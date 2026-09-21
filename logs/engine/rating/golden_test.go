@@ -32,15 +32,44 @@ func (noOpPercentiles) KillTimeBand(int64, int64, int64) (string, bool)   { retu
 
 type goldenDialect struct {
 	name   string
-	source string
+	source string                 // read from a file, when set
+	build  func() summary.Summary // constructed directly, when source is ""
 }
 
 // goldenDialects points at logs/engine/summary/testdata's own two fixture
-// dialects (v16, v22), read as already-decoded summary.Summary JSON.
+// dialects (v16, v22), read as already-decoded summary.Summary JSON, plus
+// one constructed dialect: neither v16 nor v22 is a kill (both are trash
+// fights, the only fight either checked-in log excerpt happens to close
+// first), so Output -- the one component whose formula branches on
+// Kill -- is otherwise never exercised by this golden suite at all
+// (whole-branch review, HIGH finding). "kill" is built directly rather
+// than read from a log, per the review's own fallback.
 func goldenDialects() []goldenDialect {
 	return []goldenDialect{
 		{name: "v16", source: filepath.Join("..", "summary", "testdata", "v16.summary.json.golden")},
 		{name: "v22", source: filepath.Join("..", "summary", "testdata", "v22.summary.json.golden")},
+		{name: "kill", build: killFixtureSummary},
+	}
+}
+
+// killFixtureSummary is a small, constructed kill on Shazzrah (encounter
+// 667, a real embedded mechanics table) with two players: one carries an
+// ExecutionScore, so Output takes the absolute-cap path (noOpPercentiles
+// always answers ok=false); the other has none, so Output takes the raw-
+// DPS-fallback path and is excluded, both against the real embedded
+// curated data the way scoreEveryRosterPlayer already exercises every
+// other component.
+func killFixtureSummary() summary.Summary {
+	execScore := 0.88
+	return summary.Summary{
+		EngineVersion: "golden", DurationMS: 180000, EncounterID: 667, Difficulty: 0, Kill: true,
+		Roster: []summary.RosterRow{
+			{GUID: "Player-Kill-1", Name: "Killa", Class: "Warrior", Spec: "Fury", Role: RoleDPS,
+				ExecutionScore: &execScore, DPS: 900, ActivityPct: 88, ActiveMS: 158400},
+			{GUID: "Player-Kill-2", Name: "Fallback", Class: "Mage", Spec: "Frost", Role: RoleDPS,
+				DPS: 700, ActivityPct: 90, ActiveMS: 162000},
+		},
+		Mechanics: summary.MechanicsBlock{TableFound: true, Rows: []summary.MechanicRow{}},
 	}
 }
 
@@ -55,7 +84,7 @@ func cardsGoldenFile(name string) string {
 func TestTheFixtureCardsMatchTheCommittedGolden(t *testing.T) {
 	for _, d := range goldenDialects() {
 		t.Run(d.name, func(t *testing.T) {
-			fight := loadFixtureSummary(t, d.source)
+			fight := dialectSummary(t, d)
 			cards := scoreEveryRosterPlayer(fight)
 			got := marshalIndent(t, cards)
 
@@ -90,7 +119,7 @@ func TestTheFixtureCardsMatchTheCommittedGolden(t *testing.T) {
 func TestTheGoldenCardsAreStableAcrossRuns(t *testing.T) {
 	for _, d := range goldenDialects() {
 		t.Run(d.name, func(t *testing.T) {
-			fight := loadFixtureSummary(t, d.source)
+			fight := dialectSummary(t, d)
 			first := marshalIndent(t, scoreEveryRosterPlayer(fight))
 			for i := 0; i < 5; i++ {
 				again := marshalIndent(t, scoreEveryRosterPlayer(fight))
@@ -100,6 +129,16 @@ func TestTheGoldenCardsAreStableAcrossRuns(t *testing.T) {
 			}
 		})
 	}
+}
+
+// dialectSummary returns a dialect's summary.Summary, from its file when
+// source is set, or from its constructor otherwise.
+func dialectSummary(t *testing.T, d goldenDialect) summary.Summary {
+	t.Helper()
+	if d.source != "" {
+		return loadFixtureSummary(t, d.source)
+	}
+	return d.build()
 }
 
 func loadFixtureSummary(t *testing.T, path string) summary.Summary {
