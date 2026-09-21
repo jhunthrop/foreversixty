@@ -1,4 +1,13 @@
 {
   "spec": "rogue-assassination",
-  "owned": []
+  "owned": [
+    {
+      "spell_id": 11198,
+      "name": "Expose Armor",
+      "kind": "debuff",
+      "target": "enemy",
+      "verified": "1.60.1.69893/spells.json#11198",
+      "note": "Armor-reduction debuff, max rank; core rogue kit, any spec can apply it, the same reasoning warrior-protection's Sunder Armor and druid-balance's Faerie Fire already use."
+    }
+  ]
 }
