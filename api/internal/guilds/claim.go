@@ -22,12 +22,6 @@ var (
 	ErrAlreadyClaimsAnotherGuild = errors.New("guilds: this account already holds another guild's claim")
 )
 
-// claimRateLimitWindow and claimRateLimitReason: an account may attempt
-// at most one claim (successful or pending) per rolling window, and may
-// hold at most one claimed guild at a time - both per the 2026-09-21
-// security review response (spec §2.4's amendment).
-const claimRateLimitWindow = 30 * 24 * time.Hour
-
 // ClaimResult is what Claim answers with.
 type ClaimResult struct {
 	Status    string     `json:"status"`
