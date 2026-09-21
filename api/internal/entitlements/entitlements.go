@@ -43,7 +43,3 @@ const (
 	PlanPremium = "premium"
 	PlanGuild   = "guild"
 )
-
-// verifiedGuildRanks are the two guild_members.rank values spec §0
-// calls a guild's VerifiedGuildRank.
-var verifiedGuildRanks = []string{"officer", "leader"}

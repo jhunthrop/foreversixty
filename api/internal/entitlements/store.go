@@ -49,18 +49,33 @@ func (s *Store) Can(ctx context.Context, userID int64, feature Feature) (bool, R
 // IsSupporter reuses this exact query (spec: the supporter mark and every
 // non-officer feature share one threshold).
 func (s *Store) hasStandardEntitlement(ctx context.Context, userID int64) (bool, error) {
-	var ok bool
-	err := s.Pool.QueryRow(ctx, `
+	var personal bool
+	if err := s.Pool.QueryRow(ctx, `
 		select exists (
 		  select 1 from entitlements
 		  where user_id = $1 and plan = 'premium' and `+activeStatusClause+`
-		) or exists (
+		)`, userID).Scan(&personal); err != nil {
+		return false, fmt.Errorf("entitlements: standard check %d: %w", userID, err)
+	}
+	if personal {
+		return true, nil
+	}
+	return s.hasVerifiedGuildPlan(ctx, userID)
+}
+
+// hasVerifiedGuildPlan reports whether userID is a verified member (any
+// rank) of a guild that currently has an active guild-plan entitlement —
+// the join hasStandardEntitlement and canOfficerViews both need.
+func (s *Store) hasVerifiedGuildPlan(ctx context.Context, userID int64) (bool, error) {
+	var ok bool
+	err := s.Pool.QueryRow(ctx, `
+		select exists (
 		  select 1 from guild_members m
 		  join entitlements e on e.guild_id = m.guild_id and e.plan = 'guild' and e.`+activeStatusClause+`
 		  where m.user_id = $1 and m.verified_at is not null
 		)`, userID).Scan(&ok)
 	if err != nil {
-		return false, fmt.Errorf("entitlements: standard check %d: %w", userID, err)
+		return false, fmt.Errorf("entitlements: verified guild plan check %d: %w", userID, err)
 	}
 	return ok, nil
 }
@@ -91,14 +106,9 @@ func (s *Store) canOfficerViews(ctx context.Context, userID int64) (bool, Reason
 	// so a premium-only account with no guild plan correctly gets
 	// ReasonNoPlan, not ReasonNotOfficer.
 	if member {
-		var guildMember bool
-		if err := s.Pool.QueryRow(ctx, `
-			select exists (
-			  select 1 from guild_members m
-			  join entitlements e on e.guild_id = m.guild_id and e.plan = 'guild' and e.`+activeStatusClause+`
-			  where m.user_id = $1 and m.verified_at is not null
-			)`, userID).Scan(&guildMember); err != nil {
-			return false, "", fmt.Errorf("entitlements: officer-guild check %d: %w", userID, err)
+		guildMember, err := s.hasVerifiedGuildPlan(ctx, userID)
+		if err != nil {
+			return false, "", err
 		}
 		if guildMember {
 			return false, ReasonNotOfficer, nil
