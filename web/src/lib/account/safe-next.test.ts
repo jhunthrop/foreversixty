@@ -28,4 +28,11 @@ describe('safeNextPath', () => {
   it('rejects a path that does not start with a single slash', () => {
     expect(safeNextPath('logs', '/logs')).toBe('/logs');
   });
+
+  it('rejects tab/CR/LF characters that a URL parser would strip before re-parsing as protocol-relative', () => {
+    expect(safeNextPath('/\t/evil.example', '/logs')).toBe('/logs');
+    expect(safeNextPath('/\r/evil.example', '/logs')).toBe('/logs');
+    expect(safeNextPath('/\n/evil.example', '/logs')).toBe('/logs');
+    expect(safeNextPath('/\t\\evil.example', '/logs')).toBe('/logs');
+  });
 });
