@@ -51,6 +51,7 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("DELETE /v1/guilds/{id}/characters/{region}/{ruleset}/{name}", auth.RequireSession(s.removeCharacter))
 	mux.HandleFunc("PATCH /v1/guilds/{id}/members/me", auth.RequireSession(s.patchConsent))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/members/me", auth.RequireSession(s.leaveGuild))
+	mux.HandleFunc("GET /v1/guilds/{id}/home", auth.RequireSession(s.home))
 }
 
 func (s *Service) logger() *slog.Logger {

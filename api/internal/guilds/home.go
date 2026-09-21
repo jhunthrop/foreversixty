@@ -1,0 +1,236 @@
+// api/internal/guilds/home.go
+package guilds
+
+import (
+	"context"
+	"encoding/base64"
+	"errors"
+	"fmt"
+	"net/http"
+	"strings"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/httpx"
+)
+
+// HomeReportsPerPage is the page size of the guild home's "this week's
+// reports" list, keyset-paginated the same shape as GET /v1/reports/recent.
+const HomeReportsPerPage = 20
+
+// homeReportsWindow is "this week": a trailing 7-day window, not a
+// server-specific weekly-reset timestamp, since no reset concept exists
+// anywhere in this codebase to anchor to.
+const homeReportsWindow = 7 * 24 * time.Hour
+
+const homeCursorSep = "|"
+
+// HomeCursor is the keyset position GET /v1/guilds/{id}/home pages
+// reports from.
+type HomeCursor struct {
+	CreatedAt time.Time
+	ID        string
+}
+
+func encodeHomeCursor(createdAt time.Time, id string) string {
+	raw := createdAt.UTC().Format(time.RFC3339Nano) + homeCursorSep + id
+	return base64.RawURLEncoding.EncodeToString([]byte(raw))
+}
+
+func decodeHomeCursor(s string) (HomeCursor, bool) {
+	raw, err := base64.RawURLEncoding.DecodeString(s)
+	if err != nil {
+		return HomeCursor{}, false
+	}
+	createdAt, id, ok := strings.Cut(string(raw), homeCursorSep)
+	if !ok || id == "" {
+		return HomeCursor{}, false
+	}
+	t, err := time.Parse(time.RFC3339Nano, createdAt)
+	if err != nil {
+		return HomeCursor{}, false
+	}
+	return HomeCursor{CreatedAt: t, ID: id}, true
+}
+
+type GuildIdentity struct {
+	ID      int64  `json:"id"`
+	Region  string `json:"region"`
+	Ruleset string `json:"ruleset"`
+	Name    string `json:"name"`
+}
+
+type HomeReport struct {
+	ID         string    `json:"id"`
+	Title      string    `json:"title"`
+	CreatedAt  time.Time `json:"created_at"`
+	FightCount int       `json:"fight_count"`
+	KillCount  int       `json:"kill_count"`
+}
+
+// RosterRow is one guild_characters row as the home shows it. Class,
+// Spec and ItemLevel are nil whenever the account's consent withholds
+// them — the query itself never selects those columns for a row below
+// the consent level that would show them (see HomeRoster's SQL), so
+// there is no Go-side filtering step to forget.
+type RosterRow struct {
+	CharacterKey   string  `json:"character_key"`
+	Region         string  `json:"region"`
+	Ruleset        string  `json:"ruleset"`
+	Name           string  `json:"name"`
+	Rank           string  `json:"rank"`
+	Verified       bool    `json:"verified"`
+	LoggedRecently bool    `json:"logged_recently"`
+	Consent        string  `json:"consent"`
+	Class          *string `json:"class,omitempty"`
+	Spec           *string `json:"spec,omitempty"`
+	ItemLevel      *int    `json:"item_level,omitempty"`
+}
+
+type HomeView struct {
+	Guild      GuildIdentity `json:"guild"`
+	Reports    []HomeReport  `json:"reports"`
+	NextCursor string        `json:"next_cursor,omitempty"`
+	Roster     []RosterRow   `json:"roster"`
+}
+
+// HomeReports lists this guild's reports from the trailing week, newest
+// first, keyset-paginated.
+func (s *Store) HomeReports(ctx context.Context, guildID int64, before *HomeCursor) ([]HomeReport, error) {
+	since := time.Now().Add(-homeReportsWindow)
+	const columns = `r.id, r.title, r.created_at,
+	       (select count(*) from fights f where f.report_id = r.id),
+	       (select count(*) from fights f where f.report_id = r.id and f.kill)`
+	query := `select ` + columns + ` from reports r
+		where r.guild_id = $1 and r.created_at >= $2
+		order by r.created_at desc, r.id desc limit $3`
+	args := []any{guildID, since, HomeReportsPerPage}
+	if before != nil {
+		query = `select ` + columns + ` from reports r
+			where r.guild_id = $1 and r.created_at >= $2 and (r.created_at, r.id) < ($3, $4)
+			order by r.created_at desc, r.id desc limit $5`
+		args = []any{guildID, since, before.CreatedAt, before.ID, HomeReportsPerPage}
+	}
+	rows, err := s.Pool.Query(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: home reports: %w", err)
+	}
+	defer rows.Close()
+	out := []HomeReport{}
+	for rows.Next() {
+		var h HomeReport
+		if err := rows.Scan(&h.ID, &h.Title, &h.CreatedAt, &h.FightCount, &h.KillCount); err != nil {
+			return nil, fmt.Errorf("guilds: home reports: %w", err)
+		}
+		out = append(out, h)
+	}
+	return out, rows.Err()
+}
+
+// HomeRoster lists this guild's characters (synthetic account:-prefixed
+// invite rows excluded — they have no class/spec/item level to show),
+// verified and unverified both, gear columns withheld in the query
+// itself for any row whose account has not consented to show them.
+// "Logged recently" (the literal `interval '24 hours'` below) is a
+// 24-hour proxy for "ran the companion recently", in the absence of a
+// real raid-night concept to anchor to.
+func (s *Store) HomeRoster(ctx context.Context, guildID int64) ([]RosterRow, error) {
+	rows, err := s.Pool.Query(ctx, `
+		select gc.character_key, ae.region, ae.ruleset, ae.name, gc.rank, gc.verified_at is not null,
+		       ae.updated_at >= now() - interval '24 hours', gm.consent,
+		       case when gm.consent in ('gear', 'gear_bags') then fm.class end,
+		       case when gm.consent in ('gear', 'gear_bags') then fm.spec end,
+		       case when gm.consent in ('gear', 'gear_bags') then fm.ilvl end
+		from guild_characters gc
+		join addon_exports ae on ae.character_key = gc.character_key
+		join guild_members gm on gm.guild_id = gc.guild_id and gm.user_id = gc.user_id
+		left join lateral (
+		  select class, spec, ilvl from fight_metrics
+		  where player_key = gc.character_key order by fought_at desc limit 1
+		) fm on true
+		where gc.guild_id = $1 and gc.character_key not like 'account:%'
+		order by case gc.rank when 'leader' then 0 when 'officer' then 1 else 2 end, ae.name
+	`, guildID)
+	if err != nil {
+		return nil, fmt.Errorf("guilds: home roster: %w", err)
+	}
+	defer rows.Close()
+	out := []RosterRow{}
+	for rows.Next() {
+		var row RosterRow
+		if err := rows.Scan(&row.CharacterKey, &row.Region, &row.Ruleset, &row.Name, &row.Rank,
+			&row.Verified, &row.LoggedRecently, &row.Consent, &row.Class, &row.Spec, &row.ItemLevel); err != nil {
+			return nil, fmt.Errorf("guilds: home roster: %w", err)
+		}
+		out = append(out, row)
+	}
+	return out, rows.Err()
+}
+
+// Home assembles the signed-in guild home shell: identity, this week's
+// reports, and the roster.
+func (s *Store) Home(ctx context.Context, guildID int64, before *HomeCursor) (HomeView, error) {
+	g, err := s.getGuild(ctx, guildID)
+	if err != nil {
+		return HomeView{}, err
+	}
+	reports, err := s.HomeReports(ctx, guildID, before)
+	if err != nil {
+		return HomeView{}, err
+	}
+	roster, err := s.HomeRoster(ctx, guildID)
+	if err != nil {
+		return HomeView{}, err
+	}
+	view := HomeView{
+		Guild:   GuildIdentity{ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name},
+		Reports: reports, Roster: roster,
+	}
+	if len(reports) == HomeReportsPerPage {
+		last := reports[len(reports)-1]
+		view.NextCursor = encodeHomeCursor(last.CreatedAt, last.ID)
+	}
+	return view, nil
+}
+
+// home is gated by IsMember — verified or not — never by GuildRank: an
+// unverified member still sees the home shell, just as they still
+// appear on the roster. Report *content* access stays governed by
+// mayView server-side wherever a report link is actually followed.
+func (s *Service) home(w http.ResponseWriter, r *http.Request) {
+	guildID, ok := guildIDFrom(r)
+	if !ok {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+		return
+	}
+	actor := auth.ActorFrom(r.Context())
+	member, err := s.Store.IsMember(r.Context(), guildID, actor.UserID)
+	if err != nil {
+		s.fail(w, r, "home", err, "could not load that guild's home just now")
+		return
+	}
+	if !member {
+		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "you are not a member of that guild", nil)
+		return
+	}
+	var before *HomeCursor
+	if v := r.URL.Query().Get("cursor"); v != "" {
+		c, ok := decodeHomeCursor(v)
+		if !ok {
+			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a cursor",
+				map[string]string{"cursor": "the next_cursor a previous page returned"})
+			return
+		}
+		before = &c
+	}
+	view, err := s.Store.Home(r.Context(), guildID, before)
+	if errors.Is(err, ErrNotFound) {
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
+		return
+	}
+	if err != nil {
+		s.fail(w, r, "home", err, "could not load that guild's home just now")
+		return
+	}
+	httpx.WriteOK(w, r, http.StatusOK, view)
+}
