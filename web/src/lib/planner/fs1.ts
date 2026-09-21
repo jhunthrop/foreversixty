@@ -90,6 +90,13 @@ export interface FS1Build {
   sets?: FS1Set[];
   loadouts?: FS1Loadout[];
   professions?: string[];
+  /**
+   * The character's current guild, from `GetGuildInfo("player")` (section 1.1 of the
+   * guild-membership design). Absent means unguilded -- never defaulted to `{}`, the
+   * way `bags`/`bank`/`sets`/`loadouts`/`professions` default to `[]`, because "no
+   * guild" and "an empty guild" are not the same fact.
+   */
+  guild?: { name: string; rankIndex: number };
   /** Section names the decoder did not recognise, reported rather than silently dropped. */
   ignored?: string[];
 }
@@ -258,6 +265,23 @@ function parseNamed(field: string): { name: string; payload: string }[] {
   });
 }
 
+/**
+ * `<name>:<rank-index>`, split on the first colon -- a guild is one fact, not the
+ * `name=payload;…` collection grammar `sets`/`loadouts` use. The name side never throws
+ * (decodeName); the rank side must be digits-only or the whole code is refused, since a
+ * malformed *known* section refuses the whole code (only an unrecognised section name is
+ * forgiven).
+ */
+function parseGuild(field: string): Parsed<{ name: string; rankIndex: number }> {
+  const at = field.indexOf(':');
+  const namePart = at === -1 ? field : field.slice(0, at);
+  const rankPart = at === -1 ? '' : field.slice(at + 1);
+  if (!/^\d+$/.test(rankPart)) {
+    return { ok: false, message: `That code has an unreadable guild rank: ${rankPart}.` };
+  }
+  return { ok: true, value: { name: decodeName(namePart), rankIndex: Number.parseInt(rankPart, 10) } };
+}
+
 export function decodeFS1(code: string): FS1Result {
   // Before any splitting or parsing: the cheapest possible check, and the one that keeps a
   // hostile multi-megabyte query value from doing any real work at all.
@@ -298,6 +322,7 @@ export function decodeFS1(code: string): FS1Result {
     sets: [] as FS1Set[],
     loadouts: [] as FS1Loadout[],
     professions: [] as string[],
+    guild: undefined as { name: string; rankIndex: number } | undefined,
     ignored: [] as string[],
   };
 
@@ -328,6 +353,10 @@ export function decodeFS1(code: string): FS1Result {
       // a stray comma ("a,,b" or a trailing "a,") is not a slug at all, only a formatting
       // artifact, so those alone are filtered rather than forwarded to fail there instead.
       build.professions = field === '' ? [] : field.split(',').filter((slug) => slug !== '');
+    } else if (name === 'guild') {
+      const guild = parseGuild(field);
+      if (!guild.ok) return guild;
+      build.guild = guild.value;
     } else if (name !== '') {
       // Contract 7: unknown sections are ignored by the decoder and reported in its
       // result. An addon a version ahead of the site is a thing that will happen, and
@@ -441,6 +470,7 @@ export function encodeFS1V2(build: FS1Build): string {
     );
   }
   if (professions.length > 0) sections.push(`professions=${professions.join(',')}`);
+  if (build.guild) sections.push(`guild=${encodeURIComponent(build.guild.name)}:${build.guild.rankIndex}`);
 
   // Always built from the slot list, never delegated to `encodeFS1` -- a caller can hold
   // `gearSlots` with nothing in `gear` (the doc comment on `FS1Build.gearSlots` invites
