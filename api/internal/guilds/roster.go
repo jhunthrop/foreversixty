@@ -32,7 +32,8 @@ func (s *Store) ApproveCharacter(ctx context.Context, guildID int64, characterKe
 	defer func() { _ = tx.Rollback(ctx) }()
 	var userID int64
 	err = tx.QueryRow(ctx,
-		`update guild_characters set verified_at = coalesce(verified_at, now())
+		`update guild_characters set verified_at = coalesce(verified_at, now()),
+		   verified_by = coalesce(verified_by, 'officer')
 		 where guild_id = $1 and character_key = $2 returning user_id`,
 		guildID, characterKey).Scan(&userID)
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -47,20 +48,49 @@ func (s *Store) ApproveCharacter(ctx context.Context, guildID int64, characterKe
 	return tx.Commit(ctx)
 }
 
-// CharacterOwner reads which account a guild_characters row belongs to,
-// so a handler can decide "the character's own account" before acting.
-func (s *Store) CharacterOwner(ctx context.Context, guildID int64, characterKey string) (int64, error) {
-	var userID int64
-	err := s.Pool.QueryRow(ctx,
-		`select user_id from guild_characters where guild_id = $1 and character_key = $2`,
-		guildID, characterKey).Scan(&userID)
+// CharacterOwner reads which account a guild_characters row belongs to
+// and its current rank, so a handler can decide "the character's own
+// account" and apply the rank-protects-rank rule (mayRemoveCharacter)
+// before acting.
+func (s *Store) CharacterOwner(ctx context.Context, guildID int64, characterKey string) (userID int64, rank string, err error) {
+	err = s.Pool.QueryRow(ctx,
+		`select user_id, rank from guild_characters where guild_id = $1 and character_key = $2`,
+		guildID, characterKey).Scan(&userID, &rank)
 	if errors.Is(err, pgx.ErrNoRows) {
-		return 0, ErrNotFound
+		return 0, "", ErrNotFound
 	}
 	if err != nil {
-		return 0, fmt.Errorf("guilds: character owner: %w", err)
+		return 0, "", fmt.Errorf("guilds: character owner: %w", err)
 	}
-	return userID, nil
+	return userID, rank, nil
+}
+
+// mayRemoveCharacter applies the rank-protects-rank rule (2026-09-21
+// security review response, spec §3.3's amendment): a member-rank row
+// may be removed by its own account, a verified officer/leader, or a
+// moderator; an officer-rank row adds only the account currently
+// holding the guild's claim to that list (not any officer); a
+// leader-rank row is removable only by its own account or a moderator -
+// never by the account holding the claim either, since a second
+// leader-rank row belongs to a different real character than the
+// claimant's own. This is what stops an officer from stripping the real
+// guild master's membership and then claiming the now-unclaimed guild.
+func (s *Store) mayRemoveCharacter(ctx context.Context, guildID, actorID, ownerID int64, targetRank string, moderator, verifiedOfficer bool) (bool, error) {
+	if moderator || actorID == ownerID {
+		return true, nil
+	}
+	switch targetRank {
+	case "leader":
+		return false, nil
+	case "officer":
+		g, err := s.getGuild(ctx, guildID)
+		if err != nil {
+			return false, err
+		}
+		return g.ClaimedBy != nil && *g.ClaimedBy == actorID, nil
+	default: // member
+		return verifiedOfficer, nil
+	}
 }
 
 // RemoveCharacter deletes a guild_characters row and recomputes the
@@ -168,6 +198,14 @@ func (s *Service) approveCharacter(w http.ResponseWriter, r *http.Request) {
 			"you must be a verified officer of this guild to approve a character", nil)
 		return
 	}
+	if contested, err := s.Store.contested(r.Context(), guildID); err != nil {
+		s.fail(w, r, "approve", err, "could not approve that character just now")
+		return
+	} else if contested {
+		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
+			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
+		return
+	}
 	err = s.Store.ApproveCharacter(r.Context(), guildID, key)
 	switch {
 	case errors.Is(err, ErrNotFound):
@@ -193,7 +231,7 @@ func (s *Service) removeCharacter(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	actor := auth.ActorFrom(r.Context())
-	owner, err := s.Store.CharacterOwner(r.Context(), guildID, key)
+	owner, targetRank, err := s.Store.CharacterOwner(r.Context(), guildID, key)
 	if errors.Is(err, ErrNotFound) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such character on this guild's roster", nil)
 		return
@@ -202,15 +240,35 @@ func (s *Service) removeCharacter(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "remove", err, "could not remove that character just now")
 		return
 	}
-	if owner != actor.UserID {
-		allowed, err := s.verifiedOfficerOrLeader(r, guildID)
+
+	selfOrModerator := owner == actor.UserID || actor.IsModerator()
+	var verifiedOfficer bool
+	if !selfOrModerator {
+		verifiedOfficer, err = s.verifiedOfficerOrLeader(r, guildID)
 		if err != nil {
 			s.fail(w, r, "remove", err, "could not remove that character just now")
 			return
 		}
-		if !allowed {
-			httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
-				"you must be the character's own account or a verified officer to remove it", nil)
+	}
+	allowed, err := s.Store.mayRemoveCharacter(r.Context(), guildID, actor.UserID, owner, targetRank, actor.IsModerator(), verifiedOfficer)
+	if err != nil {
+		s.fail(w, r, "remove", err, "could not remove that character just now")
+		return
+	}
+	if !allowed {
+		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
+			"you do not have standing to remove this character", nil)
+		return
+	}
+	// Leaving is never frozen by a contested claim - only another
+	// account's officer action against someone else's row is.
+	if !selfOrModerator {
+		if contested, err := s.Store.contested(r.Context(), guildID); err != nil {
+			s.fail(w, r, "remove", err, "could not remove that character just now")
+			return
+		} else if contested {
+			httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
+				"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
 			return
 		}
 	}

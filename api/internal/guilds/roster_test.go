@@ -136,3 +136,135 @@ func TestConsentPatchAndLeave(t *testing.T) {
 		t.Fatalf("leaving twice = %d, want 404", res.StatusCode)
 	}
 }
+
+func TestAnOfficerCannotRemoveTheGuildMastersCharacter(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	gm := seedUser(t, h.pool, "protected-gm@example.com")
+	seedCharacter(t, h.pool, gid, gm, "us/hardcore/protectedgm", "leader", true)
+	if _, err := h.pool.Exec(ctx, `update guilds set claimed_by = $1 where id = $2`, gm, gid); err != nil {
+		t.Fatal(err)
+	}
+	officer := seedUser(t, h.pool, "unprivileged-officer@example.com")
+	seedCharacter(t, h.pool, gid, officer, "us/hardcore/unprivilegedofficer", "officer", true)
+
+	h.actor = auth.Actor{UserID: officer, Role: "user", Method: "session"}
+	res := h.do(http.MethodDelete, fmt.Sprintf("/v1/guilds/%d/characters/us/hardcore/protectedgm", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("an officer removing the guild master = %d, want 403", res.StatusCode)
+	}
+	var claimedBy *int64
+	h.pool.QueryRow(ctx, `select claimed_by from guilds where id = $1`, gid).Scan(&claimedBy)
+	if claimedBy == nil || *claimedBy != gm {
+		t.Fatalf("claimed_by = %v, want unchanged (%d) - the claim must stay intact", claimedBy, gm)
+	}
+	var n int
+	h.pool.QueryRow(ctx, `select count(*) from guild_characters where character_key = 'us/hardcore/protectedgm'`).Scan(&n)
+	if n != 1 {
+		t.Fatal("the guild master's row must still exist")
+	}
+}
+
+func TestTheAccountHoldingTheClaimCanRemoveAnOfficerButNotAnotherLeaderRow(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	gm := seedUser(t, h.pool, "gm-removes@example.com")
+	seedCharacter(t, h.pool, gid, gm, "us/hardcore/gmremoves", "leader", true)
+	if _, err := h.pool.Exec(ctx, `update guilds set claimed_by = $1 where id = $2`, gm, gid); err != nil {
+		t.Fatal(err)
+	}
+	officer := seedUser(t, h.pool, "removable-officer@example.com")
+	seedCharacter(t, h.pool, gid, officer, "us/hardcore/removableofficer", "officer", true)
+	otherLeader := seedUser(t, h.pool, "other-leader@example.com")
+	seedCharacter(t, h.pool, gid, otherLeader, "us/hardcore/otherleader", "leader", true)
+
+	h.actor = auth.Actor{UserID: gm, Role: "user", Method: "session"}
+	res := h.do(http.MethodDelete, fmt.Sprintf("/v1/guilds/%d/characters/us/hardcore/removableofficer", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("the claim-holding account removing an officer = %d, want 200", res.StatusCode)
+	}
+
+	res = h.do(http.MethodDelete, fmt.Sprintf("/v1/guilds/%d/characters/us/hardcore/otherleader", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("the claim-holding account removing a DIFFERENT leader-rank row = %d, want 403", res.StatusCode)
+	}
+}
+
+func TestAContestedClaimFreezesApproveAndRemove(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	claimant := seedUser(t, h.pool, "frozen-claimant@example.com")
+	seedCharacter(t, h.pool, gid, claimant, "us/hardcore/frozenclaimant", "leader", true)
+	// verifiedOfficerOrLeader reads the derived guild_members table, not
+	// guild_characters directly (see syncMembership's doc comment above);
+	// the claimant needs its leader standing synced there before an
+	// approve call can reach the contested check this test is after.
+	syncMembership(t, h.pool, gid, claimant)
+	if _, err := h.pool.Exec(ctx, `update guilds set claimed_by = $1, claim_contested_at = now() where id = $2`, claimant, gid); err != nil {
+		t.Fatal(err)
+	}
+	unverified := seedUser(t, h.pool, "frozen-unverified@example.com")
+	seedCharacter(t, h.pool, gid, unverified, "us/hardcore/frozenunverified", "member", false)
+
+	h.actor = auth.Actor{UserID: claimant, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/characters/us/hardcore/frozenunverified/approve", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusConflict {
+		t.Fatalf("approve while contested = %d, want 409", res.StatusCode)
+	}
+
+	otherOfficer := seedUser(t, h.pool, "frozen-other-officer@example.com")
+	seedCharacter(t, h.pool, gid, otherOfficer, "us/hardcore/frozenotherofficer", "officer", true)
+	// Same reason as claimant above: mayRemoveCharacter's member-rank leg
+	// needs verifiedOfficerOrLeader to see otherOfficer as a real officer
+	// before the handler ever reaches the contested-freeze check, or this
+	// assertion would see 403 (unauthorized) instead of 409 (frozen).
+	syncMembership(t, h.pool, gid, otherOfficer)
+	h.actor = auth.Actor{UserID: otherOfficer, Role: "user", Method: "session"}
+	res = h.do(http.MethodDelete, fmt.Sprintf("/v1/guilds/%d/characters/us/hardcore/frozenunverified", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusConflict {
+		t.Fatalf("remove by an officer while contested = %d, want 409", res.StatusCode)
+	}
+
+	// Self-removal still works during a contest - leaving is never frozen.
+	h.actor = auth.Actor{UserID: unverified, Role: "user", Method: "session"}
+	res = h.do(http.MethodDelete, fmt.Sprintf("/v1/guilds/%d/characters/us/hardcore/frozenunverified", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("self-removal while contested = %d, want 200 (never frozen)", res.StatusCode)
+	}
+}
+
+func TestApproveCharacterRecordsVerifiedByOfficer(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	uid := seedUser(t, h.pool, "verify-source@example.com")
+	seedCharacter(t, h.pool, gid, uid, "us/hardcore/verifysource", "member", false)
+	officer := seedUser(t, h.pool, "verify-source-officer@example.com")
+	seedCharacter(t, h.pool, gid, officer, "us/hardcore/verifysourceofficer", "officer", true)
+	// verifiedOfficerOrLeader reads guild_members, not guild_characters;
+	// sync it so this officer's approve call actually clears that gate
+	// (see TestApproveCharacterNeedsAVerifiedOfficer above for the same
+	// established pattern).
+	syncMembership(t, h.pool, gid, officer)
+
+	h.actor = auth.Actor{UserID: officer, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/characters/us/hardcore/verifysource/approve", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("approve = %d, want 200", res.StatusCode)
+	}
+	var by string
+	h.pool.QueryRow(ctx, `select verified_by from guild_characters where character_key = 'us/hardcore/verifysource'`).Scan(&by)
+	if by != "officer" {
+		t.Fatalf("verified_by = %q, want officer", by)
+	}
+}
