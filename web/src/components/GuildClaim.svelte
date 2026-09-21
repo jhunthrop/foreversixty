@@ -154,25 +154,8 @@
         {/each}
       </ul>
     </section>
-    {#if settings.claim.state === 'contested'}
-      <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.contested}</p>
-    {:else if settings.claimed_by !== null}
-      <p class="text-[14px]" data-testid="guild-claim-state">
-        {settings.claimed_by.battletag === myBattletag
-          ? guildClaimCopy.claimedByYou
-          : guildClaimCopy.claimedBySomeoneElse(settings.claimed_by.battletag)}
-      </p>
-      {#if settings.claimed_by.battletag === myBattletag}
-        <button
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
-          onclick={onRelease}
-          disabled={busy}
-          data-testid="guild-claim-release"
-        >
-          {guildClaimCopy.releaseButton}
-        </button>
-      {/if}
-      {#if canContest}
+    {#snippet contestOffer()}
+      {#if canContest && settings !== null && settings.claim.state !== 'contested'}
         {#if !showContestConfirm}
           <button
             class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3"
@@ -215,6 +198,27 @@
           </div>
         {/if}
       {/if}
+    {/snippet}
+    {#if settings.claim.state === 'contested'}
+      <p class="text-[14px]" data-testid="guild-claim-contested-notice">{guildClaimCopy.contested}</p>
+    {/if}
+    {#if settings.claimed_by !== null}
+      <p class="text-[14px]" data-testid="guild-claim-state">
+        {settings.claimed_by.battletag === myBattletag
+          ? guildClaimCopy.claimedByYou
+          : guildClaimCopy.claimedBySomeoneElse(settings.claimed_by.battletag)}
+      </p>
+      {#if settings.claimed_by.battletag === myBattletag}
+        <button
+          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+          onclick={onRelease}
+          disabled={busy}
+          data-testid="guild-claim-release"
+        >
+          {guildClaimCopy.releaseButton}
+        </button>
+      {/if}
+      {@render contestOffer()}
     {:else if settings.claim_pending !== null}
       <p class="text-[14px]" data-testid="guild-claim-state">
         {guildClaimCopy.pending(settings.claim_pending.expires_at)}
@@ -231,49 +235,7 @@
       {:else if signedIn}
         <p class="text-[14px]" data-testid="guild-claim-not-eligible">{guildClaimCopy.notEligible}</p>
       {/if}
-      {#if canContest}
-        {#if !showContestConfirm}
-          <button
-            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3"
-            onclick={() => (showContestConfirm = true)}
-            disabled={busy}
-            data-testid="guild-claim-contest-button"
-          >
-            {guildHomeCopy.contestButton}
-          </button>
-        {:else}
-          <div
-            class="border-line-soft flex flex-col gap-3 border p-4"
-            data-testid="guild-claim-contest-confirm"
-          >
-            <ul class="flex flex-col gap-1 text-[13px]">
-              {#each guildHomeCopy.contestRules as rule (rule)}
-                <li>{rule}</li>
-              {/each}
-            </ul>
-            <div class="flex gap-3">
-              <button
-                class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-3"
-                onclick={onContest}
-                disabled={busy}
-                data-testid="guild-claim-contest-confirm-button"
-              >
-                {guildHomeCopy.contestConfirmButton}
-              </button>
-              <button
-                class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3"
-                onclick={() => {
-                  showContestConfirm = false;
-                  error = '';
-                }}
-                disabled={busy}
-              >
-                {guildHomeCopy.cancel}
-              </button>
-            </div>
-          </div>
-        {/if}
-      {/if}
+      {@render contestOffer()}
     {:else}
       <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.unclaimed}</p>
       {#if !signedIn}
