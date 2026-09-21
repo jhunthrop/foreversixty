@@ -17,9 +17,11 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
@@ -76,6 +78,30 @@ func main() {
 				os.Exit(1)
 			}
 			return
+		case "grant":
+			if err := runGrant(context.Background(), log, os.Args[2:]); err != nil {
+				log.Error("grant", "err", err)
+				os.Exit(1)
+			}
+			return
+		case "revoke":
+			if err := runRevoke(context.Background(), log, os.Args[2:]); err != nil {
+				log.Error("revoke", "err", err)
+				os.Exit(1)
+			}
+			return
+		case "stripe-setup":
+			if err := runStripeSetup(context.Background(), log); err != nil {
+				log.Error("stripe-setup", "err", err)
+				os.Exit(1)
+			}
+			return
+		case "stripe-reconcile":
+			if err := runStripeReconcile(context.Background(), log); err != nil {
+				log.Error("stripe-reconcile", "err", err)
+				os.Exit(1)
+			}
+			return
 		}
 	}
 	if err := serve(log); err != nil {
@@ -89,6 +115,9 @@ func main() {
 func start(ctx context.Context) (config.Config, *pgxpool.Pool, error) {
 	cfg, err := config.Load(os.Getenv)
 	if err != nil {
+		return config.Config{}, nil, err
+	}
+	if err := cfg.ValidateStripeKeyEnvironment(); err != nil {
 		return config.Config{}, nil, err
 	}
 	if err := db.Migrate(cfg.MigrateDatabaseURL); err != nil {
@@ -316,12 +345,13 @@ func serve(log *slog.Logger) error {
 	}
 
 	authStore := &auth.Store{Pool: pool}
+	entStore := &entitlements.Store{Pool: pool}
 	authenticator := &auth.Authenticator{
 		Store: authStore, CookieDomain: cfg.SessionCookieDomain,
 		Secure: strings.HasPrefix(cfg.PublicBaseURL, "https://"), Log: log,
 	}
 	accounts := &auth.Service{
-		Store: authStore, Auth: authenticator, Mailer: mailer,
+		Store: authStore, Auth: authenticator, Mailer: mailer, Entitlements: entStore,
 		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
 	}
 	if cfg.BattleNetConfigured() {
@@ -348,8 +378,21 @@ func serve(log *slog.Logger) error {
 	}
 
 	deps.Sims = &sims.Service{
-		Store: simStore, Accounts: authStore, Planner: simEngine(log),
+		Store: simStore, Accounts: entStore, Planner: simEngine(log),
 		EngineVersion: enginever.Version, Log: log,
+	}
+
+	var gateway billing.Gateway
+	if cfg.StripeConfigured() {
+		gateway = billing.NewStripeGateway(cfg.StripeSecretKey)
+	} else {
+		log.Warn("billing", "state", "stripe is not configured",
+			"effect", "checkout, portal, and the webhook answer 503")
+	}
+	deps.Billing = &billing.Service{
+		Store: &billing.Store{Pool: pool}, Entitlements: entStore,
+		Accounts: authStore, Users: authStore, Guilds: guildStore, Gateway: gateway,
+		PublicBaseURL: cfg.PublicBaseURL, WebhookSecret: cfg.StripeWebhookSecret, Log: log,
 	}
 
 	var sampler *parse.Worker

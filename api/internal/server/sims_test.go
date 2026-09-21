@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
@@ -31,16 +32,18 @@ func TestTheSimulatorRoutesAreMountedWhenTheServiceIs(t *testing.T) {
 	}
 }
 
-// fakeJobRunner and fakePremiumer are the minimum a sims.Service needs
-// to mount POST /v1/sims/run at all - the one route whose registration
-// depends on runtime state rather than always being there.
+// fakeJobRunner and fakeEntitlementer are the minimum a sims.Service
+// needs to mount POST /v1/sims/run at all - the one route whose
+// registration depends on runtime state rather than always being there.
 type fakeJobRunner struct{}
 
 func (fakeJobRunner) Run(context.Context, ...string) error { return nil }
 
-type fakePremiumer struct{}
+type fakeEntitlementer struct{}
 
-func (fakePremiumer) Premium(context.Context, int64) (bool, error) { return false, nil }
+func (fakeEntitlementer) Can(context.Context, int64, entitlements.Feature) (bool, entitlements.Reason, error) {
+	return false, entitlements.ReasonNoPlan, nil
+}
 
 // planNothing satisfies sims.Planner for the mount check, which never
 // plans anything.
@@ -82,7 +85,7 @@ func TestTheSaveMineAndRunRoutesAreMounted(t *testing.T) {
 	}
 
 	withRun := NewRouter(Deps{Version: "test", Sims: &sims.Service{
-		Jobs: fakeJobRunner{}, Accounts: fakePremiumer{}, Planner: planNothing{},
+		Jobs: fakeJobRunner{}, Accounts: fakeEntitlementer{}, Planner: planNothing{},
 	}})
 	w = httptest.NewRecorder()
 	withRun.ServeHTTP(w, httptest.NewRequest(http.MethodPost, "/v1/sims/run", strings.NewReader("{}")))
