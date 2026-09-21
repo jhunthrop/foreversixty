@@ -2,6 +2,9 @@
 // web/src/pages/login.astro
 import Base from '../layouts/Base.astro';
 import Account from '../components/Account.svelte';
+import { safeNextPath } from '../lib/account/safe-next';
+
+const next = safeNextPath(Astro.url.searchParams.get('next'), '/logs');
 ---
 
 <Base
@@ -20,6 +23,6 @@ import Account from '../components/Account.svelte';
       An account is needed to upload logs, pair the companion and claim characters. Reading reports and
       rankings never needs one.
     </p>
-    <Account client:load mode="login" next="/logs" />
+    <Account client:load mode="login" next={next} />
   </main>
 </Base>
