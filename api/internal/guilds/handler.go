@@ -102,12 +102,23 @@ func (s *Service) claim(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	actor := auth.ActorFrom(r.Context())
-	result, err := s.Store.Claim(r.Context(), guildID, actor.UserID)
+	u, err := s.Accounts.User(r.Context(), actor.UserID)
+	if err != nil {
+		s.fail(w, r, "claim", err, "could not claim that guild just now")
+		return
+	}
+	result, err := s.Store.Claim(r.Context(), guildID, actor.UserID, u.BnetSub != "")
 	switch {
 	case errors.Is(err, ErrNotFound):
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
-	case errors.Is(err, ErrAlreadyClaimed), errors.Is(err, ErrClaimPending):
-		httpx.WriteError(w, r, http.StatusConflict, "conflict", "that guild already has a claim", nil)
+	case errors.Is(err, ErrAlreadyClaimed), errors.Is(err, ErrClaimPending), errors.Is(err, ErrAlreadyClaimsAnotherGuild):
+		httpx.WriteError(w, r, http.StatusConflict, "conflict", "that guild already has a claim, or you already hold another guild's claim", nil)
+	case errors.Is(err, ErrClaimRateLimited):
+		httpx.WriteError(w, r, http.StatusTooManyRequests, "rate_limited",
+			"you may only attempt one guild claim every 30 days", nil)
+	case errors.Is(err, ErrNoBattleNetIdentity):
+		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
+			"claiming as guild master requires a linked Battle.net account", nil)
 	case errors.Is(err, ErrNotEligible):
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
 			"you need an officer or leader character in this guild to claim it", nil)

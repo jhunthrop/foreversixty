@@ -15,7 +15,7 @@ func TestClaimByTheGuildMasterIsImmediate(t *testing.T) {
 	gid := seedGuild(t, pool, "Forever")
 	seedCharacter(t, pool, gid, uid, "us/hardcore/gm", "leader", false)
 
-	result, err := s.Claim(ctx, gid, uid)
+	result, err := s.Claim(ctx, gid, uid, true)
 	if err != nil || result.Status != "confirmed" {
 		t.Fatalf("Claim = %+v, %v, want confirmed", result, err)
 	}
@@ -38,13 +38,13 @@ func TestClaimByAnOfficerGoesPendingAndRequiresEligibility(t *testing.T) {
 	gid := seedGuild(t, pool, "Forever")
 
 	stranger := seedUser(t, pool, "stranger@example.com")
-	if _, err := s.Claim(ctx, gid, stranger); !errors.Is(err, ErrNotEligible) {
+	if _, err := s.Claim(ctx, gid, stranger, true); !errors.Is(err, ErrNotEligible) {
 		t.Fatalf("Claim by a non-member = %v, want ErrNotEligible", err)
 	}
 
 	officer := seedUser(t, pool, "officer@example.com")
 	seedCharacter(t, pool, gid, officer, "us/hardcore/officer", "officer", false)
-	result, err := s.Claim(ctx, gid, officer)
+	result, err := s.Claim(ctx, gid, officer, true)
 	if err != nil || result.Status != "pending" || result.ExpiresAt == nil {
 		t.Fatalf("Claim by an officer = %+v, %v, want pending with an expiry", result, err)
 	}
@@ -54,7 +54,7 @@ func TestClaimByAnOfficerGoesPendingAndRequiresEligibility(t *testing.T) {
 		t.Fatalf("claim_pending_by = %v, want %d", pendingBy, officer)
 	}
 
-	if _, err := s.Claim(ctx, gid, officer); !errors.Is(err, ErrClaimPending) {
+	if _, err := s.Claim(ctx, gid, officer, true); !errors.Is(err, ErrClaimPending) {
 		t.Fatalf("claiming again while pending = %v, want ErrClaimPending", err)
 	}
 }
@@ -66,7 +66,7 @@ func TestConfirmClaimNeedsASecondDistinctEligibleAccount(t *testing.T) {
 	gid := seedGuild(t, pool, "Forever")
 	officer := seedUser(t, pool, "officer1@example.com")
 	seedCharacter(t, pool, gid, officer, "us/hardcore/officer1", "officer", false)
-	if _, err := s.Claim(ctx, gid, officer); err != nil {
+	if _, err := s.Claim(ctx, gid, officer, true); err != nil {
 		t.Fatal(err)
 	}
 
@@ -100,7 +100,7 @@ func TestConfirmClaimRefusesOnceExpired(t *testing.T) {
 	gid := seedGuild(t, pool, "Forever")
 	officer := seedUser(t, pool, "expiring@example.com")
 	seedCharacter(t, pool, gid, officer, "us/hardcore/expiring", "officer", false)
-	if _, err := s.Claim(ctx, gid, officer); err != nil {
+	if _, err := s.Claim(ctx, gid, officer, true); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := pool.Exec(ctx,
@@ -113,7 +113,7 @@ func TestConfirmClaimRefusesOnceExpired(t *testing.T) {
 		t.Fatalf("confirming an expired claim = %v, want ErrNoPendingClaim", err)
 	}
 	// A fresh Claim call is what actually clears the stale pending fields.
-	if _, err := s.Claim(ctx, gid, officer2); err != nil {
+	if _, err := s.Claim(ctx, gid, officer2, true); err != nil {
 		t.Fatalf("a fresh claim after expiry should be allowed: %v", err)
 	}
 }
@@ -125,7 +125,7 @@ func TestAutoConfirmClaimIfPendingFiresOnTheGuildMastersOwnExport(t *testing.T) 
 	gid := seedGuild(t, pool, "Forever")
 	officer := seedUser(t, pool, "pending-officer@example.com")
 	seedCharacter(t, pool, gid, officer, "us/hardcore/pendingofficer", "officer", false)
-	if _, err := s.Claim(ctx, gid, officer); err != nil {
+	if _, err := s.Claim(ctx, gid, officer, true); err != nil {
 		t.Fatal(err)
 	}
 
@@ -135,7 +135,7 @@ func TestAutoConfirmClaimIfPendingFiresOnTheGuildMastersOwnExport(t *testing.T) 
 	if err != nil {
 		t.Fatal(err)
 	}
-	if err := AutoConfirmClaimIfPending(ctx, tx, gid); err != nil {
+	if err := AutoConfirmClaimIfPending(ctx, tx, gid, gm); err != nil {
 		t.Fatal(err)
 	}
 	if err := tx.Commit(ctx); err != nil {
@@ -155,7 +155,7 @@ func TestReleaseClaimIsTheClaimantOrAModerator(t *testing.T) {
 	gid := seedGuild(t, pool, "Forever")
 	uid := seedUser(t, pool, "claimant@example.com")
 	seedCharacter(t, pool, gid, uid, "us/hardcore/claimant", "leader", false)
-	if _, err := s.Claim(ctx, gid, uid); err != nil {
+	if _, err := s.Claim(ctx, gid, uid, true); err != nil {
 		t.Fatal(err)
 	}
 
@@ -170,5 +170,112 @@ func TestReleaseClaimIsTheClaimantOrAModerator(t *testing.T) {
 	pool.QueryRow(ctx, `select claimed_by from guilds where id = $1`, gid).Scan(&claimedBy)
 	if claimedBy != nil {
 		t.Fatal("claimed_by should be nil after release")
+	}
+}
+
+func TestClaimRefusesAnAccountWithNoBattleNetIdentity(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	uid := seedUser(t, pool, "email-only-gm@example.com")
+	gid := seedGuild(t, pool, "Forever")
+	seedCharacter(t, pool, gid, uid, "us/hardcore/emailgm", "leader", false)
+
+	if _, err := s.Claim(ctx, gid, uid, false); !errors.Is(err, ErrNoBattleNetIdentity) {
+		t.Fatalf("Claim with no Battle.net identity = %v, want ErrNoBattleNetIdentity", err)
+	}
+	result, err := s.Claim(ctx, gid, uid, true)
+	if err != nil || result.Status != "confirmed" {
+		t.Fatalf("Claim with a Battle.net identity = %+v, %v, want confirmed", result, err)
+	}
+}
+
+func TestClaimRateLimitsToOnePerAccountPerThirtyDays(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	uid := seedUser(t, pool, "repeat-claimant@example.com")
+	g1 := seedGuild(t, pool, "First")
+	g2 := seedGuild(t, pool, "Second")
+	seedCharacter(t, pool, g1, uid, "us/hardcore/first", "leader", false)
+	if _, err := s.Claim(ctx, g1, uid, true); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.ReleaseClaim(ctx, g1, uid, false); err != nil {
+		t.Fatal(err)
+	}
+	seedCharacter(t, pool, g2, uid, "us/hardcore/second", "leader", false)
+	if _, err := s.Claim(ctx, g2, uid, true); !errors.Is(err, ErrClaimRateLimited) {
+		t.Fatalf("a second claim within 30 days = %v, want ErrClaimRateLimited (even after releasing the first)", err)
+	}
+}
+
+func TestClaimRefusesASecondGuildWhileAnotherIsStillHeld(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	uid := seedUser(t, pool, "two-guild-claimant@example.com")
+	g1 := seedGuild(t, pool, "First")
+	g2 := seedGuild(t, pool, "Second")
+	seedCharacter(t, pool, g1, uid, "us/hardcore/heldfirst", "leader", false)
+	if _, err := s.Claim(ctx, g1, uid, true); err != nil {
+		t.Fatal(err)
+	}
+	seedCharacter(t, pool, g2, uid, "us/hardcore/heldsecond", "leader", false)
+	if _, err := s.Claim(ctx, g2, uid, true); !errors.Is(err, ErrAlreadyClaimsAnotherGuild) {
+		t.Fatalf("claiming a second guild while still holding the first = %v, want ErrAlreadyClaimsAnotherGuild", err)
+	}
+}
+
+func TestAutoConfirmClaimIfPendingRefusesTheSameAccountsSecondForgedCharacter(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	attacker := seedUser(t, pool, "self-confirm@example.com")
+	seedCharacter(t, pool, gid, attacker, "us/hardcore/alt1", "officer", false)
+	if _, err := s.Claim(ctx, gid, attacker, true); err != nil {
+		t.Fatal(err)
+	}
+	var pendingBy *int64
+	pool.QueryRow(ctx, `select claim_pending_by from guilds where id = $1`, gid).Scan(&pendingBy)
+	if pendingBy == nil || *pendingBy != attacker {
+		t.Fatal("the attacker's claim should be pending")
+	}
+
+	// Same account, a second forged character at rank 0 - must NOT
+	// auto-confirm its own pending claim.
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := AutoConfirmClaimIfPending(ctx, tx, gid, attacker); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	var claimedBy *int64
+	pool.QueryRow(ctx, `select claimed_by from guilds where id = $1`, gid).Scan(&claimedBy)
+	if claimedBy != nil {
+		t.Fatal("a same-account rank-0 signal must not auto-confirm the account's own pending claim")
+	}
+
+	// A genuinely distinct account's rank-0 export still auto-confirms.
+	gm := seedUser(t, pool, "real-gm@example.com")
+	seedCharacter(t, pool, gid, gm, "us/hardcore/realgm", "leader", false)
+	tx, err = pool.Begin(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := AutoConfirmClaimIfPending(ctx, tx, gid, gm); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	pool.QueryRow(ctx, `select claimed_by from guilds where id = $1`, gid).Scan(&claimedBy)
+	if claimedBy == nil || *claimedBy != attacker {
+		t.Fatalf("claimed_by = %v, want the originally pending %d, confirmed by a genuinely distinct account", claimedBy, attacker)
 	}
 }
