@@ -8,8 +8,10 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 )
 
 func TestCreateAndReadAReport(t *testing.T) {
@@ -114,7 +116,7 @@ func TestAGuildReportIsVisibleToTheGuild(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, err := h.store.Pool.Exec(t.Context(),
-		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'member')`,
+		`insert into guild_members (guild_id, user_id, rank, verified_at) values ($1, $2, 'member', now())`,
 		guildID, member); err != nil {
 		t.Fatal(err)
 	}
@@ -170,7 +172,7 @@ func TestPatchIsForTheOwnerAndGuildOfficers(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, err := h.store.Pool.Exec(t.Context(),
-		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'officer')`,
+		`insert into guild_members (guild_id, user_id, rank, verified_at) values ($1, $2, 'officer', now())`,
 		guildID, officer); err != nil {
 		t.Fatal(err)
 	}
@@ -237,7 +239,7 @@ func TestPatchingGuildIDRequiresStandingInTheTargetGuild(t *testing.T) {
 
 	// Plain membership is not enough either.
 	if _, err := h.store.Pool.Exec(t.Context(),
-		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'member')`,
+		`insert into guild_members (guild_id, user_id, rank, verified_at) values ($1, $2, 'member', now())`,
 		guildID, h.owner); err != nil {
 		t.Fatal(err)
 	}
@@ -258,6 +260,137 @@ func TestPatchingGuildIDRequiresStandingInTheTargetGuild(t *testing.T) {
 	h.data(res, &view)
 	if view.Guild == nil || view.Guild.ID != guildID {
 		t.Fatalf("an officer could not attach the report to their guild: %+v", view.Guild)
+	}
+}
+
+// TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport is the
+// spoofing regression test (design §3.3): a bare guild_characters row
+// from an export - forged or not - must never grant access on its own.
+// A single appearance in the guild's own uploaded report does not
+// verify it; a second appearance on a distinct report date within 30
+// days does; a second appearance more than 30 days after the first
+// does not.
+func TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(GuildTo)
+	var guildID int64
+	if err := h.store.Pool.QueryRow(t.Context(),
+		`insert into guilds (region, ruleset, name) values ('us', 'hardcore', 'Spoofed') returning id`).
+		Scan(&guildID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`update reports set guild_id = $2 where id = $1`, id, guildID); err != nil {
+		t.Fatal(err)
+	}
+	spoofer := h.owner + 500
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into users (id, email) values ($1, 'spoofer@example.com') on conflict (id) do nothing`,
+		spoofer); err != nil {
+		t.Fatal(err)
+	}
+	// A bare, unverified guild_characters row - exactly what a forged
+	// export alone can produce.
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into guild_characters (guild_id, character_key, user_id, rank)
+		 values ($1, 'us/hardcore/spoofer', $2, 'member')`, guildID, spoofer); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`select 1 from guild_characters`); err != nil { // sanity: table reachable from this package
+		t.Fatal(err)
+	}
+	guildStore := &guilds.Store{Pool: h.store.Pool}
+	tx, err := h.store.Pool.Begin(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	uid := spoofer
+	if err := guilds.RecomputeMembership(t.Context(), tx, guildID, &uid); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+
+	h.actor = auth.Actor{UserID: spoofer, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("an unverified spoofed member reading a guild report = %d, want 404", res.StatusCode)
+	}
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"title":"stolen"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden && res.StatusCode != http.StatusNotFound {
+		t.Fatalf("an unverified spoofed member editing a guild report = %d, want 403 or 404", res.StatusCode)
+	}
+
+	// One appearance in the guild's own uploaded report does not verify it.
+	first := time.Now().Add(-20 * 24 * time.Hour)
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+		 values ('spoofnight1x', $1, $2, 'guild', 'complete', $3)`, spoofer, guildID, first); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into fights (report_id, fight_index, players) values ('spoofnight1x', 0, $1)`,
+		[]string{"us/hardcore/spoofer"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := guildStore.VerifyByLogs(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("one guild-log appearance should not verify the spoofer: status = %d, want 404", res.StatusCode)
+	}
+
+	// A second appearance whose own date falls outside the trailing
+	// 30-day window (VerifyByLogs counts distinct report dates with
+	// r2.created_at >= now() - 30 days; a report older than that is not
+	// counted at all) still leaves only one countable date, so it still
+	// does not verify.
+	tooLate := time.Now().Add(-35 * 24 * time.Hour)
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+		 values ('spoofnight2late', $1, $2, 'guild', 'complete', $3)`, spoofer, guildID, tooLate); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into fights (report_id, fight_index, players) values ('spoofnight2late', 0, $1)`,
+		[]string{"us/hardcore/spoofer"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := guildStore.VerifyByLogs(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("both appearances fall outside a shared 30-day window from `first`: status = %d, want 404", res.StatusCode)
+	}
+
+	// A second appearance within 30 days of the first verifies it.
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+		 values ('spoofnight2ok', $1, $2, 'guild', 'complete', $3)`,
+		spoofer, guildID, first.Add(5*24*time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into fights (report_id, fight_index, players) values ('spoofnight2ok', 0, $1)`,
+		[]string{"us/hardcore/spoofer"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := guildStore.VerifyByLogs(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	var view View
+	h.data(res, &view)
+	if view.Guild == nil {
+		t.Fatal("two distinct report dates within 30 days should have verified the spoofer")
 	}
 }
 
