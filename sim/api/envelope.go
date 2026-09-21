@@ -227,9 +227,15 @@ type EncounterSpec struct {
 	// sim fought before this field existed.
 	TargetLevel int `json:"target_level,omitempty"`
 
-	// TargetArmor overrides the level's preset. 0 means the preset -
-	// NOT an unarmoured target.
-	TargetArmor int `json:"target_armor,omitempty"`
+	// TargetArmor overrides the level's preset. nil (the field absent
+	// from the request) means the preset; a non-nil pointer is an
+	// explicit choice, INCLUDING one pointing at 0 - an unarmoured
+	// target is a real request a player can make, not a second way to
+	// spell "unset". A plain int could not tell "never sent" from
+	// "sent as 0" apart on decode, which is how a blank settings field
+	// and a typed 0 used to reach the engine as the identical request
+	// and run identically (2026-09-21 result-page review, Defect 3).
+	TargetArmor *int `json:"target_armor,omitempty"`
 
 	// TargetType changes what Hunter and Warlock abilities do. "" maps
 	// to the engine's own default, MobTypeHumanoid (sim/request's
@@ -293,10 +299,11 @@ const (
 var TargetArmorByLevel = map[int]int{60: 3300, 61: 3444, 62: 3588, 63: 3731}
 
 // TargetArmorFor resolves an encounter's armor: the override when it is
-// set, otherwise the level's preset, otherwise the boss's.
-func TargetArmorFor(level, override int) int {
-	if override > 0 {
-		return override
+// set - nil or not, including a pointer at 0 - otherwise the level's
+// preset, otherwise the boss's.
+func TargetArmorFor(level int, override *int) int {
+	if override != nil {
+		return *override
 	}
 	if armor, ok := TargetArmorByLevel[level]; ok {
 		return armor
@@ -789,8 +796,8 @@ func validateEncounterAdditions(e EncounterSpec) []error {
 	if e.TargetLevel != 0 && (e.TargetLevel < MinTargetLevel || e.TargetLevel > MaxTargetLevel) {
 		errs = append(errs, fmt.Errorf("encounter.target_level must be between %d and %d, got %d", MinTargetLevel, MaxTargetLevel, e.TargetLevel))
 	}
-	if e.TargetArmor < 0 {
-		errs = append(errs, fmt.Errorf("encounter.target_armor must not be negative, got %d; 0 means the level's preset", e.TargetArmor))
+	if e.TargetArmor != nil && *e.TargetArmor < 0 {
+		errs = append(errs, fmt.Errorf("encounter.target_armor must not be negative, got %d; omit the field for the level's preset, or send 0 for no armor", *e.TargetArmor))
 	}
 	if e.TargetType != "" && !slices.Contains(TargetTypes, e.TargetType) {
 		errs = append(errs, fmt.Errorf("encounter.target_type must be one of %v, got %q", TargetTypes, e.TargetType))

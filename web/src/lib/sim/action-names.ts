@@ -25,7 +25,7 @@
 // is never returned raw either (dps-minmaxer review round 2, D48: a saved run rendered
 // "spell:20662" as an ability name): it falls back to humaniseKey (humanise.ts), so the
 // screen always reads English, never a wire key.
-import { dataUrl, fetchJson } from '../planner/load';
+import { dataUrl, fetchJson, loadOptional } from '../planner/load';
 import { attackHandName, simCopy } from './copy';
 import { humanise, humaniseKey } from './humanise';
 
@@ -42,6 +42,17 @@ export interface ActionNames {
   spell: Record<string, string>;
   /** Client item id as a string to display name. */
   item: Record<string, string>;
+  /**
+   * Which `spell` ids the player's OWN class's spellconst carries -- before
+   * `loadActionNames` folds in `simnames/_shared.json`'s cross-class raid buffs (2026-09-21
+   * result-page review, Defect 2). sentence.ts reads this to tell "my own cooldown" from
+   * "an external raid buff someone else in the raid granted me" without re-deriving
+   * RAID_BUFFS' slug list here; every other reader of an `ActionNames` (resolveActionName
+   * itself, compare.ts, sample-log.ts, SpecCard.svelte) ignores it. Optional, and treated as
+   * "everything in `spell` is the player's own" when absent, which is what every literal
+   * `ActionNames` built by hand (a test, a fixture) already means.
+   */
+  ownSpell?: ReadonlySet<string>;
 }
 
 export interface ActionKey {
@@ -123,7 +134,40 @@ export function resolveActionName(key: string, names: ActionNames | null): strin
   return name + simCopy.actionVariant(parsed.tag, parsed.rank);
 }
 
-/** The build's name table for one class, published by scripts/sync-data.mjs. */
+/** `simnames/_shared.json`'s empty shape: an older build that scripts/sync-data.mjs has
+ *  not regenerated ships none of it, and a missing cross-class table must read as "no
+ *  extra names available", never as a load failure the page has to report. */
+const EMPTY_SHARED_NAMES: ActionNames = { spell: {}, item: {} };
+
+/**
+ * `simnames/_shared.json`: every class's own spell table unioned into one, plus the
+ * handful of raid buffs no class's spellbook owns at all (writeSimNames's own doc comment,
+ * scripts/sync-data.mjs). A 404 means the build predates this file, not that the build is
+ * broken, so it falls back to empty via loadOptional the same way loadSets and loadWeights
+ * already treat their own optional build files.
+ */
+function loadSharedActionNames(build: string): Promise<ActionNames> {
+  return loadOptional<ActionNames>(dataUrl(build, 'simnames/_shared.json'), EMPTY_SHARED_NAMES);
+}
+
+/**
+ * The build's name table for one class, published by scripts/sync-data.mjs -- the class's
+ * own spellconst-derived names, with the cross-class `simnames/_shared.json` folded in so
+ * a raid buff from another class (a mage raid-buffed with a paladin's Blessing of Kings, a
+ * warrior's Battle Shout, Thorns) resolves too (2026-09-21 result-page review, Defect 2).
+ * The class's own entry wins a same-id collision -- spell ids are one global namespace, so
+ * in practice there is none, but a class's own name is the more specific one to trust if
+ * there ever were. `ownSpell` records the pre-merge membership, for sentence.ts's "my own
+ * spec's buff, not an external raid buff" preference.
+ */
 export async function loadActionNames(build: string, classSlug: string): Promise<ActionNames> {
-  return fetchJson<ActionNames>(dataUrl(build, `simnames/${classSlug}.json`));
+  const [own, shared] = await Promise.all([
+    fetchJson<ActionNames>(dataUrl(build, `simnames/${classSlug}.json`)),
+    loadSharedActionNames(build),
+  ]);
+  return {
+    spell: { ...shared.spell, ...own.spell },
+    item: { ...shared.item, ...own.item },
+    ownSpell: new Set(Object.keys(own.spell)),
+  };
 }

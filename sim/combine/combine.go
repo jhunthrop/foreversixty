@@ -11,6 +11,7 @@ import (
 	"sort"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
 
@@ -158,8 +159,53 @@ func Results(parts []api.SimResult) (api.SimResult, error) {
 	}
 
 	out.Summary = weightSummaries(parts, total)
+	// Summary.DurationMS is the fight clock the TABLE's per-second
+	// figures are divided by, and it is a different field from
+	// out.DurationMS above (the wall clock this whole combine took).
+	// weightSummaries just merged every part's damage table into one,
+	// and out.DPS above is the iteration-weighted pooled mean of every
+	// part's own DPS - but out.Summary.DurationMS, copied in with the
+	// rest of parts[0].Summary, is still part 0's OWN duration: the one
+	// number that made part 0's own table agree with part 0's own
+	// headline. Two shards of one run almost never share a mean DPS or
+	// a fight length (different iterations, different encounter
+	// variation), so leaving it at part 0's reopens exactly the
+	// disagreement DeriveDurationMS exists to close, once combine is
+	// the thing doing the dividing. Re-deriving it from the MERGED
+	// table and the POOLED mean is what makes the combined headline and
+	// the combined table agree, the same as one un-split part already
+	// does (sim/adapter's TestHeadlineEqualsTable).
+	out.Summary.DurationMS = adapter.DeriveDurationMS(
+		adapter.SumActorTotals(out.Summary.DamageDone), out.DPS.Mean, fallbackDurationMS(parts, total),
+	)
+	// Every actor's ActiveMS is the fight's own duration, the same
+	// invariant sim/adapter.Summarize keeps (a sim models no activity
+	// gaps, so every row is "active" the whole fight) - it has to be
+	// restated here because weightSummaries carries each merged actor's
+	// ActiveMS in from whichever part first introduced that GUID, and
+	// that part's own duration is no longer the summary's.
+	for i := range out.Summary.DamageDone {
+		out.Summary.DamageDone[i].ActiveMS = out.Summary.DurationMS
+	}
 	out.Request.Iterations = total
 	return out, nil
+}
+
+// fallbackDurationMS is DeriveDurationMS's degenerate-case answer for a
+// COMBINED summary: the iteration-share-weighted average of every
+// part's own duration, the same "weigh by iteration share" rule
+// weightSummaries applies to every other per-fight figure it merges.
+// DeriveDurationMS only reaches for it when the merged table has no
+// damage or the pooled mean is non-positive - nothing happened, or the
+// rate has no well-defined duration - and a blended measured duration is
+// the sane answer either way, the same role sim/adapter's own
+// AvgIterationDuration fallback plays for one part.
+func fallbackDurationMS(parts []api.SimResult, total int) int64 {
+	var weighted float64
+	for _, p := range parts {
+		weighted += float64(p.Summary.DurationMS) * float64(p.IterationsRun) / float64(total)
+	}
+	return int64(math.Round(weighted))
 }
 
 // weightSummaries averages the per-fight damage table by iteration

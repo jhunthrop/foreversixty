@@ -106,13 +106,23 @@ test('the Casts tab reads a cast row by its humanised label and count, never the
   await expect(row).toContainText('13');
 });
 
-test('the Resources tab is empty: the fixture summary carries no non-zero resource series', async ({
+// 2026-09-21 result-page review, Defect 4: the fixture's own resource track (Energy,
+// gained 515, spent 509) carries an empty `series` -- a sim reports a whole-fight total
+// only, never a per-second reading (sim/adapter/adapter.go's `resources`) -- and the tab
+// used to filter on the series alone, so this exact fixture read "No resource changes in
+// this window" while real rage/energy plainly moved. The row must show the real totals and
+// say plainly why there is no line to draw, not read as if nothing happened.
+test('the Resources tab shows the fixture’s real activity, with no per-second line for a sim', async ({
   page,
 }) => {
   await loadFuryAndRun(page);
 
   await page.getByTestId('sim-tab-resources').click();
-  await expect(page.getByTestId('table-empty')).toHaveText('No resource changes in this window.');
+  await expect(page.getByTestId('table-empty')).toHaveCount(0);
+  const totals = page.getByTestId('resource-totals-only');
+  await expect(totals).toContainText('gained 515');
+  await expect(totals).toContainText('spent 509');
+  await expect(page.getByText('No per-second reading or cap for a simulated fight')).toBeVisible();
 });
 
 test('the Timeline tab draws one lane, the player rostered from the sample iteration', async ({ page }) => {
