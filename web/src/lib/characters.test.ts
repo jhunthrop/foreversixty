@@ -5,12 +5,18 @@ import {
   characterHref,
   characterKey,
   characterSlug,
+  guildClaimHref,
   guildHref,
+  guildInviteHref,
+  guildSettingsHref,
   isRegion,
   isRuleset,
   parseCharacterKey,
   parseCharacterPath,
+  parseGuildClaimPath,
+  parseGuildInviteToken,
   parseGuildPath,
+  parseGuildSettingsPath,
   rulesetLabel,
   splitUnitName,
 } from './characters';
@@ -135,5 +141,58 @@ describe('character and guild links', () => {
     expect(parseCharacterKey('nightslayer/elyra-duskvale')).toBeNull();
     expect(parseCharacterKey('us/nightslayer/elyra-duskvale')).toBeNull();
     expect(parseCharacterKey('')).toBeNull();
+  });
+});
+
+describe('parseGuildClaimPath', () => {
+  it('parses a claim sub-path', () => {
+    expect(parseGuildClaimPath('/guild/us/hardcore/the-last-watch/claim')).toEqual({
+      region: 'us',
+      ruleset: 'hardcore',
+      slug: 'the-last-watch',
+    });
+  });
+
+  it('refuses the plain guild path (no suffix) and a settings path', () => {
+    expect(parseGuildClaimPath('/guild/us/hardcore/the-last-watch')).toBeNull();
+    expect(parseGuildClaimPath('/guild/us/hardcore/the-last-watch/settings')).toBeNull();
+  });
+});
+
+describe('parseGuildSettingsPath', () => {
+  it('parses a settings sub-path', () => {
+    expect(parseGuildSettingsPath('/guild/eu/normal/iron-vanguard/settings')).toEqual({
+      region: 'eu',
+      ruleset: 'normal',
+      slug: 'iron-vanguard',
+    });
+  });
+
+  it('refuses an invalid region or ruleset the same way parseGuildPath does', () => {
+    expect(parseGuildSettingsPath('/guild/xx/hardcore/name/settings')).toBeNull();
+  });
+});
+
+describe('parseGuildInviteToken', () => {
+  it('reads the token segment', () => {
+    expect(parseGuildInviteToken('/guild/invite/abc-123')).toBe('abc-123');
+  });
+
+  it('refuses a token with a path separator or empty', () => {
+    expect(parseGuildInviteToken('/guild/invite/')).toBeNull();
+    expect(parseGuildInviteToken('/guild/invite/a/b')).toBeNull();
+    expect(parseGuildInviteToken('/guild/us/hardcore/name')).toBeNull();
+  });
+});
+
+describe('guild sub-route hrefs', () => {
+  it('builds claim, settings and invite links', () => {
+    expect(guildClaimHref('us', 'hardcore', 'The Last Watch')).toBe(
+      '/guild/us/hardcore/the-last-watch/claim',
+    );
+    expect(guildSettingsHref('us', 'hardcore', 'The Last Watch')).toBe(
+      '/guild/us/hardcore/the-last-watch/settings',
+    );
+    expect(guildInviteHref('abc 123')).toBe('/guild/invite/abc%20123');
   });
 });

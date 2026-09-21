@@ -134,7 +134,11 @@ export interface GuildRosterBest {
 }
 
 export interface GuildPage {
-  guild: { name: string; region: string; ruleset: string };
+  // `id` (plan ruling 2): every session-gated guild endpoint (spec section 2.6) is
+  // addressed by numeric id, and this public read is the only way a browser learns which
+  // guild a region/ruleset/name resolves to. Not in the spec's own GuildPage row — flagged
+  // for the coordinator to route to api/internal/rankings/guilds.go.
+  guild: { id: number; name: string; region: string; ruleset: string };
   progression: GuildProgressionRow[];
   roster_best: GuildRosterBest[];
   reports: { id: string; title: string; zone: string; created_at: string }[];
