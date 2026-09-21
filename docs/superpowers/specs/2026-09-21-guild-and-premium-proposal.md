@@ -1,8 +1,8 @@
 # Guild leader tools and premium — proposal
 
 **Date:** 2026-09-21
-**Status:** PROPOSAL, not approved. Decisions marked **DECIDE** are the owner's; everything
-else is a recommendation with its reason. Nothing here is built.
+**Status:** APPROVED IN DIRECTION 2026-09-21: every owner decision is answered below. Each
+piece still gets its own implementation spec before it is built. Nothing here is built yet.
 
 ## 1. Where we are
 
@@ -242,16 +242,17 @@ that names a different guild, removes access at once.
 | Compare more than two sims / builds side by side; history charts of your own character over time | — | yes | every member |
 | Officer tools (3.3) | — | — | officers |
 | Supporter mark on profile and guild page | — | yes | yes |
+| Ads | none | none | none |
 
-Recommended prices, to be decided: **Premium $4/month or $40/year; Guild $15/month or
-$150/year** covering every member (so a 40-person guild pays under 40 cents a head, and an
-officer can expense it to the guild bank in spirit if not in gold). **DECIDE: prices.**
+**DECIDED 2026-09-21: Premium $4/month or $40/year; Guild $15/month or $150/year**
+covering every member (so a 40-person guild pays under 40 cents a head, and an
+officer can expense it to the guild bank in spirit if not in gold).
 
 What stays free forever, stated publicly on the premium page: everything a single player
 needs, live logging, no ads inside tools, and every feature that touches Battle.net data.
-**DECIDE: whether to run display ads on reference pages at all** (recommendation: not
-before traffic qualifies for a premium network, and never inside the tools; ad-free is then
-a premium perk only if ads exist).
+**DECIDED 2026-09-21: no ads, anywhere, ever.** The site is paid for by premium and the
+guild plan. "Ad-free" is therefore not a perk anyone sells: it is true for everyone, and the
+premium page says so.
 
 ### 4.2 What it takes to build
 
@@ -291,18 +292,31 @@ a premium perk only if ads exist).
    are live. Until then the guild home is free and the officer tools page says what is
    coming.
 
-**DECIDE: launch timing.** Raids open December 9 and public launch is November 4.
-Recommendation: membership and the guild home before November 4; payments and the player
-plan in November; the first two officer tools by December 9.
+**DECIDED 2026-09-21: as soon as possible, fully ready well before the game's November 4
+launch.** So nothing waits on the calendar; the order is by dependency and by what needs the
+longest lead time:
+1. Now, in parallel: guild membership and the free guild home; the rating engine and
+   ratings on the site; entitlements, Stripe (test mode) and the premium page with the
+   player plan. None depends on another.
+2. Next: the nightly snapshot, the companion updater and the nightly data-addon release;
+   ratings in game; the officer views (raid-night sheet, wipe analysis), the loot council
+   helper and the readiness board.
+3. Then: the guild plan goes on sale, the officer pack and guild performance in game,
+   attendance and week-over-week, assignments.
+Long lead times to start immediately because they are outside our control: the Stripe
+account under COMMISH LLC; the CurseForge and Wago projects (new projects wait for manual
+file review before auto-approval); mechanics tables for every raid boss, which need real
+logs from the beta and so depend on people raiding there; legal pages (terms, privacy,
+refunds) which the payment processor reviews.
 
 ## 5. Open questions for the owner
 
-1. Prices (4.1).
+1. ANSWERED 2026-09-21: prices as recommended.
 2. ANSWERED 2026-09-21: Stripe, under COMMISH LLC.
-3. Ads on reference pages: ever? (4.1)
+3. ANSWERED 2026-09-21: no ads.
 4. ANSWERED 2026-09-21: the flagship is the performance analyzer (3.4); the loot council
    helper is second.
-5. Launch timing (4.3).
+5. ANSWERED 2026-09-21: as soon as possible, ready well before November 4.
 6. PARTLY ANSWERED 2026-09-21: the entity is COMMISH LLC. Still the owner's to do: the
    Stripe account under COMMISH LLC (EIN, bank account, a support email and a public
    business address or registered agent address for receipts), Stripe Tax registration
