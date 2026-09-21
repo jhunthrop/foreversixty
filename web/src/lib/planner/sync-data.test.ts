@@ -275,12 +275,59 @@ describe('writeSimNames', () => {
       }),
     );
 
-    expect(await writeSimNames(build, out)).toEqual(['simnames/warrior.json']);
+    expect(await writeSimNames(build, out)).toEqual(['simnames/warrior.json', 'simnames/_shared.json']);
 
     const table = JSON.parse(readFileSync(path.join(out, 'simnames', 'warrior.json'), 'utf8'));
     expect(table.spell['25286']).toBe('Heroic Strike');
     expect(table.spell['99999']).toBeUndefined();
     expect(table.item['14554']).toBe('Cloudkeeper Legplates');
+    rmSync(dir, { recursive: true, force: true });
+  });
+
+  // Defect 2 (2026-09-21 result-page review): a raid-buffed sim can put an aura on the
+  // player from any class's spellbook, not only their own, and the class's own
+  // simnames/<class>.json (above) has nowhere to resolve a spell it does not own. This is
+  // the id-union table the web falls back to for exactly that case.
+  it("writes simnames/_shared.json as every class's spell table unioned, plus the classless raid buffs", async () => {
+    const dir = mkdtempSync(path.join(tmpdir(), 'simnames-shared-'));
+    const build = path.join(dir, 'build');
+    const out = path.join(dir, 'out');
+    mkdirSync(path.join(build, 'spellconst'), { recursive: true });
+    mkdirSync(out, { recursive: true });
+    writeFileSync(path.join(build, 'spells.json'), JSON.stringify([]));
+    writeFileSync(
+      path.join(build, 'spellconst', 'mage.json'),
+      JSON.stringify({
+        build: '1.60.1.69893',
+        class_slug: 'mage',
+        family: 1,
+        spells: { '133': { name: 'Fireball' } },
+      }),
+    );
+    writeFileSync(
+      path.join(build, 'spellconst', 'paladin.json'),
+      JSON.stringify({
+        build: '1.60.1.69893',
+        class_slug: 'paladin',
+        family: 2,
+        // A mage running the raid-buffed preset can be Blessing-of-Kings'd by a paladin
+        // who is not in the sim at all; the mage's own simnames/mage.json never carries
+        // paladin spell ids, so this is exactly the row _shared.json exists to cover.
+        spells: { '20217': { name: 'Blessing of Kings' } },
+      }),
+    );
+
+    const written = await writeSimNames(build, out);
+    expect(written).toContain('simnames/_shared.json');
+
+    const shared = JSON.parse(readFileSync(path.join(out, 'simnames', '_shared.json'), 'utf8'));
+    expect(shared.spell['133']).toBe('Fireball');
+    expect(shared.spell['20217']).toBe('Blessing of Kings');
+    // Thorns: no player class's spellbook is in this fixture at all, so only the
+    // classless table (CLASSLESS_BUFF_SPELLS' Darkmoon Faire buff, the one entry small
+    // enough to hand-check here) proves the union ran rather than one class's own file
+    // being copied verbatim.
+    expect(shared.spell['23735']).toBe("Sayge's Dark Fortune");
     rmSync(dir, { recursive: true, force: true });
   });
 
