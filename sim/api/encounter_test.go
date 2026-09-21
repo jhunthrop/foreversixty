@@ -39,8 +39,12 @@ func TestEncounterAdditionsValidation(t *testing.T) {
 		}, "targets_over_time"},
 		{"target level 60", func(r *SimRequest) { r.Encounter.TargetLevel = 60 }, ""},
 		{"target level 64", func(r *SimRequest) { r.Encounter.TargetLevel = 64 }, "target_level"},
-		{"an armor override", func(r *SimRequest) { r.Encounter.TargetArmor = 2500 }, ""},
-		{"negative armor", func(r *SimRequest) { r.Encounter.TargetArmor = -1 }, "target_armor"},
+		{"an armor override", func(r *SimRequest) { r.Encounter.TargetArmor = ptr(2500) }, ""},
+		// 2026-09-21 result-page review, Defect 3: a typed 0 is a real request (an
+		// unarmoured target), not an error, and must validate exactly like any other
+		// non-negative override.
+		{"an explicit zero armor override", func(r *SimRequest) { r.Encounter.TargetArmor = ptr(0) }, ""},
+		{"negative armor", func(r *SimRequest) { r.Encounter.TargetArmor = ptr(-1) }, "target_armor"},
 		{"a target type", func(r *SimRequest) { r.Encounter.TargetType = "undead" }, ""},
 		{"an unknown target type", func(r *SimRequest) { r.Encounter.TargetType = "murloc" }, "target_type"},
 		{"the dummy", func(r *SimRequest) { r.Encounter.Dummy = true }, ""},
@@ -78,22 +82,36 @@ func TestEncounterAdditionsValidation(t *testing.T) {
 	}
 }
 
-// Zero armor means the level's preset, not a naked target. Getting that
-// backwards would report every sim against an unarmoured boss.
+// ptr is a *int literal for a table test: Go has no address-of operator on
+// a literal, and TargetArmor's whole point (Defect 3 below) is that nil
+// and a pointer at 0 must be two different requests.
+func ptr(v int) *int { return &v }
+
+// A nil override means the level's preset. An override pointing at 0 means
+// the target has NO armor - a real request a player can make (2026-09-21
+// result-page review, Defect 3: before TargetArmor became a pointer, 0 was
+// the only spelling of "unset" a plain int had, so a typed 0 and an absent
+// field were the same request and ran identically).
 func TestTargetArmorFor(t *testing.T) {
 	cases := []struct {
-		level, override, want int
+		name     string
+		level    int
+		override *int
+		want     int
 	}{
-		{BossLevel, 0, TargetArmorByLevel[BossLevel]},
-		{60, 0, TargetArmorByLevel[60]},
-		{0, 0, TargetArmorByLevel[BossLevel]}, // an unset level is the default boss
-		{BossLevel, 2500, 2500},
-		{99, 0, TargetArmorByLevel[BossLevel]}, // a level with no preset falls back
+		{"nil override, boss level", BossLevel, nil, TargetArmorByLevel[BossLevel]},
+		{"nil override, level 60", 60, nil, TargetArmorByLevel[60]},
+		{"nil override, unset level", 0, nil, TargetArmorByLevel[BossLevel]}, // the default boss
+		{"nil override, a level with no preset", 99, nil, TargetArmorByLevel[BossLevel]},
+		{"a positive override", BossLevel, ptr(2500), 2500},
+		{"an explicit zero override is zero, not the preset", BossLevel, ptr(0), 0},
 	}
 	for _, c := range cases {
-		if got := TargetArmorFor(c.level, c.override); got != c.want {
-			t.Errorf("TargetArmorFor(%d, %d) = %d, want %d", c.level, c.override, got, c.want)
-		}
+		t.Run(c.name, func(t *testing.T) {
+			if got := TargetArmorFor(c.level, c.override); got != c.want {
+				t.Errorf("TargetArmorFor(%d, %v) = %d, want %d", c.level, c.override, got, c.want)
+			}
+		})
 	}
 	for level := MinTargetLevel; level <= MaxTargetLevel; level++ {
 		if TargetArmorByLevel[level] <= 0 {
