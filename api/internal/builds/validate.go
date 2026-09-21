@@ -92,8 +92,8 @@ func prereqRank(t trees.TalentRef) int {
 	return *t.PrereqRank
 }
 
-// validateGear implements rule 6. Two rings or two trinkets may hold the
-// same item id only when that item is not unique.
+// validateGear implements rule 6. Two rings, two trinkets, or two hands
+// may hold the same item id only when that item is not unique.
 func validateGear(b *trees.Build, in Input, class trees.Class, fields map[string]string) {
 	for slot, itemID := range in.Gear {
 		key := "gear." + slot
@@ -106,11 +106,11 @@ func validateGear(b *trees.Build, in Input, class trees.Class, fields map[string
 			fields[key] = fmt.Sprintf("Item %d is not available to %s", itemID, class.Name)
 			continue
 		}
-		if item.Slot != ItemSlot(slot) {
+		if !fitsSlot(item, slot) {
 			fields[key] = fmt.Sprintf("%s cannot go in the %s slot", item.Name, slot)
 		}
 	}
-	for _, pair := range [][2]string{{"finger1", "finger2"}, {"trinket1", "trinket2"}} {
+	for _, pair := range [][2]string{{"finger1", "finger2"}, {"trinket1", "trinket2"}, {"main_hand", "off_hand"}} {
 		first, firstOK := in.Gear[pair[0]]
 		second, secondOK := in.Gear[pair[1]]
 		if !firstOK || !secondOK || first != second {
@@ -120,4 +120,19 @@ func validateGear(b *trees.Build, in Input, class trees.Class, fields map[string
 			fields["gear."+pair[1]] = fmt.Sprintf("Only one %s can be equipped", item.Name)
 		}
 	}
+}
+
+// fitsSlot reports whether item may go in the planner's gear slot. Every
+// slot but off_hand requires an exact match against the item's own
+// canonical slot (through ItemSlot's ring/trinket folding). off_hand
+// additionally accepts a one-handed main_hand weapon - the data pipeline
+// tags every one-hander "main_hand" because that is the slot it is
+// itemized for, not because it is barred from the other hand - so long
+// as it is not a two-hander, which never fits off_hand no matter what
+// its own slot says.
+func fitsSlot(item trees.Item, slot string) bool {
+	if item.Slot == ItemSlot(slot) {
+		return true
+	}
+	return slot == "off_hand" && item.Slot == "main_hand" && !item.TwoHand
 }

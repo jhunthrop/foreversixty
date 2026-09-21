@@ -64,6 +64,15 @@ type Item struct {
 	Stats         map[string]int `json:"stats"`
 	SetID         *int           `json:"set_id"`
 	Unique        bool           `json:"unique"`
+	// TwoHand is set on a weapon that occupies both hands. A weapon with
+	// slot "main_hand" and TwoHand false is a one-hander: the data
+	// pipeline tags every one-handed weapon with the "main_hand" slot,
+	// the same tag a canonical main-hand item carries, because that is
+	// the slot it is priced and itemized for. Whether it may also fill
+	// off_hand is a property of the weapon (one-handed or not), not of
+	// the slot field, so the validator reads this flag rather than the
+	// slot string to decide.
+	TwoHand bool `json:"two_hand"`
 }
 
 type classItems struct {

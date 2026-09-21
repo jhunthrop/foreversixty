@@ -61,6 +61,28 @@ describe('/logs', () => {
     expect(html).toContain('id="upload"');
   });
 
+  it('frames logs for a visitor who is not raiding yet', async () => {
+    const html = await container.renderToString(Logs);
+    expect(html).toContain(
+      'Logs are for group content at any level: a dungeon run logs the same way a raid does.',
+    );
+  });
+
+  it('mounts the recent public reports panel above Your reports', async () => {
+    const html = await container.renderToString(Logs);
+    const recentAt = html.indexOf('>Recent public reports<');
+    // Not '>Your reports<' plain text search: "Fights appear under Your reports as they
+    // end." (the companion pairing block) contains the same words earlier in the page, so
+    // the panel's own heading is matched by its element, not its text.
+    const mineAt = html.indexOf('>Your reports<');
+    expect(recentAt).toBeGreaterThan(-1);
+    expect(mineAt).toBeGreaterThan(-1);
+    expect(recentAt).toBeLessThan(mineAt);
+    // The panel titles it; RecentReports itself is told to leave its own heading off, so
+    // "Recent public reports" appears exactly once.
+    expect(html.split('Recent public reports').length - 1).toBe(1);
+  });
+
   it('uses no emoji, and no exclamation marks in its copy', async () => {
     const html = await container.renderToString(Logs);
     expect(html).not.toMatch(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u);

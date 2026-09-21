@@ -13,6 +13,15 @@
       "set_id": null, "unique": true },
     { "id": 16963, "name": "Lawbringer Helm", "icon": "inv_helmet_04", "slot": "head", "quality": 4,
       "required_level": 60, "item_level": 66, "armor": 597, "stats": { "intellect": 22, "stamina": 20 },
-      "set_id": 901, "unique": false }
+      "set_id": 901, "unique": false },
+    { "id": 18827, "name": "Grand Marshal's Handaxe", "icon": "inv_axe_24", "slot": "main_hand", "quality": 4,
+      "required_level": 60, "item_level": 78, "armor": 0, "stats": { "stamina": 7, "crit": 14, "attack_power": 28 },
+      "set_id": null, "unique": false, "two_hand": false },
+    { "id": 20500, "name": "Sulfuron Hammer", "icon": "inv_hammer_08", "slot": "main_hand", "quality": 4,
+      "required_level": 60, "item_level": 76, "armor": 0, "stats": { "strength": 15, "stamina": 15 },
+      "set_id": null, "unique": true, "two_hand": true },
+    { "id": 20501, "name": "Ashkandi", "icon": "inv_axe_09", "slot": "main_hand", "quality": 4,
+      "required_level": 60, "item_level": 87, "armor": 0, "stats": { "strength": 25, "crit": 20 },
+      "set_id": null, "unique": true, "two_hand": false }
   ]
 }

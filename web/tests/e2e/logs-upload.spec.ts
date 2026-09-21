@@ -7,6 +7,14 @@ const fulfil = (body: unknown, status = 200) => ({
   body: JSON.stringify({ ok: status < 400, data: body, error: null, request_id: 'r' }),
 });
 
+// /logs now also mounts the public "Recent public reports" panel (RecentReports.svelte),
+// which reads unauthenticated regardless of who is signed in. Every test in this file
+// exercises other parts of the page, so it is stubbed once here rather than in each test,
+// the way logs-recent-reports.spec.ts exercises the panel itself in full.
+test.beforeEach(async ({ page }) => {
+  await page.route('**/v1/reports/recent**', (route) => route.fulfill(fulfil({ rows: [] })));
+});
+
 const SIGNED_IN = {
   user: { id: 1, battletag: 'F#1', email: null, role: 'user', anonymize: false },
   characters: [],

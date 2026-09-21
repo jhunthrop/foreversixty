@@ -90,6 +90,45 @@ func (s *Store) OwnedBy(ctx context.Context, userID int64, page, perPage int) ([
 	return out, total, rows.Err()
 }
 
+// Recent lists the newest complete public reports, keyset-paged on
+// (created_at, id) so a page inserted between two reads of the feed is
+// never duplicated or skipped the way an offset page would be. before
+// nil reads the first page.
+func (s *Store) Recent(ctx context.Context, before *recentCursor, limit int) ([]RecentSummary, error) {
+	var beforeCreated *time.Time
+	var beforeID *string
+	if before != nil {
+		beforeCreated, beforeID = &before.CreatedAt, &before.ID
+	}
+	rows, err := s.Pool.Query(ctx,
+		`select r.id, coalesce(nullif(r.title, ''), r.zone), r.created_at,
+		        (select count(*) from fights f where f.report_id = r.id),
+		        (select count(*) from fights f where f.report_id = r.id and f.kill
+		           and f.encounter_id is not null),
+		        coalesce(g.name, '')
+		 from reports r
+		 left join guilds g on g.id = r.guild_id
+		 where r.visibility = $1 and r.status = $2
+		   and ($3::timestamptz is null or (r.created_at, r.id) < ($3, $4))
+		 order by r.created_at desc, r.id desc
+		 limit $5`,
+		Public, StatusComplete, beforeCreated, beforeID, limit)
+	if err != nil {
+		return nil, fmt.Errorf("reports: recent: %w", err)
+	}
+	defer rows.Close()
+	out := []RecentSummary{}
+	for rows.Next() {
+		var row RecentSummary
+		if err := rows.Scan(&row.ID, &row.Title, &row.CreatedAt, &row.FightCount,
+			&row.KillCount, &row.GuildName); err != nil {
+			return nil, fmt.Errorf("reports: recent: %w", err)
+		}
+		out = append(out, row)
+	}
+	return out, rows.Err()
+}
+
 // Patch is the set of fields PATCH /v1/reports/{id} may change. A nil
 // field is left alone.
 type Patch struct {

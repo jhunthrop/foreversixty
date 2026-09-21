@@ -6,6 +6,7 @@ import {
   defaultRankingsState,
   parseRankingsState,
   rankingsSearch,
+  requiresEncounter,
 } from './url';
 
 describe('the rankings URL state', () => {
@@ -58,6 +59,18 @@ describe('the rankings URL state', () => {
     const state = { ...defaultRankingsState(), ruleset: 'pvp', metric: 'hps', page: 2 };
     expect(rankingsSearch(state)).toBe('?metric=hps&ruleset=pvp&page=2');
     expect(parseRankingsState(rankingsSearch(state))).toEqual(state);
+  });
+});
+
+describe('requiresEncounter', () => {
+  it('the Characters board always needs one', () => {
+    expect(requiresEncounter({ ...defaultRankingsState(), board: 'character' })).toBe(true);
+  });
+
+  it('the Guilds board needs one for speed and execution, not for progress', () => {
+    expect(requiresEncounter({ ...defaultRankingsState(), board: 'guild', kind: 'progress' })).toBe(false);
+    expect(requiresEncounter({ ...defaultRankingsState(), board: 'guild', kind: 'speed' })).toBe(true);
+    expect(requiresEncounter({ ...defaultRankingsState(), board: 'guild', kind: 'execution' })).toBe(true);
   });
 });
 

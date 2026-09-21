@@ -140,6 +140,13 @@ export interface GuildPage {
   reports: { id: string; title: string; zone: string; created_at: string }[];
 }
 
+/** One row of GET /v1/encounters: every encounter any report has ever ranked. */
+export interface EncounterOption {
+  id: number;
+  name: string;
+  slug: string;
+}
+
 export interface RankingsQuery {
   /** The numeric encounter id or the `/rankings/<encounter-slug>` slug -- the API accepts either. */
   encounter: string;
@@ -222,6 +229,15 @@ export function fetchGuildRankings(
   apiBase: string = API_BASE_URL,
 ): Promise<{ rows: GuildRankingRow[] }> {
   return get<{ rows: GuildRankingRow[] }>(`/v1/rankings/guilds${search({ ...query })}`, apiBase);
+}
+
+/**
+ * Every encounter any report has ever ranked, for the /rankings picker: a visitor who
+ * has not been handed an `/rankings/<encounter-slug>` link has no way to name one for
+ * GET /v1/rankings, so the picker reads this first and offers what exists.
+ */
+export function fetchEncounters(apiBase: string = API_BASE_URL): Promise<{ rows: EncounterOption[] }> {
+  return get<{ rows: EncounterOption[] }>('/v1/encounters', apiBase);
 }
 
 export function fetchCharacter(path: CharacterPath, apiBase: string = API_BASE_URL): Promise<CharacterPage> {

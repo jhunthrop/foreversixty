@@ -52,6 +52,18 @@ export function defaultRankingsState(): RankingsState {
   };
 }
 
+/**
+ * Whether a board needs an encounter to answer at all: the Characters board always ranks
+ * one encounter, and so does the Guilds board's speed and execution kinds (`Store.
+ * GuildRankings` in the API 400s without one), but the Guilds board's progress kind
+ * ranks every encounter a guild has cleared and needs none. Read by Rankings.svelte to
+ * decide, on a bare /rankings with no slug, whether to show the encounter picker instead
+ * of asking the API for a ranking it cannot answer.
+ */
+export function requiresEncounter(state: RankingsState): boolean {
+  return state.board === 'character' || state.kind !== 'progress';
+}
+
 function pick(value: string | null, allowed: readonly string[], fallback: string): string {
   return value !== null && allowed.includes(value) ? value : fallback;
 }

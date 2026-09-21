@@ -3,6 +3,7 @@
      there is one "who is signed in" fetch per page rather than two. -->
 <script lang="ts">
   import { REPORTS_PER_PAGE, listMyReports, type MyReport } from '../lib/account/api';
+  import ReportRow from './ReportRow.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
 
   /** `heading` is off where the page already titles the block, as /logs' panel does. */
@@ -31,7 +32,6 @@
     else status = 'ready';
   });
 
-  const day = (iso: string): string => iso.slice(0, 10);
   const hasMore = $derived(rows.length > 0 && page * REPORTS_PER_PAGE < total);
 </script>
 
@@ -48,21 +48,15 @@
   {:else}
     <ul class="flex flex-col">
       {#each rows as report (report.id)}
-        <li
-          class="border-line-soft flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 border-b py-2 text-[14px]"
-        >
-          <a href={`/reports/${report.id}`} class="font-semibold"
-            >{report.title === '' ? report.zone : report.title}</a
-          >
-          <span class="text-muted tabular font-mono text-[13px]">{day(report.created_at)}</span>
-          <span class="text-muted text-[13px]">
-            <span class="tabular font-mono">{report.fight_count} fights · {report.kill_count} kills</span> ·
-            {report.visibility}
-          </span>
-          {#if report.status !== 'complete'}
-            <span class="pill pill-site" data-testid="report-status">{report.status}</span>
-          {/if}
-        </li>
+        <ReportRow
+          href={`/reports/${report.id}`}
+          title={report.title === '' ? report.zone : report.title}
+          createdAt={report.created_at}
+          fightCount={report.fight_count}
+          killCount={report.kill_count}
+          meta={report.visibility}
+          status={report.status}
+        />
       {/each}
     </ul>
     {#if hasMore}

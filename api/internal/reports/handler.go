@@ -66,6 +66,7 @@ type Service struct {
 func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("POST /v1/reports", auth.Require(s.create))
 	mux.HandleFunc("GET /v1/reports", auth.RequireSession(s.mine))
+	mux.HandleFunc("GET /v1/reports/recent", s.recent)
 	mux.HandleFunc("GET /v1/reports/{id}", s.get)
 	mux.HandleFunc("PATCH /v1/reports/{id}", auth.Require(s.patch))
 	mux.HandleFunc("GET /v1/reports/{id}/visibility", s.visibility)
