@@ -38,8 +38,11 @@
     measureError = '',
     whole = undefined,
     names = new Map<string, string>(),
+    simulated = false,
   }: {
     rows: CastRow[];
+    /** True for a simulated fight: one player, no log, so the note about other players' rows would be false. */
+    simulated?: boolean;
     /** Every caster's whole-fight rows: who recorded failures is a fact about the log, not the scope or the window. */
     everyone?: CastRow[];
     durationMs: number;
@@ -335,7 +338,8 @@
   {/if}
   <p class="text-muted text-[12px]" data-testid="cast-time-note">
     Cast time is marked {castTimeMark} because it is the whole fight's accumulated casting time for that spell,
-    even inside a shorter window. Failed and cancelled casts are only known from the client that wrote this log;
-    other players' rows read a dash where the log is silent.
+    even inside a shorter window.{#if !simulated}
+      Failed and cancelled casts are only known from the client that wrote this log; other players' rows read
+      a dash where the log is silent.{/if}
   </p>
 {/if}

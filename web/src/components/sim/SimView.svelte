@@ -84,8 +84,9 @@
     return { treeVersion, source, ref, code, request: decodeRequestParam(req), mode, view };
   });
 
-  // Only the plain simulator view already offers a paste box (SourceSwitcher) below the chip.
-  const hasOwnPasteBox = !hasSavedSimId && bootstrap.view === 'sim';
+  // The chip's "No character loaded" line is for pages that name no character themselves:
+  // the plain view has its own paste box, and a saved sim shows its character and result.
+  const hasOwnPasteBox = hasSavedSimId || bootstrap.view === 'sim';
 
   // Compare mode loads its character through `enterCompare` below, never through the
   // store's own URL bootstrap: a second, redundant bootstrap racing `enterCompare`'s own

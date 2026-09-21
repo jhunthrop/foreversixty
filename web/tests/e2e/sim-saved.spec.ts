@@ -190,6 +190,23 @@ test.describe('a saved sim from the prerendered fixture', () => {
 // Task 6: "what it does" no longer links straight to /sim/specs#<spec> -- it opens the
 // rotation drawer in place, and the fidelity link moves inside that drawer. Clicking it
 // open is this test's own proof the trigger is a Disclosure now, not a navigating anchor.
+// A saved sim is somebody else's result opened cold: no character is "loaded" here, and the
+// chip's empty line ("No character loaded...") sat directly above a full result. The casts
+// tab also carried the log viewer's note about other players' rows, which a one-player
+// simulated fight does not have.
+test('a saved sim opened cold says nothing about a missing character or other players', async ({ page }) => {
+  await page.goto('/sim/simfixtureab');
+  await expect(page.getByTestId('sim-dps')).toBeVisible();
+
+  await expect(page.getByTestId('sim-chip-slot')).toBeAttached();
+  await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
+
+  await page.getByTestId('sim-tab-casts').click();
+  const note = page.getByTestId('cast-time-note');
+  await expect(note).toBeVisible();
+  await expect(note).not.toContainText('other players');
+});
+
 test('a saved sim names the rotation it used, opens its drawer, and carries its fidelity', async ({
   page,
 }) => {
