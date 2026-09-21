@@ -442,6 +442,49 @@ export function anyKeepsSetBonus(
  * rows here -- these are real ties, grouped so the page can say why once per group instead
  * of leaving unexplained duplicate numbers on screen.
  */
+export interface OverlappingRowPair {
+  a: ComboRow;
+  b: ComboRow;
+}
+
+/** Two delta intervals (mean ± 1 SE), the same interval `group` (bulk's own Go ranking)
+ *  and the page's own error bars already use, touching or crossing. */
+function deltaIntervalsOverlap(a: Estimate, b: Estimate): boolean {
+  return a.mean - a.error <= b.mean + b.error && b.mean - b.error <= a.mean + a.error;
+}
+
+/**
+ * The first adjacent pair of ranked rows whose delta intervals actually overlap, or null
+ * when every adjacent gap is clean -- newcomer round 4 (review.md:83-110) / dps D25-
+ * pattern: "These runs are too close to separate..." used to print under every result
+ * with more than one row, whatever the actual gap, including a −37.4% difference at a
+ * ±1.5/±1.6 margin (about 150 times its own error bar). Adjacent pairs, not every pair:
+ * two non-adjacent rows both overlapping a shared middle row are not "close to separate"
+ * from each other in the ranking a player reads top to bottom, and comparing every pair
+ * would flag rows whose own rank already separates them by a mile.
+ */
+export function closestOverlappingPair(rows: readonly ComboRow[]): OverlappingRowPair | null {
+  for (let i = 0; i + 1 < rows.length; i++) {
+    if (deltaIntervalsOverlap(rows[i].combo.delta, rows[i + 1].combo.delta)) {
+      return { a: rows[i], b: rows[i + 1] };
+    }
+  }
+  return null;
+}
+
+/**
+ * A row's own name, for the overlap note above: the leading substitution's label, the
+ * same one `headlineFor` reads for the leader's own name ("Helm of Wrath", "Build 1"
+ * -- a talents-mode substitution's `name` is the loadout's own name). Falls back to the
+ * row's rank only for a combo this codebase does not otherwise construct (no
+ * substitutions at all), the same edge `comboKey` above already guards.
+ */
+export function rowName(row: ComboRow): string {
+  const first = row.combo.substitutions[0];
+  const label = first === undefined ? '' : substitutionLabel(first);
+  return label === '' ? `#${row.rank}` : label;
+}
+
 export function exactTieGroups(rows: readonly ComboRow[]): ComboRow[][] {
   const byDelta = new Map<string, ComboRow[]>();
   for (const row of rows) {

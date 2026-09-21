@@ -109,3 +109,46 @@ test('signed out, the copy is guidance and a pasted build can be ranked beside t
   await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 20_000 });
   await expect(page.getByTestId('sim-combo-row').first()).toContainText('Build 1');
 });
+
+// newcomer round 4 (review.md:83-110): two buttons both read "Add a build" -- the outer
+// toggle that opens the editor and the inner button that commits the pasted build. A
+// newcomer who pastes, then clicks RUN without finding the second button, got a silent
+// one-row table with no explanation ("1 valid combination", the exact repro the round-4
+// review captured). This proves the trap is closed two ways: the buttons read differently,
+// and RUN itself refuses to run while the editor holds an unadded build.
+test('the two ADD A BUILD buttons read differently, and RUN blocks on an unadded pasted build', async ({
+  page,
+}) => {
+  await loadTalents(page);
+  await page.getByTestId('sim-loadout-current').check();
+
+  await page.getByTestId('sim-loadout-add').click();
+  await expect(page.getByTestId('sim-inline-planner')).toBeVisible();
+  // newcomer round 4: the embedded editor's own DPS preview can show a pasted build's own
+  // gear (SummaryBar.svelte's `!standalone`), unlike the ranked table below it -- said
+  // beside the number itself, not only in the page's own intro sentence.
+  await expect(page.getByTestId('planner-dps-own-gear')).toHaveText(poolQualityCopy.plannerDpsOwnGearNote);
+
+  const toggleText = await page.getByTestId('sim-loadout-add').textContent();
+  const acceptText = await page.getByTestId('sim-loadout-accept').textContent();
+  expect(toggleText?.trim()).toBe(bulkCopy.talentsAddCustom);
+  expect(acceptText?.trim()).toBe(poolQualityCopy.talentsAddCustomConfirm);
+  expect(toggleText?.trim()).not.toBe(acceptText?.trim());
+
+  // Pasted, but the accept step is skipped -- the exact first-click-only path the round-4
+  // review reproduced.
+  await page.getByTestId('import-code').fill(ALT_BUILD);
+  await page.getByTestId('import-submit').click();
+  await expect(page.getByTestId('import-error')).toHaveCount(0);
+
+  await expect(page.getByTestId('sim-run-pending-custom')).toHaveText(
+    poolQualityCopy.talentsPendingCustomBuild,
+  );
+  await expect(page.getByTestId('sim-run-bulk')).toBeDisabled();
+
+  // Accepting it clears the block and the run proceeds with both builds.
+  await page.getByTestId('sim-loadout-accept').click();
+  await expect(page.getByTestId('sim-run-pending-custom')).toHaveCount(0);
+  await expect(page.getByTestId('sim-run-bulk')).toBeEnabled();
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(2));
+});

@@ -10,6 +10,7 @@
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { poolQualityCopy } from '../../lib/sim/pool-quality-copy';
 
   let {
     live,
@@ -17,7 +18,24 @@
     gate,
     pointsLeft,
     onshow,
-  }: { live: LiveDps; href: string; gate: LiveGate; pointsLeft: number; onshow: () => void } = $props();
+    ownGearCaveat = false,
+  }: {
+    live: LiveDps;
+    href: string;
+    gate: LiveGate;
+    pointsLeft: number;
+    onshow: () => void;
+    /**
+     * newcomer round 4 (review.md:83-110): true only when this preview is TalentCandidates'
+     * own inline ADD A BUILD editor (SummaryBar.svelte's `!standalone`), where the gear on
+     * screen can be a pasted build's own -- imported wholesale by ImportBox's `onimport`
+     * (`store.svelte.ts`'s `loadImported` replaces the whole gear map) -- rather than the
+     * player's current gear the ranked comparison beside it locks every row to. Root cause
+     * of the round-4 finding (Fire Mage: 681 ± 6.9 here, 400 in the ranked table): neither
+     * number is wrong, this one is just never the player's own gear once a build is pasted.
+     */
+    ownGearCaveat?: boolean;
+  } = $props();
 
   // `off` with a figure still held is a build that stopped being simmed -- a point came out,
   // or the device has not been asked yet -- so it dims exactly as a run in flight does.
@@ -88,4 +106,9 @@
     class="tabular text-muted block h-[18px] font-mono text-[12px] leading-[18px]"
     data-testid="planner-dps-error">{note}</span
   >
+  {#if ownGearCaveat}
+    <span class="text-muted block text-[12px]" data-testid="planner-dps-own-gear">
+      {poolQualityCopy.plannerDpsOwnGearNote}
+    </span>
+  {/if}
 </div>

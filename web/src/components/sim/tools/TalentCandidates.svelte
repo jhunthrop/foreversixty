@@ -18,16 +18,25 @@
   import { plannerGearFor, talentsString, type SimCharacter } from '../../../lib/sim/character';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
   import { dedupeByName } from '../../../lib/sim/dedupe';
-  import { customLoadouts, savedBuildsMessage } from '../../../lib/sim/talent-loadouts';
+  import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
+  import { customLoadouts, hasUnaddedBuild, savedBuildsMessage } from '../../../lib/sim/talent-loadouts';
 
   let {
     character,
     picked,
     ontoggle,
+    onpendingcustom,
   }: {
     character: SimCharacter;
     picked: readonly TalentLoadout[];
     ontoggle: (loadout: TalentLoadout, on: boolean) => void;
+    /**
+     * newcomer round 4 (review.md:83-110): fires whenever a valid pasted build starts or
+     * stops sitting unadded in the editor, so BulkRunBar (a sibling, not a child) can block
+     * RUN on it -- the one remaining way the two-buttons-same-label trap could still bite
+     * once the buttons themselves are told apart.
+     */
+    onpendingcustom?: (pending: boolean) => void;
   } = $props();
 
   let talents = $state<TalentFile | null>(null);
@@ -114,6 +123,14 @@
   /** dps D31/E2: a picked loadout none of the three named lists above claims -- ADD A
    *  BUILD's own paste or hand-built tree, otherwise invisible once accepted. */
   const custom = $derived(customLoadouts(picked, own, [savedLoadouts, exported]));
+
+  /** newcomer round 4: true whenever `addCustom` could accept `customCode` right now but
+   *  has not -- the trap's own precondition, reported to the RUN button's own gate. */
+  const pending = $derived(hasUnaddedBuild(customCode, index));
+  $effect(() => {
+    onpendingcustom?.(pending);
+    return () => onpendingcustom?.(false);
+  });
 
   function isPicked(loadout: TalentLoadout): boolean {
     return picked.some((entry) => entry.name === loadout.name);
@@ -253,7 +270,7 @@
           class="{SECONDARY_BUTTON} border-line-warm text-nav mt-2 w-fit px-3 disabled:opacity-50"
           data-testid="sim-loadout-accept"
           disabled={customCode === ''}
-          onclick={addCustom}>{bulkCopy.talentsAddCustom}</button
+          onclick={addCustom}>{poolQualityCopy.talentsAddCustomConfirm}</button
         >
       {:else}
         {@render lazyFallback(plannerLazy)}

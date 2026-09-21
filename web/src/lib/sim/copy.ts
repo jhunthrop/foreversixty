@@ -1017,8 +1017,6 @@ export const bulkCopy = {
    */
   noCombinations: 'no combinations',
   withinError: 'Within error of the leader',
-  withinErrorNote:
-    'These runs are too close to separate at this many iterations. Run again at a higher precision to tell them apart.',
   noGain: 'Nothing here beats what you are wearing.',
   slotSummary: 'By slot',
   slotSummaryNote: 'What the winning set uses in each slot, and what that slot contributed.',
