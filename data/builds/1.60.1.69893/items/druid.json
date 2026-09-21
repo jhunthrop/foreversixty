@@ -2448,7 +2448,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${15/5}.",
+      "effect_text": "Increases your effective stealth detection level by 3.",
       "set_id": null,
       "unique": false
     },
@@ -3708,7 +3708,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth level by ${8/5}.",
+      "effect_text": "Increases your effective stealth level by 1.6.",
       "set_id": 512,
       "unique": false
     },
@@ -6316,7 +6316,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Reduces the hit chance of Charm effects against you by 6%. Increases your effective stealth detection level by ${15/5} for 10 sec, then reduces your effective stealth detection level by ${30/-5} for 20 sec.",
+      "effect_text": "Reduces the hit chance of Charm effects against you by 6%. Increases your effective stealth detection level by 3 for 10 sec, then reduces your effective stealth detection level by 6 for 20 sec.",
       "set_id": null,
       "unique": false
     },
@@ -15291,7 +15291,7 @@
       "speed": 3.7,
       "dps": 0.0,
       "two_hand": true,
-      "effect_text": "Purifies the friendly target, removing 1 disease $leffect:effects; and 1 poison $leffect:effects;.",
+      "effect_text": "Purifies the friendly target, removing 1 disease effect and 1 poison effect.",
       "set_id": null,
       "unique": false
     },
@@ -33341,7 +33341,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "You gain an additional ${50/10} Rage from activating Enrage and an additional 20 Energy from activating Tiger's Fury.",
+      "effect_text": "You gain an additional 5 Rage from activating Enrage and an additional 20 Energy from activating Tiger's Fury.",
       "set_id": null,
       "unique": false
     },
@@ -33746,7 +33746,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth level by ${6/5}.",
+      "effect_text": "Increases your effective stealth level by 1.2.",
       "set_id": null,
       "unique": false
     },
@@ -40398,7 +40398,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 381,
       "unique": false
     },
@@ -40563,7 +40563,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 382,
       "unique": false
     },
@@ -40757,7 +40757,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 551,
       "unique": false
     },
@@ -40931,7 +40931,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 539,
       "unique": false
     },
@@ -41148,7 +41148,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 2081,
       "unique": false
     },
@@ -41448,7 +41448,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 2080,
       "unique": false
     },
@@ -43553,7 +43553,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": null,
       "unique": true
     },
@@ -44187,7 +44187,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": null,
       "unique": true
     },
@@ -46927,7 +46927,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": null,
       "unique": true
     },
@@ -47092,7 +47092,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": null,
       "unique": false
     },
@@ -49544,7 +49544,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": null,
       "unique": true
     },
@@ -51009,7 +51009,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": null,
       "unique": true
     },
@@ -51469,7 +51469,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": null,
       "unique": true
     },
@@ -52340,7 +52340,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 398,
       "unique": false
     },
@@ -52365,7 +52365,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 2076,
       "unique": false
     },
@@ -52388,7 +52388,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 2079,
       "unique": false
     },
@@ -53614,7 +53614,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 397,
       "unique": false
     },
@@ -53639,7 +53639,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 2077,
       "unique": false
     },
@@ -53662,7 +53662,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": 2078,
       "unique": false
     },

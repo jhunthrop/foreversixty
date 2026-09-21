@@ -287,11 +287,11 @@
           "ranks": [
             {
               "spell_id": 11255,
-              "description": "Your Counterspell also Silences the target for ${2000/1000} sec."
+              "description": "Your Counterspell also Silences the target for 2 sec."
             },
             {
               "spell_id": 11255,
-              "description": "Your Counterspell also Silences the target for ${4000/1000} sec."
+              "description": "Your Counterspell also Silences the target for 4 sec."
             }
           ],
           "spell_id": 11255
@@ -333,7 +333,7 @@
           "ranks": [
             {
               "spell_id": 400588,
-              "description": "Gives your Arcane Blast spell a 40% chance, and your Fireball, Frostbolt, and Frostfire Bolt spells a ${40/2}% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every ${5/10}.1 sec."
+              "description": "Gives your Arcane Blast spell a 40% chance, and your Fireball, Frostbolt, and Frostfire Bolt spells a 20% chance to reduce the channeled duration of your next Arcane Missiles spell by 50%, reduce the Mana cost by 100%, and missiles fire every 0.5 sec."
             }
           ],
           "spell_id": 400588
@@ -450,11 +450,11 @@
           "ranks": [
             {
               "spell_id": 11078,
-              "description": "Reduces the cooldown of your Fire Blast spell by ${1000/-1000} sec. Killing a non-trivial target increases the critical strike chance of your next Fire Blast cast within 20 sec by 25%."
+              "description": "Reduces the cooldown of your Fire Blast spell by 1 sec. Killing a non-trivial target increases the critical strike chance of your next Fire Blast cast within 20 sec by 25%."
             },
             {
               "spell_id": 11078,
-              "description": "Reduces the cooldown of your Fire Blast spell by ${2000/-1000} sec. Killing a non-trivial target increases the critical strike chance of your next Fire Blast cast within 20 sec by 50%."
+              "description": "Reduces the cooldown of your Fire Blast spell by 2 sec. Killing a non-trivial target increases the critical strike chance of your next Fire Blast cast within 20 sec by 50%."
             }
           ],
           "spell_id": 11078
@@ -1251,11 +1251,11 @@
           "ranks": [
             {
               "spell_id": 400647,
-              "description": "Gives your Chill effects a 15% chance to grant you the Fingers of Frost effect, which treats your next 1 $lspell:spells; cast as if the target were Frozen. Lasts 15 sec."
+              "description": "Gives your Chill effects a 15% chance to grant you the Fingers of Frost effect, which treats your next 1 spell cast as if the target were Frozen. Lasts 15 sec."
             },
             {
               "spell_id": 400647,
-              "description": "Gives your Chill effects a 15% chance to grant you the Fingers of Frost effect, which treats your next 2 $lspell:spells; cast as if the target were Frozen. Lasts 15 sec."
+              "description": "Gives your Chill effects a 15% chance to grant you the Fingers of Frost effect, which treats your next 2 spells cast as if the target were Frozen. Lasts 15 sec."
             }
           ],
           "spell_id": 400647

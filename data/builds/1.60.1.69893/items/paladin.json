@@ -3670,7 +3670,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${15/5}.",
+      "effect_text": "Increases your effective stealth detection level by 3.",
       "set_id": null,
       "unique": false
     },
@@ -5443,7 +5443,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth level by ${8/5}.",
+      "effect_text": "Increases your effective stealth level by 1.6.",
       "set_id": 512,
       "unique": false
     },
@@ -8545,7 +8545,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Reduces the hit chance of Charm effects against you by 6%. Increases your effective stealth detection level by ${15/5} for 10 sec, then reduces your effective stealth detection level by ${30/-5} for 20 sec.",
+      "effect_text": "Reduces the hit chance of Charm effects against you by 6%. Increases your effective stealth detection level by 3 for 10 sec, then reduces your effective stealth detection level by 6 for 20 sec.",
       "set_id": null,
       "unique": false
     },
@@ -45732,7 +45732,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth level by ${6/5}.",
+      "effect_text": "Increases your effective stealth level by 1.2.",
       "set_id": null,
       "unique": false
     },
@@ -56113,7 +56113,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases the duration of your Repentance by ${1000/1000} sec.",
+      "effect_text": "Increases the duration of your Repentance by 1 sec.",
       "set_id": 2086,
       "unique": false
     },
@@ -56718,7 +56718,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases the duration of your Repentance by ${1000/1000} sec.",
+      "effect_text": "Increases the duration of your Repentance by 1 sec.",
       "set_id": 2084,
       "unique": false
     },
@@ -64056,7 +64056,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases your effective stealth detection level by ${10/5}.",
+      "effect_text": "Increases your effective stealth detection level by 2.",
       "set_id": null,
       "unique": false
     },
@@ -70557,7 +70557,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases the duration of your Repentance by ${1000/1000} sec.",
+      "effect_text": "Increases the duration of your Repentance by 1 sec.",
       "set_id": 2085,
       "unique": false
     },
@@ -71669,7 +71669,7 @@
       "speed": 0.0,
       "dps": 0.0,
       "two_hand": false,
-      "effect_text": "Increases the duration of your Repentance by ${1000/1000} sec.",
+      "effect_text": "Increases the duration of your Repentance by 1 sec.",
       "set_id": 2087,
       "unique": false
     },

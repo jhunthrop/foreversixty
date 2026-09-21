@@ -10,17 +10,22 @@ runtime. We resolve only the tokens whose value is in the tables we fetch:
   $m<n> / $M<n>        the minimum of effect <n>'s displayed value
   $/<divisor>;s<n>     any of the above, divided first
   $<spell id><token>   the same token read off a different spell
+  ${<arithmetic>}      worked out, once every token inside it is a number;
+                       a trailing `.N` is the client's "N decimals"
+  $l<one>:<many>;      the word that agrees with the number before it
 
 Everything else stays in the string exactly as the client stored it:
-`$h` (proc chance), `$a<n>` (radius), `$?x[..][..]` (conditionals),
-`${..}` (arithmetic), `$l..:..;` (pluralisation). The planner shows the raw
-token rather than a number nobody can source.
+`$h` (proc chance), `$a<n>` (radius), `$?x[..][..]` (conditionals), and any
+`${..}` that still holds a token with no value here (`$rap`, `$<mult>`). The
+planner shows the raw token rather than a number nobody can source.
 """
 
 from __future__ import annotations
 
+import ast
+import operator
 import re
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field, replace
 
 from pipeline.csvio import populated
@@ -37,6 +42,24 @@ TOKEN = re.compile(
     r"(?P<kind>[sSoOtTdDmM])"
     r"(?P<index>[1-9])?"
 )
+
+#: `${300/10}`, `${500/-1000}.1`: the braces, then the client's optional decimals suffix. The
+#: suffix is a dot and ONE digit not followed by another, so "by ${30/-10}." keeps its full
+#: stop and "${8*2.5}%" is untouched.
+BRACES = re.compile(r"\$\{(?P<expr>[^{}]*)\}(?:\.(?P<places>\d)(?!\d))?")
+_ARITHMETIC = re.compile(r"[\d\s+\-*/().]+")
+#: `$lpoint:points;` -- and the number it has to agree with, somewhere before it.
+PLURAL = re.compile(
+    r"(?P<number>\d+(?:\.\d+)?)(?P<between>[^$\d]*)"
+    r"\$[lL](?P<one>[^:;]+):(?P<many>[^;]+);"
+)
+
+_BINARY: dict[type[ast.operator], Callable[[float, float], float]] = {
+    ast.Add: operator.add,
+    ast.Sub: operator.sub,
+    ast.Mult: operator.mul,
+    ast.Div: operator.truediv,
+}
 
 _MS_PER_SECOND = 1000
 _MS_PER_MINUTE = 60_000
@@ -61,6 +84,42 @@ def _format_number(value: float) -> str:
     if value == int(value):
         return str(int(value))
     return f"{value:.3f}".rstrip("0").rstrip(".")
+
+
+def _evaluate(node: ast.expr) -> float:
+    """Four-function arithmetic over number literals, and nothing else."""
+    if isinstance(node, ast.Constant) and isinstance(node.value, (int, float)):
+        return float(node.value)
+    if isinstance(node, ast.UnaryOp) and isinstance(node.op, (ast.USub, ast.UAdd)):
+        value = _evaluate(node.operand)
+        return -value if isinstance(node.op, ast.USub) else value
+    if isinstance(node, ast.BinOp) and type(node.op) in _BINARY:
+        return _BINARY[type(node.op)](_evaluate(node.left), _evaluate(node.right))
+    raise ValueError(f"not arithmetic: {ast.dump(node)}")
+
+
+def _work_out(match: re.Match[str]) -> str:
+    """One `${..}` as its value, or exactly as it stood when it is not all numbers.
+
+    The sign is dropped, as it is for every other token here: the client divides a
+    negative amount by a negative number to show it positive, and the amounts that reach
+    this point have already lost theirs.
+    """
+    expr = match["expr"]
+    if not _ARITHMETIC.fullmatch(expr):
+        return match[0]
+    try:
+        value = abs(_evaluate(ast.parse(expr.strip(), mode="eval").body))
+    except (SyntaxError, ValueError, ZeroDivisionError):
+        return match[0]
+    if match["places"] is None:
+        return _format_number(value)
+    return _format_number(round(value, int(match["places"])))
+
+
+def _agree(match: re.Match[str]) -> str:
+    word = match["one"] if float(match["number"]) == 1 else match["many"]
+    return f"{match['number']}{match['between']}{word}"
 
 
 def _bounds(effect: Effect) -> tuple[int, int]:
@@ -116,7 +175,8 @@ class SpellText:
             return ""
         if overrides:
             row = replace(row, effects={**row.effects, **_overridden(row.effects, overrides)})
-        return TOKEN.sub(lambda match: self._substitute(row, match), row.description)
+        resolved = TOKEN.sub(lambda match: self._substitute(row, match), row.description)
+        return PLURAL.sub(_agree, BRACES.sub(_work_out, resolved))
 
     def icon_file_id(self, spell_id: int) -> int:
         row = self._spells.get(spell_id)

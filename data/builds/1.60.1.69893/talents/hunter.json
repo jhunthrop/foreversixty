@@ -503,15 +503,15 @@
           "ranks": [
             {
               "spell_id": 1310661,
-              "description": "Increased the damage of your Serpent Sting ability by 6%, reduces the cooldown of your Viper Sting ability by ${2000/-1000} sec, and increases the duration of your Scorpid Sting ability by ${15000/1000} sec."
+              "description": "Increased the damage of your Serpent Sting ability by 6%, reduces the cooldown of your Viper Sting ability by 2 sec, and increases the duration of your Scorpid Sting ability by 15 sec."
             },
             {
               "spell_id": 1310661,
-              "description": "Increased the damage of your Serpent Sting ability by 13%, reduces the cooldown of your Viper Sting ability by ${4000/-1000} sec, and increases the duration of your Scorpid Sting ability by ${30000/1000} sec."
+              "description": "Increased the damage of your Serpent Sting ability by 13%, reduces the cooldown of your Viper Sting ability by 4 sec, and increases the duration of your Scorpid Sting ability by 30 sec."
             },
             {
               "spell_id": 1310661,
-              "description": "Increased the damage of your Serpent Sting ability by 20%, reduces the cooldown of your Viper Sting ability by ${6000/-1000} sec, and increases the duration of your Scorpid Sting ability by ${45000/1000} sec."
+              "description": "Increased the damage of your Serpent Sting ability by 20%, reduces the cooldown of your Viper Sting ability by 6 sec, and increases the duration of your Scorpid Sting ability by 45 sec."
             }
           ],
           "spell_id": 1310661
@@ -594,11 +594,11 @@
           "ranks": [
             {
               "spell_id": 415405,
-              "description": "Reduces the cooldown on your Rapid Fire ability by ${60000/-60000} min. In addition, when you kill a non-trivial enemy or it dies while afflicted by your Serpent Sting, you gain Rapid Killing, increasing the damage of your next Shot ability within 20 sec by 10%."
+              "description": "Reduces the cooldown on your Rapid Fire ability by 1 min. In addition, when you kill a non-trivial enemy or it dies while afflicted by your Serpent Sting, you gain Rapid Killing, increasing the damage of your next Shot ability within 20 sec by 10%."
             },
             {
               "spell_id": 415405,
-              "description": "Reduces the cooldown on your Rapid Fire ability by ${120000/-60000} min. In addition, when you kill a non-trivial enemy or it dies while afflicted by your Serpent Sting, you gain Rapid Killing, increasing the damage of your next Shot ability within 20 sec by 20%."
+              "description": "Reduces the cooldown on your Rapid Fire ability by 2 min. In addition, when you kill a non-trivial enemy or it dies while afflicted by your Serpent Sting, you gain Rapid Killing, increasing the damage of your next Shot ability within 20 sec by 20%."
             }
           ],
           "spell_id": 415405
@@ -935,23 +935,23 @@
           "ranks": [
             {
               "spell_id": 19184,
-              "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for ${1000/1000} sec."
+              "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for 1 sec."
             },
             {
               "spell_id": 19184,
-              "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for ${2000/1000} sec."
+              "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for 2 sec."
             },
             {
               "spell_id": 19184,
-              "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for ${3000/1000} sec."
+              "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for 3 sec."
             },
             {
               "spell_id": 19184,
-              "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for ${4000/1000} sec."
+              "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for 4 sec."
             },
             {
               "spell_id": 19184,
-              "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for ${5000/1000} sec."
+              "description": "When your traps are triggered, all affected targets are Entrapped, preventing them from moving for 5 sec."
             }
           ],
           "spell_id": 19184

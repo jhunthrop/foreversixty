@@ -187,11 +187,11 @@
           "ranks": [
             {
               "spell_id": 14168,
-              "description": "Reduces the Energy cost of your Expose Armor ability by 5, and refunds 1 Combo $LPoint:Points; when cast with 5 Combo Points."
+              "description": "Reduces the Energy cost of your Expose Armor ability by 5, and refunds 1 Combo Point when cast with 5 Combo Points."
             },
             {
               "spell_id": 14168,
-              "description": "Reduces the Energy cost of your Expose Armor ability by 10, and refunds 2 Combo $LPoint:Points; when cast with 5 Combo Points."
+              "description": "Reduces the Energy cost of your Expose Armor ability by 10, and refunds 2 Combo Points when cast with 5 Combo Points."
             }
           ],
           "spell_id": 14168
@@ -345,7 +345,7 @@
           "ranks": [
             {
               "spell_id": 1310707,
-              "description": "Instantly attacks with both weapons for 75% weapon damage plus an additional ${23*75/100} with each weapon. Damage increased by 20% against Poisoned targets. Awards 2 Combo $LPoint:Points;."
+              "description": "Instantly attacks with both weapons for 75% weapon damage plus an additional 17.25 with each weapon. Damage increased by 20% against Poisoned targets. Awards 2 Combo Points."
             }
           ],
           "spell_id": 1310707
@@ -879,15 +879,15 @@
           "ranks": [
             {
               "spell_id": 13958,
-              "description": "Reduces the chance enemies have to detect you while in Stealth mode as if you were ${5/5} $llevel:levels; higher."
+              "description": "Reduces the chance enemies have to detect you while in Stealth mode as if you were 1 level higher."
             },
             {
               "spell_id": 13958,
-              "description": "Reduces the chance enemies have to detect you while in Stealth mode as if you were ${10/5} $llevel:levels; higher."
+              "description": "Reduces the chance enemies have to detect you while in Stealth mode as if you were 2 levels higher."
             },
             {
               "spell_id": 13958,
-              "description": "Reduces the chance enemies have to detect you while in Stealth mode as if you were ${15/5} $llevel:levels; higher."
+              "description": "Reduces the chance enemies have to detect you while in Stealth mode as if you were 3 levels higher."
             }
           ],
           "spell_id": 13958
@@ -1042,7 +1042,7 @@
           "ranks": [
             {
               "spell_id": 14278,
-              "description": "A strike that deals 125% (180% if a Dagger is equipped in your Main Hand) weapon damage and increases your chance to dodge by 15% for 7 sec.  Awards 1 combo $lpoint:points;."
+              "description": "A strike that deals 125% (180% if a Dagger is equipped in your Main Hand) weapon damage and increases your chance to dodge by 15% for 7 sec.  Awards 1 combo point."
             }
           ],
           "spell_id": 14278
@@ -1059,11 +1059,11 @@
           "ranks": [
             {
               "spell_id": 14084,
-              "description": "Increases the radius of your Distract ability by 3 yds, and further reduces the Stealth detection of distracted enemies as though they were an additional ${5/-5} $Llevel:levels; lower."
+              "description": "Increases the radius of your Distract ability by 3 yds, and further reduces the Stealth detection of distracted enemies as though they were an additional 1 level lower."
             },
             {
               "spell_id": 14084,
-              "description": "Increases the radius of your Distract ability by 5 yds, and further reduces the Stealth detection of distracted enemies as though they were an additional ${10/-5} $Llevel:levels; lower."
+              "description": "Increases the radius of your Distract ability by 5 yds, and further reduces the Stealth detection of distracted enemies as though they were an additional 2 levels lower."
             }
           ],
           "spell_id": 14084
@@ -1080,11 +1080,11 @@
           "ranks": [
             {
               "spell_id": 30894,
-              "description": "Increases your Stealth detection as if you were ${5/5} $llevel:levels; higher and reduces your chance to be hit by spells and ranged attacks by 2%."
+              "description": "Increases your Stealth detection as if you were 1 level higher and reduces your chance to be hit by spells and ranged attacks by 2%."
             },
             {
               "spell_id": 30894,
-              "description": "Increases your Stealth detection as if you were ${15/5} $llevel:levels; higher and reduces your chance to be hit by spells and ranged attacks by 4%."
+              "description": "Increases your Stealth detection as if you were 3 levels higher and reduces your chance to be hit by spells and ranged attacks by 4%."
             }
           ],
           "spell_id": 30894
@@ -1181,7 +1181,7 @@
           "ranks": [
             {
               "spell_id": 16511,
-              "description": "An instant strike that deals 100% weapon damage (145% if a Dagger is equipped) and causes the target to take 15% increased Rupture damage from the Rogue. Lasts 15 sec. Awards 1 Combo $lPoint:Points;."
+              "description": "An instant strike that deals 100% weapon damage (145% if a Dagger is equipped) and causes the target to take 15% increased Rupture damage from the Rogue. Lasts 15 sec. Awards 1 Combo Point."
             }
           ],
           "spell_id": 16511

@@ -20,11 +20,11 @@
           "ranks": [
             {
               "spell_id": 1310902,
-              "description": "Reduces the cooldown of your Holy Strike ability by ${1000/-1000} sec."
+              "description": "Reduces the cooldown of your Holy Strike ability by 1 sec."
             },
             {
               "spell_id": 1310902,
-              "description": "Reduces the cooldown of your Holy Strike ability by ${2000/-1000} sec."
+              "description": "Reduces the cooldown of your Holy Strike ability by 2 sec."
             }
           ],
           "spell_id": 1310902
@@ -262,11 +262,11 @@
           "ranks": [
             {
               "spell_id": 426065,
-              "description": "Your Holy Shock and Flash of Light critical hits reduce the cast time of your next Holy Light cast within 15 sec by ${500/-1000}.1 sec."
+              "description": "Your Holy Shock and Flash of Light critical hits reduce the cast time of your next Holy Light cast within 15 sec by 0.5 sec."
             },
             {
               "spell_id": 426065,
-              "description": "Your Holy Shock and Flash of Light critical hits reduce the cast time of your next Holy Light cast within 15 sec by ${1000/-1000}.1 sec."
+              "description": "Your Holy Shock and Flash of Light critical hits reduce the cast time of your next Holy Light cast within 15 sec by 1 sec."
             }
           ],
           "spell_id": 426065
@@ -396,23 +396,23 @@
           "ranks": [
             {
               "spell_id": 5923,
-              "description": "Increases the critical strike chance of your Holy Shock spell by ${2+1}%, and all other spells by 1%."
+              "description": "Increases the critical strike chance of your Holy Shock spell by 3%, and all other spells by 1%."
             },
             {
               "spell_id": 5923,
-              "description": "Increases the critical strike chance of your Holy Shock spell by ${4+2}%, and all other spells by 2%."
+              "description": "Increases the critical strike chance of your Holy Shock spell by 6%, and all other spells by 2%."
             },
             {
               "spell_id": 5923,
-              "description": "Increases the critical strike chance of your Holy Shock spell by ${6+3}%, and all other spells by 3%."
+              "description": "Increases the critical strike chance of your Holy Shock spell by 9%, and all other spells by 3%."
             },
             {
               "spell_id": 5923,
-              "description": "Increases the critical strike chance of your Holy Shock spell by ${8+4}%, and all other spells by 4%."
+              "description": "Increases the critical strike chance of your Holy Shock spell by 12%, and all other spells by 4%."
             },
             {
               "spell_id": 5923,
-              "description": "Increases the critical strike chance of your Holy Shock spell by ${10+5}%, and all other spells by 5%."
+              "description": "Increases the critical strike chance of your Holy Shock spell by 15%, and all other spells by 5%."
             }
           ],
           "spell_id": 5923
@@ -599,7 +599,7 @@
           "ranks": [
             {
               "spell_id": 1314103,
-              "description": "When Seal of Fury's shield is fully absorbed, restore 0 Mana, increased by 15% per level the attacker is above you, up to ${15*3}%."
+              "description": "When Seal of Fury's shield is fully absorbed, restore 0 Mana, increased by 15% per level the attacker is above you, up to 45%."
             }
           ],
           "spell_id": 1314103
@@ -666,11 +666,11 @@
           "ranks": [
             {
               "spell_id": 1224697,
-              "description": "Increases your total Stamina by 2% and reduces the cooldown of your Divine Shield, Divine Protection, and Templar's Bulwark spells by ${30000/-1000} sec."
+              "description": "Increases your total Stamina by 2% and reduces the cooldown of your Divine Shield, Divine Protection, and Templar's Bulwark spells by 30 sec."
             },
             {
               "spell_id": 1224697,
-              "description": "Increases your total Stamina by 4% and reduces the cooldown of your Divine Shield, Divine Protection, and Templar's Bulwark spells by ${60000/-1000} sec."
+              "description": "Increases your total Stamina by 4% and reduces the cooldown of your Divine Shield, Divine Protection, and Templar's Bulwark spells by 60 sec."
             }
           ],
           "spell_id": 1224697
@@ -771,23 +771,23 @@
           "ranks": [
             {
               "spell_id": 20177,
-              "description": "Gives you a 8% chance to gain an extra attack after Blocking a melee attack and a ${8*2.5}% chance to gain an extra attack after being the victim of a non-periodic critical strike."
+              "description": "Gives you a 8% chance to gain an extra attack after Blocking a melee attack and a 20% chance to gain an extra attack after being the victim of a non-periodic critical strike."
             },
             {
               "spell_id": 20177,
-              "description": "Gives you a 16% chance to gain an extra attack after Blocking a melee attack and a ${16*2.5}% chance to gain an extra attack after being the victim of a non-periodic critical strike."
+              "description": "Gives you a 16% chance to gain an extra attack after Blocking a melee attack and a 40% chance to gain an extra attack after being the victim of a non-periodic critical strike."
             },
             {
               "spell_id": 20177,
-              "description": "Gives you a 24% chance to gain an extra attack after Blocking a melee attack and a ${24*2.5}% chance to gain an extra attack after being the victim of a non-periodic critical strike."
+              "description": "Gives you a 24% chance to gain an extra attack after Blocking a melee attack and a 60% chance to gain an extra attack after being the victim of a non-periodic critical strike."
             },
             {
               "spell_id": 20177,
-              "description": "Gives you a 32% chance to gain an extra attack after Blocking a melee attack and a ${32*2.5}% chance to gain an extra attack after being the victim of a non-periodic critical strike."
+              "description": "Gives you a 32% chance to gain an extra attack after Blocking a melee attack and a 80% chance to gain an extra attack after being the victim of a non-periodic critical strike."
             },
             {
               "spell_id": 20177,
-              "description": "Gives you a 40% chance to gain an extra attack after Blocking a melee attack and a ${40*2.5}% chance to gain an extra attack after being the victim of a non-periodic critical strike."
+              "description": "Gives you a 40% chance to gain an extra attack after Blocking a melee attack and a 100% chance to gain an extra attack after being the victim of a non-periodic critical strike."
             }
           ],
           "spell_id": 20177
@@ -1003,15 +1003,15 @@
           "ranks": [
             {
               "spell_id": 9452,
-              "description": "Gives your damaging melee attacks a chance to reduce the target's Attack Power by ${1/-3*6}, and increase your Attack Power by 1% for 30 sec."
+              "description": "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 2, and increase your Attack Power by 1% for 30 sec."
             },
             {
               "spell_id": 9452,
-              "description": "Gives your damaging melee attacks a chance to reduce the target's Attack Power by ${2/-3*6}, and increase your Attack Power by 2% for 30 sec."
+              "description": "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 4, and increase your Attack Power by 2% for 30 sec."
             },
             {
               "spell_id": 9452,
-              "description": "Gives your damaging melee attacks a chance to reduce the target's Attack Power by ${3/-3*6}, and increase your Attack Power by 3% for 30 sec."
+              "description": "Gives your damaging melee attacks a chance to reduce the target's Attack Power by 6, and increase your Attack Power by 3% for 30 sec."
             }
           ],
           "spell_id": 9452
@@ -1242,11 +1242,11 @@
           "ranks": [
             {
               "spell_id": 1311085,
-              "description": "Reduces the cast time of your Hammer of Wrath by ${500/-1000}.1 sec, and reduces all threat you generate by 10% while Righteous Fury is not active."
+              "description": "Reduces the cast time of your Hammer of Wrath by 0.5 sec, and reduces all threat you generate by 10% while Righteous Fury is not active."
             },
             {
               "spell_id": 1311085,
-              "description": "Reduces the cast time of your Hammer of Wrath by ${1000/-1000}.1 sec, and reduces all threat you generate by 20% while Righteous Fury is not active."
+              "description": "Reduces the cast time of your Hammer of Wrath by 1 sec, and reduces all threat you generate by 20% while Righteous Fury is not active."
             }
           ],
           "spell_id": 1311085

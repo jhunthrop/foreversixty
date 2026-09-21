@@ -195,3 +195,69 @@ def test_effect_amount_reads_the_modern_column_as_final():
 
 def test_effect_amount_keeps_a_negative_amount_negative():
     assert effect_amount({"EffectBasePointsF": "-40"}) == -40
+
+
+def _one(description: str, **effects: int) -> str:
+    """One spell's rendered description; `s1=300` makes effect 1 display 300."""
+    from pipeline.spelltext import Effect, SpellRow, SpellText
+
+    rows = {
+        1: SpellRow(
+            description=description,
+            duration_ms=None,
+            icon_file_id=0,
+            effects={
+                int(name[1:]) - 1: Effect(base_points=value, die_sides=0, period_ms=0)
+                for name, value in effects.items()
+            },
+        )
+    }
+    return SpellText(rows).describe(1)
+
+
+def test_brace_arithmetic_is_worked_out_once_its_tokens_are_numbers():
+    # Boundless Rage on the 1.60 client: rage is stored times ten.
+    assert _one("Increases your maximum Rage by ${$s1/10}.", s1=300) == (
+        "Increases your maximum Rage by 30."
+    )
+    assert _one("by ${$s1*3}%.", s1=8) == "by 24%."
+    assert _one("by ${$s1+4}%,", s1=8) == "by 12%,"
+    assert _one("by ${($s1/10)*2} sec", s1=10) == "by 2 sec"
+
+
+def test_brace_arithmetic_drops_the_sign_the_way_every_other_token_does():
+    # The client divides a negative amount by a negative number to show it positive; the
+    # amounts here are already shown without their sign, so the quotient's sign goes too.
+    assert _one("reduced by ${$s1/-1000} sec.", s1=2000) == "reduced by 2 sec."
+
+
+def test_a_precision_suffix_is_the_number_of_decimals_not_a_full_stop():
+    assert _one("by ${$s1/-1000}.1 sec.", s1=500) == "by 0.5 sec."
+    assert _one("by ${$s1/-1000}.2 sec", s1=330) == "by 0.33 sec"
+    # A whole number keeps no empty decimals, and a real sentence end stays a full stop.
+    assert _one("by ${$s1/-1000}.1 sec.", s1=1000) == "by 1 sec."
+    assert _one("by ${$s1/-10}.", s1=30) == "by 3."
+
+
+def test_brace_arithmetic_that_is_not_all_numbers_is_left_as_the_client_stored_it():
+    # $rap and $<mult> have no value in the tables this module reads.
+    raw = "${32+($rap*(5/100))} damage and ${(172+($bh*$bc))*$<mult>}"
+    assert _one(raw) == raw
+    assert _one("${$s1/0}", s1=5) == "${5/0}"
+
+
+def test_plural_tokens_follow_the_number_before_them():
+    assert _one("as if you were ${$s1/5} $llevel:levels; higher.", s1=5) == (
+        "as if you were 1 level higher."
+    )
+    assert _one("as if you were ${$s1/5} $llevel:levels; higher.", s1=15) == (
+        "as if you were 3 levels higher."
+    )
+    assert _one("refunds $s1 Combo $LPoint:Points; when cast", s1=2) == (
+        "refunds 2 Combo Points when cast"
+    )
+    assert _one("Awards $s1 combo $lpoint:points;.", s1=1) == "Awards 1 combo point."
+
+
+def test_a_plural_token_with_no_number_before_it_is_left_alone():
+    assert _one("Your $lspell:spells; hit harder.") == "Your $lspell:spells; hit harder."

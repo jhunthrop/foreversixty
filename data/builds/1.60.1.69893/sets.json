@@ -25,7 +25,7 @@
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to get a critical strike by ${1}.1%."
+        "description": "Improves your chance to get a critical strike by 1%."
       }
     ]
   },
@@ -82,7 +82,7 @@
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       }
     ]
   },
@@ -111,7 +111,7 @@
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to hit by ${2}.1%."
+        "description": "Improves your chance to hit by 2%."
       }
     ]
   },
@@ -128,7 +128,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${5/10}.1%."
+        "description": "Improves your chance to hit by 0.5%."
       },
       {
         "pieces": 3,
@@ -169,7 +169,7 @@
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to get a critical strike by ${21/14}.1%."
+        "description": "Improves your chance to get a critical strike by 1.5%."
       }
     ]
   },
@@ -251,7 +251,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${2}.1%."
+        "description": "Improves your chance to hit by 2%."
       }
     ]
   },
@@ -353,7 +353,7 @@
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 6,
@@ -537,7 +537,7 @@
       },
       {
         "pieces": 5,
-        "description": "Chance on spellcast to restore 200 Mana, on melee attack to regenerate 20 Energy over 5 sec, and when struck by a melee attack to generate ${100/10} Rage."
+        "description": "Chance on spellcast to restore 200 Mana, on melee attack to regenerate 20 Energy over 5 sec, and when struck by a melee attack to generate 10 Rage."
       },
       {
         "pieces": 6,
@@ -681,7 +681,7 @@
       },
       {
         "pieces": 5,
-        "description": "Chance on melee attack to heal for 110 and generate ${100/10} Rage"
+        "description": "Chance on melee attack to heal for 110 and generate 10 Rage"
       },
       {
         "pieces": 6,
@@ -737,7 +737,7 @@
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to get a critical strike with spells by ${2}.1%."
+        "description": "Improves your chance to get a critical strike with spells by 2%."
       },
       {
         "pieces": 8,
@@ -821,7 +821,7 @@
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to get a critical strike with spells by ${2}.1%."
+        "description": "Improves your chance to get a critical strike with spells by 2%."
       },
       {
         "pieces": 8,
@@ -905,11 +905,11 @@
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to get a critical strike with spells by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with spells by 1%."
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       },
       {
         "pieces": 8,
@@ -1211,7 +1211,7 @@
     "bonuses": [
       {
         "pieces": 6,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       }
     ]
   },
@@ -1249,7 +1249,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike by ${1}.1%. This effect is doubled at Night."
+        "description": "Improves your chance to get a critical strike by 1%. This effect is doubled at Night."
       },
       {
         "pieces": 4,
@@ -1355,7 +1355,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 4,
@@ -1367,7 +1367,7 @@
       },
       {
         "pieces": 6,
-        "description": "Improves your chance to get a critical strike by ${1}.1%."
+        "description": "Improves your chance to get a critical strike by 1%."
       }
     ]
   },
@@ -2136,7 +2136,7 @@
     "bonuses": [
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with spells by ${2}.1%."
+        "description": "Improves your chance to get a critical strike with spells by 2%."
       }
     ]
   },
@@ -2165,11 +2165,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       },
       {
         "pieces": 2,
-        "description": "Improves your chance to get a critical strike with spells by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with spells by 1%."
       }
     ]
   },
@@ -2227,7 +2227,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit with spells by ${1}.1%."
+        "description": "Improves your chance to hit with spells by 1%."
       },
       {
         "pieces": 2,
@@ -2306,7 +2306,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       }
     ]
   },
@@ -2325,7 +2325,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       }
     ]
   },
@@ -2344,7 +2344,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       }
     ]
   },
@@ -2363,7 +2363,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with spells by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with spells by 1%."
       }
     ]
   },
@@ -2382,7 +2382,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       }
     ]
   },
@@ -2401,7 +2401,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with spells by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with spells by 1%."
       }
     ]
   },
@@ -2420,7 +2420,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with spells by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with spells by 1%."
       }
     ]
   },
@@ -2664,7 +2664,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       }
     ]
   },
@@ -2683,7 +2683,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       }
     ]
   },
@@ -2702,7 +2702,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with spells by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with spells by 1%."
       }
     ]
   },
@@ -2721,7 +2721,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       }
     ]
   },
@@ -2740,7 +2740,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 1%."
       }
     ]
   },
@@ -2759,7 +2759,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with spells by ${1}.1%."
+        "description": "Improves your chance to get a critical strike with spells by 1%."
       }
     ]
   },
@@ -2775,11 +2775,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike with melee attacks by ${2}.1%."
+        "description": "Improves your chance to get a critical strike with melee attacks by 2%."
       },
       {
         "pieces": 4,
@@ -4284,7 +4284,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       }
     ]
   },
@@ -4320,7 +4320,7 @@
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 8,
@@ -4343,7 +4343,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       }
     ]
   },
@@ -4362,7 +4362,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       }
     ]
   },
@@ -4381,7 +4381,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       }
     ]
   },
@@ -4400,7 +4400,7 @@
       },
       {
         "pieces": 2,
-        "description": "Improves your chance to get a critical strike by ${1}.1%."
+        "description": "Improves your chance to get a critical strike by 1%."
       },
       {
         "pieces": 3,
@@ -4419,7 +4419,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to get a critical strike by ${1}.1%."
+        "description": "Improves your chance to get a critical strike by 1%."
       },
       {
         "pieces": 3,
@@ -4461,7 +4461,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 2,
@@ -4511,7 +4511,7 @@
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       }
     ]
   },
@@ -5020,7 +5020,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
@@ -5058,7 +5058,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to get a critical strike by ${1}.1%."
+        "description": "Improves your chance to get a critical strike by 1%."
       },
       {
         "pieces": 3,
@@ -5100,7 +5100,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
@@ -5119,7 +5119,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
@@ -5195,7 +5195,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to get a critical strike by ${1}.1%."
+        "description": "Improves your chance to get a critical strike by 1%."
       },
       {
         "pieces": 3,
@@ -5241,7 +5241,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to get a critical strike by ${1}.1%."
+        "description": "Improves your chance to get a critical strike by 1%."
       },
       {
         "pieces": 3,
@@ -5260,7 +5260,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
@@ -5279,7 +5279,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
@@ -5626,7 +5626,7 @@
       },
       {
         "pieces": 6,
-        "description": "Chance on spellcast to restore 200 Mana, on melee attack to regenerate 20 Energy over 5 sec, and when struck by a melee attack to generate ${100/10} Rage."
+        "description": "Chance on spellcast to restore 200 Mana, on melee attack to regenerate 20 Energy over 5 sec, and when struck by a melee attack to generate 10 Rage."
       },
       {
         "pieces": 8,
@@ -5658,7 +5658,7 @@
       },
       {
         "pieces": 4,
-        "description": "Chance on spellcast to restore 200 Mana, on melee attack to regenerate 20 Energy over 5 sec, and when struck by a melee attack to generate ${100/10} Rage."
+        "description": "Chance on spellcast to restore 200 Mana, on melee attack to regenerate 20 Energy over 5 sec, and when struck by a melee attack to generate 10 Rage."
       },
       {
         "pieces": 5,
@@ -6174,7 +6174,7 @@
       },
       {
         "pieces": 6,
-        "description": "Chance on melee attack to heal for 110 and generate ${100/10} Rage"
+        "description": "Chance on melee attack to heal for 110 and generate 10 Rage"
       },
       {
         "pieces": 8,
@@ -6286,11 +6286,11 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown of Enrage by ${30000/-1000} sec and it no longer reduces your armor."
+        "description": "Reduces the cooldown of Enrage by 30 sec and it no longer reduces your armor."
       },
       {
         "pieces": 6,
-        "description": "Bear Form and Dire Bear Form increase all threat you generate by an additional 20%, and Cower now removes all your threat against the target but has a ${20000/1000} sec longer cooldown."
+        "description": "Bear Form and Dire Bear Form increase all threat you generate by an additional 20%, and Cower now removes all your threat against the target but has a 20 sec longer cooldown."
       }
     ]
   },
@@ -6618,7 +6618,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "The radius of your totems that affect friendly targets is increased to ${20+20} yd."
+        "description": "The radius of your totems that affect friendly targets is increased to 40 yd."
       },
       {
         "pieces": 4,
@@ -6626,7 +6626,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your Healing Wave will now jump to additional nearby targets. Each jump reduces the effectiveness of the heal by 60%, and the spell will jump to up to ${3-1} additional targets."
+        "description": "Your Healing Wave will now jump to additional nearby targets. Each jump reduces the effectiveness of the heal by 60%, and the spell will jump to up to 2 additional targets."
       }
     ]
   },
@@ -6646,7 +6646,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "The radius of your totems that affect friendly targets is increased to ${20+20} yd."
+        "description": "The radius of your totems that affect friendly targets is increased to 40 yd."
       },
       {
         "pieces": 4,
@@ -6674,7 +6674,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "The radius of your totems that affect friendly targets is increased to ${20+20} yd."
+        "description": "The radius of your totems that affect friendly targets is increased to 40 yd."
       },
       {
         "pieces": 4,
@@ -6790,7 +6790,7 @@
       },
       {
         "pieces": 4,
-        "description": "You gain ${10/10} extra Rage every time you take any damage or deal auto attack damage."
+        "description": "You gain 1 extra Rage every time you take any damage or deal auto attack damage."
       },
       {
         "pieces": 6,
@@ -8254,7 +8254,7 @@
       },
       {
         "pieces": 4,
-        "description": "Chance on melee attack to heal for 110 and generate ${100/10} Rage"
+        "description": "Chance on melee attack to heal for 110 and generate 10 Rage"
       },
       {
         "pieces": 5,
@@ -8319,11 +8319,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike by ${1}.1%."
+        "description": "Improves your chance to get a critical strike by 1%."
       },
       {
         "pieces": 4,
@@ -8584,11 +8584,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
-        "description": "Improves your chance to get a critical strike by ${2}.1%."
+        "description": "Improves your chance to get a critical strike by 2%."
       },
       {
         "pieces": 4,
@@ -8610,7 +8610,7 @@
       },
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${2}.1%."
+        "description": "Improves your chance to hit by 2%."
       }
     ]
   },
@@ -8628,7 +8628,7 @@
       },
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       }
     ]
   },
@@ -8754,7 +8754,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your non-periodic spell critical strikes reduce the casting time of your next Healing Touch, Regrowth, or Nourish spell by ${500/-1000}.1 sec."
+        "description": "Your non-periodic spell critical strikes reduce the casting time of your next Healing Touch, Regrowth, or Nourish spell by 0.5 sec."
       },
       {
         "pieces": 6,
@@ -8778,7 +8778,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Increases the duration of Rake by ${6000/1000} sec and its periodic damage by 40%."
+        "description": "Increases the duration of Rake by 6 sec and its periodic damage by 40%."
       },
       {
         "pieces": 4,
@@ -8978,7 +8978,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on your Judgement ability by ${5000/-1000} sec, but reduces the damage your Judgements deal by 45%."
+        "description": "Reduces the cooldown on your Judgement ability by 5 sec, but reduces the damage your Judgements deal by 45%."
       },
       {
         "pieces": 6,
@@ -9058,11 +9058,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Reduces the cooldown of your Shadow Word: Death spell by ${6000/-1000} sec."
+        "description": "Reduces the cooldown of your Shadow Word: Death spell by 6 sec."
       },
       {
         "pieces": 4,
-        "description": "Your Shadow Word: Pain has a ${20/10}.1% chance per talent point in Spirit Tap to trigger your Spirit Tap talent when it deals damage, or a 20% chance per talent point when a target dies with your Shadow Word: Pain active. Inner Focus also has a 20% chance per talent point to trigger Spirit Tap."
+        "description": "Your Shadow Word: Pain has a 2% chance per talent point in Spirit Tap to trigger your Spirit Tap talent when it deals damage, or a 20% chance per talent point when a target dies with your Shadow Word: Pain active. Inner Focus also has a 20% chance per talent point to trigger Spirit Tap."
       },
       {
         "pieces": 6,
@@ -9094,7 +9094,7 @@
       },
       {
         "pieces": 6,
-        "description": "Reduces the cooldown on Vanish to ${60000/60000} min. Cannot be combined with Elusiveness."
+        "description": "Reduces the cooldown on Vanish to 1 min. Cannot be combined with Elusiveness."
       }
     ]
   },
@@ -9118,7 +9118,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your Rolling with the Punches also grants you 20% increased Armor from items per stack (capped at ${20*5}%)."
+        "description": "Your Rolling with the Punches also grants you 20% increased Armor from items per stack (capped at 100%)."
       },
       {
         "pieces": 6,
@@ -9198,7 +9198,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Your chance to trigger Static Shock is increased by 12% (${12/2}% while dual-wielding)."
+        "description": "Your chance to trigger Static Shock is increased by 12% (6% while dual-wielding)."
       },
       {
         "pieces": 4,
@@ -9206,7 +9206,7 @@
       },
       {
         "pieces": 6,
-        "description": "While Static Shock is engraved, your Lightning Shield now gains a charge each time you hit a target with Lightning Bolt or Chain Lightning, up to a maximum of ${6+3} charges. In addition, while Static Shock is engraved, your Lightning Shield can now deal critical damage."
+        "description": "While Static Shock is engraved, your Lightning Shield now gains a charge each time you hit a target with Lightning Bolt or Chain Lightning, up to a maximum of 9 charges. In addition, while Static Shock is engraved, your Lightning Shield can now deal critical damage."
       }
     ]
   },
@@ -9310,7 +9310,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "You gain ${100/10} Rage every time you Parry or one of your attacks is Parried."
+        "description": "You gain 10 Rage every time you Parry or one of your attacks is Parried."
       },
       {
         "pieces": 4,
@@ -9367,7 +9367,7 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cast time and global cooldown of Starfire by ${500/-1000}.1 sec."
+        "description": "Reduces the cast time and global cooldown of Starfire by 0.5 sec."
       },
       {
         "pieces": 5,
@@ -9446,7 +9446,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown of your Exorcism spell by ${3000/-1000} sec and increases its damage done by 50%."
+        "description": "Reduces the cooldown of your Exorcism spell by 3 sec and increases its damage done by 50%."
       }
     ]
   },
@@ -9467,7 +9467,7 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown of your Penance spell by ${6000/-1000} sec."
+        "description": "Reduces the cooldown of your Penance spell by 6 sec."
       },
       {
         "pieces": 5,
@@ -9567,11 +9567,11 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Shield Slam ability by ${2000/-1000} sec."
+        "description": "Reduces the cooldown on your Shield Slam ability by 2 sec."
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Bloodrage ability by ${30000/-1000} sec while you are in Gladiator Stance."
+        "description": "Reduces the cooldown on your Bloodrage ability by 30 sec while you are in Gladiator Stance."
       }
     ]
   },
@@ -9634,7 +9634,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on Mangle (Bear) by ${1500/-1000}.1 sec."
+        "description": "Reduces the cooldown on Mangle (Bear) by 1.5 sec."
       }
     ]
   },
@@ -9865,7 +9865,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on Adrenaline Rush by ${240000/-60000} min."
+        "description": "Reduces the cooldown on Adrenaline Rush by 4 min."
       }
     ]
   },
@@ -9907,7 +9907,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cast time of Chain Heal by ${500/-1000}.1 sec."
+        "description": "Reduces the cast time of Chain Heal by 0.5 sec."
       }
     ]
   },
@@ -10008,7 +10008,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Reduces the cooldown on your Shadow Cleave by ${1500/-1000}.1 sec."
+        "description": "Reduces the cooldown on your Shadow Cleave by 1.5 sec."
       },
       {
         "pieces": 4,
@@ -10228,7 +10228,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on your Shield Wall ability by ${180000/-60000} min and reduces the cooldown on your Recklessness ability by ${180000/-60000} min. Recklessness can now be used in any Stance and does not increase damage taken."
+        "description": "Reduces the cooldown on your Shield Wall ability by 3 min and reduces the cooldown on your Recklessness ability by 3 min. Recklessness can now be used in any Stance and does not increase damage taken."
       },
       {
         "pieces": 6,
@@ -10286,7 +10286,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on your Infernal Armor ability by ${10000/-1000} sec and reduces the cooldown on your Demonic Grace ability by ${3000/-1000} sec."
+        "description": "Reduces the cooldown on your Infernal Armor ability by 10 sec and reduces the cooldown on your Demonic Grace ability by 3 sec."
       },
       {
         "pieces": 6,
@@ -10402,7 +10402,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on your Lava Lash and Stormstrike abilities by ${1500/-1000}.1 sec."
+        "description": "Reduces the cooldown on your Lava Lash and Stormstrike abilities by 1.5 sec."
       },
       {
         "pieces": 6,
@@ -10431,7 +10431,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on your Lava Burst ability by ${2000/-1000} sec."
+        "description": "Reduces the cooldown on your Lava Burst ability by 2 sec."
       },
       {
         "pieces": 6,
@@ -10460,7 +10460,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on your Evasion ability by ${120000/-60000} min and reduces the cooldown on your Blade Flurry ability by ${60000/-60000} min."
+        "description": "Reduces the cooldown on your Evasion ability by 2 min and reduces the cooldown on your Blade Flurry ability by 1 min."
       },
       {
         "pieces": 6,
@@ -10547,7 +10547,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on your Mind Blast ability by ${1000/-1000}.1 sec."
+        "description": "Reduces the cooldown on your Mind Blast ability by 1 sec."
       },
       {
         "pieces": 6,
@@ -10576,7 +10576,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on your Divine Protection ability by ${180000/-60000} min and reduces the cooldown on your Avenging Wrath ability by ${120000/-60000} min."
+        "description": "Reduces the cooldown on your Divine Protection ability by 3 min and reduces the cooldown on your Avenging Wrath ability by 2 min."
       },
       {
         "pieces": 6,
@@ -10601,7 +10601,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Reduces the cooldown on your Lay on Hands ability by ${2100000/-60000} min, and your Lay on Hands now restores you to 30% of your maximum Mana when used."
+        "description": "Reduces the cooldown on your Lay on Hands ability by 35 min, and your Lay on Hands now restores you to 30% of your maximum Mana when used."
       },
       {
         "pieces": 4,
@@ -10717,7 +10717,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Reduces the cooldown on Chimera Shot, Explosive Shot, and Aimed Shot by ${1500/-1000}.1 sec, Kill Shot by ${3000/-1000} sec, and Multi-Shot by ${3000/-1000} sec."
+        "description": "Reduces the cooldown on Chimera Shot, Explosive Shot, and Aimed Shot by 1.5 sec, Kill Shot by 3 sec, and Multi-Shot by 3 sec."
       },
       {
         "pieces": 4,
@@ -10750,7 +10750,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on your Wyvern Strike ability by ${2000/-1000} sec, reduces the cooldown on your Raptor Strike ability by ${1000/-1000} sec, and reduces the cooldown on your Flanking Strike ability by ${8000/-1000} sec."
+        "description": "Reduces the cooldown on your Wyvern Strike ability by 2 sec, reduces the cooldown on your Raptor Strike ability by 1 sec, and reduces the cooldown on your Flanking Strike ability by 8 sec."
       },
       {
         "pieces": 6,
@@ -10779,7 +10779,7 @@
       },
       {
         "pieces": 4,
-        "description": "Reduces the cooldown on your Survival Instincts by ${120000/-60000} min, and reduces the cooldown on your Berserk ability by ${120000/-60000} min."
+        "description": "Reduces the cooldown on your Survival Instincts by 2 min, and reduces the cooldown on your Berserk ability by 2 min."
       },
       {
         "pieces": 6,
@@ -10808,7 +10808,7 @@
       },
       {
         "pieces": 4,
-        "description": "Each time your Rejuvenation rank 10 or rank 11 heals a target, you have a 25% chance to restore 60 mana, 8 energy, or ${20/10} rage to your target."
+        "description": "Each time your Rejuvenation rank 10 or rank 11 heals a target, you have a 25% chance to restore 60 mana, 8 energy, or 2 rage to your target."
       },
       {
         "pieces": 6,
@@ -10866,7 +10866,7 @@
       },
       {
         "pieces": 4,
-        "description": "The cooldown of your Starsurge spell is reduced by ${1500/-1000}.1 sec."
+        "description": "The cooldown of your Starsurge spell is reduced by 1.5 sec."
       },
       {
         "pieces": 6,
@@ -11128,11 +11128,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Your Shockwave deals 35% increased damage and its cooldown is reduced by ${2000/1000}.1 sec each time you hit a target with Heroic Strike or Cleave."
+        "description": "Your Shockwave deals 35% increased damage and its cooldown is reduced by 2 sec each time you hit a target with Heroic Strike or Cleave."
       },
       {
         "pieces": 4,
-        "description": "Your Recklessness, Retaliation, and Shield Wall abilities no longer share a cooldown. Additionally, your Recklessness ability lasts ${15000/1000} sec longer, and while it is active you gain 50% of your Defense Skill over 300 as Strength. "
+        "description": "Your Recklessness, Retaliation, and Shield Wall abilities no longer share a cooldown. Additionally, your Recklessness ability lasts 15 sec longer, and while it is active you gain 50% of your Defense Skill over 300 as Strength. "
       },
       {
         "pieces": 6,
@@ -11188,7 +11188,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your Blade Flurry now also strikes a third target and increases your attack speed by an additional 10%. In addition, each combo point you spend reduces the remaining cooldown on your Blade Flurry by ${500/1000}.1 sec."
+        "description": "Your Blade Flurry now also strikes a third target and increases your attack speed by an additional 10%. In addition, each combo point you spend reduces the remaining cooldown on your Blade Flurry by 0.5 sec."
       },
       {
         "pieces": 6,
@@ -11268,7 +11268,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Your Mind Flay and Mind Sear no longer lose duration from taking damage during their channel. In addition, they deal 10% increased damage per other periodic Shadow effect you have on the target, up to a maximum increase of ${10*3}%."
+        "description": "Your Mind Flay and Mind Sear no longer lose duration from taking damage during their channel. In addition, they deal 10% increased damage per other periodic Shadow effect you have on the target, up to a maximum increase of 30%."
       },
       {
         "pieces": 4,
@@ -11296,7 +11296,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Reduces the cooldown of Power Word: Barrier by ${30000/-1000} sec and Surge of Light now also makes Prayer of Healing and Greater Heal instant cast."
+        "description": "Reduces the cooldown of Power Word: Barrier by 30 sec and Surge of Light now also makes Prayer of Healing and Greater Heal instant cast."
       },
       {
         "pieces": 4,
@@ -11304,7 +11304,7 @@
       },
       {
         "pieces": 6,
-        "description": "Increases the healing of Circle of Healing and Penance by 25%. Additionally, the cooldown of your Spirit of the Redeemer is reduced by ${20/-1000} sec and your healing is increased by 20% while your Spirit of the Redeemer is active."
+        "description": "Increases the healing of Circle of Healing and Penance by 25%. Additionally, the cooldown of your Spirit of the Redeemer is reduced by 0.02 sec and your healing is increased by 20% while your Spirit of the Redeemer is active."
       }
     ]
   },
@@ -11352,7 +11352,7 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Lay on Hands grants you 20% Spell Haste for 30 sec and reduces the Global Cooldown of your next $1226451n Divine Light, Holy Light, Flash of Light, or Holy Shock spells by ${500/-1000}.1 seconds."
+        "description": "Lay on Hands grants you 20% Spell Haste for 30 sec and reduces the Global Cooldown of your next $1226451n Divine Light, Holy Light, Flash of Light, or Holy Shock spells by 0.5 seconds."
       },
       {
         "pieces": 4,
@@ -11388,7 +11388,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your Avenging Wrath no longer triggers Forbearance, lasts ${50/1000} sec longer, and increases your Block Value by 30%."
+        "description": "Your Avenging Wrath no longer triggers Forbearance, lasts 0.05 sec longer, and increases your Block Value by 30%."
       }
     ]
   },
@@ -11412,11 +11412,11 @@
       },
       {
         "pieces": 4,
-        "description": "Casting Deep Freeze increases the remaining duration of your Icy Veins spell by ${10000/1000} sec. Casting Pyroblast cancels 2 $lstack:stacks; of the effect from your Balefire Bolt."
+        "description": "Casting Deep Freeze increases the remaining duration of your Icy Veins spell by 10 sec. Casting Pyroblast cancels 2 stacks of the effect from your Balefire Bolt."
       },
       {
         "pieces": 6,
-        "description": "Reduces the cooldown on your Frozen Orb spell by ${25000/-1000} sec. Each time Glaciate is consumed, the cooldown on your Deep Freeze is reduced by ${1000/1000}.1 sec per stack consumed. Reduces the cooldown on Fire Blast by ${5000/-1000} sec and Fire Blast now refreshes the duration of your Living Bomb on the target."
+        "description": "Reduces the cooldown on your Frozen Orb spell by 25 sec. Each time Glaciate is consumed, the cooldown on your Deep Freeze is reduced by 1 sec per stack consumed. Reduces the cooldown on Fire Blast by 5 sec and Fire Blast now refreshes the duration of your Living Bomb on the target."
       }
     ]
   },
@@ -11444,7 +11444,7 @@
       },
       {
         "pieces": 6,
-        "description": "Reduces the cooldown of your Arcane Power by ${20/-1000} sec and increases its duration by ${10000/1000} sec. While Arcane Power is active, your chance to gain Arcane Tunneling is increased by 10% and each cast of Arcane Blast reduces the remaining cooldown on Mass Regeneration by ${1000/1000}.1 sec."
+        "description": "Reduces the cooldown of your Arcane Power by 0.02 sec and increases its duration by 10 sec. While Arcane Power is active, your chance to gain Arcane Tunneling is increased by 10% and each cast of Arcane Blast reduces the remaining cooldown on Mass Regeneration by 1 sec."
       }
     ]
   },
@@ -11496,7 +11496,7 @@
       },
       {
         "pieces": 4,
-        "description": "Your Starsurge now increases the damage of your next ${1+1} Starfires."
+        "description": "Your Starsurge now increases the damage of your next 2 Starfires."
       },
       {
         "pieces": 6,
@@ -11552,7 +11552,7 @@
       },
       {
         "pieces": 4,
-        "description": "Increases the duration of your Berserk ability by ${15000/1000} sec."
+        "description": "Increases the duration of your Berserk ability by 15 sec."
       },
       {
         "pieces": 6,
@@ -11640,7 +11640,7 @@
       },
       {
         "pieces": 6,
-        "description": "Maelstrom Weapon can now stack up to ${5+5} charges. When using a two-handed weapon, gain 2 charges at a time. Casts with over 5 charges increase that spell's damage or healing dealt by 20% per excess charge. Casts while at ${5+5} charges will consume all charges and cast twice."
+        "description": "Maelstrom Weapon can now stack up to 10 charges. When using a two-handed weapon, gain 2 charges at a time. Casts with over 5 charges increase that spell's damage or healing dealt by 20% per excess charge. Casts while at 10 charges will consume all charges and cast twice."
       }
     ]
   },
@@ -11696,7 +11696,7 @@
       },
       {
         "pieces": 6,
-        "description": "Your Infernal Armor now also increases all magical damage you deal by 20% and lasts an additional ${10000/1000} sec."
+        "description": "Your Infernal Armor now also increases all magical damage you deal by 20% and lasts an additional 10 sec."
       }
     ]
   },
@@ -11826,7 +11826,7 @@
       },
       {
         "pieces": 5,
-        "description": "Improves your chance to hit by ${2}.1%."
+        "description": "Improves your chance to hit by 2%."
       },
       {
         "pieces": 6,
@@ -12570,11 +12570,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Counterspell spell by ${5000/-1000} sec."
+        "description": "Reduces the cooldown on your Counterspell spell by 5 sec."
       },
       {
         "pieces": 4,
@@ -12600,11 +12600,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Kidney Shot ability by ${3000/-1000} sec."
+        "description": "Reduces the cooldown on your Kidney Shot ability by 3 sec."
       },
       {
         "pieces": 4,
@@ -12630,11 +12630,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
-        "description": "Reduces the cast time of your Banish spell by ${1500/-1000}.1 sec."
+        "description": "Reduces the cast time of your Banish spell by 1.5 sec."
       },
       {
         "pieces": 4,
@@ -12664,7 +12664,7 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Frost Trap and Freezing Trap abilities by ${3000/-1000} sec."
+        "description": "Reduces the cooldown on your Frost Trap and Freezing Trap abilities by 3 sec."
       },
       {
         "pieces": 4,
@@ -12672,7 +12672,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Aimed Shot and Multi-Shot abilities by ${1000/-1000} sec."
+        "description": "Reduces the cooldown on your Aimed Shot and Multi-Shot abilities by 1 sec."
       }
     ]
   },
@@ -12694,7 +12694,7 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Intimidating Shout ability by ${30000/-1000} sec."
+        "description": "Reduces the cooldown on your Intimidating Shout ability by 30 sec."
       },
       {
         "pieces": 4,
@@ -12702,7 +12702,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Recklessness ability by ${30000/-1000} sec."
+        "description": "Reduces the cooldown on your Recklessness ability by 30 sec."
       }
     ]
   },
@@ -12724,15 +12724,15 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Intervene ability by ${10000/-1000} sec."
+        "description": "Reduces the cooldown on your Intervene ability by 10 sec."
       },
       {
         "pieces": 4,
-        "description": "Reduces the chance for your melee attacks to be Dodged or Parried by ${12/10}.1%."
+        "description": "Reduces the chance for your melee attacks to be Dodged or Parried by 1.2%."
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Shield Wall ability by ${30000/-1000} sec."
+        "description": "Reduces the cooldown on your Shield Wall ability by 30 sec."
       }
     ]
   },
@@ -12754,7 +12754,7 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Fear Ward spell by ${60000/-1000} sec."
+        "description": "Reduces the cooldown on your Fear Ward spell by 60 sec."
       },
       {
         "pieces": 4,
@@ -12762,7 +12762,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Penance and Prayer of Mending spells by ${1000/-1000} sec."
+        "description": "Reduces the cooldown on your Penance and Prayer of Mending spells by 1 sec."
       }
     ]
   },
@@ -12780,11 +12780,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
-        "description": "Increases the duration of your Shackle Undead spell by ${10000/1000} sec."
+        "description": "Increases the duration of your Shackle Undead spell by 10 sec."
       },
       {
         "pieces": 4,
@@ -12792,7 +12792,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Devouring Plague spell by ${60000/-1000} sec."
+        "description": "Reduces the cooldown on your Devouring Plague spell by 60 sec."
       }
     ]
   },
@@ -12814,7 +12814,7 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Hammer of Justice spell by ${5000/-1000} sec."
+        "description": "Reduces the cooldown on your Hammer of Justice spell by 5 sec."
       },
       {
         "pieces": 4,
@@ -12822,7 +12822,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Judgement spell by ${500/-1000}.1 sec."
+        "description": "Reduces the cooldown on your Judgement spell by 0.5 sec."
       }
     ]
   },
@@ -12844,7 +12844,7 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Blessing of Protection spell by ${30000/-1000} sec."
+        "description": "Reduces the cooldown on your Blessing of Protection spell by 30 sec."
       },
       {
         "pieces": 4,
@@ -12852,7 +12852,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Holy Shock spell by ${1000/-1000} sec."
+        "description": "Reduces the cooldown on your Holy Shock spell by 1 sec."
       }
     ]
   },
@@ -12874,15 +12874,15 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cast time on your Turn Undead spell by ${1500/-1000}.1 sec."
+        "description": "Reduces the cast time on your Turn Undead spell by 1.5 sec."
       },
       {
         "pieces": 4,
-        "description": "Reduces the chance for your melee attacks to be Dodged or Parried by ${12/10}.1%."
+        "description": "Reduces the chance for your melee attacks to be Dodged or Parried by 1.2%."
       },
       {
         "pieces": 5,
-        "description": "Reduces the duration of Forbearance any time you gain it by ${10000/-1000}.1 sec."
+        "description": "Reduces the duration of Forbearance any time you gain it by 10 sec."
       }
     ]
   },
@@ -12912,7 +12912,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Riptide spell by ${1000/-1000} sec."
+        "description": "Reduces the cooldown on your Riptide spell by 1 sec."
       }
     ]
   },
@@ -12942,7 +12942,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Stormstrike ability by ${500/-1000}.1 sec."
+        "description": "Reduces the cooldown on your Stormstrike ability by 0.5 sec."
       }
     ]
   },
@@ -12960,11 +12960,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Earthbind Totem spell by ${2000/-1000} sec."
+        "description": "Reduces the cooldown on your Earthbind Totem spell by 2 sec."
       },
       {
         "pieces": 4,
@@ -12972,7 +12972,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Lava Burst spell by ${1000/-1000} sec."
+        "description": "Reduces the cooldown on your Lava Burst spell by 1 sec."
       }
     ]
   },
@@ -12994,7 +12994,7 @@
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Barkskin spell by ${10000/-1000} sec."
+        "description": "Reduces the cooldown on your Barkskin spell by 10 sec."
       },
       {
         "pieces": 4,
@@ -13002,7 +13002,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Swiftmend spell by ${3000/-1000}.1 sec."
+        "description": "Reduces the cooldown on your Swiftmend spell by 3 sec."
       }
     ]
   },
@@ -13024,15 +13024,15 @@
       },
       {
         "pieces": 3,
-        "description": "Your Rebirth spell is now castable in Bear Form and Dire Bear Form and its cast time is reduced by ${2000/-1000}.1 sec while you are in Bear Form or Dire Bear Form."
+        "description": "Your Rebirth spell is now castable in Bear Form and Dire Bear Form and its cast time is reduced by 2 sec while you are in Bear Form or Dire Bear Form."
       },
       {
         "pieces": 4,
-        "description": "Reduces the chance for your melee attacks to be Dodged or Parried by ${12/10}.1%."
+        "description": "Reduces the chance for your melee attacks to be Dodged or Parried by 1.2%."
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Berserk ability by ${15000/-1000}.1 sec."
+        "description": "Reduces the cooldown on your Berserk ability by 15 sec."
       }
     ]
   },
@@ -13050,11 +13050,11 @@
     "bonuses": [
       {
         "pieces": 2,
-        "description": "Improves your chance to hit by ${1}.1%."
+        "description": "Improves your chance to hit by 1%."
       },
       {
         "pieces": 3,
-        "description": "Reduces the cooldown on your Nature's Grasp spell by ${15000/-1000} sec."
+        "description": "Reduces the cooldown on your Nature's Grasp spell by 15 sec."
       },
       {
         "pieces": 4,
@@ -13062,7 +13062,7 @@
       },
       {
         "pieces": 5,
-        "description": "Increases the duration of your Insect Swarm spell by ${3000/1000} sec."
+        "description": "Increases the duration of your Insect Swarm spell by 3 sec."
       }
     ]
   },
@@ -13084,7 +13084,7 @@
       },
       {
         "pieces": 3,
-        "description": "Your Hibernate spell is now castable in Cat Form and its cast time is reduced by ${1500/-1000}.1 sec while you are in Cat Form, but Hibernate gains a cooldown of ${15000/1000} sec."
+        "description": "Your Hibernate spell is now castable in Cat Form and its cast time is reduced by 1.5 sec while you are in Cat Form, but Hibernate gains a cooldown of 15 sec."
       },
       {
         "pieces": 4,
@@ -13092,7 +13092,7 @@
       },
       {
         "pieces": 5,
-        "description": "Reduces the cooldown on your Tiger's Fury ability by ${3000/-1000}.1 sec."
+        "description": "Reduces the cooldown on your Tiger's Fury ability by 3 sec."
       }
     ]
   },

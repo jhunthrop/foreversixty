@@ -328,7 +328,7 @@
           "ranks": [
             {
               "spell_id": 402000,
-              "description": "Reduces the cooldown on your Power Word: Shield spell by ${4000/-1000} sec and reduces its mana cost by 15%."
+              "description": "Reduces the cooldown on your Power Word: Shield spell by 4 sec and reduces its mana cost by 15%."
             }
           ],
           "spell_id": 402000
@@ -345,11 +345,11 @@
           "ranks": [
             {
               "spell_id": 14750,
-              "description": "Reduces the casting time of your Mana Burn spell by ${500/-1000}.1 sec."
+              "description": "Reduces the casting time of your Mana Burn spell by 0.5 sec."
             },
             {
               "spell_id": 14750,
-              "description": "Reduces the casting time of your Mana Burn spell by ${1000/-1000}.1 sec."
+              "description": "Reduces the casting time of your Mana Burn spell by 1 sec."
             }
           ],
           "spell_id": 14750
@@ -383,23 +383,23 @@
           "ranks": [
             {
               "spell_id": 425280,
-              "description": "Your heals from Flash Heal, Binding Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 2% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by ${1000/-1000} sec."
+              "description": "Your heals from Flash Heal, Binding Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 2% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 1 sec."
             },
             {
               "spell_id": 425280,
-              "description": "Your heals from Flash Heal, Binding Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 4% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by ${2000/-1000} sec."
+              "description": "Your heals from Flash Heal, Binding Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 4% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 2 sec."
             },
             {
               "spell_id": 425280,
-              "description": "Your heals from Flash Heal, Binding Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 6% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by ${3000/-1000} sec."
+              "description": "Your heals from Flash Heal, Binding Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 6% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 3 sec."
             },
             {
               "spell_id": 425280,
-              "description": "Your heals from Flash Heal, Binding Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 8% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by ${4000/-1000} sec."
+              "description": "Your heals from Flash Heal, Binding Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 8% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 4 sec."
             },
             {
               "spell_id": 425280,
-              "description": "Your heals from Flash Heal, Binding Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 10% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by ${5000/-1000} sec."
+              "description": "Your heals from Flash Heal, Binding Heal, Lesser Heal, Heal, Greater Heal, and Penance gain 10% increased critical strike chance when cast on targets with Weakened Soul, and reduce the remaining duration of Weakened Soul on their target by 5 sec."
             }
           ],
           "spell_id": 425280
@@ -1011,11 +1011,11 @@
           "ranks": [
             {
               "spell_id": 15275,
-              "description": "Increases the duration of your Shadow Word: Pain spell by ${3000/1000} sec."
+              "description": "Increases the duration of your Shadow Word: Pain spell by 3 sec."
             },
             {
               "spell_id": 15275,
-              "description": "Increases the duration of your Shadow Word: Pain spell by ${6000/1000} sec."
+              "description": "Increases the duration of your Shadow Word: Pain spell by 6 sec."
             }
           ],
           "spell_id": 15275
@@ -1124,11 +1124,11 @@
           "ranks": [
             {
               "spell_id": 1225139,
-              "description": "Your Mind Flay now deals 10% more damage, gains 5 yards increased range, but slows the target's movement speed by ${50-(15)}%."
+              "description": "Your Mind Flay now deals 10% more damage, gains 5 yards increased range, but slows the target's movement speed by 35%."
             },
             {
               "spell_id": 1225139,
-              "description": "Your Mind Flay now deals 20% more damage, gains 10 yards increased range, but slows the target's movement speed by ${50-(30)}%."
+              "description": "Your Mind Flay now deals 20% more damage, gains 10 yards increased range, but slows the target's movement speed by 20%."
             }
           ],
           "spell_id": 1225139

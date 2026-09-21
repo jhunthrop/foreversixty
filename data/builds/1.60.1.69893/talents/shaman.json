@@ -111,23 +111,23 @@
           "ranks": [
             {
               "spell_id": 16040,
-              "description": "Reduces the cooldown of your Shock spells by ${200/-1000}.1 sec."
+              "description": "Reduces the cooldown of your Shock spells by 0.2 sec."
             },
             {
               "spell_id": 16040,
-              "description": "Reduces the cooldown of your Shock spells by ${400/-1000}.1 sec."
+              "description": "Reduces the cooldown of your Shock spells by 0.4 sec."
             },
             {
               "spell_id": 16040,
-              "description": "Reduces the cooldown of your Shock spells by ${600/-1000}.1 sec."
+              "description": "Reduces the cooldown of your Shock spells by 0.6 sec."
             },
             {
               "spell_id": 16040,
-              "description": "Reduces the cooldown of your Shock spells by ${800/-1000}.1 sec."
+              "description": "Reduces the cooldown of your Shock spells by 0.8 sec."
             },
             {
               "spell_id": 16040,
-              "description": "Reduces the cooldown of your Shock spells by ${1000/-1000}.1 sec."
+              "description": "Reduces the cooldown of your Shock spells by 1 sec."
             }
           ],
           "spell_id": 16040
@@ -244,11 +244,11 @@
           "ranks": [
             {
               "spell_id": 16086,
-              "description": "Increases the damage done by your Fire Nova spell by 10% and reduces its cooldown by ${2000/-1000} sec."
+              "description": "Increases the damage done by your Fire Nova spell by 10% and reduces its cooldown by 2 sec."
             },
             {
               "spell_id": 16086,
-              "description": "Increases the damage done by your Fire Nova spell by 20% and reduces its cooldown by ${4000/-1000} sec."
+              "description": "Increases the damage done by your Fire Nova spell by 20% and reduces its cooldown by 4 sec."
             }
           ],
           "spell_id": 16086
@@ -370,15 +370,15 @@
           "ranks": [
             {
               "spell_id": 16578,
-              "description": "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by ${170/-1000}.2 sec."
+              "description": "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by 0.17 sec."
             },
             {
               "spell_id": 16578,
-              "description": "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by ${330/-1000}.2 sec."
+              "description": "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by 0.33 sec."
             },
             {
               "spell_id": 16578,
-              "description": "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by ${500/-1000}.2 sec."
+              "description": "Reduces the cast time of your Lightning Bolt, Chain Lightning, and Lava Burst spells by 0.5 sec."
             }
           ],
           "spell_id": 16578
@@ -507,11 +507,11 @@
           "ranks": [
             {
               "spell_id": 16258,
-              "description": "Increases the amount of damage reduced by your Stoneskin Totem and Windwall Totem by 10% and reduces the cooldown of your Grounding Totem by ${1000/-1000} sec."
+              "description": "Increases the amount of damage reduced by your Stoneskin Totem and Windwall Totem by 10% and reduces the cooldown of your Grounding Totem by 1 sec."
             },
             {
               "spell_id": 16258,
-              "description": "Increases the amount of damage reduced by your Stoneskin Totem and Windwall Totem by 20% and reduces the cooldown of your Grounding Totem by ${2000/-1000} sec."
+              "description": "Increases the amount of damage reduced by your Stoneskin Totem and Windwall Totem by 20% and reduces the cooldown of your Grounding Totem by 2 sec."
             }
           ],
           "spell_id": 16258
@@ -553,11 +553,11 @@
           "ranks": [
             {
               "spell_id": 16262,
-              "description": "Reduces the cast time of your Ghost Wolf spell by ${1000/-1000}.1 sec, and Ghost Wolf may be used indoors."
+              "description": "Reduces the cast time of your Ghost Wolf spell by 1 sec, and Ghost Wolf may be used indoors."
             },
             {
               "spell_id": 16262,
-              "description": "Reduces the cast time of your Ghost Wolf spell by ${3000/-1000}.1 sec, and Ghost Wolf may be used indoors."
+              "description": "Reduces the cast time of your Ghost Wolf spell by 3 sec, and Ghost Wolf may be used indoors."
             }
           ],
           "spell_id": 16262
@@ -866,23 +866,23 @@
           "ranks": [
             {
               "spell_id": 16182,
-              "description": "Reduces the casting time of your Healing Wave spell by ${100/-1000}.1 sec."
+              "description": "Reduces the casting time of your Healing Wave spell by 0.1 sec."
             },
             {
               "spell_id": 16182,
-              "description": "Reduces the casting time of your Healing Wave spell by ${200/-1000}.1 sec."
+              "description": "Reduces the casting time of your Healing Wave spell by 0.2 sec."
             },
             {
               "spell_id": 16182,
-              "description": "Reduces the casting time of your Healing Wave spell by ${300/-1000}.1 sec."
+              "description": "Reduces the casting time of your Healing Wave spell by 0.3 sec."
             },
             {
               "spell_id": 16182,
-              "description": "Reduces the casting time of your Healing Wave spell by ${400/-1000}.1 sec."
+              "description": "Reduces the casting time of your Healing Wave spell by 0.4 sec."
             },
             {
               "spell_id": 16182,
-              "description": "Reduces the casting time of your Healing Wave spell by ${500/-1000}.1 sec."
+              "description": "Reduces the casting time of your Healing Wave spell by 0.5 sec."
             }
           ],
           "spell_id": 16182
@@ -1015,11 +1015,11 @@
           "ranks": [
             {
               "spell_id": 16184,
-              "description": "Reduces the cooldown of your Reincarnation spell by ${600000/-60000} min, increases your maximum health by 2%, and increases the amount of health and Mana you reincarnate with by an additional 10%."
+              "description": "Reduces the cooldown of your Reincarnation spell by 10 min, increases your maximum health by 2%, and increases the amount of health and Mana you reincarnate with by an additional 10%."
             },
             {
               "spell_id": 16184,
-              "description": "Reduces the cooldown of your Reincarnation spell by ${1200000/-60000} min, increases your maximum health by 4%, and increases the amount of health and Mana you reincarnate with by an additional 20%."
+              "description": "Reduces the cooldown of your Reincarnation spell by 20 min, increases your maximum health by 4%, and increases the amount of health and Mana you reincarnate with by an additional 20%."
             }
           ],
           "spell_id": 16184
