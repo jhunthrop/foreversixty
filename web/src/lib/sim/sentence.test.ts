@@ -93,26 +93,30 @@ describe('summarySentence', () => {
     );
   });
 
-  it('falls back to a humanised label rather than the raw key or a blank when the build has no name', () => {
+  it('falls back to prose rather than the raw key or the id itself when the build has no name', () => {
     const base = twoAbilities();
     const actor = base.damage_done[0];
     const one: Summary = {
       ...withoutAuras(base),
       damage_done: [{ ...actor, total: 400, abilities: [actor.abilities[0]] }],
     };
-    expect(summarySentence(one, null)).toBe('Spell 25286 is 100% of your damage.');
+    expect(summarySentence(one, null)).toBe('An unnamed spell is 100% of your damage.');
   });
 
-  it('never emits a raw spell:/item:/dungeon: key in the sentence, resolved or not', () => {
+  it('never emits a raw spell:/item:/dungeon: key in the sentence, resolved or not, and never the bare id either', () => {
     // dps-minmaxer review round 2, D48: "off-hand white hits and spell:20662 are 78% of
     // your damage" -- the exact defect this pins down, both resolved and unresolved.
+    // 2026-09-21 result-page review round 2: D48's own fix, "Spell 20662", turned out to
+    // still be an id reaching a player -- this also pins that the unresolved fallback
+    // never contains a bare number where a name belongs.
     const resolved = summarySentence(twoAbilities(), names);
     expect(resolved).not.toMatch(/\b(spell|item|dungeon):/);
 
     const unresolved = summarySentence(twoAbilities(), null);
     expect(unresolved).not.toMatch(/\b(spell|item|dungeon):/);
+    expect(unresolved).not.toMatch(/\bSpell \d+\b/);
     expect(unresolved).toBe(
-      'Spell 25286 and white hits are 61% of your damage; Spell 12974 is up 78% of the fight.',
+      'An unnamed spell and white hits are 61% of your damage; An unnamed spell is up 78% of the fight.',
     );
   });
 
