@@ -32,9 +32,22 @@ const raidsOneDateLabel = new Intl.DateTimeFormat('en-GB', {
 const FURY = `FS1:${activeBuild.build}:warrior:orc:0/5530515/0:head=12640,main_hand=12784`;
 const FURY_BLACKSMITH = `${FURY}|professions=blacksmithing`;
 
+/**
+ * A bare `/sim/drops` now restores the stored current-character pointer (current-character
+ * spec section 1: every /sim* page, including the tools island, bootstraps from it) --
+ * calling this a second time in one test, after an earlier load already wrote that pointer,
+ * lands on the loaded `CharacterStrip` rather than the paste box `SourceSwitcher` shows.
+ * "Change source" is that strip's own way back to the paste box (`sim-change-source`), so
+ * this reaches for it whenever the restore beat the fresh paste this call wants instead of
+ * asserting the paste box is unconditionally the first thing on the page.
+ */
 async function loadDrops(page: Page, code = FURY): Promise<void> {
   await page.goto('/sim/drops');
-  await page.getByTestId('sim-addon-input').fill(code);
+  const addonInput = page.getByTestId('sim-addon-input');
+  const changeSource = page.getByTestId('sim-change-source');
+  await expect(addonInput.or(changeSource)).toBeVisible();
+  if (await changeSource.isVisible()) await changeSource.click();
+  await addonInput.fill(code);
   await page.getByTestId('sim-addon-load').click();
   await expect(page.getByTestId('sim-source-picker')).toBeVisible();
 }
@@ -62,9 +75,36 @@ const STUB_SIM_ID = 'zzzzzzzzzzz2';
  * proving "Best here" picks the leader rather than merely the only or first member), and an
  * exact tie at the already-equipped Arcanite Reaper (not an upgrade).
  */
+// `request.character` (required on the real `SimRequest` shape, `types.ts`) is what
+// `combos.ts`'s `planItHref` reads to build each row's "Plan it" link -- omitted here
+// before that link existed, a hand-built server-run stub with no `character` crashed
+// `DropResults.svelte` at render (`gearForCombo` reading `.gear` off `undefined`). Mirrors
+// FURY's own gear (head=12640, main_hand=12784) plus finger1=19325, the item one of this
+// stub's own combos names as an upgrade over it.
+const STUB_CHARACTER = {
+  name: 'Fury',
+  race: 'orc',
+  class: 'warrior',
+  level: 60,
+  talents: '0-5530515-',
+  gear: [
+    { slot: 'head', item_id: 12640 },
+    { slot: 'main_hand', item_id: 12784 },
+    { slot: 'finger1', item_id: 19325 },
+  ],
+  buffs: [],
+  consumes: [],
+};
+
 const STUB_RESULT = {
   engine_version: 'test-engine',
-  request: { engine_version: 'test-engine', spec: 'warrior-fury', iterations: 3000, random_seed: 0 },
+  request: {
+    engine_version: 'test-engine',
+    spec: 'warrior-fury',
+    iterations: 3000,
+    random_seed: 0,
+    character: STUB_CHARACTER,
+  },
   lane: 'server',
   dps: { mean: 1000, stddev: 50, error: 5, min: 900, max: 1100 },
   iterations_run: 3000,
@@ -241,10 +281,17 @@ test('a drop pins into Top Gear, carrying its origin in the URL', async ({ page 
   await page.getByTestId('sim-drops-pin-finger1:19325').click();
   await expect(page).toHaveURL(/\/sim\/gear\?.*pin=19325.*pinOrigin=drop.*pinName=Ragnaros/);
   // No ?source=/?ref= rode along with the pin (the addon code was typed by hand, not
-  // arrived at through a source-carrying link), so Top Gear opens on the switcher rather
-  // than a character -- the pin itself is still held (ToolsView's own effect) for the
-  // moment one loads.
-  await expect(page.getByTestId('sim-tools-empty')).toBeVisible();
+  // arrived at through a source-carrying link) -- but `loadDrops` above already pasted FURY,
+  // which wrote the current-character pointer (current-character spec section 1: every
+  // successful load stamps it). A bare /sim/gear now restores that pointer rather than
+  // opening empty, so the pin lands on the restored character, not the switcher (updated
+  // from this test's pre-pointer assumption that nothing but the URL could carry a
+  // character across the navigation).
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+  const row = page.getByTestId('sim-candidate-finger1-19325');
+  await expect(row).toBeVisible();
+  await expect(row.getByRole('checkbox')).toBeChecked();
+  await expect(row).toContainText(bulkCopy.pinned);
 });
 
 test('a pin arriving with a source-carrying link lands ticked, upgrading an existing row rather than duplicating it', async ({

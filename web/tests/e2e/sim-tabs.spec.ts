@@ -134,21 +134,34 @@ test.describe('the simulator tab strip', () => {
     expect(query.get('source'), 'no source= for a ref-less character').toBeNull();
     expect(query.get('ref'), 'no ref= for a ref-less character').toBeNull();
 
-    // Top Gear cannot bootstrap from ?code= (ToolsView.svelte has never read it), so it
-    // stays bare rather than carrying a query it cannot itself honour.
-    await expect(page.getByTestId('sim-nav-tab-gear')).toHaveAttribute('href', '/sim/gear');
+    // Top Gear now bootstraps from ?code= too (current-character spec section 1: the tools
+    // island gained its own loadCode, `SIM_TABS`' own `supportsCode` is true on all six as
+    // of 2026-09-21) -- it carries the same fallback code as Quick Sim rather than staying
+    // bare.
+    const gear = page.getByTestId('sim-nav-tab-gear');
+    await expect(gear).toHaveAttribute('href', /^\/sim\/gear\?code=/);
+    const gearHref = await gear.getAttribute('href');
+    const gearQuery = new URL(gearHref ?? '', page.url()).searchParams;
+    expect(gearQuery.get('source'), 'no source= for a ref-less character').toBeNull();
+    expect(gearQuery.get('ref'), 'no ref= for a ref-less character').toBeNull();
 
     // Proves the Quick Sim link, once followed, genuinely restores the character -- not
     // merely that it carries a code= parameter.
     await page.goto(quickSimHref ?? '/sim');
     await expect(page.getByTestId('sim-character')).toBeVisible();
     await expect(page.getByTestId('sim-character-descriptor')).toContainText('Fury Warrior');
+
+    // Same proof for the tools island's own `?code=` bootstrap (ToolsView.svelte's
+    // `bootstrapCharacter`, `runBootstrapRestore` with `storeHandlesUrl: false`).
+    await page.goto(gearHref ?? '/sim/gear');
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(page.getByTestId('sim-character-descriptor')).toContainText('Fury Warrior');
   });
 
-  // The tools island's own `characterCode` fallback (bulk-store.svelte.ts): from /sim/gear,
-  // the four tools tabs stay bare (none of them read ?code=) while the two SimView-served
-  // tabs on the same strip still get the working fallback link.
-  test('from the tools island, only the SimView-served tabs get the ?code= fallback', async ({ page }) => {
+  // The tools island's own `characterCode` fallback (bulk-store.svelte.ts): every tab on
+  // the strip, including the other three tools tabs, now reads ?code= (current-character
+  // spec section 1) -- `SIM_TABS`' own `supportsCode` is true on all six.
+  test('from the tools island, every tab gets the ?code= fallback', async ({ page }) => {
     await page.goto('/sim/gear');
     await page.getByTestId('sim-addon-input').fill(FURY);
     await page.getByTestId('sim-addon-load').click();
@@ -159,11 +172,12 @@ test.describe('the simulator tab strip', () => {
     const specsHref = await specs.getAttribute('href');
     expect(new URL(specsHref ?? '', page.url()).searchParams.get('source')).toBeNull();
 
-    for (const id of ['gear', 'drops', 'talents', 'weights']) {
-      await expect(
-        page.getByTestId(`sim-nav-tab-${id}`),
-        `${id} cannot bootstrap from ?code=`,
-      ).toHaveAttribute('href', `/sim/${id}`);
+    for (const id of ['drops', 'talents', 'weights']) {
+      const tab = page.getByTestId(`sim-nav-tab-${id}`);
+      await expect(tab, `${id} carries the ?code= fallback`).toHaveAttribute(
+        'href',
+        new RegExp(`^/sim/${id}\\?code=`),
+      );
     }
   });
 });
