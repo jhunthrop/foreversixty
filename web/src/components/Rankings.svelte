@@ -22,12 +22,15 @@
   } from '../lib/report/format';
   import { titleize } from '../lib/report/og-meta';
   import {
+    fetchEncounters,
     fetchGuildRankings,
     fetchRankings,
+    type EncounterOption,
     type GuildRankingRow,
     type RankingRow,
     type RankingsPage,
   } from '../lib/rankings/api';
+  import { encounterPickerCopy } from '../lib/rankings/copy';
   import { PHASES } from '../lib/rankings/phases';
   import {
     FACTIONS,
@@ -35,6 +38,7 @@
     RANKING_METRICS,
     parseRankingsState,
     rankingsSearch,
+    requiresEncounter,
     type RankingsState,
   } from '../lib/rankings/url';
   import { simCopy } from '../lib/sim/copy';
@@ -51,7 +55,9 @@
         ? ''
         : (/^\/rankings\/([a-z0-9-]{1,64})\/?$/.exec(window.location.pathname)?.[1] ?? ''),
   );
-  const encounter = $derived(titleize(resolvedSlug));
+  // Bare /rankings names no encounter yet, so the page says what it is rather than
+  // rendering an empty heading while the picker below offers what does exist.
+  const encounter = $derived(resolvedSlug === '' ? 'Rankings' : titleize(resolvedSlug));
   let state = $state<RankingsState>(
     parseRankingsState(typeof window === 'undefined' ? '' : window.location.search),
   );
@@ -59,6 +65,27 @@
   let guildRows = $state<GuildRankingRow[]>([]);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let error = $state('');
+
+  /**
+   * A bare /rankings with no encounter in the URL cannot ask GET /v1/rankings or
+   * /v1/rankings/guilds for a board that needs one (requiresEncounter) -- there is
+   * nothing to name. Rather than firing that request and rendering its 400, the board
+   * this filter combination would need is swapped for the encounter picker below.
+   */
+  const needsPicker = $derived(resolvedSlug === '' && requiresEncounter(state));
+  let encounters = $state<EncounterOption[]>([]);
+  let encountersStatus = $state<'idle' | 'loading' | 'ready' | 'failed'>('idle');
+
+  async function loadEncounters(): Promise<void> {
+    encountersStatus = 'loading';
+    try {
+      const result = await fetchEncounters();
+      encounters = result.rows;
+      encountersStatus = 'ready';
+    } catch {
+      encountersStatus = 'failed';
+    }
+  }
 
   const select = 'border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9';
 
@@ -82,6 +109,15 @@
    * fields, can change at once.
    */
   $effect(() => {
+    if (needsPicker) {
+      // Nothing to fetch until an encounter is chosen: clear any board this filter
+      // combination is not going to answer for, and read the picker's own list once.
+      page = null;
+      guildRows = [];
+      status = 'ready';
+      if (encountersStatus === 'idle') void loadEncounters();
+      return;
+    }
     const requested = state;
     status = 'loading';
     const load =
@@ -265,7 +301,39 @@
     </label>
   </div>
 
-  {#if status === 'loading'}
+  {#if needsPicker}
+    <div data-testid="encounter-picker" class="flex flex-col gap-3">
+      {#if encountersStatus === 'idle' || encountersStatus === 'loading'}
+        <p class="text-muted text-[14px]">{encounterPickerCopy.loading}</p>
+      {:else if encountersStatus === 'failed'}
+        <p class="text-[14px]" role="alert">{encounterPickerCopy.failed}</p>
+      {:else if encounters.length === 0}
+        <p class="text-muted text-[14px]" data-testid="rankings-no-encounters">
+          {encounterPickerCopy.noneYet}
+        </p>
+        <p class="text-muted text-[14px]">
+          {encounterPickerCopy.tryGuildsProgress}
+          <button
+            type="button"
+            class={rowLink}
+            data-testid="rankings-try-guilds"
+            onclick={() => patch({ board: 'guild', kind: 'progress' })}
+          >
+            {state.board === 'guild' ? encounterPickerCopy.progressButton : encounterPickerCopy.guildsButton}
+          </button>
+        </p>
+      {:else}
+        <h2 class="label text-muted">{encounterPickerCopy.heading}</h2>
+        <ul class="flex flex-col" data-testid="encounter-picker-rows">
+          {#each encounters as option (option.id)}
+            <li class="border-line-soft border-b py-2 text-[14px]">
+              <a class={rowLink} href={`/rankings/${option.slug}${rankingsSearch(state)}`}>{option.name}</a>
+            </li>
+          {/each}
+        </ul>
+      {/if}
+    </div>
+  {:else if status === 'loading'}
     <p class="text-muted text-[14px]">Loading rankings.</p>
   {:else if status === 'failed'}
     <p class="text-[14px]" role="alert" data-testid="rankings-error">{error}</p>

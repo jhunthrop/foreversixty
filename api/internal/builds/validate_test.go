@@ -128,6 +128,27 @@ func TestValidate(t *testing.T) {
 			want: map[string]string{"gear.trinket2": "Only one Briarwood Reed can be equipped"},
 		},
 		{
+			// Regression for a reviewer's Share of the Simfury test character
+			// (docs/superpowers/journeys/profiles.md), refused 400 "gear
+			// invalid" because Grand Marshal's Handaxe (item 18827, a
+			// one-handed weapon the data pipeline tags slot "main_hand")
+			// was placed in off_hand. A one-hander belongs in either hand.
+			name: "rule 6 pass: a one-handed main_hand weapon in the off_hand slot",
+			in: Input{ClassID: 1, RaceID: 1, TreeVersion: "test-1",
+				Gear: map[string]int{"main_hand": 20501, "off_hand": 18827}},
+		},
+		{
+			name: "rule 6 fail: a two-handed weapon may not go in the off_hand slot",
+			in:   Input{ClassID: 1, RaceID: 1, TreeVersion: "test-1", Gear: map[string]int{"off_hand": 20500}},
+			want: map[string]string{"gear.off_hand": "Sulfuron Hammer cannot go in the off_hand slot"},
+		},
+		{
+			name: "rule 6 fail: the same unique one-handed weapon dual-wielded",
+			in: Input{ClassID: 1, RaceID: 1, TreeVersion: "test-1",
+				Gear: map[string]int{"main_hand": 20501, "off_hand": 20501}},
+			want: map[string]string{"gear.off_hand": "Only one Ashkandi can be equipped"},
+		},
+		{
 			name: "title pass: sixty characters",
 			in:   Input{ClassID: 1, RaceID: 1, TreeVersion: "test-1", Title: longTitle[:60]},
 		},

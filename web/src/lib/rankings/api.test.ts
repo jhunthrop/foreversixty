@@ -5,6 +5,7 @@ import {
   RankingsError,
   encounterSlug,
   fetchCharacter,
+  fetchEncounters,
   fetchGuild,
   fetchRankings,
 } from './api';
@@ -106,6 +107,30 @@ describe('character and guild', () => {
 
     await fetchGuild({ region: 'eu', ruleset: 'normal', slug: 'the-last-watch' }, API);
     expect((upstream.mock.calls[0][0] as Request).url).toBe(`${API}/v1/guilds/eu/normal/the-last-watch`);
+  });
+});
+
+describe('fetchEncounters', () => {
+  it('reads the encounter list the /rankings picker offers', async () => {
+    const upstream = vi.fn<GlobalFetch>(async () =>
+      envelope({ rows: [{ id: 9001, name: 'Warden Kelthas', slug: 'warden-kelthas' }] }),
+    );
+    vi.stubGlobal('fetch', upstream);
+
+    const { rows } = await fetchEncounters(API);
+
+    expect(rows).toEqual([{ id: 9001, name: 'Warden Kelthas', slug: 'warden-kelthas' }]);
+    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${API}/v1/encounters`);
+  });
+
+  it('turns a failure into a RankingsError, like every other read here', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => {
+        throw new TypeError('offline');
+      }),
+    );
+    await expect(fetchEncounters(API)).rejects.toBeInstanceOf(RankingsError);
   });
 });
 

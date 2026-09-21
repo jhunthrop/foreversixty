@@ -30,6 +30,7 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/rankings", s.rankings)
 	mux.HandleFunc("GET /v1/rankings/percentile", s.percentile)
 	mux.HandleFunc("GET /v1/rankings/guilds", s.guildRankings)
+	mux.HandleFunc("GET /v1/encounters", s.encounters)
 	mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}", s.character)
 	mux.HandleFunc("GET /v1/guilds/{region}/{ruleset}/{name}", s.guild)
 }
@@ -227,6 +228,20 @@ func (s *Service) guildRankings(w http.ResponseWriter, r *http.Request) {
 	rows, err := s.Store.GuildRankings(r.Context(), encounter, kind, at)
 	if err != nil {
 		s.fail(w, r, "guild rankings", err, "could not read the guild rankings just now")
+		return
+	}
+	cache(w)
+	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"rows": rows})
+}
+
+// encounters lists every encounter any report has ever ranked, for the
+// /rankings picker: a visitor with no encounter to name in the URL
+// cannot ask GET /v1/rankings for one, so the picker reads this route
+// first to offer the ones that exist.
+func (s *Service) encounters(w http.ResponseWriter, r *http.Request) {
+	rows, err := s.Store.Encounters(r.Context())
+	if err != nil {
+		s.fail(w, r, "encounters", err, "could not read the encounters just now")
 		return
 	}
 	cache(w)

@@ -224,3 +224,17 @@ func (h *harness) seedFight(index int, encounterID int64, start, end int64) {
 		h.t.Fatal(err)
 	}
 }
+
+// seedReport inserts a report row directly, owned by the harness's
+// actor, bypassing POST /v1/reports so a test can set title, zone,
+// visibility, status and created_at exactly rather than relying on
+// wall-clock ordering.
+func (h *harness) seedReport(id, title, zone, visibility, status string, createdAt time.Time) {
+	h.t.Helper()
+	if _, err := h.store.Pool.Exec(context.Background(),
+		`insert into reports (id, owner_id, title, visibility, zone, status, created_at)
+		 values ($1, $2, $3, $4, $5, $6, $7)`,
+		id, h.owner, title, visibility, zone, status, createdAt); err != nil {
+		h.t.Fatal(err)
+	}
+}

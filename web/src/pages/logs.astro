@@ -7,10 +7,12 @@
 import Base from '../layouts/Base.astro';
 import Account from '../components/Account.svelte';
 import Panel from '../components/Panel.astro';
+import RecentReports from '../components/RecentReports.svelte';
 import ToolCard from '../components/ToolCard.astro';
 import Upload from '../components/Upload.svelte';
 import companion from '../data/companion.json';
 import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+import { logsFraming } from '../lib/reports/copy';
 
 const download = (asset: string): string => `${companion.releasesUrl}/latest/download/${asset}`;
 
@@ -72,6 +74,9 @@ const blockTitle = 'label text-muted';
         Every pull your raid logs, broken down and ranked: damage, healing, deaths, buffs, casts and threat,
         fight by fight. There are two ways to get a log in.
       </p>
+      <p class="text-muted max-w-[720px] text-[14px] leading-relaxed" data-testid="logs-framing">
+        {logsFraming}
+      </p>
     </header>
 
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2" data-testid="logs-entries">
@@ -132,6 +137,12 @@ const blockTitle = 'label text-muted';
         </Panel>
       </div>
     </div>
+
+    <Panel title="Recent public reports">
+      <div class="p-4 md:p-5">
+        <RecentReports client:visible heading={false} />
+      </div>
+    </Panel>
 
     <Panel title="Your reports">
       <div class="p-4 md:p-5">
