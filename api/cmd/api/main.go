@@ -20,6 +20,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/parse"
@@ -269,6 +270,11 @@ func serve(log *slog.Logger) error {
 	if err := partitions.Run(ctx); err != nil {
 		return fmt.Errorf("partitions: %w", err)
 	}
+	guildStore := &guilds.Store{Pool: pool}
+	membership := &guilds.MembershipJob{Store: guildStore, Log: log}
+	if err := membership.Run(ctx); err != nil {
+		return fmt.Errorf("guilds membership sweep: %w", err)
+	}
 
 	buildStore := &builds.Store{Pool: pool, Log: log}
 	views := builds.NewViews(buildStore, log)
@@ -322,6 +328,7 @@ func serve(log *slog.Logger) error {
 		Addon: &addon.Service{
 			Store: &addon.Store{Pool: pool}, Builds: buildStore, Data: treeData, Log: log,
 		},
+		Guilds:           &guilds.Service{Store: guildStore, Accounts: authStore, Log: log},
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 
