@@ -201,6 +201,85 @@ func TestFastKeepsAQuarterThenTheTopTen(t *testing.T) {
 	// path on which removing it changes next.Ran or third.Ran at all.
 }
 
+// talentsFastPlanOf is an n-loadout talents-mode stage at fast precision --
+// the precision a signed-out browser-lane run actually uses (BulkRunBar's
+// own default), and the only ladder whose first cut (Fraction: 0.25) can
+// narrow a handful of candidates down to fewer than all of them.
+func talentsFastPlanOf(t *testing.T, n int) (api.SimRequest, StageRequests) {
+	t.Helper()
+	req := base()
+	final, _ := api.FinalIterations(api.PrecisionFast)
+	req.Iterations = final
+	req.Bulk = &api.BulkSpec{Mode: api.KindTalents, Precision: api.PrecisionFast, Cap: api.Caps[api.LaneServer]}
+	talents := []string{
+		"30305001302-05050005525010051",
+		"20305001302-05050005525010051",
+		"10305001302-05050005525010051",
+	}
+	for i := 0; i < n; i++ {
+		req.Bulk.Talents = append(req.Bulk.Talents, api.TalentLoadout{
+			Name: fmt.Sprintf("loadout-%d", i), Talents: talents[i%len(talents)],
+		})
+	}
+	stage, err := Plan(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(stage.Combos) != n {
+		t.Fatalf("planned %d combinations, want %d", len(stage.Combos), n)
+	}
+	return req, stage
+}
+
+// dps-minmaxer round 3, finding 5 (review.md near line 187): a build added
+// through ADD A BUILD gets its own credible DPS number but never joins the
+// ranked table. Root cause is here, not in the web layer: talent compare
+// submits exactly the loadouts the player ticked -- a handful of builds
+// they chose on purpose, never hundreds of auto-generated gear
+// combinations -- but Rank ran every mode through the SAME survivor cut
+// Top Gear needs to narrow a big combinatorial search. Fast precision's
+// first cut keeps a quarter of the field; at two candidates that rounds
+// to one, so a comparison build simply worse than the current one (not
+// noise -- 800+ DPS below, far past the cut's 2-SE slack) never reaches
+// stage 2, and the final result reports only the build that survived,
+// with nothing to say the other was ever asked for. The web-side fix
+// (customLoadouts, sim-pool-quality's earlier commit) made the pasted
+// build visible and ticked; this is why ticking it still was not enough.
+func TestFastNeverCutsATalentsCandidate(t *testing.T) {
+	req, stage := talentsFastPlanOf(t, 2)
+	// equipped, loadout-0 (ties the equipped set), loadout-1 (drastically
+	// worse -- an arms build simmed on deep-fury gear, the production
+	// repro's own shape).
+	means := []float64{1185, 1185, 400}
+	next, final, err := Rank(req, stage, resultsFor(stage, means, 1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if final != nil {
+		t.Fatal("stage 1 of 3 produced a final result")
+	}
+	if len(next.Combos) != 2 {
+		t.Fatalf("kept %d of 2 talent loadouts after the fast ladder's first cut, want both -- "+
+			"every loadout a player ticked must reach the final result, not just the survivors",
+			len(next.Combos))
+	}
+}
+
+// The same cut still applies in full to gear mode at the identical
+// precision and candidate count: this is a talents-mode exemption, not a
+// change to what Top Gear's own search-and-narrow cut does.
+func TestFastStillCutsGearCandidates(t *testing.T) {
+	req, stage := planOf(t, api.PrecisionFast, 2)
+	means := []float64{1185, 1185, 400}
+	next, _, err := Rank(req, stage, resultsFor(stage, means, 1))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(next.Combos) != 1 {
+		t.Fatalf("kept %d of 2 gear candidates, want the cut to narrow to 1 as before", len(next.Combos))
+	}
+}
+
 // rank.go's own clone of stage.Ran only has anything to protect
 // against if stage.Ran itself carries spare capacity - never true
 // along the public path, since stageRequests always hands one back at
