@@ -203,6 +203,72 @@ func TestResultsWeightsTheDamageTableByIterationShare(t *testing.T) {
 	}
 }
 
+// Defect 1 (2026-09-21 result-page review): a browser run splits across
+// several workers, each producing its own self-consistent part - part
+// P's own Summary.DurationMS is exactly what makes
+// "part P's table total / part P's duration" equal "part P's own DPS
+// mean" (sim/adapter's deriveDurationMS guarantees that for one part).
+// But two parts of a real split run almost never share a mean DPS or a
+// fight length - each ran its own iterations with its own encounter
+// variation - so part 0's duration is answering a question about part
+// 0, not about the combined run. weightSummaries already re-weighs the
+// damage table and Results already pools the DPS mean; neither touched
+// Summary.DurationMS, which is why it was still part 0's after
+// combining, and the combined table's implied rate ("total / duration")
+// disagreed with the combined headline exactly the way the production
+// report did (639 headline against 633.6 in the table).
+func TestResultsSummaryDurationAgreesWithThePooledHeadline(t *testing.T) {
+	// Two shards, each individually self-consistent (own total / own
+	// duration == own DPS mean), with different means and different
+	// fight lengths - what two real shards of a variable-length
+	// encounter look like.
+	parts := []api.SimResult{
+		{
+			IterationsRun: 1500,
+			DPS:           api.Estimate{Mean: 650},
+			Summary: summary.Summary{
+				DurationMS: 179000, // 116350 / 179.000s = 650 DPS exactly.
+				DamageDone: []summary.Actor{{
+					GUID: "sim-player", Total: 116350, Effective: 116350,
+					Abilities: []summary.Ability{{SpellID: 1, Total: 116350, Effective: 116350}},
+				}},
+			},
+		},
+		{
+			IterationsRun: 1500,
+			DPS:           api.Estimate{Mean: 600},
+			Summary: summary.Summary{
+				DurationMS: 181500, // 108900 / 181.500s = 600 DPS exactly.
+				DamageDone: []summary.Actor{{
+					GUID: "sim-player", Total: 108900, Effective: 108900,
+					Abilities: []summary.Ability{{SpellID: 1, Total: 108900, Effective: 108900}},
+				}},
+			},
+		},
+	}
+	got, err := Results(parts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got.Summary.DurationMS <= 0 {
+		t.Fatalf("Summary.DurationMS = %d, want a positive duration", got.Summary.DurationMS)
+	}
+	var tableTotal int64
+	for _, a := range got.Summary.DamageDone {
+		tableTotal += a.Total
+	}
+	tablePerSec := float64(tableTotal) / (float64(got.Summary.DurationMS) / 1000)
+	// Same bound sim/adapter's TestHeadlineEqualsTable uses: the
+	// integer-millisecond field is the only source of slack once the
+	// duration is actually derived from the combined total and mean.
+	const durationTolerance = 0.01
+	if diff := math.Abs(tablePerSec - got.DPS.Mean); diff > durationTolerance {
+		t.Errorf("combined table damage/sec = %v, combined headline DPS.Mean = %v, disagree by %v (want <= %v); "+
+			"Summary.DurationMS must be re-derived from the MERGED table and the POOLED mean, not copied from part 0 (%d)",
+			tablePerSec, got.DPS.Mean, diff, durationTolerance, parts[0].Summary.DurationMS)
+	}
+}
+
 // One part is the whole run: its summary is returned untouched rather
 // than scaled by a weight of one, which would round every row.
 func TestResultsWithOnePartKeepsItsSummary(t *testing.T) {
