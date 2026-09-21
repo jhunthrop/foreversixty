@@ -63,6 +63,8 @@ export const guildSettingsCopy = {
   rotateButton: 'Rotate invite link',
   tokenShownOnce: 'This link is shown once. Copy it now.',
   saved: 'Saved.',
+  // Shown when a save or rotate action itself fails (as opposed to the initial load).
+  actionFailed: 'That did not save; try again.',
 } as const;
 
 export const guildJoinCopy = {

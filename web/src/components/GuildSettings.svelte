@@ -24,6 +24,7 @@
   let settings = $state<GuildSettingsData | null>(null);
   let status = $state<'loading' | 'ready' | 'forbidden' | 'failed'>('loading');
   let notice = $state('');
+  let error = $state('');
   let rotated = $state<{ token: string; url: string } | null>(null);
   let busy = $state(false);
 
@@ -51,36 +52,44 @@
     void load();
   });
 
-  async function onSave(
-    field: 'default_visibility' | 'officer_max_rank_index',
-    value: string,
-  ): Promise<void> {
-    if (guildId === null) return;
+  /**
+   * Mirrors GuildClaim.svelte's `run()`: every action below goes through here so a
+   * rejected `updateGuildSettings`/`rotateInvite` call (network failure, validation
+   * error, 500) always ends in a visible `error` message rather than `busy` silently
+   * resetting with nothing shown -- the failure-swallowing bug this wrapper exists to
+   * rule out.
+   */
+  async function run(action: () => Promise<void>): Promise<void> {
     busy = true;
     notice = '';
+    error = '';
     try {
+      await action();
+    } catch (thrown) {
+      error = thrown instanceof Error ? thrown.message : guildSettingsCopy.actionFailed;
+    } finally {
+      busy = false;
+    }
+  }
+
+  const onSave = (field: 'default_visibility' | 'officer_max_rank_index', value: string): void =>
+    void run(async () => {
+      if (guildId === null) return;
       const patch =
         field === 'default_visibility'
           ? { default_visibility: value as GuildVisibility }
           : { officer_max_rank_index: Number(value) };
       settings = await updateGuildSettings(guildId, patch);
       notice = guildSettingsCopy.saved;
-    } finally {
-      busy = false;
-    }
-  }
+    });
 
-  async function onRotate(): Promise<void> {
-    if (guildId === null) return;
-    busy = true;
-    try {
+  const onRotate = (): void =>
+    void run(async () => {
+      if (guildId === null) return;
       const result = await rotateInvite(guildId);
       rotated = { token: result.token, url: result.url };
       if (settings !== null) settings = { ...settings, invite: { rotated_at: result.rotated_at } };
-    } finally {
-      busy = false;
-    }
-  }
+    });
 </script>
 
 <div class="flex flex-col gap-6" data-testid="guild-settings">
@@ -100,8 +109,7 @@
         id="guild-visibility"
         class="border-line-warm bg-raised rounded-control text-text h-11 w-fit px-3 text-[14px]"
         value={settings.default_visibility}
-        onchange={(event) =>
-          void onSave('default_visibility', (event.currentTarget as HTMLSelectElement).value)}
+        onchange={(event) => onSave('default_visibility', (event.currentTarget as HTMLSelectElement).value)}
         disabled={busy}
         data-testid="guild-visibility-select"
       >
@@ -121,7 +129,7 @@
         class="border-line-warm bg-raised rounded-control text-text h-11 w-24 px-3 text-[14px]"
         value={settings.officer_max_rank_index}
         onchange={(event) =>
-          void onSave('officer_max_rank_index', (event.currentTarget as HTMLInputElement).value)}
+          onSave('officer_max_rank_index', (event.currentTarget as HTMLInputElement).value)}
         disabled={busy}
         data-testid="guild-officer-threshold-input"
       />
@@ -131,7 +139,7 @@
       <p class="text-muted text-[13px]">{guildSettingsCopy.inviteWarning}</p>
       <button
         class="border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
-        onclick={() => void onRotate()}
+        onclick={onRotate}
         disabled={busy}
         data-testid="guild-invite-rotate"
       >
@@ -145,7 +153,11 @@
       {/if}
     </section>
     <div class="min-h-[21px]">
-      {#if notice !== ''}<p class="text-[14px]" data-testid="guild-settings-notice">{notice}</p>{/if}
+      {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="guild-settings-action-error">
+          {error}
+        </p>{:else if notice !== ''}<p class="text-[14px]" data-testid="guild-settings-notice">
+          {notice}
+        </p>{/if}
     </div>
   {/if}
 </div>
