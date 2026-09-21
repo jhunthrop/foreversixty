@@ -31,6 +31,33 @@ func avoidableRoleFixture(otherTank string) summary.Summary {
 const avoidableFixturePlayer = "Player-Tank"
 const avoidableFixtureOtherTank = "Player-OtherTank"
 
+// TestDeathScoreForNamesAnUnclassifiedDeathWithNoKillingBlow proves a death
+// the log never recorded a killing blow for still produces a reader-facing
+// Moment, not an empty SpellName paired with SpellID 0 (whole-branch
+// review LOW finding).
+func TestDeathScoreForNamesAnUnclassifiedDeathWithNoKillingBlow(t *testing.T) {
+	const player = "Player-Unknown"
+	fight := summary.Summary{
+		DurationMS: 100000,
+		Deaths:     []summary.Death{{GUID: player, AtMS: 50000, KillingBlow: nil}},
+	}
+	table := &mechanics.Table{EncounterID: 1, Name: "Test"}
+	_, moments := deathScoreFor(fight, player, table)
+	if len(moments) != 1 {
+		t.Fatalf("moments = %+v, want exactly one", moments)
+	}
+	m := moments[0]
+	if m.SpellName == "" {
+		t.Fatalf("Moment.SpellName is empty, want a player-facing name such as %q", unknownDeathCause)
+	}
+	if m.SpellName != unknownDeathCause {
+		t.Errorf("Moment.SpellName = %q, want %q", m.SpellName, unknownDeathCause)
+	}
+	if m.SpellID != 0 {
+		t.Errorf("Moment.SpellID = %d, want 0 (no killing blow spell id exists to report)", m.SpellID)
+	}
+}
+
 func TestAvoidableDamagePerSecondExcusesWithNoAssignmentAtAll(t *testing.T) {
 	fight := avoidableRoleFixture("")
 	got := avoidableDamagePerSecond(fight, avoidableFixturePlayer, RoleTank, nil)

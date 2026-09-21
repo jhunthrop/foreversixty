@@ -18,6 +18,12 @@ const (
 	survivalAvoidableWeight = 0.35
 )
 
+// unknownDeathCause is the death Moment's SpellName when the log never
+// recorded a killing blow at all (Death.KillingBlow is nil): a reader-
+// facing name, not an empty string paired with SpellID 0, which a card
+// would otherwise render as a blank line.
+const unknownDeathCause = "Unknown cause"
+
 // scoreSurvival implements spec §1.3's Survival component:
 // 0.65*DeathScore + 0.35*AvoidableHitScore. Returns the Component and,
 // separately, deathScoreZero -- true only when the component was actually
@@ -77,7 +83,7 @@ func deathScoreFor(fight summary.Summary, player string, table *mechanics.Table)
 			timeRemaining = 0
 		}
 		var spellID int64
-		var spellName string
+		spellName := unknownDeathCause
 		avoidable := false
 		cause := deathCauseUnclassified
 		if d.KillingBlow != nil {
