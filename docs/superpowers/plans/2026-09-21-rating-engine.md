@@ -81,9 +81,18 @@ lane is already told to compile against verbatim.
   `Kill bool` (mirroring `fight.Fight`'s own fields of the same name/type, set in `Snapshot`
   from the `fight.Fight` it already receives) — `rating.Score` needs these for the percentile
   bracket key (§1.2) and the wipe rule (§2), and its signature takes only `summary.Summary`,
-  not `fight.Fight`. All three are `omitempty`/zero-value-safe and do not change any existing
-  golden fixture's *shape*, only add three keys — the golden files are regenerated once, in
-  Task 1, and the diff is reviewed to confirm it is exactly those three additions.
+  not `fight.Fight`. **CORRECTION (whole-branch review):** all three carry `json:"...,omitempty"`
+  — `Kill` originally did not (a `bool`'s zero value is a legitimate value, and the earlier
+  text's "all three are omitempty" was simply wrong for it), which meant every `Summary` this
+  package never sets `Kill` on — `sim/adapter` builds one directly, field by field, and never
+  touches `Kill` at all — serialized an unqualified `"kill": false`, a new key `sim/adapter`'s
+  own `TestGoldenCarriesEverySummaryKey` (an exhaustive 19-key list) and `TestGoldenSummaries`
+  (a byte-for-byte golden compare) both caught on the first whole-branch review. Fixed to
+  `json:"kill,omitempty"`: absent means not a kill, the same assumption every existing
+  consumer already makes reading `Kill`'s zero value. `logs/engine/summary`'s own two golden
+  fixtures (both non-kills) were regenerated once more to drop the now-empty key; `sim/adapter`'s
+  goldens needed **no** regeneration — confirmed by an unmodified `git status sim/` after
+  `cd sim && go test ./adapter/...` turned green.
 - **R2 — `summary.RosterRow` gains `ExecutionScore *float64`.** The Output component's
   primary value (§1.3) is `fight_metrics.execution_score`, computed by `api/internal/sims`
   from a simulator run and stored in a database column no engine package can read. The API
@@ -151,6 +160,35 @@ lane is already told to compile against verbatim.
   drafting slip for "§6.4"** ("Copy for every state"), the section that actually lists the
   fixed strings. `Component.Reason` holds the short machine code shown in §5.2's own JSON
   example (`"no_mechanics_table"`), not the sentence; the web lane maps code → §6.4's copy.
+- **R11 — a player never afflicted by any dispellable debuff drops that sub-part from
+  Mechanics' average, rather than crediting a full, untested 100.** §1.3's third Mechanics
+  part ("own dispellable-debuff uptime") is a bounded 0–100 share, and RULING R5's general
+  principle would let it default to itself (0% uptime → 100 score) when the bracket lacks
+  samples — but that principle is about *how to score an already-measured value*, not about
+  whether a value exists to measure at all. `dispellableDebuffUptimeShare` returns a
+  `tracked bool` alongside its share: false only when the player was never afflicted by any
+  dispel-classified debuff this fight (no `AuraTrack` at all, not one applied and immediately
+  cleansed, which is 0% uptime and still `tracked`). Untracked drops the sub-part from
+  Mechanics' ⅓ average entirely, matching how the other two sub-parts already drop out when
+  the table lists no interrupt/dispel mechanic at all — "no data" and "measured at zero" are
+  different claims, and a healer who happens to never carry a dispellable debuff should not
+  automatically read as flawless on the one part of Mechanics that measures it. Found while
+  reproducing spec §1.6's healer worked example: crediting the untracked case as 100 pulled
+  Mechanics from 78 to 89, which the worked example's own single stated number (78) does not
+  match.
+- **R12 — a `Role`-tagged avoidable mechanic is no longer excused unconditionally for a
+  same-role player.** Whole-branch review CRITICAL finding: the original rule (`row.Role ==
+  player's own role` → always excluded from `avoidableDamagePerSecond`) could not
+  distinguish the main tank doing their job from the off tank standing in a cleave meant for
+  someone else, crediting both identically. Fixed per the review's own ruling, reproduced in
+  spec §1.3 and §1.6's tank example: with no `Assignment` (§2) overlapping the hit's own
+  window for any player of that role, every player of that role is still excused (status
+  quo, unchanged when no guild has marked assignments — the table alone still cannot say
+  whose job it was); with one or more assignments for that role overlapping the hit's
+  window, this player is excused only if one of them names them, and counts in full
+  otherwise. `excusedByAssignment` in `survival.go` implements this; `scoreSurvival` now
+  takes the full (unfiltered) `assignments` slice, not just this player's own, since the
+  assignment that matters may belong to a different player of the same role.
 
 ---
 

@@ -107,7 +107,14 @@ type Summary struct {
 	// them; they are carried through from Snapshot's own f fight.Fight.
 	EncounterID int64 `json:"encounter_id,omitempty"`
 	Difficulty  int64 `json:"difficulty,omitempty"`
-	Kill        bool  `json:"kill"`
+	// Kill is omitempty: absent means not a kill, the same assumption
+	// every existing consumer of a Summary already makes (fight.Fight's
+	// own Kill has no such convention to inherit, since Fight is never
+	// partially absent the way a wipe leaves this field at its zero
+	// value) -- sim/adapter builds a Summary directly, never sets Kill at
+	// all, and a bare "kill" carried an unqualified false into every sim
+	// golden fixture until this was caught in review.
+	Kill bool `json:"kill,omitempty"`
 
 	DamageDone   []Actor `json:"damage_done"`
 	DamageTaken  []Actor `json:"damage_taken"`

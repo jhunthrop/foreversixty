@@ -71,7 +71,7 @@ func TestWorkedExampleDPSWarriorFury(t *testing.T) {
 		CombatPotion:  consumables.PotionGroup{MaxUses: 2, Entries: []consumables.Entry{{SpellID: 17528, Name: "Mighty Rage Potion", Verified: "test"}}},
 	}
 
-	src := fakePercentiles{
+	src := &fakePercentiles{
 		band: BandTypical, bandOK: true,
 		placements: map[string]fakePlacement{
 			ComponentNameOutput:           {pct: 0.71, n: 100, ok: true},
@@ -144,7 +144,7 @@ func TestWorkedExampleHealerPriestHoly(t *testing.T) {
 		CombatPotion:  consumables.PotionGroup{MaxUses: 2, Entries: []consumables.Entry{{SpellID: 17531, Name: "Major Mana Potion", Verified: "test"}}},
 	}
 
-	src := fakePercentiles{
+	src := &fakePercentiles{
 		band: BandTypical, bandOK: true,
 		placements: map[string]fakePlacement{
 			ComponentNameOutput:           {pct: 0.41, n: 100, ok: true},
@@ -190,18 +190,28 @@ func TestWorkedExampleHealerPriestHoly(t *testing.T) {
 // tank example) and reproduced here.
 func TestWorkedExampleTankWarriorProtection(t *testing.T) {
 	const player = "Player-Prot"
+	const otherTank = "Player-OtherTank"
 	fight := summary.Summary{
 		DurationMS: 180000, EncounterID: shazzrahEncounterID, Kill: true,
 		Roster: []summary.RosterRow{
 			{GUID: player, Class: "Warrior", Spec: "Protection", Role: RoleTank, DPS: 200, ActivityPct: 85, ActiveMS: 153000},
+			{GUID: otherTank, Class: "Warrior", Spec: "Protection", Role: RoleTank},
 		},
 		Deaths: []summary.Death{
 			{GUID: player, AtMS: 175000, KillingBlow: &summary.DamageRef{SpellID: 19999, SpellName: "Vicious Headbutt"}},
 		},
+		// Two avoidable hits, earlier in the fight, from a Role-tagged
+		// ("tank") cleave -- assigned to the other tank below, so per the
+		// whole-branch review's ruling this counts in full against player,
+		// not excused: the table alone cannot say whose job a Role-tagged
+		// mechanic was, only an Assignment can.
 		Mechanics: summary.MechanicsBlock{TableFound: true, Rows: []summary.MechanicRow{
 			{SpellID: 19998, Name: "Cleave", Kind: mechanics.Avoidable, Role: "tank",
-				Players: []summary.MechanicHit{{GUID: player, Hits: 2, Damage: 4000}}},
+				Players: []summary.MechanicHit{{GUID: player, Hits: 2, Damage: 4000, FirstMS: 60000, LastMS: 65000}}},
 		}},
+	}
+	assignments := []Assignment{
+		{PlayerKey: otherTank, Job: "cleave duty", FromMS: 50000, ToMS: 70000},
 	}
 
 	// No interrupt- or dispel-kind mechanic on this table at all: Mechanics
@@ -222,7 +232,7 @@ func TestWorkedExampleTankWarriorProtection(t *testing.T) {
 		CombatPotion:  consumables.PotionGroup{MaxUses: 2, Entries: []consumables.Entry{{SpellID: 17528, Name: "Mighty Rage Potion", Verified: "test"}}},
 	}
 
-	src := fakePercentiles{
+	src := &fakePercentiles{
 		band: BandTypical, bandOK: true,
 		placements: map[string]fakePlacement{
 			ComponentNameOutput:           {pct: 0.55, n: 100, ok: true},
@@ -233,7 +243,21 @@ func TestWorkedExampleTankWarriorProtection(t *testing.T) {
 		},
 	}
 
-	card := Score(fight, player, CuratedTables{Mechanics: table, Utility: utilTable, Consumables: cat}, src, nil, DefaultModelInfo())
+	card := Score(fight, player, CuratedTables{Mechanics: table, Utility: utilTable, Consumables: cat}, src, assignments, DefaultModelInfo())
+
+	// Proves the fix, not just the display number: the fake's canned 65th
+	// percentile answer for the avoidable-hit sub-part would pass unchanged
+	// whether the real underlying value was the excused 0 or the fully-
+	// counted 22.22 -- so assert on what avoidableDamagePerSecond actually
+	// computed and handed to Placement, not only on the resulting score.
+	got := src.recorded[ComponentSurvivalAvoidableHit]
+	if len(got) != 1 {
+		t.Fatalf("Placement(survival_avoidable_hit) called %d times, want 1: %v", len(got), got)
+	}
+	if want := 4000.0 / 180.0; got[0] != want {
+		t.Fatalf("avoidable-hit value placed = %v, want %v (4000 damage over 180s, counted in full: "+
+			"the assignment names the OTHER tank for this window, not player)", got[0], want)
+	}
 
 	mech := componentByName(card, ComponentNameMechanics)
 	if !mech.Excluded {

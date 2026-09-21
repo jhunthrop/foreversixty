@@ -23,7 +23,7 @@ const (
 // separately, deathScoreZero -- true only when the component was actually
 // scored (not excluded) and DeathScore alone floored to zero, spec §1.5's
 // cap condition, which Component itself carries no field for.
-func scoreSurvival(fight summary.Summary, player, role string, bracket Bracket, table *mechanics.Table, src PercentileSource) (Component, bool) {
+func scoreSurvival(fight summary.Summary, player, role string, bracket Bracket, table *mechanics.Table, assignments []Assignment, src PercentileSource) (Component, bool) {
 	c := Component{Name: ComponentNameSurvival}
 	if table == nil {
 		// §1.1/§2: no table means no killing-blow classification, and a
@@ -37,7 +37,7 @@ func scoreSurvival(fight summary.Summary, player, role string, bracket Bracket, 
 	deathScoreZero := deathScore == 0
 
 	bracket.Component = ComponentSurvivalAvoidableHit
-	avoidablePerSec := avoidableDamagePerSecond(fight, player, role)
+	avoidablePerSec := avoidableDamagePerSecond(fight, player, role, assignments)
 	pct, n, ok := src.Placement(bracket, avoidablePerSec)
 	if !ok || n < MinSample {
 		// RULING R4: avoidable-damage-per-second is an unbounded rate with
@@ -104,19 +104,29 @@ func deathScoreFor(fight summary.Summary, player string, table *mechanics.Table)
 }
 
 // avoidableDamagePerSecond sums avoidable-mechanic damage taken over the
-// fight, excluding any row whose Role equals the player's own role -- a
-// hit this player was assigned to take is credited under Mechanics/
-// Utility, not punished under Survival (spec §1.3).
-func avoidableDamagePerSecond(fight summary.Summary, player, role string) float64 {
+// fight. A row whose Role does not match the player's own role always
+// counts in full -- it was never this player's job. A Role-tagged row
+// matching the player's own role goes through excusedByAssignment: the
+// curated table alone cannot say WHICH player of that role a given hit was
+// "for" (spec §1.3's original text wrongly excused every same-role hit
+// unconditionally, which credited the off tank standing in a cleave meant
+// for the main tank the same as the main tank doing their job); an
+// Assignment naming who actually had it during that hit is what tells
+// them apart (RULING, whole-branch review).
+func avoidableDamagePerSecond(fight summary.Summary, player, role string, assignments []Assignment) float64 {
 	var total int64
 	for _, row := range fight.Mechanics.Rows {
-		if row.Kind != mechanics.Avoidable || row.Role == role {
+		if row.Kind != mechanics.Avoidable {
 			continue
 		}
 		for _, hit := range row.Players {
-			if hit.GUID == player {
-				total += hit.Damage
+			if hit.GUID != player {
+				continue
 			}
+			if row.Role == role && excusedByAssignment(fight, assignments, row.Role, player, hit) {
+				continue
+			}
+			total += hit.Damage
 		}
 	}
 	seconds := float64(fight.DurationMS) / 1000
@@ -124,4 +134,41 @@ func avoidableDamagePerSecond(fight summary.Summary, player, role string) float6
 		return 0
 	}
 	return float64(total) / seconds
+}
+
+// excusedByAssignment decides whether one Role-tagged avoidable hit is
+// excused for player: with no Assignment overlapping the hit's own window
+// for any player of mechanicRole, every player of that role is excused (we
+// cannot tell the main tank doing their job from the off tank standing in
+// it, and wrongly punishing the main tank for every cleave is the worse
+// error); with at least one such assignment, player is excused only if one
+// of them names player specifically -- otherwise the hit was demonstrably
+// someone else's to take, and counts in full.
+func excusedByAssignment(fight summary.Summary, assignments []Assignment, mechanicRole, player string, hit summary.MechanicHit) bool {
+	anyForRole := false
+	hitStart, hitEnd := hit.FirstMS, hitEndMS(hit)
+	for _, a := range assignments {
+		if !overlapsMS(a.FromMS, a.ToMS, hitStart, hitEnd) {
+			continue
+		}
+		row, ok := rosterRow(fight, a.PlayerKey)
+		if !ok || row.Role != mechanicRole {
+			continue
+		}
+		anyForRole = true
+		if a.PlayerKey == player {
+			return true
+		}
+	}
+	return !anyForRole
+}
+
+// hitEndMS is the hit's own window end: LastMS when the track recorded a
+// span, or FirstMS nudged forward by one millisecond for a single instant
+// so overlapsMS's half-open interval still contains it.
+func hitEndMS(hit summary.MechanicHit) int64 {
+	if hit.LastMS > hit.FirstMS {
+		return hit.LastMS
+	}
+	return hit.FirstMS + 1
 }

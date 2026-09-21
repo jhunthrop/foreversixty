@@ -45,7 +45,7 @@ func Score(
 	playerAssignments := assignmentsFor(assignments, player)
 
 	outputC := scoreOutput(fight, row, bracket, percentiles)
-	survivalC, deathScoreZero := scoreSurvival(fight, player, role, bracket, tables.Mechanics, percentiles)
+	survivalC, deathScoreZero := scoreSurvival(fight, player, role, bracket, tables.Mechanics, assignments, percentiles)
 	mechanicsC := scoreMechanicsComponent(fight, player, role, bracket, tables.Mechanics, percentiles)
 	utilityC := scoreUtility(fight, player, bracket, tables.Utility, percentiles)
 	preparationC := scorePreparation(fight, player, bracket, tables.Consumables, percentiles)

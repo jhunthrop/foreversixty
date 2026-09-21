@@ -21,14 +21,25 @@ func fixtureSummary() summary.Summary {
 	}
 }
 
-// fakePercentiles is a hand-fed PercentileSource: every component test
-// supplies exactly the (bracket.Component -> pct/n/ok) triples its
-// scenario needs, so §1.2's percentile-vs-absolute rule is exercised
-// without any database.
+// fakePercentiles is a hand-fed, RECORDING PercentileSource: every
+// component test supplies exactly the (bracket.Component -> pct/n/ok)
+// triples its scenario needs, so §1.2's percentile-vs-absolute rule is
+// exercised without any database -- but every value it is asked to place
+// is also recorded, keyed by bracket.Component, in call order. A fake that
+// only returns canned answers and ignores what it was asked can hide a
+// real formula bug behind a still-correct-looking final score (the
+// whole-branch review caught exactly this on the Survival avoidable-hit
+// sub-part: the fake's canned 35th-percentile answer passed regardless of
+// whether the real computed value was the excused 0 or the fully-counted
+// 22.22); a test that cares about the underlying computation, not just the
+// final display number, asserts against src.recorded[...] instead of only
+// the Card's own Score field. Pointer receiver: the recording needs
+// mutable state, so every caller constructs *fakePercentiles.
 type fakePercentiles struct {
 	placements map[string]fakePlacement
 	band       string
 	bandOK     bool
+	recorded   map[string][]float64
 }
 
 type fakePlacement struct {
@@ -37,7 +48,11 @@ type fakePlacement struct {
 	ok  bool
 }
 
-func (f fakePercentiles) Placement(bracket Bracket, value float64) (float64, int64, bool) {
+func (f *fakePercentiles) Placement(bracket Bracket, value float64) (float64, int64, bool) {
+	if f.recorded == nil {
+		f.recorded = map[string][]float64{}
+	}
+	f.recorded[bracket.Component] = append(f.recorded[bracket.Component], value)
 	p, ok := f.placements[bracket.Component]
 	if !ok {
 		return 0, 0, false
@@ -45,7 +60,7 @@ func (f fakePercentiles) Placement(bracket Bracket, value float64) (float64, int
 	return p.pct, p.n, p.ok
 }
 
-func (f fakePercentiles) KillTimeBand(encounterID, difficulty int64, durationMS int64) (string, bool) {
+func (f *fakePercentiles) KillTimeBand(encounterID, difficulty int64, durationMS int64) (string, bool) {
 	return f.band, f.bandOK
 }
 
