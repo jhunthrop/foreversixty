@@ -35,6 +35,11 @@ const sources = zones.flatMap((z) => z.data.sources);
     <p class="text-muted text-[14px]">
       Level ranges are reported where a source gives them and not yet confirmed by Blizzard unless noted.
     </p>
+    <p class="text-muted text-[14px]">
+      {zones.length} {zones.length === 1 ? 'zone is' : 'zones are'} covered today:{' '}
+      {zones.map((z) => z.data.title).join(', ')}. The rest of the world's zones are coming as this atlas
+      grows.
+    </p>
     <EntryTable nameHeading="Zone" metaHeading="Continent" rows={rows} />
     <SourcesList sources={sources} />
   </main>
