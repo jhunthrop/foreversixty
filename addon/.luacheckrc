@@ -48,7 +48,10 @@ read_globals = {
 -- SlashCmdList is a table the client owns; Options.register sets a field on
 -- it (SlashCmdList["FOREVERSIXTY"] = ...), which luacheck flags as writing a
 -- read-only global's field unless it is listed here rather than above.
-globals = { "SLASH_FOREVERSIXTY1", "SLASH_FOREVERSIXTY2", "ForeverSixtyDB", "SlashCmdList" }
+globals = {
+	"SLASH_FOREVERSIXTY1", "SLASH_FOREVERSIXTY2", "ForeverSixtyDB", "SlashCmdList",
+	"BINDING_HEADER_FOREVERSIXTY", "BINDING_NAME_FOREVERSIXTY_TOGGLE", "FOREVERSIXTY_TOGGLE_WINDOW",
+}
 
 files["tests/"] = {
 	-- Explicit "lua54+busted", not the relative "+busted": the base std

@@ -167,6 +167,14 @@ end
 --- injection points Minimap left for the window -- and builds no frame
 --- except the event frame, which has no size and is never shown.
 function Options.register()
+	-- Bindings.xml names these two globals and calls the third; the client
+	-- auto-loads that file from the addon's own folder with no TOC entry.
+	BINDING_HEADER_FOREVERSIXTY = L.bindingHeader
+	BINDING_NAME_FOREVERSIXTY_TOGGLE = L.bindingToggle
+	FOREVERSIXTY_TOGGLE_WINDOW = function()
+		Window.toggle()
+	end
+
 	SLASH_FOREVERSIXTY1 = "/fs"
 	SLASH_FOREVERSIXTY2 = "/foreversixty"
 	SlashCmdList["FOREVERSIXTY"] = Options.run
