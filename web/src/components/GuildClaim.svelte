@@ -12,7 +12,7 @@
      refused. -->
 <script lang="ts">
   import { fetchMeOnce, type Me } from '../lib/account/api';
-  import type { CharacterPath } from '../lib/characters';
+  import { characterSlug, type CharacterPath } from '../lib/characters';
   import {
     claimGuild,
     confirmClaim,
@@ -72,6 +72,23 @@
 
   const signedIn = $derived(me !== null);
   const myBattletag = $derived(me?.user.battletag ?? null);
+
+  /**
+   * Same identity rule as Guild.svelte's own membership match (region + ruleset +
+   * slugified name, not region + ruleset alone, which many guilds share): the viewer's
+   * rank in THIS guild, read off `me.guilds`. Claim is an officer/leader-rank action
+   * (spec section 4.4); without this, any signed-in account -- a stranger, a plain
+   * member -- saw a live Claim/Confirm button that only failed once clicked (a 403 from
+   * the API), and `guildClaimCopy.notEligible` existed but was never shown.
+   */
+  const membership = $derived(
+    me?.guilds.find(
+      (g) => g.region === path.region && g.ruleset === path.ruleset && characterSlug(g.name) === path.slug,
+    ) ?? null,
+  );
+  const eligible = $derived(
+    membership !== null && (membership.rank === 'officer' || membership.rank === 'leader'),
+  );
 
   async function run(action: () => Promise<void>): Promise<void> {
     busy = true;
@@ -133,7 +150,7 @@
       {/if}
     {:else if settings.claim_pending}
       <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.pending(justClaimedExpiry)}</p>
-      {#if signedIn}
+      {#if signedIn && eligible}
         <button
           class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
           onclick={onConfirm}
@@ -142,12 +159,14 @@
         >
           {guildClaimCopy.confirmButton}
         </button>
+      {:else if signedIn}
+        <p class="text-[14px]" data-testid="guild-claim-not-eligible">{guildClaimCopy.notEligible}</p>
       {/if}
     {:else}
       <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.unclaimed}</p>
       {#if !signedIn}
         <SignInPrompt line={guildClaimCopy.signInLine} testid="guild-claim-signin" />
-      {:else}
+      {:else if eligible}
         <button
           class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
           onclick={onClaim}
@@ -156,6 +175,8 @@
         >
           {guildClaimCopy.claimButton}
         </button>
+      {:else}
+        <p class="text-[14px]" data-testid="guild-claim-not-eligible">{guildClaimCopy.notEligible}</p>
       {/if}
     {/if}
     <div class="min-h-[21px]">

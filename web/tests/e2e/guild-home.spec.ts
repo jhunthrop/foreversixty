@@ -49,6 +49,7 @@ const HOME = {
       verified: true,
       logged_recently: true,
       consent: 'gear',
+      user_id: 7,
     },
     {
       character_key: 'us/hardcore/newbie',
@@ -61,6 +62,7 @@ const HOME = {
       verified: false,
       logged_recently: false,
       consent: 'roster',
+      user_id: 42,
     },
   ],
 };
@@ -163,4 +165,88 @@ test('a signed-out visitor sees only the public page, with no signed-in section 
   await page.goto('/guild/us/hardcore/the-last-watch');
   await expect(page.getByTestId('guild')).toBeVisible();
   await expect(page.getByTestId('guild-home')).toHaveCount(0);
+});
+
+// A guild's real identity is (region, ruleset, name), not (region, ruleset) alone -- many
+// guilds share a region and ruleset. Guild B below shares GUILD_PAGE's region and ruleset
+// but is a different guild entirely (different id, name, slug).
+const GUILD_B_PAGE = {
+  guild: { id: 777, name: 'Iron Vanguard', region: 'us', ruleset: 'hardcore' },
+  progression: [],
+  roster_best: [],
+  reports: [],
+};
+
+// Signed in, but a verified member of Guild A (id 501) only -- no membership in Guild B.
+const ME_GUILD_A_ONLY = {
+  ...ME,
+  guilds: [{ id: 501, region: 'us', ruleset: 'hardcore', name: 'The Last Watch', rank: 'officer' }],
+};
+
+test('a member of one guild visiting a different guild that shares its region and ruleset sees only that guild’s public page, never their own guild’s home panel', async ({
+  page,
+}) => {
+  await page.route('**/v1/guilds/us/hardcore/iron-vanguard', (route) =>
+    route.fulfill(envelope(GUILD_B_PAGE)),
+  );
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_GUILD_A_ONLY)));
+  // Stubbed so a regression (matching on region+ruleset alone, which resolves to the
+  // viewer's OWN guild id 501) is caught by a visible guild-home section instead of
+  // silently failing the fetch.
+  await page.route('**/v1/guilds/501/home', (route) => route.fulfill(envelope(HOME)));
+
+  await page.goto('/guild/us/hardcore/iron-vanguard');
+  await expect(page.getByTestId('guild')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Iron Vanguard' })).toBeVisible();
+  await expect(page.getByTestId('guild-home')).toHaveCount(0);
+});
+
+// A solo officer with two verified characters in the guild: roster.length === 2, but both
+// rows share one account (user_id), so the empty-roster "just me" message must still show.
+const HOME_SOLO_OFFICER = {
+  guild: { id: 501, name: 'The Last Watch', region: 'us', ruleset: 'hardcore' },
+  viewer: { rank: 'officer', verified: true, can_manage: true },
+  reports: { rows: [] },
+  roster: [
+    {
+      character_key: 'us/hardcore/simfury',
+      region: 'us',
+      ruleset: 'hardcore',
+      name: 'Simfury',
+      class: 'Warrior',
+      spec: 'Fury',
+      rank: 'officer',
+      verified: true,
+      logged_recently: true,
+      consent: 'gear',
+      user_id: 7,
+    },
+    {
+      character_key: 'us/hardcore/simfuryalt',
+      region: 'us',
+      ruleset: 'hardcore',
+      name: 'Simfuryalt',
+      class: 'Priest',
+      spec: 'Holy',
+      rank: 'officer',
+      verified: true,
+      logged_recently: false,
+      consent: 'gear',
+      user_id: 7,
+    },
+  ],
+};
+
+test('a solo officer with two characters in the guild sees the empty-roster message, not the populated roster', async ({
+  page,
+}) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
+  await page.route('**/v1/guilds/501/home', (route) => route.fulfill(envelope(HOME_SOLO_OFFICER)));
+
+  await page.goto('/guild/us/hardcore/the-last-watch');
+  await expect(page.getByTestId('guild-home-empty-roster')).toHaveText(
+    "You're the only member the site knows about. Share the invite link to bring the rest of the guild in.",
+  );
+  await expect(page.getByTestId('guild-home-roster')).toHaveCount(0);
 });

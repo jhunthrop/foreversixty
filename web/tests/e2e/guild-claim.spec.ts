@@ -22,11 +22,18 @@ const ME = {
   guilds: [],
 };
 
+// An officer-rank member of the guild being claimed (Finding 2: only an officer/leader
+// rank in THIS guild may see the claim/confirm controls).
+const ME_OFFICER = {
+  ...ME,
+  guilds: [{ id: 501, region: 'us', ruleset: 'hardcore', name: 'The Last Watch', rank: 'officer' }],
+};
+
 test('an unclaimed guild shows the claim button to a signed-in officer, and claiming shows "claimed by you"', async ({
   page,
 }) => {
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
-  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_OFFICER)));
   await page.route('**/v1/guilds/501/settings', (route) =>
     route.fulfill(
       envelope({
@@ -82,5 +89,31 @@ test('a signed-out visitor sees a sign-in prompt, not a claim button', async ({ 
   );
   await page.goto('/guild/us/hardcore/the-last-watch/claim');
   await expect(page.getByTestId('guild-claim-signin')).toBeVisible();
+  await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
+});
+
+test('a signed-in visitor with no membership, or member rank, in this guild sees the not-eligible line, not a claim button', async ({
+  page,
+}) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  // `ME` above has no membership at all in guild id 501, which is the more common of the
+  // two ineligible shapes (a stranger); a plain `rank: 'member'` entry is refused the same
+  // way, exercised by the `eligible` check reading a matched membership's own rank.
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill(
+      envelope({
+        default_visibility: 'guild',
+        officer_max_rank_index: 1,
+        claimed_by: null,
+        claim_pending: false,
+        invite: { rotated_at: null },
+      }),
+    ),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await expect(page.getByTestId('guild-claim-not-eligible')).toHaveText(
+    'Only an officer or the guild master of this guild can claim it.',
+  );
   await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
 });

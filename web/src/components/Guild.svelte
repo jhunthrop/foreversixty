@@ -90,8 +90,17 @@
     void fetchMeOnce()
       .then((result) => {
         if (resolved !== requested) return;
+        // A guild's real identity is (region, ruleset, name), not (region, ruleset) alone
+        // -- many guilds share a region and ruleset. Matching on the slugified name too is
+        // what keeps a signed-in member of one guild from being matched onto a DIFFERENT
+        // guild's page that merely shares their region and ruleset, which would render
+        // their own guild's private home panel (reports, full roster, officer controls)
+        // underneath the other guild's public header.
         const membership = result?.guilds.find(
-          (g) => g.region === requested.region && g.ruleset === requested.ruleset,
+          (g) =>
+            g.region === requested.region &&
+            g.ruleset === requested.ruleset &&
+            characterSlug(g.name) === requested.slug,
         );
         if (membership === undefined) {
           homeStatus = 'idle';
@@ -137,6 +146,17 @@
   function rowPath(row: GuildRosterRow): CharacterPath {
     return { region: row.region as Region, ruleset: row.ruleset as Ruleset, slug: characterSlug(row.name) };
   }
+
+  /**
+   * `GuildRosterRow` carries no account/owner identifier other than `user_id`, so "am I
+   * the guild's only member" has to be counted by distinct account rather than by row
+   * count: a solo officer with two verified characters in the guild is still one account,
+   * and `roster.length <= 1` alone would incorrectly show the populated roster for them
+   * instead of the empty-state invite-sharing message.
+   */
+  const soloRoster = $derived(
+    home === null ? true : new Set(home.roster.map((row) => row.user_id)).size <= 1,
+  );
 
   const killed = $derived((data?.progression ?? []).filter((row) => row.kills > 0).length);
   const killedAt = (row: { first_kill_at?: string }): string =>
@@ -227,7 +247,7 @@
         {/if}
 
         <h2 class="section-title text-[18px]">{guildHomeCopy.rosterHeading}</h2>
-        {#if home.roster.length <= 1}
+        {#if soloRoster}
           <p class="text-muted text-[14px]" data-testid="guild-home-empty-roster">
             {home.viewer.can_manage ? guildHomeCopy.emptyRosterOfficer : guildHomeCopy.emptyRosterMember}
           </p>

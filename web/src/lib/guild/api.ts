@@ -52,6 +52,13 @@ export interface GuildHomeReportsPage {
  * One roster row. Synthetic `account:`-prefixed characters (invite joins with no real
  * character, spec section 2.5) are never listed here — the API omits them entirely, so
  * this type carries no synthetic-row flag to check.
+ *
+ * `user_id` extends this lane's own Ruling 1 shape (the real API for this endpoint hasn't
+ * landed, so this is cheap to add now): a roster row otherwise carries no account/owner
+ * identifier, and without one there is no way to tell "one account with two verified
+ * characters" from "two accounts with one character each" -- the distinction the
+ * empty-roster heuristic in Guild.svelte needs. A numeric id is consistent with this
+ * codebase's other numeric id fields (see `GuildSummary.id`, `MeGuild.id`).
  */
 export interface GuildRosterRow {
   character_key: string;
@@ -68,6 +75,8 @@ export interface GuildRosterRow {
   /** Present only at gear/gear_bags consent (spec section 3.2's fail-closed query rule). */
   item_level?: number;
   consent: GuildConsent;
+  /** The owning account's id -- this lane's own ruling, see the type doc comment above. */
+  user_id: number;
 }
 
 export interface GuildHome {

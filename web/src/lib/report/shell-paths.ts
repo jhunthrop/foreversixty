@@ -32,6 +32,12 @@ export function fixtureRankingsPaths(): { params: { slug: string } }[] {
 export const FIXTURE_CHARACTER_PATH = 'us/hardcore/elyra-duskvale';
 export const FIXTURE_GUILD_PATH = 'us/hardcore/the-last-watch';
 
+// A second guild fixture, same region and ruleset as FIXTURE_GUILD_PATH but a different
+// guild (id, name, slug) -- guild-home.spec.ts's cross-guild-membership regression test
+// needs a real second prerendered guild page to navigate to, the same reason
+// FIXTURE_GUILD_PATH itself exists rather than being asserted against indirectly.
+export const FIXTURE_GUILD_B_PATH = 'us/hardcore/iron-vanguard';
+
 // The three new guild sub-routes' own fixture paths, same pairing as FIXTURE_GUILD_PATH:
 // what Playwright navigates to and what [...path].astro prerenders.
 export const FIXTURE_GUILD_CLAIM_PATH = `${FIXTURE_GUILD_PATH}/claim`;
@@ -46,6 +52,7 @@ export function fixtureGuildPaths(): { params: { path: string } }[] {
   if (process.env.FOREVER_DATA !== 'fixture') return [];
   return [
     { params: { path: FIXTURE_GUILD_PATH } },
+    { params: { path: FIXTURE_GUILD_B_PATH } },
     { params: { path: FIXTURE_GUILD_CLAIM_PATH } },
     { params: { path: FIXTURE_GUILD_SETTINGS_PATH } },
     { params: { path: `invite/${FIXTURE_GUILD_INVITE_TOKEN}` } },
