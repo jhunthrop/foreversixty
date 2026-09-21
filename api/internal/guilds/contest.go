@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
@@ -79,11 +81,26 @@ func (s *Store) ContestClaim(ctx context.Context, guildID, contesterID int64) er
 	return nil
 }
 
+// unverifyClaimSourcedRows clears verified_at/verified_by on exactly
+// userID's guild_characters rows in guildID whose verification came
+// from the claim being resolved - scoped to that one account, not
+// every claim-sourced row in the guild, so an unrelated account's
+// long-settled verification (e.g. from an earlier, already-released
+// claim) is never touched by resolving a different claim.
+func unverifyClaimSourcedRows(ctx context.Context, tx pgx.Tx, guildID, userID int64) error {
+	if _, err := tx.Exec(ctx,
+		`update guild_characters set verified_at = null, verified_by = null
+		 where guild_id = $1 and user_id = $2 and verified_by = 'claim'`, guildID, userID); err != nil {
+		return fmt.Errorf("guilds: unverify claim-sourced rows for guild %d: %w", guildID, err)
+	}
+	return nil
+}
+
 // ResolveClaim is a moderator's decision on a contested claim: uphold
 // (dismiss the contest, claim stands), release (clear the claim and
-// un-verify every character whose only verification source was the
-// claim), or transfer (move the claim, and the same claim-sourced
-// verification, to the contesting account).
+// un-verify the resolved claimant's characters whose only verification
+// source was that claim), or transfer (move the claim, and the same
+// claim-sourced verification, to the contesting account).
 func (s *Store) ResolveClaim(ctx context.Context, guildID int64, outcome string) error {
 	g, err := s.getGuild(ctx, guildID)
 	if err != nil {
@@ -91,6 +108,15 @@ func (s *Store) ResolveClaim(ctx context.Context, guildID int64, outcome string)
 	}
 	if g.ClaimContestedAt == nil {
 		return ErrNoActiveClaim
+	}
+	// The account whose claim is being resolved - claimed takes
+	// priority over merely-pending, mirroring ContestClaim's own
+	// resolution logic. nil only when a contested claim was somehow
+	// never actually claimed or pending, which contest state implies
+	// cannot happen, but is guarded rather than assumed below.
+	claimant := g.ClaimedBy
+	if claimant == nil {
+		claimant = g.ClaimPendingBy
 	}
 
 	tx, err := s.Pool.Begin(ctx)
@@ -111,10 +137,10 @@ func (s *Store) ResolveClaim(ctx context.Context, guildID int64, outcome string)
 			   claim_contested_at = null, claim_contested_by = null where id = $1`, guildID); err != nil {
 			return fmt.Errorf("guilds: resolve claim (release): %w", err)
 		}
-		if _, err := tx.Exec(ctx,
-			`update guild_characters set verified_at = null, verified_by = null
-			 where guild_id = $1 and verified_by = 'claim'`, guildID); err != nil {
-			return fmt.Errorf("guilds: resolve claim (release): un-verify: %w", err)
+		if claimant != nil {
+			if err := unverifyClaimSourcedRows(ctx, tx, guildID, *claimant); err != nil {
+				return err
+			}
 		}
 		if err := RecomputeMembership(ctx, tx, guildID, nil); err != nil {
 			return err
@@ -129,10 +155,10 @@ func (s *Store) ResolveClaim(ctx context.Context, guildID int64, outcome string)
 			   claim_contested_at = null, claim_contested_by = null where id = $1`, guildID, newClaimant); err != nil {
 			return fmt.Errorf("guilds: resolve claim (transfer): %w", err)
 		}
-		if _, err := tx.Exec(ctx,
-			`update guild_characters set verified_at = null, verified_by = null
-			 where guild_id = $1 and verified_by = 'claim'`, guildID); err != nil {
-			return fmt.Errorf("guilds: resolve claim (transfer): un-verify: %w", err)
+		if claimant != nil {
+			if err := unverifyClaimSourcedRows(ctx, tx, guildID, *claimant); err != nil {
+				return err
+			}
 		}
 		if err := setVerifiedForAccount(ctx, tx, guildID, newClaimant, "claim"); err != nil {
 			return err

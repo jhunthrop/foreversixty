@@ -169,6 +169,42 @@ func TestResolveClaimTransferMovesTheClaimAndVerification(t *testing.T) {
 	}
 }
 
+func TestResolveClaimNeverUnverifiesAnUnrelatedAccountsStaleClaimSourcedRow(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+
+	// An unrelated account with a stale claim-sourced row from some
+	// earlier, already-released claim - no live claim references it.
+	stale := seedUser(t, pool, "stale-claim-source@example.com")
+	if _, err := pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id, rank, verified_at, verified_by)
+		 values ($1, 'us/hardcore/staleclaimsource', $2, 'member', now(), 'claim')`, gid, stale); err != nil {
+		t.Fatal(err)
+	}
+
+	claimant := seedUser(t, pool, "unrelated-resolve-claimant@example.com")
+	seedCharacter(t, pool, gid, claimant, "us/hardcore/unrelatedresolveclaimant", "leader", false)
+	if _, err := s.Claim(ctx, gid, claimant, true); err != nil {
+		t.Fatal(err)
+	}
+	contester := seedUser(t, pool, "unrelated-resolve-contester@example.com")
+	seedCharacter(t, pool, gid, contester, "us/hardcore/unrelatedresolvecontester", "officer", false)
+	if err := s.ContestClaim(ctx, gid, contester); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := s.ResolveClaim(ctx, gid, "release"); err != nil {
+		t.Fatal(err)
+	}
+	var staleVerified bool
+	pool.QueryRow(ctx, `select verified_at is not null from guild_characters where character_key = 'us/hardcore/staleclaimsource'`).Scan(&staleVerified)
+	if !staleVerified {
+		t.Fatal("resolving a different account's claim must never touch an unrelated account's stale claim-sourced verification")
+	}
+}
+
 func TestClaimStateReflectsEachPhase(t *testing.T) {
 	now := time.Now()
 	unclaimed := Guild{}
