@@ -96,6 +96,18 @@ type Summary struct {
 	EngineVersion string `json:"engine_version"`
 	FightIndex    int    `json:"fight_index"`
 	DurationMS    int64  `json:"duration_ms"`
+	// EncounterID, Difficulty and Kill mirror fight.Fight's own fields
+	// (fight.go:37-42). They are additive: the rating engine
+	// (logs/engine/rating) is a pure function over summary.Summary alone
+	// (never fight.Fight, per that package's own "why a new package, not a
+	// change to summary" ruling), and needs a fight-level bracket key
+	// (encounter_id, difficulty) and the wipe rule (§2 of
+	// docs/superpowers/specs/2026-09-21-performance-rating-design.md) to
+	// know whether to exclude Output. Nothing else in this package reads
+	// them; they are carried through from Snapshot's own f fight.Fight.
+	EncounterID int64 `json:"encounter_id,omitempty"`
+	Difficulty  int64 `json:"difficulty,omitempty"`
+	Kill        bool  `json:"kill"`
 
 	DamageDone   []Actor `json:"damage_done"`
 	DamageTaken  []Actor `json:"damage_taken"`
@@ -416,6 +428,9 @@ func (a *Accumulator) Snapshot(f fight.Fight, engineVersion string) Summary {
 		EngineVersion:  engineVersion,
 		FightIndex:     f.Index,
 		DurationMS:     dur.Milliseconds(),
+		EncounterID:    f.EncounterID,
+		Difficulty:     f.Difficulty,
+		Kill:           f.Kill,
 		DamageDone:     a.actors(a.damageDone),
 		DamageTaken:    a.actors(a.damageTaken),
 		Healing:        a.actors(a.healingDone),

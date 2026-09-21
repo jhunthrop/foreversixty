@@ -2,6 +2,7 @@
   "engine_version": "golden",
   "fight_index": 1,
   "duration_ms": 6400,
+  "kill": false,
   "damage_done": [
     {
       "guid": "Player-4184-000000A3",
