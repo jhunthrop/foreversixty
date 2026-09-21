@@ -292,8 +292,9 @@ describe("Minimap", function()
 		Gear.upgrades = function()
 			return {}
 		end
-		local lines = Button.tooltipLines()
+		local ok, lines = pcall(Button.tooltipLines)
 		Gear.upgrades = real
+		assert.is_true(ok)
 		assert.are.equal(L.minimapLeftClick, lines[4])
 	end)
 
