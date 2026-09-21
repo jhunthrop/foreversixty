@@ -1,0 +1,12 @@
+{
+  "spec": "rogue-subtlety",
+  "owned": [
+    {
+      "spell_id": 13958,
+      "name": "Master of Deception",
+      "kind": "talent-modifier",
+      "verified": "1.60.1.69893/spells.json#13958",
+      "note": "Threat-reduction percentage talent; self-only, not independently trackable as an aura."
+    }
+  ]
+}

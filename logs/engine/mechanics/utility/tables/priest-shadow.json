@@ -1,0 +1,29 @@
+{
+  "spec": "priest-shadow",
+  "owned": [
+    {
+      "spell_id": 23948,
+      "name": "Power Word: Fortitude",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#23948",
+      "note": "Stamina buff, max rank."
+    },
+    {
+      "spell_id": 15258,
+      "name": "Shadow Weaving",
+      "kind": "debuff",
+      "target": "enemy",
+      "verified": "1.60.1.69893/spells.json#15258",
+      "note": "Shadow talent: shadow spells apply a stacking shadow-damage-taken debuff."
+    },
+    {
+      "spell_id": 15290,
+      "name": "Vampiric Embrace",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#15290",
+      "note": "Party healing-from-damage buff while active, max rank."
+    }
+  ]
+}

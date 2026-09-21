@@ -1,0 +1,13 @@
+{
+  "spec": "warrior-fury",
+  "owned": [
+    {
+      "spell_id": 27578,
+      "name": "Battle Shout",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#27578",
+      "note": "Party attack power buff, max rank."
+    }
+  ]
+}

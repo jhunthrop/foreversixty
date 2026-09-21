@@ -1,0 +1,13 @@
+{
+  "spec": "druid-feral",
+  "owned": [
+    {
+      "spell_id": 27551,
+      "name": "Demoralizing Roar",
+      "kind": "debuff",
+      "target": "enemy",
+      "verified": "1.60.1.69893/spells.json#27551",
+      "note": "Bear-form melee attack power reduction on nearby enemies."
+    }
+  ]
+}

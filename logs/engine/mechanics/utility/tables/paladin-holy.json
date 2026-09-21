@@ -1,0 +1,37 @@
+{
+  "spec": "paladin-holy",
+  "owned": [
+    {
+      "spell_id": 25290,
+      "name": "Blessing of Wisdom",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#25290",
+      "note": "Mana regen blessing, max rank."
+    },
+    {
+      "spell_id": 1038,
+      "name": "Blessing of Salvation",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#1038",
+      "note": "Threat-reduction blessing."
+    },
+    {
+      "spell_id": 17232,
+      "name": "Devotion Aura",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#17232",
+      "note": "Party armor aura, max rank."
+    },
+    {
+      "spell_id": 25758,
+      "name": "Judgement of Wisdom",
+      "kind": "debuff",
+      "target": "enemy",
+      "verified": "1.60.1.69893/spells.json#25758",
+      "note": "Mana-return-on-hit debuff maintained on the current target; raid-wide utility for casters."
+    }
+  ]
+}

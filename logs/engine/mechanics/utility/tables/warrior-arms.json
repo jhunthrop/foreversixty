@@ -1,0 +1,28 @@
+{
+  "spec": "warrior-arms",
+  "owned": [
+    {
+      "spell_id": 27578,
+      "name": "Battle Shout",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#27578",
+      "note": "Party attack power buff, max rank."
+    },
+    {
+      "spell_id": 27991,
+      "name": "Sunder Armor",
+      "kind": "debuff",
+      "target": "enemy",
+      "verified": "1.60.1.69893/spells.json#27991",
+      "note": "Armor-reduction debuff, stacking, max rank."
+    },
+    {
+      "spell_id": 12308,
+      "name": "Improved Sunder Armor",
+      "kind": "talent-modifier",
+      "verified": "1.60.1.69893/spells.json#12308",
+      "note": "Additional armor-reduction percentage on Sunder Armor; not independently trackable as its own aura."
+    }
+  ]
+}

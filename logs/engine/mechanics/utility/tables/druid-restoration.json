@@ -1,0 +1,21 @@
+{
+  "spec": "druid-restoration",
+  "owned": [
+    {
+      "spell_id": 29166,
+      "name": "Innervate",
+      "kind": "cooldown",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#29166",
+      "note": "Mana cooldown given to another caster; tracked by use, not uptime."
+    },
+    {
+      "spell_id": 20748,
+      "name": "Rebirth",
+      "kind": "cooldown",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#20748",
+      "note": "Battle resurrection; tracked by use, not uptime."
+    }
+  ]
+}
