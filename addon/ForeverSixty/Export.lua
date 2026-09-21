@@ -201,6 +201,19 @@ function Export.professionSlugs()
 	return slugs
 end
 
+--- The character's current guild, or nil when unguilded. GetGuildInfo returns nil for
+--- an unguilded character (also the shape a login before guild data has loaded would
+--- produce, per the WoW API's own documented behaviour -- both read the same way here:
+--- no guild= section this export). Rank name (the second return) is player-chosen free
+--- text and is never read; only the index is trustworthy (spike check 23, README.md).
+function Export.guildInfo()
+	local name, _, rankIndex = GetGuildInfo("player")
+	if name == nil then
+		return nil
+	end
+	return { name = name, rankIndex = rankIndex }
+end
+
 --- The export string, or nil and the reason.
 function Export.string(data)
 	-- The class slug comes from the locale-neutral class token (see
@@ -221,6 +234,7 @@ function Export.string(data)
 		bags = Export.itemsInBags(Export.CARRIED_BAGS),
 		bank = Export.itemsInBags(Export.BANK_BAGS),
 		professions = Export.professionSlugs(),
+		guild = Export.guildInfo(),
 	})
 end
 
