@@ -38,6 +38,10 @@ afterEach(() => api.reset());
 // in this file (runOnServer's polling loop is setTimeout-based and would hang forever
 // under a clock nothing is advancing). A no-op when timers are already real.
 afterEach(() => vi.useRealTimers());
+// Fix round 1: every loader below writes the current-character pointer against real jsdom
+// localStorage (no `storage` override here, the same as every real call site), so one
+// test's write must not leak into the next test's read.
+afterEach(() => localStorage.clear());
 
 describe('createSimStore', () => {
   it('opens with no character and nothing running', () => {
@@ -390,6 +394,49 @@ describe('createSimStore', () => {
       });
       await sim.ready;
       expect(sim.character?.source.kind).toBe('build');
+    });
+
+    // Fix round 1: `?source=armory&ref=<key>` is the URL LandingState.svelte's "go to /sim"
+    // link already writes, and the pointer `fromStoredCharacter` itself now records for a
+    // stored, non-addon character -- so it must resolve back through the stored loader.
+    it('adopts a stored character from source=armory&ref=<region>/<ruleset>/<slug> at init', async () => {
+      api.route({
+        method: 'GET',
+        pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
+        respond: () =>
+          envelope({
+            spec: 'warrior-fury',
+            gear: { slots: [12640] },
+            talents: '31/0/20',
+            buffs: [],
+            race: 'orc',
+            captured_at: '2026-09-14T09:40:00Z',
+            source: 'fight',
+          }),
+      });
+      const sim = createSimStore({
+        treeVersion: '1.15.9.69722',
+        apiBase: 'https://api.test',
+        pool: createPool({ hardwareConcurrency: 2, spawn: () => fakeWorker() }),
+        source: 'armory',
+        ref: 'us/normal/thrallgar',
+      });
+      await sim.ready;
+      expect(sim.character?.name).toBe('thrallgar');
+      expect(sim.character?.race_slug).toBe('orc');
+    });
+
+    it('bootstraps nothing for an armory ref that does not parse as a character key', async () => {
+      const sim = createSimStore({
+        treeVersion: '1.15.9.69722',
+        apiBase: 'https://api.test',
+        pool: createPool({ hardwareConcurrency: 2, spawn: () => fakeWorker() }),
+        source: 'armory',
+        ref: 'not-a-character-key',
+      });
+      await sim.ready;
+      expect(sim.character).toBeNull();
+      expect(sim.phase).toBe('idle');
     });
 
     it('shows the decoder’s own refusal for a malformed code, rather than throwing', async () => {

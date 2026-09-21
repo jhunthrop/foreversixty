@@ -27,7 +27,6 @@ import { gearFromCombatant, treeRanksFromTalents } from '../report/planner-link'
 import { classSlugFromName } from '../report/tree-sizes';
 import { requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
-import type { CurrentCharacterSource } from '../current-character';
 import {
   PENDING_RACE,
   characterFromFs1,
@@ -40,7 +39,7 @@ import {
 import { fetchSimInput } from './api';
 import { simCopy } from './copy';
 import { recordCurrentCharacter } from './current-character-bridge';
-import type { CharacterSource, SourceKind } from './types';
+import type { CharacterSource } from './types';
 
 export interface LoadContext {
   /** The active data build; every /data/<build>/ fetch and every character carries it. */
@@ -96,27 +95,6 @@ export function sourcePill(source: CharacterSource, now: Date = new Date()): str
 
 async function reference(ctx: LoadContext) {
   return loadReference(ctx.treeVersion);
-}
-
-/**
- * The current-character pointer's source for `fromStoredCharacter`'s non-addon branch.
- * `SimInput.source`'s own doc comment (types.ts) says the API returns `"addon"` or
- * `"fight"` today, with `"armory"` arriving once Forever has a profile API of its own --
- * never `"build"` or `"manual"`. `'addon'` is handled by the addon branch above before this
- * function is ever reached, so all three unexpected kinds fall through to `null` rather
- * than guessing a pointer source for a case the API does not document sending.
- */
-export function pointerSourceForStored(source: SourceKind): CurrentCharacterSource | null {
-  switch (source) {
-    case 'armory':
-      return 'armory';
-    case 'fight':
-      return 'fight';
-    case 'addon':
-    case 'build':
-    case 'manual':
-      return null;
-  }
 }
 
 export async function fromStoredCharacter(
@@ -226,17 +204,34 @@ export async function fromStoredCharacter(
       // true today and true unchanged when Armory lands.
       source: { kind: input.source, ref: characterKey, captured_at: input.captured_at },
     };
-    const pointerSource = pointerSourceForStored(input.source);
-    if (pointerSource !== null) recordCurrentCharacter(character, pointerSource, characterKey, storage);
+    // The pointer's own source is always `'armory'` here, whatever `input.source` says (the
+    // character's own `source.kind` above stays the API's word, unchanged): `'armory'` in a
+    // pointer means "the site's stored character, by key" -- the same `?source=armory&ref=
+    // <key>` URL LandingState.svelte already writes -- and `bootstrapSource` (store.svelte.ts)
+    // resolves that key straight back through this same function. Stamping the API's literal
+    // `input.source` ("fight", say) here would write a pointer no loader can resume: nothing
+    // reads `?source=fight&ref=<region>/<ruleset>/<slug>` as a character key.
+    recordCurrentCharacter(character, 'armory', characterKey, storage);
     return { ok: true, character };
   } catch {
     return { ok: false, message: simCopy.characterFailed };
   }
 }
 
-export async function fromAddonExport(
+/**
+ * The shared body of `fromAddonExport` and `fromManualCode`: an FS1 string, decoded through
+ * the identical `characterFromFs1` grammar, differing only in the `CharacterSource.kind` it
+ * stamps on the character and the pointer source it records -- `'addon'`/`'addon'` for a
+ * pasted or pushed export, `'manual'`/`'code'` for a "Sim this build" link's own unsaved
+ * code. Kept as one private helper (rather than two near-duplicate exported functions) so
+ * a change to the decode step -- the talent lookup, the error message, the pointer write --
+ * only has one place to make it.
+ */
+async function loadFs1Character(
   code: string,
   ctx: LoadContext,
+  kind: 'addon' | 'manual',
+  pointerSource: 'addon' | 'code',
   storage?: Storage,
 ): Promise<SourceResult> {
   // The class is in the string, so the talent file is chosen from it rather than guessed.
@@ -253,12 +248,21 @@ export async function fromAddonExport(
     return { ok: false, message: simCopy.characterFailed };
   }
   const result = characterFromFs1(code, talents, classes, races, {
-    kind: 'addon',
+    kind,
     ref: '',
     captured_at: new Date().toISOString(),
   });
-  if (result.ok) recordCurrentCharacter(result.character, 'addon', code, storage);
+  if (result.ok) recordCurrentCharacter(result.character, pointerSource, code, storage);
   return result;
+}
+
+/** An FS1 string, pasted or pushed by the companion, into an `'addon'`-sourced character. */
+export async function fromAddonExport(
+  code: string,
+  ctx: LoadContext,
+  storage?: Storage,
+): Promise<SourceResult> {
+  return loadFs1Character(code, ctx, 'addon', 'addon', storage);
 }
 
 /**
@@ -277,25 +281,7 @@ export async function fromManualCode(
   ctx: LoadContext,
   storage?: Storage,
 ): Promise<SourceResult> {
-  const classSlug = code.trim().split(':')[2] ?? '';
-  let talents;
-  let classes;
-  let races;
-  try {
-    [talents, { classes, races }] = await Promise.all([
-      loadTalents(ctx.treeVersion, classSlug),
-      reference(ctx),
-    ]);
-  } catch {
-    return { ok: false, message: simCopy.characterFailed };
-  }
-  const result = characterFromFs1(code, talents, classes, races, {
-    kind: 'manual',
-    ref: '',
-    captured_at: new Date().toISOString(),
-  });
-  if (result.ok) recordCurrentCharacter(result.character, 'code', code, storage);
-  return result;
+  return loadFs1Character(code, ctx, 'manual', 'code', storage);
 }
 
 export async function fromPlannerBuild(

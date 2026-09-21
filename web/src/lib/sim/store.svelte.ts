@@ -36,7 +36,7 @@ import {
   type SourceResult,
 } from './sources';
 import { createRequestMethods, runAndSettle, type StoreRequestDeps } from './store-request';
-import type { CharacterPath } from '../characters';
+import { parseCharacterPath, type CharacterPath } from '../characters';
 import type { Estimate, SimProgress, SimRequest, SimResult, SourceKind } from './types';
 import { createPool, type SimPool } from './worker';
 
@@ -60,10 +60,12 @@ function toItemMap(items: readonly Item[]): Map<number, Item> {
   return new Map(items.map((item) => [item.id, item]));
 }
 
-/** The `source`/`ref` half of the URL bootstrap: the three sources a plain string ref
- *  identifies. `'armory'` and `'manual'` have no ref-shaped loader (armory needs a whole
- *  `CharacterPath`; manual is `code`'s job above), so a link naming either bootstraps
- *  nothing rather than guessing at one. */
+/** The `source`/`ref` half of the URL bootstrap: the four sources a plain string ref
+ *  identifies. `'armory'`'s ref is a character key (`<region>/<ruleset>/<slug>`, the same
+ *  key `current-character-bridge.ts` stamps for a stored, non-addon character and
+ *  `LandingState.svelte`'s own "go to /sim" link already writes), parsed into a
+ *  `CharacterPath` for `fromStoredCharacter`. `'manual'` has no ref-shaped loader (it is
+ *  `code`'s job above), so a link naming it bootstraps nothing rather than guessing at one. */
 function bootstrapSource(
   source: SourceKind | '',
   ref: string,
@@ -76,6 +78,10 @@ function bootstrapSource(
       return fromPlannerBuild(ref, ctx);
     case 'fight':
       return fromLoggedFight(ref, ctx);
+    case 'armory': {
+      const path = parseCharacterPath(`/character/${ref}`);
+      return path === null ? null : fromStoredCharacter(path, ctx);
+    }
     default:
       return null;
   }

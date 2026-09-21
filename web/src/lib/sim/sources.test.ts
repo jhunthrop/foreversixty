@@ -11,7 +11,6 @@ import {
   fromPlannerBuild,
   fromStoredCharacter,
   parseFightRef,
-  pointerSourceForStored,
   relativeTime,
   sourcePill,
 } from './sources';
@@ -308,22 +307,29 @@ describe('current-character pointer writes', () => {
     await fromPlannerBuild('zzzzzzzzzzzz', ctx, storage);
     expect(readCurrent(storage)).toEqual(before);
   });
-});
 
-describe('pointerSourceForStored', () => {
-  it('maps armory and fight to themselves', () => {
-    expect(pointerSourceForStored('armory')).toBe('armory');
-    expect(pointerSourceForStored('fight')).toBe('fight');
-  });
-
-  it('writes nothing for a kind the stored-character API never actually reports', () => {
-    // SimInput.source's own doc comment (types.ts) says the API returns "addon" or "fight"
-    // today, with "armory" arriving once Forever has a profile API of its own. It never
-    // documents "build" or "manual" as a value this endpoint sends, and 'addon' is already
-    // handled by fromStoredCharacter's own addon branch before this function is reached --
-    // so all three fall through to null rather than guessing a pointer source.
-    expect(pointerSourceForStored('addon')).toBeNull();
-    expect(pointerSourceForStored('build')).toBeNull();
-    expect(pointerSourceForStored('manual')).toBeNull();
+  it('fromStoredCharacter writes an armory-sourced pointer keyed by the character, even for a fight-sourced read', async () => {
+    // The pointer's own source is always 'armory' for a stored, non-addon character --
+    // "the site's stored character, by key" -- whatever input.source says, because that is
+    // the only URL bootstrapSource can resolve back to fromStoredCharacter. The character's
+    // own `source.kind` (asserted elsewhere) stays the API's literal word, unchanged.
+    const storage = fakeStorage();
+    const path: CharacterPath = { region: 'us', ruleset: 'normal', slug: 'thrallgar' };
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
+      respond: () =>
+        envelope({
+          spec: 'warrior-fury',
+          gear: { slots: [12640] },
+          talents: '31/0/20',
+          buffs: [],
+          race: 'orc',
+          captured_at: '2026-09-14T09:40:00Z',
+          source: 'fight',
+        }),
+    });
+    await fromStoredCharacter(path, ctx, storage);
+    expect(readCurrent(storage)).toMatchObject({ source: 'armory', ref: 'us/normal/thrallgar' });
   });
 });

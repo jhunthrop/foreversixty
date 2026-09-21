@@ -47,6 +47,10 @@ function store(tool: (typeof TOOLS)[number] = 'gear', overrides: StoreOverrides 
 
 beforeEach(() => api.install());
 afterEach(() => api.reset());
+// Fix round 1: every loader below writes the current-character pointer against real jsdom
+// localStorage (no `storage` override here, the same as every real call site), so one
+// test's write must not leak into the next test's read.
+afterEach(() => localStorage.clear());
 
 describe('TOOLS and MODE_OF_TOOL', () => {
   it('maps each tool page to its bulk mode', () => {
