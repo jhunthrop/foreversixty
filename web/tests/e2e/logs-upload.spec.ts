@@ -1,5 +1,5 @@
 // web/tests/e2e/logs-upload.spec.ts
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 const fulfil = (body: unknown, status = 200) => ({
   status,
@@ -7,19 +7,24 @@ const fulfil = (body: unknown, status = 200) => ({
   body: JSON.stringify({ ok: status < 400, data: body, error: null, request_id: 'r' }),
 });
 
-test('a log uploads part by part and hands off to the report', async ({ page }) => {
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(
-      fulfil({
-        user: { id: 1, battletag: 'F#1', email: null, role: 'user', anonymize: false },
-        characters: [],
-        guilds: [],
-      }),
-    ),
-  );
+const SIGNED_IN = {
+  user: { id: 1, battletag: 'F#1', email: null, role: 'user', anonymize: false },
+  characters: [],
+  guilds: [],
+};
+
+/** POST /v1/uploads needs a session, and the form says so up front, so every test that
+ *  drives the form is signed in. */
+async function signIn(page: Page): Promise<void> {
+  await page.route('**/v1/me', (route) => route.fulfill(fulfil(SIGNED_IN)));
+  await page.route('**/v1/devices', (route) => route.fulfill(fulfil({ devices: [] })));
   await page.route('**/v1/reports?mine=1**', (route) =>
     route.fulfill(fulfil({ rows: [], total: 0, page: 1, per_page: 100 })),
   );
+}
+
+test('a log uploads part by part and hands off to the report', async ({ page }) => {
+  await signIn(page);
   await page.route('**/v1/uploads', (route) =>
     route.fulfill(
       fulfil({
@@ -45,7 +50,9 @@ test('a log uploads part by part and hands off to the report', async ({ page }) 
     buffer: Buffer.from('9/26 20:10:00.000  COMBAT_LOG_VERSION,16\n'),
   });
   await page.getByLabel('Title').fill('Tuesday');
-  await page.getByRole('radio', { name: 'Unlisted' }).check();
+  await page.getByText('Unlisted', { exact: true }).click();
+  await expect(page.getByRole('radio', { name: 'Unlisted' })).toBeChecked();
+  await expect(page.getByTestId('upload-visibility-note')).toContainText('only people with the link');
   await page.getByTestId('upload-start').click();
 
   await page.waitForURL('**/reports/fixture2abcd');
@@ -57,7 +64,7 @@ test('a log uploads part by part and hands off to the report', async ({ page }) 
 });
 
 test('a failed part shows what went wrong instead of a spinner', async ({ page }) => {
-  await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
+  await signIn(page);
   await page.route('**/v1/uploads', (route) =>
     route.fulfill(
       fulfil({
@@ -83,7 +90,7 @@ test('a failed part shows what went wrong instead of a spinner', async ({ page }
 // The signal was only read between parts and nothing ever called xhr.abort(), so there was
 // no way to stop an upload at all: no control on the page, and no effect if there had been.
 test('cancel stops the part in flight and leaves the form usable', async ({ page }) => {
-  await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
+  await signIn(page);
   let completed = 0;
   await page.route('**/v1/uploads', (route) =>
     route.fulfill(
@@ -133,18 +140,7 @@ test('cancel stops the part in flight and leaves the form usable', async ({ page
 });
 
 test('the pairing code and the companion downloads are on the page', async ({ page }) => {
-  await page.route('**/v1/me', (route) =>
-    route.fulfill(
-      fulfil({
-        user: { id: 1, battletag: 'F#1', email: null, role: 'user', anonymize: false },
-        characters: [],
-        guilds: [],
-      }),
-    ),
-  );
-  await page.route('**/v1/reports?mine=1**', (route) =>
-    route.fulfill(fulfil({ rows: [], total: 0, page: 1, per_page: 100 })),
-  );
+  await signIn(page);
   await page.route('**/v1/devices/pair', (route) =>
     route.fulfill(fulfil({ code: '4821-9930', expires_in: 600 })),
   );
@@ -153,4 +149,33 @@ test('the pairing code and the companion downloads are on the page', async ({ pa
   await expect(page.getByTestId('companion-downloads').getByRole('link')).toHaveCount(4);
   await page.getByRole('button', { name: 'Show pairing code' }).click();
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
+});
+
+test('a signed-out visitor is told to sign in before they pick a file', async ({ page }) => {
+  await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
+  await page.goto('/logs');
+
+  // Three places need an account, and each says so with a real button rather than a link
+  // buried in a sentence.
+  // The reports panel hydrates only once it is on screen (client:visible), so the page is
+  // scrolled to its end before the prompts are looked for.
+  await page.getByRole('contentinfo').scrollIntoViewIfNeeded();
+  for (const id of ['pairing-signin', 'upload-signin', 'reports-signin']) {
+    await expect(page.getByTestId(id).getByRole('link', { name: 'Sign in with Battle.net' })).toHaveAttribute(
+      'href',
+      /\/v1\/auth\/battlenet\/start\?next=%2Flogs$/,
+    );
+  }
+  await expect(page.getByTestId('upload-file')).toBeDisabled();
+  await expect(page.getByTestId('upload-start')).toBeDisabled();
+});
+
+test('the two ways in are the first thing on the page and lead to their panels', async ({ page }) => {
+  await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
+  await page.goto('/logs');
+  const entries = page.getByTestId('logs-entries').getByRole('link');
+  await expect(entries).toHaveCount(2);
+  await entries.nth(1).click();
+  await expect(page).toHaveURL(/#upload$/);
+  await expect(page.getByTestId('upload')).toBeInViewport();
 });

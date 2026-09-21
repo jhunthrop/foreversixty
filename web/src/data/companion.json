@@ -1,9 +1,25 @@
 {
   "releasesUrl": "https://github.com/jhunthrop/foreversixty/releases",
   "downloads": [
-    { "platform": "macOS, Apple silicon", "asset": "foreversixty-companion_darwin_arm64", "signed": true },
-    { "platform": "macOS, Intel", "asset": "foreversixty-companion_darwin_amd64", "signed": true },
-    { "platform": "Windows", "asset": "foreversixty-companion_windows_amd64.exe", "signed": true },
-    { "platform": "Linux", "asset": "foreversixty-companion_linux_amd64", "signed": false }
+    {
+      "platform": "macOS, Apple silicon",
+      "asset": "foreversixty-companion_darwin_arm64",
+      "firstRun": "Not notarized yet. The first time, right-click it and choose Open."
+    },
+    {
+      "platform": "macOS, Intel",
+      "asset": "foreversixty-companion_darwin_amd64",
+      "firstRun": "Not notarized yet. The first time, right-click it and choose Open."
+    },
+    {
+      "platform": "Windows",
+      "asset": "foreversixty-companion_windows_amd64.exe",
+      "firstRun": "Not signed yet. SmartScreen will ask: choose More info, then Run anyway."
+    },
+    {
+      "platform": "Linux",
+      "asset": "foreversixty-companion_linux_amd64",
+      "firstRun": "Mark it executable first: chmod +x, then run it."
+    }
   ]
 }

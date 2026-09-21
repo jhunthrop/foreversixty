@@ -3,8 +3,10 @@
      there is one "who is signed in" fetch per page rather than two. -->
 <script lang="ts">
   import { REPORTS_PER_PAGE, listMyReports, type MyReport } from '../lib/account/api';
+  import SignInPrompt from './SignInPrompt.svelte';
 
-  let { signedIn }: { signedIn: boolean } = $props();
+  /** `heading` is off where the page already titles the block, as /logs' panel does. */
+  let { signedIn, heading = true }: { signedIn: boolean; heading?: boolean } = $props();
 
   let rows = $state<MyReport[]>([]);
   let total = $state(0);
@@ -34,9 +36,9 @@
 </script>
 
 <section class="flex flex-col gap-3" data-testid="my-reports">
-  <h2 class="section-title text-[18px]">Your reports</h2>
+  {#if heading}<h2 class="section-title text-[18px]">Your reports</h2>{/if}
   {#if !signedIn}
-    <p class="text-muted text-[14px]"><a href="/login">Sign in</a> to see the reports you own.</p>
+    <SignInPrompt line="Sign in to see the reports you own." testid="reports-signin" />
   {:else if status === 'loading'}
     <p class="text-muted text-[14px]">Loading your reports.</p>
   {:else if status === 'failed'}

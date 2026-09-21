@@ -41,6 +41,26 @@ describe('/logs', () => {
     expect(html).toContain('latest/download/foreversixty-companion_windows_amd64.exe');
   });
 
+  it('says what each build does on first run instead of claiming a signature it does not have', async () => {
+    // companion-v0.1.33: the macOS builds are ad-hoc signed and the Windows build carries no
+    // Authenticode certificate, so "signed" beside them was untrue. Each row says what the
+    // operating system will do instead.
+    const html = await container.renderToString(Logs);
+    for (const entry of companion.downloads) {
+      expect(entry.firstRun.length).toBeGreaterThan(0);
+      expect(html).toContain(entry.firstRun);
+    }
+    expect(html).not.toMatch(/>\s*signed\s*</);
+  });
+
+  it('opens with the two ways in, each a link to its own panel', async () => {
+    const html = await container.renderToString(Logs);
+    expect(html).toContain('href="#companion"');
+    expect(html).toContain('href="#upload"');
+    expect(html).toContain('id="companion"');
+    expect(html).toContain('id="upload"');
+  });
+
   it('uses no emoji, and no exclamation marks in its copy', async () => {
     const html = await container.renderToString(Logs);
     expect(html).not.toMatch(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u);
