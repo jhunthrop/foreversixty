@@ -204,6 +204,22 @@ Both run the same image as the API, dispatched on their first argument.
       --image <the API image> --region us-east1 --args sim-validate \
       --cpu 4 --memory 4Gi --task-timeout 30m
 
+The entitlements/billing lane adds two more, both cheap and short-lived — `stripe-setup` is
+run by hand once per mode (see "First-time setup" above); `stripe-reconcile` is scheduled
+nightly the same way `sim-validate` already is:
+
+    gcloud run jobs create stripe-reconcile \
+      --image <the API image> --region us-east1 --args stripe-reconcile \
+      --cpu 1 --memory 512Mi --task-timeout 5m
+
+    gcloud scheduler jobs create http stripe-reconcile-nightly \
+      --schedule "0 4 * * *" --uri "https://us-east1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/foreversixty/jobs/stripe-reconcile:run" \
+      --http-method POST --oauth-service-account-email api-runtime@foreversixty.iam.gserviceaccount.com
+
+`stripe-reconcile` heals any webhook Stripe's own three-day retry window never successfully
+delivered (design spec §2.8): it is a backstop, not the primary path — the webhook itself
+(`POST /v1/billing/webhook`) does the real-time work.
+
 `sim-run` is executed by the API for one premium run and takes the sim
 id as a second argument; `sim-validate` is scheduled nightly by Cloud
 Scheduler and takes none. Both need `/engine/forever-sim` in the image
@@ -430,6 +446,34 @@ Expected: `{"ok":true,"data":{"status":"ok"},...}`.
 
 After this, every push to `main` that touches `api/**` or `data/builds/**` runs tests, builds, and
 deploys automatically.
+
+### 3. Stripe (added by the entitlements/billing lane, done once test mode is ready)
+
+Not required for the API to start or serve anything else — every billing route answers
+`503 billing_unavailable` until these are set (`config.Config.StripeConfigured`). When ready:
+
+```bash
+printf '%s' '<stripe restricted key, sk_test_... or sk_live_...>' | gcloud secrets create STRIPE_SECRET_KEY --data-file=-
+printf '%s' '<stripe webhook signing secret, whsec_...>'          | gcloud secrets create STRIPE_WEBHOOK_SECRET --data-file=-
+gcloud secrets add-iam-policy-binding STRIPE_SECRET_KEY --member serviceAccount:api-runtime@foreversixty.iam.gserviceaccount.com --role roles/secretmanager.secretAccessor
+gcloud secrets add-iam-policy-binding STRIPE_WEBHOOK_SECRET --member serviceAccount:api-runtime@foreversixty.iam.gserviceaccount.com --role roles/secretmanager.secretAccessor
+gcloud run services update api --update-secrets STRIPE_SECRET_KEY=STRIPE_SECRET_KEY:latest,STRIPE_WEBHOOK_SECRET=STRIPE_WEBHOOK_SECRET:latest \
+  --update-env-vars STRIPE_ENVIRONMENT=live
+```
+
+`STRIPE_ENVIRONMENT` must be `live` exactly when `PUBLIC_BASE_URL` is `https://foreversixty.gg`,
+and the key's own prefix (`sk_live_`/`rk_live_` vs `sk_test_`/`rk_test_`) must agree with it —
+the service refuses to start otherwise (`config.ValidateStripeKeyEnvironment`). Neither secret is
+ever logged. See the entitlements/payments design spec §3 for the full threat model, and create
+the key as a Restricted API key (not the unrestricted default secret key) with the scopes listed
+there.
+
+Run `stripe-setup` once per mode after the secrets are set, to create the four Products/Prices
+(idempotent, safe to re-run):
+
+```bash
+gcloud run jobs execute api --region us-east1 --args stripe-setup --wait
+```
 
 ## Logs
 
