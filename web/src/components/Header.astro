@@ -1,25 +1,49 @@
 ---
 // web/src/components/Header.astro
 import communityLinks from '../data/links.json';
+import {
+  ADDON_NAV_ITEM,
+  PRIMARY_NAV_ITEMS,
+  REFERENCE_NAV_ITEMS,
+  isNavItemCurrent,
+  isReferenceCurrent,
+} from '../lib/nav';
 
-const nav = [
-  ['Planner', '/planner'],
-  ['Simulator', '/sim'],
-  ['Logs', '/logs'],
-  ['Rankings', '/rankings'],
-  ['Classes', '/classes'],
-  ['Guides', '/guides'],
-  ['Zones', '/zones'],
-  ['Dungeons', '/dungeons'],
-  ['Changelog', '/changelog'],
-] as const;
+interface Props {
+  /** The current page's path, e.g. `/sim/gear` -- Base.astro's own `path` prop, passed
+   * through so aria-current can mark the active tool and, when one of its children is
+   * current, the Reference summary. Same idea as SimTabs.astro's `currentPath` prop. */
+  path: string;
+}
+
+const { path } = Astro.props;
+const referenceCurrent = isReferenceCurrent(path);
+
+// "Logs" is the one label here short enough (37px) to miss the 44px hit-target floor on
+// its width alone -- the others all clear it on text length. "Reference" and "The addon"
+// both clear it on text length too. A little horizontal padding, only where needed, closes
+// the gap without widening every other nav entry to match.
+const NARROW_LABELS = new Set(['Logs']);
+function itemClass(label: string, current: boolean): (string | false)[] {
+  return [
+    'inline-flex shrink-0 items-center min-h-11 md:min-h-0 whitespace-nowrap text-nav hover:text-strong',
+    NARROW_LABELS.has(label) && 'px-2',
+    current && 'text-gold hover:text-gold',
+  ];
+}
 ---
 
 <!-- Phone: an explicit two-row grid -- wordmark and Discord on the first row, the nav on the
      second. No hamburger, so no client JS on a content page. The nav is one non-wrapping,
      horizontally scrollable row rather than a wrapping one: the labels already run past a
      360px viewport, so a wrapping nav changes height when Barlow swaps in for its fallback
-     and shifts the whole page down (a CLS the Lighthouse budget rejects). -->
+     and shifts the whole page down (a CLS the Lighthouse budget rejects). The Reference
+     disclosure's panel is `position: fixed` (see the <style> block below): it is a
+     descendant of this scrolling row, and a horizontally-scrolling ancestor clips an
+     absolutely-positioned descendant's overflow on the other axis too (the CSS spec folds
+     `overflow-y: visible` into `auto` whenever `overflow-x` is not `visible`), so only
+     `fixed` positioning lets the panel render as a full-width sheet under the header
+     instead of being clipped to the nav row's own height. -->
 <header class="relative grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 px-[18px] md:flex md:justify-between md:px-12 py-3 md:py-[18px] border-b border-line/60">
   <a
     href="/"
@@ -29,23 +53,74 @@ const nav = [
   </a>
   <nav
     aria-label="Primary"
-    class="col-span-2 row-start-2 md:row-auto -mx-[18px] px-[18px] md:mx-0 md:px-0 flex flex-nowrap overflow-x-auto md:overflow-visible gap-x-5 md:gap-x-[26px] text-[13px] font-semibold tracking-[0.12em] uppercase"
+    data-testid="primary-nav"
+    class="nav-scroll-fade col-span-2 row-start-2 md:row-auto -mx-[18px] px-[18px] md:mx-0 md:px-0 flex flex-nowrap overflow-x-auto md:overflow-visible gap-x-5 md:gap-x-[26px] text-[13px] font-semibold tracking-[0.12em] uppercase"
   >
-    {nav.map(([label, href]) => (
-      <a
-        href={href}
-        class:list={[
-          'inline-flex shrink-0 items-center min-h-11 md:min-h-0 whitespace-nowrap text-nav hover:text-strong',
-          // "Logs" is the one label here short enough (37px) to miss the 44px hit-target
-          // floor on its width alone -- the others all clear it on text length. A little
-          // horizontal padding, only on this one link, closes the gap without widening
-          // every other nav entry to match.
-          label === 'Logs' && 'px-2',
-        ]}
+    {PRIMARY_NAV_ITEMS.map((item) => {
+      const current = isNavItemCurrent(item, path);
+      return (
+        <a
+          href={item.href}
+          aria-current={current ? 'page' : undefined}
+          class:list={itemClass(item.label, current)}
+        >
+          {item.label}
+        </a>
+      );
+    })}
+    <details class="reference-disclosure group relative shrink-0">
+      <summary
+        aria-current={referenceCurrent ? 'page' : undefined}
+        class:list={[...itemClass('Reference', referenceCurrent), 'list-none marker:content-none']}
       >
-        {label}
-      </a>
-    ))}
+        Reference
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          class="inline-block transition-transform duration-[120ms] group-open:rotate-180"
+        >
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </summary>
+      <!-- 137px: the header's measured getBoundingClientRect().height on /classes at
+           360x800 (Playwright, chromium), the phone breakpoint this fixed panel targets. -->
+      <div class="reference-panel fixed md:absolute inset-x-0 md:inset-x-auto top-[137px] md:top-full md:left-0 md:mt-2 md:w-[200px] bg-raised border border-line rounded-panel md:rounded-panel flex flex-col md:py-2 z-30 normal-case tracking-normal font-semibold">
+        {REFERENCE_NAV_ITEMS.map((item) => {
+          const current = isNavItemCurrent(item, path);
+          return (
+            <a
+              href={item.href}
+              aria-current={current ? 'page' : undefined}
+              class:list={[
+                'flex min-h-11 items-center px-[18px] md:px-4 text-nav hover:text-strong border-b border-line-soft last:border-b-0 md:border-none',
+                current && 'text-gold hover:text-gold',
+              ]}
+            >
+              {item.label}
+            </a>
+          );
+        })}
+      </div>
+    </details>
+    {(() => {
+      const current = isNavItemCurrent(ADDON_NAV_ITEM, path);
+      return (
+        <a
+          href={ADDON_NAV_ITEM.href}
+          aria-current={current ? 'page' : undefined}
+          class:list={itemClass(ADDON_NAV_ITEM.label, current)}
+        >
+          {ADDON_NAV_ITEM.label}
+        </a>
+      );
+    })()}
   </nav>
   <div class="col-start-2 row-start-1 flex items-center justify-self-end gap-3">
     <slot name="session" />
@@ -70,3 +145,29 @@ const nav = [
     </a>
   </div>
 </header>
+
+<style>
+  /* Right-edge scroll fade, phone only (`md:` and up sets `overflow-visible` on the row, so
+     nothing scrolls there and this paints nothing extra). Two-layer scroll-shadow trick
+     (Lea Verou / CSS-Tricks "scroll shadows"): the `local`-attached layer moves with the
+     content and is solid `--color-bg` fading to transparent, anchored at the right edge; at
+     maximum scroll it exactly covers the `scroll`-attached radial-gradient "shadow" layer
+     beneath it, hiding the fade once there is nothing left to scroll to. Both layers are
+     no-ops until there is overflow to scroll in the first place. */
+  @media (max-width: 767px) {
+    .nav-scroll-fade {
+      background-repeat: no-repeat;
+      background-color: var(--color-bg);
+      background-image:
+        linear-gradient(to left, var(--color-bg) 30%, transparent),
+        radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.45), transparent);
+      background-position:
+        100% 0,
+        100% 0;
+      background-size:
+        32px 100%,
+        14px 100%;
+      background-attachment: local, scroll;
+    }
+  }
+</style>
