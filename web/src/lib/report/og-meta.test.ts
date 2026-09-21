@@ -4,6 +4,9 @@ import { fixtureBulkResult, fixtureResult, fixtureWeightsResult } from '../../te
 import type { ReportMeta } from './types';
 import {
   characterShellMeta,
+  guildClaimShellMeta,
+  guildInviteShellMeta,
+  guildSettingsShellMeta,
   guildShellMeta,
   rankingsShellMeta,
   reportShellMeta,
@@ -93,6 +96,32 @@ describe('shell unfurl values', () => {
       },
     );
     expect(shell.description).toBe('1 boss down over 12 pulls.');
+  });
+});
+
+describe('guild sub-route shells', () => {
+  it('titles the claim page without indexable content', () => {
+    const shell = guildClaimShellMeta(
+      { region: 'us', ruleset: 'hardcore', slug: 'the-last-watch' },
+      'The Last Watch',
+    );
+    expect(shell.title).toBe('Claim The Last Watch · Forever Sixty');
+    expect(shell.canonical).toBe('https://foreversixty.gg/guild/us/hardcore/the-last-watch/claim');
+  });
+
+  it('titles the settings page', () => {
+    const shell = guildSettingsShellMeta(
+      { region: 'us', ruleset: 'hardcore', slug: 'the-last-watch' },
+      'The Last Watch',
+    );
+    expect(shell.title).toBe('The Last Watch settings · Forever Sixty');
+    expect(shell.canonical).toBe('https://foreversixty.gg/guild/us/hardcore/the-last-watch/settings');
+  });
+
+  it('gives the invite page a generic, non-guild-scoped title (ruling 6: no public lookup by token)', () => {
+    const shell = guildInviteShellMeta('abc-123');
+    expect(shell.title).toBe('Join a guild · Forever Sixty');
+    expect(shell.canonical).toBe('https://foreversixty.gg/guild/invite/abc-123');
   });
 });
 

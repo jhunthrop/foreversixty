@@ -32,12 +32,24 @@ export function fixtureRankingsPaths(): { params: { slug: string } }[] {
 export const FIXTURE_CHARACTER_PATH = 'us/hardcore/elyra-duskvale';
 export const FIXTURE_GUILD_PATH = 'us/hardcore/the-last-watch';
 
+// The three new guild sub-routes' own fixture paths, same pairing as FIXTURE_GUILD_PATH:
+// what Playwright navigates to and what [...path].astro prerenders.
+export const FIXTURE_GUILD_CLAIM_PATH = `${FIXTURE_GUILD_PATH}/claim`;
+export const FIXTURE_GUILD_SETTINGS_PATH = `${FIXTURE_GUILD_PATH}/settings`;
+export const FIXTURE_GUILD_INVITE_TOKEN = 'fixtureinvitetoken1';
+
 export function fixtureCharacterPaths(): { params: { path: string } }[] {
   return process.env.FOREVER_DATA === 'fixture' ? [{ params: { path: FIXTURE_CHARACTER_PATH } }] : [];
 }
 
 export function fixtureGuildPaths(): { params: { path: string } }[] {
-  return process.env.FOREVER_DATA === 'fixture' ? [{ params: { path: FIXTURE_GUILD_PATH } }] : [];
+  if (process.env.FOREVER_DATA !== 'fixture') return [];
+  return [
+    { params: { path: FIXTURE_GUILD_PATH } },
+    { params: { path: FIXTURE_GUILD_CLAIM_PATH } },
+    { params: { path: FIXTURE_GUILD_SETTINGS_PATH } },
+    { params: { path: `invite/${FIXTURE_GUILD_INVITE_TOKEN}` } },
+  ];
 }
 
 // The simulator's fixture saved sim, same pairing as the four above: this is the id

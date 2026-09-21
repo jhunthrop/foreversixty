@@ -38,7 +38,7 @@ export interface ShellMeta {
  * cards. The other three shells take the site's own static card, which is already built by
  * src/pages/og/[...path].png.ts and needs no per-row rendering.
  */
-const SITE_CARD = `${SITE_BASE_URL}/og/index.png`;
+export const SITE_CARD = `${SITE_BASE_URL}/og/index.png`;
 
 function isoDate(value: string): string {
   const at = new Date(value);
@@ -119,6 +119,39 @@ export function guildShellMeta(path: CharacterPath, head: GuildHead): ShellMeta 
     description: `${plural(kills, 'boss down', 'bosses down')} over ${plural(pulls, 'pull', 'pulls')}.`,
     image: SITE_CARD,
     canonical: `${SITE_BASE_URL}/guild/${path.region}/${path.ruleset}/${path.slug}`,
+  };
+}
+
+export function guildClaimShellMeta(path: CharacterPath, guildName: string): ShellMeta {
+  return {
+    title: `Claim ${guildName} · Forever Sixty`,
+    description: `Claim officer control of ${guildName}.`,
+    image: SITE_CARD,
+    canonical: `${SITE_BASE_URL}/guild/${path.region}/${path.ruleset}/${path.slug}/claim`,
+  };
+}
+
+export function guildSettingsShellMeta(path: CharacterPath, guildName: string): ShellMeta {
+  return {
+    title: `${guildName} settings · Forever Sixty`,
+    description: `Officer settings for ${guildName}.`,
+    image: SITE_CARD,
+    canonical: `${SITE_BASE_URL}/guild/${path.region}/${path.ruleset}/${path.slug}/settings`,
+  };
+}
+
+/**
+ * Never guild-scoped (plan ruling 6): there is no unauthenticated endpoint to look up a
+ * guild by invite token — accepting the invite is the only route that reads one, and it is
+ * destructive and session-gated, so the Worker's shell (which must never carry a session)
+ * cannot call it.
+ */
+export function guildInviteShellMeta(token: string): ShellMeta {
+  return {
+    title: 'Join a guild · Forever Sixty',
+    description: 'Join a Forever Sixty guild by invite link.',
+    image: SITE_CARD,
+    canonical: `${SITE_BASE_URL}/guild/invite/${token}`,
   };
 }
 
