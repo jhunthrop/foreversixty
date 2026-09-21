@@ -3,6 +3,7 @@ package rating
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"time"
@@ -135,4 +136,119 @@ func insertCardRow(ctx context.Context, tx pgx.Tx, cr CardRow) error {
 		return fmt.Errorf("rating: write row %s/%d/%s: %w", cr.ReportID, cr.FightIndex, cr.PlayerKey, err)
 	}
 	return nil
+}
+
+// cursorPos is the trend list's keyset position: the (fought_at, report_id, fight_index)
+// of the last row a page returned, matching reports/recent.go's own cursor shape.
+type cursorPos struct {
+	FoughtAt   time.Time
+	ReportID   string
+	FightIndex int
+}
+
+// ReadFightRatings reads every stored rating row for one fight. ok is false when the
+// fight has no rows at all - never verified, still queued in the async Rater, or (per §4.3)
+// a fight this lane never rates at all (trash, no ranker, or a report that was never
+// Ranked). The caller (the handler) does not distinguish those three at the HTTP layer:
+// all read as 404, matching how a report's own file routes already treat "nothing here"
+// without describing why.
+func (s *Store) ReadFightRatings(ctx context.Context, reportID string, fightIndex int) ([]CardRow, bool, error) {
+	rows, err := s.Pool.Query(ctx,
+		`select player_key, player_name, coalesce(class, ''), coalesce(spec, ''), coalesce(role, ''),
+		    encounter_id, difficulty, coalesce(size, 0), coalesce(duration_ms, 0), kill, kill_time_band,
+		    overall, overall_uncapped, overall_capped, components, model_version, fought_at
+		 from rating_scores where report_id = $1 and fight_index = $2 order by player_name`,
+		reportID, fightIndex)
+	if err != nil {
+		return nil, false, fmt.Errorf("rating: read %s/%d: %w", reportID, fightIndex, err)
+	}
+	defer rows.Close()
+	var out []CardRow
+	for rows.Next() {
+		var cr CardRow
+		if err := rows.Scan(&cr.PlayerKey, &cr.PlayerName, &cr.Class, &cr.Spec, &cr.Role,
+			&cr.EncounterID, &cr.Difficulty, &cr.Size, &cr.DurationMS, &cr.Kill, &cr.KillTimeBand,
+			&cr.Overall, &cr.OverallUncapped, &cr.OverallCapped, &cr.Components, &cr.ModelVersion, &cr.FoughtAt); err != nil {
+			return nil, false, fmt.Errorf("rating: scan %s/%d: %w", reportID, fightIndex, err)
+		}
+		cr.ReportID, cr.FightIndex = reportID, fightIndex
+		out = append(out, cr)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, false, err
+	}
+	return out, len(out) > 0, nil
+}
+
+// anonymized reports whether playerKey's owning account has asked to be anonymous
+// (users.anonymize), joined the same way auth.User.PublicName's own doc names as the join
+// a character-scoped anonymize check would need. A player_key with no characters row, or
+// no linked account, is never anonymized - there is nothing to hide.
+func (s *Store) anonymized(ctx context.Context, playerKey string) (bool, error) {
+	var anon bool
+	err := s.Pool.QueryRow(ctx,
+		`select u.anonymize from characters c join users u on u.id = c.user_id where c.key = $1`,
+		playerKey).Scan(&anon)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return false, nil
+	}
+	if err != nil {
+		return false, fmt.Errorf("rating: anonymize check %s: %w", playerKey, err)
+	}
+	return anon, nil
+}
+
+// characterTrendPageSize bounds one page of the character endpoint's trend[]; a career's
+// worth of rated fights is unbounded, so this list is paginated like every other list read
+// in this API (reports/recent.go's own convention).
+const characterTrendPageSize = 20
+
+// ReadCharacterRating reads up to limit rows of playerKey's rating history, newest first,
+// from public reports only (spec §5.1's ruling: "public at time of query", enforced here
+// by joining the live reports.visibility column rather than trusting anything cached on
+// the row at write time), starting after before when it is non-nil. hasMore is true when
+// a further page exists.
+func (s *Store) ReadCharacterRating(ctx context.Context, playerKey string, limit int, before *cursorPos) ([]CardRow, bool, error) {
+	if limit <= 0 || limit > characterTrendPageSize {
+		limit = characterTrendPageSize
+	}
+	query := `select rs.player_key, rs.player_name, coalesce(rs.class, ''), coalesce(rs.spec, ''),
+	    coalesce(rs.role, ''), rs.encounter_id, rs.difficulty, coalesce(rs.size, 0),
+	    coalesce(rs.duration_ms, 0), rs.kill, rs.kill_time_band, rs.overall, rs.overall_uncapped,
+	    rs.overall_capped, rs.components, rs.model_version, rs.report_id, rs.fight_index, rs.fought_at
+	 from rating_scores rs
+	 join reports r on r.id = rs.report_id
+	 where rs.player_key = $1 and r.visibility = 'public'`
+	args := []any{playerKey}
+	if before != nil {
+		query += ` and (rs.fought_at, rs.report_id, rs.fight_index) < ($2, $3, $4)`
+		args = append(args, before.FoughtAt, before.ReportID, before.FightIndex)
+	}
+	query += ` order by rs.fought_at desc, rs.report_id desc, rs.fight_index desc limit $` + fmt.Sprint(len(args)+1)
+	args = append(args, limit+1) // one extra row, to answer hasMore without a second query
+
+	rows, err := s.Pool.Query(ctx, query, args...)
+	if err != nil {
+		return nil, false, fmt.Errorf("rating: read character %s: %w", playerKey, err)
+	}
+	defer rows.Close()
+	var out []CardRow
+	for rows.Next() {
+		var cr CardRow
+		if err := rows.Scan(&cr.PlayerKey, &cr.PlayerName, &cr.Class, &cr.Spec, &cr.Role,
+			&cr.EncounterID, &cr.Difficulty, &cr.Size, &cr.DurationMS, &cr.Kill, &cr.KillTimeBand,
+			&cr.Overall, &cr.OverallUncapped, &cr.OverallCapped, &cr.Components, &cr.ModelVersion,
+			&cr.ReportID, &cr.FightIndex, &cr.FoughtAt); err != nil {
+			return nil, false, fmt.Errorf("rating: scan character %s: %w", playerKey, err)
+		}
+		out = append(out, cr)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, false, err
+	}
+	hasMore := len(out) > limit
+	if hasMore {
+		out = out[:limit]
+	}
+	return out, hasMore, nil
 }

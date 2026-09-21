@@ -108,3 +108,66 @@ func TestRateFightStoresSixComponentsPerPlayer(t *testing.T) {
 		t.Fatalf("stored %d components, want 6", len(dtos))
 	}
 }
+
+func TestReadFightRatingsReturnsTheStoredRows(t *testing.T) {
+	pool := testPool(t)
+	store := &Store{Pool: pool}
+	ctx := context.Background()
+	f := fightFixture("store-read-1", true,
+		summary.RosterRow{GUID: "g1", Name: "Readme", Class: "Rogue", Spec: "Combat", Role: "dps"},
+	)
+	t.Cleanup(func() { pool.Exec(ctx, `delete from rating_scores where report_id = $1`, f.ReportID) })
+	if err := store.RateFight(ctx, f); err != nil {
+		t.Fatal(err)
+	}
+	rows, ok, err := store.ReadFightRatings(ctx, f.ReportID, f.FightIndex)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !ok || len(rows) != 1 {
+		t.Fatalf("ok=%v rows=%d, want ok=true rows=1", ok, len(rows))
+	}
+	if rows[0].PlayerName != "Readme" {
+		t.Errorf("player_name = %q", rows[0].PlayerName)
+	}
+}
+
+func TestReadFightRatingsMissingFightReportsNotFound(t *testing.T) {
+	pool := testPool(t)
+	store := &Store{Pool: pool}
+	_, ok, err := store.ReadFightRatings(context.Background(), "no-such-report", 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ok {
+		t.Error("a fight with no rows must report ok = false, not an empty success")
+	}
+}
+
+func TestReadCharacterRatingExcludesAnonymizedPlayers(t *testing.T) {
+	pool := testPool(t)
+	store := &Store{Pool: pool}
+	ctx := context.Background()
+	if _, err := pool.Exec(ctx,
+		`insert into users (email, anonymize) values ('rating-anon-test@example.com', true) on conflict (email) do update set anonymize = true`); err != nil {
+		t.Fatal(err)
+	}
+	var uid int64
+	pool.QueryRow(ctx, `select id from users where email = 'rating-anon-test@example.com'`).Scan(&uid)
+	if _, err := pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, user_id) values ('us/normal/anonme', 'us', 'normal', 'Anonme', $1)
+		 on conflict (key) do update set user_id = $1`, uid); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		pool.Exec(ctx, `delete from characters where key = 'us/normal/anonme'`)
+		pool.Exec(ctx, `delete from users where email = 'rating-anon-test@example.com'`)
+	})
+	anon, err := store.anonymized(ctx, "us/normal/anonme")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !anon {
+		t.Error("expected the player to read as anonymized")
+	}
+}
