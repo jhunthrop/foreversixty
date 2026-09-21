@@ -5,12 +5,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"net/http"
 	"time"
 
 	"github.com/jackc/pgx/v5"
-
-	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 )
 
 var (
@@ -201,10 +198,4 @@ func (s *Store) ReleaseClaim(ctx context.Context, guildID, userID int64, moderat
 		return fmt.Errorf("guilds: release claim: %w", err)
 	}
 	return nil
-}
-
-// acceptInvite is implemented in invite.go (a later task in this lane's
-// plan); this stub exists only so claim.go's Mount compiles until then.
-func (s *Service) acceptInvite(w http.ResponseWriter, r *http.Request) {
-	httpx.WriteError(w, r, http.StatusNotImplemented, "internal", "not implemented yet", nil)
 }
