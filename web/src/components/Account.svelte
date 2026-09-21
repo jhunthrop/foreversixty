@@ -116,23 +116,29 @@
     const value = (event.currentTarget as HTMLSelectElement).value as GuildConsent;
     guildBusy = guildId;
     void run(async () => {
-      await updateConsent(guildId, value);
-      if (me !== null) {
-        me = {
-          ...me,
-          guilds: me.guilds.map((g) => (g.id === guildId ? { ...g, consent: value } : g)),
-        };
+      try {
+        await updateConsent(guildId, value);
+        if (me !== null) {
+          me = {
+            ...me,
+            guilds: me.guilds.map((g) => (g.id === guildId ? { ...g, consent: value } : g)),
+          };
+        }
+      } finally {
+        guildBusy = null;
       }
-      guildBusy = null;
     });
   };
 
   const onLeaveGuild = (guildId: number): void => {
     guildBusy = guildId;
     void run(async () => {
-      await leaveGuild(guildId);
-      if (me !== null) me = { ...me, guilds: me.guilds.filter((g) => g.id !== guildId) };
-      guildBusy = null;
+      try {
+        await leaveGuild(guildId);
+        if (me !== null) me = { ...me, guilds: me.guilds.filter((g) => g.id !== guildId) };
+      } finally {
+        guildBusy = null;
+      }
     });
   };
 </script>
