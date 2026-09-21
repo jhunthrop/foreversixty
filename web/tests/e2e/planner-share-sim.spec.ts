@@ -113,6 +113,57 @@ test('unchecking the box skips the card sim entirely', async ({ page }) => {
   expect(simCalled).toBe(false);
 });
 
+test('unticking the box after a failed save drops Retry and reopens a fresh confirm', async ({ page }) => {
+  // Fix round (final): Retry used to repost with `confirmedIncludeSim`, captured when the
+  // visitor confirmed -- so unticking the box after a failed save and clicking Retry still
+  // saved a sim publicly, contradicting the box. The checkbox is now watched by the same
+  // reset effect a build edit is, so unticking it clears the failed outcome (Retry with it)
+  // and the next Share opens a fresh confirm that no longer lists a sim.
+  let buildCalls = 0;
+  await page.route('**/v1/builds', async (route) => {
+    buildCalls += 1;
+    await route.fulfill({
+      status: 400,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: false,
+        data: null,
+        error: { message: 'build is not valid', fields: {} },
+        request_id: 'r',
+      }),
+    });
+  });
+  await page.route('**/v1/sims', (route) =>
+    route.fulfill({ status: 500, contentType: 'application/json', body: '{}' }),
+  );
+
+  await page.goto(NEARLY_FINISHED_BUILD);
+  await finishBuild(page);
+  await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
+
+  const checkbox = page.getByLabel('Include a simmed DPS on the card');
+  await expect(checkbox).toBeChecked();
+
+  await shareBuild(page);
+  await expect(page.getByRole('alert')).toContainText('build is not valid');
+  await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();
+  expect(buildCalls).toBe(1);
+
+  await checkbox.uncheck();
+
+  // The failed outcome (and Retry with it) is gone: unticking the box is treated as an
+  // edit, the same as a talent change would be.
+  await expect(page.getByRole('button', { name: 'Retry' })).not.toBeVisible();
+  await expect(page.getByRole('alert')).not.toBeVisible();
+  expect(buildCalls).toBe(1);
+
+  // Share opens a fresh confirm -- not a re-save -- and it no longer names a sim.
+  await page.getByTestId('share-open').click();
+  await expect(page.getByTestId('share-confirm')).toBeVisible();
+  await expect(page.getByTestId('share-confirm')).not.toContainText('A simmed DPS result for the card');
+  expect(buildCalls).toBe(1);
+});
+
 test("a second save while the first build's sim is still running never overwrites the card", async ({
   page,
 }) => {

@@ -13,7 +13,7 @@
   import { battlenetStartUrl, fetchMe, type Me } from '../../lib/account/api';
   import type { CharacterPath } from '../../lib/characters';
   import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
-  import { CHIP_HEIGHT } from '../../lib/current-character-layout';
+  import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
@@ -489,7 +489,7 @@
   {/if}
 {/snippet}
 
-<div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-view">
+<div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-view">
   <!-- Unconditional and first: a reserved slot (ToolsView.svelte's own pattern), present on /sim/<id> too. -->
   <div class={CHIP_HEIGHT} data-testid="sim-chip-slot">
     <CurrentCharacterChip current={pointer} {restored} {hasOwnPasteBox} onforget={onForgetPointer} />

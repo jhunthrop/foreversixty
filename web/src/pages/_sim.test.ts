@@ -6,11 +6,14 @@
 // shell. sim/specs.astro takes no `session` prop and would pass either way; it shares the
 // container for one setup rather than two.
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
 import { loadRenderers } from 'astro:container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { VIEW_GAP } from '../lib/current-character-layout';
+import { FIXTURE_SIM_ID } from '../lib/report/shell-paths';
 import Sim from './sim.astro';
+import SimById from './sim/[id].astro';
 import Specs from './sim/specs.astro';
 
 let container: AstroContainer;
@@ -84,6 +87,26 @@ describe('the chip slot’s gap wrapper', () => {
 
   it('sim/specs.astro wraps the chip slot and the grids in the identical gap', async () => {
     const html = await container.renderToString(Specs);
+    const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
+    expect(html).toContain(wrapper);
+    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="sim-chip-slot"'));
+  });
+
+  // sim/[id].astro is the page this repo actually measures with Lighthouse (the Round 3
+  // comment on that file), so the same invariant is asserted for it too. Its own
+  // `getStaticPaths` only yields a path under `FOREVER_DATA=fixture`, but the container
+  // API renders the component directly from `params` -- the same object `getStaticPaths`
+  // would have supplied -- without going through routing or that env var at all. The cast
+  // below is only for `astro check`: a dynamic route's default export types its `props`
+  // parameter from its own `getStaticPaths` return, which this route never uses (it reads
+  // `Astro.params`, not `Astro.props`) and which `astro check` cannot narrow from the
+  // conditional `FOREVER_DATA` check inside `fixtureSimPaths()` -- so it falls back to
+  // `never`. `renderToString` never passes a `props` value for this route, so the cast
+  // changes nothing about what actually renders.
+  it('sim/[id].astro wraps the chip slot and the saved-sim skeleton in the identical gap', async () => {
+    const html = await container.renderToString(SimById as unknown as AstroComponentFactory, {
+      params: { id: FIXTURE_SIM_ID },
+    });
     const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
     expect(html).toContain(wrapper);
     expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="sim-chip-slot"'));

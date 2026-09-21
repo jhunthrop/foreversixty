@@ -105,9 +105,10 @@
   // A parsed count inside one of these renders in a tabular, monospace span, the same as every
   // other number the planner shows (OrderStrip, SummaryBar, GearPanel, TalentCell, ItemPicker).
   // This stays a small discriminated union rather than a plain string so the template can wrap
-  // just the digits with a real element -- `decodeFS1`'s own message stays flat text (its exact
-  // wording is pinned by fs1.test.ts and is the shape Task 14 reads), so the split happens once,
-  // here, rather than by reformatting arbitrary text at render time.
+  // just the digits with a real element -- `decoded.message` (current-character-planner.ts's
+  // own `decodeFS1` call, above) stays flat text (its exact wording is pinned by fs1.test.ts
+  // and is the shape Task 14 reads), so the split happens once, here, rather than by
+  // reformatting arbitrary text at render time.
   type CodeNote =
     | { kind: 'message'; text: string }
     | { kind: 'tree-count'; got: string; want: string }
@@ -117,8 +118,9 @@
    *  order is a reconstruction (nothing in the game records the order points were spent in). */
   let codeNote = $state<CodeNote | null>(null);
 
-  // Matches decodeFS1's one message that carries two counts, so the digits can be pulled out
-  // and wrapped without decodeFS1 having to return anything but a flat, tested string.
+  // Matches the one message `decodeFS1` returns that carries two counts, so the digits can be
+  // pulled out and wrapped here without `decodeFS1` itself having to return anything but a
+  // flat, tested string.
   const TREE_COUNT_MESSAGE = /^That code has (\d+) talent trees; a build has (\d+)\.$/;
 
   function noteForMessage(message: string): CodeNote {

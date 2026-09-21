@@ -42,8 +42,9 @@
   // Per-instance, not a literal id: Top Gear mounts a second, inline Planner (and so a
   // second SharePanel) on the same page, and two static `id="share-confirm-heading"`
   // elements would make `aria-labelledby` ambiguous for whichever one is not first in the
-  // DOM. `$props.id()` is Svelte's own per-component unique id, the same primitive
-  // `SearchBox.svelte`'s own `search-title-${i}` ids build by hand for a list instead.
+  // DOM. `$props.id()` is Svelte's own per-component unique id -- a different problem from
+  // `SearchBox.svelte`'s own `search-title-${i}` ids, which disambiguate multiple results
+  // inside one component instance by loop index, not one component instance from another.
   const uid = $props.id();
   const shareConfirmHeadingId = `share-confirm-heading-${uid}`;
 
@@ -138,8 +139,20 @@
   // counts, which watching only `.length` missed), `gear` (unchanged), and `title` (which
   // the old effect did not watch at all -- a title-only edit after a failed save used to
   // let Retry post the new title under a confirm that had shown the old one).
+  //
+  // `includeSim` -- the checkbox's own state, read raw rather than through
+  // `includeSimChecked` -- is watched the same way: unticking "Include a sim on the card"
+  // is treated as an edit too, so a failed save's Retry (which would otherwise reuse
+  // whatever `confirmedIncludeSim` the earlier confirm captured) disappears, and the next
+  // Share opens a fresh confirm that names what will actually happen. `includeSimChecked`
+  // would also flip -- silently, with no click of the box at all -- the moment a pending
+  // live estimate becomes ready, which would close a confirm the visitor had just opened
+  // to read; `includeSim` only ever changes from the checkbox's own `onchange` below, so
+  // that false trigger cannot happen. This still runs once on mount, harmlessly, since
+  // `outcome`/`confirmOpen` already hold these exact values then.
   $effect(() => {
     void draftOrNull();
+    void includeSim;
     outcome = null;
     copiedFrom = null;
     cardState = 'idle';
