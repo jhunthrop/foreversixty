@@ -186,10 +186,11 @@ func (s *Store) syncGuild(ctx context.Context, tx pgx.Tx, userID int64, key, reg
 		return fmt.Errorf("addon: sync guild membership for %s: %w", key, err)
 	}
 
-	// A rank-0 (guild master) export's effect on a pending officer claim
-	// is wired in a later task (guilds.AutoConfirmClaimIfPending), once
-	// the claim flow exists; nothing here yet depends on rank == "leader"
-	// beyond the row it already wrote above.
+	if rank == "leader" {
+		if err := guilds.AutoConfirmClaimIfPending(ctx, tx, guildID); err != nil {
+			return err
+		}
+	}
 	if err := afterGuildChange(ctx, tx, guildID, userID); err != nil {
 		return err
 	}

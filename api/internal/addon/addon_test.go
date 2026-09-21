@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
@@ -615,5 +616,43 @@ func TestPutExportsAnUnguildedExportRemovesAPreviousGuildRow(t *testing.T) {
 	h.pool.QueryRow(ctx, `select count(*) from guild_members where user_id = $1`, h.owner).Scan(&n)
 	if n != 0 {
 		t.Fatal("guild_members should have no row left for this account")
+	}
+}
+
+func TestPutExportsAutoConfirmsAPendingClaimWhenTheGuildMastersExportArrives(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if err := h.store.PutExports(ctx, h.owner, []Export{
+		{Name: "Officer", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Forever:1"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var guildID int64
+	h.pool.QueryRow(ctx, `select id from guilds where name = 'Forever'`).Scan(&guildID)
+	if _, err := (&guilds.Store{Pool: h.pool}).Claim(ctx, guildID, h.owner); err != nil {
+		t.Fatal(err)
+	}
+	var pendingBy *int64
+	h.pool.QueryRow(ctx, `select claim_pending_by from guilds where id = $1`, guildID).Scan(&pendingBy)
+	if pendingBy == nil {
+		t.Fatal("the officer's claim should be pending before the GM's own export arrives")
+	}
+
+	gm := h.owner + 1
+	if _, err := h.pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'gm-auto@example.com') on conflict (id) do nothing`, gm); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, gm, []Export{
+		{Name: "TheGM", Region: "us", Ruleset: "hardcore",
+			Export: "FS1:1.60.1.69893:paladin:human:0/0/0:|guild=Forever:0"},
+	}); err != nil {
+		t.Fatal(err)
+	}
+	var claimedBy *int64
+	h.pool.QueryRow(ctx, `select claimed_by from guilds where id = $1`, guildID).Scan(&claimedBy)
+	if claimedBy == nil || *claimedBy != h.owner {
+		t.Fatalf("claimed_by = %v, want the originally pending officer %d, auto-confirmed by the GM's export", claimedBy, h.owner)
 	}
 }
