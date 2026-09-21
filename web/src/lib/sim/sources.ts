@@ -25,6 +25,7 @@ import type { BuildRecord } from '../planner/types';
 import { fetchReportMeta, fetchSummary } from '../report/load';
 import { gearFromCombatant, treeRanksFromTalents } from '../report/planner-link';
 import { classSlugFromName } from '../report/tree-sizes';
+import type { RosterRow } from '../report/types';
 import { requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
 import {
@@ -49,11 +50,41 @@ export interface LoadContext {
 
 export type SourceResult = { ok: true; character: SimCharacter } | { ok: false; message: string };
 
-const FIGHT_REF = /^([a-z2-7]{12}):(\d{1,6})$/;
+// A logged-fight ref's optional third part names the exact combatant: a WoW player guid,
+// "Player-<realm id>-<hex spawn id>" (logs/engine/units/units.go's own Parse comment: "the
+// two shapes are Player-<realm>-<hex uid> and …", confirmed against the report fixtures --
+// e.g. "Player-4184-000000A1" in src/fixtures/report/report.json). It arrives through the
+// query string -- attacker-controlled input bounded only by url.ts's MAX_REF=128 -- so it is
+// matched against this exact shape rather than accepted as `(.+)`: a ref whose third part
+// does not fit is invalid, not silently passed through.
+//
+// REALM_ID_MAX_DIGITS and SPAWN_ID_MAX_HEX_CHARS are generous rather than exact (a real spawn
+// id is 8 hex characters) so a longer one is still accepted; the longest ref this can produce
+// -- 12 + 1 + 6 + 1 + "Player-".length + 6 + 1 + 16 = 50 characters -- comfortably fits
+// under MAX_REF.
+const REALM_ID_MAX_DIGITS = 6;
+const SPAWN_ID_MAX_HEX_CHARS = 16;
+const GUID_PATTERN = `Player-\\d{1,${REALM_ID_MAX_DIGITS}}-[0-9A-Fa-f]{1,${SPAWN_ID_MAX_HEX_CHARS}}`;
+const FIGHT_REF = new RegExp(`^([a-z2-7]{12}):(\\d{1,6})(?::(${GUID_PATTERN}))?$`);
 
-export function parseFightRef(ref: string): { reportId: string; fightIndex: number } | null {
+export function parseFightRef(ref: string): { reportId: string; fightIndex: number; guid?: string } | null {
   const match = FIGHT_REF.exec(ref.trim());
-  return match === null ? null : { reportId: match[1], fightIndex: Number.parseInt(match[2], 10) };
+  if (match === null) return null;
+  return { reportId: match[1], fightIndex: Number.parseInt(match[2], 10), guid: match[3] };
+}
+
+/**
+ * Which roster row a fight ref resolves to. A named guid wins outright when the roster has
+ * them, whatever their role -- a healer or tank named by the link loads as that combatant;
+ * whether the sim can run that spec is the sim's own business, not this function's. Absent,
+ * or not on the roster, falls back to the first dps row, unchanged from before a guid
+ * existed. Both branches require `class !== undefined`: a row the report engine inferred
+ * nothing about is one neither branch can build a character from.
+ */
+export function selectRosterRow(roster: RosterRow[], guid: string | undefined): RosterRow | undefined {
+  const named =
+    guid === undefined ? undefined : roster.find((row) => row.class !== undefined && row.guid === guid);
+  return named ?? roster.find((row) => row.class !== undefined && row.role === 'dps');
 }
 
 const MINUTE = 60_000;
@@ -335,7 +366,7 @@ export async function fromLoggedFight(
   try {
     const meta = await fetchReportMeta(parsed.reportId, ctx.apiBase ?? API_BASE_URL);
     const summary = await fetchSummary(meta.data_base_url, parsed.fightIndex);
-    const roster = summary.roster.find((row) => row.class !== undefined && row.role === 'dps');
+    const roster = selectRosterRow(summary.roster, parsed.guid);
     const combatant = summary.combatants.find((row) => row.guid === roster?.guid);
     if (roster === undefined || combatant === undefined) {
       return { ok: false, message: simCopy.fightNoCombatant };
