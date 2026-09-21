@@ -93,6 +93,8 @@ describe("SettingsView", function()
 		local view = SettingsView.build(_G.CreateFrame("Frame"), ctx)
 		view.reset:GetScript("OnClick")(view.reset)
 		assert.are.equal(Prefs.DEFAULTS.window.x, Prefs.get("window", "x"))
+		assert.are.equal(1, #changes)
+		assert.is_true(changes[1].entry.reset)
 	end)
 
 	it("registers with the modern Settings API when the client has it", function()

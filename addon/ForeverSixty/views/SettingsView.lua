@@ -111,15 +111,11 @@ function SettingsView.register(ctx)
 	-- one line and removes the branch.
 	panel.name = L.addonName
 	SettingsView.panel = panel
-	SettingsView.how, SettingsView.category = Theme.registerSettingsPanel(panel, L.addonName)
+	SettingsView.how = Theme.registerSettingsPanel(panel, L.addonName)
 	if SettingsView.how ~= nil then
 		SettingsView.panelView = SettingsView.build(panel, ctx)
 	end
 	return SettingsView.how
-end
-
-function SettingsView.open()
-	return Theme.openSettingsPanel(SettingsView.category)
 end
 
 ns.SettingsView = SettingsView

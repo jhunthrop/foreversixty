@@ -275,21 +275,6 @@ function Theme.registerSettingsPanel(panel, name)
 	return nil, nil
 end
 
-function Theme.openSettingsPanel(category)
-	if category == nil then
-		return false
-	end
-	if type(Settings) == "table" and type(Settings.OpenToCategory) == "function" then
-		Settings.OpenToCategory(category)
-		return true
-	end
-	if type(InterfaceOptionsFrame_OpenToCategory) == "function" then
-		InterfaceOptionsFrame_OpenToCategory(category)
-		return true
-	end
-	return false
-end
-
 --- Register one event, recording rather than raising when the client has
 --- never heard of it. This is the only RegisterEvent call in the addon.
 function Theme.registerEvent(frame, event)
