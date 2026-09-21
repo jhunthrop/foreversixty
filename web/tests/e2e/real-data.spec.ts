@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 import { collectPageErrors } from './support/console';
 import { ACTIVE_BUILD } from './support/active-build';
+import { shareBuild } from './support/planner';
 import { POINTS_PER_TIER } from '../../src/lib/planner/types';
 
 const WEB_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -251,7 +252,7 @@ test('a build shared on the new trees reopens from its link, on desktop and on a
   await spend(page, arms.id, 31);
   await spend(page, fury.id, 20);
   await page.getByLabel('Title').fill('Arms PvE');
-  await page.getByRole('button', { name: 'Share' }).click();
+  await shareBuild(page);
   await expect(page.getByTestId('share-link')).toHaveText('https://foreversixty.gg/b/real1234');
 
   expect(body!.tree_version).toBe(ACTIVE_BUILD);

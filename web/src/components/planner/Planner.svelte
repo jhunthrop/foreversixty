@@ -7,9 +7,17 @@
   import { untrack } from 'svelte';
   import type { WeightsFile } from '../../lib/addon/score';
   import activeBuild from '../../data/active-build.json';
+  import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
+  import { CHIP_HEIGHT } from '../../lib/current-character-layout';
   import { DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
+  import {
+    decidePlannerLoad,
+    isBarePlannerUrl,
+    plannerAddonCode,
+    writePlannerPointer,
+  } from '../../lib/planner/current-character-planner';
   import { ranksByTalent } from '../../lib/planner/derive';
-  import { decodeFS1, encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
+  import { encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
   import { createLiveDps } from '../../lib/planner/live-dps.svelte';
   import { isConstrainedDevice, liveGate } from '../../lib/planner/live-gate';
   import {
@@ -28,6 +36,7 @@
   import type { BuildRecord, Gear, TalentFile } from '../../lib/planner/types';
   import { characterFromPlanner } from '../../lib/sim/character';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
+  import CurrentCharacterChip from '../CurrentCharacterChip.svelte';
   import GearPanel from './GearPanel.svelte';
   import ImportBox from './ImportBox.svelte';
   import OrderStrip from './OrderStrip.svelte';
@@ -42,6 +51,7 @@
     record = null,
     gear,
     oncode,
+    standalone = true,
   }: {
     treeVersion: string;
     classSlug?: string;
@@ -60,6 +70,8 @@
      * through it; /planner and /b/:id pass nothing and the callback never fires.
      */
     oncode?: (code: string) => void;
+    /** False only for Top Gear's inline "add a build" (Task 10): no chip, no restore, no write. */
+    standalone?: boolean;
   } = $props();
 
   // The page is static, so ?class= and ?race= can only be read in the browser. A record
@@ -69,22 +81,34 @@
     return new URLSearchParams(window.location.search).get(name) ?? undefined;
   }
 
-  // A code wins over ?class= and ?race=: it names all three, and a mismatch between them
-  // would be a build in the wrong class. A record (from /b/:id) wins over all three: that
-  // build already names its class and race, and it is not an addon export to decode. Read
-  // once, like the store below and for the same reason: `record` is a prop, and this only
-  // ever wants the value the page mounted with.
-  const decoded = untrack(() => {
-    const codeParam = record ? null : (fromQuery('code') ?? null);
-    return codeParam === null ? null : decodeFS1(codeParam);
+  // Current-character pointer (Task 10, spec section 1) -- decision in current-character-
+  // planner.ts. `codeParam` is `?code=` itself, or a restored pointer's code, same path.
+  const plannerLoad = untrack(() => {
+    const urlCode = record ? null : (fromQuery('code') ?? null);
+    const search = typeof window === 'undefined' ? '' : window.location.search;
+    return decidePlannerLoad(urlCode, isBarePlannerUrl(search), record !== null, standalone, readCurrent());
   });
+  const { codeParam, decoded } = plannerLoad;
+  let restored = $state(plannerLoad.restored);
+  let pointer = $state<CurrentCharacter | null>(plannerLoad.pointer);
+  // A dead restored pointer is forgotten, not shown as an error. Runs once, on mount.
+  $effect(() => {
+    if (plannerLoad.deadPointer) clearCurrent();
+  });
+
+  function onForgetPointer(): void {
+    clearCurrent();
+    pointer = null;
+    restored = false;
+  }
 
   // A parsed count inside one of these renders in a tabular, monospace span, the same as every
   // other number the planner shows (OrderStrip, SummaryBar, GearPanel, TalentCell, ItemPicker).
   // This stays a small discriminated union rather than a plain string so the template can wrap
-  // just the digits with a real element -- `decodeFS1`'s own message stays flat text (its exact
-  // wording is pinned by fs1.test.ts and is the shape Task 14 reads), so the split happens once,
-  // here, rather than by reformatting arbitrary text at render time.
+  // just the digits with a real element -- `decoded.message` (current-character-planner.ts's
+  // own `decodeFS1` call, above) stays flat text (its exact wording is pinned by fs1.test.ts
+  // and is the shape Task 14 reads), so the split happens once, here, rather than by
+  // reformatting arbitrary text at render time.
   type CodeNote =
     | { kind: 'message'; text: string }
     | { kind: 'tree-count'; got: string; want: string }
@@ -94,8 +118,9 @@
    *  order is a reconstruction (nothing in the game records the order points were spent in). */
   let codeNote = $state<CodeNote | null>(null);
 
-  // Matches decodeFS1's one message that carries two counts, so the digits can be pulled out
-  // and wrapped without decodeFS1 having to return anything but a flat, tested string.
+  // Matches the one message `decodeFS1` returns that carries two counts, so the digits can be
+  // pulled out and wrapped here without `decodeFS1` itself having to return anything but a
+  // flat, tested string.
   const TREE_COUNT_MESSAGE = /^That code has (\d+) talent trees; a build has (\d+)\.$/;
 
   function noteForMessage(message: string): CodeNote {
@@ -147,6 +172,15 @@
     }),
   );
 
+  // The chip's "Copy addon code" link; shared with SharePanel's own button (Task 10).
+  const addonCode = $derived(plannerAddonCode(store));
+
+  // Every load source writes the pointer through here (Task 10); writePlannerPointer is a
+  // no-op inline or before talent data has loaded.
+  function writePointer(source: 'code' | 'addon' | 'build', ref: string, cls: string, title?: string): void {
+    pointer = writePlannerPointer(store, standalone, source, ref, cls, title);
+  }
+
   // The live DPS estimate (Task 20). Created once -- createLiveDps holds no pool until the
   // first request, so this costs nothing on mount and does not touch engine.ts until a talent
   // or slot actually changes. `untrack` for the same reason the store above needs it: the
@@ -192,11 +226,10 @@
   }
 
   /**
-   * The build's own FS1 code -- the planner's export format, decoded by the same
-   * `decodeFS1` this component reads a code with. Derived once so `simHref` (below) and an
-   * embedder's `oncode` (Top Gear's "add a build") always read the identical encoding of
-   * the identical build, rather than each calling `encodeFS1` with the same arguments a
-   * second time and risking the two drifting apart.
+   * The build's own FS1 code -- the planner's export format. Derived once so `simHref`
+   * (below) and an embedder's `oncode` (Top Gear's "add a build") always read the identical
+   * encoding of the identical build, rather than each calling `encodeFS1` again and risking
+   * the two drifting apart.
    */
   const liveCode = $derived(
     store.talentIndex === null
@@ -333,6 +366,12 @@
         codeNote = { kind: 'reconstructed', dropped: rebuilt.dropped.length, gearOnly };
       }
 
+      // Task 10: a `?code=`/restored code just applied above, or this mount's `record`.
+      if (record !== null) writePointer('build', record.id, slug, record.title);
+      else if (codeForThisClass !== null && codeParam !== null) {
+        writePointer('code', codeParam, codeForThisClass.build.classSlug);
+      }
+
       const sets = await loadSets(store.treeVersion);
       if (stale()) return;
       store.setSets(sets);
@@ -405,6 +444,18 @@
 </script>
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
+  {#if standalone}
+    <!-- Task 10: fixed-height slot, mirrors ToolsView.svelte's own `sim-chip-slot`. -->
+    <div class={CHIP_HEIGHT} data-testid="planner-chip-slot">
+      <CurrentCharacterChip
+        current={pointer}
+        {restored}
+        {addonCode}
+        hasOwnPasteBox={!store.readOnly}
+        onforget={onForgetPointer}
+      />
+    </div>
+  {/if}
   <SummaryBar {store} {live} {simHref} {gate} onshowdps={() => (dpsOptedIn = true)} />
 
   <p class="text-muted px-[18px] text-[13px] md:px-0">{treeSourceNotice(store.treeVersion)}</p>
@@ -718,7 +769,10 @@
         <ImportBox
           talents={store.talentIndex}
           activeBuild={activeBuild.build}
-          onimport={(build) => store.loadImported(build)}
+          onimport={(build, pastedCode) => {
+            store.loadImported(build);
+            writePointer('addon', pastedCode, build.classSlug);
+          }}
         />
       {/if}
 

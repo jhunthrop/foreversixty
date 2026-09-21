@@ -53,3 +53,17 @@ export async function finishBuild(page: Page): Promise<void> {
   const show = page.getByTestId('planner-dps-show');
   if (await show.isVisible()) await show.click();
 }
+
+/**
+ * Share, all the way to a saved build. Task 11: the Share button (`share-open`) no longer
+ * saves on its own click -- it opens a confirm step naming what becomes public, and only
+ * "Share anyway" (`share-confirm-proceed`) actually calls `saveBuild`. Every planner spec
+ * that used to do `getByRole('button', { name: 'Share' }).click()` and land straight on a
+ * saved link goes through here now, so the confirm step is exercised (not bypassed) by
+ * every one of them rather than each spec growing its own two-click copy.
+ */
+export async function shareBuild(page: Page): Promise<void> {
+  await page.getByTestId('share-open').click();
+  await expect(page.getByTestId('share-confirm')).toBeVisible();
+  await page.getByTestId('share-confirm-proceed').click();
+}

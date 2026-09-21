@@ -5,6 +5,7 @@
 // the page's own view chunk resolving), so nothing shifts between the two moments.
 //
 // Static markup with no data in it, so it is safe to {@html} and identical every render.
+import { CHIP_HEIGHT, VIEW_GAP } from '../current-character-layout';
 import type { SimTool } from './bulk-store.svelte';
 
 // A third verbatim copy of this one-liner (already duplicated between report/skeleton.ts and
@@ -26,14 +27,31 @@ const comboRow = (): string =>
   `${block('h-3 w-4')}${block('h-3 w-40')}${block('ml-auto h-3 w-14')}${block('ml-auto h-3 w-12')}${block('ml-auto h-3 w-8')}` +
   '</li>';
 
+// Fix round 1, Important #2: the inner, visible wrapper uses `VIEW_GAP`, not an
+// independent skeleton-only gap -- it is what stacks against the chip slot below, and
+// `ToolsView.svelte`'s own root uses that exact gap between its chip slot and everything
+// after it. A different gap here would still reserve the right total height (the min-h
+// budget covers that), but it would paint the strip/grid/run-bar block at the wrong
+// vertical offset relative to the chip for the whole window this skeleton is visible --
+// both as gear.astro's own pre-hydration markup and as ToolsView.svelte's own lazy
+// fallback. The *outer* wrapper's gap (between the sr-only status line and this block)
+// is untouched: that text has no visible size, so its gap paints nothing.
 const shell = (label: string, body: string): string =>
   [
     `<div class="flex flex-col gap-4" aria-busy="true">`,
     `<p class="sr-only" role="status">${label}</p>`,
-    '<div aria-hidden="true" class="flex flex-col gap-4">',
+    `<div aria-hidden="true" class="flex flex-col ${VIEW_GAP}">`,
     body,
     '</div></div>',
   ].join('');
+
+/**
+ * The current-character chip's own reserved band (fix round 1, Task 4's review, Critical):
+ * every tool page opens with this, one shared constant rather than four copies, so its
+ * height can never drift from `CHIP_HEIGHT` -- the same constant `ToolsView.svelte`'s own
+ * always-present slot and `CurrentCharacterChip.svelte` itself render with.
+ */
+const chipSlot = (): string => `<div class="${CHIP_HEIGHT}" data-testid="sim-chip-slot"></div>`;
 
 /** The character strip's reserved band, which every tool page opens with. */
 const strip = (): string =>
@@ -53,8 +71,8 @@ const table = (count: number): string =>
   `<ul class="mx-[18px] flex flex-col md:mx-0">${Array.from({ length: count }, comboRow).join('')}</ul>`;
 
 export const TOOL_SKELETONS: Record<SimTool, string> = {
-  gear: shell('Loading Top Gear.', [strip(), grid(8), runBar()].join('')),
-  talents: shell('Loading talent compare.', [strip(), grid(3), runBar()].join('')),
-  drops: shell('Loading the Droptimizer.', [strip(), grid(6), runBar()].join('')),
-  weights: shell('Loading stat weights.', [strip(), table(6), runBar()].join('')),
+  gear: shell('Loading Top Gear.', [chipSlot(), strip(), grid(8), runBar()].join('')),
+  talents: shell('Loading talent compare.', [chipSlot(), strip(), grid(3), runBar()].join('')),
+  drops: shell('Loading the Droptimizer.', [chipSlot(), strip(), grid(6), runBar()].join('')),
+  weights: shell('Loading stat weights.', [chipSlot(), strip(), table(6), runBar()].join('')),
 };

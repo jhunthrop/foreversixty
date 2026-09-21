@@ -13,10 +13,10 @@
 //     player asks for a number. `init.pool` exists for tests and for the planner, which
 //     brings its own.
 import { loadItems, loadReference, loadTalents } from '../planner/load';
-import type { ClassRow, Item, RaceRow, TalentFile } from '../planner/types';
+import type { Item, RaceRow, TalentFile } from '../planner/types';
 import { indexTalents } from '../planner/rules';
 import { dispatchServerSim, fetchSim, fetchSimProgress, saveSim } from './api';
-import { characterFromFs1, needsRace, toCharacterSpec, type SimCharacter } from './character';
+import { needsRace, toCharacterSpec, type SimCharacter } from './character';
 import { loadActionNames, type ActionNames } from './action-names';
 import { EMPTY_BUFF_NAMES, loadBuffNames, type BuffNames } from './buff-names';
 import { simCopy } from './copy';
@@ -29,13 +29,14 @@ import { defaultSettings, settingsLabel, withSpecForPreset, type SimSettings } f
 import {
   fromAddonExport,
   fromLoggedFight,
+  fromManualCode,
   fromPlannerBuild,
   fromStoredCharacter,
   type LoadContext,
   type SourceResult,
 } from './sources';
 import { createRequestMethods, runAndSettle, type StoreRequestDeps } from './store-request';
-import type { CharacterPath } from '../characters';
+import { parseCharacterPath, type CharacterPath } from '../characters';
 import type { Estimate, SimProgress, SimRequest, SimResult, SourceKind } from './types';
 import { createPool, type SimPool } from './worker';
 
@@ -52,37 +53,6 @@ function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * An unsaved planner build's own FS1 code, into a `'manual'`-sourced character. This is
- * `sources.ts`'s `fromAddonExport` in every step but the source it stamps: an addon export
- * and a "Sim this build" link decode through the identical `FS1:…` grammar and the
- * identical `characterFromFs1`, and only differ in where the character came from, which the
- * strip's pill has to say honestly (`sourcePill` reads `'addon'` as "Addon export, …" and
- * anything else, `'manual'` included, as "Entered by hand").
- */
-async function fromPlannerCode(code: string, ctx: LoadContext): Promise<SourceResult> {
-  const classSlug = code.trim().split(':')[2] ?? '';
-  let talents: TalentFile;
-  let classes: ClassRow[];
-  let races: RaceRow[];
-  try {
-    const [loadedTalents, reference] = await Promise.all([
-      loadTalents(ctx.treeVersion, classSlug),
-      loadReference(ctx.treeVersion),
-    ]);
-    talents = loadedTalents;
-    classes = reference.classes;
-    races = reference.races;
-  } catch {
-    return { ok: false, message: simCopy.characterFailed };
-  }
-  return characterFromFs1(code, talents, classes, races, {
-    kind: 'manual',
-    ref: '',
-    captured_at: new Date().toISOString(),
-  });
-}
-
 // A plain Map, not a SvelteMap: `items` below is replaced wholesale when the class changes
 // and only ever read by key, so per-key tracking would be machinery for mutations that
 // never happen.
@@ -90,10 +60,12 @@ function toItemMap(items: readonly Item[]): Map<number, Item> {
   return new Map(items.map((item) => [item.id, item]));
 }
 
-/** The `source`/`ref` half of the URL bootstrap: the three sources a plain string ref
- *  identifies. `'armory'` and `'manual'` have no ref-shaped loader (armory needs a whole
- *  `CharacterPath`; manual is `code`'s job above), so a link naming either bootstraps
- *  nothing rather than guessing at one. */
+/** The `source`/`ref` half of the URL bootstrap: the four sources a plain string ref
+ *  identifies. `'armory'`'s ref is a character key (`<region>/<ruleset>/<slug>`, the same
+ *  key `current-character-bridge.ts` stamps for a stored, non-addon character and
+ *  `LandingState.svelte`'s own "go to /sim" link already writes), parsed into a
+ *  `CharacterPath` for `fromStoredCharacter`. `'manual'` has no ref-shaped loader (it is
+ *  `code`'s job above), so a link naming it bootstraps nothing rather than guessing at one. */
 function bootstrapSource(
   source: SourceKind | '',
   ref: string,
@@ -106,6 +78,10 @@ function bootstrapSource(
       return fromPlannerBuild(ref, ctx);
     case 'fight':
       return fromLoggedFight(ref, ctx);
+    case 'armory': {
+      const path = parseCharacterPath(`/character/${ref}`);
+      return path === null ? null : fromStoredCharacter(path, ctx);
+    }
     default:
       return null;
   }
@@ -390,7 +366,7 @@ export function createSimStore(init: SimStoreInit) {
     poolOnce,
     adopt,
     restorePreviousResult,
-    fromPlannerCode: (code) => fromPlannerCode(code, ctx),
+    fromPlannerCode: (code) => fromManualCode(code, ctx),
     treeVersion: init.treeVersion,
   };
   const requestMethods = createRequestMethods(requestDeps);
@@ -434,7 +410,7 @@ export function createSimStore(init: SimStoreInit) {
     init.request !== undefined
       ? applyRequestOnce(init.request)
       : init.code !== undefined && init.code !== ''
-        ? adopt(fromPlannerCode(init.code, ctx))
+        ? adopt(fromManualCode(init.code, ctx))
         : (() => {
             const load =
               init.source !== undefined && init.ref !== undefined && init.ref !== ''
@@ -544,8 +520,13 @@ export function createSimStore(init: SimStoreInit) {
       message = null;
       phase = 'idle';
     },
-    /** One line, so compare mode reports its failures through the same alert every source uses. */
-    setMessage(text: string): void {
+    /** One line, so compare mode reports its failures through the same alert every source
+     *  uses -- and `null` to clear it, the same shape `bulk-store.svelte.ts`'s own
+     *  `setMessage` already takes, for `character-bootstrap.ts`'s `settleRestore` (Task 5):
+     *  a stored-pointer restore that settled with no character clears whatever refusal
+     *  message that dead load left behind, rather than showing it on a page the player
+     *  never asked to load. */
+    setMessage(text: string | null): void {
       message = text;
     },
     setSettings(next: SimSettings): void {
@@ -562,6 +543,12 @@ export function createSimStore(init: SimStoreInit) {
     loadBuild: (id: string) => adopt(fromPlannerBuild(id, ctx)),
     loadFight: (ref: string) => adopt(fromLoggedFight(ref, ctx)),
     loadStored: (path: CharacterPath) => adopt(fromStoredCharacter(path, ctx)),
+    /** A bare `?code=` load, the same `fromManualCode` conversion `init.code` above already
+     *  runs -- exposed as a public method (Task 5) so a bare-load restore of a `'code'`- or
+     *  `'addon'`-sourced stored pointer (`character-bootstrap.ts`'s own `fromStoredPointer`)
+     *  can run it from `SimView.svelte`'s `onMount`, after the store already exists, rather
+     *  than only at construction time through `init`. */
+    loadCode: (code: string) => adopt(fromManualCode(code, ctx)),
 
     /** Adopts a result the page was handed rather than ran: a saved sim, or a server run. */
     adoptResult(next: SimResult): void {

@@ -4,9 +4,17 @@
 // seven simulator page shells, so the sentence -- and the placement rule that matters (static,
 // above the fold at 390x844, outside the page's own min-h CLS reservation) -- lives in one
 // place rather than being copy-pasted seven times (fix round 1, Finding C).
+//
+// Task 9, spec section 1: a second line, the same way -- static, server-rendered, above
+// hydration -- telling a below-60 visitor where to go instead of leaving them to guess why
+// a page that wants a character shows nothing useful for theirs.
 import { simCopy } from '../../lib/sim/copy';
+import { handoffCopy } from '../../lib/sim/handoff-copy';
 ---
 
 <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
   {simCopy.scopeNote}
+</p>
+<p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-below-sixty-note">
+  {handoffCopy.belowSixtyFraming}
 </p>

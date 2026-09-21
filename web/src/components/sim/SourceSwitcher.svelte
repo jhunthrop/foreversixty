@@ -9,6 +9,8 @@
      the strip's "Change source", or the landing state's "Sim something else"), so the card's
      signed-in body is a way back to that list rather than a second copy of it. -->
 <script lang="ts">
+  import { currentCharacterCopy } from '../../lib/current-character-copy';
+  import { rowLink } from '../../lib/report/format';
   import { simCopy } from '../../lib/sim/copy';
 
   let {
@@ -149,6 +151,12 @@
        the same scope sentence the Astro shell already carries above the fold, repeated
        here since it sits below the shell's own copy of it once the island mounts. -->
   <p class="text-muted text-[12px]" data-testid="sim-sources-scope-note">{simCopy.scopeNote}</p>
+
+  <p class="text-muted text-[12px]">
+    <a href="/addon" class="{rowLink} text-nav" data-testid="sim-get-addon"
+      >{currentCharacterCopy.getTheAddon}</a
+    >
+  </p>
 
   {#if message}
     <p role="alert" class="text-strong text-[13px]" data-testid="sim-source-message">{message}</p>

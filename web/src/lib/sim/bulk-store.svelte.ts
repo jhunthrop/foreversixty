@@ -70,6 +70,7 @@ import { loadSimBuffs, type SimBuffFile } from './sim-buffs';
 import {
   fromAddonExport,
   fromLoggedFight,
+  fromManualCode,
   fromPlannerBuild,
   fromStoredCharacter,
   type LoadContext,
@@ -533,6 +534,7 @@ export function createBulkStore(init: BulkStoreInit) {
     loadAddon: (code: string) => adopt(fromAddonExport(code, ctx)),
     loadBuild: (id: string) => adopt(fromPlannerBuild(id, ctx)),
     loadFight: (ref: string) => adopt(fromLoggedFight(ref, ctx)),
+    loadCode: (code: string) => adopt(fromManualCode(code, ctx)),
     loadStored: (path: CharacterPath) => adopt(fromStoredCharacter(path, ctx)),
 
     async loadSpecs(): Promise<void> {

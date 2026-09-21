@@ -47,6 +47,10 @@ function store(tool: (typeof TOOLS)[number] = 'gear', overrides: StoreOverrides 
 
 beforeEach(() => api.install());
 afterEach(() => api.reset());
+// Fix round 1: every loader below writes the current-character pointer against real jsdom
+// localStorage (no `storage` override here, the same as every real call site), so one
+// test's write must not leak into the next test's read.
+afterEach(() => localStorage.clear());
 
 describe('TOOLS and MODE_OF_TOOL', () => {
   it('maps each tool page to its bulk mode', () => {
@@ -90,6 +94,13 @@ describe('loading a character', () => {
     await s.loadAddon('FS2:nope');
     expect(s.character).not.toBeNull();
     expect(s.message).not.toBeNull();
+    s.dispose();
+  });
+
+  it('loadCode adopts a character from an FS1 code, the same as loadAddon does from a paste', async () => {
+    const s = store();
+    await s.loadCode(FURY);
+    expect(s.character?.class_slug).toBe('warrior');
     s.dispose();
   });
 });

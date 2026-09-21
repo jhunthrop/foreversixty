@@ -23,6 +23,7 @@
   import type { SimCharacter } from '../../lib/sim/character';
   import { SIM_LEVEL, needsRace, plannerHrefFor } from '../../lib/sim/character';
   import { simCopy } from '../../lib/sim/copy';
+  import { handoffCopy } from '../../lib/sim/handoff-copy';
   import { sourcePill } from '../../lib/sim/sources';
   import { specLabel } from '../../lib/sim/spec-label';
 
@@ -70,9 +71,12 @@
   // A build with fewer points than SIM_LEVEL - BASE_LEVEL implies is a part-levelled
   // character: the engine still sims it at 60 (there is no level control on this page), so
   // the line says how many points it actually spends rather than letting "· 60" imply a
-  // full-levelled build that ran the tree dry.
+  // full-levelled build that ran the tree dry -- and says so honestly (Task 9, spec
+  // section 1) rather than silently relabelling a sub-51-point build as a level 60 one.
   const levelSuffix = $derived(
-    character.talent_level < SIM_LEVEL ? ` · ${character.point_order.length} talent points` : '',
+    character.talent_level < SIM_LEVEL
+      ? ` · ${character.point_order.length} talent points (${handoffCopy.simmedAtSixty})`
+      : '',
   );
   const descriptor = $derived(
     (pending

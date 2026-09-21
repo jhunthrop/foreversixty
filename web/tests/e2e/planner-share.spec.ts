@@ -2,6 +2,7 @@ import { crc32, deflateSync } from 'node:zlib';
 import { expect, test } from '@playwright/test';
 
 import { ACTIVE_BUILD } from './support/active-build';
+import { shareBuild } from './support/planner';
 
 const SAVED = {
   ok: true,
@@ -58,7 +59,7 @@ test('sharing a build posts the contract body and shows the link', async ({ page
   await page.goto('/planner');
   for (let i = 0; i < 3; i += 1) await page.getByTestId('talent-1001').click();
   await page.getByLabel('Title').fill('Arms leveling');
-  await page.getByRole('button', { name: 'Share' }).click();
+  await shareBuild(page);
 
   await expect(page.getByTestId('share-link')).toHaveText('https://foreversixty.gg/b/k7x2qm4a');
   expect(body).toEqual({
@@ -79,7 +80,7 @@ test('the copy button reports that it copied', async ({ page, context, browserNa
   );
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
-  await page.getByRole('button', { name: 'Share' }).click();
+  await shareBuild(page);
   await page.getByRole('button', { name: 'Copy link' }).click();
   await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible();
 });
@@ -94,7 +95,7 @@ test('a rate-limited save keeps the build and explains the wait', async ({ page 
   );
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
-  await page.getByRole('button', { name: 'Share' }).click();
+  await shareBuild(page);
   await expect(page.getByRole('alert')).toContainText(
     'Too many saves from this connection; try again in an hour.',
   );
@@ -124,7 +125,7 @@ test('a rejected build shows the API field message and retries', async ({ page }
   });
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
-  await page.getByRole('button', { name: 'Share' }).click();
+  await shareBuild(page);
   await expect(page.getByRole('alert')).toContainText('Talent 1001 is not in this class');
   await page.getByRole('button', { name: 'Retry' }).click();
   await expect(page.getByTestId('share-link')).toBeVisible();
@@ -142,7 +143,7 @@ test('a save that resolves after the build changed is not shown as the current b
 
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
-  await page.getByRole('button', { name: 'Share' }).click();
+  await shareBuild(page);
   await expect(page.getByRole('button', { name: 'Saving' })).toBeVisible();
 
   // Edit the build while that save is still in flight.
@@ -173,7 +174,7 @@ test('the preview card reserves its box before the image loads, and nothing abov
 
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
-  await page.getByRole('button', { name: 'Share' }).click();
+  await shareBuild(page);
   await expect(page.getByTestId('share-link')).toBeVisible();
 
   // Measured after the Share click's own auto-scroll has already settled, so the only thing

@@ -4,25 +4,33 @@ import bulkResultJson from '../../fixtures/sim/bulk-result.json';
 import itemsJson from '../../fixtures/planner/items/warrior.json';
 import setsJson from '../../fixtures/planner/sets.json';
 import { addonStringFor } from './addon-export';
+import { ranksFromTalentsString } from './character';
 import {
   MINUS,
+  canPlanCombo,
   collapsedComboCount,
+  comboKey,
   comboRows,
   deltaLabel,
   gainLabel,
+  gearForCombo,
   headlineFor,
   isEmptiedOffHand,
   keepsSetBonus,
   percentOf,
+  planItHref,
   signedGainLabel,
   slotSummary,
   sourceNameOfCombo,
   substitutionChipLabel,
   substitutionLabel,
   winningGear,
+  type ComboRow,
 } from './combos';
 import { bulkCopy } from './copy';
+import { decodeFS1 } from '../planner/fs1';
 import type { BulkResult, Combo } from './bulk-types';
+import type { GearSlot } from './types';
 import type { Item, ItemSet } from '../planner/types';
 
 const result = bulkResultJson as unknown as BulkResult;
@@ -306,6 +314,247 @@ describe('winningGear', () => {
     expect(addon).toContain('main_hand=17182');
     expect(addon).not.toContain('off_hand');
     expect(addon).not.toContain('=0');
+  });
+});
+
+describe('gearForCombo', () => {
+  it('writes one substitution over the base gear, same as winningGear does for the leader', () => {
+    const base: GearSlot[] = [{ slot: 'head', item_id: 1 }];
+    const combo: Combo = {
+      substitutions: [{ kind: 'item', slot: 'head', item_id: 2 }],
+      dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      group: 0,
+    };
+    expect(gearForCombo(base, combo)).toEqual([{ slot: 'head', item_id: 2 }]);
+  });
+
+  it('agrees with winningGear on the leader combo', () => {
+    expect(gearForCombo(result.request.character.gear, result.combos[0])).toEqual(winningGear(result));
+  });
+
+  it('removes an emptied off-hand rather than writing item_id 0, same rule as winningGear', () => {
+    const base: GearSlot[] = [
+      { slot: 'main_hand', item_id: 1 },
+      { slot: 'off_hand', item_id: 2 },
+    ];
+    const combo: Combo = {
+      substitutions: [
+        { kind: 'item', slot: 'main_hand', item_id: 3 },
+        { kind: 'item', slot: 'off_hand', item_id: 0 },
+      ],
+      dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      group: 0,
+    };
+    expect(gearForCombo(base, combo)).toEqual([{ slot: 'main_hand', item_id: 3 }]);
+  });
+
+  it('ignores a talents, set or consumes substitution, leaving the base gear untouched', () => {
+    const base: GearSlot[] = [{ slot: 'head', item_id: 1 }];
+    const combo: Combo = {
+      substitutions: [
+        { kind: 'talents', name: 'Deep Fury', talents: '0-5530515-' },
+        { kind: 'set', name: 'Battlegear of Wrath' },
+        { kind: 'consumes', name: 'flask_of_supreme_power' },
+      ],
+      dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      group: 0,
+    };
+    expect(gearForCombo(base, combo)).toEqual(base);
+  });
+});
+
+/**
+ * The fixture's own three non-item combos (task 7 fix round 1 added the talents and
+ * set+consumes rows) are reused directly rather than re-built here: `comboRows(result)`'s
+ * groups already carry one of each kind this predicate has to tell apart.
+ */
+describe('canPlanCombo', () => {
+  const itemCombo = result.combos[0];
+  const talentsCombo = result.combos.find((combo) =>
+    combo.substitutions.every((sub) => sub.kind === 'talents'),
+  )!;
+  const setAndConsumesCombo = result.combos.find((combo) =>
+    combo.substitutions.some((sub) => sub.kind === 'set'),
+  )!;
+
+  it('is true for a combo with an item substitution', () => {
+    expect(canPlanCombo(itemCombo)).toBe(true);
+  });
+
+  it('is true for a talents-only combo -- its own talents string can ride onto the spec', () => {
+    expect(canPlanCombo(talentsCombo)).toBe(true);
+  });
+
+  it('is false for a set (plus consumes) combo -- a named set carries no gear on the wire', () => {
+    expect(canPlanCombo(setAndConsumesCombo)).toBe(false);
+  });
+
+  it('is false for a consumes-only combo -- consumables change neither gear nor talents', () => {
+    const consumesOnly: Combo = {
+      substitutions: [{ kind: 'consumes', name: 'flask_of_supreme_power' }],
+      dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      group: 0,
+    };
+    expect(canPlanCombo(consumesOnly)).toBe(false);
+  });
+
+  it('is false for a set substitution even mixed with an item substitution -- the set’s own gear is still unknown', () => {
+    const setPlusItem: Combo = {
+      substitutions: [
+        { kind: 'set', name: 'Battlegear of Wrath' },
+        { kind: 'item', slot: 'trinket1', item_id: 13968 },
+      ],
+      dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      group: 0,
+    };
+    expect(canPlanCombo(setPlusItem)).toBe(false);
+  });
+});
+
+describe('planItHref', () => {
+  const itemCombo = result.combos[0];
+  const talentsCombo = result.combos.find((combo) =>
+    combo.substitutions.every((sub) => sub.kind === 'talents'),
+  )!;
+  const setAndConsumesCombo = result.combos.find((combo) =>
+    combo.substitutions.some((sub) => sub.kind === 'set'),
+  )!;
+
+  function decodedGearOf(href: string): { slot: string; itemId: number }[] {
+    const code = decodeURIComponent(href.replace(/^\/planner\?code=/, ''));
+    const decoded = decodeFS1(code);
+    if (!decoded.ok) throw new Error(decoded.message);
+    return decoded.build.gearSlots;
+  }
+
+  it('encodes an item row’s own substituted item into the planner link', () => {
+    const href = planItHref(result, itemCombo, 'test-build');
+    expect(href).not.toBeNull();
+    const gear = decodedGearOf(href!);
+    expect(gear.find((slot) => slot.slot === 'head')?.itemId).toBe(16963);
+    expect(gear.find((slot) => slot.slot === 'shoulder')?.itemId).toBe(16966);
+  });
+
+  // FS1's own tree encoding writes a fully empty tree as a single "0" digit (`encodeTree`'s
+  // trailing-zero trim falls back to "0" rather than the empty string), so a wholly-unspent
+  // tree round-trips as `[0]`, not `[]`. Trailing zeros are trimmed on both sides before
+  // comparing -- the same normalisation `encodeTree` itself already applies -- so this test
+  // asserts what the talents STRING actually said, not an FS1 encoding artifact.
+  function trimTrailingZeros(tree: readonly number[]): number[] {
+    const trimmed = [...tree];
+    while (trimmed.length > 0 && trimmed[trimmed.length - 1] === 0) trimmed.pop();
+    return trimmed;
+  }
+
+  it('carries a talents-only row’s own talents string, with the base gear untouched', () => {
+    const href = planItHref(result, talentsCombo, 'test-build');
+    expect(href).not.toBeNull();
+    const code = decodeURIComponent(href!.replace(/^\/planner\?code=/, ''));
+    const decoded = decodeFS1(code);
+    if (!decoded.ok) throw new Error(decoded.message);
+    expect(decoded.build.treeRanks.map(trimTrailingZeros)).toEqual(
+      ranksFromTalentsString(talentsCombo.substitutions[0].talents!).map(trimTrailingZeros),
+    );
+    expect(decoded.build.gearSlots.map((slot) => slot.itemId).sort()).toEqual(
+      result.request.character.gear.map((slot) => slot.item_id).sort(),
+    );
+  });
+
+  it('is null for a set (plus consumes) row -- no link opens gear the row never carried', () => {
+    expect(planItHref(result, setAndConsumesCombo, 'test-build')).toBeNull();
+  });
+});
+
+/**
+ * Review fix round 1: the original `comboKey` (moved here unchanged from
+ * `DropResults.svelte`) keyed on only the FIRST substitution, so the fixture's own
+ * `combos[0]` (head+shoulder) and `combos[1]` (head alone) both rendered "head:16963" once
+ * `comboKey` reached a component (`ComboResults.svelte`) whose rows can carry more than one
+ * substitution -- harmless in `DropResults.svelte`, whose "drops" mode combos are always
+ * single-substitution, but a real `data-testid` collision (and an e2e selector risk) once
+ * shared. `web/tests/e2e/sim-drops.spec.ts` asserts `sim-drops-pin-finger1:19325`,
+ * `sim-drops-pin-head:16963` and `sim-drops-pin-main_hand:12784` verbatim, so the plain
+ * single-item case (no enchant, no suffix) must keep producing exactly `<slot>:<item_id>`.
+ */
+describe('comboKey', () => {
+  it('keys a plain single-item row on slot:item_id, unchanged -- e2e selects these ids verbatim', () => {
+    const headOnly = comboRows(result).find(
+      (row) => row.combo.substitutions.length === 1 && row.combo.substitutions[0].slot === 'head',
+    )!;
+    expect(comboKey(headOnly)).toBe('head:16963');
+  });
+
+  it('gives combos[0] (head+shoulder) and combos[1] (head alone) different keys', () => {
+    const rows = comboRows(result);
+    const headAndShoulder = rows.find((row) => row.combo.substitutions.length === 2)!;
+    const headOnly = rows.find(
+      (row) => row.combo.substitutions.length === 1 && row.combo.substitutions[0].slot === 'head',
+    )!;
+    expect(comboKey(headAndShoulder)).not.toBe(comboKey(headOnly));
+  });
+
+  it('distinguishes two rows carrying the same item at different enchants', () => {
+    const plain: ComboRow = {
+      rank: 1,
+      withinError: true,
+      percent: 0,
+      combo: {
+        substitutions: [{ kind: 'item', slot: 'head', item_id: 16963 }],
+        dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+        delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+        group: 0,
+      },
+    };
+    const enchanted: ComboRow = {
+      ...plain,
+      combo: {
+        ...plain.combo,
+        substitutions: [{ kind: 'item', slot: 'head', item_id: 16963, enchant: 907 }],
+      },
+    };
+    const differentlyEnchanted: ComboRow = {
+      ...plain,
+      combo: {
+        ...plain.combo,
+        substitutions: [{ kind: 'item', slot: 'head', item_id: 16963, enchant: 123 }],
+      },
+    };
+    expect(comboKey(plain)).toBe('head:16963');
+    expect(comboKey(enchanted)).not.toBe(comboKey(plain));
+    expect(comboKey(enchanted)).not.toBe(comboKey(differentlyEnchanted));
+  });
+
+  it('distinguishes two talents-only rows with different loadouts', () => {
+    const deepFury: ComboRow = {
+      rank: 5,
+      withinError: false,
+      percent: 0,
+      combo: {
+        substitutions: [{ kind: 'talents', name: 'Deep Fury', talents: '0-5530515-' }],
+        dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+        delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+        group: 2,
+      },
+    };
+    const arms: ComboRow = {
+      ...deepFury,
+      combo: {
+        ...deepFury.combo,
+        substitutions: [{ kind: 'talents', name: 'Deep Wounds', talents: '5530515-0-' }],
+      },
+    };
+    expect(comboKey(deepFury)).not.toBe(comboKey(arms));
+  });
+
+  it('gives every row of the fixture result a unique key', () => {
+    const rows = comboRows(result);
+    const keys = new Set(rows.map((row) => comboKey(row)));
+    expect(keys.size).toBe(rows.length);
   });
 });
 

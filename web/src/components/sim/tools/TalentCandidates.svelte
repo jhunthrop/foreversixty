@@ -223,6 +223,7 @@
           raceSlug={character.race_slug}
           gear={plannerGearFor(character)}
           oncode={(code: string) => (customCode = code)}
+          standalone={false}
         />
         <button
           type="button"

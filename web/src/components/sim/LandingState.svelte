@@ -38,20 +38,26 @@
   }
 
   /**
-   * The row's own link. Armory is not a loadable source yet (`store.svelte.ts`'s
-   * `bootstrapSource` has no case for it -- see that file's own header note), so following
-   * this URL on its own lands back on this same landing state rather than the character it
-   * names; picking, here or from a link followed elsewhere, is what actually loads one. The
-   * href exists so the row is a real link -- copyable, middle-clickable, opens in a new tab
-   * -- exactly as the design calls for, not so the URL alone reproduces the pick.
+   * The row's own link. Armory is a loadable source (`store.svelte.ts`'s `bootstrapSource`
+   * resolves `armory` through `fromStoredCharacter`, keyed off this same `?source=armory&
+   * ref=<key>` pair -- current-character spec, 2026-09-21), so following this URL on its
+   * own now loads the character it names. The href still exists so the row is a real link
+   * -- copyable, middle-clickable, opens in a new tab -- exactly as the design calls for,
+   * not only so a click handler (`follow`, below) can pick it in place.
    */
   function hrefFor(character: MeCharacter): string {
     return `/sim${simSearch(withSimState(defaultSimState(), { source: 'armory', ref: character.key }))}`;
   }
 
   /** A link that picks the character in place and still opens in a new tab from a middle
-   *  click -- the same pattern MechanicsMode.svelte's own `follow` uses for an in-place link. */
+   *  click -- the same pattern MechanicsMode.svelte's own `follow` uses for an in-place
+   *  link. Fix round 1, Important #1: while anything is busy (the button's own
+   *  `disabled={busyKey !== null}` below, unreachable through an `<a>`), this falls through
+   *  to the link's own plain navigation instead of picking in place -- an anchor has no
+   *  `disabled`, so without this check the row's link was the one entry point that could
+   *  still start a race in-place, busy or not. */
   function follow(event: MouseEvent, path: CharacterPath): void {
+    if (busyKey !== null) return;
     if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
     event.preventDefault();
     onpick(path);
