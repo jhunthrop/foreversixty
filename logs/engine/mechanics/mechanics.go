@@ -89,6 +89,24 @@ type Phase struct {
 	Starts PhaseStart `json:"starts"`
 }
 
+// Downtime is a forced stretch a trigger opens during which the boss is
+// untargetable or the raid is expected to step out -- a Firesworn's death
+// detonation, a transition nobody can hit through. It extends only the
+// rating engine's Activity component (logs/engine/rating): a downtime
+// window is deliberately never subtracted from Survival's or Mechanics'
+// own denominators, since "the boss is untargetable" does not mean
+// "avoidable damage stopped mattering" (docs/superpowers/specs/2026-09-21-
+// performance-rating-design.md §3.4, §2).
+type Downtime struct {
+	// Trigger reuses PhaseStart's exact shape: the engine already has one
+	// validated way to say "this fires when," and a downtime window is
+	// structurally identical to a phase boundary except it also carries a
+	// duration and does not rename the fight's phase.
+	Trigger    PhaseStart `json:"trigger"`
+	DurationMS int64      `json:"duration_ms"`
+	Note       string     `json:"note,omitempty"`
+}
+
 // Table is one encounter's mechanics, and the phases it is fought in.
 type Table struct {
 	EncounterID int64      `json:"encounter_id"`
@@ -97,6 +115,9 @@ type Table struct {
 	// Phases are the stretches the encounter is fought in, in the order they
 	// happen. Empty for an encounter nobody has curated phases for.
 	Phases []Phase `json:"phases,omitempty"`
+	// Downtime is every forced-downtime window this encounter's table
+	// curates. Empty means none, the same convention Phases already uses.
+	Downtime []Downtime `json:"downtime,omitempty"`
 }
 
 //go:embed tables/*.json
@@ -162,26 +183,41 @@ func Parse(data []byte) (Table, error) {
 		if p.Name == "" {
 			return Table{}, fmt.Errorf("phases[%d]: name is required", i)
 		}
-		switch {
-		case p.Starts.SpellID > 0:
-			if !phaseOn[p.Starts.On] {
-				return Table{}, fmt.Errorf(
-					"phases[%d]: on %q is not cast_start, cast_success, aura_applied or aura_removed", i, p.Starts.On)
-			}
-			if p.Starts.HealthPct != 0 {
-				return Table{}, fmt.Errorf(
-					"phases[%d]: a phase starts on a spell or on a health percentage, not both", i)
-			}
-		case p.Starts.HealthPct > 0 && p.Starts.HealthPct <= 100:
-			if p.Starts.On != "" {
-				return Table{}, fmt.Errorf("phases[%d]: on belongs to a spell trigger; a health trigger takes none", i)
-			}
-		default:
-			return Table{}, fmt.Errorf(
-				"phases[%d]: starts must name a spell_id with on, or a health_pct above 0 and at most 100", i)
+		if err := validatePhaseStart(p.Starts); err != nil {
+			return Table{}, fmt.Errorf("phases[%d]: %w", i, err)
+		}
+	}
+	for i, d := range t.Downtime {
+		if d.DurationMS <= 0 {
+			return Table{}, fmt.Errorf("downtime[%d]: duration_ms must be positive", i)
+		}
+		if err := validatePhaseStart(d.Trigger); err != nil {
+			return Table{}, fmt.Errorf("downtime[%d]: %w", i, err)
 		}
 	}
 	return t, nil
+}
+
+// validatePhaseStart is Parse's field check for a PhaseStart, shared by
+// Phase.Starts and Downtime.Trigger: both name "this fires when" with the
+// exact same spell-or-health vocabulary.
+func validatePhaseStart(start PhaseStart) error {
+	switch {
+	case start.SpellID > 0:
+		if !phaseOn[start.On] {
+			return fmt.Errorf("on %q is not cast_start, cast_success, aura_applied or aura_removed", start.On)
+		}
+		if start.HealthPct != 0 {
+			return fmt.Errorf("starts on a spell or on a health percentage, not both")
+		}
+	case start.HealthPct > 0 && start.HealthPct <= 100:
+		if start.On != "" {
+			return fmt.Errorf("on belongs to a spell trigger; a health trigger takes none")
+		}
+	default:
+		return fmt.Errorf("starts must name a spell_id with on, or a health_pct above 0 and at most 100")
+	}
+	return nil
 }
 
 // Load returns the embedded table for an encounter, and false when there is none.
