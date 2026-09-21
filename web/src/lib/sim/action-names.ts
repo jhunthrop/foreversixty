@@ -23,11 +23,16 @@
 // untouched. A key the grammar DOES recognise but whose id the build's table does not
 // carry -- the names file is still loading, or a build that never published this id --
 // is never returned raw either (dps-minmaxer review round 2, D48: a saved run rendered
-// "spell:20662" as an ability name): it falls back to humaniseKey (humanise.ts), so the
-// screen always reads English, never a wire key.
-import { dataUrl, fetchJson } from '../planner/load';
+// "spell:20662" as an ability name): it used to fall back to humaniseKey's "Spell 20662"/
+// "Item 20662", which read as English but still repeated the raw wire number verbatim --
+// 2026-09-21 result-page review round 2 found this itself was still an id reaching a
+// player, just spelled out. unresolvedActionName's "An unnamed spell"/"An unnamed item"
+// is the fallback now: real prose with no number in it at all. `humaniseKey` itself is
+// untouched (DropResults.svelte's own "kind:id" keys are not spell/item ids and still want
+// its generic behaviour).
+import { dataUrl, fetchJson, loadOptional } from '../planner/load';
 import { attackHandName, simCopy } from './copy';
-import { humanise, humaniseKey } from './humanise';
+import { humanise } from './humanise';
 
 /**
  * The first row id sim/adapter allocates for itself (its `syntheticBase`). Every client
@@ -42,6 +47,17 @@ export interface ActionNames {
   spell: Record<string, string>;
   /** Client item id as a string to display name. */
   item: Record<string, string>;
+  /**
+   * Which `spell` ids the player's OWN class's spellconst carries -- before
+   * `loadActionNames` folds in `simnames/_shared.json`'s cross-class raid buffs (2026-09-21
+   * result-page review, Defect 2). sentence.ts reads this to tell "my own cooldown" from
+   * "an external raid buff someone else in the raid granted me" without re-deriving
+   * RAID_BUFFS' slug list here; every other reader of an `ActionNames` (resolveActionName
+   * itself, compare.ts, sample-log.ts, SpecCard.svelte) ignores it. Optional, and treated as
+   * "everything in `spell` is the player's own" when absent, which is what every literal
+   * `ActionNames` built by hand (a test, a fixture) already means.
+   */
+  ownSpell?: ReadonlySet<string>;
 }
 
 export interface ActionKey {
@@ -103,9 +119,23 @@ export function attackHand(tag: number): AttackHand | null {
 }
 
 /**
+ * The words a truly-unresolvable spell or item id reads as, never the number itself
+ * (2026-09-21 result-page review round 2, Defect 2 continued): production still showed a
+ * handful of ids the shared table (simnames/_shared.json, scripts/sync-data.mjs) has no
+ * row for -- an engine-internal proc with no client spell of its own (spellconst omits it,
+ * spells.json has never heard of it either) is the one kind that can still reach here. A
+ * name this unlikely to exist is still better spelled out in words than as a number a
+ * player has to go look up.
+ */
+function unresolvedActionName(kind: 'spell' | 'item'): string {
+  return kind === 'spell' ? simCopy.unnamedSpell : simCopy.unnamedItem;
+}
+
+/**
  * The name a player reads. `names` is null until the build's file has loaded, and an id the
  * build does not carry -- a racial from a class file we did not fetch, a proc from an item
- * the player does not own in this build -- keeps its key rather than becoming "Unknown".
+ * the player does not own in this build -- reads as `unresolvedActionName`'s own prose
+ * rather than becoming "Unknown" or repeating the raw id.
  */
 export function resolveActionName(key: string, names: ActionNames | null): string {
   const parsed = parseActionKey(key);
@@ -119,11 +149,44 @@ export function resolveActionName(key: string, names: ActionNames | null): strin
     return humanise(parsed.label) + simCopy.actionVariant(parsed.tag, parsed.rank);
   }
   const table = parsed.kind === 'spell' ? names?.spell : names?.item;
-  const name = table?.[parsed.label] ?? humaniseKey(`${parsed.kind}:${parsed.label}`);
+  const name = table?.[parsed.label] ?? unresolvedActionName(parsed.kind);
   return name + simCopy.actionVariant(parsed.tag, parsed.rank);
 }
 
-/** The build's name table for one class, published by scripts/sync-data.mjs. */
+/** `simnames/_shared.json`'s empty shape: an older build that scripts/sync-data.mjs has
+ *  not regenerated ships none of it, and a missing cross-class table must read as "no
+ *  extra names available", never as a load failure the page has to report. */
+const EMPTY_SHARED_NAMES: ActionNames = { spell: {}, item: {} };
+
+/**
+ * `simnames/_shared.json`: every class's own spell table unioned into one, plus the
+ * handful of raid buffs no class's spellbook owns at all (writeSimNames's own doc comment,
+ * scripts/sync-data.mjs). A 404 means the build predates this file, not that the build is
+ * broken, so it falls back to empty via loadOptional the same way loadSets and loadWeights
+ * already treat their own optional build files.
+ */
+function loadSharedActionNames(build: string): Promise<ActionNames> {
+  return loadOptional<ActionNames>(dataUrl(build, 'simnames/_shared.json'), EMPTY_SHARED_NAMES);
+}
+
+/**
+ * The build's name table for one class, published by scripts/sync-data.mjs -- the class's
+ * own spellconst-derived names, with the cross-class `simnames/_shared.json` folded in so
+ * a raid buff from another class (a mage raid-buffed with a paladin's Blessing of Kings, a
+ * warrior's Battle Shout, Thorns) resolves too (2026-09-21 result-page review, Defect 2).
+ * The class's own entry wins a same-id collision -- spell ids are one global namespace, so
+ * in practice there is none, but a class's own name is the more specific one to trust if
+ * there ever were. `ownSpell` records the pre-merge membership, for sentence.ts's "my own
+ * spec's buff, not an external raid buff" preference.
+ */
 export async function loadActionNames(build: string, classSlug: string): Promise<ActionNames> {
-  return fetchJson<ActionNames>(dataUrl(build, `simnames/${classSlug}.json`));
+  const [own, shared] = await Promise.all([
+    fetchJson<ActionNames>(dataUrl(build, `simnames/${classSlug}.json`)),
+    loadSharedActionNames(build),
+  ]);
+  return {
+    spell: { ...shared.spell, ...own.spell },
+    item: { ...shared.item, ...own.item },
+    ownSpell: new Set(Object.keys(own.spell)),
+  };
 }

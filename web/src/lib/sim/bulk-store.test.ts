@@ -47,6 +47,10 @@ function store(tool: (typeof TOOLS)[number] = 'gear', overrides: StoreOverrides 
 
 beforeEach(() => api.install());
 afterEach(() => api.reset());
+// Fix round 1: every loader below writes the current-character pointer against real jsdom
+// localStorage (no `storage` override here, the same as every real call site), so one
+// test's write must not leak into the next test's read.
+afterEach(() => localStorage.clear());
 
 describe('TOOLS and MODE_OF_TOOL', () => {
   it('maps each tool page to its bulk mode', () => {
@@ -90,6 +94,13 @@ describe('loading a character', () => {
     await s.loadAddon('FS2:nope');
     expect(s.character).not.toBeNull();
     expect(s.message).not.toBeNull();
+    s.dispose();
+  });
+
+  it('loadCode adopts a character from an FS1 code, the same as loadAddon does from a paste', async () => {
+    const s = store();
+    await s.loadCode(FURY);
+    expect(s.character?.class_slug).toBe('warrior');
     s.dispose();
   });
 });
@@ -328,6 +339,89 @@ describe('running', () => {
     expect(s.referenceStat).toBe('attack_power');
     await s.run();
     expect(s.weights.find((row) => row.stat === 'attack_power')?.weight).toBe(1);
+    s.dispose();
+  });
+
+  // Defect A: production repro -- a browser-lane weights run at the default ("fast")
+  // precision used to be refused by sim/api's own closed-iteration-set check (a weights
+  // request's Iterations is the engine's per-direction base count, not one of the settings
+  // bar's three fixed choices), and that refusal never reached the page: `pool.weights()`
+  // resolved with the refusal instead of rejecting, `runWeightsRun` read it as an ordinary
+  // finished result, and the page landed on `phase: 'done'` with an empty table, no message
+  // and no error -- the button just said "Run again". Both halves are fixed now: sim/api no
+  // longer refuses the browser lane's guarded default, and engine.ts's `simWeights` binding
+  // unwraps a `.error`-carrying answer the same way `simValidate`/`simRank` already do. This
+  // test pins the second half at the layer it actually broke: a `pool.weights()` that
+  // rejects (what the fixed binding now does for a refused or failed run) must never leave
+  // the page silently "done".
+  it('never lands on a silent "done" when the engine lane rejects a weights run', async () => {
+    const notUsedHere = (name: string) => (): never => {
+      throw new Error(`unexpected call to SimPool.${name} in this test`);
+    };
+    const rejectingPool: SimPool = {
+      size: 1,
+      split: notUsedHere('split'),
+      run: notUsedHere('run'),
+      combine: notUsedHere('combine'),
+      needsMore: notUsedHere('needsMore'),
+      validate: notUsedHere('validate'),
+      count: notUsedHere('count'),
+      plan: notUsedHere('plan'),
+      rank: notUsedHere('rank'),
+      weights: async () => {
+        throw new Error('iterations must be one of [500 3000 10000], got 60');
+      },
+      abort: notUsedHere('abort'),
+      terminate: () => {},
+    };
+    const s = store('weights', { pool: rejectingPool });
+    await s.loadAddon(FURY);
+    await s.loadSpecs();
+    await s.run();
+    expect(s.result).toBeNull();
+    expect(s.weights).toEqual([]);
+    expect(s.phase).toBe('error');
+    expect(s.message).toBe(bulkCopy.bulkFailed);
+    expect(s.detail).toBe('iterations must be one of [500 3000 10000], got 60');
+    s.dispose();
+  });
+
+  // Belt-and-braces (defect A): even a weights run that finishes -- not thrown, not
+  // aborted -- must say something if it carries no weight rows. `sim/adapter.Weights` never
+  // returns an empty slice on a genuine success, so this path should be unreachable in
+  // product; the test exists so a future change on either side of the wire cannot reopen
+  // the silent "done" by a different route.
+  it('says so when a finished weights run carries no weight rows', async () => {
+    const notUsedHere = (name: string) => (): never => {
+      throw new Error(`unexpected call to SimPool.${name} in this test`);
+    };
+    const emptyWeightsPool: SimPool = {
+      size: 1,
+      split: notUsedHere('split'),
+      run: notUsedHere('run'),
+      combine: notUsedHere('combine'),
+      needsMore: notUsedHere('needsMore'),
+      validate: notUsedHere('validate'),
+      count: notUsedHere('count'),
+      plan: notUsedHere('plan'),
+      rank: notUsedHere('rank'),
+      weights: async () =>
+        JSON.stringify({
+          iterations_run: 60,
+          dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+          summary: {},
+          weights: [],
+        }),
+      abort: notUsedHere('abort'),
+      terminate: () => {},
+    };
+    const s = store('weights', { pool: emptyWeightsPool });
+    await s.loadAddon(FURY);
+    await s.loadSpecs();
+    await s.run();
+    expect(s.phase).toBe('done');
+    expect(s.weights).toEqual([]);
+    expect(s.message).toBe(bulkCopy.weightsEmpty);
     s.dispose();
   });
 

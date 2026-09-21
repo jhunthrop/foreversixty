@@ -5,6 +5,7 @@
 import Base from '../layouts/Base.astro';
 import Panel from '../components/Panel.astro';
 import AddonPasteBox from '../components/AddonPasteBox.svelte';
+import CurrentCharacterBar from '../components/CurrentCharacterBar.svelte';
 import { addonCopy } from '../lib/addon/copy';
 import activeBuild from '../data/active-build.json';
 import communityLinks from '../data/links.json';
@@ -63,7 +64,10 @@ const flows = [
       </ul>
     </Panel>
 
+    <!-- The paste box writes the current character; the bar under it shows it, with the
+         same Open in planner / simulator links every tool page carries. -->
     <AddonPasteBox client:load />
+    <CurrentCharacterBar client:load hasOwnPasteBox />
 
     <div class="grid gap-4 md:grid-cols-2">
       {flows.map((flow) => (

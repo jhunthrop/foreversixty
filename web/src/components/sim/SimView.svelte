@@ -12,11 +12,14 @@
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, fetchMe, type Me } from '../../lib/account/api';
   import type { CharacterPath } from '../../lib/characters';
+  import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
+  import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
   import { fetchSim, fetchSpecs, listMySims } from '../../lib/sim/api';
   import { codeForCharacterSpec } from '../../lib/sim/character';
+  import { decideBootstrap, RESTORE_BUSY_KEY, runBootstrapRestore } from '../../lib/sim/character-bootstrap';
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
   import type { KindFilter } from '../../lib/sim/history';
@@ -44,6 +47,7 @@
   import type { SimListRow, SimRequest, SimResult, SpecFidelity } from '../../lib/sim/types';
   import BuffPanel from './BuffPanel.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
+  import CurrentCharacterChip from '../CurrentCharacterChip.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
   import ReportOptions from './ReportOptions.svelte';
@@ -59,9 +63,8 @@
 
   // True on /sim/<id> -- a saved sim, `sim-island.ts`'s own `simIdFor` already resolved off
   // the mount's data or the path -- and on the prerendered fixture page, which inlines its
-  // result for Lighthouse. Task 17 renders that view; the character strip, the source
-  // switcher and the empty prompt below are /sim's own UI, not /sim/<id>'s, so they stay out
-  // of the way rather than showing a builder under content that has not landed yet.
+  // result. Task 17 renders that view; the character strip, the source switcher and the
+  // empty prompt below stay out of the way rather than showing a builder under it.
   const hasSavedSimId = untrack(() => simId !== '' || inlineResult !== null);
 
   // Read once, like simId and inlineResult above: these are the page's own one-shot
@@ -81,13 +84,13 @@
     return { treeVersion, source, ref, code, request: decodeRequestParam(req), mode, view };
   });
 
+  // The chip's "No character loaded" line is for pages that name no character themselves:
+  // the plain view has its own paste box, and a saved sim shows its character and result.
+  const hasOwnPasteBox = hasSavedSimId || bootstrap.view === 'sim';
+
   // Compare mode loads its character through `enterCompare` below, never through the
-  // store's own URL bootstrap: both call the identical `fromLoggedFight(ref)`, and
-  // `adopt()` unconditionally clears `result` on every successful load, so a second,
-  // redundant bootstrap racing `enterCompare`'s own bootstrap could land after
-  // `store.run()` and null out the sim result `comparison` was just built from. One
-  // loader for one entry path avoids that race rather than trusting the two to agree on
-  // an order they are never sequenced to keep.
+  // store's own URL bootstrap: a second, redundant bootstrap racing `enterCompare`'s own
+  // could land after `store.run()` and null out the result `comparison` was built from.
   const store = untrack(() =>
     createSimStore({
       treeVersion: bootstrap.treeVersion,
@@ -98,9 +101,8 @@
     }),
   );
 
-  // Compare mode's own state: `actual` is the logged fight's raw summary, read straight
-  // off the report lane's own loader (no second parse, no new API), and `comparing` gates
-  // every compare-only branch below so plain /sim never has to think about either.
+  // Compare mode's own state: `actual` is the logged fight's raw summary, and `comparing`
+  // gates every compare-only branch below so plain /sim never has to think about either.
   let actual = $state<Summary | null>(null);
   let comparing = $state(false);
 
@@ -142,10 +144,8 @@
   let savedResult = $state<SimResult | null>(untrack(() => inlineResult));
   let savedError = $state<string | null>(null);
 
-  // One-time init reads of savedResult and simId, the same reason bootstrap and store
-  // above are wrapped: this runs once, at setup, never again as either changes. The
-  // .then/.catch callbacks below run later, as ordinary reactive writes -- untrack only
-  // covers the synchronous read that kicks the fetch off.
+  // One-time init read, the same reason bootstrap and store above are wrapped: the
+  // .then/.catch callbacks run later, as ordinary reactive writes.
   untrack(() => {
     if (hasSavedSimId && savedResult === null && simId !== '') {
       void fetchSim(simId)
@@ -157,23 +157,10 @@
   });
 
   /**
-   * "Run this yourself", the stale-result remedy and the ordinary way off a saved page:
-   * opens /sim with a character loaded, so the player can change something and run it
-   * themselves. It is a callback rather than an `<a href>` SavedSim builds itself so the
-   * URL is built with the same `sim/url.ts` vocabulary this file already owns for its own
-   * bootstrap, in one place. It is never triggered automatically -- only this handler,
-   * from the player's own click.
-   *
-   * `source.kind`+`ref` round-trips correctly for `build` and `fight`: both always carry a
-   * non-empty `ref` (fromPlannerBuild, fromLoggedFight) that `bootstrapSource` can look
-   * back up. `addon` (a pasted or pushed FS1 export) and `manual` (a build adopted from the
-   * planner) never persist a `ref` at all -- `sources.ts`'s `fromAddonExport` and
-   * `character.ts`'s `characterFromPlanner` both write `ref: ''` -- so navigating with
-   * their `source`/`ref` landed on an empty `/sim?source=addon` with no character and no
-   * message (H4, final whole-branch review). The saved result's own `request.character`
-   * carries everything an FS1 code does, so this builds one and hands it to `/sim`'s
-   * existing `?code=` bootstrap -- the same path "Sim this build" already uses -- instead
-   * of a ref nothing wrote.
+   * "Run this yourself": opens /sim with a character loaded, via the same `sim/url.ts`
+   * vocabulary this file's own bootstrap uses. `addon`/`manual` sources persist no `ref`
+   * (H4, final whole-branch review), so those fall back to the saved result's own
+   * `request.character`, converted to an FS1 code and handed to `?code=` instead.
    */
   function onRerunSaved(): void {
     if (savedResult === null) return;
@@ -209,10 +196,8 @@
     if (comparison !== null) compareViewLazy.load();
   });
 
-  // Set from `onMount`'s own `fetchMe` below, the same answer that already gates the
-  // premium control -- one fetch, read by the history panel (Task 17), the landing state
-  // and the source switcher's signed-in card (Task 18), rather than a signed-in flag each
-  // of them would otherwise need its own copy of.
+  // Set from `onMount`'s own `fetchMe` below -- read by the history panel, the landing
+  // state and the source switcher's signed-in card.
   let me = $state<Me | null>(null);
   // The history panel (Task 17), for a signed-in player on plain /sim only.
   const signedIn = $derived(me !== null);
@@ -247,9 +232,7 @@
   });
 
   // Design 5.4: the finish notification. `notifier` is the real Notification API, or null
-  // where the browser has none (notify.ts's own seam) -- read once, since the API itself
-  // never appears mid-session. Permission is asked for only from `toggleNotify`, the
-  // player's own click on the checkbox; nothing here asks on mount.
+  // where the browser has none, read once. Permission is asked only from `toggleNotify`.
   const notifier = untrack(() => browserNotifier());
   let notifyWanted = $state(false);
   // The id of the last result a notification was raised for, so a re-render never raises a
@@ -278,11 +261,7 @@
     }
   });
 
-  // The save form under the results (Task 17). `saveOpen`/`saveTitle` are the inline
-  // form; `savedUrl` is what replaces it on success, exactly as `SharePanel.svelte`'s own
-  // save flow does for a build. Any new run invalidates whatever the form was showing --
-  // a fresh result is a different sim to save, and an old saved link would be pointing at
-  // the wrong one.
+  // The save form: `saveOpen`/`saveTitle` are the inline form, `savedUrl` replaces it on success.
   let saveOpen = $state(false);
   let saveTitle = $state('');
   let saving = $state(false);
@@ -356,13 +335,13 @@
         if (result !== null) void loadHistory();
       })
       .catch(() => {});
+    // Never on /sim/<id>: a saved sim never restores the visitor's own current character.
+    if (!hasSavedSimId) void restoreFromPointer();
     return () => store.dispose();
   });
 
-  // The spec support list: `/sim/specs` renders it as a grid, and `/sim` needs it too, to
-  // know whether the loaded character's own spec is one the engine models at all. One
-  // small, cacheable, credential-free GET, so both views share it rather than each fetching
-  // their own copy.
+  // The spec support list: /sim/specs renders it as a grid, and /sim needs it too, to know
+  // whether the loaded character's own spec is one the engine models -- both share it.
   let specRows = $state<SpecFidelity[] | null>(null);
   let specsError = $state<string | null>(null);
 
@@ -376,9 +355,8 @@
     }
   }
 
-  // No reactive read inside, so this fires once, on mount, the way an `onMount` fetch would
-  // -- the effect form is what Task 15's brief calls for, since `/sim/specs`' own grid needs
-  // exactly this same one-shot load.
+  // No reactive read inside, so this fires once, on mount -- the effect form Task 15's
+  // brief calls for, since /sim/specs' own grid needs exactly this one-shot load.
   $effect(() => {
     void loadSpecs();
   });
@@ -394,27 +372,31 @@
     return mergeSpecRows(specRows).find((row) => row.spec === store.character?.spec) ?? null;
   });
 
-  // False until the player explicitly asks for the switcher -- the strip's "Change source",
-  // the landing state's "Sim something else", or the no-characters card's account link.
-  // Design 4.6: a signed-in member with characters opens on the landing state instead of
-  // the switcher, so defaulting this to `store.character === null` (as it read before the
-  // landing state existed) would show the switcher on every first paint and the landing
-  // state would never appear. Once a character *is* on screen, the effect below keeps this
-  // false regardless, the same way it always has.
+  // False until the player explicitly asks for the switcher. Design 4.6: a signed-in
+  // member with characters opens on the landing state instead, so defaulting this to
+  // `store.character === null` would show the switcher on every first paint instead.
   let switcherOpen = $state(false);
 
   $effect(() => {
     if (store.character !== null) switcherOpen = false;
   });
 
+  // The current-character chip (Task 5). `pointer` is refreshed in the `syncTabHrefs`
+  // effect below; `restored` is only ever set by `restoreFromPointer`.
+  let pointer = $state<CurrentCharacter | null>(null);
+  let restored = $state(false);
+
+  function onForgetPointer(): void {
+    clearCurrent();
+    pointer = null;
+    restored = false;
+  }
+
   /**
-   * A fresh FS1 v2 code for the loaded character, the same conversion the share link below
-   * ("Run this yourself") already falls back to when a saved result has no ref of its own
-   * to point at. The tab strip's own fallback for the identical case (fix round 1, Finding
-   * A): `tabStateFor` only reaches for this when `store.character.source.ref` is empty --
-   * an addon paste or a `?code=` link, the newcomer persona's primary entry path -- so
-   * `store.buildRequest()` (which needs the talent file to have resolved) runs only then,
-   * not on every character.
+   * A fresh FS1 v2 code for the loaded character, the same conversion "Run this yourself"
+   * above falls back to. Only reached when `store.character.source.ref` is empty (fix
+   * round 1, Finding A) -- an addon paste or a `?code=` link -- so `store.buildRequest()`
+   * runs only then, not on every character.
    */
   function fallbackTabCode(): string | null {
     if (store.character === null || store.character.source.ref !== '') return null;
@@ -425,13 +407,14 @@
   // Keeps the loaded character on every tab in SimTabs.astro's strip (task-1-brief.md):
   // whenever the character this island holds changes -- loaded, changed source, or cleared
   // -- every tab's href is rewritten to carry the same query its own destination can
-  // actually bootstrap from (`?source=&ref=`, or `?code=` only on the two tabs that read
-  // it, `SIM_TABS`' own `supportsCode`). The strip lives above this island's own mount
-  // point (SimTabs.astro's own comment), so `syncTabHrefs` reaches it through `document`
-  // rather than this component's own root.
+  // actually bootstrap from (`?source=&ref=`, or the `?code=` fallback every tab now reads,
+  // `SIM_TABS`' own `supportsCode` -- current-character spec, 2026-09-21). The strip lives
+  // above this island's own mount point (SimTabs.astro's own comment), so `syncTabHrefs`
+  // reaches it through `document` rather than this component's own root.
   $effect(() => {
     const source = store.character === null ? null : store.character.source;
     syncTabHrefs(source, fallbackTabCode());
+    pointer = readCurrent();
   });
 
   function onSignIn(): void {
@@ -440,10 +423,6 @@
 
   // The landing state's own busy key (Task 18): the row a pick is in flight for, so its
   // button reads "Loading…" while every other row disables rather than reads it too.
-  // `store.loadStored`'s own `adopt()` is what sets `store.message` on a refusal -- the
-  // "no race recorded" case sources.ts's `fromStoredCharacter` returns when the API has not
-  // recorded one yet -- so the landing-state message below reads that field rather than a
-  // second one this function would have to keep in step with it.
   let landingBusyKey = $state<string | null>(null);
 
   async function pickCharacter(path: CharacterPath): Promise<void> {
@@ -452,12 +431,32 @@
     landingBusyKey = null;
   }
 
-  // The stale-engine banner and pill describe a *settled* result, not one that is being
-  // re-run right now: while either lane is actively running, `store.result` still holds
-  // the old, stale result (neither lane clears it until a fresh one lands), so without this
-  // gate the stale banner's own "Run again" would render right alongside a live "Loading
-  // engine…"/"Stop" or the server-lane's own in-flight state -- two different "run this
-  // again" affordances on screen, one of them describing a run that already started.
+  // `store.ready` already ran the URL's own bootstrap; `runBootstrapRestore` (shared with
+  // ToolsView.svelte) only fires the stored-pointer fallback once that settled with
+  // nothing. `landingBusyKey` is held for the same window (fix round 1): `LandingState`
+  // disables its picks off that prop alone, never off `store.phase`, and `adopt()` has no
+  // per-load generation guard, so a fast pick could otherwise race this background load.
+  async function restoreFromPointer(): Promise<void> {
+    await store.ready;
+    const url = {
+      code: bootstrap.code,
+      source: bootstrap.source,
+      ref: bootstrap.ref,
+      hasRequest: bootstrap.request !== null,
+    };
+    const stored = readCurrent();
+    if (!decideBootstrap(url, stored).restored) return;
+    landingBusyKey = RESTORE_BUSY_KEY;
+    try {
+      restored = await runBootstrapRestore(store, url, stored, () => store.character !== null);
+    } finally {
+      landingBusyKey = null;
+    }
+  }
+
+  // The stale-engine banner describes a *settled* result: while either lane is running,
+  // `store.result` still holds the old result, so this gate keeps its "Run again" from
+  // rendering alongside a live "Loading engine…"/"Stop".
   const staleVersion = $derived(
     store.result !== null &&
       isStale(store.result.engine_version) &&
@@ -491,7 +490,11 @@
   {/if}
 {/snippet}
 
-<div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-view">
+<div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-view">
+  <!-- Unconditional and first: a reserved slot (ToolsView.svelte's own pattern), present on /sim/<id> too. -->
+  <div class={CHIP_HEIGHT} data-testid="sim-chip-slot">
+    <CurrentCharacterChip current={pointer} {restored} {hasOwnPasteBox} onforget={onForgetPointer} />
+  </div>
   {#if hasSavedSimId}
     <!-- /sim/<sim_id>: read-only, and not the sim page with a result in it -- no switcher,
          no settings bar, no run control. SavedSim composes its own heading. -->

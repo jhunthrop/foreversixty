@@ -156,22 +156,41 @@ func (s *Store) Queue(ctx context.Context, id string, userID int64, req simapi.S
 	return nil
 }
 
-// Get reads one stored result.
-func (s *Store) Get(ctx context.Context, id string) (simapi.SimResult, error) {
-	var body []byte
-	err := s.Pool.QueryRow(ctx, `select result from sims where id = $1`, id).Scan(&body)
+// Get reads one stored result, plus the title the member gave it, when
+// they gave one.
+//
+// The title travels as a second return value, not a field on
+// simapi.SimResult, for the same reason Save's own title parameter is a
+// sibling of the SimResult it saves (that function's own comment): the
+// contract's `sims.title` column names the row, not a fact the engine
+// produced, and adding it to the shared envelope type would be
+// something every OTHER reader of a SimResult -- the wasm build, the
+// premium job, forever-sim -- would then carry and have to ignore.
+//
+// Defect fix: this used to select only `result`, so a saved sim's own
+// name never reached the page, its <title> or its og tags at all --
+// GET /v1/sims?mine=1's own Row (Mine, below) already carried
+// `coalesce(title, ”)` for the history list; a single saved sim's own
+// GET never did the same.
+func (s *Store) Get(ctx context.Context, id string) (simapi.SimResult, string, error) {
+	var (
+		body  []byte
+		title string
+	)
+	err := s.Pool.QueryRow(ctx,
+		`select result, coalesce(title, '') from sims where id = $1`, id).Scan(&body, &title)
 	if isNoRows(err) {
-		return simapi.SimResult{}, ErrNotFound
+		return simapi.SimResult{}, "", ErrNotFound
 	}
 	if err != nil {
-		return simapi.SimResult{}, fmt.Errorf("sims: read %s: %w", id, err)
+		return simapi.SimResult{}, "", fmt.Errorf("sims: read %s: %w", id, err)
 	}
 	var out simapi.SimResult
 	if err := json.Unmarshal(body, &out); err != nil {
-		return simapi.SimResult{}, fmt.Errorf("sims: decode %s: %w", id, err)
+		return simapi.SimResult{}, "", fmt.Errorf("sims: decode %s: %w", id, err)
 	}
 	out.SimID = id
-	return out, nil
+	return out, title, nil
 }
 
 // ForBuild answers the newest done sim run against a build: the row

@@ -53,10 +53,11 @@ describe('defaultSettings', () => {
       profile: '',
       style: 'patchwerk',
       target_level: 63,
-      target_armor: 0,
+      // Absent, not 0: the default fight carries no armor override at all (Defect 3).
       target_type: '',
       dummy: false,
     });
+    expect(settings.encounter.target_armor).toBeUndefined();
     expect(settings.preset).toBe('raid-buffed');
     expect(settings.buffs.length).toBeGreaterThan(0);
     expect(settings.cooldowns).toEqual([]);
@@ -188,11 +189,23 @@ describe('the setters never mutate and always clamp', () => {
     expect(withTargetLevel(base, 61).encounter.target_level).toBe(61);
   });
 
-  it('keeps target armor non-negative and bounded, and zero means the engine’s preset', () => {
+  // 2026-09-21 result-page review, Defect 3: blank must mean "the level's preset" and a
+  // typed 0 must mean zero armor, all the way through -- `null` is `withTargetArmor`'s own
+  // "clear the override" (settings.ts's own doc comment); a number, including 0, is always
+  // an explicit override, never silently swapped for the preset.
+  it('clears the override to the level’s preset on null, and keeps a numeric override non-negative and bounded', () => {
     const base = defaultSettings(PHYSICAL);
+    const overridden = withTargetArmor(base, 3731);
+    expect(overridden.encounter.target_armor).toBe(3731);
+    expect(withTargetArmor(overridden, null).encounter.target_armor).toBeUndefined();
     expect(withTargetArmor(base, -10).encounter.target_armor).toBe(0);
     expect(withTargetArmor(base, 999999).encounter.target_armor).toBe(MAX_TARGET_ARMOR);
     expect(withTargetArmor(base, 3731).encounter.target_armor).toBe(3731);
+  });
+
+  it('an explicit 0 is zero armor, not the preset', () => {
+    const base = defaultSettings(PHYSICAL);
+    expect(withTargetArmor(base, 0).encounter.target_armor).toBe(0);
   });
 
   it('publishes contract A8’s armor preset for each level, so the control can name the figure', () => {
@@ -200,24 +213,27 @@ describe('the setters never mutate and always clamp', () => {
     expect(TARGET_LEVELS.every((level) => TARGET_ARMOR_BY_LEVEL[level] > 0)).toBe(true);
   });
 
-  // tank MAJOR, review.md:227-229: armor 0 has to DISPLAY as the preset it silently means,
-  // not as a blank field indistinguishable from a typed 0. `targetArmorField` is the pure
-  // decision SettingsSheet.svelte renders its input value off of; the wire value (0) is
-  // untouched -- only what the field shows changes.
+  // 2026-09-21 result-page review, Defect 3: the field must read BLANK when there is no
+  // override (its `placeholder`, SettingsSheet.svelte's own concern, shows the preset as a
+  // hint), and read exactly the override -- including "0" -- when there is one. `0` must
+  // never again be swapped for the preset text: that collapsed "leave it blank" and "type
+  // 0" into the identical request.
   describe('targetArmorField', () => {
-    it('shows the level 63 preset when armor is 0', () => {
-      expect(targetArmorField({ ...DEFAULT_ENCOUNTER, target_level: 63, target_armor: 0 })).toEqual({
-        value: '3731',
-        preset: 3731,
-        level: 63,
-      });
+    it('reads blank, with the level 63 preset available for a hint, when there is no override', () => {
+      const { target_armor: _armor, ...withoutOverride } = { ...DEFAULT_ENCOUNTER, target_level: 63 };
+      expect(targetArmorField(withoutOverride)).toEqual({ value: '', preset: 3731, level: 63 });
     });
 
-    it('shows the level 60 preset when armor is 0', () => {
-      expect(targetArmorField({ ...DEFAULT_ENCOUNTER, target_level: 60, target_armor: 0 })).toEqual({
-        value: '3300',
-        preset: 3300,
-        level: 60,
+    it('reads blank with the level 60 preset when there is no override', () => {
+      const { target_armor: _armor, ...withoutOverride } = { ...DEFAULT_ENCOUNTER, target_level: 60 };
+      expect(targetArmorField(withoutOverride)).toEqual({ value: '', preset: 3300, level: 60 });
+    });
+
+    it('reads an explicit 0 as "0", never as the preset', () => {
+      expect(targetArmorField({ ...DEFAULT_ENCOUNTER, target_level: 63, target_armor: 0 })).toEqual({
+        value: '0',
+        preset: 3731,
+        level: 63,
       });
     });
 
@@ -230,11 +246,8 @@ describe('the setters never mutate and always clamp', () => {
     });
 
     it('falls back to level 63 when target_level is absent', () => {
-      const { target_level: _targetLevel, ...withoutLevel } = {
-        ...DEFAULT_ENCOUNTER,
-        target_armor: 0,
-      };
-      expect(targetArmorField(withoutLevel)).toEqual({ value: '3731', preset: 3731, level: 63 });
+      const { target_level: _targetLevel, target_armor: _armor, ...withoutLevel } = { ...DEFAULT_ENCOUNTER };
+      expect(targetArmorField(withoutLevel)).toEqual({ value: '', preset: 3731, level: 63 });
     });
 
     /**

@@ -11,6 +11,7 @@ import (
 	"sort"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
+	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
 )
 
@@ -158,8 +159,99 @@ func Results(parts []api.SimResult) (api.SimResult, error) {
 	}
 
 	out.Summary = weightSummaries(parts, total)
+	// Summary.DurationMS is the fight clock every per-fight figure in the
+	// summary is divided by - the table's per-second totals, an aura's
+	// uptime share, an actor's activity percent - and it is a different
+	// field from out.DurationMS above (the wall clock this whole combine
+	// took). weightSummaries just merged every part's damage table into
+	// one, and out.DPS above is the iteration-weighted pooled mean of
+	// every part's own DPS - but out.Summary.DurationMS, copied in with
+	// the rest of parts[0].Summary, is still part 0's OWN duration: the
+	// one number that made part 0's own table agree with part 0's own
+	// headline. Two shards of one run almost never share a mean DPS or a
+	// fight length (different iterations, different encounter
+	// variation), so leaving it at part 0's reopens exactly the
+	// disagreement DeriveDurationMS exists to close, once combine is the
+	// thing doing the dividing.
+	partZeroDurationMS := out.Summary.DurationMS
+	out.Summary.DurationMS = adapter.DeriveDurationMS(
+		adapter.SumActorTotals(out.Summary.DamageDone), out.DPS.Mean, fallbackDurationMS(parts, total),
+	)
+	// Every actor's ActiveMS is the fight's own duration, the same
+	// invariant sim/adapter.Summarize keeps (a sim models no activity
+	// gaps, so every row is "active" the whole fight) - it has to be
+	// restated here because weightSummaries carries each merged actor's
+	// ActiveMS in from whichever part first introduced that GUID, and
+	// that part's own duration is no longer the summary's.
+	for i := range out.Summary.DamageDone {
+		out.Summary.DamageDone[i].ActiveMS = out.Summary.DurationMS
+	}
+	// Auras, casts and resources are still part 0's own - weightSummaries'
+	// own doc comment calls that a "share the largest part already
+	// represents within sampling error" - but the clock they were
+	// measured against just moved. An aura's UptimeMS is a MILLISECOND
+	// COUNT, measured over part 0's OWN mean iteration length; dividing
+	// it by the newly-derived (and, ordinarily, shorter) combined
+	// duration inflates its uptime share past what part 0 itself ever
+	// measured - which is how every full-uptime buff read an impossible
+	// 100.9% (2026-09-21 result-page review round 3, E8). The fix
+	// rescales UptimeMS by the same ratio the clock itself just moved
+	// by, which preserves the one thing that is actually meaningful
+	// across a duration change - the UPTIME SHARE part 0 measured, not
+	// the millisecond count - so an aura that was up 100% of part 0's
+	// own fight still reads exactly 100%, and one at 61% still reads 61%.
+	rescaleToDuration(out.Summary.Auras, partZeroDurationMS, out.Summary.DurationMS)
 	out.Request.Iterations = total
 	return out, nil
+}
+
+// fallbackDurationMS is DeriveDurationMS's degenerate-case answer for a
+// COMBINED summary: the iteration-share-weighted average of every
+// part's own duration, the same "weigh by iteration share" rule
+// weightSummaries applies to every other per-fight figure it merges.
+// DeriveDurationMS only reaches for it when the merged table has no
+// damage or the pooled mean is non-positive - nothing happened, or the
+// rate has no well-defined duration - and a blended measured duration is
+// the sane answer either way, the same role sim/adapter's own
+// AvgIterationDuration fallback plays for one part.
+func fallbackDurationMS(parts []api.SimResult, total int) int64 {
+	var weighted float64
+	for _, p := range parts {
+		weighted += float64(p.Summary.DurationMS) * float64(p.IterationsRun) / float64(total)
+	}
+	return int64(math.Round(weighted))
+}
+
+// rescaleToDuration rescales every aura's UptimeMS in place by newMS/oldMS -
+// the ratio Summary.DurationMS just moved by - so the UPTIME SHARE
+// (UptimeMS/DurationMS) part 0 measured survives the clock changing under
+// it, rather than the millisecond count (2026-09-21 result-page review
+// round 3, E8; see Results' own comment on the call site for the fuller
+// account). Rescaling preserves the share exactly for an always-up aura
+// (UptimeMS == oldMS becomes exactly newMS) and proportionally for every
+// other one.
+//
+// oldMS <= 0 leaves every row untouched - part 0 itself had no well-defined
+// duration to measure a share against, the same degenerate case
+// DeriveDurationMS's own fallback exists for, and guessing a scale from
+// nothing would invent a number rather than report one. The result is
+// still clamped to newMS: math.Round on a scale computed from two
+// independently-derived integers can round an always-up aura's UptimeMS
+// one millisecond past the very duration it was just rescaled to agree
+// with, and an uptime a hair over 100% is the exact defect this function
+// exists to close.
+func rescaleToDuration(auras []summary.AuraTrack, oldMS, newMS int64) {
+	if oldMS <= 0 {
+		return
+	}
+	scale := float64(newMS) / float64(oldMS)
+	for i := range auras {
+		rescaled := int64(math.Round(float64(auras[i].UptimeMS) * scale))
+		if rescaled > newMS {
+			rescaled = newMS
+		}
+		auras[i].UptimeMS = rescaled
+	}
 }
 
 // weightSummaries averages the per-fight damage table by iteration

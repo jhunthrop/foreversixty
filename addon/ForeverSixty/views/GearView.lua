@@ -16,6 +16,7 @@ local Widgets = ns.Widgets or require("Widgets")
 local Export = ns.Export or require("Export")
 local Gear = ns.Gear or require("Gear")
 local Talents = ns.Talents or require("Talents")
+local Compat = ns.Compat or require("Compat")
 
 local GearView = {}
 
@@ -25,7 +26,7 @@ function GearView.readEquipped()
 		local link = GetInventoryItemLink("player", entry.id)
 		if link ~= nil then
 			equipped[entry.slot] = {
-				itemId = tonumber((GetItemInfoInstant(link))),
+				itemId = tonumber((Compat.itemInfoInstant(link))),
 				link = link,
 				stats = Gear.statsOf(link),
 			}
@@ -37,14 +38,14 @@ end
 --- What the client can tell us about one item. An item the client has
 --- never seen has no name yet; saying so is better than a blank row.
 function GearView.itemInfo(itemId, link)
-	local name, _, quality, _, _, _, _, _, _, icon = GetItemInfo(link or itemId)
+	local name, _, quality, _, _, _, _, _, _, icon = Compat.itemInfo(link or itemId)
 	return {
 		itemId = itemId,
 		link = link,
 		name = name or string.format(L.gearItemUnknown, itemId or 0),
 		cached = name ~= nil,
 		quality = quality,
-		icon = icon or (type(GetItemIcon) == "function" and GetItemIcon(itemId)) or nil,
+		icon = icon or Compat.itemIcon(itemId),
 	}
 end
 
@@ -72,7 +73,22 @@ function GearView.noteFor(row)
 	if row.differs then
 		return L.gearDiffers
 	end
+	if row.plannedItemId ~= nil and row.plannedItemId == row.equippedItemId then
+		return L.gearMatches
+	end
 	return ""
+end
+
+--- The note's colour says the same thing as its words: the plan is met,
+--- the player has done better than it, or there is something to change.
+function GearView.noteColor(row)
+	if row.better then
+		return "gold"
+	end
+	if row.differs then
+		return "muted"
+	end
+	return "success"
 end
 
 --- `equipped` and `upgrades` are both taken as arguments, never read: the
@@ -151,6 +167,7 @@ local function renderSlot(row, item)
 	fillItemColumn(row.planned, item.plannedItemId, item.plannedLink)
 	fillItemColumn(row.equipped, item.equippedItemId, item.equippedLink)
 	row.equipped.right:SetText(GearView.noteFor(item))
+	row.equipped.right:SetTextColor(Theme.rgb(Theme.HEX[GearView.noteColor(item)]))
 end
 
 function GearView.upgradeRow(parent, width)
@@ -164,7 +181,7 @@ function GearView.upgradeRow(parent, width)
 			Theme.equip(row.link)
 		end
 	end)
-	row.equip:SetSize(Theme.SIZES.buttonWidth, Theme.SIZES.rowHeight)
+	row.equip:SetSize(Theme.SIZES.equipButtonWidth, Theme.SIZES.rowHeight - Theme.SIZES.border * 2)
 	row.equip:SetPoint("RIGHT", row.frame, "RIGHT", 0, 0)
 	-- Widgets.itemRow anchors `right` to the frame's own RIGHT edge, which
 	-- is exactly where the button now sits. Re-anchor it to the button's
@@ -181,6 +198,7 @@ local function renderUpgrade(row, item)
 	row.text:SetText(string.format(L.gearSlotRow, item.slot, info.name))
 	paintQuality(row.text, info.quality)
 	row.right:SetText(string.format(L.gearUpgradeRow, item.delta))
+	row.right:SetTextColor(Theme.rgb(Theme.HEX.success))
 	Widgets.setEnabled(row.equip, not Theme.inCombat())
 end
 
@@ -194,14 +212,14 @@ local function layout(parent, ctx)
 	view.equippedHeader = Widgets.label(parent, L.gearEquipped, "muted", "small")
 	view.equippedHeader:SetPoint("LEFT", view.plannedHeader, "RIGHT",
 		math.floor(ctx.contentWidth / 2), 0)
-	view.slots = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.listRows, GearView.slotColumns)
+	view.slots = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.gearSlotRows, GearView.slotColumns)
 	view.slots.frame:SetPoint("TOPLEFT", view.plannedHeader, "BOTTOMLEFT", 0, -gap)
 	view.slots:SetRenderer(renderSlot)
-	view.bagsTitle = Widgets.label(parent, L.gearBagUpgrades, "gold", "small")
+	view.bagsTitle = Widgets.label(parent, L.gearBagUpgrades, "muted", "small")
 	view.bagsTitle:SetPoint("TOPLEFT", view.slots.frame, "BOTTOMLEFT", 0, -padding)
 	view.combat = Widgets.label(parent, "", "warning", "small")
 	view.combat:SetPoint("LEFT", view.bagsTitle, "RIGHT", gap, 0)
-	view.upgrades = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.listRows,
+	view.upgrades = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.gearUpgradeRows,
 		GearView.upgradeRow)
 	view.upgrades.frame:SetPoint("TOPLEFT", view.bagsTitle, "BOTTOMLEFT", 0, -gap)
 	view.upgrades:SetRenderer(renderUpgrade)

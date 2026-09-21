@@ -13,8 +13,9 @@ local L = {
 	buildMismatch = "This addon carries data for build %s; you are playing %s. Numbers may be out of date.",
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
+	tabOverview = "Overview",
 	tabExport = "Export",
-	tabFollow = "Follow",
+	tabFollow = "Talents",
 	tabGear = "Gear",
 	tabSettings = "Settings",
 	headerRealmLevel = "%s · level %d",
@@ -35,13 +36,19 @@ local L = {
 	diagNone = "Nothing to report.",
 
 	-- Export
-	exportTitle = "Your character, for the planner",
-	exportHint = "Copy this and paste it into the Import from addon box at foreversixty.gg/planner.",
+	exportTitle = "Send your character to the site",
+	exportHint = "The planner and the simulator read this code: talents, gear, bags and professions.",
+	exportSteps = {
+		"Press Copy code, then Ctrl+C.",
+		"Open foreversixty.gg/planner or foreversixty.gg/sim.",
+		"Paste it into the box marked Import from addon.",
+	},
+	exportContents = "WHAT IS IN IT",
 	-- exportNoTalents is deleted with the refusal it belonged to
 	-- (controller ruling 5); this is the summary's line, not an error.
 	exportNoPoints = "No talent points yet",
-	exportCopy = "Copy for the site",
-	exportCopied = "Selected -- press Ctrl+C",
+	exportCopy = "Copy code",
+	exportCopied = "Selected. Press Ctrl+C",
 	-- "<tree> <points>", joined by exportTreeSeparator: "Arms 0 · Fury 0 · Protection 0".
 	exportTree = "%s %d",
 	exportTreeSeparator = " · ",
@@ -72,6 +79,7 @@ local L = {
 	codecOrderLength = "That code's talent order is not a whole number of points.",
 	codecOrderCell = "That code names talent cell %s, which is not on any tree.",
 	codecStatPair = "That code has an unreadable stat: %s.",
+	codecGuildRank = "That code has an unreadable guild rank: %s.",
 	-- FSB1 only: an empty data build or class field. FS1 accepts an empty
 	-- field in either position (parity with the shipped site decoder).
 	codecEmptyField = "That code's %s field is empty.",
@@ -86,7 +94,8 @@ local L = {
 
 	-- Follow
 	followTitle = "Next point",
-	followNone = "No build loaded. Paste an addon code with /fs follow <code>.",
+	followNone = "No build loaded. Paste a build code above and press Load.",
+	followPasteFirst = "Paste a build code first.",
 	followDone = "This build is finished; every point is spent.",
 	followNext = "%s (%s, tier %d)",
 	followLoaded = "Loaded %s: %d points.",
@@ -94,7 +103,8 @@ local L = {
 	-- instead, so the player can still find the cell.
 	followUnknownCell = "%d:%d",
 	followPasteHint = "Paste a build code from foreversixty.gg",
-	followLoadButton = "Load",
+	followLoadButton = "Load build",
+	followLoadTitle = "LOAD A BUILD",
 	followForget = "Forget build",
 	followShowTracker = "Show tracker",
 	followProgress = "%d of %d points",
@@ -124,15 +134,16 @@ local L = {
 	gearNoBuild = "No build loaded, so there is nothing to compare against.",
 	gearUpgrade = "%s: %+.1f over %s",
 	gearNone = "Nothing in your bags beats what you are wearing.",
-	gearPlanned = "Planned",
-	gearEquipped = "Equipped",
+	gearPlanned = "PLANNED",
+	gearEquipped = "EQUIPPED",
+	gearMatches = "As planned",
 	gearEmptySlot = "Empty",
 	gearYoursBetter = "Yours is better (%+.0f)",
 	gearDiffers = "Different from the plan",
-	gearBagUpgrades = "Upgrades in your bags",
+	gearBagUpgrades = "UPGRADES IN YOUR BAGS",
 	gearEquipButton = "Equip",
 	gearInCombat = "In combat",
-	gearLoadABuild = "Load a build on the Follow tab to compare gear",
+	gearLoadABuild = "Load a build on the Talents page to compare your gear with the plan.",
 	gearOpenFollow = "Open the Follow tab",
 	-- "<slot>  <name>" for an upgrade row.
 	gearSlotRow = "%s  %s",
@@ -149,13 +160,49 @@ local L = {
 	minimapNoBuild = "No build loaded",
 
 	-- Settings
-	settingsTitle = "Forever Sixty options",
+	settingsTitle = "Settings",
+	settingsGroupScreen = "ON SCREEN",
+	settingsGroupData = "YOUR DATA",
+	settingsMinimapHint = "Left click opens this window.",
+	settingsTrackerHint = "A small bar with the next talent to take from your loaded build.",
+	settingsTrackerLockedHint = "Unlock it to drag it somewhere else.",
+	settingsAutoSaveHint = "The companion app reads this to keep your character on the site current.",
+	settingsChatHint = "Off by default: the window already shows it.",
 	settingsMinimap = "Show the minimap button",
 	settingsTracker = "Show the tracker",
 	settingsTrackerLocked = "Lock the tracker in place",
 	settingsAutoSave = "Save my export when I log out",
 	settingsChat = "Print /fs answers in chat too",
 	settingsReset = "Reset positions",
+	-- The Overview page.
+	overviewBuildEyebrow = "YOUR BUILD",
+	overviewBuildNone = "No build loaded",
+	overviewBuildNoneHint = "Plan a build at foreversixty.gg/planner, copy its addon code and load it on the "
+		.. "Talents page. The addon then shows the next talent to take as you level.",
+	overviewBuildProgress = "%d of %d points taken",
+	overviewBuildOpen = "Open talents",
+	overviewBuildLoad = "Load a build",
+	overviewGearEyebrow = "GEAR",
+	overviewGearSlots = "%d of %d slots filled",
+	overviewGearNeedsBuild = "Load a build to compare what you wear with what you planned, "
+		.. "and to score what is in your bags.",
+	overviewGearUpgrades = "%d upgrades waiting in your bags, by our stat weights.",
+	overviewGearNoUpgrades = "Nothing in your bags beats what you are wearing.",
+	overviewGearMatched = "%d of %d planned pieces equipped",
+	overviewGearOpen = "See gear",
+	overviewTreesEyebrow = "TALENT POINTS",
+	overviewTreesNone = "No points spent yet. Talents open at level 10.",
+	overviewSyncEyebrow = "SEND TO THE SITE",
+	overviewSyncTitle = "Your character, for the planner and the simulator",
+	overviewSyncNothing = "There is nothing to send yet.",
+	overviewSyncCopy = "Copy code",
+	overviewSyncCopied = "Selected. Press Ctrl+C",
+	siteName = "foreversixty.gg",
+	headerLevelLine = "Level %d %s %s",
+	headerSpecSeparator = "  ·  ",
+	statusDataBuild = "Data %s",
+	statusOutOfDate = "Data out of date",
+	addonVersion = "v%s",
 }
 
 ns.L = L

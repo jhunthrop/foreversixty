@@ -109,7 +109,7 @@ func TestMigrateCreatesEveryPhase3Table(t *testing.T) {
 	defer pool.Close()
 	for _, name := range []string{
 		"users", "sessions", "login_tokens", "devices", "pairing_codes",
-		"guilds", "guild_members", "characters", "uploads", "reports",
+		"guilds", "guild_members", "guild_characters", "characters", "uploads", "reports",
 		"fights", "raw_chunks", "fight_metrics", "percentile_digests",
 		"moderation", "addon_exports", "addon_inbox",
 	} {
@@ -512,5 +512,220 @@ func TestMigration0016BackfillsOlderSimHeadlines(t *testing.T) {
 		if headline != want {
 			t.Errorf("%s (%v, %s): headline = %q, want %q", c.id, c.mean, c.state, headline, want)
 		}
+	}
+}
+
+func TestMigration0018DownReversesUp(t *testing.T) {
+	url := testURL(t)
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := Migrate(url); err != nil {
+			t.Errorf("restoring the latest migration: %v", err)
+		}
+	})
+	pool, err := Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+
+	if n := tableCount(t, pool, "guild_characters"); n != 1 {
+		t.Fatal("guild_characters should exist at the latest migration")
+	}
+	for _, col := range []string{"consent", "verified_at"} {
+		var n int
+		if err := pool.QueryRow(context.Background(),
+			`select count(*) from information_schema.columns where table_name = 'guild_members' and column_name = $1`,
+			col).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		if n != 1 {
+			t.Errorf("guild_members.%s should exist at the latest migration", col)
+		}
+	}
+
+	migrateTo(t, url, 17)
+	if n := tableCount(t, pool, "guild_characters"); n != 0 {
+		t.Error("guild_characters survived the down migration")
+	}
+	for _, col := range []string{"consent", "verified_at"} {
+		var n int
+		if err := pool.QueryRow(context.Background(),
+			`select count(*) from information_schema.columns where table_name = 'guild_members' and column_name = $1`,
+			col).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		if n != 0 {
+			t.Errorf("guild_members.%s survived the down migration", col)
+		}
+	}
+	for _, col := range []string{"officer_max_rank_index", "claim_pending_by", "claim_requested_at", "invite_token_hash", "invite_token_rotated_at"} {
+		var n int
+		if err := pool.QueryRow(context.Background(),
+			`select count(*) from information_schema.columns where table_name = 'guilds' and column_name = $1`,
+			col).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		if n != 0 {
+			t.Errorf("guilds.%s survived the down migration", col)
+		}
+	}
+	// 0018 must not reverse anything an earlier migration created.
+	if n := tableCount(t, pool, "guild_members"); n != 1 {
+		t.Error("the down migration took a table from an earlier migration")
+	}
+
+	if err := Migrate(url); err != nil {
+		t.Fatalf("migrating up again: %v", err)
+	}
+	if n := tableCount(t, pool, "guild_characters"); n != 1 {
+		t.Error("guild_characters did not come back")
+	}
+}
+
+func TestGuildCharactersCharacterKeyIsUniqueAcrossGuilds(t *testing.T) {
+	url := testURL(t)
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	pool, err := Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+	ctx := context.Background()
+	if _, err := pool.Exec(ctx, `truncate users, guilds cascade`); err != nil {
+		t.Fatal(err)
+	}
+	var uid int64
+	if err := pool.QueryRow(ctx,
+		`insert into users (email) values ('unique-key@example.com') returning id`).Scan(&uid); err != nil {
+		t.Fatal(err)
+	}
+	var g1, g2 int64
+	if err := pool.QueryRow(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', 'One') returning id`).Scan(&g1); err != nil {
+		t.Fatal(err)
+	}
+	if err := pool.QueryRow(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', 'Two') returning id`).Scan(&g2); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id) values ($1, 'us/normal/baelgrim', $2)`,
+		g1, uid); err != nil {
+		t.Fatal(err)
+	}
+	_, err = pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id) values ($1, 'us/normal/baelgrim', $2)`,
+		g2, uid)
+	if err == nil {
+		t.Fatal("the same character_key under a second guild should violate the unique index")
+	}
+}
+
+func TestMigration0018SecurityHardeningColumnsRoundTrip(t *testing.T) {
+	url := testURL(t)
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := Migrate(url); err != nil {
+			t.Errorf("restoring the latest migration: %v", err)
+		}
+	})
+	pool, err := Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+
+	for _, check := range []struct{ table, column string }{
+		{"guild_characters", "verified_by"},
+		{"guilds", "claim_contested_at"},
+		{"guilds", "claim_contested_by"},
+	} {
+		var n int
+		if err := pool.QueryRow(context.Background(),
+			`select count(*) from information_schema.columns where table_name = $1 and column_name = $2`,
+			check.table, check.column).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		if n != 1 {
+			t.Errorf("%s.%s should exist at the latest migration", check.table, check.column)
+		}
+	}
+	if n := tableCount(t, pool, "guild_claim_attempts"); n != 1 {
+		t.Fatal("guild_claim_attempts should exist at the latest migration")
+	}
+	if n := indexCount(t, pool, "guilds_region_ruleset_lower_name_idx"); n != 1 {
+		t.Fatal("guilds_region_ruleset_lower_name_idx should exist at the latest migration")
+	}
+
+	migrateTo(t, url, 17)
+	for _, check := range []struct{ table, column string }{
+		{"guild_characters", "verified_by"},
+		{"guilds", "claim_contested_at"},
+		{"guilds", "claim_contested_by"},
+	} {
+		var n int
+		if err := pool.QueryRow(context.Background(),
+			`select count(*) from information_schema.columns where table_name = $1 and column_name = $2`,
+			check.table, check.column).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		if n != 0 {
+			t.Errorf("%s.%s survived the down migration", check.table, check.column)
+		}
+	}
+	if n := tableCount(t, pool, "guild_claim_attempts"); n != 0 {
+		t.Error("guild_claim_attempts survived the down migration")
+	}
+	if n := indexCount(t, pool, "guilds_region_ruleset_lower_name_idx"); n != 0 {
+		t.Error("guilds_region_ruleset_lower_name_idx survived the down migration")
+	}
+	// 0018's own base table must survive its own down migration's new
+	// prefix - only the newly-appended block should be reversed here.
+	if n := tableCount(t, pool, "guild_characters"); n != 0 {
+		t.Error("guild_characters itself should still be gone at version 17 (this assertion documents the base table's own down migration still runs)")
+	}
+
+	if err := Migrate(url); err != nil {
+		t.Fatalf("migrating up again: %v", err)
+	}
+	if n := tableCount(t, pool, "guild_claim_attempts"); n != 1 {
+		t.Error("guild_claim_attempts did not come back")
+	}
+}
+
+func TestGuildsAreCaseInsensitiveByRegionAndRuleset(t *testing.T) {
+	url := testURL(t)
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	pool, err := Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+	ctx := context.Background()
+	if _, err := pool.Exec(ctx, `truncate guilds cascade`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', 'Iron Vanguard')`); err != nil {
+		t.Fatal(err)
+	}
+	_, err = pool.Exec(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', 'IRON VANGUARD')`)
+	if err == nil {
+		t.Fatal("a case-variant name in the same region/ruleset should violate the case-insensitive unique index")
+	}
+	// A different ruleset, or a genuinely different name, is unaffected.
+	if _, err := pool.Exec(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'hardcore', 'Iron Vanguard')`); err != nil {
+		t.Fatalf("a different ruleset should not collide: %v", err)
 	}
 }

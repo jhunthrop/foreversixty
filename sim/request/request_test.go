@@ -14,6 +14,11 @@ import (
 	googleproto "google.golang.org/protobuf/proto"
 )
 
+// ptr is a *int literal for a table test: api.EncounterSpec.TargetArmor
+// distinguishes "no override" (nil) from "override at 0" (a pointer at 0),
+// and a Go literal cannot take the address of a literal directly.
+func ptr(v int) *int { return &v }
+
 func fury() api.SimRequest {
 	return api.SimRequest{
 		EngineVersion: enginever.Version,
@@ -409,7 +414,7 @@ func TestEncounterCarriesTheParityFields(t *testing.T) {
 	req.Encounter.Movement = &api.Movement{IntervalSec: 20, DurationSec: 5, Kind: api.MovementCasting}
 	req.Encounter.TargetsOverTime = []api.TargetCount{{AtSec: 0, Count: 1}, {AtSec: 40, Count: 3}}
 	req.Encounter.TargetLevel = 61
-	req.Encounter.TargetArmor = 2500
+	req.Encounter.TargetArmor = ptr(2500)
 	req.Encounter.TargetType = "undead"
 	req.Encounter.Dummy = true
 
@@ -469,6 +474,25 @@ func TestEncounterDefaultsAreUnchanged(t *testing.T) {
 	}
 	if got := target.Stats[proto.Stat_StatArmor]; got != float64(api.TargetArmorByLevel[api.BossLevel]) {
 		t.Errorf("armor = %v, want the boss preset %d", got, api.TargetArmorByLevel[api.BossLevel])
+	}
+}
+
+// 2026-09-21 result-page review, Defect 3: an explicit override of 0 must
+// build a target with NO armor, not the level's preset - the exact
+// distinction TargetArmor becoming a *int exists to carry all the way from
+// the request to the engine's own proto.
+func TestEncounterExplicitZeroArmorIsZeroNotThePreset(t *testing.T) {
+	req := fury()
+	req.Encounter.TargetArmor = ptr(0)
+	got, err := Build(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i, target := range got.Encounter.Targets {
+		if armor := target.Stats[proto.Stat_StatArmor]; armor != 0 {
+			t.Errorf("target %d armor = %v, want 0 (an explicit override), not the preset %d",
+				i, armor, api.TargetArmorByLevel[api.BossLevel])
+		}
 	}
 }
 

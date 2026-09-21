@@ -43,11 +43,27 @@ type Accounts interface {
 	GuildRank(ctx context.Context, guildID, userID int64) (string, bool, error)
 }
 
+// GuildClaims is the guilds package's freeze hook (D, 2026-09-21 second
+// security review response): whether userID's officer-derived rights
+// over guildID are currently suspended by a contested claim (any
+// contest freezes, unconditionally, as of the fourth security review
+// response - the guild does not need to be "uncorroborated"). *guilds.Store
+// satisfies it. A nil Guilds (as every test that does not care about
+// claim disputes leaves it) makes mayEdit behave exactly as before this
+// hook existed - see its nil check there.
+type GuildClaims interface {
+	FrozenClaimant(ctx context.Context, guildID, userID int64) (bool, error)
+}
+
 // Service serves the report routes.
 type Service struct {
 	Store    *Store
 	Accounts Accounts
-	Signer   Signer
+	// Guilds answers the claim-freeze hook mayEdit consults (D). Nil is
+	// safe and leaves report edit rights exactly as they were before
+	// this hook existed.
+	Guilds GuildClaims
+	Signer Signer
 	// Rank withdraws a report's ranking rows when a patch takes the
 	// report out of the visibilities that may rank. Nil leaves the
 	// rows in place, which is only ever right in a test that is not
@@ -540,7 +556,13 @@ func (s *Service) mayView(r *http.Request, rep Report) bool {
 	return false
 }
 
-// mayEdit is the owner, a moderator, or an officer of the report's guild.
+// mayEdit is the owner, a moderator, or an officer of the report's
+// guild - except that a disputed claimant's officer-derived right is
+// suspended while their guild's claim is contested and frozen (D,
+// 2026-09-21 second security review response): their own reports (the
+// OwnerID check above) are unaffected, as is every other verified
+// officer and every moderator, since this freeze check only ever runs
+// after the rank check below has already granted standing.
 func (s *Service) mayEdit(ctx context.Context, a auth.Actor, rep Report) (bool, error) {
 	if !a.Signed() {
 		return false, nil
@@ -555,5 +577,17 @@ func (s *Service) mayEdit(ctx context.Context, a auth.Actor, rep Report) (bool, 
 	if err != nil || !ok {
 		return false, err
 	}
-	return rank == rankOfficer || rank == rankLeader, nil
+	if rank != rankOfficer && rank != rankLeader {
+		return false, nil
+	}
+	if s.Guilds != nil {
+		frozen, err := s.Guilds.FrozenClaimant(ctx, *rep.GuildID, a.UserID)
+		if err != nil {
+			return false, err
+		}
+		if frozen {
+			return false, nil
+		}
+	}
+	return true, nil
 }

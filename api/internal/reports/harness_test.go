@@ -17,6 +17,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/engine"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 )
@@ -70,6 +71,11 @@ type harness struct {
 	reportID string
 	service  *Service
 	ingest   *Ingest
+	// guilds is the real guilds.Store behind h.service.Guilds - wired by
+	// default (D, third security review response), so a test that seeds
+	// a contested-and-frozen claim exercises the real mayEdit hook, not
+	// a stub. It is a no-op for every test that never contests a guild.
+	guilds *guilds.Store
 }
 
 func newHarness(t *testing.T) *harness {
@@ -87,13 +93,13 @@ func newHarness(t *testing.T) *harness {
 	h := &harness{
 		t: t, store: &Store{Pool: pool}, dir: t.TempDir(),
 		ranker: &fakeRanker{}, sampler: &fakeSampler{}, jobs: &jobs.Fake{}, parts: newFakeMultipart(),
-		owner: owner.ID,
+		owner: owner.ID, guilds: &guilds.Store{Pool: pool},
 	}
 	h.files = store.NewDir(h.dir)
 	h.actor = auth.Actor{UserID: owner.ID, Role: "user", Method: "device", DeviceID: "device-1"}
 
 	h.service = &Service{
-		Store: h.store, Accounts: accounts, Signer: fakeSigner{}, Rank: h.ranker,
+		Store: h.store, Accounts: accounts, Guilds: h.guilds, Signer: fakeSigner{}, Rank: h.ranker,
 		PublicBaseURL: "https://foreversixty.gg", APIBaseURL: "https://api.foreversixty.gg", Log: quiet,
 	}
 	h.ingest = &Ingest{Store: h.store, Put: h.files, Rank: h.ranker, Samp: h.sampler, Log: quiet}

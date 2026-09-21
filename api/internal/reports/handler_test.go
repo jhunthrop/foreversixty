@@ -8,8 +8,10 @@ import (
 	"net/http"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 )
 
 func TestCreateAndReadAReport(t *testing.T) {
@@ -114,7 +116,7 @@ func TestAGuildReportIsVisibleToTheGuild(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, err := h.store.Pool.Exec(t.Context(),
-		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'member')`,
+		`insert into guild_members (guild_id, user_id, rank, verified_at) values ($1, $2, 'member', now())`,
 		guildID, member); err != nil {
 		t.Fatal(err)
 	}
@@ -132,6 +134,111 @@ func TestAGuildReportIsVisibleToTheGuild(t *testing.T) {
 	res.Body.Close()
 	if res.StatusCode != http.StatusNotFound {
 		t.Fatalf("a non-member sees %d, want 404", res.StatusCode)
+	}
+}
+
+// TestAFrozenClaimantsReportEditRightIsSuspendedButOnlyForOthers is D's
+// regression net (third security review response): while a guild's
+// claim is contested and frozen, the disputed claimant's
+// officer-derived edit right over ANOTHER member's guild report is
+// refused; their own report (ownership always wins first) still edits
+// fine; GET is entirely unaffected by the freeze (mayView never
+// consults it); and a different, unrelated verified officer of the
+// same guild is unaffected.
+func TestAFrozenClaimantsReportEditRightIsSuspendedButOnlyForOthers(t *testing.T) {
+	h := newHarness(t)
+	ctx := t.Context()
+
+	var gid int64
+	if err := h.store.Pool.QueryRow(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'hardcore', 'Frozen Freehold') returning id`).
+		Scan(&gid); err != nil {
+		t.Fatal(err)
+	}
+
+	claimant := h.owner
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id, rank) values ($1, 'us/hardcore/claimant', $2, 'leader')`,
+		gid, claimant); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.guilds.Claim(ctx, gid, claimant, true); err != nil {
+		t.Fatal(err)
+	}
+
+	contester := claimant + 1
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'frozen-contester@example.com') on conflict (id) do nothing`, contester); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id, rank) values ($1, 'us/hardcore/contester', $2, 'officer')`,
+		gid, contester); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.guilds.ContestClaim(ctx, gid, contester, true); err != nil {
+		t.Fatal(err)
+	}
+	// A contest always freezes (fourth security review response) - no
+	// further setup needed.
+
+	otherOfficer := claimant + 2
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'frozen-other-officer@example.com') on conflict (id) do nothing`, otherOfficer); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into guild_members (guild_id, user_id, rank, verified_at) values ($1, $2, 'officer', now())`,
+		gid, otherOfficer); err != nil {
+		t.Fatal(err)
+	}
+
+	otherMember := claimant + 3
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'frozen-other-member@example.com') on conflict (id) do nothing`, otherMember); err != nil {
+		t.Fatal(err)
+	}
+	h.actor = auth.Actor{UserID: otherMember, Role: "user", Method: "session"}
+	othersReport := h.createReport(GuildTo)
+	if _, err := h.store.Pool.Exec(ctx, `update reports set guild_id = $2 where id = $1`, othersReport, gid); err != nil {
+		t.Fatal(err)
+	}
+
+	h.actor = auth.Actor{UserID: claimant, Role: "user", Method: "session"}
+	ownReport := h.createReport(GuildTo)
+	if _, err := h.store.Pool.Exec(ctx, `update reports set guild_id = $2 where id = $1`, ownReport, gid); err != nil {
+		t.Fatal(err)
+	}
+
+	// The frozen claimant may not edit another member's guild report.
+	res := h.json(http.MethodPatch, "/v1/reports/"+othersReport, `{"title":"Claimant edits someone else's"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("a frozen claimant patching another member's report = %d, want 403", res.StatusCode)
+	}
+
+	// The frozen claimant may still edit their OWN report - ownership
+	// wins before the rank/freeze check is even reached.
+	res = h.json(http.MethodPatch, "/v1/reports/"+ownReport, `{"title":"Claimant edits their own"}`)
+	var view View
+	h.data(res, &view)
+	if view.Title != "Claimant edits their own" {
+		t.Fatalf("a frozen claimant patching their own report failed: %+v", view)
+	}
+
+	// GET is entirely unaffected by the freeze - mayView never consults it.
+	res = h.do(http.MethodGet, "/v1/reports/"+othersReport, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("a frozen claimant reading another member's guild report = %d, want 200 (GET is unaffected)", res.StatusCode)
+	}
+
+	// A different, unrelated verified officer of the same guild is unaffected.
+	h.actor = auth.Actor{UserID: otherOfficer, Role: "user", Method: "session"}
+	res = h.json(http.MethodPatch, "/v1/reports/"+othersReport, `{"title":"Another officer edits fine"}`)
+	h.data(res, &view)
+	if view.Title != "Another officer edits fine" {
+		t.Fatalf("an unrelated verified officer should be unaffected by the freeze: %+v", view)
 	}
 }
 
@@ -170,7 +277,7 @@ func TestPatchIsForTheOwnerAndGuildOfficers(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, err := h.store.Pool.Exec(t.Context(),
-		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'officer')`,
+		`insert into guild_members (guild_id, user_id, rank, verified_at) values ($1, $2, 'officer', now())`,
 		guildID, officer); err != nil {
 		t.Fatal(err)
 	}
@@ -237,7 +344,7 @@ func TestPatchingGuildIDRequiresStandingInTheTargetGuild(t *testing.T) {
 
 	// Plain membership is not enough either.
 	if _, err := h.store.Pool.Exec(t.Context(),
-		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'member')`,
+		`insert into guild_members (guild_id, user_id, rank, verified_at) values ($1, $2, 'member', now())`,
 		guildID, h.owner); err != nil {
 		t.Fatal(err)
 	}
@@ -258,6 +365,147 @@ func TestPatchingGuildIDRequiresStandingInTheTargetGuild(t *testing.T) {
 	h.data(res, &view)
 	if view.Guild == nil || view.Guild.ID != guildID {
 		t.Fatalf("an officer could not attach the report to their guild: %+v", view.Guild)
+	}
+}
+
+// TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport is the
+// spoofing regression test (design §3.3): a bare guild_characters row
+// from an export - forged or not - must never grant access on its own.
+// A single appearance in the guild's own uploaded report does not
+// verify it; a second appearance on a distinct report date within 30
+// days does; a second appearance more than 30 days after the first
+// does not.
+func TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(GuildTo)
+	var guildID int64
+	if err := h.store.Pool.QueryRow(t.Context(),
+		`insert into guilds (region, ruleset, name) values ('us', 'hardcore', 'Spoofed') returning id`).
+		Scan(&guildID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`update reports set guild_id = $2 where id = $1`, id, guildID); err != nil {
+		t.Fatal(err)
+	}
+	spoofer := h.owner + 500
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into users (id, email) values ($1, 'spoofer@example.com') on conflict (id) do nothing`,
+		spoofer); err != nil {
+		t.Fatal(err)
+	}
+	// Every report below is owned by a distinct uploader account, not
+	// the spoofer - item 3's fixed independence rule (fourth security
+	// review response) never counts a report toward its own account's
+	// verification.
+	uploader := h.owner + 501
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into users (id, email) values ($1, 'spoof-uploader@example.com') on conflict (id) do nothing`,
+		uploader); err != nil {
+		t.Fatal(err)
+	}
+	// A bare, unverified guild_characters row - exactly what a forged
+	// export alone can produce.
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into guild_characters (guild_id, character_key, user_id, rank)
+		 values ($1, 'us/hardcore/spoofer', $2, 'member')`, guildID, spoofer); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`select 1 from guild_characters`); err != nil { // sanity: table reachable from this package
+		t.Fatal(err)
+	}
+	guildStore := &guilds.Store{Pool: h.store.Pool}
+	tx, err := h.store.Pool.Begin(t.Context())
+	if err != nil {
+		t.Fatal(err)
+	}
+	uid := spoofer
+	if err := guilds.RecomputeMembership(t.Context(), tx, guildID, &uid); err != nil {
+		t.Fatal(err)
+	}
+	if err := tx.Commit(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+
+	h.actor = auth.Actor{UserID: spoofer, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("an unverified spoofed member reading a guild report = %d, want 404", res.StatusCode)
+	}
+	res = h.json(http.MethodPatch, "/v1/reports/"+id, `{"title":"stolen"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden && res.StatusCode != http.StatusNotFound {
+		t.Fatalf("an unverified spoofed member editing a guild report = %d, want 403 or 404", res.StatusCode)
+	}
+
+	// One appearance in the guild's own uploaded report does not verify it.
+	first := time.Now().Add(-20 * 24 * time.Hour)
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+		 values ('spoofnight1x', $1, $2, 'guild', 'complete', $3)`, uploader, guildID, first); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into fights (report_id, fight_index, players) values ('spoofnight1x', 0, $1)`,
+		[]string{"us/hardcore/spoofer"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := guildStore.VerifyByLogs(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("one guild-log appearance should not verify the spoofer: status = %d, want 404", res.StatusCode)
+	}
+
+	// A second appearance whose own date falls outside the trailing
+	// 30-day window (VerifyByLogs counts distinct report dates with
+	// r2.created_at >= now() - 30 days; a report older than that is not
+	// counted at all) still leaves only one countable date, so it still
+	// does not verify.
+	tooLate := time.Now().Add(-35 * 24 * time.Hour)
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+		 values ('spoofnight2late', $1, $2, 'guild', 'complete', $3)`, uploader, guildID, tooLate); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into fights (report_id, fight_index, players) values ('spoofnight2late', 0, $1)`,
+		[]string{"us/hardcore/spoofer"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := guildStore.VerifyByLogs(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusNotFound {
+		t.Fatalf("both appearances fall outside a shared 30-day window from `first`: status = %d, want 404", res.StatusCode)
+	}
+
+	// A second appearance within 30 days of the first verifies it.
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+		 values ('spoofnight2ok', $1, $2, 'guild', 'complete', $3)`,
+		uploader, guildID, first.Add(5*24*time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into fights (report_id, fight_index, players) values ('spoofnight2ok', 0, $1)`,
+		[]string{"us/hardcore/spoofer"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := guildStore.VerifyByLogs(t.Context()); err != nil {
+		t.Fatal(err)
+	}
+	res = h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	var view View
+	h.data(res, &view)
+	if view.Guild == nil {
+		t.Fatal("two distinct report dates within 30 days should have verified the spoofer")
 	}
 }
 

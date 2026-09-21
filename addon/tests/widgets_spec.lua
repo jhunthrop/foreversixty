@@ -81,11 +81,45 @@ describe("Widgets", function()
 		assert.are.equal("Copy", button:GetText())
 	end)
 
-	it("carries the label on a client that has the button template too", function()
+	-- Found in game: the stock templates gave a red button, gold tabs and a
+	-- one-line input, none of it the site's design.
+	it("draws its own button, tab and field even on a client with the stock templates", function()
 		start({ templates = ALL_TEMPLATES })
 		local button = Widgets.button(_G.UIParent, "Copy", function() end)
-		assert.are.equal("UIPanelButtonTemplate", button.template)
+		local tab = Widgets.tab(_G.UIParent, "Export", function() end)
+		local box = Widgets.editBox(_G.UIParent, 300, 72, true)
+		assert.is_nil(button.template)
+		assert.is_nil(tab.template)
+		assert.is_nil(box.template)
 		assert.are.equal("Copy", button:GetText())
+	end)
+
+	it("sets an edit box inside a field of exactly the size asked for", function()
+		start()
+		local box = Widgets.editBox(_G.UIParent, 300, 72, true)
+		local field = Widgets.field(box)
+		assert.are.equal(300, field.width)
+		assert.are.equal(72, field.height)
+		assert.is_true(box.width < field.width)
+		assert.is_true(box.height < field.height)
+	end)
+
+	it("underlines the active tab only", function()
+		start()
+		local tab = Widgets.tab(_G.UIParent, "Export", function() end)
+		assert.is_false(tab.foreverSixtyUnderline:IsShown())
+		Widgets.setTabActive(tab, true)
+		assert.is_true(tab.foreverSixtyUnderline:IsShown())
+		Widgets.setTabActive(tab, false)
+		assert.is_false(tab.foreverSixtyUnderline:IsShown())
+	end)
+
+	it("closes through the title bar's close button", function()
+		start()
+		local closed = 0
+		local button = Widgets.closeButton(_G.UIParent, function() closed = closed + 1 end)
+		button:GetScript("OnClick")(button)
+		assert.are.equal(1, closed)
 	end)
 
 	it("ignores a click on a disabled button rather than acting on it", function()
@@ -264,5 +298,68 @@ describe("Widgets", function()
 		-- lines in it is a grey box following the cursor.
 		assert.is_nil(mock.firstCall(_G.GameTooltip, "SetOwner"))
 		assert.is_nil(mock.firstCall(_G.GameTooltip, "Show"))
+	end)
+	describe("keyboard focus", function()
+		-- An edit box that holds focus swallows every keybind. It may take
+		-- focus only when the player asks to copy, and must give it back.
+		local function box()
+			start()
+			return Widgets.editBox(_G.CreateFrame("Frame"), 200, 80, true)
+		end
+
+		it("does not hold the keyboard merely for having been created", function()
+			local b = box()
+			assert.is_false(b.focused)
+			assert.is_false(b.autoFocus)
+		end)
+
+		it("sets text without focus", function()
+			local b = box()
+			Widgets.setText(b, "FS1:code")
+			assert.are.equal("FS1:code", b:GetText())
+			assert.is_false(b.focused)
+		end)
+
+		it("gives focus back when the box is hidden", function()
+			local b = box()
+			Widgets.selectText(b, "FS1:code")
+			assert.is_true(b.focused)
+			b:GetScript("OnHide")(b)
+			assert.is_false(b.focused)
+		end)
+
+		it("gives focus back on Escape and on Enter", function()
+			local b = box()
+			Widgets.selectText(b, "FS1:code")
+			b:GetScript("OnEscapePressed")(b)
+			assert.is_false(b.focused)
+			Widgets.selectText(b, "FS1:code")
+			b:GetScript("OnEnterPressed")(b)
+			assert.is_false(b.focused)
+		end)
+
+		it("gives focus back shortly after the player copies with Ctrl+C", function()
+			local b = box()
+			Widgets.selectText(b, "FS1:code")
+			_G.IsControlKeyDown = function()
+				return true
+			end
+			b:GetScript("OnKeyDown")(b, "C")
+			assert.are.equal(1, mock.runTimers(state))
+			assert.is_false(b.focused)
+			_G.IsControlKeyDown = nil
+		end)
+
+		it("keeps focus for any other key", function()
+			local b = box()
+			Widgets.selectText(b, "FS1:code")
+			_G.IsControlKeyDown = function()
+				return false
+			end
+			b:GetScript("OnKeyDown")(b, "C")
+			mock.runTimers(state)
+			assert.is_true(b.focused)
+			_G.IsControlKeyDown = nil
+		end)
 	end)
 end)

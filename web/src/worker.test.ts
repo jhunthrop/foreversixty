@@ -580,12 +580,17 @@ const SHELL_HTML = `<!doctype html><html><head><title>Report · Forever Sixty</t
 <meta property="og:image" content="https://foreversixty.gg/og/reports.png" data-og="og-image" />
 </head><body><div id="report" data-report-mount></div></body></html>`;
 
+/** Assets a shell request may resolve to: reports.html for the report shell, guild.html
+ *  for the claim/settings/invite shells this task adds (the plain guild shell arrives
+ *  with a later task and is still unhandled here). */
+const SHELL_ASSET_PATHS = new Set(['/reports.html', '/guild.html']);
+
 function shellEnv() {
   return {
     API_BASE_URL,
     ASSETS: {
       fetch: vi.fn<AssetFetch>(async (request: Request) =>
-        new URL(request.url).pathname === '/reports.html'
+        SHELL_ASSET_PATHS.has(new URL(request.url).pathname)
           ? new Response(SHELL_HTML, { status: 200, headers: { 'content-type': 'text/html' } })
           : new Response('not found', { status: 404 }),
       ),
@@ -789,6 +794,80 @@ describe('shell routes with rewritten unfurl tags', () => {
     );
     expect(response.status).toBe(404);
   });
+
+  it('titles the claim shell from the guild name, non-indexable', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(
+        async () =>
+          new Response(
+            JSON.stringify({
+              ok: true,
+              data: { guild: { name: 'The Last Watch', region: 'us', ruleset: 'hardcore' } },
+              error: null,
+              request_id: 'r',
+            }),
+            { status: 200, headers: { 'content-type': 'application/json' } },
+          ),
+      ),
+    );
+
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/guild/us/hardcore/the-last-watch/claim'),
+      shellEnv(),
+    );
+    const html = await response.text();
+
+    expect(html).toContain('<title>Claim The Last Watch · Forever Sixty</title>');
+    expect(response.headers.get('x-robots-tag')).toBe('noindex');
+  });
+
+  it('titles the settings shell the same way', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(
+        async () =>
+          new Response(
+            JSON.stringify({
+              ok: true,
+              data: { guild: { name: 'The Last Watch', region: 'us', ruleset: 'hardcore' } },
+              error: null,
+              request_id: 'r',
+            }),
+            { status: 200, headers: { 'content-type': 'application/json' } },
+          ),
+      ),
+    );
+
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/guild/us/hardcore/the-last-watch/settings'),
+      shellEnv(),
+    );
+    const html = await response.text();
+
+    expect(html).toContain('<title>The Last Watch settings · Forever Sixty</title>');
+    expect(response.headers.get('x-robots-tag')).toBe('noindex');
+  });
+
+  it('gives the invite shell a generic non-indexable title with no upstream fetch', async () => {
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+    const upstream = vi.fn<GlobalFetch>(async () => {
+      throw new Error('the invite shell must not call the API — plan ruling 6');
+    });
+    vi.stubGlobal('fetch', upstream);
+
+    const response = await worker.fetch(
+      new Request('https://foreversixty.gg/guild/invite/abc-123'),
+      shellEnv(),
+    );
+    const html = await response.text();
+
+    expect(html).toContain('<title>Join a guild · Forever Sixty</title>');
+    expect(response.headers.get('x-robots-tag')).toBe('noindex');
+    expect(upstream).not.toHaveBeenCalled();
+  });
 });
 
 // --- appended for Task 9: the sim shell route ---
@@ -830,6 +909,34 @@ describe('/sim/<sim_id>', () => {
     expect(response.headers.get('x-robots-tag')).toBeNull();
     expect(html).toContain('Fury Warrior, 101 DPS · Forever Sixty');
     expect(html).toContain('https://foreversixty.gg/sim/simfixtureab');
+  });
+
+  // Defect fix: GET /v1/sims/{id} used to drop the name a member gave a saved sim before it
+  // ever reached this Worker, so the rewritten head always carried the composed spec/DPS
+  // line regardless of what was typed. This is the end-to-end proof at the layer that
+  // actually writes `<title>`/`og:title`/`og:description` into what a crawler or a chat
+  // unfurl sees: a titled API answer rewrites the head with that title, through the exact
+  // same HTMLRewriter path (setInnerContent/setAttribute, which escape by default) as
+  // every other shell.
+  it('rewrites the head with the member’s own name when the sim has one', async () => {
+    const assets = shellAssets('/sim.html');
+    const named = 'Thoradin - Fury Warrior, raid-buffed BWL night';
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        json({ ok: true, data: { ...fixtureResult, title: named }, error: null, request_id: 'r' }),
+      ),
+    );
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+
+    const response = await worker.fetch(new Request('https://foreversixty.gg/sim/simfixtureab'), {
+      API_BASE_URL: 'https://api.test',
+      ASSETS: assets,
+    } as unknown as Env);
+
+    const html = await response.text();
+    expect(html).toContain(`${named} · Forever Sixty`);
+    expect(html).not.toContain('Fury Warrior, 101 DPS · Forever Sixty');
   });
 
   it('serves the shell unrewritten and noindex when the API cannot answer', async () => {

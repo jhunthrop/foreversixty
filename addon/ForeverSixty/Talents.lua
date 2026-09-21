@@ -54,6 +54,55 @@ local function traitRank(configID, node)
 	return info and (info.activeRank or info.ranksPurchased) or 0
 end
 
+--- A spell's texture, from wherever this client keeps the function.
+local function spellTexture(spellID)
+	if spellID == nil then
+		return nil
+	end
+	if type(C_Spell) == "table" and type(C_Spell.GetSpellTexture) == "function" then
+		return C_Spell.GetSpellTexture(spellID)
+	end
+	if type(GetSpellTexture) == "function" then
+		return GetSpellTexture(spellID)
+	end
+	return nil
+end
+
+--- node -> entry -> definition -> spell -> texture. Raises on any client
+--- function that is missing; iconFor turns that into nil.
+local function traitIcon(node)
+	local configID = C_ClassTalents.GetActiveConfigID()
+	local info = C_Traits.GetNodeInfo(configID, node)
+	local entryID = info.activeEntry and info.activeEntry.entryID or info.entryIDs[1]
+	local entry = C_Traits.GetEntryInfo(configID, entryID)
+	local definition = C_Traits.GetDefinitionInfo(entry.definitionID)
+	return definition.overrideIcon or spellTexture(definition.overriddenSpellID or definition.spellID)
+end
+
+local iconCache = {}
+
+--- The icon for a talent from Data.lua (its `node` is the client's trait
+--- node id), or nil. The data file carries no icons, so this asks the
+--- client, and every link of that chain may be absent on a client nobody
+--- here can run: a failure is "no icon", never an error. A found icon is
+--- kept for the session; a miss is asked again, because a character below
+--- the talent level has no trait config yet and will have one later.
+function Talents.iconFor(talent)
+	local node = type(talent) == "table" and talent.node or nil
+	if node == nil or not hasTraitApi() then
+		return nil
+	end
+	if iconCache[node] ~= nil then
+		return iconCache[node]
+	end
+	local ok, icon = pcall(traitIcon, node)
+	if ok and icon ~= nil then
+		iconCache[node] = icon
+		return icon
+	end
+	return nil
+end
+
 local function traitRanks(data)
 	local class = data and data.classes and data.classes[Talents.playerClassSlug()]
 	if class == nil then

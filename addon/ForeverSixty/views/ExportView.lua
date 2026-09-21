@@ -10,13 +10,15 @@ ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Theme = ns.Theme or require("Theme")
 local Widgets = ns.Widgets or require("Widgets")
+local Cards = ns.Cards or require("Cards")
 local Export = ns.Export or require("Export")
 local Talents = ns.Talents or require("Talents")
 
 local ExportView = {}
 
 --- Points per tree, in Data.lua's tab order.
-local function treePoints(data, classSlug)
+--- Points spent per tree, in tab order. Shared with the Overview page.
+function ExportView.treePoints(data, classSlug)
 	local class = data and data.classes and data.classes[classSlug]
 	if class == nil then
 		return {}
@@ -71,7 +73,7 @@ end
 --- Everything the tab shows, as new plain tables and finished strings.
 function ExportView.summary(data)
 	local classSlug = Talents.playerClassSlug()
-	local trees = treePoints(data, classSlug)
+	local trees = ExportView.treePoints(data, classSlug)
 	local code, reason = Export.string(data)
 	return {
 		classSlug = classSlug,
@@ -98,19 +100,36 @@ local function under(region, above, parent, gap)
 	return region
 end
 
+--- One numbered step: the number in gold, the instruction beside it.
+local function step(parent, above, number, text, gap)
+	local mark = under(Widgets.label(parent, tostring(number), "gold", "small"), above, parent, gap)
+	local label = Widgets.label(parent, text, "body", "small")
+	label:SetPoint("LEFT", mark, "LEFT", Theme.SIZES.padding, 0)
+	return mark
+end
+
 local function layout(parent, width)
 	local view = { frame = parent }
 	local gap, padding = Theme.SIZES.gap, Theme.SIZES.padding
 	view.title = under(Widgets.label(parent, L.exportTitle, "gold"), nil, parent)
 	view.hint = under(Widgets.label(parent, L.exportHint, "muted", "small"), view.title, parent, gap)
-	view.talents = under(Widgets.label(parent, "", "body", "small"), view.hint, parent, padding)
+	local last = view.hint
+	for number, text in ipairs(L.exportSteps) do
+		last = step(parent, last, number, text, number == 1 and padding or gap * 2)
+	end
+	-- The code and its button come straight after the steps that use them.
+	view.box = Widgets.editBox(parent, width - (Theme.SIZES.buttonWidth + gap * 2),
+		Theme.SIZES.buttonHeight + gap, true, true)
+	Widgets.field(view.box):SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -padding)
+	view.reason = Widgets.label(parent, "", "warning", "small")
+	view.reason:SetPoint("TOPLEFT", last, "BOTTOMLEFT", 0, -padding)
+	view.contents = Widgets.label(parent, L.exportContents, "muted", "small")
+	view.contents:SetPoint("TOPLEFT", Widgets.field(view.box), "BOTTOMLEFT", 0, -padding * 2)
+	view.talents = under(Widgets.label(parent, "", "body", "small"), view.contents, parent, gap * 2)
 	view.slots = under(Widgets.label(parent, "", "body", "small"), view.talents, parent, gap)
 	view.bags = under(Widgets.label(parent, "", "body", "small"), view.slots, parent, gap)
 	view.professions = under(Widgets.label(parent, "", "body", "small"), view.bags, parent, gap)
-	view.saved = under(Widgets.label(parent, "", "muted", "small"), view.professions, parent, gap)
-	view.reason = under(Widgets.label(parent, "", "warning", "small"), view.saved, parent, padding)
-	view.box = Widgets.editBox(parent, width, Theme.SIZES.editBoxHeight, true)
-	view.box:SetPoint("TOPLEFT", view.reason, "BOTTOMLEFT", 0, -gap)
+	view.saved = under(Widgets.label(parent, "", "muted", "small"), view.professions, parent, padding)
 	return view
 end
 
@@ -125,11 +144,12 @@ function ExportView.apply(view, model)
 	view.reason:SetText(model.reason or "")
 	if model.code == nil then
 		view.reason:Show()
-		view.box:Hide()
+		Widgets.field(view.box):Hide()
 	else
 		view.reason:Hide()
-		view.box:Show()
-		Widgets.selectText(view.box, model.code)
+		Widgets.field(view.box):Show()
+		-- Text only. Focus is taken by the Copy button, never by a redraw.
+		Widgets.setText(view.box, model.code)
 	end
 	Widgets.setEnabled(view.copy, model.code ~= nil)
 	return view
@@ -154,10 +174,10 @@ end
 
 function ExportView.mount(parent, ctx)
 	local view = layout(parent, ctx.contentWidth)
-	view.copy = Widgets.button(parent, L.exportCopy, function(button)
+	view.copy = Cards.primaryButton(parent, L.exportCopy, function(button)
 		onCopy(view, button)
 	end)
-	view.copy:SetPoint("TOPLEFT", view.box, "BOTTOMLEFT", 0, -Theme.SIZES.gap)
+	view.copy:SetPoint("LEFT", Widgets.field(view.box), "RIGHT", Theme.SIZES.gap * 2, 0)
 	function view.refresh()
 		return ExportView.apply(view, ExportView.summary(ctx.data))
 	end

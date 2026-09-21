@@ -5,9 +5,11 @@
 <script lang="ts">
   import { addonCopy } from '../../lib/addon/copy';
   import { importFromAddon, type ImportOutcome } from '../../lib/addon/import';
+  import { currentCharacterCopy } from '../../lib/current-character-copy';
   import type { TalentIndex } from '../../lib/planner/rules';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import type { Gear } from '../../lib/planner/types';
+  import { rowLink } from '../../lib/report/format';
 
   let {
     talents,
@@ -16,7 +18,16 @@
   }: {
     talents: TalentIndex;
     activeBuild: string;
-    onimport: (build: { classSlug: string; raceSlug: string; order: number[]; gear: Gear }) => void;
+    /**
+     * `pastedCode` (Task 10) is the export string as pasted, trimmed the same way `submit`
+     * decodes it -- the current-character bridge's own 'addon' pointer is written from
+     * this exact string, never a re-encoding of the parsed build, so a caller reading it
+     * back later decodes byte-for-byte what the player pasted.
+     */
+    onimport: (
+      build: { classSlug: string; raceSlug: string; order: number[]; gear: Gear },
+      pastedCode: string,
+    ) => void;
   } = $props();
 
   let code = $state('');
@@ -26,15 +37,19 @@
   const failure = $derived(outcome !== null && !outcome.ok ? outcome.message : null);
 
   function submit(): void {
-    const result = importFromAddon(code.trim(), talents, activeBuild);
+    const trimmed = code.trim();
+    const result = importFromAddon(trimmed, talents, activeBuild);
     outcome = result;
     if (result.ok) {
-      onimport({
-        classSlug: result.classSlug,
-        raceSlug: result.raceSlug,
-        order: result.order,
-        gear: result.gear,
-      });
+      onimport(
+        {
+          classSlug: result.classSlug,
+          raceSlug: result.raceSlug,
+          order: result.order,
+          gear: result.gear,
+        },
+        trimmed,
+      );
     }
   }
 </script>
@@ -67,4 +82,9 @@
   {#each notes as note (note)}
     <p class="text-muted text-[13px]" data-testid="import-note">{note}</p>
   {/each}
+  <p class="text-muted text-[13px]">
+    <a href="/addon" class="{rowLink} text-nav" data-testid="import-get-addon"
+      >{currentCharacterCopy.getTheAddon}</a
+    >
+  </p>
 </section>

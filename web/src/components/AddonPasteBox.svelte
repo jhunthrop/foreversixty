@@ -9,6 +9,7 @@
   import { addonCopy } from '../lib/addon/copy';
   import { decodeFS1 } from '../lib/planner/fs1';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { CURRENT_CHARACTER_CHANGED, writeCurrent } from '../lib/current-character';
   import { plannerCodeHref, simCodeHref } from '../lib/handoff-links';
 
   let code = $state('');
@@ -25,6 +26,18 @@
     }
     error = null;
     loaded = trimmed;
+    // The export is now the site's current character, so the planner and every simulator
+    // tab open on it without a second paste. The label is the class alone: the spec needs
+    // the talent file, which the tool that opens it loads and then writes a fuller label.
+    const classSlug = result.build.classSlug;
+    writeCurrent({
+      source: 'addon',
+      ref: trimmed,
+      label: classSlug.charAt(0).toUpperCase() + classSlug.slice(1),
+      classSlug,
+      savedAt: new Date().toISOString(),
+    });
+    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
   }
 </script>
 

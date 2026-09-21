@@ -216,7 +216,8 @@ func TestCharactersAndGuildsComeBackForMe(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, err := s.Pool.Exec(ctx,
-		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'officer')`, guildID, u.ID); err != nil {
+		`insert into guild_members (guild_id, user_id, rank, verified_at) values ($1, $2, 'officer', now())`,
+		guildID, u.ID); err != nil {
 		t.Fatal(err)
 	}
 
@@ -228,12 +229,76 @@ func TestCharactersAndGuildsComeBackForMe(t *testing.T) {
 	if err != nil || len(guilds) != 1 || guilds[0].Rank != "officer" {
 		t.Fatalf("guilds = %v, err = %v", guilds, err)
 	}
+	if !guilds[0].Verified {
+		t.Fatal("a guild_members row seeded with verified_at should read Verified = true")
+	}
+	if guilds[0].Consent != "gear" {
+		t.Fatalf("consent = %q, want the default 'gear'", guilds[0].Consent)
+	}
 	rank, ok, err := s.GuildRank(ctx, guildID, u.ID)
 	if err != nil || !ok || rank != "officer" {
 		t.Fatalf("rank = %q, %v, %v", rank, ok, err)
 	}
 	if _, ok, _ := s.GuildRank(ctx, guildID, u.ID+999); ok {
 		t.Fatal("a stranger should not have a rank")
+	}
+}
+
+func TestGuildRankRefusesAnUnverifiedRow(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	u, err := s.UpsertEmailUser(ctx, "unverified@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var guildID int64
+	if err := s.Pool.QueryRow(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'hardcore', 'Spoofed') returning id`).
+		Scan(&guildID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Pool.Exec(ctx,
+		`insert into guild_members (guild_id, user_id, rank) values ($1, $2, 'officer')`, guildID, u.ID); err != nil {
+		t.Fatal(err)
+	}
+	if _, ok, err := s.GuildRank(ctx, guildID, u.ID); err != nil || ok {
+		t.Fatalf("GuildRank for an unverified row = %v, %v, want ok = false", ok, err)
+	}
+	if _, err := s.Pool.Exec(ctx,
+		`update guild_members set verified_at = now() where guild_id = $1 and user_id = $2`, guildID, u.ID); err != nil {
+		t.Fatal(err)
+	}
+	if rank, ok, err := s.GuildRank(ctx, guildID, u.ID); err != nil || !ok || rank != "officer" {
+		t.Fatalf("GuildRank once verified = %q, %v, %v, want officer/true", rank, ok, err)
+	}
+}
+
+func TestGuildsOrdersByMostRecentlyRefreshedMembership(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	u, err := s.UpsertEmailUser(ctx, "multi-guild@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	var older, newer int64
+	s.Pool.QueryRow(ctx, `insert into guilds (region, ruleset, name) values ('us', 'hardcore', 'Older') returning id`).Scan(&older)
+	s.Pool.QueryRow(ctx, `insert into guilds (region, ruleset, name) values ('us', 'hardcore', 'Newer') returning id`).Scan(&newer)
+	if _, err := s.Pool.Exec(ctx,
+		`insert into guild_members (guild_id, user_id, rank, refreshed_at) values ($1, $2, 'member', now() - interval '1 day')`,
+		older, u.ID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Pool.Exec(ctx,
+		`insert into guild_members (guild_id, user_id, rank, refreshed_at) values ($1, $2, 'member', now())`,
+		newer, u.ID); err != nil {
+		t.Fatal(err)
+	}
+	guilds, err := s.Guilds(ctx, u.ID)
+	if err != nil || len(guilds) != 2 {
+		t.Fatalf("guilds = %v, %v", guilds, err)
+	}
+	if guilds[0].ID != newer {
+		t.Fatalf("guilds[0] = %+v, want the most recently refreshed membership first", guilds[0])
 	}
 }
 

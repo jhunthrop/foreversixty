@@ -12,12 +12,15 @@
   import {
     defaultItemQuery,
     matchCount,
+    noResultsReason,
     searchItems,
     slotOptions,
     type ItemQuery,
     type SearchContext,
   } from '../../../lib/sim/item-search';
-  import { groupSources, type LootFile } from '../../../lib/sim/loot';
+  import { legendaryVariantLabel } from '../../../lib/sim/legendary-variants';
+  import { groupSources, type LootFile, sourceLabel } from '../../../lib/sim/loot';
+  import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
 
   let {
     items,
@@ -38,6 +41,17 @@
   const found = $derived(searchItems(items, query, ctx));
   const matching = $derived(matchCount(items, query, ctx));
   const groups = $derived(groupSources(loot));
+  const emptyReason = $derived(noResultsReason(items, query, ctx));
+
+  /** dps D27: name why an off-hand search excludes a two-hander instead of implying the
+   *  item does not exist, when the search can prove one of those two things is true. */
+  const noResultsMessage = $derived(
+    emptyReason.twoHanded
+      ? poolQualityCopy.searchWrongSlotTwoHanded
+      : emptyReason.existsElsewhere
+        ? poolQualityCopy.searchWrongSlotElsewhere
+        : bulkCopy.searchNoResults,
+  );
 </script>
 
 <section
@@ -89,7 +103,7 @@
         {#each groups as group (group.kind)}
           <optgroup label={group.label}>
             {#each group.sources as source (source.id)}
-              <option value={source.id}>{source.name}</option>
+              <option value={source.id}>{sourceLabel(source)}</option>
             {/each}
           </optgroup>
         {/each}
@@ -107,7 +121,7 @@
   </div>
 
   {#if found.length === 0}
-    <p class="text-muted text-[13px]">{bulkCopy.searchNoResults}</p>
+    <p class="text-muted text-[13px]">{noResultsMessage}</p>
   {:else}
     <ul class="max-h-[320px] overflow-y-auto">
       {#each found as item (item.id)}
@@ -125,7 +139,7 @@
             class="rounded-control border-line h-6 w-6 border object-cover"
           />
           <span class={`flex-1 text-[14px] font-semibold ${rarityClassFor(item.quality)}`}>
-            {item.name}
+            {item.name}{legendaryVariantLabel(item.id) === '' ? '' : ` (${legendaryVariantLabel(item.id)})`}
           </span>
           <span class="tabular text-muted font-mono text-[12px]">{item.item_level}</span>
           <button

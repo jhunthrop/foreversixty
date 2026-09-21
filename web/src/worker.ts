@@ -10,11 +10,20 @@
 // The Workers runtime types are declared inline instead of pulling in
 // @cloudflare/workers-types, which would have to be added to the Astro tsconfig's `types`
 // and would then apply to every file in the project.
-import { parseCharacterPath, parseGuildPath } from './lib/characters';
+import {
+  parseCharacterPath,
+  parseGuildClaimPath,
+  parseGuildInviteToken,
+  parseGuildPath,
+  parseGuildSettingsPath,
+} from './lib/characters';
 import { DUCKDB_RUNTIME_PREFIX, duckdbRuntimeKey } from './lib/report/duckdb-runtime';
 import {
   characterShellMeta,
+  guildClaimShellMeta,
+  guildInviteShellMeta,
   guildShellMeta,
+  guildSettingsShellMeta,
   rankingsShellMeta,
   reportShellMeta,
   simShellMeta,
@@ -427,6 +436,31 @@ async function shellHead(url: URL, env: Env): Promise<ShellHead | null> {
     return { meta: characterShellMeta(character, data), indexable: true };
   }
 
+  const guildClaim = parseGuildClaimPath(url.pathname);
+  if (guildClaim !== null) {
+    const data = await apiData<GuildHead>(
+      `${env.API_BASE_URL}/v1/guilds/${guildClaim.region}/${guildClaim.ruleset}/${guildClaim.slug}`,
+    );
+    if (data === null) return null;
+    return { meta: guildClaimShellMeta(guildClaim, data.guild.name), indexable: false };
+  }
+
+  const guildSettings = parseGuildSettingsPath(url.pathname);
+  if (guildSettings !== null) {
+    const data = await apiData<GuildHead>(
+      `${env.API_BASE_URL}/v1/guilds/${guildSettings.region}/${guildSettings.ruleset}/${guildSettings.slug}`,
+    );
+    if (data === null) return null;
+    return { meta: guildSettingsShellMeta(guildSettings, data.guild.name), indexable: false };
+  }
+
+  // No API call at all (plan ruling 6): there is no unauthenticated endpoint to resolve an
+  // invite token to a guild name.
+  const inviteToken = parseGuildInviteToken(url.pathname);
+  if (inviteToken !== null) {
+    return { meta: guildInviteShellMeta(inviteToken), indexable: false };
+  }
+
   const guild = parseGuildPath(url.pathname);
   if (guild !== null) {
     const data = await apiData<GuildHead>(
@@ -450,7 +484,10 @@ function shellPathIsAddressable(url: URL): boolean {
     RANKINGS_SLUG.test(url.pathname) ||
     SIM_ID.test(url.pathname) ||
     parseCharacterPath(url.pathname) !== null ||
-    parseGuildPath(url.pathname) !== null
+    parseGuildPath(url.pathname) !== null ||
+    parseGuildClaimPath(url.pathname) !== null ||
+    parseGuildSettingsPath(url.pathname) !== null ||
+    parseGuildInviteToken(url.pathname) !== null
   );
 }
 

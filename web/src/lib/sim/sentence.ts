@@ -49,8 +49,35 @@ export function namedSummary(summary: Summary, names: ActionNames | null): Summa
   };
 }
 
+/**
+ * Clamped to 100 as a last line of defence (2026-09-21 result-page review round 3, E8: a
+ * combined sim result's aura rows read up to 101% here, sim/combine's own bug, now fixed
+ * at the source) -- this is the one place every uptime and every damage share in the
+ * sentence is rounded, so clamping it once covers both without either caller needing to
+ * know why the source disagreed.
+ */
 function percent(part: number, whole: number): number {
-  return whole <= 0 ? 0 : Math.round((part / whole) * 100);
+  return whole <= 0 ? 0 : Math.min(Math.round((part / whole) * 100), 100);
+}
+
+/**
+ * True for an aura the player's OWN class grants (or when there is no class-vs-shared
+ * signal to read at all -- `names` not loaded yet, or a hand-built `ActionNames` with no
+ * `ownSpell`, which is every fixture written before this preference existed and which
+ * means exactly "everything here is the player's own"). False only for an aura
+ * `loadActionNames` resolved through the cross-class `simnames/_shared.json` table -- a
+ * raid buff from another class's spellbook, or one of the handful no class owns at all
+ * (Rallying Cry of the Dragonslayer, Sayge's Fortune...). 2026-09-21 result-page review,
+ * Defect 2: the sentence used to pick whichever BUFF aura had the highest uptime, and a
+ * raid buff applied once at pull and never dropped always wins that contest against the
+ * player's own, shorter-lived cooldowns -- which is how "Thorns is up 100% of the fight"
+ * reached the summary sentence of a Frost Mage that never cast Thorns.
+ */
+function isOwnSpecAura(key: string, names: ActionNames | null): boolean {
+  const parsed = parseActionKey(key);
+  if (parsed === null || parsed.kind !== 'spell') return true;
+  if (names?.ownSpell === undefined) return true;
+  return names.ownSpell.has(parsed.label);
 }
 
 export function playerActor(summary: Summary): Actor | null {
@@ -82,8 +109,16 @@ export function summarySentence(summary: Summary, names: ActionNames | null): st
   // (other:move) it would drop, or a tag-variant row it would fold into a bigger one with a
   // summed uptime, is exactly the aura this line then names (final whole-branch review,
   // Finding 1 -- a regression from before the BUFFS/DEBUFFS work, when both read one array).
+  //
+  // isOwnSpecAura filters to the player's OWN class before the uptime sort: an external
+  // raid buff (Thorns, Blessing of Kings, Arcane Brilliance...) is almost always up for the
+  // whole fight and would otherwise always win the sort against the player's own, shorter
+  // cooldowns. No own-spec buff aura is not "fall back to whichever raid buff is up
+  // longest" -- it is nothing to say about uptime at all (2026-09-21 result-page review,
+  // Defect 2).
   const aura = sanitizeAuraTracks(summary.auras)
     .filter((track) => track.target_guid === actor.guid && track.type === 'BUFF')
+    .filter((track) => isOwnSpecAura(track.name, names))
     .sort((a, b) => b.uptime_ms - a.uptime_ms)[0];
   if (aura === undefined || summary.duration_ms <= 0) return `${damage}.`;
 

@@ -23,6 +23,7 @@
   import type { SimCharacter } from '../../lib/sim/character';
   import { SIM_LEVEL, needsRace, plannerHrefFor } from '../../lib/sim/character';
   import { simCopy } from '../../lib/sim/copy';
+  import { handoffCopy } from '../../lib/sim/handoff-copy';
   import { sourcePill } from '../../lib/sim/sources';
   import { specLabel } from '../../lib/sim/spec-label';
 
@@ -32,6 +33,8 @@
     races = [],
     gearKnown = true,
     readonly = false,
+    plannerHref,
+    talentPoints,
     onchange,
     onrace = () => {},
   }: {
@@ -45,6 +48,33 @@
      *  change on a read-only result -- the button was rendering live and focusable but
      *  wired to a no-op (Task 17's review, MEDIUM). */
     readonly?: boolean;
+    /**
+     * The "Open in planner" link, precomputed by the caller -- SavedSim.svelte's own fix:
+     * a saved sim's `character` carries no `point_order` (genuinely unknowable, the same
+     * honest-empty rule `sources.ts` already follows for a combat log) and never will, so
+     * this component's own `plannerHrefFor(character, talentIndex)` below -- which needs
+     * one to reconstruct a talents string through `toCharacterSpec` -- can only ever encode
+     * zeroed talents for it. A saved sim's stored request already carries the true, final
+     * talents string with nothing to reconstruct (`plannerHrefForSpec`, character.ts), so
+     * SavedSim builds the href itself and hands it straight through here rather than this
+     * component trying to re-derive from a `point_order` its caller never had. Absent (the
+     * live /sim page, SimView.svelte): unchanged, this component still computes its own
+     * from `character`/`talentIndex` below.
+     */
+    plannerHref?: string;
+    /**
+     * The point count, precomputed by the caller -- SavedSim.svelte's own fix for the same
+     * reason `plannerHref` above is: `character.point_order` is empty for a saved sim (the
+     * click order is genuinely unknowable from the stored request), so this component's own
+     * `character.point_order.length` reads 0 and the count used to be hidden entirely
+     * (2026-09-21 result-page review round 3, newcomer's own finding: the live page shows
+     * "51 points" beside Open in planner, the saved page showed nothing). A saved sim's
+     * stored request already carries the true, final talents string, and the point count is
+     * just the sum of its digits (`talentPointsFromString`, character.ts) -- no order
+     * needed. Absent (the live /sim page): unchanged, this component still counts
+     * `character.point_order.length`.
+     */
+    talentPoints?: number;
     onchange: () => void;
     /** The player answering the race question; the store replaces the character. */
     onrace?: (slug: string) => void;
@@ -54,8 +84,12 @@
   // points into an FS1 code -- the same file TalentCandidates.svelte:41-44 loads for its
   // own build list. Starts null so the link renders from first paint with the class+race
   // fallback `plannerHrefFor` gives a null index, and upgrades in place once this resolves.
+  // Skipped entirely when the caller already precomputed `plannerHref` (a saved sim, whose
+  // stored talents this component never needs to re-derive at all): nothing else here reads
+  // `talentIndex`, so fetching this file for it would be a request this page has no use for.
   let talents = $state<TalentFile | null>(null);
   onMount(() => {
+    if (plannerHref !== undefined) return;
     void loadTalents(character.tree_version, character.class_slug)
       .then((file) => (talents = file))
       .catch(() => (talents = null));
@@ -70,9 +104,12 @@
   // A build with fewer points than SIM_LEVEL - BASE_LEVEL implies is a part-levelled
   // character: the engine still sims it at 60 (there is no level control on this page), so
   // the line says how many points it actually spends rather than letting "· 60" imply a
-  // full-levelled build that ran the tree dry.
+  // full-levelled build that ran the tree dry -- and says so honestly (Task 9, spec
+  // section 1) rather than silently relabelling a sub-51-point build as a level 60 one.
   const levelSuffix = $derived(
-    character.talent_level < SIM_LEVEL ? ` · ${character.point_order.length} talent points` : '',
+    character.talent_level < SIM_LEVEL
+      ? ` · ${character.point_order.length} talent points (${handoffCopy.simmedAtSixty})`
+      : '',
   );
   const descriptor = $derived(
     (pending
@@ -80,7 +117,9 @@
       : `${character.race_slug.replace(/-/g, ' ')} ${specLabel(character.spec)} · ${SIM_LEVEL}`) +
       levelSuffix,
   );
-  const split = $derived(character.point_order.length);
+  const split = $derived(
+    character.point_order.length > 0 ? character.point_order.length : (talentPoints ?? 0),
+  );
 </script>
 
 <section
@@ -167,10 +206,14 @@
   <div class="flex flex-wrap items-baseline gap-3 text-[13px]">
     <span class="text-muted label">Talents</span>
     <!-- A saved sim's stored request carries the engine's talent *string*, not the
-         planner's point order (Task 17), so its `point_order` is always empty and `split`
-         is 0 -- not because the build spent nothing, but because this page cannot see the
-         order. Showing "0 points" would claim the build spent none, so the count is left
-         out entirely rather than printed wrong. -->
+         planner's point order (Task 17), so its `point_order` is always empty --
+         `talentPoints` (the caller's own digit-sum of that string, SavedSim.svelte) is what
+         keeps `split` honest there instead (2026-09-21 result-page review round 3). Neither
+         source ever produces a genuine zero for a level-60 character, so `split > 0` still
+         means "a real count is known" here, not "the build spent something" specifically --
+         showing "0 points" would claim a build spent none, which this guard still avoids
+         for the one remaining case (character/talentPoints both absent) where the count is
+         simply unknown. -->
     {#if split > 0}
       <span class="tabular text-strong font-mono" data-testid="sim-talent-count">{split} points</span>
     {/if}
@@ -182,7 +225,7 @@
          ([id].astro's own comment) or anything mounted below it. -->
     <a
       class="-my-3 ml-auto inline-flex h-11 items-center md:my-0 md:h-auto"
-      href={plannerHrefFor(character, talentIndex)}
+      href={plannerHref ?? plannerHrefFor(character, talentIndex)}
       data-testid="sim-open-planner"
     >
       {simCopy.openInPlanner}

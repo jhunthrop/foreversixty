@@ -116,23 +116,25 @@ describe('resolveActionName', () => {
     expect(resolveActionName('other:attack/9', names)).toBe('Attack (10)');
   });
 
-  it('falls back to a humanised label, never the raw key, when the build does not know the id', () => {
+  it('falls back to prose, never the raw key or the id itself, when the build does not know the id', () => {
     // dps-minmaxer review round 2, D48: a saved run rendered "spell:20662" as an ability
-    // name. An id the table never carries -- rather than one merely still loading, the
-    // next test -- reads the same way.
-    expect(resolveActionName('spell:999999', names)).toBe('Spell 999999');
-    expect(resolveActionName('item:1', names)).toBe('Item 1');
+    // name. 2026-09-21 result-page review round 2: "Spell 20662" -- action-names.ts's own
+    // fix for D48 -- turned out to still be an id reaching a player, just spelled out. An
+    // id the table never carries -- rather than one merely still loading, the next test --
+    // reads as prose with no number in it at all.
+    expect(resolveActionName('spell:999999', names)).toBe('An unnamed spell');
+    expect(resolveActionName('item:1', names)).toBe('An unnamed item');
   });
 
-  it('falls back to a humanised label, never the raw key, when the names have not loaded yet', () => {
-    expect(resolveActionName('spell:25286', null)).toBe('Spell 25286');
+  it('falls back to prose, never the raw key or the id itself, when the names have not loaded yet', () => {
+    expect(resolveActionName('spell:25286', null)).toBe('An unnamed spell');
     // An other action needs no table, so it reads properly even before one loads.
     expect(resolveActionName('other:attack', null)).toBe('Attack');
   });
 
-  it('keeps a tagged or ranked action’s variant suffix on the humanised fallback too', () => {
-    expect(resolveActionName('spell:999999/1', names)).toBe('Spell 999999 (2)');
-    expect(resolveActionName('spell:999999+r3', names)).toBe('Spell 999999 (Rank 3)');
+  it('keeps a tagged or ranked action’s variant suffix on the unresolved fallback too', () => {
+    expect(resolveActionName('spell:999999/1', names)).toBe('An unnamed spell (2)');
+    expect(resolveActionName('spell:999999+r3', names)).toBe('An unnamed spell (Rank 3)');
   });
 
   it('passes a real display name straight through, so a logged fight renders unchanged', () => {

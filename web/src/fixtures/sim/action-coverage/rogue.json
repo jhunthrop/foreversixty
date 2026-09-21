@@ -1,0 +1,32 @@
+{
+  "provenance": "Generated 2026-09-21 (result-page review round 2, Defect 2 continued) by building sim/cmd/forever-sim and running it natively against a minimal-but-valid raid-buffed character (empty talents, no gear -- the raid-buffed preset applies unconditionally, so every RAID_BUFFS aura, every racial and every class-agnostic action the engine adds still appears): iterations 500, duration_sec 180, targets 1, buffs the full RAID_BUFFS list (web/src/lib/sim/settings.ts). Not a checked-in golden (sim/adapter/golden_test.go): this exists only to widen raid-buff-names.test.ts style coverage across more classes, not to pin the adapter's output shape.",
+  "spec": "rogue-assassination",
+  "class": "rogue",
+  "keys": [
+    "other:attack/1",
+    "other:move",
+    "spell:10293",
+    "spell:10301",
+    "spell:11294",
+    "spell:15366",
+    "spell:16609",
+    "spell:1787",
+    "spell:20217",
+    "spell:20218",
+    "spell:20906",
+    "spell:22817",
+    "spell:22818",
+    "spell:22820",
+    "spell:22888",
+    "spell:23768",
+    "spell:24425",
+    "spell:25289",
+    "spell:25291",
+    "spell:457437",
+    "spell:6774",
+    "spell:6774/1",
+    "spell:6774/2",
+    "spell:6774/3",
+    "spell:9910"
+  ]
+}

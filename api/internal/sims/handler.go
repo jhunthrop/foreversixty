@@ -152,8 +152,17 @@ func (s *Service) save(w http.ResponseWriter, r *http.Request) {
 	httpx.WriteOK(w, r, http.StatusCreated, map[string]string{"sim_id": id})
 }
 
+// GetOutput is the body of GET /v1/sims/{id}: a stored result, with the
+// name the member gave it when they gave one -- the read side of
+// SaveInput above, the same sibling-field shape and for the same
+// reason (this file's own doc comment on Store.Get).
+type GetOutput struct {
+	simapi.SimResult
+	Title string `json:"title,omitempty"`
+}
+
 func (s *Service) get(w http.ResponseWriter, r *http.Request) {
-	res, err := s.Store.Get(r.Context(), r.PathValue("id"))
+	res, title, err := s.Store.Get(r.Context(), r.PathValue("id"))
 	switch {
 	case errors.Is(err, ErrNotFound):
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such sim", nil)
@@ -161,7 +170,7 @@ func (s *Service) get(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "get", err, "could not read that sim just now")
 	default:
 		w.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(fetchMaxAge))
-		httpx.WriteOK(w, r, http.StatusOK, res)
+		httpx.WriteOK(w, r, http.StatusOK, GetOutput{SimResult: res, Title: title})
 	}
 }
 

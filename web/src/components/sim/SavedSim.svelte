@@ -16,7 +16,12 @@
   import { loadActionNames, type ActionNames } from '../../lib/sim/action-names';
   import { fetchSpecs } from '../../lib/sim/api';
   import { requestKind, type BulkResult, type WeightsResult } from '../../lib/sim/bulk-types';
-  import { SIM_LEVEL, type SimCharacter } from '../../lib/sim/character';
+  import {
+    SIM_LEVEL,
+    plannerHrefForSpec,
+    talentPointsFromString,
+    type SimCharacter,
+  } from '../../lib/sim/character';
   import { bulkCopy, simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
@@ -59,15 +64,22 @@
     weights: bulkCopy.weightsTitle,
   };
 
-  // No title travels with a fetched SimResult -- the contract's `sims.title` column has no
-  // mirror on the Go `SimResult` struct, only on the `GET /v1/sims?mine=1` row -- so the
-  // heading always falls back to the spec, the one branch this shape can ever reach today.
-  // A bulk or weights kind leads with its own name beside the spec, the same way /sim/gear,
-  // /sim/talents, /sim/drops and /sim/weights title themselves.
-  const heading = $derived(
+  // Defect fix: GET /v1/sims/{id} used to drop the name a member gave this sim entirely
+  // (api/internal/sims/handler.go's GetOutput carries it now, as `result.title`) -- the
+  // heading fell back to the composed spec/kind line unconditionally, so a reviewer's own
+  // "Thoradin - Fury Warrior, raid-buffed BWL night" never appeared anywhere on the page
+  // they had just typed it into. The composed line remains the fallback for the common
+  // case (naming a sim is optional): every kind title, spec label and DPS figure this page
+  // already knows how to say, unchanged.
+  const fallbackHeading = $derived(
     kind === 'run'
       ? specLabel(result.request.spec)
       : `${KIND_TITLES[kind]} · ${specLabel(result.request.spec)}`,
+  );
+  // Svelte's own text interpolation escapes this on render (SaveSimForm.svelte's input is
+  // free text, kept exactly as typed): no `{@html}` here or anywhere else this reaches.
+  const heading = $derived(
+    result.title !== undefined && result.title !== '' ? result.title : fallbackHeading,
   );
 
   const gearKnown = $derived(result.request.character.gear.length > 0);
@@ -80,8 +92,12 @@
     race_slug: result.request.character.race,
     talent_level: SIM_LEVEL,
     tree_version: activeBuild.build,
-    // The stored gear is the engine's list, not the planner's map; the strip only needs
-    // item ids per slot and that is exactly what a GearSlot carries.
+    // Genuinely unknowable here, same as a combat-log character (sources.ts): a saved sim's
+    // stored request carries the engine's final talent STRING, not the click order that
+    // produced it, and there is no honest way back from one to the other. This is why the
+    // strip's own default "Open in planner" derivation (plannerHrefFor, which needs
+    // point_order to rebuild a talents string) is NOT what this page uses -- see
+    // `plannerHref` below, which reaches the stored talents string directly instead.
     point_order: [],
     gear: Object.fromEntries(
       result.request.character.gear.map((slot): [string, number] => [slot.slot, slot.item_id]),
@@ -98,6 +114,25 @@
     consumables: [...result.request.character.consumes],
     source: result.request.source,
   });
+
+  /**
+   * "Open in planner", built straight from the stored request's own `CharacterSpec` --
+   * `result.request.character.talents` is the engine's final talents string, already
+   * correct, with no `point_order`/`TalentIndex` reconstruction needed at all (the same
+   * shortcut `combos.ts`'s `planItHref` takes for a bulk row's own "Plan it" link). Defect
+   * fix: this page used to hand `CharacterStrip` a `character` with `point_order: []` and
+   * let it fall through to its own `plannerHrefFor`, which -- having no order to work with
+   * -- always encoded zeroed talents through `toCharacterSpec`.
+   */
+  const plannerHref = $derived(plannerHrefForSpec(result.request.character, activeBuild.build));
+
+  /**
+   * The talent point count, the same digit-sum `plannerHref` above's own comment describes
+   * for the talents string -- no `point_order` needed (2026-09-21 result-page review round
+   * 3, newcomer's own finding: the live page shows "51 points" beside Open in planner, this
+   * page showed nothing).
+   */
+  const talentPoints = $derived(talentPointsFromString(result.request.character.talents));
 
   let items = $state<Map<number, Item>>(new Map());
 
@@ -229,6 +264,8 @@
   {items}
   gearKnown={kind !== 'weights' && gearKnown}
   readonly
+  {plannerHref}
+  {talentPoints}
   onchange={() => {}}
 />
 

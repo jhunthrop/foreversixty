@@ -37,9 +37,10 @@
     'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9';
   const percent = (value: number): string => `${Math.round(value * 100)}%`;
   // tank MAJOR, review.md:227-229: armor 0 means the level's preset, not an empty field --
-  // `targetArmorField` decides what the input DISPLAYS; the wire value settings.ts sends
-  // stays 0 until the player types something else. It is also the one source of both the
-  // preset figure and the level that figure came from, for the help note below.
+  // `targetArmorField` decides what the input DISPLAYS: blank when there is no override,
+  // exactly the override (including "0") when there is one (2026-09-21 result-page review,
+  // Defect 3). It is also the one source of both the preset figure and the level that
+  // figure came from, for the help note below.
   const armorField = $derived(targetArmorField(settings.encounter));
   // Contract A8's figure for whichever level is chosen, so an empty armor field says what
   // the engine will use instead of nothing at all. Fix round 1 Minor 1: derived from
@@ -47,14 +48,17 @@
   // rather than a second, independent `TARGET_ARMOR_BY_LEVEL` lookup that only agreed with
   // it by coincidence (it used a different fallback, `?? 63` vs. `DEFAULT_TARGET_LEVEL`).
   const armorPreset = $derived(simCopy.targetArmorPreset(armorField.preset.toLocaleString('en-US')));
-  // Task 7 (newcomer MINOR 213-216): the field's own current state, not the placeholder
-  // repeated as a tooltip -- `target_armor: 0` is settings.ts's "use the level's preset".
-  const armorEmpty = $derived(settings.encounter.target_armor === 0);
+  // The field's own current state: no override at all, not "reads as 0" -- Defect 3 is
+  // exactly the bug of treating those as the same thing.
+  const armorEmpty = $derived(settings.encounter.target_armor === undefined);
   // Both sentences, in both states: Task 7's own "is the preset in effect or is it
   // overridden", plus task 4b's `targetArmorNote` -- which is what the hover-less `<p>`
   // under this field used to say, and the only place the LEVEL that preset belongs to is
   // named. Merging the two lanes, that fact moves into the help rather than being dropped
-  // with the paragraph that carried it.
+  // with the paragraph that carried it. This is also the "what armor value the run
+  // actually used" readout Defect 3 asks for: it reads the preset when the field is empty
+  // and the player's own override, unmassaged, when it is not -- never one standing in for
+  // the other.
   const armorHelp = $derived(
     `${
       armorEmpty
@@ -132,9 +136,15 @@
           step="1"
           class={control}
           {disabled}
-          placeholder={armorPreset}
+          placeholder={String(armorField.preset)}
           value={armorField.value}
-          onchange={(event) => onchange(withTargetArmor(settings, Number(event.currentTarget.value)))}
+          onchange={(event) => {
+            // Blank means "clear the override" (null, settings.ts's own contract); a typed
+            // value -- including "0" -- is always an explicit armor, never re-read as
+            // blank (2026-09-21 result-page review, Defect 3).
+            const raw = event.currentTarget.value;
+            onchange(withTargetArmor(settings, raw === '' ? null : Number(raw)));
+          }}
           data-testid="sim-target-armor"
         />
       </label>

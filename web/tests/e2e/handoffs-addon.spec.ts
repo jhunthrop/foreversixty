@@ -34,3 +34,32 @@ test('the page says the in-game UI is in beta testing and ships no screenshot of
   const images = await page.locator('main img').count();
   expect(images).toBe(0);
 });
+
+// The point of the whole round: a character given to the site once is the site's current
+// character everywhere, with no second paste.
+test('an export pasted on /addon becomes the current character on the simulator and its tabs', async ({
+  page,
+}) => {
+  await page.goto('/addon');
+  await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
+  await page.getByTestId('addon-paste-submit').click();
+
+  // The bar under the paste box shows it at once, without a reload.
+  const chip = page.getByTestId('current-character-chip');
+  await expect(chip).toContainText('Warrior');
+
+  // A bare simulator URL (no ?code=) restores it and says so; so does a tool tab.
+  await page.goto('/sim');
+  await expect(page.getByTestId('sim-character')).toBeVisible({ timeout: 15_000 });
+  await page.goto('/sim/gear');
+  await expect(page.getByTestId('current-character-chip')).toContainText('Warrior', { timeout: 15_000 });
+
+  // Forget means forgotten everywhere.
+  await page.goto('/addon');
+  await page
+    .getByTestId('current-character-chip')
+    .getByRole('button', { name: /forget/i })
+    .click();
+  await page.goto('/sim');
+  await expect(page.getByTestId('sim-character')).toHaveCount(0);
+});

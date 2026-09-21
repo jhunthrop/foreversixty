@@ -12,6 +12,7 @@ ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Codec = ns.Codec or require("Codec")
 local Talents = ns.Talents or require("Talents")
+local Compat = ns.Compat or require("Compat")
 
 local Export = {}
 
@@ -85,19 +86,15 @@ function Export.containerSize(bag)
 end
 
 --- An item link's id, or nil for a link this client will not parse.
---- GetItemInfoInstant is required here, not guarded: it has shipped on
---- every WoW client since well before this addon's Classic Era target
---- build (spike check 2 catches it if that is ever wrong), and both
---- isEquippable below and Gear.upgrades already call it unguarded. A guard
---- only here, that let a missing API slip past as a successfully parsed
---- id, would not avoid that crash -- it would only move it from this
---- function to one of those, inside the PLAYER_LOGOUT handler that is the
---- only path that ever writes ForeverSixtyDB.
+--- The lookup goes through Compat: the 1.60 client keeps
+--- GetItemInfoInstant on C_Item and has no global of that name, which is
+--- what the first in-game export died on. Where the client cannot answer,
+--- the id is read out of the link text itself.
 local function itemIdOf(link)
 	if link == nil then
 		return nil
 	end
-	local id = GetItemInfoInstant(link)
+	local id = Compat.itemInfoInstant(link)
 	if id ~= nil then
 		return tonumber(id)
 	end
@@ -108,7 +105,7 @@ end
 --- items and bags would be several times longer for nothing: the planner
 --- has no slot to put any of them in, `INVTYPE_BAG` included.
 local function isEquippable(link)
-	local _, _, _, equipSlot = GetItemInfoInstant(link)
+	local _, _, _, equipSlot = Compat.itemInfoInstant(link)
 	return equipSlot ~= nil and equipSlot ~= "" and equipSlot ~= "INVTYPE_NON_EQUIP"
 		and equipSlot ~= "INVTYPE_BAG"
 end
@@ -201,6 +198,19 @@ function Export.professionSlugs()
 	return slugs
 end
 
+--- The character's current guild, or nil when unguilded. GetGuildInfo returns nil for
+--- an unguilded character (also the shape a login before guild data has loaded would
+--- produce, per the WoW API's own documented behaviour -- both read the same way here:
+--- no guild= section this export). Rank name (the second return) is player-chosen free
+--- text and is never read; only the index is trustworthy (spike check 23, README.md).
+function Export.guildInfo()
+	local name, _, rankIndex = GetGuildInfo("player")
+	if name == nil then
+		return nil
+	end
+	return { name = name, rankIndex = rankIndex }
+end
+
 --- The export string, or nil and the reason.
 function Export.string(data)
 	-- The class slug comes from the locale-neutral class token (see
@@ -221,6 +231,7 @@ function Export.string(data)
 		bags = Export.itemsInBags(Export.CARRIED_BAGS),
 		bank = Export.itemsInBags(Export.BANK_BAGS),
 		professions = Export.professionSlugs(),
+		guild = Export.guildInfo(),
 	})
 end
 

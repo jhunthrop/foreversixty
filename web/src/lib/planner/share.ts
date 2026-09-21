@@ -2,6 +2,7 @@
 // Saving a build. The API answers in the Phase 0 envelope { ok, data, error, request_id };
 // 201 is a new id, 200 is the same build saved before, and both carry { id, url }.
 import { API_BASE_URL } from './config';
+import { plannerCopy } from './copy';
 import type { BuildDraft } from './types';
 
 export interface SavedBuild {
@@ -44,6 +45,29 @@ function failed(message: string, fields: Record<string, string> = {}): SaveOutco
  */
 export function cardUrlFor(buildUrl: string): string {
   return `${buildUrl}/card.png`;
+}
+
+/**
+ * What sharing this draft actually posts publicly, named for the confirm step -- one place
+ * that lists it, so the confirm's copy can never drift from `POST /v1/builds`'s own body
+ * (`class_id`, `race_id`, `point_order`, `gear`, and `title` when set). Class/race and talent
+ * order are always listed: `store.toDraft()` always fills both. Gear is listed only when the
+ * draft actually has something equipped -- `toDraft()` always sends the `gear` key (`{}`
+ * when nothing is equipped), but the confirm names what becomes *public*, and an empty map
+ * publishes no gear at all, so claiming otherwise would not be true. Title is listed only
+ * when the draft has one -- the one field `toDraft()` genuinely omits rather than sends
+ * empty. `includeSim` is the caller's own "Include a sim on the card" checkbox, effectively
+ * checked -- ticked and a live estimate is actually ready to run from -- since a sim result
+ * is only ever saved (`attachSim` -> `saveSim`) when both hold.
+ */
+export function sharedFields(draft: BuildDraft, includeSim: boolean): string[] {
+  const fields: string[] = [plannerCopy.shareFieldClassRace, plannerCopy.shareFieldTalents];
+  if (Object.keys(draft.gear ?? {}).length > 0) fields.push(plannerCopy.shareFieldGear);
+  if (draft.title !== undefined && draft.title.length > 0) {
+    fields.push(plannerCopy.shareFieldTitle(draft.title));
+  }
+  if (includeSim) fields.push(plannerCopy.shareFieldSim);
+  return fields;
 }
 
 export async function saveBuild(draft: BuildDraft, apiBase: string = API_BASE_URL): Promise<SaveOutcome> {

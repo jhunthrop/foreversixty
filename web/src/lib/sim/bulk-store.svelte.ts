@@ -70,12 +70,13 @@ import { loadSimBuffs, type SimBuffFile } from './sim-buffs';
 import {
   fromAddonExport,
   fromLoggedFight,
+  fromManualCode,
   fromPlannerBuild,
   fromStoredCharacter,
   type LoadContext,
   type SourceResult,
 } from './sources';
-import type { SimResult, SourceKind, SpecFidelity } from './types';
+import type { SimResult, SpecFidelity } from './types';
 import { weightStatsFor } from './weights';
 import { createPool, type SimPool } from './worker';
 
@@ -122,8 +123,6 @@ export interface BulkStoreInit {
   pool?: SimPool;
   /** Injected by tests; production reads `navigator.hardwareConcurrency`. */
   hardwareConcurrency?: number;
-  source?: SourceKind | '';
-  ref?: string;
   serverPollMs?: number;
   /** Injected by tests; production uses `MAX_SERVER_POLLS`. */
   serverPollLimit?: number;
@@ -162,6 +161,11 @@ export function createBulkStore(init: BulkStoreInit) {
   let rows = $state<CandidateRow[]>([]);
   let locked = $state<string[]>([]);
   let loadouts = $state<TalentLoadout[]>([]);
+  // newcomer round 4 (review.md:83-110): whether TalentCandidates' own inline editor holds
+  // a valid pasted build that ADD A BUILD's accept step has not yet turned into a picked
+  // loadout -- the trap RUN would otherwise fall into silently. Only TalentCandidates ever
+  // sets this; every other tool leaves it false.
+  let pendingCustomBuild = $state(false);
   let namedSets = $state<GearSet[]>([]);
   let precision = $state<Precision>('fast');
   let cap = $state(browserCap(init.hardwareConcurrency ?? globalThis.navigator?.hardwareConcurrency));
@@ -440,6 +444,12 @@ export function createBulkStore(init: BulkStoreInit) {
     get loadouts() {
       return loadouts;
     },
+    get pendingCustomBuild() {
+      return pendingCustomBuild;
+    },
+    setPendingCustomBuild(value: boolean): void {
+      pendingCustomBuild = value;
+    },
     get namedSets() {
       return namedSets;
     },
@@ -533,6 +543,7 @@ export function createBulkStore(init: BulkStoreInit) {
     loadAddon: (code: string) => adopt(fromAddonExport(code, ctx)),
     loadBuild: (id: string) => adopt(fromPlannerBuild(id, ctx)),
     loadFight: (ref: string) => adopt(fromLoggedFight(ref, ctx)),
+    loadCode: (code: string) => adopt(fromManualCode(code, ctx)),
     loadStored: (path: CharacterPath) => adopt(fromStoredCharacter(path, ctx)),
 
     async loadSpecs(): Promise<void> {

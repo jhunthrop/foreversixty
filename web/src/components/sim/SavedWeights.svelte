@@ -65,7 +65,7 @@
   <!-- Task 8, sub-item 1: the same caveat as the live page (StatWeights.svelte), in the
        same words, right before the numbers it caveats -- see that file's own comment. -->
   <p class="text-muted text-[12px]" data-testid="sim-weights-error-caveat">
-    {bulkCopy.weightsErrorCaveat}
+    {bulkCopy.weightsErrorCaveat(result.weights.map((row) => row.stat))}
   </p>
   <ul class="flex flex-col">
     {#each result.weights as row (row.stat)}

@@ -14,7 +14,7 @@ local realPrint = _G.print
 
 --- Install a fresh mock into _G and return its state table.
 -- @param state table with any of: talents, traits, equipped, bags, itemStats,
---   class, race, realm, region, professions, build
+--   class, race, realm, region, professions, build, guild
 --
 -- `talents` installs the classic GetTalentInfo window. `traits` installs
 -- the 1.60 client's trait system instead -- { configID = <id or nil>,
@@ -166,6 +166,18 @@ function mock.install(state)
 		return state.professionNames and state.professionNames[index] or nil
 	end
 
+	-- Returns guildName, guildRankName, guildRankIndex, guildRealm; nil when the unit is
+	-- not in a guild (the addon's own default: no spec here sets state.guild). Rank
+	-- index is 0-based; 0 is always the guild master -- server-authoritative, the client
+	-- never lets a non-GM report 0. Unverified against the 1.60.1 beta client; see
+	-- addon/README.md's spike checklist rows 23/23a.
+	_G.GetGuildInfo = function()
+		if state.guild == nil then
+			return nil
+		end
+		return state.guild.name, state.guild.rankName, state.guild.rankIndex, state.guild.realm
+	end
+
 	_G.GetBuildInfo = function()
 		return state.build or "1.60.1", "69893", "Sep 16 2026", 16001
 	end
@@ -213,7 +225,11 @@ function mock.install(state)
 		end
 		local frame = {
 			kind = kind, name = name, parent = parent, template = template,
-			shown = true, enabled = true, focused = false,
+			-- A real EditBox is created with auto-focus ON and takes the
+			-- keyboard the moment it exists. Found in game: the addon turned
+			-- auto-focus off afterwards but never gave the focus back, so
+			-- opening the window killed every keybind.
+			shown = true, enabled = true, focused = (kind == "EditBox"), autoFocus = (kind == "EditBox"),
 			calls = {}, children = {}, regions = {}, points = {}, events = {},
 		}
 		function frame:SetText(value)
@@ -245,6 +261,9 @@ function mock.install(state)
 		function frame:Show()
 			record(self, "Show")
 			self.shown = true
+			if self.kind == "EditBox" and self.autoFocus then
+				self.focused = true
+			end
 		end
 		function frame:Hide()
 			record(self, "Hide")
@@ -267,6 +286,17 @@ function mock.install(state)
 		function frame:SetFocus()
 			record(self, "SetFocus")
 			self.focused = true
+		end
+		function frame:SetAutoFocus(value)
+			record(self, "SetAutoFocus", value)
+			self.autoFocus = value
+		end
+		function frame:ClearFocus()
+			record(self, "ClearFocus")
+			self.focused = false
+		end
+		function frame:HasFocus()
+			return self.focused == true
 		end
 		function frame:SetSize(width, height)
 			record(self, "SetSize", width, height)
@@ -415,7 +445,7 @@ function mock.uninstall()
 		"C_Traits", "C_ClassTalents", "GetInventoryItemLink", "GetContainerNumSlots",
 		"GetContainerItemLink", "C_Container", "GetItemStats", "GetItemInfoInstant",
 		"GetItemInfo", "GetItemIcon", "UnitClass", "UnitRace", "UnitLevel", "UnitName",
-		"GetRealmName", "GetCurrentRegion", "GetProfessions", "GetProfessionInfo",
+		"GetRealmName", "GetCurrentRegion", "GetProfessions", "GetProfessionInfo", "GetGuildInfo",
 		"GetBuildInfo", "SlashCmdList", "UIParent", "CreateFrame", "Minimap",
 		"GameTooltip", "UISpecialFrames", "C_Timer", "date",
 		-- Globals an example may set on _G directly rather than through

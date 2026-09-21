@@ -60,8 +60,9 @@ describe("Window", function()
 
 	it("numbers its four tabs and refuses one it does not have", function()
 		start()
-		assert.are.equal(1, Window.tabIndex("export"))
-		assert.are.equal(4, Window.tabIndex("settings"))
+		assert.are.equal(1, Window.tabIndex("overview"))
+		assert.are.equal(4, Window.tabIndex("export"))
+		assert.are.equal(5, Window.tabIndex("settings"))
 		assert.is_nil(Window.tabIndex("bank"))
 	end)
 
@@ -220,5 +221,84 @@ describe("Window", function()
 		assert.are.equal(Prefs.DEFAULTS.window.point, last[3])
 		assert.are.equal(Prefs.DEFAULTS.window.x, last[4])
 		assert.are.equal(Prefs.DEFAULTS.window.y, last[5])
+	end)
+	-- Found in game: tabs anchored to the bottom edge hung half outside the
+	-- frame and covered a page's own buttons, and there was no way to close
+	-- the window but Escape.
+	it("shows a spec by its name, not by the site's key for it", function()
+		start()
+		assert.are.equal("Arms", Window.specLabel("warrior-arms"))
+		assert.are.equal("Beast Mastery", Window.specLabel("hunter-beast-mastery"))
+		assert.are.equal(L.headerNoSpec, Window.specLabel(nil))
+		assert.are.equal("Holy", Window.headerModel(DATA).specLabel)
+	end)
+
+	describe("layout", function()
+		it("keeps the sidebar, the header and the page inside the window", function()
+			start()
+			Window.open()
+			local S = Theme.SIZES
+			assert.are.equal(S.windowWidth, Window.pageLeft() + Window.pageWidth())
+			assert.are.equal(S.windowHeight, Window.pageTop() + Window.pageHeight())
+			assert.is_true(Window.pageHeight() > 0)
+			-- Every sidebar item sits inside the sidebar's height.
+			local foot = S.gap * 2 + #Window.TABS * S.navHeight
+			assert.is_true(foot < S.windowHeight - S.titleBarHeight)
+			for _, tab in ipairs(Window.TABS) do
+				assert.is_truthy(Window.tabs[tab.name], tab.name .. " has no sidebar item")
+			end
+		end)
+
+		it("leaves each page room for its own padding beside the sidebar", function()
+			start()
+			local S = Theme.SIZES
+			assert.are.equal(S.windowWidth, S.sidebarWidth + Window.contentWidth() + S.padding * 2)
+		end)
+
+		it("opens on the Overview for a player who has not chosen a page", function()
+			start()
+			Window.open()
+			assert.are.equal("overview", Window.current)
+			assert.is_true(Window.tabs.overview.foreverSixtyActive)
+		end)
+
+		it("falls back to the first page when a saved page no longer exists", function()
+			start()
+			Prefs.set("window", "tab", "bank")
+			Window.open()
+			assert.are.equal("overview", Window.current)
+		end)
+
+		it("fits the Overview's two rows of cards in the page", function()
+			start()
+			local S = Theme.SIZES
+			assert.is_true(S.padding * 2 + S.cardHeight * 2 + S.cardGap <= Window.pageHeight())
+		end)
+
+		it("gives each page lists that fit the page", function()
+			start()
+			local S = Theme.SIZES
+			local room = Window.pageHeight()
+			-- Gear: a reason line, a header line, the slot list, a title line
+			-- and the upgrade list, with the page's padding top and bottom.
+			local gear = S.padding * 3 + S.rowHeight * 3 + S.gap * 3
+				+ (S.gearSlotRows + S.gearUpgradeRows) * S.rowHeight
+			assert.is_true(gear <= room, "the Gear page is taller than the window")
+			-- Talents: name, bar, list, then the load section (title, field,
+			-- hint, tracker toggle).
+			local talents = S.padding * 3 + S.rowHeight + S.gap * 2 + S.progressHeight + S.gap * 2
+				+ S.followRows * S.rowHeight
+				+ S.rowHeight + S.gap * 2 + (S.buttonHeight + S.gap) + S.gap + S.rowHeight
+				+ S.gap * 2 + S.rowHeight
+			assert.is_true(talents <= room, "the Talents page is taller than the window")
+		end)
+
+		it("closes from the title bar", function()
+			start()
+			Window.open()
+			assert.is_true(Window.isOpen())
+			Window.closeButton:GetScript("OnClick")(Window.closeButton)
+			assert.is_false(Window.isOpen())
+		end)
 	end)
 end)

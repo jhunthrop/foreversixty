@@ -9,6 +9,9 @@
      the strip's "Change source", or the landing state's "Sim something else"), so the card's
      signed-in body is a way back to that list rather than a second copy of it. -->
 <script lang="ts">
+  import { currentCharacterCopy } from '../../lib/current-character-copy';
+  import { rowLink } from '../../lib/report/format';
+  import { parseBuildInput } from '../../lib/sim/build-input';
   import { simCopy } from '../../lib/sim/copy';
 
   let {
@@ -45,10 +48,12 @@
     'border-line-warm rounded-control bg-raised text-text min-h-11 w-full border px-3 py-2 text-[14px]';
   const action = 'border-line-warm-strong rounded-control text-strong label min-h-11 self-start border px-4';
 
-  /** Accepts a full link or a bare id: people paste whichever is in their clipboard. */
-  export function lastSegment(value: string): string {
-    const withoutQuery = value.trim().split('?')[0].replace(/\/+$/, '');
-    return withoutQuery.split('/').at(-1) ?? '';
+  /** A saved link or id loads the saved build; an unsaved planner link loads its code. */
+  function loadBuildInput(): void {
+    const input = parseBuildInput(buildRef);
+    if (input === null) return;
+    if (input.kind === 'code') onaddon(input.code);
+    else onbuild(input.id);
   }
 
   /** A report link carries the fight in ?fight=; a pasted ref already has it after a colon. */
@@ -103,7 +108,7 @@
         type="button"
         class={action}
         disabled={busy}
-        onclick={() => onbuild(lastSegment(buildRef))}
+        onclick={loadBuildInput}
         data-testid="sim-build-load">Load</button
       >
     </div>
@@ -149,6 +154,12 @@
        the same scope sentence the Astro shell already carries above the fold, repeated
        here since it sits below the shell's own copy of it once the island mounts. -->
   <p class="text-muted text-[12px]" data-testid="sim-sources-scope-note">{simCopy.scopeNote}</p>
+
+  <p class="text-muted text-[12px]">
+    <a href="/addon" class="{rowLink} text-nav" data-testid="sim-get-addon"
+      >{currentCharacterCopy.getTheAddon}</a
+    >
+  </p>
 
   {#if message}
     <p role="alert" class="text-strong text-[13px]" data-testid="sim-source-message">{message}</p>

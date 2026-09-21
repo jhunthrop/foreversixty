@@ -71,14 +71,29 @@ describe("Theme", function()
 	end)
 
 	it("builds with the template when the client has it", function()
+		-- Theme.TEMPLATES ships empty (the addon draws its own chrome), so
+		-- the lookup is proved with a key named for this test alone.
 		start({ templates = ALL_TEMPLATES })
+		Theme.TEMPLATES.button = "UIPanelButtonTemplate"
+		finally(function()
+			Theme.TEMPLATES.button = nil
+		end)
 		local frame, used = Theme.createFrame("Button", nil, _G.UIParent, "button")
 		assert.is_true(used)
 		assert.are.equal("UIPanelButtonTemplate", frame.template)
 	end)
 
+	it("ships with no stock templates, so every control is the addon's own", function()
+		start({ templates = ALL_TEMPLATES })
+		assert.are.same({}, Theme.TEMPLATES)
+	end)
+
 	it("builds a bare frame when the client does not", function()
 		start({ templates = {} })
+		Theme.TEMPLATES.button = "UIPanelButtonTemplate"
+		finally(function()
+			Theme.TEMPLATES.button = nil
+		end)
 		local frame, used = Theme.createFrame("Button", nil, _G.UIParent, "button")
 		assert.is_false(used)
 		assert.is_nil(frame.template)

@@ -4,6 +4,7 @@
 // is served by src/worker.ts from sim.html with its head rewritten. Prerendering the fixture
 // gives Lighthouse and Playwright a page with real content rather than an empty shell.
 import Base from '../../layouts/Base.astro';
+import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
 import { FIXTURE_SIM_ID, fixtureSimPaths } from '../../lib/report/shell-paths';
 import fixtureResult from '../../fixtures/sim/result.json';
 import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
@@ -47,15 +48,34 @@ const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined
       SIM_SAVED_SKELETON_HTML}, between mounting and a real (non-prerendered) id's fetch
       resolving) renders the identical string, so nothing shifts between the two moments
       report/skeleton.ts's own comment describes.
+
+      Raised by the current-character chip's own reserved band (Task 5, the same
+      gear.astro pattern): CHIP_HEIGHT (`h-[88px] md:h-11`) plus the view's own gap before
+      the next block (`gap-[22px]` phone, `md:gap-8` desktop) -- +110px phone, +76px
+      desktop, on top of the Round 3 figures above. The slot sits first, above
+      SIM_SAVED_SKELETON_HTML, the same position SimView.svelte's own render puts it in --
+      that skeleton string itself carries no chip slot of its own (it would double up with
+      this one, which SimView.svelte also renders unconditionally, saved sim or not).
+
+      Fix round 1, Important #2 (worst here: this is the prerendered Lighthouse fixture
+      page): the slot and SIM_SAVED_SKELETON_HTML are wrapped in `flex flex-col
+      ${VIEW_GAP}`, the identical gap SimView.svelte's own root uses between them once
+      hydrated. Without this wrapper the two sat flush against each other pre-hydration
+      but 22px/32px apart after, so the whole saved-sim skeleton -- and the real result
+      that replaces it -- painted noticeably higher before hydration than after, on the
+      one page this repository actually measures with Lighthouse.
     -->
     <div
       id="sim"
       data-sim-mount
       data-sim-id={id}
       data-sim-result={inline}
-      class="min-h-[1234px] md:min-h-[900px]"
+      class="min-h-[1344px] md:min-h-[976px]"
     >
-      <Fragment set:html={SIM_SAVED_SKELETON_HTML} />
+      <div class={`flex flex-col ${VIEW_GAP}`}>
+        <div class={CHIP_HEIGHT} data-testid="sim-chip-slot"></div>
+        <Fragment set:html={SIM_SAVED_SKELETON_HTML} />
+      </div>
     </div>
     <script type="module" src="/sim-island.js"></script>
   </main>

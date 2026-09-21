@@ -8,6 +8,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
+	"github.com/jhunthrop/foreversixty/api/internal/guilds"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
@@ -37,6 +38,7 @@ type Deps struct {
 	Uploads  *reports.Uploads
 	Rankings *rankings.Service
 	Addon    *addon.Service
+	Guilds   *guilds.Service
 	Sims     *sims.Service
 
 	TrustedProxyHops int
@@ -86,6 +88,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.Addon != nil {
 		addon.Mount(mux, d.Addon)
+	}
+	if d.Guilds != nil {
+		guilds.Mount(mux, d.Guilds, d.TrustedProxyHops)
 	}
 	if d.Sims != nil {
 		sims.Mount(mux, d.Sims)

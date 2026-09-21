@@ -162,7 +162,7 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 	// own integer totals, player and pets together - not from the raw
 	// float totals, and not measured from the engine's iteration timer.
 	// See the package comment for why.
-	durationMS := deriveDurationMS(sumActorTotals(out.DamageDone), DPS(res).Mean, avgIterationMS)
+	durationMS := DeriveDurationMS(SumActorTotals(out.DamageDone), DPS(res).Mean, avgIterationMS)
 	out.DurationMS = durationMS
 	for i := range out.DamageDone {
 		out.DamageDone[i].ActiveMS = durationMS
@@ -679,6 +679,47 @@ func castsFor(u *proto.UnitMetrics, guid, owner string, iters float64, out []sum
 	return out
 }
 
+// engineResourceTypeToLogPowerType translates the engine's own
+// proto.ResourceType enum (sim/core/proto/api.pb.go: None 0, Mana 1,
+// Energy 2, Rage 3, ComboPoints 4, Focus 5, Health 6) into the combat
+// log's own power-type numbering - the WoW client's real PowerType enum
+// (Mana 0, Rage 1, Focus 2, Energy 3, ComboPoints 4, ... Warcraft Logs'
+// own POWER_TYPE field, which is what a real fight's ResourceTrack.PowerType
+// already carries and what the report's POWER_NAMES table
+// (web/src/components/report/ResourceGraphs.svelte) is keyed by. The two
+// enums do not agree on a single value except ComboPoints (4 in both, by
+// coincidence): the engine's Rage is the log's Energy and the engine's
+// Energy is the log's Rage, which is how a Fury Warrior's rage read as
+// "Energy" on the RESOURCES tab (2026-09-21 result-page review round 3,
+// E7) - resources() used to hand the engine's own enum value straight to
+// PowerType, and POWER_NAMES read it as if it were already the log's.
+//
+// Health (6) has no entry: no playable spec in this ruleset spends health
+// as a tracked resource (a death knight's runic power/health interplay is
+// a later expansion's mechanic), so it has never been observed here: an
+// id this table does not recognise is returned unchanged, which
+// deliberately mismatches POWER_NAMES rather than guessing - the same
+// "drop what we cannot correctly translate" rule combatLogSchool follows
+// for a school bit engineSchoolToLogBit has not been taught about yet.
+var engineResourceTypeToLogPowerType = map[int64]int64{
+	1: 0, // Mana        -> Mana
+	2: 3, // Energy      -> Energy
+	3: 1, // Rage        -> Rage
+	4: 4, // ComboPoints -> Combo points (coincidentally identical)
+	5: 2, // Focus       -> Focus (unused by any class in this ruleset today - hunters run on mana, sim/hunter/hunter.go's own EnableManaBar - kept for the day that changes)
+}
+
+// logPowerType is engineResourceTypeToLogPowerType applied to one engine
+// resource type, falling back to the engine's own value when the table
+// does not recognise it (see that table's own comment for why that is the
+// safer default over guessing).
+func logPowerType(t proto.ResourceType) int64 {
+	if translated, ok := engineResourceTypeToLogPowerType[int64(t)]; ok {
+		return translated
+	}
+	return int64(t)
+}
+
 func resources(u *proto.UnitMetrics, iters float64) []summary.ResourceTrack {
 	// The engine reports one ResourceMetrics per action per resource type;
 	// the summary wants one track per resource type.
@@ -690,7 +731,7 @@ func resources(u *proto.UnitMetrics, iters float64) []summary.ResourceTrack {
 			tr = &summary.ResourceTrack{
 				GUID:      playerGUID,
 				Name:      u.Name,
-				PowerType: int64(rm.Type),
+				PowerType: logPowerType(rm.Type),
 				Series:    []int64{},
 				// The engine reports no per-second reading and no cap, so
 				// Max, AtMaxMS and ZeroMS stay zero and the resource graph

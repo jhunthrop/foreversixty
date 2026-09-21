@@ -4,6 +4,9 @@ import { fixtureBulkResult, fixtureResult, fixtureWeightsResult } from '../../te
 import type { ReportMeta } from './types';
 import {
   characterShellMeta,
+  guildClaimShellMeta,
+  guildInviteShellMeta,
+  guildSettingsShellMeta,
   guildShellMeta,
   rankingsShellMeta,
   reportShellMeta,
@@ -96,6 +99,32 @@ describe('shell unfurl values', () => {
   });
 });
 
+describe('guild sub-route shells', () => {
+  it('titles the claim page without indexable content', () => {
+    const shell = guildClaimShellMeta(
+      { region: 'us', ruleset: 'hardcore', slug: 'the-last-watch' },
+      'The Last Watch',
+    );
+    expect(shell.title).toBe('Claim The Last Watch · Forever Sixty');
+    expect(shell.canonical).toBe('https://foreversixty.gg/guild/us/hardcore/the-last-watch/claim');
+  });
+
+  it('titles the settings page', () => {
+    const shell = guildSettingsShellMeta(
+      { region: 'us', ruleset: 'hardcore', slug: 'the-last-watch' },
+      'The Last Watch',
+    );
+    expect(shell.title).toBe('The Last Watch settings · Forever Sixty');
+    expect(shell.canonical).toBe('https://foreversixty.gg/guild/us/hardcore/the-last-watch/settings');
+  });
+
+  it('gives the invite page a generic, non-guild-scoped title (ruling 6: no public lookup by token)', () => {
+    const shell = guildInviteShellMeta('abc-123');
+    expect(shell.title).toBe('Join a guild · Forever Sixty');
+    expect(shell.canonical).toBe('https://foreversixty.gg/guild/invite/abc-123');
+  });
+});
+
 describe('simShellMeta', () => {
   const result = fixtureResult;
 
@@ -127,6 +156,38 @@ describe('simShellMeta', () => {
     const meta = simShellMeta({ ...result, summary: { ...result.summary, auras: [] } });
     expect(meta.description).toContain('solo, 3:00, single target');
     expect(meta.description).not.toContain('raid-buffed');
+  });
+});
+
+// Defect fix: the name a member gave a saved sim ("Name this sim", SaveSimForm.svelte) used
+// to reach neither simShellMeta's input (SimResult had no title field at all) nor its
+// output, so a shared link's <title>/og:title/og:description always read the same composed
+// spec-and-DPS sentence -- the field report's own repro is this exact string.
+describe('simShellMeta with a member-given title', () => {
+  const named = 'Thoradin - Fury Warrior, raid-buffed BWL night';
+
+  it('leads the title with the member’s own name, not the composed spec/DPS line', () => {
+    const meta = simShellMeta({ ...fixtureResult, title: named });
+    expect(meta.title).toBe(`${named} · Forever Sixty`);
+  });
+
+  it('leads the description with it too, ahead of the same numbers as always', () => {
+    const meta = simShellMeta({ ...fixtureResult, title: named });
+    expect(meta.description.startsWith(`${named}. Simulated on engine`)).toBe(true);
+  });
+
+  it('falls back to the composed title/description when no title was given, unchanged', () => {
+    const untitled = simShellMeta(fixtureResult);
+    const explicitlyEmpty = simShellMeta({ ...fixtureResult, title: '' });
+    expect(untitled.title).toBe('Fury Warrior, 101 DPS · Forever Sixty');
+    expect(explicitlyEmpty).toEqual(untitled);
+  });
+
+  it('carries a title through a bulk and a weights kind’s own unfurl too', () => {
+    const bulk = simShellMeta({ ...fixtureBulkResult, sim_id: 'simfixtureab', title: named });
+    expect(bulk.title).toBe(`${named} · Forever Sixty`);
+    const weights = simShellMeta({ ...fixtureWeightsResult, sim_id: 'simfixtureab', title: named });
+    expect(weights.title).toBe(`${named} · Forever Sixty`);
   });
 });
 

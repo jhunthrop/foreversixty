@@ -46,6 +46,14 @@ change the named constant if it differs from the default.
 | 20 | Equip API | `/dump C_Item and C_Item.EquipItemByName ~= nil`, `/dump EquipItemByName ~= nil` | `Theme.equip` prefers `C_Item`; with neither, the Equip buttons are off and `/fs diag` says so |
 | 21 | Talent events | log in, then run `/fs diag` and list any event it names | `Options.EVENTS`; each is registered through `Theme.registerEvent`, which records a refusal rather than erroring |
 | 22 | Talent button mapping | open the talent window with a build loaded and see whether the next talent glows; then run `/fs diag` — a line about no talent button means neither mapping matched | `TalentGlow.CLASSIC_BUTTON` (the `TalentFrameTalent<n>` naming) and `TalentGlow.traitButton` (the `nodeID` walk). Record which one this client took |
+| 23 | Guild info shape while in a guild | `/dump GetGuildInfo("player")` — expect `name, rankName, rankIndex[, realm]`; confirm `rankIndex` is `0` for the guild master | `Export.guildInfo()` reads positions 1 and 3; if the shape differs, fix there, not a flag |
+| 23a | Guild info while unguilded | `/dump GetGuildInfo("player")` on a character with no guild — expect `nil` | Confirms `Export.guildInfo()` returns `nil` and `Export.string` writes no `guild=` section |
+| 23b | Round trip | `/fs export` while in a guild, paste the code into the planner's import box on the site, confirm the guild name and rank index shown there match what `/dump GetGuildInfo("player")` reported | End-to-end check that `Codec.encodeFS1` and `fs1.ts`'s `decodeFS1` agree, beyond the fixture vectors |
+| 24 | Keyboard after opening the window | `/fs`, then press a movement key and an action bar key without clicking anything | An edit box takes the keyboard when it is created; `Widgets.editBox` clears focus at creation and releases it on Escape, Enter, hide and shortly after Ctrl+C. Found broken twice in game: dead keys mean a focus path was missed |
+| 25 | Item functions | `/dump C_Item.GetItemInfoInstant, GetItemInfoInstant, C_Item.GetItemStats, GetItemStats` — note which are functions | Every item lookup goes through `Compat`; the 1.60 client has no global `GetItemInfoInstant` |
+| 26 | Talent icons | load a build, open the Talents page: each talent row should show its real icon, not a question mark | `Talents.iconFor` walks `C_Traits.GetNodeInfo`, `GetEntryInfo`, `GetDefinitionInfo` and a spell texture function; a question mark means a link of that chain is missing here. `/dump C_Traits.GetEntryInfo, C_Traits.GetDefinitionInfo, C_Spell and C_Spell.GetSpellTexture, GetSpellTexture` says which |
+| 27 | Window chrome | `/fs`: sidebar with five pages and icons, a gold bar on the active one, the character name in class colour, a data pill at the top right, a close x, a soft shadow, a short fade in and the open sound | `Theme.fadeIn` (`UIFrameFadeIn`), `Theme.playSound` (`SOUNDKIT`), `Theme.desaturate`, `Theme.shadow`: each does nothing, quietly, on a client without its function |
+| 28 | Copy from the Overview | press Copy code on the Overview, then Ctrl+C, and paste into a text editor | The Overview keeps an invisible one-line field so there is a selection to copy; if nothing is copied, the client does not copy from a fully transparent edit box and the field needs to be visible |
 
 ## Findings
 
@@ -76,6 +84,8 @@ Run on one character per role and tick here:
       toggles as the window's Settings tab.
 - [ ] Logging out writes `ForeverSixtyDB.characters` and `savedAt`; the companion
       picks it up. Turning auto-save off stops it.
+- [ ] The Export tab's export includes a `|guild=` section for a guilded character and
+      none for an unguilded one (`/fs diag` or `/dump` the saved string).
 - [ ] `/fs diag` lists nothing unexpected.
 
 Two screenshots close this lane: the window on Follow with a build loaded, and

@@ -3,9 +3,10 @@
 // runs are within error of the leader, `delta` already carries its own error, and the
 // ordering is the planner's. This turns those into rows, labels and a winning gear list.
 import type { BulkResult, Combo, Substitution } from './bulk-types';
+import { plannerHrefForSpec } from './character';
 import { bulkCopy } from './copy';
 import { confidenceBand, formatMargin } from './estimate';
-import type { Estimate, GearSlot } from './types';
+import type { CharacterSpec, Estimate, GearSlot } from './types';
 import type { Item, ItemSet } from '../planner/types';
 
 export interface ComboRow {
@@ -159,6 +160,65 @@ export function comboRows(result: BulkResult): ComboRow[] {
   });
 }
 
+const COMBO_KEY_PART_SEPARATOR = '|';
+
+/**
+ * One substitution's own contribution to `comboKey` below. An `item` substitution is
+ * `slot:item_id`, with an `:enchant:<n>:suffix:<n>` tail ONLY when either is non-zero --
+ * the common case (neither set) stays the bare `slot:item_id` form every existing
+ * `data-testid` and e2e selector already depends on
+ * (`web/tests/e2e/sim-drops.spec.ts`'s `sim-drops-pin-finger1:19325` and
+ * `sim-drops-pin-head:16963` among them). A non-item substitution (`talents`, `set`,
+ * `consumes`) has no slot or item id at all, so its own kind plus whatever names it --
+ * `talents` for a `talents` substitution (the loadout's own build, which is what actually
+ * distinguishes two loadouts that happen to share a display name), `name` for `set` and
+ * `consumes` -- is what makes it stable and distinct from a substitution of a different
+ * kind or a different loadout/set/list.
+ *
+ * Deliberately NOT `substitutionIdentity` above: that function omits `slot` ON PURPOSE
+ * (design 3.2 tries a ring or trinket in both slots and wants both tries to collapse to one
+ * de-duped row), which is exactly the ambiguity `comboKey` exists to keep apart for a
+ * `data-testid` / `{#each}` key -- two rows `comboIdentity` calls "the same candidate" must
+ * still never render the same key once dedupe has already run and both survive as
+ * genuinely different rows (which happens whenever their deltas are not bit-identical,
+ * since `dedupedCombos` only drops an exact repeat of an EARLIER identity).
+ */
+function comboKeyPart(sub: Substitution): string {
+  if (sub.kind === 'item') {
+    const base = `${sub.slot ?? ''}:${sub.item_id ?? ''}`;
+    const enchant = sub.enchant ?? 0;
+    const suffix = sub.suffix ?? 0;
+    return enchant === 0 && suffix === 0 ? base : `${base}:enchant:${enchant}:suffix:${suffix}`;
+  }
+  if (sub.kind === 'talents') return `talents:${sub.talents ?? ''}`;
+  return `${sub.kind}:${sub.name ?? ''}`;
+}
+
+/**
+ * A row's identity for a `{#each}` key or a `data-testid` suffix: every substitution's own
+ * `comboKeyPart`, joined -- not just the first. Review fix round 1: keying on the first
+ * substitution alone gave the fixture's own `combos[0]` (head+shoulder) and `combos[1]`
+ * (head alone) the identical key "head:16963" once this function reached a component whose
+ * rows can carry more than one substitution (`ComboResults.svelte`'s gear-mode rows) --
+ * harmless in `DropResults.svelte`, whose "drops" mode combos are always
+ * single-substitution, but a real collision once shared, and Task 12's e2e selects rows by
+ * this id.
+ *
+ * A single plain `item` substitution still produces exactly `slot:item_id` (join of one
+ * part is that part, unchanged), which is what every existing `data-testid` and e2e
+ * selector already depends on. The rank is the fallback only when a combo carries no
+ * substitution at all (`substitutions.length === 0`) -- a combination this codebase does
+ * not otherwise construct, kept only so this function never throws on one.
+ *
+ * Moved here from `DropResults.svelte` (task 7): `ComboResults.svelte` needs the identical
+ * rule for its own "Plan it" test ids, and this lane's own DRY rule is one function, not a
+ * second copy typed again in a second component.
+ */
+export function comboKey(row: ComboRow): string {
+  if (row.combo.substitutions.length === 0) return String(row.rank);
+  return row.combo.substitutions.map(comboKeyPart).join(COMBO_KEY_PART_SEPARATOR);
+}
+
 /**
  * How many of `result.combos` the de-dupe above folded away -- `result.combos.length` minus
  * `comboRows(result).length`.
@@ -191,24 +251,21 @@ export function isEmptiedOffHand(sub: Substitution): boolean {
 }
 
 /**
- * The leader's substitutions written over the base character's gear.
- *
- * Reads `result.combos[0]` directly, not the de-duplicated list `comboRows` builds: index 0
- * is always the FIRST occurrence of its own identity (nothing ranked ahead of it could share
- * it), so a de-dupe can never change which combo is at index 0 or what it contains.
+ * One combination's substitutions written over a base gear list.
  *
  * The rule-5 sentinel REMOVES its slot rather than writing `item_id: 0` over it: this list
  * is what `addon-export.ts` turns into a paste-into-the-game string and what
- * `codeForCharacterSpec` encodes into the planner link, and neither the addon grammar nor
+ * `codeForCharacterSpec` encodes into a planner link, and neither the addon grammar nor
  * FS1 defines 0 as "empty" -- a decoder reads `off_hand=0` as an item that does not exist
  * (final whole-branch review, Important 1).
  *
- * Every step returns a new list: the input's slots are copied once at the top and never
- * written through.
+ * Every step returns a new list: `baseGear` is copied once at the top and never written
+ * through -- `winningGear` below and `planItHref`'s own per-row gear both rely on that to
+ * leave the caller's own list untouched.
  */
-export function winningGear(result: BulkResult): GearSlot[] {
-  let gear: GearSlot[] = result.request.character.gear.map((slot) => ({ ...slot }));
-  for (const sub of result.combos[0]?.substitutions ?? []) {
+export function gearForCombo(baseGear: readonly GearSlot[], combo: Combo): GearSlot[] {
+  let gear: GearSlot[] = baseGear.map((slot) => ({ ...slot }));
+  for (const sub of combo.substitutions) {
     if (sub.kind !== 'item' || sub.slot === undefined || sub.item_id === undefined) continue;
     if (isEmptiedOffHand(sub)) {
       gear = gear.filter((slot) => slot.slot !== sub.slot);
@@ -221,6 +278,63 @@ export function winningGear(result: BulkResult): GearSlot[] {
     gear = at >= 0 ? gear.map((slot, index) => (index === at ? next : slot)) : [...gear, next];
   }
   return gear;
+}
+
+/**
+ * The leader's substitutions written over the base character's gear.
+ *
+ * Reads `result.combos[0]` directly, not the de-duplicated list `comboRows` builds: index 0
+ * is always the FIRST occurrence of its own identity (nothing ranked ahead of it could share
+ * it), so a de-dupe can never change which combo is at index 0 or what it contains.
+ *
+ * A result with no combos at all (an empty run) has no leader to write over the base gear
+ * with, so this reads back the base character's own gear -- a copy of what is genuinely
+ * equipped, never a fabricated `Combo` standing in for "no winner".
+ */
+export function winningGear(result: BulkResult): GearSlot[] {
+  const leader = result.combos[0];
+  return leader === undefined
+    ? result.request.character.gear.map((slot) => ({ ...slot }))
+    : gearForCombo(result.request.character.gear, leader);
+}
+
+/**
+ * Whether `planItHref` below has anything to open for this row. An `item` substitution
+ * changes gear, so `gearForCombo` can write it over the base set. A `talents` substitution
+ * changes the loadout instead, so its own `Substitution.talents` string -- the engine's
+ * talents string, exactly `CharacterSpec.talents` -- can ride onto the encoded spec in its
+ * place, gear untouched.
+ *
+ * A `set` substitution carries only the set's `name` (contract 10.1's `Substitution` has no
+ * gear field -- `sim/bulk`'s own `apply` never puts a named set's items into `subs`, only
+ * its label), so a row naming one can never be reconstructed without silently opening the
+ * base gear and calling it the set the row actually won with. Excluded whether it is the
+ * row's only substitution or mixed with others, since the row's true gear is unknowable
+ * either way. A `consumes` substitution changes neither gear nor talents at all.
+ */
+export function canPlanCombo(combo: Combo): boolean {
+  const kinds = new Set(combo.substitutions.map((sub) => sub.kind));
+  if (kinds.has('set')) return false;
+  return kinds.has('item') || kinds.has('talents');
+}
+
+/**
+ * "Plan it" (design 1): the base character with this one row's own change opened in the
+ * planner, through the same `plannerHrefForSpec`/`codeForCharacterSpec` conversion every
+ * other "Open in planner" link uses (`character.ts`) -- one encoder, so no two links can
+ * ever disagree about what a code encodes. Null when `canPlanCombo` says the row has
+ * nothing a planner link can honestly open (see its own doc comment); the caller draws no
+ * link rather than one that opens gear or a loadout this row never actually tried.
+ */
+export function planItHref(result: BulkResult, combo: Combo, treeVersion: string): string | null {
+  if (!canPlanCombo(combo)) return null;
+  const talents = combo.substitutions.find((sub) => sub.kind === 'talents')?.talents;
+  const spec: CharacterSpec = {
+    ...result.request.character,
+    gear: gearForCombo(result.request.character.gear, combo),
+    ...(talents === undefined ? {} : { talents }),
+  };
+  return plannerHrefForSpec(spec, treeVersion);
 }
 
 export interface SlotSummaryRow {
@@ -298,6 +412,88 @@ export function keepsSetBonus(
     counts.set(setId, (counts.get(setId) ?? 0) + 1);
   }
   return sets.some((set) => (counts.get(set.id) ?? 0) >= pieces);
+}
+
+/**
+ * Whether `keepsSetBonus` would ever be true for this result at all -- dps D24:
+ * ComboResults.svelte used to print "Only combinations keeping a 4-piece set bonus" and
+ * its checkbox over every result, including a character with no 4-piece set anywhere in
+ * play, where ticking it can only ever empty the table. The checkbox means nothing to a
+ * player it can never apply to, so the page shows it only when at least one combo in the
+ * result reaches the piece count.
+ */
+export function anyKeepsSetBonus(
+  result: BulkResult,
+  items: ReadonlyMap<number, Item>,
+  sets: readonly ItemSet[],
+  pieces: number,
+): boolean {
+  return result.combos.some((combo) => keepsSetBonus(combo, result, items, sets, pieces));
+}
+
+/**
+ * Rows whose delta is bit-identical to at least one other row here -- not `combo.group`'s
+ * own "within error" test (a statistical closeness the page already draws a rule under),
+ * but the same mean AND the same error to the decimal, which only happens when two
+ * candidates leave the simulated character in an identical state: neither's stats touch
+ * anything this spec's damage depends on (dps D36: three different necks, none of them
+ * carrying a melee stat, all landing on the same `-19 ± 2.3`). `dedupedCombos` above only
+ * ever drops an exact repeat of the same item id, so distinct items always keep distinct
+ * rows here -- these are real ties, grouped so the page can say why once per group instead
+ * of leaving unexplained duplicate numbers on screen.
+ */
+export interface OverlappingRowPair {
+  a: ComboRow;
+  b: ComboRow;
+}
+
+/** Two delta intervals (mean ± 1 SE), the same interval `group` (bulk's own Go ranking)
+ *  and the page's own error bars already use, touching or crossing. */
+function deltaIntervalsOverlap(a: Estimate, b: Estimate): boolean {
+  return a.mean - a.error <= b.mean + b.error && b.mean - b.error <= a.mean + a.error;
+}
+
+/**
+ * The first adjacent pair of ranked rows whose delta intervals actually overlap, or null
+ * when every adjacent gap is clean -- newcomer round 4 (review.md:83-110) / dps D25-
+ * pattern: "These runs are too close to separate..." used to print under every result
+ * with more than one row, whatever the actual gap, including a −37.4% difference at a
+ * ±1.5/±1.6 margin (about 150 times its own error bar). Adjacent pairs, not every pair:
+ * two non-adjacent rows both overlapping a shared middle row are not "close to separate"
+ * from each other in the ranking a player reads top to bottom, and comparing every pair
+ * would flag rows whose own rank already separates them by a mile.
+ */
+export function closestOverlappingPair(rows: readonly ComboRow[]): OverlappingRowPair | null {
+  for (let i = 0; i + 1 < rows.length; i++) {
+    if (deltaIntervalsOverlap(rows[i].combo.delta, rows[i + 1].combo.delta)) {
+      return { a: rows[i], b: rows[i + 1] };
+    }
+  }
+  return null;
+}
+
+/**
+ * A row's own name, for the overlap note above: the leading substitution's label, the
+ * same one `headlineFor` reads for the leader's own name ("Helm of Wrath", "Build 1"
+ * -- a talents-mode substitution's `name` is the loadout's own name). Falls back to the
+ * row's rank only for a combo this codebase does not otherwise construct (no
+ * substitutions at all), the same edge `comboKey` above already guards.
+ */
+export function rowName(row: ComboRow): string {
+  const first = row.combo.substitutions[0];
+  const label = first === undefined ? '' : substitutionLabel(first);
+  return label === '' ? `#${row.rank}` : label;
+}
+
+export function exactTieGroups(rows: readonly ComboRow[]): ComboRow[][] {
+  const byDelta = new Map<string, ComboRow[]>();
+  for (const row of rows) {
+    const key = `${row.combo.delta.mean}:${row.combo.delta.error}`;
+    const group = byDelta.get(key);
+    if (group === undefined) byDelta.set(key, [row]);
+    else group.push(row);
+  }
+  return [...byDelta.values()].filter((group) => group.length > 1);
 }
 
 /**

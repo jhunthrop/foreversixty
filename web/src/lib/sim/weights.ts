@@ -24,6 +24,7 @@
 // the string rather than guessed at.
 import { classRows } from '../planner/reference';
 import { simCopy, WEIGHT_ERROR_BELOW_THRESHOLD } from './copy';
+import { humanise } from './humanise';
 import { PRECISION_ITERATIONS, type Lane } from './precision';
 import { specLabel, specRow } from './spec-label';
 import type { Precision, StatWeight } from './bulk-types';
@@ -55,6 +56,19 @@ const PAWN_KEYS: Readonly<Record<string, string>> = {
   armor_penetration: 'ArmorPenetration',
   expertise: '',
   mp5: 'Mp5',
+  // School-specific spell power (2026-09-21 result-page review round 3, newcomer's own
+  // finding): specs.go's own per-spec WeightStats names one of these for every caster spec
+  // that deals a single school of damage (mage-frost's own row: "frost_power" beside
+  // "spell_power") -- PAWN_KEYS not carrying them at all was why the checklist and the
+  // results table showed the raw engine key verbatim instead of a real label. Pawn has no
+  // separate school-power key of its own (a Frost Mage's "SpellDamage" already covers it),
+  // so these map to '' the same way feral_attack_power and expertise do above.
+  arcane_power: '',
+  fire_power: '',
+  frost_power: '',
+  holy_power: '',
+  nature_power: '',
+  shadow_power: '',
 };
 
 /**
@@ -88,8 +102,18 @@ export function fallbackReferenceFor(spec: string): string {
   return DEFAULT_REFERENCE;
 }
 
+/**
+ * A stat's display label, `BY_ID` first, then `simCopy.statLabel` directly (for an id
+ * `pickableStatsFor` reads off the wire that PAWN_KEYS has not been taught about yet), then
+ * a humanised form -- never the raw id (2026-09-21 result-page review round 3: a Frost
+ * Mage's Stat Weights page showed a row literally labelled `frost_power` because PAWN_KEYS
+ * had no entry for it at all and this function's old fallback was the bare id itself, the
+ * same "raw wire key reaches the screen" shape action-names.ts's own resolveActionName
+ * exists to end for spell/item ids). humanise.ts's own `humanise` is the same last-resort
+ * `stats.ts`'s own `statLabel` already uses for the same reason.
+ */
 export function statLabel(id: string): string {
-  return BY_ID.get(id)?.label ?? id;
+  return BY_ID.get(id)?.label ?? simCopy.statLabel[id] ?? humanise(id);
 }
 
 /**

@@ -32,8 +32,9 @@ async function loadFuryAndRun(page: Page): Promise<void> {
 // writeSimNames writes nothing), so `store.actionNames` stays null. D48 (dps-minmaxer
 // review round 2): that used to mean every ability, aura and cast name on this page was
 // the engine's own raw action key -- "spell:20662" on screen. resolveActionName's own
-// humanised fallback (action-names.ts) means a null table now reads "Spell 20662" instead
-// -- English, never a raw key, even before the build's own table has loaded.
+// unresolved fallback (action-names.ts) means a null table now reads "An unnamed spell"
+// instead -- English with no number in it at all, never a raw key and never (2026-09-21
+// result-page review round 2) the id itself spelled out as "Spell 20662".
 
 test('the sentence names the two biggest damage sources, their share and the biggest buff', async ({
   page,
@@ -47,9 +48,10 @@ test('the sentence names the two biggest damage sources, their share and the big
   // AuraTable's own name-tiebroken sort below).
   const sentence = page.getByTestId('sim-sentence');
   await expect(sentence).toHaveText(
-    'main-hand white hits and Spell 1680 are 78% of your damage; Spell 25289 is up 100% of the fight.',
+    'main-hand white hits and An unnamed spell are 78% of your damage; An unnamed spell is up 100% of the fight.',
   );
   await expect(sentence).not.toContainText(/\bspell:/);
+  await expect(sentence).not.toContainText(/\bSpell \d+\b/);
 });
 
 test('the Damage tab is selected first and the actor table reads a humanised label, never the raw key', async ({
@@ -62,8 +64,9 @@ test('the Damage tab is selected first and the actor table reads a humanised lab
 
   await page.getByTestId('actor-sim-player').click();
   const row = page.getByTestId('row-abilities');
-  await expect(row).toContainText('Spell 25286');
+  await expect(row).toContainText('An unnamed spell');
   await expect(row).not.toContainText(/\bspell:/);
+  await expect(row).not.toContainText(/\bSpell \d+\b/);
 });
 
 test('the Buffs tab shows the first aura row at 100% uptime, with no engine-internal rows', async ({
@@ -74,15 +77,30 @@ test('the Buffs tab shows the first aura row at 100% uptime, with no engine-inte
   await page.getByTestId('sim-tab-buffs').click();
   const table = page.getByTestId('aura-table');
   const first = table.locator('li').first();
-  // spell:25289 and spell:2458 tie at the top on uptime share; AuraTable's own tiebreak is
-  // the resolved name, ascending ("Spell 2458" sorts before "Spell 25289").
-  await expect(first).toContainText('Spell 2458');
+  // spell:25289 and spell:2458 tie at the top on uptime share; both now read the same
+  // unresolved prose (2026-09-21 result-page review round 2), so AuraTable's own
+  // name-ascending tiebreak no longer distinguishes them and the stable sort keeps the
+  // fixture's own array order instead -- 25289 first.
+  await expect(first).toHaveAttribute('data-testid', 'aura-25289-sim-player');
+  await expect(first).toContainText('An unnamed spell');
   await expect(first).not.toContainText(/\bspell:/);
-  await expect(page.getByTestId('aura-uptime').first()).toHaveText('100.1%');
+  await expect(first).not.toContainText(/\bSpell \d+\b/);
+  // The fixture's own uptime_ms (179,863) is a hair past its duration_ms (179,629) --
+  // 100.13% unclamped -- which is exactly AuraTable's shareOf clamp's own job to cap at
+  // 100.0%, never a number over it (2026-09-21 result-page review round 3, E8's display
+  // layer clamp).
+  await expect(page.getByTestId('aura-uptime').first()).toHaveText('100.0%');
   // Task 4: sanitizeAuraTracks drops the fixture's own inert rows (including other:move)
-  // and folds a tag/rank duplicate into its base row, so no row is left disambiguated by a
-  // trailing "#<spell id>" -- the newcomer-sim repro's "Blizzard#10" shape.
-  await expect(table).not.toContainText(/#\d/);
+  // and folds a tag/rank duplicate into its base row.
+  //
+  // AuraTable's own `ambiguous` disambiguates two DIFFERENT spells that render the SAME
+  // name on one target by appending "#<spell id>" (the newcomer-sim repro's "Blizzard#10"
+  // shape) -- and with a null name table every unresolved row now reads the identical "An
+  // unnamed spell" (2026-09-21 result-page review round 2), so it fires for all seven here.
+  // That is the fix working as designed, not a regression: the id is still on screen for
+  // someone who needs it, just never glued to the words "Spell" the way the old fallback
+  // read.
+  await expect(first).toContainText('An unnamed spell#25289');
 });
 
 test('the Debuffs tab says the engine does not report debuffs, not that the fight had none', async ({
@@ -101,18 +119,29 @@ test('the Casts tab reads a cast row by its humanised label and count, never the
 
   await page.getByTestId('sim-tab-casts').click();
   const row = page.getByTestId('cast-sim-player-1680');
-  await expect(row).toContainText('Spell 1680');
+  await expect(row).toContainText('An unnamed spell');
   await expect(row).not.toContainText(/\bspell:/);
+  await expect(row).not.toContainText(/\bSpell \d+\b/);
   await expect(row).toContainText('13');
 });
 
-test('the Resources tab is empty: the fixture summary carries no non-zero resource series', async ({
+// 2026-09-21 result-page review, Defect 4: the fixture's own resource track (Energy,
+// gained 515, spent 509) carries an empty `series` -- a sim reports a whole-fight total
+// only, never a per-second reading (sim/adapter/adapter.go's `resources`) -- and the tab
+// used to filter on the series alone, so this exact fixture read "No resource changes in
+// this window" while real rage/energy plainly moved. The row must show the real totals and
+// say plainly why there is no line to draw, not read as if nothing happened.
+test('the Resources tab shows the fixture’s real activity, with no per-second line for a sim', async ({
   page,
 }) => {
   await loadFuryAndRun(page);
 
   await page.getByTestId('sim-tab-resources').click();
-  await expect(page.getByTestId('table-empty')).toHaveText('No resource changes in this window.');
+  await expect(page.getByTestId('table-empty')).toHaveCount(0);
+  const totals = page.getByTestId('resource-totals-only');
+  await expect(totals).toContainText('gained 515');
+  await expect(totals).toContainText('spent 509');
+  await expect(page.getByText('No per-second reading or cap for a simulated fight')).toBeVisible();
 });
 
 test('the Timeline tab draws one lane, the player rostered from the sample iteration', async ({ page }) => {
@@ -176,11 +205,12 @@ test('the buffs tab counts applications and the sample tab shows one iteration',
   await expect(log.getByText(simCopy.samplePrePull).first()).toBeVisible();
   // public/data/<build>/simnames/warrior.json does not exist under FOREVER_DATA=fixture
   // (see the note above loadFuryAndRun), so the sample log resolves nothing and renders
-  // resolveActionName's humanised fallback -- the same thing the cast table renders in
+  // resolveActionName's unresolved fallback -- the same thing the cast table renders in
   // this environment. The resolved-name path is covered instead, with names injected, by
   // src/lib/sim/sample-log.test.ts.
-  await expect(log).toContainText('Spell 25286');
+  await expect(log).toContainText('An unnamed spell');
   await expect(log).not.toContainText(/\bspell:/);
+  await expect(log).not.toContainText(/\bSpell \d+\b/);
   // Resources after each cast: the fixture's only pool is rage.
   await expect(log.locator('th', { hasText: simCopy.resourceLabel.rage })).toHaveCount(1);
 });
