@@ -1,0 +1,45 @@
+{
+  "spec": "paladin-retribution",
+  "owned": [
+    {
+      "spell_id": 25291,
+      "name": "Blessing of Might",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#25291",
+      "note": "Attack power blessing, max rank."
+    },
+    {
+      "spell_id": 20217,
+      "name": "Blessing of Kings",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#20217",
+      "note": "All-stats percentage blessing."
+    },
+    {
+      "spell_id": 13008,
+      "name": "Retribution Aura",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#13008",
+      "note": "Party-wide reactive damage aura, max rank."
+    },
+    {
+      "spell_id": 20920,
+      "name": "Seal of Command",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#20920",
+      "note": "Self combat seal; uptime reflects seal discipline during the rotation."
+    },
+    {
+      "spell_id": 25943,
+      "name": "Judgement of the Crusader",
+      "kind": "debuff",
+      "target": "enemy",
+      "verified": "1.60.1.69893/spells.json#25943",
+      "note": "Raid-wide critical strike chance debuff maintained on the current target."
+    }
+  ]
+}

@@ -49,14 +49,21 @@ func runMechanicsDraft(args []string, out, errOut io.Writer) error {
 	defer file.Close()
 
 	d := newDrafter(*encounterID)
+	u := newUtilityDrafter()
 	s := session.New(o)
 	if err := stream(s, file, func(c session.Closed) error {
 		d.addFight(c.Fight, c.Summary, s.Units(), c.Events)
+		u.addFight(c.Summary, s.Units())
 		return nil
 	}); err != nil {
 		return err
 	}
-	return d.write(out, errOut)
+	if err := d.write(out, errOut); err != nil {
+		return err
+	}
+	// Utility evidence (spec §3.5) is spec-keyed, not encounter-keyed, so it
+	// is reported once at the end rather than per encounter table.
+	return u.write(errOut)
 }
 
 // drafter collects evidence for one or more encounters across every fight
@@ -250,6 +257,13 @@ func (d *drafter) write(out, errOut io.Writer) error {
 				return err
 			}
 		}
+		downtime, downtimeEvidence := draftDowntime(ed.pulls)
+		t.Downtime = downtime
+		for _, line := range downtimeEvidence {
+			if _, err := fmt.Fprintln(errOut, line); err != nil {
+				return err
+			}
+		}
 		data, err := json.MarshalIndent(t, "", "  ")
 		if err != nil {
 			return err
@@ -383,143 +397,4 @@ func bossHealthReadings(events []event.Event, bossName string, reg *units.Regist
 		})
 	}
 	return out
-}
-
-// phaseCandidate is one spell that could open a phase: how it was seen, when, and on
-// how many of the encounter's pulls.
-type phaseCandidate struct {
-	spellID   int64
-	name      string
-	on        string
-	pulls     int
-	firstMS   int64
-	healthPct []float64
-}
-
-// count records a spell as a phase candidate for this pull only when it
-// happened exactly once. A second row for the same spell this pull -- a
-// debuff that landed on two different players, say, each its own row with
-// its own count of one -- disqualifies it instead of silently keeping
-// whichever row was seen first; so does a single row whose own count was
-// never one to begin with.
-func count(once map[int64]*phaseCandidate, spellID int64, name, on string, firstMS, cnt int64, healthPct float64) {
-	existing, ok := once[spellID]
-	switch {
-	case !ok && cnt == 1:
-		once[spellID] = &phaseCandidate{
-			spellID: spellID, name: name, on: on, pulls: 1,
-			firstMS: firstMS, healthPct: []float64{healthPct},
-		}
-	case !ok:
-		once[spellID] = &phaseCandidate{spellID: spellID, name: name, on: on}
-	default:
-		existing.pulls = 0
-	}
-}
-
-// spread is the distance between a float slice's lowest and highest value,
-// zero for fewer than two entries -- one pull says nothing about
-// consistency yet.
-func spread(vals []float64) float64 {
-	if len(vals) < 2 {
-		return 0
-	}
-	min, max := vals[0], vals[0]
-	for _, v := range vals[1:] {
-		if v < min {
-			min = v
-		}
-		if v > max {
-			max = v
-		}
-	}
-	return max - min
-}
-
-func minOf(vals []float64) float64 {
-	m := vals[0]
-	for _, v := range vals[1:] {
-		if v < m {
-			m = v
-		}
-	}
-	return m
-}
-
-func maxOf(vals []float64) float64 {
-	m := vals[0]
-	for _, v := range vals[1:] {
-		if v > m {
-			m = v
-		}
-	}
-	return m
-}
-
-// formatMS prints a millisecond offset as m:ss.
-func formatMS(ms int64) string {
-	total := ms / 1000
-	if total < 0 {
-		total = 0
-	}
-	return fmt.Sprintf("%d:%02d", total/60, total%60)
-}
-
-// draftPhases proposes phase triggers for one encounter. The rule is the spec's: an
-// enemy cast or aura application that happened exactly once in every pull, at a boss
-// health that did not move much between them. Anything that happened twice in a pull is
-// a rotation, not a phase; anything that happened in one pull of five is a fluke.
-func draftPhases(pulls []draftPull) ([]mechanics.Phase, []string) {
-	seen := map[int64]*phaseCandidate{}
-	for _, pull := range pulls {
-		once := map[int64]*phaseCandidate{}
-		for _, row := range pull.enemyCasts {
-			count(once, row.SpellID, row.SpellName, mechanics.OnCastStart, row.firstMS, row.count, pull.bossPctAt(row.firstMS))
-		}
-		for _, row := range pull.enemyAuras {
-			count(once, row.SpellID, row.SpellName, mechanics.OnAuraApplied, row.firstMS, row.count, pull.bossPctAt(row.firstMS))
-		}
-		for id, c := range once {
-			if c.pulls == 0 {
-				continue
-			}
-			found := seen[id]
-			if found == nil {
-				seen[id] = c
-				continue
-			}
-			found.pulls++
-			found.healthPct = append(found.healthPct, c.healthPct...)
-			if c.firstMS < found.firstMS {
-				found.firstMS = c.firstMS
-			}
-		}
-	}
-	kept := []*phaseCandidate{}
-	for _, c := range seen {
-		if c.pulls == len(pulls) && spread(c.healthPct) <= 10 {
-			kept = append(kept, c)
-		}
-	}
-	// Candidates come out of a map, so two at the same instant would otherwise
-	// swap names between runs; the spell id breaks the tie the same way every time.
-	sort.SliceStable(kept, func(i, j int) bool {
-		if kept[i].firstMS != kept[j].firstMS {
-			return kept[i].firstMS < kept[j].firstMS
-		}
-		return kept[i].spellID < kept[j].spellID
-	})
-	phases := make([]mechanics.Phase, 0, len(kept))
-	evidence := make([]string, 0, len(kept))
-	for i, c := range kept {
-		name := fmt.Sprintf("Phase %d", i+2)
-		phases = append(phases, mechanics.Phase{
-			Name:   name,
-			Starts: mechanics.PhaseStart{SpellID: c.spellID, On: c.on},
-		})
-		evidence = append(evidence, fmt.Sprintf(
-			"%s: %s (%d) %s once on each of %d pulls, first at %s, boss at %.0f%%-%.0f%%",
-			name, c.name, c.spellID, c.on, c.pulls, formatMS(c.firstMS), minOf(c.healthPct), maxOf(c.healthPct)))
-	}
-	return phases, evidence
 }

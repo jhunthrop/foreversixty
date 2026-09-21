@@ -1,0 +1,53 @@
+{
+  "spec": "priest-discipline",
+  "owned": [
+    {
+      "spell_id": 23948,
+      "name": "Power Word: Fortitude",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#23948",
+      "note": "Stamina buff, max rank."
+    },
+    {
+      "spell_id": 21564,
+      "name": "Prayer of Fortitude",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#21564",
+      "note": "Raid-wide stamina buff, max rank."
+    },
+    {
+      "spell_id": 27841,
+      "name": "Divine Spirit",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#27841",
+      "note": "Spirit buff, max rank."
+    },
+    {
+      "spell_id": 27681,
+      "name": "Prayer of Spirit",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#27681",
+      "note": "Raid-wide spirit buff."
+    },
+    {
+      "spell_id": 10060,
+      "name": "Power Infusion",
+      "kind": "cooldown",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#10060",
+      "note": "Caster damage/haste cooldown; tracked by use, not uptime."
+    },
+    {
+      "spell_id": 6346,
+      "name": "Fear Ward",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#6346",
+      "note": "Discipline talent: single-target fear-immunity buff."
+    }
+  ]
+}
