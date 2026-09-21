@@ -29,11 +29,19 @@ export const guildHomeCopy = {
 export const guildClaimCopy = {
   loading: "Checking this guild's claim.",
   failed: 'That did not load. Reload the page to try again.',
+  // Guild name isn't known until the public guild page resolves, so the heading falls
+  // back to a nameless form rather than the page ever hardcoding either half itself.
+  heading: (guildName: string): string => (guildName === '' ? 'Claim this guild' : `Claim ${guildName}`),
   unclaimed: 'Nobody has claimed this guild yet.',
   claimedByYou: 'You claimed this guild.',
   claimedBySomeoneElse: (battletag: string): string => `Claimed by ${battletag}.`,
-  pending: (expiresAt: string): string =>
-    `A claim is pending, confirmed by a second officer or the guild master. Expires ${expiresAt.slice(0, 10)}.`,
+  // `expiresAt` is only known in the same session the viewer just triggered the pending
+  // claim (the POST .../claim response) -- a pending claim loaded later from settings
+  // carries no expiry, hence the optional form rather than a second, separate string.
+  pending: (expiresAt?: string): string =>
+    expiresAt === undefined
+      ? 'A claim is pending, confirmed by a second officer or the guild master.'
+      : `A claim is pending, confirmed by a second officer or the guild master. Expires ${expiresAt.slice(0, 10)}.`,
   claimButton: 'Claim this guild',
   confirmButton: 'Confirm this claim',
   releaseButton: 'Release claim',
