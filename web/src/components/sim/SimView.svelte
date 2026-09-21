@@ -425,10 +425,10 @@
   // Keeps the loaded character on every tab in SimTabs.astro's strip (task-1-brief.md):
   // whenever the character this island holds changes -- loaded, changed source, or cleared
   // -- every tab's href is rewritten to carry the same query its own destination can
-  // actually bootstrap from (`?source=&ref=`, or `?code=` only on the two tabs that read
-  // it, `SIM_TABS`' own `supportsCode`). The strip lives above this island's own mount
-  // point (SimTabs.astro's own comment), so `syncTabHrefs` reaches it through `document`
-  // rather than this component's own root.
+  // actually bootstrap from (`?source=&ref=`, or the `?code=` fallback every tab now reads,
+  // `SIM_TABS`' own `supportsCode` -- current-character spec, 2026-09-21). The strip lives
+  // above this island's own mount point (SimTabs.astro's own comment), so `syncTabHrefs`
+  // reaches it through `document` rather than this component's own root.
   $effect(() => {
     const source = store.character === null ? null : store.character.source;
     syncTabHrefs(source, fallbackTabCode());

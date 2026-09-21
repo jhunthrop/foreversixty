@@ -10,12 +10,16 @@
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../../data/active-build.json';
   import { battlenetStartUrl, fetchMe, type Me } from '../../../lib/account/api';
+  import { clearCurrent, readCurrent } from '../../../lib/current-character';
+  import { currentCharacterCopy } from '../../../lib/current-character-copy';
+  import { rowLink } from '../../../lib/report/format';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
   import { TOOL_SKELETONS } from '../../../lib/sim/bulk-skeleton';
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
   import type { Origin } from '../../../lib/sim/candidates';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
   import { syncTabHrefs } from '../../../lib/sim/tabs';
+  import { decideToolsBootstrap, sourceIdForInstance } from '../../../lib/sim/tools-bootstrap';
   import { parseSimState } from '../../../lib/sim/url';
   import CharacterStrip from '../CharacterStrip.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
@@ -23,12 +27,16 @@
   let { tool }: { tool: SimTool } = $props();
 
   const bootstrap = untrack(() => {
-    const { source, ref } = parseSimState(window.location.search);
+    const { source, ref, code } = parseSimState(window.location.search);
     const params = new URLSearchParams(window.location.search);
     const mount = document.getElementById('sim-tools');
     return {
       source,
       ref,
+      code,
+      // /sim/drops's own preselect (Task 4): a Droptimizer's zone slug, matched against a
+      // LootSource.id once the loot file has loaded (the instance $effect below).
+      instance: params.get('instance') ?? '',
       treeVersion: mount?.dataset.treeVersion ?? activeBuild.build,
       // A Droptimizer pin (Task 18): the item, and the `drop:<source-id>` origin and boss
       // name it carried in, so the row lands on Top Gear with its real provenance rather
@@ -52,6 +60,11 @@
   let me = $state<Me | null>(null);
   let switcherOpen = $state(false);
   let pinApplied = false;
+  let instanceApplied = false;
+  // True once the load this mount kicked off came from the stored current-character
+  // pointer rather than the URL (Task 4, current-character spec section 1) -- drives the
+  // "Restored your last character. Forget" line above the strip.
+  let restored = $state(false);
 
   $effect(() => {
     if (store.character !== null) switcherOpen = false;
@@ -61,9 +74,9 @@
   // the same rewrite SimView.svelte's own effect performs for /sim, /sim/[id] and
   // /sim/specs: whenever this island's own character changes, every tab's href is
   // rewritten to carry the same query its own destination can actually bootstrap from --
-  // `?source=&ref=`, or `store.characterCode` (bulk-store.svelte.ts) on the two tabs that
-  // read `?code=` (`SIM_TABS`' own `supportsCode`; the four tools tabs never do, so a
-  // ref-less character's fallback code never reaches them, fix round 1 Finding A).
+  // `?source=&ref=`, or `store.characterCode` (bulk-store.svelte.ts) as the fallback
+  // `?code=` every tab now reads (Task 4; `SIM_TABS`' own `supportsCode` is `true` on all
+  // six as of the current-character spec, 2026-09-21).
   $effect(() => {
     const source = store.character === null ? null : store.character.source;
     // `store.characterCode` costs a talent-index rebuild (bulk-store-request.ts's own
@@ -99,6 +112,20 @@
     store.addSearchItem(itemId, origin, bootstrap.pinName);
   });
 
+  /**
+   * `/sim/drops`'s own preselect (Task 4): a Droptimizer link's `?instance=` zone slug,
+   * matched against the loaded loot file's own sources once it has settled. Modelled on
+   * the pin effect above -- same `phase === 'idle'` gate, same apply-once guard -- so a
+   * player who switches sources afterward is never re-forced back onto this pick.
+   */
+  $effect(() => {
+    if (instanceApplied || store.phase !== 'idle' || store.character === null) return;
+    instanceApplied = true;
+    if (tool !== 'drops' || bootstrap.instance === '') return;
+    const matchId = sourceIdForInstance(store.loot.sources, bootstrap.instance);
+    if (matchId !== null) store.toggleSource(matchId);
+  });
+
   onMount(() => {
     void fetchMe()
       .then((result) => {
@@ -107,18 +134,29 @@
       })
       .catch(() => {});
     void store.loadSpecs();
-    // The URL's own bootstrap, once, here rather than in an effect: a "sim this build" link
-    // arrives as ?source=&ref=.
-    if (bootstrap.source !== '' && bootstrap.ref !== '') {
-      if (bootstrap.source === 'addon') void store.loadAddon(bootstrap.ref);
-      else if (bootstrap.source === 'build') void store.loadBuild(bootstrap.ref);
-      else if (bootstrap.source === 'fight') void store.loadFight(bootstrap.ref);
-    }
+    // The URL's own bootstrap wins over the stored current-character pointer, which wins
+    // over nothing (Task 4, current-character spec section 1) -- decideToolsBootstrap is
+    // the one place that precedence lives, so it is testable without mounting this island.
+    const decision = decideToolsBootstrap(
+      { code: bootstrap.code, source: bootstrap.source, ref: bootstrap.ref },
+      readCurrent(),
+    );
+    restored = decision.restored;
+    if (decision.kind === 'code') void store.loadCode(decision.code);
+    else if (decision.kind === 'addon') void store.loadAddon(decision.code);
+    else if (decision.kind === 'build') void store.loadBuild(decision.id);
+    else if (decision.kind === 'fight') void store.loadFight(decision.ref);
+    else if (decision.kind === 'stored') void store.loadStored(decision.path);
     return () => store.dispose();
   });
 
   function onSignIn(): void {
     window.location.href = battlenetStartUrl(`${window.location.pathname}${window.location.search}`);
+  }
+
+  function onForgetRestored(): void {
+    clearCurrent();
+    restored = false;
   }
 
   // One chunk per tool, resolved from a closed map: `tool` is validated against TOOLS
@@ -155,6 +193,22 @@
 {/snippet}
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-tools-view">
+  {#if restored}
+    <p
+      class="text-muted flex min-h-11 items-center gap-3 px-[18px] text-[13px] md:px-0"
+      data-testid="sim-restored-note"
+    >
+      {currentCharacterCopy.restoredNote}
+      <button
+        type="button"
+        class={`${rowLink} text-nav`}
+        onclick={onForgetRestored}
+        data-testid="sim-restored-forget"
+      >
+        {currentCharacterCopy.forget}
+      </button>
+    </p>
+  {/if}
   {#if store.character !== null && !switcherOpen}
     <CharacterStrip
       character={store.character}

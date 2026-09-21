@@ -9,21 +9,16 @@ describe('SIM_TABS', () => {
   it('carries exactly the six entries task-1-brief.md names, in its order', () => {
     expect(SIM_TABS).toEqual([
       { id: 'quick-sim', label: 'Quick Sim', href: '/sim', supportsCode: true },
-      { id: 'gear', label: 'Top Gear', href: '/sim/gear', supportsCode: false },
-      { id: 'drops', label: 'Droptimizer', href: '/sim/drops', supportsCode: false },
-      { id: 'talents', label: 'Talents', href: '/sim/talents', supportsCode: false },
-      { id: 'weights', label: 'Weights', href: '/sim/weights', supportsCode: false },
+      { id: 'gear', label: 'Top Gear', href: '/sim/gear', supportsCode: true },
+      { id: 'drops', label: 'Droptimizer', href: '/sim/drops', supportsCode: true },
+      { id: 'talents', label: 'Talents', href: '/sim/talents', supportsCode: true },
+      { id: 'weights', label: 'Weights', href: '/sim/weights', supportsCode: true },
       { id: 'specs', label: 'Spec support', href: '/sim/specs', supportsCode: true },
     ]);
   });
 
-  // Fix round 1, Finding A: only SimView.svelte's store (`store.svelte.ts`'s
-  // `fromPlannerCode`) ever reads `?code=`; ToolsView.svelte / bulk-store.svelte.ts never
-  // have. `syncTabHrefs` relies on exactly this split to know which tabs a fallback code is
-  // safe to offer.
-  it('marks only the two SimView-served tabs as able to bootstrap from ?code=', () => {
-    const supportsCode = SIM_TABS.filter((tab) => tab.supportsCode).map((tab) => tab.id);
-    expect(supportsCode).toEqual(['quick-sim', 'specs']);
+  it('marks every tab able to bootstrap from ?code=, now the tools island has loadCode too', () => {
+    expect(SIM_TABS.every((tab) => tab.supportsCode)).toBe(true);
   });
 
   it('reuses KIND_TITLES for gear and drops, so a page title and its tab can never disagree', () => {
@@ -135,16 +130,17 @@ describe('syncTabHrefs', () => {
     for (const tab of SIM_TABS) expect(hrefOf(nav, tab.id)).toBe(tab.href);
   });
 
-  // Fix round 1, Finding A: the fallback code is real ("Quick Sim", "Spec support"), never
-  // an inert query the destination cannot consume ("Top Gear", "Droptimizer", "Talents",
-  // "Weights").
-  it('offers a fallback code only to the tabs whose own destination can bootstrap from it', () => {
+  // Task 4, current-character spec (2026-09-21): the tools island gained its own
+  // `loadCode`, so every tab's own destination can now bootstrap from `?code=` -- the
+  // fallback is real ("Quick Sim", "Spec support") on every one of them, not only the two
+  // SimView-served tabs fix round 1's original split reserved it for.
+  it('offers a fallback code to every tab, now every destination can bootstrap from it', () => {
     const nav = buildStrip();
     syncTabHrefs({ kind: 'addon', ref: '' }, 'FS1:1:warrior:orc:0/0/0:head=1', document);
 
-    expect(hrefOf(nav, 'quick-sim')).toBe('/sim?code=FS1%3A1%3Awarrior%3Aorc%3A0%2F0%2F0%3Ahead%3D1');
-    expect(hrefOf(nav, 'specs')).toBe('/sim/specs?code=FS1%3A1%3Awarrior%3Aorc%3A0%2F0%2F0%3Ahead%3D1');
-    for (const id of ['gear', 'drops', 'talents', 'weights']) expect(hrefOf(nav, id)).toBe(`/sim/${id}`);
+    for (const tab of SIM_TABS) {
+      expect(hrefOf(nav, tab.id)).toBe(`${tab.href}?code=FS1%3A1%3Awarrior%3Aorc%3A0%2F0%2F0%3Ahead%3D1`);
+    }
   });
 
   it('is bare on every tab for a ref-less source with no fallback code either', () => {

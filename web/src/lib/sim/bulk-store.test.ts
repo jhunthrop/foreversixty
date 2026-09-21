@@ -96,6 +96,13 @@ describe('loading a character', () => {
     expect(s.message).not.toBeNull();
     s.dispose();
   });
+
+  it('loadCode adopts a character from an FS1 code, the same as loadAddon does from a paste', async () => {
+    const s = store();
+    await s.loadCode(FURY);
+    expect(s.character?.class_slug).toBe('warrior');
+    s.dispose();
+  });
 });
 
 describe('the cap', () => {

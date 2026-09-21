@@ -38,12 +38,12 @@
   }
 
   /**
-   * The row's own link. Armory is not a loadable source yet (`store.svelte.ts`'s
-   * `bootstrapSource` has no case for it -- see that file's own header note), so following
-   * this URL on its own lands back on this same landing state rather than the character it
-   * names; picking, here or from a link followed elsewhere, is what actually loads one. The
-   * href exists so the row is a real link -- copyable, middle-clickable, opens in a new tab
-   * -- exactly as the design calls for, not so the URL alone reproduces the pick.
+   * The row's own link. Armory is a loadable source (`store.svelte.ts`'s `bootstrapSource`
+   * resolves `armory` through `fromStoredCharacter`, keyed off this same `?source=armory&
+   * ref=<key>` pair -- current-character spec, 2026-09-21), so following this URL on its
+   * own now loads the character it names. The href still exists so the row is a real link
+   * -- copyable, middle-clickable, opens in a new tab -- exactly as the design calls for,
+   * not only so a click handler (`follow`, below) can pick it in place.
    */
   function hrefFor(character: MeCharacter): string {
     return `/sim${simSearch(withSimState(defaultSimState(), { source: 'armory', ref: character.key }))}`;

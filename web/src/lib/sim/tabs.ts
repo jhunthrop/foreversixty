@@ -20,16 +20,13 @@ export interface SimTabEntry {
   readonly label: string;
   readonly href: string;
   /**
-   * Whether this tab's own destination can bootstrap a character from `?code=` -- true for
-   * `quick-sim` and `specs` (SimView.svelte's store, `store.svelte.ts`'s `fromPlannerCode`
-   * branch of its init), false for the four tools-island tabs (ToolsView.svelte /
-   * bulk-store.svelte.ts, which bootstrap only from `?source=&ref=` and have never read
-   * `?code=` at all). `syncTabHrefs` reads this per tab (fix round 1, Finding A) so a
-   * fallback FS1 code -- the only escape hatch for a `ref`-less character -- is never
-   * offered to a tab that cannot consume it: that would be exactly the inert-query problem
-   * this fallback exists to avoid, just moved rather than fixed. Adding `?code=` support
-   * to the tools island is a real feature, not a fix-round-sized change, so it stays out of
-   * scope here.
+   * Whether this tab's own destination can bootstrap a character from `?code=`. Every tab
+   * can, as of the current-character spec (2026-09-21): the tools island
+   * (ToolsView.svelte / bulk-store.svelte.ts) gained its own `loadCode`, matching
+   * SimView.svelte's long-standing `fromPlannerCode` (now `sources.ts`'s
+   * `fromManualCode`). Kept as a field, not simplified away, because `tabStateFor` still
+   * needs to know per tab whether a fallback code is safe to offer -- the day any tab
+   * loses that ability again, this is the one place to flip back.
    */
   readonly supportsCode: boolean;
 }
@@ -41,10 +38,10 @@ export interface SimTabEntry {
  */
 export const SIM_TABS: readonly SimTabEntry[] = [
   { id: 'quick-sim', label: simCopy.tabQuickSim, href: '/sim', supportsCode: true },
-  { id: 'gear', label: KIND_TITLES.gear, href: '/sim/gear', supportsCode: false },
-  { id: 'drops', label: KIND_TITLES.drops, href: '/sim/drops', supportsCode: false },
-  { id: 'talents', label: simCopy.tabTalents, href: '/sim/talents', supportsCode: false },
-  { id: 'weights', label: simCopy.tabWeights, href: '/sim/weights', supportsCode: false },
+  { id: 'gear', label: KIND_TITLES.gear, href: '/sim/gear', supportsCode: true },
+  { id: 'drops', label: KIND_TITLES.drops, href: '/sim/drops', supportsCode: true },
+  { id: 'talents', label: simCopy.tabTalents, href: '/sim/talents', supportsCode: true },
+  { id: 'weights', label: simCopy.tabWeights, href: '/sim/weights', supportsCode: true },
   { id: 'specs', label: simCopy.tabSpecs, href: '/sim/specs', supportsCode: true },
 ];
 
