@@ -3,6 +3,7 @@ package guilds
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 )
@@ -178,5 +179,41 @@ func TestMembershipJobRunsBothSweepsOnStartup(t *testing.T) {
 	pool.QueryRow(ctx, `select count(*) from guild_characters`).Scan(&n)
 	if n != 0 {
 		t.Fatal("Run should perform the first sweep pass synchronously before returning")
+	}
+}
+
+func TestVerifyByLogsRecordsVerifiedByLogs(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	uid := seedUser(t, pool, "logs-source@example.com")
+	gid := seedGuild(t, pool, "Forever")
+	seedCharacter(t, pool, gid, uid, "us/hardcore/logssource", "member", false)
+
+	first := time.Now().Add(-20 * 24 * time.Hour)
+	for i, days := range []float64{20, 5} {
+		id := fmt.Sprintf("logsource%d", i)
+		if _, err := pool.Exec(ctx,
+			`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+			 values ($1, $2, $3, 'guild', 'complete', $4)`,
+			id, uid, gid, first.Add(time.Duration(20-days)*24*time.Hour)); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := pool.Exec(ctx,
+			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`,
+			id, []string{"us/hardcore/logssource"}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := s.VerifyByLogs(ctx); err != nil {
+		t.Fatal(err)
+	}
+	var by string
+	if err := pool.QueryRow(ctx,
+		`select verified_by from guild_characters where character_key = 'us/hardcore/logssource'`).Scan(&by); err != nil {
+		t.Fatal(err)
+	}
+	if by != "logs" {
+		t.Fatalf("verified_by = %q, want logs", by)
 	}
 }

@@ -76,7 +76,7 @@ func (s *Store) VerifyByLogs(ctx context.Context) error {
 
 	rows, err := tx.Query(ctx, `
 		update guild_characters gc
-		set verified_at = now()
+		set verified_at = now(), verified_by = 'logs'
 		where gc.verified_at is null
 		  and (
 		    select count(distinct r2.created_at::date)

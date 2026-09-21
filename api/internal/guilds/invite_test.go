@@ -4,8 +4,12 @@ package guilds
 import (
 	"context"
 	"errors"
+	"fmt"
+	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 )
 
 func TestRotateInviteOnlyAVerifiedOfficerCanReadItAfterwards(t *testing.T) {
@@ -93,5 +97,46 @@ func TestAcceptInviteTwiceForDifferentGuildsTransfersTheSyntheticRow(t *testing.
 	pool.QueryRow(ctx, `select guild_id from guild_characters where character_key = $1`, syntheticKey(uid)).Scan(&guildID)
 	if guildID != g2 {
 		t.Fatalf("guild_id = %d, want %d (the second, most recent invite)", guildID, g2)
+	}
+}
+
+func TestAcceptInviteRecordsVerifiedByInvite(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	token, _, err := s.RotateInvite(ctx, gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	uid := seedUser(t, pool, "invite-source@example.com")
+	if _, err := s.AcceptInvite(ctx, token, uid); err != nil {
+		t.Fatal(err)
+	}
+	var by string
+	if err := pool.QueryRow(ctx,
+		`select verified_by from guild_characters where character_key = $1`, syntheticKey(uid)).Scan(&by); err != nil {
+		t.Fatal(err)
+	}
+	if by != "invite" {
+		t.Fatalf("verified_by = %q, want invite", by)
+	}
+}
+
+func TestRotateInviteIsFrozenDuringAContestedClaim(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	officer := seedUser(t, h.pool, "frozen-rotate@example.com")
+	seedCharacter(t, h.pool, gid, officer, "us/hardcore/frozenrotate", "officer", true)
+	syncMembership(t, h.pool, gid, officer)
+	if _, err := h.pool.Exec(ctx, `update guilds set claim_contested_at = now() where id = $1`, gid); err != nil {
+		t.Fatal(err)
+	}
+	h.actor = auth.Actor{UserID: officer, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, fmt.Sprintf("/v1/guilds/%d/invite/rotate", gid), "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusConflict {
+		t.Fatalf("invite rotate while contested = %d, want 409", res.StatusCode)
 	}
 }

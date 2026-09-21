@@ -4,7 +4,11 @@ package guilds
 import (
 	"context"
 	"errors"
+	"fmt"
+	"net/http"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 )
 
 func TestSettingsReadsTheCurrentGuildState(t *testing.T) {
@@ -70,5 +74,45 @@ func TestUpdateSettingsRederivesEveryCharactersRankAndRecomputesTheAccounts(t *t
 	pool.QueryRow(ctx, `select rank from guild_members where guild_id = $1 and user_id = $2`, gid, uid).Scan(&memberRank)
 	if memberRank != "officer" {
 		t.Fatalf("guild_members.rank = %q, want officer (recomputed in the same call)", memberRank)
+	}
+}
+
+func TestSettingsExposesClaimStateAndPopulatesClaimant(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	claimant := seedUser(t, h.pool, "settings-claimant@example.com")
+	seedCharacter(t, h.pool, gid, claimant, "us/hardcore/settingsclaimant", "leader", true)
+	syncMembership(t, h.pool, gid, claimant)
+	if _, err := h.pool.Exec(ctx, `update guilds set claimed_by = $1 where id = $2`, claimant, gid); err != nil {
+		t.Fatal(err)
+	}
+	h.actor = auth.Actor{UserID: claimant, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/settings", gid), "")
+	var view SettingsView
+	h.data(res, &view)
+	if view.Claim.State != "claimed" {
+		t.Fatalf("claim.state = %q, want claimed", view.Claim.State)
+	}
+	if view.ClaimedBy == nil || view.ClaimedBy.Battletag == "" {
+		t.Fatalf("claimed_by = %v, want populated (this was the bug the review found: always null)", view.ClaimedBy)
+	}
+}
+
+func TestPatchSettingsIsFrozenDuringAContestedClaim(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	officer := seedUser(t, h.pool, "frozen-settings@example.com")
+	seedCharacter(t, h.pool, gid, officer, "us/hardcore/frozensettings", "officer", true)
+	syncMembership(t, h.pool, gid, officer)
+	if _, err := h.pool.Exec(ctx, `update guilds set claim_contested_at = now() where id = $1`, gid); err != nil {
+		t.Fatal(err)
+	}
+	h.actor = auth.Actor{UserID: officer, Role: "user", Method: "session"}
+	res := h.do(http.MethodPatch, fmt.Sprintf("/v1/guilds/%d/settings", gid), `{"default_visibility":"public"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusConflict {
+		t.Fatalf("patch settings while contested = %d, want 409", res.StatusCode)
 	}
 }

@@ -100,10 +100,12 @@ func (s *Store) AcceptInvite(ctx context.Context, token string, userID int64) (I
 		}
 	}
 	if _, err := tx.Exec(ctx,
-		`insert into guild_characters (guild_id, character_key, user_id, rank, source, verified_at, refreshed_at)
-		 values ($1, $2, $3, 'member', 'invite', now(), now())
+		`insert into guild_characters (guild_id, character_key, user_id, rank, source, verified_at, verified_by, refreshed_at)
+		 values ($1, $2, $3, 'member', 'invite', now(), 'invite', now())
 		 on conflict (guild_id, character_key) do update set
-		   user_id = excluded.user_id, refreshed_at = now(), verified_at = coalesce(guild_characters.verified_at, now())`,
+		   user_id = excluded.user_id, refreshed_at = now(),
+		   verified_at = coalesce(guild_characters.verified_at, now()),
+		   verified_by = coalesce(guild_characters.verified_by, 'invite')`,
 		g.ID, key, userID); err != nil {
 		return InviteAccept{}, fmt.Errorf("guilds: accept invite: %w", err)
 	}
@@ -131,6 +133,14 @@ func (s *Service) rotateInvite(w http.ResponseWriter, r *http.Request) {
 	if !allowed {
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
 			"you must be a verified officer of this guild to rotate its invite link", nil)
+		return
+	}
+	if contested, err := s.Store.contested(r.Context(), guildID); err != nil {
+		s.fail(w, r, "rotate_invite", err, "could not rotate that invite just now")
+		return
+	} else if contested {
+		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
+			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
 		return
 	}
 	token, rotatedAt, err := s.Store.RotateInvite(r.Context(), guildID)

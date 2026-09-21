@@ -51,6 +51,7 @@ type SettingsView struct {
 	OfficerMaxRankIndex int               `json:"officer_max_rank_index"`
 	ClaimedBy           *MemberRef        `json:"claimed_by"`
 	ClaimPending        *ClaimPendingView `json:"claim_pending"`
+	Claim               ClaimStateView    `json:"claim"`
 	Invite              InviteView        `json:"invite"`
 }
 
@@ -62,6 +63,7 @@ func (s *Store) Settings(ctx context.Context, guildID int64) (SettingsView, erro
 	return SettingsView{
 		DefaultVisibility: g.DefaultVisibility, OfficerMaxRankIndex: g.OfficerMaxRankIndex,
 		Invite: InviteView{RotatedAt: g.InviteTokenRotatedAt},
+		Claim:  claimState(g, time.Now()),
 	}, nil
 }
 
@@ -152,6 +154,23 @@ func (s *Service) getSettings(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "settings", err, "could not read those settings just now")
 		return
 	}
+	g, err := s.Store.getGuild(r.Context(), guildID)
+	if err != nil {
+		s.fail(w, r, "settings", err, "could not read those settings just now")
+		return
+	}
+	if g.ClaimedBy != nil {
+		if u, err := s.Accounts.User(r.Context(), *g.ClaimedBy); err == nil {
+			view.ClaimedBy = &MemberRef{Battletag: u.PublicName()}
+		}
+	}
+	if g.pendingActive(time.Now()) {
+		if u, err := s.Accounts.User(r.Context(), *g.ClaimPendingBy); err == nil {
+			view.ClaimPending = &ClaimPendingView{
+				By: MemberRef{Battletag: u.PublicName()}, ExpiresAt: g.ClaimRequestedAt.Add(ClaimPendingTTL),
+			}
+		}
+	}
 	httpx.WriteOK(w, r, http.StatusOK, view)
 }
 
@@ -174,6 +193,14 @@ func (s *Service) patchSettings(w http.ResponseWriter, r *http.Request) {
 	if !allowed {
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden",
 			"you must be a verified officer of this guild to change its settings", nil)
+		return
+	}
+	if contested, err := s.Store.contested(r.Context(), guildID); err != nil {
+		s.fail(w, r, "patch_settings", err, "could not change those settings just now")
+		return
+	} else if contested {
+		httpx.WriteError(w, r, http.StatusConflict, "claim_contested",
+			"this guild's claim is contested; officer actions are frozen until a moderator resolves it", nil)
 		return
 	}
 	var in settingsPatchInput
