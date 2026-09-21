@@ -156,7 +156,41 @@ cover a handful of encounters today and need one per raid boss before December 9
 curation is the long pole, and the drafting tool that proposes a table from a log already
 exists.
 
-### 3.5 Consent
+### 3.5 Ratings in game (the Raider.IO model; owner's direction, 2026-09-21)
+
+An addon cannot reach the network, so ratings reach the game as a file, the way Raider.IO's
+scores do. The companion already moves data both ways between the site and the addon (a
+build from the site arrives in game through `ForeverSixtyInbox`; an export leaves through
+the addon's saved variables), so this is the same mechanism with a bigger file.
+
+- **The snapshot.** A nightly job (Cloud Run job on a scheduler, like `sim-validate`) builds
+  one compact file per region and ruleset: every player with a public rating, as overall
+  score, role, the six parts, best bosses and the snapshot date. Same visibility rule as the
+  site: public reports only, `anonymize` honoured. Published to R2 under a content-hashed
+  name with a small manifest beside it.
+- **Auto-update by the desktop app.** The companion checks the manifest when it starts and
+  on a timer (conditional request, so an unchanged night costs nothing), downloads a new
+  snapshot, and writes it into a data-only addon folder beside ours
+  (`ForeverSixty_Ratings`, load-on-demand) by writing a temporary file and renaming it, so
+  the game can never read half a file. It does this for every WoW install it already
+  watches. The companion's own self-update is unchanged.
+- **Without the companion.** A weekly snapshot ships inside the addon's CurseForge and Wago
+  releases (the release workflow already exists), so the feature works, a little staler,
+  for players who never install the desktop app.
+- **In game.** The score in the unit tooltip, the group finder's applicant list, the guild
+  roster, `/who` and the chat right-click menu; a modifier key expands it to the six parts;
+  every tooltip carries "as of <date>". The game reads addon files only at login or
+  `/reload`, so the addon says when a newer snapshot is waiting rather than pretending to
+  be live.
+- **Size.** Small at launch. If it grows, split by realm, as Raider.IO splits by region and
+  faction; the manifest makes that a data change, not an addon change.
+- **Free,** like Raider.IO's: it is what spreads the addon. A whole-raid roster check in
+  game belongs to the same paid tier as the roster check on the site.
+- **To verify in the beta client:** that a load-on-demand, data-only addon behaves there as
+  it does on the modern client, and the tooltip and group-finder hooks available at
+  Interface 16001.
+
+### 3.6 Consent
 
 A raider's gear and bags are theirs. A member chooses what officers can see: **roster only**
 (name, class, spec), **gear** (default), or **gear and bags** (needed for consumable
@@ -213,7 +247,7 @@ a premium perk only if ads exist).
 
 ### 4.3 Sequence
 
-1. **Guild membership and the free guild home** (3.1, 3.2, 3.5). No payments needed; makes
+1. **Guild membership and the free guild home** (3.1, 3.2, 3.6). No payments needed; makes
    `guild` visibility real; gives every later piece its audience. About one lane.
 2. **Entitlements + payments + the premium page** with the player plan, gating what is
    already built (server sims) plus retention. About one lane, API-heavy, security review
