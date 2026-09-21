@@ -332,6 +332,10 @@
           </div>
         {/if}
 
+        {#if !showContestConfirm && contestError !== ''}
+          <p class="text-[13px]" role="alert" data-testid="guild-home-contest-error">{contestError}</p>
+        {/if}
+
         {#if showContestConfirm}
           <div
             class="border-line-soft flex flex-col gap-3 border p-4"
