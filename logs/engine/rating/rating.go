@@ -113,10 +113,10 @@ type Card struct {
 
 // Component is one of the six parts of a Card (spec §4.1, verbatim).
 type Component struct {
-	Name       string   // "output" | "survival" | "mechanics" | "utility" | "preparation" | "activity"
-	Score      float64  // 0-100; meaningless if Excluded
-	Weight     float64  // the *renormalised* weight actually applied
-	Basis      string   // "percentile" | "absolute" | ""
+	Name       string  // "output" | "survival" | "mechanics" | "utility" | "preparation" | "activity"
+	Score      float64 // 0-100; meaningless if Excluded
+	Weight     float64 // the *renormalised* weight actually applied
+	Basis      string  // "percentile" | "absolute" | ""
 	Percentile *float64
 	BracketN   int64
 	Excluded   bool
