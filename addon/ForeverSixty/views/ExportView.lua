@@ -110,7 +110,7 @@ local function layout(parent, width)
 	view.saved = under(Widgets.label(parent, "", "muted", "small"), view.professions, parent, gap)
 	view.reason = under(Widgets.label(parent, "", "warning", "small"), view.saved, parent, padding)
 	view.box = Widgets.editBox(parent, width, Theme.SIZES.editBoxHeight, true)
-	view.box:SetPoint("TOPLEFT", view.reason, "BOTTOMLEFT", 0, -gap)
+	Widgets.field(view.box):SetPoint("TOPLEFT", view.saved, "BOTTOMLEFT", 0, -padding)
 	return view
 end
 
@@ -125,10 +125,10 @@ function ExportView.apply(view, model)
 	view.reason:SetText(model.reason or "")
 	if model.code == nil then
 		view.reason:Show()
-		view.box:Hide()
+		Widgets.field(view.box):Hide()
 	else
 		view.reason:Hide()
-		view.box:Show()
+		Widgets.field(view.box):Show()
 		-- Text only. Focus is taken by the Copy button, never by a redraw.
 		Widgets.setText(view.box, model.code)
 	end
@@ -158,7 +158,7 @@ function ExportView.mount(parent, ctx)
 	view.copy = Widgets.button(parent, L.exportCopy, function(button)
 		onCopy(view, button)
 	end)
-	view.copy:SetPoint("TOPLEFT", view.box, "BOTTOMLEFT", 0, -Theme.SIZES.gap)
+	view.copy:SetPoint("TOPLEFT", Widgets.field(view.box), "BOTTOMLEFT", 0, -Theme.SIZES.padding)
 	function view.refresh()
 		return ExportView.apply(view, ExportView.summary(ctx.data))
 	end

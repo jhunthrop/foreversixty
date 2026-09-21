@@ -251,4 +251,13 @@ describe("FollowView", function()
 		view.refresh()
 		assert.is_false(view.tracker.checked)
 	end)
+	-- Found in game: pressing Load on an empty box showed the decoder's
+	-- "That code is unlabelled" error over an empty field.
+	it("asks for a code rather than reporting a bad one when the box is empty", function()
+		start()
+		local view = FollowView.mount(_G.CreateFrame("Frame"), ctxFor())
+		view.code:SetText("   ")
+		view.load:GetScript("OnClick")(view.load)
+		assert.are.equal(L.followPasteFirst, view.error:GetText())
+	end)
 end)

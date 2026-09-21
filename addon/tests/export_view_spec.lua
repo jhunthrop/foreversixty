@@ -174,7 +174,7 @@ describe("ExportView", function()
 		start({ class = { name = "Skyborne", token = "SKYBORNE" } })
 		local view = ExportView.mount(_G.CreateFrame("Frame"),
 			{ data = DATA, contentWidth = 520, select = function() end })
-		assert.is_false(view.box:IsShown())
+		assert.is_false(view.box.foreverSixtyField:IsShown())
 		assert.is_false(view.copy:IsEnabled())
 		assert.is_truthy(view.reason:GetText():find("skyborne", 1, true))
 		assert.is_true(view.reason:IsShown())

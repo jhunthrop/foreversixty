@@ -87,7 +87,8 @@ local L = {
 
 	-- Follow
 	followTitle = "Next point",
-	followNone = "No build loaded. Paste an addon code with /fs follow <code>.",
+	followNone = "No build loaded. Paste a build code above and press Load.",
+	followPasteFirst = "Paste a build code first.",
 	followDone = "This build is finished; every point is spent.",
 	followNext = "%s (%s, tier %d)",
 	followLoaded = "Loaded %s: %d points.",

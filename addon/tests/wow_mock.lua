@@ -225,7 +225,11 @@ function mock.install(state)
 		end
 		local frame = {
 			kind = kind, name = name, parent = parent, template = template,
-			shown = true, enabled = true, focused = false,
+			-- A real EditBox is created with auto-focus ON and takes the
+			-- keyboard the moment it exists. Found in game: the addon turned
+			-- auto-focus off afterwards but never gave the focus back, so
+			-- opening the window killed every keybind.
+			shown = true, enabled = true, focused = (kind == "EditBox"), autoFocus = (kind == "EditBox"),
 			calls = {}, children = {}, regions = {}, points = {}, events = {},
 		}
 		function frame:SetText(value)
@@ -257,6 +261,9 @@ function mock.install(state)
 		function frame:Show()
 			record(self, "Show")
 			self.shown = true
+			if self.kind == "EditBox" and self.autoFocus then
+				self.focused = true
+			end
 		end
 		function frame:Hide()
 			record(self, "Hide")
@@ -279,6 +286,10 @@ function mock.install(state)
 		function frame:SetFocus()
 			record(self, "SetFocus")
 			self.focused = true
+		end
+		function frame:SetAutoFocus(value)
+			record(self, "SetAutoFocus", value)
+			self.autoFocus = value
 		end
 		function frame:ClearFocus()
 			record(self, "ClearFocus")

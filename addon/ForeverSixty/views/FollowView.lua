@@ -123,10 +123,10 @@ end
 local function layout(parent, ctx)
 	local gap, padding = Theme.SIZES.gap, Theme.SIZES.padding
 	local view = { frame = parent, ctx = ctx }
-	view.code = Widgets.editBox(parent, ctx.contentWidth, Theme.SIZES.buttonHeight, false)
-	view.code:SetPoint("TOPLEFT", parent, "TOPLEFT", padding, -padding)
+	view.code = Widgets.editBox(parent, ctx.contentWidth, Theme.SIZES.buttonHeight, false, true)
+	Widgets.field(view.code):SetPoint("TOPLEFT", parent, "TOPLEFT", padding, -padding)
 	view.hint = Widgets.label(parent, L.followPasteHint, "muted", "small")
-	view.hint:SetPoint("TOPLEFT", view.code, "BOTTOMLEFT", 0, -gap)
+	view.hint:SetPoint("TOPLEFT", Widgets.field(view.code), "BOTTOMLEFT", 0, -gap)
 	view.error = Widgets.label(parent, "", "warning", "small")
 	view.error:SetPoint("TOPLEFT", view.hint, "BOTTOMLEFT", 0, -gap)
 	view.inbox = Widgets.label(parent, L.followInbox, "gold", "small")
@@ -135,7 +135,7 @@ local function layout(parent, ctx)
 	view.name:SetPoint("TOPLEFT", view.inbox, "BOTTOMLEFT", 0, -padding)
 	view.progress = Widgets.label(parent, "", "muted", "small")
 	view.progress:SetPoint("TOPLEFT", view.name, "BOTTOMLEFT", 0, -gap)
-	view.list = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.listRows)
+	view.list = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.followRows)
 	view.list.frame:SetPoint("TOPLEFT", view.progress, "BOTTOMLEFT", 0, -gap)
 	view.list:SetRenderer(renderRow)
 	return view
@@ -160,7 +160,18 @@ function FollowView.apply(view, model)
 	return view
 end
 
+--- An empty box is not a bad code: pressing Load with nothing pasted says
+--- what to do, where the first in-game screenshot showed a decoder error
+--- ("That code is unlabelled") over an empty field.
+local function isBlank(code)
+	return code == nil or code:match("^%s*$") ~= nil
+end
+
 local function loadCode(view, code, name)
+	if isBlank(code) then
+		view.error:SetText(L.followPasteFirst)
+		return nil
+	end
 	local build, message = Follow.load(code, view.ctx.data, name)
 	view.error:SetText(build == nil and message or "")
 	-- A refusal must not clear a build already loaded: the player still

@@ -195,14 +195,14 @@ local function layout(parent, ctx)
 	view.equippedHeader = Widgets.label(parent, L.gearEquipped, "muted", "small")
 	view.equippedHeader:SetPoint("LEFT", view.plannedHeader, "RIGHT",
 		math.floor(ctx.contentWidth / 2), 0)
-	view.slots = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.listRows, GearView.slotColumns)
+	view.slots = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.gearSlotRows, GearView.slotColumns)
 	view.slots.frame:SetPoint("TOPLEFT", view.plannedHeader, "BOTTOMLEFT", 0, -gap)
 	view.slots:SetRenderer(renderSlot)
 	view.bagsTitle = Widgets.label(parent, L.gearBagUpgrades, "gold", "small")
 	view.bagsTitle:SetPoint("TOPLEFT", view.slots.frame, "BOTTOMLEFT", 0, -padding)
 	view.combat = Widgets.label(parent, "", "warning", "small")
 	view.combat:SetPoint("LEFT", view.bagsTitle, "RIGHT", gap, 0)
-	view.upgrades = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.listRows,
+	view.upgrades = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.gearUpgradeRows,
 		GearView.upgradeRow)
 	view.upgrades.frame:SetPoint("TOPLEFT", view.bagsTitle, "BOTTOMLEFT", 0, -gap)
 	view.upgrades:SetRenderer(renderUpgrade)

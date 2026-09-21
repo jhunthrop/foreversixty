@@ -17,6 +17,12 @@ local Theme = {}
 --- The site's palette, web/src/styles/tokens.css, as six hex digits.
 Theme.HEX = {
 	background = "0d111a",
+	--- A field the player reads or types in: darker than the window, so it
+	--- reads as set into it.
+	inset = "070a10",
+	--- A button at rest, and under the cursor.
+	raised = "161c2b",
+	hover = "1f2739",
 	border = "262e40",
 	titleTop = "131824",
 	titleBottom = "0d111a",
@@ -35,18 +41,27 @@ Theme.ALPHA = {
 
 Theme.SIZES = {
 	windowWidth = 560,
-	windowHeight = 420,
+	windowHeight = 460,
 	titleBarHeight = 28,
+	--- The two lines under the title bar: who this is, and which data build.
+	headerHeight = 40,
 	tabHeight = 24,
+	tabUnderline = 2,
+	closeButton = 18,
 	tabWidth = 96,
 	border = 1,
 	padding = 12,
 	gap = 4,
 	rowHeight = 18,
-	listRows = 12,
+	--- Rows per list, chosen so each page fits the window under the tab
+	--- strip: the Follow list sits between the paste field and its buttons,
+	--- and the Gear page stacks two lists. The lists scroll with the wheel.
+	followRows = 9,
+	gearSlotRows = 9,
+	gearUpgradeRows = 6,
 	buttonHeight = 22,
 	buttonWidth = 150,
-	editBoxHeight = 48,
+	editBoxHeight = 72,
 	iconSize = 16,
 	trackerWidth = 240,
 	trackerHeight = 48,
@@ -69,11 +84,14 @@ Theme.FONTS = {
 Theme.FALLBACK_FONT = { path = "Fonts\\FRIZQT__.TTF", size = 12 }
 
 --- Every template this addon will ever ask for, by the key callers use.
-Theme.TEMPLATES = {
-	tab = "PanelTabButtonTemplate",
-	button = "UIPanelButtonTemplate",
-	editBox = "InputBoxTemplate",
-}
+--- Empty on purpose. The first in-game screenshots showed what the
+--- client's stock templates do to this window: a red action button, gold
+--- tabs hanging off the bottom edge and a one-line input with the export
+--- spilling out of it, none of it the site's design. Buttons, tabs and
+--- fields are drawn by Widgets from flat textures instead, which also
+--- means one code path to test. createFrame keeps the lookup so a template
+--- can be named here again without touching a caller.
+Theme.TEMPLATES = {}
 
 Theme.MEDIA = { minimapIcon = "Interface\\AddOns\\ForeverSixty\\media\\minimap" }
 

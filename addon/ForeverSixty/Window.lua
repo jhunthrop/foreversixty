@@ -151,6 +151,10 @@ local function buildTitleBar(frame)
 	Theme.gradient(bar, "titleTop", "titleBottom")
 	Window.title = Widgets.label(bar, L.addonName, "gold")
 	Window.title:SetPoint("LEFT", bar, "LEFT", Theme.SIZES.padding, 0)
+	Window.closeButton = Widgets.closeButton(bar, function()
+		Window.close()
+	end)
+	Window.closeButton:SetPoint("RIGHT", bar, "RIGHT", -Theme.SIZES.gap, 0)
 	return bar
 end
 
@@ -170,15 +174,36 @@ local function buildHeader(frame)
 	return frame
 end
 
+--- How far below the window's top edge the tab strip starts, and where
+--- the page under it starts. The strip sits under the header, inside the
+--- window: the first in-game screenshot showed tabs anchored to the bottom
+--- edge hanging half outside the frame and covering a page's own buttons.
+function Window.tabStripTop()
+	return Theme.SIZES.titleBarHeight + Theme.SIZES.headerHeight
+end
+
+function Window.pageTop()
+	return Window.tabStripTop() + Theme.SIZES.tabHeight
+end
+
+function Window.pageHeight()
+	return Theme.SIZES.windowHeight - Window.pageTop()
+end
+
 local function buildTabs(frame)
 	for index, tab in ipairs(Window.TABS) do
 		local button = Widgets.tab(frame, L[tab.label], function()
 			Window.select(tab.name)
 		end)
-		button:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT",
-			Theme.SIZES.padding + (index - 1) * Theme.SIZES.tabWidth, 0)
+		button:SetPoint("TOPLEFT", frame, "TOPLEFT",
+			Theme.SIZES.padding + (index - 1) * Theme.SIZES.tabWidth, -Window.tabStripTop())
 		Window.tabs[tab.name] = button
 	end
+	local rule = Theme.texture(frame, "ARTWORK", "border")
+	rule:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, -Window.pageTop())
+	rule:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 0, -Window.pageTop())
+	rule:SetHeight(Theme.SIZES.border)
+	Window.tabRule = rule
 	return frame
 end
 
@@ -211,11 +236,11 @@ function Window.ensure()
 end
 
 function Window.mountPage(name)
+	-- The holder spans the window; each page pads its own content by
+	-- Theme.SIZES.padding, which is what contentWidth already allows for.
 	local holder = CreateFrame("Frame", nil, Window.frame)
-	holder:SetSize(Window.contentWidth(),
-		Theme.SIZES.windowHeight - Theme.SIZES.titleBarHeight - Theme.SIZES.tabHeight)
-	holder:SetPoint("TOPLEFT", Window.frame, "TOPLEFT",
-		Theme.SIZES.padding, -(Theme.SIZES.titleBarHeight + Theme.SIZES.padding * 3))
+	holder:SetSize(Theme.SIZES.windowWidth, Window.pageHeight())
+	holder:SetPoint("TOPLEFT", Window.frame, "TOPLEFT", 0, -Window.pageTop())
 	return Window.VIEWS[name].mount(holder, Window.context())
 end
 

@@ -221,4 +221,48 @@ describe("Window", function()
 		assert.are.equal(Prefs.DEFAULTS.window.x, last[4])
 		assert.are.equal(Prefs.DEFAULTS.window.y, last[5])
 	end)
+	-- Found in game: tabs anchored to the bottom edge hung half outside the
+	-- frame and covered a page's own buttons, and there was no way to close
+	-- the window but Escape.
+	describe("layout", function()
+		it("keeps the tab strip and the page inside the window", function()
+			start()
+			Window.open()
+			local S = Theme.SIZES
+			assert.is_true(Window.tabStripTop() >= S.titleBarHeight + S.headerHeight)
+			assert.are.equal(S.windowHeight, Window.pageTop() + Window.pageHeight())
+			assert.is_true(Window.pageHeight() > 0)
+			for _, tab in pairs(Window.tabs) do
+				local point = tab.points[#tab.points]
+				assert.are.equal("TOPLEFT", point[1])
+				assert.are.equal(-Window.tabStripTop(), point[5])
+			end
+		end)
+
+		it("leaves each page room for its own padding inside the window", function()
+			start()
+			local S = Theme.SIZES
+			assert.are.equal(S.windowWidth, Window.contentWidth() + S.padding * 2)
+		end)
+
+		it("gives each page lists that fit under the tab strip", function()
+			start()
+			local S = Theme.SIZES
+			local room = Window.pageHeight() - S.padding * 2
+			-- Gear: two header lines, two lists, the gap between them.
+			local gear = (S.gearSlotRows + S.gearUpgradeRows) * S.rowHeight + S.rowHeight * 3 + S.padding
+			assert.is_true(gear <= room, "the Gear page is taller than the window")
+			-- Follow: the paste field, five text lines, the list, a button row and a toggle row.
+			local follow = S.buttonHeight * 3 + S.rowHeight * 5 + S.followRows * S.rowHeight + S.padding
+			assert.is_true(follow <= room, "the Follow page is taller than the window")
+		end)
+
+		it("closes from the title bar", function()
+			start()
+			Window.open()
+			assert.is_true(Window.isOpen())
+			Window.closeButton:GetScript("OnClick")(Window.closeButton)
+			assert.is_false(Window.isOpen())
+		end)
+	end)
 end)
