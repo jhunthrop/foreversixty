@@ -13,6 +13,10 @@ ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Follow = ns.Follow or require("Follow")
 local Talents = ns.Talents or require("Talents")
+local Theme = ns.Theme or require("Theme")
+local Widgets = ns.Widgets or require("Widgets")
+local Prefs = ns.Prefs or require("Prefs")
+local Window = ns.Window or require("Window")
 
 local Toast = {}
 
@@ -71,6 +75,91 @@ end
 --- "cannot tell" and never fires; only a confirmed rise does.
 function Toast.grewSince(previous, current)
 	return previous ~= nil and current ~= nil and current > previous
+end
+
+Toast.FRAME_NAME = "ForeverSixtyToast"
+Toast.WIDTH = 320
+Toast.HEIGHT = 32
+Toast.FADE_SECONDS = 5
+Toast.TOP_OFFSET = -80
+
+function Toast.ensure()
+	if Toast.frame ~= nil then
+		return Toast.frame
+	end
+	local frame = Widgets.panel(UIParent, Toast.WIDTH, Toast.HEIGHT, Toast.FRAME_NAME)
+	frame:SetFrameStrata("HIGH")
+	frame:SetPoint("TOP", UIParent, "TOP", 0, Toast.TOP_OFFSET)
+	frame:EnableMouse(true)
+	frame:SetScript("OnMouseUp", function()
+		Window.open("follow")
+	end)
+	Toast.frame = frame
+	Toast.text = Widgets.label(frame, "", "gold", "small")
+	Toast.text:SetPoint("CENTER", frame, "CENTER", 0, 0)
+	frame:Hide()
+	return frame
+end
+
+function Toast.hide()
+	if Toast.frame ~= nil then
+		Toast.frame:Hide()
+	end
+	return nil
+end
+
+--- Show `model` now, or hold it until combat ends: the design's combat
+--- rule applies to a toast popping up mid-fight just as much as to a
+--- protected action.
+function Toast.show(model)
+	if model == nil or not Prefs.flag("toast") then
+		return nil
+	end
+	if Theme.inCombat() then
+		Toast.pending = model
+		return nil
+	end
+	local frame = Toast.ensure()
+	Toast.text:SetText(model.text)
+	frame:Show()
+	Theme.after(Toast.FADE_SECONDS, Toast.hide)
+	return model
+end
+
+function Toast.flushPending()
+	local model = Toast.pending
+	Toast.pending = nil
+	if model ~= nil then
+		Toast.show(model)
+	end
+	return model
+end
+
+local function currentLevel()
+	if type(UnitLevel) ~= "function" then
+		return nil
+	end
+	return UnitLevel("player")
+end
+
+--- Always fires (if a build is loaded): PLAYER_LEVEL_UP is never
+--- ambiguous. Resets the baseline so the very next refresh() does not
+--- immediately fire again for the same point.
+function Toast.onLevelUp(data, level)
+	Toast.baseline = Toast.unspentPoints()
+	return Toast.show(Toast.model(data, Follow.build, Talents.readRanks(data), level or currentLevel()))
+end
+
+--- Called on every talent-ish event; fires only on a confirmed rise in the
+--- unspent count.
+function Toast.refresh(data)
+	local current = Toast.unspentPoints()
+	local fire = Toast.grewSince(Toast.baseline, current)
+	Toast.baseline = current
+	if not fire then
+		return nil
+	end
+	return Toast.show(Toast.model(data, Follow.build, Talents.readRanks(data), currentLevel()))
 end
 
 ns.Toast = Toast

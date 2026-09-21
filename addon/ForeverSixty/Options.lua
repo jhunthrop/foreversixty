@@ -16,6 +16,7 @@ local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Tooltip = ns.Tooltip or require("Tooltip")
+local Toast = ns.Toast or require("Toast")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
 local Theme = ns.Theme or require("Theme")
@@ -131,13 +132,18 @@ end
 Options.EVENTS = {
 	"PLAYER_LOGIN", "PLAYER_LOGOUT", "PLAYER_ENTERING_WORLD",
 	"PLAYER_TALENT_UPDATE", "TRAIT_CONFIG_UPDATED", "PLAYER_LEVEL_UP",
+	"PLAYER_REGEN_ENABLED",
 }
 
-function Options.onEvent(_, event)
+function Options.onEvent(_, event, ...)
 	if event == "PLAYER_LOGOUT" then
 		if Prefs.flag("autoSave") then
 			Export.save(Options.data)
 		end
+		return
+	end
+	if event == "PLAYER_REGEN_ENABLED" then
+		Toast.flushPending()
 		return
 	end
 	if event == "PLAYER_LOGIN" then
@@ -146,8 +152,12 @@ function Options.onEvent(_, event)
 		SettingsView.register(Window.context())
 		MinimapButton.refresh()
 	end
+	if event == "PLAYER_LEVEL_UP" then
+		Toast.onLevelUp(Options.data, ...)
+	end
 	Tracker.refresh(Options.data)
 	TalentGlow.refresh(Options.data)
+	Toast.refresh(Options.data)
 	Window.refresh()
 end
 
