@@ -262,10 +262,12 @@ a premium perk only if ads exist).
 2. **Payments.** A hosted checkout and customer portal (Stripe is the default choice:
    subscriptions, tax, the portal, webhooks; we store a customer id and never a card).
    Webhooks write entitlements; the site never trusts the browser about payment.
-   **DECIDE: Stripe, or Patreon as the first step.** Patreon is a weekend to wire (OAuth plus
-   a membership check) and costs more per dollar; Stripe is the right long-term answer and
-   about two weeks with tax, receipts, dunning and the portal. Recommendation: Stripe, since
-   the guild plan needs seats-free group billing Patreon cannot express.
+   **DECIDED 2026-09-21: Stripe.** The merchant of record is **COMMISH LLC**; its legal name
+   appears on the premium page footer, the terms, the privacy policy, the refund policy,
+   Stripe receipts and the card statement descriptor (a short form such as
+   `FOREVERSIXTY` with COMMISH LLC as the account's legal entity). Stripe Tax handles sales
+   tax and VAT; Stripe's hosted Checkout and Customer Portal mean the site never sees or
+   stores a card.
 3. **A premium page** (`/premium`) that says what is free forever first, then the two
    plans, then the honest FAQ (refunds, cancelling keeps access to period end, what happens
    to long-retention logs if you stop: they fall back to 90 days after a 30-day grace).
@@ -296,11 +298,14 @@ plan in November; the first two officer tools by December 9.
 ## 5. Open questions for the owner
 
 1. Prices (4.1).
-2. Stripe or Patreon first (4.2).
+2. ANSWERED 2026-09-21: Stripe, under COMMISH LLC.
 3. Ads on reference pages: ever? (4.1)
 4. ANSWERED 2026-09-21: the flagship is the performance analyzer (3.4); the loot council
    helper is second.
 5. Launch timing (4.3).
-6. A legal entity and a payments account: the processor needs a business or sole-prop
-   identity, a bank account and a support email. That is yours to set up; nothing here
-   starts taking money without it.
+6. PARTLY ANSWERED 2026-09-21: the entity is COMMISH LLC. Still the owner's to do: the
+   Stripe account under COMMISH LLC (EIN, bank account, a support email and a public
+   business address or registered agent address for receipts), Stripe Tax registration
+   where required, and the keys into Google Secret Manager (never pasted into chat:
+   `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`; the publishable key is public). Build and
+   test run entirely against Stripe test mode until then.
