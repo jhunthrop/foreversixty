@@ -847,3 +847,46 @@ describe('plannerHrefFor', () => {
     expect(code.includes('professions=')).toBe(false);
   });
 });
+
+describe('toCharacterSpec: a consumable only ever reaches a class that can use it', () => {
+  // Production, four specs at once: the Raid-buffed preset's physical half carries a Mighty
+  // Rage Potion, and the engine adds rage to a rage bar a rogue, hunter, shaman or paladin
+  // does not have -- a nil dereference, shown to the player as a Go stack trace.
+  const base: SimCharacter = {
+    name: 'Thrallgar',
+    spec: 'warrior-fury',
+    class_slug: 'warrior',
+    race_slug: 'orc',
+    talent_level: 60,
+    tree_version: BUILD,
+    point_order: [],
+    gear: {},
+    gear_slots: [],
+    buffs: [],
+    consumables: [],
+    source,
+    professions: [],
+    bags: [],
+    bank: [],
+    sets: [],
+    loadouts: [],
+  };
+
+  it('never sends a rage potion for a class with no rage bar', async () => {
+    const index = indexTalents(await warriorTalents());
+    for (const class_slug of ['rogue', 'hunter', 'shaman', 'paladin', 'mage']) {
+      const spec = toCharacterSpec({ ...base, class_slug }, index, [], [...PHYSICAL_CONSUMABLES]);
+      expect(spec.consumes).not.toContain('mighty_rage_potion');
+      // Nothing else is touched.
+      expect(spec.consumes).toEqual(PHYSICAL_CONSUMABLES.filter((id) => id !== 'mighty_rage_potion'));
+    }
+  });
+
+  it('keeps it for the two classes that have rage', async () => {
+    const index = indexTalents(await warriorTalents());
+    for (const class_slug of ['warrior', 'druid']) {
+      const spec = toCharacterSpec({ ...base, class_slug }, index, [], [...PHYSICAL_CONSUMABLES]);
+      expect(spec.consumes).toContain('mighty_rage_potion');
+    }
+  });
+});

@@ -291,6 +291,24 @@ export function ranksFromTalentsString(talents: string): number[][] {
  * had scheduled something and found nothing, when the truth is "every cooldown on
  * cooldown", which is what an absent field means to the engine (contract 1.7).
  */
+/** The two classes with a rage bar. A druid has one in bear form, which the engine models. */
+const RAGE_CLASSES: ReadonlySet<string> = new Set(['warrior', 'druid']);
+/** Consumables that do nothing but add rage. */
+const RAGE_CONSUMABLES: ReadonlySet<string> = new Set(['mighty_rage_potion']);
+
+/**
+ * The consumables this class can actually use. In game a rogue who drinks a rage potion gets
+ * nothing, so leaving it out of the request is what happened, not a rewrite of what the
+ * player asked for -- and it has to be left out, because the engine adds the rage to a rage
+ * bar that only a warrior or a druid has and dereferences nil for everyone else. Every
+ * request is built here, so the Raid-buffed preset, a Custom panel tick and a saved sim's
+ * re-run all pass through the one guard.
+ */
+export function usableConsumables(classSlug: string, consumes: readonly string[]): string[] {
+  if (RAGE_CLASSES.has(classSlug)) return [...consumes];
+  return consumes.filter((id) => !RAGE_CONSUMABLES.has(id));
+}
+
 export function toCharacterSpec(
   character: SimCharacter,
   index: TalentIndex,
@@ -313,7 +331,7 @@ export function toCharacterSpec(
         ? character.gear_slots.map((slot) => ({ ...slot }))
         : gearSlots(character.gear),
     buffs: [...buffs],
-    consumes: [...consumes],
+    consumes: usableConsumables(character.class_slug, consumes),
     // Still omitted when empty, for the reason the original comment gives: an empty list
     // would claim we had looked and found none.
     ...(character.professions.length === 0 ? {} : { professions: [...character.professions] }),

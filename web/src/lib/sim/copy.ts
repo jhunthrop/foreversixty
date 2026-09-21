@@ -196,6 +196,10 @@ export const simCopy = {
   // The landing state's companion line when fromStoredCharacter refuses for want of a race.
   landingNoRace: 'Paste your addon export instead; it carries your race.',
 
+  /** The engine panicked. Its stack trace is for us, not for the player. */
+  engineCrashed:
+    'The engine hit a bug running this character. Try the Solo preset or a different setting, and tell us on Discord what you loaded so we can fix it.',
+
   // --- Task 20: live DPS in the planner. ---
   /** The engine has no model for this spec, or the run otherwise failed. */
   liveDpsFailed: 'DPS estimate unavailable for this build.',

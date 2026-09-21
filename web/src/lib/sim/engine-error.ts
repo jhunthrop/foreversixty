@@ -25,6 +25,9 @@ import { specLabel } from './spec-label';
  *  like `combine: part 0 failed: request: …`. The id is always double-quoted. */
 const UNSUPPORTED_SPEC = /unsupported spec: "([^"]*)"/;
 
+/** The adapter's own wrapper around a recovered panic, or the dump that follows it. */
+const ENGINE_PANIC = /runtime error:|Stack Trace:|goroutine \d+ \[/;
+
 /**
  * The engine's raw failure text, or the honest sentence when it names an unsupported spec.
  * Everything else -- an unknown buff id, a duplicate summary row, a cancel, a plain network
@@ -33,6 +36,9 @@ const UNSUPPORTED_SPEC = /unsupported spec: "([^"]*)"/;
  * for a player to read.
  */
 export function humaniseEngineError(detail: string): string {
+  // A Go panic is not the engine's words to a player, it is a goroutine dump with the build
+  // machine's own file paths in it. It is the second shape that is never shown verbatim.
+  if (ENGINE_PANIC.test(detail)) return simCopy.engineCrashed;
   const match = UNSUPPORTED_SPEC.exec(detail);
   return match === null ? detail : simCopy.engineUnsupportedSpec(specLabel(match[1]));
 }

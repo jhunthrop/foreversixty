@@ -58,3 +58,19 @@ describe('humaniseServerFailure', () => {
     expect(humaniseServerFailure(undefined, simCopy.failed)).toBe(simCopy.failed);
   });
 });
+
+describe('humaniseEngineError: a crash is said in a sentence, never as a stack trace', () => {
+  const PANIC =
+    'combine: part 0 failed: adapter: the engine reported an error: runtime error: invalid memory address or nil pointer dereference\nStack Trace:\ngoroutine 9 [running]:\nruntime/debug.Stack()\n\t/opt/hostedtoolcache/go/1.25.11/x64/src/runtime/debug/stack.go:26 +0x6\ngithub.com/wowsims/classic/sim/core.(*rageBar).AddRage(0x0)';
+
+  it('drops the trace, the goroutine dump and the build machine’s own file paths', () => {
+    const shown = humaniseEngineError(PANIC);
+    expect(shown).toBe(simCopy.engineCrashed);
+    expect(shown).not.toMatch(/goroutine|Stack Trace|\/opt\/|\.go:/);
+  });
+
+  it('still shows an ordinary refusal exactly as the engine wrote it', () => {
+    const refusal = 'request: character: unknown consumable "flask_of_nope"';
+    expect(humaniseEngineError(refusal)).toBe(refusal);
+  });
+});
