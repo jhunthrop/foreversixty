@@ -269,6 +269,126 @@ func TestResultsSummaryDurationAgreesWithThePooledHeadline(t *testing.T) {
 	}
 }
 
+// 2026-09-21 result-page review round 3, E8: every full-uptime buff read an
+// impossible 100.9% because Results re-derives Summary.DurationMS (the
+// clock above) but auras are still part 0's own, measured against part
+// 0's OWN duration - dividing an unchanged UptimeMS by the new, shorter
+// combined duration inflated every share by the same ratio. Same two
+// shards as the headline/table test above (different means, different
+// fight lengths - what real shards look like), now carrying auras.
+func twoShardPartsWithAuras() []api.SimResult {
+	return []api.SimResult{
+		{
+			IterationsRun: 1500,
+			DPS:           api.Estimate{Mean: 650},
+			Summary: summary.Summary{
+				DurationMS: 179000,
+				DamageDone: []summary.Actor{{
+					GUID: "sim-player", Total: 116350, Effective: 116350,
+					Abilities: []summary.Ability{{SpellID: 1, Total: 116350, Effective: 116350}},
+				}},
+				Auras: []summary.AuraTrack{
+					// Up for the whole of part 0's own fight.
+					{SpellID: 6673, TargetGUID: "sim-player", Type: "BUFF", UptimeMS: 179000},
+					// Up for exactly half of it.
+					{SpellID: 9910, TargetGUID: "sim-player", Type: "BUFF", UptimeMS: 89500},
+				},
+			},
+		},
+		{
+			IterationsRun: 1500,
+			DPS:           api.Estimate{Mean: 600},
+			Summary: summary.Summary{
+				DurationMS: 181500,
+				DamageDone: []summary.Actor{{
+					GUID: "sim-player", Total: 108900, Effective: 108900,
+					Abilities: []summary.Ability{{SpellID: 1, Total: 108900, Effective: 108900}},
+				}},
+			},
+		},
+	}
+}
+
+func TestResultsRescalesAuraUptimeToTheNewDuration(t *testing.T) {
+	got, err := Results(twoShardPartsWithAuras())
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got.Summary.Auras) != 2 {
+		t.Fatalf("Auras has %d entries, want 2", len(got.Summary.Auras))
+	}
+	for _, a := range got.Summary.Auras {
+		if a.UptimeMS > got.Summary.DurationMS {
+			t.Errorf("aura %d UptimeMS = %d, exceeds Summary.DurationMS = %d (an impossible uptime over 100%%)",
+				a.SpellID, a.UptimeMS, got.Summary.DurationMS)
+		}
+	}
+
+	var alwaysUp, half summary.AuraTrack
+	for _, a := range got.Summary.Auras {
+		switch a.SpellID {
+		case 6673:
+			alwaysUp = a
+		case 9910:
+			half = a
+		}
+	}
+	// Up for all of part 0's own fight must still read exactly 100% of the
+	// NEW one, not 100.9%: the whole point of rescaling by the same ratio
+	// the clock moved by.
+	if alwaysUp.UptimeMS != got.Summary.DurationMS {
+		t.Errorf("always-up aura UptimeMS = %d, want exactly Summary.DurationMS = %d (100%%)",
+			alwaysUp.UptimeMS, got.Summary.DurationMS)
+	}
+	// Half of part 0's own fight must still read close to 50% of the new
+	// one - the SHARE survives the rescale, not the millisecond count.
+	share := float64(half.UptimeMS) / float64(got.Summary.DurationMS) * 100
+	if diff := math.Abs(share - 50); diff > 0.01 {
+		t.Errorf("half-uptime aura reads %.4f%% of the combined fight, want ~50%% (diff %v)", share, diff)
+	}
+
+	for _, a := range got.Summary.DamageDone {
+		if a.ActiveMS > got.Summary.DurationMS {
+			t.Errorf("actor %s ActiveMS = %d, exceeds Summary.DurationMS = %d", a.GUID, a.ActiveMS, got.Summary.DurationMS)
+		}
+	}
+}
+
+// The same invariants on a single, un-split result: rescaling must be a
+// no-op here (weightSummaries returns part 0's own summary untouched for
+// one part, and re-deriving DurationMS from the SAME total and mean part
+// 0 itself used reproduces part 0's own duration), so nothing regresses
+// for the common case - most runs never split.
+func TestResultsAuraUptimeInvariantsHoldForOneUnsplitPart(t *testing.T) {
+	only := api.SimResult{
+		IterationsRun: 3000,
+		DPS:           api.Estimate{Mean: 650},
+		Summary: summary.Summary{
+			DurationMS: 179000,
+			DamageDone: []summary.Actor{{
+				GUID: "sim-player", Total: 116350, Effective: 116350, ActiveMS: 179000,
+				Abilities: []summary.Ability{{SpellID: 1, Total: 116350, Effective: 116350}},
+			}},
+			Auras: []summary.AuraTrack{
+				{SpellID: 6673, TargetGUID: "sim-player", Type: "BUFF", UptimeMS: 179000},
+			},
+		},
+	}
+	got, err := Results([]api.SimResult{only})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, a := range got.Summary.Auras {
+		if a.UptimeMS > got.Summary.DurationMS {
+			t.Errorf("aura %d UptimeMS = %d, exceeds Summary.DurationMS = %d", a.SpellID, a.UptimeMS, got.Summary.DurationMS)
+		}
+	}
+	if got.Summary.Auras[0].UptimeMS != got.Summary.DurationMS {
+		t.Errorf("always-up aura UptimeMS = %d, want exactly Summary.DurationMS = %d (100%%)",
+			got.Summary.Auras[0].UptimeMS, got.Summary.DurationMS)
+	}
+}
+
 // One part is the whole run: its summary is returned untouched rather
 // than scaled by a weight of one, which would round every row.
 func TestResultsWithOnePartKeepsItsSummary(t *testing.T) {

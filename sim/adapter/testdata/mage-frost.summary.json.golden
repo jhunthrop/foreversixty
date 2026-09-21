@@ -753,7 +753,7 @@
     {
       "guid": "sim-player",
       "name": "Sim",
-      "power_type": 1,
+      "power_type": 0,
       "series": [],
       "gained": 9001,
       "spent": 12310,

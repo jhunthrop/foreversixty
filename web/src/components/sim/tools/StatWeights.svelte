@@ -135,7 +135,7 @@
            (D45's own WEIGHT_INSIGNIFICANT_LABEL, which the caveat's own first sentence
            restates in prose), not a second warning box stacked above this one. -->
       <p class="text-muted text-[12px]" data-testid="sim-weights-error-caveat">
-        {bulkCopy.weightsErrorCaveat}
+        {bulkCopy.weightsErrorCaveat(store.weights.map((row) => row.stat))}
       </p>
       <ul class="flex flex-col">
         {#each store.weights as row (row.stat)}

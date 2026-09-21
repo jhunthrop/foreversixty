@@ -221,6 +221,31 @@ describe('summarySentence', () => {
       'Heroic Strike and white hits are 61% of your damage.',
     );
   });
+
+  // 2026-09-21 result-page review round 3, E8: "Battle Shout is up 101% of the fight" --
+  // sim/combine's own bug (fixed at the source), pinned here as a last line of defence:
+  // an aura whose uptime_ms somehow exceeds duration_ms must still read exactly 100%.
+  it('never reads an uptime over 100%, even when uptime_ms exceeds duration_ms', () => {
+    const base = twoAbilities();
+    const actor = base.damage_done[0];
+    const impossible: Summary = {
+      ...base,
+      duration_ms: 178_700,
+      auras: [
+        {
+          ...summary.auras[0],
+          target_guid: actor.guid,
+          type: 'BUFF',
+          uptime_ms: 180_200,
+          name: 'spell:12974',
+        },
+      ],
+    };
+    const withFlurry: ActionNames = { spell: { ...names.spell, '12974': 'Flurry' }, item: {} };
+    expect(summarySentence(impossible, withFlurry)).toBe(
+      'Heroic Strike and white hits are 61% of your damage; Flurry is up 100% of the fight.',
+    );
+  });
 });
 
 describe('namedSummary', () => {

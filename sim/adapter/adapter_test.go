@@ -253,8 +253,16 @@ func TestSummarizeAurasCastsAndResources(t *testing.T) {
 		t.Fatalf("Resources has %d entries, want 1", len(got.Resources))
 	}
 	r := got.Resources[0]
-	if r.PowerType != int64(proto.ResourceType_ResourceTypeRage) {
-		t.Errorf("resource PowerType = %d, want %d", r.PowerType, proto.ResourceType_ResourceTypeRage)
+	// The LOG's own power-type id for Rage (1), not the engine's own enum
+	// value (proto.ResourceType_ResourceTypeRage == 3) - 2026-09-21
+	// result-page review round 3, E7: this assertion used to pin the raw
+	// engine value straight through, which is exactly how a Fury Warrior's
+	// RESOURCES tab came to read "Energy" for rage (POWER_NAMES is keyed
+	// by the log's numbering, and 3 there is Energy). See
+	// engineResourceTypeToLogPowerType's own comment (adapter.go) for both
+	// enums in full.
+	if r.PowerType != 1 {
+		t.Errorf("resource PowerType = %d, want 1 (the log's own Rage id)", r.PowerType)
 	}
 	if r.Spent != 60 {
 		t.Errorf("resource Spent = %d, want 60 (6000 spent over 100 iterations)", r.Spent)
@@ -288,6 +296,82 @@ func TestSummarizeReportsWastedResource(t *testing.T) {
 	}
 	if r.Wasted != 10 {
 		t.Errorf("Wasted = %d, want 10 ((gain - actual_gain) over 100 iterations)", r.Wasted)
+	}
+}
+
+// 2026-09-21 result-page review round 3, E7: PowerType must be the LOG's
+// own power-type numbering (what web/src/components/report/
+// ResourceGraphs.svelte's POWER_NAMES is keyed by), never the engine's
+// own proto.ResourceType value handed through unchanged - the two enums
+// disagree on every resource but ComboPoints, and Rage/Energy are each
+// other's engine id, which is exactly how a Fury Warrior's own rage read
+// as "Energy". Covers every resource a class in this ruleset actually
+// uses: Rage (warrior/druid feral/rogue-adjacent... actually rogues and
+// cat druids use Energy, warriors and bear druids use Rage), Energy,
+// Mana (every caster, and hunters too - sim/hunter/hunter.go's own
+// EnableManaBar, not Focus, in this ruleset) and ComboPoints. Focus is
+// exercised directly against the translation table alone (TestLogPowerType
+// below), not through a real class, because none uses it here.
+func TestSummarizeTranslatesEveryResourceTypeToTheLogsOwnNumbering(t *testing.T) {
+	cases := []struct {
+		name        string
+		engineType  proto.ResourceType
+		wantLogType int64
+	}{
+		{"Mana", proto.ResourceType_ResourceTypeMana, 0},
+		{"Rage", proto.ResourceType_ResourceTypeRage, 1},
+		{"Energy", proto.ResourceType_ResourceTypeEnergy, 3},
+		{"ComboPoints", proto.ResourceType_ResourceTypeComboPoints, 4},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			u := oneAction()
+			u.Resources = []*proto.ResourceMetrics{{
+				Id:         &proto.ActionID{RawId: &proto.ActionID_SpellId{SpellId: 2687}},
+				Type:       c.engineType,
+				Events:     100,
+				Gain:       500,
+				ActualGain: 500,
+			}}
+			got, err := Summarize(resultWith(u, 100), req())
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(got.Resources) != 1 {
+				t.Fatalf("Resources has %d entries, want 1", len(got.Resources))
+			}
+			if pt := got.Resources[0].PowerType; pt != c.wantLogType {
+				t.Errorf("engine %s (%d) -> PowerType %d, want the log's own %d",
+					c.name, c.engineType, pt, c.wantLogType)
+			}
+		})
+	}
+}
+
+// The translation table directly, including Focus - unreachable through a
+// real class in this ruleset (no spec's PowerBarOptions selects it,
+// sim/hunter/hunter.go included), but engineResourceTypeToLogPowerType
+// carries it anyway for the day that changes, and this pins it does not
+// silently regress to "unrecognised, passed through unchanged" (5, which
+// the log's own POWER_NAMES would read as "Runic power").
+func TestLogPowerType(t *testing.T) {
+	cases := []struct {
+		engine proto.ResourceType
+		want   int64
+	}{
+		{proto.ResourceType_ResourceTypeMana, 0},
+		{proto.ResourceType_ResourceTypeRage, 1},
+		{proto.ResourceType_ResourceTypeFocus, 2},
+		{proto.ResourceType_ResourceTypeEnergy, 3},
+		{proto.ResourceType_ResourceTypeComboPoints, 4},
+		// Health has no entry (see engineResourceTypeToLogPowerType's own
+		// comment): an unrecognised type passes through unchanged.
+		{proto.ResourceType_ResourceTypeHealth, int64(proto.ResourceType_ResourceTypeHealth)},
+	}
+	for _, c := range cases {
+		if got := logPowerType(c.engine); got != c.want {
+			t.Errorf("logPowerType(%v) = %d, want %d", c.engine, got, c.want)
+		}
 	}
 }
 

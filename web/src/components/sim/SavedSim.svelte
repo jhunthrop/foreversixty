@@ -16,7 +16,12 @@
   import { loadActionNames, type ActionNames } from '../../lib/sim/action-names';
   import { fetchSpecs } from '../../lib/sim/api';
   import { requestKind, type BulkResult, type WeightsResult } from '../../lib/sim/bulk-types';
-  import { SIM_LEVEL, plannerHrefForSpec, type SimCharacter } from '../../lib/sim/character';
+  import {
+    SIM_LEVEL,
+    plannerHrefForSpec,
+    talentPointsFromString,
+    type SimCharacter,
+  } from '../../lib/sim/character';
   import { bulkCopy, simCopy } from '../../lib/sim/copy';
   import { encounterLabel } from '../../lib/sim/encounter';
   import { confidenceBand, formatMargin } from '../../lib/sim/estimate';
@@ -120,6 +125,14 @@
    * -- always encoded zeroed talents through `toCharacterSpec`.
    */
   const plannerHref = $derived(plannerHrefForSpec(result.request.character, activeBuild.build));
+
+  /**
+   * The talent point count, the same digit-sum `plannerHref` above's own comment describes
+   * for the talents string -- no `point_order` needed (2026-09-21 result-page review round
+   * 3, newcomer's own finding: the live page shows "51 points" beside Open in planner, this
+   * page showed nothing).
+   */
+  const talentPoints = $derived(talentPointsFromString(result.request.character.talents));
 
   let items = $state<Map<number, Item>>(new Map());
 
@@ -252,6 +265,7 @@
   gearKnown={kind !== 'weights' && gearKnown}
   readonly
   {plannerHref}
+  {talentPoints}
   onchange={() => {}}
 />
 

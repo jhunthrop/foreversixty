@@ -88,9 +88,20 @@
       ]),
     ];
   }
-  /** Uptime over the time the track's target was in: the figure the row shows. */
+  /**
+   * Uptime over the time the track's target was in: the figure the row shows. Clamped to
+   * 100 here, once, rather than at each of this function's callers -- a last line of
+   * defence (2026-09-21 result-page review round 3, E8: a combined sim result's aura rows
+   * read up to 100.9%, sim/combine's own bug, now fixed at the source by rescaling
+   * UptimeMS to the summary's own re-derived duration) so a future source of the same
+   * shape of bug reads as an honest 100%, never a number over it, without this component
+   * needing to know why the source disagreed.
+   */
   const shareOf = (track: AuraTrack): number =>
-    track.time_ms === undefined ? pct(track.uptime_ms) : (track.uptime_ms / track.time_ms) * 100;
+    Math.min(
+      track.time_ms === undefined ? pct(track.uptime_ms) : (track.uptime_ms / track.time_ms) * 100,
+      100,
+    );
 
   /** Names that two different spells share on one target: shown with their spell id. */
   const ambiguous = $derived.by(() => {

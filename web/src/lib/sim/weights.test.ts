@@ -25,6 +25,7 @@ import {
 } from './weights';
 import { PRECISION_ITERATIONS } from './precision';
 import { specRow } from './spec-label';
+import { SPECS } from './specs';
 import { WEIGHT_ERROR_BELOW_THRESHOLD } from './copy';
 import type { StatWeight, WeightsResult } from './bulk-types';
 import type { SpecFidelity } from './types';
@@ -65,7 +66,15 @@ describe('defaultStatsFor', () => {
 describe('statLabel', () => {
   it('names every stat the picker offers', () => {
     for (const stat of WEIGHT_STATS) expect(statLabel(stat.id)).toBe(stat.label);
-    expect(statLabel('nonesuch')).toBe('nonesuch');
+  });
+
+  // 2026-09-21 result-page review round 3: this used to return the bare id unchanged for
+  // anything BY_ID had no row for, which is exactly how `frost_power` leaked onto the page
+  // as itself -- PAWN_KEYS had no entry for any school-specific power stat. Humanised, never
+  // the raw id, is the same last-resort stats.ts's own statLabel already uses.
+  it('humanises an id neither BY_ID nor simCopy.statLabel carries, rather than returning it bare', () => {
+    expect(statLabel('nonesuch')).toBe('Nonesuch');
+    expect(statLabel('some_unlisted_stat')).toBe('Some unlisted stat');
   });
 });
 
@@ -155,6 +164,32 @@ describe('pickableStatsFor (sub-item 4: only the spec’s own stats)', () => {
       expect(pickable.map((stat) => stat.id)).not.toContain(wrong);
     }
   });
+});
+
+// 2026-09-21 result-page review round 3: a Frost Mage's "Stats to weigh" checklist and
+// results table showed a row literally labelled `frost_power` -- PAWN_KEYS (weights.ts) had
+// no entry for any school-specific power stat, so pickableStatsFor's own fallback handed
+// back the raw wire id as its label. This walks every spec specs.ts carries (the client's
+// own mirror of sim/specs/specs.go) and asserts every id its own weight_stats names comes
+// back with a real, human label -- never the snake_case id itself.
+describe('every spec’s pickable stats have a real label, never the raw id', () => {
+  const SNAKE_CASE = /^[a-z]+(_[a-z]+)*$/;
+
+  for (const spec of SPECS) {
+    it(`${spec.spec}: every weight_stats id resolves to a label, not its own key`, () => {
+      const pickable = pickableStatsFor(spec.weight_stats);
+      for (const stat of pickable) {
+        expect(stat.label, `${spec.spec}'s ${stat.id} has no real label`).not.toBe(stat.id);
+        // A label that still happens to be snake_case (rather than failing to differ from
+        // the id at all) is the same leak in a different shape -- catches a stat whose id
+        // and intended label would coincidentally differ only by casing.
+        expect(
+          SNAKE_CASE.test(stat.label),
+          `${spec.spec}'s ${stat.id} label "${stat.label}" still reads snake_case`,
+        ).toBe(false);
+      }
+    });
+  }
 });
 
 describe('hasWeightStats (final whole-branch review, Finding 3: the note must not disagree with the picker)', () => {

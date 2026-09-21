@@ -103,14 +103,15 @@ describe('StatWeights: the error-is-a-lower-bound caveat (Task 8, sub-item 1)', 
       { stat: 'strength', weight: 2.14, error: 0.06 },
     ];
     const body = renderWeights(weights);
-    expect(body).toContain(bulkCopy.weightsErrorCaveat);
+    const caveat = bulkCopy.weightsErrorCaveat(weights.map((row) => row.stat));
+    expect(body).toContain(caveat);
     // Plain words, not the contract citation a player would have to look up.
-    expect(bulkCopy.weightsErrorCaveat).not.toMatch(/10\.9|lower bound/i);
+    expect(caveat).not.toMatch(/10\.9|lower bound/i);
   });
 
   it('says nothing about the error bar when there are no weights to caution about yet', () => {
     const body = renderWeights([]);
-    expect(body).not.toContain(bulkCopy.weightsErrorCaveat);
+    expect(body).not.toContain(bulkCopy.weightsErrorCaveat([]));
   });
 });
 
