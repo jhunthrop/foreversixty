@@ -42,6 +42,8 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/guilds/{id}/claim", auth.RequireSession(s.claim))
 	mux.HandleFunc("POST /v1/guilds/{id}/claim/confirm", auth.RequireSession(s.confirmClaim))
 	mux.HandleFunc("POST /v1/guilds/{id}/claim/release", auth.RequireSession(s.releaseClaim))
+	mux.HandleFunc("POST /v1/guilds/{id}/claim/contest", auth.RequireSession(s.contestClaim))
+	mux.HandleFunc("POST /v1/guilds/{id}/claim/resolve", auth.RequireSession(s.resolveClaim))
 	mux.HandleFunc("GET /v1/guilds/{id}/settings", auth.RequireSession(s.getSettings))
 	mux.HandleFunc("PATCH /v1/guilds/{id}/settings", auth.RequireSession(s.patchSettings))
 	mux.HandleFunc("POST /v1/guilds/{id}/invite/rotate", auth.RequireSession(s.rotateInvite))
