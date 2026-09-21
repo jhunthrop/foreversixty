@@ -18,7 +18,7 @@ import { decodeFS1, type FS1Result } from './fs1';
 import type { TalentIndex } from './rules';
 import type { PlannerStore } from './store.svelte';
 import { readCurrent, writeCurrent, type CurrentCharacter } from '../current-character';
-import { specOf } from '../sim/character';
+import { characterFromPlanner, plannerHrefFor, specOf } from '../sim/character';
 import { specLabel } from '../sim/spec-label';
 
 /** True when `/planner`'s own URL carries none of `?code=`, `?class=`, `?race=` -- the only
@@ -187,4 +187,25 @@ export function plannerAddonCode(store: PlannerStore): string {
         talents: store.talentIndex,
         items: store.itemIndex,
       });
+}
+
+/**
+ * The planner's current build as an unsaved "sim this build" link: path and query only, no
+ * origin -- the caller (`SharePanel.svelte`'s share-confirm) prepends
+ * `window.location.origin` itself, at click time, so this stays safe to call from a plain
+ * `$derived` that could in principle run during SSR.
+ *
+ * Reuses `characterFromPlanner`/`plannerHrefFor` -- the same FS1 v2 code conversion
+ * `ComboResults.svelte`'s "Open in planner" link and every other "open this character in the
+ * planner" link in the app already build from -- rather than a second hand-built `?code=`
+ * string that could drift onto the addon paste string's shape (`FSB1:`) instead.
+ *
+ * `''` when the store cannot produce a code: no talent data loaded yet, or its class or race
+ * does not resolve against the loaded reference data (`characterFromPlanner`'s own guard,
+ * e.g. a still-loading store or an unvalidated `?class=`/`?race=`).
+ */
+export function unsavedPlannerHref(store: PlannerStore): string {
+  if (store.talentIndex === null) return '';
+  const character = characterFromPlanner(store);
+  return character === null ? '' : plannerHrefFor(character, store.talentIndex);
 }

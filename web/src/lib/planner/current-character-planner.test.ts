@@ -1,5 +1,8 @@
 // web/src/lib/planner/current-character-planner.test.ts
 import { describe, expect, it } from 'vitest';
+import fixtureClasses from '../../fixtures/planner/classes.json';
+import fixtureCombos from '../../fixtures/planner/combos.json';
+import fixtureRaces from '../../fixtures/planner/races.json';
 import fixtureTalents from '../../fixtures/planner/talents/warrior.json';
 import { readCurrent, type CurrentCharacter } from '../current-character';
 import {
@@ -8,13 +11,38 @@ import {
   labelForPlannerLoad,
   plannerAddonCode,
   recordPlannerCharacter,
+  unsavedPlannerHref,
   writePlannerPointer,
   type PlannerLoadDecision,
 } from './current-character-planner';
 import { decodeFS1, orderFromRanks } from './fs1';
 import { indexTalents } from './rules';
-import type { PlannerStore } from './store.svelte';
-import type { TalentFile } from './types';
+import { createPlannerStore, type PlannerStore } from './store.svelte';
+import type { ClassRow, Combo, RaceRow, TalentFile } from './types';
+
+const BUILD = '1.15.9.69722';
+
+/** Same loading sequence as store.test.ts's own `loaded()`: reference data plus this
+ *  class's talent file, the two things `characterFromPlanner` needs to convert the store's
+ *  live build into a `SimCharacter`. Named apart from `writePlannerPointer`'s own local
+ *  `loadedStore` fixture below, which is a plain object literal rather than a real store. */
+function loadedPlannerStore(
+  overrides: Partial<Parameters<typeof createPlannerStore>[0]> | null = null,
+): PlannerStore {
+  const store = createPlannerStore({
+    treeVersion: BUILD,
+    classSlug: 'warrior',
+    raceSlug: 'human',
+    ...(overrides ?? {}),
+  });
+  store.setReference({
+    classes: fixtureClasses as ClassRow[],
+    races: fixtureRaces as RaceRow[],
+    combos: fixtureCombos as Combo[],
+  });
+  store.setTalents(fixtureTalents as TalentFile);
+  return store;
+}
 
 function fakeStorage(): Storage {
   const map = new Map<string, string>();
@@ -292,5 +320,52 @@ describe('writePlannerPointer', () => {
     const result = writePlannerPointer(emptyStore, true, 'code', GOOD_CODE, 'warrior', undefined, storage);
     expect(result).toBeNull();
     expect(readCurrent(storage)).toBeNull();
+  });
+});
+
+describe('unsavedPlannerHref', () => {
+  it('is empty before talent data has loaded', () => {
+    const store = { talentIndex: null } as unknown as PlannerStore;
+    expect(unsavedPlannerHref(store)).toBe('');
+  });
+
+  it('is empty when the store cannot resolve a class against the loaded reference data', () => {
+    const store = loadedPlannerStore({ classSlug: 'not-a-class' });
+    expect(unsavedPlannerHref(store)).toBe('');
+  });
+
+  it('is empty when the store cannot resolve a race against the loaded reference data', () => {
+    // `setReference` auto-repairs an illegal `raceSlug` to a legal one for the class
+    // (`repairRaceForClass`), so an unresolvable race never survives a real load -- this
+    // exercises `characterFromPlanner`'s own `raceRow === null` guard directly instead.
+    const store = {
+      talentIndex: indexTalents(fixtureTalents as TalentFile),
+      talents: fixtureTalents as TalentFile,
+      classes: fixtureClasses as ClassRow[],
+      classRow: (fixtureClasses as ClassRow[])[0],
+      raceRow: null,
+    } as unknown as PlannerStore;
+    expect(unsavedPlannerHref(store)).toBe('');
+  });
+
+  it('builds a /planner?code= link -- path and query only, no origin', () => {
+    const store = loadedPlannerStore();
+    store.addPoint(1001);
+    const href = unsavedPlannerHref(store);
+    expect(href.startsWith('/planner?code=')).toBe(true);
+    expect(href).not.toContain('://');
+  });
+
+  it('round-trips through decodeFS1 back to the same talent order', () => {
+    const store = loadedPlannerStore();
+    store.addPoint(1001);
+    store.addPoint(1001);
+    const href = unsavedPlannerHref(store);
+    const code = new URLSearchParams(href.slice(href.indexOf('?'))).get('code') ?? '';
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    const index = indexTalents(fixtureTalents as TalentFile);
+    expect(orderFromRanks(index, decoded.build.treeRanks).order).toEqual(store.order);
   });
 });

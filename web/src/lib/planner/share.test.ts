@@ -1,6 +1,7 @@
 // web/src/lib/planner/share.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cardUrlFor, RATE_LIMIT_MESSAGE, SAVE_FAILED_MESSAGE, saveBuild } from './share';
+import { plannerCopy } from './copy';
+import { cardUrlFor, RATE_LIMIT_MESSAGE, SAVE_FAILED_MESSAGE, saveBuild, sharedFields } from './share';
 import type { BuildDraft } from './types';
 
 const draft: BuildDraft = {
@@ -119,5 +120,43 @@ describe('saveBuild', () => {
       message: SAVE_FAILED_MESSAGE,
       fields: {},
     });
+  });
+});
+
+describe('sharedFields', () => {
+  it('lists class/race, talents and gear for an untitled draft, even with nothing equipped', () => {
+    expect(sharedFields(draft, false)).toEqual([
+      plannerCopy.shareFieldClassRace,
+      plannerCopy.shareFieldTalents,
+      plannerCopy.shareFieldGear,
+    ]);
+  });
+
+  it('still lists gear when the draft omits the key entirely', () => {
+    const bare: BuildDraft = { ...draft, gear: undefined };
+    expect(sharedFields(bare, false)).toEqual([
+      plannerCopy.shareFieldClassRace,
+      plannerCopy.shareFieldTalents,
+      plannerCopy.shareFieldGear,
+    ]);
+  });
+
+  it('adds the title, quoted, when the draft has one', () => {
+    const titled: BuildDraft = { ...draft, gear: { head: 1 }, title: 'Arms leveling' };
+    expect(sharedFields(titled, false)).toEqual([
+      plannerCopy.shareFieldClassRace,
+      plannerCopy.shareFieldTalents,
+      plannerCopy.shareFieldGear,
+      plannerCopy.shareFieldTitle('Arms leveling'),
+    ]);
+  });
+
+  it('adds the sim line only when a sim will actually be attached', () => {
+    expect(sharedFields(draft, true)).toEqual([
+      plannerCopy.shareFieldClassRace,
+      plannerCopy.shareFieldTalents,
+      plannerCopy.shareFieldGear,
+      plannerCopy.shareFieldSim,
+    ]);
   });
 });

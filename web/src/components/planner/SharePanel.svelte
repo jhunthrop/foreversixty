@@ -8,12 +8,15 @@
      no new field on BuildDraft or the card route. The panel's job is only to run that sim,
      after the build has an id, and to never let a failed sim take the save down with it. -->
 <script lang="ts">
+  import { tick } from 'svelte';
   import { addonCopy } from '../../lib/addon/copy';
-  import { plannerAddonCode } from '../../lib/planner/current-character-planner';
+  import { plannerCopy } from '../../lib/planner/copy';
+  import { plannerAddonCode, unsavedPlannerHref } from '../../lib/planner/current-character-planner';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import {
     cardUrlFor,
     saveBuild,
+    sharedFields,
     UNSAVABLE_BUILD_MESSAGE,
     type SaveOutcome,
     type SavedBuild,
@@ -40,16 +43,16 @@
   let outcome = $state<SaveOutcome | null>(null);
   let cardBroken = $state(false);
   /**
-   * Which button last copied, or null. One flag for both buttons rather than one each:
-   * only one thing can be on the clipboard, so only one button should say so, and the two
-   * then behave identically instead of the panel having two copy buttons with two idioms.
+   * Which button last copied, or null. One flag for every copy button rather than one each:
+   * only one thing can be on the clipboard, so only one button should say so, and every
+   * button then behaves identically instead of the panel having three copy idioms.
    *
    * No timer. "Copied" stands until the build changes, which the $effect below already
    * watches for -- and it is true for exactly that long, because the text on the clipboard
    * goes stale at exactly that moment. A timed revert would need a cleared handle, a named
    * duration and a cleanup on destroy to say something less accurate.
    */
-  let copiedFrom = $state<'link' | 'addon' | null>(null);
+  let copiedFrom = $state<'link' | 'addon' | 'unsaved' | null>(null);
 
   // Derived, not computed on click: the button is disabled while there is nothing to
   // copy, and a $derived keeps that in step with every talent and gear edit for free.
@@ -59,13 +62,23 @@
   // current-character chip so the two "Copy addon code" surfaces can never disagree.
   const addonCode = $derived(plannerAddonCode(store));
 
-  async function copyToClipboard(text: string, source: 'link' | 'addon'): Promise<void> {
+  // Same story for the confirm step's "unsaved link" alternative: path and query only, no
+  // origin (`window.location.origin` is only ever read inside the click handler below, so
+  // this stays safe to evaluate during SSR). '' before talent data has loaded.
+  const unsavedHref = $derived(unsavedPlannerHref(store));
+
+  async function copyToClipboard(text: string, source: 'link' | 'addon' | 'unsaved'): Promise<void> {
     try {
       await navigator.clipboard.writeText(text);
       copiedFrom = source;
     } catch {
       copiedFrom = null;
     }
+  }
+
+  function copyUnsavedLink(): void {
+    if (unsavedHref === '') return;
+    void copyToClipboard(`${window.location.origin}${unsavedHref}`, 'unsaved');
   }
 
   /** Checked by default when the planner has an estimate for this build; see the panel. */
@@ -108,6 +121,7 @@
 
   // Any edit invalidates the link that was shown: builds are immutable, so a changed build
   // is a different build. The card sim's own status resets with it, for the same reason.
+  // The confirm step closes too: it asked about a build that no longer exists.
   $effect(() => {
     void store.order.length;
     void store.gear;
@@ -116,6 +130,7 @@
     cardState = 'idle';
     cardDps = '';
     cardVersion = '';
+    confirmOpen = false;
   });
 
   /** True once a newer save has started, or the build on screen is no longer this one. */
@@ -176,6 +191,55 @@
     }
   }
 
+  /**
+   * Share asks before it writes (one-product spec section 1): the button opens this confirm
+   * step rather than saving straight away, naming what `share()`'s own `saveBuild` call is
+   * about to post publicly. `draftOrNull() === null` (the unsavable-build edge case) lists
+   * nothing rather than guessing at fields that were never going to be sent.
+   */
+  let confirmOpen = $state(false);
+  let shareButtonEl: HTMLButtonElement | undefined;
+  let confirmHeadingEl: HTMLParagraphElement | undefined = $state();
+  const shareItems = $derived.by(() => {
+    const draft = draftOrNull();
+    return draft === null ? [] : sharedFields(draft, includeSimChecked);
+  });
+
+  /**
+   * Opens the confirm and, once its markup has rendered, moves focus onto its own heading --
+   * not the "Share anyway" button, so Tab from there reaches every option in order rather
+   * than skipping the first. `tick()`, not a `$effect` reading `confirmHeadingEl`: the
+   * element is only ever read here, imperatively, the same as every other `bind:this` focus
+   * move in this codebase (Planner.svelte's tab arrow keys, SearchBox.svelte's own input).
+   */
+  async function requestShare(): Promise<void> {
+    confirmOpen = true;
+    await tick();
+    confirmHeadingEl?.focus();
+  }
+
+  /** Closes the confirm and returns focus to the button that opened it. */
+  function cancelShare(): void {
+    confirmOpen = false;
+    shareButtonEl?.focus();
+  }
+
+  async function confirmedShare(): Promise<void> {
+    confirmOpen = false;
+    await share();
+  }
+
+  /**
+   * Escape cancels while the confirm is open, from anywhere on the page -- the same
+   * `<svelte:window>` idiom `Disclosure.svelte` already uses for the identical reason: the
+   * key can fire while focus is still on a button inside the confirm, not a keydown handler
+   * on the (non-interactive) panel itself.
+   */
+  function onConfirmKeydown(event: KeyboardEvent): void {
+    if (event.key !== 'Escape') return;
+    cancelShare();
+  }
+
   async function share(): Promise<void> {
     saving = true;
     cardBroken = false;
@@ -208,6 +272,8 @@
   $effect(() => () => pool?.terminate());
 </script>
 
+<svelte:window onkeydown={confirmOpen ? onConfirmKeydown : undefined} />
+
 <section class="flex w-full flex-col gap-3" data-testid="share-panel">
   <div class="flex flex-wrap items-end gap-3">
     <label class="flex flex-col gap-1">
@@ -225,9 +291,11 @@
       type="button"
       class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
       disabled={saving || store.spent === 0}
-      onclick={share}
+      data-testid="share-open"
+      bind:this={shareButtonEl}
+      onclick={() => void requestShare()}
     >
-      {saving ? 'Saving' : 'Share'}
+      {saving ? plannerCopy.saving : plannerCopy.share}
     </button>
     <button
       type="button"
@@ -253,6 +321,61 @@
     />
     {simCopy.includeSimOnCard}
   </label>
+
+  {#if confirmOpen}
+    <div
+      class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-3"
+      role="group"
+      aria-labelledby="share-confirm-heading"
+      data-testid="share-confirm"
+    >
+      <p
+        id="share-confirm-heading"
+        tabindex="-1"
+        bind:this={confirmHeadingEl}
+        class="text-strong text-[14px] outline-none"
+      >
+        {plannerCopy.shareConfirmTitle}
+      </p>
+      <p class="text-muted text-[13px]">{plannerCopy.shareConfirmIntro}</p>
+      <ul class="text-muted list-disc pl-5 text-[13px]">
+        {#each shareItems as item (item)}
+          <li>{item}</li>
+        {/each}
+      </ul>
+      <div class="flex flex-wrap gap-3">
+        <button
+          type="button"
+          class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
+          data-testid="share-confirm-proceed"
+          onclick={() => void confirmedShare()}
+        >
+          {plannerCopy.shareConfirmProceed}
+        </button>
+        <button type="button" class={NEUTRAL_BUTTON} data-testid="share-confirm-cancel" onclick={cancelShare}>
+          {plannerCopy.shareConfirmCancel}
+        </button>
+        <button
+          type="button"
+          class={NEUTRAL_BUTTON}
+          disabled={addonCode === ''}
+          data-testid="share-confirm-copy-code"
+          onclick={() => void copyToClipboard(addonCode, 'addon')}
+        >
+          {copiedFrom === 'addon' ? addonCopy.copiedAddonCode : plannerCopy.shareConfirmCopyCode}
+        </button>
+        <button
+          type="button"
+          class={NEUTRAL_BUTTON}
+          disabled={unsavedHref === ''}
+          data-testid="share-confirm-copy-unsaved"
+          onclick={copyUnsavedLink}
+        >
+          {copiedFrom === 'unsaved' ? plannerCopy.copiedUnsavedLink : plannerCopy.shareConfirmCopyUnsaved}
+        </button>
+      </div>
+    </div>
+  {/if}
 
   {#if failure}
     <div class="border-line bg-raised rounded-panel flex flex-col gap-2 border p-3" role="alert">
