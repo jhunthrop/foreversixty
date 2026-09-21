@@ -86,3 +86,32 @@ describe('CharacterStrip’s plannerHref override', () => {
     expect(plannerLinkHref(body)).toBe('/planner?class=warrior&amp;race=orc');
   });
 });
+
+// 2026-09-21 result-page review round 3, newcomer's own finding: the live page shows "51
+// points" beside Open in planner; SavedSim.svelte's own character (point_order: [], the
+// same reason plannerHref needs an override above) made this component's own
+// `point_order.length` read 0 and the count was hidden entirely. `talentPoints` is
+// SavedSim's own escape hatch, the same shape as `plannerHref`.
+describe('CharacterStrip’s talentPoints override', () => {
+  it('shows the precomputed talentPoints when point_order is empty', () => {
+    const { body } = render(CharacterStrip, {
+      props: { character: base, ...requiredProps, talentPoints: 51 },
+    });
+    expect(body).toContain('data-testid="sim-talent-count"');
+    expect(body).toContain('51 points');
+  });
+
+  it('prefers a real point_order over the override when both are present', () => {
+    const { body } = render(CharacterStrip, {
+      props: { character: fullBuild, ...requiredProps, talentPoints: 3 },
+    });
+    expect(body).toContain('51 points');
+    expect(body).not.toContain('3 points');
+  });
+
+  it('shows nothing, not "0 points", when neither point_order nor talentPoints is known', () => {
+    const { body } = render(CharacterStrip, { props: { character: base, ...requiredProps } });
+    expect(body).not.toContain('data-testid="sim-talent-count"');
+    expect(body).not.toContain('0 points');
+  });
+});
