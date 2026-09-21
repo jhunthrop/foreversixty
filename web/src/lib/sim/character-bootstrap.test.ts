@@ -78,12 +78,19 @@ describe('decideBootstrap', () => {
     expect(decision).toEqual({ kind: 'build', id: 'b1', restored: true });
   });
 
-  it('restores an addon-sourced pointer through loadCode, same as a fresh addon paste’s own FS1 string', () => {
+  // 2026-09-21 result-page review round 3, newcomer's own finding: this used to route an
+  // addon-sourced pointer through loadCode -- the SAME loader a manually-typed/pasted
+  // `?code=` uses, which tags the restored character 'manual' -- so a restored addon-export
+  // character's own source badge read "Entered by hand", a false attribution. A restored
+  // addon pointer must go through loadAddon, the identical loader a fresh addon paste uses
+  // (character-bootstrap.ts's own BootstrapLoad already had a distinct `{kind: 'addon'}` for
+  // this; fromStoredPointer just was not using it).
+  it('restores an addon-sourced pointer through loadAddon, same as a fresh addon paste', () => {
     const decision = decideBootstrap(
       { code: '', source: '', ref: '' },
       stored('addon', 'FS1:1:warrior:orc:0/0/0:'),
     );
-    expect(decision).toEqual({ kind: 'code', code: 'FS1:1:warrior:orc:0/0/0:', restored: true });
+    expect(decision).toEqual({ kind: 'addon', code: 'FS1:1:warrior:orc:0/0/0:', restored: true });
   });
 
   it('restores a code-sourced pointer through loadCode too', () => {
