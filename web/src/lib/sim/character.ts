@@ -106,6 +106,23 @@ export function talentLevel(order: number[]): number {
   return order.length === 0 ? BASE_LEVEL : Math.min(SIM_LEVEL, BASE_LEVEL + order.length);
 }
 
+/**
+ * A build's total spent points, straight from the engine's own talents STRING -- no
+ * `point_order` (the click order that produced it) required. A saved sim's stored request
+ * carries only that final string, never the order (CharacterStrip.svelte's own comment on
+ * why its point count used to read blank there), but the string alone already says how many
+ * points were spent: every character `ranksFromTalentsString` decodes is one talent's own
+ * rank (0-9, `talentsString`'s own encoder caps it there), so the sum of every rank, across
+ * every tree, is the point count -- the same number `point_order.length` would have given
+ * had the order been available (2026-09-21 result-page review round 3, newcomer's own
+ * finding).
+ */
+export function talentPointsFromString(talents: string): number {
+  return ranksFromTalentsString(talents)
+    .flat()
+    .reduce((sum, rank) => sum + rank, 0);
+}
+
 export function toBuildDraft(
   character: SimCharacter,
   classes: readonly ClassRow[],

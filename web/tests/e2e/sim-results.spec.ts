@@ -85,7 +85,11 @@ test('the Buffs tab shows the first aura row at 100% uptime, with no engine-inte
   await expect(first).toContainText('An unnamed spell');
   await expect(first).not.toContainText(/\bspell:/);
   await expect(first).not.toContainText(/\bSpell \d+\b/);
-  await expect(page.getByTestId('aura-uptime').first()).toHaveText('100.1%');
+  // The fixture's own uptime_ms (179,863) is a hair past its duration_ms (179,629) --
+  // 100.13% unclamped -- which is exactly AuraTable's shareOf clamp's own job to cap at
+  // 100.0%, never a number over it (2026-09-21 result-page review round 3, E8's display
+  // layer clamp).
+  await expect(page.getByTestId('aura-uptime').first()).toHaveText('100.0%');
   // Task 4: sanitizeAuraTracks drops the fixture's own inert rows (including other:move)
   // and folds a tag/rank duplicate into its base row.
   //

@@ -34,6 +34,7 @@
     gearKnown = true,
     readonly = false,
     plannerHref,
+    talentPoints,
     onchange,
     onrace = () => {},
   }: {
@@ -61,6 +62,19 @@
      * from `character`/`talentIndex` below.
      */
     plannerHref?: string;
+    /**
+     * The point count, precomputed by the caller -- SavedSim.svelte's own fix for the same
+     * reason `plannerHref` above is: `character.point_order` is empty for a saved sim (the
+     * click order is genuinely unknowable from the stored request), so this component's own
+     * `character.point_order.length` reads 0 and the count used to be hidden entirely
+     * (2026-09-21 result-page review round 3, newcomer's own finding: the live page shows
+     * "51 points" beside Open in planner, the saved page showed nothing). A saved sim's
+     * stored request already carries the true, final talents string, and the point count is
+     * just the sum of its digits (`talentPointsFromString`, character.ts) -- no order
+     * needed. Absent (the live /sim page): unchanged, this component still counts
+     * `character.point_order.length`.
+     */
+    talentPoints?: number;
     onchange: () => void;
     /** The player answering the race question; the store replaces the character. */
     onrace?: (slug: string) => void;
@@ -103,7 +117,9 @@
       : `${character.race_slug.replace(/-/g, ' ')} ${specLabel(character.spec)} · ${SIM_LEVEL}`) +
       levelSuffix,
   );
-  const split = $derived(character.point_order.length);
+  const split = $derived(
+    character.point_order.length > 0 ? character.point_order.length : (talentPoints ?? 0),
+  );
 </script>
 
 <section
@@ -190,10 +206,14 @@
   <div class="flex flex-wrap items-baseline gap-3 text-[13px]">
     <span class="text-muted label">Talents</span>
     <!-- A saved sim's stored request carries the engine's talent *string*, not the
-         planner's point order (Task 17), so its `point_order` is always empty and `split`
-         is 0 -- not because the build spent nothing, but because this page cannot see the
-         order. Showing "0 points" would claim the build spent none, so the count is left
-         out entirely rather than printed wrong. -->
+         planner's point order (Task 17), so its `point_order` is always empty --
+         `talentPoints` (the caller's own digit-sum of that string, SavedSim.svelte) is what
+         keeps `split` honest there instead (2026-09-21 result-page review round 3). Neither
+         source ever produces a genuine zero for a level-60 character, so `split > 0` still
+         means "a real count is known" here, not "the build spent something" specifically --
+         showing "0 points" would claim a build spent none, which this guard still avoids
+         for the one remaining case (character/talentPoints both absent) where the count is
+         simply unknown. -->
     {#if split > 0}
       <span class="tabular text-strong font-mono" data-testid="sim-talent-count">{split} points</span>
     {/if}

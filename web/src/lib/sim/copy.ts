@@ -1074,18 +1074,42 @@ export const bulkCopy = {
    * Task 8, sub-item 1: contract 10.9 documents `StatWeight.Error` as a standard error that
    * is a lower bound, not the true uncertainty -- an 8-seed check found the real run-to-run
    * spread runs four to ten times wider for crit and melee haste, the two stats most
-   * entangled with the rotation's own rage/proc decisions. (Expertise would be the third of
-   * that classic-plus-TBC trio, but the 1.60 client has no expertise stat at all -- D45's own
-   * `pickableStatsFor` never offers it, deny-listed as retail-only -- so it is not named
-   * here either.) One sentence, not a second warning stacked on the greying above: it opens
-   * by naming what a greyed row already means (D45's own `WEIGHT_INSIGNIFICANT_LABEL`,
+   * entangled with a MELEE rotation's own rage/proc decisions. (Expertise would be the
+   * third of that classic-plus-TBC trio, but the 1.60 client has no expertise stat at all
+   * -- D45's own `pickableStatsFor` never offers it, deny-listed as retail-only -- so it is
+   * not named either.) One sentence, not a second warning stacked on the greying above: it
+   * opens by naming what a greyed row already means (D45's own `WEIGHT_INSIGNIFICANT_LABEL`,
    * restated in prose rather than assumed read) and then extends the same "how much to
    * trust this" idea to every other row's own ± figure, so the two read as one thought about
    * the table, not two. No mention of "contract 10.9" or "lower bound" -- a player reads
    * this without the spec open.
+   *
+   * `pickedStatIds` (2026-09-21 result-page review round 3, newcomer's own finding): a
+   * fixed "crit and melee haste" read as boilerplate to a Frost Mage, whose own table only
+   * ever weighs spell haste -- melee haste never appears in a caster spec's own
+   * weight_stats (sim/specs/specs.go). The caveat now names only the swingy stats the
+   * CALLER'S own run actually weighed, crit and whichever haste (melee or spell) is really
+   * on the table, so the sentence never claims a stat this run's own class does not have.
    */
-  weightsErrorCaveat:
-    'A greyed row cannot be told apart from zero. The ± on every other row is a floor, not the full picture: for crit and melee haste, the real run-to-run swing can run four to ten times wider.',
+  weightsErrorCaveat: (pickedStatIds: readonly string[]): string => {
+    const swingyLabels: Record<string, string> = {
+      crit: 'crit',
+      melee_haste: 'melee haste',
+      spell_haste: 'spell haste',
+    };
+    const swingy = (['crit', 'melee_haste', 'spell_haste'] as const)
+      .filter((id) => pickedStatIds.includes(id))
+      .map((id) => swingyLabels[id]);
+    // No swingy stat in this run's own list at all is not expected for any real spec (every
+    // one weighs crit), but reads honestly rather than naming a stat that is not there.
+    const named =
+      swingy.length === 0
+        ? 'crit and haste'
+        : swingy.length === 1
+          ? swingy[0]
+          : `${swingy.slice(0, -1).join(', ')} and ${swingy[swingy.length - 1]}`;
+    return `A greyed row cannot be told apart from zero. The ± on every other row is a floor, not the full picture: for ${named}, the real run-to-run swing can run four to ten times wider.`;
+  },
   /**
    * Task 8, sub-item 2: the precision control's own bare "Fast"/"Normal"/"High" no longer
    * says a number for a weights run (BulkRunBar.svelte's `precisionLabelFor`) -- the wire's

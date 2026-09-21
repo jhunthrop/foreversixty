@@ -55,11 +55,21 @@ function toStoredLoad(ref: string, restored: boolean): BootstrapDecision {
 }
 
 /** The stored pointer alone, once the URL has offered neither a whole request nor
- *  `?code=` nor `?source=&ref=`. */
+ *  `?code=` nor `?source=&ref=`.
+ *
+ * 'addon' and 'code' both store the FS1 string itself (CurrentCharacter's own doc comment),
+ * but they are not the same load: 'addon' means the pointer came from an addon export
+ * paste, and BootstrapLoad already carries a distinct `{kind: 'addon'}` for exactly that --
+ * loadAddon (store.svelte.ts) tags the resulting character `{kind: 'addon', ...}` the same
+ * way a fresh paste does, where loadCode's `fromManualCode` always tags 'manual'. Folding
+ * both into `{kind: 'code'}` here lost that distinction on restore: a character restored
+ * from an addon paste came back tagged 'manual' and its source badge read "Entered by
+ * hand", even though nothing was ever typed by hand (2026-09-21 result-page review round
+ * 3, newcomer's own finding).
+ */
 function fromStoredPointer(stored: CurrentCharacter): BootstrapDecision {
-  if (stored.source === 'addon' || stored.source === 'code') {
-    return { kind: 'code', code: stored.ref, restored: true };
-  }
+  if (stored.source === 'addon') return { kind: 'addon', code: stored.ref, restored: true };
+  if (stored.source === 'code') return { kind: 'code', code: stored.ref, restored: true };
   if (stored.source === 'build') return { kind: 'build', id: stored.ref, restored: true };
   if (stored.source === 'fight') return { kind: 'fight', ref: stored.ref, restored: true };
   // The only source left is 'armory': the same character-key ref `?source=armory&ref=<key>`

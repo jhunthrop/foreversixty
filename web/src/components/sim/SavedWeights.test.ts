@@ -70,8 +70,8 @@ describe('SavedWeights: the greyed row and its label (D45)', () => {
 // exactly where someone meets these weights without having read the live page (this file's
 // own header comment), so the caution has to be here too, in the same words.
 describe('SavedWeights: the error-is-a-lower-bound caveat (Task 8, sub-item 1)', () => {
-  it('renders once, in the same words as the live page', () => {
+  it('renders once, in the same words as the live page, naming this result’s own weighed stats', () => {
     const body = renderWeights(result);
-    expect(body).toContain(bulkCopy.weightsErrorCaveat);
+    expect(body).toContain(bulkCopy.weightsErrorCaveat(result.weights.map((row) => row.stat)));
   });
 });
