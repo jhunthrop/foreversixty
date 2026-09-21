@@ -102,6 +102,7 @@ end
 --- changes its capabilities inside a session.
 function Theme.reset()
 	Theme.templates = {}
+	Theme.glowPair = nil
 	for index = #ns.Diagnostics, 1, -1 do
 		ns.Diagnostics[index] = nil
 	end
@@ -285,8 +286,31 @@ function Theme.equip(link)
 	return false
 end
 
+--- Whether the client's overlay glow can be both put on and taken off.
+--- Half a pair is no pair: a client that could show the overlay but never
+--- hide it would strand a glow on a button nothing can clear, which is
+--- worse than no glow at all because the player acts on it. The addon's
+--- own outline, which it can always remove, is used instead, and the
+--- missing half is recorded. Latched like hasTemplate: once per session,
+--- not once per glow.
+local function hasOverlayGlow()
+	if Theme.glowPair ~= nil then
+		return Theme.glowPair
+	end
+	local canShow = type(ActionButton_ShowOverlayGlow) == "function"
+	local canHide = type(ActionButton_HideOverlayGlow) == "function"
+	Theme.glowPair = canShow and canHide
+	-- Neither half is the ordinary case and stays silent; only the
+	-- mismatch is worth a line in /fs diag.
+	if canShow ~= canHide then
+		Theme.note(string.format(L.diagNoTemplate,
+			canShow and "ActionButton_HideOverlayGlow" or "ActionButton_ShowOverlayGlow"))
+	end
+	return Theme.glowPair
+end
+
 function Theme.showGlow(button)
-	if type(ActionButton_ShowOverlayGlow) == "function" then
+	if hasOverlayGlow() then
 		ActionButton_ShowOverlayGlow(button)
 		return "overlay"
 	end
@@ -297,7 +321,7 @@ function Theme.showGlow(button)
 end
 
 function Theme.hideGlow(button)
-	if type(ActionButton_HideOverlayGlow) == "function" then
+	if hasOverlayGlow() then
 		ActionButton_HideOverlayGlow(button)
 		return "overlay"
 	end

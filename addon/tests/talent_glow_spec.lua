@@ -125,6 +125,63 @@ describe("TalentGlow", function()
 		assert.are.equal("trait", how)
 	end)
 
+	it("uses the classic button when the open tab is the one the point is in", function()
+		start()
+		local build = assert(Follow.load(CODE, DATA))
+		local frame = _G.CreateFrame("Frame", "PlayerTalentFrame")
+		frame.selectedTab = 1
+		local classic = _G.CreateFrame("Button", "TalentFrameTalent1")
+		local target = TalentGlow.target(DATA, build, { [1] = {} })
+		assert.are.equal(classic, (TalentGlow.buttonFor(frame, target)))
+		-- The client answered which tab is open, so there is nothing
+		-- unverified left to warn the tester about.
+		assert.are.same({}, Theme.diagnostics())
+	end)
+
+	it("will not take a classic button belonging to a tab the point is not in", function()
+		start()
+		local build = assert(Follow.load(CODE, DATA))
+		local frame = _G.CreateFrame("Frame", "PlayerTalentFrame")
+		-- Protection open while the next point is in Holy: the classic
+		-- buttons belong to the open tab, so TalentFrameTalent1 is
+		-- Protection's first talent, not the one the build wants.
+		frame.selectedTab = 2
+		_G.CreateFrame("Button", "TalentFrameTalent1")
+		local node = _G.CreateFrame("Button", nil, frame)
+		node.nodeID = 105001
+		local target = TalentGlow.target(DATA, build, { [1] = {} })
+		local button, how = TalentGlow.buttonFor(frame, target)
+		assert.are.equal(node, button)
+		assert.are.equal("trait", how)
+	end)
+
+	it("records a miss rather than glowing another tab's button", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local frame = _G.CreateFrame("Frame", "PlayerTalentFrame")
+		_G.PlayerTalentFrame = frame
+		frame.selectedTab = 2
+		_G.CreateFrame("Button", "TalentFrameTalent1")
+		assert.is_nil(TalentGlow.refresh(DATA))
+		assert.is_nil(TalentGlow.glowing)
+		assert.are.same({ L.diagNoTalentButton }, Theme.diagnostics())
+	end)
+
+	it("records once that a classic glow may be tab-scoped when the client will not say", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local frame = _G.CreateFrame("Frame", "PlayerTalentFrame")
+		_G.PlayerTalentFrame = frame
+		local classic = _G.CreateFrame("Button", "TalentFrameTalent1")
+		-- No selectedTab at all: the glow still goes on, because this is
+		-- the mapping working everywhere it works today, but the tester
+		-- is told it is unverified rather than shown a confident glow.
+		assert.are.equal("classic", TalentGlow.refresh(DATA))
+		assert.are.equal(classic, TalentGlow.glowing)
+		assert.are.equal("classic", TalentGlow.refresh(DATA))
+		assert.are.same({ L.diagTalentTabUnknown }, Theme.diagnostics())
+	end)
+
 	it("finds a node button nested under a container", function()
 		start()
 		local frame = _G.CreateFrame("Frame", "PlayerTalentFrame")
@@ -134,11 +191,27 @@ describe("TalentGlow", function()
 		assert.are.equal(node, TalentGlow.traitButton(frame, 105002))
 	end)
 
+	it("still finds a node button at exactly the depth the cap allows", function()
+		start()
+		local frame = _G.CreateFrame("Frame", "PlayerTalentFrame")
+		local deepest = frame
+		for _ = 1, TalentGlow.MAX_DEPTH do
+			deepest = _G.CreateFrame("Frame", nil, deepest)
+		end
+		deepest.nodeID = 105001
+		-- Pins the cap's exact value from the inside: with the example
+		-- below, an off-by-one in either direction goes red.
+		assert.are.equal(deepest, TalentGlow.traitButton(frame, 105001))
+	end)
+
 	it("stops walking rather than recursing forever", function()
 		start()
 		local frame = _G.CreateFrame("Frame", "PlayerTalentFrame")
 		local deepest = frame
-		for _ = 1, TalentGlow.MAX_DEPTH + 2 do
+		-- Exactly one level past the cap, not an arbitrary distance past
+		-- it: with the example above, that pins MAX_DEPTH to its exact
+		-- value, so loosening the cap by one goes red too.
+		for _ = 1, TalentGlow.MAX_DEPTH + 1 do
 			deepest = _G.CreateFrame("Frame", nil, deepest)
 		end
 		deepest.nodeID = 105001
@@ -154,9 +227,15 @@ describe("TalentGlow", function()
 
 	it("glows the classic button", function()
 		local glowed = {}
-		start({ globals = { ActionButton_ShowOverlayGlow = function(button)
-			glowed[#glowed + 1] = button
-		end } })
+		-- Both halves of the overlay pair: Theme refuses a glow it could
+		-- not take off again, so a client with only the show half would
+		-- take the addon's own outline instead (theme_spec covers that).
+		start({ globals = {
+			ActionButton_ShowOverlayGlow = function(button)
+				glowed[#glowed + 1] = button
+			end,
+			ActionButton_HideOverlayGlow = function() end,
+		} })
 		assert(Follow.load(CODE, DATA))
 		_G.PlayerTalentFrame = _G.CreateFrame("Frame", "PlayerTalentFrame")
 		local classic = _G.CreateFrame("Button", "TalentFrameTalent1")

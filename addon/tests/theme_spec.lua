@@ -225,13 +225,52 @@ describe("Theme", function()
 	end)
 
 	it("glows through the client's overlay when it has one", function()
+		local glowed, ungl = {}, {}
+		start({ globals = {
+			ActionButton_ShowOverlayGlow = function(button)
+				glowed[#glowed + 1] = button
+			end,
+			ActionButton_HideOverlayGlow = function(button)
+				ungl[#ungl + 1] = button
+			end,
+		} })
+		local button = _G.CreateFrame("Button")
+		assert.are.equal("overlay", Theme.showGlow(button))
+		assert.are.same({ button }, glowed)
+		assert.are.equal("overlay", Theme.hideGlow(button))
+		assert.are.same({ button }, ungl)
+		assert.are.same({}, Theme.diagnostics())
+	end)
+
+	it("will not use an overlay glow it cannot take off again", function()
 		local glowed = {}
 		start({ globals = { ActionButton_ShowOverlayGlow = function(button)
 			glowed[#glowed + 1] = button
 		end } })
 		local button = _G.CreateFrame("Button")
-		assert.are.equal("overlay", Theme.showGlow(button))
-		assert.are.same({ button }, glowed)
+		-- Half a pair is no pair: a client that can put the overlay on but
+		-- never take it off would strand a glow on a button forever, which
+		-- is worse than no glow, because the player acts on it. The addon's
+		-- own outline is used instead -- it can always be removed.
+		assert.are.equal("texture", Theme.showGlow(button))
+		assert.are.same({}, glowed)
+		assert.are.equal("texture", Theme.hideGlow(button))
+		-- Both calls consulted the pair; the miss is recorded once.
+		assert.are.same({ string.format(L.diagNoTemplate, "ActionButton_HideOverlayGlow") },
+			Theme.diagnostics())
+	end)
+
+	it("will not use an overlay glow it cannot put on", function()
+		local ungl = {}
+		start({ globals = { ActionButton_HideOverlayGlow = function(button)
+			ungl[#ungl + 1] = button
+		end } })
+		local button = _G.CreateFrame("Button")
+		assert.are.equal("texture", Theme.showGlow(button))
+		assert.are.equal("texture", Theme.hideGlow(button))
+		assert.are.same({}, ungl)
+		assert.are.same({ string.format(L.diagNoTemplate, "ActionButton_ShowOverlayGlow") },
+			Theme.diagnostics())
 	end)
 
 	it("draws its own gold outline when the client has no overlay glow", function()
@@ -249,6 +288,9 @@ describe("Theme", function()
 		for _, edge in ipairs(button.foreverSixtyGlow) do
 			assert.is_false(edge.shown)
 		end
+		-- Neither half present is the ordinary case, not a half-pair, so
+		-- it stays silent rather than filling /fs diag with noise.
+		assert.are.same({}, Theme.diagnostics())
 	end)
 
 	it("paints through SetTexture on a client with no SetColorTexture", function()

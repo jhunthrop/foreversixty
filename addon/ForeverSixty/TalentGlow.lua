@@ -72,8 +72,29 @@ function TalentGlow.openFrame()
 	return nil
 end
 
-function TalentGlow.classicButton(target)
-	return _G[string.format(TalentGlow.CLASSIC_BUTTON, target.index)]
+--- The classic buttons belong to whichever tab the window has open --
+--- they are repopulated when the player switches tree -- so the nth
+--- button is only the talent we want while the open tab is the one the
+--- point is in. Glowing it regardless would point confidently at the
+--- wrong talent, which is worse than pointing at nothing, because the
+--- player acts on it.
+---
+--- The open tab is read as a lowercase-initial field for the same reason
+--- nodeID is: a mock frame that was never given one reads nil rather
+--- than a fabricated method, so "the client does not expose this" stays
+--- expressible. That third case keeps the mapping working everywhere it
+--- works today, and says once that the glow is unverified.
+function TalentGlow.classicButton(frame, target)
+	local selected = frame ~= nil and frame.selectedTab or nil
+	if type(selected) == "number" and selected ~= target.tab then
+		return nil
+	end
+	local button = _G[string.format(TalentGlow.CLASSIC_BUTTON, target.index)]
+	if button ~= nil and selected == nil and not TalentGlow.notedTabScope then
+		TalentGlow.notedTabScope = true
+		Theme.note(L.diagTalentTabUnknown)
+	end
+	return button
 end
 
 local function walk(frame, node, depth)
@@ -102,7 +123,7 @@ function TalentGlow.traitButton(frame, node)
 end
 
 function TalentGlow.buttonFor(frame, target)
-	local classic = TalentGlow.classicButton(target)
+	local classic = TalentGlow.classicButton(frame, target)
 	if classic ~= nil then
 		return classic, "classic"
 	end
