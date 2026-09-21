@@ -97,6 +97,11 @@ export const guildSettingsCopy = {
   // Shown when a save or rotate action itself fails (as opposed to the initial load).
   actionFailed: 'That did not save; try again.',
   frozenNotice: 'This guild’s claim is contested. Officer actions are frozen until a moderator resolves it.',
+  // Shown only while contested and NOT frozen -- officer tools stay enabled, so the copy
+  // says so; a frozen contest shows frozenNotice instead, never both at once. Byte-identical
+  // to guildHomeCopy.contested by this codebase's established per-section duplication
+  // pattern (see that key's comment).
+  contested: 'This claim has been contested and is with a moderator. Officer tools keep working.',
 } as const;
 
 export const guildJoinCopy = {

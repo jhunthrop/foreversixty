@@ -12,4 +12,10 @@ describe('GuildSettings', () => {
     expect(body).toContain('data-testid="guild-settings"');
     expect(body).toContain(guildSettingsCopy.loading);
   });
+
+  it('renders no claim-state or frozen testids before settings resolve', () => {
+    const { body } = render(GuildSettings, { props: { path: PATH } });
+    expect(body).not.toContain('data-testid="guild-settings-claim-state"');
+    expect(body).not.toContain('data-testid="guild-settings-frozen"');
+  });
 });

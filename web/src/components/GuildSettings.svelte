@@ -90,6 +90,16 @@
       rotated = { token: result.token, url: result.url };
       if (settings !== null) settings = { ...settings, invite: { rotated_at: result.rotated_at } };
     });
+
+  /**
+   * Officer controls freeze only when the claim is BOTH contested and the API's own
+   * `frozen` flag is true (spec's 2026-09-21 security-round contract) -- a `contested`
+   * claim against an established, corroborated guild goes to a moderator without
+   * disabling anything, so `state === 'contested'` alone is never enough here.
+   */
+  const frozen = $derived(
+    settings !== null && settings.claim.state === 'contested' && settings.claim.frozen === true,
+  );
 </script>
 
 <div class="flex flex-col gap-6" data-testid="guild-settings">
@@ -103,6 +113,18 @@
   {:else if status === 'failed'}
     <p class="text-[14px]" role="alert" data-testid="guild-settings-error">{guildSettingsCopy.failed}</p>
   {:else if settings !== null}
+    {#if settings.claim.state !== 'unclaimed' && !(settings.claim.state === 'contested' && frozen)}
+      <p class="text-[13px]" data-testid="guild-settings-claim-state">
+        {settings.claim.state === 'contested'
+          ? guildSettingsCopy.contested
+          : `Claim: ${settings.claim.state}`}
+      </p>
+    {/if}
+    {#if settings.claim.state === 'contested' && frozen}
+      <p class="text-[13px]" role="alert" data-testid="guild-settings-frozen">
+        {guildSettingsCopy.frozenNotice}
+      </p>
+    {/if}
     <section class="flex flex-col gap-3">
       <label class="label text-muted" for="guild-visibility">{guildSettingsCopy.defaultVisibility}</label>
       <select
@@ -110,7 +132,7 @@
         class="border-line-warm bg-raised rounded-control text-text h-11 w-fit px-3 text-[14px]"
         value={settings.default_visibility}
         onchange={(event) => onSave('default_visibility', (event.currentTarget as HTMLSelectElement).value)}
-        disabled={busy}
+        disabled={busy || frozen}
         data-testid="guild-visibility-select"
       >
         <option value="public">Public</option>
@@ -130,7 +152,7 @@
         value={settings.officer_max_rank_index}
         onchange={(event) =>
           onSave('officer_max_rank_index', (event.currentTarget as HTMLInputElement).value)}
-        disabled={busy}
+        disabled={busy || frozen}
         data-testid="guild-officer-threshold-input"
       />
     </section>
@@ -140,7 +162,7 @@
       <button
         class="border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
         onclick={onRotate}
-        disabled={busy}
+        disabled={busy || frozen}
         data-testid="guild-invite-rotate"
       >
         {guildSettingsCopy.rotateButton}
