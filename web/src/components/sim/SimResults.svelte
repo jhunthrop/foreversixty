@@ -129,7 +129,7 @@
         emptyMessage={AURA_EMPTY_MESSAGE.DEBUFF}
       />
     {:else if tab === 'casts'}
-      <CastTable rows={named.casts} durationMs={named.duration_ms} />
+      <CastTable rows={named.casts} durationMs={named.duration_ms} simulated />
     {:else if tab === 'resources'}
       <ResourceGraphs tracks={named.resources} durationMs={named.duration_ms} />
     {:else if tab === 'timeline'}
