@@ -34,6 +34,7 @@ read_globals = {
 	"UISpecialFrames", "Minimap", "GetItemIcon", "date",
 	"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
 	"GetCursorPosition", "InterfaceOptionsFrame_OpenToCategory",
+	"AddonCompartmentFrame",
 	-- Saved variables the TOC declares. ForeverSixtyInbox is written by the
 	-- companion and only ever read here; ForeverSixtyDB is the addon's own
 	-- and Export.save writes it, so it is a global, not a read_global.
@@ -74,5 +75,6 @@ files["tests/"] = {
 		"ActionButton_ShowOverlayGlow", "ActionButton_HideOverlayGlow",
 		"GetCursorPosition", "Settings", "InterfaceOptions_AddCategory",
 		"InterfaceOptionsFrame_OpenToCategory", "PlayerTalentFrame", "TalentFrame",
+		"AddonCompartmentFrame",
 	},
 }

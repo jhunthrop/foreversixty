@@ -16,6 +16,8 @@ local L = ns.L or require("Locale")
 local Theme = ns.Theme or require("Theme")
 local Prefs = ns.Prefs or require("Prefs")
 local Follow = ns.Follow or require("Follow")
+local Talents = ns.Talents or require("Talents")
+local Gear = ns.Gear or require("Gear")
 
 local MinimapButton = {}
 
@@ -42,11 +44,27 @@ end
 
 function MinimapButton.tooltipLines()
 	local build = Follow.build
-	local name = L.minimapNoBuild
-	if build ~= nil then
-		name = build.name or string.format(L.followBuildName, build.classSlug)
+	local lines = { L.addonName }
+	if build == nil then
+		lines[#lines + 1] = L.minimapNoBuild
+		lines[#lines + 1] = L.minimapLeftClick
+		lines[#lines + 1] = L.minimapRightClick
+		return lines
 	end
-	return { L.addonName, name, L.minimapLeftClick, L.minimapRightClick }
+	lines[#lines + 1] = build.name or string.format(L.followBuildName, build.classSlug)
+	if MinimapButton.data ~= nil then
+		local ranks = Talents.readRanks(MinimapButton.data)
+		local point = Follow.nextPoint(build, ranks)
+		local spent = point ~= nil and (point.index - 1) or #build.order
+		lines[#lines + 1] = string.format(L.minimapProgress, spent, #build.order)
+		local upgrades = Gear.upgrades(MinimapButton.data, build)
+		if #upgrades > 0 then
+			lines[#lines + 1] = string.format(L.minimapUpgrades, #upgrades)
+		end
+	end
+	lines[#lines + 1] = L.minimapLeftClick
+	lines[#lines + 1] = L.minimapRightClick
+	return lines
 end
 
 function MinimapButton.place(angle)
@@ -139,6 +157,42 @@ function MinimapButton.setShown(shown)
 	Prefs.set("minimap", "shown", shown)
 	MinimapButton.refresh()
 	return shown
+end
+
+--- Whether this client has the addon compartment. Theme.lua is off limits
+--- in this lane (file ownership), so this guard lives here instead of
+--- there, following the same never-raise, note-once contract as every
+--- capability check in Theme.lua.
+function MinimapButton.hasCompartment()
+	return type(AddonCompartmentFrame) == "table"
+		and type(AddonCompartmentFrame.RegisterAddon) == "function"
+end
+
+--- Registers the button's own open/settings behaviour with the
+--- compartment. Idempotent, and silent (not an error) when the client has
+--- none.
+function MinimapButton.registerCompartment()
+	if MinimapButton.compartmentRegistered then
+		return true
+	end
+	if not MinimapButton.hasCompartment() then
+		return false
+	end
+	local ok = pcall(AddonCompartmentFrame.RegisterAddon, AddonCompartmentFrame, {
+		text = L.addonName,
+		icon = Theme.MEDIA.minimapIcon,
+		notCheckable = true,
+		func = function()
+			if MinimapButton.open ~= nil then
+				MinimapButton.open()
+			end
+		end,
+	})
+	MinimapButton.compartmentRegistered = ok
+	if not ok then
+		Theme.note(string.format(L.diagNoTemplate, "AddonCompartmentFrame"))
+	end
+	return ok
 end
 
 ns.Minimap = MinimapButton

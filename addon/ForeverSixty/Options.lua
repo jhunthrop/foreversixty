@@ -150,7 +150,9 @@ function Options.onEvent(_, event, ...)
 		Follow.restore(Options.data)
 		Options.readInbox()
 		SettingsView.register(Window.context())
+		MinimapButton.data = Options.data
 		MinimapButton.refresh()
+		MinimapButton.registerCompartment()
 	end
 	if event == "PLAYER_LEVEL_UP" then
 		Toast.onLevelUp(Options.data, ...)
