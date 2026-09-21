@@ -10,15 +10,16 @@ import (
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
 )
 
-// Premiumer reads the premium flag. auth.Store satisfies it; the
-// tests use a stub so the handler can be exercised without an
-// accounts table.
-type Premiumer interface {
-	Premium(ctx context.Context, userID int64) (bool, error)
+// Entitlementer answers whether an account may use a feature.
+// entitlements.Store satisfies it; tests use a stub so the handler can
+// be exercised without an entitlements table.
+type Entitlementer interface {
+	Can(ctx context.Context, userID int64, feature entitlements.Feature) (bool, entitlements.Reason, error)
 }
 
 // failCompensationTimeout bounds the compensating write below: it
@@ -31,12 +32,12 @@ const failCompensationTimeout = 5 * time.Second
 // the page has something to poll.
 func (s *Service) run(w http.ResponseWriter, r *http.Request) {
 	actor := auth.ActorFrom(r.Context())
-	premium, err := s.Accounts.Premium(r.Context(), actor.UserID)
+	allowed, _, err := s.Accounts.Can(r.Context(), actor.UserID, entitlements.FeatureServerSims)
 	if err != nil {
 		s.fail(w, r, "premium", err, "could not check your account just now")
 		return
 	}
-	if !premium {
+	if !allowed {
 		// 402, not 403: the account is fine, the feature is paid for.
 		httpx.WriteError(w, r, http.StatusPaymentRequired, "premium_required",
 			"running on our servers is a premium feature", nil)

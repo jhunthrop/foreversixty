@@ -100,7 +100,7 @@ func assertCapExceededBody(t *testing.T, res *http.Response, cap, combinations i
 // over-cap summary would.
 func TestABulkRunPastTheLanesCapIsRefusedWithBothNumbers(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	h.planner.err = simapi.ErrCapExceeded{Cap: simapi.Caps[simapi.LaneServer], Combinations: 31200}
 
 	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
@@ -117,7 +117,7 @@ func TestABulkRunPastTheLanesCapIsRefusedWithBothNumbers(t *testing.T) {
 // returns). checkSize must answer the identical body either way.
 func TestABulkRunPastTheLanesCapViaAnOverCapSummaryIsAlsoRefused(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	h.planner.summary = simapi.PlanSummary{
 		Kind: simapi.KindGear, Combinations: 31200,
 		Cap: simapi.Caps[simapi.LaneServer], IterationsTotal: 100,
@@ -138,7 +138,7 @@ func TestABulkRunPastTheLanesCapViaAnOverCapSummaryIsAlsoRefused(t *testing.T) {
 // sized.
 func TestAPlannerFailureThatIsNotACapBreachFailsTheSubmit(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	h.planner.err = errAnyway
 
 	res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t))
@@ -155,7 +155,7 @@ func TestAPlannerFailureThatIsNotACapBreachFailsTheSubmit(t *testing.T) {
 
 func TestTheServerSetsTheCapItself(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	if res := h.json(http.MethodPost, "/v1/sims/run", bulkBody(t)); res.StatusCode != http.StatusAccepted {
 		t.Fatalf("status %d, want 202", res.StatusCode)
 	}
@@ -170,7 +170,7 @@ func TestTheServerSetsTheCapItself(t *testing.T) {
 
 func TestAPlainRunIsNeverPlanned(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	if res := h.json(http.MethodPost, "/v1/sims/run", runBody(t)); res.StatusCode != http.StatusAccepted {
 		t.Fatalf("status %d, want 202", res.StatusCode)
 	}
@@ -181,7 +181,7 @@ func TestAPlainRunIsNeverPlanned(t *testing.T) {
 
 func TestAnAccountWithoutPremiumIsAnswered402(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = false
+	h.entitlements.allowed = false
 	res := h.json(http.MethodPost, "/v1/sims/run", runBody(t))
 	if res.StatusCode != http.StatusPaymentRequired {
 		t.Fatalf("status %d, want 402", res.StatusCode)
@@ -196,7 +196,7 @@ func TestAnAccountWithoutPremiumIsAnswered402(t *testing.T) {
 
 func TestAPremiumRunIsQueuedDispatchedAndPollable(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	res := h.json(http.MethodPost, "/v1/sims/run", runBody(t))
 	if res.StatusCode != http.StatusAccepted {
 		t.Fatalf("status %d, want 202", res.StatusCode)
@@ -243,7 +243,7 @@ func TestAPremiumRunIsQueuedDispatchedAndPollable(t *testing.T) {
 
 func TestARunTheEnvelopeRejectsIsRefused(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	b, err := json.Marshal(simapi.SimRequest{
 		Spec: "warrior-fury", Iterations: defaultIterations,
 		Source: simapi.CharacterSource{Kind: simapi.SourceManual},
@@ -260,7 +260,7 @@ func TestARunTheEnvelopeRejectsIsRefused(t *testing.T) {
 
 func TestARunNobodyCanStartIsRecordedAsFailed(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	h.jobs.Err = errAnyway
 	res := h.json(http.MethodPost, "/v1/sims/run", runBody(t))
 	if res.StatusCode != http.StatusBadGateway {
@@ -290,7 +290,7 @@ func (j cancelingJobs) Run(ctx context.Context, args ...string) error {
 
 func TestARunNobodyCanStartIsRecordedAsFailedEvenWhenTheRequestContextIsDone(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 
 	ctx, cancel := context.WithCancel(auth.WithActor(context.Background(), h.actor))
 	h.service.Jobs = cancelingJobs{cancel: cancel}
@@ -316,7 +316,7 @@ func TestARunNobodyCanStartIsRecordedAsFailedEvenWhenTheRequestContextIsDone(t *
 
 func TestABulkRunPastTheBudgetIsRefusedWithItsEstimate(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	// Exactly four thousand seconds of engine time, whatever the
 	// benchmark's current figure is.
 	h.planner.summary = simapi.PlanSummary{
@@ -370,7 +370,7 @@ func weightsBody(t *testing.T, iterations int, stats []string, reference string)
 // still queued exactly as before.
 func TestALegalWeightsRunIsQueuedAfterASizeCheck(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	body := weightsBody(t, defaultIterations, []string{"strength", "crit"}, "crit")
 	if res := h.json(http.MethodPost, "/v1/sims/run", body); res.StatusCode != http.StatusAccepted {
 		t.Fatalf("status %d, want 202", res.StatusCode)
@@ -432,7 +432,7 @@ func TestAWeightsRunPastTheBudgetIsRefusedWithItsEstimate(t *testing.T) {
 
 func TestTheRunRouteNeedsASession(t *testing.T) {
 	h := newHarness(t)
-	h.premium.premium = true
+	h.entitlements.allowed = true
 	h.anonymous()
 	if res := h.json(http.MethodPost, "/v1/sims/run", runBody(t)); res.StatusCode != http.StatusUnauthorized {
 		t.Fatalf("status %d, want 401", res.StatusCode)
