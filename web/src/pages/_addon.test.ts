@@ -10,16 +10,17 @@
 // that way; the copy-file rule (every visible string comes from addonCopy, never a
 // literal) genuinely is a property of the source text, so that stays a source-text check.
 //
-// The Svelte renderer has to be handed to the container explicitly since addon.astro now
-// mounts AddonPasteBox.svelte -- Astro's integrations are not loaded in a unit test,
-// without this the island renders as an empty shell (see _planner.test.ts for the same
-// pattern).
+// The Svelte renderer has to be handed to the container explicitly, exactly as
+// _planner.test.ts and _logs.test.ts do: addon.astro mounts AddonPasteBox.svelte, and wraps
+// Base.astro, which mounts SessionNav on every page. Astro's integrations are not loaded in
+// a unit test, so without this the container throws NoMatchingRenderer.
 import { readFileSync } from 'node:fs';
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
 import { loadRenderers } from 'astro:container';
 import { describe, expect, it, beforeAll } from 'vitest';
 import { addonCopy } from '../lib/addon/copy';
+import { ADDON_NAV_ITEM } from '../lib/nav';
 import activeBuild from '../data/active-build.json';
 import AddonPage, { CURSEFORGE_URL, WAGO_URL, GITHUB_RELEASES_URL } from './addon.astro';
 
@@ -63,9 +64,11 @@ describe('/addon', () => {
     expect(source).not.toContain('jhunthrop/forever/releases');
   });
 
-  it('is reachable from the footer', () => {
-    const footer = readFileSync(new URL('../components/Footer.astro', import.meta.url), 'utf8');
-    expect(footer).toContain('/addon');
+  it('is reachable from the primary nav', () => {
+    // c313e78 dropped the footer's own addon link once ADDON_NAV_ITEM promoted it into
+    // Header.astro's primary nav (every page, not just the footer); this now checks the
+    // nav data Header.astro renders from rather than a link Footer.astro no longer carries.
+    expect(ADDON_NAV_ITEM.href).toBe('/addon');
   });
 
   it('links all three install routes in the rendered output', () => {

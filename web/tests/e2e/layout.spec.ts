@@ -24,3 +24,18 @@ test.describe('phone layout', () => {
     expect(searchbox?.height ?? 0).toBeGreaterThanOrEqual(44);
   });
 });
+
+test('Sign in is in the header with no session prop needed, on a page that never passed one', async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill({
+      status: 401,
+      contentType: 'application/json',
+      body: '{"ok":false,"data":null,"error":null,"request_id":"r"}',
+    }),
+  );
+  // /classes never passed `session` to Base.astro before this lane's change.
+  await page.goto('/classes');
+  await expect(page.getByTestId('session-nav').getByRole('link', { name: 'Sign in' })).toBeVisible();
+});

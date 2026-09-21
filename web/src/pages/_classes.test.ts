@@ -3,7 +3,15 @@
 // src/pages/ is a route, so an unprefixed classes.test.ts would build as the route
 // /classes.test and run its top-level beforeAll during the build. Astro skips
 // `_`-prefixed files; vitest still collects it.
+//
+// The Svelte renderer has to be handed to the container explicitly, exactly as
+// _planner.test.ts and _logs.test.ts do: classes.astro wraps Base.astro, which now mounts
+// SessionNav client:load on every page, and Astro's integrations are not loaded in a unit
+// test, so without this the container throws NoMatchingRenderer rather than rendering an
+// empty shell.
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
+import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
+import { loadRenderers } from 'astro:container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import Classes from './classes.astro';
 import { classRows, raceRows } from '../lib/planner/reference';
@@ -11,7 +19,8 @@ import { classRows, raceRows } from '../lib/planner/reference';
 let html: string;
 
 beforeAll(async () => {
-  const container = await AstroContainer.create();
+  const renderers = await loadRenderers([getContainerRenderer()]);
+  const container = await AstroContainer.create({ renderers });
   html = await container.renderToString(Classes);
 });
 
@@ -64,7 +73,11 @@ describe('classes.astro', () => {
     expect(html).not.toContain('aria-label="Plan a Human Warrior, new in Forever"');
   });
 
-  it('ships no island', () => {
-    expect(html).not.toContain('<astro-island');
+  it('ships no island of its own', () => {
+    // The one <astro-island> present is Base's now-universal SessionNav client:load mount
+    // (fb4952e), the same header account widget every other page carries -- classes.astro
+    // itself still mounts nothing; before that change this page carried zero islands, so
+    // the assertion counted zero rather than filtering by mount.
+    expect(html.match(/<astro-island/g) ?? []).toHaveLength(1);
   });
 });
