@@ -1,0 +1,25 @@
+---
+// web/src/pages/premium/checkout.astro
+// session=true: this page exists only to run one action, exactly like /login. This site
+// builds statically (astro.config.mjs has no server output/adapter, and wrangler.jsonc's
+// run_worker_first does not list this path), so this frontmatter runs once at build time
+// and never sees a real visitor's query string -- Astro.url here is always the build URL,
+// with no `plan`, `interval`, `guild_id`, `status` or `session_id`. Validating those params
+// here would silently do nothing (they would always read as absent) and would make this
+// page never work for a real visitor. CheckoutLauncher itself is the one place that reads
+// and validates the query string, client-side after hydration, against a closed set --
+// see its own header comment for the full reasoning and the security rule it enforces.
+import Base from '../../layouts/Base.astro';
+import CheckoutLauncher from '../../components/CheckoutLauncher.svelte';
+---
+
+<Base title="Checkout" description="Continue to checkout." path="/premium/checkout" session>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[480px] flex-col gap-4 px-[18px] pt-10 pb-16 md:px-12"
+  >
+    <h1 class="section-title text-[18px]">Checkout</h1>
+    <CheckoutLauncher client:load />
+  </main>
+</Base>
