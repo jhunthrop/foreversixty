@@ -183,6 +183,12 @@ describe('parseGuildInviteToken', () => {
     expect(parseGuildInviteToken('/guild/invite/a/b')).toBeNull();
     expect(parseGuildInviteToken('/guild/us/hardcore/name')).toBeNull();
   });
+
+  // A percent-encoded `..` is the same traversal isCharacterSlug refuses for a character
+  // slug -- decoded before the unsafe-character check, not after, so it cannot hide.
+  it('refuses a percent-encoded traversal segment', () => {
+    expect(parseGuildInviteToken('/guild/invite/%2e%2e')).toBeNull();
+  });
 });
 
 describe('guild sub-route hrefs', () => {

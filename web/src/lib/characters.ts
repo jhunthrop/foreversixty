@@ -159,7 +159,9 @@ export function parseGuildSettingsPath(pathname: string): CharacterPath | null {
 /** Longer than any real invite token (a 32-byte value, base64url or hex is well under this). */
 const MAX_TOKEN_LENGTH = 128;
 /** Same reasoning as UNSAFE_IN_SLUG: a token is opaque, so nothing that could traverse or
- *  re-target a URL is allowed through unescaped. */
+ *  re-target a URL is allowed through unescaped. Checked against the *decoded* value below,
+ *  the same order isCharacterSlug uses, so a percent-encoded escape (`%2e%2e`, `%2f`) is
+ *  refused as the `..` or `/` it decodes to rather than passing through unblocked. */
 const UNSAFE_IN_TOKEN = /[/\\.?#\s]/;
 
 export function parseGuildInviteToken(pathname: string): string | null {
@@ -169,7 +171,15 @@ export function parseGuildInviteToken(pathname: string): string | null {
     .filter((part) => part !== '');
   if (parts.length !== 3 || parts[0] !== 'guild' || parts[1] !== 'invite') return null;
   const token = parts[2];
-  if (token === '' || token.length > MAX_TOKEN_LENGTH || UNSAFE_IN_TOKEN.test(token)) return null;
+  if (token.length > MAX_TOKEN_LENGTH) return null;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(token);
+  } catch {
+    // A malformed escape. Nothing legitimate produces one, and it is not worth guessing at.
+    return null;
+  }
+  if (decoded.length > MAX_TOKEN_LENGTH || UNSAFE_IN_TOKEN.test(decoded)) return null;
   return token;
 }
 
