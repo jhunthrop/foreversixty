@@ -50,16 +50,22 @@ func (s *Store) eligibleClaimRank(ctx context.Context, guildID, userID int64) (s
 
 // checkClaimRateLimit enforces the 2026-09-21 hardening: at most one
 // currently-claimed guild per account, and at most one claim attempt
-// (successful or pending) per account per rolling 30 days. Checked
-// before either branch of Claim acts. The "already claims another
-// guild" check runs first: holding a claim always also means a recent
-// attempt exists, so checking attempts first would make the
-// already-claims case unreachable in practice - a caller who still
-// holds a guild always hears about that specifically, not a generic
-// rate limit, even though both are true.
-func (s *Store) checkClaimRateLimit(ctx context.Context, userID int64) error {
+// (successful or pending) per account per rolling 30 days - scoped to
+// kind = 'claim' now that guild_claim_attempts also records contest
+// attempts, so a contest never eats into a separate account's claim
+// budget or vice versa. Checked before either branch of Claim acts. The
+// "already claims another guild" check runs first: holding a claim
+// always also means a recent attempt exists, so checking attempts
+// first would make the already-claims case unreachable in practice - a
+// caller who still holds a guild always hears about that specifically,
+// not a generic rate limit, even though both are true. Takes tx, not
+// s.Pool: it must run after lockAccountForClaimActivity, inside the
+// same transaction that later inserts the attempt row, or a burst of
+// concurrent calls from the same account could each read the same
+// stale count (HIGH, third security review response).
+func (s *Store) checkClaimRateLimit(ctx context.Context, tx pgx.Tx, userID int64) error {
 	var claimedElsewhere int
-	if err := s.Pool.QueryRow(ctx,
+	if err := tx.QueryRow(ctx,
 		`select count(*) from guilds where claimed_by = $1`, userID).Scan(&claimedElsewhere); err != nil {
 		return fmt.Errorf("guilds: claim rate limit: %w", err)
 	}
@@ -67,8 +73,9 @@ func (s *Store) checkClaimRateLimit(ctx context.Context, userID int64) error {
 		return ErrAlreadyClaimsAnotherGuild
 	}
 	var recent int
-	if err := s.Pool.QueryRow(ctx,
-		`select count(*) from guild_claim_attempts where user_id = $1 and attempted_at >= now() - interval '30 days'`,
+	if err := tx.QueryRow(ctx,
+		`select count(*) from guild_claim_attempts
+		 where user_id = $1 and kind = 'claim' and attempted_at >= now() - interval '30 days'`,
 		userID).Scan(&recent); err != nil {
 		return fmt.Errorf("guilds: claim rate limit: %w", err)
 	}
@@ -108,9 +115,6 @@ func (s *Store) Claim(ctx context.Context, guildID, userID int64, hasBattleNetId
 	if rank == "leader" && !hasBattleNetIdentity {
 		return ClaimResult{}, ErrNoBattleNetIdentity
 	}
-	if err := s.checkClaimRateLimit(ctx, userID); err != nil {
-		return ClaimResult{}, err
-	}
 
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
@@ -118,7 +122,14 @@ func (s *Store) Claim(ctx context.Context, guildID, userID int64, hasBattleNetId
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
-	if _, err := tx.Exec(ctx, `insert into guild_claim_attempts (user_id) values ($1)`, userID); err != nil {
+	if err := lockAccountForClaimActivity(ctx, tx, userID); err != nil {
+		return ClaimResult{}, err
+	}
+	if err := s.checkClaimRateLimit(ctx, tx, userID); err != nil {
+		return ClaimResult{}, err
+	}
+
+	if _, err := tx.Exec(ctx, `insert into guild_claim_attempts (user_id, kind) values ($1, 'claim')`, userID); err != nil {
 		return ClaimResult{}, fmt.Errorf("guilds: claim: record attempt: %w", err)
 	}
 

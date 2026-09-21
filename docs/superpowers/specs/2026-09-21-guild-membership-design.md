@@ -505,6 +505,60 @@ Forever merges each ruleset's original realms into one shared roster and leaderb
 guild name is only ever ambiguous within a `(region, ruleset)` pair, never within a single
 original realm, and the public guild page (`rankings/guilds.go`) already keys the same way.
 
+#### Third amendment, 2026-09-21 (third security review response)
+
+A second, scoped re-review confirmed A, B, D and E of the second amendment fixed, but found
+the corroboration test A4's freeze rule reads was itself gameable: `frozen()` counted *any*
+`guild_characters` row with `verified_by = 'logs'` on a different account, with no check on
+who owned the reports that earned it. A squatter who has claimed a guild is that guild's
+only officer, and so is free to attach any report to it (`PATCH .guild_id`, standing-gated
+on officer rank, §2.6) — including their own uploaded reports. Attaching two such reports
+naming a second, throwaway account's character got that account `verified_by = 'logs'`
+purely from the squatter's own uploads, satisfying A4's old corroboration test and letting
+the squatter's claim read as "established and corroborated" — never freezing — even against
+a contest from the real guild master.
+
+Fixed, in two parts:
+
+- **Corroboration now requires independence, not just distinctness.** A claim counts as
+  corroborated only when at least **two** distinct accounts other than the claimant each
+  have a character verified by logs, where the reports that did the verifying were owned by
+  **neither the claimant nor the account being verified**. A lone squatter plus one alt
+  account can verify nobody this way: every report either of their two accounts could
+  attach is owned by one of the two accounts the rule excludes; a third, genuinely
+  independent account has to be the one doing the uploading. `guild_characters` gains
+  `log_evidence_owner_1`/`log_evidence_owner_2` (migration 0018, still amended in place),
+  recording which two reports' owners actually drove a row's verification at the moment
+  `VerifyByLogs` sets it — read by `frozen()`'s corroboration check rather than re-derived
+  from reports that may since have been deleted or detached, and re-evaluated against
+  whoever holds the claim *now*, not whoever held it when the row was verified.
+- **`VerifyByLogs` itself now applies the same independence rule while the guild's claim is
+  young (established less than 14 days ago) or contested**: only reports owned by neither
+  the character's own account nor the current claim holder count toward the two-distinct-
+  dates threshold. This closes the exploit at its source — a squatter's self-attached
+  reports can never earn a throwaway account real corroboration evidence in the first place,
+  even before anyone has thought to contest the claim, so the evidence is not sitting there
+  waiting to count once the claim later turns 14 days old. An entirely unclaimed guild (no
+  claim exists yet for a contest to dispute) is exempt from this restriction, so a
+  freshly-synced guild's characters still verify normally from their own reports exactly as
+  before this response; a merely-*pending* claim is likewise exempt, since a contest against
+  a pending claim is always young by construction (`pendingActive`'s own TTL) and so always
+  freezes regardless of corroboration.
+
+Second, unrelated finding from the same re-review: `checkContestRateLimit`'s "one open
+contest per account" rule was a check-then-act race — a burst of concurrent contests from
+one account could each read the same stale count before any of them committed. Fixed the
+same way `guilds_claimed_by_idx` already protects the claim side: a partial unique index,
+`guilds (claim_contested_by) where claim_contested_by is not null`, with the resulting
+23505 mapped to `ErrAlreadyContestingAnotherGuild`, plus a per-account transaction-scoped
+advisory lock (`lockAccountForClaimActivity`) taken at the top of both the claim and the
+contest transaction, before either one's rate-limit count runs, so the count and the
+attempt-row insert are serialised per account rather than merely per guild. Also closed, as
+a directly adjacent gap: the contest UPDATE previously had no `where claim_contested_at is
+null` guard, so two different accounts racing to contest the *same* guild could each
+silently overwrite the other's `claim_contested_by`; it now answers `ErrAlreadyContested`
+via a zero-rows-affected check instead.
+
 ### 2.5 The invite link
 
 Unchanged mechanics from the first draft (a random 32-byte token, shown once, stored only
@@ -794,7 +848,33 @@ second amendment:
   Cc (control): zero-width space (U+200B), zero-width joiner (U+200D), the right-to-left
   override (U+202E), and the byte-order mark (U+FEFF) can none of them appear in a real WoW
   guild name, and a bidi override in particular can make a guild's displayed name
-  misleading about what it actually contains.
+  misleading about what it actually contains. (Go's `unicode.C` is documented as "the set of
+  Unicode control, special, and *unassigned* code points" — it already subsumes `unicode.Cn`,
+  which does exist in Go's standard library; an earlier draft of this response's own code
+  comment claimed otherwise and has been corrected.)
+
+#### Third amendment, 2026-09-21 (third security review response)
+
+A4's corroboration test (second amendment) was itself exploitable: it credited *any*
+`verified_by = 'logs'` row on a different account, with no check on who owned the
+corroborating reports. Since a claimed guild's only officer is free to attach any report to
+it, a squatter could manufacture their own "independent" corroboration by attaching their
+own uploaded reports naming a throwaway account's character. Full detail and the fix (an
+independence requirement on both `frozen()`'s read and `VerifyByLogs`'s write, backed by new
+`log_evidence_owner_1`/`log_evidence_owner_2` provenance columns) is recorded in §2.4's own
+third amendment, immediately above §2.5, rather than duplicated here — this is the same
+change, described there because it lives in the claim/contest flow's own module.
+
+The same re-review also asked for regression coverage this response's own D fix (mayEdit's
+freeze check) had shipped without: an HTTP-level test in `reports/handler_test.go` now
+exercises the real route (`TestAFrozenClaimantsReportEditRightIsSuspendedButOnlyForOthers`)
+— confirming a frozen claimant is refused on another member's guild report, still succeeds
+on their own, that `GET` is unaffected, and that an unrelated verified officer is
+unaffected — and `cmd/api/main_test.go` gained a wiring guard
+(`TestNewReportsServiceWiresGuilds`) so dropping `reports.Service.Guilds` from how `main`
+wires it fails a test rather than silently disabling the freeze in production, while every
+other reports test harness keeps leaving `Guilds` nil deliberately (nil-safe by design,
+since most reports tests have nothing to do with a claim dispute).
 
 ## 4. The web side
 

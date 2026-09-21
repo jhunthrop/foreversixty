@@ -1,4 +1,10 @@
 -- api/internal/db/migrations/0018_guild_membership.down.sql
+-- Third security review response additions (2026-09-21), reversed
+-- first, in exact reverse order of the up migration's appended block.
+drop index if exists guilds_claim_contested_by_idx;
+alter table guild_characters drop column if exists log_evidence_owner_2;
+alter table guild_characters drop column if exists log_evidence_owner_1;
+
 -- Second security review response additions (2026-09-21), reversed
 -- first, in exact reverse order of the up migration's appended block.
 drop index if exists guild_claim_resolutions_guild_contester_idx;

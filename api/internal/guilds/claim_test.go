@@ -331,4 +331,98 @@ func TestClaimEnforcesOneClaimedGuildPerAccountUnderConcurrency(t *testing.T) {
 	if claimedCount != 1 {
 		t.Fatalf("guilds claimed by the account = %d, want exactly 1", claimedCount)
 	}
+	// lockAccountForClaimActivity (HIGH, third security review response)
+	// serialises the count-then-insert per account: the losing
+	// transaction's own attempt-row insert rolls back with the rest of
+	// its transaction, so exactly one 'claim'-kind attempt row should
+	// exist, never two (which a lost-update race could otherwise leave
+	// behind even where the guilds-table unique index alone would not
+	// catch it).
+	var attemptCount int
+	if err := pool.QueryRow(ctx,
+		`select count(*) from guild_claim_attempts where user_id = $1 and kind = 'claim'`, uid).
+		Scan(&attemptCount); err != nil {
+		t.Fatal(err)
+	}
+	if attemptCount != 1 {
+		t.Fatalf("recorded 'claim' attempts for the account = %d, want exactly 1", attemptCount)
+	}
+}
+
+// TestContestClaimEnforcesOneOpenContestPerAccountUnderConcurrency is
+// item 2 of the third security review response: N concurrent contests
+// from one account must not all pass the count-then-act rate-limit
+// checks. Mirrors TestClaimEnforcesOneClaimedGuildPerAccountUnderConcurrency.
+func TestContestClaimEnforcesOneOpenContestPerAccountUnderConcurrency(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+
+	g1 := seedGuild(t, pool, "ConcurrentContestFirst")
+	claimant1 := seedUser(t, pool, "concurrent-contest-claimant1@example.com")
+	seedCharacter(t, pool, g1, claimant1, "us/hardcore/concurrentcontestclaimant1", "leader", false)
+	if _, err := s.Claim(ctx, g1, claimant1, true); err != nil {
+		t.Fatal(err)
+	}
+	g2 := seedGuild(t, pool, "ConcurrentContestSecond")
+	claimant2 := seedUser(t, pool, "concurrent-contest-claimant2@example.com")
+	seedCharacter(t, pool, g2, claimant2, "us/hardcore/concurrentcontestclaimant2", "leader", false)
+	if _, err := s.Claim(ctx, g2, claimant2, true); err != nil {
+		t.Fatal(err)
+	}
+
+	contester := seedUser(t, pool, "concurrent-contester@example.com")
+	seedCharacter(t, pool, g1, contester, "us/hardcore/concurrentcontester1", "officer", false)
+	seedCharacter(t, pool, g2, contester, "us/hardcore/concurrentcontester2", "officer", false)
+
+	var wg sync.WaitGroup
+	results := make(chan error, 2)
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		results <- s.ContestClaim(ctx, g1, contester, true)
+	}()
+	go func() {
+		defer wg.Done()
+		results <- s.ContestClaim(ctx, g2, contester, true)
+	}()
+	wg.Wait()
+	close(results)
+
+	var succeeded, rejected int
+	for err := range results {
+		switch {
+		case err == nil:
+			succeeded++
+		case errors.Is(err, ErrAlreadyContestingAnotherGuild), errors.Is(err, ErrContestRateLimited):
+			rejected++
+		default:
+			t.Fatalf("unexpected error from a concurrent contest: %v", err)
+		}
+	}
+	if succeeded != 1 {
+		t.Fatalf("succeeded = %d, want exactly 1 (guilds_claim_contested_by_idx must stop a second concurrent contest from the same account)", succeeded)
+	}
+	if rejected != 1 {
+		t.Fatalf("rejected = %d, want exactly 1", rejected)
+	}
+	var contestedCount int
+	if err := pool.QueryRow(ctx, `select count(*) from guilds where claim_contested_by = $1`, contester).Scan(&contestedCount); err != nil {
+		t.Fatal(err)
+	}
+	if contestedCount != 1 {
+		t.Fatalf("guilds contested by the account = %d, want exactly 1", contestedCount)
+	}
+	// Same rationale as the claim-side assertion above: the per-account
+	// advisory lock must serialise the attempts count-then-insert, so
+	// the losing transaction's attempt row never survives its rollback.
+	var attemptCount int
+	if err := pool.QueryRow(ctx,
+		`select count(*) from guild_claim_attempts where user_id = $1 and kind = 'contest'`, contester).
+		Scan(&attemptCount); err != nil {
+		t.Fatal(err)
+	}
+	if attemptCount != 1 {
+		t.Fatalf("recorded 'contest' attempts for the account = %d, want exactly 1", attemptCount)
+	}
 }

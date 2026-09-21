@@ -137,6 +137,112 @@ func TestAGuildReportIsVisibleToTheGuild(t *testing.T) {
 	}
 }
 
+// TestAFrozenClaimantsReportEditRightIsSuspendedButOnlyForOthers is D's
+// regression net (third security review response): while a guild's
+// claim is contested and frozen, the disputed claimant's
+// officer-derived edit right over ANOTHER member's guild report is
+// refused; their own report (ownership always wins first) still edits
+// fine; GET is entirely unaffected by the freeze (mayView never
+// consults it); and a different, unrelated verified officer of the
+// same guild is unaffected.
+func TestAFrozenClaimantsReportEditRightIsSuspendedButOnlyForOthers(t *testing.T) {
+	h := newHarness(t)
+	ctx := t.Context()
+
+	var gid int64
+	if err := h.store.Pool.QueryRow(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'hardcore', 'Frozen Freehold') returning id`).
+		Scan(&gid); err != nil {
+		t.Fatal(err)
+	}
+
+	claimant := h.owner
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id, rank) values ($1, 'us/hardcore/claimant', $2, 'leader')`,
+		gid, claimant); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.guilds.Claim(ctx, gid, claimant, true); err != nil {
+		t.Fatal(err)
+	}
+
+	contester := claimant + 1
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'frozen-contester@example.com') on conflict (id) do nothing`, contester); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id, rank) values ($1, 'us/hardcore/contester', $2, 'officer')`,
+		gid, contester); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.guilds.ContestClaim(ctx, gid, contester, true); err != nil {
+		t.Fatal(err)
+	}
+	// The claim was established moments ago by Claim() above, so it is
+	// young (well under 14 days) - the contest freezes without needing
+	// a separate corroboration setup.
+
+	otherOfficer := claimant + 2
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'frozen-other-officer@example.com') on conflict (id) do nothing`, otherOfficer); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into guild_members (guild_id, user_id, rank, verified_at) values ($1, $2, 'officer', now())`,
+		gid, otherOfficer); err != nil {
+		t.Fatal(err)
+	}
+
+	otherMember := claimant + 3
+	if _, err := h.store.Pool.Exec(ctx,
+		`insert into users (id, email) values ($1, 'frozen-other-member@example.com') on conflict (id) do nothing`, otherMember); err != nil {
+		t.Fatal(err)
+	}
+	h.actor = auth.Actor{UserID: otherMember, Role: "user", Method: "session"}
+	othersReport := h.createReport(GuildTo)
+	if _, err := h.store.Pool.Exec(ctx, `update reports set guild_id = $2 where id = $1`, othersReport, gid); err != nil {
+		t.Fatal(err)
+	}
+
+	h.actor = auth.Actor{UserID: claimant, Role: "user", Method: "session"}
+	ownReport := h.createReport(GuildTo)
+	if _, err := h.store.Pool.Exec(ctx, `update reports set guild_id = $2 where id = $1`, ownReport, gid); err != nil {
+		t.Fatal(err)
+	}
+
+	// The frozen claimant may not edit another member's guild report.
+	res := h.json(http.MethodPatch, "/v1/reports/"+othersReport, `{"title":"Claimant edits someone else's"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusForbidden {
+		t.Fatalf("a frozen claimant patching another member's report = %d, want 403", res.StatusCode)
+	}
+
+	// The frozen claimant may still edit their OWN report - ownership
+	// wins before the rank/freeze check is even reached.
+	res = h.json(http.MethodPatch, "/v1/reports/"+ownReport, `{"title":"Claimant edits their own"}`)
+	var view View
+	h.data(res, &view)
+	if view.Title != "Claimant edits their own" {
+		t.Fatalf("a frozen claimant patching their own report failed: %+v", view)
+	}
+
+	// GET is entirely unaffected by the freeze - mayView never consults it.
+	res = h.do(http.MethodGet, "/v1/reports/"+othersReport, "", nil)
+	res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		t.Fatalf("a frozen claimant reading another member's guild report = %d, want 200 (GET is unaffected)", res.StatusCode)
+	}
+
+	// A different, unrelated verified officer of the same guild is unaffected.
+	h.actor = auth.Actor{UserID: otherOfficer, Role: "user", Method: "session"}
+	res = h.json(http.MethodPatch, "/v1/reports/"+othersReport, `{"title":"Another officer edits fine"}`)
+	h.data(res, &view)
+	if view.Title != "Another officer edits fine" {
+		t.Fatalf("an unrelated verified officer should be unaffected by the freeze: %+v", view)
+	}
+}
+
 func TestPatchIsForTheOwnerAndGuildOfficers(t *testing.T) {
 	h := newHarness(t)
 	id := h.createReport(Public)

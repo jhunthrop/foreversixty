@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
@@ -82,23 +83,56 @@ func (s *Store) claimView(ctx context.Context, g Guild, now time.Time) (ClaimSta
 
 // frozen applies A4: a contest freezes officer tools only when the
 // disputed claim is young (established less than freezeThreshold ago)
-// or the guild has no character verified by logs other than the
-// claimant's own. An established claim with independently
-// log-corroborated members is recorded as contested and queued for a
-// moderator, but nothing freezes.
+// or the guild is not independently corroborated (see corroborated).
+// An established, independently corroborated claim is recorded as
+// contested and queued for a moderator, but nothing freezes.
 func (s *Store) frozen(ctx context.Context, guildID, claimant int64, since time.Time) (bool, error) {
 	if time.Since(since) < freezeThreshold {
 		return true, nil
 	}
-	var corroborated bool
-	if err := s.Pool.QueryRow(ctx,
-		`select exists(
-		   select 1 from guild_characters
-		   where guild_id = $1 and verified_by = 'logs' and user_id != $2
-		 )`, guildID, claimant).Scan(&corroborated); err != nil {
-		return false, fmt.Errorf("guilds: frozen: %w", err)
+	corroborated, err := s.corroborated(ctx, guildID, claimant)
+	if err != nil {
+		return false, err
 	}
 	return !corroborated, nil
+}
+
+// corroborated implements the third security review response's
+// independence rule: a claim counts as corroborated only when at
+// least TWO distinct accounts other than the claimant each have a
+// character in this guild verified by logs, where the reports that
+// did the verifying were owned by neither the claimant nor the
+// account being verified. A squatter who is a guild's only officer -
+// and so can attach any report to it - cannot manufacture
+// "independent" corroboration merely by attaching their own uploaded
+// reports, or a verified character's own reports, to the guild: doing
+// either would make that verification's evidence fail the ownership
+// check below, however many report-dates it satisfies. A lone
+// squatter plus one alt account can verify nobody this way, since
+// every report either of their two accounts could attach is owned by
+// one of the two accounts the rule excludes.
+//
+// This reads guild_characters.log_evidence_owner_1/2, recorded by
+// VerifyByLogs at the moment it verifies a row, rather than
+// re-deriving ownership from reports that may since have been deleted
+// or detached from the guild - and re-evaluated against the CURRENT
+// claimant every time a contest is checked, so a row verified while
+// the claim was held by someone else (before a transfer) is judged
+// against who holds it now, not who held it when the row was
+// verified.
+func (s *Store) corroborated(ctx context.Context, guildID, claimant int64) (bool, error) {
+	var count int
+	if err := s.Pool.QueryRow(ctx, `
+		select count(distinct user_id) from guild_characters
+		where guild_id = $1 and user_id != $2 and verified_by = 'logs'
+		  and log_evidence_owner_1 is not null
+		  and log_evidence_owner_1 != $2 and log_evidence_owner_1 != user_id
+		  and log_evidence_owner_2 is not null
+		  and log_evidence_owner_2 != $2 and log_evidence_owner_2 != user_id
+	`, guildID, claimant).Scan(&count); err != nil {
+		return false, fmt.Errorf("guilds: corroborated: %w", err)
+	}
+	return count >= 2, nil
 }
 
 // checkContestRateLimit enforces A2: at most one open contest per
@@ -106,9 +140,15 @@ func (s *Store) frozen(ctx context.Context, guildID, claimant int64, since time.
 // account per rolling 30 days - the same shape checkClaimRateLimit
 // already applies to claims, now sharing guild_claim_attempts via its
 // kind column.
-func (s *Store) checkContestRateLimit(ctx context.Context, userID int64) error {
+// checkContestRateLimit takes tx, not s.Pool, for the same reason
+// checkClaimRateLimit does: it must run after
+// lockAccountForClaimActivity, inside the same transaction that later
+// inserts the attempt row and updates guilds.claim_contested_by, or a
+// burst of concurrent contests from the same account could each read
+// the same stale counts (HIGH, third security review response).
+func (s *Store) checkContestRateLimit(ctx context.Context, tx pgx.Tx, userID int64) error {
 	var openElsewhere int
-	if err := s.Pool.QueryRow(ctx,
+	if err := tx.QueryRow(ctx,
 		`select count(*) from guilds where claim_contested_by = $1`, userID).Scan(&openElsewhere); err != nil {
 		return fmt.Errorf("guilds: contest rate limit: %w", err)
 	}
@@ -116,7 +156,7 @@ func (s *Store) checkContestRateLimit(ctx context.Context, userID int64) error {
 		return ErrAlreadyContestingAnotherGuild
 	}
 	var recent int
-	if err := s.Pool.QueryRow(ctx,
+	if err := tx.QueryRow(ctx,
 		`select count(*) from guild_claim_attempts
 		 where user_id = $1 and kind = 'contest' and attempted_at >= now() - interval '30 days'`,
 		userID).Scan(&recent); err != nil {
@@ -187,23 +227,46 @@ func (s *Store) ContestClaim(ctx context.Context, guildID, contesterID int64, ha
 	} else if upheld {
 		return ErrContestAlreadyUpheld
 	}
-	if err := s.checkContestRateLimit(ctx, contesterID); err != nil {
-		return err
-	}
 
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("guilds: contest claim: begin: %w", err)
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
+
+	if err := lockAccountForClaimActivity(ctx, tx, contesterID); err != nil {
+		return err
+	}
+	if err := s.checkContestRateLimit(ctx, tx, contesterID); err != nil {
+		return err
+	}
 	if _, err := tx.Exec(ctx,
 		`insert into guild_claim_attempts (user_id, kind) values ($1, 'contest')`, contesterID); err != nil {
 		return fmt.Errorf("guilds: contest claim: record attempt: %w", err)
 	}
-	if _, err := tx.Exec(ctx,
-		`update guilds set claim_contested_at = now(), claim_contested_by = $2 where id = $1`,
-		guildID, contesterID); err != nil {
+	// Guarded by "claim_contested_at is null" so two concurrent
+	// contesters of the SAME guild cannot both silently overwrite each
+	// other's claim_contested_by; guilds_claim_contested_by_idx (a
+	// second, independent guard) then catches the cross-guild race -
+	// the SAME account trying to hold an open contest on two different
+	// guilds at once - as a commit-time unique violation, since the
+	// pre-transaction checkContestRateLimit read above can still be
+	// stale against a sibling transaction racing on a different guild
+	// row entirely, which the per-account advisory lock above does not
+	// by itself prevent (HIGH, third security review response).
+	tag, err := tx.Exec(ctx,
+		`update guilds set claim_contested_at = now(), claim_contested_by = $2
+		 where id = $1 and claim_contested_at is null`,
+		guildID, contesterID)
+	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			return ErrAlreadyContestingAnotherGuild
+		}
 		return fmt.Errorf("guilds: contest claim: %w", err)
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrAlreadyContested
 	}
 	if err := tx.Commit(ctx); err != nil {
 		return fmt.Errorf("guilds: contest claim: commit: %w", err)

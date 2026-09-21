@@ -121,6 +121,24 @@ func objects(cfg config.Config, log *slog.Logger) *r2.Client {
 	return client
 }
 
+// newReportsService builds the reports.Service exactly as serve wires
+// it, pulled into its own function so main_test.go can assert the
+// wiring itself: Guilds must always be populated, since a
+// reports.Service with Guilds left nil silently disables the
+// contested-and-frozen-claim report-edit freeze (D, third security
+// review response) rather than failing loudly - reports.Service.Guilds
+// being nil elsewhere (every test harness that does not care about
+// claim disputes) is deliberately still supported, so the guard belongs
+// here, at the one call site that matters for a real deployment, not as
+// a universal nil-check inside reports.Service itself.
+func newReportsService(reportStore *reports.Store, authStore *auth.Store, guildStore *guilds.Store,
+	rankStore *rankings.Store, cfg config.Config, log *slog.Logger) *reports.Service {
+	return &reports.Service{
+		Store: reportStore, Accounts: authStore, Guilds: guildStore, Rank: rankStore,
+		PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
+	}
+}
+
 // runParse is the Cloud Run job: parse one uploaded log into its
 // report, then exit.
 func runParse(ctx context.Context, log *slog.Logger, args []string) error {
@@ -320,10 +338,7 @@ func serve(log *slog.Logger) error {
 		Version: version, Log: log, AllowedOrigin: cfg.PublicBaseURL,
 		Subscribe: subscribeSvc, Builds: buildsSvc, Site: siteDeps,
 		Auth: authenticator, Accounts: accounts,
-		Reports: &reports.Service{
-			Store: reportStore, Accounts: authStore, Guilds: guildStore, Rank: rankStore,
-			PublicBaseURL: cfg.PublicBaseURL, APIBaseURL: cfg.APIBaseURL, Log: log,
-		},
+		Reports:  newReportsService(reportStore, authStore, guildStore, rankStore, cfg, log),
 		Rankings: &rankings.Service{Store: rankStore, Log: log},
 		Addon: &addon.Service{
 			Store: &addon.Store{Pool: pool, Log: log}, Builds: buildStore, Data: treeData, Log: log,

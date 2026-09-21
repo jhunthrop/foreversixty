@@ -200,6 +200,24 @@ func LockGuilds(ctx context.Context, tx pgx.Tx, ids ...int64) error {
 	return nil
 }
 
+// lockAccountForClaimActivity takes a transaction-scoped advisory lock
+// on userID, serialising every claim/contest rate-limit check-then-act
+// sequence for that one account (HIGH, third security review response):
+// without it, a burst of concurrent Claim or ContestClaim calls from
+// the same account could each read the same stale
+// guild_claim_attempts count before any of them committed its own
+// insert. Uses the two-integer advisory lock form with a fixed
+// classid of 0 - Postgres never lets this collide with the per-guild
+// single-bigint locks LockGuilds/RecomputeMembership take, regardless
+// of numeric value, so no namespacing beyond that is needed. Call
+// right after tx.Begin, before any rate-limit read.
+func lockAccountForClaimActivity(ctx context.Context, tx pgx.Tx, userID int64) error {
+	if _, err := tx.Exec(ctx, `select pg_advisory_xact_lock(0, $1::int)`, userID); err != nil {
+		return fmt.Errorf("guilds: lock account %d: %w", userID, err)
+	}
+	return nil
+}
+
 // setVerifiedForAccount marks every one of userID's guild_characters
 // rows in guildID verified via source, without overwriting an
 // already-verified row's original source - the claim flow trusts every
