@@ -32,8 +32,11 @@ describe('planner.astro', () => {
     expect(html).toContain('href="https://foreversixty.gg/planner"');
   });
 
-  it('mounts exactly one island', async () => {
+  it('mounts exactly two islands', async () => {
+    // Planner.svelte plus Base's now-universal SessionNav client:load mount (fb4952e):
+    // planner.astro never passed a `session` prop before this branch, so it mounted only
+    // its own island until now.
     const html = await container.renderToString(Planner);
-    expect(html.match(/<astro-island/g) ?? []).toHaveLength(1);
+    expect(html.match(/<astro-island/g) ?? []).toHaveLength(2);
   });
 });

@@ -63,6 +63,19 @@ function classNamesIn(html: string): string[] {
   return [...names].sort();
 }
 
+/**
+ * Header.astro's Reference disclosure (e082853) carries three class names that are not
+ * Tailwind utilities, so this file's "Tailwind's source scan kept it" premise does not
+ * apply to them: `nav-scroll-fade`'s rule lives in Header.astro's own scoped `<style>`
+ * block, which this standalone build never sees (vite.island.config.ts runs the Tailwind
+ * and Svelte plugins only -- no Astro plugin ever compiles Header.astro's `<style>` here,
+ * on the main site that block reaches the page through Astro's own compiler, a separate
+ * pipeline this file does not build); `reference-disclosure` and `reference-panel` are
+ * bare semantic hooks with no CSS of their own anywhere in the codebase. Excluded here
+ * rather than silently passing the "every class has a selector" check for them.
+ */
+const NON_TAILWIND_MARKER_CLASSES = new Set(['nav-scroll-fade', 'reference-disclosure', 'reference-panel']);
+
 let css = '';
 let outDir = '';
 
@@ -123,7 +136,11 @@ describe('planner-island.css', () => {
       // Guards the extraction itself: were the attribute regex to stop matching, the filter
       // below would be vacuously empty and this would pass against an empty stylesheet.
       expect(names).toContain('px-[18px]');
-      expect(names.filter((className) => !hasSelector(css, className))).toEqual([]);
+      expect(
+        names.filter(
+          (className) => !NON_TAILWIND_MARKER_CLASSES.has(className) && !hasSelector(css, className),
+        ),
+      ).toEqual([]);
     });
   }
 });

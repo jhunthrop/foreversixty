@@ -12,11 +12,15 @@ import {
 interface Props {
   /** The current page's path, e.g. `/sim/gear` -- Base.astro's own `path` prop, passed
    * through so aria-current can mark the active tool and, when one of its children is
-   * current, the Reference summary. Same idea as SimTabs.astro's `currentPath` prop. */
-  path: string;
+   * current, the Reference summary. Same idea as SimTabs.astro's `currentPath` prop.
+   * Defaults to `''` for callers that render this component with no routing context at all
+   * (e.g. planner-island.test.ts, which only cares that the Tailwind build still covers its
+   * classes) -- no real href is ever the empty string, so isNavItemCurrent/isReferenceCurrent
+   * simply evaluate to "nothing is current" instead of throwing on a missing prop. */
+  path?: string;
 }
 
-const { path } = Astro.props;
+const { path = '' } = Astro.props;
 const referenceCurrent = isReferenceCurrent(path);
 
 // "Logs" is the one label here short enough (37px) to miss the 44px hit-target floor on
