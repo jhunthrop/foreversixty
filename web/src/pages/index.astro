@@ -5,6 +5,7 @@ import Base from '../layouts/Base.astro';
 import SkyBand from '../components/SkyBand.astro';
 import StatePanel from '../components/StatePanel.astro';
 import RecentReports from '../components/RecentReports.svelte';
+import { RECENT_REPORTS_PRELOAD } from '../lib/reports/recent';
 import ToolCard from '../components/ToolCard.astro';
 import Panel from '../components/Panel.astro';
 import FeedRow from '../components/FeedRow.astro';
@@ -140,7 +141,11 @@ const popular = [
               Logs
             </a>
             <div class="min-h-[120px] p-4">
-              <RecentReports client:visible compact heading={false} />
+              <RecentReports
+                client:visible={{ rootMargin: RECENT_REPORTS_PRELOAD }}
+                compact
+                heading={false}
+              />
             </div>
           </Panel>
           <Panel title="Still unknown">

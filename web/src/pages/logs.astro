@@ -8,6 +8,7 @@ import Base from '../layouts/Base.astro';
 import Account from '../components/Account.svelte';
 import Panel from '../components/Panel.astro';
 import RecentReports from '../components/RecentReports.svelte';
+import { RECENT_REPORTS_PRELOAD } from '../lib/reports/recent';
 import ToolCard from '../components/ToolCard.astro';
 import Upload from '../components/Upload.svelte';
 import companion from '../data/companion.json';
@@ -140,7 +141,7 @@ const blockTitle = 'label text-muted';
 
     <Panel title="Recent public reports">
       <div class="p-4 md:p-5">
-        <RecentReports client:visible heading={false} />
+        <RecentReports client:visible={{ rootMargin: RECENT_REPORTS_PRELOAD }} heading={false} />
       </div>
     </Panel>
 

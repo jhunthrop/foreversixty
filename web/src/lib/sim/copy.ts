@@ -238,7 +238,7 @@ export const simCopy = {
   sourceAddonTitle: 'From the addon',
   sourceAddonBody: 'Paste the export string from the Forever Sixty addon, or let the companion push it.',
   sourceBuildTitle: 'From a build',
-  sourceBuildBody: 'Paste a planner link or its id.',
+  sourceBuildBody: 'Paste a planner link, saved or not, or a saved build id.',
   sourceFightTitle: 'From a logged fight',
   sourceFightBody: 'Paste a report link, or open a fight from a report and choose Sim this fight.',
   sourceAccountTitle: 'Your characters',
