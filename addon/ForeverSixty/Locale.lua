@@ -72,6 +72,7 @@ local L = {
 	codecOrderLength = "That code's talent order is not a whole number of points.",
 	codecOrderCell = "That code names talent cell %s, which is not on any tree.",
 	codecStatPair = "That code has an unreadable stat: %s.",
+	codecGuildRank = "That code has an unreadable guild rank: %s.",
 	-- FSB1 only: an empty data build or class field. FS1 accepts an empty
 	-- field in either position (parity with the shipped site decoder).
 	codecEmptyField = "That code's %s field is empty.",
