@@ -174,9 +174,16 @@ the addon's saved variables), so this is the same mechanism with a bigger file.
   (`ForeverSixty_Ratings`, load-on-demand) by writing a temporary file and renaming it, so
   the game can never read half a file. It does this for every WoW install it already
   watches. The companion's own self-update is unchanged.
-- **Without the companion.** A weekly snapshot ships inside the addon's CurseForge and Wago
-  releases (the release workflow already exists), so the feature works, a little staler,
-  for players who never install the desktop app.
+- **Without the companion: a nightly release,** as Raider.IO does. A scheduled workflow
+  runs after the snapshot job, and publishes a new version of the ratings data addon to
+  CurseForge and Wago (the release workflow and its packager already exist) only when the
+  snapshot actually changed. So a player who updates addons through the CurseForge or Wago
+  app gets last night's ratings without ever installing our desktop app. The ratings data
+  ships as its **own project**, separate from the main addon: the main addon's version and
+  changelog then mean "the code changed", its users are not nagged with a daily update for
+  a data refresh, and the data addon's version is simply the snapshot date. New CurseForge
+  projects start with manual file review before auto-approval is granted, so the first
+  weeks of nightly files may land with a delay: apply for the project early.
 - **In game.** The score in the unit tooltip, the group finder's applicant list, the guild
   roster, `/who` and the chat right-click menu; a modifier key expands it to the six parts;
   every tooltip carries "as of <date>". The game reads addon files only at login or
