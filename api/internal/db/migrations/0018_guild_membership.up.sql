@@ -38,3 +38,35 @@ alter table guilds add column if not exists claim_pending_by bigint references u
 alter table guilds add column if not exists claim_requested_at timestamptz;
 alter table guilds add column if not exists invite_token_hash bytea;
 alter table guilds add column if not exists invite_token_rotated_at timestamptz;
+
+-- Security hardening (2026-09-21 review response — see the spec's dated
+-- amendment blocks in §2.4 and §3.3).
+
+-- Which of the four corroboration paths actually set verified_at, so a
+-- claim release/transfer can un-verify precisely the rows the claim
+-- itself vouched for and nothing a character separately earned through
+-- officer approval, an invite, or log corroboration.
+alter table guild_characters add column if not exists verified_by text
+  check (verified_by in ('claim', 'officer', 'invite', 'logs'));
+
+-- A claim may be contested while pending or already claimed; a
+-- moderator resolves it (uphold, release, or transfer).
+alter table guilds add column if not exists claim_contested_at timestamptz;
+alter table guilds add column if not exists claim_contested_by bigint references users (id) on delete set null;
+
+-- Rate-limits an account to one claim (successful or pending) per
+-- rolling 30 days, across every guild - a small, guilds-owned table
+-- rather than a column on auth's own users table.
+create table if not exists guild_claim_attempts (
+  id           bigserial primary key,
+  user_id      bigint not null references users (id) on delete cascade,
+  attempted_at timestamptz not null default now()
+);
+create index if not exists guild_claim_attempts_user_idx on guild_claim_attempts (user_id, attempted_at desc);
+
+-- Guild identity is case-insensitive: one guild per (region, ruleset,
+-- lower(name)). The pre-existing exact-text unique(region, ruleset,
+-- name) constraint (migration 0005) stays - the new index is strictly
+-- stricter and subsumes it, so both coexist harmlessly.
+create unique index if not exists guilds_region_ruleset_lower_name_idx
+  on guilds (region, ruleset, lower(name));
