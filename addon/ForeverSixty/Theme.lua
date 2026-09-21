@@ -220,6 +220,36 @@ function Theme.outline(parent, thickness, hexKey)
 	return edges
 end
 
+--- Two stacked half-height textures standing in for a gradient. A real
+--- one needs SetGradient, whose argument shape moved between clients;
+--- two flat bands read as the site's title bar and cannot break.
+function Theme.gradient(parent, topKey, bottomKey)
+	local top = Theme.texture(parent, "BACKGROUND", topKey)
+	top:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 0)
+	top:SetPoint("RIGHT", parent, "RIGHT", 0, 0)
+	local bottom = Theme.texture(parent, "BACKGROUND", bottomKey)
+	bottom:SetPoint("BOTTOMLEFT", parent, "BOTTOMLEFT", 0, 0)
+	bottom:SetPoint("RIGHT", parent, "RIGHT", 0, 0)
+	top:SetPoint("BOTTOM", parent, "CENTER", 0, 0)
+	bottom:SetPoint("TOP", parent, "CENTER", 0, 0)
+	return top, bottom
+end
+
+--- Let Escape close a frame. UISpecialFrames is a plain client table;
+--- a client without it simply has no Escape binding for this window.
+function Theme.makeEscapable(frameName)
+	if type(UISpecialFrames) ~= "table" then
+		return false
+	end
+	for _, name in ipairs(UISpecialFrames) do
+		if name == frameName then
+			return true
+		end
+	end
+	table.insert(UISpecialFrames, frameName)
+	return true
+end
+
 function Theme.setShown(edges, shown)
 	for _, edge in ipairs(edges) do
 		if shown then

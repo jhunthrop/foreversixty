@@ -23,4 +23,5 @@ views\GearView.lua
 views\SettingsView.lua
 Tracker.lua
 Minimap.lua
+Window.lua
 Options.lua

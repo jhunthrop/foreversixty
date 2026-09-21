@@ -8,11 +8,18 @@ ns = type(ns) == "table" and ns or {}
 local L = {
 	-- Chrome
 	addonName = "Forever Sixty",
-	slashHint = "/fs export, /fs follow, /fs gear, /fs inbox, /fs options",
+	slashHint = "/fs, /fs export, /fs follow <code>, /fs gear, /fs settings, /fs inbox, /fs diag",
 	dataBuild = "Data build: %s",
 	buildMismatch = "This addon carries data for build %s; you are playing %s. Numbers may be out of date.",
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
+	tabExport = "Export",
+	tabFollow = "Follow",
+	tabGear = "Gear",
+	tabSettings = "Settings",
+	headerRealmLevel = "%s · level %d",
+	headerNoSpec = "No spec yet",
+	diagHeader = "What this client turned out not to have:",
 
 	-- Diagnostics: what /fs diag prints. These are the only record of a
 	-- capability this client turned out not to have, and the human tester

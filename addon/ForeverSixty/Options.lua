@@ -16,27 +16,20 @@ local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Talents = ns.Talents or require("Talents")
+local Prefs = ns.Prefs or require("Prefs")
+local Theme = ns.Theme or require("Theme")
+local Tracker = ns.Tracker or require("Tracker")
+local TalentGlow = ns.TalentGlow or require("TalentGlow")
+local MinimapButton = ns.Minimap or require("Minimap")
+local SettingsView = ns.SettingsView or require("SettingsView")
+local Window = ns.Window or require("Window")
 
 local Options = {}
 Options.data = Data
 
-local function clientBuild()
-	local version = GetBuildInfo and GetBuildInfo() or nil
-	return version
-end
-
-local function header(data)
-	local lines = { string.format(L.dataBuild, data.build) }
-	local version = clientBuild()
-	-- The data build is "1.60.1.69893" and GetBuildInfo's version is
-	-- "1.60.1", so the comparison is on the prefix: a client on 1.61 is a
-	-- client this data no longer describes.
-	if version ~= nil and data.build:sub(1, #version) ~= version then
-		lines[#lines + 1] = string.format(L.buildMismatch, data.build, version)
-	end
-	lines[#lines + 1] = L.slashHint
-	return lines
-end
+--- The subcommands that are a tab in the window. Anything else (inbox,
+--- diag) has nowhere in the window to land, so it always answers in chat.
+Options.TABS = { export = true, follow = true, gear = true, settings = true }
 
 --- The companion's inbox, read at login and never written.
 --- `companion/internal/addon/addon.go` owns that file; writing to it here
@@ -96,32 +89,88 @@ function Options.handle(input)
 		-- `slashHint` advertises this subcommand, and there is no separate
 		-- options panel in this task, so the honest minimum is the same
 		-- header bare /fs already shows.
-		return header(data)
+		return Window.buildLines(data)
+	elseif command == "diag" then
+		local notes = Theme.diagnostics()
+		if #notes == 0 then
+			return { L.diagNone }
+		end
+		local lines = { L.diagHeader }
+		for _, note in ipairs(notes) do
+			lines[#lines + 1] = note
+		end
+		return lines
 	end
-	return header(data)
+	return Window.buildLines(data)
 end
 
+--- The slash command. The window is the surface now: /fs and the four tab
+--- commands open it, and print as well only when the player turned the
+--- chat pref on. A subcommand with no tab of its own always prints, or it
+--- would have no answer at all.
 function Options.run(input)
-	for _, line in ipairs(Options.handle(input)) do
+	local lines = Options.handle(input)
+	local command = (input or ""):match("^(%S*)")
+	local tab = Options.TABS[command] and command or nil
+	local opensWindow = command == "" or tab ~= nil
+	if opensWindow then
+		Window.open(tab)
+	end
+	if opensWindow and not Prefs.flag("chat") then
+		return lines
+	end
+	for _, line in ipairs(lines) do
 		print(string.format(L.chatLine, L.addonName, line))
 	end
+	return lines
 end
 
+--- Every event any surface refreshes on. Theme.registerEvent swallows the
+--- ones this client has never heard of and records them for /fs diag.
+Options.EVENTS = {
+	"PLAYER_LOGIN", "PLAYER_LOGOUT", "PLAYER_ENTERING_WORLD",
+	"PLAYER_TALENT_UPDATE", "TRAIT_CONFIG_UPDATED", "PLAYER_LEVEL_UP",
+}
+
+function Options.onEvent(_, event)
+	if event == "PLAYER_LOGOUT" then
+		if Prefs.flag("autoSave") then
+			Export.save(Options.data)
+		end
+		return
+	end
+	if event == "PLAYER_LOGIN" then
+		Follow.restore(Options.data)
+		Options.readInbox()
+		SettingsView.register(Window.context())
+		MinimapButton.refresh()
+	end
+	Tracker.refresh(Options.data)
+	TalentGlow.refresh(Options.data)
+	Window.refresh()
+end
+
+--- Runs at file load. Registers the slash command, the events and the two
+--- injection points Minimap left for the window -- and builds no frame
+--- except the event frame, which has no size and is never shown.
 function Options.register()
 	SLASH_FOREVERSIXTY1 = "/fs"
 	SLASH_FOREVERSIXTY2 = "/foreversixty"
 	SlashCmdList["FOREVERSIXTY"] = Options.run
 
+	Window.data = Options.data
+	MinimapButton.open = function()
+		return Window.open()
+	end
+	MinimapButton.openSettings = function()
+		return Window.open("settings")
+	end
+
 	local frame = CreateFrame("Frame", "ForeverSixtyEventFrame", UIParent)
-	frame:RegisterEvent("PLAYER_LOGIN")
-	frame:RegisterEvent("PLAYER_LOGOUT")
-	frame:SetScript("OnEvent", function(_, event)
-		if event == "PLAYER_LOGIN" then
-			Options.readInbox()
-		else
-			Export.save(Options.data)
-		end
-	end)
+	for _, event in ipairs(Options.EVENTS) do
+		Theme.registerEvent(frame, event)
+	end
+	frame:SetScript("OnEvent", Options.onEvent)
 	Options.frame = frame
 	return frame
 end

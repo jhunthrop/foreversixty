@@ -27,12 +27,23 @@ describe("Options", function()
 				{ name = "Retribution", talents = {} },
 			},
 		})
-		-- Follow must be reloaded fresh before Options: Options captures its
-		-- Follow dependency at load time through the `ns.Follow or
-		-- require("Follow")` bridge, and Follow.build is module-level state
-		-- that would otherwise leak an earlier example's loaded build into
-		-- this one.
+		-- Theme is reset rather than reloaded: Options, Window and the views
+		-- all reach it through package.loaded, and a reload would hand them
+		-- a different ns.Diagnostics than the one this spec asserts on.
+		require("Theme").reset()
+		helper.load("Prefs")
+		helper.load("Widgets")
+		helper.load("Export")
+		helper.load("Gear")
 		helper.load("Follow")
+		helper.load("TalentGlow")
+		helper.load("ExportView")
+		helper.load("FollowView")
+		helper.load("GearView")
+		helper.load("SettingsView")
+		helper.load("Tracker")
+		helper.load("Minimap")
+		helper.load("Window")
 		Options = helper.load("Options")
 		Options.data = DATA
 	end)
@@ -168,7 +179,10 @@ describe("Options", function()
 		assert.are.equal("/fs", SLASH_FOREVERSIXTY1)
 	end)
 
-	it("the registered handler routes to handle and prints each line through the chat prefix", function()
+	it("prints each line through the chat prefix when the chat pref is on", function()
+		-- The window is the surface now, so /fs prints only when the player
+		-- asked for chat as well. Controller ruling 6.
+		require("Prefs").setFlag("chat", true)
 		Options.register()
 		SlashCmdList["FOREVERSIXTY"]("")
 
@@ -177,5 +191,51 @@ describe("Options", function()
 			string.format(Locale.chatLine, Locale.addonName, string.format(Locale.dataBuild, DATA.build)),
 			string.format(Locale.chatLine, Locale.addonName, Locale.slashHint),
 		}, state.printed)
+	end)
+
+	it("opens the window on a bare /fs", function()
+		Options.register()
+		SlashCmdList["FOREVERSIXTY"]("")
+		assert.is_true(require("Window").isOpen())
+	end)
+
+	it("opens the tab /fs was given", function()
+		Options.register()
+		SlashCmdList["FOREVERSIXTY"]("gear")
+		assert.is_true(require("Window").tabs.gear.foreverSixtyActive)
+	end)
+
+	it("says nothing in chat while the chat pref is off", function()
+		Options.register()
+		SlashCmdList["FOREVERSIXTY"]("")
+		assert.are.same({}, state.printed)
+	end)
+
+	it("answers a command with no tab of its own in chat regardless", function()
+		-- /fs inbox has nowhere in the window to land, so it always prints.
+		Options.register()
+		SlashCmdList["FOREVERSIXTY"]("inbox")
+		assert.are.equal(1, #state.printed)
+	end)
+
+	it("says there is nothing to report on /fs diag", function()
+		require("Theme").reset()
+		assert.are.same({ require("Locale").diagNone }, Options.handle("diag"))
+	end)
+
+	it("lists what this client turned out not to have on /fs diag", function()
+		local Theme = require("Theme")
+		Theme.reset()
+		Theme.note("a client refusal")
+		local lines = Options.handle("diag")
+		assert.are.equal(require("Locale").diagHeader, lines[1])
+		assert.are.equal("a client refusal", lines[2])
+	end)
+
+	it("writes nothing at logout while the auto-save pref is off", function()
+		require("Prefs").setFlag("autoSave", false)
+		Options.register()
+		Options.onEvent(Options.frame, "PLAYER_LOGOUT")
+		assert.is_nil(_G.ForeverSixtyDB and _G.ForeverSixtyDB.characters)
 	end)
 end)
