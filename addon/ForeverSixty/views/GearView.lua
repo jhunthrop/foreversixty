@@ -2,11 +2,12 @@
 -- The Gear tab: the planned set against what is worn, and what in the
 -- bags beats it.
 --
--- rows() takes the equipped items as an argument rather than reading
--- them, so every scoring decision the tab makes -- which slots appear,
--- which differ, which of the player's own items already win, and by how
--- much -- is a pure function of plain tables. readEquipped() is the one
--- thin reader that fetches them from the client.
+-- rows() takes the equipped items and the upgrade list as arguments
+-- rather than reading them, so every scoring decision the tab makes --
+-- which slots appear, which differ, which of the player's own items
+-- already win and by how much -- is a pure function of plain tables.
+-- readEquipped() is the one thin reader that fetches equipped items from
+-- the client; the caller (mount()'s refresh) is what reads Gear.upgrades.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -55,6 +56,7 @@ function GearView.slotRow(slot, plan, worn, weights)
 	return {
 		slot = slot,
 		plannedItemId = plan ~= nil and plan.itemId or nil,
+		plannedLink = plan ~= nil and plan.link or nil,
 		equippedItemId = worn ~= nil and worn.itemId or nil,
 		equippedLink = worn ~= nil and worn.link or nil,
 		differs = plan ~= nil and worn ~= nil and plan.itemId ~= worn.itemId,
@@ -73,7 +75,11 @@ function GearView.noteFor(row)
 	return ""
 end
 
-function GearView.rows(data, build, ranks, equipped)
+--- `equipped` and `upgrades` are both taken as arguments, never read: the
+--- whole model is a pure function of `data`, `build`, `ranks`, `equipped`
+--- and `upgrades`. mount()'s refresh is what calls GearView.readEquipped()
+--- and Gear.upgrades() to supply them.
+function GearView.rows(data, build, ranks, equipped, upgrades)
 	if build == nil then
 		return { empty = true, reason = L.gearLoadABuild, slots = {}, upgrades = {} }
 	end
@@ -98,34 +104,73 @@ function GearView.rows(data, build, ranks, equipped)
 		reason = nil,
 		spec = spec,
 		slots = slots,
-		upgrades = Gear.upgrades(data, build),
+		upgrades = upgrades or {},
 	}
 end
 
-local function paintName(region, info)
-	region:SetText(info.name)
-	region:SetTextColor(Theme.qualityColor(info.quality))
+local function paintQuality(region, quality)
+	region:SetTextColor(Theme.qualityColor(quality))
 	return region
 end
 
+--- One side of a slot row: an item's icon, name (in rarity colour) and
+--- tooltip, or the empty-slot placeholder when there is nothing there. A
+--- missing side must look different from a correctly geared one, not
+--- merely silent.
+local function fillItemColumn(column, itemId, link)
+	if itemId == nil then
+		column.itemId, column.link = nil, nil
+		column.icon:SetTexture(nil)
+		column.text:SetText(L.gearEmptySlot)
+		paintQuality(column.text, nil)
+		return
+	end
+	local info = GearView.itemInfo(itemId, link)
+	column.itemId, column.link = info.itemId, info.link
+	column.icon:SetTexture(info.icon)
+	column.text:SetText(info.name)
+	paintQuality(column.text, info.quality)
+end
+
+--- Two icon/name/tooltip pairs per row: the planned item on the left,
+--- what is equipped in that slot on the right. Passed to Widgets.list as
+--- the row builder, the same way upgradeRow is. Named apart from the pure
+--- GearView.slotRow model function above, which it renders.
+function GearView.slotColumns(parent, width)
+	local half = math.floor((width - Theme.SIZES.gap) / 2)
+	local frame = CreateFrame("Frame", nil, parent)
+	frame:SetSize(width, Theme.SIZES.rowHeight)
+	local planned = Widgets.itemRow(frame, half)
+	planned.frame:SetPoint("LEFT", frame, "LEFT", 0, 0)
+	local equipped = Widgets.itemRow(frame, half)
+	equipped.frame:SetPoint("LEFT", planned.frame, "RIGHT", Theme.SIZES.gap, 0)
+	return { frame = frame, planned = planned, equipped = equipped }
+end
+
 local function renderSlot(row, item)
-	local info = GearView.itemInfo(item.equippedItemId or item.plannedItemId, item.equippedLink)
-	row.itemId, row.link = info.itemId, info.link
-	row.icon:SetTexture(info.icon)
-	paintName(row.text, info)
-	row.text:SetText(string.format(L.gearSlotRow, item.slot, info.name))
-	row.right:SetText(GearView.noteFor(item))
+	fillItemColumn(row.planned, item.plannedItemId, item.plannedLink)
+	fillItemColumn(row.equipped, item.equippedItemId, item.equippedLink)
+	row.equipped.right:SetText(GearView.noteFor(item))
 end
 
 function GearView.upgradeRow(parent, width)
 	local row = Widgets.itemRow(parent, width)
 	row.equip = Widgets.button(row.frame, L.gearEquipButton, function()
-		if row.link ~= nil then
+		-- Checked again here, not only at the last render: the button's
+		-- enabled state only updates when renderUpgrade runs, so combat
+		-- starting while the tab sits open must not leave a stale-enabled
+		-- button able to equip.
+		if row.link ~= nil and not Theme.inCombat() then
 			Theme.equip(row.link)
 		end
 	end)
-	row.equip:SetSize(Theme.SIZES.tabWidth, Theme.SIZES.rowHeight)
+	row.equip:SetSize(Theme.SIZES.buttonWidth, Theme.SIZES.rowHeight)
 	row.equip:SetPoint("RIGHT", row.frame, "RIGHT", 0, 0)
+	-- Widgets.itemRow anchors `right` to the frame's own RIGHT edge, which
+	-- is exactly where the button now sits. Re-anchor it to the button's
+	-- LEFT so the delta stays readable instead of drawn underneath.
+	row.right:ClearAllPoints()
+	row.right:SetPoint("RIGHT", row.equip, "LEFT", -Theme.SIZES.gap, 0)
 	return row
 end
 
@@ -133,7 +178,8 @@ local function renderUpgrade(row, item)
 	local info = GearView.itemInfo(item.itemId, item.link)
 	row.itemId, row.link = info.itemId, info.link
 	row.icon:SetTexture(info.icon)
-	paintName(row.text, info)
+	row.text:SetText(string.format(L.gearSlotRow, item.slot, info.name))
+	paintQuality(row.text, info.quality)
 	row.right:SetText(string.format(L.gearUpgradeRow, item.delta))
 	Widgets.setEnabled(row.equip, not Theme.inCombat())
 end
@@ -143,8 +189,13 @@ local function layout(parent, ctx)
 	local view = { frame = parent, ctx = ctx }
 	view.reason = Widgets.label(parent, "", "warning", "small")
 	view.reason:SetPoint("TOPLEFT", parent, "TOPLEFT", padding, -padding)
-	view.slots = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.listRows)
-	view.slots.frame:SetPoint("TOPLEFT", view.reason, "BOTTOMLEFT", 0, -gap)
+	view.plannedHeader = Widgets.label(parent, L.gearPlanned, "muted", "small")
+	view.plannedHeader:SetPoint("TOPLEFT", view.reason, "BOTTOMLEFT", 0, -gap)
+	view.equippedHeader = Widgets.label(parent, L.gearEquipped, "muted", "small")
+	view.equippedHeader:SetPoint("LEFT", view.plannedHeader, "RIGHT",
+		math.floor(ctx.contentWidth / 2), 0)
+	view.slots = Widgets.list(parent, ctx.contentWidth, Theme.SIZES.listRows, GearView.slotColumns)
+	view.slots.frame:SetPoint("TOPLEFT", view.plannedHeader, "BOTTOMLEFT", 0, -gap)
 	view.slots:SetRenderer(renderSlot)
 	view.bagsTitle = Widgets.label(parent, L.gearBagUpgrades, "gold", "small")
 	view.bagsTitle:SetPoint("TOPLEFT", view.slots.frame, "BOTTOMLEFT", 0, -padding)
@@ -179,8 +230,10 @@ function GearView.mount(parent, ctx)
 	view.goFollow:SetPoint("TOPLEFT", view.reason, "BOTTOMLEFT", 0, -Theme.SIZES.gap)
 	function view.refresh()
 		local Follow = ns.Follow or require("Follow")
-		return GearView.apply(view, GearView.rows(ctx.data, Follow.build,
-			Talents.readRanks(ctx.data), GearView.readEquipped()))
+		local build = Follow.build
+		local upgrades = build ~= nil and Gear.upgrades(ctx.data, build) or {}
+		return GearView.apply(view, GearView.rows(ctx.data, build,
+			Talents.readRanks(ctx.data), GearView.readEquipped(), upgrades))
 	end
 	view.refresh()
 	return view

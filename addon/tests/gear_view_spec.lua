@@ -43,7 +43,7 @@ local function install(overrides)
 end
 
 describe("GearView", function()
-	local Theme, Follow, GearView
+	local Theme, Gear, Follow, GearView
 
 	local function start(overrides)
 		local state = install(overrides)
@@ -51,7 +51,7 @@ describe("GearView", function()
 		Theme.reset()
 		helper.load("Widgets")
 		helper.load("Export")
-		helper.load("Gear")
+		Gear = helper.load("Gear")
 		Follow = helper.load("Follow")
 		GearView = helper.load("GearView")
 		return state
@@ -73,7 +73,7 @@ describe("GearView", function()
 
 	it("says to load a build when there is none", function()
 		start()
-		local model = GearView.rows(DATA, nil, {}, {})
+		local model = GearView.rows(DATA, nil, {}, {}, {})
 		assert.is_true(model.empty)
 		assert.are.equal(L.gearLoadABuild, model.reason)
 	end)
@@ -82,7 +82,7 @@ describe("GearView", function()
 		start()
 		local build = assert(Follow.load(CODE, DATA))
 		local bare = { build = DATA.build, classes = DATA.classes, weights = {} }
-		local model = GearView.rows(bare, build, { [1] = { ["1:1"] = 1 } }, {})
+		local model = GearView.rows(bare, build, { [1] = { ["1:1"] = 1 } }, {}, {})
 		assert.are.equal(L.gearNoWeights, model.reason)
 		assert.are.same({}, model.slots)
 	end)
@@ -90,7 +90,7 @@ describe("GearView", function()
 	it("makes a row for a slot the plan or the character has something in", function()
 		start()
 		local build = assert(Follow.load(CODE, DATA))
-		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped())
+		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped(), {})
 		assert.are.equal(1, #model.slots)
 		assert.are.equal("head", model.slots[1].slot)
 		assert.are.equal(10, model.slots[1].plannedItemId)
@@ -100,14 +100,14 @@ describe("GearView", function()
 	it("marks a slot where what is worn is not what was planned", function()
 		start()
 		local build = assert(Follow.load(CODE, DATA))
-		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped())
+		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped(), {})
 		assert.is_true(model.slots[1].differs)
 	end)
 
 	it("says yours is better, with the delta, when the worn item scores higher", function()
 		start()
 		local build = assert(Follow.load(CODE, DATA))
-		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped())
+		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped(), {})
 		assert.are.equal(6, model.slots[1].delta)
 		assert.is_true(model.slots[1].better)
 		assert.are.equal(string.format(L.gearYoursBetter, 6), GearView.noteFor(model.slots[1]))
@@ -128,24 +128,50 @@ describe("GearView", function()
 		assert.is_false(row.differs)
 	end)
 
+	it("carries the planned item's own link, when the build has one, for its own tooltip", function()
+		start()
+		local row = GearView.slotRow("head",
+			{ itemId = 10, link = "synthetic", stats = { strength = 10 } },
+			nil, { strength = 1.0 })
+		assert.are.equal("synthetic", row.plannedLink)
+	end)
+
 	it("scores nothing against a planned item that carries no stats", function()
 		-- An FS1 code carries a final tree and no item stats; scoring it at
 		-- zero would call everything an upgrade.
 		start()
 		local build = assert(Follow.load("FSB1:1.60.1.69893:paladin:111:head=10", DATA))
-		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped())
+		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped(), {})
 		assert.is_nil(model.slots[1].delta)
 		assert.is_false(model.slots[1].better)
 		assert.are.equal(L.gearDiffers, GearView.noteFor(model.slots[1]))
 	end)
 
-	it("lists what is in the bags that beats the plan", function()
+	it("lists what is in the bags, and already on the character, that beats the plan", function()
 		start()
 		local build = assert(Follow.load(CODE, DATA))
-		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped())
+		local upgrades = Gear.upgrades(DATA, build)
+		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, GearView.readEquipped(), upgrades)
 		assert.are.equal(2, #model.upgrades)
 		assert.are.equal(12, model.upgrades[1].itemId)
 		assert.are.equal("|Hitem:12|h", model.upgrades[1].link)
+		-- The equipped item (11) is a legitimate second entry: Gear.upgrades
+		-- scans what is worn too, so a slot the player already has right is
+		-- never hidden as an "upgrade" the player should not act on.
+		assert.are.equal(11, model.upgrades[2].itemId)
+	end)
+
+	it("takes equipped items and upgrades as arguments rather than reading them itself", function()
+		-- Regression pin: rows() used to call Gear.upgrades(data, build)
+		-- internally, which re-read live equipped/bag state and silently
+		-- ignored the `ranks` argument for upgrade scoring. Passing `{}`
+		-- for equipped here, plus a synthetic upgrades list, proves the
+		-- model reflects only what was handed in.
+		start()
+		local build = assert(Follow.load(CODE, DATA))
+		local synthetic = { { slot = "legs", itemId = 42, link = "synthetic-link", delta = 99 } }
+		local model = GearView.rows(DATA, build, { [1] = { ["1:1"] = 1 } }, {}, synthetic)
+		assert.are.same(synthetic, model.upgrades)
 	end)
 
 	it("names an item the client has not cached yet", function()
@@ -171,6 +197,44 @@ describe("GearView", function()
 		assert.is_truthy(view.upgrades.rows[1].text:GetText():find("Bagged Helm", 1, true))
 	end)
 
+	it("shows the planned item next to what is actually equipped, not just one of them", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
+		local row = view.slots.rows[1]
+		assert.are.equal(string.format(L.gearItemUnknown, 10), row.planned.text:GetText())
+		assert.are.equal("Worn Helm", row.equipped.text:GetText())
+		assert.are.equal(string.format(L.gearYoursBetter, 6), row.equipped.right:GetText())
+	end)
+
+	it("shows Empty on whichever side has nothing, not the correctly-geared look", function()
+		start()
+		-- Only legs is planned; the fixture still has item 11 worn in head.
+		assert(Follow.load("FSB1:1.60.1.69893:paladin:111:legs=77:strength=5", DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
+		-- head: worn but not planned.
+		assert.are.equal(L.gearEmptySlot, view.slots.rows[1].planned.text:GetText())
+		assert.are.equal("Worn Helm", view.slots.rows[1].equipped.text:GetText())
+		-- legs: planned but not worn.
+		assert.are.equal(L.gearEmptySlot, view.slots.rows[2].equipped.text:GetText())
+	end)
+
+	it("keeps the delta readable next to the Equip button rather than under it", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
+		local row = view.upgrades.rows[1]
+		local anchor = mock.lastCall(row.right, "SetPoint")
+		assert.are.equal(row.equip, anchor[2])
+	end)
+
+	it("names the slot on an upgrade row, so two rings are not indistinguishable", function()
+		start()
+		assert(Follow.load(CODE, DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
+		assert.is_truthy(view.upgrades.rows[1].text:GetText():find("head", 1, true))
+	end)
+
 	it("turns the Equip buttons off in combat and says why", function()
 		start({ globals = { InCombatLockdown = function() return true end } })
 		assert(Follow.load(CODE, DATA))
@@ -189,6 +253,23 @@ describe("GearView", function()
 		local row = view.upgrades.rows[1]
 		row.equip:GetScript("OnClick")(row.equip)
 		assert.are.same({ "|Hitem:12|h" }, equipped)
+	end)
+
+	it("refuses to equip if combat starts before the click, even off a stale enabled row", function()
+		-- The button's enabled state is only recomputed when renderUpgrade
+		-- runs. Nothing re-renders on a combat transition yet (that is
+		-- task 11's job), so the click handler must check for itself.
+		local equipped = {}
+		start({ globals = { EquipItemByName = function(link)
+			equipped[#equipped + 1] = link
+		end } })
+		assert(Follow.load(CODE, DATA))
+		local view = GearView.mount(_G.CreateFrame("Frame"), ctxFor())
+		local row = view.upgrades.rows[1]
+		assert.is_true(row.equip:IsEnabled())
+		_G.InCombatLockdown = function() return true end
+		row.equip:GetScript("OnClick")(row.equip)
+		assert.are.same({}, equipped)
 	end)
 
 	it("offers the Follow tab when there is no build to compare against", function()

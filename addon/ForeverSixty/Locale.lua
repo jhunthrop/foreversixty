@@ -124,10 +124,9 @@ local L = {
 	gearBagUpgrades = "Upgrades in your bags",
 	gearEquipButton = "Equip",
 	gearInCombat = "In combat",
-	gearNotCached = "Item not cached yet, hover it once",
 	gearLoadABuild = "Load a build on the Follow tab to compare gear",
 	gearOpenFollow = "Open the Follow tab",
-	-- "<slot>  <name>" for a slot row, and "<name>  +12" for an upgrade.
+	-- "<slot>  <name>" for an upgrade row.
 	gearSlotRow = "%s  %s",
 	gearUpgradeRow = "%+.0f",
 	gearItemUnknown = "Item %d",
