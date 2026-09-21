@@ -34,7 +34,7 @@ describe('fetchGuildHome', () => {
   it('reads the flat reports array and top-level next_cursor, plus claim state', async () => {
     const home = {
       guild: { id: 42, region: 'us', ruleset: 'hardcore', name: 'The Last Watch' },
-      claim: { state: 'claimed' },
+      claim: { state: 'claimed', frozen: false },
       reports: [
         {
           id: 'r1',
@@ -62,7 +62,7 @@ describe('fetchGuildHome', () => {
     const upstream = vi.fn<GlobalFetch>(async () =>
       envelope({
         guild: { id: 42, region: 'us', ruleset: 'hardcore', name: 'X' },
-        claim: { state: 'unclaimed' },
+        claim: { state: 'unclaimed', frozen: false },
         reports: [],
         roster: [],
       }),
@@ -99,7 +99,7 @@ describe('settings', () => {
         officer_max_rank_index: 1,
         claimed_by: null,
         claim_pending: { by: { battletag: 'Fixture#1234' }, expires_at: '2026-10-01T00:00:00Z' },
-        claim: { state: 'pending', since: '2026-09-17T00:00:00Z' },
+        claim: { state: 'pending', since: '2026-09-17T00:00:00Z', frozen: false },
         invite: { rotated_at: null },
       }),
     );

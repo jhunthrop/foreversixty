@@ -17,9 +17,11 @@
   } from '../lib/characters';
   import {
     approveCharacter,
+    contestClaim,
     fetchGuildHome,
     removeCharacter,
     type GuildHome,
+    type GuildHomeReport,
     type GuildRosterRow,
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
@@ -69,6 +71,14 @@
   let home = $state<GuildHome | null>(null);
   let homeStatus = $state<'idle' | 'loading' | 'ready'>('idle');
   let rosterBusy = $state<string | null>(null); // character_key currently being approved/removed
+  let rosterActionError = $state('');
+  let contestBusy = $state(false);
+  let contestError = $state('');
+  let showContestConfirm = $state(false);
+
+  let myGuildMembership = $state<{ rank: string; verified: boolean } | null>(null);
+  let myCharacterKeys = $state<Set<string>>(new Set());
+  let isModerator = $state(false);
 
   /**
    * A second, independent effect from the public page's own: it never blocks or delays the
@@ -102,10 +112,13 @@
             g.ruleset === requested.ruleset &&
             characterSlug(g.name) === requested.slug,
         );
+        myCharacterKeys = new Set((result?.characters ?? []).map((c) => c.key));
+        isModerator = result?.user.role === 'moderator' || result?.user.role === 'admin';
         if (membership === undefined) {
           homeStatus = 'idle';
           return null;
         }
+        myGuildMembership = { rank: membership.rank ?? 'member', verified: membership.verified };
         return fetchGuildHome(membership.id).then((page) => {
           if (resolved !== requested) return;
           home = page;
@@ -118,28 +131,85 @@
       });
   });
 
-  async function onApprove(characterKey: string): Promise<void> {
+  const canManage = $derived(
+    myGuildMembership !== null &&
+      myGuildMembership.verified &&
+      (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
+  );
+
+  /** A raw membership row (any rank, verified or not) is enough to offer contesting --
+   *  the API enforces the real officer/leader-or-rank-0 rule server side (spec section
+   *  3.3's amendment); a plain member who tries gets a 403 with a sentence. */
+  const canContest = $derived(myGuildMembership !== null);
+
+  async function onApprove(row: GuildRosterRow): Promise<void> {
     if (home === null) return;
-    rosterBusy = characterKey;
+    rosterBusy = row.character_key;
+    rosterActionError = '';
     try {
-      const updated = await approveCharacter(home.guild.id, characterKey);
+      await approveCharacter(home.guild.id, row.region, row.ruleset, characterSlug(row.name));
       home = {
         ...home,
-        roster: home.roster.map((row) => (row.character_key === characterKey ? updated : row)),
+        roster: home.roster.map((r) =>
+          r.character_key === row.character_key ? { ...r, verified: true } : r,
+        ),
       };
+    } catch (thrown) {
+      rosterActionError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
     } finally {
       rosterBusy = null;
     }
   }
 
-  async function onRemove(characterKey: string): Promise<void> {
+  async function onRemove(row: GuildRosterRow): Promise<void> {
     if (home === null) return;
-    rosterBusy = characterKey;
+    rosterBusy = row.character_key;
+    rosterActionError = '';
     try {
-      await removeCharacter(home.guild.id, characterKey);
-      home = { ...home, roster: home.roster.filter((row) => row.character_key !== characterKey) };
+      await removeCharacter(home.guild.id, row.region, row.ruleset, characterSlug(row.name));
+      home = { ...home, roster: home.roster.filter((r) => r.character_key !== row.character_key) };
+    } catch (thrown) {
+      rosterActionError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
     } finally {
       rosterBusy = null;
+    }
+  }
+
+  /** Whether the Remove control should even render for this row. Never shows a control
+   *  the API would refuse for the two absolute cases (a leader-rank row, an
+   *  officer-rank row) unless the viewer is the row's own account or a moderator -- the
+   *  conservative reading of rank-protects-rank (plan's reconciliation record, item 10):
+   *  the web has no signal for "am I the claim holder" from the home response alone, so
+   *  an officer-rank row's Remove is hidden even from a genuine claim-holder officer,
+   *  who still has the settings page or the API directly. */
+  function mayShowRemove(row: GuildRosterRow): boolean {
+    const isSelf = myCharacterKeys.has(row.character_key);
+    if (isSelf || isModerator) return true;
+    if (row.rank === 'member') return canManage;
+    return false; // officer or leader rank, not self, not moderator
+  }
+
+  /**
+   * `frozen` is the API's own answer to "is this claim young or uncorroborated enough
+   * that officer tools must stop working" (contest.go's `frozen()`); `state ===
+   * 'contested'` alone is not that signal -- an established claim with independently
+   * log-corroborated members can be contested and awaiting a moderator while
+   * `frozen: false`, in which case officer controls stay live. The contest response
+   * itself carries no `frozen` bit, so a successful contest re-fetches home rather than
+   * guessing the freeze outcome client-side.
+   */
+  async function onContest(): Promise<void> {
+    if (home === null) return;
+    contestBusy = true;
+    contestError = '';
+    try {
+      await contestClaim(home.guild.id);
+      showContestConfirm = false;
+      home = await fetchGuildHome(home.guild.id);
+    } catch (thrown) {
+      contestError = thrown instanceof Error ? thrown.message : 'That did not work; try again';
+    } finally {
+      contestBusy = false;
     }
   }
 
@@ -147,16 +217,16 @@
     return { region: row.region as Region, ruleset: row.ruleset as Ruleset, slug: characterSlug(row.name) };
   }
 
-  /**
-   * `GuildRosterRow` carries no account/owner identifier other than `user_id`, so "am I
-   * the guild's only member" has to be counted by distinct account rather than by row
-   * count: a solo officer with two verified characters in the guild is still one account,
-   * and `roster.length <= 1` alone would incorrectly show the populated roster for them
-   * instead of the empty-state invite-sharing message.
-   */
+  /** "Am I the guild's only member" is counted by distinct account, not row count: a
+   *  solo officer with two characters is still one account. `Me.characters[].key`
+   *  exact-matches `character_key`, so any roster row not in that set belongs to
+   *  someone else. */
   const soloRoster = $derived(
-    home === null ? true : new Set(home.roster.map((row) => row.user_id)).size <= 1,
+    home === null ? true : home.roster.every((row) => myCharacterKeys.has(row.character_key)),
   );
+
+  const reportWipeCount = (report: GuildHomeReport): number =>
+    Math.max(0, report.fight_count - report.kill_count);
 
   const killed = $derived((data?.progression ?? []).filter((row) => row.kills > 0).length);
   const killedAt = (row: { first_kill_at?: string }): string =>
@@ -207,7 +277,7 @@
       <section class="border-line-soft flex flex-col gap-4 border-b pb-6" data-testid="guild-home">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <h2 class="section-title text-[18px]">{guildHomeCopy.reportsHeading}</h2>
-          {#if home.viewer.can_manage}
+          {#if canManage}
             <a
               class="text-[13px] font-semibold"
               href={guildSettingsHref(resolved.region, resolved.ruleset, home.guild.name)}
@@ -215,7 +285,7 @@
             >
               {guildHomeCopy.settingsLink}
             </a>
-          {:else if !home.viewer.verified}
+          {:else if myGuildMembership !== null && !myGuildMembership.verified}
             <a
               class="text-[13px] font-semibold"
               href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
@@ -225,21 +295,77 @@
             </a>
           {/if}
         </div>
-        {#if home.reports.rows.length === 0}
+
+        {#if home.claim.frozen}
+          <p class="text-[13px]" role="alert" data-testid="guild-home-frozen">{guildHomeCopy.frozenNotice}</p>
+        {/if}
+
+        {#if home.claim.state !== 'unclaimed' || canContest}
+          <div class="flex flex-wrap items-center gap-3">
+            {#if home.claim.state === 'contested'}
+              <span class="text-muted text-[13px]" data-testid="guild-home-claim-state">
+                {guildHomeCopy.contested}
+              </span>
+            {/if}
+            {#if canContest && home.claim.state !== 'unclaimed' && home.claim.state !== 'contested'}
+              <button
+                class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                onclick={() => (showContestConfirm = true)}
+                data-testid="guild-home-contest-button"
+              >
+                {guildHomeCopy.contestButton}
+              </button>
+            {/if}
+          </div>
+        {/if}
+
+        {#if showContestConfirm}
+          <div
+            class="border-line-soft flex flex-col gap-3 border p-4"
+            data-testid="guild-home-contest-confirm"
+          >
+            <p class="text-[13px]">{guildHomeCopy.contestConfirmLine}</p>
+            <div class="flex gap-3">
+              <button
+                class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"
+                onclick={() => void onContest()}
+                disabled={contestBusy}
+                data-testid="guild-home-contest-confirm-button"
+              >
+                {guildHomeCopy.contestConfirmButton}
+              </button>
+              <button
+                class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                onclick={() => (showContestConfirm = false)}
+                disabled={contestBusy}
+              >
+                Cancel
+              </button>
+            </div>
+            {#if contestError !== ''}<p class="text-[13px]" role="alert">{contestError}</p>{/if}
+          </div>
+        {/if}
+
+        {#if myGuildMembership !== null && !myGuildMembership.verified}
+          <p class="text-muted text-[13px]" data-testid="guild-home-unverified-note">
+            {guildHomeCopy.reportsUnverifiedNote}
+          </p>
+        {/if}
+        {#if home.reports.length === 0}
           <p class="text-muted text-[14px]" data-testid="guild-home-empty-reports">
             {guildHomeCopy.noReports}
           </p>
         {:else}
           <ul class="flex flex-col" data-testid="guild-home-reports">
-            {#each home.reports.rows as report (report.id)}
+            {#each home.reports as report (report.id)}
               <li
                 class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-2 text-[14px]"
               >
-                <a class={rowLink} href={`/reports/${report.id}`}
-                  >{report.title === '' ? report.zone : report.title}</a
-                >
+                <a class={rowLink} href={`/reports/${report.id}`}>
+                  {report.title === '' ? guildHomeCopy.untitledReport : report.title}
+                </a>
                 <span class="text-muted tabular font-mono text-[13px]">
-                  {guildHomeCopy.reportSummary(report.kill_count, report.wipe_count)}
+                  {guildHomeCopy.reportSummary(report.kill_count, reportWipeCount(report))}
                 </span>
               </li>
             {/each}
@@ -249,7 +375,7 @@
         <h2 class="section-title text-[18px]">{guildHomeCopy.rosterHeading}</h2>
         {#if soloRoster}
           <p class="text-muted text-[14px]" data-testid="guild-home-empty-roster">
-            {home.viewer.can_manage ? guildHomeCopy.emptyRosterOfficer : guildHomeCopy.emptyRosterMember}
+            {canManage ? guildHomeCopy.emptyRosterOfficer : guildHomeCopy.emptyRosterMember}
           </p>
         {:else}
           <ul class="flex flex-col" data-testid="guild-home-roster">
@@ -281,21 +407,22 @@
                 {#if row.consent !== 'roster'}
                   <GuildRosterHandoff path={rowPath(row)} />
                 {/if}
-                {#if home.viewer.can_manage}
-                  {#if !row.verified}
-                    <button
-                      class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                      onclick={() => void onApprove(row.character_key)}
-                      disabled={rosterBusy === row.character_key}
-                      data-testid="guild-roster-approve"
-                    >
-                      {guildHomeCopy.approve}
-                    </button>
-                  {/if}
+                {#if canManage && !row.verified}
                   <button
                     class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                    onclick={() => void onRemove(row.character_key)}
-                    disabled={rosterBusy === row.character_key}
+                    onclick={() => void onApprove(row)}
+                    disabled={rosterBusy === row.character_key || home.claim.frozen}
+                    data-testid="guild-roster-approve"
+                  >
+                    {guildHomeCopy.approve}
+                  </button>
+                {/if}
+                {#if mayShowRemove(row)}
+                  <button
+                    class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                    onclick={() => void onRemove(row)}
+                    disabled={rosterBusy === row.character_key ||
+                      (home.claim.frozen && !myCharacterKeys.has(row.character_key) && !isModerator)}
                     data-testid="guild-roster-remove"
                   >
                     {guildHomeCopy.remove}
@@ -304,6 +431,9 @@
               </li>
             {/each}
           </ul>
+        {/if}
+        {#if rosterActionError !== ''}
+          <p class="text-[13px]" role="alert" data-testid="guild-roster-action-error">{rosterActionError}</p>
         {/if}
       </section>
     {/if}

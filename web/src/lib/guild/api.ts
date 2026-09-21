@@ -32,10 +32,20 @@ export interface GuildSummary {
 
 export type ClaimState = 'unclaimed' | 'pending' | 'claimed' | 'contested';
 
-/** GET .../home and GET .../settings both expose this (2026-09-21 security amendment). */
+/**
+ * GET .../home and GET .../settings both expose this (2026-09-21 security amendment).
+ * `frozen` was added by a second, concurrent security review (same date): "contested" and
+ * "frozen" are distinct -- a contest against an established (14+ day old) claim with
+ * independently log-corroborated members is recorded as `state: 'contested'` but
+ * `frozen: false`, so officer tools stay enabled and the claim is only queued for a
+ * moderator. Only a young or uncorroborated contested claim is `frozen: true`. `frozen` is
+ * meaningless (always `false`) at any state other than `'contested'`. Consumers must gate
+ * "disable officer controls" on `frozen`, never on `state === 'contested'` alone.
+ */
 export interface ClaimStateView {
   state: ClaimState;
   since?: string;
+  frozen: boolean;
 }
 
 export interface MemberRef {
