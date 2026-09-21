@@ -156,9 +156,10 @@ export function guildInviteShellMeta(token: string): ShellMeta {
 }
 
 /**
- * A saved sim's unfurl. There is no rendered card for a sim at launch -- the API draws one
- * per report and per build, and a third renderer is its work, not this lane's -- so the
- * site's own card stands in, the way the rankings and character shells already do.
+ * `simShellMeta`'s own composition, before a member's own name (`result.title`) overrides
+ * it -- split out so that override is one place, below, rather than three (a branch per
+ * kind). Every existing kind's title/description is exactly what it always was; nothing in
+ * this function changed for the title defect fix.
  *
  * The description is the whole run in one sentence: the engine it came from, the figure and
  * its 95% band, how many iterations bought that band, and the settings. Someone deciding
@@ -166,11 +167,8 @@ export function guildInviteShellMeta(token: string): ShellMeta {
  * (gear/talents/drops) says the combination count and the leader's own headline instead --
  * there is no single DPS figure worth leading with when the page is a ranked table -- and
  * weights says the top few stats rather than a figure that was never the point of the run.
- *
- * Takes no `apiBase`, unlike reportShellMeta: a sim's image is always the site's own card,
- * never a per-sim render, so there is nothing here for an API origin to build.
  */
-export function simShellMeta(result: SimResult): ShellMeta {
+function fallbackSimShellMeta(result: SimResult): ShellMeta {
   const kind = requestKind(result.request);
   const canonical = `${SITE_BASE_URL}/sim/${result.sim_id ?? ''}`;
   const spec = specLabel(result.request.spec);
@@ -219,5 +217,33 @@ export function simShellMeta(result: SimResult): ShellMeta {
     description: `Simulated on engine ${result.engine_version}: ${dps} DPS ± ${band} over ${iterations} iterations, ${settings}.`,
     image: SITE_CARD,
     canonical,
+  };
+}
+
+/**
+ * A saved sim's unfurl. There is no rendered card for a sim at launch -- the API draws one
+ * per report and per build, and a third renderer is its work, not this lane's -- so the
+ * site's own card stands in, the way the rankings and character shells already do.
+ *
+ * Takes no `apiBase`, unlike reportShellMeta: a sim's image is always the site's own card,
+ * never a per-sim render, so there is nothing here for an API origin to build.
+ *
+ * Defect fix: `result.title` -- "Name this sim" (SaveSimForm.svelte), carried through by
+ * `GET /v1/sims/{id}`'s own `GetOutput` (api/internal/sims/handler.go) -- used to reach
+ * neither this function's input (SimResult had no such field) nor its output, so a member's
+ * own name never appeared in `<title>`, `og:title` or `og:description`: every shared link
+ * read the same composed spec-and-DPS sentence regardless of what was typed. It leads both
+ * now, when given -- `title` verbatim (src/worker.ts's `rewriteHead` still routes it through
+ * HTMLRewriter's own `setInnerContent`/`setAttribute`, which escape by default; nothing here
+ * switches either into raw-HTML mode), `description` with it as the opening sentence, ahead
+ * of the same numbers `fallbackSimShellMeta` already composed.
+ */
+export function simShellMeta(result: SimResult): ShellMeta {
+  const meta = fallbackSimShellMeta(result);
+  if (result.title === undefined || result.title === '') return meta;
+  return {
+    ...meta,
+    title: `${result.title} · Forever Sixty`,
+    description: `${result.title}. ${meta.description}`,
   };
 }

@@ -67,7 +67,7 @@ func (d JobDeps) logger() *slog.Logger {
 // of waiting forever; the error is still returned so the job's exit
 // code says it failed and the platform's logs show why.
 func Run(ctx context.Context, d JobDeps, simID string) error {
-	stored, err := d.Store.Get(ctx, simID)
+	stored, _, err := d.Store.Get(ctx, simID)
 	if err != nil {
 		// Nothing to mark: there is no row.
 		return err

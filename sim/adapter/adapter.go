@@ -162,7 +162,7 @@ func Summarize(res *proto.RaidSimResult, req api.SimRequest) (summary.Summary, e
 	// own integer totals, player and pets together - not from the raw
 	// float totals, and not measured from the engine's iteration timer.
 	// See the package comment for why.
-	durationMS := deriveDurationMS(sumActorTotals(out.DamageDone), DPS(res).Mean, avgIterationMS)
+	durationMS := DeriveDurationMS(SumActorTotals(out.DamageDone), DPS(res).Mean, avgIterationMS)
 	out.DurationMS = durationMS
 	for i := range out.DamageDone {
 		out.DamageDone[i].ActiveMS = durationMS

@@ -71,7 +71,7 @@
 
 {#if current !== null}
   <div
-    class={`border-line bg-raised rounded-panel overflow-hidden border px-3 text-[13px] ${CHIP_HEIGHT}`}
+    class={`border-line bg-raised rounded-panel mx-[18px] overflow-hidden border px-3 text-[13px] md:mx-0 ${CHIP_HEIGHT}`}
     data-testid="current-character-chip"
   >
     <div class="flex h-full flex-col md:flex-row md:items-center md:gap-3">
@@ -107,7 +107,7 @@
         {/if}
         <button
           type="button"
-          class={`${rowLink} text-muted min-w-11 justify-center md:ml-auto md:min-w-0 md:justify-start`}
+          class={`${rowLink} text-muted min-w-11 justify-center md:ml-auto md:justify-start`}
           onclick={onforget}
           data-testid="current-character-forget"
         >
@@ -118,7 +118,7 @@
   </div>
 {:else if !hasOwnPasteBox}
   <p
-    class={`text-muted flex items-center overflow-hidden text-[13px] ${CHIP_HEIGHT}`}
+    class={`text-muted mx-[18px] flex items-center overflow-hidden text-[13px] md:mx-0 ${CHIP_HEIGHT}`}
     data-testid="current-character-chip"
   >
     {currentCharacterCopy.noCharacterLine}

@@ -11,6 +11,7 @@
 <script lang="ts">
   import { currentCharacterCopy } from '../../lib/current-character-copy';
   import { rowLink } from '../../lib/report/format';
+  import { parseBuildInput } from '../../lib/sim/build-input';
   import { simCopy } from '../../lib/sim/copy';
 
   let {
@@ -47,10 +48,12 @@
     'border-line-warm rounded-control bg-raised text-text min-h-11 w-full border px-3 py-2 text-[14px]';
   const action = 'border-line-warm-strong rounded-control text-strong label min-h-11 self-start border px-4';
 
-  /** Accepts a full link or a bare id: people paste whichever is in their clipboard. */
-  export function lastSegment(value: string): string {
-    const withoutQuery = value.trim().split('?')[0].replace(/\/+$/, '');
-    return withoutQuery.split('/').at(-1) ?? '';
+  /** A saved link or id loads the saved build; an unsaved planner link loads its code. */
+  function loadBuildInput(): void {
+    const input = parseBuildInput(buildRef);
+    if (input === null) return;
+    if (input.kind === 'code') onaddon(input.code);
+    else onbuild(input.id);
   }
 
   /** A report link carries the fight in ?fight=; a pasted ref already has it after a colon. */
@@ -105,7 +108,7 @@
         type="button"
         class={action}
         disabled={busy}
-        onclick={() => onbuild(lastSegment(buildRef))}
+        onclick={loadBuildInput}
         data-testid="sim-build-load">Load</button
       >
     </div>

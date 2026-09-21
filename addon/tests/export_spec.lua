@@ -139,6 +139,31 @@ describe("Export", function()
 		assert.is_truthy(assert(Export.string(DATA)):find("|professions=cooking", 1, true))
 	end)
 
+	it("returns nil from guildInfo when the character has no guild", function()
+		character({})
+		assert.is_nil(Export.guildInfo())
+	end)
+
+	it("returns the name and rank index from guildInfo when guilded", function()
+		character({ guild = { name = "Iron Vanguard", rankName = "Officer", rankIndex = 2 } })
+		assert.are.same({ name = "Iron Vanguard", rankIndex = 2 }, Export.guildInfo())
+	end)
+
+	it("writes no guild section for an unguilded character", function()
+		character({})
+		assert.is_nil(assert(Export.string(DATA)):find("|guild=", 1, true))
+	end)
+
+	it("writes the guild section, after professions, for a guilded character", function()
+		character({
+			professions = { 1 },
+			professionNames = { "Enchanting" },
+			guild = { name = "Iron Vanguard", rankName = "Officer", rankIndex = 2 },
+		})
+		local code = assert(Export.string(DATA))
+		assert.is_truthy(code:find("|professions=enchanting|guild=Iron%20Vanguard:2", 1, true))
+	end)
+
 	it("exports a character with no points spent, as an all-zero tree", function()
 		-- Controller ruling 5. encodeTree already emits "0" for an all-zero
 		-- tree and the site decoder accepts it, so the level-8 beta tester

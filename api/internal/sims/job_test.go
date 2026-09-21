@@ -51,7 +51,7 @@ func TestTheRunJobStreamsProgressAndWritesTheResultToBothPlaces(t *testing.T) {
 		t.Errorf("iterations %d, want the whole run", p.IterationsDone)
 	}
 
-	stored, err := h.store.Get(t.Context(), "aaaaaaaaaaaa")
+	stored, _, err := h.store.Get(t.Context(), "aaaaaaaaaaaa")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -150,7 +150,7 @@ func TestAnAbortedRunIsFailedNotStoredAsDone(t *testing.T) {
 		t.Fatalf("state %q, want %q: a partial result must never read as done", p.State, StateError)
 	}
 
-	stored, gerr := h.store.Get(t.Context(), "dddddddddddd")
+	stored, _, gerr := h.store.Get(t.Context(), "dddddddddddd")
 	if gerr != nil {
 		t.Fatal(gerr)
 	}
@@ -257,7 +257,7 @@ func TestABulkJobStreamsItsStagesAndStoresTheRanking(t *testing.T) {
 		t.Errorf("progress %+v, want the final stage's counts", p)
 	}
 
-	stored, err := h.store.Get(t.Context(), "ffffffffffff")
+	stored, _, err := h.store.Get(t.Context(), "ffffffffffff")
 	if err != nil {
 		t.Fatal(err)
 	}

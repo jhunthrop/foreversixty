@@ -166,3 +166,45 @@ test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’
     /main_hand_imbue:elemental_sharpening_stone/,
   );
 });
+
+// 2026-09-21 result-page review, Defect 3: leaving Target armor blank and typing 0 used to
+// send the identical request ("target_armor": 0 either way) because a bare 0 was the only
+// way the field had to spell "unset". Blank must mean "use the preset" -- the request omits
+// target_armor entirely -- and a typed 0 must mean an explicit, unarmoured target.
+test('target armor: blank omits the override, a typed 0 sends an explicit zero', async ({ page }) => {
+  await page.goto('/sim');
+  await page.getByTestId('sim-addon-input').fill(FURY);
+  await page.getByTestId('sim-addon-load').click();
+  await expect(page.getByTestId('sim-character')).toBeVisible();
+
+  await page.getByTestId('sim-settings-more').locator('summary').click();
+  const armor = page.getByTestId('sim-target-armor');
+  const requestJson = page.getByTestId('sim-request-json');
+  await page.getByTestId('sim-request-drawer').locator('summary').click();
+
+  // The default fight has never had an override: the field reads blank (its placeholder,
+  // not its value, carries the preset), and the request carries no target_armor key.
+  await expect(armor).toHaveValue('');
+  await expect(armor).toHaveAttribute('placeholder', '3731');
+  await expect(requestJson).not.toHaveValue(/"target_armor"/);
+
+  // Typing 0 is a real, explicit request for no armor -- not a second way to clear it.
+  // The control only writes on `change` (SettingsSheet.svelte), which needs a blur to
+  // fire -- `fill` alone sets the DOM value but not, reliably, that event.
+  await armor.fill('0');
+  await armor.blur();
+  await expect(armor).toHaveValue('0');
+  await expect(requestJson).toHaveValue(/"target_armor":\s*0\b/);
+
+  // A positive override behaves the same as before.
+  await armor.fill('2500');
+  await armor.blur();
+  await expect(armor).toHaveValue('2500');
+  await expect(requestJson).toHaveValue(/"target_armor":\s*2500\b/);
+
+  // Clearing the field back to blank removes the override again, not to another 0.
+  await armor.fill('');
+  await armor.blur();
+  await expect(armor).toHaveValue('');
+  await expect(requestJson).not.toHaveValue(/"target_armor"/);
+});

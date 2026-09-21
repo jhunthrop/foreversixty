@@ -159,6 +159,38 @@ describe('simShellMeta', () => {
   });
 });
 
+// Defect fix: the name a member gave a saved sim ("Name this sim", SaveSimForm.svelte) used
+// to reach neither simShellMeta's input (SimResult had no title field at all) nor its
+// output, so a shared link's <title>/og:title/og:description always read the same composed
+// spec-and-DPS sentence -- the field report's own repro is this exact string.
+describe('simShellMeta with a member-given title', () => {
+  const named = 'Thoradin - Fury Warrior, raid-buffed BWL night';
+
+  it('leads the title with the member’s own name, not the composed spec/DPS line', () => {
+    const meta = simShellMeta({ ...fixtureResult, title: named });
+    expect(meta.title).toBe(`${named} · Forever Sixty`);
+  });
+
+  it('leads the description with it too, ahead of the same numbers as always', () => {
+    const meta = simShellMeta({ ...fixtureResult, title: named });
+    expect(meta.description.startsWith(`${named}. Simulated on engine`)).toBe(true);
+  });
+
+  it('falls back to the composed title/description when no title was given, unchanged', () => {
+    const untitled = simShellMeta(fixtureResult);
+    const explicitlyEmpty = simShellMeta({ ...fixtureResult, title: '' });
+    expect(untitled.title).toBe('Fury Warrior, 101 DPS · Forever Sixty');
+    expect(explicitlyEmpty).toEqual(untitled);
+  });
+
+  it('carries a title through a bulk and a weights kind’s own unfurl too', () => {
+    const bulk = simShellMeta({ ...fixtureBulkResult, sim_id: 'simfixtureab', title: named });
+    expect(bulk.title).toBe(`${named} · Forever Sixty`);
+    const weights = simShellMeta({ ...fixtureWeightsResult, sim_id: 'simfixtureab', title: named });
+    expect(weights.title).toBe(`${named} · Forever Sixty`);
+  });
+});
+
 describe('simShellMeta by kind', () => {
   it('names Top Gear and its headline, item included', () => {
     const meta = simShellMeta({ ...fixtureBulkResult, sim_id: 'simfixtureab' });

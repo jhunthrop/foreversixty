@@ -47,12 +47,14 @@
     };
   });
 
+  // No `source`/`ref` passed to `createBulkStore` here: unlike `store.svelte.ts`,
+  // `bulk-store.svelte.ts` has never read an init-time source/ref (they were previously
+  // accepted and silently ignored). `bootstrapCharacter`'s own `runBootstrapRestore` call,
+  // below, is the one place this island's URL-driven load actually starts.
   const store = untrack(() =>
     createBulkStore({
       tool,
       treeVersion: bootstrap.treeVersion,
-      source: bootstrap.source,
-      ref: bootstrap.ref,
       hardwareConcurrency: navigator.hardwareConcurrency,
     }),
   );
@@ -149,6 +151,12 @@
    * 4's review: a dead pointer forgets itself and clears the store's own refusal message,
    * rather than showing "Restored your last character" beside an error) all live, so it is
    * testable without mounting this island.
+   *
+   * `storeHandlesUrl: false`: unlike `store.svelte.ts` (SimView's store, which resolves its
+   * own `init.code`/`init.source`/`init.ref` before this is ever called), `bulk-store.svelte.ts`
+   * has no init-time bootstrap of its own -- this call is the ONLY place a `?code=` or
+   * `?source=&ref=` load ever starts for this island, so `runBootstrapRestore` must actually
+   * start one rather than assume, as it does for SimView, that something else already did.
    */
   async function bootstrapCharacter(): Promise<void> {
     restored = await runBootstrapRestore(
@@ -156,6 +164,7 @@
       { code: bootstrap.code, source: bootstrap.source, ref: bootstrap.ref },
       readCurrent(),
       () => store.character !== null,
+      { storeHandlesUrl: false },
     );
   }
 

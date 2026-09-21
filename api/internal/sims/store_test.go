@@ -13,7 +13,7 @@ func TestASavedBrowserResultComesBackWhole(t *testing.T) {
 	if err := h.store.Save(t.Context(), "aaaaaaaaaaaa", &h.owner, "Tuesday", res); err != nil {
 		t.Fatal(err)
 	}
-	got, err := h.store.Get(t.Context(), "aaaaaaaaaaaa")
+	got, title, err := h.store.Get(t.Context(), "aaaaaaaaaaaa")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -28,11 +28,34 @@ func TestASavedBrowserResultComesBackWhole(t *testing.T) {
 	if got.Request.Character.Race != "orc" || len(got.Request.Character.Gear) != 2 {
 		t.Errorf("character did not survive the round trip: %+v", got.Request.Character)
 	}
+	// Defect fix: the name a member gave this sim ("Tuesday", saved above) used
+	// to live only in the `sims.title` column -- Get() never selected it, and
+	// the saved page, its <title> and its og tags all had nothing to read.
+	if title != "Tuesday" {
+		t.Errorf("title = %q, want %q", title, "Tuesday")
+	}
+}
+
+// A sim saved with no title (the common case: naming a run is optional) reads
+// back as "", not a Postgres NULL a caller has to special-case.
+func TestASavedResultWithNoTitleReadsBackEmpty(t *testing.T) {
+	h := newHarness(t)
+	res := browserResult("warrior-fury", 1042.5)
+	if err := h.store.Save(t.Context(), "notitleaaaaa", &h.owner, "", res); err != nil {
+		t.Fatal(err)
+	}
+	_, title, err := h.store.Get(t.Context(), "notitleaaaaa")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if title != "" {
+		t.Errorf("title = %q, want empty", title)
+	}
 }
 
 func TestAnUnknownSimIsNotFound(t *testing.T) {
 	h := newHarness(t)
-	if _, err := h.store.Get(t.Context(), "zzzzzzzzzzzz"); err != ErrNotFound {
+	if _, _, err := h.store.Get(t.Context(), "zzzzzzzzzzzz"); err != ErrNotFound {
 		t.Fatalf("err = %v, want ErrNotFound", err)
 	}
 	if _, err := h.store.Progress(t.Context(), "zzzzzzzzzzzz"); err != ErrNotFound {
@@ -90,7 +113,7 @@ func TestAServerRunWalksQueuedThenRunningThenDone(t *testing.T) {
 	}
 	// The queued row carries the whole request: it is what the job
 	// reads back, and there is no second copy anywhere.
-	queued, err := h.store.Get(t.Context(), "dddddddddddd")
+	queued, _, err := h.store.Get(t.Context(), "dddddddddddd")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -123,7 +146,7 @@ func TestAServerRunWalksQueuedThenRunningThenDone(t *testing.T) {
 	if p.State != StateDone || p.DPS == nil || *p.DPS != 1042.5 {
 		t.Fatalf("done: %+v", p)
 	}
-	stored, err := h.store.Get(t.Context(), "dddddddddddd")
+	stored, _, err := h.store.Get(t.Context(), "dddddddddddd")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -252,7 +275,7 @@ func TestSavingTheSameIdTwiceKeepsTheFirst(t *testing.T) {
 		browserResult("warrior-fury", 1900)); err != nil {
 		t.Fatal(err)
 	}
-	got, err := h.store.Get(t.Context(), "gggggggggggg")
+	got, _, err := h.store.Get(t.Context(), "gggggggggggg")
 	if err != nil {
 		t.Fatal(err)
 	}

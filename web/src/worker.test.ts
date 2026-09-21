@@ -911,6 +911,34 @@ describe('/sim/<sim_id>', () => {
     expect(html).toContain('https://foreversixty.gg/sim/simfixtureab');
   });
 
+  // Defect fix: GET /v1/sims/{id} used to drop the name a member gave a saved sim before it
+  // ever reached this Worker, so the rewritten head always carried the composed spec/DPS
+  // line regardless of what was typed. This is the end-to-end proof at the layer that
+  // actually writes `<title>`/`og:title`/`og:description` into what a crawler or a chat
+  // unfurl sees: a titled API answer rewrites the head with that title, through the exact
+  // same HTMLRewriter path (setInnerContent/setAttribute, which escape by default) as
+  // every other shell.
+  it('rewrites the head with the member’s own name when the sim has one', async () => {
+    const assets = shellAssets('/sim.html');
+    const named = 'Thoradin - Fury Warrior, raid-buffed BWL night';
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        json({ ok: true, data: { ...fixtureResult, title: named }, error: null, request_id: 'r' }),
+      ),
+    );
+    vi.stubGlobal('HTMLRewriter', FakeHTMLRewriter);
+
+    const response = await worker.fetch(new Request('https://foreversixty.gg/sim/simfixtureab'), {
+      API_BASE_URL: 'https://api.test',
+      ASSETS: assets,
+    } as unknown as Env);
+
+    const html = await response.text();
+    expect(html).toContain(`${named} · Forever Sixty`);
+    expect(html).not.toContain('Fury Warrior, 101 DPS · Forever Sixty');
+  });
+
   it('serves the shell unrewritten and noindex when the API cannot answer', async () => {
     vi.stubGlobal(
       'fetch',

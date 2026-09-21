@@ -31,6 +31,13 @@ async function signIn(page: Page): Promise<void> {
   );
 }
 
+/** The form is an island. A file chosen before it hydrates fires its change event at
+ *  nothing, and Upload stays disabled, so wait for the island to drop its `ssr` mark. */
+async function openLogs(page: Page): Promise<void> {
+  await page.goto('/logs');
+  await expect(page.locator('astro-island[ssr]:has([data-testid="upload-file"])')).toHaveCount(0);
+}
+
 test('a log uploads part by part and hands off to the report', async ({ page }) => {
   await signIn(page);
   await page.route('**/v1/uploads', (route) =>
@@ -51,7 +58,7 @@ test('a log uploads part by part and hands off to the report', async ({ page }) 
     return route.fulfill(fulfil({ report_id: 'fixture2abcd' }, 202));
   });
 
-  await page.goto('/logs');
+  await openLogs(page);
   await page.getByTestId('upload-file').setInputFiles({
     name: 'WoWCombatLog.txt',
     mimeType: 'text/plain',
@@ -84,7 +91,7 @@ test('a failed part shows what went wrong instead of a spinner', async ({ page }
   );
   await page.route('https://r2.test/p1', (route) => route.fulfill({ status: 500 }));
 
-  await page.goto('/logs');
+  await openLogs(page);
   await page.getByTestId('upload-file').setInputFiles({
     name: 'WoWCombatLog.txt',
     mimeType: 'text/plain',
@@ -122,7 +129,7 @@ test('cancel stops the part in flight and leaves the form usable', async ({ page
     await route.fulfill({ status: 200, headers: { etag: '"e1"' } });
   });
 
-  await page.goto('/logs');
+  await openLogs(page);
   await page.getByTestId('upload-file').setInputFiles({
     name: 'WoWCombatLog.txt',
     mimeType: 'text/plain',
@@ -153,7 +160,7 @@ test('the pairing code and the companion downloads are on the page', async ({ pa
     route.fulfill(fulfil({ code: '4821-9930', expires_in: 600 })),
   );
 
-  await page.goto('/logs');
+  await openLogs(page);
   await expect(page.getByTestId('companion-downloads').getByRole('link')).toHaveCount(4);
   await page.getByRole('button', { name: 'Show pairing code' }).click();
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
@@ -161,7 +168,7 @@ test('the pairing code and the companion downloads are on the page', async ({ pa
 
 test('a signed-out visitor is told to sign in before they pick a file', async ({ page }) => {
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
-  await page.goto('/logs');
+  await openLogs(page);
 
   // Three places need an account, and each says so with a real button rather than a link
   // buried in a sentence.
@@ -180,7 +187,7 @@ test('a signed-out visitor is told to sign in before they pick a file', async ({
 
 test('the two ways in are the first thing on the page and lead to their panels', async ({ page }) => {
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(null, 401)));
-  await page.goto('/logs');
+  await openLogs(page);
   const entries = page.getByTestId('logs-entries').getByRole('link');
   await expect(entries).toHaveCount(2);
   await entries.nth(1).click();

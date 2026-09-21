@@ -7,11 +7,13 @@ import { addonStringFor } from './addon-export';
 import { ranksFromTalentsString } from './character';
 import {
   MINUS,
+  anyKeepsSetBonus,
   canPlanCombo,
   collapsedComboCount,
   comboKey,
   comboRows,
   deltaLabel,
+  exactTieGroups,
   gainLabel,
   gearForCombo,
   headlineFor,
@@ -623,6 +625,66 @@ describe('keepsSetBonus', () => {
 
   it('is true at a piece count the combination does reach', () => {
     expect(keepsSetBonus(result.combos[0], result, items, sets, 2)).toBe(true);
+  });
+});
+
+/**
+ * dps D24: ComboResults.svelte used to print "Only combinations keeping a 4-piece set
+ * bonus" over every result, including a character with no 4-piece set at all -- reading
+ * like a filter silently throwing candidates away. `anyKeepsSetBonus` is what the page now
+ * checks before showing the checkbox at all: whether it is even possible.
+ */
+describe('anyKeepsSetBonus', () => {
+  it('is false at a piece count nothing in the result reaches (no 4-piece set exists here)', () => {
+    expect(anyKeepsSetBonus(result, items, sets, 4)).toBe(false);
+  });
+
+  it('is true at a piece count some combo does reach', () => {
+    expect(anyKeepsSetBonus(result, items, sets, 2)).toBe(true);
+  });
+
+  it('is false when the result has no combos at all', () => {
+    expect(anyKeepsSetBonus({ ...result, combos: [] }, items, sets, 2)).toBe(false);
+  });
+});
+
+/**
+ * dps D36: three or four ranked rows for genuinely different items (three different necks,
+ * none of them carrying a stat this spec's damage depends on) showed the identical delta to
+ * the decimal, reading like a bug silently reporting one candidate under several rows.
+ * `dedupedCombos` (above) only ever drops an EXACT repeat of the same item id, so distinct
+ * items always keep distinct rows -- these are real ties, and `exactTieGroups` is what lets
+ * the page say so instead of leaving the duplicate numbers unexplained.
+ */
+describe('exactTieGroups', () => {
+  const estimate = { mean: -19, stddev: 0, error: 2.3, min: -30, max: -10 };
+  const otherEstimate = { mean: -41, stddev: 0, error: 11, min: -60, max: -20 };
+
+  function row(itemId: number, delta = estimate): ComboRow {
+    return {
+      rank: 1,
+      combo: {
+        substitutions: [{ kind: 'item', slot: 'neck', item_id: itemId, name: `Item ${itemId}` }],
+        dps: delta,
+        delta,
+        group: 0,
+      },
+      withinError: true,
+      percent: 0,
+    };
+  }
+
+  it('groups rows whose delta is bit-identical, three different items included', () => {
+    const rows = [row(1), row(2), row(3, otherEstimate)];
+    expect(exactTieGroups(rows)).toEqual([[rows[0], rows[1]]]);
+  });
+
+  it('finds nothing when every row is its own number', () => {
+    expect(exactTieGroups([row(1), row(2, otherEstimate)])).toEqual([]);
+  });
+
+  it('finds nothing in a list of one', () => {
+    expect(exactTieGroups([row(1)])).toEqual([]);
   });
 });
 

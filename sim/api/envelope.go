@@ -227,9 +227,15 @@ type EncounterSpec struct {
 	// sim fought before this field existed.
 	TargetLevel int `json:"target_level,omitempty"`
 
-	// TargetArmor overrides the level's preset. 0 means the preset -
-	// NOT an unarmoured target.
-	TargetArmor int `json:"target_armor,omitempty"`
+	// TargetArmor overrides the level's preset. nil (the field absent
+	// from the request) means the preset; a non-nil pointer is an
+	// explicit choice, INCLUDING one pointing at 0 - an unarmoured
+	// target is a real request a player can make, not a second way to
+	// spell "unset". A plain int could not tell "never sent" from
+	// "sent as 0" apart on decode, which is how a blank settings field
+	// and a typed 0 used to reach the engine as the identical request
+	// and run identically (2026-09-21 result-page review, Defect 3).
+	TargetArmor *int `json:"target_armor,omitempty"`
 
 	// TargetType changes what Hunter and Warlock abilities do. "" maps
 	// to the engine's own default, MobTypeHumanoid (sim/request's
@@ -293,10 +299,11 @@ const (
 var TargetArmorByLevel = map[int]int{60: 3300, 61: 3444, 62: 3588, 63: 3731}
 
 // TargetArmorFor resolves an encounter's armor: the override when it is
-// set, otherwise the level's preset, otherwise the boss's.
-func TargetArmorFor(level, override int) int {
-	if override > 0 {
-		return override
+// set - nil or not, including a pointer at 0 - otherwise the level's
+// preset, otherwise the boss's.
+func TargetArmorFor(level int, override *int) int {
+	if override != nil {
+		return *override
 	}
 	if armor, ok := TargetArmorByLevel[level]; ok {
 		return armor
@@ -374,6 +381,23 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	case r.Bulk != nil:
 		// A bulk request's count is the precision's, checked by
 		// BulkSpec.validate against the ladder.
+	case r.Weights != nil:
+		// A weights sweep's own Iterations is the engine's per-direction
+		// base count (sim/request.BuildWeights multiplies it by
+		// WeightsIterationsFactor before the engine ever sees it), not a
+		// plain run's choice from the settings bar - so the closed set
+		// below does not apply to it, the same way it does not apply to
+		// a bulk request's count. The browser lane guards its own "fast"
+		// default well under any of the three closed-set numbers
+		// (weights.ts's WEIGHTS_BROWSER_DEFAULT_ITERATIONS, 60) to keep a
+		// weights run's wall clock bounded; refusing that request here
+		// bounced it back as a request-shaped SimResult with .Error set,
+		// which the page used to swallow as a silent "done" (defect A).
+		// Bounded the same way a split part's count already is: positive,
+		// and no larger than the largest run the UI can ever ask for.
+		if r.Iterations <= 0 || r.Iterations > MaxIterations {
+			errs = append(errs, fmt.Errorf("weights.iterations must be between 1 and %d, got %d", MaxIterations, r.Iterations))
+		}
 	case !closedSet:
 		// A split part comes first, ahead of the target-error case,
 		// because a part of a target-error run is both: combine.Split
@@ -789,8 +813,8 @@ func validateEncounterAdditions(e EncounterSpec) []error {
 	if e.TargetLevel != 0 && (e.TargetLevel < MinTargetLevel || e.TargetLevel > MaxTargetLevel) {
 		errs = append(errs, fmt.Errorf("encounter.target_level must be between %d and %d, got %d", MinTargetLevel, MaxTargetLevel, e.TargetLevel))
 	}
-	if e.TargetArmor < 0 {
-		errs = append(errs, fmt.Errorf("encounter.target_armor must not be negative, got %d; 0 means the level's preset", e.TargetArmor))
+	if e.TargetArmor != nil && *e.TargetArmor < 0 {
+		errs = append(errs, fmt.Errorf("encounter.target_armor must not be negative, got %d; omit the field for the level's preset, or send 0 for no armor", *e.TargetArmor))
 	}
 	if e.TargetType != "" && !slices.Contains(TargetTypes, e.TargetType) {
 		errs = append(errs, fmt.Errorf("encounter.target_type must be one of %v, got %q", TargetTypes, e.TargetType))

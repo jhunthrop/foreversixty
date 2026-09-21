@@ -59,3 +59,10 @@ export async function fetchRecentReports(
   }
   return result.data ?? { rows: [] };
 }
+
+/**
+ * How far below the viewport the panel starts loading. It sits under the fold, so waiting
+ * for it to be fully on screen shows every visitor a "Loading" line first; one screen of
+ * lead time means it is usually filled by the time it is scrolled to.
+ */
+export const RECENT_REPORTS_PRELOAD = '900px';

@@ -46,6 +46,23 @@ func TestWeightsValidation(t *testing.T) {
 			r.Bulk = &BulkSpec{Mode: KindGear, Precision: PrecisionNormal, Cap: 10,
 				Candidates: []Candidate{{Slot: "head", ItemID: 1, Origin: OriginBag}}}
 		}, "a request is one kind"},
+		// The browser lane's own guarded default for a "fast"-precision weights
+		// run (weights.ts's WEIGHTS_BROWSER_DEFAULT_ITERATIONS, 60) is not one
+		// of the settings bar's three closed-set counts (500, 3,000, 10,000):
+		// a weights request's Iterations is the engine's own per-direction
+		// base count, not a plain run's choice. Bug repro (defect A): this
+		// used to be refused here with "iterations must be one of [500 3000
+		// 10000], got 60", which the page (bulk-run.ts's pool.weights, before
+		// its own fix) swallowed as a silent, resultless "done".
+		{"the browser lane's guarded fast default (60 iterations)", func(r *SimRequest) {
+			r.Iterations = 60
+		}, ""},
+		{"a weights request with zero iterations", func(r *SimRequest) {
+			r.Iterations = 0
+		}, "weights.iterations"},
+		{"a weights request past the largest run the UI can ask for", func(r *SimRequest) {
+			r.Iterations = MaxIterations + 1
+		}, "weights.iterations"},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

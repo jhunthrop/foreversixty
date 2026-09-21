@@ -20,14 +20,19 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
-// sumActorTotals adds up every actor's Total in a damage table - the
+// SumActorTotals adds up every actor's Total in a damage table - the
 // player and every pet - because RaidMetrics.Dps is the RAID's DPS, and
 // a hunter's or warlock's pet damage is folded into it (sim/core adds a
 // pet's dps.Total into its owner's before the raid sums the owners:
 // character.doneIteration -> AddFinalPetMetrics). A duration derived
 // from the player's total alone would under-count for any spec with a
 // pet and the table still would not match the headline.
-func sumActorTotals(actors []summary.Actor) int64 {
+//
+// Exported so sim/combine can apply the same rule to a MERGED table: a
+// browser run's parts are combined by weightSummaries before this ever
+// runs on them, and the merged actor list is exactly the "damage table"
+// a duration must agree with, the same as one part's own.
+func SumActorTotals(actors []summary.Actor) int64 {
 	var total int64
 	for _, a := range actors {
 		total += a.Total
@@ -35,7 +40,7 @@ func sumActorTotals(actors []summary.Actor) int64 {
 	return total
 }
 
-// deriveDurationMS is the fight length that makes the summary's own
+// DeriveDurationMS is the fight length that makes the summary's own
 // total damage, divided by this duration, equal meanDPS - to the
 // precision an integer-millisecond field allows. It is computed from
 // totalDamage, the sum of the summary's already-rounded actor totals,
@@ -54,7 +59,13 @@ func sumActorTotals(actors []summary.Actor) int64 {
 // (logs/engine/summary/roster.go's DPS and activity-% arithmetic, the
 // report's own per-second table), and a zero duration would turn every
 // one of those into a division by zero.
-func deriveDurationMS(totalDamage int64, meanDPS float64, fallbackMS int64) int64 {
+//
+// Exported for the same reason SumActorTotals is: sim/combine must
+// re-derive Summary.DurationMS after it merges several parts' tables
+// and pools their DPS means, because each part's own DurationMS only
+// ever answered that ONE part's own total and own mean, not the
+// combined run's.
+func DeriveDurationMS(totalDamage int64, meanDPS float64, fallbackMS int64) int64 {
 	if totalDamage <= 0 || meanDPS <= 0 {
 		return fallbackMS
 	}

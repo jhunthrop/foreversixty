@@ -16,10 +16,12 @@
   import { codeForCharacterSpec } from '../../../lib/sim/character';
   import { confidenceBand, formatMargin } from '../../../lib/sim/estimate';
   import {
+    anyKeepsSetBonus,
     collapsedComboCount,
     comboKey,
     comboRows,
     deltaLabel,
+    exactTieGroups,
     headlineFor,
     keepsSetBonus,
     planItHref,
@@ -29,6 +31,7 @@
   } from '../../../lib/sim/combos';
   import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
   import { handoffCopy } from '../../../lib/sim/handoff-copy';
+  import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
   import SaveSimForm from './SaveSimForm.svelte';
   import SubstitutionChips from './SubstitutionChips.svelte';
 
@@ -68,6 +71,16 @@
   const collapsed = $derived(collapsedComboCount(result));
   const summary = $derived(slotSummary(result));
   const winner = $derived(winningGear(result));
+
+  /**
+   * dps D24: "Only combinations keeping a 4-piece set bonus" and its checkbox used to show
+   * over every result, including a character with no 4-piece set anywhere in play, where
+   * ticking it can only empty the table. Shown only when the result proves it can matter.
+   */
+  const canKeepSet = $derived(anyKeepsSetBonus(result, items, sets, FOUR_PIECE));
+
+  /** dps D36: rows tied to the decimal on genuinely different items, explained once. */
+  const tieGroups = $derived(exactTieGroups(rows));
 
   const equippedFigure = $derived(Math.round(result.equipped.mean).toLocaleString('en-US'));
   const equippedBand = $derived(formatMargin(confidenceBand(result.equipped)));
@@ -127,14 +140,21 @@
     <span class="text-muted">{bulkCopy.ranAtStages(result.stages)}</span>
   </p>
 
-  <label class="text-muted flex min-h-11 w-fit items-center gap-2 text-[12px]">
-    <input type="checkbox" class="h-5 w-5" data-testid="sim-keep-set" bind:checked={keepSet} />
-    {bulkCopy.keepFourPiece}
-  </label>
+  {#if canKeepSet}
+    <label class="text-muted flex min-h-11 w-fit items-center gap-2 text-[12px]">
+      <input type="checkbox" class="h-5 w-5" data-testid="sim-keep-set" bind:checked={keepSet} />
+      {bulkCopy.keepFourPiece}
+    </label>
+  {/if}
 
   {#if rows.length === 0}
     <p class="text-muted text-[13px]">{bulkCopy.noGain}</p>
   {:else}
+    {#if tieGroups.length > 0}
+      <p class="text-muted text-[12px]" data-testid="sim-exact-ties">
+        {poolQualityCopy.exactTieNote(tieGroups.reduce((total, group) => total + group.length, 0))}
+      </p>
+    {/if}
     <!-- A generic ARIA table, not <ul>/<li>: the grid already carries five columns and
          needs their headers announced (finding 4, fix round 1) -- role="row"/"columnheader"/
          "cell" on plain divs, rather than fighting <ul>'s own implicit list semantics.

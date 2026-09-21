@@ -23,7 +23,7 @@ read_globals = {
 	"C_Container",
 	-- Character
 	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
-	"GetProfessions", "GetProfessionInfo", "GetBuildInfo",
+	"GetProfessions", "GetProfessionInfo", "GetBuildInfo", "GetGuildInfo",
 	-- UI
 	"CreateFrame", "UIParent", "GameTooltip", "StaticPopupDialogs", "ITEM_QUALITY_COLORS",
 	"InterfaceOptions_AddCategory", "Settings",
