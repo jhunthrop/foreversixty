@@ -216,6 +216,9 @@ describe("Window", function()
 			end
 		end
 		assert.are.equal(Prefs.DEFAULTS.window.point, last[1])
+		assert.are.equal(_G.UIParent, last[2])
+		assert.are.equal(Prefs.DEFAULTS.window.point, last[3])
 		assert.are.equal(Prefs.DEFAULTS.window.x, last[4])
+		assert.are.equal(Prefs.DEFAULTS.window.y, last[5])
 	end)
 end)
