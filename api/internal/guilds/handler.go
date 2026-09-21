@@ -3,6 +3,7 @@ package guilds
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"log/slog"
 	"net/http"
@@ -41,6 +42,8 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/guilds/{id}/claim", auth.RequireSession(s.claim))
 	mux.HandleFunc("POST /v1/guilds/{id}/claim/confirm", auth.RequireSession(s.confirmClaim))
 	mux.HandleFunc("POST /v1/guilds/{id}/claim/release", auth.RequireSession(s.releaseClaim))
+	mux.HandleFunc("GET /v1/guilds/{id}/settings", auth.RequireSession(s.getSettings))
+	mux.HandleFunc("PATCH /v1/guilds/{id}/settings", auth.RequireSession(s.patchSettings))
 	accept := httpx.RateLimitPer(inviteAcceptPerHour, time.Hour, trustedProxyHops)
 	mux.Handle("POST /v1/guilds/invite/{token}/accept", accept(auth.RequireSession(s.acceptInvite)))
 }
@@ -61,6 +64,16 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 func guildIDFrom(r *http.Request) (int64, bool) {
 	id, err := strconv.ParseInt(r.PathValue("id"), 10, 64)
 	return id, err == nil && id > 0
+}
+
+// decodeJSON decodes r's body into v, capped at maxJSONBody, answering 400
+// in the envelope on failure. Callers return immediately when it errors.
+func decodeJSON(w http.ResponseWriter, r *http.Request, v any) error {
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxJSONBody)).Decode(v); err != nil {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "body must be JSON", nil)
+		return err
+	}
+	return nil
 }
 
 func (s *Service) claim(w http.ResponseWriter, r *http.Request) {
