@@ -88,28 +88,40 @@ type RosterRow struct {
 }
 
 type HomeView struct {
-	Guild      GuildIdentity `json:"guild"`
-	Reports    []HomeReport  `json:"reports"`
-	NextCursor string        `json:"next_cursor,omitempty"`
-	Roster     []RosterRow   `json:"roster"`
+	Guild      GuildIdentity  `json:"guild"`
+	Claim      ClaimStateView `json:"claim"`
+	Reports    []HomeReport   `json:"reports"`
+	NextCursor string         `json:"next_cursor,omitempty"`
+	Roster     []RosterRow    `json:"roster"`
 }
 
 // HomeReports lists this guild's reports from the trailing week, newest
-// first, keyset-paginated.
-func (s *Store) HomeReports(ctx context.Context, guildID int64, before *HomeCursor) ([]HomeReport, error) {
+// first, keyset-paginated. A member sees their own report regardless of
+// visibility, every public report regardless of their own verification,
+// and a guild-visible report only once they are verified - never a
+// private or unlisted row that is not their own, even once verified: an
+// unlisted report is discoverable by every member on this page, which
+// defeats its whole point (2026-09-21 security review response, spec
+// §3.3's amendment).
+func (s *Store) HomeReports(ctx context.Context, guildID, userID int64, verified bool, before *HomeCursor) ([]HomeReport, error) {
 	since := time.Now().Add(-homeReportsWindow)
 	const columns = `r.id, r.title, r.created_at,
 	       (select count(*) from fights f where f.report_id = r.id),
 	       (select count(*) from fights f where f.report_id = r.id and f.kill)`
+	visibility := `(r.owner_id = $3 or r.visibility = 'public')`
+	if verified {
+		visibility = `(r.owner_id = $3 or r.visibility = 'public' or r.visibility = 'guild')`
+	}
 	query := `select ` + columns + ` from reports r
-		where r.guild_id = $1 and r.created_at >= $2
-		order by r.created_at desc, r.id desc limit $3`
-	args := []any{guildID, since, HomeReportsPerPage}
+		where r.guild_id = $1 and r.created_at >= $2 and ` + visibility + `
+		order by r.created_at desc, r.id desc limit $4`
+	args := []any{guildID, since, userID, HomeReportsPerPage}
 	if before != nil {
 		query = `select ` + columns + ` from reports r
-			where r.guild_id = $1 and r.created_at >= $2 and (r.created_at, r.id) < ($3, $4)
-			order by r.created_at desc, r.id desc limit $5`
-		args = []any{guildID, since, before.CreatedAt, before.ID, HomeReportsPerPage}
+			where r.guild_id = $1 and r.created_at >= $2 and ` + visibility + `
+			  and (r.created_at, r.id) < ($4, $5)
+			order by r.created_at desc, r.id desc limit $6`
+		args = []any{guildID, since, userID, before.CreatedAt, before.ID, HomeReportsPerPage}
 	}
 	rows, err := s.Pool.Query(ctx, query, args...)
 	if err != nil {
@@ -167,14 +179,14 @@ func (s *Store) HomeRoster(ctx context.Context, guildID int64) ([]RosterRow, err
 	return out, rows.Err()
 }
 
-// Home assembles the signed-in guild home shell: identity, this week's
-// reports, and the roster.
-func (s *Store) Home(ctx context.Context, guildID int64, before *HomeCursor) (HomeView, error) {
+// Home assembles the signed-in guild home shell: identity, claim state,
+// this week's reports, and the roster.
+func (s *Store) Home(ctx context.Context, guildID, userID int64, verified bool, before *HomeCursor) (HomeView, error) {
 	g, err := s.getGuild(ctx, guildID)
 	if err != nil {
 		return HomeView{}, err
 	}
-	reports, err := s.HomeReports(ctx, guildID, before)
+	reports, err := s.HomeReports(ctx, guildID, userID, verified, before)
 	if err != nil {
 		return HomeView{}, err
 	}
@@ -184,6 +196,7 @@ func (s *Store) Home(ctx context.Context, guildID int64, before *HomeCursor) (Ho
 	}
 	view := HomeView{
 		Guild:   GuildIdentity{ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name},
+		Claim:   claimState(g, time.Now()),
 		Reports: reports, Roster: roster,
 	}
 	if len(reports) == HomeReportsPerPage {
@@ -213,6 +226,11 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "you are not a member of that guild", nil)
 		return
 	}
+	_, verified, err := s.Accounts.GuildRank(r.Context(), guildID, actor.UserID)
+	if err != nil {
+		s.fail(w, r, "home", err, "could not load that guild's home just now")
+		return
+	}
 	var before *HomeCursor
 	if v := r.URL.Query().Get("cursor"); v != "" {
 		c, ok := decodeHomeCursor(v)
@@ -223,7 +241,7 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 		}
 		before = &c
 	}
-	view, err := s.Store.Home(r.Context(), guildID, before)
+	view, err := s.Store.Home(r.Context(), guildID, actor.UserID, verified, before)
 	if errors.Is(err, ErrNotFound) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
 		return

@@ -148,3 +148,112 @@ func TestHomeReportsListsOnlyTheTrailingWeek(t *testing.T) {
 		t.Fatalf("reports = %+v, want only the 2-day-old one", view.Reports)
 	}
 }
+
+func TestHomeReportsHidesPrivateAndUnlistedFromOthers(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	owner := seedUser(t, h.pool, "home-visibility-owner@example.com")
+	seedCharacter(t, h.pool, gid, owner, "us/hardcore/homevisibilityowner", "member", true)
+	viewer := seedUser(t, h.pool, "home-visibility-viewer@example.com")
+	seedCharacter(t, h.pool, gid, viewer, "us/hardcore/homevisibilityviewer", "member", true)
+	// GuildRank (which the home handler calls to determine `verified`)
+	// reads guild_members, not guild_characters; seedCharacter alone
+	// leaves guild_members empty, so the viewer would read as
+	// unverified without this.
+	recomputeMembership(t, h.pool, gid, viewer)
+
+	for _, r := range []struct{ id, visibility string }{
+		{"homevispublic", "public"}, {"homevisguild", "guild"},
+		{"homevisprivate", "private"}, {"homevisunlisted", "unlisted"},
+	} {
+		if _, err := h.pool.Exec(ctx,
+			`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+			 values ($1, $2, $3, $4, 'complete', now())`, r.id, owner, gid, r.visibility); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	h.actor = auth.Actor{UserID: viewer, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	var view HomeView
+	h.data(res, &view)
+	seen := map[string]bool{}
+	for _, r := range view.Reports {
+		seen[r.ID] = true
+	}
+	if !seen["homevispublic"] || !seen["homevisguild"] {
+		t.Fatalf("a verified viewer should see public and guild reports: %+v", view.Reports)
+	}
+	if seen["homevisprivate"] || seen["homevisunlisted"] {
+		t.Fatalf("a verified viewer who is not the owner must never see private or unlisted reports: %+v", view.Reports)
+	}
+
+	h.actor = auth.Actor{UserID: owner, Role: "user", Method: "session"}
+	res = h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	h.data(res, &view)
+	seen = map[string]bool{}
+	for _, r := range view.Reports {
+		seen[r.ID] = true
+	}
+	for _, id := range []string{"homevispublic", "homevisguild", "homevisprivate", "homevisunlisted"} {
+		if !seen[id] {
+			t.Fatalf("the owner should see every one of their own reports regardless of visibility: %+v", view.Reports)
+		}
+	}
+}
+
+func TestHomeReportsHidesGuildVisibilityFromAnUnverifiedMember(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	owner := seedUser(t, h.pool, "home-unverified-owner@example.com")
+	seedCharacter(t, h.pool, gid, owner, "us/hardcore/homeunverifiedowner", "member", true)
+	unverified := seedUser(t, h.pool, "home-unverified-viewer@example.com")
+	seedCharacter(t, h.pool, gid, unverified, "us/hardcore/homeunverifiedviewer", "member", false)
+
+	for _, r := range []struct{ id, visibility string }{
+		{"unverifiedpublic", "public"}, {"unverifiedguild", "guild"},
+	} {
+		if _, err := h.pool.Exec(ctx,
+			`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+			 values ($1, $2, $3, $4, 'complete', now())`, r.id, owner, gid, r.visibility); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	h.actor = auth.Actor{UserID: unverified, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	var view HomeView
+	h.data(res, &view)
+	seen := map[string]bool{}
+	for _, r := range view.Reports {
+		seen[r.ID] = true
+	}
+	if !seen["unverifiedpublic"] {
+		t.Fatal("an unverified member should still see public reports")
+	}
+	if seen["unverifiedguild"] {
+		t.Fatal("an unverified member must not see guild-visibility reports")
+	}
+}
+
+func TestHomeExposesClaimState(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	member := seedUser(t, h.pool, "home-claim-state@example.com")
+	seedCharacter(t, h.pool, gid, member, "us/hardcore/homeclaimstate", "member", true)
+	claimant := seedUser(t, h.pool, "home-claim-state-claimant@example.com")
+	seedCharacter(t, h.pool, gid, claimant, "us/hardcore/homeclaimstateclaimant", "leader", true)
+	if _, err := h.pool.Exec(ctx, `update guilds set claimed_by = $1 where id = $2`, claimant, gid); err != nil {
+		t.Fatal(err)
+	}
+	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	var view HomeView
+	h.data(res, &view)
+	if view.Claim.State != "claimed" {
+		t.Fatalf("claim.state = %q, want claimed", view.Claim.State)
+	}
+}
