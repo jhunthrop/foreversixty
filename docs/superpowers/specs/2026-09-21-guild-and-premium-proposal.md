@@ -197,7 +197,30 @@ the addon's saved variables), so this is the same mechanism with a bigger file.
   it does on the modern client, and the tooltip and group-finder hooks available at
   Interface 16001.
 
-### 3.6 Consent
+### 3.6 Guild performance in game (owner's direction, 2026-09-21)
+
+Two channels, because the nightly data addon is a public file anyone can open:
+
+- **Public, in the nightly data addon, free:** each guild's progression and its place on
+  the speed and execution boards (public on the site already), and every member's public
+  rating, which the player table already carries. The in-game guild roster shows a score
+  beside each name and sorts by it. Works with or without the desktop app.
+- **Private, through the desktop app only, guild plan:** an **officer pack**. The companion
+  is signed in as the user; for an officer of a claimed guild on the guild plan it downloads
+  that guild's pack (ratings from guild-only and private logs, attendance, last raid night's
+  sheet, tonight's readiness board, assignments) over an authenticated request and writes
+  it to a file on that machine only, the way the build inbox already works. Members'
+  consent settings (3.7) are applied on the server before the pack is built, so hidden gear
+  or bags are never in it. It never ships through CurseForge or Wago.
+- **In game:** a Guild tab in the addon window: roster sorted by overall rating with the
+  six parts on hover, last raid night's sheet, the readiness board, and a one-click summary
+  to officer chat. Everything is date-stamped; a fresh pack shows after a `/reload`.
+- **Honest limit, stated on the settings page:** the pack is a file on the officer's
+  computer, readable by anyone with access to that computer, like any addon's saved data.
+- **Order:** after the rating engine, guild membership and the companion's snapshot updater
+  exist; it reuses all three.
+
+### 3.7 Consent
 
 A raider's gear and bags are theirs. A member chooses what officers can see: **roster only**
 (name, class, spec), **gear** (default), or **gear and bags** (needed for consumable
@@ -254,7 +277,7 @@ a premium perk only if ads exist).
 
 ### 4.3 Sequence
 
-1. **Guild membership and the free guild home** (3.1, 3.2, 3.6). No payments needed; makes
+1. **Guild membership and the free guild home** (3.1, 3.2, 3.7). No payments needed; makes
    `guild` visibility real; gives every later piece its audience. About one lane.
 2. **Entitlements + payments + the premium page** with the player plan, gating what is
    already built (server sims) plus retention. About one lane, API-heavy, security review
