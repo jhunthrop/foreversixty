@@ -23,11 +23,16 @@
 // untouched. A key the grammar DOES recognise but whose id the build's table does not
 // carry -- the names file is still loading, or a build that never published this id --
 // is never returned raw either (dps-minmaxer review round 2, D48: a saved run rendered
-// "spell:20662" as an ability name): it falls back to humaniseKey (humanise.ts), so the
-// screen always reads English, never a wire key.
+// "spell:20662" as an ability name): it used to fall back to humaniseKey's "Spell 20662"/
+// "Item 20662", which read as English but still repeated the raw wire number verbatim --
+// 2026-09-21 result-page review round 2 found this itself was still an id reaching a
+// player, just spelled out. unresolvedActionName's "An unnamed spell"/"An unnamed item"
+// is the fallback now: real prose with no number in it at all. `humaniseKey` itself is
+// untouched (DropResults.svelte's own "kind:id" keys are not spell/item ids and still want
+// its generic behaviour).
 import { dataUrl, fetchJson, loadOptional } from '../planner/load';
 import { attackHandName, simCopy } from './copy';
-import { humanise, humaniseKey } from './humanise';
+import { humanise } from './humanise';
 
 /**
  * The first row id sim/adapter allocates for itself (its `syntheticBase`). Every client
@@ -114,9 +119,23 @@ export function attackHand(tag: number): AttackHand | null {
 }
 
 /**
+ * The words a truly-unresolvable spell or item id reads as, never the number itself
+ * (2026-09-21 result-page review round 2, Defect 2 continued): production still showed a
+ * handful of ids the shared table (simnames/_shared.json, scripts/sync-data.mjs) has no
+ * row for -- an engine-internal proc with no client spell of its own (spellconst omits it,
+ * spells.json has never heard of it either) is the one kind that can still reach here. A
+ * name this unlikely to exist is still better spelled out in words than as a number a
+ * player has to go look up.
+ */
+function unresolvedActionName(kind: 'spell' | 'item'): string {
+  return kind === 'spell' ? simCopy.unnamedSpell : simCopy.unnamedItem;
+}
+
+/**
  * The name a player reads. `names` is null until the build's file has loaded, and an id the
  * build does not carry -- a racial from a class file we did not fetch, a proc from an item
- * the player does not own in this build -- keeps its key rather than becoming "Unknown".
+ * the player does not own in this build -- reads as `unresolvedActionName`'s own prose
+ * rather than becoming "Unknown" or repeating the raw id.
  */
 export function resolveActionName(key: string, names: ActionNames | null): string {
   const parsed = parseActionKey(key);
@@ -130,7 +149,7 @@ export function resolveActionName(key: string, names: ActionNames | null): strin
     return humanise(parsed.label) + simCopy.actionVariant(parsed.tag, parsed.rank);
   }
   const table = parsed.kind === 'spell' ? names?.spell : names?.item;
-  const name = table?.[parsed.label] ?? humaniseKey(`${parsed.kind}:${parsed.label}`);
+  const name = table?.[parsed.label] ?? unresolvedActionName(parsed.kind);
   return name + simCopy.actionVariant(parsed.tag, parsed.rank);
 }
 
