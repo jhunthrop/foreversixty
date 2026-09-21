@@ -1,6 +1,5 @@
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
 import { describe, expect, it } from 'vitest';
-import { addonCopy } from '../lib/addon/copy';
 import Footer from './Footer.astro';
 
 describe('Footer', () => {
@@ -12,12 +11,17 @@ describe('Footer', () => {
     );
   });
 
-  it('links to About, Sources, Changelog, the addon page, Contribute', async () => {
+  it('links to About, Sources, Changelog, Contribute', async () => {
     const container = await AstroContainer.create();
     const html = await container.renderToString(Footer);
-    for (const label of ['About', 'Sources', 'Changelog', addonCopy.pageTitle, 'Contribute']) {
+    for (const label of ['About', 'Sources', 'Changelog', 'Contribute']) {
       expect(html).toContain(`>${label}<`);
     }
-    expect(html).toContain('href="/addon"');
+  });
+
+  it('no longer links to the addon page (promoted to the primary nav)', async () => {
+    const container = await AstroContainer.create();
+    const html = await container.renderToString(Footer);
+    expect(html).not.toContain('href="/addon"');
   });
 });
