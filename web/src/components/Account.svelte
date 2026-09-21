@@ -25,6 +25,7 @@
   import { characterHref, parseCharacterPath, rulesetLabel } from '../lib/characters';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
+  import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import MyReports from './MyReports.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
 
@@ -230,6 +231,7 @@
   </div>
 {:else}
   <div class="flex flex-col gap-8" data-testid="account">
+    <CurrentCharacterBar />
     {#if status === 'loading'}
       <p class="text-muted text-[14px]">Loading your account.</p>
     {:else if !signedIn}

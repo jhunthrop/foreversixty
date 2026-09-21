@@ -107,7 +107,7 @@
         {/if}
         <button
           type="button"
-          class={`${rowLink} text-muted md:ml-auto`}
+          class={`${rowLink} text-muted min-w-11 justify-center md:ml-auto md:min-w-0 md:justify-start`}
           onclick={onforget}
           data-testid="current-character-forget"
         >

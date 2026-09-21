@@ -3,6 +3,7 @@
      have been seen in at pull. The page exists for characters who have never signed in:
      a public report is enough to have one, which is the spec's position. -->
 <script lang="ts">
+  import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import { parseCharacterPath, rulesetLabel, type CharacterPath } from '../lib/characters';
   import { classColorVar, formatAmount, percentileToken, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchCharacter, type CharacterPage } from '../lib/rankings/api';
@@ -79,6 +80,7 @@
   <p class="text-[14px]" role="alert" data-testid="character-error">{error}</p>
 {:else if data !== null && resolved !== null}
   <div class="flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
+    <CurrentCharacterBar />
     <header class="flex flex-col gap-1">
       <h1 class="section-title text-[18px]" style={`color: ${classColorVar(data.character.class)}`}>
         {data.character.name}
