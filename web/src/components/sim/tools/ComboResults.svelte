@@ -17,6 +17,7 @@
   import { confidenceBand, formatMargin } from '../../../lib/sim/estimate';
   import {
     anyKeepsSetBonus,
+    closestOverlappingPair,
     collapsedComboCount,
     comboKey,
     comboRows,
@@ -25,6 +26,7 @@
     headlineFor,
     keepsSetBonus,
     planItHref,
+    rowName,
     signedGainLabel,
     slotSummary,
     winningGear,
@@ -81,6 +83,21 @@
 
   /** dps D36: rows tied to the decimal on genuinely different items, explained once. */
   const tieGroups = $derived(exactTieGroups(rows));
+
+  /**
+   * newcomer round 4 / dps D25-pattern: "too close to separate" shown only when it is
+   * actually true of an adjacent pair in the ranking, named to that pair.
+   */
+  const overlap = $derived(closestOverlappingPair(rows));
+
+  /**
+   * newcomer round 4 (review.md:83-110): the same pasted build reads a different DPS in
+   * the editor's own preview (that build's own gear) and in this table (the CURRENT
+   * character's gear, only the talents substituted) -- both correct, never explained.
+   * `bulkCopy.talentsIntro` says this once at the top of the page; this repeats it beside
+   * the numbers themselves, since that is where the disagreement is actually read.
+   */
+  const isTalentsMode = $derived(result.request.bulk?.mode === 'talents');
 
   const equippedFigure = $derived(Math.round(result.equipped.mean).toLocaleString('en-US'));
   const equippedBand = $derived(formatMargin(confidenceBand(result.equipped)));
@@ -139,6 +156,12 @@
     {bulkCopy.resultsEquipped}: {equippedFigure} ± {equippedBand}
     <span class="text-muted">{bulkCopy.ranAtStages(result.stages)}</span>
   </p>
+
+  {#if isTalentsMode}
+    <p class="text-muted text-[12px]" data-testid="sim-talents-gear-locked">
+      {poolQualityCopy.talentsGearLockedNote}
+    </p>
+  {/if}
 
   {#if canKeepSet}
     <label class="text-muted flex min-h-11 w-fit items-center gap-2 text-[12px]">
@@ -248,9 +271,15 @@
         </div>
       {/each}
     </div>
-    <!-- Fix round 1, minor 1: nothing to "tell apart" with exactly one finalist. -->
-    {#if rows.length > 1}
-      <p class="text-muted text-[12px]">{bulkCopy.withinErrorNote}</p>
+    <!-- Fix round 1, minor 1: nothing to "tell apart" with exactly one finalist.
+         newcomer round 4 / dps D25-pattern: shown only when `closestOverlappingPair`
+         proves an adjacent pair actually overlaps -- a −37.4% gap at a ±1.5/±1.6 margin
+         used to print this unconditionally, which is a false alarm on a clearly separable
+         result. Named to the pair it is true of when it fires. -->
+    {#if overlap !== null}
+      <p class="text-muted text-[12px]" data-testid="sim-within-error-note">
+        {poolQualityCopy.withinErrorNoteNaming(rowName(overlap.a), rowName(overlap.b))}
+      </p>
     {/if}
     <!-- Final whole-branch review, Important 2: the run bar's own count (store.combinations)
          is the engine's simCount over the submitted request, before comboRows' de-dupe

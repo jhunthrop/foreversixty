@@ -14,6 +14,7 @@
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import { BULK_PRECISIONS, LOW_CORE_CAP, type Precision } from '../../../lib/sim/bulk-types';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
+  import { poolQualityCopy } from '../../../lib/sim/pool-quality-copy';
   import { isSimulatedSpec, specDisplayName } from '../../../lib/sim/spec-label';
   import { weightsEngineIterations, weightsIterationsFor } from '../../../lib/sim/weights';
   import PrecisionSelect from '../PrecisionSelect.svelte';
@@ -143,7 +144,8 @@
         store.character === null ||
         store.phase === 'loading-character' ||
         (nothingToRun && !running) ||
-        (notSimulated && !running)}
+        (notSimulated && !running) ||
+        (store.pendingCustomBuild && !running)}
       onclick={() => (running ? store.stop() : void store.run())}
     >
       {#if running}{bulkCopy.stopBulk}{:else if store.result !== null}{bulkCopy.runBulkAgain}{:else}{bulkCopy.runBulk}{/if}
@@ -163,6 +165,15 @@
   {#if notSimulated}
     <p class="text-strong text-[13px]" data-testid="sim-run-not-simulated">
       {simCopy.runNotSimulated(specDisplayName(store.character?.spec ?? ''))}
+    </p>
+  {/if}
+
+  {#if store.pendingCustomBuild}
+    <!-- newcomer round 4 (review.md:83-110): a valid pasted build sitting in TalentCandidates'
+         own editor, not yet added -- blocked rather than added automatically, so RUN never
+         changes what is being compared without the player asking it to. -->
+    <p class="text-strong text-[13px]" data-testid="sim-run-pending-custom">
+      {poolQualityCopy.talentsPendingCustomBuild}
     </p>
   {/if}
 

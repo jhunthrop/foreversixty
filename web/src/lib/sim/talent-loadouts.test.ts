@@ -1,9 +1,14 @@
 // web/src/lib/sim/talent-loadouts.test.ts
 import { describe, expect, it } from 'vitest';
+import talentsFixture from '../../fixtures/planner/talents/warrior.json';
+import { indexTalents } from '../planner/rules';
+import type { TalentFile } from '../planner/types';
 import { bulkCopy } from './copy';
 import { poolQualityCopy } from './pool-quality-copy';
-import { customLoadouts, savedBuildsMessage } from './talent-loadouts';
+import { customLoadouts, hasUnaddedBuild, savedBuildsMessage } from './talent-loadouts';
 import type { TalentLoadout } from './types';
+
+const index = indexTalents(talentsFixture as unknown as TalentFile);
 
 function loadout(name: string): TalentLoadout {
   return { name, talents: `talents-for-${name}` };
@@ -41,6 +46,34 @@ describe('customLoadouts', () => {
     const first = loadout('Build 1');
     const second = loadout('Build 2');
     expect(customLoadouts([own, first, second], own, [[], []])).toEqual([first, second]);
+  });
+});
+
+describe('hasUnaddedBuild', () => {
+  const VALID_CODE = 'FS1:1:warrior:orc:1/0/0:';
+
+  /**
+   * newcomer round 4, review.md:83-110: two buttons both read "Add a build" -- the outer
+   * toggle (sim-loadout-add) and the inner accept (sim-loadout-accept) -- and a player who
+   * pastes into IMPORT FROM ADDON, then clicks RUN without ever finding the second button,
+   * gets a silent one-row table with no explanation. `hasUnaddedBuild` is the trap's own
+   * precondition: a decodable build sitting in the editor's `customCode` that `addCustom`
+   * has not yet turned into a picked loadout.
+   */
+  it('is true once the editor holds a build addCustom could actually accept', () => {
+    expect(hasUnaddedBuild(VALID_CODE, index)).toBe(true);
+  });
+
+  it('is false with nothing pasted', () => {
+    expect(hasUnaddedBuild('', index)).toBe(false);
+  });
+
+  it('is false for a string that does not decode', () => {
+    expect(hasUnaddedBuild('not a build code', index)).toBe(false);
+  });
+
+  it('is false while talents have not loaded yet -- addCustom itself would no-op', () => {
+    expect(hasUnaddedBuild(VALID_CODE, null)).toBe(false);
   });
 });
 
