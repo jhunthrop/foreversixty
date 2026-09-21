@@ -29,19 +29,22 @@ const BUDGETS = [
   { file: 'dist/sim-tools-island.js', limitBytes: 70 * 1024 },
 ];
 
-// Rankings, Character and Guild are ordinary `client:load` Astro islands, not standalone
-// Vite builds, so Astro emits them under dist/_astro/ with a content hash in the filename
-// (e.g. Rankings.xBviRjNL.js) rather than the fixed name the two budgets above match on.
-// None of their pages are in lighthouserc.json's collect.url, so nothing else in CI catches
-// a regression here. 16 KB gzipped is roughly 3x the heaviest of the three today (Rankings,
-// ~4.1-4.8 KB depending on gzip level) -- enough headroom that legitimate UI growth will not
-// flap the build, tight enough that an accidental heavy import (a chart library, a duplicated
-// data module) still trips it well before it could threaten a Lighthouse score no test here
-// measures directly.
+// Rankings, Character and GuildShell are ordinary `client:load` Astro islands, not
+// standalone Vite builds, so Astro emits them under dist/_astro/ with a content hash in
+// the filename (e.g. Rankings.xBviRjNL.js) rather than the fixed name the two budgets
+// above match on. GuildShell is the client-side router guild.astro and
+// guild/[...path].astro mount (Task 11): it statically imports Guild, GuildClaim,
+// GuildSettings and GuildJoin, so its chunk carries all four views' weight, not just the
+// one plain-guild page's -- still ~7 KB gzipped today, comfortably under budget. None of
+// their pages are in lighthouserc.json's collect.url, so nothing else in CI catches a
+// regression here. 16 KB gzipped is enough headroom that legitimate UI growth will not
+// flap the build, tight enough that an accidental heavy import (a chart library, a
+// duplicated data module) still trips it well before it could threaten a Lighthouse score
+// no test here measures directly.
 const PAGE_ISLAND_BUDGETS = [
   { component: 'Rankings', limitBytes: 16 * 1024 },
   { component: 'Character', limitBytes: 16 * 1024 },
-  { component: 'Guild', limitBytes: 16 * 1024 },
+  { component: 'GuildShell', limitBytes: 16 * 1024 },
 ];
 
 /**

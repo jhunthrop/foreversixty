@@ -133,6 +133,69 @@ export function parseGuildPath(pathname: string): CharacterPath | null {
 }
 
 /**
+ * A `/guild/<region>/<ruleset>/<slug>/claim` or `.../settings` path — one segment longer
+ * than parseGuildPath's, with a fixed literal suffix rather than a second wildcard, so a
+ * mistyped fifth segment refuses cleanly instead of being read as part of the slug.
+ */
+function parseGuildSuffixPath(pathname: string, suffix: 'claim' | 'settings'): CharacterPath | null {
+  const parts = pathname
+    .replace(/\/+$/, '')
+    .split('/')
+    .filter((part) => part !== '');
+  if (parts.length !== 5 || parts[0] !== 'guild' || parts[4] !== suffix) return null;
+  const [, region, ruleset, slug] = parts;
+  if (!isRegion(region) || !isRuleset(ruleset) || !isCharacterSlug(slug)) return null;
+  return { region, ruleset, slug };
+}
+
+export function parseGuildClaimPath(pathname: string): CharacterPath | null {
+  return parseGuildSuffixPath(pathname, 'claim');
+}
+
+export function parseGuildSettingsPath(pathname: string): CharacterPath | null {
+  return parseGuildSuffixPath(pathname, 'settings');
+}
+
+/** Longer than any real invite token (a 32-byte value, base64url or hex is well under this). */
+const MAX_TOKEN_LENGTH = 128;
+/** Same reasoning as UNSAFE_IN_SLUG: a token is opaque, so nothing that could traverse or
+ *  re-target a URL is allowed through unescaped. Checked against the *decoded* value below,
+ *  the same order isCharacterSlug uses, so a percent-encoded escape (`%2e%2e`, `%2f`) is
+ *  refused as the `..` or `/` it decodes to rather than passing through unblocked. */
+const UNSAFE_IN_TOKEN = /[/\\.?#\s]/;
+
+export function parseGuildInviteToken(pathname: string): string | null {
+  const parts = pathname
+    .replace(/\/+$/, '')
+    .split('/')
+    .filter((part) => part !== '');
+  if (parts.length !== 3 || parts[0] !== 'guild' || parts[1] !== 'invite') return null;
+  const token = parts[2];
+  if (token.length > MAX_TOKEN_LENGTH) return null;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(token);
+  } catch {
+    // A malformed escape. Nothing legitimate produces one, and it is not worth guessing at.
+    return null;
+  }
+  if (decoded.length > MAX_TOKEN_LENGTH || UNSAFE_IN_TOKEN.test(decoded)) return null;
+  return token;
+}
+
+export function guildClaimHref(region: string, ruleset: string, name: string): string {
+  return `${guildHref(region, ruleset, name)}/claim`;
+}
+
+export function guildSettingsHref(region: string, ruleset: string, name: string): string {
+  return `${guildHref(region, ruleset, name)}/settings`;
+}
+
+export function guildInviteHref(token: string): string {
+  return `/guild/invite/${encodeURIComponent(token)}`;
+}
+
+/**
  * A ranking row's `player.key` (contract: `GET /v1/rankings` and `GET /v1/rankings/guilds`)
  * is `<region>/<ruleset>/<name-slug>` -- exactly `parseCharacterPath`'s last three segments
  * -- so this reuses that parser's validation rather than trusting the key's shape and

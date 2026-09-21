@@ -3,7 +3,7 @@
 // Fixture-only, like the report and rankings fixture pages: one guild Playwright can reach
 // without a Worker. A real build prerenders none.
 import Base from '../../layouts/Base.astro';
-import Guild from '../../components/Guild.svelte';
+import GuildShell from '../../components/GuildShell.svelte';
 import { fixtureGuildPaths } from '../../lib/report/shell-paths';
 
 export function getStaticPaths() {
@@ -24,6 +24,6 @@ const { path } = Astro.params;
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
-    <Guild client:load />
+    <GuildShell client:load />
   </main>
 </Base>

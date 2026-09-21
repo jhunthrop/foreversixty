@@ -8,6 +8,7 @@
      `1fr` brand column stretch, wrapping the wordmark to two lines and back on hydration). -->
 <script lang="ts">
   import { fetchMeOnce, type Me } from '../lib/account/api';
+  import { guildHref } from '../lib/characters';
 
   let me = $state<Me | null>(null);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
@@ -42,6 +43,18 @@
     <a href="/account" class="text-nav hover:text-strong inline-flex min-h-11 items-center md:min-h-0">
       {displayName}
     </a>
+    {#if me !== null && me.guilds.length > 0}
+      <!-- The API's GET /v1/me now orders guilds by most-recently-active membership
+           (spec section 2.6's ORDER BY change), so [0] is the right one with no further
+           sorting here. -->
+      <a
+        href={guildHref(me.guilds[0].region, me.guilds[0].ruleset, me.guilds[0].name)}
+        class="text-nav hover:text-strong inline-flex min-h-11 items-center md:min-h-0"
+        data-testid="session-my-guild"
+      >
+        My guild
+      </a>
+    {/if}
   {:else}
     <a
       href="/login"

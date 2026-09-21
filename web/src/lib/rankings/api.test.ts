@@ -97,7 +97,7 @@ describe('character and guild', () => {
   it('reads a guild the same way', async () => {
     const upstream = vi.fn<GlobalFetch>(async () =>
       envelope({
-        guild: { name: 'The Last Watch', region: 'eu', ruleset: 'normal' },
+        guild: { id: 501, name: 'The Last Watch', region: 'eu', ruleset: 'normal' },
         progression: [],
         roster_best: [],
         reports: [],

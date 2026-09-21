@@ -12,6 +12,7 @@ import FeedRow from '../components/FeedRow.astro';
 import ClassTile from '../components/ClassTile.astro';
 import SearchBox from '../components/SearchBox.svelte';
 import SubscribeBox from '../components/SubscribeBox.svelte';
+import HomeGuildLink from '../components/HomeGuildLink.svelte';
 import dates from '../data/dates.json';
 import toolsData from '../data/tools.json';
 import unknowns from '../data/unknowns.json';
@@ -76,6 +77,7 @@ const popular = [
                 {i < popular.length - 1 && <span class="text-muted">·</span>}
               </>
             ))}
+            <HomeGuildLink client:visible />
           </p>
         </div>
         <div class="col-span-12 lg:col-span-5">

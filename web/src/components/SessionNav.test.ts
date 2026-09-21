@@ -20,4 +20,9 @@ describe('SessionNav', () => {
     expect(body).not.toContain('href="/login"');
     expect(body).not.toContain('href="/account"');
   });
+
+  it('renders no "My guild" link before the session resolves (nothing to reserve space for)', () => {
+    const { body } = render(SessionNav);
+    expect(body).not.toContain('data-testid="session-my-guild"');
+  });
 });
