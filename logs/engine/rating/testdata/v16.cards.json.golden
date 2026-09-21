@@ -1,0 +1,230 @@
+{
+  "Player-4184-000000A1": {
+    "Overall": 0,
+    "OverallUncapped": 0,
+    "OverallCapped": false,
+    "Components": [
+      {
+        "Name": "output",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "wipe",
+        "Moments": null
+      },
+      {
+        "Name": "survival",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "no_mechanics_table",
+        "Moments": null
+      },
+      {
+        "Name": "mechanics",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "no_mechanics_table",
+        "Moments": null
+      },
+      {
+        "Name": "utility",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "no_utility_table",
+        "Moments": null
+      },
+      {
+        "Name": "preparation",
+        "Score": 0,
+        "Weight": 66.67,
+        "Basis": "absolute",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": false,
+        "Reason": "",
+        "Moments": null
+      },
+      {
+        "Name": "activity",
+        "Score": 0,
+        "Weight": 33.33,
+        "Basis": "absolute",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": false,
+        "Reason": "",
+        "Moments": null
+      }
+    ],
+    "Basis": "absolute",
+    "ModelVersion": "rating-2026-09-21",
+    "KillTimeBand": ""
+  },
+  "Player-4184-000000A2": {
+    "Overall": 28.13,
+    "OverallUncapped": 28.13,
+    "OverallCapped": false,
+    "Components": [
+      {
+        "Name": "output",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "wipe",
+        "Moments": null
+      },
+      {
+        "Name": "survival",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "no_mechanics_table",
+        "Moments": null
+      },
+      {
+        "Name": "mechanics",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "no_mechanics_table",
+        "Moments": null
+      },
+      {
+        "Name": "utility",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "no_utility_table",
+        "Moments": null
+      },
+      {
+        "Name": "preparation",
+        "Score": 0,
+        "Weight": 50,
+        "Basis": "absolute",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": false,
+        "Reason": "",
+        "Moments": null
+      },
+      {
+        "Name": "activity",
+        "Score": 56.25,
+        "Weight": 50,
+        "Basis": "absolute",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": false,
+        "Reason": "",
+        "Moments": null
+      }
+    ],
+    "Basis": "absolute",
+    "ModelVersion": "rating-2026-09-21",
+    "KillTimeBand": ""
+  },
+  "Player-4184-000000A3": {
+    "Overall": 7.81,
+    "OverallUncapped": 7.81,
+    "OverallCapped": false,
+    "Components": [
+      {
+        "Name": "output",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "wipe",
+        "Moments": null
+      },
+      {
+        "Name": "survival",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "no_mechanics_table",
+        "Moments": null
+      },
+      {
+        "Name": "mechanics",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "no_mechanics_table",
+        "Moments": null
+      },
+      {
+        "Name": "utility",
+        "Score": 0,
+        "Weight": 0,
+        "Basis": "",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": true,
+        "Reason": "no_utility_table",
+        "Moments": null
+      },
+      {
+        "Name": "preparation",
+        "Score": 0,
+        "Weight": 66.67,
+        "Basis": "absolute",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": false,
+        "Reason": "",
+        "Moments": null
+      },
+      {
+        "Name": "activity",
+        "Score": 23.44,
+        "Weight": 33.33,
+        "Basis": "absolute",
+        "Percentile": null,
+        "BracketN": 0,
+        "Excluded": false,
+        "Reason": "",
+        "Moments": null
+      }
+    ],
+    "Basis": "absolute",
+    "ModelVersion": "rating-2026-09-21",
+    "KillTimeBand": ""
+  }
+}
