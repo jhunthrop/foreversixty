@@ -76,7 +76,7 @@ import {
   type LoadContext,
   type SourceResult,
 } from './sources';
-import type { SimResult, SourceKind, SpecFidelity } from './types';
+import type { SimResult, SpecFidelity } from './types';
 import { weightStatsFor } from './weights';
 import { createPool, type SimPool } from './worker';
 
@@ -123,8 +123,6 @@ export interface BulkStoreInit {
   pool?: SimPool;
   /** Injected by tests; production reads `navigator.hardwareConcurrency`. */
   hardwareConcurrency?: number;
-  source?: SourceKind | '';
-  ref?: string;
   serverPollMs?: number;
   /** Injected by tests; production uses `MAX_SERVER_POLLS`. */
   serverPollLimit?: number;

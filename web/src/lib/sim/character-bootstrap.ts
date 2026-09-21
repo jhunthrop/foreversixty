@@ -166,6 +166,25 @@ export function settleRestore(wasRestore: boolean, characterLoaded: boolean): Re
   return { clearPointer: true, restored: false, clearMessage: true };
 }
 
+export interface RunBootstrapRestoreOptions {
+  storage?: Storage;
+  /**
+   * True (the default) when the mounting store already ran the URL's own bootstrap by
+   * itself before this is ever called -- SimView.svelte's `await store.ready`, which is
+   * `store.svelte.ts`'s own `init.code`/`init.request`/`init.source`/`init.ref` handling,
+   * resolved at construction. This function then fires only the stored-pointer fallback
+   * (a URL-driven decision never re-dispatches, which would double-load the same
+   * character). False for a store with no such init-time bootstrap of its own
+   * (`bulk-store.svelte.ts`: its `BulkStoreInit.source`/`ref` are read by nothing at
+   * construction) -- ToolsView.svelte passes false because this call is the ONLY place a
+   * `?code=`/`?source=&ref=` load ever starts for the tools island, so it must actually
+   * start one rather than assume something else already did (fix round: the assumption
+   * this flag replaces silently dropped every direct-URL load on /sim/gear, /sim/drops,
+   * /sim/talents and /sim/weights).
+   */
+  storeHandlesUrl?: boolean;
+}
+
 /**
  * The whole "decide, load, settle" sequence a /sim* page's own bootstrap fallback runs, in
  * one call -- both ToolsView.svelte and SimView.svelte call this rather than each
@@ -182,10 +201,12 @@ export async function runBootstrapRestore(
   url: BootstrapUrl,
   stored: CurrentCharacter | null,
   characterLoaded: () => boolean,
-  storage?: Storage,
+  options: RunBootstrapRestoreOptions = {},
 ): Promise<boolean> {
+  const { storage, storeHandlesUrl = true } = options;
   const decision = decideBootstrap(url, stored);
-  if (!decision.restored) return false;
+  if (decision.kind === 'none') return false;
+  if (!decision.restored && storeHandlesUrl) return false;
   const load = startBootstrapLoad(loaders, decision);
   if (load !== null) await load;
   const outcome = settleRestore(decision.restored, characterLoaded());
