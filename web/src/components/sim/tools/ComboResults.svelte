@@ -17,15 +17,18 @@
   import { confidenceBand, formatMargin } from '../../../lib/sim/estimate';
   import {
     collapsedComboCount,
+    comboKey,
     comboRows,
     deltaLabel,
     headlineFor,
     keepsSetBonus,
+    planItHref,
     signedGainLabel,
     slotSummary,
     winningGear,
   } from '../../../lib/sim/combos';
   import { bulkCopy, toolFixCopy } from '../../../lib/sim/copy';
+  import { handoffCopy } from '../../../lib/sim/handoff-copy';
   import SaveSimForm from './SaveSimForm.svelte';
   import SubstitutionChips from './SubstitutionChips.svelte';
 
@@ -69,11 +72,20 @@
   const equippedFigure = $derived(Math.round(result.equipped.mean).toLocaleString('en-US'));
   const equippedBand = $derived(formatMargin(confidenceBand(result.equipped)));
 
-  /** The winning set into the planner, through the same ?code= bootstrap /sim already uses. */
+  /**
+   * The winning set into the planner, through the same ?code= bootstrap /sim already uses.
+   * The leader's own row, through `planItHref` -- the identical conversion every per-row
+   * "Plan it" link below uses, so this page's one "Open in planner" link can never disagree
+   * with a row's own link about what a code encodes. Falls back to `winner` (`winningGear`)
+   * when there is no leader to ask (an empty run) or the leader is one `planItHref` cannot
+   * honestly open (a named set or consumables alone, `canPlanCombo`'s own rule) -- this
+   * button has always shown a link regardless, and still does.
+   */
   const plannerHref = $derived(
-    `/planner?code=${encodeURIComponent(
-      codeForCharacterSpec({ ...result.request.character, gear: winner }, treeVersion),
-    )}`,
+    (result.combos.length > 0 ? planItHref(result, result.combos[0], treeVersion) : null) ??
+      `/planner?code=${encodeURIComponent(
+        codeForCharacterSpec({ ...result.request.character, gear: winner }, treeVersion),
+      )}`,
   );
 
   /**
@@ -125,10 +137,21 @@
   {:else}
     <!-- A generic ARIA table, not <ul>/<li>: the grid already carries five columns and
          needs their headers announced (finding 4, fix round 1) -- role="row"/"columnheader"/
-         "cell" on plain divs, rather than fighting <ul>'s own implicit list semantics. -->
+         "cell" on plain divs, rather than fighting <ul>'s own implicit list semantics.
+
+         Task 7's sixth column ("Plan it") is `auto`-wide and `md:`-only: the five columns
+         above already fit a phone tightly (this file's own longstanding note), so a sixth
+         fixed-width track there would either force horizontal scroll or squeeze the
+         substitution column to nothing. Below `md` the action cell instead spans every
+         column of its OWN row (`col-span-full`) -- CSS grid auto-flow cannot fit a
+         full-span item into a row the other five cells already fill, so it drops to a new
+         row of its own, full width, rather than overlapping them. The header row carries
+         the identical sixth cell (empty, `aria-label`d) so every `role="row"` keeps the
+         same cell count as there are `columnheader`s at every breakpoint -- this only
+         changes CSS placement, never how many cells exist. -->
     <div role="table" class="flex flex-col">
       <div
-        class="text-muted grid grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 px-2 pb-1 text-[11px] tracking-wide uppercase"
+        class="text-muted grid grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 gap-y-1 px-2 pb-1 text-[11px] tracking-wide uppercase md:grid-cols-[28px_minmax(0,2fr)_84px_96px_56px_auto]"
         role="row"
       >
         <span role="columnheader">{bulkCopy.resultsRank}</span>
@@ -136,6 +159,11 @@
         <span role="columnheader" class="ml-auto">{bulkCopy.resultsDps}</span>
         <span role="columnheader" class="ml-auto">{bulkCopy.resultsDelta}</span>
         <span role="columnheader" class="ml-auto">{bulkCopy.resultsPercent}</span>
+        <!-- No visible label: an action column names itself by its own link text, so this
+             carries only the accessible name a screen reader needs for the column. Same
+             breakpoint classes as the data cell below, so an empty header never desyncs
+             from where the link itself sits. -->
+        <span role="columnheader" class="col-span-full md:col-span-1" aria-label={handoffCopy.planIt}></span>
       </div>
       {#each rows as row, index (row.combo.substitutions
         .map((sub) => `${sub.kind}:${sub.slot ?? ''}:${sub.item_id ?? sub.name ?? ''}`)
@@ -143,8 +171,9 @@
         <!-- Fix round 1, minor 2: a real visual boundary at the end of the leader's
              within-error group, not only a repeated rank digit in a 28px column. -->
         {@const groupEnd = index === rows.length - 1 || rows[index + 1].combo.group !== row.combo.group}
+        {@const href = planItHref(result, row.combo, treeVersion)}
         <div
-          class="grid min-h-11 grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 border-b px-2 py-2 {groupEnd
+          class="grid min-h-11 grid-cols-[28px_minmax(0,2fr)_84px_96px_56px] items-center gap-x-3 gap-y-1 border-b px-2 py-2 md:grid-cols-[28px_minmax(0,2fr)_84px_96px_56px_auto] {groupEnd
             ? 'border-line-warm'
             : 'border-line-soft'}"
           role="row"
@@ -181,6 +210,15 @@
             aria-label={`${bulkCopy.resultsPercent} ${row.percent.toFixed(1)}%`}
           >
             {row.percent.toFixed(1)}%
+          </span>
+          <span role="cell" class="col-span-full md:col-span-1 md:ml-auto">
+            {#if href !== null}
+              <a
+                class="{SECONDARY_BUTTON} border-line-warm text-nav px-3"
+                {href}
+                data-testid={`sim-combo-plan-it-${comboKey(row)}`}>{handoffCopy.planIt}</a
+              >
+            {/if}
           </span>
         </div>
       {/each}

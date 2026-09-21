@@ -3,9 +3,10 @@
 // runs are within error of the leader, `delta` already carries its own error, and the
 // ordering is the planner's. This turns those into rows, labels and a winning gear list.
 import type { BulkResult, Combo, Substitution } from './bulk-types';
+import { codeForCharacterSpec } from './character';
 import { bulkCopy } from './copy';
 import { confidenceBand, formatMargin } from './estimate';
-import type { Estimate, GearSlot } from './types';
+import type { CharacterSpec, Estimate, GearSlot } from './types';
 import type { Item, ItemSet } from '../planner/types';
 
 export interface ComboRow {
@@ -160,6 +161,24 @@ export function comboRows(result: BulkResult): ComboRow[] {
 }
 
 /**
+ * A row's identity for a `{#each}` key or a `data-testid` suffix: `slot:item_id`, not the
+ * item id alone. A candidate fitting more than one slot carries `Candidate.Slot === ""`
+ * (contract 1.3 -- rings, trinkets, weapons) and the planner may try the same item in
+ * either of its slots, which is two combinations with one item id: keyed on the id alone
+ * Svelte sees a duplicate key, and a test id built from it collides too (final whole-branch
+ * review, Minor 7). The rank is the fallback for a combination with no item substitution at
+ * all (a talents, set or consumes row).
+ *
+ * Moved here from `DropResults.svelte` (task 7): `ComboResults.svelte` needs the identical
+ * rule for its own "Plan it" test ids, and this lane's own DRY rule is one function, not a
+ * second copy typed again in a second component.
+ */
+export function comboKey(row: ComboRow): string {
+  const sub = row.combo.substitutions[0];
+  return sub?.item_id === undefined ? String(row.rank) : `${sub.slot ?? ''}:${sub.item_id}`;
+}
+
+/**
  * How many of `result.combos` the de-dupe above folded away -- `result.combos.length` minus
  * `comboRows(result).length`.
  *
@@ -191,24 +210,21 @@ export function isEmptiedOffHand(sub: Substitution): boolean {
 }
 
 /**
- * The leader's substitutions written over the base character's gear.
- *
- * Reads `result.combos[0]` directly, not the de-duplicated list `comboRows` builds: index 0
- * is always the FIRST occurrence of its own identity (nothing ranked ahead of it could share
- * it), so a de-dupe can never change which combo is at index 0 or what it contains.
+ * One combination's substitutions written over a base gear list.
  *
  * The rule-5 sentinel REMOVES its slot rather than writing `item_id: 0` over it: this list
  * is what `addon-export.ts` turns into a paste-into-the-game string and what
- * `codeForCharacterSpec` encodes into the planner link, and neither the addon grammar nor
+ * `codeForCharacterSpec` encodes into a planner link, and neither the addon grammar nor
  * FS1 defines 0 as "empty" -- a decoder reads `off_hand=0` as an item that does not exist
  * (final whole-branch review, Important 1).
  *
- * Every step returns a new list: the input's slots are copied once at the top and never
- * written through.
+ * Every step returns a new list: `baseGear` is copied once at the top and never written
+ * through -- `winningGear` below and `planItHref`'s own per-row gear both rely on that to
+ * leave the caller's own list untouched.
  */
-export function winningGear(result: BulkResult): GearSlot[] {
-  let gear: GearSlot[] = result.request.character.gear.map((slot) => ({ ...slot }));
-  for (const sub of result.combos[0]?.substitutions ?? []) {
+export function gearForCombo(baseGear: readonly GearSlot[], combo: Combo): GearSlot[] {
+  let gear: GearSlot[] = baseGear.map((slot) => ({ ...slot }));
+  for (const sub of combo.substitutions) {
     if (sub.kind !== 'item' || sub.slot === undefined || sub.item_id === undefined) continue;
     if (isEmptiedOffHand(sub)) {
       gear = gear.filter((slot) => slot.slot !== sub.slot);
@@ -221,6 +237,63 @@ export function winningGear(result: BulkResult): GearSlot[] {
     gear = at >= 0 ? gear.map((slot, index) => (index === at ? next : slot)) : [...gear, next];
   }
   return gear;
+}
+
+/**
+ * The leader's substitutions written over the base character's gear.
+ *
+ * Reads `result.combos[0]` directly, not the de-duplicated list `comboRows` builds: index 0
+ * is always the FIRST occurrence of its own identity (nothing ranked ahead of it could share
+ * it), so a de-dupe can never change which combo is at index 0 or what it contains.
+ *
+ * A result with no combos at all (an empty run) has no leader to write over the base gear
+ * with, so this reads back the base character's own gear -- a copy of what is genuinely
+ * equipped, never a fabricated `Combo` standing in for "no winner".
+ */
+export function winningGear(result: BulkResult): GearSlot[] {
+  const leader = result.combos[0];
+  return leader === undefined
+    ? result.request.character.gear.map((slot) => ({ ...slot }))
+    : gearForCombo(result.request.character.gear, leader);
+}
+
+/**
+ * Whether `planItHref` below has anything to open for this row. An `item` substitution
+ * changes gear, so `gearForCombo` can write it over the base set. A `talents` substitution
+ * changes the loadout instead, so its own `Substitution.talents` string -- the engine's
+ * talents string, exactly `CharacterSpec.talents` -- can ride onto the encoded spec in its
+ * place, gear untouched.
+ *
+ * A `set` substitution carries only the set's `name` (contract 10.1's `Substitution` has no
+ * gear field -- `sim/bulk`'s own `apply` never puts a named set's items into `subs`, only
+ * its label), so a row naming one can never be reconstructed without silently opening the
+ * base gear and calling it the set the row actually won with. Excluded whether it is the
+ * row's only substitution or mixed with others, since the row's true gear is unknowable
+ * either way. A `consumes` substitution changes neither gear nor talents at all.
+ */
+export function canPlanCombo(combo: Combo): boolean {
+  const kinds = new Set(combo.substitutions.map((sub) => sub.kind));
+  if (kinds.has('set')) return false;
+  return kinds.has('item') || kinds.has('talents');
+}
+
+/**
+ * "Plan it" (design 1): the base character with this one row's own change opened in the
+ * planner, through the same `codeForCharacterSpec` conversion the page's own "Open in
+ * planner" link already uses (`character.ts`) -- one encoder, so the two links can never
+ * disagree about what a code encodes. Null when `canPlanCombo` says the row has nothing a
+ * planner link can honestly open (see its own doc comment); the caller draws no link rather
+ * than one that opens gear or a loadout this row never actually tried.
+ */
+export function planItHref(result: BulkResult, combo: Combo, treeVersion: string): string | null {
+  if (!canPlanCombo(combo)) return null;
+  const talents = combo.substitutions.find((sub) => sub.kind === 'talents')?.talents;
+  const spec: CharacterSpec = {
+    ...result.request.character,
+    gear: gearForCombo(result.request.character.gear, combo),
+    ...(talents === undefined ? {} : { talents }),
+  };
+  return `/planner?code=${encodeURIComponent(codeForCharacterSpec(spec, treeVersion))}`;
 }
 
 export interface SlotSummaryRow {
