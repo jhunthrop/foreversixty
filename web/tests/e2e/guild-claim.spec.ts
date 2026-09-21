@@ -26,7 +26,9 @@ const ME = {
 // rank in THIS guild may see the claim/confirm controls).
 const ME_OFFICER = {
   ...ME,
-  guilds: [{ id: 501, region: 'us', ruleset: 'hardcore', name: 'The Last Watch', rank: 'officer' }],
+  guilds: [
+    { id: 501, region: 'us', ruleset: 'hardcore', name: 'The Last Watch', rank: 'officer', verified: true },
+  ],
 };
 
 test('an unclaimed guild shows the claim button to a signed-in officer, and claiming shows "claimed by you"', async ({
@@ -40,7 +42,8 @@ test('an unclaimed guild shows the claim button to a signed-in officer, and clai
         default_visibility: 'guild',
         officer_max_rank_index: 1,
         claimed_by: null,
-        claim_pending: false,
+        claim_pending: null,
+        claim: { state: 'unclaimed', frozen: false },
         invite: { rotated_at: null },
       }),
     ),
@@ -57,7 +60,8 @@ test('an unclaimed guild shows the claim button to a signed-in officer, and clai
         default_visibility: 'guild',
         officer_max_rank_index: 1,
         claimed_by: { battletag: 'Fixture#1234' },
-        claim_pending: false,
+        claim_pending: null,
+        claim: { state: 'claimed', since: '2026-09-21T00:00:00Z', frozen: false },
         invite: { rotated_at: null },
       }),
     ),
@@ -82,7 +86,8 @@ test('a signed-out visitor sees a sign-in prompt, not a claim button', async ({ 
         default_visibility: 'guild',
         officer_max_rank_index: 1,
         claimed_by: null,
-        claim_pending: false,
+        claim_pending: null,
+        claim: { state: 'unclaimed', frozen: false },
         invite: { rotated_at: null },
       }),
     ),
@@ -106,7 +111,8 @@ test('a signed-in visitor with no membership, or member rank, in this guild sees
         default_visibility: 'guild',
         officer_max_rank_index: 1,
         claimed_by: null,
-        claim_pending: false,
+        claim_pending: null,
+        claim: { state: 'unclaimed', frozen: false },
         invite: { rotated_at: null },
       }),
     ),
@@ -116,4 +122,109 @@ test('a signed-in visitor with no membership, or member rank, in this guild sees
     'Only an officer or the guild master of this guild can claim it.',
   );
   await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
+});
+
+// A pending claim now carries a real `ClaimPendingView` object (`{by, expires_at}`), never
+// a boolean -- this exercises the confirm flow off that real shape end to end.
+test('a pending claim shows who is confirming it and lets a second officer confirm', async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_OFFICER)));
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill(
+      envelope({
+        default_visibility: 'guild',
+        officer_max_rank_index: 1,
+        claimed_by: null,
+        claim_pending: { by: { battletag: 'OtherOfficer#5678' }, expires_at: '2026-09-28T00:00:00Z' },
+        claim: { state: 'pending', since: '2026-09-21T00:00:00Z', frozen: false },
+        invite: { rotated_at: null },
+      }),
+    ),
+  );
+  await page.route('**/v1/guilds/501/claim/confirm', (route) =>
+    route.fulfill(envelope({ status: 'confirmed', claimed_by: { battletag: 'OtherOfficer#5678' } })),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await expect(page.getByTestId('guild-claim-state')).toHaveText(
+    'A claim is pending, confirmed by a second officer or the guild master. Expires 2026-09-28.',
+  );
+  await expect(page.getByTestId('guild-claim-confirm')).toBeVisible();
+});
+
+// The claim rules blurb (guildClaimCopy.rules) is new: it renders whenever settings loaded
+// successfully, regardless of claim state, so this asserts it independently of any one
+// claim-state scenario above.
+test('the claiming rules render alongside the claim state', async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_OFFICER)));
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill(
+      envelope({
+        default_visibility: 'guild',
+        officer_max_rank_index: 1,
+        claimed_by: null,
+        claim_pending: null,
+        claim: { state: 'unclaimed', frozen: false },
+        invite: { rotated_at: null },
+      }),
+    ),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await expect(page.getByTestId('guild-claim-rules')).toContainText('A claim can be contested.');
+});
+
+// The contested-state notice is a NEW, dedicated testid that renders ADDITIONALLY
+// alongside the claimed_by/claim_pending/unclaimed paragraph, not instead of it -- both
+// must be visible at once.
+test('a contested claim shows the dedicated contested notice alongside the claimed-by state', async ({
+  page,
+}) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_OFFICER)));
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill(
+      envelope({
+        default_visibility: 'guild',
+        officer_max_rank_index: 1,
+        claimed_by: { battletag: 'OtherOfficer#5678' },
+        claim_pending: null,
+        claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: false },
+        invite: { rotated_at: null },
+      }),
+    ),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await expect(page.getByTestId('guild-claim-contested-notice')).toHaveText(
+    'This guild’s claim is contested and under review by a moderator.',
+  );
+  await expect(page.getByTestId('guild-claim-state')).toHaveText('Claimed by OtherOfficer#5678.');
+  // Not the claimant, so no release control -- this is a different account's claim.
+  await expect(page.getByTestId('guild-claim-release')).toHaveCount(0);
+});
+
+// Regression guard for Task 3's own fix: while a claim is BOTH held by the viewer AND
+// contested, Release must stay visible and enabled -- contesting must never strand the
+// claimant with no way to release the guild.
+test('release stays visible and enabled for the claim holder even while their claim is contested', async ({
+  page,
+}) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_OFFICER)));
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill(
+      envelope({
+        default_visibility: 'guild',
+        officer_max_rank_index: 1,
+        claimed_by: { battletag: 'Fixture#1234' },
+        claim_pending: null,
+        claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: true },
+        invite: { rotated_at: null },
+      }),
+    ),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await expect(page.getByTestId('guild-claim-contested-notice')).toBeVisible();
+  await expect(page.getByTestId('guild-claim-state')).toHaveText('You claimed this guild.');
+  await expect(page.getByTestId('guild-claim-release')).toBeVisible();
+  await expect(page.getByTestId('guild-claim-release')).toBeEnabled();
 });

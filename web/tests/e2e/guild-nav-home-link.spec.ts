@@ -12,7 +12,9 @@ function envelope(data: unknown, status = 200) {
 const ME_WITH_GUILD = {
   user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false, premium: false },
   characters: [],
-  guilds: [{ id: 501, region: 'us', ruleset: 'hardcore', name: 'The Last Watch', rank: 'member' }],
+  guilds: [
+    { id: 501, region: 'us', ruleset: 'hardcore', name: 'The Last Watch', rank: 'member', verified: true },
+  ],
 };
 
 test('a signed-in member sees "My guild" in the header on a tool page', async ({ page }) => {
