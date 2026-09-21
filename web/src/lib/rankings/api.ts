@@ -16,6 +16,7 @@
 import { AccountError, requestEnvelope, type EnvelopeResult } from '../account/api';
 import { API_BASE_URL } from '../planner/config';
 import type { CharacterPath } from '../characters';
+import type { CharacterRating, ReportRatings } from '../rating/types';
 
 export const RANKINGS_FAILED = 'Rankings did not load';
 
@@ -250,4 +251,19 @@ export function fetchCharacter(path: CharacterPath, apiBase: string = API_BASE_U
 
 export function fetchGuild(path: CharacterPath, apiBase: string = API_BASE_URL): Promise<GuildPage> {
   return get<GuildPage>(`/v1/guilds/${path.region}/${path.ruleset}/${path.slug}`, apiBase);
+}
+
+export function fetchReportRatings(
+  reportId: string,
+  fightIndex: number,
+  apiBase: string = API_BASE_URL,
+): Promise<ReportRatings> {
+  return get<ReportRatings>(`/v1/reports/${reportId}/fights/${fightIndex}/ratings`, apiBase);
+}
+
+export function fetchCharacterRating(
+  path: CharacterPath,
+  apiBase: string = API_BASE_URL,
+): Promise<CharacterRating> {
+  return get<CharacterRating>(`/v1/characters/${path.region}/${path.ruleset}/${path.slug}/rating`, apiBase);
 }

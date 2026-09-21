@@ -5,9 +5,11 @@ import {
   RankingsError,
   encounterSlug,
   fetchCharacter,
+  fetchCharacterRating,
   fetchEncounters,
   fetchGuild,
   fetchRankings,
+  fetchReportRatings,
 } from './api';
 
 const API = 'https://api.foreversixty.test';
@@ -154,5 +156,94 @@ describe('encounterSlug', () => {
 
   it('is total: an empty name slugs to an empty string, not a throw', () => {
     expect(encounterSlug('')).toBe('');
+  });
+});
+
+const REPORT_RATINGS = {
+  fight_index: 3,
+  kill: true,
+  kill_time_band: 'typical',
+  model_version: 'rating-2026-09-21',
+  players: [
+    {
+      player_key: 'us/normal/simfury',
+      player_name: 'Simfury',
+      class: 'Warrior',
+      spec: 'Fury',
+      role: 'dps',
+      overall: 70,
+      overall_uncapped: 70,
+      overall_capped: false,
+      basis: 'percentile',
+      components: [],
+    },
+  ],
+};
+
+describe('fetchReportRatings', () => {
+  it('reads the per-fight report card from the ratings endpoint', async () => {
+    const upstream = vi.fn<GlobalFetch>(async () => envelope(REPORT_RATINGS));
+    vi.stubGlobal('fetch', upstream);
+
+    const ratings = await fetchReportRatings('fixture2abcd', 3, API);
+
+    expect((upstream.mock.calls[0][0] as Request).url).toBe(
+      `${API}/v1/reports/fixture2abcd/fights/3/ratings`,
+    );
+    expect((upstream.mock.calls[0][0] as Request).credentials).toBe('omit');
+    expect(ratings.players[0].player_name).toBe('Simfury');
+  });
+
+  it('an empty roster (Ruling 1’s launch state) resolves normally, not as an error', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope({ ...REPORT_RATINGS, players: [] })),
+    );
+    const ratings = await fetchReportRatings('fixture2abcd', 3, API);
+    expect(ratings.players).toEqual([]);
+  });
+
+  it('a transport failure raises RankingsError', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(null, 500)),
+    );
+    await expect(fetchReportRatings('fixture2abcd', 3, API)).rejects.toBeInstanceOf(RankingsError);
+  });
+});
+
+describe('fetchCharacterRating', () => {
+  it('reads the aggregate from the character rating endpoint', async () => {
+    const data = {
+      player_key: 'us/hardcore/elyra-duskvale',
+      sample_size: 12,
+      trend: [{ fought_at: '2026-12-09T22:10:00Z', overall: 62, report_id: 'fixture2abcd', fight_index: 2 }],
+      best_component: 'preparation',
+      worst_component: 'activity',
+      latest: null,
+    };
+    const upstream = vi.fn<GlobalFetch>(async () => envelope(data));
+    vi.stubGlobal('fetch', upstream);
+
+    const rating = await fetchCharacterRating(
+      { region: 'us', ruleset: 'hardcore', slug: 'elyra-duskvale' },
+      API,
+    );
+
+    expect((upstream.mock.calls[0][0] as Request).url).toBe(
+      `${API}/v1/characters/us/hardcore/elyra-duskvale/rating`,
+    );
+    expect((upstream.mock.calls[0][0] as Request).credentials).toBe('omit');
+    expect(rating.sample_size).toBe(12);
+  });
+
+  it('an anonymized character 404s, and the fetcher raises RankingsError (Ruling 2)', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => envelope(null, 404)),
+    );
+    await expect(
+      fetchCharacterRating({ region: 'us', ruleset: 'hardcore', slug: 'hidden' }, API),
+    ).rejects.toBeInstanceOf(RankingsError);
   });
 });
