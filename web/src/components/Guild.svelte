@@ -175,28 +175,12 @@
     }
   }
 
-  /** Whether the Remove control should even render for this row. Never shows a control
-   *  the API would refuse for the two absolute cases (a leader-rank row, an
-   *  officer-rank row) unless the viewer is the row's own account or a moderator -- the
-   *  conservative reading of rank-protects-rank (plan's reconciliation record, item 10):
-   *  the web has no signal for "am I the claim holder" from the home response alone, so
-   *  an officer-rank row's Remove is hidden even from a genuine claim-holder officer,
-   *  who still has the settings page or the API directly. */
-  function mayShowRemove(row: GuildRosterRow): boolean {
-    const isSelf = myCharacterKeys.has(row.character_key);
-    if (isSelf || isModerator) return true;
-    if (row.rank === 'member') return canManage;
-    return false; // officer or leader rank, not self, not moderator
-  }
-
   /**
-   * `frozen` is the API's own answer to "is this claim young or uncorroborated enough
-   * that officer tools must stop working" (contest.go's `frozen()`); `state ===
-   * 'contested'` alone is not that signal -- an established claim with independently
-   * log-corroborated members can be contested and awaiting a moderator while
-   * `frozen: false`, in which case officer controls stay live. The contest response
-   * itself carries no `frozen` bit, so a successful contest re-fetches home rather than
-   * guessing the freeze outcome client-side.
+   * A contest always freezes officer tools now (a later security-review response
+   * simplified the freeze rule to exactly `state === 'contested'`), so `home.claim.frozen`
+   * is always true right after a successful contest -- but the contest response itself
+   * carries no `claim` object, so the page still re-fetches home to pick up the fresh
+   * claim/roster state (may_remove per row, etc.) rather than guessing it client-side.
    *
    * The re-fetch is wrapped separately from `contestClaim` itself: once `contestClaim`
    * resolves, the contest is recorded server-side no matter what happens next, so a
@@ -239,6 +223,15 @@
 
   const reportWipeCount = (report: GuildHomeReport): number =>
     Math.max(0, report.fight_count - report.kill_count);
+
+  /** An empty title falls back to the zone (matching ReportView.svelte's own
+   *  `title === '' ? zone : title` pattern), and only when both are empty does the row
+   *  fall back to the honest "untitled" placeholder. */
+  const reportLabel = (report: GuildHomeReport): string => {
+    if (report.title !== '') return report.title;
+    if (report.zone !== '') return report.zone;
+    return guildHomeCopy.untitledReport;
+  };
 
   const killed = $derived((data?.progression ?? []).filter((row) => row.kills > 0).length);
   const killedAt = (row: { first_kill_at?: string }): string =>
@@ -312,26 +305,19 @@
           <p class="text-[13px]" role="alert" data-testid="guild-home-frozen">{guildHomeCopy.frozenNotice}</p>
         {/if}
 
-        {#if (home.claim.state === 'contested' && !home.claim.frozen) || (canContest && home.claim.state !== 'unclaimed' && home.claim.state !== 'contested')}
+        {#if canContest && home.claim.state !== 'unclaimed' && home.claim.state !== 'contested'}
           <div class="flex flex-wrap items-center gap-3">
-            {#if home.claim.state === 'contested' && !home.claim.frozen}
-              <span class="text-muted text-[13px]" data-testid="guild-home-claim-state">
-                {guildHomeCopy.contested}
-              </span>
-            {/if}
-            {#if canContest && home.claim.state !== 'unclaimed' && home.claim.state !== 'contested'}
-              <button
-                class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                onclick={() => {
-                  showContestConfirm = true;
-                  contestError = '';
-                }}
-                disabled={contestBusy}
-                data-testid="guild-home-contest-button"
-              >
-                {guildHomeCopy.contestButton}
-              </button>
-            {/if}
+            <button
+              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+              onclick={() => {
+                showContestConfirm = true;
+                contestError = '';
+              }}
+              disabled={contestBusy}
+              data-testid="guild-home-contest-button"
+            >
+              {guildHomeCopy.contestButton}
+            </button>
           </div>
         {/if}
 
@@ -389,7 +375,7 @@
                 class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-2 text-[14px]"
               >
                 <a class={rowLink} href={`/reports/${report.id}`}>
-                  {report.title === '' ? guildHomeCopy.untitledReport : report.title}
+                  {reportLabel(report)}
                 </a>
                 <span class="text-muted tabular font-mono text-[13px]">
                   {guildHomeCopy.reportSummary(report.kill_count, reportWipeCount(report))}
@@ -444,7 +430,7 @@
                     {guildHomeCopy.approve}
                   </button>
                 {/if}
-                {#if mayShowRemove(row)}
+                {#if row.may_remove}
                   <button
                     class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
                     onclick={() => void onRemove(row)}

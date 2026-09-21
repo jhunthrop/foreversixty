@@ -26,20 +26,21 @@ export const guildHomeCopy = {
   openPlanner: 'Open in planner',
   untitledReport: 'Untitled report',
   contestButton: 'Contest this claim',
-  // The true contest rules (2026-09-21 coordinator update, superseding the earlier single
-  // contestConfirmLine sentence -- that key no longer exists; a later task's GuildClaim.svelte
-  // work should use this array instead). One plain fact per line, in this order.
+  // The true contest rules. One plain fact per line, in this order: account eligibility,
+  // the per-account attempt limit, the per-account permanent block after an uphold, the
+  // per-guild cooldown after an uphold, then the freeze consequence. Simplified (no more
+  // young-claim/corroboration nuance) and extended (the guild-wide upheld cooldown) by a
+  // later security-review response -- read directly against contest.go's ContestClaim,
+  // recentlyUpheld, and previouslyUpheld.
   contestRules: [
     'Contesting needs a Battle.net-linked account.',
     'You may attempt one contest every 30 days.',
     'If a moderator upholds this guild’s claim, you cannot contest it again.',
-    'Officer tools freeze only when the claim is less than 14 days old, or the guild has no member verified by raid logs. Otherwise the contest goes to a moderator and nothing freezes.',
+    'A guild whose claim was upheld in the last 30 days cannot be contested again, unless a moderator reopens it.',
+    'Officer tools freeze until a moderator reviews the contest. Members can still read and upload.',
   ] as readonly string[],
   contestConfirmButton: 'Yes, contest this claim',
   cancel: 'Cancel',
-  // Shown only while contested and NOT frozen -- officer tools are still live, so the
-  // copy says so; a frozen contest shows frozenNotice instead, never both at once.
-  contested: 'This claim has been contested and is with a moderator. Officer tools keep working.',
   frozenNotice: 'This guild’s claim is contested. Officer actions are frozen until a moderator resolves it.',
   // The contest call itself succeeded but the page's own follow-up refresh failed -- a
   // distinct case from the contest failing outright, so it gets its own honest sentence
@@ -97,11 +98,6 @@ export const guildSettingsCopy = {
   // Shown when a save or rotate action itself fails (as opposed to the initial load).
   actionFailed: 'That did not save; try again.',
   frozenNotice: 'This guild’s claim is contested. Officer actions are frozen until a moderator resolves it.',
-  // Shown only while contested and NOT frozen -- officer tools stay enabled, so the copy
-  // says so; a frozen contest shows frozenNotice instead, never both at once. Byte-identical
-  // to guildHomeCopy.contested by this codebase's established per-section duplication
-  // pattern (see that key's comment).
-  contested: 'This claim has been contested and is with a moderator. Officer tools keep working.',
 } as const;
 
 export const guildJoinCopy = {

@@ -67,12 +67,10 @@ test('a non-officer sees the honest forbidden line, never a bare 403', async ({ 
   );
 });
 
-// Officer controls freeze only when the claim is BOTH contested and the API's own `frozen`
-// flag is true (contest.go's `frozen()`) -- `state === 'contested'` alone must never be
-// enough to disable anything here.
-test('a contested and frozen claim disables officer controls and shows the frozen notice', async ({
-  page,
-}) => {
+// A contest always freezes officer tools now (a later security-review response simplified
+// the freeze rule to exactly `state === 'contested'`) -- there is no longer a
+// contested-but-not-frozen case.
+test('a contested claim disables officer controls and shows the frozen notice', async ({ page }) => {
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
   await page.route('**/v1/guilds/501/settings', (route) =>
     route.fulfill(
@@ -94,33 +92,4 @@ test('a contested and frozen claim disables officer controls and shows the froze
   // The plain claim-state line is suppressed while frozen -- the frozen alert replaces it,
   // never both at once.
   await expect(page.getByTestId('guild-settings-claim-state')).toHaveCount(0);
-});
-
-// The opposite of the test above: an established, log-corroborated claim can be contested
-// and awaiting a moderator while `frozen: false` -- officer tools stay enabled and the
-// copy says so via guildSettingsCopy.contested.
-test('a contested claim that is not frozen shows the contested note and keeps controls enabled', async ({
-  page,
-}) => {
-  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
-  await page.route('**/v1/guilds/501/settings', (route) =>
-    route.fulfill(
-      envelope({
-        default_visibility: 'guild',
-        officer_max_rank_index: 1,
-        claimed_by: { battletag: 'Fixture#1234' },
-        claim_pending: null,
-        claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: false },
-        invite: { rotated_at: null },
-      }),
-    ),
-  );
-  await page.goto('/guild/us/hardcore/the-last-watch/settings');
-  await expect(page.getByTestId('guild-settings-claim-state')).toHaveText(
-    'This claim has been contested and is with a moderator. Officer tools keep working.',
-  );
-  await expect(page.getByTestId('guild-settings-frozen')).toHaveCount(0);
-  await expect(page.getByTestId('guild-visibility-select')).toBeEnabled();
-  await expect(page.getByTestId('guild-officer-threshold-input')).toBeEnabled();
-  await expect(page.getByTestId('guild-invite-rotate')).toBeEnabled();
 });

@@ -34,13 +34,13 @@ export type ClaimState = 'unclaimed' | 'pending' | 'claimed' | 'contested';
 
 /**
  * GET .../home and GET .../settings both expose this (2026-09-21 security amendment).
- * `frozen` was added by a second, concurrent security review (same date): "contested" and
- * "frozen" are distinct -- a contest against an established (14+ day old) claim with
- * independently log-corroborated members is recorded as `state: 'contested'` but
- * `frozen: false`, so officer tools stay enabled and the claim is only queued for a
- * moderator. Only a young or uncorroborated contested claim is `frozen: true`. `frozen` is
- * meaningless (always `false`) at any state other than `'contested'`. Consumers must gate
- * "disable officer controls" on `frozen`, never on `state === 'contested'` alone.
+ * `frozen` is exactly `state === 'contested'`: two earlier, narrower freeze rules (a
+ * young-claim-only test, then an independence-checked corroboration test) were each found
+ * gameable by a squatter, so a later security-review response simplified this to "a
+ * contest always freezes officer tools" -- there is no longer a `contested`-but-not-frozen
+ * case. The field stays in the response shape (the API's own choice) so consumers may keep
+ * gating on `frozen`, but it is always `true` whenever `state === 'contested'` and always
+ * `false` otherwise.
  */
 export interface ClaimStateView {
   state: ClaimState;
@@ -57,11 +57,17 @@ export interface ClaimPendingView {
   expires_at: string;
 }
 
-/** One report row. No `zone`: HomeReport carries none (plan's reconciliation record,
- *  item 2) — an empty title falls back to guildHomeCopy.untitledReport, not a zone. */
+/**
+ * One report row. `zone` (added by a later security-review response, item 7) lets an
+ * untitled report still show something identifying, matching every other report list in
+ * this codebase (`ReportView.svelte`'s own `title === '' ? zone : title` pattern) -- an
+ * empty title falls back to `zone`, and only when BOTH are empty does the row fall back to
+ * `guildHomeCopy.untitledReport`.
+ */
 export interface GuildHomeReport {
   id: string;
   title: string;
+  zone: string;
   created_at: string;
   fight_count: number;
   kill_count: number;
@@ -86,6 +92,16 @@ export interface GuildRosterRow {
   /** Present only at gear/gear_bags consent (spec section 3.2's fail-closed query rule). */
   item_level?: number;
   consent: GuildConsent;
+  /**
+   * Computed server-side (a later security-review response, item 7) from the exact same
+   * rank-protects-rank rule the DELETE .../characters/{key} route itself enforces, from
+   * the viewpoint of whoever asked for this home. Replaces this lane's own earlier,
+   * conservative client-side guess (hide Remove on any officer/leader row but self or
+   * moderator) with an exact one: show Remove exactly when this is `true`, nothing more.
+   * A stale or forged `true` still gets a 403 with a sentence server-side -- this field
+   * only controls what renders, never what the API accepts.
+   */
+  may_remove: boolean;
 }
 
 export interface GuildHome {

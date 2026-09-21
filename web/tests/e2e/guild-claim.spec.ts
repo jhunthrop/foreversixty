@@ -188,7 +188,7 @@ test('a contested claim shows the dedicated contested notice alongside the claim
         officer_max_rank_index: 1,
         claimed_by: { battletag: 'OtherOfficer#5678' },
         claim_pending: null,
-        claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: false },
+        claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: true },
         invite: { rotated_at: null },
       }),
     ),

@@ -92,10 +92,11 @@
     });
 
   /**
-   * Officer controls freeze only when the claim is BOTH contested and the API's own
-   * `frozen` flag is true (spec's 2026-09-21 security-round contract) -- a `contested`
-   * claim against an established, corroborated guild goes to a moderator without
-   * disabling anything, so `state === 'contested'` alone is never enough here.
+   * A contest always freezes officer tools now (a later security-review response
+   * simplified the freeze rule): `frozen` is guaranteed true whenever `state ===
+   * 'contested'`, so there is no longer a contested-but-not-frozen case to render
+   * separately. `settings.claim.frozen` is still read explicitly rather than assumed,
+   * since the API's own response shape is the source of truth.
    */
   const frozen = $derived(
     settings !== null && settings.claim.state === 'contested' && settings.claim.frozen === true,
@@ -113,11 +114,9 @@
   {:else if status === 'failed'}
     <p class="text-[14px]" role="alert" data-testid="guild-settings-error">{guildSettingsCopy.failed}</p>
   {:else if settings !== null}
-    {#if settings.claim.state !== 'unclaimed' && !(settings.claim.state === 'contested' && frozen)}
+    {#if settings.claim.state !== 'unclaimed' && settings.claim.state !== 'contested'}
       <p class="text-[13px]" data-testid="guild-settings-claim-state">
-        {settings.claim.state === 'contested'
-          ? guildSettingsCopy.contested
-          : `Claim: ${settings.claim.state}`}
+        Claim: {settings.claim.state}
       </p>
     {/if}
     {#if settings.claim.state === 'contested' && frozen}

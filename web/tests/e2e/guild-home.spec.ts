@@ -31,6 +31,7 @@ const HOME = {
     {
       id: 'fixture2abcd',
       title: 'Sanguine Depths',
+      zone: 'The Necrotic Wake',
       created_at: '2026-09-20T20:00:00Z',
       fight_count: 8,
       kill_count: 3,
@@ -48,6 +49,7 @@ const HOME = {
       verified: true,
       logged_recently: true,
       consent: 'gear',
+      may_remove: false,
     },
     {
       character_key: 'us/hardcore/newbie',
@@ -60,6 +62,7 @@ const HOME = {
       verified: false,
       logged_recently: false,
       consent: 'roster',
+      may_remove: true,
     },
   ],
 };
@@ -85,6 +88,55 @@ test('a signed-in officer sees this week’s reports, who logged, and the roster
     'href',
     '/guild/us/hardcore/the-last-watch/settings',
   );
+});
+
+// A report row falls back to its zone when untitled, matching every other report list in
+// this codebase, and only falls back to the honest "untitled" placeholder when both title
+// and zone are empty (a later security-review response added `zone` to HomeReport).
+test('a report row falls back to its zone when untitled, and to the placeholder only when both are empty', async ({
+  page,
+}) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
+  await page.route('**/v1/guilds/501/home', (route) =>
+    route.fulfill(
+      envelope({
+        ...HOME,
+        reports: [
+          {
+            id: 'fixturetitled',
+            title: 'Sanguine Depths',
+            zone: 'The Necrotic Wake',
+            created_at: '2026-09-20T20:00:00Z',
+            fight_count: 4,
+            kill_count: 4,
+          },
+          {
+            id: 'fixtureuntitled',
+            title: '',
+            zone: 'Mechagon Workshop',
+            created_at: '2026-09-20T19:00:00Z',
+            fight_count: 2,
+            kill_count: 1,
+          },
+          {
+            id: 'fixtureblank',
+            title: '',
+            zone: '',
+            created_at: '2026-09-20T18:00:00Z',
+            fight_count: 1,
+            kill_count: 0,
+          },
+        ],
+      }),
+    ),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch');
+  const reports = page.getByTestId('guild-home-reports');
+  await expect(reports).toContainText('Sanguine Depths');
+  await expect(reports).not.toContainText('The Necrotic Wake');
+  await expect(reports).toContainText('Mechagon Workshop');
+  await expect(reports).toContainText('Untitled report');
 });
 
 test('approving an unverified character calls the approve endpoint and removes the unverified pill', async ({
@@ -205,6 +257,7 @@ const HOME_SOLO_OFFICER = {
       verified: true,
       logged_recently: true,
       consent: 'gear',
+      may_remove: true,
     },
     {
       character_key: 'us/hardcore/simfuryalt',
@@ -217,6 +270,7 @@ const HOME_SOLO_OFFICER = {
       verified: true,
       logged_recently: false,
       consent: 'gear',
+      may_remove: true,
     },
   ],
 };
@@ -243,9 +297,10 @@ test('a solo officer with two characters in the guild sees the empty-roster mess
   await expect(page.getByTestId('guild-home-roster')).toHaveCount(0);
 });
 
-test('a contested claim that is frozen shows the frozen notice and disables approve/remove', async ({
-  page,
-}) => {
+// A contest always freezes officer tools now (a later security-review response
+// simplified the freeze rule to exactly `state === 'contested'` -- there is no longer a
+// contested-but-not-frozen case).
+test('a contested claim shows the frozen notice and disables approve/remove', async ({ page }) => {
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
   await page.route('**/v1/guilds/501/home', (route) =>
@@ -259,71 +314,63 @@ test('a contested claim that is frozen shows the frozen notice and disables appr
   await expect(page.getByTestId('guild-roster-remove')).toBeDisabled();
 });
 
-// The opposite of the test above: an established, log-corroborated claim can be contested
-// and awaiting a moderator while `frozen: false` (contest.go's own distinction) -- officer
-// tools must stay live, and the copy must say so rather than showing the frozen banner.
-test('a contested claim that is not frozen shows the contested note and keeps officer tools working', async ({
-  page,
-}) => {
+// The rank-protects-rank rule now lives entirely server-side: the client renders Remove
+// exactly where `may_remove` says to, with no client-side re-derivation of the rule
+// (a later security-review response added `may_remove` per roster row precisely so the
+// web's earlier conservative guess -- hide Remove on any officer/leader row but self or
+// moderator -- could be retired).
+test('the roster shows Remove exactly where the API says may_remove is true', async ({ page }) => {
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
-  await page.route('**/v1/guilds/501/home', (route) =>
-    route.fulfill(
-      envelope({ ...HOME, claim: { state: 'contested', since: '2026-09-19T00:00:00Z', frozen: false } }),
-    ),
-  );
-  await page.goto('/guild/us/hardcore/the-last-watch');
-  await expect(page.getByTestId('guild-home-claim-state')).toHaveText(
-    'This claim has been contested and is with a moderator. Officer tools keep working.',
-  );
-  await expect(page.getByTestId('guild-home-frozen')).toHaveCount(0);
-  await expect(page.getByTestId('guild-roster-approve')).toBeEnabled();
-  await expect(page.getByTestId('guild-roster-remove')).toBeEnabled();
-});
-
-test('an officer sees no remove control on another officer’s row, but sees it on a member row and their own row', async ({
-  page,
-}) => {
-  const ME_WITH_OWN_CHAR = {
-    ...ME,
-    characters: [
-      { key: 'us/hardcore/simfury', region: 'us', ruleset: 'hardcore', name: 'Simfury', class: 'Warrior' },
-    ],
-  };
-  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
-  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_WITH_OWN_CHAR)));
   await page.route('**/v1/guilds/501/home', (route) =>
     route.fulfill(
       envelope({
         ...HOME,
         roster: [
-          ...HOME.roster,
-          {
-            character_key: 'us/hardcore/otherofficer',
-            region: 'us',
-            ruleset: 'hardcore',
-            name: 'OtherOfficer',
-            class: 'Mage',
-            spec: 'Frost',
-            rank: 'officer',
-            verified: true,
-            logged_recently: false,
-            consent: 'roster',
-          },
+          { ...HOME.roster[0], may_remove: true },
+          { ...HOME.roster[1], may_remove: false },
         ],
       }),
     ),
   );
   await page.goto('/guild/us/hardcore/the-last-watch');
-  const ownRow = page.getByTestId('guild-home-roster').getByRole('listitem').filter({ hasText: 'Simfury' });
-  await expect(ownRow.getByTestId('guild-roster-remove')).toBeVisible();
-  const memberRow = page.getByTestId('guild-home-roster').getByRole('listitem').filter({ hasText: 'Newbie' });
-  await expect(memberRow.getByTestId('guild-roster-remove')).toBeVisible();
-  const otherOfficerRow = page
+  const allowedRow = page
     .getByTestId('guild-home-roster')
     .getByRole('listitem')
-    .filter({ hasText: 'OtherOfficer' });
-  await expect(otherOfficerRow.getByTestId('guild-roster-remove')).toHaveCount(0);
+    .filter({ hasText: 'Simfury' });
+  await expect(allowedRow.getByTestId('guild-roster-remove')).toBeVisible();
+  const refusedRow = page
+    .getByTestId('guild-home-roster')
+    .getByRole('listitem')
+    .filter({ hasText: 'Newbie' });
+  await expect(refusedRow.getByTestId('guild-roster-remove')).toHaveCount(0);
+});
+
+// A stale or forged `may_remove: true` still gets the API's own 403 with a sentence --
+// this control's visibility never substitutes for the server's own check.
+test('a 403 on remove shows the API sentence, not a silent failure', async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
+  await page.route('**/v1/guilds/501/home', (route) =>
+    route.fulfill(envelope({ ...HOME, roster: [{ ...HOME.roster[1], may_remove: true }] })),
+  );
+  await page.route('**/v1/guilds/501/characters/us/hardcore/newbie', (route) =>
+    route.fulfill({
+      status: 403,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: false,
+        data: null,
+        error: { message: 'you do not have standing to remove this character' },
+        request_id: 'r',
+      }),
+    }),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch');
+  await page.getByTestId('guild-roster-remove').click();
+  await expect(page.getByTestId('guild-roster-action-error')).toHaveText(
+    'you do not have standing to remove this character',
+  );
 });
 
 test('an unverified member sees the public-reports-only note', async ({ page }) => {
@@ -362,4 +409,23 @@ test('contesting a claim calls the contest endpoint after confirming', async ({ 
   await page.getByTestId('guild-home-contest-confirm-button').click();
   await expect(page.getByTestId('guild-home-frozen')).toBeVisible();
   expect(contestCalled).toBe(true);
+});
+
+// The confirm step's rules must say the true, simplified freeze rule -- a contest always
+// freezes officer tools now, not only a young or uncorroborated one -- and must cover the
+// new per-guild upheld cooldown a later security-review response added.
+test('the contest confirm step states the true freeze rule and the guild-wide upheld cooldown', async ({
+  page,
+}) => {
+  await stub(page);
+  await page.goto('/guild/us/hardcore/the-last-watch');
+  await page.getByTestId('guild-home-contest-button').click();
+  const confirm = page.getByTestId('guild-home-contest-confirm');
+  await expect(confirm).toContainText(
+    'Officer tools freeze until a moderator reviews the contest. Members can still read and upload.',
+  );
+  await expect(confirm).toContainText(
+    'A guild whose claim was upheld in the last 30 days cannot be contested again, unless a moderator reopens it.',
+  );
+  await expect(confirm).not.toContainText('less than 14 days old');
 });
