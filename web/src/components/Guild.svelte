@@ -312,9 +312,9 @@
           <p class="text-[13px]" role="alert" data-testid="guild-home-frozen">{guildHomeCopy.frozenNotice}</p>
         {/if}
 
-        {#if home.claim.state === 'contested' || (canContest && home.claim.state !== 'unclaimed')}
+        {#if (home.claim.state === 'contested' && !home.claim.frozen) || (canContest && home.claim.state !== 'unclaimed' && home.claim.state !== 'contested')}
           <div class="flex flex-wrap items-center gap-3">
-            {#if home.claim.state === 'contested'}
+            {#if home.claim.state === 'contested' && !home.claim.frozen}
               <span class="text-muted text-[13px]" data-testid="guild-home-claim-state">
                 {guildHomeCopy.contested}
               </span>
@@ -322,7 +322,10 @@
             {#if canContest && home.claim.state !== 'unclaimed' && home.claim.state !== 'contested'}
               <button
                 class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                onclick={() => (showContestConfirm = true)}
+                onclick={() => {
+                  showContestConfirm = true;
+                  contestError = '';
+                }}
                 disabled={contestBusy}
                 data-testid="guild-home-contest-button"
               >
@@ -341,7 +344,11 @@
             class="border-line-soft flex flex-col gap-3 border p-4"
             data-testid="guild-home-contest-confirm"
           >
-            <p class="text-[13px]">{guildHomeCopy.contestConfirmLine}</p>
+            <ul class="flex flex-col gap-1 text-[13px]">
+              {#each guildHomeCopy.contestRules as rule (rule)}
+                <li>{rule}</li>
+              {/each}
+            </ul>
             <div class="flex gap-3">
               <button
                 class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-3"
@@ -353,7 +360,10 @@
               </button>
               <button
                 class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                onclick={() => (showContestConfirm = false)}
+                onclick={() => {
+                  showContestConfirm = false;
+                  contestError = '';
+                }}
                 disabled={contestBusy}
               >
                 {guildHomeCopy.cancel}
