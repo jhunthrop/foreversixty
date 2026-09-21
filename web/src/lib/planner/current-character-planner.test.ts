@@ -1,0 +1,256 @@
+// web/src/lib/planner/current-character-planner.test.ts
+import { describe, expect, it } from 'vitest';
+import fixtureTalents from '../../fixtures/planner/talents/warrior.json';
+import { readCurrent, type CurrentCharacter } from '../current-character';
+import {
+  decidePlannerLoad,
+  isBarePlannerUrl,
+  labelForPlannerLoad,
+  plannerAddonCode,
+  recordPlannerCharacter,
+  writePlannerPointer,
+  type PlannerLoadDecision,
+} from './current-character-planner';
+import { decodeFS1, orderFromRanks } from './fs1';
+import { indexTalents } from './rules';
+import type { PlannerStore } from './store.svelte';
+import type { TalentFile } from './types';
+
+function fakeStorage(): Storage {
+  const map = new Map<string, string>();
+  return {
+    getItem: (key) => map.get(key) ?? null,
+    setItem: (key, value) => void map.set(key, value),
+    removeItem: (key) => void map.delete(key),
+    clear: () => map.clear(),
+    key: (index) => [...map.keys()][index] ?? null,
+    get length() {
+      return map.size;
+    },
+  };
+}
+
+function stored(source: CurrentCharacter['source'], ref: string): CurrentCharacter {
+  return { source, ref, label: 'Warrior', classSlug: 'warrior', savedAt: '2026-09-21T00:00:00.000Z' };
+}
+
+const GOOD_CODE = 'FS1:1:warrior:orc:0/5530515/0:';
+
+describe('isBarePlannerUrl', () => {
+  it('is true for an empty query', () => {
+    expect(isBarePlannerUrl('')).toBe(true);
+  });
+  it('is false when ?code= is present', () => {
+    expect(isBarePlannerUrl('?code=FS1:1:warrior:orc:0/0/0:')).toBe(false);
+  });
+  it('is false when ?class= is present', () => {
+    expect(isBarePlannerUrl('?class=warrior')).toBe(false);
+  });
+  it('is false when ?race= is present', () => {
+    expect(isBarePlannerUrl('?race=orc')).toBe(false);
+  });
+});
+
+describe('decidePlannerLoad', () => {
+  it('prefers the URL code over a stored pointer, but still surfaces the pointer for the chip', () => {
+    const pointer = stored('addon', 'FS1:1:warrior:orc:1:');
+    const decision = decidePlannerLoad(GOOD_CODE, true, false, true, pointer);
+    expect(decision).toEqual<PlannerLoadDecision>({
+      codeParam: GOOD_CODE,
+      restored: false,
+      deadPointer: false,
+      pointer,
+    });
+  });
+
+  it('restores a code-sourced pointer on a bare, standalone, record-less mount', () => {
+    const pointer = stored('code', GOOD_CODE);
+    const decision = decidePlannerLoad(null, true, false, true, pointer);
+    expect(decision).toEqual<PlannerLoadDecision>({
+      codeParam: GOOD_CODE,
+      restored: true,
+      deadPointer: false,
+      pointer,
+    });
+  });
+
+  it('restores an addon-sourced pointer the same way', () => {
+    const pointer = stored('addon', GOOD_CODE);
+    const decision = decidePlannerLoad(null, true, false, true, pointer);
+    expect(decision).toEqual<PlannerLoadDecision>({
+      codeParam: GOOD_CODE,
+      restored: true,
+      deadPointer: false,
+      pointer,
+    });
+  });
+
+  it('does not restore a build-sourced pointer -- it has its own permalink -- but the chip still shows it', () => {
+    const pointer = stored('build', 'b1');
+    const decision = decidePlannerLoad(null, true, false, true, pointer);
+    expect(decision).toEqual<PlannerLoadDecision>({
+      codeParam: null,
+      restored: false,
+      deadPointer: false,
+      pointer,
+    });
+  });
+
+  it('does not restore a fight- or armory-sourced pointer', () => {
+    const fight = stored('fight', 'abc:1');
+    expect(decidePlannerLoad(null, true, false, true, fight)).toEqual<PlannerLoadDecision>({
+      codeParam: null,
+      restored: false,
+      deadPointer: false,
+      pointer: fight,
+    });
+    const armory = stored('armory', 'us/normal/simfury');
+    expect(decidePlannerLoad(null, true, false, true, armory)).toEqual<PlannerLoadDecision>({
+      codeParam: null,
+      restored: false,
+      deadPointer: false,
+      pointer: armory,
+    });
+  });
+
+  it('does not restore when the URL is not bare, but the chip still shows the pointer', () => {
+    const pointer = stored('code', GOOD_CODE);
+    const decision = decidePlannerLoad(null, false, false, true, pointer);
+    expect(decision).toEqual<PlannerLoadDecision>({
+      codeParam: null,
+      restored: false,
+      deadPointer: false,
+      pointer,
+    });
+  });
+
+  it('does not restore when a record is present (/b/:id already has its own build)', () => {
+    const pointer = stored('code', GOOD_CODE);
+    const decision = decidePlannerLoad(null, true, true, true, pointer);
+    expect(decision).toEqual<PlannerLoadDecision>({
+      codeParam: null,
+      restored: false,
+      deadPointer: false,
+      pointer,
+    });
+  });
+
+  it('shows no pointer at all when the mount is not standalone (Top Gear\'s inline "add a build")', () => {
+    const decision = decidePlannerLoad(null, true, false, false, stored('code', GOOD_CODE));
+    expect(decision).toEqual<PlannerLoadDecision>({
+      codeParam: null,
+      restored: false,
+      deadPointer: false,
+      pointer: null,
+    });
+  });
+
+  it('does not restore when nothing is stored', () => {
+    const decision = decidePlannerLoad(null, true, false, true, null);
+    expect(decision).toEqual<PlannerLoadDecision>({
+      codeParam: null,
+      restored: false,
+      deadPointer: false,
+      pointer: null,
+    });
+  });
+
+  it('forgets a stored code that no longer decodes, with no error, no restore and no pointer', () => {
+    const decision = decidePlannerLoad(null, true, false, true, stored('code', 'not an fs1 code'));
+    expect(decision).toEqual<PlannerLoadDecision>({
+      codeParam: null,
+      restored: false,
+      deadPointer: true,
+      pointer: null,
+    });
+  });
+});
+
+describe('labelForPlannerLoad', () => {
+  const index = indexTalents(fixtureTalents as TalentFile);
+  const decoded = decodeFS1(GOOD_CODE);
+  const order = decoded.ok ? orderFromRanks(index, decoded.build.treeRanks).order : [];
+
+  it('uses the build title when there is one', () => {
+    expect(labelForPlannerLoad('My Fury Build', 'Warrior', index, order)).toBe('My Fury Build');
+  });
+
+  it('ignores a blank title and falls through to the class/spec label', () => {
+    expect(labelForPlannerLoad('   ', 'Warrior', index, order)).toBe('Warrior · Fury Warrior');
+  });
+
+  it('joins the class name with the spec label once talent data has loaded', () => {
+    expect(labelForPlannerLoad(undefined, 'Warrior', index, order)).toBe('Warrior · Fury Warrior');
+  });
+
+  it('is the class name alone when talent data has not loaded yet', () => {
+    expect(labelForPlannerLoad(undefined, 'Warrior', null, [])).toBe('Warrior');
+  });
+});
+
+describe('recordPlannerCharacter', () => {
+  it('writes a code-sourced pointer with the given label and class slug', () => {
+    const storage = fakeStorage();
+    recordPlannerCharacter('code', GOOD_CODE, 'Warrior · Fury Warrior', 'warrior', storage);
+    expect(readCurrent(storage)).toMatchObject({
+      source: 'code',
+      ref: GOOD_CODE,
+      label: 'Warrior · Fury Warrior',
+      classSlug: 'warrior',
+    });
+  });
+
+  it('writes a build-sourced pointer', () => {
+    const storage = fakeStorage();
+    recordPlannerCharacter('build', 'b1', 'My Build', 'mage', storage);
+    expect(readCurrent(storage)).toMatchObject({ source: 'build', ref: 'b1', classSlug: 'mage' });
+  });
+
+  it('writes an addon-sourced pointer', () => {
+    const storage = fakeStorage();
+    recordPlannerCharacter('addon', GOOD_CODE, 'Warrior', 'warrior', storage);
+    expect(readCurrent(storage)).toMatchObject({ source: 'addon', ref: GOOD_CODE });
+  });
+});
+
+describe('plannerAddonCode', () => {
+  it('is empty with no talent index', () => {
+    const store = { talentIndex: null } as unknown as Parameters<typeof plannerAddonCode>[0];
+    expect(plannerAddonCode(store)).toBe('');
+  });
+});
+
+describe('writePlannerPointer', () => {
+  const index = indexTalents(fixtureTalents as TalentFile);
+  const decoded = decodeFS1(GOOD_CODE);
+  const order = decoded.ok ? orderFromRanks(index, decoded.build.treeRanks).order : [];
+  const loadedStore = {
+    talentIndex: index,
+    classRow: { id: 1, slug: 'warrior', name: 'Warrior' },
+    order,
+  } as unknown as PlannerStore;
+  const emptyStore = { talentIndex: null } as unknown as PlannerStore;
+
+  it('writes and returns the fresh pointer once talent data has loaded, standalone', () => {
+    const storage = fakeStorage();
+    const result = writePlannerPointer(loadedStore, true, 'code', GOOD_CODE, 'warrior', undefined, storage);
+    expect(result).toMatchObject({ source: 'code', ref: GOOD_CODE, label: 'Warrior · Fury Warrior' });
+    expect(readCurrent(storage)).toEqual(result);
+  });
+
+  it('is a no-op inline (standalone false), leaving any existing pointer untouched', () => {
+    const storage = fakeStorage();
+    recordPlannerCharacter('build', 'b1', 'Old', 'mage', storage);
+    const before = readCurrent(storage);
+    const result = writePlannerPointer(loadedStore, false, 'code', GOOD_CODE, 'warrior', undefined, storage);
+    expect(result).toEqual(before);
+    expect(readCurrent(storage)).toEqual(before);
+  });
+
+  it('is a no-op before talent data has loaded', () => {
+    const storage = fakeStorage();
+    const result = writePlannerPointer(emptyStore, true, 'code', GOOD_CODE, 'warrior', undefined, storage);
+    expect(result).toBeNull();
+    expect(readCurrent(storage)).toBeNull();
+  });
+});

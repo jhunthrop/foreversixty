@@ -8,8 +8,8 @@
      no new field on BuildDraft or the card route. The panel's job is only to run that sim,
      after the build has an id, and to never let a failed sim take the save down with it. -->
 <script lang="ts">
-  import { addonCodeFor } from '../../lib/addon/build-code';
   import { addonCopy } from '../../lib/addon/copy';
+  import { plannerAddonCode } from '../../lib/planner/current-character-planner';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import {
     cardUrlFor,
@@ -55,18 +55,9 @@
   // copy, and a $derived keeps that in step with every talent and gear edit for free.
   // talentIndex is null until the talent data has loaded (or has failed to); the addon
   // code is the empty string then, rather than a cast that would crash on that failure.
-  const addonCode = $derived(
-    store.talentIndex === null
-      ? ''
-      : addonCodeFor({
-          dataBuild: store.treeVersion,
-          classSlug: store.classSlug,
-          order: store.order,
-          gear: store.gear,
-          talents: store.talentIndex,
-          items: store.itemIndex,
-        }),
-  );
+  // `plannerAddonCode` (Task 10) is the one derivation, shared with Planner.svelte's own
+  // current-character chip so the two "Copy addon code" surfaces can never disagree.
+  const addonCode = $derived(plannerAddonCode(store));
 
   async function copyToClipboard(text: string, source: 'link' | 'addon'): Promise<void> {
     try {
