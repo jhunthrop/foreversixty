@@ -59,6 +59,6 @@ OWNER: support email.
 
 ## Battlenet-sourced data
 
-Nothing sourced from Battle.net's own API is never sold. Blizzard's Developer API Terms of Use
+Battle.net-sourced data is never sold. Blizzard's Developer API Terms of Use
 forbid paywalling data or features that come from their API, and this site would keep that
 rule even if it did not have to.
