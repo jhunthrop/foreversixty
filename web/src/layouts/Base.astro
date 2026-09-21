@@ -23,7 +23,7 @@ import barlow600Url from '@fontsource/barlow/files/barlow-latin-600-normal.woff2
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import Account from '../components/Account.svelte';
+import SessionNav from '../components/SessionNav.svelte';
 
 import { SITE_NAME, SITE_URL, toJsonLd, websiteLd } from '../lib/seo';
 
@@ -31,16 +31,10 @@ interface Props {
   title: string;
   description: string;
   path: string;
-  /**
-   * Renders the signed-in state in the header. Only the logs-product pages set it: a
-   * content page that did would ship client JavaScript for a link, and the Lighthouse
-   * budgets on those pages have no room for it.
-   */
-  session?: boolean;
   /** Extra JSON-LD nodes for this page; the homepage always carries the WebSite node. */
   jsonLd?: object[];
 }
-const { title, description, path, session = false, jsonLd = [] } = Astro.props;
+const { title, description, path, jsonLd = [] } = Astro.props;
 const site = SITE_URL;
 const fullTitle = title === SITE_NAME ? title : `${title} · ${SITE_NAME}`;
 const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
@@ -80,8 +74,34 @@ const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
     >
       Skip to content
     </a>
-    <Header>{session && <Account client:load mode="nav" slot="session" />}</Header>
+    <Header path={path}>
+      <SessionNav client:load slot="session" />
+    </Header>
     <slot />
     <Footer />
+    <script>
+      // Site-wide "/" shortcut (design/DESIGN-SYSTEM.md: "`/` keyboard hint. First
+      // interactive element on every page"). Pages with a SearchBox island
+      // (src/components/SearchBox.svelte, mounted on `/` and `/search`) already focus it
+      // via src/directives/interaction.ts's own capture-phase "/" listener and call
+      // preventDefault -- this script checks `defaultPrevented` first and steps aside when
+      // that has already happened, so the two mechanisms never fight. Everywhere else
+      // (every page without a search box) this is the only "/" handling that exists, and it
+      // goes to /search.
+      window.addEventListener('keydown', (event) => {
+        if (event.key !== '/' || event.defaultPrevented) return;
+        if (event.metaKey || event.ctrlKey || event.altKey) return;
+        const target = event.target;
+        const typing =
+          target instanceof HTMLInputElement ||
+          target instanceof HTMLTextAreaElement ||
+          (target instanceof HTMLElement && target.isContentEditable);
+        if (typing) return;
+        const searchBox = document.querySelector<HTMLInputElement>('input[aria-label="Search the site"]');
+        event.preventDefault();
+        if (searchBox) searchBox.focus();
+        else window.location.assign('/search');
+      });
+    </script>
   </body>
 </html>
