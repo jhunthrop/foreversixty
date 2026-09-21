@@ -124,17 +124,24 @@ describe('saveBuild', () => {
 });
 
 describe('sharedFields', () => {
-  it('lists class/race, talents and gear for an untitled draft, even with nothing equipped', () => {
+  it('lists only class/race and talents for an untitled draft with nothing equipped', () => {
     expect(sharedFields(draft, false)).toEqual([
       plannerCopy.shareFieldClassRace,
       plannerCopy.shareFieldTalents,
-      plannerCopy.shareFieldGear,
     ]);
   });
 
-  it('still lists gear when the draft omits the key entirely', () => {
+  it('leaves gear out when the draft omits the key entirely', () => {
     const bare: BuildDraft = { ...draft, gear: undefined };
     expect(sharedFields(bare, false)).toEqual([
+      plannerCopy.shareFieldClassRace,
+      plannerCopy.shareFieldTalents,
+    ]);
+  });
+
+  it('lists gear once something is actually equipped', () => {
+    const geared: BuildDraft = { ...draft, gear: { head: 1 } };
+    expect(sharedFields(geared, false)).toEqual([
       plannerCopy.shareFieldClassRace,
       plannerCopy.shareFieldTalents,
       plannerCopy.shareFieldGear,
@@ -155,7 +162,6 @@ describe('sharedFields', () => {
     expect(sharedFields(draft, true)).toEqual([
       plannerCopy.shareFieldClassRace,
       plannerCopy.shareFieldTalents,
-      plannerCopy.shareFieldGear,
       plannerCopy.shareFieldSim,
     ]);
   });

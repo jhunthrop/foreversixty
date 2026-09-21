@@ -39,6 +39,14 @@
 
   let { store, live }: { store: PlannerStore; live: LiveDps } = $props();
 
+  // Per-instance, not a literal id: Top Gear mounts a second, inline Planner (and so a
+  // second SharePanel) on the same page, and two static `id="share-confirm-heading"`
+  // elements would make `aria-labelledby` ambiguous for whichever one is not first in the
+  // DOM. `$props.id()` is Svelte's own per-component unique id, the same primitive
+  // `SearchBox.svelte`'s own `search-title-${i}` ids build by hand for a list instead.
+  const uid = $props.id();
+  const shareConfirmHeadingId = `share-confirm-heading-${uid}`;
+
   let saving = $state(false);
   let outcome = $state<SaveOutcome | null>(null);
   let cardBroken = $state(false);
@@ -120,11 +128,18 @@
   }
 
   // Any edit invalidates the link that was shown: builds are immutable, so a changed build
-  // is a different build. The card sim's own status resets with it, for the same reason.
-  // The confirm step closes too: it asked about a build that no longer exists.
+  // is a different build. The card sim's own status resets with it, for the same reason,
+  // and the confirm step closes too: it asked about a build that no longer exists.
+  //
+  // Reading `draftOrNull()` -- not `store.order.length`/`store.gear` as before -- is what
+  // makes this catch every field `toDraft()` actually sends, not just two of them: it reads
+  // `classRow`/`raceRow` (so a class or race change counts), the whole `order` array via
+  // its `[...order]` spread (so reordering points between trees at the same total count
+  // counts, which watching only `.length` missed), `gear` (unchanged), and `title` (which
+  // the old effect did not watch at all -- a title-only edit after a failed save used to
+  // let Retry post the new title under a confirm that had shown the old one).
   $effect(() => {
-    void store.order.length;
-    void store.gear;
+    void draftOrNull();
     outcome = null;
     copiedFrom = null;
     cardState = 'idle';
@@ -140,7 +155,7 @@
 
   async function attachSim(build: SavedBuild, generation: number): Promise<void> {
     const character = characterFromPlanner(store);
-    if (!includeSim || character === null || store.talentIndex === null) return;
+    if (!confirmedIncludeSim || character === null || store.talentIndex === null) return;
     cardState = 'running';
     // The card sim runs at the settings the sim page opens on -- raid-buffed, three
     // minutes, single target, split physical or caster by this build's own spec. The
@@ -206,6 +221,17 @@
   });
 
   /**
+   * Whether a sim will be attached, captured the instant "Share anyway" runs rather than
+   * re-read live afterward. `attachSim` reads this, not `includeSim`/`live.state` directly:
+   * a live estimate that leaves 'ready' between the confirm and the save resolving (or a
+   * later Retry of the same failed save) can then neither attach a sim the confirm never
+   * listed nor skip one it did -- what the visitor confirmed is what actually happens.
+   * Retry reuses it unchanged, for the same reason: it re-attempts the save the visitor
+   * already confirmed, not a fresh one.
+   */
+  let confirmedIncludeSim = $state(false);
+
+  /**
    * Opens the confirm and, once its markup has rendered, moves focus onto its own heading --
    * not the "Share anyway" button, so Tab from there reaches every option in order rather
    * than skipping the first. `tick()`, not a `$effect` reading `confirmHeadingEl`: the
@@ -226,6 +252,7 @@
 
   async function confirmedShare(): Promise<void> {
     confirmOpen = false;
+    confirmedIncludeSim = includeSimChecked;
     await share();
   }
 
@@ -326,11 +353,11 @@
     <div
       class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-3"
       role="group"
-      aria-labelledby="share-confirm-heading"
+      aria-labelledby={shareConfirmHeadingId}
       data-testid="share-confirm"
     >
       <p
-        id="share-confirm-heading"
+        id={shareConfirmHeadingId}
         tabindex="-1"
         bind:this={confirmHeadingEl}
         class="text-strong text-[14px] outline-none"
