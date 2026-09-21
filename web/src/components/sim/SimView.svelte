@@ -10,7 +10,7 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
-  import { battlenetStartUrl, fetchMe, type Me } from '../../lib/account/api';
+  import { battlenetStartUrl, effectiveServerSims, fetchMe, type Me } from '../../lib/account/api';
   import type { CharacterPath } from '../../lib/characters';
   import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
   import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
@@ -331,7 +331,7 @@
     void fetchMe()
       .then((result) => {
         me = result;
-        store.setPremium(result?.user.premium === true);
+        store.setPremium(effectiveServerSims(result));
         if (result !== null) void loadHistory();
       })
       .catch(() => {});
@@ -644,6 +644,7 @@
           relativeError={store.relativeError}
           lane={store.lane}
           premium={store.premium}
+          signedIn={me !== null}
           message={store.message}
           detail={store.detail}
           racePending={store.needsRace}

@@ -9,7 +9,7 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../../data/active-build.json';
-  import { battlenetStartUrl, fetchMe, type Me } from '../../../lib/account/api';
+  import { battlenetStartUrl, effectiveServerSims, fetchMe, type Me } from '../../../lib/account/api';
   import { clearCurrent, readCurrent, type CurrentCharacter } from '../../../lib/current-character';
   import { CHIP_HEIGHT, VIEW_GAP } from '../../../lib/current-character-layout';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
@@ -172,7 +172,7 @@
     void fetchMe()
       .then((result) => {
         me = result;
-        store.setPremium(result?.user.premium === true);
+        store.setPremium(effectiveServerSims(result));
       })
       .catch(() => {});
     void store.loadSpecs();

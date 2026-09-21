@@ -199,7 +199,9 @@
         <!-- Contract 10.1 A2: the premium lane's cap is 5,000, and bulkCopy.capPremiumNote
              says that number. Offering it when the list is past 5,000 too would send the
              player to a lane that refuses the same request. -->
-        <span class="text-muted">{bulkCopy.capPremiumNote}</span>
+        <span class="text-muted"
+          >{bulkCopy.capPremiumNote} <a href="/premium" class="underline">{bulkCopy.seePlans}</a></span
+        >
       {:else}
         <span class="text-muted"
           >{bulkCopy.serverCapNotice(store.serverCapNotice.cap, store.serverCapNotice.combinations)}</span

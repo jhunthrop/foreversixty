@@ -131,12 +131,18 @@ export const weightsUnsupportedSpec = (specName: string): string =>
   `The engine doesn't simulate ${specName}; stat weights need a DPS spec.`;
 // --- Lane W1 (persona round 1: results, labels, weights) ---
 
+/** Shared across `simCopy.seePlans` and `bulkCopy.seePlans`: both sit next to a premium
+ *  note and link to the same `/premium` page, so the label is one string, not two. */
+const seePlansLabel = 'See plans';
+
 export const simCopy = {
   /** Network and API failures. */
   saveFailed: 'The sim could not be saved; try again.',
   loadFailed: 'That sim did not load.',
   notFound: 'No sim with that id.',
   premiumRequired: 'Running on our servers is a premium feature. The browser lane is free and unlimited.',
+  seePlans: seePlansLabel,
+  getPremium: 'Get premium',
   specsFailed: 'Spec support could not be read.',
   characterFailed: 'That character could not be read.',
 
@@ -990,6 +996,7 @@ export const bulkCopy = {
     `${combinations.toLocaleString('en-US')} combinations is past this browser’s limit of ${cap.toLocaleString('en-US')}. Untick ${(combinations - cap).toLocaleString('en-US')} of them, or run it on our servers.`,
   capPremium: 'Run on our servers',
   capPremiumNote: 'Premium lifts the limit to 5,000 combinations and any precision.',
+  seePlans: seePlansLabel,
   serverCapNotice: (cap: number, combinations: number): string =>
     `${combinations.toLocaleString('en-US')} combinations is past our servers’ limit of ${cap.toLocaleString('en-US')} too. Untick ${(combinations - cap).toLocaleString('en-US')} of them.`,
   lowCoreNote: (cap: number): string =>

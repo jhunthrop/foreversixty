@@ -27,6 +27,7 @@
     relativeError,
     lane,
     premium,
+    signedIn = false,
     message,
     detail,
     racePending,
@@ -57,6 +58,10 @@
      */
     lane: Lane;
     premium: boolean;
+    /** Whether the visitor is signed in (`me !== null`). Gates the "Get premium" link that
+     *  replaces the server-run button for a signed-in, non-premium visitor -- a signed-out
+     *  visitor sees neither, since they would hit the sign-in wall before premium matters. */
+    signedIn?: boolean;
     message: string | null;
     /** The engine's own words for the failure, shown verbatim under the message. Empty when there are none. */
     detail: string;
@@ -192,6 +197,14 @@
         onclick={onserver}
         data-testid="sim-server-run">{simCopy.runOnServers}</button
       >
+    {:else if signedIn}
+      <a
+        href="/premium"
+        class="border-line-warm rounded-control text-nav label inline-flex min-h-11 items-center border px-4 md:min-h-9"
+        data-testid="sim-get-premium"
+      >
+        {simCopy.getPremium}
+      </a>
     {/if}
   </div>
 
@@ -224,6 +237,9 @@
       data-testid="sim-message"
     >
       {message}
+      {#if message === simCopy.premiumRequired}
+        <a href="/premium" class="underline">{simCopy.seePlans}</a>
+      {/if}
     </p>
   {/if}
 
