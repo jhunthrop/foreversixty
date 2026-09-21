@@ -82,6 +82,7 @@
       character={store.character}
       picked={store.loadouts}
       ontoggle={(loadout, on) => (on ? store.addLoadout(loadout) : store.removeLoadout(loadout.name))}
+      onpendingcustom={(pending) => store.setPendingCustomBuild(pending)}
     />
   {/if}
 

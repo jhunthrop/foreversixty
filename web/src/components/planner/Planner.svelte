@@ -456,7 +456,7 @@
       />
     </div>
   {/if}
-  <SummaryBar {store} {live} {simHref} {gate} onshowdps={() => (dpsOptedIn = true)} />
+  <SummaryBar {store} {live} {simHref} {gate} {standalone} onshowdps={() => (dpsOptedIn = true)} />
 
   <p class="text-muted px-[18px] text-[13px] md:px-0">{treeSourceNotice(store.treeVersion)}</p>
 

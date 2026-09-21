@@ -9,6 +9,7 @@ import {
   MINUS,
   anyKeepsSetBonus,
   canPlanCombo,
+  closestOverlappingPair,
   collapsedComboCount,
   comboKey,
   comboRows,
@@ -21,6 +22,7 @@ import {
   keepsSetBonus,
   percentOf,
   planItHref,
+  rowName,
   signedGainLabel,
   slotSummary,
   sourceNameOfCombo,
@@ -32,7 +34,7 @@ import {
 import { bulkCopy } from './copy';
 import { decodeFS1 } from '../planner/fs1';
 import type { BulkResult, Combo } from './bulk-types';
-import type { GearSlot } from './types';
+import type { Estimate, GearSlot } from './types';
 import type { Item, ItemSet } from '../planner/types';
 
 const result = bulkResultJson as unknown as BulkResult;
@@ -685,6 +687,84 @@ describe('exactTieGroups', () => {
 
   it('finds nothing in a list of one', () => {
     expect(exactTieGroups([row(1)])).toEqual([]);
+  });
+});
+
+/**
+ * newcomer round 4 (review.md:83-110) / dps D25-pattern: "These runs are too close to
+ * separate..." used to print under every result with more than one row, including a
+ * −37.4% gap at a ±1.5/±1.6 margin (roughly 150x the margin, not close at all).
+ * `closestOverlappingPair` is the real predicate: at least one ADJACENT pair in the
+ * ranking whose delta intervals (mean ± error) actually overlap.
+ */
+describe('closestOverlappingPair', () => {
+  function row(itemId: number, delta: Estimate): ComboRow {
+    return {
+      rank: 1,
+      combo: {
+        substitutions: [{ kind: 'item', slot: 'neck', item_id: itemId, name: `Item ${itemId}` }],
+        dps: delta,
+        delta,
+        group: 0,
+      },
+      withinError: true,
+      percent: 0,
+    };
+  }
+
+  it('is null for a clear gap -- the round-4 repro numbers themselves', () => {
+    // "Your current build" +0 ± 1.6, "Build 1" −239 ± 1.5: intervals [-1.6,1.6] and
+    // [-240.5,-237.5] do not touch.
+    const rows = [
+      row(1, { mean: 0, stddev: 0, error: 1.6, min: 0, max: 0 }),
+      row(2, { mean: -239, stddev: 0, error: 1.5, min: 0, max: 0 }),
+    ];
+    expect(closestOverlappingPair(rows)).toBeNull();
+  });
+
+  it('finds an overlapping adjacent pair and names both rows', () => {
+    const rows = [
+      row(1, { mean: 100, stddev: 0, error: 5, min: 0, max: 0 }),
+      row(2, { mean: 98, stddev: 0, error: 5, min: 0, max: 0 }),
+      row(3, { mean: -50, stddev: 0, error: 2, min: 0, max: 0 }),
+    ];
+    expect(closestOverlappingPair(rows)).toEqual({ a: rows[0], b: rows[1] });
+  });
+
+  it('is null for a single row, and for an empty list', () => {
+    expect(closestOverlappingPair([row(1, { mean: 0, stddev: 0, error: 5, min: 0, max: 0 })])).toBeNull();
+    expect(closestOverlappingPair([])).toBeNull();
+  });
+
+  it('touching intervals (equal bounds) count as overlapping', () => {
+    const rows = [
+      row(1, { mean: 10, stddev: 0, error: 5, min: 0, max: 0 }),
+      row(2, { mean: 20, stddev: 0, error: 5, min: 0, max: 0 }),
+    ];
+    // [5,15] and [15,25] touch at exactly 15.
+    expect(closestOverlappingPair(rows)).toEqual({ a: rows[0], b: rows[1] });
+  });
+});
+
+describe('rowName', () => {
+  it('names a row from its leading substitution, the same source headlineFor uses', () => {
+    const combo: Combo = {
+      substitutions: [{ kind: 'item', slot: 'head', item_id: 1, name: 'Helm of Wrath' }],
+      dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      group: 0,
+    };
+    expect(rowName({ rank: 1, combo, withinError: true, percent: 0 })).toBe('Helm of Wrath');
+  });
+
+  it('falls back to the rank when the substitution carries no name', () => {
+    const combo: Combo = {
+      substitutions: [],
+      dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+      group: 0,
+    };
+    expect(rowName({ rank: 3, combo, withinError: true, percent: 0 })).toBe('#3');
   });
 });
 

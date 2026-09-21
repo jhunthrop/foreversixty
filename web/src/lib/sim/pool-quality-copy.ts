@@ -67,4 +67,53 @@ export const poolQualityCopy = {
    */
   talentsSavedSignedOut:
     'Sign in to save builds and see them here. Paste one below with ADD A BUILD instead.',
+
+  /**
+   * TalentCandidates.svelte, newcomer round 4 (review.md:83-110): the outer toggle that
+   * opens the build editor and the inner button that actually commits the pasted build
+   * into the comparison both read "Add a build" -- a newcomer who clicks only the first,
+   * pastes, and runs gets a silent one-row table. The toggle keeps naming what it opens
+   * (`bulkCopy.talentsAddCustom`); this names what the inner button actually DOES.
+   */
+  talentsAddCustomConfirm: 'Add this build to the comparison',
+  /**
+   * BulkRunBar.svelte, same finding: the run button's own refusal line
+   * (`sim-run-not-simulated`/`sim-cap-notice` pattern) for the one remaining way the trap
+   * could still bite even with the two buttons told apart -- a valid pasted build sitting
+   * in the editor that RUN would silently leave out. Blocking with one line, rather than
+   * adding it automatically, keeps the comparison exactly what the player ticked: an
+   * automatic add could not un-surprise a player who wanted to review the build first.
+   */
+  talentsPendingCustomBuild:
+    'The build in the editor has not been added to the comparison yet — click “Add this build to the comparison” first, or RUN will leave it out.',
+
+  /**
+   * combos.ts's `closestOverlappingPair`, dps D25-pattern (round 3 Top Gear, round 4
+   * Talent Compare, newcomer round 4 review.md:83-110): "These runs are too close to
+   * separate..." used to print under every result with more than one row, including a
+   * −37.4% gap at a ±1.5/±1.6 margin -- roughly 150 times its own error bar, not close at
+   * all. Named to the one pair it is actually true of, when it is true of one.
+   */
+  withinErrorNoteNaming: (a: string, b: string): string =>
+    `${a} and ${b} are too close to separate at this many iterations. Run again at a higher precision to tell them apart.`,
+
+  /**
+   * PlannerDps.svelte, newcomer round 4 (review.md:83-110): the same pasted Fire Mage
+   * build read 681 ± 6.9 in the build editor's own preview and 400 in Talent Compare's
+   * ranked table. Root cause (confirmed): ImportBox's `onimport` replaces the planner
+   * draft's gear wholesale with the pasted export's own (`store.svelte.ts`'s
+   * `loadImported`), so this preview sims the pasted character whole, with THEIR gear --
+   * while the ranked comparison locks every row to the CURRENT character's gear and
+   * substitutes only the talent tree (contract: "gear is locked to what you are
+   * wearing"). Neither number is wrong; only the editor's own preview needed saying so,
+   * since it is the one number on the page that is NOT your current gear.
+   */
+  plannerDpsOwnGearNote: 'With the gear shown above — the comparison below always uses your current gear.',
+  /**
+   * ComboResults.svelte, same finding: the other half of the same explanation, said once
+   * near the table itself rather than only in the page's own standfirst
+   * (`bulkCopy.talentsIntro`, easy to scroll past before a result exists to compare it
+   * against).
+   */
+  talentsGearLockedNote: 'Every row above uses your current gear — only the talent tree changes.',
 } as const;
