@@ -149,7 +149,13 @@ func (s *Service) acceptInvite(w http.ResponseWriter, r *http.Request) {
 	actor := auth.ActorFrom(r.Context())
 	result, err := s.Store.AcceptInvite(r.Context(), token, actor.UserID)
 	switch {
-	case err == nil:
+	case errors.Is(err, ErrNotFound):
+		// Never distinguish "no such token" from "rotated away" — both
+		// fall out of the same zero-row lookup in AcceptInvite.
+		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "that invite link is not valid", nil)
+	case err != nil:
+		s.fail(w, r, "accept_invite", err, "could not accept that invite just now")
+	default:
 		s.logger().Info("guilds", "op", "invite_accept", "guild_id", result.GuildID, "user_id", actor.UserID)
 		httpx.WriteOK(w, r, http.StatusOK, map[string]any{
 			"guild": map[string]any{
@@ -157,9 +163,5 @@ func (s *Service) acceptInvite(w http.ResponseWriter, r *http.Request) {
 			},
 			"rank": result.Rank,
 		})
-	default:
-		// Never distinguish "no such token" from "rotated away" — both
-		// fall out of the same zero-row lookup in AcceptInvite.
-		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "that invite link is not valid", nil)
 	}
 }
