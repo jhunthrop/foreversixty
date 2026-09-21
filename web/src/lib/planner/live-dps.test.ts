@@ -98,6 +98,27 @@ describe('createLiveDps', () => {
     dps.dispose();
   });
 
+  it('keeps the last figure when it is told to stop, and forgets it only when cleared', async () => {
+    const index = await warriorIndex();
+    vi.useFakeTimers();
+    const dps = live();
+    dps.request(character, index);
+    await vi.runAllTimersAsync();
+    const first = dps.estimate.mean;
+    expect(first).toBeGreaterThan(0);
+
+    // A build that drops a point stops simming but still shows what it last measured.
+    dps.request(null, null);
+    expect(dps.state).toBe('off');
+    expect(dps.estimate.mean).toBe(first);
+
+    // A class change is a different question, not a stale answer.
+    dps.clear();
+    expect(dps.state).toBe('off');
+    expect(dps.estimate.mean).toBe(0);
+    dps.dispose();
+  });
+
   it('goes off, not to an error, when there is no character to sim', async () => {
     const index = await warriorIndex();
     const dps = live();

@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { LAST_TALENT, NEARLY_FINISHED_BUILD, finishBuild, showTree } from './support/planner';
 
 import { heldRoute } from './support/held-route';
 
@@ -31,8 +32,8 @@ test('a saved build sims itself for the card, without blocking the link', async 
     });
   });
 
-  await page.goto('/planner');
-  await page.getByTestId('talent-1001').click();
+  await page.goto(NEARLY_FINISHED_BUILD);
+  await finishBuild(page);
   await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
 
   const checkbox = page.getByLabel('Include a simmed DPS on the card');
@@ -70,8 +71,8 @@ test('a failed card sim never breaks the share link', async ({ page }) => {
     }),
   );
 
-  await page.goto('/planner');
-  await page.getByTestId('talent-1001').click();
+  await page.goto(NEARLY_FINISHED_BUILD);
+  await finishBuild(page);
   await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
 
   await page.getByRole('button', { name: 'Share' }).click();
@@ -96,8 +97,8 @@ test('unchecking the box skips the card sim entirely', async ({ page }) => {
     });
   });
 
-  await page.goto('/planner');
-  await page.getByTestId('talent-1001').click();
+  await page.goto(NEARLY_FINISHED_BUILD);
+  await finishBuild(page);
   await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
 
   const checkbox = page.getByLabel('Include a simmed DPS on the card');
@@ -168,8 +169,8 @@ test("a second save while the first build's sim is still running never overwrite
     });
   });
 
-  await page.goto('/planner');
-  await page.getByTestId('talent-1001').click();
+  await page.goto(NEARLY_FINISHED_BUILD);
+  await finishBuild(page);
   await expect(page.getByTestId('planner-dps')).not.toHaveText('—', { timeout: 3000 });
 
   await page.getByRole('button', { name: 'Share' }).click();
@@ -179,7 +180,11 @@ test("a second save while the first build's sim is still running never overwrite
   );
 
   // A second, different save starts while the first build's sim is still held above.
-  await page.getByTestId('talent-1002').click();
+  // Still a whole build, so it still sims: one point moves from Arms into Flurry.
+  await showTree(page, 'Arms');
+  await page.getByTestId('talent-1001').click({ button: 'right' });
+  await showTree(page, 'Fury');
+  await page.getByTestId(LAST_TALENT).click();
   await expect(page.getByTestId('share-link')).not.toBeVisible();
   await page.getByRole('button', { name: 'Share' }).click();
 

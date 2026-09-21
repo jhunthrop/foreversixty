@@ -11,6 +11,7 @@
   import { ranksByTalent } from '../../lib/planner/derive';
   import { decodeFS1, encodeFS1, orderFromRanks } from '../../lib/planner/fs1';
   import { createLiveDps } from '../../lib/planner/live-dps.svelte';
+  import { isConstrainedDevice, liveGate } from '../../lib/planner/live-gate';
   import {
     DATA_LOAD_FAILED,
     DataLoadError,
@@ -156,10 +157,27 @@
   // Every edit to the build re-requests an estimate; live.request debounces the burst into
   // one run and cancels whatever was already in flight. `characterFromPlanner` returns null
   // until the talent file has loaded, which `request` treats as "off" rather than an error.
+  // ...but only for a build worth simming, on a device that wants it (live-gate.ts): until
+  // every point is spent nothing is asked of the engine, so nothing is downloaded either, and
+  // a phone is asked first. Stopping keeps the last figure on screen, dimmed.
+  const constrained = untrack(() => isConstrainedDevice());
+  let dpsOptedIn = $state(false);
+  const gate = $derived(liveGate({ spent: store.spent, constrained, optedIn: dpsOptedIn }));
+
+  // A figure from another class is not a stale answer to this build. Declared BEFORE the
+  // request effect below on purpose: effects flush in declaration order, and a build pasted
+  // in for another class changes the class and the talents in one go -- clearing second
+  // would cancel the very run that paste had just scheduled.
+  $effect(() => {
+    void store.classSlug;
+    untrack(() => live.clear());
+  });
+
   $effect(() => {
     void store.order;
     void store.gear;
-    live.request(characterFromPlanner(store), store.talentIndex);
+    if (gate === 'run') live.request(characterFromPlanner(store), store.talentIndex);
+    else live.request(null, null);
   });
 
   // No reactive reads of its own: this effect's body runs once, on mount, purely to register
@@ -387,7 +405,7 @@
 </script>
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
-  <SummaryBar {store} {live} {simHref} />
+  <SummaryBar {store} {live} {simHref} {gate} onshowdps={() => (dpsOptedIn = true)} />
 
   <p class="text-muted px-[18px] text-[13px] md:px-0">{treeSourceNotice(store.treeVersion)}</p>
 

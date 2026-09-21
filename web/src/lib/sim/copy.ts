@@ -201,6 +201,11 @@ export const simCopy = {
   liveDpsFailed: 'DPS estimate unavailable for this build.',
   /** The summary bar's fourth figure, beside Level, Split and Points. */
   plannerDpsLabel: 'DPS',
+  /** Under the figure while points are unspent: the live estimate waits for a whole build. */
+  plannerDpsPointsToGo: (left: number): string => (left === 1 ? '1 point to go' : `${left} points to go`),
+  /** On a phone or a data-saver connection the estimate is asked for, never assumed. */
+  plannerDpsShow: 'Show DPS',
+  plannerDpsShowNote: 'Runs on this device',
   /** The link that opens the full results for the build on the page. */
   simThisBuild: 'Sim this build',
 

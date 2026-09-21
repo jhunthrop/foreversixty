@@ -104,6 +104,21 @@ export function createLiveDps(init: { pool?: SimPool; debounceMs?: number } = {}
       }, debounceMs);
     },
 
+    /**
+     * Forgets the last figure. `request(null, …)` deliberately keeps it -- a build one point
+     * short of finished shows its last number dimmed -- but a number from another class is
+     * not a stale answer to this build, it is an answer to a different question.
+     */
+    clear(): void {
+      if (timer !== null) clearTimeout(timer);
+      timer = null;
+      handle?.cancel();
+      estimate = EMPTY_ESTIMATE;
+      iterationsRun = 0;
+      message = null;
+      state = 'off';
+    },
+
     dispose(): void {
       if (timer !== null) clearTimeout(timer);
       timer = null;

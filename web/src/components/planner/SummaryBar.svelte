@@ -7,8 +7,16 @@
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { MAX_POINTS } from '../../lib/planner/types';
   import PlannerDps from './PlannerDps.svelte';
+  import type { LiveGate } from '../../lib/planner/live-gate';
 
-  let { store, live, simHref }: { store: PlannerStore; live: LiveDps; simHref: string } = $props();
+  let {
+    store,
+    live,
+    simHref,
+    gate,
+    onshowdps,
+  }: { store: PlannerStore; live: LiveDps; simHref: string; gate: LiveGate; onshowdps: () => void } =
+    $props();
 
   // The bar's one refusal line already carries the planner's own refusals (an illegal move,
   // a read-only build); a failed live estimate is the same kind of fact -- something the
@@ -80,7 +88,7 @@
     </span>
   </div>
 
-  <PlannerDps {live} href={simHref} />
+  <PlannerDps {live} href={simHref} {gate} pointsLeft={MAX_POINTS - store.spent} onshow={onshowdps} />
 
   <p
     role="status"
