@@ -3,9 +3,9 @@ package guilds
 
 import (
 	"context"
-	"fmt"
-	"sync"
+	"errors"
 	"testing"
+	"time"
 )
 
 func TestIsMemberReadsGuildCharactersRegardlessOfVerification(t *testing.T) {
@@ -237,41 +237,61 @@ func TestSetVerifiedForAccountVerifiesEveryRowAndRecordsSource(t *testing.T) {
 	}
 }
 
-func TestRecomputeMembershipSerialisesConcurrentCallersForTheSameGuild(t *testing.T) {
+func TestRecomputeMembershipsAdvisoryLockSerialisesConcurrentTransactions(t *testing.T) {
 	pool := testPool(t)
 	ctx := context.Background()
 	gid := seedGuild(t, pool, "Forever")
-	var wg sync.WaitGroup
-	errs := make([]error, 20)
-	for i := 0; i < 20; i++ {
-		wg.Add(1)
-		go func(i int) {
-			defer wg.Done()
-			uid := seedUser(t, pool, fmt.Sprintf("lockrace-%d@example.com", i))
-			seedCharacter(t, pool, gid, uid, fmt.Sprintf("us/hardcore/lockrace%d", i), "member", true)
-			tx, err := pool.Begin(ctx)
-			if err != nil {
-				errs[i] = err
-				return
-			}
-			if err := RecomputeMembership(ctx, tx, gid, &uid); err != nil {
-				errs[i] = err
-				return
-			}
-			errs[i] = tx.Commit(ctx)
-		}(i)
-	}
-	wg.Wait()
-	for i, err := range errs {
-		if err != nil {
-			t.Fatalf("goroutine %d: %v", i, err)
-		}
-	}
-	var n int
-	if err := pool.QueryRow(ctx, `select count(*) from guild_members where guild_id = $1`, gid).Scan(&n); err != nil {
+	uid := seedUser(t, pool, "lock-hold@example.com")
+	seedCharacter(t, pool, gid, uid, "us/hardcore/lockhold", "member", true)
+
+	txA, err := pool.Begin(ctx)
+	if err != nil {
 		t.Fatal(err)
 	}
-	if n != 20 {
-		t.Fatalf("guild_members rows = %d, want 20 (one per concurrently-added account, none lost to the race)", n)
+	defer func() { _ = txA.Rollback(ctx) }()
+	if err := RecomputeMembership(ctx, txA, gid, &uid); err != nil {
+		t.Fatal(err)
+	}
+	// txA now holds the advisory lock for this guild, uncommitted.
+
+	started := make(chan struct{})
+	done := make(chan error, 1)
+	go func() {
+		txB, err := pool.Begin(ctx)
+		if err != nil {
+			done <- err
+			return
+		}
+		defer func() { _ = txB.Rollback(ctx) }()
+		close(started)
+		done <- RecomputeMembership(ctx, txB, gid, &uid)
+	}()
+	<-started
+	// Give txB every chance to race ahead if the lock did not block it.
+	select {
+	case err := <-done:
+		t.Fatalf("a concurrent RecomputeMembership on the same guild returned (err=%v) before the lock-holding transaction committed - the advisory lock did not serialise it", err)
+	case <-time.After(200 * time.Millisecond):
+		// Expected: txB is still blocked waiting for the advisory lock.
+	}
+	if err := txA.Commit(ctx); err != nil {
+		t.Fatal(err)
+	}
+	select {
+	case err := <-done:
+		if err != nil {
+			t.Fatal(err)
+		}
+	case <-time.After(2 * time.Second):
+		t.Fatal("txB never completed after txA committed and released the lock")
+	}
+}
+
+func TestContestedReturnsNotFoundForAnUnknownGuild(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	if _, err := s.contested(ctx, 999999999); !errors.Is(err, ErrNotFound) {
+		t.Fatalf("contested for an unknown guild id = %v, want ErrNotFound", err)
 	}
 }
