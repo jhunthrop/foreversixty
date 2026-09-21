@@ -49,8 +49,15 @@ export function namedSummary(summary: Summary, names: ActionNames | null): Summa
   };
 }
 
+/**
+ * Clamped to 100 as a last line of defence (2026-09-21 result-page review round 3, E8: a
+ * combined sim result's aura rows read up to 101% here, sim/combine's own bug, now fixed
+ * at the source) -- this is the one place every uptime and every damage share in the
+ * sentence is rounded, so clamping it once covers both without either caller needing to
+ * know why the source disagreed.
+ */
 function percent(part: number, whole: number): number {
-  return whole <= 0 ? 0 : Math.round((part / whole) * 100);
+  return whole <= 0 ? 0 : Math.min(Math.round((part / whole) * 100), 100);
 }
 
 /**
