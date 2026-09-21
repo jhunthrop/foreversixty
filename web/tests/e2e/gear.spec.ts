@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { openGear } from './support/planner';
+import { openGear, shareBuild } from './support/planner';
 
 // Gear is the optional half of a build and the only part of the planner that reads the item
 // data. The set bonus carries the most: it appears only once both pieces are on, so it
@@ -82,7 +82,7 @@ test('gear travels with the shared build', async ({ page }) => {
   await openGear(page);
   await page.getByTestId('slot-main_hand').click();
   await page.getByTestId('item-12784').click();
-  await page.getByRole('button', { name: 'Share' }).click();
+  await shareBuild(page);
   await expect(page.getByTestId('share-link')).toBeVisible();
   expect(gear).toEqual({ main_hand: 12784 });
 });
