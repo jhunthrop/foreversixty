@@ -165,9 +165,14 @@
              from where the link itself sits. -->
         <span role="columnheader" class="col-span-full md:col-span-1" aria-label={handoffCopy.planIt}></span>
       </div>
-      {#each rows as row, index (row.combo.substitutions
-        .map((sub) => `${sub.kind}:${sub.slot ?? ''}:${sub.item_id ?? sub.name ?? ''}`)
-        .join('|'))}
+      {#each rows as row, index (comboKey(row))}
+        <!-- Review fix round 1: this each-key used to hash the substitutions inline here,
+             a second copy of what `comboKey` (combos.ts) already computes for the row's own
+             `data-testid` below. `comboKey` is at least as discriminating as the old inline
+             hash -- it keys every substitution the same way (kind-qualified for a
+             non-item one, slot+item_id for an item one) and additionally tells apart two
+             rows carrying the same item at different enchants/suffixes, which the old hash
+             never did -- so one function now serves both the each-key and the test id. -->
         <!-- Fix round 1, minor 2: a real visual boundary at the end of the leader's
              within-error group, not only a repeated rank digit in a 28px column. -->
         {@const groupEnd = index === rows.length - 1 || rows[index + 1].combo.group !== row.combo.group}

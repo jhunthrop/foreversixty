@@ -146,4 +146,20 @@ describe('ComboResults: "Plan it" per row (task 7)', () => {
     const body = renderCombos();
     expect(body).toContain(`aria-label="${handoffCopy.planIt}"`);
   });
+
+  /**
+   * Review fix round 1: `comboKey` used to key on only a row's first substitution, so the
+   * fixture's own `combos[0]` (head+shoulder) and `combos[1]` (head alone) rendered the
+   * identical `data-testid="sim-combo-plan-it-head:16963"` -- this asserts the render
+   * itself, not just `comboKey` in isolation, since it is the rendered id an e2e spec
+   * would actually select by.
+   */
+  it('gives every plannable row a unique Plan it test id', () => {
+    const body = renderCombos();
+    const rows = comboRows(result);
+    const plannableCount = rows.filter((row) => canPlanCombo(row.combo)).length;
+    const ids = [...body.matchAll(/data-testid="(sim-combo-plan-it-[^"]+)"/g)].map((match) => match[1]);
+    expect(ids).toHaveLength(plannableCount);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
 });

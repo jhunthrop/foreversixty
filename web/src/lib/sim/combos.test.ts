@@ -25,6 +25,7 @@ import {
   substitutionChipLabel,
   substitutionLabel,
   winningGear,
+  type ComboRow,
 } from './combos';
 import { bulkCopy } from './copy';
 import { decodeFS1 } from '../planner/fs1';
@@ -469,14 +470,91 @@ describe('planItHref', () => {
   });
 });
 
+/**
+ * Review fix round 1: the original `comboKey` (moved here unchanged from
+ * `DropResults.svelte`) keyed on only the FIRST substitution, so the fixture's own
+ * `combos[0]` (head+shoulder) and `combos[1]` (head alone) both rendered "head:16963" once
+ * `comboKey` reached a component (`ComboResults.svelte`) whose rows can carry more than one
+ * substitution -- harmless in `DropResults.svelte`, whose "drops" mode combos are always
+ * single-substitution, but a real `data-testid` collision (and an e2e selector risk) once
+ * shared. `web/tests/e2e/sim-drops.spec.ts` asserts `sim-drops-pin-finger1:19325`,
+ * `sim-drops-pin-head:16963` and `sim-drops-pin-main_hand:12784` verbatim, so the plain
+ * single-item case (no enchant, no suffix) must keep producing exactly `<slot>:<item_id>`.
+ */
 describe('comboKey', () => {
-  it('keys an item row on slot:item_id', () => {
-    expect(comboKey(comboRows(result)[0])).toBe('head:16963');
+  it('keys a plain single-item row on slot:item_id, unchanged -- e2e selects these ids verbatim', () => {
+    const headOnly = comboRows(result).find(
+      (row) => row.combo.substitutions.length === 1 && row.combo.substitutions[0].slot === 'head',
+    )!;
+    expect(comboKey(headOnly)).toBe('head:16963');
   });
 
-  it('falls back to the rank for a row with no item substitution', () => {
-    const talentsRow = comboRows(result).find((row) => row.combo.substitutions[0].kind === 'talents')!;
-    expect(comboKey(talentsRow)).toBe(String(talentsRow.rank));
+  it('gives combos[0] (head+shoulder) and combos[1] (head alone) different keys', () => {
+    const rows = comboRows(result);
+    const headAndShoulder = rows.find((row) => row.combo.substitutions.length === 2)!;
+    const headOnly = rows.find(
+      (row) => row.combo.substitutions.length === 1 && row.combo.substitutions[0].slot === 'head',
+    )!;
+    expect(comboKey(headAndShoulder)).not.toBe(comboKey(headOnly));
+  });
+
+  it('distinguishes two rows carrying the same item at different enchants', () => {
+    const plain: ComboRow = {
+      rank: 1,
+      withinError: true,
+      percent: 0,
+      combo: {
+        substitutions: [{ kind: 'item', slot: 'head', item_id: 16963 }],
+        dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+        delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+        group: 0,
+      },
+    };
+    const enchanted: ComboRow = {
+      ...plain,
+      combo: {
+        ...plain.combo,
+        substitutions: [{ kind: 'item', slot: 'head', item_id: 16963, enchant: 907 }],
+      },
+    };
+    const differentlyEnchanted: ComboRow = {
+      ...plain,
+      combo: {
+        ...plain.combo,
+        substitutions: [{ kind: 'item', slot: 'head', item_id: 16963, enchant: 123 }],
+      },
+    };
+    expect(comboKey(plain)).toBe('head:16963');
+    expect(comboKey(enchanted)).not.toBe(comboKey(plain));
+    expect(comboKey(enchanted)).not.toBe(comboKey(differentlyEnchanted));
+  });
+
+  it('distinguishes two talents-only rows with different loadouts', () => {
+    const deepFury: ComboRow = {
+      rank: 5,
+      withinError: false,
+      percent: 0,
+      combo: {
+        substitutions: [{ kind: 'talents', name: 'Deep Fury', talents: '0-5530515-' }],
+        dps: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+        delta: { mean: 0, stddev: 0, error: 0, min: 0, max: 0 },
+        group: 2,
+      },
+    };
+    const arms: ComboRow = {
+      ...deepFury,
+      combo: {
+        ...deepFury.combo,
+        substitutions: [{ kind: 'talents', name: 'Deep Wounds', talents: '5530515-0-' }],
+      },
+    };
+    expect(comboKey(deepFury)).not.toBe(comboKey(arms));
+  });
+
+  it('gives every row of the fixture result a unique key', () => {
+    const rows = comboRows(result);
+    const keys = new Set(rows.map((row) => comboKey(row)));
+    expect(keys.size).toBe(rows.length);
   });
 });
 

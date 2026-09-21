@@ -160,22 +160,63 @@ export function comboRows(result: BulkResult): ComboRow[] {
   });
 }
 
+const COMBO_KEY_PART_SEPARATOR = '|';
+
 /**
- * A row's identity for a `{#each}` key or a `data-testid` suffix: `slot:item_id`, not the
- * item id alone. A candidate fitting more than one slot carries `Candidate.Slot === ""`
- * (contract 1.3 -- rings, trinkets, weapons) and the planner may try the same item in
- * either of its slots, which is two combinations with one item id: keyed on the id alone
- * Svelte sees a duplicate key, and a test id built from it collides too (final whole-branch
- * review, Minor 7). The rank is the fallback for a combination with no item substitution at
- * all (a talents, set or consumes row).
+ * One substitution's own contribution to `comboKey` below. An `item` substitution is
+ * `slot:item_id`, with an `:enchant:<n>:suffix:<n>` tail ONLY when either is non-zero --
+ * the common case (neither set) stays the bare `slot:item_id` form every existing
+ * `data-testid` and e2e selector already depends on
+ * (`web/tests/e2e/sim-drops.spec.ts`'s `sim-drops-pin-finger1:19325` and
+ * `sim-drops-pin-head:16963` among them). A non-item substitution (`talents`, `set`,
+ * `consumes`) has no slot or item id at all, so its own kind plus whatever names it --
+ * `talents` for a `talents` substitution (the loadout's own build, which is what actually
+ * distinguishes two loadouts that happen to share a display name), `name` for `set` and
+ * `consumes` -- is what makes it stable and distinct from a substitution of a different
+ * kind or a different loadout/set/list.
+ *
+ * Deliberately NOT `substitutionIdentity` above: that function omits `slot` ON PURPOSE
+ * (design 3.2 tries a ring or trinket in both slots and wants both tries to collapse to one
+ * de-duped row), which is exactly the ambiguity `comboKey` exists to keep apart for a
+ * `data-testid` / `{#each}` key -- two rows `comboIdentity` calls "the same candidate" must
+ * still never render the same key once dedupe has already run and both survive as
+ * genuinely different rows (which happens whenever their deltas are not bit-identical,
+ * since `dedupedCombos` only drops an exact repeat of an EARLIER identity).
+ */
+function comboKeyPart(sub: Substitution): string {
+  if (sub.kind === 'item') {
+    const base = `${sub.slot ?? ''}:${sub.item_id ?? ''}`;
+    const enchant = sub.enchant ?? 0;
+    const suffix = sub.suffix ?? 0;
+    return enchant === 0 && suffix === 0 ? base : `${base}:enchant:${enchant}:suffix:${suffix}`;
+  }
+  if (sub.kind === 'talents') return `talents:${sub.talents ?? ''}`;
+  return `${sub.kind}:${sub.name ?? ''}`;
+}
+
+/**
+ * A row's identity for a `{#each}` key or a `data-testid` suffix: every substitution's own
+ * `comboKeyPart`, joined -- not just the first. Review fix round 1: keying on the first
+ * substitution alone gave the fixture's own `combos[0]` (head+shoulder) and `combos[1]`
+ * (head alone) the identical key "head:16963" once this function reached a component whose
+ * rows can carry more than one substitution (`ComboResults.svelte`'s gear-mode rows) --
+ * harmless in `DropResults.svelte`, whose "drops" mode combos are always
+ * single-substitution, but a real collision once shared, and Task 12's e2e selects rows by
+ * this id.
+ *
+ * A single plain `item` substitution still produces exactly `slot:item_id` (join of one
+ * part is that part, unchanged), which is what every existing `data-testid` and e2e
+ * selector already depends on. The rank is the fallback only when a combo carries no
+ * substitution at all (`substitutions.length === 0`) -- a combination this codebase does
+ * not otherwise construct, kept only so this function never throws on one.
  *
  * Moved here from `DropResults.svelte` (task 7): `ComboResults.svelte` needs the identical
  * rule for its own "Plan it" test ids, and this lane's own DRY rule is one function, not a
  * second copy typed again in a second component.
  */
 export function comboKey(row: ComboRow): string {
-  const sub = row.combo.substitutions[0];
-  return sub?.item_id === undefined ? String(row.rank) : `${sub.slot ?? ''}:${sub.item_id}`;
+  if (row.combo.substitutions.length === 0) return String(row.rank);
+  return row.combo.substitutions.map(comboKeyPart).join(COMBO_KEY_PART_SEPARATOR);
 }
 
 /**
