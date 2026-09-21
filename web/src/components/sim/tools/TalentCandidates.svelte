@@ -13,11 +13,12 @@
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import type { BuildRecord, TalentFile } from '../../../lib/planner/types';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
-  import { fetchMyBuilds } from '../../../lib/sim/api';
+  import { fetchMyBuilds, SimApiError } from '../../../lib/sim/api';
   import type { TalentLoadout } from '../../../lib/sim/bulk-types';
   import { plannerGearFor, talentsString, type SimCharacter } from '../../../lib/sim/character';
   import { bulkCopy, simCopy } from '../../../lib/sim/copy';
   import { dedupeByName } from '../../../lib/sim/dedupe';
+  import { customLoadouts, savedBuildsMessage } from '../../../lib/sim/talent-loadouts';
 
   let {
     character,
@@ -32,6 +33,8 @@
   let talents = $state<TalentFile | null>(null);
   let saved = $state<BuildRecord[] | null>(null);
   let savedFailed = $state(false);
+  /** dps D31: a 401/403 (signed out) reads as guidance, not an error -- `savedBuildsMessage`. */
+  let savedSignedOut = $state(false);
   let plannerOpen = $state(false);
   let customCode = $state('');
 
@@ -43,14 +46,17 @@
       .catch(() => (talents = null));
     // Contract 10.6's own ruling: every failure -- a 404 from a deployment older than the
     // migration, or anything else -- reads as "no saved builds", one line, no error banner,
-    // because the rest of the page is correct without this list.
+    // because the rest of the page is correct without this list. dps D31: a 401/403 is not
+    // "anything else" to the player -- it is the expected, permanent state for a visitor
+    // with no account, so it gets its own, non-alarming wording (`savedBuildsMessage`).
     void fetchMyBuilds()
       .then((page) => {
         saved = page.rows.filter((row) => row.tree_version === character.tree_version);
       })
-      .catch(() => {
+      .catch((error: unknown) => {
         saved = [];
         savedFailed = true;
+        savedSignedOut = error instanceof SimApiError && (error.status === 401 || error.status === 403);
       });
   });
 
@@ -104,6 +110,10 @@
           }),
     ),
   );
+
+  /** dps D31/E2: a picked loadout none of the three named lists above claims -- ADD A
+   *  BUILD's own paste or hand-built tree, otherwise invisible once accepted. */
+  const custom = $derived(customLoadouts(picked, own, [savedLoadouts, exported]));
 
   function isPicked(loadout: TalentLoadout): boolean {
     return picked.some((entry) => entry.name === loadout.name);
@@ -177,7 +187,7 @@
 
   {#if savedFailed}
     <p class="text-muted text-[12px]" data-testid="sim-loadouts-unavailable">
-      {bulkCopy.talentsSavedUnavailable}
+      {savedBuildsMessage(savedSignedOut)}
     </p>
   {:else if savedLoadouts.length === 0 && saved !== null}
     <p class="text-muted text-[12px]">{bulkCopy.talentsNoSaved}</p>
@@ -198,6 +208,19 @@
       </label>
     {/each}
   {/if}
+
+  {#each custom as loadout (loadout.name)}
+    <label class="text-text flex min-h-11 items-center gap-2 text-[13px]">
+      <input
+        type="checkbox"
+        class="h-5 w-5"
+        data-testid={`sim-loadout-${loadout.name}`}
+        checked={isPicked(loadout)}
+        onchange={(event) => ontoggle(loadout, event.currentTarget.checked)}
+      />
+      {loadout.name}
+    </label>
+  {/each}
 
   <button
     type="button"

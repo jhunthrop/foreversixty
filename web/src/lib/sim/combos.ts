@@ -415,6 +415,45 @@ export function keepsSetBonus(
 }
 
 /**
+ * Whether `keepsSetBonus` would ever be true for this result at all -- dps D24:
+ * ComboResults.svelte used to print "Only combinations keeping a 4-piece set bonus" and
+ * its checkbox over every result, including a character with no 4-piece set anywhere in
+ * play, where ticking it can only ever empty the table. The checkbox means nothing to a
+ * player it can never apply to, so the page shows it only when at least one combo in the
+ * result reaches the piece count.
+ */
+export function anyKeepsSetBonus(
+  result: BulkResult,
+  items: ReadonlyMap<number, Item>,
+  sets: readonly ItemSet[],
+  pieces: number,
+): boolean {
+  return result.combos.some((combo) => keepsSetBonus(combo, result, items, sets, pieces));
+}
+
+/**
+ * Rows whose delta is bit-identical to at least one other row here -- not `combo.group`'s
+ * own "within error" test (a statistical closeness the page already draws a rule under),
+ * but the same mean AND the same error to the decimal, which only happens when two
+ * candidates leave the simulated character in an identical state: neither's stats touch
+ * anything this spec's damage depends on (dps D36: three different necks, none of them
+ * carrying a melee stat, all landing on the same `-19 ± 2.3`). `dedupedCombos` above only
+ * ever drops an exact repeat of the same item id, so distinct items always keep distinct
+ * rows here -- these are real ties, grouped so the page can say why once per group instead
+ * of leaving unexplained duplicate numbers on screen.
+ */
+export function exactTieGroups(rows: readonly ComboRow[]): ComboRow[][] {
+  const byDelta = new Map<string, ComboRow[]>();
+  for (const row of rows) {
+    const key = `${row.combo.delta.mean}:${row.combo.delta.error}`;
+    const group = byDelta.get(key);
+    if (group === undefined) byDelta.set(key, [row]);
+    else group.push(row);
+  }
+  return [...byDelta.values()].filter((group) => group.length > 1);
+}
+
+/**
  * "Helm of Wrath", "Deep Fury", "AQ set" -- whatever this substitution actually changed.
  *
  * It reads `name`, which contract 10.1 A6 fills for items too, from simdb. There is no
