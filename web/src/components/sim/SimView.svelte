@@ -318,11 +318,10 @@
   }
 
   onMount(() => {
-    // `user.premium` on GET /v1/me, per the simulator contract -- the server lane renders
-    // only once this answers true. A signed-out visitor and an unreachable API read the
-    // same way here (fetchMe resolves null, or the promise rejects and is swallowed): both
-    // mean "no premium control", the way Account.svelte's own `load()` already treats a
-    // failed fetchMe as "not signed in" rather than an error banner.
+    // effectiveServerSims(me) on GET /v1/me -- the server lane renders only once this answers
+    // true. A signed-out visitor and an unreachable API read the same way (fetchMe resolves
+    // null, or the promise rejects and is swallowed): both mean "no premium control", matching
+    // Account.svelte's own load() treating a failed fetchMe as "not signed in", not an error.
     //
     // The same answer also gates the history panel (Task 17), the landing state and the
     // source switcher's signed-in card (Task 18): `signedIn` above is `me !== null`, and
