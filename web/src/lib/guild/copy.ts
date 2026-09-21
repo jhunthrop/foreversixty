@@ -4,10 +4,12 @@
 // tool. Wording quoted directly from the spec is marked as such below.
 export const guildHomeCopy = {
   loading: 'Loading your guild.',
-  failed: 'Your guild did not load. Reload the page to try again.',
   reportsHeading: "This week's reports",
   // Spec section 4.1, exact wording.
   noReports: 'No reports this week yet.',
+  // One report row's kill/wipe tally -- combined here rather than as two separate labels
+  // so a translation can reorder or repunctuate the pair as a unit.
+  reportSummary: (killCount: number, wipeCount: number): string => `${killCount} kills · ${wipeCount} wipes`,
   rosterHeading: 'Roster',
   // Spec section 4.1, exact wording, officer viewer.
   emptyRosterOfficer:
@@ -15,6 +17,7 @@ export const guildHomeCopy = {
   emptyRosterMember: "You're the only member the site knows about.",
   loggedRecently: 'Logged in the last day',
   unverified: 'Unverified',
+  itemLevelLabel: 'ilvl',
   approve: 'Approve',
   remove: 'Remove',
   settingsLink: 'Guild settings',

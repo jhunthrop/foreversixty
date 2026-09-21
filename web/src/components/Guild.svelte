@@ -67,7 +67,7 @@
   });
 
   let home = $state<GuildHome | null>(null);
-  let homeStatus = $state<'idle' | 'loading' | 'ready' | 'failed'>('idle');
+  let homeStatus = $state<'idle' | 'loading' | 'ready'>('idle');
   let rosterBusy = $state<string | null>(null); // character_key currently being approved/removed
 
   /**
@@ -76,7 +76,12 @@
    * leaves `home` null -- the same "fail toward the public-only view" rule fetchMe's own
    * callers (SessionNav, MyReports) already follow, so this component behaves identically
    * whether /v1/me is stubbed, refuses, or is not reachable at all (guild-phone.spec.ts
-   * exercises exactly this last case today and must keep passing unmodified).
+   * exercises exactly this last case today and must keep passing unmodified). There is no
+   * visible error state for this section: a stranger to the guild is not owed an
+   * explanation for why they see no member content, and a signed-in member's own error is
+   * already the whole page's concern via `status`/`error` above, not this section's to
+   * duplicate. So every rejection here -- network failure, signed out, not a member, or
+   * the home fetch itself failing -- lands on the same `'idle'`, which renders nothing.
    */
   $effect(() => {
     const requested = resolved;
@@ -100,7 +105,7 @@
       })
       .catch(() => {
         if (resolved !== requested) return;
-        homeStatus = homeStatus === 'loading' ? 'failed' : homeStatus;
+        homeStatus = 'idle';
       });
   });
 
@@ -214,7 +219,7 @@
                   >{report.title === '' ? report.zone : report.title}</a
                 >
                 <span class="text-muted tabular font-mono text-[13px]">
-                  {report.kill_count} kills · {report.wipe_count} wipes
+                  {guildHomeCopy.reportSummary(report.kill_count, report.wipe_count)}
                 </span>
               </li>
             {/each}
@@ -249,7 +254,9 @@
                   </span>
                 {/if}
                 {#if row.item_level !== undefined}
-                  <span class="text-muted tabular font-mono text-[13px]">ilvl {row.item_level}</span>
+                  <span class="text-muted tabular font-mono text-[13px]"
+                    >{guildHomeCopy.itemLevelLabel} {row.item_level}</span
+                  >
                 {/if}
                 {#if row.consent !== 'roster'}
                   <GuildRosterHandoff path={rowPath(row)} />
@@ -279,8 +286,6 @@
           </ul>
         {/if}
       </section>
-    {:else if homeStatus === 'failed'}
-      <p class="text-[14px]" role="alert" data-testid="guild-home-error">{guildHomeCopy.failed}</p>
     {/if}
 
     <section class="flex flex-col gap-2">
