@@ -13,8 +13,9 @@ local L = {
 	buildMismatch = "This addon carries data for build %s; you are playing %s. Numbers may be out of date.",
 	-- How a printed line is prefixed with the addon's name.
 	chatLine = "%s: %s",
+	tabOverview = "Overview",
 	tabExport = "Export",
-	tabFollow = "Follow",
+	tabFollow = "Talents",
 	tabGear = "Gear",
 	tabSettings = "Settings",
 	headerRealmLevel = "%s · level %d",
@@ -158,6 +159,35 @@ local L = {
 	settingsAutoSave = "Save my export when I log out",
 	settingsChat = "Print /fs answers in chat too",
 	settingsReset = "Reset positions",
+	-- The Overview page.
+	overviewBuildEyebrow = "YOUR BUILD",
+	overviewBuildNone = "No build loaded",
+	overviewBuildNoneHint = "Plan a build at foreversixty.gg/planner, copy its addon code and load it on the "
+		.. "Talents page. The addon then shows the next talent to take as you level.",
+	overviewBuildProgress = "%d of %d points taken",
+	overviewBuildOpen = "Open talents",
+	overviewBuildLoad = "Load a build",
+	overviewGearEyebrow = "GEAR",
+	overviewGearSlots = "%d of %d slots filled",
+	overviewGearNeedsBuild = "Load a build to compare what you wear with what you planned, "
+		.. "and to score what is in your bags.",
+	overviewGearUpgrades = "%d upgrades waiting in your bags, by our stat weights.",
+	overviewGearNoUpgrades = "Nothing in your bags beats what you are wearing.",
+	overviewGearMatched = "%d of %d planned pieces equipped",
+	overviewGearOpen = "See gear",
+	overviewTreesEyebrow = "TALENT POINTS",
+	overviewTreesNone = "No points spent yet. Talents open at level 10.",
+	overviewSyncEyebrow = "SEND TO THE SITE",
+	overviewSyncTitle = "Your character, for the planner and the simulator",
+	overviewSyncNothing = "There is nothing to send yet.",
+	overviewSyncCopy = "Copy code",
+	overviewSyncCopied = "Selected. Press Ctrl+C",
+	siteName = "foreversixty.gg",
+	headerLevelLine = "Level %d %s %s",
+	headerSpecSeparator = "  ·  ",
+	statusDataBuild = "Data %s",
+	statusOutOfDate = "Data out of date",
+	addonVersion = "v%s",
 }
 
 ns.L = L

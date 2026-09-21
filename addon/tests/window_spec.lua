@@ -60,8 +60,9 @@ describe("Window", function()
 
 	it("numbers its four tabs and refuses one it does not have", function()
 		start()
-		assert.are.equal(1, Window.tabIndex("export"))
-		assert.are.equal(4, Window.tabIndex("settings"))
+		assert.are.equal(1, Window.tabIndex("overview"))
+		assert.are.equal(4, Window.tabIndex("export"))
+		assert.are.equal(5, Window.tabIndex("settings"))
 		assert.is_nil(Window.tabIndex("bank"))
 	end)
 
@@ -225,24 +226,45 @@ describe("Window", function()
 	-- frame and covered a page's own buttons, and there was no way to close
 	-- the window but Escape.
 	describe("layout", function()
-		it("keeps the tab strip and the page inside the window", function()
+		it("keeps the sidebar, the header and the page inside the window", function()
 			start()
 			Window.open()
 			local S = Theme.SIZES
-			assert.is_true(Window.tabStripTop() >= S.titleBarHeight + S.headerHeight)
+			assert.are.equal(S.windowWidth, Window.pageLeft() + Window.pageWidth())
 			assert.are.equal(S.windowHeight, Window.pageTop() + Window.pageHeight())
 			assert.is_true(Window.pageHeight() > 0)
-			for _, tab in pairs(Window.tabs) do
-				local point = tab.points[#tab.points]
-				assert.are.equal("TOPLEFT", point[1])
-				assert.are.equal(-Window.tabStripTop(), point[5])
+			-- Every sidebar item sits inside the sidebar's height.
+			local foot = S.gap * 2 + #Window.TABS * S.navHeight
+			assert.is_true(foot < S.windowHeight - S.titleBarHeight)
+			for _, tab in ipairs(Window.TABS) do
+				assert.is_truthy(Window.tabs[tab.name], tab.name .. " has no sidebar item")
 			end
 		end)
 
-		it("leaves each page room for its own padding inside the window", function()
+		it("leaves each page room for its own padding beside the sidebar", function()
 			start()
 			local S = Theme.SIZES
-			assert.are.equal(S.windowWidth, Window.contentWidth() + S.padding * 2)
+			assert.are.equal(S.windowWidth, S.sidebarWidth + Window.contentWidth() + S.padding * 2)
+		end)
+
+		it("opens on the Overview for a player who has not chosen a page", function()
+			start()
+			Window.open()
+			assert.are.equal("overview", Window.current)
+			assert.is_true(Window.tabs.overview.foreverSixtyActive)
+		end)
+
+		it("falls back to the first page when a saved page no longer exists", function()
+			start()
+			Prefs.set("window", "tab", "bank")
+			Window.open()
+			assert.are.equal("overview", Window.current)
+		end)
+
+		it("fits the Overview's two rows of cards in the page", function()
+			start()
+			local S = Theme.SIZES
+			assert.is_true(S.padding * 2 + S.cardHeight * 2 + S.cardGap <= Window.pageHeight())
 		end)
 
 		it("gives each page lists that fit under the tab strip", function()

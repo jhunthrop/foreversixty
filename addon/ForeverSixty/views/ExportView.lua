@@ -10,13 +10,15 @@ ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Theme = ns.Theme or require("Theme")
 local Widgets = ns.Widgets or require("Widgets")
+local Cards = ns.Cards or require("Cards")
 local Export = ns.Export or require("Export")
 local Talents = ns.Talents or require("Talents")
 
 local ExportView = {}
 
 --- Points per tree, in Data.lua's tab order.
-local function treePoints(data, classSlug)
+--- Points spent per tree, in tab order. Shared with the Overview page.
+function ExportView.treePoints(data, classSlug)
 	local class = data and data.classes and data.classes[classSlug]
 	if class == nil then
 		return {}
@@ -71,7 +73,7 @@ end
 --- Everything the tab shows, as new plain tables and finished strings.
 function ExportView.summary(data)
 	local classSlug = Talents.playerClassSlug()
-	local trees = treePoints(data, classSlug)
+	local trees = ExportView.treePoints(data, classSlug)
 	local code, reason = Export.string(data)
 	return {
 		classSlug = classSlug,
@@ -155,7 +157,7 @@ end
 
 function ExportView.mount(parent, ctx)
 	local view = layout(parent, ctx.contentWidth)
-	view.copy = Widgets.button(parent, L.exportCopy, function(button)
+	view.copy = Cards.primaryButton(parent, L.exportCopy, function(button)
 		onCopy(view, button)
 	end)
 	view.copy:SetPoint("TOPLEFT", Widgets.field(view.box), "BOTTOMLEFT", 0, -Theme.SIZES.padding)

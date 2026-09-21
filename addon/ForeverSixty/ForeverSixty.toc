@@ -14,6 +14,7 @@ Talents.lua
 Prefs.lua
 Theme.lua
 Widgets.lua
+Cards.lua
 Export.lua
 Follow.lua
 Gear.lua
@@ -23,6 +24,7 @@ views\FollowView.lua
 views\GearView.lua
 views\SettingsView.lua
 Tracker.lua
+views\OverviewView.lua
 Minimap.lua
 Window.lua
 Options.lua
