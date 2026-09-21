@@ -179,9 +179,8 @@ func TestAFrozenClaimantsReportEditRightIsSuspendedButOnlyForOthers(t *testing.T
 	if err := h.guilds.ContestClaim(ctx, gid, contester, true); err != nil {
 		t.Fatal(err)
 	}
-	// The claim was established moments ago by Claim() above, so it is
-	// young (well under 14 days) - the contest freezes without needing
-	// a separate corroboration setup.
+	// A contest always freezes (fourth security review response) - no
+	// further setup needed.
 
 	otherOfficer := claimant + 2
 	if _, err := h.store.Pool.Exec(ctx,
@@ -395,6 +394,16 @@ func TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport(t *testing.T) {
 		spoofer); err != nil {
 		t.Fatal(err)
 	}
+	// Every report below is owned by a distinct uploader account, not
+	// the spoofer - item 3's fixed independence rule (fourth security
+	// review response) never counts a report toward its own account's
+	// verification.
+	uploader := h.owner + 501
+	if _, err := h.store.Pool.Exec(t.Context(),
+		`insert into users (id, email) values ($1, 'spoof-uploader@example.com') on conflict (id) do nothing`,
+		uploader); err != nil {
+		t.Fatal(err)
+	}
 	// A bare, unverified guild_characters row - exactly what a forged
 	// export alone can produce.
 	if _, err := h.store.Pool.Exec(t.Context(),
@@ -435,7 +444,7 @@ func TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport(t *testing.T) {
 	first := time.Now().Add(-20 * 24 * time.Hour)
 	if _, err := h.store.Pool.Exec(t.Context(),
 		`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
-		 values ('spoofnight1x', $1, $2, 'guild', 'complete', $3)`, spoofer, guildID, first); err != nil {
+		 values ('spoofnight1x', $1, $2, 'guild', 'complete', $3)`, uploader, guildID, first); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := h.store.Pool.Exec(t.Context(),
@@ -460,7 +469,7 @@ func TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport(t *testing.T) {
 	tooLate := time.Now().Add(-35 * 24 * time.Hour)
 	if _, err := h.store.Pool.Exec(t.Context(),
 		`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
-		 values ('spoofnight2late', $1, $2, 'guild', 'complete', $3)`, spoofer, guildID, tooLate); err != nil {
+		 values ('spoofnight2late', $1, $2, 'guild', 'complete', $3)`, uploader, guildID, tooLate); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := h.store.Pool.Exec(t.Context(),
@@ -481,7 +490,7 @@ func TestAnUnverifiedGuildCharacterCannotSeeOrEditAGuildReport(t *testing.T) {
 	if _, err := h.store.Pool.Exec(t.Context(),
 		`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
 		 values ('spoofnight2ok', $1, $2, 'guild', 'complete', $3)`,
-		spoofer, guildID, first.Add(5*24*time.Hour)); err != nil {
+		uploader, guildID, first.Add(5*24*time.Hour)); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := h.store.Pool.Exec(t.Context(),

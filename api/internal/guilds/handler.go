@@ -66,6 +66,11 @@ func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("PATCH /v1/guilds/{id}/members/me", auth.RequireSession(s.patchConsent))
 	mux.HandleFunc("DELETE /v1/guilds/{id}/members/me", auth.RequireSession(s.leaveGuild))
 	mux.HandleFunc("GET /v1/guilds/{id}/home", auth.RequireSession(s.home))
+	// No auth.RequireSession wrap (item 4, fourth security review
+	// response): the handler itself answers 404 for a non-moderator,
+	// including an unauthenticated caller, so the route's existence is
+	// never advertised by a 401/403 that a wrap would otherwise leak.
+	mux.HandleFunc("GET /v1/moderation/claims", s.moderationClaims)
 }
 
 func (s *Service) logger() *slog.Logger {
@@ -100,16 +105,18 @@ func (s *Service) verifiedOfficerOrLeader(r *http.Request, guildID int64) (bool,
 }
 
 // freezeCheck applies the officer-power freeze gate every officer route
-// in this package shares (A4, 2026-09-21 second security review
-// response): a route is blocked with 409 claim_contested only while the
-// guild's claim is BOTH contested and frozen - an established,
-// independently log-corroborated claim is recorded as contested and
-// queued for a moderator, but nothing freezes. moderatorExempt lets a
-// route that already gave the caller moderator standing (settings) also
-// give them the bypass every moderator implicitly needs to be the one
-// who resolves a freeze in the first place; a route with no moderator
-// standing at all passes false and the freeze (once it applies) blocks
-// everyone the same way.
+// in this package shares (A4, 2026-09-21 security review response,
+// simplified by the fourth response): a route is blocked with 409
+// claim_contested whenever the guild's claim is contested - always,
+// with no exception for an established or otherwise-corroborated
+// claim, since both narrower rules this package tried were found
+// gameable by a squatter and the fourth response deleted the escape
+// rather than patch it again. moderatorExempt lets a route that
+// already gave the caller moderator standing (settings) also give them
+// the bypass every moderator implicitly needs to be the one who
+// resolves a freeze in the first place; a route with no moderator
+// standing at all passes false and the freeze blocks everyone the same
+// way.
 func (s *Service) freezeCheck(ctx context.Context, guildID int64, moderatorExempt bool) (bool, error) {
 	if moderatorExempt {
 		return false, nil
@@ -118,11 +125,7 @@ func (s *Service) freezeCheck(ctx context.Context, guildID int64, moderatorExemp
 	if err != nil {
 		return false, err
 	}
-	view, err := s.Store.claimView(ctx, g, time.Now())
-	if err != nil {
-		return false, err
-	}
-	return view.State == "contested" && view.Frozen, nil
+	return claimState(g, time.Now()).Frozen, nil
 }
 
 // decodeJSON decodes r's body into v, capped at maxJSONBody, answering 400

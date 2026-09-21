@@ -424,26 +424,32 @@ func TestClaimStateReflectsEachPhase(t *testing.T) {
 	}
 }
 
-// TestAContestAgainstAYoungClaimFreezes is A4/A5: a contest against a
-// claim established only a few days ago freezes officer tools even
-// though the freeze-eligibility rule's corroboration half is not what
-// is being tested here.
-func TestAContestAgainstAYoungClaimFreezes(t *testing.T) {
+// TestAContestAlwaysFreezes is the fourth security review response's
+// simplification: a contest freezes the disputed claimant's officer
+// tools unconditionally, with no exception for a young, an established,
+// or an otherwise "corroborated" claim - two narrower rules (a 14-day
+// young-claim test, then an independence-checked corroboration test)
+// were each found gameable by a squatter in turn, so this response
+// deletes the escape rather than patch it a third time.
+func TestAContestAlwaysFreezes(t *testing.T) {
 	pool := testPool(t)
 	s := &Store{Pool: pool}
 	ctx := context.Background()
 	gid := seedGuild(t, pool, "Forever")
-	claimant := seedUser(t, pool, "young-claim-claimant@example.com")
-	seedCharacter(t, pool, gid, claimant, "us/hardcore/youngclaimclaimant", "leader", false)
+	claimant := seedUser(t, pool, "always-frozen-claimant@example.com")
+	seedCharacter(t, pool, gid, claimant, "us/hardcore/alwaysfrozenclaimant", "leader", false)
 	if _, err := s.Claim(ctx, gid, claimant, true); err != nil {
 		t.Fatal(err)
 	}
+	// Establish the claim well past the old 14-day threshold - under
+	// the deleted rule this alone would have been enough to avoid a
+	// freeze; under the current rule it changes nothing.
 	if _, err := pool.Exec(ctx,
-		`update guilds set claimed_at = now() - interval '3 days' where id = $1`, gid); err != nil {
+		`update guilds set claimed_at = now() - interval '90 days' where id = $1`, gid); err != nil {
 		t.Fatal(err)
 	}
-	contester := seedUser(t, pool, "young-claim-contester@example.com")
-	seedCharacter(t, pool, gid, contester, "us/hardcore/youngclaimcontester", "officer", false)
+	contester := seedUser(t, pool, "always-frozen-contester@example.com")
+	seedCharacter(t, pool, gid, contester, "us/hardcore/alwaysfrozencontester", "officer", false)
 	if err := s.ContestClaim(ctx, gid, contester, true); err != nil {
 		t.Fatal(err)
 	}
@@ -452,20 +458,55 @@ func TestAContestAgainstAYoungClaimFreezes(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	view, err := s.claimView(ctx, g, time.Now())
+	view := claimState(g, time.Now())
+	if view.State != "contested" || !view.Frozen {
+		t.Fatalf("claim view = %+v, want contested and frozen (a 90-day-old claim included)", view)
+	}
+}
+
+// TestAnUpheldContestUnfreezes: resolving a contest with "uphold"
+// clears claim_contested_at, so claimState no longer reports contested
+// or frozen - officer tools return to the standing claimant.
+func TestAnUpheldContestUnfreezes(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	claimant := seedUser(t, pool, "unfreeze-claimant@example.com")
+	seedCharacter(t, pool, gid, claimant, "us/hardcore/unfreezeclaimant", "leader", false)
+	if _, err := s.Claim(ctx, gid, claimant, true); err != nil {
+		t.Fatal(err)
+	}
+	contester := seedUser(t, pool, "unfreeze-contester@example.com")
+	seedCharacter(t, pool, gid, contester, "us/hardcore/unfreezecontester", "officer", false)
+	if err := s.ContestClaim(ctx, gid, contester, true); err != nil {
+		t.Fatal(err)
+	}
+	g, err := s.getGuild(ctx, gid)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if view.State != "contested" || !view.Frozen {
-		t.Fatalf("claim view = %+v, want contested and frozen (claim is only 3 days old)", view)
+	if view := claimState(g, time.Now()); !view.Frozen {
+		t.Fatalf("claim view = %+v, want frozen before the uphold", view)
+	}
+
+	moderator := seedUser(t, pool, "unfreeze-mod@example.com")
+	if err := s.ResolveClaim(ctx, gid, moderator, "uphold"); err != nil {
+		t.Fatal(err)
+	}
+	g, err = s.getGuild(ctx, gid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	view := claimState(g, time.Now())
+	if view.State != "claimed" || view.Frozen {
+		t.Fatalf("claim view after uphold = %+v, want claimed and not frozen", view)
 	}
 }
 
 // seedIndependentLogReport inserts one report+fight row naming players
-// so VerifyByLogs's real job can corroborate them - the third security
-// review response's explicit instruction that every corroboration test
-// go through the real verification path, not a raw insert of
-// verified_by = 'logs'.
+// so VerifyByLogs's real job can verify them - tests go through the
+// real verification path, not a raw insert of verified_by = 'logs'.
 func seedIndependentLogReport(t *testing.T, pool *pgxpool.Pool, id string, ownerID, guildID int64, createdAt time.Time, players []string) {
 	t.Helper()
 	ctx := context.Background()
@@ -480,93 +521,20 @@ func seedIndependentLogReport(t *testing.T, pool *pgxpool.Pool, id string, owner
 	}
 }
 
-// TestAContestAgainstAnEstablishedCorroboratedClaimDoesNotFreeze is
-// A4/A5, hardened by the third security review response's independence
-// rule: an established (>=14 days old) claim with at least TWO
-// distinct accounts other than the claimant each independently
-// verified by logs - via reports owned by a genuinely third account,
-// neither the claimant nor either verified account - is recorded as
-// contested and queued for a moderator, but officer tools are NOT
-// frozen. Goes through the real VerifyByLogs job, not a raw insert.
-func TestAContestAgainstAnEstablishedCorroboratedClaimDoesNotFreeze(t *testing.T) {
-	pool := testPool(t)
-	s := &Store{Pool: pool}
-	ctx := context.Background()
-	gid := seedGuild(t, pool, "Forever")
-	claimant := seedUser(t, pool, "established-claimant@example.com")
-	seedCharacter(t, pool, gid, claimant, "us/hardcore/establishedclaimant", "leader", false)
-	if _, err := s.Claim(ctx, gid, claimant, true); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := pool.Exec(ctx,
-		`update guilds set claimed_at = now() - interval '30 days' where id = $1`, gid); err != nil {
-		t.Fatal(err)
-	}
-
-	// Two other members, each with an unverified character...
-	memberA := seedUser(t, pool, "corroborated-member-a@example.com")
-	seedCharacter(t, pool, gid, memberA, "us/hardcore/corroboratedmembera", "member", false)
-	memberB := seedUser(t, pool, "corroborated-member-b@example.com")
-	seedCharacter(t, pool, gid, memberB, "us/hardcore/corroboratedmemberb", "member", false)
-	// ...verified by a genuinely THIRD account's uploaded reports -
-	// neither the claimant nor either account being verified.
-	uploader := seedUser(t, pool, "corroborated-uploader@example.com")
-	first := time.Now().Add(-20 * 24 * time.Hour)
-	seedIndependentLogReport(t, pool, "corrob-night-1", uploader, gid, first,
-		[]string{"us/hardcore/corroboratedmembera", "us/hardcore/corroboratedmemberb"})
-	seedIndependentLogReport(t, pool, "corrob-night-2", uploader, gid, first.Add(5*24*time.Hour),
-		[]string{"us/hardcore/corroboratedmembera", "us/hardcore/corroboratedmemberb"})
-	if err := s.VerifyByLogs(ctx); err != nil {
-		t.Fatal(err)
-	}
-	var verifiedCount int
-	if err := pool.QueryRow(ctx,
-		`select count(*) from guild_characters where guild_id = $1 and verified_by = 'logs'`, gid).
-		Scan(&verifiedCount); err != nil {
-		t.Fatal(err)
-	}
-	if verifiedCount != 2 {
-		t.Fatalf("logs-verified rows = %d, want 2 (the real VerifyByLogs job should have corroborated both)", verifiedCount)
-	}
-
-	contester := seedUser(t, pool, "established-contester@example.com")
-	seedCharacter(t, pool, gid, contester, "us/hardcore/establishedcontester", "officer", false)
-	if err := s.ContestClaim(ctx, gid, contester, true); err != nil {
-		t.Fatal(err)
-	}
-
-	g, err := s.getGuild(ctx, gid)
-	if err != nil {
-		t.Fatal(err)
-	}
-	view, err := s.claimView(ctx, g, time.Now())
-	if err != nil {
-		t.Fatal(err)
-	}
-	if view.State != "contested" {
-		t.Fatalf("state = %q, want contested", view.State)
-	}
-	if view.Frozen {
-		t.Fatal("an established claim with two independently log-verified members should not freeze on contest")
-	}
-}
-
-// TestAContestAgainstASquattersManufacturedCorroborationStaysFrozen is
-// the CRITICAL finding's own six-step exploit, reproduced end to end
-// through the real Claim/VerifyByLogs/ContestClaim path (not a raw
-// insert of verified_by = 'logs'): a squatter claims an unclaimed
+// TestAContestFreezesRegardlessOfWhatASquatterManufactures is the
+// CRITICAL finding's own exploit scenario, reproduced through the real
+// Claim/VerifyByLogs/ContestClaim path: a squatter claims an unclaimed
 // guild, is now its only officer, and attaches their OWN uploaded
 // reports naming a throwaway account's character on two distinct
-// nights. Before this response, VerifyByLogs would have corroborated
-// the throwaway account from those self-attached reports alone,
-// letting the squatter's own contest defence (or a defence against the
-// real guild master's contest) read as "established and corroborated"
-// and never freeze. After this response, the squatter's self-owned
-// reports never satisfy VerifyByLogs's independence requirement while
-// the claim is young, so the throwaway account is never verified at
-// all - and once the claim is later established and a genuine contest
-// arrives, frozen() finds no real corroboration and stays frozen.
-func TestAContestAgainstASquattersManufacturedCorroborationStaysFrozen(t *testing.T) {
+// nights. Under item 3's fixed, always-on rule (a report only fails to
+// count when it is owned by the character's OWN account), this
+// self-attachment actually succeeds in verifying the throwaway account
+// - an accepted, explicitly out-of-scope risk (it grants the throwaway
+// nothing but access to the squatter's own reports, and a moderator's
+// release un-verifies every claim-derived row regardless). What matters
+// here is that this manufactured "verified" appearance changes nothing
+// about freezing: the contest still freezes, unconditionally.
+func TestAContestFreezesRegardlessOfWhatASquatterManufactures(t *testing.T) {
 	pool := testPool(t)
 	s := &Store{Pool: pool}
 	ctx := context.Background()
@@ -578,10 +546,6 @@ func TestAContestAgainstASquattersManufacturedCorroborationStaysFrozen(t *testin
 		t.Fatal(err)
 	}
 
-	// The squatter, as the guild's only officer, attaches their OWN
-	// uploaded reports naming a throwaway account's character on two
-	// distinct nights - while the claim is still young, exactly the
-	// exploit's own six steps.
 	throwaway := seedUser(t, pool, "throwaway@example.com")
 	seedCharacter(t, pool, gid, throwaway, "us/hardcore/throwaway", "member", false)
 	first := time.Now().Add(-10 * 24 * time.Hour)
@@ -596,17 +560,10 @@ func TestAContestAgainstASquattersManufacturedCorroborationStaysFrozen(t *testin
 		Scan(&manufacturedVerified); err != nil {
 		t.Fatal(err)
 	}
-	if manufacturedVerified {
-		t.Fatal("a squatter's own uploaded reports must never verify a throwaway account while the claim is young")
+	if !manufacturedVerified {
+		t.Fatal("item 3's accepted rule lets a squatter verify a sockpuppet from their own reports - it should have succeeded here")
 	}
 
-	// Time passes; the claim is now established.
-	if _, err := pool.Exec(ctx,
-		`update guilds set claimed_at = now() - interval '30 days' where id = $1`, gid); err != nil {
-		t.Fatal(err)
-	}
-
-	// The real guild master (or anyone else with standing) contests it.
 	realGM := seedUser(t, pool, "real-gm@example.com")
 	seedCharacter(t, pool, gid, realGM, "us/hardcore/realgm", "officer", false)
 	if err := s.ContestClaim(ctx, gid, realGM, true); err != nil {
@@ -617,14 +574,11 @@ func TestAContestAgainstASquattersManufacturedCorroborationStaysFrozen(t *testin
 	if err != nil {
 		t.Fatal(err)
 	}
-	view, err := s.claimView(ctx, g, time.Now())
-	if err != nil {
-		t.Fatal(err)
-	}
+	view := claimState(g, time.Now())
 	if view.State != "contested" {
 		t.Fatalf("state = %q, want contested", view.State)
 	}
 	if !view.Frozen {
-		t.Fatal("a squatter's manufactured, non-independent corroboration must not un-freeze a contest against them")
+		t.Fatal("a contest must freeze regardless of what the disputed claimant has manufactured in their own guild shell")
 	}
 }

@@ -109,21 +109,12 @@ create table if not exists guild_claim_resolutions (
 create index if not exists guild_claim_resolutions_guild_contester_idx
   on guild_claim_resolutions (guild_id, contester_id);
 
--- Third security review response (2026-09-21) - see the spec's third
--- dated amendment blocks in §2.4 and §3.3.
-
--- Which two reports' owners actually drove a guild_characters row's
--- logs-based verification, recorded at the moment VerifyByLogs sets
--- verified_by = 'logs' rather than re-derived later from reports that
--- may since have been deleted or detached. frozen()'s corroboration
--- check reads these to require independence (owned by neither the
--- claimant nor the account being verified) at the time a contest is
--- actually evaluated, regardless of what a report's ownership was, or
--- whether it still exists, by then.
-alter table guild_characters add column if not exists log_evidence_owner_1 bigint
-  references users (id) on delete set null;
-alter table guild_characters add column if not exists log_evidence_owner_2 bigint
-  references users (id) on delete set null;
+-- Third security review response (2026-09-21) - see the spec's fourth
+-- dated amendment blocks in §2.4 and §3.3 (the third response's own
+-- corroboration mechanism, and the log_evidence_owner_1/2 columns it
+-- read, were deleted by the fourth response as gameable a second way;
+-- this migration was still unreleased, so the columns were removed
+-- here rather than added and then dropped in a later migration).
 
 -- At most one OPEN contest per account across every guild: converts
 -- checkContestRateLimit's application-level check-then-act (N

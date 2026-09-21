@@ -426,3 +426,66 @@ func TestContestClaimEnforcesOneOpenContestPerAccountUnderConcurrency(t *testing
 		t.Fatalf("recorded 'contest' attempts for the account = %d, want exactly 1", attemptCount)
 	}
 }
+
+// TestContestClaimSameGuildConcurrentContestersRaceCleanly is the
+// missing concurrency case the third re-review noted (fourth security
+// review response, item 5): two DIFFERENT accounts contesting the SAME
+// guild at the same time must not both silently overwrite
+// claim_contested_by - the "where claim_contested_at is null" guard on
+// the UPDATE, backstopped by RowsAffected, must leave exactly one
+// winner and answer the loser ErrAlreadyContested.
+func TestContestClaimSameGuildConcurrentContestersRaceCleanly(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+
+	gid := seedGuild(t, pool, "SameGuildRace")
+	claimant := seedUser(t, pool, "samerace-claimant@example.com")
+	seedCharacter(t, pool, gid, claimant, "us/hardcore/sameraceclaimant", "leader", false)
+	if _, err := s.Claim(ctx, gid, claimant, true); err != nil {
+		t.Fatal(err)
+	}
+	contesterA := seedUser(t, pool, "samerace-contester-a@example.com")
+	seedCharacter(t, pool, gid, contesterA, "us/hardcore/sameracecontestera", "officer", false)
+	contesterB := seedUser(t, pool, "samerace-contester-b@example.com")
+	seedCharacter(t, pool, gid, contesterB, "us/hardcore/sameracecontesterb", "officer", false)
+
+	var wg sync.WaitGroup
+	results := make(chan error, 2)
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		results <- s.ContestClaim(ctx, gid, contesterA, true)
+	}()
+	go func() {
+		defer wg.Done()
+		results <- s.ContestClaim(ctx, gid, contesterB, true)
+	}()
+	wg.Wait()
+	close(results)
+
+	var succeeded, rejected int
+	for err := range results {
+		switch {
+		case err == nil:
+			succeeded++
+		case errors.Is(err, ErrAlreadyContested):
+			rejected++
+		default:
+			t.Fatalf("unexpected error from a same-guild concurrent contest: %v", err)
+		}
+	}
+	if succeeded != 1 {
+		t.Fatalf("succeeded = %d, want exactly 1 (the claim_contested_at is null guard must let only one contester win)", succeeded)
+	}
+	if rejected != 1 {
+		t.Fatalf("rejected = %d, want exactly 1 (ErrAlreadyContested)", rejected)
+	}
+	var contestedBy *int64
+	if err := pool.QueryRow(ctx, `select claim_contested_by from guilds where id = $1`, gid).Scan(&contestedBy); err != nil {
+		t.Fatal(err)
+	}
+	if contestedBy == nil || (*contestedBy != contesterA && *contestedBy != contesterB) {
+		t.Fatalf("claim_contested_by = %v, want one of the two contesters, not overwritten or lost", contestedBy)
+	}
+}

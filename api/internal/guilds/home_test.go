@@ -257,3 +257,78 @@ func TestHomeExposesClaimState(t *testing.T) {
 		t.Fatalf("claim.state = %q, want claimed", view.Claim.State)
 	}
 }
+
+// TestHomeReportsExposeZone is item 7 (fourth security review
+// response): each report in the guild home list carries its zone, the
+// same way every other report list in this codebase already does.
+func TestHomeReportsExposeZone(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+	uid := seedUser(t, h.pool, "home-zone@example.com")
+	seedCharacter(t, h.pool, gid, uid, "us/hardcore/homezone", "member", true)
+
+	if _, err := h.pool.Exec(ctx,
+		`insert into reports (id, owner_id, guild_id, visibility, status, zone, created_at)
+		 values ('zonedhome', $1, $2, 'guild', 'complete', 'Blackrock Spire', now() - interval '1 day')`,
+		uid, gid); err != nil {
+		t.Fatal(err)
+	}
+
+	h.actor = auth.Actor{UserID: uid, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	var view HomeView
+	h.data(res, &view)
+	if len(view.Reports) != 1 || view.Reports[0].Zone != "Blackrock Spire" {
+		t.Fatalf("reports = %+v, want one report with zone Blackrock Spire", view.Reports)
+	}
+}
+
+// TestHomeRosterMayRemoveMatchesTheRemoveRule is item 7 (fourth
+// security review response): may_remove on each roster row is computed
+// from the exact rank-protects-rank rule the DELETE route enforces, from
+// the viewpoint of whoever is asking - a verified officer viewer may
+// remove a plain member's row (verifiedOfficer), never the guild
+// master's leader-rank row (rank protects rank), and always their own
+// row regardless of rank (self).
+func TestHomeRosterMayRemoveMatchesTheRemoveRule(t *testing.T) {
+	h := newHTTPHarness(t)
+	ctx := context.Background()
+	gid := seedGuild(t, h.pool, "Forever")
+
+	viewer := seedUser(t, h.pool, "may-remove-viewer@example.com")
+	seedCharacter(t, h.pool, gid, viewer, "us/hardcore/mayremoveviewer", "officer", true)
+	seedExport(t, h.pool, viewer, "us/hardcore/mayremoveviewer", "us", "hardcore", "mayremoveviewer")
+	recomputeMembership(t, h.pool, gid, viewer)
+
+	member := seedUser(t, h.pool, "may-remove-member@example.com")
+	seedCharacter(t, h.pool, gid, member, "us/hardcore/mayremovemember", "member", false)
+	seedExport(t, h.pool, member, "us/hardcore/mayremovemember", "us", "hardcore", "mayremovemember")
+	recomputeMembership(t, h.pool, gid, member)
+
+	leader := seedUser(t, h.pool, "may-remove-leader@example.com")
+	seedCharacter(t, h.pool, gid, leader, "us/hardcore/mayremoveleader", "leader", true)
+	seedExport(t, h.pool, leader, "us/hardcore/mayremoveleader", "us", "hardcore", "mayremoveleader")
+	recomputeMembership(t, h.pool, gid, leader)
+	if _, err := h.pool.Exec(ctx, `update guilds set claimed_by = $1 where id = $2`, leader, gid); err != nil {
+		t.Fatal(err)
+	}
+
+	h.actor = auth.Actor{UserID: viewer, Role: "user", Method: "session"}
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	var view HomeView
+	h.data(res, &view)
+	byKey := map[string]RosterRow{}
+	for _, row := range view.Roster {
+		byKey[row.CharacterKey] = row
+	}
+	if row := byKey["us/hardcore/mayremoveviewer"]; !row.MayRemove {
+		t.Fatalf("the viewer's own row: may_remove = %v, want true (self)", row.MayRemove)
+	}
+	if row := byKey["us/hardcore/mayremovemember"]; !row.MayRemove {
+		t.Fatalf("a plain member row seen by a verified officer: may_remove = %v, want true", row.MayRemove)
+	}
+	if row := byKey["us/hardcore/mayremoveleader"]; row.MayRemove {
+		t.Fatalf("the guild master's leader-rank row: may_remove = %v, want false (rank protects rank)", row.MayRemove)
+	}
+}

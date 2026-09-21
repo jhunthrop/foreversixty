@@ -65,9 +65,9 @@ func (s *Store) CharacterOwner(ctx context.Context, guildID int64, characterKey 
 	return userID, rank, nil
 }
 
-// mayRemoveCharacter applies the rank-protects-rank rule (2026-09-21
-// security review response, spec §3.3's amendment): a member-rank row
-// may be removed by its own account, a verified officer/leader, or a
+// mayRemoveRow applies the rank-protects-rank rule (2026-09-21 security
+// review response, spec §3.3's amendment): a member-rank row may be
+// removed by its own account, a verified officer/leader, or a
 // moderator; an officer-rank row adds only the account currently
 // holding the guild's claim to that list (not any officer); a
 // leader-rank row is removable only by its own account or a moderator -
@@ -75,22 +75,31 @@ func (s *Store) CharacterOwner(ctx context.Context, guildID int64, characterKey 
 // leader-rank row belongs to a different real character than the
 // claimant's own. This is what stops an officer from stripping the real
 // guild master's membership and then claiming the now-unclaimed guild.
-func (s *Store) mayRemoveCharacter(ctx context.Context, guildID, actorID, ownerID int64, targetRank string, moderator, verifiedOfficer bool) (bool, error) {
+// Pure (g is already in hand) so both the actual remove route
+// (mayRemoveCharacter) and the guild home's per-row may_remove field
+// (item 7, fourth security review response) read the exact same rule
+// from one place.
+func mayRemoveRow(g Guild, actorID, ownerID int64, targetRank string, moderator, verifiedOfficer bool) bool {
 	if moderator || actorID == ownerID {
-		return true, nil
+		return true
 	}
 	switch targetRank {
 	case "leader":
-		return false, nil
+		return false
 	case "officer":
-		g, err := s.getGuild(ctx, guildID)
-		if err != nil {
-			return false, err
-		}
-		return g.ClaimedBy != nil && *g.ClaimedBy == actorID, nil
+		return g.ClaimedBy != nil && *g.ClaimedBy == actorID
 	default: // member
-		return verifiedOfficer, nil
+		return verifiedOfficer
 	}
+}
+
+// mayRemoveCharacter is mayRemoveRow after fetching the guild row it needs.
+func (s *Store) mayRemoveCharacter(ctx context.Context, guildID, actorID, ownerID int64, targetRank string, moderator, verifiedOfficer bool) (bool, error) {
+	g, err := s.getGuild(ctx, guildID)
+	if err != nil {
+		return false, err
+	}
+	return mayRemoveRow(g, actorID, ownerID, targetRank, moderator, verifiedOfficer), nil
 }
 
 // RemoveCharacter deletes a guild_characters row and recomputes the

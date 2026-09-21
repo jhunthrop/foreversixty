@@ -61,8 +61,14 @@ type GuildIdentity struct {
 }
 
 type HomeReport struct {
-	ID         string    `json:"id"`
-	Title      string    `json:"title"`
+	ID    string `json:"id"`
+	Title string `json:"title"`
+	// Zone lets an untitled report still show something identifying in
+	// the list, the same way every other report list in this codebase
+	// already does (reports.View, rankings' guild report list) - added
+	// here so the guild home matches that convention (item 7, fourth
+	// security review response).
+	Zone       string    `json:"zone"`
 	CreatedAt  time.Time `json:"created_at"`
 	FightCount int       `json:"fight_count"`
 	KillCount  int       `json:"kill_count"`
@@ -85,6 +91,16 @@ type RosterRow struct {
 	Class          *string `json:"class,omitempty"`
 	Spec           *string `json:"spec,omitempty"`
 	ItemLevel      *int    `json:"item_level,omitempty"`
+	// MayRemove is computed server-side from the exact same
+	// mayRemoveRow rule the DELETE .../characters/{key} route enforces
+	// (item 7, fourth security review response), from the viewpoint of
+	// whoever is asking for this home - so the web can show the remove
+	// control exactly where it would actually succeed, never a control
+	// that then answers 403.
+	MayRemove bool `json:"may_remove"`
+	// ownerUserID is gc.user_id: read to compute MayRemove against the
+	// viewing actor, never marshaled into the response itself.
+	ownerUserID int64
 }
 
 type HomeView struct {
@@ -105,7 +121,7 @@ type HomeView struct {
 // §3.3's amendment).
 func (s *Store) HomeReports(ctx context.Context, guildID, userID int64, verified bool, before *HomeCursor) ([]HomeReport, error) {
 	since := time.Now().Add(-homeReportsWindow)
-	const columns = `r.id, r.title, r.created_at,
+	const columns = `r.id, r.title, r.zone, r.created_at,
 	       (select count(*) from fights f where f.report_id = r.id),
 	       (select count(*) from fights f where f.report_id = r.id and f.kill)`
 	visibility := `(r.owner_id = $3 or r.visibility = 'public')`
@@ -131,7 +147,7 @@ func (s *Store) HomeReports(ctx context.Context, guildID, userID int64, verified
 	out := []HomeReport{}
 	for rows.Next() {
 		var h HomeReport
-		if err := rows.Scan(&h.ID, &h.Title, &h.CreatedAt, &h.FightCount, &h.KillCount); err != nil {
+		if err := rows.Scan(&h.ID, &h.Title, &h.Zone, &h.CreatedAt, &h.FightCount, &h.KillCount); err != nil {
 			return nil, fmt.Errorf("guilds: home reports: %w", err)
 		}
 		out = append(out, h)
@@ -145,10 +161,15 @@ func (s *Store) HomeReports(ctx context.Context, guildID, userID int64, verified
 // itself for any row whose account has not consented to show them.
 // "Logged recently" (the literal `interval '24 hours'` below) is a
 // 24-hour proxy for "ran the companion recently", in the absence of a
-// real raid-night concept to anchor to.
-func (s *Store) HomeRoster(ctx context.Context, guildID int64) ([]RosterRow, error) {
+// real raid-night concept to anchor to. MayRemove is computed per row
+// against the viewing actor (item 7, fourth security review response):
+// actorID, moderator and verifiedOfficer describe who is asking, and g
+// carries the guild's claimed_by the same rule reads for an
+// officer-rank row - both already in the caller's hands from Home, so
+// this costs no extra query.
+func (s *Store) HomeRoster(ctx context.Context, guildID int64, g Guild, actorID int64, moderator, verifiedOfficer bool) ([]RosterRow, error) {
 	rows, err := s.Pool.Query(ctx, `
-		select gc.character_key, ae.region, ae.ruleset, ae.name, gc.rank, gc.verified_at is not null,
+		select gc.character_key, gc.user_id, ae.region, ae.ruleset, ae.name, gc.rank, gc.verified_at is not null,
 		       ae.updated_at >= now() - interval '24 hours', gm.consent,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.class end,
 		       case when gm.consent in ('gear', 'gear_bags') then fm.spec end,
@@ -170,18 +191,21 @@ func (s *Store) HomeRoster(ctx context.Context, guildID int64) ([]RosterRow, err
 	out := []RosterRow{}
 	for rows.Next() {
 		var row RosterRow
-		if err := rows.Scan(&row.CharacterKey, &row.Region, &row.Ruleset, &row.Name, &row.Rank,
+		if err := rows.Scan(&row.CharacterKey, &row.ownerUserID, &row.Region, &row.Ruleset, &row.Name, &row.Rank,
 			&row.Verified, &row.LoggedRecently, &row.Consent, &row.Class, &row.Spec, &row.ItemLevel); err != nil {
 			return nil, fmt.Errorf("guilds: home roster: %w", err)
 		}
+		row.MayRemove = mayRemoveRow(g, actorID, row.ownerUserID, row.Rank, moderator, verifiedOfficer)
 		out = append(out, row)
 	}
 	return out, rows.Err()
 }
 
 // Home assembles the signed-in guild home shell: identity, claim state,
-// this week's reports, and the roster.
-func (s *Store) Home(ctx context.Context, guildID, userID int64, verified bool, before *HomeCursor) (HomeView, error) {
+// this week's reports, and the roster. moderator and verifiedOfficer
+// describe userID's own standing, read once here rather than
+// re-derived per roster row.
+func (s *Store) Home(ctx context.Context, guildID, userID int64, verified, moderator, verifiedOfficer bool, before *HomeCursor) (HomeView, error) {
 	g, err := s.getGuild(ctx, guildID)
 	if err != nil {
 		return HomeView{}, err
@@ -190,17 +214,13 @@ func (s *Store) Home(ctx context.Context, guildID, userID int64, verified bool, 
 	if err != nil {
 		return HomeView{}, err
 	}
-	roster, err := s.HomeRoster(ctx, guildID)
-	if err != nil {
-		return HomeView{}, err
-	}
-	claim, err := s.claimView(ctx, g, time.Now())
+	roster, err := s.HomeRoster(ctx, guildID, g, userID, moderator, verifiedOfficer)
 	if err != nil {
 		return HomeView{}, err
 	}
 	view := HomeView{
 		Guild:   GuildIdentity{ID: g.ID, Region: g.Region, Ruleset: g.Ruleset, Name: g.Name},
-		Claim:   claim,
+		Claim:   claimState(g, time.Now()),
 		Reports: reports, Roster: roster,
 	}
 	if len(reports) == HomeReportsPerPage {
@@ -230,11 +250,13 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusForbidden, "forbidden", "you are not a member of that guild", nil)
 		return
 	}
-	_, verified, err := s.Accounts.GuildRank(r.Context(), guildID, actor.UserID)
+	rank, verified, err := s.Accounts.GuildRank(r.Context(), guildID, actor.UserID)
 	if err != nil {
 		s.fail(w, r, "home", err, "could not load that guild's home just now")
 		return
 	}
+	verifiedOfficer := verified && (rank == "officer" || rank == "leader")
+	moderator := actor.IsModerator()
 	var before *HomeCursor
 	if v := r.URL.Query().Get("cursor"); v != "" {
 		c, ok := decodeHomeCursor(v)
@@ -245,7 +267,7 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 		}
 		before = &c
 	}
-	view, err := s.Store.Home(r.Context(), guildID, actor.UserID, verified, before)
+	view, err := s.Store.Home(r.Context(), guildID, actor.UserID, verified, moderator, verifiedOfficer, before)
 	if errors.Is(err, ErrNotFound) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such guild", nil)
 		return

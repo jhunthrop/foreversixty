@@ -68,27 +68,24 @@ func (s *Store) AgeOut(ctx context.Context, at time.Time) error {
 // nights of the guild's own real combat-log uploads naming the same
 // character.
 //
-// Third security review response: while the guild's claim is young
-// (established less than 14 days ago - the literal below must stay in
-// sync with freezeThreshold in contest.go, the same duplication
-// AutoConfirmClaimIfPending's own literal already carries against
-// ClaimPendingTTL) or contested, only reports owned by neither the
-// character's own account nor the current claim holder count toward
-// the two-distinct-dates threshold - otherwise a squatter (the guild's
-// only officer, so free to attach any report to it) could self-verify
-// a throwaway account's character with their own uploaded reports
-// during that risk window and manufacture, in advance, the very
-// corroboration frozen() will later check for once the claim turns 14
-// days old. An entirely unclaimed guild carries none of this risk (no
-// claim exists yet for a contest to dispute), so it is exempt - this
-// is also what lets a freshly-synced, not-yet-claimed guild's
-// characters still verify normally from their own reports, exactly as
-// before this response. Outside the risk window any report counts;
-// either way, the report owner(s) that actually drove a fresh
-// verification are recorded on log_evidence_owner_1/2, which frozen()'s
-// corroboration check reads later - re-evaluated against whoever holds
-// the claim at contest time, not against this sweep's snapshot of who
-// held it.
+// One fixed, always-on independence rule (fourth security review
+// response, replacing two narrower rules - a 14-day/contested switch,
+// then a two-account corroboration test reading recorded report-owner
+// evidence - each found gameable by a squatter in turn): a report never
+// counts toward a character's own two-distinct-dates threshold if that
+// report is owned by the character's own account. This still lets a
+// squatter verify sockpuppets into their own guild shell from their
+// OWN uploaded reports, since nothing here stops account A's reports
+// from verifying account B's character - accepted, because that grants
+// the sockpuppets access to nothing but the squatter's own reports (see
+// mayView/mayEdit), and a moderator's release un-verifies every
+// claim-derived row regardless.
+//
+// Separately: while a guild's claim is contested, this verifies nobody
+// in that guild at all - membership cannot shift under a moderator's
+// feet while they are looking at an open dispute, the same guarantee
+// approve's freeze already gives the roster (item 3, fourth security
+// review response).
 func (s *Store) VerifyByLogs(ctx context.Context) error {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
@@ -97,54 +94,19 @@ func (s *Store) VerifyByLogs(ctx context.Context) error {
 	defer func() { _ = tx.Rollback(ctx) }()
 
 	rows, err := tx.Query(ctx, `
-		with unverified as (
-		  select gc.guild_id, gc.character_key, gc.user_id, g.claimed_by,
-		         (g.claim_contested_at is not null
-		          or (g.claimed_at is not null and now() - g.claimed_at < interval '14 days')
-		         ) as restrict_independence
-		  from guild_characters gc
-		  join guilds g on g.id = gc.guild_id
-		  where gc.verified_at is null
-		),
-		qualifying as (
-		  select u.guild_id, u.character_key, u.user_id,
-		         r.id as report_id, r.owner_id as report_owner, r.created_at::date as report_date
-		  from unverified u
-		  join reports r on r.guild_id = u.guild_id
-		  join fights f on f.report_id = r.id and u.character_key = any(f.players)
-		  where r.created_at >= now() - interval '30 days'
-		    and (
-		      not u.restrict_independence
-		      or (r.owner_id is distinct from u.user_id
-		          and (u.claimed_by is null or r.owner_id is distinct from u.claimed_by))
-		    )
-		),
-		by_date as (
-		  select distinct on (guild_id, character_key, report_date)
-		    guild_id, character_key, user_id, report_date, report_owner
-		  from qualifying
-		  order by guild_id, character_key, report_date, report_id
-		),
-		ranked as (
-		  select guild_id, character_key, user_id, report_owner,
-		         row_number() over (partition by guild_id, character_key order by report_date) as rn,
-		         count(*) over (partition by guild_id, character_key) as distinct_dates
-		  from by_date
-		),
-		eligible as (
-		  select guild_id, character_key, user_id,
-		         max(report_owner) filter (where rn = 1) as owner1,
-		         max(report_owner) filter (where rn = 2) as owner2
-		  from ranked
-		  where distinct_dates >= 2
-		  group by guild_id, character_key, user_id
-		)
 		update guild_characters gc
-		set verified_at = now(), verified_by = 'logs',
-		    log_evidence_owner_1 = e.owner1, log_evidence_owner_2 = e.owner2
-		from eligible e
-		where gc.guild_id = e.guild_id and gc.character_key = e.character_key and gc.verified_at is null
-		returning gc.guild_id, gc.user_id
+		set verified_at = now(), verified_by = 'logs'
+		where gc.verified_at is null
+		  and exists (select 1 from guilds g where g.id = gc.guild_id and g.claim_contested_at is null)
+		  and (
+		    select count(distinct r2.created_at::date)
+		    from fights f2 join reports r2 on r2.id = f2.report_id
+		    where r2.guild_id = gc.guild_id
+		      and gc.character_key = any(f2.players)
+		      and r2.created_at >= now() - interval '30 days'
+		      and r2.owner_id is distinct from gc.user_id
+		  ) >= 2
+		returning guild_id, user_id
 	`)
 	if err != nil {
 		return fmt.Errorf("guilds: verify by logs: update: %w", err)

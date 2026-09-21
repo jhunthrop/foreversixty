@@ -559,6 +559,87 @@ null` guard, so two different accounts racing to contest the *same* guild could 
 silently overwrite the other's `claim_contested_by`; it now answers `ErrAlreadyContested`
 via a zero-rows-affected check instead.
 
+#### Fourth amendment, 2026-09-21 (fourth security review response)
+
+A third re-review confirmed the contest race, the report-freeze regression net, lock
+ordering and the migration all fixed, but blocked again on the corroboration test A4's
+freeze rule read: independence was checked only one hop deep. A squatter could wait out the
+14-day young-claim window, verify a sockpuppet account X from their own uploaded reports
+(a path the third response's own relaxation-while-established branch allowed), let X become
+a verified officer of the guild, then have X's reports verify two further sockpuppets Y and
+Z - `corroborated()` then counted four "distinct, non-claimant, independently-verified"
+accounts and the freeze lifted, with no real third party ever involved.
+
+**Coordinator ruling: stop trying to prove corroboration. Delete the escape.** Both narrower
+freeze rules this spec has tried - the original A4 (young-claim-only) and the third
+response's independence-checked corroboration test - were found gameable by a squatter in
+turn. A contest now **always** freezes the disputed claimant's officer tools for that guild
+until a moderator resolves it, with no exception for a young, an established, or an
+otherwise "corroborated" claim. `claim.frozen` stays in the response shape exactly as
+before (`state`, `since`, `frozen`) - the web needs no change - and is simply `true`
+whenever `state` is `"contested"`. What already bounds the cost of a false contest does not
+change: a contester needs a linked Battle.net identity, one contest per account per 30 days,
+one open contest per account at a time, an uphold is final for that (guild, account) pair,
+and the same per-IP rate limit as before. A frozen legitimate guild loses only approve,
+remove, settings save, invite rotate, and the claimant's officer-derived edit rights over
+other members' reports until a moderator upholds the claim; members keep reading and
+uploading throughout.
+
+**Residual risk, stated plainly:** a contest costs the attacker one linked Battle.net
+account per guild, once every 30 days, and costs the legitimately claimed guild its officer
+tools until a moderator acts. This is deliberately accepted rather than engineered around a
+fourth time - every attempt to distinguish "safe to un-freeze" from "still risky" using
+signal the guild's own claimant or officers can produce has turned out to be producible by
+an attacker who controls that account, so the freeze no longer tries to make that
+distinction at all.
+
+The two mechanisms the deleted rule needed, and nothing else used, are gone with it:
+`corroborated()`, `frozen()`, the 14-day `freezeThreshold` constant, and the young-or-
+contested relaxation switch in `VerifyByLogs`. `guilds.claimed_at` stays - `claimState` now
+also reports it as `since` for the `"claimed"` state (a pre-existing gap: it was previously
+surfaced only for `"pending"` and `"contested"`). The `log_evidence_owner_1`/`_2` columns
+migration 0018 added to record corroborating report ownership have no remaining reader now
+that `corroborated()` is gone; since the migration is still unreleased, they were removed
+from it rather than dropped in a new one.
+
+**`VerifyByLogs` gets one fixed, simple independence rule, always on** (replacing the young-
+or-contested-only relaxation): a character is verified by logs only from reports **not
+owned by that character's own account**. A squatter can still verify sockpuppets into their
+own guild shell from their own uploaded reports - accepted, because that grants the
+sockpuppets access to nothing beyond the squatter's own reports (`mayView`/`mayEdit` govern
+everything else), and a moderator's `release` un-verifies every claim-derived row regardless
+of how it got there. Separately, and unconditionally: **while a guild's claim is contested,
+`VerifyByLogs` verifies nobody in that guild at all.** Combined with the freeze already
+blocking `approve`, membership of a disputed guild cannot change while a moderator is
+looking at the dispute.
+
+**The moderation queue.** `GET /v1/moderation/claims` (new) lists every open (contested,
+unresolved) claim, paginated the same keyset shape as `GET /v1/reports/recent` and
+`GET /v1/guilds/{id}/home`: guild identity, both parties' battletags, `claimed_at`/
+`contested_at`, and each side's plain evidence facts - rank index from their export, whether
+and how their strongest character is verified, and how many distinct raid nights within 30
+days that character appears in this guild's reports that it does not own. The site hands a
+moderator raw signal, never a verdict. The route answers `404`, not `403`, for anyone who is
+not a moderator - including an unauthenticated caller - so its existence is never
+advertised. Every successful contest now writes a `Warn`-level structured log line (not
+`Info`), so it can be alerted on.
+
+**Two small, additive response shape changes the web lane asked for:** `HomeReport` gains
+`zone` (a plain string, matching how `reports.View` and the public guild report list already
+expose it - never a pointer, since the underlying column is `not null default ''`), so an
+untitled report can still show something identifying. Each `RosterRow` in the guild home
+gains `may_remove: boolean`, computed server-side from the exact same rank-protects-rank
+rule (now factored into one pure `mayRemoveRow` function) the `DELETE .../characters/{key}`
+route itself enforces, from the viewpoint of whoever is asking - so the web shows the remove
+control exactly where it would succeed, never one that then answers 403.
+
+**Minor fix:** `lockAccountForClaimActivity`'s advisory lock previously cast a user id
+straight to a single 32-bit integer (`pg_advisory_xact_lock(0, $1::int)`), which errors for
+any user id above 2^31-1. It now splits the id into its high and low 32-bit halves
+(`pg_advisory_xact_lock($1, $2)`, both `int4`) - a lossless encoding of the full 64-bit id
+into the two-integer lock form, which never collides with the per-guild single-bigint locks
+`LockGuilds`/`RecomputeMembership` take, regardless of numeric value.
+
 ### 2.5 The invite link
 
 Unchanged mechanics from the first draft (a random 32-byte token, shown once, stored only
@@ -601,10 +682,12 @@ per the existing store style throughout this codebase.
 | `DELETE /v1/guilds/{id}/characters/{character_key}` | session, the character's own account **or** a verified officer/leader — **rank protects rank (2026-09-21 amendment)**: an `officer`-rank row also requires the account currently holding the claim; a `leader`-rank row only its own account or a moderator | — | `{status: "removed"}` | 403 `forbidden`; 404 `not_found`; 409 `claim_contested` (contested AND frozen — second amendment; never on the caller's own row or a moderator's call) |
 | `PATCH /v1/guilds/{id}/members/me` | session | `{consent: "roster"\|"gear"\|"gear_bags"}` | updated member row | 400 `invalid`; 404 `not_found` (no membership) |
 | `DELETE /v1/guilds/{id}/members/me` | session | — | `{status: "left"}` (removes every one of the caller's own `guild_characters` rows in this guild) | 404 `not_found` |
-| `GET /v1/guilds/{id}/home` | session, any member (verified or not — §3.2) | — | this week's **verified-or-public-or-own** reports (2026-09-21 amendment), character roster, who-logged (§4.1), `claim: {state, since?, frozen}` (`frozen` added by the second amendment) | 403 `forbidden` (not a member); 404 `not_found` |
+| `GET /v1/guilds/{id}/home` | session, any member (verified or not — §3.2) | — | this week's **verified-or-public-or-own** reports, each carrying `zone` (fourth amendment), character roster with `may_remove` per row (fourth amendment), who-logged (§4.1), `claim: {state, since?, frozen}` (`frozen` is simply `state == "contested"` as of the fourth amendment) | 403 `forbidden` (not a member); 404 `not_found` |
+| `GET /v1/moderation/claims` (2026-09-21 fourth amendment) | session, moderator only | — | `{claims: [{guild, claimant: {battletag, evidence}, contester: {battletag, evidence}, claimed_at, contested_at}], next_cursor?}` where `evidence` is `{rank_index, verified, verified_by?, independent_nights}` | 404 `not_found` for anyone who is not a moderator (including unauthenticated — the route's existence is not advertised); 400 `invalid` (bad cursor) |
 
-Report editing (`api/internal/reports/handler.go`'s `mayEdit`) also observes the contested-
-AND-frozen freeze now (second amendment): while frozen, the disputed claimant's
+Report editing (`api/internal/reports/handler.go`'s `mayEdit`) also observes the contest
+freeze (unconditional as of the fourth amendment): while a guild's claim is contested, the
+disputed claimant's
 officer-derived edit right over their guild's reports is suspended through a new
 `reports.Service.Guilds` (`GuildClaims.FrozenClaimant`) hook — their own reports, every
 other verified officer, and every moderator are unaffected.
@@ -875,6 +958,32 @@ unaffected — and `cmd/api/main_test.go` gained a wiring guard
 wires it fails a test rather than silently disabling the freeze in production, while every
 other reports test harness keeps leaving `Guilds` nil deliberately (nil-safe by design,
 since most reports tests have nothing to do with a claim dispute).
+
+#### Fourth amendment, 2026-09-21 (fourth security review response)
+
+The third amendment's own independence rule was still gameable one hop removed: a squatter
+could verify a sockpuppet from their own reports (the third amendment's young-or-contested
+relaxation permitted this outside that window), let the sockpuppet become a verified
+officer, then have the sockpuppet's reports verify two further sockpuppets — satisfying the
+"two distinct, independently-sourced accounts" test with no genuine third party anywhere in
+the chain. Full detail and the fix (deleting the freeze exception rather than patching it a
+third time; a contest now always freezes) is recorded in §2.4's own fourth amendment,
+immediately above §2.5, for the same reason the third amendment's fix lived there rather
+than here.
+
+Two access-control-relevant pieces of that response belong here specifically:
+
+- **`VerifyByLogs`'s independence rule is now fixed and unconditional**: a report never
+  counts toward a character's own verification if that report is owned by the character's
+  own account. No exception for an unclaimed, young, or contested guild. A squatter
+  verifying their own sockpuppets from their own reports is accepted (§2.4's fourth
+  amendment states why); the previous conditional relaxation that let this rule not apply
+  outside the 14-day/contested window is gone with the freeze rule it existed to protect.
+- **`GET /v1/moderation/claims` is a new, moderator-only surface** into `guild_characters`
+  and `reports` data that a plain member cannot otherwise see in aggregate across guilds
+  (evidence facts for both sides of every open contest, not just the caller's own guild).
+  It answers `404` for a non-moderator specifically so its existence, and the standing it
+  requires, is never disclosed the way a `401`/`403` would.
 
 ## 4. The web side
 

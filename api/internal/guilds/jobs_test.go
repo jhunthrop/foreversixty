@@ -89,12 +89,17 @@ func TestVerifyByLogsRequiresTwoDistinctNightsWithinThirtyDays(t *testing.T) {
 	uid := seedUser(t, pool, "logger@example.com")
 	gid := seedGuild(t, pool, "Forever")
 	seedCharacter(t, pool, gid, uid, "us/hardcore/logger", "member", false)
+	// Owned by a different account than the character being verified -
+	// item 3's fixed independence rule (fourth security review
+	// response) never counts a report toward its own account's
+	// verification.
+	uploader := seedUser(t, pool, "logger-uploader@example.com")
 
 	seedReportWithFight := func(id string, createdAt time.Time, players []string) {
 		t.Helper()
 		if _, err := pool.Exec(ctx,
 			`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
-			 values ($1, $2, $3, 'guild', 'complete', $4)`, id, uid, gid, createdAt); err != nil {
+			 values ($1, $2, $3, 'guild', 'complete', $4)`, id, uploader, gid, createdAt); err != nil {
 			t.Fatal(err)
 		}
 		if _, err := pool.Exec(ctx,
@@ -135,13 +140,14 @@ func TestVerifyByLogsRefusesTwoAppearancesMoreThanThirtyDaysApart(t *testing.T) 
 	uid := seedUser(t, pool, "stale-logger@example.com")
 	gid := seedGuild(t, pool, "Forever")
 	seedCharacter(t, pool, gid, uid, "us/hardcore/staleoverlap", "member", false)
+	uploader := seedUser(t, pool, "stale-logger-uploader@example.com")
 
 	for i, days := range []int{40, 5} {
 		id := "far" + string(rune('a'+i))
 		if _, err := pool.Exec(ctx,
 			`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
 			 values ($1, $2, $3, 'guild', 'complete', now() - ($4::int * interval '1 day'))`,
-			id, uid, gid, days); err != nil {
+			id, uploader, gid, days); err != nil {
 			t.Fatal(err)
 		}
 		if _, err := pool.Exec(ctx,
@@ -189,6 +195,7 @@ func TestVerifyByLogsRecordsVerifiedByLogs(t *testing.T) {
 	uid := seedUser(t, pool, "logs-source@example.com")
 	gid := seedGuild(t, pool, "Forever")
 	seedCharacter(t, pool, gid, uid, "us/hardcore/logssource", "member", false)
+	uploader := seedUser(t, pool, "logs-source-uploader@example.com")
 
 	first := time.Now().Add(-20 * 24 * time.Hour)
 	for i, days := range []float64{20, 5} {
@@ -196,7 +203,7 @@ func TestVerifyByLogsRecordsVerifiedByLogs(t *testing.T) {
 		if _, err := pool.Exec(ctx,
 			`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
 			 values ($1, $2, $3, 'guild', 'complete', $4)`,
-			id, uid, gid, first.Add(time.Duration(20-days)*24*time.Hour)); err != nil {
+			id, uploader, gid, first.Add(time.Duration(20-days)*24*time.Hour)); err != nil {
 			t.Fatal(err)
 		}
 		if _, err := pool.Exec(ctx,
@@ -215,5 +222,51 @@ func TestVerifyByLogsRecordsVerifiedByLogs(t *testing.T) {
 	}
 	if by != "logs" {
 		t.Fatalf("verified_by = %q, want logs", by)
+	}
+}
+
+// TestVerifyByLogsVerifiesNobodyInAContestedGuild is item 3's second
+// half (fourth security review response): while a guild's claim is
+// contested, VerifyByLogs verifies nobody in that guild at all - since
+// approve is already frozen for the same reason, membership of a
+// disputed guild cannot change under a moderator's feet while they are
+// looking at the dispute.
+func TestVerifyByLogsVerifiesNobodyInAContestedGuild(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	ctx := context.Background()
+	gid := seedGuild(t, pool, "Forever")
+	uid := seedUser(t, pool, "contested-logger@example.com")
+	seedCharacter(t, pool, gid, uid, "us/hardcore/contestedlogger", "member", false)
+	uploader := seedUser(t, pool, "contested-logger-uploader@example.com")
+
+	first := time.Now().Add(-20 * 24 * time.Hour)
+	for i, offset := range []time.Duration{0, 15 * 24 * time.Hour} {
+		id := fmt.Sprintf("contestlog%d", i)
+		if _, err := pool.Exec(ctx,
+			`insert into reports (id, owner_id, guild_id, visibility, status, created_at)
+			 values ($1, $2, $3, 'guild', 'complete', $4)`,
+			id, uploader, gid, first.Add(offset)); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := pool.Exec(ctx,
+			`insert into fights (report_id, fight_index, players) values ($1, 0, $2)`,
+			id, []string{"us/hardcore/contestedlogger"}); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := pool.Exec(ctx, `update guilds set claim_contested_at = now() where id = $1`, gid); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := s.VerifyByLogs(ctx); err != nil {
+		t.Fatal(err)
+	}
+	var verified bool
+	pool.QueryRow(ctx,
+		`select verified_at is not null from guild_characters where character_key = 'us/hardcore/contestedlogger'`).
+		Scan(&verified)
+	if verified {
+		t.Fatal("VerifyByLogs must verify nobody in a contested guild, even with two genuinely independent qualifying reports")
 	}
 }

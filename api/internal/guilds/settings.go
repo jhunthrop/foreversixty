@@ -60,14 +60,10 @@ func (s *Store) Settings(ctx context.Context, guildID int64) (SettingsView, erro
 	if err != nil {
 		return SettingsView{}, err
 	}
-	claim, err := s.claimView(ctx, g, time.Now())
-	if err != nil {
-		return SettingsView{}, err
-	}
 	return SettingsView{
 		DefaultVisibility: g.DefaultVisibility, OfficerMaxRankIndex: g.OfficerMaxRankIndex,
 		Invite: InviteView{RotatedAt: g.InviteTokenRotatedAt},
-		Claim:  claim,
+		Claim:  claimState(g, time.Now()),
 	}, nil
 }
 

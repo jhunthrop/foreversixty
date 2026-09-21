@@ -49,22 +49,17 @@ func (g Guild) pendingActive(now time.Time) bool {
 
 // activeClaimant reports the account a contest would currently be
 // disputing - the claimed account if one holds the claim, otherwise a
-// still-pending one, otherwise none - and since, when it was
-// established (claimed_at for a held claim, claim_requested_at for a
-// pending one). Claimed takes priority over merely-pending, the same
-// resolution ContestClaim and ResolveClaim both need (2026-09-21
-// second security review response).
-func (g Guild) activeClaimant(now time.Time) (claimant int64, since time.Time, ok bool) {
+// still-pending one, otherwise none. Claimed takes priority over
+// merely-pending, the same resolution ContestClaim and ResolveClaim
+// both need (2026-09-21 second security review response).
+func (g Guild) activeClaimant(now time.Time) (claimant int64, ok bool) {
 	if g.ClaimedBy != nil {
-		if g.ClaimedAt != nil {
-			since = *g.ClaimedAt
-		}
-		return *g.ClaimedBy, since, true
+		return *g.ClaimedBy, true
 	}
 	if g.pendingActive(now) {
-		return *g.ClaimPendingBy, *g.ClaimRequestedAt, true
+		return *g.ClaimPendingBy, true
 	}
-	return 0, time.Time{}, false
+	return 0, false
 }
 
 // Store is every guild-mutation read and write.
@@ -206,13 +201,18 @@ func LockGuilds(ctx context.Context, tx pgx.Tx, ids ...int64) error {
 // without it, a burst of concurrent Claim or ContestClaim calls from
 // the same account could each read the same stale
 // guild_claim_attempts count before any of them committed its own
-// insert. Uses the two-integer advisory lock form with a fixed
-// classid of 0 - Postgres never lets this collide with the per-guild
-// single-bigint locks LockGuilds/RecomputeMembership take, regardless
-// of numeric value, so no namespacing beyond that is needed. Call
-// right after tx.Begin, before any rate-limit read.
+// insert. Uses the two-integer advisory lock form, with userID split
+// into its high and low 32 bits rather than truncated to a single
+// int4 (an earlier version cast straight to ::int, which silently
+// failed - Postgres errors "integer out of range" - for any user id
+// above 2^31-1; the fourth security review response's own minor note).
+// Postgres never lets the two-integer lock space collide with the
+// per-guild single-bigint locks LockGuilds/RecomputeMembership take,
+// regardless of numeric value, so no further namespacing is needed.
+// Call right after tx.Begin, before any rate-limit read.
 func lockAccountForClaimActivity(ctx context.Context, tx pgx.Tx, userID int64) error {
-	if _, err := tx.Exec(ctx, `select pg_advisory_xact_lock(0, $1::int)`, userID); err != nil {
+	hi, lo := int32(userID>>32), int32(userID)
+	if _, err := tx.Exec(ctx, `select pg_advisory_xact_lock($1, $2)`, hi, lo); err != nil {
 		return fmt.Errorf("guilds: lock account %d: %w", userID, err)
 	}
 	return nil

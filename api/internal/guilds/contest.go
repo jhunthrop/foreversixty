@@ -24,115 +24,41 @@ var (
 	ErrContestAlreadyUpheld          = errors.New("guilds: this account's contest of this guild's claim has already been upheld")
 )
 
-// freezeThreshold is A4's "young" claim age: a contest against a claim
-// established less than this long ago freezes officer tools regardless
-// of corroboration, because a brand-new claim has had no time to
-// accumulate independent log verification of its own (2026-09-21
-// second security review response).
-const freezeThreshold = 14 * 24 * time.Hour
-
 // ClaimStateView is the claim state object GET /v1/guilds/{id}/settings
 // and GET /v1/guilds/{id}/home both expose (2026-09-21 security review
-// response, spec §2.4's amendment; Frozen added by the second review
-// response, A4).
+// response, spec §2.4's amendment). Frozen (added by the second review
+// response, simplified by the fourth) is exactly State == "contested":
+// a contest always freezes the disputed claimant's officer tools for
+// that guild until a moderator resolves it - two earlier attempts at a
+// narrower rule (young-claim-only, then an independence-checked
+// corroboration test) were each found gameable by a squatter, so the
+// fourth response deletes the escape rather than patch it a third
+// time. The field stays in the response shape so the web needs no
+// change; see spec §2.4's fourth amendment for the reasoning and the
+// accepted residual risk.
 type ClaimStateView struct {
 	State  string     `json:"state"`
 	Since  *time.Time `json:"since,omitempty"`
 	Frozen bool       `json:"frozen"`
 }
 
-// claimState derives the four-phase claim state a guild is in as of now.
-// Pure (no DB access) - Frozen is filled in separately by claimView,
-// since it needs a query the settings/home callers already pay for
-// only when the state is actually "contested".
+// claimState derives the four-phase claim state a guild is in as of
+// now, entirely pure (no DB access - the fourth security review
+// response removed the only rule that ever needed one). Since is filled
+// in for every state that has a meaningful "as of" instant: claimed_at
+// for "claimed", claim_requested_at for "pending", claim_contested_at
+// for "contested".
 func claimState(g Guild, now time.Time) ClaimStateView {
 	switch {
 	case g.ClaimContestedAt != nil:
-		return ClaimStateView{State: "contested", Since: g.ClaimContestedAt}
+		return ClaimStateView{State: "contested", Since: g.ClaimContestedAt, Frozen: true}
 	case g.ClaimedBy != nil:
-		return ClaimStateView{State: "claimed"}
+		return ClaimStateView{State: "claimed", Since: g.ClaimedAt}
 	case g.pendingActive(now):
 		return ClaimStateView{State: "pending", Since: g.ClaimRequestedAt}
 	default:
 		return ClaimStateView{State: "unclaimed"}
 	}
-}
-
-// claimView is claimState plus Frozen: only ever computed when the
-// state is "contested" (Frozen is meaningless, and always false,
-// otherwise). A contested guild with no coherent active claimant left
-// (which contest state should never actually allow) is treated as
-// frozen rather than silently unfrozen - fail closed.
-func (s *Store) claimView(ctx context.Context, g Guild, now time.Time) (ClaimStateView, error) {
-	view := claimState(g, now)
-	if view.State != "contested" {
-		return view, nil
-	}
-	claimant, since, ok := g.activeClaimant(now)
-	if !ok {
-		view.Frozen = true
-		return view, nil
-	}
-	frozen, err := s.frozen(ctx, g.ID, claimant, since)
-	if err != nil {
-		return ClaimStateView{}, err
-	}
-	view.Frozen = frozen
-	return view, nil
-}
-
-// frozen applies A4: a contest freezes officer tools only when the
-// disputed claim is young (established less than freezeThreshold ago)
-// or the guild is not independently corroborated (see corroborated).
-// An established, independently corroborated claim is recorded as
-// contested and queued for a moderator, but nothing freezes.
-func (s *Store) frozen(ctx context.Context, guildID, claimant int64, since time.Time) (bool, error) {
-	if time.Since(since) < freezeThreshold {
-		return true, nil
-	}
-	corroborated, err := s.corroborated(ctx, guildID, claimant)
-	if err != nil {
-		return false, err
-	}
-	return !corroborated, nil
-}
-
-// corroborated implements the third security review response's
-// independence rule: a claim counts as corroborated only when at
-// least TWO distinct accounts other than the claimant each have a
-// character in this guild verified by logs, where the reports that
-// did the verifying were owned by neither the claimant nor the
-// account being verified. A squatter who is a guild's only officer -
-// and so can attach any report to it - cannot manufacture
-// "independent" corroboration merely by attaching their own uploaded
-// reports, or a verified character's own reports, to the guild: doing
-// either would make that verification's evidence fail the ownership
-// check below, however many report-dates it satisfies. A lone
-// squatter plus one alt account can verify nobody this way, since
-// every report either of their two accounts could attach is owned by
-// one of the two accounts the rule excludes.
-//
-// This reads guild_characters.log_evidence_owner_1/2, recorded by
-// VerifyByLogs at the moment it verifies a row, rather than
-// re-deriving ownership from reports that may since have been deleted
-// or detached from the guild - and re-evaluated against the CURRENT
-// claimant every time a contest is checked, so a row verified while
-// the claim was held by someone else (before a transfer) is judged
-// against who holds it now, not who held it when the row was
-// verified.
-func (s *Store) corroborated(ctx context.Context, guildID, claimant int64) (bool, error) {
-	var count int
-	if err := s.Pool.QueryRow(ctx, `
-		select count(distinct user_id) from guild_characters
-		where guild_id = $1 and user_id != $2 and verified_by = 'logs'
-		  and log_evidence_owner_1 is not null
-		  and log_evidence_owner_1 != $2 and log_evidence_owner_1 != user_id
-		  and log_evidence_owner_2 is not null
-		  and log_evidence_owner_2 != $2 and log_evidence_owner_2 != user_id
-	`, guildID, claimant).Scan(&count); err != nil {
-		return false, fmt.Errorf("guilds: corroborated: %w", err)
-	}
-	return count >= 2, nil
 }
 
 // checkContestRateLimit enforces A2: at most one open contest per
@@ -186,9 +112,10 @@ func (s *Store) previouslyUpheld(ctx context.Context, guildID, contesterID int64
 }
 
 // ContestClaim flags guildID's current claim (pending or claimed) as
-// disputed by contesterID, freezing the claimant's officer powers
-// until a moderator resolves it, when the claim is young or
-// uncorroborated (A4). The contester must: hold a linked Battle.net
+// disputed by contesterID, always freezing the claimant's officer
+// powers for this guild until a moderator resolves it (A4, simplified
+// by the fourth security review response). The contester must: hold a
+// linked Battle.net
 // identity (A1, exactly as a leader claim does - a free email-only
 // account with one forged officer export must never be able to freeze
 // a real guild's officer tools); hold a raw officer/leader rank
@@ -207,7 +134,7 @@ func (s *Store) ContestClaim(ctx context.Context, guildID, contesterID int64, ha
 	if err != nil {
 		return err
 	}
-	claimant, _, ok := g.activeClaimant(time.Now())
+	claimant, ok := g.activeClaimant(time.Now())
 	if !ok {
 		return ErrNoActiveClaim
 	}
@@ -399,14 +326,15 @@ func (s *Store) ResolveClaim(ctx context.Context, guildID, moderatorID int64, ou
 }
 
 // FrozenClaimant reports whether guildID's claim is currently contested
-// and frozen (A4) with userID as the disputed claimant - the hook
-// reports/handler.go's mayEdit consults (D, 2026-09-21 second security
-// review response): while frozen, the disputed claimant's
-// officer-derived edit right over their guild's reports is suspended
-// right alongside every other officer power; their own reports (owned
-// by them regardless of guild role) and every other verified officer
-// or moderator are unaffected, since mayEdit only ever calls this after
-// its own owner/moderator/officer-rank checks have already passed.
+// (always frozen when it is, per the fourth security review response)
+// with userID as the disputed claimant - the hook reports/handler.go's
+// mayEdit consults (D, 2026-09-21 second security review response):
+// while frozen, the disputed claimant's officer-derived edit right
+// over their guild's reports is suspended right alongside every other
+// officer power; their own reports (owned by them regardless of guild
+// role) and every other verified officer or moderator are unaffected,
+// since mayEdit only ever calls this after its own
+// owner/moderator/officer-rank checks have already passed.
 func (s *Store) FrozenClaimant(ctx context.Context, guildID, userID int64) (bool, error) {
 	g, err := s.getGuild(ctx, guildID)
 	if err != nil {
@@ -415,14 +343,10 @@ func (s *Store) FrozenClaimant(ctx context.Context, guildID, userID int64) (bool
 		}
 		return false, err
 	}
-	view, err := s.claimView(ctx, g, time.Now())
-	if err != nil {
-		return false, err
-	}
-	if view.State != "contested" || !view.Frozen {
+	if g.ClaimContestedAt == nil {
 		return false, nil
 	}
-	claimant, _, ok := g.activeClaimant(time.Now())
+	claimant, ok := g.activeClaimant(time.Now())
 	return ok && claimant == userID, nil
 }
 
@@ -466,7 +390,10 @@ func (s *Service) contestClaim(w http.ResponseWriter, r *http.Request) {
 	case err != nil:
 		s.fail(w, r, "contest_claim", err, "could not contest that claim just now")
 	default:
-		s.logger().Info("guilds", "op", "claim_contest", "guild_id", guildID, "user_id", actor.UserID)
+		// Warn, not Info: every contest is a moderation-queue event a
+		// human should be alerted on (item 4, fourth security review
+		// response), not routine activity.
+		s.logger().Warn("guilds", "op", "claim_contest", "guild_id", guildID, "user_id", actor.UserID)
 		httpx.WriteOK(w, r, http.StatusOK, map[string]string{"status": "contested"})
 	}
 }
