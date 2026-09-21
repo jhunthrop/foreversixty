@@ -13,10 +13,10 @@
 //     player asks for a number. `init.pool` exists for tests and for the planner, which
 //     brings its own.
 import { loadItems, loadReference, loadTalents } from '../planner/load';
-import type { ClassRow, Item, RaceRow, TalentFile } from '../planner/types';
+import type { Item, RaceRow, TalentFile } from '../planner/types';
 import { indexTalents } from '../planner/rules';
 import { dispatchServerSim, fetchSim, fetchSimProgress, saveSim } from './api';
-import { characterFromFs1, needsRace, toCharacterSpec, type SimCharacter } from './character';
+import { needsRace, toCharacterSpec, type SimCharacter } from './character';
 import { loadActionNames, type ActionNames } from './action-names';
 import { EMPTY_BUFF_NAMES, loadBuffNames, type BuffNames } from './buff-names';
 import { simCopy } from './copy';
@@ -29,6 +29,7 @@ import { defaultSettings, settingsLabel, withSpecForPreset, type SimSettings } f
 import {
   fromAddonExport,
   fromLoggedFight,
+  fromManualCode,
   fromPlannerBuild,
   fromStoredCharacter,
   type LoadContext,
@@ -50,37 +51,6 @@ const DEFAULT_SERVER_POLL_MS = 2000;
 
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-/**
- * An unsaved planner build's own FS1 code, into a `'manual'`-sourced character. This is
- * `sources.ts`'s `fromAddonExport` in every step but the source it stamps: an addon export
- * and a "Sim this build" link decode through the identical `FS1:…` grammar and the
- * identical `characterFromFs1`, and only differ in where the character came from, which the
- * strip's pill has to say honestly (`sourcePill` reads `'addon'` as "Addon export, …" and
- * anything else, `'manual'` included, as "Entered by hand").
- */
-async function fromPlannerCode(code: string, ctx: LoadContext): Promise<SourceResult> {
-  const classSlug = code.trim().split(':')[2] ?? '';
-  let talents: TalentFile;
-  let classes: ClassRow[];
-  let races: RaceRow[];
-  try {
-    const [loadedTalents, reference] = await Promise.all([
-      loadTalents(ctx.treeVersion, classSlug),
-      loadReference(ctx.treeVersion),
-    ]);
-    talents = loadedTalents;
-    classes = reference.classes;
-    races = reference.races;
-  } catch {
-    return { ok: false, message: simCopy.characterFailed };
-  }
-  return characterFromFs1(code, talents, classes, races, {
-    kind: 'manual',
-    ref: '',
-    captured_at: new Date().toISOString(),
-  });
 }
 
 // A plain Map, not a SvelteMap: `items` below is replaced wholesale when the class changes
@@ -390,7 +360,7 @@ export function createSimStore(init: SimStoreInit) {
     poolOnce,
     adopt,
     restorePreviousResult,
-    fromPlannerCode: (code) => fromPlannerCode(code, ctx),
+    fromPlannerCode: (code) => fromManualCode(code, ctx),
     treeVersion: init.treeVersion,
   };
   const requestMethods = createRequestMethods(requestDeps);
@@ -434,7 +404,7 @@ export function createSimStore(init: SimStoreInit) {
     init.request !== undefined
       ? applyRequestOnce(init.request)
       : init.code !== undefined && init.code !== ''
-        ? adopt(fromPlannerCode(init.code, ctx))
+        ? adopt(fromManualCode(init.code, ctx))
         : (() => {
             const load =
               init.source !== undefined && init.ref !== undefined && init.ref !== ''

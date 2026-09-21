@@ -1,7 +1,9 @@
 // web/src/lib/sim/sources.ts
-// The four ways a character reaches the simulator, and the pill that says which. Every one
+// The five ways a character reaches the simulator, and the pill that says which. Every one
 // of them ends in a SimCharacter, so nothing downstream -- the strip, the request builder,
-// the planner link -- knows or cares where it came from.
+// the planner link -- knows or cares where it came from. Every one of them also writes the
+// site's current-character pointer (current-character-bridge.ts) on success, so a bare
+// /sim or /planner load can restore whatever was last loaded, from wherever it came from.
 //
 //   stored   GET /v1/characters/<region>/<ruleset>/<name>/sim-input -- whatever the API's
 //            newest source for that character is. Armory is not one of them yet (simulator
@@ -12,6 +14,7 @@
 //   addon    an FS1 string, pasted or pushed by the companion
 //   build    GET /v1/builds/<id>, the planner's own record
 //   fight    <report_id>:<fight_index>, read out of the fight's COMBATANT_INFO row
+//   manual   an unsaved planner build's own FS1 code (a "Sim this build" link)
 //
 // Each returns a result rather than throwing: every one of these is something a player
 // typed or pasted, and the page shows the reason inline beside the field.
@@ -24,6 +27,7 @@ import { gearFromCombatant, treeRanksFromTalents } from '../report/planner-link'
 import { classSlugFromName } from '../report/tree-sizes';
 import { requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
+import type { CurrentCharacterSource } from '../current-character';
 import {
   PENDING_RACE,
   characterFromFs1,
@@ -35,7 +39,8 @@ import {
 } from './character';
 import { fetchSimInput } from './api';
 import { simCopy } from './copy';
-import type { CharacterSource } from './types';
+import { recordCurrentCharacter } from './current-character-bridge';
+import type { CharacterSource, SourceKind } from './types';
 
 export interface LoadContext {
   /** The active data build; every /data/<build>/ fetch and every character carries it. */
@@ -93,7 +98,32 @@ async function reference(ctx: LoadContext) {
   return loadReference(ctx.treeVersion);
 }
 
-export async function fromStoredCharacter(path: CharacterPath, ctx: LoadContext): Promise<SourceResult> {
+/**
+ * The current-character pointer's source for `fromStoredCharacter`'s non-addon branch.
+ * `SimInput.source`'s own doc comment (types.ts) says the API returns `"addon"` or
+ * `"fight"` today, with `"armory"` arriving once Forever has a profile API of its own --
+ * never `"build"` or `"manual"`. `'addon'` is handled by the addon branch above before this
+ * function is ever reached, so all three unexpected kinds fall through to `null` rather
+ * than guessing a pointer source for a case the API does not document sending.
+ */
+export function pointerSourceForStored(source: SourceKind): CurrentCharacterSource | null {
+  switch (source) {
+    case 'armory':
+      return 'armory';
+    case 'fight':
+      return 'fight';
+    case 'addon':
+    case 'build':
+    case 'manual':
+      return null;
+  }
+}
+
+export async function fromStoredCharacter(
+  path: CharacterPath,
+  ctx: LoadContext,
+  storage?: Storage,
+): Promise<SourceResult> {
   let input;
   try {
     input = await fetchSimInput(path, ctx.apiBase ?? API_BASE_URL);
@@ -122,7 +152,7 @@ export async function fromStoredCharacter(path: CharacterPath, ctx: LoadContext)
     } catch {
       return { ok: false, message: simCopy.characterFailed };
     }
-    return characterFromFs1(
+    const result = characterFromFs1(
       code,
       talents,
       classes,
@@ -130,6 +160,8 @@ export async function fromStoredCharacter(path: CharacterPath, ctx: LoadContext)
       { kind: 'addon', ref: characterKey, captured_at: input.captured_at },
       path.slug,
     );
+    if (result.ok) recordCurrentCharacter(result.character, 'addon', code, storage);
+    return result;
   }
 
   const classSlug = input.spec.split('-')[0];
@@ -161,48 +193,52 @@ export async function fromStoredCharacter(path: CharacterPath, ctx: LoadContext)
     const totalPoints = input.talents
       .split('/')
       .reduce((sum, part) => sum + (Number.parseInt(part, 10) || 0), 0);
-    return {
-      ok: true,
-      character: {
-        name,
-        spec: input.spec,
-        class_slug: classSlug,
-        race_slug: raceRow.slug,
-        talent_level: talentLevel(new Array<number>(totalPoints)),
-        tree_version: ctx.treeVersion,
-        point_order: [],
-        // `input.gear`'s shape is the source's own -- the addon's own export JSON for an
-        // addon read, `{"trinkets": […]}` for a fight (input.go) -- and openapi.yaml
-        // leaves it an opaque object rather than the planner's slot-to-item map. Nothing
-        // in this repository decodes either shape yet, so gear starts empty rather than
-        // guessed at: the same honest-empty choice as point_order, above.
-        gear: {},
-        // No enchant or suffix data on this source either, so gear_slots is the (empty) id
-        // map converted -- the same "the two always agree on item ids" promise every other
-        // source keeps.
-        gear_slots: [],
-        professions: [],
-        bags: [],
-        bank: [],
-        sets: [],
-        loadouts: [],
-        // Buff ids straight through. The amended contract puts the spell-id mapping on the
-        // API side -- "the web never maps spell ids itself" -- so `input.buffs` is already
-        // the engine's vocabulary and anything it does not recognise surfaces as the
-        // engine's own error rather than being dropped here.
-        buffs: [...input.buffs],
-        consumables: [],
-        // The API's own word for where this came from -- never a guess, so the pill is
-        // true today and true unchanged when Armory lands.
-        source: { kind: input.source, ref: characterKey, captured_at: input.captured_at },
-      },
+    const character: SimCharacter = {
+      name,
+      spec: input.spec,
+      class_slug: classSlug,
+      race_slug: raceRow.slug,
+      talent_level: talentLevel(new Array<number>(totalPoints)),
+      tree_version: ctx.treeVersion,
+      point_order: [],
+      // `input.gear`'s shape is the source's own -- the addon's own export JSON for an
+      // addon read, `{"trinkets": […]}` for a fight (input.go) -- and openapi.yaml
+      // leaves it an opaque object rather than the planner's slot-to-item map. Nothing
+      // in this repository decodes either shape yet, so gear starts empty rather than
+      // guessed at: the same honest-empty choice as point_order, above.
+      gear: {},
+      // No enchant or suffix data on this source either, so gear_slots is the (empty) id
+      // map converted -- the same "the two always agree on item ids" promise every other
+      // source keeps.
+      gear_slots: [],
+      professions: [],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      // Buff ids straight through. The amended contract puts the spell-id mapping on the
+      // API side -- "the web never maps spell ids itself" -- so `input.buffs` is already
+      // the engine's vocabulary and anything it does not recognise surfaces as the
+      // engine's own error rather than being dropped here.
+      buffs: [...input.buffs],
+      consumables: [],
+      // The API's own word for where this came from -- never a guess, so the pill is
+      // true today and true unchanged when Armory lands.
+      source: { kind: input.source, ref: characterKey, captured_at: input.captured_at },
     };
+    const pointerSource = pointerSourceForStored(input.source);
+    if (pointerSource !== null) recordCurrentCharacter(character, pointerSource, characterKey, storage);
+    return { ok: true, character };
   } catch {
     return { ok: false, message: simCopy.characterFailed };
   }
 }
 
-export async function fromAddonExport(code: string, ctx: LoadContext): Promise<SourceResult> {
+export async function fromAddonExport(
+  code: string,
+  ctx: LoadContext,
+  storage?: Storage,
+): Promise<SourceResult> {
   // The class is in the string, so the talent file is chosen from it rather than guessed.
   const classSlug = code.trim().split(':')[2] ?? '';
   let talents;
@@ -216,14 +252,57 @@ export async function fromAddonExport(code: string, ctx: LoadContext): Promise<S
   } catch {
     return { ok: false, message: simCopy.characterFailed };
   }
-  return characterFromFs1(code, talents, classes, races, {
+  const result = characterFromFs1(code, talents, classes, races, {
     kind: 'addon',
     ref: '',
     captured_at: new Date().toISOString(),
   });
+  if (result.ok) recordCurrentCharacter(result.character, 'addon', code, storage);
+  return result;
 }
 
-export async function fromPlannerBuild(buildId: string, ctx: LoadContext): Promise<SourceResult> {
+/**
+ * An unsaved planner build's own FS1 code, into a `'manual'`-sourced character. Moved here
+ * from store.svelte.ts (Task 3, current-character spec) so the tools island -- previously
+ * blind to `?code=` entirely -- can bootstrap from one too, through the same loader the sim
+ * page already used. Identical to `fromAddonExport` in every step but the source it stamps
+ * on the character and the pointer: an addon export and a "Sim this build" link decode
+ * through the identical `FS1:…` grammar and the identical `characterFromFs1`, and only
+ * differ in where the character came from, which the strip's pill has to say honestly
+ * (`sourcePill` reads `'addon'` as "Addon export, …" and anything else, `'manual'`
+ * included, as "Entered by hand").
+ */
+export async function fromManualCode(
+  code: string,
+  ctx: LoadContext,
+  storage?: Storage,
+): Promise<SourceResult> {
+  const classSlug = code.trim().split(':')[2] ?? '';
+  let talents;
+  let classes;
+  let races;
+  try {
+    [talents, { classes, races }] = await Promise.all([
+      loadTalents(ctx.treeVersion, classSlug),
+      reference(ctx),
+    ]);
+  } catch {
+    return { ok: false, message: simCopy.characterFailed };
+  }
+  const result = characterFromFs1(code, talents, classes, races, {
+    kind: 'manual',
+    ref: '',
+    captured_at: new Date().toISOString(),
+  });
+  if (result.ok) recordCurrentCharacter(result.character, 'code', code, storage);
+  return result;
+}
+
+export async function fromPlannerBuild(
+  buildId: string,
+  ctx: LoadContext,
+  storage?: Storage,
+): Promise<SourceResult> {
   let record: BuildRecord | null;
   try {
     ({ data: record } = await requestEnvelope<BuildRecord>(
@@ -245,7 +324,9 @@ export async function fromPlannerBuild(buildId: string, ctx: LoadContext): Promi
       name: record.title === undefined || record.title === '' ? classRow.name : record.title,
       source: { kind: 'build', ref: record.id, captured_at: record.created_at },
     });
-    return character === null ? { ok: false, message: simCopy.buildNotFound } : { ok: true, character };
+    if (character === null) return { ok: false, message: simCopy.buildNotFound };
+    recordCurrentCharacter(character, 'build', record.id, storage);
+    return { ok: true, character };
   } catch {
     return { ok: false, message: simCopy.buildNotFound };
   }
@@ -257,7 +338,11 @@ export async function fromPlannerBuild(buildId: string, ctx: LoadContext): Promi
  * Talents are only usable when the log recorded one rank per talent in tab order; when it
  * did not, the character still loads with its gear and the page says the tree is empty.
  */
-export async function fromLoggedFight(ref: string, ctx: LoadContext): Promise<SourceResult> {
+export async function fromLoggedFight(
+  ref: string,
+  ctx: LoadContext,
+  storage?: Storage,
+): Promise<SourceResult> {
   const parsed = parseFightRef(ref);
   if (parsed === null) return { ok: false, message: simCopy.fightRefInvalid };
 
@@ -312,34 +397,33 @@ export async function fromLoggedFight(ref: string, ctx: LoadContext): Promise<So
           );
     const point_order = Array.isArray(order) ? [] : order.ok ? order.character.point_order : [];
 
-    return {
-      ok: true,
-      character: {
-        name: roster.name,
-        spec: specForSplit(classSlug, split),
-        class_slug: classSlug,
-        // Empty on purpose: the log has no race and this function will not guess one.
-        race_slug: PENDING_RACE,
-        talent_level: talentLevel(point_order),
-        tree_version: ctx.treeVersion,
-        point_order,
-        gear: gearFromCombatant(combatant.gear),
-        // A fight's gear carries no enchant or suffix either, so gear_slots is the id map
-        // converted -- the same "the two always agree on item ids" promise every other
-        // source keeps.
-        gear_slots: gearSlots(gearFromCombatant(combatant.gear)),
-        professions: [],
-        bags: [],
-        bank: [],
-        sets: [],
-        loadouts: [],
-        // Same as above: the fight records spell ids and CharacterSpec wants buff ids, so
-        // the settings bar's preset stands in until one vocabulary maps onto the other.
-        buffs: [],
-        consumables: [],
-        source: { kind: 'fight', ref, captured_at: meta.created_at },
-      },
+    const character: SimCharacter = {
+      name: roster.name,
+      spec: specForSplit(classSlug, split),
+      class_slug: classSlug,
+      // Empty on purpose: the log has no race and this function will not guess one.
+      race_slug: PENDING_RACE,
+      talent_level: talentLevel(point_order),
+      tree_version: ctx.treeVersion,
+      point_order,
+      gear: gearFromCombatant(combatant.gear),
+      // A fight's gear carries no enchant or suffix either, so gear_slots is the id map
+      // converted -- the same "the two always agree on item ids" promise every other
+      // source keeps.
+      gear_slots: gearSlots(gearFromCombatant(combatant.gear)),
+      professions: [],
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      // Same as above: the fight records spell ids and CharacterSpec wants buff ids, so
+      // the settings bar's preset stands in until one vocabulary maps onto the other.
+      buffs: [],
+      consumables: [],
+      source: { kind: 'fight', ref, captured_at: meta.created_at },
     };
+    recordCurrentCharacter(character, 'fight', ref, storage);
+    return { ok: true, character };
   } catch {
     return { ok: false, message: simCopy.fightNoCombatant };
   }

@@ -1,20 +1,37 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { FIXTURE_BUILD_ID, createSimApi, envelope } from '../../test-support/sim-api';
+import { readCurrent } from '../current-character';
 import { simCopy } from './copy';
 import type { CharacterPath } from '../characters';
 import {
   fromAddonExport,
   fromLoggedFight,
+  fromManualCode,
   fromPlannerBuild,
   fromStoredCharacter,
   parseFightRef,
+  pointerSourceForStored,
   relativeTime,
   sourcePill,
 } from './sources';
 
 const ctx = { treeVersion: '1.15.9.69722', apiBase: 'https://api.test' };
 const FURY = 'FS1:1.15.9.69722:warrior:orc:0/5530515/0:head=12640,main_hand=11726';
+
+function fakeStorage(): Storage {
+  const map = new Map<string, string>();
+  return {
+    getItem: (key) => map.get(key) ?? null,
+    setItem: (key, value) => void map.set(key, value),
+    removeItem: (key) => void map.delete(key),
+    clear: () => map.clear(),
+    key: (index) => [...map.keys()][index] ?? null,
+    get length() {
+      return map.size;
+    },
+  };
+}
 
 const api = createSimApi();
 beforeEach(() => api.install());
@@ -123,6 +140,19 @@ describe('fromAddonExport', () => {
 
   it('passes the decoder’s reason through unchanged', async () => {
     const result = await fromAddonExport('FS2:1:warrior:orc:0/0/0:', ctx);
+    expect(result).toEqual({ ok: false, message: 'That code is FS2; this site reads FS1.' });
+  });
+});
+
+describe('fromManualCode', () => {
+  it('decodes the same as fromAddonExport, stamped "manual"', async () => {
+    const result = await fromManualCode(FURY, ctx);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.character.source.kind).toBe('manual');
+  });
+
+  it('passes the decoder’s reason through unchanged', async () => {
+    const result = await fromManualCode('FS2:1:warrior:orc:0/0/0:', ctx);
     expect(result).toEqual({ ok: false, message: 'That code is FS2; this site reads FS1.' });
   });
 });
@@ -240,5 +270,60 @@ describe('fromStoredCharacter, addon-sourced', () => {
       ref: 'us/normal/simfury',
       captured_at: '2026-09-20T09:00:00Z',
     });
+  });
+});
+
+describe('current-character pointer writes', () => {
+  it('fromAddonExport writes an addon-sourced pointer with the pasted code as ref', async () => {
+    const storage = fakeStorage();
+    await fromAddonExport(FURY, ctx, storage);
+    const pointer = readCurrent(storage);
+    expect(pointer?.source).toBe('addon');
+    expect(pointer?.ref).toBe(FURY);
+    expect(pointer?.classSlug).toBe('warrior');
+  });
+
+  it('fromManualCode writes a code-sourced pointer with the pasted code as ref', async () => {
+    const storage = fakeStorage();
+    await fromManualCode(FURY, ctx, storage);
+    expect(readCurrent(storage)).toMatchObject({ source: 'code', ref: FURY });
+  });
+
+  it('fromPlannerBuild writes a build-sourced pointer with the build id as ref', async () => {
+    const storage = fakeStorage();
+    await fromPlannerBuild(FIXTURE_BUILD_ID, ctx, storage);
+    expect(readCurrent(storage)).toMatchObject({ source: 'build', ref: FIXTURE_BUILD_ID });
+  });
+
+  it('writes nothing when the load fails', async () => {
+    const storage = fakeStorage();
+    await fromAddonExport('garbage', ctx, storage);
+    expect(readCurrent(storage)).toBeNull();
+  });
+
+  it('leaves a previously stored pointer untouched when the load fails', async () => {
+    const storage = fakeStorage();
+    await fromAddonExport(FURY, ctx, storage);
+    const before = readCurrent(storage);
+    await fromPlannerBuild('zzzzzzzzzzzz', ctx, storage);
+    expect(readCurrent(storage)).toEqual(before);
+  });
+});
+
+describe('pointerSourceForStored', () => {
+  it('maps armory and fight to themselves', () => {
+    expect(pointerSourceForStored('armory')).toBe('armory');
+    expect(pointerSourceForStored('fight')).toBe('fight');
+  });
+
+  it('writes nothing for a kind the stored-character API never actually reports', () => {
+    // SimInput.source's own doc comment (types.ts) says the API returns "addon" or "fight"
+    // today, with "armory" arriving once Forever has a profile API of its own. It never
+    // documents "build" or "manual" as a value this endpoint sends, and 'addon' is already
+    // handled by fromStoredCharacter's own addon branch before this function is reached --
+    // so all three fall through to null rather than guessing a pointer source.
+    expect(pointerSourceForStored('addon')).toBeNull();
+    expect(pointerSourceForStored('build')).toBeNull();
+    expect(pointerSourceForStored('manual')).toBeNull();
   });
 });
