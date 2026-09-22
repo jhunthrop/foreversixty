@@ -37,6 +37,8 @@
   import { characterFromPlanner } from '../../lib/sim/character';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
   import CurrentCharacterChip from '../CurrentCharacterChip.svelte';
+  import LoadError from '../ui/LoadError.svelte';
+  import Skeleton from '../ui/Skeleton.svelte';
   import GearPanel from './GearPanel.svelte';
   import ImportBox from './ImportBox.svelte';
   import OrderStrip from './OrderStrip.svelte';
@@ -603,7 +605,7 @@
            arriving. It cannot show the trees themselves -- their names, tiers and columns are
            the very thing still loading -- so it grows to fill the reserve and says so. -->
       <div class="border-line bg-raised rounded-panel mx-[18px] flex grow flex-col gap-3 border p-4 md:mx-0">
-        <p class="text-muted text-[14px]" role="status">Loading talent data</p>
+        <Skeleton lines={4} rowHeight="h-4" label="Loading talent data" testid="planner-talent-skeleton" />
       </div>
     {:else if status === 'failed'}
       <div class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-3 border p-5 md:mx-0">
@@ -613,13 +615,11 @@
         <p class="text-muted text-[13px]">
           Build {store.treeVersion} did not return the files the planner needs.
         </p>
-        <button
-          type="button"
-          class="{SECONDARY_BUTTON} border-line-warm-strong text-text w-fit px-4"
-          onclick={() => (attempt += 1)}
-        >
-          Retry
-        </button>
+        <LoadError
+          message="Talent data did not load."
+          onRetry={() => (attempt += 1)}
+          testid="planner-load-error"
+        />
       </div>
     {:else if store.talentIndex}
       <!-- One panel at a time on a phone: three trees side by side do not fit 360px, and
