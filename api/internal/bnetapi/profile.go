@@ -3,6 +3,8 @@ package bnetapi
 
 import (
 	"context"
+	"encoding/json"
+	"fmt"
 	"net/url"
 	"strings"
 )
@@ -15,28 +17,49 @@ type AccountCharacter struct {
 	RealmSlug string
 	RealmName string
 	ClassSlug string
-	Level     int
-	Faction   string // lowercase: "alliance" | "horde"
+	// RaceName and GenderType are the account-profile entry's own
+	// playable_race.name and lowercased gender.type (spec §B); the
+	// importer stores them as characters.race/.gender verbatim (race is
+	// not lowercased — "Night Elf", not "night elf").
+	RaceName   string
+	GenderType string
+	Level      int
+	Faction    string // lowercase: "alliance" | "horde"
+	// Raw is this character's own account-profile entry, exactly as
+	// Blizzard answered it — stored verbatim as characters.bnet_account
+	// (spec §B).
+	Raw json.RawMessage
 }
 
 type accountCharactersResponse struct {
 	WowAccounts []struct {
-		Characters []struct {
-			Name  string `json:"name"`
-			ID    int64  `json:"id"`
-			Realm struct {
-				Slug string `json:"slug"`
-				Name string `json:"name"`
-			} `json:"realm"`
-			PlayableClass struct {
-				Name string `json:"name"`
-			} `json:"playable_class"`
-			Faction struct {
-				Type string `json:"type"`
-			} `json:"faction"`
-			Level int `json:"level"`
-		} `json:"characters"`
+		Characters []json.RawMessage `json:"characters"`
 	} `json:"wow_accounts"`
+}
+
+// accountCharacterFields is the typed shape read out of each account-
+// profile entry's raw bytes (spec §0's "name, id, realm, playable_class,
+// playable_race, gender, faction, level").
+type accountCharacterFields struct {
+	Name  string `json:"name"`
+	ID    int64  `json:"id"`
+	Realm struct {
+		Slug string `json:"slug"`
+		Name string `json:"name"`
+	} `json:"realm"`
+	PlayableClass struct {
+		Name string `json:"name"`
+	} `json:"playable_class"`
+	PlayableRace struct {
+		Name string `json:"name"`
+	} `json:"playable_race"`
+	Gender struct {
+		Type string `json:"type"`
+	} `json:"gender"`
+	Faction struct {
+		Type string `json:"type"`
+	} `json:"faction"`
+	Level int `json:"level"`
 }
 
 // AccountCharacters lists every character on the account behind
@@ -51,12 +74,19 @@ func (c *Client) AccountCharacters(ctx context.Context, region, userToken string
 	}
 	var out []AccountCharacter
 	for _, acct := range res.WowAccounts {
-		for _, ch := range acct.Characters {
+		for _, raw := range acct.Characters {
+			var fields accountCharacterFields
+			if err := json.Unmarshal(raw, &fields); err != nil {
+				return nil, fmt.Errorf("bnetapi: account_characters: decode character: %w", err)
+			}
 			out = append(out, AccountCharacter{
-				ID: ch.ID, Name: ch.Name,
-				RealmSlug: ch.Realm.Slug, RealmName: ch.Realm.Name,
-				ClassSlug: classSlug(ch.PlayableClass.Name),
-				Level:     ch.Level, Faction: strings.ToLower(ch.Faction.Type),
+				ID: fields.ID, Name: fields.Name,
+				RealmSlug: fields.Realm.Slug, RealmName: fields.Realm.Name,
+				ClassSlug:  classSlug(fields.PlayableClass.Name),
+				RaceName:   fields.PlayableRace.Name,
+				GenderType: strings.ToLower(fields.Gender.Type),
+				Level:      fields.Level, Faction: strings.ToLower(fields.Faction.Type),
+				Raw: raw,
 			})
 		}
 	}
@@ -76,6 +106,12 @@ type CharacterProfile struct {
 	GuildName          string
 	HasGuild           bool
 	LastLoginTimestamp int64
+	// AverageItemLevel and EquippedItemLevel are pointers because the
+	// field is simply absent from some responses (a fresh, ungeared
+	// character) — nil means "Blizzard didn't say", not "zero" (spec §B,
+	// §C: "item_level (equipped) omitted when unknown").
+	AverageItemLevel  *int
+	EquippedItemLevel *int
 }
 
 type characterProfileResponse struct {
@@ -95,26 +131,57 @@ type characterProfileResponse struct {
 		Name string `json:"name"`
 	} `json:"guild"`
 	LastLoginTimestamp int64 `json:"last_login_timestamp"`
+	AverageItemLevel   *int  `json:"average_item_level"`
+	EquippedItemLevel  *int  `json:"equipped_item_level"`
 }
 
-// Character reads one character's public profile. name is lowercased
-// before it reaches the URL, per Blizzard's own rule for this endpoint.
-func (c *Client) Character(ctx context.Context, region, realmSlug, name string) (CharacterProfile, error) {
+// Character reads one character's public profile and returns both the
+// typed struct and the response's raw body (spec §B: "stored verbatim as
+// bnet_profile"), so a caller that wants to capture it never has to
+// refetch or re-marshal what it already has. name is lowercased before
+// it reaches the URL, per Blizzard's own rule for this endpoint.
+func (c *Client) Character(ctx context.Context, region, realmSlug, name string) (CharacterProfile, json.RawMessage, error) {
+	token, err := c.AppToken(ctx)
+	if err != nil {
+		return CharacterProfile{}, nil, fmt.Errorf("bnetapi: character: %w", err)
+	}
 	u := c.APIHost(region) + "/profile/wow/character/" + url.PathEscape(realmSlug) + "/" +
 		url.PathEscape(strings.ToLower(name)) + "?namespace=" + c.ProfileNamespace(region)
+	body, err := c.getBytes(ctx, "character", u, token)
+	if err != nil {
+		return CharacterProfile{}, nil, err
+	}
 	var res characterProfileResponse
-	if err := c.getJSON(ctx, "character", u, &res); err != nil {
-		return CharacterProfile{}, err
+	if err := json.Unmarshal(body, &res); err != nil {
+		return CharacterProfile{}, nil, fmt.Errorf("bnetapi: character: decode: %w", err)
 	}
 	p := CharacterProfile{
 		Name: res.Name, Level: res.Level, Faction: strings.ToLower(res.Faction.Type),
 		ClassSlug: classSlug(res.CharacterClass.Name),
 		RealmSlug: res.Realm.Slug, RealmName: res.Realm.Name,
 		LastLoginTimestamp: res.LastLoginTimestamp,
+		AverageItemLevel:   res.AverageItemLevel, EquippedItemLevel: res.EquippedItemLevel,
 	}
 	if res.Guild != nil {
 		p.GuildName = res.Guild.Name
 		p.HasGuild = true
 	}
-	return p, nil
+	return p, json.RawMessage(body), nil
+}
+
+// Equipment reads a character's equipped-items snapshot verbatim. Not
+// parsed here — the planner's Blizzard-to-FS1 gear mapping is a later
+// lane (spec §B) — so the caller stores the raw body directly.
+func (c *Client) Equipment(ctx context.Context, region, realmSlug, name string) (json.RawMessage, error) {
+	token, err := c.AppToken(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("bnetapi: equipment: %w", err)
+	}
+	u := c.APIHost(region) + "/profile/wow/character/" + url.PathEscape(realmSlug) + "/" +
+		url.PathEscape(strings.ToLower(name)) + "/equipment?namespace=" + c.ProfileNamespace(region)
+	body, err := c.getBytes(ctx, "equipment", u, token)
+	if err != nil {
+		return nil, err
+	}
+	return json.RawMessage(body), nil
 }

@@ -243,27 +243,39 @@ func (c *Client) getJSON(ctx context.Context, op, rawURL string, out any) error 
 // token (the app token, or a user's own OAuth access token) and decodes
 // the JSON body into out.
 func (c *Client) getJSONWithToken(ctx context.Context, op, rawURL, token string, out any) error {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, withLocale(rawURL), nil)
+	body, err := c.getBytes(ctx, op, rawURL, token)
 	if err != nil {
-		return fmt.Errorf("bnetapi: %s: request: %w", op, err)
-	}
-	req.Header.Set("Authorization", "Bearer "+token)
-	res, err := c.do(req)
-	if err != nil {
-		return fmt.Errorf("bnetapi: %s: %w", op, err)
-	}
-	defer res.Body.Close()
-	body, err := io.ReadAll(io.LimitReader(res.Body, maxResponseBytes))
-	if err != nil {
-		return fmt.Errorf("bnetapi: %s: read: %w", op, err)
-	}
-	if res.StatusCode != http.StatusOK {
-		return statusError(op, res.StatusCode)
+		return err
 	}
 	if err := json.Unmarshal(body, out); err != nil {
 		return fmt.Errorf("bnetapi: %s: decode: %w", op, err)
 	}
 	return nil
+}
+
+// getBytes performs a bearer-authenticated GET and returns the raw
+// response body, for a caller that needs the bytes themselves (Character
+// and Equipment capture them verbatim for storage, spec §B) as well as
+// the decoded shape.
+func (c *Client) getBytes(ctx context.Context, op, rawURL, token string) ([]byte, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, withLocale(rawURL), nil)
+	if err != nil {
+		return nil, fmt.Errorf("bnetapi: %s: request: %w", op, err)
+	}
+	req.Header.Set("Authorization", "Bearer "+token)
+	res, err := c.do(req)
+	if err != nil {
+		return nil, fmt.Errorf("bnetapi: %s: %w", op, err)
+	}
+	defer res.Body.Close()
+	body, err := io.ReadAll(io.LimitReader(res.Body, maxResponseBytes))
+	if err != nil {
+		return nil, fmt.Errorf("bnetapi: %s: read: %w", op, err)
+	}
+	if res.StatusCode != http.StatusOK {
+		return nil, statusError(op, res.StatusCode)
+	}
+	return body, nil
 }
 
 // classSlug lowercases a Blizzard class/name field into the site's own
