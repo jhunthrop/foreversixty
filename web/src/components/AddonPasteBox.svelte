@@ -8,11 +8,13 @@
 <script lang="ts">
   import { fetchMeOnce } from '../lib/account/api';
   import { addonCopy } from '../lib/addon/copy';
+  import { ADDON_PASTE_STATUS_MIN_H } from '../lib/addon/paste-layout';
   import { decodeFS1 } from '../lib/planner/fs1';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { CURRENT_CHARACTER_CHANGED, writeCurrent } from '../lib/current-character';
   import { plannerCodeHref, simCodeHref } from '../lib/handoff-links';
   import AddonPasteSave from './AddonPasteSave.svelte';
+  import Skeleton from './ui/Skeleton.svelte';
 
   let code = $state('');
   let error = $state<string | null>(null);
@@ -99,7 +101,9 @@
         {addonCopy.pasteOpenSim}
       </a>
     </div>
-    {#if signedIn !== null}
+    {#if signedIn === null}
+      <Skeleton lines={2} minHeight={ADDON_PASTE_STATUS_MIN_H} testid="addon-paste-status-skeleton" />
+    {:else}
       {#key loaded}
         <AddonPasteSave {signedIn} code={loaded} />
       {/key}

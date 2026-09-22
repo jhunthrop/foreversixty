@@ -63,3 +63,34 @@ test('an export pasted on /addon becomes the current character on the simulator 
   await page.goto('/sim');
   await expect(page.getByTestId('sim-character')).toHaveCount(0);
 });
+
+test('the signed-in hint does not push the planner/sim links while the session check is pending', async ({
+  page,
+}) => {
+  let resolveMe: (() => void) | undefined;
+  await page.route('**/v1/me', (route) => {
+    void new Promise<void>((resolve) => {
+      resolveMe = resolve;
+    }).then(() =>
+      route.fulfill({
+        status: 401,
+        contentType: 'application/json',
+        body: '{"ok":false,"error":"unauthorized"}',
+      }),
+    );
+  });
+  await page.goto('/addon');
+  await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
+  await page.getByTestId('addon-paste-submit').click();
+  const plannerLinkTop = await page
+    .getByTestId('addon-paste-planner')
+    .boundingBox()
+    .then((box) => box?.y);
+  resolveMe?.();
+  await expect(page.getByTestId('addon-paste-signin-hint')).toBeVisible();
+  const plannerLinkTopAfter = await page
+    .getByTestId('addon-paste-planner')
+    .boundingBox()
+    .then((box) => box?.y);
+  expect(plannerLinkTopAfter).toBe(plannerLinkTop);
+});
