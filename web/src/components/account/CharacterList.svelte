@@ -10,10 +10,10 @@
   import { characterListCopy } from '../../lib/account/character-list-copy';
   import { characterHref, guildRankLabel, parseCharacterPath, rulesetLabel } from '../../lib/characters';
   import { relativeTime } from '../../lib/dates';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { classColorVar } from '../../lib/report/format';
   import { classDisplayName } from '../../lib/sim/spec-label';
   import CharacterHandoffLinks from '../CharacterHandoffLinks.svelte';
+  import EmptyState from '../ui/EmptyState.svelte';
 
   let { characters, bnetImportedAt }: { characters: MeCharacter[]; bnetImportedAt?: string } = $props();
 
@@ -24,6 +24,11 @@
 
 <section class="flex flex-col gap-3" data-testid="account-characters">
   <h2 class="section-title text-[18px]">{characterListCopy.heading}</h2>
+  <p class="text-muted text-[13px]">
+    {characterListCopy.introLead}
+    <a class="text-text underline" href="/addon#paste">{characterListCopy.introPasteLink}</a
+    >{characterListCopy.introTail}
+  </p>
 
   {#if bnetImportedAt !== undefined}
     <p class="text-muted text-[13px]" data-testid="bnet-imported">
@@ -33,23 +38,11 @@
   {/if}
 
   {#if characters.length === 0}
-    <p class="text-muted text-[14px]">{characterListCopy.empty}</p>
-    <div class="flex flex-wrap gap-3">
-      <a
-        class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
-        href={REFRESH_HREF}
-        data-testid="characters-refresh"
-      >
-        {characterListCopy.refreshFromBattlenet}
-      </a>
-      <a
-        class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4"
-        href="/addon#paste"
-        data-testid="characters-paste"
-      >
-        {characterListCopy.pasteAnExport}
-      </a>
-    </div>
+    <EmptyState
+      message={characterListCopy.empty}
+      action={{ label: characterListCopy.refreshFromBattlenet, href: REFRESH_HREF }}
+      testid="account-characters-empty"
+    />
   {:else}
     <ul class="flex flex-col">
       {#each characters as character (character.key)}
