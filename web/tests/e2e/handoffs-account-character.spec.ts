@@ -1,5 +1,6 @@
 // web/tests/e2e/handoffs-account-character.spec.ts
 import { expect, test } from '@playwright/test';
+import { NEEDS_EXPORT_TEXT } from '../../src/lib/handoff-copy';
 import { ACTIVE_BUILD } from './support/active-build';
 
 function envelope(data: unknown, status = 200) {
@@ -62,7 +63,5 @@ test('a signed-in member sees hand-off links only for a character with an addon 
   );
 
   const rolandRow = page.getByRole('listitem').filter({ hasText: 'Roland' });
-  await expect(rolandRow.getByTestId('character-needs-addon')).toHaveText(
-    'Log in with the addon once to make this character simmable.',
-  );
+  await expect(rolandRow.getByTestId('character-needs-addon')).toHaveText(NEEDS_EXPORT_TEXT);
 });

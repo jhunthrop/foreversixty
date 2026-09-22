@@ -4,6 +4,7 @@
      the exact same addon-export check (lib/addon-export.ts), so it lives once. -->
 <script lang="ts">
   import { lookupAddonExport } from '../lib/addon-export';
+  import { handoffCopy } from '../lib/handoff-copy';
   import { plannerCodeHref, simCodeHref } from '../lib/handoff-links';
   import type { CharacterPath } from '../lib/characters';
 
@@ -32,13 +33,18 @@
 
 <div class="flex min-h-11 flex-wrap items-center gap-3 md:min-h-0" data-testid="character-handoff">
   {#if status === 'loading'}
-    <span class="invisible text-[13px]" aria-hidden="true">Open in simulator</span>
+    <span class="invisible text-[13px]" aria-hidden="true">{handoffCopy.openInSimulator}</span>
   {:else if code !== null}
-    <a class={LINK} href={simCodeHref(code)} data-testid="character-open-sim"> Open in simulator </a>
-    <a class={LINK} href={plannerCodeHref(code)} data-testid="character-open-planner"> Open in planner </a>
+    <a class={LINK} href={simCodeHref(code)} data-testid="character-open-sim">{handoffCopy.openInSimulator}</a
+    >
+    <a class={LINK} href={plannerCodeHref(code)} data-testid="character-open-planner"
+      >{handoffCopy.openInPlanner}</a
+    >
   {:else}
     <span class="text-muted text-[13px]" data-testid="character-needs-addon">
-      Log in with the addon once to make this character simmable.
+      {handoffCopy.needsExportLead}
+      <a class="text-text underline" href={handoffCopy.pasteHref}>{handoffCopy.needsExportPasteLink}</a
+      >{handoffCopy.needsExportTail}
     </span>
   {/if}
 </div>
