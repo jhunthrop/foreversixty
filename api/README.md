@@ -220,6 +220,19 @@ nightly the same way `sim-validate` already is:
 delivered (design spec §2.8): it is a backstop, not the primary path — the webhook itself
 (`POST /v1/billing/webhook`) does the real-time work.
 
+The performance ratings lane adds `rating-backfill`: it rates every fight in every
+complete report that has no rating yet, in bounded batches, and is safe to re-run and to
+run beside live ingest (new uploads are rated as they land). Run it once after the
+ratings deploy, and again after any engine or curated-data change that bumps the model
+version:
+
+    gcloud run jobs create rating-backfill \
+      --image <the API image> --region us-east1 --args rating-backfill \
+      --cpu 2 --memory 2Gi --task-timeout 60m \
+      --set-env-vars "$(tr '\n' ',' < .env.job)"
+
+    gcloud run jobs execute rating-backfill --region us-east1 --wait
+
 `sim-run` is executed by the API for one premium run and takes the sim
 id as a second argument; `sim-validate` is scheduled nightly by Cloud
 Scheduler and takes none. Both need `/engine/forever-sim` in the image
