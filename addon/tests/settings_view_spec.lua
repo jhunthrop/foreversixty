@@ -169,4 +169,17 @@ describe("SettingsView", function()
 		end
 		assert.are.equal(2, groups)
 	end)
+	-- Seen in game: each toggle was anchored to the indented hint above it,
+	-- so the list stepped to the right like sub-bullets.
+	it("lines every toggle up on the same left edge", function()
+		start()
+		local view = SettingsView.build(_G.CreateFrame("Frame"), ctxFor())
+		local left
+		for _, toggle in ipairs(view.toggles) do
+			local point = toggle.frame.points[#toggle.frame.points]
+			assert.are.equal("TOPLEFT", point[1])
+			left = left or point[4]
+			assert.are.equal(left, point[4])
+		end
+	end)
 end)

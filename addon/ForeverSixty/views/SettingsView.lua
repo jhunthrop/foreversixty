@@ -76,31 +76,37 @@ function SettingsView.build(parent, ctx)
 	local view = { frame = parent, ctx = ctx, toggles = {} }
 	view.title = Widgets.label(parent, L.settingsTitle, "gold")
 	view.title:SetPoint("TOPLEFT", parent, "TOPLEFT", padding, -padding)
-	local above = view.title
+	-- Every row is anchored to the page's left edge at the same x, and only
+	-- its y comes from the row above. Anchoring each toggle to the indented
+	-- hint under the previous one made the list staircase to the right,
+	-- like sub-bullets (seen in game).
+	local y = -(padding + Theme.SIZES.rowHeight)
+	local function place(region, indent, gapAbove, height)
+		y = y - gapAbove
+		region:SetPoint("TOPLEFT", parent, "TOPLEFT", padding + indent, y)
+		y = y - height
+		return region
+	end
 	for index, entry in ipairs(SettingsView.toggles()) do
 		if entry.group ~= nil then
-			local heading = Widgets.label(parent, entry.group, "muted", "small")
-			heading:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -padding)
-			above = heading
+			place(Widgets.label(parent, entry.group, "muted", "small"), 0, padding, Theme.SIZES.rowHeight)
 		end
 		local toggle = Widgets.toggle(parent, entry.label, entry.checked, function(value)
 			SettingsView.write(entry, value, ctx)
 		end)
-		toggle.frame:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -gap * 2)
+		place(toggle.frame, 0, gap * 2, Theme.SIZES.rowHeight)
 		view.toggles[index] = toggle
-		above = toggle.frame
 		if entry.hint ~= nil then
-			-- Indented to sit under the label, not under the tick box.
-			local hint = Widgets.label(parent, entry.hint, "muted", "small")
-			hint:SetPoint("TOPLEFT", toggle.frame, "BOTTOMLEFT", Theme.SIZES.iconSize + gap, 0)
-			above = hint
+			-- Under the label, not under the tick box.
+			place(Widgets.label(parent, entry.hint, "muted", "small"),
+				Theme.SIZES.iconSize + gap, 0, Theme.SIZES.rowHeight)
 		end
 	end
 	view.reset = Widgets.button(parent, L.settingsReset, function()
 		Prefs.resetPositions()
 		ctx.onPrefChanged({ reset = true }, true)
 	end)
-	view.reset:SetPoint("TOPLEFT", above, "BOTTOMLEFT", 0, -padding)
+	place(view.reset, 0, padding, Theme.SIZES.buttonHeight)
 	function view.refresh()
 		for index, entry in ipairs(SettingsView.toggles()) do
 			view.toggles[index]:SetChecked(entry.checked)
