@@ -505,7 +505,8 @@ func serve(log *slog.Logger) error {
 		Reports:  newReportsService(reportStore, authStore, guildStore, rankStore, cfg, log),
 		Rankings: &rankings.Service{Store: rankStore, Log: log},
 		Addon: &addon.Service{
-			Store: &addon.Store{Pool: pool, Log: log}, Builds: buildStore, Data: treeData, Log: log,
+			Store: &addon.Store{Pool: pool, Log: log}, Builds: buildStore, Data: treeData,
+			Accounts: authStore, Log: log,
 		},
 		Guilds:           &guilds.Service{Store: guildStore, Accounts: authStore, Log: log},
 		Rating:           &rating.Service{Store: ratingStore, Reports: reportStore, Accounts: authStore, Log: log},

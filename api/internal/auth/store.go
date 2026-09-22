@@ -340,20 +340,22 @@ func (s *Store) RevokeDevice(ctx context.Context, userID int64, id string) (bool
 	return tag.RowsAffected() == 1, nil
 }
 
-// Characters lists the characters linked to an account, each with its
-// current guild membership (if any) attached (spec §6).
-func (s *Store) Characters(ctx context.Context, userID int64) ([]Character, error) {
-	rows, err := s.Pool.Query(ctx,
-		`select c.key, c.region, c.ruleset, c.name, coalesce(c.class, ''),
-		        coalesce(c.realm_name, ''), c.level, coalesce(c.faction, ''), c.source,
-		        g.id, g.name, gc.rank, gc.rank_index, gc.verified_at is not null
-		 from characters c
-		 left join guild_characters gc on gc.character_key = c.key
-		 left join guilds g on g.id = gc.guild_id
-		 where c.user_id = $1 order by c.key`, userID)
-	if err != nil {
-		return nil, fmt.Errorf("auth: list characters: %w", err)
-	}
+// characterColumns is every column both Characters and CharactersByKeys
+// select, in the order scanCharacterRows reads them.
+const characterColumns = `c.key, c.region, c.ruleset, c.name, coalesce(c.class, ''),
+	        coalesce(c.realm_name, ''), c.level, coalesce(c.faction, ''), c.source,
+	        g.id, g.name, gc.rank, gc.rank_index, gc.verified_at is not null`
+
+// characterFrom is the join every character read shares: a character
+// with its current guild membership, if any, attached (spec §6).
+const characterFrom = `from characters c
+	 left join guild_characters gc on gc.character_key = c.key
+	 left join guilds g on g.id = gc.guild_id`
+
+// scanCharacterRows reads every row of a characterColumns/characterFrom
+// query into Characters, attaching a CharacterGuild wherever the guild
+// join matched.
+func scanCharacterRows(rows pgx.Rows) ([]Character, error) {
 	defer rows.Close()
 	out := []Character{}
 	for rows.Next() {
@@ -365,7 +367,7 @@ func (s *Store) Characters(ctx context.Context, userID int64) ([]Character, erro
 		if err := rows.Scan(&c.Key, &c.Region, &c.Ruleset, &c.Name, &c.Class,
 			&c.Realm, &c.Level, &c.Faction, &c.Source,
 			&guildID, &guildName, &rank, &rankIndex, &verified); err != nil {
-			return nil, fmt.Errorf("auth: list characters: %w", err)
+			return nil, fmt.Errorf("auth: scan characters: %w", err)
 		}
 		if guildID != nil {
 			c.Guild = &CharacterGuild{
@@ -375,6 +377,32 @@ func (s *Store) Characters(ctx context.Context, userID int64) ([]Character, erro
 		out = append(out, c)
 	}
 	return out, rows.Err()
+}
+
+// Characters lists the characters linked to an account, each with its
+// current guild membership (if any) attached (spec §6).
+func (s *Store) Characters(ctx context.Context, userID int64) ([]Character, error) {
+	rows, err := s.Pool.Query(ctx,
+		`select `+characterColumns+` `+characterFrom+` where c.user_id = $1 order by c.key`, userID)
+	if err != nil {
+		return nil, fmt.Errorf("auth: list characters: %w", err)
+	}
+	return scanCharacterRows(rows)
+}
+
+// CharactersByKeys reads the same per-character shape Characters does,
+// filtered to a specific set of keys rather than an account — what
+// POST /v1/me/exports answers with for the keys it just wrote (spec §4.5).
+func (s *Store) CharactersByKeys(ctx context.Context, keys []string) ([]Character, error) {
+	if len(keys) == 0 {
+		return []Character{}, nil
+	}
+	rows, err := s.Pool.Query(ctx,
+		`select `+characterColumns+` `+characterFrom+` where c.key = any($1) order by c.key`, keys)
+	if err != nil {
+		return nil, fmt.Errorf("auth: characters by keys: %w", err)
+	}
+	return scanCharacterRows(rows)
 }
 
 // LinkCharacter records a character as belonging to an account. It

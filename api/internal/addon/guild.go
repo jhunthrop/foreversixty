@@ -43,6 +43,23 @@ func ParseFS1Guild(export string) (name string, rankIndex int, ok bool) {
 	return "", 0, false
 }
 
+// ParseFS1Class reads the class slug out of an FS1 export's head
+// (web/src/lib/planner/fs1.ts's decodeFS1: "FS1:<data-build>:<class-
+// slug>:<race-slug>:..."), ignoring everything else — the addon-export
+// and signed-in-paste paths' only source for characters.class (spec
+// §4.5), since neither carries a class field of its own the way
+// Blizzard's profile API does. ok is false when the export is not FS1 or
+// is missing its class field; putOneExport treats that exactly like an
+// export with no class at all — the column is left as it was.
+func ParseFS1Class(export string) (classSlug string, ok bool) {
+	head, _, _ := strings.Cut(export, "|")
+	parts := strings.Split(head, ":")
+	if len(parts) < 3 || parts[0] != "FS1" || parts[2] == "" {
+		return "", false
+	}
+	return parts[2], true
+}
+
 // isDigits reports whether s is one or more ASCII digits — the same grammar
 // fs1.ts's /^\d+$/ and Codec.lua's isDigits check for a section's numeric half.
 func isDigits(s string) bool {

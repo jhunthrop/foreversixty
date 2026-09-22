@@ -44,6 +44,12 @@ const (
 	InboxLimit = 50
 	// maxRankIndex is a WoW guild's highest real rank index (10 ranks, 0-9).
 	maxRankIndex = 9
+	// myExportsPerHour is POST /v1/me/exports's per-IP rate limit (spec
+	// §4.5: "rate-limited like POST /v1/guilds/{id}/claim/contest" — the
+	// same kind of httpx.RateLimitPer wrap, at guilds' contestPerHour
+	// magnitude rather than claim's own 30-day account-level gate, since
+	// a signed-in paste has no equivalent per-account store to lean on).
+	myExportsPerHour = 20
 )
 
 // Export is one character's addon export.
@@ -143,7 +149,41 @@ func (s *Store) putOneExport(ctx context.Context, tx pgx.Tx, userID int64, key, 
 	if tag.RowsAffected() == 0 {
 		return fmt.Errorf("%w: %s", ErrCharacterClaimed, key)
 	}
+	if err := s.putOneCharacter(ctx, tx, userID, key, region, ruleset, e); err != nil {
+		return err
+	}
 	return s.syncGuild(ctx, tx, userID, key, region, ruleset, e.Export)
+}
+
+// putOneCharacter upserts characters (spec §4.5): the same ownership
+// guard as auth.Store.LinkCharacter and the Battle.net import's own
+// write — never steal a key from another account. class is read from
+// the export's head (ParseFS1Class); when the head carries none, the
+// column is left as it was (coalesce), the same "silently degrade,
+// never clobber good data with unknown" rule the Battle.net import's
+// richer write follows for its own optional fields. This is what makes
+// GET /v1/me list a companion (or signed-in paste) user's characters.
+func (s *Store) putOneCharacter(ctx context.Context, tx pgx.Tx, userID int64, key, region, ruleset string, e Export) error {
+	class, _ := ParseFS1Class(e.Export)
+	tag, err := tx.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, class, user_id, source, refreshed_at)
+		 values ($1, $2, $3, $4, nullif($5, ''), $6, 'export', now())
+		 on conflict (key) do update set
+		   name = excluded.name, class = coalesce(nullif($5, ''), characters.class),
+		   user_id = excluded.user_id, source = 'export', refreshed_at = now()
+		 where characters.user_id is null or characters.user_id = excluded.user_id`,
+		key, region, ruleset, e.Name, class, userID)
+	if err != nil {
+		return fmt.Errorf("addon: store character %s: %w", key, err)
+	}
+	if tag.RowsAffected() == 0 {
+		// characters and addon_exports are independently owned rows; the
+		// addon_exports write above can succeed for userID while a
+		// different account already owns this key's characters row (a
+		// Battle.net import, or another device). Never steal it.
+		return fmt.Errorf("%w: %s", ErrCharacterClaimed, key)
+	}
+	return nil
 }
 
 // syncGuild reads the export's guild= section (if any) and makes
@@ -314,16 +354,22 @@ type Service struct {
 	// better than one that cannot start.
 	Builds BuildSource
 	Data   *trees.Data
-	Log    *slog.Logger
+	// Accounts answers POST /v1/me/exports's response body. Nil is safe
+	// (the response carries an empty characters list) for a test
+	// harness that does not exercise it.
+	Accounts CharacterReader
+	Log      *slog.Logger
 }
 
 // Mount registers the addon routes. The companion reads and writes with
-// its device token; the site queues a build with a session, which is
-// the only way an inbox row is ever created.
-func Mount(mux *http.ServeMux, s *Service) {
+// its device token; the site queues a build, and a signed-in paste
+// stores its own exports, with a session.
+func Mount(mux *http.ServeMux, s *Service, trustedProxyHops int) {
 	mux.HandleFunc("POST /v1/addon/exports", auth.RequireDevice(s.putExports))
 	mux.HandleFunc("GET /v1/addon/inbox", auth.RequireDevice(s.inbox))
 	mux.HandleFunc("POST /v1/addon/inbox", auth.RequireSession(s.queueBuild))
+	myExports := httpx.RateLimitPer(myExportsPerHour, time.Hour, trustedProxyHops)
+	mux.Handle("POST /v1/me/exports", myExports(auth.RequireSession(s.putMyExports)))
 }
 
 func (s *Service) logger() *slog.Logger {
@@ -343,28 +389,28 @@ type ExportsInput struct {
 	Characters []Export `json:"characters"`
 }
 
-func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
-	var in ExportsInput
-	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxBody)).Decode(&in); err != nil {
-		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
-			"body must be JSON with a characters list", nil)
-		return
-	}
-	if len(in.Characters) == 0 || len(in.Characters) > MaxExports {
+// validExports reports whether exports is a well-formed batch (between
+// one and MaxExports entries, each with a name, an export of at most
+// MaxExportLen, a valid region, and a name whose slug is a valid
+// character key), writing the first violation to w. Shared by
+// putExports and putMyExports so the two request bodies (device sync
+// and the signed-in paste, spec §4.5) are validated identically.
+func validExports(w http.ResponseWriter, r *http.Request, exports []Export) bool {
+	if len(exports) == 0 || len(exports) > MaxExports {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not a sync",
 			map[string]string{"characters": "between one and 200 characters"})
-		return
+		return false
 	}
-	for _, c := range in.Characters {
+	for _, c := range exports {
 		if c.Name == "" || len(c.Export) == 0 || len(c.Export) > MaxExportLen {
 			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that export cannot be stored",
 				map[string]string{"characters": "each needs a name and an export of at most 4096 characters"})
-			return
+			return false
 		}
 		if !character.ValidRegion(c.Region) {
 			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that character cannot be stored",
 				map[string]string{"characters": "region must be one of us, eu, kr, tw, cn"})
-			return
+			return false
 		}
 		// The name becomes the key's slug and, through the inbox, a
 		// Lua string; the same rule ValidKey applies on the way back
@@ -372,8 +418,21 @@ func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 		if !character.ValidSlug(character.Slug(c.Name)) {
 			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that character cannot be stored",
 				map[string]string{"characters": "name must be letters, digits, spaces and hyphens"})
-			return
+			return false
 		}
+	}
+	return true
+}
+
+func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
+	var in ExportsInput
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxBody)).Decode(&in); err != nil {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
+			"body must be JSON with a characters list", nil)
+		return
+	}
+	if !validExports(w, r, in.Characters) {
+		return
 	}
 	if err := s.Store.PutExports(r.Context(), auth.ActorFrom(r.Context()).UserID, in.Characters); err != nil {
 		if errors.Is(err, ErrCharacterClaimed) {
@@ -386,6 +445,63 @@ func (s *Service) putExports(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	httpx.WriteOK(w, r, http.StatusOK, map[string]int{"stored": len(in.Characters)})
+}
+
+// MyExportsInput is the body of POST /v1/me/exports (spec §4.5): the
+// addon-less way to reach the same characters rows the companion writes.
+type MyExportsInput struct {
+	Exports []Export `json:"exports"`
+}
+
+// CharacterReader answers the /v1/me character objects for a set of
+// keys. auth.Store satisfies it; kept narrow so this package need not
+// depend on auth's whole Store surface and a test can stub it.
+type CharacterReader interface {
+	CharactersByKeys(ctx context.Context, keys []string) ([]auth.Character, error)
+}
+
+func (s *Service) putMyExports(w http.ResponseWriter, r *http.Request) {
+	var in MyExportsInput
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, maxBody)).Decode(&in); err != nil {
+		httpx.WriteError(w, r, http.StatusBadRequest, "invalid",
+			"body must be JSON with an exports list", nil)
+		return
+	}
+	if !validExports(w, r, in.Exports) {
+		return
+	}
+	userID := auth.ActorFrom(r.Context()).UserID
+	if err := s.Store.PutExports(r.Context(), userID, in.Exports); err != nil {
+		if errors.Is(err, ErrCharacterClaimed) {
+			httpx.WriteError(w, r, http.StatusConflict, "conflict",
+				"one of those characters is already synced from a different account",
+				map[string]string{"exports": "already claimed by another account"})
+			return
+		}
+		s.fail(w, r, "my_exports", err, "could not store those exports just now")
+		return
+	}
+	chars, err := s.writtenCharacters(r.Context(), in.Exports)
+	if err != nil {
+		s.fail(w, r, "my_exports", err, "could not store those exports just now")
+		return
+	}
+	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"characters": chars})
+}
+
+// writtenCharacters reads back the /v1/me character objects for exactly
+// the keys putMyExports just wrote. A nil Accounts (a test harness that
+// does not wire one) answers an empty list rather than failing the
+// request — the write already succeeded.
+func (s *Service) writtenCharacters(ctx context.Context, exports []Export) ([]auth.Character, error) {
+	if s.Accounts == nil {
+		return []auth.Character{}, nil
+	}
+	keys := make([]string, len(exports))
+	for i, e := range exports {
+		keys[i] = character.Key(e.Region, character.RulesetFromRealm(e.Ruleset, ""), e.Name)
+	}
+	return s.Accounts.CharactersByKeys(ctx, keys)
 }
 
 func (s *Service) inbox(w http.ResponseWriter, r *http.Request) {
