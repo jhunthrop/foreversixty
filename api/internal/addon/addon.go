@@ -181,14 +181,14 @@ func (s *Store) syncGuild(ctx context.Context, tx pgx.Tx, userID int64, key, reg
 		if _, err := tx.Exec(ctx, `delete from guild_characters where character_key = $1`, key); err != nil {
 			return fmt.Errorf("addon: clear guild for %s: %w", key, err)
 		}
-		return afterGuildChange(ctx, tx, *prevGuildID, prevUserID)
+		return guilds.AfterGuildChange(ctx, tx, *prevGuildID, prevUserID)
 	}
 
-	guildID, officerMax, err := resolveGuild(ctx, tx, region, ruleset, name)
+	guildID, officerMax, err := guilds.ResolveGuild(ctx, tx, region, ruleset, name)
 	if err != nil {
 		return err
 	}
-	rank := deriveRank(rankIndex, officerMax)
+	rank := guilds.DeriveRank(rankIndex, officerMax)
 
 	if prevGuildID != nil && *prevGuildID != guildID {
 		// A transfer touches two guilds; lock both, in a fixed
@@ -206,16 +206,14 @@ func (s *Store) syncGuild(ctx context.Context, tx pgx.Tx, userID int64, key, reg
 		}
 	}
 
-	// verified_at is deliberately not in this SET list: a re-sync of the
-	// same character in the same guild keeps whatever verification it
-	// already earned. Only a transfer starts a fresh, unverified row.
-	if _, err := tx.Exec(ctx,
-		`insert into guild_characters (guild_id, character_key, user_id, rank_index, rank, source, refreshed_at)
-		 values ($1, $2, $3, $4, $5, 'export', now())
-		 on conflict (guild_id, character_key) do update set
-		   user_id = excluded.user_id, rank_index = excluded.rank_index, rank = excluded.rank,
-		   refreshed_at = now()`,
-		guildID, key, userID, rankIndex, rank); err != nil {
+	// Reverify: false — a re-sync of the same character in the same
+	// guild keeps whatever verification it already earned (including a
+	// 'bnet' row this export must not downgrade, spec §4.3). Only a
+	// transfer starts a fresh, unverified row.
+	if err := guilds.UpsertCharacterMembership(ctx, tx, guilds.MembershipRow{
+		GuildID: guildID, CharacterKey: key, UserID: userID,
+		RankIndex: rankIndex, Rank: rank, Source: "export", Reverify: false,
+	}); err != nil {
 		return fmt.Errorf("addon: sync guild membership for %s: %w", key, err)
 	}
 
@@ -224,73 +222,13 @@ func (s *Store) syncGuild(ctx context.Context, tx pgx.Tx, userID int64, key, reg
 			return err
 		}
 	}
-	if err := afterGuildChange(ctx, tx, guildID, userID); err != nil {
+	if err := guilds.AfterGuildChange(ctx, tx, guildID, userID); err != nil {
 		return err
 	}
 	if prevGuildID != nil && *prevGuildID != guildID {
-		return afterGuildChange(ctx, tx, *prevGuildID, prevUserID)
+		return guilds.AfterGuildChange(ctx, tx, *prevGuildID, prevUserID)
 	}
 	return nil
-}
-
-// resolveGuild finds or creates the guild an export names, matching
-// case-insensitively on (region, ruleset, lower(name)) - two exports
-// differing only in casing must resolve to the same guilds row, the
-// same way the pre-existing public guild page already matches (2026-
-// 09-21 security review response, spec §3.3's amendment). The first
-// writer's casing is kept as the display name; a concurrent insert
-// racing on the same case-insensitive name is tolerated by falling back
-// to the row the winner created.
-func resolveGuild(ctx context.Context, tx pgx.Tx, region, ruleset, name string) (id int64, officerMax int, err error) {
-	err = tx.QueryRow(ctx,
-		`select id, officer_max_rank_index from guilds where region = $1 and ruleset = $2 and lower(name) = lower($3)`,
-		region, ruleset, name).Scan(&id, &officerMax)
-	if err == nil {
-		return id, officerMax, nil
-	}
-	if !errors.Is(err, pgx.ErrNoRows) {
-		return 0, 0, fmt.Errorf("addon: read guild %s: %w", name, err)
-	}
-	err = tx.QueryRow(ctx,
-		`insert into guilds (region, ruleset, name) values ($1, $2, $3)
-		 on conflict (region, ruleset, (lower(name))) do nothing
-		 returning id, officer_max_rank_index`,
-		region, ruleset, name).Scan(&id, &officerMax)
-	if errors.Is(err, pgx.ErrNoRows) {
-		// A concurrent insert of a case-variant name won the race; read
-		// the row it created.
-		err = tx.QueryRow(ctx,
-			`select id, officer_max_rank_index from guilds where region = $1 and ruleset = $2 and lower(name) = lower($3)`,
-			region, ruleset, name).Scan(&id, &officerMax)
-	}
-	if err != nil {
-		return 0, 0, fmt.Errorf("addon: create/read guild %s: %w", name, err)
-	}
-	return id, officerMax, nil
-}
-
-// deriveRank turns a raw GetGuildInfo rank index into the label
-// officer detection uses. Index 0 is always the guild master
-// (server-authoritative, never configurable).
-func deriveRank(rankIndex, officerMax int) string {
-	switch {
-	case rankIndex == 0:
-		return "leader"
-	case rankIndex <= officerMax:
-		return "officer"
-	default:
-		return "member"
-	}
-}
-
-// afterGuildChange runs RecomputeMembership and the lost-claim check for
-// one account in one guild, the pair of calls every branch of syncGuild
-// needs after it changes a guild_characters row.
-func afterGuildChange(ctx context.Context, tx pgx.Tx, guildID, userID int64) error {
-	if err := guilds.RecomputeMembership(ctx, tx, guildID, &userID); err != nil {
-		return err
-	}
-	return guilds.ReleaseClaimIfLost(ctx, tx, guildID, userID)
 }
 
 // Exports lists a user's stored exports, newest first.
