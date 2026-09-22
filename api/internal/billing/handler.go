@@ -165,7 +165,19 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 		}
 		metadata["guild_id"] = strconv.FormatInt(*in.GuildID, 10)
 		clientRef = fmt.Sprintf("guild:%d:user:%d", *in.GuildID, actor.UserID)
-		s.guildCheckout(w, r, *in.GuildID, actor.UserID, in.Intent == "transfer", lookupKey, clientRef, metadata)
+		transfer := in.Intent == "transfer"
+		if transfer {
+			// Carried onto the Subscription itself (subscription_data.metadata,
+			// same as every other field here) so upsertFromSubscription can
+			// tell a deliberate "Take over billing" handoff (spec §2.9
+			// RULING 10) apart from the double-billing security finding's
+			// race: RULING 10 intends the new subscription to become the
+			// one entitlements points at, with the old one left for the
+			// guild to cancel by hand — the opposite of the duplicate guard
+			// UpsertStripe otherwise applies here.
+			metadata["intent"] = "transfer"
+		}
+		s.guildCheckout(w, r, *in.GuildID, actor.UserID, transfer, lookupKey, clientRef, metadata)
 		return
 	}
 

@@ -116,16 +116,29 @@ func (s *Store) WithEventLock(ctx context.Context, id string, fn func(context.Co
 // WithGuildLock takes a session-level Postgres advisory lock scoped to
 // guildID for the duration of fn, so at most one caller is ever inside fn
 // for that guild at a time — the fix for the security review's
-// double-billing finding (2026-09-21): without it, two officers checking
-// out for the same guild concurrently could each read "no active plan"
-// from checkGuildCheckout before either had created a Checkout Session,
-// each pay, and the second webhook would silently overwrite the first
-// subscription id in entitlements (UpsertStripe's duplicate guard,
-// entitlements/store.go, is the second, independent layer against the
-// same race). Held by handler.go's guildCheckout from the entitlement
-// read through Checkout Session creation and the pending_checkouts write.
+// double-billing finding (2026-09-21). Two callers: handler.go's
+// guildCheckout holds it from checkGuildCheckout's entitlement read
+// through Checkout Session creation and the pending_checkouts write, so
+// two officers checking out for the same guild concurrently can never
+// both read "no active plan" and both pay; webhook.go's
+// upsertFromSubscription holds it around every entitlements write for a
+// guild subject, so two webhook deliveries for two *different*
+// subscriptions on the same guild (the checkout-serialization window
+// cannot cover a delivery race, only a checkout race) can never both
+// read the entitlements row before either has written it — the gap an
+// independent review found in an earlier version of this fix, where
+// UpsertStripe's own duplicate guard was a check-then-act with nothing
+// serializing it against a second, concurrent webhook.
 func (s *Store) WithGuildLock(ctx context.Context, guildID int64, fn func(context.Context) error) error {
-	return s.withAdvisoryLock(ctx, fmt.Sprintf("guild-checkout:%d", guildID), fn)
+	return s.withAdvisoryLock(ctx, fmt.Sprintf("guild:%d", guildID), fn)
+}
+
+// WithUserLock is WithGuildLock's symmetric counterpart for a personal
+// premium subject — webhook.go's upsertFromSubscription holds it around
+// every entitlements write for a user subject, for the same reason
+// WithGuildLock now does for a guild one.
+func (s *Store) WithUserLock(ctx context.Context, userID int64, fn func(context.Context) error) error {
+	return s.withAdvisoryLock(ctx, fmt.Sprintf("user:%d", userID), fn)
 }
 
 // RecordPendingCheckout writes one row marking a guild-plan Checkout

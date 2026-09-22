@@ -367,6 +367,63 @@ func TestUpsertStripeAllowsARenewalOnTheSameSubscriptionID(t *testing.T) {
 	}
 }
 
+// TestUpsertStripeTransferOverwritesInsteadOfFlaggingADuplicate is a
+// regression test for a gap an independent review found in an earlier
+// version of the double-billing fix (2026-09-21): the guild-billing
+// "Take over billing" handoff (spec §2.9 RULING 10) deliberately creates
+// a second, different subscription for a guild that already has an
+// active one, and *intends* the new one to become the entitled
+// subscription — the opposite of the duplicate guard's default behavior.
+// A StripeUpsert carrying Transfer: true must overwrite, not flag.
+func TestUpsertStripeTransferOverwritesInsteadOfFlaggingADuplicate(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	oldOfficer := seedUser(t, pool)
+	newOfficer := seedUser(t, pool)
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+
+	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
+		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		StripeSubscriptionID: "sub_old_officer", BillingUserID: oldOfficer, Actor: "stripe_webhook:evt_old",
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := s.UpsertStripe(context.Background(), StripeUpsert{
+		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		StripeSubscriptionID: "sub_new_officer", BillingUserID: newOfficer, Actor: "stripe_webhook:evt_transfer",
+		Transfer: true,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.Duplicate {
+		t.Fatalf("a transfer upsert must not be flagged a duplicate: %+v", res)
+	}
+
+	gb, err := s.GuildBilling(context.Background(), gid)
+	if err != nil || gb == nil || gb.BillingUserID == nil || *gb.BillingUserID != newOfficer {
+		t.Fatalf("guild billing after transfer = %+v, %v, want billing_user_id = newOfficer", gb, err)
+	}
+	var subID string
+	if err := pool.QueryRow(context.Background(),
+		`select stripe_subscription_id from entitlements where guild_id = $1 and plan = 'guild'`, gid).Scan(&subID); err != nil {
+		t.Fatal(err)
+	}
+	if subID != "sub_new_officer" {
+		t.Fatalf("stripe_subscription_id = %q, want sub_new_officer (the transfer must overwrite)", subID)
+	}
+	var anomalies int
+	if err := pool.QueryRow(context.Background(),
+		`select count(*) from entitlement_anomalies where guild_id = $1`, gid).Scan(&anomalies); err != nil {
+		t.Fatal(err)
+	}
+	if anomalies != 0 {
+		t.Fatalf("anomaly rows = %d, want 0 for a deliberate transfer", anomalies)
+	}
+}
+
 func TestSetCanceledSetsGraceUntilFromTheLastKnownPeriodEnd(t *testing.T) {
 	pool := testPool(t)
 	s := &Store{Pool: pool}

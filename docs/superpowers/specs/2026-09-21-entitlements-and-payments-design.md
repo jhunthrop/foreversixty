@@ -690,13 +690,27 @@ row to start walking from). Three independent layers close this, all landed in t
    the identical `409 conflict`/`portal_hint` shape an already-active plan would answer with.
    The row is cleared when its `checkout.session.completed` webhook lands, or by
    §2.8's nightly sweep once it expires with no webhook ever landing (an abandoned checkout).
-2. **`upsertFromSubscription` refuses to overwrite.** When it finds an existing row for a
-   `(subject, plan)` already `active`/`trialing`/`past_due` and pointing at a *different*
-   `stripe_subscription_id`, the row is left untouched, and the newcomer is recorded in a new
-   `entitlement_anomalies` table (`kind = 'duplicate_subscription'`) instead — see migration
-   `0020`'s amendment. The newcomer subscription is then canceled at Stripe with
-   `cancel_at_period_end: true` through the `Gateway` interface (never revoked, so whoever
-   paid for it keeps what they already paid for through the current period).
+2. **`upsertFromSubscription` refuses to overwrite — except a deliberate transfer.** When it
+   finds an existing row for a `(subject, plan)` already `active`/`trialing`/`past_due` and
+   pointing at a *different* `stripe_subscription_id`, the row is left untouched, and the
+   newcomer is recorded in a new `entitlement_anomalies` table
+   (`kind = 'duplicate_subscription'`) instead — see migration `0020`'s amendment. The
+   newcomer subscription is then canceled at Stripe with `cancel_at_period_end: true` through
+   the `Gateway` interface (never revoked, so whoever paid for it keeps what they already
+   paid for through the current period). **Carve-out, found by a second review pass against
+   an earlier version of this fix:** §2.9 RULING 10's "Take over billing" handoff
+   *deliberately* creates a second, different subscription for a guild that already has one,
+   and intends the new subscription to become the entitled one — the checkout endpoint now
+   carries `intent: "transfer"` into `metadata`/`subscription_data.metadata` alongside
+   `plan`/`user_id`/`guild_id` (§2.2), and `StripeUpsert.Transfer` (read from that metadata)
+   makes this one write skip the duplicate guard entirely and overwrite normally, so a
+   legitimate handoff is never mistaken for the race this guard exists to catch. The write
+   itself is also now serialized per subject (`billing.Store.WithGuildLock`/`WithUserLock`,
+   held around the whole call to `entitlements.UpsertStripe`) — a second finding from that
+   same review pass: layer 1's advisory lock only ever serializes *creating* a Checkout
+   Session, not the webhook deliveries that later land for whatever subscriptions got
+   created, so two deliveries for two different subscriptions on the same subject could
+   previously still reach `UpsertStripe` concurrently and race its own check-then-act.
 3. **`stripe-reconcile` becomes two-directional** (§2.8, revised below): the
    database-→-Stripe pass this section originally specified is unchanged, but the "logs...
    as an anomaly to investigate" promise this section made and never implemented is now real,

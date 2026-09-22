@@ -345,6 +345,16 @@ type StripeUpsert struct {
 	StripeSubscriptionID string
 	BillingUserID        int64
 	Actor                string
+	// Transfer is true when sub.Metadata["intent"] == "transfer" — a
+	// deliberate "Take over billing" handoff (spec §2.9 RULING 10), the
+	// one flow that *intends* a second, different subscription for a
+	// guild that already had an active one: RULING 10 has the new
+	// subscription become the one entitlements points at, with the old
+	// one left for the guild to cancel by hand. A Transfer upsert skips
+	// the duplicate-subscription guard below entirely — the opposite of
+	// every other caller, for which a second active subscription is
+	// exactly the security finding this guard exists to catch.
+	Transfer bool
 }
 
 // UpsertResult is UpsertStripe's outcome. Duplicate is true when an
@@ -375,7 +385,7 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult,
 		if err != nil {
 			return err
 		}
-		if !isNew && isActiveStatus(existing.status) &&
+		if !isNew && !p.Transfer && isActiveStatus(existing.status) &&
 			existing.stripeSubscriptionID != nil && *existing.stripeSubscriptionID != p.StripeSubscriptionID {
 			result = UpsertResult{Duplicate: true, ExistingSubscriptionID: *existing.stripeSubscriptionID}
 			return recordAnomaly(ctx, tx, &existing.id, p.UserID, p.GuildID, p.Plan,

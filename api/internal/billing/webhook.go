@@ -206,19 +206,44 @@ func (s *Service) upsertFromSubscription(ctx context.Context, sub *stripe.Subscr
 	p := entitlements.StripeUpsert{
 		Plan: plan, Status: string(sub.Status), CancelAtPeriodEnd: sub.CancelAtPeriodEnd,
 		StripeSubscriptionID: sub.ID, BillingUserID: billingUserID, Actor: actor,
+		// spec §2.9 RULING 10's "Take over billing" handoff: the new
+		// subscription is meant to overwrite the guild's row, not be
+		// flagged as a duplicate (StripeUpsert.Transfer's own doc).
+		Transfer: sub.Metadata["intent"] == "transfer",
 	}
 	if end, ok := subscriptionPeriodEnd(sub); ok {
 		p.CurrentPeriodEnd = &end
 	}
+	// The write itself is serialized per subject (security review fix,
+	// 2026-09-21): checkGuildCheckout's advisory lock only ever
+	// serializes *creating* a Checkout Session, not the webhook deliveries
+	// that later land for whatever subscriptions got created — two
+	// deliveries for two different subscriptions on the same subject can
+	// still reach here concurrently (an independent review's finding
+	// against an earlier version of this fix, where UpsertStripe's
+	// duplicate guard was an unserialized check-then-act). Holding the
+	// same guild/user lock here closes that: the second delivery's
+	// UpsertStripe call only runs after the first's has fully committed.
 	if plan == entitlements.PlanGuild {
 		guildID, err := strconv.ParseInt(sub.Metadata["guild_id"], 10, 64)
 		if err != nil {
 			return fmt.Errorf("billing: guild subscription %s carries no valid guild_id metadata: %w", sub.ID, err)
 		}
 		p.GuildID = &guildID
-	} else {
-		p.UserID = &billingUserID
+		return s.Store.WithGuildLock(ctx, guildID, func(ctx context.Context) error {
+			return s.applyUpsert(ctx, p, sub, plan)
+		})
 	}
+	p.UserID = &billingUserID
+	return s.Store.WithUserLock(ctx, billingUserID, func(ctx context.Context) error {
+		return s.applyUpsert(ctx, p, sub, plan)
+	})
+}
+
+// applyUpsert is upsertFromSubscription's locked half: the actual
+// entitlements write, and — on a caught duplicate — canceling the
+// newcomer at Stripe. Always called from inside WithGuildLock/WithUserLock.
+func (s *Service) applyUpsert(ctx context.Context, p entitlements.StripeUpsert, sub *stripe.Subscription, plan string) error {
 	result, err := s.Entitlements.UpsertStripe(ctx, p)
 	if err != nil {
 		return err

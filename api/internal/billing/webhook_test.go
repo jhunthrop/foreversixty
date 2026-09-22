@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strconv"
+	"sync"
 	"testing"
 	"time"
 
@@ -288,6 +289,115 @@ func TestWebhookDuplicateSubscriptionForTheSameGuildIsKeptAndTheNewcomerCanceled
 
 	if len(h.gateway.CanceledAtPeriodEnd) != 1 || h.gateway.CanceledAtPeriodEnd[0] != "sub_dupe_b" {
 		t.Fatalf("CanceledAtPeriodEnd = %v, want [sub_dupe_b]", h.gateway.CanceledAtPeriodEnd)
+	}
+}
+
+// TestWebhookTransferSubscriptionOverwritesInsteadOfBeingCanceled is the
+// webhook-layer half of the transfer-flow regression fix: a subscription
+// carrying intent=transfer metadata (spec §2.9 RULING 10's "Take over
+// billing" handoff) must overwrite the guild's existing row and must
+// never be canceled at Stripe — the opposite of an ordinary duplicate.
+func TestWebhookTransferSubscriptionOverwritesInsteadOfBeingCanceled(t *testing.T) {
+	h := newHarness(t)
+	gid := h.seedGuild(t, "webhook-transfer-guild", true)
+	oldOfficer := h.seedUser(t, "webhook-transfer-old@example.com")
+	newOfficer := h.seedUser(t, "webhook-transfer-new@example.com")
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+
+	oldSub := fixtureSubscription("sub_transfer_old", "guild", oldOfficer, gid, stripe.SubscriptionStatusActive, end)
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{oldSub.ID: oldSub}
+	if _, err := h.svc.Entitlements.UpsertStripe(t.Context(), entitlementsStripeUpsertFor(oldSub)); err != nil {
+		t.Fatal(err)
+	}
+
+	newSub := fixtureSubscription("sub_transfer_new", "guild", newOfficer, gid, stripe.SubscriptionStatusActive, end)
+	newSub.Metadata["intent"] = "transfer"
+	h.gateway.Subscriptions["sub_transfer_new"] = newSub
+
+	r := signedWebhookRequest(t, "customer.subscription.created", map[string]any{"id": newSub.ID})
+	if w := h.do(t, r); w.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
+	}
+
+	var subID string
+	if err := h.pool.QueryRow(t.Context(),
+		`select stripe_subscription_id from entitlements where guild_id = $1 and plan = 'guild'`, gid).Scan(&subID); err != nil {
+		t.Fatal(err)
+	}
+	if subID != "sub_transfer_new" {
+		t.Fatalf("stripe_subscription_id = %q, want sub_transfer_new (the transfer must overwrite)", subID)
+	}
+	if len(h.gateway.CanceledAtPeriodEnd) != 0 {
+		t.Fatalf("CanceledAtPeriodEnd = %v, want none — a transfer must never be canceled", h.gateway.CanceledAtPeriodEnd)
+	}
+	var anomalies int
+	if err := h.pool.QueryRow(t.Context(),
+		`select count(*) from entitlement_anomalies where guild_id = $1`, gid).Scan(&anomalies); err != nil {
+		t.Fatal(err)
+	}
+	if anomalies != 0 {
+		t.Fatalf("anomaly rows = %d, want 0 for a deliberate transfer", anomalies)
+	}
+}
+
+// TestWebhookConcurrentDeliveriesForDifferentSubscriptionsOnTheSameGuildAreSerialized
+// is a regression test for a gap an independent review found in an
+// earlier version of this fix (2026-09-21): checkGuildCheckout's
+// advisory lock only ever serializes *creating* a Checkout Session, not
+// the webhook deliveries that later land for whatever subscriptions got
+// created — two deliveries for two different subscriptions on the same
+// guild, with no entitlements row yet for either, could previously both
+// read "no existing row" before either had written one, letting the
+// second's unconditional upsert silently overwrite the first with no
+// anomaly recorded. upsertFromSubscription now holds WithGuildLock
+// around the entire write, closing that window: exactly one subscription
+// must end up kept, and the other recorded as a duplicate and canceled.
+func TestWebhookConcurrentDeliveriesForDifferentSubscriptionsOnTheSameGuildAreSerialized(t *testing.T) {
+	h := newHarness(t)
+	gid := h.seedGuild(t, "webhook-race-guild", true)
+	officer1 := h.seedUser(t, "webhook-race-1@example.com")
+	officer2 := h.seedUser(t, "webhook-race-2@example.com")
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+
+	sub1 := fixtureSubscription("sub_race_1", "guild", officer1, gid, stripe.SubscriptionStatusActive, end)
+	sub2 := fixtureSubscription("sub_race_2", "guild", officer2, gid, stripe.SubscriptionStatusActive, end)
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub1.ID: sub1, sub2.ID: sub2}
+
+	r1 := signedWebhookRequest(t, "customer.subscription.created", map[string]any{"id": sub1.ID})
+	r2 := signedWebhookRequest(t, "customer.subscription.created", map[string]any{"id": sub2.ID})
+
+	codes := make([]int, 2)
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() { defer wg.Done(); codes[0] = h.do(t, r1).Code }()
+	go func() { defer wg.Done(); codes[1] = h.do(t, r2).Code }()
+	wg.Wait()
+
+	for i, c := range codes {
+		if c != http.StatusOK {
+			t.Fatalf("delivery %d: status = %d, want 200 (a webhook always answers 200 once processed, duplicate or not)", i, c)
+		}
+	}
+
+	var rows int
+	if err := h.pool.QueryRow(t.Context(),
+		`select count(*) from entitlements where guild_id = $1 and plan = 'guild'`, gid).Scan(&rows); err != nil {
+		t.Fatal(err)
+	}
+	if rows != 1 {
+		t.Fatalf("entitlements rows for the guild = %d, want exactly 1", rows)
+	}
+	var anomalies int
+	if err := h.pool.QueryRow(t.Context(),
+		`select count(*) from entitlement_anomalies where guild_id = $1 and kind = 'duplicate_subscription'`, gid).
+		Scan(&anomalies); err != nil {
+		t.Fatal(err)
+	}
+	if anomalies != 1 {
+		t.Fatalf("duplicate_subscription anomalies = %d, want exactly 1", anomalies)
+	}
+	if len(h.gateway.CanceledAtPeriodEnd) != 1 {
+		t.Fatalf("CanceledAtPeriodEnd = %v, want exactly one cancellation", h.gateway.CanceledAtPeriodEnd)
 	}
 }
 
