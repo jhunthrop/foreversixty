@@ -5,6 +5,7 @@ import (
 	"context"
 	"io"
 	"net/http"
+	"net/url"
 )
 
 // ProbeResult is one game's answer to the namespace probe (spec §5).
@@ -22,7 +23,8 @@ type ProbeResult struct {
 func (c *Client) Probe(ctx context.Context, region string, games []string) []ProbeResult {
 	out := make([]ProbeResult, 0, len(games))
 	for _, game := range games {
-		u := c.APIHost(region) + "/data/wow/realm/index?namespace=dynamic-" + game + "-" + region
+		u := c.APIHost(region) + "/data/wow/realm/index?namespace=" +
+			url.QueryEscape("dynamic-"+game+"-"+region)
 		out = append(out, ProbeResult{Game: game, Status: c.probeStatus(ctx, u)})
 	}
 	return out

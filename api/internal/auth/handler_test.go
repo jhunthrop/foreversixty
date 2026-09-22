@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -996,5 +997,49 @@ func TestMeCharacterShapeForAGuildedBnetCharacter(t *testing.T) {
 	if c.Guild == nil || c.Guild.ID != gid || c.Guild.Name != "Iron Vanguard" ||
 		c.Guild.Rank != "officer" || c.Guild.RankIndex == nil || *c.Guild.RankIndex != 1 || !c.Guild.Verified {
 		t.Fatalf("guild = %+v, does not match spec §6's shape", c.Guild)
+	}
+}
+
+// failingImporter stands in for bnetimport when Blizzard is down: the
+// spec's §4.1 rule is that an import error is logged and the login
+// still completes, redirect and session included.
+type failingImporter struct{ calls int }
+
+func (f *failingImporter) ImportAccount(context.Context, int64, string) (ImportSummary, error) {
+	f.calls++
+	return ImportSummary{}, errors.New("blizzard answered 503")
+}
+
+func TestBattleNetImportFailureNeverFailsTheLogin(t *testing.T) {
+	h := newHarness(t)
+	h.withBattleNet(t, "12345", "Baelgrim#1234")
+	importer := &failingImporter{}
+	h.svc.Importer = importer
+
+	res := h.do(t, http.MethodGet, "/v1/auth/battlenet/start?next=/account", "")
+	res.Body.Close()
+	target, err := url.Parse(res.Header.Get("Location"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := target.Query().Get("state")
+
+	res = h.do(t, http.MethodGet, "/v1/auth/battlenet/callback?code=the-code&state="+state, "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusFound {
+		t.Fatalf("callback = %d, want a redirect despite the import failing", res.StatusCode)
+	}
+	if got := res.Header.Get("Location"); got != "https://foreversixty.gg/account" {
+		t.Fatalf("redirected to %q, want the next page", got)
+	}
+	if importer.calls != 1 {
+		t.Fatalf("importer was called %d times, want once", importer.calls)
+	}
+
+	res = h.do(t, http.MethodGet, "/v1/me", "")
+	var me Me
+	h.decode(t, res, &me)
+	if me.User.Battletag == nil || *me.User.Battletag != "Baelgrim#1234" {
+		t.Fatalf("the session did not start: me = %+v", me)
 	}
 }

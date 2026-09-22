@@ -901,6 +901,33 @@ func TestPutExportsNeverStealsACharactersRowEvenWithNoPriorAddonExportsRow(t *te
 	}
 }
 
+// TestPutExportsKeepsABattleNetImportedCharactersSource: an export from
+// the owner of a row Battle.net imported refreshes the row without
+// demoting its source, so the nightly bnet-refresh keeps re-checking
+// its guild (review finding on the 2026-09-22 branch).
+func TestPutExportsKeepsABattleNetImportedCharactersSource(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if _, err := h.pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, user_id, source) values
+		 ('us/hardcore/baelgrim', 'us', 'hardcore', 'Baelgrim', $1, 'bnet')`, h.owner); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner,
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:"}}); err != nil {
+		t.Fatal(err)
+	}
+	var source, class string
+	if err := h.pool.QueryRow(ctx,
+		`select source, coalesce(class, '') from characters where key = 'us/hardcore/baelgrim'`).
+		Scan(&source, &class); err != nil {
+		t.Fatal(err)
+	}
+	if source != "bnet" || class != "warrior" {
+		t.Fatalf("source = %q class = %q, want bnet kept and the class refreshed", source, class)
+	}
+}
+
 // TestPostMyExportsStoresAndReturnsTheWrittenCharacters is the signed-in
 // paste path (spec §4.5): a session (not a device) POSTs {"exports": [...]}
 // and gets back the /v1/me character objects for what it just wrote.

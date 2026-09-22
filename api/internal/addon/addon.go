@@ -170,7 +170,12 @@ func (s *Store) putOneCharacter(ctx context.Context, tx pgx.Tx, userID int64, ke
 		 values ($1, $2, $3, $4, nullif($5, ''), $6, 'export', now())
 		 on conflict (key) do update set
 		   name = excluded.name, class = coalesce(nullif($5, ''), characters.class),
-		   user_id = excluded.user_id, source = 'export', refreshed_at = now()
+		   user_id = excluded.user_id,
+		   -- A row Battle.net imported stays 'bnet' so the nightly refresh
+		   -- keeps re-checking its guild; an export only claims the
+		   -- source when nothing stronger holds it.
+		   source = case when characters.source = 'bnet' then 'bnet' else 'export' end,
+		   refreshed_at = now()
 		 where characters.user_id is null or characters.user_id = excluded.user_id`,
 		key, region, ruleset, e.Name, class, userID)
 	if err != nil {
