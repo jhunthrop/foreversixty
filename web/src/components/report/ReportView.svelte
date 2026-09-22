@@ -1317,7 +1317,9 @@
 {/snippet}
 
 {#if status === 'failed'}
-  <LoadError message={error} onRetry={() => void loadReport()} testid="report-error" />
+  <div class="px-[18px] md:px-0">
+    <LoadError message={error} onRetry={() => void loadReport()} testid="report-error" />
+  </div>
 {:else if status === 'loading' || meta === null}
   <!-- Static, trusted markup of our own (skeleton.ts): no data goes into it. -->
   <!-- eslint-disable-next-line svelte/no-at-html-tags -->
