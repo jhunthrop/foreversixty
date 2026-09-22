@@ -2,9 +2,22 @@
 package billing
 
 import (
+	"context"
 	"net/http"
 	"testing"
 )
+
+// fakeFrozenClaimant lets a test control checkGuildCheckout's
+// frozen-claimant branch without needing a real guilds.Store — the one
+// piece of guild-claim-contest state this package reads but does not
+// own (Ruling A/B).
+type fakeFrozenClaimant struct {
+	frozenUserID int64 // FrozenClaimant returns true only for this exact userID
+}
+
+func (f fakeFrozenClaimant) FrozenClaimant(_ context.Context, _, userID int64) (bool, error) {
+	return userID == f.frozenUserID, nil
+}
 
 func TestCheckoutPersonalPremiumCreatesACustomerAndSession(t *testing.T) {
 	h := newHarness(t)
@@ -126,6 +139,36 @@ func TestCheckoutGuildConflictsWhenAlreadyOnThePlanUnlessTransfer(t *testing.T) 
 		map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid, "intent": "transfer"})
 	if w := h.do(t, r); w.Code != http.StatusOK {
 		t.Fatalf("transfer: status = %d, body = %s", w.Code, w.Body.String())
+	}
+}
+
+func TestCheckoutGuildRefusesTheDisputedClaimantButNotOtherOfficers(t *testing.T) {
+	h := newHarness(t)
+	gid := h.seedGuild(t, "frozen-claim", true)
+	disputedClaimant := h.seedUser(t, "frozen-claimant@example.com")
+	otherOfficer := h.seedUser(t, "frozen-other-officer@example.com")
+	h.seedGuildMember(t, gid, disputedClaimant, "leader")
+	h.seedGuildMember(t, gid, otherOfficer, "officer")
+	h.svc.Guilds = fakeFrozenClaimant{frozenUserID: disputedClaimant}
+
+	r := h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", disputedClaimant,
+		map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid})
+	w := h.do(t, r)
+	if w.Code != http.StatusForbidden {
+		t.Fatalf("disputed claimant: status = %d, body = %s", w.Code, w.Body.String())
+	}
+	env := decodeEnvelope(t, w)
+	if env.Error.Code != "forbidden" {
+		t.Fatalf("disputed claimant: error code = %q", env.Error.Code)
+	}
+
+	// A different verified officer of the same guild is unaffected by
+	// the contest — only the disputed claimant is frozen.
+	r = h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", otherOfficer,
+		map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid})
+	w = h.do(t, r)
+	if w.Code != http.StatusOK {
+		t.Fatalf("other officer: status = %d, body = %s", w.Code, w.Body.String())
 	}
 }
 
