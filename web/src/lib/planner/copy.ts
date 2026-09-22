@@ -4,7 +4,6 @@
 // Share opens into before it writes a build to a public link (one-product spec section 1).
 export const plannerCopy = {
   share: 'Share',
-  saving: 'Saving',
   shareConfirmTitle: 'Share this build',
   shareConfirmIntro:
     'Sharing posts the following to a link anyone can open. Once created, that link cannot be edited:',

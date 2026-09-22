@@ -66,9 +66,9 @@ test('an export pasted on /addon becomes the current character on the simulator 
 
 // The planner/sim links (data-testid="addon-paste-planner") sit ABOVE the reserved
 // skeleton/hint block in the DOM (AddonPasteBox.svelte), so nothing below them moving can
-// ever move their own boundingBox -- that made the previous version of this test
-// tautological (it could not fail even when the reservation was sized wrong; see
-// task-8-report.md's fix-2 addendum). This version instead measures two things that DO
+// ever move their own boundingBox, which made an earlier version of this test
+// tautological: it could not fail even when the reservation was sized wrong. This
+// version instead measures two things that DO
 // move when the reserved slot's height changes: the addon-paste-box section's own total
 // height, and the top of current-character-chip (CurrentCharacterBar.svelte, rendered by
 // addon.astro immediately after AddonPasteBox), which has a fixed height of its own
