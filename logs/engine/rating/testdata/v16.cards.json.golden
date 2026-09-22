@@ -72,12 +72,15 @@
       }
     ],
     "Basis": "absolute",
-    "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": ""
+    "ModelVersion": "rating-2026-09-21-coverage",
+    "KillTimeBand": "",
+    "Coverage": 0.15,
+    "Insufficient": true,
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter; no utility table for this spec"
   },
   "Player-4184-000000A2": {
-    "Overall": 28.13,
-    "OverallUncapped": 28.13,
+    "Overall": 0,
+    "OverallUncapped": 0,
     "OverallCapped": false,
     "Components": [
       {
@@ -148,12 +151,15 @@
       }
     ],
     "Basis": "absolute",
-    "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": ""
+    "ModelVersion": "rating-2026-09-21-coverage",
+    "KillTimeBand": "",
+    "Coverage": 0.2,
+    "Insufficient": true,
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter; no utility table for this spec"
   },
   "Player-4184-000000A3": {
-    "Overall": 7.81,
-    "OverallUncapped": 7.81,
+    "Overall": 0,
+    "OverallUncapped": 0,
     "OverallCapped": false,
     "Components": [
       {
@@ -224,7 +230,10 @@
       }
     ],
     "Basis": "absolute",
-    "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": ""
+    "ModelVersion": "rating-2026-09-21-coverage",
+    "KillTimeBand": "",
+    "Coverage": 0.15,
+    "Insufficient": true,
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter; no utility table for this spec"
   }
 }

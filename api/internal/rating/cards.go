@@ -97,6 +97,12 @@ type CardRow struct {
 	Overall, OverallUncapped                                                       float64
 	Components                                                                     json.RawMessage
 	FoughtAt                                                                       time.Time
+	// Coverage, Insufficient and InsufficientReason — spec §1.5's coverage ruling, dated
+	// 2026-09-21, migration 0023_rating_coverage. Copied straight from the Card; this
+	// package never recomputes them.
+	Coverage           float64
+	Insufficient       bool
+	InsufficientReason string
 }
 
 // newCardRow builds a CardRow from one player's already-scored Card. PlayerKey is left
@@ -117,5 +123,6 @@ func newCardRow(f fightMeta, row summary.RosterRow, card ratingengine.Card) Card
 		DurationMS: f.DurationMS, Kill: f.Kill, KillTimeBand: f.KillTimeBand,
 		Overall: card.Overall, OverallUncapped: card.OverallUncapped, OverallCapped: card.OverallCapped,
 		Components: components, ModelVersion: card.ModelVersion, FoughtAt: f.FoughtAt,
+		Coverage: card.Coverage, Insufficient: card.Insufficient, InsufficientReason: card.InsufficientReason,
 	}
 }

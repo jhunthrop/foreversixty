@@ -66,9 +66,13 @@ const MinSample = 20
 const DefaultCapThreshold = 40.0
 
 // DefaultModelVersion is this spec's own model version stamp (spec §4.4:
+// bumped 2026-09-21 for the Coverage/Insufficient/InsufficientReason
+// fields (§1.5's coverage ruling): every row stored under the previous
+// stamp is stale until the backfill recomputes it, the same mechanism
+// that already handles every other model-version bump.
 // "a short string... bumped whenever a formula, a weight, or any curated
 // table changes in a way that could change a stored score").
-const DefaultModelVersion = "rating-2026-09-21"
+const DefaultModelVersion = "rating-2026-09-21-coverage"
 
 // The fixed machine-readable exclusion reasons Component.Reason carries
 // (spec §5.2's own JSON example shows "no_mechanics_table" in exactly this
@@ -109,6 +113,22 @@ type Card struct {
 	Basis           string // "percentile" | "absolute" | "mixed" (per-component; see Component.Basis)
 	ModelVersion    string
 	KillTimeBand    string // "fast" | "typical" | "slow" | "" (excluded/wipe)
+	// Coverage is the sum of the role weights of the components that were
+	// NOT excluded, as a fraction (0-1) of the role's total weight (spec
+	// §1.5, dated 2026-09-21). When Coverage is below MinCoverage,
+	// Insufficient is true and Overall/OverallUncapped/OverallCapped are
+	// all zero-valued: a number built mostly from weight renormalised
+	// onto one or two surviving components reads as a judgement it
+	// cannot support. The components themselves are always returned in
+	// full regardless, scores and reasons included, so the page can show
+	// what WAS measured.
+	Coverage float64
+	// Insufficient is true when Coverage < MinCoverage.
+	Insufficient bool
+	// InsufficientReason names, in plain words built from the excluded
+	// components' own Reason codes, what was missing -- set iff
+	// Insufficient.
+	InsufficientReason string
 }
 
 // Component is one of the six parts of a Card (spec §4.1, verbatim).

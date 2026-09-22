@@ -19,6 +19,14 @@ import (
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
 )
 
+// execScorePtr is a small helper for the RosterRow.ExecutionScore *float64 field: a fixture
+// with none of it excludes Output outright (spec §1.3: raw DPS has no absolute standard),
+// which drops a single-component test fight below spec §1.5's MinCoverage in a throwaway
+// test database with no percentile digests ever folded — realistic for a genuinely
+// unvalidated spec, but not what these fixtures are testing, so tests that need a
+// sufficient card set one explicitly.
+func execScorePtr(v float64) *float64 { return &v }
+
 func newTestService(t *testing.T) (*Service, *reports.Store) {
 	pool := testPool(t)
 	reportStore := &reports.Store{Pool: pool}
@@ -332,7 +340,8 @@ func TestCharacterRatingServesATrendForAPublicReport(t *testing.T) {
 	svc, rs := newTestService(t)
 	mustCreateReport(t, rs, "handler-char-1", reports.Public)
 	f := fightFixture("handler-char-1", true,
-		summary.RosterRow{GUID: "g1", Name: "Trendy", Class: "Shaman", Spec: "Elemental", Role: "dps"},
+		summary.RosterRow{GUID: "g1", Name: "Trendy", Class: "Shaman", Spec: "Elemental", Role: "dps",
+			ExecutionScore: execScorePtr(0.9)},
 	)
 	if err := svc.Store.RateFight(context.Background(), f); err != nil {
 		t.Fatal(err)
@@ -359,6 +368,73 @@ func TestCharacterRatingServesATrendForAPublicReport(t *testing.T) {
 	}
 	if env.Data.Latest == nil || env.Data.Latest.PlayerName != "Trendy" {
 		t.Fatalf("latest = %+v, want the one rated fight", env.Data.Latest)
+	}
+}
+
+// TestCharacterRatingExcludesInsufficientCardsFromTrendAndSampleSize is spec
+// §1.5's coverage ruling: an insufficient card is real per-component data
+// (still shown on the fight's own report card) but must not enter any
+// character-level mean or count, or the site averages in noise. Two rated
+// fights are stored for the same character; the older is then marked
+// insufficient directly (RateFight's own engine run over a throwaway test
+// database's empty digests will not reliably reproduce a real insufficient
+// card end to end, and this test's job is the SQL exclusion, not the
+// engine's coverage arithmetic, which logs/engine/rating already covers).
+func TestCharacterRatingExcludesInsufficientCardsFromTrendAndSampleSize(t *testing.T) {
+	svc, rs := newTestService(t)
+	mustCreateReport(t, rs, "handler-char-insufficient", reports.Public)
+	ctx := context.Background()
+
+	good := fightFixture("handler-char-insufficient", true,
+		summary.RosterRow{GUID: "g1", Name: "Covered", Class: "Shaman", Spec: "Elemental", Role: "dps",
+			ExecutionScore: execScorePtr(0.9)})
+	good.FightIndex = 1
+	good.FoughtAt = time.Date(2026, 12, 9, 2, 0, 0, 0, time.UTC)
+	if err := svc.Store.RateFight(ctx, good); err != nil {
+		t.Fatal(err)
+	}
+
+	thin := fightFixture("handler-char-insufficient", false,
+		summary.RosterRow{GUID: "g1", Name: "Covered", Class: "Shaman", Spec: "Elemental", Role: "dps"})
+	thin.FightIndex = 2
+	thin.FoughtAt = time.Date(2026, 12, 9, 1, 0, 0, 0, time.UTC) // older, so it would sort first if not excluded
+	if err := svc.Store.RateFight(ctx, thin); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := rs.Pool.Exec(ctx,
+		`update rating_scores set insufficient = true, coverage = 0.3, overall = 0, overall_uncapped = 0,
+		 insufficient_reason = 'no output on a wipe; no mechanics table for this encounter'
+		 where report_id = $1 and fight_index = 2`, "handler-char-insufficient"); err != nil {
+		t.Fatal(err)
+	}
+
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	req := httptest.NewRequest(http.MethodGet, "/v1/characters/us/normal/Covered/rating", nil)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", rec.Code, rec.Body.String())
+	}
+	var env struct {
+		Data characterRatingDTO `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &env); err != nil {
+		t.Fatal(err)
+	}
+	if env.Data.SampleSize != 1 {
+		t.Fatalf("sample_size = %d, want 1 (the insufficient fight must not be counted)", env.Data.SampleSize)
+	}
+	for _, tp := range env.Data.Trend {
+		if tp.FightIndex == 2 {
+			t.Fatalf("trend includes the insufficient fight: %+v", env.Data.Trend)
+		}
+	}
+	if env.Data.Latest == nil {
+		t.Fatal("latest is nil, want the one sufficient fight")
+	}
+	if env.Data.Latest.Overall == 0 {
+		t.Error("latest picked the insufficient (zeroed) fight instead of the sufficient one")
 	}
 }
 
@@ -423,7 +499,8 @@ func TestCharacterRatingSetsPublicCacheControl(t *testing.T) {
 	svc, rs := newTestService(t)
 	mustCreateReport(t, rs, "handler-char-cache-1", reports.Public)
 	f := fightFixture("handler-char-cache-1", true,
-		summary.RosterRow{GUID: "g1", Name: "Cached", Class: "Hunter", Spec: "Survival", Role: "dps"},
+		summary.RosterRow{GUID: "g1", Name: "Cached", Class: "Hunter", Spec: "Survival", Role: "dps",
+			ExecutionScore: execScorePtr(0.9)},
 	)
 	if err := svc.Store.RateFight(context.Background(), f); err != nil {
 		t.Fatal(err)

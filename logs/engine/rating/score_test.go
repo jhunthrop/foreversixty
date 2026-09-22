@@ -103,6 +103,10 @@ func TestWorkedExampleDPSWarriorFury(t *testing.T) {
 		t.Fatalf("round(Overall) = %v (Overall=%v), want %v (spec §1.6's DPS worked example, \"-> 70\")",
 			math.Round(card.Overall), card.Overall, want)
 	}
+	if card.Coverage != 1 || card.Insufficient {
+		t.Fatalf("Coverage=%v Insufficient=%v, want 1/false (every component scored, spec §1.5's coverage note)",
+			card.Coverage, card.Insufficient)
+	}
 }
 
 // TestWorkedExampleHealerPriestHoly reproduces spec §1.6's second worked
@@ -176,6 +180,10 @@ func TestWorkedExampleHealerPriestHoly(t *testing.T) {
 	if want := 70.0; math.Round(card.Overall) != want {
 		t.Fatalf("round(Overall) = %v (Overall=%v), want %v (spec §1.6's healer worked example, \"-> 70\")",
 			math.Round(card.Overall), card.Overall, want)
+	}
+	if card.Coverage != 1 || card.Insufficient {
+		t.Fatalf("Coverage=%v Insufficient=%v, want 1/false (every component scored, spec §1.5's coverage note)",
+			card.Coverage, card.Insufficient)
 	}
 }
 
@@ -278,6 +286,13 @@ func TestWorkedExampleTankWarriorProtection(t *testing.T) {
 	if want := 80.0; math.Round(card.Overall) != want {
 		t.Fatalf("round(Overall) = %v (Overall=%v, OverallUncapped=%v), want %v (spec §1.6's tank worked example, corrected)",
 			math.Round(card.Overall), card.Overall, card.OverallUncapped, want)
+	}
+	// Mechanics (weight 20 of the tank's 100) is the only excluded
+	// component: coverage 0.8, well above MinCoverage -- unaffected by
+	// spec §1.5's coverage ruling, per the ruling's own note that this
+	// worked example and the healer's are unaffected.
+	if want := 0.8; card.Coverage != want || card.Insufficient {
+		t.Fatalf("Coverage=%v Insufficient=%v, want %v/false", card.Coverage, card.Insufficient, want)
 	}
 }
 
