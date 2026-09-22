@@ -77,7 +77,7 @@ func writeHeader(bw *bufio.Writer, d Data) {
 }
 
 func writeCharacterRow(bw *bufio.Writer, key string, row characterRow) {
-	fmt.Fprintf(bw, "\t\t[%q] = { rating = %d", key, row.Rating)
+	fmt.Fprintf(bw, "\t\t[%q] = { rating = %d, mean90 = %d", key, row.Rating, row.Mean90)
 	for _, name := range componentNames {
 		if v, ok := row.Components[name]; ok {
 			fmt.Fprintf(bw, ", %s = %d", name, v)

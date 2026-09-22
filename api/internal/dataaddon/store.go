@@ -15,11 +15,15 @@ type Store struct {
 	Pool *pgxpool.Pool
 }
 
-// characterFightRow is one public, in-window, non-anonymized rated fight.
+// characterFightRow is one public, in-window, non-anonymized, sufficient
+// rated fight -- "sufficient" meaning the engine did not mark it
+// insufficient (migration 0023: a card built from under half a role's
+// weight table gets Overall = 0, and that 0 is not a score).
 type characterFightRow struct {
 	PlayerKey  string
 	Overall    float64
 	Components json.RawMessage
+	FoughtAt   time.Time
 }
 
 // characterFights reads every rating_scores row fought_at or after since,
@@ -28,13 +32,19 @@ type characterFightRow struct {
 // anonymized and ReadCharacterRating apply per character, applied here
 // across every character at once. A player_key with no characters row at
 // all (never linked to an account) is not anonymized, matching
-// rating.Store.anonymized's own "nothing to hide" rule exactly.
+// rating.Store.anonymized's own "nothing to hide" rule exactly. It also
+// excludes insufficient cards at this same SQL layer, with the identical
+// predicate rating.Store.ReadCharacterRating uses: `not coalesce(rs.
+// insufficient, false)`. A NULL insufficient (a row written before
+// migration 0023 added the column) reads as sufficient, matching every
+// other stale-row gap in this codebase.
 func (s *Store) characterFights(ctx context.Context, since time.Time) ([]characterFightRow, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select rs.player_key, rs.overall, rs.components
+		`select rs.player_key, rs.overall, rs.components, rs.fought_at
 		 from rating_scores rs
 		 join reports r on r.id = rs.report_id
 		 where r.visibility = 'public' and rs.fought_at >= $1
+		   and not coalesce(rs.insufficient, false)
 		   and not exists (
 		     select 1 from characters c join users u on u.id = c.user_id
 		     where c.key = rs.player_key and u.anonymize
@@ -47,7 +57,7 @@ func (s *Store) characterFights(ctx context.Context, since time.Time) ([]charact
 	var out []characterFightRow
 	for rows.Next() {
 		var r characterFightRow
-		if err := rows.Scan(&r.PlayerKey, &r.Overall, &r.Components); err != nil {
+		if err := rows.Scan(&r.PlayerKey, &r.Overall, &r.Components, &r.FoughtAt); err != nil {
 			return nil, fmt.Errorf("dataaddon: scan character fight: %w", err)
 		}
 		out = append(out, r)

@@ -101,7 +101,7 @@ func aggregateCharacters(ctx context.Context, d Deps, since time.Time) (map[stri
 	byPlayer := map[string][]fightScore{}
 	for _, f := range fights {
 		byPlayer[f.PlayerKey] = append(byPlayer[f.PlayerKey], fightScore{
-			Overall: f.Overall, Components: decodeComponents(f.Components),
+			Overall: f.Overall, FoughtAt: f.FoughtAt, Components: decodeComponents(f.Components),
 		})
 	}
 

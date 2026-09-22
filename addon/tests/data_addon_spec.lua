@@ -29,7 +29,7 @@ describe("the data-addon job's output, read by Ratings.lua", function()
 	it("reads Thoradin's card with every component present", function()
 		start("Normal", 1)
 		local card = Ratings.forCharacter("Thoradin")
-		assert.are.equal(81, card.rating)
+		assert.are.equal(80, card.rating)
 		assert.are.equal(2, card.fights)
 		local byKey = {}
 		for _, c in ipairs(card.components) do

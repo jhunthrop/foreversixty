@@ -12,8 +12,8 @@ func TestRenderWithLimitSplitsByRegionWhenOverTheLimit(t *testing.T) {
 		Generated: time.Date(2026, 9, 22, 4, 0, 0, 0, time.UTC),
 		Build:     "1.60.1.69893",
 		Characters: map[string]characterRow{
-			"us:normal:thoradin": {Rating: 81, Components: map[string]int{"output": 91}, Fights: 2},
-			"eu:pvp:mörk":        {Rating: 88, Components: map[string]int{"output": 70}, Fights: 1},
+			"us:normal:thoradin": {Rating: 81, Mean90: 81, Components: map[string]int{"output": 91}, Fights: 2},
+			"eu:pvp:mörk":        {Rating: 88, Mean90: 88, Components: map[string]int{"output": 70}, Fights: 1},
 		},
 		Guilds: map[string]guildRow{
 			"us:normal:iron-vanguard": {Name: "Iron Vanguard", Nights: 1, Roster: 1, Members: []string{"a"}},

@@ -4,6 +4,7 @@ package dataaddon
 import (
 	"encoding/json"
 	"math"
+	"time"
 )
 
 // componentNames is the addon's six component keys, in Ratings.lua's own
@@ -19,19 +20,26 @@ type componentScore struct {
 	Score *float64
 }
 
-// fightScore is one public, in-window, non-anonymized rated fight read for
-// one character.
+// fightScore is one public, in-window, non-anonymized, sufficient rated
+// fight read for one character.
 type fightScore struct {
 	Overall    float64
+	FoughtAt   time.Time
 	Components []componentScore
 }
 
-// characterRow is one character's line in Data.lua: the rounded rating,
-// whichever components had at least one non-excluded fight to average
-// (absent from the map for the rest -- "may omit what it cannot compute"),
-// and the fight count the rating rests on.
+// characterRow is one character's line in Data.lua: Rating is the latest
+// (by FoughtAt) fight's overall, rounded -- the same number the site's
+// character page headlines, per the coordinator's ruling that the addon
+// matches the site rather than the other way around. Mean90 is the mean
+// of overall across every fight in the aggregation window, rounded, kept
+// alongside Rating so a future addon UI can show both numbers. Components
+// are whichever had at least one non-excluded fight to average (absent
+// from the map for the rest -- "may omit what it cannot compute"), and
+// Fights is the count both Rating and Mean90 rest on.
 type characterRow struct {
 	Rating     int
+	Mean90     int
 	Components map[string]int
 	Fights     int
 }
@@ -65,18 +73,24 @@ func decodeComponents(raw json.RawMessage) []componentScore {
 }
 
 // aggregateCharacter folds one character's fights into its Data.lua row.
-// ok is false for zero fights: a character with no public rated fights in
-// the window has nothing to say, and gets no row at all rather than a
-// zeroed one.
+// ok is false for zero fights: a character with no public, sufficient
+// rated fights in the window has nothing to say, and gets no row at all
+// rather than a zeroed one -- this is also how a character whose only
+// cards were insufficient disappears, since store.go's characterFights
+// never returns an insufficient row in the first place.
 func aggregateCharacter(fights []fightScore) (row characterRow, ok bool) {
 	if len(fights) == 0 {
 		return characterRow{}, false
 	}
 	var overallSum float64
+	latest := fights[0]
 	sums := make(map[string]float64, len(componentNames))
 	counts := make(map[string]int, len(componentNames))
 	for _, f := range fights {
 		overallSum += f.Overall
+		if f.FoughtAt.After(latest.FoughtAt) {
+			latest = f
+		}
 		for _, c := range f.Components {
 			if c.Score == nil {
 				continue
@@ -92,7 +106,8 @@ func aggregateCharacter(fights []fightScore) (row characterRow, ok bool) {
 		}
 	}
 	return characterRow{
-		Rating:     roundHalfUp(overallSum / float64(len(fights))),
+		Rating:     roundHalfUp(latest.Overall),
+		Mean90:     roundHalfUp(overallSum / float64(len(fights))),
 		Components: components,
 		Fights:     len(fights),
 	}, true

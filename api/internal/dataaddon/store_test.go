@@ -85,6 +85,87 @@ func TestCharacterFightsAppliesTheWindowVisibilityAndAnonymizeRules(t *testing.T
 	}
 }
 
+func TestCharacterFightsExcludesInsufficientCardsAndOmitsAnAllInsufficientCharacter(t *testing.T) {
+	pool := testPool(t)
+	ctx := context.Background()
+	now := time.Date(2026, 9, 22, 4, 0, 0, 0, time.UTC)
+
+	var user1, user2 int64
+	if err := pool.QueryRow(ctx, `insert into users (battletag) values ('WithEnough') returning id`).Scan(&user1); err != nil {
+		t.Fatal(err)
+	}
+	if err := pool.QueryRow(ctx, `insert into users (battletag) values ('OnlyInsufficient') returning id`).Scan(&user2); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		pool.Exec(ctx, `delete from users where id in ($1, $2)`, user1, user2)
+	})
+
+	if _, err := pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, user_id) values
+		 ('us/normal/withenough', 'us', 'normal', 'Withenough', $1),
+		 ('us/normal/onlyinsufficient', 'us', 'normal', 'Onlyinsufficient', $2)`, user1, user2); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		pool.Exec(ctx, `delete from characters where key in ('us/normal/withenough', 'us/normal/onlyinsufficient')`)
+	})
+
+	if _, err := pool.Exec(ctx,
+		`insert into reports (id, visibility, status, created_at) values ($1, 'public', 'complete', $2)`,
+		"dataaddon-store-insufficient", now.Add(-2*24*time.Hour)); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		pool.Exec(ctx, `delete from reports where id = 'dataaddon-store-insufficient'`)
+	})
+
+	insertScore := func(index int, playerKey string, overall float64, insufficient bool, foughtAt time.Time) {
+		if err := db.EnsureRatingsPartition(ctx, pool, foughtAt); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := pool.Exec(ctx,
+			`insert into rating_scores (report_id, fight_index, player_key, player_name, encounter_id,
+			   kill, overall, overall_uncapped, overall_capped, components, model_version, fought_at, insufficient)
+			 values ('dataaddon-store-insufficient', $1, $2, $2, 1, false, $3, $3, false, '[]', 'test', $4, $5)`,
+			index, playerKey, overall, foughtAt, insufficient); err != nil {
+			t.Fatal(err)
+		}
+	}
+	insertScore(1, "us/normal/withenough", 80, false, now.Add(-2*24*time.Hour))
+	insertScore(2, "us/normal/withenough", 82, false, now.Add(-3*24*time.Hour))
+	insertScore(3, "us/normal/withenough", 0, true, now.Add(-4*24*time.Hour))
+	insertScore(4, "us/normal/onlyinsufficient", 0, true, now.Add(-2*24*time.Hour))
+	t.Cleanup(func() {
+		pool.Exec(ctx, `delete from rating_scores where report_id = 'dataaddon-store-insufficient'`)
+	})
+
+	store := &Store{Pool: pool}
+	rows, err := store.characterFights(ctx, now.Add(-ratingWindow))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var withEnough []characterFightRow
+	for _, r := range rows {
+		if r.PlayerKey == "us/normal/onlyinsufficient" {
+			t.Fatalf("onlyinsufficient should have zero rows (its only card is insufficient); got %+v", r)
+		}
+		if r.PlayerKey == "us/normal/withenough" {
+			withEnough = append(withEnough, r)
+		}
+	}
+	if len(withEnough) != 2 {
+		t.Fatalf("withenough rows = %d, want exactly 2 (the insufficient row must not appear); got %+v", len(withEnough), withEnough)
+	}
+	var sum float64
+	for _, r := range withEnough {
+		sum += r.Overall
+	}
+	if sum != 162 {
+		t.Errorf("overall sum = %v, want 162 (80+82; the insufficient row's 0 must never enter the sum)", sum)
+	}
+}
+
 func TestGuildQueriesReadVerifiedMembersNightsAndProgression(t *testing.T) {
 	pool := testPool(t)
 	ctx := context.Background()

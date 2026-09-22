@@ -1,18 +1,21 @@
 // api/internal/dataaddon/aggregate_test.go
 package dataaddon
 
-import "testing"
+import (
+	"testing"
+	"time"
+)
 
 func score(v float64) *float64 { return &v }
 
-func TestAggregateCharacterAveragesOverallAndEachNonExcludedComponent(t *testing.T) {
+func TestAggregateCharacterRatingIsTheLatestFightAndMean90IsTheWindowMean(t *testing.T) {
 	fights := []fightScore{
-		{Overall: 80, Components: []componentScore{
+		{Overall: 80, FoughtAt: time.Date(2026, 9, 1, 0, 0, 0, 0, time.UTC), Components: []componentScore{
 			{Name: "output", Score: score(90)}, {Name: "survival", Score: score(70)},
 			{Name: "mechanics", Score: score(85)}, {Name: "utility", Score: score(60)},
 			{Name: "preparation", Score: score(95)}, {Name: "activity", Score: nil}, // excluded this fight
 		}},
-		{Overall: 82, Components: []componentScore{
+		{Overall: 82, FoughtAt: time.Date(2026, 9, 10, 0, 0, 0, 0, time.UTC), Components: []componentScore{
 			{Name: "output", Score: score(92)}, {Name: "survival", Score: score(74)},
 			{Name: "mechanics", Score: score(83)}, {Name: "utility", Score: score(64)},
 			{Name: "preparation", Score: score(93)}, {Name: "activity", Score: score(91)},
@@ -22,8 +25,11 @@ func TestAggregateCharacterAveragesOverallAndEachNonExcludedComponent(t *testing
 	if !ok {
 		t.Fatal("aggregateCharacter reported no data for two fights")
 	}
-	if row.Rating != 81 {
-		t.Errorf("rating = %d, want 81", row.Rating)
+	if row.Rating != 82 {
+		t.Errorf("rating = %d, want 82 (the later fight's overall)", row.Rating)
+	}
+	if row.Mean90 != 81 {
+		t.Errorf("mean90 = %d, want 81 (the two-fight mean)", row.Mean90)
 	}
 	if row.Fights != 2 {
 		t.Errorf("fights = %d, want 2", row.Fights)
@@ -36,9 +42,29 @@ func TestAggregateCharacterAveragesOverallAndEachNonExcludedComponent(t *testing
 	}
 }
 
+func TestAggregateCharacterRatingIsOrderIndependent(t *testing.T) {
+	early := fightScore{Overall: 80, FoughtAt: time.Date(2026, 9, 1, 0, 0, 0, 0, time.UTC)}
+	late := fightScore{Overall: 82, FoughtAt: time.Date(2026, 9, 10, 0, 0, 0, 0, time.UTC)}
+
+	forward, ok := aggregateCharacter([]fightScore{early, late})
+	if !ok {
+		t.Fatal("aggregateCharacter reported no data")
+	}
+	backward, ok := aggregateCharacter([]fightScore{late, early})
+	if !ok {
+		t.Fatal("aggregateCharacter reported no data")
+	}
+	if forward.Rating != 82 || backward.Rating != 82 {
+		t.Errorf("rating should be 82 regardless of slice order; forward=%d backward=%d", forward.Rating, backward.Rating)
+	}
+	if forward.Mean90 != backward.Mean90 {
+		t.Errorf("mean90 should not depend on slice order; forward=%d backward=%d", forward.Mean90, backward.Mean90)
+	}
+}
+
 func TestAggregateCharacterOmitsAComponentWithNoNonExcludedFights(t *testing.T) {
 	fights := []fightScore{
-		{Overall: 88, Components: []componentScore{
+		{Overall: 88, FoughtAt: time.Date(2026, 9, 1, 0, 0, 0, 0, time.UTC), Components: []componentScore{
 			{Name: "output", Score: score(70)}, {Name: "survival", Score: nil},
 			{Name: "mechanics", Score: score(70)}, {Name: "utility", Score: nil},
 			{Name: "preparation", Score: nil}, {Name: "activity", Score: nil},
