@@ -64,7 +64,16 @@ test('an export pasted on /addon becomes the current character on the simulator 
   await expect(page.getByTestId('sim-character')).toHaveCount(0);
 });
 
-test('the signed-in hint does not push the planner/sim links while the session check is pending', async ({
+// The planner/sim links (data-testid="addon-paste-planner") sit ABOVE the reserved
+// skeleton/hint block in the DOM (AddonPasteBox.svelte), so nothing below them moving can
+// ever move their own boundingBox -- that made the previous version of this test
+// tautological (it could not fail even when the reservation was sized wrong; see
+// task-8-report.md's fix-2 addendum). This version instead measures two things that DO
+// move when the reserved slot's height changes: the addon-paste-box section's own total
+// height, and the top of current-character-chip (CurrentCharacterBar.svelte, rendered by
+// addon.astro immediately after AddonPasteBox), which has a fixed height of its own
+// (CHIP_HEIGHT) and so only shifts when something above it does.
+test('a pending session check reserves the signed-out branch height, so the section and the chip below it never shrink once it resolves', async ({
   page,
 }) => {
   let resolveMe: (() => void) | undefined;
@@ -82,15 +91,33 @@ test('the signed-in hint does not push the planner/sim links while the session c
   await page.goto('/addon');
   await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
   await page.getByTestId('addon-paste-submit').click();
-  const plannerLinkTop = await page
-    .getByTestId('addon-paste-planner')
+
+  // The pasted export is already the current character (writeCurrent() runs synchronously
+  // in submit(), independent of the /v1/me held pending below), so the chip is already on
+  // the page while the skeleton is still showing.
+  const chip = page.getByTestId('current-character-chip');
+  await expect(chip).toBeVisible();
+  await expect(page.getByTestId('addon-paste-status-skeleton')).toBeVisible();
+  const sectionHeightBefore = await page
+    .getByTestId('addon-paste-box')
     .boundingBox()
-    .then((box) => box?.y);
+    .then((box) => box?.height);
+  const chipTopBefore = await chip.boundingBox().then((box) => box?.y);
+  expect(sectionHeightBefore).toBeDefined();
+  expect(chipTopBefore).toBeDefined();
+
   resolveMe?.();
   await expect(page.getByTestId('addon-paste-signin-hint')).toBeVisible();
-  const plannerLinkTopAfter = await page
-    .getByTestId('addon-paste-planner')
+  const sectionHeightAfter = await page
+    .getByTestId('addon-paste-box')
     .boundingBox()
-    .then((box) => box?.y);
-  expect(plannerLinkTopAfter).toBe(plannerLinkTop);
+    .then((box) => box?.height);
+  const chipTopAfter = await chip.boundingBox().then((box) => box?.y);
+
+  // Before the fix, ADDON_PASTE_STATUS_MIN_H reserved the taller signed-in form's height
+  // (168px) for every pending check, so landing on the much shorter signed-out hint (this
+  // test's route always answers 401) shrank the section by ~148.5px and pulled the chip up
+  // by the same amount -- these two assertions catch exactly that regression.
+  expect(sectionHeightAfter).toBeGreaterThanOrEqual(sectionHeightBefore as number);
+  expect(chipTopAfter).toBeGreaterThanOrEqual(chipTopBefore as number);
 });

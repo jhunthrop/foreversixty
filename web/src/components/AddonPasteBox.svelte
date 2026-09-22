@@ -102,7 +102,12 @@
       </a>
     </div>
     {#if signedIn === null}
-      <Skeleton lines={2} minHeight={ADDON_PASTE_STATUS_MIN_H} testid="addon-paste-status-skeleton" />
+      <!-- One row, not the ui default of three: ADDON_PASTE_STATUS_MIN_H reserves the
+           shorter (sign-in hint) branch's real height, and Skeleton's own row content
+           would otherwise dominate that min-height once more than one row is stacked
+           (two h-4 rows plus their gap already exceed 19.5px on their own), silently
+           reopening the shrink this constant exists to prevent. -->
+      <Skeleton lines={1} minHeight={ADDON_PASTE_STATUS_MIN_H} testid="addon-paste-status-skeleton" />
     {:else}
       {#key loaded}
         <AddonPasteSave {signedIn} code={loaded} />
