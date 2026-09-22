@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 // defaultMailFrom is used when MAIL_FROM is not set.
@@ -98,6 +99,19 @@ type Config struct {
 	SimJobName    string
 	SimJobRegion  string
 	SimJobProject string
+
+	// StripeSecretKey, StripeWebhookSecret and StripeEnvironment configure
+	// billing. Absent, billing routes answer 503 rather than the API
+	// failing to start (coordinator's lane constraint — no Stripe keys
+	// exist yet).
+	StripeSecretKey     string
+	StripeWebhookSecret string
+	// StripeEnvironment is "test" or "live", from STRIPE_ENVIRONMENT. It
+	// must be "live" exactly when PublicBaseURL is the production origin
+	// (see ValidateStripeKeyEnvironment) — this is a separate value from
+	// the key's own prefix so the check has two independent signals to
+	// compare, not one value checked against itself.
+	StripeEnvironment string
 }
 
 func Load(getenv func(string) string) (Config, error) {
@@ -177,6 +191,10 @@ func Load(getenv func(string) string) (Config, error) {
 		c.SessionCookieDomain = ""
 	}
 
+	c.StripeSecretKey = getenv("STRIPE_SECRET_KEY")
+	c.StripeWebhookSecret = getenv("STRIPE_WEBHOOK_SECRET")
+	c.StripeEnvironment = getenv("STRIPE_ENVIRONMENT")
+
 	return c, nil
 }
 
@@ -189,4 +207,48 @@ func (c Config) R2Configured() bool {
 // BattleNetConfigured reports whether Battle.net sign-in can be offered.
 func (c Config) BattleNetConfigured() bool {
 	return c.BnetClientID != "" && c.BnetClientSecret != "" && c.BnetRedirectURL != ""
+}
+
+// productionBaseURL is the one PublicBaseURL value ValidateStripeKeyEnvironment treats as
+// production (spec §3).
+const productionBaseURL = "https://foreversixty.gg"
+
+// StripeConfigured reports whether billing can be offered: both the
+// secret key and the webhook secret are present. Absent, the billing
+// routes answer 503 rather than the deployment failing to start.
+func (c Config) StripeConfigured() bool {
+	return c.StripeSecretKey != "" && c.StripeWebhookSecret != ""
+}
+
+// ValidateStripeKeyEnvironment is the spec §3 startup check, scoped by
+// the coordinator's lane constraint that the API must start with no
+// Stripe keys at all: a completely absent StripeSecretKey is always a
+// no-op (the billing routes answer 503 instead — Task 8). Once a key is
+// present, it must only be a live key where PublicBaseURL is the
+// production origin, and STRIPE_ENVIRONMENT must be "live" exactly then
+// too.
+func (c Config) ValidateStripeKeyEnvironment() error {
+	if c.StripeSecretKey == "" {
+		return nil
+	}
+	wantLive := c.PublicBaseURL == productionBaseURL
+	gotLive := c.StripeEnvironment == "live"
+	if wantLive != gotLive {
+		if wantLive {
+			return fmt.Errorf("config: STRIPE_ENVIRONMENT must be \"live\" when PUBLIC_BASE_URL is %s", productionBaseURL)
+		}
+		return fmt.Errorf("config: STRIPE_ENVIRONMENT must not be \"live\" unless PUBLIC_BASE_URL is %s", productionBaseURL)
+	}
+	isLiveKey := strings.HasPrefix(c.StripeSecretKey, "sk_live_") || strings.HasPrefix(c.StripeSecretKey, "rk_live_")
+	isTestKey := strings.HasPrefix(c.StripeSecretKey, "sk_test_") || strings.HasPrefix(c.StripeSecretKey, "rk_test_")
+	if !isLiveKey && !isTestKey {
+		return fmt.Errorf("config: STRIPE_SECRET_KEY does not look like a Stripe secret or restricted key")
+	}
+	if gotLive && !isLiveKey {
+		return fmt.Errorf("config: STRIPE_ENVIRONMENT is \"live\" but STRIPE_SECRET_KEY is a test key")
+	}
+	if !gotLive && isLiveKey {
+		return fmt.Errorf("config: STRIPE_ENVIRONMENT is %q but STRIPE_SECRET_KEY is a live key", c.StripeEnvironment)
+	}
+	return nil
 }

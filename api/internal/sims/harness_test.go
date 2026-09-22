@@ -17,6 +17,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/jobs"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 	simapi "github.com/jhunthrop/foreversixty/sim/api"
@@ -56,17 +57,17 @@ func testPool(t *testing.T) *pgxpool.Pool {
 // harness is the simulator surface mounted over the test database,
 // with a local directory for R2 and a fixed actor on every request.
 type harness struct {
-	t       *testing.T
-	store   *Store
-	dir     string
-	files   *store.Dir
-	service *Service
-	server  *httptest.Server
-	actor   auth.Actor
-	owner   int64
-	jobs    *jobs.Fake
-	premium *fakePremium
-	planner *fakePlanner
+	t            *testing.T
+	store        *Store
+	dir          string
+	files        *store.Dir
+	service      *Service
+	server       *httptest.Server
+	actor        auth.Actor
+	owner        int64
+	jobs         *jobs.Fake
+	entitlements *fakeEntitlements
+	planner      *fakePlanner
 }
 
 func newHarness(t *testing.T) *harness {
@@ -84,7 +85,7 @@ func newHarness(t *testing.T) *harness {
 	h := &harness{t: t, store: &Store{Pool: pool}, dir: t.TempDir(), owner: owner.ID}
 	h.files = store.NewDir(h.dir)
 	h.actor = auth.Actor{UserID: owner.ID, Role: "user", Method: "session"}
-	h.jobs, h.premium = &jobs.Fake{}, &fakePremium{}
+	h.jobs, h.entitlements = &jobs.Fake{}, &fakeEntitlements{}
 	// A plan that fits: one combination, well inside both bounds. A test
 	// that cares sets its own.
 	h.planner = &fakePlanner{summary: simapi.PlanSummary{
@@ -92,7 +93,7 @@ func newHarness(t *testing.T) *harness {
 		Cap: simapi.Caps[simapi.LaneServer], IterationsTotal: 4000,
 	}}
 	h.service = &Service{
-		Store: h.store, Accounts: h.premium, Jobs: h.jobs, Planner: h.planner,
+		Store: h.store, Accounts: h.entitlements, Jobs: h.jobs, Planner: h.planner,
 		EngineVersion: testEngine, Log: quiet,
 	}
 
@@ -229,13 +230,19 @@ func browserResult(spec string, mean float64) simapi.SimResult {
 	}
 }
 
-// fakePremium answers the premium question without an accounts table.
-type fakePremium struct {
-	premium bool
+// fakeEntitlements answers the server-sims Can() question without an
+// entitlements table.
+type fakeEntitlements struct {
+	allowed bool
 	err     error
 }
 
-func (f fakePremium) Premium(context.Context, int64) (bool, error) { return f.premium, f.err }
+func (f fakeEntitlements) Can(context.Context, int64, entitlements.Feature) (bool, entitlements.Reason, error) {
+	if !f.allowed {
+		return false, entitlements.ReasonNoPlan, f.err
+	}
+	return true, entitlements.ReasonEntitled, f.err
+}
 
 // fakePlanner answers the plan-only count without a binary. The real one
 // invokes `forever-sim -plan` (contract 10.2); nothing about the

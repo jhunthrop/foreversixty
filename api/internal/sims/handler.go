@@ -48,9 +48,9 @@ const (
 // Service serves the simulator routes.
 type Service struct {
 	Store *Store
-	// Accounts reads the premium flag. Nil means the premium lane is
-	// not offered.
-	Accounts Premiumer
+	// Accounts answers the server-sims entitlement question. Nil means
+	// the premium lane is not offered.
+	Accounts Entitlementer
 	// Jobs starts the premium lane's Cloud Run job. Nil means the
 	// deployment cannot reach it, and the premium lane is not offered.
 	Jobs jobs.Runner

@@ -1,14 +1,17 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	netmail "net/mail"
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/mail"
 	"github.com/jhunthrop/foreversixty/api/internal/textx"
@@ -35,10 +38,15 @@ const (
 
 // Service serves every sign-in route.
 type Service struct {
-	Store         *Store
-	Auth          *Authenticator
-	BNet          *BattleNet
-	Mailer        mail.Mailer
+	Store  *Store
+	Auth   *Authenticator
+	BNet   *BattleNet
+	Mailer mail.Mailer
+	// Entitlements answers GET /v1/me's Entitlements block and each
+	// guild's Plan field. Nil is safe (every field reads as its zero
+	// value, every Guild.Plan stays nil) for a test harness that does
+	// not exercise billing.
+	Entitlements  *entitlements.Store
 	PublicBaseURL string
 	APIBaseURL    string
 	Log           *slog.Logger
@@ -248,11 +256,46 @@ func (s *Service) patchMe(w http.ResponseWriter, r *http.Request) {
 	s.me(w, r)
 }
 
-// Me is the /v1/me body: who you are, and what you own.
+// Me is the /v1/me body: who you are, what you own, and what you're
+// entitled to (spec §1.4).
 type Me struct {
-	User       User        `json:"user"`
-	Characters []Character `json:"characters"`
-	Guilds     []Guild     `json:"guilds"`
+	User         User             `json:"user"`
+	Characters   []Character      `json:"characters"`
+	Guilds       []Guild          `json:"guilds"`
+	Entitlements EntitlementsView `json:"entitlements"`
+}
+
+// EntitlementsView is every Can() feature pre-resolved for the caller,
+// plus their own personal billing state.
+type EntitlementsView struct {
+	ServerSims    bool         `json:"server_sims"`
+	Retention     bool         `json:"retention"`
+	MultiCompare  bool         `json:"multi_compare"`
+	History       bool         `json:"history"`
+	Notifications bool         `json:"notifications"`
+	OfficerViews  bool         `json:"officer_views"`
+	RosterCheck   bool         `json:"roster_check"`
+	SupporterMark bool         `json:"supporter_mark"`
+	Billing       *BillingView `json:"billing"`
+}
+
+// BillingView is the caller's own personal premium subscription state,
+// nil when they have none (spec §1.4).
+type BillingView struct {
+	Plan              string  `json:"plan"`
+	Status            string  `json:"status"`
+	CurrentPeriodEnd  *string `json:"current_period_end"`
+	CancelAtPeriodEnd bool    `json:"cancel_at_period_end"`
+}
+
+// GuildBillingView is a guild's billing state, shown only to a verified
+// officer/leader of that guild (spec §1.4; Ruling C).
+type GuildBillingView struct {
+	Status               string  `json:"status"`
+	CurrentPeriodEnd     *string `json:"current_period_end"`
+	CancelAtPeriodEnd    bool    `json:"cancel_at_period_end"`
+	BilledBy             string  `json:"billed_by"`
+	YouAreBillingContact bool    `json:"you_are_billing_contact"`
 }
 
 func (s *Service) me(w http.ResponseWriter, r *http.Request) {
@@ -272,7 +315,123 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
-	httpx.WriteOK(w, r, http.StatusOK, Me{User: u, Characters: chars, Guilds: guilds})
+	guilds, err = s.attachGuildPlans(r.Context(), guilds, u.ID)
+	if err != nil {
+		s.fail(w, r, "me", err, "could not load your account just now")
+		return
+	}
+	ev, err := s.buildEntitlementsView(r.Context(), u.ID)
+	if err != nil {
+		s.fail(w, r, "me", err, "could not load your account just now")
+		return
+	}
+	httpx.WriteOK(w, r, http.StatusOK, Me{User: u, Characters: chars, Guilds: guilds, Entitlements: ev})
+}
+
+// entitlementFeatures pairs every gated Feature with the EntitlementsView
+// field it sets, so buildEntitlementsView is one loop rather than seven
+// near-identical Can calls.
+var entitlementFeatures = []struct {
+	feature entitlements.Feature
+	set     func(*EntitlementsView, bool)
+}{
+	{entitlements.FeatureServerSims, func(v *EntitlementsView, ok bool) { v.ServerSims = ok }},
+	{entitlements.FeatureRetention, func(v *EntitlementsView, ok bool) { v.Retention = ok }},
+	{entitlements.FeatureMultiCompare, func(v *EntitlementsView, ok bool) { v.MultiCompare = ok }},
+	{entitlements.FeatureHistory, func(v *EntitlementsView, ok bool) { v.History = ok }},
+	{entitlements.FeatureNotifications, func(v *EntitlementsView, ok bool) { v.Notifications = ok }},
+	{entitlements.FeatureOfficerViews, func(v *EntitlementsView, ok bool) { v.OfficerViews = ok }},
+	{entitlements.FeatureRosterCheck, func(v *EntitlementsView, ok bool) { v.RosterCheck = ok }},
+}
+
+func (s *Service) buildEntitlementsView(ctx context.Context, userID int64) (EntitlementsView, error) {
+	var ev EntitlementsView
+	if s.Entitlements == nil {
+		return ev, nil
+	}
+	for _, f := range entitlementFeatures {
+		ok, _, err := s.Entitlements.Can(ctx, userID, f.feature)
+		if err != nil {
+			return EntitlementsView{}, fmt.Errorf("auth: me: entitlements: %w", err)
+		}
+		f.set(&ev, ok)
+	}
+	supporter, err := s.Entitlements.IsSupporter(ctx, userID)
+	if err != nil {
+		return EntitlementsView{}, fmt.Errorf("auth: me: supporter: %w", err)
+	}
+	ev.SupporterMark = supporter
+	b, err := s.Entitlements.PersonalBilling(ctx, userID)
+	if err != nil {
+		return EntitlementsView{}, fmt.Errorf("auth: me: billing: %w", err)
+	}
+	if b != nil {
+		ev.Billing = &BillingView{
+			Plan: b.Plan, Status: b.Status, CancelAtPeriodEnd: b.CancelAtPeriodEnd,
+			CurrentPeriodEnd: rfc3339Ptr(b.CurrentPeriodEnd),
+		}
+	}
+	return ev, nil
+}
+
+// isActiveEntitlementStatus mirrors entitlements.Store's own
+// activeStatusClause (unexported there): the three statuses that keep a
+// guild's plan visible/active on this response (spec §1.3 rule 4).
+func isActiveEntitlementStatus(status string) bool {
+	return status == "active" || status == "trialing" || status == "past_due"
+}
+
+// attachGuildPlans fills Guild.Plan for every guild in guilds where
+// userID is a verified officer/leader and that guild currently has an
+// active plan (spec §1.4; Ruling C).
+func (s *Service) attachGuildPlans(ctx context.Context, guilds []Guild, userID int64) ([]Guild, error) {
+	if s.Entitlements == nil {
+		return guilds, nil
+	}
+	out := make([]Guild, len(guilds))
+	copy(out, guilds)
+	for i, g := range out {
+		if !g.Verified || (g.Rank != "officer" && g.Rank != "leader") {
+			continue
+		}
+		gb, err := s.Entitlements.GuildBilling(ctx, g.ID)
+		if err != nil {
+			return nil, fmt.Errorf("auth: me: guild billing %d: %w", g.ID, err)
+		}
+		if gb == nil || !isActiveEntitlementStatus(gb.Status) {
+			continue
+		}
+		billedBy, youAre := "", false
+		switch {
+		case gb.BillingUserID == nil:
+			// A CLI grant, never billed through Stripe — no billing
+			// contact to name.
+		case *gb.BillingUserID == userID:
+			billedBy, youAre = "you", true
+		default:
+			if bu, err := s.Store.User(ctx, *gb.BillingUserID); err == nil {
+				billedBy = bu.PublicName()
+			} else {
+				billedBy = "a former member"
+			}
+		}
+		out[i].Plan = &GuildBillingView{
+			Status: gb.Status, CancelAtPeriodEnd: gb.CancelAtPeriodEnd,
+			CurrentPeriodEnd: rfc3339Ptr(gb.CurrentPeriodEnd), BilledBy: billedBy, YouAreBillingContact: youAre,
+		}
+	}
+	return out, nil
+}
+
+// rfc3339Ptr formats t as an RFC 3339 string pointer, nil in, nil out —
+// EntitlementsView/GuildBillingView's CurrentPeriodEnd shape (spec §1.4:
+// "null for a grant with no expiry").
+func rfc3339Ptr(t *time.Time) *string {
+	if t == nil {
+		return nil
+	}
+	s := t.UTC().Format(time.RFC3339)
+	return &s
 }
 
 func (s *Service) pair(w http.ResponseWriter, r *http.Request) {

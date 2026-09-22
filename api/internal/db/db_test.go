@@ -729,3 +729,157 @@ func TestGuildsAreCaseInsensitiveByRegionAndRuleset(t *testing.T) {
 		t.Fatalf("a different ruleset should not collide: %v", err)
 	}
 }
+
+func TestMigrateCreatesEntitlementsTables(t *testing.T) {
+	url := testURL(t)
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	pool, err := Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+	for _, name := range []string{"entitlements", "stripe_customers", "stripe_events", "entitlement_audit"} {
+		if n := tableCount(t, pool, name); n != 1 {
+			t.Errorf("%s should exist at the latest migration", name)
+		}
+	}
+	for _, idx := range []string{"entitlements_user_plan_unique", "entitlements_guild_plan_unique"} {
+		var n int
+		if err := pool.QueryRow(context.Background(),
+			`select count(*) from pg_constraint where conname = $1`, idx).Scan(&n); err != nil {
+			t.Fatal(err)
+		}
+		if n != 1 {
+			t.Errorf("constraint %s is missing", idx)
+		}
+	}
+}
+
+func TestEntitlementsUserAndGuildPlanRowsDoNotCollideOnNulls(t *testing.T) {
+	url := testURL(t)
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	pool, err := Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+	ctx := context.Background()
+	if _, err := pool.Exec(ctx, `truncate users, guilds, entitlements cascade`); err != nil {
+		t.Fatal(err)
+	}
+	var g1, g2 int64
+	if err := pool.QueryRow(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', 'One') returning id`).Scan(&g1); err != nil {
+		t.Fatal(err)
+	}
+	if err := pool.QueryRow(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', 'Two') returning id`).Scan(&g2); err != nil {
+		t.Fatal(err)
+	}
+	for _, gid := range []int64{g1, g2} {
+		if _, err := pool.Exec(ctx,
+			`insert into entitlements (guild_id, plan, source, status) values ($1, 'guild', 'grant', 'active')`,
+			gid); err != nil {
+			t.Fatalf("guild %d: %v", gid, err)
+		}
+	}
+	var rows int
+	if err := pool.QueryRow(ctx, `select count(*) from entitlements`).Scan(&rows); err != nil {
+		t.Fatal(err)
+	}
+	if rows != 2 {
+		t.Fatalf("two guild-plan rows (both user_id null) should coexist, got %d rows", rows)
+	}
+}
+
+func TestMigration0020BackfillsPremiumUsersAsGrantedEntitlements(t *testing.T) {
+	url := testURL(t)
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	pool, err := Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+	ctx := context.Background()
+	if _, err := pool.Exec(ctx, `truncate users, entitlements cascade`); err != nil {
+		t.Fatal(err)
+	}
+	var premiumUser, freeUser int64
+	if err := pool.QueryRow(ctx,
+		`insert into users (email, premium) values ('backfill-premium@example.com', true) returning id`).
+		Scan(&premiumUser); err != nil {
+		t.Fatal(err)
+	}
+	if err := pool.QueryRow(ctx,
+		`insert into users (email, premium) values ('backfill-free@example.com', false) returning id`).
+		Scan(&freeUser); err != nil {
+		t.Fatal(err)
+	}
+	// Re-run 0020's own backfill statement directly: the migration already ran once (against
+	// the seed users that existed before this test inserted its own), so this pins the
+	// statement's own idempotency and correctness rather than depending on migration order.
+	if _, err := pool.Exec(ctx, `
+		insert into entitlements (user_id, plan, source, status, granted_by, grant_note)
+		select id, 'premium', 'grant', 'active', null, 'migrated from users.premium'
+		from users where premium = true
+		on conflict (user_id, plan) do nothing`); err != nil {
+		t.Fatal(err)
+	}
+	var status string
+	if err := pool.QueryRow(ctx,
+		`select status from entitlements where user_id = $1 and plan = 'premium'`, premiumUser).Scan(&status); err != nil {
+		t.Fatal(err)
+	}
+	if status != "active" {
+		t.Errorf("backfilled status = %q, want active", status)
+	}
+	var n int
+	if err := pool.QueryRow(ctx,
+		`select count(*) from entitlements where user_id = $1`, freeUser).Scan(&n); err != nil {
+		t.Fatal(err)
+	}
+	if n != 0 {
+		t.Error("a non-premium user must not get a backfilled entitlement")
+	}
+}
+
+func TestMigration0020DownReversesUp(t *testing.T) {
+	url := testURL(t)
+	if err := Migrate(url); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		if err := Migrate(url); err != nil {
+			t.Errorf("restoring the latest migration: %v", err)
+		}
+	})
+	pool, err := Connect(context.Background(), url)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer pool.Close()
+	// The migration directly beneath 0020 is 0018 (guild_membership); there is no 0019 in
+	// this repo, so 18 - not 19 - is the version to migrate down to.
+	migrateTo(t, url, 18)
+	for _, name := range []string{"entitlements", "stripe_customers", "stripe_events", "entitlement_audit"} {
+		if n := tableCount(t, pool, name); n != 0 {
+			t.Errorf("%s survived the down migration", name)
+		}
+	}
+	// 0020 must not reverse anything an earlier migration created.
+	if n := tableCount(t, pool, "guild_characters"); n != 1 {
+		t.Error("the down migration took a table from an earlier migration")
+	}
+	if err := Migrate(url); err != nil {
+		t.Fatalf("migrating up again: %v", err)
+	}
+	if n := tableCount(t, pool, "entitlements"); n != 1 {
+		t.Error("entitlements did not come back")
+	}
+}

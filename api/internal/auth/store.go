@@ -47,10 +47,6 @@ type User struct {
 	Email     *string `json:"email"`
 	Role      string  `json:"role"`
 	Anonymize bool    `json:"anonymize"`
-	// Premium is whether this account may run sims on our servers. It
-	// is set by hand until payments are designed; no code here ever
-	// turns it on.
-	Premium bool `json:"premium"`
 }
 
 // PublicName is what strangers may be told an account is called: the
@@ -109,6 +105,11 @@ type Guild struct {
 	Rank     string `json:"rank,omitempty"`
 	Consent  string `json:"consent,omitempty"`
 	Verified bool   `json:"verified"`
+	// Plan is non-nil only when this guild currently has an active guild
+	// plan and the caller is a verified officer/leader of it (spec §1.4;
+	// Ruling C — a non-officer member sees the features it unlocks, not
+	// the billing detail).
+	Plan *GuildBillingView `json:"plan,omitempty"`
 }
 
 // Store is every account read and write. One type rather than one per
@@ -116,12 +117,11 @@ type Guild struct {
 // take them as one dependency.
 type Store struct{ Pool *pgxpool.Pool }
 
-const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize, premium`
+const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize`
 
 func scanUser(row pgx.Row) (User, error) {
 	var u User
-	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize,
-		&u.Premium); err != nil {
+	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return User{}, ErrNotFound
 		}
@@ -429,19 +429,4 @@ func (s *Store) GuildRank(ctx context.Context, guildID, userID int64) (string, b
 		return "", false, fmt.Errorf("auth: guild rank: %w", err)
 	}
 	return rank, true, nil
-}
-
-// Premium reports whether an account may run sims on our servers. An
-// unknown id is not premium rather than an error: the caller is about
-// to answer 402 either way.
-func (s *Store) Premium(ctx context.Context, id int64) (bool, error) {
-	var premium bool
-	err := s.Pool.QueryRow(ctx, `select premium from users where id = $1`, id).Scan(&premium)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return false, nil
-	}
-	if err != nil {
-		return false, fmt.Errorf("auth: read premium %d: %w", id, err)
-	}
-	return premium, nil
 }

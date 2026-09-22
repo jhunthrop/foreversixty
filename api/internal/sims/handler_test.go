@@ -431,7 +431,7 @@ func TestTheRunRouteIsNotMountedWithoutJobsAndAccounts(t *testing.T) {
 // TestTheSaveMineAndRunRoutesAreMounted covers that.)
 func TestTheRunRouteNeedsAPlannerToo(t *testing.T) {
 	mux := http.NewServeMux()
-	Mount(mux, &Service{Jobs: &jobs.Fake{}, Accounts: &fakePremium{}})
+	Mount(mux, &Service{Jobs: &jobs.Fake{}, Accounts: &fakeEntitlements{}})
 	w := httptest.NewRecorder()
 	mux.ServeHTTP(w, httptest.NewRequest(http.MethodPost, "/v1/sims/run", strings.NewReader("{}")))
 	if w.Code != http.StatusMethodNotAllowed {
