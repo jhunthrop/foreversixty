@@ -18,6 +18,7 @@ local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
 local Talents = ns.Talents or require("Talents")
 local Tracker = ns.Tracker or require("Tracker")
+local Ratings = ns.Ratings or require("Ratings")
 local ExportView = ns.ExportView or require("ExportView")
 local FollowView = ns.FollowView or require("FollowView")
 local GearView = ns.GearView or require("GearView")
@@ -122,6 +123,17 @@ local function treeModels(data)
 	return models
 end
 
+--- The player's own rating from the data addon, for the Overview's sync
+--- card: it is where "your character on the site" already lives.
+local function ratingLine()
+	local name = type(UnitName) == "function" and UnitName("player") or nil
+	local card = Ratings.forCharacter(name)
+	if card == nil then
+		return nil
+	end
+	return string.format(L.overviewRating, card.rating, card.fights)
+end
+
 local function syncModel(data)
 	local summary = ExportView.summary(data)
 	return {
@@ -129,6 +141,7 @@ local function syncModel(data)
 		code = summary.code,
 		title = L.overviewSyncTitle,
 		detail = summary.code ~= nil and summary.savedLine or (summary.reason or L.overviewSyncNothing),
+		progress = ratingLine(),
 	}
 end
 
@@ -239,6 +252,9 @@ local function layout(parent, ctx)
 	view.trees.empty = Widgets.label(view.trees, "", "muted", "small")
 	view.trees.empty:SetPoint("BOTTOMLEFT", view.trees, "BOTTOMLEFT", S.padding, S.padding)
 	view.sync = place(Cards.card(parent, width, S.cardHeight, L.overviewSyncEyebrow), 1, 1)
+	-- The rating line sits above the button, where withBar puts a caption.
+	view.sync.progress = Widgets.label(view.sync, "", "gold", "small")
+	view.sync.progress:SetPoint("BOTTOMLEFT", view.sync, "BOTTOMLEFT", S.padding, S.padding + S.buttonHeight + S.gap * 3)
 	view.copy = Cards.primaryButton(view.sync, L.overviewSyncCopy, function(button)
 		onCopy(view, button)
 	end)

@@ -234,19 +234,91 @@ describe("Tooltip", function()
 			assert.is_function(captured[2])
 		end)
 
-		it("falls back to the legacy hook with no processor", function()
+		it("falls back to the legacy hooks, item and unit, with no processor", function()
 			startHook({ class = { name = "Paladin", token = "PALADIN" } })
 			assert.are.equal("legacy", Tooltip.register())
-			local call = mock.firstCall(_G.GameTooltip, "HookScript")
-			assert.are.equal("OnTooltipSetItem", call[1])
-			assert.is_function(call[2])
+			local scripts = {}
+			for _, call in ipairs(_G.GameTooltip.calls) do
+				if call.method == "HookScript" then
+					scripts[call[1]] = true
+					assert.is_function(call[2])
+				end
+			end
+			assert.is_true(scripts.OnTooltipSetItem)
+			assert.is_true(scripts.OnTooltipSetUnit)
 		end)
 
-		it("registers only once", function()
+		it("registers each hook only once", function()
 			startHook()
 			Tooltip.register()
 			Tooltip.register()
-			assert.are.equal(1, mock.countCalls(_G.GameTooltip, "HookScript"))
+			assert.are.equal(2, mock.countCalls(_G.GameTooltip, "HookScript"))
+		end)
+
+		it("hooks the unit tooltip through the processor when the client has it", function()
+			local kinds = {}
+			startHook({ globals = {
+				TooltipDataProcessor = {
+					AddTooltipPostCall = function(kind) kinds[#kinds + 1] = kind end,
+				},
+				Enum = { TooltipDataType = { Item = 1, Unit = 2 } },
+			} })
+			Tooltip.register()
+			assert.are.same({ 2, 1 }, kinds)
+		end)
+	end)
+
+	describe("the unit line", function()
+		local function withData(rating)
+			-- The data global must exist before Ratings and Tooltip load, in
+			-- that order, so Tooltip captures the Ratings that reads it.
+			mock.install({ class = { name = "Paladin", token = "PALADIN" }, realm = "Ashbringer", region = 1 })
+			_G.ForeverSixtyData = rating and {
+				format = 1, generated = os.date("!%Y-%m-%dT%H:%M:%SZ"), build = "1.60.1.69893",
+				characters = { ["us:ashbringer:bob"] = { rating = rating, fights = 5 } }, guilds = {},
+			} or nil
+			Theme = helper.load("Theme")
+			Theme.reset()
+			helper.load("Export")
+			helper.load("Gear")
+			helper.load("Prefs")
+			helper.load("Follow")
+			helper.load("Ratings")
+			Tooltip = helper.load("Tooltip")
+			_G.UnitIsPlayer = function() return true end
+			_G.UnitName = function(unit)
+				if unit == "mouseover" then return "Bob", "" end
+				return "Me", ""
+			end
+		end
+
+		after_each(function()
+			_G.ForeverSixtyData = nil
+			_G.UnitIsPlayer = nil
+		end)
+
+		it("adds a gold rating line for a rated player", function()
+			withData(77)
+			local tooltip = _G.CreateFrame("GameTooltip")
+			Tooltip.onUnitTooltip(tooltip, "mouseover")
+			local call = mock.firstCall(tooltip, "AddLine")
+			assert.is_truthy(call[1]:find("rating 77", 1, true))
+		end)
+
+		it("adds nothing for an unrated player or without the data addon", function()
+			withData(nil)
+			local tooltip = _G.CreateFrame("GameTooltip")
+			Tooltip.onUnitTooltip(tooltip, "mouseover")
+			assert.are.equal(0, mock.countCalls(tooltip, "AddLine"))
+		end)
+
+		it("turns itself off after a failure instead of raising", function()
+			withData(77)
+			_G.UnitName = function() error("boom") end
+			local tooltip = _G.CreateFrame("GameTooltip")
+			Tooltip.onUnitTooltip(tooltip, "mouseover")
+			assert.is_true(Tooltip.unitDisabled)
+			Tooltip.onUnitTooltip(tooltip, "mouseover")
 		end)
 	end)
 end)

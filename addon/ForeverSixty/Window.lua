@@ -31,6 +31,7 @@ Window.TABS = {
 	{ name = "overview", label = "tabOverview" },
 	{ name = "follow", label = "tabFollow" },
 	{ name = "gear", label = "tabGear" },
+	{ name = "guild", label = "tabGuild" },
 	{ name = "export", label = "tabExport" },
 	{ name = "settings", label = "tabSettings" },
 }
@@ -38,6 +39,7 @@ Window.TABS = {
 Window.VIEWS = {
 	overview = ns.OverviewView or require("OverviewView"),
 	export = ns.ExportView or require("ExportView"),
+	guild = ns.GuildView or require("GuildView"),
 	follow = ns.FollowView or require("FollowView"),
 	gear = ns.GearView or require("GearView"),
 	settings = ns.SettingsView or require("SettingsView"),

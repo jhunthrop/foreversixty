@@ -180,6 +180,74 @@ function Tooltip.itemLinkFrom(tooltip)
 	return link
 end
 
+--- The Ratings line on a player's tooltip: the Raider.IO moment. Same
+--- guard as the item hook: a failure turns this hook off, never raises.
+local Ratings = ns.Ratings or require("Ratings")
+
+local function addUnitLines(tooltip, unit)
+	if type(UnitIsPlayer) == "function" and not UnitIsPlayer(unit) then
+		return
+	end
+	local name = type(UnitName) == "function" and select(1, UnitName(unit)) or nil
+	local realm = type(UnitName) == "function" and select(2, UnitName(unit)) or nil
+	if realm == "" then
+		realm = nil
+	end
+	local card = Ratings.forCharacter(name, realm)
+	if card == nil then
+		return
+	end
+	tooltip:AddLine(Ratings.tooltipLine(card), Theme.rgb(Theme.HEX.gold))
+	tooltip:Show()
+end
+
+function Tooltip.onUnitTooltip(tooltip, unit)
+	if Tooltip.unitDisabled or unit == nil or not Prefs.flag("tooltip") then
+		return
+	end
+	local ok, err = pcall(addUnitLines, tooltip, unit)
+	if not ok then
+		Tooltip.unitDisabled = true
+		Theme.note(string.format(L.diagTooltipHookFailed, tostring(err)))
+	end
+end
+
+function Tooltip.unitFrom(tooltip)
+	if type(tooltip) ~= "table" or type(tooltip.GetUnit) ~= "function" then
+		return nil
+	end
+	local ok, _, unit = pcall(tooltip.GetUnit, tooltip)
+	return ok and unit or nil
+end
+
+function Tooltip.hasUnitProcessor()
+	return Tooltip.hasProcessor() and Enum.TooltipDataType.Unit ~= nil
+end
+
+--- The unit hook, registered beside the item hook by the same rule.
+function Tooltip.registerUnit()
+	if Tooltip.unitRegistered then
+		return Tooltip.unitHow
+	end
+	Tooltip.unitRegistered = true
+	if Tooltip.hasUnitProcessor() then
+		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit, function(tooltip)
+			Tooltip.onUnitTooltip(tooltip, Tooltip.unitFrom(tooltip))
+		end)
+		Tooltip.unitHow = "processor"
+		return Tooltip.unitHow
+	end
+	if type(GameTooltip) == "table" and type(GameTooltip.HookScript) == "function" then
+		GameTooltip:HookScript("OnTooltipSetUnit", function(tooltip)
+			Tooltip.onUnitTooltip(tooltip, Tooltip.unitFrom(tooltip))
+		end)
+		Tooltip.unitHow = "legacy"
+		return Tooltip.unitHow
+	end
+	Tooltip.unitHow = nil
+	return nil
+end
+
 function Tooltip.hasProcessor()
 	return type(TooltipDataProcessor) == "table"
 		and type(TooltipDataProcessor.AddTooltipPostCall) == "function"
@@ -196,6 +264,7 @@ function Tooltip.register()
 		return Tooltip.how
 	end
 	Tooltip.registered = true
+	Tooltip.registerUnit()
 	if Tooltip.hasProcessor() then
 		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip)
 			Tooltip.onTooltip(tooltip, Tooltip.itemLinkFrom(tooltip))

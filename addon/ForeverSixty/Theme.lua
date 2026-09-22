@@ -289,6 +289,7 @@ Theme.NAV_ICONS = {
 	follow = "Interface\\Icons\\INV_Misc_Book_09",
 	gear = "Interface\\Icons\\INV_Chest_Chain",
 	export = "Interface\\Icons\\INV_Letter_15",
+	guild = "Interface\\Icons\\INV_BannerPVP_02",
 	settings = "Interface\\Icons\\INV_Misc_Gear_01",
 }
 Theme.UNKNOWN_ICON = "Interface\\Icons\\INV_Misc_QuestionMark"

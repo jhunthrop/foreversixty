@@ -24,6 +24,8 @@ local function install(overrides)
 	local state = {
 		class = { name = "Paladin", token = "PALADIN" },
 		race = { name = "Human", token = "Human" },
+		realm = "Ashbringer",
+		region = 1,
 		talents = {
 			{ name = "Holy", talents = { { name = "Divine Strength", tier = 1, column = 1, rank = 1, maxRank = 5 } } },
 			{ name = "Protection", talents = {} },
@@ -154,6 +156,22 @@ describe("OverviewView", function()
 			assert.is_truthy(sync.code:find("FS1:", 1, true))
 			assert.are.equal(string.format(L.exportSavedAt, L.exportNotYet), sync.detail)
 		end)
+	end)
+
+	it("shows the player's own rating on the sync card when the data addon has it", function()
+		start()
+		_G.UnitName = function() return "Thoradin" end
+		_G.ForeverSixtyData = {
+			format = 1, generated = os.date("!%Y-%m-%dT%H:%M:%SZ"), build = "1.60.1.69893",
+			characters = { ["us:ashbringer:thoradin"] = { rating = 73, fights = 11 } }, guilds = {},
+		}
+		helper.load("Ratings")
+		OverviewView = helper.load("OverviewView")
+		assert.are.equal(string.format(L.overviewRating, 73, 11), OverviewView.summary(DATA).sync.progress)
+		_G.ForeverSixtyData = nil
+		helper.load("Ratings")
+		OverviewView = helper.load("OverviewView")
+		assert.is_nil(OverviewView.summary(DATA).sync.progress)
 	end)
 
 	it("mounts four cards and refreshes without error", function()

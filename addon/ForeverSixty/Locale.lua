@@ -226,6 +226,32 @@ local L = {
 	diagNoTooltipHook = "This client has no tooltip hook API; item tooltips will not show Forever Sixty's lines.",
 	diagCompartmentFailed = "This client's addon compartment did not accept Forever Sixty; "
 		.. "the minimap button is used instead.",
+	-- Ratings, read from the Forever Sixty Data addon.
+	ratingsNotInstalled = "Install the Forever Sixty Data addon to see ratings and guild standings in game. "
+		.. "It updates every night.",
+	ratingsUnreadable = "The Forever Sixty Data addon could not be read. Update both addons.",
+	ratingsUpdateAddon = "Your Forever Sixty Data is newer than this addon understands. Update Forever Sixty.",
+	ratingsGenerated = "Data from %s",
+	ratingsStale = "This data is more than three days old. Update Forever Sixty Data.",
+	ratingsTooltip = "Forever Sixty rating %d, over %d fights",
+	ratingsOutput = "Output",
+	ratingsSurvival = "Survival",
+	ratingsMechanics = "Mechanics",
+	ratingsUtility = "Utility",
+	ratingsPreparation = "Preparation",
+	ratingsActivity = "Activity",
+	overviewRating = "Your rating on the site: %d, over %d fights",
+	-- The Guild page.
+	tabGuild = "Guild",
+	guildNone = "Not in a guild",
+	guildNoneHint = "Join a guild and the addon shows its standing here.",
+	guildRank = "%s",
+	guildNights = "%d raid nights logged",
+	guildRoster = "%d on the roster",
+	guildRosterTitle = "ROSTER BY RATING",
+	guildUnrated = "No rating yet",
+	guildNotOnSite = "This guild has no logs on foreversixty.gg yet. "
+		.. "Upload a raid night and it appears here the next day.",
 }
 
 ns.L = L
