@@ -1012,6 +1012,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -1087,16 +1088,7 @@ func regionsOf(d Data) []string {
 	for r := range set {
 		out = append(out, r)
 	}
-	return sortedStrings(out)
-}
-
-func sortedStrings(s []string) []string {
-	out := append([]string{}, s...)
-	for i := 1; i < len(out); i++ {
-		for j := i; j > 0 && out[j-1] > out[j]; j-- {
-			out[j-1], out[j] = out[j], out[j-1]
-		}
-	}
+	sort.Strings(out)
 	return out
 }
 ```
@@ -1137,6 +1129,8 @@ import (
 	"context"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/db"
 )
 
 // seedUser inserts a minimal users row and returns its id.
@@ -1189,10 +1183,17 @@ func TestCharacterFightsAppliesTheWindowVisibilityAndAnonymizeRules(t *testing.T
 	})
 
 	insertScore := func(reportID string, index int, playerKey string, overall float64, foughtAt time.Time) {
+		// rating_scores is partitioned by month on fought_at (migration
+		// 0022): a plain insert with no matching partition fails outright,
+		// so every write through this test helper ensures one first, the
+		// same way rating.Store.RateFight does before its own insert.
+		if err := db.EnsureRatingsPartition(ctx, pool, foughtAt); err != nil {
+			t.Fatal(err)
+		}
 		if _, err := pool.Exec(ctx,
 			`insert into rating_scores (report_id, fight_index, player_key, player_name, encounter_id,
-			   overall, overall_uncapped, overall_capped, components, model_version, fought_at)
-			 values ($1, $2, $3, $3, 1, $4, $4, false, '[]', 'test', $5)`,
+			   kill, overall, overall_uncapped, overall_capped, components, model_version, fought_at)
+			 values ($1, $2, $3, $3, 1, false, $4, $4, false, '[]', 'test', $5)`,
 			reportID, index, playerKey, overall, foughtAt); err != nil {
 			t.Fatal(err)
 		}
@@ -1735,6 +1736,8 @@ import (
 	"context"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/db"
 )
 
 type recordingLogger struct {
@@ -1751,19 +1754,26 @@ func TestRunSkipsAnUnparseablePlayerKeyAndCountsIt(t *testing.T) {
 	pool := testPool(t)
 	ctx := context.Background()
 	now := time.Date(2026, 9, 22, 4, 0, 0, 0, time.UTC)
+	foughtAt := now.Add(-2 * 24 * time.Hour)
 
 	if _, err := pool.Exec(ctx,
 		`insert into reports (id, visibility, status, created_at) values ('dataaddon-job-bad', 'public', 'complete', $1)`,
-		now.Add(-2*24*time.Hour)); err != nil {
+		foughtAt); err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { pool.Exec(ctx, `delete from reports where id = 'dataaddon-job-bad'`) })
 
+	// rating_scores is partitioned by month on fought_at (migration 0022);
+	// ensure the partition exists before inserting into it, the same way
+	// rating.Store.RateFight does before its own insert.
+	if err := db.EnsureRatingsPartition(ctx, pool, foughtAt); err != nil {
+		t.Fatal(err)
+	}
 	if _, err := pool.Exec(ctx,
 		`insert into rating_scores (report_id, fight_index, player_key, player_name, encounter_id,
-		   overall, overall_uncapped, overall_capped, components, model_version, fought_at)
-		 values ('dataaddon-job-bad', 1, 'not-a-valid-key', 'x', 1, 50, 50, false, '[]', 'test', $1)`,
-		now.Add(-2*24*time.Hour)); err != nil {
+		   kill, overall, overall_uncapped, overall_capped, components, model_version, fought_at)
+		 values ('dataaddon-job-bad', 1, 'not-a-valid-key', 'x', 1, false, 50, 50, false, '[]', 'test', $1)`,
+		foughtAt); err != nil {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { pool.Exec(ctx, `delete from rating_scores where report_id = 'dataaddon-job-bad'`) })
@@ -2248,6 +2258,8 @@ import (
 	"path/filepath"
 	"testing"
 	"time"
+
+	"github.com/jhunthrop/foreversixty/api/internal/db"
 )
 
 // goldenFixturePath is the one file both this test and
@@ -2353,10 +2365,19 @@ func TestGoldenDataLuaIsByteExact(t *testing.T) {
 		`{"name":"preparation","score":null,"excluded":true},{"name":"activity","score":null,"excluded":true}]`
 
 	insertScore := func(reportID string, index int, playerKey string, overall float64, components string, foughtAt time.Time) {
+		// rating_scores is partitioned by month on fought_at (migration
+		// 0022); ensure the partition exists before inserting into it, the
+		// same way rating.Store.RateFight does before its own insert. This
+		// fixture spans two calendar months (the in-window fights in
+		// September 2026, the deliberately-out-of-window fight about 100
+		// days back in June 2026), so this must run per insert, not once.
+		if err := db.EnsureRatingsPartition(ctx, pool, foughtAt); err != nil {
+			t.Fatal(err)
+		}
 		if _, err := pool.Exec(ctx,
 			`insert into rating_scores (report_id, fight_index, player_key, player_name, encounter_id,
-			   overall, overall_uncapped, overall_capped, components, model_version, fought_at)
-			 values ($1, $2, $3, $3, 100, $4, $4, false, $5, 'test', $6)`,
+			   kill, overall, overall_uncapped, overall_capped, components, model_version, fought_at)
+			 values ($1, $2, $3, $3, 100, false, $4, $4, false, $5, 'test', $6)`,
 			reportID, index, playerKey, overall, components, foughtAt); err != nil {
 			t.Fatal(err)
 		}
