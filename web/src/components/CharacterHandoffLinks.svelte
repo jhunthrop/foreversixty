@@ -43,8 +43,7 @@
   {:else}
     <span class="text-muted text-[13px]" data-testid="character-needs-addon">
       {handoffCopy.needsExportLead}
-      <a class="text-text underline" href={handoffCopy.pasteHref}>{handoffCopy.needsExportPasteLink}</a
-      >{handoffCopy.needsExportTail}
+      <a class="text-text underline" href={handoffCopy.pasteHref}>{handoffCopy.needsExportPasteLink}</a>
     </span>
   {/if}
 </div>
