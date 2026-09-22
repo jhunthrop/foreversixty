@@ -16,6 +16,7 @@
 import { AccountError, requestEnvelope, type EnvelopeResult } from '../account/api';
 import { API_BASE_URL } from '../planner/config';
 import type { CharacterPath } from '../characters';
+import { normaliseReportRatings } from '../rating/normalise';
 import type { CharacterRating, ReportRatings } from '../rating/types';
 
 export const RANKINGS_FAILED = 'Rankings did not load';
@@ -258,7 +259,9 @@ export function fetchReportRatings(
   fightIndex: number,
   apiBase: string = API_BASE_URL,
 ): Promise<ReportRatings> {
-  return get<ReportRatings>(`/v1/reports/${reportId}/fights/${fightIndex}/ratings`, apiBase);
+  return get<ReportRatings>(`/v1/reports/${reportId}/fights/${fightIndex}/ratings`, apiBase).then(
+    normaliseReportRatings,
+  );
 }
 
 export function fetchCharacterRating(
