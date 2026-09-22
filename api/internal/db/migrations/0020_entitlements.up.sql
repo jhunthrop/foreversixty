@@ -72,6 +72,44 @@ create table entitlement_audit (
 );
 create index entitlement_audit_entitlement_idx on entitlement_audit (entitlement_id, created_at desc);
 
+-- Guards a guild checkout's check-and-create window against a second, concurrent officer of
+-- the same guild (security review, 2026-09-21): written inside billing.Store.WithGuildLock,
+-- after checkGuildCheckout's entitlement read finds no active plan and before the Checkout
+-- Session is handed back to the caller, so a second caller inside the same lock window sees
+-- this row and is refused exactly as if the guild already had the plan. Cleared when its
+-- checkout.session.completed webhook lands, or by the nightly stripe-reconcile sweep once
+-- expires_at (mirroring the Stripe Checkout Session's own expiry) has passed.
+create table pending_checkouts (
+  id                  bigserial primary key,
+  guild_id            bigint not null references guilds(id) on delete cascade,
+  user_id             bigint not null references users(id) on delete cascade,
+  stripe_session_id   text not null unique,
+  created_at          timestamptz not null default now(),
+  expires_at          timestamptz not null
+);
+create index pending_checkouts_guild_idx on pending_checkouts (guild_id);
+
+-- Every entitlement-write anomaly a human should look at (security review, 2026-09-21):
+-- 'duplicate_subscription' is UpsertStripe finding an already-active row for the same
+-- (subject, plan) pointing at a different stripe_subscription_id (the row is left untouched
+-- and the newcomer subscription is canceled at Stripe instead of overwriting it);
+-- 'orphan_subscription' is stripe-reconcile finding a live Stripe subscription for one of
+-- our own products with no matching entitlements row at all (spec §2.8's two-directional
+-- check). entitlement_id is null for an orphan (there is, by definition, no local row to
+-- point at).
+create table entitlement_anomalies (
+  id                      bigserial primary key,
+  entitlement_id          bigint references entitlements(id) on delete set null,
+  user_id                 bigint references users(id) on delete set null,
+  guild_id                bigint references guilds(id) on delete set null,
+  plan                    text not null check (plan in ('premium', 'guild')),
+  kind                    text not null check (kind in ('duplicate_subscription', 'orphan_subscription')),
+  stripe_subscription_id  text not null,
+  actor                   text not null,
+  created_at              timestamptz not null default now()
+);
+create index entitlement_anomalies_created_idx on entitlement_anomalies (created_at desc);
+
 -- Backfill (spec §1.2 step 1): one entitlements row per account that has premium = true today.
 -- users.premium is left in place by this migration — the Go code deployed alongside it stops
 -- reading the column, but the column itself is dropped only by a later 0021, after this lane's
