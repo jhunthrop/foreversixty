@@ -104,6 +104,14 @@ type Character struct {
 	Realm   string `json:"realm,omitempty"`
 	Level   *int   `json:"level,omitempty"`
 	Faction string `json:"faction,omitempty"`
+	// Race and Gender come from the Battle.net account-profile capture
+	// (spec §B/C); omitted when the character has never been through
+	// the Battle.net import.
+	Race   string `json:"race,omitempty"`
+	Gender string `json:"gender,omitempty"`
+	// ItemLevel is the character's equipped item level from the last
+	// Battle.net profile capture; omitted when unknown.
+	ItemLevel *int `json:"item_level,omitempty"`
 	// Source is which path most recently wrote this row: "export" or
 	// "bnet".
 	Source string `json:"source"`
@@ -344,6 +352,7 @@ func (s *Store) RevokeDevice(ctx context.Context, userID int64, id string) (bool
 // select, in the order scanCharacterRows reads them.
 const characterColumns = `c.key, c.region, c.ruleset, c.name, coalesce(c.class, ''),
 	        coalesce(c.realm_name, ''), c.level, coalesce(c.faction, ''), c.source,
+	        coalesce(c.race, ''), coalesce(c.gender, ''), c.equipped_item_level,
 	        g.id, g.name, gc.rank, gc.rank_index, gc.verified_at is not null`
 
 // characterFrom is the join every character read shares: a character
@@ -366,6 +375,7 @@ func scanCharacterRows(rows pgx.Rows) ([]Character, error) {
 		var verified bool
 		if err := rows.Scan(&c.Key, &c.Region, &c.Ruleset, &c.Name, &c.Class,
 			&c.Realm, &c.Level, &c.Faction, &c.Source,
+			&c.Race, &c.Gender, &c.ItemLevel,
 			&guildID, &guildName, &rank, &rankIndex, &verified); err != nil {
 			return nil, fmt.Errorf("auth: scan characters: %w", err)
 		}

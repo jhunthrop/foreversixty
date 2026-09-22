@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -15,17 +16,21 @@ import (
 
 // fixtureServer serves canned JSON per exact path+query, recording every
 // request it sees so a test can assert on call counts (AppToken caching,
-// the retry-once behaviour).
+// the retry-once behaviour). callsMu guards calls: net/http runs each
+// request's handler on its own goroutine, and a test that fetches
+// several fixtures concurrently (e.g. Realms' worker pool) would
+// otherwise race on the map.
 type fixtureServer struct {
 	t        *testing.T
 	server   *httptest.Server
 	handlers map[string]func(w http.ResponseWriter, r *http.Request)
-	calls    map[string]*int32
+	callsMu  sync.Mutex
+	calls    map[string]int32
 }
 
 func newFixtureServer(t *testing.T) *fixtureServer {
 	t.Helper()
-	fs := &fixtureServer{t: t, handlers: map[string]func(http.ResponseWriter, *http.Request){}, calls: map[string]*int32{}}
+	fs := &fixtureServer{t: t, handlers: map[string]func(http.ResponseWriter, *http.Request){}, calls: map[string]int32{}}
 	fs.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Fixtures are keyed without the locale the client always adds
 		// (see withLocale); the locale itself is asserted once, below.
@@ -33,12 +38,9 @@ func newFixtureServer(t *testing.T) *fixtureServer {
 		if r.URL.Query().Has("namespace") && r.URL.Query().Get("locale") != apiLocale {
 			t.Errorf("fixtureServer: %s carried no locale=%s", r.URL.RequestURI(), apiLocale)
 		}
-		if n, ok := fs.calls[key]; ok {
-			atomic.AddInt32(n, 1)
-		} else {
-			n := int32(1)
-			fs.calls[key] = &n
-		}
+		fs.callsMu.Lock()
+		fs.calls[key]++
+		fs.callsMu.Unlock()
 		h, ok := fs.handlers[key]
 		if !ok {
 			t.Fatalf("fixtureServer: unexpected request %s", key)
@@ -61,11 +63,9 @@ func (fs *fixtureServer) json(method, path string, status int, body any) {
 }
 
 func (fs *fixtureServer) count(method, path string) int32 {
-	n, ok := fs.calls[method+" "+path]
-	if !ok {
-		return 0
-	}
-	return atomic.LoadInt32(n)
+	fs.callsMu.Lock()
+	defer fs.callsMu.Unlock()
+	return fs.calls[method+" "+path]
 }
 
 // newTestClient wires a Client whose token endpoint and every regional API

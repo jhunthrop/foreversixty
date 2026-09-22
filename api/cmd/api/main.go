@@ -350,7 +350,7 @@ func runBnetRefresh(ctx context.Context, log *slog.Logger) error {
 	if !cfg.BattleNetConfigured() {
 		return fmt.Errorf("%s needs Battle.net credentials", bnetimport.RefreshJobCommand)
 	}
-	svc := &bnetimport.Service{Pool: pool, Client: bnetClient(cfg), Regions: cfg.BnetRegions, Log: log}
+	svc := &bnetimport.Service{Pool: pool, Client: bnetClient(cfg, log), Regions: cfg.BnetRegions, Log: log}
 	result, err := svc.RunRefresh(ctx, cfg.BnetProbeGames)
 	if err != nil {
 		return err
@@ -362,11 +362,14 @@ func runBnetRefresh(ctx context.Context, log *slog.Logger) error {
 
 // bnetClient builds the Blizzard game-data/profile client every
 // Battle.net-import call site (the login import, the nightly refresh)
-// shares.
-func bnetClient(cfg config.Config) *bnetapi.Client {
+// shares. It carries the service logger so the client's own WARN lines
+// (a failed realm detail, a rate limit) are structured JSON like every
+// other package's, rather than the unstructured text slog.Default()
+// writes to stderr — invisible to a structured-log query, spec A1.
+func bnetClient(cfg config.Config, log *slog.Logger) *bnetapi.Client {
 	return bnetapi.New(bnetapi.Config{
 		ClientID: cfg.BnetClientID, ClientSecret: cfg.BnetClientSecret,
-		Game: cfg.BnetProfileGame, Regions: cfg.BnetRegions,
+		Game: cfg.BnetProfileGame, Regions: cfg.BnetRegions, Log: log,
 	})
 }
 
@@ -486,9 +489,14 @@ func serve(log *slog.Logger) error {
 	}
 	if cfg.BattleNetConfigured() {
 		accounts.BNet = auth.NewBattleNet(cfg.BnetClientID, cfg.BnetClientSecret, cfg.BnetRedirectURL)
+		bnetSvcClient := bnetClient(cfg, log)
 		accounts.Importer = &bnetimport.Service{
-			Pool: pool, Client: bnetClient(cfg), Regions: cfg.BnetRegions, Log: log,
+			Pool: pool, Client: bnetSvcClient, Regions: cfg.BnetRegions, Log: log,
 		}
+		// Warm the realm cache before traffic arrives (spec A1): a first
+		// sign-in must never pay the cost of a cold per-region realm
+		// fetch inside the import's 5s budget.
+		go bnetSvcClient.WarmRealms(context.Background(), cfg.BnetRegions)
 	} else {
 		log.Warn("auth", "state", "battle.net is not configured", "effect", "email sign-in only")
 	}
