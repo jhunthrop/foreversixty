@@ -1,5 +1,6 @@
 // web/tests/e2e/rankings.spec.ts
 import { expect, test } from '@playwright/test';
+import { gotoHydrated } from './support/hydrated';
 import { heldRoute } from './support/held-route';
 
 const ROWS = {
@@ -66,7 +67,7 @@ test('the board lists ranked kills with guilds, splits, reports and moderation s
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ROWS) }),
   );
 
-  await page.goto('/rankings/warden-kelthas');
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
 
   await expect(page.locator('h1')).toHaveText('Warden Kelthas');
   await expect(page.getByTestId('rankings-count')).toContainText('2 ranked kills');
@@ -102,7 +103,7 @@ test('every filter lands in the URL and in the request', async ({ page }) => {
     return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ROWS) });
   });
 
-  await page.goto('/rankings/warden-kelthas');
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
   await page.getByTestId('filter-metric').selectOption('hps');
   await page.getByTestId('filter-ruleset').selectOption('hardcore');
 
@@ -140,7 +141,7 @@ test('the guild board asks the guild endpoint', async ({ page }) => {
     });
   });
 
-  await page.goto('/rankings/warden-kelthas');
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
   await page.getByTestId('board-guild').click();
 
   await expect(page.getByTestId('guild-rows')).toContainText('The Last Watch');
@@ -149,7 +150,7 @@ test('the guild board asks the guild endpoint', async ({ page }) => {
 
 test('a failed rankings call says so instead of showing an empty board', async ({ page }) => {
   await page.route('**/v1/rankings?**', (route) => route.abort());
-  await page.goto('/rankings/warden-kelthas');
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
   await expect(page.getByTestId('rankings-error')).toBeVisible();
 });
 
@@ -168,7 +169,7 @@ test('a stale filtered response is discarded once a newer filter has already ans
     route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(HPS_ROWS) }),
   );
 
-  await page.goto('/rankings/warden-kelthas');
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
   await slow.started;
 
   await page.getByTestId('filter-metric').selectOption('hps');
