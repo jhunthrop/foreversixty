@@ -41,7 +41,19 @@
   });
 </script>
 
-{#if status === 'ready' && data !== null}
+{#if status === 'loading'}
+  <!-- Reserves height for the common loading -> ready path so the panel's own container
+       does not pop in and push "Best per encounter" down once the fetch resolves -- the
+       plan's binding "no layout shift" constraint. Mirrors RatingPanel.svelte's own
+       loading-skeleton idiom. The rare loading -> hidden path (an anonymized character)
+       still fully collapses to nothing once resolved -- Ruling 2's own explicit
+       requirement, which takes precedence over reserving permanent dead space for a
+       panel that is supposed not to exist for that character. -->
+  <section class="flex flex-col gap-2" data-testid="character-rating-loading" aria-hidden="true">
+    <h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>
+    <div class="bg-line-soft h-24 w-full animate-pulse rounded"></div>
+  </section>
+{:else if status === 'ready' && data !== null}
   <section class="flex flex-col gap-2" data-testid="character-rating">
     <h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>
     {#if data.sample_size === 0}
