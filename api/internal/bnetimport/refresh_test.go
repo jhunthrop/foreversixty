@@ -106,6 +106,8 @@ func TestRunRefreshClearsAWithdrawnBnetMembershipButLeavesExportSourcedRowsAlone
 			"character_class": map[string]string{"name": "Rogue"}, "realm": map[string]string{"slug": "whitemane"}})
 	f.json(http.MethodGet, "/profile/wow/character/whitemane/left/equipment?namespace=profile-classic1x-us",
 		http.StatusOK, map[string]any{"equipped_items": []map[string]any{}})
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/left/character-media?namespace=profile-classic1x-us",
+		http.StatusOK, map[string]any{"assets": []map[string]string{}})
 
 	svc := newTestService(t, pool, f)
 	if _, err := svc.RunRefresh(ctx, nil); err != nil {
@@ -144,6 +146,7 @@ func TestRunRefreshRekeysARowWhoseRealmResolvesToAnotherRuleset(t *testing.T) {
 	f.realms("us", map[string]string{"living-flame": "PVP"})
 	f.json(http.MethodGet, "/profile/wow/character/living-flame/dottzz?namespace=profile-classic1x-us", http.StatusNotFound, nil)
 	f.json(http.MethodGet, "/profile/wow/character/living-flame/dottzz/equipment?namespace=profile-classic1x-us", http.StatusNotFound, nil)
+	f.json(http.MethodGet, "/profile/wow/character/living-flame/dottzz/character-media?namespace=profile-classic1x-us", http.StatusNotFound, nil)
 
 	svc := newTestService(t, pool, f)
 	if _, err := svc.RunRefresh(ctx, nil); err != nil {

@@ -273,6 +273,38 @@ func TestTheCharacterPageShowsBestsHistoryAndBuilds(t *testing.T) {
 	}
 }
 
+func TestTheCharacterPageCarriesAvatarAndRenderURLsWhenCaptured(t *testing.T) {
+	h := newHarness(t)
+	serve(t, h)
+	if _, err := h.pool.Exec(context.Background(),
+		`insert into characters (key, region, ruleset, name, class, avatar_url, render_url)
+		 values ('us/hardcore/withmedia', 'us', 'hardcore', 'Withmedia', 'warrior',
+		         'https://render.worldofwarcraft.com/avatar.jpg', 'https://render.worldofwarcraft.com/main-raw.png')`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(context.Background(),
+		`insert into characters (key, region, ruleset, name, class) values ('us/hardcore/nomedia', 'us', 'hardcore', 'Nomedia', 'mage')`); err != nil {
+		t.Fatal(err)
+	}
+
+	res := h.get("/v1/characters/us/hardcore/withmedia")
+	var withMedia Character
+	h.data(res, &withMedia)
+	if withMedia.Character.AvatarURL != "https://render.worldofwarcraft.com/avatar.jpg" {
+		t.Fatalf("avatar_url = %q", withMedia.Character.AvatarURL)
+	}
+	if withMedia.Character.RenderURL != "https://render.worldofwarcraft.com/main-raw.png" {
+		t.Fatalf("render_url = %q", withMedia.Character.RenderURL)
+	}
+
+	res = h.get("/v1/characters/us/hardcore/nomedia")
+	var noMedia Character
+	h.data(res, &noMedia)
+	if noMedia.Character.AvatarURL != "" || noMedia.Character.RenderURL != "" {
+		t.Fatalf("avatar/render = %q/%q, want both empty (omitted from JSON)", noMedia.Character.AvatarURL, noMedia.Character.RenderURL)
+	}
+}
+
 func TestTheGuildPageShowsProgressionRosterAndReports(t *testing.T) {
 	h := newHarness(t)
 	serve(t, h)

@@ -254,6 +254,11 @@ type CharacterRef struct {
 	Ruleset string `json:"ruleset"`
 	Name    string `json:"name"`
 	Class   string `json:"class,omitempty"`
+	// AvatarURL and RenderURL are Blizzard's own render-CDN images for
+	// this character (.superpowers/account-visual-brief.md §A4), omitted
+	// when the Battle.net import has not captured them.
+	AvatarURL string `json:"avatar_url,omitempty"`
+	RenderURL string `json:"render_url,omitempty"`
 }
 
 // HistoryLimit is how many of a character's fights the page shows.
@@ -271,7 +276,8 @@ func (s *Store) Character(ctx context.Context, region, ruleset, name string) (Ch
 	}
 	var class *string
 	err := s.Pool.QueryRow(ctx,
-		`select name, class from characters where key = $1`, key).Scan(&out.Character.Name, &class)
+		`select name, class, coalesce(avatar_url, ''), coalesce(render_url, '') from characters where key = $1`, key).
+		Scan(&out.Character.Name, &class, &out.Character.AvatarURL, &out.Character.RenderURL)
 	if err == nil && class != nil {
 		out.Character.Class = *class
 	} else if err != nil && err != pgx.ErrNoRows {
