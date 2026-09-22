@@ -92,6 +92,6 @@ test('a reference fetch that fails still mounts, and Planner offers the retry', 
   );
   await page.goto('/b/k7x2qm4a');
 
-  await expect(page.getByText('Talent data did not load')).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Retry' })).toBeVisible();
+  await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Try again' })).toBeVisible();
 });
