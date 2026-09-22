@@ -1,0 +1,11 @@
+## Interface: 16001
+## Title: Forever Sixty Data
+## Notes: Nightly performance ratings and guild standings from foreversixty.gg, read by the Forever Sixty addon.
+## Author: foreversixty.gg
+## Version: @project-version@
+## X-Curse-Project-ID: 1706707
+## X-Wago-ID: ANz7R564
+## X-Website: https://foreversixty.gg/ratings
+## LoadOnDemand: 0
+
+Data.lua
