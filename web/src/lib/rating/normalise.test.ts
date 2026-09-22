@@ -47,3 +47,49 @@ describe('normaliseReportRatings', () => {
     expect(normaliseReportRatings(wire).players).toEqual([]);
   });
 });
+
+describe('insufficient cards', () => {
+  it('reads the coverage fields and defaults them for an older API', () => {
+    const wire = {
+      fight_index: 1,
+      kill: false,
+      kill_time_band: '',
+      model_version: 'v1',
+      players: [
+        {
+          player_key: 'k',
+          player_name: 'Bob',
+          class: 'priest',
+          spec: 'shadow',
+          role: 'dps',
+          overall: 0,
+          overall_uncapped: 0,
+          overall_capped: false,
+          basis: '',
+          coverage: 0.3,
+          insufficient: true,
+          insufficient_reason: 'wipe; no mechanics table',
+          components: [],
+        },
+        {
+          player_key: 'k2',
+          player_name: 'Ann',
+          class: 'mage',
+          spec: 'frost',
+          role: 'dps',
+          overall: 80,
+          overall_uncapped: 80,
+          overall_capped: false,
+          basis: 'mixed',
+          components: [],
+        },
+      ],
+    } as unknown as ReportRatings;
+    const [bob, ann] = normaliseReportRatings(wire).players;
+    expect(bob.insufficient).toBe(true);
+    expect(bob.coverage).toBe(0.3);
+    expect(ann.insufficient).toBe(false);
+    expect(ann.coverage).toBe(1);
+    expect(ann.insufficient_reason).toBe('');
+  });
+});

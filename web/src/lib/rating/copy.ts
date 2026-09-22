@@ -14,6 +14,10 @@ export const ratingCopy = {
   panelHeading: 'Performance rating',
   panelMore: 'Rating tab',
   panelEmpty: 'No ratings for this fight yet.',
+  /** Under half the role's weight was measurable, so there is no overall. */
+  insufficient: 'Not rated',
+  insufficientNote: (reason: string): string =>
+    `Not enough is measured on this fight to rate this player: ${reason}. The parts below are what was measured.`,
   tabEmpty:
     'No ratings for this fight yet. Ratings are computed after a report finishes processing, and some encounters do not have a curated table yet.',
   fetchFailed: 'Ratings did not load.',

@@ -52,13 +52,24 @@ func Score(
 	activityC := scoreActivity(fight, player, bracket, tables.Mechanics, playerAssignments, percentiles)
 
 	components := [6]Component{outputC, survivalC, mechanicsC, utilityC, preparationC, activityC}
-	overallUncapped, overall, capped, basis := combine(&components, w, deathScoreZero, now.CapEnabled, now.CapThreshold)
+	overallUncapped, overall, capped, basis, coverage := combine(&components, w, deathScoreZero, now.CapEnabled, now.CapThreshold)
 
-	return Card{
+	card := Card{
 		Overall: overall, OverallUncapped: overallUncapped, OverallCapped: capped,
 		Components: components, Basis: basis,
 		ModelVersion: now.ModelVersion, KillTimeBand: bracket.KillTimeBand,
+		Coverage: round2(coverage),
 	}
+	// Spec §1.5, dated 2026-09-21: below MinCoverage, the overall is not
+	// published at all — it would be a judgement resting on whichever one
+	// or two components survived exclusion, weighted up to carry the
+	// whole card. The components themselves are still returned in full.
+	if coverage < MinCoverage {
+		card.Insufficient = true
+		card.InsufficientReason = buildInsufficientReason(components)
+		card.Overall, card.OverallUncapped, card.OverallCapped = 0, 0, false
+	}
+	return card
 }
 
 // assignmentsFor filters to one player's own assignment windows (spec §2).

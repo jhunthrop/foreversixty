@@ -72,12 +72,15 @@
       }
     ],
     "Basis": "absolute",
-    "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": "typical"
+    "ModelVersion": "rating-2026-09-21-coverage",
+    "KillTimeBand": "typical",
+    "Coverage": 0.8,
+    "Insufficient": false,
+    "InsufficientReason": ""
   },
   "Player-Kill-2": {
-    "Overall": 43.33,
-    "OverallUncapped": 43.33,
+    "Overall": 0,
+    "OverallUncapped": 0,
     "OverallCapped": false,
     "Components": [
       {
@@ -148,7 +151,10 @@
       }
     ],
     "Basis": "absolute",
-    "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": "typical"
+    "ModelVersion": "rating-2026-09-21-coverage",
+    "KillTimeBand": "typical",
+    "Coverage": 0.45,
+    "Insufficient": true,
+    "InsufficientReason": "not enough logs to score output; not enough logs to score mechanics"
   }
 }

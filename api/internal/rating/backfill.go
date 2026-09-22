@@ -5,8 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 	"io"
-	"strings"
 
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -80,11 +80,10 @@ func Backfill(ctx context.Context, d BackfillDeps, batchSize int) (recomputed in
 		return 0, fmt.Errorf("rating: backfill: %w", err)
 	}
 	for _, sf := range fights {
-		region, ruleset, ok := splitPlayerKeyRegionRuleset(sf.PlayerKey)
-		if !ok {
-			d.logf().Warn("rating", "op", "backfill", "report", sf.ReportID, "fight", sf.FightIndex,
-				"err", "unparseable player_key "+sf.PlayerKey)
-			continue
+		region, ruleset := sf.Region, sf.Ruleset
+		if !character.ValidRegion(region) || !character.ValidRuleset(ruleset) {
+			// A report with no logging character: the same default ingest uses.
+			region, ruleset = "us", character.RulesetNormal
 		}
 		sum, err := readSummary(ctx, d.Summaries, sf.ReportID, sf.FightIndex)
 		if err != nil {
@@ -125,17 +124,4 @@ func readSummary(ctx context.Context, get Getter, reportID string, index int) (s
 		return summary.Summary{}, fmt.Errorf("rating: decode summary %s/%d: %w", reportID, index, err)
 	}
 	return s, nil
-}
-
-// splitPlayerKeyRegionRuleset reads the region/ruleset prefix back out of a character key
-// ("us/normal/simfury" -> "us", "normal") - every player of one fight shares the same
-// pair (api/internal/character.KeyFromUnit builds every row's key from the same
-// RatedFight.Region/Ruleset), so reading it back off any one stored row is enough to
-// rebuild the RatedFight Backfill needs.
-func splitPlayerKeyRegionRuleset(key string) (region, ruleset string, ok bool) {
-	parts := strings.SplitN(key, "/", 3)
-	if len(parts) != 3 || parts[0] == "" || parts[1] == "" {
-		return "", "", false
-	}
-	return parts[0], parts[1], true
 }

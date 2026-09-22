@@ -27,7 +27,7 @@ func TestCombineRenormalisesWeightsAcrossExcludedComponents(t *testing.T) {
 		{Name: ComponentNamePreparation, Score: 100},
 		{Name: ComponentNameActivity, Score: 70},
 	}
-	overallUncapped, overall, capped, _ := combine(&components, w, false, true, DefaultCapThreshold)
+	overallUncapped, overall, capped, _, _ := combine(&components, w, false, true, DefaultCapThreshold)
 	if capped {
 		t.Fatal("no cap condition was signalled; capped must be false")
 	}
@@ -64,7 +64,7 @@ func TestCombineAppliesTheCatastropheCapWhenEnabled(t *testing.T) {
 		{Name: ComponentNamePreparation, Score: 90, Basis: BasisPercentile},
 		{Name: ComponentNameActivity, Score: 90, Basis: BasisPercentile},
 	}
-	overallUncapped, overall, capped, basis := combine(&components, w, true, true, DefaultCapThreshold)
+	overallUncapped, overall, capped, basis, _ := combine(&components, w, true, true, DefaultCapThreshold)
 	if !capped {
 		t.Fatal("survivalDeathScoreZero was true; capped must be true")
 	}
@@ -86,7 +86,7 @@ func TestCombineLeavesOverallUncappedWhenCapDisabled(t *testing.T) {
 		{Name: ComponentNameMechanics, Score: 90}, {Name: ComponentNameUtility, Score: 90},
 		{Name: ComponentNamePreparation, Score: 90}, {Name: ComponentNameActivity, Score: 90},
 	}
-	overallUncapped, overall, capped, _ := combine(&components, w, true, false, DefaultCapThreshold)
+	overallUncapped, overall, capped, _, _ := combine(&components, w, true, false, DefaultCapThreshold)
 	if !capped {
 		t.Fatal("the condition still fired even though the cap is disabled")
 	}

@@ -57,7 +57,7 @@ test.describe('phone nav', () => {
   test.use({ viewport: { width: 360, height: 800 } });
   test.skip(() => test.info().project.name !== 'mobile', 'phone layout only');
 
-  test('the four tools come before Reference and The addon in scroll order', async ({ page }) => {
+  test('the four tools come before Reference, The addon and Premium in scroll order', async ({ page }) => {
     await page.goto('/');
     const nav = page.getByTestId('primary-nav');
     // Scoped to the nav's own top-level items (direct-child anchors, plus the Reference
@@ -69,7 +69,7 @@ test.describe('phone nav', () => {
     const labels = await nav.locator(':scope > a, :scope > details > summary').allTextContents();
     const trimmed = labels.map((label) => label.trim());
     expect(trimmed.slice(0, 4)).toEqual(['Planner', 'Simulator', 'Logs', 'Rankings']);
-    expect(trimmed.slice(4)).toEqual(['Reference', 'The addon']);
+    expect(trimmed.slice(4)).toEqual(['Reference', 'The addon', 'Premium']);
   });
 
   test('the nav row scrolls and carries the right-edge fade background while more is reachable', async ({
