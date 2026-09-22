@@ -30,10 +30,21 @@
   import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
   import { guildConsentCopy } from '../lib/guild/copy';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { relativeTime } from '../lib/dates';
   import CharacterList from './account/CharacterList.svelte';
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import MyReports from './MyReports.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
+  import Skeleton from './ui/Skeleton.svelte';
+  import LoadError from './ui/LoadError.svelte';
+  import AccountPanel from './account/AccountPanel.svelte';
+  import {
+    CHARACTERS_SKELETON_MIN_H,
+    IDENTITY_SKELETON_MIN_H,
+    MORE_SKELETON_MIN_H,
+    SIGNED_OUT_MIN_H,
+  } from '../lib/account/layout';
+  import { accountSignInCopy } from '../lib/account/signin-copy';
 
   let { mode, next = '/logs' }: { mode: 'nav' | 'login' | 'account' | 'pairing' | 'reports'; next?: string } =
     $props();
@@ -241,6 +252,7 @@
             class="border-line-warm bg-raised rounded-control text-text h-11 flex-1 px-3 text-[15px]"
             type="email"
             autocomplete="email"
+            placeholder="you@example.com"
             required
             bind:value={email}
           />
@@ -305,147 +317,184 @@
   </div>
 {:else}
   <div class="flex flex-col gap-8" data-testid="account">
-    <CurrentCharacterBar />
-    {#if toast !== ''}<p class="text-[14px]" data-testid="account-toast">{toast}</p>{/if}
     {#if status === 'loading'}
-      <p class="text-muted text-[14px]">Loading your account.</p>
+      <Skeleton lines={3} minHeight={CHARACTERS_SKELETON_MIN_H} testid="account-characters-skeleton" />
+      <Skeleton lines={4} minHeight={IDENTITY_SKELETON_MIN_H} testid="account-identity-skeleton" />
+      <Skeleton lines={3} minHeight={MORE_SKELETON_MIN_H} testid="account-more-skeleton" />
+    {:else if status === 'failed'}
+      <LoadError message={error} onRetry={() => void load()} testid="account-load-error" />
     {:else if !signedIn}
-      <p class="text-[14px]"><a href="/login">Sign in</a> to see your devices and characters.</p>
+      <div class={SIGNED_OUT_MIN_H}>
+        <SignInPrompt line={accountSignInCopy.reason} next="/account" testid="account-signin" />
+      </div>
     {:else}
-      <section class="flex flex-col gap-3">
-        <h2 class="section-title text-[18px]">Account</h2>
-        <p class="text-[14px]">{displayName}</p>
-        <button
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
-          onclick={onSignOut}
-          disabled={busy}
-        >
-          Sign out
-        </button>
-      </section>
+      <div class="reveal flex flex-col gap-8">
+        <CurrentCharacterBar compact />
 
-      <section class="flex flex-col gap-3">
-        <h2 class="section-title text-[18px]">Billing</h2>
-        {#if billing === null}
-          <p class="text-[14px]">
-            {billingBlockCopy.notSubscribed} <a href="/premium">{billingBlockCopy.seePlans}</a>.
-          </p>
-        {:else}
-          <p class="text-[14px]">
-            {billing.plan} —
-            {billing.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
-            {billing.current_period_end ? new Date(billing.current_period_end).toLocaleDateString() : ''}
-          </p>
-          {#if billing.status === 'past_due'}
-            <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
-          {/if}
-          <button
-            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
-            onclick={onManageBilling}
-            disabled={busy}
+        {#if toast !== ''}
+          <div
+            class="bg-raised border-gold flex flex-col gap-1 border-l-2 px-4 py-3"
+            data-testid="account-toast"
           >
-            {billingBlockCopy.manageBilling}
-          </button>
+            <p class="text-[14px]">{toast}</p>
+            {#if me!.bnet_imported_at !== undefined}
+              <p class="text-muted text-[13px]">
+                {characterListCopy.importedFrom(relativeTime(new Date(me!.bnet_imported_at)))}
+              </p>
+            {/if}
+          </div>
         {/if}
-      </section>
 
-      <section class="flex flex-col gap-3">
-        <h2 class="section-title text-[18px]">Devices</h2>
-        {#if devices.length === 0}
-          <p class="text-muted text-[14px]">No devices paired.</p>
-        {:else}
-          <ul class="flex flex-col">
-            {#each devices as device (device.id)}
-              <li class="border-line-soft flex min-h-11 items-center justify-between gap-4 border-b py-2">
-                <span class="text-[14px]">
-                  {device.name}
-                  <span class="text-muted">· {device.platform}</span>
-                </span>
-                <button
-                  class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                  onclick={() => onRevoke(device.id)}
-                  disabled={busy}
-                >
-                  Revoke
-                </button>
-              </li>
-            {/each}
-          </ul>
-        {/if}
-        {#if pairing === null}
-          <button
-            class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
-            onclick={onPair}
-            disabled={busy}
-          >
-            Pair a device
-          </button>
-        {:else}
-          <p class="tabular text-strong font-mono text-[24px]" data-testid="pairing-code">{pairing.code}</p>
-          <p class="text-muted text-[13px]">
-            Type this into the companion within {Math.round(pairing.expires_in / 60)} minutes.
-          </p>
-        {/if}
-      </section>
+        <CharacterList characters={me!.characters} bnetImportedAt={me!.bnet_imported_at} />
 
-      <CharacterList characters={me!.characters} bnetImportedAt={me!.bnet_imported_at} />
-
-      <section class="flex flex-col gap-3">
-        <h2 class="section-title text-[18px]">Name</h2>
-        <label class="flex min-h-11 items-center gap-3 text-[14px]">
-          <input
-            type="checkbox"
-            checked={me!.user.anonymize}
-            onchange={onAnonymize}
-            disabled={busy}
-            data-testid="anonymize"
-          />
-          Show a pseudonym instead of my character names
-        </label>
-        <p class="text-muted text-[13px]">
-          Applies everywhere your characters appear, on reports and rankings alike. Reports themselves are
-          never deleted or rewritten.
-        </p>
-      </section>
-
-      {#if me!.guilds.length > 0}
-        <section class="flex flex-col gap-3" data-testid="account-guilds">
-          <h2 class="section-title text-[18px]">{guildConsentCopy.heading}</h2>
-          <ul class="flex flex-col">
-            {#each me!.guilds as guild (guild.id)}
-              <li
-                class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-2 text-[14px]"
+        <AccountPanel testid="account-identity">
+          <section class="flex flex-col gap-3">
+            <h2 class="section-title text-[18px]">Devices</h2>
+            {#if devices.length === 0}
+              <p class="text-muted text-[14px]">No devices paired.</p>
+            {:else}
+              <ul class="flex flex-col">
+                {#each devices as device (device.id)}
+                  <li class="border-line-soft flex min-h-11 items-center justify-between gap-4 border-b py-2">
+                    <span class="text-[14px]">
+                      {device.name}
+                      <span class="text-muted">· {device.platform}</span>
+                    </span>
+                    <button
+                      class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                      onclick={() => onRevoke(device.id)}
+                      disabled={busy}
+                    >
+                      Revoke
+                    </button>
+                  </li>
+                {/each}
+              </ul>
+            {/if}
+            {#if pairing === null}
+              <button
+                class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+                onclick={onPair}
+                disabled={busy}
               >
-                <a href={guildHref(guild.region, guild.ruleset, guild.name)}>{guild.name}</a>
-                <select
-                  class="border-line-warm bg-raised rounded-control text-text h-11 px-3 text-[13px] md:h-9"
-                  value={guild.consent ?? 'gear'}
-                  onchange={(event) => onConsentChange(guild.id, event)}
-                  disabled={busy || guildBusy === guild.id}
-                  data-testid="account-guild-consent"
-                >
-                  <option value="roster">{guildConsentCopy.roster}</option>
-                  <option value="gear">{guildConsentCopy.gear}</option>
-                  <option value="gear_bags">{guildConsentCopy.gearBags}</option>
-                </select>
-                <button
-                  class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                  onclick={() => onLeaveGuild(guild.id)}
-                  disabled={busy || guildBusy === guild.id}
-                  data-testid="account-guild-leave"
-                >
-                  {guildConsentCopy.leave}
-                </button>
-              </li>
-            {/each}
-          </ul>
-        </section>
-      {/if}
+                Pair a device
+              </button>
+            {:else}
+              <p class="tabular text-strong font-mono text-[24px]" data-testid="pairing-code">
+                {pairing.code}
+              </p>
+              <p class="text-muted text-[13px]">
+                Type this into the companion within {Math.round(pairing.expires_in / 60)} minutes.
+              </p>
+            {/if}
+          </section>
 
-      <MyReports {signedIn} />
+          <section class="border-line-soft flex flex-col gap-3 border-t pt-4">
+            <h2 class="section-title text-[18px]">You</h2>
+            <p class="text-[14px]">{displayName}</p>
+            <button
+              class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+              onclick={onSignOut}
+              disabled={busy}
+            >
+              Sign out
+            </button>
+            <label class="flex min-h-11 items-center gap-3 text-[14px]">
+              <input
+                type="checkbox"
+                checked={me!.user.anonymize}
+                onchange={onAnonymize}
+                disabled={busy}
+                data-testid="anonymize"
+              />
+              Show a pseudonym instead of my character names
+            </label>
+            <p class="text-muted text-[13px]">
+              Applies everywhere your characters appear, on reports and rankings alike. Reports themselves are
+              never deleted or rewritten.
+            </p>
+          </section>
+        </AccountPanel>
+
+        <AccountPanel testid="account-more">
+          {#if me!.guilds.length > 0}
+            <section class="flex flex-col gap-3" data-testid="account-guilds">
+              <h2 class="section-title text-[18px]">{guildConsentCopy.heading}</h2>
+              <ul class="flex flex-col">
+                {#each me!.guilds as guild (guild.id)}
+                  <li
+                    class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-2 text-[14px]"
+                  >
+                    <a href={guildHref(guild.region, guild.ruleset, guild.name)}>{guild.name}</a>
+                    <select
+                      class="border-line-warm bg-raised rounded-control text-text h-11 px-3 text-[13px] md:h-9"
+                      value={guild.consent ?? 'gear'}
+                      onchange={(event) => onConsentChange(guild.id, event)}
+                      disabled={busy || guildBusy === guild.id}
+                      data-testid="account-guild-consent"
+                    >
+                      <option value="roster">{guildConsentCopy.roster}</option>
+                      <option value="gear">{guildConsentCopy.gear}</option>
+                      <option value="gear_bags">{guildConsentCopy.gearBags}</option>
+                    </select>
+                    <button
+                      class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                      onclick={() => onLeaveGuild(guild.id)}
+                      disabled={busy || guildBusy === guild.id}
+                      data-testid="account-guild-leave"
+                    >
+                      {guildConsentCopy.leave}
+                    </button>
+                  </li>
+                {/each}
+              </ul>
+            </section>
+          {/if}
+
+          <section
+            class={me!.guilds.length > 0
+              ? 'border-line-soft flex flex-col gap-3 border-t pt-4'
+              : 'flex flex-col gap-3'}
+          >
+            {#if billing === null}
+              <p class="label text-muted">
+                {billingBlockCopy.notSubscribed}
+                <a class="text-text underline" href="/premium">{billingBlockCopy.seePlans}</a>.
+              </p>
+            {:else}
+              <h2 class="section-title text-[18px]">Billing</h2>
+              <p class="text-[14px]">
+                {billing.plan} —
+                {billing.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
+                {billing.current_period_end ? new Date(billing.current_period_end).toLocaleDateString() : ''}
+              </p>
+              {#if billing.status === 'past_due'}
+                <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
+              {/if}
+              <button
+                class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+                onclick={onManageBilling}
+                disabled={busy}
+              >
+                {billingBlockCopy.manageBilling}
+              </button>
+            {/if}
+          </section>
+
+          <section class="border-line-soft border-t pt-4">
+            <MyReports {signedIn} />
+          </section>
+        </AccountPanel>
+      </div>
     {/if}
     <div class="min-h-[21px]">
-      {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
+      {#if status !== 'failed' && error !== ''}<p
+          class="text-[14px]"
+          role="alert"
+          data-testid="account-error"
+        >
+          {error}
+        </p>{/if}
     </div>
   </div>
 {/if}
