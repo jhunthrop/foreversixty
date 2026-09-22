@@ -104,7 +104,7 @@
         data-testid={`rating-card-${guid || player.player_key}`}
         open={visible.length === 1}
       >
-        <summary class="flex cursor-pointer items-center gap-3">
+        <summary class="flex min-h-11 cursor-pointer items-center gap-3 md:min-h-9">
           {#if guid !== ''}
             <button
               type="button"
@@ -143,7 +143,7 @@
                 class="border-line-soft rounded-control border p-2"
                 data-testid={`rating-component-${part.name}`}
               >
-                <summary class="flex cursor-pointer items-center gap-3 text-[13px]">
+                <summary class="flex min-h-11 cursor-pointer items-center gap-3 text-[13px] md:min-h-9">
                   <span class="flex-1 font-semibold">{componentLabel(part.name)}</span>
                   {#if !part.excluded}
                     <span class="tabular text-muted text-[12px]">weight {Math.round(part.weight)}%</span>
