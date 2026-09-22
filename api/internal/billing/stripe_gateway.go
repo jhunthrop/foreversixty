@@ -50,7 +50,7 @@ func (g *StripeGateway) CreateCustomer(ctx context.Context, email string) (strin
 	return c.ID, nil
 }
 
-func (g *StripeGateway) CreateCheckoutSession(ctx context.Context, p CheckoutParams) (string, error) {
+func (g *StripeGateway) CreateCheckoutSession(ctx context.Context, p CheckoutParams) (CheckoutSession, error) {
 	sess, err := g.client.V1CheckoutSessions.Create(ctx, &stripe.CheckoutSessionCreateParams{
 		Mode:              stripe.String(string(stripe.CheckoutSessionModeSubscription)),
 		Customer:          stripe.String(p.CustomerID),
@@ -66,9 +66,9 @@ func (g *StripeGateway) CreateCheckoutSession(ctx context.Context, p CheckoutPar
 		CancelURL:           stripe.String(p.CancelURL),
 	})
 	if err != nil {
-		return "", fmt.Errorf("billing: create checkout session: %w", err)
+		return CheckoutSession{}, fmt.Errorf("billing: create checkout session: %w", err)
 	}
-	return sess.URL, nil
+	return CheckoutSession{URL: sess.URL, SessionID: sess.ID, ExpiresAt: time.Unix(sess.ExpiresAt, 0).UTC()}, nil
 }
 
 func (g *StripeGateway) CreatePortalSession(ctx context.Context, customerID, returnURL string) (string, error) {
@@ -109,6 +109,53 @@ func (g *StripeGateway) PriceIDForLookupKey(ctx context.Context, lookupKey strin
 		return price.ID, nil
 	}
 	return "", ErrPriceNotFound
+}
+
+// CancelSubscriptionAtPeriodEnd implements Gateway.CancelSubscriptionAtPeriodEnd.
+func (g *StripeGateway) CancelSubscriptionAtPeriodEnd(ctx context.Context, subscriptionID string) error {
+	if _, err := g.client.V1Subscriptions.Update(ctx, subscriptionID, &stripe.SubscriptionUpdateParams{
+		CancelAtPeriodEnd: stripe.Bool(true),
+	}); err != nil {
+		return fmt.Errorf("billing: cancel subscription at period end %s: %w", subscriptionID, err)
+	}
+	return nil
+}
+
+// ListSubscriptions implements Gateway.ListSubscriptions. Stripe's
+// Subscriptions List API filters by Price, not Product, so productID is
+// applied client-side against each subscription's own line items —
+// every subscription this integration creates has exactly one item
+// (spec §2.2), so this is a cheap per-subscription check, not an N+1
+// query. No Status filter is passed: by default the List API already
+// excludes canceled subscriptions, which is exactly "currently live."
+func (g *StripeGateway) ListSubscriptions(ctx context.Context, productID string) ([]StripeSubscriptionSummary, error) {
+	params := &stripe.SubscriptionListParams{}
+	params.AddExpand("data.items.data.price.product")
+	var out []StripeSubscriptionSummary
+	for sub, err := range g.client.V1Subscriptions.List(ctx, params) {
+		if err != nil {
+			return nil, fmt.Errorf("billing: list subscriptions for product %s: %w", productID, err)
+		}
+		if !subscriptionHasProduct(sub, productID) {
+			continue
+		}
+		out = append(out, StripeSubscriptionSummary{ID: sub.ID, Status: string(sub.Status)})
+	}
+	return out, nil
+}
+
+// subscriptionHasProduct reports whether any of sub's line items bills
+// against productID — ListSubscriptions' client-side filter.
+func subscriptionHasProduct(sub *stripe.Subscription, productID string) bool {
+	if sub.Items == nil {
+		return false
+	}
+	for _, item := range sub.Items.Data {
+		if item.Price != nil && item.Price.Product != nil && item.Price.Product.ID == productID {
+			return true
+		}
+	}
+	return false
 }
 
 // EnsurePrice is stripe-setup's only call (Ruling D): retrieve-or-create

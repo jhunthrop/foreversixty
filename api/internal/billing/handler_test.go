@@ -4,6 +4,7 @@ package billing
 import (
 	"context"
 	"net/http"
+	"sync"
 	"testing"
 )
 
@@ -139,6 +140,54 @@ func TestCheckoutGuildConflictsWhenAlreadyOnThePlanUnlessTransfer(t *testing.T) 
 		map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid, "intent": "transfer"})
 	if w := h.do(t, r); w.Code != http.StatusOK {
 		t.Fatalf("transfer: status = %d, body = %s", w.Code, w.Body.String())
+	}
+}
+
+// TestCheckoutGuildSerializesConcurrentRequestsForTheSameGuild is the
+// end-to-end regression test for the security review's double-billing
+// finding (2026-09-21): two verified officers of the same claimed,
+// not-yet-subscribed guild firing POST /v1/billing/checkout at the same
+// time must never both succeed — exactly one Checkout Session may be
+// created, and the loser sees the same 409/portal_hint an already-active
+// plan would answer with, not a partial or duplicate session.
+func TestCheckoutGuildSerializesConcurrentRequestsForTheSameGuild(t *testing.T) {
+	h := newHarness(t)
+	gid := h.seedGuild(t, "race-guild", true)
+	officer1 := h.seedUser(t, "race-officer-1@example.com")
+	officer2 := h.seedUser(t, "race-officer-2@example.com")
+	h.seedGuildMember(t, gid, officer1, "officer")
+	h.seedGuildMember(t, gid, officer2, "officer")
+
+	// Requests are built before launching the goroutines: only h.do runs
+	// concurrently below, since t.FailNow (reachable through t.Fatal
+	// inside sessionRequest's own error branch) must only ever be called
+	// from the goroutine running the test itself.
+	r1 := h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", officer1,
+		map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid})
+	r2 := h.sessionRequest(t, http.MethodPost, "/v1/billing/checkout", officer2,
+		map[string]any{"plan": "guild", "interval": "monthly", "guild_id": gid})
+
+	codes := make([]int, 2)
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() { defer wg.Done(); codes[0] = h.do(t, r1).Code }()
+	go func() { defer wg.Done(); codes[1] = h.do(t, r2).Code }()
+	wg.Wait()
+
+	var oks, conflicts int
+	for _, c := range codes {
+		switch c {
+		case http.StatusOK:
+			oks++
+		case http.StatusConflict:
+			conflicts++
+		}
+	}
+	if oks != 1 || conflicts != 1 {
+		t.Fatalf("codes = %v, want exactly one 200 and one 409", codes)
+	}
+	if len(h.gateway.Checkouts) != 1 {
+		t.Fatalf("checkout sessions created = %d, want exactly 1", len(h.gateway.Checkouts))
 	}
 }
 

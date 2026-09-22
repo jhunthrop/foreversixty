@@ -4,6 +4,7 @@ package billing
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -54,12 +55,18 @@ type FrozenClaimant interface {
 // *entitlements.Store satisfies it.
 type Entitlements interface {
 	GuildBilling(ctx context.Context, guildID int64) (*entitlements.GuildBilling, error)
-	UpsertStripe(ctx context.Context, p entitlements.StripeUpsert) error
+	UpsertStripe(ctx context.Context, p entitlements.StripeUpsert) (entitlements.UpsertResult, error)
 	SetCanceled(ctx context.Context, stripeSubscriptionID string, graceUntil *time.Time, actor string) error
-	// StripeSubscriptionIDs is stripe-reconcile's (Task 8) only read:
+	// StripeSubscriptionIDs is stripe-reconcile's database→Stripe read:
 	// every stripe_subscription_id whose row still needs to be believed
 	// live (spec §2.8).
 	StripeSubscriptionIDs(ctx context.Context) ([]string, error)
+	// RecordAnomaly is stripe-reconcile's Stripe→database read's writer:
+	// a live Stripe subscription for one of our products with no
+	// matching entitlements row at all (spec §2.8's last paragraph,
+	// security review fix 2026-09-21).
+	RecordAnomaly(ctx context.Context, userID, guildID *int64, plan string,
+		kind entitlements.AnomalyKind, stripeSubscriptionID, actor string) error
 }
 
 // Service serves every billing route.
@@ -156,13 +163,10 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 			httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "guild_id is required for the guild plan", nil)
 			return
 		}
-		status, code, message, fields := s.checkGuildCheckout(r.Context(), *in.GuildID, actor.UserID, in.Intent == "transfer")
-		if status != 0 {
-			httpx.WriteError(w, r, status, code, message, fields)
-			return
-		}
 		metadata["guild_id"] = strconv.FormatInt(*in.GuildID, 10)
 		clientRef = fmt.Sprintf("guild:%d:user:%d", *in.GuildID, actor.UserID)
+		s.guildCheckout(w, r, *in.GuildID, actor.UserID, in.Intent == "transfer", lookupKey, clientRef, metadata)
+		return
 	}
 
 	customerID, err := s.customerFor(r.Context(), actor.UserID)
@@ -175,7 +179,7 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "checkout", err, "could not start checkout just now")
 		return
 	}
-	url, err := s.Gateway.CreateCheckoutSession(r.Context(), CheckoutParams{
+	session, err := s.Gateway.CreateCheckoutSession(r.Context(), CheckoutParams{
 		CustomerID: customerID, PriceID: priceID, ClientReferenceID: clientRef, Metadata: metadata,
 		SuccessURL: s.PublicBaseURL + "/premium/checkout?status=success&session_id={CHECKOUT_SESSION_ID}",
 		CancelURL:  s.PublicBaseURL + "/premium?canceled=1",
@@ -184,46 +188,129 @@ func (s *Service) checkout(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "checkout", err, "could not start checkout just now")
 		return
 	}
-	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"checkout_url": url})
+	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"checkout_url": session.URL})
 }
 
-// checkGuildCheckout is spec §2.3's three preconditions plus Ruling B's
-// frozen-claimant check. status == 0 means every check passed; otherwise
-// it is the HTTP status/code/message/fields checkout should answer with.
-func (s *Service) checkGuildCheckout(ctx context.Context, guildID, userID int64, transfer bool) (status int, code, message string, fields map[string]string) {
+// checkoutRefusal carries a refusal's HTTP shape out of guildCheckout's
+// WithGuildLock closure without conflating "the caller may not do this"
+// with an actual failure (s.fail's 500 path) — errors.As in guildCheckout
+// tells the two apart.
+type checkoutRefusal struct {
+	status  int
+	code    string
+	message string
+	fields  map[string]string
+}
+
+func (e *checkoutRefusal) Error() string { return e.message }
+
+// guildCheckout is the guild-plan checkout path, wholly serialized per
+// guild by an advisory lock held from the entitlement read through
+// Checkout Session creation and the pending_checkouts write (security
+// review fix, 2026-09-21): without it, two officers checking out for the
+// same guild at once could each read "no active plan," each create a
+// session, and each pay — the second webhook's upsert would then silently
+// overwrite the first subscription id (entitlements.UpsertStripe's
+// duplicate guard is the second, independent layer against that half of
+// the race, for a delivery this lock's window does not cover).
+func (s *Service) guildCheckout(w http.ResponseWriter, r *http.Request, guildID, userID int64,
+	transfer bool, lookupKey, clientRef string, metadata map[string]string) {
+	var result CheckoutSession
+	err := s.Store.WithGuildLock(r.Context(), guildID, func(ctx context.Context) error {
+		if refusal := s.checkGuildCheckout(ctx, guildID, userID, transfer); refusal != nil {
+			return refusal
+		}
+		customerID, err := s.customerFor(ctx, userID)
+		if err != nil {
+			return err
+		}
+		priceID, err := s.Gateway.PriceIDForLookupKey(ctx, lookupKey)
+		if err != nil {
+			return err
+		}
+		session, err := s.Gateway.CreateCheckoutSession(ctx, CheckoutParams{
+			CustomerID: customerID, PriceID: priceID, ClientReferenceID: clientRef, Metadata: metadata,
+			SuccessURL: s.PublicBaseURL + "/premium/checkout?status=success&session_id={CHECKOUT_SESSION_ID}",
+			CancelURL:  s.PublicBaseURL + "/premium?canceled=1",
+		})
+		if err != nil {
+			return err
+		}
+		if err := s.Store.RecordPendingCheckout(ctx, guildID, userID, session.SessionID, session.ExpiresAt); err != nil {
+			return err
+		}
+		result = session
+		return nil
+	})
+	if err != nil {
+		var refusal *checkoutRefusal
+		if errors.As(err, &refusal) {
+			httpx.WriteError(w, r, refusal.status, refusal.code, refusal.message, refusal.fields)
+			return
+		}
+		s.fail(w, r, "checkout", err, "could not start checkout just now")
+		return
+	}
+	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"checkout_url": result.URL})
+}
+
+// alreadyOnThePlanRefusal is the 409/portal_hint shape both an already-
+// active entitlement and a pending, in-flight checkout answer with —
+// from the caller's own point of view the two are indistinguishable
+// ("someone has already started buying this guild the plan").
+func alreadyOnThePlanRefusal() *checkoutRefusal {
+	return &checkoutRefusal{status: http.StatusConflict, code: "conflict",
+		message: "this guild already has the plan", fields: map[string]string{"portal_hint": "1"}}
+}
+
+// checkGuildCheckout is spec §2.3's three preconditions, Ruling B's
+// frozen-claimant check, and (security review fix, 2026-09-21) the
+// pending-checkout guard — nil means every check passed; otherwise the
+// refusal guildCheckout should answer with. Always called from inside
+// WithGuildLock, so the entitlement and pending-checkout reads below are
+// race-free against a second, concurrent caller for the same guild.
+func (s *Service) checkGuildCheckout(ctx context.Context, guildID, userID int64, transfer bool) *checkoutRefusal {
 	claimed, err := s.Store.GuildClaimed(ctx, guildID)
 	if err != nil {
-		return http.StatusInternalServerError, "internal", "", nil
+		return &checkoutRefusal{status: http.StatusInternalServerError, code: "internal"}
 	}
 	if !claimed {
-		return http.StatusForbidden, "forbidden", "this guild has not been claimed yet", nil
+		return &checkoutRefusal{status: http.StatusForbidden, code: "forbidden", message: "this guild has not been claimed yet"}
 	}
 	rank, verified, err := s.Accounts.GuildRank(ctx, guildID, userID)
 	if err != nil {
-		return http.StatusInternalServerError, "internal", "", nil
+		return &checkoutRefusal{status: http.StatusInternalServerError, code: "internal"}
 	}
 	if !verified || (rank != "officer" && rank != "leader") {
-		return http.StatusForbidden, "forbidden", "you must be a verified officer or leader of this guild", nil
+		return &checkoutRefusal{status: http.StatusForbidden, code: "forbidden",
+			message: "you must be a verified officer or leader of this guild"}
 	}
 	if s.Guilds != nil {
 		frozen, err := s.Guilds.FrozenClaimant(ctx, guildID, userID)
 		if err != nil {
-			return http.StatusInternalServerError, "internal", "", nil
+			return &checkoutRefusal{status: http.StatusInternalServerError, code: "internal"}
 		}
 		if frozen {
-			return http.StatusForbidden, "forbidden",
-				"this guild's claim is contested; billing actions are frozen for the disputed claimant until a moderator resolves it", nil
+			return &checkoutRefusal{status: http.StatusForbidden, code: "forbidden",
+				message: "this guild's claim is contested; billing actions are frozen for the disputed claimant until a moderator resolves it"}
 		}
 	}
 	existing, err := s.Entitlements.GuildBilling(ctx, guildID)
 	if err != nil {
-		return http.StatusInternalServerError, "internal", "", nil
+		return &checkoutRefusal{status: http.StatusInternalServerError, code: "internal"}
 	}
 	active := existing != nil && (existing.Status == "active" || existing.Status == "trialing" || existing.Status == "past_due")
 	if active && !transfer {
-		return http.StatusConflict, "conflict", "this guild already has the plan", map[string]string{"portal_hint": "1"}
+		return alreadyOnThePlanRefusal()
 	}
-	return 0, "", "", nil
+	pending, err := s.Store.PendingGuildCheckout(ctx, guildID)
+	if err != nil {
+		return &checkoutRefusal{status: http.StatusInternalServerError, code: "internal"}
+	}
+	if pending {
+		return alreadyOnThePlanRefusal()
+	}
+	return nil
 }
 
 // customerFor returns userID's Stripe Customer id, creating and saving

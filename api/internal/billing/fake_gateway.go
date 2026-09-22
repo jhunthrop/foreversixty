@@ -5,9 +5,15 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"time"
 
 	stripe "github.com/stripe/stripe-go/v82"
 )
+
+// fakeCheckoutExpiry is CreateCheckoutSession's default ExpiresAt when a
+// test does not set NextCheckoutExpiresAt — long enough that ordinary
+// tests never trip PendingGuildCheckout's expiry check by accident.
+const fakeCheckoutExpiry = 24 * time.Hour
 
 // FakeGateway is the in-memory Gateway every test in this codebase uses.
 // Zero value is usable; tests populate the exported fields directly
@@ -20,6 +26,7 @@ type FakeGateway struct {
 	Err error
 
 	nextCustomerID int
+	nextSessionID  int
 	// Subscriptions is looked up by GetSubscription — tests register a
 	// hand-built *stripe.Subscription fixture here before calling a
 	// handler that re-fetches it.
@@ -27,14 +34,22 @@ type FakeGateway struct {
 	// Prices maps a lookup key to a price id — pre-populate to simulate
 	// stripe-setup having already run; EnsurePrice adds to it.
 	Prices map[string]string
+	// ListSubscriptionsResult is ListSubscriptions' answer, keyed by
+	// product id — a test populates this directly (independent of
+	// Subscriptions, which GetSubscription reads) since the whole point
+	// of an orphan-subscription test is a Stripe subscription our
+	// database has never heard of.
+	ListSubscriptionsResult map[string][]StripeSubscriptionSummary
 
-	Customers    []string // emails passed to CreateCustomer, in order
-	Checkouts    []CheckoutParams
-	Portals      []PortalCall
-	EnsuredSpecs []PriceSpec
+	Customers           []string // emails passed to CreateCustomer, in order
+	Checkouts           []CheckoutParams
+	Portals             []PortalCall
+	EnsuredSpecs        []PriceSpec
+	CanceledAtPeriodEnd []string // subscription ids passed to CancelSubscriptionAtPeriodEnd, in order
 
-	NextCheckoutURL string
-	NextPortalURL   string
+	NextCheckoutURL       string
+	NextCheckoutExpiresAt time.Time
+	NextPortalURL         string
 }
 
 func (f *FakeGateway) CreateCustomer(_ context.Context, email string) (string, error) {
@@ -48,17 +63,27 @@ func (f *FakeGateway) CreateCustomer(_ context.Context, email string) (string, e
 	return fmt.Sprintf("cus_fake_%d", f.nextCustomerID), nil
 }
 
-func (f *FakeGateway) CreateCheckoutSession(_ context.Context, p CheckoutParams) (string, error) {
+func (f *FakeGateway) CreateCheckoutSession(_ context.Context, p CheckoutParams) (CheckoutSession, error) {
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	if f.Err != nil {
-		return "", f.Err
+		return CheckoutSession{}, f.Err
 	}
 	f.Checkouts = append(f.Checkouts, p)
-	if f.NextCheckoutURL != "" {
-		return f.NextCheckoutURL, nil
+	f.nextSessionID++
+	url := f.NextCheckoutURL
+	if url == "" {
+		url = "https://checkout.stripe.com/fake/session"
 	}
-	return "https://checkout.stripe.com/fake/session", nil
+	expiresAt := f.NextCheckoutExpiresAt
+	if expiresAt.IsZero() {
+		expiresAt = time.Now().Add(fakeCheckoutExpiry)
+	}
+	return CheckoutSession{
+		URL:       url,
+		SessionID: fmt.Sprintf("cs_fake_%d", f.nextSessionID),
+		ExpiresAt: expiresAt,
+	}, nil
 }
 
 func (f *FakeGateway) CreatePortalSession(_ context.Context, customerID, returnURL string) (string, error) {
@@ -98,6 +123,25 @@ func (f *FakeGateway) PriceIDForLookupKey(_ context.Context, lookupKey string) (
 		return "", ErrPriceNotFound
 	}
 	return id, nil
+}
+
+func (f *FakeGateway) CancelSubscriptionAtPeriodEnd(_ context.Context, subscriptionID string) error {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.Err != nil {
+		return f.Err
+	}
+	f.CanceledAtPeriodEnd = append(f.CanceledAtPeriodEnd, subscriptionID)
+	return nil
+}
+
+func (f *FakeGateway) ListSubscriptions(_ context.Context, productID string) ([]StripeSubscriptionSummary, error) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	if f.Err != nil {
+		return nil, f.Err
+	}
+	return f.ListSubscriptionsResult[productID], nil
 }
 
 func (f *FakeGateway) EnsurePrice(_ context.Context, spec PriceSpec) error {

@@ -56,15 +56,25 @@ func fixtureSubscription(id, plan string, userID, guildID int64, status stripe.S
 // entitlementsStripeUpsertFor turns a fixture *stripe.Subscription into
 // the same entitlements.StripeUpsert upsertFromSubscription would build,
 // so a test can seed a row identical to what a real webhook delivery
-// would have written, without going through the handler.
+// would have written, without going through the handler. Mirrors
+// upsertFromSubscription's own plan-based subject choice: a premium
+// fixture sets UserID, a guild fixture sets GuildID (never both — the
+// entitlements_one_subject constraint refuses that combination).
 func entitlementsStripeUpsertFor(sub *stripe.Subscription) entitlements.StripeUpsert {
 	uid, _ := metadataUserID(sub)
 	end, _ := subscriptionPeriodEnd(sub)
-	return entitlements.StripeUpsert{
-		UserID: &uid, Plan: sub.Metadata["plan"], Status: string(sub.Status),
+	up := entitlements.StripeUpsert{
+		Plan: sub.Metadata["plan"], Status: string(sub.Status),
 		CurrentPeriodEnd: &end, StripeSubscriptionID: sub.ID, BillingUserID: uid,
 		Actor: "test_fixture",
 	}
+	if up.Plan == entitlements.PlanGuild {
+		gid, _ := strconv.ParseInt(sub.Metadata["guild_id"], 10, 64)
+		up.GuildID = &gid
+	} else {
+		up.UserID = &uid
+	}
+	return up
 }
 
 func TestWebhookFirstDeliveryIsProcessedAndAudited(t *testing.T) {
@@ -199,7 +209,7 @@ func TestWebhookSubscriptionDeletedSetsCanceledAndGrace(t *testing.T) {
 	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
 	sub := fixtureSubscription("sub_webhook_deleted", "premium", uid, 0, stripe.SubscriptionStatusActive, end)
 	h.gateway.Subscriptions = map[string]*stripe.Subscription{sub.ID: sub}
-	if err := h.svc.Entitlements.UpsertStripe(t.Context(), entitlementsStripeUpsertFor(sub)); err != nil {
+	if _, err := h.svc.Entitlements.UpsertStripe(t.Context(), entitlementsStripeUpsertFor(sub)); err != nil {
 		t.Fatal(err)
 	}
 	r := signedWebhookRequest(t, "customer.subscription.deleted", map[string]any{"id": sub.ID})
@@ -217,6 +227,67 @@ func TestWebhookSubscriptionDeletedSetsCanceledAndGrace(t *testing.T) {
 	}
 	if !grace.Equal(end.Add(retentionGraceDays)) {
 		t.Fatalf("grace_until = %v, want %v", grace, end.Add(retentionGraceDays))
+	}
+}
+
+// TestWebhookDuplicateSubscriptionForTheSameGuildIsKeptAndTheNewcomerCanceled
+// is the webhook-layer regression test for the security review's
+// double-billing finding (2026-09-21): a second, live subscription for a
+// guild that already has an active one must never overwrite it — the
+// first officer's subscription (sub_a) stays entitled, an anomaly is
+// recorded, and the newcomer (sub_b) is canceled at Stripe instead of
+// silently taking over.
+func TestWebhookDuplicateSubscriptionForTheSameGuildIsKeptAndTheNewcomerCanceled(t *testing.T) {
+	h := newHarness(t)
+	gid := h.seedGuild(t, "webhook-dupe-guild", true)
+	officerA := h.seedUser(t, "webhook-dupe-a@example.com")
+	officerB := h.seedUser(t, "webhook-dupe-b@example.com")
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+
+	subA := fixtureSubscription("sub_dupe_a", "guild", officerA, gid, stripe.SubscriptionStatusActive, end)
+	h.gateway.Subscriptions = map[string]*stripe.Subscription{subA.ID: subA}
+	if _, err := h.svc.Entitlements.UpsertStripe(t.Context(), entitlementsStripeUpsertFor(subA)); err != nil {
+		t.Fatal(err)
+	}
+
+	subB := fixtureSubscription("sub_dupe_b", "guild", officerB, gid, stripe.SubscriptionStatusActive, end)
+	h.gateway.Subscriptions["sub_dupe_b"] = subB
+
+	r := signedWebhookRequest(t, "customer.subscription.created", map[string]any{"id": subB.ID})
+	w := h.do(t, r)
+	if w.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
+	}
+
+	var subID string
+	if err := h.pool.QueryRow(t.Context(),
+		`select stripe_subscription_id from entitlements where guild_id = $1 and plan = 'guild'`, gid).Scan(&subID); err != nil {
+		t.Fatal(err)
+	}
+	if subID != "sub_dupe_a" {
+		t.Fatalf("kept subscription id = %q, want sub_dupe_a (untouched)", subID)
+	}
+
+	var anomalies int
+	var kind, gotSubID string
+	if err := h.pool.QueryRow(t.Context(),
+		`select count(*) from entitlement_anomalies where guild_id = $1`, gid).Scan(&anomalies); err != nil {
+		t.Fatal(err)
+	}
+	if anomalies != 1 {
+		t.Fatalf("anomaly rows = %d, want 1", anomalies)
+	}
+	if err := h.pool.QueryRow(t.Context(),
+		`select kind, stripe_subscription_id from entitlement_anomalies where guild_id = $1`, gid).
+		Scan(&kind, &gotSubID); err != nil {
+		t.Fatal(err)
+	}
+	if kind != "duplicate_subscription" || gotSubID != "sub_dupe_b" {
+		t.Fatalf("anomaly = kind=%q sub=%q, want duplicate_subscription/sub_dupe_b", kind, gotSubID)
+	}
+
+	if len(h.gateway.CanceledAtPeriodEnd) != 1 || h.gateway.CanceledAtPeriodEnd[0] != "sub_dupe_b" {
+		t.Fatalf("CanceledAtPeriodEnd = %v, want [sub_dupe_b]", h.gateway.CanceledAtPeriodEnd)
 	}
 }
 

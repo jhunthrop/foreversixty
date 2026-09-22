@@ -21,13 +21,13 @@ const centsPerDollar = 100
 // amount or product name is hardcoded (Ruling D: fixed product ids so
 // this is idempotent with no Search API dependency).
 var priceSpecs = []billing.PriceSpec{
-	{ProductID: "prod_fs_premium", ProductName: "Forever Sixty Premium",
+	{ProductID: billing.ProductIDPremium, ProductName: "Forever Sixty Premium",
 		LookupKey: billing.LookupKeyPremiumMonthly, Interval: "month", UnitAmountCents: 4 * centsPerDollar},
-	{ProductID: "prod_fs_premium", ProductName: "Forever Sixty Premium",
+	{ProductID: billing.ProductIDPremium, ProductName: "Forever Sixty Premium",
 		LookupKey: billing.LookupKeyPremiumYearly, Interval: "year", UnitAmountCents: 40 * centsPerDollar},
-	{ProductID: "prod_fs_guild", ProductName: "Forever Sixty Guild",
+	{ProductID: billing.ProductIDGuild, ProductName: "Forever Sixty Guild",
 		LookupKey: billing.LookupKeyGuildMonthly, Interval: "month", UnitAmountCents: 15 * centsPerDollar},
-	{ProductID: "prod_fs_guild", ProductName: "Forever Sixty Guild",
+	{ProductID: billing.ProductIDGuild, ProductName: "Forever Sixty Guild",
 		LookupKey: billing.LookupKeyGuildYearly, Interval: "year", UnitAmountCents: 150 * centsPerDollar},
 }
 

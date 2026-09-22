@@ -115,7 +115,20 @@ func (s *Service) onCheckoutCompleted(ctx context.Context, event stripe.Event, a
 			}
 		}
 	}
-	return s.upsertFromSubscription(ctx, sub, actor)
+	if err := s.upsertFromSubscription(ctx, sub, actor); err != nil {
+		return err
+	}
+	// A completed Checkout Session no longer needs to block a later,
+	// genuinely new checkout for the same guild — cleared whether this
+	// upsert wrote the row or, on a caught duplicate, left it untouched
+	// (security review fix, 2026-09-21): either way the session itself
+	// did complete, which is what pending_checkouts tracks.
+	if sessionID := stripeRefID(event.Data.Object["id"]); sessionID != "" {
+		if err := s.Store.DeletePendingCheckout(ctx, sessionID); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (s *Service) onSubscriptionEvent(ctx context.Context, event stripe.Event, actor string) error {
@@ -206,5 +219,26 @@ func (s *Service) upsertFromSubscription(ctx context.Context, sub *stripe.Subscr
 	} else {
 		p.UserID = &billingUserID
 	}
-	return s.Entitlements.UpsertStripe(ctx, p)
+	result, err := s.Entitlements.UpsertStripe(ctx, p)
+	if err != nil {
+		return err
+	}
+	if !result.Duplicate {
+		return nil
+	}
+	// A second, live subscription for a (subject, plan) that already had
+	// one, pointing at a different id (security review fix, 2026-09-21):
+	// UpsertStripe already kept the existing row and recorded the
+	// anomaly; this is the other half — the newcomer must not keep
+	// billing with nothing in our database honoring it, so it is
+	// canceled at Stripe (at period end: whoever paid for it keeps what
+	// they already paid for). No secret or metadata dump in the log line
+	// — subscription ids and the kept id only.
+	s.logger().Error("billing", "op", "duplicate_subscription",
+		"newcomer_subscription_id", sub.ID, "kept_subscription_id", result.ExistingSubscriptionID,
+		"plan", plan)
+	if err := s.Gateway.CancelSubscriptionAtPeriodEnd(ctx, sub.ID); err != nil {
+		return fmt.Errorf("billing: cancel duplicate subscription %s: %w", sub.ID, err)
+	}
+	return nil
 }

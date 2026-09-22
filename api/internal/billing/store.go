@@ -77,6 +77,28 @@ func (s *Store) MarkEventProcessed(ctx context.Context, id string) error {
 	return nil
 }
 
+// withAdvisoryLock takes a session-level Postgres advisory lock scoped to
+// key for the duration of fn, so at most one caller is ever inside fn for
+// that key at a time. Uses a dedicated connection acquired from the pool
+// for the lock/unlock pair, not tied to any of fn's own transactions.
+// Shared by WithEventLock and WithGuildLock (DRY) — their key spaces
+// never collide because a raw Stripe event id (WithEventLock's key) is
+// never spelled like WithGuildLock's "guild-checkout:<id>" prefix.
+func (s *Store) withAdvisoryLock(ctx context.Context, key string, fn func(context.Context) error) error {
+	conn, err := s.Pool.Acquire(ctx)
+	if err != nil {
+		return fmt.Errorf("billing: lock %s: acquire: %w", key, err)
+	}
+	defer conn.Release()
+	if _, err := conn.Exec(ctx, `select pg_advisory_lock(hashtext($1))`, key); err != nil {
+		return fmt.Errorf("billing: lock %s: lock: %w", key, err)
+	}
+	defer func() {
+		_, _ = conn.Exec(context.WithoutCancel(ctx), `select pg_advisory_unlock(hashtext($1))`, key)
+	}()
+	return fn(ctx)
+}
+
 // WithEventLock takes a session-level Postgres advisory lock scoped to
 // event id for the duration of fn, so at most one webhook delivery for
 // that event id is ever inside fn at a time. This is what makes
@@ -85,23 +107,79 @@ func (s *Store) MarkEventProcessed(ctx context.Context, id string) error {
 // outrun a slow first attempt that has not yet responded): the second
 // caller blocks here until the first's fn has returned (success or
 // failure) and the lock is released, then sees the now-correct
-// processed_at state. Uses a dedicated connection acquired from the
-// pool for the lock/unlock pair, not tied to any of fn's own
-// transactions (handleEvent's writes go through entitlements.Store,
-// which manages its own transactions independently).
+// processed_at state. handleEvent's writes go through entitlements.Store,
+// which manages its own transactions independently of this lock.
 func (s *Store) WithEventLock(ctx context.Context, id string, fn func(context.Context) error) error {
-	conn, err := s.Pool.Acquire(ctx)
+	return s.withAdvisoryLock(ctx, id, fn)
+}
+
+// WithGuildLock takes a session-level Postgres advisory lock scoped to
+// guildID for the duration of fn, so at most one caller is ever inside fn
+// for that guild at a time — the fix for the security review's
+// double-billing finding (2026-09-21): without it, two officers checking
+// out for the same guild concurrently could each read "no active plan"
+// from checkGuildCheckout before either had created a Checkout Session,
+// each pay, and the second webhook would silently overwrite the first
+// subscription id in entitlements (UpsertStripe's duplicate guard,
+// entitlements/store.go, is the second, independent layer against the
+// same race). Held by handler.go's guildCheckout from the entitlement
+// read through Checkout Session creation and the pending_checkouts write.
+func (s *Store) WithGuildLock(ctx context.Context, guildID int64, fn func(context.Context) error) error {
+	return s.withAdvisoryLock(ctx, fmt.Sprintf("guild-checkout:%d", guildID), fn)
+}
+
+// RecordPendingCheckout writes one row marking a guild-plan Checkout
+// Session in flight (security review fix, 2026-09-21) — called inside
+// WithGuildLock, after the Checkout Session is created, so a second
+// caller for the same guild inside a later lock window sees it via
+// PendingGuildCheckout and is refused exactly as an already-active plan
+// would refuse it.
+func (s *Store) RecordPendingCheckout(ctx context.Context, guildID, userID int64, stripeSessionID string, expiresAt time.Time) error {
+	if _, err := s.Pool.Exec(ctx,
+		`insert into pending_checkouts (guild_id, user_id, stripe_session_id, expires_at) values ($1, $2, $3, $4)`,
+		guildID, userID, stripeSessionID, expiresAt); err != nil {
+		return fmt.Errorf("billing: record pending checkout guild %d: %w", guildID, err)
+	}
+	return nil
+}
+
+// PendingGuildCheckout reports whether guildID has an unexpired pending
+// Checkout Session in flight. Read inside checkGuildCheckout's own
+// WithGuildLock window, so it only ever race-frees against a genuinely
+// concurrent caller — never a stale row left by a session nobody
+// completed, which expires_at (and the reconcile sweep below) bounds.
+func (s *Store) PendingGuildCheckout(ctx context.Context, guildID int64) (bool, error) {
+	var exists bool
+	if err := s.Pool.QueryRow(ctx,
+		`select exists (select 1 from pending_checkouts where guild_id = $1 and expires_at > now())`,
+		guildID).Scan(&exists); err != nil {
+		return false, fmt.Errorf("billing: pending checkout guild %d: %w", guildID, err)
+	}
+	return exists, nil
+}
+
+// DeletePendingCheckout removes a guild's pending-checkout row once its
+// Checkout Session's checkout.session.completed webhook lands — a
+// completed session (successful or a caught duplicate) no longer needs
+// to block a later, genuinely new checkout for the same guild.
+func (s *Store) DeletePendingCheckout(ctx context.Context, stripeSessionID string) error {
+	if _, err := s.Pool.Exec(ctx, `delete from pending_checkouts where stripe_session_id = $1`, stripeSessionID); err != nil {
+		return fmt.Errorf("billing: delete pending checkout %s: %w", stripeSessionID, err)
+	}
+	return nil
+}
+
+// SweepExpiredPendingCheckouts deletes every pending_checkouts row whose
+// Checkout Session expired with no webhook ever landing for it (an
+// abandoned checkout) — called from the nightly stripe-reconcile job
+// (spec §2.8), the existing sweep this fix piggybacks on rather than
+// standing up a new background job. Returns how many rows it removed.
+func (s *Store) SweepExpiredPendingCheckouts(ctx context.Context) (int64, error) {
+	tag, err := s.Pool.Exec(ctx, `delete from pending_checkouts where expires_at <= now()`)
 	if err != nil {
-		return fmt.Errorf("billing: lock event %s: acquire: %w", id, err)
+		return 0, fmt.Errorf("billing: sweep pending checkouts: %w", err)
 	}
-	defer conn.Release()
-	if _, err := conn.Exec(ctx, `select pg_advisory_lock(hashtext($1))`, id); err != nil {
-		return fmt.Errorf("billing: lock event %s: lock: %w", id, err)
-	}
-	defer func() {
-		_, _ = conn.Exec(context.WithoutCancel(ctx), `select pg_advisory_unlock(hashtext($1))`, id)
-	}()
-	return fn(ctx)
+	return tag.RowsAffected(), nil
 }
 
 // GuildClaimed reports whether guildID has been claimed (spec §2.3

@@ -11,6 +11,7 @@ package billing
 import (
 	"context"
 	"errors"
+	"time"
 
 	stripe "github.com/stripe/stripe-go/v82"
 )
@@ -42,6 +43,16 @@ type CheckoutParams struct {
 	CancelURL         string
 }
 
+// ProductIDPremium and ProductIDGuild are the two fixed Stripe Product
+// ids stripe-setup creates (cmd/api/stripe_setup.go's priceSpecs) — the
+// single source of truth for both that command and stripe-reconcile's
+// two-directional check (spec §2.8, security review fix 2026-09-21),
+// which lists Stripe's own live subscriptions against exactly these ids.
+const (
+	ProductIDPremium = "prod_fs_premium"
+	ProductIDGuild   = "prod_fs_guild"
+)
+
 // PriceSpec is one (product, price) pair stripe-setup ensures exists
 // (spec §2.1's table).
 type PriceSpec struct {
@@ -59,6 +70,30 @@ type PortalCall struct {
 	ReturnURL  string
 }
 
+// CheckoutSession is what CreateCheckoutSession returns: the checkout
+// URL, plus the Stripe Session id and its own expiry — both needed by
+// the guild-plan path's pending_checkouts row (security review fix,
+// 2026-09-21, handler.go's guildCheckout): SessionID is what
+// DeletePendingCheckout later matches against, and ExpiresAt is what
+// that row's own expires_at mirrors, so an abandoned checkout stops
+// blocking a later real one on the same guild without waiting on a
+// webhook that will never arrive.
+type CheckoutSession struct {
+	URL       string
+	SessionID string
+	ExpiresAt time.Time
+}
+
+// StripeSubscriptionSummary is what ListSubscriptions returns for each
+// live Stripe subscription against one of our own products — just
+// enough for stripe-reconcile's orphan check (spec §2.8's last
+// paragraph, security review fix 2026-09-21), never the full
+// Subscription object.
+type StripeSubscriptionSummary struct {
+	ID     string
+	Status string
+}
+
 // Gateway is every Stripe API call this package makes. StripeGateway
 // wraps stripe-go's unified client; FakeGateway is an in-memory
 // implementation of the same interface — every test in this codebase
@@ -66,7 +101,7 @@ type PortalCall struct {
 // real Stripe API (the coordinator's lane constraint).
 type Gateway interface {
 	CreateCustomer(ctx context.Context, email string) (customerID string, err error)
-	CreateCheckoutSession(ctx context.Context, p CheckoutParams) (checkoutURL string, err error)
+	CreateCheckoutSession(ctx context.Context, p CheckoutParams) (CheckoutSession, error)
 	CreatePortalSession(ctx context.Context, customerID, returnURL string) (portalURL string, err error)
 	// GetSubscription re-fetches a Subscription fresh by id — the one
 	// call every webhook event handler makes instead of trusting the
@@ -77,4 +112,17 @@ type Gateway interface {
 	// when spec.LookupKey resolves to none, a no-op otherwise (spec
 	// §2.1 — never mutates an existing price's amount).
 	EnsurePrice(ctx context.Context, spec PriceSpec) error
+	// CancelSubscriptionAtPeriodEnd sets cancel_at_period_end on a live
+	// Stripe subscription — the newcomer side of the duplicate-
+	// subscription guard (entitlements.UpsertResult.Duplicate,
+	// webhook.go's upsertFromSubscription): the officer who
+	// accidentally paid twice keeps what they already paid for through
+	// the current period; the operator's runbook (spec §2.7) covers
+	// refunding that charge by hand.
+	CancelSubscriptionAtPeriodEnd(ctx context.Context, subscriptionID string) error
+	// ListSubscriptions lists every subscription Stripe currently
+	// considers live against productID — stripe-reconcile's
+	// two-directional check (spec §2.8): Stripe → our database, the
+	// direction the original design deferred and this fix implements.
+	ListSubscriptions(ctx context.Context, productID string) ([]StripeSubscriptionSummary, error)
 }
