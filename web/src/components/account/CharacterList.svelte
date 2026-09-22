@@ -62,7 +62,7 @@
             {rulesetLabel(character.ruleset)}
             {character.region.toUpperCase()}
             {#if character.realm !== undefined}· {character.realm}{/if}
-            {#if character.level !== undefined}· Level {character.level}{/if}
+            {#if character.level !== undefined}· {characterListCopy.levelPrefix(character.level)}{/if}
           </span>
           {#if character.guild !== undefined}
             <span class="text-muted" data-testid="character-guild-line">
