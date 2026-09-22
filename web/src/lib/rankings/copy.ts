@@ -3,7 +3,6 @@
 // voice: never demands a choice the visitor cannot make.
 export const encounterPickerCopy = {
   heading: 'Choose an encounter',
-  loading: 'Loading encounters.',
   failed: 'Encounters did not load.',
   noneYet: 'No encounters have been ranked yet.',
   tryGuildsProgress: 'The Guilds board ranks guild progress across every encounter and needs none.',

@@ -31,6 +31,7 @@
     type RankingsPage,
   } from '../lib/rankings/api';
   import { encounterPickerCopy } from '../lib/rankings/copy';
+  import { RANKINGS_LOADING_MIN_H } from '../lib/rankings/layout';
   import { PHASES } from '../lib/rankings/phases';
   import {
     FACTIONS,
@@ -343,7 +344,7 @@
       {/if}
     </div>
   {:else if status === 'loading'}
-    <Skeleton lines={8} rowHeight="h-11" minHeight="min-h-[440px]" testid="rankings-skeleton" />
+    <Skeleton lines={8} rowHeight="h-11" minHeight={RANKINGS_LOADING_MIN_H} testid="rankings-skeleton" />
   {:else if status === 'failed'}
     <LoadError message={error} onRetry={() => (attempt += 1)} testid="rankings-error" />
   {:else if state.board === 'guild'}

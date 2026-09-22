@@ -3,7 +3,6 @@
 // honest-copy voice: never promises what is not built, no exclamation marks.
 export const recentReportsCopy = {
   heading: 'Recent public reports',
-  loading: 'Loading recent reports.',
   failed: 'Recent reports did not load.',
   empty: 'No public reports yet. The first raid logs land in December; dungeon logs are welcome now.',
   older: 'Older reports',

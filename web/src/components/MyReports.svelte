@@ -3,6 +3,7 @@
      there is one "who is signed in" fetch per page rather than two. -->
 <script lang="ts">
   import { REPORTS_PER_PAGE, listMyReports, type MyReport } from '../lib/account/api';
+  import { REPORTS_LOADING_MIN_H } from '../lib/reports/layout';
   import { myReportsCopy } from '../lib/reports/my-reports-copy';
   import ReportRow from './ReportRow.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
@@ -46,7 +47,10 @@
   {#if !signedIn}
     <SignInPrompt line="Sign in to see the reports you own." testid="reports-signin" />
   {:else if status === 'loading'}
-    <Skeleton lines={5} rowHeight="h-11" testid="my-reports-skeleton" />
+    <!-- Five rows, not REPORTS_PER_PAGE's hundred: a hundred shimmering rows would be
+         its own kind of noise, so the row count is a legible stand-in and
+         REPORTS_LOADING_MIN_H carries the reservation /logs' CLS 0.05 budget needs. -->
+    <Skeleton lines={5} rowHeight="h-11" minHeight={REPORTS_LOADING_MIN_H} testid="my-reports-skeleton" />
   {:else if status === 'failed'}
     <LoadError
       message={myReportsCopy.failed}
