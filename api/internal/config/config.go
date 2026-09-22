@@ -34,7 +34,7 @@ const (
 	defaultBnetRegions = "us,eu"
 	// defaultBnetProbeGames is every game namespace segment the nightly
 	// refresh's probe checks (spec §5).
-	defaultBnetProbeGames = "classic1x,classic,classic-forever,classicforever,forever,classic60,anniversary"
+	defaultBnetProbeGames = "classic1x,classic-forever,classicforever,forever,classic60,anniversary"
 )
 
 // defaultTrustedProxyHops is used when TRUSTED_PROXY_HOPS is not set. 1

@@ -259,7 +259,7 @@ the same rows the companion writes.
 
 `bnetapi.Probe(ctx, region) []ProbeResult` requests
 `GET /data/wow/realm/index?namespace=dynamic-{game}-{region}` for each game in
-`BNET_PROBE_GAMES` (default `classic1x,classic,classic-forever,classicforever,forever,classic60,anniversary`)
+`BNET_PROBE_GAMES` (default `classic1x,classic-forever,classicforever,forever,classic60,anniversary`)
 and returns `{Game, Status}`. The refresh job logs one line per game; any game other than the
 configured one that answers 200 is logged at WARN as `namespace_appeared`. Also
 `GET https://us.version.battle.net/wow_classic_beta/versions` style CDN products are **not**
