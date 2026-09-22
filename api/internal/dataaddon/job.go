@@ -44,10 +44,11 @@ func (noopLogger) Error(string, ...any) {}
 
 // Result is what one run produced.
 type Result struct {
-	Characters  int            // rows written
-	Guilds      int            // rows written
-	SkippedRows int            // rows a bad player_key could not be formatted for
-	Files       map[string]int // filename -> byte size (the dispatch's "size line")
+	Characters  int               // rows written
+	Guilds      int               // rows written
+	SkippedRows int               // rows a bad player_key could not be formatted for
+	Files       map[string]int    // filename -> byte size (the dispatch's "size line")
+	Rendered    map[string][]byte // filename -> content, for a caller (the golden test) that needs the bytes themselves
 }
 
 // objectKeyPrefix is where every published file (and the manifest) lives
@@ -83,7 +84,8 @@ func Run(ctx context.Context, d Deps) (Result, error) {
 	}
 
 	return Result{
-		Characters: len(characters), Guilds: len(guilds), SkippedRows: skipped, Files: sizes,
+		Characters: len(characters), Guilds: len(guilds), SkippedRows: skipped,
+		Files: sizes, Rendered: files,
 	}, nil
 }
 
