@@ -73,6 +73,35 @@ func (s *Service) captureProfile(ctx context.Context, tx pgx.Tx, key string, pro
 	return nil
 }
 
+// captureMedia fetches and stores a character's render/avatar image URLs
+// and the raw character-media response (bnet_media), the same
+// coalesce-on-partial-data shape captureProfile and captureEquipment use
+// (.superpowers/account-visual-brief.md §A2/A3). A 404/403 character-media
+// (a Season of Discovery character, a private profile) leaves the row
+// exactly as it was and logs nothing beyond what syncCharacterGuild's own
+// profile_unavailable already recorded.
+func (s *Service) captureMedia(ctx context.Context, tx pgx.Tx, key, region, realmSlug, name string) error {
+	media, raw, err := s.Client.CharacterMedia(ctx, region, realmSlug, name)
+	if err != nil {
+		if errors.Is(err, bnetapi.ErrNotFound) || errors.Is(err, bnetapi.ErrForbidden) {
+			return nil
+		}
+		return fmt.Errorf("bnetimport: media %s: %w", key, err)
+	}
+	raw = s.capCapture("bnet_media", key, raw)
+	if _, err := tx.Exec(ctx,
+		`update characters set
+		   avatar_url = coalesce(nullif($2, ''), avatar_url),
+		   render_url = coalesce(nullif($3, ''), render_url),
+		   bnet_media = coalesce($4, bnet_media),
+		   bnet_captured_at = now()
+		 where key = $1`,
+		key, media.AvatarURL, media.RenderURL, rawOrNil(raw)); err != nil {
+		return fmt.Errorf("bnetimport: capture media %s: %w", key, err)
+	}
+	return nil
+}
+
 // captureEquipment fetches and stores a character's equipment snapshot
 // verbatim (spec §B — not parsed here). A private or missing equipment
 // page (403/404) is left exactly as it was, the same rule

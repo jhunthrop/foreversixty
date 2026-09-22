@@ -24,7 +24,7 @@ const ME = {
 
 test('a signed-in member sees hand-off links only for a character with an addon export', async ({ page }) => {
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
-  await page.route('**/v1/devices', (route) => route.fulfill(envelope({ devices: [] })));
+  await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
   await page.route('**/v1/characters/us/normal/thrallgar/sim-input', (route) =>
     route.fulfill(
       envelope({

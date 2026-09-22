@@ -105,7 +105,16 @@ export interface BuildSeen {
 }
 
 export interface CharacterPage {
-  character: { name: string; region: string; ruleset: string; class?: string };
+  character: {
+    name: string;
+    region: string;
+    ruleset: string;
+    class?: string;
+    /** Blizzard's own render-CDN images (design/DESIGN-SYSTEM.md), omitted when the
+     *  Battle.net import has not captured them. */
+    avatar_url?: string;
+    render_url?: string;
+  };
   best: CharacterFight[];
   history: CharacterFight[];
   builds_seen: BuildSeen[];

@@ -70,6 +70,9 @@ func (s *Service) importOneCharacter(ctx context.Context, userID int64, region, 
 	if err := s.captureEquipment(ctx, tx, key, region, ch.RealmSlug, ch.Name); err != nil {
 		return false, false, false, err
 	}
+	if err := s.captureMedia(ctx, tx, key, region, ch.RealmSlug, ch.Name); err != nil {
+		return false, false, false, err
+	}
 	if err := tx.Commit(ctx); err != nil {
 		return false, false, false, fmt.Errorf("bnetimport: commit %s: %w", key, err)
 	}

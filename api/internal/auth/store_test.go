@@ -251,8 +251,9 @@ func TestCharactersIncludesRaceGenderAndItemLevel(t *testing.T) {
 		t.Fatal(err)
 	}
 	if _, err := s.Pool.Exec(ctx,
-		`insert into characters (key, region, ruleset, name, class, user_id, race, gender, equipped_item_level)
-		 values ('us/pvp/geared', 'us', 'pvp', 'Geared', 'warrior', $1, 'Dwarf', 'male', 54)`, u.ID); err != nil {
+		`insert into characters (key, region, ruleset, name, class, user_id, race, gender, equipped_item_level, avatar_url, render_url)
+		 values ('us/pvp/geared', 'us', 'pvp', 'Geared', 'warrior', $1, 'Dwarf', 'male', 54,
+		         'https://render.worldofwarcraft.com/avatar.jpg', 'https://render.worldofwarcraft.com/main-raw.png')`, u.ID); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := s.Pool.Exec(ctx,
@@ -277,6 +278,12 @@ func TestCharactersIncludesRaceGenderAndItemLevel(t *testing.T) {
 	if geared.ItemLevel == nil || *geared.ItemLevel != 54 {
 		t.Fatalf("geared item level = %v, want 54", geared.ItemLevel)
 	}
+	if geared.AvatarURL == nil || *geared.AvatarURL != "https://render.worldofwarcraft.com/avatar.jpg" {
+		t.Fatalf("geared avatar_url = %v", geared.AvatarURL)
+	}
+	if geared.RenderURL == nil || *geared.RenderURL != "https://render.worldofwarcraft.com/main-raw.png" {
+		t.Fatalf("geared render_url = %v", geared.RenderURL)
+	}
 
 	plain := byKey["us/pvp/plain"]
 	if plain.Race != "" || plain.Gender != "" {
@@ -284,6 +291,9 @@ func TestCharactersIncludesRaceGenderAndItemLevel(t *testing.T) {
 	}
 	if plain.ItemLevel != nil {
 		t.Fatalf("plain item level = %v, want nil (omitted from JSON)", plain.ItemLevel)
+	}
+	if plain.AvatarURL != nil || plain.RenderURL != nil {
+		t.Fatalf("plain avatar/render = %v/%v, want both nil (omitted from JSON)", plain.AvatarURL, plain.RenderURL)
 	}
 }
 

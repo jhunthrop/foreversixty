@@ -13,9 +13,12 @@ import Account from '../components/Account.svelte';
   <main
     id="main"
     tabindex="-1"
-    class="mx-auto flex w-full max-w-[640px] flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+    class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
-    <h1 class="section-title text-[18px]">Your account</h1>
+    <!-- The title lives inside Account.svelte itself, not here (brief 2026-09-22 §B1: it
+         sits beside the identity line at lg, and both come from the same `me` load) --
+         same "the island owns its own <h1>" pattern character.astro uses for
+         Character.svelte, rather than the two rendering a duplicate heading. -->
     <Account client:load mode="account" />
   </main>
 </Base>

@@ -109,7 +109,7 @@ func (s *Service) RunRefresh(ctx context.Context, probeGames []string) (RefreshR
 // Blizzard character id and realm (spec A3 — never trusting the key as
 // it stood when the batch was snapshotted, which a concurrent login
 // import may have rekeyed since), bumps its refreshed_at, and re-runs
-// the guild sync and equipment capture steps of the import (spec §4.2
+// the guild sync, equipment capture, and media capture steps of the import (spec §4.2
 // steps 4-5, §B). It never re-runs step 3 (the characters row's own
 // class/level/faction/realm), which needs the account's own user token
 // the nightly job does not have. A row that has since been rekeyed or
@@ -146,6 +146,9 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 		return err
 	}
 	if err := s.captureEquipment(ctx, tx, key, region, sc.RealmSlug, name); err != nil {
+		return err
+	}
+	if err := s.captureMedia(ctx, tx, key, region, sc.RealmSlug, name); err != nil {
 		return err
 	}
 	if err := tx.Commit(ctx); err != nil {

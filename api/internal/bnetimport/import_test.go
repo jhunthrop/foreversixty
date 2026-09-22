@@ -40,6 +40,11 @@ func TestImportAccountWritesAGuildedCharacterAndItsMembership(t *testing.T) {
 	}
 	f.json(http.MethodGet, "/profile/wow/character/whitemane/thoradin/equipment?namespace=profile-classic1x-us",
 		http.StatusOK, map[string]any{"equipped_items": []map[string]any{}})
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/thoradin/character-media?namespace=profile-classic1x-us",
+		http.StatusOK, map[string]any{"assets": []map[string]string{
+			{"key": "avatar", "value": "https://render.worldofwarcraft.com/us/character/whitemane/1-thoradin-avatar.jpg"},
+			{"key": "main-raw", "value": "https://render.worldofwarcraft.com/character/whitemane/1-thoradin-main-raw.png"},
+		}})
 
 	svc := newTestService(t, pool, f)
 	summary, err := svc.ImportAccount(context.Background(), uid, "user-oauth-token")
@@ -52,14 +57,24 @@ func TestImportAccountWritesAGuildedCharacterAndItsMembership(t *testing.T) {
 
 	var region, ruleset, source, race, gender string
 	var level, avgIL, equipIL int
-	var bnetAccount, bnetProfile, bnetEquipment []byte
+	var bnetAccount, bnetProfile, bnetEquipment, bnetMedia []byte
+	var avatarURL, renderURL *string
 	if err := pool.QueryRow(context.Background(),
 		`select region, ruleset, level, source, race, gender, average_item_level, equipped_item_level,
-		        bnet_account, bnet_profile, bnet_equipment
+		        bnet_account, bnet_profile, bnet_equipment, avatar_url, render_url, bnet_media
 		 from characters where key = 'us/pvp/thoradin'`).
 		Scan(&region, &ruleset, &level, &source, &race, &gender, &avgIL, &equipIL,
-			&bnetAccount, &bnetProfile, &bnetEquipment); err != nil {
+			&bnetAccount, &bnetProfile, &bnetEquipment, &avatarURL, &renderURL, &bnetMedia); err != nil {
 		t.Fatal(err)
+	}
+	if avatarURL == nil || *avatarURL != "https://render.worldofwarcraft.com/us/character/whitemane/1-thoradin-avatar.jpg" {
+		t.Fatalf("avatar_url = %v", avatarURL)
+	}
+	if renderURL == nil || *renderURL != "https://render.worldofwarcraft.com/character/whitemane/1-thoradin-main-raw.png" {
+		t.Fatalf("render_url = %v", renderURL)
+	}
+	if len(bnetMedia) == 0 {
+		t.Fatal("bnet_media was not captured")
 	}
 	if region != "us" || ruleset != "pvp" || level != 60 || source != "bnet" {
 		t.Fatalf("character row = %s/%s level=%d source=%s", region, ruleset, level, source)
@@ -236,6 +251,8 @@ func TestImportAccountRekeysWhenARealmsRulesetResolvesDifferently(t *testing.T) 
 	}
 	f.json(http.MethodGet, "/profile/wow/character/whitemane/dottzz/equipment?namespace=profile-classic1x-us",
 		http.StatusOK, map[string]any{"equipped_items": []map[string]any{}})
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/dottzz/character-media?namespace=profile-classic1x-us",
+		http.StatusOK, map[string]any{"assets": []map[string]string{}})
 
 	svc := newTestService(t, pool, f)
 	if _, err := svc.ImportAccount(ctx, uid, "user-oauth-token"); err != nil {
@@ -291,6 +308,8 @@ func TestImportAccountLogsAndCountsA404CharacterProfileAsUnavailable(t *testing.
 	f.json(http.MethodGet, "/profile/wow/character/whitemane/sodpop?namespace=profile-classic1x-us",
 		http.StatusNotFound, nil)
 	f.json(http.MethodGet, "/profile/wow/character/whitemane/sodpop/equipment?namespace=profile-classic1x-us",
+		http.StatusNotFound, nil)
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/sodpop/character-media?namespace=profile-classic1x-us",
 		http.StatusNotFound, nil)
 
 	svc := newTestService(t, pool, f)

@@ -50,6 +50,10 @@ export interface MeCharacter {
   gender?: 'male' | 'female';
   /** Equipped item level, from the Battle.net character profile when it answered. */
   item_level?: number;
+  /** Blizzard's own render-CDN images (design/DESIGN-SYSTEM.md's "Character row"/hero
+   *  band); omitted when the Battle.net import has not captured them. */
+  avatar_url?: string;
+  render_url?: string;
   /** `'bnet'` or `'export'` -- which path last wrote this row. Optional: older/stubbed
    *  fixtures written before the Battle.net import landed carry no such field. */
   source?: string;

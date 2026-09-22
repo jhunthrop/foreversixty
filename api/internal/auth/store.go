@@ -112,6 +112,11 @@ type Character struct {
 	// ItemLevel is the character's equipped item level from the last
 	// Battle.net profile capture; omitted when unknown.
 	ItemLevel *int `json:"item_level,omitempty"`
+	// AvatarURL and RenderURL are Blizzard's own render-CDN images for
+	// this character (spec .superpowers/account-visual-brief.md §A4),
+	// omitted when the Battle.net import has not captured them.
+	AvatarURL *string `json:"avatar_url,omitempty"`
+	RenderURL *string `json:"render_url,omitempty"`
 	// Source is which path most recently wrote this row: "export" or
 	// "bnet".
 	Source string `json:"source"`
@@ -353,6 +358,7 @@ func (s *Store) RevokeDevice(ctx context.Context, userID int64, id string) (bool
 const characterColumns = `c.key, c.region, c.ruleset, c.name, coalesce(c.class, ''),
 	        coalesce(c.realm_name, ''), c.level, coalesce(c.faction, ''), c.source,
 	        coalesce(c.race, ''), coalesce(c.gender, ''), c.equipped_item_level,
+	        c.avatar_url, c.render_url,
 	        g.id, g.name, gc.rank, gc.rank_index, gc.verified_at is not null`
 
 // characterFrom is the join every character read shares: a character
@@ -376,6 +382,7 @@ func scanCharacterRows(rows pgx.Rows) ([]Character, error) {
 		if err := rows.Scan(&c.Key, &c.Region, &c.Ruleset, &c.Name, &c.Class,
 			&c.Realm, &c.Level, &c.Faction, &c.Source,
 			&c.Race, &c.Gender, &c.ItemLevel,
+			&c.AvatarURL, &c.RenderURL,
 			&guildID, &guildName, &rank, &rankIndex, &verified); err != nil {
 			return nil, fmt.Errorf("auth: scan characters: %w", err)
 		}

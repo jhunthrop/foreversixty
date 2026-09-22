@@ -27,7 +27,7 @@ const ME = {
 
 test('changing consent calls the API and leaving removes the row', async ({ page }) => {
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
-  await page.route('**/v1/devices', (route) => route.fulfill(envelope({ devices: [] })));
+  await page.route('**/v1/devices', (route) => route.fulfill(envelope([])));
   await page.route('**/v1/guilds/501/members/me', (route) => {
     if (route.request().method() === 'PATCH') return route.fulfill(envelope({ consent: 'roster' }));
     return route.fulfill(envelope({ status: 'left' }));
