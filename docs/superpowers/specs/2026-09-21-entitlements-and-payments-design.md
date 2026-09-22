@@ -672,21 +672,82 @@ func (s *Service) upsertFromSubscription(ctx context.Context, sub *stripe.Subscr
   the Charge→Subscription resolution later if refund volume ever makes the manual step error-
   prone.
 
+**Amendment, 2026-09-21 (security review response).** An independent security review found
+`checkGuildCheckout` (§2.3) reading a guild's entitlement with a plain, unserialized SELECT:
+two officers of the same guild checking out concurrently could each read "no active plan,"
+each create a Checkout Session, and each pay. The second webhook's `upsertFromSubscription`
+then silently overwrote the first officer's `stripe_subscription_id` in `entitlements`,
+orphaning their subscription — it kept billing with nothing in our database pointing at it —
+and §2.8's original, database-→-Stripe-only reconcile could never find it (it has no local
+row to start walking from). Three independent layers close this, all landed in the same
+`pay-api` branch this spec describes:
+
+1. **A per-guild Postgres advisory lock** (`billing.Store.WithGuildLock`, mirroring the
+   webhook's own `WithEventLock`) serializes §2.3's three preconditions through Checkout
+   Session creation, plus a `pending_checkouts` row (`guild_id`, `user_id`,
+   `stripe_session_id`, `expires_at` mirroring the Checkout Session's own expiry) written
+   inside that same lock — a second caller in the same window sees the pending row and gets
+   the identical `409 conflict`/`portal_hint` shape an already-active plan would answer with.
+   The row is cleared when its `checkout.session.completed` webhook lands, or by
+   §2.8's nightly sweep once it expires with no webhook ever landing (an abandoned checkout).
+2. **`upsertFromSubscription` refuses to overwrite.** When it finds an existing row for a
+   `(subject, plan)` already `active`/`trialing`/`past_due` and pointing at a *different*
+   `stripe_subscription_id`, the row is left untouched, and the newcomer is recorded in a new
+   `entitlement_anomalies` table (`kind = 'duplicate_subscription'`) instead — see migration
+   `0020`'s amendment. The newcomer subscription is then canceled at Stripe with
+   `cancel_at_period_end: true` through the `Gateway` interface (never revoked, so whoever
+   paid for it keeps what they already paid for through the current period).
+3. **`stripe-reconcile` becomes two-directional** (§2.8, revised below): the
+   database-→-Stripe pass this section originally specified is unchanged, but the "logs...
+   as an anomaly to investigate" promise this section made and never implemented is now real,
+   through `Gateway.ListSubscriptions` and the same `entitlement_anomalies` table
+   (`kind = 'orphan_subscription'`).
+
+**Operator runbook for a `duplicate_subscription` anomaly**: query `entitlement_anomalies
+where kind = 'duplicate_subscription'` (or wait for the eventual admin surface to list them —
+not built in this fix). Each row names the plan, the guild or user subject, the newcomer's
+`stripe_subscription_id`, and when it happened. In the Stripe Dashboard, find that
+subscription (already `cancel_at_period_end` by the time it is recorded — no urgency), and
+**refund the second officer's charge**, exactly as the ordinary refund runbook above already
+does: refund and cancel in the same action (the newcomer is already scheduled to cancel at
+period end, so "cancel" here means canceling it immediately rather than waiting out the
+period, if the refund is issued before then). The kept row (`ExistingSubscriptionID` in the
+anomaly's sibling `entitlements` row) needs no action — it was never touched.
+
 ### 2.8 Reconciliation
 
 A seventh `os.Args[1]` subcommand, `stripe-reconcile`, run nightly on a Cloud Scheduler job
-the same way `sim-validate` already is (`api/README.md`'s job-creation pattern). It lists
-every `entitlements` row with `source = 'stripe'` and `status` not `canceled`, re-fetches
-each by `stripe_subscription_id`, and calls `upsertFromSubscription` — healing any webhook
-Stripe's own three-day retry window never successfully delivered (rare, but the backstop
-this spec's brief asks for explicitly). One-directional (database → Stripe, not the reverse):
-Stripe's own retry-for-three-days already covers the common case, and a two-directional sync
-would mean discovering and reconciling Stripe subscriptions with **no** local row at all,
-which should not exist under normal operation (every subscription this integration creates
-carries `subscription_data.metadata`) and is a signal worth a human looking at, not silently
-auto-repairing — the reconciliation job logs (does not create rows for) any Stripe
-subscription referencing this account's products that has no matching `stripe_subscription_id`
-locally, as an anomaly to investigate.
+the same way `sim-validate` already is (`api/README.md`'s job-creation pattern), with three
+passes:
+
+1. **Database → Stripe** (the original design): every `entitlements` row with
+   `source = 'stripe'` and `status` not `canceled` is re-fetched fresh by
+   `stripe_subscription_id` and upserted through `upsertFromSubscription` exactly as a
+   webhook event would — healing anything Stripe's own three-day retry window never
+   successfully delivered (rare, but the backstop this spec's brief asks for explicitly).
+2. **The `pending_checkouts` sweep** (added by the amendment below): any row whose Checkout
+   Session has expired with no webhook ever landing for it — an abandoned checkout — is
+   deleted, the same backstop role this job already plays for webhooks, extended to a
+   session nobody ever completed.
+3. **Stripe → database** (added by the amendment below): for each of our two Stripe Product
+   ids (`billing.ProductIDPremium`, `billing.ProductIDGuild`), `Gateway.ListSubscriptions`
+   lists every subscription Stripe currently considers live, and any with no matching
+   `entitlements.stripe_subscription_id` is written to `entitlement_anomalies`
+   (`kind = 'orphan_subscription'`) for a human to investigate.
+
+**Amendment, 2026-09-21 (security review response): pass 3 is new, and pass 2 is new.**
+Originally this job was one-directional (database → Stripe only, pass 1 above): Stripe's own
+retry-for-three-days already covers the common case, and the reasoning against a
+two-directional sync was that a Stripe subscription with no local row should not exist under
+normal operation (every subscription this integration creates carries
+`subscription_data.metadata`) and is a signal worth a human looking at, not something to
+silently auto-repair. That reasoning still holds — pass 3 does not auto-repair anything, it
+only surfaces the anomaly durably (a queryable `entitlement_anomalies` row) instead of the log
+line this section originally specified and the code never actually wrote. Pass 3 is exactly
+the layer that would have caught the double-billing finding's orphaned first subscription,
+which pass 1 alone can never see (it has no local row to start walking from) — see §2.7's own
+amendment for the full finding and the other two layers that close it, and for the operator
+runbook a `duplicate_subscription` or `orphan_subscription` anomaly row calls for.
 
 ### 2.9 Who may buy the guild plan, and what happens on departure
 
