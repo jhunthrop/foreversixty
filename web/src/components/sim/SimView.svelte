@@ -17,7 +17,7 @@
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
-  import { fetchSim, fetchSpecs, listMySims } from '../../lib/sim/api';
+  import { fetchSpecs, listMySims } from '../../lib/sim/api';
   import { codeForCharacterSpec } from '../../lib/sim/character';
   import { decideBootstrap, RESTORE_BUSY_KEY, runBootstrapRestore } from '../../lib/sim/character-bootstrap';
   import { compareSummaries } from '../../lib/sim/compare';
@@ -25,6 +25,7 @@
   import type { KindFilter } from '../../lib/sim/history';
   import { SIM_LAZY_MIN_H } from '../../lib/sim/lazy-layout';
   import { browserNotifier, enableNotifications, notifyFinished } from '../../lib/sim/notify';
+  import { createSavedSimState } from '../../lib/sim/saved-sim-state.svelte';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
   import {
@@ -144,24 +145,12 @@
   // above: a prerendered fixture page already carries its result (`inlineResult`), so only
   // the id-only case fetches. Called once, here, rather than from an `$effect` -- the same
   // reason `enterCompare` is not one.
-  let savedResult = $state<SimResult | null>(untrack(() => inlineResult));
-  let savedError = $state<string | null>(null);
-
-  // Named and retriggerable so a failed fetch's LoadError can call it again in place,
-  // rather than leaving a dead-end message with no way back to the saved sim.
-  function loadSavedSim(): void {
-    savedError = null;
-    void fetchSim(simId)
-      .then((result) => (savedResult = result))
-      .catch((error) => {
-        savedError = error instanceof Error ? error.message : simCopy.loadFailed;
-      });
-  }
+  const savedSim = createSavedSimState(untrack(() => inlineResult));
 
   // One-time init read, the same reason bootstrap and store above are wrapped: the
   // .then/.catch callbacks run later, as ordinary reactive writes.
   untrack(() => {
-    if (hasSavedSimId && savedResult === null && simId !== '') loadSavedSim();
+    if (hasSavedSimId && savedSim.result === null && simId !== '') savedSim.load(simId);
   });
 
   /**
@@ -171,15 +160,15 @@
    * `request.character`, converted to an FS1 code and handed to `?code=` instead.
    */
   function onRerunSaved(): void {
-    if (savedResult === null) return;
-    const { kind, ref } = savedResult.request.source;
+    if (savedSim.result === null) return;
+    const { kind, ref } = savedSim.result.request.source;
     const target =
       ref !== ''
         ? withSimState(defaultSimState(), { source: kind, ref })
         : withSimState(defaultSimState(), {
             // codeForCharacterSpec carries the saved result's own gear list, enchants and
             // suffixes included (contract 10.5) -- character.ts's own reason.
-            code: codeForCharacterSpec(savedResult.request.character, bootstrap.treeVersion),
+            code: codeForCharacterSpec(savedSim.result.request.character, bootstrap.treeVersion),
           });
     window.location.href = `/sim${simSearch(target)}`;
   }
@@ -505,12 +494,12 @@
   {#if hasSavedSimId}
     <!-- /sim/<sim_id>: read-only, and not the sim page with a result in it -- no switcher,
          no settings bar, no run control. SavedSim composes its own heading. -->
-    {#if savedResult !== null}
-      <SavedSim result={savedResult} onrerun={onRerunSaved} />
-    {:else if savedError !== null}
+    {#if savedSim.result !== null}
+      <SavedSim result={savedSim.result} onrerun={onRerunSaved} />
+    {:else if savedSim.error !== null}
       <!-- Same reason as the lazyFallback wrapper above: LoadError has no class-passthrough prop. -->
       <div class="px-[18px] md:px-0">
-        <LoadError message={savedError} onRetry={() => loadSavedSim()} testid="sim-saved-error" />
+        <LoadError message={savedSim.error} onRetry={() => savedSim.load(simId)} testid="sim-saved-error" />
       </div>
     {:else}
       <!-- Between mounting and a real, non-prerendered id's fetch resolving. Static,
