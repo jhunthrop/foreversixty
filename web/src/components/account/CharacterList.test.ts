@@ -52,12 +52,18 @@ describe('CharacterList', () => {
     expect(body).not.toContain('data-testid="character-guild-line"');
   });
 
-  it('shows the empty state with both actions when there are no characters', () => {
+  it('shows the intro line once, with the paste link, above the list', () => {
+    const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
+    expect(body).toContain(characterListCopy.introLead);
+    expect(body).toContain('href="/addon#paste"');
+  });
+
+  it('shows EmptyState with one action (Refresh from Battle.net) when there are no characters', () => {
     const { body } = render(CharacterList, { props: { characters: [] } });
     expect(body).toContain(characterListCopy.empty);
-    expect(body).toContain('data-testid="characters-refresh"');
-    expect(body).toContain('data-testid="characters-paste"');
-    expect(body).toContain('href="/addon#paste"');
+    expect(body).toContain('data-testid="account-characters-empty"');
+    expect(body).toContain(characterListCopy.refreshFromBattlenet);
+    expect(body).not.toContain('data-testid="characters-paste"');
   });
 
   it('shows the imported-from line only when bnetImportedAt is set', () => {

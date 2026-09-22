@@ -6,12 +6,13 @@
 export const handoffCopy = {
   openInSimulator: 'Open in simulator',
   openInPlanner: 'Open in planner',
-  /** Shown when the site holds no export for the character: the two ways to get one. */
-  needsExportLead: 'No export yet. In game, type /fs export and',
+  /** Shown when the site holds no export for the character. Spec 2026-09-22 §2.3: the "how"
+   *  (addon vs. companion) is explained once, in the Characters section's own intro line
+   *  (character-list-copy.ts) -- this per-row line only points at the one action. */
+  needsExportLead: 'No export yet ·',
   needsExportPasteLink: 'paste it here',
-  needsExportTail: ', or run the desktop companion to send it for you.',
   pasteHref: '/addon#paste',
 } as const;
 
 /** The plain-text form of the needs-export line, for tests and accessible names. */
-export const NEEDS_EXPORT_TEXT = `${handoffCopy.needsExportLead} ${handoffCopy.needsExportPasteLink}${handoffCopy.needsExportTail}`;
+export const NEEDS_EXPORT_TEXT = `${handoffCopy.needsExportLead} ${handoffCopy.needsExportPasteLink}`;

@@ -6,11 +6,15 @@ export const characterListCopy = {
   heading: 'Characters',
   empty: 'No characters linked yet. Sign in with Battle.net to link them.',
   refreshFromBattlenet: 'Refresh from Battle.net',
-  pasteAnExport: 'Paste an export',
   importedFrom: (relative: string): string => `Imported from Battle.net ${relative}.`,
   verified: 'Verified',
   levelPrefix: (level: number): string => `Level ${level}`,
   itemLevelPrefix: (itemLevel: number): string => `ilvl ${itemLevel}`,
   /** spec 2026-09-22 §7.3, shown on /account after a Battle.net refresh redirect. */
   refreshedToast: 'Characters refreshed from Battle.net.',
+  /** Spec 2026-09-22 §2.3: the export "how" explained once, here, instead of on every row
+   *  (handoff-copy.ts's needsExportLead now only points at the paste link). */
+  introLead: 'A character becomes simmable once the site has its export: type /fs export in game and',
+  introPasteLink: 'paste it here',
+  introTail: ', or run the desktop companion and it sends the export for you.',
 } as const;
