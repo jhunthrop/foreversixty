@@ -71,9 +71,13 @@ function SettingsView.write(entry, value, ctx)
 end
 
 --- The page. Called once for the window tab and once for the game panel.
-function SettingsView.build(parent, ctx)
+function SettingsView.build(holder, ctx)
 	local gap, padding = Theme.SIZES.gap, Theme.SIZES.padding
-	local view = { frame = parent, ctx = ctx, toggles = {} }
+	-- The list outgrew the page once every setting had a line explaining it
+	-- (seen in game), so the page scrolls with the wheel.
+	local scroll = Widgets.scrollable(holder)
+	local parent = scroll.content
+	local view = { frame = holder, ctx = ctx, toggles = {}, scroll = scroll }
 	view.title = Widgets.label(parent, L.settingsTitle, "gold")
 	view.title:SetPoint("TOPLEFT", parent, "TOPLEFT", padding, -padding)
 	-- Every row is anchored to the page's left edge at the same x, and only
@@ -99,7 +103,7 @@ function SettingsView.build(parent, ctx)
 		if entry.hint ~= nil then
 			-- Under the label, not under the tick box.
 			place(Widgets.label(parent, entry.hint, "muted", "small"),
-				Theme.SIZES.iconSize + gap, 0, Theme.SIZES.rowHeight)
+				Theme.SIZES.iconSize + gap, -gap, Theme.SIZES.rowHeight)
 		end
 	end
 	view.reset = Widgets.button(parent, L.settingsReset, function()
@@ -107,6 +111,7 @@ function SettingsView.build(parent, ctx)
 		ctx.onPrefChanged({ reset = true }, true)
 	end)
 	place(view.reset, 0, padding, Theme.SIZES.buttonHeight)
+	scroll:SetContentHeight(-y + padding)
 	function view.refresh()
 		for index, entry in ipairs(SettingsView.toggles()) do
 			view.toggles[index]:SetChecked(entry.checked)

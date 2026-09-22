@@ -362,4 +362,51 @@ describe("Widgets", function()
 			_G.IsControlKeyDown = nil
 		end)
 	end)
+	describe("a scrollable page", function()
+		local function holderOf(height)
+			start()
+			local holder = _G.CreateFrame("Frame")
+			holder:SetSize(400, height)
+			return holder
+		end
+
+		it("does not scroll when the content fits", function()
+			local scroll = Widgets.scrollable(holderOf(300))
+			scroll:SetContentHeight(200)
+			assert.are.equal(0, scroll:Range())
+			assert.are.equal(0, scroll:ScrollTo(500))
+		end)
+
+		it("scrolls exactly as far as the content overflows, and no further", function()
+			local scroll = Widgets.scrollable(holderOf(300))
+			scroll:SetContentHeight(500)
+			assert.are.equal(200, scroll:Range())
+			assert.are.equal(200, scroll:ScrollTo(999))
+			assert.are.equal(0, scroll:ScrollTo(-50))
+		end)
+
+		it("moves one step per wheel notch and clamps", function()
+			local holder = holderOf(300)
+			local scroll = Widgets.scrollable(holder)
+			scroll:SetContentHeight(360)
+			holder:GetScript("OnMouseWheel")(holder, -1)
+			assert.are.equal(math.min(Widgets.SCROLL_STEP, 60), scroll.offset)
+			holder:GetScript("OnMouseWheel")(holder, -1)
+			assert.are.equal(60, scroll.offset)
+			holder:GetScript("OnMouseWheel")(holder, 1)
+			assert.are.equal(60 - Widgets.SCROLL_STEP, scroll.offset)
+		end)
+
+		it("clips the holder so scrolled-away rows do not draw over the page", function()
+			local holder = holderOf(300)
+			Widgets.scrollable(holder)
+			local clipped = false
+			for _, call in ipairs(holder.calls) do
+				if call.method == "SetClipsChildren" and call[1] == true then
+					clipped = true
+				end
+			end
+			assert.is_true(clipped)
+		end)
+	end)
 end)

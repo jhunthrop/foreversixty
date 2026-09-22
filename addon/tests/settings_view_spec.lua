@@ -182,4 +182,13 @@ describe("SettingsView", function()
 			assert.are.equal(left, point[4])
 		end
 	end)
+	-- Seen in game: the settings ran off the bottom of the page.
+	it("tells the page how tall it is so the page can scroll", function()
+		start()
+		local holder = _G.CreateFrame("Frame")
+		holder:SetSize(538, 200)
+		local view = SettingsView.build(holder, ctxFor())
+		assert.is_true(view.scroll.contentHeight > 200)
+		assert.is_true(view.scroll:Range() > 0)
+	end)
 end)

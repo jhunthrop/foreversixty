@@ -290,6 +290,43 @@ function Widgets.itemRow(parent, width)
 	return row
 end
 
+--- A page taller than its holder scrolls with the mouse wheel. The
+--- holder clips; the content frame inside it moves. Widgets.scrollable
+--- returns the content frame to lay out on and a function to call once the
+--- content's height is known. No scroll template: the same flat approach
+--- as Widgets.list, so the specs cover it.
+function Widgets.scrollable(holder)
+	local content = CreateFrame("Frame", nil, holder)
+	content:SetPoint("TOPLEFT", holder, "TOPLEFT", 0, 0)
+	content:SetSize(holder:GetWidth(), holder:GetHeight())
+	if type(holder.SetClipsChildren) == "function" then
+		holder:SetClipsChildren(true)
+	end
+	local scroll = { holder = holder, content = content, offset = 0, contentHeight = holder:GetHeight() }
+	function scroll:Range()
+		return math.max(0, self.contentHeight - self.holder:GetHeight())
+	end
+	function scroll:ScrollTo(offset)
+		self.offset = math.max(0, math.min(offset, self:Range()))
+		self.content:ClearAllPoints()
+		self.content:SetPoint("TOPLEFT", self.holder, "TOPLEFT", 0, self.offset)
+		return self.offset
+	end
+	function scroll:SetContentHeight(height)
+		self.contentHeight = height
+		self.content:SetHeight(math.max(height, self.holder:GetHeight()))
+		return self:ScrollTo(self.offset)
+	end
+	holder:EnableMouseWheel(true)
+	holder:SetScript("OnMouseWheel", function(_, delta)
+		scroll:ScrollTo(scroll.offset - delta * Widgets.SCROLL_STEP)
+	end)
+	return scroll
+end
+
+--- Pixels one notch of the wheel moves a scrollable page.
+Widgets.SCROLL_STEP = 40
+
 Widgets.List = {}
 Widgets.List.__index = Widgets.List
 
