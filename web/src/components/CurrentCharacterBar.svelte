@@ -11,6 +11,7 @@
      shows only when a pointer exists and renders nothing otherwise, never the "no character"
      sentence. -->
 <script lang="ts">
+  import { untrack } from 'svelte';
   import { fetchMeOnce } from '../lib/account/api';
   import {
     CURRENT_CHARACTER_CHANGED,
@@ -30,18 +31,24 @@
   // "nothing to show".
   let guildLine = $state('');
 
+  // `read` writes `current` and must never read it back through the signal: an effect
+  // that reads what it writes re-runs itself, and with a fresh object from readCurrent()
+  // on every run that is an infinite loop (effect_update_depth_exceeded on /account with an
+  // armory pointer stored, which starved every other island on the page). The local
+  // `next` is the only thing the closure consults.
   $effect(() => {
     const read = (): void => {
-      current = readCurrent();
+      const next = readCurrent();
+      current = next;
       guildLine = '';
-      if (current === null || current.source !== 'armory') return;
-      const key = current.ref;
+      if (next === null || next.source !== 'armory') return;
+      const key = next.ref;
       // fetchMeOnce is the shared, deduped /v1/me promise every account island on the page
       // already uses (Account.svelte, AddonPasteBox.svelte) -- this is what makes the read
       // "no new fetch" per the spec, not a second request of its own.
       void fetchMeOnce()
         .then((me) => {
-          if (current?.ref !== key) return; // a newer read landed first
+          if (untrack(() => current)?.ref !== key) return; // a newer read landed first
           const character = me?.characters.find((c) => c.key === key);
           if (character?.guild === undefined) return;
           const rank = character.guild.rank === undefined ? '' : ` · ${guildRankLabel(character.guild.rank)}`;
