@@ -69,6 +69,7 @@ func (noopLogger) Warn(string, ...any)  {}
 // RateFight's own per-fight advisory lock (store.go) serialises the two.
 func Backfill(ctx context.Context, d BackfillDeps, batchSize int) (recomputed int, err error) {
 	if d.Store == nil || d.Summaries == nil {
+		d.logf().Warn("rating", "op", "backfill", "err", "no-op: Store or Summaries is nil (this deployment has no bucket configured)")
 		return 0, nil
 	}
 	if batchSize <= 0 {

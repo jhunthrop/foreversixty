@@ -65,10 +65,18 @@ func TestBackfillRecomputesStaleRowsAndAdvancesModelVersion(t *testing.T) {
 	}
 }
 
+// TestBackfillIsBoundedPerRun proves the batch bound with reads that actually succeed:
+// with 3 stale fights and a getter that can satisfy all 3, a batchSize-2 run must
+// recompute exactly 2 and leave exactly 1 still stale. A getter where every read fails
+// (as an earlier version of this test used) cannot tell "the SQL limit was really 2" apart
+// from "the limit was ignored and every fight failed anyway" - both report 0 recomputed
+// and 3 remaining regardless of the bound, so that shape does not actually test anything
+// about boundedness. This version does.
 func TestBackfillIsBoundedPerRun(t *testing.T) {
 	pool := testPool(t)
 	ratingStore := &Store{Pool: pool} // see the naming note in the test above
 	ctx := context.Background()
+	objects := map[string][]byte{}
 	for i := 0; i < 3; i++ {
 		f := fightFixture(fightIDFor(i), true,
 			summary.RosterRow{GUID: "g1", Name: "Bounded", Class: "Shaman", Spec: "Elemental", Role: "dps"})
@@ -76,29 +84,31 @@ func TestBackfillIsBoundedPerRun(t *testing.T) {
 			t.Fatal(err)
 		}
 		pool.Exec(ctx, `update rating_scores set model_version = 'rating-2020-01-01' where report_id = $1`, f.ReportID)
+		body, err := json.Marshal(f.Summary)
+		if err != nil {
+			t.Fatal(err)
+		}
+		objects[store.Keys{ReportID: f.ReportID}.FightSummary(f.FightIndex)] = body
 	}
 	t.Cleanup(func() {
 		for i := 0; i < 3; i++ {
 			pool.Exec(ctx, `delete from rating_scores where report_id = $1`, fightIDFor(i))
 		}
 	})
-	getter := fakeGetter{objects: map[string][]byte{}} // every read fails: this test only checks the batch bound, not success
+	getter := fakeGetter{objects: objects} // every one of the 3 stale fights' summaries is available
 	n, err := Backfill(ctx, BackfillDeps{Store: ratingStore, Summaries: getter}, 2)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if n != 0 { // every read failed, so nothing was actually recomputed - but the query must have been capped at 2
-		t.Fatalf("recomputed %d, want 0 (every read fails in this test)", n)
+	if n != 2 {
+		t.Fatalf("recomputed %d fights, want exactly 2 (batchSize 2 of 3 stale, all reads succeed)", n)
 	}
-	// Every read fails, so nothing was actually rewritten either way (batched or not) -
-	// this just confirms staleFights still reports all 3 untouched afterward, i.e. the
-	// bounded run did not somehow mutate rows it never successfully recomputed.
 	remaining, err := ratingStore.staleFights(ctx, 10)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(remaining) != 3 {
-		t.Fatalf("staleFights after a bounded run = %d, want 3 (3 stale, batchSize 2, 0 recomputed)", len(remaining))
+	if len(remaining) != 1 {
+		t.Fatalf("staleFights after a bounded run = %d, want 1 (3 stale - 2 recomputed)", len(remaining))
 	}
 }
 
