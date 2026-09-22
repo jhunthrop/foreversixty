@@ -8,6 +8,9 @@
   import { recentReportsCopy } from '../lib/reports/copy';
   import { fetchRecentReports, type RecentReport } from '../lib/reports/recent';
   import ReportRow from './ReportRow.svelte';
+  import EmptyState from './ui/EmptyState.svelte';
+  import LoadError from './ui/LoadError.svelte';
+  import Skeleton from './ui/Skeleton.svelte';
 
   /** `heading` is off where the page already titles the block, as /logs' panel does --
    *  the same convention MyReports.svelte uses for "Your reports". */
@@ -42,13 +45,13 @@
 <section class="flex flex-col gap-3" data-testid="recent-reports">
   {#if heading}<h2 class="section-title text-[18px]">{recentReportsCopy.heading}</h2>{/if}
   {#if status === 'loading'}
-    <p class="text-muted text-[14px]">{recentReportsCopy.loading}</p>
+    <Skeleton lines={5} rowHeight="h-11" testid="recent-reports-skeleton" />
   {:else if status === 'failed'}
-    <p class="text-[14px]" role="alert">{recentReportsCopy.failed}</p>
+    <LoadError message={recentReportsCopy.failed} onRetry={() => void load()} testid="recent-reports-error" />
   {:else if rows.length === 0}
-    <p class="text-muted text-[14px]" data-testid="recent-reports-empty">{recentReportsCopy.empty}</p>
+    <EmptyState message={recentReportsCopy.empty} testid="recent-reports-empty" />
   {:else}
-    <ul class="flex flex-col">
+    <ul class="reveal flex flex-col">
       {#each rows as report (report.id)}
         <ReportRow
           href={`/reports/${report.id}`}

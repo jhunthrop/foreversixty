@@ -3,8 +3,12 @@
      there is one "who is signed in" fetch per page rather than two. -->
 <script lang="ts">
   import { REPORTS_PER_PAGE, listMyReports, type MyReport } from '../lib/account/api';
+  import { myReportsCopy } from '../lib/reports/my-reports-copy';
   import ReportRow from './ReportRow.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
+  import EmptyState from './ui/EmptyState.svelte';
+  import LoadError from './ui/LoadError.svelte';
+  import Skeleton from './ui/Skeleton.svelte';
 
   /** `heading` is off where the page already titles the block, as /logs' panel does. */
   let { signedIn, heading = true }: { signedIn: boolean; heading?: boolean } = $props();
@@ -40,13 +44,17 @@
   {#if !signedIn}
     <SignInPrompt line="Sign in to see the reports you own." testid="reports-signin" />
   {:else if status === 'loading'}
-    <p class="text-muted text-[14px]">Loading your reports.</p>
+    <Skeleton lines={5} rowHeight="h-11" testid="my-reports-skeleton" />
   {:else if status === 'failed'}
-    <p class="text-[14px]" role="alert">Your reports did not load. Reload the page to try again.</p>
+    <LoadError message={myReportsCopy.failed} onRetry={() => void load(page)} testid="my-reports-error" />
   {:else if rows.length === 0}
-    <p class="text-muted text-[14px]">No reports yet. Upload a log or start the companion.</p>
+    <EmptyState
+      message={myReportsCopy.empty}
+      action={{ label: myReportsCopy.uploadAction, href: '/logs' }}
+      testid="my-reports-empty"
+    />
   {:else}
-    <ul class="flex flex-col">
+    <ul class="reveal flex flex-col">
       {#each rows as report (report.id)}
         <ReportRow
           href={`/reports/${report.id}`}
