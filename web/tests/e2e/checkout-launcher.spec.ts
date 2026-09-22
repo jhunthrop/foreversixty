@@ -121,6 +121,46 @@ test('the success return re-fetches /v1/me rather than trusting the query string
   expect(meCalls).toBeGreaterThan(1);
 });
 
+test("forbidden guild checkout: shows the API's own reason verbatim, honest for either refusal", async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false },
+          characters: [],
+          guilds: [],
+          entitlements: mockEntitlements(),
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.route('**/v1/billing/checkout', (route) =>
+    route.fulfill(
+      fulfil(
+        {
+          ok: false,
+          data: null,
+          error: {
+            message:
+              "this guild's claim is contested; billing actions are frozen for the disputed claimant until a moderator resolves it",
+          },
+          request_id: 'r',
+        },
+        403,
+      ),
+    ),
+  );
+  await page.goto('/premium/checkout?plan=guild&interval=monthly&guild_id=42');
+  await expect(page.getByTestId('checkout-message')).toContainText('billing actions are frozen');
+  // No retry button: retrying a permission refusal does not help either way.
+  await expect(page.getByRole('button', { name: 'Try again' })).toHaveCount(0);
+});
+
 test('an unescaped, malformed query string never renders raw into the page', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)),

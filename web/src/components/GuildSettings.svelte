@@ -6,6 +6,9 @@
      read directly rather than re-derived from /v1/me client side. -->
 <script lang="ts">
   import type { CharacterPath } from '../lib/characters';
+  import { fetchMeOnce, type GuildBillingView } from '../lib/account/api';
+  import { openPortal } from '../lib/billing/api';
+  import { billingBlockCopy } from '../lib/billing/copy';
   import {
     GuildApiError,
     fetchGuildSettings,
@@ -16,6 +19,7 @@
   } from '../lib/guild/api';
   import { guildSettingsCopy } from '../lib/guild/copy';
   import { fetchGuild } from '../lib/rankings/api';
+  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 
   let { path }: { path: CharacterPath } = $props();
 
@@ -27,6 +31,16 @@
   let error = $state('');
   let rotated = $state<{ token: string; url: string } | null>(null);
   let busy = $state(false);
+  /**
+   * A guild's billing view is not part of GET /v1/guilds/{id}/settings's own response (the
+   * entitlements work landed after that endpoint did, in a lane that could not edit it) --
+   * it lives on GET /v1/me's guilds[] entry for this same guild instead (spec 1.4). This
+   * page already knows guildId once `load()` resolves, so finding the matching entry is a
+   * plain lookup, not a second "which guild" round-trip; the one extra cost is the /v1/me
+   * fetch itself, shared via fetchMeOnce's own cache with anything else on the page that
+   * already asked.
+   */
+  let guildBilling = $state<GuildBillingView | null>(null);
 
   /**
    * A 403 from GET .../settings is read directly off the thrown GuildApiError's status --
@@ -45,6 +59,16 @@
       status = 'ready';
     } catch (thrown) {
       status = thrown instanceof GuildApiError && thrown.status === 403 ? 'forbidden' : 'failed';
+      return;
+    }
+    // Best-effort: a failed /v1/me here should not take down a settings page that already
+    // loaded successfully -- the billing section just falls back to "not subscribed" until
+    // a retry (page reload) succeeds, same as any other read this page treats as secondary.
+    try {
+      const me = await fetchMeOnce();
+      guildBilling = me?.guilds.find((g) => g.id === guildId)?.plan ?? null;
+    } catch {
+      guildBilling = null;
     }
   }
 
@@ -91,6 +115,13 @@
       if (settings !== null) settings = { ...settings, invite: { rotated_at: result.rotated_at } };
     });
 
+  const onManageBilling = (): void =>
+    void run(async () => {
+      if (guildId === null) return;
+      const result = await openPortal(guildId);
+      window.location.assign(result.portal_url);
+    });
+
   /**
    * A contest always freezes officer tools now (a later security-review response
    * simplified the freeze rule): `frozen` is guaranteed true whenever `state ===
@@ -124,6 +155,44 @@
         {guildSettingsCopy.frozenNotice}
       </p>
     {/if}
+    <section class="flex flex-col gap-3" data-testid="guild-settings-billing">
+      <h2 class="section-title text-[18px]">Billing</h2>
+      {#if guildBilling === null}
+        <p class="text-[14px]">{billingBlockCopy.guildNotSubscribed}</p>
+        {#if guildId !== null}
+          <a
+            href={`/premium/checkout?plan=guild&interval=monthly&guild_id=${guildId}`}
+            class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+            data-testid="guild-subscribe-link"
+          >
+            {billingBlockCopy.subscribeTheGuild}
+          </a>
+        {/if}
+      {:else}
+        <p class="text-[14px]">
+          {guildBilling.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
+          {guildBilling.current_period_end
+            ? new Date(guildBilling.current_period_end).toLocaleDateString()
+            : ''}
+          {#if guildBilling.billed_by !== ''}
+            · {billingBlockCopy.guildBilledBy(guildBilling.billed_by)}
+          {/if}
+        </p>
+        {#if guildBilling.status === 'past_due'}
+          <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
+        {/if}
+        {#if guildBilling.you_are_billing_contact}
+          <button
+            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+            onclick={onManageBilling}
+            disabled={busy}
+            data-testid="guild-manage-billing"
+          >
+            {billingBlockCopy.manageBilling}
+          </button>
+        {/if}
+      {/if}
+    </section>
     <section class="flex flex-col gap-3">
       <label class="label text-muted" for="guild-visibility">{guildSettingsCopy.defaultVisibility}</label>
       <select

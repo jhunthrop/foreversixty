@@ -127,6 +127,15 @@
           message = checkoutCopy.notOpenYet;
         } else if (error.status === 409) {
           message = checkoutCopy.guildAlreadyOnPlan;
+        } else if (error.status === 403) {
+          // The API's own sentence, verbatim (RunControl.svelte's own convention for an
+          // engine's words: "never paraphrased, never hidden"). A 403 here covers two
+          // distinct, honest refusals -- not a verified officer/leader of this guild, or a
+          // verified officer whose guild's claim is currently contested and frozen -- and
+          // the server already states which one applies; inventing a single generic
+          // sentence here would flatten that distinction. Retrying does not help either
+          // way, so showRetry stays false.
+          message = error.message;
         } else {
           message = checkoutCopy.genericFailure;
           showRetry = true;

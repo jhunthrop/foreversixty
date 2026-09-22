@@ -72,6 +72,9 @@ export interface GuildBillingView {
   status: string;
   current_period_end: string | null;
   cancel_at_period_end: boolean;
+  /** Empty for a plan granted through the CLI, never through Stripe -- there is no billing
+   *  contact to name (api/internal/auth/handler.go's attachGuildPlans). A reader must not
+   *  show "Billed by" with nothing after it. */
   billed_by: string;
   you_are_billing_contact: boolean;
 }

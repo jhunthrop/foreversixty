@@ -85,4 +85,6 @@ export const billingBlockCopy = {
   ends: 'Ends',
   pastDueBanner: 'Your last payment failed. Update your card to keep access.',
   guildBilledBy: (name: string): string => `Billed by ${name}`,
+  guildNotSubscribed: 'This guild is not on the guild plan yet.',
+  subscribeTheGuild: 'Subscribe the guild',
 };
