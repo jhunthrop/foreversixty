@@ -56,6 +56,47 @@ const weights = [
       </div>
     </Panel>
 
+    <Panel title="What each component measures">
+      <div class="flex flex-col gap-3 p-3 text-[14px] leading-relaxed" data-testid="ratings-components">
+        <p>
+          <strong>Output.</strong> Damage or healing done. For a DPS spec the simulator already models, Output
+          is judged against how well the fight could have gone with your gear — rotation, GCD usage, cooldown
+          timing — not just the raw number on the meter. A healer's Output counts effective healing only;
+          overheal never adds to it. A tank still deals damage, but Output carries little weight for that
+          role, since holding threat and staying alive are the job.
+        </p>
+        <p>
+          <strong>Survival.</strong> Whether you died — an avoidable death early in a fight costs far more
+          than one near the very end — blended with how much avoidable damage you took without dying. Tanks
+          are judged on avoidable damage alone: taking damage on purpose is the job, so a fight's expected
+          hits never count against them.
+        </p>
+        <p>
+          <strong>Mechanics.</strong> Three things, averaged: the interrupts you made, valued by how much
+          damage the interrupted cast would have done; the dispels you made, valued by the healing or damage
+          they denied the enemy; and how long you personally carried a debuff that should have been dispelled,
+          where less time carrying it scores better. That last part is scored on the person carrying the
+          debuff, not on whoever should have cleansed it.
+        </p>
+        <p>
+          <strong>Utility.</strong> The average uptime across every buff, debuff, and cooldown your class and
+          spec are expected to keep running for the raid — not the single worst one. One dropped buff does not
+          sink the whole score the way judging by your worst upkeep would; this rewards broad coverage
+          instead. (Threat is not scored yet — not modeled yet, not silently left out.)
+        </p>
+        <p>
+          <strong>Preparation.</strong> Showing up ready: the right flask, food, weapon oil or stone, and
+          world buffs at the pull, plus using your class's potions during the fight — each weighed by how much
+          it matters for your role.
+        </p>
+        <p>
+          <strong>Activity.</strong> The share of the fight you spent actively doing something rather than
+          idle, after fairly excluding any period the fight itself expects you to do nothing — a scripted
+          phase transition, for instance — so it is not just raw uptime.
+        </p>
+      </div>
+    </Panel>
+
     <Panel title="Weights, by role">
       <div class="overflow-x-auto p-3">
         <table class="w-full min-w-[420px] border-collapse text-[13px]" data-testid="ratings-weights">
@@ -94,6 +135,10 @@ const weights = [
         own column in that table, since a tank's Output is worth little (10 of 100) and its Survival a lot
         (35), because taking damage on purpose is the job. A healer's Output is measured on effective healing,
         never raw — overheal does not count toward it.
+      </p>
+      <p class="text-muted p-3 pt-0 text-[13px]" data-testid="ratings-adjustable">
+        The weight table above, and the cap below, are both settings a guild's officers can change — this page
+        always describes the site-wide defaults.
       </p>
     </Panel>
 
