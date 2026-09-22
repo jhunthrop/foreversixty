@@ -243,7 +243,7 @@ func (c *Client) getJSON(ctx context.Context, op, rawURL string, out any) error 
 // token (the app token, or a user's own OAuth access token) and decodes
 // the JSON body into out.
 func (c *Client) getJSONWithToken(ctx context.Context, op, rawURL, token string, out any) error {
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, rawURL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, withLocale(rawURL), nil)
 	if err != nil {
 		return fmt.Errorf("bnetapi: %s: request: %w", op, err)
 	}
@@ -271,3 +271,19 @@ func (c *Client) getJSONWithToken(ctx context.Context, op, rawURL, token string,
 // lowercase is exact (matches the FS1 export's classSlug field, see
 // web/src/lib/planner/fs1.ts).
 func classSlug(name string) string { return strings.ToLower(strings.TrimSpace(name)) }
+
+// apiLocale pins every game-data and profile response to one language.
+// Without a locale Blizzard answers every "name" field as an object keyed
+// by locale ({"en_US": "Whitemane", ...}), which the narrow response
+// structs decode as a string and reject; seen on the first production
+// import, 2026-09-22.
+const apiLocale = "en_US"
+
+// withLocale appends locale=en_US to a namespaced Blizzard API URL. A
+// URL with no namespace (the token endpoint) is returned unchanged.
+func withLocale(rawURL string) string {
+	if !strings.Contains(rawURL, "namespace=") || strings.Contains(rawURL, "locale=") {
+		return rawURL
+	}
+	return rawURL + "&locale=" + apiLocale
+}

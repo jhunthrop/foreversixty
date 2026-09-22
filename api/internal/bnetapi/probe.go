@@ -35,7 +35,7 @@ func (c *Client) probeStatus(ctx context.Context, rawURL string) int {
 	if err != nil {
 		return 0
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, rawURL, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, withLocale(rawURL), nil)
 	if err != nil {
 		return 0
 	}

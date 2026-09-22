@@ -7,6 +7,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"sync/atomic"
 	"testing"
 	"time"
@@ -26,7 +27,12 @@ func newFixtureServer(t *testing.T) *fixtureServer {
 	t.Helper()
 	fs := &fixtureServer{t: t, handlers: map[string]func(http.ResponseWriter, *http.Request){}, calls: map[string]*int32{}}
 	fs.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		key := r.Method + " " + r.URL.RequestURI()
+		// Fixtures are keyed without the locale the client always adds
+		// (see withLocale); the locale itself is asserted once, below.
+		key := r.Method + " " + strings.Replace(r.URL.RequestURI(), "&locale="+apiLocale, "", 1)
+		if r.URL.Query().Has("namespace") && r.URL.Query().Get("locale") != apiLocale {
+			t.Errorf("fixtureServer: %s carried no locale=%s", r.URL.RequestURI(), apiLocale)
+		}
 		if n, ok := fs.calls[key]; ok {
 			atomic.AddInt32(n, 1)
 		} else {

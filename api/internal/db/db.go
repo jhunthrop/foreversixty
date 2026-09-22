@@ -5,6 +5,8 @@ import (
 	"embed"
 	"errors"
 	"fmt"
+	"github.com/jackc/pgx/v5"
+	"strings"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -16,7 +18,21 @@ import (
 var migrations embed.FS
 
 func Connect(ctx context.Context, url string) (*pgxpool.Pool, error) {
-	pool, err := pgxpool.New(ctx, url)
+	cfg, err := pgxpool.ParseConfig(url)
+	if err != nil {
+		return nil, fmt.Errorf("db: connect: %w", err)
+	}
+	// Production connects through Neon's pooler (PgBouncer in transaction
+	// mode), where pgx's default named prepared statements outlive the
+	// connection they were prepared on: after one statement failed, the
+	// next request on a recycled connection died with "prepared statement
+	// name is already in use" (2026-09-22). cache_describe keeps the
+	// statement description cache but sends every query unnamed, which a
+	// transaction pooler handles. The URL may still override it.
+	if !strings.Contains(url, "default_query_exec_mode=") {
+		cfg.ConnConfig.DefaultQueryExecMode = pgx.QueryExecModeCacheDescribe
+	}
+	pool, err := pgxpool.NewWithConfig(ctx, cfg)
 	if err != nil {
 		return nil, fmt.Errorf("db: connect: %w", err)
 	}

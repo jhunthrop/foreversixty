@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
@@ -62,7 +63,8 @@ func newBlizzardFixture(t *testing.T) *blizzardFixture {
 	t.Helper()
 	f := &blizzardFixture{handlers: map[string]func(http.ResponseWriter, *http.Request){}}
 	f.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		key := r.Method + " " + r.URL.RequestURI()
+		// Fixtures are keyed without the locale bnetapi always appends.
+		key := r.Method + " " + strings.Replace(r.URL.RequestURI(), "&locale=en_US", "", 1)
 		h, ok := f.handlers[key]
 		if !ok {
 			t.Fatalf("blizzardFixture: unexpected request %s", key)
