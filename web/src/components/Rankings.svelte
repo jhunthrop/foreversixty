@@ -43,6 +43,9 @@
   } from '../lib/rankings/url';
   import { simCopy } from '../lib/sim/copy';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
+  import EmptyState from './ui/EmptyState.svelte';
+  import LoadError from './ui/LoadError.svelte';
+  import Skeleton from './ui/Skeleton.svelte';
 
   // The prerendered fixture page passes the slug; the Worker-served shell has none, so
   // the island reads it out of the path. One component, both routes.
@@ -65,6 +68,7 @@
   let guildRows = $state<GuildRankingRow[]>([]);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let error = $state('');
+  let attempt = $state(0);
 
   /**
    * A bare /rankings with no encounter in the URL cannot ask GET /v1/rankings or
@@ -109,6 +113,7 @@
    * fields, can change at once.
    */
   $effect(() => {
+    void attempt;
     if (needsPicker) {
       // Nothing to fetch until an encounter is chosen: clear any board this filter
       // combination is not going to answer for, and read the picker's own list once.
@@ -304,9 +309,13 @@
   {#if needsPicker}
     <div data-testid="encounter-picker" class="flex flex-col gap-3">
       {#if encountersStatus === 'idle' || encountersStatus === 'loading'}
-        <p class="text-muted text-[14px]">{encounterPickerCopy.loading}</p>
+        <Skeleton lines={3} rowHeight="h-4" testid="rankings-picker-skeleton" />
       {:else if encountersStatus === 'failed'}
-        <p class="text-[14px]" role="alert">{encounterPickerCopy.failed}</p>
+        <LoadError
+          message={encounterPickerCopy.failed}
+          onRetry={() => void loadEncounters()}
+          testid="rankings-picker-error"
+        />
       {:else if encounters.length === 0}
         <p class="text-muted text-[14px]" data-testid="rankings-no-encounters">
           {encounterPickerCopy.noneYet}
@@ -334,14 +343,14 @@
       {/if}
     </div>
   {:else if status === 'loading'}
-    <p class="text-muted text-[14px]">Loading rankings.</p>
+    <Skeleton lines={8} rowHeight="h-11" minHeight="min-h-[440px]" testid="rankings-skeleton" />
   {:else if status === 'failed'}
-    <p class="text-[14px]" role="alert" data-testid="rankings-error">{error}</p>
+    <LoadError message={error} onRetry={() => (attempt += 1)} testid="rankings-error" />
   {:else if state.board === 'guild'}
     {#if guildRows.length === 0}
-      <p class="text-muted text-[14px]" data-testid="rankings-empty">No guilds ranked here yet.</p>
+      <EmptyState message="No guilds ranked here yet." testid="rankings-empty" />
     {:else}
-      <ul class="flex flex-col" data-testid="guild-rows">
+      <ul class="reveal flex flex-col" data-testid="guild-rows">
         {#each guildRows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
           <li
             class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-3 border-b px-2 py-2 text-[14px]"
@@ -356,9 +365,9 @@
       </ul>
     {/if}
   {:else if page === null || page.rows.length === 0}
-    <p class="text-muted text-[14px]" data-testid="rankings-empty">Nothing ranked here yet.</p>
+    <EmptyState message="Nothing ranked here yet." testid="rankings-empty" />
   {:else}
-    <ul class="flex flex-col" data-testid="ranking-rows">
+    <ul class="reveal flex flex-col" data-testid="ranking-rows">
       {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
         {@const buildHref = plannerHref(row)}
         {@const characterLinkHref = characterRowHref(row)}
