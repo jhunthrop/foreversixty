@@ -21,7 +21,7 @@ describe('Character failed state', () => {
     const { body } = render(Character, { props: { path } });
     // status starts 'loading' in SSR (no effect runs server-side), so this only proves
     // the markup shape LoadError renders exists; the retry wiring itself is exercised by
-    // an e2e route-stub test (Task 13).
+    // the route-stub test in tests/e2e/character-retry.spec.ts.
     expect(body).not.toContain('character-error');
   });
 });

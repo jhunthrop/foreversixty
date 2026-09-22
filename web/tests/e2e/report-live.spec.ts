@@ -108,6 +108,38 @@ test('a closed report never polls', async ({ page }) => {
   expect(calls).toBe(1);
 });
 
+// The report island's top-level failure (report-error) is the one that leaves nothing on
+// screen at all, so its Try again has to re-fire the same GET /v1/reports/{id} in place
+// rather than ask for a reload (design 2026-09-22 spec section 1.5). /reports/fixture2live
+// is the shell that carries no inlined meta, so it is the only prerendered report page
+// that actually makes that call; the meta it is answered with points at the complete
+// fixture's own static data files, so once the retry lands the whole page renders from
+// what the preview server already serves.
+test('Try again on a failed report re-fires the meta fetch in place', async ({ page }) => {
+  const meta = JSON.parse(await readFile(path.join(FIXTURES, 'meta.json'), 'utf8'));
+
+  // A flag rather than a call counter: it flips between the two halves of the test, so
+  // which request counts as the retry never depends on how many the island made first.
+  let failing = true;
+  await page.route('**/v1/reports/fixture2live', async (route) => {
+    if (failing) {
+      await route.abort();
+      return;
+    }
+    await route.fulfill(envelope({ ...meta, id: 'fixture2live' }));
+  });
+
+  await page.goto('/reports/fixture2live?fight=3');
+  await expect(page.getByTestId('report-error')).toBeVisible();
+  await expect(page.getByTestId('report-title')).toHaveCount(0);
+
+  failing = false;
+  await page.getByTestId('report-error-retry').click();
+
+  await expect(page.getByTestId('report-title')).toBeVisible();
+  await expect(page.getByTestId('report-error')).toHaveCount(0);
+});
+
 // Holds every matching request open until release() is called, then fulfils each with
 // `body` -- the same shape report-tabs.spec.ts's heldRoute() uses for the fight-switch
 // races, extended with a call counter: the poll test below needs to prove a *duplicate*
