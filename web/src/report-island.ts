@@ -16,6 +16,7 @@
 // enough to be worth caching.
 import { mount } from 'svelte';
 import ReportView from './components/report/ReportView.svelte';
+import { scheduleBoot } from './lib/islands/boot';
 import type { ReportMeta } from './lib/report/types';
 import './styles/fonts.css';
 import './styles/global.css';
@@ -54,8 +55,4 @@ function boot(): void {
   mount(ReportView, { target, props: { reportId, inlineMeta } });
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', boot, { once: true });
-} else {
-  boot();
-}
+scheduleBoot(boot);

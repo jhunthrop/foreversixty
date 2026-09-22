@@ -212,10 +212,34 @@
     }
   }
 
+  // Drawing is deferred to the next animation frame and coalesced: the mount effect and
+  // the ResizeObserver's first measurement both fire before anything is painted, so drawing
+  // synchronously paints the canvas twice (once at the 720px default) inside the island's
+  // mount task, which is the task Lighthouse's blocking-time budget measures. One frame
+  // later is invisible to the viewer and moves the work into its own short task.
+  // Until the ResizeObserver has measured the canvas, `width` is a guess, and a frame drawn
+  // from it would be painted squashed into the real width; the observer's first callback
+  // draws instead, synchronously, which still lands before the page's first paint.
+  let measured = false;
+  let frame = 0;
+  function scheduleDraw(): void {
+    if (frame !== 0) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      if (measured) draw();
+    });
+  }
+
   $effect(() => {
     // Re-reads series, window, deaths and width, so any of them redraws the canvas.
     void [series, extra, marks, phases, current, deaths, width, peak, hoverMs];
-    draw();
+    scheduleDraw();
+  });
+
+  $effect(() => {
+    return () => {
+      if (frame !== 0) cancelAnimationFrame(frame);
+    };
   });
 
   $effect(() => {
@@ -223,6 +247,8 @@
     if (element === null) return;
     const observer = new ResizeObserver(([entry]) => {
       width = Math.max(240, Math.round(entry.contentRect.width));
+      measured = true;
+      draw();
     });
     observer.observe(element);
     return () => observer.disconnect();
