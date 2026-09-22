@@ -440,7 +440,7 @@
             <CharacterList characters={me!.characters} bnetImportedAt={me!.bnet_imported_at} />
 
             <StatePanel label="Your reports" testid="account-reports">
-              <MyReports {signedIn} />
+              <MyReports {signedIn} heading={false} />
             </StatePanel>
           </div>
 
