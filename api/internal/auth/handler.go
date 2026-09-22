@@ -46,7 +46,12 @@ type Service struct {
 	// guild's Plan field. Nil is safe (every field reads as its zero
 	// value, every Guild.Plan stays nil) for a test harness that does
 	// not exercise billing.
-	Entitlements  *entitlements.Store
+	Entitlements *entitlements.Store
+	// Importer runs the Battle.net character/guild import right after a
+	// successful Battle.net sign-in. Nil means the feature is off (no
+	// Battle.net credentials configured, or a test harness that does
+	// not exercise it): login behaves exactly as before.
+	Importer      Importer
 	PublicBaseURL string
 	APIBaseURL    string
 	Log           *slog.Logger
@@ -138,7 +143,29 @@ func (s *Service) bnetCallback(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "battlenet", err, "could not sign you in just now")
 		return
 	}
+	s.runImport(r, u.ID, bu.AccessToken)
 	http.Redirect(w, r, s.PublicBaseURL+safeNext(next), http.StatusFound)
+}
+
+// runImport calls the Battle.net importer, bounded by importBudget, and
+// logs the outcome. It never fails the login (spec §4.1): an error is
+// logged at WARN and the caller redirects exactly as it would have with
+// no importer at all.
+func (s *Service) runImport(r *http.Request, userID int64, accessToken string) {
+	if s.Importer == nil || accessToken == "" {
+		return
+	}
+	ctx, cancel := context.WithTimeout(r.Context(), importBudget)
+	defer cancel()
+	summary, err := s.Importer.ImportAccount(ctx, userID, accessToken)
+	id := httpx.RequestIDFrom(r.Context())
+	if err != nil {
+		s.logger().Warn("auth", "id", id, "op", "battlenet_import", "user_id", userID, "err", err)
+		return
+	}
+	s.logger().Info("auth", "id", id, "op", "battlenet_import", "user_id", userID,
+		"regions", summary.Regions, "characters", summary.Characters,
+		"guilds", summary.Guilds, "skipped", summary.Skipped)
 }
 
 type emailRequest struct {
@@ -263,6 +290,9 @@ type Me struct {
 	Characters   []Character      `json:"characters"`
 	Guilds       []Guild          `json:"guilds"`
 	Entitlements EntitlementsView `json:"entitlements"`
+	// BnetImportedAt is when the Battle.net import last ran for this
+	// account, omitted when it never has (spec §6).
+	BnetImportedAt *string `json:"bnet_imported_at,omitempty"`
 }
 
 // EntitlementsView is every Can() feature pre-resolved for the caller,
@@ -325,7 +355,10 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
-	httpx.WriteOK(w, r, http.StatusOK, Me{User: u, Characters: chars, Guilds: guilds, Entitlements: ev})
+	httpx.WriteOK(w, r, http.StatusOK, Me{
+		User: u, Characters: chars, Guilds: guilds, Entitlements: ev,
+		BnetImportedAt: rfc3339Ptr(u.BnetImportedAt),
+	})
 }
 
 // entitlementFeatures pairs every gated Feature with the EntitlementsView

@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -943,5 +944,102 @@ func TestMeWorksWithNoEntitlementsStoreConfigured(t *testing.T) {
 	if len(body.Guilds) != 1 || body.Guilds[0].Plan != nil {
 		t.Fatalf("attachGuildPlans must leave Plan nil with no Entitlements store, even for a "+
 			"verified officer of a guild with an active plan row: %+v", body.Guilds)
+	}
+}
+
+// TestMeCharacterShapeForAGuildedBnetCharacter pins spec §6's frozen
+// GET /v1/me interface: a single Battle.net-imported, guilded character,
+// with the exact fields the design's own example names.
+func TestMeCharacterShapeForAGuildedBnetCharacter(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "guilded-bnet@example.com")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`update users set bnet_imported_at = '2026-09-22T03:30:00Z' where id = $1`, uid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into characters (key, region, ruleset, name, class, user_id, realm_name, level, faction, source, imported_at, refreshed_at)
+		 values ('us/pvp/thoradin', 'us', 'pvp', 'Thoradin', 'warrior', $1, 'Whitemane', 60, 'alliance', 'bnet', now(), now())`,
+		uid); err != nil {
+		t.Fatal(err)
+	}
+	gid := h.seedGuild(t, "Iron Vanguard")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into guild_characters (guild_id, character_key, user_id, rank, rank_index, source, verified_by, verified_at)
+		 values ($1, 'us/pvp/thoradin', $2, 'officer', 1, 'bnet', 'bnet', now())`,
+		gid, uid); err != nil {
+		t.Fatal(err)
+	}
+
+	res := h.sessionRequest(t, http.MethodGet, "/v1/me", uid)
+	if res.StatusCode != http.StatusOK {
+		res.Body.Close()
+		t.Fatalf("status = %d", res.StatusCode)
+	}
+	var body struct {
+		BnetImportedAt string      `json:"bnet_imported_at"`
+		Characters     []Character `json:"characters"`
+	}
+	h.decode(t, res, &body)
+
+	if body.BnetImportedAt == "" {
+		t.Fatal("bnet_imported_at was omitted, want it present")
+	}
+	if len(body.Characters) != 1 {
+		t.Fatalf("characters = %+v, want exactly one", body.Characters)
+	}
+	c := body.Characters[0]
+	if c.Key != "us/pvp/thoradin" || c.Region != "us" || c.Ruleset != "pvp" || c.Name != "Thoradin" ||
+		c.Class != "warrior" || c.Realm != "Whitemane" || c.Level == nil || *c.Level != 60 ||
+		c.Faction != "alliance" || c.Source != "bnet" {
+		t.Fatalf("character = %+v, does not match spec §6's shape", c)
+	}
+	if c.Guild == nil || c.Guild.ID != gid || c.Guild.Name != "Iron Vanguard" ||
+		c.Guild.Rank != "officer" || c.Guild.RankIndex == nil || *c.Guild.RankIndex != 1 || !c.Guild.Verified {
+		t.Fatalf("guild = %+v, does not match spec §6's shape", c.Guild)
+	}
+}
+
+// failingImporter stands in for bnetimport when Blizzard is down: the
+// spec's §4.1 rule is that an import error is logged and the login
+// still completes, redirect and session included.
+type failingImporter struct{ calls int }
+
+func (f *failingImporter) ImportAccount(context.Context, int64, string) (ImportSummary, error) {
+	f.calls++
+	return ImportSummary{}, errors.New("blizzard answered 503")
+}
+
+func TestBattleNetImportFailureNeverFailsTheLogin(t *testing.T) {
+	h := newHarness(t)
+	h.withBattleNet(t, "12345", "Baelgrim#1234")
+	importer := &failingImporter{}
+	h.svc.Importer = importer
+
+	res := h.do(t, http.MethodGet, "/v1/auth/battlenet/start?next=/account", "")
+	res.Body.Close()
+	target, err := url.Parse(res.Header.Get("Location"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := target.Query().Get("state")
+
+	res = h.do(t, http.MethodGet, "/v1/auth/battlenet/callback?code=the-code&state="+state, "")
+	res.Body.Close()
+	if res.StatusCode != http.StatusFound {
+		t.Fatalf("callback = %d, want a redirect despite the import failing", res.StatusCode)
+	}
+	if got := res.Header.Get("Location"); got != "https://foreversixty.gg/account" {
+		t.Fatalf("redirected to %q, want the next page", got)
+	}
+	if importer.calls != 1 {
+		t.Fatalf("importer was called %d times, want once", importer.calls)
+	}
+
+	res = h.do(t, http.MethodGet, "/v1/me", "")
+	var me Me
+	h.decode(t, res, &me)
+	if me.User.Battletag == nil || *me.User.Battletag != "Baelgrim#1234" {
+		t.Fatalf("the session did not start: me = %+v", me)
 	}
 }

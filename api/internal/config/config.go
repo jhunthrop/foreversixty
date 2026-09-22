@@ -25,6 +25,16 @@ const (
 	defaultSimJobName          = "sim-run"
 	defaultSimJobRegion        = "us-east1"
 	defaultSimJobProject       = "foreversixty"
+
+	// defaultBnetProfileGame is the profile-game segment of a namespace
+	// (spec §1 rule 3): the value between "profile-" and "-{region}".
+	// Forever's real namespace is one env change on launch day.
+	defaultBnetProfileGame = "classic1x"
+	// defaultBnetRegions is which regional hosts to try for an account.
+	defaultBnetRegions = "us,eu"
+	// defaultBnetProbeGames is every game namespace segment the nightly
+	// refresh's probe checks (spec §5).
+	defaultBnetProbeGames = "classic1x,classic,classic-forever,classicforever,forever,classic60,anniversary"
 )
 
 // defaultTrustedProxyHops is used when TRUSTED_PROXY_HOPS is not set. 1
@@ -85,6 +95,13 @@ type Config struct {
 	BnetClientID     string
 	BnetClientSecret string
 	BnetRedirectURL  string
+
+	// BnetProfileGame, BnetRegions and BnetProbeGames configure the
+	// Battle.net character import and its namespace probe (spec §1
+	// rule 3, §5): BNET_PROFILE_GAME, BNET_REGIONS, BNET_PROBE_GAMES.
+	BnetProfileGame string
+	BnetRegions     []string
+	BnetProbeGames  []string
 
 	// ParseJobName, ParseJobRegion and ParseJobProject address the Cloud
 	// Run job that parses a whole-file upload.
@@ -162,6 +179,12 @@ func Load(getenv func(string) string) (Config, error) {
 	c.BnetClientID = getenv("BNET_CLIENT_ID")
 	c.BnetClientSecret = getenv("BNET_CLIENT_SECRET")
 	c.BnetRedirectURL = getenv("BNET_REDIRECT_URL")
+	c.BnetProfileGame = getenv("BNET_PROFILE_GAME")
+	if c.BnetProfileGame == "" {
+		c.BnetProfileGame = defaultBnetProfileGame
+	}
+	c.BnetRegions = splitCommaList(getenv("BNET_REGIONS"), defaultBnetRegions)
+	c.BnetProbeGames = splitCommaList(getenv("BNET_PROBE_GAMES"), defaultBnetProbeGames)
 	for _, d := range []struct {
 		dst *string
 		env string
@@ -196,6 +219,22 @@ func Load(getenv func(string) string) (Config, error) {
 	c.StripeEnvironment = getenv("STRIPE_ENVIRONMENT")
 
 	return c, nil
+}
+
+// splitCommaList splits a comma-separated env value into its trimmed,
+// non-empty parts, falling back to def (itself comma-separated) when v is
+// empty — the shape BNET_REGIONS and BNET_PROBE_GAMES both use.
+func splitCommaList(v, def string) []string {
+	if v == "" {
+		v = def
+	}
+	var out []string
+	for _, part := range strings.Split(v, ",") {
+		if trimmed := strings.TrimSpace(part); trimmed != "" {
+			out = append(out, trimmed)
+		}
+	}
+	return out
 }
 
 // R2Configured reports whether the object store can be reached. Without it

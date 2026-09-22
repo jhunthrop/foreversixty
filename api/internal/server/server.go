@@ -91,7 +91,7 @@ func NewRouter(d Deps) http.Handler {
 		rankings.Mount(mux, d.Rankings)
 	}
 	if d.Addon != nil {
-		addon.Mount(mux, d.Addon)
+		addon.Mount(mux, d.Addon, d.TrustedProxyHops)
 	}
 	if d.Guilds != nil {
 		guilds.Mount(mux, d.Guilds, d.TrustedProxyHops)

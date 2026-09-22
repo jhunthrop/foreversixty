@@ -40,6 +40,12 @@ const bnetHTTPTimeout = 10 * time.Second
 type BnetUser struct {
 	Sub       string `json:"sub"`
 	Battletag string `json:"battletag"`
+	// AccessToken is the OAuth access token from the code exchange,
+	// carried alongside the identity so bnetCallback can hand it to the
+	// Battle.net importer. It is used inside that one request and then
+	// dropped — it is never persisted, never logged, and never
+	// marshalled (no json tag), per spec §1 rule 1.
+	AccessToken string `json:"-"`
 }
 
 // BattleNet is the Battle.net half of sign-in.
@@ -109,6 +115,7 @@ func (b *BattleNet) Identify(ctx context.Context, code string) (BnetUser, error)
 	if u.Sub == "" {
 		return BnetUser{}, fmt.Errorf("auth: battle.net userinfo carried no subject")
 	}
+	u.AccessToken = tok.AccessToken
 	return u, nil
 }
 

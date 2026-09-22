@@ -64,8 +64,8 @@ func newHarness(t *testing.T) *harness {
 		builds: &builds.Store{Pool: pool}, trees: data}
 	h.actor = auth.Actor{UserID: owner.ID, Role: "user", Method: "device", DeviceID: "device-1"}
 	mux := http.NewServeMux()
-	Mount(mux, &Service{Store: h.store, Builds: h.builds, Data: data,
-		Log: slog.New(slog.NewTextHandler(io.Discard, nil))})
+	Mount(mux, &Service{Store: h.store, Builds: h.builds, Data: data, Accounts: &auth.Store{Pool: pool},
+		Log: slog.New(slog.NewTextHandler(io.Discard, nil))}, 0)
 	h.server = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		mux.ServeHTTP(w, r.WithContext(auth.WithActor(r.Context(), h.actor)))
 	}))
@@ -853,5 +853,145 @@ func TestPutExportsOppositeTransfersDoNotDeadlock(t *testing.T) {
 	}
 	if errB != nil {
 		t.Fatalf("transfer DeadlockTwo->DeadlockOne concurrent with the opposite transfer: %v", errB)
+	}
+}
+
+// TestPutExportsAlsoWritesTheCharactersRow is spec §4.5: an export sync
+// must make GET /v1/me list the character, not just addon_exports.
+func TestPutExportsAlsoWritesTheCharactersRow(t *testing.T) {
+	h := newHarness(t)
+	if err := h.store.PutExports(context.Background(), h.owner,
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us",
+			Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:"}}); err != nil {
+		t.Fatal(err)
+	}
+	var class, source string
+	var userID int64
+	if err := h.pool.QueryRow(context.Background(),
+		`select coalesce(class, ''), source, user_id from characters where key = 'us/hardcore/baelgrim'`).
+		Scan(&class, &source, &userID); err != nil {
+		t.Fatal(err)
+	}
+	if class != "warrior" || source != "export" || userID != h.owner {
+		t.Fatalf("characters row = class=%q source=%q user_id=%d, want warrior/export/%d",
+			class, source, userID, h.owner)
+	}
+}
+
+// TestPutExportsNeverStealsACharactersRowEvenWithNoPriorAddonExportsRow
+// covers the case addon_exports' own claim guard cannot see: a
+// characters row already owned by someone else (a Battle.net import,
+// say) for a key that has never been synced by device before.
+func TestPutExportsNeverStealsACharactersRowEvenWithNoPriorAddonExportsRow(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	other, err := (&auth.Store{Pool: h.pool}).UpsertEmailUser(ctx, "bnet-owner@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, user_id, source) values
+		 ('us/hardcore/baelgrim', 'us', 'hardcore', 'Baelgrim', $1, 'bnet')`, other.ID); err != nil {
+		t.Fatal(err)
+	}
+	err = h.store.PutExports(ctx, h.owner,
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:"}})
+	if !errors.Is(err, ErrCharacterClaimed) {
+		t.Fatalf("err = %v, want ErrCharacterClaimed", err)
+	}
+}
+
+// TestPutExportsKeepsABattleNetImportedCharactersSource: an export from
+// the owner of a row Battle.net imported refreshes the row without
+// demoting its source, so the nightly bnet-refresh keeps re-checking
+// its guild (review finding on the 2026-09-22 branch).
+func TestPutExportsKeepsABattleNetImportedCharactersSource(t *testing.T) {
+	h := newHarness(t)
+	ctx := context.Background()
+	if _, err := h.pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, user_id, source) values
+		 ('us/hardcore/baelgrim', 'us', 'hardcore', 'Baelgrim', $1, 'bnet')`, h.owner); err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(ctx, h.owner,
+		[]Export{{Name: "Baelgrim", Ruleset: "hardcore", Region: "us", Export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:"}}); err != nil {
+		t.Fatal(err)
+	}
+	var source, class string
+	if err := h.pool.QueryRow(ctx,
+		`select source, coalesce(class, '') from characters where key = 'us/hardcore/baelgrim'`).
+		Scan(&source, &class); err != nil {
+		t.Fatal(err)
+	}
+	if source != "bnet" || class != "warrior" {
+		t.Fatalf("source = %q class = %q, want bnet kept and the class refreshed", source, class)
+	}
+}
+
+// TestPostMyExportsStoresAndReturnsTheWrittenCharacters is the signed-in
+// paste path (spec §4.5): a session (not a device) POSTs {"exports": [...]}
+// and gets back the /v1/me character objects for what it just wrote.
+func TestPostMyExportsStoresAndReturnsTheWrittenCharacters(t *testing.T) {
+	h := newHarness(t)
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	res := h.do(http.MethodPost, "/v1/me/exports",
+		`{"exports":[{"name":"Baelgrim","ruleset":"hardcore","region":"us","export":"FS1:1.60.1.69893:priest:human:0/0/0:"}]}`)
+	var out struct {
+		Characters []struct {
+			Key    string `json:"key"`
+			Class  string `json:"class"`
+			Source string `json:"source"`
+		} `json:"characters"`
+	}
+	h.data(res, &out)
+	if len(out.Characters) != 1 || out.Characters[0].Key != "us/hardcore/baelgrim" ||
+		out.Characters[0].Class != "priest" || out.Characters[0].Source != "export" {
+		t.Fatalf("characters = %+v", out.Characters)
+	}
+
+	exports, err := h.store.Exports(context.Background(), h.owner)
+	if err != nil || len(exports) != 1 {
+		t.Fatalf("exports = %+v, err = %v", exports, err)
+	}
+}
+
+// TestPostMyExportsNeedsASessionNotADevice covers the identity guard: a
+// device token (the companion's own credential) must not reach this
+// signed-in-only route.
+func TestPostMyExportsNeedsASessionNotADevice(t *testing.T) {
+	h := newHarness(t)
+	res := h.do(http.MethodPost, "/v1/me/exports",
+		`{"exports":[{"name":"Baelgrim","ruleset":"hardcore","region":"us","export":"FS1:aaa"}]}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusUnauthorized {
+		t.Fatalf("status = %d, want 401 (the harness actor is a device)", res.StatusCode)
+	}
+}
+
+// TestPostMyExportsRefusesNonsenseAndConflicts mirrors putExports'
+// validation and claim-conflict behaviour on the session route.
+func TestPostMyExportsRefusesNonsenseAndConflicts(t *testing.T) {
+	h := newHarness(t)
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+
+	res := h.do(http.MethodPost, "/v1/me/exports", `{"exports":[]}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("empty exports = %d, want 400", res.StatusCode)
+	}
+
+	stranger, err := (&auth.Store{Pool: h.pool}).UpsertEmailUser(context.Background(), "stranger2@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := h.store.PutExports(context.Background(), stranger.ID,
+		[]Export{{Name: "Claimed", Ruleset: "hardcore", Region: "us", Export: "FS1:aaa"}}); err != nil {
+		t.Fatal(err)
+	}
+	res = h.do(http.MethodPost, "/v1/me/exports",
+		`{"exports":[{"name":"Claimed","ruleset":"hardcore","region":"us","export":"FS1:stolen"}]}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusConflict {
+		t.Fatalf("stealing a claimed character = %d, want 409", res.StatusCode)
 	}
 }

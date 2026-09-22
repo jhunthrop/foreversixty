@@ -41,6 +41,9 @@ make run
 | `BNET_CLIENT_ID` | no | — | Battle.net OAuth client. Without the id, the secret, and the redirect URL, only the email magic link is offered. |
 | `BNET_CLIENT_SECRET` | no | — | |
 | `BNET_REDIRECT_URL` | no | — | Registered for production and for `http://localhost:8080/v1/auth/battlenet/callback`. |
+| `BNET_PROFILE_GAME` | no | `classic1x` | The profile-game segment of a Blizzard namespace (`profile-<game>-<region>`, `dynamic-<game>-<region>`). Forever's real namespace is one env change on launch day — see "The Battle.net character import" below. |
+| `BNET_REGIONS` | no | `us,eu` | Comma-separated; which regional Blizzard hosts to try for an account during import and refresh. |
+| `BNET_PROBE_GAMES` | no | `classic1x,classic,classic-forever,classicforever,forever,classic60,anniversary` | Comma-separated; every game namespace segment the nightly refresh's namespace probe checks, logging one line per game (any game other than `BNET_PROFILE_GAME` that answers 200 is logged at WARN as `namespace_appeared`). |
 | `PARSE_JOB_NAME` | no | `parse-report` | The Cloud Run job that parses a whole-file upload. |
 | `PARSE_JOB_REGION` | no | `us-east1` | |
 | `PARSE_JOB_PROJECT` | no | `foreversixty` | The Google Cloud project the job lives in. |
@@ -281,6 +284,32 @@ the same way `api.yml`'s own `deploy` job is gated on `GCP_WIF_PROVIDER`.
 
 Like `parse-report`, `sim-run` and `sim-validate`, `data-addon` is in `.github/workflows/api.yml`'s
 "Point the jobs at the new image" list, so every deploy repoints it at the new image.
+
+### The bnet-refresh job
+
+`bnet-refresh` (`api/internal/bnetimport`) re-syncs every `characters` row with
+`source = 'bnet'` and `refreshed_at` older than 20 hours against Blizzard's public profile and
+guild-roster data (the app's own client-credentials token — no user's OAuth token is needed,
+or kept, for this job), at most 4 Blizzard calls per second, stopping the run on the first
+`429`. It then runs the namespace probe (`BNET_PROBE_GAMES`), logging one line per game and a
+WARN for any game other than `BNET_PROFILE_GAME` that answers 200 — the owner's signal to flip
+`BNET_PROFILE_GAME` on launch day. It needs the same Battle.net credentials the service itself
+does (`BNET_CLIENT_ID`, `BNET_CLIENT_SECRET`) and is a no-op with none configured.
+
+    gcloud run jobs create bnet-refresh \
+      --image us-east1-docker.pkg.dev/foreversixty/api/api:latest \
+      --region us-east1 --args bnet-refresh \
+      --cpu 1 --memory 512Mi --task-timeout 15m \
+      --set-env-vars "$(tr '\n' ',' < .env.job)" \
+      --service-account api-runtime@foreversixty.iam.gserviceaccount.com
+
+    gcloud scheduler jobs create http bnet-refresh-nightly \
+      --schedule "30 3 * * *" \
+      --uri "https://us-east1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/foreversixty/jobs/bnet-refresh:run" \
+      --http-method POST --oauth-service-account-email api-runtime@foreversixty.iam.gserviceaccount.com
+
+`bnet-refresh` is in `.github/workflows/api.yml`'s "Point the jobs at the new image" list too,
+so every deploy repoints it at the new image.
 
 `sim-run` is executed by the API for one premium run and takes the sim
 id as a second argument; `sim-validate` is scheduled nightly by Cloud

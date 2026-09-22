@@ -61,3 +61,35 @@ func TestParseFS1GuildReadsTheGuildSection(t *testing.T) {
 		})
 	}
 }
+
+func TestParseFS1ClassReadsTheHeadsClassSlug(t *testing.T) {
+	cases := []struct {
+		name      string
+		export    string
+		wantClass string
+		wantOK    bool
+	}{
+		{
+			name: "plain FS1 head", export: "FS1:1.60.1.69893:warrior:tauren:0/0/0:",
+			wantClass: "warrior", wantOK: true,
+		},
+		{
+			name: "head with sections after it", export: "FS1:1.60.1.69893:mage:human:0/0/0:|guild=Forever:1",
+			wantClass: "mage", wantOK: true,
+		},
+		{name: "not FS1", export: "FS2:1.60.1.69893:warrior:tauren:0/0/0:", wantOK: false},
+		{name: "too short", export: "FS1:1.60.1.69893", wantOK: false},
+		{name: "empty export", export: "", wantOK: false},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			class, ok := ParseFS1Class(c.export)
+			if ok != c.wantOK {
+				t.Fatalf("ok = %v, want %v", ok, c.wantOK)
+			}
+			if ok && class != c.wantClass {
+				t.Fatalf("class = %q, want %q", class, c.wantClass)
+			}
+		})
+	}
+}
