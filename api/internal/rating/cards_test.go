@@ -14,6 +14,7 @@ func sampleCard() ratingengine.Card {
 	return ratingengine.Card{
 		Overall: 70, OverallUncapped: 70, OverallCapped: false,
 		Basis: "percentile", ModelVersion: ratingengine.DefaultModelVersion, KillTimeBand: "typical",
+		Coverage: 0.85, Insufficient: false, InsufficientReason: "",
 		Components: [6]ratingengine.Component{
 			{Name: ratingengine.ComponentNameOutput, Score: 71, Weight: 35, Basis: "percentile",
 				Percentile: &pct, BracketN: 142, Excluded: false},
@@ -77,5 +78,39 @@ func TestNewCardRowRoundTripsThroughJSON(t *testing.T) {
 	}
 	if len(decoded) != 6 {
 		t.Fatalf("decoded %d components, want 6", len(decoded))
+	}
+	if cr.Coverage != 0.85 || cr.Insufficient || cr.InsufficientReason != "" {
+		t.Errorf("Coverage=%v Insufficient=%v InsufficientReason=%q, want 0.85/false/\"\" (copied from the Card)",
+			cr.Coverage, cr.Insufficient, cr.InsufficientReason)
+	}
+}
+
+// TestNewCardRowCarriesAnInsufficientCard confirms an insufficient Card's
+// zeroed Overall fields and its reason both survive into the stored row
+// unchanged -- the row is what the API persists, and a silently-dropped
+// InsufficientReason would leave the page with no explanation for why
+// Overall reads 0.
+func TestNewCardRowCarriesAnInsufficientCard(t *testing.T) {
+	meta := fightMeta{ReportID: "r1", FightIndex: 3, EncounterID: 667, Kill: false, FoughtAt: time.Now()}
+	row := summary.RosterRow{GUID: "g1", Name: "Shadowpriest", Class: "Priest", Spec: "Shadow", Role: "dps"}
+	card := ratingengine.Card{
+		Overall: 0, OverallUncapped: 0, OverallCapped: false,
+		Coverage: 0.3, Insufficient: true,
+		InsufficientReason: "no output on a wipe; no mechanics table for this encounter",
+		Components:         [6]ratingengine.Component{{Name: ratingengine.ComponentNameOutput}},
+	}
+	cr := newCardRow(meta, row, card)
+	if !cr.Insufficient {
+		t.Fatal("Insufficient must survive into the CardRow")
+	}
+	if cr.Coverage != 0.3 {
+		t.Errorf("Coverage = %v, want 0.3", cr.Coverage)
+	}
+	if cr.InsufficientReason != card.InsufficientReason {
+		t.Errorf("InsufficientReason = %q, want %q", cr.InsufficientReason, card.InsufficientReason)
+	}
+	if cr.Overall != 0 || cr.OverallUncapped != 0 {
+		t.Errorf("an insufficient card's zeroed overall fields must survive too: overall=%v uncapped=%v",
+			cr.Overall, cr.OverallUncapped)
 	}
 }

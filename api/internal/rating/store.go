@@ -121,17 +121,20 @@ func insertCardRow(ctx context.Context, tx pgx.Tx, cr CardRow) error {
 	_, err := tx.Exec(ctx,
 		`insert into rating_scores (report_id, fight_index, player_key, player_name, class, spec, role,
 		   encounter_id, difficulty, size, duration_ms, kill, kill_time_band, overall, overall_uncapped,
-		   overall_capped, components, model_version, fought_at)
+		   overall_capped, components, model_version, fought_at, coverage, insufficient, insufficient_reason)
 		 values ($1, $2, $3, $4, nullif($5, ''), nullif($6, ''), nullif($7, ''), $8, $9, $10, $11, $12, $13,
-		   $14, $15, $16, $17, $18, $19)
+		   $14, $15, $16, $17, $18, $19, $20, $21, nullif($22, ''))
 		 on conflict (report_id, fight_index, player_key, fought_at) do update set
 		   player_name = excluded.player_name, class = excluded.class, spec = excluded.spec,
 		   role = excluded.role, overall = excluded.overall, overall_uncapped = excluded.overall_uncapped,
 		   overall_capped = excluded.overall_capped, components = excluded.components,
-		   model_version = excluded.model_version, computed_at = now()`,
+		   model_version = excluded.model_version, coverage = excluded.coverage,
+		   insufficient = excluded.insufficient, insufficient_reason = excluded.insufficient_reason,
+		   computed_at = now()`,
 		cr.ReportID, cr.FightIndex, cr.PlayerKey, cr.PlayerName, cr.Class, cr.Spec, cr.Role,
 		cr.EncounterID, cr.Difficulty, cr.Size, cr.DurationMS, cr.Kill, cr.KillTimeBand,
-		cr.Overall, cr.OverallUncapped, cr.OverallCapped, cr.Components, cr.ModelVersion, cr.FoughtAt)
+		cr.Overall, cr.OverallUncapped, cr.OverallCapped, cr.Components, cr.ModelVersion, cr.FoughtAt,
+		cr.Coverage, cr.Insufficient, cr.InsufficientReason)
 	if err != nil {
 		return fmt.Errorf("rating: write row %s/%d/%s: %w", cr.ReportID, cr.FightIndex, cr.PlayerKey, err)
 	}
@@ -210,7 +213,8 @@ func (s *Store) ReadFightRatings(ctx context.Context, reportID string, fightInde
 	rows, err := s.Pool.Query(ctx,
 		`select player_key, player_name, coalesce(class, ''), coalesce(spec, ''), coalesce(role, ''),
 		    encounter_id, difficulty, coalesce(size, 0), coalesce(duration_ms, 0), kill, kill_time_band,
-		    overall, overall_uncapped, overall_capped, components, model_version, fought_at
+		    overall, overall_uncapped, overall_capped, components, model_version, fought_at,
+		    coalesce(coverage, 0), coalesce(insufficient, false), coalesce(insufficient_reason, '')
 		 from rating_scores where report_id = $1 and fight_index = $2 order by player_name`,
 		reportID, fightIndex)
 	if err != nil {
@@ -222,7 +226,8 @@ func (s *Store) ReadFightRatings(ctx context.Context, reportID string, fightInde
 		var cr CardRow
 		if err := rows.Scan(&cr.PlayerKey, &cr.PlayerName, &cr.Class, &cr.Spec, &cr.Role,
 			&cr.EncounterID, &cr.Difficulty, &cr.Size, &cr.DurationMS, &cr.Kill, &cr.KillTimeBand,
-			&cr.Overall, &cr.OverallUncapped, &cr.OverallCapped, &cr.Components, &cr.ModelVersion, &cr.FoughtAt); err != nil {
+			&cr.Overall, &cr.OverallUncapped, &cr.OverallCapped, &cr.Components, &cr.ModelVersion, &cr.FoughtAt,
+			&cr.Coverage, &cr.Insufficient, &cr.InsufficientReason); err != nil {
 			return nil, false, fmt.Errorf("rating: scan %s/%d: %w", reportID, fightIndex, err)
 		}
 		cr.ReportID, cr.FightIndex = reportID, fightIndex
@@ -261,7 +266,13 @@ const characterTrendPageSize = 20
 // from public reports only (spec §5.1's ruling: "public at time of query", enforced here
 // by joining the live reports.visibility column rather than trusting anything cached on
 // the row at write time), starting after before when it is non-nil. hasMore is true when
-// a further page exists.
+// a further page exists. Insufficient cards (spec §1.5's coverage ruling, dated
+// 2026-09-21) are excluded outright, at the SQL level: they are real per-component data
+// worth showing on a fight's own report card, but their Overall is zero-valued and does
+// not belong in any character-level mean or count this endpoint's trend/sample_size/
+// latest/best-worst-component all are. A NULL insufficient (a row written before this
+// column existed) reads as sufficient until the backfill re-rates it under the bumped
+// DefaultModelVersion, the same way every other stale-row gap already resolves itself.
 func (s *Store) ReadCharacterRating(ctx context.Context, playerKey string, limit int, before *cursorPos) ([]CardRow, bool, error) {
 	if limit <= 0 || limit > characterTrendPageSize {
 		limit = characterTrendPageSize
@@ -269,10 +280,11 @@ func (s *Store) ReadCharacterRating(ctx context.Context, playerKey string, limit
 	query := `select rs.player_key, rs.player_name, coalesce(rs.class, ''), coalesce(rs.spec, ''),
 	    coalesce(rs.role, ''), rs.encounter_id, rs.difficulty, coalesce(rs.size, 0),
 	    coalesce(rs.duration_ms, 0), rs.kill, rs.kill_time_band, rs.overall, rs.overall_uncapped,
-	    rs.overall_capped, rs.components, rs.model_version, rs.report_id, rs.fight_index, rs.fought_at
+	    rs.overall_capped, rs.components, rs.model_version, rs.report_id, rs.fight_index, rs.fought_at,
+	    coalesce(rs.coverage, 0), coalesce(rs.insufficient, false), coalesce(rs.insufficient_reason, '')
 	 from rating_scores rs
 	 join reports r on r.id = rs.report_id
-	 where rs.player_key = $1 and r.visibility = 'public'`
+	 where rs.player_key = $1 and r.visibility = 'public' and not coalesce(rs.insufficient, false)`
 	args := []any{playerKey}
 	if before != nil {
 		query += ` and (rs.fought_at, rs.report_id, rs.fight_index) < ($2, $3, $4)`
@@ -292,7 +304,8 @@ func (s *Store) ReadCharacterRating(ctx context.Context, playerKey string, limit
 		if err := rows.Scan(&cr.PlayerKey, &cr.PlayerName, &cr.Class, &cr.Spec, &cr.Role,
 			&cr.EncounterID, &cr.Difficulty, &cr.Size, &cr.DurationMS, &cr.Kill, &cr.KillTimeBand,
 			&cr.Overall, &cr.OverallUncapped, &cr.OverallCapped, &cr.Components, &cr.ModelVersion,
-			&cr.ReportID, &cr.FightIndex, &cr.FoughtAt); err != nil {
+			&cr.ReportID, &cr.FightIndex, &cr.FoughtAt,
+			&cr.Coverage, &cr.Insufficient, &cr.InsufficientReason); err != nil {
 			return nil, false, fmt.Errorf("rating: scan character %s: %w", playerKey, err)
 		}
 		out = append(out, cr)

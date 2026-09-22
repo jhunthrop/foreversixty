@@ -7,22 +7,30 @@ import (
 )
 
 // playerRatingDTO is one roster player's rating, as either read endpoint returns it.
+// Coverage/Insufficient/InsufficientReason are spec §1.5's coverage ruling, dated
+// 2026-09-21: when Insufficient is true, Overall/OverallUncapped/OverallCapped are
+// zero-valued and InsufficientReason names what was missing; Components is still the full
+// six entries, so the per-fight report card (§6.1) can show what WAS measured.
 type playerRatingDTO struct {
-	PlayerKey       string          `json:"player_key"`
-	PlayerName      string          `json:"player_name"`
-	Class           string          `json:"class"`
-	Spec            string          `json:"spec"`
-	Role            string          `json:"role"`
-	Overall         float64         `json:"overall"`
-	OverallUncapped float64         `json:"overall_uncapped"`
-	OverallCapped   bool            `json:"overall_capped"`
-	Components      json.RawMessage `json:"components"`
+	PlayerKey          string          `json:"player_key"`
+	PlayerName         string          `json:"player_name"`
+	Class              string          `json:"class"`
+	Spec               string          `json:"spec"`
+	Role               string          `json:"role"`
+	Overall            float64         `json:"overall"`
+	OverallUncapped    float64         `json:"overall_uncapped"`
+	OverallCapped      bool            `json:"overall_capped"`
+	Coverage           float64         `json:"coverage"`
+	Insufficient       bool            `json:"insufficient"`
+	InsufficientReason string          `json:"insufficient_reason,omitempty"`
+	Components         json.RawMessage `json:"components"`
 }
 
 func toPlayerRatingDTO(cr CardRow) playerRatingDTO {
 	return playerRatingDTO{
 		PlayerKey: cr.PlayerKey, PlayerName: cr.PlayerName, Class: cr.Class, Spec: cr.Spec, Role: cr.Role,
 		Overall: cr.Overall, OverallUncapped: cr.OverallUncapped, OverallCapped: cr.OverallCapped,
+		Coverage: cr.Coverage, Insufficient: cr.Insufficient, InsufficientReason: cr.InsufficientReason,
 		Components: cr.Components,
 	}
 }

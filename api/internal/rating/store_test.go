@@ -130,6 +130,25 @@ func TestReadFightRatingsReturnsTheStoredRows(t *testing.T) {
 	if rows[0].PlayerName != "Readme" {
 		t.Errorf("player_name = %q", rows[0].PlayerName)
 	}
+	// This fixture (no ExecutionScore, rogue-combat has no curated owned utility, and a
+	// throwaway test database folds no percentile digests) genuinely clears spec §1.5's
+	// coverage ruling: Output, Utility and Mechanics all end up excluded, leaving Survival,
+	// Preparation and Activity -- 30 of the dps role's 100 weight points. Round-tripping
+	// through the real coverage/insufficient/insufficient_reason columns, not just the
+	// engine's own in-memory Card, is what this test is for.
+	if !rows[0].Insufficient {
+		t.Fatalf("Insufficient = false, want true (coverage=%v)", rows[0].Coverage)
+	}
+	if rows[0].Coverage <= 0 || rows[0].Coverage >= 0.5 {
+		t.Errorf("Coverage = %v, want a value in (0, 0.5)", rows[0].Coverage)
+	}
+	if rows[0].InsufficientReason == "" {
+		t.Error("InsufficientReason must be stored and read back non-empty")
+	}
+	if rows[0].Overall != 0 || rows[0].OverallUncapped != 0 {
+		t.Errorf("an insufficient row's overall columns must read back zero: overall=%v uncapped=%v",
+			rows[0].Overall, rows[0].OverallUncapped)
+	}
 }
 
 func TestReadFightRatingsMissingFightReportsNotFound(t *testing.T) {
