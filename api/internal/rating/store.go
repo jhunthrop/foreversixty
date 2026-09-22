@@ -150,18 +150,40 @@ type cursorPos struct {
 type staleFight struct {
 	ReportID   string
 	FightIndex int
-	PlayerKey  string
+	Region     string
+	Ruleset    string
 	FoughtAt   time.Time
 }
 
 // staleFights selects up to limit (report_id, fight_index) pairs whose stored rows are not
 // at the engine's current DefaultModelVersion, one representative player_key and fought_at
 // per fight (every player of one fight shares both).
+// staleFights lists fights the backfill should rate, oldest report first, up to limit:
+// those never rated at all (a complete, non-private report's fight with no rating_scores
+// row: the first production run found only these and rated nothing), then those rated by
+// an older model. For a never-rated fight, region and ruleset come from the report's
+// logging character and fought-at from the fight's start, exactly as ingest derives them
+// (reports.ReportRealm, i.rate); for a stale one they are read back off its own row.
 func (s *Store) staleFights(ctx context.Context, limit int) ([]staleFight, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select distinct on (report_id, fight_index) report_id, fight_index, player_key, fought_at
-		 from rating_scores where model_version <> $1
-		 order by report_id, fight_index limit $2`,
+		`(select f.report_id, f.fight_index,
+		         coalesce(split_part(r.logging_character, '/', 1), '') as region,
+		         coalesce(split_part(r.logging_character, '/', 2), '') as ruleset,
+		         to_timestamp(f.start_ms / 1000.0) as fought_at
+		    from fights f
+		    join reports r on r.id = f.report_id
+		   where r.status = 'complete' and r.visibility <> 'private'
+		     and f.encounter_id is not null and f.encounter_id <> 0
+		     and not exists (select 1 from rating_scores rs
+		                      where rs.report_id = f.report_id and rs.fight_index = f.fight_index)
+		   order by f.report_id, f.fight_index
+		   limit $2)
+		 union all
+		 (select distinct on (report_id, fight_index) report_id, fight_index,
+		         split_part(player_key, '/', 1), split_part(player_key, '/', 2), fought_at
+		    from rating_scores where model_version <> $1
+		   order by report_id, fight_index limit $2)
+		 limit $2`,
 		ratingengine.DefaultModelVersion, limit)
 	if err != nil {
 		return nil, fmt.Errorf("rating: stale fights: %w", err)
@@ -170,7 +192,7 @@ func (s *Store) staleFights(ctx context.Context, limit int) ([]staleFight, error
 	var out []staleFight
 	for rows.Next() {
 		var sf staleFight
-		if err := rows.Scan(&sf.ReportID, &sf.FightIndex, &sf.PlayerKey, &sf.FoughtAt); err != nil {
+		if err := rows.Scan(&sf.ReportID, &sf.FightIndex, &sf.Region, &sf.Ruleset, &sf.FoughtAt); err != nil {
 			return nil, err
 		}
 		out = append(out, sf)

@@ -8,7 +8,9 @@ import (
 	"errors"
 	"io"
 	"testing"
+	"time"
 
+	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	ratingengine "github.com/jhunthrop/foreversixty/logs/engine/rating"
 	"github.com/jhunthrop/foreversixty/logs/engine/store"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -114,4 +116,69 @@ func TestBackfillIsBoundedPerRun(t *testing.T) {
 
 func fightIDFor(i int) string {
 	return "backfill-bounded-" + string(rune('a'+i))
+}
+
+// The first production run of the backfill rated nothing: every existing report had
+// fights with no rating row at all, and staleFights only ever looked at rating_scores.
+// A fight of a complete, non-private report that has never been rated is exactly what
+// the backfill exists for, and its region, ruleset and fought-at time come from the
+// report and the fight row the same way ingest derives them.
+func TestBackfillRatesFightsThatWereNeverRated(t *testing.T) {
+	pool := testPool(t)
+	ratingStore := &Store{Pool: pool}
+	ctx := context.Background()
+	rs := &reports.Store{Pool: pool}
+	mustCreateReport(t, rs, "backfill-unrated-1", reports.Public)
+	mustCreateReport(t, rs, "backfill-unrated-private", reports.Private)
+	if _, err := pool.Exec(ctx, `update reports set logging_character = 'eu/hardcore/logger' where id = 'backfill-unrated-1'`); err != nil {
+		t.Fatal(err)
+	}
+	startMS := time.Date(2026, 12, 9, 1, 0, 0, 0, time.UTC).UnixMilli()
+	for _, id := range []string{"backfill-unrated-1", "backfill-unrated-private"} {
+		if _, err := pool.Exec(ctx,
+			`insert into fights (report_id, fight_index, encounter_id, name, kill, duration_ms, start_ms, verified)
+			 values ($1, 1, 667, 'Unrated', true, 180000, $2, true)`, id, startMS); err != nil {
+			t.Fatal(err)
+		}
+	}
+	f := fightFixture("backfill-unrated-1", true,
+		summary.RosterRow{GUID: "g1", Name: "Fresh", Class: "Mage", Spec: "Frost", Role: "dps"},
+	)
+	body, err := json.Marshal(f.Summary)
+	if err != nil {
+		t.Fatal(err)
+	}
+	getter := fakeGetter{objects: map[string][]byte{
+		store.Keys{ReportID: "backfill-unrated-1"}.FightSummary(1):       body,
+		store.Keys{ReportID: "backfill-unrated-private"}.FightSummary(1): body,
+	}}
+	n, err := Backfill(ctx, BackfillDeps{Store: ratingStore, Summaries: getter}, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n != 1 {
+		t.Fatalf("recomputed %d fights, want 1 (the public one only)", n)
+	}
+	var key string
+	var foughtAt time.Time
+	if err := pool.QueryRow(ctx,
+		`select player_key, fought_at from rating_scores where report_id = 'backfill-unrated-1'`).Scan(&key, &foughtAt); err != nil {
+		t.Fatal(err)
+	}
+	if key != "eu/hardcore/fresh" {
+		t.Errorf("player_key = %q, want the report's own region and ruleset", key)
+	}
+	if !foughtAt.Equal(time.UnixMilli(startMS)) {
+		t.Errorf("fought_at = %v, want the fight's start", foughtAt)
+	}
+	var private int
+	pool.QueryRow(ctx, `select count(*) from rating_scores where report_id = 'backfill-unrated-private'`).Scan(&private)
+	if private != 0 {
+		t.Errorf("a private report's fight was rated")
+	}
+	// A second run finds nothing left to do.
+	n, err = Backfill(ctx, BackfillDeps{Store: ratingStore, Summaries: getter}, 10)
+	if err != nil || n != 0 {
+		t.Fatalf("second run recomputed %d (err %v), want 0", n, err)
+	}
 }
