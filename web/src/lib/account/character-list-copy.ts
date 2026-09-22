@@ -6,7 +6,6 @@ export const characterListCopy = {
   heading: 'Characters',
   empty: 'No characters linked yet. Sign in with Battle.net to link them.',
   refreshFromBattlenet: 'Refresh from Battle.net',
-  pasteAnExport: 'Paste an export',
   importedFrom: (relative: string): string => `Imported from Battle.net ${relative}.`,
   verified: 'Verified',
   levelPrefix: (level: number): string => `Level ${level}`,
