@@ -4,6 +4,7 @@
 ## Author: foreversixty.gg
 ## Version: @project-version@
 ## X-Curse-Project-ID: 1706689
+## X-Wago-ID: XKqEdoKy
 ## X-Website: https://foreversixty.gg/addon
 ## SavedVariables: ForeverSixtyDB, ForeverSixtyInbox
 
