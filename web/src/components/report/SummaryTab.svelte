@@ -28,7 +28,15 @@
   import { simLinkFor } from '../../lib/report/sim-link';
   import GearList from './GearList.svelte';
   import SummaryPanels from './SummaryPanels.svelte';
-  import RatingPanel from './RatingPanel.svelte';
+  import { createLazyComponent } from '../../lib/report/lazy-component.svelte';
+
+  // Lazy, like ReportView's own tabs: the panel fetches and renders after the summary has
+  // painted. Eager, its chunk and its fetch landed inside the report page's blocking-time
+  // budget (Lighthouse: 200ms) and pushed it over.
+  const ratingPanelLazy = createLazyComponent(() => import('./RatingPanel.svelte'));
+  $effect(() => {
+    if (onTab && reportId !== undefined && fightIndex !== undefined) ratingPanelLazy.load();
+  });
   import ClassIcon from './ClassIcon.svelte';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
@@ -260,13 +268,18 @@
   {#if onTab}
     <SummaryPanels {summary} {everyone} {durationMs} {players} {onTab} {onSelectPlayer} {approximate} />
     {#if reportId !== undefined && fightIndex !== undefined}
-      <RatingPanel
-        {reportId}
-        {fightIndex}
-        roster={[...summary.roster].map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
-        onTab={() => onTab('rating')}
-        {onSelectPlayer}
-      />
+      {#if ratingPanelLazy.current}
+        <ratingPanelLazy.current
+          {reportId}
+          {fightIndex}
+          roster={[...summary.roster].map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
+          onTab={() => onTab('rating')}
+          {onSelectPlayer}
+        />
+      {:else}
+        <!-- The panel's outer height with no ratings (its most common state), so its arrival does not move the At pull section. -->
+        <div class="min-h-[70px]" data-testid="rating-panel-slot" aria-hidden="true"></div>
+      {/if}
     {/if}
   {/if}
 

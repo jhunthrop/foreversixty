@@ -79,17 +79,26 @@ func (s *Store) MarkEventProcessed(ctx context.Context, id string) error {
 
 // withAdvisoryLock takes a session-level Postgres advisory lock scoped to
 // key for the duration of fn, so at most one caller is ever inside fn for
-// that key at a time. Uses a dedicated connection acquired from the pool
-// for the lock/unlock pair, not tied to any of fn's own transactions.
-// Shared by WithEventLock and WithGuildLock (DRY) — their key spaces
-// never collide because a raw Stripe event id (WithEventLock's key) is
-// never spelled like WithGuildLock's "guild-checkout:<id>" prefix.
+// that key at a time. Shared by WithEventLock, WithGuildLock and
+// WithUserLock (DRY); their key spaces never collide because a raw Stripe
+// event id is never spelled like the "guild-checkout:<id>" or
+// "user-billing:<id>" prefixes.
+//
+// The lock lives on a connection opened OUTSIDE the pool, from the pool's
+// own config. A session lock has to hold its connection for the whole of
+// fn, and fn runs transactions on the pool; holding a pooled connection
+// here meant a lock holder competed with its own work for connections,
+// and two webhook deliveries (each an event lock holding a guild lock
+// holding a transaction) exhausted a four-connection pool and hung CI for
+// ten minutes. A dedicated connection per lock costs one extra connection
+// per in-flight webhook or checkout, which is bounded by the routes' own
+// rate limits, and can never deadlock the pool.
 func (s *Store) withAdvisoryLock(ctx context.Context, key string, fn func(context.Context) error) error {
-	conn, err := s.Pool.Acquire(ctx)
+	conn, err := pgx.ConnectConfig(ctx, s.Pool.Config().ConnConfig)
 	if err != nil {
-		return fmt.Errorf("billing: lock %s: acquire: %w", key, err)
+		return fmt.Errorf("billing: lock %s: connect: %w", key, err)
 	}
-	defer conn.Release()
+	defer func() { _ = conn.Close(context.WithoutCancel(ctx)) }()
 	if _, err := conn.Exec(ctx, `select pg_advisory_lock(hashtext($1))`, key); err != nil {
 		return fmt.Errorf("billing: lock %s: lock: %w", key, err)
 	}

@@ -14,6 +14,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: logs } }
+    # GOWORK=off: the workspace pulls in sim, whose development replace
+    # points at a local engine clone that does not exist here (sim.yml
+    # rewrites that replace before it builds; this module never needed
+    # the engine). The logs module stands alone with its own go.sum.
+    env: { GOWORK: off }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -51,6 +56,11 @@ jobs:
     continue-on-error: true
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: logs } }
+    # GOWORK=off: the workspace pulls in sim, whose development replace
+    # points at a local engine clone that does not exist here (sim.yml
+    # rewrites that replace before it builds; this module never needed
+    # the engine). The logs module stands alone with its own go.sum.
+    env: { GOWORK: off }
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
