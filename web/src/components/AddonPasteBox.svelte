@@ -6,15 +6,31 @@
      readable and links on with the raw code, so it needs no TalentIndex and no active
      build to reconcile against. -->
 <script lang="ts">
+  import { fetchMeOnce } from '../lib/account/api';
   import { addonCopy } from '../lib/addon/copy';
   import { decodeFS1 } from '../lib/planner/fs1';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { CURRENT_CHARACTER_CHANGED, writeCurrent } from '../lib/current-character';
   import { plannerCodeHref, simCodeHref } from '../lib/handoff-links';
+  import AddonPasteSave from './AddonPasteSave.svelte';
 
   let code = $state('');
   let error = $state<string | null>(null);
   let loaded = $state<string | null>(null);
+  // null while fetchMeOnce is still resolving -- the save/hint block renders nothing until
+  // it is known, rather than flashing the signed-out hint first (same idiom as Account.svelte's
+  // own status: 'loading' | 'ready' | 'failed', simplified to the one fact this needs).
+  let signedIn = $state<boolean | null>(null);
+
+  $effect(() => {
+    void fetchMeOnce()
+      .then((me) => {
+        signedIn = me !== null;
+      })
+      .catch(() => {
+        signedIn = false;
+      });
+  });
 
   function submit(): void {
     const trimmed = code.trim();
@@ -42,6 +58,7 @@
 </script>
 
 <section
+  id="paste"
   class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-4"
   data-testid="addon-paste-box"
 >
@@ -82,5 +99,10 @@
         {addonCopy.pasteOpenSim}
       </a>
     </div>
+    {#if signedIn !== null}
+      {#key loaded}
+        <AddonPasteSave {signedIn} code={loaded} />
+      {/key}
+    {/if}
   {/if}
 </section>

@@ -25,11 +25,12 @@
   import { safeNextPath } from '../lib/account/safe-next';
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
-  import { characterHref, guildHref, parseCharacterPath, rulesetLabel } from '../lib/characters';
+  import { characterListCopy } from '../lib/account/character-list-copy';
+  import { guildHref } from '../lib/characters';
   import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
   import { guildConsentCopy } from '../lib/guild/copy';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-  import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
+  import CharacterList from './account/CharacterList.svelte';
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import MyReports from './MyReports.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
@@ -84,6 +85,20 @@
     if (mode !== 'login') return;
     const params = new URLSearchParams(window.location.search);
     resolvedNext = safeNextPath(params.get('next'), next);
+  });
+
+  // Spec 2026-09-22 §7.3: a second Battle.net login (the refresh link) redirects back to
+  // ?refreshed=1. Shown once, then the query string is dropped with replaceState so a
+  // reload or a shared link never re-shows a stale toast. Same "$effect, no typeof window
+  // guard" reasoning as the `next`-param effect above.
+  let toast = $state('');
+
+  $effect(() => {
+    if (mode !== 'account') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('refreshed') !== '1') return;
+    toast = characterListCopy.refreshedToast;
+    window.history.replaceState({}, '', window.location.pathname);
   });
 
   async function run(action: () => Promise<void>): Promise<void> {
@@ -291,6 +306,7 @@
 {:else}
   <div class="flex flex-col gap-8" data-testid="account">
     <CurrentCharacterBar />
+    {#if toast !== ''}<p class="text-[14px]" data-testid="account-toast">{toast}</p>{/if}
     {#if status === 'loading'}
       <p class="text-muted text-[14px]">Loading your account.</p>
     {:else if !signedIn}
@@ -372,34 +388,7 @@
         {/if}
       </section>
 
-      <section class="flex flex-col gap-3">
-        <h2 class="section-title text-[18px]">Characters</h2>
-        {#if me!.characters.length === 0}
-          <p class="text-muted text-[14px]">
-            No characters linked yet. Sign in with Battle.net to link them.
-          </p>
-        {:else}
-          <ul class="flex flex-col">
-            {#each me!.characters as character (character.key)}
-              {@const path = parseCharacterPath(`/character/${character.key}`)}
-              <li
-                class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-2 text-[14px]"
-              >
-                <a href={characterHref(character.region, character.ruleset, character.name)}
-                  >{character.name}</a
-                >
-                <span class="text-muted">
-                  {rulesetLabel(character.ruleset)}
-                  {character.region.toUpperCase()}
-                </span>
-                {#if path !== null}
-                  <CharacterHandoffLinks {path} />
-                {/if}
-              </li>
-            {/each}
-          </ul>
-        {/if}
-      </section>
+      <CharacterList characters={me!.characters} bnetImportedAt={me!.bnet_imported_at} />
 
       <section class="flex flex-col gap-3">
         <h2 class="section-title text-[18px]">Name</h2>

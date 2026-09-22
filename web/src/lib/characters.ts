@@ -33,6 +33,15 @@ export function rulesetLabel(id: string): string {
   return RULESETS.find((ruleset) => ruleset.id === id)?.label ?? id;
 }
 
+/**
+ * `guild_characters.rank` (`leader|officer|member`, `api/internal/db/0018_guild_membership`)
+ * capitalised for display, same "echo what the API sent, just tidier" approach as
+ * `rulesetLabel` -- a rank the site has not heard of is still shown, capitalised, not hidden.
+ */
+export function guildRankLabel(rank: string): string {
+  return rank.length === 0 ? rank : rank.charAt(0).toUpperCase() + rank.slice(1);
+}
+
 export interface UnitName {
   /** What the report shows. */
   name: string;

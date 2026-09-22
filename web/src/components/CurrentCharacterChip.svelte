@@ -35,6 +35,7 @@
     hasOwnPasteBox = false,
     addonCode = '',
     restored = false,
+    guildLine = '',
   }: {
     current: CurrentCharacter | null;
     onforget: () => void;
@@ -47,6 +48,11 @@
      *  the URL. Only shown alongside a loaded `current` -- a page that passes this true
      *  with no character loaded (a dead pointer, say) sees the ordinary empty state. */
     restored?: boolean;
+    /** "Iron Vanguard · Officer", already formatted -- spec 2026-09-22 §7.5. Built by
+     *  CurrentCharacterBar.svelte, which is the one place with `/v1/me` in hand; this stays
+     *  a pure render of the string it is given, same as `addonCode`. Empty when the current
+     *  character has no known guild (not an 'armory' pointer, no match, or unguilded). */
+    guildLine?: string;
   } = $props();
 
   let copied = $state(false);
@@ -85,6 +91,11 @@
           </span>
         {/if}
         <span style:color={classColorVar(current.classSlug)}>{current.label}</span>
+        {#if guildLine !== ''}
+          <span class="text-muted truncate font-normal" data-testid="current-character-guild">
+            {guildLine}
+          </span>
+        {/if}
       </span>
       <div
         class="flex h-11 flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap md:h-auto md:flex-1"

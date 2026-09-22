@@ -48,6 +48,14 @@ export const addonCopy = {
   pasteOpenPlanner: 'Open in planner',
   pasteOpenSim: 'Open in simulator',
 
+  // --- /addon page's signed-in save (spec 2026-09-22 §7.4) ---
+  pasteSignInHint: 'Sign in to keep this character on your account.',
+  pasteNameLabel: 'Character name',
+  pasteRegionLabel: 'Region',
+  pasteRulesetLabel: 'Ruleset',
+  pasteSaveAction: 'Save to your account',
+  pasteSaved: 'Saved to your account',
+
   // --- /addon page ---
   pageTitle: 'The addon',
   pageDescription:

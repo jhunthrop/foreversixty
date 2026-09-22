@@ -16,3 +16,10 @@ describe('Account "My guilds" block', () => {
     expect(body).not.toContain('data-testid="account-guilds"');
   });
 });
+
+describe('Account refreshed toast', () => {
+  it('renders no toast on a plain server render (no window/query string to read yet)', () => {
+    const { body } = render(Account, { props: { mode: 'account' } });
+    expect(body).not.toContain('data-testid="account-toast"');
+  });
+});

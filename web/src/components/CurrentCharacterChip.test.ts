@@ -128,6 +128,19 @@ describe('CurrentCharacterChip', () => {
   // The height reservation this component and its mounting page share now lives in
   // current-character-layout.ts, not a local const -- this pins that the chip actually
   // renders the imported value, not a copy that could drift from it.
+  it('shows the guild line beside the label when given one', () => {
+    const { body } = render(CurrentCharacterChip, {
+      props: { current, onforget: () => {}, guildLine: 'Iron Vanguard · Officer' },
+    });
+    expect(body).toContain('data-testid="current-character-guild"');
+    expect(body).toContain('Iron Vanguard · Officer');
+  });
+
+  it('shows no guild line when none is given', () => {
+    const { body } = render(CurrentCharacterChip, { props: { current, onforget: () => {} } });
+    expect(body).not.toContain('data-testid="current-character-guild"');
+  });
+
   it('renders the imported CHIP_HEIGHT classes, in every state, restored or not', () => {
     for (const props of [
       { current, onforget: () => {} },

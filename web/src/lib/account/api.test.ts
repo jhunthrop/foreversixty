@@ -12,6 +12,7 @@ import {
   forgetSession,
   listDevices,
   pairDevice,
+  postMyExports,
   requestEmailLink,
   revokeDevice,
   setAnonymize,
@@ -162,6 +163,45 @@ describe('the account API', () => {
     );
     await expect(listDevices(API)).rejects.toBeInstanceOf(AccountError);
     await expect(listDevices(API)).rejects.toThrow(ACCOUNT_FAILED);
+  });
+
+  it('posts a signed-in paste to /v1/me/exports and returns the written characters', async () => {
+    document.cookie = 'fs_csrf=abc; path=/';
+    const written = [
+      { key: 'us/hardcore/elyra-duskvale', region: 'us', ruleset: 'hardcore', name: 'Elyra Duskvale' },
+    ];
+    const upstream = vi.fn<GlobalFetch>(async () => envelope({ characters: written }));
+    vi.stubGlobal('fetch', upstream);
+
+    const input = [{ name: 'Elyra Duskvale', region: 'us', ruleset: 'hardcore', export: 'FS1:1:priest:...' }];
+    await expect(postMyExports(input, API)).resolves.toEqual(written);
+
+    const request = upstream.mock.calls[0][0] as Request;
+    expect(request.method).toBe('POST');
+    expect(request.url).toBe(`${API}/v1/me/exports`);
+    expect(request.headers.get('x-csrf-token')).toBe('abc');
+    expect(await request.json()).toEqual({ exports: input });
+  });
+
+  it('surfaces the API error message when a paste save fails', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(
+        async () =>
+          new Response(
+            JSON.stringify({
+              ok: false,
+              data: null,
+              error: { message: 'That export is too long.' },
+              request_id: 'r',
+            }),
+            { status: 400, headers: { 'content-type': 'application/json' } },
+          ),
+      ),
+    );
+    await expect(
+      postMyExports([{ name: 'X', region: 'us', ruleset: 'pvp', export: 'FS1:...' }], API),
+    ).rejects.toThrow('That export is too long.');
   });
 });
 
