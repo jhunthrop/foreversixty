@@ -1,7 +1,7 @@
 {
   "Player-11-0E93D4E2": {
-    "Overall": 31.57,
-    "OverallUncapped": 31.57,
+    "Overall": 0,
+    "OverallUncapped": 0,
     "OverallCapped": false,
     "Components": [
       {
@@ -73,11 +73,14 @@
     ],
     "Basis": "absolute",
     "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": ""
+    "KillTimeBand": "",
+    "Coverage": 0.4,
+    "Insufficient": true,
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter"
   },
   "Player-1136-09362954": {
-    "Overall": 14.39,
-    "OverallUncapped": 14.39,
+    "Overall": 0,
+    "OverallUncapped": 0,
     "OverallCapped": false,
     "Components": [
       {
@@ -149,11 +152,14 @@
     ],
     "Basis": "absolute",
     "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": ""
+    "KillTimeBand": "",
+    "Coverage": 0.3,
+    "Insufficient": true,
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter"
   },
   "Player-3208-0E1007EF": {
-    "Overall": 23.42,
-    "OverallUncapped": 23.42,
+    "Overall": 0,
+    "OverallUncapped": 0,
     "OverallCapped": false,
     "Components": [
       {
@@ -225,11 +231,14 @@
     ],
     "Basis": "absolute",
     "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": ""
+    "KillTimeBand": "",
+    "Coverage": 0.15,
+    "Insufficient": true,
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter; no utility table for this spec"
   },
   "Player-3676-06EC6282": {
-    "Overall": 15.61,
-    "OverallUncapped": 15.61,
+    "Overall": 0,
+    "OverallUncapped": 0,
     "OverallCapped": false,
     "Components": [
       {
@@ -301,11 +310,14 @@
     ],
     "Basis": "absolute",
     "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": ""
+    "KillTimeBand": "",
+    "Coverage": 0.3,
+    "Insufficient": true,
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter"
   },
   "Player-3725-0C61A6C9": {
-    "Overall": 33.34,
-    "OverallUncapped": 33.34,
+    "Overall": 0,
+    "OverallUncapped": 0,
     "OverallCapped": false,
     "Components": [
       {
@@ -377,11 +389,14 @@
     ],
     "Basis": "absolute",
     "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": ""
+    "KillTimeBand": "",
+    "Coverage": 0.4,
+    "Insufficient": true,
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter"
   },
   "Player-76-0C1789E9": {
-    "Overall": 14.29,
-    "OverallUncapped": 14.29,
+    "Overall": 0,
+    "OverallUncapped": 0,
     "OverallCapped": false,
     "Components": [
       {
@@ -453,6 +468,9 @@
     ],
     "Basis": "absolute",
     "ModelVersion": "rating-2026-09-21",
-    "KillTimeBand": ""
+    "KillTimeBand": "",
+    "Coverage": 0.35,
+    "Insufficient": true,
+    "InsufficientReason": "no output on a wipe; no mechanics table for this encounter"
   }
 }

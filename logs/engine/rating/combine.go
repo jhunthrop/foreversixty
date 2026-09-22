@@ -34,25 +34,41 @@ func weightOf(w weights.RoleWeights, name string) float64 {
 	}
 }
 
-// combine applies spec §1.1's renormalisation and §1.5's weighted mean and
-// Survival-catastrophe cap to six already-scored components, in place:
-// every non-excluded Component's Weight field is overwritten with its
-// renormalised share (spec §4.1's "the *renormalised* weight actually
-// applied"). survivalDeathScoreZero is true only when Survival was scored
-// (not excluded) and its death half alone floored to zero (spec §1.5's cap
-// condition) — Component carries no field for "the death half
-// specifically," so the Survival scorer threads it through here separately
-// rather than it being re-derived from Component.Score, which mixes the
-// death and avoidable-hit halves together.
+// roleTotalWeight is the role's six weights summed — always 100 by
+// construction (weights.Parse refuses a role whose weights do not sum to
+// 100), computed rather than hard-coded so combine's coverage fraction
+// stays correct if that invariant is ever loosened.
+func roleTotalWeight(w weights.RoleWeights) float64 {
+	return w.Output + w.Survival + w.Mechanics + w.Utility + w.Preparation + w.Activity
+}
+
+// combine applies spec §1.1's renormalisation and §1.5's weighted mean,
+// Survival-catastrophe cap, and coverage rule to six already-scored
+// components, in place: every non-excluded Component's Weight field is
+// overwritten with its renormalised share (spec §4.1's "the
+// *renormalised* weight actually applied"). survivalDeathScoreZero is
+// true only when Survival was scored (not excluded) and its death half
+// alone floored to zero (spec §1.5's cap condition) — Component carries
+// no field for "the death half specifically," so the Survival scorer
+// threads it through here separately rather than it being re-derived
+// from Component.Score, which mixes the death and avoidable-hit halves
+// together. coverage is the fraction (0-1) of the role's total weight
+// actually scored (spec §1.5's dated 2026-09-21 coverage ruling); the
+// caller (Score) decides whether it crosses MinCoverage, since zeroing
+// Overall and building InsufficientReason needs the full Card, not just
+// this function's own return values.
 func combine(
 	components *[6]Component, w weights.RoleWeights,
 	survivalDeathScoreZero, capEnabled bool, capThreshold float64,
-) (overallUncapped, overall float64, capped bool, basis string) {
+) (overallUncapped, overall float64, capped bool, basis string, coverage float64) {
 	var totalWeight float64
 	for _, c := range components {
 		if !c.Excluded {
 			totalWeight += weightOf(w, c.Name)
 		}
+	}
+	if roleTotal := roleTotalWeight(w); roleTotal > 0 {
+		coverage = totalWeight / roleTotal
 	}
 
 	basisKinds := map[string]bool{}
@@ -92,5 +108,5 @@ func combine(
 	default:
 		basis = "mixed"
 	}
-	return overallUncapped, overall, capped, basis
+	return overallUncapped, overall, capped, basis, coverage
 }
