@@ -3,10 +3,12 @@ package rating
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -145,6 +147,179 @@ func TestBestWorstComponentReturnsEmptyOnUnmarshalFailure(t *testing.T) {
 	best, worst := bestWorstComponent(json.RawMessage(`not json`))
 	if best != "" || worst != "" {
 		t.Errorf("best=%q worst=%q, want both empty on malformed input", best, worst)
+	}
+}
+
+// anonymize marks playerKey's owning account as anonymized, creating the account and the
+// character link if they do not already exist, mirroring store_test.go's own
+// TestReadCharacterRatingExcludesAnonymizedPlayers setup so both files stay consistent.
+func anonymize(t *testing.T, pool *pgxpool.Pool, email, playerKey, region, ruleset, name string) {
+	t.Helper()
+	ctx := context.Background()
+	var uid int64
+	if err := pool.QueryRow(ctx,
+		`insert into users (email, anonymize) values ($1, true)
+		 on conflict (email) do update set anonymize = true
+		 returning id`, email).Scan(&uid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, user_id) values ($1, $2, $3, $4, $5)
+		 on conflict (key) do update set user_id = $5`,
+		playerKey, region, ruleset, name, uid); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		pool.Exec(ctx, `delete from characters where key = $1`, playerKey)
+		pool.Exec(ctx, `delete from users where email = $1`, email)
+	})
+}
+
+func TestVisiblePlayersOmitsAnonymizedPlayersRows(t *testing.T) {
+	svc, rs := newTestService(t)
+	mustCreateReport(t, rs, "handler-anon-1", reports.Public)
+	f := fightFixture("handler-anon-1", true,
+		summary.RosterRow{GUID: "g1", Name: "Seen", Class: "Hunter", Spec: "Marksmanship", Role: "dps"},
+		summary.RosterRow{GUID: "g2", Name: "Hidden", Class: "Rogue", Spec: "Subtlety", Role: "dps"},
+	)
+	if err := svc.Store.RateFight(context.Background(), f); err != nil {
+		t.Fatal(err)
+	}
+	anonymize(t, rs.Pool, "rating-handler-anon@example.com", "us/normal/hidden", "us", "normal", "Hidden")
+
+	rows, _, err := svc.Store.ReadFightRatings(context.Background(), "handler-anon-1", 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	players, err := svc.visiblePlayers(context.Background(), rows)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(players) != 1 || players[0].PlayerName != "Seen" {
+		t.Fatalf("visiblePlayers = %+v, want exactly the one non-anonymized row (spec §5.1: "+
+			"an anonymized player's row is omitted entirely)", players)
+	}
+}
+
+func TestFightRatingsResponseOmitsAnAnonymizedPlayersRow(t *testing.T) {
+	svc, rs := newTestService(t)
+	mustCreateReport(t, rs, "handler-anon-2", reports.Public)
+	f := fightFixture("handler-anon-2", true,
+		summary.RosterRow{GUID: "g1", Name: "Visible", Class: "Druid", Spec: "Feral", Role: "dps"},
+		summary.RosterRow{GUID: "g2", Name: "Ghost", Class: "Mage", Spec: "Fire", Role: "dps"},
+	)
+	if err := svc.Store.RateFight(context.Background(), f); err != nil {
+		t.Fatal(err)
+	}
+	anonymize(t, rs.Pool, "rating-handler-anon2@example.com", "us/normal/ghost", "us", "normal", "Ghost")
+
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	req := httptest.NewRequest(http.MethodGet, "/v1/reports/handler-anon-2/fights/1/ratings", nil)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", rec.Code, rec.Body.String())
+	}
+	var env struct {
+		Data fightRatingsDTO `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &env); err != nil {
+		t.Fatal(err)
+	}
+	if len(env.Data.Players) != 1 || env.Data.Players[0].PlayerName != "Visible" {
+		t.Fatalf("players = %+v, want exactly the one non-anonymized row", env.Data.Players)
+	}
+}
+
+func TestCharacterRatingServesATrendForAPublicReport(t *testing.T) {
+	svc, rs := newTestService(t)
+	mustCreateReport(t, rs, "handler-char-1", reports.Public)
+	f := fightFixture("handler-char-1", true,
+		summary.RosterRow{GUID: "g1", Name: "Trendy", Class: "Shaman", Spec: "Elemental", Role: "dps"},
+	)
+	if err := svc.Store.RateFight(context.Background(), f); err != nil {
+		t.Fatal(err)
+	}
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	req := httptest.NewRequest(http.MethodGet, "/v1/characters/us/normal/Trendy/rating", nil)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", rec.Code, rec.Body.String())
+	}
+	var env struct {
+		Data characterRatingDTO `json:"data"`
+	}
+	if err := json.Unmarshal(rec.Body.Bytes(), &env); err != nil {
+		t.Fatal(err)
+	}
+	if env.Data.PlayerKey != "us/normal/trendy" {
+		t.Errorf("player_key = %q, want us/normal/trendy", env.Data.PlayerKey)
+	}
+	if env.Data.SampleSize != 1 || len(env.Data.Trend) != 1 {
+		t.Fatalf("sample_size=%d len(trend)=%d, want 1 and 1", env.Data.SampleSize, len(env.Data.Trend))
+	}
+	if env.Data.Latest == nil || env.Data.Latest.PlayerName != "Trendy" {
+		t.Fatalf("latest = %+v, want the one rated fight", env.Data.Latest)
+	}
+}
+
+func TestCharacterRatingIs404WhenNoRatedFightsExist(t *testing.T) {
+	svc, _ := newTestService(t)
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	req := httptest.NewRequest(http.MethodGet, "/v1/characters/us/normal/nobodyhome/rating", nil)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	if rec.Code != http.StatusNotFound {
+		t.Fatalf("status = %d, want 404 for a character with no rated fights", rec.Code)
+	}
+}
+
+func TestCharacterRatingIs404ForAnAnonymizedCharacter(t *testing.T) {
+	svc, rs := newTestService(t)
+	mustCreateReport(t, rs, "handler-char-anon-1", reports.Public)
+	f := fightFixture("handler-char-anon-1", true,
+		summary.RosterRow{GUID: "g1", Name: "Ducking", Class: "Warlock", Spec: "Demonology", Role: "dps"},
+	)
+	if err := svc.Store.RateFight(context.Background(), f); err != nil {
+		t.Fatal(err)
+	}
+	anonymize(t, rs.Pool, "rating-handler-char-anon@example.com", "us/normal/ducking", "us", "normal", "Ducking")
+
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	req := httptest.NewRequest(http.MethodGet, "/v1/characters/us/normal/Ducking/rating", nil)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	if rec.Code != http.StatusNotFound {
+		t.Fatalf("status = %d, want 404 for an anonymized character (must read the same as no such character)", rec.Code)
+	}
+}
+
+func TestTrendCursorRoundTripsThroughEncodeAndDecode(t *testing.T) {
+	want := cursorPos{
+		FoughtAt:   time.Date(2026, 12, 9, 1, 2, 3, 0, time.UTC),
+		ReportID:   "handler-cursor-1",
+		FightIndex: 4,
+	}
+	got, ok := decodeTrendCursor(encodeTrendCursor(want))
+	if !ok {
+		t.Fatal("decode of a cursor this package just encoded reported ok = false")
+	}
+	if !got.FoughtAt.Equal(want.FoughtAt) || got.ReportID != want.ReportID || got.FightIndex != want.FightIndex {
+		t.Errorf("round trip = %+v, want %+v", got, want)
+	}
+}
+
+func TestDecodeTrendCursorRejectsWhatThisPackageDidNotEncode(t *testing.T) {
+	cases := []string{"", "not-base64!!", base64.RawURLEncoding.EncodeToString([]byte("too|few")), base64.RawURLEncoding.EncodeToString([]byte("bad-time|r1|3"))}
+	for _, c := range cases {
+		if _, ok := decodeTrendCursor(c); ok {
+			t.Errorf("decodeTrendCursor(%q) = ok, want rejected", c)
+		}
 	}
 }
 

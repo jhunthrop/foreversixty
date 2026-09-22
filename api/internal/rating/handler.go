@@ -2,8 +2,10 @@
 package rating
 
 import (
+	"context"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"strconv"
@@ -76,17 +78,10 @@ func (s *Service) fightRatings(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no ratings for that fight", nil)
 		return
 	}
-	players := make([]playerRatingDTO, 0, len(rows))
-	for _, cr := range rows {
-		anon, err := s.Store.anonymized(r.Context(), cr.PlayerKey)
-		if err != nil {
-			s.fail(w, r, "fight", err, "could not read that fight's ratings just now")
-			return
-		}
-		if anon {
-			continue // spec §5.1: an anonymized player's row is omitted entirely, no placeholder
-		}
-		players = append(players, toPlayerRatingDTO(cr))
+	players, err := s.visiblePlayers(r.Context(), rows)
+	if err != nil {
+		s.fail(w, r, "fight", err, "could not read that fight's ratings just now")
+		return
 	}
 	if rep.Visibility == reports.Public {
 		w.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(cacheSeconds))
@@ -97,6 +92,25 @@ func (s *Service) fightRatings(w http.ResponseWriter, r *http.Request) {
 		FightIndex: n, Kill: rows[0].Kill, KillTimeBand: rows[0].KillTimeBand,
 		ModelVersion: rows[0].ModelVersion, Players: players,
 	})
+}
+
+// visiblePlayers turns a fight's stored rows into the DTOs a caller may actually see,
+// dropping any row whose owning account has asked to be anonymized (spec §5.1: an
+// anonymized player's row is omitted entirely, never masked or replaced with a
+// placeholder).
+func (s *Service) visiblePlayers(ctx context.Context, rows []CardRow) ([]playerRatingDTO, error) {
+	players := make([]playerRatingDTO, 0, len(rows))
+	for _, cr := range rows {
+		anon, err := s.Store.anonymized(ctx, cr.PlayerKey)
+		if err != nil {
+			return nil, fmt.Errorf("rating: check anonymize %s: %w", cr.PlayerKey, err)
+		}
+		if anon {
+			continue
+		}
+		players = append(players, toPlayerRatingDTO(cr))
+	}
+	return players, nil
 }
 
 func (s *Service) characterRating(w http.ResponseWriter, r *http.Request) {
