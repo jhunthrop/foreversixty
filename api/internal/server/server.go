@@ -12,6 +12,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/rating"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
 	"github.com/jhunthrop/foreversixty/api/internal/site"
@@ -40,6 +41,7 @@ type Deps struct {
 	Addon    *addon.Service
 	Guilds   *guilds.Service
 	Sims     *sims.Service
+	Rating   *rating.Service
 
 	TrustedProxyHops int
 }
@@ -94,6 +96,9 @@ func NewRouter(d Deps) http.Handler {
 	}
 	if d.Sims != nil {
 		sims.Mount(mux, d.Sims)
+	}
+	if d.Rating != nil {
+		rating.Mount(mux, d.Rating)
 	}
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such route", nil)

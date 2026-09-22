@@ -27,6 +27,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/phase"
 	"github.com/jhunthrop/foreversixty/api/internal/r2"
 	"github.com/jhunthrop/foreversixty/api/internal/rankings"
+	"github.com/jhunthrop/foreversixty/api/internal/rating"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/api/internal/server"
 	"github.com/jhunthrop/foreversixty/api/internal/sims"
@@ -73,6 +74,12 @@ func main() {
 		case sims.ValidateJobCommand:
 			if err := runValidate(context.Background(), log); err != nil {
 				log.Error(sims.ValidateJobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
+		case rating.BackfillJobCommand:
+			if err := runRatingBackfill(context.Background(), log); err != nil {
+				log.Error(rating.BackfillJobCommand, "err", err)
 				os.Exit(1)
 			}
 			return
@@ -211,6 +218,28 @@ func runValidate(ctx context.Context, log *slog.Logger) error {
 	}, specs, at, enginever.Version)
 }
 
+// runRatingBackfill is the nightly (and on-demand) Cloud Run job: recompute every
+// rating_scores row not at logs/engine/rating's current model version.
+func runRatingBackfill(ctx context.Context, log *slog.Logger) error {
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	client := objects(cfg, log)
+	if client == nil {
+		return fmt.Errorf("%s needs R2 credentials", rating.BackfillJobCommand)
+	}
+	n, err := rating.Backfill(ctx, rating.BackfillDeps{
+		Store: &rating.Store{Pool: pool, Log: log}, Summaries: client, Log: log,
+	}, rating.BackfillBatchSize)
+	if err != nil {
+		return err
+	}
+	log.Info(rating.BackfillJobCommand, "recomputed", n)
+	return nil
+}
+
 // simEngine is what every simulator job and the submit handler use: the
 // real binary when the image carries one, and the checked-in fixture
 // when it does not, so a deployment without the artifact still answers
@@ -284,7 +313,7 @@ func serve(log *slog.Logger) error {
 
 	// Ranking rows are written into monthly partitions, which have to
 	// exist before the first fight of the month closes.
-	partitions := &db.PartitionJob{Pool: pool, Log: log}
+	partitions := &db.PartitionJob{Pool: pool, Log: log, Tables: []string{"fight_metrics", db.RatingsTable}}
 	if err := partitions.Run(ctx); err != nil {
 		return fmt.Errorf("partitions: %w", err)
 	}
@@ -332,6 +361,7 @@ func serve(log *slog.Logger) error {
 
 	reportStore := &reports.Store{Pool: pool}
 	rankStore := &rankings.Store{Pool: pool, Specs: inferrer(treeData)}
+	ratingStore := &rating.Store{Pool: pool, Log: log}
 	client := objects(cfg, log)
 
 	deps := server.Deps{
@@ -344,6 +374,7 @@ func serve(log *slog.Logger) error {
 			Store: &addon.Store{Pool: pool, Log: log}, Builds: buildStore, Data: treeData, Log: log,
 		},
 		Guilds:           &guilds.Service{Store: guildStore, Accounts: authStore, Log: log},
+		Rating:           &rating.Service{Store: ratingStore, Reports: reportStore, Accounts: authStore, Log: log},
 		TrustedProxyHops: cfg.TrustedProxyHops,
 	}
 
@@ -354,6 +385,7 @@ func serve(log *slog.Logger) error {
 
 	var sampler *parse.Worker
 	var scorer *sims.Scorer
+	var rater *rating.Rater
 	if client != nil {
 		deps.Reports.Signer = client
 		sampler = parse.NewWorker(parse.Deps{
@@ -374,6 +406,9 @@ func serve(log *slog.Logger) error {
 		go scorer.Run(ctx)
 		deps.Ingest.Score = scorerShim{scorer}
 		deps.Ingest.Members = authStore
+		rater = rating.NewRater(rating.RateDeps{Store: ratingStore, Log: log})
+		go rater.Run(ctx)
+		deps.Ingest.Rate = rater
 		if runner, err := jobs.NewCloudRun(ctx, cfg.ParseJobProject, cfg.ParseJobRegion, cfg.ParseJobName); err != nil {
 			log.Warn("jobs", "state", "the parse job cannot be reached", "err", err,
 				"effect", "whole-file uploads are not offered")
@@ -426,6 +461,9 @@ func serve(log *slog.Logger) error {
 	}
 	if scorer != nil {
 		scorer.Close()
+	}
+	if rater != nil {
+		rater.Close()
 	}
 	log.Info("stopped")
 	return nil
