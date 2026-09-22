@@ -61,6 +61,12 @@ export interface RatingCardPlayer {
   overall: number;
   overall_uncapped: number;
   overall_capped: boolean;
+  /** Share of the role's weight the measured components carry, 0 to 1. */
+  coverage: number;
+  /** True when under half the weight was measurable: there is no overall, and the
+   *  reason names what was missing. The components still say what WAS measured. */
+  insufficient: boolean;
+  insufficient_reason: string;
   basis: RatingBasis;
   /** Always six entries, one per RATING_COMPONENT_ORDER member, per spec §4.1's
    *  Card.Components [6]Component — a component the engine could not score is present

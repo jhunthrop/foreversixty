@@ -80,8 +80,10 @@
             {/if}
           </span>
           <span
-            class="text-gold tabular w-8 text-right font-mono font-bold"
-            data-testid="rating-panel-overall">{Math.round(player.overall)}</span
+            class={`tabular w-8 text-right font-mono font-bold ${player.insufficient ? 'text-muted' : 'text-gold'}`}
+            data-testid="rating-panel-overall"
+            title={player.insufficient ? ratingCopy.insufficientNote(player.insufficient_reason) : undefined}
+            >{player.insufficient ? '—' : Math.round(player.overall)}</span
           >
           <span class="flex w-24 shrink-0 gap-[2px]" aria-hidden="true">
             {#each RATING_COMPONENT_ORDER as name (name)}

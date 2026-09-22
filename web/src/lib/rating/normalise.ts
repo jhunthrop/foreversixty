@@ -19,7 +19,13 @@ function normaliseComponent(part: RatingComponent): RatingComponent {
 }
 
 function normalisePlayer(player: RatingCardPlayer): RatingCardPlayer {
-  return { ...player, components: (player.components ?? []).map(normaliseComponent) };
+  return {
+    ...player,
+    coverage: player.coverage ?? 1,
+    insufficient: player.insufficient ?? false,
+    insufficient_reason: player.insufficient_reason ?? '',
+    components: (player.components ?? []).map(normaliseComponent),
+  };
 }
 
 export function normaliseReportRatings(wire: ReportRatings): ReportRatings {

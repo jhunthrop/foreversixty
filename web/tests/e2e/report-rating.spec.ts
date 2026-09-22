@@ -194,3 +194,37 @@ test('the Rating tab links to the explanation page', async ({ page }) => {
     '/ratings',
   );
 });
+
+// The first real production card: a wipe with no mechanics table and no validated spec,
+// where only three of six parts were measurable. The engine gives such a card no overall,
+// and the page must say so rather than print the renormalised remainder as a judgement.
+test('a card with too little measured shows Not rated and the reason, never a number', async ({ page }) => {
+  await page.route('**/v1/reports/fixture2abcd/fights/3/ratings', (route) =>
+    route.fulfill(
+      envelope({
+        fight_index: 3,
+        kill: false,
+        kill_time_band: '',
+        model_version: 'v1',
+        players: [
+          {
+            ...PLAYER,
+            overall: 0,
+            overall_uncapped: 0,
+            coverage: 0.3,
+            insufficient: true,
+            insufficient_reason: 'wipe; no mechanics table for this encounter',
+          },
+        ],
+      }),
+    ),
+  );
+  await page.goto(`${REPORT}?fight=3&tab=rating`);
+
+  await expect(page.getByTestId('rating-tab')).toBeVisible();
+  await expect(page.getByTestId('rating-insufficient')).toHaveText('Not rated');
+  await expect(page.getByTestId('rating-overall')).toHaveCount(0);
+  await expect(page.getByTestId('rating-insufficient-note')).toContainText('no mechanics table');
+  // The parts that were measured are still listed.
+  await expect(page.getByTestId('rating-components')).toBeVisible();
+});

@@ -127,11 +127,21 @@
               {splitUnitName(player.player_name).name}
             </span>
           {/if}
-          <span class="text-gold tabular text-[28px] font-bold" data-testid="rating-overall"
-            >{Math.round(player.overall)}</span
-          >
+          {#if player.insufficient}
+            <span class="text-muted text-[13px] font-semibold" data-testid="rating-insufficient"
+              >{ratingCopy.insufficient}</span
+            >
+          {:else}
+            <span class="text-gold tabular text-[28px] font-bold" data-testid="rating-overall"
+              >{Math.round(player.overall)}</span
+            >
+          {/if}
         </summary>
-        {#if player.overall_capped}
+        {#if player.insufficient}
+          <p class="text-muted mt-2 text-[13px]" data-testid="rating-insufficient-note">
+            {ratingCopy.insufficientNote(player.insufficient_reason)}
+          </p>
+        {:else if player.overall_capped}
           <p class="text-muted mt-2 text-[13px]" data-testid="rating-capped-note">
             <span class="tabular font-semibold">{Math.round(player.overall)}</span>, {ratingCopy.cappedNote}
           </p>
