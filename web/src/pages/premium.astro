@@ -1,0 +1,135 @@
+---
+// web/src/pages/premium.astro
+// Static content: what is free forever, the two plans, and the FAQ. No client JavaScript --
+// the monthly/yearly toggle is CSS-only (:target), the same no-JS-interactivity idiom the
+// header's Reference disclosure uses with native <details>. The buy links point at
+// /premium/checkout, a separate small page that does hydrate (Base.astro's own session
+// contract: a content page carries session=false, /premium/checkout carries session).
+import Base from '../layouts/Base.astro';
+import { checkoutCopy, premiumCopy } from '../lib/billing/copy';
+import type { Interval } from '../lib/billing/plans';
+import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+
+const buyLinkClass = `${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4`;
+
+function checkoutHref(plan: 'premium' | 'guild', interval: Interval): string {
+  return `/premium/checkout?plan=${plan}&interval=${interval}`;
+}
+---
+
+<Base
+  title="Premium"
+  description="What is free forever on Forever Sixty, what Premium and the guild plan add, and what each costs."
+  path="/premium"
+>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[820px] flex-col gap-10 px-[18px] pt-4 pb-16 md:px-12 md:pt-7"
+  >
+    <p class="text-[14px]" role="status" data-testid="premium-canceled-notice" hidden>
+      {checkoutCopy.canceled}
+    </p>
+
+    <section class="flex flex-col gap-3">
+      <h1 class="section-title text-[18px]">{premiumCopy.freeForeverHeading}</h1>
+      {premiumCopy.freeForeverBody.map((line) => (
+        <p class="text-[15px] leading-relaxed">{line}</p>
+      ))}
+      <p class="text-muted text-[13px]">{premiumCopy.freeForeverNote}</p>
+    </section>
+
+    <section class="flex flex-col gap-4">
+      <h2 class="section-title text-[18px]">{premiumCopy.plansHeading}</h2>
+
+      <!-- CSS-only interval toggle: two anchors targeting :target-shown panels. Defaults to
+           monthly when there is no fragment (the :target selector only matches the fragment
+           that is actually present, so #monthly-panel shows by default via the sibling rule
+           below and only #yearly-panel's own :target hides it). -->
+      <nav class="flex gap-4 text-[13px]" aria-label="Billing interval">
+        <a href="#monthly" class="underline">
+          {premiumCopy.intervalLabel.monthly}
+        </a>
+        <a href="#yearly" class="underline">
+          {premiumCopy.intervalLabel.yearly}
+        </a>
+      </nav>
+
+      <div id="yearly" class="price-toggle flex flex-col gap-6">
+        <div class="monthly-panel flex flex-col gap-6">
+          {(['premium', 'guild'] as const).map((plan) => (
+            <article class="border-line rounded-control flex flex-col gap-2 border p-5">
+              <h3 class="text-[16px] font-bold">{premiumCopy.pricedName(plan, 'monthly')}</h3>
+              <ul class="flex flex-col gap-1 text-[14px]">
+                {(plan === 'premium' ? premiumCopy.premiumFeatures : premiumCopy.guildFeatures).map(
+                  (line) => (
+                    <li>{line}</li>
+                  ),
+                )}
+              </ul>
+              <a href={checkoutHref(plan, 'monthly')} class={`${buyLinkClass} mt-2`}>
+                {premiumCopy.buyLabel(plan, 'monthly')}
+              </a>
+            </article>
+          ))}
+        </div>
+        <div class="yearly-panel flex flex-col gap-6">
+          {(['premium', 'guild'] as const).map((plan) => (
+            <article class="border-line rounded-control flex flex-col gap-2 border p-5">
+              <h3 class="text-[16px] font-bold">{premiumCopy.pricedName(plan, 'yearly')}</h3>
+              <ul class="flex flex-col gap-1 text-[14px]">
+                {(plan === 'premium' ? premiumCopy.premiumFeatures : premiumCopy.guildFeatures).map(
+                  (line) => (
+                    <li>{line}</li>
+                  ),
+                )}
+              </ul>
+              <a href={checkoutHref(plan, 'yearly')} class={`${buyLinkClass} mt-2`}>
+                {premiumCopy.buyLabel(plan, 'yearly')}
+              </a>
+            </article>
+          ))}
+        </div>
+      </div>
+      <p class="text-muted text-[13px]">{premiumCopy.noAds}</p>
+    </section>
+
+    <section class="flex flex-col gap-3">
+      <h2 class="section-title text-[18px]">FAQ</h2>
+      {premiumCopy.faq.map((entry) => (
+        <details class="border-line-soft border-b py-3">
+          <summary class="cursor-pointer text-[15px] font-semibold">{entry.question}</summary>
+          <p class="text-muted mt-2 text-[14px] leading-relaxed">{entry.answer}</p>
+        </details>
+      ))}
+    </section>
+  </main>
+
+  <script is:inline>
+    // is:inline, same as Base.astro's own site-wide script: no bundling and no request, so
+    // this page still ships zero client JavaScript files (tests/e2e/premium.spec.ts and
+    // tests/e2e/home.spec.ts both assert this). Plain JavaScript on purpose -- no TypeScript.
+    //
+    // Stripe's cancel_url (docs/superpowers/specs/2026-09-21-entitlements-and-payments-design.md
+    // section 2.2) sends a visitor who backs out of Checkout to this exact page, ?canceled=1,
+    // not to /premium/checkout -- this static page is the only place that can acknowledge it.
+    if (new URLSearchParams(window.location.search).get('canceled') === '1') {
+      const notice = document.querySelector('[data-testid="premium-canceled-notice"]');
+      if (notice) notice.hidden = false;
+    }
+  </script>
+  <style slot="head">
+    /* Both panels reserve their own layout independently; only visibility toggles, so there
+       is no layout shift between them (the coordinator's Lighthouse CLS budget). Yearly is
+       hidden unless #yearly is the current fragment; monthly is hidden only when #yearly is. */
+    .yearly-panel {
+      display: none;
+    }
+    #yearly:target .monthly-panel {
+      display: none;
+    }
+    #yearly:target .yearly-panel {
+      display: flex;
+    }
+  </style>
+</Base>

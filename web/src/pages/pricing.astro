@@ -1,0 +1,5 @@
+---
+// web/src/pages/pricing.astro
+// One page, one source of truth for prices: /pricing always resolves to /premium.
+return Astro.redirect('/premium', 301);
+---

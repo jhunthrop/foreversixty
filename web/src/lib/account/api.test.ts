@@ -6,6 +6,7 @@ import {
   AccountError,
   battlenetStartUrl,
   csrfToken,
+  effectiveServerSims,
   fetchMe,
   fetchMeOnce,
   forgetSession,
@@ -224,5 +225,40 @@ describe('fetchMeOnce', () => {
     await expect(fetchMeOnce(API)).rejects.toBeDefined();
     await expect(fetchMeOnce(API)).resolves.toMatchObject({ user: { id: 7 } });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe('effectiveServerSims', () => {
+  it('is false for a signed-out visitor', () => {
+    expect(effectiveServerSims(null)).toBe(false);
+  });
+
+  it('prefers entitlements.server_sims when present', () => {
+    const me = {
+      user: { id: 1, battletag: 'A', email: null, role: 'user', anonymize: false, premium: false },
+      characters: [],
+      guilds: [],
+      entitlements: {
+        server_sims: true,
+        retention: false,
+        multi_compare: false,
+        history: false,
+        notifications: false,
+        officer_views: false,
+        roster_check: false,
+        supporter_mark: false,
+        billing: null,
+      },
+    } as unknown as Parameters<typeof effectiveServerSims>[0];
+    expect(effectiveServerSims(me)).toBe(true);
+  });
+
+  it('falls back to user.premium when entitlements is absent (pre-API-lane fixtures)', () => {
+    const me = {
+      user: { id: 1, battletag: 'A', email: null, role: 'user', anonymize: false, premium: true },
+      characters: [],
+      guilds: [],
+    } as unknown as Parameters<typeof effectiveServerSims>[0];
+    expect(effectiveServerSims(me)).toBe(true);
   });
 });

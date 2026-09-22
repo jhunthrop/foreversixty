@@ -22,6 +22,9 @@
     type Me,
     type PairingCode,
   } from '../lib/account/api';
+  import { safeNextPath } from '../lib/account/safe-next';
+  import { openPortal } from '../lib/billing/api';
+  import { billingBlockCopy } from '../lib/billing/copy';
   import { characterHref, guildHref, parseCharacterPath, rulesetLabel } from '../lib/characters';
   import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
   import { guildConsentCopy } from '../lib/guild/copy';
@@ -46,6 +49,9 @@
 
   const signedIn = $derived(me !== null);
   const displayName = $derived(me?.user.battletag ?? me?.user.email ?? 'Your account');
+  // Optional chaining all the way through: `entitlements` itself may be absent on an
+  // older/stubbed /v1/me response (see the `Me.entitlements` doc comment in account/api.ts).
+  const billing = $derived(me?.entitlements?.billing ?? null);
 
   async function load(): Promise<void> {
     status = 'loading';
@@ -64,6 +70,20 @@
   // whether Astro hydrates it or the report island mounts it by hand.
   $effect(() => {
     void load();
+  });
+
+  // The static build has no per-request server, so Astro frontmatter never sees a real
+  // visitor's query string -- it only ever runs once, at build time. `next` (the prop) is
+  // therefore always the caller's hardcoded fallback. Read the real `?next=` here instead,
+  // client-side after hydration, which is the one place in this architecture that runs on
+  // the visitor's own request. $effect does not run during SSR, so this is safe without a
+  // `typeof window` guard.
+  let resolvedNext = $state(next);
+
+  $effect(() => {
+    if (mode !== 'login') return;
+    const params = new URLSearchParams(window.location.search);
+    resolvedNext = safeNextPath(params.get('next'), next);
   });
 
   async function run(action: () => Promise<void>): Promise<void> {
@@ -102,6 +122,12 @@
     void run(async () => {
       await signOut();
       window.location.assign('/');
+    });
+
+  const onManageBilling = (): void =>
+    void run(async () => {
+      const result = await openPortal(undefined);
+      window.location.assign(result.portal_url);
     });
 
   const onAnonymize = (event: Event): void => {
@@ -183,7 +209,7 @@
       <div class="flex flex-col gap-3">
         <a
           class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
-          href={battlenetStartUrl(next)}
+          href={battlenetStartUrl(resolvedNext)}
           data-testid="battlenet"
         >
           Sign in with Battle.net
@@ -280,6 +306,31 @@
         >
           Sign out
         </button>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="section-title text-[18px]">Billing</h2>
+        {#if billing === null}
+          <p class="text-[14px]">
+            {billingBlockCopy.notSubscribed} <a href="/premium">{billingBlockCopy.seePlans}</a>.
+          </p>
+        {:else}
+          <p class="text-[14px]">
+            {billing.plan} —
+            {billing.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
+            {billing.current_period_end ? new Date(billing.current_period_end).toLocaleDateString() : ''}
+          </p>
+          {#if billing.status === 'past_due'}
+            <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
+          {/if}
+          <button
+            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+            onclick={onManageBilling}
+            disabled={busy}
+          >
+            {billingBlockCopy.manageBilling}
+          </button>
+        {/if}
       </section>
 
       <section class="flex flex-col gap-3">

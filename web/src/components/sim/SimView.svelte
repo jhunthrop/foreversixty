@@ -10,7 +10,7 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
-  import { battlenetStartUrl, fetchMe, type Me } from '../../lib/account/api';
+  import { battlenetStartUrl, effectiveServerSims, fetchMe, type Me } from '../../lib/account/api';
   import type { CharacterPath } from '../../lib/characters';
   import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
   import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
@@ -318,11 +318,10 @@
   }
 
   onMount(() => {
-    // `user.premium` on GET /v1/me, per the simulator contract -- the server lane renders
-    // only once this answers true. A signed-out visitor and an unreachable API read the
-    // same way here (fetchMe resolves null, or the promise rejects and is swallowed): both
-    // mean "no premium control", the way Account.svelte's own `load()` already treats a
-    // failed fetchMe as "not signed in" rather than an error banner.
+    // effectiveServerSims(me) on GET /v1/me -- the server lane renders only once this answers
+    // true. A signed-out visitor and an unreachable API read the same way (fetchMe resolves
+    // null, or the promise rejects and is swallowed): both mean "no premium control", matching
+    // Account.svelte's own load() treating a failed fetchMe as "not signed in", not an error.
     //
     // The same answer also gates the history panel (Task 17), the landing state and the
     // source switcher's signed-in card (Task 18): `signedIn` above is `me !== null`, and
@@ -331,7 +330,7 @@
     void fetchMe()
       .then((result) => {
         me = result;
-        store.setPremium(result?.user.premium === true);
+        store.setPremium(effectiveServerSims(result));
         if (result !== null) void loadHistory();
       })
       .catch(() => {});
@@ -644,6 +643,7 @@
           relativeError={store.relativeError}
           lane={store.lane}
           premium={store.premium}
+          signedIn={me !== null}
           message={store.message}
           detail={store.detail}
           racePending={store.needsRace}

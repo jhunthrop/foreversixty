@@ -21,12 +21,15 @@ test('homepage renders the reference layout without a marketing hero', async ({ 
 });
 
 test('content pages ship no client JavaScript', async ({ page }) => {
-  const scripts: string[] = [];
-  page.on('request', (r) => {
-    if (r.resourceType() === 'script') scripts.push(r.url());
-  });
-  await page.goto('/about');
-  expect(scripts).toEqual([]);
+  for (const path of ['/about', '/premium']) {
+    const scripts: string[] = [];
+    page.on('request', (r) => {
+      if (r.resourceType() === 'script') scripts.push(r.url());
+    });
+    await page.goto(path);
+    expect(scripts).toEqual([]);
+    page.removeAllListeners('request');
+  }
 });
 
 test('a keyboard user can skip the header straight to the content', async ({ page }) => {
