@@ -22,12 +22,34 @@ export class AccountError extends Error {
   }
 }
 
+/**
+ * A character's own guild line (spec 2026-09-22 §6): distinct from `MeGuild`, the
+ * account-level "My guilds" entry below -- this is what `GET /v1/me`'s `characters[].guild`
+ * carries, with no `region`/`ruleset`/`consent`/`plan` of its own.
+ */
+export interface MeCharacterGuild {
+  id: number;
+  name: string;
+  rank?: string;
+  rank_index?: number;
+  verified: boolean;
+}
+
 export interface MeCharacter {
   key: string;
   region: string;
   ruleset: string;
   name: string;
   class?: string;
+  /** Spec 2026-09-22 §6: omitted when the Battle.net import/refresh has not learned it yet. */
+  realm?: string;
+  level?: number;
+  faction?: 'alliance' | 'horde';
+  /** `'bnet'` or `'export'` -- which path last wrote this row. Optional: older/stubbed
+   *  fixtures written before the Battle.net import landed carry no such field. */
+  source?: string;
+  /** Omitted when the character has no `guild_characters` row at all. */
+  guild?: MeCharacterGuild;
 }
 
 export interface MeGuild {
@@ -98,6 +120,9 @@ export interface Me {
   guilds: MeGuild[];
   /** Optional: absent until the API lane ships spec 1.4's block. See effectiveServerSims. */
   entitlements?: EntitlementsView;
+  /** RFC3339; spec 2026-09-22 §6, omitted when this account has never imported from
+   *  Battle.net. */
+  bnet_imported_at?: string;
 }
 
 /**
@@ -294,6 +319,32 @@ export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
 
 export async function setAnonymize(value: boolean, apiBase: string = API_BASE_URL): Promise<void> {
   await call('/v1/me', apiBase, { method: 'PATCH', body: { anonymize: value } });
+}
+
+/** One character's export, matching `POST /v1/me/exports`'s body (spec 2026-09-22 §4.5) --
+ *  the same `{name, region, ruleset, export}` shape the companion's `PutExports` reads,
+ *  because the export string itself carries no character identity (see the plan's Ruling 1). */
+export interface MyExportInput {
+  name: string;
+  region: string;
+  ruleset: string;
+  export: string;
+}
+
+/**
+ * The signed-in paste's write path: the addon-less way to reach the same `characters` rows
+ * the companion writes (spec 2026-09-22 §4.5). Returns the `/v1/me` character objects for the
+ * keys written, empty when the API answered with none.
+ */
+export async function postMyExports(
+  exports: MyExportInput[],
+  apiBase: string = API_BASE_URL,
+): Promise<MeCharacter[]> {
+  const result = await call<{ characters: MeCharacter[] }>('/v1/me/exports', apiBase, {
+    method: 'POST',
+    body: { exports },
+  });
+  return result?.characters ?? [];
 }
 
 /** One row of the "Your reports" list. */

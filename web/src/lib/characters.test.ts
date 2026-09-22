@@ -8,6 +8,7 @@ import {
   guildClaimHref,
   guildHref,
   guildInviteHref,
+  guildRankLabel,
   guildSettingsHref,
   isRegion,
   isRuleset,
@@ -30,6 +31,12 @@ describe('rulesets and regions', () => {
   it('labels a ruleset, and echoes anything it does not know', () => {
     expect(rulesetLabel('rp')).toBe('Roleplay');
     expect(rulesetLabel('seasonal')).toBe('seasonal');
+  });
+
+  it('capitalises a guild rank for display', () => {
+    expect(guildRankLabel('officer')).toBe('Officer');
+    expect(guildRankLabel('leader')).toBe('Leader');
+    expect(guildRankLabel('')).toBe('');
   });
 
   it('guards both enumerations', () => {
