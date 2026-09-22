@@ -508,9 +508,7 @@
     {#if savedResult !== null}
       <SavedSim result={savedResult} onrerun={onRerunSaved} />
     {:else if savedError !== null}
-      <!-- LoadError has no class-passthrough prop, so the phone gutter the paragraph it
-           replaces carried (px-[18px] md:px-0) lives on this wrapper instead of the shared
-           primitive -- the same fix the report island's top-level error needed. -->
+      <!-- Same reason as the lazyFallback wrapper above: LoadError has no class-passthrough prop. -->
       <div class="px-[18px] md:px-0">
         <LoadError message={savedError} onRetry={() => loadSavedSim()} testid="sim-saved-error" />
       </div>
