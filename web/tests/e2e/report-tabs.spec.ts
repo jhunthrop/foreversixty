@@ -185,6 +185,18 @@ test('a stale fight success neither clears the current error nor paints its rost
   await expect(summaryRosterRows(page)).toHaveCount(3);
 });
 
+test('a lazy mode shows a sized skeleton, not a blank panel, while its chunk loads', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3');
+  // Slow the chunk down so the loading frame is observable: throttle just this request.
+  await page.route('**/CompareMode*.js', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    await route.continue();
+  });
+  await page.getByTestId('mode-compare').click();
+  await expect(page.getByTestId('lazy-view-skeleton')).toBeVisible();
+  await expect(page.getByTestId('lazy-view-skeleton')).not.toBeVisible({ timeout: 5000 });
+});
+
 test('compare puts two fights side by side with a per-player difference', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=3&mode=compare');
   await expect(page.getByTestId('compare-mode')).toContainText('Pick a second fight');

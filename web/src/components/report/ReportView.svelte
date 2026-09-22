@@ -78,6 +78,9 @@
   import SummaryTab from './SummaryTab.svelte';
   import ThreatTable from './ThreatTable.svelte';
   import TimeChart from './TimeChart.svelte';
+  import LoadError from '../ui/LoadError.svelte';
+  import Skeleton from '../ui/Skeleton.svelte';
+  import { REPORT_LAZY_MIN_H } from '../../lib/report/layout';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   // Compare, Mechanics, Rankings, Timelines, Events and Queries are not the landing mode or
   // view (Analyze / tables / summary is), so each ships as its own chunk fetched the first
@@ -1289,17 +1292,16 @@
   });
 </script>
 
-{#snippet lazyFallback(lazy: LazyLoadState)}
-  <!-- Nothing renders while the import is still in flight (loading and no failure yet): the
-       mode or view stays blank for that one round trip, the same gap a network-bound fetch
-       elsewhere on this page leaves. A failure -- offline after the entry loaded, or a chunk
-       evicted from the cache -- says so and offers a retry that calls `load()` again, which
+{#snippet lazyFallback(lazy: LazyLoadState, minHeight: string)}
+  <!-- While the import is still in flight (loading and no failure yet), a Skeleton sized to
+       the panel reserves its place instead of leaving the mode or view blank for that one
+       round trip. A failure -- offline after the entry loaded, or a chunk evicted from the
+       cache -- says so through LoadError and offers a retry that calls `load()` again, which
        is a fresh attempt rather than a no-op: see lazy-component.svelte.ts. -->
   {#if lazy.error !== ''}
-    <p class="text-muted text-[13px]" role="alert" data-testid="lazy-view-error">
-      {lazy.error}
-      <button type="button" class="text-strong ml-1 underline" onclick={() => lazy.load()}>Try again</button>
-    </p>
+    <LoadError message={lazy.error} onRetry={() => lazy.load()} testid="lazy-view-error" />
+  {:else}
+    <Skeleton {minHeight} testid="lazy-view-skeleton" />
   {/if}
 {/snippet}
 
@@ -1315,7 +1317,7 @@
 {/snippet}
 
 {#if status === 'failed'}
-  <p class="px-[18px] text-[14px] md:px-0" role="alert" data-testid="report-error">{error}</p>
+  <LoadError message={error} onRetry={() => void loadReport()} testid="report-error" />
 {:else if status === 'loading' || meta === null}
   <!-- Static, trusted markup of our own (skeleton.ts): no data goes into it. -->
   <!-- eslint-disable-next-line svelte/no-at-html-tags -->
@@ -1708,7 +1710,7 @@
               onSelectPlayer={(guid) => patch({ source: guid })}
             />
           {:else}
-            {@render lazyFallback(ratingTabLazy)}
+            {@render lazyFallback(ratingTabLazy, REPORT_LAZY_MIN_H.rating)}
           {/if}
         {/if}
       {/if}
@@ -1742,7 +1744,7 @@
             ].sort((a, b) => a.localeCompare(b))}
           />
         {:else}
-          {@render lazyFallback(timelinesViewLazy)}
+          {@render lazyFallback(timelinesViewLazy, REPORT_LAZY_MIN_H.timelines)}
         {/if}
       {/if}
       {#if scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'events'}
@@ -1767,7 +1769,7 @@
                 }}
           />
         {:else}
-          {@render lazyFallback(eventsViewLazy)}
+          {@render lazyFallback(eventsViewLazy, REPORT_LAZY_MIN_H.events)}
         {/if}
       {/if}
       <!-- `scoped` only to say a summary has loaded, the same guard its three siblings
@@ -1777,7 +1779,7 @@
         {#if queriesViewLazy.current}
           <queriesViewLazy.current dataBaseUrl={dataBase} fightIndex={state.fight} window={timeWindow} />
         {:else}
-          {@render lazyFallback(queriesViewLazy)}
+          {@render lazyFallback(queriesViewLazy, REPORT_LAZY_MIN_H.queries)}
         {/if}
       {/if}
       {#if state.mode === 'compare' && summary !== null && !nightMode}
@@ -1796,7 +1798,7 @@
             onPatch={patch}
           />
         {:else}
-          {@render lazyFallback(compareModeLazy)}
+          {@render lazyFallback(compareModeLazy, REPORT_LAZY_MIN_H.compare)}
         {/if}
       {/if}
       {#if state.mode === 'rankings' && fight !== null}
@@ -1810,7 +1812,7 @@
             onPatch={patch}
           />
         {:else}
-          {@render lazyFallback(rankingsModeLazy)}
+          {@render lazyFallback(rankingsModeLazy, REPORT_LAZY_MIN_H.rankings)}
         {/if}
       {/if}
       <!-- The whole fight, never the window and never the source scope: `base`, not
@@ -1827,7 +1829,7 @@
             hrefFor={(next) => reportSearch(withState(state, next), firstFight) || '?'}
           />
         {:else}
-          {@render lazyFallback(mechanicsModeLazy)}
+          {@render lazyFallback(mechanicsModeLazy, REPORT_LAZY_MIN_H.mechanics)}
         {/if}
       {:else if state.mode === 'mechanics' && nightMode && nightLoading}
         <!-- The night's fold is every pull's summary fetched in turn, so a cold load
