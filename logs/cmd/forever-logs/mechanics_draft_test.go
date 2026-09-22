@@ -225,3 +225,90 @@ func TestMechanicsDraftProposesPhaseCandidates(t *testing.T) {
 		t.Errorf("the evidence for each candidate must reach stderr:\n%s", errOut.String())
 	}
 }
+
+// TestDraftDowntimeProposesARecurringMechanicNotAPhase exercises
+// draftDowntime directly: a spell that fires twice on every pull is a
+// downtime candidate, not a phase trigger (draftPhases' own count()
+// disqualifies exactly this case, "not a phase, a rotation" per its own
+// comment); a spell whose repeat count disagrees between pulls is
+// disqualified; a spell seen only once per pull never reaches
+// draftDowntime's candidate set at all.
+func TestDraftDowntimeProposesARecurringMechanicNotAPhase(t *testing.T) {
+	pulls := []draftPull{
+		{enemyAuras: []draftRow{
+			{SpellID: 19497, SpellName: "Eruption", count: 2},
+			{SpellID: 999, SpellName: "Inconsistent", count: 2},
+			{SpellID: 555, SpellName: "Once Only", count: 1},
+		}},
+		{enemyAuras: []draftRow{
+			{SpellID: 19497, SpellName: "Eruption", count: 2},
+			{SpellID: 999, SpellName: "Inconsistent", count: 3},
+			{SpellID: 555, SpellName: "Once Only", count: 1},
+		}},
+	}
+	downtime, evidence := draftDowntime(pulls)
+	if len(downtime) != 1 || downtime[0].Trigger.SpellID != 19497 {
+		t.Fatalf("downtime = %+v, want exactly the consistent spell 19497", downtime)
+	}
+	if downtime[0].DurationMS != downtimePlaceholderMS {
+		t.Errorf("DurationMS = %d, want the documented placeholder %d", downtime[0].DurationMS, downtimePlaceholderMS)
+	}
+	if downtime[0].Trigger.On != mechanics.OnAuraApplied {
+		t.Errorf("On = %q, want %q", downtime[0].Trigger.On, mechanics.OnAuraApplied)
+	}
+	if !strings.HasPrefix(downtime[0].Note, "draft:") {
+		t.Errorf("a drafted downtime window must carry a draft: note, got %q", downtime[0].Note)
+	}
+	if len(evidence) != 1 || !strings.Contains(evidence[0], "Eruption") {
+		t.Errorf("evidence = %v, want one line naming Eruption", evidence)
+	}
+}
+
+// TestUtilityDrafterCreditsOnlyPlayerAppliedAuras exercises utilityDrafter
+// directly: a player's own aura is credited to their spec; an enemy's aura
+// (no player applier) is not.
+func TestUtilityDrafterCreditsOnlyPlayerAppliedAuras(t *testing.T) {
+	// Flag values match the existing TestAddFightCountsPeriodicTicks
+	// fixture above: 0x512 is a friendly player, 0xa48 a hostile NPC.
+	reg := units.NewRegistry(units.Options{})
+	reg.Observe(event.Event{
+		Time:   time.Unix(0, 0),
+		Kind:   event.AuraApplied,
+		Source: event.Unit{GUID: "Player-1", Name: "Warry", Flags: 0x512},
+		Dest:   event.Unit{GUID: "Boss-1", Name: "Boss", Flags: 0xa48},
+		Spell:  event.Spell{ID: 7386, Name: "Sunder Armor"},
+	})
+	reg.Observe(event.Event{
+		Time:   time.Unix(0, 0),
+		Kind:   event.AuraApplied,
+		Source: event.Unit{GUID: "Boss-1", Name: "Boss", Flags: 0xa48},
+		Dest:   event.Unit{GUID: "Player-1", Name: "Warry", Flags: 0x512},
+		Spell:  event.Spell{ID: 12345, Name: "Boss Debuff"},
+	})
+
+	sum := summary.Summary{
+		DurationMS: 100000,
+		Combatants: []summary.CombatantRow{{GUID: "Player-1", Spec: "Protection"}},
+		Auras: []summary.AuraTrack{
+			{SpellID: 7386, Name: "Sunder Armor", Type: "DEBUFF", UptimeMS: 90000, Appliers: []string{"Player-1"}},
+			{SpellID: 12345, Name: "Boss Debuff", Type: "DEBUFF", UptimeMS: 50000, Appliers: []string{"Boss-1"}},
+		},
+	}
+	d := newUtilityDrafter()
+	d.addFight(sum, reg)
+
+	bySpell, ok := d.bySpec["Protection"]
+	if !ok {
+		t.Fatalf("no evidence recorded for spec Protection: %+v", d.bySpec)
+	}
+	c, ok := bySpell[7386]
+	if !ok {
+		t.Fatalf("Sunder Armor (player-applied) must be credited: %+v", bySpell)
+	}
+	if c.target != "enemy" || c.fights != 1 || c.meanUptimePct != 90 {
+		t.Errorf("candidate = %+v, want target enemy, 1 fight, 90%% uptime", c)
+	}
+	if _, ok := bySpell[12345]; ok {
+		t.Error("Boss Debuff (enemy-applied) must not be credited to any player's spec")
+	}
+}

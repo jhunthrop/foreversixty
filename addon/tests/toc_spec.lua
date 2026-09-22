@@ -6,12 +6,15 @@
 -- every spec reaches its module through require, not through the TOC.
 describe("the TOC", function()
 	local EXPECTED = {
-		"Locale.lua", "Data.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
-		"Theme.lua", "Widgets.lua", "Export.lua", "Follow.lua", "Gear.lua",
+		"Locale.lua", "Data.lua", "Compat.lua", "Codec.lua", "Talents.lua", "Prefs.lua",
+		"Theme.lua", "Widgets.lua", "Cards.lua", "Export.lua", "Follow.lua", "Gear.lua",
+		"Tooltip.lua",
 		"TalentGlow.lua",
 		"views/ExportView.lua", "views/FollowView.lua",
 		"views/GearView.lua", "views/SettingsView.lua",
-		"Tracker.lua", "Minimap.lua", "Window.lua", "Options.lua",
+		-- After Tracker: the Overview reads Tracker.model, and in game a module
+		-- that is not loaded yet is simply nil.
+		"Tracker.lua", "views/OverviewView.lua", "Minimap.lua", "Window.lua", "Toast.lua", "Options.lua",
 	}
 
 	--- The file lines of the TOC, with the client's backslashes turned

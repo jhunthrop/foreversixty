@@ -15,6 +15,8 @@ local Data = ns.Data or require("Data")
 local Export = ns.Export or require("Export")
 local Follow = ns.Follow or require("Follow")
 local Gear = ns.Gear or require("Gear")
+local Tooltip = ns.Tooltip or require("Tooltip")
+local Toast = ns.Toast or require("Toast")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
 local Theme = ns.Theme or require("Theme")
@@ -55,6 +57,13 @@ function Options.readInbox()
 	return #usable
 end
 
+--- Wrap `text` in the client's own colour-escape codes, gold. Used for
+--- /fs help only: every other line the addon prints goes through the
+--- plain chat prefix (chatLine), not a colour.
+function Options.colorGold(text)
+	return string.format("|cff%s%s|r", Theme.HEX.gold, text)
+end
+
 function Options.handle(input)
 	local data = Options.data
 	local command, rest = (input or ""):match("^(%S*)%s*(.*)$")
@@ -90,6 +99,8 @@ function Options.handle(input)
 		-- options panel in this task, so the honest minimum is the same
 		-- header bare /fs already shows.
 		return Window.buildLines(data)
+	elseif command == "help" then
+		return { Options.colorGold(L.slashHint) }
 	elseif command == "diag" then
 		local notes = Theme.diagnostics()
 		if #notes == 0 then
@@ -130,23 +141,34 @@ end
 Options.EVENTS = {
 	"PLAYER_LOGIN", "PLAYER_LOGOUT", "PLAYER_ENTERING_WORLD",
 	"PLAYER_TALENT_UPDATE", "TRAIT_CONFIG_UPDATED", "PLAYER_LEVEL_UP",
+	"PLAYER_REGEN_ENABLED",
 }
 
-function Options.onEvent(_, event)
+function Options.onEvent(_, event, ...)
 	if event == "PLAYER_LOGOUT" then
 		if Prefs.flag("autoSave") then
 			Export.save(Options.data)
 		end
 		return
 	end
+	if event == "PLAYER_REGEN_ENABLED" then
+		Toast.flushPending()
+		return
+	end
 	if event == "PLAYER_LOGIN" then
 		Follow.restore(Options.data)
 		Options.readInbox()
 		SettingsView.register(Window.context())
+		MinimapButton.data = Options.data
 		MinimapButton.refresh()
+		MinimapButton.registerCompartment()
+	end
+	if event == "PLAYER_LEVEL_UP" then
+		Toast.onLevelUp(Options.data, ...)
 	end
 	Tracker.refresh(Options.data)
 	TalentGlow.refresh(Options.data)
+	Toast.refresh(Options.data)
 	Window.refresh()
 end
 
@@ -154,11 +176,21 @@ end
 --- injection points Minimap left for the window -- and builds no frame
 --- except the event frame, which has no size and is never shown.
 function Options.register()
+	-- Bindings.xml names these two globals and calls the third; the client
+	-- auto-loads that file from the addon's own folder with no TOC entry.
+	BINDING_HEADER_FOREVERSIXTY = L.bindingHeader
+	BINDING_NAME_FOREVERSIXTY_TOGGLE = L.bindingToggle
+	FOREVERSIXTY_TOGGLE_WINDOW = function()
+		Window.toggle()
+	end
+
 	SLASH_FOREVERSIXTY1 = "/fs"
 	SLASH_FOREVERSIXTY2 = "/foreversixty"
 	SlashCmdList["FOREVERSIXTY"] = Options.run
 
 	Window.data = Options.data
+	Tooltip.data = Options.data
+	Tooltip.register()
 	MinimapButton.open = function()
 		return Window.open()
 	end

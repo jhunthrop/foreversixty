@@ -42,6 +42,16 @@ type RosterRow struct {
 	DPS         float64 `json:"dps"`
 	HPS         float64 `json:"hps"`
 	DTPS        float64 `json:"dtps"`
+	// ExecutionScore is fight_metrics.execution_score (api/internal/sims/score.go),
+	// a simulator-relative ratio computed independently by the API layer
+	// and never set by this package (always nil here). It exists so the
+	// API layer can overlay it onto the roster row it rebuilds before
+	// calling rating.Score (logs/engine/rating), whose fixed signature
+	// takes only a summary.Summary and has no other parameter for a
+	// value that lives in a separate database table
+	// (docs/superpowers/specs/2026-09-21-performance-rating-design.md
+	// §1.3, §4.4).
+	ExecutionScore *float64 `json:"execution_score,omitempty"`
 }
 
 // MetricRow is one ranking metric row: one player, one fight.

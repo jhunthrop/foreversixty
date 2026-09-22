@@ -4,5 +4,9 @@
   "mechanics": [
     { "spell_id": 19497, "name": "Eruption", "kind": "avoidable", "note": "A Firesworn blows up when it dies; nobody should be next to one as it goes down." },
     { "spell_id": 20483, "name": "Massive Eruption", "kind": "avoidable", "note": "The larger of the two Firesworn detonations, for the same reason and with the same answer: be somewhere else." }
+  ],
+  "downtime": [
+    { "trigger": { "spell_id": 19497, "on": "aura_applied" }, "duration_ms": 3000,
+      "note": "A Firesworn's death detonation window: melee are expected to step out, not to keep swinging. Same spell id as the Eruption mechanic above (verified 1.60.1.69893/spells.json#19497), read here as the detonation aura's own applied instant rather than as a damage hit." }
   ]
 }

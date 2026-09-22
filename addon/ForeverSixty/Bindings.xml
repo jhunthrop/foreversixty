@@ -1,0 +1,5 @@
+<Bindings>
+	<Binding name="FOREVERSIXTY_TOGGLE" header="FOREVERSIXTY">
+		FOREVERSIXTY_TOGGLE_WINDOW()
+	</Binding>
+</Bindings>

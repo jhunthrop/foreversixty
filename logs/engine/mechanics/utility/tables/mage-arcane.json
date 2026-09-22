@@ -1,0 +1,21 @@
+{
+  "spec": "mage-arcane",
+  "owned": [
+    {
+      "spell_id": 23028,
+      "name": "Arcane Brilliance",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#23028",
+      "note": "Raid-wide intellect buff (upgrade of Arcane Intellect)."
+    },
+    {
+      "spell_id": 16876,
+      "name": "Arcane Intellect",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#16876",
+      "note": "Single-target intellect buff, max rank; cast between Brilliance refreshes."
+    }
+  ]
+}

@@ -215,16 +215,29 @@ cause term), since a death-timing-only signal with no cause information is not t
 *AvoidableHitScore*: `100 - percentile(avoidableDamageTakenPerSecond)` within the same
 bracket, where `avoidableDamageTakenPerSecond = Σ MechanicHit.Damage / (DurationMS/1000)`
 summed over `MechanicsBlock.Rows[kind == avoidable].Players[GUID == this player]`
-(`mechanics.go:22-45`, `MechanicHit` at `mechanics.go:49-61`), **excluding any row whose
-`Role` equals this player's own role** — a hit this player was assigned to take (e.g. the
-tank in `tables/1084.json`'s `role: "tank"` rows) is credited under Mechanics/Utility, not
-punished under Survival, and a *non*-tank hit by a tank-role mechanic still counts fully
-against them, exactly matching `Mechanic.Role`'s existing doc comment: "a hit on anyone else
-is then that role's problem as much as the victim's" (`mechanics.go:44-47`). This is the
-literal mechanism behind "tanks' ... Survival judged on avoidable damage only, since taking
-damage is the job": for a tank, avoidable-damage-taken already excludes every hit their own
-`role: "tank"` rows describe, leaving only genuinely avoidable damage (standing in fire,
-missing a dodge on a mechanic meant for someone else) to score against.
+(`mechanics.go:22-45`, `MechanicHit` at `mechanics.go:49-61`), with a `Role`-tagged row (e.g.
+the tank in `tables/1084.json`'s `role: "tank"` rows) going through the assignment check
+below rather than being excluded unconditionally. A *non*-tank hit by a tank-role mechanic
+still counts fully against them regardless, exactly matching `Mechanic.Role`'s existing doc
+comment: "a hit on anyone else is then that role's problem as much as the victim's"
+(`mechanics.go:44-47`).
+
+**CORRECTION (whole-branch review):** this section originally read "excluding any row whose
+`Role` equals this player's own role" unconditionally — meaning a `role: "tank"` cleave that
+hit the *off* tank standing in it scored identically to the *main* tank taking the exact same
+mechanic as their actual job, because the curated table alone cannot say which player of a
+role a given hit was "for." **RULING:** a `Role`-tagged row excuses a same-role player only
+when (a) the fight carries no `Assignment` (§2) overlapping that hit's own window for any
+player of that role, in which case every player of that role is excused — the table cannot
+tell the main tank doing their job from the off tank standing in it, and wrongly punishing
+the main tank for every cleave is the worse of the two errors — or (b) an `Assignment`
+overlapping that hit's window names this specific player. When one or more assignments for
+that role overlap the hit's window and none of them names this player, the hit counts in
+full: it was demonstrably someone else's to take. This is the literal mechanism behind
+"tanks' ... Survival judged on avoidable damage only, since taking damage is the job": with
+no assignment data (today's default, since officer tooling does not exist yet, §2), every
+`role: "tank"` hit is still excused for every tank exactly as before; the assignment path only
+ever makes scoring *stricter*, once a guild actually marks who had which add or cleave.
 
 **Mechanics.** Three parts, averaged with equal weight (⅓ each) among the parts that have
 data (each is independently excludable):
@@ -388,25 +401,54 @@ avoidable (Arcane Explosion, `spell_id: 19712`):**
 death after a healer CC, classified unavoidable per this encounter — Vicious Headbutt-style
 tank damage) plus two avoidable hits earlier (stood in a cleave meant for the other tank):**
 
+An officer has marked `Assignment{PlayerKey: "<the other tank>", Job: "cleave duty", FromMS:
+50000, ToMS: 70000}` (§2) — the raid's actual plan for this window. The cleave (`role:
+"tank"`, spec §3.1's `Mechanic.Role`) lands on *this* tank at 60,000–65,000 ms, inside that
+window, but the assignment names someone else for it: per §1.3's corrected rule, an
+assignment overlapping the hit that does not name this player means the hit counts in full,
+not the unconditional same-role excuse the uncorrected text described. Had no assignment
+existed for this window at all, the same two hits would have been excused instead (§1.3's
+case (a)) and AvoidableHitScore would read a percentile of `0`, not of `4000/180 ≈ 22.2`.
+
 | Component | Raw / percentile | Score |
 |---|---|---:|
 | Output | tank's own `metric_dps`, 55th pct (small weight regardless) | 55 |
-| Survival | 1 death: `penalty = 70*0.15*(1-175000/180000) = 70*0.15*0.028 = 0.29` → DeathScore 99.7; AvoidableHitScore (two hits from a cleave assigned to the *other* tank — Role: "tank" but not *this* tank's assignment, so fully counted) 35th pct → 35 | `0.65*99.7 + 0.35*35 = 76.06` |
+| Survival | 1 death: `penalty = 70*0.15*(1-175000/180000) = 70*0.15*0.028 = 0.29` → DeathScore 99.7; AvoidableHitScore (two hits, 4000 damage over the 180s fight ≈ 22.2/s, counted in full per the assignment above) 35th pct → 35 | `0.65*99.7 + 0.35*35 = 77.06` |
 | Mechanics | Taunted off the add duty correctly (logged, not scored — see §1.3 Utility taunt note) | excluded from the ⅓ split with the remaining two parts reweighted |
 | Utility | Sunder Armor 97% uptime, Demoralizing Shout n/a for Protection kit here | 91 |
 | Preparation | Flask + food + weapon stone present | 100 |
 | Activity | 85% active share | 70th pct → 70 |
 
-`overall = .10*55 + .35*76.06 + .20*(Mechanics excluded → reweighted onto Utility/
-Preparation/Activity's shares proportionally, per §1.1) ...`
+`overall = .10*55 + .35*77.06 + .20*(Mechanics excluded → reweighted onto Output/Survival/
+Utility/Preparation/Activity's shares proportionally, per §1.1) ...`
 
 showing the renormalisation explicitly: Mechanics' 20 points redistribute across the other
-five in proportion to their own weights (`10, 35, 15, 10, 5` sum to 75; each gets
-`+20 * (own/75)`): Output `+2.67→12.67`, Survival `+9.33→44.33`, Utility `+4→19`,
-Preparation `+2.67→12.67`, Activity `+1.33→6.33` (all divided by 100 as usual):
+five in proportion to their own §1.4 tank weights (`10, 35, 20, 10, 5` sum to 80; each gets
+`+20 * (own/80)`): Output `+2.5→12.5`, Survival `+8.75→43.75`, Utility `+5→25`,
+Preparation `+2.5→12.5`, Activity `+1.25→6.25` (all divided by 100 as usual, new total 100):
 
-`overall = .1267*55 + .4433*76.06 + .19*91 + .1267*100 + .0633*70`
-`= 6.97 + 33.72 + 17.29 + 12.67 + 4.43 = 75.1` → **75**
+`overall = .125*55 + .4375*77.06 + .25*91 + .125*100 + .0625*70`
+`= 6.875 + 33.71 + 22.75 + 12.5 + 4.375 = 80.21` → **80**
+
+**CORRECTION (implementation pass, 2026-09-21):** this worked example originally read
+Survival's combined score as `76.06` (an arithmetic slip — `0.65*99.7 + 0.35*35` is `77.06`,
+not `76.06`) and the tank weight table's own Utility figure as `15` in the redistribution
+step (transcribed wrong — §1.4's tank row gives Utility `20`, and the five non-Mechanics
+weights `10+35+20+10+5` sum to `80`, not `75`). Both are fixed above; the corrected final
+score is **80**, not 75. Verified against `logs/engine/rating`'s own test suite
+(`TestCombineRenormalisesWeightsAcrossExcludedComponents` in `combine_test.go` and
+`TestWorkedExampleTankWarriorProtection` in `score_test.go`), which reproduce this exact
+arithmetic.
+
+**CORRECTION (whole-branch review):** this example originally described the two avoidable
+hits as excused unconditionally because the cleave was `role: "tank"` and this player is a
+tank — §1.3's own text said the same, unconditionally, and both were wrong for the same
+reason (the review's CRITICAL finding): a curated table's `role: "tank"` tag cannot say
+*which* tank a hit was for, so the uncorrected rule credited the off tank standing in a
+cleave exactly like the main tank doing their actual job. The example now includes the
+`Assignment` that makes the hit demonstrably someone else's to take, so it counts in full;
+the final numbers were already computed on the fully-counted value (`22.2`/s, 35th
+percentile) and do not change.
 
 ---
 

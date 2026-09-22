@@ -14,7 +14,7 @@ ns = type(ns) == "table" and ns or {}
 local Prefs = {}
 
 Prefs.DEFAULTS = {
-	window = { point = "CENTER", x = 0, y = 0, tab = "export" },
+	window = { point = "CENTER", x = 0, y = 0, tab = "overview" },
 	tracker = { point = "TOP", x = 0, y = -180, locked = false, shown = true },
 	minimap = { angle = 200, shown = true },
 	-- On by default: the export written at logout is what feeds the
@@ -24,6 +24,11 @@ Prefs.DEFAULTS = {
 	-- Off by default: the window is the surface now, and printing the same
 	-- answer into chat as well is noise.
 	chat = false,
+	-- On by default: the tooltip line and the toast are what makes the
+	-- platform's value visible outside the window, which is the point of
+	-- this pass (design "Addon premium pass").
+	tooltip = true,
+	toast = true,
 }
 
 --- The sections resetPositions puts back.

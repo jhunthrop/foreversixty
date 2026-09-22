@@ -1,0 +1,29 @@
+{
+  "spec": "shaman-enhancement",
+  "owned": [
+    {
+      "spell_id": 27621,
+      "name": "Windfury Totem",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#27621",
+      "note": "Melee haste/extra-attack totem, max rank; Enhancement's signature raid contribution."
+    },
+    {
+      "spell_id": 25361,
+      "name": "Strength of Earth Totem",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#25361",
+      "note": "Strength totem, max rank."
+    },
+    {
+      "spell_id": 25359,
+      "name": "Grace of Air Totem",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#25359",
+      "note": "Agility totem, max rank."
+    }
+  ]
+}
