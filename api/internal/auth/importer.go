@@ -21,6 +21,11 @@ type ImportSummary struct {
 	Guilds int
 	// Skipped is collisions and level-too-low skips, combined.
 	Skipped int
+	// Unavailable is how many characters answered 404 for their public
+	// profile (spec A2 — e.g. a Season of Discovery character under the
+	// classic1x namespace). The characters row is still written; only
+	// its guild membership and profile capture are unavailable.
+	Unavailable int
 }
 
 // Importer runs the Battle.net character/guild import after a successful

@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
 )
 
@@ -27,17 +29,23 @@ type RefreshResult struct {
 	RateLimited bool
 }
 
-// staleCharacter is one characters row the refresh must re-check.
+// staleCharacter identifies one characters row the refresh must
+// re-check, by Blizzard's own character id and the realm it was last
+// seen on — not by its key, which can go stale between this batch's
+// snapshot and the moment it is actually processed (spec A3: a
+// concurrent login import can rekey a row mid-run). refreshOneCharacter
+// re-resolves the current key from these two fields right before use.
 type staleCharacter struct {
-	Key, Region, Ruleset, RealmSlug, Name string
-	UserID                                int64
+	BnetCharacterID int64
+	RealmSlug       string
+	UserID          int64
 }
 
 // staleBnetCharacters lists every 'bnet'-sourced character not refreshed
 // within refreshWindow.
 func (s *Service) staleBnetCharacters(ctx context.Context) ([]staleCharacter, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select key, region, ruleset, coalesce(realm_slug, ''), name, user_id from characters
+		`select coalesce(bnet_character_id, 0), coalesce(realm_slug, ''), user_id from characters
 		 where source = 'bnet' and refreshed_at < now() - $1::interval
 		 order by refreshed_at`,
 		fmt.Sprintf("%d seconds", int(refreshWindow.Seconds())))
@@ -48,7 +56,7 @@ func (s *Service) staleBnetCharacters(ctx context.Context) ([]staleCharacter, er
 	var out []staleCharacter
 	for rows.Next() {
 		var sc staleCharacter
-		if err := rows.Scan(&sc.Key, &sc.Region, &sc.Ruleset, &sc.RealmSlug, &sc.Name, &sc.UserID); err != nil {
+		if err := rows.Scan(&sc.BnetCharacterID, &sc.RealmSlug, &sc.UserID); err != nil {
 			return nil, fmt.Errorf("bnetimport: stale characters: %w", err)
 		}
 		out = append(out, sc)
@@ -84,7 +92,7 @@ func (s *Service) RunRefresh(ctx context.Context, probeGames []string) (RefreshR
 				s.logger().Warn("bnetimport", "op", "refresh", "err", "rate limited by Blizzard, stopping this run")
 				break
 			}
-			s.logger().Warn("bnetimport", "op", "refresh_character", "key", sc.Key, "err", err)
+			s.logger().Warn("bnetimport", "op", "refresh_character", "bnet_character_id", sc.BnetCharacterID, "err", err)
 			result.Skipped++
 			continue
 		}
@@ -95,26 +103,46 @@ func (s *Service) RunRefresh(ctx context.Context, probeGames []string) (RefreshR
 	return result, nil
 }
 
-// refreshOneCharacter bumps a stale row's refreshed_at and re-runs the
-// guild sync steps of the import (spec §4.2 steps 4-5) — it never
-// re-runs step 3 (the characters row's own class/level/faction/realm),
-// which needs the account's own user token the nightly job does not
-// have.
+// refreshOneCharacter re-resolves sc's *current* characters row by
+// Blizzard character id and realm (spec A3 — never trusting the key as
+// it stood when the batch was snapshotted, which a concurrent login
+// import may have rekeyed since), bumps its refreshed_at, and re-runs
+// the guild sync and equipment capture steps of the import (spec §4.2
+// steps 4-5, §B). It never re-runs step 3 (the characters row's own
+// class/level/faction/realm), which needs the account's own user token
+// the nightly job does not have. A row that has since been rekeyed or
+// removed (no match on bnet_character_id/realm_slug) is silently skipped
+// — nothing to refresh.
 func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, rosterCache map[string]bnetapi.Roster) error {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
-		return fmt.Errorf("bnetimport: refresh begin %s: %w", sc.Key, err)
+		return fmt.Errorf("bnetimport: refresh begin bnet_character_id=%d: %w", sc.BnetCharacterID, err)
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
 
-	if _, err := tx.Exec(ctx, `update characters set refreshed_at = now() where key = $1`, sc.Key); err != nil {
-		return fmt.Errorf("bnetimport: refresh stamp %s: %w", sc.Key, err)
+	var key, region, ruleset, name string
+	err = tx.QueryRow(ctx,
+		`select key, region, ruleset, name from characters
+		 where bnet_character_id = $1 and coalesce(realm_slug, '') = $2 and source = 'bnet'`,
+		sc.BnetCharacterID, sc.RealmSlug).Scan(&key, &region, &ruleset, &name)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return nil
 	}
-	if _, err := s.syncCharacterGuild(ctx, tx, sc.UserID, sc.Region, sc.Ruleset, sc.Key, sc.RealmSlug, sc.Name, rosterCache); err != nil {
+	if err != nil {
+		return fmt.Errorf("bnetimport: refresh resolve bnet_character_id=%d: %w", sc.BnetCharacterID, err)
+	}
+
+	if _, err := tx.Exec(ctx, `update characters set refreshed_at = now() where key = $1`, key); err != nil {
+		return fmt.Errorf("bnetimport: refresh stamp %s: %w", key, err)
+	}
+	if _, _, err := s.syncCharacterGuild(ctx, tx, sc.UserID, region, ruleset, key, sc.RealmSlug, name, rosterCache); err != nil {
+		return err
+	}
+	if err := s.captureEquipment(ctx, tx, key, region, sc.RealmSlug, name); err != nil {
 		return err
 	}
 	if err := tx.Commit(ctx); err != nil {
-		return fmt.Errorf("bnetimport: refresh commit %s: %w", sc.Key, err)
+		return fmt.Errorf("bnetimport: refresh commit %s: %w", key, err)
 	}
 	return nil
 }

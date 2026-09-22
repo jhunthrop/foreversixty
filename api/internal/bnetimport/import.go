@@ -130,7 +130,7 @@ func (s *Service) importRegion(ctx context.Context, userID int64, userToken, reg
 		ruleset := rulesetForRealm(realms, ch.RealmSlug)
 		key := character.Key(region, ruleset, ch.Name)
 
-		wrote, guildWritten, err := s.importOneCharacter(ctx, userID, region, ruleset, key, ch, rosterCache)
+		wrote, guildWritten, unavailable, err := s.importOneCharacter(ctx, userID, region, ruleset, key, ch, rosterCache)
 		if err != nil {
 			if errors.Is(err, context.DeadlineExceeded) {
 				return ErrBudget
@@ -146,6 +146,9 @@ func (s *Service) importRegion(ctx context.Context, userID int64, userToken, reg
 		summary.Characters++
 		if guildWritten {
 			summary.Guilds++
+		}
+		if unavailable {
+			summary.Unavailable++
 		}
 	}
 	return nil

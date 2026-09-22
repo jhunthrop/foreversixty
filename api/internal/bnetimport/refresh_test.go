@@ -12,13 +12,13 @@ func TestStaleBnetCharactersFindsOnlyOldBnetRows(t *testing.T) {
 	uid := seedUser(t, pool)
 	ctx := context.Background()
 	if _, err := pool.Exec(ctx,
-		`insert into characters (key, region, ruleset, name, user_id, realm_slug, source, refreshed_at)
-		 values ('us/pvp/stale', 'us', 'pvp', 'Stale', $1, 'whitemane', 'bnet', now() - interval '25 hours')`, uid); err != nil {
+		`insert into characters (key, region, ruleset, name, user_id, realm_slug, bnet_character_id, source, refreshed_at)
+		 values ('us/pvp/stale', 'us', 'pvp', 'Stale', $1, 'whitemane', 101, 'bnet', now() - interval '25 hours')`, uid); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := pool.Exec(ctx,
-		`insert into characters (key, region, ruleset, name, user_id, realm_slug, source, refreshed_at)
-		 values ('us/pvp/fresh', 'us', 'pvp', 'Fresh', $1, 'whitemane', 'bnet', now())`, uid); err != nil {
+		`insert into characters (key, region, ruleset, name, user_id, realm_slug, bnet_character_id, source, refreshed_at)
+		 values ('us/pvp/fresh', 'us', 'pvp', 'Fresh', $1, 'whitemane', 102, 'bnet', now())`, uid); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := pool.Exec(ctx,
@@ -32,8 +32,8 @@ func TestStaleBnetCharactersFindsOnlyOldBnetRows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(stale) != 1 || stale[0].Key != "us/pvp/stale" {
-		t.Fatalf("stale = %+v, want just us/pvp/stale", stale)
+	if len(stale) != 1 || stale[0].BnetCharacterID != 101 || stale[0].RealmSlug != "whitemane" {
+		t.Fatalf("stale = %+v, want just bnet_character_id=101/whitemane", stale)
 	}
 }
 
@@ -46,11 +46,12 @@ func TestRunRefreshStopsOnRateLimit(t *testing.T) {
 	// (which would otherwise succeed) is ever reached.
 	ages := map[string]string{"us/pvp/one": "26 hours", "us/pvp/two": "25 hours"}
 	names := map[string]string{"us/pvp/one": "One", "us/pvp/two": "Two"}
+	bnetIDs := map[string]int{"us/pvp/one": 201, "us/pvp/two": 202}
 	for _, key := range []string{"us/pvp/one", "us/pvp/two"} {
 		if _, err := pool.Exec(ctx,
-			`insert into characters (key, region, ruleset, name, user_id, realm_slug, source, refreshed_at)
-			 values ($1, 'us', 'pvp', $2, $3, 'whitemane', 'bnet', now() - $4::interval)`,
-			key, names[key], uid, ages[key]); err != nil {
+			`insert into characters (key, region, ruleset, name, user_id, realm_slug, bnet_character_id, source, refreshed_at)
+			 values ($1, 'us', 'pvp', $2, $3, 'whitemane', $4, 'bnet', now() - $5::interval)`,
+			key, names[key], uid, bnetIDs[key], ages[key]); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -61,6 +62,8 @@ func TestRunRefreshStopsOnRateLimit(t *testing.T) {
 	f.json(http.MethodGet, "/profile/wow/character/whitemane/two?namespace=profile-classic1x-us",
 		http.StatusOK, map[string]any{"name": "Two", "level": 60, "faction": map[string]string{"type": "HORDE"},
 			"character_class": map[string]string{"name": "Rogue"}, "realm": map[string]string{"slug": "whitemane"}})
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/two/equipment?namespace=profile-classic1x-us",
+		http.StatusOK, map[string]any{"equipped_items": []map[string]any{}})
 
 	svc := newTestService(t, pool, f)
 	result, err := svc.RunRefresh(ctx, nil)
@@ -80,8 +83,8 @@ func TestRunRefreshClearsAWithdrawnBnetMembershipButLeavesExportSourcedRowsAlone
 	uid := seedUser(t, pool)
 	ctx := context.Background()
 	if _, err := pool.Exec(ctx,
-		`insert into characters (key, region, ruleset, name, user_id, realm_slug, source, refreshed_at)
-		 values ('us/pvp/left', 'us', 'pvp', 'Left', $1, 'whitemane', 'bnet', now() - interval '25 hours')`, uid); err != nil {
+		`insert into characters (key, region, ruleset, name, user_id, realm_slug, bnet_character_id, source, refreshed_at)
+		 values ('us/pvp/left', 'us', 'pvp', 'Left', $1, 'whitemane', 301, 'bnet', now() - interval '25 hours')`, uid); err != nil {
 		t.Fatal(err)
 	}
 	var gid int64
@@ -99,6 +102,8 @@ func TestRunRefreshClearsAWithdrawnBnetMembershipButLeavesExportSourcedRowsAlone
 	f.json(http.MethodGet, "/profile/wow/character/whitemane/left?namespace=profile-classic1x-us", http.StatusOK,
 		map[string]any{"name": "Left", "level": 60, "faction": map[string]string{"type": "HORDE"},
 			"character_class": map[string]string{"name": "Rogue"}, "realm": map[string]string{"slug": "whitemane"}})
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/left/equipment?namespace=profile-classic1x-us",
+		http.StatusOK, map[string]any{"equipped_items": []map[string]any{}})
 
 	svc := newTestService(t, pool, f)
 	if _, err := svc.RunRefresh(ctx, nil); err != nil {

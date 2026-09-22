@@ -165,7 +165,7 @@ func (s *Service) runImport(r *http.Request, userID int64, accessToken string) {
 	}
 	s.logger().Info("auth", "id", id, "op", "battlenet_import", "user_id", userID,
 		"regions", summary.Regions, "characters", summary.Characters,
-		"guilds", summary.Guilds, "skipped", summary.Skipped)
+		"guilds", summary.Guilds, "skipped", summary.Skipped, "unavailable", summary.Unavailable)
 }
 
 type emailRequest struct {
