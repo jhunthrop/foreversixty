@@ -279,10 +279,8 @@ Variables — the same place `GCP_WIF_PROVIDER` and `GCP_DEPLOYER_SA` already li
 `addon-data-release.yml` is gated on this variable existing (`if: vars.DATA_ADDON_BUCKET != ''`),
 the same way `api.yml`'s own `deploy` job is gated on `GCP_WIF_PROVIDER`.
 
-Like `parse-report`, `sim-run` and `sim-validate`, `.github/workflows/api.yml`'s `deploy`
-job's "Point the jobs at the new image" loop should add `data-addon` to its job list so a
-new deploy repoints it too — that file is outside this lane's ownership, so this is a
-follow-up for whichever lane next touches `api.yml`, not done here.
+Like `parse-report`, `sim-run` and `sim-validate`, `data-addon` is in `.github/workflows/api.yml`'s
+"Point the jobs at the new image" list, so every deploy repoints it at the new image.
 
 `sim-run` is executed by the API for one premium run and takes the sim
 id as a second argument; `sim-validate` is scheduled nightly by Cloud
