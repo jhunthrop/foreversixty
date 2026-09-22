@@ -108,7 +108,7 @@ Inline SVG, 24px grid, 2px stroke, round caps and joins, `currentColor` or gold.
 
 ## Motion
 
-One reveal on page load (sky band fades in over 400ms), gold focus rings, 120ms hover transitions on cards and links. Nothing else animates.
+One reveal on page load (sky band fades in over 400ms), gold focus rings, 120ms hover transitions on cards and links, and one 160ms fade (`.reveal`) when an island's data lands in place of its skeleton. Nothing else animates. Every island reserves its ready height while loading (a `Skeleton` sized to the content, or a fixed `min-h`), so a fade is the only thing that changes; nothing moves. Reduced-motion turns the shimmer and the fade off.
 
 ## Light mode
 

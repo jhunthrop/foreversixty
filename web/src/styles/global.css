@@ -170,8 +170,23 @@
     background-position: -200% 0;
   }
 }
+/* An island's content the moment its data lands: one short fade so a skeleton or a
+   loading line never snaps into a table. Applied to the wrapper of the ready state only,
+   never to controls a player is already using (design system, Motion). */
+.reveal {
+  animation: reveal 160ms ease-out both;
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .skeleton-block {
+  .skeleton-block,
+  .reveal {
     animation: none;
   }
 }
