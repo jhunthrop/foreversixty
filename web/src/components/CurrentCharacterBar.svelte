@@ -4,7 +4,12 @@
      one prop, and on /planner and /sim* the page that mounts it owns the pointer; here
      nothing else does, so this reads it once on mount and forgets it on request.
      `refresh` lets a sibling on the same page (the addon page's paste box) say "I just wrote
-     a new pointer" without the two sharing a store. -->
+     a new pointer" without the two sharing a store.
+
+     `compact` is set by Account.svelte's account mode (spec 2026-09-22 F2): the page already
+     has a full Characters list a few hundred px below, so the pointer chip beside the title
+     shows only when a pointer exists and renders nothing otherwise, never the "no character"
+     sentence. -->
 <script lang="ts">
   import { fetchMeOnce } from '../lib/account/api';
   import {
@@ -16,7 +21,7 @@
   import { guildRankLabel } from '../lib/characters';
   import CurrentCharacterChip from './CurrentCharacterChip.svelte';
 
-  let { hasOwnPasteBox = false }: { hasOwnPasteBox?: boolean } = $props();
+  let { hasOwnPasteBox = false, compact = false }: { hasOwnPasteBox?: boolean; compact?: boolean } = $props();
 
   let current = $state<CurrentCharacter | null>(null);
   // Spec 2026-09-22 §7.5: "Iron Vanguard · Officer", built once the matching /v1/me
@@ -58,4 +63,4 @@
   }
 </script>
 
-<CurrentCharacterChip {current} {hasOwnPasteBox} {guildLine} onforget={forget} />
+<CurrentCharacterChip {current} hasOwnPasteBox={hasOwnPasteBox || compact} {guildLine} onforget={forget} />
