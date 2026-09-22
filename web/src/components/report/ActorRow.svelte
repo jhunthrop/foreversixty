@@ -40,6 +40,7 @@
   import type { ExactSplit } from '../../lib/report/exact';
   import AbilityBar from './AbilityBar.svelte';
   import ClassIcon from './ClassIcon.svelte';
+  import { BUSY_CLASS } from '../../lib/ui/busy';
 
   let {
     rank,
@@ -466,11 +467,12 @@
           {#if exact === null}
             <button
               type="button"
-              class="border-line-warm rounded-control text-text inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
+              class={`border-line-warm rounded-control text-text inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9 ${measuring ? BUSY_CLASS : ''}`}
               disabled={measuring}
+              aria-busy={measuring}
               onclick={() => void runMeasure()}
             >
-              {measuring ? 'Measuring…' : 'Measure this window exactly'}
+              Measure this window exactly
             </button>
             <span class="text-muted text-[12px]"
               >The split below is prorated (~). Measuring reads the fight’s events.</span

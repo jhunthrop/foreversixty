@@ -14,6 +14,7 @@
   import { addonCopy } from '../lib/addon/copy';
   import { REGIONS, RULESETS } from '../lib/characters';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { BUSY_CLASS } from '../lib/ui/busy';
 
   let { signedIn, code }: { signedIn: boolean; code: string } = $props();
 
@@ -78,8 +79,9 @@
     </div>
     <button
       type="button"
-      class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
       disabled={busy || saved || !canSave}
+      aria-busy={busy}
       onclick={onSave}
       data-testid="addon-paste-save-button"
     >

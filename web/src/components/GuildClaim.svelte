@@ -27,6 +27,7 @@
   import { fetchGuild } from '../lib/rankings/api';
   import GuildStatus from './GuildStatus.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
+  import { BUSY_CLASS } from '../lib/ui/busy';
 
   let { path }: { path: CharacterPath } = $props();
 
@@ -165,9 +166,10 @@
       {#if canContest && settings !== null && settings.claim.state !== 'contested'}
         {#if !showContestConfirm}
           <button
-            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3"
+            class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3 ${busy ? BUSY_CLASS : ''}`}
             onclick={() => (showContestConfirm = true)}
             disabled={busy}
+            aria-busy={busy}
             data-testid="guild-claim-contest-button"
           >
             {guildHomeCopy.contestButton}
@@ -184,20 +186,22 @@
             </ul>
             <div class="flex gap-3">
               <button
-                class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-3"
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-3 ${busy ? BUSY_CLASS : ''}`}
                 onclick={onContest}
                 disabled={busy}
+                aria-busy={busy}
                 data-testid="guild-claim-contest-confirm-button"
               >
                 {guildHomeCopy.contestConfirmButton}
               </button>
               <button
-                class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3"
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3 ${busy ? BUSY_CLASS : ''}`}
                 onclick={() => {
                   showContestConfirm = false;
                   error = '';
                 }}
                 disabled={busy}
+                aria-busy={busy}
               >
                 {guildHomeCopy.cancel}
               </button>
@@ -217,9 +221,10 @@
       </p>
       {#if settings.claimed_by.battletag === myBattletag}
         <button
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+          class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
           onclick={onRelease}
           disabled={busy}
+          aria-busy={busy}
           data-testid="guild-claim-release"
         >
           {guildClaimCopy.releaseButton}
@@ -232,9 +237,10 @@
       </p>
       {#if signedIn && eligible}
         <button
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
           onclick={onConfirm}
           disabled={busy}
+          aria-busy={busy}
           data-testid="guild-claim-confirm"
         >
           {guildClaimCopy.confirmButton}
@@ -249,9 +255,10 @@
         <SignInPrompt line={guildClaimCopy.signInLine} testid="guild-claim-signin" />
       {:else if eligible}
         <button
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
           onclick={onClaim}
           disabled={busy}
+          aria-busy={busy}
           data-testid="guild-claim-button"
         >
           {guildClaimCopy.claimButton}

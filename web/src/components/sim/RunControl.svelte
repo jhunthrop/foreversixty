@@ -16,6 +16,7 @@
   import { engineLabel } from '../../lib/sim/version';
   import HelpNote from './HelpNote.svelte';
   import PrecisionSelect from './PrecisionSelect.svelte';
+  import { BUSY_CLASS } from '../../lib/ui/busy';
 
   let {
     spec,
@@ -125,7 +126,8 @@
 >
   <button
     type="button"
-    class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 w-full border px-5 disabled:opacity-50 md:w-auto md:min-w-[9rem]"
+    class={`border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 w-full border px-5 disabled:opacity-50 md:w-auto md:min-w-[9rem] ${running ? BUSY_CLASS : ''}`}
+    aria-busy={running}
     disabled={loadingEngine ||
       phase === 'loading-character' ||
       (racePending && !running) ||

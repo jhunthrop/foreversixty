@@ -15,6 +15,7 @@
   } from '../../lib/report/events';
   import type { StreamLine } from '../../lib/report/exact';
   import type { Summary } from '../../lib/report/types';
+  import { BUSY_CLASS } from '../../lib/ui/busy';
 
   let {
     summary,
@@ -127,11 +128,11 @@
       and not here.{#if loadStream !== undefined}
         <button
           type="button"
-          class="text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0"
+          class={`text-gold inline-flex min-h-11 items-center underline-offset-2 hover:underline md:min-h-0 ${streaming ? BUSY_CLASS : ''}`}
           data-testid="events-stream"
           disabled={streaming}
-          onclick={() => void runStream()}
-          >{streaming ? 'Loading…' : 'Load every hit and heal in this window'}</button
+          aria-busy={streaming}
+          onclick={() => void runStream()}>Load every hit and heal in this window</button
         >
         from the fight’s events.{/if}{:else}: casts, auras and deaths from the summary, and
       <span class="tabular font-mono"

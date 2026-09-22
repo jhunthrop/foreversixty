@@ -15,6 +15,7 @@
   } from '../lib/upload/multipart';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import SignInPrompt from './SignInPrompt.svelte';
+  import { BUSY_CLASS } from '../lib/ui/busy';
 
   const VISIBILITIES = [
     { id: 'public', label: 'Public', note: 'Listed, ranked, anyone can open it.' },
@@ -203,9 +204,10 @@
 
   <div class="flex flex-wrap items-center gap-3">
     <button
-      class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 disabled:opacity-50"
+      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 disabled:opacity-50 ${busy ? BUSY_CLASS : ''}`}
       onclick={() => void start()}
       disabled={file === null || tooLarge || locked}
+      aria-busy={busy}
       data-testid="upload-start"
     >
       Upload

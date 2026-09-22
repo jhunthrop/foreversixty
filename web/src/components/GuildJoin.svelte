@@ -13,6 +13,7 @@
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import GuildStatus from './GuildStatus.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
+  import { BUSY_CLASS } from '../lib/ui/busy';
 
   let { token }: { token: string } = $props();
 
@@ -65,9 +66,10 @@
     <SignInPrompt line={guildJoinCopy.signInLine} testid="guild-join-signin" />
   {:else}
     <button
-      class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
       onclick={() => void onJoin()}
       disabled={busy}
+      aria-busy={busy}
       data-testid="guild-join-button"
     >
       {guildJoinCopy.joinButton}

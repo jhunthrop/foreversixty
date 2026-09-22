@@ -8,6 +8,7 @@
 <script lang="ts">
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
   import { simCopy } from '../../../lib/sim/copy';
+  import { BUSY_CLASS } from '../../../lib/ui/busy';
 
   let {
     onsave,
@@ -108,12 +109,13 @@
     </label>
     <button
       type="button"
-      class="{SECONDARY_BUTTON} border-line-warm text-nav px-5 disabled:opacity-50"
+      class={`${SECONDARY_BUTTON} border-line-warm text-nav px-5 disabled:opacity-50 ${saving ? BUSY_CLASS : ''}`}
       disabled={saving}
+      aria-busy={saving}
       onclick={() => void confirmSave()}
       data-testid="sim-save-confirm"
     >
-      {saving ? simCopy.savingAction : simCopy.saveAction}
+      {simCopy.saveAction}
     </button>
     <button
       type="button"

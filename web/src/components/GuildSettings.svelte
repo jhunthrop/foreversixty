@@ -22,6 +22,7 @@
   import { fetchGuild } from '../lib/rankings/api';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import GuildStatus from './GuildStatus.svelte';
+  import { BUSY_CLASS } from '../lib/ui/busy';
 
   let { path }: { path: CharacterPath } = $props();
 
@@ -190,9 +191,10 @@
         {/if}
         {#if guildBilling.you_are_billing_contact}
           <button
-            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+            class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
             onclick={onManageBilling}
             disabled={busy}
+            aria-busy={busy}
             data-testid="guild-manage-billing"
           >
             {billingBlockCopy.manageBilling}
@@ -204,10 +206,11 @@
       <label class="label text-muted" for="guild-visibility">{guildSettingsCopy.defaultVisibility}</label>
       <select
         id="guild-visibility"
-        class="border-line-warm bg-raised rounded-control text-text h-11 w-fit px-3 text-[14px]"
+        class={`border-line-warm bg-raised rounded-control text-text h-11 w-fit px-3 text-[14px] ${busy ? BUSY_CLASS : ''}`}
         value={settings.default_visibility}
         onchange={(event) => onSave('default_visibility', (event.currentTarget as HTMLSelectElement).value)}
         disabled={busy || frozen}
+        aria-busy={busy}
         data-testid="guild-visibility-select"
       >
         <option value="public">Public</option>
@@ -223,11 +226,12 @@
         id="guild-officer-threshold"
         type="number"
         min="0"
-        class="border-line-warm bg-raised rounded-control text-text h-11 w-24 px-3 text-[14px]"
+        class={`border-line-warm bg-raised rounded-control text-text h-11 w-24 px-3 text-[14px] ${busy ? BUSY_CLASS : ''}`}
         value={settings.officer_max_rank_index}
         onchange={(event) =>
           onSave('officer_max_rank_index', (event.currentTarget as HTMLInputElement).value)}
         disabled={busy || frozen}
+        aria-busy={busy}
         data-testid="guild-officer-threshold-input"
       />
     </section>
@@ -235,9 +239,10 @@
       <h2 class="section-title text-[18px]">{guildSettingsCopy.inviteHeading}</h2>
       <p class="text-muted text-[13px]">{guildSettingsCopy.inviteWarning}</p>
       <button
-        class="border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
+        class={`border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase ${busy ? BUSY_CLASS : ''}`}
         onclick={onRotate}
         disabled={busy || frozen}
+        aria-busy={busy}
         data-testid="guild-invite-rotate"
       >
         {guildSettingsCopy.rotateButton}

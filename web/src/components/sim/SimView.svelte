@@ -62,6 +62,7 @@
   import SpecGrid from './SpecGrid.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
+  import { BUSY_CLASS } from '../ui/busy';
 
   let { simId = '', inlineResult = null }: { simId?: string; inlineResult?: SimResult | null } = $props();
 
@@ -750,12 +751,13 @@
             </label>
             <button
               type="button"
-              class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
+              class={`border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50 ${saving ? BUSY_CLASS : ''}`}
               disabled={saving}
+              aria-busy={saving}
               onclick={() => void confirmSave()}
               data-testid="sim-save-confirm"
             >
-              {saving ? simCopy.savingAction : simCopy.saveAction}
+              {simCopy.saveAction}
             </button>
             <button
               type="button"
