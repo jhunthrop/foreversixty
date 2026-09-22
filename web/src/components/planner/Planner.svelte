@@ -610,19 +610,22 @@
     {:else if status === 'failed'}
       <div class="border-line bg-raised rounded-panel mx-[18px] flex flex-col gap-3 border p-5 md:mx-0">
         <p class="text-strong text-[15px] font-semibold">{DATA_LOAD_FAILED}</p>
-        <!-- Honest for every branch of `load`: the reference files fail into this state too,
-             not just talents/<class>.json. -->
-        <p class="text-muted text-[13px]">
-          Build {store.treeVersion} did not return the files the planner needs.
-        </p>
+        <!-- The detail is LoadError's own message rather than a paragraph above it: the
+             primitive's default sentence is DATA_LOAD_FAILED with a full stop, so keeping
+             both said the same thing twice in a row. Honest for every branch of `load`:
+             the reference files fail into this state too, not just talents/<class>.json. -->
         <LoadError
-          message="Talent data did not load."
+          message={`Build ${store.treeVersion} did not return the files the planner needs.`}
           onRetry={() => (attempt += 1)}
           testid="planner-load-error"
         />
       </div>
     {:else if store.talentIndex}
-      <!-- One panel at a time on a phone: three trees side by side do not fit 360px, and
+      <!-- The ready state's own wrapper, and the only thing `.reveal` may sit on (design
+           2026-09-22 spec section 1.4). It repeats the reserve div's flex column and gap so
+           the panels below keep the exact spacing they had as that div's direct children. -->
+      <div class="reveal flex flex-col gap-[22px] md:gap-8">
+        <!-- One panel at a time on a phone: three trees side by side do not fit 360px, and
            stacking them -- with the gear panel's seventeen slots under them -- puts the last
            one several screens down. Desktop keeps the columns and hides this. The roving
            tabindex lives on the tabs, as it does on TreeGrid's cells.
@@ -630,170 +633,171 @@
            never a tab stop -- and is there to satisfy the compiler's a11y rule that an element
            carrying an interactive role and a key handler declare a tabindex; -1 declares one
            without adding a stop, and it matches what TreeGrid's `role="grid"` does. -->
-      <div
-        role="tablist"
-        tabindex={-1}
-        aria-label="Planner sections"
-        class="border-line-soft mx-[18px] flex gap-2 border-b pb-2 md:hidden"
-        onkeydown={onTabKeys}
-      >
-        {#each store.talentIndex.trees as tree, i (tree.id)}
-          <button
-            type="button"
-            role="tab"
-            id={`tree-tab-${tree.id}`}
-            aria-selected={activeTree === i}
-            aria-controls={`tree-panel-${tree.id}`}
-            tabindex={activeTree === i ? 0 : -1}
-            class="{SECONDARY_BUTTON} flex-1 justify-center {activeTree === i
-              ? 'border-gold text-gold'
-              : 'border-line text-nav'}"
-            onclick={() => (activeTree = i)}
-          >
-            <span>{tree.name}</span>
-            <span class="tabular text-muted ml-2 font-mono">{store.split[i] ?? 0}</span>
-          </button>
-        {/each}
-        <!-- Last, so `gearTabIndex` is the tree count and onTabKeys picks it up from the
+        <div
+          role="tablist"
+          tabindex={-1}
+          aria-label="Planner sections"
+          class="border-line-soft mx-[18px] flex gap-2 border-b pb-2 md:hidden"
+          onkeydown={onTabKeys}
+        >
+          {#each store.talentIndex.trees as tree, i (tree.id)}
+            <button
+              type="button"
+              role="tab"
+              id={`tree-tab-${tree.id}`}
+              aria-selected={activeTree === i}
+              aria-controls={`tree-panel-${tree.id}`}
+              tabindex={activeTree === i ? 0 : -1}
+              class="{SECONDARY_BUTTON} flex-1 justify-center {activeTree === i
+                ? 'border-gold text-gold'
+                : 'border-line text-nav'}"
+              onclick={() => (activeTree = i)}
+            >
+              <span>{tree.name}</span>
+              <span class="tabular text-muted ml-2 font-mono">{store.split[i] ?? 0}</span>
+            </button>
+          {/each}
+          <!-- Last, so `gearTabIndex` is the tree count and onTabKeys picks it up from the
              tablist's own DOM order without knowing gear exists. No count beside the name:
              the trees show the points spent in them because that number is otherwise only on
              the panel behind the tab, and the gear panel's own totals are not one number. -->
-        {#if hasGear}
-          <button
-            type="button"
-            role="tab"
-            id="gear-tab"
-            aria-selected={activeTree === gearTabIndex}
-            aria-controls="gear-tabpanel"
-            tabindex={activeTree === gearTabIndex ? 0 : -1}
-            class="{SECONDARY_BUTTON} flex-1 justify-center {activeTree === gearTabIndex
-              ? 'border-gold text-gold'
-              : 'border-line text-nav'}"
-            onclick={() => (activeTree = gearTabIndex)}
-          >
-            Gear
-          </button>
-        {/if}
-      </div>
+          {#if hasGear}
+            <button
+              type="button"
+              role="tab"
+              id="gear-tab"
+              aria-selected={activeTree === gearTabIndex}
+              aria-controls="gear-tabpanel"
+              tabindex={activeTree === gearTabIndex ? 0 : -1}
+              class="{SECONDARY_BUTTON} flex-1 justify-center {activeTree === gearTabIndex
+                ? 'border-gold text-gold'
+                : 'border-line text-nav'}"
+              onclick={() => (activeTree = gearTabIndex)}
+            >
+              Gear
+            </button>
+          {/if}
+        </div>
 
-      <div class="grid grid-cols-1 gap-4 px-[18px] md:grid-cols-3 md:px-0" data-testid="tree-columns">
-        {#each store.talentIndex.trees as tree, i (tree.id)}
-          <!-- The inactive trees are hidden with a class, not the `hidden` attribute: the
+        <div class="grid grid-cols-1 gap-4 px-[18px] md:grid-cols-3 md:px-0" data-testid="tree-columns">
+          {#each store.talentIndex.trees as tree, i (tree.id)}
+            <!-- The inactive trees are hidden with a class, not the `hidden` attribute: the
                attribute would hide them on desktop too, where `md:flex` cannot override it. -->
-          <div
-            id={`tree-panel-${tree.id}`}
-            role="tabpanel"
-            aria-labelledby={`tree-tab-${tree.id}`}
-            data-testid={`tree-panel-${tree.id}`}
-            class="border-line-warm bg-raised rounded-panel flex-col gap-3 border p-4 md:flex {activeTree ===
-            i
-              ? 'flex'
-              : 'hidden'}"
-          >
-            <!-- The game's tree header: name on the left, points in the tree on the
+            <div
+              id={`tree-panel-${tree.id}`}
+              role="tabpanel"
+              aria-labelledby={`tree-tab-${tree.id}`}
+              data-testid={`tree-panel-${tree.id}`}
+              class="border-line-warm bg-raised rounded-panel flex-col gap-3 border p-4 md:flex {activeTree ===
+              i
+                ? 'flex'
+                : 'hidden'}"
+            >
+              <!-- The game's tree header: name on the left, points in the tree on the
                  right, a rule under both. Warm border and gold number are the
                  design system's; the proportions are the client's. -->
-            <header class="border-line-soft flex items-baseline justify-between border-b pb-2">
-              <h2 class="section-title text-[15px]">{tree.name}</h2>
-              <span class="tabular text-gold font-mono text-[15px]" data-testid={`tree-points-${tree.id}`}>
-                {store.split[i] ?? 0}
-              </span>
-            </header>
-            <TreeGrid {store} {tree} />
-          </div>
-        {/each}
-      </div>
+              <header class="border-line-soft flex items-baseline justify-between border-b pb-2">
+                <h2 class="section-title text-[15px]">{tree.name}</h2>
+                <span class="tabular text-gold font-mono text-[15px]" data-testid={`tree-points-${tree.id}`}>
+                  {store.split[i] ?? 0}
+                </span>
+              </header>
+              <TreeGrid {store} {tree} />
+            </div>
+          {/each}
+        </div>
 
-      <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
-        {#if store.readOnly}
-          <!-- A build opened from a share link. Every edit is refused until Fork, so the
+        <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
+          {#if store.readOnly}
+            <!-- A build opened from a share link. Every edit is refused until Fork, so the
                toolbar says so up front rather than leaving the refusal message to explain it
                after the first click. Reset and Share are gone with it: there is nothing of
                one's own to clear, and re-sharing someone else's build under a new id is the
                one thing Fork is for. -->
-          <p class="text-muted text-[13px]">
-            This build was shared as a link. Fork it to spend points of your own.
-          </p>
-          <button
-            type="button"
-            class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
-            onclick={() => store.fork()}
-          >
-            Fork
-          </button>
-        {:else}
-          <!-- Nested rather than a third arm of the branch above, so `readOnly` is asked once:
+            <p class="text-muted text-[13px]">
+              This build was shared as a link. Fork it to spend points of your own.
+            </p>
+            <button
+              type="button"
+              class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
+              onclick={() => store.fork()}
+            >
+              Fork
+            </button>
+          {:else}
+            <!-- Nested rather than a third arm of the branch above, so `readOnly` is asked once:
                Reset and Share belong to the same half of that decision, and SharePanel has to
                sit outside the confirm to survive it -- it holds the title being typed and the
                link of the last save, and re-mounting it when the confirm opens would throw
                both away. -->
-          {#if confirmingReset}
-            <span class="text-muted text-[13px]">Clear every point in this build?</span>
-            <button
-              type="button"
-              class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
-              onclick={() => {
-                store.reset();
-                confirmingReset = false;
-              }}
-            >
-              Clear all points
-            </button>
-            <!-- Reset leaves the DOM the moment it is pressed, so the keyboard lands on the
+            {#if confirmingReset}
+              <span class="text-muted text-[13px]">Clear every point in this build?</span>
+              <button
+                type="button"
+                class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
+                onclick={() => {
+                  store.reset();
+                  confirmingReset = false;
+                }}
+              >
+                Clear all points
+              </button>
+              <!-- Reset leaves the DOM the moment it is pressed, so the keyboard lands on the
                  question it just asked rather than back at the top of the document. It lands
                  on the safe answer: a second Enter pressed out of habit keeps the build rather
                  than clearing it, which is the only reason the second step exists. -->
-            <button
-              type="button"
-              class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-              {@attach (node) => node.focus()}
-              onclick={() => (confirmingReset = false)}
-            >
-              Keep the build
-            </button>
-          {:else}
-            <button
-              type="button"
-              class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-              onclick={() => (confirmingReset = true)}
-            >
-              Reset…
-            </button>
+              <button
+                type="button"
+                class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
+                {@attach (node) => node.focus()}
+                onclick={() => (confirmingReset = false)}
+              >
+                Keep the build
+              </button>
+            {:else}
+              <button
+                type="button"
+                class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
+                onclick={() => (confirmingReset = true)}
+              >
+                Reset…
+              </button>
+            {/if}
+
+            <SharePanel {store} {live} />
           {/if}
+        </div>
 
-          <SharePanel {store} {live} />
-        {/if}
-      </div>
-
-      {#if !store.readOnly}
-        <!-- A read-only build (opened from a share link) has nowhere for an imported build to
+        {#if !store.readOnly}
+          <!-- A read-only build (opened from a share link) has nowhere for an imported build to
              go until it is forked, so the box only mounts once the toolbar above already shows
              Reset and Share rather than "Fork it to spend points of your own." -->
-        <ImportBox
-          talents={store.talentIndex}
-          activeBuild={activeBuild.build}
-          onimport={(build, pastedCode) => {
-            store.loadImported(build);
-            writePointer('addon', pastedCode, build.classSlug);
-          }}
-        />
-      {/if}
+          <ImportBox
+            talents={store.talentIndex}
+            activeBuild={activeBuild.build}
+            onimport={(build, pastedCode) => {
+              store.loadImported(build);
+              writePointer('addon', pastedCode, build.classSlug);
+            }}
+          />
+        {/if}
 
-      <OrderStrip {store} />
+        <OrderStrip {store} />
 
-      <!-- The gear tab's panel. Hidden by a class rather than the `hidden` attribute for the
+        <!-- The gear tab's panel. Hidden by a class rather than the `hidden` attribute for the
            same reason the tree panels are: the attribute would hide it on desktop too, where
            it belongs under the order strip and `md:flex` could not override it. -->
-      {#if hasGear}
-        <div
-          id="gear-tabpanel"
-          role="tabpanel"
-          aria-labelledby="gear-tab"
-          class="flex-col md:flex {activeTree === gearTabIndex ? 'flex' : 'hidden'}"
-        >
-          <GearPanel {store} {weights} />
-        </div>
-      {/if}
+        {#if hasGear}
+          <div
+            id="gear-tabpanel"
+            role="tabpanel"
+            aria-labelledby="gear-tab"
+            class="flex-col md:flex {activeTree === gearTabIndex ? 'flex' : 'hidden'}"
+          >
+            <GearPanel {store} {weights} />
+          </div>
+        {/if}
+      </div>
     {/if}
   </div>
 </div>

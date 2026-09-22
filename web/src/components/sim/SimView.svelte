@@ -496,7 +496,13 @@
     <!-- /sim/<sim_id>: read-only, and not the sim page with a result in it -- no switcher,
          no settings bar, no run control. SavedSim composes its own heading. -->
     {#if savedSim.result !== null}
-      <SavedSim result={savedSim.result} onrerun={onRerunSaved} />
+      <!-- `.reveal` goes on the wrapper of the ready state only (design 2026-09-22 spec
+           section 1.4), and SavedSim takes no class prop -- so this one-child div carries
+           it. A single stretched flex item in place of the component's own root: the
+           column's gap sits outside it either way, so nothing moves. -->
+      <div class="reveal">
+        <SavedSim result={savedSim.result} onrerun={onRerunSaved} />
+      </div>
     {:else if savedSim.error !== null}
       <!-- Same reason as the lazyFallback wrapper above: LoadError has no class-passthrough prop. -->
       <div class="px-[18px] md:px-0">
@@ -597,198 +603,205 @@
       {/if}
 
       {#if store.character !== null}
-        <SettingsBar
-          settings={store.settings}
-          spec={store.character.spec}
-          disabled={store.phase === 'running' || store.serverRunning}
-          onchange={(next) => store.setSettings(next)}
-          names={store.buffNames}
-        />
-        {#if store.settings.preset === 'custom'}
-          <BuffPanel
+        <!-- Everything a loaded character brings with it, under the one wrapper `.reveal`
+             is allowed to sit on (design 2026-09-22 spec section 1.4). The wrapper repeats
+             the view's own `flex flex-col VIEW_GAP` so these panels keep the exact spacing
+             they had as direct children of `sim-view`; none of them sets an `align-self`
+             or a flex ratio, so nesting them one level deeper changes nothing else. -->
+        <div class={`reveal flex flex-col ${VIEW_GAP}`}>
+          <SettingsBar
             settings={store.settings}
-            build={store.character.tree_version}
-            names={store.buffNames}
+            spec={store.character.spec}
             disabled={store.phase === 'running' || store.serverRunning}
             onchange={(next) => store.setSettings(next)}
+            names={store.buffNames}
           />
-        {/if}
-        <RequestDrawer
-          request={store.buildRequest()}
-          disabled={store.phase === 'running' || store.serverRunning}
-          onvalidate={(json) => store.validateRequest(json)}
-          onapply={(request) => void store.applyRequest(request)}
-          onrun={(request) => void store.runRequest(request)}
-          onshare={(request) => shareUrlFor(request)}
-        />
-        {#if characterSpecRow !== null && needsFidelityNote(characterSpecRow)}
-          <!-- A fidelity state labels, it never blocks: the run control below always
+          {#if store.settings.preset === 'custom'}
+            <BuffPanel
+              settings={store.settings}
+              build={store.character.tree_version}
+              names={store.buffNames}
+              disabled={store.phase === 'running' || store.serverRunning}
+              onchange={(next) => store.setSettings(next)}
+            />
+          {/if}
+          <RequestDrawer
+            request={store.buildRequest()}
+            disabled={store.phase === 'running' || store.serverRunning}
+            onvalidate={(json) => store.validateRequest(json)}
+            onapply={(request) => void store.applyRequest(request)}
+            onrun={(request) => void store.runRequest(request)}
+            onshare={(request) => shareUrlFor(request)}
+          />
+          {#if characterSpecRow !== null && needsFidelityNote(characterSpecRow)}
+            <!-- A fidelity state labels, it never blocks: the run control below always
                renders once a character is loaded, and this is the one-line footnote
                linking to the full card on /sim/specs. -->
-          <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="spec-fidelity-note">
-            <a href="/sim/specs" class={specPillClass(characterSpecRow.state)}
-              >{specStateLabel(characterSpecRow.state)}</a
-            >
-            {specStateNote(characterSpecRow.state)}
-          </p>
-        {/if}
-        <RunControl
-          spec={store.character.spec}
-          phase={store.phase}
-          estimate={store.estimate}
-          iterationsDone={store.iterationsDone}
-          iterationsTotal={store.iterationsTotal}
-          precisionId={store.precisionId}
-          relativeError={store.relativeError}
-          lane={store.lane}
-          premium={store.premium}
-          signedIn={me !== null}
-          message={store.message}
-          detail={store.detail}
-          racePending={store.needsRace}
-          {staleVersion}
-          serverRunning={store.serverRunning}
-          onrun={() => void store.run()}
-          onstop={() => store.stop()}
-          onprecision={(value) => store.setPrecisionId(value)}
-          onserver={() => void store.runOnServer()}
-          onrerun={() => void store.run()}
-        />
-        {#if comparing}
-          <!-- Replaces the sentence and the results, per Design 4.2 -- the strip, the
-                 settings bar and the run control above stay exactly where they are. -->
-          {#if actual === null}
-            <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="compare-loading">
-              {simCopy.compareLoading}
+            <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="spec-fidelity-note">
+              <a href="/sim/specs" class={specPillClass(characterSpecRow.state)}
+                >{specStateLabel(characterSpecRow.state)}</a
+              >
+              {specStateNote(characterSpecRow.state)}
             </p>
-          {:else if comparison !== null}
-            {#if compareViewLazy.current}
-              <compareViewLazy.current
-                {comparison}
-                simDuration={store.result?.summary.duration_ms ?? 0}
-                actualDuration={actual.duration_ms}
+          {/if}
+          <RunControl
+            spec={store.character.spec}
+            phase={store.phase}
+            estimate={store.estimate}
+            iterationsDone={store.iterationsDone}
+            iterationsTotal={store.iterationsTotal}
+            precisionId={store.precisionId}
+            relativeError={store.relativeError}
+            lane={store.lane}
+            premium={store.premium}
+            signedIn={me !== null}
+            message={store.message}
+            detail={store.detail}
+            racePending={store.needsRace}
+            {staleVersion}
+            serverRunning={store.serverRunning}
+            onrun={() => void store.run()}
+            onstop={() => store.stop()}
+            onprecision={(value) => store.setPrecisionId(value)}
+            onserver={() => void store.runOnServer()}
+            onrerun={() => void store.run()}
+          />
+          {#if comparing}
+            <!-- Replaces the sentence and the results, per Design 4.2 -- the strip, the
+                 settings bar and the run control above stay exactly where they are. -->
+            {#if actual === null}
+              <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="compare-loading">
+                {simCopy.compareLoading}
+              </p>
+            {:else if comparison !== null}
+              {#if compareViewLazy.current}
+                <compareViewLazy.current
+                  {comparison}
+                  simDuration={store.result?.summary.duration_ms ?? 0}
+                  actualDuration={actual.duration_ms}
+                />
+              {:else}
+                {@render lazyFallback(compareViewLazy, SIM_LAZY_MIN_H.compare)}
+              {/if}
+            {/if}
+          {:else if store.result !== null}
+            {#if simResultsLazy.current}
+              <simResultsLazy.current
+                summary={store.result.summary}
+                estimate={store.result.dps}
+                iterationsRun={store.result.iterations_run}
+                actionNames={store.actionNames}
+                sample={store.result.sample}
               />
             {:else}
-              {@render lazyFallback(compareViewLazy, SIM_LAZY_MIN_H.compare)}
+              {@render lazyFallback(simResultsLazy, SIM_LAZY_MIN_H.results)}
             {/if}
           {/if}
-        {:else if store.result !== null}
-          {#if simResultsLazy.current}
-            <simResultsLazy.current
-              summary={store.result.summary}
-              estimate={store.result.dps}
-              iterationsRun={store.result.iterations_run}
-              actionNames={store.actionNames}
-              sample={store.result.sample}
-            />
-          {:else}
-            {@render lazyFallback(simResultsLazy, SIM_LAZY_MIN_H.results)}
+
+          {#if store.result !== null && !comparing}
+            <DetailsCard result={store.result} />
+            <RotationCard spec={store.result.request.spec} fidelity={characterSpecRow} />
           {/if}
-        {/if}
 
-        {#if store.result !== null && !comparing}
-          <DetailsCard result={store.result} />
-          <RotationCard spec={store.result.request.spec} fidelity={characterSpecRow} />
-        {/if}
-
-        {#if store.result !== null}
-          <!-- Design 5.4: the report title and the finish notification. The title feeds
+          {#if store.result !== null}
+            <!-- Design 5.4: the report title and the finish notification. The title feeds
                the save form, the notification and the saved link (openSaveForm reads
                store.reportTitle below); the notification checkbox only appears where the
                browser actually has a Notification API to ask (`notifier`, owned by this
                file since the $effect above needs it in component scope). -->
-          <ReportOptions
-            title={store.reportTitle}
-            notifierAvailable={notifier !== null}
-            {notifyWanted}
-            ontitlechange={(value) => store.setReportTitle(value)}
-            onnotifychange={(wanted) => void toggleNotify(wanted)}
-          />
-        {/if}
+            <ReportOptions
+              title={store.reportTitle}
+              notifierAvailable={notifier !== null}
+              {notifyWanted}
+              ontitlechange={(value) => store.setReportTitle(value)}
+              onnotifychange={(wanted) => void toggleNotify(wanted)}
+            />
+          {/if}
 
-        <!-- The save form (Task 17): disabled until there is a result, an inline
+          <!-- The save form (Task 17): disabled until there is a result, an inline
                title field pre-filled with the report title rather than a dialog, and
                the saved link shown in place -- the page never navigates away from the
                result it just saved. -->
-        <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0" data-testid="sim-save">
-          {#if savedUrl !== null}
-            <label class="sr-only" for="sim-save-link">{simCopy.savedLinkLabel}</label>
-            <input
-              id="sim-save-link"
-              type="text"
-              readonly
-              value={savedUrl}
-              class="border-line-warm rounded-control bg-raised text-text h-11 min-w-0 flex-1 border px-3 text-[14px] md:max-w-[420px]"
-              data-testid="sim-save-link"
-              onclick={(event) => event.currentTarget.select()}
-            />
-            <button
-              type="button"
-              class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
-              onclick={() => void copySavedLink()}
-              data-testid="sim-save-copy"
-            >
-              {savedLinkCopied ? simCopy.copied : simCopy.copyLink}
-            </button>
-            <a
-              class="border-line-warm rounded-control text-nav label inline-flex min-h-11 items-center border px-4"
-              href={savedUrl}
-              target="_blank"
-              rel="noopener"
-              data-testid="sim-open-new-tab"
-            >
-              {simCopy.openInNewTab}
-            </a>
-          {:else if saveOpen}
-            <label class="flex flex-col gap-1">
-              <span class="label text-muted">{simCopy.saveTitleLabel}</span>
+          <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0" data-testid="sim-save">
+            {#if savedUrl !== null}
+              <label class="sr-only" for="sim-save-link">{simCopy.savedLinkLabel}</label>
               <input
+                id="sim-save-link"
                 type="text"
-                bind:value={saveTitle}
-                class="border-line-warm rounded-control bg-raised text-text h-11 w-[260px] border px-3 text-[14px]"
-                data-testid="sim-save-title"
+                readonly
+                value={savedUrl}
+                class="border-line-warm rounded-control bg-raised text-text h-11 min-w-0 flex-1 border px-3 text-[14px] md:max-w-[420px]"
+                data-testid="sim-save-link"
+                onclick={(event) => event.currentTarget.select()}
               />
-            </label>
-            <button
-              type="button"
-              class={`border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50 ${saving ? BUSY_CLASS : ''}`}
-              disabled={saving}
-              aria-busy={saving}
-              onclick={() => void confirmSave()}
-              data-testid="sim-save-confirm"
-            >
-              {simCopy.saveAction}
-            </button>
-            <button
-              type="button"
-              class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
-              onclick={cancelSave}
-              data-testid="sim-save-cancel"
-            >
-              {simCopy.cancel}
-            </button>
-            {#if saveFailed}
-              <span role="alert" class="text-strong text-[13px]" data-testid="sim-save-error">
-                {simCopy.saveFailed}
-              </span>
+              <button
+                type="button"
+                class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
+                onclick={() => void copySavedLink()}
+                data-testid="sim-save-copy"
+              >
+                {savedLinkCopied ? simCopy.copied : simCopy.copyLink}
+              </button>
+              <a
+                class="border-line-warm rounded-control text-nav label inline-flex min-h-11 items-center border px-4"
+                href={savedUrl}
+                target="_blank"
+                rel="noopener"
+                data-testid="sim-open-new-tab"
+              >
+                {simCopy.openInNewTab}
+              </a>
+            {:else if saveOpen}
+              <label class="flex flex-col gap-1">
+                <span class="label text-muted">{simCopy.saveTitleLabel}</span>
+                <input
+                  type="text"
+                  bind:value={saveTitle}
+                  class="border-line-warm rounded-control bg-raised text-text h-11 w-[260px] border px-3 text-[14px]"
+                  data-testid="sim-save-title"
+                />
+              </label>
+              <button
+                type="button"
+                class={`border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50 ${saving ? BUSY_CLASS : ''}`}
+                disabled={saving}
+                aria-busy={saving}
+                onclick={() => void confirmSave()}
+                data-testid="sim-save-confirm"
+              >
+                {simCopy.saveAction}
+              </button>
+              <button
+                type="button"
+                class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
+                onclick={cancelSave}
+                data-testid="sim-save-cancel"
+              >
+                {simCopy.cancel}
+              </button>
+              {#if saveFailed}
+                <span role="alert" class="text-strong text-[13px]" data-testid="sim-save-error">
+                  {simCopy.saveFailed}
+                </span>
+              {/if}
+            {:else}
+              <button
+                type="button"
+                class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
+                disabled={!canSave}
+                onclick={openSaveForm}
+                data-testid="sim-save-open"
+              >
+                {simCopy.saveThisSim}
+              </button>
+              <!-- Task 7: the disabled reason, said plainly (Task 3's pattern), never a title=. -->
+              {#if store.result !== null && !canSave}
+                <p class="text-muted text-[12px]" data-testid="sim-save-disabled-note">
+                  {simCopy.saveAbortedDisabled}
+                </p>
+              {/if}
             {/if}
-          {:else}
-            <button
-              type="button"
-              class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
-              disabled={!canSave}
-              onclick={openSaveForm}
-              data-testid="sim-save-open"
-            >
-              {simCopy.saveThisSim}
-            </button>
-            <!-- Task 7: the disabled reason, said plainly (Task 3's pattern), never a title=. -->
-            {#if store.result !== null && !canSave}
-              <p class="text-muted text-[12px]" data-testid="sim-save-disabled-note">
-                {simCopy.saveAbortedDisabled}
-              </p>
-            {/if}
-          {/if}
+          </div>
         </div>
       {:else}
         <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
