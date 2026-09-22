@@ -358,12 +358,15 @@
 {:else}
   <div class="flex flex-col gap-8" data-testid="account">
     {#if status === 'loading'}
+      <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
       <Skeleton lines={3} minHeight={CHARACTERS_SKELETON_MIN_H} testid="account-characters-skeleton" />
       <Skeleton lines={4} minHeight={IDENTITY_SKELETON_MIN_H} testid="account-identity-skeleton" />
       <Skeleton lines={3} minHeight={MORE_SKELETON_MIN_H} testid="account-more-skeleton" />
     {:else if status === 'failed'}
+      <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
       <LoadError message={error} onRetry={() => void load()} testid="account-load-error" />
     {:else if !signedIn}
+      <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
       <div class={SIGNED_OUT_MIN_H}>
         <SignInPrompt line={accountSignInCopy.reason} next="/account" testid="account-signin" />
       </div>
