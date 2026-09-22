@@ -945,3 +945,56 @@ func TestMeWorksWithNoEntitlementsStoreConfigured(t *testing.T) {
 			"verified officer of a guild with an active plan row: %+v", body.Guilds)
 	}
 }
+
+// TestMeCharacterShapeForAGuildedBnetCharacter pins spec §6's frozen
+// GET /v1/me interface: a single Battle.net-imported, guilded character,
+// with the exact fields the design's own example names.
+func TestMeCharacterShapeForAGuildedBnetCharacter(t *testing.T) {
+	h := newHarness(t)
+	uid := h.seedUser(t, "guilded-bnet@example.com")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`update users set bnet_imported_at = '2026-09-22T03:30:00Z' where id = $1`, uid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into characters (key, region, ruleset, name, class, user_id, realm_name, level, faction, source, imported_at, refreshed_at)
+		 values ('us/pvp/thoradin', 'us', 'pvp', 'Thoradin', 'warrior', $1, 'Whitemane', 60, 'alliance', 'bnet', now(), now())`,
+		uid); err != nil {
+		t.Fatal(err)
+	}
+	gid := h.seedGuild(t, "Iron Vanguard")
+	if _, err := h.svc.Store.Pool.Exec(t.Context(),
+		`insert into guild_characters (guild_id, character_key, user_id, rank, rank_index, source, verified_by, verified_at)
+		 values ($1, 'us/pvp/thoradin', $2, 'officer', 1, 'bnet', 'bnet', now())`,
+		gid, uid); err != nil {
+		t.Fatal(err)
+	}
+
+	res := h.sessionRequest(t, http.MethodGet, "/v1/me", uid)
+	if res.StatusCode != http.StatusOK {
+		res.Body.Close()
+		t.Fatalf("status = %d", res.StatusCode)
+	}
+	var body struct {
+		BnetImportedAt string      `json:"bnet_imported_at"`
+		Characters     []Character `json:"characters"`
+	}
+	h.decode(t, res, &body)
+
+	if body.BnetImportedAt == "" {
+		t.Fatal("bnet_imported_at was omitted, want it present")
+	}
+	if len(body.Characters) != 1 {
+		t.Fatalf("characters = %+v, want exactly one", body.Characters)
+	}
+	c := body.Characters[0]
+	if c.Key != "us/pvp/thoradin" || c.Region != "us" || c.Ruleset != "pvp" || c.Name != "Thoradin" ||
+		c.Class != "warrior" || c.Realm != "Whitemane" || c.Level == nil || *c.Level != 60 ||
+		c.Faction != "alliance" || c.Source != "bnet" {
+		t.Fatalf("character = %+v, does not match spec §6's shape", c)
+	}
+	if c.Guild == nil || c.Guild.ID != gid || c.Guild.Name != "Iron Vanguard" ||
+		c.Guild.Rank != "officer" || c.Guild.RankIndex == nil || *c.Guild.RankIndex != 1 || !c.Guild.Verified {
+		t.Fatalf("guild = %+v, does not match spec §6's shape", c.Guild)
+	}
+}

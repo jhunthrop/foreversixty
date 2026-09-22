@@ -18,6 +18,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 )
@@ -40,22 +41,11 @@ var ErrBudget = errors.New("bnetimport: import budget exceeded")
 // paste it by hand.
 const minImportLevel = 10
 
-// ImportSummary is what one ImportAccount run produced (spec §4.1),
-// logged by the caller at INFO (success) or WARN (error).
-type ImportSummary struct {
-	// Regions is which regions answered 200 for /profile/user/wow.
-	Regions []string
-	// Characters is how many characters rows were written.
-	Characters int
-	// Guilds is how many guild memberships were written.
-	Guilds int
-	// Skipped is collisions and level < minImportLevel, combined.
-	Skipped int
-}
-
-// Service runs the Battle.net import and the nightly refresh. It
-// satisfies auth.Importer structurally (ImportAccount's signature
-// matches auth.Importer with no import of the auth package needed).
+// Service runs the Battle.net import and the nightly refresh.
+// ImportAccount satisfies auth.Importer (it returns auth.ImportSummary,
+// defined in that package rather than here so the dependency runs one
+// way only: bnetimport already needs auth transitively through guilds,
+// which reads auth.User, so auth itself never imports bnetimport).
 type Service struct {
 	Pool    *pgxpool.Pool
 	Client  *bnetapi.Client
@@ -77,8 +67,8 @@ func (s *Service) logger() *slog.Logger {
 // users.bnet_imported_at, even on a partial run: a login that started an
 // import always counts as "we tried," and GET /v1/me's "Imported from
 // Battle.net" line and the nightly refresh both key off that timestamp.
-func (s *Service) ImportAccount(ctx context.Context, userID int64, userToken string) (ImportSummary, error) {
-	summary := ImportSummary{}
+func (s *Service) ImportAccount(ctx context.Context, userID int64, userToken string) (auth.ImportSummary, error) {
+	summary := auth.ImportSummary{}
 	rosterCache := map[string]bnetapi.Roster{}
 	realmCache := map[string][]bnetapi.Realm{}
 
@@ -106,7 +96,7 @@ func (s *Service) ImportAccount(ctx context.Context, userID int64, userToken str
 // unreadable) is logged and does not stop the run; only ErrBudget
 // (the context deadline) propagates.
 func (s *Service) importRegion(ctx context.Context, userID int64, userToken, region string,
-	summary *ImportSummary, rosterCache map[string]bnetapi.Roster, realmCache map[string][]bnetapi.Realm) error {
+	summary *auth.ImportSummary, rosterCache map[string]bnetapi.Roster, realmCache map[string][]bnetapi.Realm) error {
 	chars, err := s.Client.AccountCharacters(ctx, region, userToken)
 	if err != nil {
 		if errors.Is(err, context.DeadlineExceeded) {
