@@ -124,6 +124,19 @@ func DeriveRank(rankIndex, officerMax int) string {
 	}
 }
 
+// StampBnetRoster records that guildID's roster was just read from
+// Blizzard: its own numeric guild id, the realm the roster was fetched
+// from, and when — the fields the Battle.net import/refresh path adds to
+// guilds (spec §2).
+func StampBnetRoster(ctx context.Context, tx pgx.Tx, guildID, bnetGuildID int64, realmSlug string) error {
+	if _, err := tx.Exec(ctx,
+		`update guilds set bnet_guild_id = $2, realm_slug = $3, roster_refreshed_at = now() where id = $1`,
+		guildID, bnetGuildID, realmSlug); err != nil {
+		return fmt.Errorf("guilds: stamp bnet roster for guild %d: %w", guildID, err)
+	}
+	return nil
+}
+
 // AfterGuildChange runs RecomputeMembership and the lost-claim check for
 // one account in one guild — the pair of calls every caller needs after
 // it changes a guild_characters row. Moved here from addon.afterGuildChange
