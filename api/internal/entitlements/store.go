@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -251,20 +252,83 @@ func conflictTarget(subj Subject) (string, error) {
 // tx, for the audit's old_status — "" and isNew=true when no row exists
 // yet.
 func existingStatus(ctx context.Context, tx pgx.Tx, subj Subject, plan string) (status string, isNew bool, err error) {
-	var row pgx.Row
-	if subj.UserID != nil {
-		row = tx.QueryRow(ctx, `select status from entitlements where user_id = $1 and plan = $2`, *subj.UserID, plan)
-	} else {
-		row = tx.QueryRow(ctx, `select status from entitlements where guild_id = $1 and plan = $2`, *subj.GuildID, plan)
+	row, isNew, err := existingEntitlement(ctx, tx, subj, plan)
+	if err != nil {
+		return "", false, err
 	}
-	err = row.Scan(&status)
-	if errors.Is(err, pgx.ErrNoRows) {
+	if isNew {
 		return "", true, nil
 	}
-	if err != nil {
-		return "", false, fmt.Errorf("entitlements: read existing: %w", err)
+	return row.status, false, nil
+}
+
+// existingRow is existingEntitlement's read: enough of an entitlements
+// row to decide UpsertStripe's duplicate-subscription guard (spec fix,
+// security review 2026-09-21) and to carry the audit's old_status.
+type existingRow struct {
+	id                   int64
+	status               string
+	stripeSubscriptionID *string
+}
+
+// existingEntitlement reads subj's row for plan, inside tx — isNew=true
+// and a zero existingRow when no row exists yet.
+func existingEntitlement(ctx context.Context, tx pgx.Tx, subj Subject, plan string) (row existingRow, isNew bool, err error) {
+	var q pgx.Row
+	if subj.UserID != nil {
+		q = tx.QueryRow(ctx,
+			`select id, status, stripe_subscription_id from entitlements where user_id = $1 and plan = $2`,
+			*subj.UserID, plan)
+	} else {
+		q = tx.QueryRow(ctx,
+			`select id, status, stripe_subscription_id from entitlements where guild_id = $1 and plan = $2`,
+			*subj.GuildID, plan)
 	}
-	return status, false, nil
+	err = q.Scan(&row.id, &row.status, &row.stripeSubscriptionID)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return existingRow{}, true, nil
+	}
+	if err != nil {
+		return existingRow{}, false, fmt.Errorf("entitlements: read existing: %w", err)
+	}
+	return row, false, nil
+}
+
+// isActiveStatus mirrors activeStatusClause's SQL as Go, for a status
+// value already read into memory (UpsertStripe's duplicate check).
+func isActiveStatus(status string) bool {
+	return status == "active" || status == "trialing" || status == "past_due"
+}
+
+// execer is the common surface of *pgxpool.Pool and pgx.Tx that
+// recordAnomaly needs — letting UpsertStripe's transactional write and
+// stripe-reconcile's standalone RecordAnomaly (Task 7) share one insert
+// instead of duplicating it (DRY).
+type execer interface {
+	Exec(ctx context.Context, sql string, args ...interface{}) (pgconn.CommandTag, error)
+}
+
+// recordAnomaly writes one entitlement_anomalies row (spec fix, security
+// review 2026-09-21): see AnomalyKind's docs for what each kind means.
+// entitlementID is nil for an orphan (there is no local row to point at).
+func recordAnomaly(ctx context.Context, db execer, entitlementID, userID, guildID *int64,
+	plan string, kind AnomalyKind, stripeSubscriptionID, actor string) error {
+	if _, err := db.Exec(ctx, `
+		insert into entitlement_anomalies (entitlement_id, user_id, guild_id, plan, kind, stripe_subscription_id, actor)
+		values ($1, $2, $3, $4, $5, $6, $7)`,
+		entitlementID, userID, guildID, plan, string(kind), stripeSubscriptionID, actor); err != nil {
+		return fmt.Errorf("entitlements: record anomaly: %w", err)
+	}
+	return nil
+}
+
+// RecordAnomaly is recordAnomaly's standalone form, for stripe-reconcile's
+// orphan-subscription report (spec §2.8's last paragraph) — a write with
+// no entitlements row write alongside it, so it runs outside any
+// transaction.
+func (s *Store) RecordAnomaly(ctx context.Context, userID, guildID *int64, plan string,
+	kind AnomalyKind, stripeSubscriptionID, actor string) error {
+	return recordAnomaly(ctx, s.Pool, nil, userID, guildID, plan, kind, stripeSubscriptionID, actor)
 }
 
 // StripeUpsert is upsertFromSubscription's (billing package) sole way to
@@ -283,17 +347,39 @@ type StripeUpsert struct {
 	Actor                string
 }
 
+// UpsertResult is UpsertStripe's outcome. Duplicate is true when an
+// existing ACTIVE row for the same subject+plan already pointed at a
+// different Stripe subscription — the row was left untouched and
+// ExistingSubscriptionID names the one that was kept. The caller
+// (billing.Service.upsertFromSubscription) must cancel the newcomer
+// subscription at Stripe: this is the entitlements-layer half of the
+// double-billing fix (security review, 2026-09-21) — the second layer
+// against checkGuildCheckout's advisory lock, for the race the lock
+// cannot cover on its own (two Checkout Sessions started far enough
+// apart, or outside this process, that the lock window never overlapped).
+type UpsertResult struct {
+	Duplicate              bool
+	ExistingSubscriptionID string
+}
+
 // UpsertStripe is the only writer of entitlements from Stripe state.
-func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) error {
+func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) (UpsertResult, error) {
 	subj := Subject{UserID: p.UserID, GuildID: p.GuildID}
 	target, err := conflictTarget(subj)
 	if err != nil {
-		return err
+		return UpsertResult{}, err
 	}
-	return s.withTx(ctx, func(tx pgx.Tx) error {
-		oldStatus, isNew, err := existingStatus(ctx, tx, subj, p.Plan)
+	var result UpsertResult
+	err = s.withTx(ctx, func(tx pgx.Tx) error {
+		existing, isNew, err := existingEntitlement(ctx, tx, subj, p.Plan)
 		if err != nil {
 			return err
+		}
+		if !isNew && isActiveStatus(existing.status) &&
+			existing.stripeSubscriptionID != nil && *existing.stripeSubscriptionID != p.StripeSubscriptionID {
+			result = UpsertResult{Duplicate: true, ExistingSubscriptionID: *existing.stripeSubscriptionID}
+			return recordAnomaly(ctx, tx, &existing.id, p.UserID, p.GuildID, p.Plan,
+				AnomalyDuplicateSubscription, p.StripeSubscriptionID, p.Actor)
 		}
 		var id int64
 		if err := tx.QueryRow(ctx, `
@@ -312,10 +398,11 @@ func (s *Store) UpsertStripe(ctx context.Context, p StripeUpsert) error {
 		}
 		var oldPtr *string
 		if !isNew {
-			oldPtr = &oldStatus
+			oldPtr = &existing.status
 		}
 		return recordAudit(ctx, tx, id, p.UserID, p.GuildID, p.Plan, oldPtr, p.Status, p.Actor)
 	})
+	return result, err
 }
 
 // SetCanceled is customer.subscription.deleted's writer (spec §2.6's

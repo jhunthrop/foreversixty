@@ -27,7 +27,7 @@ func testPool(t *testing.T) *pgxpool.Pool {
 	}
 	t.Cleanup(pool.Close)
 	if _, err := pool.Exec(context.Background(),
-		`truncate users, guilds, entitlements, entitlement_audit cascade`); err != nil {
+		`truncate users, guilds, entitlements, entitlement_audit, entitlement_anomalies cascade`); err != nil {
 		t.Fatal(err)
 	}
 	return pool
@@ -197,7 +197,7 @@ func TestUpsertStripeInsertsThenUpdatesTheSameRowAndAudits(t *testing.T) {
 	s := &Store{Pool: pool}
 	uid := seedUser(t, pool)
 	end := time.Now().Add(30 * 24 * time.Hour).UTC().Truncate(time.Second)
-	if err := s.UpsertStripe(context.Background(), StripeUpsert{
+	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
 		UserID: i64(uid), Plan: PlanPremium, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_1", BillingUserID: uid, Actor: "stripe_webhook:evt_1",
 	}); err != nil {
@@ -210,7 +210,7 @@ func TestUpsertStripeInsertsThenUpdatesTheSameRowAndAudits(t *testing.T) {
 
 	// A later event (renewal) updates the same row, not a second one.
 	end2 := end.Add(30 * 24 * time.Hour)
-	if err := s.UpsertStripe(context.Background(), StripeUpsert{
+	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
 		UserID: i64(uid), Plan: PlanPremium, Status: "active", CurrentPeriodEnd: &end2,
 		StripeSubscriptionID: "sub_1", BillingUserID: uid, Actor: "stripe_webhook:evt_2",
 	}); err != nil {
@@ -244,11 +244,11 @@ func TestUpsertStripeGuildPlanUpsertsByGuildID(t *testing.T) {
 		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_guild_1", BillingUserID: officer, Actor: "stripe_webhook:evt_1",
 	}
-	if err := s.UpsertStripe(context.Background(), up); err != nil {
+	if _, err := s.UpsertStripe(context.Background(), up); err != nil {
 		t.Fatal(err)
 	}
 	up.Status, up.Actor = "past_due", "stripe_webhook:evt_2"
-	if err := s.UpsertStripe(context.Background(), up); err != nil {
+	if _, err := s.UpsertStripe(context.Background(), up); err != nil {
 		t.Fatal(err)
 	}
 	gb, err := s.GuildBilling(context.Background(), gid)
@@ -257,12 +257,122 @@ func TestUpsertStripeGuildPlanUpsertsByGuildID(t *testing.T) {
 	}
 }
 
+// TestUpsertStripeKeepsAnExistingActiveRowOnADifferentSubscriptionID is the
+// entitlements-layer half of the security review's double-billing fix
+// (2026-09-21): two Checkout Sessions for the same guild, each completing
+// its own subscription, must never let the second silently overwrite the
+// first — the first officer's subscription would otherwise keep billing
+// with nothing in our database pointing at it.
+func TestUpsertStripeKeepsAnExistingActiveRowOnADifferentSubscriptionID(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	gid := seedGuild(t, pool)
+	officerA := seedUser(t, pool)
+	officerB := seedUser(t, pool)
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+
+	res, err := s.UpsertStripe(context.Background(), StripeUpsert{
+		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		StripeSubscriptionID: "sub_a", BillingUserID: officerA, Actor: "stripe_webhook:evt_a",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.Duplicate {
+		t.Fatalf("first write must not be flagged a duplicate: %+v", res)
+	}
+
+	res, err = s.UpsertStripe(context.Background(), StripeUpsert{
+		GuildID: i64(gid), Plan: PlanGuild, Status: "active", CurrentPeriodEnd: &end,
+		StripeSubscriptionID: "sub_b", BillingUserID: officerB, Actor: "stripe_webhook:evt_b",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !res.Duplicate || res.ExistingSubscriptionID != "sub_a" {
+		t.Fatalf("second write = %+v, want Duplicate=true ExistingSubscriptionID=sub_a", res)
+	}
+
+	gb, err := s.GuildBilling(context.Background(), gid)
+	if err != nil || gb == nil || gb.BillingUserID == nil || *gb.BillingUserID != officerA {
+		t.Fatalf("guild billing after duplicate write = %+v, %v — sub_a's row must be untouched", gb, err)
+	}
+	var subID string
+	if err := pool.QueryRow(context.Background(),
+		`select stripe_subscription_id from entitlements where guild_id = $1 and plan = 'guild'`, gid).Scan(&subID); err != nil {
+		t.Fatal(err)
+	}
+	if subID != "sub_a" {
+		t.Fatalf("stripe_subscription_id = %q, want sub_a (untouched)", subID)
+	}
+
+	var anomalies int
+	var kind, gotSubID, actor string
+	if err := pool.QueryRow(context.Background(),
+		`select count(*) from entitlement_anomalies where guild_id = $1`, gid).Scan(&anomalies); err != nil {
+		t.Fatal(err)
+	}
+	if anomalies != 1 {
+		t.Fatalf("anomaly rows = %d, want 1", anomalies)
+	}
+	if err := pool.QueryRow(context.Background(),
+		`select kind, stripe_subscription_id, actor from entitlement_anomalies where guild_id = $1`, gid).
+		Scan(&kind, &gotSubID, &actor); err != nil {
+		t.Fatal(err)
+	}
+	if kind != "duplicate_subscription" || gotSubID != "sub_b" || actor != "stripe_webhook:evt_b" {
+		t.Fatalf("anomaly = kind=%q sub=%q actor=%q, want duplicate_subscription/sub_b/stripe_webhook:evt_b", kind, gotSubID, actor)
+	}
+
+	// The audit trail records only the write that actually happened.
+	var audits int
+	if err := pool.QueryRow(context.Background(),
+		`select count(*) from entitlement_audit where guild_id = $1`, gid).Scan(&audits); err != nil {
+		t.Fatal(err)
+	}
+	if audits != 1 {
+		t.Fatalf("audit rows = %d, want 1 (the skipped duplicate write leaves no audit row)", audits)
+	}
+}
+
+// TestUpsertStripeAllowsARenewalOnTheSameSubscriptionID confirms the
+// duplicate guard keys off a *different* subscription id, not merely an
+// already-active row — a renewal event for the same subscription (the
+// ordinary, overwhelmingly common case) must keep upserting in place.
+func TestUpsertStripeAllowsARenewalOnTheSameSubscriptionID(t *testing.T) {
+	pool := testPool(t)
+	s := &Store{Pool: pool}
+	uid := seedUser(t, pool)
+	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
+	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
+		UserID: i64(uid), Plan: PlanPremium, Status: "active", CurrentPeriodEnd: &end,
+		StripeSubscriptionID: "sub_renew", BillingUserID: uid, Actor: "stripe_webhook:evt_1",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	end2 := end.Add(24 * time.Hour)
+	res, err := s.UpsertStripe(context.Background(), StripeUpsert{
+		UserID: i64(uid), Plan: PlanPremium, Status: "active", CurrentPeriodEnd: &end2,
+		StripeSubscriptionID: "sub_renew", BillingUserID: uid, Actor: "stripe_webhook:evt_2",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if res.Duplicate {
+		t.Fatalf("a renewal on the same subscription id must not be flagged a duplicate: %+v", res)
+	}
+	b, err := s.PersonalBilling(context.Background(), uid)
+	if err != nil || b == nil || !b.CurrentPeriodEnd.Equal(end2) {
+		t.Fatalf("after renewal: %+v, %v", b, err)
+	}
+}
+
 func TestSetCanceledSetsGraceUntilFromTheLastKnownPeriodEnd(t *testing.T) {
 	pool := testPool(t)
 	s := &Store{Pool: pool}
 	uid := seedUser(t, pool)
 	end := time.Now().Add(time.Hour).UTC().Truncate(time.Second)
-	if err := s.UpsertStripe(context.Background(), StripeUpsert{
+	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
 		UserID: i64(uid), Plan: PlanPremium, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_cancel_1", BillingUserID: uid, Actor: "stripe_webhook:evt_1",
 	}); err != nil {
@@ -315,14 +425,14 @@ func TestStripeSubscriptionIDsListsOnlyNonCanceledStripeSourcedRows(t *testing.T
 	s := &Store{Pool: pool}
 	uid := seedUser(t, pool)
 	end := time.Now().Add(time.Hour)
-	if err := s.UpsertStripe(context.Background(), StripeUpsert{
+	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
 		UserID: i64(uid), Plan: PlanPremium, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_reconcile_active", BillingUserID: uid, Actor: "test",
 	}); err != nil {
 		t.Fatal(err)
 	}
 	uid2 := seedUser(t, pool)
-	if err := s.UpsertStripe(context.Background(), StripeUpsert{
+	if _, err := s.UpsertStripe(context.Background(), StripeUpsert{
 		UserID: i64(uid2), Plan: PlanPremium, Status: "active", CurrentPeriodEnd: &end,
 		StripeSubscriptionID: "sub_reconcile_canceled", BillingUserID: uid2, Actor: "test",
 	}); err != nil {

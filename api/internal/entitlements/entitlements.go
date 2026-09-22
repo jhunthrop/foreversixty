@@ -43,3 +43,19 @@ const (
 	PlanPremium = "premium"
 	PlanGuild   = "guild"
 )
+
+// AnomalyKind is entitlement_anomalies.kind (migration 0020, security
+// review 2026-09-21's double-billing fix).
+type AnomalyKind string
+
+const (
+	// AnomalyDuplicateSubscription is UpsertStripe finding an already-
+	// active row for a (subject, plan) pointing at a different
+	// stripe_subscription_id: the row is left untouched and the newcomer
+	// is canceled at Stripe instead of overwriting it.
+	AnomalyDuplicateSubscription AnomalyKind = "duplicate_subscription"
+	// AnomalyOrphanSubscription is stripe-reconcile finding a live Stripe
+	// subscription for one of our own products with no matching
+	// entitlements row at all (spec §2.8's two-directional check).
+	AnomalyOrphanSubscription AnomalyKind = "orphan_subscription"
+)
