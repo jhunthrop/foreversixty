@@ -17,8 +17,10 @@
   let total = $state(0);
   let page = $state(1);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
+  let attemptedPage = $state(1);
 
   async function load(next: number): Promise<void> {
+    attemptedPage = next;
     status = 'loading';
     try {
       const result = await listMyReports(next);
@@ -46,7 +48,11 @@
   {:else if status === 'loading'}
     <Skeleton lines={5} rowHeight="h-11" testid="my-reports-skeleton" />
   {:else if status === 'failed'}
-    <LoadError message={myReportsCopy.failed} onRetry={() => void load(page)} testid="my-reports-error" />
+    <LoadError
+      message={myReportsCopy.failed}
+      onRetry={() => void load(attemptedPage)}
+      testid="my-reports-error"
+    />
   {:else if rows.length === 0}
     <EmptyState
       message={myReportsCopy.empty}
