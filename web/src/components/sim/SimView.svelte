@@ -62,7 +62,7 @@
   import SpecGrid from './SpecGrid.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
-  import { BUSY_CLASS } from '../ui/busy';
+  import { BUSY_CLASS } from '../../lib/ui/busy';
 
   let { simId = '', inlineResult = null }: { simId?: string; inlineResult?: SimResult | null } = $props();
 
