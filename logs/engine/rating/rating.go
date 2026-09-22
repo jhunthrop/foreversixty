@@ -66,9 +66,13 @@ const MinSample = 20
 const DefaultCapThreshold = 40.0
 
 // DefaultModelVersion is this spec's own model version stamp (spec §4.4:
+// bumped 2026-09-21 for the Coverage/Insufficient/InsufficientReason
+// fields (§1.5's coverage ruling): every row stored under the previous
+// stamp is stale until the backfill recomputes it, the same mechanism
+// that already handles every other model-version bump.
 // "a short string... bumped whenever a formula, a weight, or any curated
 // table changes in a way that could change a stored score").
-const DefaultModelVersion = "rating-2026-09-21"
+const DefaultModelVersion = "rating-2026-09-21-coverage"
 
 // The fixed machine-readable exclusion reasons Component.Reason carries
 // (spec §5.2's own JSON example shows "no_mechanics_table" in exactly this

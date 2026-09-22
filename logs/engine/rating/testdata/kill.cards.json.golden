@@ -72,7 +72,7 @@
       }
     ],
     "Basis": "absolute",
-    "ModelVersion": "rating-2026-09-21",
+    "ModelVersion": "rating-2026-09-21-coverage",
     "KillTimeBand": "typical",
     "Coverage": 0.8,
     "Insufficient": false,
@@ -151,7 +151,7 @@
       }
     ],
     "Basis": "absolute",
-    "ModelVersion": "rating-2026-09-21",
+    "ModelVersion": "rating-2026-09-21-coverage",
     "KillTimeBand": "typical",
     "Coverage": 0.45,
     "Insufficient": true,
