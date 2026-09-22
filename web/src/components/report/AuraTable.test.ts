@@ -47,4 +47,11 @@ describe('AuraTable', () => {
     const body = renderBuffs([track({ uptime_ms: 90_000 })], 180_000);
     expect(body).toContain('>50.0%<');
   });
+
+  it('every row carries an aura-<guid>-<spellId> anchor id for a rating moment to jump to', () => {
+    // src/lib/rating/moments.ts already builds hrefs against this exact convention
+    // (aura-<targetGuid>-<spellId>); this row-side id is what those links land on.
+    const body = renderBuffs([track({ target_guid: 'sim-player', spell_id: 6673 })], 180_000);
+    expect(body).toContain('id="aura-sim-player-6673"');
+  });
 });

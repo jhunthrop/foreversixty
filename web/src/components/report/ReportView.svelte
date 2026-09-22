@@ -89,6 +89,7 @@
   const timelinesViewLazy = createLazyComponent(() => import('./TimelinesView.svelte'));
   const eventsViewLazy = createLazyComponent(() => import('./EventsView.svelte'));
   const queriesViewLazy = createLazyComponent(() => import('./QueriesView.svelte'));
+  const ratingTabLazy = createLazyComponent(() => import('./RatingTab.svelte'));
   import {
     abilityOptions,
     applyActorFilters,
@@ -1276,6 +1277,16 @@
     if (scoped !== null && !nightMode && state.mode === 'analyze' && state.view === 'queries')
       queriesViewLazy.load();
   });
+  $effect(() => {
+    if (
+      scoped !== null &&
+      !nightMode &&
+      state.mode === 'analyze' &&
+      state.view === 'tables' &&
+      state.tab === 'rating'
+    )
+      ratingTabLazy.load();
+  });
 </script>
 
 {#snippet lazyFallback(lazy: LazyLoadState)}
@@ -1683,6 +1694,22 @@
             {reportId}
             fightIndex={nightMode ? undefined : state.fight}
           />
+        {:else if state.tab === 'rating' && nightMode}
+          <p class="text-muted text-[14px]" data-testid="rating-tab-night">
+            Ratings are one pull's. Pick a boss pull from the list to see one.
+          </p>
+        {:else if state.tab === 'rating'}
+          {#if ratingTabLazy.current}
+            <ratingTabLazy.current
+              {reportId}
+              fightIndex={state.fight}
+              {roster}
+              source={state.source}
+              onSelectPlayer={(guid) => patch({ source: guid })}
+            />
+          {:else}
+            {@render lazyFallback(ratingTabLazy)}
+          {/if}
         {/if}
       {/if}
       {#if nightMode && state.mode !== 'mechanics' && (state.view !== 'tables' || state.mode !== 'analyze')}

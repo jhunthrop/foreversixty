@@ -28,6 +28,7 @@
   import { simLinkFor } from '../../lib/report/sim-link';
   import GearList from './GearList.svelte';
   import SummaryPanels from './SummaryPanels.svelte';
+  import RatingPanel from './RatingPanel.svelte';
   import ClassIcon from './ClassIcon.svelte';
   import type { Placement } from '../../lib/report/percentile';
   import type { RosterRow, Summary } from '../../lib/report/types';
@@ -64,7 +65,7 @@
     /** The players' GUIDs, so the panels show the raid and not the trash. */
     players?: ReadonlySet<string>;
     /** Opens one of the deeper tabs from a panel's heading. */
-    onTab?: (tab: 'damage-done' | 'healing' | 'damage-taken' | 'deaths') => void;
+    onTab?: (tab: 'damage-done' | 'healing' | 'damage-taken' | 'deaths' | 'rating') => void;
     reportId?: string;
     fightIndex?: number;
   } = $props();
@@ -258,6 +259,15 @@
 
   {#if onTab}
     <SummaryPanels {summary} {everyone} {durationMs} {players} {onTab} {onSelectPlayer} {approximate} />
+    {#if reportId !== undefined && fightIndex !== undefined}
+      <RatingPanel
+        {reportId}
+        {fightIndex}
+        roster={[...summary.roster].map((row) => ({ guid: row.guid, name: row.name, class: row.class }))}
+        onTab={() => onTab('rating')}
+        {onSelectPlayer}
+      />
+    {/if}
   {/if}
 
   {#if summary.combatants.length > 0}
