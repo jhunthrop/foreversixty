@@ -361,6 +361,53 @@ overall score at 40, because nothing else in the fight makes up for it."*
 `overall` and every `score_c` round to the nearest integer for display; the stored value
 keeps two decimal places (§5.2's schema) so a recompute is stable to the same input.
 
+**RULING (dated 2026-09-21, found live in production): a coverage floor, below which there
+is no overall at all.** The rating engine rated its first real production fight — a wipe on
+retail-era specs, no curated mechanics table for the encounter, no validated simulator
+spec. Output, Survival and Mechanics were correctly excluded per §1.1; the renormalisation
+above did exactly what it says and gave the surviving three components (Utility,
+Preparation, Activity) the full weight. The card printed `overall 7.81` for a Shadow priest
+whose Utility and Preparation both read 0 on the wipe, and `13.97` for the tank — two
+numbers that read as a judgement on the player's performance while resting on 30% and 35%
+of the role's own weight table. Renormalisation is correct arithmetic; it is not, by
+itself, a claim that the arithmetic still means what "your overall" ordinarily means once
+most of the components it would have come from never ran.
+
+`Card.Coverage` (§4.1) is the sum of the role weights of the components that were **not**
+excluded, as a fraction of the role's total weight (always 100 by construction, §1.4):
+
+```
+coverage = Σ weight_c    over every scored (non-excluded) component
+           ───────────────────────────────────────────────────────
+           Σ weight_c    over all six components for this role
+```
+
+`MinCoverage = 0.5`. When `coverage < MinCoverage`, the card has **no overall**: `Overall`,
+`OverallUncapped` and `OverallCapped` are zero-valued, and a new field `Insufficient` is
+`true`, with `InsufficientReason` naming what was missing in plain words built from the
+excluded components' own `Reason` codes — for example *"no output on a wipe; no mechanics
+table for this encounter."* The six `Components` are always returned in full regardless,
+scores and reasons included, so the page can still show what WAS measured (a wipe's
+Preparation and Activity are real, useful coaching signal on their own) without printing a
+headline number that cannot support the weight of "how good was this player."
+
+**Why 0.5, not lower or higher:** half the role's own weight table is the same bar the
+cap's own reasoning already uses in spirit — a number built from less than half of what
+"overall" is supposed to mean is closer to "we measured a couple of things" than to a
+rating. **Cost if wrong:** too low and a genuinely thin card (two components, the rest
+excluded) still publishes a number nobody should trust; too high and a fight missing only
+one component (e.g. a tank whose Mechanics is legitimately empty — §1.6's own tank example
+sits at 0.8 coverage) would lose its overall unnecessarily, which is the more damaging
+direction to err in given the brief's "never a bare number, but also never no number when
+one is earned" spirit — 0.5 was chosen because every genuinely-informative case this spec's
+own worked examples produce (§1.6: DPS 1.0, healer 1.0, tank 0.8) clears it comfortably,
+while the production wipe (0.3 and 0.35) does not.
+
+**A wipe with only Preparation and Activity measurable is the canonical insufficient
+card** — the shape the production incident above actually was. §1.6's tank and healer
+worked examples are unaffected: both state their own coverage in their own worked-example
+block below so a reader can check the arithmetic directly.
+
 ### 1.6 Worked examples
 
 All three use a `typical` kill-time band, `bracket.n >= 20` (percentile path), Molten Core's
@@ -381,7 +428,8 @@ avoidable (Arcane Explosion, `spell_id: 19712`):**
 
 `overall (unrounded) = .35*71 + .15*75.9 + .20*55 + .15*62 + .10*95 + .05*80`
 `= 24.85 + 11.39 + 11.0 + 9.3 + 9.5 + 4.0 = 70.0` → **70**, no cap triggered
-(`DeathScore = 84.4 ≠ 0`).
+(`DeathScore = 84.4 ≠ 0`). `coverage = 1.0` (all six components scored) — no
+`MinCoverage` concern, per §1.5's coverage ruling.
 
 **Healer — Priest Holy, no deaths, one dropped dispellable debuff:**
 
@@ -395,7 +443,10 @@ avoidable (Arcane Explosion, `spell_id: 19712`):**
 | Activity | 78% active share (healers idle between damage windows is expected; bracket already compares healer-to-healer) | 66th pct → 66 |
 
 `overall = .30*41 + .10*89.5 + .20*78 + .20*85 + .10*100 + .10*66`
-`= 12.3 + 8.95 + 15.6 + 17.0 + 10.0 + 6.6 = 70.45` → **70**
+`= 12.3 + 8.95 + 15.6 + 17.0 + 10.0 + 6.6 = 70.45` → **70**. `coverage = 1.0`
+(all six components scored, Mechanics included even though only its dispel
+sub-part had data — the component itself is not excluded) — no `MinCoverage`
+concern.
 
 **Tank — Warrior Protection, one unavoidable death at 175,000 ms (from raid-wipe tank
 death after a healer CC, classified unavoidable per this encounter — Vicious Headbutt-style
@@ -428,7 +479,10 @@ five in proportion to their own §1.4 tank weights (`10, 35, 20, 10, 5` sum to 8
 Preparation `+2.5→12.5`, Activity `+1.25→6.25` (all divided by 100 as usual, new total 100):
 
 `overall = .125*55 + .4375*77.06 + .25*91 + .125*100 + .0625*70`
-`= 6.875 + 33.71 + 22.75 + 12.5 + 4.375 = 80.21` → **80**
+`= 6.875 + 33.71 + 22.75 + 12.5 + 4.375 = 80.21` → **80**. `coverage = 0.8` (Mechanics,
+weight 20 of the tank's 100, is the only excluded component; 80 of 100 weight points
+scored) — comfortably above `MinCoverage = 0.5` (§1.5's coverage ruling), so this example
+is unaffected and keeps its overall.
 
 **CORRECTION (implementation pass, 2026-09-21):** this worked example originally read
 Survival's combined score as `76.06` (an arithmetic slip — `0.65*99.7 + 0.35*35` is `77.06`,
@@ -703,7 +757,8 @@ type Card struct {
     // Overall is the site-default figure: OverallUncapped, with §1.5's cap applied if
     // OverallCapped fired. OverallUncapped is always stored too, so a guild-adjustable
     // setting that turns the cap off — or a future recompute of the cap's own threshold —
-    // reads it straight back with no backfill (§1.5, §4.2).
+    // reads it straight back with no backfill (§1.5, §4.2). All three are zero-valued when
+    // Insufficient is true (§1.5's coverage ruling, dated 2026-09-21).
     Overall         float64
     OverallUncapped float64
     OverallCapped   bool     // §1.5's Survival-catastrophe cap condition fired this fight
@@ -711,6 +766,18 @@ type Card struct {
     Basis           string   // "percentile" | "absolute" | "mixed" (per-component; see Component.Basis)
     ModelVersion    string
     KillTimeBand    string   // "fast" | "typical" | "slow" | "" (excluded/wipe)
+    // Coverage, Insufficient and InsufficientReason — added 2026-09-21, §1.5's coverage
+    // ruling. Coverage is the fraction (0-1) of the role's total weight the scored
+    // (non-excluded) components carry. Insufficient is true when Coverage < MinCoverage
+    // (0.5); Overall/OverallUncapped/OverallCapped are then zero-valued and
+    // InsufficientReason names what was missing in plain words, built from the excluded
+    // components' own Reason codes (e.g. "no output on a wipe; no mechanics table for this
+    // encounter"). Components is always populated in full regardless — an insufficient
+    // card still reports every component's own score and reason, so the page can show what
+    // WAS measured even with no headline number.
+    Coverage           float64
+    Insufficient       bool
+    InsufficientReason string
 }
 
 type Component struct {
@@ -789,7 +856,20 @@ create table if not exists rating_scores (
   computed_at    timestamptz not null default now(),
   primary key (report_id, fight_index, player_key, fought_at)
 ) partition by range (fought_at);
+```
 
+**ADDENDUM (dated 2026-09-21, migration `0023_rating_coverage`):** `0022_ratings` above is
+already live in production, so §1.5's coverage ruling's three new `Card` fields land as
+nullable additive columns rather than a rewrite of this migration: `coverage numeric`,
+`insufficient boolean`, `insufficient_reason text`. Nullable because a row already written
+by a pre-coverage model version has none of the three to backfill from without a recompute
+— the backfill job (§4.4) re-rates it under the bumped `DefaultModelVersion` instead, which
+fills them in the ordinary way, the same mechanism that already handles every other
+model-version bump. `staleFights` (§4.4) already selects `rating_scores where
+model_version <> DefaultModelVersion`; bumping the constant is the only change that
+mechanism itself needs.
+
+```sql
 create index if not exists rating_scores_player_idx on rating_scores (player_key, fought_at desc);
 create index if not exists rating_scores_report_idx on rating_scores (report_id, fight_index);
 create index if not exists rating_scores_stale_idx on rating_scores (model_version) where model_version <> '';
@@ -991,6 +1071,7 @@ Both endpoints answer inside `httpx.Envelope` (`api/internal/httpx/envelope.go:2
       "player_name": "Simfury",
       "class": "Warrior", "spec": "Fury", "role": "dps",
       "overall": 70, "overall_uncapped": 70, "overall_capped": false,
+      "coverage": 1.0, "insufficient": false, "insufficient_reason": "",
       "basis": "percentile",
       "components": [
         { "name": "output", "score": 71, "weight": 35, "basis": "percentile",
@@ -1029,6 +1110,16 @@ layer (§6.1) shows `overall` by default and, when `overall_capped` is `true`, t
 naming what capped it. Officer tooling with the cap turned off for its guild (§1.5) reads
 `overall_uncapped` instead — a read-time substitution both endpoints already support with no
 API change beyond serving the field that is already on the row.
+
+`coverage`, `insufficient` and `insufficient_reason` are added 2026-09-21 (§1.5's coverage
+ruling). When `insufficient` is `true`, `overall`/`overall_uncapped`/`overall_capped` are
+`0`/`0`/`false` and `insufficient_reason` names what was missing; `components` is still the
+full six entries with their own scores and reasons. The web layer (§6.1, §6.4) shows the
+per-fight card's components even when `insufficient` is `true`, and shows
+`insufficient_reason` in place of a headline number rather than printing `0`. The character
+endpoint (§5.1) and the data addon's own aggregation exclude every row where `insufficient`
+is `true` from any mean or count they compute — an insufficient card is real, useful,
+per-component coaching data, but it is not a number that belongs in a trend average.
 
 ### 5.3 Caching
 
