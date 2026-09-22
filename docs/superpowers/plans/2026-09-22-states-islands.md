@@ -685,25 +685,20 @@ needed, matching Task 4's design note above):
   {:else if !signedIn}
 ```
 
-The outer `<div class="flex flex-col gap-4" data-testid="guild-join">` gets no `.reveal` of
-its own since it wraps the loading/failed states too — instead wrap each ready branch: the
-`SignInPrompt` line and the join-button block each get their own reveal wrapper. Simplest:
-wrap both remaining branches in one `<div class="reveal ...">` matching the existing
-`flex flex-col gap-4`:
+Add `.reveal` directly to the outer `<div class="flex flex-col gap-4" data-testid="guild-join">`
+(the same root-div approach Steps 8 and 9 below use for GuildClaim/GuildSettings — a nested
+wrapper with `display: contents` was considered and rejected: `opacity`, which `.reveal`'s
+keyframe animates, has no box to render on a `display: contents` element in most browsers,
+so the fade would silently do nothing):
 
 ```svelte
-{:else}
-  <div class="reveal contents">
-    {#if !signedIn}
-      <SignInPrompt line={guildJoinCopy.signInLine} testid="guild-join-signin" />
-    {:else}
-      ...
-    {/if}
-  </div>
-{/if}
+<div class="reveal flex flex-col gap-4" data-testid="guild-join">
 ```
 
-(`contents` so the wrapper adds no box of its own to the existing `gap-4` flex parent.)
+The `.reveal` class plays its 160ms fade once at mount regardless of which branch
+(loading/failed/signed-out/signed-in) is showing at that instant; it has no visible effect
+beyond that one fade-in, so applying it to the root rather than only the ready branch is
+harmless here, matching Steps 8 and 9's own reasoning below.
 
 - [ ] **Step 8: Wire `GuildClaim.svelte`**
 
