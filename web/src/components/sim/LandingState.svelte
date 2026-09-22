@@ -12,6 +12,7 @@
   import { parseCharacterPath, rulesetLabel } from '../../lib/characters';
   import { classColorVar } from '../../lib/report/format';
   import { simCopy } from '../../lib/sim/copy';
+  import { BUSY_CLASS } from '../../lib/ui/busy';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
 
   let {
@@ -98,14 +99,19 @@
              `character`/`message` state with no ordering guarantee, so a second click
              landing mid-pick could silently discard the first. Disabling every row until the
              in-flight one settles is the safer trade until adopt() grows that guard. -->
+        <!-- The label never changes while the pick is in flight (design 2026-09-22 spec
+             section 3.2): `aria-busy` and the shared dimmed look say it instead, and both
+             key off this row rather than the global `busyKey !== null` the `disabled` flag
+             above uses -- only one row is actually running a request. -->
         <button
           type="button"
-          class="border-line-warm-strong rounded-control text-strong label ml-auto min-h-11 shrink-0 border px-4 disabled:opacity-50 md:min-h-9"
+          class={`border-line-warm-strong rounded-control text-strong label ml-auto min-h-11 shrink-0 border px-4 disabled:opacity-50 md:min-h-9 ${busyKey === character.key ? BUSY_CLASS : ''}`}
           disabled={busyKey !== null || path === null}
+          aria-busy={busyKey === character.key}
           onclick={() => path !== null && onpick(path)}
           data-testid={`sim-pick-${character.key}`}
         >
-          {busyKey === character.key ? simCopy.loading : simCopy.simIt}
+          {simCopy.simIt}
         </button>
       </li>
     {/each}

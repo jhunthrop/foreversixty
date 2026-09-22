@@ -13,6 +13,7 @@
   import { rowLink } from '../../lib/report/format';
   import { parseBuildInput } from '../../lib/sim/build-input';
   import { simCopy } from '../../lib/sim/copy';
+  import { BUSY_CLASS } from '../../lib/ui/busy';
 
   let {
     busy,
@@ -47,6 +48,10 @@
   const field =
     'border-line-warm rounded-control bg-raised text-text min-h-11 w-full border px-3 py-2 text-[14px]';
   const action = 'border-line-warm-strong rounded-control text-strong label min-h-11 self-start border px-4';
+  // The three Load buttons all start a request, so each takes the shared busy look and
+  // aria-busy while `busy` holds (design 2026-09-22 spec section 3.2). Their label is
+  // "Load" whether or not a load is running -- only the look changes.
+  const actionBusy = $derived(busy ? `${action} ${BUSY_CLASS}` : action);
 
   /** A saved link or id loads the saved build; an unsaved planner link loads its code. */
   function loadBuildInput(): void {
@@ -83,8 +88,9 @@
         data-testid="sim-addon-input"></textarea>
       <button
         type="button"
-        class={action}
+        class={actionBusy}
         disabled={busy}
+        aria-busy={busy}
         onclick={() => onaddon(addonCode)}
         data-testid="sim-addon-load"
       >
@@ -106,8 +112,9 @@
       />
       <button
         type="button"
-        class={action}
+        class={actionBusy}
         disabled={busy}
+        aria-busy={busy}
         onclick={loadBuildInput}
         data-testid="sim-build-load">Load</button
       >
@@ -127,8 +134,9 @@
       />
       <button
         type="button"
-        class={action}
+        class={actionBusy}
         disabled={busy}
+        aria-busy={busy}
         onclick={() => onfight(fightRefOf(fightRef))}
         data-testid="sim-fight-load">Load</button
       >
