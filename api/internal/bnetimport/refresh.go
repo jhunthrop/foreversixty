@@ -11,6 +11,7 @@ import (
 	"github.com/jackc/pgx/v5"
 
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
+	"github.com/jhunthrop/foreversixty/api/internal/character"
 )
 
 // refreshWindow is spec §4.4's staleness threshold: a 'bnet'-sourced
@@ -78,6 +79,7 @@ func (s *Service) RunRefresh(ctx context.Context, probeGames []string) (RefreshR
 	result := RefreshResult{Considered: len(stale)}
 
 	rosterCache := map[string]bnetapi.Roster{}
+	realmCache := map[string][]bnetapi.Realm{}
 	ticker := time.NewTicker(time.Second / refreshRateLimit)
 	defer ticker.Stop()
 	for _, sc := range stale {
@@ -86,7 +88,7 @@ func (s *Service) RunRefresh(ctx context.Context, probeGames []string) (RefreshR
 			return result, ctx.Err()
 		case <-ticker.C:
 		}
-		if err := s.refreshOneCharacter(ctx, sc, rosterCache); err != nil {
+		if err := s.refreshOneCharacter(ctx, sc, rosterCache, realmCache); err != nil {
 			if errors.Is(err, bnetapi.ErrRateLimited) {
 				result.RateLimited = true
 				s.logger().Warn("bnetimport", "op", "refresh", "err", "rate limited by Blizzard, stopping this run")
@@ -113,7 +115,8 @@ func (s *Service) RunRefresh(ctx context.Context, probeGames []string) (RefreshR
 // the nightly job does not have. A row that has since been rekeyed or
 // removed (no match on bnet_character_id/realm_slug) is silently skipped
 // — nothing to refresh.
-func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, rosterCache map[string]bnetapi.Roster) error {
+func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, rosterCache map[string]bnetapi.Roster,
+	realmCache map[string][]bnetapi.Realm) error {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("bnetimport: refresh begin bnet_character_id=%d: %w", sc.BnetCharacterID, err)
@@ -130,6 +133,10 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 	}
 	if err != nil {
 		return fmt.Errorf("bnetimport: refresh resolve bnet_character_id=%d: %w", sc.BnetCharacterID, err)
+	}
+	key, ruleset, err = s.rekeyInPlace(ctx, tx, key, region, ruleset, name, sc.RealmSlug, realmCache)
+	if err != nil {
+		return err
 	}
 
 	if _, err := tx.Exec(ctx, `update characters set refreshed_at = now() where key = $1`, key); err != nil {
@@ -161,4 +168,49 @@ func (s *Service) runProbe(ctx context.Context, games []string) {
 			}
 		}
 	}
+}
+
+// rekeyInPlace re-resolves the row's ruleset from its realm (the login
+// import keyed the first production rows under a realm list whose types
+// had not loaded, see the 2026-09-22 brief, A1) and, when the key it
+// implies differs, moves the characters and guild_characters rows to the
+// new key inside the refresh's transaction. A realm list that cannot be
+// fetched leaves the key alone for this run; a new key already taken by
+// another row (the same name on two realms sharing a ruleset) is logged
+// and left alone too. Returns the key and ruleset to carry on with.
+func (s *Service) rekeyInPlace(ctx context.Context, tx pgx.Tx, key, region, ruleset, name, realmSlug string,
+	realmCache map[string][]bnetapi.Realm) (string, string, error) {
+	realms, ok := realmCache[region]
+	if !ok {
+		var err error
+		if realms, err = s.Client.Realms(ctx, region); err != nil {
+			s.logger().Warn("bnetimport", "op", "realms", "region", region, "err", err)
+			realms = nil
+		}
+		realmCache[region] = realms
+	}
+	if realms == nil {
+		return key, ruleset, nil
+	}
+	newRuleset := rulesetForRealm(realms, realmSlug)
+	newKey := character.Key(region, newRuleset, name)
+	if newKey == key {
+		return key, ruleset, nil
+	}
+	var taken bool
+	if err := tx.QueryRow(ctx, `select exists (select 1 from characters where key = $1)`, newKey).Scan(&taken); err != nil {
+		return "", "", fmt.Errorf("bnetimport: rekey check %s: %w", newKey, err)
+	}
+	if taken {
+		s.logger().Warn("bnetimport", "op", "rekey_taken", "old_key", key, "new_key", newKey)
+		return key, ruleset, nil
+	}
+	if _, err := tx.Exec(ctx, `update characters set key = $1, ruleset = $2 where key = $3`, newKey, newRuleset, key); err != nil {
+		return "", "", fmt.Errorf("bnetimport: rekey %s: %w", key, err)
+	}
+	if _, err := tx.Exec(ctx, `update guild_characters set character_key = $1 where character_key = $2`, newKey, key); err != nil {
+		return "", "", fmt.Errorf("bnetimport: rekey membership %s: %w", key, err)
+	}
+	s.logger().Info("bnetimport", "op", "rekey", "old_key", key, "new_key", newKey)
+	return newKey, newRuleset, nil
 }

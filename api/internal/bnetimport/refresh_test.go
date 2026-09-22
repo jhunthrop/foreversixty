@@ -57,6 +57,7 @@ func TestRunRefreshStopsOnRateLimit(t *testing.T) {
 	}
 
 	f := newBlizzardFixture(t)
+	f.realms("us", map[string]string{"whitemane": "PVP"})
 	f.json(http.MethodGet, "/profile/wow/character/whitemane/one?namespace=profile-classic1x-us",
 		http.StatusTooManyRequests, nil)
 	f.json(http.MethodGet, "/profile/wow/character/whitemane/two?namespace=profile-classic1x-us",
@@ -99,6 +100,7 @@ func TestRunRefreshClearsAWithdrawnBnetMembershipButLeavesExportSourcedRowsAlone
 	}
 
 	f := newBlizzardFixture(t)
+	f.realms("us", map[string]string{"whitemane": "PVP"})
 	f.json(http.MethodGet, "/profile/wow/character/whitemane/left?namespace=profile-classic1x-us", http.StatusOK,
 		map[string]any{"name": "Left", "level": 60, "faction": map[string]string{"type": "HORDE"},
 			"character_class": map[string]string{"name": "Rogue"}, "realm": map[string]string{"slug": "whitemane"}})
@@ -115,5 +117,46 @@ func TestRunRefreshClearsAWithdrawnBnetMembershipButLeavesExportSourcedRowsAlone
 	}
 	if n != 0 {
 		t.Fatalf("guild_characters rows = %d, want 0 (the character left the guild)", n)
+	}
+}
+
+func TestRunRefreshRekeysARowWhoseRealmResolvesToAnotherRuleset(t *testing.T) {
+	pool := testPool(t)
+	uid := seedUser(t, pool)
+	ctx := context.Background()
+	if _, err := pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, user_id, realm_slug, bnet_character_id, source, refreshed_at)
+		 values ('us/normal/dottzz', 'us', 'normal', 'Dottzz', $1, 'living-flame', 501, 'bnet', now() - interval '25 hours')`, uid); err != nil {
+		t.Fatal(err)
+	}
+	var gid int64
+	if err := pool.QueryRow(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', 'Embers') returning id`).Scan(&gid); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := pool.Exec(ctx,
+		`insert into guild_characters (guild_id, character_key, user_id, rank, source, verified_by, verified_at)
+		 values ($1, 'us/normal/dottzz', $2, 'member', 'bnet', 'bnet', now())`, gid, uid); err != nil {
+		t.Fatal(err)
+	}
+
+	f := newBlizzardFixture(t)
+	f.realms("us", map[string]string{"living-flame": "PVP"})
+	f.json(http.MethodGet, "/profile/wow/character/living-flame/dottzz?namespace=profile-classic1x-us", http.StatusNotFound, nil)
+	f.json(http.MethodGet, "/profile/wow/character/living-flame/dottzz/equipment?namespace=profile-classic1x-us", http.StatusNotFound, nil)
+
+	svc := newTestService(t, pool, f)
+	if _, err := svc.RunRefresh(ctx, nil); err != nil {
+		t.Fatal(err)
+	}
+	var ruleset, membershipKey string
+	if err := pool.QueryRow(ctx, `select ruleset from characters where key = 'us/pvp/dottzz'`).Scan(&ruleset); err != nil {
+		t.Fatalf("the row was not rekeyed to us/pvp/dottzz: %v", err)
+	}
+	if err := pool.QueryRow(ctx, `select character_key from guild_characters where user_id = $1`, uid).Scan(&membershipKey); err != nil {
+		t.Fatal(err)
+	}
+	if ruleset != "pvp" || membershipKey != "us/pvp/dottzz" {
+		t.Fatalf("ruleset = %q, membership key = %q", ruleset, membershipKey)
 	}
 }

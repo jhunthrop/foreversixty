@@ -100,3 +100,19 @@ func (f *blizzardFixture) client() *bnetapi.Client {
 func newTestService(t *testing.T, pool *pgxpool.Pool, f *blizzardFixture) *Service {
 	return &Service{Pool: pool, Client: f.client(), Regions: []string{"us"}}
 }
+
+// realms registers a region's realm index and one detail per realm, the
+// two calls Realms makes, so a refresh test can resolve its rows' rulesets.
+// realmTypes maps slug to Blizzard's realm type ("PVP", "NORMAL", ...).
+func (f *blizzardFixture) realms(region string, realmTypes map[string]string) {
+	index := []map[string]any{}
+	id := 1
+	for slug, realmType := range realmTypes {
+		index = append(index, map[string]any{"id": id, "name": slug, "slug": slug})
+		f.json(http.MethodGet, "/data/wow/realm/"+slug+"?namespace=dynamic-classic1x-"+region, http.StatusOK,
+			map[string]any{"type": map[string]string{"type": realmType}, "category": "Classic Era"})
+		id++
+	}
+	f.json(http.MethodGet, "/data/wow/realm/index?namespace=dynamic-classic1x-"+region, http.StatusOK,
+		map[string]any{"realms": index})
+}
