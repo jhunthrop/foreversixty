@@ -7,6 +7,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"google.golang.org/api/option"
@@ -35,15 +36,15 @@ func TestFakeUploaderReportsItsConfiguredFailure(t *testing.T) {
 	}
 }
 
-func TestGCSUploadPUTsTheObjectToTheStorageJSONAPI(t *testing.T) {
-	var gotPath, gotBucket string
+func TestGCSUploadPostsTheObjectToTheStorageJSONAPI(t *testing.T) {
+	var gotMethod, gotPath string
 	var gotBody []byte
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		gotMethod = r.Method
 		gotPath = r.URL.Path
-		gotBucket = r.URL.Query().Get("name")
 		gotBody, _ = io.ReadAll(r.Body)
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(map[string]string{"name": gotBucket})
+		_ = json.NewEncoder(w).Encode(map[string]string{"name": "data-addon/Data.lua"})
 	}))
 	defer srv.Close()
 
@@ -54,24 +55,17 @@ func TestGCSUploadPUTsTheObjectToTheStorageJSONAPI(t *testing.T) {
 	if err := g.Upload(context.Background(), "my-bucket", "data-addon/Data.lua", []byte("ForeverSixtyData = {}")); err != nil {
 		t.Fatal(err)
 	}
-	if gotPath == "" {
-		t.Fatal("no request reached the fake server")
+	if gotMethod != http.MethodPost {
+		t.Errorf("method = %q, want POST (Objects.Insert(...).Media(...) is a multipart POST, not a PUT)", gotMethod)
 	}
-	if string(gotBody) != "" && !contains(string(gotBody), "ForeverSixtyData") {
+	const wantPath = "/upload/storage/v1/b/my-bucket/o"
+	if gotPath != wantPath {
+		t.Errorf("path = %q, want %q (the bucket belongs in the path, not a name= query param)", gotPath, wantPath)
+	}
+	if !strings.Contains(string(gotBody), "ForeverSixtyData") {
 		// The storage/v1 client sends a multipart body (metadata + media);
 		// this only asserts the payload made it across, not the exact
 		// multipart framing.
 		t.Errorf("body = %q, want it to contain the uploaded content", gotBody)
 	}
-}
-
-func contains(s, sub string) bool {
-	return len(s) >= len(sub) && (func() bool {
-		for i := 0; i+len(sub) <= len(s); i++ {
-			if s[i:i+len(sub)] == sub {
-				return true
-			}
-		}
-		return false
-	})()
 }
