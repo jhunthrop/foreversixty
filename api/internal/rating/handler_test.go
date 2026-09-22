@@ -135,8 +135,11 @@ func TestFightRatingsRejectsAnInvalidFightIndex(t *testing.T) {
 // mustCreateGuildReport inserts a minimal guilds row and a report that belongs to it,
 // visibility 'guild' - mustCreateReport's own insert never sets guild_id, and reports.
 // guild_id references guilds(id), so a guild-visible report needs both rows to exist for
-// the foreign key.
-func mustCreateGuildReport(t *testing.T, rs *reports.Store, reportID string) {
+// the foreign key. Returns the report's owner id, so a caller can pick a non-member actor
+// id that is guaranteed not to collide with it (visible()'s owner check would otherwise
+// make a same-id "stranger" actor visible for the wrong reason - not because they are a
+// verified guild member, but because they happen to share the owner's id).
+func mustCreateGuildReport(t *testing.T, rs *reports.Store, reportID string) int64 {
 	t.Helper()
 	ctx := context.Background()
 	ownerID := testOwnerID(t, rs.Pool)
@@ -159,11 +162,12 @@ func mustCreateGuildReport(t *testing.T, rs *reports.Store, reportID string) {
 		rs.Pool.Exec(ctx, `delete from rating_scores where report_id = $1`, reportID)
 		rs.Pool.Exec(ctx, `delete from guilds where id = $1`, guildID)
 	})
+	return ownerID
 }
 
 func TestFightRatingsIsVisibleToAVerifiedGuildMember(t *testing.T) {
 	svc, rs := newTestService(t)
-	mustCreateGuildReport(t, rs, "handler-guild-1")
+	ownerID := mustCreateGuildReport(t, rs, "handler-guild-1")
 	f := fightFixture("handler-guild-1", true,
 		summary.RosterRow{GUID: "g1", Name: "Officer", Class: "Priest", Spec: "Shadow", Role: "dps"},
 	)
@@ -174,7 +178,11 @@ func TestFightRatingsIsVisibleToAVerifiedGuildMember(t *testing.T) {
 	mux := http.NewServeMux()
 	Mount(mux, svc)
 	req := httptest.NewRequest(http.MethodGet, "/v1/reports/handler-guild-1/fights/1/ratings", nil)
-	req = req.WithContext(auth.WithActor(req.Context(), auth.Actor{UserID: 2, Role: "user", Method: "session"}))
+	// ownerID+1, not a hardcoded id: visible() already returns true for the owner
+	// regardless of stubAccounts, so this actor must be guaranteed distinct from the
+	// owner for the test to actually exercise the guild-membership branch rather than the
+	// owner branch.
+	req = req.WithContext(auth.WithActor(req.Context(), auth.Actor{UserID: ownerID + 1, Role: "user", Method: "session"}))
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
 	if rec.Code != http.StatusOK {
@@ -185,7 +193,7 @@ func TestFightRatingsIsVisibleToAVerifiedGuildMember(t *testing.T) {
 
 func TestFightRatingsIs404ForAGuildReportToANonMember(t *testing.T) {
 	svc, rs := newTestService(t)
-	mustCreateGuildReport(t, rs, "handler-guild-2")
+	ownerID := mustCreateGuildReport(t, rs, "handler-guild-2")
 	f := fightFixture("handler-guild-2", true,
 		summary.RosterRow{GUID: "g1", Name: "Stranger", Class: "Priest", Spec: "Shadow", Role: "dps"},
 	)
@@ -196,7 +204,7 @@ func TestFightRatingsIs404ForAGuildReportToANonMember(t *testing.T) {
 	mux := http.NewServeMux()
 	Mount(mux, svc)
 	req := httptest.NewRequest(http.MethodGet, "/v1/reports/handler-guild-2/fights/1/ratings", nil)
-	req = req.WithContext(auth.WithActor(req.Context(), auth.Actor{UserID: 2, Role: "user", Method: "session"}))
+	req = req.WithContext(auth.WithActor(req.Context(), auth.Actor{UserID: ownerID + 1, Role: "user", Method: "session"}))
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
 	if rec.Code != http.StatusNotFound {
