@@ -23,6 +23,7 @@
   import { compareSummaries } from '../../lib/sim/compare';
   import { simCopy } from '../../lib/sim/copy';
   import type { KindFilter } from '../../lib/sim/history';
+  import { SIM_LAZY_MIN_H } from '../../lib/sim/lazy-layout';
   import { browserNotifier, enableNotifications, notifyFinished } from '../../lib/sim/notify';
   import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
   import { parseFightRef } from '../../lib/sim/sources';
@@ -58,6 +59,8 @@
   import SettingsBar from './SettingsBar.svelte';
   import SourceSwitcher from './SourceSwitcher.svelte';
   import SpecGrid from './SpecGrid.svelte';
+  import LoadError from '../ui/LoadError.svelte';
+  import Skeleton from '../ui/Skeleton.svelte';
 
   let { simId = '', inlineResult = null }: { simId?: string; inlineResult?: SimResult | null } = $props();
 
@@ -144,16 +147,21 @@
   let savedResult = $state<SimResult | null>(untrack(() => inlineResult));
   let savedError = $state<string | null>(null);
 
+  // Named and retriggerable so a failed fetch's LoadError can call it again in place,
+  // rather than leaving a dead-end message with no way back to the saved sim.
+  function loadSavedSim(): void {
+    savedError = null;
+    void fetchSim(simId)
+      .then((result) => (savedResult = result))
+      .catch((error) => {
+        savedError = error instanceof Error ? error.message : simCopy.loadFailed;
+      });
+  }
+
   // One-time init read, the same reason bootstrap and store above are wrapped: the
   // .then/.catch callbacks run later, as ordinary reactive writes.
   untrack(() => {
-    if (hasSavedSimId && savedResult === null && simId !== '') {
-      void fetchSim(simId)
-        .then((result) => (savedResult = result))
-        .catch((error) => {
-          savedError = error instanceof Error ? error.message : simCopy.loadFailed;
-        });
-    }
+    if (hasSavedSimId && savedResult === null && simId !== '') loadSavedSim();
   });
 
   /**
@@ -476,16 +484,16 @@
   });
 </script>
 
-{#snippet lazyFallback(lazy: LazyLoadState)}
+{#snippet lazyFallback(lazy: LazyLoadState, minHeight: string)}
   {#if lazy.error !== ''}
-    <p class="text-muted px-[18px] text-[13px] md:px-0" role="alert" data-testid="sim-results-error">
-      {lazy.error}
-      <button
-        type="button"
-        class="text-strong ml-1 inline-flex min-h-11 items-center underline"
-        onclick={() => lazy.load()}>{simCopy.tryAgain}</button
-      >
-    </p>
+    <!-- LoadError has no class-passthrough prop, so the phone gutter the paragraph it
+         replaces carried (px-[18px] md:px-0) lives on this wrapper instead of the shared
+         primitive -- the same fix the report island's top-level error needed. -->
+    <div class="px-[18px] md:px-0">
+      <LoadError message={lazy.error} onRetry={() => lazy.load()} testid="sim-results-error" />
+    </div>
+  {:else}
+    <Skeleton {minHeight} testid="sim-lazy-skeleton" />
   {/if}
 {/snippet}
 
@@ -500,9 +508,12 @@
     {#if savedResult !== null}
       <SavedSim result={savedResult} onrerun={onRerunSaved} />
     {:else if savedError !== null}
-      <p class="text-muted px-[18px] text-[14px] md:px-0" role="alert" data-testid="sim-saved-error">
-        {savedError}
-      </p>
+      <!-- LoadError has no class-passthrough prop, so the phone gutter the paragraph it
+           replaces carried (px-[18px] md:px-0) lives on this wrapper instead of the shared
+           primitive -- the same fix the report island's top-level error needed. -->
+      <div class="px-[18px] md:px-0">
+        <LoadError message={savedError} onRetry={() => loadSavedSim()} testid="sim-saved-error" />
+      </div>
     {:else}
       <!-- Between mounting and a real, non-prerendered id's fetch resolving. Static,
            trusted markup of our own (skeleton.ts): no data goes into it, and it is the
@@ -670,7 +681,7 @@
                 actualDuration={actual.duration_ms}
               />
             {:else}
-              {@render lazyFallback(compareViewLazy)}
+              {@render lazyFallback(compareViewLazy, SIM_LAZY_MIN_H.compare)}
             {/if}
           {/if}
         {:else if store.result !== null}
@@ -683,7 +694,7 @@
               sample={store.result.sample}
             />
           {:else}
-            {@render lazyFallback(simResultsLazy)}
+            {@render lazyFallback(simResultsLazy, SIM_LAZY_MIN_H.results)}
           {/if}
         {/if}
 

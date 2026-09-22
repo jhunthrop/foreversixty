@@ -392,6 +392,31 @@ test('a saved sim shows the loading skeleton until the fetch resolves, then the 
   await expect(page.getByTestId('sim-saved-skeleton')).toHaveCount(0);
 });
 
+// Task 7: the saved-sim fetch is a named, retriggerable function (loadSavedSim) rather than
+// a dead-end anonymous block, so a failed GET /v1/sims/{id} offers a real retry through
+// LoadError -- the same request re-fired in place, not a page reload.
+test('a failed saved-sim fetch offers a retry that re-fires the same request', async ({ page }) => {
+  const id = 'simfailonceb';
+  await page.route(`**/sim/${id}`, (route) =>
+    route.fulfill({ status: 200, contentType: 'text/html', body: SHELL_HTML }),
+  );
+  let attempts = 0;
+  await page.route(`**/v1/sims/${id}`, async (route) => {
+    attempts += 1;
+    if (attempts === 1) {
+      await route.fulfill(failure('boom', 500));
+    } else {
+      await route.fulfill(envelope({ ...fixtureResult, sim_id: id }));
+    }
+  });
+
+  await page.goto(`/sim/${id}`);
+
+  await expect(page.getByTestId('sim-saved-error')).toBeVisible();
+  await page.getByTestId('sim-saved-error-retry').click();
+  await expect(page.getByTestId('sim-saved-error')).not.toBeVisible();
+});
+
 test('a stale engine version shows the pill and the sentence, and is never re-run automatically', async ({
   page,
 }) => {
