@@ -50,6 +50,10 @@ type Result struct {
 	Files       map[string]int // filename -> byte size (the dispatch's "size line")
 }
 
+// objectKeyPrefix is where every published file (and the manifest) lives
+// inside the bucket.
+const objectKeyPrefix = "data-addon/"
+
 // Run reads the database, aggregates, renders Data.lua (or its region-split
 // form), and uploads it, in that order. It never fails the whole run over
 // one bad row (dispatch: "skipped with a logged reason and counted"); it
@@ -58,9 +62,39 @@ type Result struct {
 func Run(ctx context.Context, d Deps) (Result, error) {
 	since := d.Now.Add(-ratingWindow)
 
-	fights, err := d.Store.characterFights(ctx, since)
+	characters, skipped, err := aggregateCharacters(ctx, d, since)
 	if err != nil {
 		return Result{}, err
+	}
+
+	guilds, err := aggregateGuilds(ctx, d, since)
+	if err != nil {
+		return Result{}, err
+	}
+
+	files, err := Render(Data{Generated: d.Now, Build: d.Build, Characters: characters, Guilds: guilds})
+	if err != nil {
+		return Result{}, fmt.Errorf("dataaddon: render: %w", err)
+	}
+
+	sizes, err := publish(ctx, d, files)
+	if err != nil {
+		return Result{}, err
+	}
+
+	return Result{
+		Characters: len(characters), Guilds: len(guilds), SkippedRows: skipped, Files: sizes,
+	}, nil
+}
+
+// aggregateCharacters reads every in-window character fight, groups them by
+// player key, and aggregates each player's fights into a characterRow. A
+// player_key that cannot be split into region/ruleset/name is logged and
+// counted as skipped rather than failing the run.
+func aggregateCharacters(ctx context.Context, d Deps, since time.Time) (map[string]characterRow, int, error) {
+	fights, err := d.Store.characterFights(ctx, since)
+	if err != nil {
+		return nil, 0, err
 	}
 	byPlayer := map[string][]fightScore{}
 	for _, f := range fights {
@@ -84,62 +118,71 @@ func Run(ctx context.Context, d Deps) (Result, error) {
 		}
 		characters[characterKey(region, ruleset, name)] = row
 	}
+	return characters, skipped, nil
+}
 
+// aggregateGuilds reads every guild with at least one verified member,
+// along with its verified members, raid nights, and progression, and
+// aggregates each into a guildRow.
+func aggregateGuilds(ctx context.Context, d Deps, since time.Time) (map[string]guildRow, error) {
 	guildIdentities, err := d.Store.guildsWithVerifiedMembers(ctx)
 	if err != nil {
-		return Result{}, err
+		return nil, err
 	}
 	guilds := map[string]guildRow{}
-	if len(guildIdentities) > 0 {
-		ids := make([]int64, len(guildIdentities))
-		for i, g := range guildIdentities {
-			ids[i] = g.ID
-		}
-		members, err := d.Store.verifiedMembers(ctx, ids)
-		if err != nil {
-			return Result{}, err
-		}
-		nights, err := d.Store.nightsByGuild(ctx, ids, since)
-		if err != nil {
-			return Result{}, err
-		}
-		killed, total, err := d.Store.progressionByGuild(ctx, ids)
-		if err != nil {
-			return Result{}, err
-		}
-		for _, g := range guildIdentities {
-			guilds[guildKey(g.Region, g.Ruleset, g.Name)] = buildGuildRow(
-				g, members[g.ID], nights[g.ID], killed[g.ID], total[g.ID])
-		}
+	if len(guildIdentities) == 0 {
+		return guilds, nil
 	}
 
-	files, err := Render(Data{Generated: d.Now, Build: d.Build, Characters: characters, Guilds: guilds})
+	ids := make([]int64, len(guildIdentities))
+	for i, g := range guildIdentities {
+		ids[i] = g.ID
+	}
+	members, err := d.Store.verifiedMembers(ctx, ids)
 	if err != nil {
-		return Result{}, fmt.Errorf("dataaddon: render: %w", err)
+		return nil, err
 	}
+	nights, err := d.Store.nightsByGuild(ctx, ids, since)
+	if err != nil {
+		return nil, err
+	}
+	killed, total, err := d.Store.progressionByGuild(ctx, ids)
+	if err != nil {
+		return nil, err
+	}
+	for _, g := range guildIdentities {
+		guilds[guildKey(g.Region, g.Ruleset, g.Name)] = buildGuildRow(
+			g, members[g.ID], nights[g.ID], killed[g.ID], total[g.ID])
+	}
+	return guilds, nil
+}
 
+// publish logs each rendered file's size and, unless this deployment has no
+// bucket configured, uploads every file plus the manifest under
+// objectKeyPrefix. It returns the filename -> byte size map for Result.Files
+// regardless of whether the upload happened.
+func publish(ctx context.Context, d Deps, files map[string][]byte) (map[string]int, error) {
 	sizes := map[string]int{}
 	for name, body := range files {
 		sizes[name] = len(body)
 		d.logger().Info("dataaddon", "op", "render", "file", name, "bytes", len(body))
 	}
+
 	if d.Upload == nil || d.Bucket == "" {
 		d.logger().Warn("dataaddon", "op", "upload",
 			"err", "no-op: DATA_ADDON_BUCKET is not set, this deployment publishes no addon data")
-	} else {
-		for name, body := range files {
-			if err := d.Upload.Upload(ctx, d.Bucket, "data-addon/"+name, body); err != nil {
-				return Result{}, fmt.Errorf("dataaddon: upload %s: %w", name, err)
-			}
-		}
-		if err := d.Upload.Upload(ctx, d.Bucket, "data-addon/manifest.txt", manifestOf(files)); err != nil {
-			return Result{}, fmt.Errorf("dataaddon: upload manifest: %w", err)
-		}
+		return sizes, nil
 	}
 
-	return Result{
-		Characters: len(characters), Guilds: len(guilds), SkippedRows: skipped, Files: sizes,
-	}, nil
+	for name, body := range files {
+		if err := d.Upload.Upload(ctx, d.Bucket, objectKeyPrefix+name, body); err != nil {
+			return nil, fmt.Errorf("dataaddon: upload %s: %w", name, err)
+		}
+	}
+	if err := d.Upload.Upload(ctx, d.Bucket, objectKeyPrefix+"manifest.txt", manifestOf(files)); err != nil {
+		return nil, fmt.Errorf("dataaddon: upload manifest: %w", err)
+	}
+	return sizes, nil
 }
 
 // manifestOf lists every published filename, one per line, sorted -- what
