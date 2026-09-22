@@ -88,17 +88,39 @@
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
     <CurrentCharacterBar />
-    <header class="flex flex-col gap-1">
-      <h1 class="section-title text-[18px]" style={`color: ${classColorVar(data.character.class)}`}>
-        {data.character.name}
-      </h1>
-      <p class="text-muted text-[13px]">
-        {rulesetLabel(resolved.ruleset)}
-        {resolved.region.toUpperCase()}
-        {#if data.character.class}· {data.character.class}{/if}
-        · <span class="tabular font-mono">{data.history.length}</span> ranked fights
-      </p>
-      <CharacterHandoffLinks path={resolved} />
+    <header class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-3">
+          {#if data.character.render_url === undefined && data.character.avatar_url !== undefined}
+            <img
+              class="h-11 w-11 shrink-0 rounded-[3px] object-cover"
+              src={data.character.avatar_url}
+              alt=""
+              loading="lazy"
+              data-testid="character-avatar"
+            />
+          {/if}
+          <h1 class="section-title text-[18px]" style={`color: ${classColorVar(data.character.class)}`}>
+            {data.character.name}
+          </h1>
+        </div>
+        <p class="text-muted text-[13px]">
+          {rulesetLabel(resolved.ruleset)}
+          {resolved.region.toUpperCase()}
+          {#if data.character.class}· {data.character.class}{/if}
+          · <span class="tabular font-mono">{data.history.length}</span> ranked fights
+        </p>
+        <CharacterHandoffLinks path={resolved} />
+      </div>
+      {#if data.character.render_url !== undefined}
+        <img
+          class="hidden max-h-[280px] w-auto object-contain lg:block lg:max-h-[360px]"
+          src={data.character.render_url}
+          alt=""
+          loading="lazy"
+          data-testid="character-render"
+        />
+      {/if}
     </header>
 
     <CharacterRatingPanel path={resolved} />

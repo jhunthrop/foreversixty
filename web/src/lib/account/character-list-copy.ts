@@ -9,7 +9,6 @@ export const characterListCopy = {
   importedFrom: (relative: string): string => `Imported from Battle.net ${relative}.`,
   verified: 'Verified',
   levelPrefix: (level: number): string => `Level ${level}`,
-  itemLevelPrefix: (itemLevel: number): string => `ilvl ${itemLevel}`,
   /** spec 2026-09-22 §7.3, shown on /account after a Battle.net refresh redirect. */
   refreshedToast: 'Characters refreshed from Battle.net.',
   /** Spec 2026-09-22 §2.3: the export "how" explained once, here, instead of on every row

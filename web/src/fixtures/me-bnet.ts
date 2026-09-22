@@ -19,6 +19,10 @@ export const meBnetFixture: Me = {
       level: 60,
       faction: 'alliance',
       source: 'bnet',
+      // Two tiny local images (not fetched from Blizzard) so e2e and Lighthouse never
+      // reach out to render.worldofwarcraft.com (spec 2026-09-22 §B8).
+      avatar_url: '/fixtures/avatar-placeholder.jpg',
+      render_url: '/fixtures/render-placeholder.png',
       guild: { id: 12, name: 'Iron Vanguard', rank: 'officer', rank_index: 1, verified: true },
     },
     {
