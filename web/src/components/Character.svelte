@@ -4,6 +4,7 @@
      a public report is enough to have one, which is the spec's position. -->
 <script lang="ts">
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
+  import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
   import { parseCharacterPath, rulesetLabel, type CharacterPath } from '../lib/characters';
   import { classColorVar, formatAmount, percentileToken, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchCharacter, type CharacterPage } from '../lib/rankings/api';
@@ -11,6 +12,9 @@
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
+  import EmptyState from './ui/EmptyState.svelte';
+  import LoadError from './ui/LoadError.svelte';
+  import Skeleton from './ui/Skeleton.svelte';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -37,6 +41,7 @@
   let data = $state<CharacterPage | null>(null);
   let status = $state<'loading' | 'ready' | 'failed' | 'missing'>('loading');
   let error = $state('');
+  let attempt = $state(0);
 
   /**
    * This page has no filter or fight-switching UI -- unlike Rankings.svelte or the report
@@ -49,6 +54,7 @@
    * trigger.
    */
   $effect(() => {
+    void attempt;
     const requested = resolved;
     if (requested === null) {
       status = 'missing';
@@ -76,11 +82,11 @@
     >.
   </p>
 {:else if status === 'loading'}
-  <p class="text-muted text-[14px]">Loading.</p>
+  <Skeleton lines={6} rowHeight="h-4" minHeight={CHARACTER_LOADING_MIN_H} testid="character-skeleton" />
 {:else if status === 'failed'}
-  <p class="text-[14px]" role="alert" data-testid="character-error">{error}</p>
+  <LoadError message={error} onRetry={() => (attempt += 1)} testid="character-error" />
 {:else if data !== null && resolved !== null}
-  <div class="flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
+  <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
     <CurrentCharacterBar />
     <header class="flex flex-col gap-1">
       <h1 class="section-title text-[18px]" style={`color: ${classColorVar(data.character.class)}`}>
@@ -100,7 +106,7 @@
     <section class="flex flex-col gap-2">
       <h2 class="section-title text-[18px]">Best per encounter</h2>
       {#if data.best.length === 0}
-        <p class="text-muted text-[14px]" data-testid="character-empty">Nothing ranked yet.</p>
+        <EmptyState message="Nothing ranked yet." testid="character-empty" />
       {:else}
         <ul class="flex flex-col" data-testid="character-best">
           {#each data.best as row (`${row.encounter_id}-${row.difficulty}-${row.metric}`)}
