@@ -32,6 +32,7 @@
   import { referenceStatOf } from '../../lib/sim/spec-label';
   import { ITERATIONS } from '../../lib/sim/types';
   import { createPool, type SimPool } from '../../lib/sim/worker';
+  import { BUSY_CLASS } from '../../lib/ui/busy';
 
   // Retry and Copy link are both the neutral (non-gold) secondary button; only the layout
   // around them differs.
@@ -329,13 +330,14 @@
     </label>
     <button
       type="button"
-      class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
+      class={`${SECONDARY_BUTTON} border-line-warm-strong text-gold px-4 ${saving ? BUSY_CLASS : ''}`}
       disabled={saving || store.spent === 0}
+      aria-busy={saving}
       data-testid="share-open"
       bind:this={shareButtonEl}
       onclick={() => void requestShare()}
     >
-      {saving ? plannerCopy.saving : plannerCopy.share}
+      {plannerCopy.share}
     </button>
     <button
       type="button"

@@ -20,6 +20,7 @@
   import PrecisionSelect from '../PrecisionSelect.svelte';
   import RequestDrawer from '../RequestDrawer.svelte';
   import SettingsBar from '../SettingsBar.svelte';
+  import { BUSY_CLASS } from '../../../lib/ui/busy';
 
   let { store }: { store: BulkStore } = $props();
 
@@ -138,7 +139,7 @@
 
     <button
       type="button"
-      class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
+      class={`${SECONDARY_BUTTON} border-line-warm text-nav px-4 ${running ? BUSY_CLASS : ''}`}
       data-testid="sim-run-bulk"
       disabled={store.capNotice !== null ||
         store.character === null ||
@@ -146,6 +147,7 @@
         (nothingToRun && !running) ||
         (notSimulated && !running) ||
         (store.pendingCustomBuild && !running)}
+      aria-busy={running}
       onclick={() => (running ? store.stop() : void store.run())}
     >
       {#if running}{bulkCopy.stopBulk}{:else if store.result !== null}{bulkCopy.runBulkAgain}{:else}{bulkCopy.runBulk}{/if}
@@ -154,9 +156,10 @@
     {#if store.premium}
       <button
         type="button"
-        class="{SECONDARY_BUTTON} border-line-warm text-nav px-4"
+        class={`${SECONDARY_BUTTON} border-line-warm text-nav px-4 ${running ? BUSY_CLASS : ''}`}
         data-testid="sim-server-run"
         disabled={running || store.serverCapNotice !== null || notSimulated}
+        aria-busy={running}
         onclick={() => void store.runOnServer()}>{bulkCopy.capPremium}</button
       >
     {/if}

@@ -8,11 +8,13 @@
 <script lang="ts">
   import { fetchMeOnce } from '../lib/account/api';
   import { addonCopy } from '../lib/addon/copy';
+  import { ADDON_PASTE_STATUS_MIN_H } from '../lib/addon/paste-layout';
   import { decodeFS1 } from '../lib/planner/fs1';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { CURRENT_CHARACTER_CHANGED, writeCurrent } from '../lib/current-character';
   import { plannerCodeHref, simCodeHref } from '../lib/handoff-links';
   import AddonPasteSave from './AddonPasteSave.svelte';
+  import Skeleton from './ui/Skeleton.svelte';
 
   let code = $state('');
   let error = $state<string | null>(null);
@@ -83,26 +85,40 @@
     <p class="text-strong text-[13px]" data-testid="addon-paste-error" role="alert">{error}</p>
   {/if}
   {#if loaded !== null}
-    <div class="flex flex-wrap gap-3">
-      <a
-        class="text-gold inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
-        href={plannerCodeHref(loaded)}
-        data-testid="addon-paste-planner"
-      >
-        {addonCopy.pasteOpenPlanner}
-      </a>
-      <a
-        class="text-gold inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
-        href={simCodeHref(loaded)}
-        data-testid="addon-paste-sim"
-      >
-        {addonCopy.pasteOpenSim}
-      </a>
+    <!-- The ready state of this box: a pasted export that decoded, so the two places it
+         goes next and the save block below it. `.reveal` goes on this wrapper rather than
+         the <section>, which is present from first paint and never fades (design
+         2026-09-22 spec section 1.4). It repeats the section's `flex flex-col gap-3` so
+         the two children keep the spacing they had as the section's own children. -->
+    <div class="reveal flex flex-col gap-3">
+      <div class="flex flex-wrap gap-3">
+        <a
+          class="text-gold inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
+          href={plannerCodeHref(loaded)}
+          data-testid="addon-paste-planner"
+        >
+          {addonCopy.pasteOpenPlanner}
+        </a>
+        <a
+          class="text-gold inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
+          href={simCodeHref(loaded)}
+          data-testid="addon-paste-sim"
+        >
+          {addonCopy.pasteOpenSim}
+        </a>
+      </div>
+      {#if signedIn === null}
+        <!-- One row, not the ui default of three: ADDON_PASTE_STATUS_MIN_H reserves the
+           shorter (sign-in hint) branch's real height, and Skeleton's own row content
+           would otherwise dominate that min-height once more than one row is stacked
+           (two h-4 rows plus their gap already exceed 19.5px on their own), silently
+           reopening the shrink this constant exists to prevent. -->
+        <Skeleton lines={1} minHeight={ADDON_PASTE_STATUS_MIN_H} testid="addon-paste-status-skeleton" />
+      {:else}
+        {#key loaded}
+          <AddonPasteSave {signedIn} code={loaded} />
+        {/key}
+      {/if}
     </div>
-    {#if signedIn !== null}
-      {#key loaded}
-        <AddonPasteSave {signedIn} code={loaded} />
-      {/key}
-    {/if}
   {/if}
 </section>

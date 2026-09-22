@@ -66,8 +66,8 @@ test('a failed talent fetch shows the reason and a working retry', async ({ page
     return route.continue();
   });
   await page.goto('/planner');
-  await expect(page.getByText('Talent data did not load')).toBeVisible();
-  await page.getByRole('button', { name: 'Retry' }).click();
+  await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Try again' }).click();
   await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
 });
 
@@ -122,7 +122,7 @@ test('a slow class switch cannot leave one class holding another class trees', a
   );
 
   await page.goto('/planner');
-  await expect(page.getByText('Loading talent data')).toBeVisible();
+  await expect(page.getByTestId('planner-talent-skeleton')).toBeVisible();
   await page.getByLabel('Class').selectOption('paladin');
   await expect(page.getByRole('heading', { name: 'Holy' })).toBeVisible();
 
@@ -321,7 +321,7 @@ test('a class switch drops a reset confirm that is still open', async ({ page })
   // Warrior is the only class with talent data on this build, so the way back to a ready
   // planner under a different class is out and back again.
   await page.getByLabel('Class').selectOption('paladin');
-  await expect(page.getByText('Talent data did not load')).toBeVisible();
+  await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
   await page.getByLabel('Class').selectOption('warrior');
   await expect(page.getByRole('heading', { name: 'Arms' })).toBeVisible();
 
@@ -369,7 +369,7 @@ test('a code naming a class with no talent data fails clean, and switching class
   // failure without a route mock.
   await page.goto('/planner?code=FS1%3A1.15.9.69722%3Apaladin%3Ahuman%3A5%2F0%2F0%3A');
 
-  await expect(page.getByText('Talent data did not load')).toBeVisible();
+  await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
   await expect(page.getByTestId('planner-code-note')).toHaveText(
     'That code names a class this planner does not have: paladin.',
   );
@@ -401,9 +401,9 @@ test('a good code survives a transient failure on its own class, and still appli
   });
 
   await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
-  await expect(page.getByText('Talent data did not load')).toBeVisible();
+  await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
 
-  await page.getByRole('button', { name: 'Retry' }).click();
+  await page.getByRole('button', { name: 'Try again' }).click();
   await expect(page.getByTestId('talent-1001')).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('planner-split')).toHaveText('3/0');
   await expect(page.getByTestId('planner-code-note')).toContainText('not recorded in game');

@@ -1,6 +1,7 @@
 // web/tests/e2e/report-tabs.spec.ts
 import { expect, test } from '@playwright/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
+import { heldRoute } from './support/held-route';
 
 const REPORT = '/reports/fixture2abcd';
 
@@ -114,30 +115,19 @@ test('a fight whose summary does not load says so instead of passing off the las
 // one that cannot race -- by holding the slow fight's response open in the route handler
 // until the fast one has already settled. The fixture's three fights have three, one and
 // five players, so the rendered line names which fight is on screen.
-async function heldRoute(
+async function heldFightRoute(
   page: import('@playwright/test').Page,
   fightIndex: number,
   settle: 'abort' | 'continue',
 ): Promise<{ started: Promise<void>; release: () => void }> {
-  let markStarted = (): void => {};
-  let release = (): void => {};
-  const started = new Promise<void>((resolve) => (markStarted = resolve));
-  const gate = new Promise<void>((resolve) => (release = resolve));
-
-  await page.route(`**/fights/${fightIndex}/summary.json*`, async (route) => {
-    markStarted();
-    await gate;
-    await (settle === 'abort' ? route.abort() : route.continue());
-  });
-
-  return { started, release: () => release() };
+  return heldRoute(page, `**/fights/${fightIndex}/summary.json*`, settle);
 }
 
 test('a stale fight failure does not fail the fight that is on screen', async ({ page }) => {
   await page.goto(`${REPORT}?fight=1`);
   await expect(summaryRosterRows(page)).toHaveCount(3);
 
-  const slow = await heldRoute(page, 2, 'abort');
+  const slow = await heldFightRoute(page, 2, 'abort');
   await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-2').click();
   await slow.started;
@@ -162,7 +152,7 @@ test('a stale fight success neither clears the current error nor paints its rost
   await page.goto(`${REPORT}?fight=1`);
   await expect(summaryRosterRows(page)).toHaveCount(3);
 
-  const slow = await heldRoute(page, 2, 'continue');
+  const slow = await heldFightRoute(page, 2, 'continue');
   await page.route('**/fights/3/summary.json*', (route) => route.abort());
 
   await page.getByTestId('toggle-trash').click();
@@ -183,6 +173,34 @@ test('a stale fight success neither clears the current error nor paints its rost
   // stale answer speaking for the selected fight.
   await expect(page.getByTestId('report-fight-error')).toHaveText('Report data did not load');
   await expect(summaryRosterRows(page)).toHaveCount(3);
+});
+
+test('a lazy mode shows a sized skeleton, not a blank panel, while its chunk loads', async ({ page }) => {
+  await page.goto('/reports/fixture2abcd?fight=3');
+  // Settled first, so the only chunk the held route below can catch is the one the click
+  // asks for: everything the island needs to paint this fight is already fetched.
+  await expect(page.getByTestId('report-title')).toBeVisible();
+  await expect(page.getByTestId('summary-tab')).toBeVisible();
+
+  // The chunk is held open rather than delayed by a fixed setTimeout: a timed delay races
+  // the assertion below (miss the window and the skeleton is already gone), so the test
+  // owns when the loading frame ends instead of hoping it outlasts a poll -- the shape
+  // sim-saved.spec.ts holds its saved-sim fetch with, and handoffs-addon.spec.ts /v1/me.
+  //
+  // The pattern is the island's whole chunk family, not 'CompareMode*.js': the report
+  // island is built by its own Vite pass (src/report-island.ts), which names every
+  // dynamic chunk report-island-<hash>.js. The name-based pattern this replaces matched
+  // nothing at all, so the delay it was supposed to impose never happened and the test
+  // was only ever catching the real, unslowed loading frame by luck.
+  const chunk = await heldRoute(page, '**/report-island-*.js', 'continue');
+  await page.getByTestId('mode-compare').click();
+  await chunk.started;
+
+  await expect(page.getByTestId('lazy-view-skeleton')).toBeVisible();
+
+  chunk.release();
+  await expect(page.getByTestId('lazy-view-skeleton')).toHaveCount(0);
+  await expect(page.getByTestId('compare-mode')).toBeVisible();
 });
 
 test('compare puts two fights side by side with a per-player difference', async ({ page }) => {
@@ -208,7 +226,7 @@ test('compare puts two fights side by side with a per-player difference', async 
 test('a stale compare answer does not overwrite the fight actually selected', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=3&mode=compare&cmetric=damage_done');
 
-  const slow = await heldRoute(page, 1, 'continue');
+  const slow = await heldFightRoute(page, 1, 'continue');
   await page.getByTestId('compare-with').selectOption('1');
   await slow.started;
 

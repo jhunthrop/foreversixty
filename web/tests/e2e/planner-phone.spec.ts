@@ -109,7 +109,7 @@ test.describe('planner on a phone', () => {
     const land = await holdTalents(page, 'continue');
 
     await page.goto('/planner');
-    await expect(page.getByText('Loading talent data')).toBeVisible();
+    await expect(page.getByTestId('planner-talent-skeleton')).toBeVisible();
     const loading = await footerTop(page);
 
     land();
@@ -124,11 +124,11 @@ test.describe('planner on a phone', () => {
     const land = await holdTalents(page, 'abort');
 
     await page.goto('/planner');
-    await expect(page.getByText('Loading talent data')).toBeVisible();
+    await expect(page.getByTestId('planner-talent-skeleton')).toBeVisible();
     const loading = await footerTop(page);
 
     land();
-    await expect(page.getByText('Talent data did not load')).toBeVisible();
+    await expect(page.getByText('Talent data did not load', { exact: true })).toBeVisible();
     expect(Math.abs((await footerTop(page)) - loading)).toBeLessThanOrEqual(SETTLED_PX);
   });
 

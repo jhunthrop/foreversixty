@@ -18,6 +18,7 @@
   import { formatDuration } from '../../lib/report/format';
   import { QUERY_ABANDONED, QUERY_TEMPLATES, withWindow, type QueryResult } from '../../lib/report/query';
   import type { TimeWindow } from '../../lib/report/window';
+  import { BUSY_CLASS } from '../../lib/ui/busy';
 
   let {
     dataBaseUrl,
@@ -148,13 +149,13 @@
 
   <button
     type="button"
-    class="border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
+    class={`border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase ${running ? BUSY_CLASS : ''}`}
     onclick={() => void run()}
     disabled={running}
     aria-busy={running}
     data-testid="query-run"
   >
-    {running ? 'Running' : 'Run'}
+    Run
   </button>
 
   <!-- Always in the DOM, so the first slow run is announced rather than swallowed: a live

@@ -262,7 +262,6 @@ export const simCopy = {
   // their characters and one button each, and no form until they ask for one. ---
   yourCharacters: 'Your characters',
   simIt: 'Sim',
-  loading: 'Loading…',
   otherCharacter: 'Sim something else',
   // The contract's sim-input has no Armory source yet (sources.ts's own header note), so
   // this says, out loud, where the gear behind every row actually comes from.
@@ -474,7 +473,6 @@ export const simCopy = {
    *  the same pattern RequestDrawer's own share link already uses. */
   savedLinkLabel: 'Saved sim link',
   saveAction: 'Save',
-  savingAction: 'Saving…',
   cancel: 'Cancel',
   copyLink: 'Copy link',
   copied: 'Copied',

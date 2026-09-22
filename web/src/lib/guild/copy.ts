@@ -3,13 +3,16 @@
 // use, in the site's own honest-copy voice: no exclamation marks, never a nag inside a
 // tool. Wording quoted directly from the spec is marked as such below.
 export const guildHomeCopy = {
-  loading: 'Loading your guild.',
   reportsHeading: "This week's reports",
   // Spec section 4.1, exact wording.
   noReports: 'No reports this week yet.',
   // One report row's kill/wipe tally -- combined here rather than as two separate labels
   // so a translation can reorder or repunctuate the pair as a unit.
   reportSummary: (killCount: number, wipeCount: number): string => `${killCount} kills · ${wipeCount} wipes`,
+  progressionHeading: 'Progression',
+  // The progression list's empty line, moved out of Guild.svelte's markup when it became
+  // an EmptyState: section 1.2 of the 2026-09-22 design wants every visible string here.
+  noProgression: 'No pulls recorded yet.',
   rosterHeading: 'Roster',
   // Spec section 4.1, exact wording, officer viewer.
   emptyRosterOfficer:
@@ -51,8 +54,7 @@ export const guildHomeCopy = {
 } as const;
 
 export const guildClaimCopy = {
-  loading: "Checking this guild's claim.",
-  failed: 'That did not load. Reload the page to try again.',
+  failed: 'That did not load.',
   // Guild name isn't known until the public guild page resolves, so the heading falls
   // back to a nameless form rather than the page ever hardcoding either half itself.
   heading: (guildName: string): string => (guildName === '' ? 'Claim this guild' : `Claim ${guildName}`),
@@ -82,8 +84,7 @@ export const guildClaimCopy = {
 } as const;
 
 export const guildSettingsCopy = {
-  loading: 'Loading settings.',
-  failed: 'Settings did not load. Reload the page to try again.',
+  failed: 'Settings did not load.',
   // Spec section 4.4, exact wording.
   forbidden: 'You need to be a verified officer of this guild to see its settings.',
   heading: 'Guild settings',
@@ -101,7 +102,6 @@ export const guildSettingsCopy = {
 } as const;
 
 export const guildJoinCopy = {
-  loading: 'Loading this invite.',
   failed: 'That invite link did not work.',
   joinButton: 'Join as a member',
   joined: 'You joined the guild.',

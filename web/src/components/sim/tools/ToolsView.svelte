@@ -16,13 +16,14 @@
   import { TOOL_SKELETONS } from '../../../lib/sim/bulk-skeleton';
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
   import type { Origin } from '../../../lib/sim/candidates';
-  import { bulkCopy, simCopy } from '../../../lib/sim/copy';
+  import { bulkCopy } from '../../../lib/sim/copy';
   import { syncTabHrefs } from '../../../lib/sim/tabs';
   import { runBootstrapRestore, sourceIdForInstance } from '../../../lib/sim/character-bootstrap';
   import { parseSimState } from '../../../lib/sim/url';
   import CurrentCharacterChip from '../../CurrentCharacterChip.svelte';
   import CharacterStrip from '../CharacterStrip.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
+  import LoadError from '../../ui/LoadError.svelte';
 
   let { tool }: { tool: SimTool } = $props();
 
@@ -209,14 +210,14 @@
 
 {#snippet lazyFallback(lazy: LazyLoadState)}
   {#if lazy.error !== ''}
-    <p class="text-muted px-[18px] text-[13px] md:px-0" role="alert" data-testid="sim-tool-error">
-      {lazy.error}
-      <button
-        type="button"
-        class="text-strong ml-1 inline-flex min-h-11 items-center underline"
-        onclick={() => lazy.load()}>{simCopy.tryAgain}</button
-      >
-    </p>
+    <!-- One failed state for every island (design 2026-09-22 spec section 1.5), so the
+         chunk that would not load says so through LoadError rather than an ad-hoc alert
+         line. The phone gutter the old <p> carried (px-[18px] md:px-0) lives on this
+         wrapper instead, since LoadError takes no class prop -- the same shape the report
+         island's top-level error and SimView's two lazy panels already use. -->
+    <div class="px-[18px] md:px-0">
+      <LoadError message={lazy.error} onRetry={() => lazy.load()} testid="sim-tool-error" />
+    </div>
   {:else}
     <!-- eslint-disable-next-line svelte/no-at-html-tags -->
     {@html TOOL_SKELETONS[tool]}

@@ -18,8 +18,11 @@
     type GuildVisibility,
   } from '../lib/guild/api';
   import { guildSettingsCopy } from '../lib/guild/copy';
+  import { GUILD_LOADING } from '../lib/guild/layout';
   import { fetchGuild } from '../lib/rankings/api';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import GuildStatus from './GuildStatus.svelte';
+  import { BUSY_CLASS } from '../lib/ui/busy';
 
   let { path }: { path: CharacterPath } = $props();
 
@@ -134,16 +137,21 @@
   );
 </script>
 
-<div class="flex flex-col gap-6" data-testid="guild-settings">
+<div class="reveal flex flex-col gap-6" data-testid="guild-settings">
   <h1 class="section-title text-[18px]">
     {guildName === '' ? guildSettingsCopy.heading : `${guildName} · ${guildSettingsCopy.heading}`}
   </h1>
-  {#if status === 'loading'}
-    <p class="text-muted text-[14px]">{guildSettingsCopy.loading}</p>
+  {#if status === 'loading' || status === 'failed'}
+    <GuildStatus
+      status={status === 'loading' ? 'loading' : 'failed'}
+      error={guildSettingsCopy.failed}
+      onRetry={() => void load()}
+      lines={GUILD_LOADING.settings.lines}
+      minHeight={GUILD_LOADING.settings.minHeight}
+      testid="guild-settings"
+    />
   {:else if status === 'forbidden'}
     <p class="text-[14px]" data-testid="guild-settings-forbidden">{guildSettingsCopy.forbidden}</p>
-  {:else if status === 'failed'}
-    <p class="text-[14px]" role="alert" data-testid="guild-settings-error">{guildSettingsCopy.failed}</p>
   {:else if settings !== null}
     {#if settings.claim.state !== 'unclaimed' && settings.claim.state !== 'contested'}
       <p class="text-[13px]" data-testid="guild-settings-claim-state">
@@ -183,9 +191,10 @@
         {/if}
         {#if guildBilling.you_are_billing_contact}
           <button
-            class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+            class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
             onclick={onManageBilling}
             disabled={busy}
+            aria-busy={busy}
             data-testid="guild-manage-billing"
           >
             {billingBlockCopy.manageBilling}
@@ -197,10 +206,11 @@
       <label class="label text-muted" for="guild-visibility">{guildSettingsCopy.defaultVisibility}</label>
       <select
         id="guild-visibility"
-        class="border-line-warm bg-raised rounded-control text-text h-11 w-fit px-3 text-[14px]"
+        class={`border-line-warm bg-raised rounded-control text-text h-11 w-fit px-3 text-[14px] ${busy ? BUSY_CLASS : ''}`}
         value={settings.default_visibility}
         onchange={(event) => onSave('default_visibility', (event.currentTarget as HTMLSelectElement).value)}
         disabled={busy || frozen}
+        aria-busy={busy}
         data-testid="guild-visibility-select"
       >
         <option value="public">Public</option>
@@ -216,11 +226,12 @@
         id="guild-officer-threshold"
         type="number"
         min="0"
-        class="border-line-warm bg-raised rounded-control text-text h-11 w-24 px-3 text-[14px]"
+        class={`border-line-warm bg-raised rounded-control text-text h-11 w-24 px-3 text-[14px] ${busy ? BUSY_CLASS : ''}`}
         value={settings.officer_max_rank_index}
         onchange={(event) =>
           onSave('officer_max_rank_index', (event.currentTarget as HTMLInputElement).value)}
         disabled={busy || frozen}
+        aria-busy={busy}
         data-testid="guild-officer-threshold-input"
       />
     </section>
@@ -228,9 +239,10 @@
       <h2 class="section-title text-[18px]">{guildSettingsCopy.inviteHeading}</h2>
       <p class="text-muted text-[13px]">{guildSettingsCopy.inviteWarning}</p>
       <button
-        class="border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase"
+        class={`border-line-warm-strong rounded-control text-strong inline-flex h-11 w-fit items-center border px-4 text-[12px] font-bold tracking-[0.06em] uppercase ${busy ? BUSY_CLASS : ''}`}
         onclick={onRotate}
         disabled={busy || frozen}
+        aria-busy={busy}
         data-testid="guild-invite-rotate"
       >
         {guildSettingsCopy.rotateButton}

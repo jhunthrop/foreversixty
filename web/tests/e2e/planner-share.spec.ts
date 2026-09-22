@@ -144,7 +144,7 @@ test('a save that resolves after the build changed is not shown as the current b
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
   await shareBuild(page);
-  await expect(page.getByRole('button', { name: 'Saving' })).toBeVisible();
+  await expect(page.getByTestId('share-open')).toHaveAttribute('aria-busy', 'true');
 
   // Edit the build while that save is still in flight.
   await page.getByTestId('talent-1001').click();

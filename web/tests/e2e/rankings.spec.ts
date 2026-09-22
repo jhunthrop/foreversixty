@@ -154,6 +154,30 @@ test('a failed rankings call says so instead of showing an empty board', async (
   await expect(page.getByTestId('rankings-error')).toBeVisible();
 });
 
+// LoadError's Try again has to re-fire the same request in place, never reload the page
+// (design 2026-09-22 spec section 1.5). A flag rather than an attempt counter: it flips
+// between the two halves of the test, so which request counts as the retry never depends
+// on how many the board made on the way in.
+test('Try again on a failed board re-fires the same request and paints the rows', async ({ page }) => {
+  let failing = true;
+  await page.route('**/v1/rankings?**', async (route) => {
+    if (failing) {
+      await route.abort();
+      return;
+    }
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ROWS) });
+  });
+
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
+  await expect(page.getByTestId('rankings-error')).toBeVisible();
+
+  failing = false;
+  await page.getByTestId('rankings-error-retry').click();
+
+  await expect(page.getByTestId('ranking-rows').locator('li')).toHaveCount(2);
+  await expect(page.getByTestId('rankings-error')).toHaveCount(0);
+});
+
 // Every filter lives in the URL (src/components/Rankings.svelte's `state`), and changing
 // one fires a brand new request without waiting for the one before it to finish -- so the
 // default board's own request and the switch to Healing can both be in flight at once and
