@@ -12,6 +12,7 @@
   import { relativeTime } from '../../lib/dates';
   import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { classColorVar } from '../../lib/report/format';
+  import { classDisplayName } from '../../lib/sim/spec-label';
   import CharacterHandoffLinks from '../CharacterHandoffLinks.svelte';
 
   let { characters, bnetImportedAt }: { characters: MeCharacter[]; bnetImportedAt?: string } = $props();
@@ -56,13 +57,17 @@
         <li class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-2 text-[14px]">
           <a href={characterHref(character.region, character.ruleset, character.name)}>{character.name}</a>
           <span class="text-muted">
+            {#if character.race !== undefined}{character.race}{/if}
             {#if character.class !== undefined}
-              <span style:color={classColorVar(character.class)}>{character.class}</span>
+              <span style:color={classColorVar(character.class)}>{classDisplayName(character.class)}</span>
             {/if}
             {rulesetLabel(character.ruleset)}
             {character.region.toUpperCase()}
             {#if character.realm !== undefined}· {character.realm}{/if}
             {#if character.level !== undefined}· {characterListCopy.levelPrefix(character.level)}{/if}
+            {#if character.item_level !== undefined}· {characterListCopy.itemLevelPrefix(
+                character.item_level,
+              )}{/if}
           </span>
           {#if character.guild !== undefined}
             <span class="text-muted" data-testid="character-guild-line">

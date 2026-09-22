@@ -45,6 +45,11 @@ export interface MeCharacter {
   realm?: string;
   level?: number;
   faction?: 'alliance' | 'horde';
+  /** "Night Elf"; from the Battle.net import, omitted until it has run. */
+  race?: string;
+  gender?: 'male' | 'female';
+  /** Equipped item level, from the Battle.net character profile when it answered. */
+  item_level?: number;
   /** `'bnet'` or `'export'` -- which path last wrote this row. Optional: older/stubbed
    *  fixtures written before the Battle.net import landed carry no such field. */
   source?: string;

@@ -10,7 +10,9 @@ const GUILDED: MeCharacter = {
   region: 'us',
   ruleset: 'hardcore',
   name: 'Elyra Duskvale',
-  class: 'Priest',
+  class: 'priest',
+  race: 'Night Elf',
+  item_level: 63,
   realm: 'Whitemane',
   level: 60,
   faction: 'alliance',
@@ -23,10 +25,18 @@ const UNGUILDED: MeCharacter = {
   region: 'us',
   ruleset: 'pvp',
   name: 'Thoradin',
-  class: 'Warrior',
+  class: 'warrior',
 };
 
 describe('CharacterList', () => {
+  it('prints the race and the class display name from the class slug, and the item level', () => {
+    const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
+    expect(body).toContain('Night Elf');
+    expect(body).toContain('>Priest<');
+    expect(body).not.toContain('>priest<');
+    expect(body).toContain(characterListCopy.itemLevelPrefix(63));
+  });
+
   it('shows a guilded, verified character with the guild line and a verified pill', () => {
     const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
     expect(body).toContain('Iron Vanguard');

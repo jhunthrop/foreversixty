@@ -38,6 +38,15 @@ export function specLabel(spec: string): string {
   return className === undefined ? row.name : `${row.name} ${className}`;
 }
 
+/**
+ * "Warrior" for the slug `warrior`. The API and the addon carry class slugs; every place a
+ * class is printed on its own (the account's character list) wants the display name from
+ * classes.json, the same source specLabel joins in. An unknown slug is returned unchanged.
+ */
+export function classDisplayName(classSlug: string): string {
+  return classRows.find((entry) => entry.slug === classSlug)?.name ?? classSlug;
+}
+
 /** The class slug, for classColorVar and the planner. Empty for an unknown spec. */
 export function classOfSpec(spec: string): string {
   return specRow(spec)?.class_slug ?? '';
