@@ -229,7 +229,11 @@ func (s *Service) guildCheckout(w http.ResponseWriter, r *http.Request, guildID,
 	transfer bool, lookupKey, clientRef string, metadata map[string]string) {
 	var result CheckoutSession
 	err := s.Store.WithGuildLock(r.Context(), guildID, func(ctx context.Context) error {
-		if refusal := s.checkGuildCheckout(ctx, guildID, userID, transfer); refusal != nil {
+		refusal, err := s.checkGuildCheckout(ctx, guildID, userID, transfer)
+		if err != nil {
+			return err
+		}
+		if refusal != nil {
 			return refusal
 		}
 		customerID, err := s.customerFor(ctx, userID)
@@ -277,52 +281,55 @@ func alreadyOnThePlanRefusal() *checkoutRefusal {
 
 // checkGuildCheckout is spec §2.3's three preconditions, Ruling B's
 // frozen-claimant check, and (security review fix, 2026-09-21) the
-// pending-checkout guard — nil means every check passed; otherwise the
-// refusal guildCheckout should answer with. Always called from inside
-// WithGuildLock, so the entitlement and pending-checkout reads below are
-// race-free against a second, concurrent caller for the same guild.
-func (s *Service) checkGuildCheckout(ctx context.Context, guildID, userID int64, transfer bool) *checkoutRefusal {
+// pending-checkout guard. A non-nil refusal is a caller-facing 4xx
+// guildCheckout should answer with; a non-nil error is a genuine internal
+// failure (a DB read that errored) which the caller instead routes to
+// s.fail — logged with the real underlying error, never silently turned
+// into an empty-message 500. Always called from inside WithGuildLock, so
+// the entitlement and pending-checkout reads below are race-free against
+// a second, concurrent caller for the same guild.
+func (s *Service) checkGuildCheckout(ctx context.Context, guildID, userID int64, transfer bool) (*checkoutRefusal, error) {
 	claimed, err := s.Store.GuildClaimed(ctx, guildID)
 	if err != nil {
-		return &checkoutRefusal{status: http.StatusInternalServerError, code: "internal"}
+		return nil, err
 	}
 	if !claimed {
-		return &checkoutRefusal{status: http.StatusForbidden, code: "forbidden", message: "this guild has not been claimed yet"}
+		return &checkoutRefusal{status: http.StatusForbidden, code: "forbidden", message: "this guild has not been claimed yet"}, nil
 	}
 	rank, verified, err := s.Accounts.GuildRank(ctx, guildID, userID)
 	if err != nil {
-		return &checkoutRefusal{status: http.StatusInternalServerError, code: "internal"}
+		return nil, err
 	}
 	if !verified || (rank != "officer" && rank != "leader") {
 		return &checkoutRefusal{status: http.StatusForbidden, code: "forbidden",
-			message: "you must be a verified officer or leader of this guild"}
+			message: "you must be a verified officer or leader of this guild"}, nil
 	}
 	if s.Guilds != nil {
 		frozen, err := s.Guilds.FrozenClaimant(ctx, guildID, userID)
 		if err != nil {
-			return &checkoutRefusal{status: http.StatusInternalServerError, code: "internal"}
+			return nil, err
 		}
 		if frozen {
 			return &checkoutRefusal{status: http.StatusForbidden, code: "forbidden",
-				message: "this guild's claim is contested; billing actions are frozen for the disputed claimant until a moderator resolves it"}
+				message: "this guild's claim is contested; billing actions are frozen for the disputed claimant until a moderator resolves it"}, nil
 		}
 	}
 	existing, err := s.Entitlements.GuildBilling(ctx, guildID)
 	if err != nil {
-		return &checkoutRefusal{status: http.StatusInternalServerError, code: "internal"}
+		return nil, err
 	}
 	active := existing != nil && (existing.Status == "active" || existing.Status == "trialing" || existing.Status == "past_due")
 	if active && !transfer {
-		return alreadyOnThePlanRefusal()
+		return alreadyOnThePlanRefusal(), nil
 	}
 	pending, err := s.Store.PendingGuildCheckout(ctx, guildID)
 	if err != nil {
-		return &checkoutRefusal{status: http.StatusInternalServerError, code: "internal"}
+		return nil, err
 	}
 	if pending {
-		return alreadyOnThePlanRefusal()
+		return alreadyOnThePlanRefusal(), nil
 	}
-	return nil
+	return nil, nil
 }
 
 // customerFor returns userID's Stripe Customer id, creating and saving
