@@ -52,7 +52,7 @@ export const guildHomeCopy = {
 
 export const guildClaimCopy = {
   loading: "Checking this guild's claim.",
-  failed: 'That did not load. Reload the page to try again.',
+  failed: 'That did not load.',
   // Guild name isn't known until the public guild page resolves, so the heading falls
   // back to a nameless form rather than the page ever hardcoding either half itself.
   heading: (guildName: string): string => (guildName === '' ? 'Claim this guild' : `Claim ${guildName}`),
@@ -83,7 +83,7 @@ export const guildClaimCopy = {
 
 export const guildSettingsCopy = {
   loading: 'Loading settings.',
-  failed: 'Settings did not load. Reload the page to try again.',
+  failed: 'Settings did not load.',
   // Spec section 4.4, exact wording.
   forbidden: 'You need to be a verified officer of this guild to see its settings.',
   heading: 'Guild settings',

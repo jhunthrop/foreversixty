@@ -31,6 +31,8 @@
   import { RANKING_METRICS } from '../lib/rankings/url';
   import { executionLabel, executionTitle } from '../lib/sim/execution';
   import GuildRosterHandoff from './GuildRosterHandoff.svelte';
+  import GuildStatus from './GuildStatus.svelte';
+  import { GUILD_LOADING } from '../lib/guild/layout';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -41,6 +43,7 @@
   let data = $state<GuildPage | null>(null);
   let status = $state<'loading' | 'ready' | 'failed' | 'missing'>('loading');
   let error = $state('');
+  let attempt = $state(0);
 
   /**
    * Same reasoning as Character.svelte's effect: this page has no filter or tab state, so
@@ -49,6 +52,7 @@
    * being true later, rather than leaning on today's absence of a second trigger.
    */
   $effect(() => {
+    void attempt;
     const requested = resolved;
     if (requested === null) {
       status = 'missing';
@@ -262,12 +266,17 @@
     That is not a guild address. They look like <code class="font-mono">/guild/eu/normal/the-last-watch</code
     >.
   </p>
-{:else if status === 'loading'}
-  <p class="text-muted text-[14px]">Loading.</p>
-{:else if status === 'failed'}
-  <p class="text-[14px]" role="alert" data-testid="guild-error">{error}</p>
+{:else if status === 'loading' || status === 'failed'}
+  <GuildStatus
+    status={status === 'loading' ? 'loading' : 'failed'}
+    error={status === 'failed' ? error : ''}
+    onRetry={() => (attempt += 1)}
+    lines={GUILD_LOADING.home.lines}
+    minHeight={GUILD_LOADING.home.minHeight}
+    testid="guild"
+  />
 {:else if data !== null && resolved !== null}
-  <div class="flex flex-col gap-[22px] md:gap-8" data-testid="guild" id="guild">
+  <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="guild" id="guild">
     <header class="flex flex-col gap-1">
       <h1 class="section-title text-[18px]">{data.guild.name}</h1>
       <p class="text-muted text-[13px]">

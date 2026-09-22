@@ -18,6 +18,6 @@ describe('Guild', () => {
 
   it('still renders the loading state as its initial static render (existing public-page behavior)', () => {
     const { body } = render(Guild, { props: { path: PATH } });
-    expect(body).toContain('Loading.');
+    expect(body).toContain('data-testid="guild-skeleton"');
   });
 });

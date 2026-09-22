@@ -18,8 +18,10 @@
     type GuildVisibility,
   } from '../lib/guild/api';
   import { guildSettingsCopy } from '../lib/guild/copy';
+  import { GUILD_LOADING } from '../lib/guild/layout';
   import { fetchGuild } from '../lib/rankings/api';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import GuildStatus from './GuildStatus.svelte';
 
   let { path }: { path: CharacterPath } = $props();
 
@@ -134,16 +136,21 @@
   );
 </script>
 
-<div class="flex flex-col gap-6" data-testid="guild-settings">
+<div class="reveal flex flex-col gap-6" data-testid="guild-settings">
   <h1 class="section-title text-[18px]">
     {guildName === '' ? guildSettingsCopy.heading : `${guildName} · ${guildSettingsCopy.heading}`}
   </h1>
-  {#if status === 'loading'}
-    <p class="text-muted text-[14px]">{guildSettingsCopy.loading}</p>
+  {#if status === 'loading' || status === 'failed'}
+    <GuildStatus
+      status={status === 'loading' ? 'loading' : 'failed'}
+      error={guildSettingsCopy.failed}
+      onRetry={() => void load()}
+      lines={GUILD_LOADING.settings.lines}
+      minHeight={GUILD_LOADING.settings.minHeight}
+      testid="guild-settings"
+    />
   {:else if status === 'forbidden'}
     <p class="text-[14px]" data-testid="guild-settings-forbidden">{guildSettingsCopy.forbidden}</p>
-  {:else if status === 'failed'}
-    <p class="text-[14px]" role="alert" data-testid="guild-settings-error">{guildSettingsCopy.failed}</p>
   {:else if settings !== null}
     {#if settings.claim.state !== 'unclaimed' && settings.claim.state !== 'contested'}
       <p class="text-[13px]" data-testid="guild-settings-claim-state">

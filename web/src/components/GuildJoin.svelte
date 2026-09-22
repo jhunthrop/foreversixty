@@ -9,7 +9,9 @@
   import { guildHref } from '../lib/characters';
   import { GuildApiError, acceptInvite, type InviteAcceptResult } from '../lib/guild/api';
   import { guildJoinCopy } from '../lib/guild/copy';
+  import { GUILD_LOADING } from '../lib/guild/layout';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import GuildStatus from './GuildStatus.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
 
   let { token }: { token: string } = $props();
@@ -49,11 +51,16 @@
   }
 </script>
 
-<div class="flex flex-col gap-4" data-testid="guild-join">
-  {#if status === 'loading'}
-    <p class="text-muted text-[14px]">{guildJoinCopy.loading}</p>
-  {:else if status === 'failed'}
-    <p class="text-[14px]" role="alert" data-testid="guild-join-error">{guildJoinCopy.failed}</p>
+<div class="reveal flex flex-col gap-4" data-testid="guild-join">
+  {#if status === 'loading' || status === 'failed'}
+    <GuildStatus
+      status={status === 'loading' ? 'loading' : 'failed'}
+      error={guildJoinCopy.failed}
+      onRetry={() => void load()}
+      lines={GUILD_LOADING.join.lines}
+      minHeight={GUILD_LOADING.join.minHeight}
+      testid="guild-join"
+    />
   {:else if !signedIn}
     <SignInPrompt line={guildJoinCopy.signInLine} testid="guild-join-signin" />
   {:else}

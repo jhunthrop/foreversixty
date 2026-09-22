@@ -22,8 +22,10 @@
     type GuildSettingsData,
   } from '../lib/guild/api';
   import { guildClaimCopy, guildHomeCopy } from '../lib/guild/copy';
+  import { GUILD_LOADING } from '../lib/guild/layout';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { fetchGuild } from '../lib/rankings/api';
+  import GuildStatus from './GuildStatus.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
 
   let { path }: { path: CharacterPath } = $props();
@@ -139,12 +141,17 @@
     });
 </script>
 
-<div class="flex flex-col gap-4" data-testid="guild-claim">
+<div class="reveal flex flex-col gap-4" data-testid="guild-claim">
   <h1 class="section-title text-[18px]">{guildClaimCopy.heading(guildName)}</h1>
-  {#if status === 'loading'}
-    <p class="text-muted text-[14px]">{guildClaimCopy.loading}</p>
-  {:else if status === 'failed'}
-    <p class="text-[14px]" role="alert" data-testid="guild-claim-error">{error}</p>
+  {#if status === 'loading' || status === 'failed'}
+    <GuildStatus
+      status={status === 'loading' ? 'loading' : 'failed'}
+      {error}
+      onRetry={() => void load()}
+      lines={GUILD_LOADING.claim.lines}
+      minHeight={GUILD_LOADING.claim.minHeight}
+      testid="guild-claim"
+    />
   {:else if settings !== null}
     <section class="flex flex-col gap-2" data-testid="guild-claim-rules">
       <h2 class="section-title text-[16px]">{guildClaimCopy.rulesHeading}</h2>
