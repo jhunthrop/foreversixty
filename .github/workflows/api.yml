@@ -182,7 +182,7 @@ jobs:
         # so rather than failing the deploy.
       - name: Point the jobs at the new image
         run: |
-          for job in parse-report sim-run sim-validate stripe-reconcile rating-backfill data-addon; do
+          for job in parse-report sim-run sim-validate stripe-reconcile rating-backfill data-addon bnet-refresh; do
             if gcloud run jobs describe "$job" --region us-east1 >/dev/null 2>&1; then
               gcloud run jobs update "$job" --region us-east1 --image "$IMAGE"
             else
