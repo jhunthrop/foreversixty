@@ -13,6 +13,6 @@ ForeverSixtyData = {
 	build = "1.60.1.69893",
 	-- ["<region>:<ruleset>:<name-slug>"] = { rating, output, survival, mechanics, utility, preparation, activity, fights }
 	characters = {},
-	-- ["<region>:<ruleset>:<guild-slug>"] = { name, progress, nights, roster }
+	-- ["<region>:<ruleset>:<guild-slug>"] = { name, progress, nights, roster, members = { "<name-slug>", ... } }
 	guilds = {},
 }

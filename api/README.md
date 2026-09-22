@@ -233,6 +233,57 @@ version:
 
     gcloud run jobs execute rating-backfill --region us-east1 --wait
 
+### The data-addon job
+
+`data-addon` (`api/internal/dataaddon`) aggregates every public rated character's last 90
+days and every verified guild's roster into the Forever Sixty Data addon's `Data.lua`, and
+publishes it to a Cloud Storage bucket for `.github/workflows/addon-data-release.yml` to
+package nightly. Unlike every other job in this file, its bucket address is read directly
+via `os.Getenv("DATA_ADDON_BUCKET")` in `main.go` rather than through `config.Config` — see
+`docs/superpowers/plans/2026-09-21-data-addon.md`'s Task 9 for why.
+
+One-time setup (in addition to "1. Google Cloud project setup" above):
+
+    gcloud services enable storage.googleapis.com
+    gcloud storage buckets create gs://foreversixty-addon-data --location us-east1 --uniform-bucket-level-access
+
+    # api-runtime (the service's own service account) needs to write the nightly file:
+    gcloud storage buckets add-iam-policy-binding gs://foreversixty-addon-data \
+      --member serviceAccount:api-runtime@foreversixty.iam.gserviceaccount.com \
+      --role roles/storage.objectAdmin
+
+    # the deployer service account (see "Then set up Workload Identity Federation..." above)
+    # needs read access, since addon-data-release.yml downloads through the same WIF identity
+    # api.yml's deploy job already uses:
+    gcloud storage buckets add-iam-policy-binding gs://foreversixty-addon-data \
+      --member serviceAccount:<deployer service account email> \
+      --role roles/storage.objectViewer
+
+    gcloud run jobs create data-addon \
+      --image us-east1-docker.pkg.dev/foreversixty/api/api:latest \
+      --region us-east1 --args data-addon \
+      --cpu 1 --memory 512Mi --task-timeout 10m \
+      --set-env-vars "$(tr '\n' ',' < .env.job),DATA_ADDON_BUCKET=foreversixty-addon-data" \
+      --service-account api-runtime@foreversixty.iam.gserviceaccount.com
+
+    gcloud scheduler jobs create http data-addon-nightly \
+      --schedule "0 4 * * *" \
+      --uri "https://us-east1-run.googleapis.com/apis/run.googleapis.com/v1/namespaces/foreversixty/jobs/data-addon:run" \
+      --http-method POST --oauth-service-account-email api-runtime@foreversixty.iam.gserviceaccount.com
+
+Then, as a GitHub repository variable (Settings → Secrets and variables → Actions →
+Variables — the same place `GCP_WIF_PROVIDER` and `GCP_DEPLOYER_SA` already live):
+
+    DATA_ADDON_BUCKET = foreversixty-addon-data
+
+`addon-data-release.yml` is gated on this variable existing (`if: vars.DATA_ADDON_BUCKET != ''`),
+the same way `api.yml`'s own `deploy` job is gated on `GCP_WIF_PROVIDER`.
+
+Like `parse-report`, `sim-run` and `sim-validate`, `.github/workflows/api.yml`'s `deploy`
+job's "Point the jobs at the new image" loop should add `data-addon` to its job list so a
+new deploy repoints it too — that file is outside this lane's ownership, so this is a
+follow-up for whichever lane next touches `api.yml`, not done here.
+
 `sim-run` is executed by the API for one premium run and takes the sim
 id as a second argument; `sim-validate` is scheduled nightly by Cloud
 Scheduler and takes none. Both need `/engine/forever-sim` in the image

@@ -20,6 +20,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
+	"github.com/jhunthrop/foreversixty/api/internal/dataaddon"
 	"github.com/jhunthrop/foreversixty/api/internal/db"
 	"github.com/jhunthrop/foreversixty/api/internal/entitlements"
 	"github.com/jhunthrop/foreversixty/api/internal/guilds"
@@ -82,6 +83,12 @@ func main() {
 		case rating.BackfillJobCommand:
 			if err := runRatingBackfill(context.Background(), log); err != nil {
 				log.Error(rating.BackfillJobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
+		case dataaddon.JobCommand:
+			if err := runDataAddon(context.Background(), log); err != nil {
+				log.Error(dataaddon.JobCommand, "err", err)
 				os.Exit(1)
 			}
 			return
@@ -266,6 +273,59 @@ func runRatingBackfill(ctx context.Context, log *slog.Logger) error {
 		return err
 	}
 	log.Info(rating.BackfillJobCommand, "recomputed", n)
+	return nil
+}
+
+// runDataAddon is the nightly Cloud Run job: aggregate every public rated
+// character and guild into the Forever Sixty Data addon's Data.lua (or its
+// region-split form) and publish it to DATA_ADDON_BUCKET for
+// addon-data-release.yml to package. DATA_ADDON_BUCKET is read directly
+// via os.Getenv, not added to config.Config: api/internal/config is
+// outside this lane's file ownership (docs/superpowers/plans/
+// 2026-09-21-data-addon.md), and this is the one job whose bucket address
+// a future lane can fold into Config the normal way without this lane
+// having touched that file first.
+func runDataAddon(ctx context.Context, log *slog.Logger) error {
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+
+	treeData, err := trees.Load(cfg.TreeDataDir)
+	if err != nil {
+		return fmt.Errorf("trees: %s: %w", cfg.TreeDataDir, err)
+	}
+	build := "unknown"
+	if latest, ok := treeData.Latest(); ok {
+		build = latest.Version
+	} else {
+		log.Warn(dataaddon.JobCommand, "err", "no client build available",
+			"effect", "Data.lua's build field reads \"unknown\"")
+	}
+
+	bucket := os.Getenv("DATA_ADDON_BUCKET")
+	var uploader dataaddon.Uploader
+	if bucket != "" {
+		gcs, err := dataaddon.NewGCS(ctx)
+		if err != nil {
+			return fmt.Errorf("%s: %w", dataaddon.JobCommand, err)
+		}
+		uploader = gcs
+	} else {
+		log.Warn(dataaddon.JobCommand, "err", "DATA_ADDON_BUCKET is not set",
+			"effect", "Data.lua is rendered but not published")
+	}
+
+	result, err := dataaddon.Run(ctx, dataaddon.Deps{
+		Store: &dataaddon.Store{Pool: pool}, Upload: uploader, Bucket: bucket,
+		Build: build, Now: time.Now().UTC(), Log: log,
+	})
+	if err != nil {
+		return err
+	}
+	log.Info(dataaddon.JobCommand, "characters", result.Characters, "guilds", result.Guilds,
+		"skipped", result.SkippedRows, "files", result.Files)
 	return nil
 }
 

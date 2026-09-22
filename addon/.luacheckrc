@@ -11,7 +11,10 @@
 -- busted runs them on the host's Lua, never the client's.
 std = "lua51"
 max_line_length = 120
-exclude_files = { "ForeverSixty/Data.lua" } -- generated
+-- Generated files: the item data, and the data addon's golden fixture, which the Go
+-- golden test (api/internal/dataaddon/golden_test.go) writes byte-for-byte with rows
+-- longer than any line-length rule.
+exclude_files = { "ForeverSixty/Data.lua", "tests/fixtures/data_addon_sample.lua" }
 
 read_globals = {
 	-- Talents: the classic window, and the 1.60 client's trait system

@@ -1,0 +1,154 @@
+# .github/workflows/addon-data-release.yml
+# Nightly: download the data-addon Cloud Run job's own output (published
+# to gs://<DATA_ADDON_BUCKET>/data-addon/...) and publish it through the
+# same BigWigsMods packager addon-release.yml uses for the main addon.
+# Scheduled an hour after the data-addon job's own 04:00 UTC Cloud
+# Scheduler run (api/README.md's "The data-addon job") so the bucket
+# object is fresh before this runs.
+name: addon-data-release
+on:
+  schedule:
+    - cron: '0 5 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Build the zip and publish nothing'
+        type: boolean
+        default: true
+permissions:
+  contents: read
+concurrency:
+  group: addon-data-release
+  cancel-in-progress: false
+jobs:
+  release:
+    # Skipped until the bucket variable exists (api/README.md "The
+    # data-addon job" names exactly what the owner creates), the same gate
+    # api.yml's own deploy job uses for GCP_WIF_PROVIDER.
+    if: vars.DATA_ADDON_BUCKET != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOYER_SA }}
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: the nightly job's manifest names what it published
+        id: manifest
+        run: |
+          set -eu -o pipefail
+          gcloud storage cat "gs://${{ vars.DATA_ADDON_BUCKET }}/data-addon/manifest.txt" > /tmp/manifest.txt
+          test -s /tmp/manifest.txt || { echo "manifest.txt named no files"; exit 1; }
+          echo "files=$(paste -sd, /tmp/manifest.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: download every file the manifest names
+        run: |
+          set -eu -o pipefail
+          while IFS= read -r name; do
+            [ -n "$name" ] || continue
+            gcloud storage cp "gs://${{ vars.DATA_ADDON_BUCKET }}/data-addon/$name" "addon/ForeverSixtyData/$name"
+          done < /tmp/manifest.txt
+
+      - uses: leafo/gh-actions-lua@v10
+        with: { luaVersion: '5.1.5' }
+      - name: every published file parses on the client's own interpreter
+        run: |
+          set -eu -o pipefail
+          for f in addon/ForeverSixtyData/*.lua; do luac -p "$f"; done
+
+      - name: today's tag
+        id: tag
+        run: echo "tag=data-v$(date -u +%Y.%m.%d)" >> "$GITHUB_OUTPUT"
+
+      # Same trick as addon-release.yml's own "give the packager its own
+      # checkout" step, for the same reason: release.sh requires its
+      # topdir to be a VCS checkout root, and this is a monorepo
+      # subdirectory. This step also folds the manifest's file list into
+      # the TOC when it names more than just Data.lua (a split night),
+      # entirely inside this throwaway checkout -- the real repository's
+      # checked-in TOC is never touched.
+      - name: give the packager its own checkout of addon/ForeverSixtyData
+        id: pkgroot
+        run: |
+          set -eu -o pipefail
+          pkgroot="$RUNNER_TEMP/ForeverSixtyData-pkgroot"
+          rm -rf "$pkgroot"
+          mkdir -p "$pkgroot"
+          git archive HEAD -- addon/ForeverSixtyData | tar -x -C "$pkgroot" --strip-components=2
+          cp addon/ForeverSixtyData/*.lua "$pkgroot/"
+          if [ "${{ steps.manifest.outputs.files }}" != "Data.lua" ]; then
+            awk 'NR==FNR{n++; line[n]=$0; next} /^Data\.lua[[:space:]]*$/{for (i=1;i<=n;i++) print line[i]; next} {print}' \
+              /tmp/manifest.txt "$pkgroot/ForeverSixtyData.toc" > /tmp/toc.new
+            mv /tmp/toc.new "$pkgroot/ForeverSixtyData.toc"
+          fi
+          git -C "$pkgroot" init -q
+          origin=$(git remote get-url origin)
+          git -C "$pkgroot" remote add origin "$origin"
+          git -C "$pkgroot" -c user.name=github-actions[bot] \
+            -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
+            add -A
+          git -C "$pkgroot" -c user.name=github-actions[bot] \
+            -c user.email=41898282+github-actions[bot]@users.noreply.github.com \
+            commit -q -m "addon-data-release packaging snapshot ($GITHUB_SHA)"
+          git -C "$pkgroot" tag "${{ steps.tag.outputs.tag }}"
+          echo "dir=$pkgroot" >> "$GITHUB_OUTPUT"
+
+      - name: which publish targets are configured
+        id: targets
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "publish=no" >> "$GITHUB_OUTPUT"
+            echo "::notice::Dry run requested; the zip is built and nothing is published."
+          elif [ "$CF_API_KEY" != "" ] || [ "$WAGO_API_TOKEN" != "" ]; then
+            echo "publish=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=no" >> "$GITHUB_OUTPUT"
+            echo "::notice::Neither CF_API_KEY nor WAGO_API_TOKEN is set; the zip is built and nothing is published."
+          fi
+
+      - name: build the zip
+        uses: BigWigsMods/packager@v2
+        with:
+          args: -d -t ${{ steps.pkgroot.outputs.dir }}
+
+      - name: what the zip contains
+        run: |
+          set -eu -o pipefail
+          mapfile -t zips < <(find "${{ steps.pkgroot.outputs.dir }}/.release" -name '*.zip')
+          if [ "${#zips[@]}" -ne 1 ]; then
+            echo "expected exactly one zip in .release, found ${#zips[@]}:"
+            printf '%s\n' "${zips[@]}"
+            exit 1
+          fi
+          zip="${zips[0]}"
+          top=$(unzip -Z1 "$zip" | cut -d/ -f1 | sort -u)
+          if [ "$top" != "ForeverSixtyData" ]; then echo "top-level folder is '$top'"; exit 1; fi
+          unzip -Z1 "$zip" | grep -q 'ForeverSixtyData/Data.lua' || { echo "Data.lua is missing"; exit 1; }
+          echo "zip=$zip" >> "$GITHUB_ENV"
+
+      - name: attach it to the release
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.dry_run != true)
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          files: ${{ env.zip }}
+          generate_release_notes: true
+
+      - name: publish to CurseForge and Wago Addons
+        if: steps.targets.outputs.publish == 'yes' && (github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.dry_run != true))
+        uses: BigWigsMods/packager@v2
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+        with:
+          args: -t ${{ steps.pkgroot.outputs.dir }}
