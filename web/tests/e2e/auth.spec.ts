@@ -1,5 +1,6 @@
 // web/tests/e2e/auth.spec.ts
 import { expect, test } from '@playwright/test';
+import { meBnetFixture } from '../../src/fixtures/me-bnet';
 
 const ME = {
   ok: true,
@@ -113,4 +114,34 @@ test('every control on the account page clears 44px on phone', async ({ page }, 
     const box = await control.boundingBox();
     expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
   }
+});
+
+test('a signed-in visitor sees imported characters, refreshes, and gets the toast', async ({ page }) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(fulfil({ ok: true, data: meBnetFixture, error: null, request_id: 'r' })),
+  );
+  await page.route('**/v1/devices', (route) =>
+    route.fulfill(fulfil({ ok: true, data: [], error: null, request_id: 'r' })),
+  );
+
+  await page.goto('/account?refreshed=1');
+
+  await expect(page.getByText('Characters refreshed from Battle.net.')).toBeVisible();
+  await expect.poll(() => new URL(page.url()).search).toBe('');
+
+  // The guilded, verified character.
+  await expect(page.getByRole('link', { name: 'Thoradin' })).toBeVisible();
+  await expect(page.getByTestId('character-guild-line').filter({ hasText: 'Iron Vanguard' })).toContainText(
+    'Officer',
+  );
+  await expect(page.getByTestId('character-guild-verified').first()).toHaveText('Verified');
+
+  // The unguilded character carries no guild line at all.
+  const elyraRow = page.getByRole('link', { name: 'Elyra Duskvale' }).locator('..');
+  await expect(elyraRow.getByTestId('character-guild-line')).toHaveCount(0);
+
+  await expect(page.getByTestId('bnet-imported')).toContainText('Imported from Battle.net');
+  await expect(
+    page.getByTestId('bnet-imported').getByRole('link', { name: 'Refresh from Battle.net' }),
+  ).toHaveAttribute('href', /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Frefreshed%3D1$/);
 });
