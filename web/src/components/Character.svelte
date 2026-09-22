@@ -10,6 +10,7 @@
   import { RANKING_METRICS } from '../lib/rankings/url';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
+  import CharacterRatingPanel from './CharacterRatingPanel.svelte';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
 
@@ -93,6 +94,8 @@
       </p>
       <CharacterHandoffLinks path={resolved} />
     </header>
+
+    <CharacterRatingPanel path={resolved} />
 
     <section class="flex flex-col gap-2">
       <h2 class="section-title text-[18px]">Best per encounter</h2>
