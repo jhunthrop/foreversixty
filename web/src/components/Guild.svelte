@@ -32,6 +32,7 @@
   import { executionLabel, executionTitle } from '../lib/sim/execution';
   import GuildRosterHandoff from './GuildRosterHandoff.svelte';
   import GuildStatus from './GuildStatus.svelte';
+  import EmptyState from './ui/EmptyState.svelte';
   import { GUILD_LOADING } from '../lib/guild/layout';
 
   let { path = null }: { path?: CharacterPath | null } = $props();
@@ -374,9 +375,7 @@
           </p>
         {/if}
         {#if home.reports.length === 0}
-          <p class="text-muted text-[14px]" data-testid="guild-home-empty-reports">
-            {guildHomeCopy.noReports}
-          </p>
+          <EmptyState message={guildHomeCopy.noReports} testid="guild-home-empty-reports" />
         {:else}
           <ul class="flex flex-col" data-testid="guild-home-reports">
             {#each home.reports as report (report.id)}
@@ -461,9 +460,9 @@
     {/if}
 
     <section class="flex flex-col gap-2">
-      <h2 class="section-title text-[18px]">Progression</h2>
+      <h2 class="section-title text-[18px]">{guildHomeCopy.progressionHeading}</h2>
       {#if data.progression.length === 0}
-        <p class="text-muted text-[14px]" data-testid="guild-empty">No pulls recorded yet.</p>
+        <EmptyState message={guildHomeCopy.noProgression} testid="guild-empty" />
       {:else}
         <ul class="flex flex-col" data-testid="guild-progression">
           {#each data.progression as row (row.encounter)}
