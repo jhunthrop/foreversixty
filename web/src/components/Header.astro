@@ -2,7 +2,7 @@
 // web/src/components/Header.astro
 import communityLinks from '../data/links.json';
 import {
-  ADDON_NAV_ITEM,
+  TRAILING_NAV_ITEMS,
   PRIMARY_NAV_ITEMS,
   REFERENCE_NAV_ITEMS,
   isNavItemCurrent,
@@ -115,18 +115,18 @@ function itemClass(label: string, current: boolean): (string | false)[] {
         })}
       </div>
     </details>
-    {(() => {
-      const current = isNavItemCurrent(ADDON_NAV_ITEM, path);
+    {TRAILING_NAV_ITEMS.map((item) => {
+      const current = isNavItemCurrent(item, path);
       return (
         <a
-          href={ADDON_NAV_ITEM.href}
+          href={item.href}
           aria-current={current ? 'page' : undefined}
-          class:list={itemClass(ADDON_NAV_ITEM.label, current)}
+          class:list={itemClass(item.label, current)}
         >
-          {ADDON_NAV_ITEM.label}
+          {item.label}
         </a>
       );
-    })()}
+    })}
   </nav>
   <div class="col-start-2 row-start-1 flex items-center justify-self-end gap-3">
     <slot name="session" />

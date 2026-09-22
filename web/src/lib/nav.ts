@@ -26,6 +26,12 @@ export const REFERENCE_NAV_ITEMS: readonly NavItem[] = [
 /** Promoted from the footer into the primary nav. */
 export const ADDON_NAV_ITEM: NavItem = { label: 'The addon', href: '/addon' };
 
+/** Last in the row: what the site sells is one click from every page, not a footer link. */
+export const PREMIUM_NAV_ITEM: NavItem = { label: 'Premium', href: '/premium' };
+
+/** The items after the Reference disclosure, in order. */
+export const TRAILING_NAV_ITEMS: readonly NavItem[] = [ADDON_NAV_ITEM, PREMIUM_NAV_ITEM];
+
 /**
  * True for the item's own page and any sub-path of it (`/sim` matches `/sim/gear`), so a
  * tool's own sub-pages (the sim tab strip, a saved permalink) still mark the top-level nav

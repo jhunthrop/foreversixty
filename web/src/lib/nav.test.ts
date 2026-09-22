@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   ADDON_NAV_ITEM,
+  PREMIUM_NAV_ITEM,
+  TRAILING_NAV_ITEMS,
   PRIMARY_NAV_ITEMS,
   REFERENCE_NAV_ITEMS,
   isNavItemCurrent,
@@ -59,5 +61,12 @@ describe('isReferenceCurrent', () => {
   it('is false elsewhere', () => {
     expect(isReferenceCurrent('/planner')).toBe(false);
     expect(isReferenceCurrent('/')).toBe(false);
+  });
+});
+
+describe('the trailing items', () => {
+  it('end with Premium, so what the site sells is one click from every page', () => {
+    expect(TRAILING_NAV_ITEMS.map((item) => item.label)).toEqual(['The addon', 'Premium']);
+    expect(PREMIUM_NAV_ITEM.href).toBe('/premium');
   });
 });
