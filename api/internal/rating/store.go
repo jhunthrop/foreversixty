@@ -146,6 +146,38 @@ type cursorPos struct {
 	FightIndex int
 }
 
+// staleFight is one (report, fight) the backfill job (backfill.go) must recompute.
+type staleFight struct {
+	ReportID   string
+	FightIndex int
+	PlayerKey  string
+	FoughtAt   time.Time
+}
+
+// staleFights selects up to limit (report_id, fight_index) pairs whose stored rows are not
+// at the engine's current DefaultModelVersion, one representative player_key and fought_at
+// per fight (every player of one fight shares both).
+func (s *Store) staleFights(ctx context.Context, limit int) ([]staleFight, error) {
+	rows, err := s.Pool.Query(ctx,
+		`select distinct on (report_id, fight_index) report_id, fight_index, player_key, fought_at
+		 from rating_scores where model_version <> $1
+		 order by report_id, fight_index limit $2`,
+		ratingengine.DefaultModelVersion, limit)
+	if err != nil {
+		return nil, fmt.Errorf("rating: stale fights: %w", err)
+	}
+	defer rows.Close()
+	var out []staleFight
+	for rows.Next() {
+		var sf staleFight
+		if err := rows.Scan(&sf.ReportID, &sf.FightIndex, &sf.PlayerKey, &sf.FoughtAt); err != nil {
+			return nil, err
+		}
+		out = append(out, sf)
+	}
+	return out, rows.Err()
+}
+
 // ReadFightRatings reads every stored rating row for one fight. ok is false when the
 // fight has no rows at all - never verified, still queued in the async Rater, or (per §4.3)
 // a fight this lane never rates at all (trash, no ranker, or a report that was never
