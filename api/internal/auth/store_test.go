@@ -243,6 +243,50 @@ func TestCharactersAndGuildsComeBackForMe(t *testing.T) {
 	}
 }
 
+func TestCharactersIncludesRaceGenderAndItemLevel(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	u, err := s.UpsertEmailUser(ctx, "geared@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, class, user_id, race, gender, equipped_item_level)
+		 values ('us/pvp/geared', 'us', 'pvp', 'Geared', 'warrior', $1, 'Dwarf', 'male', 54)`, u.ID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := s.Pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, class, user_id)
+		 values ('us/pvp/plain', 'us', 'pvp', 'Plain', 'mage', $1)`, u.ID); err != nil {
+		t.Fatal(err)
+	}
+
+	chars, err := s.Characters(ctx, u.ID)
+	if err != nil || len(chars) != 2 {
+		t.Fatalf("characters = %v, err = %v", chars, err)
+	}
+	byKey := map[string]Character{}
+	for _, c := range chars {
+		byKey[c.Key] = c
+	}
+
+	geared := byKey["us/pvp/geared"]
+	if geared.Race != "Dwarf" || geared.Gender != "male" {
+		t.Fatalf("geared race/gender = %q/%q, want Dwarf/male", geared.Race, geared.Gender)
+	}
+	if geared.ItemLevel == nil || *geared.ItemLevel != 54 {
+		t.Fatalf("geared item level = %v, want 54", geared.ItemLevel)
+	}
+
+	plain := byKey["us/pvp/plain"]
+	if plain.Race != "" || plain.Gender != "" {
+		t.Fatalf("plain race/gender = %q/%q, want both empty (omitted from JSON)", plain.Race, plain.Gender)
+	}
+	if plain.ItemLevel != nil {
+		t.Fatalf("plain item level = %v, want nil (omitted from JSON)", plain.ItemLevel)
+	}
+}
+
 func TestGuildRankRefusesAnUnverifiedRow(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()
