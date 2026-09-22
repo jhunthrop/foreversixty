@@ -52,12 +52,15 @@ func NewRater(d RateDeps) *Rater {
 	return &Rater{Deps: d, queue: make(chan reports.RatedFight, RateQueueDepth), done: make(chan struct{})}
 }
 
-// Schedule queues one fight. It never blocks: a full queue drops the fight (logged), and a
-// Schedule racing Close is a no-op rather than a panic.
+// Schedule queues one fight. It never blocks: a full queue, or one that lost the race with
+// Close, drops the fight (logged) rather than blocking the ingest or panicking on a send to
+// a closed channel.
 func (s *Rater) Schedule(f reports.RatedFight) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	if s.closed {
+		s.Deps.logger().Warn("rating", "op", "schedule", "report", f.ReportID, "fight", f.FightIndex,
+			"err", "rater is closed")
 		return
 	}
 	select {
@@ -68,34 +71,33 @@ func (s *Rater) Schedule(f reports.RatedFight) {
 	}
 }
 
-// Run drains the queue until Close is called. It never returns an error: every failure to
-// rate one fight is logged and the loop continues, the same best-effort contract i.rate
-// itself promises the ingest.
+// Run consumes the queue until Close is called. A fight already queued when Close runs is
+// still drained and rated: closing a channel does not discard what is already buffered in
+// it - this is sims.Scorer.Run's exact shape, on purpose. Ratings run on a context the
+// shutdown signal does not cancel, matching Scorer's own "in-flight work finishes"
+// contract.
 func (s *Rater) Run(ctx context.Context) {
-	for {
-		select {
-		case f, ok := <-s.queue:
-			if !ok {
-				return
-			}
-			if err := s.Deps.Store.RateFight(ctx, RatedFight{
-				ReportID: f.ReportID, FightIndex: f.FightIndex, Region: f.Region, Ruleset: f.Ruleset,
-				FoughtAt: f.FoughtAt, EncounterID: f.EncounterID, Summary: f.Summary,
-			}); err != nil {
-				s.Deps.logger().Error("rating", "op", "rate", "report", f.ReportID, "fight", f.FightIndex, "err", err)
-			}
-		case <-s.done:
-			return
+	defer close(s.done)
+	work := context.WithoutCancel(ctx)
+	for f := range s.queue {
+		if err := s.Deps.Store.RateFight(work, RatedFight{
+			ReportID: f.ReportID, FightIndex: f.FightIndex, Region: f.Region, Ruleset: f.Ruleset,
+			FoughtAt: f.FoughtAt, EncounterID: f.EncounterID, Summary: f.Summary,
+		}); err != nil {
+			s.Deps.logger().Error("rating", "op", "rate", "report", f.ReportID, "fight", f.FightIndex, "err", err)
 		}
 	}
 }
 
-// Close stops Run and makes every later Schedule a no-op. Idempotent.
+// Close stops the rater and waits for the queue to drain (every fight already buffered is
+// rated before this returns). No Schedule started after Close returns reaches the queue,
+// and calling Close twice is fine.
 func (s *Rater) Close() {
 	s.once.Do(func() {
 		s.mu.Lock()
 		s.closed = true
+		close(s.queue)
 		s.mu.Unlock()
-		close(s.done)
 	})
+	<-s.done
 }
