@@ -47,6 +47,10 @@ type User struct {
 	Email     *string `json:"email"`
 	Role      string  `json:"role"`
 	Anonymize bool    `json:"anonymize"`
+	// BnetImportedAt is when the Battle.net import last ran for this
+	// account, nil when it never has. Not serialized directly — Me's
+	// own top-level bnet_imported_at field carries it (spec §6).
+	BnetImportedAt *time.Time `json:"-"`
 }
 
 // PublicName is what strangers may be told an account is called: the
@@ -94,6 +98,28 @@ type Character struct {
 	Ruleset string `json:"ruleset"`
 	Name    string `json:"name"`
 	Class   string `json:"class,omitempty"`
+	// Realm, Level and Faction are what Blizzard's profile API adds
+	// (spec §6); omitted when unknown (an export-sourced character that
+	// has never been through the Battle.net import).
+	Realm   string `json:"realm,omitempty"`
+	Level   *int   `json:"level,omitempty"`
+	Faction string `json:"faction,omitempty"`
+	// Source is which path most recently wrote this row: "export" or
+	// "bnet".
+	Source string `json:"source"`
+	// Guild is this character's current guild membership, omitted when
+	// it has none.
+	Guild *CharacterGuild `json:"guild,omitempty"`
+}
+
+// CharacterGuild is a character's guild_characters row, as GET /v1/me
+// exposes it (spec §6).
+type CharacterGuild struct {
+	ID        int64  `json:"id"`
+	Name      string `json:"name"`
+	Rank      string `json:"rank"`
+	RankIndex *int   `json:"rank_index,omitempty"`
+	Verified  bool   `json:"verified"`
 }
 
 // Guild is a guild the user belongs to.
@@ -117,11 +143,11 @@ type Guild struct {
 // take them as one dependency.
 type Store struct{ Pool *pgxpool.Pool }
 
-const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize`
+const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize, bnet_imported_at`
 
 func scanUser(row pgx.Row) (User, error) {
 	var u User
-	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize); err != nil {
+	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize, &u.BnetImportedAt); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return User{}, ErrNotFound
 		}
@@ -314,11 +340,17 @@ func (s *Store) RevokeDevice(ctx context.Context, userID int64, id string) (bool
 	return tag.RowsAffected() == 1, nil
 }
 
-// Characters lists the characters linked to an account.
+// Characters lists the characters linked to an account, each with its
+// current guild membership (if any) attached (spec §6).
 func (s *Store) Characters(ctx context.Context, userID int64) ([]Character, error) {
 	rows, err := s.Pool.Query(ctx,
-		`select key, region, ruleset, name, coalesce(class, '') from characters
-		 where user_id = $1 order by key`, userID)
+		`select c.key, c.region, c.ruleset, c.name, coalesce(c.class, ''),
+		        coalesce(c.realm_name, ''), c.level, coalesce(c.faction, ''), c.source,
+		        g.id, g.name, gc.rank, gc.rank_index, gc.verified_at is not null
+		 from characters c
+		 left join guild_characters gc on gc.character_key = c.key
+		 left join guilds g on g.id = gc.guild_id
+		 where c.user_id = $1 order by c.key`, userID)
 	if err != nil {
 		return nil, fmt.Errorf("auth: list characters: %w", err)
 	}
@@ -326,8 +358,19 @@ func (s *Store) Characters(ctx context.Context, userID int64) ([]Character, erro
 	out := []Character{}
 	for rows.Next() {
 		var c Character
-		if err := rows.Scan(&c.Key, &c.Region, &c.Ruleset, &c.Name, &c.Class); err != nil {
+		var guildID *int64
+		var guildName, rank *string
+		var rankIndex *int
+		var verified bool
+		if err := rows.Scan(&c.Key, &c.Region, &c.Ruleset, &c.Name, &c.Class,
+			&c.Realm, &c.Level, &c.Faction, &c.Source,
+			&guildID, &guildName, &rank, &rankIndex, &verified); err != nil {
 			return nil, fmt.Errorf("auth: list characters: %w", err)
+		}
+		if guildID != nil {
+			c.Guild = &CharacterGuild{
+				ID: *guildID, Name: *guildName, Rank: *rank, RankIndex: rankIndex, Verified: verified,
+			}
 		}
 		out = append(out, c)
 	}

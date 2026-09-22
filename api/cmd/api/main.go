@@ -18,6 +18,8 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
+	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
+	"github.com/jhunthrop/foreversixty/api/internal/bnetimport"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
 	"github.com/jhunthrop/foreversixty/api/internal/dataaddon"
@@ -89,6 +91,12 @@ func main() {
 		case dataaddon.JobCommand:
 			if err := runDataAddon(context.Background(), log); err != nil {
 				log.Error(dataaddon.JobCommand, "err", err)
+				os.Exit(1)
+			}
+			return
+		case bnetimport.RefreshJobCommand:
+			if err := runBnetRefresh(context.Background(), log); err != nil {
+				log.Error(bnetimport.RefreshJobCommand, "err", err)
 				os.Exit(1)
 			}
 			return
@@ -329,6 +337,39 @@ func runDataAddon(ctx context.Context, log *slog.Logger) error {
 	return nil
 }
 
+// runBnetRefresh is the nightly Cloud Run job (spec §4.4): re-sync every
+// stale 'bnet'-sourced character's guild membership from Blizzard's
+// public data (no user token needed), and run the namespace probe
+// (spec §5).
+func runBnetRefresh(ctx context.Context, log *slog.Logger) error {
+	cfg, pool, err := start(ctx)
+	if err != nil {
+		return err
+	}
+	defer pool.Close()
+	if !cfg.BattleNetConfigured() {
+		return fmt.Errorf("%s needs Battle.net credentials", bnetimport.RefreshJobCommand)
+	}
+	svc := &bnetimport.Service{Pool: pool, Client: bnetClient(cfg), Regions: cfg.BnetRegions, Log: log}
+	result, err := svc.RunRefresh(ctx, cfg.BnetProbeGames)
+	if err != nil {
+		return err
+	}
+	log.Info(bnetimport.RefreshJobCommand, "considered", result.Considered, "refreshed", result.Refreshed,
+		"skipped", result.Skipped, "rate_limited", result.RateLimited)
+	return nil
+}
+
+// bnetClient builds the Blizzard game-data/profile client every
+// Battle.net-import call site (the login import, the nightly refresh)
+// shares.
+func bnetClient(cfg config.Config) *bnetapi.Client {
+	return bnetapi.New(bnetapi.Config{
+		ClientID: cfg.BnetClientID, ClientSecret: cfg.BnetClientSecret,
+		Game: cfg.BnetProfileGame, Regions: cfg.BnetRegions,
+	})
+}
+
 // simEngine is what every simulator job and the submit handler use: the
 // real binary when the image carries one, and the checked-in fixture
 // when it does not, so a deployment without the artifact still answers
@@ -445,6 +486,9 @@ func serve(log *slog.Logger) error {
 	}
 	if cfg.BattleNetConfigured() {
 		accounts.BNet = auth.NewBattleNet(cfg.BnetClientID, cfg.BnetClientSecret, cfg.BnetRedirectURL)
+		accounts.Importer = &bnetimport.Service{
+			Pool: pool, Client: bnetClient(cfg), Regions: cfg.BnetRegions, Log: log,
+		}
 	} else {
 		log.Warn("auth", "state", "battle.net is not configured", "effect", "email sign-in only")
 	}
