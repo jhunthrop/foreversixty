@@ -7,11 +7,13 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
 	"github.com/jhunthrop/foreversixty/api/internal/reports"
 	"github.com/jhunthrop/foreversixty/logs/engine/summary"
@@ -113,6 +115,92 @@ func TestFightRatingsIs404ForAMissingFight(t *testing.T) {
 	mux.ServeHTTP(rec, req)
 	if rec.Code != http.StatusNotFound {
 		t.Fatalf("status = %d, want 404", rec.Code)
+	}
+}
+
+func TestFightRatingsRejectsAnInvalidFightIndex(t *testing.T) {
+	svc, _ := newTestService(t)
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	for _, n := range []string{"0", "-1", "abc"} {
+		req := httptest.NewRequest(http.MethodGet, "/v1/reports/whatever-report/fights/"+n+"/ratings", nil)
+		rec := httptest.NewRecorder()
+		mux.ServeHTTP(rec, req)
+		if rec.Code != http.StatusBadRequest {
+			t.Errorf("fight index %q: status = %d, want 400", n, rec.Code)
+		}
+	}
+}
+
+// mustCreateGuildReport inserts a minimal guilds row and a report that belongs to it,
+// visibility 'guild' - mustCreateReport's own insert never sets guild_id, and reports.
+// guild_id references guilds(id), so a guild-visible report needs both rows to exist for
+// the foreign key.
+func mustCreateGuildReport(t *testing.T, rs *reports.Store, reportID string) {
+	t.Helper()
+	ctx := context.Background()
+	ownerID := testOwnerID(t, rs.Pool)
+	var guildID int64
+	if err := rs.Pool.QueryRow(ctx,
+		`insert into guilds (region, ruleset, name) values ('us', 'normal', $1)
+		 on conflict (region, ruleset, name) do update set name = excluded.name
+		 returning id`, "Handler Test Guild "+reportID).Scan(&guildID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := rs.Pool.Exec(ctx,
+		`insert into reports (id, owner_id, guild_id, title, visibility, zone, status, created_at)
+		 values ($1, $2, $3, 'Handler guild test', 'guild', 'Blackrock Spire', 'complete', now())
+		 on conflict (id) do update set visibility = excluded.visibility, guild_id = excluded.guild_id`,
+		reportID, ownerID, guildID); err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() {
+		rs.Pool.Exec(ctx, `delete from reports where id = $1`, reportID)
+		rs.Pool.Exec(ctx, `delete from rating_scores where report_id = $1`, reportID)
+		rs.Pool.Exec(ctx, `delete from guilds where id = $1`, guildID)
+	})
+}
+
+func TestFightRatingsIsVisibleToAVerifiedGuildMember(t *testing.T) {
+	svc, rs := newTestService(t)
+	mustCreateGuildReport(t, rs, "handler-guild-1")
+	f := fightFixture("handler-guild-1", true,
+		summary.RosterRow{GUID: "g1", Name: "Officer", Class: "Priest", Spec: "Shadow", Role: "dps"},
+	)
+	if err := svc.Store.RateFight(context.Background(), f); err != nil {
+		t.Fatal(err)
+	}
+	svc.Accounts = stubAccounts{rank: "member", ok: true}
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	req := httptest.NewRequest(http.MethodGet, "/v1/reports/handler-guild-1/fights/1/ratings", nil)
+	req = req.WithContext(auth.WithActor(req.Context(), auth.Actor{UserID: 2, Role: "user", Method: "session"}))
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s (a verified guild member must see a guild report's ratings)",
+			rec.Code, rec.Body.String())
+	}
+}
+
+func TestFightRatingsIs404ForAGuildReportToANonMember(t *testing.T) {
+	svc, rs := newTestService(t)
+	mustCreateGuildReport(t, rs, "handler-guild-2")
+	f := fightFixture("handler-guild-2", true,
+		summary.RosterRow{GUID: "g1", Name: "Stranger", Class: "Priest", Spec: "Shadow", Role: "dps"},
+	)
+	if err := svc.Store.RateFight(context.Background(), f); err != nil {
+		t.Fatal(err)
+	}
+	svc.Accounts = stubAccounts{rank: "", ok: false}
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	req := httptest.NewRequest(http.MethodGet, "/v1/reports/handler-guild-2/fights/1/ratings", nil)
+	req = req.WithContext(auth.WithActor(req.Context(), auth.Actor{UserID: 2, Role: "user", Method: "session"}))
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	if rec.Code != http.StatusNotFound {
+		t.Fatalf("status = %d, want 404 for a non-member of a guild report", rec.Code)
 	}
 }
 
@@ -320,6 +408,26 @@ func TestDecodeTrendCursorRejectsWhatThisPackageDidNotEncode(t *testing.T) {
 		if _, ok := decodeTrendCursor(c); ok {
 			t.Errorf("decodeTrendCursor(%q) = ok, want rejected", c)
 		}
+	}
+}
+
+func TestCharacterRatingSetsPublicCacheControl(t *testing.T) {
+	svc, rs := newTestService(t)
+	mustCreateReport(t, rs, "handler-char-cache-1", reports.Public)
+	f := fightFixture("handler-char-cache-1", true,
+		summary.RosterRow{GUID: "g1", Name: "Cached", Class: "Hunter", Spec: "Survival", Role: "dps"},
+	)
+	if err := svc.Store.RateFight(context.Background(), f); err != nil {
+		t.Fatal(err)
+	}
+	mux := http.NewServeMux()
+	Mount(mux, svc)
+	req := httptest.NewRequest(http.MethodGet, "/v1/characters/us/normal/Cached/rating", nil)
+	rec := httptest.NewRecorder()
+	mux.ServeHTTP(rec, req)
+	want := "public, max-age=" + strconv.Itoa(cacheSeconds)
+	if got := rec.Header().Get("Cache-Control"); got != want {
+		t.Errorf("Cache-Control = %q, want %q (spec §5.3)", got, want)
 	}
 }
 
