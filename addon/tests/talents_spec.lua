@@ -139,4 +139,102 @@ describe("Talents", function()
 	it("returns nothing for a class Data.lua does not carry", function()
 		assert.is_nil(Talents.treeRanks(DATA, "shaman"))
 	end)
+	-- The Talents page shows each talent's icon. The data file carries none,
+	-- so it is asked of the client: node -> entry -> definition -> spell ->
+	-- texture. Nobody can run the game here, so every link in that chain is
+	-- allowed to be missing, and a missing one means "no icon", never an error.
+	describe("iconFor", function()
+		local function withTraits(traits)
+			mock.install({
+				class = { name = "Warrior", token = "WARRIOR" },
+				traits = { configID = 7, ranks = {} },
+			})
+			_G.C_Traits.GetNodeInfo = function(_, node)
+				return traits.nodes[node]
+			end
+			_G.C_Traits.GetEntryInfo = traits.GetEntryInfo
+			_G.C_Traits.GetDefinitionInfo = traits.GetDefinitionInfo
+			_G.C_Spell = traits.C_Spell
+			_G.GetSpellTexture = traits.GetSpellTexture
+			return helper.load("Talents")
+		end
+
+		local CHAIN = {
+			nodes = { [100] = { entryIDs = { 11 }, activeEntry = { entryID = 11 } } },
+			GetEntryInfo = function(_, entry)
+				return entry == 11 and { definitionID = 22 } or nil
+			end,
+			GetDefinitionInfo = function(definition)
+				return definition == 22 and { spellID = 12294 } or nil
+			end,
+			C_Spell = { GetSpellTexture = function(spell)
+				return spell == 12294 and 132355 or nil
+			end },
+		}
+
+		after_each(function()
+			_G.C_Spell, _G.GetSpellTexture = nil, nil
+			mock.uninstall()
+		end)
+
+		it("walks node, entry, definition and spell to a texture", function()
+			assert.are.equal(132355, withTraits(CHAIN).iconFor({ node = 100 }))
+		end)
+
+		it("prefers the definition's own icon when it carries one", function()
+			local chain = {}
+			for key, value in pairs(CHAIN) do
+				chain[key] = value
+			end
+			chain.GetDefinitionInfo = function()
+				return { spellID = 12294, overrideIcon = 999 }
+			end
+			assert.are.equal(999, withTraits(chain).iconFor({ node = 100 }))
+		end)
+
+		it("uses the global spell texture function on a client without C_Spell", function()
+			local chain = {}
+			for key, value in pairs(CHAIN) do
+				chain[key] = value
+			end
+			chain.C_Spell = nil
+			chain.GetSpellTexture = function()
+				return 4242
+			end
+			assert.are.equal(4242, withTraits(chain).iconFor({ node = 100 }))
+		end)
+
+		it("answers nil when any link of the chain is missing or raises", function()
+			assert.is_nil(withTraits(CHAIN).iconFor({ node = 555 }))
+			assert.is_nil(withTraits(CHAIN).iconFor({}))
+			assert.is_nil(withTraits(CHAIN).iconFor(nil))
+			local broken = { nodes = CHAIN.nodes, GetEntryInfo = function()
+				error("not on this client")
+			end }
+			assert.is_nil(withTraits(broken).iconFor({ node = 100 }))
+			local none = { nodes = CHAIN.nodes }
+			assert.is_nil(withTraits(none).iconFor({ node = 100 }))
+		end)
+
+		it("asks the client once per node", function()
+			local calls = 0
+			local chain = {}
+			for key, value in pairs(CHAIN) do
+				chain[key] = value
+			end
+			chain.GetEntryInfo = function(_, entry)
+				calls = calls + 1
+				return CHAIN.GetEntryInfo(nil, entry)
+			end
+			local loaded = withTraits(chain)
+			loaded.iconFor({ node = 100 })
+			loaded.iconFor({ node = 100 })
+			assert.are.equal(1, calls)
+		end)
+
+		it("answers nil on a client with no trait system at all", function()
+			mock.install({ class = { name = "Warrior", token = "WARRIOR" } })
+			assert.is_nil(helper.load("Talents").iconFor({ node = 100 }))
+		end)
+	end)
 end)

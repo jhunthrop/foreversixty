@@ -1,0 +1,29 @@
+{
+  "spec": "druid-balance",
+  "owned": [
+    {
+      "spell_id": 21850,
+      "name": "Gift of the Wild",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#21850",
+      "note": "Party-wide stat/resistance buff from the Balance tree's Improved Mark of the Wild talent."
+    },
+    {
+      "spell_id": 29166,
+      "name": "Innervate",
+      "kind": "cooldown",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#29166",
+      "note": "Mana cooldown given to another caster; tracked by use, not uptime."
+    },
+    {
+      "spell_id": 21670,
+      "name": "Faerie Fire",
+      "kind": "debuff",
+      "target": "enemy",
+      "verified": "1.60.1.69893/spells.json#21670",
+      "note": "Armor-reduction debuff, max rank; any druid spec can apply it, but Balance is the ranged spec most likely to open a pull with it."
+    }
+  ]
+}

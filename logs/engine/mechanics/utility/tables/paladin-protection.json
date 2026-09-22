@@ -1,0 +1,44 @@
+{
+  "spec": "paladin-protection",
+  "owned": [
+    {
+      "spell_id": 20217,
+      "name": "Blessing of Kings",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#20217",
+      "note": "All-stats percentage blessing."
+    },
+    {
+      "spell_id": 17232,
+      "name": "Devotion Aura",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#17232",
+      "note": "Party armor aura, max rank."
+    },
+    {
+      "spell_id": 25780,
+      "name": "Righteous Fury",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#25780",
+      "note": "Self threat-generation buff; core to holding aggro, uptime is a meaningful tanking signal."
+    },
+    {
+      "spell_id": 20468,
+      "name": "Improved Righteous Fury",
+      "kind": "talent-modifier",
+      "verified": "1.60.1.69893/spells.json#20468",
+      "note": "Threat percentage modifier on Righteous Fury; not independently trackable as its own aura."
+    },
+    {
+      "spell_id": 25943,
+      "name": "Judgement of the Crusader",
+      "kind": "debuff",
+      "target": "enemy",
+      "verified": "1.60.1.69893/spells.json#25943",
+      "note": "Raid-wide critical strike chance debuff maintained on the current target."
+    }
+  ]
+}

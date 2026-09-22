@@ -158,4 +158,37 @@ describe("SettingsView", function()
 		assert.are.equal(#SettingsView.panelView.toggles, #tab.toggles)
 		assert.are_not.equal(SettingsView.panelView, tab)
 	end)
+	it("heads each group once and explains every setting", function()
+		start()
+		local groups = 0
+		for _, row in ipairs(SettingsView.toggles()) do
+			assert.is_truthy(row.hint, row.label .. " has no explanation")
+			if row.group ~= nil then
+				groups = groups + 1
+			end
+		end
+		assert.are.equal(2, groups)
+	end)
+	-- Seen in game: each toggle was anchored to the indented hint above it,
+	-- so the list stepped to the right like sub-bullets.
+	it("lines every toggle up on the same left edge", function()
+		start()
+		local view = SettingsView.build(_G.CreateFrame("Frame"), ctxFor())
+		local left
+		for _, toggle in ipairs(view.toggles) do
+			local point = toggle.frame.points[#toggle.frame.points]
+			assert.are.equal("TOPLEFT", point[1])
+			left = left or point[4]
+			assert.are.equal(left, point[4])
+		end
+	end)
+	-- Seen in game: the settings ran off the bottom of the page.
+	it("tells the page how tall it is so the page can scroll", function()
+		start()
+		local holder = _G.CreateFrame("Frame")
+		holder:SetSize(538, 200)
+		local view = SettingsView.build(holder, ctxFor())
+		assert.is_true(view.scroll.contentHeight > 200)
+		assert.is_true(view.scroll:Range() > 0)
+	end)
 end)

@@ -1,0 +1,21 @@
+{
+  "spec": "warlock-affliction",
+  "owned": [
+    {
+      "spell_id": 11724,
+      "name": "Curse of the Elements",
+      "kind": "debuff",
+      "target": "enemy",
+      "verified": "1.60.1.69893/spells.json#11724",
+      "note": "Magic-damage-taken debuff, max rank."
+    },
+    {
+      "spell_id": 16231,
+      "name": "Curse of Recklessness",
+      "kind": "debuff",
+      "target": "enemy",
+      "verified": "1.60.1.69893/spells.json#16231",
+      "note": "Armor-reduction curse, max rank."
+    }
+  ]
+}

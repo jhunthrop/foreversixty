@@ -688,6 +688,24 @@ func TestNilRegistryFallsBackToGUIDs(t *testing.T) {
 	}
 }
 
+// TestSnapshotCopiesFightLevelFieldsRatingNeeds covers the additive fields
+// the rating engine (logs/engine/rating) needs from a fight-level source it
+// otherwise has no access to, since rating.Score's signature takes only a
+// summary.Summary, never a fight.Fight (docs/superpowers/specs/2026-09-21-
+// performance-rating-design.md §1.2's bracket key, §2's wipe rule).
+func TestSnapshotCopiesFightLevelFieldsRatingNeeds(t *testing.T) {
+	_, f, s := build(t)
+	if s.EncounterID != f.EncounterID {
+		t.Errorf("EncounterID = %d, want %d", s.EncounterID, f.EncounterID)
+	}
+	if s.Difficulty != f.Difficulty {
+		t.Errorf("Difficulty = %d, want %d", s.Difficulty, f.Difficulty)
+	}
+	if s.Kill != f.Kill {
+		t.Errorf("Kill = %v, want %v", s.Kill, f.Kill)
+	}
+}
+
 func TestSnapshotIsDeterministic(t *testing.T) {
 	first, _, _ := build(t)
 	_, f, _ := build(t)

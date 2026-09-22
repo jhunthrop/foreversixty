@@ -1,0 +1,13 @@
+{
+  "spec": "shaman-elemental",
+  "owned": [
+    {
+      "spell_id": 24854,
+      "name": "Mana Spring Totem",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#24854",
+      "note": "Party mana regen totem; commonly the caster-group totem an Elemental shaman drops."
+    }
+  ]
+}

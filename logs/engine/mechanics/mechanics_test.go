@@ -114,6 +114,41 @@ func TestParseAcceptsPhasesAndRefusesAMalformedTrigger(t *testing.T) {
 	}
 }
 
+func TestParseAcceptsDowntimeAndRefusesAMalformedTriggerOrDuration(t *testing.T) {
+	good := []byte(`{"encounter_id": 666, "name": "Garr", "mechanics": [
+		{"spell_id": 19497, "name": "Eruption", "kind": "avoidable"}],
+		"downtime": [
+			{"trigger": {"spell_id": 19497, "on": "aura_applied"}, "duration_ms": 3000}]}`)
+	table, err := Parse(good)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(table.Downtime) != 1 {
+		t.Fatalf("downtime = %+v", table.Downtime)
+	}
+	if table.Downtime[0].Trigger.On != OnAuraApplied || table.Downtime[0].DurationMS != 3000 {
+		t.Fatalf("downtime = %+v", table.Downtime[0])
+	}
+
+	refused := map[string][]byte{
+		"a zero duration": []byte(
+			`{"encounter_id":1,"name":"X","downtime":[{"trigger":{"spell_id":5,"on":"aura_applied"},"duration_ms":0}]}`),
+		"a negative duration": []byte(
+			`{"encounter_id":1,"name":"X","downtime":[{"trigger":{"spell_id":5,"on":"aura_applied"},"duration_ms":-1}]}`),
+		"an unknown on": []byte(
+			`{"encounter_id":1,"name":"X","downtime":[{"trigger":{"spell_id":5,"on":"cast_finished"},"duration_ms":1000}]}`),
+		"both forms at once": []byte(
+			`{"encounter_id":1,"name":"X","downtime":[{"trigger":{"spell_id":5,"on":"cast_start","health_pct":50},"duration_ms":1000}]}`),
+		"no trigger at all": []byte(
+			`{"encounter_id":1,"name":"X","downtime":[{"trigger":{},"duration_ms":1000}]}`),
+	}
+	for why, data := range refused {
+		if _, err := Parse(data); err == nil {
+			t.Errorf("%s must be refused", why)
+		}
+	}
+}
+
 func TestTheFixtureEncounterNamesItsSecondPhase(t *testing.T) {
 	table, ok := Load(9001)
 	if !ok {

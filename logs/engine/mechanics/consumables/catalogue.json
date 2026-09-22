@@ -1,0 +1,78 @@
+{
+  "roles": {
+    "dps": {
+      "weights": { "flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20 },
+      "flask": [
+        { "spell_id": 17626, "name": "Flask of the Titans", "verified": "1.60.1.69893/spells.json#17626" },
+        { "spell_id": 17628, "name": "Flask of Supreme Power", "verified": "1.60.1.69893/spells.json#17628" }
+      ],
+      "food": [
+        { "spell_id": 1249522, "name": "Grilled Squid", "verified": "1.60.1.69893/spells.json#1249522" }
+      ],
+      "weapon_enchant": [
+        { "spell_id": 22756, "name": "Elemental Sharpening Stone", "verified": "1.60.1.69893/spells.json#22756" },
+        { "spell_id": 25122, "name": "Brilliant Wizard Oil", "verified": "1.60.1.69893/spells.json#25122" }
+      ],
+      "world_buffs": [
+        { "spell_id": 22888, "name": "Rallying Cry of the Dragonslayer", "verified": "1.60.1.69893/spells.json#22888" },
+        { "spell_id": 16609, "name": "Warchief's Blessing", "verified": "1.60.1.69893/spells.json#16609" },
+        { "spell_id": 15366, "name": "Songflower Serenade", "verified": "1.60.1.69893/spells.json#15366" },
+        { "spell_id": 24425, "name": "Spirit of Zandalar", "verified": "1.60.1.69893/spells.json#24425" }
+      ],
+      "combat_potion": {
+        "max_uses": 2,
+        "entries": [
+          { "spell_id": 17528, "name": "Mighty Rage Potion", "verified": "1.60.1.69893/spells.json#17528" }
+        ]
+      }
+    },
+    "healer": {
+      "weights": { "flask": 30, "food": 15, "weapon_enchant": 0, "world_buffs": 20, "combat_potion": 35 },
+      "flask": [
+        { "spell_id": 17627, "name": "Flask of Distilled Wisdom", "verified": "1.60.1.69893/spells.json#17627" },
+        { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.69893/spells.json#17629" }
+      ],
+      "food": [
+        { "spell_id": 1249513, "name": "Nightfin Soup", "verified": "1.60.1.69893/spells.json#1249513" }
+      ],
+      "weapon_enchant": [],
+      "world_buffs": [
+        { "spell_id": 22888, "name": "Rallying Cry of the Dragonslayer", "verified": "1.60.1.69893/spells.json#22888" },
+        { "spell_id": 16609, "name": "Warchief's Blessing", "verified": "1.60.1.69893/spells.json#16609" },
+        { "spell_id": 15366, "name": "Songflower Serenade", "verified": "1.60.1.69893/spells.json#15366" },
+        { "spell_id": 24425, "name": "Spirit of Zandalar", "verified": "1.60.1.69893/spells.json#24425" }
+      ],
+      "combat_potion": {
+        "max_uses": 2,
+        "entries": [
+          { "spell_id": 17531, "name": "Major Mana Potion", "verified": "1.60.1.69893/spells.json#17531" }
+        ]
+      }
+    },
+    "tank": {
+      "weights": { "flask": 30, "food": 15, "weapon_enchant": 15, "world_buffs": 20, "combat_potion": 20 },
+      "flask": [
+        { "spell_id": 17626, "name": "Flask of the Titans", "verified": "1.60.1.69893/spells.json#17626" },
+        { "spell_id": 17629, "name": "Flask of Chromatic Resistance", "verified": "1.60.1.69893/spells.json#17629" }
+      ],
+      "food": [
+        { "spell_id": 1248395, "name": "Tender Wolf Steak", "verified": "1.60.1.69893/spells.json#1248395" }
+      ],
+      "weapon_enchant": [
+        { "spell_id": 22756, "name": "Elemental Sharpening Stone", "verified": "1.60.1.69893/spells.json#22756" }
+      ],
+      "world_buffs": [
+        { "spell_id": 22888, "name": "Rallying Cry of the Dragonslayer", "verified": "1.60.1.69893/spells.json#22888" },
+        { "spell_id": 16609, "name": "Warchief's Blessing", "verified": "1.60.1.69893/spells.json#16609" },
+        { "spell_id": 15366, "name": "Songflower Serenade", "verified": "1.60.1.69893/spells.json#15366" },
+        { "spell_id": 24425, "name": "Spirit of Zandalar", "verified": "1.60.1.69893/spells.json#24425" }
+      ],
+      "combat_potion": {
+        "max_uses": 2,
+        "entries": [
+          { "spell_id": 17528, "name": "Mighty Rage Potion", "verified": "1.60.1.69893/spells.json#17528" }
+        ]
+      }
+    }
+  }
+}

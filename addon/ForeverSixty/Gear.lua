@@ -11,6 +11,7 @@ ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Export = ns.Export or require("Export")
 local Talents = ns.Talents or require("Talents")
+local Compat = ns.Compat or require("Compat")
 
 local Gear = {}
 
@@ -45,7 +46,7 @@ Gear.STAT_KEYS = {
 }
 
 function Gear.statsOf(link)
-	local raw = link and GetItemStats(link) or nil
+	local raw = link and Compat.itemStats(link) or nil
 	local stats = {}
 	if raw == nil then
 		return stats
@@ -166,11 +167,10 @@ function Gear.upgrades(data, build)
 	local planned = plannedBySlot(build)
 	local found = {}
 	for _, link in ipairs(Gear.candidates()) do
-		-- Called bare, matching Export.lua's itemIdOf and isEquippable:
-		-- GetItemInfoInstant is a required client API for this addon, not a
-		-- guarded one, so every call site fails the same way if it is ever
-		-- missing instead of one throwing while another silently mis-scores.
-		local id, _, _, equipLocation = GetItemInfoInstant(link)
+		-- Through Compat, like Export.lua's itemIdOf and isEquippable, so
+		-- every call site finds the function in the same place on a client
+		-- that moved it to C_Item.
+		local id, _, _, equipLocation = Compat.itemInfoInstant(link)
 		for _, target in ipairs(Gear.SLOTS_BY_EQUIP_LOCATION[equipLocation] or {}) do
 			local against = planned[target]
 			-- A planned item with no stats is an FS1 code, which carries none.

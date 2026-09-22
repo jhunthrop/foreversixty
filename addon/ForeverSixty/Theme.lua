@@ -17,6 +17,22 @@ local Theme = {}
 --- The site's palette, web/src/styles/tokens.css, as six hex digits.
 Theme.HEX = {
 	background = "0d111a",
+	--- A field the player reads or types in: darker than the window, so it
+	--- reads as set into it.
+	inset = "070a10",
+	--- A button at rest, and under the cursor.
+	raised = "161c2b",
+	hover = "1f2739",
+	--- A card on a page, and the sidebar's ground.
+	card = "111726",
+	sidebar = "0a0e16",
+	--- A progress bar's empty track.
+	track = "1b2233",
+	--- The primary button's label: dark, on gold.
+	onGold = "15110a",
+	goldHover = "f2cd74",
+	success = "6fcf8e",
+	shadow = "000000",
 	border = "262e40",
 	titleTop = "131824",
 	titleBottom = "0d111a",
@@ -31,22 +47,46 @@ Theme.ALPHA = {
 	--- A row the player has already matched, and a disabled button.
 	dim = 0.55,
 	disabled = 0.4,
+	shadow = 0.5,
 }
 
 Theme.SIZES = {
-	windowWidth = 560,
-	windowHeight = 420,
+	windowWidth = 720,
+	windowHeight = 500,
+	--- The left navigation, and one item in it.
+	sidebarWidth = 150,
+	navHeight = 30,
+	navIcon = 16,
+	navBar = 2,
+	--- How far the drop shadow reaches past the window.
+	shadow = 5,
+	cardGap = 12,
+	cardHeight = 150,
+	progressHeight = 6,
+	pillHeight = 16,
+	--- Seconds the window takes to fade in.
+	fadeIn = 0.15,
 	titleBarHeight = 28,
+	--- The two lines under the title bar: who this is, and which data build.
+	headerHeight = 56,
 	tabHeight = 24,
+	tabUnderline = 2,
+	closeButton = 18,
 	tabWidth = 96,
 	border = 1,
-	padding = 12,
+	padding = 16,
 	gap = 4,
-	rowHeight = 18,
-	listRows = 12,
+	rowHeight = 20,
+	--- Rows per list, chosen so each page fits the window under the tab
+	--- strip: the Follow list sits between the paste field and its buttons,
+	--- and the Gear page stacks two lists. The lists scroll with the wheel.
+	followRows = 11,
+	gearSlotRows = 9,
+	gearUpgradeRows = 5,
+	equipButtonWidth = 72,
 	buttonHeight = 22,
 	buttonWidth = 150,
-	editBoxHeight = 48,
+	editBoxHeight = 72,
 	iconSize = 16,
 	trackerWidth = 240,
 	trackerHeight = 48,
@@ -65,15 +105,19 @@ Theme.FONTS = {
 	normal = "GameFontNormal",
 	small = "GameFontNormalSmall",
 	highlight = "GameFontHighlight",
+	large = "GameFontNormalLarge",
 }
 Theme.FALLBACK_FONT = { path = "Fonts\\FRIZQT__.TTF", size = 12 }
 
 --- Every template this addon will ever ask for, by the key callers use.
-Theme.TEMPLATES = {
-	tab = "PanelTabButtonTemplate",
-	button = "UIPanelButtonTemplate",
-	editBox = "InputBoxTemplate",
-}
+--- Empty on purpose. The first in-game screenshots showed what the
+--- client's stock templates do to this window: a red action button, gold
+--- tabs hanging off the bottom edge and a one-line input with the export
+--- spilling out of it, none of it the site's design. Buttons, tabs and
+--- fields are drawn by Widgets from flat textures instead, which also
+--- means one code path to test. createFrame keeps the lookup so a template
+--- can be named here again without touching a caller.
+Theme.TEMPLATES = {}
 
 Theme.MEDIA = { minimapIcon = "Interface\\AddOns\\ForeverSixty\\media\\minimap" }
 
@@ -233,6 +277,73 @@ function Theme.gradient(parent, topKey, bottomKey)
 	top:SetPoint("BOTTOM", parent, "CENTER", 0, 0)
 	bottom:SetPoint("TOP", parent, "CENTER", 0, 0)
 	return top, bottom
+end
+
+--- The edge trimmed off a game icon. Every icon in the client carries a
+--- baked-in bevel; cropping it is what makes a row of them look designed.
+Theme.ICON_CROP = { 0.08, 0.92, 0.08, 0.92 }
+
+--- Icons for the sidebar. All of them are in the base client's icon set.
+Theme.NAV_ICONS = {
+	overview = "Interface\\Icons\\INV_Misc_Map_01",
+	follow = "Interface\\Icons\\INV_Misc_Book_09",
+	gear = "Interface\\Icons\\INV_Chest_Chain",
+	export = "Interface\\Icons\\INV_Letter_15",
+	settings = "Interface\\Icons\\INV_Misc_Gear_01",
+}
+Theme.UNKNOWN_ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
+
+--- A game icon with its bevel cropped. `path` may be a texture path or a
+--- file id; nil draws the neutral tile rather than nothing.
+function Theme.icon(parent, layer, path, size)
+	local texture = parent:CreateTexture(nil, layer or "ARTWORK")
+	texture:SetSize(size, size)
+	texture:SetTexture(path or Theme.UNKNOWN_ICON)
+	if type(texture.SetTexCoord) == "function" then
+		texture:SetTexCoord(Theme.ICON_CROP[1], Theme.ICON_CROP[2], Theme.ICON_CROP[3], Theme.ICON_CROP[4])
+	end
+	return texture
+end
+
+--- Grey an icon out, where the client can.
+function Theme.desaturate(texture, on)
+	if type(texture.SetDesaturated) == "function" then
+		texture:SetDesaturated(on)
+	end
+	return texture
+end
+
+--- Fade a frame in. A client without the helper just shows it.
+function Theme.fadeIn(frame, seconds)
+	if type(UIFrameFadeIn) == "function" and pcall(UIFrameFadeIn, frame, seconds, 0, 1) then
+		return true
+	end
+	frame:SetAlpha(1)
+	return false
+end
+
+--- The client's own window sounds, by name in SOUNDKIT. Silent without them.
+Theme.SOUNDS = { open = "IG_CHARACTER_INFO_OPEN", close = "IG_CHARACTER_INFO_CLOSE" }
+
+function Theme.playSound(key)
+	local kit = type(SOUNDKIT) == "table" and SOUNDKIT[Theme.SOUNDS[key] or ""] or nil
+	if kit ~= nil and type(PlaySound) == "function" then
+		return pcall(PlaySound, kit)
+	end
+	return false
+end
+
+--- A soft shadow past a frame's edges: a darker frame behind it, one
+--- strata step down, so it never covers the window's own content.
+function Theme.shadow(frame)
+	local reach = Theme.SIZES.shadow
+	local shadow = Theme.texture(frame, "BACKGROUND", "shadow", Theme.ALPHA.shadow)
+	shadow:SetPoint("TOPLEFT", frame, "TOPLEFT", -reach, reach)
+	shadow:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", reach, -reach)
+	if type(shadow.SetDrawLayer) == "function" then
+		shadow:SetDrawLayer("BACKGROUND", -8)
+	end
+	return shadow
 end
 
 --- Let Escape close a frame. UISpecialFrames is a plain client table;

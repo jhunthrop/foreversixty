@@ -1,0 +1,29 @@
+{
+  "spec": "shaman-restoration",
+  "owned": [
+    {
+      "spell_id": 24854,
+      "name": "Mana Spring Totem",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#24854",
+      "note": "Party mana regen totem, max rank."
+    },
+    {
+      "spell_id": 10463,
+      "name": "Healing Stream Totem",
+      "kind": "buff",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#10463",
+      "note": "Party passive heal totem, max rank."
+    },
+    {
+      "spell_id": 17359,
+      "name": "Mana Tide Totem",
+      "kind": "cooldown",
+      "target": "ally",
+      "verified": "1.60.1.69893/spells.json#17359",
+      "note": "Restoration-only party mana-regen cooldown totem; long cooldown, tracked by use, not uptime."
+    }
+  ]
+}
