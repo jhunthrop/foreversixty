@@ -1079,3 +1079,78 @@ func TestAnIngestWithNoScorerStillStoresTheFight(t *testing.T) {
 	id := h.createReport(Public)
 	h.postVerifiedFight(t, id, 1) // must not panic and must still succeed
 }
+
+// fakeRater records the fights handed to the rating pipeline.
+type fakeRater struct {
+	mu        sync.Mutex
+	scheduled []RatedFight
+}
+
+func (f *fakeRater) Schedule(rf RatedFight) {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	f.scheduled = append(f.scheduled, rf)
+}
+
+func (f *fakeRater) taken() []RatedFight {
+	f.mu.Lock()
+	defer f.mu.Unlock()
+	return append([]RatedFight{}, f.scheduled...)
+}
+
+// TestPutFightSchedulesARatingForAPublicReport posts through the real
+// route the way TestAVerifiedFightQueuesItsMembersForScoring does for
+// i.score, but proves the opposite of that hook's own gate: unlike
+// i.score, i.rate has no member gate, so it must schedule every
+// roster player even when nobody in the fixture is a signed-in
+// member.
+func TestPutFightSchedulesARatingForAPublicReport(t *testing.T) {
+	h := newHarness(t)
+	rater := &fakeRater{}
+	h.ingest.Rate = rater
+	// Nobody in the fixture is linked to an account. i.score would
+	// queue nothing under this membership; i.rate must not care.
+	h.ingest.Members = fakeMembers{}
+	id := h.createReport(Public)
+	h.postVerifiedFight(t, id, 1)
+
+	scheduled := rater.taken()
+	if len(scheduled) != 1 {
+		t.Fatalf("scheduled %d ratings, want 1", len(scheduled))
+	}
+	rf := scheduled[0]
+	if rf.ReportID != id || rf.FightIndex != 1 {
+		t.Errorf("scheduled %+v, want %s/1", rf, id)
+	}
+	if rf.EncounterID == 0 {
+		t.Error("a rated fight was scheduled with no encounter id")
+	}
+	if len(rf.Summary.Roster) != 3 {
+		t.Errorf("i.rate must include every roster player, not signed-in members only; got %d roster rows",
+			len(rf.Summary.Roster))
+	}
+}
+
+// TestPutFightSkipsRatingForAPrivateReport mirrors
+// TestAPrivateReportQueuesNothingForScoring for i.rate: a private
+// report may never rank or rate, no matter how many players fought.
+func TestPutFightSkipsRatingForAPrivateReport(t *testing.T) {
+	h := newHarness(t)
+	rater := &fakeRater{}
+	h.ingest.Rate = rater
+	id := h.createReport(Private)
+	h.postVerifiedFight(t, id, 1)
+	if n := len(rater.taken()); n != 0 {
+		t.Fatalf("%d ratings scheduled from a private report", n)
+	}
+}
+
+// TestPutFightStillCompletesWhenRateIsNil mirrors
+// TestAnIngestWithNoScorerStillStoresTheFight: a deployment with no
+// rater wired must not panic or fail the upload.
+func TestPutFightStillCompletesWhenRateIsNil(t *testing.T) {
+	h := newHarness(t)
+	h.ingest.Rate = nil
+	id := h.createReport(Public)
+	h.postVerifiedFight(t, id, 1) // must not panic and must still succeed
+}

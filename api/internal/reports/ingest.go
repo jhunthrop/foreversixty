@@ -123,6 +123,29 @@ type Scorer interface {
 	Schedule(f ScoredFight)
 }
 
+// RatedFight is one verified, ranked fight handed to the rating
+// pipeline: the already-decoded summary the ingest holds in memory
+// (the same summary the verify handler already unmarshalled to store
+// the fight, so no extra summary read is needed), plus the
+// region/ruleset a roster row's name is keyed under, matching what
+// ReportRealm already resolves for i.rank/i.score.
+type RatedFight struct {
+	ReportID        string
+	FightIndex      int
+	Region, Ruleset string
+	FoughtAt        time.Time
+	EncounterID     int64
+	Summary         summary.Summary
+}
+
+// Rater schedules one fight's ratings for every roster player, out of
+// band, so the companion's fight-close call returns at once - the
+// same never-blocks-storage shape as Scorer. *rating.Rater satisfies
+// it.
+type Rater interface {
+	Schedule(f RatedFight)
+}
+
 // Ingest serves the companion's routes: one fight at a time, a live
 // snapshot while a fight is open, raw chunks in the background, and a
 // completion call at the end of the night.
@@ -139,7 +162,13 @@ type Ingest struct {
 	// who are the only ones scored at fight close. Nil means nobody
 	// is, which is the honest answer for a deployment that cannot ask.
 	Members Members
-	Log     *slog.Logger
+	// Rate schedules ratings for every roster player of a ranked
+	// fight, unlike Score which is signed-in-member-only (the
+	// execution scorer needs a rebuildable simulator character, a
+	// rating does not). Nil means this deployment rates nothing,
+	// which degrades the same way a nil Score does.
+	Rate Rater
+	Log  *slog.Logger
 }
 
 // MountIngest registers the companion's routes.
@@ -345,6 +374,7 @@ func (i *Ingest) putFight(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	i.score(r.Context(), rep, n, f.EncounterID, derived)
+	i.rate(r.Context(), rep, n, f.EncounterID, f.Start, posted)
 	if err := i.WriteReportJSON(r.Context(), rep); err != nil {
 		i.fail(w, r, "fight", err, "could not store that fight just now")
 		return
@@ -419,6 +449,24 @@ func (i *Ingest) score(ctx context.Context, rep Report, n int, encounterID int64
 			ReportID: rep.ID, FightIndex: n, PlayerKey: key, PlayerName: row.Name,
 		})
 	}
+}
+
+// rate schedules this fight's ratings for every roster player -
+// unlike score, which is signed-in-member-only. Trash, an unranked
+// visibility, and a deployment with no rater are all skipped, matching
+// score's own skip conditions exactly except for the member gate:
+// score's member gate is specific to needing a simulator character,
+// not a rating precondition. Best-effort and returns nothing, for the
+// same reason score is: a rating failure must never fail an upload.
+func (i *Ingest) rate(ctx context.Context, rep Report, n int, encounterID int64, at time.Time, sum summary.Summary) {
+	if i.Rate == nil || encounterID == 0 || !Ranked(rep.Visibility) {
+		return
+	}
+	region, ruleset := ReportRealm(rep)
+	i.Rate.Schedule(RatedFight{
+		ReportID: rep.ID, FightIndex: n, Region: region, Ruleset: ruleset,
+		FoughtAt: at.UTC(), EncounterID: encounterID, Summary: sum,
+	})
 }
 
 // ReportRealm is the region and ruleset a report's players are keyed
