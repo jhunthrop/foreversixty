@@ -101,6 +101,10 @@ type CharacterProfile struct {
 	Level              int
 	Faction            string
 	ClassSlug          string
+	// RaceName is Blizzard's race.name, verbatim (title case, e.g. "Night Elf") — the same
+	// string data/builds/<build>/races.json keys its own race rows by (spec
+	// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.2).
+	RaceName           string
 	RealmSlug          string
 	RealmName          string
 	GuildName          string
@@ -123,6 +127,9 @@ type characterProfileResponse struct {
 	CharacterClass struct {
 		Name string `json:"name"`
 	} `json:"character_class"`
+	Race struct {
+		Name string `json:"name"`
+	} `json:"race"`
 	Realm struct {
 		Slug string `json:"slug"`
 		Name string `json:"name"`
@@ -157,7 +164,7 @@ func (c *Client) Character(ctx context.Context, region, realmSlug, name string) 
 	}
 	p := CharacterProfile{
 		Name: res.Name, Level: res.Level, Faction: strings.ToLower(res.Faction.Type),
-		ClassSlug: classSlug(res.CharacterClass.Name),
+		ClassSlug: classSlug(res.CharacterClass.Name), RaceName: res.Race.Name,
 		RealmSlug: res.Realm.Slug, RealmName: res.Realm.Name,
 		LastLoginTimestamp: res.LastLoginTimestamp,
 		AverageItemLevel:   res.AverageItemLevel, EquippedItemLevel: res.EquippedItemLevel,
@@ -180,6 +187,24 @@ func (c *Client) Equipment(ctx context.Context, region, realmSlug, name string) 
 	u := c.APIHost(region) + "/profile/wow/character/" + url.PathEscape(realmSlug) + "/" +
 		url.PathEscape(strings.ToLower(name)) + "/equipment?namespace=" + c.ProfileNamespace(region)
 	body, err := c.getBytes(ctx, "equipment", u, token)
+	if err != nil {
+		return nil, err
+	}
+	return json.RawMessage(body), nil
+}
+
+// Specializations reads a character's talent groups verbatim. Not parsed here — the
+// Blizzard-to-FS1 talent mapping is bnetbuild's job (spec
+// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.2) — so the caller stores
+// the raw body directly, the same shape Equipment already returns.
+func (c *Client) Specializations(ctx context.Context, region, realmSlug, name string) (json.RawMessage, error) {
+	token, err := c.AppToken(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("bnetapi: specializations: %w", err)
+	}
+	u := c.APIHost(region) + "/profile/wow/character/" + url.PathEscape(realmSlug) + "/" +
+		url.PathEscape(strings.ToLower(name)) + "/specializations?namespace=" + c.ProfileNamespace(region)
+	body, err := c.getBytes(ctx, "specializations", u, token)
 	if err != nil {
 		return nil, err
 	}
