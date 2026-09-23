@@ -34,6 +34,19 @@ func TestLoadFixtureReadsTheTwoTreeClass(t *testing.T) {
 	if !ok || r.Name != "Dwarf" || r.Faction != "alliance" {
 		t.Fatalf("race 3 = %+v ok=%v", r, ok)
 	}
+	races := b.Races()
+	if len(races) == 0 {
+		t.Fatal("Races() must list every race the fixture loaded")
+	}
+	found := false
+	for _, race := range races {
+		if race.ID == 3 && race.Name == "Dwarf" {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatal("Races() must include race 3 (Dwarf) from the fixture")
+	}
 	if !b.ComboAllowed(1, 1) {
 		t.Fatal("Human Warrior is in combos.json and must be allowed")
 	}
