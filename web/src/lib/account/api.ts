@@ -7,7 +7,7 @@
 // DELETE /v1/sessions and PATCH /v1/me { anonymize } come from the contract's Amendments
 // section; the first draft required both behaviours on /account without naming a route.
 import { API_BASE_URL } from '../planner/config';
-import { forgetPrivate, query, setQueryData } from '../data/query';
+import { forgetPrivate, invalidate, query, setQueryData } from '../data/query';
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
 export const ACCOUNT_FAILED = 'That did not work; try again';
@@ -370,18 +370,33 @@ export async function requestEmailLink(email: string, apiBase: string = API_BASE
   await call('/v1/auth/email', apiBase, { method: 'POST', body: { email } });
 }
 
-export async function listDevices(apiBase: string = API_BASE_URL): Promise<Device[]> {
-  return (await call<Device[]>('/v1/devices', apiBase)) ?? [];
+const DEVICES_TTL_MS = 10 * 60 * 1000;
+
+function devicesKey(apiBase: string): string {
+  return `${apiBase}/v1/devices`;
+}
+
+export function listDevices(apiBase: string = API_BASE_URL): Promise<Device[]> {
+  return query<Device[]>(
+    devicesKey(apiBase),
+    async () => (await call<Device[]>('/v1/devices', apiBase)) ?? [],
+    {
+      scope: 'private',
+      ttlMs: DEVICES_TTL_MS,
+    },
+  );
 }
 
 export async function pairDevice(apiBase: string = API_BASE_URL): Promise<PairingCode> {
   const code = await call<PairingCode>('/v1/devices/pair', apiBase, { method: 'POST' });
   if (code === null) throw new AccountError(ACCOUNT_FAILED, 0);
+  invalidate(devicesKey(apiBase));
   return code;
 }
 
 export async function revokeDevice(id: string, apiBase: string = API_BASE_URL): Promise<void> {
   await call(`/v1/devices/${encodeURIComponent(id)}`, apiBase, { method: 'DELETE' });
+  invalidate(devicesKey(apiBase));
 }
 
 export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
@@ -424,6 +439,7 @@ export async function postMyExports(
     method: 'POST',
     body: { exports },
   });
+  invalidate(meKey(apiBase));
   return result?.characters ?? [];
 }
 
@@ -451,18 +467,30 @@ export const REPORTS_PER_PAGE = 100;
 
 const EMPTY_REPORT_PAGE: MyReportPage = { rows: [], total: 0, page: 1, per_page: REPORTS_PER_PAGE };
 
+const MY_REPORTS_TTL_MS = 10 * 60 * 1000;
+
+function myReportsKey(apiBase: string, page: number): string {
+  return `${apiBase}/v1/reports?mine=1&page=${page}`;
+}
+
 /**
  * The "Your reports" list on /logs, per the contract's Amendments section. A signed-out
  * visitor gets an empty page rather than an error, because /logs renders for them too --
  * it just tells them to sign in.
  */
 export async function listMyReports(page: number = 1, apiBase: string = API_BASE_URL): Promise<MyReportPage> {
-  try {
-    return (await call<MyReportPage>(`/v1/reports?mine=1&page=${page}`, apiBase)) ?? EMPTY_REPORT_PAGE;
-  } catch (error) {
-    if (error instanceof AccountError && (error.status === 401 || error.status === 403)) {
-      return EMPTY_REPORT_PAGE;
-    }
-    throw error;
-  }
+  return query<MyReportPage>(
+    myReportsKey(apiBase, page),
+    async () => {
+      try {
+        return (await call<MyReportPage>(`/v1/reports?mine=1&page=${page}`, apiBase)) ?? EMPTY_REPORT_PAGE;
+      } catch (error) {
+        if (error instanceof AccountError && (error.status === 401 || error.status === 403)) {
+          return EMPTY_REPORT_PAGE;
+        }
+        throw error;
+      }
+    },
+    { scope: 'private', ttlMs: MY_REPORTS_TTL_MS },
+  );
 }

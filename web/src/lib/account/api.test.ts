@@ -14,6 +14,7 @@ import {
   listDevices,
   pairDevice,
   postMyExports,
+  REPORTS_PER_PAGE,
   requestEmailLink,
   requestEnvelope,
   revokeDevice,
@@ -150,6 +151,33 @@ describe('the account API', () => {
     expect((upstream.mock.calls[2][0] as Request).url).toBe(`${API}/v1/devices/dev1`);
   });
 
+  it('listDevices shares a cached answer across two calls without a second request', async () => {
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValue(
+        envelope([{ id: 'd1', name: 'Phone', platform: 'ios', created_at: 't', last_seen_at: null }]),
+      );
+    vi.stubGlobal('fetch', fetchSpy);
+    await listDevices(API);
+    await listDevices(API);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('revokeDevice invalidates the devices list', async () => {
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValueOnce(
+        envelope([{ id: 'd1', name: 'Phone', platform: 'ios', created_at: 't', last_seen_at: null }]),
+      )
+      .mockResolvedValueOnce(envelope(null)) // the DELETE
+      .mockResolvedValueOnce(envelope([]));
+    vi.stubGlobal('fetch', fetchSpy);
+    await listDevices(API);
+    await revokeDevice('d1', API);
+    await listDevices(API);
+    expect(fetchSpy).toHaveBeenCalledTimes(3); // list, delete, re-list (invalidated, not cached)
+  });
+
   it('signs out and sets the anonymize flag', async () => {
     // A dedicated apiBase, not the shared `API` constant: `setAnonymize` now writes its
     // response into query.ts's cache via `setQueryData`, and this test's fixture response
@@ -255,6 +283,17 @@ describe('listMyReports', () => {
     );
     const { listMyReports } = await import('./api');
     await expect(listMyReports(1, API)).resolves.toEqual({ rows: [], total: 0, page: 1, per_page: 100 });
+  });
+
+  it('shares a cached answer across two calls without a second request', async () => {
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValue(envelope({ rows: [], total: 0, page: 1, per_page: REPORTS_PER_PAGE }));
+    vi.stubGlobal('fetch', fetchSpy);
+    const { listMyReports } = await import('./api');
+    await listMyReports(1, API);
+    await listMyReports(1, API);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 });
 
