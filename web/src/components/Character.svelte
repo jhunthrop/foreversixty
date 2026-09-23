@@ -4,6 +4,7 @@
      a public report is enough to have one, which is the spec's position. -->
 <script lang="ts">
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
+  import CharacterPortrait from './character/CharacterPortrait.svelte';
   import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
   import { parseCharacterPath, rulesetLabel, type CharacterPath } from '../lib/characters';
   import { classColorVar, formatAmount, percentileToken, rowLink } from '../lib/report/format';
@@ -91,14 +92,8 @@
     <header class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div class="flex flex-col gap-1">
         <div class="flex items-center gap-3">
-          {#if data.character.render_url === undefined && data.character.avatar_url !== undefined}
-            <img
-              class="h-11 w-11 shrink-0 rounded-[3px] object-cover"
-              src={data.character.avatar_url}
-              alt=""
-              loading="lazy"
-              data-testid="character-avatar"
-            />
+          {#if data.character.render_url === undefined}
+            <CharacterPortrait character={data.character} size="lg" testid="character" />
           {/if}
           <h1 class="section-title text-[18px]" style={`color: ${classColorVar(data.character.class)}`}>
             {data.character.name}

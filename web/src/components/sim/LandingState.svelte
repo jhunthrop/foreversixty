@@ -8,12 +8,11 @@
 <script lang="ts">
   import type { MeCharacter } from '../../lib/account/api';
   import type { CharacterPath } from '../../lib/characters';
-  import { buildSourcePill } from '../../lib/account/build-pill';
-  import { parseCharacterPath, rulesetLabel } from '../../lib/characters';
-  import { classColorVar } from '../../lib/report/format';
+  import { parseCharacterPath } from '../../lib/characters';
   import { simCopy } from '../../lib/sim/copy';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
+  import CharacterRow from '../character/CharacterRow.svelte';
 
   let {
     characters,
@@ -68,59 +67,30 @@
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-landing">
   <h2 class="section-title text-[15px]">{simCopy.yourCharacters}</h2>
 
-  <ul class="border-line bg-raised rounded-panel flex flex-col border">
+  <ul class="border-line bg-raised rounded-panel flex flex-col border px-3">
     {#each characters as character (character.key)}
-      {@const colour = classColorVar(character.class)}
       {@const path = pathOf(character)}
-      {@const pill = buildSourcePill(character.build)}
-      <li
-        class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-3 py-2 last:border-b-0"
-        data-testid={`sim-character-${character.key}`}
+      <CharacterRow
+        {character}
+        href={hrefFor(character)}
+        onNameClick={(event) => path !== null && follow(event, path)}
+        nameTestid={`sim-character-link-${character.key}`}
+        pillTestid={`sim-character-build-${character.key}`}
+        testid={`sim-character-${character.key}`}
       >
-        <!-- The row's own link: the swatch, name and descriptor, not the "Sim" button below
-             (a button nested inside an anchor is invalid, doubly-interactive markup) -- the
-             two are siblings that do the same thing, the way the design calls for a row that
-             is a link and a button that is "the same action". -->
-        <a
-          class="flex min-h-11 min-w-0 flex-1 items-center gap-3"
-          href={hrefFor(character)}
-          onclick={(event) => path !== null && follow(event, path)}
-          data-testid={`sim-character-link-${character.key}`}
-        >
-          <span class="rounded-control h-7 w-7 shrink-0" style={`background: ${colour}`} aria-hidden="true"
-          ></span>
-          <span class="text-[15px] font-semibold" style={`color: ${colour}`}>{character.name}</span>
-          <span class="text-muted text-[13px]">
-            {rulesetLabel(character.ruleset)} · {character.region.toUpperCase()}
-          </span>
-          <span
-            class={pill.pillClass === null ? 'text-muted text-[12px]' : `pill ${pill.pillClass}`}
-            data-testid={`sim-character-build-${character.key}`}
+        {#snippet action()}
+          <button
+            type="button"
+            class={`border-line-warm-strong rounded-control text-strong label ml-auto min-h-11 shrink-0 border px-4 disabled:opacity-50 md:min-h-9 ${busyKey === character.key ? BUSY_CLASS : ''}`}
+            disabled={busyKey !== null || path === null}
+            aria-busy={busyKey === character.key}
+            onclick={() => path !== null && onpick(path)}
+            data-testid={`sim-pick-${character.key}`}
           >
-            {pill.label}
-          </span>
-        </a>
-        <!-- Every row disables while any one is busy, not just the busy row (fix round 1,
-             MEDIUM-2, accepted as-is). `store.svelte.ts`'s `adopt()` has no per-load
-             generation guard: two concurrent `loadStored()` calls would race the same
-             `character`/`message` state with no ordering guarantee, so a second click
-             landing mid-pick could silently discard the first. Disabling every row until the
-             in-flight one settles is the safer trade until adopt() grows that guard. -->
-        <!-- The label never changes while the pick is in flight (design 2026-09-22 spec
-             section 3.2): `aria-busy` and the shared dimmed look say it instead, and both
-             key off this row rather than the global `busyKey !== null` the `disabled` flag
-             above uses -- only one row is actually running a request. -->
-        <button
-          type="button"
-          class={`border-line-warm-strong rounded-control text-strong label ml-auto min-h-11 shrink-0 border px-4 disabled:opacity-50 md:min-h-9 ${busyKey === character.key ? BUSY_CLASS : ''}`}
-          disabled={busyKey !== null || path === null}
-          aria-busy={busyKey === character.key}
-          onclick={() => path !== null && onpick(path)}
-          data-testid={`sim-pick-${character.key}`}
-        >
-          {simCopy.simIt}
-        </button>
-      </li>
+            {simCopy.simIt}
+          </button>
+        {/snippet}
+      </CharacterRow>
     {/each}
   </ul>
 

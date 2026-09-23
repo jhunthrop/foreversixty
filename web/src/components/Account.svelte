@@ -29,7 +29,6 @@
   import { createQueryState } from '../lib/data/query.svelte';
   import { characterListCopy } from '../lib/account/character-list-copy';
   import { accountPageCopy } from '../lib/account/account-page-copy';
-  import { characterDescriptor } from '../lib/account/character-descriptor';
   import { heroCharacter } from '../lib/account/hero-character';
   import { characterHref, guildHref, parseCharacterPath } from '../lib/characters';
   import {
@@ -39,7 +38,6 @@
     type CurrentCharacter,
   } from '../lib/current-character';
   import { mainCharacter, pointerForCharacter } from '../lib/account/main-character';
-  import { classColorVar } from '../lib/report/format';
   import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
   import { guildConsentCopy } from '../lib/guild/copy';
   import { API_BASE_URL } from '../lib/planner/config';
@@ -47,6 +45,7 @@
   import { relativeTime } from '../lib/dates';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterList from './account/CharacterList.svelte';
+  import CharacterIdentity from './character/CharacterIdentity.svelte';
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import MyReports from './MyReports.svelte';
@@ -526,14 +525,13 @@
                 data-testid="account-hero"
               >
                 <div class="flex flex-col gap-1">
-                  <a
-                    class="w-fit [font-family:var(--font-display)] text-[15px] font-semibold"
-                    style:color={classColorVar(hero.class)}
+                  <CharacterIdentity
+                    character={hero}
+                    size="lg"
+                    descriptor="full"
                     href={characterHref(hero.region, hero.ruleset, hero.name)}
-                  >
-                    {hero.name}
-                  </a>
-                  <span class="text-muted text-[13px]">{characterDescriptor(hero)}</span>
+                    testid="account-hero"
+                  />
                   {#if heroPath !== null}
                     <div class="flex min-h-11 flex-wrap items-center gap-3 md:min-h-0">
                       <CharacterHandoffLinks path={heroPath} />

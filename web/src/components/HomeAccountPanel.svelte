@@ -12,8 +12,9 @@
   import { createQueryState } from '../lib/data/query.svelte';
   import { readCurrent } from '../lib/current-character';
   import { classColorVar } from '../lib/report/format';
-  import { classSquare, classIconUrl, characterDescriptor } from '../lib/account/character-descriptor';
   import { heroCharacter } from '../lib/account/hero-character';
+  import CharacterIdentity from './character/CharacterIdentity.svelte';
+  import CharacterPortrait from './character/CharacterPortrait.svelte';
   import { mainCharacter } from '../lib/account/main-character';
   import { parseCharacterPath } from '../lib/characters';
   import { API_BASE_URL } from '../lib/planner/config';
@@ -101,9 +102,6 @@
   const shownOthers = $derived(others.slice(0, HOME_CHIP_LIMIT));
   const hiddenCount = $derived(others.length - shownOthers.length);
   const heroPath = $derived(hero === null ? null : parseCharacterPath(`/character/${hero.key}`));
-  const descriptor = $derived(hero === null ? '' : characterDescriptor(hero));
-  const square = $derived(hero === null ? null : classSquare(hero));
-  const classIcon = $derived(hero === null ? undefined : classIconUrl(hero));
 
   // The latest rating figure, when one exists (spec 2026-09-23 §2 item 2): a second fetch,
   // chained off the hero rather than blocking it, since this island is already deferred
@@ -138,37 +136,7 @@
     class="flex flex-wrap items-center gap-3 bg-[var(--color-bg)] [grid-area:1/1]"
     data-testid="home-account-panel"
   >
-    {#if hero.avatar_url !== undefined}
-      <img
-        class="h-10 w-10 shrink-0 rounded-[3px] object-cover"
-        src={hero.avatar_url}
-        alt=""
-        loading="lazy"
-        data-testid="home-hero-avatar"
-      />
-    {:else if square !== null}
-      <span
-        class="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-[3px] text-[16px] font-bold"
-        style={`background-color: color-mix(in srgb, ${square.color} 22%, transparent); color: ${square.color}`}
-        data-testid="home-hero-avatar-fallback"
-      >
-        {square.letter}
-        {#if classIcon !== undefined}
-          <img
-            class="absolute inset-0 h-10 w-10 rounded-[3px] object-cover"
-            src={classIcon}
-            alt=""
-            loading="lazy"
-          />
-        {/if}
-      </span>
-    {/if}
-    <div class="flex min-w-0 flex-col gap-0.5">
-      <span class="text-[15px] font-semibold" style={`color: ${classColorVar(hero.class)}`}>{hero.name}</span>
-      {#if descriptor !== ''}
-        <span class="text-muted text-[12px]">{descriptor}</span>
-      {/if}
-    </div>
+    <CharacterIdentity character={hero} size="md" descriptor="full" testid="home-hero" />
     <a class="text-nav text-[13px] font-semibold" href="/planner">{homePanelCopy.openInPlanner}</a>
     <a class="text-nav text-[13px] font-semibold" href="/sim">{homePanelCopy.openInSimulator}</a>
     <a class="text-nav text-[13px] font-semibold" href="/logs">{homePanelCopy.logs}</a>
@@ -181,8 +149,6 @@
     {#if shownOthers.length > 0}
       <ul class="flex w-full flex-wrap gap-2" data-testid="home-character-chips">
         {#each shownOthers as other (other.key)}
-          {@const chip = classSquare(other)}
-          {@const icon = classIconUrl(other)}
           <li>
             <button
               type="button"
@@ -191,29 +157,7 @@
               aria-label={homePanelCopy.switchTo(other.name)}
               data-testid="home-character-chip"
             >
-              {#if other.avatar_url !== undefined}
-                <img
-                  class="h-6 w-6 rounded-[3px] object-cover"
-                  src={other.avatar_url}
-                  alt=""
-                  loading="lazy"
-                />
-              {:else}
-                <span
-                  class="relative flex h-6 w-6 items-center justify-center rounded-[3px] text-[11px] font-bold"
-                  style={`background-color: color-mix(in srgb, ${chip.color} 22%, transparent); color: ${chip.color}`}
-                >
-                  {chip.letter}
-                  {#if icon !== undefined}
-                    <img
-                      class="absolute inset-0 h-6 w-6 rounded-[3px] object-cover"
-                      src={icon}
-                      alt=""
-                      loading="lazy"
-                    />
-                  {/if}
-                </span>
-              {/if}
+              <CharacterPortrait character={other} size="sm" testid="home-chip" />
               <span class="font-semibold" style={`color: ${classColorVar(other.class)}`}>{other.name}</span>
               {#if other.level !== undefined}<span class="text-muted">{other.level}</span>{/if}
             </button>
