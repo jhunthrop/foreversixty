@@ -217,6 +217,20 @@ export interface EnvelopeResult<T> {
  * the browser never reached at all -- carries no `error.message` of its own; it defaults
  * to `ACCOUNT_FAILED`, the account module's own generic copy.
  */
+
+/**
+ * The ETag `requestEnvelope` last saw for a GET, per `${apiBase}${path}`, and the body it
+ * came with. Never touched for a non-GET request. `query.ts`'s stale-while-revalidate
+ * background reload is what actually exercises this: a 304 makes that reload a cheap,
+ * bodiless round trip, resolved transparently to the same data the caller already had.
+ */
+const remembered = new Map<string, { etag: string; data: unknown }>();
+
+/** Tests only: a fresh module has remembered no ETags. */
+export function forgetRemembered(): void {
+  remembered.clear();
+}
+
 export async function requestEnvelope<T>(
   path: string,
   apiBase: string,
@@ -228,10 +242,14 @@ export async function requestEnvelope<T>(
   } = {},
 ): Promise<EnvelopeResult<T>> {
   const method = init.method ?? 'GET';
+  const remememberedKey = `${apiBase}${path}`;
   const headers = new Headers({ accept: 'application/json' });
   if (method !== 'GET') {
     headers.set('x-csrf-token', csrfToken());
     if (init.body !== undefined) headers.set('content-type', 'application/json');
+  } else {
+    const known = remembered.get(remememberedKey);
+    if (known !== undefined) headers.set('if-none-match', known.etag);
   }
 
   let response: Response;
@@ -246,6 +264,11 @@ export async function requestEnvelope<T>(
     );
   } catch {
     throw new AccountError(init.failureMessage ?? ACCOUNT_FAILED, 0);
+  }
+
+  if (method === 'GET' && response.status === 304) {
+    const known = remembered.get(remememberedKey);
+    return { status: 304, data: (known?.data as T | undefined) ?? null, message: null };
   }
 
   let envelope: Envelope<T> | null = null;
@@ -263,6 +286,13 @@ export async function requestEnvelope<T>(
       response.status,
     );
   }
+
+  if (method === 'GET') {
+    const etag = response.headers.get('etag');
+    if (etag !== null) remembered.set(remememberedKey, { etag, data: envelope?.data ?? null });
+    else remembered.delete(remememberedKey);
+  }
+
   return { status: response.status, data: envelope?.data ?? null, message: envelope?.error?.message ?? null };
 }
 
@@ -332,6 +362,7 @@ export function fetchMeOnce(apiBase: string = API_BASE_URL): Promise<Me | null> 
 
 /** Tests only: a fresh page has no remembered session. */
 export function forgetSession(): void {
+  forgetRemembered();
   sessions.clear();
   clearSnapshot();
 }
@@ -359,6 +390,7 @@ export async function revokeDevice(id: string, apiBase: string = API_BASE_URL): 
 }
 
 export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
+  forgetRemembered();
   clearSnapshot();
   await call('/v1/sessions', apiBase, { method: 'DELETE' });
 }

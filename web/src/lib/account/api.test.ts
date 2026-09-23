@@ -14,6 +14,7 @@ import {
   pairDevice,
   postMyExports,
   requestEmailLink,
+  requestEnvelope,
   revokeDevice,
   setAnonymize,
   signOut,
@@ -300,5 +301,35 @@ describe('effectiveServerSims', () => {
       guilds: [],
     } as unknown as Parameters<typeof effectiveServerSims>[0];
     expect(effectiveServerSims(me)).toBe(true);
+  });
+});
+
+describe('ETag revalidation', () => {
+  it('sends If-None-Match on a repeat GET after seeing an ETag, and resolves the 304 to the prior data', async () => {
+    const first = new Response(JSON.stringify({ ok: true, data: { n: 1 }, error: null }), {
+      status: 200,
+      headers: { 'content-type': 'application/json', etag: 'W/"abc"' },
+    });
+    const second = new Response(null, { status: 304, headers: { etag: 'W/"abc"' } });
+    const fetchSpy = vi.fn().mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+    vi.stubGlobal('fetch', fetchSpy);
+
+    const a = await requestEnvelope<{ n: number }>('/v1/etag-demo', API);
+    expect(a.data).toEqual({ n: 1 });
+
+    const b = await requestEnvelope<{ n: number }>('/v1/etag-demo', API);
+    expect(b.data).toEqual({ n: 1 }); // the 304's cached body
+    expect(b.status).toBe(304);
+
+    const sentHeaders = fetchSpy.mock.calls[1][0].headers as Headers;
+    expect(sentHeaders.get('if-none-match')).toBe('W/"abc"');
+  });
+
+  it('never sends If-None-Match for a non-GET request', async () => {
+    const fetchSpy = vi.fn().mockResolvedValue(envelope({ ok: true }));
+    vi.stubGlobal('fetch', fetchSpy);
+    await requestEnvelope('/v1/etag-demo-2', API, { method: 'POST', body: {} });
+    const sentHeaders = fetchSpy.mock.calls[0][0].headers as Headers;
+    expect(sentHeaders.has('if-none-match')).toBe(false);
   });
 });
