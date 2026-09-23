@@ -103,8 +103,13 @@ export function forgetPrivate(): void
 - **In-page dedupe**: one in-flight promise per key, shared.
 - **Stale while revalidate**: a stored entry younger than `ttlMs` resolves immediately and a
   revalidation runs in the background; when the live answer differs (structural compare),
-  subscribers are called with the new state. An entry older than the TTL is not shown;
-  the load runs as a first visit does.
+  subscribers are called with the new state. An equal answer keeps the reference the
+  islands already render and notifies nobody. An entry older than the TTL is not shown;
+  the load runs as a first visit does. An entry this page has itself loaded (or written
+  through `setQueryData`) is served as is on later reads and does not revalidate again:
+  the site is an MPA, so the next page load is the next revalidation. (Added 2026-09-23
+  after the account page looped: an island mounting inside another's ready state re-read
+  `/v1/me`, every read revalidated, every revalidation handed out a new object.)
 - **Persistence by scope**: `public` entries persist in `localStorage` under `fs.q.<hash>`
   with `{v, savedAt, data}`; `private` entries persist the same way but are read only while
   `sessionHinted()` (`session-cache.ts`) and are removed by `forgetPrivate()`, which `signOut`

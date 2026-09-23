@@ -47,16 +47,59 @@ describe('query()', () => {
     expect(b).toEqual({ n: 1 });
   });
 
-  it('serves a fresh cached answer instantly and revalidates in the background', async () => {
-    let call = 0;
+  it('serves a stored answer instantly and revalidates it once in the background', async () => {
+    await query('k2', () => Promise.resolve({ n: 1 }), { scope: 'public', ttlMs: 60_000 });
+    vi.resetModules();
+    const fresh = await import('./query'); // a new page: the entry comes from storage
+    let call = 1;
     const load = vi.fn().mockImplementation(() => Promise.resolve({ n: ++call }));
-    const first = await query('k2', load, { scope: 'public', ttlMs: 60_000 });
-    expect(first).toEqual({ n: 1 });
-
-    const second = await query('k2', load, { scope: 'public', ttlMs: 60_000 });
-    expect(second).toEqual({ n: 1 }); // instant, from cache, before the background load below settles
+    const second = await fresh.query('k2', load, { scope: 'public', ttlMs: 60_000 });
+    expect(second).toEqual({ n: 1 }); // instant, from storage, before the background load settles
     await Promise.resolve().then(() => Promise.resolve());
-    expect(load).toHaveBeenCalledTimes(2); // the background revalidation ran
+    expect(load).toHaveBeenCalledTimes(1); // the one background revalidation ran
+    await Promise.resolve();
+    await fresh.query('k2', load, { scope: 'public', ttlMs: 60_000 });
+    await Promise.resolve().then(() => Promise.resolve());
+    expect(load).toHaveBeenCalledTimes(1); // and not again for this page
+  });
+
+  it('an entry this page loaded does not revalidate on a later read', async () => {
+    const load = vi.fn().mockResolvedValue({ n: 1 });
+    await query('k2b', load, { scope: 'public', ttlMs: 60_000 });
+    const second = await query('k2b', load, { scope: 'public', ttlMs: 60_000 });
+    expect(second).toEqual({ n: 1 });
+    await Promise.resolve().then(() => Promise.resolve());
+    expect(load).toHaveBeenCalledTimes(1);
+  });
+
+  it('a revalidation answering the same data keeps the same reference and tells nobody', async () => {
+    await query('k2c', () => Promise.resolve({ n: 1, list: [1, 2] }), { scope: 'public', ttlMs: 60_000 });
+    vi.resetModules();
+    const fresh = await import('./query');
+    const before = await fresh.query('k2c', () => Promise.resolve({ n: 1, list: [1, 2] }), {
+      scope: 'public',
+      ttlMs: 60_000,
+    });
+    const seen: unknown[] = [];
+    const unsubscribe = fresh.subscribe('k2c', (state) => seen.push(state.data));
+    await Promise.resolve().then(() => Promise.resolve());
+    await Promise.resolve();
+    expect(seen).toHaveLength(1); // the synchronous replay only; the equal answer was silent
+    expect(seen[0]).toBe(before);
+    unsubscribe();
+  });
+
+  it('a revalidation answering different data notifies with the new value', async () => {
+    await query('k2d', () => Promise.resolve({ n: 1 }), { scope: 'public', ttlMs: 60_000 });
+    vi.resetModules();
+    const fresh = await import('./query');
+    await fresh.query('k2d', () => Promise.resolve({ n: 2 }), { scope: 'public', ttlMs: 60_000 });
+    const seen: unknown[] = [];
+    const unsubscribe = fresh.subscribe('k2d', (state) => seen.push(state.data));
+    await Promise.resolve().then(() => Promise.resolve());
+    await Promise.resolve();
+    expect(seen).toEqual([{ n: 1 }, { n: 2 }]);
+    unsubscribe();
   });
 
   it('does not show a stored entry older than its ttlMs; treats it as a first load', async () => {

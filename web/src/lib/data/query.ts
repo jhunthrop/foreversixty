@@ -29,6 +29,13 @@ interface Entry<T> {
   ttlMs: number;
   version: number;
   inflight: Promise<T> | null;
+  /** True once a load has settled for this entry during this page's life. A fresh entry
+   *  that only came from storage still gets one background revalidation on first use; an
+   *  entry this page already loaded (or just wrote through setQueryData) does not
+   *  revalidate again on every read -- the site is an MPA, the next page load is the next
+   *  revalidation. Without this, every island mount re-fetched its key, and an island
+   *  that mounts inside another's ready state fetched, re-rendered and re-mounted forever. */
+  validated: boolean;
 }
 
 const STORAGE_PREFIX = 'fs.q.';
@@ -159,8 +166,24 @@ function notify<T>(key: string, entry: Entry<T>): void {
 }
 
 function setState<T>(key: string, entry: Entry<T>, patch: Partial<QueryState<T>>): void {
-  entry.state = { ...entry.state, ...patch };
+  const next = { ...entry.state, ...patch };
+  const unchanged = (Object.keys(next) as (keyof QueryState<T>)[]).every((k) => next[k] === entry.state[k]);
+  if (unchanged) return; // nothing an island could see moved: no new object, no re-render
+  entry.state = next;
   notify(key, entry as Entry<unknown>);
+}
+
+/** Structural equality for the JSON-shaped data every query holds: a revalidation that
+ *  answers the same bytes keeps the reference the islands already render, so `$derived`
+ *  chains and effects keyed on it do not re-run (spec 2026-09-23 §3.1, "structural
+ *  compare"). */
+function sameData(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  try {
+    return JSON.stringify(a) === JSON.stringify(b);
+  } catch {
+    return false;
+  }
 }
 
 function getOrCreateEntry<T>(key: string, options: QueryOptions<T>): Entry<T> {
@@ -178,6 +201,7 @@ function getOrCreateEntry<T>(key: string, options: QueryOptions<T>): Entry<T> {
     ttlMs: options.ttlMs,
     version,
     inflight: null,
+    validated: false,
   };
   store.set(key, entry as Entry<unknown>);
   return entry;
@@ -204,9 +228,11 @@ function revalidate<T>(
   const promise = load()
     .then((raw) => {
       entry.inflight = null;
-      const data = options.parse !== undefined ? options.parse(raw) : raw;
+      const parsed = options.parse !== undefined ? options.parse(raw) : raw;
+      const data = sameData(parsed, entry.state.data) ? (entry.state.data as T) : parsed;
       entry.savedAt = Date.now();
       entry.ttlMs = options.ttlMs;
+      entry.validated = true;
       setState(key, entry, { data, status: 'ready', error: '', stale: false });
       writePersisted(key, entry as Entry<unknown>);
       return data;
@@ -215,6 +241,7 @@ function revalidate<T>(
       entry.inflight = null;
       if (options.scope === 'private' && isUnauthorized(error)) forgetPrivate();
       if (background) {
+        entry.validated = true; // the next read does not retry; a new page load will
         setState(key, entry, { stale: true });
         return entry.state.data as T; // swallow: the stale answer stays, nothing visible logs
       }
@@ -232,15 +259,19 @@ export function query<T>(key: string, load: () => Promise<T>, options: QueryOpti
   const fresh = entry.state.status === 'ready' && age < options.ttlMs;
 
   if (fresh) {
+    // A fresh entry this page has not loaded itself (hydrated from storage) revalidates
+    // once in the background; one it has loaded is served as is (see Entry.validated).
     // Deferred a tick beyond the instant read below (not started inline): a caller that
     // only awaits the instant answer -- setQueryData's own write, a just-hydrated entry, or
     // another still-fresh read -- never observes this background load starting, matching
     // stale-while-revalidate's promise that the cached answer alone is a complete, valid
     // response. A caller that wants to see the revalidation happen awaits an extra
     // microtask turn after that, same as the module's own tests do.
-    void Promise.resolve()
-      .then(() => Promise.resolve())
-      .then(() => revalidate(key, entry, load, options, true));
+    if (!entry.validated) {
+      void Promise.resolve()
+        .then(() => Promise.resolve())
+        .then(() => revalidate(key, entry, load, options, true));
+    }
     return Promise.resolve(entry.state.data as T);
   }
   return revalidate(key, entry, load, options, false);
@@ -268,8 +299,10 @@ export function setQueryData<T>(key: string, data: T): void {
     ttlMs: 0,
     version: 0,
     inflight: null,
+    validated: false,
   };
   entry.savedAt = Date.now();
+  entry.validated = true; // the resource as the server just returned it
   setState(key, entry, { data, status: 'ready', error: '', stale: false });
   store.set(key, entry as Entry<unknown>);
   writePersisted(key, entry as Entry<unknown>);
