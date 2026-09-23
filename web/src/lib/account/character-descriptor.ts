@@ -42,3 +42,25 @@ export function classSquare(character: MeCharacter): { letter: string; color: st
   const label = character.class === undefined ? character.name : classDisplayName(character.class);
   return { letter: label.charAt(0).toUpperCase(), color: classColorVar(character.class) };
 }
+
+/** Blizzard's own 56 px class icons, on the CDN that also serves character avatars. The
+ *  path is per game version; Classic Era's set is the one every vanilla class has today,
+ *  and Forever's, once it exists, is one constant away. */
+const CLASS_ICON_BASE = 'https://render.worldofwarcraft.com/classic1x-us/icons/56/classicon_';
+const CLASS_ICON_SLUGS: ReadonlySet<string> = new Set([
+  'warrior',
+  'paladin',
+  'hunter',
+  'rogue',
+  'priest',
+  'shaman',
+  'mage',
+  'warlock',
+  'druid',
+]);
+
+/** The class icon a character without an avatar shows; undefined for an unknown class. */
+export function classIconUrl(character: MeCharacter): string | undefined {
+  const slug = character.class?.toLowerCase();
+  return slug !== undefined && CLASS_ICON_SLUGS.has(slug) ? `${CLASS_ICON_BASE}${slug}.jpg` : undefined;
+}

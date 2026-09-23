@@ -38,10 +38,17 @@ const UNGUILDED: MeCharacter = {
 };
 
 describe('CharacterList', () => {
+  it('shows the class icon over the letter square when a character has no avatar', () => {
+    const { body } = render(CharacterList, { props: { characters: [UNGUILDED] } });
+    expect(body).toContain('character-class-icon');
+    expect(body).toContain('classicon_warrior.jpg');
+    expect(body).toContain('character-avatar-fallback');
+  });
+
   it('shows a class-coloured letter square and the race/class/level/realm descriptor', () => {
     const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
     expect(body).toContain('data-testid="character-avatar-fallback"');
-    expect(body).toContain('>P<'); // Priest's initial
+    expect(body).toContain('"character-avatar-fallback">P'); // Priest's initial
     expect(body).toContain('Night Elf Priest · Level 60 · Whitemane (Hardcore US)');
     expect(body).not.toContain('data-testid="character-avatar"');
   });
