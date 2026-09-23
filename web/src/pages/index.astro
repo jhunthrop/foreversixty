@@ -13,6 +13,10 @@ import ClassTile from '../components/ClassTile.astro';
 import SearchBox from '../components/SearchBox.svelte';
 import SubscribeBox from '../components/SubscribeBox.svelte';
 import HomeGuildLink from '../components/HomeGuildLink.svelte';
+import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
+import { homePanelCopy } from '../lib/home-panel-copy';
+import { battlenetStartUrl } from '../lib/account/api';
+import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 import dates from '../data/dates.json';
 import toolsData from '../data/tools.json';
 import unknowns from '../data/unknowns.json';
@@ -89,6 +93,22 @@ const popular = [
         </div>
       </div>
     </SkyBand>
+
+    <div
+      class="grid min-h-[52px] w-full max-w-[1344px] mx-auto px-[18px] md:px-12"
+      data-testid="home-account-block"
+    >
+      <div class="[grid-area:1/1] flex flex-wrap items-center gap-3" data-testid="home-signed-out">
+        <p class="text-[14px]">{homePanelCopy.signedOutLine}</p>
+        <a
+          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
+          href={battlenetStartUrl('/account?signed_in=1')}
+        >
+          {homePanelCopy.signInButton}
+        </a>
+      </div>
+      <HomeAccountPanel client:load />
+    </div>
 
     <div class="flex flex-col gap-[22px] md:gap-8 w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-9 pb-8">
       <section class="flex flex-col gap-4">
