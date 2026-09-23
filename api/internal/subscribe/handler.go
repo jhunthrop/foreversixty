@@ -41,6 +41,7 @@ func Mount(mux *http.ServeMux, s *Service, log *slog.Logger, trustedProxyHops in
 		http.Redirect(w, r, target, http.StatusFound)
 	}
 	mux.HandleFunc("GET /v1/subscribe/confirm", func(w http.ResponseWriter, r *http.Request) {
+		httpx.CachePrivate(w)
 		ok, err := s.Confirm(r.Context(), r.URL.Query().Get("token"))
 		if err != nil {
 			log.Error("subscribe", "id", httpx.RequestIDFrom(r.Context()), "op", "confirm", "err", err)
@@ -48,6 +49,7 @@ func Mount(mux *http.ServeMux, s *Service, log *slog.Logger, trustedProxyHops in
 		redirect(w, r, err == nil && ok, "/subscribed")
 	})
 	mux.HandleFunc("GET /v1/subscribe/unsubscribe", func(w http.ResponseWriter, r *http.Request) {
+		httpx.CachePrivate(w)
 		ok, err := s.Unsubscribe(r.Context(), r.URL.Query().Get("token"))
 		if err != nil {
 			log.Error("subscribe", "id", httpx.RequestIDFrom(r.Context()), "op", "unsubscribe", "err", err)

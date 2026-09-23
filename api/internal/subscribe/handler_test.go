@@ -74,6 +74,28 @@ func TestUnsubscribeRedirects(t *testing.T) {
 	}
 }
 
+// TestConfirmSetsPrivateCacheControl and
+// TestUnsubscribeSetsPrivateCacheControl pin the two subscribe redirects
+// to the Private class: each answers to the one token in the URL, and a
+// shared cache must never replay one caller's redirect for another.
+func TestConfirmSetsPrivateCacheControl(t *testing.T) {
+	h := newTestHandler()
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, httptest.NewRequest("GET", "/v1/subscribe/confirm?token=tok", nil))
+	if got := rec.Header().Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+}
+
+func TestUnsubscribeSetsPrivateCacheControl(t *testing.T) {
+	h := newTestHandler()
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, httptest.NewRequest("GET", "/v1/subscribe/unsubscribe?token=utok", nil))
+	if got := rec.Header().Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+}
+
 func TestPostSubscribeReturns202EvenWhenMailFailsAndLogsAsync(t *testing.T) {
 	var buf bytes.Buffer
 	log := slog.New(slog.NewTextHandler(&buf, nil))

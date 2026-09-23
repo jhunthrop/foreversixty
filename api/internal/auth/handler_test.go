@@ -1072,3 +1072,96 @@ func TestChoosingAMainCharacter(t *testing.T) {
 		t.Fatalf("main_character_key = %v, want us/pvp/reloadd", me.MainCharacterKey)
 	}
 }
+
+// TestMeSetsPrivateCacheControl pins /v1/me to the Private class: an
+// account's own view must never be served by a shared cache to anyone
+// else, however briefly.
+func TestMeSetsPrivateCacheControl(t *testing.T) {
+	h := newHarness(t)
+	h.signIn(t, "raider@example.com")
+	res := h.do(t, http.MethodGet, "/v1/me", "")
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q", got)
+	}
+}
+
+// TestListDevicesSetsPrivateCacheControl pins the same class onto
+// GET /v1/devices: the account's own paired-device list.
+func TestListDevicesSetsPrivateCacheControl(t *testing.T) {
+	h := newHarness(t)
+	h.signIn(t, "raider@example.com")
+	res := h.do(t, http.MethodGet, "/v1/devices", "")
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q", got)
+	}
+}
+
+// TestEmailCallbackSetsPrivateCacheControl pins the magic-link callback:
+// it redirects, but the redirect itself carries session-starting
+// headers that a shared cache must never replay for another visitor.
+func TestEmailCallbackSetsPrivateCacheControl(t *testing.T) {
+	h := newHarness(t)
+	res := h.do(t, http.MethodPost, "/v1/auth/email", `{"email":"raider@example.com"}`)
+	res.Body.Close()
+	link := h.mailer.Sent[len(h.mailer.Sent)-1].Text
+	i := strings.Index(link, "token=")
+	if i < 0 {
+		t.Fatalf("the mail carries no token: %q", link)
+	}
+	token := strings.TrimSpace(link[i+len("token="):])
+	token, _, _ = strings.Cut(token, "\n")
+
+	res = h.do(t, http.MethodGet, "/v1/auth/email/callback?token="+token, "")
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q", got)
+	}
+}
+
+// TestBnetStartSetsPrivateCacheControl and
+// TestBnetCallbackSetsPrivateCacheControl cover the two Battle.net
+// routes the same way, using the harness's own fake provider.
+func TestBnetStartSetsPrivateCacheControl(t *testing.T) {
+	h := newHarness(t)
+	h.withBattleNet(t, "12345", "Baelgrim#1234")
+	res := h.do(t, http.MethodGet, "/v1/auth/battlenet/start", "")
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q", got)
+	}
+}
+
+func TestBnetCallbackSetsPrivateCacheControl(t *testing.T) {
+	h := newHarness(t)
+	h.withBattleNet(t, "12345", "Baelgrim#1234")
+	start := h.do(t, http.MethodGet, "/v1/auth/battlenet/start", "")
+	start.Body.Close()
+	target, err := url.Parse(start.Header.Get("Location"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	state := target.Query().Get("state")
+
+	res := h.do(t, http.MethodGet, "/v1/auth/battlenet/callback?code=the-code&state="+state, "")
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q", got)
+	}
+}

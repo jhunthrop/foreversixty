@@ -48,7 +48,10 @@ func ParsePage(w http.ResponseWriter, r *http.Request) (int, bool) {
 
 // SetPrivateListCache marks a per-account list response as never
 // cached at a shared edge: the response depends on who is asking, and
-// a shared cache does not know that.
+// a shared cache does not know that. This is CachePrivate under its
+// list-specific name, kept as its own function so every "mine=1" call
+// site reads as what it is - httpx/cache.go is still the one place
+// the actual header value lives.
 func SetPrivateListCache(w http.ResponseWriter) {
-	w.Header().Set("Cache-Control", "private, no-store")
+	CachePrivate(w)
 }

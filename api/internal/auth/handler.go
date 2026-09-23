@@ -100,6 +100,7 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 }
 
 func (s *Service) bnetStart(w http.ResponseWriter, r *http.Request) {
+	httpx.CachePrivate(w)
 	state := NewSessionID()
 	next := safeNext(r.URL.Query().Get("next"))
 	http.SetCookie(w, &http.Cookie{
@@ -111,6 +112,7 @@ func (s *Service) bnetStart(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) bnetCallback(w http.ResponseWriter, r *http.Request) {
+	httpx.CachePrivate(w)
 	c, err := r.Cookie(bnetStateCookie)
 	if err != nil || c.Value == "" {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "this sign-in has expired; start again", nil)
@@ -213,6 +215,7 @@ func (s *Service) emailStart(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Service) emailCallback(w http.ResponseWriter, r *http.Request) {
+	httpx.CachePrivate(w)
 	token := r.URL.Query().Get("token")
 	if token == "" {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that link is missing its token", nil)
@@ -374,6 +377,7 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "me", err, "could not load your account just now")
 		return
 	}
+	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, Me{
 		User: u, Characters: chars, Guilds: guilds, Entitlements: ev,
 		BnetImportedAt: rfc3339Ptr(u.BnetImportedAt), MainCharacterKey: u.MainCharacterKey,
@@ -536,6 +540,7 @@ func (s *Service) listDevices(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "devices", err, "could not list your devices just now")
 		return
 	}
+	httpx.CachePrivate(w)
 	// The array is the body: the account page reads data as the list,
 	// with no wrapper object around it.
 	httpx.WriteOK(w, r, http.StatusOK, devices)

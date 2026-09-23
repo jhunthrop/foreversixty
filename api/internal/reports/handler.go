@@ -20,15 +20,21 @@ import (
 const (
 	// maxJSONBody is the ceiling on the small JSON bodies here.
 	maxJSONBody = 8 << 10
-	// visibilityMaxAge is how long the site Worker may cache a report's
-	// visibility, as the contract sets it.
-	visibilityMaxAge = 60
 	// MinePerPage is the page size of the caller's own report list,
 	// the same hundred the rankings page uses.
 	MinePerPage = 100
 	// officer ranks that may edit a guild's reports.
 	rankOfficer = "officer"
 	rankLeader  = "leader"
+	// reportsFeedMaxAge and reportsFeedStale are the Live public boards
+	// class's values (spec §2.2), for GET /v1/reports/recent.
+	reportsFeedMaxAge = 30 * time.Second
+	reportsFeedStale  = 300 * time.Second
+	// reportsObjectMaxAge and reportsObjectStale are the Public
+	// per-object reads class's values, for a public report's own body
+	// and for GET .../visibility (spec §2.2: "a public report's meta").
+	reportsObjectMaxAge = 60 * time.Second
+	reportsObjectStale  = 600 * time.Second
 )
 
 // Signer hands out signed URLs for a report's files. *r2.Client
@@ -196,6 +202,7 @@ func (s *Service) mine(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "mine", err, "could not list your reports just now")
 		return
 	}
+	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, MinePage{
 		Rows: rows, Total: total, Page: page, PerPage: MinePerPage,
 	})
@@ -221,6 +228,11 @@ func (s *Service) get(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		s.fail(w, r, "get", err, "could not load that report just now")
 		return
+	}
+	if rep.Visibility == Public || rep.Visibility == Unlisted {
+		httpx.CachePublic(w, reportsObjectMaxAge, reportsObjectStale)
+	} else {
+		httpx.CachePrivate(w)
 	}
 	httpx.WriteOK(w, r, http.StatusOK, view)
 }
@@ -392,7 +404,7 @@ func (s *Service) visibility(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "visibility", err, "could not read that report just now")
 		return
 	}
-	w.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(visibilityMaxAge))
+	httpx.CachePublic(w, reportsObjectMaxAge, reportsObjectStale)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]string{"visibility": rep.Visibility})
 }
 
@@ -420,6 +432,7 @@ func (s *Service) access(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no such report", nil)
 		return
 	}
+	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]any{
 		"data_base_url": s.APIBaseURL + "/v1/reports/" + rep.ID + "/files",
 		"expires_in":    int(r2.AccessTTL.Seconds()),

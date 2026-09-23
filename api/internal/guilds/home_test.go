@@ -332,3 +332,20 @@ func TestHomeRosterMayRemoveMatchesTheRemoveRule(t *testing.T) {
 		t.Fatalf("the guild master's leader-rank row: may_remove = %v, want false (rank protects rank)", row.MayRemove)
 	}
 }
+
+// TestHomeSetsPrivateCacheControl pins GET .../home to the Private
+// class: the home view is scoped to the caller's own membership and
+// consent, never something a shared cache may reuse for someone else.
+func TestHomeSetsPrivateCacheControl(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "Forever")
+	member := seedUser(t, h.pool, "home-cache-member@example.com")
+	seedCharacter(t, h.pool, gid, member, "us/hardcore/homecachemember", "member", true)
+	h.actor = auth.Actor{UserID: member, Role: "user", Method: "session"}
+
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/home", gid), "")
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+}

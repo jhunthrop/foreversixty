@@ -116,3 +116,21 @@ func TestPatchSettingsIsFrozenDuringAContestedClaim(t *testing.T) {
 		t.Fatalf("patch settings while contested = %d, want 409", res.StatusCode)
 	}
 }
+
+// TestGetSettingsSetsPrivateCacheControl pins GET .../settings to the
+// Private class: a guild's settings are only ever read by its own
+// verified officers, never something a shared cache may reuse.
+func TestGetSettingsSetsPrivateCacheControl(t *testing.T) {
+	h := newHTTPHarness(t)
+	gid := seedGuild(t, h.pool, "Forever")
+	officer := seedUser(t, h.pool, "settings-cache-officer@example.com")
+	seedCharacter(t, h.pool, gid, officer, "us/hardcore/settingscacheofficer", "officer", true)
+	syncMembership(t, h.pool, gid, officer)
+	h.actor = auth.Actor{UserID: officer, Role: "user", Method: "session"}
+
+	res := h.do(http.MethodGet, fmt.Sprintf("/v1/guilds/%d/settings", gid), "")
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+}

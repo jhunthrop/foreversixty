@@ -226,5 +226,6 @@ func (s *Service) moderationClaims(w http.ResponseWriter, r *http.Request) {
 		last := raw[len(raw)-1]
 		resp["next_cursor"] = encodeModerationCursor(last.ContestedAt, last.Guild.ID)
 	}
+	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, resp)
 }

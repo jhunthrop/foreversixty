@@ -332,8 +332,11 @@ func TestMyOwnBuildsAreOnlyMine(t *testing.T) {
 		if w.Code != http.StatusOK {
 			t.Fatalf("user %d: status %d, body %s", c.user, w.Code, w.Body.String())
 		}
-		if got := w.Header().Get("Cache-Control"); got != "private, no-store" {
+		if got := w.Header().Get("Cache-Control"); got != "private, no-cache" {
 			t.Errorf("user %d: cache-control = %q", c.user, got)
+		}
+		if got := w.Header().Get("Vary"); got != "Cookie, Authorization" {
+			t.Errorf("user %d: vary = %q", c.user, got)
 		}
 		var env struct {
 			OK   bool `json:"ok"`

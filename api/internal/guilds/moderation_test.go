@@ -119,3 +119,18 @@ func TestModerationClaimsRejectsAMalformedCursor(t *testing.T) {
 		t.Fatalf("a malformed cursor = %d, want 400", res.StatusCode)
 	}
 }
+
+// TestModerationClaimsSetsPrivateCacheControl pins the moderator-only
+// claim queue to the Private class: it is scoped to the caller's own
+// moderator standing, never something a shared cache may reuse.
+func TestModerationClaimsSetsPrivateCacheControl(t *testing.T) {
+	h := newHTTPHarness(t)
+	moderator := seedUser(t, h.pool, "moderation-cache@example.com")
+	h.actor = auth.Actor{UserID: moderator, Role: "moderator", Method: "session"}
+
+	res := h.do(http.MethodGet, "/v1/moderation/claims", "")
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+}

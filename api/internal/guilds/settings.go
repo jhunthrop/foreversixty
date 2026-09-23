@@ -171,6 +171,7 @@ func (s *Service) getSettings(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, view)
 }
 

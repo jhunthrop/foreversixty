@@ -38,6 +38,37 @@ func TestCreateAndReadAReport(t *testing.T) {
 	}
 }
 
+// GET /v1/reports/{id} branches public/private the same way
+// rating.fightRatings already does (spec §2.2): a public or unlisted
+// report is the Public per-object reads class, cacheable at the edge;
+// anything else is never shared.
+func TestGetSetsPublicCacheControlForAPublicReport(t *testing.T) {
+	h := newHarness(t)
+	id := h.createReport(Public)
+
+	res := h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	want := "public, max-age=60, stale-while-revalidate=600"
+	if got := res.Header.Get("Cache-Control"); got != want {
+		t.Errorf("Cache-Control = %q, want %q", got, want)
+	}
+}
+
+func TestGetSetsPrivateCacheControlForAPrivateReport(t *testing.T) {
+	h := newHarness(t)
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	id := h.createReport(Private)
+
+	res := h.do(http.MethodGet, "/v1/reports/"+id, "", nil)
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q, want private, no-cache", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q, want Cookie, Authorization", got)
+	}
+}
+
 func TestCreateRejectsABadVisibilityAndCharacter(t *testing.T) {
 	h := newHarness(t)
 	res := h.json(http.MethodPost, "/v1/reports", `{"visibility":"secret"}`)
@@ -516,7 +547,7 @@ func TestVisibilityRouteIsCachedForTheWorker(t *testing.T) {
 	var out struct {
 		Visibility string `json:"visibility"`
 	}
-	if got := res.Header.Get("Cache-Control"); got != "public, max-age=60" {
+	if got := res.Header.Get("Cache-Control"); got != "public, max-age=60, stale-while-revalidate=600" {
 		t.Fatalf("cache-control = %q", got)
 	}
 	h.data(res, &out)
@@ -570,6 +601,24 @@ func TestAccessHandsOutSignedRedirectsForAPrivateReport(t *testing.T) {
 	defer refused.Body.Close()
 	if refused.StatusCode != http.StatusNotFound {
 		t.Fatalf("a raw chunk = %d, want 404", refused.StatusCode)
+	}
+}
+
+// /access hands back a signed-URL base for a signed-in caller, so it
+// is never shared cache fodder either, whatever the report's own
+// visibility - the Private reads class applies here unconditionally.
+func TestAccessSetsPrivateCacheControl(t *testing.T) {
+	h := newHarness(t)
+	h.actor = auth.Actor{UserID: h.owner, Role: "user", Method: "session"}
+	id := h.createReport(Private)
+
+	res := h.do(http.MethodGet, "/v1/reports/"+id+"/access", "", nil)
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q, want private, no-cache", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q, want Cookie, Authorization", got)
 	}
 }
 
@@ -716,6 +765,24 @@ func TestTheOwnReportsListIsPagedAndCounted(t *testing.T) {
 	h.data(res, &page)
 	if page.Total != 0 {
 		t.Fatalf("a stranger sees %d reports, want none", page.Total)
+	}
+}
+
+// The caller's own report list is never shared cache fodder: it is
+// keyed to whoever is signed in, so it takes the Private reads class
+// (spec §2.2), never a public one.
+func TestMineSetsPrivateCacheControl(t *testing.T) {
+	h := newHarness(t)
+	h.asSession()
+	h.createReport(Public)
+
+	res := h.do(http.MethodGet, "/v1/reports?mine=1", "", nil)
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q, want private, no-cache", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q, want Cookie, Authorization", got)
 	}
 }
 

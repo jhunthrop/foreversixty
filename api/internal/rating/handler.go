@@ -21,6 +21,10 @@ import (
 // volatile as a rankings page").
 const cacheSeconds = 30
 
+// liveBoardStale is the Live public boards class's
+// stale-while-revalidate window (spec §2.2), matching rankings'.
+const liveBoardStale = 300 * time.Second
+
 // Service serves the two rating read routes.
 type Service struct {
 	Store    *Store
@@ -84,9 +88,9 @@ func (s *Service) fightRatings(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if rep.Visibility == reports.Public {
-		w.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(cacheSeconds))
+		httpx.CachePublic(w, cacheSeconds*time.Second, liveBoardStale)
 	} else {
-		w.Header().Set("Cache-Control", "private")
+		httpx.CachePrivate(w)
 	}
 	httpx.WriteOK(w, r, http.StatusOK, fightRatingsDTO{
 		FightIndex: n, Kill: rows[0].Kill, KillTimeBand: rows[0].KillTimeBand,
@@ -139,7 +143,7 @@ func (s *Service) characterRating(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusNotFound, "not_found", "no rated fights for that character", nil)
 		return
 	}
-	w.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(cacheSeconds))
+	httpx.CachePublic(w, cacheSeconds*time.Second, liveBoardStale)
 	httpx.WriteOK(w, r, http.StatusOK, buildCharacterRatingDTO(playerKey, rows, hasMore))
 }
 

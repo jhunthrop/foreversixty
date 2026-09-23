@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
@@ -95,7 +94,7 @@ func (s *Service) fetch(w http.ResponseWriter, r *http.Request) {
 		s.logger().Error("builds", "id", httpx.RequestIDFrom(r.Context()), "op", "fetch", "err", err)
 		httpx.WriteError(w, r, http.StatusInternalServerError, "internal", "could not load that build", nil)
 	default:
-		w.Header().Set("Cache-Control", fmt.Sprintf("public, max-age=%d", int(fetchMaxAge.Seconds())))
+		httpx.CachePublic(w, fetchMaxAge, 0)
 		httpx.WriteOK(w, r, http.StatusOK, b)
 	}
 }

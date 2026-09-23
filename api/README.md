@@ -83,6 +83,34 @@ the whole suite runs with `-p 1`:
 go test -race -cover -p 1 ./...
 ```
 
+## Cache headers
+
+Every `GET` route sets its `Cache-Control` through one of two `httpx` helpers
+(`api/internal/httpx/cache.go`), never by hand:
+
+- `httpx.CachePublic(w, maxAge, staleWhileRevalidate)` — a shared cache and the browser may
+  both keep the answer. Four values are in use:
+  - **Live public boards** (rankings, ratings, the reports feed, a guild or character's public
+    page): `public, max-age=30, stale-while-revalidate=300`.
+  - **Public per-object reads** (a public report's meta/fights, a saved sim result, a public
+    character's sim input): `public, max-age=60, stale-while-revalidate=600`.
+  - **Reference** (spec lists, builds, phase boundaries): today's per-route value, no
+    `stale-while-revalidate`.
+- `httpx.CachePrivate(w)` — `Cache-Control: private, no-cache` plus `Vary: Cookie,
+  Authorization`, so a shared cache never keys one caller's answer for another. Every
+  signed-in-only read (`/v1/me`, devices, your reports, your sims, guild settings/home,
+  private/guild reports) uses this.
+
+A route whose answer depends on who is asking — a report that is public for one viewer and
+private for another — branches between the two at request time rather than picking one
+statically; see `reports.Service.get` or `sims.Service.simInput` for the pattern.
+
+Every successful (2xx) `GET` also carries `ETag: W/"<16 hex chars>"`, a weak tag computed over
+the envelope's `data` field alone. A matching `If-None-Match` (weak or strong, comma-separated)
+answers `304 Not Modified` with an empty body and the same `ETag`/`Cache-Control` the `200`
+would have carried — the cheap revalidation path a client can use once it already holds a
+cached answer, regardless of which class that route is in.
+
 ## Build endpoints
 
 | Route | Notes |
