@@ -57,6 +57,11 @@ export interface MeCharacter {
   /** `'bnet'` or `'export'` -- which path last wrote this row. Optional: older/stubbed
    *  fixtures written before the Battle.net import landed carry no such field. */
   source?: string;
+  /** The site's newest export for this character, when it has one (spec 2026-09-22 §5):
+   *  `'addon'` for a paste or companion push, `'blizzard'` for one built from the
+   *  Battle.net profile. Omitted exactly when the site holds no build for the character --
+   *  never inferred from anything else on this row. */
+  build?: { source: 'addon' | 'blizzard'; captured_at: string };
   /** Omitted when the character has no `guild_characters` row at all. */
   guild?: MeCharacterGuild;
 }

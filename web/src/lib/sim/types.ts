@@ -9,7 +9,7 @@
 import type { Summary } from '../report/types';
 
 /** Where the character came from. */
-export type SourceKind = 'armory' | 'addon' | 'build' | 'fight' | 'manual';
+export type SourceKind = 'armory' | 'addon' | 'blizzard' | 'build' | 'fight' | 'manual';
 
 /**
  * The only iteration counts the contract allows.

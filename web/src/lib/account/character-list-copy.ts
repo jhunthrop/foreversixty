@@ -16,4 +16,8 @@ export const characterListCopy = {
   introLead: 'A character becomes simmable once the site has its export: type /fs export in game and',
   introPasteLink: 'paste it here',
   introTail: ', or run the desktop companion and it sends the export for you.',
+  /** The account rows' and the sim landing rows' build-source pill (spec 2026-09-22 §3.1). */
+  battlenetSource: 'Battle.net',
+  addonSource: 'Addon',
+  noBuildYet: 'No build yet',
 } as const;
