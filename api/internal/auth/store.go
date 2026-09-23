@@ -120,9 +120,20 @@ type Character struct {
 	// Source is which path most recently wrote this row: "export" or
 	// "bnet".
 	Source string `json:"source"`
+	// Build is which path most recently produced a simmable build for this character, and
+	// when (spec docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.5, §5),
+	// omitted when the character has none (§2.5: "so the account page and the simulator's
+	// landing know which characters are simmable without one request per character").
+	Build *CharacterBuild `json:"build,omitempty"`
 	// Guild is this character's current guild membership, omitted when
 	// it has none.
 	Guild *CharacterGuild `json:"guild,omitempty"`
+}
+
+// CharacterBuild is a character's addon_exports row, as GET /v1/me exposes it.
+type CharacterBuild struct {
+	Source     string    `json:"source"`
+	CapturedAt time.Time `json:"captured_at"`
 }
 
 // CharacterGuild is a character's guild_characters row, as GET /v1/me
@@ -359,11 +370,14 @@ const characterColumns = `c.key, c.region, c.ruleset, c.name, coalesce(c.class, 
 	        coalesce(c.realm_name, ''), c.level, coalesce(c.faction, ''), c.source,
 	        coalesce(c.race, ''), coalesce(c.gender, ''), c.equipped_item_level,
 	        c.avatar_url, c.render_url,
+	        ae.source, ae.captured_at,
 	        g.id, g.name, gc.rank, gc.rank_index, gc.verified_at is not null`
 
-// characterFrom is the join every character read shares: a character
-// with its current guild membership, if any, attached (spec §6).
+// characterFrom is the join every character read shares: a character with its addon_exports
+// build (spec docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.5) and its
+// current guild membership, if any, attached (spec §6).
 const characterFrom = `from characters c
+	 left join addon_exports ae on ae.character_key = c.key
 	 left join guild_characters gc on gc.character_key = c.key
 	 left join guilds g on g.id = gc.guild_id`
 
@@ -375,6 +389,8 @@ func scanCharacterRows(rows pgx.Rows) ([]Character, error) {
 	out := []Character{}
 	for rows.Next() {
 		var c Character
+		var buildSource *string
+		var buildCapturedAt *time.Time
 		var guildID *int64
 		var guildName, rank *string
 		var rankIndex *int
@@ -383,8 +399,12 @@ func scanCharacterRows(rows pgx.Rows) ([]Character, error) {
 			&c.Realm, &c.Level, &c.Faction, &c.Source,
 			&c.Race, &c.Gender, &c.ItemLevel,
 			&c.AvatarURL, &c.RenderURL,
+			&buildSource, &buildCapturedAt,
 			&guildID, &guildName, &rank, &rankIndex, &verified); err != nil {
 			return nil, fmt.Errorf("auth: scan characters: %w", err)
+		}
+		if buildSource != nil && buildCapturedAt != nil {
+			c.Build = &CharacterBuild{Source: *buildSource, CapturedAt: *buildCapturedAt}
 		}
 		if guildID != nil {
 			c.Guild = &CharacterGuild{

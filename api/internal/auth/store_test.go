@@ -297,6 +297,54 @@ func TestCharactersIncludesRaceGenderAndItemLevel(t *testing.T) {
 	}
 }
 
+// TestCharactersIncludesBuildFromAddonExports is spec
+// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.5, §5: characters[] gains
+// build: { source, captured_at }, omitted for a character with no addon_exports row.
+func TestCharactersIncludesBuildFromAddonExports(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	u, err := s.UpsertEmailUser(ctx, "built@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := s.LinkCharacter(ctx, u.ID, Character{
+		Key: "us/pvp/kiloz", Region: "us", Ruleset: "pvp", Name: "Kiloz", Class: "warrior",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	capturedAt := time.Now().Add(-2 * 24 * time.Hour).Truncate(time.Second)
+	if _, err := s.Pool.Exec(ctx,
+		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, source, captured_at, updated_at)
+		 values ('us/pvp/kiloz', $1, 'us', 'pvp', 'Kiloz', 'FS1:1.60.1.69893:warrior:orc:0/0/0:', 'blizzard', $2, now())`,
+		u.ID, capturedAt); err != nil {
+		t.Fatal(err)
+	}
+	if err := s.LinkCharacter(ctx, u.ID, Character{
+		Key: "us/pvp/nobuild", Region: "us", Ruleset: "pvp", Name: "Nobuild", Class: "mage",
+	}); err != nil {
+		t.Fatal(err)
+	}
+
+	chars, err := s.Characters(ctx, u.ID)
+	if err != nil || len(chars) != 2 {
+		t.Fatalf("characters = %v, err = %v", chars, err)
+	}
+	byKey := map[string]Character{}
+	for _, c := range chars {
+		byKey[c.Key] = c
+	}
+	built := byKey["us/pvp/kiloz"]
+	if built.Build == nil || built.Build.Source != "blizzard" {
+		t.Fatalf("built.Build = %+v, want source blizzard", built.Build)
+	}
+	if !built.Build.CapturedAt.Equal(capturedAt) {
+		t.Fatalf("CapturedAt = %v, want %v", built.Build.CapturedAt, capturedAt)
+	}
+	if byKey["us/pvp/nobuild"].Build != nil {
+		t.Fatal("a character with no addon_exports row must have Build == nil (omitted from JSON)")
+	}
+}
+
 func TestGuildRankRefusesAnUnverifiedRow(t *testing.T) {
 	s := testStore(t)
 	ctx := context.Background()
