@@ -141,3 +141,54 @@ test('the signed-in hero shows a rating figure once one exists, never before', a
   await page.goto('/');
   await expect(page.getByTestId('home-hero-rating')).toHaveText('Performance rating 1.08');
 });
+
+test('the hub lists the other characters as chips, and a chip makes that character current', async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+          characters: [
+            {
+              key: 'us/normal/kiloz',
+              region: 'us',
+              ruleset: 'normal',
+              name: 'Kiloz',
+              class: 'warrior',
+              level: 60,
+            },
+            {
+              key: 'us/normal/dottzz',
+              region: 'us',
+              ruleset: 'normal',
+              name: 'Dottzz',
+              class: 'priest',
+              level: 12,
+            },
+          ],
+          guilds: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.route('**/v1/characters/**', (route) =>
+    route.fulfill(fulfil({ ok: false, data: null, error: { message: 'none' }, request_id: 'r' }, 404)),
+  );
+  await page.goto('/');
+  const panel = page.getByTestId('home-account-panel');
+  await expect(panel).toBeVisible();
+  // Kiloz is the main character (highest level); Dottzz is the one chip.
+  const chip = panel.getByTestId('home-character-chip');
+  await expect(chip).toHaveCount(1);
+  await expect(chip).toContainText('Dottzz');
+  await chip.click();
+  await expect(panel).toContainText('Dottzz');
+  await expect(panel.getByTestId('home-character-chip')).toContainText('Kiloz');
+  const stored = await page.evaluate(() => window.localStorage.getItem('fs.currentCharacter') ?? '');
+  expect(stored).toContain('us/normal/dottzz');
+});

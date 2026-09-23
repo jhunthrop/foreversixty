@@ -20,4 +20,10 @@ export const homePanelCopy = {
   openInSimulator: 'Open in simulator',
   logs: 'Logs',
   yourCharacters: 'Your characters',
+  /** The chip row under the hero: every other character, one click to make it current. */
+  switchTo: (name: string): string => `Switch to ${name}`,
+  moreCharacters: (count: number): string => `+${count} more`,
 } as const;
+
+/** How many other characters the hub's chip row shows before "+N more" links to /account. */
+export const HOME_CHIP_LIMIT = 6;
