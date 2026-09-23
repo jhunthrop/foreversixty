@@ -1,6 +1,7 @@
 // web/src/lib/guild/api.test.ts
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { forgetPrivate, invalidate } from '../data/query';
 import {
   GUILD_API_FAILED,
   GuildApiError,
@@ -16,6 +17,9 @@ import {
   removeCharacter,
   rotateInvite,
   updateConsent,
+  updateGuildSettings,
+  type GuildHome,
+  type GuildSettingsData,
 } from './api';
 
 const API = 'https://api.foreversixty.test';
@@ -28,7 +32,36 @@ function envelope(data: unknown, status = 200): Response {
   });
 }
 
-afterEach(() => vi.unstubAllGlobals());
+/** Minimal fixtures matching `GuildHome`/`GuildSettingsData` -- no shared helper exists yet
+ *  in this file, so these two are just for the caching/invalidation tests below. */
+function guildHomeFixture(): GuildHome {
+  return {
+    guild: { id: 9, region: 'us', ruleset: 'hardcore', name: 'Fixture Guild' },
+    claim: { state: 'claimed', frozen: false },
+    reports: [],
+    roster: [],
+  };
+}
+
+function guildSettingsFixture(): GuildSettingsData {
+  return {
+    default_visibility: 'guild',
+    officer_max_rank_index: 1,
+    claimed_by: null,
+    claim_pending: null,
+    claim: { state: 'claimed', frozen: false },
+    invite: { rotated_at: null },
+  };
+}
+
+afterEach(() => {
+  // fetchGuildHome/fetchGuildSettings now cache through query.ts's shared, module-level
+  // store (scope: 'private'), so a later test's read for the same guild id could otherwise
+  // see a still-fresh entry an earlier test left behind and never call `fetch` at all.
+  forgetPrivate();
+  invalidate('');
+  vi.unstubAllGlobals();
+});
 
 describe('fetchGuildHome', () => {
   it('reads the flat reports array and top-level next_cursor, plus claim state', async () => {
@@ -177,5 +210,28 @@ describe('membership and invite', () => {
     );
     await expect(fetchGuildHome(42, undefined, API)).rejects.toThrow(GUILD_API_FAILED);
     await expect(fetchGuildHome(42, undefined, API)).rejects.toBeInstanceOf(GuildApiError);
+  });
+});
+
+describe('caching through query.ts', () => {
+  it('fetchGuildHome caches per guild id and cursor', async () => {
+    const fetchSpy = vi.fn<GlobalFetch>(async () => envelope(guildHomeFixture()));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchGuildHome(9, undefined, API);
+    await fetchGuildHome(9, undefined, API);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('updateGuildSettings invalidates the settings cache for that guild', async () => {
+    const fetchSpy = vi
+      .fn<GlobalFetch>()
+      .mockImplementationOnce(async () => envelope(guildSettingsFixture()))
+      .mockImplementationOnce(async () => envelope(guildSettingsFixture()))
+      .mockImplementationOnce(async () => envelope(guildSettingsFixture()));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchGuildSettings(9, API);
+    await updateGuildSettings(9, { officer_max_rank_index: 2 }, API);
+    await fetchGuildSettings(9, API);
+    expect(fetchSpy).toHaveBeenCalledTimes(3);
   });
 });

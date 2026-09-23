@@ -5,6 +5,7 @@
 // (account/api.ts's requestEnvelope), a module-local error class, and typed reads/writes
 // with no bespoke fetch() call anywhere else in this lane's own code.
 import { AccountError, requestEnvelope, type EnvelopeResult } from '../account/api';
+import { invalidate, query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 
 export const GUILD_API_FAILED = 'That did not work; try again';
@@ -181,50 +182,118 @@ async function call<T>(
   return result.data;
 }
 
+const GUILD_TTL_MS = 5 * 60 * 1000;
+
+/** Matches the path `fetchGuildHome` itself builds, so `invalidate(guildHomeKey(id,
+ *  undefined, apiBase))` -- a prefix match -- catches every cursor page cached for this
+ *  guild, not just the cursor-less first page. */
+function guildHomeKey(guildId: number, cursor: string | undefined, apiBase: string): string {
+  return `${apiBase}/v1/guilds/${guildId}/home${cursor === undefined ? '' : `?cursor=${cursor}`}`;
+}
+
+function guildSettingsKey(guildId: number, apiBase: string): string {
+  return `${apiBase}/v1/guilds/${guildId}/settings`;
+}
+
+/**
+ * "Guild home/settings for a member" (spec section 3.2): private, 5 minutes, through the
+ * shared client cache (web/src/lib/data/query.ts). Every mutation below invalidates both
+ * keys for the guild it acted on.
+ */
 export function fetchGuildHome(
   guildId: number,
   cursor?: string,
   apiBase: string = API_BASE_URL,
 ): Promise<GuildHome> {
-  const query = cursor === undefined ? '' : `?cursor=${encodeURIComponent(cursor)}`;
-  return call<GuildHome>(`/v1/guilds/${guildId}/home${query}`, apiBase);
+  const path = cursor === undefined ? '' : `?cursor=${encodeURIComponent(cursor)}`;
+  return query<GuildHome>(
+    guildHomeKey(guildId, cursor, apiBase),
+    () => call<GuildHome>(`/v1/guilds/${guildId}/home${path}`, apiBase),
+    { scope: 'private', ttlMs: GUILD_TTL_MS },
+  );
 }
 
 export function fetchGuildSettings(
   guildId: number,
   apiBase: string = API_BASE_URL,
 ): Promise<GuildSettingsData> {
-  return call<GuildSettingsData>(`/v1/guilds/${guildId}/settings`, apiBase);
+  return query<GuildSettingsData>(
+    guildSettingsKey(guildId, apiBase),
+    () => call<GuildSettingsData>(`/v1/guilds/${guildId}/settings`, apiBase),
+    { scope: 'private', ttlMs: GUILD_TTL_MS },
+  );
 }
 
-export function updateGuildSettings(
+export async function updateGuildSettings(
   guildId: number,
   patch: { default_visibility?: GuildVisibility; officer_max_rank_index?: number },
   apiBase: string = API_BASE_URL,
 ): Promise<GuildSettingsData> {
-  return call<GuildSettingsData>(`/v1/guilds/${guildId}/settings`, apiBase, { method: 'PATCH', body: patch });
+  const data = await call<GuildSettingsData>(`/v1/guilds/${guildId}/settings`, apiBase, {
+    method: 'PATCH',
+    body: patch,
+  });
+  invalidate(guildSettingsKey(guildId, apiBase));
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  return data;
 }
 
-export function claimGuild(guildId: number, apiBase: string = API_BASE_URL): Promise<ClaimResult> {
-  return call<ClaimResult>(`/v1/guilds/${guildId}/claim`, apiBase, { method: 'POST' });
+export async function claimGuild(guildId: number, apiBase: string = API_BASE_URL): Promise<ClaimResult> {
+  const data = await call<ClaimResult>(`/v1/guilds/${guildId}/claim`, apiBase, { method: 'POST' });
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
 }
 
-export function confirmClaim(guildId: number, apiBase: string = API_BASE_URL): Promise<ClaimConfirmResult> {
-  return call<ClaimConfirmResult>(`/v1/guilds/${guildId}/claim/confirm`, apiBase, { method: 'POST' });
+export async function confirmClaim(
+  guildId: number,
+  apiBase: string = API_BASE_URL,
+): Promise<ClaimConfirmResult> {
+  const data = await call<ClaimConfirmResult>(`/v1/guilds/${guildId}/claim/confirm`, apiBase, {
+    method: 'POST',
+  });
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
 }
 
-export function releaseClaim(guildId: number, apiBase: string = API_BASE_URL): Promise<ClaimReleaseResult> {
-  return call<ClaimReleaseResult>(`/v1/guilds/${guildId}/claim/release`, apiBase, { method: 'POST' });
+export async function releaseClaim(
+  guildId: number,
+  apiBase: string = API_BASE_URL,
+): Promise<ClaimReleaseResult> {
+  const data = await call<ClaimReleaseResult>(`/v1/guilds/${guildId}/claim/release`, apiBase, {
+    method: 'POST',
+  });
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
 }
 
-export function contestClaim(guildId: number, apiBase: string = API_BASE_URL): Promise<ContestResult> {
-  return call<ContestResult>(`/v1/guilds/${guildId}/claim/contest`, apiBase, { method: 'POST' });
+export async function contestClaim(guildId: number, apiBase: string = API_BASE_URL): Promise<ContestResult> {
+  const data = await call<ContestResult>(`/v1/guilds/${guildId}/claim/contest`, apiBase, { method: 'POST' });
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
 }
 
-export function rotateInvite(guildId: number, apiBase: string = API_BASE_URL): Promise<InviteRotateResult> {
-  return call<InviteRotateResult>(`/v1/guilds/${guildId}/invite/rotate`, apiBase, { method: 'POST' });
+export async function rotateInvite(
+  guildId: number,
+  apiBase: string = API_BASE_URL,
+): Promise<InviteRotateResult> {
+  const data = await call<InviteRotateResult>(`/v1/guilds/${guildId}/invite/rotate`, apiBase, {
+    method: 'POST',
+  });
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
 }
 
+/**
+ * No `guildId` is known until the API answers (the token alone does not name a guild), so
+ * this deliberately does not invalidate any guild's cached home/settings -- unlike every
+ * other mutation in this file. The page that calls this navigates to the guild afterward,
+ * which re-fetches regardless.
+ */
 export function acceptInvite(token: string, apiBase: string = API_BASE_URL): Promise<InviteAcceptResult> {
   return call<InviteAcceptResult>(`/v1/guilds/invite/${token}/accept`, apiBase, { method: 'POST' });
 }
@@ -237,45 +306,57 @@ export function acceptInvite(token: string, apiBase: string = API_BASE_URL): Pro
  * `rankings/api.ts` already builds the sibling `/v1/characters/{region}/{ruleset}/{slug}`
  * path.
  */
-export function approveCharacter(
+export async function approveCharacter(
   guildId: number,
   region: string,
   ruleset: string,
   slug: string,
   apiBase: string = API_BASE_URL,
 ): Promise<ApproveResult> {
-  return call<ApproveResult>(
+  const data = await call<ApproveResult>(
     `/v1/guilds/${guildId}/characters/${region}/${ruleset}/${encodeURIComponent(slug)}/approve`,
     apiBase,
     { method: 'POST' },
   );
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
 }
 
-export function removeCharacter(
+export async function removeCharacter(
   guildId: number,
   region: string,
   ruleset: string,
   slug: string,
   apiBase: string = API_BASE_URL,
 ): Promise<RemovedResult> {
-  return call<RemovedResult>(
+  const data = await call<RemovedResult>(
     `/v1/guilds/${guildId}/characters/${region}/${ruleset}/${encodeURIComponent(slug)}`,
     apiBase,
     { method: 'DELETE' },
   );
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
 }
 
-export function updateConsent(
+export async function updateConsent(
   guildId: number,
   consent: GuildConsent,
   apiBase: string = API_BASE_URL,
 ): Promise<UpdatedMember> {
-  return call<UpdatedMember>(`/v1/guilds/${guildId}/members/me`, apiBase, {
+  const data = await call<UpdatedMember>(`/v1/guilds/${guildId}/members/me`, apiBase, {
     method: 'PATCH',
     body: { consent },
   });
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
 }
 
-export function leaveGuild(guildId: number, apiBase: string = API_BASE_URL): Promise<LeftResult> {
-  return call<LeftResult>(`/v1/guilds/${guildId}/members/me`, apiBase, { method: 'DELETE' });
+export async function leaveGuild(guildId: number, apiBase: string = API_BASE_URL): Promise<LeftResult> {
+  const data = await call<LeftResult>(`/v1/guilds/${guildId}/members/me`, apiBase, { method: 'DELETE' });
+  invalidate(guildHomeKey(guildId, undefined, apiBase));
+  invalidate(guildSettingsKey(guildId, apiBase));
+  return data;
 }
