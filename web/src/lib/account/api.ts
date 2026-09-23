@@ -231,6 +231,44 @@ export function forgetRemembered(): void {
   remembered.clear();
 }
 
+/**
+ * Builds the request headers, applying `If-None-Match` for a GET that has a remembered
+ * ETag. Returns the `known` entry too (rather than making `requestEnvelope` look it up
+ * again) so the 304 short-circuit below can resolve to the same body without a second
+ * `remembered.get`.
+ */
+function buildRequestHeaders(
+  method: string,
+  hasBody: boolean,
+  rememberedKey: string,
+): { headers: Headers; known: { etag: string; data: unknown } | undefined } {
+  const headers = new Headers({ accept: 'application/json' });
+  if (method !== 'GET') {
+    headers.set('x-csrf-token', csrfToken());
+    if (hasBody) headers.set('content-type', 'application/json');
+    return { headers, known: undefined };
+  }
+  const known = remembered.get(rememberedKey);
+  if (known !== undefined) headers.set('if-none-match', known.etag);
+  return { headers, known };
+}
+
+/** Records (or forgets) the ETag a successful GET came back with. */
+function rememberEtag(rememberedKey: string, response: Response, data: unknown): void {
+  const etag = response.headers.get('etag');
+  if (etag !== null) remembered.set(rememberedKey, { etag, data });
+  else remembered.delete(rememberedKey);
+}
+
+/** A response with no JSON body (or a malformed one) parses to `null`, never throws. */
+async function parseEnvelope<T>(response: Response): Promise<Envelope<T> | null> {
+  try {
+    return (await response.json()) as Envelope<T>;
+  } catch {
+    return null;
+  }
+}
+
 export async function requestEnvelope<T>(
   path: string,
   apiBase: string,
@@ -242,15 +280,8 @@ export async function requestEnvelope<T>(
   } = {},
 ): Promise<EnvelopeResult<T>> {
   const method = init.method ?? 'GET';
-  const remememberedKey = `${apiBase}${path}`;
-  const headers = new Headers({ accept: 'application/json' });
-  if (method !== 'GET') {
-    headers.set('x-csrf-token', csrfToken());
-    if (init.body !== undefined) headers.set('content-type', 'application/json');
-  } else {
-    const known = remembered.get(remememberedKey);
-    if (known !== undefined) headers.set('if-none-match', known.etag);
-  }
+  const rememberedKey = `${apiBase}${path}`;
+  const { headers, known } = buildRequestHeaders(method, init.body !== undefined, rememberedKey);
 
   let response: Response;
   try {
@@ -267,31 +298,21 @@ export async function requestEnvelope<T>(
   }
 
   if (method === 'GET' && response.status === 304) {
-    const known = remembered.get(remememberedKey);
     return { status: 304, data: (known?.data as T | undefined) ?? null, message: null };
   }
 
-  let envelope: Envelope<T> | null = null;
-  try {
-    envelope = (await response.json()) as Envelope<T>;
-  } catch {
-    envelope = null;
-  }
+  const envelope = await parseEnvelope<T>(response);
 
   if (!response.ok) {
-    // The API's own message is shown verbatim when it has one: it is the only thing that
-    // can say "too many sign-in links" or name the field that was wrong.
+    // The API's own message is shown verbatim when it has one, since it can say things
+    // like "too many sign-in links" that no generic fallback can.
     throw new AccountError(
       envelope?.error?.message ?? init.failureMessage ?? ACCOUNT_FAILED,
       response.status,
     );
   }
 
-  if (method === 'GET') {
-    const etag = response.headers.get('etag');
-    if (etag !== null) remembered.set(remememberedKey, { etag, data: envelope?.data ?? null });
-    else remembered.delete(remememberedKey);
-  }
+  if (method === 'GET') rememberEtag(rememberedKey, response, envelope?.data ?? null);
 
   return { status: response.status, data: envelope?.data ?? null, message: envelope?.error?.message ?? null };
 }
