@@ -19,6 +19,7 @@ import (
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/billing"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
+	"github.com/jhunthrop/foreversixty/api/internal/bnetbuild"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetimport"
 	"github.com/jhunthrop/foreversixty/api/internal/builds"
 	"github.com/jhunthrop/foreversixty/api/internal/config"
@@ -350,7 +351,19 @@ func runBnetRefresh(ctx context.Context, log *slog.Logger) error {
 	if !cfg.BattleNetConfigured() {
 		return fmt.Errorf("%s needs Battle.net credentials", bnetimport.RefreshJobCommand)
 	}
-	svc := &bnetimport.Service{Pool: pool, Client: bnetClient(cfg, log), Regions: cfg.BnetRegions, Log: log}
+	treeData, err := trees.Load(cfg.TreeDataDir)
+	if err != nil {
+		return fmt.Errorf("trees: %s: %w", cfg.TreeDataDir, err)
+	}
+	tables, ok, err := bnetbuild.LoadTables(cfg.TreeDataDir, treeData)
+	if err != nil {
+		return fmt.Errorf("bnetbuild: load tables: %w", err)
+	}
+	if !ok {
+		log.Warn(bnetimport.RefreshJobCommand, "err", "no client build available",
+			"effect", "characters are re-synced but no Blizzard-sourced build is (re-)encoded")
+	}
+	svc := &bnetimport.Service{Pool: pool, Client: bnetClient(cfg, log), Regions: cfg.BnetRegions, Log: log, Tables: tables}
 	result, err := svc.RunRefresh(ctx, cfg.BnetProbeGames)
 	if err != nil {
 		return err
@@ -490,8 +503,16 @@ func serve(log *slog.Logger) error {
 	if cfg.BattleNetConfigured() {
 		accounts.BNet = auth.NewBattleNet(cfg.BnetClientID, cfg.BnetClientSecret, cfg.BnetRedirectURL)
 		bnetSvcClient := bnetClient(cfg, log)
+		bnetTables, ok, err := bnetbuild.LoadTables(cfg.TreeDataDir, treeData)
+		if err != nil {
+			return fmt.Errorf("bnetbuild: load tables: %w", err)
+		}
+		if !ok {
+			log.Warn("auth", "err", "no client build available",
+				"effect", "Battle.net sign-in works but no character gets a Blizzard-sourced build")
+		}
 		accounts.Importer = &bnetimport.Service{
-			Pool: pool, Client: bnetSvcClient, Regions: cfg.BnetRegions, Log: log,
+			Pool: pool, Client: bnetSvcClient, Regions: cfg.BnetRegions, Log: log, Tables: bnetTables,
 		}
 		// Warm the realm cache before traffic arrives (spec A1): a first
 		// sign-in must never pay the cost of a cold per-region realm
