@@ -67,6 +67,15 @@ func newBlizzardFixture(t *testing.T) *blizzardFixture {
 		key := r.Method + " " + strings.Replace(r.URL.RequestURI(), "&locale=en_US", "", 1)
 		h, ok := f.handlers[key]
 		if !ok {
+			// A /specializations read this test never stubbed answers 404 by default
+			// (a Season of Discovery character has none, spec
+			// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §0), rather
+			// than failing every test written before that capture existed — a test
+			// asserting on the Blizzard-sourced build stubs it explicitly instead.
+			if r.Method == http.MethodGet && strings.HasSuffix(r.URL.Path, "/specializations") {
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
 			t.Fatalf("blizzardFixture: unexpected request %s", key)
 			return
 		}

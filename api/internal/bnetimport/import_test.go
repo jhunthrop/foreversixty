@@ -4,7 +4,12 @@ package bnetimport
 import (
 	"context"
 	"net/http"
+	"os"
+	"strings"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/api/internal/bnetbuild"
+	"github.com/jhunthrop/foreversixty/api/internal/trees"
 )
 
 const accountCharactersPath = "/profile/user/wow?namespace=profile-classic1x-us"
@@ -326,5 +331,83 @@ func TestImportAccountLogsAndCountsA404CharacterProfileAsUnavailable(t *testing.
 	}
 	if n != 0 {
 		t.Fatalf("guild_characters rows = %d, want 0", n)
+	}
+}
+
+// TestImportWritesABlizzardSourcedExportWhenAllThreeCapturesAnswer is the era-kiloz fixture
+// (a real Classic Era warrior, spec docs/superpowers/specs/2026-09-22-battlenet-first-design.md
+// §0) run all the way through ImportAccount: profile, equipment and specializations all
+// answer, so bnetbuild.Encode runs and addon_exports gets a source='blizzard' row.
+func TestImportWritesABlizzardSourcedExportWhenAllThreeCapturesAnswer(t *testing.T) {
+	pool := testPool(t)
+	uid := seedUser(t, pool)
+	f := newBlizzardFixture(t)
+	f.handlers[http.MethodGet+" "+accountCharactersPath] = func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write([]byte(`{"wow_accounts":[{"id":1,"characters":[
+			{"name":"Kiloz","id":36745378,"realm":{"slug":"whitemane","name":"Whitemane"},
+			 "playable_class":{"name":"Warrior"},"playable_race":{"name":"Orc"},
+			 "gender":{"type":"MALE"},"faction":{"type":"HORDE"},"level":60}
+		]}]}`))
+	}
+	f.realms("us", map[string]string{"whitemane": "NORMAL"})
+
+	profileBody, err := os.ReadFile("../bnetapi/testdata/era-kiloz/profile.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	equipmentBody, err := os.ReadFile("../bnetapi/testdata/era-kiloz/equipment.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	specBody, err := os.ReadFile("../bnetapi/testdata/era-kiloz/specializations.json")
+	if err != nil {
+		t.Fatal(err)
+	}
+	f.handlers[http.MethodGet+" /profile/wow/character/whitemane/kiloz?namespace=profile-classic1x-us"] = func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(profileBody)
+	}
+	f.handlers[http.MethodGet+" /profile/wow/character/whitemane/kiloz/equipment?namespace=profile-classic1x-us"] = func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(equipmentBody)
+	}
+	f.handlers[http.MethodGet+" /profile/wow/character/whitemane/kiloz/specializations?namespace=profile-classic1x-us"] = func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_, _ = w.Write(specBody)
+	}
+	f.json(http.MethodGet, "/profile/wow/character/whitemane/kiloz/character-media?namespace=profile-classic1x-us",
+		http.StatusNotFound, nil)
+	// The fixture's profile carries a guild (Onslaught); its roster is irrelevant to this
+	// test (the Blizzard-sourced export write), so 404 it rather than modelling the roster.
+	f.json(http.MethodGet, "/data/wow/guild/whitemane/onslaught/roster?namespace=profile-classic1x-us",
+		http.StatusNotFound, nil)
+
+	data, err := trees.Load("../../../data/builds")
+	if err != nil {
+		t.Fatal(err)
+	}
+	tables, ok, err := bnetbuild.LoadTables("../../../data/builds", data)
+	if err != nil || !ok {
+		t.Fatalf("LoadTables: ok=%v err=%v", ok, err)
+	}
+	svc := newTestService(t, pool, f)
+	svc.Tables = tables
+
+	if _, err := svc.ImportAccount(context.Background(), uid, "user-oauth-token"); err != nil {
+		t.Fatal(err)
+	}
+
+	var source, export string
+	if err := pool.QueryRow(context.Background(),
+		`select source, export from addon_exports where character_key = 'us/normal/kiloz'`).
+		Scan(&source, &export); err != nil {
+		t.Fatal(err)
+	}
+	if source != "blizzard" {
+		t.Fatalf("source = %q, want blizzard", source)
+	}
+	if !strings.HasPrefix(export, "FS1:") || !strings.Contains(export, ":warrior:orc:") {
+		t.Fatalf("export = %q, want an FS1 warrior/orc build", export)
 	}
 }
