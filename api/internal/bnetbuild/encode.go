@@ -5,6 +5,13 @@
 // docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.2). Every function here is
 // pure: no I/O, no database, no HTTP — bnetimport does all three and calls Encode with what
 // it captured.
+//
+// Note on per-rank spell ids: today's data pipeline writes the same spell_id into every rank
+// of a multi-rank talent (talents.go's blizzardTalentEntry-matching doc explains why this
+// matters) rather than each rank's own distinct spell id, so TalentBySpellID's fallback
+// rarely fires in practice — Blizzard's classic1x API reports the CURRENT rank's spell id,
+// which this site's flattened data can only coincidentally hold. Fixing that is a data-lane
+// change (a per-rank spell_id column), not something this package can correct on its own.
 package bnetbuild
 
 import (
@@ -27,13 +34,17 @@ type Inputs struct {
 	Races     RaceTable
 }
 
-// Report is what Encode could not map cleanly — logged at INFO with the character's key by
-// the caller (bnetimport), never inside this pure package (spec §2.2).
+// Report is what Encode could not map cleanly, plus how many talents each matching strategy
+// resolved (MatchedByName/MatchedByID/MatchedBySpell) — logged at INFO with the character's
+// key by the caller (bnetimport), never inside this pure package (spec §2.2).
 type Report struct {
 	UnmatchedTalents []string
 	Clamped          []string
 	NoSuffix         []string
 	SkippedSlots     []string
+	MatchedByName    int
+	MatchedByID      int
+	MatchedBySpell   int
 }
 
 // Encode builds one FS1 v1 string: "FS1:<build>:<class>:<race>:<t1>/<t2>/<t3>:<gear>" (spec
@@ -48,7 +59,7 @@ func Encode(in Inputs) (code string, report Report, err error) {
 		return "", Report{}, fmt.Errorf("bnetbuild: unknown race %q", in.Profile.RaceName)
 	}
 
-	treeRanks, unmatched, clamped, err := encodeTalents(in.Talents, in.Talent)
+	talentResult, err := encodeTalents(in.Talents, in.Talent)
 	if err != nil {
 		return "", Report{}, err
 	}
@@ -59,14 +70,17 @@ func Encode(in Inputs) (code string, report Report, err error) {
 
 	treeFields := make([]string, 3)
 	for i := 0; i < 3; i++ {
-		treeFields[i] = encodeTree(treeRanks[i])
+		treeFields[i] = encodeTree(talentResult.TreeRanks[i])
 	}
 
 	code = strings.Join([]string{
 		"FS1", in.Build, in.Profile.ClassSlug, raceSlug, strings.Join(treeFields, "/"), gear,
 	}, ":")
 	return code, Report{
-		UnmatchedTalents: unmatched, Clamped: clamped, NoSuffix: noSuffix, SkippedSlots: skippedSlots,
+		UnmatchedTalents: talentResult.Unmatched, Clamped: talentResult.Clamped,
+		NoSuffix: noSuffix, SkippedSlots: skippedSlots,
+		MatchedByName: talentResult.MatchedByName, MatchedByID: talentResult.MatchedByID,
+		MatchedBySpell: talentResult.MatchedBySpell,
 	}, nil
 }
 
