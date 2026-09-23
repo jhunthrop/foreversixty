@@ -1,9 +1,9 @@
 <!-- web/src/components/sim/SourceSwitcher.svelte -->
 <!-- The four ways in. Order is deliberate: the addon export is first because it needs no
      account and produces the most accurate character, and "your characters" is last because
-     it is the one that needs a sign-in and, until Blizzard ships a Forever profile API, is
-     really the addon export under a different name -- which its own copy says out loud
-     rather than letting a player assume their Armory gear is being read.
+     it is the one that needs a sign-in. The site now has a real Battle.net-backed source
+     (spec 2026-09-22 §3.3), so signing in gets a member's gear and talents from Blizzard
+     directly rather than only from a prior addon export.
      A signed-in member's own character list lives in LandingState.svelte, not here (Task
      18): this switcher only reaches a signed-in member when they explicitly reopen it (from
      the strip's "Change source", or the landing state's "Sim something else"), so the card's
@@ -149,12 +149,11 @@
           {simCopy.backToCharacters}
         </button>
       {:else if !signedIn}
-        <p class="text-muted text-[13px]">{simCopy.armorySignIn}</p>
+        <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
         <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
           Sign in with Battle.net
         </button>
       {/if}
-      <p class="text-muted text-[12px]" data-testid="sim-armory-note">{simCopy.armoryNotYet}</p>
     </div>
   </div>
 

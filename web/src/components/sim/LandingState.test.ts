@@ -51,4 +51,22 @@ describe('LandingState', () => {
     });
     expect(pickButtonTag(body)).toContain('disabled=""');
   });
+
+  // Task 7: each row carries its own build-source pill (buildSourcePill, build-pill.ts)
+  // rather than the deleted blanket footnote -- a Battle.net-backed character says so.
+  it('shows a Battle.net pill for a character with a Battle.net build', () => {
+    const characters = [
+      {
+        ...CHARACTERS[0],
+        build: { source: 'blizzard' as const, captured_at: '2026-09-20T00:00:00Z' },
+      },
+    ];
+    const { body } = render(LandingState, {
+      props: { characters, busyKey: null, onpick: () => {}, onother: () => {} },
+    });
+    const match =
+      /<span[^>]*data-testid="sim-character-build-us\/normal\/simfury"[^>]*>([\s\S]*?)<\/span>/.exec(body);
+    if (match === null) throw new Error('build pill not found');
+    expect(match[1]).toContain('Battle.net');
+  });
 });
