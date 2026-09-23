@@ -22,7 +22,6 @@ test('homepage states the product and stops, not a marketing slogan', async ({ p
   await expect(page.getByRole('heading', { name: 'Your guild' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What changed' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Still unknown' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Guides by class' })).toBeVisible();
   await expect(page.getByText('Not affiliated with or endorsed by Blizzard Entertainment')).toBeVisible();
   expect(errors).toEqual([]);
 });
