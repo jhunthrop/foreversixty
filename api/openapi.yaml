@@ -8,6 +8,11 @@ components:
   schemas:
     Envelope:
       type: object
+      description: >-
+        Every successful (2xx) GET response carries ETag: W/"<16 hex chars of sha256(data)>".
+        A request with a matching If-None-Match (weak or strong, comma-separated) gets 304 Not
+        Modified with an empty body and the same ETag and Cache-Control headers the 200 would
+        have carried. POST, PATCH, and DELETE responses never carry an ETag.
       required: [ok, data, error, request_id]
       properties:
         ok: { type: boolean }
