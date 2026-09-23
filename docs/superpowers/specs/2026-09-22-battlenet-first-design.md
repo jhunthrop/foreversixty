@@ -12,7 +12,8 @@ Today: hear about the site → sign in → install the addon → log in with the
 type `/fs export` → copy → paste on the site → name the character → sim. Six steps, one
 context switch into the game, and the drop-off is at the export.
 
-After: hear about the site → **sign in with Battle.net** → sim. One required step. The
+After: hear about the site → **sign in with Battle.net** → your hub, with your characters
+ready for the planner, the simulator, logs, rankings and your guild. One required step. The
 addon and the companion become upgrades offered where they matter, never prerequisites.
 
 What makes this possible (verified 2026-09-22 on a Classic Era character, fixture at
@@ -147,31 +148,42 @@ that played yesterday has today's gear without touching the site. The refresh lo
 
 ## 3. Lane `bnet-first-web`: the site around the new path
 
-### 3.1 Sign in lands on the simulator
+### 3.1 Sign in lands on your hub
 
-- `/login` and every sign-in link default `next` to `/sim?signed_in=1` instead of `/logs`
-  (the header's Sign in link, `SignInPrompt`, and the account page's own prompt).
-- The simulator's landing, when `signed_in=1` is present, waits for `/v1/me`, picks the
-  **main character** (the simmable character with the latest `build.captured_at`; ties by
-  level; none simmable → the highest level) and loads it through the existing
-  `fromStoredCharacter`/`sim-input` path, sets the current-character pointer, and shows a
-  one-line banner: "Signed in. <Name> is loaded from Battle.net; your other characters are
-  below." The banner is removed from the URL with `history.replaceState`. No simmable
-  character → the landing shows the characters list with the paste fallback and the
-  "Refresh from Battle.net" link, and the sentence that Blizzard has no data for this
-  realm type when `source` is missing on every character.
-- The simulator's "Your characters" rows show each character's build source as a source
-  pill (`Battle.net · 2 days ago`, `Addon · today`) and a muted "No build yet" for the rest.
+The site is the planner, the simulator, logs, rankings, guilds and the reference together;
+sims are one of six things a signed-in player does. So sign-in lands on **the account
+page as the player's hub**, not on any one tool.
+
+- `/login` and every sign-in link default `next` to `/account?signed_in=1` (the header's
+  Sign in link, `SignInPrompt`, the home panel).
+- On arrival with `signed_in=1`, the account page picks the **main character** (the
+  simmable character with the latest `build.captured_at`; ties by level; none simmable →
+  the highest level; none at all → nothing), sets the current-character pointer to it so
+  every tool opens with it, and shows it in the hero band with the full set of actions:
+  `Open in simulator`, `Open in planner`, `Logs` (`/logs`), and the character's own page.
+  A one-line banner reads "Signed in. <Name> is your current character; change it from
+  any row below." and the URL is cleaned with `history.replaceState`. No simmable
+  character → the hero band still shows the main character, with its character page link,
+  `Logs`, and the paste fallback in place of the simulator and planner actions, plus the
+  sentence that Blizzard serves no data for this realm type when no character has a build.
+- The hub's main column, in order: the hero band; Characters (rows carry the build source
+  pill `Battle.net · 2 days ago` / `Addon · today` / `No build yet`); **Your ratings**: the
+  main character's latest rating card summary with a link to its character page (the
+  existing `CharacterRatingPanel`, reused, only when a rating exists); Your reports. The
+  rail stays: Devices, You, Guilds and plan; the Guilds panel links to the guild home.
+- The simulator's own landing keeps its "Your characters" list with the source pills;
+  nothing is auto-loaded there beyond the current-character pointer it already honours.
 
 ### 3.2 The home page leads with the path
 
 Signed out, the hero keeps the search (it is the reference site's first control) and gains,
 above the tool cards, one panel: the sentence "Sign in with Battle.net and your characters
-arrive with their gear and talents, ready to sim." with the Sign in button (`next=/sim?signed_in=1`).
-Reference, not pitch: one sentence, one button, no list of benefits.
+arrive with their gear, talents and guild: plan, sim, log and rank them from here." with
+the Sign in button (`next=/account?signed_in=1`). Reference, not pitch: one sentence, one
+button, no list of benefits.
 
-Signed in, that panel becomes the current character strip: the chip, `Open in simulator`,
-`Open in planner`, and "Your characters" linking to `/account`.
+Signed in, that panel becomes the current character strip: the chip, `Open in planner`,
+`Open in simulator`, `Logs`, and "Your characters" linking to `/account`.
 
 ### 3.3 The addon and the companion become upgrades, in context
 
@@ -201,17 +213,18 @@ per-row `sim-input` lookup on the account page); the character page keeps its ow
 
 ### 3.5 Tests
 
-Vitest: main-character selection (`lib/sim/main-character.ts`, pure), the sim landing's
-signed-in state, the home panel both ways, copy changes; the FS1 decode test over the API
+Vitest: main-character selection (`lib/account/main-character.ts`, pure), the hub's
+signed-in arrival, the home panel both ways, copy changes; the FS1 decode test over the API
 lane's checked-in `era-kiloz.fs1` (skip with a clear message if the file is absent on this
-branch). Playwright: sign-in → simulator loaded journey with `/v1/me` and `sim-input`
-stubbed (`source: "blizzard"`), the home panel signed out and signed in. `npm run lhci`
+branch). Playwright: sign-in → hub with the main character in the hero band and the pointer set,
+then `Open in simulator` loading it, with `/v1/me` and `sim-input` stubbed (`source:
+"blizzard"`), the home panel signed out and signed in. `npm run lhci`
 before the final report with CLS per URL (the home page is in the strict bucket).
 
 ## 4. Order of work in the web lane
 
 1. Contract types and normalisers (5).
-2. Sim landing signed-in load and the main-character rule.
+2. The hub's signed-in arrival and the main-character rule (`lib/account/main-character.ts`).
 3. Sign-in `next` defaults.
 4. Home panel.
 5. Copy pass (3.3) and hand-offs (3.4).
