@@ -9,7 +9,6 @@
      of the two stacking and reflowing the page underneath. -->
 <script lang="ts">
   import { fetchMeOnce, type Me, type MeCharacter } from '../lib/account/api';
-  import { ME_UPDATED } from '../lib/account/session-cache';
   import { readCurrent } from '../lib/current-character';
   import { classColorVar } from '../lib/report/format';
   import { classSquare, classIconUrl, characterDescriptor } from '../lib/account/character-descriptor';
@@ -25,15 +24,6 @@
 
   let me = $state<Me | null>(null);
   let ready = $state(false);
-  // A background revalidation of the snapshot this island rendered from (session-cache.ts)
-  // announces a change; follow it so the hub never sits on a stale account.
-  $effect(() => {
-    const follow = (event: Event): void => {
-      me = (event as CustomEvent<Me | null>).detail;
-    };
-    window.addEventListener(ME_UPDATED, follow);
-    return () => window.removeEventListener(ME_UPDATED, follow);
-  });
 
   $effect(() => {
     void fetchMeOnce()

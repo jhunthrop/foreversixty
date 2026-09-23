@@ -7,7 +7,7 @@
 // DELETE /v1/sessions and PATCH /v1/me { anonymize } come from the contract's Amendments
 // section; the first draft required both behaviours on /account without naming a route.
 import { API_BASE_URL } from '../planner/config';
-import { ME_UPDATED, clearSnapshot, readSnapshot, sameMe, writeSnapshot } from './session-cache';
+import { forgetPrivate, query, setQueryData } from '../data/query';
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
 export const ACCOUNT_FAILED = 'That did not work; try again';
@@ -336,56 +336,30 @@ export async function fetchMe(apiBase: string = API_BASE_URL): Promise<Me | null
   }
 }
 
-/**
- * One `/v1/me` per page, shared by every island that needs to know who is signed in: the
- * header, the pairing block, the upload form and the reports list are separate islands, and
- * each asking on its own was four identical requests. A failure is not remembered, so the
- * next caller asks again rather than inheriting a dead promise.
- */
-const sessions = new Map<string, Promise<Me | null>>();
+const ME_TTL_MS = 10 * 60 * 1000;
 
-/**
- * Fetches and records the live answer. A change against what the page already knows is
- * announced on `window` as ME_UPDATED, so an island rendering the snapshot can follow.
- */
-async function revalidateMe(apiBase: string, shown: Me | null): Promise<Me | null> {
-  const live = await fetchMe(apiBase);
-  if (live === null) clearSnapshot();
-  else writeSnapshot(live);
-  sessions.set(apiBase, Promise.resolve(live));
-  if (!sameMe(shown, live) && typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent(ME_UPDATED, { detail: live }));
-  }
-  return live;
+function meKey(apiBase: string): string {
+  return `${apiBase}/v1/me`;
 }
 
+/**
+ * One `/v1/me` per key, shared by every island that needs to know who is signed in, through
+ * the shared client cache (web/src/lib/data/query.ts): a stale answer renders instantly and
+ * revalidates in the background; a signed-out answer (`null`) is cached exactly like a
+ * signed-in one, since `query.ts` tracks "has an answer" via its own `status`, not `data
+ * !== null`.
+ */
 export function fetchMeOnce(apiBase: string = API_BASE_URL): Promise<Me | null> {
-  const known = sessions.get(apiBase);
-  if (known !== undefined) return known;
-  // Stale while revalidate: the last answer this browser saw, when the session cookie is
-  // still present, is shown at once and checked in the background (session-cache.ts).
-  const snapshot = readSnapshot();
-  if (snapshot !== null) {
-    const shown = Promise.resolve<Me | null>(snapshot);
-    sessions.set(apiBase, shown);
-    void revalidateMe(apiBase, snapshot).catch(() => {
-      // A failed revalidation keeps the snapshot; the next page load tries again.
-    });
-    return shown;
-  }
-  const pending = revalidateMe(apiBase, null).catch((error: unknown) => {
-    sessions.delete(apiBase);
-    throw error;
+  return query<Me | null>(meKey(apiBase), () => fetchMe(apiBase), {
+    scope: 'private',
+    ttlMs: ME_TTL_MS,
   });
-  sessions.set(apiBase, pending);
-  return pending;
 }
 
 /** Tests only: a fresh page has no remembered session. */
 export function forgetSession(): void {
+  forgetPrivate();
   forgetRemembered();
-  sessions.clear();
-  clearSnapshot();
 }
 
 export function battlenetStartUrl(next: string, apiBase: string = API_BASE_URL): string {
@@ -412,17 +386,19 @@ export async function revokeDevice(id: string, apiBase: string = API_BASE_URL): 
 
 export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
   forgetRemembered();
-  clearSnapshot();
+  forgetPrivate();
   await call('/v1/sessions', apiBase, { method: 'DELETE' });
 }
 
 export async function setAnonymize(value: boolean, apiBase: string = API_BASE_URL): Promise<void> {
-  await call('/v1/me', apiBase, { method: 'PATCH', body: { anonymize: value } });
+  const me = await call<Me>('/v1/me', apiBase, { method: 'PATCH', body: { anonymize: value } });
+  if (me !== null) setQueryData(meKey(apiBase), me);
 }
 
 /** Chooses the account's main character (one of its own); the rest become alts. */
 export async function setMainCharacter(key: string, apiBase: string = API_BASE_URL): Promise<void> {
-  await call('/v1/me', apiBase, { method: 'PATCH', body: { main_character_key: key } });
+  const me = await call<Me>('/v1/me', apiBase, { method: 'PATCH', body: { main_character_key: key } });
+  if (me !== null) setQueryData(meKey(apiBase), me);
 }
 
 /** One character's export, matching `POST /v1/me/exports`'s body (spec 2026-09-22 §4.5) --

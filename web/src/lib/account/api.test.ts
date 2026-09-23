@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 // web/src/lib/account/api.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { invalidate } from '../data/query';
 import {
   ACCOUNT_FAILED,
   AccountError,
@@ -45,6 +46,15 @@ const ME = {
 };
 
 afterEach(() => {
+  // setAnonymize/setMainCharacter now write into query.ts's shared, module-level cache
+  // (setQueryData), so every test in this file -- not just the ones under the `fetchMeOnce`
+  // describe below -- must clear it, or a later test's `fetchMeOnce(API)` sees a stale
+  // "fresh" entry an earlier test left behind and never calls `fetch` at all. `forgetSession`
+  // only forgets `scope: 'private'` entries; `invalidate('')` (every key) also resets one
+  // `setQueryData` can create with no prior `query()` call for that key, which defaults to
+  // `scope: 'public'` and so survives `forgetSession`.
+  forgetSession();
+  invalidate('');
   vi.unstubAllGlobals();
   document.cookie = 'fs_csrf=; Max-Age=0; path=/';
 });
@@ -141,17 +151,22 @@ describe('the account API', () => {
   });
 
   it('signs out and sets the anonymize flag', async () => {
+    // A dedicated apiBase, not the shared `API` constant: `setAnonymize` now writes its
+    // response into query.ts's cache via `setQueryData`, and this test's fixture response
+    // (`{ ok: true }`, not a real `Me`) would otherwise seed a bogus `${API}/v1/me` entry
+    // that outlives this test and confuses the `fetchMeOnce` tests below, which share `API`.
+    const apiBase = `${API}/signout-fixture`;
     const upstream = vi.fn<GlobalFetch>(async () => envelope({ ok: true }));
     vi.stubGlobal('fetch', upstream);
 
-    await signOut(API);
-    await setAnonymize(true, API);
+    await signOut(apiBase);
+    await setAnonymize(true, apiBase);
 
-    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${API}/v1/sessions`);
+    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${apiBase}/v1/sessions`);
     expect((upstream.mock.calls[0][0] as Request).method).toBe('DELETE');
     const patch = upstream.mock.calls[1][0] as Request;
     expect(patch.method).toBe('PATCH');
-    expect(patch.url).toBe(`${API}/v1/me`);
+    expect(patch.url).toBe(`${apiBase}/v1/me`);
     expect(await patch.json()).toEqual({ anonymize: true });
   });
 
@@ -244,11 +259,6 @@ describe('listMyReports', () => {
 });
 
 describe('fetchMeOnce', () => {
-  afterEach(() => {
-    forgetSession();
-    vi.unstubAllGlobals();
-  });
-
   it('asks the API once however many islands want the session', async () => {
     const fetchMock = vi.fn<GlobalFetch>(async () => envelope(ME));
     vi.stubGlobal('fetch', fetchMock);
@@ -266,6 +276,24 @@ describe('fetchMeOnce', () => {
     await expect(fetchMeOnce(API)).rejects.toBeDefined();
     await expect(fetchMeOnce(API)).resolves.toMatchObject({ user: { id: 7 } });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('shares one in-flight request across concurrent callers on a page', async () => {
+    const fetchSpy = vi.fn().mockResolvedValue(envelope(ME));
+    vi.stubGlobal('fetch', fetchSpy);
+    const [a, b] = await Promise.all([fetchMeOnce(API), fetchMeOnce(API)]);
+    expect(a).toEqual(ME);
+    expect(b).toEqual(ME);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('forgetSession clears the shared /v1/me cache: the next fetchMeOnce call is a real request', async () => {
+    const fetchSpy = vi.fn().mockResolvedValue(envelope(ME));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchMeOnce(API);
+    forgetSession();
+    await fetchMeOnce(API);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
   });
 });
 

@@ -24,7 +24,6 @@
     type PairingCode,
   } from '../lib/account/api';
   import { safeNextPath } from '../lib/account/safe-next';
-  import { ME_UPDATED } from '../lib/account/session-cache';
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
   import { characterListCopy } from '../lib/account/character-list-copy';
@@ -101,16 +100,6 @@
   });
   // The hero is the current character when one is pointed at, else the account's main
   // (chosen, or the site's guess): the main is the default context everywhere.
-  // A background revalidation of the session snapshot (session-cache.ts) announces a
-  // change; follow it, since this page renders from whatever `fetchMeOnce` handed it.
-  $effect(() => {
-    const follow = (event: Event): void => {
-      if (status !== 'ready') return;
-      me = (event as CustomEvent<Me | null>).detail;
-    };
-    window.addEventListener(ME_UPDATED, follow);
-    return () => window.removeEventListener(ME_UPDATED, follow);
-  });
   const hero = $derived(
     me === null
       ? null
