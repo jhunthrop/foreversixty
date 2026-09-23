@@ -120,7 +120,9 @@ and `HomeAccountPanel.svelte` make). `me` becomes `$derived(session.data)`; the 
 flag (`store.setPremium(effectiveServerSims(me))`) and the history load run from an
 `$effect` keyed on `me` that guards against re-running for the same object (compare the
 reference, and never call a session read from inside it). While `session.status ===
-'loading'` with no data, the landing area shows a `Skeleton` sized to four rows
+'loading'` with no data and the session cookie's readable half present (`sessionHinted()`;
+a signed-out visitor gets the source switcher at once, never a skeleton for a read that
+answers nobody), the landing area shows a `Skeleton` sized to four rows
 (`lib/sim/layout.ts` constant, measured once); a failed session read renders as signed out
 exactly as today (the sim never shows a session error). A returning signed-in visitor sees
 "Your characters" from the snapshot before `/v1/me` answers: one Playwright test proves it

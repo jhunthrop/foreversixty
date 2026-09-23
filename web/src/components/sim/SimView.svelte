@@ -11,6 +11,7 @@
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, effectiveServerSims, fetchMeOnce, type Me } from '../../lib/account/api';
+  import { sessionHinted } from '../../lib/data/query';
   import { createQueryState } from '../../lib/data/query.svelte';
   import { API_BASE_URL } from '../../lib/planner/config';
   import { SIM_LANDING_SKELETON_MIN_H } from '../../lib/sim/layout';
@@ -206,6 +207,10 @@
     ttlMs: 10 * 60 * 1000,
   });
   const me = $derived(session.data);
+  // The landing skeleton shows only for a visitor who has a session to load (the cookie's
+  // readable half is present) and no snapshot yet; a signed-out visitor gets the source
+  // switcher at once, as before, rather than a skeleton for a read that answers "nobody".
+  const sessionPending = $derived(session.status === 'loading' && session.data === null && sessionHinted());
   // The history panel (Task 17), for a signed-in player on plain /sim only.
   const signedIn = $derived(me !== null);
   let historyRows = $state<SimListRow[] | null>(null);
@@ -551,7 +556,7 @@
           onchange={() => (switcherOpen = true)}
           onrace={(slug) => store.setRace(slug)}
         />
-      {:else if session.status === 'loading' && session.data === null && !switcherOpen}
+      {:else if sessionPending && !switcherOpen}
         <!-- Spec 2026-09-23 §3: a cold cache shows a reserved skeleton while the session read
              is in flight; a returning signed-in visitor's snapshot skips this entirely. -->
         <Skeleton lines={4} minHeight={SIM_LANDING_SKELETON_MIN_H} testid="sim-landing-skeleton" />
