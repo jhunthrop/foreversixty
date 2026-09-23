@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { DATA_LOAD_FAILED, dataUrl, loadReference, loadSets, loadTalents } from './load';
+import { invalidate } from '../data/query';
+import { DATA_LOAD_FAILED, dataUrl, fetchJson, loadReference, loadSets, loadTalents } from './load';
 
 function stubFetch(map: Record<string, unknown>, status = 200): void {
   vi.stubGlobal(
@@ -15,7 +16,14 @@ function stubFetch(map: Record<string, unknown>, status = 200): void {
   );
 }
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  // fetchJson now caches through query.ts's shared, module-level store (scope: 'public'),
+  // so a later test that reuses the same url -- loadTalents' network-failure test below
+  // reads 'b1'/'warrior' again, same as its success test -- would otherwise see a still-
+  // fresh entry and never call `fetch` at all.
+  invalidate('');
+  vi.unstubAllGlobals();
+});
 
 describe('dataUrl', () => {
   it('builds a root-relative path under the build id', () => {
@@ -42,6 +50,44 @@ describe('loadTalents', () => {
       }),
     );
     await expect(loadTalents('b1', 'warrior')).rejects.toThrow(DATA_LOAD_FAILED);
+  });
+});
+
+describe('caching through query.ts', () => {
+  // fetchJson is the one wrapped call point -- loadTalents/loadItems/loadReference call it
+  // directly and loadOptional (loadSets/loadWeights) calls it too, so this covers all five
+  // loaders. Asserted on fetchJson itself rather than loadTalents: loadTalents adds a
+  // second layer of async indirection around fetchJson's own wrap of query(), and that
+  // extra layer delays the caller's second await just long enough to observe query()'s
+  // deliberately-deferred background revalidation actually firing (a real, harmless
+  // stale-while-revalidate re-check, not a caching defect) -- so asserting the call count
+  // through loadTalents is flaky in a way asserting it on fetchJson directly is not.
+  it('caches per build and class', async () => {
+    const fetchSpy = vi.fn(
+      async () =>
+        new Response(JSON.stringify({ build: 'b1', class_slug: 'warrior', trees: [] }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
+    );
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchJson(dataUrl('b1', 'talents/warrior.json'));
+    await fetchJson(dataUrl('b1', 'talents/warrior.json'));
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('loadTalents resolves to the same data on repeat calls, served from the fetchJson cache', async () => {
+    const fetchSpy = vi.fn(
+      async () =>
+        new Response(JSON.stringify({ build: 'b1', class_slug: 'warrior', trees: [] }), {
+          status: 200,
+          headers: { 'content-type': 'application/json' },
+        }),
+    );
+    vi.stubGlobal('fetch', fetchSpy);
+    const first = await loadTalents('b1', 'warrior');
+    const second = await loadTalents('b1', 'warrior');
+    expect(second).toEqual(first);
   });
 });
 

@@ -14,6 +14,7 @@
 // see `get()` below for how the two modules' slightly different failure readings are
 // reconciled.
 import { AccountError, requestEnvelope, type EnvelopeResult } from '../account/api';
+import { query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 import type { CharacterPath } from '../characters';
 import { normaliseReportRatings } from '../rating/normalise';
@@ -235,15 +236,31 @@ async function get<T>(path: string, apiBase: string): Promise<T> {
   return result.data;
 }
 
-export function fetchRankings(query: RankingsQuery, apiBase: string = API_BASE_URL): Promise<RankingsPage> {
-  return get<RankingsPage>(`/v1/rankings${search({ ...query })}`, apiBase);
+/** All reads below are public (a ranking, character page, guild page, report card and
+ *  encounter list are not tied to a signed-in visitor), so each goes through query.ts's
+ *  shared cache with `scope: 'public'`. `fetchRankings`/`fetchGuildRankings`/character/guild/
+ *  ratings reads share one 60-second TTL; `fetchEncounters` is a reference list that changes
+ *  only when a new fight type is ever ranked for the first time, so it gets a 1-hour TTL. */
+const RANKINGS_TTL_MS = 60_000;
+const REFERENCE_TTL_MS = 60 * 60 * 1000;
+
+export function fetchRankings(query_: RankingsQuery, apiBase: string = API_BASE_URL): Promise<RankingsPage> {
+  const path = `/v1/rankings${search({ ...query_ })}`;
+  return query<RankingsPage>(`${apiBase}${path}`, () => get<RankingsPage>(path, apiBase), {
+    scope: 'public',
+    ttlMs: RANKINGS_TTL_MS,
+  });
 }
 
 export function fetchGuildRankings(
-  query: { encounter: string; kind: string; phase?: string },
+  q: { encounter: string; kind: string; phase?: string },
   apiBase: string = API_BASE_URL,
 ): Promise<{ rows: GuildRankingRow[] }> {
-  return get<{ rows: GuildRankingRow[] }>(`/v1/rankings/guilds${search({ ...query })}`, apiBase);
+  const path = `/v1/rankings/guilds${search({ ...q })}`;
+  return query<{ rows: GuildRankingRow[] }>(`${apiBase}${path}`, () => get(path, apiBase), {
+    scope: 'public',
+    ttlMs: RANKINGS_TTL_MS,
+  });
 }
 
 /**
@@ -252,15 +269,30 @@ export function fetchGuildRankings(
  * GET /v1/rankings, so the picker reads this first and offers what exists.
  */
 export function fetchEncounters(apiBase: string = API_BASE_URL): Promise<{ rows: EncounterOption[] }> {
-  return get<{ rows: EncounterOption[] }>('/v1/encounters', apiBase);
+  return query<{ rows: EncounterOption[] }>(
+    `${apiBase}/v1/encounters`,
+    () => get('/v1/encounters', apiBase),
+    {
+      scope: 'public',
+      ttlMs: REFERENCE_TTL_MS,
+    },
+  );
 }
 
 export function fetchCharacter(path: CharacterPath, apiBase: string = API_BASE_URL): Promise<CharacterPage> {
-  return get<CharacterPage>(`/v1/characters/${path.region}/${path.ruleset}/${path.slug}`, apiBase);
+  const p = `/v1/characters/${path.region}/${path.ruleset}/${path.slug}`;
+  return query<CharacterPage>(`${apiBase}${p}`, () => get<CharacterPage>(p, apiBase), {
+    scope: 'public',
+    ttlMs: RANKINGS_TTL_MS,
+  });
 }
 
 export function fetchGuild(path: CharacterPath, apiBase: string = API_BASE_URL): Promise<GuildPage> {
-  return get<GuildPage>(`/v1/guilds/${path.region}/${path.ruleset}/${path.slug}`, apiBase);
+  const p = `/v1/guilds/${path.region}/${path.ruleset}/${path.slug}`;
+  return query<GuildPage>(`${apiBase}${p}`, () => get<GuildPage>(p, apiBase), {
+    scope: 'public',
+    ttlMs: RANKINGS_TTL_MS,
+  });
 }
 
 export function fetchReportRatings(
@@ -268,8 +300,14 @@ export function fetchReportRatings(
   fightIndex: number,
   apiBase: string = API_BASE_URL,
 ): Promise<ReportRatings> {
-  return get<ReportRatings>(`/v1/reports/${reportId}/fights/${fightIndex}/ratings`, apiBase).then(
-    normaliseReportRatings,
+  const p = `/v1/reports/${reportId}/fights/${fightIndex}/ratings`;
+  return query<ReportRatings>(
+    `${apiBase}${p}`,
+    () => get<ReportRatings>(p, apiBase).then(normaliseReportRatings),
+    {
+      scope: 'public',
+      ttlMs: RANKINGS_TTL_MS,
+    },
   );
 }
 
@@ -277,5 +315,9 @@ export function fetchCharacterRating(
   path: CharacterPath,
   apiBase: string = API_BASE_URL,
 ): Promise<CharacterRating> {
-  return get<CharacterRating>(`/v1/characters/${path.region}/${path.ruleset}/${path.slug}/rating`, apiBase);
+  const p = `/v1/characters/${path.region}/${path.ruleset}/${path.slug}/rating`;
+  return query<CharacterRating>(`${apiBase}${p}`, () => get<CharacterRating>(p, apiBase), {
+    scope: 'public',
+    ttlMs: RANKINGS_TTL_MS,
+  });
 }

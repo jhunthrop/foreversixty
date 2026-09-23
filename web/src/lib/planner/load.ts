@@ -2,11 +2,15 @@
 // Every planner fetch. The files live under /data/<build>/ so the browser caches them
 // per build id and a data swap never serves stale trees.
 import type { WeightsFile } from '../addon/score';
+import { query } from '../data/query';
 import type { ReferenceData } from './store.svelte';
 import type { ClassRow, Combo, ItemFile, ItemSet, RaceRow, TalentFile } from './types';
 
 /** The one message the planner shows when data cannot be read; the UI adds a retry. */
 export const DATA_LOAD_FAILED = 'Talent data did not load';
+
+/** Spec §0/§3.2's "Spec lists, builds, reference" class: public, 1 hour. */
+const REFERENCE_TTL_MS = 60 * 60 * 1000;
 
 /**
  * What every planner fetch throws. `status` is the HTTP status when the server answered at
@@ -28,6 +32,10 @@ export function dataUrl(build: string, file: string): string {
 }
 
 export async function fetchJson<T>(url: string): Promise<T> {
+  return query<T>(url, () => rawFetchJson<T>(url), { scope: 'public', ttlMs: REFERENCE_TTL_MS });
+}
+
+async function rawFetchJson<T>(url: string): Promise<T> {
   let response: Response;
   try {
     response = await fetch(url, { headers: { accept: 'application/json' } });

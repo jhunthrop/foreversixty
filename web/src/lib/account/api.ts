@@ -7,7 +7,7 @@
 // DELETE /v1/sessions and PATCH /v1/me { anonymize } come from the contract's Amendments
 // section; the first draft required both behaviours on /account without naming a route.
 import { API_BASE_URL } from '../planner/config';
-import { ME_UPDATED, clearSnapshot, readSnapshot, sameMe, writeSnapshot } from './session-cache';
+import { forgetPrivate, invalidate, query, setQueryData } from '../data/query';
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
 export const ACCOUNT_FAILED = 'That did not work; try again';
@@ -217,6 +217,58 @@ export interface EnvelopeResult<T> {
  * the browser never reached at all -- carries no `error.message` of its own; it defaults
  * to `ACCOUNT_FAILED`, the account module's own generic copy.
  */
+
+/**
+ * The ETag `requestEnvelope` last saw for a GET, per `${apiBase}${path}`, and the body it
+ * came with. Never touched for a non-GET request. `query.ts`'s stale-while-revalidate
+ * background reload is what actually exercises this: a 304 makes that reload a cheap,
+ * bodiless round trip, resolved transparently to the same data the caller already had.
+ */
+const remembered = new Map<string, { etag: string; data: unknown }>();
+
+/** Tests only: a fresh module has remembered no ETags. */
+export function forgetRemembered(): void {
+  remembered.clear();
+}
+
+/**
+ * Builds the request headers, applying `If-None-Match` for a GET that has a remembered
+ * ETag. Returns the `known` entry too (rather than making `requestEnvelope` look it up
+ * again) so the 304 short-circuit below can resolve to the same body without a second
+ * `remembered.get`.
+ */
+function buildRequestHeaders(
+  method: string,
+  hasBody: boolean,
+  rememberedKey: string,
+): { headers: Headers; known: { etag: string; data: unknown } | undefined } {
+  const headers = new Headers({ accept: 'application/json' });
+  if (method !== 'GET') {
+    headers.set('x-csrf-token', csrfToken());
+    if (hasBody) headers.set('content-type', 'application/json');
+    return { headers, known: undefined };
+  }
+  const known = remembered.get(rememberedKey);
+  if (known !== undefined) headers.set('if-none-match', known.etag);
+  return { headers, known };
+}
+
+/** Records (or forgets) the ETag a successful GET came back with. */
+function rememberEtag(rememberedKey: string, response: Response, data: unknown): void {
+  const etag = response.headers.get('etag');
+  if (etag !== null) remembered.set(rememberedKey, { etag, data });
+  else remembered.delete(rememberedKey);
+}
+
+/** A response with no JSON body (or a malformed one) parses to `null`, never throws. */
+async function parseEnvelope<T>(response: Response): Promise<Envelope<T> | null> {
+  try {
+    return (await response.json()) as Envelope<T>;
+  } catch {
+    return null;
+  }
+}
+
 export async function requestEnvelope<T>(
   path: string,
   apiBase: string,
@@ -228,11 +280,8 @@ export async function requestEnvelope<T>(
   } = {},
 ): Promise<EnvelopeResult<T>> {
   const method = init.method ?? 'GET';
-  const headers = new Headers({ accept: 'application/json' });
-  if (method !== 'GET') {
-    headers.set('x-csrf-token', csrfToken());
-    if (init.body !== undefined) headers.set('content-type', 'application/json');
-  }
+  const rememberedKey = `${apiBase}${path}`;
+  const { headers, known } = buildRequestHeaders(method, init.body !== undefined, rememberedKey);
 
   let response: Response;
   try {
@@ -248,21 +297,23 @@ export async function requestEnvelope<T>(
     throw new AccountError(init.failureMessage ?? ACCOUNT_FAILED, 0);
   }
 
-  let envelope: Envelope<T> | null = null;
-  try {
-    envelope = (await response.json()) as Envelope<T>;
-  } catch {
-    envelope = null;
+  if (method === 'GET' && response.status === 304) {
+    return { status: 304, data: (known?.data as T | undefined) ?? null, message: null };
   }
 
+  const envelope = await parseEnvelope<T>(response);
+
   if (!response.ok) {
-    // The API's own message is shown verbatim when it has one: it is the only thing that
-    // can say "too many sign-in links" or name the field that was wrong.
+    // The API's own message is shown verbatim when it has one, since it can say things
+    // like "too many sign-in links" that no generic fallback can.
     throw new AccountError(
       envelope?.error?.message ?? init.failureMessage ?? ACCOUNT_FAILED,
       response.status,
     );
   }
+
+  if (method === 'GET') rememberEtag(rememberedKey, response, envelope?.data ?? null);
+
   return { status: response.status, data: envelope?.data ?? null, message: envelope?.error?.message ?? null };
 }
 
@@ -285,55 +336,30 @@ export async function fetchMe(apiBase: string = API_BASE_URL): Promise<Me | null
   }
 }
 
-/**
- * One `/v1/me` per page, shared by every island that needs to know who is signed in: the
- * header, the pairing block, the upload form and the reports list are separate islands, and
- * each asking on its own was four identical requests. A failure is not remembered, so the
- * next caller asks again rather than inheriting a dead promise.
- */
-const sessions = new Map<string, Promise<Me | null>>();
+const ME_TTL_MS = 10 * 60 * 1000;
 
-/**
- * Fetches and records the live answer. A change against what the page already knows is
- * announced on `window` as ME_UPDATED, so an island rendering the snapshot can follow.
- */
-async function revalidateMe(apiBase: string, shown: Me | null): Promise<Me | null> {
-  const live = await fetchMe(apiBase);
-  if (live === null) clearSnapshot();
-  else writeSnapshot(live);
-  sessions.set(apiBase, Promise.resolve(live));
-  if (!sameMe(shown, live) && typeof window !== 'undefined') {
-    window.dispatchEvent(new CustomEvent(ME_UPDATED, { detail: live }));
-  }
-  return live;
+function meKey(apiBase: string): string {
+  return `${apiBase}/v1/me`;
 }
 
+/**
+ * One `/v1/me` per key, shared by every island that needs to know who is signed in, through
+ * the shared client cache (web/src/lib/data/query.ts): a stale answer renders instantly and
+ * revalidates in the background; a signed-out answer (`null`) is cached exactly like a
+ * signed-in one, since `query.ts` tracks "has an answer" via its own `status`, not `data
+ * !== null`.
+ */
 export function fetchMeOnce(apiBase: string = API_BASE_URL): Promise<Me | null> {
-  const known = sessions.get(apiBase);
-  if (known !== undefined) return known;
-  // Stale while revalidate: the last answer this browser saw, when the session cookie is
-  // still present, is shown at once and checked in the background (session-cache.ts).
-  const snapshot = readSnapshot();
-  if (snapshot !== null) {
-    const shown = Promise.resolve<Me | null>(snapshot);
-    sessions.set(apiBase, shown);
-    void revalidateMe(apiBase, snapshot).catch(() => {
-      // A failed revalidation keeps the snapshot; the next page load tries again.
-    });
-    return shown;
-  }
-  const pending = revalidateMe(apiBase, null).catch((error: unknown) => {
-    sessions.delete(apiBase);
-    throw error;
+  return query<Me | null>(meKey(apiBase), () => fetchMe(apiBase), {
+    scope: 'private',
+    ttlMs: ME_TTL_MS,
   });
-  sessions.set(apiBase, pending);
-  return pending;
 }
 
 /** Tests only: a fresh page has no remembered session. */
 export function forgetSession(): void {
-  sessions.clear();
-  clearSnapshot();
+  forgetPrivate();
+  forgetRemembered();
 }
 
 export function battlenetStartUrl(next: string, apiBase: string = API_BASE_URL): string {
@@ -344,32 +370,50 @@ export async function requestEmailLink(email: string, apiBase: string = API_BASE
   await call('/v1/auth/email', apiBase, { method: 'POST', body: { email } });
 }
 
-export async function listDevices(apiBase: string = API_BASE_URL): Promise<Device[]> {
-  return (await call<Device[]>('/v1/devices', apiBase)) ?? [];
+const DEVICES_TTL_MS = 10 * 60 * 1000;
+
+function devicesKey(apiBase: string): string {
+  return `${apiBase}/v1/devices`;
+}
+
+export function listDevices(apiBase: string = API_BASE_URL): Promise<Device[]> {
+  return query<Device[]>(
+    devicesKey(apiBase),
+    async () => (await call<Device[]>('/v1/devices', apiBase)) ?? [],
+    {
+      scope: 'private',
+      ttlMs: DEVICES_TTL_MS,
+    },
+  );
 }
 
 export async function pairDevice(apiBase: string = API_BASE_URL): Promise<PairingCode> {
   const code = await call<PairingCode>('/v1/devices/pair', apiBase, { method: 'POST' });
   if (code === null) throw new AccountError(ACCOUNT_FAILED, 0);
+  invalidate(devicesKey(apiBase));
   return code;
 }
 
 export async function revokeDevice(id: string, apiBase: string = API_BASE_URL): Promise<void> {
   await call(`/v1/devices/${encodeURIComponent(id)}`, apiBase, { method: 'DELETE' });
+  invalidate(devicesKey(apiBase));
 }
 
 export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
-  clearSnapshot();
+  forgetRemembered();
+  forgetPrivate();
   await call('/v1/sessions', apiBase, { method: 'DELETE' });
 }
 
 export async function setAnonymize(value: boolean, apiBase: string = API_BASE_URL): Promise<void> {
-  await call('/v1/me', apiBase, { method: 'PATCH', body: { anonymize: value } });
+  const me = await call<Me>('/v1/me', apiBase, { method: 'PATCH', body: { anonymize: value } });
+  if (me !== null) setQueryData(meKey(apiBase), me);
 }
 
 /** Chooses the account's main character (one of its own); the rest become alts. */
 export async function setMainCharacter(key: string, apiBase: string = API_BASE_URL): Promise<void> {
-  await call('/v1/me', apiBase, { method: 'PATCH', body: { main_character_key: key } });
+  const me = await call<Me>('/v1/me', apiBase, { method: 'PATCH', body: { main_character_key: key } });
+  if (me !== null) setQueryData(meKey(apiBase), me);
 }
 
 /** One character's export, matching `POST /v1/me/exports`'s body (spec 2026-09-22 §4.5) --
@@ -395,6 +439,7 @@ export async function postMyExports(
     method: 'POST',
     body: { exports },
   });
+  invalidate(meKey(apiBase));
   return result?.characters ?? [];
 }
 
@@ -422,18 +467,30 @@ export const REPORTS_PER_PAGE = 100;
 
 const EMPTY_REPORT_PAGE: MyReportPage = { rows: [], total: 0, page: 1, per_page: REPORTS_PER_PAGE };
 
+const MY_REPORTS_TTL_MS = 10 * 60 * 1000;
+
+function myReportsKey(apiBase: string, page: number): string {
+  return `${apiBase}/v1/reports?mine=1&page=${page}`;
+}
+
 /**
  * The "Your reports" list on /logs, per the contract's Amendments section. A signed-out
  * visitor gets an empty page rather than an error, because /logs renders for them too --
  * it just tells them to sign in.
  */
 export async function listMyReports(page: number = 1, apiBase: string = API_BASE_URL): Promise<MyReportPage> {
-  try {
-    return (await call<MyReportPage>(`/v1/reports?mine=1&page=${page}`, apiBase)) ?? EMPTY_REPORT_PAGE;
-  } catch (error) {
-    if (error instanceof AccountError && (error.status === 401 || error.status === 403)) {
-      return EMPTY_REPORT_PAGE;
-    }
-    throw error;
-  }
+  return query<MyReportPage>(
+    myReportsKey(apiBase, page),
+    async () => {
+      try {
+        return (await call<MyReportPage>(`/v1/reports?mine=1&page=${page}`, apiBase)) ?? EMPTY_REPORT_PAGE;
+      } catch (error) {
+        if (error instanceof AccountError && (error.status === 401 || error.status === 403)) {
+          return EMPTY_REPORT_PAGE;
+        }
+        throw error;
+      }
+    },
+    { scope: 'private', ttlMs: MY_REPORTS_TTL_MS },
+  );
 }

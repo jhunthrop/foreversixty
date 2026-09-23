@@ -1,5 +1,6 @@
 // web/src/lib/reports/recent.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { invalidate } from '../data/query';
 import { RECENT_REPORTS_FAILED, RecentReportsError, fetchRecentReports } from './recent';
 
 const API = 'https://api.foreversixty.test';
@@ -12,7 +13,14 @@ function envelope(data: unknown, status = 200): Response {
   });
 }
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  // fetchRecentReports now caches through query.ts's shared, module-level store
+  // (scope: 'public'), so a later test that reuses the same cursor/apiBase key -- most of
+  // the tests below read the first page from the same API -- would otherwise see a still-
+  // fresh entry and never call `fetch` at all.
+  invalidate('');
+  vi.unstubAllGlobals();
+});
 
 describe('fetchRecentReports', () => {
   it('reads the first page with no cursor in the query', async () => {
@@ -78,5 +86,15 @@ describe('fetchRecentReports', () => {
 
     const result = await fetchRecentReports(undefined, API);
     expect(result.rows).toEqual([]);
+  });
+});
+
+describe('caching through query.ts', () => {
+  it('caches the first page for repeat calls', async () => {
+    const fetchSpy = vi.fn<GlobalFetch>(async () => envelope({ rows: [] }));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchRecentReports(undefined, API);
+    await fetchRecentReports(undefined, API);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CharacterPath } from '../characters';
+import { forgetPrivate, invalidate } from '../data/query';
 import {
   FIXTURE_MY_BUILD_ID,
   FIXTURE_SIM_ID,
@@ -27,9 +28,20 @@ import { simCopy } from './copy';
 import { ENGINE_VERSION } from './version';
 
 const api = createSimApi();
+type GlobalFetch = (...args: Parameters<typeof fetch>) => Promise<Response>;
 
 beforeEach(() => api.install());
 afterEach(() => api.reset());
+afterEach(() => {
+  // fetchSim/fetchMyBuilds/listMySims/fetchSpecs/fetchSimInput/fetchPhases now cache
+  // through query.ts's shared, module-level store, so a later test's read for the same key
+  // could otherwise see a still-fresh entry an earlier test left behind and never call
+  // `fetch` at all. `forgetPrivate` only forgets `scope: 'private'` entries (fetchMyBuilds,
+  // listMySims); `invalidate('')` (every key) also clears the `scope: 'public'` ones
+  // (fetchSim, fetchSpecs, fetchSimInput, fetchPhases).
+  forgetPrivate();
+  invalidate('');
+});
 
 describe('fetchSim', () => {
   it('reads a stored result', async () => {
@@ -188,6 +200,29 @@ describe('fetchSimInput', () => {
     await fetchSimInput(path, TEST_API);
     expect(api.lastUrl()).toContain('/v1/characters/us/normal/thrallgar/sim-input');
     expect(api.lastUrl()).not.toContain('%2F');
+  });
+});
+
+describe('caching through query.ts', () => {
+  it('fetchSim caches per sim id', async () => {
+    const fetchSpy = vi.fn<GlobalFetch>(async () => envelope(fixtureResult));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchSim('sim1', TEST_API);
+    await fetchSim('sim1', TEST_API);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('listMySims caches and saveSim invalidates it', async () => {
+    const fetchSpy = vi
+      .fn<GlobalFetch>()
+      .mockResolvedValueOnce(envelope({ rows: [], total: 0, page: 1, per_page: 20 }))
+      .mockResolvedValueOnce(envelope({ sim_id: 's2' })) // the save
+      .mockResolvedValueOnce(envelope({ rows: [], total: 1, page: 1, per_page: 20 }));
+    vi.stubGlobal('fetch', fetchSpy);
+    await listMySims(1, TEST_API);
+    await saveSim(fixtureResult, TEST_API);
+    await listMySims(1, TEST_API);
+    expect(fetchSpy).toHaveBeenCalledTimes(3);
   });
 });
 

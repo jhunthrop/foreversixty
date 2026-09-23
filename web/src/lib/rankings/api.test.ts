@@ -1,5 +1,6 @@
 // web/src/lib/rankings/api.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { invalidate } from '../data/query';
 import {
   RANKINGS_FAILED,
   RankingsError,
@@ -47,7 +48,14 @@ function envelope(data: unknown, status = 200): Response {
   });
 }
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  // Every read in this file now caches through query.ts's shared, module-level store
+  // (scope: 'public'), so a later test that reuses a prior test's exact apiBase/path -- the
+  // fetchEncounters failure test reads the same URL as the fetchEncounters success test right
+  // above it -- would otherwise see a still-fresh entry and never call `fetch` at all.
+  invalidate('');
+  vi.unstubAllGlobals();
+});
 
 describe('fetchRankings', () => {
   it('sends only the filters that are set, in the contract’s parameter names', async () => {
@@ -245,5 +253,27 @@ describe('fetchCharacterRating', () => {
     await expect(
       fetchCharacterRating({ region: 'us', ruleset: 'hardcore', slug: 'hidden' }, API),
     ).rejects.toBeInstanceOf(RankingsError);
+  });
+});
+
+describe('caching through query.ts', () => {
+  it('fetchRankings caches per query string', async () => {
+    // The brief's sample used `{ encounter: 'e', kind: 'dps' }`, but `kind` belongs to
+    // fetchGuildRankings' query shape, not RankingsQuery (which has `metric`, not `kind`) --
+    // using it here would fail the excess-property check. `metric` exercises the same
+    // per-query-string dedupe.
+    const fetchSpy = vi.fn<GlobalFetch>(async () => envelope(PAGE));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchRankings({ encounter: 'e', metric: 'dps' }, API);
+    await fetchRankings({ encounter: 'e', metric: 'dps' }, API);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('fetchEncounters caches for the reference TTL', async () => {
+    const fetchSpy = vi.fn<GlobalFetch>(async () => envelope({ rows: [] }));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchEncounters(API);
+    await fetchEncounters(API);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 });

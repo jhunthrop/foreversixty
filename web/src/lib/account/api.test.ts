@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 // web/src/lib/account/api.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { invalidate } from '../data/query';
 import {
   ACCOUNT_FAILED,
   AccountError,
@@ -13,7 +14,9 @@ import {
   listDevices,
   pairDevice,
   postMyExports,
+  REPORTS_PER_PAGE,
   requestEmailLink,
+  requestEnvelope,
   revokeDevice,
   setAnonymize,
   signOut,
@@ -44,6 +47,15 @@ const ME = {
 };
 
 afterEach(() => {
+  // setAnonymize/setMainCharacter now write into query.ts's shared, module-level cache
+  // (setQueryData), so every test in this file -- not just the ones under the `fetchMeOnce`
+  // describe below -- must clear it, or a later test's `fetchMeOnce(API)` sees a stale
+  // "fresh" entry an earlier test left behind and never calls `fetch` at all. `forgetSession`
+  // only forgets `scope: 'private'` entries; `invalidate('')` (every key) also resets one
+  // `setQueryData` can create with no prior `query()` call for that key, which defaults to
+  // `scope: 'public'` and so survives `forgetSession`.
+  forgetSession();
+  invalidate('');
   vi.unstubAllGlobals();
   document.cookie = 'fs_csrf=; Max-Age=0; path=/';
 });
@@ -139,18 +151,50 @@ describe('the account API', () => {
     expect((upstream.mock.calls[2][0] as Request).url).toBe(`${API}/v1/devices/dev1`);
   });
 
+  it('listDevices shares a cached answer across two calls without a second request', async () => {
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValue(
+        envelope([{ id: 'd1', name: 'Phone', platform: 'ios', created_at: 't', last_seen_at: null }]),
+      );
+    vi.stubGlobal('fetch', fetchSpy);
+    await listDevices(API);
+    await listDevices(API);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('revokeDevice invalidates the devices list', async () => {
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValueOnce(
+        envelope([{ id: 'd1', name: 'Phone', platform: 'ios', created_at: 't', last_seen_at: null }]),
+      )
+      .mockResolvedValueOnce(envelope(null)) // the DELETE
+      .mockResolvedValueOnce(envelope([]));
+    vi.stubGlobal('fetch', fetchSpy);
+    await listDevices(API);
+    await revokeDevice('d1', API);
+    await listDevices(API);
+    expect(fetchSpy).toHaveBeenCalledTimes(3); // list, delete, re-list (invalidated, not cached)
+  });
+
   it('signs out and sets the anonymize flag', async () => {
+    // A dedicated apiBase, not the shared `API` constant: `setAnonymize` now writes its
+    // response into query.ts's cache via `setQueryData`, and this test's fixture response
+    // (`{ ok: true }`, not a real `Me`) would otherwise seed a bogus `${API}/v1/me` entry
+    // that outlives this test and confuses the `fetchMeOnce` tests below, which share `API`.
+    const apiBase = `${API}/signout-fixture`;
     const upstream = vi.fn<GlobalFetch>(async () => envelope({ ok: true }));
     vi.stubGlobal('fetch', upstream);
 
-    await signOut(API);
-    await setAnonymize(true, API);
+    await signOut(apiBase);
+    await setAnonymize(true, apiBase);
 
-    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${API}/v1/sessions`);
+    expect((upstream.mock.calls[0][0] as Request).url).toBe(`${apiBase}/v1/sessions`);
     expect((upstream.mock.calls[0][0] as Request).method).toBe('DELETE');
     const patch = upstream.mock.calls[1][0] as Request;
     expect(patch.method).toBe('PATCH');
-    expect(patch.url).toBe(`${API}/v1/me`);
+    expect(patch.url).toBe(`${apiBase}/v1/me`);
     expect(await patch.json()).toEqual({ anonymize: true });
   });
 
@@ -240,14 +284,20 @@ describe('listMyReports', () => {
     const { listMyReports } = await import('./api');
     await expect(listMyReports(1, API)).resolves.toEqual({ rows: [], total: 0, page: 1, per_page: 100 });
   });
+
+  it('shares a cached answer across two calls without a second request', async () => {
+    const fetchSpy = vi
+      .fn()
+      .mockResolvedValue(envelope({ rows: [], total: 0, page: 1, per_page: REPORTS_PER_PAGE }));
+    vi.stubGlobal('fetch', fetchSpy);
+    const { listMyReports } = await import('./api');
+    await listMyReports(1, API);
+    await listMyReports(1, API);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('fetchMeOnce', () => {
-  afterEach(() => {
-    forgetSession();
-    vi.unstubAllGlobals();
-  });
-
   it('asks the API once however many islands want the session', async () => {
     const fetchMock = vi.fn<GlobalFetch>(async () => envelope(ME));
     vi.stubGlobal('fetch', fetchMock);
@@ -265,6 +315,24 @@ describe('fetchMeOnce', () => {
     await expect(fetchMeOnce(API)).rejects.toBeDefined();
     await expect(fetchMeOnce(API)).resolves.toMatchObject({ user: { id: 7 } });
     expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('shares one in-flight request across concurrent callers on a page', async () => {
+    const fetchSpy = vi.fn().mockResolvedValue(envelope(ME));
+    vi.stubGlobal('fetch', fetchSpy);
+    const [a, b] = await Promise.all([fetchMeOnce(API), fetchMeOnce(API)]);
+    expect(a).toEqual(ME);
+    expect(b).toEqual(ME);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('forgetSession clears the shared /v1/me cache: the next fetchMeOnce call is a real request', async () => {
+    const fetchSpy = vi.fn().mockResolvedValue(envelope(ME));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchMeOnce(API);
+    forgetSession();
+    await fetchMeOnce(API);
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
   });
 });
 
@@ -300,5 +368,35 @@ describe('effectiveServerSims', () => {
       guilds: [],
     } as unknown as Parameters<typeof effectiveServerSims>[0];
     expect(effectiveServerSims(me)).toBe(true);
+  });
+});
+
+describe('ETag revalidation', () => {
+  it('sends If-None-Match on a repeat GET after seeing an ETag, and resolves the 304 to the prior data', async () => {
+    const first = new Response(JSON.stringify({ ok: true, data: { n: 1 }, error: null }), {
+      status: 200,
+      headers: { 'content-type': 'application/json', etag: 'W/"abc"' },
+    });
+    const second = new Response(null, { status: 304, headers: { etag: 'W/"abc"' } });
+    const fetchSpy = vi.fn().mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+    vi.stubGlobal('fetch', fetchSpy);
+
+    const a = await requestEnvelope<{ n: number }>('/v1/etag-demo', API);
+    expect(a.data).toEqual({ n: 1 });
+
+    const b = await requestEnvelope<{ n: number }>('/v1/etag-demo', API);
+    expect(b.data).toEqual({ n: 1 }); // the 304's cached body
+    expect(b.status).toBe(304);
+
+    const sentHeaders = fetchSpy.mock.calls[1][0].headers as Headers;
+    expect(sentHeaders.get('if-none-match')).toBe('W/"abc"');
+  });
+
+  it('never sends If-None-Match for a non-GET request', async () => {
+    const fetchSpy = vi.fn().mockResolvedValue(envelope({ ok: true }));
+    vi.stubGlobal('fetch', fetchSpy);
+    await requestEnvelope('/v1/etag-demo-2', API, { method: 'POST', body: {} });
+    const sentHeaders = fetchSpy.mock.calls[0][0].headers as Headers;
+    expect(sentHeaders.has('if-none-match')).toBe(false);
   });
 });

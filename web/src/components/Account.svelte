@@ -24,9 +24,9 @@
     type PairingCode,
   } from '../lib/account/api';
   import { safeNextPath } from '../lib/account/safe-next';
-  import { ME_UPDATED } from '../lib/account/session-cache';
   import { openPortal } from '../lib/billing/api';
   import { billingBlockCopy } from '../lib/billing/copy';
+  import { createQueryState } from '../lib/data/query.svelte';
   import { characterListCopy } from '../lib/account/character-list-copy';
   import { accountPageCopy } from '../lib/account/account-page-copy';
   import { characterDescriptor } from '../lib/account/character-descriptor';
@@ -42,6 +42,7 @@
   import { classColorVar } from '../lib/report/format';
   import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
   import { guildConsentCopy } from '../lib/guild/copy';
+  import { API_BASE_URL } from '../lib/planner/config';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { relativeTime } from '../lib/dates';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
@@ -64,8 +65,28 @@
   let { mode, next = '/logs' }: { mode: 'nav' | 'login' | 'account' | 'pairing' | 'reports'; next?: string } =
     $props();
 
-  let me = $state<Me | null>(null);
-  let status = $state<'loading' | 'ready' | 'failed'>('loading');
+  // One `/v1/me` read, shared with every other island through the client cache
+  // (web/src/lib/data/query.ts) -- see SessionNav.svelte and HomeAccountPanel.svelte's own
+  // copies of this same call.
+  const session = createQueryState<Me | null>(`${API_BASE_URL}/v1/me`, () => fetchMeOnce(), {
+    scope: 'private',
+    ttlMs: 10 * 60 * 1000,
+  });
+
+  // A writable $derived (Svelte 5): tracks `session.data`, but the guild consent/leave
+  // handlers below (onConsentChange, onLeaveGuild) also reassign it directly, since
+  // lib/guild/api.ts's updateConsent/leaveGuild invalidate only their own guild-scoped
+  // cache keys, never this one, so those optimistic edits have nowhere else to live. Any
+  // such local override lasts only until `session.data` next changes, at which point this
+  // reverts to tracking it again -- setMain/onAnonymize's own edits are harmless duplicates
+  // of that: setMainCharacter/setAnonymize (lib/account/api.ts) already push the server's
+  // fresh `me` into this same cache key via setQueryData.
+  let me = $derived(session.data);
+
+  // Whether the devices list (fetched only for 'account'/'pairing', same gate as before) has
+  // loaded, mirroring the granularity `session.status` alone cannot give this component: the
+  // old `load()` awaited both the `/v1/me` and the devices read before flipping to 'ready'.
+  let devicesStatus = $state<'idle' | 'loading' | 'ready' | 'failed'>('idle');
   let error = $state('');
   let notice = $state('');
   let email = $state('');
@@ -101,16 +122,6 @@
   });
   // The hero is the current character when one is pointed at, else the account's main
   // (chosen, or the site's guess): the main is the default context everywhere.
-  // A background revalidation of the session snapshot (session-cache.ts) announces a
-  // change; follow it, since this page renders from whatever `fetchMeOnce` handed it.
-  $effect(() => {
-    const follow = (event: Event): void => {
-      if (status !== 'ready') return;
-      me = (event as CustomEvent<Me | null>).detail;
-    };
-    window.addEventListener(ME_UPDATED, follow);
-    return () => window.removeEventListener(ME_UPDATED, follow);
-  });
   const hero = $derived(
     me === null
       ? null
@@ -136,23 +147,48 @@
     return relativeTime(new Date(latest));
   });
 
-  async function load(): Promise<void> {
-    status = 'loading';
-    error = '';
-    try {
-      me = await fetchMeOnce();
-      if (me !== null && (mode === 'account' || mode === 'pairing')) devices = await listDevices();
-      status = 'ready';
-    } catch {
-      status = 'failed';
-      error = ACCOUNT_FAILED;
-    }
-  }
+  // The combined status every mode below reads: 'loading'/'failed' first reflect the
+  // `/v1/me` read itself, then -- only for 'account'/'pairing', the same gate `load()` used
+  // to apply around its own `listDevices()` call -- the devices read alongside it, so this
+  // stays 'loading' until both reads that used to be one sequential `await` chain have
+  // settled, and 'failed' if either one did.
+  const status = $derived.by<'loading' | 'ready' | 'failed'>(() => {
+    if (session.status === 'failed') return 'failed';
+    if (session.status !== 'ready') return 'loading';
+    const needsDevices = (mode === 'account' || mode === 'pairing') && me !== null;
+    if (!needsDevices) return 'ready';
+    if (devicesStatus === 'failed') return 'failed';
+    if (devicesStatus === 'ready') return 'ready';
+    return 'loading';
+  });
 
-  // One load on mount. $effect rather than onMount so the component works identically
-  // whether Astro hydrates it or the report island mounts it by hand.
+  // Devices, for 'account'/'pairing' only, once `me` is known -- the second half of the old
+  // `load()`'s sequential await chain, now driven by `me` changing instead.
   $effect(() => {
-    void load();
+    if (me === null || (mode !== 'account' && mode !== 'pairing')) {
+      devicesStatus = 'idle';
+      return;
+    }
+    devicesStatus = 'loading';
+    void listDevices()
+      .then((result) => {
+        devices = result;
+        devicesStatus = 'ready';
+      })
+      .catch(() => {
+        devicesStatus = 'failed';
+      });
+  });
+
+  // `error` here is the *load* failure's message; run()'s own actions (below) overwrite it
+  // with their own message once the page is past 'loading'/'failed', exactly as `load()`
+  // used to reset it at the top of every attempt and set it in its own catch.
+  $effect(() => {
+    if (status === 'failed') {
+      error = ACCOUNT_FAILED;
+    } else if (status === 'loading') {
+      error = '';
+    }
   });
 
   // The static build has no per-request server, so Astro frontmatter never sees a real
@@ -372,8 +408,8 @@
     {/if}
     {#if notice !== ''}<p class="text-[14px]" data-testid="account-notice">{notice}</p>{/if}
     <!-- 21px is the measured line height of the text-[14px] error line: reserved so the
-         `load()` call above landing (or a `run()` action failing) never shoves the page
-         down after first paint, the same reason `mode === 'nav'` renders `&nbsp;` while
+         session load landing (or a `run()` action failing) never shoves the page down after
+         first paint, the same reason `mode === 'nav'` renders `&nbsp;` while
          `status === 'loading'`. Repeated for the pairing and account modes below. -->
     <div class="min-h-[21px]">
       {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="account-error">{error}</p>{/if}
@@ -428,7 +464,7 @@
       <Skeleton lines={3} minHeight={MORE_SKELETON_MIN_H} testid="account-more-skeleton" />
     {:else if status === 'failed'}
       <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
-      <LoadError message={error} onRetry={() => void load()} testid="account-load-error" />
+      <LoadError message={error} onRetry={() => session.refresh()} testid="account-load-error" />
     {:else if !signedIn}
       <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
       <div class={SIGNED_OUT_MIN_H}>

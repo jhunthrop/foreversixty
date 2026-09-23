@@ -1,5 +1,6 @@
 // web/src/lib/report/load.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { invalidate } from '../data/query';
 import fixtureMeta from '../../fixtures/report/meta.json';
 import fixtureReport from '../../fixtures/report/report.json';
 import fixtureSummary from '../../fixtures/report/fights/3/summary.json';
@@ -36,6 +37,11 @@ function envelope(data: unknown, status = 200): Response {
 }
 
 afterEach(() => {
+  // fetchReportMeta/fetchReportFile now cache through query.ts's shared, module-level
+  // store (scope: 'public'), so a later test that reuses the same id/apiBase or
+  // dataBaseUrl key -- several tests below read 'fixture2abcd'/API or DATA again -- would
+  // otherwise see a still-fresh entry and never call `fetch` at all.
+  invalidate('');
   vi.unstubAllGlobals();
   vi.useRealTimers();
 });
@@ -153,6 +159,24 @@ describe('the report files', () => {
     expect(eventsUrl(DATA, 2)).toBe(`${DATA}/fights/2/events.parquet`);
     // The engine version busts a year-long cache when a re-parse rewrites the same path.
     expect(eventsUrl(DATA, 2, '0.3.5')).toBe(`${DATA}/fights/2/events.parquet?v=0.3.5`);
+  });
+});
+
+describe('caching through query.ts', () => {
+  it('fetchReportMeta caches per report id', async () => {
+    const fetchSpy = vi.fn<GlobalFetch>(async () => envelope(fixtureMeta));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchReportMeta('r1', API);
+    await fetchReportMeta('r1', API);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('fetchReportFile caches per data base url', async () => {
+    const fetchSpy = vi.fn<GlobalFetch>(async () => json(fixtureReport));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchReportFile(DATA);
+    await fetchReportFile(DATA);
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 });
 
