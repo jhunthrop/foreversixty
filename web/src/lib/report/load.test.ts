@@ -178,6 +178,24 @@ describe('caching through query.ts', () => {
     await fetchReportFile(DATA);
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
+
+  it("a 'fresh' read (the live poll) asks the network every time and updates the entry", async () => {
+    const fetchSpy = vi.fn<GlobalFetch>(async () => json(fixtureReport));
+    vi.stubGlobal('fetch', fetchSpy);
+    await fetchReportFile(DATA);
+    const closed = {
+      ...fixtureReport,
+      fights: fixtureReport.fights.map((f) => ({ ...f, in_progress: false })),
+    };
+    vi.stubGlobal(
+      'fetch',
+      vi.fn<GlobalFetch>(async () => json(closed)),
+    );
+    const polled = await fetchReportFile(DATA, 'fresh');
+    expect(polled.fights.every((f) => f.in_progress === false)).toBe(true);
+    const cached = await fetchReportFile(DATA);
+    expect(cached).toBe(polled);
+  });
 });
 
 describe('withFreshBase', () => {

@@ -1217,7 +1217,7 @@
     const poller = createPoller(async () => {
       // report.json first: it is what turns a live fight into a closed one and adds the
       // next fight to the selector.
-      const next = await fromDataBase(fetchReportFile);
+      const next = await fromDataBase((base) => fetchReportFile(base, 'fresh'));
       file = next;
       if (meta !== null) meta = { ...meta, fights: next.fights };
 

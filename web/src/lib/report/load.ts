@@ -130,14 +130,23 @@ async function dataGet<T>(url: string, cache: RequestCache): Promise<T> {
   }
 }
 
-export async function fetchReportFile(dataBaseUrl: string): Promise<ReportFile> {
+/**
+ * `'cached'` (the page load) serves the entry the cache holds; `'fresh'` (the live poll)
+ * always asks the network and writes what comes back into the same entry. The poll cannot
+ * ride the cache: an entry this page has loaded is served as is on later reads
+ * (query.ts's `Entry.validated`), and a five-second poll exists to see report.json change.
+ */
+export async function fetchReportFile(
+  dataBaseUrl: string,
+  freshness: 'cached' | 'fresh' = 'cached',
+): Promise<ReportFile> {
   return query<ReportFile>(
     `${dataBaseUrl}/report.json`,
     async () => {
       const file = await dataGet<ReportFile>(`${dataBaseUrl}/report.json`, 'no-cache');
       return { ...file, fights: asArray(file.fights), units: asArray(file.units) };
     },
-    { scope: 'public', ttlMs: REPORT_META_TTL_MS },
+    { scope: 'public', ttlMs: freshness === 'fresh' ? 0 : REPORT_META_TTL_MS },
   );
 }
 
