@@ -1,24 +1,63 @@
 import { expect, test } from '@playwright/test';
 import { collectPageErrors } from './support/console';
 
-test('homepage renders the reference layout without a marketing hero', async ({ page }) => {
+test('homepage states the product and stops, not a marketing slogan', async ({ page }) => {
   const errors = collectPageErrors(page);
   await page.goto('/');
   const h1 = page.locator('h1');
   await expect(h1).toHaveCount(1);
   const heading = (await h1.innerText()).trim();
-  // A reference heading, not a slogan: short, and it does not end in punctuation.
+  // A reference heading, not a slogan: short, and it never ends with "!" or "?" -- a
+  // trailing "." is fine (spec 2026-09-23 §2's own headline sentence, reference voice
+  // "state the thing and stop").
   expect(heading.length).toBeLessThanOrEqual(90);
-  expect(heading).not.toMatch(/[.!?]$/);
+  expect(heading).not.toMatch(/[!?]$/);
+  expect(heading).toBe('Your character, planned, simmed, logged and ranked.');
   await expect(page.getByRole('combobox', { name: 'Search the site' })).toBeVisible();
   await expect(page.getByText('Right now')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Tools' })).toBeVisible();
+  await expect(page.getByTestId('home-product-planner')).toBeVisible();
+  await expect(page.getByTestId('home-product-simulator')).toBeVisible();
+  await expect(page.getByTestId('home-product-logs')).toBeVisible();
+  await expect(page.getByTestId('home-product-rankings')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your guild' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What changed' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Still unknown' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Guides by class' })).toBeVisible();
   await expect(page.getByText('Not affiliated with or endorsed by Blizzard Entertainment')).toBeVisible();
   expect(errors).toEqual([]);
 });
+
+test('the four product panels link to their tools, with the planner and simulator live elements', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(
+    page.getByTestId('home-product-planner').getByRole('link', { name: 'Open the planner' }),
+  ).toHaveAttribute('href', '/planner');
+  await expect(
+    page.getByTestId('home-product-simulator').getByRole('link', { name: 'Open the simulator' }),
+  ).toHaveAttribute('href', '/sim');
+  await expect(
+    page.getByTestId('home-product-logs').getByRole('link', { name: 'Open the logs' }),
+  ).toHaveAttribute('href', '/logs');
+  await expect(
+    page.getByTestId('home-product-rankings').getByRole('link', { name: 'Open the rankings' }),
+  ).toHaveAttribute('href', '/rankings');
+  // The planner panel's live element: nine class tiles linking into the planner.
+  await expect(
+    page.getByTestId('home-product-planner').getByRole('link', { name: 'Warrior' }),
+  ).toHaveAttribute('href', '/planner?class=warrior');
+  // The simulator panel's live element: damage-spec pills linking into the simulator.
+  await expect(
+    page
+      .getByTestId('home-product-simulator')
+      .getByRole('link', { name: /Warrior/ })
+      .first(),
+  ).toHaveAttribute('href', /^\/sim\?spec=/);
+});
+
+// The reference tiles' and addon/companion row's own ordering and hrefs are
+// handoffs-home.spec.ts's job; the assertions above already cover this page's presence.
 
 test('content pages ship no client JavaScript', async ({ page }) => {
   for (const path of ['/about', '/premium']) {

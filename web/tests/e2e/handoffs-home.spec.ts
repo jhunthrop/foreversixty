@@ -1,23 +1,37 @@
 // web/tests/e2e/handoffs-home.spec.ts
 import { expect, test } from '@playwright/test';
 
-test('the homepage tools grid carries Simulator and The addon, in spec order', async ({ page }) => {
+test('the four product panels carry Planner, Simulator, Logs and Rankings, in spec order', async ({
+  page,
+}) => {
   await page.goto('/');
-  const grid = page.getByTestId('tools-grid');
+  const grid = page.getByTestId('home-product-panels');
+  const labels = await grid.locator('[data-testid^="home-product-"] .label').allTextContents();
+  expect(labels).toEqual(['Planner', 'Simulator', 'Logs', 'Rankings']);
+  await expect(
+    page.getByTestId('home-product-simulator').getByRole('link', { name: 'Open the simulator' }),
+  ).toHaveAttribute('href', '/sim');
+});
+
+test('the addon and companion row links to /addon and /logs#companion, in that order', async ({ page }) => {
+  await page.goto('/');
+  const titles = await page
+    .locator('.font-display')
+    .filter({ hasText: /^(The addon|The companion)$/ })
+    .allTextContents();
+  expect(titles).toEqual(['The addon', 'The companion']);
+  await expect(page.getByRole('link', { name: /The addon/ })).toHaveAttribute('href', '/addon');
+  await expect(page.getByRole('link', { name: /The companion/ })).toHaveAttribute('href', '/logs#companion');
+});
+
+test('the reference tiles carry Classes, Guides, Zones, Dungeons, in that order', async ({ page }) => {
+  await page.goto('/');
+  const grid = page.getByTestId('reference-tiles');
   const cards = grid.getByRole('link');
   const titles = await cards.evaluateAll((links) =>
     links.map((a) => a.querySelector('.font-display')?.textContent?.trim() ?? ''),
   );
-  expect(titles).toEqual([
-    'Build planner',
-    'Simulator',
-    'Combat logs',
-    'Rankings',
-    'The addon',
-    'Dungeons',
-    'Zone atlas',
-    'Class guides',
-  ]);
-  await expect(grid.getByRole('link', { name: /Simulator/ })).toHaveAttribute('href', '/sim');
-  await expect(grid.getByRole('link', { name: /The addon/ })).toHaveAttribute('href', '/addon');
+  expect(titles).toEqual(['Classes', 'Guides', 'Zones', 'Dungeons']);
+  await expect(grid.getByRole('link', { name: /Zones/ })).toHaveAttribute('href', '/zones');
+  await expect(grid.getByRole('link', { name: /Dungeons/ })).toHaveAttribute('href', '/dungeons');
 });
