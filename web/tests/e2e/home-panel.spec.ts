@@ -224,7 +224,14 @@ test('a returning signed-in visitor sees the hub from the session snapshot befor
   await page.route('**/v1/me', (route) => route.fulfill(fulfil(body)));
   await page.goto('/');
   await expect(page.getByTestId('home-account-panel')).toBeVisible();
-  const stored = await page.evaluate(() => window.localStorage.getItem('fs.me') ?? '');
+  // The data module persists under its own keys (lib/data/query.ts); the session entry is
+  // whichever one holds the account.
+  const stored = await page.evaluate(() =>
+    Object.keys(window.localStorage)
+      .filter((k) => k.startsWith('fs.q.'))
+      .map((k) => window.localStorage.getItem(k) ?? '')
+      .join('\n'),
+  );
   expect(stored).toContain('Kiloz');
 
   // Second load: /v1/me is held for five seconds, yet the hub renders at once from the

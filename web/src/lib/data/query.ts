@@ -309,3 +309,21 @@ export function forgetPrivate(): void {
     }
   }
 }
+
+/**
+ * Tests only: forget everything the module holds in memory and in the browser store, so
+ * one test's answer is never served to the next. Wired into vitest's setup file.
+ */
+export function resetQueryCache(): void {
+  store.clear();
+  subscribers.clear();
+  const storage = localStorageOrNull();
+  if (storage === null) return;
+  for (const row of everyPersisted(storage)) {
+    try {
+      storage.removeItem(row.storageKey);
+    } catch {
+      // Best-effort.
+    }
+  }
+}
