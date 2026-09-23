@@ -103,22 +103,48 @@ func (s *Service) captureMedia(ctx context.Context, tx pgx.Tx, key, region, real
 }
 
 // captureEquipment fetches and stores a character's equipment snapshot
-// verbatim (spec §B — not parsed here). A private or missing equipment
-// page (403/404) is left exactly as it was, the same rule
-// syncCharacterGuild already applies to a private character profile.
-func (s *Service) captureEquipment(ctx context.Context, tx pgx.Tx, key, region, realmSlug, name string) error {
+// verbatim (spec §B — not parsed here), and returns the raw body so the
+// caller can feed it straight to bnetbuild.Encode without a second
+// Blizzard call (docs/superpowers/specs/2026-09-22-battlenet-first-design.md
+// §2.3). A private or missing equipment page (403/404) is left exactly as
+// it was, the same rule syncCharacterGuild already applies to a private
+// character profile, and returns (nil, nil) — not an error.
+func (s *Service) captureEquipment(ctx context.Context, tx pgx.Tx, key, region, realmSlug, name string) (json.RawMessage, error) {
 	raw, err := s.Client.Equipment(ctx, region, realmSlug, name)
 	if err != nil {
 		if errors.Is(err, bnetapi.ErrNotFound) || errors.Is(err, bnetapi.ErrForbidden) {
-			return nil
+			return nil, nil
 		}
-		return fmt.Errorf("bnetimport: equipment %s: %w", key, err)
+		return nil, fmt.Errorf("bnetimport: equipment %s: %w", key, err)
 	}
-	raw = s.capCapture("bnet_equipment", key, raw)
+	capped := s.capCapture("bnet_equipment", key, raw)
 	if _, err := tx.Exec(ctx,
 		`update characters set bnet_equipment = coalesce($2, bnet_equipment), bnet_captured_at = now() where key = $1`,
-		key, rawOrNil(raw)); err != nil {
-		return fmt.Errorf("bnetimport: capture equipment %s: %w", key, err)
+		key, rawOrNil(capped)); err != nil {
+		return nil, fmt.Errorf("bnetimport: capture equipment %s: %w", key, err)
 	}
-	return nil
+	return raw, nil
+}
+
+// captureSpecializations fetches and stores a character's talent groups
+// (spec §2.3), the same coalesce-on-partial-data and 403/404-is-not-an-
+// error shape as captureEquipment, and returns the raw body for
+// bnetbuild.Encode. A Season of Discovery character (classic1x namespace,
+// spec §0) has no /specializations sub-resource and answers 404/403 here
+// like every other missing sub-resource.
+func (s *Service) captureSpecializations(ctx context.Context, tx pgx.Tx, key, region, realmSlug, name string) (json.RawMessage, error) {
+	raw, err := s.Client.Specializations(ctx, region, realmSlug, name)
+	if err != nil {
+		if errors.Is(err, bnetapi.ErrNotFound) || errors.Is(err, bnetapi.ErrForbidden) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("bnetimport: specializations %s: %w", key, err)
+	}
+	capped := s.capCapture("bnet_talents", key, raw)
+	if _, err := tx.Exec(ctx,
+		`update characters set bnet_talents = coalesce($2, bnet_talents), bnet_captured_at = now() where key = $1`,
+		key, rawOrNil(capped)); err != nil {
+		return nil, fmt.Errorf("bnetimport: capture specializations %s: %w", key, err)
+	}
+	return raw, nil
 }

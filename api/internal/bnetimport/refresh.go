@@ -142,13 +142,22 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 	if _, err := tx.Exec(ctx, `update characters set refreshed_at = now() where key = $1`, key); err != nil {
 		return fmt.Errorf("bnetimport: refresh stamp %s: %w", key, err)
 	}
-	if _, _, err := s.syncCharacterGuild(ctx, tx, sc.UserID, region, ruleset, key, sc.RealmSlug, name, rosterCache); err != nil {
+	profile, _, _, err := s.syncCharacterGuild(ctx, tx, sc.UserID, region, ruleset, key, sc.RealmSlug, name, rosterCache)
+	if err != nil {
 		return err
 	}
-	if err := s.captureEquipment(ctx, tx, key, region, sc.RealmSlug, name); err != nil {
+	rawEquipment, err := s.captureEquipment(ctx, tx, key, region, sc.RealmSlug, name)
+	if err != nil {
+		return err
+	}
+	rawSpecializations, err := s.captureSpecializations(ctx, tx, key, region, sc.RealmSlug, name)
+	if err != nil {
 		return err
 	}
 	if err := s.captureMedia(ctx, tx, key, region, sc.RealmSlug, name); err != nil {
+		return err
+	}
+	if err := s.buildAndWriteExport(ctx, tx, sc.UserID, key, region, ruleset, profile, rawEquipment, rawSpecializations); err != nil {
 		return err
 	}
 	if err := tx.Commit(ctx); err != nil {

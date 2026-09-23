@@ -63,14 +63,22 @@ func (s *Service) importOneCharacter(ctx context.Context, userID int64, region, 
 		return false, false, false, nil
 	}
 
-	guildWritten, unavailable, err = s.syncCharacterGuild(ctx, tx, userID, region, ruleset, key, ch.RealmSlug, ch.Name, rosterCache)
+	profile, guildWritten, unavailable, err := s.syncCharacterGuild(ctx, tx, userID, region, ruleset, key, ch.RealmSlug, ch.Name, rosterCache)
 	if err != nil {
 		return false, false, false, err
 	}
-	if err := s.captureEquipment(ctx, tx, key, region, ch.RealmSlug, ch.Name); err != nil {
+	rawEquipment, err := s.captureEquipment(ctx, tx, key, region, ch.RealmSlug, ch.Name)
+	if err != nil {
+		return false, false, false, err
+	}
+	rawSpecializations, err := s.captureSpecializations(ctx, tx, key, region, ch.RealmSlug, ch.Name)
+	if err != nil {
 		return false, false, false, err
 	}
 	if err := s.captureMedia(ctx, tx, key, region, ch.RealmSlug, ch.Name); err != nil {
+		return false, false, false, err
+	}
+	if err := s.buildAndWriteExport(ctx, tx, userID, key, region, ruleset, profile, rawEquipment, rawSpecializations); err != nil {
 		return false, false, false, err
 	}
 	if err := tx.Commit(ctx); err != nil {
@@ -130,7 +138,7 @@ func (s *Service) rekeyIfNeeded(ctx context.Context, tx pgx.Tx, userID int64, ne
 // Discovery character) is logged and reported via unavailable, and 403
 // (a private profile) is left silent, as before.
 func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, userID int64, region, ruleset, key, realmSlug, name string,
-	rosterCache map[string]bnetapi.Roster) (guildWritten, unavailable bool, err error) {
+	rosterCache map[string]bnetapi.Roster) (profile bnetapi.CharacterProfile, guildWritten, unavailable bool, err error) {
 	var prevGuildID *int64
 	var prevUserID int64
 	var prevSource string
@@ -138,32 +146,32 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, userID int6
 		`select guild_id, user_id, source from guild_characters where character_key = $1`, key).
 		Scan(&prevGuildID, &prevUserID, &prevSource)
 	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
-		return false, false, fmt.Errorf("bnetimport: read previous guild for %s: %w", key, err)
+		return bnetapi.CharacterProfile{}, false, false, fmt.Errorf("bnetimport: read previous guild for %s: %w", key, err)
 	}
 
 	profile, rawProfile, err := s.Client.Character(ctx, region, realmSlug, name)
 	if err != nil {
 		if errors.Is(err, bnetapi.ErrNotFound) {
 			s.logger().Info("bnetimport", "op", "profile_unavailable", "key", key, "status", http.StatusNotFound)
-			return false, true, nil
+			return bnetapi.CharacterProfile{}, false, true, nil
 		}
 		if errors.Is(err, bnetapi.ErrForbidden) {
-			return false, false, nil
+			return bnetapi.CharacterProfile{}, false, false, nil
 		}
-		return false, false, fmt.Errorf("bnetimport: character profile %s: %w", key, err)
+		return bnetapi.CharacterProfile{}, false, false, fmt.Errorf("bnetimport: character profile %s: %w", key, err)
 	}
 	if err := s.captureProfile(ctx, tx, key, profile, rawProfile); err != nil {
-		return false, false, err
+		return profile, false, false, err
 	}
 
 	if !profile.HasGuild {
 		if prevGuildID != nil && prevSource == "bnet" {
 			if _, err := tx.Exec(ctx, `delete from guild_characters where character_key = $1`, key); err != nil {
-				return false, false, fmt.Errorf("bnetimport: clear guild for %s: %w", key, err)
+				return profile, false, false, fmt.Errorf("bnetimport: clear guild for %s: %w", key, err)
 			}
-			return false, false, guilds.AfterGuildChange(ctx, tx, *prevGuildID, prevUserID)
+			return profile, false, false, guilds.AfterGuildChange(ctx, tx, *prevGuildID, prevUserID)
 		}
-		return false, false, nil
+		return profile, false, false, nil
 	}
 
 	cacheKey := strings.ToLower(region + "/" + realmSlug + "/" + profile.GuildName)
@@ -172,34 +180,34 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, userID int6
 		roster, err = s.Client.GuildRoster(ctx, region, realmSlug, profile.GuildName)
 		if err != nil {
 			if errors.Is(err, bnetapi.ErrNotFound) || errors.Is(err, bnetapi.ErrForbidden) {
-				return false, false, nil
+				return profile, false, false, nil
 			}
-			return false, false, fmt.Errorf("bnetimport: guild roster %s: %w", key, err)
+			return profile, false, false, fmt.Errorf("bnetimport: guild roster %s: %w", key, err)
 		}
 		rosterCache[cacheKey] = roster
 	}
 	rankIndex, found := findRank(roster.Members, name, realmSlug)
 	if !found {
 		s.logger().Warn("bnetimport", "op", "roster_rank_not_found", "key", key, "guild", profile.GuildName)
-		return false, false, nil
+		return profile, false, false, nil
 	}
 
 	guildID, officerMax, err := guilds.ResolveGuild(ctx, tx, region, ruleset, profile.GuildName)
 	if err != nil {
-		return false, false, err
+		return profile, false, false, err
 	}
 	if err := guilds.StampBnetRoster(ctx, tx, guildID, roster.GuildID, realmSlug); err != nil {
-		return false, false, err
+		return profile, false, false, err
 	}
 	rank := guilds.DeriveRank(rankIndex, officerMax)
 
 	if prevGuildID != nil && *prevGuildID != guildID {
 		if err := guilds.LockGuilds(ctx, tx, guildID, *prevGuildID); err != nil {
-			return false, false, err
+			return profile, false, false, err
 		}
 		if _, err := tx.Exec(ctx,
 			`delete from guild_characters where character_key = $1 and guild_id = $2`, key, *prevGuildID); err != nil {
-			return false, false, fmt.Errorf("bnetimport: clear previous guild for %s: %w", key, err)
+			return profile, false, false, fmt.Errorf("bnetimport: clear previous guild for %s: %w", key, err)
 		}
 	}
 
@@ -208,22 +216,22 @@ func (s *Service) syncCharacterGuild(ctx context.Context, tx pgx.Tx, userID int6
 		RankIndex: rankIndex, Rank: rank, Source: "bnet", VerifiedBy: "bnet",
 		VerifiedAt: time.Now(), Reverify: true,
 	}); err != nil {
-		return false, false, err
+		return profile, false, false, err
 	}
 	if rank == "leader" {
 		if err := guilds.AutoConfirmClaimIfPending(ctx, tx, guildID, userID); err != nil {
-			return false, false, err
+			return profile, false, false, err
 		}
 	}
 	if err := guilds.AfterGuildChange(ctx, tx, guildID, userID); err != nil {
-		return false, false, err
+		return profile, false, false, err
 	}
 	if prevGuildID != nil && *prevGuildID != guildID {
 		if err := guilds.AfterGuildChange(ctx, tx, *prevGuildID, prevUserID); err != nil {
-			return false, false, err
+			return profile, false, false, err
 		}
 	}
-	return true, false, nil
+	return profile, true, false, nil
 }
 
 // findRank locates name's own roster rank by name and realm (case-

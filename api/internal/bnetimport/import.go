@@ -20,6 +20,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/bnetapi"
+	"github.com/jhunthrop/foreversixty/api/internal/bnetbuild"
 	"github.com/jhunthrop/foreversixty/api/internal/character"
 )
 
@@ -51,6 +52,11 @@ type Service struct {
 	Client  *bnetapi.Client
 	Regions []string
 	Log     *slog.Logger
+	// Tables is the active client build's talent/enchant/suffix/race data (spec §2.2,
+	// §2.3), loaded once per process by cmd/api's wiring. A zero Tables (Trees nil) means
+	// no build data is available and buildAndWriteExport (build.go) is a no-op — never a
+	// crash.
+	Tables bnetbuild.Tables
 }
 
 func (s *Service) logger() *slog.Logger {

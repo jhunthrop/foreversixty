@@ -49,7 +49,8 @@ func TestCharacterReadsGuildedAndUnguilded(t *testing.T) {
 	fs.handlers[http.MethodGet+" /profile/wow/character/whitemane/thoradin?namespace=profile-classic1x-us"] = func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		_, _ = w.Write([]byte(`{"name":"Thoradin","level":42,"faction":{"type":"ALLIANCE"},
-			"character_class":{"name":"Warrior"},"realm":{"slug":"whitemane","name":"Whitemane"},
+			"character_class":{"name":"Warrior"},"race":{"name":"Orc"},
+			"realm":{"slug":"whitemane","name":"Whitemane"},
 			"guild":{"name":"Iron Vanguard","id":12},"last_login_timestamp":1700000000000,
 			"average_item_level":55,"equipped_item_level":54}`))
 	}
@@ -73,6 +74,9 @@ func TestCharacterReadsGuildedAndUnguilded(t *testing.T) {
 	}
 	if guilded.EquippedItemLevel == nil || *guilded.EquippedItemLevel != 54 {
 		t.Fatalf("EquippedItemLevel = %v, want 54", guilded.EquippedItemLevel)
+	}
+	if guilded.RaceName != "Orc" {
+		t.Fatalf("RaceName = %q, want the verbatim race.name", guilded.RaceName)
 	}
 	if len(rawGuilded) == 0 || !strings.Contains(string(rawGuilded), "Iron Vanguard") {
 		t.Fatalf("raw = %s, want the verbatim response body", rawGuilded)
@@ -103,5 +107,21 @@ func TestEquipmentReturnsTheRawBody(t *testing.T) {
 	}
 	if !strings.Contains(string(raw), "equipped_items") || !strings.Contains(string(raw), "HEAD") {
 		t.Fatalf("raw = %s, want the verbatim equipment body", raw)
+	}
+}
+
+func TestSpecializationsReturnsTheRawBody(t *testing.T) {
+	fs := newFixtureServer(t)
+	fs.json(http.MethodPost, "/token", http.StatusOK, map[string]any{"access_token": "tok", "expires_in": 3600})
+	fs.json(http.MethodGet, "/profile/wow/character/whitemane/thoradin/specializations?namespace=profile-classic1x-us",
+		http.StatusOK, map[string]any{"specialization_groups": []map[string]any{{"is_active": true}}})
+
+	c := newTestClient(fs)
+	raw, err := c.Specializations(context.Background(), "us", "whitemane", "Thoradin")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(raw), "specialization_groups") {
+		t.Fatalf("raw = %s, want the verbatim specializations body", raw)
 	}
 }

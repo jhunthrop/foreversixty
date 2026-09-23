@@ -1384,7 +1384,7 @@ paths:
                             items: { type: string }
                             description: Engine buff ids, from sim/request/IDS.md.
                           captured_at: { type: string, format: date-time }
-                          source: { type: string, enum: [addon, fight] }
+                          source: { type: string, enum: [addon, blizzard, fight] }
         '404': { description: No such character }
   /v1/phases:
     get:

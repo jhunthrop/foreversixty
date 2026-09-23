@@ -140,6 +140,18 @@ func (b *Build) Class(id int) (Class, bool) { c, ok := b.classes[id]; return c, 
 
 func (b *Build) Race(id int) (Race, bool) { r, ok := b.races[id]; return r, ok }
 
+// Races lists the build's playable races by id. bnetbuild uses it to build a
+// Blizzard-race-name-to-slug table without re-parsing races.json (spec
+// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.2).
+func (b *Build) Races() []Race {
+	out := make([]Race, 0, len(b.races))
+	for _, r := range b.races {
+		out = append(out, r)
+	}
+	sort.Slice(out, func(i, j int) bool { return out[i].ID < out[j].ID })
+	return out
+}
+
 func (b *Build) ComboAllowed(raceID, classID int) bool {
 	_, ok := b.combos[[2]int{raceID, classID}]
 	return ok
