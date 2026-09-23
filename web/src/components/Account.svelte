@@ -368,7 +368,7 @@
     {:else if !signedIn}
       <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
       <div class={SIGNED_OUT_MIN_H}>
-        <SignInPrompt line={accountSignInCopy.reason} next="/account" testid="account-signin" />
+        <SignInPrompt line={accountSignInCopy.reason} testid="account-signin" />
       </div>
     {:else}
       <div class="reveal flex flex-col gap-8">

@@ -36,7 +36,7 @@ test('a signed-out visitor is offered both sign-in routes', async ({ page }) => 
   await expect(page.getByTestId('session-nav').getByRole('link', { name: 'Sign in' })).toBeVisible();
   await expect(page.getByTestId('battlenet')).toHaveAttribute(
     'href',
-    /\/v1\/auth\/battlenet\/start\?next=%2Flogs$/,
+    /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Fsigned_in%3D1$/,
   );
   await expect(page.getByTestId('email-form')).toBeVisible();
 });

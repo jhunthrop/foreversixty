@@ -6,7 +6,11 @@
   import { battlenetStartUrl } from '../lib/account/api';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 
-  let { line, next = '/logs', testid }: { line: string; next?: string; testid: string } = $props();
+  let {
+    line,
+    next = '/account?signed_in=1',
+    testid,
+  }: { line: string; next?: string; testid: string } = $props();
 </script>
 
 <div class="flex flex-col items-start gap-3" data-testid={testid}>
