@@ -53,9 +53,15 @@ test('signing in lands on the hub with the main character in the hero band', asy
     'Thoradin is your current character',
   );
   await expect.poll(() => new URL(page.url()).search).toBe('');
-  await expect(page.getByTestId('account-hero')).toContainText('Thoradin');
-  await expect(page.getByTestId('character-open-sim')).toHaveAttribute('href', /^\/sim\?code=/);
+  const heroBand = page.getByTestId('account-hero');
+  await expect(heroBand).toContainText('Thoradin');
+  // Thoradin also appears in the Characters list below (its own row's own
+  // "character-open-sim" link, pointed at the armory fallback), so this locator must stay
+  // scoped to the hero band -- the same disambiguation handoffs-account-character.spec.ts
+  // uses for a row -- or it hits a strict-mode violation on the two same-testid matches.
+  const heroSim = heroBand.getByTestId('character-open-sim');
+  await expect(heroSim).toHaveAttribute('href', /^\/sim\?code=/);
 
-  await page.getByTestId('character-open-sim').click();
+  await heroSim.click();
   await expect(page).toHaveURL(/\/sim\?code=/);
 });

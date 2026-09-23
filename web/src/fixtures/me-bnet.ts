@@ -24,6 +24,7 @@ export const meBnetFixture: Me = {
       avatar_url: '/fixtures/avatar-placeholder.jpg',
       render_url: '/fixtures/render-placeholder.png',
       guild: { id: 12, name: 'Iron Vanguard', rank: 'officer', rank_index: 1, verified: true },
+      build: { source: 'blizzard', captured_at: '2026-09-21T03:14:00Z' },
     },
     {
       key: 'us/hardcore/elyra-duskvale',

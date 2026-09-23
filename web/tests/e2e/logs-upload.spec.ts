@@ -175,10 +175,14 @@ test('a signed-out visitor is told to sign in before they pick a file', async ({
   // The reports panel hydrates only once it is on screen (client:visible), so the page is
   // scrolled to its end before the prompts are looked for.
   await page.getByRole('contentinfo').scrollIntoViewIfNeeded();
+  // Every sign-in link's default landed on the hub, not /logs, once this lane's "sign-in
+  // defaults" change shipped (SignInPrompt.svelte's own `next = '/account?signed_in=1'`
+  // fallback) -- none of these three prompts passes its own `next`, so all three now fall
+  // through to that default instead of the old /logs one.
   for (const id of ['pairing-signin', 'upload-signin', 'reports-signin']) {
     await expect(page.getByTestId(id).getByRole('link', { name: 'Sign in with Battle.net' })).toHaveAttribute(
       'href',
-      /\/v1\/auth\/battlenet\/start\?next=%2Flogs$/,
+      /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Fsigned_in%3D1$/,
     );
   }
   await expect(page.getByTestId('upload-file')).toBeDisabled();

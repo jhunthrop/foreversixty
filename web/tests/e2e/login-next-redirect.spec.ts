@@ -32,10 +32,14 @@ test('a safe ?next= value survives into the Battle.net link, post-hydration', as
   );
 });
 
-test('an unsafe protocol-relative ?next= value is rejected and falls back to /logs', async ({ page }) => {
+test('an unsafe protocol-relative ?next= value is rejected and falls back to the hub', async ({ page }) => {
   await page.goto('/login?next=//evil.example/x');
 
+  // Every sign-in link's default landed on the hub, not /logs, once this lane's "sign-in
+  // defaults" change shipped (login.astro's own `next="/account?signed_in=1"` fallback) --
+  // safeNextPath's rejection falls back to whatever `next` the caller passed in, so this
+  // now asserts that new default rather than the old /logs one.
   const battlenet = page.getByTestId('battlenet');
-  await expect(battlenet).toHaveAttribute('href', /next=%2Flogs$/);
+  await expect(battlenet).toHaveAttribute('href', /next=%2Faccount%3Fsigned_in%3D1$/);
   await expect(battlenet).not.toHaveAttribute('href', /evil\.example/);
 });
