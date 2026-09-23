@@ -24,16 +24,13 @@ const ME_OK = {
 };
 
 test('a failed /v1/me shows Try again, which re-fires the same request', async ({ page }) => {
-  let call = 0;
+  // Every /v1/me answers 500 until the retry is clicked. Counting requests is not
+  // deterministic: the header's SessionNav and the account island share one deduped
+  // fetchMeOnce promise when their calls overlap (one request) and make two when they do
+  // not, so "fail the first N" sometimes failed the retry itself under CPU contention.
+  let failing = true;
   await page.route('**/v1/me', (route) => {
-    call += 1;
-    // /account also mounts the header's SessionNav (Base.astro's `session` slot), which
-    // shares `fetchMeOnce` with this island (src/lib/account/api.ts). SessionNav's bundle
-    // is far smaller than Account.svelte's, so it hydrates and completes its own
-    // `/v1/me` round trip first; the account island's own initial load is therefore the
-    // *second* request, not the first. Failing both covers SessionNav's request and the
-    // account island's own initial load, so the island actually reaches its failed state.
-    if (call <= 2)
+    if (failing)
       return route.fulfill(
         fulfil({ ok: false, data: null, error: { message: 'oops' }, request_id: 'r' }, 500),
       );
@@ -46,6 +43,7 @@ test('a failed /v1/me shows Try again, which re-fires the same request', async (
   await page.goto('/account');
 
   await expect(page.getByTestId('account-load-error')).toBeVisible();
+  failing = false;
   await page.getByTestId('account-load-error-retry').click();
 
   await expect(page.getByRole('link', { name: 'Elyra Duskvale' })).toBeVisible();
