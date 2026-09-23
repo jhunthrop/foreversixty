@@ -37,6 +37,20 @@ const UNGUILDED: MeCharacter = {
   class: 'warrior',
 };
 
+const WITH_BLIZZARD_BUILD: MeCharacter = {
+  ...UNGUILDED,
+  key: 'us/pvp/blizzardbuilt',
+  name: 'Blizzardbuilt',
+  build: { source: 'blizzard', captured_at: '2026-09-20T00:00:00Z' },
+};
+
+const WITH_ADDON_BUILD: MeCharacter = {
+  ...UNGUILDED,
+  key: 'us/pvp/addonbuilt',
+  name: 'Addonbuilt',
+  build: { source: 'addon', captured_at: '2026-09-20T00:00:00Z' },
+};
+
 describe('CharacterList', () => {
   it('shows the class icon over the letter square when a character has no avatar', () => {
     const { body } = render(CharacterList, { props: { characters: [UNGUILDED] } });
@@ -78,8 +92,31 @@ describe('CharacterList', () => {
 
   it('shows the export explanation once, as the panel footer line', () => {
     const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
-    expect(body).toContain(characterListCopy.introLead);
+    expect(body).toContain('Gear and talents come from Battle.net and refresh nightly.');
+    expect(body).toContain(characterListCopy.introInstallAddonLink);
+    expect(body).toContain('href="/addon"');
+    expect(body).toContain(characterListCopy.introPasteLink);
     expect(body).toContain('href="/addon#paste"');
+  });
+
+  it('shows a Battle.net build pill and the "Open in simulator" link for a character with a blizzard build', () => {
+    const { body } = render(CharacterList, { props: { characters: [WITH_BLIZZARD_BUILD] } });
+    expect(body).toContain('data-testid="character-build-pill">Battle.net');
+    expect(body).toContain('data-testid="character-open-sim"');
+    expect(body).toContain('href="/sim?source=armory&amp;ref=us%2Fpvp%2Fblizzardbuilt"');
+    expect(body).not.toContain('data-testid="character-needs-addon"');
+  });
+
+  it('shows an Addon build pill and the "Open in simulator" link for a character with an addon build', () => {
+    const { body } = render(CharacterList, { props: { characters: [WITH_ADDON_BUILD] } });
+    expect(body).toContain('data-testid="character-build-pill">Addon');
+    expect(body).toContain('data-testid="character-open-sim"');
+  });
+
+  it('shows "No export yet" and no simulator link for a character with no build', () => {
+    const { body } = render(CharacterList, { props: { characters: [UNGUILDED] } });
+    expect(body).toContain('data-testid="character-needs-addon"');
+    expect(body).not.toContain('data-testid="character-open-sim"');
   });
 
   it('shows EmptyState with one action (Refresh from Battle.net) when there are no characters', () => {

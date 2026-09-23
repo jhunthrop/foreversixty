@@ -11,11 +11,11 @@ export const characterListCopy = {
   levelPrefix: (level: number): string => `Level ${level}`,
   /** spec 2026-09-22 §7.3, shown on /account after a Battle.net refresh redirect. */
   refreshedToast: 'Characters refreshed from Battle.net.',
-  /** Spec 2026-09-22 §2.3: the export "how" explained once, here, instead of on every row
-   *  (handoff-copy.ts's needsExportLead now only points at the paste link). */
-  introLead: 'A character becomes simmable once the site has its export: type /fs export in game and',
-  introPasteLink: 'paste it here',
-  introTail: ', or run the desktop companion and it sends the export for you.',
+  /** spec 2026-09-22 §3.3: the export "how" explained once, here, for every row. */
+  introLead:
+    'Gear and talents come from Battle.net and refresh nightly. Install the addon to include bags and bank and to update right after a session; paste an export for a character Battle.net has no data for.',
+  introInstallAddonLink: 'Install the addon',
+  introPasteLink: 'paste an export',
   /** The account rows' and the sim landing rows' build-source pill (spec 2026-09-22 §3.1). */
   battlenetSource: 'Battle.net',
   addonSource: 'Addon',
