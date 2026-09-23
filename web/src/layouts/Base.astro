@@ -100,6 +100,13 @@ const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
     <slot />
     <Footer />
     <script is:inline>
+      // The session hint, before first paint: the readable half of the session cookie pair
+      // (fs_csrf) means someone is signed in, so anything marked data-session-hide (the home
+      // page's "Sign in" block) stays hidden until its island renders the signed-in state,
+      // instead of flashing for a signed-in visitor on every load (lib/account/session-cache.ts).
+      if (/(?:^|;\s*)fs_csrf=[^;]+/.test(document.cookie)) document.documentElement.dataset.session = '1';
+    </script>
+    <script is:inline>
       // is:inline: no bundling and no request, so a content page still ships no script
       // file. It also means no TypeScript in here -- this is plain JavaScript on purpose.
       // Site-wide "/" shortcut (design/DESIGN-SYSTEM.md: "`/` keyboard hint. First

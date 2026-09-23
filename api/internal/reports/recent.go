@@ -98,5 +98,8 @@ func (s *Service) recent(w http.ResponseWriter, r *http.Request) {
 		last := rows[len(rows)-1]
 		page.NextCursor = encodeRecentCursor(last.CreatedAt, last.ID)
 	}
+	// Public feed, the same 30 s the rankings use: the browser and the CDN reuse it across
+	// the home page and /logs instead of a fresh query per island per load.
+	w.Header().Set("Cache-Control", "public, max-age=30")
 	httpx.WriteOK(w, r, http.StatusOK, page)
 }

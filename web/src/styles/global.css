@@ -170,6 +170,12 @@
     background-position: -200% 0;
   }
 }
+/* Hidden until an island confirms the session (Base.astro's session hint): a signed-in
+   visitor never sees the server-rendered "Sign in" block flash before the swap. */
+html[data-session='1'] [data-session-hide] {
+  visibility: hidden;
+}
+
 /* An island's content the moment its data lands: one short fade so a skeleton or a
    loading line never snaps into a table. Applied to the wrapper of the ready state only,
    never to controls a player is already using (design system, Motion). */

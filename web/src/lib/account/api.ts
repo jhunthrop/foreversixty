@@ -7,6 +7,7 @@
 // DELETE /v1/sessions and PATCH /v1/me { anonymize } come from the contract's Amendments
 // section; the first draft required both behaviours on /account without naming a route.
 import { API_BASE_URL } from '../planner/config';
+import { ME_UPDATED, clearSnapshot, readSnapshot, sameMe, writeSnapshot } from './session-cache';
 
 export const SIGN_IN_REQUIRED = 'Sign in to continue';
 export const ACCOUNT_FAILED = 'That did not work; try again';
@@ -292,10 +293,36 @@ export async function fetchMe(apiBase: string = API_BASE_URL): Promise<Me | null
  */
 const sessions = new Map<string, Promise<Me | null>>();
 
+/**
+ * Fetches and records the live answer. A change against what the page already knows is
+ * announced on `window` as ME_UPDATED, so an island rendering the snapshot can follow.
+ */
+async function revalidateMe(apiBase: string, shown: Me | null): Promise<Me | null> {
+  const live = await fetchMe(apiBase);
+  if (live === null) clearSnapshot();
+  else writeSnapshot(live);
+  sessions.set(apiBase, Promise.resolve(live));
+  if (!sameMe(shown, live) && typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(ME_UPDATED, { detail: live }));
+  }
+  return live;
+}
+
 export function fetchMeOnce(apiBase: string = API_BASE_URL): Promise<Me | null> {
   const known = sessions.get(apiBase);
   if (known !== undefined) return known;
-  const pending = fetchMe(apiBase).catch((error: unknown) => {
+  // Stale while revalidate: the last answer this browser saw, when the session cookie is
+  // still present, is shown at once and checked in the background (session-cache.ts).
+  const snapshot = readSnapshot();
+  if (snapshot !== null) {
+    const shown = Promise.resolve<Me | null>(snapshot);
+    sessions.set(apiBase, shown);
+    void revalidateMe(apiBase, snapshot).catch(() => {
+      // A failed revalidation keeps the snapshot; the next page load tries again.
+    });
+    return shown;
+  }
+  const pending = revalidateMe(apiBase, null).catch((error: unknown) => {
     sessions.delete(apiBase);
     throw error;
   });
@@ -306,6 +333,7 @@ export function fetchMeOnce(apiBase: string = API_BASE_URL): Promise<Me | null> 
 /** Tests only: a fresh page has no remembered session. */
 export function forgetSession(): void {
   sessions.clear();
+  clearSnapshot();
 }
 
 export function battlenetStartUrl(next: string, apiBase: string = API_BASE_URL): string {
@@ -331,6 +359,7 @@ export async function revokeDevice(id: string, apiBase: string = API_BASE_URL): 
 }
 
 export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
+  clearSnapshot();
   await call('/v1/sessions', apiBase, { method: 'DELETE' });
 }
 

@@ -192,3 +192,49 @@ test('the hub lists the other characters as chips, and a chip makes that charact
   const stored = await page.evaluate(() => window.localStorage.getItem('fs.currentCharacter') ?? '');
   expect(stored).toContain('us/normal/dottzz');
 });
+
+test('a returning signed-in visitor sees the hub from the session snapshot before /v1/me answers', async ({
+  page,
+  context,
+}) => {
+  const body = {
+    ok: true,
+    data: {
+      user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+      characters: [
+        {
+          key: 'us/normal/kiloz',
+          region: 'us',
+          ruleset: 'normal',
+          name: 'Kiloz',
+          class: 'warrior',
+          level: 60,
+        },
+      ],
+      guilds: [],
+    },
+    error: null,
+    request_id: 'r',
+  };
+  // The readable half of the session cookie pair is what makes the snapshot trusted.
+  await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
+  await page.route('**/v1/characters/**', (route) =>
+    route.fulfill({ status: 404, json: { ok: false, data: null, error: { message: 'none' } } }),
+  );
+  await page.route('**/v1/me', (route) => route.fulfill(fulfil(body)));
+  await page.goto('/');
+  await expect(page.getByTestId('home-account-panel')).toBeVisible();
+  const stored = await page.evaluate(() => window.localStorage.getItem('fs.me') ?? '');
+  expect(stored).toContain('Kiloz');
+
+  // Second load: /v1/me is held for five seconds, yet the hub renders at once from the
+  // snapshot, and the signed-out block never shows (Base.astro's session hint).
+  await page.unroute('**/v1/me');
+  await page.route('**/v1/me', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await route.fulfill(fulfil(body));
+  });
+  await page.goto('/');
+  await expect(page.getByTestId('home-account-panel')).toBeVisible({ timeout: 3000 });
+  await expect(page.getByTestId('home-signed-out')).toBeHidden();
+});
