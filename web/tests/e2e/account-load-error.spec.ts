@@ -46,6 +46,8 @@ test('a failed /v1/me shows Try again, which re-fires the same request', async (
   failing = false;
   await page.getByTestId('account-load-error-retry').click();
 
-  await expect(page.getByRole('link', { name: 'Elyra Duskvale' })).toBeVisible();
+  await expect(
+    page.getByTestId('account-characters').getByRole('link', { name: 'Elyra Duskvale' }),
+  ).toBeVisible();
   await expect(page.getByTestId('account-load-error')).toHaveCount(0);
 });

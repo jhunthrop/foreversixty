@@ -19,7 +19,33 @@
   import EmptyState from '../ui/EmptyState.svelte';
   import StatePanel from '../ui/StatePanel.svelte';
 
-  let { characters, bnetImportedAt }: { characters: MeCharacter[]; bnetImportedAt?: string } = $props();
+  let {
+    characters,
+    bnetImportedAt,
+    mainKey = undefined,
+    onSetMain = undefined,
+  }: {
+    characters: MeCharacter[];
+    bnetImportedAt?: string;
+    /** The chosen main's key; the row carries a Main pill and every other row a Set as main control. */
+    mainKey?: string;
+    /** Called with the key when Set as main is pressed; the caller records it and updates `mainKey`. */
+    onSetMain?: (key: string) => Promise<void>;
+  } = $props();
+  let settingMain = $state('');
+  let setMainError = $state('');
+  async function setMain(key: string): Promise<void> {
+    if (onSetMain === undefined) return;
+    settingMain = key;
+    setMainError = '';
+    try {
+      await onSetMain(key);
+    } catch {
+      setMainError = characterListCopy.setAsMainFailed;
+    } finally {
+      settingMain = '';
+    }
+  }
 
   /** `?next=` on the refresh link (spec §7.2/§7.3): a second Battle.net login re-runs the
    *  import and lands back here with the toast query param. */
@@ -110,10 +136,27 @@
               </span>
             {/if}
           </div>
+          {#if mainKey === character.key}
+            <span class="pill pill-site" data-testid="character-main-pill">{characterListCopy.main}</span>
+          {:else if onSetMain !== undefined}
+            <button
+              type="button"
+              class="text-nav inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
+              onclick={() => void setMain(character.key)}
+              disabled={settingMain !== ''}
+              aria-busy={settingMain === character.key}
+              data-testid="character-set-main"
+            >
+              {characterListCopy.setAsMain}
+            </button>
+          {/if}
           <CharacterRowLink {character} />
         </li>
       {/each}
     </ul>
+  {/if}
+  {#if setMainError !== ''}
+    <p class="text-[13px]" role="alert" data-testid="character-set-main-error">{setMainError}</p>
   {/if}
   <p class="text-muted text-[13px]">
     {characterListCopy.introBattlenetLine}

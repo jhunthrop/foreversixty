@@ -8,6 +8,10 @@ export const characterListCopy = {
   refreshFromBattlenet: 'Refresh from Battle.net',
   importedFrom: (relative: string): string => `Imported from Battle.net ${relative}.`,
   verified: 'Verified',
+  /** The main character's pill, and the control on every alt. */
+  main: 'Main',
+  setAsMain: 'Set as main',
+  setAsMainFailed: 'Could not set your main just now.',
   levelPrefix: (level: number): string => `Level ${level}`,
   /** spec 2026-09-22 §7.3, shown on /account after a Battle.net refresh redirect. */
   refreshedToast: 'Characters refreshed from Battle.net.',

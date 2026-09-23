@@ -22,8 +22,15 @@ function betterByLevel(a: MeCharacter, b: MeCharacter): MeCharacter {
   return levelOf(b) > levelOf(a) ? b : a;
 }
 
-export function mainCharacter(characters: readonly MeCharacter[]): MeCharacter | null {
+/**
+ * The account's main: the character the player chose (`main_character_key`) when it is
+ * still one of theirs; otherwise the site's own guess until they choose, the simmable
+ * character with the freshest build, then the highest level. Everything else is an alt.
+ */
+export function mainCharacter(characters: readonly MeCharacter[], mainKey?: string): MeCharacter | null {
   if (characters.length === 0) return null;
+  const chosen = mainKey === undefined ? undefined : characters.find((c) => c.key === mainKey);
+  if (chosen !== undefined) return chosen;
   const simmable = characters.filter((character) => character.build !== undefined);
   if (simmable.length > 0) return simmable.reduce(betterSimmable);
   return [...characters].reduce(betterByLevel);

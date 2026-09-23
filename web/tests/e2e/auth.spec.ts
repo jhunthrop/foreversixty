@@ -93,10 +93,9 @@ test('the account page lists devices, pairs one, and shows the character', async
 
   await expect(page.getByTestId('session-nav')).toContainText('Fixture#1234');
   await expect(page.getByText('Raid PC')).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Elyra Duskvale' })).toHaveAttribute(
-    'href',
-    '/character/us/hardcore/elyra-duskvale',
-  );
+  await expect(
+    page.getByTestId('account-characters').getByRole('link', { name: 'Elyra Duskvale' }),
+  ).toHaveAttribute('href', '/character/us/hardcore/elyra-duskvale');
 
   await page.getByRole('button', { name: 'Pair a device' }).click();
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
@@ -130,18 +129,62 @@ test('a signed-in visitor sees imported characters, refreshes, and gets the toas
   await expect.poll(() => new URL(page.url()).search).toBe('');
 
   // The guilded, verified character.
-  await expect(page.getByRole('link', { name: 'Thoradin' })).toBeVisible();
+  await expect(page.getByTestId('account-characters').getByRole('link', { name: 'Thoradin' })).toBeVisible();
   await expect(page.getByTestId('character-guild-line').filter({ hasText: 'Iron Vanguard' })).toContainText(
     'Officer',
   );
   await expect(page.getByTestId('character-guild-verified').first()).toHaveText('Verified');
 
   // The unguilded character carries no guild line at all.
-  const elyraRow = page.getByRole('link', { name: 'Elyra Duskvale' }).locator('..');
+  const elyraRow = page
+    .getByTestId('account-characters')
+    .getByRole('link', { name: 'Elyra Duskvale' })
+    .locator('..');
   await expect(elyraRow.getByTestId('character-guild-line')).toHaveCount(0);
 
   await expect(page.getByTestId('bnet-imported')).toContainText('Imported from Battle.net');
   await expect(
     page.getByTestId('bnet-imported').getByRole('link', { name: 'Refresh from Battle.net' }),
   ).toHaveAttribute('href', /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Frefreshed%3D1$/);
+});
+
+test('choosing a main on the account page records it and makes it the hero', async ({ page }) => {
+  let mainKey: string | undefined;
+  const me = () => ({
+    ok: true,
+    data: {
+      user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+      characters: [
+        { key: 'us/pvp/reloadd', region: 'us', ruleset: 'pvp', name: 'Reloadd', class: 'hunter', level: 25 },
+        { key: 'us/pvp/dottzz', region: 'us', ruleset: 'pvp', name: 'Dottzz', class: 'priest', level: 12 },
+      ],
+      guilds: [],
+      ...(mainKey === undefined ? {} : { main_character_key: mainKey }),
+    },
+    error: null,
+    request_id: 'r',
+  });
+  await page.route('**/v1/me', async (route) => {
+    if (route.request().method() === 'PATCH') {
+      mainKey = (route.request().postDataJSON() as { main_character_key: string }).main_character_key;
+    }
+    await route.fulfill({ json: me() });
+  });
+  await page.route('**/v1/devices', (route) => route.fulfill({ json: { ok: true, data: [], error: null } }));
+  await page.route('**/v1/reports**', (route) =>
+    route.fulfill({ json: { ok: true, data: { rows: [], total: 0, page: 1, per_page: 20 }, error: null } }),
+  );
+  await page.route('**/v1/characters/**', (route) =>
+    route.fulfill({ status: 404, json: { ok: false, data: null, error: { message: 'none' } } }),
+  );
+  await page.goto('/account');
+  const list = page.getByTestId('account-characters');
+  await expect(list).toBeVisible();
+  // Reloadd is the site's guess (highest level) until the player chooses; Dottzz offers Set as main.
+  await expect(list.getByTestId('character-main-pill')).toHaveCount(1);
+  const dottzzRow = list.locator('li', { hasText: 'Dottzz' });
+  await dottzzRow.getByTestId('character-set-main').click();
+  await expect(dottzzRow.getByTestId('character-main-pill')).toBeVisible();
+  expect(mainKey).toBe('us/pvp/dottzz');
+  await expect(page.getByTestId('account-hero')).toContainText('Dottzz');
 });

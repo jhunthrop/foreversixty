@@ -74,7 +74,10 @@
   // that character current for the planner, the simulator and the account page alike.
   let pointerVersion = $state(0);
   const hero = $derived<MeCharacter | null>(
-    me === null ? null : (heroCharacter(readCurrentIfReady(), me.characters) ?? mainCharacter(me.characters)),
+    me === null
+      ? null
+      : (heroCharacter(readCurrentIfReady(), me.characters) ??
+          mainCharacter(me.characters, me.main_character_key)),
   );
   function readCurrentIfReady() {
     void pointerVersion;

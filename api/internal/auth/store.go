@@ -51,6 +51,9 @@ type User struct {
 	// account, nil when it never has. Not serialized directly — Me's
 	// own top-level bnet_imported_at field carries it (spec §6).
 	BnetImportedAt *time.Time `json:"-"`
+	// MainCharacterKey is the account's chosen main, nil until chosen. Not
+	// serialized directly: Me carries it as main_character_key.
+	MainCharacterKey *string `json:"-"`
 }
 
 // PublicName is what strangers may be told an account is called: the
@@ -167,11 +170,11 @@ type Guild struct {
 // take them as one dependency.
 type Store struct{ Pool *pgxpool.Pool }
 
-const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize, bnet_imported_at`
+const userColumns = `id, coalesce(bnet_sub, ''), battletag, email, role, anonymize, bnet_imported_at, main_character_key`
 
 func scanUser(row pgx.Row) (User, error) {
 	var u User
-	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize, &u.BnetImportedAt); err != nil {
+	if err := row.Scan(&u.ID, &u.BnetSub, &u.Battletag, &u.Email, &u.Role, &u.Anonymize, &u.BnetImportedAt, &u.MainCharacterKey); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return User{}, ErrNotFound
 		}
@@ -202,6 +205,26 @@ func (s *Store) UpsertEmailUser(ctx context.Context, email string) (User, error)
 func (s *Store) SetAnonymize(ctx context.Context, id int64, anonymize bool) (User, error) {
 	return scanUser(s.Pool.QueryRow(ctx,
 		`update users set anonymize = $2 where id = $1 returning `+userColumns, id, anonymize))
+}
+
+// ErrNotYourCharacter is SetMainCharacter's answer to a key the account
+// does not own: a main is chosen from the account's own list only.
+var ErrNotYourCharacter = errors.New("auth: not one of this account's characters")
+
+// SetMainCharacter records the account's main. The key must be one of
+// the account's own characters; every other character is an alt by
+// definition, so nothing else is stored.
+func (s *Store) SetMainCharacter(ctx context.Context, id int64, key string) (User, error) {
+	var owned bool
+	if err := s.Pool.QueryRow(ctx,
+		`select exists (select 1 from characters where key = $1 and user_id = $2)`, key, id).Scan(&owned); err != nil {
+		return User{}, fmt.Errorf("auth: check character ownership: %w", err)
+	}
+	if !owned {
+		return User{}, ErrNotYourCharacter
+	}
+	return scanUser(s.Pool.QueryRow(ctx,
+		`update users set main_character_key = $2 where id = $1 returning `+userColumns, id, key))
 }
 
 // User reads one account.

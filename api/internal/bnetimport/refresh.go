@@ -223,6 +223,10 @@ func (s *Service) rekeyInPlace(ctx context.Context, tx pgx.Tx, key, region, rule
 	if _, err := tx.Exec(ctx, `update guild_characters set character_key = $1 where character_key = $2`, newKey, key); err != nil {
 		return "", "", fmt.Errorf("bnetimport: rekey membership %s: %w", key, err)
 	}
+	// The account's chosen main follows its character.
+	if _, err := tx.Exec(ctx, `update users set main_character_key = $1 where main_character_key = $2`, newKey, key); err != nil {
+		return "", "", fmt.Errorf("bnetimport: rekey main %s: %w", key, err)
+	}
 	s.logger().Info("bnetimport", "op", "rekey", "old_key", key, "new_key", newKey)
 	return newKey, newRuleset, nil
 }

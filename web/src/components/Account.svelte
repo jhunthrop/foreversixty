@@ -17,6 +17,7 @@
     revokeDevice,
     requestEmailLink,
     setAnonymize,
+    setMainCharacter,
     signOut,
     type Device,
     type Me,
@@ -97,7 +98,14 @@
     window.addEventListener(CURRENT_CHARACTER_CHANGED, read);
     return () => window.removeEventListener(CURRENT_CHARACTER_CHANGED, read);
   });
-  const hero = $derived(me === null ? null : heroCharacter(currentCharacter, me.characters));
+  // The hero is the current character when one is pointed at, else the account's main
+  // (chosen, or the site's guess): the main is the default context everywhere.
+  const hero = $derived(
+    me === null
+      ? null
+      : (heroCharacter(currentCharacter, me.characters) ??
+          mainCharacter(me.characters, me.main_character_key)),
+  );
   const heroPath = $derived(hero === null ? null : parseCharacterPath(`/character/${hero.key}`));
   // spec 2026-09-22 §3.1: "the sentence that Blizzard serves no data for this realm type
   // when no character has a build" -- account-wide, not just the hero, since it is telling
@@ -175,7 +183,7 @@
     if (mode !== 'account' || me === null) return;
     const params = new URLSearchParams(window.location.search);
     if (params.get('signed_in') !== '1') return;
-    const main = mainCharacter(me.characters);
+    const main = mainCharacter(me.characters, me.main_character_key);
     if (main !== null) {
       const pointer = pointerForCharacter(main);
       writeCurrent(pointer);
@@ -184,6 +192,18 @@
     }
     window.history.replaceState({}, '', window.location.pathname);
   });
+
+  /** Records the chosen main and makes it the current character, so every tool follows. */
+  async function setMain(key: string): Promise<void> {
+    await setMainCharacter(key);
+    if (me === null) return;
+    me = { ...me, main_character_key: key };
+    const chosen = me.characters.find((c) => c.key === key);
+    if (chosen !== undefined) {
+      writeCurrent(pointerForCharacter(chosen));
+      window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+    }
+  }
 
   async function run(action: () => Promise<void>): Promise<void> {
     busy = true;
@@ -496,7 +516,12 @@
               </div>
             {/if}
 
-            <CharacterList characters={me!.characters} bnetImportedAt={me!.bnet_imported_at} />
+            <CharacterList
+              characters={me!.characters}
+              bnetImportedAt={me!.bnet_imported_at}
+              mainKey={mainCharacter(me!.characters, me!.main_character_key)?.key}
+              onSetMain={setMain}
+            />
 
             {#if heroPath !== null}
               <StatePanel label={accountPageCopy.yourRatingsLabel} testid="account-ratings">

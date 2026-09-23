@@ -1043,3 +1043,32 @@ func TestBattleNetImportFailureNeverFailsTheLogin(t *testing.T) {
 		t.Fatalf("the session did not start: me = %+v", me)
 	}
 }
+
+// TestChoosingAMainCharacter: PATCH /v1/me with main_character_key records the
+// account's main, refuses a character the account does not own, and /v1/me
+// carries the choice back.
+func TestChoosingAMainCharacter(t *testing.T) {
+	h := newHarness(t)
+	h.signIn(t, "raider@example.com")
+	res := h.do(t, http.MethodGet, "/v1/me", "")
+	var me Me
+	h.decode(t, res, &me)
+	ctx := context.Background()
+	if _, err := h.svc.Store.Pool.Exec(ctx,
+		`insert into characters (key, region, ruleset, name, user_id) values
+		 ('us/pvp/reloadd', 'us', 'pvp', 'Reloadd', $1), ('us/pvp/stranger', 'us', 'pvp', 'Stranger', null)`, me.User.ID); err != nil {
+		t.Fatal(err)
+	}
+
+	res = h.do(t, http.MethodPatch, "/v1/me", `{"main_character_key":"us/pvp/stranger"}`)
+	res.Body.Close()
+	if res.StatusCode != http.StatusBadRequest {
+		t.Fatalf("status = %d, want 400 for a character the account does not own", res.StatusCode)
+	}
+
+	res = h.do(t, http.MethodPatch, "/v1/me", `{"main_character_key":"us/pvp/reloadd"}`)
+	h.decode(t, res, &me)
+	if me.MainCharacterKey == nil || *me.MainCharacterKey != "us/pvp/reloadd" {
+		t.Fatalf("main_character_key = %v, want us/pvp/reloadd", me.MainCharacterKey)
+	}
+}

@@ -137,6 +137,9 @@ export interface Me {
   /** RFC3339; spec 2026-09-22 §6, omitted when this account has never imported from
    *  Battle.net. */
   bnet_imported_at?: string;
+  /** The account's chosen main character's key; omitted until chosen. Every other
+   *  character is an alt. */
+  main_character_key?: string;
 }
 
 /**
@@ -333,6 +336,11 @@ export async function signOut(apiBase: string = API_BASE_URL): Promise<void> {
 
 export async function setAnonymize(value: boolean, apiBase: string = API_BASE_URL): Promise<void> {
   await call('/v1/me', apiBase, { method: 'PATCH', body: { anonymize: value } });
+}
+
+/** Chooses the account's main character (one of its own); the rest become alts. */
+export async function setMainCharacter(key: string, apiBase: string = API_BASE_URL): Promise<void> {
+  await call('/v1/me', apiBase, { method: 'PATCH', body: { main_character_key: key } });
 }
 
 /** One character's export, matching `POST /v1/me/exports`'s body (spec 2026-09-22 §4.5) --

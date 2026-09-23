@@ -261,6 +261,9 @@ func (s *Service) deleteSession(w http.ResponseWriter, r *http.Request) {
 // the sign-in itself.
 type MeInput struct {
 	Anonymize *bool `json:"anonymize"`
+	// MainCharacterKey chooses the account's main; must be one of its own
+	// characters. Everything else the account owns is an alt.
+	MainCharacterKey *string `json:"main_character_key"`
 }
 
 // patchMe sets the read-time pseudonym flag the privacy section
@@ -271,14 +274,28 @@ func (s *Service) patchMe(w http.ResponseWriter, r *http.Request) {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "body must be JSON", nil)
 		return
 	}
-	if in.Anonymize == nil {
+	if in.Anonymize == nil && in.MainCharacterKey == nil {
 		httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "nothing to change",
-			map[string]string{"anonymize": "true or false"})
+			map[string]string{"anonymize": "true or false", "main_character_key": "one of your characters"})
 		return
 	}
-	if _, err := s.Store.SetAnonymize(r.Context(), ActorFrom(r.Context()).UserID, *in.Anonymize); err != nil {
-		s.fail(w, r, "me", err, "could not change your account just now")
-		return
+	userID := ActorFrom(r.Context()).UserID
+	if in.Anonymize != nil {
+		if _, err := s.Store.SetAnonymize(r.Context(), userID, *in.Anonymize); err != nil {
+			s.fail(w, r, "me", err, "could not change your account just now")
+			return
+		}
+	}
+	if in.MainCharacterKey != nil {
+		if _, err := s.Store.SetMainCharacter(r.Context(), userID, *in.MainCharacterKey); err != nil {
+			if errors.Is(err, ErrNotYourCharacter) {
+				httpx.WriteError(w, r, http.StatusBadRequest, "invalid", "that is not one of your characters",
+					map[string]string{"main_character_key": "one of your characters"})
+				return
+			}
+			s.fail(w, r, "me", err, "could not change your account just now")
+			return
+		}
 	}
 	s.me(w, r)
 }
@@ -293,6 +310,8 @@ type Me struct {
 	// BnetImportedAt is when the Battle.net import last ran for this
 	// account, omitted when it never has (spec §6).
 	BnetImportedAt *string `json:"bnet_imported_at,omitempty"`
+	// MainCharacterKey is the account's chosen main, omitted until chosen.
+	MainCharacterKey *string `json:"main_character_key,omitempty"`
 }
 
 // EntitlementsView is every Can() feature pre-resolved for the caller,
@@ -357,7 +376,7 @@ func (s *Service) me(w http.ResponseWriter, r *http.Request) {
 	}
 	httpx.WriteOK(w, r, http.StatusOK, Me{
 		User: u, Characters: chars, Guilds: guilds, Entitlements: ev,
-		BnetImportedAt: rfc3339Ptr(u.BnetImportedAt),
+		BnetImportedAt: rfc3339Ptr(u.BnetImportedAt), MainCharacterKey: u.MainCharacterKey,
 	})
 }
 

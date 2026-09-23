@@ -52,6 +52,16 @@ const WITH_ADDON_BUILD: MeCharacter = {
 };
 
 describe('CharacterList', () => {
+  it('marks the chosen main with a pill and offers Set as main on every alt', () => {
+    const { body } = render(CharacterList, {
+      props: { characters: [GUILDED, UNGUILDED], mainKey: GUILDED.key, onSetMain: async () => {} },
+    });
+    expect((body.match(/character-main-pill/g) ?? []).length).toBe(1);
+    expect((body.match(/character-set-main"/g) ?? []).length).toBe(1);
+    expect(body).toContain(characterListCopy.main);
+    expect(body).toContain(characterListCopy.setAsMain);
+  });
+
   it('shows the class icon over the letter square when a character has no avatar', () => {
     const { body } = render(CharacterList, { props: { characters: [UNGUILDED] } });
     expect(body).toContain('character-class-icon');

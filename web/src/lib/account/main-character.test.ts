@@ -88,3 +88,16 @@ describe('pointerForCharacter', () => {
     expect(pointer.classSlug).toBe('');
   });
 });
+
+describe('mainCharacter with a chosen main', () => {
+  const low = { key: 'us/pvp/dottzz', region: 'us', ruleset: 'pvp', name: 'Dottzz', level: 12 };
+  const high = { key: 'us/pvp/reloadd', region: 'us', ruleset: 'pvp', name: 'Reloadd', level: 25 };
+
+  it("returns the chosen character over the site's own guess", () => {
+    expect(mainCharacter([low, high], 'us/pvp/dottzz')?.key).toBe('us/pvp/dottzz');
+  });
+
+  it('falls back to the guess when the chosen key is no longer one of the characters', () => {
+    expect(mainCharacter([low, high], 'us/pvp/gone')?.key).toBe('us/pvp/reloadd');
+  });
+});

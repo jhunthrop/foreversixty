@@ -122,6 +122,10 @@ func (s *Service) rekeyIfNeeded(ctx context.Context, tx pgx.Tx, userID int64, ne
 	if _, err := tx.Exec(ctx, `delete from characters where key = $1`, oldKey); err != nil {
 		return fmt.Errorf("bnetimport: rekey delete old row %s: %w", oldKey, err)
 	}
+	// The account's chosen main follows its character to the new key.
+	if _, err := tx.Exec(ctx, `update users set main_character_key = $1 where main_character_key = $2`, newKey, oldKey); err != nil {
+		return fmt.Errorf("bnetimport: rekey main %s: %w", oldKey, err)
+	}
 	s.logger().Info("bnetimport", "op", "rekey", "old_key", oldKey, "new_key", newKey)
 	return nil
 }
