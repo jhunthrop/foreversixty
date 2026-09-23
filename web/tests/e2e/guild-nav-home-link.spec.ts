@@ -55,11 +55,15 @@ test('a signed-in member sees "My guild" and its progression on the homepage', a
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_WITH_GUILD)));
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
   await page.goto('/');
+  // The "Your guild" panel (spec 2026-09-23 §2 item 5) sits below the four product panels
+  // and the reference band -- below the fold at a normal viewport -- and is `client:visible`,
+  // so the browser's own IntersectionObserver (not merely Playwright's `toBeVisible`, which
+  // does not require an element be scrolled into view) has to actually see it before it
+  // hydrates and fires its fetch.
+  await page.getByRole('heading', { name: 'Your guild' }).scrollIntoViewIfNeeded();
   await expect(page.getByTestId('home-my-guild')).toHaveAttribute(
     'href',
     '/guild/us/hardcore/the-last-watch',
-    // client:visible on an already-visible hero element hydrates promptly, but this still
-    // waits for the assertion's own retry loop rather than assuming synchronous readiness.
   );
   await expect(page.getByTestId('home-guild-ready')).toContainText('1 of 2 bosses down');
 });

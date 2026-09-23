@@ -217,7 +217,7 @@ const popular = [
         </div>
       </Panel>
 
-      <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="home-companion-row">
         {homeCompanionRow.map((card) => (
           <ToolCard title={card.title} description={card.description} href={card.href}>
             <svg

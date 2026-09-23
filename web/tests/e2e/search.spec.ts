@@ -79,7 +79,10 @@ test('the results dropdown closes on outside click and drops aria-controls', asy
   await expect(page.getByRole('listbox')).toBeVisible();
   await expect(box).toHaveAttribute('aria-controls', 'search-results');
 
-  await page.getByRole('heading', { name: 'Tools' }).click();
+  // Clicking a fixed page corner rather than a heading: the search box now lives in the
+  // Reference band (spec 2026-09-23), and several headings below it can sit under the
+  // dropdown's own absolute-positioned overlay depending on viewport height.
+  await page.mouse.click(5, 5);
   await expect(page.getByRole('listbox')).toBeHidden();
   await expect(box).not.toHaveAttribute('aria-controls');
 });

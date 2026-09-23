@@ -12,7 +12,7 @@
 <script lang="ts">
   import { fetchMeOnce, type Me, type MeGuild } from '../lib/account/api';
   import { fetchGuild, type GuildPage } from '../lib/rankings/api';
-  import { guildHref, type CharacterPath } from '../lib/characters';
+  import { characterSlug, guildHref, type CharacterPath } from '../lib/characters';
   import { homeGuildPanelCopy } from '../lib/home-landing-copy';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
@@ -25,11 +25,15 @@
   let progression = $state<{ killed: number; total: number } | null>(null);
   let attempt = $state(0);
 
+  /** `fetchGuild`'s path wants the same URL-safe slug `guildHref` builds into the link below
+   *  -- `characterSlug`, the one place that derivation lives -- never the raw display name,
+   *  which a multi-word guild name like "The Last Watch" would send straight into the path
+   *  unencoded and unslugged. */
   function guildPath(g: MeGuild): CharacterPath {
     return {
       region: g.region as CharacterPath['region'],
       ruleset: g.ruleset as CharacterPath['ruleset'],
-      slug: g.name,
+      slug: characterSlug(g.name),
     };
   }
 

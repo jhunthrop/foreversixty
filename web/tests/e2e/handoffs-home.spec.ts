@@ -15,13 +15,11 @@ test('the four product panels carry Planner, Simulator, Logs and Rankings, in sp
 
 test('the addon and companion row links to /addon and /logs#companion, in that order', async ({ page }) => {
   await page.goto('/');
-  const titles = await page
-    .locator('.font-display')
-    .filter({ hasText: /^(The addon|The companion)$/ })
-    .allTextContents();
+  const row = page.getByTestId('home-companion-row');
+  const titles = await row.locator('.font-display').allTextContents();
   expect(titles).toEqual(['The addon', 'The companion']);
-  await expect(page.getByRole('link', { name: /The addon/ })).toHaveAttribute('href', '/addon');
-  await expect(page.getByRole('link', { name: /The companion/ })).toHaveAttribute('href', '/logs#companion');
+  await expect(row.getByRole('link', { name: /The addon/ })).toHaveAttribute('href', '/addon');
+  await expect(row.getByRole('link', { name: /The companion/ })).toHaveAttribute('href', '/logs#companion');
 });
 
 test('the reference tiles carry Classes, Guides, Zones, Dungeons, in that order', async ({ page }) => {
