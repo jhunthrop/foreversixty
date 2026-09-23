@@ -62,6 +62,9 @@
   const colour = $derived(classColorVar(current?.class));
 </script>
 
+<!-- The root always renders, even empty: the island hydrates with client:visible (an
+     eager island cost the home page one animation step of LCP), and an observer needs a
+     box to see. Empty and pointer-events-none, it occludes nothing until signed in. -->
 {#if ready && me !== null}
   <div
     class="flex flex-wrap items-center gap-3 bg-[var(--color-bg)] [grid-area:1/1]"
@@ -74,4 +77,6 @@
     <a class="text-nav text-[13px] font-semibold" href="/logs">{homePanelCopy.logs}</a>
     <a class="text-nav text-[13px] font-semibold" href="/account">{homePanelCopy.yourCharacters}</a>
   </div>
+{:else}
+  <div class="pointer-events-none min-h-[52px] [grid-area:1/1]" aria-hidden="true"></div>
 {/if}
