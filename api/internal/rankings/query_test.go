@@ -121,7 +121,7 @@ func TestRankingsAnswerAPageWithGuildsAndRanks(t *testing.T) {
 	h.seedFight("report-one", 1, engine.FixtureBase, nil)
 
 	res := h.get("/v1/rankings?encounter=9001&metric=dps")
-	if got := res.Header.Get("Cache-Control"); got != "public, max-age=30" {
+	if got := res.Header.Get("Cache-Control"); got != "public, max-age=30, stale-while-revalidate=300" {
 		t.Fatalf("cache-control = %q", got)
 	}
 	var page Page

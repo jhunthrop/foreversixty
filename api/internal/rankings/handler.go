@@ -17,6 +17,10 @@ import (
 // The design's caching note sets it at thirty seconds.
 const cacheSeconds = 30
 
+// liveBoardStale is the Live public boards class's
+// stale-while-revalidate window (spec §2.2).
+const liveBoardStale = 300 * time.Second
+
 // Service serves the rankings, character, and guild routes.
 type Service struct {
 	Store *Store
@@ -54,9 +58,11 @@ func (s *Service) fail(w http.ResponseWriter, r *http.Request, op string, err er
 	httpx.WriteError(w, r, http.StatusInternalServerError, "internal", message, nil)
 }
 
-// cache marks a read cacheable for the edge.
+// cache marks a read cacheable for the edge: rankings, ratings, the
+// reports feed, and a guild or character's public page are all the
+// spec's "Live public boards" class (§2.2).
 func cache(w http.ResponseWriter) {
-	w.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(cacheSeconds))
+	httpx.CachePublic(w, cacheSeconds*time.Second, liveBoardStale)
 }
 
 // encounterOf reads the `encounter` parameter, which may be the

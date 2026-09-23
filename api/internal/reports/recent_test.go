@@ -78,6 +78,21 @@ func TestStoreRecentBreaksTiesByID(t *testing.T) {
 	}
 }
 
+// The public feed joins rankings' own Live public boards class (spec
+// §2.2): a thirty-second edge cache with a five-minute
+// stale-while-revalidate window.
+func TestRecentSetsLiveBoardCacheControl(t *testing.T) {
+	h := newHarness(t)
+	h.seedReport("recentcache1", "Tuesday", "Blackrock Depths", Public, StatusComplete, time.Now().UTC())
+
+	res := h.do(http.MethodGet, "/v1/reports/recent", "", nil)
+	res.Body.Close()
+	want := "public, max-age=30, stale-while-revalidate=300"
+	if got := res.Header.Get("Cache-Control"); got != want {
+		t.Errorf("Cache-Control = %q, want %q", got, want)
+	}
+}
+
 // TestRecentHandlerFiltersLinksAndCounts is the handler-level test the
 // spec calls for: guild name, fight and kill counts, and the title
 // fallback, all read back through GET /v1/reports/recent.

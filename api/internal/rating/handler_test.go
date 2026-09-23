@@ -510,7 +510,7 @@ func TestCharacterRatingSetsPublicCacheControl(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/v1/characters/us/normal/Cached/rating", nil)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
-	want := "public, max-age=" + strconv.Itoa(cacheSeconds)
+	want := "public, max-age=" + strconv.Itoa(cacheSeconds) + ", stale-while-revalidate=300"
 	if got := rec.Header().Get("Cache-Control"); got != want {
 		t.Errorf("Cache-Control = %q, want %q (spec §5.3)", got, want)
 	}
@@ -530,7 +530,7 @@ func TestFightRatingsSetsPrivateCacheControlForANonPublicReport(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/v1/reports/handler-unlisted-1/fights/1/ratings", nil)
 	rec := httptest.NewRecorder()
 	mux.ServeHTTP(rec, req)
-	if got := rec.Header().Get("Cache-Control"); got != "private" {
-		t.Errorf("Cache-Control = %q, want private for an unlisted report (spec §5.3)", got)
+	if got := rec.Header().Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q, want private, no-cache for an unlisted report (spec §5.3)", got)
 	}
 }
