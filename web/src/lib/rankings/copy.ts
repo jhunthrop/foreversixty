@@ -9,3 +9,11 @@ export const encounterPickerCopy = {
   guildsButton: 'Guilds',
   progressButton: 'Progress',
 } as const;
+
+/** The home page's Rankings panel (spec 2026-09-23 §2 item 3): the top five guilds by
+ *  progression, from `GET /v1/rankings/guilds?kind=progress` (needs no encounter). */
+export const homeTopGuildsCopy = {
+  failed: 'Rankings did not load.',
+  empty: 'No kills ranked yet.',
+  bossesUnit: 'bosses',
+} as const;
