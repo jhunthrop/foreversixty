@@ -50,6 +50,10 @@ test('the home page shows the current character strip when signed in', async ({ 
   });
   await page.goto('/');
   await expect(page.getByTestId('home-account-panel')).toBeVisible();
+  // The header is live on the home page too: a signed-in visitor sees their tag, not a
+  // "Sign in" link beside their own character strip (Base.astro's `session`).
+  await expect(page.getByTestId('session-nav')).toContainText('Fixture#1');
+  await expect(page.getByTestId('session-nav-static')).toHaveCount(0);
   await expect(
     page.getByTestId('home-account-panel').getByRole('link', { name: 'Open in simulator' }),
   ).toHaveAttribute('href', '/sim');
