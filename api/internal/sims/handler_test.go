@@ -258,6 +258,24 @@ func TestMyOwnSimsNeedASessionAndMineEqualsOne(t *testing.T) {
 	}
 }
 
+// TestMyOwnSimsSetsPrivateCacheControl mirrors the equivalent test in
+// the builds package (TestMyOwnBuildsAreOnlyMine): the caller's own
+// sims list is keyed to whoever is signed in, so it takes the Private
+// reads class (spec §2.2), never a shared one.
+func TestMyOwnSimsSetsPrivateCacheControl(t *testing.T) {
+	h := newHarness(t)
+	saveBrowserResult(h, "warrior-fury", 1000, "one")
+
+	res := h.do(http.MethodGet, "/v1/sims?mine=1", "", nil)
+	res.Body.Close()
+	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
+		t.Errorf("Cache-Control = %q", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q", got)
+	}
+}
+
 func TestMyOwnSimsFilterByKind(t *testing.T) {
 	h := newHarness(t)
 	saveBrowserResult(h, "warrior-fury", 1204.4, "a plain run")

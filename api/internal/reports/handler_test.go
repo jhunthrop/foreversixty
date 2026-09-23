@@ -64,6 +64,9 @@ func TestGetSetsPrivateCacheControlForAPrivateReport(t *testing.T) {
 	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
 		t.Errorf("Cache-Control = %q, want private, no-cache", got)
 	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q, want Cookie, Authorization", got)
+	}
 }
 
 func TestCreateRejectsABadVisibilityAndCharacter(t *testing.T) {
@@ -614,6 +617,9 @@ func TestAccessSetsPrivateCacheControl(t *testing.T) {
 	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
 		t.Errorf("Cache-Control = %q, want private, no-cache", got)
 	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q, want Cookie, Authorization", got)
+	}
 }
 
 func TestReadablePathAllowsOnlyThePageFiles(t *testing.T) {
@@ -774,6 +780,9 @@ func TestMineSetsPrivateCacheControl(t *testing.T) {
 	res.Body.Close()
 	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
 		t.Errorf("Cache-Control = %q, want private, no-cache", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q, want Cookie, Authorization", got)
 	}
 }
 

@@ -1099,6 +1099,9 @@ func TestListDevicesSetsPrivateCacheControl(t *testing.T) {
 	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
 		t.Errorf("Cache-Control = %q", got)
 	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q", got)
+	}
 }
 
 // TestEmailCallbackSetsPrivateCacheControl pins the magic-link callback:
@@ -1121,6 +1124,9 @@ func TestEmailCallbackSetsPrivateCacheControl(t *testing.T) {
 	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
 		t.Errorf("Cache-Control = %q", got)
 	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q", got)
+	}
 }
 
 // TestBnetStartSetsPrivateCacheControl and
@@ -1133,6 +1139,9 @@ func TestBnetStartSetsPrivateCacheControl(t *testing.T) {
 	res.Body.Close()
 	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
 		t.Errorf("Cache-Control = %q", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q", got)
 	}
 }
 
@@ -1151,5 +1160,8 @@ func TestBnetCallbackSetsPrivateCacheControl(t *testing.T) {
 	res.Body.Close()
 	if got := res.Header.Get("Cache-Control"); got != "private, no-cache" {
 		t.Errorf("Cache-Control = %q", got)
+	}
+	if got := res.Header.Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q", got)
 	}
 }

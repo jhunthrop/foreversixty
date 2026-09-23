@@ -185,7 +185,7 @@ func (s *Service) simInput(w http.ResponseWriter, r *http.Request) {
 	if auth.ActorFrom(r.Context()).Signed() {
 		httpx.CachePrivate(w)
 	} else {
-		httpx.CachePublic(w, inputMaxAge*time.Second, 600*time.Second)
+		httpx.CachePublic(w, inputMaxAge*time.Second, publicObjectStale)
 	}
 	httpx.WriteOK(w, r, http.StatusOK, in)
 }

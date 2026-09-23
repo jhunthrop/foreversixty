@@ -533,4 +533,7 @@ func TestFightRatingsSetsPrivateCacheControlForANonPublicReport(t *testing.T) {
 	if got := rec.Header().Get("Cache-Control"); got != "private, no-cache" {
 		t.Errorf("Cache-Control = %q, want private, no-cache for an unlisted report (spec §5.3)", got)
 	}
+	if got := rec.Header().Get("Vary"); got != "Cookie, Authorization" {
+		t.Errorf("Vary = %q, want Cookie, Authorization for an unlisted report (spec §5.3)", got)
+	}
 }
