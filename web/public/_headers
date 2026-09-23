@@ -17,3 +17,15 @@
 # revalidated.
 /_sim/*
   Cache-Control: public, max-age=31536000, immutable
+
+# Game data synced per build by scripts/sync-data.mjs under /data/<build>/. The images
+# (talent icons and tree backgrounds) never change for a build, so they cache for a year;
+# without this a talent tree made the browser revalidate every icon on every load. The JSON
+# beside them can be regenerated for the same build when the pipeline is corrected, so it
+# keeps an hour in the browser and a day of serving stale while the edge revalidates.
+/data/:build/icons/*
+  Cache-Control: public, max-age=31536000, immutable
+/data/:build/trees/*
+  Cache-Control: public, max-age=31536000, immutable
+/data/*
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
