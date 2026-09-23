@@ -1,5 +1,6 @@
 // web/src/lib/sim/sim-items.test.ts
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { invalidate } from '../data/query';
 import { isKnownItem, knownItemIds, loadSimItems } from './sim-items';
 
 function stubFetch(map: Record<string, unknown>, status = 200): void {
@@ -16,7 +17,14 @@ function stubFetch(map: Record<string, unknown>, status = 200): void {
   );
 }
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  // loadSimItems now caches through query.ts's shared, module-level store (scope:
+  // 'public', via planner/load.ts's fetchJson), so a later test that reuses the same
+  // build's url -- every test in the describe block below reads '/data/b1/simitems.json'
+  // -- would otherwise see a still-fresh entry and never call `fetch` at all.
+  invalidate('');
+  vi.unstubAllGlobals();
+});
 
 describe('loadSimItems', () => {
   it('returns the parsed file when the build ships one', async () => {
