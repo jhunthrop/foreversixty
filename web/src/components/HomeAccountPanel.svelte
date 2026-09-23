@@ -11,7 +11,7 @@
   import { fetchMeOnce, type Me } from '../lib/account/api';
   import { readCurrent } from '../lib/current-character';
   import { classColorVar } from '../lib/report/format';
-  import { homePanelCopy } from '../lib/home-panel-copy';
+  import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
 
   let me = $state<Me | null>(null);
   let ready = $state(false);
@@ -25,6 +25,29 @@
       .catch(() => {
         ready = true;
       });
+  });
+
+  /**
+   * The grid-overlay CLS trick (this component's root and index.astro's signed-out block
+   * share the same `[grid-area:1/1]` cell) only ever covers the signed-out row visually --
+   * it stays mounted underneath, so without this a signed-in keyboard/screen-reader user
+   * could still tab to, or hear, a duplicate "Sign in with Battle.net" link sitting behind
+   * the visible strip. Reaches outside this component's own root via `document`, the same
+   * cross-island DOM-reach pattern `syncTabHrefs` in `lib/sim/tabs.ts` uses to coordinate
+   * with a sibling shell element it doesn't own. `ready && me !== null` never reverts to
+   * signed-out within one mount today (`fetchMeOnce` resolves once), but the else branch
+   * clears both attributes anyway so this stays correct if that ever changes.
+   */
+  $effect(() => {
+    const signedOut = document.getElementById(HOME_SIGNED_OUT_ID);
+    if (signedOut === null) return;
+    if (ready && me !== null) {
+      signedOut.setAttribute('inert', '');
+      signedOut.setAttribute('aria-hidden', 'true');
+    } else {
+      signedOut.removeAttribute('inert');
+      signedOut.removeAttribute('aria-hidden');
+    }
   });
 
   const pointer = $derived(readCurrentIfReady());

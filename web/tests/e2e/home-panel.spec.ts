@@ -56,4 +56,9 @@ test('the home page shows the current character strip when signed in', async ({ 
   await expect(
     page.getByTestId('home-account-panel').getByRole('link', { name: 'Your characters' }),
   ).toHaveAttribute('href', '/account');
+  // The signed-out "Sign in with Battle.net" link is only ever visually covered by the
+  // grid-overlay CLS trick, never removed from the DOM -- without `inert`, a signed-in
+  // keyboard/screen-reader user could still tab to, or hear, the duplicate link behind it.
+  await expect(page.locator('#home-signed-out')).toHaveAttribute('inert', '');
+  await expect(page.locator('#home-signed-out')).toHaveAttribute('aria-hidden', 'true');
 });

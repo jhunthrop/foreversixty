@@ -14,7 +14,7 @@ import SearchBox from '../components/SearchBox.svelte';
 import SubscribeBox from '../components/SubscribeBox.svelte';
 import HomeGuildLink from '../components/HomeGuildLink.svelte';
 import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
-import { homePanelCopy } from '../lib/home-panel-copy';
+import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
 import { battlenetStartUrl } from '../lib/account/api';
 import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 import dates from '../data/dates.json';
@@ -98,7 +98,11 @@ const popular = [
       class="grid min-h-[52px] w-full max-w-[1344px] mx-auto px-[18px] md:px-12"
       data-testid="home-account-block"
     >
-      <div class="[grid-area:1/1] flex flex-wrap items-center gap-3" data-testid="home-signed-out">
+      <div
+        id={HOME_SIGNED_OUT_ID}
+        class="[grid-area:1/1] flex flex-wrap items-center gap-3"
+        data-testid="home-signed-out"
+      >
         <p class="text-[14px]">{homePanelCopy.signedOutLine}</p>
         <a
           class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
