@@ -1,53 +1,33 @@
 [
   {
-    "title": "Build planner",
-    "description": "Revamped talents and every race and class combo, including Skyborne and Undead Paladin. Share a build by link.",
-    "href": "/planner",
+    "title": "Classes",
+    "description": "What changed for each class in Forever, with the demo findings and every source.",
+    "href": "/classes",
     "status": {
       "label": "Live",
-      "kind": "site"
+      "kind": "community"
     },
     "icon": "talents"
   },
   {
-    "title": "Simulator",
-    "description": "Estimate your DPS, find upgrades with the Droptimizer and Top Gear, and check stat weights.",
-    "href": "/sim",
+    "title": "Guides",
+    "description": "Leveling, talents and pre-raid gear, written after we play it, not before.",
+    "href": "/guides",
     "status": {
       "label": "Live",
-      "kind": "site"
+      "kind": "community"
     },
-    "icon": "simulator"
+    "icon": "guides"
   },
   {
-    "title": "Combat logs",
-    "description": "Upload a log or log live with the companion. Every fight, every view, and your parse against everyone else's.",
-    "href": "/logs",
+    "title": "Zones",
+    "description": "Mount Hyjal, Zephras Isle, Riverglades, Shen'dralar and the reworked old zones.",
+    "href": "/zones",
     "status": {
       "label": "Live",
-      "kind": "site"
+      "kind": "community"
     },
-    "icon": "logs"
-  },
-  {
-    "title": "Rankings",
-    "description": "Every encounter's leaderboard by class and spec, updated the moment a fight ends.",
-    "href": "/rankings",
-    "status": {
-      "label": "Live",
-      "kind": "site"
-    },
-    "icon": "rankings"
-  },
-  {
-    "title": "The addon",
-    "description": "Paste an export to load your character into the planner or the simulator, then copy a build back into the game.",
-    "href": "/addon",
-    "status": {
-      "label": "Live",
-      "kind": "site"
-    },
-    "icon": "addon"
+    "icon": "map"
   },
   {
     "title": "Dungeons",
@@ -58,25 +38,5 @@
       "kind": "community"
     },
     "icon": "dungeon"
-  },
-  {
-    "title": "Zone atlas",
-    "description": "Mount Hyjal, Zephras Isle, Riverglades, Shen'dralar and the reworked old zones.",
-    "href": "/zones",
-    "status": {
-      "label": "Live",
-      "kind": "community"
-    },
-    "icon": "map"
-  },
-  {
-    "title": "Class guides",
-    "description": "What changed for each class in Forever, with the demo findings and every source.",
-    "href": "/guides",
-    "status": {
-      "label": "Live",
-      "kind": "community"
-    },
-    "icon": "guides"
   }
 ]

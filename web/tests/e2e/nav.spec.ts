@@ -13,11 +13,15 @@ test.describe('Reference disclosure', () => {
     const before = await header.boundingBox();
     const summary = page.locator('summary');
     await summary.click();
-    await expect(page.getByRole('link', { name: 'Classes' })).toBeVisible();
+    // Scoped to the primary nav: the homepage's own Reference band (spec 2026-09-23) has a
+    // "Classes" tile with the exact same accessible name, so an unscoped role query is
+    // ambiguous here -- the same reason the keyboard test below scopes to `primary-nav`.
+    const classesLink = page.getByTestId('primary-nav').getByRole('link', { name: 'Classes' });
+    await expect(classesLink).toBeVisible();
     const afterOpen = await header.boundingBox();
     expect(afterOpen?.height).toBe(before?.height);
     await summary.click();
-    await expect(page.getByRole('link', { name: 'Classes' })).toBeHidden();
+    await expect(classesLink).toBeHidden();
   });
 
   test('opens by keyboard: Tab to the summary, Enter toggles it', async ({ page }) => {

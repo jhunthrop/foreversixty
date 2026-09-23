@@ -1,16 +1,23 @@
 <!-- web/src/components/HomeAccountPanel.svelte -->
-<!-- The home page's signed-in swap (spec 2026-09-22 §3.2): while this is loading or the
-     visitor is signed out, it renders nothing and the Astro shell's own server-rendered
-     sentence + button (index.astro) stays exactly where it is -- the same "server shell
-     first, island swaps in place" trick SessionNav.svelte's header link uses, so the panel
-     never shows two competing versions. Both this island's root and index.astro's
-     signed-out block share `[grid-area:1/1]` in a shared grid wrapper, so once this mounts
-     signed-in it visually occludes the signed-out row (a solid background over the same
-     cell) instead of the two stacking and reflowing the page underneath. -->
+<!-- The home page's signed-in hub summary (spec 2026-09-23 §2 item 2): while this is loading
+     or the visitor is signed out, it renders nothing and the sky band's own server-rendered
+     signed-out hero (index.astro) stays exactly where it is -- the same "server shell first,
+     island swaps in place" trick SessionNav.svelte's header link uses, so the hero never
+     shows two competing versions. Both this island's root and index.astro's signed-out block
+     share `[grid-area:1/1]` in a shared grid wrapper, so once this mounts signed-in it
+     visually occludes the signed-out block (a solid background over the same cell) instead
+     of the two stacking and reflowing the page underneath. -->
 <script lang="ts">
-  import { fetchMeOnce, type Me } from '../lib/account/api';
+  import { fetchMeOnce, type Me, type MeCharacter } from '../lib/account/api';
   import { readCurrent } from '../lib/current-character';
   import { classColorVar } from '../lib/report/format';
+  import { classSquare, classIconUrl, characterDescriptor } from '../lib/account/character-descriptor';
+  import { heroCharacter } from '../lib/account/hero-character';
+  import { mainCharacter } from '../lib/account/main-character';
+  import { parseCharacterPath } from '../lib/characters';
+  import { fetchCharacterRating } from '../lib/rankings/api';
+  import type { CharacterRating } from '../lib/rating/types';
+  import { ratingCopy } from '../lib/rating/copy';
   import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
 
   let me = $state<Me | null>(null);
@@ -34,14 +41,18 @@
    * could still tab to, or hear, a duplicate "Sign in with Battle.net" link sitting behind
    * the visible strip. Reaches outside this component's own root via `document`, the same
    * cross-island DOM-reach pattern `syncTabHrefs` in `lib/sim/tabs.ts` uses to coordinate
-   * with a sibling shell element it doesn't own. `ready && me !== null` never reverts to
-   * signed-out within one mount today (`fetchMeOnce` resolves once), but the else branch
-   * clears both attributes anyway so this stays correct if that ever changes.
+   * with a sibling shell element it doesn't own. `ready && me !== null && hero !== null`
+   * never reverts within one mount today (`fetchMeOnce` resolves once), but the else branch
+   * clears both attributes anyway so this stays correct if that ever changes. Gated on
+   * `hero !== null` too (review fix): a signed-in visitor with zero characters yet -- a real
+   * state, `main-character.ts`'s own `mainCharacter([])` returns null for it -- has no hub
+   * summary to show, so the signed-out block (sentence + Battle.net button) must stay live
+   * and focusable rather than being hidden behind a hero that renders nothing.
    */
   $effect(() => {
     const signedOut = document.getElementById(HOME_SIGNED_OUT_ID);
     if (signedOut === null) return;
-    if (ready && me !== null) {
+    if (ready && me !== null && hero !== null) {
       signedOut.setAttribute('inert', '');
       signedOut.setAttribute('aria-hidden', 'true');
     } else {
@@ -50,32 +61,98 @@
     }
   });
 
-  const pointer = $derived(readCurrentIfReady());
+  /**
+   * The hero character: `heroCharacter()`'s own rule (a current-character pointer naming a
+   * listed character, never a guess) first -- the same rule /account's hero band uses --
+   * falling back to `mainCharacter()` (the hub's own well-defined "one character to point
+   * at on arrival" algorithm, not a guess either) so a signed-in visitor with characters but
+   * no current-character pointer yet still sees a hero, the way a first-ever sign-in does.
+   */
+  const hero = $derived<MeCharacter | null>(
+    me === null ? null : (heroCharacter(readCurrentIfReady(), me.characters) ?? mainCharacter(me.characters)),
+  );
   function readCurrentIfReady() {
     if (!ready || me === null) return null;
     return readCurrent();
   }
-  const current = $derived(
-    pointer === null ? null : me?.characters.find((c) => c.key === pointer.ref || pointer.ref === ''),
+  const heroPath = $derived(hero === null ? null : parseCharacterPath(`/character/${hero.key}`));
+  const descriptor = $derived(hero === null ? '' : characterDescriptor(hero));
+  const square = $derived(hero === null ? null : classSquare(hero));
+  const classIcon = $derived(hero === null ? undefined : classIconUrl(hero));
+
+  // The latest rating figure, when one exists (spec 2026-09-23 §2 item 2): a second fetch,
+  // chained off the hero rather than blocking it, since this island is already deferred
+  // (`client:visible`) and never sits on the LCP path. Never shown until it resolves with a
+  // real sample -- an absent figure, not an invented one.
+  let rating = $state<CharacterRating | null>(null);
+  $effect(() => {
+    const path = heroPath;
+    rating = null;
+    if (path === null) return;
+    void fetchCharacterRating(path)
+      .then((result) => {
+        if (path !== heroPath) return;
+        rating = result;
+      })
+      .catch(() => {
+        rating = null;
+      });
+  });
+  const ratingFigure = $derived(
+    rating !== null && rating.sample_size > 0 && rating.latest !== null
+      ? `${ratingCopy.panelHeading} ${rating.latest.overall.toFixed(2)}`
+      : '',
   );
-  const displayName = $derived(pointer?.label ?? me?.characters[0]?.name ?? '');
-  const colour = $derived(classColorVar(current?.class));
 </script>
 
 <!-- The root always renders, even empty: the island hydrates with client:visible (an
      eager island cost the home page one animation step of LCP), and an observer needs a
      box to see. Empty and pointer-events-none, it occludes nothing until signed in. -->
-{#if ready && me !== null}
+{#if ready && me !== null && hero !== null}
   <div
     class="flex flex-wrap items-center gap-3 bg-[var(--color-bg)] [grid-area:1/1]"
     data-testid="home-account-panel"
   >
-    <span class="rounded-control h-7 w-7 shrink-0" style={`background: ${colour}`} aria-hidden="true"></span>
-    <span class="text-[15px] font-semibold" style={`color: ${colour}`}>{displayName}</span>
+    {#if hero.avatar_url !== undefined}
+      <img
+        class="h-10 w-10 shrink-0 rounded-[3px] object-cover"
+        src={hero.avatar_url}
+        alt=""
+        loading="lazy"
+        data-testid="home-hero-avatar"
+      />
+    {:else if square !== null}
+      <span
+        class="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-[3px] text-[16px] font-bold"
+        style={`background-color: color-mix(in srgb, ${square.color} 22%, transparent); color: ${square.color}`}
+        data-testid="home-hero-avatar-fallback"
+      >
+        {square.letter}
+        {#if classIcon !== undefined}
+          <img
+            class="absolute inset-0 h-10 w-10 rounded-[3px] object-cover"
+            src={classIcon}
+            alt=""
+            loading="lazy"
+          />
+        {/if}
+      </span>
+    {/if}
+    <div class="flex min-w-0 flex-col gap-0.5">
+      <span class="text-[15px] font-semibold" style={`color: ${classColorVar(hero.class)}`}>{hero.name}</span>
+      {#if descriptor !== ''}
+        <span class="text-muted text-[12px]">{descriptor}</span>
+      {/if}
+    </div>
     <a class="text-nav text-[13px] font-semibold" href="/planner">{homePanelCopy.openInPlanner}</a>
     <a class="text-nav text-[13px] font-semibold" href="/sim">{homePanelCopy.openInSimulator}</a>
     <a class="text-nav text-[13px] font-semibold" href="/logs">{homePanelCopy.logs}</a>
     <a class="text-nav text-[13px] font-semibold" href="/account">{homePanelCopy.yourCharacters}</a>
+    {#if ratingFigure !== ''}
+      <span class="text-muted tabular font-mono text-[12px]" data-testid="home-hero-rating"
+        >{ratingFigure}</span
+      >
+    {/if}
   </div>
 {:else}
   <div class="pointer-events-none min-h-[52px] [grid-area:1/1]" aria-hidden="true"></div>

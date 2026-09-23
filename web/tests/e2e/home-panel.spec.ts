@@ -19,6 +19,31 @@ test('the home page offers Battle.net sign-in when signed out', async ({ page })
   await expect(page.getByTestId('home-account-panel')).toHaveCount(0);
 });
 
+test('a signed-in visitor with zero characters still sees the Battle.net sign-in CTA, not a blank hero', async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+          characters: [],
+          guilds: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.goto('/');
+  await expect(page.getByTestId('home-account-panel')).toHaveCount(0);
+  const signedOut = page.getByTestId('home-signed-out');
+  await expect(signedOut).toBeVisible();
+  await expect(signedOut).not.toHaveAttribute('inert');
+  await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
+});
+
 test('the home page shows the current character strip when signed in', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(
@@ -65,4 +90,54 @@ test('the home page shows the current character strip when signed in', async ({ 
   // keyboard/screen-reader user could still tab to, or hear, the duplicate link behind it.
   await expect(page.locator('#home-signed-out')).toHaveAttribute('inert', '');
   await expect(page.locator('#home-signed-out')).toHaveAttribute('aria-hidden', 'true');
+});
+
+test('the signed-in hero shows a rating figure once one exists, never before', async ({ page }) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+          characters: [
+            { key: 'us/normal/kiloz', region: 'us', ruleset: 'normal', name: 'Kiloz', class: 'Warrior' },
+          ],
+          guilds: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.route('**/v1/characters/us/normal/kiloz/rating', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          player_key: 'us/normal/kiloz',
+          sample_size: 4,
+          trend: [],
+          best_component: 'damage',
+          worst_component: 'utility',
+          latest: { player_key: 'us/normal/kiloz', overall: 1.08 },
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.addInitScript(() => {
+    window.localStorage.setItem(
+      'fs.currentCharacter',
+      JSON.stringify({
+        source: 'armory',
+        ref: 'us/normal/kiloz',
+        label: 'Kiloz · Warrior',
+        classSlug: 'warrior',
+        savedAt: new Date().toISOString(),
+      }),
+    );
+  });
+  await page.goto('/');
+  await expect(page.getByTestId('home-hero-rating')).toHaveText('Performance rating 1.08');
 });

@@ -1,22 +1,35 @@
 ---
 // web/src/pages/index.astro
+// The landing page (spec 2026-09-23, "the landing page is the product, not the wiki"): sign
+// in with Battle.net and your character is planned, simmed, logged and ranked here, with
+// your guild. The reference (search, Classes/Guides/Zones/Dungeons, Popular links) is the
+// second tier, not the front door.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SkyBand from '../components/SkyBand.astro';
 import StatePanel from '../components/StatePanel.astro';
+import HomeProductPanel from '../components/HomeProductPanel.astro';
+import ClassTile from '../components/ClassTile.astro';
 import RecentReports from '../components/RecentReports.svelte';
-import { RECENT_REPORTS_PRELOAD } from '../lib/reports/recent';
+import HomeTopGuilds from '../components/HomeTopGuilds.svelte';
 import ToolCard from '../components/ToolCard.astro';
 import Panel from '../components/Panel.astro';
 import FeedRow from '../components/FeedRow.astro';
-import ClassTile from '../components/ClassTile.astro';
 import SearchBox from '../components/SearchBox.svelte';
 import SubscribeBox from '../components/SubscribeBox.svelte';
 import HomeGuildLink from '../components/HomeGuildLink.svelte';
 import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
 import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
+import {
+  homeCompanionRow,
+  homeGuildPanelCopy,
+  homeHeroCopy,
+  homeProductPanels,
+  homeReferenceCopy,
+} from '../lib/home-landing-copy';
 import { battlenetStartUrl } from '../lib/account/api';
 import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+import { dpsSpecs, specLabel } from '../lib/sim/spec-label';
 import dates from '../data/dates.json';
 import toolsData from '../data/tools.json';
 import unknowns from '../data/unknowns.json';
@@ -31,7 +44,11 @@ interface Tool {
   status: { label: string; kind: ToolStatusKind };
   icon: string;
 }
-const tools = toolsData as Tool[];
+// Every remaining row is a Reference tile (spec §2 item 4): Classes, Guides, Zones,
+// Dungeons -- the product panels below carry their own copy, not this file's.
+const referenceTiles = toolsData as Tool[];
+
+const [plannerPanel, simPanel, logsPanel, rankingsPanel] = homeProductPanels;
 
 const changelog = (await getCollection('changelog'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
@@ -43,8 +60,6 @@ const icons: Record<string, string> = {
     '<circle cx="12" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/><circle cx="12" cy="19" r="2"/><path d="M12 7v10M8 11l3-4M16 11l-3-4M8 13l3 4M16 13l-3 4"/>',
   simulator: '<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-6"/><path d="M2 20h20"/>',
   logs: '<path d="M4 19V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14"/><path d="M4 19h16"/><path d="M8 15v-4M12 15V8M16 15v-6"/>',
-  rankings:
-    '<path d="M8 21h8M12 17v4"/><path d="M6 4h12v4a6 6 0 0 1-12 0z"/><path d="M6 6H3v2a3 3 0 0 0 3 3M18 6h3v2a3 3 0 0 1-3 3"/>',
   addon: '<path d="M9 2v4"/><path d="M15 2v4"/><path d="M6 8h12l-1 5a5 5 0 0 1-10 0z"/><path d="M12 17v5"/>',
   guides:
     '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/><path d="M9 7h6M9 11h4"/>',
@@ -62,7 +77,7 @@ const popular = [
 
 <Base
   title="Forever Sixty"
-  description="Fan-run reference for World of Warcraft: Forever. Every fact dated and sourced."
+  description="World of Warcraft: Forever, planned, simmed, logged and ranked. Sign in with Battle.net."
   path="/"
   session
 >
@@ -70,20 +85,31 @@ const popular = [
     <SkyBand>
       <div class="grid grid-cols-12 gap-[22px] md:gap-8 items-start w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-7 pb-10">
         <div class="col-span-12 lg:col-span-7 flex flex-col gap-[18px]">
-          <h1 class="label text-gold font-body">
-            World of Warcraft: Forever · fan reference · every fact dated and sourced
+          <p class="label text-gold font-body">{homeHeroCopy.eyebrow}</p>
+          <h1 class="font-display text-[22px] font-bold leading-tight text-strong">
+            {homeHeroCopy.headline}
           </h1>
-          <SearchBox client:interaction />
-          <p class="flex flex-wrap gap-[10px] text-[13px]">
-            <span class="text-muted">Popular:</span>
-            {popular.map(([label, href], i) => (
-              <>
-                <a href={href}>{label}</a>
-                {i < popular.length - 1 && <span class="text-muted">·</span>}
-              </>
-            ))}
-            <HomeGuildLink client:visible />
-          </p>
+          <div class="grid" data-testid="home-account-block">
+            <div
+              id={HOME_SIGNED_OUT_ID}
+              class="[grid-area:1/1] flex flex-col gap-[14px]"
+              data-testid="home-signed-out"
+            >
+              <p class="text-[14px] leading-relaxed">{homePanelCopy.signedOutLine}</p>
+              <div class="flex flex-wrap items-center gap-3">
+                <a
+                  class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
+                  href={battlenetStartUrl('/account?signed_in=1')}
+                >
+                  {homePanelCopy.signInButton}
+                </a>
+                <a class="text-nav text-[13px]" href={homeHeroCopy.addonAltHref}>
+                  {homeHeroCopy.addonAltLabel}
+                </a>
+              </div>
+            </div>
+            <HomeAccountPanel client:visible />
+          </div>
         </div>
         <div class="col-span-12 lg:col-span-5">
           <StatePanel
@@ -95,34 +121,74 @@ const popular = [
       </div>
     </SkyBand>
 
-    <div
-      class="grid min-h-[52px] w-full max-w-[1344px] mx-auto px-[18px] md:px-12"
-      data-testid="home-account-block"
-    >
-      <div
-        id={HOME_SIGNED_OUT_ID}
-        class="[grid-area:1/1] flex flex-wrap items-center gap-3"
-        data-testid="home-signed-out"
-      >
-        <p class="text-[14px]">{homePanelCopy.signedOutLine}</p>
-        <a
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
-          href={battlenetStartUrl('/account?signed_in=1')}
-        >
-          {homePanelCopy.signInButton}
-        </a>
-      </div>
-      <HomeAccountPanel client:visible />
-    </div>
-
     <div class="flex flex-col gap-[22px] md:gap-8 w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-9 pb-8">
-      <section class="flex flex-col gap-4">
-        <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
-          <h2 class="section-title">Tools</h2>
-          <span class="text-[13px] text-muted">Each one says when its data is real.</span>
+      <section class="flex flex-col gap-4" data-testid="home-product-panels">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
+          <HomeProductPanel
+            label={plannerPanel.label}
+            sentence={plannerPanel.sentence}
+            href={plannerPanel.href}
+            linkLabel={plannerPanel.linkLabel}
+          >
+            <div class="grid grid-cols-3 sm:grid-cols-9 gap-2">
+              {classes.map((c) => (
+                <ClassTile name={c.name} slug={c.slug} compact />
+              ))}
+            </div>
+          </HomeProductPanel>
+
+          <HomeProductPanel
+            label={simPanel.label}
+            sentence={simPanel.sentence}
+            href={simPanel.href}
+            linkLabel={simPanel.linkLabel}
+          >
+            <div class="flex flex-wrap gap-2">
+              {dpsSpecs().map((row) => (
+                // Plain /sim, not /sim?spec=<slug> (review fix): the simulator's own URL
+                // state (lib/sim/url.ts's SimState) has no `spec` field and never reads
+                // one, so a per-spec query string would look distinct while landing on the
+                // identical generic page for every pill -- these pills are the simulator's
+                // real spec coverage, not a working per-spec deep link (that would need a
+                // change to /sim itself, out of this lane's scope).
+                <a href="/sim" class="pill pill-site">
+                  {specLabel(row.spec)}
+                </a>
+              ))}
+            </div>
+          </HomeProductPanel>
+
+          <HomeProductPanel
+            label={logsPanel.label}
+            sentence={logsPanel.sentence}
+            href={logsPanel.href}
+            linkLabel={logsPanel.linkLabel}
+          >
+            <div class="min-h-[120px]">
+              <RecentReports client:visible compact heading={false} />
+            </div>
+          </HomeProductPanel>
+
+          <HomeProductPanel
+            label={rankingsPanel.label}
+            sentence={rankingsPanel.sentence}
+            href={rankingsPanel.href}
+            linkLabel={rankingsPanel.linkLabel}
+          >
+            <div class="min-h-[220px]">
+              <HomeTopGuilds client:visible />
+            </div>
+          </HomeProductPanel>
         </div>
-        <div class="grid grid-cols-2 lg:grid-cols-3 gap-4" data-testid="tools-grid">
-          {tools.map((t) => (
+      </section>
+
+      <section class="flex flex-col gap-4">
+        <div class="flex flex-col gap-[10px]">
+          <SearchBox client:interaction />
+          <p class="text-[13px] text-muted">{homeReferenceCopy.sentence}</p>
+        </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" data-testid="reference-tiles">
+          {referenceTiles.map((t) => (
             <ToolCard title={t.title} description={t.description} href={t.href} status={t.status}>
               <svg
                 slot="icon"
@@ -140,6 +206,41 @@ const popular = [
             </ToolCard>
           ))}
         </div>
+        <p class="flex flex-wrap gap-[10px] text-[13px]">
+          <span class="text-muted">Popular:</span>
+          {popular.map(([label, href], i) => (
+            <>
+              <a href={href}>{label}</a>
+              {i < popular.length - 1 && <span class="text-muted">·</span>}
+            </>
+          ))}
+        </p>
+      </section>
+
+      <Panel title={homeGuildPanelCopy.label}>
+        <div class="p-[18px]">
+          <HomeGuildLink client:visible />
+        </div>
+      </Panel>
+
+      <section class="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="home-companion-row">
+        {homeCompanionRow.map((card) => (
+          <ToolCard title={card.title} description={card.description} href={card.href}>
+            <svg
+              slot="icon"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+              set:html={icons[card.href === '/addon' ? 'addon' : 'logs']}
+            />
+          </ToolCard>
+        ))}
       </section>
 
       <div class="grid grid-cols-12 gap-[22px] md:gap-8">
@@ -159,22 +260,6 @@ const popular = [
           ))}
         </Panel>
         <div class="col-span-12 lg:col-span-4 flex flex-col gap-[22px] md:gap-8">
-          <!-- The logs lane's public feed, compact: the newest few public reports, so a
-               visitor can open a real report without an account or a link from a friend.
-               Below the fold on a phone and hydrated only when seen; the floor holds the
-               panel's height while it loads so nothing under it moves. -->
-          <Panel title="Recent public reports">
-            <a slot="aside" href="/logs" class="text-[13px] font-semibold">
-              Logs
-            </a>
-            <div class="min-h-[120px] p-4">
-              <RecentReports
-                client:visible={{ rootMargin: RECENT_REPORTS_PRELOAD }}
-                compact
-                heading={false}
-              />
-            </div>
-          </Panel>
           <Panel title="Still unknown">
             {unknowns.map((u, i) => (
               <div
@@ -210,20 +295,6 @@ const popular = [
           </Panel>
         </div>
       </div>
-
-      <section class="flex flex-col gap-4">
-        <div class="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
-          <h2 class="section-title">Guides by class</h2>
-          <span class="text-[13px] text-muted">
-            Leveling, talents, pre-raid gear. Written after we play it, not before.
-          </span>
-        </div>
-        <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-3">
-          {classes.map((c) => (
-            <ClassTile name={c.name} slug={c.slug} />
-          ))}
-        </div>
-      </section>
     </div>
   </main>
 </Base>
