@@ -7,9 +7,13 @@
 // public reads do, rather than account/api.ts's own session-carrying default. The
 // AccountError-to-module-error wrapping below mirrors rankings/api.ts's own `get()`.
 import { AccountError, requestEnvelope } from '../account/api';
+import { query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 
 export const RECENT_REPORTS_FAILED = 'Recent reports did not load';
+
+/** Spec §0/§3.2's "reports feed" class: public, 60 seconds. */
+const RECENT_REPORTS_TTL_MS = 60_000;
 
 export class RecentReportsError extends Error {
   constructor(
@@ -46,18 +50,24 @@ export async function fetchRecentReports(
   cursor?: string,
   apiBase: string = API_BASE_URL,
 ): Promise<RecentReportsPage> {
-  const query = cursor === undefined || cursor === '' ? '' : `?cursor=${encodeURIComponent(cursor)}`;
-  let result;
-  try {
-    result = await requestEnvelope<RecentReportsPage>(`/v1/reports/recent${query}`, apiBase, {
-      credentials: 'omit',
-      failureMessage: RECENT_REPORTS_FAILED,
-    });
-  } catch (error) {
-    if (error instanceof AccountError) throw new RecentReportsError(error.message, error.status);
-    throw new RecentReportsError(RECENT_REPORTS_FAILED, 0);
-  }
-  return result.data ?? { rows: [] };
+  const path = `/v1/reports/recent${cursor === undefined || cursor === '' ? '' : `?cursor=${encodeURIComponent(cursor)}`}`;
+  return query<RecentReportsPage>(
+    `${apiBase}${path}`,
+    async () => {
+      let result;
+      try {
+        result = await requestEnvelope<RecentReportsPage>(path, apiBase, {
+          credentials: 'omit',
+          failureMessage: RECENT_REPORTS_FAILED,
+        });
+      } catch (error) {
+        if (error instanceof AccountError) throw new RecentReportsError(error.message, error.status);
+        throw new RecentReportsError(RECENT_REPORTS_FAILED, 0);
+      }
+      return result.data ?? { rows: [] };
+    },
+    { scope: 'public', ttlMs: RECENT_REPORTS_TTL_MS },
+  );
 }
 
 /**

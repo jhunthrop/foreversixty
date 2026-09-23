@@ -8,12 +8,16 @@
 // cache and wrong for a poller five seconds later in the same browser: `cache: 'no-cache'`
 // makes the browser revalidate instead of serving its own copy, while summary.json and
 // events.parquet are immutable and take the default.
+import { query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 import { asArray, type ReportFile, type ReportMeta, type Summary } from './types';
 
 export const REPORT_LOAD_FAILED = 'Report data did not load';
 export const REPORT_NOT_FOUND = 'No report with that id';
 export const REPORT_FORBIDDEN = 'That report is not public';
+
+/** Spec §0/§3.2's "a public report's meta and fights" class: public, 5 minutes. */
+const REPORT_META_TTL_MS = 5 * 60 * 1000;
 
 /** Every failure the island renders comes out of here, so components never see a raw fetch error. */
 export class ReportLoadError extends Error {
@@ -58,7 +62,11 @@ async function apiGet<T>(path: string, apiBase: string): Promise<T> {
 }
 
 export function fetchReportMeta(id: string, apiBase: string = API_BASE_URL): Promise<ReportMeta> {
-  return apiGet<ReportMeta>(`/v1/reports/${encodeURIComponent(id)}`, apiBase);
+  const path = `/v1/reports/${encodeURIComponent(id)}`;
+  return query<ReportMeta>(`${apiBase}${path}`, () => apiGet<ReportMeta>(path, apiBase), {
+    scope: 'public',
+    ttlMs: REPORT_META_TTL_MS,
+  });
 }
 
 /**
@@ -66,6 +74,9 @@ export function fetchReportMeta(id: string, apiBase: string = API_BASE_URL): Pro
  * signed base url instead. It expires in ten minutes; the island re-asks on a 403 rather
  * than holding a timer, because a viewer who leaves the page open overnight should get one
  * failed fetch and a retry, not a background request loop.
+ *
+ * Not migrated to query(): a signed url is only valid for ten minutes, and caching it
+ * would fight `withFreshBase`'s own re-ask-on-403 mechanism below.
  */
 export async function fetchAccessUrl(id: string, apiBase: string = API_BASE_URL): Promise<string> {
   const access = await apiGet<{ data_base_url: string }>(
@@ -120,8 +131,14 @@ async function dataGet<T>(url: string, cache: RequestCache): Promise<T> {
 }
 
 export async function fetchReportFile(dataBaseUrl: string): Promise<ReportFile> {
-  const file = await dataGet<ReportFile>(`${dataBaseUrl}/report.json`, 'no-cache');
-  return { ...file, fights: asArray(file.fights), units: asArray(file.units) };
+  return query<ReportFile>(
+    `${dataBaseUrl}/report.json`,
+    async () => {
+      const file = await dataGet<ReportFile>(`${dataBaseUrl}/report.json`, 'no-cache');
+      return { ...file, fights: asArray(file.fights), units: asArray(file.units) };
+    },
+    { scope: 'public', ttlMs: REPORT_META_TTL_MS },
+  );
 }
 
 /**
@@ -135,6 +152,9 @@ export function versioned(url: string, engineVersion: string): string {
   return engineVersion === '' ? url : `${url}?v=${encodeURIComponent(engineVersion)}`;
 }
 
+// Not migrated to query(): summary.json is immutable under its versioned url (the browser's
+// own HTTP cache already handles repeat reads), and fetchLive below needs a fresh answer on
+// every poll tick, so wrapping either here would fight a mechanism that already exists.
 export function fetchSummary(dataBaseUrl: string, fightIndex: number, engineVersion = ''): Promise<Summary> {
   return dataGet<Summary>(
     versioned(`${dataBaseUrl}/fights/${fightIndex}/summary.json`, engineVersion),
