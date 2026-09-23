@@ -13,6 +13,7 @@
 //     all is decided from `user.premium` on GET /v1/me, not from a failed call.
 import { AccountError, requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
+import { invalidate, query } from '../data/query';
 import { API_BASE_URL } from '../planner/config';
 import type { BuildRecord } from '../planner/types';
 import type { BulkServerProgress } from './bulk-types';
@@ -57,6 +58,21 @@ async function call<T>(
   return data;
 }
 
+// Cache classes (spec 3.2). fetchSim/fetchSimInput are a public report's meta/fights and a
+// public sim's own result -- 5 minutes. fetchMyBuilds/listMySims are "my sims", private --
+// 10 minutes. fetchSpecs/fetchPhases are reference data, public -- 1 hour.
+const SIM_RESULT_TTL_MS = 5 * 60 * 1000;
+const MY_SIMS_TTL_MS = 10 * 60 * 1000;
+const REFERENCE_TTL_MS = 60 * 60 * 1000;
+
+function myBuildsKey(apiBase: string, page: number): string {
+  return `${apiBase}/v1/builds?mine=1&page=${page}`;
+}
+
+function mySimsKey(apiBase: string, page: number, kind: KindFilter): string {
+  return `${apiBase}/v1/sims?mine=1&page=${page}&kind=${kind}`;
+}
+
 /**
  * Saves a browser-run result. The whole request travels; it is plain JSON throughout.
  *
@@ -89,11 +105,19 @@ export async function saveSim(
     method: 'POST',
     body,
   });
+  // Every mine=1 sims list, whatever page or kind, shares this prefix -- a bare
+  // invalidate() call clears them all at once rather than guessing which page/kind the
+  // caller was last looking at.
+  invalidate(`${apiBase}/v1/sims?mine=1`);
   return data.sim_id;
 }
 
 export function fetchSim(simId: string, apiBase: string = API_BASE_URL): Promise<SimResult> {
-  return call<SimResult>(`/v1/sims/${simId}`, apiBase, simCopy.loadFailed, { credentials: 'omit' });
+  return query<SimResult>(
+    `${apiBase}/v1/sims/${simId}`,
+    () => call<SimResult>(`/v1/sims/${simId}`, apiBase, simCopy.loadFailed, { credentials: 'omit' }),
+    { scope: 'public', ttlMs: SIM_RESULT_TTL_MS },
+  );
 }
 
 /**
@@ -108,7 +132,11 @@ export function fetchMyBuilds(
   page: number = 1,
   apiBase: string = API_BASE_URL,
 ): Promise<{ rows: BuildRecord[]; total: number; page: number; per_page: number }> {
-  return call(`/v1/builds?mine=1&page=${page}`, apiBase, simCopy.loadFailed);
+  return query(
+    myBuildsKey(apiBase, page),
+    () => call(`/v1/builds?mine=1&page=${page}`, apiBase, simCopy.loadFailed),
+    { scope: 'private', ttlMs: MY_SIMS_TTL_MS },
+  );
 }
 
 export function listMySims(
@@ -120,7 +148,11 @@ export function listMySims(
   // vocabulary of five and adding a sixth for "no filter" would be a word the API has to
   // know about for no reason.
   const filter = kind === 'all' ? '' : `&kind=${kind}`;
-  return call<SimListPage>(`/v1/sims?mine=1&page=${page}${filter}`, apiBase, simCopy.loadFailed);
+  return query<SimListPage>(
+    mySimsKey(apiBase, page, kind),
+    () => call<SimListPage>(`/v1/sims?mine=1&page=${page}${filter}`, apiBase, simCopy.loadFailed),
+    { scope: 'private', ttlMs: MY_SIMS_TTL_MS },
+  );
 }
 
 /** The premium lane. Throws SimApiError with status 402 when the account is not premium. */
@@ -135,6 +167,7 @@ export async function dispatchServerSim(
   return data.sim_id;
 }
 
+// Not cached: a poll's whole point is a fresh answer every call (see the plan's Task 8 ruling).
 export function fetchSimProgress(simId: string, apiBase: string = API_BASE_URL): Promise<SimProgress> {
   return call<SimProgress>(`/v1/sims/${simId}/progress`, apiBase, simCopy.loadFailed, {
     credentials: 'omit',
@@ -147,6 +180,7 @@ export function fetchSimProgress(simId: string, apiBase: string = API_BASE_URL):
  * `SimRequest`, the API derives the kind from the body, and a second POST helper would be a
  * second place for the CSRF header to go wrong.
  */
+// Not cached: a poll's whole point is a fresh answer every call (see the plan's Task 8 ruling).
 export function fetchBulkProgress(
   simId: string,
   apiBase: string = API_BASE_URL,
@@ -157,9 +191,11 @@ export function fetchBulkProgress(
 }
 
 export async function fetchSpecs(apiBase: string = API_BASE_URL): Promise<SpecFidelity[]> {
-  const data = await call<{ specs: SpecFidelity[] }>('/v1/specs', apiBase, simCopy.specsFailed, {
-    credentials: 'omit',
-  });
+  const data = await query<{ specs: SpecFidelity[] }>(
+    `${apiBase}/v1/specs`,
+    () => call<{ specs: SpecFidelity[] }>('/v1/specs', apiBase, simCopy.specsFailed, { credentials: 'omit' }),
+    { scope: 'public', ttlMs: REFERENCE_TTL_MS },
+  );
   return data.specs;
 }
 
@@ -171,7 +207,11 @@ export async function fetchSpecs(apiBase: string = API_BASE_URL): Promise<SpecFi
  */
 export function fetchSimInput(path: CharacterPath, apiBase: string = API_BASE_URL): Promise<SimInput> {
   const segments = [path.region, path.ruleset, path.slug].map(encodeURIComponent).join('/');
-  return call<SimInput>(`/v1/characters/${segments}/sim-input`, apiBase, simCopy.characterFailed);
+  return query<SimInput>(
+    `${apiBase}/v1/characters/${segments}/sim-input`,
+    () => call<SimInput>(`/v1/characters/${segments}/sim-input`, apiBase, simCopy.characterFailed),
+    { scope: 'public', ttlMs: SIM_RESULT_TTL_MS },
+  );
 }
 
 /**
@@ -181,8 +221,10 @@ export function fetchSimInput(path: CharacterPath, apiBase: string = API_BASE_UR
  * should call this directly -- read the phase table through `phase.ts` instead.
  */
 export async function fetchPhases(apiBase: string = API_BASE_URL): Promise<PhaseRow[]> {
-  const data = await call<{ phases: PhaseRow[] }>('/v1/phases', apiBase, bulkCopy.phasesFailed, {
-    credentials: 'omit',
-  });
+  const data = await query<{ phases: PhaseRow[] }>(
+    `${apiBase}/v1/phases`,
+    () => call<{ phases: PhaseRow[] }>('/v1/phases', apiBase, bulkCopy.phasesFailed, { credentials: 'omit' }),
+    { scope: 'public', ttlMs: REFERENCE_TTL_MS },
+  );
   return data.phases;
 }
