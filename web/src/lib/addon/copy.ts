@@ -23,6 +23,12 @@ export const addonCopy = {
   dataBuildField: 'data build',
   classField: 'class',
 
+  // --- bags and bank (Battle.net-sourced characters) ---
+  /** Spec 2026-09-22 §3.3: shown wherever a Battle.net-sourced character's bags/bank are
+   *  unavailable (no current render site yet — the bulk gear tool has no per-slot "why is
+   *  this empty" note today; this is the copy ready for when it does). */
+  bagsNeedAddonForBlizzard: 'Bags and bank come from the addon. Install it to include them.',
+
   // --- share panel ---
   copyAddonCode: 'Copy addon code',
   copiedAddonCode: 'Copied',
@@ -59,7 +65,7 @@ export const addonCopy = {
   // --- /addon page ---
   pageTitle: 'The addon',
   pageDescription:
-    'Your character into the planner with one paste, and a build you chose here as an in-game guide.',
+    'Battle.net already gives your gear and talents. The addon adds your bags and bank, your professions, an in-game build guide, and refreshes the moment you log out.',
   pageNoNetwork:
     'The addon never talks to the network. Everything it knows is generated here and carried in the strings you copy.',
   installCurseForge: 'Install from CurseForge',

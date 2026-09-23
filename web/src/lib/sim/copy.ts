@@ -931,7 +931,6 @@ export const bulkCopy = {
    * `locked` -- so a multi-slot candidate would otherwise reach the engine.
    */
   talentsHasCandidate: 'A talent compare changes only the tree. Untick every item candidate.',
-  bagsNeedAddon: 'Your bags and bank come from the addon export; this character was loaded another way.',
   tryEach: 'Try each',
   consumableCandidates: 'Try each of these as a candidate rather than a setting.',
 
