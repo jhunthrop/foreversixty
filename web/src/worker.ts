@@ -509,19 +509,27 @@ type RewriterConstructor = new () => Rewriter;
 function rewriteHead(response: Response, meta: ShellMeta): Response {
   const Ctor = (globalThis as { HTMLRewriter?: RewriterConstructor }).HTMLRewriter;
   if (Ctor === undefined) return response;
-  return new Ctor()
-    .on('title', { element: (element) => element.setInnerContent(meta.title) })
-    .on('meta[data-og="description"]', {
-      element: (element) => element.setAttribute('content', meta.description),
-    })
-    .on('meta[data-og="og-title"]', { element: (element) => element.setAttribute('content', meta.title) })
-    .on('meta[data-og="og-description"]', {
-      element: (element) => element.setAttribute('content', meta.description),
-    })
-    .on('meta[data-og="og-url"]', { element: (element) => element.setAttribute('content', meta.canonical) })
-    .on('meta[data-og="og-image"]', { element: (element) => element.setAttribute('content', meta.image) })
-    .on('link[data-og="canonical"]', { element: (element) => element.setAttribute('href', meta.canonical) })
-    .transform(response);
+  return (
+    new Ctor()
+      .on('title', { element: (element) => element.setInnerContent(meta.title) })
+      // The shell's own heading (lib/report/skeleton.ts): the title paints before the island.
+      .on('h1[data-testid="report-shell-title"]', {
+        element: (element) => {
+          if (meta.heading !== undefined) element.setInnerContent(meta.heading);
+        },
+      })
+      .on('meta[data-og="description"]', {
+        element: (element) => element.setAttribute('content', meta.description),
+      })
+      .on('meta[data-og="og-title"]', { element: (element) => element.setAttribute('content', meta.title) })
+      .on('meta[data-og="og-description"]', {
+        element: (element) => element.setAttribute('content', meta.description),
+      })
+      .on('meta[data-og="og-url"]', { element: (element) => element.setAttribute('content', meta.canonical) })
+      .on('meta[data-og="og-image"]', { element: (element) => element.setAttribute('content', meta.image) })
+      .on('link[data-og="canonical"]', { element: (element) => element.setAttribute('href', meta.canonical) })
+      .transform(response)
+  );
 }
 
 async function serveShell(env: Env, url: URL, asset: string): Promise<Response> {

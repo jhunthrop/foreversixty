@@ -21,17 +21,44 @@ const tableRow = (bar: string): string =>
  * beside the mode bar, the tab strip and a table. Announced once to a screen reader;
  * the blocks themselves are decoration and hidden from it.
  */
-export const REPORT_SKELETON_HTML = [
-  '<div class="report-skeleton flex flex-col gap-4 px-[18px] md:px-0" data-testid="report-skeleton" aria-busy="true">',
-  '<p class="sr-only" role="status">Loading the report.</p>',
-  '<div aria-hidden="true" class="flex flex-col gap-4">',
-  `<div class="flex flex-col gap-2">${block('h-5 w-56')}${block('h-3 w-80 max-w-full')}</div>`,
-  '<div class="grid grid-cols-1 gap-[22px] md:grid-cols-[300px_minmax(0,1fr)] md:gap-8">',
-  `<ul class="flex flex-col">${['w-28', 'w-36', 'w-24', 'w-32', 'w-28', 'w-36', 'w-20', 'w-32'].map(fightRow).join('')}</ul>`,
-  '<div class="flex flex-col gap-4">',
-  `<div class="flex flex-wrap gap-2">${['w-20', 'w-24', 'w-20', 'w-16'].map((w) => block(`h-9 ${w} rounded-control`)).join('')}</div>`,
-  `<div class="flex flex-wrap gap-3">${['w-16', 'w-24', 'w-24', 'w-16', 'w-14', 'w-16', 'w-16'].map((w) => block(`h-3 ${w}`)).join('')}</div>`,
-  `${block('h-24 w-full')}`,
-  `<ul class="flex flex-col">${['w-full', 'w-4/5', 'w-2/3', 'w-1/2', 'w-1/3'].map(tableRow).join('')}</ul>`,
-  '</div></div></div></div>',
-].join('');
+export const REPORT_SHELL_TITLE_TESTID = 'report-shell-title';
+
+/** The five characters HTML needs escaped in text content and attributes. */
+function escapeHtml(text: string): string {
+  return text.replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
+  );
+}
+
+/**
+ * The skeleton with the report's title already in its heading, when the shell knows it:
+ * the prerendered fixture page passes its own, and the Worker fills the same heading
+ * through its rewriter (src/worker.ts). The title is the page's largest paint; drawn by
+ * the shell it paints on first render instead of after the island hydrates, which is
+ * what kept the report page's Lighthouse score at the budget's edge. The island's own
+ * loading state uses the bare form (REPORT_SKELETON_HTML) and swaps in the same heading
+ * style, so nothing moves.
+ */
+export function reportSkeletonHtml(title?: string): string {
+  const heading =
+    title === undefined
+      ? `<h1 class="section-title min-h-[26px] text-[18px]" data-testid="${REPORT_SHELL_TITLE_TESTID}">${block('h-5 w-56')}</h1>`
+      : `<h1 class="section-title min-h-[26px] text-[18px]" data-testid="${REPORT_SHELL_TITLE_TESTID}">${escapeHtml(title)}</h1>`;
+  return [
+    '<div class="report-skeleton flex flex-col gap-4 px-[18px] md:px-0" data-testid="report-skeleton" aria-busy="true">',
+    '<p class="sr-only" role="status">Loading the report.</p>',
+    `<div class="flex flex-col gap-2">${heading}${block('h-3 w-80 max-w-full')}</div>`,
+    '<div aria-hidden="true" class="flex flex-col gap-4">',
+    '<div class="grid grid-cols-1 gap-[22px] md:grid-cols-[300px_minmax(0,1fr)] md:gap-8">',
+    `<ul class="flex flex-col">${['w-28', 'w-36', 'w-24', 'w-32', 'w-28', 'w-36', 'w-20', 'w-32'].map(fightRow).join('')}</ul>`,
+    '<div class="flex flex-col gap-4">',
+    `<div class="flex flex-wrap gap-2">${['w-20', 'w-24', 'w-20', 'w-16'].map((w) => block(`h-9 ${w} rounded-control`)).join('')}</div>`,
+    `<div class="flex flex-wrap gap-3">${['w-16', 'w-24', 'w-24', 'w-16', 'w-14', 'w-16', 'w-16'].map((w) => block(`h-3 ${w}`)).join('')}</div>`,
+    `${block('h-24 w-full')}`,
+    `<ul class="flex flex-col">${['w-full', 'w-4/5', 'w-2/3', 'w-1/2', 'w-1/3'].map(tableRow).join('')}</ul>`,
+    '</div></div></div></div>',
+  ].join('');
+}
+
+export const REPORT_SKELETON_HTML = reportSkeletonHtml();

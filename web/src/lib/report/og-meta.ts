@@ -26,6 +26,10 @@ export type ShellKind = 'report' | 'rankings' | 'character' | 'guild' | 'sim';
 export interface ShellMeta {
   /** The whole <title>, including the site suffix. */
   title: string;
+  /** The page's own heading, without the site suffix: what the shell paints as its h1
+   *  before the island mounts (lib/report/skeleton.ts). Omitted where the shell has no
+   *  heading of its own. */
+  heading?: string;
   description: string;
   /** Absolute og:image url. */
   image: string;
@@ -60,8 +64,10 @@ export function titleize(slug: string): string {
 export function reportShellMeta(meta: ReportMeta, apiBase: string): ShellMeta {
   const kills = meta.fights.filter((fight) => fight.kill).length;
   const killPhrase = kills === 0 ? 'no boss kills' : plural(kills, 'boss kill', 'boss kills');
+  const heading = meta.title === '' ? meta.zone : meta.title;
   return {
-    title: `${meta.title === '' ? meta.zone : meta.title} · Forever Sixty`,
+    heading,
+    title: `${heading} · Forever Sixty`,
     description: `${plural(meta.fights.length, 'fight', 'fights')} in ${meta.zone}, ${killPhrase}, logged ${isoDate(meta.created_at)}.`,
     image: `${apiBase}/reports/${meta.id}/card.png`,
     canonical: `${SITE_BASE_URL}/reports/${meta.id}`,

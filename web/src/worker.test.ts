@@ -578,7 +578,7 @@ const SHELL_HTML = `<!doctype html><html><head><title>Report · Forever Sixty</t
 <meta property="og:description" content="placeholder" data-og="og-description" />
 <meta property="og:url" content="https://foreversixty.gg/reports" data-og="og-url" />
 <meta property="og:image" content="https://foreversixty.gg/og/reports.png" data-og="og-image" />
-</head><body><div id="report" data-report-mount></div></body></html>`;
+</head><body><div id="report" data-report-mount><h1 data-testid="report-shell-title"><span class="skeleton-block"></span></h1></div></body></html>`;
 
 /** Assets a shell request may resolve to: reports.html for the report shell, guild.html
  *  for the claim/settings/invite shells this task adds (the plain guild shell arrives
@@ -620,6 +620,8 @@ describe('shell routes with rewritten unfurl tags', () => {
     expect(response.headers.get('content-type')).toContain('text/html');
     expect(response.headers.get('cache-control')).toBe('public, max-age=60');
     expect(html).toContain('<title>Sanguine Depths, fixture night · Forever Sixty</title>');
+    // The shell's own heading carries the title too, so it paints before the island (skeleton.ts).
+    expect(html).toContain('data-testid="report-shell-title">Sanguine Depths, fixture night</h1>');
     expect(html).toContain('content="4 fights in Sanguine Depths, 2 boss kills, logged 2026-09-26."');
     expect(html).toContain(`content="${API_BASE_URL}/reports/fixture2abcd/card.png"`);
     expect(html).toContain('href="https://foreversixty.gg/reports/fixture2abcd"');
