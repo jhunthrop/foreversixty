@@ -116,10 +116,10 @@
     </ul>
   {/if}
   <p class="text-muted text-[13px]">
-    Gear and talents come from Battle.net and refresh nightly.
+    {characterListCopy.introBattlenetLine}
     <a class="text-text underline" href="/addon">{characterListCopy.introInstallAddonLink}</a>
-    to include bags and bank and to update right after a session;
+    {characterListCopy.introAddonTail}
     <a class="text-text underline" href="/addon#paste">{characterListCopy.introPasteLink}</a>
-    for a character Battle.net has no data for.
+    {characterListCopy.introPasteTail}
   </p>
 </StatePanel>
