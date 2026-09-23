@@ -10,7 +10,10 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
-  import { battlenetStartUrl, effectiveServerSims, fetchMe, type Me } from '../../lib/account/api';
+  import { battlenetStartUrl, effectiveServerSims, fetchMeOnce, type Me } from '../../lib/account/api';
+  import { createQueryState } from '../../lib/data/query.svelte';
+  import { API_BASE_URL } from '../../lib/planner/config';
+  import { SIM_LANDING_SKELETON_MIN_H } from '../../lib/sim/layout';
   import type { CharacterPath } from '../../lib/characters';
   import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
   import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
@@ -194,9 +197,15 @@
     if (comparison !== null) compareViewLazy.load();
   });
 
-  // Set from `onMount`'s own `fetchMe` below -- read by the history panel, the landing
-  // state and the source switcher's signed-in card.
-  let me = $state<Me | null>(null);
+  // One `/v1/me` read, shared with every other island through the client cache
+  // (web/src/lib/data/query.ts) -- the same call Account.svelte, SessionNav.svelte and
+  // HomeAccountPanel.svelte make. Read by the history panel, the landing state and the
+  // source switcher's signed-in card.
+  const session = createQueryState<Me | null>(`${API_BASE_URL}/v1/me`, () => fetchMeOnce(), {
+    scope: 'private',
+    ttlMs: 10 * 60 * 1000,
+  });
+  const me = $derived(session.data);
   // The history panel (Task 17), for a signed-in player on plain /sim only.
   const signedIn = $derived(me !== null);
   let historyRows = $state<SimListRow[] | null>(null);
@@ -315,23 +324,23 @@
     }
   }
 
+  // effectiveServerSims(me) on GET /v1/me -- the server lane renders only once this answers
+  // true. A signed-out visitor and an unreachable API read the same way (`me` stays null
+  // whether the session read answered null or failed; the sim never shows a session error,
+  // spec 2026-09-23 §3). The same answer gates the history panel, the landing state and the
+  // source switcher's signed-in card: `signedIn` above is `me !== null`, and the history
+  // panel's own `GET /v1/sims?mine=1` fires only then. Keyed on `me`'s reference and guarded
+  // against re-running for the same object (the 2026-09-23 account-page loop); it never
+  // starts a session read itself, only reacts to the one `createQueryState` made above.
+  let lastMe: Me | null = null;
+  $effect(() => {
+    if (me === lastMe) return;
+    lastMe = me;
+    store.setPremium(effectiveServerSims(me));
+    if (me !== null) void loadHistory();
+  });
+
   onMount(() => {
-    // effectiveServerSims(me) on GET /v1/me -- the server lane renders only once this answers
-    // true. A signed-out visitor and an unreachable API read the same way (fetchMe resolves
-    // null, or the promise rejects and is swallowed): both mean "no premium control", matching
-    // Account.svelte's own load() treating a failed fetchMe as "not signed in", not an error.
-    //
-    // The same answer also gates the history panel (Task 17), the landing state and the
-    // source switcher's signed-in card (Task 18): `signedIn` above is `me !== null`, and
-    // the history panel's own `GET /v1/sims?mine=1` fires only then -- a signed-out visitor
-    // gets no second request for a list that would come back empty anyway.
-    void fetchMe()
-      .then((result) => {
-        me = result;
-        store.setPremium(effectiveServerSims(result));
-        if (result !== null) void loadHistory();
-      })
-      .catch(() => {});
     // Never on /sim/<id>: a saved sim never restores the visitor's own current character.
     if (!hasSavedSimId) void restoreFromPointer();
     return () => store.dispose();
@@ -542,6 +551,10 @@
           onchange={() => (switcherOpen = true)}
           onrace={(slug) => store.setRace(slug)}
         />
+      {:else if session.status === 'loading' && session.data === null && !switcherOpen}
+        <!-- Spec 2026-09-23 §3: a cold cache shows a reserved skeleton while the session read
+             is in flight; a returning signed-in visitor's snapshot skips this entirely. -->
+        <Skeleton lines={4} minHeight={SIM_LANDING_SKELETON_MIN_H} testid="sim-landing-skeleton" />
       {:else if me !== null && me.characters.length > 0 && !switcherOpen}
         <!-- Design 4.6: a signed-in member sees their characters and one button each, and
              no form until they ask for one -- so this replaces the switcher entirely rather

@@ -189,3 +189,38 @@ test('a signed-in member with no characters gets the switcher and the noCharacte
   // here (it used to, and clicking it re-rendered this same state).
   await expect(page.getByTestId('sim-back-to-characters')).toHaveCount(0);
 });
+
+// Spec 2026-09-23 §3: the simulator reads the session through the client cache, so a
+// returning signed-in visitor sees their characters from the snapshot before /v1/me answers
+// (the same shape as home-panel.spec.ts's returning-visitor test).
+test('a returning signed-in visitor sees their characters from the session snapshot before /v1/me answers', async ({
+  page,
+  context,
+}) => {
+  await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
+  await page.route('**/v1/characters/**', (route) => route.fulfill(failure('none', 404)));
+  await page.route('**/v1/sims?mine=1*', (route) =>
+    route.fulfill(envelope({ rows: [], total: 0, page: 1, per_page: 100 })),
+  );
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
+  await page.goto('/sim');
+  await expect(page.getByTestId('sim-landing')).toBeVisible();
+  const stored = await page.evaluate(() =>
+    Object.keys(window.localStorage)
+      .filter((k) => k.startsWith('fs.q.'))
+      .map((k) => window.localStorage.getItem(k) ?? '')
+      .join('\n'),
+  );
+  expect(stored).toContain('Thrallgar');
+
+  // Second load: /v1/me is held for five seconds, yet the landing state renders at once from
+  // the snapshot and the skeleton never shows.
+  await page.unroute('**/v1/me');
+  await page.route('**/v1/me', async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await route.fulfill(envelope(ME));
+  });
+  await page.goto('/sim');
+  await expect(page.getByTestId('sim-landing')).toBeVisible({ timeout: 3000 });
+  await expect(page.getByTestId('sim-landing-skeleton')).toHaveCount(0);
+});
