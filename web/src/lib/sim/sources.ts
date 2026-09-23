@@ -113,6 +113,8 @@ export function sourcePill(source: CharacterSource, now: Date = new Date()): str
   switch (source.kind) {
     case 'armory':
       return `Armory, ${relativeTime(source.captured_at, now)}`;
+    case 'blizzard':
+      return `Battle.net, ${relativeTime(source.captured_at, now)}`;
     case 'addon':
       return `Addon export, ${relativeTime(source.captured_at, now)}`;
     case 'build':
@@ -146,7 +148,11 @@ export async function fromStoredCharacter(
   // -- class, race, talents and gear -- so it takes exactly the paste path, with the
   // stored name and capture time. Nothing here is guessed: the code refuses the same
   // way the paste box does.
-  if (input.source === 'addon' && typeof input.gear === 'string' && input.gear.startsWith(`${FS1_PREFIX}:`)) {
+  if (
+    (input.source === 'addon' || input.source === 'blizzard') &&
+    typeof input.gear === 'string' &&
+    input.gear.startsWith(`${FS1_PREFIX}:`)
+  ) {
     const code = input.gear;
     const decoded = decodeFS1(code);
     if (!decoded.ok) return { ok: false, message: decoded.message };
@@ -166,7 +172,7 @@ export async function fromStoredCharacter(
       talents,
       classes,
       races,
-      { kind: 'addon', ref: characterKey, captured_at: input.captured_at },
+      { kind: input.source, ref: characterKey, captured_at: input.captured_at },
       path.slug,
     );
     if (result.ok) recordCurrentCharacter(result.character, 'addon', code, storage);

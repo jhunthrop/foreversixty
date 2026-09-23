@@ -23,6 +23,20 @@ describe('lookupAddonExport', () => {
     expect(result.code).toBe('FS1:1.60.1.69893:warrior:human:0/0/0:');
   });
 
+  it('carries the FS1 code when the newest source is a Battle.net import', async () => {
+    fetchSimInput.mockResolvedValueOnce({
+      spec: 'warrior-fury',
+      gear: 'FS1:1.60.1.69893:warrior:human:0/0/0:',
+      talents: '',
+      buffs: [],
+      captured_at: '2026-09-20T00:00:00Z',
+      source: 'blizzard',
+    });
+
+    const result = await lookupAddonExport(PATH);
+    expect(result.code).toBe('FS1:1.60.1.69893:warrior:human:0/0/0:');
+  });
+
   it('reads no export when the newest source is a logged fight', async () => {
     fetchSimInput.mockResolvedValueOnce({
       spec: 'mage-fire',
