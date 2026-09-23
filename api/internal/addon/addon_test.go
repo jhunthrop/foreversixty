@@ -13,6 +13,7 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -162,6 +163,31 @@ func TestExportsRefuseNonsense(t *testing.T) {
 // TestPutExportsClaimsAnUnclaimedCharacter is the first of the three
 // cases the Task 5 review pointed at: a character_key nobody has synced
 // before is claimed by whoever syncs it first.
+// TestPutExportsStampsSourceAddonAndCapturedAt is spec
+// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.4: the addon path always
+// writes source='addon', captured_at=now() — even when it overwrites a row a previous addon
+// export already claimed.
+func TestPutExportsStampsSourceAddonAndCapturedAt(t *testing.T) {
+	h := newHarness(t)
+	if err := h.store.PutExports(context.Background(), h.owner,
+		[]Export{{Name: "Kiloz", Ruleset: "normal", Region: "us", Export: "FS1:1.60.1.69893:warrior:orc:0/0/0:"}}); err != nil {
+		t.Fatal(err)
+	}
+	var source string
+	var capturedAt time.Time
+	if err := h.pool.QueryRow(context.Background(),
+		`select source, captured_at from addon_exports where character_key = 'us/normal/kiloz'`).
+		Scan(&source, &capturedAt); err != nil {
+		t.Fatal(err)
+	}
+	if source != "addon" {
+		t.Fatalf("source = %q, want addon", source)
+	}
+	if time.Since(capturedAt) > time.Minute {
+		t.Fatalf("captured_at = %v, want stamped to roughly now", capturedAt)
+	}
+}
+
 func TestPutExportsClaimsAnUnclaimedCharacter(t *testing.T) {
 	h := newHarness(t)
 	if err := h.store.PutExports(context.Background(), h.owner,

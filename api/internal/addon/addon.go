@@ -137,10 +137,11 @@ func (s *Store) PutExports(ctx context.Context, userID int64, exports []Export) 
 // stealing it.
 func (s *Store) putOneExport(ctx context.Context, tx pgx.Tx, userID int64, key, region, ruleset string, e Export) error {
 	tag, err := tx.Exec(ctx,
-		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, updated_at)
-		 values ($1, $2, $3, $4, $5, $6, now())
+		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, source, captured_at, updated_at)
+		 values ($1, $2, $3, $4, $5, $6, 'addon', now(), now())
 		 on conflict (character_key) do update set
-		   user_id = excluded.user_id, export = excluded.export, updated_at = now()
+		   user_id = excluded.user_id, export = excluded.export,
+		   source = 'addon', captured_at = now(), updated_at = now()
 		 where addon_exports.user_id = excluded.user_id`,
 		key, userID, region, ruleset, e.Name, e.Export)
 	if err != nil {
