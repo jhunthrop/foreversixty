@@ -156,6 +156,21 @@ func TestAnExportOnlyCharacterHasGearAndNoTalents(t *testing.T) {
 	}
 }
 
+// TestSimInputReportsBlizzardSource is spec
+// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.5: source is addon,
+// blizzard or fight — a Blizzard-sourced build reads back as "blizzard", not "addon".
+func TestSimInputReportsBlizzardSource(t *testing.T) {
+	h := newHarness(t)
+	h.service.Summaries = dirGetter{root: h.dir}
+	seedExportWithSource(h, "us/normal/kiloz", "us", "normal", "Kiloz",
+		"FS1:1.60.1.69893:warrior:orc:0/0/0:head=21329", "blizzard", time.Now().UTC())
+	var in Input
+	h.data(h.do(http.MethodGet, "/v1/characters/us/normal/kiloz/sim-input", "", nil), &in)
+	if in.Source != "blizzard" {
+		t.Fatalf("Source = %q, want blizzard", in.Source)
+	}
+}
+
 func TestSimInputServesTheCharacterWithNoBucket(t *testing.T) {
 	h := newHarness(t)
 	ensureMetricsPartition(h)

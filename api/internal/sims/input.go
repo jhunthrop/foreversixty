@@ -66,6 +66,7 @@ func (s *Store) SimInput(ctx context.Context, key string) (Input, FightRef, bool
 	var (
 		ref        FightRef
 		export     *string
+		exportSrc  *string
 		exportAt   *time.Time
 		fightClass *string
 		fightSpec  *string
@@ -77,8 +78,8 @@ func (s *Store) SimInput(ctx context.Context, key string) (Input, FightRef, bool
 		playerName *string
 	)
 	err := s.Pool.QueryRow(ctx,
-		`select export, updated_at from addon_exports where character_key = $1`, key).
-		Scan(&export, &exportAt)
+		`select export, source, captured_at from addon_exports where character_key = $1`, key).
+		Scan(&export, &exportSrc, &exportAt)
 	if err != nil && !isNoRows(err) {
 		return Input{}, FightRef{}, false, fmt.Errorf("sims: read export %s: %w", key, err)
 	}
@@ -124,9 +125,13 @@ func (s *Store) SimInput(ctx context.Context, key string) (Input, FightRef, bool
 
 	switch {
 	case exportAt != nil && (fightAt == nil || exportAt.After(*fightAt)):
-		// The addon export is the richer source of gear: it carries
-		// what the character logged out in, slot by slot.
-		out.Source, out.CapturedAt = "addon", *exportAt
+		// The export is the richer source of gear: it carries what the
+		// character logged out in (addon) or last had equipped on
+		// Blizzard's servers (blizzard), slot by slot. Selection between
+		// this and the last fight uses captured_at — when the build was
+		// true in the game — not updated_at (spec
+		// docs/superpowers/specs/2026-09-22-battlenet-first-design.md §2.5).
+		out.Source, out.CapturedAt = *exportSrc, *exportAt
 		// The export is the addon's opaque string (an FS1 code), not JSON: it
 		// travels as a JSON string. Handing it to RawMessage as-is made the
 		// encoder fail after the headers were out, and every addon-sourced
