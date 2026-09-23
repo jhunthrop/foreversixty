@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"net/http"
 	"slices"
-	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
@@ -34,15 +34,18 @@ const (
 	// maxRequestBytes bounds a POST /v1/sims/run body. The envelope is
 	// JSON with a gear list in it, so 256 KB is generous.
 	maxRequestBytes = 256 << 10
-	// fetchMaxAge is how long a saved sim may be cached, in seconds:
-	// it never changes once written.
-	fetchMaxAge = 86400
 	// SimRunJobCommand is the argument the image dispatches on for one
 	// premium run, the way ParseJobCommand does for an upload.
 	SimRunJobCommand = "sim-run"
 	// maxTitle bounds the name a member may give a saved sim, in
 	// runes.
 	maxTitle = 120
+	// publicObjectMaxAge and publicObjectStale are the spec §2.2 Public
+	// per-object reads class's values: a saved sim result is immutable,
+	// but the frozen contract (spec §4) fixes this class's numbers for
+	// every route in it, saved sims included.
+	publicObjectMaxAge = 60 * time.Second
+	publicObjectStale  = 600 * time.Second
 )
 
 // Service serves the simulator routes.
@@ -169,7 +172,7 @@ func (s *Service) get(w http.ResponseWriter, r *http.Request) {
 	case err != nil:
 		s.fail(w, r, "get", err, "could not read that sim just now")
 	default:
-		w.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(fetchMaxAge))
+		httpx.CachePublic(w, publicObjectMaxAge, publicObjectStale)
 		httpx.WriteOK(w, r, http.StatusOK, GetOutput{SimResult: res, Title: title})
 	}
 }

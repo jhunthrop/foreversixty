@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
-	"strconv"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/httpx"
@@ -230,6 +229,6 @@ func (s *Service) specs(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "specs", err, "could not read the spec list just now")
 		return
 	}
-	w.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(specsMaxAge))
+	httpx.CachePublic(w, specsMaxAge*time.Second, 0)
 	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"specs": out})
 }

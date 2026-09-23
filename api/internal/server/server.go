@@ -4,6 +4,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/jhunthrop/foreversixty/api/internal/addon"
 	"github.com/jhunthrop/foreversixty/api/internal/auth"
@@ -63,7 +64,7 @@ func NewRouter(d Deps) http.Handler {
 	// same way the rankings do. Four fixed instants that change only with
 	// a deploy, so an hour at the edge is safe.
 	mux.HandleFunc("GET /v1/phases", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control", "public, max-age=3600")
+		httpx.CachePublic(w, time.Hour, 0)
 		httpx.WriteOK(w, r, http.StatusOK, map[string]any{"phases": phase.Boundaries})
 	})
 	if d.Subscribe != nil {

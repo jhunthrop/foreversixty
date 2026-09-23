@@ -45,8 +45,9 @@ func TestABrowserResultIsSavedAndReadBack(t *testing.T) {
 
 	h.anonymous()
 	res := h.do(http.MethodGet, "/v1/sims/"+id, "", nil)
-	if cc := res.Header.Get("Cache-Control"); !strings.Contains(cc, "public") {
-		t.Errorf("Cache-Control %q: a saved sim never changes", cc)
+	want := "public, max-age=60, stale-while-revalidate=600"
+	if cc := res.Header.Get("Cache-Control"); cc != want {
+		t.Errorf("Cache-Control = %q, want %q", cc, want)
 	}
 	var got GetOutput
 	h.data(res, &got)

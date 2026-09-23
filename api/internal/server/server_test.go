@@ -57,8 +57,9 @@ func TestThePhasesRouteServesTheBoundaries(t *testing.T) {
 	if env.Data.Phases[0].Name != phase.Boundaries[0].Name {
 		t.Errorf("first phase %q, want %q", env.Data.Phases[0].Name, phase.Boundaries[0].Name)
 	}
-	if cc := w.Header().Get("Cache-Control"); !strings.Contains(cc, "public") {
-		t.Errorf("Cache-Control %q: four fixed instants are cacheable", cc)
+	want := "public, max-age=3600"
+	if cc := w.Header().Get("Cache-Control"); cc != want {
+		t.Errorf("Cache-Control = %q, want %q", cc, want)
 	}
 }
 

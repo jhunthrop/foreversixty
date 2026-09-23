@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -184,9 +183,9 @@ func (s *Service) simInput(w http.ResponseWriter, r *http.Request) {
 	// is the same public data the character page already serves and
 	// takes the same short window.
 	if auth.ActorFrom(r.Context()).Signed() {
-		w.Header().Set("Cache-Control", "private, no-store")
+		httpx.CachePrivate(w)
 	} else {
-		w.Header().Set("Cache-Control", "public, max-age="+strconv.Itoa(inputMaxAge))
+		httpx.CachePublic(w, inputMaxAge*time.Second, 600*time.Second)
 	}
 	httpx.WriteOK(w, r, http.StatusOK, in)
 }

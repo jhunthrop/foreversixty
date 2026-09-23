@@ -206,14 +206,18 @@ func TestSimInputIsNeverCachedForASignedInCaller(t *testing.T) {
 
 	res := h.do(http.MethodGet, "/v1/characters/us/normal/baelgrim/sim-input", "", nil)
 	res.Body.Close()
-	if cc := res.Header.Get("Cache-Control"); cc != "private, no-store" {
+	if cc := res.Header.Get("Cache-Control"); cc != "private, no-cache" {
 		t.Errorf("signed in: Cache-Control %q", cc)
+	}
+	if v := res.Header.Get("Vary"); v != "Cookie, Authorization" {
+		t.Errorf("signed in: Vary %q", v)
 	}
 
 	h.anonymous()
 	res = h.do(http.MethodGet, "/v1/characters/us/normal/baelgrim/sim-input", "", nil)
 	res.Body.Close()
-	if cc := res.Header.Get("Cache-Control"); cc == "private, no-store" {
-		t.Errorf("anonymous: Cache-Control %q; a public read may be cached briefly", cc)
+	want := "public, max-age=60, stale-while-revalidate=600"
+	if cc := res.Header.Get("Cache-Control"); cc != want {
+		t.Errorf("anonymous: Cache-Control %q, want %q", cc, want)
 	}
 }

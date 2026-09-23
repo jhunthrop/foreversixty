@@ -276,5 +276,6 @@ func (s *Service) home(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "home", err, "could not load that guild's home just now")
 		return
 	}
+	httpx.CachePrivate(w)
 	httpx.WriteOK(w, r, http.StatusOK, view)
 }

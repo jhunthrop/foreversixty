@@ -39,6 +39,10 @@ func TestEverySpecHasACardBeforeAnythingIsMeasured(t *testing.T) {
 	if cc := res.Header.Get("Cache-Control"); cc == "" {
 		t.Error("the support page should be cacheable")
 	}
+	want := "public, max-age=300"
+	if cc := res.Header.Get("Cache-Control"); cc != want {
+		t.Errorf("Cache-Control = %q, want %q", cc, want)
+	}
 	h.data(res, &out)
 	if len(out.Specs) != len(DPSSpecs()) {
 		t.Fatalf("%d cards, want one per dps spec (%d)", len(out.Specs), len(DPSSpecs()))
