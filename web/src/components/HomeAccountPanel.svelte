@@ -9,12 +9,14 @@
      of the two stacking and reflowing the page underneath. -->
 <script lang="ts">
   import { fetchMeOnce, type Me, type MeCharacter } from '../lib/account/api';
+  import { createQueryState } from '../lib/data/query.svelte';
   import { readCurrent } from '../lib/current-character';
   import { classColorVar } from '../lib/report/format';
   import { classSquare, classIconUrl, characterDescriptor } from '../lib/account/character-descriptor';
   import { heroCharacter } from '../lib/account/hero-character';
   import { mainCharacter } from '../lib/account/main-character';
   import { parseCharacterPath } from '../lib/characters';
+  import { API_BASE_URL } from '../lib/planner/config';
   import { fetchCharacterRating } from '../lib/rankings/api';
   import type { CharacterRating } from '../lib/rating/types';
   import { ratingCopy } from '../lib/rating/copy';
@@ -22,19 +24,19 @@
   import { pointerForCharacter } from '../lib/account/main-character';
   import { writeCurrent, CURRENT_CHARACTER_CHANGED } from '../lib/current-character';
 
-  let me = $state<Me | null>(null);
-  let ready = $state(false);
-
-  $effect(() => {
-    void fetchMeOnce()
-      .then((result) => {
-        me = result;
-        ready = true;
-      })
-      .catch(() => {
-        ready = true;
-      });
+  // One `/v1/me` read, shared with every other island through the client cache
+  // (web/src/lib/data/query.ts) -- see SessionNav.svelte and Account.svelte's own copies of
+  // this same call.
+  const session = createQueryState<Me | null>(`${API_BASE_URL}/v1/me`, () => fetchMeOnce(), {
+    scope: 'private',
+    ttlMs: 10 * 60 * 1000,
   });
+
+  const me = $derived(session.data);
+  // 'ready' before this rewrite meant "the fetch attempt finished, whichever way" -- true on
+  // both the old `.then` and `.catch` branches -- so it maps to createQueryState's two
+  // terminal statuses, not just the successful one.
+  const ready = $derived(session.status === 'ready' || session.status === 'failed');
 
   /**
    * The grid-overlay CLS trick (this component's root and index.astro's signed-out block

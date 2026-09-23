@@ -8,34 +8,25 @@
      `1fr` brand column stretch, wrapping the wordmark to two lines and back on hydration). -->
 <script lang="ts">
   import { fetchMeOnce, type Me } from '../lib/account/api';
+  import { createQueryState } from '../lib/data/query.svelte';
   import { guildHref } from '../lib/characters';
+  import { API_BASE_URL } from '../lib/planner/config';
 
-  let me = $state<Me | null>(null);
-  let status = $state<'loading' | 'ready' | 'failed'>('loading');
-
-  const signedIn = $derived(me !== null);
-  const displayName = $derived(me?.user.battletag ?? me?.user.email ?? 'Your account');
-
-  async function load(): Promise<void> {
-    status = 'loading';
-    try {
-      me = await fetchMeOnce();
-      status = 'ready';
-    } catch {
-      status = 'failed';
-    }
-  }
-
-  // One load on mount. $effect rather than onMount so this behaves identically whether
-  // Astro hydrates it or a future caller mounts it by hand (Account.svelte's own comment
-  // gives the same reason for the same choice).
-  $effect(() => {
-    void load();
+  // One `/v1/me` read, shared with every other island through the client cache
+  // (web/src/lib/data/query.ts) -- see HomeAccountPanel.svelte and Account.svelte's own
+  // copies of this same call. `createQueryState`'s $effect does the one-load-on-mount work
+  // this component used to do by hand.
+  const session = createQueryState<Me | null>(`${API_BASE_URL}/v1/me`, () => fetchMeOnce(), {
+    scope: 'private',
+    ttlMs: 10 * 60 * 1000,
   });
+
+  const signedIn = $derived(session.data !== null);
+  const displayName = $derived(session.data?.user.battletag ?? session.data?.user.email ?? 'Your account');
 </script>
 
 <div class="flex items-center gap-3 text-[13px]" data-testid="session-nav">
-  {#if status === 'loading'}
+  {#if session.status === 'loading'}
     <span class="invisible inline-flex min-h-11 items-center px-2 md:min-h-0 md:px-0" aria-hidden="true">
       Sign in
     </span>
@@ -43,12 +34,16 @@
     <a href="/account" class="text-nav hover:text-strong inline-flex min-h-11 items-center md:min-h-0">
       {displayName}
     </a>
-    {#if me !== null && me.guilds.length > 0}
+    {#if session.data !== null && session.data.guilds.length > 0}
       <!-- The API's GET /v1/me now orders guilds by most-recently-active membership
            (spec section 2.6's ORDER BY change), so [0] is the right one with no further
            sorting here. -->
       <a
-        href={guildHref(me.guilds[0].region, me.guilds[0].ruleset, me.guilds[0].name)}
+        href={guildHref(
+          session.data.guilds[0].region,
+          session.data.guilds[0].ruleset,
+          session.data.guilds[0].name,
+        )}
         class="text-nav hover:text-strong inline-flex min-h-11 items-center md:min-h-0"
         data-testid="session-my-guild"
       >
