@@ -35,17 +35,37 @@ func TestEncodeGearMapsEveryFixtureSlotAndSkipsShirtAndTabard(t *testing.T) {
 	}
 }
 
-func TestEncodeGearMatchesASuffixedItemName(t *testing.T) {
+func TestEncodeGearMatchesASuffixedItemNameWithAnEnchant(t *testing.T) {
+	raw := []byte(`{"equipped_items":[{"item":{"id":1234},"slot":{"type":"WAIST"},"name":"Girdle of the Falcon",
+		"enchantments":[{"enchantment_id":42,"enchantment_slot":{"type":"PERMANENT"}}]}]}`)
+	gear, _, noSuffix, err := encodeGear(raw, SuffixTable{"of the Falcon": 14})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if gear != "waist=1234:42:14" {
+		t.Fatalf("gear = %q, want waist=1234:42:14 (item id, enchant, suffix)", gear)
+	}
+	if len(noSuffix) != 0 {
+		t.Fatalf("noSuffix = %v, want none: this item matched and had an enchant to anchor the suffix", noSuffix)
+	}
+}
+
+// TestEncodeGearDropsASuffixWithNoEnchantToAnchorIt covers the grammar's real limit:
+// item_id[:enchant[:suffix]] has no form for "item_id, no enchant, a suffix" — a bare
+// "item_id::suffix" is not digits-only in its middle field and the site's own decoder
+// (web/src/lib/planner/fs1.ts's parseGearList) refuses it, which would otherwise fail the
+// whole gear list, not just this one slot. The suffix is dropped and reported instead.
+func TestEncodeGearDropsASuffixWithNoEnchantToAnchorIt(t *testing.T) {
 	raw := []byte(`{"equipped_items":[{"item":{"id":1234},"slot":{"type":"WAIST"},"name":"Girdle of the Falcon","enchantments":[]}]}`)
 	gear, _, noSuffix, err := encodeGear(raw, SuffixTable{"of the Falcon": 14})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if gear != "waist=1234::14" {
-		t.Fatalf("gear = %q, want waist=1234::14 (item id, no enchant, suffix 14)", gear)
+	if gear != "waist=1234" {
+		t.Fatalf("gear = %q, want waist=1234 (the suffix dropped, not written as an invalid entry)", gear)
 	}
-	if len(noSuffix) != 0 {
-		t.Fatalf("noSuffix = %v, want none: this item matched", noSuffix)
+	if len(noSuffix) != 1 || noSuffix[0] != "Girdle of the Falcon" {
+		t.Fatalf("noSuffix = %v, want the dropped item's name reported", noSuffix)
 	}
 }
 

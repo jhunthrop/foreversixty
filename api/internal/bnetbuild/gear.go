@@ -75,7 +75,13 @@ func encodeGear(raw json.RawMessage, suffixes SuffixTable) (gear string, skipped
 		case enchant != 0:
 			entry += ":" + strconv.Itoa(enchant)
 		case matched:
-			entry += "::" + strconv.Itoa(suffix)
+			// The grammar has no way to write a suffix without an enchant ahead of it
+			// (item_id[:enchant[:suffix]]) — "item_id::suffix" is not a legal three-part
+			// entry, and web/src/lib/planner/fs1.ts's parseGearList refuses it (every
+			// colon-separated part must be digits-only, and "" is not). Rather than write
+			// a string the site's own decoder cannot read, the suffix is dropped and
+			// reported (spec §1.3's honesty rule: nothing here is inferred or faked).
+			noSuffix = append(noSuffix, it.Name)
 		}
 		parts = append(parts, entry)
 	}

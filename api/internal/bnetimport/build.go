@@ -51,7 +51,7 @@ func (s *Service) buildAndWriteExport(ctx context.Context, tx pgx.Tx, userID int
 	if profile.LastLoginTimestamp > 0 {
 		capturedAt = time.UnixMilli(profile.LastLoginTimestamp)
 	}
-	if _, err := tx.Exec(ctx,
+	tag, err := tx.Exec(ctx,
 		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, source, captured_at, updated_at)
 		 values ($1, $2, $3, $4, $5, $6, 'blizzard', $7, now())
 		 on conflict (character_key) do update set
@@ -59,8 +59,17 @@ func (s *Service) buildAndWriteExport(ctx context.Context, tx pgx.Tx, userID int
 		   export = excluded.export, source = 'blizzard', captured_at = excluded.captured_at, updated_at = now()
 		 where addon_exports.user_id = excluded.user_id
 		   and (addon_exports.source = 'blizzard' or excluded.captured_at > addon_exports.captured_at)`,
-		key, userID, region, ruleset, profile.Name, code, capturedAt); err != nil {
+		key, userID, region, ruleset, profile.Name, code, capturedAt)
+	if err != nil {
 		return fmt.Errorf("bnetimport: write export %s: %w", key, err)
+	}
+	if tag.RowsAffected() == 0 {
+		// The newest-wins guard (spec §2.4) blocked the write — a different account
+		// already owns this key's addon_exports row, or an addon export taken since the
+		// character's last Blizzard session is still the freshest source. Not an error:
+		// this is the guard doing exactly what it's for.
+		s.logger().Info("bnetimport", "op", "build_guarded", "key", key)
+		return nil
 	}
 	s.logger().Info("bnetimport", "op", "build_encoded", "key", key,
 		"unmatched_talents", len(report.UnmatchedTalents), "clamped", len(report.Clamped),
