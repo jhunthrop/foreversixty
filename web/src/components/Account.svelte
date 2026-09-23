@@ -99,6 +99,11 @@
   });
   const hero = $derived(me === null ? null : heroCharacter(currentCharacter, me.characters));
   const heroPath = $derived(hero === null ? null : parseCharacterPath(`/character/${hero.key}`));
+  // spec 2026-09-22 §3.1: "the sentence that Blizzard serves no data for this realm type
+  // when no character has a build" -- account-wide, not just the hero, since it is telling
+  // the player why the handoff links below are stuck on the paste fallback for every
+  // character, not only this one.
+  const noBattlenetData = $derived(me !== null && me.characters.every((c) => c.build === undefined));
 
   /** Devices panel's Updated stamp: the most recently seen device, or '' when none has
    *  ever reported in (brief 2026-09-22 §B2: "an Updated stamp ... where a timestamp
@@ -472,6 +477,11 @@
                         {accountPageCopy.heroLogs}
                       </a>
                     </div>
+                  {/if}
+                  {#if noBattlenetData}
+                    <p class="text-muted text-[13px]" data-testid="account-hero-no-bnet-data">
+                      {accountPageCopy.noBattlenetDataForRealm}
+                    </p>
                   {/if}
                 </div>
                 {#if hero.render_url !== undefined}
