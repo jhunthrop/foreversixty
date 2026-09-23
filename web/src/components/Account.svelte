@@ -30,7 +30,13 @@
   import { characterDescriptor } from '../lib/account/character-descriptor';
   import { heroCharacter } from '../lib/account/hero-character';
   import { characterHref, guildHref, parseCharacterPath } from '../lib/characters';
-  import { CURRENT_CHARACTER_CHANGED, readCurrent, type CurrentCharacter } from '../lib/current-character';
+  import {
+    CURRENT_CHARACTER_CHANGED,
+    readCurrent,
+    writeCurrent,
+    type CurrentCharacter,
+  } from '../lib/current-character';
+  import { mainCharacter, pointerForCharacter } from '../lib/account/main-character';
   import { classColorVar } from '../lib/report/format';
   import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
   import { guildConsentCopy } from '../lib/guild/copy';
@@ -38,6 +44,7 @@
   import { relativeTime } from '../lib/dates';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterList from './account/CharacterList.svelte';
+  import CharacterRatingPanel from './CharacterRatingPanel.svelte';
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import MyReports from './MyReports.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
@@ -92,6 +99,11 @@
   });
   const hero = $derived(me === null ? null : heroCharacter(currentCharacter, me.characters));
   const heroPath = $derived(hero === null ? null : parseCharacterPath(`/character/${hero.key}`));
+  // spec 2026-09-22 §3.1: "the sentence that Blizzard serves no data for this realm type
+  // when no character has a build" -- account-wide, not just the hero, since it is telling
+  // the player why the handoff links below are stuck on the paste fallback for every
+  // character, not only this one.
+  const noBattlenetData = $derived(me !== null && me.characters.every((c) => c.build === undefined));
 
   /** Devices panel's Updated stamp: the most recently seen device, or '' when none has
    *  ever reported in (brief 2026-09-22 §B2: "an Updated stamp ... where a timestamp
@@ -149,6 +161,27 @@
     const params = new URLSearchParams(window.location.search);
     if (params.get('refreshed') !== '1') return;
     toast = characterListCopy.refreshedToast;
+    window.history.replaceState({}, '', window.location.pathname);
+  });
+
+  // Hub arrival (spec 2026-09-22 §3.1): a fresh sign-in lands on ?signed_in=1, picks the
+  // main character, writes it as the site's current-character pointer, and shows a one-line
+  // banner naming it. Same "read the query string, act once, then replaceState it away"
+  // idiom as the ?refreshed=1 toast above -- replaceState is what keeps this from re-firing
+  // on a later `me` reassignment, not extra state.
+  let signedInBanner = $state('');
+
+  $effect(() => {
+    if (mode !== 'account' || me === null) return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('signed_in') !== '1') return;
+    const main = mainCharacter(me.characters);
+    if (main !== null) {
+      const pointer = pointerForCharacter(main);
+      writeCurrent(pointer);
+      window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+      signedInBanner = accountPageCopy.signedInBanner(main.name);
+    }
     window.history.replaceState({}, '', window.location.pathname);
   });
 
@@ -368,7 +401,7 @@
     {:else if !signedIn}
       <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
       <div class={SIGNED_OUT_MIN_H}>
-        <SignInPrompt line={accountSignInCopy.reason} next="/account" testid="account-signin" />
+        <SignInPrompt line={accountSignInCopy.reason} testid="account-signin" />
       </div>
     {:else}
       <div class="reveal flex flex-col gap-8">
@@ -391,6 +424,15 @@
 
         <CurrentCharacterBar compact />
 
+        {#if signedInBanner !== ''}
+          <div
+            class="bg-raised border-gold flex flex-col gap-1 border-l-2 px-4 py-3"
+            data-testid="account-signed-in-banner"
+          >
+            <p class="text-[14px]">{signedInBanner}</p>
+          </div>
+        {/if}
+
         {#if toast !== ''}
           <div
             class="bg-raised border-gold flex flex-col gap-1 border-l-2 px-4 py-3"
@@ -408,8 +450,10 @@
         <div class="flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
           <div class="flex flex-col gap-8 lg:col-span-8">
             {#if hero !== null}
-              <!-- The current character's render (brief §B4): shown only when the compact
-                   chip's pointer matches a listed character that has one -- nothing invented. -->
+              <!-- The current character (brief §B4, loosened §3.1): shown whenever the
+                   compact chip's pointer matches a listed character; the render below is
+                   shown only when that character has one -- an addon-only import still gets
+                   a hero band, just without art. -->
               <div
                 class="border-line-soft flex flex-col-reverse items-start gap-4 overflow-hidden border-b bg-[var(--color-bg)] pb-6 lg:flex-row lg:items-end lg:justify-between"
                 data-testid="account-hero"
@@ -424,20 +468,43 @@
                   </a>
                   <span class="text-muted text-[13px]">{characterDescriptor(hero)}</span>
                   {#if heroPath !== null}
-                    <CharacterHandoffLinks path={heroPath} />
+                    <div class="flex min-h-11 flex-wrap items-center gap-3 md:min-h-0">
+                      <CharacterHandoffLinks path={heroPath} />
+                      <a
+                        class="inline-flex min-h-11 items-center text-[13px] font-semibold md:min-h-0"
+                        href="/logs"
+                      >
+                        {accountPageCopy.heroLogs}
+                      </a>
+                    </div>
+                  {/if}
+                  {#if noBattlenetData}
+                    <p class="text-muted text-[13px]" data-testid="account-hero-no-bnet-data">
+                      {accountPageCopy.noBattlenetDataForRealm}
+                    </p>
                   {/if}
                 </div>
-                <img
-                  class="max-h-[280px] w-auto object-contain lg:max-h-[360px]"
-                  src={hero.render_url}
-                  alt=""
-                  loading="lazy"
-                  data-testid="account-hero-render"
-                />
+                {#if hero.render_url !== undefined}
+                  <img
+                    class="max-h-[280px] w-auto object-contain lg:max-h-[360px]"
+                    src={hero.render_url}
+                    alt=""
+                    loading="lazy"
+                    data-testid="account-hero-render"
+                  />
+                {/if}
               </div>
             {/if}
 
             <CharacterList characters={me!.characters} bnetImportedAt={me!.bnet_imported_at} />
+
+            {#if heroPath !== null}
+              <StatePanel label={accountPageCopy.yourRatingsLabel} testid="account-ratings">
+                <div class="p-[18px]">
+                  <CharacterRatingPanel path={heroPath} />
+                </div>
+              </StatePanel>
+            {/if}
 
             <StatePanel label="Your reports" testid="account-reports">
               <MyReports {signedIn} heading={false} />

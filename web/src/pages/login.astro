@@ -18,6 +18,6 @@ import { accountSignInCopy } from '../lib/account/signin-copy';
   >
     <h1 class="section-title text-[18px]">Sign in</h1>
     <p class="text-muted text-[14px]">{accountSignInCopy.reason}</p>
-    <Account client:load mode="login" next="/logs" />
+    <Account client:load mode="login" next="/account?signed_in=1" />
   </main>
 </Base>

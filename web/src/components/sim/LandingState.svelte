@@ -1,14 +1,14 @@
 <!-- web/src/components/sim/LandingState.svelte -->
 <!-- What a signed-in member sees when they open /sim: their characters, one button each,
      and no form at all until they ask for one.
-     The footnote is not boilerplate. The contract's sim-input has no Armory source yet, so
-     the gear behind each of these rows is the member's last addon export or last logged
-     fight, and a member who assumed the Armory was being read would be wrong about how
-     fresh their gear is. The design's "last-logout gear" is precisely what an addon export
-     holds, so this is the feature through the source that exists. -->
+     Each row carries its own build-source pill (buildSourcePill, build-pill.ts) rather than
+     a single blanket footnote: the site now has a real Battle.net-backed source alongside
+     the addon export, so "where did this gear come from" is a per-character fact, not a
+     lane-wide one. -->
 <script lang="ts">
   import type { MeCharacter } from '../../lib/account/api';
   import type { CharacterPath } from '../../lib/characters';
+  import { buildSourcePill } from '../../lib/account/build-pill';
   import { parseCharacterPath, rulesetLabel } from '../../lib/characters';
   import { classColorVar } from '../../lib/report/format';
   import { simCopy } from '../../lib/sim/copy';
@@ -72,6 +72,7 @@
     {#each characters as character (character.key)}
       {@const colour = classColorVar(character.class)}
       {@const path = pathOf(character)}
+      {@const pill = buildSourcePill(character.build)}
       <li
         class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-3 py-2 last:border-b-0"
         data-testid={`sim-character-${character.key}`}
@@ -91,6 +92,12 @@
           <span class="text-[15px] font-semibold" style={`color: ${colour}`}>{character.name}</span>
           <span class="text-muted text-[13px]">
             {rulesetLabel(character.ruleset)} · {character.region.toUpperCase()}
+          </span>
+          <span
+            class={pill.pillClass === null ? 'text-muted text-[12px]' : `pill ${pill.pillClass}`}
+            data-testid={`sim-character-build-${character.key}`}
+          >
+            {pill.label}
           </span>
         </a>
         <!-- Every row disables while any one is busy, not just the busy row (fix round 1,
@@ -117,7 +124,6 @@
     {/each}
   </ul>
 
-  <p class="text-muted text-[12px]" data-testid="sim-landing-note">{simCopy.landingSourceNote}</p>
   <!-- task-2-brief.md: this is what a signed-in member reads first on /sim, before they
        have picked a character -- the same scope sentence the Astro shell already carries
        above the fold, repeated here since a member who scrolled straight to their

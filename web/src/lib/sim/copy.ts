@@ -191,11 +191,10 @@ export const simCopy = {
   fightNoCombatant: 'That fight did not record this character’s gear and talents.',
   fightNoTalents:
     'That fight recorded gear but not talent ranks, so the sim uses the gear and an empty tree.',
-  armorySignIn: 'Sign in with Battle.net to find your characters.',
-  // Armory itself is not a source yet (simulator contract, sim-input). Saying so is better
-  // than an Armory card that quietly serves an addon export under the wrong name.
-  armoryNotYet:
-    'Blizzard has no character profile API for Forever yet, so a signed-in character’s gear comes from your last addon export or your last logged fight. It will come from the Armory the day that exists.',
+  /** SourceSwitcher's signed-out account card (spec 2026-09-22 §3.3: the site now has a
+   *  real Battle.net-backed source, so this replaces the old "not yet" disclaimer). */
+  signInToFindCharacters:
+    'Sign in with Battle.net to find your characters, with their gear and talents ready to sim.',
   // A combat log records no race and this lane never guesses one; the strip asks instead.
   pickRace: 'Pick your race; the combat log did not record it.',
   pickRacePlaceholder: 'Choose a race',
@@ -263,11 +262,7 @@ export const simCopy = {
   yourCharacters: 'Your characters',
   simIt: 'Sim',
   otherCharacter: 'Sim something else',
-  // The contract's sim-input has no Armory source yet (sources.ts's own header note), so
-  // this says, out loud, where the gear behind every row actually comes from.
-  landingSourceNote:
-    'Gear comes from your last addon export or your last logged fight. Blizzard has no character profile API for Forever yet.',
-  noCharactersYet: 'No characters yet. Install the addon and the companion, or paste an export.',
+  noCharactersYet: 'No characters yet. Sign in with Battle.net, or paste an export below.',
   // The /logs link's own visible text, fix round 1 LOW-1: was a literal "Logs" and a
   // trailing "." in SimView.svelte's template, outside this file's "every user-visible
   // string" rule.
@@ -936,7 +931,6 @@ export const bulkCopy = {
    * `locked` -- so a multi-slot candidate would otherwise reach the engine.
    */
   talentsHasCandidate: 'A talent compare changes only the tree. Untick every item candidate.',
-  bagsNeedAddon: 'Your bags and bank come from the addon export; this character was loaded another way.',
   tryEach: 'Try each',
   consumableCandidates: 'Try each of these as a candidate rather than a setting.',
 

@@ -163,6 +163,25 @@ describe('fromStoredCharacter', () => {
     if (!result.ok) throw new Error(result.message);
     expect(result.character.source.kind).toBe('armory');
   });
+
+  it('reads a blizzard-sourced sim-input exactly like an addon-sourced one', async () => {
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/characters\/[^/]+\/[^/]+\/[^/]+\/sim-input$/,
+      respond: () =>
+        envelope({
+          spec: 'warrior-fury',
+          gear: FURY,
+          talents: '',
+          buffs: [],
+          captured_at: '2026-09-21T00:00:00Z',
+          source: 'blizzard',
+        }),
+    });
+    const result = await fromStoredCharacter(path, ctx);
+    expect(result.ok).toBe(true);
+    if (result.ok) expect(result.character.source.kind).toBe('blizzard');
+  });
 });
 
 describe('fromAddonExport', () => {
@@ -397,6 +416,9 @@ describe('sourcePill', () => {
     expect(sourcePill({ kind: 'addon', ref: '', captured_at: '2026-09-14T11:59:50Z' }, now)).toBe(
       'Addon export, just now',
     );
+    expect(
+      sourcePill({ kind: 'blizzard', ref: 'us/normal/kiloz', captured_at: '2026-09-12T12:00:00Z' }, now),
+    ).toBe('Battle.net, 2 days ago');
     expect(sourcePill({ kind: 'build', ref: 'bld1', captured_at: '2026-09-13T20:00:00Z' }, now)).toBe(
       'Build from planner',
     );

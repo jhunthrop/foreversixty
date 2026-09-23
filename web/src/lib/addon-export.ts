@@ -18,7 +18,9 @@ export async function lookupAddonExport(path: CharacterPath, apiBase?: string): 
   try {
     const input = await fetchSimInput(path, apiBase);
     const code =
-      input.source === 'addon' && typeof input.gear === 'string' && input.gear.startsWith(`${FS1_PREFIX}:`)
+      (input.source === 'addon' || input.source === 'blizzard') &&
+      typeof input.gear === 'string' &&
+      input.gear.startsWith(`${FS1_PREFIX}:`)
         ? input.gear
         : null;
     return { path, code };

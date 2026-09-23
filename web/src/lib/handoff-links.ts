@@ -5,6 +5,7 @@
 // tool. No other module in this lane's scope should compose one of these paths by hand —
 // that is what lets the coordinator retarget every link at Lane B's
 // `current-character.ts` (`plannerHrefFor`/`simHrefFor`) in this one file at merge time.
+import { defaultSimState, simSearch, withSimState } from './sim/url';
 
 export function plannerCodeHref(code: string): string {
   return `/planner?code=${encodeURIComponent(code)}`;
@@ -27,4 +28,15 @@ export function simFightHref(reportId: string, fightIndex: number, guid?: string
 
 export function simDropsHref(instanceSlug: string): string {
   return `/sim/drops?instance=${encodeURIComponent(instanceSlug)}`;
+}
+
+/** A stored character, by key (spec 2026-09-22 §3.4): loads through the sim's own
+ *  `?source=armory&ref=` bootstrap (`store.svelte.ts`'s `bootstrapSource`), which resolves
+ *  whichever source the API actually holds -- `'addon'` or `'blizzard'` -- with no extra
+ *  fetch needed to build this href, unlike `simCodeHref`/`plannerCodeHref` which need the
+ *  FS1 string itself. Used where a whole list of characters needs a working "Open in
+ *  simulator" link without one `sim-input` fetch per row (`CharacterRowLink.svelte`,
+ *  `LandingState.svelte`'s own row link already builds the identical URL by hand). */
+export function simArmoryHref(characterKey: string): string {
+  return `/sim${simSearch(withSimState(defaultSimState(), { source: 'armory', ref: characterKey }))}`;
 }
