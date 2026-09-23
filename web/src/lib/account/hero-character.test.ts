@@ -33,9 +33,9 @@ describe('heroCharacter', () => {
     expect(heroCharacter({ ...POINTER, source: 'addon' }, [CHAR])).toBeNull();
   });
 
-  it('returns null when the pointer names a character with no render_url', () => {
+  it('returns the character even when it has no render_url (an addon-only import)', () => {
     const noRender = { ...CHAR, render_url: undefined };
-    expect(heroCharacter(POINTER, [noRender])).toBeNull();
+    expect(heroCharacter(POINTER, [noRender])).toBe(noRender);
   });
 
   it('returns null when the pointer names no listed character', () => {
