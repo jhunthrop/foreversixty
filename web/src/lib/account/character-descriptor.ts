@@ -34,11 +34,19 @@ function locationLabel(character: MeCharacter): string {
   return `${rulesetLabel(character.ruleset)} ${character.region.toUpperCase()}`;
 }
 
+/** The smallest shape `classSquare`/`classIconUrl` need -- every `MeCharacter` satisfies it, and
+ *  so does `CharacterPortrait.svelte`'s own narrower `PortraitCharacter` prop type (spec
+ *  2026-09-23 §2.1: "type it as the smallest shape and let MeCharacter satisfy it"). */
+export interface ClassIconSubject {
+  name: string;
+  class?: string;
+}
+
 /** The class-coloured fallback square's letter and colour, for a character with no
  *  avatar_url -- the class's first letter (design/DESIGN-SYSTEM.md's Character row) in
  *  the class's own colour, or the site's own text colour for a character with no class on
  *  file yet. */
-export function classSquare(character: MeCharacter): { letter: string; color: string } {
+export function classSquare(character: ClassIconSubject): { letter: string; color: string } {
   const label = character.class === undefined ? character.name : classDisplayName(character.class);
   return { letter: label.charAt(0).toUpperCase(), color: classColorVar(character.class) };
 }
@@ -60,7 +68,7 @@ const CLASS_ICON_SLUGS: ReadonlySet<string> = new Set([
 ]);
 
 /** The class icon a character without an avatar shows; undefined for an unknown class. */
-export function classIconUrl(character: MeCharacter): string | undefined {
+export function classIconUrl(character: ClassIconSubject): string | undefined {
   const slug = character.class?.toLowerCase();
   return slug !== undefined && CLASS_ICON_SLUGS.has(slug) ? `${CLASS_ICON_BASE}${slug}.jpg` : undefined;
 }
