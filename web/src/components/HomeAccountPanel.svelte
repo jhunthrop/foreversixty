@@ -41,14 +41,18 @@
    * could still tab to, or hear, a duplicate "Sign in with Battle.net" link sitting behind
    * the visible strip. Reaches outside this component's own root via `document`, the same
    * cross-island DOM-reach pattern `syncTabHrefs` in `lib/sim/tabs.ts` uses to coordinate
-   * with a sibling shell element it doesn't own. `ready && me !== null` never reverts to
-   * signed-out within one mount today (`fetchMeOnce` resolves once), but the else branch
-   * clears both attributes anyway so this stays correct if that ever changes.
+   * with a sibling shell element it doesn't own. `ready && me !== null && hero !== null`
+   * never reverts within one mount today (`fetchMeOnce` resolves once), but the else branch
+   * clears both attributes anyway so this stays correct if that ever changes. Gated on
+   * `hero !== null` too (review fix): a signed-in visitor with zero characters yet -- a real
+   * state, `main-character.ts`'s own `mainCharacter([])` returns null for it -- has no hub
+   * summary to show, so the signed-out block (sentence + Battle.net button) must stay live
+   * and focusable rather than being hidden behind a hero that renders nothing.
    */
   $effect(() => {
     const signedOut = document.getElementById(HOME_SIGNED_OUT_ID);
     if (signedOut === null) return;
-    if (ready && me !== null) {
+    if (ready && me !== null && hero !== null) {
       signedOut.setAttribute('inert', '');
       signedOut.setAttribute('aria-hidden', 'true');
     } else {

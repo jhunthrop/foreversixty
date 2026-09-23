@@ -145,7 +145,13 @@ const popular = [
           >
             <div class="flex flex-wrap gap-2">
               {dpsSpecs().map((row) => (
-                <a href={`/sim?spec=${row.spec}`} class="pill pill-site">
+                // Plain /sim, not /sim?spec=<slug> (review fix): the simulator's own URL
+                // state (lib/sim/url.ts's SimState) has no `spec` field and never reads
+                // one, so a per-spec query string would look distinct while landing on the
+                // identical generic page for every pill -- these pills are the simulator's
+                // real spec coverage, not a working per-spec deep link (that would need a
+                // change to /sim itself, out of this lane's scope).
+                <a href="/sim" class="pill pill-site">
                   {specLabel(row.spec)}
                 </a>
               ))}

@@ -47,13 +47,15 @@ test('the four product panels link to their tools, with the planner and simulato
   await expect(
     page.getByTestId('home-product-planner').getByRole('link', { name: 'Warrior' }),
   ).toHaveAttribute('href', '/planner?class=warrior');
-  // The simulator panel's live element: damage-spec pills linking into the simulator.
+  // The simulator panel's live element: damage-spec pills, real coverage, linking into the
+  // simulator itself -- plain /sim, since /sim has no per-spec URL state to preselect from
+  // (a per-spec query string would look distinct while landing on an identical page).
   await expect(
     page
       .getByTestId('home-product-simulator')
       .getByRole('link', { name: /Warrior/ })
       .first(),
-  ).toHaveAttribute('href', /^\/sim\?spec=/);
+  ).toHaveAttribute('href', '/sim');
 });
 
 // The reference tiles' and addon/companion row's own ordering and hrefs are

@@ -19,6 +19,31 @@ test('the home page offers Battle.net sign-in when signed out', async ({ page })
   await expect(page.getByTestId('home-account-panel')).toHaveCount(0);
 });
 
+test('a signed-in visitor with zero characters still sees the Battle.net sign-in CTA, not a blank hero', async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+          characters: [],
+          guilds: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.goto('/');
+  await expect(page.getByTestId('home-account-panel')).toHaveCount(0);
+  const signedOut = page.getByTestId('home-signed-out');
+  await expect(signedOut).toBeVisible();
+  await expect(signedOut).not.toHaveAttribute('inert');
+  await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
+});
+
 test('the home page shows the current character strip when signed in', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(
