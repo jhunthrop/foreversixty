@@ -41,8 +41,8 @@ func recomputeMembership(t *testing.T, pool *pgxpool.Pool, guildID, userID int64
 func seedExport(t *testing.T, pool *pgxpool.Pool, userID int64, key, region, ruleset, name string) {
 	t.Helper()
 	if _, err := pool.Exec(context.Background(), `
-		insert into addon_exports (character_key, user_id, region, ruleset, name, export, updated_at)
-		values ($1, $2, $3, $4, $5, '', now())`,
+		insert into addon_exports (character_key, user_id, region, ruleset, name, export, captured_at, updated_at)
+		values ($1, $2, $3, $4, $5, '', now(), now())`,
 		key, userID, region, ruleset, name); err != nil {
 		t.Fatal(err)
 	}

@@ -21,15 +21,23 @@ func (d dirGetter) Get(_ context.Context, key string) (io.ReadCloser, error) {
 	return os.Open(d.root + "/" + key)
 }
 
-// seedExport writes one addon export for a character.
+// seedExport writes one addon-sourced export for a character, at is used for both
+// captured_at and updated_at (the two coincide for a freshly-written addon export).
 func seedExport(h *harness, key, region, ruleset, name, export string, at time.Time) {
 	h.t.Helper()
+	seedExportWithSource(h, key, region, ruleset, name, export, "addon", at)
+}
+
+// seedExportWithSource is seedExport plus an explicit source ("addon" or "blizzard"),
+// for tests asserting on SimInput's reported source.
+func seedExportWithSource(h *harness, key, region, ruleset, name, export, source string, at time.Time) {
+	h.t.Helper()
 	if _, err := h.store.Pool.Exec(h.t.Context(),
-		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, updated_at)
-		 values ($1, $2, $3, $4, $5, $6, $7)
+		`insert into addon_exports (character_key, user_id, region, ruleset, name, export, source, captured_at, updated_at)
+		 values ($1, $2, $3, $4, $5, $6, $7, $8, $8)
 		 on conflict (character_key) do update set export = excluded.export,
-		   updated_at = excluded.updated_at`,
-		key, h.owner, region, ruleset, name, export, at); err != nil {
+		   source = excluded.source, captured_at = excluded.captured_at, updated_at = excluded.updated_at`,
+		key, h.owner, region, ruleset, name, export, source, at); err != nil {
 		h.t.Fatal(err)
 	}
 }
