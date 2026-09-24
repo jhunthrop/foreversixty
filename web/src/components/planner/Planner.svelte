@@ -33,6 +33,7 @@
   import { createPlannerStore } from '../../lib/planner/store.svelte';
   import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   import { treeSourceNotice } from '../../lib/planner/tree-source';
+  import { plannerSearchFor } from '../../lib/planner/url';
   import type { BuildRecord, Gear, TalentFile } from '../../lib/planner/types';
   import { characterFromPlanner } from '../../lib/sim/character';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
@@ -427,6 +428,23 @@
   // have written into `codeNote` moments earlier in that same flush (decode failures are
   // reported synchronously, before load()'s first `await`). Every run after the first is a
   // genuine class change, and only those should ever clear it.
+  // The address mirrors the class and race on screen (lib/planner/url.ts), so a refresh or a
+  // copied link lands on the build the visitor chose rather than the one the page opened on.
+  // Only the standalone /planner page owns its address: /b/:id names a record, and Top Gear's
+  // inline planner lives on another page's URL. replaceState, never pushState: a class switch
+  // is not a navigation the back button should retrace.
+  const decodedCode = decoded !== null && decoded.ok ? decoded.build : null;
+  $effect(() => {
+    if (!standalone || record) return;
+    const next = plannerSearchFor(
+      window.location.search,
+      store.classSlug,
+      store.raceSlug,
+      decodedCode === null ? null : { classSlug: decodedCode.classSlug, raceSlug: decodedCode.raceSlug },
+    );
+    if (next !== null) window.history.replaceState(null, '', `${window.location.pathname}${next}`);
+  });
+
   let classSlugForNoteReset = store.classSlug;
   $effect(() => {
     void store.classSlug;

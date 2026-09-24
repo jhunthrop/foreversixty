@@ -58,6 +58,27 @@ test('?class and ?race preselect the build', async ({ page }) => {
   await expect(page.getByLabel('Race')).toHaveValue('dwarf');
 });
 
+test('switching class and race rewrites the address, so a refresh keeps the choice', async ({ page }) => {
+  await page.goto('/planner?class=warrior&race=dwarf');
+  await expect(page.getByLabel('Class')).toHaveValue('warrior');
+  await page.getByLabel('Class').selectOption('mage');
+  await expect(page).toHaveURL(/\/planner\?class=mage(&race=[a-z]+)?$/);
+  await page.getByLabel('Race').selectOption('gnome');
+  await expect(page).toHaveURL(/\/planner\?class=mage&race=gnome$/);
+  await page.reload();
+  await expect(page.getByLabel('Class')).toHaveValue('mage');
+  await expect(page.getByLabel('Race')).toHaveValue('gnome');
+});
+
+test('a code stays in the address until its class or race is left', async ({ page }) => {
+  const code = 'FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A';
+  await page.goto(`/planner?code=${code}`);
+  await expect(page.getByLabel('Class')).toHaveValue('warrior');
+  await expect(page).toHaveURL(new RegExp(`/planner\\?code=${code}$`));
+  await page.getByLabel('Race').selectOption('dwarf');
+  await expect(page).toHaveURL(/\/planner\?class=warrior&race=dwarf$/);
+});
+
 test('a failed talent fetch shows the reason and a working retry', async ({ page }) => {
   let attempts = 0;
   await page.route('**/data/*/talents/warrior.json', async (route) => {
