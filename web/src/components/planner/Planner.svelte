@@ -434,13 +434,22 @@
   // inline planner lives on another page's URL. replaceState, never pushState: a class switch
   // is not a navigation the back button should retrace.
   const decodedCode = decoded !== null && decoded.ok ? decoded.build : null;
+  // The class and race the page came up with, read once the reference data has landed:
+  // `setReference` moves an unset or illegal race to the class's first legal one, and that
+  // move is the page opening, not the visitor choosing, so it must not rewrite a bare address.
+  let opened: { classSlug: string; raceSlug: string } | null = null;
   $effect(() => {
-    if (!standalone || record) return;
+    if (!standalone || record || store.races.length === 0) return;
+    if (opened === null) {
+      opened = { classSlug: store.classSlug, raceSlug: store.raceSlug };
+      return;
+    }
     const next = plannerSearchFor(
       window.location.search,
       store.classSlug,
       store.raceSlug,
       decodedCode === null ? null : { classSlug: decodedCode.classSlug, raceSlug: decodedCode.raceSlug },
+      opened,
     );
     if (next !== null) window.history.replaceState(null, '', `${window.location.pathname}${next}`);
   });

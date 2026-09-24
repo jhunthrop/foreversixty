@@ -16,16 +16,21 @@ const CODE = 'code';
  * and race are still the ones on screen the address is left alone, so a refresh reloads that
  * build, talents and all. Once the visitor moves off it, class and race are written and any
  * `?code=` dropped, because a refresh would otherwise reload the code's build over the one
- * they chose. Every other parameter is left as it was.
+ * they chose. `opened` is the class and race the page came up with: a bare address stays
+ * bare until the visitor changes one of them, so following a plain /planner link never
+ * rewrites it. Every other parameter is left as it was.
  */
 export function plannerSearchFor(
   search: string,
   classSlug: string,
   raceSlug: string,
   code: { classSlug: string; raceSlug: string } | null,
+  opened: { classSlug: string; raceSlug: string },
 ): string | null {
   const params = new URLSearchParams(search);
   if (code !== null && code.classSlug === classSlug && code.raceSlug === raceSlug) return null;
+  const bare = params.get(CODE) === null && params.get(CLASS) === null && params.get(RACE) === null;
+  if (bare && opened.classSlug === classSlug && opened.raceSlug === raceSlug) return null;
 
   const next = new URLSearchParams(search);
   next.delete(CODE);
