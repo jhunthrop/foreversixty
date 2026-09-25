@@ -27,6 +27,12 @@ describe('timelineRows', () => {
 
   it('preserves every field of the source row', () => {
     const rows = timelineRows(DATES, new Date('2026-09-24T12:00:00Z'));
-    expect(rows[1]).toEqual({ key: 'Sept 17', value: 'Beta opens', note: 'level cap 30', iso: '2026-09-17', status: 'past' });
+    expect(rows[1]).toEqual({
+      key: 'Sept 17',
+      value: 'Beta opens',
+      note: 'level cap 30',
+      iso: '2026-09-17',
+      status: 'past',
+    });
   });
 });

@@ -13,7 +13,11 @@ describe('HomeTimeline', () => {
   it('renders every row with its own status, and the updated stamp', async () => {
     const c = await AstroContainer.create();
     const html = await c.renderToString(HomeTimeline, {
-      props: { dates: DATES, now: new Date('2026-09-24T00:00:00Z'), updated: new Date('2026-09-20T00:00:00Z') },
+      props: {
+        dates: DATES,
+        now: new Date('2026-09-24T00:00:00Z'),
+        updated: new Date('2026-09-20T00:00:00Z'),
+      },
     });
     expect(html).toContain('data-testid="home-timeline"');
     expect((html.match(/data-testid="home-timeline-row"/g) ?? []).length).toBe(4);
