@@ -8,10 +8,20 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { MeCharacter } from '../../lib/account/api';
+import { landingCopy } from '../../lib/sim/landing-copy';
 import LandingState from './LandingState.svelte';
 
+// A build on the fixture (2026-09-24 landing pass, Finding 1): without one the row now
+// renders the "Paste export" link instead of the Sim button every test below still needs.
 const CHARACTERS: MeCharacter[] = [
-  { key: 'us/normal/simfury', name: 'Simfury', class: 'warrior', region: 'us', ruleset: 'normal' },
+  {
+    key: 'us/normal/simfury',
+    name: 'Simfury',
+    class: 'warrior',
+    region: 'us',
+    ruleset: 'normal',
+    build: { source: 'addon', captured_at: '2026-09-20T00:00:00Z' },
+  },
 ];
 
 function pickButtonTag(body: string): string {
@@ -68,5 +78,96 @@ describe('LandingState', () => {
       /<span[^>]*data-testid="sim-character-build-us\/normal\/simfury"[^>]*>([\s\S]*?)<\/span>/.exec(body);
     if (match === null) throw new Error('build pill not found');
     expect(match[1]).toContain('Battle.net');
+  });
+
+  // Finding 4: the landing rows use the full descriptor, same as the account page's list.
+  it('renders the full descriptor', () => {
+    const characters = [{ ...CHARACTERS[0], race: 'Orc', level: 60, realm: 'Whitemane' }];
+    const { body } = render(LandingState, {
+      props: { characters, busyKey: null, onpick: () => {}, onother: () => {} },
+    });
+    expect(body).toContain('Orc Warrior');
+    expect(body).toContain('Level 60');
+  });
+
+  // Finding 5: the scope note no longer repeats here -- ScopeNote.astro's own copy, above
+  // the island, is the only copy of it now.
+  it('renders no scope note of its own', () => {
+    const { body } = render(LandingState, {
+      props: { characters: CHARACTERS, busyKey: null, onpick: () => {}, onother: () => {} },
+    });
+    expect(body).not.toContain('data-testid="sim-landing-scope-note"');
+  });
+
+  describe('a character with no build (Finding 1)', () => {
+    const NO_BUILD: MeCharacter = {
+      key: 'us/normal/roland',
+      name: 'Roland',
+      class: 'mage',
+      region: 'us',
+      ruleset: 'normal',
+    };
+
+    it('renders the Paste export link instead of the Sim button, and no pill', () => {
+      const { body } = render(LandingState, {
+        props: { characters: [NO_BUILD], busyKey: null, onpick: () => {}, onother: () => {} },
+      });
+      expect(body).not.toContain('data-testid="sim-pick-us/normal/roland"');
+      expect(body).toContain('data-testid="sim-paste-us/normal/roland"');
+      expect(body).toContain(landingCopy.pasteExport);
+      expect(body).toContain(`href="${landingCopy.pasteExportHref}"`);
+      expect(body).not.toContain('data-testid="sim-character-build-us/normal/roland"');
+    });
+  });
+
+  describe('a failed pick for want of a build (Finding 2)', () => {
+    it('renders no alert when failedKey is null', () => {
+      const { body } = render(LandingState, {
+        props: {
+          characters: CHARACTERS,
+          busyKey: null,
+          failedKey: null,
+          onpick: () => {},
+          onother: () => {},
+        },
+      });
+      expect(body).not.toContain('data-testid="sim-landing-build-missing"');
+    });
+
+    it('renders the build-missing alert, with the character name and both links, before "Sim something else"', () => {
+      const { body } = render(LandingState, {
+        props: {
+          characters: CHARACTERS,
+          busyKey: null,
+          failedKey: 'us/normal/simfury',
+          onpick: () => {},
+          onother: () => {},
+        },
+      });
+      expect(body).toContain('data-testid="sim-landing-build-missing"');
+      expect(body).toContain('No build yet for Simfury.');
+      expect(body).toContain(landingCopy.buildMissingPasteLink);
+      expect(body).toContain(`href="${landingCopy.pasteExportHref}"`);
+      expect(body).toContain(landingCopy.buildMissingAccountLink);
+      expect(body).toContain(`href="${landingCopy.buildMissingAccountHref}"`);
+
+      const alertIndex = body.indexOf('data-testid="sim-landing-build-missing"');
+      const otherIndex = body.indexOf('data-testid="sim-other-character"');
+      expect(alertIndex).toBeGreaterThan(-1);
+      expect(otherIndex).toBeGreaterThan(alertIndex);
+    });
+
+    it('renders no alert when failedKey names no character in the list', () => {
+      const { body } = render(LandingState, {
+        props: {
+          characters: CHARACTERS,
+          busyKey: null,
+          failedKey: 'us/normal/nobody',
+          onpick: () => {},
+          onother: () => {},
+        },
+      });
+      expect(body).not.toContain('data-testid="sim-landing-build-missing"');
+    });
   });
 });

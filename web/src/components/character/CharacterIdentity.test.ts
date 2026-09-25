@@ -1,6 +1,7 @@
 // web/src/components/character/CharacterIdentity.test.ts
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import { createRawSnippet } from 'svelte';
 import type { MeCharacter } from '../../lib/account/api';
 import CharacterIdentity from './CharacterIdentity.svelte';
 
@@ -96,6 +97,28 @@ describe('CharacterIdentity', () => {
     expect(nameSpanIndex).toBeGreaterThan(h1Index);
     expect(nameSpanIndex).toBeLessThan(closeH1Index);
     expect(body).not.toContain('<a');
+  });
+
+  // Finding 3, 2026-09-24 landing pass: CharacterRow.svelte's own pill and guild line
+  // render through this slot, in the text column, after the descriptor line.
+  it('renders `below` content in the text column, after the descriptor line, when given', () => {
+    const below = createRawSnippet(() => ({
+      render: () => '<span data-testid="below-marker">extra</span>',
+    }));
+    const { body } = render(CharacterIdentity, {
+      props: { character: CHAR, size: 'md', descriptor: 'full', descriptorTestid: 'd', below },
+    });
+    const descriptorIndex = body.indexOf('data-testid="d"');
+    const belowIndex = body.indexOf('below-marker');
+    expect(descriptorIndex).toBeGreaterThan(-1);
+    expect(belowIndex).toBeGreaterThan(descriptorIndex);
+  });
+
+  it('renders nothing extra when `below` is omitted (every other caller)', () => {
+    const { body } = render(CharacterIdentity, {
+      props: { character: CHAR, size: 'md', descriptor: 'none' },
+    });
+    expect(body).not.toContain('below-marker');
   });
 
   it('renders no <h1> when heading is omitted or false (every other caller)', () => {

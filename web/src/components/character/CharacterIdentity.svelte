@@ -1,8 +1,13 @@
 <!-- web/src/components/character/CharacterIdentity.svelte -->
 <!-- Portrait + name + descriptor as one block (spec 2026-09-23 §2.2): the account hero band,
      the home hub's hero, and (through CharacterRow) every character-list row draw their name
-     and descriptor line through this, instead of four hand-rolled copies. -->
+     and descriptor line through this, instead of four hand-rolled copies.
+
+     `below` (Finding 3, 2026-09-24 landing pass) is one additive slot in the text column,
+     after the descriptor line: CharacterRow.svelte renders its build pill and guild line
+     through it, so they sit under the name rather than under the whole portrait+name block. -->
 <script lang="ts">
+  import type { Snippet } from 'svelte';
   import type { MeCharacter } from '../../lib/account/api';
   import { characterDescriptor } from '../../lib/account/character-descriptor';
   import { rulesetLabel } from '../../lib/characters';
@@ -22,6 +27,7 @@
     nameTestid,
     descriptorTestid,
     testid = 'character',
+    below,
   }: {
     character: MeCharacter;
     size: 'sm' | 'md' | 'lg';
@@ -35,6 +41,11 @@
     nameTestid?: string;
     descriptorTestid?: string;
     testid?: string;
+    /** Finding 3, 2026-09-24 landing pass: one additive slot in the text column, after the
+     *  descriptor line -- CharacterRow.svelte's own build pill and guild line render
+     *  through it, so they sit under the name rather than under the whole portrait+name
+     *  block. Every other caller renders nothing extra here, unchanged. */
+    below?: Snippet;
   } = $props();
 
   const line = $derived(
@@ -89,6 +100,9 @@
     {/if}
     {#if line !== ''}
       <span class="text-muted text-[13px]" data-testid={descriptorTestid}>{line}</span>
+    {/if}
+    {#if below !== undefined}
+      {@render below()}
     {/if}
   </div>
 </div>

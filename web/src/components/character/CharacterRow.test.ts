@@ -64,4 +64,34 @@ describe('CharacterRow', () => {
     expect(body).toContain('href="/character/x"');
     expect(body).toContain('data-testid="n"');
   });
+
+  // Finding 1, 2026-09-24 landing pass: the landing rows hide the pill entirely for a
+  // character with no build -- the row's action already says so. Opt-in, so every other
+  // caller (the account page) keeps today's muted "No build yet" text.
+  it('hides the pill for a character with no build only when hidePillWhenNoBuild is set', () => {
+    const withoutFlag = render(CharacterRow, { props: { character: GUILDED, pillTestid: 'p' } });
+    expect(withoutFlag.body).toContain('data-testid="p"');
+
+    const withFlag = render(CharacterRow, {
+      props: { character: GUILDED, pillTestid: 'p', hidePillWhenNoBuild: true },
+    });
+    expect(withFlag.body).not.toContain('data-testid="p"');
+  });
+
+  it('still shows the pill with hidePillWhenNoBuild set when the character has a build', () => {
+    const { body } = render(CharacterRow, {
+      props: { character: PLAIN, pillTestid: 'p', hidePillWhenNoBuild: true },
+    });
+    expect(body).toMatch(/data-testid="p">\s*Addon/);
+  });
+
+  // Finding 3: the pill and guild line render through CharacterIdentity's own `below` slot
+  // now -- this pins that they still land inside the row at all, not that they vanished.
+  it('still renders the pill inside the row (through CharacterIdentity, Finding 3)', () => {
+    const { body } = render(CharacterRow, { props: { character: PLAIN, pillTestid: 'p' } });
+    const nameIndex = body.indexOf(PLAIN.name);
+    const pillIndex = body.indexOf('data-testid="p"');
+    expect(nameIndex).toBeGreaterThan(-1);
+    expect(pillIndex).toBeGreaterThan(nameIndex);
+  });
 });

@@ -25,6 +25,7 @@ import {
   saveSim,
 } from './api';
 import { simCopy } from './copy';
+import { landingCopy } from './landing-copy';
 import { ENGINE_VERSION } from './version';
 
 const api = createSimApi();
@@ -200,6 +201,18 @@ describe('fetchSimInput', () => {
     await fetchSimInput(path, TEST_API);
     expect(api.lastUrl()).toContain('/v1/characters/us/normal/thrallgar/sim-input');
     expect(api.lastUrl()).not.toContain('%2F');
+  });
+
+  // Finding 2, 2026-09-24 landing pass: this route's own 404 -- the character has no build
+  // recorded at all -- reads differently from fetchSim's "No sim with that id.", which every
+  // other 404 in this file still gets (see fetchSim's own test above).
+  it('says the character has no build, not "no sim with that id", on 404', async () => {
+    api.route({
+      method: 'GET',
+      pattern: /\/v1\/characters\/.*\/sim-input$/,
+      respond: () => failure('none', 404),
+    });
+    await expect(fetchSimInput(path, TEST_API)).rejects.toThrow(landingCopy.buildMissingFallback);
   });
 });
 

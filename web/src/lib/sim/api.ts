@@ -18,6 +18,7 @@ import { API_BASE_URL } from '../planner/config';
 import type { BuildRecord } from '../planner/types';
 import type { BulkServerProgress } from './bulk-types';
 import { bulkCopy, simCopy } from './copy';
+import { landingCopy } from './landing-copy';
 import type { KindFilter } from './history';
 import type { PhaseRow } from './phase';
 import type { SimInput, SimListPage, SimProgress, SimRequest, SimResult, SpecFidelity } from './types';
@@ -34,11 +35,17 @@ export class SimApiError extends Error {
   }
 }
 
-/** Every failure this module raises, with the copy the page shows, keyed off the status. */
-function asSimError(error: unknown, fallback: string): SimApiError {
+/**
+ * Every failure this module raises, with the copy the page shows, keyed off the status.
+ * `notFoundMessage` lets one caller's 404 read differently from every other route's shared
+ * "No sim with that id." (Finding 2, 2026-09-24 landing pass: `fetchSimInput`'s 404 -- the
+ * character has no build recorded at all -- is not a missing sim, and saying so the same
+ * way misleads). Every other call site passes none, so its own 404 message is unchanged.
+ */
+function asSimError(error: unknown, fallback: string, notFoundMessage?: string): SimApiError {
   const status = error instanceof AccountError ? error.status : 0;
   if (status === PREMIUM_REQUIRED_STATUS) return new SimApiError(simCopy.premiumRequired, status);
-  if (status === 404) return new SimApiError(simCopy.notFound, status);
+  if (status === 404) return new SimApiError(notFoundMessage ?? simCopy.notFound, status);
   return new SimApiError(fallback, status);
 }
 
@@ -47,12 +54,13 @@ async function call<T>(
   apiBase: string,
   fallback: string,
   init: { method?: string; body?: unknown; credentials?: RequestCredentials } = {},
+  notFoundMessage?: string,
 ): Promise<T> {
   let data: T | null;
   try {
     ({ data } = await requestEnvelope<T>(path, apiBase, { ...init, failureMessage: fallback }));
   } catch (error) {
-    throw asSimError(error, fallback);
+    throw asSimError(error, fallback, notFoundMessage);
   }
   if (data === null) throw new SimApiError(fallback, 0);
   return data;
@@ -209,7 +217,14 @@ export function fetchSimInput(path: CharacterPath, apiBase: string = API_BASE_UR
   const segments = [path.region, path.ruleset, path.slug].map(encodeURIComponent).join('/');
   return query<SimInput>(
     `${apiBase}/v1/characters/${segments}/sim-input`,
-    () => call<SimInput>(`/v1/characters/${segments}/sim-input`, apiBase, simCopy.characterFailed),
+    () =>
+      call<SimInput>(
+        `/v1/characters/${segments}/sim-input`,
+        apiBase,
+        simCopy.characterFailed,
+        {},
+        landingCopy.buildMissingFallback,
+      ),
     { scope: 'public', ttlMs: SIM_RESULT_TTL_MS },
   );
 }

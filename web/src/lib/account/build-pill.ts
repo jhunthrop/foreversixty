@@ -13,6 +13,13 @@ export interface BuildPill {
   pillClass: 'pill-blizzard' | 'pill-site' | null;
 }
 
+/** Finding 1 (2026-09-24 landing pass): the one presence check the landing row's own
+ *  action (Sim vs. "Paste export") and this pill's visibility (CharacterRow.svelte) both
+ *  make, so the two decisions can never read `build` two different ways. */
+export function hasBuild(character: Pick<MeCharacter, 'build'>): boolean {
+  return character.build !== undefined;
+}
+
 export function buildSourcePill(build: MeCharacter['build'], now: Date = new Date()): BuildPill {
   if (build === undefined) return { label: characterListCopy.noBuildYet, pillClass: null };
   const name =
