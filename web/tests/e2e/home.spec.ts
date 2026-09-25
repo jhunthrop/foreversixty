@@ -14,11 +14,11 @@ test('homepage states the product and stops, not a marketing slogan', async ({ p
   expect(heading).not.toMatch(/[!?]$/);
   expect(heading).toBe('Your character, planned, simmed, logged and ranked.');
   await expect(page.getByRole('combobox', { name: 'Search the site' })).toBeVisible();
-  await expect(page.getByText('Right now')).toBeVisible();
-  await expect(page.getByTestId('home-product-planner')).toBeVisible();
-  await expect(page.getByTestId('home-product-simulator')).toBeVisible();
-  await expect(page.getByTestId('home-product-logs')).toBeVisible();
-  await expect(page.getByTestId('home-product-rankings')).toBeVisible();
+  await expect(page.getByTestId('home-timeline')).toBeVisible();
+  await expect(page.getByTestId('home-next-planner-signed-out')).toBeVisible();
+  await expect(page.getByTestId('home-next-simulator-signed-out')).toBeVisible();
+  await expect(page.getByTestId('home-next-logs-signed-out')).toBeVisible();
+  await expect(page.getByTestId('home-next-rankings-signed-out')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Your guild' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What changed' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Still unknown' })).toBeVisible();
@@ -26,35 +26,24 @@ test('homepage states the product and stops, not a marketing slogan', async ({ p
   expect(errors).toEqual([]);
 });
 
-test('the four product panels link to their tools, with the planner and simulator live elements', async ({
+test('the four next-steps cards link to their tools, with the planner and simulator live elements gone from this page', async ({
   page,
 }) => {
   await page.goto('/');
   await expect(
-    page.getByTestId('home-product-planner').getByRole('link', { name: 'Open the planner' }),
+    page.getByTestId('home-next-planner-signed-out').getByRole('link', { name: 'Open the planner' }),
   ).toHaveAttribute('href', '/planner');
   await expect(
-    page.getByTestId('home-product-simulator').getByRole('link', { name: 'Open the simulator' }),
+    page.getByTestId('home-next-simulator-signed-out').getByRole('link', { name: 'Open the simulator' }),
   ).toHaveAttribute('href', '/sim');
   await expect(
-    page.getByTestId('home-product-logs').getByRole('link', { name: 'Open the logs' }),
+    page.getByTestId('home-next-logs-signed-out').getByRole('link', { name: 'Open the logs' }),
   ).toHaveAttribute('href', '/logs');
   await expect(
-    page.getByTestId('home-product-rankings').getByRole('link', { name: 'Open the rankings' }),
+    page.getByTestId('home-next-rankings-signed-out').getByRole('link', { name: 'Open the rankings' }),
   ).toHaveAttribute('href', '/rankings');
-  // The planner panel's live element: nine class tiles linking into the planner.
-  await expect(
-    page.getByTestId('home-product-planner').getByRole('link', { name: 'Warrior' }),
-  ).toHaveAttribute('href', '/planner?class=warrior');
-  // The simulator panel's live element: damage-spec pills, real coverage, linking into the
-  // simulator itself -- plain /sim, since /sim has no per-spec URL state to preselect from
-  // (a per-spec query string would look distinct while landing on an identical page).
-  await expect(
-    page
-      .getByTestId('home-product-simulator')
-      .getByRole('link', { name: /Warrior/ })
-      .first(),
-  ).toHaveAttribute('href', '/sim');
+  // The class-tile row and the spec-pill wall left the home page (spec 2026-09-24 §3).
+  await expect(page.getByRole('link', { name: 'Warrior', exact: true })).toHaveCount(0);
 });
 
 // The reference tiles' and addon/companion row's own ordering and hrefs are
