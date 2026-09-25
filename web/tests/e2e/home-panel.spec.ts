@@ -11,7 +11,12 @@ test('the home page offers Battle.net sign-in when signed out', async ({ page })
     route.fulfill(fulfil({ ok: false, data: null, error: null, request_id: 'r' }, 401)),
   );
   await page.goto('/');
-  await expect(page.getByTestId('home-signed-out')).toBeVisible();
+  const signedOut = page.getByTestId('home-signed-out');
+  await expect(signedOut).toBeVisible();
+  // The pitch heading moved inside the signed-out block in this redesign.
+  await expect(signedOut.getByRole('heading', { level: 1 })).toHaveText(
+    'Your character, planned, simmed, logged and ranked.',
+  );
   await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toHaveAttribute(
     'href',
     /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Fsigned_in%3D1$/,
@@ -44,7 +49,9 @@ test('a signed-in visitor with zero characters still sees the Battle.net sign-in
   await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
 });
 
-test('the home page shows the current character strip when signed in', async ({ page }) => {
+test('a character with no build shows Get the build, not a Sim button, with the portrait fallback', async ({
+  page,
+}) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       fulfil({
@@ -74,22 +81,136 @@ test('the home page shows the current character strip when signed in', async ({ 
     );
   });
   await page.goto('/');
-  await expect(page.getByTestId('home-account-panel')).toBeVisible();
+  const panel = page.getByTestId('home-account-panel');
+  await expect(panel).toBeVisible();
   // The header is live on the home page too: a signed-in visitor sees their tag, not a
-  // "Sign in" link beside their own character strip (Base.astro's `session`).
+  // "Sign in" link beside their own hero.
   await expect(page.getByTestId('session-nav')).toContainText('Fixture#1');
   await expect(page.getByTestId('session-nav-static')).toHaveCount(0);
-  await expect(
-    page.getByTestId('home-account-panel').getByRole('link', { name: 'Open in simulator' }),
-  ).toHaveAttribute('href', '/sim');
-  await expect(
-    page.getByTestId('home-account-panel').getByRole('link', { name: 'Your characters' }),
-  ).toHaveAttribute('href', '/account');
+  // The character name is the page's only heading -- no testid is passed for it, so it is
+  // located by role/name, the way a real user (or a screen reader) would find it.
+  await expect(panel.getByRole('heading', { name: 'Kiloz', level: 1 })).toBeVisible();
+  await expect(panel.getByRole('link', { name: 'Get the build' })).toHaveAttribute(
+    'href',
+    '/account#characters',
+  );
+  await expect(panel.getByRole('link', { name: 'Plan talents' })).toHaveAttribute('href', '/planner');
+  await expect(panel.getByRole('link', { name: 'Logs' })).toHaveAttribute('href', '/logs');
+  await expect(panel.getByRole('link', { name: 'Your characters' })).toHaveAttribute('href', '/account');
   // The signed-out "Sign in with Battle.net" link is only ever visually covered by the
   // grid-overlay CLS trick, never removed from the DOM -- without `inert`, a signed-in
   // keyboard/screen-reader user could still tab to, or hear, the duplicate link behind it.
   await expect(page.locator('#home-signed-out')).toHaveAttribute('inert', '');
   await expect(page.locator('#home-signed-out')).toHaveAttribute('aria-hidden', 'true');
+  // No render_url on this fixture: the CharacterPortrait fallback (letter square) stands in
+  // for the character render image. It sits in a `hidden lg:block` wrapper (desktop-only
+  // decoration), so `toBeAttached` -- not `toBeVisible` -- is the right check across both
+  // the desktop and mobile projects this suite runs under.
+  await expect(panel.getByTestId('home-hero-portrait-avatar-fallback')).toBeAttached();
+  await expect(panel.getByTestId('home-hero-render')).toHaveCount(0);
+});
+
+test('a character with a build shows a Sim button to the armory-source href and its render image', async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+          characters: [
+            {
+              key: 'us/normal/kiloz',
+              region: 'us',
+              ruleset: 'normal',
+              name: 'Kiloz',
+              class: 'Warrior',
+              render_url: 'https://example.test/render.jpg',
+              build: { source: 'addon', captured_at: '2026-09-20T00:00:00Z' },
+            },
+          ],
+          guilds: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.addInitScript(() => {
+    window.localStorage.setItem(
+      'fs.currentCharacter',
+      JSON.stringify({
+        source: 'armory',
+        ref: 'us/normal/kiloz',
+        label: 'Kiloz · Warrior',
+        classSlug: 'warrior',
+        savedAt: new Date().toISOString(),
+      }),
+    );
+  });
+  await page.goto('/');
+  const panel = page.getByTestId('home-account-panel');
+  await expect(panel.getByRole('link', { name: 'Sim Kiloz' })).toHaveAttribute(
+    'href',
+    '/sim?source=armory&ref=us%2Fnormal%2Fkiloz',
+  );
+  await expect(panel.getByRole('link', { name: 'Get the build' })).toHaveCount(0);
+  // Same `hidden lg:block` desktop-only wrapper as the portrait fallback -- `toBeAttached`
+  // holds on both the desktop and mobile projects; `toBeVisible` would only hold on desktop.
+  await expect(panel.getByTestId('home-hero-render')).toBeAttached();
+  await expect(panel.getByTestId('home-hero-render')).toHaveAttribute(
+    'src',
+    'https://example.test/render.jpg',
+  );
+  // The render image replaces the portrait fallback entirely -- never both at once.
+  await expect(panel.getByTestId('home-hero-portrait-avatar-fallback')).toHaveCount(0);
+});
+
+test('the hero shows a guild line when the character has one, with a verified mark', async ({ page }) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+          characters: [
+            {
+              key: 'us/normal/kiloz',
+              region: 'us',
+              ruleset: 'normal',
+              name: 'Kiloz',
+              class: 'Warrior',
+              guild: { id: 9, name: 'Emerald Dream', verified: true },
+            },
+          ],
+          guilds: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.route('**/v1/characters/**', (route) =>
+    route.fulfill(fulfil({ ok: false, data: null, error: { message: 'none' }, request_id: 'r' }, 404)),
+  );
+  await page.addInitScript(() => {
+    window.localStorage.setItem(
+      'fs.currentCharacter',
+      JSON.stringify({
+        source: 'armory',
+        ref: 'us/normal/kiloz',
+        label: 'Kiloz · Warrior',
+        classSlug: 'warrior',
+        savedAt: new Date().toISOString(),
+      }),
+    );
+  });
+  await page.goto('/');
+  const panel = page.getByTestId('home-account-panel');
+  const guildLine = panel.getByTestId('home-hero-guild-line');
+  await expect(guildLine).toContainText('Emerald Dream');
+  await expect(guildLine.getByTestId('home-hero-guild-verified')).toHaveText('Verified');
 });
 
 test('the signed-in hero shows a rating figure once one exists, never before', async ({ page }) => {
