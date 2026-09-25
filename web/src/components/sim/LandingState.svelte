@@ -1,14 +1,26 @@
 <!-- web/src/components/sim/LandingState.svelte -->
-<!-- What a signed-in member sees when they open /sim: their characters, one button each,
+<!-- What a signed-in member sees when they open /sim: their characters, one action each,
      and no form at all until they ask for one.
      Each row carries its own build-source pill (buildSourcePill, build-pill.ts) rather than
      a single blanket footnote: the site now has a real Battle.net-backed source alongside
      the addon export, so "where did this gear come from" is a per-character fact, not a
-     lane-wide one. -->
+     lane-wide one.
+
+     2026-09-24 landing pass (owner-approved UX review), Finding 1: the action follows the
+     character's own build state -- Sim for a character with one, a "Paste export" link in
+     its place for a character without, and the row's pill is hidden then too (the action
+     already says it). Finding 2: a pick that fails for want of a build (the API's own
+     sim-input 404, as opposed to the older "no race recorded" refusal) shows its own alert
+     here, between the list and "Sim something else" -- SimView.svelte's `failedKey` names
+     which row. Finding 4: rows use the full descriptor, same as the account page's list.
+     Finding 5: the scope note that used to repeat here is gone; ScopeNote.astro's own two
+     sentences above the island are the only copy of it now. -->
 <script lang="ts">
   import type { MeCharacter } from '../../lib/account/api';
+  import { hasBuild } from '../../lib/account/build-pill';
   import type { CharacterPath } from '../../lib/characters';
   import { parseCharacterPath } from '../../lib/characters';
+  import { landingCopy } from '../../lib/sim/landing-copy';
   import { simCopy } from '../../lib/sim/copy';
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { armorySimHref } from '../../lib/sim/url';
@@ -17,14 +29,23 @@
   let {
     characters,
     busyKey,
+    failedKey = null,
     onpick,
     onother,
   }: {
     characters: MeCharacter[];
     busyKey: string | null;
+    /** Finding 2: the key of the character whose pick just failed for want of a build --
+     *  set only for that one failure, never for the race refusal, which keeps its own hint
+     *  where it already was (SimView.svelte's `sim-landing-message` paragraph). */
+    failedKey?: string | null;
     onpick: (path: CharacterPath) => void;
     onother: () => void;
   } = $props();
+
+  const failedCharacter = $derived(
+    failedKey === null ? null : (characters.find((character) => character.key === failedKey) ?? null),
+  );
 
   // `MeCharacter.key` is already `<region>/<ruleset>/<slug>` (`characters.ts`'s own
   // `characterKey` shape), so this reuses that module's validated parser -- the same
@@ -72,6 +93,8 @@
       {@const path = pathOf(character)}
       <CharacterRow
         {character}
+        descriptor="full"
+        hidePillWhenNoBuild
         href={hrefFor(character)}
         onNameClick={(event) => path !== null && follow(event, path)}
         nameTestid={`sim-character-link-${character.key}`}
@@ -79,26 +102,57 @@
         testid={`sim-character-${character.key}`}
       >
         {#snippet action()}
-          <button
-            type="button"
-            class={`border-line-warm-strong rounded-control text-strong label ml-auto min-h-11 shrink-0 border px-4 disabled:opacity-50 md:min-h-9 ${busyKey === character.key ? BUSY_CLASS : ''}`}
-            disabled={busyKey !== null || path === null}
-            aria-busy={busyKey === character.key}
-            onclick={() => path !== null && onpick(path)}
-            data-testid={`sim-pick-${character.key}`}
-          >
-            {simCopy.simIt}
-          </button>
+          {#if hasBuild(character)}
+            <button
+              type="button"
+              class={`border-line-warm-strong rounded-control text-strong label ml-auto min-h-11 shrink-0 border px-4 disabled:opacity-50 md:min-h-9 ${busyKey === character.key ? BUSY_CLASS : ''}`}
+              disabled={busyKey !== null || path === null}
+              aria-busy={busyKey === character.key}
+              onclick={() => path !== null && onpick(path)}
+              data-testid={`sim-pick-${character.key}`}
+            >
+              {simCopy.simIt}
+            </button>
+          {:else}
+            <!-- Finding 1: a character with no build gets no Sim button -- there is nothing
+                 to sim yet -- and this link in its place. -->
+            <a
+              class="text-nav label ml-auto inline-flex min-h-11 shrink-0 items-center underline md:min-h-9"
+              href={landingCopy.pasteExportHref}
+              data-testid={`sim-paste-${character.key}`}
+            >
+              {landingCopy.pasteExport}
+            </a>
+          {/if}
         {/snippet}
       </CharacterRow>
     {/each}
   </ul>
 
-  <!-- task-2-brief.md: this is what a signed-in member reads first on /sim, before they
-       have picked a character -- the same scope sentence the Astro shell already carries
-       above the fold, repeated here since a member who scrolled straight to their
-       character list may never have read the shell's own copy. -->
-  <p class="text-muted text-[12px]" data-testid="sim-landing-scope-note">{simCopy.scopeNote}</p>
+  {#if failedCharacter !== null}
+    <!-- Finding 2: the sim-input 404 -- this character has no build recorded at all, as
+         opposed to the "no race recorded" refusal SimView.svelte's own paragraph still
+         handles below (never this one). The design system's LoadError shape (role="alert",
+         a muted line, no retry action here since the remedy is one of the two links, not a
+         re-fetch of the same 404), built by hand rather than through that component: its
+         `message` prop is plain text and cannot carry the two links this alert needs. -->
+    <div
+      class="flex min-h-11 flex-wrap items-center gap-3 text-[14px]"
+      role="alert"
+      data-testid="sim-landing-build-missing"
+    >
+      <span class="text-muted">
+        {landingCopy.buildMissingLead(failedCharacter.name)}
+        <a class="text-text underline" href={landingCopy.pasteExportHref}
+          >{landingCopy.buildMissingPasteLink}</a
+        >,
+        {landingCopy.buildMissingMiddle}
+        <a class="text-text underline" href={landingCopy.buildMissingAccountHref}
+          >{landingCopy.buildMissingAccountLink}</a
+        >.
+      </span>
+    </div>
+  {/if}
 
   <button
     type="button"

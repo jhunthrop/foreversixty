@@ -1,8 +1,14 @@
 // web/tests/e2e/sim-landing.spec.ts
 // Task 18: the signed-in landing state (design 4.6). A member who opens /sim sees their
-// characters and one button each, and no form until they ask for one -- the source switcher
+// characters and one action each, and no form until they ask for one -- the source switcher
 // (tests/e2e/sim-sources.spec.ts) is what every signed-out visitor still gets.
+//
+// 2026-09-24 landing pass (owner-approved UX review) adds Wendel: a character the site
+// holds no build for at all (`build` omitted, unlike Thrallgar and Roland below), whose
+// sim-input read 404s -- Finding 1's "Paste export" link and Finding 2's build-missing
+// alert both need one.
 import { expect, test } from '@playwright/test';
+import { landingCopy } from '../../src/lib/sim/landing-copy';
 import { simCopy } from '../../src/lib/sim/copy';
 
 function envelope(data: unknown, status = 200) {
@@ -21,15 +27,27 @@ function failure(message: string, status: number) {
   };
 }
 
-// Two characters: Thrallgar's stored source carries a race (the success path -- the API's
-// own answer today is an addon export or a logged fight, and this stub is the former, per
-// sources.ts's own `sourcePill`); Roland's does not, which is the second, louder limitation
-// the brief calls out -- `fromStoredCharacter` refuses rather than guessing one.
+// Three characters, each with a build (2026-09-24 landing pass, Finding 1: no build, no Sim
+// button) except Wendel: Thrallgar's stored source carries a race (the success path -- the
+// API's own answer today is an addon export or a logged fight, and this stub is the former,
+// per sources.ts's own `sourcePill`); Roland's does not, which is the second, louder
+// limitation the brief calls out -- `fromStoredCharacter` refuses rather than guessing one;
+// Wendel carries no `build` at all, so his row gets no Sim button and no pill -- a "Paste
+// export" link instead, and his own sim-input read 404s below.
+const BUILD = { source: 'addon' as const, captured_at: '2026-09-20T00:00:00Z' };
 const ME = {
   user: { id: 7, battletag: 'Fixture#1234', email: null, role: 'user', anonymize: false, premium: false },
   characters: [
-    { key: 'us/normal/thrallgar', region: 'us', ruleset: 'normal', name: 'Thrallgar', class: 'Warrior' },
-    { key: 'us/normal/roland', region: 'us', ruleset: 'normal', name: 'Roland', class: 'Mage' },
+    {
+      key: 'us/normal/thrallgar',
+      region: 'us',
+      ruleset: 'normal',
+      name: 'Thrallgar',
+      class: 'Warrior',
+      build: BUILD,
+    },
+    { key: 'us/normal/roland', region: 'us', ruleset: 'normal', name: 'Roland', class: 'Mage', build: BUILD },
+    { key: 'us/normal/wendel', region: 'us', ruleset: 'normal', name: 'Wendel', class: 'Priest' },
   ],
   guilds: [],
 };
@@ -70,6 +88,11 @@ async function stubSignedIn(page: import('@playwright/test').Page): Promise<void
   await page.route('**/v1/characters/us/normal/roland/sim-input', (route) =>
     route.fulfill(envelope(ROLAND_INPUT)),
   );
+  // Wendel carries no build at all: the API's own answer for a character it holds nothing
+  // for (Finding 2).
+  await page.route('**/v1/characters/us/normal/wendel/sim-input', (route) =>
+    route.fulfill(failure('no build', 404)),
+  );
   // Signed-in fires the history panel's own load (SimView's onMount); stubbed empty so it
   // settles rather than reaching the real API this suite has no server for.
   await page.route('**/v1/sims?mine=1*', (route) =>
@@ -89,9 +112,12 @@ test.describe('a signed-in member with characters', () => {
     await expect(page.getByTestId('sim-character-us/normal/thrallgar')).toBeVisible();
     await expect(page.getByTestId('sim-character-us/normal/roland')).toBeVisible();
     await expect(page.getByTestId('sim-sources')).toHaveCount(0);
-    // task-2-brief.md: the landing state is what a signed-in member reads first, so it
-    // carries the DPS-only scope sentence too, not only the Astro shell above it.
-    await expect(page.getByTestId('sim-landing-scope-note')).toHaveText(simCopy.scopeNote);
+    // Finding 5 (2026-09-24 landing pass): the landing state no longer carries its own copy
+    // of the scope sentence -- ScopeNote.astro's own two sentences, above the island, are
+    // the only copy of it now, and no engine-version hash precedes any of this (Finding 6).
+    await expect(page.getByTestId('sim-landing-scope-note')).toHaveCount(0);
+    await expect(page.getByTestId('sim-scope-note')).toHaveText(simCopy.scopeNote);
+    await expect(page.getByTestId('sim-engine-version')).toHaveCount(0);
 
     // Fix round 1, MEDIUM-1: the row is a real link (`url.ts`'s own `simSearch`), not only
     // the button beside it -- copyable, middle-clickable, opens in a new tab.
@@ -99,6 +125,49 @@ test.describe('a signed-in member with characters', () => {
       'href',
       '/sim?source=armory&ref=us%2Fnormal%2Fthrallgar',
     );
+  });
+
+  // Finding 1: a character with no build gets no Sim button -- a "Paste export" link and no
+  // pill instead, since the action already says it.
+  test('a character with no build gets a Paste export link, no Sim button, and no pill', async ({ page }) => {
+    await page.goto('/sim');
+
+    await expect(page.getByTestId('sim-pick-us/normal/wendel')).toHaveCount(0);
+    const pasteLink = page.getByTestId('sim-paste-us/normal/wendel');
+    await expect(pasteLink).toHaveText(landingCopy.pasteExport);
+    await expect(pasteLink).toHaveAttribute('href', landingCopy.pasteExportHref);
+    await expect(page.getByTestId('sim-character-build-us/normal/wendel')).toHaveCount(0);
+  });
+
+  // Finding 2: the sim-input 404 gets its own alert, with the character's name and both
+  // links, in place of (not alongside) the old plain-text race hint -- which never follows
+  // this failure (Ruling: `simCopy.landingNoRace` follows only the race refusal).
+  test('picking a character with no build shows the build-missing alert, and the list stays up', async ({
+    page,
+  }) => {
+    await page.goto('/sim');
+
+    // Wendel has no Sim button (Finding 1), but the row's own name link still picks him in
+    // place on a plain left click (`follow()`, LandingState.svelte) -- the same
+    // fromStoredCharacter/fetchSimInput path a Sim press would take for a character that had
+    // one, and the only way this specific failure (a 404, not the race refusal) is reached.
+    await page.getByTestId('sim-character-link-us/normal/wendel').click();
+
+    const alert = page.getByTestId('sim-landing-build-missing');
+    await expect(alert).toBeVisible();
+    await expect(alert).toContainText('No build yet for Wendel.');
+    await expect(alert.getByRole('link', { name: landingCopy.buildMissingPasteLink })).toHaveAttribute(
+      'href',
+      landingCopy.pasteExportHref,
+    );
+    await expect(alert.getByRole('link', { name: landingCopy.buildMissingAccountLink })).toHaveAttribute(
+      'href',
+      landingCopy.buildMissingAccountHref,
+    );
+    // The old plain-text race hint never follows a 404 (Ruling, Finding 2).
+    await expect(page.getByTestId('sim-landing-message')).toHaveCount(0);
+    await expect(page.getByTestId('sim-landing')).toBeVisible();
+    await expect(page.getByTestId('sim-character')).toHaveCount(0);
   });
 
   test('pressing Sim loads the strip, with the source pill the API actually answered', async ({ page }) => {

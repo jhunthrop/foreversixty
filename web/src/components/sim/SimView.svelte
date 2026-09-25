@@ -41,6 +41,7 @@
   } from '../../lib/sim/spec-state';
   import { createSimStore } from '../../lib/sim/store.svelte';
   import { syncTabHrefs } from '../../lib/sim/tabs';
+  import { landingCopy } from '../../lib/sim/landing-copy';
   import {
     decodeRequestParam,
     defaultSimState,
@@ -435,11 +436,20 @@
   // The landing state's own busy key (Task 18): the row a pick is in flight for, so its
   // button reads "Loading…" while every other row disables rather than reads it too.
   let landingBusyKey = $state<string | null>(null);
+  // Finding 2, 2026-09-24 landing pass: the key of the character a pick just failed for,
+  // want of a build (the sim-input 404) -- set only then, never for the race refusal, which
+  // keeps its own hint below (the `sim-landing-message` paragraph, gated on this being
+  // null). `store.message` carries no status code, so this compares it against
+  // `fetchSimInput`'s own 404 sentinel (`sim/api.ts`) rather than guessing from the text.
+  let landingFailedKey = $state<string | null>(null);
 
   async function pickCharacter(path: CharacterPath): Promise<void> {
-    landingBusyKey = `${path.region}/${path.ruleset}/${path.slug}`;
+    const key = `${path.region}/${path.ruleset}/${path.slug}`;
+    landingBusyKey = key;
+    landingFailedKey = null;
     await store.loadStored(path);
     landingBusyKey = null;
+    landingFailedKey = store.message === landingCopy.buildMissingFallback ? key : null;
   }
 
   // `store.ready` already ran the URL's own bootstrap; `runBootstrapRestore` (shared with
@@ -536,11 +546,15 @@
          Lighthouse's LCP measurement and, before this, was "Simulator" on both pages (M7,
          final whole-branch review), which the spec-support page's own title disagreed
          with. -->
-    <div class="flex flex-wrap items-baseline justify-end gap-x-4 gap-y-1 px-[18px] md:px-0">
-      <a class="tabular text-muted font-mono text-[12px]" href="/sim/specs" data-testid="sim-engine-version"
-        >{engineLabel(ENGINE_VERSION)}</a
-      >
-    </div>
+    <!-- Finding 6, 2026-09-24 landing pass: the engine-version hash used to render here,
+         unconditionally, ahead of every state below -- including the landing state, which
+         it preceded with a lone right-aligned hash before a signed-in member had even
+         loaded a character. It now renders once a character is loaded, right after
+         SettingsBar below -- not inside SettingsBar.svelte itself, which TopGear.svelte's
+         bulk tool pages (/sim/gear, /sim/talents, /sim/drops, /sim/weights) also render:
+         putting it there leaked a sub-44px control onto pages that never budgeted for it
+         (sim-tools-phone.spec.ts's own audit). This keeps it scoped to plain /sim, where
+         "the engine matters" actually means something. -->
 
     {#if bootstrap.view === 'specs'}
       <!-- Round 2 (Lighthouse): specs-intro is static now, in sim/specs.astro, ahead of
@@ -567,16 +581,17 @@
         <LandingState
           characters={me.characters}
           busyKey={landingBusyKey}
+          failedKey={landingFailedKey}
           onpick={(path) => void pickCharacter(path)}
           onother={() => (switcherOpen = true)}
         />
-        {#if store.message !== null}
-          <!-- The only failure a stored-character pick raises today is sources.ts's own
-               "no race recorded" refusal (a combat log carries none, and the API has not
-               started sending one for a stored character either) -- but whatever the
-               message, the remedy is the same: the addon export is the one source that
-               always carries a race, so the hint follows every refusal here rather than
-               only the one the copy names. -->
+        {#if store.message !== null && landingFailedKey === null}
+          <!-- The race refusal (sources.ts's "no race recorded", a combat log carries none
+               and the API has not started sending one for a stored character either) is the
+               one failure this paragraph still shows -- the sim-input 404 (Finding 2, 2026-
+               09-24 landing pass) has its own alert inside LandingState now, and
+               `landingFailedKey` gates this one off whenever that is the failure on
+               screen, so the two never both render for the same pick. -->
           <p class="text-muted px-[18px] text-[14px] md:px-0" role="alert" data-testid="sim-landing-message">
             {store.message}
             {simCopy.landingNoRace}
@@ -634,6 +649,16 @@
             onchange={(next) => store.setSettings(next)}
             names={store.buffNames}
           />
+          <!-- Finding 6: the engine hash, right after the settings bar it used to sit above
+               every state -- same anchor, same classes, same test id and href, now visible
+               only once a character has actually reached the engine. -->
+          <div class="flex justify-end px-[18px] md:px-0">
+            <a
+              class="tabular text-muted font-mono text-[12px]"
+              href="/sim/specs"
+              data-testid="sim-engine-version">{engineLabel(ENGINE_VERSION)}</a
+            >
+          </div>
           {#if store.settings.preset === 'custom'}
             <BuffPanel
               settings={store.settings}

@@ -171,6 +171,58 @@ test('nothing scrolls sideways and every target clears 44px on an empty /sim', a
   await sectionsKeepGutter(page);
 });
 
+// Finding 1, 2026-09-24 landing pass: a character with no build gets a "Paste export" text
+// link, in place of the Sim button, and it still clears the 44px hit target.
+test('a signed-in member with an unbuilt character clears 44px on the Paste export link', async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        data: {
+          user: {
+            id: 7,
+            battletag: 'Fixture#1234',
+            email: null,
+            role: 'user',
+            anonymize: false,
+            premium: false,
+          },
+          characters: [
+            { key: 'us/normal/roland', region: 'us', ruleset: 'normal', name: 'Roland', class: 'Mage' },
+          ],
+          guilds: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    }),
+  );
+  await page.route('**/v1/sims?mine=1*', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        data: { rows: [], total: 0, page: 1, per_page: 100 },
+        error: null,
+        request_id: 'r',
+      }),
+    }),
+  );
+
+  await page.goto('/sim');
+  await expect(page.getByTestId('sim-landing')).toBeVisible();
+  await expect(page.getByTestId('sim-paste-us/normal/roland')).toBeVisible();
+  await expect(page.getByTestId('sim-pick-us/normal/roland')).toHaveCount(0);
+
+  await noHorizontalScroll(page);
+  await targetsAreBigEnough(page);
+});
+
 test('a loaded character reaches the run button and the DPS figure in one scroll after pressing run, in a two-column gear grid, with no sideways scroll', async ({
   page,
 }) => {

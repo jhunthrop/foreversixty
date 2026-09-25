@@ -198,7 +198,9 @@ export const simCopy = {
   // A combat log records no race and this lane never guesses one; the strip asks instead.
   pickRace: 'Pick your race; the combat log did not record it.',
   pickRacePlaceholder: 'Choose a race',
-  // The landing state's companion line when fromStoredCharacter refuses for want of a race.
+  // The landing state's companion line when fromStoredCharacter refuses for want of a race
+  // -- and only then (2026-09-24 landing pass, Finding 2): the sim-input 404 (no build
+  // recorded at all) has its own alert now, `sim/landing-copy.ts`'s `buildMissing*` copy.
   landingNoRace: 'Paste your addon export instead; it carries your race.',
 
   /** The engine panicked. Its stack trace is for us, not for the player. */
