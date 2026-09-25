@@ -72,4 +72,41 @@ describe('CharacterIdentity', () => {
     });
     expect(custom.body).toContain('data-testid="home-hero-avatar-fallback"');
   });
+
+  it('wraps the name link in an <h1> when heading is set (Ruling 5)', () => {
+    const { body } = render(CharacterIdentity, {
+      props: { character: CHAR, size: 'lg', descriptor: 'none', href: '/character/x', heading: true },
+    });
+    expect(body).toContain('<h1');
+    const h1Index = body.indexOf('<h1');
+    const aIndex = body.indexOf('<a');
+    const closeH1Index = body.indexOf('</h1>');
+    expect(aIndex).toBeGreaterThan(h1Index);
+    expect(aIndex).toBeLessThan(closeH1Index);
+  });
+
+  it('wraps the plain name span in an <h1> when heading is set and href is omitted', () => {
+    const { body } = render(CharacterIdentity, {
+      props: { character: CHAR, size: 'lg', descriptor: 'none', heading: true, nameTestid: 'n' },
+    });
+    expect(body).toContain('<h1');
+    const h1Index = body.indexOf('<h1');
+    const nameSpanIndex = body.indexOf('data-testid="n"');
+    const closeH1Index = body.indexOf('</h1>');
+    expect(nameSpanIndex).toBeGreaterThan(h1Index);
+    expect(nameSpanIndex).toBeLessThan(closeH1Index);
+    expect(body).not.toContain('<a');
+  });
+
+  it('renders no <h1> when heading is omitted or false (every other caller)', () => {
+    const omitted = render(CharacterIdentity, {
+      props: { character: CHAR, size: 'md', descriptor: 'none', href: '/character/x' },
+    });
+    expect(omitted.body).not.toContain('<h1');
+
+    const explicit = render(CharacterIdentity, {
+      props: { character: CHAR, size: 'md', descriptor: 'none', heading: false },
+    });
+    expect(explicit.body).not.toContain('<h1');
+  });
 });
