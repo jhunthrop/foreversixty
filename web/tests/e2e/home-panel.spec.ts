@@ -102,17 +102,31 @@ test('a character with no build shows Get the build, not a Sim button, with the 
   // keyboard/screen-reader user could still tab to, or hear, the duplicate link behind it.
   await expect(page.locator('#home-signed-out')).toHaveAttribute('inert', '');
   await expect(page.locator('#home-signed-out')).toHaveAttribute('aria-hidden', 'true');
-  // No render_url on this fixture: the CharacterPortrait fallback (letter square) stands in
-  // for the character render image. It sits in a `hidden lg:block` wrapper (desktop-only
-  // decoration), so `toBeAttached` -- not `toBeVisible` -- is the right check across both
-  // the desktop and mobile projects this suite runs under.
-  await expect(panel.getByTestId('home-hero-portrait-avatar-fallback')).toBeAttached();
+  // No render_url on this fixture: CharacterIdentity's own inline portrait (the one
+  // beside the name, testid "home-hero" passed through to its CharacterPortrait) is the
+  // hero's sole visual identity here -- HomeAccountPanel renders no separate portrait of
+  // its own when there is no render, so there is exactly one portrait, not two.
+  await expect(panel.getByTestId('home-hero-avatar-fallback')).toBeVisible();
   await expect(panel.getByTestId('home-hero-render')).toHaveCount(0);
 });
 
 test('a character with a build shows a Sim button to the armory-source href and its render image', async ({
   page,
-}) => {
+}, testInfo) => {
+  // A real (tiny) image, not just a mocked /v1/me url: the img has no explicit
+  // width/height, so an unresolved src collapses its rendered box to 0x0 and a
+  // visibility assertion below would pass or fail for the wrong reason.
+  await page.route('**/render.jpg', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'image/png',
+      // A minimal valid 1x1 transparent PNG.
+      body: Buffer.from(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+        'base64',
+      ),
+    }),
+  );
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       fulfil({
@@ -156,15 +170,15 @@ test('a character with a build shows a Sim button to the armory-source href and 
     '/sim?source=armory&ref=us%2Fnormal%2Fkiloz',
   );
   await expect(panel.getByRole('link', { name: 'Get the build' })).toHaveCount(0);
-  // Same `hidden lg:block` desktop-only wrapper as the portrait fallback -- `toBeAttached`
-  // holds on both the desktop and mobile projects; `toBeVisible` would only hold on desktop.
-  await expect(panel.getByTestId('home-hero-render')).toBeAttached();
-  await expect(panel.getByTestId('home-hero-render')).toHaveAttribute(
-    'src',
-    'https://example.test/render.jpg',
-  );
-  // The render image replaces the portrait fallback entirely -- never both at once.
-  await expect(panel.getByTestId('home-hero-portrait-avatar-fallback')).toHaveCount(0);
+  const renderImage = panel.getByTestId('home-hero-render');
+  await expect(renderImage).toHaveAttribute('src', 'https://example.test/render.jpg');
+  // `hidden lg:block`: visible once the image data loads on the desktop-width project,
+  // and genuinely hidden (not just untested) below the `lg` breakpoint on mobile.
+  if (testInfo.project.name === 'desktop') {
+    await expect(renderImage).toBeVisible();
+  } else {
+    await expect(renderImage).toBeHidden();
+  }
 });
 
 test('the hero shows a guild line when the character has one, with a verified mark', async ({ page }) => {

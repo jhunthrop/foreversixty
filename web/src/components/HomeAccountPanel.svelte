@@ -103,10 +103,6 @@
           loading="lazy"
           data-testid="home-hero-render"
         />
-      {:else}
-        <div class="hidden lg:block">
-          <CharacterPortrait character={hero} size="lg" testid="home-hero-portrait" />
-        </div>
       {/if}
       <div class="flex flex-col gap-2">
         <CharacterIdentity character={hero} size="lg" descriptor="full" heading testid="home-hero" />
