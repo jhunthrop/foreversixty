@@ -49,6 +49,22 @@ function storageOf(storage: Storage | undefined): Storage | null {
  */
 export const CURRENT_CHARACTER_CHANGED = 'fs:current-character';
 
+/**
+ * `<html data-pointer="1">` while a pointer is stored. Base.astro's inline pre-paint script
+ * sets it from localStorage before first paint (it repeats STORAGE_KEY, since an inline
+ * script cannot import), and global.css hides every `.chip-slot` unless it is set, so a page
+ * with nothing to show in the current-character band shows no band at all instead of the
+ * band's reserved height as dead space. Kept in step here whenever the pointer is written or
+ * cleared, so a paste that creates one reveals the band and Forget collapses it.
+ */
+export const POINTER_ATTRIBUTE = 'pointer';
+
+function markPointerPresent(present: boolean): void {
+  if (typeof document === 'undefined') return;
+  if (present) document.documentElement.dataset[POINTER_ATTRIBUTE] = '1';
+  else delete document.documentElement.dataset[POINTER_ATTRIBUTE];
+}
+
 export function readCurrent(storage?: Storage): CurrentCharacter | null {
   const target = storageOf(storage);
   if (target === null) return null;
@@ -86,6 +102,7 @@ export function writeCurrent(value: CurrentCharacter, storage?: Storage): void {
     const serialised = JSON.stringify(value);
     if (serialised.length > MAX_STORED_LENGTH) return;
     target.setItem(STORAGE_KEY, serialised);
+    markPointerPresent(true);
   } catch {
     // Private browsing, quota exceeded, or a disabled storage API: the pointer is a
     // convenience, so a failed write is silently skipped rather than surfaced.
@@ -97,6 +114,7 @@ export function clearCurrent(storage?: Storage): void {
   if (target === null) return;
   try {
     target.removeItem(STORAGE_KEY);
+    markPointerPresent(false);
   } catch {
     // Same as writeCurrent: nothing to surface.
   }

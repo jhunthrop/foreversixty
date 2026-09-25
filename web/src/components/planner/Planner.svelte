@@ -475,7 +475,7 @@
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
   {#if standalone}
     <!-- Task 10: fixed-height slot, mirrors ToolsView.svelte's own `sim-chip-slot`. -->
-    <div class={CHIP_HEIGHT} data-testid="planner-chip-slot">
+    <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="planner-chip-slot">
       <CurrentCharacterChip
         current={pointer}
         {restored}

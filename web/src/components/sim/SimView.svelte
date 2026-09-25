@@ -503,7 +503,7 @@
 
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-view">
   <!-- Unconditional and first: a reserved slot (ToolsView.svelte's own pattern), present on /sim/<id> too. -->
-  <div class={CHIP_HEIGHT} data-testid="sim-chip-slot">
+  <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="sim-chip-slot">
     <CurrentCharacterChip current={pointer} {restored} {hasOwnPasteBox} onforget={onForgetPointer} />
   </div>
   {#if hasSavedSimId}

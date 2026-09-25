@@ -105,6 +105,15 @@ const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
       // page's "Sign in" block) stays hidden until its island renders the signed-in state,
       // instead of flashing for a signed-in visitor on every load (lib/account/session-cache.ts).
       if (/(?:^|;\s*)fs_csrf=[^;]+/.test(document.cookie)) document.documentElement.dataset.session = '1';
+      // The current-character hint, same idea: a stored pointer (lib/current-character.ts's
+      // STORAGE_KEY, repeated here because an inline script cannot import) means the
+      // planner and simulator pages will show the current-character band, so its reserved
+      // slot (.chip-slot, global.css) stays; without one the slot collapses before paint.
+      try {
+        if (localStorage.getItem('fs.currentCharacter')) document.documentElement.dataset.pointer = '1';
+      } catch {
+        /* storage unavailable: no pointer, no band */
+      }
     </script>
     <script is:inline>
       // is:inline: no bundling and no request, so a content page still ships no script

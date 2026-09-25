@@ -176,6 +176,14 @@ html[data-session='1'] [data-session-hide] {
   visibility: hidden;
 }
 
+/* The current-character band's slot (planner and simulator shells and islands) exists only
+   while a pointer is stored: Base.astro sets data-pointer before first paint from localStorage
+   and lib/current-character.ts keeps it in step, so a page with no pointer never shows the
+   band's reserved height as dead space. */
+html:not([data-pointer='1']) .chip-slot {
+  display: none;
+}
+
 /* An island's content the moment its data lands: one short fade so a skeleton or a
    loading line never snaps into a table. Applied to the wrapper of the ready state only,
    never to controls a player is already using (design system, Motion). */

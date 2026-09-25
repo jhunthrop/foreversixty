@@ -140,3 +140,19 @@ describe('simHrefFor', () => {
     );
   });
 });
+
+describe('the pre-paint pointer attribute', () => {
+  it('follows writeCurrent and clearCurrent on the document element', () => {
+    delete document.documentElement.dataset.pointer;
+    writeCurrent({
+      source: 'code',
+      ref: 'FS1:x',
+      label: 'Simfury · Fury Warrior',
+      classSlug: 'warrior',
+      savedAt: '2026-09-25T00:00:00Z',
+    });
+    expect(document.documentElement.dataset.pointer).toBe('1');
+    clearCurrent();
+    expect(document.documentElement.dataset.pointer).toBeUndefined();
+  });
+});

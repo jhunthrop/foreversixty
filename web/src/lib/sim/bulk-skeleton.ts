@@ -51,7 +51,7 @@ const shell = (label: string, body: string): string =>
  * height can never drift from `CHIP_HEIGHT` -- the same constant `ToolsView.svelte`'s own
  * always-present slot and `CurrentCharacterChip.svelte` itself render with.
  */
-const chipSlot = (): string => `<div class="${CHIP_HEIGHT}" data-testid="sim-chip-slot"></div>`;
+const chipSlot = (): string => `<div class="chip-slot ${CHIP_HEIGHT}" data-testid="sim-chip-slot"></div>`;
 
 /** The character strip's reserved band, which every tool page opens with. */
 const strip = (): string =>

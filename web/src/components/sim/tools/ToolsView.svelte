@@ -229,7 +229,7 @@
        conditionally rendered -- so its height never changes and nothing below it ever
        shifts, whether the chip has a character to show or not. bulk-skeleton.ts's own
        `chipSlot` reserves the identical band before hydration. -->
-  <div class={CHIP_HEIGHT} data-testid="sim-chip-slot">
+  <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="sim-chip-slot">
     <CurrentCharacterChip current={pointer} {restored} hasOwnPasteBox onforget={onForgetPointer} />
   </div>
   {#if store.character !== null && !switcherOpen}
