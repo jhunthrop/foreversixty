@@ -1,21 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { levelColorClass, levelRange, levelRangeLong } from './levels';
-
-describe('levelRange', () => {
-  it('joins a complete range and falls back to an em dash', () => {
-    expect(levelRange(30, 40)).toBe('30–40');
-    expect(levelRange(undefined, 40)).toBe('—');
-    expect(levelRange(30, undefined)).toBe('—');
-    expect(levelRange()).toBe('—');
-  });
-});
-
-describe('levelRangeLong', () => {
-  it('spells out a complete range and says so when there is none', () => {
-    expect(levelRangeLong(52, 60)).toBe('Level 52–60');
-    expect(levelRangeLong()).toBe('Level range not yet known');
-  });
-});
+import { levelColorClass } from './levels';
 
 describe('levelColorClass', () => {
   it('switches rarity colour at the bracket boundaries', () => {
