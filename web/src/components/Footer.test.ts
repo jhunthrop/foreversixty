@@ -11,17 +11,19 @@ describe('Footer', () => {
     );
   });
 
-  it('links to About, Sources, Changelog, Contribute', async () => {
+  it('links to About, Sources, Changelog, Contribute, Premium, Get set up', async () => {
     const container = await AstroContainer.create();
     const html = await container.renderToString(Footer);
-    for (const label of ['About', 'Sources', 'Changelog', 'Contribute']) {
+    for (const label of ['About', 'Sources', 'Changelog', 'Contribute', 'Premium', 'Get set up']) {
       expect(html).toContain(`>${label}<`);
     }
   });
 
-  it('no longer links to the addon page (promoted to the primary nav)', async () => {
+  it('links Get set up to /setup', async () => {
     const container = await AstroContainer.create();
     const html = await container.renderToString(Footer);
-    expect(html).not.toContain('href="/addon"');
+    const match = /<a[^>]*href="\/setup"[^>]*>/.exec(html);
+    expect(match, 'no href="/setup" anchor found').toBeDefined();
+    expect(match?.[0]).toContain('>');
   });
 });
