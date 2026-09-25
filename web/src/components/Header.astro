@@ -1,58 +1,45 @@
 ---
 // web/src/components/Header.astro
 import communityLinks from '../data/links.json';
-import {
-  TRAILING_NAV_ITEMS,
-  PRIMARY_NAV_ITEMS,
-  REFERENCE_NAV_ITEMS,
-  isNavItemCurrent,
-  isReferenceCurrent,
-} from '../lib/nav';
+import { TRAILING_NAV_ITEMS, PRIMARY_NAV_ITEMS, isNavItemCurrent } from '../lib/nav';
 
 interface Props {
   /** The current page's path, e.g. `/sim/gear` -- Base.astro's own `path` prop, passed
-   * through so aria-current can mark the active tool and, when one of its children is
-   * current, the Reference summary. Same idea as SimTabs.astro's `currentPath` prop.
-   * Defaults to `''` for callers that render this component with no routing context at all
-   * (e.g. planner-island.test.ts, which only cares that the Tailwind build still covers its
-   * classes) -- no real href is ever the empty string, so isNavItemCurrent/isReferenceCurrent
-   * simply evaluate to "nothing is current" instead of throwing on a missing prop. */
+   * through so aria-current can mark the active tool. Defaults to `''` for callers that
+   * render this component with no routing context at all (e.g. planner-island.test.ts,
+   * which only cares that the Tailwind build still covers its classes) -- no real href is
+   * ever the empty string, so isNavItemCurrent simply evaluates to "nothing is current"
+   * instead of throwing on a missing prop. */
   path?: string;
 }
 
 const { path = '' } = Astro.props;
-const referenceCurrent = isReferenceCurrent(path);
 
 // "Logs" is the one label here short enough (37px) to miss the 44px hit-target floor on
-// its width alone -- the others all clear it on text length. "Reference" and "The addon"
-// both clear it on text length too. A little horizontal padding, only where needed, closes
-// the gap without widening every other nav entry to match.
+// its width alone -- the others all clear it on text length. "Get set up" clears it on text
+// length too. A little horizontal padding, only where needed, closes the gap without
+// widening every other nav entry to match.
 const NARROW_LABELS = new Set(['Logs']);
 function itemClass(label: string, current: boolean): (string | false)[] {
   return [
-    'inline-flex shrink-0 items-center min-h-11 md:min-h-0 whitespace-nowrap text-nav hover:text-strong',
+    'inline-flex items-center justify-center md:justify-start min-h-11 md:min-h-0 whitespace-nowrap text-nav hover:text-strong',
     NARROW_LABELS.has(label) && 'px-2',
     current && 'text-gold hover:text-gold',
   ];
 }
 
+const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
+
 // Not an HTML comment: that would ship in every page and in the API's chrome snapshot.
-// Phone: an explicit two-row grid -- wordmark and Discord on the first row, the nav on the
-// second. No hamburger, so no client JS on a content page. The nav is one non-wrapping,
-// horizontally scrollable row rather than a wrapping one: the labels already run past a
-// 360px viewport, so a wrapping nav changes height when Barlow swaps in for its fallback
-// and shifts the whole page down (a CLS the Lighthouse budget rejects). The Reference
-// disclosure's panel sits inside this scrolling row, and a horizontally-scrolling ancestor
-// clips its positioned descendants on the other axis too (the CSS spec folds
-// `overflow-y: visible` into `auto` whenever `overflow-x` is not `visible`). The way out
-// is the containing block, not `position: fixed`: on a phone neither the row nor the
-// <details> is positioned, so the panel's containing block is this <header> -- an
-// ANCESTOR of the scrolling row, which therefore does not clip it -- and `top-full` puts
-// it directly under the header at whatever height the header is, scrolling away with it.
-// A fixed panel at a measured pixel offset floated over the page once it was scrolled.
+// Phone: an explicit three-row grid -- wordmark and Discord on the first row, the six nav
+// items wrapped two rows of three on the second. A fixed two-row height is the CLS
+// reservation now (design/DESIGN-SYSTEM.md's "nothing moves"), in place of the old
+// horizontally-scrolling row's scroll-fade trick -- six items at this label length wrap
+// cleanly to two full rows of three with no ragged last row. No hamburger, so no client JS
+// on a content page.
 ---
 
-<header class="relative grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 px-[18px] md:flex md:justify-between md:px-12 py-3 md:py-[18px] border-b border-line/60">
+<header class="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-3 px-[18px] md:flex md:justify-between md:px-12 py-3 md:py-[18px] border-b border-line/60">
   <a
     href="/"
     class="col-start-1 row-start-1 font-display text-[20px] font-bold tracking-[0.08em] uppercase gold-text"
@@ -62,60 +49,9 @@ function itemClass(label: string, current: boolean): (string | false)[] {
   <nav
     aria-label="Primary"
     data-testid="primary-nav"
-    class="nav-scroll-fade col-span-2 row-start-2 md:row-auto -mx-[18px] px-[18px] md:mx-0 md:px-0 flex flex-nowrap overflow-x-auto md:overflow-visible gap-x-5 md:gap-x-[26px] text-[13px] font-semibold tracking-[0.12em] uppercase"
+    class="col-span-2 row-start-2 md:row-auto grid grid-cols-3 gap-x-3 gap-y-2 md:flex md:flex-nowrap md:gap-x-[22px] text-[13px] font-semibold tracking-[0.12em] uppercase"
   >
-    {PRIMARY_NAV_ITEMS.map((item) => {
-      const current = isNavItemCurrent(item, path);
-      return (
-        <a
-          href={item.href}
-          aria-current={current ? 'page' : undefined}
-          class:list={itemClass(item.label, current)}
-        >
-          {item.label}
-        </a>
-      );
-    })}
-    <details class="reference-disclosure group shrink-0 md:relative">
-      <summary
-        aria-current={referenceCurrent ? 'page' : undefined}
-        class:list={[...itemClass('Reference', referenceCurrent), 'list-none marker:content-none']}
-      >
-        Reference
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-          class="inline-block transition-transform duration-[120ms] group-open:rotate-180"
-        >
-          <path d="M6 9l6 6 6-6" />
-        </svg>
-      </summary>
-      <div class="reference-panel absolute inset-x-0 md:inset-x-auto top-full md:left-0 md:mt-2 md:w-[200px] bg-raised border border-line rounded-panel md:rounded-panel flex flex-col md:py-2 z-30 normal-case tracking-normal font-semibold">
-        {REFERENCE_NAV_ITEMS.map((item) => {
-          const current = isNavItemCurrent(item, path);
-          return (
-            <a
-              href={item.href}
-              aria-current={current ? 'page' : undefined}
-              class:list={[
-                'flex min-h-11 items-center px-[18px] md:px-4 text-nav hover:text-strong border-b border-line-soft last:border-b-0 md:border-none',
-                current && 'text-gold hover:text-gold',
-              ]}
-            >
-              {item.label}
-            </a>
-          );
-        })}
-      </div>
-    </details>
-    {TRAILING_NAV_ITEMS.map((item) => {
+    {NAV_ITEMS.map((item) => {
       const current = isNavItemCurrent(item, path);
       return (
         <a
@@ -151,29 +87,3 @@ function itemClass(label: string, current: boolean): (string | false)[] {
     </a>
   </div>
 </header>
-
-<style>
-  /* Right-edge scroll fade, phone only (`md:` and up sets `overflow-visible` on the row, so
-     nothing scrolls there and this paints nothing extra). Two-layer scroll-shadow trick
-     (Lea Verou / CSS-Tricks "scroll shadows"): the `local`-attached layer moves with the
-     content and is solid `--color-bg` fading to transparent, anchored at the right edge; at
-     maximum scroll it exactly covers the `scroll`-attached radial-gradient "shadow" layer
-     beneath it, hiding the fade once there is nothing left to scroll to. Both layers are
-     no-ops until there is overflow to scroll in the first place. */
-  @media (max-width: 767px) {
-    .nav-scroll-fade {
-      background-repeat: no-repeat;
-      background-color: var(--color-bg);
-      background-image:
-        linear-gradient(to left, var(--color-bg) 30%, transparent),
-        radial-gradient(farthest-side at 100% 50%, rgba(0, 0, 0, 0.45), transparent);
-      background-position:
-        100% 0,
-        100% 0;
-      background-size:
-        32px 100%,
-        14px 100%;
-      background-attachment: local, scroll;
-    }
-  }
-</style>
