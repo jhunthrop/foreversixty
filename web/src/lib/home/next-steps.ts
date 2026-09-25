@@ -6,7 +6,7 @@
 import { headlineOf, kindOf } from '../sim/history';
 import { simCopy } from '../sim/copy';
 import { MAX_POINTS } from '../planner/types';
-import { talentPointsFromString } from '../sim/character';
+import { talentPointsFromSplit } from '../sim/sources';
 import { formatDate } from '../dates';
 import type { SimListRow } from '../sim/types';
 import type { MyReport } from '../account/api';
@@ -21,12 +21,13 @@ export function simCardLine(row: SimListRow): string {
 }
 
 /** "24 of 51 points" from a talent split string ("31/0/20", GET .../sim-input's `talents`
- *  field) via the same digit-sum function CharacterStrip.svelte/SavedSim.svelte already use
- *  for a saved sim's own "51 points" figure (Ruling 2). Empty when the character has no
+ *  field -- SimInput.talents / fight_metrics.talent_split, points per tree, never a
+ *  per-talent order) via the same tree-total parse `sources.ts`'s own fight-sourced branch
+ *  already uses for a stored character's talent level. Empty when the character has no
  *  recorded talents yet -- the caller's cue to show the empty state instead. */
 export function plannerPointsLabel(talents: string): string {
   if (talents === '') return '';
-  return `${talentPointsFromString(talents)} of ${MAX_POINTS} points`;
+  return `${talentPointsFromSplit(talents)} of ${MAX_POINTS} points`;
 }
 
 /** "<title>, <date>" for the visitor's latest report. */

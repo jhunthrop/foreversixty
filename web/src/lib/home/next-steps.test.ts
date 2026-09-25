@@ -35,9 +35,16 @@ describe('simCardLine', () => {
 
 describe('plannerPointsLabel', () => {
   it('sums a talent split string against MAX_POINTS', () => {
-    // Dash-separated trees, each digit 0-9 an individual talent's rank
-    // (ranksFromTalentsString in lib/sim/character.ts): 9+9+9+9+9 + 6 = 51.
-    expect(plannerPointsLabel('99999-6')).toBe('51 of 51 points');
+    // "31/0/20" is SimInput.talents' own shape (fight_metrics.talent_split): points per
+    // tree, slash-separated. 31 + 0 + 20 = 51.
+    expect(plannerPointsLabel('31/0/20')).toBe('51 of 51 points');
+  });
+  it('sums a split with only one non-zero tree', () => {
+    // Distinguishes the '/'-separated tree-total parse from the unrelated dash-separated,
+    // per-character digit parse `lib/sim/character.ts`'s `talentPointsFromString` uses for
+    // an FS1-decoded build's own talent order: a value like '10' would sum to 1 under that
+    // parse (each character read as a single-digit rank) but sums to 10 under this one.
+    expect(plannerPointsLabel('10/0/0')).toBe('10 of 51 points');
   });
   it('returns empty for no recorded talents', () => {
     expect(plannerPointsLabel('')).toBe('');
