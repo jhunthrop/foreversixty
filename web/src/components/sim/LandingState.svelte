@@ -11,7 +11,7 @@
   import { parseCharacterPath } from '../../lib/characters';
   import { simCopy } from '../../lib/sim/copy';
   import { BUSY_CLASS } from '../../lib/ui/busy';
-  import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
+  import { armorySimHref } from '../../lib/sim/url';
   import CharacterRow from '../character/CharacterRow.svelte';
 
   let {
@@ -46,7 +46,7 @@
    * not only so a click handler (`follow`, below) can pick it in place.
    */
   function hrefFor(character: MeCharacter): string {
-    return `/sim${simSearch(withSimState(defaultSimState(), { source: 'armory', ref: character.key }))}`;
+    return armorySimHref(character.key);
   }
 
   /** A link that picks the character in place and still opens in a new tab from a middle
