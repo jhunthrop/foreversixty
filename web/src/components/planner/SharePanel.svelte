@@ -43,9 +43,9 @@
   // Per-instance, not a literal id: Top Gear mounts a second, inline Planner (and so a
   // second SharePanel) on the same page, and two static `id="share-confirm-heading"`
   // elements would make `aria-labelledby` ambiguous for whichever one is not first in the
-  // DOM. `$props.id()` is Svelte's own per-component unique id -- a different problem from
-  // `SearchBox.svelte`'s own `search-title-${i}` ids, which disambiguate multiple results
-  // inside one component instance by loop index, not one component instance from another.
+  // DOM. `$props.id()` is Svelte's own per-component unique id, disambiguating one
+  // component instance from another -- a different problem from disambiguating multiple
+  // items within one instance by loop index.
   const uid = $props.id();
   const shareConfirmHeadingId = `share-confirm-heading-${uid}`;
 
@@ -250,7 +250,7 @@
    * not the "Share anyway" button, so Tab from there reaches every option in order rather
    * than skipping the first. `tick()`, not a `$effect` reading `confirmHeadingEl`: the
    * element is only ever read here, imperatively, the same as every other `bind:this` focus
-   * move in this codebase (Planner.svelte's tab arrow keys, SearchBox.svelte's own input).
+   * move in this codebase (Planner.svelte's tab arrow keys).
    */
   async function requestShare(): Promise<void> {
     confirmOpen = true;

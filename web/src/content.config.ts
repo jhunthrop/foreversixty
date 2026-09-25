@@ -33,26 +33,6 @@ const changelog = defineCollection({
   }),
 });
 
-const dungeons = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/dungeons' }),
-  schema: factSchema.extend({
-    zone: z.string(),
-    levelMin: z.number().int().min(1).max(60).optional(),
-    levelMax: z.number().int().min(1).max(60).optional(),
-    order: z.number().int(),
-  }),
-});
-
-const zones = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/zones' }),
-  schema: factSchema.extend({
-    continent: z.enum(['Eastern Kingdoms', 'Kalimdor', 'Zephras Isle']),
-    levelMin: z.number().int().optional(),
-    levelMax: z.number().int().optional(),
-    isNew: z.boolean().default(true),
-  }),
-});
-
 // Exported (not just used inline below) so a plain Node test can validate a guide's raw
 // frontmatter against the exact same schema without going through Astro's content layer --
 // `getCollection` needs the dev/build pipeline and returns nothing under plain `vitest run`,
@@ -70,4 +50,4 @@ const guides = defineCollection({
   schema: guideSchema,
 });
 
-export const collections = { pages, changelog, dungeons, zones, guides };
+export const collections = { pages, changelog, guides };

@@ -26,10 +26,6 @@ export function simFightHref(reportId: string, fightIndex: number, guid?: string
   return `/sim?source=fight&ref=${encodeURIComponent(ref)}`;
 }
 
-export function simDropsHref(instanceSlug: string): string {
-  return `/sim/drops?instance=${encodeURIComponent(instanceSlug)}`;
-}
-
 /** A stored character, by key (spec 2026-09-22 §3.4): loads through the sim's own
  *  `?source=armory&ref=` bootstrap (`store.svelte.ts`'s `bootstrapSource`), which resolves
  *  whichever source the API actually holds -- `'addon'` or `'blizzard'` -- with no extra

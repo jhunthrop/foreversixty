@@ -115,31 +115,5 @@ const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
         /* storage unavailable: no pointer, no band */
       }
     </script>
-    <script is:inline>
-      // is:inline: no bundling and no request, so a content page still ships no script
-      // file. It also means no TypeScript in here -- this is plain JavaScript on purpose.
-      // Site-wide "/" shortcut (design/DESIGN-SYSTEM.md: "`/` keyboard hint. First
-      // interactive element on every page"). Pages with a SearchBox island
-      // (src/components/SearchBox.svelte, mounted on `/` and `/search`) already focus it
-      // via src/directives/interaction.ts's own capture-phase "/" listener and call
-      // preventDefault -- this script checks `defaultPrevented` first and steps aside when
-      // that has already happened, so the two mechanisms never fight. Everywhere else
-      // (every page without a search box) this is the only "/" handling that exists, and it
-      // goes to /search.
-      window.addEventListener('keydown', (event) => {
-        if (event.key !== '/' || event.defaultPrevented) return;
-        if (event.metaKey || event.ctrlKey || event.altKey) return;
-        const target = event.target;
-        const typing =
-          target instanceof HTMLInputElement ||
-          target instanceof HTMLTextAreaElement ||
-          (target instanceof HTMLElement && target.isContentEditable);
-        if (typing) return;
-        const searchBox = document.querySelector('input[aria-label="Search the site"]');
-        event.preventDefault();
-        if (searchBox) searchBox.focus();
-        else window.location.assign('/search');
-      });
-    </script>
   </body>
 </html>

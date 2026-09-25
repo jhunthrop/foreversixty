@@ -11,7 +11,6 @@ import HomeTimeline from '../components/HomeTimeline.astro';
 import ToolCard from '../components/ToolCard.astro';
 import Panel from '../components/Panel.astro';
 import FeedRow from '../components/FeedRow.astro';
-import SearchBox from '../components/SearchBox.svelte';
 import SubscribeBox from '../components/SubscribeBox.svelte';
 import HomeGuildLink from '../components/HomeGuildLink.svelte';
 import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
@@ -166,7 +165,6 @@ const popular = [
 
       <section class="flex flex-col gap-4">
         <div class="flex flex-col gap-[10px]">
-          <SearchBox client:interaction />
           <p class="text-[13px] text-muted">{homeReferenceCopy.sentence}</p>
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" data-testid="reference-tiles">

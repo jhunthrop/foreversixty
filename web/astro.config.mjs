@@ -5,23 +5,10 @@ import sitemap from '@astrojs/sitemap';
 import { createReadStream, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import pagefind from 'astro-pagefind';
 import tailwindcss from '@tailwindcss/vite';
 import links from './src/data/links.json';
 import { assertLinksAreReal } from './src/lib/links';
 import { DUCKDB_WASM_VERSION, RUNTIME_MODULES, stagingDir } from './scripts/duckdb-runtime.mjs';
-
-// Registers `client:interaction` (see src/directives/interaction.ts): hydrates the homepage
-// search island on the user's first focus/`/`-press instead of during initial page load, so
-// its JS never competes with the mobile LCP budget in lighthouserc.json.
-const interactionDirective = {
-  name: 'interaction-directive',
-  hooks: {
-    'astro:config:setup': ({ addClientDirective }) => {
-      addClientDirective({ name: 'interaction', entrypoint: './src/directives/interaction.ts' });
-    },
-  },
-};
 
 // The two DuckDB engine modules are over Cloudflare's static-asset limit, so they are not
 // in public/ and `astro dev` has nothing to serve them with: in production src/worker.ts
@@ -65,7 +52,7 @@ const placeholderGuard = {
 // content layer, which is not available inside the config. Path → date, for the sitemap.
 const contentLastmod = (() => {
   const root = fileURLToPath(new URL('./src/content', import.meta.url));
-  const routeOf = { pages: '', zones: '/zones', dungeons: '/dungeons' };
+  const routeOf = { pages: '' };
   const byPath = new Map();
   let newest = '';
   const record = (routePath, fileContents) => {
@@ -100,7 +87,6 @@ const contentLastmod = (() => {
   }
   byPath.set('/', newest);
   byPath.set('/changelog', newest);
-  byPath.set('/everything-we-know', byPath.get('/everything-we-know') ?? newest);
   return (url) => byPath.get(new URL(url).pathname.replace(/\/$/, '') || '/');
 })();
 
@@ -124,17 +110,10 @@ export default defineConfig({
         return lastmod ? { ...item, lastmod } : item;
       },
     }),
-    pagefind(),
-    interactionDirective,
     placeholderGuard,
     duckdbRuntime,
   ],
   vite: {
     plugins: [tailwindcss()],
-    // astro-pagefind writes /pagefind/pagefind.js into dist/ *after* the bundle is generated,
-    // so the search island's dynamic import of it can never be resolved at build time. Marking
-    // the path external tells Rollup to emit the import untouched in both the client and the
-    // SSR bundle instead of failing with UNRESOLVED_IMPORT.
-    build: { rollupOptions: { external: [/^\/pagefind\//] } },
   },
 });

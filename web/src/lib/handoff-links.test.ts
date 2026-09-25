@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { plannerCodeHref, simCodeHref, simDropsHref, simFightHref } from './handoff-links';
+import { plannerCodeHref, simCodeHref, simFightHref } from './handoff-links';
 
 describe('handoff-links', () => {
   it('builds a planner link carrying the FS1 code, URL-encoded', () => {
@@ -22,9 +22,5 @@ describe('handoff-links', () => {
     expect(simFightHref('abc2defg2hij', 3, 'Player-4184-000000A1')).toBe(
       '/sim?source=fight&ref=abc2defg2hij%3A3%3APlayer-4184-000000A1',
     );
-  });
-
-  it('builds a drops link preselecting an instance', () => {
-    expect(simDropsHref('hall-of-thanes')).toBe('/sim/drops?instance=hall-of-thanes');
   });
 });
