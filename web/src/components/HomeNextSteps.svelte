@@ -4,7 +4,16 @@
      the identical grid-overlay trick HomeAccountPanel already uses for the hero -- kept as
      its own small effect here rather than an extraction, since the two occluded elements
      (#home-signed-out, #home-next-steps-signed-out) are different ids on different DOM
-     nodes and the eight-line body has nothing left to share once that's the only variable. -->
+     nodes and the eight-line body has nothing left to share once that's the only variable.
+     The id lives in a `module` script, not the instance script: an instance-script `export
+     const` becomes a component-instance binding (reachable only via `bind:this`), not a
+     real ES module export, so a plain `.astro` file couldn't import it by name -- module
+     scope is a genuine static export, and the instance script below still reads it via
+     ordinary closure over the module scope. -->
+<script module lang="ts">
+  export const HOME_NEXT_STEPS_SIGNED_OUT_ID = 'home-next-steps-signed-out';
+</script>
+
 <script lang="ts">
   import { createHomeHero } from '../lib/account/home-hero.svelte';
   import { armorySimHref } from '../lib/sim/url';
@@ -15,8 +24,6 @@
   import { homePanelCopy } from '../lib/home-panel-copy';
   import { homeProductPanels } from '../lib/home-landing-copy';
   import type { SimInput, SimListRow } from '../lib/sim/types';
-
-  export const HOME_NEXT_STEPS_SIGNED_OUT_ID = 'home-next-steps-signed-out';
 
   const homeHero = createHomeHero();
   const me = $derived(homeHero.me);

@@ -7,11 +7,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SkyBand from '../components/SkyBand.astro';
-import StatePanel from '../components/StatePanel.astro';
-import HomeProductPanel from '../components/HomeProductPanel.astro';
-import ClassTile from '../components/ClassTile.astro';
-import RecentReports from '../components/RecentReports.svelte';
-import HomeTopGuilds from '../components/HomeTopGuilds.svelte';
+import HomeTimeline from '../components/HomeTimeline.astro';
 import ToolCard from '../components/ToolCard.astro';
 import Panel from '../components/Panel.astro';
 import FeedRow from '../components/FeedRow.astro';
@@ -19,6 +15,7 @@ import SearchBox from '../components/SearchBox.svelte';
 import SubscribeBox from '../components/SubscribeBox.svelte';
 import HomeGuildLink from '../components/HomeGuildLink.svelte';
 import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
+import HomeNextSteps, { HOME_NEXT_STEPS_SIGNED_OUT_ID } from '../components/HomeNextSteps.svelte';
 import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
 import {
   homeCompanionRow,
@@ -29,11 +26,9 @@ import {
 } from '../lib/home-landing-copy';
 import { battlenetStartUrl } from '../lib/account/api';
 import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-import { dpsSpecs, specLabel } from '../lib/sim/spec-label';
 import dates from '../data/dates.json';
 import toolsData from '../data/tools.json';
 import unknowns from '../data/unknowns.json';
-import classes from '../data/classes.json';
 import communityLinks from '../data/links.json';
 import type { ToolStatusKind } from '../lib/sources';
 
@@ -47,8 +42,6 @@ interface Tool {
 // Every remaining row is a Reference tile (spec §2 item 4): Classes, Guides, Zones,
 // Dungeons -- the product panels below carry their own copy, not this file's.
 const referenceTiles = toolsData as Tool[];
-
-const [plannerPanel, simPanel, logsPanel, rankingsPanel] = homeProductPanels;
 
 const changelog = (await getCollection('changelog'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
@@ -83,103 +76,69 @@ const popular = [
 >
   <main id="main" tabindex="-1" class="flex flex-col">
     <SkyBand>
-      <div class="grid grid-cols-12 gap-[22px] md:gap-8 items-start w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-7 pb-10">
-        <div class="col-span-12 lg:col-span-7 flex flex-col gap-[18px]">
-          <p class="label text-gold font-body">{homeHeroCopy.eyebrow}</p>
-          <h1 class="font-display text-[22px] font-bold leading-tight text-strong">
-            {homeHeroCopy.headline}
-          </h1>
-          <div class="grid" data-testid="home-account-block">
-            <div
-              id={HOME_SIGNED_OUT_ID}
-              data-session-hide
-              class="[grid-area:1/1] flex flex-col gap-[14px]"
-              data-testid="home-signed-out"
-            >
-              <p class="text-[14px] leading-relaxed">{homePanelCopy.signedOutLine}</p>
-              <div class="flex flex-wrap items-center gap-3">
-                <a
-                  class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
-                  href={battlenetStartUrl('/account?signed_in=1')}
-                >
-                  {homePanelCopy.signInButton}
-                </a>
-                <a class="text-nav text-[13px]" href={homeHeroCopy.addonAltHref}>
-                  {homeHeroCopy.addonAltLabel}
-                </a>
-              </div>
+      <div class="flex w-full max-w-[1344px] flex-col gap-[18px] px-[18px] pt-7 pb-10 mx-auto md:px-12">
+        <p class="label text-gold font-body">{homeHeroCopy.eyebrow}</p>
+        <div class="grid" data-testid="home-account-block">
+          <div
+            id={HOME_SIGNED_OUT_ID}
+            data-session-hide
+            class="[grid-area:1/1] flex flex-col gap-[18px]"
+            data-testid="home-signed-out"
+          >
+            <h1 class="font-display text-[22px] font-bold leading-tight text-strong">
+              {homeHeroCopy.headline}
+            </h1>
+            <p class="text-[14px] leading-relaxed max-w-[560px]">{homePanelCopy.signedOutLine}</p>
+            <div class="flex flex-wrap items-center gap-3">
+              <a
+                class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
+                href={battlenetStartUrl('/account?signed_in=1')}
+              >
+                {homePanelCopy.signInButton}
+              </a>
+              <a class="text-nav text-[13px]" href={homeHeroCopy.addonAltHref}>
+                {homeHeroCopy.addonAltLabel}
+              </a>
             </div>
-            <HomeAccountPanel client:visible />
           </div>
-        </div>
-        <div class="col-span-12 lg:col-span-5">
-          <StatePanel
-            title="Right now"
-            updated={updated}
-            rows={dates.map(({ key, value, note, highlight }) => ({ key, value, note, highlight }))}
-          />
+          <HomeAccountPanel client:visible />
         </div>
       </div>
     </SkyBand>
 
-    <div class="flex flex-col gap-[22px] md:gap-8 w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-9 pb-8">
-      <section class="flex flex-col gap-4" data-testid="home-product-panels">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
-          <HomeProductPanel
-            label={plannerPanel.label}
-            sentence={plannerPanel.sentence}
-            href={plannerPanel.href}
-            linkLabel={plannerPanel.linkLabel}
-          >
-            <div class="grid grid-cols-3 sm:grid-cols-9 gap-2">
-              {classes.map((c) => (
-                <ClassTile name={c.name} slug={c.slug} compact />
-              ))}
-            </div>
-          </HomeProductPanel>
+    <div class="w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-8 md:pt-12">
+      <HomeTimeline dates={dates} updated={updated} />
+    </div>
 
-          <HomeProductPanel
-            label={simPanel.label}
-            sentence={simPanel.sentence}
-            href={simPanel.href}
-            linkLabel={simPanel.linkLabel}
+    <div class="flex flex-col gap-8 md:gap-12 w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-9 pb-8">
+      <section class="flex flex-col gap-4">
+        <div class="grid" data-testid="home-next-steps-block">
+          <div
+            id={HOME_NEXT_STEPS_SIGNED_OUT_ID}
+            data-session-hide
+            class="[grid-area:1/1] grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4"
+            data-testid="home-next-steps-signed-out"
           >
-            <div class="flex flex-wrap gap-2">
-              {dpsSpecs().map((row) => (
-                // Plain /sim, not /sim?spec=<slug> (review fix): the simulator's own URL
-                // state (lib/sim/url.ts's SimState) has no `spec` field and never reads
-                // one, so a per-spec query string would look distinct while landing on the
-                // identical generic page for every pill -- these pills are the simulator's
-                // real spec coverage, not a working per-spec deep link (that would need a
-                // change to /sim itself, out of this lane's scope).
-                <a href="/sim" class="pill pill-site">
-                  {specLabel(row.spec)}
+            {homeProductPanels.map((panel) => (
+              <div
+                class="bg-raised border-line flex flex-col gap-2 rounded-panel border px-[18px] py-[16px]"
+                data-testid={`home-next-${panel.label.toLowerCase()}-signed-out`}
+              >
+                <div class="flex items-center gap-2">
+                  <span
+                    class="bg-gold h-2 w-2 rounded-full shadow-[0_0_10px_rgba(229,185,85,.8)]"
+                    aria-hidden="true"
+                  />
+                  <span class="label text-gold">{panel.label}</span>
+                </div>
+                <p class="text-muted text-[13px]">{panel.sentence}</p>
+                <a class="text-nav mt-auto w-fit text-[13px] font-semibold" href={panel.href}>
+                  {panel.linkLabel}
                 </a>
-              ))}
-            </div>
-          </HomeProductPanel>
-
-          <HomeProductPanel
-            label={logsPanel.label}
-            sentence={logsPanel.sentence}
-            href={logsPanel.href}
-            linkLabel={logsPanel.linkLabel}
-          >
-            <div class="min-h-[120px]">
-              <RecentReports client:visible compact heading={false} />
-            </div>
-          </HomeProductPanel>
-
-          <HomeProductPanel
-            label={rankingsPanel.label}
-            sentence={rankingsPanel.sentence}
-            href={rankingsPanel.href}
-            linkLabel={rankingsPanel.linkLabel}
-          >
-            <div class="min-h-[220px]">
-              <HomeTopGuilds client:visible />
-            </div>
-          </HomeProductPanel>
+              </div>
+            ))}
+          </div>
+          <HomeNextSteps client:visible />
         </div>
       </section>
 
