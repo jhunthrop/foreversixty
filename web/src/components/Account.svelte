@@ -415,16 +415,16 @@
     </div>
   </div>
 {:else if mode === 'reports'}
-  <!-- /logs only, inside that page's own "Your reports" panel, which is why MyReports is
-       told to leave its heading off. The floor is one row tall so the panel does not jump
-       when the session answers. -->
-  <div class="min-h-[88px]">
-    {#if status === 'loading'}
-      <p class="text-muted text-[14px]">Loading your reports.</p>
-    {:else}
+  <!-- /logs only, inside that page's own "Your reports" panel. Spec 2026-09-25 §3.6: a
+       signed-out visitor saw "Loading your reports." resolve into a sign-in prompt inside a
+       panel that had no reason to exist for them at all -- the section now renders only once
+       the session has resolved AND the visitor is signed in; `status` (not the raw `me`
+       value) gates it, so nothing renders during SSR either, when `status` starts 'loading'. -->
+  {#if status === 'ready' && signedIn}
+    <div class="min-h-[88px]">
       <MyReports {signedIn} heading={false} />
-    {/if}
-  </div>
+    </div>
+  {/if}
 {:else if mode === 'pairing'}
   <!-- Signed out and signed in are the same shape on purpose, a line over a button, so the
        block is the same height either way and the steps under it never move when the

@@ -44,6 +44,11 @@ function boot(): void {
   // The shell's no-JS paragraph lives inside the mount element; Svelte 5 appends rather
   // than replaces, so it has to go before the mount or it stays under the island.
   target.replaceChildren();
+  // Spec 2026-09-25 §3.6: sim.astro's min-h-[1154px]/md:min-h-[607px] is the pre-hydration
+  // shell's own CLS reservation (measured against the static addon-card LCP element it
+  // renders before hydration) -- it has no reason to keep applying once SimView has mounted
+  // and governs its own height, and left in place it floored "Your sims" at 600px+ forever.
+  target.classList.remove('min-h-[1154px]', 'md:min-h-[607px]');
   mount(SimView, { target, props });
 }
 

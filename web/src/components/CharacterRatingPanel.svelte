@@ -10,6 +10,7 @@
   import type { CharacterPath } from '../lib/characters';
   import type { CharacterRating } from '../lib/rating/types';
   import RatingTrend from './RatingTrend.svelte';
+  import EmptyState from './ui/EmptyState.svelte';
 
   let { path, apiBase = undefined }: { path: CharacterPath; apiBase?: string } = $props();
 
@@ -57,7 +58,7 @@
   <section class="flex flex-col gap-2" data-testid="character-rating">
     <h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>
     {#if data.sample_size === 0}
-      <p class="text-muted text-[14px]" data-testid="character-rating-empty">{ratingCopy.characterEmpty}</p>
+      <EmptyState message={ratingCopy.characterEmpty} testid="character-rating-empty" />
     {:else}
       {#if data.latest !== null}
         <div class="flex items-center gap-4">

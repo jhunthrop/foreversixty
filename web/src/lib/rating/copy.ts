@@ -54,7 +54,7 @@ export const ratingCopy = {
     'An avoidable death early in a fight caps the overall score at 40, because nothing else in the fight makes up for it.',
   trendTooFew: (have: number): string =>
     `Not enough rated fights yet to show a trend (${have} of ${MIN_TREND_SAMPLES} needed).`,
-  characterEmpty: 'No rated fights yet.',
+  characterEmpty: 'Nothing rated yet. Ratings appear after your first ranked fight.',
 } as const;
 
 const COMPONENT_LABELS: Record<string, string> = {

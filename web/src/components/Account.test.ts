@@ -23,3 +23,11 @@ describe('Account refreshed toast', () => {
     expect(body).not.toContain('data-testid="account-toast"');
   });
 });
+
+describe('Account "reports" mode (logs page)', () => {
+  it('renders nothing before the session resolves, not a "Loading your reports" message', () => {
+    const { body } = render(Account, { props: { mode: 'reports' } });
+    expect(body).not.toContain('Loading your reports');
+    expect(body).not.toContain('data-testid="my-reports"');
+  });
+});
