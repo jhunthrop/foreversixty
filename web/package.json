@@ -9,7 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "build:island": "vite build --config vite.island.config.ts && vite build --config vite.report-island.config.ts && vite build --config vite.sim-island.config.ts && vite build --config vite.sim-tools-island.config.ts",
-    "postbuild": "npm run build:island && node scripts/check-island-size.mjs && node scripts/check-sim-engine-artifact.mjs",
+    "postbuild": "npm run build:island && node scripts/check-island-size.mjs && node scripts/check-sim-engine-artifact.mjs && node scripts/check-no-removed-routes.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "lint": "eslint . --ignore-pattern public/duckdb/ --ignore-pattern public/_sim/",
