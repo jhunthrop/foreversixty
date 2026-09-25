@@ -1,9 +1,9 @@
 // web/src/lib/home-landing-copy.ts
 // The home page's own words (spec 2026-09-23, "the landing page is the product, not the
-// wiki"): the sky-band hero, the four product panels, the reference band's sentence, the
-// Your guild panel, and the addon/companion row. `home-panel-copy.ts` stays the account-
-// aware strip's own copy (the signed-out sentence there is now also the hero's sentence, so
-// it stays the one source rather than a second copy of the same words here).
+// wiki"; spec 2026-09-25 §3.5 drops the Reference band): the sky-band hero, the four product
+// panels, the Your guild panel, and the "Get set up" card. `home-panel-copy.ts` stays the
+// account-aware strip's own copy (the signed-out sentence there is now also the hero's
+// sentence, so it stays the one source rather than a second copy of the same words here).
 import { battlenetStartUrl } from './account/api';
 
 export const homeHeroCopy = {
@@ -56,10 +56,6 @@ export const homeAroundTheSiteCopy = {
   seeAll: 'See all',
 } as const;
 
-export const homeReferenceCopy = {
-  sentence: 'Every fact dated and sourced.',
-} as const;
-
 export const homeGuildPanelCopy = {
   label: 'Your guild',
   /** Signed out, or signed in with no guild yet: the same claim invitation either way. */
@@ -79,17 +75,11 @@ export interface HomeCompanionRowCard {
   href: string;
 }
 
-/** Spec section 2 item 6, two small cards, reference voice: what each does, one line. */
+/** Spec 2026-09-25 §3.5: the addon and companion row becomes one card. */
 export const homeCompanionRow: readonly HomeCompanionRowCard[] = [
   {
-    title: 'The addon',
-    description:
-      'The addon adds bags, bank and professions to your Battle.net build and shows the next talent point in game.',
-    href: '/addon',
-  },
-  {
-    title: 'The companion',
-    description: 'The companion logs live from your desktop and sends your exports.',
-    href: '/logs#companion',
+    title: 'Get set up',
+    description: 'Sign in with Battle.net, install the addon, and pair the companion -- one page.',
+    href: '/setup',
   },
 ] as const;

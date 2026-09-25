@@ -1,9 +1,8 @@
 ---
 // web/src/pages/index.astro
-// The landing page (spec 2026-09-23, "the landing page is the product, not the wiki"): sign
-// in with Battle.net and your character is planned, simmed, logged and ranked here, with
-// your guild. The reference (search, Classes/Guides/Zones/Dungeons, Popular links) is the
-// second tier, not the front door.
+// The landing page (spec 2026-09-23, "the landing page is the product, not the wiki"; spec
+// 2026-09-25 §3.5 drops the Reference band and Still unknown panel): sign in with Battle.net
+// and your character is planned, simmed, logged and ranked here, with your guild.
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SkyBand from '../components/SkyBand.astro';
@@ -24,50 +23,21 @@ import {
   homeGuildPanelCopy,
   homeHeroCopy,
   homeProductPanels,
-  homeReferenceCopy,
 } from '../lib/home-landing-copy';
 import { battlenetStartUrl } from '../lib/account/api';
 import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 import dates from '../data/dates.json';
-import toolsData from '../data/tools.json';
-import unknowns from '../data/unknowns.json';
 import communityLinks from '../data/links.json';
-import type { ToolStatusKind } from '../lib/sources';
-
-interface Tool {
-  title: string;
-  description: string;
-  href: string;
-  status: { label: string; kind: ToolStatusKind };
-  icon: string;
-}
-// Every remaining row is a Reference tile (spec §2 item 4): Classes, Guides, Zones,
-// Dungeons -- the product panels below carry their own copy, not this file's.
-const referenceTiles = toolsData as Tool[];
 
 const changelog = (await getCollection('changelog'))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 4);
 const updated = changelog[0]?.data.updated;
 
-const icons: Record<string, string> = {
-  talents:
-    '<circle cx="12" cy="5" r="2"/><circle cx="6" cy="12" r="2"/><circle cx="18" cy="12" r="2"/><circle cx="12" cy="19" r="2"/><path d="M12 7v10M8 11l3-4M16 11l-3-4M8 13l3 4M16 13l-3 4"/>',
-  simulator: '<path d="M4 20V10"/><path d="M10 20V4"/><path d="M16 20v-6"/><path d="M2 20h20"/>',
-  logs: '<path d="M4 19V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14"/><path d="M4 19h16"/><path d="M8 15v-4M12 15V8M16 15v-6"/>',
-  addon: '<path d="M9 2v4"/><path d="M15 2v4"/><path d="M6 8h12l-1 5a5 5 0 0 1-10 0z"/><path d="M12 17v5"/>',
-  guides:
-    '<path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19a2 2 0 0 1 2-2h13"/><path d="M9 7h6M9 11h4"/>',
-  dungeon: '<path d="M4 20V8l8-5 8 5v12"/><path d="M9 20v-6h6v6"/>',
-  map: '<path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/>',
-};
-const popular = [
-  ['Skyborne race', '/skyborne'],
-  ['Undead Paladin', '/guides/paladin'],
-  ['Hall of Thanes', '/dungeons/hall-of-thanes'],
-  ['Mount Hyjal', '/zones/mount-hyjal'],
-  ["What's in the $29.99 pack", '/editions'],
-] as const;
+// The "Get set up" card's only icon (spec 2026-09-25 §3.5 collapses the addon/companion row
+// to one card, so this no longer needs to be a lookup map).
+const addonIconPath =
+  '<path d="M9 2v4"/><path d="M15 2v4"/><path d="M6 8h12l-1 5a5 5 0 0 1-10 0z"/><path d="M12 17v5"/>';
 ---
 
 <Base
@@ -163,40 +133,6 @@ const popular = [
         </Panel>
       </section>
 
-      <section class="flex flex-col gap-4">
-        <div class="flex flex-col gap-[10px]">
-          <p class="text-[13px] text-muted">{homeReferenceCopy.sentence}</p>
-        </div>
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" data-testid="reference-tiles">
-          {referenceTiles.map((t) => (
-            <ToolCard title={t.title} description={t.description} href={t.href} status={t.status}>
-              <svg
-                slot="icon"
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-                set:html={icons[t.icon]}
-              />
-            </ToolCard>
-          ))}
-        </div>
-        <p class="flex flex-wrap gap-[10px] text-[13px]">
-          <span class="text-muted">Popular:</span>
-          {popular.map(([label, href], i) => (
-            <>
-              <a href={href}>{label}</a>
-              {i < popular.length - 1 && <span class="text-muted">·</span>}
-            </>
-          ))}
-        </p>
-      </section>
-
       <Panel title={homeGuildPanelCopy.label}>
         <div class="p-[18px]">
           <HomeGuildLink client:visible />
@@ -217,7 +153,7 @@ const popular = [
               stroke-linecap="round"
               stroke-linejoin="round"
               aria-hidden="true"
-              set:html={icons[card.href === '/addon' ? 'addon' : 'logs']}
+              set:html={addonIconPath}
             />
           </ToolCard>
         ))}
@@ -240,16 +176,6 @@ const popular = [
           ))}
         </Panel>
         <div class="col-span-12 lg:col-span-4 flex flex-col gap-[22px] md:gap-8">
-          <Panel title="Still unknown">
-            {unknowns.map((u, i) => (
-              <div
-                class={`flex flex-col gap-[3px] px-[18px] py-[14px] text-[14px] ${i < unknowns.length - 1 ? 'border-b border-line-soft' : ''}`}
-              >
-                <span class="text-strong font-semibold">{u.title}</span>
-                <span class="text-[13px] text-muted">{u.note}</span>
-              </div>
-            ))}
-          </Panel>
           <Panel title="Help build this">
             <div class="flex flex-col gap-3 p-[18px]">
               <p class="text-[14px] leading-relaxed">

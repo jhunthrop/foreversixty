@@ -1,12 +1,6 @@
 // web/src/lib/home-landing-copy.test.ts
 import { describe, expect, it } from 'vitest';
-import {
-  homeCompanionRow,
-  homeGuildPanelCopy,
-  homeHeroCopy,
-  homeProductPanels,
-  homeReferenceCopy,
-} from './home-landing-copy';
+import { homeCompanionRow, homeGuildPanelCopy, homeHeroCopy, homeProductPanels } from './home-landing-copy';
 
 function nonEmpty(value: string): boolean {
   return value.trim().length > 0;
@@ -28,10 +22,6 @@ describe('home-landing-copy', () => {
     }
   });
 
-  it('carries the reference band sentence', () => {
-    expect(homeReferenceCopy.sentence).toBe('Every fact dated and sourced.');
-  });
-
   it('formats the guild progression sentence honestly from real counts', () => {
     expect(homeGuildPanelCopy.progressionOf(3, 12)).toBe('3 of 12 bosses down');
     expect(homeGuildPanelCopy.progressionOf(0, 0)).toBe('0 of 0 bosses down');
@@ -41,8 +31,9 @@ describe('home-landing-copy', () => {
     expect(homeGuildPanelCopy.claimHref).toMatch(/\/v1\/auth\/battlenet\/start\?next=/);
   });
 
-  it('lists exactly the addon and companion cards', () => {
-    expect(homeCompanionRow.map((c) => c.title)).toEqual(['The addon', 'The companion']);
-    expect(homeCompanionRow.map((c) => c.href)).toEqual(['/addon', '/logs#companion']);
+  it('collapses the addon and companion row into one "Get set up" card', () => {
+    expect(homeCompanionRow).toHaveLength(1);
+    expect(homeCompanionRow[0].title).toBe('Get set up');
+    expect(homeCompanionRow[0].href).toBe('/setup');
   });
 });
