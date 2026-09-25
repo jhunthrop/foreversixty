@@ -6,8 +6,7 @@
   import type { Snippet } from 'svelte';
   import type { MeCharacter } from '../../lib/account/api';
   import { buildSourcePill } from '../../lib/account/build-pill';
-  import { characterListCopy } from '../../lib/account/character-list-copy';
-  import { guildRankLabel } from '../../lib/characters';
+  import CharacterGuildLine from './CharacterGuildLine.svelte';
   import CharacterIdentity from './CharacterIdentity.svelte';
 
   let {
@@ -59,13 +58,7 @@
       {pill.label}
     </span>
     {#if guild !== undefined}
-      <span class="text-muted text-[13px]" data-testid="character-guild-line">
-        {guild.name}
-        {#if guild.rank !== undefined}· {guildRankLabel(guild.rank)}{/if}
-        {#if guild.verified}
-          <span class="text-strong" data-testid="character-guild-verified">{characterListCopy.verified}</span>
-        {/if}
-      </span>
+      <CharacterGuildLine {guild} testid="character-guild" />
     {/if}
   </div>
   {#if action !== undefined}{@render action()}{/if}

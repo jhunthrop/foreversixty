@@ -163,3 +163,12 @@ export const SIM_ID_PATTERN = /^\/sim\/([a-z2-7]{12})\/?$/;
 export function simIdFrom(pathname: string): string {
   return SIM_ID_PATTERN.exec(pathname)?.[1] ?? '';
 }
+
+/**
+ * The armory-source href for a stored character (spec 2026-09-24 §2.1: the hero's own
+ * "Sim {name}" button uses this exact call, byte-identical to what LandingState.svelte's
+ * row links already build). The one place `?source=armory&ref=<key>` is assembled.
+ */
+export function armorySimHref(characterKey: string): string {
+  return `/sim${simSearch(withSimState(defaultSimState(), { source: 'armory', ref: characterKey }))}`;
+}

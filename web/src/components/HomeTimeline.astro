@@ -1,0 +1,54 @@
+---
+// web/src/components/HomeTimeline.astro
+// Spec 2026-09-24 §2.2: the five site dates as a horizontal timeline, the quietest panel
+// treatment, replacing the old "Right now" StatePanel on this page only (StatePanel itself
+// is unchanged and still used elsewhere). `now` is a prop only so the SSR test can pin it;
+// index.astro never passes it, so this always classifies against the real clock in
+// production.
+import UpdatedStamp from './UpdatedStamp.astro';
+import { timelineRows, type DateEntry } from '../lib/home/timeline';
+
+interface Props {
+  dates: DateEntry[];
+  updated?: Date;
+  now?: Date;
+}
+const { dates, updated, now } = Astro.props;
+const rows = timelineRows(dates, now);
+---
+
+<div
+  class="bg-raised/85 border-line grid grid-cols-2 gap-3 rounded-panel border px-[18px] py-[14px] md:flex md:items-stretch md:gap-0 md:overflow-x-auto"
+  data-testid="home-timeline"
+>
+  {rows.map((row, i) => (
+    <div
+      class={`flex min-w-0 flex-col gap-1 px-3 py-1 md:min-w-[150px] md:flex-1 ${
+        i < rows.length - 1 ? 'md:border-line-soft md:border-r' : ''
+      } ${row.status === 'past' ? 'opacity-60' : ''}`}
+      data-testid="home-timeline-row"
+      data-status={row.status}
+    >
+      <div class="flex items-center gap-2">
+        {row.status === 'next' && (
+          <span
+            class="bg-gold h-2 w-2 shrink-0 rounded-full shadow-[0_0_10px_rgba(229,185,85,.8)]"
+            data-testid="home-timeline-dot"
+            aria-hidden="true"
+          />
+        )}
+        <span class="font-mono tabular text-[12px] text-muted">{row.key}</span>
+      </div>
+      <span class="text-strong text-[13px] font-semibold">{row.value}</span>
+      {row.note && <span class="text-muted text-[12px]">{row.note}</span>}
+    </div>
+  ))}
+  {updated && (
+    <div
+      class="flex items-end pl-1 md:ml-auto md:shrink-0 md:items-center md:self-center"
+      data-testid="home-timeline-updated"
+    >
+      <UpdatedStamp date={updated} />
+    </div>
+  )}
+</div>

@@ -16,13 +16,23 @@ export const homePanelCopy = {
   // Spec 2026-09-23 §2 item 2's exact hero sentence.
   signedOutLine: 'Sign in with Battle.net and your characters arrive with their gear, talents and guild.',
   signInButton: 'Sign in with Battle.net',
-  openInPlanner: 'Open in planner',
-  openInSimulator: 'Open in simulator',
   logs: 'Logs',
   yourCharacters: 'Your characters',
+  planTalents: 'Plan talents',
+  getTheBuild: 'Get the build',
+  simCharacter: (name: string): string => `Sim ${name}`,
   /** The chip row under the hero: every other character, one click to make it current. */
   switchTo: (name: string): string => `Switch to ${name}`,
   moreCharacters: (count: number): string => `+${count} more`,
+  noSimYet: 'No sim yet.',
+  runAction: 'Run',
+  noBuildYet: 'No build yet.',
+  continuePlanning: 'Continue planning',
+  noLogsYet: 'No logs yet.',
+  uploadALog: 'Upload a log',
+  openAction: 'Open',
+  notRatedYet: 'Not rated yet.',
+  rankingsForClass: (klass: string): string => `Rankings for ${klass}`,
 } as const;
 
 /** How many other characters the hub's chip row shows before "+N more" links to /account. */

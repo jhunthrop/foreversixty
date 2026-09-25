@@ -8,36 +8,26 @@
      visually occludes the signed-out block (a solid background over the same cell) instead
      of the two stacking and reflowing the page underneath. -->
 <script lang="ts">
-  import { fetchMeOnce, type Me, type MeCharacter } from '../lib/account/api';
-  import { createQueryState } from '../lib/data/query.svelte';
-  import { readCurrent } from '../lib/current-character';
+  import type { MeCharacter } from '../lib/account/api';
   import { classColorVar } from '../lib/report/format';
-  import { heroCharacter } from '../lib/account/hero-character';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import CharacterPortrait from './character/CharacterPortrait.svelte';
-  import { mainCharacter } from '../lib/account/main-character';
-  import { parseCharacterPath } from '../lib/characters';
-  import { API_BASE_URL } from '../lib/planner/config';
-  import { fetchCharacterRating } from '../lib/rankings/api';
-  import type { CharacterRating } from '../lib/rating/types';
+  import CharacterGuildLine from './character/CharacterGuildLine.svelte';
   import { ratingCopy } from '../lib/rating/copy';
   import { HOME_CHIP_LIMIT, HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
-  import { pointerForCharacter } from '../lib/account/main-character';
-  import { writeCurrent, CURRENT_CHARACTER_CHANGED } from '../lib/current-character';
+  import { createHomeHero } from '../lib/account/home-hero.svelte';
+  import { armorySimHref } from '../lib/sim/url';
+  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 
-  // One `/v1/me` read, shared with every other island through the client cache
-  // (web/src/lib/data/query.ts) -- see SessionNav.svelte and Account.svelte's own copies of
-  // this same call.
-  const session = createQueryState<Me | null>(`${API_BASE_URL}/v1/me`, () => fetchMeOnce(), {
-    scope: 'private',
-    ttlMs: 10 * 60 * 1000,
-  });
-
-  const me = $derived(session.data);
+  // The session read, hero derivation and rating fetch all live in one shared composable
+  // (lib/account/home-hero.svelte.ts) so this island and HomeNextSteps.svelte agree on who
+  // "the main character" is without each fetching /v1/me or the rating separately.
+  const homeHero = createHomeHero();
+  const me = $derived(homeHero.me);
   // 'ready' before this rewrite meant "the fetch attempt finished, whichever way" -- true on
   // both the old `.then` and `.catch` branches -- so it maps to createQueryState's two
   // terminal statuses, not just the successful one.
-  const ready = $derived(session.status === 'ready' || session.status === 'failed');
+  const ready = $derived(homeHero.ready);
 
   /**
    * The grid-overlay CLS trick (this component's root and index.astro's signed-out block
@@ -76,24 +66,9 @@
    * at on arrival" algorithm, not a guess either) so a signed-in visitor with characters but
    * no current-character pointer yet still sees a hero, the way a first-ever sign-in does.
    */
-  // Bumped whenever this panel writes the pointer, so `hero` re-reads it: a chip click makes
-  // that character current for the planner, the simulator and the account page alike.
-  let pointerVersion = $state(0);
-  const hero = $derived<MeCharacter | null>(
-    me === null
-      ? null
-      : (heroCharacter(readCurrentIfReady(), me.characters) ??
-          mainCharacter(me.characters, me.main_character_key)),
-  );
-  function readCurrentIfReady() {
-    void pointerVersion;
-    if (!ready || me === null) return null;
-    return readCurrent();
-  }
+  const hero = $derived(homeHero.hero);
   function switchTo(character: MeCharacter): void {
-    writeCurrent(pointerForCharacter(character));
-    pointerVersion += 1;
-    window.dispatchEvent(new Event(CURRENT_CHARACTER_CHANGED));
+    homeHero.switchTo(character);
   }
   /** Every other character, in the account's order, capped for the row; the rest is "+N more". */
   const others = $derived(
@@ -101,26 +76,12 @@
   );
   const shownOthers = $derived(others.slice(0, HOME_CHIP_LIMIT));
   const hiddenCount = $derived(others.length - shownOthers.length);
-  const heroPath = $derived(hero === null ? null : parseCharacterPath(`/character/${hero.key}`));
 
-  // The latest rating figure, when one exists (spec 2026-09-23 §2 item 2): a second fetch,
-  // chained off the hero rather than blocking it, since this island is already deferred
-  // (`client:visible`) and never sits on the LCP path. Never shown until it resolves with a
-  // real sample -- an absent figure, not an invented one.
-  let rating = $state<CharacterRating | null>(null);
-  $effect(() => {
-    const path = heroPath;
-    rating = null;
-    if (path === null) return;
-    void fetchCharacterRating(path)
-      .then((result) => {
-        if (path !== heroPath) return;
-        rating = result;
-      })
-      .catch(() => {
-        rating = null;
-      });
-  });
+  // The latest rating figure, when one exists (spec 2026-09-23 §2 item 2): chained off the
+  // hero rather than blocking it, since this island is already deferred (`client:visible`)
+  // and never sits on the LCP path. Never shown until it resolves with a real sample -- an
+  // absent figure, not an invented one.
+  const rating = $derived(homeHero.rating);
   const ratingFigure = $derived(
     rating !== null && rating.sample_size > 0 && rating.latest !== null
       ? `${ratingCopy.panelHeading} ${rating.latest.overall.toFixed(2)}`
@@ -132,20 +93,51 @@
      eager island cost the home page one animation step of LCP), and an observer needs a
      box to see. Empty and pointer-events-none, it occludes nothing until signed in. -->
 {#if ready && me !== null && hero !== null}
-  <div
-    class="flex flex-wrap items-center gap-3 bg-[var(--color-bg)] [grid-area:1/1]"
-    data-testid="home-account-panel"
-  >
-    <CharacterIdentity character={hero} size="md" descriptor="full" testid="home-hero" />
-    <a class="text-nav text-[13px] font-semibold" href="/planner">{homePanelCopy.openInPlanner}</a>
-    <a class="text-nav text-[13px] font-semibold" href="/sim">{homePanelCopy.openInSimulator}</a>
-    <a class="text-nav text-[13px] font-semibold" href="/logs">{homePanelCopy.logs}</a>
-    <a class="text-nav text-[13px] font-semibold" href="/account">{homePanelCopy.yourCharacters}</a>
-    {#if ratingFigure !== ''}
-      <span class="text-muted tabular font-mono text-[12px]" data-testid="home-hero-rating"
-        >{ratingFigure}</span
-      >
-    {/if}
+  <div class="flex flex-col gap-4 bg-[var(--color-bg)] [grid-area:1/1]" data-testid="home-account-panel">
+    <div class="flex flex-wrap items-end gap-5">
+      {#if hero.render_url !== undefined}
+        <img
+          class="hidden max-h-[320px] w-auto shrink-0 object-contain lg:block"
+          src={hero.render_url}
+          alt=""
+          loading="lazy"
+          data-testid="home-hero-render"
+        />
+      {/if}
+      <div class="flex flex-col gap-2">
+        <CharacterIdentity character={hero} size="lg" descriptor="full" heading testid="home-hero" />
+        {#if hero.guild !== undefined}
+          <CharacterGuildLine guild={hero.guild} testid="home-hero-guild" />
+        {/if}
+        <div class="flex flex-wrap items-center gap-3 pt-1">
+          {#if hero.build !== undefined}
+            <a
+              class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
+              href={armorySimHref(hero.key)}
+            >
+              {homePanelCopy.simCharacter(hero.name)}
+            </a>
+          {:else}
+            <a
+              class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
+              href="/account#characters"
+            >
+              {homePanelCopy.getTheBuild}
+            </a>
+          {/if}
+          <a class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4`} href="/planner">
+            {homePanelCopy.planTalents}
+          </a>
+          <a class="text-nav text-[13px] font-semibold" href="/logs">{homePanelCopy.logs}</a>
+          <a class="text-nav text-[13px] font-semibold" href="/account">{homePanelCopy.yourCharacters}</a>
+          {#if ratingFigure !== ''}
+            <span class="text-muted tabular font-mono text-[12px]" data-testid="home-hero-rating"
+              >{ratingFigure}</span
+            >
+          {/if}
+        </div>
+      </div>
+    </div>
     {#if shownOthers.length > 0}
       <ul class="flex w-full flex-wrap gap-2" data-testid="home-character-chips">
         {#each shownOthers as other (other.key)}

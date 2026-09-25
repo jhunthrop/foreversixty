@@ -17,6 +17,7 @@
     size,
     descriptor,
     href,
+    heading = false,
     onNameClick,
     nameTestid,
     descriptorTestid,
@@ -26,6 +27,10 @@
     size: 'sm' | 'md' | 'lg';
     descriptor: 'full' | 'realm' | 'none';
     href?: string;
+    /** Wraps the name in an `<h1>` -- spec 2026-09-24 Ruling 5: the signed-in home hero's
+     *  character name is the page's only heading, the same "name is the h1" rule
+     *  Character.svelte's public header already follows. Every other caller omits this. */
+    heading?: boolean;
     onNameClick?: (event: MouseEvent) => void;
     nameTestid?: string;
     descriptorTestid?: string;
@@ -49,7 +54,25 @@
 <div class="flex min-w-0 items-center gap-3">
   <CharacterPortrait {character} {size} {testid} />
   <div class="flex min-w-0 flex-col gap-0.5">
-    {#if href !== undefined}
+    {#if heading}
+      <h1 class="m-0 p-0 font-normal">
+        {#if href !== undefined}
+          <a
+            class={nameClass}
+            style:color={classColorVar(character.class)}
+            {href}
+            onclick={onNameClick}
+            data-testid={nameTestid}
+          >
+            {character.name}
+          </a>
+        {:else}
+          <span class={nameClass} style:color={classColorVar(character.class)} data-testid={nameTestid}>
+            {character.name}
+          </span>
+        {/if}
+      </h1>
+    {:else if href !== undefined}
       <a
         class={nameClass}
         style:color={classColorVar(character.class)}

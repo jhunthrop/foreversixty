@@ -48,6 +48,14 @@ export const homeProductPanels: readonly HomeProductPanelCopy[] = [
   },
 ] as const;
 
+/** Spec section 2.4, "Around the site": the two compact tables, each five rows "as today"
+ *  (RecentReports compact and HomeTopGuilds), with a "See all" link apiece. */
+export const homeAroundTheSiteCopy = {
+  reportsLabel: 'Recent reports',
+  guildsLabel: 'Top guilds',
+  seeAll: 'See all',
+} as const;
+
 export const homeReferenceCopy = {
   sentence: 'Every fact dated and sourced.',
 } as const;

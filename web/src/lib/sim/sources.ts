@@ -130,6 +130,14 @@ async function reference(ctx: LoadContext) {
   return loadReference(ctx.treeVersion);
 }
 
+/** Sums a "31/0/20"-style tree-total talent split (fight_metrics.talent_split /
+ *  SimInput.talents) into a point count. The one place this parse happens, so a caller
+ *  reading this same field (the home Planner card, lib/home/next-steps.ts) reads it the
+ *  same way this file's own fight-sourced branch, below, always has. */
+export function talentPointsFromSplit(talents: string): number {
+  return talents.split('/').reduce((sum, part) => sum + (Number.parseInt(part, 10) || 0), 0);
+}
+
 export async function fromStoredCharacter(
   path: CharacterPath,
   ctx: LoadContext,
@@ -205,9 +213,7 @@ export async function fromStoredCharacter(
     // fromLoggedFight's own `split` produces -- but not enough to say which talent was
     // picked in which order, so point_order is honestly empty: the same "the page says
     // the tree is empty" case fromLoggedFight already has for the same reason.
-    const totalPoints = input.talents
-      .split('/')
-      .reduce((sum, part) => sum + (Number.parseInt(part, 10) || 0), 0);
+    const totalPoints = talentPointsFromSplit(input.talents);
     const character: SimCharacter = {
       name,
       spec: input.spec,
