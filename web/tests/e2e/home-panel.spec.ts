@@ -51,7 +51,7 @@ test('a signed-in visitor with zero characters still sees the Battle.net sign-in
 
 test('a character with no build shows Get the build, not a Sim button, with the portrait fallback', async ({
   page,
-}) => {
+}, testInfo) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       fulfil({
@@ -108,6 +108,16 @@ test('a character with no build shows Get the build, not a Sim button, with the 
   // its own when there is no render, so there is exactly one portrait, not two.
   await expect(panel.getByTestId('home-hero-avatar-fallback')).toBeVisible();
   await expect(panel.getByTestId('home-hero-render')).toHaveCount(0);
+  // Every hero gets the class's tree art as a backdrop at desktop width, render or not
+  // (lib/home/class-art.ts); it is decoration, so it is absent from the phone layout.
+  const art = panel.getByTestId('home-hero-art');
+  await expect(art).toHaveAttribute('style', /trees\/warriorarms\.webp/);
+  if (testInfo.project.name === 'desktop') await expect(art).toBeVisible();
+  else await expect(art).toBeHidden();
+  // No character has a build: the reason is Blizzard's, and the hero says so once.
+  await expect(panel.getByTestId('home-hero-no-bnet-data')).toHaveText(
+    'Blizzard serves no data for this realm type yet.',
+  );
 });
 
 test('a character with a build shows a Sim button to the armory-source href and its render image', async ({

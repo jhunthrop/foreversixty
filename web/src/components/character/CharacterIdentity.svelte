@@ -9,8 +9,8 @@
   import { classColorVar } from '../../lib/report/format';
   import CharacterPortrait from './CharacterPortrait.svelte';
 
-  /** 14 / 15 / 18px, spec 2026-09-23 §2.2. */
-  const NAME_SIZE = { sm: 'text-[14px]', md: 'text-[15px]', lg: 'text-[18px]' } as const;
+  /** 14 / 15 / 18 / 22px, spec 2026-09-23 §2.2 (xl for the home hero; 22px is the display ceiling). */
+  const NAME_SIZE = { sm: 'text-[14px]', md: 'text-[15px]', lg: 'text-[18px]', xl: 'text-[22px]' } as const;
 
   let {
     character,
@@ -24,7 +24,7 @@
     testid = 'character',
   }: {
     character: MeCharacter;
-    size: 'sm' | 'md' | 'lg';
+    size: 'sm' | 'md' | 'lg' | 'xl';
     descriptor: 'full' | 'realm' | 'none';
     href?: string;
     /** Wraps the name in an `<h1>` -- spec 2026-09-24 Ruling 5: the signed-in home hero's
@@ -47,7 +47,7 @@
   // Display font only at lg (spec 2026-09-23 §2.2): the account hero band is the one place
   // CharacterIdentity's own name needs it; a row or chip name is never that prominent.
   const nameClass = $derived(
-    `w-fit ${NAME_SIZE[size]} font-semibold${size === 'lg' ? ' [font-family:var(--font-display)]' : ''}`,
+    `w-fit ${NAME_SIZE[size]} font-semibold${size === 'lg' || size === 'xl' ? ' [font-family:var(--font-display)]' : ''}`,
   );
 </script>
 

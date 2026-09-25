@@ -18,12 +18,19 @@
   import { createHomeHero } from '../lib/account/home-hero.svelte';
   import { armorySimHref } from '../lib/sim/url';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { classArtUrl } from '../lib/home/class-art';
+  import { accountPageCopy } from '../lib/account/account-page-copy';
 
   // The session read, hero derivation and rating fetch all live in one shared composable
   // (lib/account/home-hero.svelte.ts) so this island and HomeNextSteps.svelte agree on who
   // "the main character" is without each fetching /v1/me or the rating separately.
   const homeHero = createHomeHero();
   const me = $derived(homeHero.me);
+  // The backdrop every hero gets, render or not: the class's tree art (lib/home/class-art.ts).
+  const art = $derived(hero === null ? undefined : classArtUrl(hero.class));
+  // Same rule as the account page's hero band: when no character has a build, the reason is
+  // Blizzard's, and saying so once here keeps "No build yet" from reading as the site's failure.
+  const noBattlenetData = $derived(me !== null && me.characters.every((c) => c.build === undefined));
   // 'ready' before this rewrite meant "the fetch attempt finished, whichever way" -- true on
   // both the old `.then` and `.catch` branches -- so it maps to createQueryState's two
   // terminal statuses, not just the successful one.
@@ -93,35 +100,35 @@
      eager island cost the home page one animation step of LCP), and an observer needs a
      box to see. Empty and pointer-events-none, it occludes nothing until signed in. -->
 {#if ready && me !== null && hero !== null}
-  <div class="flex flex-col gap-4 bg-[var(--color-bg)] [grid-area:1/1]" data-testid="home-account-panel">
-    <div class="flex flex-wrap items-end gap-5">
-      {#if hero.render_url !== undefined}
-        <img
-          class="hidden max-h-[320px] w-auto shrink-0 object-contain lg:block"
-          src={hero.render_url}
-          alt=""
-          loading="lazy"
-          data-testid="home-hero-render"
-        />
-      {/if}
-      <div class="flex flex-col gap-2">
-        <CharacterIdentity character={hero} size="lg" descriptor="full" heading testid="home-hero" />
+  <div class="relative flex flex-col gap-4 [grid-area:1/1]" data-testid="home-account-panel">
+    {#if art !== undefined}
+      <!-- The class art, masked into the band's right half and faded so the identity reads
+           over it; the render (below) sits on top of it when one exists. -->
+      <div
+        class="hero-art pointer-events-none absolute top-[-64px] right-[-48px] bottom-[-56px] hidden w-[52%] lg:block"
+        style={`background-image: url('${art}')`}
+        aria-hidden="true"
+        data-testid="home-hero-art"
+      ></div>
+    {/if}
+    <div class="relative flex flex-wrap items-end gap-6">
+      <div class="flex min-w-0 flex-col gap-2">
+        <CharacterIdentity character={hero} size="xl" descriptor="full" heading testid="home-hero" />
         {#if hero.guild !== undefined}
           <CharacterGuildLine guild={hero.guild} testid="home-hero-guild" />
         {/if}
-        <div class="flex flex-wrap items-center gap-3 pt-1">
+        {#if noBattlenetData}
+          <p class="text-muted text-[13px]" data-testid="home-hero-no-bnet-data">
+            {accountPageCopy.noBattlenetDataForRealm}
+          </p>
+        {/if}
+        <div class="flex flex-wrap items-center gap-3 pt-2">
           {#if hero.build !== undefined}
-            <a
-              class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
-              href={armorySimHref(hero.key)}
-            >
+            <a class={`${SECONDARY_BUTTON_FIXED} border-gold text-gold px-4`} href={armorySimHref(hero.key)}>
               {homePanelCopy.simCharacter(hero.name)}
             </a>
           {:else}
-            <a
-              class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
-              href="/account#characters"
-            >
+            <a class={`${SECONDARY_BUTTON_FIXED} border-gold text-gold px-4`} href="/account#characters">
               {homePanelCopy.getTheBuild}
             </a>
           {/if}
@@ -137,9 +144,18 @@
           {/if}
         </div>
       </div>
+      {#if hero.render_url !== undefined}
+        <img
+          class="hidden max-h-[320px] w-auto shrink-0 object-contain lg:ml-auto lg:block"
+          src={hero.render_url}
+          alt=""
+          loading="lazy"
+          data-testid="home-hero-render"
+        />
+      {/if}
     </div>
     {#if shownOthers.length > 0}
-      <ul class="flex w-full flex-wrap gap-2" data-testid="home-character-chips">
+      <ul class="relative flex w-full flex-wrap gap-2" data-testid="home-character-chips">
         {#each shownOthers as other (other.key)}
           <li>
             <button
@@ -169,3 +185,18 @@
 {:else}
   <div class="pointer-events-none min-h-[52px] [grid-area:1/1]" aria-hidden="true"></div>
 {/if}
+
+<style>
+  /* The tree art is 300x331: scaled up it goes soft, which is the point of a backdrop. The
+     mask fades it into the sky on the left and bottom so the identity column reads over it. */
+  .hero-art {
+    background-size: auto 118%;
+    background-repeat: no-repeat;
+    background-position: 72% 42%;
+    opacity: 0.85;
+    filter: saturate(1.2) contrast(1.05);
+    mix-blend-mode: lighten;
+    -webkit-mask-image: radial-gradient(ellipse 52% 82% at 70% 48%, #000 34%, transparent 78%);
+    mask-image: radial-gradient(ellipse 52% 82% at 70% 48%, #000 34%, transparent 78%);
+  }
+</style>

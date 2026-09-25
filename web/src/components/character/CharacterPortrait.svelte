@@ -14,18 +14,20 @@
     avatar_url?: string;
   }
 
-  /** 28 / 36 / 44px, spec 2026-09-23 §2.1 -- one named map, no magic numbers at the call site. */
+  /** 28 / 36 / 44 / 72px, spec 2026-09-23 §2.1 (xl added for the home hero, 2026-09-25) --
+   *  one named map, no magic numbers at the call site. */
   const SIZE_CLASS = {
     sm: { box: 'h-7 w-7', letter: 'text-[12px]' },
     md: { box: 'h-9 w-9', letter: 'text-[15px]' },
     lg: { box: 'h-11 w-11', letter: 'text-[18px]' },
+    xl: { box: 'h-[72px] w-[72px]', letter: 'text-[26px]' },
   } as const;
 
   let {
     character,
     size,
     testid,
-  }: { character: PortraitCharacter; size: 'sm' | 'md' | 'lg'; testid: string } = $props();
+  }: { character: PortraitCharacter; size: 'sm' | 'md' | 'lg' | 'xl'; testid: string } = $props();
 
   const box = $derived(SIZE_CLASS[size].box);
   const letterClass = $derived(SIZE_CLASS[size].letter);
