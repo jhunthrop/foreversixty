@@ -104,9 +104,9 @@ describe('CharacterList', () => {
     const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
     expect(body).toContain('Gear and talents come from Battle.net and refresh nightly.');
     expect(body).toContain(characterListCopy.introInstallAddonLink);
-    expect(body).toContain('href="/addon"');
+    expect(body).toContain('href="/setup"');
     expect(body).toContain(characterListCopy.introPasteLink);
-    expect(body).toContain('href="/addon#paste"');
+    expect(body).toContain('href="/setup#paste"');
   });
 
   it('shows a Battle.net build pill and the "Open in simulator" link for a character with a blizzard build', () => {

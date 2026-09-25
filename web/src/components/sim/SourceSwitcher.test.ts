@@ -17,7 +17,7 @@ const requiredProps = {
 describe('SourceSwitcher', () => {
   it('links to /addon, with the shared "get the addon" copy', () => {
     const { body } = render(SourceSwitcher, { props: requiredProps });
-    expect(body).toContain('href="/addon"');
+    expect(body).toContain('href="/setup"');
     expect(body).toContain(currentCharacterCopy.getTheAddon);
   });
 
@@ -26,7 +26,7 @@ describe('SourceSwitcher', () => {
   // still gives the anchor a real touch target on phone.
   it('gives the /addon link a 44px hit target', () => {
     const { body } = render(SourceSwitcher, { props: requiredProps });
-    const match = /<a[^>]*href="\/addon"[^>]*>/.exec(body);
+    const match = /<a[^>]*href="\/setup"[^>]*>/.exec(body);
     if (match === null) throw new Error('no /addon anchor rendered');
     expect(match[0]).toContain('min-h-11');
   });

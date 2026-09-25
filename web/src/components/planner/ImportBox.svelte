@@ -83,7 +83,7 @@
     <p class="text-muted text-[13px]" data-testid="import-note">{note}</p>
   {/each}
   <p class="text-muted text-[13px]">
-    <a href="/addon" class="{rowLink} text-nav" data-testid="import-get-addon"
+    <a href="/setup" class="{rowLink} text-nav" data-testid="import-get-addon"
       >{currentCharacterCopy.getTheAddon}</a
     >
   </p>

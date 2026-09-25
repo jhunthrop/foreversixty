@@ -106,9 +106,9 @@
   {/if}
   <p class="text-muted text-[13px]">
     {characterListCopy.introBattlenetLine}
-    <a class="text-text underline" href="/addon">{characterListCopy.introInstallAddonLink}</a>
+    <a class="text-text underline" href="/setup">{characterListCopy.introInstallAddonLink}</a>
     {characterListCopy.introAddonTail}
-    <a class="text-text underline" href="/addon#paste">{characterListCopy.introPasteLink}</a>
+    <a class="text-text underline" href="/setup#paste">{characterListCopy.introPasteLink}</a>
     {characterListCopy.introPasteTail}
   </p>
 </StatePanel>

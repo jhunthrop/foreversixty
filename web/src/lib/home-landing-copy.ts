@@ -10,7 +10,7 @@ export const homeHeroCopy = {
   eyebrow: 'World of Warcraft: Forever',
   headline: 'Your character, planned, simmed, logged and ranked.',
   addonAltLabel: 'or paste an addon export',
-  addonAltHref: '/addon#paste',
+  addonAltHref: '/setup#paste',
 } as const;
 
 export interface HomeProductPanelCopy {

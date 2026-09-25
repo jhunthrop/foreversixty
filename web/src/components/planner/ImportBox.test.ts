@@ -16,13 +16,13 @@ const talents = indexTalents(fixtureTalents as TalentFile);
 describe('ImportBox', () => {
   it('links to /addon, with the shared "get the addon" copy', () => {
     const { body } = render(ImportBox, { props: { talents, activeBuild: '1', onimport: () => {} } });
-    expect(body).toContain('href="/addon"');
+    expect(body).toContain('href="/setup"');
     expect(body).toContain(currentCharacterCopy.getTheAddon);
   });
 
   it('gives the /addon link a 44px hit target', () => {
     const { body } = render(ImportBox, { props: { talents, activeBuild: '1', onimport: () => {} } });
-    const match = /<a[^>]*href="\/addon"[^>]*>/.exec(body);
+    const match = /<a[^>]*href="\/setup"[^>]*>/.exec(body);
     if (match === null) throw new Error('no /addon anchor rendered');
     expect(match[0]).toContain('min-h-11');
   });

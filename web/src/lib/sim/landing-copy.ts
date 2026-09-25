@@ -9,7 +9,7 @@ export const landingCopy = {
   /** Finding 1: a character with no build gets no Sim button -- this link renders in its
    *  place, `sim-paste-<key>`. */
   pasteExport: 'Paste export',
-  pasteExportHref: '/addon#paste',
+  pasteExportHref: '/setup#paste',
 
   /**
    * Finding 2: the alert a failed pick shows when the API's own sim-input read 404s --

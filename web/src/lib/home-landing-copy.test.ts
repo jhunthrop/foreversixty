@@ -16,7 +16,7 @@ describe('home-landing-copy', () => {
   it('carries a non-empty hero eyebrow, headline and addon-alt link', () => {
     expect(nonEmpty(homeHeroCopy.eyebrow)).toBe(true);
     expect(nonEmpty(homeHeroCopy.headline)).toBe(true);
-    expect(homeHeroCopy.addonAltHref).toBe('/addon#paste');
+    expect(homeHeroCopy.addonAltHref).toBe('/setup#paste');
   });
 
   it('lists exactly the four product panels, in spec order, each fully populated', () => {

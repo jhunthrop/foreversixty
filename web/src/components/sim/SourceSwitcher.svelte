@@ -163,7 +163,7 @@
   <p class="text-muted text-[12px]" data-testid="sim-sources-scope-note">{simCopy.scopeNote}</p>
 
   <p class="text-muted text-[12px]">
-    <a href="/addon" class="{rowLink} text-nav" data-testid="sim-get-addon"
+    <a href="/setup" class="{rowLink} text-nav" data-testid="sim-get-addon"
       >{currentCharacterCopy.getTheAddon}</a
     >
   </p>

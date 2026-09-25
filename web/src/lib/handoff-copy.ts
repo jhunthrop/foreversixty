@@ -11,7 +11,7 @@ export const handoffCopy = {
    *  (character-list-copy.ts) -- this per-row line only points at the one action. */
   needsExportLead: 'No export yet ·',
   needsExportPasteLink: 'paste it here',
-  pasteHref: '/addon#paste',
+  pasteHref: '/setup#paste',
 } as const;
 
 /** The plain-text form of the needs-export line, for tests and accessible names. */
