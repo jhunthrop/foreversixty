@@ -85,6 +85,10 @@ export const addonCopy = {
   setupStep2Title: '2. The addon',
   setupStep3Title: '3. The companion',
   setupSignInBody: 'Imports your characters -- gear, talents and guild, refreshed nightly.',
+  /** Same wording as `home-panel-copy.ts`'s `signInButton`; kept as its own key here so
+   *  every visible string on this page comes from `addonCopy`, matching this page's own
+   *  copy-module convention rather than reaching into the home page's module. */
+  setupSignInAction: 'Sign in with Battle.net',
   setupCompanionBody:
     'The companion logs live from your desktop: turn on advanced combat logging, type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.',
 

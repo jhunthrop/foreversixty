@@ -34,6 +34,7 @@ const STRING_COPY_KEYS = [
   'setupStep2Title',
   'setupStep3Title',
   'setupSignInBody',
+  'setupSignInAction',
   'setupCompanionBody',
 ] as const;
 
