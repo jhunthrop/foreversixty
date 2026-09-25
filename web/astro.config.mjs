@@ -65,16 +65,31 @@ const placeholderGuard = {
 // content layer, which is not available inside the config. Path → date, for the sitemap.
 const contentLastmod = (() => {
   const root = fileURLToPath(new URL('./src/content', import.meta.url));
-  const routeOf = { pages: '', guides: '/guides', zones: '/zones', dungeons: '/dungeons' };
+  const routeOf = { pages: '', zones: '/zones', dungeons: '/dungeons' };
   const byPath = new Map();
   let newest = '';
+  const record = (routePath, fileContents) => {
+    const match = fileContents.match(/^updated:\s*'?(\d{4}-\d{2}-\d{2})/m);
+    if (!match) return;
+    byPath.set(routePath, match[1]);
+    if (match[1] > newest) newest = match[1];
+  };
   for (const [dir, prefix] of Object.entries(routeOf)) {
     for (const file of readdirSync(join(root, dir))) {
       if (!file.endsWith('.md')) continue;
-      const match = readFileSync(join(root, dir, file), 'utf8').match(/^updated:\s*'?(\d{4}-\d{2}-\d{2})/m);
-      if (!match) continue;
-      byPath.set(`${prefix}/${file.slice(0, -3)}`, match[1]);
-      if (match[1] > newest) newest = match[1];
+      record(`${prefix}/${file.slice(0, -3)}`, readFileSync(join(root, dir, file), 'utf8'));
+    }
+  }
+  // guides/ is one directory per class (src/content/guides/<class>/{index,<spec>}.md):
+  // index.md is the class landing page at /guides/<class>, every other file is a spec guide
+  // at /guides/<class>/<spec>.
+  for (const classSlug of readdirSync(join(root, 'guides'), { withFileTypes: true })) {
+    if (!classSlug.isDirectory()) continue;
+    for (const file of readdirSync(join(root, 'guides', classSlug.name))) {
+      if (!file.endsWith('.md')) continue;
+      const stem = file.slice(0, -3);
+      const routePath = stem === 'index' ? `/guides/${classSlug.name}` : `/guides/${classSlug.name}/${stem}`;
+      record(routePath, readFileSync(join(root, 'guides', classSlug.name, file), 'utf8'));
     }
   }
   for (const file of readdirSync(join(root, 'changelog'))) {

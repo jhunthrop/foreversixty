@@ -57,6 +57,10 @@ const guides = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/guides' }),
   schema: factSchema.extend({
     classSlug: z.string(),
+    // Present on every spec guide (e.g. `warrior/fury`), absent on a class landing page
+    // (`warrior/index`), which covers the whole class rather than one tree.
+    spec: z.string().optional(),
+    role: z.enum(['dps', 'healer', 'tank']).optional(),
   }),
 });
 

@@ -6,12 +6,22 @@ import ClassTile from '../../components/ClassTile.astro';
 import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import classes from '../../data/classes.json';
 import { latest } from '../../lib/dates';
-const updated = latest((await getCollection('guides')).map((g) => g.data.updated));
+
+const guides = await getCollection('guides');
+const updated = latest(guides.map((g) => g.data.updated));
+const specGuidesByClass = new Map(
+  classes.map((c) => [
+    c.slug,
+    guides
+      .filter((g) => g.data.classSlug === c.slug && g.data.spec !== undefined)
+      .sort((a, b) => a.data.title.localeCompare(b.data.title)),
+  ]),
+);
 ---
 
 <Base
   title="Guides"
-  description="Class guides for World of Warcraft: Forever, written after beta play."
+  description="Class and spec guides for World of Warcraft: Forever, with a beta-honesty note on every projection."
   path="/guides"
 >
   <main
@@ -24,11 +34,23 @@ const updated = latest((await getCollection('guides')).map((g) => g.data.updated
       <UpdatedStamp date={updated} />
     </header>
     <p class="text-muted text-[14px]">
-      Leveling and talent guides are written after we play each class in beta, not before.
+      The beta caps at level 30. Anything about level 60 play is a projection from the demo trees and 1.12
+      knowledge until we can confirm it against a live raid, and each guide's Overview says so.
     </p>
-    <div class="grid grid-cols-3 gap-3">
+    <div class="flex flex-col gap-3">
       {classes.map((c) => (
-        <ClassTile name={c.name} slug={c.slug} />
+        <section class="rounded-control bg-raised border border-line p-4">
+          <div class="grid grid-cols-[84px_1fr] gap-4 items-start">
+            <ClassTile name={c.name} slug={c.slug} />
+            <ul class="flex flex-wrap gap-x-4 gap-y-1 list-none p-0 m-0 text-[13px]">
+              {(specGuidesByClass.get(c.slug) ?? []).map((spec) => (
+                <li>
+                  <a href={`/guides/${spec.id}`}>{spec.data.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
       ))}
     </div>
   </main>
