@@ -12,9 +12,12 @@
   import { classColorVar } from '../lib/report/format';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import CharacterPortrait from './character/CharacterPortrait.svelte';
+  import CharacterGuildLine from './character/CharacterGuildLine.svelte';
   import { ratingCopy } from '../lib/rating/copy';
   import { HOME_CHIP_LIMIT, HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
   import { createHomeHero } from '../lib/account/home-hero.svelte';
+  import { armorySimHref } from '../lib/sim/url';
+  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
 
   // The session read, hero derivation and rating fetch all live in one shared composable
   // (lib/account/home-hero.svelte.ts) so this island and HomeNextSteps.svelte agree on who
@@ -90,20 +93,55 @@
      eager island cost the home page one animation step of LCP), and an observer needs a
      box to see. Empty and pointer-events-none, it occludes nothing until signed in. -->
 {#if ready && me !== null && hero !== null}
-  <div
-    class="flex flex-wrap items-center gap-3 bg-[var(--color-bg)] [grid-area:1/1]"
-    data-testid="home-account-panel"
-  >
-    <CharacterIdentity character={hero} size="md" descriptor="full" testid="home-hero" />
-    <a class="text-nav text-[13px] font-semibold" href="/planner">{homePanelCopy.openInPlanner}</a>
-    <a class="text-nav text-[13px] font-semibold" href="/sim">{homePanelCopy.openInSimulator}</a>
-    <a class="text-nav text-[13px] font-semibold" href="/logs">{homePanelCopy.logs}</a>
-    <a class="text-nav text-[13px] font-semibold" href="/account">{homePanelCopy.yourCharacters}</a>
-    {#if ratingFigure !== ''}
-      <span class="text-muted tabular font-mono text-[12px]" data-testid="home-hero-rating"
-        >{ratingFigure}</span
-      >
-    {/if}
+  <div class="flex flex-col gap-4 bg-[var(--color-bg)] [grid-area:1/1]" data-testid="home-account-panel">
+    <div class="flex flex-wrap items-end gap-5">
+      {#if hero.render_url !== undefined}
+        <img
+          class="hidden max-h-[320px] w-auto shrink-0 object-contain lg:block"
+          src={hero.render_url}
+          alt=""
+          loading="lazy"
+          data-testid="home-hero-render"
+        />
+      {:else}
+        <div class="hidden lg:block">
+          <CharacterPortrait character={hero} size="lg" testid="home-hero-portrait" />
+        </div>
+      {/if}
+      <div class="flex flex-col gap-2">
+        <CharacterIdentity character={hero} size="lg" descriptor="full" heading testid="home-hero" />
+        {#if hero.guild !== undefined}
+          <CharacterGuildLine guild={hero.guild} testid="home-hero-guild" />
+        {/if}
+        <div class="flex flex-wrap items-center gap-3 pt-1">
+          {#if hero.build !== undefined}
+            <a
+              class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
+              href={armorySimHref(hero.key)}
+            >
+              {homePanelCopy.simCharacter(hero.name)}
+            </a>
+          {:else}
+            <a
+              class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
+              href="/account#characters"
+            >
+              {homePanelCopy.getTheBuild}
+            </a>
+          {/if}
+          <a class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4`} href="/planner">
+            {homePanelCopy.planTalents}
+          </a>
+          <a class="text-nav text-[13px] font-semibold" href="/logs">{homePanelCopy.logs}</a>
+          <a class="text-nav text-[13px] font-semibold" href="/account">{homePanelCopy.yourCharacters}</a>
+          {#if ratingFigure !== ''}
+            <span class="text-muted tabular font-mono text-[12px]" data-testid="home-hero-rating"
+              >{ratingFigure}</span
+            >
+          {/if}
+        </div>
+      </div>
+    </div>
     {#if shownOthers.length > 0}
       <ul class="flex w-full flex-wrap gap-2" data-testid="home-character-chips">
         {#each shownOthers as other (other.key)}
