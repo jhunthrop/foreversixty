@@ -561,12 +561,14 @@
               </div>
             {/if}
 
-            <CharacterList
-              characters={me!.characters}
-              bnetImportedAt={me!.bnet_imported_at}
-              mainKey={mainCharacter(me!.characters, me!.main_character_key)?.key}
-              onSetMain={setMain}
-            />
+            <div id="characters">
+              <CharacterList
+                characters={me!.characters}
+                bnetImportedAt={me!.bnet_imported_at}
+                mainKey={mainCharacter(me!.characters, me!.main_character_key)?.key}
+                onSetMain={setMain}
+              />
+            </div>
 
             {#if heroPath !== null}
               <StatePanel label={accountPageCopy.yourRatingsLabel} testid="account-ratings">

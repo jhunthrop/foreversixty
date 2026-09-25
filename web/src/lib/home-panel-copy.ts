@@ -24,6 +24,15 @@ export const homePanelCopy = {
   /** The chip row under the hero: every other character, one click to make it current. */
   switchTo: (name: string): string => `Switch to ${name}`,
   moreCharacters: (count: number): string => `+${count} more`,
+  noSimYet: 'No sim yet.',
+  runAction: 'Run',
+  noBuildYet: 'No build yet.',
+  continuePlanning: 'Continue planning',
+  noLogsYet: 'No logs yet.',
+  uploadALog: 'Upload a log',
+  openAction: 'Open',
+  notRatedYet: 'Not rated yet.',
+  rankingsForClass: (klass: string): string => `Rankings for ${klass}`,
 } as const;
 
 /** How many other characters the hub's chip row shows before "+N more" links to /account. */
