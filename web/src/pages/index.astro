@@ -16,8 +16,11 @@ import SubscribeBox from '../components/SubscribeBox.svelte';
 import HomeGuildLink from '../components/HomeGuildLink.svelte';
 import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
 import HomeNextSteps, { HOME_NEXT_STEPS_SIGNED_OUT_ID } from '../components/HomeNextSteps.svelte';
+import RecentReports from '../components/RecentReports.svelte';
+import HomeTopGuilds from '../components/HomeTopGuilds.svelte';
 import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
 import {
+  homeAroundTheSiteCopy,
   homeCompanionRow,
   homeGuildPanelCopy,
   homeHeroCopy,
@@ -140,6 +143,25 @@ const popular = [
           </div>
           <HomeNextSteps client:visible />
         </div>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-2 gap-4" data-testid="home-around-the-site">
+        <Panel title={homeAroundTheSiteCopy.reportsLabel}>
+          <a slot="aside" href="/logs" class="text-[13px] font-semibold">
+            {homeAroundTheSiteCopy.seeAll}
+          </a>
+          <div class="p-[18px]">
+            <RecentReports client:visible compact heading={false} />
+          </div>
+        </Panel>
+        <Panel title={homeAroundTheSiteCopy.guildsLabel}>
+          <a slot="aside" href="/rankings?board=guild" class="text-[13px] font-semibold">
+            {homeAroundTheSiteCopy.seeAll}
+          </a>
+          <div class="p-[18px]">
+            <HomeTopGuilds client:visible />
+          </div>
+        </Panel>
       </section>
 
       <section class="flex flex-col gap-4">

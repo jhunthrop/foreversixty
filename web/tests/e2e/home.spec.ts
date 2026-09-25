@@ -3,6 +3,32 @@ import { collectPageErrors } from './support/console';
 
 test('homepage states the product and stops, not a marketing slogan', async ({ page }) => {
   const errors = collectPageErrors(page);
+  // Top guilds (spec §2.4, "Around the site") reads GET /v1/rankings/guilds live; stub it
+  // so the ready state is deterministic instead of depending on the real API answering
+  // (the way rankings.spec.ts, rankings-phone.spec.ts and rankings-encounter-picker.spec.ts
+  // already stub this same endpoint).
+  await page.route('**/v1/rankings/guilds?**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        data: {
+          rows: [
+            {
+              rank: 1,
+              guild: { name: 'The Last Watch', ruleset: 'hardcore', region: 'us' },
+              value: 9,
+              fought_at: '2026-12-09T22:10:00Z',
+              report_id: 'fixture2abcd',
+            },
+          ],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    }),
+  );
   await page.goto('/');
   const h1 = page.locator('h1');
   await expect(h1).toHaveCount(1);
@@ -19,6 +45,17 @@ test('homepage states the product and stops, not a marketing slogan', async ({ p
   await expect(page.getByTestId('home-next-simulator-signed-out')).toBeVisible();
   await expect(page.getByTestId('home-next-logs-signed-out')).toBeVisible();
   await expect(page.getByTestId('home-next-rankings-signed-out')).toBeVisible();
+  // Spec §2.4 "Around the site": Recent reports and Top guilds, mounted nested inside
+  // the old HomeProductPanel grid before this branch deleted that grid. RecentReports'
+  // own wrapping section carries this testid in every load state (loading/failed/empty/
+  // ready), so this alone proves the component is mounted at all -- the exact thing an
+  // earlier task silently dropped. Top guilds' ready-state <ul> only renders once its
+  // client:visible island hydrates and the stubbed fetch above resolves, so it needs a
+  // scroll into view first (the same reason logs-recent-reports.spec.ts scrolls to
+  // recent-reports before asserting on it).
+  await expect(page.getByTestId('recent-reports')).toBeVisible();
+  await page.getByTestId('home-around-the-site').scrollIntoViewIfNeeded();
+  await expect(page.getByTestId('home-top-guilds')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Your guild' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What changed' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Still unknown' })).toBeVisible();
