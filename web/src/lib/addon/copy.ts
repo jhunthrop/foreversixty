@@ -80,6 +80,14 @@ export const addonCopy = {
   inGameBody:
     'The addon window, tracker, talent glow, gear tab and minimap button are in beta testing in game. There is no screenshot here because we have not captured one yet.',
 
+  // --- /setup page's three steps (spec 2026-09-25 §3.4) ---
+  setupStep1Title: '1. Sign in with Battle.net',
+  setupStep2Title: '2. The addon',
+  setupStep3Title: '3. The companion',
+  setupSignInBody: 'Imports your characters -- gear, talents and guild, refreshed nightly.',
+  setupCompanionBody:
+    'The companion logs live from your desktop: turn on advanced combat logging, type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.',
+
   // --- gear panel weights ---
   scoreColumn: 'Score',
   sortByScore: 'Sort by score',
