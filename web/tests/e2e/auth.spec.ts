@@ -1,5 +1,6 @@
 // web/tests/e2e/auth.spec.ts
 import { expect, test } from '@playwright/test';
+import { gotoHydrated } from './support/hydrated';
 import { meBnetFixture } from '../../src/fixtures/me-bnet';
 
 const ME = {
@@ -51,7 +52,9 @@ test('asking for an email link shows what happens next', async ({ page }) => {
     return route.fulfill(fulfil({ ok: true, data: { sent: true }, error: null, request_id: 'r' }));
   });
 
-  await page.goto('/login');
+  // Wait for the island: a click before hydration submits the static form and no notice
+  // ever appears (the same intermittent failure the upload and rankings specs had).
+  await gotoHydrated(page, '/login', 'login');
   await page.getByLabel('Or a sign-in link by email').fill('raider@example.com');
   await page.getByRole('button', { name: 'Send link' }).click();
 
