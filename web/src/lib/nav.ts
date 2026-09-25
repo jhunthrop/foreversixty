@@ -7,30 +7,22 @@ export interface NavItem {
   readonly href: string;
 }
 
-/** The four tools, first in the nav on every breakpoint (spec 2026-09-21, section 3). */
+/** The five doors, in this order on every breakpoint (spec 2026-09-25, section 2). */
 export const PRIMARY_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Planner', href: '/planner' },
   { label: 'Simulator', href: '/sim' },
   { label: 'Logs', href: '/logs' },
   { label: 'Rankings', href: '/rankings' },
-];
-
-/** Folded under the "Reference" disclosure. */
-export const REFERENCE_NAV_ITEMS: readonly NavItem[] = [
-  { label: 'Classes', href: '/classes' },
   { label: 'Guides', href: '/guides' },
-  { label: 'Zones', href: '/zones' },
-  { label: 'Dungeons', href: '/dungeons' },
 ];
 
-/** Promoted from the footer into the primary nav. */
-export const ADDON_NAV_ITEM: NavItem = { label: 'The addon', href: '/addon' };
+/** The sixth, quieter item at the end of the row (spec section 2). */
+export const SETUP_NAV_ITEM: NavItem = { label: 'Get set up', href: '/setup' };
 
-/** Last in the row: what the site sells is one click from every page, not a footer link. */
-export const PREMIUM_NAV_ITEM: NavItem = { label: 'Premium', href: '/premium' };
-
-/** The items after the Reference disclosure, in order. */
-export const TRAILING_NAV_ITEMS: readonly NavItem[] = [ADDON_NAV_ITEM, PREMIUM_NAV_ITEM];
+/** The items after the five doors, in order. One entry today; kept as an array (rather than
+ *  inlining SETUP_NAV_ITEM at the call site) so Header.astro's render loop needs no special
+ *  case if a second trailing item is ever added. */
+export const TRAILING_NAV_ITEMS: readonly NavItem[] = [SETUP_NAV_ITEM];
 
 /**
  * True for the item's own page and any sub-path of it (`/sim` matches `/sim/gear`), so a
@@ -40,10 +32,4 @@ export const TRAILING_NAV_ITEMS: readonly NavItem[] = [ADDON_NAV_ITEM, PREMIUM_N
  */
 export function isNavItemCurrent(item: NavItem, path: string): boolean {
   return path === item.href || path.startsWith(`${item.href}/`);
-}
-
-/** True when the current page is one the Reference disclosure holds, so its summary can
- * carry `aria-current` even though none of its own children render as the trigger. */
-export function isReferenceCurrent(path: string): boolean {
-  return REFERENCE_NAV_ITEMS.some((item) => isNavItemCurrent(item, path));
 }

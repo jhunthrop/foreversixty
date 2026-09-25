@@ -1,32 +1,27 @@
 import { describe, expect, it } from 'vitest';
-import {
-  ADDON_NAV_ITEM,
-  PREMIUM_NAV_ITEM,
-  TRAILING_NAV_ITEMS,
-  PRIMARY_NAV_ITEMS,
-  REFERENCE_NAV_ITEMS,
-  isNavItemCurrent,
-  isReferenceCurrent,
-} from './nav';
+import { PRIMARY_NAV_ITEMS, SETUP_NAV_ITEM, TRAILING_NAV_ITEMS, isNavItemCurrent } from './nav';
 
 describe('nav structure', () => {
-  it('orders the four tools Planner, Simulator, Logs, Rankings', () => {
-    expect(PRIMARY_NAV_ITEMS.map((item) => item.label)).toEqual(['Planner', 'Simulator', 'Logs', 'Rankings']);
-    expect(PRIMARY_NAV_ITEMS.map((item) => item.href)).toEqual(['/planner', '/sim', '/logs', '/rankings']);
-  });
-
-  it('orders the reference group Classes, Guides, Zones, Dungeons', () => {
-    expect(REFERENCE_NAV_ITEMS.map((item) => item.label)).toEqual(['Classes', 'Guides', 'Zones', 'Dungeons']);
-    expect(REFERENCE_NAV_ITEMS.map((item) => item.href)).toEqual([
-      '/classes',
+  it('orders the five doors Planner, Simulator, Logs, Rankings, Guides', () => {
+    expect(PRIMARY_NAV_ITEMS.map((item) => item.label)).toEqual([
+      'Planner',
+      'Simulator',
+      'Logs',
+      'Rankings',
+      'Guides',
+    ]);
+    expect(PRIMARY_NAV_ITEMS.map((item) => item.href)).toEqual([
+      '/planner',
+      '/sim',
+      '/logs',
+      '/rankings',
       '/guides',
-      '/zones',
-      '/dungeons',
     ]);
   });
 
-  it('names the addon nav item "The addon" at /addon', () => {
-    expect(ADDON_NAV_ITEM).toEqual({ label: 'The addon', href: '/addon' });
+  it('names the setup nav item "Get set up" at /setup, alone in the trailing row', () => {
+    expect(SETUP_NAV_ITEM).toEqual({ label: 'Get set up', href: '/setup' });
+    expect(TRAILING_NAV_ITEMS).toEqual([SETUP_NAV_ITEM]);
   });
 });
 
@@ -47,26 +42,6 @@ describe('isNavItemCurrent', () => {
   });
 
   it('does not match a path that merely starts with the same letters', () => {
-    // /plannerx is not a sub-path of /planner; only an exact "/planner" or "/planner/..." is.
     expect(isNavItemCurrent(planner, '/plannerx')).toBe(false);
-  });
-});
-
-describe('isReferenceCurrent', () => {
-  it('is true when the path is one of the reference pages', () => {
-    expect(isReferenceCurrent('/classes')).toBe(true);
-    expect(isReferenceCurrent('/dungeons/hall-of-thanes')).toBe(true);
-  });
-
-  it('is false elsewhere', () => {
-    expect(isReferenceCurrent('/planner')).toBe(false);
-    expect(isReferenceCurrent('/')).toBe(false);
-  });
-});
-
-describe('the trailing items', () => {
-  it('end with Premium, so what the site sells is one click from every page', () => {
-    expect(TRAILING_NAV_ITEMS.map((item) => item.label)).toEqual(['The addon', 'Premium']);
-    expect(PREMIUM_NAV_ITEM.href).toBe('/premium');
   });
 });
