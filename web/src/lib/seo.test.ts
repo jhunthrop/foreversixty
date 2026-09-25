@@ -2,12 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { articleLd, breadcrumbLd, toJsonLd, websiteLd } from './seo';
 
 describe('structured data', () => {
-  it('describes the site with a search action on the search page', () => {
+  it('describes the site by name and url, with no search action', () => {
     const ld = websiteLd();
     expect(ld['@type']).toBe('WebSite');
-    expect(ld.potentialAction.target.urlTemplate).toBe(
-      'https://foreversixty.gg/search?q={search_term_string}',
-    );
+    expect(ld.name).toBe('Forever Sixty');
+    expect(ld.url).toBe('https://foreversixty.gg');
+    expect(ld).not.toHaveProperty('potentialAction');
   });
 
   it('describes a reference page with its modified date and og image', () => {

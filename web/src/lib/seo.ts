@@ -11,18 +11,13 @@ const publisher = {
   logo: { '@type': 'ImageObject', url: `${SITE_URL}/favicon.svg` },
 };
 
-/** The site node, carried on the homepage so Google can offer a sitelinks search box. */
+/** The site node, carried on the homepage. */
 export function websiteLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: SITE_NAME,
     url: SITE_URL,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: { '@type': 'EntryPoint', urlTemplate: `${SITE_URL}/search?q={search_term_string}` },
-      'query-input': 'required name=search_term_string',
-    },
   };
 }
 

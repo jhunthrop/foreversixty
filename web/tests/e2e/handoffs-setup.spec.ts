@@ -2,7 +2,7 @@
 import { expect, test } from '@playwright/test';
 import { ACTIVE_BUILD } from './support/active-build';
 
-test('the /addon paste box offers the planner and the simulator once an export decodes', async ({ page }) => {
+test('the /setup paste box offers the planner and the simulator once an export decodes', async ({ page }) => {
   await page.goto('/setup');
   await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
   await page.getByTestId('addon-paste-submit').click();
@@ -37,7 +37,7 @@ test('the page says the in-game UI is in beta testing and ships no screenshot of
 
 // The point of the whole round: a character given to the site once is the site's current
 // character everywhere, with no second paste.
-test('an export pasted on /addon becomes the current character on the simulator and its tabs', async ({
+test('an export pasted on /setup becomes the current character on the simulator and its tabs', async ({
   page,
 }) => {
   await page.goto('/setup');
@@ -71,7 +71,7 @@ test('an export pasted on /addon becomes the current character on the simulator 
 // version instead measures two things that DO
 // move when the reserved slot's height changes: the addon-paste-box section's own total
 // height, and the top of current-character-chip (CurrentCharacterBar.svelte, rendered by
-// addon.astro immediately after AddonPasteBox), which has a fixed height of its own
+// setup.astro immediately after AddonPasteBox), which has a fixed height of its own
 // (CHIP_HEIGHT) and so only shifts when something above it does.
 test('a pending session check reserves the signed-out branch height, so the section and the chip below it never shrink once it resolves', async ({
   page,
