@@ -14,6 +14,7 @@ test('the footer links to Premium, Terms, Privacy and Refunds, each clearing the
   const nav = page.getByRole('navigation', { name: 'Footer' });
   for (const [label, href] of [
     ['Premium', '/premium'],
+    ['Get set up', '/setup'],
     ['Terms', '/terms'],
     ['Privacy', '/privacy'],
     ['Refunds', '/refunds'],

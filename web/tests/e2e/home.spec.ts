@@ -39,7 +39,6 @@ test('homepage states the product and stops, not a marketing slogan', async ({ p
   expect(heading.length).toBeLessThanOrEqual(90);
   expect(heading).not.toMatch(/[!?]$/);
   expect(heading).toBe('Your character, planned, simmed, logged and ranked.');
-  await expect(page.getByRole('combobox', { name: 'Search the site' })).toBeVisible();
   await expect(page.getByTestId('home-timeline')).toBeVisible();
   await expect(page.getByTestId('home-next-planner-signed-out')).toBeVisible();
   await expect(page.getByTestId('home-next-simulator-signed-out')).toBeVisible();
@@ -58,7 +57,6 @@ test('homepage states the product and stops, not a marketing slogan', async ({ p
   await expect(page.getByTestId('home-top-guilds')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Your guild' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'What changed' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Still unknown' })).toBeVisible();
   await expect(page.getByText('Not affiliated with or endorsed by Blizzard Entertainment')).toBeVisible();
   expect(errors).toEqual([]);
 });

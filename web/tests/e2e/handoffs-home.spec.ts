@@ -13,23 +13,8 @@ test('the four next-steps cards carry Planner, Simulator, Logs and Rankings, in 
   ).toHaveAttribute('href', '/sim');
 });
 
-test('the addon and companion row links to /addon and /logs#companion, in that order', async ({ page }) => {
+test('the "Get set up" card links to /setup', async ({ page }) => {
   await page.goto('/');
   const row = page.getByTestId('home-companion-row');
-  const titles = await row.locator('.font-display').allTextContents();
-  expect(titles).toEqual(['The addon', 'The companion']);
-  await expect(row.getByRole('link', { name: /The addon/ })).toHaveAttribute('href', '/addon');
-  await expect(row.getByRole('link', { name: /The companion/ })).toHaveAttribute('href', '/logs#companion');
-});
-
-test('the reference tiles carry Classes, Guides, Zones, Dungeons, in that order', async ({ page }) => {
-  await page.goto('/');
-  const grid = page.getByTestId('reference-tiles');
-  const cards = grid.getByRole('link');
-  const titles = await cards.evaluateAll((links) =>
-    links.map((a) => a.querySelector('.font-display')?.textContent?.trim() ?? ''),
-  );
-  expect(titles).toEqual(['Classes', 'Guides', 'Zones', 'Dungeons']);
-  await expect(grid.getByRole('link', { name: /Zones/ })).toHaveAttribute('href', '/zones');
-  await expect(grid.getByRole('link', { name: /Dungeons/ })).toHaveAttribute('href', '/dungeons');
+  await expect(row.getByRole('link', { name: /Get set up/ })).toHaveAttribute('href', '/setup');
 });

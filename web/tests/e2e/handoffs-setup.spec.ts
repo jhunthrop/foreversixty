@@ -1,9 +1,9 @@
-// web/tests/e2e/handoffs-addon.spec.ts
+// web/tests/e2e/handoffs-setup.spec.ts
 import { expect, test } from '@playwright/test';
 import { ACTIVE_BUILD } from './support/active-build';
 
 test('the /addon paste box offers the planner and the simulator once an export decodes', async ({ page }) => {
-  await page.goto('/addon');
+  await page.goto('/setup');
   await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
   await page.getByTestId('addon-paste-submit').click();
 
@@ -21,7 +21,7 @@ test('the /addon paste box offers the planner and the simulator once an export d
 });
 
 test('a code from another format is refused by name, not silently dropped', async ({ page }) => {
-  await page.goto('/addon');
+  await page.goto('/setup');
   await page.getByTestId('addon-paste-code').fill('FS2:nope');
   await page.getByTestId('addon-paste-submit').click();
   await expect(page.getByTestId('addon-paste-error')).toHaveText('That code is FS2; this site reads FS1.');
@@ -29,7 +29,7 @@ test('a code from another format is refused by name, not silently dropped', asyn
 });
 
 test('the page says the in-game UI is in beta testing and ships no screenshot of it', async ({ page }) => {
-  await page.goto('/addon');
+  await page.goto('/setup');
   await expect(page.getByText('in beta testing in game')).toBeVisible();
   const images = await page.locator('main img').count();
   expect(images).toBe(0);
@@ -40,7 +40,7 @@ test('the page says the in-game UI is in beta testing and ships no screenshot of
 test('an export pasted on /addon becomes the current character on the simulator and its tabs', async ({
   page,
 }) => {
-  await page.goto('/addon');
+  await page.goto('/setup');
   await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
   await page.getByTestId('addon-paste-submit').click();
 
@@ -55,7 +55,7 @@ test('an export pasted on /addon becomes the current character on the simulator 
   await expect(page.getByTestId('current-character-chip')).toContainText('Warrior', { timeout: 15_000 });
 
   // Forget means forgotten everywhere.
-  await page.goto('/addon');
+  await page.goto('/setup');
   await page
     .getByTestId('current-character-chip')
     .getByRole('button', { name: /forget/i })
@@ -88,7 +88,7 @@ test('a pending session check reserves the signed-out branch height, so the sect
       }),
     );
   });
-  await page.goto('/addon');
+  await page.goto('/setup');
   await page.getByTestId('addon-paste-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:0/0/0:`);
   await page.getByTestId('addon-paste-submit').click();
 
