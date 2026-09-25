@@ -584,51 +584,53 @@
           </div>
 
           <div class="flex flex-col gap-8 lg:col-span-4">
-            <StatePanel
-              label={accountPageCopy.devicesLabel}
-              updated={devicesUpdated}
-              testid="account-devices"
-            >
-              {#if devices.length === 0}
-                <p class="text-muted text-[14px]">{accountPageCopy.noDevices}</p>
-              {:else}
-                <ul class="flex flex-col">
-                  {#each devices as device (device.id)}
-                    <li
-                      class="border-line-soft flex min-h-11 items-center justify-between gap-4 border-b py-2"
-                    >
-                      <span class="text-[14px]">
-                        {device.name}
-                        <span class="text-muted">· {device.platform}</span>
-                      </span>
-                      <button
-                        class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                        onclick={() => onRevoke(device.id)}
-                        disabled={busy}
+            <div id="devices">
+              <StatePanel
+                label={accountPageCopy.devicesLabel}
+                updated={devicesUpdated}
+                testid="account-devices"
+              >
+                {#if devices.length === 0}
+                  <p class="text-muted text-[14px]">{accountPageCopy.noDevices}</p>
+                {:else}
+                  <ul class="flex flex-col">
+                    {#each devices as device (device.id)}
+                      <li
+                        class="border-line-soft flex min-h-11 items-center justify-between gap-4 border-b py-2"
                       >
-                        Revoke
-                      </button>
-                    </li>
-                  {/each}
-                </ul>
-              {/if}
-              {#if pairing === null}
-                <button
-                  class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
-                  onclick={onPair}
-                  disabled={busy}
-                >
-                  {accountPageCopy.pairADevice}
-                </button>
-              {:else}
-                <p class="tabular text-strong font-mono text-[24px]" data-testid="pairing-code">
-                  {pairing.code}
-                </p>
-                <p class="text-muted text-[13px]">
-                  Type this into the companion within {Math.round(pairing.expires_in / 60)} minutes.
-                </p>
-              {/if}
-            </StatePanel>
+                        <span class="text-[14px]">
+                          {device.name}
+                          <span class="text-muted">· {device.platform}</span>
+                        </span>
+                        <button
+                          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                          onclick={() => onRevoke(device.id)}
+                          disabled={busy}
+                        >
+                          Revoke
+                        </button>
+                      </li>
+                    {/each}
+                  </ul>
+                {/if}
+                {#if pairing === null}
+                  <button
+                    class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4"
+                    onclick={onPair}
+                    disabled={busy}
+                  >
+                    {accountPageCopy.pairADevice}
+                  </button>
+                {:else}
+                  <p class="tabular text-strong font-mono text-[24px]" data-testid="pairing-code">
+                    {pairing.code}
+                  </p>
+                  <p class="text-muted text-[13px]">
+                    Type this into the companion within {Math.round(pairing.expires_in / 60)} minutes.
+                  </p>
+                {/if}
+              </StatePanel>
+            </div>
 
             <StatePanel label={accountPageCopy.youLabel} testid="account-you">
               <label class="flex min-h-11 items-center gap-3 text-[14px]">
@@ -644,69 +646,71 @@
               <p class="text-muted text-[13px]">{accountPageCopy.pseudonymNote}</p>
             </StatePanel>
 
-            <StatePanel label={accountPageCopy.guildsAndPlanLabel} testid="account-guilds-plan">
-              {#if me!.guilds.length > 0}
-                <ul class="flex flex-col" data-testid="account-guilds">
-                  {#each me!.guilds as guild (guild.id)}
-                    <li
-                      class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-2 text-[14px]"
-                    >
-                      <a href={guildHref(guild.region, guild.ruleset, guild.name)}>{guild.name}</a>
-                      <select
-                        class="border-line-warm bg-raised rounded-control text-text h-11 px-3 text-[13px] md:h-9"
-                        value={guild.consent ?? 'gear'}
-                        onchange={(event) => onConsentChange(guild.id, event)}
-                        disabled={busy || guildBusy === guild.id}
-                        data-testid="account-guild-consent"
+            <div id="plan">
+              <StatePanel label={accountPageCopy.guildsAndPlanLabel} testid="account-guilds-plan">
+                {#if me!.guilds.length > 0}
+                  <ul class="flex flex-col" data-testid="account-guilds">
+                    {#each me!.guilds as guild (guild.id)}
+                      <li
+                        class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-2 text-[14px]"
                       >
-                        <option value="roster">{guildConsentCopy.roster}</option>
-                        <option value="gear">{guildConsentCopy.gear}</option>
-                        <option value="gear_bags">{guildConsentCopy.gearBags}</option>
-                      </select>
-                      <button
-                        class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
-                        onclick={() => onLeaveGuild(guild.id)}
-                        disabled={busy || guildBusy === guild.id}
-                        data-testid="account-guild-leave"
-                      >
-                        {guildConsentCopy.leave}
-                      </button>
-                    </li>
-                  {/each}
-                </ul>
-              {/if}
-
-              <div
-                class={me!.guilds.length > 0
-                  ? 'border-line-soft flex flex-col gap-3 border-t pt-4'
-                  : 'flex flex-col gap-3'}
-              >
-                {#if billing === null}
-                  <p class="text-[14px]" data-testid="account-billing-row">
-                    <span class="text-muted">{accountPageCopy.planKey}</span> · {billingBlockCopy.notSubscribed}
-                    <a class="text-text underline" href="/premium">{billingBlockCopy.seePlans}</a>
-                  </p>
-                {:else}
-                  <p class="text-[14px]">
-                    {billing.plan} —
-                    {billing.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
-                    {billing.current_period_end
-                      ? new Date(billing.current_period_end).toLocaleDateString()
-                      : ''}
-                  </p>
-                  {#if billing.status === 'past_due'}
-                    <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
-                  {/if}
-                  <button
-                    class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
-                    onclick={onManageBilling}
-                    disabled={busy}
-                  >
-                    {billingBlockCopy.manageBilling}
-                  </button>
+                        <a href={guildHref(guild.region, guild.ruleset, guild.name)}>{guild.name}</a>
+                        <select
+                          class="border-line-warm bg-raised rounded-control text-text h-11 px-3 text-[13px] md:h-9"
+                          value={guild.consent ?? 'gear'}
+                          onchange={(event) => onConsentChange(guild.id, event)}
+                          disabled={busy || guildBusy === guild.id}
+                          data-testid="account-guild-consent"
+                        >
+                          <option value="roster">{guildConsentCopy.roster}</option>
+                          <option value="gear">{guildConsentCopy.gear}</option>
+                          <option value="gear_bags">{guildConsentCopy.gearBags}</option>
+                        </select>
+                        <button
+                          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text px-3"
+                          onclick={() => onLeaveGuild(guild.id)}
+                          disabled={busy || guildBusy === guild.id}
+                          data-testid="account-guild-leave"
+                        >
+                          {guildConsentCopy.leave}
+                        </button>
+                      </li>
+                    {/each}
+                  </ul>
                 {/if}
-              </div>
-            </StatePanel>
+
+                <div
+                  class={me!.guilds.length > 0
+                    ? 'border-line-soft flex flex-col gap-3 border-t pt-4'
+                    : 'flex flex-col gap-3'}
+                >
+                  {#if billing === null}
+                    <p class="text-[14px]" data-testid="account-billing-row">
+                      <span class="text-muted">{accountPageCopy.planKey}</span> · {billingBlockCopy.notSubscribed}
+                      <a class="text-text underline" href="/premium">{billingBlockCopy.seePlans}</a>
+                    </p>
+                  {:else}
+                    <p class="text-[14px]">
+                      {billing.plan} —
+                      {billing.cancel_at_period_end ? billingBlockCopy.ends : billingBlockCopy.renews}
+                      {billing.current_period_end
+                        ? new Date(billing.current_period_end).toLocaleDateString()
+                        : ''}
+                    </p>
+                    {#if billing.status === 'past_due'}
+                      <p class="text-strong text-[13px]" role="alert">{billingBlockCopy.pastDueBanner}</p>
+                    {/if}
+                    <button
+                      class="{SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-4"
+                      onclick={onManageBilling}
+                      disabled={busy}
+                    >
+                      {billingBlockCopy.manageBilling}
+                    </button>
+                  {/if}
+                </div>
+              </StatePanel>
+            </div>
           </div>
         </div>
       </div>

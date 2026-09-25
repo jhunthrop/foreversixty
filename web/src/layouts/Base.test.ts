@@ -1,5 +1,5 @@
 // The Svelte renderer has to be handed to the container explicitly, exactly as
-// _planner.test.ts and _logs.test.ts do: Base.astro now mounts SessionNav client:load on
+// _planner.test.ts and _logs.test.ts do: Base.astro now mounts AccountMenu client:load on
 // every page, and Astro's integrations are not loaded in a unit test, so without this the
 // container throws NoMatchingRenderer rather than rendering an empty shell.
 import { experimental_AstroContainer as AstroContainer } from 'astro/container';
