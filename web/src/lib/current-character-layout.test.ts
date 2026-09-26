@@ -10,8 +10,10 @@ describe('chip-slot pre-paint rule', () => {
       "html:not([data-pointer='1']):not([data-session='1']) .chip-slot {\n  display: none;\n}",
     );
   });
+});
 
-  it('CHIP_HEIGHT is the two-tier phone/desktop shape the spine bar and the chip both reuse', () => {
+describe('CHIP_HEIGHT', () => {
+  it('is the two-row-phone, one-row-desktop height every chip and its reserved slot share', () => {
     expect(CHIP_HEIGHT).toBe('h-[88px] md:h-11');
   });
 });
