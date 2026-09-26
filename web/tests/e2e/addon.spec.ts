@@ -98,18 +98,24 @@ test.describe('the addon flows', () => {
     await expect(page.getByTestId('import-error')).toHaveText('That code is FS2; this site reads FS1.');
   });
 
-  test('an export for another class is refused by name rather than reconstructed', async ({ page }) => {
+  test('an export for another class switches the planner to that class rather than reconstructing', async ({
+    page,
+  }) => {
     // The fixture has no paladin data at all, which is exactly the point: decodeFS1 only
     // parses the string, so this well-formed paladin export decodes fine, and the class
-    // check has to refuse it before anything tries to reconstruct an order against the
-    // warrior tree the planner actually has loaded.
+    // check has to catch it before anything tries to reconstruct an order against the
+    // warrior tree the planner actually has loaded. The standalone planner then switches
+    // to paladin itself (the import completes once that class's talents load; here they
+    // never do, since the fixture has none) instead of asking the player to switch.
     await page.goto('/planner');
     await openImportBox(page);
     await page.getByTestId('import-code').fill(`FS1:${ACTIVE_BUILD}:paladin:human:0/0/0:`);
     await page.getByTestId('import-submit').click();
-    await expect(page.getByTestId('import-error')).toHaveText(
-      addonCopy.importWrongClass('paladin', 'warrior'),
-    );
+    // The box (and its "switching" line) leaves with the warrior trees the moment the class
+    // changes; what persists is the class itself, and here the fixture's own missing-data
+    // state for it.
+    await expect(page.getByLabel('Class')).toHaveValue('paladin');
+    await expect(page.getByTestId('planner-load-error')).toBeVisible();
   });
 
   test('the item picker sorts by score', async ({ page }) => {
