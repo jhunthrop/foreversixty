@@ -7,6 +7,7 @@
 import type { MeCharacter } from './account/api';
 import { plannerHrefFor, simHrefFor, type CurrentCharacter } from './current-character';
 import { defaultRankingsState, rankingsSearch } from './rankings/url';
+import { classDisplayName } from './sim/spec-label';
 
 /** The class the spine displays and links every door with: the resolved pointer character's
  *  class first, then the raw pointer's own `classSlug` (every source carries one, even a
@@ -27,10 +28,6 @@ export interface SpineDoor {
   readonly label: string;
   readonly href: string;
   readonly testid: string;
-}
-
-function capitalize(slug: string): string {
-  return slug.length === 0 ? slug : slug.charAt(0).toUpperCase() + slug.slice(1);
 }
 
 /**
@@ -69,7 +66,7 @@ export function spineDoorsFor(
     { id: 'logs', label: 'Logs', href: '/logs', testid: 'current-character-bar-logs' },
     {
       id: 'rankings',
-      label: `Rankings for ${capitalize(classSlug)}`,
+      label: `Rankings for ${classDisplayName(classSlug)}`,
       href: `/rankings${rankingsQuery}`,
       testid: 'current-character-bar-rankings',
     },
