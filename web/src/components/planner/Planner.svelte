@@ -485,9 +485,15 @@
       />
     </div>
   {/if}
-  <SummaryBar {store} {live} {simHref} {gate} {standalone} onshowdps={() => (dpsOptedIn = true)} />
-
-  <p class="text-muted px-[18px] text-[13px] md:px-0">{treeSourceNotice(store.treeVersion)}</p>
+  <SummaryBar
+    {store}
+    {live}
+    {simHref}
+    {gate}
+    {standalone}
+    hasCharacter={pointer !== null}
+    onshowdps={() => (dpsOptedIn = true)}
+  />
 
   {#if codeNote !== null}
     <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-code-note">
@@ -546,6 +552,14 @@
        and read-only figures below sit outside that mount, comfortably under either reserve
        either way). Rounded up per this comment's own convention: 1095.5 becomes 1096, 1435
        is already whole; under costs movement, over costs only dead space.
+
+       The states lane's Task 5 (2026-09-25, spec section 6) moved the build-source notice
+       paragraph (`treeSourceNotice`) from above this reserve to under the tree columns,
+       inside it -- caveats move after the thing they caveat, never before it -- so the
+       paragraph's own line and the flex gap around it now count toward what this reserves
+       rather than sitting above it, uncounted. Measured the same way, that grew the naturals
+       from 1095.5/1435 to 1137 at 360px and 1486.5 from md up. 1137 is already whole; 1486.5
+       rounds up to 1487, this comment's own convention again.
 
        Two things this comment used to have wrong, both settled by measurement. A reserve that
        is *too large* does not haul the footer up in the failed-to-load state: the min-height
@@ -613,9 +627,9 @@
 
        A class the build ships no item file for loses the gear panel, and with it the Gear
        tab. On a phone that changes nothing: the tree tab is what is reserved for, and it
-       measures the same 1095.5 (op-character's own figure, above). On desktop the panel
+       measures the same 1137 (Task 5's own figure, above). On desktop the panel
        leaves the column and the ready planner comes in at 616 (stale, see above -- still
-       comfortably under the 1435 md reserve either way), dead space rather than movement.
+       comfortably under the 1487 md reserve either way), dead space rather than movement.
 
        Fork replaces Reset and drops the SharePanel section, but only on the read-only mount --
        the editable toolbar this measures is untouched. The read-only mount is the shorter one,
@@ -625,7 +639,7 @@
        tracked `readOnly` would spend that growth shoving the footer down the moment it is
        pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
        island's whole planner arrives after first paint regardless of what this reserves. -->
-  <div class="flex min-h-[1096px] flex-col gap-[22px] md:min-h-[1435px] md:gap-8">
+  <div class="flex min-h-[1137px] flex-col gap-[22px] md:min-h-[1487px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
@@ -733,6 +747,10 @@
             </div>
           {/each}
         </div>
+
+        <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-tree-source">
+          {treeSourceNotice(store.treeVersion)}
+        </p>
 
         <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
           {#if store.readOnly}

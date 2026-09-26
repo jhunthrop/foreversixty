@@ -113,14 +113,28 @@ test('a phone is asked before anything runs, and the answer holds for the visit'
 
 // The DPS column is one line taller than its neighbours (the ± line). Centring the bar's
 // columns put its caption and figure above everyone else's.
-test('the DPS caption and figure sit on the same lines as the rest of the summary bar', async ({ page }) => {
+test('the DPS caption and figure sit on the same lines as the rest of the summary bar', async ({
+  page,
+}, testInfo) => {
   await page.goto(NEARLY_FINISHED_BUILD);
   const top = (testid: string): Promise<number> =>
     page.getByTestId(testid).evaluate((el) => Math.round(el.getBoundingClientRect().top));
   const bottom = (testid: string): Promise<number> =>
     page.getByTestId(testid).evaluate((el) => Math.round(el.getBoundingClientRect().bottom));
-  // Same row of the bar on both projects: Points and DPS are neighbours.
-  expect(await top('planner-dps')).toBe(await top('planner-spent'));
-  expect(await bottom('planner-dps')).toBe(await bottom('planner-spent'));
+  // The figure and "Sim this build" sit on the same line as each other on both projects --
+  // PlannerDps.svelte's own `items-center` row -- regardless of which row of the bar they
+  // land on.
   expect(await top('planner-sim-link')).toBe(await top('planner-dps'));
+  // Desktop has the width to spare, so Spent and DPS stay neighbours there, same as before.
+  // Mobile does not: spec 2026-09-25 §6 widened "Left" to "Points left", which alone no
+  // longer fits beside Class/Race/Level and drops to Split/Spent's row -- the row DPS used
+  // to share -- leaving no room left for DPS once a real figure (wider than the placeholder
+  // em dash) is showing. DPS wrapping to its own row is what keeps its own width reservation
+  // (PlannerDps.svelte's `min-w-[7ch]`, same task) from ever fighting for that room instead.
+  if (testInfo.project.name === 'mobile') {
+    expect(await top('planner-dps')).toBeGreaterThan(await bottom('planner-spent'));
+  } else {
+    expect(await top('planner-dps')).toBe(await top('planner-spent'));
+    expect(await bottom('planner-dps')).toBe(await bottom('planner-spent'));
+  }
 });
