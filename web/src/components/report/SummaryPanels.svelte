@@ -1,7 +1,10 @@
 <!-- web/src/components/report/SummaryPanels.svelte -->
-<!-- The summary as a dashboard: the four things a reader wants at a glance, side by side,
-     before any tab is clicked. Damage and healing by source, damage taken by ability, and
-     the deaths, each a short bar list that links to the tab that goes deeper. -->
+<!-- The summary as a dashboard: the things a reader wants at a glance, side by side, before
+     any tab is clicked. Damage taken by ability and the deaths, each a short bar list that
+     links to the tab that goes deeper. Damage and healing by source used to sit here too;
+     design review 2026-09-26 finding 6 dropped them -- the Summary table two sections above
+     already breaks damage and healing down by source, in the same numbers, so this repeated
+     them rather than adding anything. -->
 <script lang="ts">
   /** The log's null unit: a fall, a hazard, or a source the log did not name (as DeathsTab reads it). */
   const NULL_GUID = /^0+$/;
@@ -12,10 +15,8 @@
     formatDuration,
     formatPerSecond,
     schoolToken,
-    formatAmountLike,
   } from '../../lib/report/format';
   import type { Actor, Summary } from '../../lib/report/types';
-  import ClassIcon from './ClassIcon.svelte';
 
   let {
     summary,
@@ -38,29 +39,12 @@
      * trust bare.
      */
     approximate?: boolean;
-    onTab: (tab: 'damage-done' | 'healing' | 'damage-taken' | 'deaths') => void;
+    onTab: (tab: 'damage-taken' | 'deaths') => void;
     /** Narrows the page to one player, the way the roster's names do. */
     onSelectPlayer?: (guid: string) => void;
   } = $props();
 
   const ROWS = 8;
-
-  /** The players' rows of a table, largest first, with each row's share of every player's total. */
-  function bySource(table: Actor[], all: Actor[] = table): { actor: Actor; share: number }[] {
-    const ofPlayers = (actor: Actor): boolean => players.size === 0 || players.has(actor.guid);
-    const rows = table.filter(ofPlayers);
-    const total = all.filter(ofPlayers).reduce((sum, actor) => sum + actor.effective, 0);
-    return rows
-      .sort((a, b) => b.effective - a.effective)
-      .slice(0, ROWS)
-      .map((actor) => ({ actor, share: total === 0 ? 0 : (actor.effective / total) * 100 }));
-  }
-
-  const damage = $derived(bySource(summary.damage_done, (everyone ?? summary).damage_done));
-  const healing = $derived(bySource(summary.healing, (everyone ?? summary).healing));
-  /** Each panel's largest figure, so its amounts read in one scale. */
-  const damageMax = $derived(Math.max(0, ...damage.map(({ actor }) => actor.effective)));
-  const healingMax = $derived(Math.max(0, ...healing.map(({ actor }) => actor.effective)));
 
   /** Every ability that hit a player, summed over the players it hit, largest first. */
   function abilityTotals(table: Actor[]): { name: string; school?: number; total: number }[] {
@@ -78,8 +62,8 @@
     }
     return [...totals.values()].sort((a, b) => b.total - a.total);
   }
-  // The share is of everything every player took, the same rule as the two panels above:
-  // a source scope narrows the rows to one player's hits, never the total they share.
+  // The share is of everything every player took: a source scope narrows the rows to one
+  // player's hits, never the total they share.
   const takenByAbility = $derived.by(() => {
     const rows = abilityTotals(summary.damage_taken);
     const total = abilityTotals((everyone ?? summary).damage_taken).reduce((sum, row) => sum + row.total, 0);
@@ -94,126 +78,6 @@
 </script>
 
 <div class="grid grid-cols-1 gap-4 md:grid-cols-2" data-testid="summary-panels">
-  <section class={panel} data-testid="panel-damage">
-    <h2 class={heading}>
-      Damage done by source
-      <button type="button" class={more} onclick={() => onTab('damage-done')}>Damage Done tab</button>
-    </h2>
-    <ul class="flex flex-col">
-      <li
-        class="text-muted label hidden min-h-6 grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 md:grid"
-        aria-hidden="true"
-      >
-        <span>Name</span>
-        <span
-          class="text-right"
-          title="Share of every player's total in this window, whatever the source scope">Share</span
-        >
-        <span class="hidden md:inline"></span>
-        <span class="text-right" title="Amount in this window">Amount</span>
-        <span class="text-right" title="Amount divided by the window's length">Per sec</span>
-      </li>
-      {#each damage as { actor, share } (actor.guid)}
-        <li
-          class="border-line-soft grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 border-b py-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] md:border-0 md:py-0"
-        >
-          <span
-            class="flex min-w-0 items-center gap-1.5 truncate font-semibold"
-            style={`color: ${classColorVar(actor.class)}`}
-            title={splitUnitName(actor.name).name}
-            ><ClassIcon className={actor.class} size={16} />{#if onSelectPlayer}<button
-                type="button"
-                class="inline-flex min-h-11 items-center truncate underline-offset-2 hover:underline md:min-h-0"
-                style={`color: ${classColorVar(actor.class)}`}
-                title="Show only this player"
-                onclick={() => onSelectPlayer(actor.guid)}>{splitUnitName(actor.name).name}</button
-              >{:else}{splitUnitName(actor.name).name}{/if}</span
-          >
-          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
-            >{share.toFixed(1)}%<span class="label font-body ml-1 md:hidden">share</span></span
-          >
-          <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
-            ><span class="block h-full" style={`width: ${share}%; background: ${classColorVar(actor.class)}`}
-            ></span></span
-          >
-          <span class="tabular text-right font-mono whitespace-nowrap"
-            >{formatAmountLike(actor.effective, damageMax)}<span class="label font-body ml-1 md:hidden"
-              >amount</span
-            ></span
-          >
-          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
-            >{formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1 md:hidden"
-              >per sec</span
-            ></span
-          >
-        </li>
-      {/each}
-    </ul>
-    <p class="text-muted text-[11px]" data-testid="panel-share-note">
-      Share is of every player’s total in this window, whatever the source scope shows.
-    </p>
-  </section>
-
-  <section class={panel} data-testid="panel-healing">
-    <h2 class={heading}>
-      Healing done by source
-      <button type="button" class={more} onclick={() => onTab('healing')}>Healing tab</button>
-    </h2>
-    <ul class="flex flex-col">
-      <li
-        class="text-muted label hidden min-h-6 grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] items-center gap-x-2 md:grid"
-        aria-hidden="true"
-      >
-        <span>Name</span>
-        <span
-          class="text-right"
-          title="Share of every player's total in this window, whatever the source scope">Share</span
-        >
-        <span class="hidden md:inline"></span>
-        <span class="text-right" title="Amount in this window">Amount</span>
-        <span class="text-right" title="Amount divided by the window's length">Per sec</span>
-      </li>
-      {#each healing as { actor, share } (actor.guid)}
-        <li
-          class="border-line-soft grid min-h-8 grid-cols-[minmax(0,1fr)_44px_64px] items-center gap-x-2 gap-y-1 border-b py-1 text-[13px] md:grid-cols-[minmax(150px,1.6fr)_44px_minmax(0,2fr)_64px_56px] md:border-0 md:py-0"
-        >
-          <span
-            class="flex min-w-0 items-center gap-1.5 truncate font-semibold"
-            style={`color: ${classColorVar(actor.class)}`}
-            title={splitUnitName(actor.name).name}
-            ><ClassIcon className={actor.class} size={16} />{#if onSelectPlayer}<button
-                type="button"
-                class="inline-flex min-h-11 items-center truncate underline-offset-2 hover:underline md:min-h-0"
-                style={`color: ${classColorVar(actor.class)}`}
-                title="Show only this player"
-                onclick={() => onSelectPlayer(actor.guid)}>{splitUnitName(actor.name).name}</button
-              >{:else}{splitUnitName(actor.name).name}{/if}</span
-          >
-          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
-            >{share.toFixed(1)}%<span class="label font-body ml-1 md:hidden">share</span></span
-          >
-          <span class="bg-line-soft col-span-3 block h-[8px] w-full md:col-span-1"
-            ><span class="block h-full" style={`width: ${share}%; background: ${classColorVar(actor.class)}`}
-            ></span></span
-          >
-          <span class="tabular text-right font-mono whitespace-nowrap"
-            >{formatAmountLike(actor.effective, healingMax)}<span class="label font-body ml-1 md:hidden"
-              >amount</span
-            ></span
-          >
-          <span class="text-muted tabular text-right font-mono text-[12px] whitespace-nowrap"
-            >{formatPerSecond(actor.effective, durationMs)}<span class="label font-body ml-1 md:hidden"
-              >per sec</span
-            ></span
-          >
-        </li>
-      {/each}
-    </ul>
-    <p class="text-muted text-[11px]" data-testid="panel-share-note">
-      Share is of every player’s total in this window, whatever the source scope shows.
-    </p>
-  </section>
-
   <section class={panel} data-testid="panel-taken">
     <h2 class={heading}>
       Damage taken by ability

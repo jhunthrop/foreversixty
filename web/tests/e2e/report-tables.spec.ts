@@ -1,6 +1,7 @@
 // web/tests/e2e/report-tables.spec.ts
 import { expect, test, type Locator } from '@playwright/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
+import { openChartIfCollapsed } from './support/report-chart';
 
 /**
  * Clicks an ability's chart control until its label flips. The forced click (see the note
@@ -55,6 +56,7 @@ test('an ability goes on the main chart in its school colour and comes off again
   test.slow();
   await serveDuckdbRuntime(page);
   await page.goto(`${FIGHT}&tab=damage-done`);
+  await openChartIfCollapsed(page);
   await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
   const control = page
     .getByTestId('row-abilities')
@@ -79,6 +81,7 @@ test('a window change keeps the ability on the chart', async ({ page }) => {
   test.slow();
   await serveDuckdbRuntime(page);
   await page.goto(`${FIGHT}&tab=damage-done`);
+  await openChartIfCollapsed(page);
   await page.getByTestId('actor-Player-4184-000000A1').getByRole('button').first().click();
   const control = page
     .getByTestId('row-abilities')
@@ -89,7 +92,7 @@ test('a window change keeps the ability on the chart', async ({ page }) => {
   await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam', { timeout: 60_000 });
   // A window is a stretch to read the line against, not a different question: the pick
   // and its measured whole-fight series survive it, and the brush only slices the line.
-  await page.getByTestId('window-presets').getByRole('button', { name: 'First 30s' }).click();
+  await page.getByTestId('window-select').selectOption({ label: 'First 30s' });
   await expect(page).toHaveURL(/start=0&end=30000/);
   await expect(page.getByTestId('time-chart')).toContainText('Baelgrim · Slam');
   await expect(control).toHaveText('Off the chart');
@@ -102,6 +105,7 @@ test('picking a second ability replaces the first: one line at a time', async ({
   // one row, nothing to pick a second control from. The trash pull is where she has three
   // (Power Word: Shield, Heal, Renew), which is what this test needs two of.
   await page.goto('/reports/fixture2abcd?fight=1&tab=healing');
+  await openChartIfCollapsed(page);
   await page.getByTestId('actor-Player-4184-000000A2').getByRole('button').first().click();
   const controls = page.getByTestId('row-abilities').getByTestId('ability-chart');
   // force: true -- see the note on the previous test: the same last-column-of-a-

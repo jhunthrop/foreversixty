@@ -65,6 +65,22 @@ export const TABS: readonly { id: Tab; label: string }[] = [
   { id: 'casts', label: 'Casts' },
 ];
 
+/**
+ * The six tabs a raider reaches for first, in the order the desktop category row shows
+ * them (design review 2026-09-26): the one a fight opens on, then the three amount
+ * tables, then Deaths and Threat. Everything else in TABS renders under ModeBar's "More"
+ * menu, in TABS' own order -- Rating, Buffs, Debuffs, Interrupts, Dispels, Resources,
+ * Casts, which is already TABS' order once these six are pulled out.
+ */
+export const FIRST_TIER_TABS: readonly Tab[] = [
+  'summary',
+  'damage-done',
+  'healing',
+  'damage-taken',
+  'deaths',
+  'threat',
+];
+
 /** The two scopes that are not a single unit. Anything else is a GUID. */
 export const SOURCE_FRIENDLIES = 'friendlies';
 export const SOURCE_ENEMIES = 'enemies';

@@ -7,7 +7,14 @@
      chart), and the presets. All three call the same onWindow. -->
 <script lang="ts">
   import { formatAmount, formatDuration } from '../../lib/report/format';
-  import { BUCKET_MS, isFullWindow, type TimeWindow } from '../../lib/report/window';
+  import { reportCopy } from '../../lib/report/copy';
+  import {
+    BUCKET_MS,
+    isFullWindow,
+    windowSummaryLabel,
+    type TimeWindow,
+    type WindowPreset,
+  } from '../../lib/report/window';
 
   let {
     series,
@@ -19,6 +26,8 @@
     window: current,
     deaths,
     label,
+    presets,
+    onSelectPreset,
     onWindow,
   }: {
     series: number[];
@@ -34,8 +43,29 @@
     window: TimeWindow;
     deaths: { at_ms: number; name: string }[];
     label: string;
+    /**
+     * The report's own window chips, merged into the slider row as a `<select>` (design
+     * review 2026-09-26 finding 1/2/4): its first option is the whole fight, so it stands
+     * in for the old reset button too. Undefined for a table's own chart (ThreatTable),
+     * which brushes a window but offers no presets of its own -- that one keeps the plain
+     * Start/End/reset row this component always drew.
+     */
+    presets?: WindowPreset[];
+    /** Fired with a chosen preset's index; undefined whenever `presets` is. */
+    onSelectPreset?: (index: number) => void;
     onWindow: (window: TimeWindow | null) => void;
   } = $props();
+
+  /** The select's value: the preset matching the current window, or none for a custom drag. */
+  const selectedPreset = $derived(
+    presets === undefined
+      ? -1
+      : presets.findIndex((preset) =>
+          preset.window === null
+            ? isFullWindow(current, durationMs)
+            : preset.window.startMs === current.startMs && preset.window.endMs === current.endMs,
+        ),
+  );
 
   const HEIGHT = 96;
 
@@ -313,9 +343,7 @@
             · {line.label.toLowerCase()} {formatAmount(line.value)}{unit}{/each}</span
         >
       {/if}
-      {isFullWindow(current, durationMs)
-        ? `Whole fight · ${formatDuration(durationMs)}`
-        : `${formatDuration(current.startMs)} to ${formatDuration(current.endMs)}`}
+      {windowSummaryLabel(current, durationMs)}
     </span>
   </figcaption>
 
@@ -380,6 +408,26 @@
        the thumb pseudo-element needs no sizing of its own -- and leaving the control's
        native appearance alone is what keeps accent-gold painting the filled track. -->
   <div class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4">
+    {#if presets !== undefined}
+      <!-- Left of the sliders (design review 2026-09-26 finding 4): the six-button preset
+           row folded into one select, full width on phone with the sliders under it, and
+           sized to its own content beside them at md and up. Its first option is the whole
+           fight, so a separate reset button would just repeat it. -->
+      <label class="text-muted label flex min-h-11 items-center gap-2 md:min-h-0" for="window-select">
+        {reportCopy.window}
+        <select
+          id="window-select"
+          class="border-line-warm bg-raised rounded-control text-text h-11 flex-1 px-2 text-[13px] normal-case md:h-9 md:flex-none"
+          data-testid="window-select"
+          value={selectedPreset}
+          onchange={(event) => onSelectPreset?.(Number(event.currentTarget.value))}
+        >
+          {#each presets as preset, index (index)}
+            <option value={index}>{preset.label}</option>
+          {/each}
+        </select>
+      </label>
+    {/if}
     <label class="label text-muted flex min-h-11 flex-1 items-center gap-2 md:min-h-0" for="window-start">
       Start
       <input
@@ -416,13 +464,15 @@
         }}
       />
     </label>
-    <button
-      type="button"
-      class="border-line-warm rounded-control text-text inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
-      onclick={() => onWindow(null)}
-      data-testid="window-reset"
-    >
-      Whole fight
-    </button>
+    {#if presets === undefined}
+      <button
+        type="button"
+        class="border-line-warm rounded-control text-text inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
+        onclick={() => onWindow(null)}
+        data-testid="window-reset"
+      >
+        Whole fight
+      </button>
+    {/if}
   </div>
 </figure>

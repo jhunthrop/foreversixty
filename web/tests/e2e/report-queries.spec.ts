@@ -53,8 +53,14 @@ test('nothing DuckDB-related loads on page load, while browsing, or on opening Q
   const phone = (page.viewportSize()?.width ?? 1280) < 1024;
   if (phone) await page.getByTestId('tab-select').selectOption('damage-done');
   else await page.getByTestId('tab-damage-done').click();
-  if (phone) await page.getByTestId('tab-select').selectOption('casts');
-  else await page.getByTestId('tab-casts').click();
+  if (phone) {
+    await page.getByTestId('tab-select').selectOption('casts');
+  } else {
+    // Casts lives under the category row's "More" menu now (design review 2026-09-26
+    // finding 3): a native `<details>`, opened by clicking its own summary.
+    await page.getByTestId('tab-more').click();
+    await page.getByTestId('tab-casts').click();
+  }
   await page.getByTestId('view-events').click();
   await expect(page.getByTestId('events-view')).toBeVisible();
 

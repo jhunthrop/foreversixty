@@ -38,17 +38,20 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
       one line tall, the footer sits inside the viewport, and rendering the report shoves
       the footer down by roughly the report's own height -- a layout shift every bit as
       real whether the box grows into the reservation or past it, so a reservation smaller
-      than the eventual content still costs the CLS budget. Measured on the fixture at
-      360px (Task 21's Lighthouse profile): the placeholder alone paints at 100svh (640px)
-      but the island's default view (first fight, Summary tab) settles at ~1288px, so
-      100svh was a guess that undershot by roughly a screen and turned into a 0.32 CLS,
-      more than six times the 0.05 budget. 200svh reserves ~1280px, within 8px of that
-      measured height, and the remaining shift is negligible. A real report's default view
-      will not match this fixture's height exactly, but it lands far closer than a single
-      screen -- the failure mode this replaces was undershooting by roughly a full screen,
-      not being off by a few rows.
+      than the eventual content still costs the CLS budget. Re-measured on the fixture at
+      360px (the Lighthouse profile, 360x640) after the design review 2026-09-26 loop
+      collapsed the phone chart block to a one-line strip by default: the island's default
+      view (first fight, the collapsed chart, Summary tab) now settles at ~2967px, up from
+      an earlier round's ~1288px because Summary has grown a rating panel and a longer
+      combatants list since that measurement, not because this round grew the page --
+      collapsing the chart is a net reduction against what this same build would measure
+      with it open. 468svh reserves ~2995px, 28px above the measured height: CI's Linux
+      fonts wrap a little wider than a Mac's, so the reserve carries headroom the Mac
+      measurement itself does not need. A real report's default view will not match this
+      fixture's height exactly, but it lands far closer than a guess -- re-measure and move
+      this number whenever the default view's content changes materially.
     -->
-    <div id="report" data-report-mount data-report-id={id} data-report={inline} class="min-h-[200svh]">
+    <div id="report" data-report-mount data-report-id={id} data-report={inline} class="min-h-[468svh]">
       <Fragment set:html={reportSkeletonHtml(id === FIXTURE_REPORT_ID ? fixtureMeta.title : undefined)} />
     </div>
     <script type="module" src="/report-island.js"></script>
