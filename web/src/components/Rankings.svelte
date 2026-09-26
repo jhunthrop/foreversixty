@@ -36,7 +36,7 @@
     applyCurrentCharacterPrefilter,
     pinCurrentCharacterRow,
   } from '../lib/rankings/current-character-prefilter';
-  import { RANKINGS_LOADING_MIN_H } from '../lib/rankings/layout';
+  import { RANKINGS_LOADING_MIN_H, RANKING_ROW_GRID } from '../lib/rankings/layout';
   import { PHASES } from '../lib/rankings/phases';
   import {
     FACTIONS,
@@ -78,6 +78,12 @@
         ),
   );
   let page = $state<RankingsPage | null>(null);
+  const metricLabel = $derived(
+    RANKING_METRICS.find((metric) => metric.id === state.metric)?.label ?? 'Value',
+  );
+  /** The pointer's own armory key at the time the board loaded: the row it names is pinned
+   *  first by pinCurrentCharacterRow and marked "You" in the list. */
+  let currentKey = $state<string | null>(null);
   let guildRows = $state<GuildRankingRow[]>([]);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let error = $state('');
@@ -161,7 +167,9 @@
             page: requested.page,
           }).then((result) => {
             if (state !== requested) return;
-            page = { ...result, rows: pinCurrentCharacterRow(result.rows, readCurrent()) };
+            const current = readCurrent();
+            currentKey = current?.source === 'armory' ? current.ref : null;
+            page = { ...result, rows: pinCurrentCharacterRow(result.rows, current) };
             guildRows = [];
             status = 'ready';
           });
@@ -389,12 +397,29 @@
       testid="rankings-empty"
     />
   {:else}
+    <!-- The column line: the board's one header, drawn only at md and up, where every
+         cell has its own column. On a phone the row folds its figures into labelled lines
+         of its own, so a header would name columns that are not there. -->
+    <div
+      class="{RANKING_ROW_GRID} label text-muted border-line-soft hidden gap-x-3 border-b px-2 py-1 md:grid"
+      data-testid="ranking-columns"
+    >
+      <span>#</span>
+      <span>Character</span>
+      <span>Guild</span>
+      <span class="text-right">Size</span>
+      <span class="text-right">{metricLabel}</span>
+      <span class="text-right">Executed</span>
+      <span class="text-right">Date</span>
+      <span class="text-right">Length</span>
+      <span class="text-right">Build</span>
+    </div>
     <ul class="reveal flex flex-col" data-testid="ranking-rows">
       {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
         {@const buildHref = plannerHref(row)}
         {@const characterLinkHref = characterRowHref(row)}
         <li
-          class="border-line-soft grid min-h-11 grid-cols-[40px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px] md:grid-cols-[40px_minmax(140px,1.4fr)_minmax(120px,1fr)_72px_88px_72px_96px_72px_88px]"
+          class="{RANKING_ROW_GRID} border-line-soft grid min-h-11 items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px]"
           data-testid={`ranking-${row.rank}`}
         >
           <span
@@ -403,23 +428,28 @@
           >
             {row.rank}
           </span>
-          {#if characterLinkHref !== null}
-            <a
-              class="{rowLink} truncate font-semibold"
-              style={`color: ${classColorVar(row.player.class)}`}
-              href={characterLinkHref}
-              data-testid="ranking-character"
-            >
-              {splitUnitName(row.player.name).name}
-            </a>
-          {:else}
-            <!-- player.key did not parse into a region and ruleset: an unlinked name is
-                 the legible failure, not a guessed link that would point at the wrong
-                 character. -->
-            <span class="truncate font-semibold" style={`color: ${classColorVar(row.player.class)}`}>
-              {splitUnitName(row.player.name).name}
-            </span>
-          {/if}
+          <span class="flex min-w-0 items-center gap-2">
+            {#if characterLinkHref !== null}
+              <a
+                class="{rowLink} truncate font-semibold"
+                style={`color: ${classColorVar(row.player.class)}`}
+                href={characterLinkHref}
+                data-testid="ranking-character"
+              >
+                {splitUnitName(row.player.name).name}
+              </a>
+            {:else}
+              <!-- player.key did not parse into a region and ruleset: an unlinked name is
+                   the legible failure, not a guessed link that would point at the wrong
+                   character. -->
+              <span class="truncate font-semibold" style={`color: ${classColorVar(row.player.class)}`}>
+                {splitUnitName(row.player.name).name}
+              </span>
+            {/if}
+            {#if currentKey !== null && row.player.key === currentKey}
+              <span class="pill pill-sample shrink-0" data-testid="ranking-you">You</span>
+            {/if}
+          </span>
           <span class="text-muted truncate text-[13px]">
             {#if row.guild}
               <a class={rowLink} href={guildHref(row.guild.region, row.guild.ruleset, row.guild.name)}
@@ -443,7 +473,7 @@
             >
           {:else}
             <a
-              class="{rowLink} tabular hidden text-right font-mono text-[13px] md:inline"
+              class="tabular hidden min-h-11 items-center justify-end text-right font-mono text-[13px] md:inline-flex"
               href={executionHref(row.report_id, row.fight_index)}
               title={executionTitle(row.execution_score)}
               data-testid="ranking-execution">{executionLabel(row.execution_score)}</a
