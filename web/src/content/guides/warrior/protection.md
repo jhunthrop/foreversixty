@@ -3,6 +3,9 @@ title: Protection Warrior in Forever
 classSlug: warrior
 spec: protection
 role: tank
+build: 'FS1:1.60.1.69893:warrior:dwarf:003/055/552531233000010001:'
+recommendedRaces: [dwarf, tauren]
+statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
 description: 'Talents, tanking priority, stat priority, and race picks for Protection Warrior in Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -45,7 +48,7 @@ Verified against this build's talent data, in roughly the order you'd take them:
 - **Concussion Blow** (one point, and the prerequisite for Shield Slam below) — a 5-second stun, useful crowd control on top of being a stepping stone.
 - **Shield Slam** (requires 1 point in Concussion Blow) — the capstone: a shield bash dealing damage that scales with Block Value and generating a very high amount of threat.
 
-A build reaching Shield Slam spends roughly 31 points in Protection, with the remainder commonly split into a few Fury points for Cruelty and Iron Will (crit for Rage generation, and shorter Stun and Fear durations) and a couple of Arms points for Deep Wounds. Exact splits vary by preference and aren't fixed by anything confirmed for Forever. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
+A build reaching Shield Slam spends roughly 31 points in Protection, with the remainder commonly split into a few Fury points for Cruelty and Iron Will (crit for Rage generation, and shorter Stun and Fear durations) and a couple of early Arms points. Exact splits vary by preference and aren't fixed by anything confirmed for Forever. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
 
 ## Rotation and priority
 

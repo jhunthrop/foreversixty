@@ -3,6 +3,9 @@ title: Assassination Rogue in Forever
 classSlug: rogue
 spec: assassination
 role: dps
+build: 'FS1:1.60.1.69893:rogue:night-elf:32500000551501051/3252/51:'
+recommendedRaces: [night-elf, troll]
+statPriority: [Attack power, Agility, Critical strike, Hit, Melee haste]
 description: 'Assassination Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -29,7 +32,7 @@ Assassination is a poison-focused melee DPS spec that trades Combat's flat weapo
 
 Reading the tree in priority order for a single-target build: **Malice** (flat crit chance with attacks and poisons) and **Lethality** (bonus critical strike damage on Sinister Strike, Gouge, Backstab, Mutilate, Ghostly Strike, and Hemorrhage) come first as damage multipliers that scale everything after them. **Seal Fate** follows, since it converts combo-point-generating crits into bonus combo points and rewards the crit investment already made. **Cold Blood** is the spec's signature burst cooldown, guaranteeing a critical strike on the next attack. **Vile Poisons** and **Improved Poisons** raise both poison damage and application chance, which matters more here than in the other two trees. The two talent-granted abilities new to this tree in Forever, **Mutilate** (a dual-wield combo builder that hits harder against a target already carrying your poisons) and **Venom** (a finisher that raises how hard and how often your poisons land), round out the kit but aren't verified against a working rotation yet — see Rotation below.
 
-Point allocation is heavily weighted into Assassination: roughly 31 points are needed to reach Venom at the bottom of the tree, leaving the rest split as a handful of points in Combat for weapon-skill and survivability talents and a few in Subtlety for utility. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
+Point allocation is heavily weighted into Assassination: roughly 33 points are needed to reach Venom at the bottom of the tree, leaving the rest split as a handful of points in Combat for weapon-skill and survivability talents and a few in Subtlety for utility. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
 
 ## Rotation and priority
 

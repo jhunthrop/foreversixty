@@ -3,6 +3,9 @@ title: Frost Mage in Forever
 classSlug: mage
 spec: frost
 role: dps
+build: 'FS1:1.60.1.69893:mage:gnome:0/2305/2555100300000301051:'
+recommendedRaces: [gnome, troll]
+statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Frost damage']
 description: 'Talents, rotation, stats, and gear for Frost Mage in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
@@ -39,7 +42,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Winter's Chill** — a chance for Frost hits to stack a debuff that raises Ice Lance's and Frostbolt's crit chance against that target, up to 5 stacks at rank 5.
 - **Ice Barrier** — the capstone: an instant shield that also stops your casts from being interrupted or delayed while it holds.
 
-A typical Frost build spends roughly 31 points in this tree to reach Ice Barrier at the bottom, with the remaining 20 points usually going into Fire for Ignite and Critical Mass — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+A typical Frost build spends roughly 31 points in this tree to reach Ice Barrier at the bottom, with the remaining 10 points usually going into Fire for Ignite — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
 ## Rotation and priority
 

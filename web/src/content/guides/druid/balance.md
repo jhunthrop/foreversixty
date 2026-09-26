@@ -3,6 +3,18 @@ title: Balance Druid in Forever
 classSlug: druid
 spec: balance
 role: dps
+build: 'FS1:1.60.1.69893:druid:night-elf:5532220005501001/0/5:'
+recommendedRaces: [night-elf, tauren]
+statPriority:
+  [
+    Spell power,
+    Intellect,
+    Critical strike,
+    Hit,
+    Spell haste,
+    Spell penetration,
+    'Nature damage and Arcane damage',
+  ]
 description: 'Talents, rotation, stats, and gear for Balance Druid in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred

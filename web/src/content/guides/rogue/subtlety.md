@@ -3,6 +3,9 @@ title: Subtlety Rogue in Forever
 classSlug: rogue
 spec: subtlety
 role: dps
+build: 'FS1:1.60.1.69893:rogue:night-elf:321/32003/532322131000300105:'
+recommendedRaces: [night-elf, troll]
+statPriority: [Attack power, Agility, Critical strike, Hit, Melee haste]
 description: 'Subtlety Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -29,7 +32,7 @@ Subtlety trades Combat's raw weapon damage and Assassination's poison uptime for
 
 In rough priority order: **Opportunity** raises the damage of Backstab, Ambush, and Mutilate, which matters even for a Hemorrhage-based build since Ambush remains the spec's stealth opener. **Initiative** adds a chance at an extra combo point when opening with Cheap Shot or a similar ability, accelerating the path to a finisher. **Ghostly Strike** is a cheap, high-damage-relative-to-cost filler that also applies its own attack power debuff. **Serrated Blades** adds armor penetration and boosts finisher damage, a flat multiplier once you're spending combo points regularly. **Hemorrhage**, the tree's signature ability, replaces Sinister Strike as the combo builder and needs its bleed reapplied once its charges run out. **Cutthroat**, new to the tree in Forever, occasionally lets a Backstab set up your following Ambush so it lands without needing Stealth first — a build-around for repeated openers mid-fight, though it isn't verified in this site's simulated rotation (see Rotation below).
 
-Point allocation runs deep into Subtlety to reach the bottom-row talents, with the remainder split as a handful of points in Combat for utility (Deflection, Dual Wield Specialization) and a few in Assassination for crit. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
+Point allocation runs deep into Subtlety to reach the bottom-row talents, with the remainder split as a handful of points in Combat for utility (Deflection) and a few in Assassination for crit. Open the planner at [/planner?class=rogue](/planner?class=rogue) to build this out.
 
 ## Rotation and priority
 

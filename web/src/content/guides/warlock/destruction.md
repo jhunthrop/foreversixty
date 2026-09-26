@@ -3,6 +3,18 @@ title: Destruction Warlock in Forever
 classSlug: warlock
 spec: destruction
 role: dps
+build: 'FS1:1.60.1.69893:warlock:gnome:055/0/2555005100101051:'
+recommendedRaces: [gnome, troll]
+statPriority:
+  [
+    Spell power,
+    Intellect,
+    Critical strike,
+    Hit,
+    Spell haste,
+    Spell penetration,
+    'Shadow damage and Fire damage',
+  ]
 description: 'Talents, rotation, stats, and gear for Destruction Warlock in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
