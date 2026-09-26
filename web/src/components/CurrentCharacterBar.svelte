@@ -32,7 +32,17 @@
     hasOwnPasteBox = false,
     compact = false,
     spine = false,
-  }: { hasOwnPasteBox?: boolean; compact?: boolean; spine?: boolean } = $props();
+    currentDoor = null,
+    restored = false,
+  }: {
+    hasOwnPasteBox?: boolean;
+    compact?: boolean;
+    spine?: boolean;
+    /** The door this page is: drawn in gold and marked aria-current, never linked to itself. */
+    currentDoor?: 'plan' | 'sim' | 'logs' | 'rankings' | null;
+    /** The mounting page restored the pointer from a previous visit (the chip's old note). */
+    restored?: boolean;
+  } = $props();
 
   let current = $state<CurrentCharacter | null>(null);
   let guildLine = $state('');
@@ -150,15 +160,35 @@
           class="flex h-11 flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap md:h-auto md:flex-1"
         >
           {#each doors as door (door.id)}
-            <a class="{rowLink} text-nav min-w-11 justify-center" href={door.href} data-testid={door.testid}
-              >{door.label}</a
+            <a
+              class="{rowLink} label min-w-11 justify-center {door.id === currentDoor
+                ? 'text-gold'
+                : 'text-nav'}"
+              href={door.href}
+              aria-current={door.id === currentDoor ? 'page' : undefined}
+              data-testid={door.testid}>{door.label}</a
             >
           {/each}
+          {#if current !== null}
+            {#if restored}
+              <span class="text-muted text-[12px]" data-testid="current-character-restored">
+                {currentCharacterCopy.restoredNote}
+              </span>
+            {/if}
+            <button
+              type="button"
+              class="{rowLink} text-muted label min-w-11 justify-center"
+              onclick={forget}
+              data-testid="current-character-forget"
+            >
+              {currentCharacterCopy.forget}
+            </button>
+          {/if}
           {#if me !== null && me.characters.length > 0}
             <div class="relative">
               <button
                 type="button"
-                class="{rowLink} text-nav min-w-11 justify-center"
+                class="{rowLink} label text-nav min-w-11 justify-center"
                 data-testid="current-character-bar-switch"
                 onclick={() => (switchOpen = !switchOpen)}
               >

@@ -16,8 +16,8 @@
   import { API_BASE_URL } from '../../lib/planner/config';
   import { SIM_LANDING_SKELETON_MIN_H } from '../../lib/sim/layout';
   import type { CharacterPath } from '../../lib/characters';
-  import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
-  import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
+  import { readCurrent } from '../../lib/current-character';
+  import { VIEW_GAP } from '../../lib/current-character-layout';
   import { readLastUpgrade, type LastUpgrade } from '../../lib/sim/last-upgrade';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
@@ -56,7 +56,6 @@
   import BuffPanel from './BuffPanel.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
   import CurrentCharacterBar from '../CurrentCharacterBar.svelte';
-  import CurrentCharacterChip from '../CurrentCharacterChip.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
   import ReportOptions from './ReportOptions.svelte';
@@ -95,10 +94,6 @@
     const view: 'sim' | 'specs' = mount?.dataset.simView === 'specs' ? 'specs' : 'sim';
     return { treeVersion, source, ref, code, request: decodeRequestParam(req), mode, view };
   });
-
-  // The chip's "No character loaded" line is for pages that name no character themselves:
-  // the plain view has its own paste box, and a saved sim shows its character and result.
-  const hasOwnPasteBox = hasSavedSimId || bootstrap.view === 'sim';
 
   // Compare mode loads its character through `enterCompare` below, never through the
   // store's own URL bootstrap: a second, redundant bootstrap racing `enterCompare`'s own
@@ -402,16 +397,8 @@
     if (store.character !== null) switcherOpen = false;
   });
 
-  // The current-character chip (Task 5). `pointer` is refreshed in the `syncTabHrefs`
-  // effect below; `restored` is only ever set by `restoreFromPointer`.
-  let pointer = $state<CurrentCharacter | null>(null);
+  // `restored` is only ever set by `restoreFromPointer`; the spine bar shows the note.
   let restored = $state(false);
-
-  function onForgetPointer(): void {
-    clearCurrent();
-    pointer = null;
-    restored = false;
-  }
 
   /**
    * A fresh FS1 v2 code for the loaded character, the same conversion "Run this yourself"
@@ -435,7 +422,6 @@
   $effect(() => {
     const source = store.character === null ? null : store.character.source;
     syncTabHrefs(source, fallbackTabCode());
-    pointer = readCurrent();
   });
 
   function onSignIn(): void {
@@ -521,11 +507,9 @@
 {/snippet}
 
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-view">
-  <CurrentCharacterBar spine />
-  <!-- Unconditional and first: a reserved slot (ToolsView.svelte's own pattern), present on /sim/<id> too. -->
-  <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="sim-chip-slot">
-    <CurrentCharacterChip current={pointer} {restored} {hasOwnPasteBox} onforget={onForgetPointer} />
-  </div>
+  <!-- The spine bar is the one current-character band on this page (the old chip said the
+       same character a second time, 44px below it); it reserves CHIP_HEIGHT itself. -->
+  <CurrentCharacterBar spine currentDoor="sim" {restored} />
   {#if hasSavedSimId}
     <!-- /sim/<sim_id>: read-only, and not the sim page with a result in it -- no switcher,
          no settings bar, no run control. SavedSim composes its own heading. -->
@@ -861,7 +845,7 @@
             {/if}
           </div>
         </div>
-      {:else}
+      {:else if me === null || me.characters.length === 0}
         <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
           {simCopy.emptyPrompt}
         </p>

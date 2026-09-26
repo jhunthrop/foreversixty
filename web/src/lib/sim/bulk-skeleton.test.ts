@@ -29,12 +29,12 @@ describe('TOOL_SKELETONS', () => {
   // four copies that could drift apart.
   it('opens every skeleton with the chip slot, reserving CHIP_HEIGHT before the strip', () => {
     for (const html of Object.values(TOOL_SKELETONS)) {
-      expect(html).toContain(`data-testid="sim-chip-slot"`);
+      expect(html).toContain(`data-testid="current-character-bar"`);
       expect(html).toContain(CHIP_HEIGHT);
       // The chip slot is the very first thing inside the skeleton's aria-hidden body --
       // the strip band that used to open it now comes strictly after.
       const body = html.slice(html.indexOf('aria-hidden="true"'));
-      expect(body.indexOf('sim-chip-slot')).toBeLessThan(body.indexOf('skeleton-block'));
+      expect(body.indexOf('current-character-bar')).toBeLessThan(body.indexOf('skeleton-block'));
     }
   });
 
@@ -57,7 +57,7 @@ describe('TOOL_SKELETONS', () => {
   it('reserves the spine bar slot before the chip slot', () => {
     for (const html of Object.values(TOOL_SKELETONS)) {
       expect(html).toContain('data-testid="current-character-bar"');
-      expect(html.indexOf('current-character-bar')).toBeLessThan(html.indexOf('sim-chip-slot'));
+      expect(html.indexOf('current-character-bar')).toBeLessThan(html.indexOf('skeleton-block'));
     }
   });
 });

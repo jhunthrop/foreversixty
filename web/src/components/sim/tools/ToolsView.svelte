@@ -10,8 +10,8 @@
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../../data/active-build.json';
   import { battlenetStartUrl, effectiveServerSims, fetchMe, type Me } from '../../../lib/account/api';
-  import { clearCurrent, readCurrent, type CurrentCharacter } from '../../../lib/current-character';
-  import { CHIP_HEIGHT, VIEW_GAP } from '../../../lib/current-character-layout';
+  import { readCurrent } from '../../../lib/current-character';
+  import { VIEW_GAP } from '../../../lib/current-character-layout';
   import { createLazyComponent, type LazyLoadState } from '../../../lib/report/lazy-component.svelte';
   import { TOOL_SKELETONS } from '../../../lib/sim/bulk-skeleton';
   import { createBulkStore, type SimTool } from '../../../lib/sim/bulk-store.svelte';
@@ -21,7 +21,6 @@
   import { runBootstrapRestore, sourceIdForInstance } from '../../../lib/sim/character-bootstrap';
   import { parseSimState } from '../../../lib/sim/url';
   import CurrentCharacterBar from '../../CurrentCharacterBar.svelte';
-  import CurrentCharacterChip from '../../CurrentCharacterChip.svelte';
   import CharacterStrip from '../CharacterStrip.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
   import LoadError from '../../ui/LoadError.svelte';
@@ -70,12 +69,6 @@
   // Task 4's review, Important: a dead pointer must not claim "restored") -- passed to the
   // chip below, which shows "Restored your last character" beside the label only then.
   let restored = $state(false);
-  // The chip's own prop (fix round 1, Critical: the chip, not an ad-hoc row here, is what
-  // shows the current-character pointer -- CurrentCharacterChip.svelte's own header
-  // comment). Refreshed from storage inside the tab-sync effect below, the same moment
-  // every loader has already written it (sources.ts's own `recordCurrentCharacter`, called
-  // before `adopt()` assigns `character`).
-  let pointer = $state<CurrentCharacter | null>(null);
 
   $effect(() => {
     if (store.character !== null) switcherOpen = false;
@@ -98,7 +91,6 @@
     // fallback to try -- the same guard SimView.svelte's own effect applies.
     const fallbackCode = source !== null && source.ref === '' ? store.characterCode : null;
     syncTabHrefs(source, fallbackCode);
-    pointer = readCurrent();
   });
 
   /**
@@ -186,12 +178,6 @@
     window.location.href = battlenetStartUrl(`${window.location.pathname}${window.location.search}`);
   }
 
-  function onForgetPointer(): void {
-    clearCurrent();
-    pointer = null;
-    restored = false;
-  }
-
   // One chunk per tool, resolved from a closed map: `tool` is validated against TOOLS
   // before it reaches here, and a map rather than a template literal keeps the bundler's
   // own analysis exact.
@@ -226,14 +212,9 @@
 {/snippet}
 
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-tools-view">
-  <CurrentCharacterBar spine />
-  <!-- Fix round 1, Task 4's review (Critical): a reserved, always-present slot -- never
-       conditionally rendered -- so its height never changes and nothing below it ever
-       shifts, whether the chip has a character to show or not. bulk-skeleton.ts's own
-       `chipSlot` reserves the identical band before hydration. -->
-  <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="sim-chip-slot">
-    <CurrentCharacterChip current={pointer} {restored} hasOwnPasteBox onforget={onForgetPointer} />
-  </div>
+  <!-- The spine bar is the one current-character band on the tool pages; it reserves
+       CHIP_HEIGHT itself and bulk-skeleton.ts's `chipSlot` reserves the same band before hydration. -->
+  <CurrentCharacterBar spine currentDoor="sim" {restored} />
   {#if store.character !== null && !switcherOpen}
     <CharacterStrip
       character={store.character}

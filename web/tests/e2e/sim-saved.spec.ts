@@ -198,7 +198,7 @@ test('a saved sim opened cold says nothing about a missing character or other pl
   await page.goto('/sim/simfixtureab');
   await expect(page.getByTestId('sim-dps')).toBeVisible();
 
-  await expect(page.getByTestId('sim-chip-slot')).toBeAttached();
+  await expect(page.getByTestId('current-character-bar')).toBeAttached();
   await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
 
   await page.getByTestId('sim-tab-casts').click();

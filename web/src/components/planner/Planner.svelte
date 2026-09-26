@@ -11,12 +11,10 @@
   import { mainCharacter } from '../../lib/account/main-character';
   import { createQueryState } from '../../lib/data/query.svelte';
   import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
-  import { CHIP_HEIGHT } from '../../lib/current-character-layout';
   import { API_BASE_URL, DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
   import {
     decidePlannerLoad,
     isBarePlannerUrl,
-    plannerAddonCode,
     writePlannerPointer,
   } from '../../lib/planner/current-character-planner';
   import { ranksByTalent } from '../../lib/planner/derive';
@@ -41,7 +39,6 @@
   import { characterFromPlanner } from '../../lib/sim/character';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
   import CurrentCharacterBar from '../CurrentCharacterBar.svelte';
-  import CurrentCharacterChip from '../CurrentCharacterChip.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
   import GearPanel from './GearPanel.svelte';
@@ -102,12 +99,6 @@
   $effect(() => {
     if (plannerLoad.deadPointer) clearCurrent();
   });
-
-  function onForgetPointer(): void {
-    clearCurrent();
-    pointer = null;
-    restored = false;
-  }
 
   // A parsed count inside one of these renders in a tabular, monospace span, the same as every
   // other number the planner shows (OrderStrip, SummaryBar, GearPanel, TalentCell, ItemPicker).
@@ -201,7 +192,6 @@
   });
 
   // The chip's "Copy addon code" link; shared with SharePanel's own button (Task 10).
-  const addonCode = $derived(plannerAddonCode(store));
 
   // Every load source writes the pointer through here (Task 10); writePlannerPointer is a
   // no-op inline or before talent data has loaded.
@@ -499,19 +489,9 @@
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
   {#if standalone}
-    <CurrentCharacterBar spine />
-  {/if}
-  {#if standalone}
-    <!-- Task 10: fixed-height slot, mirrors ToolsView.svelte's own `sim-chip-slot`. -->
-    <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="planner-chip-slot">
-      <CurrentCharacterChip
-        current={pointer}
-        {restored}
-        {addonCode}
-        hasOwnPasteBox={!store.readOnly}
-        onforget={onForgetPointer}
-      />
-    </div>
+    <!-- The spine bar is the one current-character band on the planner; the share panel
+         below carries Copy addon code, which the old chip duplicated. -->
+    <CurrentCharacterBar spine currentDoor="plan" {restored} />
   {/if}
   <!-- Final-review fix (states lane): "bare build" (spec section 6 -- Level hidden unless a
        character is loaded) means "no real character or build data", not just "no pointer".

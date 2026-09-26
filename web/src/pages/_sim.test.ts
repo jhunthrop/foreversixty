@@ -82,14 +82,14 @@ describe('the chip slot’s gap wrapper', () => {
     const html = await container.renderToString(Sim);
     const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
     expect(html).toContain(wrapper);
-    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="sim-chip-slot"'));
+    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="current-character-bar"'));
   });
 
   it('sim/specs.astro wraps the chip slot and the grids in the identical gap', async () => {
     const html = await container.renderToString(Specs);
     const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
     expect(html).toContain(wrapper);
-    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="sim-chip-slot"'));
+    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="current-character-bar"'));
   });
 
   // sim/[id].astro is the page this repo actually measures with Lighthouse (the Round 3
@@ -109,6 +109,6 @@ describe('the chip slot’s gap wrapper', () => {
     });
     const wrapper = `<div class="flex flex-col ${VIEW_GAP}">`;
     expect(html).toContain(wrapper);
-    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="sim-chip-slot"'));
+    expect(html.indexOf(wrapper)).toBeLessThan(html.indexOf('data-testid="current-character-bar"'));
   });
 });

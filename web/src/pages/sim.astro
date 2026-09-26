@@ -65,8 +65,7 @@ import SimTabs from '../components/sim/SimTabs.astro';
          comfortably under the existing 1154px reserve, so mobile is unchanged. -->
     <div id="sim" data-sim-mount class="min-h-[1154px] md:min-h-[620px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
-        <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="current-character-bar"></div>
-        <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="sim-chip-slot"></div>
+        <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
         <section class="mx-[18px] flex flex-col gap-3 md:mx-0">
           <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
             <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">

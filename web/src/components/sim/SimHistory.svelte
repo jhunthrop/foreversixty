@@ -3,6 +3,7 @@
      placeholder inviting an account would be an advertisement on a page that works fine
      without one, and the free browser lane is the product. -->
 <script lang="ts">
+  import { formatDate } from '../../lib/dates';
   import { simCopy } from '../../lib/sim/copy';
   import { KIND_FILTERS, headlineOf, kindOf, titleOf, type KindFilter } from '../../lib/sim/history';
   import type { SimListRow } from '../../lib/sim/types';
@@ -63,7 +64,7 @@
               {headlineOf(row)}
             </span>
             <span class="tabular text-muted hidden text-right font-mono text-[13px] md:inline">
-              {row.created_at.slice(0, 10)}
+              {formatDate(new Date(row.created_at))}
             </span>
           </a>
         </li>

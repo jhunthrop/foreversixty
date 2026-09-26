@@ -295,23 +295,21 @@ test('a returning signed-in visitor sees their characters from the session snaps
   await expect(page.getByTestId('sim-landing-skeleton')).toHaveCount(0);
 });
 
-// Task 8: the spine bar mounts above the sim page's own current-character chip, on every
-// /sim* page. The chip-slot pre-paint rule (global.css) hides both slots before hydration
-// unless `fs_csrf` is present -- the same signed-in-visitor cookie logs-recent-reports.spec.ts's
-// own spine-bar test sets -- so this test sets it too, rather than the bar's visibility
-// assertion failing regardless of the /v1/me mock.
-test('the spine bar reserves its slot before the sim chip slot, with no layout shift once both hydrate', async ({
-  page,
-}) => {
+// The spine bar is the one current-character band on every /sim* page (the old chip that
+// repeated it 44px below is gone, 2026-09-26 design loop). The chip-slot pre-paint rule
+// (global.css) hides the band before hydration unless `fs_csrf`/`data-pointer` is present,
+// so this test sets the cookie to see the bar, and checks nothing repeats it.
+test('the spine bar is the only current-character band on /sim, above the landing list', async ({ page }) => {
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
-  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_NO_CHARACTERS)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
   await page.goto('/sim');
   const bar = page.getByTestId('current-character-bar');
-  const chip = page.getByTestId('sim-chip-slot');
   await expect(bar).toBeVisible();
+  await expect(page.getByTestId('sim-chip-slot')).toHaveCount(0);
+  await expect(page.getByTestId('current-character-chip')).toHaveCount(0);
   const barBox = await bar.boundingBox();
-  const chipBox = await chip.boundingBox();
+  const listBox = await page.getByTestId('sim-landing').boundingBox();
   expect(barBox).not.toBeNull();
-  expect(chipBox).not.toBeNull();
-  expect((barBox as { y: number }).y).toBeLessThan((chipBox as { y: number }).y);
+  expect(listBox).not.toBeNull();
+  expect((barBox as { y: number }).y).toBeLessThan((listBox as { y: number }).y);
 });
