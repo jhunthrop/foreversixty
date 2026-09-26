@@ -14,6 +14,7 @@ import SubscribeBox from '../components/SubscribeBox.svelte';
 import HomeGuildLink from '../components/HomeGuildLink.svelte';
 import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
 import HomeNextSteps, { HOME_NEXT_STEPS_SIGNED_OUT_ID } from '../components/HomeNextSteps.svelte';
+import HomeGetSetUp, { HOME_GET_SET_UP_SIGNED_OUT_ID } from '../components/HomeGetSetUp.svelte';
 import RecentReports from '../components/RecentReports.svelte';
 import HomeTopGuilds from '../components/HomeTopGuilds.svelte';
 import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
@@ -25,7 +26,7 @@ import {
   homeProductPanels,
 } from '../lib/home-landing-copy';
 import { battlenetStartUrl } from '../lib/account/api';
-import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
 import dates from '../data/dates.json';
 import communityLinks from '../data/links.json';
 
@@ -48,39 +49,41 @@ const addonIconPath =
 >
   <main id="main" tabindex="-1" class="flex flex-col">
     <SkyBand>
-      <div class="flex w-full max-w-[1344px] flex-col gap-[18px] px-[18px] pt-7 pb-8 mx-auto md:px-12">
+      <div class="flex w-full max-w-[1344px] flex-col gap-[18px] px-[18px] py-7 mx-auto md:px-12 lg:py-8">
         <p class="label text-gold font-body">{homeHeroCopy.eyebrow}</p>
-        <div class="grid" data-testid="home-account-block">
-          <div
-            id={HOME_SIGNED_OUT_ID}
-            data-session-hide
-            class="[grid-area:1/1] flex flex-col gap-[18px]"
-            data-testid="home-signed-out"
-          >
-            <h1 class="font-display text-[22px] font-bold leading-tight text-strong">
-              {homeHeroCopy.headline}
-            </h1>
-            <p class="text-[14px] leading-relaxed max-w-[560px]">{homePanelCopy.signedOutLine}</p>
-            <div class="flex flex-wrap items-center gap-3">
-              <a
-                class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4`}
-                href={battlenetStartUrl('/account?signed_in=1')}
-              >
-                {homePanelCopy.signInButton}
-              </a>
-              <a class="text-nav text-[13px]" href={homeHeroCopy.addonAltHref}>
-                {homeHeroCopy.addonAltLabel}
-              </a>
+        <!-- Review round 1 fix item 4: at lg this becomes a two-column band (the character
+             card/sign-in block 7/12, the dates timeline 5/12) so the art's right half carries
+             real content instead of empty decoration; below lg the two stack in the same
+             order they always have (hero, then timeline), just one level deeper in the DOM. -->
+        <div class="flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
+          <div class="grid lg:col-span-7" data-testid="home-account-block">
+            <div
+              id={HOME_SIGNED_OUT_ID}
+              data-session-hide
+              class="[grid-area:1/1] flex flex-col gap-[18px]"
+              data-testid="home-signed-out"
+            >
+              <h1 class="font-display text-[22px] font-bold leading-tight text-strong">
+                {homeHeroCopy.headline}
+              </h1>
+              <p class="text-[14px] leading-relaxed max-w-[560px]">{homePanelCopy.signedOutLine}</p>
+              <div class="flex flex-wrap items-center gap-3">
+                <a class={`${PRIMARY_BUTTON_FIXED} px-4`} href={battlenetStartUrl('/account?signed_in=1')}>
+                  {homePanelCopy.signInButton}
+                </a>
+                <a class="text-nav text-[13px]" href={homeHeroCopy.addonAltHref}>
+                  {homeHeroCopy.addonAltLabel}
+                </a>
+              </div>
             </div>
+            <HomeAccountPanel client:visible />
           </div>
-          <HomeAccountPanel client:visible />
+          <div class="lg:col-span-5">
+            <HomeTimeline dates={dates} updated={updated} />
+          </div>
         </div>
       </div>
     </SkyBand>
-
-    <div class="w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-6 md:pt-8">
-      <HomeTimeline dates={dates} updated={updated} />
-    </div>
 
     <div class="flex flex-col gap-8 md:gap-12 w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-9 pb-8">
       <section class="flex flex-col gap-4">
@@ -88,7 +91,7 @@ const addonIconPath =
           <div
             id={HOME_NEXT_STEPS_SIGNED_OUT_ID}
             data-session-hide
-            class="[grid-area:1/1] grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4"
+            class="[grid-area:1/1] grid grid-cols-1 items-stretch gap-4 md:grid-cols-2 lg:grid-cols-5"
             data-testid="home-next-steps-signed-out"
           >
             {homeProductPanels.map((panel) => (
@@ -139,24 +142,32 @@ const addonIconPath =
         </div>
       </Panel>
 
-      <section class="grid grid-cols-1 gap-4" data-testid="home-companion-row">
-        {homeCompanionRow.map((card) => (
-          <ToolCard title={card.title} description={card.description} href={card.href}>
-            <svg
-              slot="icon"
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-              set:html={addonIconPath}
-            />
-          </ToolCard>
-        ))}
+      <section class="flex flex-col" data-testid="home-companion-row">
+        <div
+          id={HOME_GET_SET_UP_SIGNED_OUT_ID}
+          data-session-hide
+          class="grid grid-cols-1 gap-4"
+          data-testid="home-get-set-up-signed-out"
+        >
+          {homeCompanionRow.map((card) => (
+            <ToolCard title={card.title} description={card.description} href={card.href}>
+              <svg
+                slot="icon"
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+                set:html={addonIconPath}
+              />
+            </ToolCard>
+          ))}
+        </div>
+        <HomeGetSetUp client:idle />
       </section>
 
       <div class="grid grid-cols-12 gap-[22px] md:gap-8">

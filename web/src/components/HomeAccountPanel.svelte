@@ -17,8 +17,9 @@
   import { HOME_CHIP_LIMIT, HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
   import { createHomeHero } from '../lib/account/home-hero.svelte';
   import { armorySimHref } from '../lib/sim/url';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { classArtUrl } from '../lib/home/class-art';
+  import { classSlugFromName } from '../lib/report/tree-sizes';
   import { accountPageCopy } from '../lib/account/account-page-copy';
 
   // The session read, hero derivation and rating fetch all live in one shared composable
@@ -84,6 +85,13 @@
   const shownOthers = $derived(others.slice(0, HOME_CHIP_LIMIT));
   const hiddenCount = $derived(others.length - shownOthers.length);
 
+  /** Review round 1 fix item 1: the hero's one primary action, no build yet -- the same
+   *  `?class=` fallback the planner door and the rankings card already build from the
+   *  hero's class, honest about carrying no talents or gear (unlike a `?code=` link). */
+  const openPlannerHref = $derived(
+    hero?.class === undefined ? '/planner' : `/planner?class=${classSlugFromName(hero.class)}`,
+  );
+
   // The latest rating figure, when one exists (spec 2026-09-23 §2 item 2): chained off the
   // hero rather than blocking it, since this island is already deferred (`client:visible`)
   // and never sits on the LCP path. Never shown until it resolves with a real sample -- an
@@ -128,26 +136,35 @@
             {/if}
           {/snippet}
         </CharacterIdentity>
-        <div class="flex flex-wrap items-center gap-3 pt-2 md:pl-[88px]">
-          {#if hero.build !== undefined}
-            <a class={`${SECONDARY_BUTTON_FIXED} border-gold text-gold px-4`} href={armorySimHref(hero.key)}>
-              {homePanelCopy.simCharacter(hero.name)}
-            </a>
-          {:else}
-            <a class={`${SECONDARY_BUTTON_FIXED} border-gold text-gold px-4`} href="/account#characters">
-              {homePanelCopy.getTheBuild}
-            </a>
-          {/if}
-          <a class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text px-4`} href="/planner">
-            {homePanelCopy.planTalents}
-          </a>
-          <a class="text-nav text-[13px] font-semibold" href="/logs">{homePanelCopy.logs}</a>
-          <a class="text-nav text-[13px] font-semibold" href="/account">{homePanelCopy.yourCharacters}</a>
-          {#if ratingFigure !== ''}
-            <span class="text-muted tabular font-mono text-[12px]" data-testid="home-hero-rating"
-              >{ratingFigure}</span
-            >
-          {/if}
+        <!-- Review round 1 fix item 1: one primary action, not two look-alike outlined
+             buttons beside two more text links -- the character's single strongest next
+             step (Sim, once a build exists; otherwise the planner, the same place the
+             Planner door itself points to). Everything else is a plain secondary text row
+             underneath, never competing with it for weight. -->
+        <div class="flex flex-col gap-2 pt-2 md:pl-[88px]">
+          <div class="flex flex-wrap items-center gap-3">
+            {#if hero.build !== undefined}
+              <a class={`${PRIMARY_BUTTON_FIXED} px-4`} href={armorySimHref(hero.key)}>
+                {homePanelCopy.simCharacter(hero.name)}
+              </a>
+            {:else}
+              <a class={`${PRIMARY_BUTTON_FIXED} px-4`} href={openPlannerHref}>
+                {homePanelCopy.openThePlanner}
+              </a>
+            {/if}
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            {#if hero.build !== undefined}
+              <a class="text-nav text-[13px] font-semibold" href="/planner">{homePanelCopy.planTalents}</a>
+            {/if}
+            <a class="text-nav text-[13px] font-semibold" href="/logs">{homePanelCopy.logs}</a>
+            <a class="text-nav text-[13px] font-semibold" href="/account">{homePanelCopy.yourCharacters}</a>
+            {#if ratingFigure !== ''}
+              <span class="text-muted tabular font-mono text-[12px]" data-testid="home-hero-rating"
+                >{ratingFigure}</span
+              >
+            {/if}
+          </div>
         </div>
       </div>
       {#if hero.render_url !== undefined}
