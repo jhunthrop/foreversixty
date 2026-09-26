@@ -15,19 +15,6 @@ import { RECENT_REPORTS_PRELOAD } from '../lib/reports/recent';
 import Upload from '../components/Upload.svelte';
 import { logsCompanionCopy, logsFraming } from '../lib/reports/copy';
 
-/** 24px grid, 2px stroke, round caps: design/DESIGN-SYSTEM.md "Icons". */
-const ICON_ATTRS = {
-  width: 22,
-  height: 22,
-  viewBox: '0 0 24 24',
-  fill: 'none',
-  stroke: 'currentColor',
-  'stroke-width': 2,
-  'stroke-linecap': 'round',
-  'stroke-linejoin': 'round',
-  'aria-hidden': 'true',
-} as const;
-
 const block = 'flex flex-col gap-3 p-4 md:p-5';
 const blockTitle = 'label text-muted';
 ---
