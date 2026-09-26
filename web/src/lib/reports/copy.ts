@@ -16,5 +16,5 @@ export const logsFraming =
  *  /setup for the download and /combatlog steps instead of repeating them. */
 export const logsCompanionCopy = {
   pointer: 'Downloads and the in-game /combatlog step are on the setup page.',
-  pointerLink: 'Setup',
+  pointerLink: 'Get set up',
 } as const;
