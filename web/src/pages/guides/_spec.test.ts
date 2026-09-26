@@ -39,8 +39,16 @@ describe('/guides/warrior/fury', () => {
   it('embeds the tree, the build-action buttons, the stat and race pills, and the footer caveat', async () => {
     const entry = loadGuideEntry('warrior/fury');
     const html = await container.renderToString(SpecPage, { props: { entry } });
-    expect(html).toContain('data-testid="guide-tree-columns"');
-    expect(html).toContain('client:visible');
+    // GuideBuildTree hydrates client:visible and fetches its talent data in a $effect that
+    // only runs after hydration -- SSR always renders its loading skeleton
+    // (GuideBuildTree.test.ts's own assertion), never the post-fetch tree. So this checks
+    // what SSR actually produces: the island mounted with the right initial state and the
+    // right code prop, and Astro's own client-directive attribute (not the literal string
+    // "client:visible", which never appears -- Astro serializes it as `client="visible"` on
+    // the <astro-island> element).
+    expect(html).toContain('data-testid="guide-tree-skeleton"');
+    expect(html).toContain('client="visible"');
+    expect(html).toContain(entry.data.build as string);
     expect(html).toContain('data-testid="guide-load-build"');
     expect(html).toContain('data-testid="guide-sim-build"');
     expect(html).toContain('data-testid="stat-priority-pills"');
