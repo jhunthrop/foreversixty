@@ -24,14 +24,17 @@ test.describe('current character', () => {
     await expect(page.getByTestId('sim-character')).toBeVisible();
 
     await page.goto('/planner');
-    await expect(page.getByTestId('current-character-restored')).toBeVisible();
+    // The restored note is desktop-only (the phone row keeps its six doors on one line);
+    // on every project the restored pointer shows as the Forget control being present.
+    await expect(page.getByTestId('current-character-restored')).toBeAttached();
+    await expect(page.getByTestId('current-character-forget')).toBeVisible();
   });
 
   test('Forget on the restored chip clears the pointer for the next bare load', async ({ page }) => {
     await page.goto(`/sim?code=${encodeURIComponent(FURY)}`);
 
     await page.goto('/sim');
-    await expect(page.getByTestId('current-character-restored')).toBeVisible();
+    await expect(page.getByTestId('current-character-restored')).toBeAttached();
 
     await page.getByTestId('current-character-forget').click();
 
