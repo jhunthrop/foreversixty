@@ -21,6 +21,9 @@ import { parse as parseYaml } from 'yaml';
 import { describe, expect, it } from 'vitest';
 import { guideSchema } from '../../content.config';
 import { SPEC_SECTIONS, splitSpecSections } from '../../lib/guides/sections';
+import { decodeFS1, orderFromRanks } from '../../lib/planner/fs1';
+import { indexTalents } from '../../lib/planner/rules';
+import { MAX_POINTS, type TalentFile } from '../../lib/planner/types';
 
 const guidesRoot = join(dirname(fileURLToPath(import.meta.url)));
 
@@ -89,4 +92,42 @@ describe('guide content structure', () => {
       expect(['dps', 'healer', 'tank']).toContain(guide.frontmatter.role);
     }
   });
+});
+
+const DATA_BUILD = '1.60.1.69893';
+const dataRoot = join(
+  dirname(fileURLToPath(import.meta.url)),
+  '../../../../data/builds',
+  DATA_BUILD,
+  'talents',
+);
+const talentCache = new Map<string, TalentFile>();
+function talentsFor(classSlug: string): TalentFile {
+  const cached = talentCache.get(classSlug);
+  if (cached) return cached;
+  const file = JSON.parse(readFileSync(join(dataRoot, `${classSlug}.json`), 'utf8')) as TalentFile;
+  talentCache.set(classSlug, file);
+  return file;
+}
+
+describe('guide build codes', () => {
+  it.each(specGuides.map((g) => [g.id, g] as const))(
+    '%s has a build: that decodes, names its own class, and is legally reachable within 51 points',
+    (id, guide) => {
+      const code = guide.frontmatter.build;
+      expect(typeof code, `${id}: no build: frontmatter`).toBe('string');
+      const decoded = decodeFS1(code as string);
+      expect(decoded.ok, `${id}: ${decoded.ok ? '' : decoded.message}`).toBe(true);
+      if (!decoded.ok) return;
+      expect(decoded.build.classSlug, `${id}: build: is for the wrong class`).toBe(
+        guide.frontmatter.classSlug,
+      );
+      const index = indexTalents(talentsFor(decoded.build.classSlug));
+      const { order, dropped } = orderFromRanks(index, decoded.build.treeRanks);
+      expect(dropped, `${id}: unreachable talents in build:`).toEqual([]);
+      expect(order.length, `${id}: build: spends more than the ${MAX_POINTS}-point cap`).toBeLessThanOrEqual(
+        MAX_POINTS,
+      );
+    },
+  );
 });

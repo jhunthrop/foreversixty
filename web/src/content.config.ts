@@ -43,6 +43,20 @@ export const guideSchema = factSchema.extend({
   // (`warrior/index`), which covers the whole class rather than one tree.
   spec: z.string().optional(),
   role: z.enum(['dps', 'healer', 'tank']).optional(),
+  /** An FS1 code for this spec's recommended build (spec guides only). `[spec].astro`
+   *  decodes it to light the embedded read-only tree and to build the "Load this build" /
+   *  "Sim this build" links; `_sections.test.ts`'s own SSR test decodes every one and checks
+   *  it names this guide's own class and stays legally reachable within 51 points. */
+  build: z.string().optional(),
+  /** Race slugs (races.json's own `slug`) this guide calls a strong pick, in the order the
+   *  guide's own Races prose names them. RacePillRow.astro marks these among the class's
+   *  full legal race list; an empty array (the default, and every class landing page's
+   *  value) marks none. */
+  recommendedRaces: z.array(z.string()).default([]),
+  /** Stat names in priority order, exactly as this guide's own Stat priority prose already
+   *  names them (its bold terms) -- StatPriorityPills.astro renders these as an ordered pill
+   *  row; the guide's own prose stays underneath as the reasoning, unchanged. */
+  statPriority: z.array(z.string()).default([]),
 });
 
 const guides = defineCollection({
