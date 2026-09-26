@@ -102,7 +102,7 @@
       });
   });
 
-  const [plannerPanel, simPanel, logsPanel, rankingsPanel] = homeProductPanels;
+  const [plannerPanel, simPanel, logsPanel, rankingsPanel, guidesPanel] = homeProductPanels;
   const plannerPoints = $derived(simInput === null ? '' : plannerPointsLabel(simInput.talents));
   const ratingValue = $derived(ratingCardValue(rating));
   const classSlug = $derived(hero?.class === undefined ? '' : classSlugFromName(hero.class));
@@ -110,7 +110,7 @@
 
 {#if ready && me !== null && hero !== null}
   <div
-    class="reveal grid grid-cols-1 items-stretch gap-4 [grid-area:1/1] sm:grid-cols-2 lg:grid-cols-4"
+    class="reveal grid grid-cols-1 items-stretch gap-4 [grid-area:1/1] md:grid-cols-2 lg:grid-cols-5"
     data-testid="home-next-steps"
   >
     <div
@@ -153,14 +153,18 @@
         <span class="text-strong text-[13px] font-semibold" data-testid="home-next-planner-value"
           >{plannerPoints}</span
         >
+      {:else if hero.build === undefined}
+        <!-- No build at all (review round 1 fix item 1): the muted status line and the
+             action link below would say the same thing twice, so this card carries the one
+             "No build yet -- Paste an export" message on the link itself, not here. -->
       {:else}
         <span class="text-muted text-[13px]">{homePanelCopy.noBuildYet}</span>
       {/if}
       <a
         class="text-nav mt-auto w-fit text-[13px] font-semibold"
-        href={hero.build === undefined ? '/account#characters' : '/planner'}
+        href={hero.build === undefined ? '/setup#paste' : '/planner'}
       >
-        {hero.build === undefined ? homePanelCopy.getTheBuild : homePanelCopy.continuePlanning}
+        {hero.build === undefined ? homePanelCopy.noBuildPasteExport : homePanelCopy.continuePlanning}
       </a>
     </div>
 
@@ -207,6 +211,22 @@
       {/if}
       <a class="text-nav mt-auto w-fit text-[13px] font-semibold" href={`/rankings?class=${classSlug}`}>
         {homePanelCopy.rankingsForClass(hero.class ?? '')}
+      </a>
+    </div>
+
+    <div
+      class="bg-raised border-line rounded-panel flex flex-col gap-2 border px-[18px] py-[16px]"
+      data-testid="home-next-guides"
+    >
+      <div class="flex items-center gap-2">
+        <span class="bg-gold h-2 w-2 rounded-full shadow-[0_0_10px_rgba(229,185,85,.8)]" aria-hidden="true"
+        ></span>
+        <span class="label text-gold">{guidesPanel.label}</span>
+      </div>
+      <p class="text-muted text-[13px]">{guidesPanel.sentence}</p>
+      <span class="text-strong text-[13px] font-semibold">{homePanelCopy.guidesStatus}</span>
+      <a class="text-nav mt-auto w-fit text-[13px] font-semibold" href={guidesPanel.href}>
+        {guidesPanel.linkLabel}
       </a>
     </div>
   </div>

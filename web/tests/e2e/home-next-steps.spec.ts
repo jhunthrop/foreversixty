@@ -182,4 +182,47 @@ test('the four cards fall back to their empty states with nothing to show', asyn
   await expect(page.getByTestId('home-next-planner')).toContainText('No build yet.');
   await expect(page.getByTestId('home-next-logs')).toContainText('No logs yet.');
   await expect(page.getByTestId('home-next-rankings')).toContainText('Not rated yet.');
+  await expect(page.getByTestId('home-next-guides')).toContainText('27 spec guides');
+  await expect(
+    page.getByTestId('home-next-guides').getByRole('link', { name: 'Open guides' }),
+  ).toHaveAttribute('href', '/guides');
+});
+
+test('a character with no build at all shows the one paste-export link, not a duplicate status line', async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+          characters: [
+            { key: 'us/normal/kiloz', region: 'us', ruleset: 'normal', name: 'Kiloz', class: 'Warrior' },
+          ],
+          guilds: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.addInitScript(() => {
+    window.localStorage.setItem(
+      'fs.currentCharacter',
+      JSON.stringify({
+        source: 'armory',
+        ref: 'us/normal/kiloz',
+        label: 'Kiloz · Warrior',
+        classSlug: 'warrior',
+        savedAt: new Date().toISOString(),
+      }),
+    );
+  });
+  await page.goto('/');
+  const planner = page.getByTestId('home-next-planner');
+  await expect(planner.getByTestId('home-next-planner-value')).toHaveCount(0);
+  await expect(planner.getByText('No build yet.', { exact: true })).toHaveCount(0);
+  const link = planner.getByRole('link', { name: 'No build yet · Paste an export' });
+  await expect(link).toHaveAttribute('href', '/setup#paste');
 });

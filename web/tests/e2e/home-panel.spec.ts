@@ -49,7 +49,7 @@ test('a signed-in visitor with zero characters still sees the Battle.net sign-in
   await expect(page.getByRole('link', { name: 'Sign in with Battle.net' })).toBeVisible();
 });
 
-test('a character with no build shows Get the build, not a Sim button, with the portrait fallback', async ({
+test('a character with no build shows Open the planner as the one primary action, not a Sim button, with the portrait fallback', async ({
   page,
 }, testInfo) => {
   await page.route('**/v1/me', (route) =>
@@ -90,11 +90,17 @@ test('a character with no build shows Get the build, not a Sim button, with the 
   // The character name is the page's only heading -- no testid is passed for it, so it is
   // located by role/name, the way a real user (or a screen reader) would find it.
   await expect(panel.getByRole('heading', { name: 'Kiloz', level: 1 })).toBeVisible();
-  await expect(panel.getByRole('link', { name: 'Get the build' })).toHaveAttribute(
+  // Review round 1 fix item 1: no build yet, so the one primary action is "Open the
+  // planner" (the same `?class=` fallback the Planner door itself builds), never a claim
+  // that a build exists to retrieve -- "Get the build" is retired from this page entirely.
+  await expect(panel.getByRole('link', { name: 'Open the planner' })).toHaveAttribute(
     'href',
-    '/account#characters',
+    '/planner?class=warrior',
   );
-  await expect(panel.getByRole('link', { name: 'Plan talents' })).toHaveAttribute('href', '/planner');
+  await expect(panel.getByRole('link', { name: 'Get the build' })).toHaveCount(0);
+  // Without a build, "Plan talents" would only repeat the primary action, so it is absent
+  // rather than a second, competing route to the same place.
+  await expect(panel.getByRole('link', { name: 'Plan talents' })).toHaveCount(0);
   await expect(panel.getByRole('link', { name: 'Logs' })).toHaveAttribute('href', '/logs');
   await expect(panel.getByRole('link', { name: 'Your characters' })).toHaveAttribute('href', '/account');
   // The signed-out "Sign in with Battle.net" link is only ever visually covered by the
@@ -180,6 +186,9 @@ test('a character with a build shows a Sim button to the armory-source href and 
     '/sim?source=armory&ref=us%2Fnormal%2Fkiloz',
   );
   await expect(panel.getByRole('link', { name: 'Get the build' })).toHaveCount(0);
+  // Once a build exists, "Sim Kiloz" is the primary action and "Plan talents" is the
+  // secondary text row underneath it -- never two look-alike buttons side by side.
+  await expect(panel.getByRole('link', { name: 'Plan talents' })).toHaveAttribute('href', '/planner');
   const renderImage = panel.getByTestId('home-hero-render');
   await expect(renderImage).toHaveAttribute('src', 'https://example.test/render.jpg');
   // `hidden lg:block`: visible once the image data loads on the desktop-width project,

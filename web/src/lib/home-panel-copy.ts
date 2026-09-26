@@ -19,7 +19,11 @@ export const homePanelCopy = {
   logs: 'Logs',
   yourCharacters: 'Your characters',
   planTalents: 'Plan talents',
-  getTheBuild: 'Get the build',
+  // Review round 1 fix item 1: "Get the build" retired everywhere on the page -- the hero's
+  // one primary action reads "Open the planner" when the character has no build yet (it is
+  // the same next step the planner door itself points to), never a claim that a build
+  // already exists to retrieve.
+  openThePlanner: 'Open the planner',
   simCharacter: (name: string): string => `Sim ${name}`,
   /** The chip row under the hero: every other character, one click to make it current. */
   switchTo: (name: string): string => `Switch to ${name}`,
@@ -28,11 +32,19 @@ export const homePanelCopy = {
   runAction: 'Run',
   noBuildYet: 'No build yet.',
   continuePlanning: 'Continue planning',
+  /** The planner door card's no-build state (review round 1 fix item 1): one link, not a
+   *  muted status line plus a separate "Get the build" action, and it sends the visitor to
+   *  the fastest way to get one (pasting an export) rather than the account page. */
+  noBuildPasteExport: 'No build yet · Paste an export',
   noLogsYet: 'No logs yet.',
   uploadALog: 'Upload a log',
   openAction: 'Open',
   notRatedYet: 'Not rated yet.',
   rankingsForClass: (klass: string): string => `Rankings for ${klass}`,
+  /** Guides carries no per-character state (review round 1 fix item 2): its status line is
+   *  the site's own fixed fact, the same figure `home-landing-copy.ts`'s Guides sentence
+   *  names, so the signed-in card's live-status shape still applies to it. */
+  guidesStatus: '27 spec guides',
 } as const;
 
 /** How many other characters the hub's chip row shows before "+N more" links to /account. */

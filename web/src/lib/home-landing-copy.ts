@@ -20,7 +20,9 @@ export interface HomeProductPanelCopy {
   href: string;
 }
 
-/** Spec section 2 item 3, one entry per product panel, in display order. */
+/** Spec section 2 item 3, one entry per product panel, in display order. Review round 1 fix
+ *  item 2 adds Guides last: the fifth door this site offers, previously reachable only from
+ *  the header nav, now presented the same way as the other four. */
 export const homeProductPanels: readonly HomeProductPanelCopy[] = [
   {
     label: 'Planner',
@@ -45,6 +47,12 @@ export const homeProductPanels: readonly HomeProductPanelCopy[] = [
     sentence: 'Guild progression and character parses, per boss.',
     linkLabel: 'Open the rankings',
     href: '/rankings',
+  },
+  {
+    label: 'Guides',
+    sentence: '27 spec guides, talent builds and rotations for every class.',
+    linkLabel: 'Open guides',
+    href: '/guides',
   },
 ] as const;
 
@@ -75,7 +83,8 @@ export interface HomeCompanionRowCard {
   href: string;
 }
 
-/** Spec 2026-09-25 §3.5: the addon and companion row becomes one card. */
+/** Spec 2026-09-25 §3.5: the addon and companion row becomes one card. Signed-out only --
+ *  see `homeGetSetUpCopy` for the state-aware, signed-in line (review round 1 fix item 3). */
 export const homeCompanionRow: readonly HomeCompanionRowCard[] = [
   {
     title: 'Get set up',
@@ -83,3 +92,15 @@ export const homeCompanionRow: readonly HomeCompanionRowCard[] = [
     href: '/setup',
   },
 ] as const;
+
+/** Review round 1 fix item 3: a signed-in visitor never sees the three-step pitch above --
+ *  `lib/home/get-set-up.ts` builds one slim line from these words, naming only the step(s)
+ *  `me` proves are not done yet. The companion has no signal here (no API tells this page
+ *  whether one is paired), so its own item never carries a done mark either way. */
+export const homeGetSetUpCopy = {
+  /** Both known steps (signed in, addon linked) done: the one line names them and points at
+   *  the one step left, verbatim. */
+  bothDone: 'Signed in and addon linked · Set up the companion →',
+  addonRemaining: 'Install the addon',
+  companionRemaining: 'Set up the companion',
+} as const;
