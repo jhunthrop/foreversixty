@@ -1,0 +1,32 @@
+---
+// web/src/components/guides/BuildActionButtons.astro
+// The two links under a spec guide's embedded tree (spec 5): "Load this build" and "Sim this
+// build". Plain links, not buttons with client handlers -- Planner.svelte's own
+// writePlannerPointer and sim's sources.ts already write the current-character pointer
+// unconditionally whenever their page loads with a ?code=, so there is nothing for a click
+// handler here to do that the destination page does not already do on arrival.
+import { guidesCopy } from '../../lib/guides/copy';
+import { loadBuildHref, simBuildHref } from '../../lib/guides/build-links';
+
+interface Props {
+  code: string;
+}
+const { code } = Astro.props;
+---
+
+<div class="flex flex-wrap gap-3" data-testid="guide-build-actions">
+  <a
+    href={loadBuildHref(code)}
+    class="rounded-control border-line-warm text-text inline-flex min-h-11 items-center border px-4 text-[14px] font-semibold"
+    data-testid="guide-load-build"
+  >
+    {guidesCopy.loadThisBuild}
+  </a>
+  <a
+    href={simBuildHref(code)}
+    class="rounded-control border-line-warm text-text inline-flex min-h-11 items-center border px-4 text-[14px] font-semibold"
+    data-testid="guide-sim-build"
+  >
+    {guidesCopy.simThisBuild}
+  </a>
+</div>

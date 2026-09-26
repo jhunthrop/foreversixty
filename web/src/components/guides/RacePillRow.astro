@@ -1,0 +1,38 @@
+---
+// web/src/components/guides/RacePillRow.astro
+// Spec 5 / the dispatch's own instruction: "race portraits do not exist: use the race name in
+// a pill with the faction colour, no invented art." Every race legal for the class, the
+// guide's own recommended ones marked both visually (a filled pill vs. an outline) and for
+// screen readers (recommendedRaceLabel).
+import { guidesCopy } from '../../lib/guides/copy';
+import { factionColorVar, racePillsFor } from '../../lib/guides/race-pills';
+
+interface Props {
+  classSlug: string;
+  recommendedRaces: string[];
+}
+const { classSlug, recommendedRaces } = Astro.props;
+const pills = racePillsFor(classSlug, recommendedRaces);
+---
+
+<ul class="m-0 flex list-none flex-wrap gap-2 p-0" data-testid="guide-race-pills">
+  {pills.map((race) => {
+    const color = factionColorVar(race.faction);
+    const style = race.recommended
+      ? `background-color: color-mix(in srgb, ${color} 18%, transparent); border-color: ${color}; color: ${color}`
+      : `border-color: var(--color-line); color: var(--color-muted)`;
+    return (
+      <li>
+        <span
+          class="rounded-pill inline-flex items-center gap-1 border px-3 py-1 text-[13px] font-semibold"
+          style={style}
+          data-testid={`race-pill-${race.slug}`}
+          data-recommended={race.recommended}
+        >
+          {race.name}
+          {race.recommended && <span class="sr-only">{` (${guidesCopy.recommendedRaceLabel})`}</span>}
+        </span>
+      </li>
+    );
+  })}
+</ul>
