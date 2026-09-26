@@ -2,6 +2,7 @@
 import { expect, test } from '@playwright/test';
 import { serveDuckdbRuntime } from './support/duckdb-runtime';
 import { heldRoute } from './support/held-route';
+import { openChartIfCollapsed } from './support/report-chart';
 
 const REPORT = '/reports/fixture2abcd';
 
@@ -464,6 +465,7 @@ test('the full event stream lists aura refreshes under Auras applied', async ({ 
 
 test('the chart bands the fight’s phases and names them at their left edge', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=3');
+  await openChartIfCollapsed(page);
   const bands = page.getByTestId('time-chart').getByTestId('phase-band');
   await expect(bands).toHaveCount(2);
   await expect(bands.first()).toHaveText('Phase 1');
@@ -472,17 +474,18 @@ test('the chart bands the fight’s phases and names them at their left edge', a
 
 test('a phase is a window preset, so every table reads per phase in one click', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=3');
-  await page
-    .getByTestId('window-presets')
-    .getByRole('button', { name: /Phase 2 · 14.0s to 1:00/ })
-    .click();
+  await openChartIfCollapsed(page);
+  // The six-button preset row is a select now (design review 2026-09-26 finding 4); the
+  // option labels are the old buttons' own names, unchanged.
+  await page.getByTestId('window-select').selectOption({ label: 'Phase 2 · 14.0s to 1:00' });
   await expect(page).toHaveURL(/start=14000&end=60000/);
 });
 
 test('a fight with no phases shows no bands and no phase presets', async ({ page }) => {
   await page.goto('/reports/fixture2abcd?fight=4');
+  await openChartIfCollapsed(page);
   await expect(page.getByTestId('phase-band')).toHaveCount(0);
-  await expect(page.getByTestId('window-presets')).not.toContainText('Phase');
+  await expect(page.getByTestId('window-select')).not.toContainText('Phase');
 });
 
 test('the fight list says nothing about a phase on a kill', async ({ page }) => {

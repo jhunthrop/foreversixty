@@ -26,7 +26,6 @@
     formatDuration,
     outcomeLabel,
     phaseReached,
-    rowLink,
     schoolToken,
   } from '../../lib/report/format';
   import {
@@ -61,6 +60,7 @@
     windowMs,
     windowOf,
     windowPresets,
+    windowSummaryLabel,
     type TimeWindow,
   } from '../../lib/report/window';
   import ActorTable from './ActorTable.svelte';
@@ -110,6 +110,8 @@
   import { inSource, scopeSource } from '../../lib/report/source';
   import { splitUnitName } from '../../lib/characters';
   import { simCopy } from '../../lib/sim/copy';
+  import { reportCopy } from '../../lib/report/copy';
+  import { SECONDARY_BUTTON } from '../../lib/planner/styles';
   // Value imports from exact.ts are deliberately absent: it pulls in the DuckDB query layer
   // (src/lib/report/query.ts), which dynamically imports the multi-hundred-KB duckdb-wasm
   // package. None of that belongs in the initial bundle everyone pays for on load -- every
@@ -567,6 +569,44 @@
   // Whole means the cut window too: "ignore events after a death" narrows what the tables
   // sum just as a brush does, and a narrowed table is measured, not prorated.
   const windowIsWhole = $derived(base !== null && isFullWindow(cutWindow, base.duration_ms));
+
+  // The chart block collapses to a one-line strip on a phone by default and stays open on
+  // desktop (design review 2026-09-26 findings 1 and 2): every table tab shared the same
+  // chart, its sliders and its six preset buttons above it, so switching tables re-asked a
+  // phone visitor to scroll past the same stack every time. `md:` here matches Tailwind's
+  // own breakpoint, not this component's `lg`-gated table tabs, which answer a different
+  // question (does a pill row or a select fit).
+  const CHART_OPEN_KEY = 'fs.report.chartOpen';
+  function prefersOpenChart(): boolean {
+    try {
+      return globalThis.matchMedia?.('(min-width: 768px)').matches ?? true;
+    } catch {
+      return true;
+    }
+  }
+  let chartOpen = $state(prefersOpenChart());
+  $effect(() => {
+    // The visitor's remembered choice, read once after mount -- never at the component's
+    // own evaluation, so there is nothing here for a server render to disagree with.
+    try {
+      const stored = globalThis.localStorage?.getItem(CHART_OPEN_KEY);
+      if (stored === 'true' || stored === 'false') chartOpen = stored === 'true';
+    } catch {
+      /* Storage can be unavailable (Safari private mode); the viewport default stands. */
+    }
+  });
+  function setChartOpen(open: boolean): void {
+    chartOpen = open;
+    try {
+      globalThis.localStorage?.setItem(CHART_OPEN_KEY, String(open));
+    } catch {
+      /* ignore */
+    }
+  }
+  /** The collapsed strip's own readout, the same words the open chart's caption uses. */
+  const chartSummaryLabel = $derived(
+    summary === null ? '' : windowSummaryLabel(timeWindow, summary.duration_ms),
+  );
 
   /**
    * True while the report is still being written -- the report's own status says so, or a
@@ -1345,22 +1385,27 @@
             <span class="pill pill-site" data-testid="report-live">Live</span>
           {/if}
         </span>
-        {#if fight}
-          <a
-            class={rowLink}
-            href={`/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`}
-            data-testid="report-sim-fight">{simCopy.simThisFight}</a
+        <!-- Sim first, Copy link second, both the same secondary button (design review
+             2026-09-26 finding 5): the old inline gold link read as emphasis, not the one
+             action a raider reaches for right after opening a fight. -->
+        <div class="ml-auto flex items-center gap-2">
+          {#if fight}
+            <a
+              class="{SECONDARY_BUTTON} border-line-warm text-text px-3"
+              href={`/sim?source=fight&ref=${encodeURIComponent(`${reportId}:${state.fight}`)}&mode=compare`}
+              data-testid="report-sim-fight">{simCopy.simThisFight}</a
+            >
+          {/if}
+          <button
+            type="button"
+            class="{SECONDARY_BUTTON} border-line-warm text-text px-3"
+            title="Copy a link to exactly this view"
+            data-testid="copy-link"
+            onclick={() => void copyLink()}
           >
-        {/if}
-        <button
-          type="button"
-          class="border-line-warm rounded-control text-text ml-auto inline-flex h-11 items-center border px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:h-9"
-          title="Copy a link to exactly this view"
-          data-testid="copy-link"
-          onclick={() => void copyLink()}
-        >
-          {copied === '' ? 'Copy link' : copied}
-        </button>
+            {copied === '' ? 'Copy link' : copied}
+          </button>
+        </div>
       </div>
       <p class="text-muted text-[13px]" data-testid="report-subtitle">
         {#if meta.zone !== ''}{meta.zone} ·{/if}
@@ -1445,43 +1490,41 @@
           <ModeBar {state} {roster} onPatch={patch} {nightMode} />
         </div>
         <!-- The chart and its presets are a fight's: nothing draws a chart over a night, and
-           Mechanics ignores the window, so it does not show a strip it would then disown. -->
+           Mechanics ignores the window, so it does not show a strip it would then disown.
+           Collapsed to one line by default on a phone (chartOpen, above): a canvas nobody
+           opens is a canvas nobody should pay the scroll distance for. -->
         {#if summary !== null && !nightMode && state.mode !== 'mechanics'}
-          <TimeChart
-            series={chartSeries}
-            extra={chartExtra}
-            phases={summary.phases ?? []}
-            durationMs={summary.duration_ms}
-            window={timeWindow}
-            deaths={summary.deaths
-              .filter((death) => !playerSet.has(state.source) || death.guid === state.source)
-              .map((death) => ({ at_ms: death.at_ms, name: death.name }))}
-            label={chartLabel}
-            onWindow={setWindow}
-          />
-          <!-- Wrapped at every width: a strip that scrolls sideways hid the death presets on a phone. -->
-          <div class="flex flex-wrap gap-2" data-testid="window-presets">
-            <!-- Keyed by position, not by label: a battle-rez puts the same name in
-               `deaths` twice, and two buttons labelled "Before Thalgrit died" would be a
-               duplicate key, which Svelte throws on rather than renders. The list is
-               rebuilt wholesale whenever the fight changes, so position is stable. -->
-            {#each presets as preset, position (position)}
-              {@const active =
-                preset.window === null
-                  ? windowIsWhole
-                  : timeWindow.startMs === preset.window.startMs && timeWindow.endMs === preset.window.endMs}
+          {#if chartOpen}
+            <TimeChart
+              series={chartSeries}
+              extra={chartExtra}
+              phases={summary.phases ?? []}
+              durationMs={summary.duration_ms}
+              window={timeWindow}
+              deaths={summary.deaths
+                .filter((death) => !playerSet.has(state.source) || death.guid === state.source)
+                .map((death) => ({ at_ms: death.at_ms, name: death.name }))}
+              label={chartLabel}
+              {presets}
+              onSelectPreset={(index) => setWindow(presets[index]?.window ?? null)}
+              onWindow={setWindow}
+            />
+          {:else}
+            <div
+              class="border-line rounded-panel bg-raised flex items-center justify-between gap-3 border p-3"
+              data-testid="chart-collapsed"
+            >
+              <span class="tabular text-muted font-mono text-[12px]">{chartSummaryLabel}</span>
               <button
                 type="button"
-                class="rounded-control inline-flex h-11 shrink-0 items-center border px-3 text-[12px] font-bold tracking-[0.06em] whitespace-nowrap uppercase md:h-9 {active
-                  ? 'border-gold bg-card-top text-strong'
-                  : 'border-line-soft text-nav'}"
-                aria-pressed={active}
-                onclick={() => setWindow(preset.window)}
+                class="{SECONDARY_BUTTON} border-line-warm text-text px-3"
+                data-testid="chart-toggle"
+                onclick={() => setChartOpen(true)}
               >
-                {preset.label}
+                {reportCopy.showChart}
               </button>
-            {/each}
-          </div>
+            </div>
+          {/if}
         {/if}
         <!-- Where a tab's table begins. On a phone the chart, its sliders and the death
            presets sit between the tab strip and the table, so a tap on a tab that left the

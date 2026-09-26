@@ -10,6 +10,7 @@
 // than one per project, the same pairing report-brush.spec.ts uses.
 import { expect, test } from '@playwright/test';
 import { assertNoHorizontalScroll } from './support/phone-scroll';
+import { openChartIfCollapsed } from './support/report-chart';
 
 test.use({ viewport: { width: 360, height: 800 } });
 
@@ -93,6 +94,7 @@ test('the compare table stays inside the page gutter once a second fight is pick
 
 test('the chart sits above the table, as the spec asks', async ({ page }) => {
   await page.goto(`${REPORT}&tab=damage-done`);
+  await openChartIfCollapsed(page);
   const chart = (await page.getByTestId('time-chart').boundingBox())!;
   const table = (await page.getByTestId('actor-table').boundingBox())!;
   expect(chart.y).toBeLessThan(table.y);
@@ -210,10 +212,19 @@ test('the on-the-chart control is a 44px target on a phone, one tap from the nam
   await control.click();
 });
 
-test('a phase preset is a 44px target on a phone', async ({ page }) => {
+test('the window select and the chart toggle are 44px targets on a phone', async ({ page }) => {
   await page.goto(`${REPORT}`);
-  const chip = page.getByTestId('window-presets').getByRole('button', { name: /Phase 2/ });
-  await expect(chip).toBeVisible();
-  const box = await chip.boundingBox();
+  // Collapsed by default (design review 2026-09-26 finding 1): the toggle is the only
+  // chart-block control on screen until it is pressed.
+  const toggle = page.getByTestId('chart-toggle');
+  await expect(toggle).toBeVisible();
+  expect((await toggle.boundingBox())?.height ?? 0).toBeGreaterThanOrEqual(44);
+
+  // The six-button preset row is one select now (finding 4), which replaces this test's
+  // old "a phase preset chip clears 44px" question with the select's own box.
+  await toggle.click();
+  const select = page.getByTestId('window-select');
+  await expect(select).toContainText('Phase 2');
+  const box = await select.boundingBox();
   expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
 });

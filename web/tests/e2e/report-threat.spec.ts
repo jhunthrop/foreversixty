@@ -3,6 +3,7 @@
 // "who has the most threat on this enemy", and the taunt list under it, which answers
 // "who took the boss off me, and when" in one click.
 import { expect, test } from '@playwright/test';
+import { openChartIfCollapsed } from './support/report-chart';
 
 const FIGHT = '/reports/fixture2abcd?fight=3&tab=threat';
 
@@ -186,7 +187,12 @@ test('a source scope shares the totals table against everyone too', async ({ pag
 // of itself with the rest held by the enemy it is fighting.
 test('the totals table shares the players to 100% and leaves the enemies out of it', async ({ page }) => {
   await page.goto(FIGHT);
-  const shares = await page.getByTestId('threat-share').allInnerTexts();
+  const shareCells = page.getByTestId('threat-share');
+  // allInnerTexts() reads whatever is on screen the instant it is called, with no wait of
+  // its own -- a bare navigation racing the table's first paint can read zero rows and
+  // pass a sum of 0 as "not yet 100%", never getting to fail loudly on a real regression.
+  await expect(shareCells.first()).toBeVisible();
+  const shares = await shareCells.allInnerTexts();
   const sum = shares.reduce((total, text) => total + Number.parseFloat(text), 0);
   expect(Math.round(sum * 10) / 10).toBeCloseTo(100, 0);
   // The fixture's boss builds no threat row of its own; the sample log's bosses do, and
@@ -199,6 +205,10 @@ test('the totals table shares the players to 100% and leaves the enemies out of 
 // rest of the page uses.
 test('the threat chart draws one line per player and marks the taunts', async ({ page }) => {
   await page.goto(FIGHT);
+  // The shared chart above this one is collapsed by default on a phone (design review
+  // 2026-09-26 finding 1); this test's first `chart-scale` assertion means the shared
+  // chart's own scale, so it has to be open for that to be the first one in the DOM.
+  await openChartIfCollapsed(page);
   const chart = page.getByTestId('threat-chart');
   await expect(chart).toBeVisible();
   // Four players built threat on Warden Kelthas, so four legend entries.

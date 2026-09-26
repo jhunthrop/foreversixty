@@ -60,6 +60,17 @@ export function isFullWindow(window: TimeWindow, durationMs: number): boolean {
   return window.startMs <= 0 && window.endMs >= durationMs;
 }
 
+/**
+ * "Whole fight · 1:00" or "5.0s to 12.0s": the one-line summary the chart's own caption and
+ * the phone's collapsed chart strip both need. One function, so the wording cannot drift
+ * between the two places that read a window out loud.
+ */
+export function windowSummaryLabel(window: TimeWindow, durationMs: number): string {
+  return isFullWindow(window, durationMs)
+    ? `Whole fight · ${formatDuration(durationMs)}`
+    : `${formatDuration(window.startMs)} to ${formatDuration(window.endMs)}`;
+}
+
 /** The URL's start and end, clamped; a window that covers the fight is the whole fight. */
 export function windowOf(state: Pick<ReportState, 'start' | 'end'>, durationMs: number): TimeWindow {
   if (state.start === null || state.end === null) return fullWindow(durationMs);
