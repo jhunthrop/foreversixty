@@ -11,7 +11,6 @@ import { loadRenderers } from 'astro:container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import Planner from './planner.astro';
 import activeBuild from '../data/active-build.json';
-import { treeSourceNotice } from '../lib/planner/tree-source';
 
 let container: AstroContainer;
 
@@ -25,10 +24,12 @@ describe('planner.astro', () => {
     const html = await container.renderToString(Planner);
     expect(html).toContain('Build planner');
     expect(html).toContain(activeBuild.build);
-    // Computed rather than a literal string, so this keeps passing once Task 12 flips
-    // active-build.json off the pre-beta snapshot: treeSourceNotice's other branch renders
-    // it a "read from the game client" build id, and the assertion follows it there too.
-    expect(html).toContain(treeSourceNotice(activeBuild.build));
+    // No treeSourceNotice assertion here: Task 5 moved that paragraph inside the
+    // `{:else if store.talentIndex}` ready branch, which only exists once Planner.svelte's
+    // own `$effect` has populated `store.talentIndex` -- and, same as Guild.test.ts and
+    // CharacterRatingPanel.test.ts document for their own components, svelte/server's
+    // render() (which AstroContainer.renderToString uses under the hood) never runs
+    // `$effect` at all, so this render never leaves the pre-`$effect` loading state.
     expect(html).toContain('href="https://foreversixty.gg/planner"');
   });
 

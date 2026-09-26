@@ -291,9 +291,11 @@ test('a solo officer with two characters in the guild sees the empty-roster mess
   await page.route('**/v1/guilds/501/home', (route) => route.fulfill(envelope(HOME_SOLO_OFFICER)));
 
   await page.goto('/guild/us/hardcore/the-last-watch');
-  await expect(page.getByTestId('guild-home-empty-roster')).toHaveText(
+  const emptyRoster = page.getByTestId('guild-home-empty-roster');
+  await expect(emptyRoster).toContainText(
     "You're the only member the site knows about. Share the invite link to bring the rest of the guild in.",
   );
+  await expect(emptyRoster.getByRole('link', { name: 'Guild settings' })).toBeVisible();
   await expect(page.getByTestId('guild-home-roster')).toHaveCount(0);
 });
 

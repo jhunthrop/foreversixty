@@ -270,6 +270,48 @@ test('the flat list only lists genuine upgrades, and the boss card names the tru
   await expect(page.getByTestId('sim-drops-best')).toContainText('+80');
 });
 
+/**
+ * Task 7 (spec 2026-09-25 §6): the after-sim sentence reads back a small localStorage
+ * record Droptimizer.svelte writes on a genuine top-row upgrade, with no fetch of its own.
+ * This is the one end-to-end proof that the whole chain -- the write here, the read on a
+ * later, wholly separate /sim page load -- actually reaches the results card, not just the
+ * two halves in isolation (last-upgrade.test.ts's round-trip, SimResults.test.ts's SSR
+ * render).
+ */
+test('a real Droptimizer upgrade names the next action on a later plain sim', async ({ page }) => {
+  await stubPremiumRun(page);
+  await loadDrops(page);
+  await page.getByTestId('sim-upcoming').check();
+  await page.getByTestId('sim-source-raid:molten-core:11502').check();
+  await expect(page.getByTestId('sim-server-run')).toBeVisible();
+  await page.getByTestId('sim-server-run').click();
+  await expect(page.getByTestId('sim-drops-flat')).toBeVisible({ timeout: 10_000 });
+
+  // Wait on the write itself, not the DOM's own render timing, for proof the effect ran.
+  await expect
+    .poll(() => page.evaluate(() => window.localStorage.getItem('fs.lastDroptimizerUpgrade')))
+    .toContain('Band of Accuria');
+
+  // A wholly separate page load, per current-character.ts's own "nothing fetched anew"
+  // rule: no ?code= carries the upgrade across, only the localStorage record -- the
+  // current-character pointer `loadDrops` above already wrote restores the same FURY
+  // character here on its own, the same restore-over-paste-box behaviour `loadDrops`
+  // itself accounts for.
+  await page.goto('/sim');
+  const addonInput = page.getByTestId('sim-addon-input');
+  const characterStrip = page.getByTestId('sim-character');
+  await expect(addonInput.or(characterStrip)).toBeVisible();
+  if (await addonInput.isVisible()) {
+    await addonInput.fill(FURY);
+    await page.getByTestId('sim-addon-load').click();
+    await expect(characterStrip).toBeVisible();
+  }
+  await page.getByTestId('sim-run-button').click();
+  await expect(page.getByTestId('sim-results')).toBeVisible({ timeout: 10_000 });
+
+  await expect(page.getByTestId('sim-next-action')).toContainText('Upgrade: ');
+});
+
 test('a drop pins into Top Gear, carrying its origin in the URL', async ({ page }) => {
   await stubPremiumRun(page);
   await loadDrops(page);

@@ -119,7 +119,9 @@ test('an enemy picked on the night’s Threat tab keeps the damage tabs’ rows'
   await page.getByTestId('threat-target').selectOption({ label: 'Warden Kelthas' });
   await expect(page).toHaveURL(/target=Warden\+Kelthas/);
 
-  await page.getByTestId('tab-damage-done').click();
+  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
+  if (phone) await page.getByTestId('tab-select').selectOption('damage-done');
+  else await page.getByTestId('tab-damage-done').click();
   const rows = page.getByTestId('actor-table').locator('li');
   await expect(rows.first()).toBeVisible();
   await expect(page.getByTestId('table-empty')).toHaveCount(0);

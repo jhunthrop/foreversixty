@@ -154,14 +154,18 @@ test('cancel stops the part in flight and leaves the form usable', async ({ page
   await expect(page).toHaveURL(/\/logs$/);
 });
 
-test('the pairing code and the companion downloads are on the page', async ({ page }) => {
+test("the pairing code is on the page, and the companion's downloads point to /setup", async ({ page }) => {
   await signIn(page);
   await page.route('**/v1/devices/pair', (route) =>
     route.fulfill(fulfil({ code: '4821-9930', expires_in: 600 })),
   );
 
   await openLogs(page);
-  await expect(page.getByTestId('companion-downloads').getByRole('link')).toHaveCount(4);
+  await expect(page.getByTestId('logs-companion-pointer').getByRole('link')).toHaveAttribute(
+    'href',
+    '/setup',
+  );
+  await expect(page.getByTestId('companion-downloads')).toHaveCount(0);
   await page.getByRole('button', { name: 'Show pairing code' }).click();
   await expect(page.getByTestId('pairing-code')).toHaveText('4821-9930');
 });

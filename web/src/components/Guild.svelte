@@ -395,9 +395,16 @@
 
         <h2 class="section-title text-[18px]">{guildHomeCopy.rosterHeading}</h2>
         {#if soloRoster}
-          <p class="text-muted text-[14px]" data-testid="guild-home-empty-roster">
-            {canManage ? guildHomeCopy.emptyRosterOfficer : guildHomeCopy.emptyRosterMember}
-          </p>
+          <EmptyState
+            message={canManage ? guildHomeCopy.emptyRosterOfficer : guildHomeCopy.emptyRosterMember}
+            action={canManage
+              ? {
+                  label: guildHomeCopy.manageInvite,
+                  href: guildSettingsHref(resolved.region, resolved.ruleset, home.guild.name),
+                }
+              : undefined}
+            testid="guild-home-empty-roster"
+          />
         {:else}
           <ul class="flex flex-col" data-testid="guild-home-roster">
             {#each home.roster as row (row.character_key)}

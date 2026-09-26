@@ -31,7 +31,7 @@
     type RankingRow,
     type RankingsPage,
   } from '../lib/rankings/api';
-  import { encounterPickerCopy } from '../lib/rankings/copy';
+  import { encounterPickerCopy, rankingsEmptyCopy } from '../lib/rankings/copy';
   import {
     applyCurrentCharacterPrefilter,
     pinCurrentCharacterRow,
@@ -362,7 +362,11 @@
     <LoadError message={error} onRetry={() => (attempt += 1)} testid="rankings-error" />
   {:else if state.board === 'guild'}
     {#if guildRows.length === 0}
-      <EmptyState message="No guilds ranked here yet." testid="rankings-empty" />
+      <EmptyState
+        message={rankingsEmptyCopy.message}
+        action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
+        testid="rankings-empty"
+      />
     {:else}
       <ul class="reveal flex flex-col" data-testid="guild-rows">
         {#each guildRows as row (`${row.rank}-${row.guild.region}-${row.guild.ruleset}-${row.guild.name}`)}
@@ -379,7 +383,11 @@
       </ul>
     {/if}
   {:else if page === null || page.rows.length === 0}
-    <EmptyState message="Nothing ranked here yet." testid="rankings-empty" />
+    <EmptyState
+      message={rankingsEmptyCopy.message}
+      action={{ label: rankingsEmptyCopy.action, href: rankingsEmptyCopy.href }}
+      testid="rankings-empty"
+    />
   {:else}
     <ul class="reveal flex flex-col" data-testid="ranking-rows">
       {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}

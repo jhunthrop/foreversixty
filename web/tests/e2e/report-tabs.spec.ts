@@ -34,7 +34,13 @@ test('the report opens on its first fight with the chrome the spec sets', async 
   for (const view of ['tables', 'timelines', 'events', 'queries']) {
     await expect(page.getByTestId(`view-${view}`)).toBeVisible();
   }
-  await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeVisible();
+  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
+  if (phone) {
+    await expect(page.getByTestId('tab-select')).toBeVisible();
+    await expect(page.getByTestId('tab-select')).toHaveValue('summary');
+  } else {
+    await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeVisible();
+  }
 });
 
 test('trash is folded away behind a count, and unfolds', async ({ page }) => {
@@ -46,18 +52,33 @@ test('trash is folded away behind a count, and unfolds', async ({ page }) => {
 
 test('every control the spec names writes itself into the URL and reads back', async ({ page }) => {
   await page.goto(REPORT);
+  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
 
   await page.getByTestId('toggle-trash').click();
   await page.getByTestId('fight-2').click();
-  await page.getByTestId('tab-healing').click();
+  if (phone) await page.getByTestId('tab-select').selectOption('healing');
+  else await page.getByTestId('tab-healing').click();
   await page.getByTestId('view-events').click();
 
   await expect(page).toHaveURL(/\?fight=2&view=events&tab=healing$/);
 
   await page.goto(`${REPORT}?fight=3&view=tables&tab=deaths&source=Player-4184-000000A1`);
-  await expect(page.getByTestId('tab-deaths')).toHaveAttribute('aria-selected', 'true');
+  if (phone) await expect(page.getByTestId('tab-select')).toHaveValue('deaths');
+  else await expect(page.getByTestId('tab-deaths')).toHaveAttribute('aria-selected', 'true');
   await expect(page.getByTestId('source-scope')).toHaveValue('Player-4184-000000A1');
   await expect(page.getByTestId('fight-3')).toHaveAttribute('aria-current', 'true');
+});
+
+test('the table tabs are a select below lg and a wrapping pill row at lg and up', async ({ page }) => {
+  await page.goto(REPORT);
+  const phone = (page.viewportSize()?.width ?? 1280) < 1024;
+  if (phone) {
+    await expect(page.getByTestId('tab-select')).toBeVisible();
+    await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeHidden();
+  } else {
+    await expect(page.getByRole('tab', { name: 'Damage Done' })).toBeVisible();
+    await expect(page.getByTestId('tab-select')).toBeHidden();
+  }
 });
 
 test('the source scope lists the fight’s players', async ({ page }) => {

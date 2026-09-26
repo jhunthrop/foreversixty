@@ -148,6 +148,54 @@ test('the guild board asks the guild endpoint', async ({ page }) => {
   expect(guildUrl).toContain('kind=progress');
 });
 
+// Spec 2026-09-25 section 6: an empty result says what fills it and offers one action,
+// through EmptyState -- covering both boards, since both are "no data because nothing has
+// been uploaded yet" (2026-09-25-states ledger, ruling 1).
+test('the character board with no ranked fights says so and links to Upload a log', async ({ page }) => {
+  await page.route('**/v1/rankings?**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: true,
+        data: { rows: [], total: 0, page: 1, per_page: 100, updated_at: '2026-12-09T22:15:00Z' },
+        error: null,
+        request_id: 'r',
+      }),
+    }),
+  );
+
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
+
+  const empty = page.getByTestId('rankings-empty');
+  await expect(empty).toContainText(
+    'No ranked fights yet for this filter. Rankings fill in as reports are uploaded.',
+  );
+  await expect(empty.getByRole('link', { name: 'Upload a log' })).toHaveAttribute('href', '/logs');
+});
+
+test('the guild board with no ranked guilds says so and links to Upload a log', async ({ page }) => {
+  await page.route('**/v1/rankings?**', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ROWS) }),
+  );
+  await page.route('**/v1/rankings/guilds?**', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, data: { rows: [] }, error: null, request_id: 'r' }),
+    }),
+  );
+
+  await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');
+  await page.getByTestId('board-guild').click();
+
+  const empty = page.getByTestId('rankings-empty');
+  await expect(empty).toContainText(
+    'No ranked fights yet for this filter. Rankings fill in as reports are uploaded.',
+  );
+  await expect(empty.getByRole('link', { name: 'Upload a log' })).toHaveAttribute('href', '/logs');
+});
+
 test('a failed rankings call says so instead of showing an empty board', async ({ page }) => {
   await page.route('**/v1/rankings?**', (route) => route.abort());
   await gotoHydrated(page, '/rankings/warden-kelthas', 'filter-metric');

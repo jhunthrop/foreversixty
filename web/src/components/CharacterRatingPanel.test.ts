@@ -51,3 +51,18 @@ describe('CharacterRatingPanel', () => {
     ).not.toThrow();
   });
 });
+
+describe('CharacterRatingPanel empty state copy', () => {
+  it('the empty-ratings copy offers exactly one action: Upload a log', () => {
+    // Same constraint as Rankings.test.ts's own empty-state pin (see git log
+    // "rankings empty states"): svelte/server never runs $effect, so the fetch never
+    // fires and this panel never reaches `data.sample_size === 0` under this render
+    // path. This pins the copy module's own contract instead -- the exact label this
+    // component wires into EmptyState's `action` once `status === 'ready'` and
+    // `sample_size === 0` (see CharacterRatingPanel.svelte's own template). The
+    // rendered branch has no e2e coverage today (grep of tests/e2e/*.spec.ts for
+    // "character-rating-empty" turns up nothing; character-rating.spec.ts covers the
+    // ready+trend, too-few-samples, and 404-hidden states, but not sample_size === 0).
+    expect(ratingCopy.characterEmptyAction).toBe('Upload a log');
+  });
+});

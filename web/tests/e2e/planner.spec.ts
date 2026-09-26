@@ -12,7 +12,9 @@ const ACTIVE_BUILD_NOTICE = treeSourceNotice(ACTIVE_BUILD);
 test('the planner opens on the default class with an empty build', async ({ page }) => {
   const errors = collectPageErrors(page);
   await page.goto('/planner');
-  await expect(page.getByTestId('planner-level')).toHaveText('9');
+  // A bare /planner has no current-character pointer, so Level -- which reads as a real
+  // character's level -- is not shown for a build nobody has loaded (spec 2026-09-25 §6).
+  await expect(page.getByTestId('planner-level')).toHaveCount(0);
   await expect(page.getByTestId('planner-spent')).toHaveText('0/51');
   await expect(page.getByLabel('Class')).toHaveValue('warrior');
   await expect(page.getByText(ACTIVE_BUILD_NOTICE)).toBeVisible();
@@ -22,6 +24,12 @@ test('the planner opens on the default class with an empty build', async ({ page
   // one-tree-at-a-time rule, and this project runs at a phone width.
   await expect(page.getByRole('heading', { name: 'Fury', includeHidden: true })).toBeAttached();
   expect(errors).toEqual([]);
+});
+
+test('Level appears once a build opens from an addon code (a real character)', async ({ page }) => {
+  await page.goto('/planner?code=FS1%3A1.15.9.69722%3Awarrior%3Ahuman%3A3%2F0%2F0%3A');
+  await expect(page.getByTestId('planner-level')).toBeVisible();
+  await expect(page.getByTestId('planner-level')).toHaveText('12');
 });
 
 test('a prerequisite link is drawn and turns gold when the rank is met', async ({ page }) => {
@@ -170,7 +178,10 @@ test('clicking a talent spends points and the counters follow', async ({ page })
   await expect(improvedHeroicStrike).toHaveAttribute('data-rank', '3');
   await expect(page.getByTestId('planner-spent')).toHaveText('3/51');
   await expect(page.getByTestId('planner-split')).toHaveText('3/0');
-  await expect(page.getByTestId('planner-level')).toHaveText('12');
+  // This is a bare build (no current-character pointer), so Level is not shown here at all
+  // (spec 2026-09-25 §6) -- the Level-appears/tracks-a-real-character case is covered by
+  // 'Level appears once a build opens from an addon code (a real character)', above.
+  await expect(page.getByTestId('planner-level')).toHaveCount(0);
 });
 
 test('a locked tier refuses the point and says why', async ({ page }) => {

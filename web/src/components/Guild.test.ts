@@ -7,6 +7,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import Guild from './Guild.svelte';
+import { guildHomeCopy } from '../lib/guild/copy';
 
 const PATH = { region: 'us' as const, ruleset: 'hardcore' as const, slug: 'the-last-watch' };
 
@@ -19,5 +20,10 @@ describe('Guild', () => {
   it('still renders the loading state as its initial static render (existing public-page behavior)', () => {
     const { body } = render(Guild, { props: { path: PATH } });
     expect(body).toContain('data-testid="guild-skeleton"');
+  });
+
+  it('the empty-roster copy names one action for an officer and none for a member', () => {
+    expect(guildHomeCopy.manageInvite).toBe('Guild settings');
+    expect(guildHomeCopy.emptyRosterMember).not.toMatch(/officer|invite/i);
   });
 });

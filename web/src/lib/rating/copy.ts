@@ -55,6 +55,9 @@ export const ratingCopy = {
   trendTooFew: (have: number): string =>
     `Not enough rated fights yet to show a trend (${have} of ${MIN_TREND_SAMPLES} needed).`,
   characterEmpty: 'Nothing rated yet. Ratings appear after your first ranked fight.',
+  /** Spec §6's one-action rule: a ranked fight comes from an uploaded report, same as
+   *  MyReports.svelte's own reports-empty action. */
+  characterEmptyAction: 'Upload a log',
 } as const;
 
 const COMPONENT_LABELS: Record<string, string> = {

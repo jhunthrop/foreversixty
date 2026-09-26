@@ -15,6 +15,7 @@
     simHref,
     gate,
     standalone,
+    hasCharacter,
     onshowdps,
   }: {
     store: PlannerStore;
@@ -30,6 +31,9 @@
      * would be noise.
      */
     standalone: boolean;
+    /** Spec 2026-09-25 §6: Level reads as a real character's level, so it renders only once
+     *  one is loaded (the site's current-character pointer), never for a bare build. */
+    hasCharacter: boolean;
     onshowdps: () => void;
   } = $props();
 
@@ -75,15 +79,17 @@
     </select>
   </label>
 
-  <div class="flex flex-col gap-1">
-    <span class="label text-muted">Level</span>
-    <span class="tabular text-strong font-mono text-[20px] leading-11" data-testid="planner-level">
-      {store.level}
-    </span>
-  </div>
+  {#if hasCharacter}
+    <div class="flex flex-col gap-1">
+      <span class="label text-muted">Level</span>
+      <span class="tabular text-strong font-mono text-[20px] leading-11" data-testid="planner-level">
+        {store.level}
+      </span>
+    </div>
+  {/if}
 
   <div class="flex flex-col gap-1">
-    <span class="label text-muted">Left</span>
+    <span class="label text-muted">Points left</span>
     <span class="tabular text-gold font-mono text-[20px] leading-11" data-testid="planner-remaining">
       {MAX_POINTS - store.spent}
     </span>
@@ -97,7 +103,7 @@
   </div>
 
   <div class="flex flex-col gap-1">
-    <span class="label text-muted">Points</span>
+    <span class="label text-muted">Spent</span>
     <span class="tabular text-strong font-mono text-[20px] leading-11" data-testid="planner-spent">
       {store.spent}/{MAX_POINTS}
     </span>

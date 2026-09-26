@@ -18,6 +18,7 @@
   import type { CharacterPath } from '../../lib/characters';
   import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
   import { CHIP_HEIGHT, VIEW_GAP } from '../../lib/current-character-layout';
+  import { readLastUpgrade, type LastUpgrade } from '../../lib/sim/last-upgrade';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
   import { fetchReportMeta, fetchSummary } from '../../lib/report/load';
   import type { Summary } from '../../lib/report/types';
@@ -248,6 +249,13 @@
   // Design 5.4: the finish notification. `notifier` is the real Notification API, or null
   // where the browser has none, read once. Permission is asked only from `toggleNotify`.
   const notifier = untrack(() => browserNotifier());
+
+  // Spec 2026-09-25 §6: the after-sim sentence's data source, read once -- same one-shot
+  // pattern as `notifier`/`bootstrap`/`store` above. No re-read on later state changes: a
+  // Droptimizer run made *during this same /sim session* (impossible today -- they are
+  // separate page loads) would need a fresh read, but nothing on this page can produce one
+  // without a navigation, which remounts the island anyway.
+  const topUpgrade = untrack<LastUpgrade | null>(() => readLastUpgrade());
   let notifyWanted = $state(false);
   // The id of the last result a notification was raised for, so a re-render never raises a
   // second one for the same run.
@@ -628,6 +636,10 @@
         />
       {/if}
 
+      <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
+        {landingCopy.scopeCaveat}
+      </p>
+
       {#if signedIn && simHistoryLazy.current}
         <simHistoryLazy.current
           rows={historyRows}
@@ -737,6 +749,7 @@
                 iterationsRun={store.result.iterations_run}
                 actionNames={store.actionNames}
                 sample={store.result.sample}
+                {topUpgrade}
               />
             {:else}
               {@render lazyFallback(simResultsLazy, SIM_LAZY_MIN_H.results)}

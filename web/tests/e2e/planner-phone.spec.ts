@@ -85,7 +85,10 @@ test.describe('planner on a phone', () => {
     await page.mouse.wheel(0, 600);
     await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThanOrEqual(target - 1);
 
-    const box = await page.getByTestId('planner-level').boundingBox();
+    // planner-remaining, not planner-level: a bare /planner (this test's own load) has no
+    // current-character pointer, so Level does not render at all (spec 2026-09-25 §6) --
+    // Points left sits in the same summary bar row and is always present.
+    const box = await page.getByTestId('planner-remaining').boundingBox();
     expect(box?.y ?? -1).toBeGreaterThanOrEqual(0);
     expect(box?.y ?? 9999).toBeLessThan(200);
   });

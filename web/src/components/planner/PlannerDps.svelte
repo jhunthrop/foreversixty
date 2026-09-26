@@ -82,8 +82,14 @@
         {simCopy.plannerDpsShow}
       </button>
     {:else}
+      <!-- min-w-[7ch]: the summary bar's row wrap (SummaryBar.svelte) reads this column's own
+           width, which would otherwise shrink for the em dash and grow again for a real
+           figure -- the same swap "keeps its height through a run" (planner-dps.spec.ts)
+           guards against. Reserving for a wide figure up front (Task 5, spec 2026-09-25 §6,
+           which widened "Left" to "Points left" and used up the row's spare width) keeps this
+           column's own width constant across that swap instead of only its note line's. -->
       <span
-        class={`tabular font-mono text-[20px] leading-11 ${
+        class={`tabular inline-block min-w-[7ch] font-mono text-[20px] leading-11 ${
           stale || live.state === 'error' || live.estimate.mean === 0 ? 'text-muted' : 'text-gold'
         }`}
         data-testid="planner-dps"

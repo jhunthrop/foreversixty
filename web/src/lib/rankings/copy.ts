@@ -17,3 +17,10 @@ export const homeTopGuildsCopy = {
   empty: 'No kills ranked yet.',
   bossesUnit: 'bosses',
 } as const;
+
+/** Spec 2026-09-25 §6: every ranking board's own empty state, character or guild. */
+export const rankingsEmptyCopy = {
+  message: 'No ranked fights yet for this filter. Rankings fill in as reports are uploaded.',
+  action: 'Upload a log',
+  href: '/logs',
+} as const;

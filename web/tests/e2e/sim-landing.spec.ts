@@ -113,10 +113,11 @@ test.describe('a signed-in member with characters', () => {
     await expect(page.getByTestId('sim-character-us/normal/roland')).toBeVisible();
     await expect(page.getByTestId('sim-sources')).toHaveCount(0);
     // Finding 5 (2026-09-24 landing pass): the landing state no longer carries its own copy
-    // of the scope sentence -- ScopeNote.astro's own two sentences, above the island, are
-    // the only copy of it now, and no engine-version hash precedes any of this (Finding 6).
+    // of the scope sentence -- SimView's own merged caveat (Task 8, spec 2026-09-25 §6),
+    // under the character list, is the only copy of it now on /sim, and no engine-version
+    // hash precedes any of this (Finding 6).
     await expect(page.getByTestId('sim-landing-scope-note')).toHaveCount(0);
-    await expect(page.getByTestId('sim-scope-note')).toHaveText(simCopy.scopeNote);
+    await expect(page.getByTestId('sim-scope-note')).toHaveText(landingCopy.scopeCaveat);
     await expect(page.getByTestId('sim-engine-version')).toHaveCount(0);
 
     // Fix round 1, MEDIUM-1: the row is a real link (`url.ts`'s own `simSearch`), not only

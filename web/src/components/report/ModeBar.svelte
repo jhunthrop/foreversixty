@@ -73,89 +73,92 @@
     {/each}
   </div>
 
-  {#if state.mode === 'analyze' && !nightMode}
-    <!-- The tablist holds only tabs: the Source picker beside it is a sibling, since a
-         label inside a tablist is a child the role does not allow. -->
-    <div class="flex flex-wrap items-center gap-1">
-      <div role="tablist" aria-label="View" class="flex flex-wrap items-center gap-1">
-        {#each VIEWS as option (option.id)}
-          <button
-            type="button"
-            role="tab"
-            class="{pill} rounded-control border"
-            class:border-gold={state.view === option.id}
-            class:bg-card-top={state.view === option.id}
-            class:border-line-soft={state.view !== option.id}
-            class:text-strong={state.view === option.id}
-            class:text-nav={state.view !== option.id}
-            aria-selected={state.view === option.id}
-            data-testid={`view-${option.id}`}
-            onclick={() => onPatch({ view: option.id as View })}
-          >
-            {option.label}
-          </button>
-        {/each}
-      </div>
-
-      <label class="text-muted label ml-auto flex items-center gap-2" for="report-source">
-        Source
-        <select
-          id="report-source"
-          class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
-          value={state.source}
-          data-testid="source-scope"
-          onchange={(event) => onPatch({ source: event.currentTarget.value })}
-        >
-          <option value={SOURCE_FRIENDLIES}>All friendlies</option>
-          <option value={SOURCE_ENEMIES}>All enemies</option>
-          {#each roster as unit (unit.guid)}
-            <option value={unit.guid} style={`color: ${classColorVar(unit.class)}`}>
-              {splitUnitName(unit.name).name}
-            </option>
+  <!-- Row 2: the view segmented control, the source scope and the table tabs, one flex-wrap
+       group -- spec 2026-09-25 §6 collapses the old three rows to two. Each piece still
+       renders only when it means something for the current mode, so a Compare/Rankings/
+       Mechanics pull shows only its own Source select, and a night carries no view control
+       at all (nightMode's own gate below). -->
+  {#if (state.mode === 'analyze' && !nightMode) || (nightMode && state.mode !== 'mechanics') || (state.mode === 'analyze' && (state.view === 'tables' || nightMode))}
+    <div class="flex flex-wrap items-center gap-2" data-testid="mode-bar-context">
+      {#if state.mode === 'analyze' && !nightMode}
+        <div role="tablist" aria-label="View" class="flex flex-wrap items-center gap-1">
+          {#each VIEWS as option (option.id)}
+            <button
+              type="button"
+              role="tab"
+              class="{pill} rounded-control border"
+              class:border-gold={state.view === option.id}
+              class:bg-card-top={state.view === option.id}
+              class:border-line-soft={state.view !== option.id}
+              class:text-strong={state.view === option.id}
+              class:text-nav={state.view !== option.id}
+              aria-selected={state.view === option.id}
+              data-testid={`view-${option.id}`}
+              onclick={() => onPatch({ view: option.id as View })}
+            >
+              {option.label}
+            </button>
           {/each}
-        </select>
-      </label>
-    </div>
-  {/if}
+        </div>
+      {/if}
 
-  {#if nightMode && state.mode !== 'mechanics'}
-    <label class="text-muted label flex items-center gap-2" for="report-source">
-      Source
-      <select
-        id="report-source"
-        class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
-        value={state.source}
-        data-testid="source-scope"
-        onchange={(event) => onPatch({ source: event.currentTarget.value })}
-      >
-        <option value={SOURCE_FRIENDLIES}>All friendlies</option>
-        <option value={SOURCE_ENEMIES}>All enemies</option>
-        {#each roster as unit (unit.guid)}
-          <option value={unit.guid} style={`color: ${classColorVar(unit.class)}`}>
-            {splitUnitName(unit.name).name}
-          </option>
-        {/each}
-      </select>
-    </label>
-  {/if}
-  {#if state.mode === 'analyze' && (state.view === 'tables' || nightMode)}
-    <div role="tablist" aria-label="Table" class="border-line-soft flex flex-wrap border-b">
-      {#each TABS as tab (tab.id)}
-        <button
-          type="button"
-          role="tab"
-          class="{pill} {underline} shrink-0 whitespace-nowrap"
-          class:border-gold={state.tab === tab.id}
-          class:border-transparent={state.tab !== tab.id}
-          class:text-strong={state.tab === tab.id}
-          class:text-nav={state.tab !== tab.id}
-          aria-selected={state.tab === tab.id}
-          data-testid={`tab-${tab.id}`}
-          onclick={() => onPatch({ tab: tab.id as Tab })}
-        >
-          {tab.label}
-        </button>
-      {/each}
+      {#if (state.mode === 'analyze' && !nightMode) || (nightMode && state.mode !== 'mechanics')}
+        <label class="text-muted label flex items-center gap-2" for="report-source">
+          Source
+          <select
+            id="report-source"
+            class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9"
+            value={state.source}
+            data-testid="source-scope"
+            onchange={(event) => onPatch({ source: event.currentTarget.value })}
+          >
+            <option value={SOURCE_FRIENDLIES}>All friendlies</option>
+            <option value={SOURCE_ENEMIES}>All enemies</option>
+            {#each roster as unit (unit.guid)}
+              <option value={unit.guid} style={`color: ${classColorVar(unit.class)}`}>
+                {splitUnitName(unit.name).name}
+              </option>
+            {/each}
+          </select>
+        </label>
+      {/if}
+
+      {#if state.mode === 'analyze' && (state.view === 'tables' || nightMode)}
+        <!-- Below lg: a native select, one tap to any of the thirteen tabs. At lg and up:
+             the existing wrapping pill row -- both read state.tab and both call the same
+             onPatch, so the URL and the fight-switch races above never have to know which
+             control fired. -->
+        <label class="lg:hidden" for="report-tab-select">
+          <span class="sr-only">Table</span>
+          <select
+            id="report-tab-select"
+            class="border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px]"
+            value={state.tab}
+            data-testid="tab-select"
+            onchange={(event) => onPatch({ tab: event.currentTarget.value as Tab })}
+          >
+            {#each TABS as tab (tab.id)}<option value={tab.id}>{tab.label}</option>{/each}
+          </select>
+        </label>
+        <div role="tablist" aria-label="Table" class="border-line-soft hidden flex-wrap border-b lg:flex">
+          {#each TABS as tab (tab.id)}
+            <button
+              type="button"
+              role="tab"
+              class="{pill} {underline} shrink-0 whitespace-nowrap"
+              class:border-gold={state.tab === tab.id}
+              class:border-transparent={state.tab !== tab.id}
+              class:text-strong={state.tab === tab.id}
+              class:text-nav={state.tab !== tab.id}
+              aria-selected={state.tab === tab.id}
+              data-testid={`tab-${tab.id}`}
+              onclick={() => onPatch({ tab: tab.id as Tab })}
+            >
+              {tab.label}
+            </button>
+          {/each}
+        </div>
+      {/if}
     </div>
   {/if}
 </div>

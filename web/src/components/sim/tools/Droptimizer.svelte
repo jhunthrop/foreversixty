@@ -11,8 +11,10 @@
   import type { Me } from '../../../lib/account/api';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
+  import { topUpgradeOf } from '../../../lib/sim/combos';
   import { bulkCopy } from '../../../lib/sim/copy';
   import { pickedWithNothingTried } from '../../../lib/sim/drop-picks';
+  import { writeLastUpgrade } from '../../../lib/sim/last-upgrade';
   import BulkRunBar from './BulkRunBar.svelte';
   import DropResults from './DropResults.svelte';
   import SourcePicker from './SourcePicker.svelte';
@@ -52,6 +54,19 @@
       ? []
       : pickedWithNothingTried(store.submittedDropPicks, store.loot, (store.result as BulkResult).combos),
   );
+
+  // Spec 2026-09-25 §6: the after-sim sentence on plain /sim reads this back later, with no
+  // fetch of its own. Only a genuine upgrade (`topUpgradeOf`'s own `> 0` rule, the same one
+  // DropResults.svelte's `isUpgrade` uses) is worth recording -- a run with nothing better
+  // than what is equipped writes nothing, leaving whatever was last recorded (or nothing)
+  // in place rather than overwriting a real upgrade with "no upgrade" from an unrelated
+  // later run.
+  $effect(() => {
+    if (store.result === null) return;
+    const upgrade = topUpgradeOf(store.result as BulkResult);
+    if (upgrade === null) return;
+    writeLastUpgrade({ ...upgrade, savedAt: new Date().toISOString() });
+  });
 </script>
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="sim-droptimizer">
