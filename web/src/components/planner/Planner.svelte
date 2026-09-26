@@ -485,13 +485,19 @@
       />
     </div>
   {/if}
+  <!-- Final-review fix (states lane): "bare build" (spec section 6 -- Level hidden unless a
+       character is loaded) means "no real character or build data", not just "no pointer".
+       A pointer-less standalone /planner has neither, so Level still hides there. But /b/:id
+       mounts with a populated `record` and no pointer (a fresh browser has no localStorage
+       entry) -- that build's Level is exactly as meaningful as a pointer-loaded character's,
+       so `record !== null` also counts as "has a character" here. -->
   <SummaryBar
     {store}
     {live}
     {simHref}
     {gate}
     {standalone}
-    hasCharacter={pointer !== null}
+    hasCharacter={pointer !== null || record !== null}
     onshowdps={() => (dpsOptedIn = true)}
   />
 

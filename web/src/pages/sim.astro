@@ -54,8 +54,16 @@ import SimTabs from '../components/sim/SimTabs.astro';
          the card -- and everything the island renders below it -- painted higher before
          hydration than after, even though the min-h total above already budgeted for the
          gap. The wrapper changes no width, only the vertical offset, so the LCP card's own
-         wrap width (the pixel-identical claim above) is unaffected. -->
-    <div id="sim" data-sim-mount class="min-h-[1154px] md:min-h-[607px]">
+         wrap width (the pixel-identical claim above) is unaffected.
+
+         Final-review fix (states lane, Finding 3): Task 8 measured the desktop reserve as
+         ~13px short but deferred the fix to this review. Re-measured with a real Chromium
+         build+preview (`[data-sim-mount]`'s `getBoundingClientRect().height` after zeroing
+         its own `min-height`): 620px at desktop widths (>=768px), consistently across
+         repeated loads -- 13px over the old 607px figure, confirming Task 8's own estimate.
+         607 becomes 620. Mobile's naturally taller content measured 1086.5px at 390x844,
+         comfortably under the existing 1154px reserve, so mobile is unchanged. -->
+    <div id="sim" data-sim-mount class="min-h-[1154px] md:min-h-[620px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
         <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="sim-chip-slot"></div>
         <section class="mx-[18px] flex flex-col gap-3 md:mx-0">

@@ -83,11 +83,16 @@ const blockTitle = 'label text-muted';
         <Panel title="The companion">
           <div class={block}>
             <p class="text-muted text-[13px]" data-testid="logs-companion-pointer">
+              <!-- Final-review fix (states lane, Finding 5): `pointer` is already a complete
+                   sentence ending in its own period; the trailing "." this paragraph used to
+                   append after the link turned "Get set up" into what read as a second,
+                   overlapping sentence. Dropped, matching EmptyState's own convention
+                   elsewhere on this site: one sentence, then a standalone action label with
+                   no punctuation of its own. -->
               {logsCompanionCopy.pointer}{' '}
               <a class="text-nav underline" href="/setup">
                 {logsCompanionCopy.pointerLink}
               </a>
-              .
             </p>
           </div>
           <div class={`${block} border-line-soft border-t`}>
