@@ -53,7 +53,10 @@
   class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b py-3 text-[14px] last:border-b-0"
   data-testid={testid}
 >
-  <div class="min-w-0 flex-1">
+  <!-- basis-full on a phone: the identity takes the whole first line and the actions wrap
+       under it. As flex-1 alone it shrank to make room for the unwrappable actions and the
+       descriptor fell to one word per line. -->
+  <div class="min-w-0 basis-full md:flex-1 md:basis-0">
     <CharacterIdentity
       {character}
       size="md"

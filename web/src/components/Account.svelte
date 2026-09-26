@@ -47,7 +47,6 @@
   import CharacterList from './account/CharacterList.svelte';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
   import CharacterRatingPanel from './CharacterRatingPanel.svelte';
-  import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import MyReports from './MyReports.svelte';
   import SignInPrompt from './SignInPrompt.svelte';
   import Skeleton from './ui/Skeleton.svelte';
@@ -482,7 +481,10 @@
              at lg, stacked under the title on phone. -->
         <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
-          <div class="flex flex-col items-start gap-2 lg:items-end" data-testid="account-identity">
+          <div
+            class="flex flex-wrap items-center gap-x-4 gap-y-2 lg:justify-end"
+            data-testid="account-identity"
+          >
             <p class="text-strong text-[14px]">{displayName}</p>
             <p class="text-muted text-[13px]">{signedInMethod}</p>
             <button
@@ -494,8 +496,6 @@
             </button>
           </div>
         </div>
-
-        <CurrentCharacterBar compact />
 
         {#if signedInBanner !== ''}
           <div
@@ -580,7 +580,7 @@
             {#if heroPath !== null}
               <StatePanel label={accountPageCopy.yourRatingsLabel} testid="account-ratings">
                 <div class="p-[18px]">
-                  <CharacterRatingPanel path={heroPath} />
+                  <CharacterRatingPanel path={heroPath} heading={false} />
                 </div>
               </StatePanel>
             {/if}

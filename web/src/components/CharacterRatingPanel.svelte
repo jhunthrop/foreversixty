@@ -12,7 +12,16 @@
   import RatingTrend from './RatingTrend.svelte';
   import EmptyState from './ui/EmptyState.svelte';
 
-  let { path, apiBase = undefined }: { path: CharacterPath; apiBase?: string } = $props();
+  let {
+    path,
+    apiBase = undefined,
+    heading = true,
+  }: {
+    path: CharacterPath;
+    apiBase?: string;
+    /** False when the mounting panel already titles it (the account page's "Your ratings"). */
+    heading?: boolean;
+  } = $props();
 
   let data = $state<CharacterRating | null>(null);
   let status = $state<'loading' | 'ready' | 'hidden'>('loading');
@@ -51,12 +60,12 @@
        requirement, which takes precedence over reserving permanent dead space for a
        panel that is supposed not to exist for that character. -->
   <section class="flex flex-col gap-2" data-testid="character-rating-loading" aria-hidden="true">
-    <h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>
+    {#if heading}<h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>{/if}
     <div class="bg-line-soft h-24 w-full animate-pulse rounded"></div>
   </section>
 {:else if status === 'ready' && data !== null}
   <section class="flex flex-col gap-2" data-testid="character-rating">
-    <h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>
+    {#if heading}<h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>{/if}
     {#if data.sample_size === 0}
       <EmptyState
         message={ratingCopy.characterEmpty}
