@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { parse as parseYaml } from 'yaml';
 import { describe, expect, it } from 'vitest';
 import { guideSchema } from '../../content.config';
-import { SPEC_SECTIONS } from '../../lib/guides/sections';
+import { SPEC_SECTIONS, splitSpecSections } from '../../lib/guides/sections';
 
 const guidesRoot = join(dirname(fileURLToPath(import.meta.url)));
 
@@ -72,13 +72,13 @@ describe('guide content structure', () => {
   });
 
   it.each(specGuides.map((g) => [g.id, g] as const))('%s renders all nine sections in order', (id, guide) => {
-    const headings = [...guide.body.matchAll(/^##\s+(.+)$/gm)].map((m) => m[1].trim());
-    const positions = SPEC_SECTIONS.map((section) => headings.indexOf(section));
-    for (const [index, position] of positions.entries()) {
-      expect(position, `missing section "${SPEC_SECTIONS[index]}" in ${id}`).toBeGreaterThanOrEqual(0);
+    const sections = splitSpecSections(guide.body);
+    for (const section of SPEC_SECTIONS) {
+      expect(sections.has(section), `missing section "${section}" in ${id}`).toBe(true);
     }
-    const sorted = [...positions].sort((a, b) => a - b);
-    expect(positions, `sections out of order in ${id}`).toEqual(sorted);
+    expect([...sections.keys()], `sections out of order in ${id}`).toEqual(
+      SPEC_SECTIONS.filter((section) => sections.has(section)),
+    );
   });
 
   it('gives every spec guide a spec, a role and a classSlug matching its directory', () => {
