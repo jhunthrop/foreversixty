@@ -26,6 +26,9 @@ export function resolveSpineClassSlug(
 export interface SpineDoor {
   readonly id: 'plan' | 'sim' | 'logs' | 'rankings';
   readonly label: string;
+  /** What a phone shows in place of `label` when the full label would not fit six doors
+   *  on one 390px row: "Rankings" for "Rankings for Warrior". Absent when they are the same. */
+  readonly shortLabel?: string;
   readonly href: string;
   readonly testid: string;
 }
@@ -67,6 +70,7 @@ export function spineDoorsFor(
     {
       id: 'rankings',
       label: `Rankings for ${classDisplayName(classSlug)}`,
+      shortLabel: 'Rankings',
       href: `/rankings${rankingsQuery}`,
       testid: 'current-character-bar-rankings',
     },

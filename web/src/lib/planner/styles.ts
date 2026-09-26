@@ -4,8 +4,9 @@
 
 /**
  * design/DESIGN-SYSTEM.md "Secondary button": warm border, uppercase 12px 700 at 0.06em tracking,
- * 36px tall -- 44px on phone, where it has to clear the hit-target minimum. There is no primary
- * button. Callers add the border and text colour they want, and their own horizontal padding.
+ * 36px tall -- 44px on phone, where it has to clear the hit-target minimum. Callers add the
+ * border and text colour they want, and their own horizontal padding. The one action a page
+ * exists for takes PRIMARY_BUTTON instead.
  */
 export const SECONDARY_BUTTON =
   'rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase md:h-9';
@@ -17,6 +18,19 @@ export const SECONDARY_BUTTON =
  */
 export const SECONDARY_BUTTON_FIXED =
   'rounded-control inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase';
+
+/**
+ * The primary button: the same recipe filled gold, for the single action a page is for
+ * (Sign in with Battle.net on /login and /setup, Run sim on /sim, Sim this build in the
+ * planner). One per view, never two side by side: two filled buttons are two secondaries.
+ * Callers add their own horizontal padding.
+ */
+export const PRIMARY_BUTTON =
+  'rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase md:h-9';
+
+/** PRIMARY_BUTTON at 44px on every breakpoint, as SECONDARY_BUTTON_FIXED is to SECONDARY_BUTTON. */
+export const PRIMARY_BUTTON_FIXED =
+  'rounded-control border-gold bg-gold text-bg hover:bg-gold-hover inline-flex h-11 items-center border text-[12px] font-bold tracking-[0.06em] uppercase';
 
 /**
  * The four states a talent cell is read at a glance by, from design/DESIGN-SYSTEM.md

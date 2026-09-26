@@ -134,11 +134,17 @@
          make spec 2026-09-25 4.1's signed-out line permanently unreachable for exactly the
          visitor it is written for. `CHIP_HEIGHT` alone still reserves the identical height. -->
     <div class={CHIP_HEIGHT} data-testid="current-character-bar">
-      <p class="text-muted mx-[18px] flex h-full items-center gap-3 overflow-hidden text-[13px] md:mx-0">
+      <!-- Sentence above, links below on a phone: as one row the two links were squeezed into
+           a side column and wrapped a word per line. One row again from md. -->
+      <div
+        class="text-muted mx-[18px] flex h-full flex-col justify-center gap-1 overflow-hidden text-[13px] md:mx-0 md:flex-row md:items-center md:gap-3"
+      >
         <span data-testid="current-character-bar-signed-out">{currentCharacterCopy.barSignedOutLine}</span>
-        <a class="text-nav underline" href="/login">{currentCharacterCopy.barSignIn}</a>
-        <a class="text-nav underline" href="/setup#paste">{currentCharacterCopy.barPasteExport}</a>
-      </p>
+        <span class="flex min-h-11 items-center gap-4 md:min-h-0 md:gap-3">
+          <a class="text-nav underline" href="/login">{currentCharacterCopy.barSignIn}</a>
+          <a class="text-nav underline" href="/setup#paste">{currentCharacterCopy.barPasteExport}</a>
+        </span>
+      </div>
     </div>
   {:else}
     <!-- This branch alone stays behind `.chip-slot`: it depends on client-only data (the
@@ -158,10 +164,10 @@
         </div>
         <!-- Every child is shrink-0: a flex item with an explicit min-width (min-w-11) no longer
              keeps its min-content width, so without it the phone row shrank the links onto
-             one another instead of scrolling. -->
-        <div
-          class="flex h-11 flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap md:h-auto md:flex-1"
-        >
+             one another. The row wraps rather than scrolls: a scrolled row hid Forget and
+             Switch past the edge with nothing to say so. Six short labels fit one 390px line;
+             the restored note is desktop-only so it cannot push the row to a second line. -->
+        <div class="flex h-11 flex-wrap items-center gap-x-3 whitespace-nowrap md:h-auto md:flex-1">
           {#each doors as door (door.id)}
             <a
               class="{rowLink} label min-w-11 shrink-0 justify-center {door.id === currentDoor
@@ -169,12 +175,18 @@
                 : 'text-nav'}"
               href={door.href}
               aria-current={door.id === currentDoor ? 'page' : undefined}
-              data-testid={door.testid}>{door.label}</a
+              data-testid={door.testid}
+              >{#if door.shortLabel !== undefined}<span class="md:hidden">{door.shortLabel}</span><span
+                  class="hidden md:inline">{door.label}</span
+                >{:else}{door.label}{/if}</a
             >
           {/each}
           {#if current !== null}
             {#if restored}
-              <span class="text-muted shrink-0 text-[12px]" data-testid="current-character-restored">
+              <span
+                class="text-muted hidden shrink-0 text-[12px] md:inline"
+                data-testid="current-character-restored"
+              >
                 {currentCharacterCopy.restoredNote}
               </span>
             {/if}
