@@ -567,6 +567,7 @@
         {/if}
         <LandingState
           characters={me.characters}
+          currentKey={runBlockCharacter?.key ?? null}
           busyKey={landingBusyKey}
           failedKey={landingFailedKey}
           onpick={(path) => void pickCharacter(path)}

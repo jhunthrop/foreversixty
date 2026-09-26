@@ -25,16 +25,21 @@
   import { BUSY_CLASS } from '../../lib/ui/busy';
   import { armorySimHref } from '../../lib/sim/url';
   import CharacterRow from '../character/CharacterRow.svelte';
+  import { currentCharacterCopy } from '../../lib/current-character-copy';
 
   let {
     characters,
     busyKey,
     failedKey = null,
+    currentKey = null,
     onpick,
     onother,
   }: {
     characters: MeCharacter[];
     busyKey: string | null;
+    /** The key of the character the site is currently pointed at (the Run block above):
+     *  its row carries a Current pill so the two never read as unrelated. */
+    currentKey?: string | null;
     /** Finding 2: the key of the character whose pick just failed for want of a build --
      *  set only for that one failure, never for the race refusal, which keeps its own hint
      *  where it already was (SimView.svelte's `sim-landing-message` paragraph). */
@@ -108,6 +113,11 @@
         testid={`sim-character-${character.key}`}
       >
         {#snippet action()}
+          {#if character.key === currentKey}
+            <span class="pill pill-sample ml-auto shrink-0" data-testid={`sim-current-${character.key}`}
+              >{currentCharacterCopy.switchCurrentMarker}</span
+            >
+          {/if}
           {#if hasBuild(character)}
             <button
               type="button"
