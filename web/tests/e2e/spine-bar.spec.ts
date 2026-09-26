@@ -68,22 +68,12 @@ test.describe('the spine bar opens every door on the current character', () => {
   });
 });
 
-// SKIPPED -- real product bug, not a test bug, and out of this task's file scope (Task 1's
-// global.css, not Task 10's). The pre-paint rule Task 1 added to web/src/styles/global.css
-// (`html:not([data-pointer='1']):not([data-session='1']) .chip-slot { display: none; }`)
-// hides the whole `.chip-slot` box -- which is the same element `current-character-bar` and
-// `current-character-bar-signed-out` render inside -- for exactly the visitor shape this
-// line exists to greet: no stored pointer and no session cookie. Verified directly: on a
-// bare `/logs` load, `document.documentElement.dataset` has neither `pointer` nor `session`,
-// the signed-out `<p>` is present in the DOM with the right text and both links' hrefs, and
-// `getComputedStyle(...).display` on `[data-testid="current-character-bar"]` is `"none"`.
-// Task 1's own comment calls this "the one CLS trade-off this rule accepts" -- but the rule
-// as written suppresses the very state it says it accepts, rather than merely not
-// pre-reserving space for it. Flagged for the coordinator/Task 11 whole-branch review to fix
-// in global.css (this task owns only spine-bar.spec.ts).
-test.skip('the bar shows the signed-out, no-pointer line with two links, on a fresh visit', async ({
-  page,
-}) => {
+// Fixed after this spec first found it broken (see the ledger, "Task 10 follow-up"): the
+// signed-out branch no longer sits inside `.chip-slot` (CurrentCharacterBar.svelte) -- that
+// class is hidden pre-paint whenever neither `data-pointer` nor `data-session` is set, which
+// is exactly the one visitor shape this line greets, so hiding it made the line permanently
+// unreachable rather than merely not pre-reserving space for it.
+test('the bar shows the signed-out, no-pointer line with two links, on a fresh visit', async ({ page }) => {
   await page.goto('/logs');
   const bar = page.getByTestId('current-character-bar-signed-out');
   await expect(bar).toBeVisible();

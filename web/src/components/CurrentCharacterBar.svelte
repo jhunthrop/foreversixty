@@ -113,14 +113,29 @@
 </script>
 
 {#if spine}
-  <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="current-character-bar">
-    {#if classSlug === null}
+  {#if classSlug === null}
+    <!-- Not wrapped in `.chip-slot`: that class is hidden pre-paint (global.css) whenever
+         neither `data-pointer` nor `data-session` is set on `<html>`, which is exactly the
+         one signal-free case this branch is FOR -- a visitor with truly nothing to resolve.
+         The hiding rule exists to stop a *different* guess (this component's own SSR output,
+         made with no client data at all) from flashing before hydration corrects it; for a
+         genuinely signed-out, no-pointer visitor there is nothing to correct after hydration
+         -- SSR and the hydrated client render the identical line -- so hiding it here would
+         make spec 2026-09-25 4.1's signed-out line permanently unreachable for exactly the
+         visitor it is written for. `CHIP_HEIGHT` alone still reserves the identical height. -->
+    <div class={CHIP_HEIGHT} data-testid="current-character-bar">
       <p class="text-muted mx-[18px] flex h-full items-center gap-3 overflow-hidden text-[13px] md:mx-0">
         <span data-testid="current-character-bar-signed-out">{currentCharacterCopy.barSignedOutLine}</span>
         <a class="text-nav underline" href="/login">{currentCharacterCopy.barSignIn}</a>
         <a class="text-nav underline" href="/setup#paste">{currentCharacterCopy.barPasteExport}</a>
       </p>
-    {:else}
+    </div>
+  {:else}
+    <!-- This branch alone stays behind `.chip-slot`: it depends on client-only data (the
+         stored pointer, the session) the pre-paint script has already hinted at via
+         data-pointer/data-session when either is real, so hiding it until hydration
+         resolves is what stops it from ever painting a wrong guess. -->
+    <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="current-character-bar">
       <div class="flex h-full flex-col md:flex-row md:items-center md:gap-4" bind:this={switchRoot}>
         <div class="flex h-11 shrink-0 items-center md:h-auto" data-testid="current-character-bar-identity">
           {#if displayCharacter !== null}
@@ -164,8 +179,8 @@
           {/if}
         </div>
       </div>
-    {/if}
-  </div>
+    </div>
+  {/if}
 {:else}
   <CurrentCharacterChip {current} hasOwnPasteBox={hasOwnPasteBox || compact} {guildLine} onforget={forget} />
 {/if}
