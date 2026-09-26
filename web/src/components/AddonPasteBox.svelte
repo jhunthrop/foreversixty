@@ -74,7 +74,7 @@
     data-testid="addon-paste-code"></textarea>
   <button
     type="button"
-    class={SECONDARY_BUTTON_FIXED}
+    class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong self-start px-4"
     disabled={code.trim() === ''}
     onclick={submit}
     data-testid="addon-paste-submit"

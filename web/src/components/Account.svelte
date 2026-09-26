@@ -372,7 +372,7 @@
     {:else}
       <div class="flex flex-col gap-3">
         <a
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4"
+          class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong self-start px-4"
           href={battlenetStartUrl(resolvedNext)}
           data-testid="battlenet"
         >
