@@ -62,16 +62,23 @@ local function playerRealm()
 	return type(GetRealmName) == "function" and GetRealmName() or ""
 end
 
+-- The client has no `os` table; its clock is the `time` and `date` globals, which take the
+-- same arguments as their os.* namesakes. The specs run on plain Lua, where only os.* exists
+-- (their WoW mock defines `date` alone, so the pair is taken together or not at all).
+local hasClientClock = type(time) == "function" and type(date) == "function"
+local clockTime = hasClientClock and time or os.time
+local clockDate = hasClientClock and date or os.date
+
 --- Seconds since an ISO 8601 UTC stamp, or nil for one this cannot read.
 local function ageOf(generated)
 	local y, mo, d, h, mi, s = tostring(generated or ""):match("^(%d%d%d%d)%-(%d%d)%-(%d%d)T(%d%d):(%d%d):(%d%d)Z$")
 	if y == nil then
 		return nil
 	end
-	-- os.time reads the table as local time; the difference from a UTC
+	-- time() reads the table as local time; the difference from a UTC
 	-- table read the same way cancels the zone out.
-	local now = os.time(os.date("!*t"))
-	local then_ = os.time({ year = tonumber(y), month = tonumber(mo), day = tonumber(d),
+	local now = clockTime(clockDate("!*t"))
+	local then_ = clockTime({ year = tonumber(y), month = tonumber(mo), day = tonumber(d),
 		hour = tonumber(h), min = tonumber(mi), sec = tonumber(s) })
 	return now - then_
 end
