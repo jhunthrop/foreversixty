@@ -50,8 +50,22 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
       measurement itself does not need. A real report's default view will not match this
       fixture's height exactly, but it lands far closer than a guess -- re-measure and move
       this number whenever the default view's content changes materially.
+    
+      Review round 2 (design loop): one svh figure measured on a phone was applied at every
+      width, and at 1280x900 it reserved 4212px for a report that settles at 1301px -- a
+      screen and a half of black above the footer. Pixel reserves per breakpoint instead,
+      measured with the reserve removed in-page on the fixture's default view: 2436 at
+      360x640 (Lighthouse's phone), 1532 at 800 wide, 1301 at 1280 wide; each reserve is 24px
+      above its natural for the CI runner's fonts. svh would scale with a viewport the
+      content does not scale with, so px is the honest unit here.
     -->
-    <div id="report" data-report-mount data-report-id={id} data-report={inline} class="min-h-[468svh]">
+    <div
+      id="report"
+      data-report-mount
+      data-report-id={id}
+      data-report={inline}
+      class="min-h-[2460px] md:min-h-[1556px] lg:min-h-[1325px]"
+    >
       <Fragment set:html={reportSkeletonHtml(id === FIXTURE_REPORT_ID ? fixtureMeta.title : undefined)} />
     </div>
     <script type="module" src="/report-island.js"></script>
