@@ -12,4 +12,7 @@ export const currentCharacterCopy = {
   copiedAddonCode: 'Copied',
   noCharacterLine: 'No character loaded. Paste an addon export in the planner or the simulator.',
   getTheAddon: "Don't have an export? Get the addon.",
+  /** The spine bar's Switch popover (`CharacterSwitchList.svelte`, spec 2026-09-25 §4.1). */
+  switchCurrentMarker: 'Current',
+  switchAction: 'Switch',
 } as const;
