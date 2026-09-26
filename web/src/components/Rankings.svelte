@@ -12,6 +12,7 @@
     rulesetLabel,
     splitUnitName,
   } from '../lib/characters';
+  import { readCurrent } from '../lib/current-character';
   import { SECONDARY_BUTTON, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import {
     classColorVar,
@@ -31,6 +32,10 @@
     type RankingsPage,
   } from '../lib/rankings/api';
   import { encounterPickerCopy } from '../lib/rankings/copy';
+  import {
+    applyCurrentCharacterPrefilter,
+    pinCurrentCharacterRow,
+  } from '../lib/rankings/current-character-prefilter';
   import { RANKINGS_LOADING_MIN_H } from '../lib/rankings/layout';
   import { PHASES } from '../lib/rankings/phases';
   import {
@@ -44,6 +49,7 @@
   } from '../lib/rankings/url';
   import { simCopy } from '../lib/sim/copy';
   import { executionHref, executionLabel, executionTitle } from '../lib/sim/execution';
+  import CurrentCharacterBar from './CurrentCharacterBar.svelte';
   import EmptyState from './ui/EmptyState.svelte';
   import LoadError from './ui/LoadError.svelte';
   import Skeleton from './ui/Skeleton.svelte';
@@ -63,7 +69,13 @@
   // rendering an empty heading while the picker below offers what does exist.
   const encounter = $derived(resolvedSlug === '' ? 'Rankings' : titleize(resolvedSlug));
   let state = $state<RankingsState>(
-    parseRankingsState(typeof window === 'undefined' ? '' : window.location.search),
+    typeof window === 'undefined'
+      ? parseRankingsState('')
+      : applyCurrentCharacterPrefilter(
+          parseRankingsState(window.location.search),
+          window.location.search,
+          readCurrent(),
+        ),
   );
   let page = $state<RankingsPage | null>(null);
   let guildRows = $state<GuildRankingRow[]>([]);
@@ -149,7 +161,7 @@
             page: requested.page,
           }).then((result) => {
             if (state !== requested) return;
-            page = result;
+            page = { ...result, rows: pinCurrentCharacterRow(result.rows, readCurrent()) };
             guildRows = [];
             status = 'ready';
           });
@@ -181,6 +193,7 @@
 </script>
 
 <div class="flex flex-col gap-[22px] md:gap-6" data-testid="rankings" id="rankings">
+  <CurrentCharacterBar spine />
   <header class="flex flex-col gap-1">
     <h1 class="section-title text-[18px]">{encounter}</h1>
     <p class="text-muted text-[13px]" data-testid="rankings-count">
