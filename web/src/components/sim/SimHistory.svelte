@@ -6,6 +6,7 @@
   import { simCopy } from '../../lib/sim/copy';
   import { KIND_FILTERS, headlineOf, kindOf, titleOf, type KindFilter } from '../../lib/sim/history';
   import type { SimListRow } from '../../lib/sim/types';
+  import EmptyState from '../ui/EmptyState.svelte';
 
   let {
     rows,
@@ -42,7 +43,7 @@
   {:else if rows === null}
     <p class="text-muted text-[13px]">{simCopy.historyLoading}</p>
   {:else if rows.length === 0}
-    <p class="text-muted text-[13px]">{simCopy.historyEmpty}</p>
+    <EmptyState message={simCopy.historyEmpty} testid="sim-history-empty" />
   {:else}
     <ul class="border-line bg-raised rounded-panel flex flex-col border">
       {#each rows as row (row.sim_id)}
