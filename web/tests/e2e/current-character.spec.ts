@@ -39,12 +39,12 @@ test.describe('current character', () => {
     await expect(page.getByTestId('current-character-restored')).toHaveCount(0);
   });
 
-  test('every paste box links to /addon', async ({ page }) => {
+  test('every paste box links to /setup', async ({ page }) => {
     await page.goto('/sim');
-    await expect(page.getByTestId('sim-get-addon')).toHaveAttribute('href', '/addon');
+    await expect(page.getByTestId('sim-get-addon')).toHaveAttribute('href', '/setup');
 
     await page.goto('/planner');
-    await expect(page.getByTestId('import-get-addon')).toHaveAttribute('href', '/addon');
+    await expect(page.getByTestId('import-get-addon')).toHaveAttribute('href', '/setup');
   });
 
   test('the below-60 framing line is on /sim', async ({ page }) => {

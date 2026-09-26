@@ -416,15 +416,22 @@
   </div>
 {:else if mode === 'reports'}
   <!-- /logs only, inside that page's own "Your reports" panel. Spec 2026-09-25 §3.6: a
-       signed-out visitor saw "Loading your reports." resolve into a sign-in prompt inside a
-       panel that had no reason to exist for them at all -- the section now renders only once
-       the session has resolved AND the visitor is signed in; `status` (not the raw `me`
-       value) gates it, so nothing renders during SSR either, when `status` starts 'loading'. -->
-  {#if status === 'ready' && signedIn}
-    <div class="min-h-[88px]">
+       signed-out visitor saw the literal "Loading your reports." text before the session
+       resolved -- MyReports itself renders only once the session has resolved; `status`
+       (not the raw `me` value) gates it, so no such text shows during SSR either, when
+       `status` starts 'loading'. `MyReports` still branches internally on `signedIn` and
+       shows its own sign-in prompt for a signed-out visitor once `status` is ready.
+       The min-h-[88px] floor stays OUTSIDE that `{#if}`, always rendered, for two reasons:
+       it is one row tall so the panel does not jump when the session answers, and -- more
+       load-bearing -- this island is `client:visible` (web/src/pages/logs.astro); gating
+       every last bit of this island's markup on `status` left it with zero rendered content
+       and therefore zero layout box before hydration, so the IntersectionObserver driving
+       `client:visible` had nothing to ever intersect and the island never hydrated at all. -->
+  <div class="min-h-[88px]">
+    {#if status === 'ready'}
       <MyReports {signedIn} heading={false} />
-    </div>
-  {/if}
+    {/if}
+  </div>
 {:else if mode === 'pairing'}
   <!-- Signed out and signed in are the same shape on purpose, a line over a button, so the
        block is the same height either way and the steps under it never move when the

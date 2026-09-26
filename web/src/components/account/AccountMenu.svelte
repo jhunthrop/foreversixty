@@ -34,9 +34,21 @@
 
   let open = $state(false);
   let root: HTMLElement;
+  let detailsEl: HTMLDetailsElement | undefined = $state();
 
   function close(): void {
     open = false;
+    // The reactive `open` binding above is driven by the native <details> element's own
+    // `toggle` event, which the browser queues as a task rather than firing synchronously
+    // with the click that opened it (the open ATTRIBUTE itself, though, is set synchronously
+    // as part of that click's default action). A pointerdown fired immediately after opening
+    // -- as a fast synthetic outside-click test does -- can therefore land before that
+    // `toggle` event has run, while `open` (this component's state) is still stale at
+    // `false`. Setting `open = false` again is then a no-op in Svelte's eyes (no observed
+    // change), so it never pushes the close back down to the DOM. Closing the element
+    // directly sidesteps that race: it always reflects reality regardless of whether the
+    // `toggle` event has caught up yet.
+    if (detailsEl) detailsEl.open = false;
   }
 
   function onSwitch(character: MeCharacter): void {
@@ -52,12 +64,15 @@
 
   function onDocumentPointerDown(event: PointerEvent): void {
     const target = event.target;
-    if (!open || !(target instanceof Node) || root.contains(target)) return;
+    // Reads the <details> element's own `open` attribute rather than the `open` state
+    // above, which can still be stale (see `close()`'s comment) for a pointerdown fired
+    // immediately after the opening click.
+    if (!detailsEl?.open || !(target instanceof Node) || root.contains(target)) return;
     close();
   }
 
   function onDocumentKeydown(event: KeyboardEvent): void {
-    if (open && event.key === 'Escape') close();
+    if (detailsEl?.open && event.key === 'Escape') close();
   }
 
   $effect(() => {
@@ -76,7 +91,7 @@
       Sign in
     </span>
   {:else if signedIn}
-    <details bind:open data-testid="account-menu" class="relative">
+    <details bind:open bind:this={detailsEl} data-testid="account-menu" class="relative">
       <summary class="flex min-h-11 list-none items-center gap-2 px-1 marker:content-none md:min-h-0">
         {#if main !== null}
           <CharacterPortrait character={main} size="sm" testid="account-menu-portrait" />

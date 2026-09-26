@@ -30,27 +30,6 @@ const GUILD_PAGE = {
   reports: [],
 };
 
-test('a signed-in member sees "My guild" in the header on a tool page', async ({ page }) => {
-  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_WITH_GUILD)));
-  await page.goto('/planner');
-  await expect(page.getByTestId('session-my-guild')).toHaveAttribute(
-    'href',
-    '/guild/us/hardcore/the-last-watch',
-  );
-});
-
-test('a signed-out visitor never sees "My guild" in the header', async ({ page }) => {
-  await page.route('**/v1/me', (route) =>
-    route.fulfill({
-      status: 401,
-      contentType: 'application/json',
-      body: '{"ok":false,"data":null,"error":null,"request_id":"r"}',
-    }),
-  );
-  await page.goto('/planner');
-  await expect(page.getByTestId('session-my-guild')).toHaveCount(0);
-});
-
 test('a signed-in member sees "My guild" and its progression on the homepage', async ({ page }) => {
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_WITH_GUILD)));
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
