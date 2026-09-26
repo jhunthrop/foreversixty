@@ -50,7 +50,19 @@ export const CELL_BORDER: Record<CellState, string> = {
   maxed: 'border-kill',
   filled: 'border-kill',
   available: 'border-gold',
-  locked: 'border-line-soft opacity-50',
+  locked: 'border-line',
+};
+
+/**
+ * What dims in a cell you cannot reach yet: the face (icon or mark), never the frame. Dimming
+ * the whole cell let the tree art show through it, and a half-transparent box next to a solid
+ * one read as a missing node rather than a locked one.
+ */
+export const CELL_FACE: Record<CellState, string> = {
+  maxed: '',
+  filled: '',
+  available: '',
+  locked: 'opacity-40',
 };
 
 /**

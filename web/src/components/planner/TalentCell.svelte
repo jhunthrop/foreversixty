@@ -6,7 +6,7 @@
 <script lang="ts">
   import { dataUrl } from '../../lib/planner/load';
   import { canAddPoint } from '../../lib/planner/rules';
-  import { CELL_BORDER, CELL_PILL, cellState } from '../../lib/planner/styles';
+  import { CELL_BORDER, CELL_PILL, cellState, CELL_FACE } from '../../lib/planner/styles';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import type { Talent } from '../../lib/planner/types';
 
@@ -110,7 +110,7 @@
 
 {#snippet face()}
   {#if iconBroken}
-    <span class="text-muted font-display text-[13px] font-bold" aria-hidden="true">
+    <span class={`text-muted font-display text-[13px] font-bold ${CELL_FACE[state]}`} aria-hidden="true">
       {talent.name.slice(0, 2)}
     </span>
   {:else}
@@ -121,7 +121,7 @@
       height="40"
       loading="lazy"
       decoding="async"
-      class="rounded-control h-10 w-10 object-cover"
+      class={`rounded-control h-10 w-10 object-cover ${CELL_FACE[state]}`}
       onerror={() => (iconBroken = true)}
       onload={(event) => {
         // A 1x1 file is the data pipeline's placeholder for art it has not produced yet
