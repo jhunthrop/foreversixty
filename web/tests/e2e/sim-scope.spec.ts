@@ -66,12 +66,14 @@ test.describe('the DPS-only scope sentence', () => {
     );
   });
 
-  // The landing state and the source switcher are what a signed-out visitor reads first
-  // (task-2-brief.md), so each carries the same sentence too -- not only the shell.
-  test('/sim carries the sentence a second time in the source switcher, for a signed-out visitor', async ({
-    page,
-  }) => {
+  // 2026-09-26 layout pass, Finding 3: the source switcher's own duplicate copy of this
+  // sentence (`sim-sources-scope-note`, task-2-brief.md's original fix) is gone from /sim --
+  // the hero sign-in card's own "Your characters" heading carries the one copy now
+  // (`sim-scope-note`, asserted above by the loop over PAGES), so a signed-out visitor never
+  // reads the restriction twice.
+  test('/sim states the sentence once, not twice, for a signed-out visitor', async ({ page }) => {
     await page.goto('/sim');
-    await expect(page.getByTestId('sim-sources-scope-note')).toHaveText(simCopy.scopeNote);
+    await expect(page.getByTestId('sim-sources-scope-note')).toHaveCount(0);
+    await expect(page.getByTestId('sim-scope-note')).toBeVisible();
   });
 });
