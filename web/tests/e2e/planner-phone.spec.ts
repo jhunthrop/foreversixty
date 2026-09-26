@@ -154,10 +154,9 @@ test.describe('planner on a phone', () => {
       await clears44(locator);
     }
 
-    // The point-order toggle exists only once a point is spent (an empty strip has nothing to
-    // hide), so spend one before measuring it.
+    // Point order's own disclosure summary, closed by default (design loop, planner round).
     await page.getByTestId('talent-1001').click();
-    await clears44(page.getByRole('button', { name: 'Hide point order' }));
+    await clears44(page.getByTestId('order-strip').locator('summary'));
 
     // A gear slot and an item row are hit with a finger like everything else here, and the
     // rows are the narrowest thing the planner asks anyone to tap, so the picker is opened

@@ -15,6 +15,8 @@
     talents,
     activeBuild,
     onimport,
+    phone = false,
+    class: className = '',
   }: {
     talents: TalentIndex;
     activeBuild: string;
@@ -28,6 +30,17 @@
       build: { classSlug: string; raceSlug: string; order: number[]; gear: Gear },
       pastedCode: string,
     ) => void;
+    /**
+     * Below md the standalone planner folds this behind a native, closed-by-default
+     * disclosure (design loop, planner round): a visitor reaches Gear without scrolling
+     * past a paste box most never touch. False for every other mount -- Top Gear's inline
+     * "add a build" embeds this same component in its own layout and never grows this
+     * collapse of its own.
+     */
+    phone?: boolean;
+    /** Merged onto the root element, so the caller's own responsive grid can place this
+     *  panel without either side knowing about the other's layout. */
+    class?: string;
   } = $props();
 
   let code = $state('');
@@ -54,8 +67,17 @@
   }
 </script>
 
-<section class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-4" data-testid="import-box">
-  <h2 class="section-title text-[15px]">{addonCopy.importTitle}</h2>
+<svelte:element
+  this={phone ? 'details' : 'section'}
+  class="border-line bg-raised rounded-panel flex flex-col gap-3 border p-4 {className}"
+  data-testid="import-box"
+>
+  {#if phone}
+    <summary class="label text-nav flex min-h-11 cursor-pointer items-center">{addonCopy.importTitle}</summary
+    >
+  {:else}
+    <h2 class="section-title text-[15px]">{addonCopy.importTitle}</h2>
+  {/if}
   <textarea
     class="border-line rounded-control bg-card-top min-h-11 w-full border px-2 py-1 font-mono text-[13px]"
     rows="2"
@@ -87,4 +109,4 @@
       >{currentCharacterCopy.getTheAddon}</a
     >
   </p>
-</section>
+</svelte:element>

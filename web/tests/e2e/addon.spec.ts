@@ -3,7 +3,7 @@ import { createServer } from 'vite';
 import { addonCopy } from '../../src/lib/addon/copy';
 import type * as Fsb1Module from '../../src/lib/addon/fsb1';
 import { ACTIVE_BUILD } from './support/active-build';
-import { openGear } from './support/planner';
+import { openGear, openImportBox } from './support/planner';
 
 // Not a plain `import { decodeFSB1 } from '../../src/lib/addon/fsb1'`. fsb1.ts used to
 // import PINNED_STATS from sim/stats.ts, which imports a generated `.json` file at module
@@ -76,6 +76,7 @@ test.describe('the addon flows', () => {
     // even though this class has two trees; orderFromRanks ignores the field it has no
     // tree for.
     await page.goto('/planner');
+    await openImportBox(page);
     await page.getByTestId('import-code').fill(`FS1:${ACTIVE_BUILD}:warrior:human:3502/0/0:head=12640`);
     await page.getByTestId('import-submit').click();
 
@@ -86,6 +87,7 @@ test.describe('the addon flows', () => {
 
   test('a code from another format is refused by name', async ({ page }) => {
     await page.goto('/planner');
+    await openImportBox(page);
     await page.getByTestId('import-code').fill('FS2:nope');
     await page.getByTestId('import-submit').click();
     // The literal, not `addonCopy.wrongPrefix('FS2', 'FS1')`: this refusal comes out of
@@ -102,6 +104,7 @@ test.describe('the addon flows', () => {
     // check has to refuse it before anything tries to reconstruct an order against the
     // warrior tree the planner actually has loaded.
     await page.goto('/planner');
+    await openImportBox(page);
     await page.getByTestId('import-code').fill(`FS1:${ACTIVE_BUILD}:paladin:human:0/0/0:`);
     await page.getByTestId('import-submit').click();
     await expect(page.getByTestId('import-error')).toHaveText(

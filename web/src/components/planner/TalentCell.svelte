@@ -140,7 +140,7 @@
       data-testid={`talent-${talent.id}`}
       data-rank={rank}
       data-state={state}
-      class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 ${CELL_BORDER[state]}`}
+      class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
     >
       {@render face()}
     </div>
@@ -153,7 +153,7 @@
       data-testid={`talent-${talent.id}`}
       data-rank={rank}
       data-state={state}
-      class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 ${CELL_BORDER[state]}`}
+      class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 lg:h-14 lg:w-14 ${CELL_BORDER[state]}`}
       onclick={add}
       oncontextmenu={removeOnContextMenu}
       onfocus={() => {

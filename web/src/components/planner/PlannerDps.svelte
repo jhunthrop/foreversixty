@@ -9,7 +9,7 @@
   import { simCopy } from '../../lib/sim/copy';
   import type { LiveDps } from '../../lib/planner/live-dps.svelte';
   import type { LiveGate } from '../../lib/planner/live-gate';
-  import { SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
+  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { poolQualityCopy } from '../../lib/sim/pool-quality-copy';
 
   let {
@@ -97,11 +97,13 @@
         {figure}
       </span>
     {/if}
-    <!-- min-h-11 at every width, the same as GearPanel.svelte's slot buttons: no other
-         control in this lane shrinks its target on desktop, and a summary-bar row is exactly
-         where a mouse-only "it's fine above 44px on desktop" argument would first break the
-         pattern. -->
-    <a class="label text-nav flex min-h-11 items-center underline" {href} data-testid="planner-sim-link">
+    <!-- The bar's one primary button (build review round 1, finding 5): simming a build is
+         one of the planner's own jobs, so it reads as a real action, at least as strong as
+         Share, rather than a plain underlined link beside a dash. PRIMARY_BUTTON_FIXED, not
+         the shrinking PRIMARY_BUTTON: no other control in this lane shrinks its target on
+         desktop, and a summary-bar row is exactly where a mouse-only "it's fine above 44px on
+         desktop" argument would first break the pattern. -->
+    <a class="{PRIMARY_BUTTON_FIXED} px-4" {href} data-testid="planner-sim-link">
       {simCopy.simThisBuild}
     </a>
   </div>

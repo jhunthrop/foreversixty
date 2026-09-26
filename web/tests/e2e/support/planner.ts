@@ -6,10 +6,11 @@ import { expect, type Page } from '@playwright/test';
 const MD_BREAKPOINT = 768;
 
 /**
- * Brings the gear panel on screen. From md up it is always in the column under the order
- * strip; below md it is the last tab, so it has to be selected first. Both Playwright
- * projects run the gear specs and the mobile one is narrower than md, so every gear move
- * goes through here rather than assuming the panel is already on screen.
+ * Brings the gear panel on screen. From md up it is always directly under the tree row (in
+ * the rail layout's own left column from lg, or last in the stack between md and lg); below
+ * md it is the last tab, so it has to be selected first. Both Playwright projects run the
+ * gear specs and the mobile one is narrower than md, so every gear move goes through here
+ * rather than assuming the panel is already on screen.
  */
 export async function openGear(page: Page): Promise<void> {
   if ((page.viewportSize()?.width ?? MD_BREAKPOINT) >= MD_BREAKPOINT) {
@@ -17,6 +18,34 @@ export async function openGear(page: Page): Promise<void> {
     return;
   }
   await page.getByRole('tab', { name: 'Gear' }).click();
+}
+
+/**
+ * Opens the point order panel's content. From md up it is always open (design loop, planner
+ * round); below md it is a native, closed-by-default `<details>`, so its own summary has to
+ * be clicked first. Every spec that reads the strip's list goes through here rather than
+ * assuming the disclosure is already open on a phone-width viewport.
+ */
+export async function openOrderStrip(page: Page): Promise<void> {
+  await openDisclosure(page, 'order-strip');
+}
+
+/**
+ * Opens the import box's content. From md up it is always open; below md it is a native,
+ * closed-by-default `<details>` (design loop, planner round), so a spec that fills or clicks
+ * inside it on a phone-width viewport has to open the disclosure first -- Playwright refuses
+ * to act on an element a closed `<details>` hides.
+ */
+export async function openImportBox(page: Page): Promise<void> {
+  await openDisclosure(page, 'import-box');
+}
+
+async function openDisclosure(page: Page, testId: string): Promise<void> {
+  if ((page.viewportSize()?.width ?? MD_BREAKPOINT) >= MD_BREAKPOINT) return;
+  const el = page.getByTestId(testId);
+  if (await el.evaluate((node) => node.tagName === 'DETAILS' && !(node as HTMLDetailsElement).open)) {
+    await el.locator('summary').click();
+  }
 }
 
 /**
