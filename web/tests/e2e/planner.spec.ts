@@ -3,6 +3,7 @@ import { collectPageErrors } from './support/console';
 
 import { treeSourceNotice } from '../../src/lib/planner/tree-source';
 import { ACTIVE_BUILD } from './support/active-build';
+import { openOrderStrip } from './support/planner';
 
 // tree-source.ts carries no import.meta.env dependency (unlike its neighbour config.ts,
 // which reads PUBLIC_API_BASE_URL at module scope and cannot be imported under
@@ -286,6 +287,7 @@ test('a long press that also raises a context menu removes one point, not two', 
 test('the order strip lists every point with the level it was spent at', async ({ page }) => {
   await page.goto('/planner');
   for (let i = 0; i < 3; i += 1) await page.getByTestId('talent-1001').click();
+  await openOrderStrip(page);
   const points = page.getByTestId('order-strip').getByRole('listitem');
   await expect(points).toHaveCount(3);
   await expect(points.nth(0)).toContainText('10');
@@ -294,14 +296,27 @@ test('the order strip lists every point with the level it was spent at', async (
   await expect(points.nth(0)).toContainText('Improved Heroic Strike');
 });
 
-test('the order strip collapses and reopens', async ({ page }) => {
+// Design loop, planner round: from md up the panel is always open, with no collapse control
+// at all (build review round 1, finding 4 -- reserving a full section for a short, often
+// empty list was disproportionate); below md it folds behind a native <details>, closed by
+// default, in place of the custom expand/collapse button this test used to pin.
+test('from md up, point order has no collapse control and is always open', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'md-and-up layout only');
   await page.goto('/planner');
   await page.getByTestId('talent-1001').click();
-  const toggle = page.getByRole('button', { name: 'Hide point order' });
-  await toggle.click();
-  await expect(page.getByTestId('order-strip').getByRole('list')).toBeHidden();
-  await page.getByRole('button', { name: 'Show point order' }).click();
+  await expect(page.getByRole('button', { name: /point order/i })).toHaveCount(0);
   await expect(page.getByTestId('order-strip').getByRole('list')).toBeVisible();
+});
+
+test('below md, point order is a native disclosure that opens on tap', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile', 'below-md layout only');
+  await page.goto('/planner');
+  await page.getByTestId('talent-1001').click();
+  const strip = page.getByTestId('order-strip');
+  expect(await strip.evaluate((el) => el.tagName)).toBe('DETAILS');
+  await expect(strip.getByRole('list')).toBeHidden();
+  await strip.locator('summary').click();
+  await expect(strip.getByRole('list')).toBeVisible();
 });
 
 test('reset asks before it clears the build', async ({ page }) => {
@@ -328,6 +343,7 @@ test('a long point order scrolls inside the strip, not across the page', async (
   await page.goto('/planner');
   for (let i = 0; i < 3; i += 1) await page.getByTestId('talent-1001').click();
   for (let i = 0; i < 5; i += 1) await page.getByTestId('talent-1002').click();
+  await openOrderStrip(page);
   await expect(page.getByTestId('order-strip').getByRole('listitem')).toHaveCount(8);
   const widths = await page.evaluate(() => {
     const list = document.querySelector('[data-testid="order-strip"] ol');

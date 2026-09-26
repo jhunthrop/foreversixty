@@ -74,3 +74,22 @@ export const CONNECTOR_STROKE: Record<'met' | 'unmet', string> = {
   met: 'stroke-gold',
   unmet: 'stroke-line',
 };
+
+/**
+ * The tree row's column count at md and up, one literal class per tree count so
+ * Tailwind's static scanner keeps every string this can ever render (a template literal
+ * class name is invisible to it). Two trees split the row between them instead of
+ * reserving a third, empty column, and a third tree gets its own column rather than
+ * crowding into two -- build review round 1, finding 2.
+ */
+const TREE_ROW_COLUMN_CLASSES: Record<number, string> = {
+  1: 'md:grid-cols-1',
+  2: 'md:grid-cols-2',
+  3: 'md:grid-cols-3',
+};
+
+/** Falls back to the three-column class for a tree count this table has never seen, the
+ *  same count the row reserved unconditionally before this fix. */
+export function treeRowColumnsClass(treeCount: number): string {
+  return TREE_ROW_COLUMN_CLASSES[treeCount] ?? TREE_ROW_COLUMN_CLASSES[3];
+}

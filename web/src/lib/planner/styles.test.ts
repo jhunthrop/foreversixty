@@ -1,6 +1,6 @@
 // web/src/lib/planner/styles.test.ts
 import { describe, expect, it } from 'vitest';
-import { CELL_BORDER, CELL_PILL, cellState } from './styles';
+import { CELL_BORDER, CELL_PILL, cellState, treeRowColumnsClass } from './styles';
 
 describe('cellState', () => {
   it('is locked when no point can go in yet', () => {
@@ -26,5 +26,18 @@ describe('cellState', () => {
       expect(CELL_BORDER[state]).toBeTruthy();
       expect(CELL_PILL[state]).toBeTruthy();
     }
+  });
+});
+
+describe('treeRowColumnsClass', () => {
+  it('gives each tree its own column for one, two or three trees', () => {
+    expect(treeRowColumnsClass(1)).toBe('md:grid-cols-1');
+    expect(treeRowColumnsClass(2)).toBe('md:grid-cols-2');
+    expect(treeRowColumnsClass(3)).toBe('md:grid-cols-3');
+  });
+
+  it('falls back to three columns for a count the table has never seen', () => {
+    expect(treeRowColumnsClass(4)).toBe('md:grid-cols-3');
+    expect(treeRowColumnsClass(0)).toBe('md:grid-cols-3');
   });
 });

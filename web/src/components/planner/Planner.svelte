@@ -32,8 +32,7 @@
   } from '../../lib/planner/load';
   import type { TalentIndex } from '../../lib/planner/rules';
   import { createPlannerStore } from '../../lib/planner/store.svelte';
-  import { SECONDARY_BUTTON } from '../../lib/planner/styles';
-  import { plannerCopy } from '../../lib/planner/copy';
+  import { treeRowColumnsClass } from '../../lib/planner/styles';
   import { treeSourceNotice } from '../../lib/planner/tree-source';
   import { plannerSearchFor } from '../../lib/planner/url';
   import type { BuildRecord, Gear, TalentFile } from '../../lib/planner/types';
@@ -45,9 +44,9 @@
   import GearPanel from './GearPanel.svelte';
   import ImportBox from './ImportBox.svelte';
   import OrderStrip from './OrderStrip.svelte';
-  import SharePanel from './SharePanel.svelte';
+  import PlannerToolbar from './PlannerToolbar.svelte';
   import SummaryBar from './SummaryBar.svelte';
-  import TreeGrid from './TreeGrid.svelte';
+  import TreeTabs from './TreeTabs.svelte';
 
   let {
     treeVersion,
@@ -303,21 +302,27 @@
   const hasGear = $derived(store.itemIndex.size > 0);
   const gearTabIndex = $derived(store.talentIndex ? store.talentIndex.trees.length : 0);
 
-  // The roving tabindex keeps the unselected tabs out of the tab order, so arrow keys are the
-  // only way to reach them: without this a keyboard could never open the second tree, or the
-  // gear panel behind the last tab. Moving selects, which is the automatic-activation half of
-  // the ARIA tabs pattern -- switching panel costs nothing, so there is no reason to make it
-  // a second keypress. The tabs come off the event rather than a `bind:this`: the listener is
-  // on the tablist itself, so currentTarget is already the element, and there is no reference
-  // to go stale when the branch unmounts.
-  function onTabKeys(event: KeyboardEvent & { currentTarget: HTMLDivElement }): void {
-    const step = event.key === 'ArrowRight' ? 1 : event.key === 'ArrowLeft' ? -1 : 0;
-    if (step === 0) return;
-    event.preventDefault();
-    const tabs = event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]');
-    activeTree = (activeTree + step + tabs.length) % tabs.length;
-    tabs[activeTree].focus();
-  }
+  // The tree row's own column count -- one class per tree count so Tailwind keeps every
+  // literal this can render (design loop, planner round; build review round 1, finding 2).
+  const treeColumnsClass = $derived(treeRowColumnsClass(store.talentIndex?.trees.length ?? 3));
+
+  // Below md, Import and Point order fold behind a native, closed-by-default <details>
+  // (design loop, planner round; build review round 1, finding 3) rather than sitting
+  // between the tabs and Gear on every visit. The same `(max-width: 767px)` query
+  // ActorRow.svelte and ReportView.svelte already read for their own phone/desktop split.
+  // Standalone-gated: Top Gear's inline "add a build" (TalentCandidates.svelte) mounts this
+  // same component inside its own layout and must not grow a collapse of its own.
+  let phoneViewport = $state(false);
+  $effect(() => {
+    const query = window.matchMedia('(max-width: 767px)');
+    const read = (): void => {
+      phoneViewport = query.matches;
+    };
+    read();
+    query.addEventListener('change', read);
+    return () => query.removeEventListener('change', read);
+  });
+  const collapsesOnPhone = $derived(standalone && phoneViewport);
 
   // Nothing cancels a request that is already in flight, so switching class twice in quick
   // succession leaves two runs of this racing to write to the same store. The class this run
@@ -662,8 +667,25 @@
        Fork grows the toolbar back to the editable height, and a reserve that
        tracked `readOnly` would spend that growth shoving the footer down the moment it is
        pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
-       island's whole planner arrives after first paint regardless of what this reserves. -->
-  <div class="flex min-h-[1185px] flex-col gap-[22px] md:min-h-[1535px] md:gap-8">
+       island's whole planner arrives after first paint regardless of what this reserves.
+
+       Design loop, planner round (2026-09-26, build review round 1): everything below the
+       tree row -- Share, Import, Point order and, from md up, Gear -- used to stack full
+       width, one section per row. It now shares a responsive grid with the tree row itself
+       (findings 1-4: the trees were the headline feature and the page buried them under
+       three utility panels), so from md up Gear sits beside the rail instead of under it and
+       the ready planner is a good deal shorter than every figure this comment measured
+       before today. Re-measured the same way -- load /planner, zero this element's
+       min-height, read `getBoundingClientRect().height` at 360px and at 1280px -- the
+       fixture build's naturals are 958.5 at 360px and 1073.5 from md up. Per this lane's own
+       instructions (CI's Linux fonts wrap wider than a Mac's), both reserves carry 24px
+       above those figures rather than the single wrapped line this comment tracked by hand
+       before: 983 at 360px, 1098 from md up. Every other paragraph above is left as history
+       -- the reasoning for reserving the loaded height rather than the audit's viewport, for
+       binding the reserve to every branch, for measuring at 360px, and so on -- still holds;
+       only the numbers it produced are stale now that the layout it measured no longer
+       stacks the same way. -->
+  <div class="flex min-h-[983px] flex-col gap-[22px] md:min-h-[1098px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
@@ -690,191 +712,90 @@
            2026-09-22 spec section 1.4). It repeats the reserve div's flex column and gap so
            the panels below keep the exact spacing they had as that div's direct children. -->
       <div class="reveal flex flex-col gap-[22px] md:gap-8">
-        <!-- One panel at a time on a phone: three trees side by side do not fit 360px, and
-           stacking them -- with the gear panel's seventeen slots under them -- puts the last
-           one several screens down. Desktop keeps the columns and hides this. The roving
-           tabindex lives on the tabs, as it does on TreeGrid's cells.
-           The -1 on the container changes nothing about the keyboard order -- a bare div was
-           never a tab stop -- and is there to satisfy the compiler's a11y rule that an element
-           carrying an interactive role and a key handler declare a tabindex; -1 declares one
-           without adding a stop, and it matches what TreeGrid's `role="grid"` does. -->
-        <div
-          role="tablist"
-          tabindex={-1}
-          aria-label="Planner sections"
-          class="border-line-soft mx-[18px] flex gap-2 border-b pb-2 md:hidden"
-          onkeydown={onTabKeys}
-        >
-          {#each store.talentIndex.trees as tree, i (tree.id)}
-            <button
-              type="button"
-              role="tab"
-              id={`tree-tab-${tree.id}`}
-              aria-selected={activeTree === i}
-              aria-controls={`tree-panel-${tree.id}`}
-              tabindex={activeTree === i ? 0 : -1}
-              class="{SECONDARY_BUTTON} flex-1 justify-center {activeTree === i
-                ? 'border-gold text-gold'
-                : 'border-line text-nav'}"
-              onclick={() => (activeTree = i)}
-            >
-              <span>{tree.name}</span>
-              <span class="tabular text-muted ml-2 font-mono">{store.split[i] ?? 0}</span>
-            </button>
-          {/each}
-          <!-- Last, so `gearTabIndex` is the tree count and onTabKeys picks it up from the
-             tablist's own DOM order without knowing gear exists. No count beside the name:
-             the trees show the points spent in them because that number is otherwise only on
-             the panel behind the tab, and the gear panel's own totals are not one number. -->
-          {#if hasGear}
-            <button
-              type="button"
-              role="tab"
-              id="gear-tab"
-              aria-selected={activeTree === gearTabIndex}
-              aria-controls="gear-tabpanel"
-              tabindex={activeTree === gearTabIndex ? 0 : -1}
-              class="{SECONDARY_BUTTON} flex-1 justify-center {activeTree === gearTabIndex
-                ? 'border-gold text-gold'
-                : 'border-line text-nav'}"
-              onclick={() => (activeTree = gearTabIndex)}
-            >
-              Gear
-            </button>
-          {/if}
-        </div>
+        <!-- The tree row, Gear, the tree-source caveat and the three utility panels share one
+             responsive box: a flex column on phone, where DOM order is visual order (nothing
+             below needs an `order` class to read right there), a two-column grid from md
+             (no rail yet -- Share and Import share a row, everything else spans both
+             columns), and a twelve-column grid from lg, where explicit `order` values (not
+             DOM position) put Gear directly under the tree row in an 8-column left side and
+             Share/Import/Point order in a 4-column rail on the right. CSS grid's own
+             auto-placement fills each row from the low end of `order` up, wrapping to the
+             next row only once a span no longer fits -- TreeRow(8)+Share(4) share row one,
+             Notice(8)+Import(4) row two, Gear(8)+OrderStrip(4) row three -- which is what
+             turns six flat siblings into two visual columns without any explicit
+             `grid-row` (build review round 1, findings 1-4). -->
+        <div class="flex flex-col gap-[22px] md:grid md:grid-cols-2 md:items-start md:gap-8 lg:grid-cols-12">
+          <!-- The phone tab strip and the tree row it switches between, split into their own
+               component (design loop, planner round) so this file stays under the project's
+               file-size guideline. `md:hidden` on its own tablist keeps it out of the md/lg
+               grid's layout, so `order-1`/`lg:col-span-8` -- read by its tree-columns div --
+               are the only placement this needs at those breakpoints. -->
+          <TreeTabs
+            {store}
+            talentIndex={store.talentIndex}
+            bind:activeTree
+            {hasGear}
+            {gearTabIndex}
+            {treeColumnsClass}
+          />
 
-        <div class="grid grid-cols-1 gap-4 px-[18px] md:grid-cols-3 md:px-0" data-testid="tree-columns">
-          {#each store.talentIndex.trees as tree, i (tree.id)}
-            <!-- The inactive trees are hidden with a class, not the `hidden` attribute: the
-               attribute would hide them on desktop too, where `md:flex` cannot override it. -->
+          <!-- Gear sits right after the tree row in every DOM/order sense on phone (the two
+             are the same tab-switched slot, so whichever is hidden costs no height) and
+             directly under it again from lg, where `order` -- not this position -- is what
+             actually places it (build review round 1, finding 3). Hidden by a class rather
+             than the `hidden` attribute for the same reason the tree panels are: the
+             attribute would hide it from md up too, where `md:flex`/`lg:flex` could not
+             override it. -->
+          {#if hasGear}
             <div
-              id={`tree-panel-${tree.id}`}
+              id="gear-tabpanel"
               role="tabpanel"
-              aria-labelledby={`tree-tab-${tree.id}`}
-              data-testid={`tree-panel-${tree.id}`}
-              class="border-line-warm bg-raised rounded-panel flex-col gap-3 border p-4 md:flex {activeTree ===
-              i
+              aria-labelledby="gear-tab"
+              class="order-2 flex-col md:order-6 md:col-span-2 md:flex lg:order-5 lg:col-span-8 {activeTree ===
+              gearTabIndex
                 ? 'flex'
                 : 'hidden'}"
             >
-              <!-- The game's tree header: name on the left, points in the tree on the
-                 right, a rule under both. Warm border and gold number are the
-                 design system's; the proportions are the client's. -->
-              <header class="border-line-soft flex items-baseline justify-between border-b pb-2">
-                <h2 class="section-title text-[15px]">{tree.name}</h2>
-                <span class="tabular text-gold font-mono text-[15px]" data-testid={`tree-points-${tree.id}`}>
-                  {store.split[i] ?? 0}
-                </span>
-              </header>
-              <TreeGrid {store} {tree} />
+              <GearPanel {store} {weights} />
             </div>
-          {/each}
-        </div>
-
-        <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-tree-source">
-          {treeSourceNotice(store.treeVersion)}
-        </p>
-
-        <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
-          {#if store.readOnly}
-            <!-- A build opened from a share link. Every edit is refused until Fork, so the
-               toolbar says so up front rather than leaving the refusal message to explain it
-               after the first click. Reset and Share are gone with it: there is nothing of
-               one's own to clear, and re-sharing someone else's build under a new id is the
-               one thing Fork is for. -->
-            <p class="text-muted text-[13px]">
-              This build was shared as a link. Fork it to spend points of your own.
-            </p>
-            <button
-              type="button"
-              class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
-              onclick={() => store.fork()}
-            >
-              Fork
-            </button>
-          {:else}
-            <!-- Nested rather than a third arm of the branch above, so `readOnly` is asked once:
-               Reset and Share belong to the same half of that decision, and SharePanel has to
-               sit outside the confirm to survive it -- it holds the title being typed and the
-               link of the last save, and re-mounting it when the confirm opens would throw
-               both away. -->
-            <section
-              class="border-line bg-raised rounded-panel flex w-full flex-col gap-3 border p-4"
-              data-testid="planner-share-section"
-            >
-              <header class="flex flex-wrap items-center justify-between gap-3">
-                <h2 class="section-title text-[15px]">{plannerCopy.shareTitle}</h2>
-                <div class="flex flex-wrap items-center gap-3">
-                  {#if confirmingReset}
-                    <span class="text-muted text-[13px]">Clear every point in this build?</span>
-                    <button
-                      type="button"
-                      class="{SECONDARY_BUTTON} border-line-warm-strong text-gold px-4"
-                      onclick={() => {
-                        store.reset();
-                        confirmingReset = false;
-                      }}
-                    >
-                      Clear all points
-                    </button>
-                    <!-- Reset leaves the DOM the moment it is pressed, so the keyboard lands on the
-                 question it just asked rather than back at the top of the document. It lands
-                 on the safe answer: a second Enter pressed out of habit keeps the build rather
-                 than clearing it, which is the only reason the second step exists. -->
-                    <button
-                      type="button"
-                      class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-                      {@attach (node) => node.focus()}
-                      onclick={() => (confirmingReset = false)}
-                    >
-                      Keep the build
-                    </button>
-                  {:else}
-                    <button
-                      type="button"
-                      class="{SECONDARY_BUTTON} border-line-warm text-text px-4"
-                      onclick={() => (confirmingReset = true)}
-                    >
-                      Reset…
-                    </button>
-                  {/if}
-                </div>
-              </header>
-              <SharePanel {store} {live} />
-            </section>
           {/if}
-        </div>
 
-        {#if !store.readOnly}
-          <!-- A read-only build (opened from a share link) has nowhere for an imported build to
-             go until it is forked, so the box only mounts once the toolbar above already shows
-             Reset and Share rather than "Fork it to spend points of your own." -->
-          <ImportBox
-            talents={store.talentIndex}
-            activeBuild={activeBuild.build}
-            onimport={(build, pastedCode) => {
-              store.loadImported(build);
-              writePointer('addon', pastedCode, build.classSlug);
-            }}
-          />
-        {/if}
-
-        <OrderStrip {store} />
-
-        <!-- The gear tab's panel. Hidden by a class rather than the `hidden` attribute for the
-           same reason the tree panels are: the attribute would hide it on desktop too, where
-           it belongs under the order strip and `md:flex` could not override it. -->
-        {#if hasGear}
-          <div
-            id="gear-tabpanel"
-            role="tabpanel"
-            aria-labelledby="gear-tab"
-            class="flex-col md:flex {activeTree === gearTabIndex ? 'flex' : 'hidden'}"
+          <p
+            class="text-muted order-3 px-[18px] text-[13px] md:order-2 md:col-span-2 md:px-0 lg:order-3 lg:col-span-8"
+            data-testid="planner-tree-source"
           >
-            <GearPanel {store} {weights} />
+            {treeSourceNotice(store.treeVersion)}
+          </p>
+
+          <div
+            class="order-4 flex flex-wrap items-center gap-3 px-[18px] md:order-3 md:col-span-1 md:px-0 lg:order-2 lg:col-span-4"
+            data-testid="planner-toolbar"
+          >
+            <PlannerToolbar {store} {live} bind:confirmingReset />
           </div>
-        {/if}
+
+          {#if !store.readOnly}
+            <!-- A read-only build (opened from a share link) has nowhere for an imported build to
+               go until it is forked, so the box only mounts once the toolbar above already shows
+               Reset and Share rather than "Fork it to spend points of your own." -->
+            <ImportBox
+              talents={store.talentIndex}
+              activeBuild={activeBuild.build}
+              onimport={(build, pastedCode) => {
+                store.loadImported(build);
+                writePointer('addon', pastedCode, build.classSlug);
+              }}
+              phone={collapsesOnPhone}
+              class="order-5 mx-[18px] md:order-4 md:col-span-1 md:mx-0 lg:order-4 lg:col-span-4"
+            />
+          {/if}
+
+          <OrderStrip
+            {store}
+            phone={collapsesOnPhone}
+            class="order-6 md:order-5 md:col-span-2 lg:order-6 lg:col-span-4"
+          />
+        </div>
       </div>
     {/if}
   </div>
