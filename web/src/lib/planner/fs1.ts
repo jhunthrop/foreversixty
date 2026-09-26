@@ -330,6 +330,7 @@ export function decodeFS1(code: string): FS1Result {
     professions: [] as string[],
     guild: undefined as { name: string; rankIndex: number } | undefined,
     ignored: [] as string[],
+    character: undefined as { name: string; realm: string } | undefined,
   };
 
   for (const section of sections) {
