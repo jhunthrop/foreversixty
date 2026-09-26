@@ -28,6 +28,7 @@ import {
   sourceNameOfCombo,
   substitutionChipLabel,
   substitutionLabel,
+  topUpgradeOf,
   winningGear,
   type ComboRow,
 } from './combos';
@@ -838,5 +839,62 @@ describe('substitutionChipLabel', () => {
     expect(
       substitutionChipLabel({ kind: 'item', slot: 'head', item_id: 1, name: 'X', source_name: '' }),
     ).toBe('X');
+  });
+});
+
+describe('topUpgradeOf', () => {
+  it('reads the top row when it is a genuine upgrade', () => {
+    const upgradeResult = {
+      combos: [
+        {
+          group: 0,
+          delta: { mean: 41, error: 11 },
+          dps: { mean: 0, error: 0 },
+          substitutions: [
+            { kind: 'item', item_id: 1, name: 'Bracers of X', source_name: 'Blackfathom Deeps' },
+          ],
+        },
+      ],
+      equipped: { mean: 1000, error: 5 },
+      request: { character: { gear: [] } },
+    } as unknown as BulkResult;
+    expect(topUpgradeOf(upgradeResult)).toEqual({
+      itemName: 'Bracers of X',
+      sourceName: 'Blackfathom Deeps',
+      // deltaLabel goes through confidenceBand (1.96 * error) and formatMargin, same as
+      // every other "±" figure on the page -- error 11 becomes a 22 margin, not 11 itself.
+      gain: '+41 ± 22',
+    });
+  });
+
+  it('is null when the top row is not an upgrade', () => {
+    const noUpgradeResult = {
+      combos: [{ group: 0, delta: { mean: 0, error: 0 }, dps: { mean: 0, error: 0 }, substitutions: [] }],
+      equipped: { mean: 1000, error: 5 },
+      request: { character: { gear: [] } },
+    } as unknown as BulkResult;
+    expect(topUpgradeOf(noUpgradeResult)).toBeNull();
+  });
+
+  it('falls back to "an unknown source" when the substitution carries no source name', () => {
+    const noSourceResult = {
+      combos: [
+        {
+          group: 0,
+          delta: { mean: 20, error: 4 },
+          dps: { mean: 0, error: 0 },
+          substitutions: [{ kind: 'item', item_id: 1, name: 'Bracers of X' }],
+        },
+      ],
+      equipped: { mean: 1000, error: 5 },
+      request: { character: { gear: [] } },
+    } as unknown as BulkResult;
+    expect(topUpgradeOf(noSourceResult)).toEqual({
+      itemName: 'Bracers of X',
+      sourceName: 'an unknown source',
+      // Same confidenceBand/formatMargin path: error 4 -> 1.96*4 = 7.84 -> "7.8" (below 10,
+      // one decimal kept).
+      gain: '+20 ± 7.8',
+    });
   });
 });

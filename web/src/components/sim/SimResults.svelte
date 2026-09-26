@@ -16,7 +16,9 @@
   import { rowLink } from '../../lib/report/format';
   import { fullWindow } from '../../lib/report/window';
   import type { ActionNames } from '../../lib/sim/action-names';
+  import { afterSimCopy, afterSimSentence } from '../../lib/sim/after-sim-copy';
   import { AURA_EMPTY_MESSAGE, simCopy } from '../../lib/sim/copy';
+  import type { LastUpgrade } from '../../lib/sim/last-upgrade';
   import { namedSummary, summarySentence } from '../../lib/sim/sentence';
   import type { Estimate, SampleCast } from '../../lib/sim/types';
   import type { Summary } from '../../lib/report/types';
@@ -29,6 +31,7 @@
     iterationsRun,
     actionNames,
     sample,
+    topUpgrade = null,
   }: {
     summary: Summary;
     estimate: Estimate;
@@ -37,6 +40,9 @@
     actionNames: ActionNames | null;
     /** One iteration's casts (Design 5.1). Undefined for a result the engine did not sample. */
     sample: SampleCast[] | undefined;
+    /** Spec 2026-09-25 §6: the last Droptimizer upgrade on record, read with no new fetch
+     *  (SimView.svelte's own one-shot localStorage read). Null when none exists yet. */
+    topUpgrade?: LastUpgrade | null;
   } = $props();
 
   const TABS = [
@@ -61,6 +67,7 @@
   // are engine action keys. `named` is a copy -- the stored SimResult keeps the keys.
   const named = $derived(namedSummary(summary, actionNames));
   const sentence = $derived(summarySentence(summary, actionNames));
+  const nextActionSentence = $derived(afterSimSentence(topUpgrade));
   const buffs = $derived(named.auras.filter((track) => track.type === 'BUFF'));
   const debuffs = $derived(named.auras.filter((track) => track.type === 'DEBUFF'));
   // GUID to display name, for AuraTable's "from X" line. A sim has one target (the
@@ -72,6 +79,20 @@
 
   const pill = `${rowLink} shrink-0 px-3 text-[12px] font-bold tracking-[0.06em] uppercase md:min-h-9`;
 </script>
+
+<p
+  class="text-strong px-[18px] text-[15px] md:px-0"
+  role="status"
+  aria-live="polite"
+  data-testid="sim-next-action"
+>
+  {#if topUpgrade === null}
+    {afterSimCopy.noUpgrade}
+    <a class="text-nav underline" href={afterSimCopy.noUpgradeHref}>{afterSimCopy.noUpgradeLink}</a>
+  {:else}
+    {nextActionSentence}
+  {/if}
+</p>
 
 <p
   class="text-strong px-[18px] text-[15px] md:px-0"

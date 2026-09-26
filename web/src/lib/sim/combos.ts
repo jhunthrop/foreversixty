@@ -548,3 +548,20 @@ export function headlineFor(result: BulkResult): string {
   const what = substitutionLabel(winner.substitutions[0]);
   return what === '' ? `${gain} DPS` : `${gain} DPS from ${what}`;
 }
+
+/** The after-sim sentence's own data shape, off a bulk result's top row -- null when the
+ *  result has no genuine upgrade (DropResults.svelte's own `> 0` rule). Exported so
+ *  Droptimizer.svelte's write-on-success effect, and its own test, share one function
+ *  rather than the effect re-deriving this inline. */
+export function topUpgradeOf(
+  result: BulkResult,
+): { itemName: string; sourceName: string; gain: string } | null {
+  const top = comboRows(result)[0];
+  if (top === undefined || top.combo.delta.mean <= 0) return null;
+  const sourceName = sourceNameOfCombo(top.combo);
+  return {
+    itemName: substitutionLabel(top.combo.substitutions[0]),
+    sourceName: sourceName === '' ? 'an unknown source' : sourceName,
+    gain: deltaLabel(top.combo.delta),
+  };
+}
