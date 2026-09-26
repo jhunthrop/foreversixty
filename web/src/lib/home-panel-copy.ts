@@ -35,7 +35,7 @@ export const homePanelCopy = {
   /** The planner door card's no-build state (review round 1 fix item 1): one link, not a
    *  muted status line plus a separate "Get the build" action, and it sends the visitor to
    *  the fastest way to get one (pasting an export) rather than the account page. */
-  noBuildPasteExport: 'No build yet · Paste an export',
+  pasteAnExport: 'Paste an export',
   noLogsYet: 'No logs yet.',
   uploadALog: 'Upload a log',
   openAction: 'Open',

@@ -153,18 +153,17 @@
         <span class="text-strong text-[13px] font-semibold" data-testid="home-next-planner-value"
           >{plannerPoints}</span
         >
-      {:else if hero.build === undefined}
-        <!-- No build at all (review round 1 fix item 1): the muted status line and the
-             action link below would say the same thing twice, so this card carries the one
-             "No build yet -- Paste an export" message on the link itself, not here. -->
       {:else}
+        <!-- Status line, then the action link, the shape every other door card has (review
+             round 2): with no build the status is "No build yet." and the action is the
+             paste box; with a build but no sim input it is the same status over the planner. -->
         <span class="text-muted text-[13px]">{homePanelCopy.noBuildYet}</span>
       {/if}
       <a
         class="text-nav mt-auto w-fit text-[13px] font-semibold"
         href={hero.build === undefined ? '/setup#paste' : '/planner'}
       >
-        {hero.build === undefined ? homePanelCopy.noBuildPasteExport : homePanelCopy.continuePlanning}
+        {hero.build === undefined ? homePanelCopy.pasteAnExport : homePanelCopy.continuePlanning}
       </a>
     </div>
 

@@ -188,9 +188,7 @@ test('the four cards fall back to their empty states with nothing to show', asyn
   ).toHaveAttribute('href', '/guides');
 });
 
-test('a character with no build at all shows the one paste-export link, not a duplicate status line', async ({
-  page,
-}) => {
+test('a character with no build at all shows the status line and a paste-export action', async ({ page }) => {
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       fulfil({
@@ -222,7 +220,8 @@ test('a character with no build at all shows the one paste-export link, not a du
   await page.goto('/');
   const planner = page.getByTestId('home-next-planner');
   await expect(planner.getByTestId('home-next-planner-value')).toHaveCount(0);
-  await expect(planner.getByText('No build yet.', { exact: true })).toHaveCount(0);
-  const link = planner.getByRole('link', { name: 'No build yet · Paste an export' });
+  // Status line then action link, the same two-line shape as every other door card.
+  await expect(planner.getByText('No build yet.', { exact: true })).toHaveCount(1);
+  const link = planner.getByRole('link', { name: 'Paste an export' });
   await expect(link).toHaveAttribute('href', '/setup#paste');
 });
