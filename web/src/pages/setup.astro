@@ -115,8 +115,14 @@ const flows = [
         <AddonPasteBox client:idle />
         <CurrentCharacterBar client:idle hasOwnPasteBox />
         <details class="border-line rounded-control border">
-          <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center px-4 select-none">
+          <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 select-none">
             {addonCopy.setupHowItWorks}
+            <span class="when-closed text-muted" aria-hidden="true">
+              {addonCopy.disclosureOpen}
+            </span>
+            <span class="when-open text-muted" aria-hidden="true">
+              {addonCopy.disclosureClose}
+            </span>
           </summary>
           <div class="grid gap-4 px-4 pb-4 md:grid-cols-3">
             {flows.map((flow) => (

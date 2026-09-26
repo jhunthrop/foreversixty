@@ -48,6 +48,8 @@ const STRING_COPY_KEYS = [
   'setupHowItWorks',
   'setupCompanionDownloadLead',
   'setupCompanionPair',
+  'disclosureOpen',
+  'disclosureClose',
 ] as const;
 
 let html: string;

@@ -254,7 +254,7 @@
     <div class="grid grid-cols-2 gap-x-3 gap-y-2 md:flex md:flex-wrap md:items-center md:gap-x-4">
       {#if state.board === 'character'}
         <label
-          class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+          class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
           for="rankings-metric"
         >
           Metric
@@ -271,7 +271,7 @@
         </label>
       {:else}
         <label
-          class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+          class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
           for="rankings-kind"
         >
           Board
@@ -287,7 +287,7 @@
       {/if}
 
       <label
-        class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+        class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
         for="rankings-ruleset"
       >
         Ruleset
@@ -304,7 +304,7 @@
       </label>
 
       <label
-        class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+        class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
         for="rankings-region"
       >
         Region
@@ -320,7 +320,7 @@
       </label>
 
       <label
-        class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+        class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
         for="rankings-phase"
       >
         Phase
@@ -336,7 +336,7 @@
       </label>
 
       <label
-        class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+        class="label text-muted flex flex-col items-start gap-1 last:odd:col-span-2 md:flex-row md:items-center md:gap-2"
         for="rankings-faction"
       >
         Faction
@@ -515,8 +515,10 @@
             {formatDuration(row.duration_ms)}
           </span>
           <!-- One span on a phone (the row's third column), its two children direct grid
-               cells from md (`md:contents`), so Build and Report are two headed columns. -->
-          <span class="flex items-center justify-end gap-3 text-[13px] md:contents">
+               cells from md (`md:contents`), so Build and Report are two headed columns. The
+               phone span has a floor width: each row is its own grid, so without one the
+               column was as wide as that row's build code and Report drifted row to row. -->
+          <span class="flex min-w-[148px] items-center justify-end gap-3 text-[13px] md:contents">
             {#if buildHref !== null}
               <a class="{rowLink} md:justify-self-end" href={buildHref} data-testid="ranking-build"
                 >{row.talent_split}</a

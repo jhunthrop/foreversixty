@@ -228,3 +228,10 @@ html:not([data-pointer='1']) .setup-when-pointer,
 html[data-pointer='1'] .setup-when-no-pointer {
   display: none;
 }
+
+/* A disclosure's own affordance: a summary carries one .when-closed and one .when-open
+   child ("Show" / "Hide" or a caret), and only the one that applies is drawn. */
+details[open] > summary .when-closed,
+details:not([open]) > summary .when-open {
+  display: none;
+}

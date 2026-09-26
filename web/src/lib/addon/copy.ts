@@ -109,6 +109,8 @@ export const addonCopy = {
   setupHowItWorks: 'How the addon works',
   setupCompanionDownloadLead: 'Download the companion',
   setupCompanionPair: 'Pair it on your account',
+  disclosureOpen: 'Show',
+  disclosureClose: 'Hide',
 
   // --- gear panel weights ---
   scoreColumn: 'Score',

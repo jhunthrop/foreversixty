@@ -33,8 +33,14 @@ const { placement = 'inline' } = Astro.props;
            first screen of a seven-screen page, so a reader who wanted Stat priority after
            Overview had to scroll back up. One 44px line rides under the header instead. -->
     <details class="bg-bg border-line-soft border-b">
-      <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center gap-2 select-none">
+      <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 select-none">
         On this page
+        <span class="when-closed text-muted" aria-hidden="true">
+          Show
+        </span>
+        <span class="when-open text-muted" aria-hidden="true">
+          Hide
+        </span>
       </summary>
       <ol class="m-0 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 pb-3 text-[13px]">
         {SPEC_SECTIONS.map((section) => (
