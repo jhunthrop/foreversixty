@@ -123,6 +123,12 @@
       decoding="async"
       class="rounded-control h-10 w-10 object-cover"
       onerror={() => (iconBroken = true)}
+      onload={(event) => {
+        // A 1x1 file is the data pipeline's placeholder for art it has not produced yet
+        // (the beta build ships those); the two-letter mark reads as a node, a blank box
+        // does not.
+        if (event.currentTarget.naturalWidth <= 1) iconBroken = true;
+      }}
     />
   {/if}
   <span
