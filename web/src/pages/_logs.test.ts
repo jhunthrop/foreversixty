@@ -68,7 +68,9 @@ describe('/logs', () => {
     );
   });
 
-  it('mounts the recent public reports panel above Your reports', async () => {
+  it('mounts Your reports first, above the recent public reports panel', async () => {
+    // Reordered by the spine mount (spec 2026-09-25 §4.1/4.2): "Your reports" is the first
+    // content panel a signed-in visitor sees, ahead of "Recent public reports".
     const html = await container.renderToString(Logs);
     const recentAt = html.indexOf('>Recent public reports<');
     // Not '>Your reports<' plain text search: "Fights appear under Your reports as they
@@ -77,10 +79,20 @@ describe('/logs', () => {
     const mineAt = html.indexOf('>Your reports<');
     expect(recentAt).toBeGreaterThan(-1);
     expect(mineAt).toBeGreaterThan(-1);
-    expect(recentAt).toBeLessThan(mineAt);
+    expect(mineAt).toBeLessThan(recentAt);
     // The panel titles it; RecentReports itself is told to leave its own heading off, so
     // "Recent public reports" appears exactly once.
     expect(html.split('Recent public reports').length - 1).toBe(1);
+  });
+
+  it('mounts the spine bar as the first child of main', async () => {
+    const html = await container.renderToString(Logs);
+    const mainAt = html.indexOf('id="main"');
+    const barAt = html.indexOf('data-testid="current-character-bar"');
+    const mineAt = html.indexOf('>Your reports<');
+    expect(mainAt).toBeGreaterThan(-1);
+    expect(barAt).toBeGreaterThan(mainAt);
+    expect(barAt).toBeLessThan(mineAt);
   });
 
   it('uses no emoji, and no exclamation marks in its copy', async () => {

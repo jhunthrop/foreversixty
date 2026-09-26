@@ -6,6 +6,7 @@
 // Panel); the islands inside them are unchanged in behaviour.
 import Base from '../layouts/Base.astro';
 import Account from '../components/Account.svelte';
+import CurrentCharacterBar from '../components/CurrentCharacterBar.svelte';
 import Panel from '../components/Panel.astro';
 import RecentReports from '../components/RecentReports.svelte';
 import { RECENT_REPORTS_PRELOAD } from '../lib/reports/recent';
@@ -69,6 +70,14 @@ const blockTitle = 'label text-muted';
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1344px] flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
   >
+    <CurrentCharacterBar client:idle spine />
+
+    <Panel title="Your reports">
+      <div class="p-4 md:p-5">
+        <Account client:visible mode="reports" />
+      </div>
+    </Panel>
+
     <header class="flex flex-col gap-2">
       <h1 class="section-title text-[18px]">Logs</h1>
       <p class="text-muted max-w-[720px] text-[14px] leading-relaxed">
@@ -142,12 +151,6 @@ const blockTitle = 'label text-muted';
     <Panel title="Recent public reports">
       <div class="p-4 md:p-5">
         <RecentReports client:visible={{ rootMargin: RECENT_REPORTS_PRELOAD }} heading={false} />
-      </div>
-    </Panel>
-
-    <Panel title="Your reports">
-      <div class="p-4 md:p-5">
-        <Account client:visible mode="reports" />
       </div>
     </Panel>
   </main>

@@ -117,3 +117,32 @@ test('an "Older reports" control appears only when the API says a further page e
   await expect(page.getByTestId('recent-reports-older')).toHaveCount(0);
   expect(calls).toBe(2);
 });
+
+test('the spine bar mounts on /logs and "Your reports" is the first panel for a signed-in visitor', async ({
+  page,
+}) => {
+  // The chip-slot pre-paint rule (global.css) hides the spine bar before hydration unless
+  // `fs_csrf` is present, the same signed-in-visitor cookie sim-landing.spec.ts and
+  // home-panel.spec.ts set; without it the bar's `.chip-slot` is `display: none` at first
+  // paint and this test's own visibility assertion fails regardless of the /v1/me mock.
+  await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
+  await page.route('**/v1/me', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        data: { user: { battletag: 'Fixture#1234' }, characters: [] },
+        error: null,
+      }),
+    }),
+  );
+  await page.goto('/logs');
+  await expect(page.getByTestId('current-character-bar')).toBeVisible();
+  const myReports = page.getByTestId('my-reports');
+  const companion = page.locator('#companion');
+  const myReportsBox = await myReports.boundingBox();
+  const companionBox = await companion.boundingBox();
+  expect(myReportsBox).not.toBeNull();
+  expect(companionBox).not.toBeNull();
+  expect((myReportsBox as { y: number }).y).toBeLessThan((companionBox as { y: number }).y);
+});
