@@ -21,3 +21,18 @@ describe('CurrentCharacterBar', () => {
     expect(body).not.toContain('data-testid="current-character-chip"');
   });
 });
+
+describe('CurrentCharacterBar spine mode', () => {
+  it('renders the signed-out, no-session line with no pointer (SSR: session/pointer both null)', () => {
+    const { body } = render(CurrentCharacterBar, { props: { spine: true } });
+    expect(body).toContain(currentCharacterCopy.barSignedOutLine);
+    expect(body).toContain('/login');
+    expect(body).toContain('/setup#paste');
+  });
+
+  it('reserves the same CHIP_HEIGHT classes as the plain chip', () => {
+    const { body } = render(CurrentCharacterBar, { props: { spine: true } });
+    expect(body).toContain('h-[88px]');
+    expect(body).toContain('md:h-11');
+  });
+});
