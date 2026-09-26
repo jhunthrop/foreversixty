@@ -58,7 +58,11 @@
   <section class="flex flex-col gap-2" data-testid="character-rating">
     <h2 class="section-title text-[18px]">{ratingCopy.panelHeading}</h2>
     {#if data.sample_size === 0}
-      <EmptyState message={ratingCopy.characterEmpty} testid="character-rating-empty" />
+      <EmptyState
+        message={ratingCopy.characterEmpty}
+        action={{ label: ratingCopy.characterEmptyAction, href: '/logs' }}
+        testid="character-rating-empty"
+      />
     {:else}
       {#if data.latest !== null}
         <div class="flex items-center gap-4">
