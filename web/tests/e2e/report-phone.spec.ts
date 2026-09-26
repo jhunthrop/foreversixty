@@ -99,12 +99,13 @@ test('the chart sits above the table, as the spec asks', async ({ page }) => {
 });
 
 // The strips once stuck to the top of a phone screen; at 263px they covered every table's
-// headings, so they scroll with the page now, and the tab strip wraps rather than hiding
-// "Deaths" past the right edge.
+// headings, so they scroll with the page now. Spec 2026-09-25 section 6 replaced the
+// thirteen-pill strip below lg with a single select, which cannot itself wrap past the
+// right edge the way the pill row once could -- so this now guards the select the same way.
 test('every tab is visible on a phone without scrolling sideways', async ({ page }) => {
   await page.goto(`${REPORT}&tab=damage-done`);
-  const deaths = (await page.getByTestId('tab-deaths').boundingBox())!;
-  expect(deaths.x + deaths.width).toBeLessThanOrEqual(390);
+  const select = (await page.getByTestId('tab-select').boundingBox())!;
+  expect(select.x + select.width).toBeLessThanOrEqual(390);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });
 
