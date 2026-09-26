@@ -4,9 +4,9 @@
      a public report is enough to have one, which is the spec's position. -->
 <script lang="ts">
   import CurrentCharacterBar from './CurrentCharacterBar.svelte';
-  import CharacterPortrait from './character/CharacterPortrait.svelte';
+  import CharacterIdentity from './character/CharacterIdentity.svelte';
   import { CHARACTER_LOADING_MIN_H } from '../lib/character-layout';
-  import { parseCharacterPath, rulesetLabel, type CharacterPath } from '../lib/characters';
+  import { characterKey, parseCharacterPath, rulesetLabel, type CharacterPath } from '../lib/characters';
   import { classColorVar, formatAmount, percentileToken, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchCharacter, type CharacterPage } from '../lib/rankings/api';
   import { RANKING_METRICS } from '../lib/rankings/url';
@@ -88,23 +88,40 @@
   <LoadError message={error} onRetry={() => (attempt += 1)} testid="character-error" />
 {:else if data !== null && resolved !== null}
   <div class="reveal flex flex-col gap-[22px] md:gap-8" data-testid="character" id="character">
-    <CurrentCharacterBar />
+    <CurrentCharacterBar spine />
     <header class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div class="flex flex-col gap-1">
-        <div class="flex items-center gap-3">
-          {#if data.character.render_url === undefined}
-            <CharacterPortrait character={data.character} size="lg" testid="character" />
-          {/if}
+        {#if data.character.render_url === undefined}
+          <CharacterIdentity
+            character={{
+              key: characterKey(resolved.region, resolved.ruleset, data.character.name),
+              ...data.character,
+            }}
+            size="lg"
+            descriptor="none"
+            heading
+            nameTestid="character-name"
+          >
+            {#snippet below()}
+              <p class="text-muted text-[13px]">
+                {rulesetLabel(resolved.ruleset)}
+                {resolved.region.toUpperCase()}
+                {#if data.character.class}· {data.character.class}{/if}
+                · <span class="tabular font-mono">{data.history.length}</span> ranked fights
+              </p>
+            {/snippet}
+          </CharacterIdentity>
+        {:else}
           <h1 class="section-title text-[18px]" style={`color: ${classColorVar(data.character.class)}`}>
             {data.character.name}
           </h1>
-        </div>
-        <p class="text-muted text-[13px]">
-          {rulesetLabel(resolved.ruleset)}
-          {resolved.region.toUpperCase()}
-          {#if data.character.class}· {data.character.class}{/if}
-          · <span class="tabular font-mono">{data.history.length}</span> ranked fights
-        </p>
+          <p class="text-muted text-[13px]">
+            {rulesetLabel(resolved.ruleset)}
+            {resolved.region.toUpperCase()}
+            {#if data.character.class}· {data.character.class}{/if}
+            · <span class="tabular font-mono">{data.history.length}</span> ranked fights
+          </p>
+        {/if}
         <CharacterHandoffLinks path={resolved} />
       </div>
       {#if data.character.render_url !== undefined}
