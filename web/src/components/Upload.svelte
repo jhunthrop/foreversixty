@@ -139,7 +139,11 @@
        No floor is held for it. Most visitors who get this far are signed in and never see
        it, and on a phone this panel is below the first screen either way. -->
   {#if session === 'out'}
-    <SignInPrompt line="Sign in to upload. The report is filed under your account." testid="upload-signin" />
+    <SignInPrompt
+      line="Sign in to upload. The report is filed under your account."
+      testid="upload-signin"
+      compact
+    />
   {/if}
 
   <div

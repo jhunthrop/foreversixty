@@ -439,7 +439,7 @@
     {#if status === 'loading'}
       <p class="text-muted text-[14px]">Checking whether you are signed in.</p>
     {:else if !signedIn}
-      <SignInPrompt line="Sign in to pair the companion with your account." testid="pairing-signin" />
+      <SignInPrompt line="Sign in to pair the companion with your account." testid="pairing-signin" compact />
     {:else if pairing === null}
       <p class="text-[14px]">Signed in as {displayName}. Show a code, then type it into the companion.</p>
       <button
