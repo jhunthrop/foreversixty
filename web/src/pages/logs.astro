@@ -1,16 +1,17 @@
 ---
 // web/src/pages/logs.astro
-// Where a raid leader starts. Two ways in, said first and said apart: live logging through
-// the companion is the primary path, and the whole-file upload is the fallback for a night
-// that was already logged. Every block is one of the site's own containers (ToolCard,
-// Panel); the islands inside them are unchanged in behaviour.
+// Where a raid leader starts. The page names itself first, then the two ways in as two
+// links in its own intro: live logging through the companion is the primary path, and the
+// whole-file upload is the fallback for a night that was already logged. Each way is its
+// own panel below (no separate explainer cards -- the design loop's logs round dropped them
+// because they said what the panels under them already say). Recent public reports sit
+// under the companion on wide screens so the tall upload form has a full column beside it.
 import Base from '../layouts/Base.astro';
 import Account from '../components/Account.svelte';
 import CurrentCharacterBar from '../components/CurrentCharacterBar.svelte';
 import Panel from '../components/Panel.astro';
 import RecentReports from '../components/RecentReports.svelte';
 import { RECENT_REPORTS_PRELOAD } from '../lib/reports/recent';
-import ToolCard from '../components/ToolCard.astro';
 import Upload from '../components/Upload.svelte';
 import { logsCompanionCopy, logsFraming } from '../lib/reports/copy';
 
@@ -26,24 +27,6 @@ const ICON_ATTRS = {
   'stroke-linejoin': 'round',
   'aria-hidden': 'true',
 } as const;
-
-const entries = [
-  {
-    href: '#companion',
-    title: 'Log live with the companion',
-    description:
-      'A small desktop app watches the combat log while you raid. Each fight is on the site within three seconds of ending.',
-    // A pulse: something that is happening now.
-    icon: '<path d="M3 12h4l3-8 4 16 3-8h4"/>',
-  },
-  {
-    href: '#upload',
-    title: 'Upload a log file',
-    description:
-      'A whole WoWCombatLog.txt from a night you already recorded. The way in when the companion was not running.',
-    icon: '<path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/>',
-  },
-];
 
 const block = 'flex flex-col gap-3 p-4 md:p-5';
 const blockTitle = 'label text-muted';
@@ -62,42 +45,42 @@ const blockTitle = 'label text-muted';
   >
     <CurrentCharacterBar client:idle spine />
 
-    <Panel title="Your reports">
-      <div class="p-4 md:p-5">
-        <Account client:visible mode="reports" />
-      </div>
-    </Panel>
-
     <header class="flex flex-col gap-2">
       <h1 class="section-title text-[18px]">Logs</h1>
-      <p class="text-muted max-w-[720px] text-[14px] leading-relaxed">
+      <p class="text-muted max-w-[720px] text-[14px] leading-relaxed" data-testid="logs-entries">
         Every pull your raid logs, broken down and ranked: damage, healing, deaths, buffs, casts and threat,
-        fight by fight. There are two ways to get a log in.
+        fight by fight. Two ways to get a log in:{' '}
+        <a class="text-nav underline" href="#companion">
+          log live with the companion
+        </a>{' '}
+        or{' '}
+        <a class="text-nav underline" href="#upload">
+          upload a log file
+        </a>
+        .
       </p>
       <p class="text-muted max-w-[720px] text-[14px] leading-relaxed" data-testid="logs-framing">
         {logsFraming}
       </p>
     </header>
 
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2" data-testid="logs-entries">
-      {entries.map((entry) => (
-        <ToolCard title={entry.title} description={entry.description} href={entry.href}>
-          <svg slot="icon" {...ICON_ATTRS} set:html={entry.icon} />
-        </ToolCard>
-      ))}
-    </div>
+    <Panel title="Your reports">
+      <div class="p-4 md:p-5">
+        <Account client:visible mode="reports" />
+      </div>
+    </Panel>
 
-    <div class="grid grid-cols-12 items-start gap-[22px] md:gap-8">
-      <div id="companion" class="col-span-12 scroll-mt-6 lg:col-span-7">
+    <div class="grid grid-cols-1 items-start gap-[22px] md:gap-8 lg:grid-cols-12">
+      <div id="companion" class="scroll-mt-6 lg:col-span-7 lg:col-start-1 lg:row-start-1">
         <Panel title="The companion">
+          <span slot="aside" class="text-muted text-[13px]">
+            Live, while you raid
+          </span>
           <div class={block}>
             <p class="text-muted text-[13px]" data-testid="logs-companion-pointer">
-              <!-- Final-review fix (states lane, Finding 5): `pointer` is already a complete
-                   sentence ending in its own period; the trailing "." this paragraph used to
-                   append after the link turned "Get set up" into what read as a second,
-                   overlapping sentence. Dropped, matching EmptyState's own convention
-                   elsewhere on this site: one sentence, then a standalone action label with
-                   no punctuation of its own. -->
+              <!-- `pointer` is a complete sentence ending in its own period; the link after it
+                   is a standalone action label with no punctuation of its own, matching
+                   EmptyState's convention elsewhere on this site. -->
               {logsCompanionCopy.pointer}{' '}
               <a class="text-nav underline" href="/setup">
                 {logsCompanionCopy.pointerLink}
@@ -111,7 +94,7 @@ const blockTitle = 'label text-muted';
         </Panel>
       </div>
 
-      <div id="upload" class="col-span-12 scroll-mt-6 lg:col-span-5">
+      <div id="upload" class="scroll-mt-6 lg:col-span-5 lg:col-start-8 lg:row-span-2 lg:row-start-1">
         <Panel title="Upload a log">
           <span slot="aside" class="text-muted text-[13px]">
             For a night already logged
@@ -119,12 +102,14 @@ const blockTitle = 'label text-muted';
           <Upload client:load />
         </Panel>
       </div>
-    </div>
 
-    <Panel title="Recent public reports">
-      <div class="p-4 md:p-5">
-        <RecentReports client:visible={{ rootMargin: RECENT_REPORTS_PRELOAD }} heading={false} />
+      <div class="lg:col-span-7 lg:col-start-1 lg:row-start-2">
+        <Panel title="Recent public reports">
+          <div class="p-4 md:p-5">
+            <RecentReports client:visible={{ rootMargin: RECENT_REPORTS_PRELOAD }} heading={false} />
+          </div>
+        </Panel>
       </div>
-    </Panel>
+    </div>
   </main>
 </Base>

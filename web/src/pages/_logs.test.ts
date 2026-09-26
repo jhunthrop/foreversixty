@@ -76,6 +76,18 @@ describe('/logs', () => {
     expect(html.split('Recent public reports').length - 1).toBe(1);
   });
 
+  it('names itself before the first panel: the heading and its two ways in precede Your reports', async () => {
+    // Design loop, logs round: the page used to open on "Your reports" with its own h1 a
+    // panel further down, and two explainer cards restated the two panels beneath them. Now
+    // the heading and intro come first, and the intro's two links are the only "two ways in".
+    const html = await container.renderToString(Logs);
+    const headingAt = html.indexOf('>Logs</h1>');
+    const mineAt = html.indexOf('>Your reports<');
+    expect(headingAt).toBeGreaterThan(-1);
+    expect(headingAt).toBeLessThan(mineAt);
+    expect(html).not.toContain('Log live with the companion');
+  });
+
   it('mounts the spine bar as the first child of main', async () => {
     const html = await container.renderToString(Logs);
     const mainAt = html.indexOf('id="main"');

@@ -156,12 +156,15 @@
             </span>
           {/if}
         </div>
+        <!-- Every child is shrink-0: a flex item with an explicit min-width (min-w-11) no longer
+             keeps its min-content width, so without it the phone row shrank the links onto
+             one another instead of scrolling. -->
         <div
           class="flex h-11 flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap md:h-auto md:flex-1"
         >
           {#each doors as door (door.id)}
             <a
-              class="{rowLink} label min-w-11 justify-center {door.id === currentDoor
+              class="{rowLink} label min-w-11 shrink-0 justify-center {door.id === currentDoor
                 ? 'text-gold'
                 : 'text-nav'}"
               href={door.href}
@@ -171,13 +174,13 @@
           {/each}
           {#if current !== null}
             {#if restored}
-              <span class="text-muted text-[12px]" data-testid="current-character-restored">
+              <span class="text-muted shrink-0 text-[12px]" data-testid="current-character-restored">
                 {currentCharacterCopy.restoredNote}
               </span>
             {/if}
             <button
               type="button"
-              class="{rowLink} text-muted label min-w-11 justify-center"
+              class="{rowLink} text-muted label min-w-11 shrink-0 justify-center"
               onclick={forget}
               data-testid="current-character-forget"
             >
@@ -185,7 +188,7 @@
             </button>
           {/if}
           {#if me !== null && me.characters.length > 0}
-            <div class="relative">
+            <div class="relative shrink-0">
               <button
                 type="button"
                 class="{rowLink} label text-nav min-w-11 justify-center"
