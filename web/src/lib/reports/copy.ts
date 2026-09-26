@@ -11,3 +11,10 @@ export const recentReportsCopy = {
 /** /logs' one line for a visitor who is not raiding yet, spec section 4's exact wording. */
 export const logsFraming =
   'Logs are for group content at any level: a dungeon run logs the same way a raid does.';
+
+/** /logs' companion column, spec section 3.4: it keeps the pairing island but points to
+ *  /setup for the download and /combatlog steps instead of repeating them. */
+export const logsCompanionCopy = {
+  pointer: 'Downloads and the in-game /combatlog step are on the setup page.',
+  pointerLink: 'Setup',
+} as const;

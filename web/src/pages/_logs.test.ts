@@ -11,6 +11,7 @@ import { getContainerRenderer } from '@astrojs/svelte/container-renderer';
 import { loadRenderers } from 'astro:container';
 import { beforeAll, describe, expect, it } from 'vitest';
 import companion from '../data/companion.json';
+import { logsCompanionCopy } from '../lib/reports/copy';
 import Logs from './logs.astro';
 
 let container: AstroContainer;
@@ -34,23 +35,14 @@ describe('/logs', () => {
     }
   });
 
-  it('tells the player the exact steps, including advanced combat logging', async () => {
+  // Spec 2026-09-25 section 3.4: the companion column no longer repeats the download panel
+  // or the /combatlog reminder -- both moved to /setup -- so it points there instead.
+  it('points the companion column at /setup instead of repeating the download steps', async () => {
     const html = await container.renderToString(Logs);
-    expect(html).toContain('Advanced Combat Logging');
-    expect(html).toContain('/combatlog');
-    expect(html).toContain('latest/download/foreversixty-companion_windows_amd64.exe');
-  });
-
-  it('says what each build does on first run instead of claiming a signature it does not have', async () => {
-    // companion-v0.1.33: the macOS builds are ad-hoc signed and the Windows build carries no
-    // Authenticode certificate, so "signed" beside them was untrue. Each row says what the
-    // operating system will do instead.
-    const html = await container.renderToString(Logs);
-    for (const entry of companion.downloads) {
-      expect(entry.firstRun.length).toBeGreaterThan(0);
-      expect(html).toContain(entry.firstRun);
-    }
-    expect(html).not.toMatch(/>\s*signed\s*</);
+    expect(html).toContain(logsCompanionCopy.pointer);
+    expect(html).toContain('href="/setup"');
+    expect(html).not.toContain('Advanced Combat Logging');
+    expect(html).not.toContain('latest/download/foreversixty-companion_windows_amd64.exe');
   });
 
   it('opens with the two ways in, each a link to its own panel', async () => {
@@ -71,9 +63,8 @@ describe('/logs', () => {
   it('mounts the recent public reports panel above Your reports', async () => {
     const html = await container.renderToString(Logs);
     const recentAt = html.indexOf('>Recent public reports<');
-    // Not '>Your reports<' plain text search: "Fights appear under Your reports as they
-    // end." (the companion pairing block) contains the same words earlier in the page, so
-    // the panel's own heading is matched by its element, not its text.
+    // Matched by its element, not a plain text search, so a future block that happens to
+    // reuse the words "Your reports" in prose cannot false-match this heading.
     const mineAt = html.indexOf('>Your reports<');
     expect(recentAt).toBeGreaterThan(-1);
     expect(mineAt).toBeGreaterThan(-1);

@@ -11,11 +11,7 @@ import RecentReports from '../components/RecentReports.svelte';
 import { RECENT_REPORTS_PRELOAD } from '../lib/reports/recent';
 import ToolCard from '../components/ToolCard.astro';
 import Upload from '../components/Upload.svelte';
-import companion from '../data/companion.json';
-import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
-import { logsFraming } from '../lib/reports/copy';
-
-const download = (asset: string): string => `${companion.releasesUrl}/latest/download/${asset}`;
+import { logsCompanionCopy, logsFraming } from '../lib/reports/copy';
 
 /** 24px grid, 2px stroke, round caps: design/DESIGN-SYSTEM.md "Icons". */
 const ICON_ATTRS = {
@@ -48,12 +44,6 @@ const entries = [
   },
 ];
 
-const steps = [
-  'Turn on advanced combat logging in the game: Options, Network, Advanced Combat Logging.',
-  'Type /combatlog in the game. It stays on until you type it again.',
-];
-
-const downloadButton = `${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-full justify-center px-4`;
 const block = 'flex flex-col gap-3 p-4 md:p-5';
 const blockTitle = 'label text-muted';
 ---
@@ -92,39 +82,17 @@ const blockTitle = 'label text-muted';
       <div id="companion" class="col-span-12 scroll-mt-6 lg:col-span-7">
         <Panel title="The companion">
           <div class={block}>
-            <h3 class={blockTitle}>1. Download it</h3>
-            <ul class="grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2" data-testid="companion-downloads">
-              {companion.downloads.map((entry) => (
-                <li class="flex flex-col gap-1">
-                  <a class={downloadButton} href={download(entry.asset)}>
-                    {entry.platform}
-                  </a>
-                  <span class="text-muted text-[13px]">{entry.firstRun}</span>
-                </li>
-              ))}
-            </ul>
-            <p class="text-muted text-[13px]">
-              It reads the game's log file and never changes it, and it never sees a password. The source and
-              every past release are on <a href={companion.releasesUrl}>GitHub</a>.
+            <p class="text-muted text-[13px]" data-testid="logs-companion-pointer">
+              {logsCompanionCopy.pointer}{' '}
+              <a class="text-nav underline" href="/setup">
+                {logsCompanionCopy.pointerLink}
+              </a>
+              .
             </p>
           </div>
-
           <div class={`${block} border-line-soft border-t`}>
-            <h3 class={blockTitle}>2. Pair it with your account</h3>
+            <h3 class={blockTitle}>Pair it with your account</h3>
             <Account client:load mode="pairing" />
-          </div>
-
-          <div class={`${block} border-line-soft border-t`}>
-            <h3 class={blockTitle}>3. Before the first pull</h3>
-            <ul class="flex list-disc flex-col gap-2 pl-5 text-[14px]">
-              {steps.map((step) => (
-                <li set:html={step.replace('/combatlog', '<code class="font-mono">/combatlog</code>')} />
-              ))}
-            </ul>
-            <p class="text-muted text-[13px]">
-              Fights appear under Your reports as they end. The raw file uploads in the background, so closing
-              the game loses nothing.
-            </p>
           </div>
         </Panel>
       </div>
