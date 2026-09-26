@@ -170,14 +170,16 @@ describe('sourceIdForInstance', () => {
   });
 });
 
+const PATH: CharacterPath = { region: 'us', ruleset: 'normal', slug: 'simfury' };
+
 describe('settleRestore', () => {
   it('is inert for a URL-driven load, whether it succeeded or failed', () => {
-    expect(settleRestore(false, true)).toEqual({
+    expect(settleRestore({ kind: 'none', restored: false }, true)).toEqual({
       clearPointer: false,
       restored: false,
       clearMessage: false,
     });
-    expect(settleRestore(false, false)).toEqual({
+    expect(settleRestore({ kind: 'none', restored: false }, false)).toEqual({
       clearPointer: false,
       restored: false,
       clearMessage: false,
@@ -185,16 +187,31 @@ describe('settleRestore', () => {
   });
 
   it('claims restored only once a restore actually produced a character', () => {
-    expect(settleRestore(true, true)).toEqual({
+    expect(settleRestore({ kind: 'stored', path: PATH, restored: true }, true)).toEqual({
       clearPointer: false,
       restored: true,
       clearMessage: false,
     });
   });
 
-  it('forgets a dead or stale pointer and clears the store’s error, rather than showing "Restored" beside it', () => {
-    expect(settleRestore(true, false)).toEqual({
-      clearPointer: true,
+  it('forgets a dead code/addon/build/fight pointer, clearing the store’s error, rather than showing "Restored" beside it', () => {
+    for (const decision of [
+      { kind: 'code', code: 'x', restored: true } as const,
+      { kind: 'addon', code: 'x', restored: true } as const,
+      { kind: 'build', id: 'x', restored: true } as const,
+      { kind: 'fight', ref: 'x', restored: true } as const,
+    ]) {
+      expect(settleRestore(decision, false)).toEqual({
+        clearPointer: true,
+        restored: false,
+        clearMessage: true,
+      });
+    }
+  });
+
+  it('keeps an armory pointer that restored to no character — a real character with no build yet, not a dead reference', () => {
+    expect(settleRestore({ kind: 'stored', path: PATH, restored: true }, false)).toEqual({
+      clearPointer: false,
       restored: false,
       clearMessage: true,
     });
@@ -211,8 +228,6 @@ function fakeLoaders() {
     setMessage: vi.fn(),
   };
 }
-
-const PATH: CharacterPath = { region: 'us', ruleset: 'normal', slug: 'simfury' };
 
 describe('startBootstrapLoad', () => {
   it('calls loadCode for a code decision', async () => {

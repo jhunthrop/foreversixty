@@ -161,19 +161,29 @@ export interface RestoreSettlement {
 
 /**
  * What to do once a /sim* page's own bootstrap load has settled (fix round 1, Task 4's
- * review, Important: a dead stored pointer was showing "Restored" beside an error and
- * would be retried forever). A URL-driven load (`wasRestore` false) keeps today's
- * behaviour on failure -- nothing here is cleared, and the store's own message shows,
- * exactly as it did before this pointer existed. A load that came from the stored pointer
- * only claims "restored" once it actually produced a character; one that settled with none
- * is forgotten (`clearPointer`) and its refusal message cleared (`clearMessage`), since the
- * player never asked for that specific load and should see the ordinary empty state, not
- * an error for a pointer they cannot see or act on.
+ * review, Important: a dead stored pointer was showing "Restored" beside an error and would
+ * be retried forever). A URL-driven load (`decision.restored` false) keeps today's behaviour
+ * on failure -- nothing here is cleared, and the store's own message shows, exactly as it did
+ * before this pointer existed. A load that came from the stored pointer only claims
+ * "restored" once it actually produced a character.
+ *
+ * Spec 2026-09-25 section 4.2 ("the landing list only when [the character] does not [have a
+ * build]"): an `'armory'` pointer (`decision.kind === 'stored'`) names a real character,
+ * independent of whether the simulator can run it -- a build-less restore here is
+ * `/sim`-specific absence, not a dead reference, and the same pointer is still exactly what
+ * Planner, Logs and Rankings want. It alone survives a build-less restore (`clearPointer:
+ * false`); every other kind (`code`, `addon`, `build`, `fight`) names an artifact that will
+ * never resolve differently on a retry and is still forgotten, unchanged from before this
+ * ruling. Either way the store's own refusal message is cleared (`clearMessage: true`): the
+ * player never asked for this specific background load and should see the ordinary empty
+ * state (or, for a survived armory pointer, the ordinary landing list), not an error for a
+ * restore they cannot see or act on.
  */
-export function settleRestore(wasRestore: boolean, characterLoaded: boolean): RestoreSettlement {
-  if (!wasRestore) return { clearPointer: false, restored: false, clearMessage: false };
+export function settleRestore(decision: BootstrapDecision, characterLoaded: boolean): RestoreSettlement {
+  if (!decision.restored) return { clearPointer: false, restored: false, clearMessage: false };
   if (characterLoaded) return { clearPointer: false, restored: true, clearMessage: false };
-  return { clearPointer: true, restored: false, clearMessage: true };
+  const survivesEmptyLoad = decision.kind === 'stored';
+  return { clearPointer: !survivesEmptyLoad, restored: false, clearMessage: true };
 }
 
 export interface RunBootstrapRestoreOptions {
@@ -219,7 +229,7 @@ export async function runBootstrapRestore(
   if (!decision.restored && storeHandlesUrl) return false;
   const load = startBootstrapLoad(loaders, decision);
   if (load !== null) await load;
-  const outcome = settleRestore(decision.restored, characterLoaded());
+  const outcome = settleRestore(decision, characterLoaded());
   if (outcome.clearPointer) clearCurrent(storage);
   if (outcome.clearMessage) loaders.setMessage(null);
   return outcome.restored;
