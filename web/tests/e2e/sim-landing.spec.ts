@@ -128,6 +128,25 @@ test.describe('a signed-in member with characters', () => {
     );
   });
 
+  // 2026-09-26 layout pass, Finding 1: the Run block sits directly under the spine bar, for
+  // whichever character is current (here, the site's own main-character guess, since this
+  // fixture stores no pointer) -- pressing its button does the exact same pick the list's
+  // own Sim link does for that same character.
+  test('the Run block runs the current character, the same pick the list offers it', async ({ page }) => {
+    await page.goto('/sim');
+
+    const block = page.getByTestId('sim-run-block');
+    await expect(block).toBeVisible();
+    await expect(block.getByTestId('sim-run-block-action')).toHaveText(landingCopy.runSim);
+    await expect(block).toContainText('Thrallgar');
+
+    await block.getByTestId('sim-run-block-action').click();
+
+    await expect(page.getByTestId('sim-character')).toBeVisible();
+    await expect(page.getByTestId('sim-source-pill')).toHaveText('Addon export, just now');
+    await expect(page.getByTestId('sim-landing')).toHaveCount(0);
+  });
+
   // Finding 1: a character with no build gets no Sim button -- a "Paste export" link and no
   // pill instead, since the action already says it.
   test('a character with no build gets a Paste export link, no Sim button, and no pill', async ({ page }) => {

@@ -44,11 +44,16 @@ function boot(): void {
   // The shell's no-JS paragraph lives inside the mount element; Svelte 5 appends rather
   // than replaces, so it has to go before the mount or it stays under the island.
   target.replaceChildren();
-  // Spec 2026-09-25 §3.6: sim.astro's min-h-[1154px]/md:min-h-[607px] is the pre-hydration
-  // shell's own CLS reservation (measured against the static addon-card LCP element it
-  // renders before hydration) -- it has no reason to keep applying once SimView has mounted
-  // and governs its own height, and left in place it floored "Your sims" at 600px+ forever.
-  target.classList.remove('min-h-[1154px]', 'md:min-h-[607px]');
+  // Spec 2026-09-25 §3.6: sim.astro's min-h-[…]/md:min-h-[…] is the pre-hydration shell's
+  // own CLS reservation (measured against the static hero-card LCP element it renders
+  // before hydration) -- it has no reason to keep applying once SimView has mounted and
+  // governs its own height, and left in place it floors the page at that height forever.
+  // 2026-09-26 layout pass: bumped to the re-measured 1408px/819px figures (sim.astro's own
+  // comment has the numbers) -- fixing, in passing, a stale mismatch this call already had
+  // (a prior desktop re-measure moved sim.astro's own class from 607 to 620px without this
+  // literal following it, so `md:min-h-[607px]` never actually matched anything in the
+  // classList and desktop's reservation was never removed).
+  target.classList.remove('min-h-[1408px]', 'md:min-h-[819px]');
   mount(SimView, { target, props });
 }
 

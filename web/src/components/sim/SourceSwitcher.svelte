@@ -7,13 +7,22 @@
      A signed-in member's own character list lives in LandingState.svelte, not here (Task
      18): this switcher only reaches a signed-in member when they explicitly reopen it (from
      the strip's "Change source", or the landing state's "Sim something else"), so the card's
-     signed-in body is a way back to that list rather than a second copy of it. -->
+     signed-in body is a way back to that list rather than a second copy of it.
+
+     2026-09-26 layout pass, review round 1: `heroSignIn` promotes the sign-in card to a
+     full-width hero above the three paste cards, for a signed-out visitor on /sim only
+     (Finding 2 -- the audience already uses Battle.net, so "sign in and go" should not sit
+     equal-weight beside three cards that need something to paste). The bulk tool pages
+     (ToolsView.svelte) never pass it, so their switcher keeps today's four-card grid. -->
 <script lang="ts">
   import { currentCharacterCopy } from '../../lib/current-character-copy';
+  import { landingCopy } from '../../lib/sim/landing-copy';
+  import { PRIMARY_BUTTON_FIXED } from '../../lib/planner/styles';
   import { rowLink } from '../../lib/report/format';
   import { parseBuildInput } from '../../lib/sim/build-input';
   import { simCopy } from '../../lib/sim/copy';
   import { BUSY_CLASS } from '../../lib/ui/busy';
+  import ExampleResultCard from './ExampleResultCard.svelte';
 
   let {
     busy,
@@ -25,6 +34,7 @@
     onsignin,
     onback = () => {},
     hasCharacters = true,
+    heroSignIn = false,
   }: {
     busy: boolean;
     message: string | null;
@@ -38,6 +48,10 @@
     /** False for a signed-in account with no characters: there is nothing to go back to,
      *  so the account card carries only its note. */
     hasCharacters?: boolean;
+    /** Finding 2, 2026-09-26 layout pass: renders the sign-in card as a full-width hero
+     *  above the three paste cards instead of a fourth, equal-weight one. Has no effect
+     *  while `signedIn` is true -- that state is always the "back to your characters" grid. */
+    heroSignIn?: boolean;
   } = $props();
 
   let addonCode = $state('');
@@ -52,6 +66,8 @@
   // aria-busy while `busy` holds (design 2026-09-22 spec section 3.2). Their label is
   // "Load" whether or not a load is running -- only the look changes.
   const actionBusy = $derived(busy ? `${action} ${BUSY_CLASS}` : action);
+
+  const showHero = $derived(heroSignIn && !signedIn);
 
   /** A saved link or id loads the saved build; an unsaved planner link loads its code. */
   function loadBuildInput(): void {
@@ -72,95 +88,140 @@
   }
 </script>
 
+{#snippet addonCard()}
+  <div class={card}>
+    <h2 class="section-title text-[15px]">{simCopy.sourceAddonTitle}</h2>
+    <p class="text-muted text-[13px]">{simCopy.sourceAddonBody}</p>
+    <label class="sr-only" for="sim-addon">{simCopy.sourceAddonTitle}</label>
+    <textarea
+      id="sim-addon"
+      rows="2"
+      class={field}
+      placeholder="FS1:…"
+      bind:value={addonCode}
+      disabled={busy}
+      data-testid="sim-addon-input"></textarea>
+    <button
+      type="button"
+      class={actionBusy}
+      disabled={busy}
+      aria-busy={busy}
+      onclick={() => onaddon(addonCode)}
+      data-testid="sim-addon-load"
+    >
+      Load
+    </button>
+  </div>
+{/snippet}
+
+{#snippet buildCard()}
+  <div class={card}>
+    <h2 class="section-title text-[15px]">{simCopy.sourceBuildTitle}</h2>
+    <p class="text-muted text-[13px]">{simCopy.sourceBuildBody}</p>
+    <label class="sr-only" for="sim-build">{simCopy.sourceBuildTitle}</label>
+    <input
+      id="sim-build"
+      class={field}
+      placeholder="foreversixty.gg/b/…"
+      bind:value={buildRef}
+      disabled={busy}
+      data-testid="sim-build-input"
+    />
+    <button
+      type="button"
+      class={actionBusy}
+      disabled={busy}
+      aria-busy={busy}
+      onclick={loadBuildInput}
+      data-testid="sim-build-load">Load</button
+    >
+  </div>
+{/snippet}
+
+{#snippet fightCard()}
+  <div class={card}>
+    <h2 class="section-title text-[15px]">{simCopy.sourceFightTitle}</h2>
+    <p class="text-muted text-[13px]">{simCopy.sourceFightBody}</p>
+    <label class="sr-only" for="sim-fight">{simCopy.sourceFightTitle}</label>
+    <input
+      id="sim-fight"
+      class={field}
+      placeholder="foreversixty.gg/reports/…?fight=2"
+      bind:value={fightRef}
+      disabled={busy}
+      data-testid="sim-fight-input"
+    />
+    <button
+      type="button"
+      class={actionBusy}
+      disabled={busy}
+      aria-busy={busy}
+      onclick={() => onfight(fightRefOf(fightRef))}
+      data-testid="sim-fight-load">Load</button
+    >
+  </div>
+{/snippet}
+
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-sources">
-  <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-    <div class={card}>
-      <h2 class="section-title text-[15px]">{simCopy.sourceAddonTitle}</h2>
-      <p class="text-muted text-[13px]">{simCopy.sourceAddonBody}</p>
-      <label class="sr-only" for="sim-addon">{simCopy.sourceAddonTitle}</label>
-      <textarea
-        id="sim-addon"
-        rows="2"
-        class={field}
-        placeholder="FS1:…"
-        bind:value={addonCode}
-        disabled={busy}
-        data-testid="sim-addon-input"></textarea>
-      <button
-        type="button"
-        class={actionBusy}
-        disabled={busy}
-        aria-busy={busy}
-        onclick={() => onaddon(addonCode)}
-        data-testid="sim-addon-load"
-      >
-        Load
-      </button>
-    </div>
+  {#if showHero}
+    <!-- Finding 5: the intro line and a static example of a finished sim, ahead of every
+         load method -- neither paragraph is orphaned: the intro belongs to the page's own
+         lead, and the example card is its own bordered panel, never a bare floating line. -->
+    <p class="text-muted text-[14px]" data-testid="sim-intro-line">{landingCopy.introLine}</p>
+    <ExampleResultCard />
 
-    <div class={card}>
-      <h2 class="section-title text-[15px]">{simCopy.sourceBuildTitle}</h2>
-      <p class="text-muted text-[13px]">{simCopy.sourceBuildBody}</p>
-      <label class="sr-only" for="sim-build">{simCopy.sourceBuildTitle}</label>
-      <input
-        id="sim-build"
-        class={field}
-        placeholder="foreversixty.gg/b/…"
-        bind:value={buildRef}
-        disabled={busy}
-        data-testid="sim-build-input"
-      />
-      <button
-        type="button"
-        class={actionBusy}
-        disabled={busy}
-        aria-busy={busy}
-        onclick={loadBuildInput}
-        data-testid="sim-build-load">Load</button
-      >
-    </div>
-
-    <div class={card}>
-      <h2 class="section-title text-[15px]">{simCopy.sourceFightTitle}</h2>
-      <p class="text-muted text-[13px]">{simCopy.sourceFightBody}</p>
-      <label class="sr-only" for="sim-fight">{simCopy.sourceFightTitle}</label>
-      <input
-        id="sim-fight"
-        class={field}
-        placeholder="foreversixty.gg/reports/…?fight=2"
-        bind:value={fightRef}
-        disabled={busy}
-        data-testid="sim-fight-input"
-      />
-      <button
-        type="button"
-        class={actionBusy}
-        disabled={busy}
-        aria-busy={busy}
-        onclick={() => onfight(fightRefOf(fightRef))}
-        data-testid="sim-fight-load">Load</button
-      >
-    </div>
-
+    <!-- Finding 2: the hero. Full width, first, with the one PRIMARY_BUTTON on this view
+         and the email-link alternative as text -- the three paste cards below are
+         secondary. Finding 3: the DPS-only restriction lives here too, as the caption
+         under this heading, its only copy on the page for a signed-out visitor. -->
     <div class={card} data-testid="sim-account-card">
       <h2 class="section-title text-[15px]">{simCopy.sourceAccountTitle}</h2>
-      {#if signedIn && hasCharacters}
-        <button type="button" class={action} onclick={onback} data-testid="sim-back-to-characters">
-          {simCopy.backToCharacters}
-        </button>
-      {:else if !signedIn}
-        <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
-        <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
-          Sign in with Battle.net
-        </button>
-      {/if}
+      <p class="text-muted text-[13px]" data-testid="sim-scope-note">{landingCopy.scopeCaveat}</p>
+      <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
+      <button
+        type="button"
+        class="{PRIMARY_BUTTON_FIXED} self-start px-5"
+        onclick={onsignin}
+        data-testid="sim-signin"
+      >
+        {landingCopy.signInWithBattlenet}
+      </button>
+      <a class="text-nav text-[13px] underline" href="/login">{landingCopy.emailLinkInstead}</a>
     </div>
-  </div>
 
-  <!-- task-2-brief.md: this switcher is what a signed-out visitor reads first on /sim --
-       the same scope sentence the Astro shell already carries above the fold, repeated
-       here since it sits below the shell's own copy of it once the island mounts. -->
-  <p class="text-muted text-[12px]" data-testid="sim-sources-scope-note">{simCopy.scopeNote}</p>
+    <div class="grid grid-cols-1 gap-3 md:grid-cols-3">
+      {@render addonCard()}
+      {@render buildCard()}
+      {@render fightCard()}
+    </div>
+  {:else}
+    <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
+      {@render addonCard()}
+      {@render buildCard()}
+      {@render fightCard()}
+
+      <div class={card} data-testid="sim-account-card">
+        <h2 class="section-title text-[15px]">{simCopy.sourceAccountTitle}</h2>
+        {#if signedIn && hasCharacters}
+          <button type="button" class={action} onclick={onback} data-testid="sim-back-to-characters">
+            {simCopy.backToCharacters}
+          </button>
+        {:else if !signedIn}
+          <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
+          <button type="button" class={action} onclick={onsignin} data-testid="sim-signin">
+            {landingCopy.signInWithBattlenet}
+          </button>
+        {/if}
+      </div>
+    </div>
+
+    <!-- task-2-brief.md: this switcher is what a signed-out visitor reads first on the bulk
+         tool pages -- the same scope sentence their own Astro shell already carries above
+         the fold, repeated here since it sits below the shell's own copy of it once the
+         island mounts. /sim's own hero branch above carries the one copy of this sentence
+         it needs instead (Finding 3). -->
+    <p class="text-muted text-[12px]" data-testid="sim-sources-scope-note">{simCopy.scopeNote}</p>
+  {/if}
 
   <p class="text-muted text-[12px]">
     <a href="/setup" class="{rowLink} text-nav" data-testid="sim-get-addon"

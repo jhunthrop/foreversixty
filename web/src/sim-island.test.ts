@@ -59,11 +59,11 @@ describe('readInlineResult', () => {
 
 describe('boot()', () => {
   it('removes the shell min-h reservation from the mount element once the island mounts', async () => {
-    document.body.innerHTML = '<div id="sim" data-sim-mount class="min-h-[1154px] md:min-h-[607px]"></div>';
+    document.body.innerHTML = '<div id="sim" data-sim-mount class="min-h-[1408px] md:min-h-[819px]"></div>';
     vi.resetModules();
     await import('./sim-island');
     const target = document.getElementById('sim')!;
-    expect(target.className).not.toContain('min-h-[1154px]');
-    expect(target.className).not.toContain('min-h-[607px]');
+    expect(target.className).not.toContain('min-h-[1408px]');
+    expect(target.className).not.toContain('min-h-[819px]');
   });
 });
