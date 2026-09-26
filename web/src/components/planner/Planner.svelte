@@ -684,8 +684,13 @@
        -- the reasoning for reserving the loaded height rather than the audit's viewport, for
        binding the reserve to every branch, for measuring at 360px, and so on -- still holds;
        only the numbers it produced are stale now that the layout it measured no longer
-       stacks the same way. -->
-  <div class="flex min-h-[983px] flex-col gap-[22px] md:min-h-[1098px] md:gap-8">
+       stacks the same way. 
+       Round 2 of the same review (two real columns from lg, one stack below): measured with
+       the reserve removed in-page, the loaded naturals are 958.5 at 390px, 1454.5 at 800px
+       (md, everything stacked) and 871.5 at 1280px (lg, the rail beside the trees). Three
+       values now, since one md figure cannot serve both a stacked tablet and a two-column
+       desktop: 983 / 1479 / 896, each 24px above its natural for the CI runner's fonts. -->
+  <div class="flex min-h-[983px] flex-col gap-[22px] md:min-h-[1479px] md:gap-8 lg:min-h-[896px]">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
@@ -724,77 +729,69 @@
              Notice(8)+Import(4) row two, Gear(8)+OrderStrip(4) row three -- which is what
              turns six flat siblings into two visual columns without any explicit
              `grid-row` (build review round 1, findings 1-4). -->
-        <div class="flex flex-col gap-[22px] md:grid md:grid-cols-2 md:items-start md:gap-8 lg:grid-cols-12">
-          <!-- The phone tab strip and the tree row it switches between, split into their own
-               component (design loop, planner round) so this file stays under the project's
-               file-size guideline. `md:hidden` on its own tablist keeps it out of the md/lg
-               grid's layout, so `order-1`/`lg:col-span-8` -- read by its tree-columns div --
-               are the only placement this needs at those breakpoints. -->
-          <TreeTabs
-            {store}
-            talentIndex={store.talentIndex}
-            bind:activeTree
-            {hasGear}
-            {gearTabIndex}
-            {treeColumnsClass}
-          />
+        <div class="flex flex-col gap-[22px] md:gap-8 lg:grid lg:grid-cols-12 lg:items-start">
+          <!-- Two real columns from lg (trees, notice and gear on the left; share, import and
+               point order in the rail), each its own flex column so no row height is shared
+               across columns: one flat auto-placed grid put the one-line notice in the same
+               row as the Import panel and left a panel-tall void above Gear (review round 2).
+               Below lg both wrappers are `contents`, so their children stack in DOM order:
+               trees, gear (the same tab-switched slot), notice, share, import, point order. -->
+          <div class="contents lg:col-span-8 lg:flex lg:flex-col lg:gap-8">
+            <!-- The phone tab strip and the tree row it switches between, split into their
+                 own component (design loop, planner round) so this file stays under the
+                 project's file-size guideline. -->
+            <TreeTabs
+              {store}
+              talentIndex={store.talentIndex}
+              bind:activeTree
+              {hasGear}
+              {gearTabIndex}
+              {treeColumnsClass}
+            />
 
-          <!-- Gear sits right after the tree row in every DOM/order sense on phone (the two
-             are the same tab-switched slot, so whichever is hidden costs no height) and
-             directly under it again from lg, where `order` -- not this position -- is what
-             actually places it (build review round 1, finding 3). Hidden by a class rather
-             than the `hidden` attribute for the same reason the tree panels are: the
-             attribute would hide it from md up too, where `md:flex`/`lg:flex` could not
-             override it. -->
-          {#if hasGear}
-            <div
-              id="gear-tabpanel"
-              role="tabpanel"
-              aria-labelledby="gear-tab"
-              class="order-2 flex-col md:order-6 md:col-span-2 md:flex lg:order-5 lg:col-span-8 {activeTree ===
-              gearTabIndex
-                ? 'flex'
-                : 'hidden'}"
-            >
-              <GearPanel {store} {weights} />
-            </div>
-          {/if}
+            <!-- Gear sits right after the tree row: on a phone the two are the same
+               tab-switched slot, so whichever is hidden costs no height. Hidden by a class
+               rather than the `hidden` attribute, which `md:flex` could not override. -->
+            {#if hasGear}
+              <div
+                id="gear-tabpanel"
+                role="tabpanel"
+                aria-labelledby="gear-tab"
+                class="flex-col md:flex {activeTree === gearTabIndex ? 'flex' : 'hidden'}"
+              >
+                <GearPanel {store} {weights} />
+              </div>
+            {/if}
 
-          <p
-            class="text-muted order-3 px-[18px] text-[13px] md:order-2 md:col-span-2 md:px-0 lg:order-3 lg:col-span-8"
-            data-testid="planner-tree-source"
-          >
-            {treeSourceNotice(store.treeVersion)}
-          </p>
-
-          <div
-            class="order-4 flex flex-wrap items-center gap-3 px-[18px] md:order-3 md:col-span-1 md:px-0 lg:order-2 lg:col-span-4"
-            data-testid="planner-toolbar"
-          >
-            <PlannerToolbar {store} {live} bind:confirmingReset />
+            <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="planner-tree-source">
+              {treeSourceNotice(store.treeVersion)}
+            </p>
           </div>
 
-          {#if !store.readOnly}
-            <!-- A read-only build (opened from a share link) has nowhere for an imported build to
-               go until it is forked, so the box only mounts once the toolbar above already shows
-               Reset and Share rather than "Fork it to spend points of your own." -->
-            <ImportBox
-              talents={store.talentIndex}
-              activeBuild={activeBuild.build}
-              onimport={(build, pastedCode) => {
-                store.loadImported(build);
-                writePointer('addon', pastedCode, build.classSlug);
-              }}
-              phone={collapsesOnPhone}
-              class="order-5 mx-[18px] md:order-4 md:col-span-1 md:mx-0 lg:order-4 lg:col-span-4"
-            />
-          {/if}
+          <div class="contents lg:col-span-4 lg:flex lg:flex-col lg:gap-8">
+            <div class="flex flex-wrap items-center gap-3 px-[18px] md:px-0" data-testid="planner-toolbar">
+              <PlannerToolbar {store} {live} bind:confirmingReset />
+            </div>
 
-          <OrderStrip
-            {store}
-            phone={collapsesOnPhone}
-            class="order-6 md:order-5 md:col-span-2 lg:order-6 lg:col-span-4"
-          />
+            {#if !store.readOnly}
+              <!-- A read-only build (opened from a share link) has nowhere for an imported
+                 build to go until it is forked, so the box only mounts once the toolbar
+                 above already shows Reset and Share rather than "Fork it to spend points
+                 of your own." -->
+              <ImportBox
+                talents={store.talentIndex}
+                activeBuild={activeBuild.build}
+                onimport={(build, pastedCode) => {
+                  store.loadImported(build);
+                  writePointer('addon', pastedCode, build.classSlug);
+                }}
+                phone={collapsesOnPhone}
+                class="mx-[18px] md:mx-0"
+              />
+            {/if}
+
+            <OrderStrip {store} phone={collapsesOnPhone} />
+          </div>
         </div>
       </div>
     {/if}

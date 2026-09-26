@@ -102,10 +102,7 @@
   {/if}
 </div>
 
-<div
-  class="order-1 grid grid-cols-1 gap-4 px-[18px] md:order-1 md:col-span-2 md:px-0 lg:order-1 lg:col-span-8 {treeColumnsClass}"
-  data-testid="tree-columns"
->
+<div class="grid grid-cols-1 gap-4 px-[18px] md:px-0 {treeColumnsClass}" data-testid="tree-columns">
   {#each talentIndex.trees as tree, i (tree.id)}
     <!-- The inactive trees are hidden with a class, not the `hidden` attribute: the
        attribute would hide them on desktop too, where `md:flex` cannot override it. -->
