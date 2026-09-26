@@ -1,6 +1,8 @@
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
 
+/** "Sept 25" in UTC; an invalid date renders as nothing rather than "undefined NaN". */
 export function formatDate(d: Date): string {
+  if (Number.isNaN(d.getTime())) return '';
   return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
 }
 

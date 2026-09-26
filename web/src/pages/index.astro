@@ -48,7 +48,7 @@ const addonIconPath =
 >
   <main id="main" tabindex="-1" class="flex flex-col">
     <SkyBand>
-      <div class="flex w-full max-w-[1344px] flex-col gap-[18px] px-[18px] pt-7 pb-10 mx-auto md:px-12">
+      <div class="flex w-full max-w-[1344px] flex-col gap-[18px] px-[18px] pt-7 pb-8 mx-auto md:px-12">
         <p class="label text-gold font-body">{homeHeroCopy.eyebrow}</p>
         <div class="grid" data-testid="home-account-block">
           <div
@@ -78,7 +78,7 @@ const addonIconPath =
       </div>
     </SkyBand>
 
-    <div class="w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-8 md:pt-12">
+    <div class="w-full max-w-[1344px] mx-auto px-[18px] md:px-12 pt-6 md:pt-8">
       <HomeTimeline dates={dates} updated={updated} />
     </div>
 
@@ -110,7 +110,7 @@ const addonIconPath =
               </div>
             ))}
           </div>
-          <HomeNextSteps client:visible />
+          <HomeNextSteps client:idle />
         </div>
       </section>
 
@@ -139,7 +139,7 @@ const addonIconPath =
         </div>
       </Panel>
 
-      <section class="grid grid-cols-1 md:grid-cols-2 gap-4" data-testid="home-companion-row">
+      <section class="grid grid-cols-1 gap-4" data-testid="home-companion-row">
         {homeCompanionRow.map((card) => (
           <ToolCard title={card.title} description={card.description} href={card.href}>
             <svg

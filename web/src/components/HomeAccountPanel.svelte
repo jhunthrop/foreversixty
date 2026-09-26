@@ -113,16 +113,22 @@
     {/if}
     <div class="relative flex flex-wrap items-end gap-6">
       <div class="flex min-w-0 flex-col gap-2">
-        <CharacterIdentity character={hero} size="xl" descriptor="full" heading testid="home-hero" />
-        {#if hero.guild !== undefined}
-          <CharacterGuildLine guild={hero.guild} testid="home-hero-guild" />
-        {/if}
-        {#if noBattlenetData}
-          <p class="text-muted text-[13px]" data-testid="home-hero-no-bnet-data">
-            {accountPageCopy.noBattlenetDataForRealm}
-          </p>
-        {/if}
-        <div class="flex flex-wrap items-center gap-3 pt-2">
+        <!-- The guild line, the realm note and the actions render inside the identity's text
+             column (`below`), so everything the hero says lines up under the name rather
+             than snapping back to the portrait's left edge. -->
+        <CharacterIdentity character={hero} size="xl" descriptor="full" heading testid="home-hero">
+          {#snippet below()}
+            {#if hero.guild !== undefined}
+              <CharacterGuildLine guild={hero.guild} testid="home-hero-guild" />
+            {/if}
+            {#if noBattlenetData}
+              <p class="text-muted text-[13px]" data-testid="home-hero-no-bnet-data">
+                {accountPageCopy.noBattlenetDataForRealm}
+              </p>
+            {/if}
+          {/snippet}
+        </CharacterIdentity>
+        <div class="flex flex-wrap items-center gap-3 pt-2 md:pl-[88px]">
           {#if hero.build !== undefined}
             <a class={`${SECONDARY_BUTTON_FIXED} border-gold text-gold px-4`} href={armorySimHref(hero.key)}>
               {homePanelCopy.simCharacter(hero.name)}
@@ -155,7 +161,7 @@
       {/if}
     </div>
     {#if shownOthers.length > 0}
-      <ul class="relative flex w-full flex-wrap gap-2" data-testid="home-character-chips">
+      <ul class="relative flex w-full flex-wrap gap-2 md:pl-[88px]" data-testid="home-character-chips">
         {#each shownOthers as other (other.key)}
           <li>
             <button
