@@ -30,6 +30,8 @@ test('a code from another format is refused by name, not silently dropped', asyn
 
 test('the page says the in-game UI is in beta testing and ships no screenshot of it', async ({ page }) => {
   await page.goto('/setup');
+  // The three how-it-works cards sit behind one closed disclosure (design loop, setup round).
+  await page.getByText('How the addon works').click();
   await expect(page.getByText('in beta testing in game')).toBeVisible();
   const images = await page.locator('main img').count();
   expect(images).toBe(0);

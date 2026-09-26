@@ -208,3 +208,23 @@ html:not([data-pointer='1']):not([data-session='1']) .chip-slot {
     animation: none;
   }
 }
+
+/* /account: with no session hint on <html> the visitor can only resolve to the sign-in
+   prompt, so the loading skeletons and the signed-out floor that matched them collapse
+   (Account.svelte's loading branch explains the floor). */
+html:not([data-session='1']) .session-reserve {
+  min-height: 0;
+}
+html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
+  display: none;
+}
+
+/* /setup as a checklist: what each step shows depends on the two pre-paint hints on <html>
+   (data-session from the session cookie, data-pointer from the stored character), so a step
+   a visitor has finished reads as done before any island hydrates. */
+html:not([data-session='1']) .setup-when-in,
+html[data-session='1'] .setup-when-out,
+html:not([data-pointer='1']) .setup-when-pointer,
+html[data-pointer='1'] .setup-when-no-pointer {
+  display: none;
+}

@@ -41,7 +41,7 @@
   import { leaveGuild, updateConsent, type GuildConsent } from '../lib/guild/api';
   import { guildConsentCopy } from '../lib/guild/copy';
   import { API_BASE_URL } from '../lib/planner/config';
-  import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+  import { PRIMARY_BUTTON_FIXED, SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { relativeTime } from '../lib/dates';
   import CharacterHandoffLinks from './CharacterHandoffLinks.svelte';
   import CharacterList from './account/CharacterList.svelte';
@@ -366,13 +366,15 @@
 {:else if mode === 'login'}
   <div class="flex flex-col gap-6" data-testid="login">
     {#if signedIn}
-      <p class="text-[14px]">
-        Signed in as {displayName}. <a href="/account">Your account</a>.
-      </p>
+      <p class="text-[14px]">Signed in as {displayName}.</p>
+      <a class="{PRIMARY_BUTTON_FIXED} self-start px-5" href="/account" data-testid="login-go-account">
+        Your account
+      </a>
     {:else}
+      <p class="text-muted text-[14px]">{accountSignInCopy.reason}</p>
       <div class="flex flex-col gap-3">
         <a
-          class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong self-start px-4"
+          class="{PRIMARY_BUTTON_FIXED} self-start px-5"
           href={battlenetStartUrl(resolvedNext)}
           data-testid="battlenet"
         >
@@ -464,15 +466,23 @@
   <div class="flex flex-col gap-8" data-testid="account">
     {#if status === 'loading'}
       <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
-      <Skeleton lines={3} minHeight={CHARACTERS_SKELETON_MIN_H} testid="account-characters-skeleton" />
-      <Skeleton lines={4} minHeight={IDENTITY_SKELETON_MIN_H} testid="account-identity-skeleton" />
-      <Skeleton lines={3} minHeight={MORE_SKELETON_MIN_H} testid="account-more-skeleton" />
+      <!-- `.session-reserve`: global.css collapses these skeletons (and the signed-out
+           block's floor below) when `<html>` carries no data-session hint, i.e. the visitor
+           has no session cookie and this can only resolve to the sign-in prompt. The reserve
+           existed so a real signed-out visitor's footer did not jump when the skeletons gave
+           way to the prompt; with no skeleton drawn there is nothing to jump from, and the
+           page ends under its one button instead of reserving three panels of black. -->
+      <div class="session-reserve flex flex-col gap-8">
+        <Skeleton lines={3} minHeight={CHARACTERS_SKELETON_MIN_H} testid="account-characters-skeleton" />
+        <Skeleton lines={4} minHeight={IDENTITY_SKELETON_MIN_H} testid="account-identity-skeleton" />
+        <Skeleton lines={3} minHeight={MORE_SKELETON_MIN_H} testid="account-more-skeleton" />
+      </div>
     {:else if status === 'failed'}
       <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
       <LoadError message={error} onRetry={() => session.refresh()} testid="account-load-error" />
     {:else if !signedIn}
       <h1 class="section-title text-[18px]">{accountPageCopy.title}</h1>
-      <div class={SIGNED_OUT_MIN_H}>
+      <div class="session-reserve {SIGNED_OUT_MIN_H}">
         <SignInPrompt line={accountSignInCopy.reason} testid="account-signin" />
       </div>
     {:else}
@@ -532,6 +542,7 @@
                 data-testid="account-hero"
               >
                 <div class="flex flex-col gap-1">
+                  <h2 class="label text-muted mb-1">{accountPageCopy.currentCharacterLabel}</h2>
                   <CharacterIdentity
                     character={hero}
                     size="lg"
@@ -577,6 +588,12 @@
               />
             </div>
 
+            <StatePanel label="Your reports" testid="account-reports">
+              <MyReports {signedIn} heading={false} />
+            </StatePanel>
+          </div>
+
+          <div class="flex flex-col gap-8 lg:col-span-4">
             {#if heroPath !== null}
               <StatePanel label={accountPageCopy.yourRatingsLabel} testid="account-ratings">
                 <div class="p-[18px]">
@@ -585,12 +602,6 @@
               </StatePanel>
             {/if}
 
-            <StatePanel label="Your reports" testid="account-reports">
-              <MyReports {signedIn} heading={false} />
-            </StatePanel>
-          </div>
-
-          <div class="flex flex-col gap-8 lg:col-span-4">
             <div id="devices">
               <StatePanel
                 label={accountPageCopy.devicesLabel}
@@ -654,8 +665,8 @@
             </StatePanel>
 
             <div id="plan">
-              <StatePanel label={accountPageCopy.guildsAndPlanLabel} testid="account-guilds-plan">
-                {#if me!.guilds.length > 0}
+              {#if me!.guilds.length > 0}
+                <StatePanel label={accountPageCopy.guildLabel} testid="account-guilds-panel">
                   <ul class="flex flex-col" data-testid="account-guilds">
                     {#each me!.guilds as guild (guild.id)}
                       <li
@@ -684,13 +695,10 @@
                       </li>
                     {/each}
                   </ul>
-                {/if}
-
-                <div
-                  class={me!.guilds.length > 0
-                    ? 'border-line-soft flex flex-col gap-3 border-t pt-4'
-                    : 'flex flex-col gap-3'}
-                >
+                </StatePanel>
+              {/if}
+              <StatePanel label={accountPageCopy.planLabel} testid="account-guilds-plan">
+                <div class="flex flex-col gap-3">
                   {#if billing === null}
                     <p class="text-[14px]" data-testid="account-billing-row">
                       <span class="text-muted">{accountPageCopy.planKey}</span> · {billingBlockCopy.notSubscribed}

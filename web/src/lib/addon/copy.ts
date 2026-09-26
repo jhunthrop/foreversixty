@@ -63,7 +63,6 @@ export const addonCopy = {
   pasteSaved: 'Saved to your account',
 
   // --- /addon page ---
-  pageTitle: 'The addon',
   pageDescription:
     'Battle.net already gives your gear and talents. The addon adds your bags and bank, your professions, an in-game build guide, and refreshes the moment you log out.',
   pageNoNetwork:
@@ -95,6 +94,21 @@ export const addonCopy = {
   setupSignInAction: 'Sign in with Battle.net',
   setupCompanionBody:
     'The companion logs live from your desktop: turn on advanced combat logging, type /combatlog in game, and every fight appears under Your reports within seconds of the pull ending.',
+  /** The page as a checklist (design loop, setup round): its own title, a status row
+   *  under it, a done line for each step a visitor has already finished, the addon's
+   *  how-it-works cards behind one disclosure, and the companion's downloads. */
+  setupPageTitle: 'Get set up',
+  setupStatusSignIn: 'Not signed in',
+  setupStatusSignedIn: 'Signed in',
+  setupStatusAddon: 'Addon export',
+  setupStatusAddonDone: 'Addon export loaded',
+  setupStatusCompanion: 'Companion app',
+  setupSignedInLine: 'Signed in. Your characters import from Battle.net nightly.',
+  setupSignedInLink: 'Your account',
+  setupAddonDoneLine: 'An export is loaded; the site is pointed at that character.',
+  setupHowItWorks: 'How the addon works',
+  setupCompanionDownloadLead: 'Download the companion',
+  setupCompanionPair: 'Pair it on your account',
 
   // --- gear panel weights ---
   scoreColumn: 'Score',

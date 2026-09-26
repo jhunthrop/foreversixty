@@ -41,6 +41,8 @@
       : ` · ${meta}`}
   </span>
   {#if status !== '' && status !== 'complete'}
-    <span class="pill pill-site" data-testid="report-status">{status}</span>
+    <!-- Outline, not the filled gold: that fill is the account page's Main pill, and one
+         solid gold shape should mean one thing on a page. -->
+    <span class="pill pill-sample" data-testid="report-status">{status}</span>
   {/if}
 </li>

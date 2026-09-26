@@ -110,7 +110,8 @@
     }
   }
 
-  const select = 'border-line-warm bg-raised rounded-control text-text h-11 px-2 text-[13px] md:h-9';
+  const select =
+    'border-line-warm bg-raised rounded-control text-text h-11 w-full px-2 text-[13px] md:h-9 md:w-auto';
 
   function patch(next: Partial<RankingsState>): void {
     // Any filter change returns to page one: page three of a different filter is nothing.
@@ -214,118 +215,144 @@
     </p>
   </header>
 
-  <div class="flex flex-wrap items-center gap-x-4 gap-y-2" data-testid="rankings-filters">
-    <div role="tablist" aria-label="Board" class="flex items-center gap-1">
-      {#each [{ id: 'character', label: 'Characters' }, { id: 'guild', label: 'Guilds' }] as board (board.id)}
-        <button
-          type="button"
-          role="tab"
-          class="{SECONDARY_BUTTON} px-3"
-          class:border-line-warm-strong={state.board === board.id}
-          class:border-line-soft={state.board !== board.id}
-          class:text-strong={state.board === board.id}
-          class:text-nav={state.board !== board.id}
-          aria-selected={state.board === board.id}
-          data-testid={`board-${board.id}`}
-          onclick={() => patch({ board: board.id as RankingsState['board'] })}
-        >
-          {board.label}
-        </button>
-      {/each}
+  <!-- Two deliberate rows: the board and its scope (Characters/Guilds, Today only) first,
+       then the five filters. Before, the checkbox fell off the end of the filter row and sat
+       alone on a line of its own; on a phone the filters are a two-column grid instead of
+       five stacked full-width selects, so the first ranked kill is one short scroll away. -->
+  <div class="flex flex-col gap-2" data-testid="rankings-filters">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+      <div role="tablist" aria-label="Board" class="flex items-center gap-1">
+        {#each [{ id: 'character', label: 'Characters' }, { id: 'guild', label: 'Guilds' }] as board (board.id)}
+          <button
+            type="button"
+            role="tab"
+            class="{SECONDARY_BUTTON} px-3"
+            class:border-line-warm-strong={state.board === board.id}
+            class:border-line-soft={state.board !== board.id}
+            class:text-strong={state.board === board.id}
+            class:text-nav={state.board !== board.id}
+            aria-selected={state.board === board.id}
+            data-testid={`board-${board.id}`}
+            onclick={() => patch({ board: board.id as RankingsState['board'] })}
+          >
+            {board.label}
+          </button>
+        {/each}
+      </div>
+
+      <label class="flex min-h-11 items-center gap-2 text-[13px] md:min-h-0">
+        <input
+          type="checkbox"
+          checked={state.since === 'today'}
+          onchange={(event) =>
+            patch({ since: (event.currentTarget as HTMLInputElement).checked ? 'today' : '' })}
+        />
+        Today only
+      </label>
     </div>
 
-    {#if state.board === 'character'}
-      <label class="label text-muted flex items-center gap-2" for="rankings-metric">
-        Metric
-        <select
-          id="rankings-metric"
-          class={select}
-          value={state.metric}
-          data-testid="filter-metric"
-          onchange={(event) => patch({ metric: (event.currentTarget as HTMLSelectElement).value })}
+    <div class="grid grid-cols-2 gap-x-3 gap-y-2 md:flex md:flex-wrap md:items-center md:gap-x-4">
+      {#if state.board === 'character'}
+        <label
+          class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+          for="rankings-metric"
         >
-          {#each RANKING_METRICS as metric (metric.id)}<option value={metric.id}>{metric.label}</option
+          Metric
+          <select
+            id="rankings-metric"
+            class={select}
+            value={state.metric}
+            data-testid="filter-metric"
+            onchange={(event) => patch({ metric: (event.currentTarget as HTMLSelectElement).value })}
+          >
+            {#each RANKING_METRICS as metric (metric.id)}<option value={metric.id}>{metric.label}</option
+              >{/each}
+          </select>
+        </label>
+      {:else}
+        <label
+          class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+          for="rankings-kind"
+        >
+          Board
+          <select
+            id="rankings-kind"
+            class={select}
+            value={state.kind}
+            onchange={(event) => patch({ kind: (event.currentTarget as HTMLSelectElement).value })}
+          >
+            {#each GUILD_KINDS as kind (kind.id)}<option value={kind.id}>{kind.label}</option>{/each}
+          </select>
+        </label>
+      {/if}
+
+      <label
+        class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+        for="rankings-ruleset"
+      >
+        Ruleset
+        <select
+          id="rankings-ruleset"
+          class={select}
+          value={state.ruleset}
+          data-testid="filter-ruleset"
+          onchange={(event) => patch({ ruleset: (event.currentTarget as HTMLSelectElement).value })}
+        >
+          <option value="">Every ruleset</option>
+          {#each RULESETS as ruleset (ruleset.id)}<option value={ruleset.id}>{ruleset.label}</option>{/each}
+        </select>
+      </label>
+
+      <label
+        class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+        for="rankings-region"
+      >
+        Region
+        <select
+          id="rankings-region"
+          class={select}
+          value={state.region}
+          onchange={(event) => patch({ region: (event.currentTarget as HTMLSelectElement).value })}
+        >
+          <option value="">Every region</option>
+          {#each REGIONS as region (region)}<option value={region}>{region.toUpperCase()}</option>{/each}
+        </select>
+      </label>
+
+      <label
+        class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+        for="rankings-phase"
+      >
+        Phase
+        <select
+          id="rankings-phase"
+          class={select}
+          value={state.phase}
+          onchange={(event) => patch({ phase: (event.currentTarget as HTMLSelectElement).value })}
+        >
+          <option value="">Every phase</option>
+          {#each PHASES as phase (phase.id)}<option value={phase.id}>{phase.label}</option>{/each}
+        </select>
+      </label>
+
+      <label
+        class="label text-muted flex flex-col items-start gap-1 md:flex-row md:items-center md:gap-2"
+        for="rankings-faction"
+      >
+        Faction
+        <select
+          id="rankings-faction"
+          class={select}
+          value={state.faction}
+          onchange={(event) => patch({ faction: (event.currentTarget as HTMLSelectElement).value })}
+        >
+          <option value="">Both</option>
+          {#each FACTIONS as faction (faction)}<option value={faction}
+              >{faction === 'horde' ? 'Horde' : 'Alliance'}</option
             >{/each}
         </select>
       </label>
-    {:else}
-      <label class="label text-muted flex items-center gap-2" for="rankings-kind">
-        Board
-        <select
-          id="rankings-kind"
-          class={select}
-          value={state.kind}
-          onchange={(event) => patch({ kind: (event.currentTarget as HTMLSelectElement).value })}
-        >
-          {#each GUILD_KINDS as kind (kind.id)}<option value={kind.id}>{kind.label}</option>{/each}
-        </select>
-      </label>
-    {/if}
-
-    <label class="label text-muted flex items-center gap-2" for="rankings-ruleset">
-      Ruleset
-      <select
-        id="rankings-ruleset"
-        class={select}
-        value={state.ruleset}
-        data-testid="filter-ruleset"
-        onchange={(event) => patch({ ruleset: (event.currentTarget as HTMLSelectElement).value })}
-      >
-        <option value="">Every ruleset</option>
-        {#each RULESETS as ruleset (ruleset.id)}<option value={ruleset.id}>{ruleset.label}</option>{/each}
-      </select>
-    </label>
-
-    <label class="label text-muted flex items-center gap-2" for="rankings-region">
-      Region
-      <select
-        id="rankings-region"
-        class={select}
-        value={state.region}
-        onchange={(event) => patch({ region: (event.currentTarget as HTMLSelectElement).value })}
-      >
-        <option value="">Every region</option>
-        {#each REGIONS as region (region)}<option value={region}>{region.toUpperCase()}</option>{/each}
-      </select>
-    </label>
-
-    <label class="label text-muted flex items-center gap-2" for="rankings-phase">
-      Phase
-      <select
-        id="rankings-phase"
-        class={select}
-        value={state.phase}
-        onchange={(event) => patch({ phase: (event.currentTarget as HTMLSelectElement).value })}
-      >
-        <option value="">Every phase</option>
-        {#each PHASES as phase (phase.id)}<option value={phase.id}>{phase.label}</option>{/each}
-      </select>
-    </label>
-
-    <label class="label text-muted flex items-center gap-2" for="rankings-faction">
-      Faction
-      <select
-        id="rankings-faction"
-        class={select}
-        value={state.faction}
-        onchange={(event) => patch({ faction: (event.currentTarget as HTMLSelectElement).value })}
-      >
-        <option value="">Both</option>
-        {#each FACTIONS as faction (faction)}<option value={faction}
-            >{faction === 'horde' ? 'Horde' : 'Alliance'}</option
-          >{/each}
-      </select>
-    </label>
-
-    <label class="flex min-h-11 items-center gap-2 text-[13px] md:min-h-0">
-      <input
-        type="checkbox"
-        checked={state.since === 'today'}
-        onchange={(event) =>
-          patch({ since: (event.currentTarget as HTMLInputElement).checked ? 'today' : '' })}
-      />
-      Today only
-    </label>
+    </div>
   </div>
 
   {#if needsPicker}
@@ -413,6 +440,7 @@
       <span class="text-right">Date</span>
       <span class="text-right">Length</span>
       <span class="text-right">Build</span>
+      <span class="text-right">Report</span>
     </div>
     <ul class="reveal flex flex-col" data-testid="ranking-rows">
       {#each page.rows as row (`${row.report_id}-${row.fight_index}-${row.player.key}`)}
@@ -420,6 +448,7 @@
         {@const characterLinkHref = characterRowHref(row)}
         <li
           class="{RANKING_ROW_GRID} border-line-soft grid min-h-11 items-center gap-x-3 gap-y-1 border-b px-2 py-2 text-[14px]"
+          class:bg-raised={currentKey !== null && row.player.key === currentKey}
           data-testid={`ranking-${row.rank}`}
         >
           <span
@@ -485,14 +514,18 @@
           <span class="text-muted tabular hidden text-right font-mono text-[13px] md:inline">
             {formatDuration(row.duration_ms)}
           </span>
-          <span class="flex items-center justify-end gap-2 text-[13px]">
+          <!-- One span on a phone (the row's third column), its two children direct grid
+               cells from md (`md:contents`), so Build and Report are two headed columns. -->
+          <span class="flex items-center justify-end gap-3 text-[13px] md:contents">
             {#if buildHref !== null}
-              <a class={rowLink} href={buildHref} data-testid="ranking-build">{row.talent_split}</a>
+              <a class="{rowLink} md:justify-self-end" href={buildHref} data-testid="ranking-build"
+                >{row.talent_split}</a
+              >
             {:else}
-              <span class="text-muted tabular font-mono">{row.talent_split}</span>
+              <span class="text-muted tabular font-mono md:justify-self-end">{row.talent_split}</span>
             {/if}
             <a
-              class={rowLink}
+              class="{rowLink} md:justify-self-end"
               href={`/reports/${row.report_id}?fight=${row.fight_index}`}
               data-testid="ranking-report">Report</a
             >

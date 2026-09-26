@@ -189,8 +189,9 @@ test('a signed-out visitor is told to sign in before they pick a file', async ({
       /\/v1\/auth\/battlenet\/start\?next=%2Faccount%3Fsigned_in%3D1$/,
     );
   }
-  await expect(page.getByTestId('upload-file')).toBeDisabled();
-  await expect(page.getByTestId('upload-start')).toBeDisabled();
+  // Signed out, the form is not drawn at all: the prompt is the whole panel.
+  await expect(page.getByTestId('upload-file')).toHaveCount(0);
+  await expect(page.getByTestId('upload-start')).toHaveCount(0);
 });
 
 test('the two ways in are the first thing on the page and lead to their panels', async ({ page }) => {

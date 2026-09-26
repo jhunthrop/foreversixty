@@ -146,86 +146,91 @@
     />
   {/if}
 
-  <div
-    class="border-line-warm rounded-panel flex flex-col items-start gap-2 border border-dashed p-4"
-    ondrop={onDrop}
-    ondragover={(event) => event.preventDefault()}
-    role="group"
-    aria-label="Choose a combat log"
-  >
-    <input
-      id="upload-file"
-      class="peer sr-only"
-      type="file"
-      accept=".txt,text/plain"
-      onchange={pick}
-      disabled={locked}
-      data-testid="upload-file"
-    />
-    <label
-      for="upload-file"
-      class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong peer-focus-visible:outline-gold cursor-pointer px-4 peer-focus-visible:outline-2 peer-disabled:cursor-default peer-disabled:opacity-50"
+  <!-- The form itself only exists for a session: signed out, the compact prompt above is
+       the whole panel, so nobody picks a file, titles it and chooses who can see it before
+       finding out the upload was never going to start. -->
+  {#if session !== 'out'}
+    <div
+      class="border-line-warm rounded-panel flex flex-col items-start gap-2 border border-dashed p-4"
+      ondrop={onDrop}
+      ondragover={(event) => event.preventDefault()}
+      role="group"
+      aria-label="Choose a combat log"
     >
-      Choose file
-    </label>
-    {#if file === null}
-      <p class="text-muted text-[13px]">or drag <code class="font-mono">WoWCombatLog.txt</code> here</p>
-    {:else}
-      <p class="text-muted tabular font-mono text-[13px] break-all" data-testid="upload-size">
-        {file.name} · {formatAmount(file.size)} bytes
-      </p>
-    {/if}
-  </div>
-
-  <div class="flex flex-col gap-1">
-    <label class="label text-muted" for="upload-title">Title</label>
-    <input
-      id="upload-title"
-      class={FIELD}
-      type="text"
-      maxlength="60"
-      placeholder="Molten Core, week 3"
-      bind:value={title}
-      disabled={locked}
-    />
-    <p class="text-muted text-[13px]">Optional. Without one the report is named after its zone.</p>
-  </div>
-
-  <fieldset class="flex flex-col gap-2" disabled={locked}>
-    <legend class="label text-muted mb-2">Who can see it</legend>
-    <div class="flex flex-wrap gap-2">
-      {#each VISIBILITIES as option (option.id)}
-        <label
-          class="{CHOICE} has-[:checked]:border-gold-deep has-[:checked]:text-gold has-[:focus-visible]:outline-gold has-[:focus-visible]:outline-2"
-        >
-          <input type="radio" name="visibility" value={option.id} bind:group={visibility} class="sr-only" />
-          {option.label}
-        </label>
-      {/each}
-    </div>
-    <p class="text-muted text-[13px]" data-testid="upload-visibility-note">{visibilityNote}</p>
-  </fieldset>
-
-  <div class="flex flex-wrap items-center gap-3">
-    <button
-      class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 disabled:opacity-50 ${busy ? BUSY_CLASS : ''}`}
-      onclick={() => void start()}
-      disabled={file === null || tooLarge || locked}
-      aria-busy={busy}
-      data-testid="upload-start"
-    >
-      Upload
-    </button>
-    {#if phase === 'uploading'}
-      <button
-        class="{SECONDARY_BUTTON_FIXED} border-line-warm text-muted w-fit px-4"
-        onclick={cancel}
-        data-testid="upload-cancel"
+      <input
+        id="upload-file"
+        class="peer sr-only"
+        type="file"
+        accept=".txt,text/plain"
+        onchange={pick}
+        disabled={locked}
+        data-testid="upload-file"
+      />
+      <label
+        for="upload-file"
+        class="{SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong peer-focus-visible:outline-gold cursor-pointer px-4 peer-focus-visible:outline-2 peer-disabled:cursor-default peer-disabled:opacity-50"
       >
-        Cancel
+        Choose file
+      </label>
+      {#if file === null}
+        <p class="text-muted text-[13px]">or drag <code class="font-mono">WoWCombatLog.txt</code> here</p>
+      {:else}
+        <p class="text-muted tabular font-mono text-[13px] break-all" data-testid="upload-size">
+          {file.name} · {formatAmount(file.size)} bytes
+        </p>
+      {/if}
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <label class="label text-muted" for="upload-title">Title</label>
+      <input
+        id="upload-title"
+        class={FIELD}
+        type="text"
+        maxlength="60"
+        placeholder="Molten Core, week 3"
+        bind:value={title}
+        disabled={locked}
+      />
+      <p class="text-muted text-[13px]">Optional. Without one the report is named after its zone.</p>
+    </div>
+
+    <fieldset class="flex flex-col gap-2" disabled={locked}>
+      <legend class="label text-muted mb-2">Who can see it</legend>
+      <div class="flex flex-wrap gap-2">
+        {#each VISIBILITIES as option (option.id)}
+          <label
+            class="{CHOICE} has-[:checked]:border-gold-deep has-[:checked]:text-gold has-[:focus-visible]:outline-gold has-[:focus-visible]:outline-2"
+          >
+            <input type="radio" name="visibility" value={option.id} bind:group={visibility} class="sr-only" />
+            {option.label}
+          </label>
+        {/each}
+      </div>
+      <p class="text-muted text-[13px]" data-testid="upload-visibility-note">{visibilityNote}</p>
+    </fieldset>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <button
+        class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 disabled:opacity-50 ${busy ? BUSY_CLASS : ''}`}
+        onclick={() => void start()}
+        disabled={file === null || tooLarge || locked}
+        aria-busy={busy}
+        data-testid="upload-start"
+      >
+        Upload
       </button>
-    {/if}
-  </div>
+      {#if phase === 'uploading'}
+        <button
+          class="{SECONDARY_BUTTON_FIXED} border-line-warm text-muted w-fit px-4"
+          onclick={cancel}
+          data-testid="upload-cancel"
+        >
+          Cancel
+        </button>
+      {/if}
+    </div>
+  {/if}
 
   {#if busy}
     <div class="flex flex-col gap-2" data-testid="upload-progress">

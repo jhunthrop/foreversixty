@@ -20,7 +20,6 @@ import SetupPage, { CURSEFORGE_URL, WAGO_URL, GITHUB_RELEASES_URL } from './setu
 const source = readFileSync(new URL('./setup.astro', import.meta.url), 'utf8');
 
 const STRING_COPY_KEYS = [
-  'pageTitle',
   'pageDescription',
   'pageNoNetwork',
   'installCurseForge',
@@ -37,6 +36,18 @@ const STRING_COPY_KEYS = [
   'setupSignInRealmNote',
   'setupSignInAction',
   'setupCompanionBody',
+  'setupPageTitle',
+  'setupStatusSignIn',
+  'setupStatusSignedIn',
+  'setupStatusAddon',
+  'setupStatusAddonDone',
+  'setupStatusCompanion',
+  'setupSignedInLine',
+  'setupSignedInLink',
+  'setupAddonDoneLine',
+  'setupHowItWorks',
+  'setupCompanionDownloadLead',
+  'setupCompanionPair',
 ] as const;
 
 let html: string;

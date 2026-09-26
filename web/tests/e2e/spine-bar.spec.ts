@@ -32,7 +32,9 @@ test.describe('the spine bar opens every door on the current character', () => {
 
   test("Rankings for Warrior is on /logs' bar once a warrior export is loaded", async ({ page }) => {
     await pasteAndGoTo(page, '/logs');
-    await expect(page.getByTestId('current-character-bar-rankings')).toHaveText('Rankings for Warrior');
+    // The door carries both its labels in the DOM ("Rankings" below md, the full one from md),
+    // so match the full one rather than the exact text.
+    await expect(page.getByTestId('current-character-bar-rankings')).toContainText('Rankings for Warrior');
     await expect(page.getByTestId('current-character-bar-rankings')).toHaveAttribute(
       'href',
       '/rankings?class=warrior',

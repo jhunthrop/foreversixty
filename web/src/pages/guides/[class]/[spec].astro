@@ -20,7 +20,6 @@ import SpecTableOfContents from '../../../components/SpecTableOfContents.astro';
 import Content from '../../../layouts/Content.astro';
 import { renderGuideMarkdown } from '../../../lib/guides/markdown';
 import { splitSpecSections, type SpecSection } from '../../../lib/guides/sections';
-import { plannerHref } from '../../../lib/planner/reference';
 
 export async function getStaticPaths() {
   const guides = await getCollection('guides');
@@ -72,9 +71,11 @@ const buildCode = entry.data.build;
   sources={entry.data.sources}
   confidencePlacement="footer"
 >
-  <p>
-    <a href={plannerHref(entry.data.classSlug)}>Open the planner for this class</a>
-  </p>
+  <!-- The build's two actions first, under the title: they are what a raider opens the
+       guide for. The same pair repeats under the tree for whoever read down to it. The old
+       generic "open the planner for this class" link went: it opened an empty planner, not
+       this build. -->
+  {buildCode !== undefined && <BuildActionButtons code={buildCode} />}
   <SpecTableOfContents />
   <SpecTableOfContents slot="aside" placement="rail" />
   <Fragment set:html={overviewHtml} />

@@ -141,8 +141,12 @@
       >
         <span data-testid="current-character-bar-signed-out">{currentCharacterCopy.barSignedOutLine}</span>
         <span class="flex min-h-11 items-center gap-4 md:min-h-0 md:gap-3">
-          <a class="text-nav underline" href="/login">{currentCharacterCopy.barSignIn}</a>
-          <a class="text-nav underline" href="/setup#paste">{currentCharacterCopy.barPasteExport}</a>
+          <a class="text-nav inline-flex min-h-11 items-center underline md:min-h-0" href="/login"
+            >{currentCharacterCopy.barSignIn}</a
+          >
+          <a class="text-nav inline-flex min-h-11 items-center underline md:min-h-0" href="/setup#paste"
+            >{currentCharacterCopy.barPasteExport}</a
+          >
         </span>
       </div>
     </div>

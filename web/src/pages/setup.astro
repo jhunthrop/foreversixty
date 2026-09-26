@@ -8,7 +8,8 @@ import AddonPasteBox from '../components/AddonPasteBox.svelte';
 import CurrentCharacterBar from '../components/CurrentCharacterBar.svelte';
 import { addonCopy } from '../lib/addon/copy';
 import { battlenetStartUrl } from '../lib/account/api';
-import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
+import { PRIMARY_BUTTON_FIXED } from '../lib/planner/styles';
+import companion from '../data/companion.json';
 import activeBuild from '../data/active-build.json';
 import communityLinks from '../data/links.json';
 
@@ -33,15 +34,43 @@ const flows = [
 ];
 ---
 
-<Base title={addonCopy.pageTitle} description={addonCopy.pageDescription} path="/setup" session>
+<Base title={addonCopy.setupPageTitle} description={addonCopy.pageDescription} path="/setup" session>
   <main
     id="main"
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1000px] flex-col gap-5 px-[18px] py-10 md:px-12"
   >
-    <header class="flex flex-col gap-2">
-      <h1 class="text-[28px] font-bold tracking-[0.02em]">{addonCopy.pageTitle}</h1>
+    <header class="flex flex-col gap-3">
+      <h1 class="text-[28px] font-bold tracking-[0.02em]">{addonCopy.setupPageTitle}</h1>
       <p class="text-muted text-[15px]">{addonCopy.pageDescription}</p>
+      <!-- The checklist at a glance. Each item has a done and a not-done reading; global.css
+           shows one of them from the <html> hints, so a signed-in visitor with an export
+           loaded sees two ticks before any script runs. The companion has no hint of its own
+           (pairing lives on the account), so it never reads as done here. -->
+      <ol class="label text-muted flex flex-wrap gap-x-5 gap-y-1" data-testid="setup-status">
+        <li class="flex items-center gap-2">
+          <span
+            class="setup-when-out border-line-warm inline-block size-3 rounded-full border"
+            aria-hidden="true"
+          ></span>
+          <span class="setup-when-in bg-gold inline-block size-3 rounded-full" aria-hidden="true"></span>
+          <span class="setup-when-out">{addonCopy.setupStatusSignIn}</span>
+          <span class="setup-when-in">{addonCopy.setupStatusSignedIn}</span>
+        </li>
+        <li class="flex items-center gap-2">
+          <span
+            class="setup-when-no-pointer border-line-warm inline-block size-3 rounded-full border"
+            aria-hidden="true"
+          ></span>
+          <span class="setup-when-pointer bg-gold inline-block size-3 rounded-full" aria-hidden="true"></span>
+          <span class="setup-when-no-pointer">{addonCopy.setupStatusAddon}</span>
+          <span class="setup-when-pointer">{addonCopy.setupStatusAddonDone}</span>
+        </li>
+        <li class="flex items-center gap-2">
+          <span class="border-line-warm inline-block size-3 rounded-full border" aria-hidden="true"></span>
+          <span>{addonCopy.setupStatusCompanion}</span>
+        </li>
+      </ol>
     </header>
 
     <Panel title={addonCopy.setupStep1Title}>
@@ -49,11 +78,17 @@ const flows = [
         <p class="text-muted text-[14px] leading-relaxed">{addonCopy.setupSignInBody}</p>
         <p class="text-muted text-[14px] leading-relaxed">{addonCopy.setupSignInRealmNote}</p>
         <a
-          class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong px-4 w-fit`}
+          class={`setup-when-out ${PRIMARY_BUTTON_FIXED} px-5 w-fit`}
           href={battlenetStartUrl('/account?signed_in=1')}
         >
           {addonCopy.setupSignInAction}
         </a>
+        <p class="setup-when-in text-[14px]" data-testid="setup-signed-in">
+          {addonCopy.setupSignedInLine}{' '}
+          <a class="text-nav underline" href="/account">
+            {addonCopy.setupSignedInLink}
+          </a>
+        </p>
       </div>
     </Panel>
 
@@ -74,21 +109,53 @@ const flows = [
             </li>
           ))}
         </ul>
+        <p class="setup-when-pointer text-[14px]" data-testid="setup-addon-done">
+          {addonCopy.setupAddonDoneLine}
+        </p>
         <AddonPasteBox client:idle />
         <CurrentCharacterBar client:idle hasOwnPasteBox />
-        <div class="grid gap-4 md:grid-cols-3">
-          {flows.map((flow) => (
-            <div class="border-line rounded-control border p-4">
-              <h3 class="label text-muted mb-2">{flow.title}</h3>
-              <p class="text-muted text-[14px] leading-relaxed">{flow.body}</p>
-            </div>
-          ))}
-        </div>
+        <details class="border-line rounded-control border">
+          <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center px-4 select-none">
+            {addonCopy.setupHowItWorks}
+          </summary>
+          <div class="grid gap-4 px-4 pb-4 md:grid-cols-3">
+            {flows.map((flow) => (
+              <div class="border-line-soft rounded-control border p-4">
+                <h3 class="label text-muted mb-2">{flow.title}</h3>
+                <p class="text-muted text-[14px] leading-relaxed">{flow.body}</p>
+              </div>
+            ))}
+          </div>
+        </details>
       </div>
     </Panel>
 
     <Panel title={addonCopy.setupStep3Title}>
-      <p class="text-muted p-[18px] text-[14px] leading-relaxed">{addonCopy.setupCompanionBody}</p>
+      <div class="flex flex-col gap-4 p-[18px]">
+        <p class="text-muted text-[14px] leading-relaxed">{addonCopy.setupCompanionBody}</p>
+        <div class="flex flex-col gap-2">
+          <h3 class="label text-muted">{addonCopy.setupCompanionDownloadLead}</h3>
+          <ul
+            class="flex flex-col gap-2 md:flex-row md:flex-wrap md:gap-6"
+            data-testid="setup-companion-downloads"
+          >
+            {companion.downloads.map((entry) => (
+              <li>
+                <a
+                  class="inline-flex min-h-11 items-center text-[14px] font-semibold underline underline-offset-2"
+                  href={`${companion.releasesUrl}/latest/download/${entry.asset}`}
+                  rel="noopener"
+                >
+                  {entry.platform}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <a class="text-nav inline-flex min-h-11 items-center text-[14px] underline" href="/account#devices">
+          {addonCopy.setupCompanionPair}
+        </a>
+      </div>
     </Panel>
   </main>
 </Base>

@@ -28,18 +28,23 @@ const { placement = 'inline' } = Astro.props;
     </ol>
   </nav>
 ) : (
-  <nav
-    aria-label="Sections in this guide"
-    class="rounded-control bg-raised border-line border p-4 lg:hidden"
-    data-testid="guide-toc-inline"
-  >
-    <h2 class="section-title text-[13px]">On this page</h2>
-    <ol class="m-0 mt-2 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 text-[13px]">
-      {SPEC_SECTIONS.map((section) => (
-        <li>
-          <a href={`#${slugify(section)}`}>{section}</a>
-        </li>
-      ))}
-    </ol>
+  <nav aria-label="Sections in this guide" class="sticky top-0 z-20 lg:hidden" data-testid="guide-toc-inline">
+    <!-- Sticky and closed by default below lg: a nine-link box scrolled away after the
+           first screen of a seven-screen page, so a reader who wanted Stat priority after
+           Overview had to scroll back up. One 44px line rides under the header instead. -->
+    <details class="bg-bg border-line-soft border-b">
+      <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center gap-2 select-none">
+        On this page
+      </summary>
+      <ol class="m-0 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 pb-3 text-[13px]">
+        {SPEC_SECTIONS.map((section) => (
+          <li>
+            <a class="inline-flex min-h-9 items-center" href={`#${slugify(section)}`}>
+              {section}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </details>
   </nav>
 )}

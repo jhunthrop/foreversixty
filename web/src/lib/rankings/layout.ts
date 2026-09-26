@@ -11,9 +11,10 @@ export const RANKINGS_LOADING_MIN_H = 'min-h-[440px]';
 
 /**
  * The character board's column template, shared by the header line and every row so the
- * two can never drift apart: rank, name, guild, then six figure columns at md and up; on a
+ * two can never drift apart: rank, name, guild, then seven columns at md and up (size, the
+ * metric, executed, date, length, build, report); on a
  * phone three columns (rank, name, the build and report links) with the figures folded
  * into the row's own second line.
  */
 export const RANKING_ROW_GRID =
-  'grid-cols-[40px_minmax(0,1fr)_auto] md:grid-cols-[40px_minmax(140px,1.4fr)_minmax(120px,1fr)_72px_88px_72px_96px_72px_88px]';
+  'grid-cols-[40px_minmax(0,1fr)_auto] md:grid-cols-[40px_minmax(140px,1.4fr)_minmax(120px,1fr)_64px_88px_72px_96px_64px_72px_64px]';

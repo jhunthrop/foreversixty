@@ -2,7 +2,6 @@
 // web/src/pages/login.astro
 import Base from '../layouts/Base.astro';
 import Account from '../components/Account.svelte';
-import { accountSignInCopy } from '../lib/account/signin-copy';
 ---
 
 <Base
@@ -11,13 +10,17 @@ import { accountSignInCopy } from '../lib/account/signin-copy';
   path="/login"
   session
 >
+  <!-- One centred card: the page has one job, and a left-flush column in a wide viewport
+       read as a stub. The explainer and the two ways in live in the island so a signed-in
+       visitor sees a way back into the product instead of a prompt that no longer applies. -->
   <main
     id="main"
     tabindex="-1"
-    class="mx-auto flex w-full max-w-[640px] flex-col gap-[22px] px-[18px] pt-4 pb-10 md:gap-8 md:px-12 md:pt-7"
+    class="mx-auto flex w-full max-w-[520px] flex-col px-[18px] py-10 md:px-0 md:py-16"
   >
-    <h1 class="section-title text-[18px]">Sign in</h1>
-    <p class="text-muted text-[14px]">{accountSignInCopy.reason}</p>
-    <Account client:load mode="login" next="/account?signed_in=1" />
+    <div class="border-line bg-raised rounded-panel flex flex-col gap-5 border p-6 md:p-8">
+      <h1 class="section-title text-[18px]">Sign in</h1>
+      <Account client:load mode="login" next="/account?signed_in=1" />
+    </div>
   </main>
 </Base>

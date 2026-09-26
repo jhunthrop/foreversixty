@@ -4,8 +4,9 @@
 // links in its own intro: live logging through the companion is the primary path, and the
 // whole-file upload is the fallback for a night that was already logged. Each way is its
 // own panel below (no separate explainer cards -- the design loop's logs round dropped them
-// because they said what the panels under them already say). Recent public reports sit
-// under the companion on wide screens so the tall upload form has a full column beside it.
+// because they said what the panels under them already say). The two report lists come
+// first, side by side at lg: reading logs is the returning visit, setting logging up is the
+// first one.
 import Base from '../layouts/Base.astro';
 import Account from '../components/Account.svelte';
 import CurrentCharacterBar from '../components/CurrentCharacterBar.svelte';
@@ -51,23 +52,33 @@ const blockTitle = 'label text-muted';
       </p>
     </header>
 
-    <Panel title="Your reports">
-      <div class="p-4 md:p-5">
-        <Account client:visible mode="reports" />
+    <!-- The two report lists first, side by side at lg: a raid leader mostly comes back to
+         read logs, not to set logging up. The two ways in follow. -->
+    <div class="grid grid-cols-1 items-start gap-[22px] md:gap-8 lg:grid-cols-12">
+      <div class="lg:col-span-7">
+        <Panel title="Your reports">
+          <div class="p-4 md:p-5">
+            <Account client:visible mode="reports" />
+          </div>
+        </Panel>
       </div>
-    </Panel>
+      <div class="lg:col-span-5">
+        <Panel title="Recent public reports">
+          <div class="p-4 md:p-5">
+            <RecentReports client:visible={{ rootMargin: RECENT_REPORTS_PRELOAD }} heading={false} />
+          </div>
+        </Panel>
+      </div>
+    </div>
 
     <div class="grid grid-cols-1 items-start gap-[22px] md:gap-8 lg:grid-cols-12">
-      <div id="companion" class="scroll-mt-6 lg:col-span-7 lg:col-start-1 lg:row-start-1">
+      <div id="companion" class="scroll-mt-6 lg:col-span-7">
         <Panel title="The companion">
           <span slot="aside" class="text-muted text-[13px]">
             Live, while you raid
           </span>
           <div class={block}>
             <p class="text-muted text-[13px]" data-testid="logs-companion-pointer">
-              <!-- `pointer` is a complete sentence ending in its own period; the link after it
-                   is a standalone action label with no punctuation of its own, matching
-                   EmptyState's convention elsewhere on this site. -->
               {logsCompanionCopy.pointer}{' '}
               <a class="text-nav underline" href="/setup">
                 {logsCompanionCopy.pointerLink}
@@ -81,20 +92,12 @@ const blockTitle = 'label text-muted';
         </Panel>
       </div>
 
-      <div id="upload" class="scroll-mt-6 lg:col-span-5 lg:col-start-8 lg:row-span-2 lg:row-start-1">
+      <div id="upload" class="scroll-mt-6 lg:col-span-5">
         <Panel title="Upload a log">
           <span slot="aside" class="text-muted text-[13px]">
             For a night already logged
           </span>
           <Upload client:load />
-        </Panel>
-      </div>
-
-      <div class="lg:col-span-7 lg:col-start-1 lg:row-start-2">
-        <Panel title="Recent public reports">
-          <div class="p-4 md:p-5">
-            <RecentReports client:visible={{ rootMargin: RECENT_REPORTS_PRELOAD }} heading={false} />
-          </div>
         </Panel>
       </div>
     </div>
