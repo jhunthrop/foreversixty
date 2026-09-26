@@ -40,4 +40,12 @@ describe('TalentCell read-only mode', () => {
     const { body } = render(TalentCell, { props: { store, talent, focused: false, onfocuscell: () => {} } });
     expect(body).toContain('<button');
   });
+
+  it('renders locked, not available, for an unspent talent when readOnly', () => {
+    const store = storeWithRank(0);
+    const { body } = render(TalentCell, {
+      props: { store, talent, focused: false, onfocuscell: () => {}, readOnly: true },
+    });
+    expect(body).toContain('data-state="locked"');
+  });
 });

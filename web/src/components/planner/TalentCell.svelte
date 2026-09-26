@@ -135,6 +135,7 @@
 <div class="relative">
   {#if readOnly}
     <div
+      role="group"
       aria-label={`${talent.name}, rank ${rank} of ${talent.max_rank}`}
       data-testid={`talent-${talent.id}`}
       data-rank={rank}
