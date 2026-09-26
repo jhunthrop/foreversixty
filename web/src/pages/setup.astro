@@ -74,8 +74,8 @@ const flows = [
             </li>
           ))}
         </ul>
-        <AddonPasteBox client:load />
-        <CurrentCharacterBar client:load hasOwnPasteBox />
+        <AddonPasteBox client:idle />
+        <CurrentCharacterBar client:idle hasOwnPasteBox />
         <div class="grid gap-4 md:grid-cols-2">
           {flows.map((flow) => (
             <div class="border-line rounded-control border p-4">

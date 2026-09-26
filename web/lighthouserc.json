@@ -37,7 +37,7 @@
     "assert": {
       "assertMatrix": [
         {
-          "matchingUrlPattern": "^(?!.*/(?:index|planner|logs)\\.html$)(?!.*/reports/)(?!.*/sim(?:/specs|/gear|/talents|/drops|/weights)?\\.html$)(?!.*/sim/[a-z2-7]{12}\\.html$).*$",
+          "matchingUrlPattern": "^(?!.*/(?:index|planner|logs|setup)\\.html$)(?!.*/reports/)(?!.*/sim(?:/specs|/gear|/talents|/drops|/weights)?\\.html$)(?!.*/sim/[a-z2-7]{12}\\.html$).*$",
           "aggregationMethod": "median",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.95 }],
@@ -63,7 +63,7 @@
           }
         },
         {
-          "matchingUrlPattern": ".*/(?:planner|logs)\\.html$",
+          "matchingUrlPattern": ".*/(?:planner|logs|setup)\\.html$",
           "aggregationMethod": "median",
           "assertions": {
             "categories:performance": ["error", { "minScore": 0.9 }],
