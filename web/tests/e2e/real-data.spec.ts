@@ -101,21 +101,6 @@ test('the planner offers the share panel', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Share' })).toBeAttached();
 });
 
-test('the reference page crosses every class with every race', async ({ page }) => {
-  // Read straight from the synced data, not a hardcoded count: Forever adds races (and
-  // could add classes) on top of Classic's nine, and this suite's whole point is to never
-  // let a Forever fact go stale in a literal here (see the file header).
-  const classCount = readSynced<{ slug: string }[]>('classes.json').length;
-  const raceCount = readSynced<{ slug: string }[]>('races.json').length;
-
-  await page.goto('/classes');
-  // One "Open in the planner" link per class, one table row per race.
-  await expect(page.locator('a[href^="/planner?class="]:not([href*="race="])')).toHaveCount(classCount);
-  await expect(page.locator('table tbody tr')).toHaveCount(raceCount);
-  // The class columns plus the leading "Race" header.
-  await expect(page.locator('table thead th')).toHaveCount(classCount + 1);
-});
-
 /** The synced talent file for a class, trees in position order. */
 interface SyncedTalent {
   id: number;

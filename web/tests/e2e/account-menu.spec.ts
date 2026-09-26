@@ -47,6 +47,33 @@ test('closes on outside click', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Your account' })).toBeHidden();
 });
 
+test('sign out calls the sessions endpoint and returns to the home page', async ({ page }) => {
+  let signOutCalled = false;
+  await page.route('**/v1/sessions', async (route) => {
+    signOutCalled = signOutCalled || route.request().method() === 'DELETE';
+    await route.fulfill({ status: 204, contentType: 'application/json', body: '' });
+  });
+  // /account also reads the devices list; mocked so the page settles without a real
+  // network call, the same fixture shape account-billing.spec.ts uses.
+  await page.route('**/v1/devices', (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ ok: true, data: [], error: null, request_id: 'r' }),
+    }),
+  );
+
+  // Starts away from '/' so the post-sign-out redirect is an observable navigation, not a
+  // no-op landing on the page it was already on.
+  await page.goto('/account');
+  await page.getByTestId('account-menu').locator('summary').click();
+  await page.getByTestId('account-menu-signout').click();
+
+  await page.waitForURL('/');
+  expect(new URL(page.url()).pathname).toBe('/');
+  expect(signOutCalled).toBe(true);
+});
+
 test('switching a character writes the current-character pointer and closes the menu', async ({ page }) => {
   await page.goto('/');
   await page.getByTestId('account-menu').locator('summary').click();

@@ -34,6 +34,7 @@ const STRING_COPY_KEYS = [
   'setupStep2Title',
   'setupStep3Title',
   'setupSignInBody',
+  'setupSignInRealmNote',
   'setupSignInAction',
   'setupCompanionBody',
 ] as const;
@@ -72,6 +73,10 @@ describe('/setup', () => {
 
   it('shows the current data build from the data file in the rendered output', () => {
     expect(html).toContain(addonCopy.currentDataBuild(activeBuild.build));
+  });
+
+  it('names which realm types Blizzard serves today under step 1', () => {
+    expect(html).toContain(addonCopy.setupSignInRealmNote);
   });
 
   it('every install link opts out of opener access', () => {

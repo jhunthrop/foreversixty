@@ -85,6 +85,10 @@ export const addonCopy = {
   setupStep2Title: '2. The addon',
   setupStep3Title: '3. The companion',
   setupSignInBody: 'Imports your characters -- gear, talents and guild, refreshed nightly.',
+  /** Second line under step 1: same family of copy as `accountPageCopy.noBattlenetDataForRealm`
+   *  (spec 2026-09-25 §3.4) -- that key names the gap per character, on the account page,
+   *  after sign-in; this one names it up front, before signing in, as a standalone fact. */
+  setupSignInRealmNote: 'Blizzard does not yet serve character data for every realm type.',
   /** Same wording as `home-panel-copy.ts`'s `signInButton`; kept as its own key here so
    *  every visible string on this page comes from `addonCopy`, matching this page's own
    *  copy-module convention rather than reaching into the home page's module. */
