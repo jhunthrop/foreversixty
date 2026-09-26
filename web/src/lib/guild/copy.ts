@@ -18,6 +18,8 @@ export const guildHomeCopy = {
   emptyRosterOfficer:
     "You're the only member the site knows about. Share the invite link to bring the rest of the guild in.",
   emptyRosterMember: "You're the only member the site knows about.",
+  /** The officer-only action on the empty-roster state: where the invite link lives. */
+  manageInvite: 'Guild settings',
   loggedRecently: 'Logged in the last day',
   unverified: 'Unverified',
   itemLevelLabel: 'ilvl',
