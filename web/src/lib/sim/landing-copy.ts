@@ -32,4 +32,9 @@ export const landingCopy = {
    *  learn whether a failed pick was this refusal specifically, since `fromStoredCharacter`
    *  and the store both forward `error.message` verbatim with no status code attached. */
   buildMissingFallback: 'No build yet for this character.',
+
+  /** Spec 2026-09-25 §6: the two ScopeNote sentences, merged into one line under the
+   *  character list on /sim only -- ScopeNote.astro itself, and the other six simulator
+   *  pages that share it, are unchanged (ruling in the states-lane plan). */
+  scopeCaveat: 'Damage specs at level 60; healing and tanking specs are not simulated yet.',
 } as const;

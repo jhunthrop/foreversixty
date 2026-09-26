@@ -47,9 +47,11 @@ test.describe('current character', () => {
     await expect(page.getByTestId('import-get-addon')).toHaveAttribute('href', '/setup');
   });
 
-  test('the below-60 framing line is on /sim', async ({ page }) => {
+  test('the merged scope caveat is on /sim', async ({ page }) => {
     await page.goto('/sim');
-    await expect(page.getByTestId('sim-below-sixty-note')).toBeVisible();
+    await expect(page.getByTestId('sim-scope-note')).toHaveText(
+      'Damage specs at level 60; healing and tanking specs are not simulated yet.',
+    );
   });
 
   test("Droptimizer's every-upgrade rows offer Plan it, opening the planner with the item's code", async ({

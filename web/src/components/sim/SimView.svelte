@@ -634,6 +634,10 @@
         />
       {/if}
 
+      <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
+        {landingCopy.scopeCaveat}
+      </p>
+
       {#if signedIn && simHistoryLazy.current}
         <simHistoryLazy.current
           rows={historyRows}
