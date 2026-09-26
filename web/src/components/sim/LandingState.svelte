@@ -87,6 +87,12 @@
 
 <section class="mx-[18px] flex flex-col gap-3 md:mx-0" data-testid="sim-landing">
   <h2 class="section-title text-[15px]">{simCopy.yourCharacters}</h2>
+  <!-- 2026-09-26 layout pass, Finding 3: the one copy of the DPS-only restriction on /sim,
+       as the caption under this heading -- SimView.svelte no longer renders its own copy,
+       and the source switcher's hero card (SourceSwitcher.svelte) carries the identical
+       line under its own "Your characters" heading for a signed-out visitor, so the two
+       states are never both on screen at once. -->
+  <p class="text-muted text-[13px]" data-testid="sim-scope-note">{landingCopy.scopeCaveat}</p>
 
   <ul class="border-line bg-raised rounded-panel flex flex-col border px-3">
     {#each characters as character (character.key)}

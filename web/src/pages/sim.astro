@@ -7,6 +7,7 @@ import { CHIP_HEIGHT, VIEW_GAP } from '../lib/current-character-layout';
 import { simCopy } from '../lib/sim/copy';
 import { landingCopy } from '../lib/sim/landing-copy';
 import SimTabs from '../components/sim/SimTabs.astro';
+import ExampleResultCard from '../components/sim/ExampleResultCard.svelte';
 ---
 
 <Base
@@ -23,60 +24,52 @@ import SimTabs from '../components/sim/SimTabs.astro';
   >
     <SimTabs currentPath="/sim" />
     <h1 class="section-title px-[18px] text-[18px] md:px-0">Simulator</h1>
-    <!-- Round 2 (Lighthouse): the signed-out default view's own largest paragraph
-         (SourceSwitcher's addon-card body, simCopy.sourceAddonBody) painted from the
-         island only, so it was the measured LCP element and its 1600ms budget was gated on
-         full hydration (81% "Render Delay"). Emitting the identical text here, from the
-         shell, lets it paint at first paint instead -- but the first attempt (a bare `<p>`
-         directly under the h1) still measured the hydrated version as LCP: outside the
-         card, the paragraph wraps at a different width, so it is a different (larger)
-         painted box once SourceSwitcher mounts, and a larger box always wins the LCP race
-         over an earlier, smaller one. Nesting it in the exact card/grid/section SourceSwitcher
-         itself renders (`SourceSwitcher.svelte`'s own `card` class) gives the static
-         paragraph the identical wrap width, so its box is pixel-identical before and after
-         hydration and the earlier paint time is credited. sim-island.ts's replaceChildren()
-         still swaps this whole div's content for the real, interactive switcher, so the
-         min-h reservation below (measured against the real switcher's rendered height,
-         mobile/desktop) keeps that swap from moving the footer -- the same reserved-height
-         technique SpecGrid.svelte's skeleton already uses for the same reason.
+    <!-- Round 2 (Lighthouse), 2026-09-26 layout pass update: the signed-out default view's
+         own largest early text used to be SourceSwitcher's addon-card body; the layout
+         review promotes the Battle.net sign-in to a full-width hero ahead of that card
+         (Finding 2), with an intro line and a static example result above it (Finding 5),
+         so those are what now paints first for a signed-out visitor and what this shell
+         reproduces ahead of hydration. `ExampleResultCard` is rendered here with no
+         `client:*` directive -- static, prerendered markup, identical to what the island
+         renders, with no risk of the two drifting apart the way two hand-copied strings
+         could. The hero card's own heading and two lines mirror
+         `SourceSwitcher.svelte`'s hero branch exactly (same classes, same copy) for the
+         same reason the original trick nested its paragraph in the real card's own markup:
+         an identical wrap width keeps the box pixel-stable across hydration. The button and
+         email-link line are not reproduced here -- they add height but not width, so they
+         do not change which text box is largest/earliest; the min-h reservation below still
+         covers their full height as part of the real measurement.
 
-         Raised by the current-character chip's own reserved band (Task 5, the same
-         gear.astro pattern): CHIP_HEIGHT (`h-[88px] md:h-11`) plus the view's own gap
-         before the next block (`gap-[22px]` phone, `md:gap-8` desktop) -- +110px phone,
-         +76px desktop, on top of the Round 2 figures above. The chip slot sits first,
-         above the LCP card, identically in both this shell and SimView.svelte's own
-         render, so the card's own box stays pixel-identical before and after hydration.
+         sim-island.ts's replaceChildren() swaps this whole div's content for the real,
+         interactive switcher, so the min-h reservation below (measured against the real
+         hydrated height, mobile/desktop) keeps that swap from moving the footer -- the same
+         reserved-height technique SpecGrid.svelte's skeleton already uses for the same
+         reason.
 
-         Fix round 1, Important #2: the chip slot and the LCP card below it are wrapped in
-         `flex flex-col ${VIEW_GAP}`, the identical gap SimView.svelte's own root uses
-         between the same two elements once hydrated. Without this wrapper the two sat
-         directly against each other (0 gap) here but 22px/32px apart after hydration, so
-         the card -- and everything the island renders below it -- painted higher before
-         hydration than after, even though the min-h total above already budgeted for the
-         gap. The wrapper changes no width, only the vertical offset, so the LCP card's own
-         wrap width (the pixel-identical claim above) is unaffected.
+         The chip slot's own reserved band (Task 5, the same gear.astro pattern) sits first,
+         above this block, identically in both this shell and SimView.svelte's own render,
+         wrapped together in `flex flex-col ${VIEW_GAP}` (fix round 1, Important #2) so the
+         vertical gap between them matches the hydrated root's own gap too.
 
-         Final-review fix (states lane, Finding 3): Task 8 measured the desktop reserve as
-         ~13px short but deferred the fix to this review. Re-measured with a real Chromium
+         2026-09-26 re-measure: with the intro line, example card and hero card all added
+         ahead of the three paste cards for a signed-out visitor, a real Chromium
          build+preview (`[data-sim-mount]`'s `getBoundingClientRect().height` after zeroing
-         its own `min-height`): 620px at desktop widths (>=768px), consistently across
-         repeated loads -- 13px over the old 607px figure, confirming Task 8's own estimate.
-         607 becomes 620. Mobile's naturally taller content measured 1086.5px at 390x844,
-         comfortably under the existing 1154px reserve, so mobile is unchanged. -->
-    <div id="sim" data-sim-mount class="min-h-[1154px] md:min-h-[620px]">
+         its own `min-height`) measured 1384px at 390x844 (phone) and 795px at desktop
+         widths (>=768px) for the signed-out default view -- both up from the pre-pass
+         1154/620 figures, since the page now says more before the fold. Reserved 24px over
+         each (lane-common's own CI-Linux-fonts-wrap-wider buffer): 1408/819. -->
+    <div id="sim" data-sim-mount class="min-h-[1408px] md:min-h-[819px]">
       <div class={`flex flex-col ${VIEW_GAP}`}>
         <div class={CHIP_HEIGHT} data-testid="current-character-bar"></div>
         <section class="mx-[18px] flex flex-col gap-3 md:mx-0">
-          <div class="grid grid-cols-1 gap-3 md:grid-cols-2">
-            <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">
-              <h2 class="section-title text-[15px]">{simCopy.sourceAddonTitle}</h2>
-              <p class="text-muted text-[13px]">{simCopy.sourceAddonBody}</p>
-            </div>
+          <p class="text-muted text-[14px]">{landingCopy.introLine}</p>
+          <ExampleResultCard />
+          <div class="border-line bg-card-top rounded-panel flex flex-col gap-3 border p-4">
+            <h2 class="section-title text-[15px]">{simCopy.sourceAccountTitle}</h2>
+            <p class="text-muted text-[13px]">{landingCopy.scopeCaveat}</p>
+            <p class="text-muted text-[13px]">{simCopy.signInToFindCharacters}</p>
           </div>
         </section>
-        <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
-          {landingCopy.scopeCaveat}
-        </p>
       </div>
       <noscript>
         <p class="text-muted px-[18px] text-[14px] md:px-0">

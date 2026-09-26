@@ -11,12 +11,15 @@
   import { onMount, untrack } from 'svelte';
   import activeBuild from '../../data/active-build.json';
   import { battlenetStartUrl, effectiveServerSims, fetchMeOnce, type Me } from '../../lib/account/api';
+  import { heroCharacter } from '../../lib/account/hero-character';
+  import { mainCharacter } from '../../lib/account/main-character';
   import { sessionHinted } from '../../lib/data/query';
   import { createQueryState } from '../../lib/data/query.svelte';
   import { API_BASE_URL } from '../../lib/planner/config';
   import { SIM_LANDING_SKELETON_MIN_H } from '../../lib/sim/layout';
   import type { CharacterPath } from '../../lib/characters';
-  import { readCurrent } from '../../lib/current-character';
+  import { parseCharacterPath } from '../../lib/characters';
+  import { CURRENT_CHARACTER_CHANGED, readCurrent, type CurrentCharacter } from '../../lib/current-character';
   import { VIEW_GAP } from '../../lib/current-character-layout';
   import { readLastUpgrade, type LastUpgrade } from '../../lib/sim/last-upgrade';
   import { createLazyComponent, type LazyLoadState } from '../../lib/report/lazy-component.svelte';
@@ -64,11 +67,12 @@
   import RunControl from './RunControl.svelte';
   import SavedSim from './SavedSim.svelte';
   import SettingsBar from './SettingsBar.svelte';
+  import SimRunBlock from './SimRunBlock.svelte';
+  import SimSavePanel from './SimSavePanel.svelte';
   import SourceSwitcher from './SourceSwitcher.svelte';
   import SpecGrid from './SpecGrid.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
-  import { BUSY_CLASS } from '../../lib/ui/busy';
 
   let { simId = '', inlineResult = null }: { simId?: string; inlineResult?: SimResult | null } = $props();
 
@@ -211,6 +215,36 @@
   const sessionPending = $derived(session.status === 'loading' && session.data === null && sessionHinted());
   // The history panel (Task 17), for a signed-in player on plain /sim only.
   const signedIn = $derived(me !== null);
+
+  // 2026-09-26 layout pass, Finding 1: the Run block's own character, resolved with the
+  // exact same pointer-then-main precedence CurrentCharacterBar.svelte's spine mode uses
+  // (`heroCharacter`/`mainCharacter`, both pure and already shared with that component) --
+  // so the block under the spine bar and the bar itself can never name a different
+  // character. Tracked the same way that component tracks it: read once, then again on
+  // every pointer write (`CURRENT_CHARACTER_CHANGED`), since a Switch elsewhere on this
+  // page's own spine bar should move this block along with it.
+  let currentPointer = $state<CurrentCharacter | null>(null);
+  $effect(() => {
+    const read = (): void => {
+      currentPointer = readCurrent();
+    };
+    read();
+    window.addEventListener(CURRENT_CHARACTER_CHANGED, read);
+    return () => window.removeEventListener(CURRENT_CHARACTER_CHANGED, read);
+  });
+  const runBlockCharacter = $derived.by(() => {
+    if (me === null) return null;
+    const pointerCharacter = heroCharacter(currentPointer, me.characters);
+    const main = mainCharacter(me.characters, me.main_character_key);
+    return pointerCharacter ?? (currentPointer === null ? main : null);
+  });
+  // `MeCharacter.key` is always `<region>/<ruleset>/<slug>` (`characters.ts`'s own shape,
+  // the same one LandingState.svelte's `pathOf` parses) -- validated at this boundary
+  // rather than assumed, the same rule every other source in this lane follows.
+  const runBlockPath = $derived(
+    runBlockCharacter === null ? null : parseCharacterPath(`/character/${runBlockCharacter.key}`),
+  );
+
   let historyRows = $state<SimListRow[] | null>(null);
   let historyError = $state<string | null>(null);
   // The history filter (Task 18). "all" sends no `kind=` at all -- see api.ts's listMySims.
@@ -278,61 +312,9 @@
     }
   });
 
-  // The save form: `saveOpen`/`saveTitle` are the inline form, `savedUrl` replaces it on success.
-  let saveOpen = $state(false);
-  let saveTitle = $state('');
-  let saving = $state(false);
-  let saveFailed = $state(false);
-  let savedUrl = $state<string | null>(null);
-  let savedLinkCopied = $state(false);
-
-  $effect(() => {
-    void store.result;
-    saveOpen = false;
-    saveFailed = false;
-    savedUrl = null;
-    savedLinkCopied = false;
-  });
-
-  // A result the run loop reports as stopped rather than finished (`sim/api`'s additive
-  // `aborted`) has nothing complete to save -- the button stays disabled and says why,
-  // rather than saving a partial run under a title the player chose for a real result.
-  const canSave = $derived(store.result !== null && store.result.aborted !== true);
-
-  function openSaveForm(): void {
-    saveTitle = store.reportTitle;
-    saveFailed = false;
-    savedUrl = null;
-    saveOpen = true;
-  }
-
-  function cancelSave(): void {
-    saveOpen = false;
-    saveFailed = false;
-  }
-
-  async function confirmSave(): Promise<void> {
-    saving = true;
-    saveFailed = false;
-    const id = await store.save(saveTitle);
-    saving = false;
-    if (id === null) {
-      saveFailed = true;
-      return;
-    }
-    saveOpen = false;
-    savedUrl = `${window.location.origin}/sim/${id}`;
-  }
-
-  async function copySavedLink(): Promise<void> {
-    if (savedUrl === null) return;
-    try {
-      await navigator.clipboard.writeText(savedUrl);
-      savedLinkCopied = true;
-    } catch {
-      savedLinkCopied = false;
-    }
-  }
+  // 2026-09-26 layout pass: the save form's own state and handlers moved to
+  // SimSavePanel.svelte (extracted to keep this file under the lane's line ceiling) -- this
+  // file only ever passed it `store.result`/`store.reportTitle` and `store.save` anyway.
 
   // effectiveServerSims(me) on GET /v1/me -- the server lane renders only once this answers
   // true. A signed-out visitor and an unreachable API read the same way (`me` stays null
@@ -572,6 +554,17 @@
         <!-- Design 4.6: a signed-in member sees their characters and one button each, and
              no form until they ask for one -- so this replaces the switcher entirely rather
              than sitting above it. -->
+        {#if runBlockCharacter !== null}
+          <!-- 2026-09-26 layout pass, Finding 1: directly under the spine bar -- one action
+               for the same character the bar itself calls current, matching whichever
+               affordance (Sim vs. Paste export) the list below offers that same character. -->
+          <SimRunBlock
+            character={runBlockCharacter}
+            path={runBlockPath}
+            busy={landingBusyKey !== null}
+            onrun={(path) => void pickCharacter(path)}
+          />
+        {/if}
         <LandingState
           characters={me.characters}
           busyKey={landingBusyKey}
@@ -608,10 +601,15 @@
           onback={() => (switcherOpen = false)}
         />
       {:else}
+        <!-- 2026-09-26 layout pass, Finding 2/3/5: the signed-out hero -- Battle.net sign-in
+             first, the DPS-only restriction as its caption, and the intro line/example card
+             ahead of it. `heroSignIn` has no effect once `switcherOpen` is reached signed in
+             (Back/Change source), which keeps today's plain grid there. -->
         <SourceSwitcher
           busy={store.phase === 'loading-character'}
           message={store.message}
           signedIn={me !== null}
+          heroSignIn
           onaddon={(code) => void store.loadAddon(code)}
           onbuild={(id) => void store.loadBuild(id)}
           onfight={(ref) => void store.loadFight(ref)}
@@ -619,10 +617,6 @@
           onback={() => (switcherOpen = false)}
         />
       {/if}
-
-      <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-scope-note">
-        {landingCopy.scopeCaveat}
-      </p>
 
       {#if signedIn && simHistoryLazy.current}
         <simHistoryLazy.current
@@ -760,90 +754,16 @@
             />
           {/if}
 
-          <!-- The save form (Task 17): disabled until there is a result, an inline
-               title field pre-filled with the report title rather than a dialog, and
-               the saved link shown in place -- the page never navigates away from the
-               result it just saved. -->
-          <div class="mx-[18px] flex flex-wrap items-center gap-3 md:mx-0" data-testid="sim-save">
-            {#if savedUrl !== null}
-              <label class="sr-only" for="sim-save-link">{simCopy.savedLinkLabel}</label>
-              <input
-                id="sim-save-link"
-                type="text"
-                readonly
-                value={savedUrl}
-                class="border-line-warm rounded-control bg-raised text-text h-11 min-w-0 flex-1 border px-3 text-[14px] md:max-w-[420px]"
-                data-testid="sim-save-link"
-                onclick={(event) => event.currentTarget.select()}
-              />
-              <button
-                type="button"
-                class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
-                onclick={() => void copySavedLink()}
-                data-testid="sim-save-copy"
-              >
-                {savedLinkCopied ? simCopy.copied : simCopy.copyLink}
-              </button>
-              <a
-                class="border-line-warm rounded-control text-nav label inline-flex min-h-11 items-center border px-4"
-                href={savedUrl}
-                target="_blank"
-                rel="noopener"
-                data-testid="sim-open-new-tab"
-              >
-                {simCopy.openInNewTab}
-              </a>
-            {:else if saveOpen}
-              <label class="flex flex-col gap-1">
-                <span class="label text-muted">{simCopy.saveTitleLabel}</span>
-                <input
-                  type="text"
-                  bind:value={saveTitle}
-                  class="border-line-warm rounded-control bg-raised text-text h-11 w-[260px] border px-3 text-[14px]"
-                  data-testid="sim-save-title"
-                />
-              </label>
-              <button
-                type="button"
-                class={`border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50 ${saving ? BUSY_CLASS : ''}`}
-                disabled={saving}
-                aria-busy={saving}
-                onclick={() => void confirmSave()}
-                data-testid="sim-save-confirm"
-              >
-                {simCopy.saveAction}
-              </button>
-              <button
-                type="button"
-                class="border-line-warm rounded-control text-nav label min-h-11 border px-4"
-                onclick={cancelSave}
-                data-testid="sim-save-cancel"
-              >
-                {simCopy.cancel}
-              </button>
-              {#if saveFailed}
-                <span role="alert" class="text-strong text-[13px]" data-testid="sim-save-error">
-                  {simCopy.saveFailed}
-                </span>
-              {/if}
-            {:else}
-              <button
-                type="button"
-                class="border-line-warm-strong rounded-control bg-card-top text-strong label min-h-11 border px-5 disabled:opacity-50"
-                disabled={!canSave}
-                onclick={openSaveForm}
-                data-testid="sim-save-open"
-              >
-                {simCopy.saveThisSim}
-              </button>
-              <!-- Task 7: the disabled reason, said plainly (Task 3's pattern), never a title=. -->
-              {#if store.result !== null && !canSave}
-                <p class="text-muted text-[12px]" data-testid="sim-save-disabled-note">
-                  {simCopy.saveAbortedDisabled}
-                </p>
-              {/if}
-            {/if}
-          </div>
+          <!-- The save form (Task 17), extracted to SimSavePanel.svelte in the 2026-09-26
+               layout pass: disabled until there is a result, an inline title field
+               pre-filled with the report title rather than a dialog, and the saved link
+               shown in place -- the page never navigates away from the result it just
+               saved. -->
+          <SimSavePanel
+            result={store.result}
+            reportTitle={store.reportTitle}
+            onsave={(title) => store.save(title)}
+          />
         </div>
       {:else if me === null || me.characters.length === 0}
         <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
