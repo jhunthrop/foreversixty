@@ -135,13 +135,15 @@
           class="flex h-11 flex-nowrap items-center gap-3 overflow-x-auto whitespace-nowrap md:h-auto md:flex-1"
         >
           {#each doors as door (door.id)}
-            <a class="{rowLink} text-nav" href={door.href} data-testid={door.testid}>{door.label}</a>
+            <a class="{rowLink} text-nav min-w-11 justify-center" href={door.href} data-testid={door.testid}
+              >{door.label}</a
+            >
           {/each}
           {#if me !== null && me.characters.length > 0}
             <div class="relative">
               <button
                 type="button"
-                class="{rowLink} text-nav"
+                class="{rowLink} text-nav min-w-11 justify-center"
                 data-testid="current-character-bar-switch"
                 onclick={() => (switchOpen = !switchOpen)}
               >

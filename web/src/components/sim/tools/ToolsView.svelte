@@ -20,6 +20,7 @@
   import { syncTabHrefs } from '../../../lib/sim/tabs';
   import { runBootstrapRestore, sourceIdForInstance } from '../../../lib/sim/character-bootstrap';
   import { parseSimState } from '../../../lib/sim/url';
+  import CurrentCharacterBar from '../../CurrentCharacterBar.svelte';
   import CurrentCharacterChip from '../../CurrentCharacterChip.svelte';
   import CharacterStrip from '../CharacterStrip.svelte';
   import SourceSwitcher from '../SourceSwitcher.svelte';
@@ -225,6 +226,7 @@
 {/snippet}
 
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-tools-view">
+  <CurrentCharacterBar spine />
   <!-- Fix round 1, Task 4's review (Critical): a reserved, always-present slot -- never
        conditionally rendered -- so its height never changes and nothing below it ever
        shifts, whether the chip has a character to show or not. bulk-skeleton.ts's own

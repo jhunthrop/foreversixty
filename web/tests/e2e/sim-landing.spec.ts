@@ -293,3 +293,24 @@ test('a returning signed-in visitor sees their characters from the session snaps
   await expect(page.getByTestId('sim-landing')).toBeVisible({ timeout: 3000 });
   await expect(page.getByTestId('sim-landing-skeleton')).toHaveCount(0);
 });
+
+// Task 8: the spine bar mounts above the sim page's own current-character chip, on every
+// /sim* page. The chip-slot pre-paint rule (global.css) hides both slots before hydration
+// unless `fs_csrf` is present -- the same signed-in-visitor cookie logs-recent-reports.spec.ts's
+// own spine-bar test sets -- so this test sets it too, rather than the bar's visibility
+// assertion failing regardless of the /v1/me mock.
+test('the spine bar reserves its slot before the sim chip slot, with no layout shift once both hydrate', async ({
+  page,
+}) => {
+  await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_NO_CHARACTERS)));
+  await page.goto('/sim');
+  const bar = page.getByTestId('current-character-bar');
+  const chip = page.getByTestId('sim-chip-slot');
+  await expect(bar).toBeVisible();
+  const barBox = await bar.boundingBox();
+  const chipBox = await chip.boundingBox();
+  expect(barBox).not.toBeNull();
+  expect(chipBox).not.toBeNull();
+  expect((barBox as { y: number }).y).toBeLessThan((chipBox as { y: number }).y);
+});

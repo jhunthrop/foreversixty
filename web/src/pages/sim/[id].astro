@@ -73,6 +73,7 @@ const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined
       class="min-h-[1344px] md:min-h-[976px]"
     >
       <div class={`flex flex-col ${VIEW_GAP}`}>
+        <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="current-character-bar"></div>
         <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="sim-chip-slot"></div>
         <Fragment set:html={SIM_SAVED_SKELETON_HTML} />
       </div>

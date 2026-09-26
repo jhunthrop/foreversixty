@@ -50,4 +50,14 @@ describe('TOOL_SKELETONS', () => {
       expect(wrapperTag).toContain(VIEW_GAP);
     }
   });
+
+  // Task 8: the spine bar's own reserved band opens every skeleton, above the
+  // current-character chip slot, so ToolsView.svelte's spine mount never shifts anything
+  // once it hydrates.
+  it('reserves the spine bar slot before the chip slot', () => {
+    for (const html of Object.values(TOOL_SKELETONS)) {
+      expect(html).toContain('data-testid="current-character-bar"');
+      expect(html.indexOf('current-character-bar')).toBeLessThan(html.indexOf('sim-chip-slot'));
+    }
+  });
 });

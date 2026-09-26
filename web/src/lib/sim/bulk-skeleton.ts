@@ -53,6 +53,14 @@ const shell = (label: string, body: string): string =>
  */
 const chipSlot = (): string => `<div class="chip-slot ${CHIP_HEIGHT}" data-testid="sim-chip-slot"></div>`;
 
+/**
+ * The spine bar's own reserved band (Task 8): every tool page opens with this, above the
+ * current-character chip slot above, so `ToolsView.svelte`'s own spine mount never causes a
+ * shift once it hydrates.
+ */
+const spineBarSlot = (): string =>
+  `<div class="chip-slot ${CHIP_HEIGHT}" data-testid="current-character-bar"></div>`;
+
 /** The character strip's reserved band, which every tool page opens with. */
 const strip = (): string =>
   '<div class="bg-raised border-line rounded-panel mx-[18px] flex flex-wrap items-center gap-x-6 gap-y-2 border p-4 md:mx-0">' +
@@ -71,8 +79,11 @@ const table = (count: number): string =>
   `<ul class="mx-[18px] flex flex-col md:mx-0">${Array.from({ length: count }, comboRow).join('')}</ul>`;
 
 export const TOOL_SKELETONS: Record<SimTool, string> = {
-  gear: shell('Loading Top Gear.', [chipSlot(), strip(), grid(8), runBar()].join('')),
-  talents: shell('Loading talent compare.', [chipSlot(), strip(), grid(3), runBar()].join('')),
-  drops: shell('Loading the Droptimizer.', [chipSlot(), strip(), grid(6), runBar()].join('')),
-  weights: shell('Loading stat weights.', [chipSlot(), strip(), table(6), runBar()].join('')),
+  gear: shell('Loading Top Gear.', [spineBarSlot(), chipSlot(), strip(), grid(8), runBar()].join('')),
+  talents: shell(
+    'Loading talent compare.',
+    [spineBarSlot(), chipSlot(), strip(), grid(3), runBar()].join(''),
+  ),
+  drops: shell('Loading the Droptimizer.', [spineBarSlot(), chipSlot(), strip(), grid(6), runBar()].join('')),
+  weights: shell('Loading stat weights.', [spineBarSlot(), chipSlot(), strip(), table(6), runBar()].join('')),
 };

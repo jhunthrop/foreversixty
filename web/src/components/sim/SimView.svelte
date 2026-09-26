@@ -54,6 +54,7 @@
   import type { SimListRow, SimRequest, SimResult, SpecFidelity } from '../../lib/sim/types';
   import BuffPanel from './BuffPanel.svelte';
   import CharacterStrip from './CharacterStrip.svelte';
+  import CurrentCharacterBar from '../CurrentCharacterBar.svelte';
   import CurrentCharacterChip from '../CurrentCharacterChip.svelte';
   import DetailsCard from './DetailsCard.svelte';
   import LandingState from './LandingState.svelte';
@@ -512,6 +513,7 @@
 {/snippet}
 
 <div class={`flex flex-col ${VIEW_GAP}`} data-testid="sim-view">
+  <CurrentCharacterBar spine />
   <!-- Unconditional and first: a reserved slot (ToolsView.svelte's own pattern), present on /sim/<id> too. -->
   <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="sim-chip-slot">
     <CurrentCharacterChip current={pointer} {restored} {hasOwnPasteBox} onforget={onForgetPointer} />
