@@ -3,6 +3,9 @@ title: Fire Mage in Forever
 classSlug: mage
 spec: fire
 role: dps
+build: 'FS1:1.60.1.69893:mage:gnome:230005/23552200030003051/0:'
+recommendedRaces: [gnome, orc]
+statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Fire damage']
 description: 'Talents, rotation, stats, and gear for Fire Mage in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
@@ -39,7 +42,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Fire Power** — a flat 10% more Fire damage at rank 5, the tree's biggest raw damage talent.
 - **Combustion** — the capstone: each Fire spell hit adds 10% Fire crit chance, lasting until you land four non-periodic Fire crits.
 
-A typical Fire build spends roughly 31 points in this tree to reach Combustion at the bottom, with the remaining 20 points usually going into Arcane for Arcane Concentration's Clearcasting and Arcane Mind's crit damage bonus — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+A typical Fire build spends roughly 31 points in this tree to reach Combustion at the bottom, with the remaining 10 points usually going into Arcane for Arcane Concentration's Clearcasting — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
 ## Rotation and priority
 

@@ -28,6 +28,7 @@ const { Content: Body } = await render(entry);
   updated={entry.data.updated}
   confidence={entry.data.confidence}
   sources={entry.data.sources}
+  confidencePlacement="footer"
 >
   <p>
     <a href={plannerHref(entry.data.classSlug)}>Open the planner for this class</a>

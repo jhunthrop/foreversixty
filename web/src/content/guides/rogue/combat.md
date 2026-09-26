@@ -3,6 +3,9 @@ title: Combat Rogue in Forever
 classSlug: rogue
 spec: combat
 role: dps
+build: 'FS1:1.60.1.69893:rogue:night-elf:32531/32531300000515201/51:'
+recommendedRaces: [night-elf, troll]
+statPriority: [Attack power, Agility, Critical strike, Hit, Melee haste]
 description: 'Combat Rogue overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred

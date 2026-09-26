@@ -1,0 +1,23 @@
+---
+// web/src/components/guides/StatPriorityPills.astro
+// Spec 5: "Stat priority renders as an ordered row of pills with the reasoning beneath" --
+// the guide's own existing prose (a numbered list or a sentence, depending on the guide) IS
+// that reasoning and is left exactly as it is; this renders only the ordered pill row above
+// it, from the guide's own statPriority frontmatter.
+interface Props {
+  stats: string[];
+}
+const { stats } = Astro.props;
+---
+
+<ol class="m-0 flex list-none flex-wrap gap-2 p-0" data-testid="stat-priority-pills">
+  {stats.map((stat, index) => (
+    <li
+      class="rounded-pill bg-raised border-line inline-flex items-center gap-2 border px-3 py-1 text-[13px] font-semibold"
+      data-testid={`stat-pill-${index}`}
+    >
+      <span class="tabular text-gold font-mono text-[11px]">{index + 1}</span>
+      <span>{stat}</span>
+    </li>
+  ))}
+</ol>

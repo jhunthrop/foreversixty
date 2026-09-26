@@ -3,6 +3,9 @@ title: Arcane Mage in Forever
 classSlug: mage
 spec: arcane
 role: dps
+build: 'FS1:1.60.1.69893:mage:gnome:255225200000011501/2305/0:'
+recommendedRaces: [gnome, orc]
+statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Arcane damage']
 description: 'Talents, rotation, stats, and gear for Arcane Mage in Forever, and what is confirmed versus projected from the beta.'
 updated: 2026-09-24
 confidence: inferred
@@ -39,7 +42,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Arcane Mind** — up to 10% Intellect and a 100% bonus to Arcane critical strike damage at rank 5.
 - **Arcane Power** — the capstone: 30% more spell damage for 15 seconds at the cost of 30% more mana per cast.
 
-A typical Arcane build spends roughly 31 points in this tree to reach Arcane Power at the bottom, with the remaining 20 points usually going into Fire for Ignite and Critical Mass rather than Frost — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
+A typical Arcane build spends roughly 31 points in this tree to reach Arcane Power at the bottom, with the remaining 10 points usually going into Fire for Ignite rather than Frost — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=mage](/planner?class=mage) to build this out.
 
 ## Rotation and priority
 

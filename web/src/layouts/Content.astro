@@ -14,8 +14,21 @@ interface Props {
   updated: Date;
   confidence: Confidence;
   sources: Source[];
+  /** 'header' (default, unchanged): the confidence sentence sits under the title, as every
+   *  `pages` collection entry still shows it. 'footer' (guides only, spec 5): it moves to a
+   *  quiet line directly above Sources instead -- "under the title" was the caveat's most
+   *  prominent spot on the page and spec 5 asks for the least prominent one instead. */
+  confidencePlacement?: 'header' | 'footer';
 }
-const { title, description = '', path, updated, confidence, sources } = Astro.props;
+const {
+  title,
+  description = '',
+  path,
+  updated,
+  confidence,
+  sources,
+  confidencePlacement = 'header',
+} = Astro.props;
 const jsonLd = [articleLd({ title, description, path, updated }), breadcrumbLd(path, title)];
 const confidenceCopy: Record<Confidence, string> = {
   confirmed: 'Confirmed by Blizzard or by multiple sources',
@@ -35,13 +48,22 @@ const confidenceCopy: Record<Confidence, string> = {
       <h1 class="text-[28px] font-bold tracking-[0.02em]">{title}</h1>
       <div class="flex flex-wrap items-center gap-3 text-[13px] text-muted">
         <UpdatedStamp date={updated} />
-        <span>·</span>
-        <span>{confidenceCopy[confidence]}</span>
+        {confidencePlacement === 'header' && (
+          <>
+            <span>·</span>
+            <span>{confidenceCopy[confidence]}</span>
+          </>
+        )}
       </div>
     </header>
     <div class="prose-forever text-[16px] leading-[1.6]">
       <slot />
     </div>
+    {confidencePlacement === 'footer' && (
+      <p class="text-muted text-[13px]" data-testid="confidence-footer-note">
+        {confidenceCopy[confidence]}
+      </p>
+    )}
     <SourcesList sources={sources} />
   </main>
 </Base>

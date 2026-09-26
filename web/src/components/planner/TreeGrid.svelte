@@ -11,7 +11,11 @@
   import type { TalentTree } from '../../lib/planner/types';
   import TalentCell from './TalentCell.svelte';
 
-  let { store, tree }: { store: PlannerStore; tree: TalentTree } = $props();
+  let {
+    store,
+    tree,
+    readOnly = false,
+  }: { store: PlannerStore; tree: TalentTree; readOnly?: boolean } = $props();
 
   const cells = $derived(gridCells(tree));
   const size = $derived(gridSize(tree));
@@ -112,7 +116,7 @@
       data-testid={`tree-${tree.id}`}
       class="relative grid gap-2"
       style={`grid-template-columns: repeat(${size.columns}, minmax(0, max-content));`}
-      onkeydown={onKeyDown}
+      onkeydown={readOnly ? undefined : onKeyDown}
     >
       {#each Array.from({ length: size.tiers }, (_, tier) => tier) as tier (tier)}
         <!-- `contents` generates no box, so the row satisfies grid's required children without
@@ -127,6 +131,7 @@
                   talent={cell.talent}
                   focused={focused?.talent.id === cell.talent.id}
                   onfocuscell={() => (focusedId = cell.talent.id)}
+                  {readOnly}
                 />
               {/if}
             </div>

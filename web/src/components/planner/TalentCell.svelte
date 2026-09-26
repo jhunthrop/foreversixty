@@ -15,18 +15,20 @@
     talent,
     focused,
     onfocuscell,
+    readOnly = false,
   }: {
     store: PlannerStore;
     talent: Talent;
     focused: boolean;
     onfocuscell: () => void;
+    readOnly?: boolean;
   } = $props();
 
   const LONG_PRESS_MS = 500;
 
   const rank = $derived(store.ranks.get(talent.id) ?? 0);
   const available = $derived(
-    store.talentIndex !== null && canAddPoint(store.talentIndex, store.order, talent.id).ok,
+    !readOnly && store.talentIndex !== null && canAddPoint(store.talentIndex, store.order, talent.id).ok,
   );
   const iconSrc = $derived(dataUrl(store.treeVersion, `icons/${talent.icon}.webp`));
   const tooltipId = $derived(`talent-tip-${talent.id}`);
@@ -106,76 +108,93 @@
   }
 </script>
 
-<div class="relative">
-  <button
-    type="button"
-    tabindex={focused ? 0 : -1}
-    aria-describedby={open ? tooltipId : undefined}
-    aria-label={`${talent.name}, rank ${rank} of ${talent.max_rank}`}
-    data-testid={`talent-${talent.id}`}
-    data-rank={rank}
-    data-state={state}
-    class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 ${CELL_BORDER[state]}`}
-    onclick={add}
-    oncontextmenu={removeOnContextMenu}
-    onfocus={() => {
-      open = true;
-      onfocuscell();
-    }}
-    onblur={() => (open = false)}
-    onmouseenter={() => (open = true)}
-    onmouseleave={() => {
-      open = false;
-      abandonPress();
-    }}
-    onpointerdown={startPress}
-    onpointerup={disarmPress}
-    onpointercancel={abandonPress}
-  >
-    {#if iconBroken}
-      <span class="text-muted font-display text-[13px] font-bold" aria-hidden="true">
-        {talent.name.slice(0, 2)}
-      </span>
-    {:else}
-      <img
-        src={iconSrc}
-        alt=""
-        width="40"
-        height="40"
-        loading="lazy"
-        decoding="async"
-        class="rounded-control h-10 w-10 object-cover"
-        onerror={() => (iconBroken = true)}
-      />
-    {/if}
-    <span
-      class={`tabular rounded-pill bg-bg absolute -right-1 -bottom-1 border px-1 font-mono text-[11px] leading-[14px] ${CELL_PILL[state]}`}
-    >
-      {rank}/{talent.max_rank}
+{#snippet face()}
+  {#if iconBroken}
+    <span class="text-muted font-display text-[13px] font-bold" aria-hidden="true">
+      {talent.name.slice(0, 2)}
     </span>
-  </button>
+  {:else}
+    <img
+      src={iconSrc}
+      alt=""
+      width="40"
+      height="40"
+      loading="lazy"
+      decoding="async"
+      class="rounded-control h-10 w-10 object-cover"
+      onerror={() => (iconBroken = true)}
+    />
+  {/if}
+  <span
+    class={`tabular rounded-pill bg-bg absolute -right-1 -bottom-1 border px-1 font-mono text-[11px] leading-[14px] ${CELL_PILL[state]}`}
+  >
+    {rank}/{talent.max_rank}
+  </span>
+{/snippet}
 
-  {#if open}
+<div class="relative">
+  {#if readOnly}
     <div
-      id={tooltipId}
-      role="tooltip"
-      bind:this={tip}
-      style:left={`${shift}px`}
-      class="border-line bg-raised rounded-panel absolute top-full z-30 mt-2 flex w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
+      role="group"
+      aria-label={`${talent.name}, rank ${rank} of ${talent.max_rank}`}
+      data-testid={`talent-${talent.id}`}
+      data-rank={rank}
+      data-state={state}
+      class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 ${CELL_BORDER[state]}`}
     >
-      <span class="text-strong font-display text-[14px] font-bold">{talent.name}</span>
-      <span class="tabular text-muted font-mono text-[12px]">
-        Rank {rank} of {talent.max_rank}
-      </span>
-      {#if rank > 0}
-        <p class="text-text text-[13px] leading-snug">{talent.ranks[rank - 1].description}</p>
-      {/if}
-      {#if rank < talent.max_rank}
-        <p class="text-muted text-[13px] leading-snug">
-          <span class="label text-muted">Next rank</span>
-          {talent.ranks[rank].description}
-        </p>
-      {/if}
+      {@render face()}
     </div>
+  {:else}
+    <button
+      type="button"
+      tabindex={focused ? 0 : -1}
+      aria-describedby={open ? tooltipId : undefined}
+      aria-label={`${talent.name}, rank ${rank} of ${talent.max_rank}`}
+      data-testid={`talent-${talent.id}`}
+      data-rank={rank}
+      data-state={state}
+      class={`rounded-control bg-card-top relative flex h-11 w-11 items-center justify-center border md:h-12 md:w-12 ${CELL_BORDER[state]}`}
+      onclick={add}
+      oncontextmenu={removeOnContextMenu}
+      onfocus={() => {
+        open = true;
+        onfocuscell();
+      }}
+      onblur={() => (open = false)}
+      onmouseenter={() => (open = true)}
+      onmouseleave={() => {
+        open = false;
+        abandonPress();
+      }}
+      onpointerdown={startPress}
+      onpointerup={disarmPress}
+      onpointercancel={abandonPress}
+    >
+      {@render face()}
+    </button>
+
+    {#if open}
+      <div
+        id={tooltipId}
+        role="tooltip"
+        bind:this={tip}
+        style:left={`${shift}px`}
+        class="border-line bg-raised rounded-panel absolute top-full z-30 mt-2 flex w-[260px] flex-col gap-2 border p-3 shadow-[0_12px_30px_rgba(0,0,0,.45)]"
+      >
+        <span class="text-strong font-display text-[14px] font-bold">{talent.name}</span>
+        <span class="tabular text-muted font-mono text-[12px]">
+          Rank {rank} of {talent.max_rank}
+        </span>
+        {#if rank > 0}
+          <p class="text-text text-[13px] leading-snug">{talent.ranks[rank - 1].description}</p>
+        {/if}
+        {#if rank < talent.max_rank}
+          <p class="text-muted text-[13px] leading-snug">
+            <span class="label text-muted">Next rank</span>
+            {talent.ranks[rank].description}
+          </p>
+        {/if}
+      </div>
+    {/if}
   {/if}
 </div>

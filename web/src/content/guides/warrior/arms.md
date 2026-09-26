@@ -3,6 +3,9 @@ title: Arms Warrior in Forever
 classSlug: warrior
 spec: arms
 role: dps
+build: 'FS1:1.60.1.69893:warrior:human:35325213032010001/0505/5005:'
+recommendedRaces: [human, orc]
+statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
 description: 'Talents, rotation, stat priority, and race picks for Arms Warrior in Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred

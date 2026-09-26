@@ -3,6 +3,9 @@ title: Fury Warrior in Forever
 classSlug: warrior
 spec: fury
 role: dps
+build: 'FS1:1.60.1.69893:warrior:human:35310003002/555000005050010051/0:'
+recommendedRaces: [human, troll]
+statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
 description: 'Talents, rotation, stat priority, and race picks for Fury Warrior in Forever, with beta-versus-projection called out.'
 updated: 2026-09-24
 confidence: inferred
@@ -50,7 +53,7 @@ Verified against this build's talent data, in roughly the order you'd take them:
 
 Also worth a point if you lean into Whirlwind uptime: **Raging Blows**, a new Forever talent that makes Whirlwind also strike with your off-hand weapon and reduces Cleave's Rage cost. It's a single-point situational pick rather than a core damage multiplier, so it isn't in the priority list above, but it's real in this build's data.
 
-A build reaching Bloodthirst spends roughly 31 points in Fury, with the remainder commonly split into a few Arms points for Deep Wounds and Impale — Fury's high crit rate keeps both the bleed and the crit-damage talent relevant — rather than Protection, which has little to offer a dual-wielding damage build. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
+A build reaching Bloodthirst spends roughly 32 points in Fury, with the remainder commonly split into a few Arms points for Deep Wounds and Impale — Fury's high crit rate keeps both the bleed and the crit-damage talent relevant — rather than Protection, which has little to offer a dual-wielding damage build. Open the planner at [/planner?class=warrior](/planner?class=warrior) to build this out.
 
 ## Rotation and priority
 
