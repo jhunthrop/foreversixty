@@ -43,7 +43,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Primal Fury** — up to a 100% chance at rank 2 for bonus Rage on a Bear crit, and a 100% chance for a bonus combo point on a Cat crit, supporting both forms from one talent.
 - **Berserk** — the capstone: Mangle hits up to 3 targets with no cooldown, and critical strike chance on combo-point generators rises 100%, for 15 seconds.
 
-The point split differs by role. A cat-DPS build typically spends roughly 31 points in Feral reaching Berserk through the offensive column — Savage Fury, Predatory Strikes, Primal Fury — with the remaining 20 usually going into Restoration for Furor's rage-and-energy-on-shift and Naturalist's flat damage bonus, a common 1.12 pattern. A bear-tank build stays in Feral for more of its points, weighting the defensive column instead — Feral Instinct, Thick Hide, Natural Reaction — before reaching Berserk, and typically only dips into Restoration for Furor rather than Naturalist. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
+The point split differs by role. A cat-DPS build typically spends roughly 31 points in Feral reaching Berserk through the offensive column — Savage Fury, Predatory Strikes, Primal Fury — with the remaining 10 usually going into Restoration for Furor's rage-and-energy-on-shift and Naturalist's flat damage bonus, a common 1.12 pattern. A bear-tank build stays in Feral for more of its points, weighting the defensive column instead — Feral Instinct, Thick Hide, Natural Reaction — before reaching Berserk, and typically only dips into Restoration for Furor rather than Naturalist. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
 
 ## Rotation and priority
 

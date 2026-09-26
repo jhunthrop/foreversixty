@@ -51,7 +51,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Moonfury** — up to 10% more Arcane and Nature damage at rank 5.
 - **Moonkin Form** — the capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party members within 45 yards.
 
-A typical Balance build spends roughly 31 points in this tree to reach Moonkin Form at the bottom, with the remaining 20 points usually going into Restoration for Nature's Focus and mana talents — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
+A typical Balance build spends roughly 31 points in this tree to reach Moonkin Form at the bottom, with the remaining 5 points usually going into Restoration for Nature's Focus and mana talents — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
 
 ## Rotation and priority
 

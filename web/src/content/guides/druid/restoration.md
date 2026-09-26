@@ -39,7 +39,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Nature's Swiftness** — makes your next Nature spell instant on activation, a saved emergency cooldown.
 - **Wild Growth** — the capstone: an area heal on the target and nearby party members, weighted to land more up front and taper off over its duration.
 
-A typical Restoration build spends roughly 35 points in this tree, with the remaining 8 usually going into Balance for Moonglow's mana discount — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
+A typical Restoration build spends roughly 31 points in this tree, with the remaining 8 usually going into Balance for Moonglow's mana discount — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
 
 ## Rotation and priority
 

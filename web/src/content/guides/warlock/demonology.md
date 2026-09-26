@@ -51,7 +51,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Master Demonologist** — a scaling buff to both Warlock and demon that differs by pet, up to 10% at rank 5 for whichever pet is out.
 - **Demonic Pact** — the capstone: your Demonic Sacrifice buff is no longer cancelled by summoning a different pet, only by re-summoning the sacrificed one.
 
-A typical Demonology build spends roughly 31 points in this tree, with the remaining 20 points usually going into Affliction for Corruption and Suppression — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
+A typical Demonology build spends roughly 31 points in this tree, with the remaining 10 points usually going into Affliction for Corruption and Suppression — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
 
 ## Rotation and priority
 
