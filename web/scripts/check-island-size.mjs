@@ -8,13 +8,16 @@ import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
 
-// Two standalone islands, two budgets. The planner's 60 KB comes from the Phase 1 spec.
-// The report island is larger by design -- twelve tabs, a canvas chart and a filter bar --
+// Two standalone islands, two budgets. The planner's 60 KB came from the Phase 1 spec; it is
+// 66 KB since the character spine (spec 2026-09-25 section 4): the bar's identity, switch
+// list and session read weigh about 3 KB gzipped on the real-data build (64.2 KB on CI on
+// 2026-09-25 against 61.4 KB), and the guides and states lanes add a little more to the
+// same island. The report island is larger by design -- twelve tabs, a canvas chart and a filter bar --
 // and 140 KB gzipped is the ceiling that keeps /reports/<id> inside its Lighthouse
 // performance budget of 0.90 on a throttled phone. DuckDB-WASM is not counted: it is
 // loaded lazily from separate files and never on page load.
 const BUDGETS = [
-  { file: 'dist/planner-island.js', limitBytes: 60 * 1024 },
+  { file: 'dist/planner-island.js', limitBytes: 66 * 1024 },
   { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's
