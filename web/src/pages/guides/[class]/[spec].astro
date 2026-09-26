@@ -1,8 +1,9 @@
 ---
 // web/src/pages/guides/[class]/[spec].astro
 // One spec guide: content/guides/<class>/<spec>.md, id `<class>/<spec>`. The nine-section
-// structure (SPEC_SECTIONS) still renders in order with the same jump-list table of contents
-// at the top; three of the nine sections now also carry a planted component (spec 5): the
+// structure (SPEC_SECTIONS) still renders in order with the same jump-list table of contents,
+// boxed at the top on narrow screens and a sticky rail beside the article at lg (Content's
+// aside slot); three of the nine sections now also carry a planted component (spec 5): the
 // embedded read-only tree and its two buttons under "Talents and builds", an ordered pill
 // row before the "Stat priority" prose, and a race pill row before the "Races" prose. No MDX
 // is installed in this project, so a markdown file cannot embed a component directly --
@@ -75,6 +76,7 @@ const buildCode = entry.data.build;
     <a href={plannerHref(entry.data.classSlug)}>Open the planner for this class</a>
   </p>
   <SpecTableOfContents />
+  <SpecTableOfContents slot="aside" placement="rail" />
   <Fragment set:html={overviewHtml} />
   <Fragment set:html={talentsHtml} />
   {buildCode !== undefined && (
