@@ -158,10 +158,24 @@ end
 
 --- The site's race slug for the client's own race. The map first; the
 --- fallback only for a token the map does not carry.
+--- The beta client reports both Skyborne peoples under one token, "Skyborne"; the
+--- site's race table has a row per faction (high-order-skyborne for the Alliance,
+--- windshaper-skyborne for the Horde), so the faction picks the row.
+Export.SKYBORNE_BY_FACTION = {
+	Alliance = "high-order-skyborne",
+	Horde = "windshaper-skyborne",
+}
+
 local function raceSlugOf()
 	local raceToken = select(2, UnitRace("player"))
 	if raceToken == nil then
 		return nil
+	end
+	if raceToken == "Skyborne" and type(UnitFactionGroup) == "function" then
+		local faction = UnitFactionGroup("player")
+		if Export.SKYBORNE_BY_FACTION[faction] ~= nil then
+			return Export.SKYBORNE_BY_FACTION[faction]
+		end
 	end
 	return Export.RACE_SLUGS[raceToken] or pascalCaseSlugify(raceToken)
 end
@@ -211,6 +225,19 @@ function Export.guildInfo()
 	return { name = name, rankIndex = rankIndex }
 end
 
+--- Who this is: the site shows the name on the character it loads from the
+--- string, instead of the class alone. nil in a test double without UnitName.
+function Export.characterInfo()
+	if type(UnitName) ~= "function" then
+		return nil
+	end
+	local name = UnitName("player")
+	if name == nil or name == "" then
+		return nil
+	end
+	return { name = name, realm = GetRealmName() or "" }
+end
+
 --- The export string, or nil and the reason.
 function Export.string(data)
 	-- The class slug comes from the locale-neutral class token (see
@@ -232,6 +259,7 @@ function Export.string(data)
 		bank = Export.itemsInBags(Export.BANK_BAGS),
 		professions = Export.professionSlugs(),
 		guild = Export.guildInfo(),
+		character = Export.characterInfo(),
 	})
 end
 

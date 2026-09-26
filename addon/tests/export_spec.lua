@@ -57,7 +57,21 @@ describe("Export", function()
 			itemStats = { ["|Hitem:12640|h"] = { __itemId = 12640, __slot = "INVTYPE_HEAD" } },
 		})
 		local code = assert(Export.string(DATA))
-		assert.are.equal("FS1:1.60.1.69893:paladin:human:2/0/0:head=12640", code)
+		-- The head is exact; the trailing name section carries whatever the client says
+		-- the player is called, url-encoded, so the site can show it.
+		local head, name = code:match("^(FS1:1%.60%.1%.69893:paladin:human:2/0/0:head=12640)|name=(.+)$")
+		assert.are.equal("FS1:1.60.1.69893:paladin:human:2/0/0:head=12640", head)
+		assert.is_truthy(name and name:find(":", 1, true), code)
+	end)
+
+	it("names the Skyborne row by faction, since the client reports both under one token", function()
+		character({ race = { name = "Skyborne", token = "Skyborne" } })
+		_G.UnitFactionGroup = function()
+			return "Horde"
+		end
+		local code = assert(Export.string(DATA))
+		_G.UnitFactionGroup = nil
+		assert.is_truthy(code:find(":paladin:windshaper-skyborne:", 1, true), code)
 	end)
 
 	it("builds the class slug from the client token, not the localized name", function()
