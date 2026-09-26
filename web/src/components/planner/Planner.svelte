@@ -593,7 +593,9 @@
        notice under the trees wraps one line more than on a Mac at the same width (Barlow's
        fallback metrics differ), which is exactly one 13px line, 19.5px, over the Mac-measured
        naturals -- the footer moved by that much on 2026-09-26. Both reserves carry 24px above
-       the Mac figures for that line: 1161 and 1511. Over costs only dead space.
+       the Mac figures for that line. The design loop's planner round (the "Share this build"
+       frame) grew the Mac naturals to 1161 and 1511, exactly the old reserves, and CI moved
+       the footer 7px; the reserves are 1185 and 1535 now. Over costs only dead space.
 
        One standing caveat, as true of the base reserve as of this one: every figure in this
        comment is measured against the *fixture* build (FOREVER_DATA=fixture, a two-tree
@@ -661,7 +663,7 @@
        tracked `readOnly` would spend that growth shoving the footer down the moment it is
        pressed. /b/:id carries no CLS budget of its own -- it is server-rendered, so the
        island's whole planner arrives after first paint regardless of what this reserves. -->
-  <div class="flex min-h-[1161px] flex-col gap-[22px] md:min-h-[1511px] md:gap-8">
+  <div class="flex min-h-[1185px] flex-col gap-[22px] md:min-h-[1535px] md:gap-8">
     {#if status === 'loading'}
       <!-- The planner's own panel chrome rather than a bare line on a blank reserve: a
            viewport of empty space reads as a broken page, and the frame reads as the planner
