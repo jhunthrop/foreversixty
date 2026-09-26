@@ -73,8 +73,11 @@
   data-testid="import-box"
 >
   {#if phone}
-    <summary class="label text-nav flex min-h-11 cursor-pointer items-center">{addonCopy.importTitle}</summary
-    >
+    <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3">
+      {addonCopy.importTitle}
+      <span class="when-closed text-muted" aria-hidden="true">Show</span>
+      <span class="when-open text-muted" aria-hidden="true">Hide</span>
+    </summary>
   {:else}
     <h2 class="section-title text-[15px]">{addonCopy.importTitle}</h2>
   {/if}

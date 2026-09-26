@@ -93,9 +93,13 @@
   data-testid="order-strip"
 >
   {#if phone}
-    <summary class="label text-nav flex min-h-11 cursor-pointer items-center justify-between">
+    <summary class="label text-nav flex min-h-11 cursor-pointer list-none items-center justify-between gap-3">
       <span>Point order</span>
-      <span class="tabular text-muted font-mono text-[12px]">{store.order.length}</span>
+      <span class="flex items-center gap-3">
+        <span class="tabular text-muted font-mono text-[12px]">{store.order.length}</span>
+        <span class="when-closed text-muted" aria-hidden="true">Show</span>
+        <span class="when-open text-muted" aria-hidden="true">Hide</span>
+      </span>
     </summary>
     <div class="pt-3">
       {@render list()}
