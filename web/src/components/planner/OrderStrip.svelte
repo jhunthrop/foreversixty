@@ -36,14 +36,16 @@
     <h2 class="section-title text-[15px]">Point order</h2>
     <div class="flex items-center gap-3">
       <span class="tabular text-muted font-mono text-[13px]">{store.order.length}</span>
-      <button
-        type="button"
-        class="{SECONDARY_BUTTON} border-line-warm text-text px-3"
-        aria-expanded={expanded}
-        onclick={() => (expanded = !expanded)}
-      >
-        {expanded ? 'Hide point order' : 'Show point order'}
-      </button>
+      {#if points.length > 0}
+        <button
+          type="button"
+          class="{SECONDARY_BUTTON} border-line-warm text-text px-3"
+          aria-expanded={expanded}
+          onclick={() => (expanded = !expanded)}
+        >
+          {expanded ? 'Hide point order' : 'Show point order'}
+        </button>
+      {/if}
     </div>
   </header>
 

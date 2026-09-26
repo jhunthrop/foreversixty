@@ -3,6 +3,7 @@
 // strings; this is the first module that is genuinely the planner's own -- the confirm step
 // Share opens into before it writes a build to a public link (one-product spec section 1).
 export const plannerCopy = {
+  shareTitle: 'Share this build',
   share: 'Share',
   shareConfirmTitle: 'Share this build',
   shareConfirmIntro:

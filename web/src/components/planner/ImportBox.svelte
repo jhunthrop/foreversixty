@@ -65,7 +65,7 @@
     data-testid="import-code"></textarea>
   <button
     type="button"
-    class={SECONDARY_BUTTON}
+    class="{SECONDARY_BUTTON} border-line-warm-strong text-strong self-start px-4"
     disabled={code.trim() === ''}
     onclick={submit}
     data-testid="import-submit"

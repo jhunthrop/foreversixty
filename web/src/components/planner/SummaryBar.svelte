@@ -79,7 +79,7 @@
     </select>
   </label>
 
-  {#if hasCharacter}
+  {#if hasCharacter && store.spent > 0}
     <div class="flex flex-col gap-1">
       <span class="label text-muted">Level</span>
       <span class="tabular text-strong font-mono text-[20px] leading-11" data-testid="planner-level">
