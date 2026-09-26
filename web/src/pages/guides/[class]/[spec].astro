@@ -1,10 +1,24 @@
 ---
 // web/src/pages/guides/[class]/[spec].astro
-// One spec guide: content/guides/<class>/<spec>.md, id `<class>/<spec>`. Renders the fixed
-// nine-section structure (SPEC_SECTIONS) with a jump-list table of contents at the top.
-import { getCollection, render } from 'astro:content';
-import Content from '../../../layouts/Content.astro';
+// One spec guide: content/guides/<class>/<spec>.md, id `<class>/<spec>`. The nine-section
+// structure (SPEC_SECTIONS) still renders in order with the same jump-list table of contents
+// at the top; three of the nine sections now also carry a planted component (spec 5): the
+// embedded read-only tree and its two buttons under "Talents and builds", an ordered pill
+// row before the "Stat priority" prose, and a race pill row before the "Races" prose. No MDX
+// is installed in this project, so a markdown file cannot embed a component directly --
+// splitSpecSections/renderGuideMarkdown (lib/guides/) render each of the nine sections
+// independently instead of the whole body as one `<Body />`, which is what makes planting
+// possible while every heading keeps its exact id (renderGuideMarkdown uses the very
+// processor Astro's own content pipeline does).
+import { getCollection } from 'astro:content';
+import BuildActionButtons from '../../../components/guides/BuildActionButtons.astro';
+import GuideBuildTree from '../../../components/guides/GuideBuildTree.svelte';
+import RacePillRow from '../../../components/guides/RacePillRow.astro';
+import StatPriorityPills from '../../../components/guides/StatPriorityPills.astro';
 import SpecTableOfContents from '../../../components/SpecTableOfContents.astro';
+import Content from '../../../layouts/Content.astro';
+import { renderGuideMarkdown } from '../../../lib/guides/markdown';
+import { splitSpecSections, type SpecSection } from '../../../lib/guides/sections';
 import { plannerHref } from '../../../lib/planner/reference';
 
 export async function getStaticPaths() {
@@ -15,8 +29,37 @@ export async function getStaticPaths() {
     return { params: { class: classSlug, spec }, props: { entry } };
   });
 }
+
 const { entry } = Astro.props;
-const { Content: Body } = await render(entry);
+// entry.body is the collection entry's own raw markdown source (the same field
+// _sections.test.ts reads off disk directly); if `astro check` reports it missing from the
+// public CollectionEntry<'guides'> type in this Astro version, fall back to
+// `(entry as unknown as { body?: string }).body ?? ''` with a one-line comment saying why,
+// rather than switching to a different data source -- the raw body is what splitSpecSections
+// is built to consume, and it must be byte-identical to what _sections.test.ts validates.
+const sections = splitSpecSections(entry.body ?? '');
+
+/** A section's raw markdown, minus its own `## Heading` line -- for the two sections that
+ *  plant a component between the heading and the guide's own prose. */
+function proseOnly(section: SpecSection): string {
+  const raw = sections.get(section) ?? '';
+  const [, ...rest] = raw.split('\n');
+  return rest.join('\n').replace(/^\n+/, '');
+}
+
+const overviewHtml = await renderGuideMarkdown(sections.get('Overview') ?? '');
+const talentsHtml = await renderGuideMarkdown(sections.get('Talents and builds') ?? '');
+const rotationHtml = await renderGuideMarkdown(sections.get('Rotation and priority') ?? '');
+const statPriorityHeadingHtml = await renderGuideMarkdown('## Stat priority');
+const statPriorityProseHtml = await renderGuideMarkdown(proseOnly('Stat priority'));
+const gearHtml = await renderGuideMarkdown(sections.get('Gear') ?? '');
+const enchantsHtml = await renderGuideMarkdown(sections.get('Enchants and consumables') ?? '');
+const racesHeadingHtml = await renderGuideMarkdown('## Races');
+const racesProseHtml = await renderGuideMarkdown(proseOnly('Races'));
+const professionsHtml = await renderGuideMarkdown(sections.get('Professions') ?? '');
+const levelingHtml = await renderGuideMarkdown(sections.get('Leveling') ?? '');
+
+const buildCode = entry.data.build;
 ---
 
 <Content
@@ -26,10 +69,29 @@ const { Content: Body } = await render(entry);
   updated={entry.data.updated}
   confidence={entry.data.confidence}
   sources={entry.data.sources}
+  confidencePlacement="footer"
 >
   <p>
     <a href={plannerHref(entry.data.classSlug)}>Open the planner for this class</a>
   </p>
   <SpecTableOfContents />
-  <Body />
+  <Fragment set:html={overviewHtml} />
+  <Fragment set:html={talentsHtml} />
+  {buildCode !== undefined && (
+    <>
+      <GuideBuildTree client:visible code={buildCode} />
+      <BuildActionButtons code={buildCode} />
+    </>
+  )}
+  <Fragment set:html={rotationHtml} />
+  <Fragment set:html={statPriorityHeadingHtml} />
+  <StatPriorityPills stats={entry.data.statPriority} />
+  <Fragment set:html={statPriorityProseHtml} />
+  <Fragment set:html={gearHtml} />
+  <Fragment set:html={enchantsHtml} />
+  <Fragment set:html={racesHeadingHtml} />
+  <RacePillRow classSlug={entry.data.classSlug} recommendedRaces={entry.data.recommendedRaces} />
+  <Fragment set:html={racesProseHtml} />
+  <Fragment set:html={professionsHtml} />
+  <Fragment set:html={levelingHtml} />
 </Content>
