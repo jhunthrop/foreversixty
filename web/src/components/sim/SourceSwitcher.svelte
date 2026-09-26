@@ -111,6 +111,13 @@
     >
       Load
     </button>
+    <!-- The addon pointer belongs to this card, not to the row's end where it read as an
+         orphaned line under three cards. -->
+    <p class="text-muted text-[12px]">
+      <a href="/setup" class="{rowLink} text-nav" data-testid="sim-get-addon"
+        >{currentCharacterCopy.getTheAddon}</a
+      >
+    </p>
   </div>
 {/snippet}
 
@@ -222,12 +229,6 @@
          it needs instead (Finding 3). -->
     <p class="text-muted text-[12px]" data-testid="sim-sources-scope-note">{simCopy.scopeNote}</p>
   {/if}
-
-  <p class="text-muted text-[12px]">
-    <a href="/setup" class="{rowLink} text-nav" data-testid="sim-get-addon"
-      >{currentCharacterCopy.getTheAddon}</a
-    >
-  </p>
 
   {#if message}
     <p role="alert" class="text-strong text-[13px]" data-testid="sim-source-message">{message}</p>

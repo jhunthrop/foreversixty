@@ -137,7 +137,7 @@
       <!-- Sentence above, links below on a phone: as one row the two links were squeezed into
            a side column and wrapped a word per line. One row again from md. -->
       <div
-        class="text-muted mx-[18px] flex h-full flex-col justify-center gap-1 overflow-hidden text-[13px] md:mx-0 md:flex-row md:items-center md:gap-3"
+        class="text-muted mx-[18px] flex h-full flex-col justify-center gap-1 overflow-hidden text-[13px] md:mx-0 md:flex-row md:items-center md:justify-start md:gap-3"
       >
         <span data-testid="current-character-bar-signed-out">{currentCharacterCopy.barSignedOutLine}</span>
         <span class="flex min-h-11 items-center gap-4 md:min-h-0 md:gap-3">
