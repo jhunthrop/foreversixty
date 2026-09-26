@@ -616,9 +616,11 @@
        than movement, and it is the safe direction to err.
 
        It wraps the swapping branches only, not the planner as a whole, and that is what lets
-       one number hold: the summary bar and the notice above are in all three states and
-       reflow with the viewport width, so keeping them outside the reserve takes their
-       wrapping out of the figure. Inside it every part is a fixed height -- the tab strip,
+       one number hold: the summary bar is in all three states and reflows with the viewport
+       width, so keeping it outside the reserve takes its wrapping out of the figure -- the
+       build-source notice used to sit there too, but Task 5 (spec 2026-09-25 §6) moved it
+       inside the reserve, where it now renders only in the ready state, alongside the tree
+       columns and toolbar it sits with. Inside it every part is a fixed height -- the tab strip,
        the toolbar (including the always-visible title field and Share button), the order
        strip's reserved row, a tree grid sized by tier count rather than by width, and --
        from md up, where gear is part of the column rather than a tab -- a gear panel whose
