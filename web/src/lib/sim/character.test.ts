@@ -27,6 +27,7 @@ import {
   toBuildDraft,
   toCharacterSpec,
   type SimCharacter,
+  needsRace,
 } from './character';
 import type { CharacterSource, CharacterSpec } from './types';
 
@@ -165,6 +166,23 @@ describe('characterFromFs1', () => {
     expect(result.ok).toBe(false);
     if (result.ok) return;
     expect(result.message).toBe(simCopy.unreachableTalents('Death Wish'));
+  });
+
+  it('treats the bare skyborne slug as a race still to pick, and takes the name from the export', async () => {
+    // The beta client reports both Skyborne peoples as "Skyborne"; the table has a row per
+    // faction, so the export is ambiguous rather than unknown.
+    const [file, classRows, raceRows] = await Promise.all([warriorTalents(), classes(), races()]);
+    const result = characterFromFs1(
+      'FS1:1.15.9.69722:warrior:skyborne:0/5530515/0:|name=Bow:Classic%20Beta%20PvP',
+      file,
+      classRows,
+      raceRows,
+      source,
+    );
+    expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(needsRace(result.character)).toBe(true);
+    expect(result.character.name).toBe('Bow');
   });
 
   it('refuses a race this build does not have rather than substituting the first one', async () => {

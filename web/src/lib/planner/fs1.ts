@@ -97,6 +97,12 @@ export interface FS1Build {
    * guild" and "an empty guild" are not the same fact.
    */
   guild?: { name: string; rankIndex: number };
+  /**
+   * Who the export is: the client's own name and realm, so the site can show "Bow" on the
+   * character it loads from the string instead of the class alone. Absent from a code an
+   * older addon wrote; nothing downstream requires it.
+   */
+  character?: { name: string; realm: string };
   /** Section names the decoder did not recognise, reported rather than silently dropped. */
   ignored?: string[];
 }
@@ -357,6 +363,13 @@ export function decodeFS1(code: string): FS1Result {
       const guild = parseGuild(field);
       if (!guild.ok) return guild;
       build.guild = guild.value;
+    } else if (name === 'name') {
+      // `<name>:<realm>`, both URL-encoded, split on the first colon; neither side can fail.
+      const at = field.indexOf(':');
+      build.character = {
+        name: decodeName(at === -1 ? field : field.slice(0, at)),
+        realm: decodeName(at === -1 ? '' : field.slice(at + 1)),
+      };
     } else if (name !== '') {
       // Contract 7: unknown sections are ignored by the decoder and reported in its
       // result. An addon a version ahead of the site is a thing that will happen, and
@@ -471,6 +484,11 @@ export function encodeFS1V2(build: FS1Build): string {
   }
   if (professions.length > 0) sections.push(`professions=${professions.join(',')}`);
   if (build.guild) sections.push(`guild=${encodeURIComponent(build.guild.name)}:${build.guild.rankIndex}`);
+  if (build.character) {
+    sections.push(
+      `name=${encodeURIComponent(build.character.name)}:${encodeURIComponent(build.character.realm)}`,
+    );
+  }
 
   // Always built from the slot list, never delegated to `encodeFS1` -- a caller can hold
   // `gearSlots` with nothing in `gear` (the doc comment on `FS1Build.gearSlots` invites

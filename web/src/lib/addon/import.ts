@@ -12,8 +12,18 @@ import type { TalentIndex } from '../planner/rules';
 import type { Gear } from '../planner/types';
 
 export type ImportOutcome =
-  | { ok: true; classSlug: string; raceSlug: string; order: number[]; gear: Gear; notes: string[] }
-  | { ok: false; message: string };
+  | {
+      ok: true;
+      classSlug: string;
+      raceSlug: string;
+      order: number[];
+      gear: Gear;
+      notes: string[];
+      /** The character's own name when the export carries one (an addon at or after the
+       *  name section); the pointer's label shows it. */
+      characterName?: string;
+    }
+  | { ok: false; message: string; wrongClass?: string };
 
 export function importFromAddon(code: string, talents: TalentIndex, activeBuild: string): ImportOutcome {
   const decoded = decodeFS1(code);
@@ -31,6 +41,7 @@ export function importFromAddon(code: string, talents: TalentIndex, activeBuild:
     return {
       ok: false,
       message: addonCopy.importWrongClass(decoded.build.classSlug, talents.file.class_slug),
+      wrongClass: decoded.build.classSlug,
     };
   }
 
@@ -59,5 +70,6 @@ export function importFromAddon(code: string, talents: TalentIndex, activeBuild:
     // enchant or a suffix, and the decoder already reduced them for us.
     gear: decoded.build.gear,
     notes,
+    ...(decoded.build.character === undefined ? {} : { characterName: decoded.build.character.name }),
   };
 }

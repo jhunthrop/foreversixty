@@ -82,6 +82,9 @@ export const SIM_LEVEL = 60;
  * otherwise send an empty `race`, which `sim/request.ParseRace` refuses at the boundary.
  */
 export const PENDING_RACE = '';
+/** The race slug an addon export carries for either Skyborne people when the client
+ *  reports both under one token; the site's table has a row per faction. */
+export const BARE_SKYBORNE_SLUG = 'skyborne';
 
 /** True while the character still needs a race from the player before it can be simmed. */
 export function needsRace(character: SimCharacter): boolean {
@@ -442,7 +445,11 @@ export function characterFromFs1(
   // race was unknown, which silently simmed an orc's racials for a troll. Forever's race
   // table has ten rows and two of them are new (high-order-skyborne, windshaper-skyborne),
   // so an unknown slug means the export is from another build, and saying so is the answer.
-  const raceRow = races.find((row) => row.slug === decoded.build.raceSlug);
+  // The beta client names both Skyborne peoples "Skyborne"; an addon older than the
+  // faction split writes that bare slug. It is not unknown, it is ambiguous between the two
+  // rows, so the character asks for its race the way a combat log's does.
+  const bareSkyborne = decoded.build.raceSlug === BARE_SKYBORNE_SLUG;
+  const raceRow = bareSkyborne ? null : races.find((row) => row.slug === decoded.build.raceSlug);
   if (raceRow === undefined) {
     return { ok: false, message: simCopy.unknownRace(decoded.build.raceSlug) };
   }
@@ -450,10 +457,10 @@ export function characterFromFs1(
   return {
     ok: true,
     character: {
-      name: name ?? classRow.name,
+      name: name ?? decoded.build.character?.name ?? classRow.name,
       spec: specOf(index, order),
       class_slug: classRow.slug,
-      race_slug: raceRow.slug,
+      race_slug: raceRow === null ? PENDING_RACE : raceRow.slug,
       talent_level: talentLevel(order),
       tree_version: decoded.build.dataBuild,
       point_order: order,

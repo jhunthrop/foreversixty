@@ -167,6 +167,13 @@ describe('version 2 sections', () => {
     expect(decoded.build.professions).toEqual(['engineering', 'blacksmithing']);
   });
 
+  it('reads the name section as the character, both halves URL-decoded', () => {
+    const decoded = decodeFS1(`${V1}|name=Bow%20Jackzon:Classic%20Beta%20PvP`);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.character).toEqual({ name: 'Bow Jackzon', realm: 'Classic Beta PvP' });
+  });
+
   it('reads the guild section', () => {
     const decoded = decodeFS1(`${V1}|guild=Iron%20Vanguard:2`);
     expect(decoded.ok).toBe(true);

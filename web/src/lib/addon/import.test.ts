@@ -128,7 +128,11 @@ describe('importFromAddon', () => {
       index,
       '1.60.1.69893',
     );
-    expect(outcome).toEqual({ ok: false, message: addonCopy.importWrongClass('warrior', 'paladin') });
+    expect(outcome).toEqual({
+      ok: false,
+      message: addonCopy.importWrongClass('warrior', 'paladin'),
+      wrongClass: 'warrior',
+    });
   });
 
   it('refuses the class mismatch before it ever notes an older data build', () => {
@@ -136,6 +140,21 @@ describe('importFromAddon', () => {
     // the class refusal wins: there is no order to annotate a build note onto when nothing
     // is being imported.
     const outcome = importFromAddon('FS1:1.15.9.69722:warrior:human:20/0/0:', index, '1.60.1.69893');
-    expect(outcome).toEqual({ ok: false, message: addonCopy.importWrongClass('warrior', 'paladin') });
+    expect(outcome).toEqual({
+      ok: false,
+      message: addonCopy.importWrongClass('warrior', 'paladin'),
+      wrongClass: 'warrior',
+    });
+  });
+
+  it('carries the character name when the export has a name section', () => {
+    const outcome = importFromAddon(
+      'FS1:1.60.1.69893:paladin:human:20/0/0:head=12640|name=Bow%20Jackzon:Classic%20Beta%20PvP',
+      index,
+      '1.60.1.69893',
+    );
+    expect(outcome.ok).toBe(true);
+    if (!outcome.ok) return;
+    expect(outcome.characterName).toBe('Bow Jackzon');
   });
 });

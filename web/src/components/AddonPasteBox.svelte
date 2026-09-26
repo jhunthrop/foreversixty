@@ -45,13 +45,17 @@
     error = null;
     loaded = trimmed;
     // The export is now the site's current character, so the planner and every simulator
-    // tab open on it without a second paste. The label is the class alone: the spec needs
-    // the talent file, which the tool that opens it loads and then writes a fuller label.
+    // tab open on it without a second paste. The label is the character's own name with
+    // the class when the export carries one (the addon's name section), else the class
+    // alone: the spec needs the talent file, which the tool that opens it loads and then
+    // writes a fuller label.
     const classSlug = result.build.classSlug;
+    const className = classSlug.charAt(0).toUpperCase() + classSlug.slice(1);
+    const characterName = result.build.character?.name;
     writeCurrent({
       source: 'addon',
       ref: trimmed,
-      label: classSlug.charAt(0).toUpperCase() + classSlug.slice(1),
+      label: characterName === undefined ? className : `${characterName} · ${className}`,
       classSlug,
       savedAt: new Date().toISOString(),
     });

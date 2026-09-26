@@ -15,6 +15,7 @@
     talents,
     activeBuild,
     onimport,
+    onwrongclass = undefined,
     phone = false,
     class: className = '',
   }: {
@@ -27,9 +28,16 @@
      * back later decodes byte-for-byte what the player pasted.
      */
     onimport: (
-      build: { classSlug: string; raceSlug: string; order: number[]; gear: Gear },
+      build: { classSlug: string; raceSlug: string; order: number[]; gear: Gear; characterName?: string },
       pastedCode: string,
     ) => void;
+    /**
+     * An export for a class other than the loaded one. When the mounting page can switch
+     * class it takes the code here and imports once that class's talents arrive, instead
+     * of the box telling the player to switch by hand; without this callback the box shows
+     * the wrong-class message as before (Top Gear's inline box has one class).
+     */
+    onwrongclass?: (classSlug: string, pastedCode: string) => void;
     /**
      * Below md the standalone planner folds this behind a native, closed-by-default
      * disclosure (design loop, planner round): a visitor reaches Gear without scrolling
@@ -52,6 +60,11 @@
   function submit(): void {
     const trimmed = code.trim();
     const result = importFromAddon(trimmed, talents, activeBuild);
+    if (!result.ok && result.wrongClass !== undefined && onwrongclass !== undefined) {
+      outcome = { ok: false, message: addonCopy.importSwitchingClass(result.wrongClass) };
+      onwrongclass(result.wrongClass, trimmed);
+      return;
+    }
     outcome = result;
     if (result.ok) {
       onimport(
@@ -60,6 +73,7 @@
           raceSlug: result.raceSlug,
           order: result.order,
           gear: result.gear,
+          ...(result.characterName === undefined ? {} : { characterName: result.characterName }),
         },
         trimmed,
       );

@@ -46,6 +46,9 @@ export const addonCopy = {
     `That export is from data build ${exported}; this site is on ${active}. Update the addon.`,
   importWrongClass: (exported: string, current: string): string =>
     `That export is for ${exported}; this planner is on ${current}. Switch to ${exported} and import again.`,
+  /** The standalone planner switches class itself and imports once those talents load. */
+  importSwitchingClass: (exported: string): string =>
+    `That export is for ${exported}; switching the planner to it.`,
 
   // --- /addon page's own paste box ---
   pasteTitle: 'Try an export',

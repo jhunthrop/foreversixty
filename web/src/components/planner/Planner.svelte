@@ -43,6 +43,7 @@
   import Skeleton from '../ui/Skeleton.svelte';
   import GearPanel from './GearPanel.svelte';
   import ImportBox from './ImportBox.svelte';
+  import { importFromAddon } from '../../lib/addon/import';
   import OrderStrip from './OrderStrip.svelte';
   import PlannerToolbar from './PlannerToolbar.svelte';
   import SummaryBar from './SummaryBar.svelte';
@@ -198,6 +199,31 @@
   function writePointer(source: 'code' | 'addon' | 'build', ref: string, cls: string, title?: string): void {
     pointer = writePlannerPointer(store, standalone, source, ref, cls, title);
   }
+
+  // An addon export for another class: switch the planner to it and import once that
+  // class's talents have loaded, instead of telling the player to switch by hand. The
+  // pending code is cleared before anything else so a failed deferred import cannot retry
+  // on every later talent load.
+  let pendingImport = $state<{ classSlug: string; code: string } | null>(null);
+  function switchClassForImport(classSlug: string, code: string): void {
+    pendingImport = { classSlug, code };
+    store.selectClass(classSlug);
+  }
+  $effect(() => {
+    const pending = pendingImport;
+    const index = store.talentIndex;
+    if (pending === null || index === null || index.file.class_slug !== pending.classSlug) return;
+    pendingImport = null;
+    const result = importFromAddon(pending.code, index, activeBuild.build);
+    if (!result.ok) return;
+    store.loadImported({
+      classSlug: result.classSlug,
+      raceSlug: result.raceSlug,
+      order: result.order,
+      gear: result.gear,
+    });
+    writePointer('addon', pending.code, result.classSlug, result.characterName);
+  });
 
   // The live DPS estimate (Task 20). Created once -- createLiveDps holds no pool until the
   // first request, so this costs nothing on mount and does not touch engine.ts until a talent
@@ -783,8 +809,9 @@
                 activeBuild={activeBuild.build}
                 onimport={(build, pastedCode) => {
                   store.loadImported(build);
-                  writePointer('addon', pastedCode, build.classSlug);
+                  writePointer('addon', pastedCode, build.classSlug, build.characterName);
                 }}
+                onwrongclass={standalone ? switchClassForImport : undefined}
                 phone={collapsesOnPhone}
                 class="mx-[18px] md:mx-0"
               />
