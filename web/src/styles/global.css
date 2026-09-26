@@ -176,11 +176,15 @@ html[data-session='1'] [data-session-hide] {
   visibility: hidden;
 }
 
-/* The current-character band's slot (planner and simulator shells and islands) exists only
-   while a pointer is stored: Base.astro sets data-pointer before first paint from localStorage
-   and lib/current-character.ts keeps it in step, so a page with no pointer never shows the
-   band's reserved height as dead space. */
-html:not([data-pointer='1']) .chip-slot {
+/* The current-character band's slot (planner, simulator, logs, rankings and character
+   shells and islands) exists while a pointer is stored OR a signed-in session is hinted:
+   Base.astro sets data-pointer before first paint from localStorage and data-session from
+   the session cookie's readable half, and lib/current-character.ts keeps data-pointer in
+   step, so a page with neither never shows the band's reserved height as dead space. The
+   spine bar's signed-out, no-pointer line (CurrentCharacterBar.svelte's `spine` mode) is the
+   one state that renders with no pre-paint reservation at all -- the rarest visitor shape,
+   and the one CLS trade-off this rule accepts (spec 2026-09-25 section 4.1). */
+html:not([data-pointer='1']):not([data-session='1']) .chip-slot {
   display: none;
 }
 
