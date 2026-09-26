@@ -1417,7 +1417,12 @@
       </p>
     {/if}
 
-    <div class="grid grid-cols-1 gap-[22px] px-[18px] md:grid-cols-[300px_minmax(0,1fr)] md:gap-8 md:px-0">
+    <!-- items-start: the fight list is a short panel beside a tall column, and stretched
+         to the row it drew a bordered box a screen or two taller than its rows. It sticks
+         instead (FightSelector), so it is never further away than the top of the screen. -->
+    <div
+      class="grid grid-cols-1 gap-[22px] px-[18px] md:grid-cols-[300px_minmax(0,1fr)] md:items-start md:gap-8 md:px-0"
+    >
       <FightSelector
         {fights}
         selected={state.fight}
@@ -1439,7 +1444,6 @@
         <div class="bg-bg -mx-[18px] px-[18px] py-2 md:mx-0 md:px-0 md:py-0">
           <ModeBar {state} {roster} onPatch={patch} {nightMode} />
         </div>
-        <Glossary />
         <!-- The chart and its presets are a fight's: nothing draws a chart over a night, and
            Mechanics ignores the window, so it does not show a strip it would then disown. -->
         {#if summary !== null && !nightMode && state.mode !== 'mechanics'}
@@ -1855,6 +1859,10 @@
             Folding the night’s pulls…
           </p>
         {/if}
+        <!-- Last in the column, not fourth in the stack of control rows above the chart:
+             a glossary is a footnote, read when a word stops someone, and up top it drew
+             a full-width bar between the tabs and the first figure. -->
+        <Glossary />
       </div>
     </div>
   </div>

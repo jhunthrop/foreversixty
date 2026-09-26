@@ -37,7 +37,7 @@
 
 <nav
   aria-label="Fights"
-  class="border-line rounded-panel bg-raised flex flex-col border"
+  class="border-line rounded-panel bg-raised flex flex-col border md:sticky md:top-4"
   data-testid="fight-selector"
 >
   <ul
