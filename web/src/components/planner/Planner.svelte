@@ -7,9 +7,12 @@
   import { untrack } from 'svelte';
   import type { WeightsFile } from '../../lib/addon/score';
   import activeBuild from '../../data/active-build.json';
+  import { fetchMeOnce, type Me } from '../../lib/account/api';
+  import { mainCharacter } from '../../lib/account/main-character';
+  import { createQueryState } from '../../lib/data/query.svelte';
   import { clearCurrent, readCurrent, type CurrentCharacter } from '../../lib/current-character';
   import { CHIP_HEIGHT } from '../../lib/current-character-layout';
-  import { DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
+  import { API_BASE_URL, DEFAULT_CLASS_SLUG } from '../../lib/planner/config';
   import {
     decidePlannerLoad,
     isBarePlannerUrl,
@@ -37,6 +40,7 @@
   import type { BuildRecord, Gear, TalentFile } from '../../lib/planner/types';
   import { characterFromPlanner } from '../../lib/sim/character';
   import { defaultSimState, simSearch, withSimState } from '../../lib/sim/url';
+  import CurrentCharacterBar from '../CurrentCharacterBar.svelte';
   import CurrentCharacterChip from '../CurrentCharacterChip.svelte';
   import LoadError from '../ui/LoadError.svelte';
   import Skeleton from '../ui/Skeleton.svelte';
@@ -161,7 +165,7 @@
         ? classSlug
         : decoded?.ok
           ? decoded.build.classSlug
-          : (fromQuery('class') ?? classSlug),
+          : (fromQuery('class') ?? plannerLoad.initialClassSlug ?? classSlug),
       raceSlug: record
         ? (raceSlug ?? '')
         : decoded?.ok
@@ -174,6 +178,27 @@
       readOnly: record !== null,
     }),
   );
+
+  // Spec 4.2: "and when there is none, on the main's class." Only reached when there was no
+  // pointer, no ?code=, no ?class= and no record at all (plannerLoad.initialClassSlug is
+  // null exactly then) -- a synchronous pointer-derived class (any source) already won in
+  // the store's own construction above and this never overrides it.
+  const session = standalone
+    ? createQueryState<Me | null>(`${API_BASE_URL}/v1/me`, () => fetchMeOnce(), {
+        scope: 'private',
+        ttlMs: 10 * 60 * 1000,
+      })
+    : null;
+  $effect(() => {
+    if (session === null || plannerLoad.initialClassSlug !== null || record !== null) return;
+    const main =
+      session.data === null ? null : mainCharacter(session.data.characters, session.data.main_character_key);
+    const mainClassSlug = main?.class?.toLowerCase();
+    // Only correct a build the visitor has not touched yet: no points spent, no race chosen
+    // beyond the class's own default, and still on the class this mount opened with.
+    if (mainClassSlug === undefined || mainClassSlug === store.classSlug || store.order.length > 0) return;
+    store.selectClass(mainClassSlug);
+  });
 
   // The chip's "Copy addon code" link; shared with SharePanel's own button (Task 10).
   const addonCode = $derived(plannerAddonCode(store));
@@ -473,6 +498,9 @@
 </script>
 
 <div class="flex flex-col gap-[22px] md:gap-8" data-testid="planner">
+  {#if standalone}
+    <CurrentCharacterBar spine />
+  {/if}
   {#if standalone}
     <!-- Task 10: fixed-height slot, mirrors ToolsView.svelte's own `sim-chip-slot`. -->
     <div class={`chip-slot ${CHIP_HEIGHT}`} data-testid="planner-chip-slot">

@@ -91,6 +91,7 @@ describe('decidePlannerLoad', () => {
       restored: false,
       deadPointer: false,
       pointer,
+      initialClassSlug: null,
     });
   });
 
@@ -103,6 +104,7 @@ describe('decidePlannerLoad', () => {
       restored: true,
       deadPointer: false,
       pointer,
+      initialClassSlug: 'warrior',
     });
   });
 
@@ -115,6 +117,7 @@ describe('decidePlannerLoad', () => {
       restored: true,
       deadPointer: false,
       pointer,
+      initialClassSlug: 'warrior',
     });
   });
 
@@ -127,6 +130,7 @@ describe('decidePlannerLoad', () => {
       restored: false,
       deadPointer: false,
       pointer,
+      initialClassSlug: 'warrior',
     });
   });
 
@@ -138,6 +142,7 @@ describe('decidePlannerLoad', () => {
       restored: false,
       deadPointer: false,
       pointer: fight,
+      initialClassSlug: 'warrior',
     });
     const armory = stored('armory', 'us/normal/simfury');
     expect(decidePlannerLoad(null, true, false, true, armory)).toEqual<PlannerLoadDecision>({
@@ -146,6 +151,7 @@ describe('decidePlannerLoad', () => {
       restored: false,
       deadPointer: false,
       pointer: armory,
+      initialClassSlug: 'warrior',
     });
   });
 
@@ -158,6 +164,7 @@ describe('decidePlannerLoad', () => {
       restored: false,
       deadPointer: false,
       pointer,
+      initialClassSlug: 'warrior',
     });
   });
 
@@ -170,6 +177,7 @@ describe('decidePlannerLoad', () => {
       restored: false,
       deadPointer: false,
       pointer,
+      initialClassSlug: 'warrior',
     });
   });
 
@@ -181,6 +189,7 @@ describe('decidePlannerLoad', () => {
       restored: false,
       deadPointer: false,
       pointer: null,
+      initialClassSlug: null,
     });
   });
 
@@ -192,6 +201,7 @@ describe('decidePlannerLoad', () => {
       restored: false,
       deadPointer: false,
       pointer: null,
+      initialClassSlug: null,
     });
   });
 
@@ -203,12 +213,34 @@ describe('decidePlannerLoad', () => {
       restored: false,
       deadPointer: true,
       pointer: null,
+      initialClassSlug: null,
     });
   });
 
   it('decodes the URL code exactly once, handing the result back rather than making the caller redo it', () => {
     const decision = decidePlannerLoad('FS1:1:warrior:orc:1:', true, false, true, null);
     expect(decision.decoded).toEqual(OTHER_DECODED);
+  });
+
+  it('uses the pointer classSlug as the initial class even for a non-restorable (armory) pointer', () => {
+    const pointer = stored('armory', 'us/normal/simfury');
+    const decision = decidePlannerLoad(null, true, false, true, pointer);
+    expect(decision.initialClassSlug).toBe('warrior');
+  });
+
+  it('uses the URL code classSlug is irrelevant here -- initialClassSlug is null when the URL already names a code', () => {
+    const decision = decidePlannerLoad(GOOD_CODE, true, false, true, null);
+    expect(decision.initialClassSlug).toBeNull();
+  });
+
+  it('is null with no pointer at all, so the caller resolves the main async', () => {
+    const decision = decidePlannerLoad(null, true, false, true, null);
+    expect(decision.initialClassSlug).toBeNull();
+  });
+
+  it('is null when the mount is not standalone, matching the rest of the decision', () => {
+    const decision = decidePlannerLoad(null, true, false, false, stored('armory', 'us/normal/simfury'));
+    expect(decision.initialClassSlug).toBeNull();
   });
 });
 

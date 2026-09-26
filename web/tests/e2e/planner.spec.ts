@@ -443,3 +443,24 @@ test('each tree draws its own art and counts its own points', async ({ page }) =
   await expect(page.getByTestId('tree-points-161')).toHaveText('1');
   await expect(page.getByTestId('planner-remaining')).toHaveText('50');
 });
+
+test('opening /planner bare with a stored, non-restorable (armory) pointer still loads cleanly', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    window.localStorage.setItem(
+      'fs.currentCharacter',
+      JSON.stringify({
+        source: 'armory',
+        ref: 'us/normal/simfury',
+        label: 'Simfury · Fury Warrior',
+        classSlug: 'warrior',
+        savedAt: '2026-09-25T00:00:00.000Z',
+      }),
+    );
+  });
+  await page.goto('/planner');
+  await expect(page.getByTestId('current-character-bar')).toBeVisible();
+  await expect(page.getByTestId('current-character-restored')).toHaveCount(0);
+  await expect(page.getByTestId('planner')).toBeVisible();
+});

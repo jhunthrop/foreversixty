@@ -54,6 +54,14 @@ export interface PlannerLoadDecision {
    *  'addon' ever restore into the planner itself), `null` on the inline mount and once
    *  `deadPointer` says the stored one is gone. */
   pointer: CurrentCharacter | null;
+  /** The class the store should open on when there is no `?code=`/restored code to decide it
+   *  instead -- the pointer's own `classSlug`, for ANY pointer source (spec 2026-09-25
+   *  section 4.2: "opens on the current character's class ... [even without] the build").
+   *  Null exactly when there is nothing to open on yet (no pointer, a non-standalone mount,
+   *  or a URL that already names a code) -- the caller then resolves the signed-in main's
+   *  class asynchronously (Planner.svelte's own effect) rather than blocking the first paint
+   *  on a network read. */
+  initialClassSlug: string | null;
 }
 
 /**
@@ -78,6 +86,7 @@ export function decidePlannerLoad(
   stored: CurrentCharacter | null,
 ): PlannerLoadDecision {
   const initialPointer = standalone ? stored : null;
+  const initialClassSlug = standalone && urlCode === null ? (stored?.classSlug ?? null) : null;
   if (urlCode !== null) {
     return {
       codeParam: urlCode,
@@ -85,6 +94,7 @@ export function decidePlannerLoad(
       restored: false,
       deadPointer: false,
       pointer: initialPointer,
+      initialClassSlug: null,
     };
   }
   const eligible = standalone && !hasRecord && isBare && stored !== null;
@@ -95,12 +105,27 @@ export function decidePlannerLoad(
     restored: false,
     deadPointer: false,
     pointer: initialPointer,
+    initialClassSlug,
   };
   if (!restorable || stored === null) return notRestoring;
   const decoded = decodeFS1(stored.ref);
   return decoded.ok
-    ? { codeParam: stored.ref, decoded, restored: true, deadPointer: false, pointer: initialPointer }
-    : { codeParam: null, decoded: null, restored: false, deadPointer: true, pointer: null };
+    ? {
+        codeParam: stored.ref,
+        decoded,
+        restored: true,
+        deadPointer: false,
+        pointer: initialPointer,
+        initialClassSlug,
+      }
+    : {
+        codeParam: null,
+        decoded: null,
+        restored: false,
+        deadPointer: true,
+        pointer: null,
+        initialClassSlug: null,
+      };
 }
 
 /**
