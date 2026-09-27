@@ -166,3 +166,35 @@ func TestAttachWeightsPutsTheDatabaseOnThePlayer(t *testing.T) {
 		t.Errorf("AttachWeights(empty) = %v, want nil", err)
 	}
 }
+
+// A worn item the database lacks -- the quality-1 Ancient Heirloom ring
+// (264908), which items/<class>.json leaves out on purpose -- used to reach
+// the engine and panic it ("No item with id"). Attach empties that slot and
+// leaves the known ones alone.
+func TestAttachUnequipsAnItemTheDatabaseLacks(t *testing.T) {
+	db, err := load()
+	if err != nil {
+		t.Skip("embedded database unavailable:", err)
+	}
+	known := db.Items[0].Id
+	player := &proto.Player{Equipment: &proto.EquipmentSpec{Items: []*proto.ItemSpec{
+		{Id: known}, {Id: 264908}, {}, nil,
+	}}}
+	req := &proto.RaidSimRequest{Raid: &proto.Raid{Parties: []*proto.Party{{Players: []*proto.Player{player}}}}}
+	if err := Attach(req); err != nil {
+		t.Fatal(err)
+	}
+	if player.Equipment.Items[0].Id != known {
+		t.Errorf("the known item %d was removed", known)
+	}
+	if player.Equipment.Items[1].Id != 0 {
+		t.Errorf("the unknown item 264908 stayed equipped: %v", player.Equipment.Items[1])
+	}
+	removed, err := UnequipUnknown(&proto.Player{Equipment: &proto.EquipmentSpec{Items: []*proto.ItemSpec{{Id: 264908}, {Id: known}}}})
+	if err != nil || len(removed) != 1 || removed[0] != 264908 {
+		t.Errorf("UnequipUnknown = %v, %v; want [264908]", removed, err)
+	}
+	if removed, err := UnequipUnknown(nil); err != nil || removed != nil {
+		t.Errorf("nil player: %v, %v", removed, err)
+	}
+}
