@@ -64,7 +64,7 @@ func TestLoadTablesResolvesTheActiveBuild(t *testing.T) {
 	if !ok {
 		t.Fatal("LoadTables must resolve a build from the real data/builds directory")
 	}
-	if tables.Build != "1.60.1.69893" {
+	if tables.Build != "1.60.1.70009" {
 		t.Fatalf("Build = %q, want the newest numeric client build", tables.Build)
 	}
 	if tables.Trees == nil || tables.Enchants == nil || tables.Suffixes == nil || tables.Races == nil {
