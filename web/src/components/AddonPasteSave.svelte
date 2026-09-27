@@ -13,6 +13,7 @@
 <script lang="ts">
   import { ACCOUNT_FAILED, AccountError, postMyExports } from '../lib/account/api';
   import { addonCopy } from '../lib/addon/copy';
+  import { missingPasteSaveField, type PasteSaveField } from '../lib/addon/paste-save';
   import { REGIONS, RULESETS, rulesetFromRealm } from '../lib/characters';
   import type { FS1Build } from '../lib/planner/fs1';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
@@ -31,10 +32,23 @@
   let busy = $state(false);
   let saved = $state(false);
   let error = $state('');
+  // The field the last press found empty, so it can be marked and focused.
+  let missing = $state<PasteSaveField | null>(null);
+  let fields: Partial<Record<PasteSaveField, HTMLInputElement | HTMLSelectElement>> = {};
 
-  const canSave = $derived(name.trim() !== '' && region !== '' && ruleset !== '');
+  const NEEDS: Record<PasteSaveField, string> = {
+    name: addonCopy.pasteNeedsName,
+    region: addonCopy.pasteNeedsRegion,
+    ruleset: addonCopy.pasteNeedsRuleset,
+  };
 
   async function onSave(): Promise<void> {
+    missing = missingPasteSaveField({ name, region, ruleset });
+    if (missing !== null) {
+      error = NEEDS[missing];
+      fields[missing]?.focus();
+      return;
+    }
     busy = true;
     error = '';
     try {
@@ -55,6 +69,8 @@
       id="addon-paste-name"
       class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"
       bind:value={name}
+      bind:this={fields.name}
+      aria-invalid={missing === 'name' ? 'true' : undefined}
       disabled={saved}
       data-testid="addon-paste-name"
     />
@@ -63,6 +79,8 @@
         aria-label={addonCopy.pasteRegionLabel}
         class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"
         bind:value={region}
+        bind:this={fields.region}
+        aria-invalid={missing === 'region' ? 'true' : undefined}
         disabled={saved}
         data-testid="addon-paste-region"
       >
@@ -75,6 +93,8 @@
         aria-label={addonCopy.pasteRulesetLabel}
         class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"
         bind:value={ruleset}
+        bind:this={fields.ruleset}
+        aria-invalid={missing === 'ruleset' ? 'true' : undefined}
         disabled={saved}
         data-testid="addon-paste-ruleset"
       >
@@ -87,7 +107,7 @@
     <button
       type="button"
       class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
-      disabled={busy || saved || !canSave}
+      disabled={busy || saved}
       aria-busy={busy}
       onclick={onSave}
       data-testid="addon-paste-save-button"

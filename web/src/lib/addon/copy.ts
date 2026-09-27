@@ -63,6 +63,11 @@ export const addonCopy = {
   pasteRegionLabel: 'Region',
   pasteRulesetLabel: 'Ruleset',
   pasteSaveAction: 'Save to your account',
+  /** Said under the save button when it is pressed with that field still empty, instead of
+   *  a disabled button (which looks the same as a live one and read as broken). */
+  pasteNeedsName: 'Give the character a name first.',
+  pasteNeedsRegion: 'Pick the region first.',
+  pasteNeedsRuleset: 'Pick the ruleset first.',
   pasteSaved: 'Saved to your account',
 
   // --- /addon page ---

@@ -30,10 +30,8 @@ describe('AddonPasteSave', () => {
     });
     expect(body).toContain('value="Bow Jackzon"');
     expect(body).toMatch(/<option value="pvp"[^>]*selected/);
-    // The region has no source in the string, so the save still waits for it.
-    const match = /<button[^>]*data-testid="addon-paste-save-button"[^>]*>/.exec(body);
-    if (match === null) throw new Error('save button not rendered');
-    expect(match[0]).toContain('disabled');
+    // The region has no source in the string, so it starts on its placeholder option.
+    expect(body).toMatch(/<option value=""[^>]*selected[^>]*>Region</);
   });
 
   it('draws the fields as fields: each has a border', () => {
@@ -45,10 +43,10 @@ describe('AddonPasteSave', () => {
     }
   });
 
-  it('disables the save button until every field is filled', () => {
+  it('keeps the save button live with empty fields: a press names what is missing, a dead button reads as broken', () => {
     const { body } = render(AddonPasteSave, { props: { signedIn: true, code: CODE } });
     const match = /<button[^>]*data-testid="addon-paste-save-button"[^>]*>/.exec(body);
     if (match === null) throw new Error('save button not rendered');
-    expect(match[0]).toContain('disabled');
+    expect(match[0]).not.toContain('disabled');
   });
 });
