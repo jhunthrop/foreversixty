@@ -1,8 +1,8 @@
 {
   "sim_id": "simfixtureab",
-  "engine_version": "7a45995ae",
+  "engine_version": "6019ec3b5",
   "request": {
-    "engine_version": "7a45995ae",
+    "engine_version": "6019ec3b5",
     "spec": "warrior-fury",
     "source": {
       "kind": "addon",
@@ -49,7 +49,7 @@
   "iterations_run": 3000,
   "duration_ms": 504,
   "summary": {
-    "engine_version": "sim:7a45995ae",
+    "engine_version": "sim:6019ec3b5",
     "fight_index": 1,
     "duration_ms": 179629,
     "damage_done": [
