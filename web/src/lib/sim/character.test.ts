@@ -8,7 +8,7 @@ import type { ClassRow, Combo, RaceRow, TalentFile } from '../planner/types';
 import { simCopy } from './copy';
 import { CASTER_CONSUMABLES, PHYSICAL_CONSUMABLES, RAID_BUFFS } from './settings';
 import {
-  SIM_LEVEL,
+  MAX_LEVEL,
   characterFromFs1,
   characterFromPlanner,
   codeForCharacterSpec,
@@ -107,10 +107,9 @@ describe('talentLevel', () => {
     expect(talentLevel(Array.from({ length: 51 }, () => 1001))).toBe(60);
   });
 
-  it('is what the strip shows and never what the engine is sent', () => {
-    // api.SimRequest.Validate refuses any level but api.SimLevel.
-    expect(SIM_LEVEL).toBe(60);
-    expect(talentLevel([1001])).not.toBe(SIM_LEVEL);
+  it('is a display number, capped at MAX_LEVEL, distinct from what the engine is sent', () => {
+    expect(MAX_LEVEL).toBe(60);
+    expect(talentLevel([1001])).not.toBe(MAX_LEVEL);
   });
 });
 
@@ -285,6 +284,7 @@ describe('plannerGearFor', () => {
     class_slug: 'warrior',
     race_slug: 'orc',
     talent_level: 22,
+    level: 60,
     tree_version: BUILD,
     point_order: [],
     gear: {},
@@ -350,6 +350,10 @@ describe('toCharacterSpec', () => {
       class_slug: 'warrior',
       race_slug: 'orc',
       talent_level: 22,
+      // Deliberately not 60 and not what 13 points implies (talent_level: 22): the
+      // level-aware sim design (2026-09-27) sends this verbatim, independent of both, so
+      // this pins that `toCharacterSpec` no longer hardcodes MAX_LEVEL.
+      level: 45,
       tree_version: BUILD,
       point_order: order,
       gear: { head: 12640 },
@@ -369,8 +373,8 @@ describe('toCharacterSpec', () => {
       name: 'Thrallgar',
       race: 'orc',
       class: 'warrior',
-      // Always 60, whatever the talent spend says: sim/request refuses any other level.
-      level: 60,
+      // The character's own level, sent verbatim -- not always 60 any more.
+      level: 45,
       talents: '-553',
       gear: [{ slot: 'head', item_id: 12640 }],
       buffs: ['battle_shout'],
@@ -395,6 +399,7 @@ describe('toCharacterSpec', () => {
       class_slug: 'warrior',
       race_slug: 'orc',
       talent_level: 11,
+      level: 60,
       tree_version: BUILD,
       point_order: [2001, 2002],
       gear: { head: 12640 },
@@ -422,6 +427,7 @@ describe('toCharacterSpec cooldowns', () => {
       class_slug: 'warrior',
       race_slug: 'orc',
       talent_level: 11,
+      level: 60,
       tree_version: BUILD,
       point_order: [2001, 2002],
       gear: { head: 12640 },
@@ -447,6 +453,7 @@ describe('toCharacterSpec cooldowns', () => {
       class_slug: 'warrior',
       race_slug: 'orc',
       talent_level: 11,
+      level: 60,
       tree_version: BUILD,
       point_order: [2001, 2002],
       gear: { head: 12640 },
@@ -479,6 +486,7 @@ describe('the planner conversion, both ways', () => {
       class_slug: 'warrior',
       race_slug: 'orc',
       talent_level: 33,
+      level: 60,
       tree_version: BUILD,
       point_order: order,
       gear: { head: 12640, main_hand: 11726 },
@@ -526,6 +534,7 @@ describe('the planner conversion, both ways', () => {
       class_slug: 'warrior',
       race_slug: 'skyborne-unknown',
       talent_level: 60,
+      level: 60,
       tree_version: BUILD,
       point_order: [],
       gear: {},
@@ -600,6 +609,7 @@ describe('toCharacterSpec with per-slot enchants and professions', () => {
       class_slug: 'warrior',
       race_slug: 'orc',
       talent_level: 22,
+      level: 60,
       tree_version: BUILD,
       point_order: [],
       gear: { head: 12640 },
@@ -626,6 +636,7 @@ describe('toCharacterSpec with per-slot enchants and professions', () => {
       class_slug: 'warrior',
       race_slug: 'orc',
       talent_level: 22,
+      level: 60,
       tree_version: BUILD,
       point_order: [],
       gear: { head: 12640 },
@@ -659,6 +670,7 @@ describe('codeForCharacterSpec', () => {
       class_slug: 'warrior',
       race_slug: 'orc',
       talent_level: 22,
+      level: 60,
       tree_version: BUILD,
       point_order: [],
       gear: { head: 12640 },
@@ -697,6 +709,7 @@ describe('codeForCharacterSpec', () => {
       class_slug: 'warrior',
       race_slug: 'orc',
       talent_level: 22,
+      level: 60,
       tree_version: BUILD,
       point_order: [],
       gear: { head: 12640 },
@@ -801,6 +814,7 @@ describe('plannerHrefFor', () => {
     class_slug: 'warrior',
     race_slug: 'orc',
     talent_level: 22,
+    level: 60,
     tree_version: BUILD,
     point_order: [],
     gear: {},
@@ -954,6 +968,7 @@ describe('toCharacterSpec: a consumable only ever reaches a class that can use i
     class_slug: 'warrior',
     race_slug: 'orc',
     talent_level: 60,
+    level: 60,
     tree_version: BUILD,
     point_order: [],
     gear: {},

@@ -39,7 +39,10 @@ export const landingCopy = {
    *  layout pass, Finding 3: this is now the *only* copy of the sentence on /sim -- the
    *  caption under the "Your characters" heading, signed in or out -- so `sim-scope-note`
    *  never duplicates it elsewhere on the page. */
-  scopeCaveat: 'Damage specs at level 60; healing and tanking specs are not simulated yet.',
+  // Level-neutral since the level-aware sim design (2026-09-27): the simulator is no
+  // longer pinned to level 60 (`sim/lib/character.ts`'s own `level` field), so this no
+  // longer names one. Damage-specs-only is the caveat still true regardless of level.
+  scopeCaveat: 'Damage specs are simulated; healing and tanking specs are not simulated yet.',
 
   /** 2026-09-26 layout pass, Finding 1: the Run block under the spine bar, for whichever
    *  character the bar itself calls current -- the same one the character list below

@@ -57,11 +57,20 @@ describe("Export", function()
 			itemStats = { ["|Hitem:12640|h"] = { __itemId = 12640, __slot = "INVTYPE_HEAD" } },
 		})
 		local code = assert(Export.string(DATA))
-		-- The head is exact; the trailing name section carries whatever the client says
-		-- the player is called, url-encoded, so the site can show it.
-		local head, name = code:match("^(FS1:1%.60%.1%.69893:paladin:human:2/0/0:head=12640)|who=(.+)$")
+		-- The head is exact; the level section (the mock's default UnitLevel, 60) comes
+		-- first; the trailing name section carries whatever the client says the player is
+		-- called, url-encoded, so the site can show it.
+		local head, level, name =
+			code:match("^(FS1:1%.60%.1%.69893:paladin:human:2/0/0:head=12640)|level=(%d+)|who=(.+)$")
 		assert.are.equal("FS1:1.60.1.69893:paladin:human:2/0/0:head=12640", head)
+		assert.are.equal("60", level)
 		assert.is_truthy(name and name:find(":", 1, true), code)
+	end)
+
+	it("carries the real UnitLevel, first among the sections", function()
+		character({ level = 45 })
+		local code = assert(Export.string(DATA))
+		assert.is_truthy(code:find(":2/0/0:|level=45", 1, true), code)
 	end)
 
 	it("names the Skyborne row by faction, since the client reports both under one token", function()

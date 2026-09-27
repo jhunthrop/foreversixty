@@ -22,7 +22,7 @@
   import type { Slot } from '../../../lib/planner/types';
   import type { BulkResult } from '../../../lib/sim/bulk-types';
   import type { BulkStore } from '../../../lib/sim/bulk-store.svelte';
-  import { SIM_LEVEL } from '../../../lib/sim/character';
+  import { MAX_LEVEL } from '../../../lib/sim/character';
   import BulkRunBar from './BulkRunBar.svelte';
   import ComboResults from './ComboResults.svelte';
   import ConsumableCandidates from './ConsumableCandidates.svelte';
@@ -56,7 +56,7 @@
     <ItemSearch
       items={[...store.items.values()]}
       loot={store.loot}
-      ctx={{ level: SIM_LEVEL, sourcesByItem: store.sourceIndex, known: store.knownItems }}
+      ctx={{ level: MAX_LEVEL, sourcesByItem: store.sourceIndex, known: store.knownItems }}
       treeVersion={store.character?.tree_version ?? ''}
       onadd={(itemId) => store.addSearchItem(itemId)}
     />

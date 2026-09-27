@@ -15,6 +15,7 @@ const character: SimCharacter = {
   class_slug: 'warrior',
   race_slug: 'orc',
   talent_level: 60,
+  level: 60,
   tree_version: '1.15.9.69722',
   point_order: [2001, 2002],
   gear: { head: 12640 },

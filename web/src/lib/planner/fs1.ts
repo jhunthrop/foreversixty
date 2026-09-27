@@ -64,6 +64,14 @@ export interface FS1Build {
   raceSlug: string;
   treeRanks: number[][];
   /**
+   * The character's in-game level, from `UnitLevel("player")` (the level-aware sim
+   * design, 2026-09-27). Absent from a code an addon older than this wrote, and from a
+   * hand-built planner code -- never defaulted to 60 here, the way `bags`/`bank`/etc.
+   * default to `[]`, because "no level recorded" and "level 60" are not the same fact.
+   * `character.ts`'s `characterFromFs1` is where an absent level gets its fallback.
+   */
+  level?: number;
+  /**
    * The planner's map of slot to item id. Lossy by design: the strip, the planner link and
    * `BuildDraft` all read it and none of them models an enchant or a suffix.
    */
@@ -331,6 +339,7 @@ export function decodeFS1(code: string): FS1Result {
     guild: undefined as { name: string; rankIndex: number } | undefined,
     ignored: [] as string[],
     character: undefined as { name: string; realm: string } | undefined,
+    level: undefined as number | undefined,
   };
 
   for (const section of sections) {
@@ -360,6 +369,17 @@ export function decodeFS1(code: string): FS1Result {
       // a stray comma ("a,,b" or a trailing "a,") is not a slug at all, only a formatting
       // artifact, so those alone are filtered rather than forwarded to fail there instead.
       build.professions = field === '' ? [] : field.split(',').filter((slug) => slug !== '');
+    } else if (name === 'level') {
+      // Digits only, 1..60: a malformed *known* section refuses the whole code (only an
+      // unrecognised section name is forgiven), the same rule guild's rank field follows.
+      if (!/^\d+$/.test(field)) {
+        return { ok: false, message: `That code has an unreadable level: ${field}.` };
+      }
+      const level = Number.parseInt(field, 10);
+      if (level < 1 || level > 60) {
+        return { ok: false, message: `That code has an unreadable level: ${field}.` };
+      }
+      build.level = level;
     } else if (name === 'guild') {
       const guild = parseGuild(field);
       if (!guild.ok) return guild;
@@ -471,6 +491,11 @@ export function encodeFS1V2(build: FS1Build): string {
   const professions = build.professions ?? [];
 
   const sections: string[] = [];
+  // First, ahead of every other section: the character's own level is the most basic fact
+  // an export carries, alongside the head's class/race/talents, and every other section
+  // (bags, bank, sets, loadouts, professions, guild, who) is either inventory or identity
+  // that reads naturally after it.
+  if (build.level !== undefined) sections.push(`level=${build.level}`);
   if (bags.length > 0) sections.push(`bags=${encodeItems(bags)}`);
   if (bank.length > 0) sections.push(`bank=${encodeItems(bank)}`);
   if (sets.length > 0) {

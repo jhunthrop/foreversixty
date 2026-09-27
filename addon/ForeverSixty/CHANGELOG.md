@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The export carries your character's level, so the planner and simulator know it
+  instead of always assuming 60.
 - Characters are exported under their full name, first and last, on the Forever client
   (its UnitName answers the first name alone from build 1.60.1.70009).
 - First release: import your character into the planner, follow a build in game,

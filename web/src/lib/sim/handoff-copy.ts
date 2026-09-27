@@ -24,7 +24,12 @@ export const handoffCopy = {
    * Task 9, spec section 1: "when a planner build with fewer than 51 points is sent to
    * the sim, the sim says it is simming it as a level 60 with those talents rather than
    * silently relabelling it". CharacterStrip.svelte's own `levelSuffix` appends this
-   * beside the talent-point count for exactly that character.
+   * beside the talent-point count for exactly that character. The level-aware sim design
+   * (2026-09-27) made this level-neutral rather than always saying 60: the level named is
+   * whatever `character.level` actually holds, which is MAX_LEVEL for a hand-built
+   * planner build (unchanged) but the export's own level for an addon build that carries
+   * one, so an under-51-point export at another level is not told it ran at 60 when it
+   * did not.
    */
-  simmedAtSixty: 'Simmed as a level 60 with these talents.',
+  simmedAtLevel: (level: number): string => `Simmed as a level ${level} with these talents.`,
 } as const;

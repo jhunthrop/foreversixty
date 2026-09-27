@@ -5,6 +5,7 @@ import { simCopy } from './copy';
 import {
   BUFF_PRESETS,
   CASTER_CONSUMABLES,
+  DEFAULT_TARGET_LEVEL,
   DURATIONS,
   MAX_DURATION_SEC,
   MAX_TARGETS,
@@ -19,6 +20,7 @@ import {
   TARGET_TYPES,
   VARIATIONS,
   defaultSettings,
+  defaultTargetLevel,
   durationLabel,
   executePhaseOn,
   presetConsumables,
@@ -209,8 +211,37 @@ describe('the setters never mutate and always clamp', () => {
   });
 
   it('publishes contract A8’s armor preset for each level, so the control can name the figure', () => {
-    expect(TARGET_ARMOR_BY_LEVEL).toEqual({ 60: 3300, 61: 3444, 62: 3588, 63: 3731 });
+    expect(TARGET_ARMOR_BY_LEVEL[60]).toBe(3300);
+    expect(TARGET_ARMOR_BY_LEVEL[61]).toBe(3444);
+    expect(TARGET_ARMOR_BY_LEVEL[62]).toBe(3588);
+    expect(TARGET_ARMOR_BY_LEVEL[63]).toBe(3731);
     expect(TARGET_LEVELS.every((level) => TARGET_ARMOR_BY_LEVEL[level] > 0)).toBe(true);
+  });
+
+  // Level-aware sim design (2026-09-27), design step 5: extended down through level 1 for
+  // a levelling character's target (character level + 3), not just the raid range.
+  it('extends the armor table down through level 1, continuing the same rate, floored at zero', () => {
+    expect(Object.keys(TARGET_ARMOR_BY_LEVEL)).toHaveLength(63);
+    expect(TARGET_ARMOR_BY_LEVEL[1]).toBe(0);
+    expect(TARGET_ARMOR_BY_LEVEL[59]).toBeLessThan(TARGET_ARMOR_BY_LEVEL[60]);
+    // Every level's armor is non-negative and non-decreasing with level.
+    for (let level = 1; level < 63; level += 1) {
+      expect(TARGET_ARMOR_BY_LEVEL[level]).toBeGreaterThanOrEqual(0);
+      expect(TARGET_ARMOR_BY_LEVEL[level + 1]).toBeGreaterThanOrEqual(TARGET_ARMOR_BY_LEVEL[level]);
+    }
+  });
+
+  describe('defaultTargetLevel', () => {
+    it('is 3 above the character’s own level', () => {
+      expect(defaultTargetLevel(1)).toBe(4);
+      expect(defaultTargetLevel(30)).toBe(33);
+      expect(defaultTargetLevel(60)).toBe(63);
+    });
+
+    it('is what DEFAULT_TARGET_LEVEL already was, applied to MAX_LEVEL', () => {
+      expect(DEFAULT_TARGET_LEVEL).toBe(defaultTargetLevel(60));
+      expect(DEFAULT_TARGET_LEVEL).toBe(63);
+    });
   });
 
   // 2026-09-21 result-page review, Defect 3: the field must read BLANK when there is no

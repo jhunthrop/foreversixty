@@ -192,6 +192,14 @@ function Codec.encodeFS1(build)
 	}, ":")
 
 	local sections = {}
+	-- First, ahead of every other section: the character's own level is as basic a fact
+	-- as the head's class/race/talents, and every other section (bags, bank, sets,
+	-- loadouts, professions, guild, who) reads naturally after it. "level" does not start
+	-- with n, c, r, H, T, A or K, so it is safe next to the font-string escape names the
+	-- section-name comment on Codec.encodeFS1 already calls out for "who".
+	if build.level then
+		sections[#sections + 1] = "level=" .. tostring(build.level)
+	end
 	if build.bags and #build.bags > 0 then
 		sections[#sections + 1] = "bags=" .. encodeItems(build.bags)
 	end
@@ -405,7 +413,20 @@ function Codec.decodeFS1(code)
 		local at = section:find("=", 1, true)
 		local name = at and section:sub(1, at - 1) or section
 		local field = at and section:sub(at + 1) or ""
-		if name == "bags" or name == "bank" then
+		if name == "level" then
+			-- Digits only, 1..60: a malformed *known* section refuses the whole code
+			-- (only an unrecognised section name is forgiven), the same rule the guild
+			-- rank field follows -- and the same wording the site's decoder uses
+			-- (fs1.ts), so a player sees one message regardless of which side refused.
+			if not isDigits(field) then
+				return nil, refuse(L.codecLevel, field)
+			end
+			local level = tonumber(field)
+			if level < 1 or level > 60 then
+				return nil, refuse(L.codecLevel, field)
+			end
+			build.level = level
+		elseif name == "bags" or name == "bank" then
 			local items
 			items, message = parseItemList(field)
 			if items == nil then

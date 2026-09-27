@@ -5,10 +5,15 @@
 // Two things here are not obvious and are load-bearing:
 //
 //   * `talent_level` is the level the talent spend implies, which is what the character
-//     strip shows. It is NOT what the engine is sent. api.SimRequest.Validate refuses any
-//     level but api.SimLevel (60) because the engine builds every character at
-//     core.CharacterMaxLevel and proto.Player has no level field, so toCharacterSpec always
-//     sends SIM_LEVEL.
+//     strip's "simmed at a different level" note compares against. It is a display number,
+//     never what `toCharacterSpec` sends.
+//   * `level` is what IS sent (the level-aware sim design, 2026-09-27): the export's own
+//     level when the addon wrote one, else the talent-implied level for an older export
+//     with no level section, else MAX_LEVEL for a hand-built planner build. The engine
+//     will simulate any level 1..60 once lane T2's request/validation and the engine core
+//     land; `api.SimRequest.Validate` refuses anything but 60 today, so a character built
+//     here with a level under 60 fails at the API boundary until then -- see this lane's
+//     own report for what that means for callers in the meantime.
 //   * `buffs` and `consumables` are the engine's own ids in lower snake case, resolved off
 //     the protobuf descriptors by sim/request and published as sim/request/IDS.md --
 //     "battle_shout", "elixir_of_the_mongoose", "item:13452",
@@ -38,6 +43,12 @@ export interface SimCharacter {
   race_slug: string;
   /** The level the talent spend implies. Shown in the strip; never sent to the engine. */
   talent_level: number;
+  /**
+   * The level actually simulated (the level-aware sim design, 2026-09-27): the export's
+   * own level when present, the talent-implied level for an older export with none, or
+   * MAX_LEVEL for a hand-built planner build. `toCharacterSpec` sends this verbatim.
+   */
+  level: number;
   tree_version: string;
   point_order: number[];
   gear: Gear;
@@ -68,10 +79,14 @@ export interface SimCharacter {
 }
 
 /**
- * The only level the engine simulates. sim/request's own `engineCharacterLevel` is the same
- * number for the same reason, and its test asserts it against core.CharacterMaxLevel.
+ * The cap on a character's level (core.CharacterMaxLevel's own number). Was `SIM_LEVEL`,
+ * the ONLY level the engine simulated, back when the engine built every character at
+ * `CharacterMaxLevel` and `toCharacterSpec` always sent it regardless of source; the
+ * level-aware sim design (2026-09-27) lets the engine simulate any level 1..60, so this is
+ * now just the ceiling `talentLevel` clamps to and the level a hand-built planner build
+ * defaults to, not the only number `SimCharacter.level` can hold.
  */
-export const SIM_LEVEL = 60;
+export const MAX_LEVEL = 60;
 
 /**
  * `race_slug` for a character whose source did not record a race. A combat log records
@@ -106,7 +121,7 @@ export function specOf(index: TalentIndex, order: number[]): string {
 
 /** The level a build of this many points belongs to. For the strip, not for the engine. */
 export function talentLevel(order: number[]): number {
-  return order.length === 0 ? BASE_LEVEL : Math.min(SIM_LEVEL, BASE_LEVEL + order.length);
+  return order.length === 0 ? BASE_LEVEL : Math.min(MAX_LEVEL, BASE_LEVEL + order.length);
 }
 
 /**
@@ -168,6 +183,9 @@ export function fromBuildDraft(
     class_slug: classRow.slug,
     race_slug: raceRow.slug,
     talent_level: talentLevel(draft.point_order),
+    // A hand-built planner build names no in-game character, so there is no export level
+    // to prefer -- it always simulates at the cap (design 6), whatever the talent spend.
+    level: MAX_LEVEL,
     tree_version: draft.tree_version,
     point_order: [...draft.point_order],
     gear: { ...(draft.gear ?? {}) },
@@ -271,6 +289,7 @@ export function codeForCharacterSpec(spec: CharacterSpec, dataBuild: string): st
     dataBuild,
     classSlug: spec.class,
     raceSlug: spec.race,
+    level: spec.level,
     treeRanks: ranksFromTalentsString(spec.talents),
     gear: gearFromSlots(spec.gear),
     gearSlots: spec.gear.map((slot) => ({
@@ -359,9 +378,12 @@ export function toCharacterSpec(
     name: character.name,
     race: character.race_slug,
     class: character.class_slug,
-    // Always 60. api.SimRequest.Validate refuses anything else, so a level-33 request
-    // would be rejected at the boundary rather than simmed as written.
-    level: SIM_LEVEL,
+    // Sent as the character's own level (design 6) -- not always MAX_LEVEL any more.
+    // api.SimRequest.Validate still refuses anything but 60 today (lane T2's request and
+    // validation work, and the engine core it waits on, have not landed), so a character
+    // built at another level fails at the API boundary until then rather than being
+    // silently resimmed at 60.
+    level: character.level,
     talents: talentsString(index, character.point_order),
     // The slot list when the source gave one, the id map otherwise. Never both, and never
     // a merge: one of the two is the truth about this character's gear and it is this one.
@@ -462,6 +484,11 @@ export function characterFromFs1(
       class_slug: classRow.slug,
       race_slug: raceRow === null ? PENDING_RACE : raceRow.slug,
       talent_level: talentLevel(order),
+      // The export's own level (UnitLevel("player"), design 6) when the addon wrote one;
+      // an addon older than this section falls back to the same talent-implied number the
+      // strip already showed, capped at MAX_LEVEL -- the honest guess the site has always
+      // made, now also what gets simulated instead of being silently overridden to 60.
+      level: decoded.build.level ?? talentLevel(order),
       tree_version: decoded.build.dataBuild,
       point_order: order,
       gear: { ...decoded.build.gear },

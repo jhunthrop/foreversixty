@@ -29,6 +29,7 @@ import type { RosterRow } from '../report/types';
 import { requestEnvelope } from '../account/api';
 import type { CharacterPath } from '../characters';
 import {
+  MAX_LEVEL,
   PENDING_RACE,
   characterFromFs1,
   fromBuildDraft,
@@ -220,6 +221,10 @@ export async function fromStoredCharacter(
       class_slug: classSlug,
       race_slug: raceRow.slug,
       talent_level: talentLevel(new Array<number>(totalPoints)),
+      // This source carries no export level (input.go's own comment above: the addon
+      // export is an opaque string this repository never parses), so this defaults the
+      // same way a hand-built planner build does rather than guessing one.
+      level: MAX_LEVEL,
       tree_version: ctx.treeVersion,
       point_order: [],
       // `input.gear`'s shape is the source's own -- the addon's own export JSON for an
@@ -433,6 +438,8 @@ export async function fromLoggedFight(
       // Empty on purpose: the log has no race and this function will not guess one.
       race_slug: PENDING_RACE,
       talent_level: talentLevel(point_order),
+      // A combat log carries no export level either; same default as the source above.
+      level: MAX_LEVEL,
       tree_version: ctx.treeVersion,
       point_order,
       gear: gearFromCombatant(combatant.gear),

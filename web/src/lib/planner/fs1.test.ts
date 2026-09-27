@@ -205,6 +205,31 @@ describe('version 2 sections', () => {
     expect(decoded.build.guild).toEqual({ name: 'A:B', rankIndex: 3 });
   });
 
+  it('reads the level section', () => {
+    const decoded = decodeFS1(`${V1}|level=45`);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.level).toBe(45);
+  });
+
+  it('leaves level undefined, never defaulted to 60, when the code carries no level section', () => {
+    const decoded = decodeFS1(V1);
+    expect(decoded.ok).toBe(true);
+    if (!decoded.ok) return;
+    expect(decoded.build.level).toBeUndefined();
+  });
+
+  it.each([
+    ['a non-numeric level', 'sixty'],
+    ['a level of zero', '0'],
+    ['a level over 60', '61'],
+  ])('refuses %s rather than silently dropping the section', (_name, value) => {
+    const decoded = decodeFS1(`${V1}|level=${value}`);
+    expect(decoded.ok).toBe(false);
+    if (decoded.ok) return;
+    expect(decoded.message).toBe(`That code has an unreadable level: ${value}.`);
+  });
+
   it('reads bags and bank, with the optional enchant and suffix', () => {
     const decoded = decodeFS1(`${V1}|bags=16963,17076:2504,19360:2505:1820|bank=12640`);
     expect(decoded.ok).toBe(true);
@@ -410,6 +435,46 @@ describe('encodeFS1V2', () => {
     expect(decoded.build.sets).toEqual(build.sets);
     expect(decoded.build.loadouts[0].name).toBe('Deep Fury');
     expect(decoded.build.professions).toEqual(['engineering', 'blacksmithing']);
+  });
+
+  it('writes the level section first, ahead of every other section, and round-trips it', () => {
+    const code = encodeFS1V2({
+      dataBuild: '1.15.9',
+      classSlug: 'warrior',
+      raceSlug: 'orc',
+      treeRanks: [[], [], []],
+      gear: {},
+      level: 45,
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      professions: ['engineering'],
+      ignored: [],
+    });
+    expect(code.indexOf('|level=')).toBeLessThan(code.indexOf('|professions='));
+    expect(code).toContain('|level=45');
+
+    const decoded = decodeFS1(code);
+    expect(decoded.ok).toBe(true);
+    if (decoded.ok) expect(decoded.build.level).toBe(45);
+  });
+
+  it('omits the level section entirely when build.level is absent', () => {
+    const code = encodeFS1V2({
+      dataBuild: '1.15.9',
+      classSlug: 'warrior',
+      raceSlug: 'orc',
+      treeRanks: [[], [], []],
+      gear: {},
+      bags: [],
+      bank: [],
+      sets: [],
+      loadouts: [],
+      professions: [],
+      ignored: [],
+    });
+    expect(code).not.toContain('level=');
   });
 
   it('writes the guild section after professions and round-trips it', () => {
