@@ -67,15 +67,15 @@ jobs:
       # runner, and pin-engine is what rewrites it to the pinned sha
       # resolved through the module proxy instead.
       #
-      # NOT needed here: `make simdb`. Nothing genstyles reaches -
-      # sim/request, sim/api, sim/specs - imports sim/internal/simdb or
-      # go:embeds anything; only sim/bulk, sim/cmd/wasm and
-      # sim/cmd/forever-sim do. Verified by building
-      # ./internal/genstyles with both simdb.bin and enchants.json
-      # removed - it built and ran, byte-identical output.
+      # `make simdb` IS needed here since the level-aware sim:
+      # sim/request imports sim/internal/spellranks, which go:embeds the
+      # active build's spellranks.json (the rotation rank rewrite), and
+      # nothing compiles without the copy in place. It still needs no
+      # engine checkout: the target only copies the three files.
       - uses: actions/setup-go@v5
         with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
       - uses: ./.github/actions/pin-engine
+      - run: make simdb
       - name: the pinned engine sha
         id: pin
         run: |
