@@ -17,7 +17,7 @@ function fakeFonts(): { resolve: () => void } {
 
 describe('scheduleBoot', () => {
   // Animation frames are not in vitest's default fake list; the boot schedules two of them.
-  beforeEach(() => vi.useFakeTimers({ toFake: FAKED }));
+  beforeEach(() => vi.useFakeTimers({ toFake: [...FAKED] }));
   afterEach(() => {
     vi.restoreAllMocks();
     vi.useRealTimers();
