@@ -171,7 +171,9 @@ test('a 31/20/0 warrior is spent and read back as 31/20/0', async ({ page }) => 
   await expect(page.getByTestId('planner-split')).toHaveText('31/20/0');
   await expect(page.getByTestId('planner-spent')).toHaveText('51/51');
   await expect(page.getByTestId('planner-remaining')).toHaveText('0');
-  await expect(page.getByTestId('planner-level')).toHaveText('60');
+  // A bare build has no current character, so Level is not shown (spec 2026-09-25 §6);
+  // planner.spec.ts covers the Level readout for a build opened from an addon code.
+  await expect(page.getByTestId('planner-level')).toHaveCount(0);
   await expect(page.getByTestId(`tree-points-${arms.id}`)).toHaveText('31');
   await expect(page.getByTestId(`tree-points-${fury.id}`)).toHaveText('20');
 });
