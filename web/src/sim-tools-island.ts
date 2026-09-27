@@ -6,6 +6,7 @@
 // 90 KB gzipped and carries /sim's own 1,600 ms mobile LCP, and four candidate grids, a
 // source picker and two results views do not fit under that. Nothing here is loaded by /sim.
 import { mount } from 'svelte';
+import { scheduleBoot } from './lib/islands/boot';
 import ToolsView from './components/sim/tools/ToolsView.svelte';
 import { TOOLS, type SimTool } from './lib/sim/bulk-store.svelte';
 import './styles/fonts.css';
@@ -44,8 +45,4 @@ function boot(): void {
   mount(ToolsView, { target, props: { tool } });
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', boot, { once: true });
-} else {
-  boot();
-}
+scheduleBoot(boot);

@@ -8,6 +8,7 @@ import { simCopy } from '../lib/sim/copy';
 import { landingCopy } from '../lib/sim/landing-copy';
 import SimTabs from '../components/sim/SimTabs.astro';
 import ExampleResultCard from '../components/sim/ExampleResultCard.svelte';
+import IslandScript from '../components/IslandScript.astro';
 ---
 
 <Base
@@ -78,6 +79,6 @@ import ExampleResultCard from '../components/sim/ExampleResultCard.svelte';
         </p>
       </noscript>
     </div>
-    <script type="module" src="/sim-island.js"></script>
+    <IslandScript src="/sim-island.js" />
   </main>
 </Base>

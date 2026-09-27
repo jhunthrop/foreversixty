@@ -13,6 +13,7 @@ import { reportSkeletonHtml } from '../../lib/report/skeleton';
 import Base from '../../layouts/Base.astro';
 import fixtureMeta from '../../fixtures/report/meta.json';
 import { FIXTURE_REPORT_ID, fixtureReportPaths } from '../../lib/report/shell-paths';
+import IslandScript from '../../components/IslandScript.astro';
 
 export function getStaticPaths() {
   return fixtureReportPaths();
@@ -68,6 +69,6 @@ const inline = id === FIXTURE_REPORT_ID ? JSON.stringify(fixtureMeta) : undefine
     >
       <Fragment set:html={reportSkeletonHtml(id === FIXTURE_REPORT_ID ? fixtureMeta.title : undefined)} />
     </div>
-    <script type="module" src="/report-island.js"></script>
+    <IslandScript src="/report-island.js" />
   </main>
 </Base>

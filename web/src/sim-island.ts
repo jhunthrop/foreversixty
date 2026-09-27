@@ -9,6 +9,7 @@
 // it has to carry the tokens, base rules and self-hosted faces the rest of the site uses.
 import { mount } from 'svelte';
 import SimView from './components/sim/SimView.svelte';
+import { scheduleBoot } from './lib/islands/boot';
 import { simIdFrom } from './lib/sim/url';
 import type { SimResult } from './lib/sim/types';
 import './styles/fonts.css';
@@ -57,8 +58,4 @@ function boot(): void {
   mount(SimView, { target, props });
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', boot, { once: true });
-} else {
-  boot();
-}
+scheduleBoot(boot);

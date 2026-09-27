@@ -22,6 +22,7 @@ import { bulkCopy, simCopy } from '../../lib/sim/copy';
 import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
 import ScopeNote from '../../components/sim/ScopeNote.astro';
 import SimTabs from '../../components/sim/SimTabs.astro';
+import IslandScript from '../../components/IslandScript.astro';
 ---
 
 <Base title={bulkCopy.gearTitle} description={simCopy.gearDescription} path="/sim/gear" session>
@@ -43,6 +44,6 @@ import SimTabs from '../../components/sim/SimTabs.astro';
         <p class="text-muted px-[18px] text-[14px] md:px-0" set:html={bulkCopy.needsJs(bulkCopy.gearTitle)} />
       </noscript>
     </div>
-    <script type="module" src="/sim-tools-island.js" is:inline></script>
+    <IslandScript src="/sim-tools-island.js" />
   </main>
 </Base>

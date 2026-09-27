@@ -22,6 +22,7 @@ import { bulkCopy, simCopy } from '../../lib/sim/copy';
 import { TOOL_SKELETONS } from '../../lib/sim/bulk-skeleton';
 import ScopeNote from '../../components/sim/ScopeNote.astro';
 import SimTabs from '../../components/sim/SimTabs.astro';
+import IslandScript from '../../components/IslandScript.astro';
 ---
 
 <Base title={bulkCopy.weightsTitle} description={simCopy.weightsDescription} path="/sim/weights" session>
@@ -46,6 +47,6 @@ import SimTabs from '../../components/sim/SimTabs.astro';
         />
       </noscript>
     </div>
-    <script type="module" src="/sim-tools-island.js" is:inline></script>
+    <IslandScript src="/sim-tools-island.js" />
   </main>
 </Base>

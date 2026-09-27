@@ -61,8 +61,15 @@ describe('boot()', () => {
   it('removes the shell min-h reservation from the mount element once the island mounts', async () => {
     document.body.innerHTML = '<div id="sim" data-sim-mount class="min-h-[1408px] md:min-h-[819px]"></div>';
     vi.resetModules();
+    vi.useFakeTimers({
+      toFake: ['setTimeout', 'clearTimeout', 'requestAnimationFrame', 'cancelAnimationFrame'],
+    });
     await import('./sim-island');
     const target = document.getElementById('sim')!;
+    // scheduleBoot mounts after the shell has painted, so the reservation is still on.
+    expect(target.className).toContain('min-h-[1408px]');
+    await vi.runAllTimersAsync();
+    vi.useRealTimers();
     expect(target.className).not.toContain('min-h-[1408px]');
     expect(target.className).not.toContain('min-h-[819px]');
   });

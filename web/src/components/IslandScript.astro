@@ -1,0 +1,38 @@
+---
+// web/src/components/IslandScript.astro
+// Loads an island bundle (dist/<name>-island.js, the standalone Vite builds) after the
+// page's first paint.
+//
+// A plain `<script type="module">` runs as soon as the document is parsed, and on a small
+// page that is usually before the browser has painted a frame: the whole bundle then
+// evaluates ahead of the first paint, and Lighthouse's simulated First Contentful Paint
+// and Largest Contentful Paint are charged with it -- the simulator page swung between
+// 1.4 s and 2.0 s FCP, 2.0 s and 3.3 s LCP, and a score of 0.99 and 0.92, on nothing but
+// which of paint and script evaluation the browser happened to run first (2026-09-27, three
+// CI runs in a row). Injecting the module two frames in guarantees the shell has painted
+// first; src/lib/islands/boot.ts then holds the mount itself until the fonts have swapped.
+// A background tab paints no frames, so a timer loads the bundle within a second there.
+// No `modulepreload`: a preloaded module is compiled before the first paint, which put the
+// whole 57 KB bundle back into that paint's chain (a constant 2.1 s FCP instead of 1.4 s).
+interface Props {
+  src: string;
+}
+const { src } = Astro.props;
+---
+
+<script is:inline data-island={src}>
+  ((script) => {
+    const src = script.dataset.island;
+    let loaded = false;
+    const load = () => {
+      if (loaded) return;
+      loaded = true;
+      const module = document.createElement('script');
+      module.type = 'module';
+      module.src = src;
+      document.head.appendChild(module);
+    };
+    requestAnimationFrame(() => requestAnimationFrame(load));
+    setTimeout(load, 1000);
+  })(document.currentScript);
+</script>

@@ -45,7 +45,8 @@ describe.each(PAGES)('the $name shell', ({ component, path, heading, name }) => 
     expect(html).toContain('id="sim-tools"');
     expect(html).toContain(`data-sim-tool="${name}"`);
     expect(html).toContain('href="/sim-tools-island.css"');
-    expect(html).toContain('src="/sim-tools-island.js"');
+    expect(html).toContain('data-island="/sim-tools-island.js"');
+    expect(html).not.toContain('src="/sim-tools-island.js"');
   });
 
   it('renders its heading and its own skeleton before the island, so nothing shifts', async () => {

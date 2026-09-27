@@ -44,7 +44,9 @@ describe('the sim shell', () => {
     expect(html).toContain('id="sim"');
     expect(html).toContain('data-sim-mount');
     expect(html).toContain('href="/sim-island.css"');
-    expect(html).toContain('src="/sim-island.js"');
+    // Loaded by IslandScript.astro after the first paint, so no plain module tag.
+    expect(html).toContain('data-island="/sim-island.js"');
+    expect(html).not.toContain('src="/sim-island.js"');
   });
 
   it('says what the page needs and offers the planner when there is no JavaScript', async () => {

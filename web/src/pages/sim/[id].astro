@@ -10,6 +10,7 @@ import fixtureResult from '../../fixtures/sim/result.json';
 import { SIM_SAVED_SKELETON_HTML } from '../../lib/sim/skeleton';
 import ScopeNote from '../../components/sim/ScopeNote.astro';
 import SimTabs from '../../components/sim/SimTabs.astro';
+import IslandScript from '../../components/IslandScript.astro';
 
 export function getStaticPaths() {
   return fixtureSimPaths();
@@ -77,6 +78,6 @@ const inline = id === FIXTURE_SIM_ID ? JSON.stringify(fixtureResult) : undefined
         <Fragment set:html={SIM_SAVED_SKELETON_HTML} />
       </div>
     </div>
-    <script type="module" src="/sim-island.js"></script>
+    <IslandScript src="/sim-island.js" />
   </main>
 </Base>

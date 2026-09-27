@@ -5,6 +5,7 @@ import { REPORT_SKELETON_HTML } from '../lib/report/skeleton';
 // the head values rewritten from GET /v1/reports/{id}. It carries no report data: the
 // island reads the id out of the path and fetches the rest.
 import Base from '../layouts/Base.astro';
+import IslandScript from '../components/IslandScript.astro';
 ---
 
 <Base
@@ -29,6 +30,6 @@ import Base from '../layouts/Base.astro';
         </p>
       </noscript>
     </div>
-    <script type="module" src="/report-island.js"></script>
+    <IslandScript src="/report-island.js" />
   </main>
 </Base>

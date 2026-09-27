@@ -13,6 +13,7 @@ import {
 } from '../../lib/sim/spec-skeleton';
 import ScopeNote from '../../components/sim/ScopeNote.astro';
 import SimTabs from '../../components/sim/SimTabs.astro';
+import IslandScript from '../../components/IslandScript.astro';
 ---
 
 <Base
@@ -87,6 +88,6 @@ import SimTabs from '../../components/sim/SimTabs.astro';
         </p>
       </noscript>
     </div>
-    <script type="module" src="/sim-island.js"></script>
+    <IslandScript src="/sim-island.js" />
   </main>
 </Base>
