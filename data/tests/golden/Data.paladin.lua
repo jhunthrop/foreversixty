@@ -1,7 +1,6 @@
 ["paladin"] = {
 			tabs = {
 				{ name = "Holy", talents = {
-					{ name = "Improved Holy Strike", tier = 1, column = 1, maxRank = 2, node = 105328 },
 					{ name = "Divine Strength", tier = 1, column = 2, maxRank = 5, node = 105639 },
 					{ name = "Divine Intellect", tier = 1, column = 3, maxRank = 5, node = 105332 },
 					{ name = "Healing Light", tier = 2, column = 1, maxRank = 3, node = 105333 },
@@ -50,7 +49,6 @@
 					{ name = "Pursuit of Justice", tier = 3, column = 4, maxRank = 2, node = 105699 },
 					{ name = "Eye for an Eye", tier = 4, column = 1, maxRank = 2, node = 105698 },
 					{ name = "Sacred Arbiter", tier = 4, column = 3, maxRank = 1, node = 105700 },
-					{ name = "Crusade", tier = 4, column = 4, maxRank = 2, node = 110883 },
 					{ name = "Two-Handed Weapon Specialization", tier = 5, column = 1, maxRank = 3, node = 105697 },
 					{ name = "Vengeance", tier = 5, column = 2, maxRank = 3, node = 105693 },
 					{ name = "Repentance", tier = 5, column = 3, maxRank = 1, node = 105694 },

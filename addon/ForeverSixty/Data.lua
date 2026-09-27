@@ -4,7 +4,7 @@ local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 
 ns.Data = {
-	build = "1.60.1.69893",
+	build = "1.60.1.70009",
 	classes = {
 		["druid"] = {
 			tabs = {
@@ -37,9 +37,9 @@ ns.Data = {
 					{ name = "Feral Charge", tier = 3, column = 3, maxRank = 1, node = 104944 },
 					{ name = "Sharpened Claws", tier = 3, column = 4, maxRank = 2, node = 104946 },
 					{ name = "Shredding Attacks", tier = 4, column = 1, maxRank = 3, node = 104945 },
-					{ name = "Mangle", tier = 4, column = 2, maxRank = 1, node = 104949 },
+					{ name = "Primal Bite", tier = 4, column = 2, maxRank = 1, node = 104949 },
 					{ name = "Predatory Strikes", tier = 4, column = 3, maxRank = 3, node = 104952 },
-					{ name = "Primal Fury", tier = 4, column = 4, maxRank = 2, node = 104947 },
+					{ name = "Blood Frenzy", tier = 4, column = 4, maxRank = 2, node = 104947 },
 					{ name = "Predatory Instincts", tier = 5, column = 1, maxRank = 2, node = 104950 },
 					{ name = "Leader of the Pack", tier = 5, column = 2, maxRank = 1, node = 104955 },
 					{ name = "King of the Jungle", tier = 5, column = 4, maxRank = 3, node = 104951 },
@@ -195,7 +195,6 @@ ns.Data = {
 		["paladin"] = {
 			tabs = {
 				{ name = "Holy", talents = {
-					{ name = "Improved Holy Strike", tier = 1, column = 1, maxRank = 2, node = 105328 },
 					{ name = "Divine Strength", tier = 1, column = 2, maxRank = 5, node = 105639 },
 					{ name = "Divine Intellect", tier = 1, column = 3, maxRank = 5, node = 105332 },
 					{ name = "Healing Light", tier = 2, column = 1, maxRank = 3, node = 105333 },
@@ -244,7 +243,6 @@ ns.Data = {
 					{ name = "Pursuit of Justice", tier = 3, column = 4, maxRank = 2, node = 105699 },
 					{ name = "Eye for an Eye", tier = 4, column = 1, maxRank = 2, node = 105698 },
 					{ name = "Sacred Arbiter", tier = 4, column = 3, maxRank = 1, node = 105700 },
-					{ name = "Crusade", tier = 4, column = 4, maxRank = 2, node = 110883 },
 					{ name = "Two-Handed Weapon Specialization", tier = 5, column = 1, maxRank = 3, node = 105697 },
 					{ name = "Vengeance", tier = 5, column = 2, maxRank = 3, node = 105693 },
 					{ name = "Repentance", tier = 5, column = 3, maxRank = 1, node = 105694 },
@@ -390,14 +388,14 @@ ns.Data = {
 					{ name = "Call of Flame", tier = 2, column = 3, maxRank = 3, node = 104770 },
 					{ name = "Elemental Devastation", tier = 2, column = 4, maxRank = 3, node = 104769 },
 					{ name = "Elemental Focus", tier = 3, column = 2, maxRank = 1, node = 104768 },
-					{ name = "Elemental Fury", tier = 3, column = 3, maxRank = 5, node = 104766 },
+					{ name = "Elemental Alacrity", tier = 3, column = 3, maxRank = 3, node = 104765 },
 					{ name = "Improved Fire Nova", tier = 4, column = 1, maxRank = 2, node = 104764 },
 					{ name = "Eye of the Storm", tier = 4, column = 2, maxRank = 3, node = 104763 },
 					{ name = "Call of Thunder", tier = 4, column = 3, maxRank = 1, node = 104762 },
 					{ name = "Elemental Reach", tier = 5, column = 1, maxRank = 2, node = 104761 },
 					{ name = "Lightning Overload", tier = 5, column = 2, maxRank = 3, node = 104759 },
 					{ name = "Earthbound", tier = 5, column = 4, maxRank = 1, node = 104760 },
-					{ name = "Elemental Alacrity", tier = 6, column = 3, maxRank = 3, node = 104765 },
+					{ name = "Elemental Fury", tier = 6, column = 3, maxRank = 5, node = 104766 },
 					{ name = "Lava Burst", tier = 7, column = 2, maxRank = 1, node = 104758 },
 				} },
 				{ name = "Enhancement", talents = {
