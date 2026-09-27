@@ -153,6 +153,21 @@ describe("Export", function()
 		assert.is_truthy(assert(Export.string(DATA)):find("|professions=cooking", 1, true))
 	end)
 
+	it("exports the character under first and last name on the Forever client", function()
+		character({})
+		_G.UnitName = function()
+			return "Bow"
+		end
+		_G.UnitFullName = function()
+			return "Bow", "Jackzon"
+		end
+		local info = Export.characterInfo()
+		assert.are.equal("Bow Jackzon", info.name)
+		local code = assert(Export.string(DATA))
+		_G.UnitFullName = nil
+		assert.is_truthy(code:find("|who=Bow%20Jackzon:", 1, true), code)
+	end)
+
 	it("returns nil from guildInfo when the character has no guild", function()
 		character({})
 		assert.is_nil(Export.guildInfo())

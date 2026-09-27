@@ -188,11 +188,7 @@ local function addUnitLines(tooltip, unit)
 	if type(UnitIsPlayer) == "function" and not UnitIsPlayer(unit) then
 		return
 	end
-	local name = type(UnitName) == "function" and select(1, UnitName(unit)) or nil
-	local realm = type(UnitName) == "function" and select(2, UnitName(unit)) or nil
-	if realm == "" then
-		realm = nil
-	end
+	local name, realm = Compat.unitName(unit)
 	local card = Ratings.forCharacter(name, realm)
 	if card == nil then
 		return

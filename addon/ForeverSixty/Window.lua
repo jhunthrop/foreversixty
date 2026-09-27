@@ -18,6 +18,7 @@ local Cards = ns.Cards or require("Cards")
 local Prefs = ns.Prefs or require("Prefs")
 local Talents = ns.Talents or require("Talents")
 local Gear = ns.Gear or require("Gear")
+local Compat = ns.Compat or require("Compat")
 local Tracker = ns.Tracker or require("Tracker")
 local MinimapButton = ns.Minimap or require("Minimap")
 
@@ -121,7 +122,7 @@ function Window.headerModel(data)
 		and Gear.specOf(data, classSlug, Talents.readRanks(data)) or nil
 	local warning = Window.mismatchLine(data)
 	return {
-		name = type(UnitName) == "function" and UnitName("player") or "",
+		name = Compat.playerName() or "",
 		classToken = select(2, UnitClass("player")),
 		levelLine = levelLine(),
 		status = warning ~= nil and L.statusOutOfDate or string.format(L.statusDataBuild, data.build),

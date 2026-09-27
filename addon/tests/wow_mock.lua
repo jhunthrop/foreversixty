@@ -445,7 +445,8 @@ function mock.uninstall()
 		"C_Traits", "C_ClassTalents", "GetInventoryItemLink", "GetContainerNumSlots",
 		"GetContainerItemLink", "C_Container", "GetItemStats", "GetItemInfoInstant",
 		"GetItemInfo", "GetItemIcon", "UnitClass", "UnitRace", "UnitLevel", "UnitName",
-		"GetRealmName", "GetCurrentRegion", "GetProfessions", "GetProfessionInfo", "GetGuildInfo",
+		"UnitFullName", "GetNormalizedRealmName", "GetRealmName", "GetCurrentRegion",
+		"GetProfessions", "GetProfessionInfo", "GetGuildInfo",
 		"GetBuildInfo", "SlashCmdList", "UIParent", "CreateFrame", "Minimap",
 		"GameTooltip", "UISpecialFrames", "C_Timer", "date",
 		-- Globals an example may set on _G directly rather than through

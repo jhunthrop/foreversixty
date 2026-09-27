@@ -226,13 +226,11 @@ function Export.guildInfo()
 end
 
 --- Who this is: the site shows the name on the character it loads from the
---- string, instead of the class alone. nil in a test double without UnitName.
+--- string, instead of the class alone. The name is first and last where the
+--- client has both (Compat.playerName). nil in a test double without UnitName.
 function Export.characterInfo()
-	if type(UnitName) ~= "function" then
-		return nil
-	end
-	local name = UnitName("player")
-	if name == nil or name == "" then
+	local name = Compat.playerName()
+	if name == nil then
 		return nil
 	end
 	return { name = name, realm = GetRealmName() or "" }
@@ -279,7 +277,7 @@ function Export.save(data)
 	-- fallback only fires in a test double (wow_mock.lua does not stub
 	-- UnitName) or a future client that drops the API, so the record is
 	-- still written rather than erroring.
-	local name = UnitName and UnitName("player") or "player"
+	local name = Compat.playerName() or "player"
 	local realm = GetRealmName() or ""
 	local region = Export.REGION_NAMES[GetCurrentRegion and GetCurrentRegion() or 0] or ""
 	ForeverSixtyDB = ForeverSixtyDB or {}

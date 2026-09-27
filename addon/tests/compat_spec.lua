@@ -86,4 +86,101 @@ describe("Compat", function()
 		}
 		assert.are.same({ ITEM_MOD_STRENGTH_SHORT = 10 }, Compat.itemStats("link"))
 	end)
+
+	describe("names", function()
+		local kept
+
+		before_each(function()
+			kept = {
+				UnitName = _G.UnitName,
+				UnitFullName = _G.UnitFullName,
+				GetRealmName = _G.GetRealmName,
+				GetNormalizedRealmName = _G.GetNormalizedRealmName,
+			}
+			_G.GetRealmName = function()
+				return "Classic Beta PvP"
+			end
+			_G.GetNormalizedRealmName = nil
+		end)
+
+		after_each(function()
+			for name, value in pairs(kept) do
+				_G[name] = value
+			end
+		end)
+
+		it("joins first and last name on the Forever client, where UnitFullName's second value is the surname", function()
+			_G.UnitName = function()
+				return "Bow"
+			end
+			_G.UnitFullName = function()
+				return "Bow", "Jackzon"
+			end
+			assert.is_true(Compat.hasSurnames())
+			assert.are.equal("Bow Jackzon", Compat.playerName())
+		end)
+
+		it("keeps the first name alone where UnitFullName's second value is the realm", function()
+			_G.UnitName = function()
+				return "Thoradin"
+			end
+			_G.UnitFullName = function()
+				return "Thoradin", "ClassicBetaPvP"
+			end
+			assert.is_false(Compat.hasSurnames())
+			assert.are.equal("Thoradin", Compat.playerName())
+			_G.GetNormalizedRealmName = function()
+				return "Whitemane"
+			end
+			_G.UnitFullName = function()
+				return "Thoradin", "Whitemane"
+			end
+			assert.are.equal("Thoradin", Compat.playerName())
+		end)
+
+		it("does not double a full name the earlier beta client already gave UnitFullName", function()
+			_G.UnitName = function()
+				return "Obnoxious Yell"
+			end
+			_G.UnitFullName = function()
+				return "Obnoxious Yell", "Yell"
+			end
+			assert.are.equal("Obnoxious Yell", Compat.playerName())
+		end)
+
+		it("answers UnitName alone on a client without UnitFullName, and nil without either", function()
+			_G.UnitFullName = nil
+			_G.UnitName = function()
+				return "Thoradin"
+			end
+			assert.are.equal("Thoradin", Compat.playerName())
+			_G.UnitName = nil
+			assert.is_nil(Compat.playerName())
+		end)
+
+		it("reads another unit's surname as part of the name, not as a realm, on the Forever client", function()
+			_G.UnitFullName = function()
+				return "Bow", "Jackzon"
+			end
+			_G.UnitName = function(unit)
+				if unit == "player" then
+					return "Bow", ""
+				end
+				return "Offroad", "Hunt"
+			end
+			local name, realm = Compat.unitName("target")
+			assert.are.equal("Offroad Hunt", name)
+			assert.is_nil(realm)
+		end)
+
+		it("keeps another unit's realm on a client without surnames", function()
+			_G.UnitFullName = nil
+			_G.UnitName = function()
+				return "Bob", "Whitemane"
+			end
+			local name, realm = Compat.unitName("target")
+			assert.are.equal("Bob", name)
+			assert.are.equal("Whitemane", realm)
+		end)
+	end)
 end)

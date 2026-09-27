@@ -58,5 +58,66 @@ function Compat.itemIcon(item)
 	return call("GetItemIconByID", item) or call("GetItemIcon", item)
 end
 
+--- Whether `value` is this client's own realm in any spelling the API hands
+--- out: GetRealmName ("Classic Beta PvP"), GetNormalizedRealmName
+--- ("ClassicBetaPvP"), or the display name with its spaces and hyphens gone.
+local function isOwnRealm(value)
+	local realm = type(GetRealmName) == "function" and GetRealmName() or nil
+	if realm ~= nil and (value == realm or value == (realm:gsub("[%s%-]", ""))) then
+		return true
+	end
+	local normalized = type(GetNormalizedRealmName) == "function" and GetNormalizedRealmName() or nil
+	return normalized ~= nil and value == normalized
+end
+
+--- Whether this client gives characters a last name, in the slot other
+--- clients use for the realm. Forever's client (from 1.60.1.70009) answers
+--- UnitFullName("player") with first name, last name and UnitName("player")
+--- with the first name alone; every other client answers UnitFullName with
+--- name, normalized realm.
+function Compat.hasSurnames()
+	if type(UnitFullName) ~= "function" then
+		return false
+	end
+	local first, second = UnitFullName("player")
+	return type(first) == "string" and first ~= ""
+		and type(second) == "string" and second ~= "" and not isOwnRealm(second)
+end
+
+--- The player's full name, last name included on a client that has them, or
+--- nil where the client answers nothing (a test double without UnitName).
+function Compat.playerName()
+	local name = type(UnitName) == "function" and UnitName("player") or nil
+	if type(name) ~= "string" or name == "" then
+		return nil
+	end
+	if not Compat.hasSurnames() then
+		return name
+	end
+	local first, surname = UnitFullName("player")
+	-- The beta build before 70009 already put both names in the first return.
+	if first:find(" ", 1, true) then
+		return first
+	end
+	return first .. " " .. surname
+end
+
+--- A unit's name and realm as the rest of the addon reads them: on a client
+--- with last names the second value UnitName gives is the last name, not a
+--- realm, so it joins the name and the realm comes back nil.
+function Compat.unitName(unit)
+	if type(UnitName) ~= "function" then
+		return nil, nil
+	end
+	local name, second = UnitName(unit)
+	if second == "" then
+		second = nil
+	end
+	if name ~= nil and second ~= nil and Compat.hasSurnames() then
+		return name .. " " .. second, nil
+	end
+	return name, second
+end
+
 ns.Compat = Compat
 return Compat
