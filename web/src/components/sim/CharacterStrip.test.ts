@@ -16,6 +16,7 @@ const base: SimCharacter = {
   class_slug: 'warrior',
   race_slug: 'orc',
   talent_level: 60,
+  level: 60,
   tree_version: '1.15.9.69722',
   point_order: [],
   gear: {},
@@ -34,20 +35,52 @@ const requiredProps = { items: new Map(), onchange: () => {}, onrace: () => {} }
 
 // 30 points is well under the 51 a full build spends -- talent_level 39 (BASE_LEVEL 9 + 30)
 // is what characterFromFs1/fromBuildDraft would actually stamp for this many points, but
-// this test only needs it under SIM_LEVEL, which is the component's own gate.
+// this test only needs it under `level`, which is the component's own gate. `base.level`
+// is MAX_LEVEL (60), the same as a hand-built planner build's own level (design 6), so
+// this reproduces exactly the case the note exists for: a planner build with fewer points
+// than a full 60 would have, still simulated at 60.
 const underLeveled: SimCharacter = { ...base, talent_level: 39, point_order: new Array(30).fill(0) };
 const fullBuild: SimCharacter = { ...base, talent_level: 60, point_order: new Array(51).fill(0) };
 
-describe('CharacterStrip’s honest "simmed at 60" note', () => {
-  it('says the character is simmed at 60 when it has fewer than 51 points', () => {
+describe('CharacterStrip’s honest "simmed at a level" note', () => {
+  it('says the character is simmed at its own level when it has fewer than 51 points', () => {
     const { body } = render(CharacterStrip, { props: { character: underLeveled, ...requiredProps } });
-    expect(body).toContain(handoffCopy.simmedAtSixty);
+    expect(body).toContain(handoffCopy.simmedAtLevel(60));
     expect(body).toContain('30 talent points');
   });
 
   it('says nothing extra for a full 51-point build', () => {
     const { body } = render(CharacterStrip, { props: { character: fullBuild, ...requiredProps } });
-    expect(body).not.toContain(handoffCopy.simmedAtSixty);
+    expect(body).not.toContain(handoffCopy.simmedAtLevel(60));
+  });
+
+  // Level-aware sim design (2026-09-27): an addon export with no level section sets
+  // `level` to the same talent-implied number `talent_level` already is (character.ts's
+  // own `characterFromFs1`), so there is no discrepancy left between what the strip shows
+  // and what actually gets simulated -- the note would be false if shown here.
+  it('says nothing when the character’s own level already matches its talent spend', () => {
+    const noExportLevel: SimCharacter = {
+      ...base,
+      talent_level: 39,
+      level: 39,
+      point_order: new Array(30).fill(0),
+    };
+    const { body } = render(CharacterStrip, { props: { character: noExportLevel, ...requiredProps } });
+    expect(body).not.toContain('Simmed as a level');
+  });
+
+  // An export that DOES carry a level, above what its talent spend implies (a respec, or
+  // simply fewer points than that level could have), still gets the honest note -- now
+  // naming that level rather than always 60.
+  it('names the export’s own level, not always 60, when there is a real discrepancy', () => {
+    const respecced: SimCharacter = {
+      ...base,
+      talent_level: 22,
+      level: 45,
+      point_order: new Array(13).fill(0),
+    };
+    const { body } = render(CharacterStrip, { props: { character: respecced, ...requiredProps } });
+    expect(body).toContain(handoffCopy.simmedAtLevel(45));
   });
 });
 

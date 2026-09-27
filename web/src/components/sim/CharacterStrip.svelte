@@ -21,7 +21,7 @@
     type TalentFile,
   } from '../../lib/planner/types';
   import type { SimCharacter } from '../../lib/sim/character';
-  import { SIM_LEVEL, needsRace, plannerHrefFor } from '../../lib/sim/character';
+  import { needsRace, plannerHrefFor } from '../../lib/sim/character';
   import { simCopy } from '../../lib/sim/copy';
   import { handoffCopy } from '../../lib/sim/handoff-copy';
   import { sourcePill } from '../../lib/sim/sources';
@@ -101,20 +101,24 @@
   // the descriptor asks instead of asserting. Rendering an empty string there would be the
   // page quietly claiming a raceless character, which is the thing Task 7 refuses to do.
   const pending = $derived(needsRace(character));
-  // A build with fewer points than SIM_LEVEL - BASE_LEVEL implies is a part-levelled
-  // character: the engine still sims it at 60 (there is no level control on this page), so
-  // the line says how many points it actually spends rather than letting "· 60" imply a
-  // full-levelled build that ran the tree dry -- and says so honestly (Task 9, spec
-  // section 1) rather than silently relabelling a sub-51-point build as a level 60 one.
+  // A build with fewer points than character.level - BASE_LEVEL implies is a part-levelled
+  // character: `character.level` is what actually gets simulated (there is no level
+  // control on this page), so the line says how many points it actually spends rather than
+  // letting "· 60" imply a full-levelled build that ran the tree dry -- and says so
+  // honestly (Task 9, spec section 1; the level-aware sim design, 2026-09-27, generalised
+  // this from a flat SIM_LEVEL comparison to the character's own level, since a hand-built
+  // planner build is the only source that still always simulates at MAX_LEVEL regardless
+  // of points -- an addon export with no level section now sets `level` to this same
+  // talent-implied number, so there is no discrepancy left to call out for it).
   const levelSuffix = $derived(
-    character.talent_level < SIM_LEVEL
-      ? ` · ${character.point_order.length} talent points (${handoffCopy.simmedAtSixty})`
+    character.talent_level < character.level
+      ? ` · ${character.point_order.length} talent points (${handoffCopy.simmedAtLevel(character.level)})`
       : '',
   );
   const descriptor = $derived(
     (pending
-      ? `${specLabel(character.spec)} · ${SIM_LEVEL}`
-      : `${character.race_slug.replace(/-/g, ' ')} ${specLabel(character.spec)} · ${SIM_LEVEL}`) +
+      ? `${specLabel(character.spec)} · ${character.level}`
+      : `${character.race_slug.replace(/-/g, ' ')} ${specLabel(character.spec)} · ${character.level}`) +
       levelSuffix,
   );
   const split = $derived(

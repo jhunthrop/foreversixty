@@ -80,6 +80,9 @@ local L = {
 	codecOrderCell = "That code names talent cell %s, which is not on any tree.",
 	codecStatPair = "That code has an unreadable stat: %s.",
 	codecGuildRank = "That code has an unreadable guild rank: %s.",
+	-- Same wording as the site's decoder (fs1.ts), digits only 1..60: a malformed
+	-- level refuses the whole code the same way a malformed guild rank does.
+	codecLevel = "That code has an unreadable level: %s.",
 	-- FSB1 only: an empty data build or class field. FS1 accepts an empty
 	-- field in either position (parity with the shipped site decoder).
 	codecEmptyField = "That code's %s field is empty.",

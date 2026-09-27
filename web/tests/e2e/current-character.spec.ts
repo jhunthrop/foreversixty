@@ -56,7 +56,7 @@ test.describe('current character', () => {
   test('the merged scope caveat is on /sim', async ({ page }) => {
     await page.goto('/sim');
     await expect(page.getByTestId('sim-scope-note')).toHaveText(
-      'Damage specs at level 60; healing and tanking specs are not simulated yet.',
+      'Damage specs are simulated; healing and tanking specs are not simulated yet.',
     );
   });
 

@@ -251,6 +251,10 @@ function Export.string(data)
 		dataBuild = data.build,
 		classSlug = classSlug,
 		raceSlug = raceSlugOf(),
+		-- The level-aware sim design (2026-09-27): the site no longer has to guess this
+		-- from talent points. UnitLevel always answers in the real client; wow_mock's own
+		-- default (state.level or 60) keeps every existing test double answering too.
+		level = UnitLevel("player"),
 		treeRanks = treeRanks,
 		gearSlots = Export.equippedSlots(),
 		bags = Export.itemsInBags(Export.CARRIED_BAGS),

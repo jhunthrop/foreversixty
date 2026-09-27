@@ -298,6 +298,64 @@
       }
     },
     {
+      "name": "version 2, a level section",
+      "code": "FS1:1.60.1.69893:warrior:tauren:0/0/0:|level=45",
+      "build": {
+        "dataBuild": "1.60.1.69893",
+        "classSlug": "warrior",
+        "raceSlug": "tauren",
+        "treeRanks": [
+          [
+            0
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        "gearSlots": [],
+        "bags": [],
+        "bank": [],
+        "sets": [],
+        "loadouts": [],
+        "professions": [],
+        "ignored": [],
+        "level": 45
+      }
+    },
+    {
+      "name": "version 2, level alongside other sections",
+      "code": "FS1:1.60.1.69893:priest:human:0/0/5:|level=32|professions=enchanting",
+      "build": {
+        "dataBuild": "1.60.1.69893",
+        "classSlug": "priest",
+        "raceSlug": "human",
+        "treeRanks": [
+          [
+            0
+          ],
+          [
+            0
+          ],
+          [
+            5
+          ]
+        ],
+        "gearSlots": [],
+        "bags": [],
+        "bank": [],
+        "sets": [],
+        "loadouts": [],
+        "professions": [
+          "enchanting"
+        ],
+        "ignored": [],
+        "level": 32
+      }
+    },
+    {
       "name": "version 2, an unknown section is ignored and named",
       "code": "FS1:1.60.1.69893:priest:human:0/0/5:|pets=1,2",
       "build": {
@@ -367,6 +425,21 @@
       "name": "a non-numeric guild rank",
       "code": "FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:officer",
       "message": "That code has an unreadable guild rank: officer."
+    },
+    {
+      "name": "a non-numeric level",
+      "code": "FS1:1.60.1.69893:warrior:tauren:0/0/0:|level=sixty",
+      "message": "That code has an unreadable level: sixty."
+    },
+    {
+      "name": "a level of zero",
+      "code": "FS1:1.60.1.69893:warrior:tauren:0/0/0:|level=0",
+      "message": "That code has an unreadable level: 0."
+    },
+    {
+      "name": "a level over 60",
+      "code": "FS1:1.60.1.69893:warrior:tauren:0/0/0:|level=61",
+      "message": "That code has an unreadable level: 61."
     }
   ],
   "fsb1": [

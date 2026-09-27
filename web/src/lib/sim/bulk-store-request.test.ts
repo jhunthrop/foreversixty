@@ -26,6 +26,7 @@ function character(spec: string): SimCharacter {
     class_slug: 'warrior',
     race_slug: 'orc',
     talent_level: 60,
+    level: 60,
     tree_version: 'test',
     point_order: [],
     gear: {},

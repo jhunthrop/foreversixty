@@ -1,6 +1,7 @@
 // durationLabel and encounterLabel live in encounter.ts, not here: the Worker's unfurl copy
 // needs them too and it is built by a group that runs in parallel with this one. They are
 // re-exported so every caller has one import for "the settings vocabulary".
+import { MAX_LEVEL } from './character';
 import { durationLabel, encounterLabel } from './encounter';
 import { referenceStatOf } from './spec-label';
 import { applyFightStyle, DEFAULT_STYLE_ID, type FightStyleId } from './styles';
@@ -35,23 +36,50 @@ export const MAX_VARIATION = 0.3;
 export const VARIATIONS: readonly number[] = [0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3];
 
 export const TARGET_LEVELS: readonly number[] = [60, 61, 62, 63];
-export const DEFAULT_TARGET_LEVEL = 63;
 
 /**
- * Contract A8: the engine's own 3,731 at level 63 and a linear fall to the level-60
- * figure. `target_armor` ABSENT is what the request carries by default and means "the
- * level's preset" (2026-09-21 result-page review, Defect 3 -- `0` used to mean the same
- * thing, which made a typed 0 and a cleared field the same request) -- these numbers exist
- * so the override control can say what it is overriding rather than showing an empty
- * field. A better source replaces the three interior numbers on the Go side and here
- * together.
+ * The level-aware sim design (2026-09-27), design step 5: the default target is 3 above
+ * the character's own level, not a flat 63 -- 63 was always just this rule applied to a
+ * character pinned at MAX_LEVEL, which every character used to be. `sim/api/envelope.go`
+ * computes the same offset on the Go side once lane T2 wires a request's default there.
  */
-export const TARGET_ARMOR_BY_LEVEL: Record<number, number> = {
-  60: 3300,
-  61: 3444,
-  62: 3588,
-  63: 3731,
-};
+export function defaultTargetLevel(characterLevel: number): number {
+  return characterLevel + 3;
+}
+
+/**
+ * The plain constant every caller with no character in scope still uses (`DEFAULT_ENCOUNTER`,
+ * the settings bar's own fallback before a character is picked) -- `defaultTargetLevel`
+ * applied to MAX_LEVEL, unchanged in value (63) from before this design.
+ */
+export const DEFAULT_TARGET_LEVEL = defaultTargetLevel(MAX_LEVEL);
+
+/**
+ * Contract A8's own rule -- the engine's boss preset, 3,731 at level 63, and a linear fall
+ * to the level-60 figure, 3,300 (sim/api/envelope.go's own comment; ratified in
+ * docs/superpowers/specs/2026-09-19-simulator-parity-interfaces.md, A8) -- extended down
+ * through level 1 for a levelling character's target (design step 5: "the target armour
+ * table extended by level"). This repository has no per-level source for a levelling
+ * mob's own armour (the wowhead payload the level-aware design names for player base stats
+ * carries nothing about NPCs), so this continues contract A8's already-documented rate
+ * rather than inventing an unrelated curve, floored at zero once the line would otherwise
+ * go negative -- a levelling-zone mob's armor being negligible next to a raid boss's is the
+ * one fact about it this file can state without a better source, which "a better source
+ * replaces the three interior numbers" (A8) already anticipated needing.
+ */
+const ARMOR_LEVEL_60 = 3300;
+const ARMOR_BOSS_LEVEL = 63;
+const ARMOR_BOSS = 3731;
+function armorForLevel(level: number): number {
+  const raised = ((level - 60) * (ARMOR_BOSS - ARMOR_LEVEL_60)) / (ARMOR_BOSS_LEVEL - 60);
+  return Math.max(0, Math.ceil(ARMOR_LEVEL_60 + raised));
+}
+export const TARGET_ARMOR_BY_LEVEL: Record<number, number> = Object.fromEntries(
+  Array.from({ length: MAX_LEVEL + 3 }, (_, index) => index + 1).map((level) => [
+    level,
+    armorForLevel(level),
+  ]),
+);
 
 /** A generous bound on the override field; the presets above are far below it. */
 export const MAX_TARGET_ARMOR = 20_000;

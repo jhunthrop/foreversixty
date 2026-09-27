@@ -17,7 +17,7 @@
   import { fetchSpecs } from '../../lib/sim/api';
   import { requestKind, type BulkResult, type WeightsResult } from '../../lib/sim/bulk-types';
   import {
-    SIM_LEVEL,
+    MAX_LEVEL,
     plannerHrefForSpec,
     talentPointsFromString,
     type SimCharacter,
@@ -90,7 +90,11 @@
     spec: result.request.spec,
     class_slug: result.request.character.class,
     race_slug: result.request.character.race,
-    talent_level: SIM_LEVEL,
+    talent_level: MAX_LEVEL,
+    // The stored request's own level (design 6): a saved sim's own CharacterSpec already
+    // carries whatever level it actually ran at, so the strip shows that rather than
+    // asserting MAX_LEVEL for every saved sim regardless of what it was.
+    level: result.request.character.level,
     tree_version: activeBuild.build,
     // Genuinely unknowable here, same as a combat-log character (sources.ts): a saved sim's
     // stored request carries the engine's final talent STRING, not the click order that

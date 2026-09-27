@@ -19,6 +19,10 @@ const FS1_CODES = [
   ['version 2, a named set and a named loadout', 'FS1:1.60.1.69893:druid:night-elf:5/0/0:head=12640|sets=Tank%3Bmain=head=12640|loadouts=Deep%20Feral=0/553/0'],
   ['version 2, professions', 'FS1:1.60.1.69893:priest:human:0/0/5:|professions=enchanting,tailoring'],
   ['version 2, guild', 'FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:2'],
+  // Level-aware sim design (2026-09-27): `level=<n>`, from UnitLevel("player"), first
+  // among the sections (ahead of bags/bank/etc, the same way the head names class/race).
+  ['version 2, a level section', 'FS1:1.60.1.69893:warrior:tauren:0/0/0:|level=45'],
+  ['version 2, level alongside other sections', 'FS1:1.60.1.69893:priest:human:0/0/5:|level=32|professions=enchanting'],
   ['version 2, an unknown section is ignored and named', 'FS1:1.60.1.69893:priest:human:0/0/5:|pets=1,2'],
 ];
 
@@ -31,6 +35,9 @@ const INVALID = [
   ['a non-numeric item id', 'FS1:1.60.1.69893:paladin:human:0/0/0:head=12640abc'],
   ['too few fields', 'FS1:1.60.1.69893:paladin'],
   ['a non-numeric guild rank', 'FS1:1.60.1.69893:warrior:tauren:0/0/0:|guild=Iron%20Vanguard:officer'],
+  ['a non-numeric level', 'FS1:1.60.1.69893:warrior:tauren:0/0/0:|level=sixty'],
+  ['a level of zero', 'FS1:1.60.1.69893:warrior:tauren:0/0/0:|level=0'],
+  ['a level over 60', 'FS1:1.60.1.69893:warrior:tauren:0/0/0:|level=61'],
 ];
 
 // The FSB1 grammar (design "Formats"), the only statement of it that both lanes read:

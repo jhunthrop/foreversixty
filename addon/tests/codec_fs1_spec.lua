@@ -34,6 +34,9 @@ local REFUSALS = {
 	["a non-numeric item id"] = string.format(L.codecGearEntry, "head=12640abc"),
 	["too few fields"] = L.codecShort,
 	["a non-numeric guild rank"] = string.format(L.codecGuildRank, "officer"),
+	["a non-numeric level"] = string.format(L.codecLevel, "sixty"),
+	["a level of zero"] = string.format(L.codecLevel, "0"),
+	["a level over 60"] = string.format(L.codecLevel, "61"),
 }
 
 describe("Codec FS1", function()
@@ -64,6 +67,7 @@ describe("Codec FS1", function()
 				assert.are.same(vector.build.professions, build.professions, vector.name)
 				assert.are.same(vector.build.guild, build.guild, vector.name)
 				assert.are.same(vector.build.ignored, build.ignored, vector.name)
+				assert.are.same(vector.build.level, build.level, vector.name)
 			end
 		end)
 
@@ -255,6 +259,34 @@ describe("Codec FS1", function()
 				gearSlots = {},
 			})
 			assert.is_nil(code:find("guild=", 1, true))
+		end)
+
+		it("puts the level section first, ahead of every other section, and round-trips it", function()
+			local code = Codec.encodeFS1({
+				dataBuild = "1",
+				classSlug = "paladin",
+				raceSlug = "human",
+				treeRanks = { {}, {}, {} },
+				gearSlots = {},
+				professions = { "enchanting" },
+				level = 45,
+			})
+			assert.are.equal("FS1:1:paladin:human:0/0/0:|level=45|professions=enchanting", code)
+			local build = assert(Codec.decodeFS1(code))
+			assert.are.equal(45, build.level)
+		end)
+
+		it("writes no level section when build.level is nil", function()
+			local code = Codec.encodeFS1({
+				dataBuild = "1",
+				classSlug = "paladin",
+				raceSlug = "human",
+				treeRanks = { {}, {}, {} },
+				gearSlots = {},
+			})
+			assert.is_nil(code:find("level=", 1, true))
+			local build = assert(Codec.decodeFS1(code))
+			assert.is_nil(build.level)
 		end)
 	end)
 end)
