@@ -322,6 +322,9 @@ test('the spine bar is the only current-character band on /sim, above the landin
   await page.context().addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
   await page.goto('/sim');
+  // The shell carries a bar of the same test id until the island mounts (after the first
+  // paint, IslandScript.astro); measure the island's, so wait for the list it renders.
+  await expect(page.getByTestId('sim-landing')).toBeVisible();
   const bar = page.getByTestId('current-character-bar');
   await expect(bar).toBeVisible();
   await expect(page.getByTestId('sim-chip-slot')).toHaveCount(0);
