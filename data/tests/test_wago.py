@@ -65,6 +65,18 @@ def test_download_table_writes_empty_csv_when_table_missing_for_product(tmp_path
     assert path.read_text() == "ID\n"
 
 
+def test_download_table_treats_wagos_400_for_an_optional_table_as_absent(tmp_path: Path):
+    """1.60.1.70009 answers 400, not 404, for JournalInstance (2026-09-27)."""
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(400, json={"errors": "Table not found."})
+
+    client = httpx.Client(transport=httpx.MockTransport(handler), base_url="https://wago.tools")
+    assert download_table("JournalInstance", "1.60.1.70009", tmp_path, client).read_text() == "ID\n"
+    with pytest.raises(SystemExit):
+        download_table("ItemSparse", "1.60.1.70009", tmp_path, client)
+
+
 def test_download_table_404_on_required_table_fails(tmp_path: Path):
     client = httpx.Client(
         transport=fake_transport([], missing_tables=frozenset({"ItemSparse"})),

@@ -119,6 +119,12 @@ OPTIONAL_TABLES = frozenset(
 )
 
 
+#: How wago answers for a table a build does not have: 404 for most, and 400 for the
+#: 1.60.1.70009 beta build's JournalInstance (2026-09-27). Both mean "no such table
+#: here", and both are tolerated only for OPTIONAL_TABLES.
+MISSING_TABLE_STATUSES = frozenset({400, 404})
+
+
 def latest_build(product: str, client: httpx.Client) -> str:
     r = client.get("/api/builds")
     r.raise_for_status()
@@ -135,7 +141,7 @@ def download_table(table: str, build: str, dest: Path, client: httpx.Client) -> 
     r = client.get(f"/db2/{table}/csv", params={"build": build}, timeout=120)
     dest.mkdir(parents=True, exist_ok=True)
     path = dest / f"{table}.csv"
-    if r.status_code == 404:
+    if r.status_code in MISSING_TABLE_STATUSES:
         if table not in OPTIONAL_TABLES:
             raise SystemExit(f"{table} not found for build {build}; check TABLES for a typo")
         # Allowlisted: this table is known to be absent for some products/builds.
