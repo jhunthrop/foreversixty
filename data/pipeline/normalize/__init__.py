@@ -85,6 +85,12 @@ def normalize_build(
     from pipeline.normalize.talents import flat_talents, normalize_talents
     from pipeline.normalize.trait_trees import build_trait_talent_trees
     from pipeline.normalize.traits import TraitDataError, TraitRows, has_trait_trees
+    from pipeline.normalize.wowhead import (
+        load_supplement,
+        merge_class_items,
+        merge_items,
+        merge_sets,
+    )
     from pipeline.normalize.zones import normalize_zones
     from pipeline.spelltext import ExtraRows, load_spell_text
 
@@ -109,7 +115,14 @@ def normalize_build(
     check_no_sockets(t("ItemSparse"), build)
     write_json(normalize_zones(t("AreaTable"), t("Map")), build_dir / "zones.json")
     write_json(normalize_dungeons(t("JournalInstance")), build_dir / "dungeons.json")
-    write_json(normalize_items(t("ItemSparse"), t("Item")), build_dir / "items.json")
+    client_items = normalize_items(t("ItemSparse"), t("Item"))
+    wowhead_supplement = load_supplement(build_dir, {item.id for item in client_items})
+    items = (
+        merge_items(client_items, wowhead_supplement)
+        if wowhead_supplement is not None
+        else client_items
+    )
+    write_json(items, build_dir / "items.json")
     write_json(normalize_spells(t("SpellName")), build_dir / "spells.json")
 
     # Phase 1 planner data. Both directories are rebuilt from scratch so a class
@@ -181,6 +194,8 @@ def normalize_build(
     for record in talent_records:
         write_model(record, build_dir / "talents" / f"{record.class_slug}.json")
     item_sets = build_item_sets(t("ItemSet"), t("ItemSetSpell"), spell_text)
+    if wowhead_supplement is not None:
+        item_sets = merge_sets(item_sets, wowhead_supplement)
     write_json(item_sets, build_dir / "sets.json")
     shutil.rmtree(build_dir / "items", ignore_errors=True)
     skipped: list[str] = []
@@ -205,6 +220,8 @@ def normalize_build(
         logger.warning("items not emitted for build %s: %s", build, error)
         skipped.append(f"items/: {error}")
     else:
+        if wowhead_supplement is not None:
+            class_items = merge_class_items(class_items, wowhead_supplement, class_rows)
         for record in class_items:
             write_model(record, build_dir / "items" / f"{record.class_slug}.json")
 
