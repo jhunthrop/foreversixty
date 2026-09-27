@@ -199,7 +199,7 @@ func ensureMetricsPartition(h *harness) {
 // without them.
 func aCharacter(class, race string) simapi.CharacterSpec {
 	return simapi.CharacterSpec{
-		Name: "Baelgrim", Race: race, Class: class, Level: simapi.SimLevel,
+		Name: "Baelgrim", Race: race, Class: class, Level: simapi.MaxLevel,
 		Talents: "-0550000505021051-05",
 		Gear: []simapi.GearSlot{
 			{Slot: "main_hand", ItemID: 17182, Enchant: 2564},

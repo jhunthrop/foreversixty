@@ -90,7 +90,7 @@ type CombatantBuilder struct {
 // plan is honest about until a race source lands.
 func (b CombatantBuilder) FightCharacter(spec, class string, c summary.CombatantRow) (simapi.CharacterSpec, error) {
 	out := simapi.CharacterSpec{
-		Name: c.Name, Class: class, Level: simapi.SimLevel,
+		Name: c.Name, Class: class, Level: simapi.MaxLevel,
 		Gear:     gearFrom(c.Gear),
 		Buffs:    BuffIDs(c.RaidBuffs, nil),
 		Consumes: BuffIDs(c.Consumables, nil),

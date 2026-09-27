@@ -32,6 +32,10 @@ sim/internal/simdb/simdb.bin
 # same reason; data/builds/<build>/enchants.json is the committed
 # original
 sim/internal/simdb/enchants.json
+# the active build's spell rank table, copied here by `make simdb` for
+# the same reason; data/builds/<build>/spellranks.json is the committed
+# original
+sim/internal/spellranks/spellranks.json
 
 # environment
 .env

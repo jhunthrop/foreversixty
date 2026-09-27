@@ -204,7 +204,7 @@ func TestARequestTheEnvelopeRejectsIsRefused(t *testing.T) {
 	}{
 		{"no spec", func(r *simapi.SimResult) { r.Request.Spec = "" }},
 		{"no race", func(r *simapi.SimResult) { r.Request.Character.Race = "" }},
-		{"a level the engine cannot sim", func(r *simapi.SimResult) { r.Request.Character.Level = simapi.SimLevel - 1 }},
+		{"a level above the cap", func(r *simapi.SimResult) { r.Request.Character.Level = simapi.MaxLevel + 1 }},
 		{"an iteration count outside the set", func(r *simapi.SimResult) { r.Request.Iterations = 7 }},
 		{"a fight of five seconds", func(r *simapi.SimResult) { r.Request.Encounter.DurationSec = 5 }},
 		{"ninety-nine targets", func(r *simapi.SimResult) { r.Request.Encounter.Targets = 99 }},

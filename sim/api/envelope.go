@@ -17,6 +17,7 @@ package api
 import (
 	"errors"
 	"fmt"
+	"math"
 	"slices"
 	"strings"
 
@@ -103,20 +104,27 @@ const (
 	MaxDurationSec = 600
 )
 
-// SimLevel is the only level a sim runs at. It is Forever's level cap
-// and it is also the engine's fixed one: sim/core builds every
-// character at core.CharacterMaxLevel and its Player protobuf carries
-// no level at all, so a level-40 request cannot be answered - it would
-// be simulated at 60 and reported without a word. Validating it here
-// keeps that refusal at the request rather than at the worker.
-const SimLevel = 60
+// MaxLevel is Forever's level cap, and the only level the engine could
+// simulate before the level-aware sim design landed: sim/core built
+// every character at core.CharacterMaxLevel and its Player protobuf
+// carried no level at all. character.level now accepts 1..MaxLevel
+// (see Validate); the engine build this package is pinned against
+// still needs its own proto.Player.Level field (sim/request's
+// engineCharacterLevel and its TODO) before a request naming a level
+// below MaxLevel is actually simulated at that level rather than at
+// the cap - the rotation's spell ranks (sim/request's rank rewrite)
+// and the target's level already respond to it.
+const MaxLevel = 60
 
-// BossLevel is the level of every target a sim fights: three above the
-// player, which is what the attack table's suppression terms are
-// derived against. sim/request builds the encounter at this level and
-// sim/measure refuses to fit a boss-level attack table from a log that
-// never saw one, so the two have to be the same number.
-const BossLevel = SimLevel + 3
+// BossLevel is the level of a level-MaxLevel character's default
+// target: three above the player, which is what the attack table's
+// suppression terms are derived against. sim/request builds a
+// max-level character's encounter at this level by default and
+// sim/measure refuses to fit a boss-level attack table from a log
+// that never saw one, so the two have to be the same number. A
+// character below the cap defaults to its own level plus three
+// instead (DefaultTargetLevel).
+const BossLevel = MaxLevel + 3
 
 type SimRequest struct {
 	EngineVersion string          `json:"engine_version"`
@@ -280,14 +288,28 @@ type TargetCount struct {
 	Count int `json:"count"`
 }
 
-// The target levels the settings bar offers.
-const (
-	MinTargetLevel = SimLevel
-	MaxTargetLevel = BossLevel
-)
+// DefaultTargetLevel is the target level a request gets when it names
+// none: three above the character, the same offset a level-MaxLevel
+// character always fought (BossLevel) before a request could name any
+// other character level. MinEncounterTargetLevel and
+// MaxEncounterTargetLevel are the closed range built around it.
+func DefaultTargetLevel(characterLevel int) int {
+	return characterLevel + 3
+}
+
+// MinEncounterTargetLevel and MaxEncounterTargetLevel are the closed
+// range encounter.target_level may name for a character of
+// characterLevel: the character's own level up to three above it, the
+// same four-level spread [60,63] offered before a request could name a
+// character level other than MaxLevel.
+func MinEncounterTargetLevel(characterLevel int) int { return characterLevel }
+func MaxEncounterTargetLevel(characterLevel int) int { return DefaultTargetLevel(characterLevel) }
 
 // TargetArmorByLevel is the armor a target of each level carries when
-// the request does not override it.
+// the request does not override it. It is authoritative for MaxLevel's
+// own boss tier - 60 through BossLevel - which are also the four
+// levels the settings bar always offered before target levels below
+// MaxLevel existed.
 //
 // The boss row is the engine's own preset
 // (sim/encounters/default_presets.go); the three below it fall
@@ -300,7 +322,8 @@ var TargetArmorByLevel = map[int]int{60: 3300, 61: 3444, 62: 3588, 63: 3731}
 
 // TargetArmorFor resolves an encounter's armor: the override when it is
 // set - nil or not, including a pointer at 0 - otherwise the level's
-// preset, otherwise the boss's.
+// preset (TargetArmorByLevel's four rows, or armorBelowMaxLevel's
+// scaled estimate for anything under 60), otherwise the boss's.
 func TargetArmorFor(level int, override *int) int {
 	if override != nil {
 		return *override
@@ -308,7 +331,22 @@ func TargetArmorFor(level int, override *int) int {
 	if armor, ok := TargetArmorByLevel[level]; ok {
 		return armor
 	}
+	if level > 0 && level < MaxLevel {
+		return armorBelowMaxLevel(level)
+	}
 	return TargetArmorByLevel[BossLevel]
+}
+
+// armorBelowMaxLevel scales the level-60 boss preset down proportionally
+// to level - the same rule web/src/lib/sim/settings.ts's own extension
+// of TARGET_ARMOR_BY_LEVEL applies below 60, so a level-41 target's
+// armor (2,255) matches whichever lane built the request. Nothing below
+// 60 has a real per-level armor table yet (out of scope, like the
+// per-level physical crit constants), so this is a documented estimate,
+// not a second source of truth: both lanes derive it from the one
+// number, TargetArmorByLevel[MaxLevel].
+func armorBelowMaxLevel(level int) int {
+	return int(math.Round(float64(TargetArmorByLevel[MaxLevel]) * float64(level) / float64(MaxLevel)))
 }
 
 // TargetTypeUnknown is a target with no creature type, which is what a
@@ -434,7 +472,7 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	if r.Encounter.ExecuteRatio < 0 || r.Encounter.ExecuteRatio > 1 {
 		errs = append(errs, fmt.Errorf("execute_ratio must be between 0 and 1, got %v", r.Encounter.ExecuteRatio))
 	}
-	errs = append(errs, validateEncounterAdditions(r.Encounter)...)
+	errs = append(errs, validateEncounterAdditions(r.Encounter, r.Character.Level)...)
 	for i, cd := range r.Character.Cooldowns {
 		if cd.ID == "" {
 			errs = append(errs, fmt.Errorf("character.cooldowns[%d] has no id", i))
@@ -457,8 +495,8 @@ func (r SimRequest) validate(closedSet, requireCurrentEngine bool) error {
 	if r.Character.Race == "" {
 		errs = append(errs, errors.New("character.race is required"))
 	}
-	if r.Character.Level != SimLevel {
-		errs = append(errs, fmt.Errorf("character.level must be %d, got %d; the engine simulates no other level", SimLevel, r.Character.Level))
+	if r.Character.Level < 1 || r.Character.Level > MaxLevel {
+		errs = append(errs, fmt.Errorf("character.level must be between 1 and %d, got %d", MaxLevel, r.Character.Level))
 	}
 	if r.Bulk != nil {
 		errs = append(errs, r.Bulk.validate(r.Iterations)...)
@@ -779,7 +817,7 @@ func NextStepIterations(res SimResult, req SimRequest) int {
 // validateEncounterAdditions checks the fields the parity contract added
 // to EncounterSpec. They are all optional, so every check is on a value
 // the client actually sent.
-func validateEncounterAdditions(e EncounterSpec) []error {
+func validateEncounterAdditions(e EncounterSpec, characterLevel int) []error {
 	var errs []error
 	if m := e.Movement; m != nil {
 		if !slices.Contains(MovementKinds, m.Kind) {
@@ -810,8 +848,9 @@ func validateEncounterAdditions(e EncounterSpec) []error {
 			}
 		}
 	}
-	if e.TargetLevel != 0 && (e.TargetLevel < MinTargetLevel || e.TargetLevel > MaxTargetLevel) {
-		errs = append(errs, fmt.Errorf("encounter.target_level must be between %d and %d, got %d", MinTargetLevel, MaxTargetLevel, e.TargetLevel))
+	minLevel, maxLevel := MinEncounterTargetLevel(characterLevel), MaxEncounterTargetLevel(characterLevel)
+	if e.TargetLevel != 0 && (e.TargetLevel < minLevel || e.TargetLevel > maxLevel) {
+		errs = append(errs, fmt.Errorf("encounter.target_level must be between %d and %d, got %d", minLevel, maxLevel, e.TargetLevel))
 	}
 	if e.TargetArmor != nil && *e.TargetArmor < 0 {
 		errs = append(errs, fmt.Errorf("encounter.target_armor must not be negative, got %d; omit the field for the level's preset, or send 0 for no armor", *e.TargetArmor))

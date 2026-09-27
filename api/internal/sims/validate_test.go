@@ -206,7 +206,7 @@ func (f *failsOnce) FightCharacter(_, class string, c summary.CombatantRow) (sim
 		return simapi.CharacterSpec{}, ErrNoCharacter
 	}
 	return simapi.CharacterSpec{
-		Name: c.Name, Race: "orc", Class: class, Level: simapi.SimLevel,
+		Name: c.Name, Race: "orc", Class: class, Level: simapi.MaxLevel,
 		Talents: "-0550000505021051-05",
 	}, nil
 }
