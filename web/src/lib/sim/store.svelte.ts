@@ -25,7 +25,13 @@ import { precisionPlan, relativeError, type Lane, type PrecisionId } from './pre
 import type { RequestValidation } from './engine';
 import { humaniseServerFailure } from './engine-error';
 import { buildSimRequest, type RunHandle, type RunInput } from './run';
-import { defaultSettings, settingsLabel, withSpecForPreset, type SimSettings } from './settings';
+import {
+  defaultSettings,
+  encounterFor,
+  settingsLabel,
+  withSpecForPreset,
+  type SimSettings,
+} from './settings';
 import {
   fromAddonExport,
   fromLoggedFight,
@@ -594,7 +600,7 @@ export function createSimStore(init: SimStoreInit) {
           settings.consumables,
           settings.cooldowns,
         ),
-        encounter: settings.encounter,
+        encounter: encounterFor(settings.encounter, character.level),
         iterations: plan.iterations,
         targetError: plan.targetError,
         stepIterations: plan.step,
@@ -662,7 +668,7 @@ export function createSimStore(init: SimStoreInit) {
             settings.consumables,
             settings.cooldowns,
           ),
-          encounter: settings.encounter,
+          encounter: encounterFor(settings.encounter, character.level),
           iterations: plan.iterations,
           targetError: plan.targetError,
         });

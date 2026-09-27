@@ -8,6 +8,7 @@
      style's name. Execute phase and the dummy are the style's, so setting either detaches
      the encounter from its style -- settings.ts's `detached`, not this component's. -->
 <script lang="ts">
+  import { MAX_LEVEL } from '../../lib/sim/character';
   import { simCopy, toolFixCopy } from '../../lib/sim/copy';
   import {
     MAX_TARGET_ARMOR,
@@ -31,7 +32,14 @@
     settings,
     disabled,
     onchange,
-  }: { settings: SimSettings; disabled: boolean; onchange: (next: SimSettings) => void } = $props();
+    characterLevel = MAX_LEVEL,
+  }: {
+    settings: SimSettings;
+    disabled: boolean;
+    onchange: (next: SimSettings) => void;
+    /** Resolves the stored target level (60..63, an offset above the cap) for this character. */
+    characterLevel?: number;
+  } = $props();
 
   const control =
     'border-line-warm rounded-control bg-raised text-text min-h-11 min-w-0 border px-3 text-[14px] font-semibold md:min-h-9';
@@ -117,7 +125,7 @@
           data-testid="sim-target-level"
         >
           {#each TARGET_LEVELS as level (level)}
-            <option value={String(level)}>{level}</option>
+            <option value={String(level)}>{characterLevel + (level - MAX_LEVEL)}</option>
           {/each}
         </select>
       </label>

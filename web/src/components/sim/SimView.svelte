@@ -641,6 +641,7 @@
             disabled={store.phase === 'running' || store.serverRunning}
             onchange={(next) => store.setSettings(next)}
             names={store.buffNames}
+            characterLevel={store.character.level}
           />
           <!-- Finding 6: the engine hash, right after the settings bar it used to sit above
                every state -- same anchor, same classes, same test id and href, now visible

@@ -43,7 +43,7 @@ import type { RequestValidation } from './engine';
 import { humaniseEngineError } from './engine-error';
 import type { Lane } from './precision';
 import { specLabel } from './spec-label';
-import type { SimSettings } from './settings';
+import { encounterFor, type SimSettings } from './settings';
 import type { CharacterSpec, SimResult, SpecFidelity } from './types';
 import { ENGINE_VERSION } from './version';
 import { defaultStatsFor, isDpsSpec, referenceFor, weightStatsFor, weightsIterationsFor } from './weights';
@@ -117,7 +117,7 @@ export function envelope(deps: BulkRequestDeps, iterations: number): Omit<BulkRe
     spec: character.spec,
     source: character.source,
     character: spec,
-    encounter: deps.getSettings().encounter,
+    encounter: encounterFor(deps.getSettings().encounter, character.level),
     iterations,
     random_seed: 0,
   };

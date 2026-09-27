@@ -6,6 +6,7 @@
      not a disabled select, because the APL builder is deferred and a greyed-out control
      would promise it. -->
 <script lang="ts">
+  import { MAX_LEVEL } from '../../lib/sim/character';
   import type { BuffNames } from '../../lib/sim/buff-names';
   import { simCopy, toolFixCopy } from '../../lib/sim/copy';
   import { presetSummary } from '../../lib/sim/preset-summary';
@@ -38,12 +39,15 @@
      *  buffLabel's own humanised fallback still names every row, so the disclosure is never
      *  wrong to open early. */
     names = null,
+    characterLevel = MAX_LEVEL,
   }: {
     settings: SimSettings;
     spec: string;
     disabled: boolean;
     onchange: (next: SimSettings) => void;
     names?: BuffNames | null;
+    /** The level the target picker resolves against: a stored 63 is "+3" for this character. */
+    characterLevel?: number;
   } = $props();
 
   const referenceStat = $derived(referenceStatOf(spec));
@@ -285,5 +289,5 @@
     <p class="text-muted text-[12px]" data-testid="sim-targets-note">{targetsNote}</p>
   {/if}
 
-  <SettingsSheet {settings} {disabled} {onchange} />
+  <SettingsSheet {settings} {disabled} {onchange} {characterLevel} />
 </section>

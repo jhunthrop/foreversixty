@@ -6,27 +6,29 @@ import {
   BUFF_PRESETS,
   CASTER_CONSUMABLES,
   DEFAULT_TARGET_LEVEL,
+  defaultSettings,
+  defaultTargetLevel,
+  durationLabel,
   DURATIONS,
+  encounterFor,
+  executePhaseOn,
   MAX_DURATION_SEC,
-  MAX_TARGETS,
   MAX_TARGET_ARMOR,
+  MAX_TARGETS,
   MAX_VARIATION,
   MIN_DURATION_SEC,
   PHYSICAL_CONSUMABLES,
   PRESET_BUFFS,
+  presetConsumables,
   RAID_BUFFS,
+  settingsLabel,
+  styleIdOf,
   TARGET_ARMOR_BY_LEVEL,
   TARGET_LEVELS,
   TARGET_TYPES,
-  VARIATIONS,
-  defaultSettings,
-  defaultTargetLevel,
-  durationLabel,
-  executePhaseOn,
-  presetConsumables,
-  settingsLabel,
-  styleIdOf,
   targetArmorField,
+  targetLevelFor,
+  VARIATIONS,
   withDummy,
   withDuration,
   withExecutePhase,
@@ -35,8 +37,8 @@ import {
   withStyle,
   withTargetArmor,
   withTargetLevel,
-  withTargetType,
   withTargets,
+  withTargetType,
   withVariation,
 } from './settings';
 import { DEFAULT_ENCOUNTER } from './types';
@@ -476,5 +478,29 @@ describe('settingsLabel', () => {
     expect(settingsLabel(withTargets(withPreset(defaultSettings(PHYSICAL), 'solo', PHYSICAL), 4))).toBe(
       'Solo, 3:00, 4 targets',
     );
+  });
+});
+
+describe('targetLevelFor', () => {
+  it('reads a stored 60..63 as an offset above the character, so a level-15 export fights 15..18', () => {
+    expect(targetLevelFor({ ...DEFAULT_ENCOUNTER, target_level: 63 }, 15)).toBe(18);
+    expect(targetLevelFor({ ...DEFAULT_ENCOUNTER, target_level: 60 }, 15)).toBe(15);
+    expect(targetLevelFor({ ...DEFAULT_ENCOUNTER, target_level: 61 }, 38)).toBe(39);
+  });
+
+  it('is unchanged at the cap and defaults to three above when nothing is stored', () => {
+    expect(targetLevelFor({ ...DEFAULT_ENCOUNTER, target_level: 63 }, 60)).toBe(63);
+    expect(targetLevelFor({ ...DEFAULT_ENCOUNTER, target_level: undefined }, 38)).toBe(41);
+  });
+
+  it('treats a stored level outside the offset range as the default', () => {
+    expect(targetLevelFor({ ...DEFAULT_ENCOUNTER, target_level: 70 }, 38)).toBe(41);
+    expect(targetLevelFor({ ...DEFAULT_ENCOUNTER, target_level: 12 }, 38)).toBe(41);
+  });
+
+  it('encounterFor resolves target_level and leaves the rest alone', () => {
+    const resolved = encounterFor({ ...DEFAULT_ENCOUNTER, target_level: 63, targets: 2 }, 15);
+    expect(resolved.target_level).toBe(18);
+    expect(resolved.targets).toBe(2);
   });
 });

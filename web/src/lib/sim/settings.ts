@@ -54,6 +54,31 @@ export function defaultTargetLevel(characterLevel: number): number {
  */
 export const DEFAULT_TARGET_LEVEL = defaultTargetLevel(MAX_LEVEL);
 
+/** How far above the character the target may be: 0 (same level) to this (a boss). */
+export const MAX_TARGET_LEVEL_OFFSET = defaultTargetLevel(0);
+
+/**
+ * A stored `target_level` is an offset above the character, written as the absolute level
+ * of a character at the cap: 60 is "the same level", 63 is "a boss, three above" (the
+ * settings picker and every saved setting predate characters below 60). Resolved for the
+ * character actually being simmed, so a level-15 export fights a level-18 target rather
+ * than a level-63 one the engine refuses. Anything outside the offset range, including a
+ * setting saved by hand, reads as the default (three above).
+ */
+export function targetLevelFor(encounter: EncounterSpec, characterLevel: number): number {
+  const stored = encounter.target_level ?? DEFAULT_TARGET_LEVEL;
+  const offset = stored - MAX_LEVEL;
+  if (!Number.isInteger(offset) || offset < 0 || offset > MAX_TARGET_LEVEL_OFFSET) {
+    return defaultTargetLevel(characterLevel);
+  }
+  return characterLevel + offset;
+}
+
+/** The encounter as the request sends it: `target_level` resolved for this character. */
+export function encounterFor(encounter: EncounterSpec, characterLevel: number): EncounterSpec {
+  return { ...encounter, target_level: targetLevelFor(encounter, characterLevel) };
+}
+
 /**
  * Contract A8's own rule -- the engine's boss preset, 3,731 at level 63, and a linear fall
  * to the level-60 figure, 3,300 (sim/api/envelope.go's own comment; ratified in
@@ -359,8 +384,11 @@ export function withTargetArmor(settings: SimSettings, armor: number | null): Si
  * the player's own override, never silently swapped for the preset. `preset` and `level`
  * ride along either way, for the help text and the placeholder.
  */
-export function targetArmorField(encounter: EncounterSpec): { value: string; preset: number; level: number } {
-  const level = encounter.target_level ?? DEFAULT_TARGET_LEVEL;
+export function targetArmorField(
+  encounter: EncounterSpec,
+  characterLevel: number = MAX_LEVEL,
+): { value: string; preset: number; level: number } {
+  const level = targetLevelFor(encounter, characterLevel);
   const preset = TARGET_ARMOR_BY_LEVEL[level] ?? TARGET_ARMOR_BY_LEVEL[DEFAULT_TARGET_LEVEL];
   // `level` rides on the return value so a caller (SettingsSheet.svelte's `targetArmorNote`)
   // reads the SAME level `preset` was computed from, rather than a second, independent
