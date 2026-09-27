@@ -67,7 +67,7 @@ export const addonCopy = {
 
   // --- /addon page ---
   pageDescription:
-    'Battle.net already gives your gear and talents. The addon adds your bags and bank, your professions, an in-game build guide, and refreshes the moment you log out.',
+    'The addon brings your character here: gear and talents, bags and bank, your professions, an in-game build guide, and a fresh export the moment you log out.',
   pageNoNetwork:
     'The addon never talks to the network. Everything it knows is generated here and carried in the strings you copy.',
   installCurseForge: 'Install from CurseForge',
@@ -91,7 +91,7 @@ export const addonCopy = {
   /** Second line under step 1: same family of copy as `accountPageCopy.noBattlenetDataForRealm`
    *  (spec 2026-09-25 §3.4) -- that key names the gap per character, on the account page,
    *  after sign-in; this one names it up front, before signing in, as a standalone fact. */
-  setupSignInRealmNote: 'Blizzard does not yet serve character data for every realm type.',
+  setupSignInRealmNote: 'Until then, the addon below adds your characters.',
   /** Same wording as `home-panel-copy.ts`'s `signInButton`; kept as its own key here so
    *  every visible string on this page comes from `addonCopy`, matching this page's own
    *  copy-module convention rather than reaching into the home page's module. */
@@ -107,7 +107,7 @@ export const addonCopy = {
   setupStatusAddon: 'Addon export',
   setupStatusAddonDone: 'Addon export loaded',
   setupStatusCompanion: 'Companion app',
-  setupSignedInLine: 'Signed in. Your characters import from Battle.net nightly.',
+  setupSignedInLine: 'Signed in. Paste an addon export to add your characters.',
   setupSignedInLink: 'Your account',
   setupAddonDoneLine: 'An export is loaded; the site is pointed at that character.',
   setupHowItWorks: 'How the addon works',
