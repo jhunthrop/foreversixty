@@ -7,6 +7,7 @@ Pipeline that turns a WoW client build into the JSON and icons the site and the 
 uv sync
 uv run python -m pipeline fetch --product wow_classic_era            # latest build
 uv run python -m pipeline fetch --product <forever product> --build <build>
+uv run python -m pipeline fetch-wowhead --build <build>                # the items the client's ItemSparse lacks
 uv run python -m pipeline normalize --build <build>
 uv run python -m pipeline icons --build <build>
 uv run python -m pipeline tree-art --build <build>                    # then normalize again, so the manifest lists trees/

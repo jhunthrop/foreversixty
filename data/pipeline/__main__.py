@@ -11,6 +11,12 @@ def build_parser() -> argparse.ArgumentParser:
     f.add_argument("--product", required=True, help="wago.tools product key, e.g. wow_classic_era")
     f.add_argument("--build", help="build string like 1.15.7.61582; default: latest for product")
 
+    fw = sub.add_parser(
+        "fetch-wowhead",
+        help="download wowhead's Forever gear planner, the items the client's ItemSparse lacks",
+    )
+    fw.add_argument("--build", required=True, help="the build whose raw/ receives the payload")
+
     n = sub.add_parser("normalize", help="normalize raw CSVs into JSON")
     n.add_argument("--build", required=True)
 
@@ -114,6 +120,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.wago import fetch_build
 
         fetch_build(args.product, args.build)
+    elif args.command == "fetch-wowhead":
+        from pipeline.wowhead_items import fetch_wowhead
+
+        fetch_wowhead(args.build)
     elif args.command == "normalize":
         from pipeline.normalize import normalize_build
 
