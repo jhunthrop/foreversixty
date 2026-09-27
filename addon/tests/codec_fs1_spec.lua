@@ -88,7 +88,7 @@ describe("Codec FS1", function()
 			assert.are.equal(require("Locale").codecTooLong, message)
 		end)
 
-		it("round-trips the name section: who the export is, url-encoded name and realm", function()
+		it("round-trips the who section: the character, url-encoded name and realm", function()
 			local code = Codec.encodeFS1({
 				dataBuild = "1",
 				classSlug = "paladin",
@@ -97,7 +97,7 @@ describe("Codec FS1", function()
 				gearSlots = {},
 				character = { name = "Bow Jackzon", realm = "Classic Beta PvP" },
 			})
-			assert.is_truthy(code:find("|name=Bow%20Jackzon:Classic%20Beta%20PvP", 1, true), code)
+			assert.is_truthy(code:find("|who=Bow%20Jackzon:Classic%20Beta%20PvP", 1, true), code)
 			local build = assert(Codec.decodeFS1(code))
 			assert.are.same({ name = "Bow Jackzon", realm = "Classic Beta PvP" }, build.character)
 		end)

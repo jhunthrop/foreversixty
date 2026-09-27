@@ -59,7 +59,7 @@ describe("Export", function()
 		local code = assert(Export.string(DATA))
 		-- The head is exact; the trailing name section carries whatever the client says
 		-- the player is called, url-encoded, so the site can show it.
-		local head, name = code:match("^(FS1:1%.60%.1%.69893:paladin:human:2/0/0:head=12640)|name=(.+)$")
+		local head, name = code:match("^(FS1:1%.60%.1%.69893:paladin:human:2/0/0:head=12640)|who=(.+)$")
 		assert.are.equal("FS1:1.60.1.69893:paladin:human:2/0/0:head=12640", head)
 		assert.is_truthy(name and name:find(":", 1, true), code)
 	end)

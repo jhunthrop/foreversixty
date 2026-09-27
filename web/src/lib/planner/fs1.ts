@@ -364,8 +364,10 @@ export function decodeFS1(code: string): FS1Result {
       const guild = parseGuild(field);
       if (!guild.ok) return guild;
       build.guild = guild.value;
-    } else if (name === 'name') {
+    } else if (name === 'who' || name === 'name') {
       // `<name>:<realm>`, both URL-encoded, split on the first colon; neither side can fail.
+      // `who` rather than `name`: the game client's font strings read `|n` as a line break,
+      // which split the first addon build's `|name=` on screen. `name` stays readable.
       const at = field.indexOf(':');
       build.character = {
         name: decodeName(at === -1 ? field : field.slice(0, at)),
@@ -487,7 +489,7 @@ export function encodeFS1V2(build: FS1Build): string {
   if (build.guild) sections.push(`guild=${encodeURIComponent(build.guild.name)}:${build.guild.rankIndex}`);
   if (build.character) {
     sections.push(
-      `name=${encodeURIComponent(build.character.name)}:${encodeURIComponent(build.character.realm)}`,
+      `who=${encodeURIComponent(build.character.name)}:${encodeURIComponent(build.character.realm)}`,
     );
   }
 

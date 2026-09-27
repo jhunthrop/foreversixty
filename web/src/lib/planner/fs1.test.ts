@@ -167,8 +167,8 @@ describe('version 2 sections', () => {
     expect(decoded.build.professions).toEqual(['engineering', 'blacksmithing']);
   });
 
-  it('reads the name section as the character, both halves URL-decoded', () => {
-    const decoded = decodeFS1(`${V1}|name=Bow%20Jackzon:Classic%20Beta%20PvP`);
+  it('reads the who section as the character, both halves URL-decoded', () => {
+    const decoded = decodeFS1(`${V1}|who=Bow%20Jackzon:Classic%20Beta%20PvP`);
     expect(decoded.ok).toBe(true);
     if (!decoded.ok) return;
     expect(decoded.build.character).toEqual({ name: 'Bow Jackzon', realm: 'Classic Beta PvP' });

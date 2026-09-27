@@ -218,8 +218,11 @@ function Codec.encodeFS1(build)
 	if build.guild and build.guild.name then
 		sections[#sections + 1] = "guild=" .. urlEncode(build.guild.name) .. ":" .. tostring(build.guild.rankIndex)
 	end
+	-- "who", not "name": the client's font strings treat `|n` as a line break (as `|c`,
+	-- `|r`, `|H`, `|T`, `|A` and `|K` open other escapes), so a section starting with any of
+	-- those letters splits the string on screen and in the clipboard.
 	if build.character and build.character.name then
-		sections[#sections + 1] = "name=" .. urlEncode(build.character.name) .. ":" .. urlEncode(build.character.realm or "")
+		sections[#sections + 1] = "who=" .. urlEncode(build.character.name) .. ":" .. urlEncode(build.character.realm or "")
 	end
 
 	if #sections == 0 then
@@ -441,8 +444,9 @@ function Codec.decodeFS1(code)
 				return nil, refuse(L.codecGuildRank, rankText)
 			end
 			build.guild = { name = urlDecode(namePart), rankIndex = tonumber(rankText) }
-		elseif name == "name" then
-			-- `<name>:<realm>`, both url-encoded, split on the first colon.
+		elseif name == "who" or name == "name" then
+			-- `<name>:<realm>`, both url-encoded, split on the first colon. "name" is the
+			-- spelling one addon build wrote before `|n` turned out to be a line break.
 			local colonAt = field:find(":", 1, true)
 			local namePart = colonAt and field:sub(1, colonAt - 1) or field
 			local realmPart = colonAt and field:sub(colonAt + 1) or ""
