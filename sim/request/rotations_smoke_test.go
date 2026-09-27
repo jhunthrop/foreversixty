@@ -229,6 +229,47 @@ func TestEveryWrittenRotationRunsInTheEngine(t *testing.T) {
 	}
 }
 
+// The same rotations at a level below the cap: the engine builds the
+// character at that level and the rotation is rewritten to the ranks it
+// has learned (rewriteRotationRanks), so every written spec must still
+// build, run and deal damage there. Level 38 sits between the old
+// Season of Discovery brackets (25/40/50/60) the class code used to key
+// on, which is exactly where a rank map that only knew those four levels
+// answered nothing.
+func TestEveryWrittenRotationRunsInTheEngineBelowTheCap(t *testing.T) {
+	registerEngine.Do(engine.RegisterAll)
+	const level = 38
+
+	for _, rot := range writtenRotations(t) {
+		t.Run(rot.spec, func(t *testing.T) {
+			req := smokeRequest(t, rot.spec)
+			req.Character.Level = level
+			req.Character.Talents = ""
+			req.Encounter.TargetLevel = 0 // the default follows the character (level + 3)
+
+			engineReq, err := BuildWith(req, Options{OpenIterations: true})
+			if err != nil {
+				t.Fatalf("building the request at level %d: %v", level, err)
+			}
+			if got := engineReq.Raid.Parties[0].Players[0].Level; got != level {
+				t.Fatalf("the engine's player is level %d, want %d", got, level)
+			}
+			res := core.RunRaidSim(engineReq)
+			if err := adapter.ResultError(res); err != nil {
+				t.Fatalf("the sim failed at level %d: %v", level, err)
+			}
+			player, err := adapter.PlayerMetrics(res)
+			if err != nil {
+				t.Fatalf("reading the player's metrics: %v", err)
+			}
+			if dps := player.Dps.GetAvg(); dps <= 0 {
+				t.Errorf("DPS = %v at level %d; a rotation that deals no damage is not a rotation", dps, level)
+			}
+			t.Logf("SMOKE38\t%s\tdps=%.1f\ttop=%s", rot.spec, player.Dps.GetAvg(), top(castSet(player), 3))
+		})
+	}
+}
+
 // Every written rotation must also be a spec this module can build a
 // request for. The two lists are maintained in different lanes - the
 // rotation lane writes the curated file, this module carries the spec's

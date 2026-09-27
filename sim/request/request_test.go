@@ -61,12 +61,11 @@ func TestBuildProducesAPlayableRequest(t *testing.T) {
 	if p.Class != proto.Class_ClassWarrior {
 		t.Errorf("Class = %v, want ClassWarrior", p.Class)
 	}
-	// The brief's draft asserted p.Level here. The engine carries no
-	// per-player level: sim/core builds every character at
-	// core.CharacterMaxLevel, and proto.Player has no level field, so
-	// there is nothing to assert on the request. api.SimRequest.Validate
-	// refuses any other level - see
-	// TestBuildRejectsALevelTheEngineCannotSimulate in mapping_test.go.
+	// The engine builds the character at the request's level (design
+	// 2026-09-27, level-aware sim); a request that says nothing else is 60.
+	if p.Level != api.MaxLevel {
+		t.Errorf("Level = %d, want %d", p.Level, api.MaxLevel)
+	}
 	if p.TalentsString != "30305001302-05050005525010051" {
 		t.Errorf("TalentsString = %q", p.TalentsString)
 	}

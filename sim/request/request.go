@@ -194,18 +194,12 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 		Name:  ch.Name,
 		Race:  race,
 		Class: class,
-		// TODO(Level): this engine build's proto.Player has no Level
-		// field yet - lane E1 adds one on the fork's `forever` branch,
-		// and sim/enginever's pin moves once that lands and the class
-		// packages read it (see the level-aware sim design doc's
-		// "Order" section). Until then sim/core still builds every
-		// character at core.CharacterMaxLevel regardless of ch.Level,
-		// so add `player.Level = engineCharacterLevel(ch)` here once
-		// the field exists. api.SimRequest.Validate now accepts
-		// 1..api.MaxLevel rather than refusing every level but the
-		// cap; the rotation's spell ranks (rewriteRotationRanks) and
-		// the target's level already respond to ch.Level even though
-		// the player's own in-engine level does not yet.
+		// The engine builds the character at this level (sim/core's
+		// EffectiveCharacterLevel): base stats, health, mana and which
+		// spell ranks register all follow it, as the rotation's spell
+		// ranks (rewriteRotationRanks) and the target's level already do.
+		// The envelope bounds it to 1..api.MaxLevel.
+		Level:         engineCharacterLevel(ch),
 		TalentsString: ch.Talents,
 		Equipment:     equipment,
 		Consumes:      cons,
@@ -238,13 +232,10 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 	}, nil
 }
 
-// engineCharacterLevel is the level BuildWith would hand the engine's
-// proto.Player, once that message carries one (see the TODO on
-// player.Level above). It is ch.Level unchanged - the envelope already
-// bounds it to 1..api.MaxLevel - but it is its own named function
-// rather than an inline cast so that landing lane E1's field is a
-// one-line change here instead of a search for every place a level
-// might belong.
+// engineCharacterLevel is the level BuildWith hands the engine's
+// proto.Player. It is ch.Level unchanged - the envelope already bounds it
+// to 1..api.MaxLevel - kept as its own named function so every place a
+// level belongs reads the same one.
 func engineCharacterLevel(ch api.CharacterSpec) int32 {
 	return int32(ch.Level)
 }
