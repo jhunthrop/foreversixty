@@ -36,8 +36,10 @@ from __future__ import annotations
 
 import json
 import logging
+from collections import Counter
 from pathlib import Path
 
+from pipeline import wowhead_items as wh
 from pipeline.csvio import read_csv
 from pipeline.manifest import refresh_manifest
 from pipeline.models import ConsumableRecord
@@ -46,7 +48,7 @@ from pipeline.normalize.gear import MAX_PLAYER_LEVEL, column_value, int_column, 
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.simdb.enchants import build_sim_enchants
 from pipeline.simdb.equip import equip_bonuses, index_spell_effects, item_effect_spells
-from pipeline.simdb.items import build_sim_items, simdb_item_rows
+from pipeline.simdb.items import build_sim_items, build_wowhead_sim_items, simdb_item_rows
 from pipeline.simdb.ratings import load_rating_factors
 from pipeline.simdb.weapons import load_weapon_curves
 from pipeline.simproto import pb
@@ -204,10 +206,33 @@ def build_sim_database(build_dir: Path) -> tuple[pb.SimDatabase, list[Consumable
     equip = equip_bonuses(item_effect_rows, link_rows, effects_by_spell, kept_ids)
     rating_factors = load_rating_factors(build_dir)
     fork_columns = _fork_columns(build_dir)
+    items = build_sim_items(
+        pairs, set_names, equip, curves, weapon_curves, rating_factors, fork_columns
+    )
+
+    # The wowhead supplement (docs/superpowers/specs/2026-09-27-wowhead-item-
+    # supplement-design.md): items the client's own ItemSparse lacks
+    # entirely, added on top of the client universe rather than in place of
+    # any of it. A build whose raw/ has no payload -- every build before
+    # `fetch-wowhead` became a workflow step, and any build fetched without
+    # it -- is byte-identical to what this function produced before this
+    # branch existed.
+    wowhead_path = raw / wh.RAW_FILE
+    if wowhead_path.exists():
+        client_ids = {int_column(row, "ID") for row in sparse_rows}
+        supplement = wh.supplement(wh.load_items(wowhead_path), client_ids)
+        untracked: Counter[str] = Counter()
+        wowhead_items = build_wowhead_sim_items(supplement, rating_factors, set_names, untracked)
+        items = sorted((*items, *wowhead_items), key=lambda row: row.id)
+        logger.info(
+            "simdb: wowhead supplement added %d items with no on-equip effect "
+            "(untracked stats: %s)",
+            len(wowhead_items),
+            dict(untracked),
+        )
+
     database = pb.SimDatabase(
-        items=build_sim_items(
-            pairs, set_names, equip, curves, weapon_curves, rating_factors, fork_columns
-        ),
+        items=items,
         enchants=build_sim_enchants(
             read_csv(raw / "SpellItemEnchantment.csv"), effects_by_spell, rating_factors
         ),
