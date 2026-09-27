@@ -168,6 +168,13 @@ func (s *Service) refreshOneCharacter(ctx context.Context, sc staleCharacter, ro
 
 // runProbe requests the namespace probe for every configured region and
 // logs the result; it never fails the refresh run.
+// Probe runs the namespace probe alone: the nightly job's path while the character import
+// is off (config.BnetImportCharacters), so the namespace_appeared warning still fires the
+// day Blizzard serves Forever, with no character re-synced from a namespace that is not it.
+func (s *Service) Probe(ctx context.Context, games []string) {
+	s.runProbe(ctx, games)
+}
+
 func (s *Service) runProbe(ctx context.Context, games []string) {
 	if len(games) == 0 {
 		return

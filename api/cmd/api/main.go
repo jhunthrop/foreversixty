@@ -364,6 +364,13 @@ func runBnetRefresh(ctx context.Context, log *slog.Logger) error {
 			"effect", "characters are re-synced but no Blizzard-sourced build is (re-)encoded")
 	}
 	svc := &bnetimport.Service{Pool: pool, Client: bnetClient(cfg, log), Regions: cfg.BnetRegions, Log: log, Tables: tables}
+	if !cfg.BnetImportCharacters {
+		// Probe only: the namespace_appeared warning is the launch-day signal, and no
+		// character is re-synced from a namespace that is not Forever's (bnetimport.Stub).
+		svc.Probe(ctx, cfg.BnetProbeGames)
+		log.Info(bnetimport.RefreshJobCommand, "state", "character import is off, probed namespaces only")
+		return nil
+	}
 	result, err := svc.RunRefresh(ctx, cfg.BnetProbeGames)
 	if err != nil {
 		return err
@@ -511,8 +518,15 @@ func serve(log *slog.Logger) error {
 			log.Warn("auth", "err", "no client build available",
 				"effect", "Battle.net sign-in works but no character gets a Blizzard-sourced build")
 		}
-		accounts.Importer = &bnetimport.Service{
-			Pool: pool, Client: bnetSvcClient, Regions: cfg.BnetRegions, Log: log, Tables: bnetTables,
+		if cfg.BnetImportCharacters {
+			accounts.Importer = &bnetimport.Service{
+				Pool: pool, Client: bnetSvcClient, Regions: cfg.BnetRegions, Log: log, Tables: bnetTables,
+			}
+		} else {
+			// Blizzard serves no Forever namespace yet; see bnetimport.Stub.
+			accounts.Importer = &bnetimport.Stub{Regions: cfg.BnetRegions}
+			log.Warn("auth", "state", "battle.net character import is off",
+				"effect", "sign-in works, no characters are imported; set BNET_IMPORT_CHARACTERS=true once Blizzard serves Forever")
 		}
 		// Warm the realm cache before traffic arrives (spec A1): a first
 		// sign-in must never pay the cost of a cold per-region realm

@@ -102,6 +102,13 @@ type Config struct {
 	BnetProfileGame string
 	BnetRegions     []string
 	BnetProbeGames  []string
+	// BnetImportCharacters (BNET_IMPORT_CHARACTERS=true) turns the account
+	// character import on. Off by default since 2026-09-27: Blizzard serves
+	// no Forever namespace yet, so with only classic1x answering the import
+	// filled accounts with Era and Season of Discovery characters that are
+	// not Forever characters at all. Off, sign-in still works, the nightly
+	// job still probes for the namespace, and nothing is written.
+	BnetImportCharacters bool
 
 	// ParseJobName, ParseJobRegion and ParseJobProject address the Cloud
 	// Run job that parses a whole-file upload.
@@ -183,6 +190,7 @@ func Load(getenv func(string) string) (Config, error) {
 	if c.BnetProfileGame == "" {
 		c.BnetProfileGame = defaultBnetProfileGame
 	}
+	c.BnetImportCharacters = getenv("BNET_IMPORT_CHARACTERS") == "true"
 	c.BnetRegions = splitCommaList(getenv("BNET_REGIONS"), defaultBnetRegions)
 	c.BnetProbeGames = splitCommaList(getenv("BNET_PROBE_GAMES"), defaultBnetProbeGames)
 	for _, d := range []struct {
