@@ -194,10 +194,18 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 		Name:  ch.Name,
 		Race:  race,
 		Class: class,
-		// The engine carries no per-player level: sim/core builds every
-		// character at core.CharacterMaxLevel and proto.Player has no
-		// level field. api.SimRequest.Validate, which ran above, is
-		// what refuses any other level.
+		// TODO(Level): this engine build's proto.Player has no Level
+		// field yet - lane E1 adds one on the fork's `forever` branch,
+		// and sim/enginever's pin moves once that lands and the class
+		// packages read it (see the level-aware sim design doc's
+		// "Order" section). Until then sim/core still builds every
+		// character at core.CharacterMaxLevel regardless of ch.Level,
+		// so add `player.Level = engineCharacterLevel(ch)` here once
+		// the field exists. api.SimRequest.Validate now accepts
+		// 1..api.MaxLevel rather than refusing every level but the
+		// cap; the rotation's spell ranks (rewriteRotationRanks) and
+		// the target's level already respond to ch.Level even though
+		// the player's own in-engine level does not yet.
 		TalentsString: ch.Talents,
 		Equipment:     equipment,
 		Consumes:      cons,
@@ -206,7 +214,7 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 		Profession1:   first,
 		Profession2:   second,
 	}
-	if err := applySpec(player, req.Spec); err != nil {
+	if err := applySpec(player, req.Spec, ch.Class, ch.Level); err != nil {
 		return nil, err
 	}
 
@@ -216,7 +224,7 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 			Buffs:   buffs.Raid,
 			Debuffs: buffs.Debuffs,
 		},
-		Encounter: encounter(req.Encounter),
+		Encounter: encounter(req.Encounter, ch.Level),
 		SimOptions: &proto.SimOptions{
 			Iterations: int32(req.Iterations),
 			RandomSeed: req.RandomSeed,
@@ -228,6 +236,17 @@ func BuildWith(req api.SimRequest, opt Options) (*proto.RaidSimRequest, error) {
 			SampleIteration: !opt.NoSampleIteration,
 		},
 	}, nil
+}
+
+// engineCharacterLevel is the level BuildWith would hand the engine's
+// proto.Player, once that message carries one (see the TODO on
+// player.Level above). It is ch.Level unchanged - the envelope already
+// bounds it to 1..api.MaxLevel - but it is its own named function
+// rather than an inline cast so that landing lane E1's field is a
+// one-line change here instead of a search for every place a level
+// might belong.
+func engineCharacterLevel(ch api.CharacterSpec) int32 {
+	return int32(ch.Level)
 }
 
 // checkSpecClass refuses a spec that belongs to another class. Without
@@ -395,9 +414,18 @@ func targetCount(e api.EncounterSpec) int {
 // targetStats is one target's stat array, with the encounter's armor in
 // it. The engine indexes the array by proto.Stat, so it is built to the
 // enum's length rather than to the highest index we happen to set.
-func targetStats(e api.EncounterSpec) []float64 {
+//
+// level is the RESOLVED target level - encounter's own computation of
+// e.TargetLevel or its level-dependent default, never the raw field -
+// so this always asks TargetArmorFor for the level the target was
+// actually built at. Passing e.TargetLevel straight through here used
+// to work only because TargetArmorFor's map-miss fallback happened to
+// equal the one default (BossLevel) every request used; now that the
+// default is the character's own level plus three, a target level of
+// 0 and an unresolved default no longer mean the same armor.
+func targetStats(level int, override *int) []float64 {
 	out := make([]float64, len(proto.Stat_name))
-	out[proto.Stat_StatArmor] = float64(api.TargetArmorFor(e.TargetLevel, e.TargetArmor))
+	out[proto.Stat_StatArmor] = float64(api.TargetArmorFor(level, override))
 	return out
 }
 
@@ -427,7 +455,12 @@ func targetsOverTime(steps []api.TargetCount) []*proto.TargetCountAt {
 	return out
 }
 
-func encounter(e api.EncounterSpec) *proto.Encounter {
+// encounter builds the target(s) a character of characterLevel fights.
+// A request naming no target_level fights api.DefaultTargetLevel(characterLevel)
+// - three above the character, the same offset a level-MaxLevel
+// character always fought (api.BossLevel) before a request could name
+// any other character level.
+func encounter(e api.EncounterSpec, characterLevel int) *proto.Encounter {
 	below20, below25, below35 := executeProportions(e.ExecuteRatio)
 	// A target dummy has no execute window: nothing kills it, so its
 	// health never falls. The envelope's Dummy flag is the one place
@@ -438,7 +471,7 @@ func encounter(e api.EncounterSpec) *proto.Encounter {
 	}
 	level := e.TargetLevel
 	if level == 0 {
-		level = api.BossLevel
+		level = api.DefaultTargetLevel(characterLevel)
 	}
 	mob, ok := mobTypes[e.TargetType]
 	if !ok {
@@ -455,7 +488,7 @@ func encounter(e api.EncounterSpec) *proto.Encounter {
 			Name:      targetDummyName,
 			Level:     int32(level),
 			MobType:   mob,
-			Stats:     targetStats(e),
+			Stats:     targetStats(level, e.TargetArmor),
 			TankIndex: targetNotTanked,
 		}
 	}
@@ -621,14 +654,16 @@ func warriorOptions(p *proto.Player) {
 	}}
 }
 
-// applySpec attaches the spec's options and its default rotation. The
-// engine cannot build an agent for a player carrying neither.
-func applySpec(player *proto.Player, slug string) error {
+// applySpec attaches the spec's options and its default rotation,
+// rewritten to the character's own rank of every ranked spell it
+// casts. The engine cannot build an agent for a player carrying
+// neither.
+func applySpec(player *proto.Player, slug, class string, level int) error {
 	apply, ok := specOptions[slug]
 	if !ok {
 		return fmt.Errorf("%w: %q; the specs this build carries are %v", ErrUnsupportedSpec, slug, supportedSpecs())
 	}
-	rot, err := rotation(slug)
+	rot, err := rotation(slug, class, level)
 	if err != nil {
 		return err
 	}
@@ -637,12 +672,23 @@ func applySpec(player *proto.Player, slug string) error {
 	return nil
 }
 
-// rotation parses one embedded APL. It is parsed per build rather than
-// cached, so no two requests ever share a mutable rotation.
-func rotation(name string) (*proto.APLRotation, error) {
+// rotation parses one embedded APL, rewritten to level's ranks (see
+// rewriteRotationRanks). It is parsed per build rather than cached, so
+// no two requests ever share a mutable rotation.
+func rotation(name, class string, level int) (*proto.APLRotation, error) {
 	b, err := aplFS.ReadFile("apl/" + name + ".apl.json")
 	if err != nil {
 		return nil, fmt.Errorf("request: no embedded APL for %q: %w", name, err)
+	}
+	// At MaxLevel the rotation was authored for exactly the ranks it
+	// already carries, so skipping the rewrite is both an optimization
+	// and the guarantee that a level-MaxLevel rotation is byte-for-byte
+	// what it always was.
+	if level < api.MaxLevel {
+		b, err = rewriteRotationRanks(b, class, level)
+		if err != nil {
+			return nil, fmt.Errorf("request: rewriting %q's rotation for level %d: %w", name, level, err)
+		}
 	}
 	apl := &proto.APLRotation{}
 	if err := protojson.Unmarshal(b, apl); err != nil {

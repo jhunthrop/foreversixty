@@ -46,7 +46,7 @@ type alwaysBuilds struct{ asked int }
 func (a *alwaysBuilds) FightCharacter(_, class string, c summary.CombatantRow) (simapi.CharacterSpec, error) {
 	a.asked++
 	return simapi.CharacterSpec{
-		Name: c.Name, Race: "orc", Class: class, Level: simapi.SimLevel,
+		Name: c.Name, Race: "orc", Class: class, Level: simapi.MaxLevel,
 		Talents: "-0550000505021051-05",
 	}, nil
 }
@@ -222,7 +222,7 @@ func TestTheRealBuilderSaysEveryFieldItIsMissing(t *testing.T) {
 	}
 	// What it could build, it did: the caller's log line is worth
 	// more when it shows how close the character got.
-	if got.Level != simapi.SimLevel || got.Class != "warrior" {
+	if got.Level != simapi.MaxLevel || got.Class != "warrior" {
 		t.Errorf("character: %+v", got)
 	}
 	if len(got.Gear) != 1 || got.Gear[0].ItemID != 17182 || got.Gear[0].Enchant != 2564 {

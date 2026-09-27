@@ -398,11 +398,12 @@ func TestBuildWithOpenIterationsAcceptsAWorkersShare(t *testing.T) {
 	}
 
 	// OpenIterations is about the iteration count and nothing else: a part
-	// with a level the engine cannot sim is still refused.
+	// with a level outside the envelope's 1..MaxLevel range is still
+	// refused.
 	bad := part
-	bad.Character.Level = 40
+	bad.Character.Level = api.MaxLevel + 1
 	if _, err := BuildWith(bad, Options{OpenIterations: true}); err == nil {
-		t.Error("BuildWith(OpenIterations) accepted a level the engine cannot sim")
+		t.Error("BuildWith(OpenIterations) accepted a level outside the envelope's range")
 	}
 }
 
@@ -474,6 +475,26 @@ func TestEncounterDefaultsAreUnchanged(t *testing.T) {
 	}
 	if got := target.Stats[proto.Stat_StatArmor]; got != float64(api.TargetArmorByLevel[api.BossLevel]) {
 		t.Errorf("armor = %v, want the boss preset %d", got, api.TargetArmorByLevel[api.BossLevel])
+	}
+}
+
+// A character below MaxLevel with no target_level set fights three
+// above its OWN level, not the fixed boss tier - and that target's
+// armor resolves for a level with no exact preset row (api.TargetArmorFor's
+// proportional extension below 60).
+func TestEncounterDefaultsFollowACharacterBelowMaxLevel(t *testing.T) {
+	req := fury()
+	req.Character.Level = 38
+	got, err := Build(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	target := got.Encounter.Targets[0]
+	if target.Level != 41 {
+		t.Errorf("level = %d, want 41 (38 + 3, api.DefaultTargetLevel)", target.Level)
+	}
+	if got := target.Stats[proto.Stat_StatArmor]; got != float64(api.TargetArmorFor(41, nil)) {
+		t.Errorf("armor = %v, want %d (the level-41 estimate)", got, api.TargetArmorFor(41, nil))
 	}
 }
 

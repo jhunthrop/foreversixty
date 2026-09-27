@@ -103,7 +103,7 @@ func base() api.SimRequest {
 			Name:    "Thrall",
 			Race:    "orc",
 			Class:   "warrior",
-			Level:   api.SimLevel,
+			Level:   api.MaxLevel,
 			Talents: "30305001302-05050005525010051",
 			Gear: []api.GearSlot{
 				{Slot: "head", ItemID: itemHelm, Enchant: enchantHead},
@@ -254,13 +254,13 @@ func TestCandidatesTheCharacterCannotEquipAreSkipped(t *testing.T) {
 // usable's three branches - class, level, faction - above are also
 // exercised end-to-end through real build rows, but the build's own
 // level cap means no item in it carries a RequiredLevel above
-// api.SimLevel (60): the sim never runs any other level, so nothing
+// api.MaxLevel (60): the sim never runs any other level, so nothing
 // upstream of usable ever itemises one. That branch can only be
 // proven directly, against a synthetic row, which this table does for
 // all three so they are checked the same way rather than two real
 // rows and one that cannot exist.
 func TestUsableEligibilityRules(t *testing.T) {
-	warrior := api.CharacterSpec{Class: "warrior", Race: "orc", Level: api.SimLevel}
+	warrior := api.CharacterSpec{Class: "warrior", Race: "orc", Level: api.MaxLevel}
 	cases := []struct {
 		name string
 		item simdb.Item
@@ -270,8 +270,8 @@ func TestUsableEligibilityRules(t *testing.T) {
 		{"open to every class", simdb.Item{}, warrior, true},
 		{"restricted to a class the character has", simdb.Item{Classes: []string{"warrior"}}, warrior, true},
 		{"restricted to a class the character does not have", simdb.Item{Classes: []string{"mage"}}, warrior, false},
-		{"at the character's level", simdb.Item{RequiredLevel: api.SimLevel}, warrior, true},
-		{"above the character's level", simdb.Item{RequiredLevel: api.SimLevel + 1}, warrior, false},
+		{"at the character's level", simdb.Item{RequiredLevel: api.MaxLevel}, warrior, true},
+		{"above the character's level", simdb.Item{RequiredLevel: api.MaxLevel + 1}, warrior, false},
 		{"faction-open", simdb.Item{Faction: simdb.FactionAny}, warrior, true},
 		{"the character's own faction", simdb.Item{Faction: simdb.FactionHorde}, warrior, true},
 		{"the other faction", simdb.Item{Faction: simdb.FactionAlliance}, warrior, false},

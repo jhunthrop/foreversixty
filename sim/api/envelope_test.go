@@ -20,7 +20,7 @@ func runReq() SimRequest {
 			Name:    "Thrall",
 			Race:    "orc",
 			Class:   "warrior",
-			Level:   SimLevel,
+			Level:   MaxLevel,
 			Talents: "30305001302-05050005525010051",
 		},
 		Encounter:  DefaultEncounter(),
@@ -133,10 +133,11 @@ func TestValidateRejectsBadRequests(t *testing.T) {
 		{"no class", func(r *SimRequest) { r.Character.Class = "" }, "character.class"},
 		{"no race", func(r *SimRequest) { r.Character.Race = "" }, "character.race"},
 		{"no level", func(r *SimRequest) { r.Character.Level = 0 }, "character.level"},
-		// The engine has one level. A request for any other cannot be
-		// run, so it is refused here rather than queued and failed at
-		// the worker.
-		{"a level the engine cannot sim", func(r *SimRequest) { r.Character.Level = 40 }, "character.level"},
+		{"a negative level", func(r *SimRequest) { r.Character.Level = -1 }, "character.level"},
+		// character.level accepts 1..MaxLevel; anything above the cap
+		// still cannot be run and is refused here rather than queued and
+		// failed at the worker.
+		{"a level above the cap", func(r *SimRequest) { r.Character.Level = MaxLevel + 1 }, "character.level"},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -150,6 +151,29 @@ func TestValidateRejectsBadRequests(t *testing.T) {
 				t.Errorf("error %q does not mention %q", err, tc.want)
 			}
 		})
+	}
+}
+
+// The level-aware sim design: character.level accepts the whole 1..60
+// range, not just the old fixed 60.
+func TestValidateAcceptsTheFullLevelRange(t *testing.T) {
+	good := SimRequest{
+		EngineVersion: enginever.Version, Spec: "mage-frost", Iterations: 3000,
+		Source:    CharacterSource{Kind: SourceManual},
+		Encounter: DefaultEncounter(),
+		Character: CharacterSpec{Name: "Jaina", Race: "gnome", Class: "mage", Level: 60},
+	}
+	for _, level := range []int{1, 38, 60} {
+		req := good
+		req.Character.Level = level
+		if err := req.Validate(); err != nil {
+			t.Errorf("level %d was rejected: %v", level, err)
+		}
+	}
+	req := good
+	req.Character.Level = 61
+	if err := req.Validate(); err == nil || !strings.Contains(err.Error(), "character.level") {
+		t.Errorf("level 61 should have been rejected mentioning character.level, got %v", err)
 	}
 }
 
@@ -478,7 +502,7 @@ func TestAbortedIsOmittedWhenFalse(t *testing.T) {
 // they drifted the validation job would compare a sim against a log of
 // a different target tier and call the gap a modelling error.
 func TestBossLevelIsThreeAboveThePlayer(t *testing.T) {
-	if BossLevel != SimLevel+3 {
-		t.Errorf("BossLevel = %d, want %d", BossLevel, SimLevel+3)
+	if BossLevel != MaxLevel+3 {
+		t.Errorf("BossLevel = %d, want %d", BossLevel, MaxLevel+3)
 	}
 }

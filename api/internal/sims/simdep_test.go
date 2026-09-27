@@ -44,11 +44,12 @@ func TestADefaultedRequestPassesTheEnvelopesOwnValidation(t *testing.T) {
 	if err := req.Validate(); err == nil {
 		t.Fatal("an iteration count outside the closed set was accepted")
 	}
-	// One level runs, and the envelope is the only thing that says so.
+	// character.level accepts 1..MaxLevel; a level above the cap is
+	// still refused.
 	req.Iterations = defaultIterations
-	req.Character.Level = simapi.SimLevel - 1
+	req.Character.Level = simapi.MaxLevel + 1
 	if err := req.Validate(); err == nil {
-		t.Fatalf("level %d was accepted; only %d runs", req.Character.Level, simapi.SimLevel)
+		t.Fatalf("level %d was accepted; the cap is %d", req.Character.Level, simapi.MaxLevel)
 	}
 }
 

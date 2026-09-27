@@ -82,6 +82,27 @@ func TestEncounterAdditionsValidation(t *testing.T) {
 	}
 }
 
+// encounter.target_level's own bounds move with the character: a
+// level-38 character's target ranges 38..41, not 60..63, and 60 is out
+// of range for it even though it was always in range for a MaxLevel
+// character.
+func TestEncounterTargetLevelBoundsFollowCharacterLevel(t *testing.T) {
+	req := runReq()
+	req.Character.Level = 38
+	for _, level := range []int{38, 39, 40, 41} {
+		req.Encounter.TargetLevel = level
+		if err := req.Validate(); err != nil {
+			t.Errorf("target_level %d for a level-38 character was refused: %v", level, err)
+		}
+	}
+	for _, level := range []int{37, 42, 60} {
+		req.Encounter.TargetLevel = level
+		if err := req.Validate(); err == nil || !strings.Contains(err.Error(), "target_level") {
+			t.Errorf("target_level %d for a level-38 character should have been refused, got %v", level, err)
+		}
+	}
+}
+
 // ptr is a *int literal for a table test: Go has no address-of operator on
 // a literal, and TargetArmor's whole point (Defect 3 below) is that nil
 // and a pointer at 0 must be two different requests.
@@ -102,7 +123,14 @@ func TestTargetArmorFor(t *testing.T) {
 		{"nil override, boss level", BossLevel, nil, TargetArmorByLevel[BossLevel]},
 		{"nil override, level 60", 60, nil, TargetArmorByLevel[60]},
 		{"nil override, unset level", 0, nil, TargetArmorByLevel[BossLevel]}, // the default boss
-		{"nil override, a level with no preset", 99, nil, TargetArmorByLevel[BossLevel]},
+		{"nil override, a level with no preset above the cap", 99, nil, TargetArmorByLevel[BossLevel]},
+		// Below 60 there is no exact preset row, so TargetArmorFor scales
+		// TargetArmorByLevel[MaxLevel] (3,300) proportionally to level:
+		// a level-41 target's default is round(3300*41/60) = 2,255, and
+		// a level-38 hunter's default target (level 41, DefaultTargetLevel)
+		// resolves the same way.
+		{"nil override, a level below the cap", 41, nil, 2255},
+		{"nil override, level 1", 1, nil, 55},
 		{"a positive override", BossLevel, ptr(2500), 2500},
 		{"an explicit zero override is zero, not the preset", BossLevel, ptr(0), 0},
 	}
@@ -113,7 +141,7 @@ func TestTargetArmorFor(t *testing.T) {
 			}
 		})
 	}
-	for level := MinTargetLevel; level <= MaxTargetLevel; level++ {
+	for level := MaxLevel; level <= BossLevel; level++ {
 		if TargetArmorByLevel[level] <= 0 {
 			t.Errorf("no armor preset for target level %d", level)
 		}

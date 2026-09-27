@@ -287,7 +287,7 @@ func smokeRequest(t *testing.T, spec string) api.SimRequest {
 			Name:    spec,
 			Race:    smokeRace(t, class),
 			Class:   class,
-			Level:   api.SimLevel,
+			Level:   api.MaxLevel,
 			Talents: referenceTalents[spec],
 		},
 		Encounter:  api.DefaultEncounter(),

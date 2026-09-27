@@ -101,6 +101,8 @@ ACTIVE_BUILD  = $(shell sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".
 SIMDB_SRC     = data/builds/$(ACTIVE_BUILD)/simdb.bin
 ENCHANTS_EMBED = sim/internal/simdb/enchants.json
 ENCHANTS_SRC   = data/builds/$(ACTIVE_BUILD)/enchants.json
+SPELLRANKS_EMBED = sim/internal/spellranks/spellranks.json
+SPELLRANKS_SRC   = data/builds/$(ACTIVE_BUILD)/spellranks.json
 
 .PHONY: simdb
 # simdb copies the ACTIVE build's item database where sim/internal/simdb
@@ -115,7 +117,7 @@ ENCHANTS_SRC   = data/builds/$(ACTIVE_BUILD)/enchants.json
 # Every `go build`, `go test` and `go vet` in sim/ needs this file,
 # because //go:embed resolves at compile time. Run `make simdb` once
 # after a fresh clone.
-simdb: simdb-check $(SIMDB_EMBED) $(ENCHANTS_EMBED)
+simdb: simdb-check $(SIMDB_EMBED) $(ENCHANTS_EMBED) $(SPELLRANKS_EMBED)
 
 .PHONY: simdb-check
 # The diagnostics have to live in a phony target that runs BEFORE the
@@ -131,11 +133,24 @@ simdb-check:
 	  echo "no $(SIMDB_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
 	@test -f "$(ENCHANTS_SRC)" || { \
 	  echo "no $(ENCHANTS_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
+	@test -f "$(SPELLRANKS_SRC)" || { \
+	  echo "no $(SPELLRANKS_SRC); the data lane's \`python -m pipeline simdb\` has not run for build $(ACTIVE_BUILD)"; exit 1; }
 
 $(SIMDB_EMBED): $(SIMDB_SRC) $(ACTIVE_BUILD_JSON)
 	@mkdir -p $(dir $(SIMDB_EMBED))
 	@cp "$(SIMDB_SRC)" $(SIMDB_EMBED)
 	@echo "embedded $(SIMDB_SRC) ($$(wc -c < $(SIMDB_EMBED) | tr -d ' ') bytes)"
+
+# The spell rank table is embedded the same way as the item database
+# and the enchant table, in its own package (sim/internal/spellranks)
+# rather than beside them - see that package's doc comment for why:
+# sim/request's rotation rank rewrite needs to know, at request time,
+# which id is which rank of which spell and when it is learned, and
+# the browser lane has no round trip to ask with.
+$(SPELLRANKS_EMBED): $(SPELLRANKS_SRC) $(ACTIVE_BUILD_JSON)
+	@mkdir -p $(dir $(SPELLRANKS_EMBED))
+	@cp "$(SPELLRANKS_SRC)" $(SPELLRANKS_EMBED)
+	@echo "embedded $(SPELLRANKS_SRC) ($$(wc -c < $(SPELLRANKS_EMBED) | tr -d ' ') bytes)"
 
 # The enchant table rides with the item database, for the same reason:
 # an enchant's slot and item-type restrictions are what sim/bulk needs
