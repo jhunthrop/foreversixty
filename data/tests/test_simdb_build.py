@@ -1,4 +1,10 @@
-"""What is committed under builds/1.60.1.69893/ must satisfy the simulator contract.
+"""What is committed under builds/1.60.1.70009/ must satisfy the simulator contract.
+
+Re-measured 2026-09-27 for 1.60.1.70009 with wowhead's item supplement merged
+(spec 2026-09-27-wowhead-item-supplement-design.md): the item universe roughly doubles
+(9,666 from 4,986), weapons and set pieces with it; the fork-derived columns (unique,
+faction restriction, suffix options) and the enchant table are the client's own rows
+and did not move.
 
 Like tests/test_build_conformance.py and tests/test_beta_build.py, this reads
 the real output rather than running the pipeline over fixtures. The Go half is
@@ -17,21 +23,21 @@ import pytest
 
 from pipeline.simproto import pb
 
-BUILD = "1.60.1.69893"
+BUILD = "1.60.1.70009"
 BUILD_DIR = Path("builds") / BUILD
 GOCHECK = Path(__file__).parent / "gocheck"
 
-EXPECTED_ITEMS = 4986
+EXPECTED_ITEMS = 9666
 EXPECTED_ENCHANTS = 2216
-EXPECTED_WEAPONS = 759
-EXPECTED_IN_A_SET = 828
-#: 334 InventoryType-{13,21} weapons split into two disjoint HandType buckets:
-#: 216 InventoryType 13 (one-hand, either hand) and 118 InventoryType 21
+EXPECTED_WEAPONS = 1466
+EXPECTED_IN_A_SET = 1879
+#: 654 InventoryType-{13,21} weapons split into two disjoint HandType buckets:
+#: 402 InventoryType 13 (one-hand, either hand) and 252 InventoryType 21
 #: (main-hand only). See pipeline/simdb/items.py's HAND_TYPE_BY_INVENTORY_TYPE
 #: and tests/test_simdb_items.py's test_inventory_type_13_is_one_hand_not_main_hand,
 #: which pins the mapping itself against the fixtures.
-EXPECTED_ONE_HAND_WEAPONS = 216
-EXPECTED_MAIN_HAND_WEAPONS = 118
+EXPECTED_ONE_HAND_WEAPONS = 402
+EXPECTED_MAIN_HAND_WEAPONS = 252
 #: 1,329 enchants carry a stat in the final database, counting every source:
 #: the direct ITEM_MOD/resistance slots plus equip-spell auras. A narrower
 #: count, 1,255, is the equip-spell path alone (40 more of that path's rows
@@ -44,7 +50,7 @@ EXPECTED_ENCHANTS_WITH_STATS = 1329
 #: running `pipeline loot` then `pipeline simdb` for 1.60.1.69893 and
 #: reading builds/1.60.1.69893/simdb.bin -- not the same population as
 #: items.json's, so this is not derivable from any earlier task's numbers).
-EXPECTED_UNIQUE = 933
+EXPECTED_UNIQUE = 1012
 #: The whole-items.json figures from task 11's log line (loot: items.json:
 #: 69 with suffix options, 819 faction-restricted). simdb keeps only 4,986
 #: of the build's 19,171 items; both counts happen to survive that
@@ -203,7 +209,7 @@ def test_sim_items_carry_the_four_fields_contract_10_3_adds():
 
 def test_consumables_are_emitted_beside_the_protobuf():
     rows = json.loads((BUILD_DIR / "simconsumes.json").read_text())
-    assert len(rows) == 1579
+    assert len(rows) == 1577
     assert all(row["spell_ids"] for row in rows)
     assert [row["id"] for row in rows] == sorted(row["id"] for row in rows)
 

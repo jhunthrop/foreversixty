@@ -1,4 +1,4 @@
-"""What is committed under builds/1.60.1.69893/ must satisfy contract 6.
+"""What is committed under builds/1.60.1.70009/ must satisfy contract 6.
 
 Like tests/test_simdb_build.py and tests/test_gametables_build.py, this
 reads the real output rather than running the pipeline over fixtures:
@@ -18,7 +18,7 @@ from pipeline.loot.buffs import SIMBUFFS, ids_md_ids
 from pipeline.loot.sources import KIND_ORDER
 from pipeline.simdb.statmap import PROTO_STAT_ALIASES, STAT_IDS
 
-BUILD = "1.60.1.69893"
+BUILD = "1.60.1.70009"
 BUILD_DIR = Path("builds") / BUILD
 IDS_MD = Path("../sim/request/IDS.md")
 
@@ -31,14 +31,14 @@ IDS_MD = Path("../sim/request/IDS.md")
 #: list.
 SOURCES_PER_KIND = {
     "raid": 7,
-    "dungeon": 5,
+    "dungeon": 18,
     "world": 1,
     "crafted": 5,
     "rep": 31,
     "pvp": 13,
     "quest": 1,
 }
-TOTAL_SOURCES = 63
+TOTAL_SOURCES = 76
 
 RAID_SOURCE_IDS = [
     "raid:ahnqiraj",
@@ -55,44 +55,44 @@ RAID_SOURCE_IDS = [
 #: notes carry it.
 RAID_SHAPE = {
     "raid:ahnqiraj": (12, 7, 68),
-    "raid:blackwing-lair": (7, 3, 21),
+    "raid:blackwing-lair": (8, 3, 22),
     "raid:molten-core": (4, 5, 10),
-    "raid:naxxramas": (15, 1, 45),
+    "raid:naxxramas": (15, 1, 46),
     "raid:onyxias-lair": (0, 0, 0),
     "raid:ruins-of-ahnqiraj": (3, 1, 5),
     "raid:zulgurub": (1, 1, 2),
 }
-RAID_BOSSES = 42
-RAID_ITEMS = 151
+RAID_BOSSES = 43
+RAID_ITEMS = 153
 #: Bosses the fork database names no NPC for. An invented name would be
 #: worse than a blank one, so this is measured rather than forbidden.
 UNNAMED_RAID_BOSSES = 31
-UNNAMED_DUNGEON_BOSSES = 1
+UNNAMED_DUNGEON_BOSSES = 27
 
-DUNGEON_BOSSES = 6
-DUNGEONS_WITH_TRASH = 1
+DUNGEON_BOSSES = 160
+DUNGEONS_WITH_TRASH = 14
 WORLD_SOURCE_IDS = ["world:lord-kazzak"]
 CRAFTED_ITEMS = {
-    "crafted:blacksmithing": 190,
-    "crafted:enchanting": 3,
+    "crafted:blacksmithing": 191,
+    "crafted:enchanting": 4,
     "crafted:engineering": 47,
     "crafted:leatherworking": 191,
     "crafted:tailoring": 157,
 }
-QUEST_ITEMS = 1058
+QUEST_ITEMS = 1140
 PVP_ITEMS_PER_RANK = {5: 2, 6: 16, 7: 6, 8: 6, 9: 23, 10: 2, 11: 66, 12: 93,
                       14: 63, 15: 2, 16: 80, 17: 48, 18: 42}
 
 #: Every distinct item id the file names. Contract 10.4: all of them are
 #: the build's own, the 1,809 the fork names and this client does not
 #: having been left out.
-NAMED_ITEMS = 2507
+NAMED_ITEMS = 2970
 
 ENCHANT_ROWS = 173
 ENCHANT_EFFECT_IDS = 150
 SUFFIX_ROWS = 1168
-ITEMS_WITH_SUFFIXES = 69
-ITEMS_FACTION_RESTRICTED = 819
+ITEMS_WITH_SUFFIXES = 1628
+ITEMS_FACTION_RESTRICTED = 870
 SIMBUFF_ENTRIES = 165
 
 #: The stat keys `enchants.json` and `suffixes.json` emit, measured on the
@@ -230,7 +230,7 @@ def test_every_boss_id_is_its_source_id_plus_its_npc_id():
             assert boss["npc_id"] > 0
 
 
-def test_the_dungeon_sources_are_the_five_that_survived_the_filter():
+def test_the_dungeon_sources_are_the_eighteen_that_survived_the_filter():
     dungeons = [s for s in loot()["sources"] if s["kind"] == "dungeon"]
     assert len(dungeons) == SOURCES_PER_KIND["dungeon"]
     assert sum(len(s.get("bosses", [])) for s in dungeons) == DUNGEON_BOSSES

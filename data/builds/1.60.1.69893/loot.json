@@ -228,6 +228,14 @@
           ]
         },
         {
+          "id": "raid:blackwing-lair:14020",
+          "name": "Chromaggus",
+          "npc_id": 14020,
+          "items": [
+            19392
+          ]
+        },
+        {
           "id": "raid:blackwing-lair:14601",
           "name": "Ebonroc",
           "npc_id": 14601,
@@ -401,7 +409,8 @@
             23064,
             23065,
             23066,
-            23067
+            23067,
+            23577
           ]
         },
         {
@@ -521,11 +530,222 @@
       ]
     },
     {
+      "id": "dungeon:blackfathom-deeps",
+      "kind": "dungeon",
+      "name": "Blackfathom Deeps",
+      "zone_id": 719,
+      "bosses": [
+        {
+          "id": "dungeon:blackfathom-deeps:4829",
+          "name": "",
+          "npc_id": 4829,
+          "items": [
+            6909,
+            6910,
+            6911
+          ]
+        },
+        {
+          "id": "dungeon:blackfathom-deeps:4830",
+          "name": "",
+          "npc_id": 4830,
+          "items": [
+            6901,
+            6902,
+            6904
+          ]
+        },
+        {
+          "id": "dungeon:blackfathom-deeps:4831",
+          "name": "",
+          "npc_id": 4831,
+          "items": [
+            888,
+            3078,
+            11121
+          ]
+        },
+        {
+          "id": "dungeon:blackfathom-deeps:4832",
+          "name": "Twilight Lord Kelris",
+          "npc_id": 4832,
+          "items": [
+            1155,
+            6903
+          ]
+        },
+        {
+          "id": "dungeon:blackfathom-deeps:4887",
+          "name": "",
+          "npc_id": 4887,
+          "items": [
+            6907,
+            6908
+          ]
+        },
+        {
+          "id": "dungeon:blackfathom-deeps:6243",
+          "name": "",
+          "npc_id": 6243,
+          "items": [
+            6905,
+            6906
+          ]
+        }
+      ],
+      "trash": [
+        1454,
+        1481,
+        1486,
+        1491,
+        2034,
+        2271,
+        2567,
+        3413,
+        3414,
+        3415,
+        3416,
+        3417
+      ]
+    },
+    {
       "id": "dungeon:blackrock-depths",
       "kind": "dungeon",
       "name": "Blackrock Depths",
       "zone_id": 1584,
       "bosses": [
+        {
+          "id": "dungeon:blackrock-depths:8983",
+          "name": "Golem Lord Argelmach",
+          "npc_id": 8983,
+          "items": [
+            11822,
+            11823
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9017",
+          "name": "Lord Incendius",
+          "npc_id": 9017,
+          "items": [
+            11764,
+            11765
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9018",
+          "name": "High Interrogator Gerstahn ",
+          "npc_id": 9018,
+          "items": [
+            11623,
+            22240
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9024",
+          "name": "Pyromancer Loregrain",
+          "npc_id": 9024,
+          "items": [
+            11747,
+            11748,
+            11749,
+            11750
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9025",
+          "name": "Lord Roccor",
+          "npc_id": 9025,
+          "items": [
+            11631,
+            11632
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9027",
+          "name": "Gorosh the Dervish",
+          "npc_id": 9027,
+          "items": [
+            11726
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9029",
+          "name": "Eviscerator",
+          "npc_id": 9029,
+          "items": [
+            11730
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9030",
+          "name": "Ok'thor the Breaker",
+          "npc_id": 9030,
+          "items": [
+            11728
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9031",
+          "name": "Anub'shiah",
+          "npc_id": 9031,
+          "items": [
+            11731
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9032",
+          "name": "Hedrum the Creeper",
+          "npc_id": 9032,
+          "items": [
+            11633,
+            11729
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9033",
+          "name": "General Angerforge",
+          "npc_id": 9033,
+          "items": [
+            11817,
+            11821,
+            11841
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9041",
+          "name": "Warder Stilgiss",
+          "npc_id": 9041,
+          "items": [
+            22241
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9042",
+          "name": "Verek",
+          "npc_id": 9042,
+          "items": [
+            22242
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9056",
+          "name": "Fineous Darkvire",
+          "npc_id": 9056,
+          "items": [
+            11841
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9319",
+          "name": "Houndmaster Grebmar",
+          "npc_id": 9319,
+          "items": [
+            11623,
+            11627,
+            11628
+          ]
+        },
         {
           "id": "dungeon:blackrock-depths:9438",
           "name": "Dark Coffer",
@@ -534,7 +754,35 @@
             11945,
             11946
           ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9502",
+          "name": "Phalanx",
+          "npc_id": 9502,
+          "items": [
+            11745
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9537",
+          "name": "Guzzler",
+          "npc_id": 9537,
+          "items": [
+            11735
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-depths:9938",
+          "name": "Magmus",
+          "npc_id": 9938,
+          "items": [
+            11746
+          ]
         }
+      ],
+      "trash": [
+        11746,
+        11764
       ]
     },
     {
@@ -544,11 +792,112 @@
       "zone_id": 1583,
       "bosses": [
         {
+          "id": "dungeon:blackrock-spire:9196",
+          "name": "Highlord Omokk",
+          "npc_id": 9196,
+          "items": [
+            16670
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-spire:9236",
+          "name": "Shadow Hunter Vosh'gajin",
+          "npc_id": 9236,
+          "items": [
+            12651,
+            16712
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-spire:9237",
+          "name": "War Master Voone",
+          "npc_id": 9237,
+          "items": [
+            16676
+          ]
+        },
+        {
           "id": "dungeon:blackrock-spire:9568",
           "name": "Overlord Wyrmthalak",
           "npc_id": 9568,
           "items": [
-            13164
+            13164,
+            16679
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-spire:9816",
+          "name": "Pyroguard Emberseer",
+          "npc_id": 9816,
+          "items": [
+            16672
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-spire:10264",
+          "name": "Solakar Flamewreath",
+          "npc_id": 10264,
+          "items": [
+            16695
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-spire:10268",
+          "name": "Gizrul the Slavener",
+          "npc_id": 10268,
+          "items": [
+            16718
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-spire:10339",
+          "name": "Gyth",
+          "npc_id": 10339,
+          "items": [
+            12952,
+            16669
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-spire:10363",
+          "name": "General Drakkisath",
+          "npc_id": 10363,
+          "items": [
+            12602,
+            13142,
+            16666,
+            16674,
+            16688,
+            16690,
+            16700,
+            16706,
+            16721,
+            16726,
+            16730
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-spire:10429",
+          "name": "Warchief Rend Blackhand",
+          "npc_id": 10429,
+          "items": [
+            16733
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-spire:10430",
+          "name": "The Beast",
+          "npc_id": 10430,
+          "items": [
+            16729
+          ]
+        },
+        {
+          "id": "dungeon:blackrock-spire:10596",
+          "name": "Mother Smolderweb",
+          "npc_id": 10596,
+          "items": [
+            16715
           ]
         },
         {
@@ -561,8 +910,321 @@
         }
       ],
       "trash": [
+        12602,
+        12952,
         13164,
-        16309
+        16309,
+        16673,
+        16680,
+        16681,
+        16683,
+        16685,
+        16696,
+        16703,
+        16713,
+        16716,
+        16735,
+        16736
+      ]
+    },
+    {
+      "id": "dungeon:gnomeregan",
+      "kind": "dungeon",
+      "name": "Gnomeregan",
+      "zone_id": 721,
+      "bosses": [
+        {
+          "id": "dungeon:gnomeregan:6229",
+          "name": "",
+          "npc_id": 6229,
+          "items": [
+            9450
+          ]
+        },
+        {
+          "id": "dungeon:gnomeregan:6235",
+          "name": "",
+          "npc_id": 6235,
+          "items": [
+            9446,
+            9447,
+            9448
+          ]
+        },
+        {
+          "id": "dungeon:gnomeregan:7079",
+          "name": "",
+          "npc_id": 7079,
+          "items": [
+            9452,
+            9453,
+            9454
+          ]
+        },
+        {
+          "id": "dungeon:gnomeregan:7361",
+          "name": "",
+          "npc_id": 7361,
+          "items": [
+            9445
+          ]
+        },
+        {
+          "id": "dungeon:gnomeregan:7800",
+          "name": "",
+          "npc_id": 7800,
+          "items": [
+            9458,
+            9461
+          ]
+        }
+      ],
+      "trash": [
+        9449,
+        9486,
+        9488,
+        9491,
+        9510
+      ]
+    },
+    {
+      "id": "dungeon:maraudon",
+      "kind": "dungeon",
+      "name": "Maraudon",
+      "zone_id": 2100,
+      "bosses": [
+        {
+          "id": "dungeon:maraudon:12201",
+          "name": "Princess Theradras",
+          "npc_id": 12201,
+          "items": [
+            17710,
+            17713,
+            17714,
+            17715,
+            17766
+          ]
+        },
+        {
+          "id": "dungeon:maraudon:12203",
+          "name": "Landslide",
+          "npc_id": 12203,
+          "items": [
+            17943
+          ]
+        },
+        {
+          "id": "dungeon:maraudon:12225",
+          "name": "Celebras the Cursed",
+          "npc_id": 12225,
+          "items": [
+            17738,
+            17739,
+            17740
+          ]
+        },
+        {
+          "id": "dungeon:maraudon:12236",
+          "name": "Lord Vyletongue",
+          "npc_id": 12236,
+          "items": [
+            17755
+          ]
+        },
+        {
+          "id": "dungeon:maraudon:12237",
+          "name": "Meshlok the Harvester",
+          "npc_id": 12237,
+          "items": [
+            17741
+          ]
+        },
+        {
+          "id": "dungeon:maraudon:12258",
+          "name": "Razorlash",
+          "npc_id": 12258,
+          "items": [
+            17748
+          ]
+        },
+        {
+          "id": "dungeon:maraudon:13282",
+          "name": "Noxxion",
+          "npc_id": 13282,
+          "items": [
+            17745
+          ]
+        },
+        {
+          "id": "dungeon:maraudon:13596",
+          "name": "Rotgrip",
+          "npc_id": 13596,
+          "items": [
+            17728,
+            17730,
+            17732
+          ]
+        },
+        {
+          "id": "dungeon:maraudon:13601",
+          "name": "Tinkerer Gizlock",
+          "npc_id": 13601,
+          "items": [
+            17717,
+            17719
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dungeon:ragefire-chasm",
+      "kind": "dungeon",
+      "name": "Ragefire Chasm",
+      "zone_id": 2437,
+      "bosses": [
+        {
+          "id": "dungeon:ragefire-chasm:11518",
+          "name": "Jergosh the Invoker",
+          "npc_id": 11518,
+          "items": [
+            14147,
+            14150,
+            14151
+          ]
+        },
+        {
+          "id": "dungeon:ragefire-chasm:11520",
+          "name": "Taragaman the Hungerer",
+          "npc_id": 11520,
+          "items": [
+            14145,
+            14148,
+            14149
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dungeon:razorfen-downs",
+      "kind": "dungeon",
+      "name": "Razorfen Downs",
+      "zone_id": 722,
+      "bosses": [
+        {
+          "id": "dungeon:razorfen-downs:7355",
+          "name": "Tuten'kash",
+          "npc_id": 7355,
+          "items": [
+            10775
+          ]
+        },
+        {
+          "id": "dungeon:razorfen-downs:7357",
+          "name": "Mordresh Fire Eye",
+          "npc_id": 7357,
+          "items": [
+            10771
+          ]
+        },
+        {
+          "id": "dungeon:razorfen-downs:7358",
+          "name": "Amnennar the Coldbringer",
+          "npc_id": 7358,
+          "items": [
+            10761,
+            10762,
+            10763,
+            10764,
+            10765
+          ]
+        },
+        {
+          "id": "dungeon:razorfen-downs:8567",
+          "name": "Glutton",
+          "npc_id": 8567,
+          "items": [
+            10772,
+            10774
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dungeon:razorfen-kraul",
+      "kind": "dungeon",
+      "name": "Razorfen Kraul",
+      "zone_id": 491,
+      "bosses": [
+        {
+          "id": "dungeon:razorfen-kraul:4420",
+          "name": "Overlord Ramtusk",
+          "npc_id": 4420,
+          "items": [
+            6686,
+            6687
+          ]
+        },
+        {
+          "id": "dungeon:razorfen-kraul:4421",
+          "name": "Charlga Razorflank",
+          "npc_id": 4421,
+          "items": [
+            6692
+          ]
+        },
+        {
+          "id": "dungeon:razorfen-kraul:4422",
+          "name": "Agathelos the Raging",
+          "npc_id": 4422,
+          "items": [
+            6690,
+            6691
+          ]
+        },
+        {
+          "id": "dungeon:razorfen-kraul:4425",
+          "name": "Blind Hunter",
+          "npc_id": 4425,
+          "items": [
+            6695,
+            6696,
+            6697
+          ]
+        },
+        {
+          "id": "dungeon:razorfen-kraul:4428",
+          "name": "Death Speaker Jargba",
+          "npc_id": 4428,
+          "items": [
+            2816,
+            6682,
+            6685
+          ]
+        },
+        {
+          "id": "dungeon:razorfen-kraul:4438",
+          "name": "Razorfen Spearhide",
+          "npc_id": 4438,
+          "items": [
+            6679
+          ]
+        },
+        {
+          "id": "dungeon:razorfen-kraul:4842",
+          "name": "Earthcaller Halmgar",
+          "npc_id": 4842,
+          "items": [
+            6688
+          ]
+        }
+      ],
+      "trash": [
+        1976,
+        1978,
+        2039,
+        2264,
+        2549,
+        4438
       ]
     },
     {
@@ -572,6 +1234,126 @@
       "zone_id": 796,
       "bosses": [
         {
+          "id": "dungeon:scarlet-monastery:3974",
+          "name": "Houndmaster Loksey",
+          "npc_id": 3974,
+          "items": [
+            7710
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:3975",
+          "name": "Herod",
+          "npc_id": 3975,
+          "items": [
+            7717,
+            7719,
+            10330
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:3976",
+          "name": "Scarlet Commander Mograine",
+          "npc_id": 3976,
+          "items": [
+            7723,
+            7724,
+            7726,
+            10330
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:3977",
+          "name": "High Inquisitor Whitemane",
+          "npc_id": 3977,
+          "items": [
+            7721
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:3983",
+          "name": "Interrogator Vishas",
+          "npc_id": 3983,
+          "items": [
+            7682
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:4301",
+          "name": "",
+          "npc_id": 4301,
+          "items": [
+            10331
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:4302",
+          "name": "",
+          "npc_id": 4302,
+          "items": [
+            10328
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:4542",
+          "name": "High Inquisitor Fairbanks",
+          "npc_id": 4542,
+          "items": [
+            19507,
+            19508,
+            19509
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:4543",
+          "name": "Bloodmage Thalnos",
+          "npc_id": 4543,
+          "items": [
+            7684,
+            7685
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:6487",
+          "name": "Arcanist Doan",
+          "npc_id": 6487,
+          "items": [
+            7711,
+            7713,
+            7714
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:6488",
+          "name": "Fallen Champion",
+          "npc_id": 6488,
+          "items": [
+            7689,
+            7690,
+            7691
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:6489",
+          "name": "Ironspine",
+          "npc_id": 6489,
+          "items": [
+            7686,
+            7687,
+            7688
+          ]
+        },
+        {
+          "id": "dungeon:scarlet-monastery:6490",
+          "name": "Azshir the Sleepless",
+          "npc_id": 6490,
+          "items": [
+            7708,
+            7709,
+            7731
+          ]
+        },
+        {
           "id": "dungeon:scarlet-monastery:14693",
           "name": "Scorn",
           "npc_id": 14693,
@@ -579,6 +1361,20 @@
             23169
           ]
         }
+      ],
+      "trash": [
+        2277,
+        7730,
+        7752,
+        7754,
+        7757,
+        7786,
+        10328,
+        10329,
+        10330,
+        10331,
+        10332,
+        10333
       ]
     },
     {
@@ -588,6 +1384,132 @@
       "zone_id": 2057,
       "bosses": [
         {
+          "id": "dungeon:scholomance:1853",
+          "name": "Darkmaster Gandling",
+          "npc_id": 1853,
+          "items": [
+            16667,
+            16677,
+            16686,
+            16693,
+            16698,
+            16707,
+            16720,
+            16727,
+            16731
+          ]
+        },
+        {
+          "id": "dungeon:scholomance:10502",
+          "name": "Lady Illucia Barov",
+          "npc_id": 10502,
+          "items": [
+            14620,
+            14621,
+            14622,
+            14623,
+            14624
+          ]
+        },
+        {
+          "id": "dungeon:scholomance:10503",
+          "name": "Jandice Barov",
+          "npc_id": 10503,
+          "items": [
+            16701
+          ]
+        },
+        {
+          "id": "dungeon:scholomance:10504",
+          "name": "Lord Alexei Barov",
+          "npc_id": 10504,
+          "items": [
+            14620,
+            14621,
+            14622,
+            14623,
+            14624,
+            16722
+          ]
+        },
+        {
+          "id": "dungeon:scholomance:10505",
+          "name": "Instructor Malicia",
+          "npc_id": 10505,
+          "items": [
+            14620,
+            14621,
+            14622,
+            14623,
+            14624,
+            16710
+          ]
+        },
+        {
+          "id": "dungeon:scholomance:10506",
+          "name": "Kirtonos the Herald",
+          "npc_id": 10506,
+          "items": [
+            16734
+          ]
+        },
+        {
+          "id": "dungeon:scholomance:10507",
+          "name": "The Ravenian",
+          "npc_id": 10507,
+          "items": [
+            14620,
+            14621,
+            14622,
+            14623,
+            14624,
+            16716
+          ]
+        },
+        {
+          "id": "dungeon:scholomance:10508",
+          "name": "Ras Frostwhisper",
+          "npc_id": 10508,
+          "items": [
+            14525,
+            16689
+          ]
+        },
+        {
+          "id": "dungeon:scholomance:10901",
+          "name": "Lorekeeper Polkelt",
+          "npc_id": 10901,
+          "items": [
+            14620,
+            14621,
+            14622,
+            14623,
+            14624,
+            16705
+          ]
+        },
+        {
+          "id": "dungeon:scholomance:11261",
+          "name": "Doctor Theolen Krastinov",
+          "npc_id": 11261,
+          "items": [
+            14620,
+            14621,
+            14622,
+            14623,
+            14624,
+            16684
+          ]
+        },
+        {
+          "id": "dungeon:scholomance:11622",
+          "name": "Rattlegore",
+          "npc_id": 11622,
+          "items": [
+            16711
+          ]
+        },
+        {
           "id": "dungeon:scholomance:14516",
           "name": "Death Knight Darkreaver",
           "npc_id": 14516,
@@ -595,6 +1517,142 @@
             18760
           ]
         }
+      ],
+      "trash": [
+        14620,
+        14621,
+        14622,
+        14623,
+        14624,
+        16671,
+        16684,
+        16685,
+        16702,
+        16705,
+        16710,
+        16714,
+        16716,
+        16722
+      ]
+    },
+    {
+      "id": "dungeon:shadowfang-keep",
+      "kind": "dungeon",
+      "name": "Shadowfang Keep",
+      "zone_id": 209,
+      "bosses": [
+        {
+          "id": "dungeon:shadowfang-keep:3865",
+          "name": "Fel Steed / Shadow Charger",
+          "npc_id": 3865,
+          "items": [
+            6341
+          ]
+        },
+        {
+          "id": "dungeon:shadowfang-keep:3872",
+          "name": "Deathsworn Captain",
+          "npc_id": 3872,
+          "items": [
+            6641,
+            6642
+          ]
+        },
+        {
+          "id": "dungeon:shadowfang-keep:3886",
+          "name": "Razorclaw the Butcher",
+          "npc_id": 3886,
+          "items": [
+            1292,
+            6226,
+            6633
+          ]
+        },
+        {
+          "id": "dungeon:shadowfang-keep:3887",
+          "name": "Baron Silverlaine",
+          "npc_id": 3887,
+          "items": [
+            6321,
+            6323
+          ]
+        },
+        {
+          "id": "dungeon:shadowfang-keep:3927",
+          "name": "Wolf Master Nandos",
+          "npc_id": 3927,
+          "items": [
+            3748,
+            6314
+          ]
+        },
+        {
+          "id": "dungeon:shadowfang-keep:4274",
+          "name": "Fenrus the Devourer",
+          "npc_id": 4274,
+          "items": [
+            3230,
+            6340
+          ]
+        },
+        {
+          "id": "dungeon:shadowfang-keep:4275",
+          "name": "Archmage Arugal",
+          "npc_id": 4275,
+          "items": [
+            6220,
+            6324,
+            6392
+          ]
+        },
+        {
+          "id": "dungeon:shadowfang-keep:4278",
+          "name": "Commander Springvale",
+          "npc_id": 4278,
+          "items": [
+            3191,
+            6320
+          ]
+        },
+        {
+          "id": "dungeon:shadowfang-keep:4279",
+          "name": "Odo the Blindwatcher",
+          "npc_id": 4279,
+          "items": [
+            6318,
+            6319
+          ]
+        },
+        {
+          "id": "dungeon:shadowfang-keep:4627",
+          "name": "Arugal's Voidwalker",
+          "npc_id": 4627,
+          "items": [
+            5943
+          ]
+        },
+        {
+          "id": "dungeon:shadowfang-keep:14682",
+          "name": "Sever",
+          "npc_id": 14682,
+          "items": [
+            23173
+          ]
+        }
+      ],
+      "trash": [
+        1318,
+        1482,
+        1483,
+        1484,
+        1489,
+        1935,
+        1974,
+        2205,
+        2292,
+        2807,
+        3194,
+        6341
       ]
     },
     {
@@ -604,11 +1662,605 @@
       "zone_id": 2017,
       "bosses": [
         {
+          "id": "dungeon:stratholme:10435",
+          "name": "Magistrate Barthilas",
+          "npc_id": 10435,
+          "items": [
+            18722
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10436",
+          "name": "Baroness Anastari",
+          "npc_id": 10436,
+          "items": [
+            16704
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10437",
+          "name": "Nerub'enkan",
+          "npc_id": 10437,
+          "items": [
+            16675
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10438",
+          "name": "Maleki the Pallid",
+          "npc_id": 10438,
+          "items": [
+            16691
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10439",
+          "name": "Ramstein the Gorger",
+          "npc_id": 10439,
+          "items": [
+            16737
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10440",
+          "name": "Baron Rivendare",
+          "npc_id": 10440,
+          "items": [
+            13340,
+            16668,
+            16678,
+            16687,
+            16694,
+            16699,
+            16709,
+            16719,
+            16728,
+            16732
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10516",
+          "name": "The Unforgiven",
+          "npc_id": 10516,
+          "items": [
+            13404,
+            13405,
+            16717
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10558",
+          "name": "Hearthsinger Forresten",
+          "npc_id": 10558,
+          "items": [
+            16682
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10808",
+          "name": "Timmy the Cruel",
+          "npc_id": 10808,
+          "items": [
+            13400,
+            13402,
+            16724
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10809",
+          "name": "Stonespine",
+          "npc_id": 10809,
+          "items": [
+            13397
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10811",
+          "name": "Archivist Galford",
+          "npc_id": 10811,
+          "items": [
+            13387,
+            16692
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10812",
+          "name": "Balnazzar",
+          "npc_id": 10812,
+          "items": [
+            16725,
+            18720
+          ]
+        },
+        {
+          "id": "dungeon:stratholme:10997",
+          "name": "Cannon Master Willey",
+          "npc_id": 10997,
+          "items": [
+            16708
+          ]
+        },
+        {
           "id": "dungeon:stratholme:14684",
           "name": "Balzaphon",
           "npc_id": 14684,
           "items": [
             23125
+          ]
+        }
+      ],
+      "trash": [
+        16671,
+        16681,
+        16685,
+        16697,
+        16702,
+        16710,
+        16714,
+        16723,
+        16725,
+        16736,
+        18720
+      ]
+    },
+    {
+      "id": "dungeon:the-deadmines",
+      "kind": "dungeon",
+      "name": "The Deadmines",
+      "zone_id": 1581,
+      "bosses": [
+        {
+          "id": "dungeon:the-deadmines:598",
+          "name": "",
+          "npc_id": 598,
+          "items": [
+            1930
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:622",
+          "name": "",
+          "npc_id": 622,
+          "items": [
+            1936
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:636",
+          "name": "",
+          "npc_id": 636,
+          "items": [
+            1934
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:639",
+          "name": "Edwin VanCleef",
+          "npc_id": 639,
+          "items": [
+            5191,
+            5193,
+            5202,
+            10399
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:641",
+          "name": "",
+          "npc_id": 641,
+          "items": [
+            1945
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:642",
+          "name": "Sneed's Shredder",
+          "npc_id": 642,
+          "items": [
+            1937
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:643",
+          "name": "Sneed",
+          "npc_id": 643,
+          "items": [
+            5194,
+            5195
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:644",
+          "name": "Rhahk'Zor",
+          "npc_id": 644,
+          "items": [
+            872
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:645",
+          "name": "Cookie",
+          "npc_id": 645,
+          "items": [
+            5197,
+            5198
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:646",
+          "name": "Mr. Smite",
+          "npc_id": 646,
+          "items": [
+            5192,
+            5196,
+            7230
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:647",
+          "name": "Captain Greenskin",
+          "npc_id": 647,
+          "items": [
+            5200,
+            5201,
+            10403
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:1725",
+          "name": "",
+          "npc_id": 1725,
+          "items": [
+            1925
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:1731",
+          "name": "",
+          "npc_id": 1731,
+          "items": [
+            1944
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:1763",
+          "name": "Gilnid",
+          "npc_id": 1763,
+          "items": [
+            1156,
+            5199
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:3586",
+          "name": "Miner Johnson",
+          "npc_id": 3586,
+          "items": [
+            5443,
+            5444
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:3947",
+          "name": "",
+          "npc_id": 3947,
+          "items": [
+            1943
+          ]
+        },
+        {
+          "id": "dungeon:the-deadmines:4416",
+          "name": "",
+          "npc_id": 4416,
+          "items": [
+            10402
+          ]
+        }
+      ],
+      "trash": [
+        1929,
+        1951,
+        10400,
+        10401
+      ]
+    },
+    {
+      "id": "dungeon:the-stockade",
+      "kind": "dungeon",
+      "name": "The Stockade",
+      "zone_id": 717,
+      "bosses": [
+        {
+          "id": "dungeon:the-stockade:1666",
+          "name": "Kam Deepfury",
+          "npc_id": 1666,
+          "items": [
+            2280
+          ]
+        },
+        {
+          "id": "dungeon:the-stockade:1720",
+          "name": "Bruegal Ironknuckle",
+          "npc_id": 1720,
+          "items": [
+            2941,
+            2942,
+            3228
+          ]
+        }
+      ],
+      "trash": [
+        1076
+      ]
+    },
+    {
+      "id": "dungeon:the-temple-of-atalhakkar",
+      "kind": "dungeon",
+      "name": "The Temple of Atal'Hakkar",
+      "zone_id": 1477,
+      "bosses": [
+        {
+          "id": "dungeon:the-temple-of-atalhakkar:5708",
+          "name": "",
+          "npc_id": 5708,
+          "items": [
+            10801,
+            10802
+          ]
+        },
+        {
+          "id": "dungeon:the-temple-of-atalhakkar:5709",
+          "name": "",
+          "npc_id": 5709,
+          "items": [
+            10833
+          ]
+        },
+        {
+          "id": "dungeon:the-temple-of-atalhakkar:5710",
+          "name": "",
+          "npc_id": 5710,
+          "items": [
+            10807
+          ]
+        },
+        {
+          "id": "dungeon:the-temple-of-atalhakkar:5711",
+          "name": "",
+          "npc_id": 5711,
+          "items": [
+            10804
+          ]
+        },
+        {
+          "id": "dungeon:the-temple-of-atalhakkar:8580",
+          "name": "",
+          "npc_id": 8580,
+          "items": [
+            10799
+          ]
+        }
+      ],
+      "trash": [
+        10781,
+        10782,
+        10838,
+        10844,
+        12243,
+        12465,
+        12466
+      ]
+    },
+    {
+      "id": "dungeon:uldaman",
+      "kind": "dungeon",
+      "name": "Uldaman",
+      "zone_id": 1337,
+      "bosses": [
+        {
+          "id": "dungeon:uldaman:4854",
+          "name": "Grimlok",
+          "npc_id": 4854,
+          "items": [
+            9414,
+            9415,
+            9416
+          ]
+        },
+        {
+          "id": "dungeon:uldaman:6910",
+          "name": "Revelosh",
+          "npc_id": 6910,
+          "items": [
+            9389,
+            9390
+          ]
+        },
+        {
+          "id": "dungeon:uldaman:7206",
+          "name": "Ancient Stone Keeper",
+          "npc_id": 7206,
+          "items": [
+            9411
+          ]
+        },
+        {
+          "id": "dungeon:uldaman:7228",
+          "name": "Ironaya",
+          "npc_id": 7228,
+          "items": [
+            9407
+          ]
+        }
+      ],
+      "trash": [
+        9384,
+        9420
+      ]
+    },
+    {
+      "id": "dungeon:wailing-caverns",
+      "kind": "dungeon",
+      "name": "Wailing Caverns",
+      "zone_id": 718,
+      "bosses": [
+        {
+          "id": "dungeon:wailing-caverns:3653",
+          "name": "Kresh",
+          "npc_id": 3653,
+          "items": [
+            13245
+          ]
+        },
+        {
+          "id": "dungeon:wailing-caverns:3654",
+          "name": "Mutanus the Devourer",
+          "npc_id": 3654,
+          "items": [
+            6461,
+            6463,
+            6627
+          ]
+        },
+        {
+          "id": "dungeon:wailing-caverns:3669",
+          "name": "Lord Cobrahn",
+          "npc_id": 3669,
+          "items": [
+            6460,
+            6465,
+            10410
+          ]
+        },
+        {
+          "id": "dungeon:wailing-caverns:3670",
+          "name": "Lord Pythas",
+          "npc_id": 3670,
+          "items": [
+            6472,
+            6473
+          ]
+        },
+        {
+          "id": "dungeon:wailing-caverns:3671",
+          "name": "Lady Anacondra",
+          "npc_id": 3671,
+          "items": [
+            10412
+          ]
+        },
+        {
+          "id": "dungeon:wailing-caverns:3673",
+          "name": "Lord Serpentis",
+          "npc_id": 3673,
+          "items": [
+            5970,
+            6459,
+            6469,
+            10411
+          ]
+        },
+        {
+          "id": "dungeon:wailing-caverns:3674",
+          "name": "Skum",
+          "npc_id": 3674,
+          "items": [
+            6448,
+            6449
+          ]
+        },
+        {
+          "id": "dungeon:wailing-caverns:3840",
+          "name": "",
+          "npc_id": 3840,
+          "items": [
+            10413
+          ]
+        },
+        {
+          "id": "dungeon:wailing-caverns:5775",
+          "name": "Verdan the Everliving",
+          "npc_id": 5775,
+          "items": [
+            6629,
+            6630,
+            6631
+          ]
+        },
+        {
+          "id": "dungeon:wailing-caverns:5912",
+          "name": "Deviate Faerie Dragon",
+          "npc_id": 5912,
+          "items": [
+            5243,
+            6632
+          ]
+        }
+      ],
+      "trash": [
+        10413
+      ]
+    },
+    {
+      "id": "dungeon:zulfarrak",
+      "kind": "dungeon",
+      "name": "Zul'Farrak",
+      "zone_id": 1176,
+      "bosses": [
+        {
+          "id": "dungeon:zulfarrak:7267",
+          "name": "Chief Ukorz Sandscalp",
+          "npc_id": 7267,
+          "items": [
+            9476,
+            9477,
+            11086
+          ]
+        },
+        {
+          "id": "dungeon:zulfarrak:7271",
+          "name": "Witch Doctor Zum'rah",
+          "npc_id": 7271,
+          "items": [
+            18082
+          ]
+        },
+        {
+          "id": "dungeon:zulfarrak:7273",
+          "name": "Gahz'rilla",
+          "npc_id": 7273,
+          "items": [
+            9467,
+            9469
+          ]
+        },
+        {
+          "id": "dungeon:zulfarrak:7275",
+          "name": "Shadowpriest Sezz'ziz",
+          "npc_id": 7275,
+          "items": [
+            9470,
+            9473,
+            9474,
+            9475
+          ]
+        },
+        {
+          "id": "dungeon:zulfarrak:8127",
+          "name": "Antu'sul",
+          "npc_id": 8127,
+          "items": [
+            9379,
+            9639,
+            9640
+          ]
+        },
+        {
+          "id": "dungeon:zulfarrak:10082",
+          "name": "Zerillis",
+          "npc_id": 10082,
+          "items": [
+            12470
           ]
         }
       ]
@@ -751,6 +2403,7 @@
         12620,
         12624,
         12625,
+        12628,
         12631,
         12632,
         12633,
@@ -829,7 +2482,8 @@
       "items": [
         11287,
         11288,
-        11289
+        11289,
+        11811
       ]
     },
     {
@@ -2412,6 +4066,7 @@
         1116,
         1131,
         1172,
+        1264,
         1270,
         1273,
         1275,
@@ -2422,6 +4077,7 @@
         1304,
         1306,
         1310,
+        1317,
         1319,
         1436,
         1449,
@@ -2434,10 +4090,15 @@
         1893,
         2000,
         2032,
+        2033,
         2036,
         2037,
+        2041,
+        2042,
         2043,
         2044,
+        2074,
+        2089,
         2218,
         2230,
         2231,
@@ -2451,6 +4112,7 @@
         2902,
         2903,
         2904,
+        2906,
         2907,
         2908,
         2910,
@@ -2472,7 +4134,9 @@
         3209,
         3217,
         3235,
+        3324,
         3344,
+        3400,
         3431,
         3440,
         3446,
@@ -2492,6 +4156,7 @@
         3559,
         3560,
         3561,
+        3562,
         3565,
         3566,
         3567,
@@ -2562,6 +4227,7 @@
         4508,
         4509,
         4511,
+        4534,
         4535,
         4543,
         4545,
@@ -2575,6 +4241,7 @@
         4743,
         4744,
         4745,
+        4746,
         4909,
         4939,
         4947,
@@ -2636,6 +4303,7 @@
         5355,
         5356,
         5357,
+        5387,
         5420,
         5459,
         5587,
@@ -2663,8 +4331,10 @@
         5944,
         6084,
         6085,
+        6087,
         6092,
         6093,
+        6094,
         6095,
         6186,
         6187,
@@ -2674,10 +4344,16 @@
         6215,
         6223,
         6282,
+        6335,
+        6414,
         6477,
+        6480,
+        6481,
         6482,
         6502,
         6503,
+        6504,
+        6505,
         6659,
         6664,
         6665,
@@ -2703,10 +4379,14 @@
         6738,
         6739,
         6740,
+        6743,
         6744,
         6745,
         6746,
         6747,
+        6748,
+        6750,
+        6752,
         6757,
         6773,
         6774,
@@ -2723,6 +4403,9 @@
         6798,
         6801,
         6828,
+        6829,
+        6830,
+        6831,
         6832,
         6898,
         6900,
@@ -2747,6 +4430,10 @@
         6983,
         6984,
         6985,
+        6998,
+        7000,
+        7003,
+        7004,
         7106,
         7107,
         7115,
@@ -2774,8 +4461,13 @@
         7513,
         7514,
         7515,
+        7606,
+        7607,
         7738,
         7739,
+        7746,
+        7749,
+        8071,
         8703,
         9515,
         9516,
@@ -2784,10 +4476,20 @@
         9519,
         9520,
         9521,
+        9522,
+        9527,
+        9531,
+        9533,
+        9534,
+        9538,
         9598,
         9599,
         9603,
+        9604,
+        9605,
         9607,
+        9608,
+        9609,
         9630,
         9631,
         9632,
@@ -2835,6 +4537,8 @@
         9705,
         9706,
         10043,
+        10358,
+        10359,
         10418,
         10461,
         10462,
@@ -2869,6 +4573,9 @@
         10746,
         10747,
         10748,
+        10749,
+        10750,
+        10751,
         10778,
         10779,
         10820,
@@ -2876,7 +4583,9 @@
         10826,
         10827,
         11120,
+        11122,
         11229,
+        11262,
         11263,
         11265,
         11502,
@@ -2892,6 +4601,7 @@
         11862,
         11863,
         11864,
+        11865,
         11867,
         11868,
         11869,
@@ -2919,17 +4629,24 @@
         11918,
         11919,
         11936,
+        11963,
         12018,
         12021,
         12041,
+        12049,
         12050,
         12051,
+        12061,
+        12062,
         12102,
         12185,
         12295,
         12296,
         12522,
         12631,
+        13171,
+        13216,
+        13217,
         13473,
         13474,
         13475,
@@ -2954,6 +4671,16 @@
         15404,
         15405,
         15406,
+        15413,
+        15424,
+        15443,
+        15444,
+        15445,
+        15449,
+        15450,
+        15451,
+        15452,
+        15453,
         15455,
         15456,
         15457,
@@ -2999,6 +4726,7 @@
         15795,
         15796,
         15797,
+        15806,
         15812,
         15813,
         15814,
@@ -3049,6 +4777,7 @@
         17004,
         17005,
         17006,
+        17039,
         17046,
         17047,
         17523,
@@ -3058,6 +4787,13 @@
         17690,
         17691,
         17692,
+        17694,
+        17695,
+        17774,
+        17775,
+        17776,
+        17777,
+        17779,
         17900,
         17901,
         17902,
