@@ -156,3 +156,19 @@ func TestEmbeddedSpellRanksLoad(t *testing.T) {
 		t.Errorf(`HighestLearnedSpellID("hunter", 25295, 60) = (%d, %v), want (25295, true)`, id, ok)
 	}
 }
+
+func TestATierWithSeveralIDsStaysInTheRotationsBand(t *testing.T) {
+	// Earth Shock rank 5 at level 36: the classic 10412 beside two Forever
+	// copies. A rotation naming the classic rank 7 (10414) lands on 10412;
+	// one naming a Forever copy stays with the Forever ids.
+	ids := []int32{10412, 408688, 1220749}
+	if got := sameBandOrFirst(ids, 10414); got != 10412 {
+		t.Errorf("classic original: got %d, want 10412", got)
+	}
+	if got := sameBandOrFirst(ids, 408690); got != 408688 {
+		t.Errorf("forever original: got %d, want 408688", got)
+	}
+	if got := sameBandOrFirst([]int32{408688}, 10414); got != 408688 {
+		t.Errorf("no classic candidate: got %d, want the first id", got)
+	}
+}

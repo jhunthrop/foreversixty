@@ -19,8 +19,31 @@ from pathlib import Path
 import pytest
 
 from pipeline import spellranks
+from pipeline.models import SpellConstant
+from pipeline.spellranks import _spell_ranks_for_class
 
 FIXTURES = Path(__file__).parent / "fixtures" / "spellconst"
+
+
+def _spell(
+    name: str, *, rank: int, level: int, cost: int = 0, cast_time_ms: int = 0, gcd_ms: int = 0
+) -> SpellConstant:
+    """A spell constant with only the fields the chain builder reads set; the rest zero."""
+    return SpellConstant(
+        name=name,
+        rank=rank,
+        spell_level=level,
+        cost=cost,
+        cost_type=0,
+        cast_time_ms=cast_time_ms,
+        gcd_ms=gcd_ms,
+        cooldown_ms=0,
+        category_cooldown_ms=0,
+        duration_ms=0,
+        school_mask=0,
+        family_mask=[0, 0, 0, 0],
+        effects=[],
+    )
 
 
 def _result():
@@ -41,6 +64,32 @@ def test_sinister_strikes_rank_zero_duplicates_never_join_the_chain():
     assert [rank.level for rank in chain] == [1, 6, 14, 22, 30, 38, 46, 54]
     dupes = {14873, 15581, 15667, 19472, 1213441}
     assert dupes.isdisjoint({rank.id for rank in chain})
+
+
+def test_cost_less_gcd_less_copies_leave_a_ranked_chain():
+    """The 1.60 client keeps a copy of Lightning Bolt beside every rank (408439
+    beside 403...) and Magma Totem's pulse beside its totem (10579 beside
+    10585): same name, same rank, no cost, no cast time, no GCD. The chain
+    keeps the castable ids so a rewrite never names one the engine lacks."""
+    spells = {
+        "403": _spell("Lightning Bolt", rank=1, level=1, cost=15, cast_time_ms=1500, gcd_ms=1500),
+        "408439": _spell("Lightning Bolt", rank=1, level=1),
+        "529": _spell("Lightning Bolt", rank=2, level=8, cost=30, cast_time_ms=2000, gcd_ms=1500),
+        "408440": _spell("Lightning Bolt", rank=2, level=8),
+        "10585": _spell("Magma Totem", rank=2, level=36, cost=360, gcd_ms=1000),
+        "10579": _spell("Magma Totem", rank=2, level=36),
+    }
+    ranks = _spell_ranks_for_class(spells)
+    assert [r.id for r in ranks["Lightning Bolt"]] == [403, 529]
+    assert [r.id for r in ranks["Magma Totem"]] == [10585]
+
+
+def test_a_ranked_chain_with_no_castable_id_keeps_every_id():
+    spells = {
+        "1": _spell("Odd Aura", rank=1, level=10),
+        "2": _spell("Odd Aura", rank=2, level=20),
+    }
+    assert [r.id for r in _spell_ranks_for_class(spells)["Odd Aura"]] == [1, 2]
 
 
 def test_a_single_id_unranked_spell_with_a_learn_level_is_kept():

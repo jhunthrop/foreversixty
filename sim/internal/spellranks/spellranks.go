@@ -198,7 +198,24 @@ func highestLearnedIn(byID map[int32]*rankChain, id int32, level int) (newID int
 		if slices.Contains(tier.ids, id) {
 			return id, true
 		}
-		return tier.ids[0], true
+		return sameBandOrFirst(tier.ids, id), true
 	}
 	return 0, false
+}
+
+// foreverIDFloor separates the classic client's spell ids (all below it)
+// from the ids Forever added (all above it). When a tier still holds
+// more than one castable id -- Earth Shock keeps a classic id and two
+// Forever copies at every rank -- the rewrite stays in the band the
+// rotation named, since that is the family the engine registers.
+const foreverIDFloor = 100000
+
+func sameBandOrFirst(ids []int32, original int32) int32 {
+	forever := original >= foreverIDFloor
+	for _, candidate := range ids {
+		if (candidate >= foreverIDFloor) == forever {
+			return candidate
+		}
+	}
+	return ids[0]
 }

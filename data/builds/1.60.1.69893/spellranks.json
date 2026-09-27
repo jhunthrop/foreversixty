@@ -1,5 +1,5 @@
 {
-  "build": "1.60.1.70009",
+  "build": "1.60.1.69893",
   "classes": {
     "druid": {
       "1.60.0 - Item - Tier 1 - Druid - Balance 2P Bonus - Hit": [
@@ -1329,6 +1329,28 @@
           "rank": 0
         }
       ],
+      "Mangle": [
+        {
+          "id": 407995,
+          "level": 25,
+          "rank": 1
+        },
+        {
+          "id": 1238069,
+          "level": 36,
+          "rank": 2
+        },
+        {
+          "id": 1238070,
+          "level": 48,
+          "rank": 3
+        },
+        {
+          "id": 1238073,
+          "level": 60,
+          "rank": 4
+        }
+      ],
       "Mark of the Wild": [
         {
           "id": 1126,
@@ -1672,28 +1694,6 @@
           "id": 1223242,
           "level": 1,
           "rank": 0
-        }
-      ],
-      "Primal Bite": [
-        {
-          "id": 407995,
-          "level": 25,
-          "rank": 1
-        },
-        {
-          "id": 1238069,
-          "level": 36,
-          "rank": 2
-        },
-        {
-          "id": 1238070,
-          "level": 48,
-          "rank": 3
-        },
-        {
-          "id": 1238073,
-          "level": 60,
-          "rank": 4
         }
       ],
       "Prowl": [
@@ -4822,12 +4822,7 @@
         {
           "id": 2643,
           "level": 18,
-          "rank": 0
-        },
-        {
-          "id": 28751,
-          "level": 0,
-          "rank": 0
+          "rank": 1
         }
       ],
       "Multi-Shot Damage Increase": [
@@ -5247,7 +5242,7 @@
         {
           "id": 3043,
           "level": 22,
-          "rank": 0
+          "rank": 1
         }
       ],
       "Seal of the Dawn": [
@@ -6152,7 +6147,7 @@
         {
           "id": 23028,
           "level": 56,
-          "rank": 0
+          "rank": 1
         }
       ],
       "Arcane Concentration": [
@@ -6897,23 +6892,6 @@
         {
           "id": 11115,
           "level": 1,
-          "rank": 0
-        }
-      ],
-      "DNT": [
-        {
-          "id": 1321337,
-          "level": 10,
-          "rank": 0
-        },
-        {
-          "id": 1321339,
-          "level": 10,
-          "rank": 0
-        },
-        {
-          "id": 1321343,
-          "level": 10,
           "rank": 0
         }
       ],
@@ -10157,7 +10135,7 @@
         {
           "id": 25890,
           "level": 60,
-          "rank": 0
+          "rank": 1
         }
       ],
       "Greater Blessing of Might": [
@@ -13468,7 +13446,7 @@
         {
           "id": 27683,
           "level": 56,
-          "rank": 0
+          "rank": 1
         }
       ],
       "Prayer of Spirit": [
@@ -17005,6 +16983,28 @@
         },
         {
           "id": 16387,
+          "level": 58,
+          "rank": 4
+        }
+      ],
+      "Flametongue Totem Effect": [
+        {
+          "id": 8230,
+          "level": 28,
+          "rank": 1
+        },
+        {
+          "id": 8250,
+          "level": 38,
+          "rank": 2
+        },
+        {
+          "id": 10521,
+          "level": 48,
+          "rank": 3
+        },
+        {
+          "id": 15036,
           "level": 58,
           "rank": 4
         }
@@ -21590,11 +21590,6 @@
         },
         {
           "id": 25112,
-          "level": 10,
-          "rank": 0
-        },
-        {
-          "id": 1322007,
           "level": 10,
           "rank": 0
         }

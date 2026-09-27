@@ -38,9 +38,15 @@ logger = logging.getLogger(__name__)
 
 SPELLRANKS_FILE = "spellranks.json"
 
-#: One spell entry as (id, rank, level), the minimal shape this module works in
-#: before it becomes a `SpellRank`.
-_Entry = tuple[int, int, int]
+#: One spell entry as (id, rank, level, castable), the minimal shape this module
+#: works in before it becomes a `SpellRank`. `castable` is whether the client
+#: gives the id a mana cost, a cast time or a global cooldown -- what a spell the
+#: player presses has, and what the copies beside it lack.
+_Entry = tuple[int, int, int, bool]
+
+
+def _castable(spell: SpellConstant) -> bool:
+    return spell.cost > 0 or spell.cast_time_ms > 0 or spell.gcd_ms > 0
 
 
 def load_class_spell_constants(spellconst_dir: Path) -> list[ClassSpellConstants]:
@@ -54,7 +60,7 @@ def load_class_spell_constants(spellconst_dir: Path) -> list[ClassSpellConstants
 def _entries_by_name(spells: dict[str, SpellConstant]) -> dict[str, list[_Entry]]:
     groups: dict[str, list[_Entry]] = defaultdict(list)
     for spell_id, spell in spells.items():
-        groups[spell.name].append((int(spell_id), spell.rank, spell.spell_level))
+        groups[spell.name].append((int(spell_id), spell.rank, spell.spell_level, _castable(spell)))
     return groups
 
 
@@ -62,7 +68,15 @@ def _rank_chain(entries: list[_Entry]) -> list[_Entry]:
     """The player chain for one spell name: see the module docstring's caveat."""
     ranked = [entry for entry in entries if entry[1] >= 1]
     if ranked:
-        return sorted(ranked, key=lambda entry: (entry[1], entry[0]))
+        # The 1.60 client keeps cost-less, cast-less, GCD-less copies of a ranked spell
+        # beside the player's own ids at the same ranks (Lightning Bolt 403 beside
+        # 408439, Magma Totem's totem 10585 beside its pulse 10579); a rewrite that
+        # landed on one of those would name a spell the engine never registers, or
+        # registers without the periodic effect the rotation asks about. Keep the
+        # castable ids when the chain has any.
+        castable = [entry for entry in ranked if entry[3]]
+        chain = castable or ranked
+        return sorted(chain, key=lambda entry: (entry[1], entry[0]))
     return sorted(entries, key=lambda entry: entry[0])
 
 
@@ -70,9 +84,9 @@ def _spell_ranks_for_class(spells: dict[str, SpellConstant]) -> dict[str, list[S
     names: dict[str, list[SpellRank]] = {}
     for name, entries in sorted(_entries_by_name(spells).items()):
         chain = _rank_chain(entries)
-        if len(chain) <= 1 and all(level == 0 for _id, _rank, level in chain):
+        if len(chain) <= 1 and all(level == 0 for _id, _rank, level, _castable in chain):
             continue
-        names[name] = [SpellRank(id=i, rank=r, level=lvl) for i, r, lvl in chain]
+        names[name] = [SpellRank(id=i, rank=r, level=lvl) for i, r, lvl, _castable in chain]
     return names
 
 
@@ -95,7 +109,5 @@ def write_spell_ranks(build: str, root: Path = Path("builds")) -> Path:
     _write(result.model_dump(), path, sort_keys=True)
     refresh_manifest(build_dir)
     total = sum(len(names) for names in result.classes.values())
-    logger.info(
-        "wrote %s: %d ranked spell names over %d classes", path, total, len(result.classes)
-    )
+    logger.info("wrote %s: %d ranked spell names over %d classes", path, total, len(result.classes))
     return path
