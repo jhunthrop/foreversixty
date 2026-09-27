@@ -1,9 +1,10 @@
 <!-- web/src/components/AddonPasteSave.svelte -->
 <!-- The signed-in half of AddonPasteBox.svelte's successful decode (spec 2026-09-22 §7.4,
-     plan Ruling 1): the FS1 export string carries no character name, region, or ruleset --
-     the companion supplies those three separately, from the game client, and a bare paste
-     has no such source -- so this asks for them directly before POSTing
-     /v1/me/exports. Split out of AddonPasteBox.svelte (rather than inlined there) so the
+     plan Ruling 1): POST /v1/me/exports needs a character name, region and ruleset beside
+     the export. The addon's `who=` section supplies the name (first and last: Forever
+     characters have both) and the realm, which names the ruleset on every realm seen so
+     far, so those two start filled and the player checks them; the region has no source in
+     the string, so that one is asked. Split out of AddonPasteBox.svelte (rather than inlined there) so the
      signed-in and signed-out branches are each a pure render of an explicit `signedIn`
      prop and can be exercised with svelte/server's render() the way GuildJoin.svelte's own
      effect-driven fetchMeOnce() cannot be (its SSR test only ever sees the pre-effect
@@ -12,15 +13,21 @@
 <script lang="ts">
   import { ACCOUNT_FAILED, AccountError, postMyExports } from '../lib/account/api';
   import { addonCopy } from '../lib/addon/copy';
-  import { REGIONS, RULESETS } from '../lib/characters';
+  import { REGIONS, RULESETS, rulesetFromRealm } from '../lib/characters';
+  import type { FS1Build } from '../lib/planner/fs1';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { BUSY_CLASS } from '../lib/ui/busy';
 
-  let { signedIn, code }: { signedIn: boolean; code: string } = $props();
+  let { signedIn, code, character }: { signedIn: boolean; code: string; character?: FS1Build['character'] } =
+    $props();
 
-  let name = $state('');
+  // Initial values only, on purpose: AddonPasteBox.svelte keys this component on the code,
+  // so a new paste mounts a fresh form rather than overwriting what the player has typed.
+  // svelte-ignore state_referenced_locally
+  let name = $state(character?.name ?? '');
   let region = $state('');
-  let ruleset = $state('');
+  // svelte-ignore state_referenced_locally
+  let ruleset = $state<string>(character === undefined ? '' : rulesetFromRealm(character.realm));
   let busy = $state(false);
   let saved = $state(false);
   let error = $state('');
@@ -46,7 +53,7 @@
     <label class="label text-muted" for="addon-paste-name">{addonCopy.pasteNameLabel}</label>
     <input
       id="addon-paste-name"
-      class="border-line-warm bg-raised rounded-control text-text h-11 px-3 text-[14px]"
+      class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"
       bind:value={name}
       disabled={saved}
       data-testid="addon-paste-name"
@@ -54,7 +61,7 @@
     <div class="flex flex-wrap gap-3">
       <select
         aria-label={addonCopy.pasteRegionLabel}
-        class="border-line-warm bg-raised rounded-control text-text h-11 px-3 text-[14px]"
+        class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"
         bind:value={region}
         disabled={saved}
         data-testid="addon-paste-region"
@@ -66,7 +73,7 @@
       </select>
       <select
         aria-label={addonCopy.pasteRulesetLabel}
-        class="border-line-warm bg-raised rounded-control text-text h-11 px-3 text-[14px]"
+        class="border-line-warm bg-raised rounded-control text-text h-11 border px-3 text-[14px]"
         bind:value={ruleset}
         disabled={saved}
         data-testid="addon-paste-ruleset"

@@ -28,6 +28,28 @@ export function isRegion(value: string): value is Region {
   return (REGIONS as readonly string[]).includes(value);
 }
 
+/** The words a realm name spells a ruleset with, on Forever (the id itself) and on the beta. */
+const RULESET_WORDS: Readonly<Record<string, Ruleset>> = {
+  normal: 'normal',
+  pve: 'normal',
+  pvp: 'pvp',
+  rp: 'rp',
+  roleplay: 'rp',
+  hardcore: 'hardcore',
+  hc: 'hardcore',
+};
+
+/**
+ * The ruleset a realm name implies, so a form can fill the field the player would otherwise
+ * pick by hand: the addon's export names the realm the client reports (`Classic Beta PvP`,
+ * `Classic Beta PvE 2` on the beta, the ruleset itself once Forever's realms are its
+ * rulesets). Empty when no word of the name is a ruleset.
+ */
+export function rulesetFromRealm(realm: string): Ruleset | '' {
+  const words = realm.toLowerCase().split(/[^a-z0-9]+/);
+  return words.map((word) => RULESET_WORDS[word]).find((ruleset) => ruleset !== undefined) ?? '';
+}
+
 /** A ruleset the site has not heard of is echoed rather than hidden: the API is the truth. */
 export function rulesetLabel(id: string): string {
   return RULESETS.find((ruleset) => ruleset.id === id)?.label ?? id;

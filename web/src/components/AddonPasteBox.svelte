@@ -9,7 +9,7 @@
   import { fetchMeOnce } from '../lib/account/api';
   import { addonCopy } from '../lib/addon/copy';
   import { ADDON_PASTE_STATUS_MIN_H } from '../lib/addon/paste-layout';
-  import { decodeFS1 } from '../lib/planner/fs1';
+  import { decodeFS1, type FS1Build } from '../lib/planner/fs1';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { CURRENT_CHARACTER_CHANGED, writeCurrent } from '../lib/current-character';
   import { plannerCodeHref, simCodeHref } from '../lib/handoff-links';
@@ -19,6 +19,8 @@
   let code = $state('');
   let error = $state<string | null>(null);
   let loaded = $state<string | null>(null);
+  // The `who=` section of the loaded code, when it carries one: the save form starts from it.
+  let loadedCharacter = $state<FS1Build['character']>(undefined);
   // null while fetchMeOnce is still resolving -- the save/hint block renders nothing until
   // it is known, rather than flashing the signed-out hint first (same idiom as Account.svelte's
   // own status: 'loading' | 'ready' | 'failed', simplified to the one fact this needs).
@@ -44,6 +46,7 @@
     }
     error = null;
     loaded = trimmed;
+    loadedCharacter = result.build.character;
     // The export is now the site's current character, so the planner and every simulator
     // tab open on it without a second paste. The label is the character's own name with
     // the class when the export carries one (the addon's name section), else the class
@@ -120,7 +123,7 @@
         <Skeleton lines={1} minHeight={ADDON_PASTE_STATUS_MIN_H} testid="addon-paste-status-skeleton" />
       {:else}
         {#key loaded}
-          <AddonPasteSave {signedIn} code={loaded} />
+          <AddonPasteSave {signedIn} code={loaded} character={loadedCharacter} />
         {/key}
       {/if}
     </div>

@@ -24,6 +24,27 @@ describe('AddonPasteSave', () => {
     expect(body).not.toContain('data-testid="addon-paste-save"');
   });
 
+  it('starts from the name and the realm’s ruleset when the export names its character', () => {
+    const { body } = render(AddonPasteSave, {
+      props: { signedIn: true, code: CODE, character: { name: 'Bow Jackzon', realm: 'Classic Beta PvP' } },
+    });
+    expect(body).toContain('value="Bow Jackzon"');
+    expect(body).toMatch(/<option value="pvp"[^>]*selected/);
+    // The region has no source in the string, so the save still waits for it.
+    const match = /<button[^>]*data-testid="addon-paste-save-button"[^>]*>/.exec(body);
+    if (match === null) throw new Error('save button not rendered');
+    expect(match[0]).toContain('disabled');
+  });
+
+  it('draws the fields as fields: each has a border', () => {
+    const { body } = render(AddonPasteSave, { props: { signedIn: true, code: CODE } });
+    for (const testid of ['addon-paste-name', 'addon-paste-region', 'addon-paste-ruleset']) {
+      const tag = new RegExp(`<(?:input|select)[^>]*data-testid="${testid}"[^>]*>`).exec(body);
+      if (tag === null) throw new Error(`${testid} not rendered`);
+      expect(tag[0]).toMatch(/class="[^"]*\bborder\b/);
+    }
+  });
+
   it('disables the save button until every field is filled', () => {
     const { body } = render(AddonPasteSave, { props: { signedIn: true, code: CODE } });
     const match = /<button[^>]*data-testid="addon-paste-save-button"[^>]*>/.exec(body);

@@ -1,7 +1,6 @@
 // web/src/lib/characters.test.ts
 import { describe, expect, it } from 'vitest';
 import {
-  RULESETS,
   characterHref,
   characterKey,
   characterSlug,
@@ -18,7 +17,9 @@ import {
   parseGuildInviteToken,
   parseGuildPath,
   parseGuildSettingsPath,
+  rulesetFromRealm,
   rulesetLabel,
+  RULESETS,
   splitUnitName,
 } from './characters';
 
@@ -26,6 +27,15 @@ describe('rulesets and regions', () => {
   it('offers Forever’s four rulesets, which replaced realms', () => {
     expect(RULESETS.map((r) => r.id)).toEqual(['normal', 'pvp', 'rp', 'hardcore']);
     expect(RULESETS.map((r) => r.label)).toEqual(['Normal', 'PvP', 'Roleplay', 'Hardcore']);
+  });
+
+  it('reads the ruleset out of a realm name, beta spellings included', () => {
+    expect(rulesetFromRealm('Classic Beta PvP')).toBe('pvp');
+    expect(rulesetFromRealm('Classic Beta PvE 2')).toBe('normal');
+    expect(rulesetFromRealm('hardcore')).toBe('hardcore');
+    expect(rulesetFromRealm('Forever RP')).toBe('rp');
+    expect(rulesetFromRealm('Whitemane')).toBe('');
+    expect(rulesetFromRealm('')).toBe('');
   });
 
   it('labels a ruleset, and echoes anything it does not know', () => {
