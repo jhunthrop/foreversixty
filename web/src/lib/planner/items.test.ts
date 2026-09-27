@@ -1,7 +1,7 @@
 // web/src/lib/planner/items.test.ts
 import { describe, expect, it } from 'vitest';
 import fixtureItems from '../../fixtures/planner/items/warrior.json';
-import { itemsForSlot, rarityClassFor, searchItems } from './items';
+import { itemsForSlot, rarityClassFor, searchItems, wornItemLabel } from './items';
 import type { ItemFile } from './types';
 
 const items = (fixtureItems as ItemFile).items;
@@ -48,5 +48,24 @@ describe('searchItems', () => {
 
   it('returns everything for a blank query', () => {
     expect(searchItems(items, '   ')).toHaveLength(items.length);
+  });
+});
+
+describe('wornItemLabel', () => {
+  const copy = {
+    itemNotSimmed: (name: string) => `${name} · not simmed`,
+    unknownItem: (id: number) => `Unknown item ${id} · not in our data yet`,
+  };
+
+  it('names a planner item, says Empty for no item, and names an outside item as not simmed', () => {
+    expect(wornItemLabel('Band of Earthen Might', 21182, {}, copy)).toBe('Band of Earthen Might');
+    expect(wornItemLabel(undefined, undefined, {}, copy)).toBe('Empty');
+    expect(wornItemLabel(undefined, 264908, { '264908': 'Ancient Heirloom' }, copy)).toBe(
+      'Ancient Heirloom · not simmed',
+    );
+  });
+
+  it("is honest that an id nothing knows is our gap, not the player's", () => {
+    expect(wornItemLabel(undefined, 999999, {}, copy)).toBe('Unknown item 999999 · not in our data yet');
   });
 });

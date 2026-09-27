@@ -250,7 +250,11 @@ export const simCopy = {
   /** A slot the export names with an item this build's data does not carry (the beta's
    *  newest items land in the data a dump behind the client): the id is the honest
    *  answer, not "Empty", which would say the slot is bare. */
-  unknownItem: (id: number): string => `Item ${id}, not in this build's data yet`,
+  /** A worn item the planner files leave out (no combat stats, or a slot the sim does not
+   *  score): named, and said plainly not to count. */
+  itemNotSimmed: (name: string): string => `${name} · not simmed`,
+  /** An id no data of ours knows: numbered, and honest that it is our gap. */
+  unknownItem: (id: number): string => `Unknown item ${id} · not in our data yet`,
 
   sourceAddonTitle: 'From the addon',
   sourceAddonBody: 'Paste the export string from the Forever Sixty addon, or let the companion push it.',

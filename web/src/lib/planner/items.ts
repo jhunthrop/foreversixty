@@ -14,6 +14,23 @@ const RARITY_CLASS: Record<number, string> = {
   5: 'text-rarity-legendary',
 };
 
+/**
+ * The line a worn slot shows: the item's name when the planner files carry it; the name
+ * from the build's itemnames.json with "not simmed" when they do not (a keepsake ring, a
+ * totem); an honest "unknown item" only when no data of ours knows the id at all.
+ */
+export function wornItemLabel(
+  itemName: string | undefined,
+  equippedId: number | undefined,
+  outsideNames: Readonly<Record<string, string>>,
+  copy: { itemNotSimmed: (name: string) => string; unknownItem: (id: number) => string },
+): string {
+  if (itemName !== undefined) return itemName;
+  if (equippedId === undefined) return 'Empty';
+  const outside = outsideNames[String(equippedId)];
+  return outside === undefined ? copy.unknownItem(equippedId) : copy.itemNotSimmed(outside);
+}
+
 export function rarityClassFor(quality: number): string {
   return RARITY_CLASS[quality] ?? RARITY_CLASS[1];
 }

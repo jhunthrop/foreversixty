@@ -619,15 +619,6 @@
         />
       {/if}
 
-      {#if signedIn && simHistoryLazy.current}
-        <simHistoryLazy.current
-          rows={historyRows}
-          error={historyError}
-          kind={historyKind}
-          onkind={setHistoryKind}
-        />
-      {/if}
-
       {#if store.character !== null}
         <!-- Everything a loaded character brings with it, under the one wrapper `.reveal`
              is allowed to sit on (design 2026-09-22 spec section 1.4). The wrapper repeats
@@ -635,52 +626,10 @@
              they had as direct children of `sim-view`; none of them sets an `align-self`
              or a flex ratio, so nesting them one level deeper changes nothing else. -->
         <div class={`reveal flex flex-col ${VIEW_GAP}`}>
-          <SettingsBar
-            settings={store.settings}
-            spec={store.character.spec}
-            disabled={store.phase === 'running' || store.serverRunning}
-            onchange={(next) => store.setSettings(next)}
-            names={store.buffNames}
-            characterLevel={store.character.level}
-          />
-          <!-- Finding 6: the engine hash, right after the settings bar it used to sit above
-               every state -- same anchor, same classes, same test id and href, now visible
-               only once a character has actually reached the engine. -->
-          <div class="flex justify-end px-[18px] md:px-0">
-            <a
-              class="tabular text-muted font-mono text-[12px]"
-              href="/sim/specs"
-              data-testid="sim-engine-version">{engineLabel(ENGINE_VERSION)}</a
-            >
-          </div>
-          {#if store.settings.preset === 'custom'}
-            <BuffPanel
-              settings={store.settings}
-              build={store.character.tree_version}
-              names={store.buffNames}
-              disabled={store.phase === 'running' || store.serverRunning}
-              onchange={(next) => store.setSettings(next)}
-            />
-          {/if}
-          <RequestDrawer
-            request={store.buildRequest()}
-            disabled={store.phase === 'running' || store.serverRunning}
-            onvalidate={(json) => store.validateRequest(json)}
-            onapply={(request) => void store.applyRequest(request)}
-            onrun={(request) => void store.runRequest(request)}
-            onshare={(request) => shareUrlFor(request)}
-          />
-          {#if characterSpecRow !== null && needsFidelityNote(characterSpecRow)}
-            <!-- A fidelity state labels, it never blocks: the run control below always
-               renders once a character is loaded, and this is the one-line footnote
-               linking to the full card on /sim/specs. -->
-            <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="spec-fidelity-note">
-              <a href="/sim/specs" class={specPillClass(characterSpecRow.state)}
-                >{specStateLabel(characterSpecRow.state)}</a
-              >
-              {specStateNote(characterSpecRow.state)}
-            </p>
-          {/if}
+          <!-- 2026-09-28 layout pass: the run control and everything a run produces come
+               FIRST under the character -- the page's one job once a character is loaded is
+               to run it, and the result belongs beside the button that made it. The fight
+               settings, request drawer and engine hash follow as the secondary panel. -->
           <RunControl
             spec={store.character.spec}
             phase={store.phase}
@@ -761,16 +710,76 @@
                pre-filled with the report title rather than a dialog, and the saved link
                shown in place -- the page never navigates away from the result it just
                saved. -->
-          <SimSavePanel
-            result={store.result}
-            reportTitle={store.reportTitle}
-            onsave={(title) => store.save(title)}
+          {#if store.result !== null}
+            <!-- Shown only once there is something to save: with the run control first, a
+                 disabled Save sat alone between the run bar and the fight settings. -->
+            <SimSavePanel
+              result={store.result}
+              reportTitle={store.reportTitle}
+              onsave={(title) => store.save(title)}
+            />
+          {/if}
+          <SettingsBar
+            settings={store.settings}
+            spec={store.character.spec}
+            disabled={store.phase === 'running' || store.serverRunning}
+            onchange={(next) => store.setSettings(next)}
+            names={store.buffNames}
+            characterLevel={store.character.level}
           />
+          <!-- Finding 6: the engine hash, right after the settings bar it used to sit above
+               every state -- same anchor, same classes, same test id and href, now visible
+               only once a character has actually reached the engine. -->
+          <div class="flex justify-end px-[18px] md:px-0">
+            <a
+              class="tabular text-muted font-mono text-[12px]"
+              href="/sim/specs"
+              data-testid="sim-engine-version">{engineLabel(ENGINE_VERSION)}</a
+            >
+          </div>
+          {#if store.settings.preset === 'custom'}
+            <BuffPanel
+              settings={store.settings}
+              build={store.character.tree_version}
+              names={store.buffNames}
+              disabled={store.phase === 'running' || store.serverRunning}
+              onchange={(next) => store.setSettings(next)}
+            />
+          {/if}
+          <RequestDrawer
+            request={store.buildRequest()}
+            disabled={store.phase === 'running' || store.serverRunning}
+            onvalidate={(json) => store.validateRequest(json)}
+            onapply={(request) => void store.applyRequest(request)}
+            onrun={(request) => void store.runRequest(request)}
+            onshare={(request) => shareUrlFor(request)}
+          />
+          {#if characterSpecRow !== null && needsFidelityNote(characterSpecRow)}
+            <!-- A fidelity state labels, it never blocks: the run control below always
+               renders once a character is loaded, and this is the one-line footnote
+               linking to the full card on /sim/specs. -->
+            <p class="text-muted px-[18px] text-[13px] md:px-0" data-testid="spec-fidelity-note">
+              <a href="/sim/specs" class={specPillClass(characterSpecRow.state)}
+                >{specStateLabel(characterSpecRow.state)}</a
+              >
+              {specStateNote(characterSpecRow.state)}
+            </p>
+          {/if}
         </div>
       {:else if me === null || me.characters.length === 0}
         <p class="text-muted px-[18px] text-[14px] md:px-0" data-testid="sim-empty">
           {simCopy.emptyPrompt}
         </p>
+      {/if}
+
+      <!-- Saved sims last: history is what you come back to, not what you came for. -->
+      {#if signedIn && simHistoryLazy.current}
+        <simHistoryLazy.current
+          rows={historyRows}
+          error={historyError}
+          kind={historyKind}
+          onkind={setHistoryKind}
+        />
       {/if}
     {/if}
   {/if}

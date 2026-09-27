@@ -20,6 +20,11 @@ def build_parser() -> argparse.ArgumentParser:
     n = sub.add_parser("normalize", help="normalize raw CSVs into JSON")
     n.add_argument("--build", required=True)
 
+    inm = sub.add_parser(
+        "itemnames", help="write itemnames.json from a build's committed items (no raw/ needed)"
+    )
+    inm.add_argument("--build", required=True)
+
     i = sub.add_parser("icons", help="download and convert the icons a build refers to")
     i.add_argument("--build", required=True)
 
@@ -131,6 +136,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.wowhead_items import fetch_wowhead
 
         fetch_wowhead(args.build)
+    elif args.command == "itemnames":
+        from pipeline.normalize.itemnames import write_item_names_from_build
+
+        write_item_names_from_build(args.build)
     elif args.command == "normalize":
         from pipeline.normalize import normalize_build
 

@@ -74,6 +74,20 @@ export async function loadOptional<T>(url: string, empty: T): Promise<T> {
   }
 }
 
+/**
+ * Names for the wearable items the per-class files leave out (a quality-1 keepsake ring, a
+ * totem in the relic slot), so a character wearing one is named rather than numbered.
+ * Fetched only when such an id turns up; a build without the file names nothing.
+ */
+export interface ItemNamesFile {
+  build: string;
+  names: Record<string, string>;
+}
+
+export async function loadItemNames(build: string): Promise<ItemNamesFile> {
+  return loadOptional<ItemNamesFile>(dataUrl(build, 'itemnames.json'), { build, names: {} });
+}
+
 /** Sets are optional: a build without normalized items ships no sets.json. */
 export async function loadSets(build: string): Promise<ItemSet[]> {
   return loadOptional<ItemSet[]>(dataUrl(build, 'sets.json'), []);

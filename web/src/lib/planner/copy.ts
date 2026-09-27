@@ -5,7 +5,8 @@
 export const plannerCopy = {
   /** A slot an import names with an item this build's data does not carry; see
    *  simCopy.unknownItem, the same line on the simulator's strip. */
-  unknownItem: (id: number): string => `Item ${id}, not in this build's data yet`,
+  itemNotSimmed: (name: string): string => `${name} · not simmed`,
+  unknownItem: (id: number): string => `Unknown item ${id} · not in our data yet`,
   shareTitle: 'Share this build',
   share: 'Share',
   shareConfirmTitle: 'Share this build',

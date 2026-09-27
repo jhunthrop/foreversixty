@@ -6,8 +6,8 @@
   import { addonCopy } from '../../lib/addon/copy';
   import { scoreItem, specKeyFor, weightsFor, type WeightsFile } from '../../lib/addon/score';
   import { pointsPerTree } from '../../lib/planner/derive';
-  import { rarityClassFor } from '../../lib/planner/items';
-  import { dataUrl } from '../../lib/planner/load';
+  import { rarityClassFor, wornItemLabel } from '../../lib/planner/items';
+  import { dataUrl, loadItemNames } from '../../lib/planner/load';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { SLOTS, SLOT_LABELS, STAT_LABELS, type Slot, type StatKey } from '../../lib/planner/types';
   import { specLabel } from '../../lib/sim/spec-label';
@@ -15,6 +15,23 @@
   import ItemPicker from './ItemPicker.svelte';
 
   let { store, weights = [] }: { store: PlannerStore; weights?: WeightsFile } = $props();
+
+  // Names for worn items the per-class file leaves out (a keepsake ring, a totem), fetched
+  // once and only when a slot needs one -- the same lookup the simulator's strip makes.
+  let outsideNames = $state<Record<string, string>>({});
+  const needsOutsideNames = $derived(
+    SLOTS.some((slot) => {
+      const id = store.gear[slot];
+      return id !== undefined && !store.itemIndex.has(id);
+    }),
+  );
+  $effect(() => {
+    if (!needsOutsideNames) return;
+    const build = store.treeVersion;
+    void loadItemNames(build).then((file) => {
+      outsideNames = file.names;
+    });
+  });
 
   let openSlot = $state<Slot | null>(null);
 
@@ -78,7 +95,7 @@
           <span
             class={`truncate text-[13px] font-semibold ${item ? rarityClassFor(item.quality) : 'text-muted'}`}
           >
-            {item ? item.name : equippedId === undefined ? 'Empty' : plannerCopy.unknownItem(equippedId)}
+            {wornItemLabel(item?.name, equippedId, outsideNames, plannerCopy)}
           </span>
         </span>
       </button>

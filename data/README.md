@@ -9,6 +9,7 @@ uv run python -m pipeline fetch --product wow_classic_era            # latest bu
 uv run python -m pipeline fetch --product <forever product> --build <build>
 uv run python -m pipeline fetch-wowhead --build <build>                # the items the client's ItemSparse lacks
 uv run python -m pipeline normalize --build <build>
+uv run python -m pipeline itemnames --build <build>                   # names for wearables outside items/; normalize writes it too
 uv run python -m pipeline icons --build <build>
 uv run python -m pipeline tree-art --build <build>                    # then normalize again, so the manifest lists trees/
 uv run python -m pipeline loot --build <build> --engine "$FOREVER_ENGINE_PATH"   # needs raw/ and an engine checkout

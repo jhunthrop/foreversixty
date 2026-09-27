@@ -83,6 +83,7 @@ def normalize_build(
     from pipeline.normalize.effects import EffectIndex
     from pipeline.normalize.gear import ItemDataError, build_class_items, build_item_sets
     from pipeline.normalize.item_curves import load_item_curves
+    from pipeline.normalize.itemnames import write_item_names
     from pipeline.normalize.items import normalize_items
     from pipeline.normalize.sockets import check_no_sockets
     from pipeline.normalize.spells import normalize_spells
@@ -229,6 +230,7 @@ def normalize_build(
             class_items = merge_class_items(class_items, wowhead_supplement, class_rows)
         for record in class_items:
             write_model(record, build_dir / "items" / f"{record.class_slug}.json")
+        write_item_names(build, items, class_items, build_dir)
 
     # Curated Forever facts.
     classes, races, combos = merge_curated(

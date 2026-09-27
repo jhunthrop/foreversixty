@@ -9,8 +9,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { classColorVar } from '../../lib/report/format';
-  import { rarityClassFor } from '../../lib/planner/items';
-  import { dataUrl, loadTalents } from '../../lib/planner/load';
+  import { classIconUrl } from '../../lib/account/character-descriptor';
+  import { rarityClassFor, wornItemLabel } from '../../lib/planner/items';
+  import { dataUrl, loadItemNames, loadTalents } from '../../lib/planner/load';
   import { indexTalents, type TalentIndex } from '../../lib/planner/rules';
   import {
     SLOTS,
@@ -97,6 +98,25 @@
   const talentIndex = $derived<TalentIndex | null>(talents === null ? null : indexTalents(talents));
 
   const colour = $derived(classColorVar(character.class_slug));
+  const classIcon = $derived(classIconUrl({ class: character.class_slug }));
+
+  // Names for worn items the per-class files leave out, fetched once and only when a slot
+  // needs one (a quality-1 keepsake ring, a totem): the row then names the item and says it
+  // is not simmed, instead of quoting an id.
+  let outsideNames = $state<Record<string, string>>({});
+  const needsOutsideNames = $derived(
+    SLOTS.some((slot) => {
+      const id = character.gear[slot as Slot];
+      return id !== undefined && !items.has(id);
+    }),
+  );
+  $effect(() => {
+    if (!needsOutsideNames) return;
+    const build = character.tree_version;
+    void loadItemNames(build).then((file) => {
+      outsideNames = file.names;
+    });
+  });
   // A combat log records no race, so a character from one arrives with PENDING_RACE and
   // the descriptor asks instead of asserting. Rendering an empty string there would be the
   // page quietly claiming a raceless character, which is the thing Task 7 refuses to do.
@@ -131,7 +151,22 @@
   data-testid="sim-character"
 >
   <div class="flex flex-wrap items-center gap-3">
-    <span class="rounded-control h-9 w-9 shrink-0" style={`background: ${colour}`} aria-hidden="true"></span>
+    {#if classIcon !== undefined}
+      <img
+        src={classIcon}
+        alt=""
+        width="36"
+        height="36"
+        loading="lazy"
+        decoding="async"
+        class="rounded-control h-9 w-9 shrink-0 border object-cover"
+        style={`border-color: ${colour}`}
+        data-testid="sim-character-class-icon"
+      />
+    {:else}
+      <span class="rounded-control h-9 w-9 shrink-0" style={`background: ${colour}`} aria-hidden="true"
+      ></span>
+    {/if}
     <span class="text-[17px] font-semibold" style={`color: ${colour}`} data-testid="sim-character-name">
       {character.name}
     </span>
@@ -199,7 +234,7 @@
             <span
               class={`truncate text-[13px] font-semibold ${item ? rarityClassFor(item.quality) : 'text-muted'}`}
             >
-              {item ? item.name : equippedId === undefined ? 'Empty' : simCopy.unknownItem(equippedId)}
+              {wornItemLabel(item?.name, equippedId, outsideNames, simCopy)}
             </span>
           </span>
         </div>

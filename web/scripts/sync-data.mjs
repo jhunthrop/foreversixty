@@ -49,6 +49,7 @@ export const SYNC_ENTRIES = [
   // like the three above: a build the data lane has not regenerated this file for ships
   // none, and an absent file means "do not filter" (sim/sim-items.ts's loadSimItems).
   { name: 'simitems.json', kind: 'file', required: false },
+  { name: 'itemnames.json', kind: 'file', required: false },
   { name: 'classes.json', kind: 'file', required: true },
   { name: 'races.json', kind: 'file', required: true },
   { name: 'combos.json', kind: 'file', required: true },
