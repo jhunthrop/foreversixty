@@ -4,7 +4,12 @@
 
 export const characterListCopy = {
   heading: 'Characters',
-  empty: 'No characters linked yet. Sign in with Battle.net to link them.',
+  /** Blizzard serves no Forever character data yet (the API's import is off until it
+   *  does), so the empty state sends people to the addon's paste box, not to Battle.net. */
+  empty:
+    'No characters yet. Blizzard does not serve Forever character data yet, so paste an export from the addon.',
+  pasteAnExport: 'Paste an export',
+  pasteHref: '/setup#paste',
   refreshFromBattlenet: 'Refresh from Battle.net',
   importedFrom: (relative: string): string => `Imported from Battle.net ${relative}.`,
   verified: 'Verified',
@@ -16,11 +21,12 @@ export const characterListCopy = {
   /** spec 2026-09-22 §7.3, shown on /account after a Battle.net refresh redirect. */
   refreshedToast: 'Characters refreshed from Battle.net.',
   /** spec 2026-09-22 §3.3: the export "how" explained once, here, for every row. */
-  introBattlenetLine: 'Gear and talents come from Battle.net and refresh nightly.',
+  introBattlenetLine:
+    'Characters come from the addon for now: Blizzard serves no Forever character data yet.',
   introInstallAddonLink: 'Install the addon',
-  introAddonTail: 'to include bags and bank and to update right after a session;',
+  introAddonTail: 'to export gear, talents, bags and bank, then',
   introPasteLink: 'paste an export',
-  introPasteTail: 'for a character Battle.net has no data for.',
+  introPasteTail: 'to add a character here.',
   /** The account rows' and the sim landing rows' build-source pill (spec 2026-09-22 §3.1). */
   battlenetSource: 'Battle.net',
   addonSource: 'Addon',

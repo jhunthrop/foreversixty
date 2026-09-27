@@ -67,7 +67,7 @@
   {#if characters.length === 0}
     <EmptyState
       message={characterListCopy.empty}
-      action={{ label: characterListCopy.refreshFromBattlenet, href: REFRESH_HREF }}
+      action={{ label: characterListCopy.pasteAnExport, href: characterListCopy.pasteHref }}
       testid="account-characters-empty"
     />
   {:else}

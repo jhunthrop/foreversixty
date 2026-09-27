@@ -86,7 +86,8 @@ export const addonCopy = {
   setupStep1Title: '1. Sign in with Battle.net',
   setupStep2Title: '2. The addon',
   setupStep3Title: '3. The companion',
-  setupSignInBody: 'Imports your characters -- gear, talents and guild, refreshed nightly.',
+  setupSignInBody:
+    'Saves your builds, sims and logs to an account. Character import waits on Blizzard serving Forever data.',
   /** Second line under step 1: same family of copy as `accountPageCopy.noBattlenetDataForRealm`
    *  (spec 2026-09-25 §3.4) -- that key names the gap per character, on the account page,
    *  after sign-in; this one names it up front, before signing in, as a standalone fact. */

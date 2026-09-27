@@ -102,7 +102,7 @@ describe('CharacterList', () => {
 
   it('shows the export explanation once, as the panel footer line', () => {
     const { body } = render(CharacterList, { props: { characters: [GUILDED] } });
-    expect(body).toContain('Gear and talents come from Battle.net and refresh nightly.');
+    expect(body).toContain(characterListCopy.introBattlenetLine);
     expect(body).toContain(characterListCopy.introInstallAddonLink);
     expect(body).toContain('href="/setup"');
     expect(body).toContain(characterListCopy.introPasteLink);
@@ -133,7 +133,8 @@ describe('CharacterList', () => {
     const { body } = render(CharacterList, { props: { characters: [] } });
     expect(body).toContain(characterListCopy.empty);
     expect(body).toContain('data-testid="account-characters-empty"');
-    expect(body).toContain(characterListCopy.refreshFromBattlenet);
+    expect(body).toContain(characterListCopy.pasteAnExport);
+    expect(body).toContain(characterListCopy.pasteHref);
   });
 
   it('shows the imported-from line and the refresh link only when bnetImportedAt is set', () => {
