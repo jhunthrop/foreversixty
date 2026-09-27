@@ -18,8 +18,10 @@ item is worth. Weapon damage comes from `simdb/weapons.py` the same way.
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections import Counter
+from collections.abc import Iterable, Mapping
 
+from pipeline import wowhead_items as wh
 from pipeline.normalize.gear import (
     MAX_PLAYER_LEVEL,
     PLANNER_QUALITIES,
@@ -173,6 +175,33 @@ def _class_allowlist(allowable: int) -> list[int]:
     )
 
 
+def _apply_class_subclass(item: pb.SimItem, class_id: int, subclass: int, inventory: int) -> None:
+    """Armour type, weapon type, hand type and ranged weapon type from
+    Item.ClassID/SubclassID and InventoryType.
+
+    A client row and a wowhead supplement row resolve this identically once
+    each source's own columns are read into the same class/subclass/
+    inventory-type vocabulary (`wowhead_items.WowheadItem` already does that
+    translation for the wowhead side), so both `build_sim_items` and
+    `build_wowhead_sim_items` call this rather than each keeping its own copy
+    of the branch.
+    """
+    if class_id == ITEM_CLASS_ARMOR:
+        if subclass in ARMOR_TYPE_BY_SUBCLASS:
+            item.armor_type = pb.ArmorType.Value(ARMOR_TYPE_BY_SUBCLASS[subclass])
+        elif subclass == ARMOR_SUBCLASS_SHIELD:
+            item.weapon_type = pb.WeaponType.Value("WeaponTypeShield")
+    if class_id == ITEM_CLASS_WEAPON:
+        if subclass in WEAPON_TYPE_BY_SUBCLASS:
+            item.weapon_type = pb.WeaponType.Value(WEAPON_TYPE_BY_SUBCLASS[subclass])
+            if inventory in HAND_TYPE_BY_INVENTORY_TYPE:
+                item.hand_type = pb.HandType.Value(HAND_TYPE_BY_INVENTORY_TYPE[inventory])
+        if subclass in RANGED_TYPE_BY_SUBCLASS:
+            item.ranged_weapon_type = pb.RangedWeaponType.Value(
+                RANGED_TYPE_BY_SUBCLASS[subclass]
+            )
+
+
 def build_sim_items(
     pairs: list[tuple[dict[str, str], dict[str, str]]],
     set_names: Mapping[int, str],
@@ -221,20 +250,8 @@ def build_sim_items(
             unique=int_column(sparse, "MaxCount") == 1,
             required_level=int_column(sparse, "RequiredLevel"),
         )
-        if class_id == ITEM_CLASS_ARMOR:
-            if subclass in ARMOR_TYPE_BY_SUBCLASS:
-                item.armor_type = pb.ArmorType.Value(ARMOR_TYPE_BY_SUBCLASS[subclass])
-            elif subclass == ARMOR_SUBCLASS_SHIELD:
-                item.weapon_type = pb.WeaponType.Value("WeaponTypeShield")
+        _apply_class_subclass(item, class_id, subclass, inventory)
         if class_id == ITEM_CLASS_WEAPON:
-            if subclass in WEAPON_TYPE_BY_SUBCLASS:
-                item.weapon_type = pb.WeaponType.Value(WEAPON_TYPE_BY_SUBCLASS[subclass])
-                if inventory in HAND_TYPE_BY_INVENTORY_TYPE:
-                    item.hand_type = pb.HandType.Value(HAND_TYPE_BY_INVENTORY_TYPE[inventory])
-            if subclass in RANGED_TYPE_BY_SUBCLASS:
-                item.ranged_weapon_type = pb.RangedWeaponType.Value(
-                    RANGED_TYPE_BY_SUBCLASS[subclass]
-                )
             damage = weapon_damage(sparse, subclass, weapon_curves)
             if damage is not None:
                 item.weapon_damage_min = damage.minimum
@@ -260,3 +277,70 @@ def build_sim_items(
         )
         items.append(item)
     return items
+
+
+def build_wowhead_sim_items(
+    items: Iterable[wh.WowheadItem],
+    rating_factors: Mapping[str, float],
+    set_names: Mapping[int, str] | None = None,
+    untracked: Counter[str] | None = None,
+) -> list[pb.SimItem]:
+    """`SimItem` rows for wowhead's supplement -- the ids the client's own
+    `ItemSparse` lacks (`wowhead_items.supplement`'s output is what a caller
+    passes as `items` here).
+
+    Armour type, weapon type, hand type and ranged weapon type resolve
+    through `_apply_class_subclass`, the same helper `build_sim_items` calls,
+    since `WowheadItem.class_id`/`subclass_id`/`inventory_type` are already
+    the client's own vocabulary (`wowhead_items._client_subclass` does that
+    translation on load). Weapon damage and speed come straight from
+    wowhead's own `damage_min`/`damage_max`/`speed` rather than a curve --
+    wowhead states them outright; `simdb/weapons.py`'s curves are only for a
+    client row that has none.
+
+    Stats go through `wowhead_items.planner_stats` (which drops and counts a
+    wowhead key the planner does not track, the same as the planner's own
+    output) and then `ratings.convert_rating_stats`, exactly as a client
+    row's `resolve_item_values` output does: wowhead's crit/hit/defense/
+    dodge/parry/block amounts are combat-rating points, calibrated to match
+    the client's own resolved values one for one (see
+    `docs/superpowers/specs/2026-09-27-wowhead-item-supplement-design.md`),
+    so they need the same rating-to-percentage conversion before the engine
+    reads them as a flat percentage.
+
+    No on-equip effects: wowhead states them as prose, not data, so
+    `random_suffix_options` and `faction_restriction` stay at their proto
+    defaults (a supplement item is never fork-restricted or fork-suffixed --
+    `pipeline/simdb/__init__.py`'s caller logs the count and `untracked`
+    rather than raising, since dropping a stat the planner cannot place is
+    expected here, not an error).
+    """
+    set_names = set_names or {}
+    out: list[pb.SimItem] = []
+    for w in items:
+        stat_pairs: list[tuple[str, float]] = list(
+            convert_rating_stats(wh.planner_stats(w, untracked), rating_factors).items()
+        )
+        if w.armor:
+            stat_pairs.append(("armor", float(w.armor)))
+
+        item = pb.SimItem(
+            id=w.id,
+            name=w.name,
+            type=pb.ItemType.Value(ITEM_TYPE_BY_INVENTORY_TYPE[w.inventory_type]),
+            stats=stat_array(stat_pairs),
+            class_allowlist=_class_allowlist(w.class_mask) if w.class_mask is not None else [],
+            unique=w.unique,
+            required_level=w.required_level,
+        )
+        _apply_class_subclass(item, w.class_id, w.subclass_id, w.inventory_type)
+        if w.class_id == ITEM_CLASS_WEAPON and w.speed > 0:
+            item.weapon_damage_min = float(w.damage_min)
+            item.weapon_damage_max = float(w.damage_max)
+            item.weapon_speed = w.speed
+
+        if w.set_id:
+            item.set_id = w.set_id
+            item.set_name = set_names.get(w.set_id, "")
+        out.append(item)
+    return out
