@@ -16,6 +16,7 @@ uv run python -m pipeline phases                                                
 uv run python -m pipeline phases --check                                         # CI's drift gate; writes nothing
 uv run python -m pipeline simdb --build <build>
 uv run python -m pipeline simconst --build <build>
+uv run python -m pipeline levels --build <build>       # levels.json + spellranks.json; run after simconst
 uv run python -m pipeline gametables --build <build>
 uv run python -m pipeline specs
 uv run python -m pipeline specs --check                               # CI's drift gate; writes nothing
@@ -25,9 +26,9 @@ uv run ruff check . && uv run pytest
 ```
 
 `fetch`, `icons`, `tree-art` and `gametables` are the only commands that use the network.
-`normalize`, `diff`, `simdb`, `simconst`, `phases` and `specs` are offline and fully
-unit-tested against the fixtures in `tests/fixtures/`. `simproto` and `loot` read a local
-engine checkout and are the only commands that need one.
+`normalize`, `diff`, `simdb`, `simconst`, `levels`, `phases` and `specs` are offline and
+fully unit-tested against the fixtures in `tests/fixtures/`. `simproto` and `loot` read a
+local engine checkout and are the only commands that need one.
 
 ## Layout
 ```
@@ -66,6 +67,11 @@ curated/loot/*.json             overlays: Forever's own loot facts, with sources
 curated/simbuffs.json           the IDS.md ids no name join reaches, with sources
 curated/phases.json             the content phase calendar; emitted to web/src/data/phases.json
 builds/<build>/spellconst/<class-slug>.json  per-spell constants keyed by spell id
+builds/<build>/levels.json      per-level base stats, race offsets and spell crit per
+                                intellect, from wowhead's gear planner (absent for a build
+                                with no wowhead payload; see "Simulator outputs" below)
+builds/<build>/spellranks.json  per class, each spell name's player-castable rank chain,
+                                from spellconst/ (see "Simulator outputs" below)
 builds/<build>/gametables/<name>.txt  the client's own base-mana, crit and rating curves
 curated/{classes,races,combos}.json        hand-maintained Forever facts (committed)
 curated/specs.json              the canonical 27-spec list
@@ -118,6 +124,19 @@ the directory.
 `faction_restriction` (contract 10.3), which `python -m pipeline loot` writes -- so run
 `loot` before `simdb` too. See "New build checklist" below for the order and what
 `simdb`'s `_fork_columns` guard actually catches if you get it wrong.
+
+`levels` runs after `simconst` and writes two files the level-aware simulator design
+needs (docs/superpowers/specs/2026-09-27-level-aware-sim-design.md): `levels.json`,
+per-level base stats, race offsets and spell crit per intellect from wowhead's Forever
+gear planner's `baseStats`/`critSpell` page data (`pipeline/levels.py`), and
+`spellranks.json`, per class, each spell name's player-castable rank chain, from
+`spellconst/<class-slug>.json` (`pipeline/spellranks.py`). `levels.json` needs the same
+`raw/wowhead-gear-planner.js` `fetch-wowhead` writes, plus the build's own
+`classes.json`/`races.json` for the ChrClasses/ChrRaces id -> slug it refuses to guess
+at; a build with no wowhead payload at all (Classic Era, or a 1.60 build
+`fetch-wowhead` has not run for yet) writes `spellranks.json` only, and the CLI logs
+why `levels.json` was skipped. `spellranks.json` needs only `spellconst/`, so it is
+never skipped once `simconst` has run.
 
 `gametables/` is the one output that does not come from DB2. Vanilla's per-class base
 mana and its combat-rating conversions are in the client's `GameTables/*.txt`, which is
@@ -248,11 +267,15 @@ older-schema build works if one is ever fetched again.
    filter to make it pass. If `gametables` raises on an empty download, the new client does
    not ship that file: move it into `ABSENT_FROM_THE_CLASSIC_LINEAGE` and tell the engine
    lane, rather than dropping it quietly. If it raises a 400, the build string is wrong.
-7. Re-check the APL ranks: `uv run pytest tests/test_apl.py -q --no-cov`. Forever may
+7. Run `levels` after `simconst` and commit `levels.json` and `spellranks.json` (see
+   "Simulator outputs" above). If it raises on an unmapped ChrClasses or ChrRaces id, add
+   the missing row to `curated/classes.json`/`curated/races.json` (or investigate why the
+   client one is missing) rather than guessing at a slug.
+8. Re-check the APL ranks: `uv run pytest tests/test_apl.py -q --no-cov`. Forever may
    renumber spell ranks, and a rotation naming a rank the client does not have is a
    spell the engine cannot resolve.
-8. Curate the Forever facts under `curated/` with their sources.
-9. Commit `builds/<build>/` and bump `web/src/data/active-build.json`.
+9. Curate the Forever facts under `curated/` with their sources.
+10. Commit `builds/<build>/` and bump `web/src/data/active-build.json`.
 
 ## Known gaps
 - The Classic Era client has no `JournalInstance` table, so `dungeons.json` is empty for

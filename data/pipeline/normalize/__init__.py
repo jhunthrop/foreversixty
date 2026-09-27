@@ -26,14 +26,19 @@ class NormalizeResult:
     skipped: tuple[str, ...] = ()
 
 
-def _write(payload: Any, path: Path) -> None:
+def _write(payload: Any, path: Path, sort_keys: bool = False) -> None:
     """Write one JSON payload in the pipeline's only serialization format.
 
     indent=2, ensure_ascii=False and a single trailing newline are the
     determinism contract, so they are defined here once and nowhere else.
+    `sort_keys` is for a caller whose payload's dict order is not already
+    deterministic on its own (`pipeline.spellranks`, which builds its
+    `classes`/spell-name keys by iterating a `dict[str, SpellConstant]` in
+    whatever order Python handed it back).
     """
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    text = json.dumps(payload, indent=2, ensure_ascii=False, sort_keys=sort_keys)
+    path.write_text(text + "\n", encoding="utf-8")
 
 
 def write_json(records: Sequence[BaseModel], path: Path) -> None:

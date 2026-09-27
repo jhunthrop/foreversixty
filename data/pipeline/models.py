@@ -427,6 +427,56 @@ class ClassSpellConstants(BaseModel):
     spells: dict[str, SpellConstant]
 
 
+class LevelStats(BaseModel):
+    level: int
+    health: int
+    mana: int
+    agility: int
+    strength: int
+    intellect: int
+    spirit: int
+    stamina: int
+    #: Intellect needed for 1% spell crit at this level, from wowhead's
+    #: `critSpell`. None for a class the payload carries no spell-crit curve
+    #: for at all (warrior, rogue): "no data" rather than "zero".
+    spell_crit_per_int: float | None
+
+
+class ClassLevels(BaseModel):
+    levels: list[LevelStats]
+
+
+class RaceStatOffsets(BaseModel):
+    agility: int
+    strength: int
+    intellect: int
+    spirit: int
+    stamina: int
+
+
+class LevelsSource(BaseModel):
+    url: str
+    fetched_at: str
+
+
+class LevelsFile(BaseModel):
+    build: str
+    source: LevelsSource
+    classes: dict[str, ClassLevels]
+    race_offsets: dict[str, RaceStatOffsets]
+
+
+class SpellRank(BaseModel):
+    id: int
+    rank: int
+    level: int
+
+
+class SpellRanksFile(BaseModel):
+    build: str
+    classes: dict[str, dict[str, list[SpellRank]]]
+
+
 class ConsumableRecord(BaseModel):
     id: int
     name: str

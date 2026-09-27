@@ -126,6 +126,11 @@ jobs:
       # normalize that covers icons and tree art rather than before it.
       - run: uv run python -m pipeline simdb --build "$BUILD"
       - run: uv run python -m pipeline simconst --build "$BUILD"
+      # levels.json (per-level base stats) and spellranks.json (rank chains), for
+      # the level-aware simulator design. Needs simconst's spellconst/ and (for
+      # levels.json) the raw wowhead payload fetch-wowhead wrote above; a build
+      # with no wowhead payload still gets spellranks.json.
+      - run: uv run python -m pipeline levels --build "$BUILD"
       - run: uv run python -m pipeline gametables --build "$BUILD"
       - run: |
           PREV=$(ls builds | grep -vx "$BUILD" | sort -V | tail -1)

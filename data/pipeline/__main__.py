@@ -67,6 +67,13 @@ def build_parser() -> argparse.ArgumentParser:
     sc = sub.add_parser("simconst", help="write per-class spell constants for a build")
     sc.add_argument("--build", required=True)
 
+    lv = sub.add_parser(
+        "levels",
+        help="write levels.json (per-level base stats) and spellranks.json (rank "
+        "chains) for a build; run after simconst",
+    )
+    lv.add_argument("--build", required=True)
+
     sd = sub.add_parser("simdb", help="build the engine's SimDatabase for a build")
     sd.add_argument("--build", required=True)
 
@@ -165,6 +172,22 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.simconst import write_spell_constants
 
         print(write_spell_constants(args.build))
+    elif args.command == "levels":
+        from pipeline.levels import write_levels
+        from pipeline.spellranks import write_spell_ranks
+
+        levels_path = write_levels(args.build)
+        if levels_path is None:
+            # No wowhead payload for this build (Classic Era, or fetch-wowhead
+            # has not run yet): levels.json needs a source it has no other
+            # one for, so it is skipped rather than written empty or stale.
+            logging.getLogger("pipeline").warning(
+                "levels.json not written for build %s: no wowhead payload in raw/",
+                args.build,
+            )
+        else:
+            print(levels_path)
+        print(write_spell_ranks(args.build))
     elif args.command == "simdb":
         from pipeline.simdb import write_sim_database
 
