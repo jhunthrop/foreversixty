@@ -3,6 +3,14 @@
 `ManifestInterfaceData` maps a file data id to `Interface\\ICONS\\Name.blp`.
 The site refers to icons by the lowercase name without the extension, and the
 pipeline writes one 64x64 WebP per icon into `builds/<build>/icons/`.
+
+A wowhead supplement item (`pipeline/wowhead_items.py`, the ids the client's
+`ItemSparse` lacks) names its own icon the same way -- a lowercase name with
+no extension -- but the client has no file data id for one it never shipped.
+`file_id_by_name` is the reverse of `icon_names`, for looking a supplement
+icon's name back up to a CASC id when the client happens to carry the art
+under a different item; a name that resolves nowhere falls back to wowhead's
+own hosted copy (`download_zamimg_icons`).
 """
 
 from __future__ import annotations
@@ -23,6 +31,15 @@ logger = logging.getLogger(__name__)
 ICON_SIZE = 64
 CACHE_DIR = Path(".icon-cache")
 _BLP_SUFFIX = ".blp"
+
+#: Wowhead's own hosted icon art, for a supplement item's icon name the
+#: client's ManifestInterfaceData does not carry at all -- the same shape of
+#: gap the supplement itself exists to fill (`pipeline/wowhead_items.py`'s
+#: module docstring). Not versioned by client build: unlike a CASC file data
+#: id, this is a name-addressed URL wowhead itself hosts, so the same name
+#: fetches the same art regardless of which client build asked for it.
+ZAMIMG_ICON_URL = "https://wow.zamimg.com/images/wow/icons/large/{name}.jpg"
+_ZAMIMG_CACHE_SUBDIR = "zamimg"
 
 #: The client's own placeholder art, shown for anything the client itself has no
 #: icon for. This is a real `ManifestInterfaceData` row shipped in the game data,
@@ -63,6 +80,21 @@ def icon_names(manifest_rows: list[dict[str, str]]) -> dict[int, str]:
             continue
         names[int(row["ID"])] = file_name[: -len(_BLP_SUFFIX)].lower()
     return names
+
+
+def file_id_by_name(manifest_rows: list[dict[str, str]]) -> dict[str, int]:
+    """Lowercase icon name -> file data id, the reverse of `icon_names`.
+
+    A supplement item names its icon the way `icon_names` already normalises
+    the client's own names (lowercase, no extension), so looking one up here
+    is case-insensitive by construction rather than by a separate compare.
+    Two file ids can share a lowercase name; the lower id wins, the same rule
+    `wanted_icons`/`download_icons` apply to a collision.
+    """
+    by_name: dict[str, list[int]] = {}
+    for file_id, name in icon_names(manifest_rows).items():
+        by_name.setdefault(name, []).append(file_id)
+    return {name: min(ids) for name, ids in by_name.items()}
 
 
 def blp_to_webp(blp: bytes, size: int = ICON_SIZE) -> bytes:
@@ -168,6 +200,55 @@ def download_icons(
     return written
 
 
+def download_zamimg_icons(
+    names: set[str],
+    out_dir: Path,
+    cache_dir: Path = CACHE_DIR,
+    client: httpx.Client | None = None,
+) -> int:
+    """Write out_dir/<name>.webp for a supplement icon name that has no CASC
+    file id at all -- the client never shipped it (`file_id_by_name` found no
+    entry). Returns the number written.
+
+    Cached at cache_dir/zamimg/<name>.jpg, unversioned: unlike a CASC file
+    data id the same name always fetches the same wowhead-hosted image, so a
+    rerun for a later build reuses the same cached bytes rather than
+    refetching them.
+    """
+    own = client is None
+    if client is None:
+        client = httpx.Client(headers={"User-Agent": USER_AGENT})
+    out_dir.mkdir(parents=True, exist_ok=True)
+    zamimg_cache = cache_dir / _ZAMIMG_CACHE_SUBDIR
+    zamimg_cache.mkdir(parents=True, exist_ok=True)
+    written = 0
+    try:
+        for name in sorted(names):
+            target = out_dir / f"{name}.webp"
+            if target.exists():
+                continue
+            cached = zamimg_cache / f"{name}.jpg"
+            if cached.exists():
+                jpeg = cached.read_bytes()
+            else:
+                response = client.get(ZAMIMG_ICON_URL.format(name=name))
+                if response.status_code != 200 or not response.content:
+                    logger.warning(
+                        "icon %s is not on zamimg (status %s); skipping",
+                        name,
+                        response.status_code,
+                    )
+                    continue
+                jpeg = response.content
+                _atomic_write(cached, jpeg)
+            _atomic_write(target, blp_to_webp(jpeg))
+            written += 1
+    finally:
+        if own:
+            client.close()
+    return written
+
+
 def class_icon_names(build_dir: Path) -> set[str]:
     """classicon_<slug> for every class build_dir/classes.json lists.
 
@@ -224,6 +305,28 @@ def wanted_icons(build_dir: Path, names: dict[int, str]) -> dict[int, str]:
     return {file_id: wanted[file_id] for file_id in sorted(wanted)}
 
 
+def supplement_icon_names(raw: Path) -> set[str]:
+    """Icon names the wowhead supplement's own items name (`w.icon`), for a
+    build's raw/ directory. Empty when the build never fetched wowhead's
+    payload -- `fetch-wowhead` is a workflow step, not a hard requirement, so
+    a build's icons must still resolve without it.
+
+    Local imports: `pipeline.wowhead_items` and `pipeline.normalize.gear`
+    both import from this module (`resolve_icon`), so importing either at
+    module scope here would re-enter icons.py while it is still initialising.
+    """
+    from pipeline import wowhead_items as wh
+    from pipeline.csvio import read_csv
+    from pipeline.normalize.gear import int_column
+
+    path = raw / wh.RAW_FILE
+    if not path.exists():
+        return set()
+    client_ids = {int_column(row, "ID") for row in read_csv(raw / "ItemSparse.csv")}
+    supplement = wh.supplement(wh.load_items(path), client_ids)
+    return {item.icon for item in supplement}
+
+
 def icons_for_build(
     build: str,
     root: Path = Path("builds"),
@@ -236,8 +339,26 @@ def icons_for_build(
     raw = build_dir / "raw"
     if not raw.exists():
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
-    names = icon_names(read_csv(raw / "ManifestInterfaceData.csv"))
+    manifest_rows = read_csv(raw / "ManifestInterfaceData.csv")
+    names = icon_names(manifest_rows)
     wanted = wanted_icons(build_dir, names)
+
+    # A supplement icon the client happens to carry (under whatever item it
+    # was originally shipped for) goes through the same CASC path as every
+    # other icon; a name the client has nothing for at all falls back to
+    # wowhead's own hosted copy. Both are additive to what wanted_icons
+    # already found by reading the emitted JSON, since the wowhead items
+    # (`normalize`'s side of this feature) may not have landed in
+    # items/<class>.json in every build this runs against.
+    by_name = file_id_by_name(manifest_rows)
+    supplement_names = supplement_icon_names(raw)
+    wanted = {
+        **wanted,
+        **{by_name[name]: name for name in supplement_names if name in by_name},
+    }
+    zamimg_names = {name for name in supplement_names if name not in by_name}
+
     written = download_icons(wanted, build_dir / "icons", cache_dir, client, version=build)
-    print(f"{written} icons written, {len(wanted)} referenced")
+    written += download_zamimg_icons(zamimg_names, build_dir / "icons", cache_dir, client)
+    print(f"{written} icons written, {len(wanted) + len(zamimg_names)} referenced")
     return written
