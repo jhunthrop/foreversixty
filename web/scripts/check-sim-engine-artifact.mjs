@@ -1,7 +1,7 @@
 // web/scripts/check-sim-engine-artifact.mjs
 // The last-mile guard on web/public/_sim/README.md's contract: when PUBLIC_SIM_ENGINE=wasm
 // built this dist/, web/src/lib/sim/engine.ts's loadWasmEngine fetches
-// /_sim/<ENGINE_VERSION>/sim.wasm and sim.js at runtime, on a visitor's machine, not at
+// /_sim/<PUBLIC_SIM_ARTIFACT>/sim.wasm and sim.js at runtime, on a visitor's machine, not at
 // build time -- a stale or missing publish would ship silently and only fail in the
 // browser. This runs in `npm run postbuild`, after `astro build` has copied public/ into
 // dist/, so a pin bump (web/src/lib/sim/version.ts) that outran `make publish-wasm` (or a
@@ -33,15 +33,25 @@ if (match === null) {
 }
 const engineVersion = match[1];
 
-const distSimDir = path.join(webRoot, 'dist/_sim', engineVersion);
-const missing = ['sim.wasm', 'sim.js'].filter((file) => !existsSync(path.join(distSimDir, file)));
-if (missing.length > 0) {
+// The published directory is the artifact id (engine sha plus a hash of the wasm bytes,
+// `make publish-wasm`), handed to this build as PUBLIC_SIM_ARTIFACT; a build without one
+// links the bare version, the same fallback src/lib/sim/version.ts makes.
+const artifact = process.env.PUBLIC_SIM_ARTIFACT ?? engineVersion;
+if (!artifact.startsWith(engineVersion)) {
   console.error(
-    `check-sim-engine-artifact: PUBLIC_SIM_ENGINE=wasm but dist/_sim/${engineVersion}/ is missing ` +
-      `${missing.join(', ')}. A page built this way links to an engine that does not exist at the ` +
-      'path it names. Run `make simdb && make artifacts && make publish-wasm` from the repository ' +
-      'root before `npm run build`, and confirm the published sha matches ENGINE_VERSION.',
+    `check-sim-engine-artifact: PUBLIC_SIM_ARTIFACT=${artifact} does not belong to ENGINE_VERSION ${engineVersion}`,
   );
   process.exit(1);
 }
-console.log(`check-sim-engine-artifact: dist/_sim/${engineVersion}/ carries sim.wasm and sim.js`);
+const distSimDir = path.join(webRoot, 'dist/_sim', artifact);
+const missing = ['sim.wasm', 'sim.js'].filter((file) => !existsSync(path.join(distSimDir, file)));
+if (missing.length > 0) {
+  console.error(
+    `check-sim-engine-artifact: PUBLIC_SIM_ENGINE=wasm but dist/_sim/${artifact}/ is missing ` +
+      `${missing.join(', ')}. A page built this way links to an engine that does not exist at the ` +
+      'path it names. Run `make simdb && make artifacts && make publish-wasm` from the repository ' +
+      'root before `npm run build`, and export the id it wrote to artifacts/ARTIFACT_ID as PUBLIC_SIM_ARTIFACT.',
+  );
+  process.exit(1);
+}
+console.log(`check-sim-engine-artifact: dist/_sim/${artifact}/ carries sim.wasm and sim.js`);

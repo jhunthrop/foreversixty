@@ -1,8 +1,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { fixtureResult, fixtureSpecs } from '../../test-support/sim-api';
-import { ENGINE_VERSION, engineAssetUrl, engineLabel, isStale } from './version';
+import { ENGINE_ARTIFACT, ENGINE_VERSION, engineAssetUrl, engineLabel, isStale } from './version';
 
 // The engine lane's Go module is not on main yet -- this tree carries only the data lane's
 // sim/specs -- so the pin assertion runs when the file lands and reports as skipped until
@@ -27,12 +27,33 @@ describe('ENGINE_VERSION', () => {
 });
 
 describe('engineAssetUrl', () => {
-  it('addresses the immutable per-version directory', () => {
-    expect(engineAssetUrl('sim.wasm')).toBe(`/_sim/${ENGINE_VERSION}/sim.wasm`);
-    expect(engineAssetUrl('sim.js')).toBe(`/_sim/${ENGINE_VERSION}/sim.js`);
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.resetModules();
   });
 
-  it('can address an older version, so a stored result stays readable', () => {
+  it('addresses the immutable directory the page build was told about', () => {
+    expect(engineAssetUrl('sim.wasm')).toBe(`/_sim/${ENGINE_ARTIFACT}/sim.wasm`);
+    expect(engineAssetUrl('sim.js')).toBe(`/_sim/${ENGINE_ARTIFACT}/sim.js`);
+  });
+
+  it('falls back to the bare version when no artifact was published for this build', () => {
+    // vitest never sets PUBLIC_SIM_ARTIFACT, so this IS the fake-engine build's path.
+    expect(ENGINE_ARTIFACT).toBe(ENGINE_VERSION);
+  });
+
+  it('names the published bytes, not only the pin, when web.yml hands the build an artifact id', async () => {
+    // The wasm carries the site's own request layer, which changes without the pin
+    // moving; the directory is served immutable for a year, so its name must change
+    // whenever the bytes do or a returning visitor keeps the stale engine.
+    vi.stubEnv('PUBLIC_SIM_ARTIFACT', `${ENGINE_VERSION}-95318caea162`);
+    vi.resetModules();
+    const fresh = await import('./version');
+    expect(fresh.ENGINE_ARTIFACT).toBe(`${ENGINE_VERSION}-95318caea162`);
+    expect(fresh.engineAssetUrl('sim.wasm')).toBe(`/_sim/${ENGINE_VERSION}-95318caea162/sim.wasm`);
+  });
+
+  it('can address an older artifact, so a stored result stays readable', () => {
     expect(engineAssetUrl('sim.wasm', '6a1c2d9')).toBe('/_sim/6a1c2d9/sim.wasm');
   });
 });

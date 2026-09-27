@@ -267,11 +267,24 @@ publish-wasm: artifacts
 #	The binary is asked what engine it is, rather than the generated
 #	file being scraped a second time: one answer, from the artifact
 #	itself, so the directory can never name a sha the wasm is not.
+#	The directory is the engine sha PLUS twelve hex digits of the wasm's own
+#	sha256: the site's request layer (sim/request, the embedded item
+#	database and rank tables) is compiled into the same file, and it
+#	changes without the engine pin moving. The directory is served
+#	immutable for a year, so a name that only carried the pin let a
+#	republished file sit behind a stale copy in every browser that had
+#	the old one (2026-09-28: a fix in sim/request never reached returning
+#	visitors). $(ARTIFACT_DIR)/ARTIFACT_ID carries the name for web.yml,
+#	which hands it to the page build as PUBLIC_SIM_ARTIFACT.
 	@sha=$$(./$(ARTIFACT_DIR)/forever-sim -version); \
 	test -n "$$sha" || { echo "forever-sim -version printed nothing"; exit 1; }; \
-	mkdir -p "$(WEB_SIM_DIR)/$$sha"; \
-	cp $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.js "$(WEB_SIM_DIR)/$$sha/"; \
-	echo "published to $(WEB_SIM_DIR)/$$sha"
+	digest=$$( (sha256sum $(ARTIFACT_DIR)/sim.wasm 2>/dev/null || shasum -a 256 $(ARTIFACT_DIR)/sim.wasm) | cut -c1-12 ); \
+	test -n "$$digest" || { echo "could not hash $(ARTIFACT_DIR)/sim.wasm"; exit 1; }; \
+	id="$$sha-$$digest"; \
+	mkdir -p "$(WEB_SIM_DIR)/$$id"; \
+	cp $(ARTIFACT_DIR)/sim.wasm $(ARTIFACT_DIR)/sim.js "$(WEB_SIM_DIR)/$$id/"; \
+	printf '%s\n' "$$id" > $(ARTIFACT_DIR)/ARTIFACT_ID; \
+	echo "published to $(WEB_SIM_DIR)/$$id"
 
 CURATED_APL_DIR = data/curated/apl
 CURATED_SPECS_JSON = data/curated/specs.json

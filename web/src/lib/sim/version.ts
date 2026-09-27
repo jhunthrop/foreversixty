@@ -10,9 +10,20 @@
 
 export const ENGINE_VERSION = 'f29a73753';
 
-/** Where a version's browser artifacts live. Cached immutably, so the path carries the sha. */
-export function engineAssetUrl(file: 'sim.wasm' | 'sim.js', version: string = ENGINE_VERSION): string {
-  return `/_sim/${version}/${file}`;
+/**
+ * The directory the browser artifacts were published under for THIS page build: the engine
+ * sha plus twelve hex digits of the wasm's own sha256 (`make publish-wasm`), handed to the
+ * build by web.yml as PUBLIC_SIM_ARTIFACT. The site's request layer is compiled into the
+ * wasm and changes without the pin moving, and the directory is served immutable for a
+ * year, so the name has to change whenever the bytes do. A build with no artifact (the
+ * fake engine, tests) falls back to the bare version.
+ */
+export const ENGINE_ARTIFACT: string =
+  (import.meta.env.PUBLIC_SIM_ARTIFACT as string | undefined) ?? ENGINE_VERSION;
+
+/** Where the browser artifacts live. Cached immutably, so the path carries the bytes' name. */
+export function engineAssetUrl(file: 'sim.wasm' | 'sim.js', artifact: string = ENGINE_ARTIFACT): string {
+  return `/_sim/${artifact}/${file}`;
 }
 
 /**

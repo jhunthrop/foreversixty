@@ -20,7 +20,7 @@
 // It defaults to 'fake' because sim.wasm does not exist yet; web.yml sets it to 'wasm' once
 // CI builds an artifact for the pinned sha.
 import type { StageRequests } from './bulk-types';
-import { ENGINE_VERSION, engineAssetUrl } from './version';
+import { ENGINE_ARTIFACT, engineAssetUrl } from './version';
 
 export type EngineMode = 'fake' | 'wasm';
 
@@ -204,10 +204,10 @@ async function loadWasmEngine(version: string): Promise<EngineModule> {
   };
 }
 
-export async function loadEngine(version: string = ENGINE_VERSION): Promise<EngineModule> {
+export async function loadEngine(artifact: string = ENGINE_ARTIFACT): Promise<EngineModule> {
   if (ENGINE_MODE === 'fake') {
     const { createFakeEngine } = await import('../../fixtures/sim/engine-fake');
     return createFakeEngine();
   }
-  return loadWasmEngine(version);
+  return loadWasmEngine(artifact);
 }

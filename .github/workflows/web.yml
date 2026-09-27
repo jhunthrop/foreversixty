@@ -104,11 +104,14 @@ jobs:
       - name: build sim.wasm, sim.js and forever-sim
         working-directory: .
         run: make artifacts
-      - name: publish the browser pair under web/public/_sim/<engine sha>/
+      - name: publish the browser pair under web/public/_sim/<engine sha>-<wasm hash>/
         working-directory: .
-        run: make publish-wasm
-      # web/public/_sim/README.md's contract is that the published directory's name IS the
-      # engine sha, and that sha must be the one web/src/lib/sim/version.ts's ENGINE_VERSION
+        run: |
+          make publish-wasm
+          echo "PUBLIC_SIM_ARTIFACT=$(cat artifacts/ARTIFACT_ID)" >> "$GITHUB_ENV"
+      # web/public/_sim/README.md's contract is that the published directory's name is the
+      # engine sha plus a hash of the wasm's bytes (PUBLIC_SIM_ARTIFACT, set by the publish
+      # step), and that sha must be the one web/src/lib/sim/version.ts's ENGINE_VERSION
       # literal names -- version.test.ts asserts the same equality against
       # sim/enginever/version.go, but that test runs the CHECKED-IN fake build in `verify`
       # above, not this job, so the equality is asserted again here against what was just
@@ -125,9 +128,10 @@ jobs:
             echo "engine version mismatch: sim/enginever/version.go pins '$pin' but web/src/lib/sim/version.ts carries '$web_version'"
             exit 1
           fi
-          test -f "web/public/_sim/$pin/sim.wasm" || { echo "missing web/public/_sim/$pin/sim.wasm"; exit 1; }
-          test -f "web/public/_sim/$pin/sim.js"   || { echo "missing web/public/_sim/$pin/sim.js"; exit 1; }
-          echo "engine $pin: sim.wasm and sim.js published for the production build"
+          case "$PUBLIC_SIM_ARTIFACT" in "$pin-"*) ;; *) echo "PUBLIC_SIM_ARTIFACT '$PUBLIC_SIM_ARTIFACT' does not belong to engine $pin"; exit 1;; esac
+          test -f "web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.wasm" || { echo "missing web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.wasm"; exit 1; }
+          test -f "web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.js"   || { echo "missing web/public/_sim/$PUBLIC_SIM_ARTIFACT/sim.js"; exit 1; }
+          echo "engine $pin: sim.wasm and sim.js published as $PUBLIC_SIM_ARTIFACT for the production build"
       # CF_PAGES makes the build fail if src/data/links.json still holds a PLACEHOLDER link.
       # FOREVER_DATA is unset here on purpose: a real build prerenders no fixture report,
       # rankings, character or guild page and publishes no public/logs-data/.

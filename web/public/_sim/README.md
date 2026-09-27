@@ -1,8 +1,12 @@
-# `/_sim/<ENGINE_VERSION>/`
+# `/_sim/<ENGINE_VERSION>-<sha256 of sim.wasm, 12 hex>/`
 
 `sim.wasm` and `sim.js`, built from the site's own `sim/` Go module (`sim/cmd/wasm`) at one
 pinned engine version, served with
-`Cache-Control: public, max-age=31536000, immutable` — the version is in the path, so a
+`Cache-Control: public, max-age=31536000, immutable` — the directory name carries the engine sha AND a hash of the wasm's own
+bytes (`make publish-wasm` writes the name to `artifacts/ARTIFACT_ID`; web.yml hands it to the
+page build as `PUBLIC_SIM_ARTIFACT`, which `web/src/lib/sim/version.ts` reads). The site's own
+request layer is compiled into the wasm and changes without the pin moving, so the bytes name
+the directory, not the pin alone: a
 new engine is a new directory and nothing is ever revalidated.
 
 The files are **not** committed. CI builds them from the sha pinned in
