@@ -70,7 +70,11 @@
      line taller than its neighbours leaves every caption and every value on one baseline. -->
 <div class="flex flex-col gap-1">
   <span class="label text-muted">{simCopy.plannerDpsLabel}</span>
-  <div class="flex items-center gap-4">
+  <!-- A column below md, one row from md: with the figure and the button side by side on a
+       phone, the runner's wider fallback font wrapped the pair in ways a Mac never showed
+       (planner-dps.spec.ts read the button a row above the figure on CI). Stacked, the
+       phone layout has nothing left to wrap. -->
+  <div class="flex flex-col items-start gap-2 md:flex-row md:items-center md:gap-4">
     {#if gate === 'ask'}
       <!-- The same 44px the figure occupies, so asking moves nothing. -->
       <button
