@@ -32,6 +32,9 @@ test.describe('current character', () => {
 
   test('Forget on the restored chip clears the pointer for the next bare load', async ({ page }) => {
     await page.goto(`/sim?code=${encodeURIComponent(FURY)}`);
+    // The island boots after the shell's first paint (IslandScript.astro), so the pointer
+    // is written a beat after `load`: wait for the character to show before leaving.
+    await expect(page.getByTestId('sim-character')).toBeVisible();
 
     await page.goto('/sim');
     await expect(page.getByTestId('current-character-restored')).toBeAttached();
