@@ -247,6 +247,10 @@ export const simCopy = {
   // saved sim: the stored request carries item ids but the page has no item file for a
   // class it learns only from the result (Task 17).
   savedNoGear: 'The gear this was run with is not stored with the result.',
+  /** A slot the export names with an item this build's data does not carry (the beta's
+   *  newest items land in the data a dump behind the client): the id is the honest
+   *  answer, not "Empty", which would say the slot is bare. */
+  unknownItem: (id: number): string => `Item ${id}, not in this build's data yet`,
 
   sourceAddonTitle: 'From the addon',
   sourceAddonBody: 'Paste the export string from the Forever Sixty addon, or let the companion push it.',

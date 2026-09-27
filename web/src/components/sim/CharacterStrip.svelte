@@ -195,7 +195,7 @@
             <span
               class={`truncate text-[13px] font-semibold ${item ? rarityClassFor(item.quality) : 'text-muted'}`}
             >
-              {item ? item.name : 'Empty'}
+              {item ? item.name : equippedId === undefined ? 'Empty' : simCopy.unknownItem(equippedId)}
             </span>
           </span>
         </div>

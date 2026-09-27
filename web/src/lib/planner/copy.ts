@@ -3,6 +3,9 @@
 // strings; this is the first module that is genuinely the planner's own -- the confirm step
 // Share opens into before it writes a build to a public link (one-product spec section 1).
 export const plannerCopy = {
+  /** A slot an import names with an item this build's data does not carry; see
+   *  simCopy.unknownItem, the same line on the simulator's strip. */
+  unknownItem: (id: number): string => `Item ${id}, not in this build's data yet`,
   shareTitle: 'Share this build',
   share: 'Share',
   shareConfirmTitle: 'Share this build',

@@ -2,6 +2,7 @@
 <!-- The 17-slot grid, the summed stats, and the active set bonuses. Two columns of slots on
      phone, four from md up; every slot button clears 44px. -->
 <script lang="ts">
+  import { plannerCopy } from '../../lib/planner/copy';
   import { addonCopy } from '../../lib/addon/copy';
   import { scoreItem, specKeyFor, weightsFor, type WeightsFile } from '../../lib/addon/score';
   import { pointsPerTree } from '../../lib/planner/derive';
@@ -77,7 +78,7 @@
           <span
             class={`truncate text-[13px] font-semibold ${item ? rarityClassFor(item.quality) : 'text-muted'}`}
           >
-            {item ? item.name : 'Empty'}
+            {item ? item.name : equippedId === undefined ? 'Empty' : plannerCopy.unknownItem(equippedId)}
           </span>
         </span>
       </button>
