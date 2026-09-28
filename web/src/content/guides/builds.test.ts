@@ -34,7 +34,14 @@ import { parse as parseYaml } from 'yaml';
 import { describe, expect, it } from 'vitest';
 import { decodeFS1 } from '../../lib/planner/fs1';
 import { comboIsLegal } from '../../lib/planner/rules';
-import { MAX_POINTS, POINTS_PER_TIER, type ClassRow, type Combo, type RaceRow, type TalentFile } from '../../lib/planner/types';
+import {
+  MAX_POINTS,
+  POINTS_PER_TIER,
+  type ClassRow,
+  type Combo,
+  type RaceRow,
+  type TalentFile,
+} from '../../lib/planner/types';
 
 const guidesRoot = dirname(fileURLToPath(import.meta.url));
 // guidesRoot: <repo>/web/src/content/guides -- four levels up is <repo>, which holds both
@@ -166,31 +173,36 @@ describe('guide build codes decode to a legal, complete build on the active data
     expect(overflows, `${id}: ${overflows.join('; ')}`).toEqual([]);
   });
 
-  it.each(guides.map((g) => [g.id, g] as const))('%s satisfies every prereq_talent_id/prereq_rank', (id, guide) => {
-    const decoded = decodeFS1(guide.frontmatter.build as string);
-    if (!decoded.ok) return;
-    const file = talentsFor(decoded.build.classSlug);
-    const trees = [...file.trees].sort((a, b) => a.position - b.position);
-    const byId = new Map(trees.flatMap((tree) => tree.talents.map((t) => [t.id, t] as const)));
-    const rankOf = new Map<number, number>();
-    decoded.build.treeRanks.forEach((ranks, treeIndex) => {
-      trees[treeIndex]?.talents.forEach((talent, digitIndex) => {
-        rankOf.set(talent.id, Math.min(ranks[digitIndex] ?? 0, talent.max_rank));
+  it.each(guides.map((g) => [g.id, g] as const))(
+    '%s satisfies every prereq_talent_id/prereq_rank',
+    (id, guide) => {
+      const decoded = decodeFS1(guide.frontmatter.build as string);
+      if (!decoded.ok) return;
+      const file = talentsFor(decoded.build.classSlug);
+      const trees = [...file.trees].sort((a, b) => a.position - b.position);
+      const byId = new Map(trees.flatMap((tree) => tree.talents.map((t) => [t.id, t] as const)));
+      const rankOf = new Map<number, number>();
+      decoded.build.treeRanks.forEach((ranks, treeIndex) => {
+        trees[treeIndex]?.talents.forEach((talent, digitIndex) => {
+          rankOf.set(talent.id, Math.min(ranks[digitIndex] ?? 0, talent.max_rank));
+        });
       });
-    });
-    const unmet: string[] = [];
-    for (const talent of byId.values()) {
-      const have = rankOf.get(talent.id) ?? 0;
-      if (have <= 0 || talent.prereq_talent_id === null) continue;
-      const prereqHave = rankOf.get(talent.prereq_talent_id) ?? 0;
-      const need = talent.prereq_rank ?? 0;
-      if (prereqHave < need) {
-        const prereq = byId.get(talent.prereq_talent_id);
-        unmet.push(`${talent.name} needs ${need} in ${prereq?.name ?? talent.prereq_talent_id}, has ${prereqHave}`);
+      const unmet: string[] = [];
+      for (const talent of byId.values()) {
+        const have = rankOf.get(talent.id) ?? 0;
+        if (have <= 0 || talent.prereq_talent_id === null) continue;
+        const prereqHave = rankOf.get(talent.prereq_talent_id) ?? 0;
+        const need = talent.prereq_rank ?? 0;
+        if (prereqHave < need) {
+          const prereq = byId.get(talent.prereq_talent_id);
+          unmet.push(
+            `${talent.name} needs ${need} in ${prereq?.name ?? talent.prereq_talent_id}, has ${prereqHave}`,
+          );
+        }
       }
-    }
-    expect(unmet, `${id}: ${unmet.join('; ')}`).toEqual([]);
-  });
+      expect(unmet, `${id}: ${unmet.join('; ')}`).toEqual([]);
+    },
+  );
 
   it.each(guides.map((g) => [g.id, g] as const))(
     '%s reaches every tier it spends points in (5 points per tier below it, client rule)',
@@ -236,23 +248,27 @@ describe('guide build codes decode to a legal, complete build on the active data
     ).toBe(true);
   });
 
-  it.each(Object.entries(SIGNATURE_TALENTS))('%s takes its rotation-required signature talents', (id, names) => {
-    const guide = guides.find((g) => g.id === id);
-    expect(guide, `${id}: no such guide`).toBeDefined();
-    if (!guide) return;
-    const decoded = decodeFS1(guide.frontmatter.build as string);
-    if (!decoded.ok) return; // reported by the decode test above
-    const file = talentsFor(decoded.build.classSlug);
-    const trees = [...file.trees].sort((a, b) => a.position - b.position);
-    const rankOf = new Map<string, number>();
-    decoded.build.treeRanks.forEach((ranks, treeIndex) => {
-      trees[treeIndex]?.talents.forEach((talent, digitIndex) => {
-        rankOf.set(talent.name, Math.min(ranks[digitIndex] ?? 0, talent.max_rank));
+  it.each(Object.entries(SIGNATURE_TALENTS))(
+    '%s takes its rotation-required signature talents',
+    (id, names) => {
+      const guide = guides.find((g) => g.id === id);
+      expect(guide, `${id}: no such guide`).toBeDefined();
+      if (!guide) return;
+      const decoded = decodeFS1(guide.frontmatter.build as string);
+      if (!decoded.ok) return; // reported by the decode test above
+      const file = talentsFor(decoded.build.classSlug);
+      const trees = [...file.trees].sort((a, b) => a.position - b.position);
+      const rankOf = new Map<string, number>();
+      decoded.build.treeRanks.forEach((ranks, treeIndex) => {
+        trees[treeIndex]?.talents.forEach((talent, digitIndex) => {
+          rankOf.set(talent.name, Math.min(ranks[digitIndex] ?? 0, talent.max_rank));
+        });
       });
-    });
-    const missing = names.filter((name) => (rankOf.get(name) ?? 0) <= 0);
-    expect(missing, `${id}: rotation needs ${missing.join(', ')} but the build: string does not take it`).toEqual(
-      [],
-    );
-  });
+      const missing = names.filter((name) => (rankOf.get(name) ?? 0) <= 0);
+      expect(
+        missing,
+        `${id}: rotation needs ${missing.join(', ')} but the build: string does not take it`,
+      ).toEqual([]);
+    },
+  );
 });
