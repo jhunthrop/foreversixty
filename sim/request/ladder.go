@@ -231,7 +231,54 @@ type buildItem struct {
 	// a bow, gun or thrown weapon, since every wand row's own
 	// damage_max is 0 in this build (see pickWandItem's own comment).
 	Icon string `json:"icon"`
+	// WeaponClass and WeaponSubclass are joined in from
+	// data/builds/<build>/items.json (see loadItemWeaponTypes): the
+	// class item file (items/<class>.json) carries no weapon-type field
+	// of its own at all, only slot/level/speed/damage. WeaponClass is
+	// -1 for a row this build's items.json does not carry (should not
+	// happen for anything ladderGear ever sees, since every id here
+	// also has to be in simitems.json/loot.json to be picked).
+	WeaponClass    int `json:"-"`
+	WeaponSubclass int `json:"-"`
 }
+
+// Weapon and shield item/subclass ids, per the client's own item
+// taxonomy (data/builds/<build>/items.json's class_id/subclass_id),
+// confirmed against this build's own rows (warrior.json's axes, maces,
+// swords, polearms, staves, fist weapons; rogue.json's daggers; hunter's
+// bows/guns; shaman.json's shields) rather than assumed from upstream
+// Classic knowledge alone. class_id 2 is every real weapon; class_id 4
+// subclass 6 is a shield (armor, not a weapon - pickShieldItem, not
+// pickGearItem, picks these).
+const (
+	itemClassWeapon = 2
+	itemClassArmor  = 4
+
+	weaponAxe1H    = 0
+	weaponAxe2H    = 1
+	weaponBow      = 2
+	weaponGun      = 3
+	weaponMace1H   = 4
+	weaponMace2H   = 5
+	weaponPolearm  = 6
+	weaponSword1H  = 7
+	weaponSword2H  = 8
+	weaponStaff    = 10
+	weaponFist     = 13
+	weaponDagger   = 15
+	weaponThrown   = 16
+	weaponCrossbow = 18
+
+	armorSubclassShield = 6
+)
+
+// twoHandWeaponSubclasses is every subclass a "staff or two-hander" rule
+// (druid-balance/feral, warrior-arms, paladin-retribution) accepts:
+// every two-hand-only subclass in this table, plus the staff subclass
+// (a staff is two_hand:true on every row checked, so TwoHand handedness
+// alone would already select it, but the type list names it explicitly
+// for callers that constrain type without constraining hand).
+var twoHandWeaponSubclasses = []int{weaponAxe2H, weaponMace2H, weaponPolearm, weaponSword2H, weaponStaff}
 
 type classItemsFile struct {
 	Items []buildItem `json:"items"`
@@ -239,7 +286,9 @@ type classItemsFile struct {
 
 // loadClassItems reads one class's item rows - already restricted to
 // items that class can equip, which is the "class allow" the design
-// asks for.
+// asks for - and joins in each row's weapon class/subclass from
+// data/builds/<build>/items.json (loadItemWeaponTypes), since the class
+// item file itself carries no type field.
 func loadClassItems(repoRoot, build, class string) ([]buildItem, error) {
 	path := filepath.Join(repoRoot, "data", "builds", build, "items", class+".json")
 	b, err := os.ReadFile(path)
@@ -250,7 +299,51 @@ func loadClassItems(repoRoot, build, class string) ([]buildItem, error) {
 	if err := json.Unmarshal(b, &f); err != nil {
 		return nil, fmt.Errorf("ladder: parsing %s: %w", path, err)
 	}
+	types, err := loadItemWeaponTypes(repoRoot, build)
+	if err != nil {
+		return nil, err
+	}
+	for i := range f.Items {
+		t, ok := types[f.Items[i].ID]
+		if !ok {
+			f.Items[i].WeaponClass = -1
+			f.Items[i].WeaponSubclass = -1
+			continue
+		}
+		f.Items[i].WeaponClass = t.ClassID
+		f.Items[i].WeaponSubclass = t.SubclassID
+	}
 	return f.Items, nil
+}
+
+// itemTypeRow is the two fields loadItemWeaponTypes needs from one row
+// of data/builds/<build>/items.json (the build's full item table, every
+// class combined - unlike items/<class>.json, this file names each
+// item's class_id/subclass_id, which is how a weapon's TYPE - dagger,
+// sword, mace, axe, staff, fist, bow, gun, or a shield - is read).
+type itemTypeRow struct {
+	ID         int `json:"id"`
+	ClassID    int `json:"class_id"`
+	SubclassID int `json:"subclass_id"`
+}
+
+// loadItemWeaponTypes reads items.json (a bare array, unlike the other
+// build files this ladder reads) into an id -> (class, subclass) map.
+func loadItemWeaponTypes(repoRoot, build string) (map[int]itemTypeRow, error) {
+	path := filepath.Join(repoRoot, "data", "builds", build, "items.json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("ladder: reading %s: %w", path, err)
+	}
+	var rows []itemTypeRow
+	if err := json.Unmarshal(b, &rows); err != nil {
+		return nil, fmt.Errorf("ladder: parsing %s: %w", path, err)
+	}
+	out := make(map[int]itemTypeRow, len(rows))
+	for _, r := range rows {
+		out[r.ID] = r
+	}
+	return out, nil
 }
 
 type simItemsFile struct {
@@ -379,6 +472,20 @@ type gearProfile struct {
 	// weapon-DPS-through-form-conversion, so it picks no weapon at all
 	// rather than equip one that does nothing for the rotation measured.
 	Skip bool
+	// Shield fills off_hand with a shield (pickShieldItem: armor,
+	// subclass 6) instead of a weapon - shaman's elemental/resto rule
+	// (MH + shield). Mutually exclusive with OffHand in practice.
+	Shield bool
+	// MainHandTypes/OffHandTypes/RangedTypes are this wave's per-spec
+	// weapon TYPE preference (harness rule 1): the subclass ids
+	// (weaponDagger, weaponSword1H, ...) a slot's pick is restricted
+	// to, beyond handedness. Nil means "any real weapon type this
+	// handedness/known/level/loot-source filter already allows" - the
+	// pre-existing rule, unchanged for every spec this wave's brief
+	// does not name a type for.
+	MainHandTypes []int
+	OffHandTypes  []int
+	RangedTypes   []int
 }
 
 // ladderGearProfiles is every written spec whose weapon rule is not the
@@ -386,22 +493,67 @@ type gearProfile struct {
 // paladin-retribution), the dual-wielders (warrior-fury, rogue's three
 // specs, shaman-enhancement, and hunter - hunters can dual-wield a
 // melee stat-stick beside their bow in this build), hunter's ranged
-// bow, feral's "none", and every caster's wand (harness rule 3:
+// bow, feral's "none", shaman-elemental's shield, druid-balance's
+// staff/two-hander, and every caster's wand (harness rule 3:
 // priest-shadow, mage's three specs and warlock's three specs, so
 // OtherActionShoot/wand lines have a real weapon to resolve against,
 // the same way melee always has).
+//
+// Weapon TYPE (this wave's harness rule 1, from the class item table's
+// weapon subclass, joined in by loadItemWeaponTypes): assassination and
+// subtlety want a main-hand dagger (Ambush/Backstab require one, and
+// Mutilate is the spec's namesake finisher even though the pinned
+// engine's own Mutilate does not itself require one - see
+// sim/rogue/mutilate.go's ExtraCastCondition comment, quoted in this
+// lane's report); combat wants sword or mace main-hand (its own guide:
+// "Hack and Slash... treats axes the same way it always treated
+// swords" - Forever gives Combat axes too, but the brief this table
+// follows names sword/mace, so axe is left out here even though the
+// guide suggests it is also viable; a follow-up can widen this once
+// that's confirmed); shaman ele/resto want a shield rather than
+// dual-wielding (only elemental is a written spec today);
+// druid-balance (and feral, if it ever stops skipping gear) wants a
+// staff or a two-hand weapon, matching what an unconstrained "highest
+// item_level" pick already happened to choose for balance in this
+// build (a two-hand mace) - named explicitly here so that stays true
+// on a future build where it might not. Hunter's ranged slot is
+// restricted to bow/gun, per the brief's own wording, even though this
+// build's ranged table also carries crossbows and thrown weapons a
+// hunter could equip.
+//
+// Assassination's OFF-hand is deliberately left untyped (any weapon,
+// same as every dual-wielder below) despite the brief asking for
+// "dagger MH + dagger OH": this build's rogue.json carries ZERO
+// off_hand rows of class_id 2 / subclass 15 (dagger) at all - checked
+// against every level, not just the ladder's seven - only fist weapons
+// (subclass 13) and held-in-off-hand items (class 4, not a weapon).
+// Constraining OffHandTypes to dagger here leaves off_hand empty at
+// every level, which turns off AutoAttacks.IsDualWielding and makes
+// Mutilate's own ExtraCastCondition false, regressing the fix from
+// "occasional Mutilate at a worse rung" to "Mutilate never casts again"
+// (49 strict violations instead of 48, three new zero_casts rows) -
+// verified by generating the golden with the dagger-OH constraint in
+// place and reverting when it made the count worse. See this lane's
+// report for the decision and a content follow-up (the item pipeline
+// or Forever's own item pool may be missing off-hand daggers rogues
+// need).
 var ladderGearProfiles = map[string]gearProfile{
-	"warrior-arms":         {MainHand: handTwo},
-	"warrior-fury":         {MainHand: handOne, OffHand: true},
-	"paladin-retribution":  {MainHand: handTwo},
-	"shaman-enhancement":   {MainHand: handOne, OffHand: true},
-	"druid-feral":          {Skip: true},
-	"rogue-assassination":  {MainHand: handOne, OffHand: true},
-	"rogue-combat":         {MainHand: handOne, OffHand: true},
-	"rogue-subtlety":       {MainHand: handOne, OffHand: true},
-	"hunter-beast-mastery": {MainHand: handOne, OffHand: true, Ranged: true},
-	"hunter-marksmanship":  {MainHand: handOne, OffHand: true, Ranged: true},
-	"hunter-survival":      {MainHand: handOne, OffHand: true, Ranged: true},
+	"warrior-arms":        {MainHand: handTwo},
+	"warrior-fury":        {MainHand: handOne, OffHand: true},
+	"paladin-retribution": {MainHand: handTwo},
+	"shaman-enhancement":  {MainHand: handOne, OffHand: true},
+	"shaman-elemental":    {MainHand: handOne, Shield: true},
+	"druid-feral":         {Skip: true},
+	"druid-balance":       {MainHand: handAny, MainHandTypes: twoHandWeaponSubclasses},
+	"rogue-assassination": {MainHand: handOne, OffHand: true,
+		MainHandTypes: []int{weaponDagger}},
+	"rogue-combat": {MainHand: handOne, OffHand: true,
+		MainHandTypes: []int{weaponSword1H, weaponMace1H}},
+	"rogue-subtlety": {MainHand: handOne, OffHand: true,
+		MainHandTypes: []int{weaponDagger}},
+	"hunter-beast-mastery": {MainHand: handOne, OffHand: true, Ranged: true, RangedTypes: []int{weaponBow, weaponGun}},
+	"hunter-marksmanship":  {MainHand: handOne, OffHand: true, Ranged: true, RangedTypes: []int{weaponBow, weaponGun}},
+	"hunter-survival":      {MainHand: handOne, OffHand: true, Ranged: true, RangedTypes: []int{weaponBow, weaponGun}},
 	"priest-shadow":        {Wand: true},
 	"mage-arcane":          {Wand: true},
 	"mage-fire":            {Wand: true},
@@ -412,24 +564,29 @@ var ladderGearProfiles = map[string]gearProfile{
 }
 
 // pickGearItem is the highest item_level candidate in slot with
-// required_level <= level, restricted to hand's handedness and to items
-// this build's sim database knows (known). A candidate must be a real
-// weapon: speed > 0 (which is what keeps a shield out of a
-// dual-wielder's off hand: an off_hand row with speed == 0 is armor,
-// not a weapon, in this item table) and damage_max > 0. The second
-// check exists because this build's item table carries a large number
-// of quality-3 "rare" weapon rows with damage_min = damage_max = 0 and
-// no required_level (Bland Dagger, item 24071, is one) - unfinished or
-// placeholder rows, not a character's real choice, and equipping one
-// of them is what made the engine hang mid-sim rather than simulate a
-// zero-damage weapon (see the report). Ties (equal item_level) break on
-// the lower item id, so the pick is deterministic without depending on
-// the source file's row order.
-func pickGearItem(items []buildItem, known map[int]bool, slot string, level int, hand handedness) (buildItem, bool) {
+// required_level <= level, restricted to hand's handedness, to allowed
+// weapon subclasses when the caller names any (harness rule 1's
+// per-spec weapon TYPE table - nil means every type this filter set
+// already allows), and to items this build's sim database knows
+// (known). A candidate must be a real weapon: WeaponClass ==
+// itemClassWeapon (joined in from items.json by loadClassItems - a
+// held-in-off-hand item is class 4, not a weapon at all, even on a row
+// that happens to carry nonzero speed/damage fields), speed > 0 (which
+// is what keeps a shield out of a dual-wielder's off hand: an off_hand
+// row with speed == 0 is armor, not a weapon, in this item table) and
+// damage_max > 0. The last check exists because this build's item table
+// carries a large number of quality-3 "rare" weapon rows with
+// damage_min = damage_max = 0 and no required_level (Bland Dagger, item
+// 24071, is one) - unfinished or placeholder rows, not a character's
+// real choice, and equipping one of them is what made the engine hang
+// mid-sim rather than simulate a zero-damage weapon (see the report).
+// Ties (equal item_level) break on the lower item id, so the pick is
+// deterministic without depending on the source file's row order.
+func pickGearItem(items []buildItem, known map[int]bool, slot string, level int, hand handedness, allowed []int) (buildItem, bool) {
 	var best buildItem
 	found := false
 	for _, it := range items {
-		if it.Slot != slot || it.Speed <= 0 || it.DamageMax <= 0 || !known[it.ID] {
+		if it.Slot != slot || it.WeaponClass != itemClassWeapon || it.Speed <= 0 || it.DamageMax <= 0 || !known[it.ID] {
 			continue
 		}
 		if it.RequiredLevel > level {
@@ -439,6 +596,45 @@ func pickGearItem(items []buildItem, known map[int]bool, slot string, level int,
 			continue
 		}
 		if hand == handTwo && !it.TwoHand {
+			continue
+		}
+		if len(allowed) > 0 && !containsInt(allowed, it.WeaponSubclass) {
+			continue
+		}
+		if !found || it.ItemLevel > best.ItemLevel || (it.ItemLevel == best.ItemLevel && it.ID < best.ID) {
+			best, found = it, true
+		}
+	}
+	return best, found
+}
+
+// containsInt reports whether needle is in haystack; the per-spec
+// weapon TYPE lists this file builds (assassination's dagger MH+OH,
+// combat's sword/mace MH, hunter's bow/gun ranged, ...) are always
+// short enough that a linear scan is simpler than a set.
+func containsInt(haystack []int, needle int) bool {
+	for _, v := range haystack {
+		if v == needle {
+			return true
+		}
+	}
+	return false
+}
+
+// pickShieldItem is ladderGear's shaman-elemental/resto counterpart to
+// pickGearItem (harness rule 1's "MH + shield" rule): the highest
+// item_level off_hand row that is a shield - itemClassArmor, subclass
+// armorSubclassShield, in items.json's own taxonomy, since a shield is
+// armor, not a weapon, and pickGearItem's speed>0/damage_max>0 "is a
+// weapon" checks would always reject one.
+func pickShieldItem(items []buildItem, known map[int]bool, level int) (buildItem, bool) {
+	var best buildItem
+	found := false
+	for _, it := range items {
+		if it.Slot != "off_hand" || it.WeaponClass != itemClassArmor || it.WeaponSubclass != armorSubclassShield || !known[it.ID] {
+			continue
+		}
+		if it.RequiredLevel > level {
 			continue
 		}
 		if !found || it.ItemLevel > best.ItemLevel || (it.ItemLevel == best.ItemLevel && it.ID < best.ID) {
@@ -458,16 +654,21 @@ func ladderGear(items []buildItem, known map[int]bool, spec string, level int) [
 		return nil
 	}
 	var gear []api.GearSlot
-	if it, ok := pickGearItem(items, known, "main_hand", level, profile.MainHand); ok {
+	if it, ok := pickGearItem(items, known, "main_hand", level, profile.MainHand, profile.MainHandTypes); ok {
 		gear = append(gear, api.GearSlot{Slot: "main_hand", ItemID: it.ID})
 	}
 	if profile.OffHand {
-		if it, ok := pickGearItem(items, known, "off_hand", level, handOne); ok {
+		if it, ok := pickGearItem(items, known, "off_hand", level, handOne, profile.OffHandTypes); ok {
+			gear = append(gear, api.GearSlot{Slot: "off_hand", ItemID: it.ID})
+		}
+	}
+	if profile.Shield {
+		if it, ok := pickShieldItem(items, known, level); ok {
 			gear = append(gear, api.GearSlot{Slot: "off_hand", ItemID: it.ID})
 		}
 	}
 	if profile.Ranged {
-		if it, ok := pickGearItem(items, known, "ranged", level, handAny); ok {
+		if it, ok := pickGearItem(items, known, "ranged", level, handAny, profile.RangedTypes); ok {
 			gear = append(gear, api.GearSlot{Slot: "ranged", ItemID: it.ID})
 		}
 	}
