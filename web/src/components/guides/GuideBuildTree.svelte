@@ -59,7 +59,7 @@
 </script>
 
 <!-- Always-present anchor so client:visible's observer has a real element from mount
-     (HomeGuildLink.svelte's own pattern, for the same reason). -->
+     (HomeGuildCard.svelte's own pattern, for the same reason). -->
 <span aria-hidden="true"></span>
 {#if status === 'loading'}
   <Skeleton lines={3} rowHeight="h-12" minHeight="min-h-[360px]" testid="guide-tree-skeleton" />
