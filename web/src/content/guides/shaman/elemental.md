@@ -36,7 +36,7 @@ Point allocation runs deep into Elemental to reach Lava Burst at the bottom of t
 
 ## Rotation and priority
 
-The loop this site's simulator plays: against a single target, drop Searing Totem for the higher fire damage; against two or more targets, drop Magma Totem instead so everyone standing in it takes damage. Flame Shock is kept up on the target throughout, since it's cheap relative to its damage and doesn't compete heavily for the global cooldown budget. Against two or more targets, Chain Lightning is used since it hits every target for close to single-target Lightning Bolt damage. Earth Shock is slotted in as a mana dump once mana is comfortably above half, since it shares a cooldown only with Flame Shock rather than with Chain Lightning, making it safe to weave in. Lightning Bolt fills the rest of the single-target rotation.
+The loop this site's simulator plays: against a single target, drop Searing Totem for the higher fire damage; against two or more targets, drop Magma Totem instead so everyone standing in it takes damage. Flame Shock is kept up on the target throughout, since it's cheap relative to its damage and doesn't compete heavily for the global cooldown budget. Against two or more targets, Chain Lightning is used since it hits every target for close to single-target Lightning Bolt damage. Earth Shock is slotted in as a mana dump once mana is above 30%, since it shares a cooldown only with Flame Shock rather than with Chain Lightning, making it safe to weave in. Lightning Bolt fills the rest of the single-target rotation.
 
 ## Stat priority
 
