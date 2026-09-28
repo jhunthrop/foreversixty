@@ -67,29 +67,23 @@ export interface SlotHoverDiff {
  * the pipeline's own per-band `new_at_band` diff (types.ts's doc comment on `BisBand`), but
  * computed for one slot on demand rather than parsed back out of that field's `"<slot>:
  * <item name>"` strings.
+ *
+ * The previous band is `band - BAND_STEP` by arithmetic, not a walk back through whichever
+ * bands the file happens to carry: every band from MIN_BAND..MAX_BAND is ranked for both
+ * factions by contract, so a band a faction's file is missing (which the real pipeline
+ * never produces) reads as "nothing known at the previous band" rather than reaching
+ * further back for one that exists -- a smaller, cheaper rule than that reach would need
+ * (this ships in the planner island, which has its own tight gzipped budget; see
+ * scripts/check-island-size.mjs), and one the real data can never actually exercise.
  */
 export function slotHoverDiff(file: BisFile, band: number, faction: Faction, slot: string): SlotHoverDiff {
-  // Scoped to this faction's own bands, not bandLevelsFor's cross-faction union: a faction
-  // whose file happens to skip a band (never true of the real leveling contract, which
-  // ranks every band for both factions, but not a case worth trusting the other faction's
-  // band list for) must still walk back to a band *it* has data for, not the neighbouring
-  // faction's.
-  const levels = [
-    ...new Set(file.bands.filter((entry) => entry.faction === faction).map((entry) => entry.band)),
-  ].sort((a, b) => a - b);
-  const index = levels.indexOf(band);
-  const current = bandEntryFor(file, band, faction);
-  const pick = current?.slots.find((row) => row.slot === slot);
-
-  if (index <= 0) {
+  const pick = bandEntryFor(file, band, faction)?.slots.find((row) => row.slot === slot);
+  if (band <= MIN_BAND) {
     return { band, faction, pick, previous: undefined, isNewAtBand: false };
   }
-
-  const previousBand = levels[index - 1];
-  const previousEntry = bandEntryFor(file, previousBand, faction);
-  const previousPick = previousEntry?.slots.find((row) => row.slot === slot);
+  const previousBand = band - BAND_STEP;
+  const previousPick = bandEntryFor(file, previousBand, faction)?.slots.find((row) => row.slot === slot);
   const isNewAtBand = pick !== undefined && pick.item_id !== previousPick?.item_id;
-
   return { band, faction, pick, previous: { band: previousBand, pick: previousPick }, isNewAtBand };
 }
 

@@ -121,17 +121,17 @@ describe('slotHoverDiff', () => {
     expect(diff.isNewAtBand).toBe(false);
   });
 
-  it('skips a band the file has no entry for, using the previous band that does exist', () => {
-    // Alliance has 10 and 20 only; band 15 (a different faction's band) is not this
-    // faction's neighbour.
+  it('the previous band is band - 5 by arithmetic, not a walk back through whichever bands the file has', () => {
+    // No band 15 alliance entry at all; the previous band for 20 is still exactly 15 (with
+    // no pick), never band 10, even though the file does carry one.
     const file = fileWith([
       band(10, 'alliance', [slot(1, 'Old Cap')]),
-      band(15, 'horde', [slot(9, 'Horde-only Cap')]),
       band(20, 'alliance', [slot(2, 'New Cap')]),
     ]);
     const diff = slotHoverDiff(file, 20, 'alliance', 'head');
-    expect(diff.previous?.band).toBe(10);
-    expect(diff.previous?.pick?.item_name).toBe('Old Cap');
+    expect(diff.previous?.band).toBe(15);
+    expect(diff.previous?.pick).toBeUndefined();
+    expect(diff.isNewAtBand).toBe(true);
   });
 
   it('reads faction independently: the same band number, different faction, different pick', () => {

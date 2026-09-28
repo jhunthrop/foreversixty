@@ -36,35 +36,11 @@
 
   let openSlot = $state<Slot | null>(null);
 
-  // The BiS hover popover (design step 1 of the bis-hover-web lane brief). A mouse or
-  // keyboard user gets it for free from hover/focus, exactly like TalentCell's own tooltip;
-  // touch has neither, so the click handler below gives a slot's first tap the same job
-  // hover does for everyone else, and only a second tap on that same slot reaches the
-  // existing open/close-the-item-picker behaviour it always had.
+  // The BiS hover popover (design step 1 of the bis-hover-web lane brief). Mouse and
+  // keyboard get it from hover/focus, exactly like TalentCell's own tooltip; a tap on touch
+  // focuses the button too (every mobile browser does this for a plain <button>), which
+  // shows the popover the same way, alongside the item picker the tap always opened.
   let hoveredSlot = $state<Slot | null>(null);
-
-  /**
-   * Set from the pointerdown that precedes a click, never from a media query: Playwright's
-   * `.click()` always synthesizes a mouse-type pointer regardless of viewport or device
-   * emulation, so gating on `event.pointerType` here (rather than `matchMedia('(hover:
-   * none)')`) is what keeps every existing slot-click test -- desktop and the mobile
-   * project alike -- opening the item picker on the first click, exactly as before. Only a
-   * genuine touch pointer (a real phone, or Playwright's own `.tap()`, which nothing here
-   * uses yet) takes the "first tap shows the popover" path.
-   */
-  let lastPointerType = 'mouse';
-
-  function onSlotPointerDown(event: PointerEvent): void {
-    lastPointerType = event.pointerType;
-  }
-
-  function onSlotActivate(slot: Slot): void {
-    if (lastPointerType === 'touch' && hoveredSlot !== slot) {
-      hoveredSlot = slot;
-      return;
-    }
-    openSlot = openSlot === slot ? null : slot;
-  }
 
   /** Closes the popover only once focus has left the whole slot (button + popover), not
    *  when it moves from the button onto the popover's own "See the full list" link --
@@ -126,8 +102,7 @@
           aria-label={item ? `${SLOT_LABELS[slot]}: ${item.name}` : `${SLOT_LABELS[slot]}: empty`}
           aria-describedby={hoveredSlot === slot ? `bis-hover-${slot}` : undefined}
           disabled={store.readOnly}
-          onpointerdown={onSlotPointerDown}
-          onclick={() => onSlotActivate(slot)}
+          onclick={() => (openSlot = openSlot === slot ? null : slot)}
           onfocus={() => (hoveredSlot = slot)}
         >
           {#if item}
