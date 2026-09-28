@@ -31,15 +31,34 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
   warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every other slot is
-  bare. Buffs and consumables: none.
+  hands). druid-feral picks no weapon at all. Every caster spec
+  (priest-shadow, mage's three specs, warlock's three specs) fills
+  ranged with a wand instead: the same item table's ranged rows whose
+  icon names them a real wand (every wand row's own damage_max is 0 in
+  this build, unlike a bow or gun, so the melee pick's damage_max > 0
+  check is replaced by that icon check rather than dropped), so
+  OtherActionShoot/wand lines have something to resolve against.
+  Every other slot is bare. Consumables: none (see the potion rule
+  below).
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
-  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2). A level scoring
-  lower than the rung before it is a violation.
-- Unresolved: an id the engine's ComputeStats warns it cannot resolve.
-  Expected when data/curated/apl/<spec>.json's own inert array names
-  it; otherwise a violation.
+  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
+  1% drop as the 300-iteration run's own noise (shaman-elemental's
+  level 40, 46.0 vs a level-38 46.1, is exactly this). A level scoring
+  more than 1% lower than the rung before it is a violation.
+- Unresolved: an id the engine's ComputeStats warns it cannot resolve,
+  with three standing exceptions before anything counts as a
+  violation: (1) data/curated/apl/<spec>.json's own inert array names
+  it; (2) it is the potion action ({OtherID: 13}) - the ladder
+  character carries no consumes, so this can never resolve, at any
+  level, any spec; (3) it is a talent-granted spell
+  (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
+  and the ladder's own truncated build (ladderTalentString's budget
+  walk) has spent zero points on that talent at this level - expected
+  right up until the level this ladder's approximation of the guide's
+  build actually reaches that talent's row, a violation only once the
+  build HAS spent points on it and the id still will not resolve.
+  Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
   engine's OWN rank rewrite actually casts at this level (not a second,
@@ -70,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:274271 | 17.9 | 0 | other:attack/1=101.4 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:274271 | 18.9 | 0 | other:attack/1=101.4 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 30 | 00000000000000000-00000000000000000-5323221300000000000 | main_hand:274271 | 20.2 | 0 | other:attack/1=101.4 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 38 | 00000000000000000-00000000000000000-5323221310003001030 | main_hand:274271 | 25.7 | 3 | other:attack/1=101.4, spell:14278=9.6, spell:8623/5=1.3, spell:5171/5=0.0 | {SpellID: 14183}, {SpellID: 16511} |
-| 40 | 00000000000000000-00000000000000000-5323221310003001050 | main_hand:274271 | 27.0 | 3 | other:attack/1=101.4, spell:14278=9.6, spell:8624/5=1.3, spell:5171/5=0.0 | {SpellID: 14183}, {SpellID: 16511} |
-| 50 | 32100000000000000-31000000000000000-5323221310003001050 | main_hand:12061 off_hand:17738 | 40.6 | 3 | other:attack/2=101.3, other:attack/1=76.1, spell:14278=9.6, spell:11299/5=1.4, spell:6774/5=0.0 | {SpellID: 14183}, {SpellID: 16511} |
-| 60 | 32100000000000000-32003000000000000-5323221310003001050 | main_hand:23577 off_hand:234558 | 62.4 | 3 | other:attack/1=121.4, other:attack/2=63.0, spell:14278=9.6, spell:31016/5=1.3, spell:6774/5=0.0 | {SpellID: 14183}, {SpellID: 16511} |
+| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:274271 | 32.1 | 3 | other:attack/1=107.8, spell:1757=41.7, spell:6760/5=4.4, spell:5171/5=3.0 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:274271 | 33.7 | 3 | other:attack/1=107.9, spell:1758=41.7, spell:6761/5=4.4, spell:5171/5=2.9 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 30 | 00000000000000000-00000000000000000-5323221300000000000 | main_hand:274271 | 35.8 | 3 | other:attack/1=107.9, spell:1760=41.7, spell:6762/5=4.4, spell:5171/5=2.9 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 38 | 00000000000000000-00000000000000000-5323221310003001030 | main_hand:274271 | 40.7 | 4 | other:attack/1=109.9, spell:8621=34.1, spell:14278=9.0, spell:5171/5=3.9, spell:8623/5=3.4 | {SpellID: 14183}, {SpellID: 16511} |
+| 40 | 00000000000000000-00000000000000000-5323221310003001050 | main_hand:274271 | 43.8 | 4 | other:attack/1=109.9, spell:8621=34.1, spell:14278=9.0, spell:5171/5=3.9, spell:8624/5=3.4 | {SpellID: 14183}, {SpellID: 16511} |
+| 50 | 32100000000000000-31000000000000000-5323221310003001050 | main_hand:12061 off_hand:17738 | 71.3 | 4 | other:attack/2=113.0, other:attack/1=84.9, spell:11293=35.1, spell:14278=8.9, spell:11299/5=4.1 | {SpellID: 14183}, {SpellID: 16511} |
+| 60 | 32100000000000000-32003000000000000-5323221310003001050 | main_hand:23577 off_hand:234558 | 103.3 | 4 | other:attack/1=138.5, other:attack/2=71.9, spell:11294=36.9, spell:14278=8.9, spell:6774/5=4.3 | {SpellID: 14183}, {SpellID: 16511} |
 
 ## Learned but unused (informational)
 
@@ -84,34 +103,28 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 10
 
 - Backstab (spell 53)
-- Eviscerate (spell 6760)
 - Gouge (spell 1776)
 - Serrated Blades (spell 461327)
-- Sinister Strike (spell 1757)
 
 ### Level 20
 
 - Ambush (spell 8676)
 - Backstab (spell 2590)
-- Eviscerate (spell 6761)
 - Garrote (spell 703)
 - Gouge (spell 1777)
 - Kick (spell 1766)
 - Rupture (spell 1943)
 - Serrated Blades (spell 461327)
-- Sinister Strike (spell 1758)
 
 ### Level 30
 
 - Ambush (spell 8724)
 - Backstab (spell 2591)
-- Eviscerate (spell 6762)
 - Garrote (spell 8632)
 - Gouge (spell 1777)
 - Kick (spell 1767)
 - Rupture (spell 8639)
 - Serrated Blades (spell 461327)
-- Sinister Strike (spell 1760)
 
 ### Level 38
 
@@ -122,7 +135,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1767)
 - Rupture (spell 8640)
 - Serrated Blades (spell 461327)
-- Sinister Strike (spell 8621)
 
 ### Level 40
 
@@ -133,7 +145,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1767)
 - Rupture (spell 8640)
 - Serrated Blades (spell 461327)
-- Sinister Strike (spell 8621)
 
 ### Level 50
 
@@ -144,7 +155,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1768)
 - Rupture (spell 11273)
 - Serrated Blades (spell 461327)
-- Sinister Strike (spell 11293)
 
 ### Level 60
 
@@ -156,40 +166,18 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1769)
 - Rupture (spell 11275)
 - Serrated Blades (spell 461327)
-- Sinister Strike (spell 11294)
 - Test Stab R50 (spell 23959)
 - Test Strike R50 (spell 23960)
 
 ## Violations found in this run
 
-- rogue-subtlety level=10 kind=unresolved_id action={SpellID: 14183}
-- rogue-subtlety level=10 kind=unresolved_id action={SpellID: 14278}
-- rogue-subtlety level=10 kind=unresolved_id action={SpellID: 16511}
-- rogue-subtlety level=10 kind=zero_casts spell="Eviscerate" id=6760 authored=31016
-- rogue-subtlety level=10 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
-- rogue-subtlety level=20 kind=no_damage_cast dps=18.9
-- rogue-subtlety level=20 kind=unresolved_id action={SpellID: 14183}
-- rogue-subtlety level=20 kind=unresolved_id action={SpellID: 14278}
-- rogue-subtlety level=20 kind=unresolved_id action={SpellID: 16511}
 - rogue-subtlety level=20 kind=zero_casts spell="Ambush" id=8676 authored=11269
-- rogue-subtlety level=20 kind=zero_casts spell="Eviscerate" id=6761 authored=31016
-- rogue-subtlety level=20 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
-- rogue-subtlety level=30 kind=no_damage_cast dps=20.2
-- rogue-subtlety level=30 kind=unresolved_id action={SpellID: 14183}
-- rogue-subtlety level=30 kind=unresolved_id action={SpellID: 14278}
-- rogue-subtlety level=30 kind=unresolved_id action={SpellID: 16511}
 - rogue-subtlety level=30 kind=zero_casts spell="Ambush" id=8724 authored=11269
-- rogue-subtlety level=30 kind=zero_casts spell="Eviscerate" id=6762 authored=31016
-- rogue-subtlety level=30 kind=zero_casts spell="Slice and Dice" id=5171 authored=6774
-- rogue-subtlety level=38 kind=unresolved_id action={SpellID: 14183}
 - rogue-subtlety level=38 kind=unresolved_id action={SpellID: 16511}
 - rogue-subtlety level=38 kind=zero_casts spell="Ambush" id=8725 authored=11269
-- rogue-subtlety level=40 kind=unresolved_id action={SpellID: 14183}
 - rogue-subtlety level=40 kind=unresolved_id action={SpellID: 16511}
 - rogue-subtlety level=40 kind=zero_casts spell="Ambush" id=8725 authored=11269
-- rogue-subtlety level=50 kind=unresolved_id action={SpellID: 14183}
 - rogue-subtlety level=50 kind=unresolved_id action={SpellID: 16511}
 - rogue-subtlety level=50 kind=zero_casts spell="Ambush" id=11268 authored=11269
-- rogue-subtlety level=60 kind=unresolved_id action={SpellID: 14183}
 - rogue-subtlety level=60 kind=unresolved_id action={SpellID: 16511}
 - rogue-subtlety level=60 kind=zero_casts spell="Ambush" id=11269 authored=11269

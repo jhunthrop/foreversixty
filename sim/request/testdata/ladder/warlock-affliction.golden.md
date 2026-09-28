@@ -31,15 +31,34 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
   warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every other slot is
-  bare. Buffs and consumables: none.
+  hands). druid-feral picks no weapon at all. Every caster spec
+  (priest-shadow, mage's three specs, warlock's three specs) fills
+  ranged with a wand instead: the same item table's ranged rows whose
+  icon names them a real wand (every wand row's own damage_max is 0 in
+  this build, unlike a bow or gun, so the melee pick's damage_max > 0
+  check is replaced by that icon check rather than dropped), so
+  OtherActionShoot/wand lines have something to resolve against.
+  Every other slot is bare. Consumables: none (see the potion rule
+  below).
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
-  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2). A level scoring
-  lower than the rung before it is a violation.
-- Unresolved: an id the engine's ComputeStats warns it cannot resolve.
-  Expected when data/curated/apl/<spec>.json's own inert array names
-  it; otherwise a violation.
+  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
+  1% drop as the 300-iteration run's own noise (shaman-elemental's
+  level 40, 46.0 vs a level-38 46.1, is exactly this). A level scoring
+  more than 1% lower than the rung before it is a violation.
+- Unresolved: an id the engine's ComputeStats warns it cannot resolve,
+  with three standing exceptions before anything counts as a
+  violation: (1) data/curated/apl/<spec>.json's own inert array names
+  it; (2) it is the potion action ({OtherID: 13}) - the ladder
+  character carries no consumes, so this can never resolve, at any
+  level, any spec; (3) it is a talent-granted spell
+  (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
+  and the ladder's own truncated build (ladderTalentString's budget
+  walk) has spent zero points on that talent at this level - expected
+  right up until the level this ladder's approximation of the guide's
+  build actually reaches that talent's row, a violation only once the
+  build HAS spent points on it and the id still will not resolve.
+  Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
   engine's OWN rank rewrite actually casts at this level (not a second,
@@ -70,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:274271 | 9.1 | 4 | other:mana_gain=47.4, spell:1454=47.4, spell:695=31.3, spell:172=13.0, spell:980=8.8 | {OtherID: 13}, {SpellID: 18288} |
-| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:274271 | 21.6 | 4 | other:mana_gain=29.9, spell:1455=29.9, spell:1088=24.0, spell:6222=11.7, spell:1014=8.1 | {OtherID: 13}, {SpellID: 18288} |
-| 30 | 25552000020000000-0000000000000000000-0000000000000000 | main_hand:274271 | 43.9 | 4 | other:mana_gain=31.7, spell:1456=31.7, spell:1106=30.3, spell:6223=10.5, spell:6217=8.3 | {OtherID: 13}, {SpellID: 18288} |
-| 38 | 25552000030201040-0000000000000000000-0000000000000000 | main_hand:274271 | 68.0 | 4 | spell:7641=29.5, other:mana_gain=25.0, spell:11687=25.0, spell:7648=10.2, spell:11711=8.3 | {OtherID: 13}, {SpellID: 18288} |
-| 40 | 25552000030201051-0000000000000000000-0000000000000000 | main_hand:274271 | 108.6 | 5 | other:mana_gain=32.4, spell:11687=32.4, spell:1316697=22.5, spell:7641=18.6, spell:7648=10.6 | {OtherID: 13}, {SpellID: 18288} |
-| 50 | 25552000030201051-2350000000000000000-0000000000000000 | main_hand:12061 | 149.3 | 5 | other:mana_gain=30.3, spell:11688=30.3, spell:1316697=24.6, spell:11659=22.2, spell:11671=10.4 | {OtherID: 13}, {SpellID: 18288} |
-| 60 | 25552000030201051-2355230000000000000-0000000000000000 | main_hand:23577 | 227.1 | 5 | other:mana_gain=28.8, spell:11689=28.8, spell:1316697=25.1, spell:25307=21.7, spell:25311=10.5 | {OtherID: 13}, {SpellID: 18288} |
+| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:274271 ranged:279896 | 9.1 | 4 | other:mana_gain=47.4, spell:1454=47.4, spell:695=31.3, spell:172=13.0, spell:980=8.8 | {OtherID: 13}, {SpellID: 18288} |
+| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:274271 ranged:7001 | 21.4 | 4 | other:mana_gain=29.0, spell:1455=29.0, spell:1088=23.7, spell:6222=11.4, spell:1014=8.2 | {OtherID: 13}, {SpellID: 18288} |
+| 30 | 25552000020000000-0000000000000000000-0000000000000000 | main_hand:274271 ranged:5213 | 43.9 | 4 | other:mana_gain=31.7, spell:1456=31.7, spell:1106=30.3, spell:6223=10.5, spell:6217=8.3 | {OtherID: 13}, {SpellID: 18288} |
+| 38 | 25552000030201040-0000000000000000000-0000000000000000 | main_hand:274271 ranged:13064 | 72.6 | 4 | spell:7641=33.7, other:mana_gain=28.3, spell:11687=28.3, spell:7648=10.1, spell:11711=8.3 | {OtherID: 13}, {SpellID: 18288} |
+| 40 | 25552000030201051-0000000000000000000-0000000000000000 | main_hand:274271 ranged:5216 | 108.6 | 5 | other:mana_gain=32.4, spell:11687=32.4, spell:1316697=22.5, spell:7641=18.6, spell:7648=10.6 | {OtherID: 13}, {SpellID: 18288} |
+| 50 | 25552000030201051-2350000000000000000-0000000000000000 | main_hand:12061 ranged:15280 | 149.3 | 5 | other:mana_gain=30.3, spell:11688=30.3, spell:1316697=24.6, spell:11659=22.2, spell:11671=10.4 | {OtherID: 13}, {SpellID: 18288} |
+| 60 | 25552000030201051-2355230000000000000-0000000000000000 | main_hand:23577 ranged:15282 | 227.1 | 5 | other:mana_gain=28.8, spell:11689=28.8, spell:1316697=25.1, spell:25307=21.7, spell:25311=10.5 | {OtherID: 13}, {SpellID: 18288} |
 
 ## Learned but unused (informational)
 
@@ -183,17 +202,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warlock-affliction level=10 kind=unresolved_id action={OtherID: 13}
-- warlock-affliction level=10 kind=unresolved_id action={SpellID: 18288}
-- warlock-affliction level=20 kind=unresolved_id action={OtherID: 13}
-- warlock-affliction level=20 kind=unresolved_id action={SpellID: 18288}
-- warlock-affliction level=30 kind=unresolved_id action={OtherID: 13}
-- warlock-affliction level=30 kind=unresolved_id action={SpellID: 18288}
-- warlock-affliction level=38 kind=unresolved_id action={OtherID: 13}
-- warlock-affliction level=38 kind=unresolved_id action={SpellID: 18288}
-- warlock-affliction level=40 kind=unresolved_id action={OtherID: 13}
-- warlock-affliction level=40 kind=unresolved_id action={SpellID: 18288}
-- warlock-affliction level=50 kind=unresolved_id action={OtherID: 13}
-- warlock-affliction level=50 kind=unresolved_id action={SpellID: 18288}
-- warlock-affliction level=60 kind=unresolved_id action={OtherID: 13}
-- warlock-affliction level=60 kind=unresolved_id action={SpellID: 18288}
+None.

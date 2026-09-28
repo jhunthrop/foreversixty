@@ -153,6 +153,18 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 		inert[spellAction(id)] = true
 	}
 
+	// Harness rule 1 (this wave's brief): the two readers a warned
+	// action's spell id is checked against below, beside the inert and
+	// expected_idle maps above - see ladder.go's own comment on
+	// loadTalentSpellIDs and idLearnLevel for why these are separate,
+	// read-only copies of data this file's talent-truncation code and
+	// spellranks.json already carry.
+	talentSpellIDs, err := loadTalentSpellIDs(repoRoot, build, class)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rankLevelByID := idLearnLevel(ranks, class)
+
 	var rows []ladderRow
 	var unused []unusedEntry
 	var violations []string
@@ -160,6 +172,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 
 	for _, level := range ladderLevels {
 		talents := ladderTalentString(activeTrees, targets, spec.TreeIndex, level)
+		talentPoints := ladderTalentPoints(activeTrees, targets, spec.TreeIndex, level)
 		gear := ladderGear(items, knownItems, spec.Spec, level)
 
 		req := api.SimRequest{
@@ -228,20 +241,48 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 				"%s level=%d kind=no_damage_cast dps=%.1f", spec.Spec, level, dps))
 		}
 
-		// Rule 3: DPS lower than the previous rung.
-		if havePrev && dps < prevDPS {
+		// Rule 3: DPS lower than the previous rung, tolerating up to a
+		// 1% drop as this run's own noise (harness rule 4, this wave's
+		// brief - shaman-elemental's level 40 vs 38 is exactly this).
+		if havePrev && dps < prevDPS*(1-dpsRegressionTolerance) {
 			violations = append(violations, fmt.Sprintf(
 				"%s level=%d kind=dps_regression dps=%.1f prev_dps=%.1f", spec.Spec, level, dps, prevDPS))
 		}
 		prevDPS, havePrev = dps, true
 
 		// Rule 2: an unresolved id the curated file's inert array does
-		// not name.
+		// not name, with the harness's own three standing exceptions
+		// (see ladderRulesHeader's "Unresolved" entry): the potion
+		// action, a talent-granted spell the truncated build has not
+		// spent a point on yet, and an above-band spellranks.json rank
+		// the engine's own rewrite should already have dropped as a
+		// CAST (asserted, not merely excused: this id reaching the
+		// engine as unresolved some OTHER way - a condition value
+		// rewriteRankedSpellIDs's castKeys leaves as-authored - is not
+		// itself wrong, but the rewrite disagreeing about whether this
+		// level has learned it would be).
 		for _, w := range warned {
-			if !inert[w] {
-				violations = append(violations, fmt.Sprintf(
-					"%s level=%d kind=unresolved_id action=%s", spec.Spec, level, w))
+			if inert[w] {
+				continue
 			}
+			if w == potionUnresolvedAction {
+				continue // harness rule 2: no consumes on the ladder character.
+			}
+			if id, ok := warnedSpellID(w); ok {
+				if nodeID, isTalent := talentSpellIDs[id]; isTalent && talentPoints[nodeID] == 0 {
+					continue // harness rule 1: this talent has zero points at this level.
+				}
+				if rankLevel, isRank := rankLevelByID[id]; isRank && rankLevel > level {
+					if _, learned := spellranks.HighestLearnedSpellID(class, int32(id), level); learned {
+						t.Fatalf("%s level=%d: id %d is an above-band spellranks.json rank (learned at %d) "+
+							"that spellranks.HighestLearnedSpellID nonetheless calls learned at %d - the rewrite "+
+							"and this assertion disagree", spec.Spec, level, id, rankLevel, level)
+					}
+					continue // harness rule 1: the rewrite already drops a CAST of this id.
+				}
+			}
+			violations = append(violations, fmt.Sprintf(
+				"%s level=%d kind=unresolved_id action=%s", spec.Spec, level, w))
 		}
 
 		// Rule 1: a curated rotation line, resolved to the id
