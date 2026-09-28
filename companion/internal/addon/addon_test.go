@@ -132,6 +132,98 @@ func TestTheInboxRendersLuaThatReadsBack(t *testing.T) {
 	}
 }
 
+func TestTheInboxRendersTypedMessagesThatReadBack(t *testing.T) {
+	body := RenderInbox(Inbox{Messages: []Message{
+		{
+			Type: MessageUpgrade, Character: "us/hardcore/morrowlyn",
+			Slot: "chest", ItemID: 11726, ItemName: `Robe of the "Void"`,
+			Source: "Molten Core", Delta: 41.5,
+		},
+		{
+			Type: MessageWeights, Character: "us/hardcore/morrowlyn", Spec: "fury",
+			Weights: []WeightEntry{{Stat: "strength", Weight: 1}, {Stat: "hit", Weight: 0}},
+			Caps:    []string{"hit"},
+		},
+		{
+			Type: MessageGuild, Character: "us/hardcore/morrowlyn",
+			GuildName: "Sanguine", ClaimState: "claimed", PendingApprovals: 2, Rank: "officer",
+		},
+	}}, t0)
+	top, err := ParseLua(string(body))
+	if err != nil {
+		t.Fatalf("the rendered inbox does not parse: %v\n%s", err, body)
+	}
+	root := top[InboxGlobal].(*Table)
+	if keyOf(root.Fields["version"]) != "2" {
+		t.Errorf("version = %q", keyOf(root.Fields["version"]))
+	}
+	messages := root.Fields["messages"].(*Table)
+	if len(messages.Items) != 3 {
+		t.Fatalf("messages = %+v", messages)
+	}
+
+	upgrade := messages.Items[0].(*Table)
+	if upgrade.Get("type") != MessageUpgrade || upgrade.Get("character") != "us/hardcore/morrowlyn" ||
+		upgrade.Get("slot") != "chest" || keyOf(upgrade.Fields["item_id"]) != "11726" ||
+		upgrade.Get("item_name") != `Robe of the "Void"` || upgrade.Get("source") != "Molten Core" ||
+		keyOf(upgrade.Fields["delta"]) != "41.5" {
+		t.Errorf("upgrade = %+v", upgrade.Fields)
+	}
+
+	weights := messages.Items[1].(*Table)
+	if weights.Get("type") != MessageWeights || weights.Get("spec") != "fury" {
+		t.Errorf("weights = %+v", weights.Fields)
+	}
+	weightRows := weights.Fields["weights"].(*Table)
+	if len(weightRows.Items) != 2 {
+		t.Fatalf("weight rows = %+v", weightRows)
+	}
+	first := weightRows.Items[0].(*Table)
+	if first.Get("stat") != "strength" || keyOf(first.Fields["weight"]) != "1" {
+		t.Errorf("first weight = %+v", first.Fields)
+	}
+	caps := weights.Fields["caps"].(*Table)
+	if len(caps.Items) != 1 || keyOf(caps.Items[0]) != "hit" {
+		t.Errorf("caps = %+v", caps)
+	}
+
+	guild := messages.Items[2].(*Table)
+	if guild.Get("type") != MessageGuild || guild.Get("guild_name") != "Sanguine" ||
+		guild.Get("claim_state") != "claimed" || keyOf(guild.Fields["pending_approvals"]) != "2" ||
+		guild.Get("rank") != "officer" {
+		t.Errorf("guild = %+v", guild.Fields)
+	}
+
+	if string(RenderInbox(Inbox{Messages: []Message{
+		{Type: MessageGuild, Character: "us/hardcore/morrowlyn", GuildName: "Sanguine",
+			ClaimState: "claimed", PendingApprovals: 2, Rank: "officer"},
+	}}, t0)) == string(body) {
+		t.Fatal("expected a different render for a different message set")
+	}
+}
+
+// TestAnUnrecognisedMessageTypeStillRenders proves renderMessage never
+// panics or drops the envelope for a Type this companion build does not
+// special-case: a future message kind (or an unaddressed one, added by
+// a site release ahead of the next companion build) still shows up as
+// "type" and, when present, "character" — the fields Follow.inbox-style
+// forward compatibility depends on — with none of the other kinds'
+// fields spuriously present.
+func TestAnUnrecognisedMessageTypeStillRenders(t *testing.T) {
+	body := RenderInbox(Inbox{Messages: []Message{{Type: "future_kind", Character: "us/hardcore/morrowlyn"}}}, t0)
+	top, err := ParseLua(string(body))
+	if err != nil {
+		t.Fatalf("did not parse: %v\n%s", err, body)
+	}
+	row := top[InboxGlobal].(*Table).Fields["messages"].(*Table).Items[0].(*Table)
+	if row.Get("type") != "future_kind" || row.Get("character") != "us/hardcore/morrowlyn" {
+		t.Errorf("row = %+v", row.Fields)
+	}
+	if _, has := row.Fields["slot"]; has {
+		t.Errorf("an unrecognised type carried an upgrade field: %+v", row.Fields)
+	}
+}
+
 func TestWriteInboxSkipsAnIdenticalFile(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "SavedVariables", InboxName+".lua")
 	body := RenderInbox(Inbox{}, t0)
@@ -307,5 +399,50 @@ func TestTheInboxIsNotRewrittenWhenTheBuildsHaveNotChanged(t *testing.T) {
 	}
 	if !strings.Contains(string(body), "FSB1:y") {
 		t.Errorf("the rewritten inbox does not carry the new build:\n%s", body)
+	}
+}
+
+// TestAChangedMessageRewritesTheInboxEvenWithTheSameBuilds proves the
+// deep-equal half of the sync's change check (sync.go, reflect.DeepEqual
+// on Messages) actually does something: the builds slice comparison
+// above (slices.Equal) is unaware of Messages entirely, so a version
+// of this check that only compared builds would pass this test's first
+// half and then silently stop noticing a weights or guild message that
+// changed underneath an unchanged build list.
+func TestAChangedMessageRewritesTheInboxEvenWithTheSameBuilds(t *testing.T) {
+	dir := filepath.Join(t.TempDir(), "SavedVariables")
+	if err := os.MkdirAll(dir, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	path := filepath.Join(dir, SavedVariablesName+".lua")
+	if err := os.WriteFile(path, []byte(savedVariables), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	same := []Build{{ID: "b1", Name: "Holy", Code: "FSB1:x"}}
+	api := &fakeAPI{inbox: Inbox{Builds: same, Messages: []Message{
+		{Type: MessageGuild, Character: "us/hardcore/morrowlyn", GuildName: "Sanguine", PendingApprovals: 1},
+	}}}
+	s := New(Options{Paths: func() []string { return []string{path} }, API: api})
+	if err := s.Poll(t.Context(), t0); err != nil {
+		t.Fatal(err)
+	}
+	inbox := InboxPath(path)
+	if err := os.Chtimes(inbox, t0, t0); err != nil {
+		t.Fatalf("the inbox was not written: %v", err)
+	}
+
+	// Same builds, a changed message: the inbox must still be rewritten.
+	api.inbox = Inbox{Builds: same, Messages: []Message{
+		{Type: MessageGuild, Character: "us/hardcore/morrowlyn", GuildName: "Sanguine", PendingApprovals: 2},
+	}}
+	if err := s.Poll(t.Context(), t0.Add(InboxEvery)); err != nil {
+		t.Fatal(err)
+	}
+	fi, err := os.Stat(inbox)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if fi.ModTime().Equal(t0) {
+		t.Error("a changed message with unchanged builds never reached the addon")
 	}
 }

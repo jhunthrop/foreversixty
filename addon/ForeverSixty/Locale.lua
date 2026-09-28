@@ -261,6 +261,24 @@ local L = {
 	guildUnrated = "No rating yet",
 	guildNotOnSite = "This guild has no logs on foreversixty.gg yet. "
 		.. "Upload a raid night and it appears here the next day.",
+
+	-- Wave C additions (docs/superpowers/specs/2026-09-28-addon-character-
+	-- aware-design.md §3, §4, §6): the typed inbox messages -- upgrade,
+	-- weights with caps, guild state -- and the Guild tab's private state
+	-- block they feed. Kept in this one block, at the end, rather than
+	-- folded into the sections above: lane addon-b is editing this same
+	-- file at the same time for Wave B, and an appended block is the
+	-- smallest surface for the controller to merge.
+	tooltipCapped = "%s capped: more is wasted",
+	guildClaimUnclaimed = "Unclaimed on the site",
+	guildClaimPending = "Claim pending",
+	guildClaimClaimed = "Claimed",
+	guildClaimContested = "Claim contested",
+	guildPendingApprovals = "%d pending approval(s)",
+	guildYourRank = "Your rank: %s",
+	inboxUpgradeLine = "Your top upgrade: %s for %s, +%.0f",
+	inboxWeightsLine = "Weights updated for %s",
+	inboxGuildLine = "Guild news: %s",
 }
 
 ns.L = L
