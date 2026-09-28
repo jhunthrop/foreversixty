@@ -4,6 +4,8 @@
 // every spec guide for the class (content/guides/<class>/<spec>.md).
 import { getCollection, render } from 'astro:content';
 import Content from '../../../layouts/Content.astro';
+import { bisCopy } from '../../../lib/bis/copy';
+import { readSpecCatalog } from '../../../lib/bis/load';
 import { plannerHref } from '../../../lib/planner/reference';
 
 export async function getStaticPaths() {
@@ -19,6 +21,7 @@ export async function getStaticPaths() {
 }
 const { entry, specGuides } = Astro.props;
 const { Content: Body } = await render(entry);
+const hasBisSpecs = readSpecCatalog().some((spec) => spec.class_slug === entry.data.classSlug);
 ---
 
 <Content
@@ -33,6 +36,11 @@ const { Content: Body } = await render(entry);
   <p>
     <a href={plannerHref(entry.data.classSlug)}>Open the planner for this class</a>
   </p>
+  {hasBisSpecs && (
+    <p>
+      <a href={`/bis#${entry.data.classSlug}`}>{bisCopy.classGuideLink}</a>
+    </p>
+  )}
   <Body />
   {specGuides.length > 0 && (
     <nav aria-label="Spec guides" class="flex flex-col gap-2">

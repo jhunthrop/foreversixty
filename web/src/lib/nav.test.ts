@@ -2,13 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { PRIMARY_NAV_ITEMS, SETUP_NAV_ITEM, TRAILING_NAV_ITEMS, isNavItemCurrent } from './nav';
 
 describe('nav structure', () => {
-  it('orders the five doors Planner, Simulator, Logs, Rankings, Guides', () => {
+  it('orders the doors Planner, Simulator, Logs, Rankings, Guides, Leveling BiS', () => {
     expect(PRIMARY_NAV_ITEMS.map((item) => item.label)).toEqual([
       'Planner',
       'Simulator',
       'Logs',
       'Rankings',
       'Guides',
+      'Leveling BiS',
     ]);
     expect(PRIMARY_NAV_ITEMS.map((item) => item.href)).toEqual([
       '/planner',
@@ -16,6 +17,7 @@ describe('nav structure', () => {
       '/logs',
       '/rankings',
       '/guides',
+      '/bis',
     ]);
   });
 

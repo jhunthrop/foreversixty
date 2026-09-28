@@ -7,13 +7,20 @@ export interface NavItem {
   readonly href: string;
 }
 
-/** The five doors, in this order on every breakpoint (spec 2026-09-25, section 2). */
+/**
+ * The doors, in this order on every breakpoint. Spec 2026-09-25 section 2 fixed the first
+ * five (Planner, Simulator, Logs, Rankings, Guides); "Leveling BiS" is lane bis-web's own
+ * addition (2026-09-28 leveling-bis-design.md, "Navigation: a 'Leveling BiS' entry beside
+ * Guides"), placed right after Guides since it is the guides' own sibling -- gear for a
+ * leveling character, the same audience Guides already serves.
+ */
 export const PRIMARY_NAV_ITEMS: readonly NavItem[] = [
   { label: 'Planner', href: '/planner' },
   { label: 'Simulator', href: '/sim' },
   { label: 'Logs', href: '/logs' },
   { label: 'Rankings', href: '/rankings' },
   { label: 'Guides', href: '/guides' },
+  { label: 'Leveling BiS', href: '/bis' },
 ];
 
 /** The sixth, quieter item at the end of the row (spec section 2). */
