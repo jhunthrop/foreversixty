@@ -1644,6 +1644,10 @@ ns.Data = {
 			} },
 		},
 	},
+	bis = {
+	},
+	bis_new = {
+	},
 }
 
 return ns.Data

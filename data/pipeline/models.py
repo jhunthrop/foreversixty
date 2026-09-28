@@ -406,12 +406,48 @@ class AddonRotationBand(BaseModel):
     lines: list[AddonRotationLine]
 
 
+class AddonBisItem(BaseModel):
+    """One slot's leveling BiS pick, ids only (pipeline.addonbis's own
+    load-bearing decision: the item's name, score and swap_note are not
+    carried again -- the client resolves the name for free from `item_id`,
+    and the rest is prose a player reading a tooltip has no use for)."""
+
+    item_id: int
+    #: One of pipeline.addonbis.SOURCE_KIND_CODES' keys (leveling-bis's own
+    #: sourceKindPriority list: quest, dungeon, crafted, rep, pvp, world,
+    #: raid). Kept as the full word here -- render_lua is what encodes it
+    #: down to one letter for size; the JSON stays readable.
+    source_kind: str
+
+
+class AddonBisBand(BaseModel):
+    """One level's leveling BiS, both factions inline (addonbis.py's own
+    regrouping of leveling-bis's flat per-(band, faction) list -- see that
+    module's docstring). `new_at_band[faction]` is the item ids newly best
+    at this band, a subset of that faction's own `factions[faction]`
+    values -- the tooltip's "(new at <band>)" tag reads it by id."""
+
+    level: int
+    #: faction ("alliance" | "horde") -> slot -> pick.
+    factions: dict[str, dict[str, AddonBisItem]]
+    #: faction -> item ids newly best at this band.
+    new_at_band: dict[str, list[int]] = {}
+
+
 class AddonData(BaseModel):
     build: str
     classes: dict[str, AddonClass]
     weights: dict[str, dict[str, float]]
     #: Keyed by spec ("warrior-fury"), one band per pipeline.addonrotation.LEVEL_BANDS entry.
     rotations: dict[str, list[AddonRotationBand]] = {}
+    #: Keyed by spec, one band per pipeline.addonbis.BIS_LEVEL_BANDS entry
+    #: actually present in data/builds/<build>/bis/<spec>.json. Empty for
+    #: every spec until the nightly workflow (.github/workflows/bis.yml)
+    #: has written that directory -- pipeline.addonbis.build_bis tolerates
+    #: a missing bis/ the same way build_rotations does not tolerate a
+    #: missing curated/apl entry (the two directories have different
+    #: maturity, hence the different rule).
+    bis: dict[str, list[AddonBisBand]] = {}
 
 
 class PhaseBoundary(BaseModel):
