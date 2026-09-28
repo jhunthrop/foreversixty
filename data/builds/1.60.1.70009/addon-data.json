@@ -4818,7 +4818,7 @@
           {
             "spell_id": 400574,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one."
+            "condition": "Arcane Blast is the client rank chain 400574..1239700 (levels 20/30/40/50/60 per spellranks.json); this file names the top rank and the level rewrite picks the…"
           },
           {
             "spell_id": 5144,
@@ -4848,7 +4848,7 @@
           {
             "spell_id": 1239696,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one."
+            "condition": "Arcane Blast is the client rank chain 400574..1239700 (levels 20/30/40/50/60 per spellranks.json); this file names the top rank and the level rewrite picks the…"
           },
           {
             "spell_id": 5145,
@@ -4878,7 +4878,7 @@
           {
             "spell_id": 1239696,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one."
+            "condition": "Arcane Blast is the client rank chain 400574..1239700 (levels 20/30/40/50/60 per spellranks.json); this file names the top rank and the level rewrite picks the…"
           },
           {
             "spell_id": 8416,
@@ -4908,7 +4908,7 @@
           {
             "spell_id": 1239697,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one."
+            "condition": "Arcane Blast is the client rank chain 400574..1239700 (levels 20/30/40/50/60 per spellranks.json); this file names the top rank and the level rewrite picks the…"
           },
           {
             "spell_id": 8417,
@@ -4938,7 +4938,7 @@
           {
             "spell_id": 1239699,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one."
+            "condition": "Arcane Blast is the client rank chain 400574..1239700 (levels 20/30/40/50/60 per spellranks.json); this file names the top rank and the level rewrite picks the…"
           },
           {
             "spell_id": 10211,
@@ -4968,7 +4968,7 @@
           {
             "spell_id": 1239700,
             "name": "Arcane Blast",
-            "condition": "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one."
+            "condition": "Arcane Blast is the client rank chain 400574..1239700 (levels 20/30/40/50/60 per spellranks.json); this file names the top rank and the level rewrite picks the…"
           },
           {
             "spell_id": 25345,
@@ -7012,7 +7012,7 @@
           {
             "spell_id": 695,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…"
+            "condition": "Shadow Bolt as the pre-Incinerate filler: this line always sat directly beneath Incinerate's unconditional cast, so once Incinerate stopped being inert (see ab…"
           }
         ]
       },
@@ -7037,7 +7037,7 @@
           {
             "spell_id": 1088,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…"
+            "condition": "Shadow Bolt as the pre-Incinerate filler: this line always sat directly beneath Incinerate's unconditional cast, so once Incinerate stopped being inert (see ab…"
           }
         ]
       },
@@ -7067,7 +7067,7 @@
           {
             "spell_id": 1106,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…"
+            "condition": "Shadow Bolt as the pre-Incinerate filler: this line always sat directly beneath Incinerate's unconditional cast, so once Incinerate stopped being inert (see ab…"
           }
         ]
       },
@@ -7097,7 +7097,7 @@
           {
             "spell_id": 7641,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…"
+            "condition": "Shadow Bolt as the pre-Incinerate filler: this line always sat directly beneath Incinerate's unconditional cast, so once Incinerate stopped being inert (see ab…"
           }
         ]
       },
@@ -7127,12 +7127,12 @@
           {
             "spell_id": 412758,
             "name": "Incinerate",
-            "condition": "Inert until the engine registers Incinerate (found only in sim/warlock's talent metadata table, no spell registration)."
+            "condition": "Rotation-accuracy program fix round: sim/warlock/incinerate.go now registers Incinerate for real (talent-gated on warlock.Talents.Incinerate, level-gated 40/50…"
           },
           {
             "spell_id": 7641,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…"
+            "condition": "Shadow Bolt as the pre-Incinerate filler: this line always sat directly beneath Incinerate's unconditional cast, so once Incinerate stopped being inert (see ab…"
           }
         ]
       },
@@ -7162,12 +7162,12 @@
           {
             "spell_id": 1293812,
             "name": "Incinerate",
-            "condition": "Inert until the engine registers Incinerate (found only in sim/warlock's talent metadata table, no spell registration)."
+            "condition": "Rotation-accuracy program fix round: sim/warlock/incinerate.go now registers Incinerate for real (talent-gated on warlock.Talents.Incinerate, level-gated 40/50…"
           },
           {
             "spell_id": 11659,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…"
+            "condition": "Shadow Bolt as the pre-Incinerate filler: this line always sat directly beneath Incinerate's unconditional cast, so once Incinerate stopped being inert (see ab…"
           }
         ]
       },
@@ -7197,12 +7197,12 @@
           {
             "spell_id": 1293813,
             "name": "Incinerate",
-            "condition": "Inert until the engine registers Incinerate (found only in sim/warlock's talent metadata table, no spell registration)."
+            "condition": "Rotation-accuracy program fix round: sim/warlock/incinerate.go now registers Incinerate for real (talent-gated on warlock.Talents.Incinerate, level-gated 40/50…"
           },
           {
             "spell_id": 25307,
             "name": "Shadow Bolt",
-            "condition": "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…"
+            "condition": "Shadow Bolt as the pre-Incinerate filler: this line always sat directly beneath Incinerate's unconditional cast, so once Incinerate stopped being inert (see ab…"
           }
         ]
       }
