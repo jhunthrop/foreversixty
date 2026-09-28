@@ -27,6 +27,7 @@ local function ctxFor()
 		select = function() end,
 		setTracker = function() end,
 		refresh = function() end,
+		refreshEverything = function() end,
 	}
 end
 
@@ -153,7 +154,8 @@ describe("FollowView", function()
 		start()
 		Follow.load(CODE, DATA, "Deep Holy")
 		local key = require("Export").characterKey()
-		assert.are.same({ code = CODE, name = "Deep Holy" }, _G.ForeverSixtyDB.follows[key])
+		assert.are.same({ active = "raid", slots = { raid = { code = CODE, name = "Deep Holy" } } },
+			_G.ForeverSixtyDB.follows[key])
 		local restored = helper.load("Follow").restore(DATA)
 		assert.are.equal("Deep Holy", restored.name)
 	end)
@@ -268,5 +270,50 @@ describe("FollowView", function()
 		view.code:SetText("   ")
 		view.load:GetScript("OnClick")(view.load)
 		assert.are.equal(L.followPasteFirst, view.error:GetText())
+	end)
+
+	-- Named build slots (design section 1): three tabs, one click switches.
+	describe("named build slots", function()
+		it("draws one tab per slot, named from Locale, raid active by default", function()
+			start()
+			local view = FollowView.mount(_G.CreateFrame("Frame"), ctxFor())
+			assert.are.equal(3, #view.slots)
+			assert.are.equal(L.slotRaid, view.slots[1].tab.foreverSixtyLabel:GetText())
+			assert.are.equal(L.slotLeveling, view.slots[2].tab.foreverSixtyLabel:GetText())
+			assert.are.equal(L.slotPvp, view.slots[3].tab.foreverSixtyLabel:GetText())
+			assert.is_true(view.slots[1].tab.foreverSixtyActive)
+			assert.is_false(view.slots[2].tab.foreverSixtyActive)
+		end)
+
+		it("clicking a slot's tab switches to it and shows its own build", function()
+			start()
+			Follow.load(CODE, DATA, "Raid build", "raid")
+			Follow.load(CODE, DATA, "Leveling build", "leveling")
+			local view = FollowView.mount(_G.CreateFrame("Frame"), ctxFor())
+			view.slots[2].tab:GetScript("OnClick")(view.slots[2].tab)
+			assert.are.equal("Leveling build", Follow.build.name)
+			assert.is_true(view.slots[2].tab.foreverSixtyActive)
+			assert.is_false(view.slots[1].tab.foreverSixtyActive)
+			assert.are.equal("Leveling build", view.name:GetText())
+		end)
+
+		it("switching to an empty slot shows this character's empty state, not an error", function()
+			start()
+			Follow.load(CODE, DATA, "Raid build", "raid")
+			local view = FollowView.mount(_G.CreateFrame("Frame"), ctxFor())
+			view.slots[3].tab:GetScript("OnClick")(view.slots[3].tab)
+			assert.is_nil(Follow.build)
+			assert.is_true(view.model.empty)
+		end)
+
+		it("calls ctx.refreshEverything so the tracker and talent glow follow the new slot", function()
+			start()
+			local calls = 0
+			local ctx = ctxFor()
+			ctx.refreshEverything = function() calls = calls + 1 end
+			local view = FollowView.mount(_G.CreateFrame("Frame"), ctx)
+			view.slots[2].tab:GetScript("OnClick")(view.slots[2].tab)
+			assert.are.equal(1, calls)
+		end)
 	end)
 end)

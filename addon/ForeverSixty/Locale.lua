@@ -128,6 +128,25 @@ local L = {
 	followInbox = "A build arrived from the companion",
 	followInboxLoad = "Load it",
 
+	-- Named build slots (design section 1). "slot" .. Follow.SLOTS[n],
+	-- title-cased, is the lookup Follow.slotsFor uses, so a new slot id
+	-- needs a matching key here or it falls back to the raw id.
+	slotRaid = "Raid",
+	slotLeveling = "Leveling",
+	slotPvp = "PvP",
+
+	-- The Overview's "build arrived" banner (design section 1): a
+	-- one-time note the first time a login finds a companion build queued
+	-- for this character that the player has not addressed yet.
+	buildArrivedTitle = "A build arrived for %s.",
+	buildArrivedLoad = "Load it",
+	buildArrivedDismiss = "Dismiss",
+	-- The diff summary under the title: how this compares to what is
+	-- already loaded in the active slot.
+	buildArrivedFirst = "This is the first build queued for this character.",
+	buildArrivedSame = "It matches your current build point for point.",
+	buildArrivedDiff = "%d talent points differ from your current build.",
+
 	-- The tracker. followNext supplies the "<talent> (<tree>, tier n)"
 	-- half, so the two surfaces cannot drift apart.
 	trackerNext = "Next: %s",
@@ -182,6 +201,9 @@ local L = {
 	settingsAutoSave = "Save my export when I log out",
 	settingsChat = "Print /fs answers in chat too",
 	settingsReset = "Reset positions",
+	settingsAdvancedDetail = "Show advanced detail",
+	settingsAdvancedDetailHint = "Stat-weight breakdowns and rating components on every card, for a raider "
+		.. "who already knows what they mean.",
 	-- The Overview page.
 	overviewBuildEyebrow = "YOUR BUILD",
 	overviewBuildNone = "No build loaded",
@@ -226,6 +248,17 @@ local L = {
 	tooltipNotUpgrade = "Not an upgrade",
 	diagTooltipHookFailed = "The item tooltip hook failed once and turned itself off: %s",
 	toastMessage = "Level %d. Take %s, rank %d of %d.",
+	-- The rotation toast (design section 2 item 3), and the Overview's
+	-- rotation card (section 6 Wave B).
+	rotationToastMessage = "Level %d: %s opens your rotation now.",
+	overviewRotationEyebrow = "YOUR ROTATION",
+	overviewRotationTitle = "Your rotation at level %d",
+	overviewRotationNone = "No curated rotation for this spec yet.",
+	overviewRotationNoBuild = "Load a build to see your rotation.",
+	-- "<name> — <condition>" for one line; a line with no condition (the
+	-- curated APL had no notes) shows the name alone.
+	overviewRotationLine = "%s — %s",
+	overviewRotationMore = "Turn on advanced detail in Settings to see the rest.",
 	minimapProgress = "%d of %d points",
 	minimapUpgrades = "%d upgrade(s) waiting",
 	bindingHeader = "Forever Sixty",
@@ -250,6 +283,14 @@ local L = {
 	ratingsPreparation = "Preparation",
 	ratingsActivity = "Activity",
 	overviewRating = "Your rating on the site: %d, over %d fights",
+	-- The Overview's personal rating card (design section 3): always
+	-- shown, its detail widened by the advanced-detail toggle.
+	overviewRatingEyebrow = "PERSONAL RATING",
+	overviewRatingHeadline = "Rating %d, over %d fights",
+	-- "<label> <score>" for one component in the advanced breakdown,
+	-- joined with exportTreeSeparator: "Output 82 · Survival 91".
+	overviewRatingComponent = "%s %d",
+	ratingsNotRated = "No rating yet for this character.",
 	-- The Guild page.
 	tabGuild = "Guild",
 	guildNone = "Not in a guild",

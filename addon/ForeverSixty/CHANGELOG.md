@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Turning on "Show advanced detail" in Settings (off by default) widens the personal
+  rating card with its top components, alongside the existing gear and rotation detail.
+- A personal rating card on the Overview reads your rating from the Forever Sixty Data
+  addon, with an empty state when you are not rated yet.
+- A rotation card on the Overview shows your spec's priority list at your current level
+  (the top four abilities, or all of them with advanced detail on), and a toast names a
+  new ability the moment it enters your rotation on level-up.
+- Named build slots (Raid, Leveling, PvP) on the Talents page: switch with one click, and
+  the tracker and talent glow follow whichever is active. Your existing followed build
+  moved into the Raid slot.
+- A one-time banner on the Overview announces a companion build queued for this
+  character, with a one-line summary of how it differs from what is loaded and a
+  Load it / Dismiss choice.
 - The followed build and the companion's inbox are now per character: logging in on a
   second character no longer shows the first character's talent tracker, glow and Follow
   tab, and an inbox build queued on the site for one character is no longer offered to

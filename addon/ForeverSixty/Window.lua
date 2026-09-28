@@ -20,6 +20,7 @@ local Talents = ns.Talents or require("Talents")
 local Gear = ns.Gear or require("Gear")
 local Compat = ns.Compat or require("Compat")
 local Tracker = ns.Tracker or require("Tracker")
+local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local MinimapButton = ns.Minimap or require("Minimap")
 
 local Window = {}
@@ -155,6 +156,13 @@ function Window.context()
 			end,
 			refresh = function()
 				return Window.refresh()
+			end,
+			-- For anything a page does that changes what Follow.build IS
+			-- (loading a build, switching the active slot): the tracker and
+			-- the talent glow live outside the window's own pages and would
+			-- otherwise go stale until the next client event refreshed them.
+			refreshEverything = function()
+				return Window.refreshEverything(Window.data)
 			end,
 			setTracker = function(shown)
 				return Tracker.setShown(shown, Window.data)
@@ -381,6 +389,18 @@ function Window.toggle(tab)
 		return Window.close()
 	end
 	return Window.open(tab)
+end
+
+--- Refreshes the tracker and the talent glow (both outside the window's
+--- own pages) and then the window itself. Options.onEvent runs the same
+--- three on every client event that could have changed what Follow.build
+--- is; this is the one a page reaches for after doing that itself (a slot
+--- switch, a load) so all three surfaces agree without waiting for the
+--- next event.
+function Window.refreshEverything(data)
+	Tracker.refresh(data)
+	TalentGlow.refresh(data)
+	return Window.refresh()
 end
 
 --- Only the page that is showing: refreshing a hidden one costs a talent

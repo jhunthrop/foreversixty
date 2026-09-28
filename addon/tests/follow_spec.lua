@@ -122,7 +122,8 @@ describe("Follow, per character", function()
 		mock.install({ realm = "Ashbringer", region = 1, playerName = "Alice" })
 		Follow.load(CODE, DATA, "Deep Holy")
 		assert.are.equal("US/Ashbringer/Alice", require("Export").characterKey())
-		assert.are.same({ code = CODE, name = "Deep Holy" }, _G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
+		assert.are.same({ active = "raid", slots = { raid = { code = CODE, name = "Deep Holy" } } },
+			_G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
 	end)
 
 	it("does not offer one character's build to another", function()
@@ -144,7 +145,8 @@ describe("Follow, per character", function()
 		local build = Follow.restore(DATA)
 		assert.are.equal("Old Account Build", build.name)
 		assert.is_nil(_G.ForeverSixtyDB.follow)
-		assert.are.same({ code = CODE, name = "Old Account Build" },
+		assert.are.same(
+			{ active = "raid", slots = { raid = { code = CODE, name = "Old Account Build" } } },
 			_G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
 	end)
 
@@ -240,5 +242,169 @@ describe("Follow.sameCharacter", function()
 	it("refuses a value with no character-key shape", function()
 		assert.is_false(Follow.sameCharacter("not-a-key", "US/Ashbringer/Bow Jackzon"))
 		assert.is_false(Follow.sameCharacter(nil, "US/Ashbringer/Bow Jackzon"))
+	end)
+end)
+
+-- Named build slots and the "build arrived" banner (Wave A2,
+-- docs/superpowers/specs/2026-09-28-addon-character-aware-design.md
+-- section 1/2): a character keeps one build PER SLOT ("Raid", "Leveling",
+-- "PvP"), switches with one click, and a companion build queued for this
+-- character shows once on the Overview until loaded or dismissed.
+describe("Follow, named build slots", function()
+	local Follow
+
+	before_each(function()
+		mock.install({ realm = "Ashbringer", region = 1, playerName = "Alice" })
+		Follow = helper.load("Follow")
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("lists the three slots in order, none holding a build yet", function()
+		local slots = Follow.slotsFor()
+		assert.are.same({ "raid", "leveling", "pvp" }, { slots[1].id, slots[2].id, slots[3].id })
+		assert.is_true(slots[1].active)
+		for _, slot in ipairs(slots) do
+			assert.is_false(slot.hasBuild)
+		end
+	end)
+
+	it("loading a build without naming a slot fills the active one", function()
+		Follow.load(CODE, DATA, "Deep Holy")
+		local slots = Follow.slotsFor()
+		assert.is_true(slots[1].hasBuild)
+		assert.is_false(slots[2].hasBuild)
+	end)
+
+	it("loading into a named slot does not touch another slot's build", function()
+		Follow.load(CODE, DATA, "Raid build", "raid")
+		Follow.load(CODE, DATA, "Leveling build", "leveling")
+		local key = require("Export").characterKey()
+		local entry = _G.ForeverSixtyDB.follows[key]
+		assert.are.equal("Raid build", entry.slots.raid.name)
+		assert.are.equal("Leveling build", entry.slots.leveling.name)
+	end)
+
+	it("switching the active slot loads what that slot holds", function()
+		Follow.load(CODE, DATA, "Raid build", "raid")
+		Follow.load(CODE, DATA, "Leveling build", "leveling")
+		local build = Follow.setActiveSlot(DATA, "leveling")
+		assert.are.equal("Leveling build", build.name)
+		assert.are.equal("Leveling build", Follow.build.name)
+		local slots = Follow.slotsFor()
+		assert.is_false(slots[1].active)
+		assert.is_true(slots[2].active)
+	end)
+
+	it("switching to an empty slot clears the loaded build rather than refusing", function()
+		Follow.load(CODE, DATA, "Raid build", "raid")
+		local build = Follow.setActiveSlot(DATA, "pvp")
+		assert.is_nil(build)
+		assert.is_nil(Follow.build)
+	end)
+
+	it("forgetting one slot leaves the others alone", function()
+		Follow.load(CODE, DATA, "Raid build", "raid")
+		Follow.load(CODE, DATA, "Leveling build", "leveling")
+		Follow.setActiveSlot(DATA, "leveling")
+		Follow.forget("raid")
+		local slots = Follow.slotsFor()
+		assert.is_false(slots[1].hasBuild)
+		assert.is_true(slots[2].hasBuild)
+		-- Forgetting a slot that is not active must not clear the build
+		-- that IS loaded.
+		assert.is_not_nil(Follow.build)
+	end)
+
+	it("forgetting the last slot drops the character's whole entry", function()
+		Follow.load(CODE, DATA, "Raid build", "raid")
+		Follow.forget("raid")
+		local key = require("Export").characterKey()
+		assert.is_nil(_G.ForeverSixtyDB.follows[key])
+	end)
+
+	it("migrates a pre-slot single build into the default slot on restore", function()
+		local key = require("Export").characterKey()
+		_G.ForeverSixtyDB = { follows = { [key] = { code = CODE, name = "Old Single Build" } } }
+		local build = Follow.restore(DATA)
+		assert.are.equal("Old Single Build", build.name)
+		local entry = _G.ForeverSixtyDB.follows[key]
+		assert.are.equal("raid", entry.active)
+		assert.are.equal("Old Single Build", entry.slots.raid.name)
+	end)
+end)
+
+describe("Follow, the build-arrived banner", function()
+	local Follow
+
+	before_each(function()
+		mock.install({ realm = "Ashbringer", region = 1, playerName = "Alice" })
+		Follow = helper.load("Follow")
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("finds the first undismissed inbox build addressed to this character", function()
+		local inbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
+		local pending = Follow.pendingArrival(inbox)
+		assert.are.equal("a", pending.id)
+	end)
+
+	it("stops offering a build once it is dismissed", function()
+		local inbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
+		assert.is_not_nil(Follow.pendingArrival(inbox))
+		Follow.dismissInbox("a")
+		assert.is_nil(Follow.pendingArrival(inbox))
+	end)
+
+	it("moves on to the next build once the first is dismissed", function()
+		local inbox = { builds = {
+			{ id = "a", name = "First", code = CODE },
+			{ id = "b", name = "Second", code = CODE },
+		} }
+		Follow.dismissInbox("a")
+		assert.are.equal("b", Follow.pendingArrival(inbox).id)
+	end)
+
+	it("counts the talent cells two builds disagree on", function()
+		local a = { order = {
+			{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 1 },
+			{ tab = 1, tier = 2, column = 1 },
+		} }
+		local b = { order = {
+			{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 1 },
+			{ tab = 1, tier = 1, column = 2 },
+		} }
+		-- 1:2:1 (a wants one, b wants none) and 1:1:2 (a wants none, b wants
+		-- one) each count once; 1:1:1 agrees at two points either way.
+		assert.are.equal(2, Follow.orderDiffCount(a, b))
+	end)
+
+	it("reports zero when both builds want exactly the same points", function()
+		local build = assert(Follow.load(CODE, DATA))
+		assert.are.equal(0, Follow.orderDiffCount(build, build))
+	end)
+
+	it("says so when this is the first build for the character", function()
+		assert.are.equal(require("Locale").buildArrivedFirst, Follow.arrivalSummary(DATA, nil, CODE))
+	end)
+
+	it("says the builds match when the diff is zero", function()
+		local build = assert(Follow.load(CODE, DATA))
+		assert.are.equal(require("Locale").buildArrivedSame, Follow.arrivalSummary(DATA, build, CODE))
+	end)
+
+	it("counts the differing points against the currently loaded build", function()
+		local current = { classSlug = "paladin", order = {
+			{ tab = 1, tier = 1, column = 1 }, { tab = 1, tier = 1, column = 1 },
+		} }
+		-- CODE spends its second point at 1:2:1, which `current` does not.
+		local summary = Follow.arrivalSummary(DATA, current, CODE)
+		local Locale = require("Locale")
+		assert.are.equal(string.format(Locale.buildArrivedDiff, 1), summary)
 	end)
 end)

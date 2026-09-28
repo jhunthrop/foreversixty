@@ -20,8 +20,6 @@ local Toast = ns.Toast or require("Toast")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
 local Theme = ns.Theme or require("Theme")
-local Tracker = ns.Tracker or require("Tracker")
-local TalentGlow = ns.TalentGlow or require("TalentGlow")
 local MinimapButton = ns.Minimap or require("Minimap")
 local SettingsView = ns.SettingsView or require("SettingsView")
 local Window = ns.Window or require("Window")
@@ -166,10 +164,8 @@ function Options.onEvent(_, event, ...)
 	if event == "PLAYER_LEVEL_UP" then
 		Toast.onLevelUp(Options.data, ...)
 	end
-	Tracker.refresh(Options.data)
-	TalentGlow.refresh(Options.data)
 	Toast.refresh(Options.data)
-	Window.refresh()
+	Window.refreshEverything(Options.data)
 end
 
 --- Runs at file load. Registers the slash command, the events and the two
