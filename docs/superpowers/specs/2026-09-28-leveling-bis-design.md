@@ -9,6 +9,10 @@
 - **Scoring:** the simulator's stat-weights mode (`sim/request/weights.go`) run for the spec at the band's level on the accuracy program's ladder character gives the band's weights; an item's score is the weighted sum of its stats (the planner already computes item stats per level through curves). Instant to rank thousands of candidates.
 - **Verification:** Top Gear (`sim/bulk`, mode gear) sims the ranked set at that level to confirm the DPS and to settle the close calls per slot.
 
+## Built once per spec and band, never per character
+
+The owner (2026-09-28): "the BiS lists should be built once per class and level. It shouldn't be character by character." The ranking and the Top Gear verification run once per written spec per band, nightly, and the result is published as data. Per spec rather than per class because the stat weights that rank the items differ by spec (Balance and Feral want opposite gear); a class with one damage spec on the site is one list. A signed-in player's "your character" view is a lookup against that published list -- which of the saved export's slots the list beats -- and never a simulation of that character.
+
 ## Definitions
 
 - **Bands:** 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60. A band's list is "the best you can wear at level L".
