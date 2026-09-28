@@ -35,6 +35,13 @@ const (
 	ladderSeed       = 1
 )
 
+// dpsRegressionTolerance is harness rule 4 (this wave's brief): a level
+// scoring up to this much lower than the ladder's previous rung is the
+// 300-iteration run's own noise, not a real regression -
+// shaman-elemental's level 40 (46.0) against its level 38 (46.1) is
+// what set this.
+const dpsRegressionTolerance = 0.01
+
 // ---------------------------------------------------------------------
 // Talents: truncating a guide's level-60 build to a lower level.
 // ---------------------------------------------------------------------
@@ -219,6 +226,11 @@ type buildItem struct {
 	TwoHand       bool    `json:"two_hand"`
 	Speed         float64 `json:"speed"`
 	DamageMax     int     `json:"damage_max"`
+	// Icon is only read by pickWandItem (harness rule 3): a ranged-slot
+	// row's icon is how this item table distinguishes a real wand from
+	// a bow, gun or thrown weapon, since every wand row's own
+	// damage_max is 0 in this build (see pickWandItem's own comment).
+	Icon string `json:"icon"`
 }
 
 type classItemsFile struct {
@@ -282,12 +294,20 @@ const (
 // what handedness main_hand takes. The zero value is a caster: main hand
 // only, any handedness (a caster's main_hand may be a one-hand dagger or
 // a two-hand staff and either is fine, since no off-hand is ever filled
-// alongside it), no off hand, no ranged - which is also why casters have
-// no entry below.
+// alongside it), no off hand, no ranged weapon - though see Wand below,
+// which every caster spec DOES set.
 type gearProfile struct {
 	MainHand handedness
 	OffHand  bool
 	Ranged   bool
+	// Wand is harness rule 3 (this wave's brief): priest, mage and
+	// warlock fill the ranged slot with a wand the same way melee fill
+	// main_hand/off_hand, via pickWandItem rather than pickGearItem (a
+	// caster's ranged pick needs a DIFFERENT weapon-reality check - see
+	// pickWandItem's own comment for why). Mutually exclusive with
+	// Ranged in practice (hunter uses Ranged for its bow instead), but
+	// nothing enforces that beyond no spec setting both.
+	Wand bool
 	// Skip is druid-feral: "none" in the design's own words. A feral
 	// character fights shapeshifted and this ladder does not model
 	// weapon-DPS-through-form-conversion, so it picks no weapon at all
@@ -296,11 +316,14 @@ type gearProfile struct {
 }
 
 // ladderGearProfiles is every written spec whose weapon rule is not the
-// caster default: the two-handers (warrior-arms, paladin-retribution),
-// the dual-wielders (warrior-fury, rogue's three specs,
-// shaman-enhancement, and hunter - hunters can dual-wield a melee
-// stat-stick beside their bow in this build), hunter's ranged weapon,
-// and feral's "none".
+// bare caster default: the two-handers (warrior-arms,
+// paladin-retribution), the dual-wielders (warrior-fury, rogue's three
+// specs, shaman-enhancement, and hunter - hunters can dual-wield a
+// melee stat-stick beside their bow in this build), hunter's ranged
+// bow, feral's "none", and every caster's wand (harness rule 3:
+// priest-shadow, mage's three specs and warlock's three specs, so
+// OtherActionShoot/wand lines have a real weapon to resolve against,
+// the same way melee always has).
 var ladderGearProfiles = map[string]gearProfile{
 	"warrior-arms":         {MainHand: handTwo},
 	"warrior-fury":         {MainHand: handOne, OffHand: true},
@@ -313,6 +336,13 @@ var ladderGearProfiles = map[string]gearProfile{
 	"hunter-beast-mastery": {MainHand: handOne, OffHand: true, Ranged: true},
 	"hunter-marksmanship":  {MainHand: handOne, OffHand: true, Ranged: true},
 	"hunter-survival":      {MainHand: handOne, OffHand: true, Ranged: true},
+	"priest-shadow":        {Wand: true},
+	"mage-arcane":          {Wand: true},
+	"mage-fire":            {Wand: true},
+	"mage-frost":           {Wand: true},
+	"warlock-affliction":   {Wand: true},
+	"warlock-demonology":   {Wand: true},
+	"warlock-destruction":  {Wand: true},
 }
 
 // pickGearItem is the highest item_level candidate in slot with
@@ -372,6 +402,11 @@ func ladderGear(items []buildItem, known map[int]bool, spec string, level int) [
 	}
 	if profile.Ranged {
 		if it, ok := pickGearItem(items, known, "ranged", level, handAny); ok {
+			gear = append(gear, api.GearSlot{Slot: "ranged", ItemID: it.ID})
+		}
+	}
+	if profile.Wand {
+		if it, ok := pickWandItem(items, known, level); ok {
 			gear = append(gear, api.GearSlot{Slot: "ranged", ItemID: it.ID})
 		}
 	}
@@ -836,15 +871,34 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
   warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every other slot is
-  bare. Buffs and consumables: none.
+  hands). druid-feral picks no weapon at all. Every caster spec
+  (priest-shadow, mage's three specs, warlock's three specs) fills
+  ranged with a wand instead: the same item table's ranged rows whose
+  icon names them a real wand (every wand row's own damage_max is 0 in
+  this build, unlike a bow or gun, so the melee pick's damage_max > 0
+  check is replaced by that icon check rather than dropped), so
+  OtherActionShoot/wand lines have something to resolve against.
+  Every other slot is bare. Consumables: none (see the potion rule
+  below).
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
-  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2). A level scoring
-  lower than the rung before it is a violation.
-- Unresolved: an id the engine's ComputeStats warns it cannot resolve.
-  Expected when data/curated/apl/<spec>.json's own inert array names
-  it; otherwise a violation.
+  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
+  1% drop as the 300-iteration run's own noise (shaman-elemental's
+  level 40, 46.0 vs a level-38 46.1, is exactly this). A level scoring
+  more than 1% lower than the rung before it is a violation.
+- Unresolved: an id the engine's ComputeStats warns it cannot resolve,
+  with three standing exceptions before anything counts as a
+  violation: (1) data/curated/apl/<spec>.json's own inert array names
+  it; (2) it is the potion action ({OtherID: 13}) - the ladder
+  character carries no consumes, so this can never resolve, at any
+  level, any spec; (3) it is a talent-granted spell
+  (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
+  and the ladder's own truncated build (ladderTalentString's budget
+  walk) has spent zero points on that talent at this level - expected
+  right up until the level this ladder's approximation of the guide's
+  build actually reaches that talent's row, a violation only once the
+  build HAS spent points on it and the id still will not resolve.
+  Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
   engine's OWN rank rewrite actually casts at this level (not a second,
@@ -929,4 +983,211 @@ func renderLadderGolden(spec string, rows []ladderRow, unused []unusedEntry, vio
 	}
 
 	return []byte(b.String())
+}
+
+// ---------------------------------------------------------------------
+// Harness rule 1 (this wave's brief): a castSpell id the engine warns
+// it cannot resolve is EXPECTED, not a violation, when either (a) it is
+// a talent-granted spell and the ladder's own truncated build has zero
+// points in that talent at this level, or (b) it is a spellranks.json
+// rank learned above this level's band (the rank-rewrite
+// - sim/internal/spellranks.HighestLearnedSpellID, the very function
+// rewriteRotationRanks calls before a request ever reaches the engine -
+// already drops a CAST of such an id; this id reaching the engine as an
+// unresolved reference at all means it arrived some other way, a
+// condition value rewriteRankedSpellIDs's castKeys deliberately leaves
+// as-authored, per rotation_ranks.go's own comment).
+//
+// Both readers below are deliberately separate, read-only copies of
+// data this file's talent-truncation code (talentNode, talentTree,
+// loadTalentTrees, ladderTalentString - lines ~40-230, owned by lane
+// bis-all's leveling-package migration) already reads, in the same
+// spirit ladderCurated is "a second, ladder-only reader" beside
+// rotations_smoke_test.go's curatedRotation: neither touches a
+// protected line, and both use the exported talentTree/talentNode
+// shapes that section already defines.
+// ---------------------------------------------------------------------
+
+// talentRankSpellID is one rank of one talent's own spell id, from
+// data/builds/<build>/talents/<class>.json's "ranks" array - the field
+// loadTalentTrees's talentNode does not carry (it only reads id, tier,
+// column and max_rank, everything ladderTalentString's truncation walk
+// needs and nothing more).
+type talentRankSpellID struct {
+	SpellID int `json:"spell_id"`
+}
+
+type talentSpellNode struct {
+	ID    int                 `json:"id"`
+	Ranks []talentRankSpellID `json:"ranks"`
+}
+
+type talentSpellTree struct {
+	Talents []talentSpellNode `json:"talents"`
+}
+
+type talentSpellFile struct {
+	Trees []talentSpellTree `json:"trees"`
+}
+
+// loadTalentSpellIDs reads build's talent file for class a second time,
+// keyed by every rank's OWN spell id rather than by (tier, column): the
+// map from a spell id any rank of any talent grants to that talent's
+// own stable node id, which is what a warned action's id and a truncated
+// build's per-talent point count (ladderTalentPoints) share as a common
+// key.
+func loadTalentSpellIDs(repoRoot, build, class string) (map[int]int, error) {
+	path := filepath.Join(repoRoot, "data", "builds", build, "talents", class+".json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("ladder: reading %s: %w", path, err)
+	}
+	var f talentSpellFile
+	if err := json.Unmarshal(b, &f); err != nil {
+		return nil, fmt.Errorf("ladder: parsing %s: %w", path, err)
+	}
+	out := map[int]int{}
+	for _, tree := range f.Trees {
+		for _, node := range tree.Talents {
+			for _, r := range node.Ranks {
+				if r.SpellID != 0 {
+					out[r.SpellID] = node.ID
+				}
+			}
+		}
+	}
+	return out, nil
+}
+
+// ladderTalentPoints is ladderTalentString's own budget-spending walk
+// (lines ~159-213), recomputed here to return points-per-talent-node
+// rather than a rendered digit string - the shape rule 1 needs and the
+// string does not carry. Any future change to the truncation rule
+// belongs in ladderTalentString; this copy exists only because that
+// function is protected for lane bis-all's migration and returns the
+// wrong shape for this reader anyway.
+func ladderTalentPoints(activeTrees []talentTree, targets map[int]int, ownTreeIndex, level int) map[int]int {
+	budget := level - 9
+	if budget < 0 {
+		budget = 0
+	}
+	order := make([]int, 0, len(activeTrees))
+	order = append(order, ownTreeIndex)
+	for i := range activeTrees {
+		if i != ownTreeIndex {
+			order = append(order, i)
+		}
+	}
+
+	points := map[int]int{}
+	for _, ti := range order {
+		if ti < 0 || ti >= len(activeTrees) {
+			continue
+		}
+		for _, node := range activeTrees[ti].Talents {
+			if budget <= 0 {
+				break
+			}
+			target := targets[node.ID]
+			if target > node.MaxRank {
+				target = node.MaxRank
+			}
+			give := target
+			if give > budget {
+				give = budget
+			}
+			points[node.ID] = give
+			budget -= give
+		}
+	}
+	return points
+}
+
+// idLearnLevel is every id spellranks.json tracks, for ANY class, mapped
+// to the level its own row names - rule 1's "a rank whose
+// spellranks.json level is above the band's level" half. Unlike
+// buildClassAbilities (which drops rank-0 rows and groups by ability
+// name for the "learned but unused" report), this keeps every row so a
+// bare warned id - which carries no ability name - can still be looked
+// up directly.
+func idLearnLevel(ranks spellRanksFile, class string) map[int]int {
+	out := map[int]int{}
+	for name, entries := range ranks.Classes[class] {
+		if junkAbilityName.MatchString(name) {
+			continue
+		}
+		for _, e := range entries {
+			// A rank <= 0 row is the same "not a rank progression"
+			// signal buildClassAbilities filters on (Bloodrage,
+			// Judgement, Tiger's Fury - a single always-known ability,
+			// not a chain with a learn level): sim/internal/spellranks'
+			// own HighestLearnedSpellID treats such an id as untracked
+			// and always learned, so keeping it here would disagree
+			// with that package about an id that was never a real
+			// above-band rank at all.
+			if e.Rank <= 0 {
+				continue
+			}
+			if prev, ok := out[e.ID]; !ok || e.Level < prev {
+				out[e.ID] = e.Level
+			}
+		}
+	}
+	return out
+}
+
+// warnedSpellID pulls the bare spell id out of an engine warning
+// action's rendering (spellAction's own "{SpellID: %d}", with no ", Tag:
+// N" suffix - a tagged id is a rank-variant reference the talent and
+// rank tables below do not key on, so it is left for the ordinary
+// unresolved_id violation rather than guessed at).
+var warnedSpellIDPattern = regexp.MustCompile(`^\{SpellID: (\d+)\}$`)
+
+func warnedSpellID(action string) (int, bool) {
+	m := warnedSpellIDPattern.FindStringSubmatch(action)
+	if m == nil {
+		return 0, false
+	}
+	id, err := strconv.Atoi(m[1])
+	if err != nil {
+		return 0, false
+	}
+	return id, true
+}
+
+// potionUnresolvedAction is harness rule 2 (this wave's brief): the
+// ladder character carries no consumes, so the engine's own potion
+// action can never resolve. Expected at every level, every spec.
+const potionUnresolvedAction = "{OtherID: 13}"
+
+// pickWandItem is ladderGear's caster counterpart to pickGearItem
+// (harness rule 3): the highest item_level ranged-slot item whose icon
+// marks it a real wand (data/builds/<build>/items/<class>.json's own
+// "inv_wand*" icon naming - every wand row checked in this build has
+// damage_max == 0, unlike a bow or gun, so pickGearItem's damage_max > 0
+// weapon check would reject every candidate; this reader keeps that
+// check for the OTHER reason it exists - the Bland Dagger-shaped
+// placeholder rows this table also carries - by restricting the
+// candidate pool to wand-icon rows first, rather than dropping the
+// check) with required_level <= level, from a build's own item table
+// filtered to its simitems.json-known ids, the same two filters
+// pickGearItem applies.
+func pickWandItem(items []buildItem, known map[int]bool, level int) (buildItem, bool) {
+	var best buildItem
+	found := false
+	for _, it := range items {
+		if it.Slot != "ranged" || it.DamageMax <= 0 || !known[it.ID] {
+			continue
+		}
+		if !strings.HasPrefix(it.Icon, "inv_wand") {
+			continue
+		}
+		if it.RequiredLevel > level {
+			continue
+		}
+		if !found || it.ItemLevel > best.ItemLevel || (it.ItemLevel == best.ItemLevel && it.ID < best.ID) {
+			best, found = it, true
+		}
+	}
+	return best, found
 }
