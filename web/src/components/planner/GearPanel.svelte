@@ -155,6 +155,7 @@
       <div
         class="relative"
         role="group"
+        bind:this={popoverHosts[slot]}
         onmouseenter={() => showPopover(slot)}
         onmouseleave={() => hidePopoverIfShown(slot)}
         onfocusout={(event) => onSlotFocusOut(event, slot)}
@@ -192,8 +193,6 @@
             </span>
           </span>
         </button>
-
-        <div bind:this={popoverHosts[slot]}></div>
       </div>
     {/each}
   </div>

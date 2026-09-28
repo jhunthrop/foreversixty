@@ -5,7 +5,41 @@
 // unhashed URL.
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vite';
+import { defineConfig, type Plugin } from 'vite';
+
+/**
+ * Vite always wraps a dynamic `import()` in its own asset-preload helper
+ * (`__vitePreload`, ~1.1 KB raw: a modulepreload-support check, a `<link>`-injecting
+ * loader, and a dependency-URL mapper) for a plain client build -- `modulePreload: false`
+ * below does not stop this. That option only trims the dependency array the helper is
+ * handed (vite's own getInsertPreload/buildImportAnalysisPlugin,
+ * node_modules/vite/dist/node/chunks/node.js), not the helper itself, which every island
+ * here pays for regardless: sim-tools-island's pre-existing lazy view imports already
+ * carry it, and it was found to cost the bis-hover-web lane's planner popover split
+ * roughly as many bytes as the split saved (2026-09-28 budget investigation).
+ *
+ * Every island here sets `modulePreload: false` -- meaning none of them use the helper's
+ * actual asset-preloading behaviour -- so this plugin replaces vite's internal
+ * `\0vite/preload-helper.js` virtual module with a bare passthrough. A dynamic `import()`
+ * still gives Rollup its own, unrelated code-splitting point (this changes nothing about
+ * which files get split); it is just no longer decorated with preload logic none of these
+ * islands can use.
+ */
+function stripPreloadHelperPlugin(): Plugin {
+  const virtualId = '\0vite/preload-helper.js';
+  return {
+    name: 'strip-vite-preload-helper',
+    enforce: 'pre',
+    resolveId(id) {
+      if (id === virtualId || id === 'vite/preload-helper.js') return virtualId;
+      return undefined;
+    },
+    load(id) {
+      if (id !== virtualId) return undefined;
+      return 'export const __vitePreload = (loader) => loader();\n';
+    },
+  };
+}
 
 /**
  * Both standalone islands are built the same way and differ only in their entry name, so
@@ -19,7 +53,7 @@ export function islandConfig(name: 'planner-island' | 'report-island' | 'sim-isl
     // Astro exposes PUBLIC_*; plain Vite exposes VITE_* only, so PUBLIC_API_BASE_URL has to be
     // allow-listed or lib/planner/config.ts would silently fall back to the default origin.
     envPrefix: ['VITE_', 'PUBLIC_'],
-    plugins: [svelte(), tailwindcss()],
+    plugins: [svelte(), tailwindcss(), stripPreloadHelperPlugin()],
     build: {
       outDir: 'dist',
       emptyOutDir: false,
