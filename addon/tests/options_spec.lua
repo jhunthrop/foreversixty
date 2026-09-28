@@ -21,6 +21,10 @@ describe("Options", function()
 			race = { name = "Human", token = "Human" },
 			realm = "Ashbringer",
 			region = 1,
+			-- Matches the "US/Ashbringer/Bob" the inbox examples below address
+			-- a build to, so readInbox's character filter is exercised against
+			-- a real, matching key rather than trivially against the default.
+			playerName = "Bob",
 			talents = {
 				{ name = "Holy", talents = { { name = "A", tier = 1, column = 1, rank = 5, maxRank = 5 } } },
 				{ name = "Protection", talents = {} },
@@ -128,6 +132,16 @@ describe("Options", function()
 			},
 		}
 		assert.are.same({ string.format(require("Locale").inboxCount, 1) }, Options.handle("inbox"))
+	end)
+
+	it("passes this character's key to Follow.inbox, so a build addressed to another character is dropped", function()
+		_G.ForeverSixtyInbox = {
+			generated_at = "2026-09-20T00:00:00Z",
+			builds = {
+				{ id = "a", name = "Not Mine", character = "US/Ashbringer/Alice", code = "FSB1:1.60.1.69893:paladin:111:" },
+			},
+		}
+		assert.are.same({ require("Locale").inboxEmpty }, Options.handle("inbox"))
 	end)
 
 	it("says the inbox is empty rather than nothing at all", function()

@@ -236,6 +236,33 @@ function Export.characterInfo()
 	return { name = name, realm = GetRealmName() or "" }
 end
 
+--- name, realm, region as both Export.characterKey and Export.save need
+--- them -- one path, so the key ForeverSixtyDB.characters and
+--- ForeverSixtyDB.follows both index by can never drift from the record
+--- Export.save writes. Guarded rather than called straight (unlike
+--- characterInfo above): Follow reaches this on every load/restore/forget,
+--- including from specs that never install the client mock at all.
+local function characterParts()
+	local name = Compat.playerName() or "player"
+	local realm = type(GetRealmName) == "function" and GetRealmName() or ""
+	local regionIndex = type(GetCurrentRegion) == "function" and GetCurrentRegion() or nil
+	local region = Export.REGION_NAMES[regionIndex] or ""
+	return name, realm, region
+end
+
+local function characterKeyOf(name, realm, region)
+	return region .. "/" .. realm .. "/" .. name
+end
+
+--- The account-wide key this client's saved data indexes by: the same
+--- region/realm/name Export.save has always written into
+--- ForeverSixtyDB.characters (realm stands in for ruleset, spike check
+--- 12). Follow's per-character state and inbox filter use this so a
+--- second character logging in never reads the first one's build.
+function Export.characterKey()
+	return characterKeyOf(characterParts())
+end
+
 --- The export string, or nil and the reason.
 function Export.string(data)
 	-- The class slug comes from the locale-neutral class token (see
@@ -281,16 +308,14 @@ function Export.save(data)
 	-- fallback only fires in a test double (wow_mock.lua does not stub
 	-- UnitName) or a future client that drops the API, so the record is
 	-- still written rather than erroring.
-	local name = Compat.playerName() or "player"
-	local realm = GetRealmName() or ""
-	local region = Export.REGION_NAMES[GetCurrentRegion and GetCurrentRegion() or 0] or ""
+	local name, realm, region = characterParts()
 	ForeverSixtyDB = ForeverSixtyDB or {}
 	ForeverSixtyDB.characters = ForeverSixtyDB.characters or {}
 	-- Stamped on the DB, not on the character record: the Export tab shows
 	-- one "last saved" line, and a player with four characters wants the
 	-- last time anything was written, not the last time this one was.
 	ForeverSixtyDB.savedAt = date(Export.SAVED_AT_FORMAT)
-	ForeverSixtyDB.characters[region .. "/" .. realm .. "/" .. name] = {
+	ForeverSixtyDB.characters[characterKeyOf(name, realm, region)] = {
 		name = name,
 		class = UnitClass("player"),
 		realm = realm,

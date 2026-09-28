@@ -46,7 +46,7 @@ Options.TABS = { export = true, follow = true, gear = true, settings = true }
 --- Later entries are not attempted, so the count on success is the number
 --- of entries that have a `code`, not a guarantee that each one decodes.
 function Options.readInbox()
-	local usable = Follow.inbox(ForeverSixtyInbox)
+	local usable = Follow.inbox(ForeverSixtyInbox, Export.characterKey())
 	if #usable == 0 then
 		return 0
 	end

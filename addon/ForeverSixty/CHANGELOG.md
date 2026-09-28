@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- The followed build and the companion's inbox are now per character: logging in on a
+  second character no longer shows the first character's talent tracker, glow and Follow
+  tab, and an inbox build queued on the site for one character is no longer offered to
+  another. The first character to log in after this update keeps the account's old build.
 - The Overview's Send-to-the-site card shows the start of your code and its length under
   the title, and the Export page's code box shows the start of the code rather than its
   tail, so there is visibly something to copy before you press Copy code.

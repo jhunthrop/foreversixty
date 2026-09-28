@@ -98,6 +98,9 @@ local L = {
 	-- Follow
 	followTitle = "Next point",
 	followNone = "No build loaded. Paste a build code above and press Load.",
+	-- The Follow tab's empty state, named: a player with more than one
+	-- character wants to know whose build it would load before pasting one.
+	followNoneNamed = "No build loaded for %s. Paste a code, or queue one on the site.",
 	followPasteFirst = "Paste a build code first.",
 	followDone = "This build is finished; every point is spent.",
 	followNext = "%s (%s, tier %d)",

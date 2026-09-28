@@ -243,6 +243,13 @@ describe("Export", function()
 		assert.are.equal("1.60.1.69893", record.build)
 	end)
 
+	it("saves the character record under Export.characterKey(), the same key Follow indexes by", function()
+		character({})
+		_G.ForeverSixtyDB = nil
+		Export.save(DATA)
+		assert.is_truthy(_G.ForeverSixtyDB.characters[Export.characterKey()])
+	end)
+
 	it("prefers C_Container but falls back to the flat function", function()
 		character({ bags = { [0] = { "|Hitem:1|h" } } })
 		_G.C_Container = nil

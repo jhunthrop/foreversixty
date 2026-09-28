@@ -102,3 +102,143 @@ describe("Follow", function()
 		assert.are.equal(string.format(Locale.followNext, unknownName, "Holy", 9), line)
 	end)
 end)
+
+-- "the addon isn't character aware" (owner, 2026-09-28): ForeverSixtyDB.follow
+-- held one build for the whole account; these cover the per-character
+-- storage that replaced it, the one-time migration off the old key, and the
+-- inbox filter that keeps a companion build from crossing characters.
+describe("Follow, per character", function()
+	local Follow
+
+	before_each(function()
+		Follow = helper.load("Follow")
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("keys the saved build by the current character, the same key Export.save writes", function()
+		mock.install({ realm = "Ashbringer", region = 1, playerName = "Alice" })
+		Follow.load(CODE, DATA, "Deep Holy")
+		assert.are.equal("US/Ashbringer/Alice", require("Export").characterKey())
+		assert.are.same({ code = CODE, name = "Deep Holy" }, _G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
+	end)
+
+	it("does not offer one character's build to another", function()
+		mock.install({ realm = "Ashbringer", region = 1, playerName = "Alice" })
+		Follow.load(CODE, DATA, "Alice's build")
+
+		-- A second character logging in is a fresh addon load, not a change
+		-- to the same session: reload Follow so Follow.build starts nil
+		-- again, the way it would after a real relog.
+		_G.UnitName = function() return "Bob" end
+		Follow = helper.load("Follow")
+		assert.is_nil(Follow.restore(DATA))
+		assert.is_nil(Follow.build)
+	end)
+
+	it("migrates the old account-wide build to the first character that restores, then deletes it", function()
+		mock.install({ realm = "Ashbringer", region = 1, playerName = "Alice" })
+		_G.ForeverSixtyDB = { follow = { code = CODE, name = "Old Account Build" } }
+		local build = Follow.restore(DATA)
+		assert.are.equal("Old Account Build", build.name)
+		assert.is_nil(_G.ForeverSixtyDB.follow)
+		assert.are.same({ code = CODE, name = "Old Account Build" },
+			_G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
+	end)
+
+	it("does not hand the migrated build to a second character too", function()
+		mock.install({ realm = "Ashbringer", region = 1, playerName = "Alice" })
+		_G.ForeverSixtyDB = { follow = { code = CODE, name = "Old Account Build" } }
+		Follow.restore(DATA)
+
+		_G.UnitName = function() return "Bob" end
+		Follow = helper.load("Follow")
+		assert.is_nil(Follow.restore(DATA))
+	end)
+
+	it("forgets only the current character's build", function()
+		mock.install({ realm = "Ashbringer", region = 1, playerName = "Alice" })
+		Follow.load(CODE, DATA)
+		_G.ForeverSixtyDB.follows["US/Ashbringer/Bob"] = { code = CODE, name = "Bob's" }
+		Follow.forget()
+		assert.is_nil(Follow.build)
+		assert.is_nil(_G.ForeverSixtyDB.follows["US/Ashbringer/Alice"])
+		assert.is_truthy(_G.ForeverSixtyDB.follows["US/Ashbringer/Bob"])
+	end)
+end)
+
+describe("Follow.inbox", function()
+	local Follow
+
+	before_each(function()
+		Follow = helper.load("Follow")
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("keeps a build addressed to the current character", function()
+		local usable = Follow.inbox({ builds = {
+			{ id = "a", name = "Mine", character = "us/pvp/bow-jackzon", code = CODE },
+		} }, "US/PvP/Bow Jackzon")
+		assert.are.equal(1, #usable)
+	end)
+
+	it("keeps a build with no character at all -- site-wide, not addressed", function()
+		local usable = Follow.inbox({ builds = {
+			{ id = "a", name = "Anyone's", code = CODE },
+		} }, "US/PvP/Bow Jackzon")
+		assert.are.equal(1, #usable)
+	end)
+
+	it("drops a build addressed to a different character", function()
+		local usable = Follow.inbox({ builds = {
+			{ id = "a", name = "Not mine", character = "us/pvp/someone-else", code = CODE },
+		} }, "US/PvP/Bow Jackzon")
+		assert.are.equal(0, #usable)
+	end)
+
+	it("keeps the companion's order across a mix of addressed, site-wide and foreign builds", function()
+		local usable = Follow.inbox({ builds = {
+			{ id = "a", name = "Mine", character = "us/pvp/bow-jackzon", code = CODE },
+			{ id = "b", name = "Foreign", character = "us/pvp/someone-else", code = CODE },
+			{ id = "c", name = "Site-wide", code = CODE },
+		} }, "US/PvP/Bow Jackzon")
+		assert.are.same({ "a", "c" }, { usable[1].id, usable[2].id })
+	end)
+end)
+
+describe("Follow.sameCharacter", function()
+	local Follow
+
+	before_each(function()
+		Follow = helper.load("Follow")
+	end)
+
+	-- The rule (Do item 3): lower-case, spaces folded to hyphens, each of
+	-- the three "/"-separated segments compared that way -- so the site's
+	-- slugified key and the addon's own display-name key agree.
+	it("matches the addon's display-name key against the site's slugified one", function()
+		assert.is_true(Follow.sameCharacter("US/Ashbringer/Bow Jackzon", "us/ashbringer/bow-jackzon"))
+	end)
+
+	it("is case-insensitive on every segment", function()
+		assert.is_true(Follow.sameCharacter("us/ashbringer/bow jackzon", "US/ASHBRINGER/BOW-JACKZON"))
+	end)
+
+	it("does not match a different name", function()
+		assert.is_false(Follow.sameCharacter("US/Ashbringer/Bow Jackzon", "us/ashbringer/someone-else"))
+	end)
+
+	it("does not match a different realm or ruleset segment", function()
+		assert.is_false(Follow.sameCharacter("US/Ashbringer/Bow Jackzon", "us/pvp/bow-jackzon"))
+	end)
+
+	it("refuses a value with no character-key shape", function()
+		assert.is_false(Follow.sameCharacter("not-a-key", "US/Ashbringer/Bow Jackzon"))
+		assert.is_false(Follow.sameCharacter(nil, "US/Ashbringer/Bow Jackzon"))
+	end)
+end)
