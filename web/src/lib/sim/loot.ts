@@ -17,13 +17,27 @@ import { bulkCopy } from './copy';
 import { hasOpened, type PhaseRow } from './phase';
 import { poolQualityCopy } from './pool-quality-copy';
 
-export const LOOT_KINDS = ['raid', 'dungeon', 'world', 'crafted', 'rep', 'pvp', 'quest'] as const;
+// Order matches data/pipeline/loot/sources.py's KIND_ORDER exactly -- the picker's groups
+// (groupSources below) read in this order, and a reordering here would desync the two.
+export const LOOT_KINDS = [
+  'raid',
+  'dungeon',
+  'world',
+  'zone',
+  'vendor',
+  'crafted',
+  'rep',
+  'pvp',
+  'quest',
+] as const;
 export type LootKind = (typeof LOOT_KINDS)[number];
 
 export const SOURCE_KIND_LABELS: Record<LootKind, string> = {
   raid: bulkCopy.sourcesRaids,
   dungeon: bulkCopy.sourcesDungeons,
   world: bulkCopy.sourcesWorld,
+  zone: bulkCopy.sourcesZone,
+  vendor: bulkCopy.sourcesVendor,
   crafted: bulkCopy.sourcesCrafted,
   rep: bulkCopy.sourcesRep,
   pvp: bulkCopy.sourcesPvp,

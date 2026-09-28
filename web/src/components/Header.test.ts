@@ -8,9 +8,9 @@ async function renderHeader(path: string): Promise<string> {
 }
 
 describe('Header', () => {
-  it('renders the five doors and Get set up, in that order', async () => {
+  it('renders the doors and Get set up, in that order', async () => {
     const html = await renderHeader('/');
-    const order = ['Planner', 'Simulator', 'Logs', 'Rankings', 'Guides', 'Get set up'];
+    const order = ['Planner', 'Simulator', 'Logs', 'Rankings', 'Guides', 'Leveling BiS', 'Get set up'];
     let cursor = -1;
     for (const label of order) {
       const at = html.indexOf(`>${label}<`, cursor === -1 ? 0 : cursor);

@@ -1,12 +1,17 @@
 // web/src/lib/sim/loot.test.ts
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import lootJson from '../../fixtures/planner/loot.json';
+import activeBuild from '../../data/active-build.json';
 import {
   DEFAULT_OFF_KINDS,
   groupSources,
   isOpen,
   itemsOfBoss,
   itemsOfSource,
+  LOOT_KINDS,
   professionSplit,
   sourceLabel,
   sourceNameOf,
@@ -15,6 +20,8 @@ import {
   type LootSource,
 } from './loot';
 import { BUILT_IN_PHASES } from './phase';
+
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 
 const file = lootJson as unknown as LootFile;
 const phases = BUILT_IN_PHASES;
@@ -151,5 +158,24 @@ describe('professionSplit', () => {
 describe('DEFAULT_OFF_KINDS', () => {
   it('is quests and nothing else', () => {
     expect([...DEFAULT_OFF_KINDS]).toEqual(['quest']);
+  });
+});
+
+describe('LOOT_KINDS coverage', () => {
+  /**
+   * The active build's real loot.json (not the fixture) now carries `zone` and `vendor`
+   * sources (data/tests/test_loot_sources.py, 2026-09-28) -- this is the web side of that
+   * same contract, read straight off disk the way no-raw-ids.test.ts's REPO_ROOT does, so a
+   * future kind the data pipeline adds shows up here as a failing test instead of a picker
+   * that silently drops a whole group of sources.
+   */
+  it('names every source kind the active build’s loot.json actually uses', () => {
+    const file = path.join(REPO_ROOT, 'data/builds', activeBuild.build, 'loot.json');
+    const build = JSON.parse(readFileSync(file, 'utf8')) as LootFile;
+    const kindsInBuild = new Set(build.sources.map((source) => source.kind));
+    expect(kindsInBuild.size).toBeGreaterThan(0);
+    for (const kind of kindsInBuild) {
+      expect(LOOT_KINDS as readonly string[]).toContain(kind);
+    }
   });
 });

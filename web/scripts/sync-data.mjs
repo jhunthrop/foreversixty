@@ -42,6 +42,12 @@ export const SYNC_ENTRIES = [
   // ships none, and the pages say so rather than failing to render. simbuffs.json (the
   // buff/consumable name table) is already listed below, beside simconsumes.json.
   { name: 'loot.json', kind: 'file', required: false },
+  // The leveling BiS lists (lane bis-all, docs/superpowers/specs/2026-09-28-leveling-bis-
+  // design.md): one <spec>.json per written spec, published like loot.json once the
+  // pipeline lands it. Optional the same way -- a build the data lane has not run the
+  // ranking command for yet ships none, and /bis's own page falls back to this lane's
+  // committed fixture (src/data/fixtures/bis/) instead of failing the sync.
+  { name: 'bis', kind: 'dir', required: false },
   { name: 'enchants.json', kind: 'file', required: false },
   { name: 'suffixes.json', kind: 'file', required: false },
   // The item ids the engine's embedded SimDatabase actually carries (pipeline/simdb/
