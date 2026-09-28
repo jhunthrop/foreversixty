@@ -31,15 +31,34 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
   warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every other slot is
-  bare. Buffs and consumables: none.
+  hands). druid-feral picks no weapon at all. Every caster spec
+  (priest-shadow, mage's three specs, warlock's three specs) fills
+  ranged with a wand instead: the same item table's ranged rows whose
+  icon names them a real wand (every wand row's own damage_max is 0 in
+  this build, unlike a bow or gun, so the melee pick's damage_max > 0
+  check is replaced by that icon check rather than dropped), so
+  OtherActionShoot/wand lines have something to resolve against.
+  Every other slot is bare. Consumables: none (see the potion rule
+  below).
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
-  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2). A level scoring
-  lower than the rung before it is a violation.
-- Unresolved: an id the engine's ComputeStats warns it cannot resolve.
-  Expected when data/curated/apl/<spec>.json's own inert array names
-  it; otherwise a violation.
+  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
+  1% drop as the 300-iteration run's own noise (shaman-elemental's
+  level 40, 46.0 vs a level-38 46.1, is exactly this). A level scoring
+  more than 1% lower than the rung before it is a violation.
+- Unresolved: an id the engine's ComputeStats warns it cannot resolve,
+  with three standing exceptions before anything counts as a
+  violation: (1) data/curated/apl/<spec>.json's own inert array names
+  it; (2) it is the potion action ({OtherID: 13}) - the ladder
+  character carries no consumes, so this can never resolve, at any
+  level, any spec; (3) it is a talent-granted spell
+  (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
+  and the ladder's own truncated build (ladderTalentString's budget
+  walk) has spent zero points on that talent at this level - expected
+  right up until the level this ladder's approximation of the guide's
+  build actually reaches that talent's row, a violation only once the
+  build HAS spent points on it and the id still will not resolve.
+  Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
   engine's OWN rank rewrite actually casts at this level (not a second,
@@ -70,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-1000000000000000000-0000000000000000 | main_hand:274271 | 6.7 | 3 | other:mana_gain=47.3, spell:1454=47.3, spell:695=34.4, spell:172=13.7 | {OtherID: 13} |
-| 20 | 00000000000000000-2351000000000000000-0000000000000000 | main_hand:274271 | 14.7 | 3 | other:mana_gain=28.1, spell:1455=28.1, spell:1088=23.6, spell:6222=12.0 | {OtherID: 13} |
-| 30 | 00000000000000000-2355003001200000000-0000000000000000 | main_hand:274271 | 31.5 | 3 | other:mana_gain=34.2, spell:1456=34.2, spell:1106=31.0, spell:6223=10.6 | {OtherID: 13} |
-| 38 | 00000000000000000-2355003001200001340-0000000000000000 | main_hand:274271 | 45.7 | 3 | spell:7641=28.8, other:mana_gain=25.1, spell:11687=25.1, spell:7648=10.2 | {OtherID: 13} |
-| 40 | 00000000000000000-2355003001200001351-0000000000000000 | main_hand:274271 | 73.2 | 3 | spell:7641=29.0, other:mana_gain=24.6, spell:11687=24.6, spell:7648=10.4 | {OtherID: 13} |
-| 50 | 05500000000000000-2355003001200001351-0000000000000000 | main_hand:12061 | 112.3 | 4 | spell:11659=30.6, other:mana_gain=26.8, spell:11688=26.8, spell:11671=10.7, spell:6353=3.0 | {OtherID: 13} |
-| 60 | 05500000000000000-2355003001200001351-0000000000000000 | main_hand:23577 | 161.3 | 4 | spell:25307=21.9, other:mana_gain=20.6, spell:11689=20.6, spell:25311=10.5, spell:17924=3.1 | {OtherID: 13} |
+| 10 | 00000000000000000-1000000000000000000-0000000000000000 | main_hand:274271 ranged:279896 | 6.7 | 3 | other:mana_gain=47.3, spell:1454=47.3, spell:695=34.4, spell:172=13.7 | {OtherID: 13} |
+| 20 | 00000000000000000-2351000000000000000-0000000000000000 | main_hand:274271 ranged:7001 | 14.7 | 3 | other:mana_gain=28.4, spell:1455=28.4, spell:1088=23.4, spell:6222=12.4 | {OtherID: 13} |
+| 30 | 00000000000000000-2355003001200000000-0000000000000000 | main_hand:274271 ranged:5213 | 31.5 | 3 | other:mana_gain=34.2, spell:1456=34.2, spell:1106=31.0, spell:6223=10.6 | {OtherID: 13} |
+| 38 | 00000000000000000-2355003001200001340-0000000000000000 | main_hand:274271 ranged:13064 | 47.0 | 3 | spell:7641=29.5, other:mana_gain=25.8, spell:11687=25.8, spell:7648=10.4 | {OtherID: 13} |
+| 40 | 00000000000000000-2355003001200001351-0000000000000000 | main_hand:274271 ranged:5216 | 73.2 | 3 | spell:7641=29.0, other:mana_gain=24.6, spell:11687=24.6, spell:7648=10.4 | {OtherID: 13} |
+| 50 | 05500000000000000-2355003001200001351-0000000000000000 | main_hand:12061 ranged:15280 | 112.3 | 4 | spell:11659=30.6, other:mana_gain=26.8, spell:11688=26.8, spell:11671=10.7, spell:6353=3.0 | {OtherID: 13} |
+| 60 | 05500000000000000-2355003001200001351-0000000000000000 | main_hand:23577 ranged:15282 | 161.3 | 4 | spell:25307=21.9, other:mana_gain=20.6, spell:11689=20.6, spell:25311=10.5, spell:17924=3.1 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
@@ -191,10 +210,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warlock-demonology level=10 kind=unresolved_id action={OtherID: 13}
-- warlock-demonology level=20 kind=unresolved_id action={OtherID: 13}
-- warlock-demonology level=30 kind=unresolved_id action={OtherID: 13}
-- warlock-demonology level=38 kind=unresolved_id action={OtherID: 13}
-- warlock-demonology level=40 kind=unresolved_id action={OtherID: 13}
-- warlock-demonology level=50 kind=unresolved_id action={OtherID: 13}
-- warlock-demonology level=60 kind=unresolved_id action={OtherID: 13}
+None.

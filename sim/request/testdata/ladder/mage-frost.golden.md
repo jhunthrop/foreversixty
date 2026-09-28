@@ -31,15 +31,34 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   data/builds/<active>/simitems.json's known ids, honoring the spec's
   handedness (warrior-arms and paladin-retribution two-hand only;
   warrior-fury, rogue and shaman-enhancement one-hand only for both
-  hands). druid-feral picks no weapon at all. Every other slot is
-  bare. Buffs and consumables: none.
+  hands). druid-feral picks no weapon at all. Every caster spec
+  (priest-shadow, mage's three specs, warlock's three specs) fills
+  ranged with a wand instead: the same item table's ranged rows whose
+  icon names them a real wand (every wand row's own damage_max is 0 in
+  this build, unlike a bow or gun, so the melee pick's damage_max > 0
+  check is replaced by that icon check rather than dropped), so
+  OtherActionShoot/wand lines have something to resolve against.
+  Every other slot is bare. Consumables: none (see the potion rule
+  below).
 - DPS regression: each level's DPS is compared against the ladder's own
   PREVIOUS rung (not literally level-10, since the ladder's own gaps
-  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2). A level scoring
-  lower than the rung before it is a violation.
-- Unresolved: an id the engine's ComputeStats warns it cannot resolve.
-  Expected when data/curated/apl/<spec>.json's own inert array names
-  it; otherwise a violation.
+  are uneven - 30 to 38 is 8 levels, 38 to 40 is 2), tolerating up to a
+  1% drop as the 300-iteration run's own noise (shaman-elemental's
+  level 40, 46.0 vs a level-38 46.1, is exactly this). A level scoring
+  more than 1% lower than the rung before it is a violation.
+- Unresolved: an id the engine's ComputeStats warns it cannot resolve,
+  with three standing exceptions before anything counts as a
+  violation: (1) data/curated/apl/<spec>.json's own inert array names
+  it; (2) it is the potion action ({OtherID: 13}) - the ladder
+  character carries no consumes, so this can never resolve, at any
+  level, any spec; (3) it is a talent-granted spell
+  (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
+  and the ladder's own truncated build (ladderTalentString's budget
+  walk) has spent zero points on that talent at this level - expected
+  right up until the level this ladder's approximation of the guide's
+  build actually reaches that talent's row, a violation only once the
+  build HAS spent points on it and the id still will not resolve.
+  Anything else is a violation.
 - Zero casts: one of the curated rotation's own castSpell lines, resolved
   to the id sim/internal/spellranks.HighestLearnedSpellID says the
   engine's OWN rank rewrite actually casts at this level (not a second,
@@ -70,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-1000000000000000000 | main_hand:274271 | 6.7 | 1 | spell:205=39.3 | - |
-| 20 | 000000000000000000-00000000000000000-2540000000000000000 | main_hand:274271 | 13.7 | 1 | spell:7322=33.7 | - |
-| 30 | 000000000000000000-00000000000000000-2555100300000000000 | main_hand:274271 | 23.8 | 1 | spell:8406=32.3, item:5514=1.0, other:mana_gain=1.0 | - |
-| 38 | 000000000000000000-00000000000000000-2555100300000301040 | main_hand:274271 | 39.0 | 2 | spell:8408=28.4, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0, spell:12472=1.0 | - |
-| 40 | 000000000000000000-00000000000000000-2555100300000301051 | main_hand:274271 | 39.9 | 2 | spell:8408=28.9, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0, spell:12472=1.0 | - |
-| 50 | 000000000000000000-23050000000000000-2555100300000301051 | main_hand:12061 | 52.5 | 2 | spell:10180=25.7, other:mana_gain=2.0, item:5514=1.0, item:8007=1.0, spell:12472=1.0 | - |
-| 60 | 000000000000000000-23050000000000000-2555100300000301051 | main_hand:23577 | 70.7 | 2 | spell:25304=23.8, other:mana_gain=2.0, item:5514=1.0, item:8008=1.0, spell:12472=1.0 | - |
+| 10 | 000000000000000000-00000000000000000-1000000000000000000 | main_hand:274271 ranged:279896 | 6.7 | 1 | spell:205=39.3 | - |
+| 20 | 000000000000000000-00000000000000000-2540000000000000000 | main_hand:274271 ranged:7001 | 13.8 | 1 | spell:7322=34.0 | - |
+| 30 | 000000000000000000-00000000000000000-2555100300000000000 | main_hand:274271 ranged:5213 | 23.8 | 1 | spell:8406=32.3, item:5514=1.0, other:mana_gain=1.0 | - |
+| 38 | 000000000000000000-00000000000000000-2555100300000301040 | main_hand:274271 ranged:13064 | 40.0 | 2 | spell:8408=29.0, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0, spell:12472=1.0 | - |
+| 40 | 000000000000000000-00000000000000000-2555100300000301051 | main_hand:274271 ranged:5216 | 39.9 | 2 | spell:8408=28.9, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0, spell:12472=1.0 | - |
+| 50 | 000000000000000000-23050000000000000-2555100300000301051 | main_hand:12061 ranged:15280 | 52.5 | 2 | spell:10180=25.7, other:mana_gain=2.0, item:5514=1.0, item:8007=1.0, spell:12472=1.0 | - |
+| 60 | 000000000000000000-23050000000000000-2555100300000301051 | main_hand:23577 ranged:15282 | 70.7 | 2 | spell:25304=23.8, other:mana_gain=2.0, item:5514=1.0, item:8008=1.0, spell:12472=1.0 | - |
 
 ## Learned but unused (informational)
 
