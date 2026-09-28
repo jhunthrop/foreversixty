@@ -3,7 +3,7 @@ title: Feral Druid in Forever
 classSlug: druid
 spec: feral
 role: dps
-build: 'FS1:1.60.1.69893:druid:night-elf:0/5523232020032010001/055:'
+build: 'FS1:1.60.1.69893:druid:night-elf:0/5423222121032010001/55532:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [Attack power, 'Feral-specific attack power', Strength, Agility, Critical strike, Hit, Melee haste]
@@ -40,10 +40,10 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Thick Hide** — extra base armor while shapeshifted, scaling with defense skill, essential for a Bear tank and useful padding for a Cat.
 - **Savage Fury** — up to 10% more damage at rank 2 on Claw, Rake, Shred, Maul, and Swipe.
 - **Predatory Strikes** — up to 150% of your level added to melee attack power in Cat or Bear Form at rank 3.
-- **Primal Fury** — up to a 100% chance at rank 2 for bonus Rage on a Bear crit, and a 100% chance for a bonus combo point on a Cat crit, supporting both forms from one talent.
+- **Blood Frenzy** — up to a 100% chance at rank 2 for bonus Rage on a Bear crit, and a 100% chance for a bonus combo point on a Cat crit, supporting both forms from one talent. (Named "Primal Fury" in an earlier draft of this guide; this build's own data calls it Blood Frenzy, so the talent section and `build:` string below use that name.)
 - **Berserk** — the capstone: Mangle hits up to 3 targets with no cooldown, and critical strike chance on combo-point generators rises 100%, for 15 seconds.
 
-The point split differs by role. A cat-DPS build typically spends roughly 31 points in Feral reaching Berserk through the offensive column — Savage Fury, Predatory Strikes, Primal Fury — with the remaining 10 usually going into Restoration for Furor's rage-and-energy-on-shift and Naturalist's flat damage bonus, a common 1.12 pattern. A bear-tank build stays in Feral for more of its points, weighting the defensive column instead — Feral Instinct, Thick Hide, Natural Reaction — before reaching Berserk, and typically only dips into Restoration for Furor rather than Naturalist. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
+The point split differs by role. This build (a cat-DPS spread) spends 31 points in Feral reaching Berserk through the offensive column — Savage Fury, Predatory Strikes, Blood Frenzy — plus the tier-gate fillers Feral Instinct, Brutal Impact, and Thick Hide picked up along the way, with the remaining 20 in Restoration: Furor and Naturalist maxed for the rage-and-energy-on-shift and flat damage bonus, then Subtlety and Natural Shapeshifter for the rest of the budget, a common 1.12 pattern. A bear-tank build stays in Feral for more of its points, weighting the defensive column instead — Feral Instinct, Thick Hide, Natural Reaction — before reaching Berserk, and typically only dips into Restoration for Furor rather than Naturalist. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
 
 ## Rotation and priority
 

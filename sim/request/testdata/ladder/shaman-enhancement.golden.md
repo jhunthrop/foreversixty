@@ -89,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:274265 | 33.2 | 5 | spell:3606=69.2, other:attack/1=65.3, spell:8044=18.6, spell:3599=5.8, spell:20572=2.0 | {SpellID: 17364} |
-| 20 | 0000000000000000-254000000000000000-0000000000000000 | main_hand:274265 off_hand:9608 | 41.3 | 5 | other:attack/2=95.8, spell:6350=69.5, other:attack/1=65.2, spell:8045=15.2, spell:6363=5.1 | {SpellID: 17364} |
-| 30 | 0000000000000000-254030030004000000-0000000000000000 | main_hand:274265 off_hand:9608 | 48.6 | 5 | other:attack/2=99.7, spell:6351=70.1, other:attack/1=67.9, spell:8046=12.0, spell:6364=4.5 | {SpellID: 17364} |
-| 38 | 0000000000000000-254030030005102040-0000000000000000 | main_hand:274265 off_hand:9608 | 50.9 | 7 | other:attack/2=100.7, spell:6351=69.6, other:attack/1=68.5, spell:17364=9.5, spell:6364=4.5 | - |
-| 40 | 0000000000000000-254030030005102051-0000000000000000 | main_hand:274265 off_hand:9608 | 53.8 | 7 | other:attack/2=100.8, spell:6352=69.0, other:attack/1=68.6, spell:17364=9.1, spell:6365=4.0 | - |
-| 50 | 0500000000000000-254030030005102051-0000000000000000 | main_hand:12062 off_hand:17738 | 56.7 | 7 | other:attack/1=137.9, other:attack/2=107.3, spell:10435=69.7, spell:17364=8.1, spell:10437=3.6 | - |
-| 60 | 0500000000000000-254030030005102051-0000000000000000 | main_hand:234550 off_hand:234558 | 72.0 | 7 | other:attack/1=97.9, spell:10436=69.2, other:attack/2=67.7, spell:17364=7.4, spell:10438=3.4 | - |
+| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:24071 off_hand:13371 | 6.3 | 5 | spell:3606=69.2, spell:8044=18.6, spell:3599=5.8, spell:20572=2.0, spell:8075=2.0 | {SpellID: 17364} |
+| 20 | 0000000000000000-253100000000000000-0000000000000000 | main_hand:24071 off_hand:13371 | 9.5 | 5 | spell:6350=69.0, spell:8045=14.8, spell:6363=5.0, spell:20572=2.0, spell:8075=2.0 | {SpellID: 17364} |
+| 30 | 0000000000000000-253130030004000000-0000000000000000 | main_hand:24071 off_hand:13371 | 14.0 | 5 | spell:6351=70.1, spell:8046=11.7, spell:6364=4.5, spell:20572=2.0, spell:8160=2.0 | {SpellID: 17364} |
+| 38 | 0000000000000000-253130030005102040-0000000000000000 | main_hand:24071 off_hand:13371 | 9.4 | 7 | spell:6351=66.5, spell:17364=9.3, spell:6364=4.3, spell:10412=2.0, spell:20572=2.0 | - |
+| 40 | 0000000000000000-253130030005102051-0000000000000000 | main_hand:24071 off_hand:13371 | 12.0 | 7 | spell:6352=68.2, spell:17364=8.8, spell:6365=4.0, spell:10412=2.0, spell:20572=2.0 | - |
+| 50 | 5500000000000000-253130030005102051-0000000000000000 | main_hand:24071 off_hand:13371 | 16.8 | 7 | spell:10435=69.7, spell:17364=8.4, spell:10437=3.6, spell:10413=2.0, spell:10613=2.0 | - |
+| 60 | 5533220000000000-253130030005102051-0000000000000000 | main_hand:20279 off_hand:234558 | 88.4 | 7 | other:attack/1=97.5, spell:10436=68.2, other:attack/2=67.3, spell:17364=7.2, spell:10438=3.3 | - |
 
 ## Learned but unused (informational)
 
@@ -170,4 +170,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- shaman-enhancement level=38 kind=dps_regression dps=9.4 prev_dps=14.0

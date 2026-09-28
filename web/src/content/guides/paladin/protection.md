@@ -3,7 +3,7 @@ title: Protection Paladin in Forever
 classSlug: paladin
 spec: protection
 role: tank
-build: 'FS1:1.60.1.69893:paladin:dwarf:253000003/5532410301001051/0:'
+build: 'FS1:1.60.1.69893:paladin:dwarf:55222103/5532311301001051/0:'
 recommendedRaces: [dwarf, undead]
 statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
 description: 'Talents, rotation, stats, gear, races, and professions for Protection Paladin tanking in Forever.'
@@ -42,7 +42,7 @@ Verified against this build's own Paladin talent data:
 5. **Iron Creed** — Holy Strike generates more threat, and while Righteous Fury is active it also reduces damage taken for a few seconds after each cast, tying Protection's baseline attack directly into its survivability.
 6. **Holy Shield** — the tree's capstone talent; it raises block chance for a window and deals Holy damage on every block during it, which is both a mitigation cooldown and one of Protection's better threat tools.
 
-A rough point split at level 60 would put close to 31 points in Protection to reach Holy Shield, with the remainder split between Holy for early mana-sustain talents like Reverence and Retribution for Vindication's attack power debuff, depending on whether mana or threat is the bigger problem in a given fight. That split is a projection — the beta cap of 30 has not let anyone test it. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
+This build puts 31 points in Protection to reach Holy Shield, with the remaining 20 in Holy for mana-sustain — Reverence maxed, then Divine Strength, Divine Intellect, Healing Light, Spiritual Focus, and Improved Seals for the rest of the budget — rather than spreading into Retribution as well: splitting the remainder across two trees each needing their own tier-2 buy-in doesn't fit inside 51 points at once, so this build picks Holy alone. That split is a projection — the beta cap of 30 has not let anyone test it. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
 
 ## Rotation and priority
 

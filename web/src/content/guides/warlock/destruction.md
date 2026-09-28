@@ -3,7 +3,7 @@ title: Destruction Warlock in Forever
 classSlug: warlock
 spec: destruction
 role: dps
-build: 'FS1:1.60.1.69893:warlock:gnome:055/0/2555005100101051:'
+build: 'FS1:1.60.1.69893:warlock:gnome:255323/0/2353225100101051:'
 recommendedRaces: [gnome, troll]
 statPriority:
   [
@@ -51,7 +51,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Shadow and Flame** — up to a 10% damage buff at rank 5 from landing Conflagrate or Shadowburn, plus a chance for Conflagrate not to consume Immolate.
 - **Incinerate** — the capstone: extra Fire damage that gains a further 25% if the target is afflicted by Immolate, Destruction's signature filler.
 
-A typical Destruction build spends roughly 31 points in this tree to reach Incinerate at the bottom, with the remaining 10 points usually going into Affliction for Corruption and Suppression — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
+This build spends 31 points in Destruction to reach Incinerate at the bottom, with the remaining 20 in Affliction — Improved Corruption and Suppression both maxed, then Malediction, Improved Drains, Improved Life Tap, and Soul Harvesting for the rest of the budget — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=warlock](/planner?class=warlock) to build this out.
 
 ## Rotation and priority
 

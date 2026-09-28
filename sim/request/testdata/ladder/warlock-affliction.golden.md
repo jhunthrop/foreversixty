@@ -89,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:274271 ranged:279896 | 9.1 | 4 | other:mana_gain=47.4, spell:1454=47.4, spell:695=31.3, spell:172=13.0, spell:980=8.8 | {OtherID: 13}, {SpellID: 18288} |
-| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:274271 ranged:7001 | 21.4 | 4 | other:mana_gain=29.0, spell:1455=29.0, spell:1088=23.7, spell:6222=11.4, spell:1014=8.2 | {OtherID: 13}, {SpellID: 18288} |
-| 30 | 25552000020000000-0000000000000000000-0000000000000000 | main_hand:274271 ranged:5213 | 43.9 | 4 | other:mana_gain=31.7, spell:1456=31.7, spell:1106=30.3, spell:6223=10.5, spell:6217=8.3 | {OtherID: 13}, {SpellID: 18288} |
-| 38 | 25552000030201040-0000000000000000000-0000000000000000 | main_hand:274271 ranged:13064 | 72.6 | 4 | spell:7641=33.7, other:mana_gain=28.3, spell:11687=28.3, spell:7648=10.1, spell:11711=8.3 | {OtherID: 13}, {SpellID: 18288} |
-| 40 | 25552000030201051-0000000000000000000-0000000000000000 | main_hand:274271 ranged:5216 | 108.6 | 5 | other:mana_gain=32.4, spell:11687=32.4, spell:1316697=22.5, spell:7641=18.6, spell:7648=10.6 | {OtherID: 13}, {SpellID: 18288} |
-| 50 | 25552000030201051-2350000000000000000-0000000000000000 | main_hand:12061 ranged:15280 | 149.3 | 5 | other:mana_gain=30.3, spell:11688=30.3, spell:1316697=24.6, spell:11659=22.2, spell:11671=10.4 | {OtherID: 13}, {SpellID: 18288} |
-| 60 | 25552000030201051-2355230000000000000-0000000000000000 | main_hand:23577 ranged:15282 | 227.1 | 5 | other:mana_gain=28.8, spell:11689=28.8, spell:1316697=25.1, spell:25307=21.7, spell:25311=10.5 | {OtherID: 13}, {SpellID: 18288} |
+| 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:24071 ranged:19108 | 9.1 | 4 | other:mana_gain=47.4, spell:1454=47.4, spell:695=31.3, spell:172=13.0, spell:980=8.8 | {OtherID: 13}, {SpellID: 18288} |
+| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:24071 ranged:19108 | 21.6 | 4 | other:mana_gain=29.9, spell:1455=29.9, spell:1088=24.0, spell:6222=11.7, spell:1014=8.1 | {OtherID: 13}, {SpellID: 18288} |
+| 30 | 25552000110000000-0000000000000000000-0000000000000000 | main_hand:24071 ranged:19108 | 44.2 | 5 | other:mana_gain=31.2, spell:1456=31.2, spell:1106=29.9, spell:6223=10.4, spell:6217=8.2 | {OtherID: 13} |
+| 38 | 25552000130201030-0000000000000000000-0000000000000000 | main_hand:24071 ranged:19108 | 70.4 | 5 | spell:7641=31.8, other:mana_gain=27.6, spell:11687=27.6, spell:7648=10.2, spell:11711=8.3 | {OtherID: 13} |
+| 40 | 25552000130201050-0000000000000000000-0000000000000000 | main_hand:24071 ranged:19108 | 94.8 | 5 | spell:7641=33.1, other:mana_gain=27.4, spell:11687=27.4, spell:7648=10.2, spell:11711=8.2 | {OtherID: 13}, {SpellID: 1316697} |
+| 50 | 25552000130201051-2340000000000000000-0000000000000000 | main_hand:24071 ranged:19108 | 151.2 | 6 | other:mana_gain=30.2, spell:11688=30.2, spell:1316697=24.9, spell:11659=21.9, spell:11671=10.3 | {OtherID: 13} |
+| 60 | 25552000130201051-2355220000000000000-0000000000000000 | main_hand:20279 ranged:20335 | 233.3 | 6 | other:mana_gain=29.3, spell:11689=29.3, spell:1316697=25.2, spell:25307=23.1, spell:25311=10.4 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
@@ -162,6 +162,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Shadow Cleave (spell 403843)
 - Shadowburn (spell 18869)
 - Unstable Affliction (spell 427717)
+- Wrack (spell 1316697)
 
 ### Level 50
 
