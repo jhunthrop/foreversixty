@@ -93,10 +93,9 @@ def write_loot_files(
     # the repository cannot model.
     check_no_sockets(sparse_rows, build)
     zone_rows = json.loads((build_dir / "zones.json").read_text(encoding="utf-8"))
-    build_items = {
-        int(row["id"])
-        for row in json.loads((build_dir / "items.json").read_text(encoding="utf-8"))
-    }
+    item_rows = json.loads((build_dir / "items.json").read_text(encoding="utf-8"))
+    build_items = {int(row["id"]) for row in item_rows}
+    item_inventory_types = {int(row["id"]): int(row["inventory_type"]) for row in item_rows}
 
     # Contract 10.4's build filter happens inside build_loot, and its
     # pruning sweep with it -- so this runs BEFORE the overlay, which is
@@ -108,6 +107,7 @@ def write_loot_files(
         instance_types(read_csv(raw / "Map.csv"), zone_rows),
         pvp_ranks(sparse_rows),
         build_items,
+        item_inventory_types,
     )
     document = apply_overlays(document, load_overlays(overlay_dir))
 
@@ -129,14 +129,18 @@ def write_loot_files(
     )
 
     logger.info(
-        "loot: %d sources naming %d items; %d fork ids left out because this build "
-        "has no such item, %d fork source entries with no kind dropped; "
+        "loot: %d sources naming %d items (%d quests with faction detail); "
+        "%d fork ids left out because this build has no such item, "
+        "%d fork source entries with no kind dropped, %d zone sources with "
+        "a zone id zones[] does not name; "
         "%d enchants, %d suffixes, %d buff ids; "
         "items.json: %d with suffix options, %d faction-restricted",
         len(document.sources),
         stats.items,
+        len(document.quests),
         stats.absent_items,
         stats.dropped_entries,
+        stats.unnamed_zones,
         len(enchants),
         len(suffixes),
         len(simbuffs.entries),

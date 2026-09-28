@@ -18,6 +18,9 @@ from pipeline.loot.buffs import SIMBUFFS, ids_md_ids
 from pipeline.loot.sources import KIND_ORDER
 from pipeline.simdb.statmap import PROTO_STAT_ALIASES, STAT_IDS
 
+QUEST_FACTION_VALUES = {"alliance", "horde", "both"}
+FACTION_VALUES = {"alliance", "horde"}
+
 BUILD = "1.60.1.70009"
 BUILD_DIR = Path("builds") / BUILD
 IDS_MD = Path("../sim/request/IDS.md")
@@ -25,20 +28,23 @@ IDS_MD = Path("../sim/request/IDS.md")
 #: Sources per kind. Seven raids: the six the generator emits after
 #: contract 10.4's build filter, plus Onyxia's Lair, which the filter
 #: empties and curated/loot/forever-raid-phases.json adds back with its
-#: announced phase. Five dungeons, one world boss (Lord Kazzak; Azuregos
-#: keeps none of his ten drops on this client), five professions,
-#: thirty-one faction-and-standing pairs, thirteen PvP ranks, one quest
-#: list.
+#: announced phase. Eighteen dungeons, one world boss (Lord Kazzak;
+#: Azuregos keeps none of his ten drops on this client), twenty-five
+#: zones with a non-instance drop, seventeen vendor npcs selling at least
+#: one equippable item, five professions, thirty-one faction-and-standing
+#: pairs, thirteen PvP ranks, one quest list.
 SOURCES_PER_KIND = {
     "raid": 7,
     "dungeon": 18,
     "world": 1,
+    "zone": 25,
+    "vendor": 17,
     "crafted": 5,
     "rep": 31,
     "pvp": 13,
     "quest": 1,
 }
-TOTAL_SOURCES = 76
+TOTAL_SOURCES = 118
 
 RAID_SOURCE_IDS = [
     "raid:ahnqiraj",
@@ -85,8 +91,33 @@ PVP_ITEMS_PER_RANK = {5: 2, 6: 16, 7: 6, 8: 6, 9: 23, 10: 2, 11: 66, 12: 93,
 
 #: Every distinct item id the file names. Contract 10.4: all of them are
 #: the build's own, the 1,809 the fork names and this client does not
-#: having been left out.
-NAMED_ITEMS = 2970
+#: having been left out. Up from 2,970 once the zone and vendor kinds
+#: (below) started naming items no other kind already covered.
+NAMED_ITEMS = 3172
+
+#: `zone` sources: one per non-instance zone a `drop` source names,
+#: alongside (not instead of) the existing per-npc `world` bucket.
+ZONE_SOURCES = 25
+ZONE_ITEMS = 201
+UNNAMED_ZONES = 0
+
+#: `vendor` sources: one per npc selling at least one equippable item.
+VENDOR_SOURCES = 17
+VENDOR_ITEMS = 497
+
+#: `quests` map: item id -> its quest(s). Same 1,140 items as the flat
+#: `quest` bucket, now with the quest's own id, name and faction -- the
+#: item's own `factionRestriction` standing in for the quest's side, per
+#: the design (0 both, 1 alliance, 2 horde).
+QUEST_DETAIL_ITEMS = 1140
+QUEST_FACTION_COUNTS = {"alliance": 326, "horde": 307, "both": 507}
+
+#: `factions` map: item id -> "alliance"/"horde" for every restricted item
+#: this build has, quest items and non-quest items alike. Matches
+#: `ITEMS_FACTION_RESTRICTED` below exactly -- both read the same fork
+#: `factionRestriction` column, just spelled without "_only".
+FACTION_MAP_ITEMS = 870
+FACTION_MAP_COUNTS = {"alliance": 444, "horde": 426}
 
 ENCHANT_ROWS = 173
 ENCHANT_EFFECT_IDS = 150
@@ -165,8 +196,8 @@ def source_items(source: dict) -> set[int]:
     )
 
 
-def test_the_file_is_an_object_with_one_key():
-    assert list(loot()) == ["sources"]
+def test_the_file_is_an_object_with_three_keys():
+    assert list(loot()) == ["sources", "quests", "factions"]
 
 
 def test_every_kind_has_the_number_of_sources_measured():
@@ -241,6 +272,36 @@ def test_the_only_world_source_is_the_one_world_boss_with_loot_left():
     assert [s["id"] for s in loot()["sources"] if s["kind"] == "world"] == WORLD_SOURCE_IDS
 
 
+def test_zone_sources_are_additive_to_world_not_a_replacement_for_it():
+    """A drop with a named open-world npc still gets its `world` entry;
+    `zone` is the same drop grouped by zone instead of by creature, not an
+    alternative bucket that replaces it. Lord Kazzak's own drops are how
+    that overlap is exercised on the committed build: `world:lord-kazzak`
+    and whichever `zone:<id>` he stands in both name his items."""
+    zones = [s for s in loot()["sources"] if s["kind"] == "zone"]
+    assert len(zones) == ZONE_SOURCES
+    assert sum(len(s["items"]) for s in zones) == ZONE_ITEMS
+    assert sum(1 for s in zones if s["name"] == "") == UNNAMED_ZONES
+    for source in zones:
+        assert source["id"] == f"zone:{source['zone_id']}"
+        assert source["items"] == sorted(set(source["items"]))
+    world_items = {item for s in loot()["sources"] if s["kind"] == "world" for item in s["items"]}
+    zone_items = {item for s in zones for item in s["items"]}
+    assert world_items & zone_items, "the world boss's drops should also show up zoned"
+
+
+def test_vendor_sources_are_one_per_npc_selling_equippable_gear():
+    vendors = [s for s in loot()["sources"] if s["kind"] == "vendor"]
+    assert len(vendors) == VENDOR_SOURCES
+    assert sum(len(s["items"]) for s in vendors) == VENDOR_ITEMS
+    ids = sorted(s["id"] for s in vendors)
+    assert ids == sorted({f"vendor:{s['npc_id']}" for s in vendors})
+    for source in vendors:
+        assert source["name"].strip(), source["id"]
+        assert source["items"], source["id"]
+        assert source["items"] == sorted(set(source["items"]))
+
+
 def test_crafted_rep_pvp_and_quest_carry_their_own_keys_and_counts():
     assert {
         s["id"]: len(s["items"]) for s in loot()["sources"] if s["kind"] == "crafted"
@@ -265,6 +326,10 @@ def test_a_source_only_carries_the_keys_its_kind_needs():
     assert sorted(by_id()["crafted:tailoring"]) == ["id", "items", "kind", "name", "profession"]
     assert sorted(by_id()["quest"]) == ["id", "items", "kind", "name"]
     assert "profession" not in by_id()["raid:molten-core"]
+    vendor = next(s for s in loot()["sources"] if s["kind"] == "vendor")
+    assert sorted(vendor) == ["id", "items", "kind", "name", "npc_id"]
+    zone = next(s for s in loot()["sources"] if s["kind"] == "zone")
+    assert sorted(zone) == ["id", "items", "kind", "name", "zone_id"]
 
 
 def test_every_item_list_is_sorted_and_free_of_duplicates():
@@ -364,6 +429,45 @@ def test_items_json_carries_both_fork_columns_on_every_row():
         "alliance_only",
         "horde_only",
     }
+
+
+def test_quests_map_carries_id_name_and_faction_per_item():
+    """`LootFile.quests`: the same 1,140 items the flat `quest` bucket
+    names, each with the quest that hands it out and the faction that
+    item's own `factionRestriction` stands in for (0 both, 1 alliance,
+    2 horde) -- the fork states no faction on the quest itself."""
+    quests = loot()["quests"]
+    assert len(quests) == QUEST_DETAIL_ITEMS
+    assert set(quests) == {str(i) for i in by_id()["quest"]["items"]}
+    counts = {"alliance": 0, "horde": 0, "both": 0}
+    for item_id, entries in quests.items():
+        assert entries, item_id
+        for entry in entries:
+            assert sorted(entry) == ["faction", "name", "quest_id"]
+            assert entry["faction"] in QUEST_FACTION_VALUES
+            assert entry["name"].strip(), item_id
+            assert entry["quest_id"] > 0
+            counts[entry["faction"]] += 1
+    assert counts == QUEST_FACTION_COUNTS
+
+
+def test_factions_map_covers_every_restricted_item_quest_or_not():
+    """`LootFile.factions`: every faction-restricted item this build has,
+    not only the quest ones -- reads the same fork `factionRestriction`
+    column `items.json`'s own column does, so the two counts match."""
+    factions = loot()["factions"]
+    assert len(factions) == FACTION_MAP_ITEMS == ITEMS_FACTION_RESTRICTED
+    assert set(factions.values()) <= FACTION_VALUES
+    counts = {"alliance": 0, "horde": 0}
+    for value in factions.values():
+        counts[value] += 1
+    assert counts == FACTION_MAP_COUNTS
+    restricted_by_id = {
+        str(row["id"]): row["faction_restriction"] for row in items() if row["faction_restriction"]
+    }
+    assert set(factions) <= set(restricted_by_id)
+    for item_id, faction in factions.items():
+        assert restricted_by_id[item_id] == f"{faction}_only"
 
 
 def test_simbuffs_names_every_id_the_engine_lets_a_request_send():

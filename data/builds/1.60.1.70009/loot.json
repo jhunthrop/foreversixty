@@ -2276,6 +2276,1040 @@
       ]
     },
     {
+      "id": "zone:1",
+      "kind": "zone",
+      "name": "Dun Morogh",
+      "zone_id": 1,
+      "items": [
+        2254,
+        2899,
+        3223,
+        10553,
+        10554
+      ]
+    },
+    {
+      "id": "zone:10",
+      "kind": "zone",
+      "name": "Duskwood",
+      "zone_id": 10,
+      "items": [
+        880,
+        885,
+        886,
+        897,
+        899,
+        911,
+        920,
+        1077,
+        2013,
+        2014,
+        2015,
+        2017,
+        2018,
+        2020,
+        2021,
+        2226,
+        2227,
+        2232,
+        2233,
+        2234,
+        3018,
+        3227,
+        4448,
+        4449,
+        4462,
+        4464,
+        4465,
+        4474,
+        4477,
+        6204
+      ]
+    },
+    {
+      "id": "zone:11",
+      "kind": "zone",
+      "name": "Wetlands",
+      "zone_id": 11,
+      "items": [
+        753,
+        892,
+        1560,
+        1955,
+        2046,
+        2084,
+        3022,
+        3072,
+        3073,
+        3074,
+        3076,
+        3392,
+        4444,
+        4463,
+        5749,
+        5750,
+        6198,
+        6199,
+        6200,
+        6315
+      ]
+    },
+    {
+      "id": "zone:12",
+      "kind": "zone",
+      "name": "Elwynn Forest",
+      "zone_id": 12,
+      "items": [
+        1917,
+        3000,
+        5744
+      ]
+    },
+    {
+      "id": "zone:130",
+      "kind": "zone",
+      "name": "Silverpine Forest",
+      "zone_id": 130,
+      "items": [
+        4436,
+        4437,
+        4439,
+        4445,
+        4767,
+        5969,
+        5975,
+        6628
+      ]
+    },
+    {
+      "id": "zone:1377",
+      "kind": "zone",
+      "name": "Silithus",
+      "zone_id": 1377,
+      "items": [
+        20406,
+        20407,
+        20408,
+        20682,
+        20685
+      ]
+    },
+    {
+      "id": "zone:148",
+      "kind": "zone",
+      "name": "Darkshore",
+      "zone_id": 148,
+      "items": [
+        6332,
+        6333
+      ]
+    },
+    {
+      "id": "zone:16",
+      "kind": "zone",
+      "name": "Azshara",
+      "zone_id": 16,
+      "items": [
+        18674
+      ]
+    },
+    {
+      "id": "zone:17",
+      "kind": "zone",
+      "name": "The Barrens",
+      "zone_id": 17,
+      "items": [
+        1355,
+        1539,
+        2035,
+        4768,
+        4771,
+        4785,
+        5111,
+        5112,
+        5182,
+        5183,
+        7559
+      ]
+    },
+    {
+      "id": "zone:215",
+      "kind": "zone",
+      "name": "Mulgore",
+      "zone_id": 215,
+      "items": [
+        4861,
+        17922
+      ]
+    },
+    {
+      "id": "zone:2597",
+      "kind": "zone",
+      "name": "Alterac Valley",
+      "zone_id": 2597,
+      "items": [
+        22753
+      ]
+    },
+    {
+      "id": "zone:267",
+      "kind": "zone",
+      "name": "Hillsbrad Foothills",
+      "zone_id": 267,
+      "items": [
+        3053,
+        3204,
+        3336,
+        3429
+      ]
+    },
+    {
+      "id": "zone:33",
+      "kind": "zone",
+      "name": "Stranglethorn Vale",
+      "zone_id": 33,
+      "items": [
+        1522,
+        1679,
+        1986,
+        1996,
+        1998,
+        3985,
+        4478,
+        5028,
+        5029,
+        5079,
+        18706,
+        18709,
+        18710,
+        18711,
+        18712
+      ]
+    },
+    {
+      "id": "zone:36",
+      "kind": "zone",
+      "name": "Alterac Mountains",
+      "zone_id": 36,
+      "items": [
+        1678,
+        3011,
+        6331
+      ]
+    },
+    {
+      "id": "zone:38",
+      "kind": "zone",
+      "name": "Loch Modan",
+      "zone_id": 38,
+      "items": [
+        1215,
+        1938,
+        2241,
+        2265,
+        2266,
+        2267,
+        2274,
+        2281,
+        2283,
+        2284,
+        2821,
+        2822,
+        2823,
+        3563,
+        3571,
+        4949,
+        6195,
+        6197
+      ]
+    },
+    {
+      "id": "zone:4",
+      "kind": "zone",
+      "name": "Blasted Lands",
+      "zone_id": 4,
+      "items": [
+        17111,
+        18543
+      ]
+    },
+    {
+      "id": "zone:40",
+      "kind": "zone",
+      "name": "Westfall",
+      "zone_id": 40,
+      "items": [
+        816,
+        820,
+        821,
+        826,
+        827,
+        832,
+        1189,
+        1190,
+        1314,
+        1387,
+        1391,
+        1394,
+        1405,
+        1926,
+        1927,
+        1933,
+        2087,
+        2088,
+        2203,
+        2204,
+        2235,
+        3188,
+        4290,
+        4434,
+        4454,
+        5971,
+        6179,
+        6180,
+        6205
+      ]
+    },
+    {
+      "id": "zone:400",
+      "kind": "zone",
+      "name": "Thousand Needles",
+      "zone_id": 400,
+      "items": [
+        1493
+      ]
+    },
+    {
+      "id": "zone:405",
+      "kind": "zone",
+      "name": "Desolace",
+      "zone_id": 405,
+      "items": [
+        2620
+      ]
+    },
+    {
+      "id": "zone:406",
+      "kind": "zone",
+      "name": "Stonetalon Mountains",
+      "zone_id": 406,
+      "items": [
+        5751,
+        5752
+      ]
+    },
+    {
+      "id": "zone:44",
+      "kind": "zone",
+      "name": "Redridge Mountains",
+      "zone_id": 44,
+      "items": [
+        1211,
+        1214,
+        1218,
+        1219,
+        1220,
+        1296,
+        1299,
+        1300,
+        1406,
+        1440,
+        1446,
+        1448,
+        1455,
+        1457,
+        1458,
+        1459,
+        1460,
+        1461,
+        1462,
+        1469,
+        1473,
+        2058,
+        2175,
+        3229,
+        3231,
+        4446,
+        4447
+      ]
+    },
+    {
+      "id": "zone:440",
+      "kind": "zone",
+      "name": "Tanaris",
+      "zone_id": 440,
+      "items": [
+        9359
+      ]
+    },
+    {
+      "id": "zone:45",
+      "kind": "zone",
+      "name": "Arathi Highlands",
+      "zone_id": 45,
+      "items": [
+        1297,
+        1404,
+        2622,
+        3341,
+        5181,
+        5256
+      ]
+    },
+    {
+      "id": "zone:618",
+      "kind": "zone",
+      "name": "Winterspring",
+      "zone_id": 618,
+      "items": [
+        18678,
+        18679
+      ]
+    },
+    {
+      "id": "zone:85",
+      "kind": "zone",
+      "name": "Tirisfal Glades",
+      "zone_id": 85,
+      "items": [
+        3330,
+        4303
+      ]
+    },
+    {
+      "id": "vendor:11555",
+      "kind": "vendor",
+      "name": "Gorn One Eye",
+      "npc_id": 11555,
+      "items": [
+        16769
+      ]
+    },
+    {
+      "id": "vendor:12777",
+      "kind": "vendor",
+      "name": "Captain Dirgehammer",
+      "npc_id": 12777,
+      "items": [
+        16437,
+        16440,
+        16441,
+        16442,
+        16443,
+        16444,
+        16446,
+        16448,
+        16449,
+        16450,
+        16451,
+        16452,
+        16453,
+        16454,
+        16455,
+        16456,
+        16457,
+        16459,
+        16462,
+        16463,
+        16465,
+        16466,
+        16467,
+        16468,
+        16471,
+        16472,
+        16473,
+        16474,
+        16475,
+        16476,
+        16477,
+        16478,
+        16479,
+        16480,
+        16483,
+        16484,
+        17578,
+        17579,
+        17580,
+        17581,
+        17583,
+        17584,
+        17602,
+        17603,
+        17604,
+        17605,
+        17607,
+        17608,
+        23272,
+        23273,
+        23274,
+        23275,
+        23276,
+        23277,
+        23278,
+        23279,
+        23280,
+        23281,
+        23282,
+        23283,
+        23284,
+        23285,
+        23286,
+        23287,
+        23288,
+        23289,
+        23290,
+        23291,
+        23292,
+        23293,
+        23294,
+        23295,
+        23296,
+        23297,
+        23298,
+        23299,
+        23300,
+        23301,
+        23302,
+        23303,
+        23304,
+        23305,
+        23306,
+        23307,
+        23308,
+        23309,
+        23310,
+        23311,
+        23312,
+        23313,
+        23314,
+        23315,
+        23316,
+        23317,
+        23318,
+        23319
+      ]
+    },
+    {
+      "id": "vendor:12782",
+      "kind": "vendor",
+      "name": "Captain O'Neal",
+      "npc_id": 12782,
+      "items": [
+        12584,
+        18825,
+        18827,
+        18830,
+        18833,
+        18836,
+        18838,
+        18843,
+        18847,
+        18855,
+        18865,
+        18867,
+        18869,
+        18873,
+        18876,
+        23451,
+        23452,
+        23453,
+        23454,
+        23455,
+        23456
+      ]
+    },
+    {
+      "id": "vendor:12792",
+      "kind": "vendor",
+      "name": "Lady Palanseer",
+      "npc_id": 12792,
+      "items": [
+        16533,
+        16534,
+        16535,
+        16536,
+        16539,
+        16540,
+        16541,
+        16542,
+        16543,
+        16544,
+        16545,
+        16548,
+        16549,
+        16550,
+        16551,
+        16552,
+        16554,
+        16555,
+        16558,
+        16560,
+        16561,
+        16562,
+        16563,
+        16564,
+        16565,
+        16566,
+        16567,
+        16568,
+        16569,
+        16571,
+        16573,
+        16574,
+        16577,
+        16578,
+        16579,
+        16580,
+        17586,
+        17588,
+        17590,
+        17591,
+        17592,
+        17593,
+        17618,
+        17620,
+        17622,
+        17623,
+        17624,
+        17625,
+        22843,
+        22852,
+        22855,
+        22856,
+        22857,
+        22858,
+        22859,
+        22860,
+        22862,
+        22863,
+        22864,
+        22865,
+        22867,
+        22868,
+        22869,
+        22870,
+        22872,
+        22873,
+        22874,
+        22875,
+        22876,
+        22877,
+        22878,
+        22879,
+        22880,
+        22881,
+        22882,
+        22883,
+        22884,
+        22885,
+        22886,
+        22887,
+        23243,
+        23244,
+        23251,
+        23252,
+        23253,
+        23254,
+        23255,
+        23256,
+        23257,
+        23258,
+        23259,
+        23260,
+        23261,
+        23262,
+        23263,
+        23264
+      ]
+    },
+    {
+      "id": "vendor:12799",
+      "kind": "vendor",
+      "name": "Sergeant Ba'sha",
+      "npc_id": 12799,
+      "items": [
+        15200,
+        16335,
+        16341,
+        16486,
+        16497,
+        16532,
+        18427,
+        18428,
+        18429,
+        18430,
+        18432,
+        18434,
+        18435,
+        18436,
+        18437,
+        18461
+      ]
+    },
+    {
+      "id": "vendor:12805",
+      "kind": "vendor",
+      "name": "Officer Areyn",
+      "npc_id": 12805,
+      "items": [
+        16342,
+        18440,
+        18441,
+        18442,
+        18443,
+        18444,
+        18445,
+        18447,
+        18448,
+        18449,
+        18452,
+        18453,
+        18454,
+        18455,
+        18456,
+        18457
+      ]
+    },
+    {
+      "id": "vendor:14581",
+      "kind": "vendor",
+      "name": "Sergeant Thunderhorn",
+      "npc_id": 14581,
+      "items": [
+        16345,
+        18826,
+        18828,
+        18831,
+        18835,
+        18837,
+        18840,
+        18844,
+        18848,
+        18860,
+        18866,
+        18868,
+        18871,
+        18874,
+        18877,
+        23464,
+        23465,
+        23466,
+        23467,
+        23468,
+        23469
+      ]
+    },
+    {
+      "id": "vendor:14736",
+      "kind": "vendor",
+      "name": "Primal Torntusk",
+      "npc_id": 14736,
+      "items": [
+        19120
+      ]
+    },
+    {
+      "id": "vendor:14753",
+      "kind": "vendor",
+      "name": "Illiyana Moonblaze",
+      "npc_id": 14753,
+      "items": [
+        19514,
+        19515,
+        19516,
+        19517,
+        19522,
+        19523,
+        19524,
+        19525,
+        19530,
+        19531,
+        19532,
+        19533,
+        19538,
+        19539,
+        19540,
+        19541,
+        19546,
+        19547,
+        19548,
+        19549,
+        19554,
+        19555,
+        19556,
+        19557,
+        19562,
+        19563,
+        19564,
+        19565,
+        19570,
+        19571,
+        19572,
+        19573,
+        20428,
+        20431,
+        20434,
+        20438,
+        20439,
+        20440,
+        20443,
+        20444,
+        22672,
+        22748,
+        22749,
+        22750,
+        22752,
+        22753
+      ]
+    },
+    {
+      "id": "vendor:14754",
+      "kind": "vendor",
+      "name": "Kelm Hargunth",
+      "npc_id": 14754,
+      "items": [
+        19510,
+        19511,
+        19512,
+        19513,
+        19518,
+        19519,
+        19520,
+        19521,
+        19526,
+        19527,
+        19528,
+        19529,
+        19534,
+        19535,
+        19536,
+        19537,
+        19542,
+        19543,
+        19544,
+        19545,
+        19550,
+        19551,
+        19552,
+        19553,
+        19558,
+        19559,
+        19560,
+        19561,
+        19566,
+        19567,
+        19568,
+        19569,
+        20425,
+        20426,
+        20427,
+        20429,
+        20430,
+        20437,
+        20441,
+        20442,
+        22651,
+        22673,
+        22676,
+        22740,
+        22741,
+        22747
+      ]
+    },
+    {
+      "id": "vendor:14846",
+      "kind": "vendor",
+      "name": "Lhara",
+      "npc_id": 14846,
+      "items": [
+        19302,
+        19303
+      ]
+    },
+    {
+      "id": "vendor:15126",
+      "kind": "vendor",
+      "name": "Rutherford Twing",
+      "npc_id": 15126,
+      "items": [
+        20068,
+        20072,
+        20150,
+        20151,
+        20152,
+        20153,
+        20154,
+        20155,
+        20156,
+        20157,
+        20158,
+        20159,
+        20160,
+        20161,
+        20162,
+        20163,
+        20164,
+        20165,
+        20166,
+        20167,
+        20168,
+        20169,
+        20170,
+        20171,
+        20172,
+        20173,
+        20174,
+        20175,
+        20176,
+        20186,
+        20187,
+        20188,
+        20189,
+        20190,
+        20191,
+        20192,
+        20193,
+        20194,
+        20195,
+        20196,
+        20197,
+        20198,
+        20199,
+        20200,
+        20201,
+        20202,
+        20203,
+        20204,
+        20205,
+        20206,
+        20207,
+        20208,
+        20209,
+        20210,
+        20211,
+        20212,
+        20214,
+        20220,
+        21115,
+        21116,
+        21120
+      ]
+    },
+    {
+      "id": "vendor:15127",
+      "kind": "vendor",
+      "name": "Samuel Hawke",
+      "npc_id": 15127,
+      "items": [
+        20041,
+        20042,
+        20043,
+        20045,
+        20046,
+        20047,
+        20048,
+        20049,
+        20050,
+        20052,
+        20053,
+        20054,
+        20055,
+        20057,
+        20058,
+        20059,
+        20060,
+        20061,
+        20069,
+        20070,
+        20071,
+        20073,
+        20088,
+        20089,
+        20090,
+        20091,
+        20092,
+        20093,
+        20094,
+        20095,
+        20096,
+        20097,
+        20098,
+        20099,
+        20100,
+        20101,
+        20102,
+        20103,
+        20104,
+        20105,
+        20106,
+        20107,
+        20108,
+        20109,
+        20110,
+        20111,
+        20112,
+        20113,
+        20114,
+        20115,
+        20116,
+        20117,
+        20124,
+        20125,
+        20126,
+        20127,
+        20128,
+        20129,
+        21117,
+        21118,
+        21119
+      ]
+    },
+    {
+      "id": "vendor:209889",
+      "kind": "vendor",
+      "name": "Barebones",
+      "npc_id": 209889,
+      "items": [
+        1404,
+        7189,
+        10501,
+        10588,
+        10724,
+        11905,
+        18634,
+        18638,
+        18639,
+        19024
+      ]
+    },
+    {
+      "id": "vendor:214954",
+      "kind": "vendor",
+      "name": "Rix Xizzix",
+      "npc_id": 214954,
+      "items": [
+        10418
+      ]
+    },
+    {
+      "id": "vendor:2482",
+      "kind": "vendor",
+      "name": "Zarena Cromwind",
+      "npc_id": 2482,
+      "items": [
+        12252
+      ]
+    },
+    {
+      "id": "vendor:2845",
+      "kind": "vendor",
+      "name": "Fargon Mortalak",
+      "npc_id": 2845,
+      "items": [
+        12257
+      ]
+    },
+    {
       "id": "crafted:blacksmithing",
       "kind": "crafted",
       "name": "Blacksmithing",
@@ -5203,5 +6237,8859 @@
         23207
       ]
     }
-  ]
+  ],
+  "quests": {
+    "744": [
+      {
+        "quest_id": 53,
+        "name": "Sweet Amber",
+        "faction": "alliance"
+      }
+    ],
+    "1009": [
+      {
+        "quest_id": 417,
+        "name": "A Pilot's Revenge",
+        "faction": "alliance"
+      }
+    ],
+    "1116": [
+      {
+        "quest_id": 1046,
+        "name": "Raene's Cleansing",
+        "faction": "alliance"
+      }
+    ],
+    "1131": [
+      {
+        "quest_id": 101,
+        "name": "The Totem of Infliction",
+        "faction": "alliance"
+      }
+    ],
+    "1172": [
+      {
+        "quest_id": 104,
+        "name": "The Coastal Menace",
+        "faction": "both"
+      }
+    ],
+    "1264": [
+      {
+        "quest_id": 378,
+        "name": "The Fury Runs Deep",
+        "faction": "alliance"
+      }
+    ],
+    "1270": [
+      {
+        "quest_id": 116,
+        "name": "Dry Times",
+        "faction": "alliance"
+      }
+    ],
+    "1273": [
+      {
+        "quest_id": 275,
+        "name": "Blisters on The Land",
+        "faction": "alliance"
+      }
+    ],
+    "1275": [
+      {
+        "quest_id": 219,
+        "name": "Missing In Action",
+        "faction": "alliance"
+      }
+    ],
+    "1276": [
+      {
+        "quest_id": 19,
+        "name": "Tharil'zun",
+        "faction": "alliance"
+      }
+    ],
+    "1282": [
+      {
+        "quest_id": 55,
+        "name": "Morbent Fel",
+        "faction": "alliance"
+      }
+    ],
+    "1302": [
+      {
+        "quest_id": 122,
+        "name": "Underbelly Scales",
+        "faction": "alliance"
+      }
+    ],
+    "1303": [
+      {
+        "quest_id": 89,
+        "name": "The Everstill Bridge",
+        "faction": "alliance"
+      }
+    ],
+    "1304": [
+      {
+        "quest_id": 89,
+        "name": "The Everstill Bridge",
+        "faction": "alliance"
+      }
+    ],
+    "1306": [
+      {
+        "quest_id": 6481,
+        "name": "Earthen Arise",
+        "faction": "horde"
+      }
+    ],
+    "1310": [
+      {
+        "quest_id": 89,
+        "name": "The Everstill Bridge",
+        "faction": "alliance"
+      }
+    ],
+    "1317": [
+      {
+        "quest_id": 386,
+        "name": "What Comes Around...",
+        "faction": "alliance"
+      }
+    ],
+    "1319": [
+      {
+        "quest_id": 126,
+        "name": "Howling in the Hills",
+        "faction": "alliance"
+      }
+    ],
+    "1436": [
+      {
+        "quest_id": 217,
+        "name": "In Defense of the King's Lands",
+        "faction": "alliance"
+      }
+    ],
+    "1449": [
+      {
+        "quest_id": 256,
+        "name": "WANTED: Chok'sul",
+        "faction": "alliance"
+      }
+    ],
+    "1480": [
+      {
+        "quest_id": 14,
+        "name": "The People's Militia",
+        "faction": "alliance"
+      }
+    ],
+    "1547": [
+      {
+        "quest_id": 223,
+        "name": "Worgen in the Woods",
+        "faction": "alliance"
+      }
+    ],
+    "1557": [
+      {
+        "quest_id": 104,
+        "name": "The Coastal Menace",
+        "faction": "both"
+      }
+    ],
+    "1561": [
+      {
+        "quest_id": 9,
+        "name": "The Killing Fields",
+        "faction": "alliance"
+      }
+    ],
+    "1566": [
+      {
+        "quest_id": 14,
+        "name": "The People's Militia",
+        "faction": "alliance"
+      }
+    ],
+    "1832": [
+      {
+        "quest_id": 217,
+        "name": "In Defense of the King's Lands",
+        "faction": "both"
+      }
+    ],
+    "1893": [
+      {
+        "quest_id": 167,
+        "name": "Oh Brother. . .",
+        "faction": "alliance"
+      }
+    ],
+    "2000": [
+      {
+        "quest_id": 231,
+        "name": "A Daughter's Love",
+        "faction": "alliance"
+      }
+    ],
+    "2032": [
+      {
+        "quest_id": 1164,
+        "name": "To Steal From Thieves",
+        "faction": "horde"
+      }
+    ],
+    "2033": [
+      {
+        "quest_id": 377,
+        "name": "Crime and Punishment",
+        "faction": "alliance"
+      }
+    ],
+    "2036": [
+      {
+        "quest_id": 168,
+        "name": "Collecting Memories",
+        "faction": "alliance"
+      }
+    ],
+    "2037": [
+      {
+        "quest_id": 168,
+        "name": "Collecting Memories",
+        "faction": "alliance"
+      }
+    ],
+    "2041": [
+      {
+        "quest_id": 166,
+        "name": "The Defias Brotherhood",
+        "faction": "alliance"
+      }
+    ],
+    "2042": [
+      {
+        "quest_id": 166,
+        "name": "The Defias Brotherhood",
+        "faction": "alliance"
+      }
+    ],
+    "2043": [
+      {
+        "quest_id": 98,
+        "name": "The Legend of Stalvan",
+        "faction": "alliance"
+      }
+    ],
+    "2044": [
+      {
+        "quest_id": 98,
+        "name": "The Legend of Stalvan",
+        "faction": "alliance"
+      }
+    ],
+    "2074": [
+      {
+        "quest_id": 214,
+        "name": "Red Silk Bandanas",
+        "faction": "alliance"
+      }
+    ],
+    "2089": [
+      {
+        "quest_id": 214,
+        "name": "Red Silk Bandanas",
+        "faction": "alliance"
+      }
+    ],
+    "2218": [
+      {
+        "quest_id": 417,
+        "name": "A Pilot's Revenge",
+        "faction": "alliance"
+      }
+    ],
+    "2230": [
+      {
+        "quest_id": 501,
+        "name": "Elixir of Pain",
+        "faction": "horde"
+      }
+    ],
+    "2231": [
+      {
+        "quest_id": 566,
+        "name": "WANTED: Baron Vardus",
+        "faction": "horde"
+      }
+    ],
+    "2263": [
+      {
+        "quest_id": 275,
+        "name": "Blisters on The Land",
+        "faction": "alliance"
+      }
+    ],
+    "2545": [
+      {
+        "quest_id": 471,
+        "name": "Apprentice's Duties",
+        "faction": "alliance"
+      }
+    ],
+    "2694": [
+      {
+        "quest_id": 3281,
+        "name": "Stolen Silver",
+        "faction": "horde"
+      }
+    ],
+    "2805": [
+      {
+        "quest_id": 565,
+        "name": "Bartolo's Yeti Fur Cloak",
+        "faction": "alliance"
+      }
+    ],
+    "2817": [
+      {
+        "quest_id": 314,
+        "name": "Protecting the Herd",
+        "faction": "alliance"
+      }
+    ],
+    "2818": [
+      {
+        "quest_id": 452,
+        "name": "Pyrewood Ambush",
+        "faction": "horde"
+      }
+    ],
+    "2820": [
+      {
+        "quest_id": 778,
+        "name": "This Is Going to Be Hard",
+        "faction": "both"
+      }
+    ],
+    "2902": [
+      {
+        "quest_id": 223,
+        "name": "Worgen in the Woods",
+        "faction": "alliance"
+      }
+    ],
+    "2903": [
+      {
+        "quest_id": 257,
+        "name": "A Hunter's Boast",
+        "faction": "alliance"
+      }
+    ],
+    "2904": [
+      {
+        "quest_id": 257,
+        "name": "A Hunter's Boast",
+        "faction": "alliance"
+      }
+    ],
+    "2906": [
+      {
+        "quest_id": 377,
+        "name": "Crime and Punishment",
+        "faction": "alliance"
+      }
+    ],
+    "2907": [
+      {
+        "quest_id": 283,
+        "name": "A Dark Threat Looms",
+        "faction": "alliance"
+      }
+    ],
+    "2908": [
+      {
+        "quest_id": 283,
+        "name": "A Dark Threat Looms",
+        "faction": "alliance"
+      }
+    ],
+    "2910": [
+      {
+        "quest_id": 126,
+        "name": "Howling in the Hills",
+        "faction": "alliance"
+      }
+    ],
+    "2913": [
+      {
+        "quest_id": 299,
+        "name": "Uncovering the Past",
+        "faction": "alliance"
+      }
+    ],
+    "2916": [
+      {
+        "quest_id": 304,
+        "name": "A Grim Task",
+        "faction": "alliance"
+      }
+    ],
+    "2917": [
+      {
+        "quest_id": 304,
+        "name": "A Grim Task",
+        "faction": "alliance"
+      }
+    ],
+    "2933": [
+      {
+        "quest_id": 396,
+        "name": "An Audience with the King",
+        "faction": "alliance"
+      }
+    ],
+    "2943": [
+      {
+        "quest_id": 293,
+        "name": "Cleansing the Eye",
+        "faction": "alliance"
+      }
+    ],
+    "2949": [
+      {
+        "quest_id": 286,
+        "name": "Return the Statuette",
+        "faction": "alliance"
+      }
+    ],
+    "2950": [
+      {
+        "quest_id": 286,
+        "name": "Return the Statuette",
+        "faction": "alliance"
+      }
+    ],
+    "2953": [
+      {
+        "quest_id": 55,
+        "name": "Morbent Fel",
+        "faction": "alliance"
+      }
+    ],
+    "2954": [
+      {
+        "quest_id": 55,
+        "name": "Morbent Fel",
+        "faction": "alliance"
+      }
+    ],
+    "3079": [
+      {
+        "quest_id": 770,
+        "name": "The Demon Scarred Cloak",
+        "faction": "horde"
+      }
+    ],
+    "3103": [
+      {
+        "quest_id": 314,
+        "name": "Protecting the Herd",
+        "faction": "alliance"
+      }
+    ],
+    "3154": [
+      {
+        "quest_id": 297,
+        "name": "Gathering Idols",
+        "faction": "alliance"
+      }
+    ],
+    "3160": [
+      {
+        "quest_id": 307,
+        "name": "Filthy Paws",
+        "faction": "alliance"
+      }
+    ],
+    "3161": [
+      {
+        "quest_id": 307,
+        "name": "Filthy Paws",
+        "faction": "alliance"
+      }
+    ],
+    "3166": [
+      {
+        "quest_id": 307,
+        "name": "Filthy Paws",
+        "faction": "alliance"
+      }
+    ],
+    "3209": [
+      {
+        "quest_id": 474,
+        "name": "Defeat Nek'rosh",
+        "faction": "alliance"
+      }
+    ],
+    "3217": [
+      {
+        "quest_id": 309,
+        "name": "Protecting the Shipment",
+        "faction": "alliance"
+      }
+    ],
+    "3235": [
+      {
+        "quest_id": 530,
+        "name": "A Husband's Revenge",
+        "faction": "horde"
+      }
+    ],
+    "3324": [
+      {
+        "quest_id": 1098,
+        "name": "Deathstalkers in Shadowfang",
+        "faction": "horde"
+      }
+    ],
+    "3344": [
+      {
+        "quest_id": 140,
+        "name": "Captain Sander's Hidden Treasure",
+        "faction": "both"
+      }
+    ],
+    "3400": [
+      {
+        "quest_id": 386,
+        "name": "What Comes Around...",
+        "faction": "alliance"
+      }
+    ],
+    "3431": [
+      {
+        "quest_id": 219,
+        "name": "Missing In Action",
+        "faction": "alliance"
+      }
+    ],
+    "3440": [
+      {
+        "quest_id": 408,
+        "name": "The Family Crypt",
+        "faction": "horde"
+      }
+    ],
+    "3446": [
+      {
+        "quest_id": 408,
+        "name": "The Family Crypt",
+        "faction": "horde"
+      }
+    ],
+    "3449": [
+      {
+        "quest_id": 452,
+        "name": "Pyrewood Ambush",
+        "faction": "horde"
+      }
+    ],
+    "3450": [
+      {
+        "quest_id": 452,
+        "name": "Pyrewood Ambush",
+        "faction": "horde"
+      }
+    ],
+    "3451": [
+      {
+        "quest_id": 451,
+        "name": "A Recipe For Death",
+        "faction": "horde"
+      }
+    ],
+    "3452": [
+      {
+        "quest_id": 480,
+        "name": "The Weaver",
+        "faction": "horde"
+      }
+    ],
+    "3457": [
+      {
+        "quest_id": 491,
+        "name": "Wand to Bethor",
+        "faction": "horde"
+      }
+    ],
+    "3458": [
+      {
+        "quest_id": 491,
+        "name": "Wand to Bethor",
+        "faction": "horde"
+      }
+    ],
+    "3461": [
+      {
+        "quest_id": 442,
+        "name": "Assault on Fenris Isle",
+        "faction": "horde"
+      }
+    ],
+    "3462": [
+      {
+        "quest_id": 442,
+        "name": "Assault on Fenris Isle",
+        "faction": "horde"
+      }
+    ],
+    "3493": [
+      {
+        "quest_id": 296,
+        "name": "Ormer's Revenge",
+        "faction": "alliance"
+      }
+    ],
+    "3511": [
+      {
+        "quest_id": 153,
+        "name": "Red Leather Bandanas",
+        "faction": "alliance"
+      }
+    ],
+    "3555": [
+      {
+        "quest_id": 219,
+        "name": "Missing In Action",
+        "faction": "alliance"
+      }
+    ],
+    "3556": [
+      {
+        "quest_id": 397,
+        "name": "You Have Served Us Well",
+        "faction": "both"
+      }
+    ],
+    "3558": [
+      {
+        "quest_id": 275,
+        "name": "Blisters on The Land",
+        "faction": "alliance"
+      }
+    ],
+    "3559": [
+      {
+        "quest_id": 245,
+        "name": "Eight-Legged Menaces",
+        "faction": "alliance"
+      }
+    ],
+    "3560": [
+      {
+        "quest_id": 253,
+        "name": "Bride of the Embalmer",
+        "faction": "alliance"
+      }
+    ],
+    "3561": [
+      {
+        "quest_id": 471,
+        "name": "Apprentice's Duties",
+        "faction": "alliance"
+      }
+    ],
+    "3562": [
+      {
+        "quest_id": 378,
+        "name": "The Fury Runs Deep",
+        "faction": "alliance"
+      }
+    ],
+    "3565": [
+      {
+        "quest_id": 466,
+        "name": "Search for Incendicite",
+        "faction": "alliance"
+      }
+    ],
+    "3566": [
+      {
+        "quest_id": 296,
+        "name": "Ormer's Revenge",
+        "faction": "alliance"
+      }
+    ],
+    "3567": [
+      {
+        "quest_id": 150,
+        "name": "Murloc Poachers",
+        "faction": "alliance"
+      }
+    ],
+    "3570": [
+      {
+        "quest_id": 99,
+        "name": "Arugal's Folly",
+        "faction": "horde"
+      }
+    ],
+    "3572": [
+      {
+        "quest_id": 258,
+        "name": "A Hunter's Challenge",
+        "faction": "alliance"
+      }
+    ],
+    "3578": [
+      {
+        "quest_id": 9,
+        "name": "The Killing Fields",
+        "faction": "alliance"
+      }
+    ],
+    "3581": [
+      {
+        "quest_id": 491,
+        "name": "Wand to Bethor",
+        "faction": "horde"
+      }
+    ],
+    "3582": [
+      {
+        "quest_id": 451,
+        "name": "A Recipe For Death",
+        "faction": "horde"
+      }
+    ],
+    "3585": [
+      {
+        "quest_id": 480,
+        "name": "The Weaver",
+        "faction": "horde"
+      }
+    ],
+    "3586": [
+      {
+        "quest_id": 99,
+        "name": "Arugal's Folly",
+        "faction": "horde"
+      }
+    ],
+    "3733": [
+      {
+        "quest_id": 498,
+        "name": "The Rescue",
+        "faction": "horde"
+      }
+    ],
+    "3739": [
+      {
+        "quest_id": 546,
+        "name": "Souvenirs of Death",
+        "faction": "horde"
+      }
+    ],
+    "3741": [
+      {
+        "quest_id": 501,
+        "name": "Elixir of Pain",
+        "faction": "horde"
+      }
+    ],
+    "3742": [
+      {
+        "quest_id": 567,
+        "name": "Dangerous!",
+        "faction": "horde"
+      }
+    ],
+    "3743": [
+      {
+        "quest_id": 567,
+        "name": "Dangerous!",
+        "faction": "horde"
+      }
+    ],
+    "3747": [
+      {
+        "quest_id": 515,
+        "name": "Elixir of Agony",
+        "faction": "horde"
+      }
+    ],
+    "3749": [
+      {
+        "quest_id": 515,
+        "name": "Elixir of Agony",
+        "faction": "horde"
+      }
+    ],
+    "3750": [
+      {
+        "quest_id": 547,
+        "name": "Humbert's Sword",
+        "faction": "horde"
+      }
+    ],
+    "3751": [
+      {
+        "quest_id": 547,
+        "name": "Humbert's Sword",
+        "faction": "horde"
+      }
+    ],
+    "3752": [
+      {
+        "quest_id": 498,
+        "name": "The Rescue",
+        "faction": "horde"
+      }
+    ],
+    "3753": [
+      {
+        "quest_id": 564,
+        "name": "Costly Menace",
+        "faction": "alliance"
+      }
+    ],
+    "3754": [
+      {
+        "quest_id": 564,
+        "name": "Costly Menace",
+        "faction": "alliance"
+      }
+    ],
+    "3755": [
+      {
+        "quest_id": 562,
+        "name": "Stormwind Ho!",
+        "faction": "alliance"
+      }
+    ],
+    "3758": [
+      {
+        "quest_id": 505,
+        "name": "Syndicate Assassins",
+        "faction": "alliance"
+      }
+    ],
+    "3759": [
+      {
+        "quest_id": 505,
+        "name": "Syndicate Assassins",
+        "faction": "alliance"
+      }
+    ],
+    "3760": [
+      {
+        "quest_id": 550,
+        "name": "Battle of Hillsbrad",
+        "faction": "horde"
+      }
+    ],
+    "3761": [
+      {
+        "quest_id": 550,
+        "name": "Battle of Hillsbrad",
+        "faction": "horde"
+      }
+    ],
+    "3763": [
+      {
+        "quest_id": 504,
+        "name": "Crushridge Warmongers",
+        "faction": "alliance"
+      }
+    ],
+    "3764": [
+      {
+        "quest_id": 508,
+        "name": "Taretha's Gift",
+        "faction": "horde"
+      }
+    ],
+    "3765": [
+      {
+        "quest_id": 508,
+        "name": "Taretha's Gift",
+        "faction": "horde"
+      }
+    ],
+    "3822": [
+      {
+        "quest_id": 550,
+        "name": "Battle of Hillsbrad",
+        "faction": "horde"
+      }
+    ],
+    "4086": [
+      {
+        "quest_id": 705,
+        "name": "Pearl Diving",
+        "faction": "both"
+      }
+    ],
+    "4107": [
+      {
+        "quest_id": 188,
+        "name": "Tiger Mastery",
+        "faction": "both"
+      }
+    ],
+    "4108": [
+      {
+        "quest_id": 193,
+        "name": "Panther Mastery",
+        "faction": "both"
+      }
+    ],
+    "4109": [
+      {
+        "quest_id": 628,
+        "name": "Excelsior",
+        "faction": "both"
+      }
+    ],
+    "4112": [
+      {
+        "quest_id": 573,
+        "name": "Mok'thardin's Enchantment",
+        "faction": "horde"
+      }
+    ],
+    "4113": [
+      {
+        "quest_id": 348,
+        "name": "Stranglethorn Fever",
+        "faction": "both"
+      }
+    ],
+    "4114": [
+      {
+        "quest_id": 576,
+        "name": "Keep An Eye Out",
+        "faction": "both"
+      }
+    ],
+    "4115": [
+      {
+        "quest_id": 569,
+        "name": "The Defense of Grom'gol",
+        "faction": "horde"
+      }
+    ],
+    "4117": [
+      {
+        "quest_id": 617,
+        "name": "Akiris by the Bundle",
+        "faction": "both"
+      }
+    ],
+    "4118": [
+      {
+        "quest_id": 630,
+        "name": "Message in a Bottle",
+        "faction": "both"
+      }
+    ],
+    "4119": [
+      {
+        "quest_id": 197,
+        "name": "Raptor Mastery",
+        "faction": "both"
+      }
+    ],
+    "4120": [
+      {
+        "quest_id": 611,
+        "name": "The Curse of the Tides",
+        "faction": "alliance"
+      }
+    ],
+    "4121": [
+      {
+        "quest_id": 213,
+        "name": "Hostile Takeover",
+        "faction": "both"
+      }
+    ],
+    "4122": [
+      {
+        "quest_id": 328,
+        "name": "The Hidden Key",
+        "faction": "alliance"
+      }
+    ],
+    "4123": [
+      {
+        "quest_id": 331,
+        "name": "Report to Doren",
+        "faction": "alliance"
+      }
+    ],
+    "4124": [
+      {
+        "quest_id": 622,
+        "name": "Return to Corporal Kaleb",
+        "faction": "alliance"
+      }
+    ],
+    "4125": [
+      {
+        "quest_id": 206,
+        "name": "Mai'Zoth",
+        "faction": "alliance"
+      }
+    ],
+    "4126": [
+      {
+        "quest_id": 204,
+        "name": "Bad Medicine",
+        "faction": "alliance"
+      }
+    ],
+    "4127": [
+      {
+        "quest_id": 202,
+        "name": "Colonel Kurzen",
+        "faction": "alliance"
+      }
+    ],
+    "4128": [
+      {
+        "quest_id": 600,
+        "name": "Venture Company Mining",
+        "faction": "both"
+      }
+    ],
+    "4129": [
+      {
+        "quest_id": 613,
+        "name": "Cracking Maury's Foot",
+        "faction": "both"
+      }
+    ],
+    "4131": [
+      {
+        "quest_id": 621,
+        "name": "Zanzil's Secret",
+        "faction": "both"
+      }
+    ],
+    "4132": [
+      {
+        "quest_id": 582,
+        "name": "Headhunting",
+        "faction": "horde"
+      }
+    ],
+    "4133": [
+      {
+        "quest_id": 582,
+        "name": "Headhunting",
+        "faction": "horde"
+      }
+    ],
+    "4134": [
+      {
+        "quest_id": 592,
+        "name": "Saving Yenniku",
+        "faction": "horde"
+      }
+    ],
+    "4135": [
+      {
+        "quest_id": 596,
+        "name": "Bloody Bone Necklaces",
+        "faction": "horde"
+      }
+    ],
+    "4136": [
+      {
+        "quest_id": 598,
+        "name": "Split Bone Necklace",
+        "faction": "horde"
+      }
+    ],
+    "4137": [
+      {
+        "quest_id": 598,
+        "name": "Split Bone Necklace",
+        "faction": "horde"
+      }
+    ],
+    "4138": [
+      {
+        "quest_id": 608,
+        "name": "The Bloodsail Buccaneers",
+        "faction": "both"
+      }
+    ],
+    "4139": [
+      {
+        "quest_id": 331,
+        "name": "Report to Doren",
+        "faction": "alliance"
+      }
+    ],
+    "4140": [
+      {
+        "quest_id": 204,
+        "name": "Bad Medicine",
+        "faction": "alliance"
+      }
+    ],
+    "4430": [
+      {
+        "quest_id": 521,
+        "name": "The Crown of Will",
+        "faction": "horde"
+      }
+    ],
+    "4443": [
+      {
+        "quest_id": 1164,
+        "name": "To Steal From Thieves",
+        "faction": "horde"
+      }
+    ],
+    "4504": [
+      {
+        "quest_id": 633,
+        "name": "The Thandol Span",
+        "faction": "alliance"
+      }
+    ],
+    "4505": [
+      {
+        "quest_id": 633,
+        "name": "The Thandol Span",
+        "faction": "alliance"
+      }
+    ],
+    "4507": [
+      {
+        "quest_id": 646,
+        "name": "Trol'kalar",
+        "faction": "horde"
+      }
+    ],
+    "4508": [
+      {
+        "quest_id": 646,
+        "name": "Trol'kalar",
+        "faction": "horde"
+      }
+    ],
+    "4509": [
+      {
+        "quest_id": 664,
+        "name": "Drowned Sorrows",
+        "faction": "both"
+      }
+    ],
+    "4511": [
+      {
+        "quest_id": 662,
+        "name": "Deep Sea Salvage",
+        "faction": "both"
+      }
+    ],
+    "4534": [
+      {
+        "quest_id": 1013,
+        "name": "The Book of Ur",
+        "faction": "horde"
+      }
+    ],
+    "4535": [
+      {
+        "quest_id": 700,
+        "name": "A King's Tribute",
+        "faction": "alliance"
+      }
+    ],
+    "4543": [
+      {
+        "quest_id": 673,
+        "name": "Foul Magics",
+        "faction": "horde"
+      }
+    ],
+    "4545": [
+      {
+        "quest_id": 673,
+        "name": "Foul Magics",
+        "faction": "horde"
+      }
+    ],
+    "4547": [
+      {
+        "quest_id": 666,
+        "name": "Sunken Treasure",
+        "faction": "both"
+      }
+    ],
+    "4548": [
+      {
+        "quest_id": 666,
+        "name": "Sunken Treasure",
+        "faction": "both"
+      }
+    ],
+    "4549": [
+      {
+        "quest_id": 667,
+        "name": "Death From Below",
+        "faction": "both"
+      }
+    ],
+    "4550": [
+      {
+        "quest_id": 667,
+        "name": "Death From Below",
+        "faction": "both"
+      }
+    ],
+    "4652": [
+      {
+        "quest_id": 733,
+        "name": "Scrounging",
+        "faction": "alliance"
+      }
+    ],
+    "4653": [
+      {
+        "quest_id": 733,
+        "name": "Scrounging",
+        "faction": "alliance"
+      }
+    ],
+    "4741": [
+      {
+        "quest_id": 682,
+        "name": "Stromgarde Badges",
+        "faction": "alliance"
+      }
+    ],
+    "4743": [
+      {
+        "quest_id": 656,
+        "name": "Summoning the Princess",
+        "faction": "both"
+      }
+    ],
+    "4744": [
+      {
+        "quest_id": 684,
+        "name": "Wanted! Marez Cowl",
+        "faction": "alliance"
+      }
+    ],
+    "4745": [
+      {
+        "quest_id": 685,
+        "name": "Wanted! Otto and Falconcrest",
+        "faction": "alliance"
+      }
+    ],
+    "4746": [
+      {
+        "quest_id": 709,
+        "name": "Solution to Doom",
+        "faction": "both"
+      }
+    ],
+    "4909": [
+      {
+        "quest_id": 776,
+        "name": "Rites of the Earthmother",
+        "faction": "horde"
+      }
+    ],
+    "4939": [
+      {
+        "quest_id": 827,
+        "name": "Skull Rock",
+        "faction": "horde"
+      }
+    ],
+    "4947": [
+      {
+        "quest_id": 827,
+        "name": "Skull Rock",
+        "faction": "horde"
+      }
+    ],
+    "4948": [
+      {
+        "quest_id": 827,
+        "name": "Skull Rock",
+        "faction": "horde"
+      }
+    ],
+    "4964": [
+      {
+        "quest_id": 765,
+        "name": "Supervisor Fizsprocket",
+        "faction": "both"
+      }
+    ],
+    "4971": [
+      {
+        "quest_id": 770,
+        "name": "The Demon Scarred Cloak",
+        "faction": "horde"
+      }
+    ],
+    "4974": [
+      {
+        "quest_id": 765,
+        "name": "Supervisor Fizsprocket",
+        "faction": "horde"
+      }
+    ],
+    "4975": [
+      {
+        "quest_id": 697,
+        "name": "Malin's Request",
+        "faction": "alliance"
+      }
+    ],
+    "4976": [
+      {
+        "quest_id": 680,
+        "name": "The Real Threat",
+        "faction": "horde"
+      }
+    ],
+    "4977": [
+      {
+        "quest_id": 680,
+        "name": "The Real Threat",
+        "faction": "horde"
+      }
+    ],
+    "4978": [
+      {
+        "quest_id": 719,
+        "name": "A Dwarf and His Tools",
+        "faction": "alliance"
+      }
+    ],
+    "4979": [
+      {
+        "quest_id": 716,
+        "name": "Stone Is Better than Cloth",
+        "faction": "both"
+      }
+    ],
+    "4983": [
+      {
+        "quest_id": 739,
+        "name": "Murdaloc",
+        "faction": "alliance"
+      }
+    ],
+    "4984": [
+      {
+        "quest_id": 737,
+        "name": "Forbidden Knowledge",
+        "faction": "both"
+      }
+    ],
+    "4987": [
+      {
+        "quest_id": 762,
+        "name": "An Ambassador of Evil",
+        "faction": "alliance"
+      }
+    ],
+    "5240": [
+      {
+        "quest_id": 104,
+        "name": "The Coastal Menace",
+        "faction": "both"
+      }
+    ],
+    "5241": [
+      {
+        "quest_id": 297,
+        "name": "Gathering Idols",
+        "faction": "alliance"
+      }
+    ],
+    "5242": [
+      {
+        "quest_id": 99,
+        "name": "Arugal's Folly",
+        "faction": "horde"
+      }
+    ],
+    "5244": [
+      {
+        "quest_id": 223,
+        "name": "Worgen in the Woods",
+        "faction": "alliance"
+      }
+    ],
+    "5246": [
+      {
+        "quest_id": 296,
+        "name": "Ormer's Revenge",
+        "faction": "alliance"
+      }
+    ],
+    "5247": [
+      {
+        "quest_id": 685,
+        "name": "Wanted! Otto and Falconcrest",
+        "faction": "alliance"
+      }
+    ],
+    "5248": [
+      {
+        "quest_id": 705,
+        "name": "Pearl Diving",
+        "faction": "both"
+      }
+    ],
+    "5249": [
+      {
+        "quest_id": 504,
+        "name": "Crushridge Warmongers",
+        "faction": "alliance"
+      }
+    ],
+    "5250": [
+      {
+        "quest_id": 567,
+        "name": "Dangerous!",
+        "faction": "horde"
+      }
+    ],
+    "5252": [
+      {
+        "quest_id": 516,
+        "name": "Beren's Peril",
+        "faction": "horde"
+      }
+    ],
+    "5253": [
+      {
+        "quest_id": 600,
+        "name": "Venture Company Mining",
+        "faction": "both"
+      }
+    ],
+    "5274": [
+      {
+        "quest_id": 249,
+        "name": "Morganth",
+        "faction": "alliance"
+      }
+    ],
+    "5275": [
+      {
+        "quest_id": 872,
+        "name": "The Disruption Ends",
+        "faction": "horde"
+      }
+    ],
+    "5279": [
+      {
+        "quest_id": 876,
+        "name": "Serena Bloodfeather",
+        "faction": "horde"
+      }
+    ],
+    "5299": [
+      {
+        "quest_id": 913,
+        "name": "Cry of the Thunderhawk",
+        "faction": "horde"
+      }
+    ],
+    "5302": [
+      {
+        "quest_id": 913,
+        "name": "Cry of the Thunderhawk",
+        "faction": "horde"
+      }
+    ],
+    "5306": [
+      {
+        "quest_id": 913,
+        "name": "Cry of the Thunderhawk",
+        "faction": "horde"
+      }
+    ],
+    "5309": [
+      {
+        "quest_id": 891,
+        "name": "The Guns of Northwatch",
+        "faction": "horde"
+      }
+    ],
+    "5310": [
+      {
+        "quest_id": 891,
+        "name": "The Guns of Northwatch",
+        "faction": "horde"
+      }
+    ],
+    "5311": [
+      {
+        "quest_id": 898,
+        "name": "Free From the Hold",
+        "faction": "horde"
+      }
+    ],
+    "5312": [
+      {
+        "quest_id": 898,
+        "name": "Free From the Hold",
+        "faction": "horde"
+      }
+    ],
+    "5313": [
+      {
+        "quest_id": 849,
+        "name": "Revenge of Gann",
+        "faction": "horde"
+      }
+    ],
+    "5314": [
+      {
+        "quest_id": 899,
+        "name": "Consumed by Hatred",
+        "faction": "horde"
+      }
+    ],
+    "5315": [
+      {
+        "quest_id": 4740,
+        "name": "WANTED: Murkdeep!",
+        "faction": "alliance"
+      }
+    ],
+    "5316": [
+      {
+        "quest_id": 906,
+        "name": "Betrayal from Within",
+        "faction": "horde"
+      }
+    ],
+    "5317": [
+      {
+        "quest_id": 906,
+        "name": "Betrayal from Within",
+        "faction": "horde"
+      }
+    ],
+    "5318": [
+      {
+        "quest_id": 876,
+        "name": "Serena Bloodfeather",
+        "faction": "horde"
+      }
+    ],
+    "5320": [
+      {
+        "quest_id": 888,
+        "name": "Stolen Booty",
+        "faction": "both"
+      }
+    ],
+    "5321": [
+      {
+        "quest_id": 876,
+        "name": "Serena Bloodfeather",
+        "faction": "horde"
+      }
+    ],
+    "5322": [
+      {
+        "quest_id": 893,
+        "name": "Weapons of Choice",
+        "faction": "horde"
+      }
+    ],
+    "5324": [
+      {
+        "quest_id": 902,
+        "name": "Samophlange",
+        "faction": "both"
+      }
+    ],
+    "5325": [
+      {
+        "quest_id": 902,
+        "name": "Samophlange",
+        "faction": "both"
+      }
+    ],
+    "5326": [
+      {
+        "quest_id": 863,
+        "name": "The Escape",
+        "faction": "both"
+      }
+    ],
+    "5327": [
+      {
+        "quest_id": 863,
+        "name": "The Escape",
+        "faction": "both"
+      }
+    ],
+    "5328": [
+      {
+        "quest_id": 872,
+        "name": "The Disruption Ends",
+        "faction": "horde"
+      }
+    ],
+    "5337": [
+      {
+        "quest_id": 888,
+        "name": "Stolen Booty",
+        "faction": "both"
+      }
+    ],
+    "5340": [
+      {
+        "quest_id": 853,
+        "name": "Apothecary Zamah",
+        "faction": "horde"
+      }
+    ],
+    "5341": [
+      {
+        "quest_id": 866,
+        "name": "Root Samples",
+        "faction": "both"
+      }
+    ],
+    "5343": [
+      {
+        "quest_id": 865,
+        "name": "Raptor Horns",
+        "faction": "both"
+      }
+    ],
+    "5344": [
+      {
+        "quest_id": 855,
+        "name": "Centaur Bracers",
+        "faction": "horde"
+      }
+    ],
+    "5345": [
+      {
+        "quest_id": 855,
+        "name": "Centaur Bracers",
+        "faction": "horde"
+      }
+    ],
+    "5346": [
+      {
+        "quest_id": 855,
+        "name": "Centaur Bracers",
+        "faction": "horde"
+      }
+    ],
+    "5351": [
+      {
+        "quest_id": 852,
+        "name": "Hezrul Bloodmark",
+        "faction": "horde"
+      }
+    ],
+    "5355": [
+      {
+        "quest_id": 873,
+        "name": "Isha Awak",
+        "faction": "horde"
+      }
+    ],
+    "5356": [
+      {
+        "quest_id": 873,
+        "name": "Isha Awak",
+        "faction": "horde"
+      }
+    ],
+    "5357": [
+      {
+        "quest_id": 873,
+        "name": "Isha Awak",
+        "faction": "horde"
+      }
+    ],
+    "5387": [
+      {
+        "quest_id": 993,
+        "name": "A Lost Master",
+        "faction": "both"
+      }
+    ],
+    "5420": [
+      {
+        "quest_id": 924,
+        "name": "The Demon Seed",
+        "faction": "horde"
+      }
+    ],
+    "5459": [
+      {
+        "quest_id": 486,
+        "name": "Ursal the Mauler",
+        "faction": "alliance"
+      }
+    ],
+    "5587": [
+      {
+        "quest_id": 486,
+        "name": "Ursal the Mauler",
+        "faction": "alliance"
+      }
+    ],
+    "5604": [
+      {
+        "quest_id": 957,
+        "name": "Bashal'Aran",
+        "faction": "alliance"
+      }
+    ],
+    "5609": [
+      {
+        "quest_id": 994,
+        "name": "Escape Through Force",
+        "faction": "alliance"
+      }
+    ],
+    "5610": [
+      {
+        "quest_id": 947,
+        "name": "Cave Mushrooms",
+        "faction": "alliance"
+      }
+    ],
+    "5611": [
+      {
+        "quest_id": 963,
+        "name": "For Love Eternal",
+        "faction": "alliance"
+      }
+    ],
+    "5613": [
+      {
+        "quest_id": 973,
+        "name": "The Tower of Althalaxx",
+        "faction": "alliance"
+      }
+    ],
+    "5614": [
+      {
+        "quest_id": 981,
+        "name": "The Tower of Althalaxx",
+        "faction": "alliance"
+      }
+    ],
+    "5615": [
+      {
+        "quest_id": 951,
+        "name": "Mathystra Relics",
+        "faction": "alliance"
+      }
+    ],
+    "5617": [
+      {
+        "quest_id": 957,
+        "name": "Bashal'Aran",
+        "faction": "alliance"
+      }
+    ],
+    "5622": [
+      {
+        "quest_id": 973,
+        "name": "The Tower of Althalaxx",
+        "faction": "alliance"
+      }
+    ],
+    "5626": [
+      {
+        "quest_id": 943,
+        "name": "The Absent Minded Prospector",
+        "faction": "alliance"
+      }
+    ],
+    "5627": [
+      {
+        "quest_id": 943,
+        "name": "The Absent Minded Prospector",
+        "faction": "alliance"
+      }
+    ],
+    "5629": [
+      {
+        "quest_id": 741,
+        "name": "The Absent Minded Prospector",
+        "faction": "alliance"
+      }
+    ],
+    "5630": [
+      {
+        "quest_id": 741,
+        "name": "The Absent Minded Prospector",
+        "faction": "alliance"
+      }
+    ],
+    "5757": [
+      {
+        "quest_id": 951,
+        "name": "Mathystra Relics",
+        "faction": "alliance"
+      }
+    ],
+    "5812": [
+      {
+        "quest_id": 1009,
+        "name": "Ruuzel",
+        "faction": "alliance"
+      }
+    ],
+    "5813": [
+      {
+        "quest_id": 1012,
+        "name": "Insane Druids",
+        "faction": "alliance"
+      }
+    ],
+    "5814": [
+      {
+        "quest_id": 1035,
+        "name": "Fallen Sky Lake",
+        "faction": "alliance"
+      }
+    ],
+    "5815": [
+      {
+        "quest_id": 1046,
+        "name": "Raene's Cleansing",
+        "faction": "alliance"
+      }
+    ],
+    "5817": [
+      {
+        "quest_id": 1044,
+        "name": "Answered Questions",
+        "faction": "alliance"
+      }
+    ],
+    "5818": [
+      {
+        "quest_id": 1044,
+        "name": "Answered Questions",
+        "faction": "alliance"
+      }
+    ],
+    "5820": [
+      {
+        "quest_id": 1031,
+        "name": "The Branch of Cenarius",
+        "faction": "alliance"
+      }
+    ],
+    "5944": [
+      {
+        "quest_id": 153,
+        "name": "Red Leather Bandanas",
+        "faction": "alliance"
+      }
+    ],
+    "6084": [
+      {
+        "quest_id": 176,
+        "name": "Wanted: \"Hogger\"",
+        "faction": "alliance"
+      }
+    ],
+    "6085": [
+      {
+        "quest_id": 176,
+        "name": "Wanted: \"Hogger\"",
+        "faction": "alliance"
+      }
+    ],
+    "6087": [
+      {
+        "quest_id": 166,
+        "name": "The Defias Brotherhood",
+        "faction": "alliance"
+      }
+    ],
+    "6092": [
+      {
+        "quest_id": 122,
+        "name": "Underbelly Scales",
+        "faction": "alliance"
+      }
+    ],
+    "6093": [
+      {
+        "quest_id": 19,
+        "name": "Tharil'zun",
+        "faction": "alliance"
+      }
+    ],
+    "6094": [
+      {
+        "quest_id": 214,
+        "name": "Red Silk Bandanas",
+        "faction": "alliance"
+      }
+    ],
+    "6095": [
+      {
+        "quest_id": 346,
+        "name": "Return to Kristoff",
+        "faction": "alliance"
+      }
+    ],
+    "6186": [
+      {
+        "quest_id": 297,
+        "name": "Gathering Idols",
+        "faction": "alliance"
+      }
+    ],
+    "6187": [
+      {
+        "quest_id": 217,
+        "name": "In Defense of the King's Lands",
+        "faction": "alliance"
+      }
+    ],
+    "6188": [
+      {
+        "quest_id": 309,
+        "name": "Protecting the Shipment",
+        "faction": "alliance"
+      }
+    ],
+    "6191": [
+      {
+        "quest_id": 256,
+        "name": "WANTED: Chok'sul",
+        "faction": "alliance"
+      }
+    ],
+    "6194": [
+      {
+        "quest_id": 474,
+        "name": "Defeat Nek'rosh",
+        "faction": "alliance"
+      }
+    ],
+    "6215": [
+      {
+        "quest_id": 176,
+        "name": "Wanted: \"Hogger\"",
+        "faction": "alliance"
+      }
+    ],
+    "6223": [
+      {
+        "quest_id": 253,
+        "name": "Bride of the Embalmer",
+        "faction": "alliance"
+      }
+    ],
+    "6282": [
+      {
+        "quest_id": 550,
+        "name": "Battle of Hillsbrad",
+        "faction": "horde"
+      }
+    ],
+    "6335": [
+      {
+        "quest_id": 1013,
+        "name": "The Book of Ur",
+        "faction": "horde"
+      }
+    ],
+    "6414": [
+      {
+        "quest_id": 1014,
+        "name": "Arugal Must Die",
+        "faction": "horde"
+      }
+    ],
+    "6477": [
+      {
+        "quest_id": 899,
+        "name": "Consumed by Hatred",
+        "faction": "horde"
+      }
+    ],
+    "6480": [
+      {
+        "quest_id": 1486,
+        "name": "Deviate Hides",
+        "faction": "both"
+      }
+    ],
+    "6481": [
+      {
+        "quest_id": 1487,
+        "name": "Deviate Eradication",
+        "faction": "both"
+      }
+    ],
+    "6482": [
+      {
+        "quest_id": 501,
+        "name": "Elixir of Pain",
+        "faction": "horde"
+      }
+    ],
+    "6502": [
+      {
+        "quest_id": 868,
+        "name": "Egg Hunt",
+        "faction": "horde"
+      }
+    ],
+    "6503": [
+      {
+        "quest_id": 868,
+        "name": "Egg Hunt",
+        "faction": "horde"
+      }
+    ],
+    "6504": [
+      {
+        "quest_id": 914,
+        "name": "Leaders of the Fang",
+        "faction": "horde"
+      }
+    ],
+    "6505": [
+      {
+        "quest_id": 914,
+        "name": "Leaders of the Fang",
+        "faction": "horde"
+      }
+    ],
+    "6659": [
+      {
+        "quest_id": 995,
+        "name": "Escape Through Stealth",
+        "faction": "alliance"
+      }
+    ],
+    "6664": [
+      {
+        "quest_id": 1058,
+        "name": "Jin'Zil's Forest Magic",
+        "faction": "horde"
+      }
+    ],
+    "6665": [
+      {
+        "quest_id": 1058,
+        "name": "Jin'Zil's Forest Magic",
+        "faction": "horde"
+      }
+    ],
+    "6666": [
+      {
+        "quest_id": 1092,
+        "name": "Gerenzo's Orders",
+        "faction": "both"
+      }
+    ],
+    "6667": [
+      {
+        "quest_id": 1096,
+        "name": "Gerenzo Wrenchwhistle",
+        "faction": "both"
+      }
+    ],
+    "6668": [
+      {
+        "quest_id": 1096,
+        "name": "Gerenzo Wrenchwhistle",
+        "faction": "both"
+      }
+    ],
+    "6669": [
+      {
+        "quest_id": 1089,
+        "name": "The Den",
+        "faction": "horde"
+      }
+    ],
+    "6670": [
+      {
+        "quest_id": 1089,
+        "name": "The Den",
+        "faction": "horde"
+      }
+    ],
+    "6671": [
+      {
+        "quest_id": 1089,
+        "name": "The Den",
+        "faction": "horde"
+      }
+    ],
+    "6675": [
+      {
+        "quest_id": 1059,
+        "name": "Reclaiming the Charred Vale",
+        "faction": "alliance"
+      }
+    ],
+    "6676": [
+      {
+        "quest_id": 1059,
+        "name": "Reclaiming the Charred Vale",
+        "faction": "alliance"
+      }
+    ],
+    "6677": [
+      {
+        "quest_id": 1078,
+        "name": "Retrieval for Mauren",
+        "faction": "alliance"
+      }
+    ],
+    "6678": [
+      {
+        "quest_id": 1081,
+        "name": "Reception from Tyrande",
+        "faction": "alliance"
+      }
+    ],
+    "6719": [
+      {
+        "quest_id": 1135,
+        "name": "Highperch Venom",
+        "faction": "alliance"
+      }
+    ],
+    "6720": [
+      {
+        "quest_id": 1136,
+        "name": "Frostmaw",
+        "faction": "horde"
+      }
+    ],
+    "6721": [
+      {
+        "quest_id": 976,
+        "name": "Supplies to Auberdine",
+        "faction": "alliance"
+      }
+    ],
+    "6722": [
+      {
+        "quest_id": 1035,
+        "name": "Fallen Sky Lake",
+        "faction": "alliance"
+      }
+    ],
+    "6726": [
+      {
+        "quest_id": 1189,
+        "name": "Safety First",
+        "faction": "both"
+      }
+    ],
+    "6727": [
+      {
+        "quest_id": 1189,
+        "name": "Safety First",
+        "faction": "both"
+      }
+    ],
+    "6729": [
+      {
+        "quest_id": 1137,
+        "name": "News for Fizzle",
+        "faction": "both"
+      }
+    ],
+    "6732": [
+      {
+        "quest_id": 1137,
+        "name": "News for Fizzle",
+        "faction": "both"
+      }
+    ],
+    "6737": [
+      {
+        "quest_id": 1184,
+        "name": "Parts of the Swarm",
+        "faction": "horde"
+      }
+    ],
+    "6738": [
+      {
+        "quest_id": 1184,
+        "name": "Parts of the Swarm",
+        "faction": "horde"
+      }
+    ],
+    "6739": [
+      {
+        "quest_id": 1197,
+        "name": "The Sacred Flame",
+        "faction": "horde"
+      }
+    ],
+    "6740": [
+      {
+        "quest_id": 1197,
+        "name": "The Sacred Flame",
+        "faction": "horde"
+      }
+    ],
+    "6743": [
+      {
+        "quest_id": 971,
+        "name": "Knowledge in the Deeps",
+        "faction": "alliance"
+      }
+    ],
+    "6744": [
+      {
+        "quest_id": 1436,
+        "name": "Alliance Relations",
+        "faction": "horde"
+      }
+    ],
+    "6745": [
+      {
+        "quest_id": 1436,
+        "name": "Alliance Relations",
+        "faction": "horde"
+      }
+    ],
+    "6746": [
+      {
+        "quest_id": 1488,
+        "name": "The Corrupter",
+        "faction": "horde"
+      }
+    ],
+    "6747": [
+      {
+        "quest_id": 1488,
+        "name": "The Corrupter",
+        "faction": "horde"
+      }
+    ],
+    "6748": [
+      {
+        "quest_id": 1144,
+        "name": "Willix the Importer",
+        "faction": "both"
+      }
+    ],
+    "6750": [
+      {
+        "quest_id": 1144,
+        "name": "Willix the Importer",
+        "faction": "both"
+      }
+    ],
+    "6752": [
+      {
+        "quest_id": 1142,
+        "name": "Mortality Wanes",
+        "faction": "alliance"
+      }
+    ],
+    "6757": [
+      {
+        "quest_id": 1267,
+        "name": "The Missing Diplomat",
+        "faction": "alliance"
+      }
+    ],
+    "6773": [
+      {
+        "quest_id": 1380,
+        "name": "Khan Hratha",
+        "faction": "both"
+      }
+    ],
+    "6774": [
+      {
+        "quest_id": 1380,
+        "name": "Khan Hratha",
+        "faction": "both"
+      }
+    ],
+    "6780": [
+      {
+        "quest_id": 1366,
+        "name": "Centaur Bounty",
+        "faction": "horde"
+      }
+    ],
+    "6784": [
+      {
+        "quest_id": 1366,
+        "name": "Centaur Bounty",
+        "faction": "horde"
+      }
+    ],
+    "6788": [
+      {
+        "quest_id": 1381,
+        "name": "Khan Hratha",
+        "faction": "both"
+      }
+    ],
+    "6789": [
+      {
+        "quest_id": 1381,
+        "name": "Khan Hratha",
+        "faction": "both"
+      }
+    ],
+    "6790": [
+      {
+        "quest_id": 1387,
+        "name": "Centaur Bounty",
+        "faction": "alliance"
+      }
+    ],
+    "6791": [
+      {
+        "quest_id": 1457,
+        "name": "The Karnitol Shipwreck",
+        "faction": "alliance"
+      }
+    ],
+    "6792": [
+      {
+        "quest_id": 1457,
+        "name": "The Karnitol Shipwreck",
+        "faction": "alliance"
+      }
+    ],
+    "6793": [
+      {
+        "quest_id": 1467,
+        "name": "Reagents for Reclaimers Inc.",
+        "faction": "alliance"
+      }
+    ],
+    "6794": [
+      {
+        "quest_id": 1467,
+        "name": "Reagents for Reclaimers Inc.",
+        "faction": "alliance"
+      }
+    ],
+    "6797": [
+      {
+        "quest_id": 1273,
+        "name": "Questioning Reethe",
+        "faction": "horde"
+      }
+    ],
+    "6798": [
+      {
+        "quest_id": 1273,
+        "name": "Questioning Reethe",
+        "faction": "horde"
+      }
+    ],
+    "6801": [
+      {
+        "quest_id": 1258,
+        "name": "... and Bugs",
+        "faction": "alliance"
+      }
+    ],
+    "6828": [
+      {
+        "quest_id": 1393,
+        "name": "Galen's Escape",
+        "faction": "both"
+      }
+    ],
+    "6829": [
+      {
+        "quest_id": 1053,
+        "name": "In the Name of the Light",
+        "faction": "alliance"
+      }
+    ],
+    "6830": [
+      {
+        "quest_id": 1053,
+        "name": "In the Name of the Light",
+        "faction": "alliance"
+      }
+    ],
+    "6831": [
+      {
+        "quest_id": 1053,
+        "name": "In the Name of the Light",
+        "faction": "alliance"
+      }
+    ],
+    "6832": [
+      {
+        "quest_id": 1383,
+        "name": "Nothing But The Truth",
+        "faction": "horde"
+      }
+    ],
+    "6898": [
+      {
+        "quest_id": 1740,
+        "name": "The Orb of Soran'ruk",
+        "faction": "both"
+      }
+    ],
+    "6900": [
+      {
+        "quest_id": 4786,
+        "name": "The Completed Robe",
+        "faction": "both"
+      }
+    ],
+    "6953": [
+      {
+        "quest_id": 1806,
+        "name": "The Test of Righteousness",
+        "faction": "alliance"
+      }
+    ],
+    "6966": [
+      {
+        "quest_id": 1693,
+        "name": "Weapons of Elunite",
+        "faction": "alliance"
+      }
+    ],
+    "6967": [
+      {
+        "quest_id": 1693,
+        "name": "Weapons of Elunite",
+        "faction": "alliance"
+      }
+    ],
+    "6968": [
+      {
+        "quest_id": 1693,
+        "name": "Weapons of Elunite",
+        "faction": "alliance"
+      }
+    ],
+    "6969": [
+      {
+        "quest_id": 1693,
+        "name": "Weapons of Elunite",
+        "faction": "alliance"
+      }
+    ],
+    "6970": [
+      {
+        "quest_id": 1702,
+        "name": "The Shieldsmith",
+        "faction": "alliance"
+      }
+    ],
+    "6971": [
+      {
+        "quest_id": 1706,
+        "name": "Grimand's Armor",
+        "faction": "alliance"
+      }
+    ],
+    "6972": [
+      {
+        "quest_id": 1782,
+        "name": "Furen's Armor",
+        "faction": "alliance"
+      }
+    ],
+    "6973": [
+      {
+        "quest_id": 1711,
+        "name": "Mathiel's Armor",
+        "faction": "alliance"
+      }
+    ],
+    "6974": [
+      {
+        "quest_id": 1709,
+        "name": "Klockmort's Creation",
+        "faction": "alliance"
+      }
+    ],
+    "6975": [
+      {
+        "quest_id": 1792,
+        "name": "Whirlwind Weapon",
+        "faction": "both"
+      }
+    ],
+    "6976": [
+      {
+        "quest_id": 1792,
+        "name": "Whirlwind Weapon",
+        "faction": "both"
+      }
+    ],
+    "6977": [
+      {
+        "quest_id": 1792,
+        "name": "Whirlwind Weapon",
+        "faction": "both"
+      }
+    ],
+    "6978": [
+      {
+        "quest_id": 1682,
+        "name": "Grey Iron Weapons",
+        "faction": "alliance"
+      }
+    ],
+    "6979": [
+      {
+        "quest_id": 1667,
+        "name": "Dead-tooth Jack",
+        "faction": "alliance"
+      }
+    ],
+    "6980": [
+      {
+        "quest_id": 1667,
+        "name": "Dead-tooth Jack",
+        "faction": "alliance"
+      }
+    ],
+    "6981": [
+      {
+        "quest_id": 1682,
+        "name": "Grey Iron Weapons",
+        "faction": "alliance"
+      }
+    ],
+    "6982": [
+      {
+        "quest_id": 1682,
+        "name": "Grey Iron Weapons",
+        "faction": "alliance"
+      }
+    ],
+    "6983": [
+      {
+        "quest_id": 1667,
+        "name": "Dead-tooth Jack",
+        "faction": "alliance"
+      }
+    ],
+    "6984": [
+      {
+        "quest_id": 1682,
+        "name": "Grey Iron Weapons",
+        "faction": "alliance"
+      }
+    ],
+    "6985": [
+      {
+        "quest_id": 1667,
+        "name": "Dead-tooth Jack",
+        "faction": "alliance"
+      }
+    ],
+    "6998": [
+      {
+        "quest_id": 1199,
+        "name": "Twilight Falls",
+        "faction": "alliance"
+      }
+    ],
+    "7000": [
+      {
+        "quest_id": 1199,
+        "name": "Twilight Falls",
+        "faction": "alliance"
+      }
+    ],
+    "7003": [
+      {
+        "quest_id": 1275,
+        "name": "Researching the Corruption",
+        "faction": "alliance"
+      }
+    ],
+    "7004": [
+      {
+        "quest_id": 1275,
+        "name": "Researching the Corruption",
+        "faction": "alliance"
+      }
+    ],
+    "7106": [
+      {
+        "quest_id": 181,
+        "name": "Look To The Stars",
+        "faction": "alliance"
+      }
+    ],
+    "7107": [
+      {
+        "quest_id": 181,
+        "name": "Look To The Stars",
+        "faction": "alliance"
+      }
+    ],
+    "7115": [
+      {
+        "quest_id": 1822,
+        "name": "Heirloom Weapon",
+        "faction": "horde"
+      }
+    ],
+    "7116": [
+      {
+        "quest_id": 1822,
+        "name": "Heirloom Weapon",
+        "faction": "horde"
+      }
+    ],
+    "7117": [
+      {
+        "quest_id": 1822,
+        "name": "Heirloom Weapon",
+        "faction": "horde"
+      }
+    ],
+    "7118": [
+      {
+        "quest_id": 1822,
+        "name": "Heirloom Weapon",
+        "faction": "horde"
+      }
+    ],
+    "7120": [
+      {
+        "quest_id": 1824,
+        "name": "Trial at the Field of Giants",
+        "faction": "horde"
+      }
+    ],
+    "7129": [
+      {
+        "quest_id": 1843,
+        "name": "Brutal Gauntlets",
+        "faction": "horde"
+      }
+    ],
+    "7130": [
+      {
+        "quest_id": 1845,
+        "name": "Brutal Helm",
+        "faction": "horde"
+      }
+    ],
+    "7132": [
+      {
+        "quest_id": 1847,
+        "name": "Brutal Legguards",
+        "faction": "horde"
+      }
+    ],
+    "7133": [
+      {
+        "quest_id": 1848,
+        "name": "Brutal Hauberk",
+        "faction": "horde"
+      }
+    ],
+    "7229": [
+      {
+        "quest_id": 957,
+        "name": "Bashal'Aran",
+        "faction": "alliance"
+      }
+    ],
+    "7326": [
+      {
+        "quest_id": 1503,
+        "name": "Forged Steel",
+        "faction": "horde"
+      }
+    ],
+    "7327": [
+      {
+        "quest_id": 1503,
+        "name": "Forged Steel",
+        "faction": "horde"
+      }
+    ],
+    "7328": [
+      {
+        "quest_id": 1503,
+        "name": "Forged Steel",
+        "faction": "horde"
+      }
+    ],
+    "7329": [
+      {
+        "quest_id": 1503,
+        "name": "Forged Steel",
+        "faction": "horde"
+      }
+    ],
+    "7334": [
+      {
+        "quest_id": 1081,
+        "name": "Reception from Tyrande",
+        "faction": "alliance"
+      }
+    ],
+    "7335": [
+      {
+        "quest_id": 1081,
+        "name": "Reception from Tyrande",
+        "faction": "alliance"
+      }
+    ],
+    "7336": [
+      {
+        "quest_id": 1081,
+        "name": "Reception from Tyrande",
+        "faction": "alliance"
+      }
+    ],
+    "7344": [
+      {
+        "quest_id": 55,
+        "name": "Morbent Fel",
+        "faction": "alliance"
+      }
+    ],
+    "7509": [
+      {
+        "quest_id": 1941,
+        "name": "Manaweave Robe",
+        "faction": "alliance"
+      }
+    ],
+    "7510": [
+      {
+        "quest_id": 1962,
+        "name": "Spellfire Robes",
+        "faction": "horde"
+      }
+    ],
+    "7511": [
+      {
+        "quest_id": 1942,
+        "name": "Astral Knot Garment",
+        "faction": "alliance"
+      }
+    ],
+    "7512": [
+      {
+        "quest_id": 1946,
+        "name": "Nether-lace Garment",
+        "faction": "horde"
+      }
+    ],
+    "7513": [
+      {
+        "quest_id": 1952,
+        "name": "Mage's Wand",
+        "faction": "both"
+      }
+    ],
+    "7514": [
+      {
+        "quest_id": 1952,
+        "name": "Mage's Wand",
+        "faction": "both"
+      }
+    ],
+    "7515": [
+      {
+        "quest_id": 1958,
+        "name": "Celestial Power",
+        "faction": "both"
+      }
+    ],
+    "7606": [
+      {
+        "quest_id": 2040,
+        "name": "Underground Assault",
+        "faction": "alliance"
+      }
+    ],
+    "7607": [
+      {
+        "quest_id": 2040,
+        "name": "Underground Assault",
+        "faction": "alliance"
+      }
+    ],
+    "7738": [
+      {
+        "quest_id": 2139,
+        "name": "Tharnariun's Hope",
+        "faction": "alliance"
+      }
+    ],
+    "7739": [
+      {
+        "quest_id": 2139,
+        "name": "Tharnariun's Hope",
+        "faction": "alliance"
+      }
+    ],
+    "7746": [
+      {
+        "quest_id": 1050,
+        "name": "Mythology of the Titans",
+        "faction": "alliance"
+      }
+    ],
+    "7749": [
+      {
+        "quest_id": 1049,
+        "name": "Compendium of the Fallen",
+        "faction": "both"
+      }
+    ],
+    "8071": [
+      {
+        "quest_id": 1487,
+        "name": "Deviate Eradication",
+        "faction": "both"
+      }
+    ],
+    "8703": [
+      {
+        "quest_id": 2765,
+        "name": "Expert Blacksmith!",
+        "faction": "both"
+      }
+    ],
+    "9515": [
+      {
+        "quest_id": 1946,
+        "name": "Nether-lace Garment",
+        "faction": "horde"
+      }
+    ],
+    "9516": [
+      {
+        "quest_id": 1942,
+        "name": "Astral Knot Garment",
+        "faction": "alliance"
+      }
+    ],
+    "9517": [
+      {
+        "quest_id": 1958,
+        "name": "Celestial Power",
+        "faction": "both"
+      }
+    ],
+    "9518": [
+      {
+        "quest_id": 1177,
+        "name": "Hungry!",
+        "faction": "both"
+      }
+    ],
+    "9519": [
+      {
+        "quest_id": 1177,
+        "name": "Hungry!",
+        "faction": "both"
+      }
+    ],
+    "9520": [
+      {
+        "quest_id": 679,
+        "name": "Call to Arms",
+        "faction": "horde"
+      }
+    ],
+    "9521": [
+      {
+        "quest_id": 679,
+        "name": "Call to Arms",
+        "faction": "horde"
+      }
+    ],
+    "9522": [
+      {
+        "quest_id": 2418,
+        "name": "Power Stones",
+        "faction": "both"
+      }
+    ],
+    "9527": [
+      {
+        "quest_id": 2846,
+        "name": "Tiara of the Deep",
+        "faction": "both"
+      }
+    ],
+    "9531": [
+      {
+        "quest_id": 2846,
+        "name": "Tiara of the Deep",
+        "faction": "both"
+      }
+    ],
+    "9533": [
+      {
+        "quest_id": 2768,
+        "name": "Divino-matic Rod",
+        "faction": "both"
+      }
+    ],
+    "9534": [
+      {
+        "quest_id": 2768,
+        "name": "Divino-matic Rod",
+        "faction": "both"
+      }
+    ],
+    "9538": [
+      {
+        "quest_id": 2948,
+        "name": "Gnome Improvement",
+        "faction": "alliance"
+      }
+    ],
+    "9598": [
+      {
+        "quest_id": 2561,
+        "name": "Druid of the Claw",
+        "faction": "alliance"
+      }
+    ],
+    "9599": [
+      {
+        "quest_id": 483,
+        "name": "The Relics of Wakening",
+        "faction": "alliance"
+      }
+    ],
+    "9603": [
+      {
+        "quest_id": 483,
+        "name": "The Relics of Wakening",
+        "faction": "alliance"
+      }
+    ],
+    "9604": [
+      {
+        "quest_id": 2930,
+        "name": "Data Rescue",
+        "faction": "alliance"
+      }
+    ],
+    "9605": [
+      {
+        "quest_id": 2930,
+        "name": "Data Rescue",
+        "faction": "alliance"
+      }
+    ],
+    "9607": [
+      {
+        "quest_id": 1652,
+        "name": "The Tome of Valor",
+        "faction": "alliance"
+      }
+    ],
+    "9608": [
+      {
+        "quest_id": 2928,
+        "name": "Gyrodrillmatic Excavationators",
+        "faction": "alliance"
+      }
+    ],
+    "9609": [
+      {
+        "quest_id": 2928,
+        "name": "Gyrodrillmatic Excavationators",
+        "faction": "alliance"
+      }
+    ],
+    "9630": [
+      {
+        "quest_id": 2821,
+        "name": "The Mark of Quality",
+        "faction": "alliance"
+      }
+    ],
+    "9631": [
+      {
+        "quest_id": 2821,
+        "name": "The Mark of Quality",
+        "faction": "alliance"
+      }
+    ],
+    "9632": [
+      {
+        "quest_id": 2822,
+        "name": "The Mark of Quality",
+        "faction": "horde"
+      }
+    ],
+    "9633": [
+      {
+        "quest_id": 2822,
+        "name": "The Mark of Quality",
+        "faction": "horde"
+      }
+    ],
+    "9634": [
+      {
+        "quest_id": 864,
+        "name": "Return to Apothecary Zinge",
+        "faction": "horde"
+      }
+    ],
+    "9635": [
+      {
+        "quest_id": 864,
+        "name": "Return to Apothecary Zinge",
+        "faction": "horde"
+      }
+    ],
+    "9636": [
+      {
+        "quest_id": 2874,
+        "name": "Deliver to MacKinley",
+        "faction": "both"
+      }
+    ],
+    "9637": [
+      {
+        "quest_id": 2874,
+        "name": "Deliver to MacKinley",
+        "faction": "both"
+      }
+    ],
+    "9638": [
+      {
+        "quest_id": 1560,
+        "name": "Tooga's Quest",
+        "faction": "both"
+      }
+    ],
+    "9642": [
+      {
+        "quest_id": 1560,
+        "name": "Tooga's Quest",
+        "faction": "both"
+      }
+    ],
+    "9643": [
+      {
+        "quest_id": 648,
+        "name": "Rescue OOX-17/TN!",
+        "faction": "both"
+      }
+    ],
+    "9644": [
+      {
+        "quest_id": 648,
+        "name": "Rescue OOX-17/TN!",
+        "faction": "both"
+      }
+    ],
+    "9645": [
+      {
+        "quest_id": 836,
+        "name": "Rescue OOX-09/HL!",
+        "faction": "both"
+      }
+    ],
+    "9646": [
+      {
+        "quest_id": 836,
+        "name": "Rescue OOX-09/HL!",
+        "faction": "both"
+      }
+    ],
+    "9647": [
+      {
+        "quest_id": 2767,
+        "name": "Rescue OOX-22/FE!",
+        "faction": "both"
+      }
+    ],
+    "9648": [
+      {
+        "quest_id": 2767,
+        "name": "Rescue OOX-22/FE!",
+        "faction": "both"
+      }
+    ],
+    "9649": [
+      {
+        "quest_id": 2938,
+        "name": "Venom to the Undercity",
+        "faction": "horde"
+      }
+    ],
+    "9650": [
+      {
+        "quest_id": 2938,
+        "name": "Venom to the Undercity",
+        "faction": "horde"
+      }
+    ],
+    "9651": [
+      {
+        "quest_id": 2994,
+        "name": "Saving Sharpbeak",
+        "faction": "alliance"
+      }
+    ],
+    "9652": [
+      {
+        "quest_id": 2994,
+        "name": "Saving Sharpbeak",
+        "faction": "alliance"
+      }
+    ],
+    "9654": [
+      {
+        "quest_id": 2942,
+        "name": "The Morrow Stone",
+        "faction": "alliance"
+      }
+    ],
+    "9655": [
+      {
+        "quest_id": 2942,
+        "name": "The Morrow Stone",
+        "faction": "alliance"
+      }
+    ],
+    "9656": [
+      {
+        "quest_id": 2845,
+        "name": "Wandering Shay",
+        "faction": "alliance"
+      }
+    ],
+    "9657": [
+      {
+        "quest_id": 2845,
+        "name": "Wandering Shay",
+        "faction": "alliance"
+      }
+    ],
+    "9658": [
+      {
+        "quest_id": 2987,
+        "name": "Gordunni Cobalt",
+        "faction": "horde"
+      }
+    ],
+    "9660": [
+      {
+        "quest_id": 2987,
+        "name": "Gordunni Cobalt",
+        "faction": "horde"
+      }
+    ],
+    "9661": [
+      {
+        "quest_id": 2903,
+        "name": "The Battle Plans",
+        "faction": "horde"
+      }
+    ],
+    "9662": [
+      {
+        "quest_id": 2903,
+        "name": "The Battle Plans",
+        "faction": "horde"
+      }
+    ],
+    "9663": [
+      {
+        "quest_id": 2871,
+        "name": "Delivering the Relic",
+        "faction": "alliance"
+      }
+    ],
+    "9664": [
+      {
+        "quest_id": 2871,
+        "name": "Delivering the Relic",
+        "faction": "alliance"
+      }
+    ],
+    "9665": [
+      {
+        "quest_id": 3062,
+        "name": "Dark Heart",
+        "faction": "horde"
+      }
+    ],
+    "9666": [
+      {
+        "quest_id": 3062,
+        "name": "Dark Heart",
+        "faction": "horde"
+      }
+    ],
+    "9678": [
+      {
+        "quest_id": 1427,
+        "name": "Threat From the Sea",
+        "faction": "horde"
+      }
+    ],
+    "9679": [
+      {
+        "quest_id": 1427,
+        "name": "Threat From the Sea",
+        "faction": "horde"
+      }
+    ],
+    "9680": [
+      {
+        "quest_id": 1427,
+        "name": "Threat From the Sea",
+        "faction": "horde"
+      }
+    ],
+    "9682": [
+      {
+        "quest_id": 1430,
+        "name": "Fresh Meat",
+        "faction": "horde"
+      }
+    ],
+    "9683": [
+      {
+        "quest_id": 3129,
+        "name": "Weapons of Spirit",
+        "faction": "horde"
+      }
+    ],
+    "9684": [
+      {
+        "quest_id": 3129,
+        "name": "Weapons of Spirit",
+        "faction": "horde"
+      }
+    ],
+    "9686": [
+      {
+        "quest_id": 3129,
+        "name": "Weapons of Spirit",
+        "faction": "horde"
+      }
+    ],
+    "9687": [
+      {
+        "quest_id": 1440,
+        "name": "Return to Vahlarriel",
+        "faction": "alliance"
+      }
+    ],
+    "9698": [
+      {
+        "quest_id": 1440,
+        "name": "Return to Vahlarriel",
+        "faction": "alliance"
+      }
+    ],
+    "9699": [
+      {
+        "quest_id": 1440,
+        "name": "Return to Vahlarriel",
+        "faction": "alliance"
+      }
+    ],
+    "9703": [
+      {
+        "quest_id": 1169,
+        "name": "Identifying the Brood",
+        "faction": "horde"
+      }
+    ],
+    "9704": [
+      {
+        "quest_id": 1169,
+        "name": "Identifying the Brood",
+        "faction": "horde"
+      }
+    ],
+    "9705": [
+      {
+        "quest_id": 1168,
+        "name": "Army of the Black Dragon",
+        "faction": "horde"
+      }
+    ],
+    "9706": [
+      {
+        "quest_id": 1168,
+        "name": "Army of the Black Dragon",
+        "faction": "horde"
+      }
+    ],
+    "10043": [
+      {
+        "quest_id": 981,
+        "name": "The Tower of Althalaxx",
+        "faction": "alliance"
+      }
+    ],
+    "10358": [
+      {
+        "quest_id": 2418,
+        "name": "Power Stones",
+        "faction": "both"
+      }
+    ],
+    "10359": [
+      {
+        "quest_id": 2418,
+        "name": "Power Stones",
+        "faction": "both"
+      }
+    ],
+    "10418": [
+      {
+        "quest_id": 3321,
+        "name": "Did You Lose This?",
+        "faction": "both"
+      }
+    ],
+    "10461": [
+      {
+        "quest_id": 3379,
+        "name": "Shadoweaver",
+        "faction": "both"
+      }
+    ],
+    "10462": [
+      {
+        "quest_id": 3385,
+        "name": "The Undermarket",
+        "faction": "both"
+      }
+    ],
+    "10549": [
+      {
+        "quest_id": 314,
+        "name": "Protecting the Herd",
+        "faction": "alliance"
+      }
+    ],
+    "10637": [
+      {
+        "quest_id": 1358,
+        "name": "Sample for Helbrim",
+        "faction": "horde"
+      }
+    ],
+    "10638": [
+      {
+        "quest_id": 1358,
+        "name": "Sample for Helbrim",
+        "faction": "horde"
+      }
+    ],
+    "10652": [
+      {
+        "quest_id": 3129,
+        "name": "Weapons of Spirit",
+        "faction": "horde"
+      }
+    ],
+    "10653": [
+      {
+        "quest_id": 3514,
+        "name": "Horde Presence",
+        "faction": "horde"
+      }
+    ],
+    "10654": [
+      {
+        "quest_id": 3514,
+        "name": "Horde Presence",
+        "faction": "horde"
+      }
+    ],
+    "10659": [
+      {
+        "quest_id": 2701,
+        "name": "Heroes of Old",
+        "faction": "both"
+      }
+    ],
+    "10686": [
+      {
+        "quest_id": 2938,
+        "name": "Venom to the Undercity",
+        "faction": "horde"
+      }
+    ],
+    "10696": [
+      {
+        "quest_id": 3625,
+        "name": "Enchanted Azsharite Fel Weaponry",
+        "faction": "both"
+      }
+    ],
+    "10697": [
+      {
+        "quest_id": 3625,
+        "name": "Enchanted Azsharite Fel Weaponry",
+        "faction": "both"
+      }
+    ],
+    "10698": [
+      {
+        "quest_id": 3625,
+        "name": "Enchanted Azsharite Fel Weaponry",
+        "faction": "both"
+      }
+    ],
+    "10700": [
+      {
+        "quest_id": 1172,
+        "name": "The Brood of Onyxia",
+        "faction": "horde"
+      }
+    ],
+    "10701": [
+      {
+        "quest_id": 1172,
+        "name": "The Brood of Onyxia",
+        "faction": "horde"
+      }
+    ],
+    "10702": [
+      {
+        "quest_id": 1166,
+        "name": "Overlord Mok'Morokk's Concern",
+        "faction": "horde"
+      }
+    ],
+    "10703": [
+      {
+        "quest_id": 1173,
+        "name": "Challenge Overlord Mok'Morokk",
+        "faction": "horde"
+      }
+    ],
+    "10704": [
+      {
+        "quest_id": 1173,
+        "name": "Challenge Overlord Mok'Morokk",
+        "faction": "horde"
+      }
+    ],
+    "10705": [
+      {
+        "quest_id": 2972,
+        "name": "Doling Justice",
+        "faction": "alliance"
+      }
+    ],
+    "10706": [
+      {
+        "quest_id": 2972,
+        "name": "Doling Justice",
+        "faction": "alliance"
+      }
+    ],
+    "10707": [
+      {
+        "quest_id": 3461,
+        "name": "Return to Tymor",
+        "faction": "alliance"
+      }
+    ],
+    "10708": [
+      {
+        "quest_id": 3461,
+        "name": "Return to Tymor",
+        "faction": "alliance"
+      }
+    ],
+    "10709": [
+      {
+        "quest_id": 3507,
+        "name": "Betrayed",
+        "faction": "horde"
+      }
+    ],
+    "10739": [
+      {
+        "quest_id": 3566,
+        "name": "Rise, Obsidion!",
+        "faction": "alliance"
+      }
+    ],
+    "10740": [
+      {
+        "quest_id": 3566,
+        "name": "Rise, Obsidion!",
+        "faction": "alliance"
+      }
+    ],
+    "10741": [
+      {
+        "quest_id": 3566,
+        "name": "Rise, Obsidion!",
+        "faction": "alliance"
+      }
+    ],
+    "10742": [
+      {
+        "quest_id": 3463,
+        "name": "Set Them Ablaze!",
+        "faction": "both"
+      }
+    ],
+    "10743": [
+      {
+        "quest_id": 3463,
+        "name": "Set Them Ablaze!",
+        "faction": "both"
+      }
+    ],
+    "10744": [
+      {
+        "quest_id": 3463,
+        "name": "Set Them Ablaze!",
+        "faction": "both"
+      }
+    ],
+    "10745": [
+      {
+        "quest_id": 3378,
+        "name": "Prayer to Elune",
+        "faction": "alliance"
+      }
+    ],
+    "10746": [
+      {
+        "quest_id": 3378,
+        "name": "Prayer to Elune",
+        "faction": "alliance"
+      }
+    ],
+    "10747": [
+      {
+        "quest_id": 1364,
+        "name": "Mazen's Behest",
+        "faction": "alliance"
+      }
+    ],
+    "10748": [
+      {
+        "quest_id": 1364,
+        "name": "Mazen's Behest",
+        "faction": "alliance"
+      }
+    ],
+    "10749": [
+      {
+        "quest_id": 3528,
+        "name": "The God Hakkar",
+        "faction": "both"
+      }
+    ],
+    "10750": [
+      {
+        "quest_id": 3528,
+        "name": "The God Hakkar",
+        "faction": "both"
+      }
+    ],
+    "10751": [
+      {
+        "quest_id": 3528,
+        "name": "The God Hakkar",
+        "faction": "both"
+      }
+    ],
+    "10778": [
+      {
+        "quest_id": 3628,
+        "name": "You Are Rakh'likh, Demon",
+        "faction": "both"
+      }
+    ],
+    "10779": [
+      {
+        "quest_id": 3628,
+        "name": "You Are Rakh'likh, Demon",
+        "faction": "both"
+      }
+    ],
+    "10820": [
+      {
+        "quest_id": 3301,
+        "name": "Mura Runetotem",
+        "faction": "horde"
+      }
+    ],
+    "10821": [
+      {
+        "quest_id": 3301,
+        "name": "Mura Runetotem",
+        "faction": "horde"
+      }
+    ],
+    "10826": [
+      {
+        "quest_id": 3161,
+        "name": "Gahz'ridian",
+        "faction": "both"
+      }
+    ],
+    "10827": [
+      {
+        "quest_id": 3161,
+        "name": "Gahz'ridian",
+        "faction": "both"
+      }
+    ],
+    "11120": [
+      {
+        "quest_id": 3507,
+        "name": "Betrayed",
+        "faction": "horde"
+      }
+    ],
+    "11122": [
+      {
+        "quest_id": 2770,
+        "name": "Gahz'rilla",
+        "faction": "both"
+      }
+    ],
+    "11229": [
+      {
+        "quest_id": 1031,
+        "name": "The Branch of Cenarius",
+        "faction": "alliance"
+      }
+    ],
+    "11262": [
+      {
+        "quest_id": 1053,
+        "name": "In the Name of the Light",
+        "faction": "alliance"
+      }
+    ],
+    "11263": [
+      {
+        "quest_id": 1952,
+        "name": "Mage's Wand",
+        "faction": "both"
+      }
+    ],
+    "11265": [
+      {
+        "quest_id": 1383,
+        "name": "Nothing But The Truth",
+        "faction": "horde"
+      }
+    ],
+    "11502": [
+      {
+        "quest_id": 864,
+        "name": "Return to Apothecary Zinge",
+        "faction": "horde"
+      }
+    ],
+    "11853": [
+      {
+        "quest_id": 3281,
+        "name": "Stolen Silver",
+        "faction": "horde"
+      }
+    ],
+    "11854": [
+      {
+        "quest_id": 3924,
+        "name": "Samophlange Manual",
+        "faction": "horde"
+      }
+    ],
+    "11855": [
+      {
+        "quest_id": 3924,
+        "name": "Samophlange Manual",
+        "faction": "horde"
+      }
+    ],
+    "11856": [
+      {
+        "quest_id": 4266,
+        "name": "A Hero's Welcome",
+        "faction": "alliance"
+      }
+    ],
+    "11857": [
+      {
+        "quest_id": 4266,
+        "name": "A Hero's Welcome",
+        "faction": "alliance"
+      }
+    ],
+    "11858": [
+      {
+        "quest_id": 2976,
+        "name": "A Grim Discovery",
+        "faction": "horde"
+      }
+    ],
+    "11859": [
+      {
+        "quest_id": 2976,
+        "name": "A Grim Discovery",
+        "faction": "horde"
+      }
+    ],
+    "11860": [
+      {
+        "quest_id": 4450,
+        "name": "Ledger from Tanaris",
+        "faction": "both"
+      }
+    ],
+    "11861": [
+      {
+        "quest_id": 4450,
+        "name": "Ledger from Tanaris",
+        "faction": "both"
+      }
+    ],
+    "11862": [
+      {
+        "quest_id": 4300,
+        "name": "Bone-Bladed Weapons",
+        "faction": "horde"
+      }
+    ],
+    "11863": [
+      {
+        "quest_id": 4300,
+        "name": "Bone-Bladed Weapons",
+        "faction": "horde"
+      }
+    ],
+    "11864": [
+      {
+        "quest_id": 4300,
+        "name": "Bone-Bladed Weapons",
+        "faction": "horde"
+      }
+    ],
+    "11865": [
+      {
+        "quest_id": 4136,
+        "name": "Ribbly Screwspigot",
+        "faction": "both"
+      }
+    ],
+    "11867": [
+      {
+        "quest_id": 3825,
+        "name": "Ogre Head On A Stick = Party",
+        "faction": "alliance"
+      }
+    ],
+    "11868": [
+      {
+        "quest_id": 3825,
+        "name": "Ogre Head On A Stick = Party",
+        "faction": "alliance"
+      }
+    ],
+    "11869": [
+      {
+        "quest_id": 3822,
+        "name": "Krom'Grul",
+        "faction": "horde"
+      }
+    ],
+    "11873": [
+      {
+        "quest_id": 4261,
+        "name": "Ancient Spirit",
+        "faction": "alliance"
+      }
+    ],
+    "11874": [
+      {
+        "quest_id": 4261,
+        "name": "Ancient Spirit",
+        "faction": "alliance"
+      }
+    ],
+    "11875": [
+      {
+        "quest_id": 4906,
+        "name": "Further Corruption",
+        "faction": "alliance"
+      }
+    ],
+    "11876": [
+      {
+        "quest_id": 4292,
+        "name": "The Bait for Lar'korwi",
+        "faction": "both"
+      }
+    ],
+    "11882": [
+      {
+        "quest_id": 4292,
+        "name": "The Bait for Lar'korwi",
+        "faction": "both"
+      }
+    ],
+    "11884": [
+      {
+        "quest_id": 1440,
+        "name": "Return to Vahlarriel",
+        "faction": "alliance"
+      }
+    ],
+    "11888": [
+      {
+        "quest_id": 3791,
+        "name": "The Mystery of Morrowgrain",
+        "faction": "alliance"
+      }
+    ],
+    "11889": [
+      {
+        "quest_id": 3791,
+        "name": "The Mystery of Morrowgrain",
+        "faction": "alliance"
+      }
+    ],
+    "11902": [
+      {
+        "quest_id": 3962,
+        "name": "It's Dangerous to Go Alone",
+        "faction": "both"
+      }
+    ],
+    "11904": [
+      {
+        "quest_id": 3962,
+        "name": "It's Dangerous to Go Alone",
+        "faction": "both"
+      }
+    ],
+    "11905": [
+      {
+        "quest_id": 3962,
+        "name": "It's Dangerous to Go Alone",
+        "faction": "both"
+      }
+    ],
+    "11906": [
+      {
+        "quest_id": 4301,
+        "name": "The Mighty U'cha",
+        "faction": "both"
+      }
+    ],
+    "11907": [
+      {
+        "quest_id": 4301,
+        "name": "The Mighty U'cha",
+        "faction": "both"
+      }
+    ],
+    "11908": [
+      {
+        "quest_id": 3882,
+        "name": "Roll the Bones",
+        "faction": "both"
+      }
+    ],
+    "11909": [
+      {
+        "quest_id": 3882,
+        "name": "Roll the Bones",
+        "faction": "both"
+      }
+    ],
+    "11910": [
+      {
+        "quest_id": 4491,
+        "name": "A Little Help From My Friends",
+        "faction": "both"
+      }
+    ],
+    "11911": [
+      {
+        "quest_id": 4491,
+        "name": "A Little Help From My Friends",
+        "faction": "both"
+      }
+    ],
+    "11913": [
+      {
+        "quest_id": 4491,
+        "name": "A Little Help From My Friends",
+        "faction": "both"
+      }
+    ],
+    "11915": [
+      {
+        "quest_id": 4503,
+        "name": "Shizzle's Flyer",
+        "faction": "both"
+      }
+    ],
+    "11916": [
+      {
+        "quest_id": 4503,
+        "name": "Shizzle's Flyer",
+        "faction": "both"
+      }
+    ],
+    "11917": [
+      {
+        "quest_id": 4503,
+        "name": "Shizzle's Flyer",
+        "faction": "both"
+      }
+    ],
+    "11918": [
+      {
+        "quest_id": 4501,
+        "name": "Beware of Pterrordax",
+        "faction": "both"
+      }
+    ],
+    "11919": [
+      {
+        "quest_id": 4501,
+        "name": "Beware of Pterrordax",
+        "faction": "both"
+      }
+    ],
+    "11936": [
+      {
+        "quest_id": 741,
+        "name": "The Absent Minded Prospector",
+        "faction": "alliance"
+      }
+    ],
+    "11963": [
+      {
+        "quest_id": 4136,
+        "name": "Ribbly Screwspigot",
+        "faction": "both"
+      }
+    ],
+    "12018": [
+      {
+        "quest_id": 4242,
+        "name": "Abandoned Hope",
+        "faction": "alliance"
+      }
+    ],
+    "12021": [
+      {
+        "quest_id": 4242,
+        "name": "Abandoned Hope",
+        "faction": "alliance"
+      }
+    ],
+    "12041": [
+      {
+        "quest_id": 4242,
+        "name": "Abandoned Hope",
+        "faction": "alliance"
+      }
+    ],
+    "12049": [
+      {
+        "quest_id": 4136,
+        "name": "Ribbly Screwspigot",
+        "faction": "both"
+      }
+    ],
+    "12050": [
+      {
+        "quest_id": 4513,
+        "name": "A Little Slime Goes a Long Way",
+        "faction": "alliance"
+      }
+    ],
+    "12051": [
+      {
+        "quest_id": 4513,
+        "name": "A Little Slime Goes a Long Way",
+        "faction": "alliance"
+      }
+    ],
+    "12061": [
+      {
+        "quest_id": 4322,
+        "name": "Jail Break!",
+        "faction": "alliance"
+      }
+    ],
+    "12062": [
+      {
+        "quest_id": 4322,
+        "name": "Jail Break!",
+        "faction": "alliance"
+      }
+    ],
+    "12102": [
+      {
+        "quest_id": 3701,
+        "name": "The Smoldering Ruins of Thaurissan",
+        "faction": "alliance"
+      }
+    ],
+    "12185": [
+      {
+        "quest_id": 4621,
+        "name": "Avast Ye, Admiral!",
+        "faction": "both"
+      }
+    ],
+    "12295": [
+      {
+        "quest_id": 153,
+        "name": "Red Leather Bandanas",
+        "faction": "alliance"
+      }
+    ],
+    "12296": [
+      {
+        "quest_id": 14,
+        "name": "The People's Militia",
+        "faction": "alliance"
+      }
+    ],
+    "12522": [
+      {
+        "quest_id": 2038,
+        "name": "Bingles' Missing Supplies",
+        "faction": "alliance"
+      }
+    ],
+    "12631": [
+      {
+        "quest_id": 5124,
+        "name": "Fiery Plate Gauntlets",
+        "faction": "both"
+      }
+    ],
+    "13171": [
+      {
+        "quest_id": 5214,
+        "name": "The Great Ezra Grimm",
+        "faction": "both"
+      }
+    ],
+    "13216": [
+      {
+        "quest_id": 5243,
+        "name": "Houses of the Holy",
+        "faction": "both"
+      }
+    ],
+    "13217": [
+      {
+        "quest_id": 5243,
+        "name": "Houses of the Holy",
+        "faction": "both"
+      }
+    ],
+    "13473": [
+      {
+        "quest_id": 5051,
+        "name": "Two Halves Become One",
+        "faction": "both"
+      }
+    ],
+    "13474": [
+      {
+        "quest_id": 5060,
+        "name": "Locked Away",
+        "faction": "both"
+      }
+    ],
+    "13475": [
+      {
+        "quest_id": 5060,
+        "name": "Locked Away",
+        "faction": "both"
+      }
+    ],
+    "13812": [
+      {
+        "quest_id": 5532,
+        "name": "<NYI> <TXT> Ring of the Dawn",
+        "faction": "both"
+      }
+    ],
+    "15104": [
+      {
+        "quest_id": 697,
+        "name": "Malin's Request",
+        "faction": "alliance"
+      }
+    ],
+    "15105": [
+      {
+        "quest_id": 4975,
+        "name": "The Completed Orb of Noh'Orahil",
+        "faction": "both"
+      }
+    ],
+    "15106": [
+      {
+        "quest_id": 4964,
+        "name": "The Completed Orb of Dar'Orahil",
+        "faction": "both"
+      }
+    ],
+    "15107": [
+      {
+        "quest_id": 4975,
+        "name": "The Completed Orb of Noh'Orahil",
+        "faction": "both"
+      }
+    ],
+    "15108": [
+      {
+        "quest_id": 4964,
+        "name": "The Completed Orb of Dar'Orahil",
+        "faction": "both"
+      }
+    ],
+    "15109": [
+      {
+        "quest_id": 1740,
+        "name": "The Orb of Soran'ruk",
+        "faction": "both"
+      }
+    ],
+    "15202": [
+      {
+        "quest_id": 4763,
+        "name": "The Blackwood Corrupted",
+        "faction": "alliance"
+      }
+    ],
+    "15203": [
+      {
+        "quest_id": 4763,
+        "name": "The Blackwood Corrupted",
+        "faction": "alliance"
+      }
+    ],
+    "15204": [
+      {
+        "quest_id": 4763,
+        "name": "The Blackwood Corrupted",
+        "faction": "alliance"
+      }
+    ],
+    "15205": [
+      {
+        "quest_id": 5321,
+        "name": "The Sleeper Has Awakened",
+        "faction": "alliance"
+      }
+    ],
+    "15206": [
+      {
+        "quest_id": 5321,
+        "name": "The Sleeper Has Awakened",
+        "faction": "alliance"
+      }
+    ],
+    "15207": [
+      {
+        "quest_id": 5321,
+        "name": "The Sleeper Has Awakened",
+        "faction": "alliance"
+      }
+    ],
+    "15335": [
+      {
+        "quest_id": 4813,
+        "name": "The Fragments Within",
+        "faction": "alliance"
+      }
+    ],
+    "15396": [
+      {
+        "quest_id": 4813,
+        "name": "The Fragments Within",
+        "faction": "alliance"
+      }
+    ],
+    "15397": [
+      {
+        "quest_id": 4813,
+        "name": "The Fragments Within",
+        "faction": "alliance"
+      }
+    ],
+    "15399": [
+      {
+        "quest_id": 4681,
+        "name": "Washed Ashore",
+        "faction": "alliance"
+      }
+    ],
+    "15403": [
+      {
+        "quest_id": 4740,
+        "name": "WANTED: Murkdeep!",
+        "faction": "alliance"
+      }
+    ],
+    "15404": [
+      {
+        "quest_id": 4740,
+        "name": "WANTED: Murkdeep!",
+        "faction": "alliance"
+      }
+    ],
+    "15405": [
+      {
+        "quest_id": 1138,
+        "name": "Fruit of the Sea",
+        "faction": "alliance"
+      }
+    ],
+    "15406": [
+      {
+        "quest_id": 1138,
+        "name": "Fruit of the Sea",
+        "faction": "alliance"
+      }
+    ],
+    "15413": [
+      {
+        "quest_id": 5944,
+        "name": "In Dreams",
+        "faction": "both"
+      }
+    ],
+    "15424": [
+      {
+        "quest_id": 5730,
+        "name": "Hidden Enemies",
+        "faction": "horde"
+      }
+    ],
+    "15443": [
+      {
+        "quest_id": 5730,
+        "name": "Hidden Enemies",
+        "faction": "horde"
+      }
+    ],
+    "15444": [
+      {
+        "quest_id": 5730,
+        "name": "Hidden Enemies",
+        "faction": "horde"
+      }
+    ],
+    "15445": [
+      {
+        "quest_id": 5730,
+        "name": "Hidden Enemies",
+        "faction": "horde"
+      }
+    ],
+    "15449": [
+      {
+        "quest_id": 5725,
+        "name": "The Power to Destroy...",
+        "faction": "horde"
+      }
+    ],
+    "15450": [
+      {
+        "quest_id": 5725,
+        "name": "The Power to Destroy...",
+        "faction": "horde"
+      }
+    ],
+    "15451": [
+      {
+        "quest_id": 5725,
+        "name": "The Power to Destroy...",
+        "faction": "horde"
+      }
+    ],
+    "15452": [
+      {
+        "quest_id": 5724,
+        "name": "Returning the Lost Satchel",
+        "faction": "horde"
+      }
+    ],
+    "15453": [
+      {
+        "quest_id": 5724,
+        "name": "Returning the Lost Satchel",
+        "faction": "horde"
+      }
+    ],
+    "15455": [
+      {
+        "quest_id": 661,
+        "name": "Hints of a New Plague?",
+        "faction": "alliance"
+      }
+    ],
+    "15456": [
+      {
+        "quest_id": 661,
+        "name": "Hints of a New Plague?",
+        "faction": "alliance"
+      }
+    ],
+    "15457": [
+      {
+        "quest_id": 5064,
+        "name": "Grimtotem Spying",
+        "faction": "horde"
+      }
+    ],
+    "15458": [
+      {
+        "quest_id": 5064,
+        "name": "Grimtotem Spying",
+        "faction": "horde"
+      }
+    ],
+    "15459": [
+      {
+        "quest_id": 5064,
+        "name": "Grimtotem Spying",
+        "faction": "horde"
+      }
+    ],
+    "15461": [
+      {
+        "quest_id": 4966,
+        "name": "Protect Kanati Greycloud",
+        "faction": "horde"
+      }
+    ],
+    "15462": [
+      {
+        "quest_id": 4966,
+        "name": "Protect Kanati Greycloud",
+        "faction": "horde"
+      }
+    ],
+    "15463": [
+      {
+        "quest_id": 4966,
+        "name": "Protect Kanati Greycloud",
+        "faction": "horde"
+      }
+    ],
+    "15464": [
+      {
+        "quest_id": 5088,
+        "name": "Arikara",
+        "faction": "horde"
+      }
+    ],
+    "15465": [
+      {
+        "quest_id": 5088,
+        "name": "Arikara",
+        "faction": "horde"
+      }
+    ],
+    "15466": [
+      {
+        "quest_id": 5088,
+        "name": "Arikara",
+        "faction": "horde"
+      }
+    ],
+    "15467": [
+      {
+        "quest_id": 5151,
+        "name": "Hypercapacitor Gizmo",
+        "faction": "horde"
+      }
+    ],
+    "15468": [
+      {
+        "quest_id": 4904,
+        "name": "Free at Last",
+        "faction": "horde"
+      }
+    ],
+    "15469": [
+      {
+        "quest_id": 4904,
+        "name": "Free at Last",
+        "faction": "horde"
+      }
+    ],
+    "15470": [
+      {
+        "quest_id": 5147,
+        "name": "Wanted - Arnak Grimtotem",
+        "faction": "horde"
+      }
+    ],
+    "15471": [
+      {
+        "quest_id": 5147,
+        "name": "Wanted - Arnak Grimtotem",
+        "faction": "horde"
+      }
+    ],
+    "15585": [
+      {
+        "quest_id": 6142,
+        "name": "Clam Bait",
+        "faction": "horde"
+      }
+    ],
+    "15587": [
+      {
+        "quest_id": 6142,
+        "name": "Clam Bait",
+        "faction": "horde"
+      }
+    ],
+    "15588": [
+      {
+        "quest_id": 6142,
+        "name": "Clam Bait",
+        "faction": "horde"
+      }
+    ],
+    "15689": [
+      {
+        "quest_id": 5821,
+        "name": "Bodyguard for Hire ",
+        "faction": "both"
+      }
+    ],
+    "15690": [
+      {
+        "quest_id": 5501,
+        "name": "Bone Collector",
+        "faction": "both"
+      }
+    ],
+    "15691": [
+      {
+        "quest_id": 5943,
+        "name": "Gizelton Caravan",
+        "faction": "both"
+      }
+    ],
+    "15692": [
+      {
+        "quest_id": 5943,
+        "name": "Gizelton Caravan",
+        "faction": "both"
+      }
+    ],
+    "15695": [
+      {
+        "quest_id": 5943,
+        "name": "Gizelton Caravan",
+        "faction": "both"
+      }
+    ],
+    "15697": [
+      {
+        "quest_id": 5561,
+        "name": "Kodo Roundup",
+        "faction": "both"
+      }
+    ],
+    "15698": [
+      {
+        "quest_id": 5561,
+        "name": "Kodo Roundup",
+        "faction": "both"
+      }
+    ],
+    "15702": [
+      {
+        "quest_id": 4642,
+        "name": "Melding of Influences",
+        "faction": "horde"
+      }
+    ],
+    "15703": [
+      {
+        "quest_id": 4642,
+        "name": "Melding of Influences",
+        "faction": "horde"
+      }
+    ],
+    "15704": [
+      {
+        "quest_id": 5057,
+        "name": "Past Endeavors",
+        "faction": "horde"
+      }
+    ],
+    "15705": [
+      {
+        "quest_id": 5385,
+        "name": "The Remains of Trey Lightforge",
+        "faction": "both"
+      }
+    ],
+    "15706": [
+      {
+        "quest_id": 5385,
+        "name": "The Remains of Trey Lightforge",
+        "faction": "both"
+      }
+    ],
+    "15707": [
+      {
+        "quest_id": 5242,
+        "name": "A Final Blow",
+        "faction": "both"
+      }
+    ],
+    "15708": [
+      {
+        "quest_id": 5242,
+        "name": "A Final Blow",
+        "faction": "both"
+      }
+    ],
+    "15709": [
+      {
+        "quest_id": 5242,
+        "name": "A Final Blow",
+        "faction": "both"
+      }
+    ],
+    "15782": [
+      {
+        "quest_id": 5056,
+        "name": "Shy-Rotam",
+        "faction": "horde"
+      }
+    ],
+    "15783": [
+      {
+        "quest_id": 5056,
+        "name": "Shy-Rotam",
+        "faction": "horde"
+      }
+    ],
+    "15784": [
+      {
+        "quest_id": 5121,
+        "name": "High Chief Winterfall",
+        "faction": "both"
+      }
+    ],
+    "15786": [
+      {
+        "quest_id": 5121,
+        "name": "High Chief Winterfall",
+        "faction": "both"
+      }
+    ],
+    "15787": [
+      {
+        "quest_id": 5121,
+        "name": "High Chief Winterfall",
+        "faction": "both"
+      }
+    ],
+    "15789": [
+      {
+        "quest_id": 4842,
+        "name": "Strange Sources",
+        "faction": "both"
+      }
+    ],
+    "15791": [
+      {
+        "quest_id": 5253,
+        "name": "The Crystal of Zin-Malor",
+        "faction": "alliance"
+      }
+    ],
+    "15792": [
+      {
+        "quest_id": 5253,
+        "name": "The Crystal of Zin-Malor",
+        "faction": "alliance"
+      }
+    ],
+    "15795": [
+      {
+        "quest_id": 5253,
+        "name": "The Crystal of Zin-Malor",
+        "faction": "alliance"
+      }
+    ],
+    "15796": [
+      {
+        "quest_id": 4883,
+        "name": "Guarding Secrets",
+        "faction": "horde"
+      }
+    ],
+    "15797": [
+      {
+        "quest_id": 4883,
+        "name": "Guarding Secrets",
+        "faction": "horde"
+      }
+    ],
+    "15806": [
+      {
+        "quest_id": 5384,
+        "name": "Kirtonos the Herald",
+        "faction": "both"
+      }
+    ],
+    "15812": [
+      {
+        "quest_id": 4971,
+        "name": "A Matter of Time",
+        "faction": "both"
+      }
+    ],
+    "15813": [
+      {
+        "quest_id": 4971,
+        "name": "A Matter of Time",
+        "faction": "both"
+      }
+    ],
+    "15814": [
+      {
+        "quest_id": 6024,
+        "name": "Hameya's Plea",
+        "faction": "both"
+      }
+    ],
+    "15815": [
+      {
+        "quest_id": 6024,
+        "name": "Hameya's Plea",
+        "faction": "both"
+      }
+    ],
+    "15822": [
+      {
+        "quest_id": 6031,
+        "name": "Runecloth",
+        "faction": "both"
+      }
+    ],
+    "15823": [
+      {
+        "quest_id": 6031,
+        "name": "Runecloth",
+        "faction": "both"
+      }
+    ],
+    "15855": [
+      {
+        "quest_id": 5942,
+        "name": "Hidden Treasures",
+        "faction": "both"
+      }
+    ],
+    "15856": [
+      {
+        "quest_id": 5942,
+        "name": "Hidden Treasures",
+        "faction": "both"
+      }
+    ],
+    "15857": [
+      {
+        "quest_id": 5942,
+        "name": "Hidden Treasures",
+        "faction": "both"
+      }
+    ],
+    "15862": [
+      {
+        "quest_id": 4810,
+        "name": "Return to Tinkee",
+        "faction": "both"
+      }
+    ],
+    "15863": [
+      {
+        "quest_id": 4810,
+        "name": "Return to Tinkee",
+        "faction": "both"
+      }
+    ],
+    "15864": [
+      {
+        "quest_id": 6134,
+        "name": "Ghost-o-plasm Round Up",
+        "faction": "both"
+      }
+    ],
+    "15865": [
+      {
+        "quest_id": 6134,
+        "name": "Ghost-o-plasm Round Up",
+        "faction": "both"
+      }
+    ],
+    "16622": [
+      {
+        "quest_id": 4902,
+        "name": "Wildkin of Elune",
+        "faction": "alliance"
+      }
+    ],
+    "16623": [
+      {
+        "quest_id": 4902,
+        "name": "Wildkin of Elune",
+        "faction": "alliance"
+      }
+    ],
+    "16658": [
+      {
+        "quest_id": 247,
+        "name": "The Hunt Completed",
+        "faction": "horde"
+      }
+    ],
+    "16659": [
+      {
+        "quest_id": 824,
+        "name": "Je'neu of the Earthen Ring",
+        "faction": "horde"
+      }
+    ],
+    "16660": [
+      {
+        "quest_id": 824,
+        "name": "Je'neu of the Earthen Ring",
+        "faction": "horde"
+      }
+    ],
+    "16661": [
+      {
+        "quest_id": 824,
+        "name": "Je'neu of the Earthen Ring",
+        "faction": "horde"
+      }
+    ],
+    "16738": [
+      {
+        "quest_id": 5863,
+        "name": "The Dunemaul Compound",
+        "faction": "both"
+      }
+    ],
+    "16739": [
+      {
+        "quest_id": 5863,
+        "name": "The Dunemaul Compound",
+        "faction": "both"
+      }
+    ],
+    "16740": [
+      {
+        "quest_id": 6504,
+        "name": "The Lost Pages",
+        "faction": "horde"
+      }
+    ],
+    "16741": [
+      {
+        "quest_id": 6504,
+        "name": "The Lost Pages",
+        "faction": "horde"
+      }
+    ],
+    "16788": [
+      {
+        "quest_id": 6161,
+        "name": "Claim Rackmore's Treasure!",
+        "faction": "both"
+      }
+    ],
+    "16789": [
+      {
+        "quest_id": 6161,
+        "name": "Claim Rackmore's Treasure!",
+        "faction": "both"
+      }
+    ],
+    "16791": [
+      {
+        "quest_id": 6027,
+        "name": "Book of the Ancients",
+        "faction": "both"
+      }
+    ],
+    "16793": [
+      {
+        "quest_id": 6027,
+        "name": "Book of the Ancients",
+        "faction": "both"
+      }
+    ],
+    "16794": [
+      {
+        "quest_id": 5581,
+        "name": "Portals of the Legion",
+        "faction": "horde"
+      }
+    ],
+    "16873": [
+      {
+        "quest_id": 5581,
+        "name": "Portals of the Legion",
+        "faction": "horde"
+      }
+    ],
+    "16889": [
+      {
+        "quest_id": 6544,
+        "name": "Torek's Assault",
+        "faction": "horde"
+      }
+    ],
+    "16890": [
+      {
+        "quest_id": 6544,
+        "name": "Torek's Assault",
+        "faction": "horde"
+      }
+    ],
+    "16891": [
+      {
+        "quest_id": 6284,
+        "name": "Arachnophobia",
+        "faction": "horde"
+      }
+    ],
+    "16894": [
+      {
+        "quest_id": 6284,
+        "name": "Arachnophobia",
+        "faction": "horde"
+      }
+    ],
+    "16975": [
+      {
+        "quest_id": 6571,
+        "name": "Warsong Supplies",
+        "faction": "horde"
+      }
+    ],
+    "16977": [
+      {
+        "quest_id": 6571,
+        "name": "Warsong Supplies",
+        "faction": "horde"
+      }
+    ],
+    "16978": [
+      {
+        "quest_id": 6571,
+        "name": "Warsong Supplies",
+        "faction": "horde"
+      }
+    ],
+    "16981": [
+      {
+        "quest_id": 6481,
+        "name": "Earthen Arise",
+        "faction": "horde"
+      }
+    ],
+    "16985": [
+      {
+        "quest_id": 6381,
+        "name": "New Life",
+        "faction": "horde"
+      }
+    ],
+    "16986": [
+      {
+        "quest_id": 6381,
+        "name": "New Life",
+        "faction": "horde"
+      }
+    ],
+    "16987": [
+      {
+        "quest_id": 6283,
+        "name": "Bloodfury Bloodline",
+        "faction": "horde"
+      }
+    ],
+    "16990": [
+      {
+        "quest_id": 6283,
+        "name": "Bloodfury Bloodline",
+        "faction": "horde"
+      }
+    ],
+    "16992": [
+      {
+        "quest_id": 6041,
+        "name": "When Smokey Sings, I Get Violent",
+        "faction": "both"
+      }
+    ],
+    "16993": [
+      {
+        "quest_id": 6041,
+        "name": "When Smokey Sings, I Get Violent",
+        "faction": "both"
+      }
+    ],
+    "16994": [
+      {
+        "quest_id": 6135,
+        "name": "Duskwing, Oh How I Hate Thee...",
+        "faction": "horde"
+      }
+    ],
+    "16995": [
+      {
+        "quest_id": 6135,
+        "name": "Duskwing, Oh How I Hate Thee...",
+        "faction": "horde"
+      }
+    ],
+    "17002": [
+      {
+        "quest_id": 6136,
+        "name": "The Corpulent One",
+        "faction": "horde"
+      }
+    ],
+    "17003": [
+      {
+        "quest_id": 6136,
+        "name": "The Corpulent One",
+        "faction": "horde"
+      }
+    ],
+    "17004": [
+      {
+        "quest_id": 6136,
+        "name": "The Corpulent One",
+        "faction": "horde"
+      }
+    ],
+    "17005": [
+      {
+        "quest_id": 6621,
+        "name": "King of the Foulweald",
+        "faction": "horde"
+      }
+    ],
+    "17006": [
+      {
+        "quest_id": 6621,
+        "name": "King of the Foulweald",
+        "faction": "horde"
+      }
+    ],
+    "17039": [
+      {
+        "quest_id": 6521,
+        "name": "An Unholy Alliance",
+        "faction": "horde"
+      }
+    ],
+    "17046": [
+      {
+        "quest_id": 1046,
+        "name": "Raene's Cleansing",
+        "faction": "alliance"
+      }
+    ],
+    "17047": [
+      {
+        "quest_id": 1035,
+        "name": "Fallen Sky Lake",
+        "faction": "alliance"
+      }
+    ],
+    "17523": [
+      {
+        "quest_id": 6041,
+        "name": "When Smokey Sings, I Get Violent",
+        "faction": "both"
+      }
+    ],
+    "17686": [
+      {
+        "quest_id": 208,
+        "name": "Big Game Hunter",
+        "faction": "both"
+      }
+    ],
+    "17687": [
+      {
+        "quest_id": 208,
+        "name": "Big Game Hunter",
+        "faction": "both"
+      }
+    ],
+    "17688": [
+      {
+        "quest_id": 338,
+        "name": "The Green Hills of Stranglethorn",
+        "faction": "both"
+      }
+    ],
+    "17690": [
+      {
+        "quest_id": 7161,
+        "name": "Proving Grounds",
+        "faction": "horde"
+      }
+    ],
+    "17691": [
+      {
+        "quest_id": 7162,
+        "name": "Proving Grounds",
+        "faction": "alliance"
+      }
+    ],
+    "17692": [
+      {
+        "quest_id": 6641,
+        "name": "Vorsha the Lasher",
+        "faction": "horde"
+      }
+    ],
+    "17694": [
+      {
+        "quest_id": 6565,
+        "name": "Allegiance to the Old Gods",
+        "faction": "horde"
+      }
+    ],
+    "17695": [
+      {
+        "quest_id": 6565,
+        "name": "Allegiance to the Old Gods",
+        "faction": "horde"
+      }
+    ],
+    "17774": [
+      {
+        "quest_id": 7067,
+        "name": "The Pariah's Instructions",
+        "faction": "both"
+      }
+    ],
+    "17775": [
+      {
+        "quest_id": 7028,
+        "name": "Twisted Evils",
+        "faction": "both"
+      }
+    ],
+    "17776": [
+      {
+        "quest_id": 7028,
+        "name": "Twisted Evils",
+        "faction": "both"
+      }
+    ],
+    "17777": [
+      {
+        "quest_id": 7028,
+        "name": "Twisted Evils",
+        "faction": "both"
+      }
+    ],
+    "17779": [
+      {
+        "quest_id": 7028,
+        "name": "Twisted Evils",
+        "faction": "both"
+      }
+    ],
+    "17900": [
+      {
+        "quest_id": 7168,
+        "name": "Rise and Be Recognized",
+        "faction": "alliance"
+      }
+    ],
+    "17901": [
+      {
+        "quest_id": 7169,
+        "name": "Honored Amongst the Guard",
+        "faction": "alliance"
+      }
+    ],
+    "17902": [
+      {
+        "quest_id": 7170,
+        "name": "Earned Reverence",
+        "faction": "alliance"
+      }
+    ],
+    "17903": [
+      {
+        "quest_id": 7171,
+        "name": "Legendary Heroes",
+        "faction": "alliance"
+      }
+    ],
+    "17904": [
+      {
+        "quest_id": 7172,
+        "name": "The Eye of Command",
+        "faction": "alliance"
+      }
+    ],
+    "17905": [
+      {
+        "quest_id": 7163,
+        "name": "Rise and Be Recognized",
+        "faction": "horde"
+      }
+    ],
+    "17906": [
+      {
+        "quest_id": 7164,
+        "name": "Honored Amongst the Clan",
+        "faction": "horde"
+      }
+    ],
+    "17907": [
+      {
+        "quest_id": 7165,
+        "name": "Earned Reverence",
+        "faction": "horde"
+      }
+    ],
+    "17908": [
+      {
+        "quest_id": 7166,
+        "name": "Legendary Heroes",
+        "faction": "horde"
+      }
+    ],
+    "17909": [
+      {
+        "quest_id": 7167,
+        "name": "The Eye of Command",
+        "faction": "horde"
+      }
+    ],
+    "18398": [
+      {
+        "quest_id": 7486,
+        "name": "A Hero's Reward",
+        "faction": "both"
+      }
+    ],
+    "18399": [
+      {
+        "quest_id": 7486,
+        "name": "A Hero's Reward",
+        "faction": "both"
+      }
+    ],
+    "18400": [
+      {
+        "quest_id": 6845,
+        "name": "Uncovering Past Secrets",
+        "faction": "both"
+      }
+    ],
+    "18402": [
+      {
+        "quest_id": 6845,
+        "name": "Uncovering Past Secrets",
+        "faction": "both"
+      }
+    ],
+    "18585": [
+      {
+        "quest_id": 7541,
+        "name": "Service to the Horde",
+        "faction": "horde"
+      }
+    ],
+    "18586": [
+      {
+        "quest_id": 7541,
+        "name": "Service to the Horde",
+        "faction": "horde"
+      }
+    ],
+    "18602": [
+      {
+        "quest_id": 7583,
+        "name": "Suppression",
+        "faction": "both"
+      }
+    ],
+    "18762": [
+      {
+        "quest_id": 7603,
+        "name": "Kroshius' Infernal Core",
+        "faction": "both"
+      }
+    ],
+    "18807": [
+      {
+        "quest_id": 7668,
+        "name": "The Darkreaver Menace",
+        "faction": "horde"
+      }
+    ],
+    "18957": [
+      {
+        "quest_id": 2561,
+        "name": "Druid of the Claw",
+        "faction": "alliance"
+      }
+    ],
+    "19019": [
+      {
+        "quest_id": 7787,
+        "name": "Rise, Thunderfury!",
+        "faction": "both"
+      }
+    ],
+    "19022": [
+      {
+        "quest_id": 7815,
+        "name": "Snapjaws, Mon!",
+        "faction": "horde"
+      }
+    ],
+    "19024": [
+      {
+        "quest_id": 7838,
+        "name": "Arena Grandmaster",
+        "faction": "both"
+      }
+    ],
+    "19037": [
+      {
+        "quest_id": 7732,
+        "name": "Zukk'ash Report",
+        "faction": "horde"
+      }
+    ],
+    "19038": [
+      {
+        "quest_id": 7732,
+        "name": "Zukk'ash Report",
+        "faction": "horde"
+      }
+    ],
+    "19039": [
+      {
+        "quest_id": 7721,
+        "name": "Fuel for the Zapping",
+        "faction": "both"
+      }
+    ],
+    "19040": [
+      {
+        "quest_id": 7003,
+        "name": "Zapped Giants",
+        "faction": "both"
+      }
+    ],
+    "19041": [
+      {
+        "quest_id": 7733,
+        "name": "Improved Quality",
+        "faction": "alliance"
+      }
+    ],
+    "19042": [
+      {
+        "quest_id": 7734,
+        "name": "Improved Quality",
+        "faction": "horde"
+      }
+    ],
+    "19114": [
+      {
+        "quest_id": 7847,
+        "name": "Return to Primal Torntusk",
+        "faction": "horde"
+      }
+    ],
+    "19115": [
+      {
+        "quest_id": 7847,
+        "name": "Return to Primal Torntusk",
+        "faction": "horde"
+      }
+    ],
+    "19116": [
+      {
+        "quest_id": 7849,
+        "name": "Separation Anxiety",
+        "faction": "horde"
+      }
+    ],
+    "19117": [
+      {
+        "quest_id": 7849,
+        "name": "Separation Anxiety",
+        "faction": "horde"
+      }
+    ],
+    "19118": [
+      {
+        "quest_id": 7850,
+        "name": "Dark Vessels",
+        "faction": "horde"
+      }
+    ],
+    "19119": [
+      {
+        "quest_id": 7843,
+        "name": "The Final Message to the Wildhammer",
+        "faction": "horde"
+      }
+    ],
+    "19120": [
+      {
+        "quest_id": 7862,
+        "name": "Job Opening: Guard Captain of Revantusk Village",
+        "faction": "horde"
+      }
+    ],
+    "19121": [
+      {
+        "quest_id": 7861,
+        "name": "Wanted: Vile Priestess Hexx and Her Minions",
+        "faction": "horde"
+      }
+    ],
+    "19123": [
+      {
+        "quest_id": 7728,
+        "name": "STOLEN: Smithing Tuyere and Lookout's Spyglass",
+        "faction": "both"
+      }
+    ],
+    "19124": [
+      {
+        "quest_id": 7728,
+        "name": "STOLEN: Smithing Tuyere and Lookout's Spyglass",
+        "faction": "both"
+      }
+    ],
+    "19125": [
+      {
+        "quest_id": 7724,
+        "name": "Fiery Menace!",
+        "faction": "both"
+      }
+    ],
+    "19126": [
+      {
+        "quest_id": 7723,
+        "name": "Curse These Fat Fingers",
+        "faction": "both"
+      }
+    ],
+    "19127": [
+      {
+        "quest_id": 7701,
+        "name": "WANTED: Overseer Maltorius",
+        "faction": "both"
+      }
+    ],
+    "19128": [
+      {
+        "quest_id": 7701,
+        "name": "WANTED: Overseer Maltorius",
+        "faction": "both"
+      }
+    ],
+    "19141": [
+      {
+        "quest_id": 7727,
+        "name": "Incendosaurs? Whateverosaur is More Like It",
+        "faction": "both"
+      }
+    ],
+    "19159": [
+      {
+        "quest_id": 7861,
+        "name": "Wanted: Vile Priestess Hexx and Her Minions",
+        "faction": "horde"
+      }
+    ],
+    "19287": [
+      {
+        "quest_id": 7928,
+        "name": "Darkmoon Warlords Deck",
+        "faction": "both"
+      }
+    ],
+    "19288": [
+      {
+        "quest_id": 7907,
+        "name": "Darkmoon Beast Deck",
+        "faction": "both"
+      }
+    ],
+    "19289": [
+      {
+        "quest_id": 7929,
+        "name": "Darkmoon Elementals Deck",
+        "faction": "both"
+      }
+    ],
+    "19290": [
+      {
+        "quest_id": 7927,
+        "name": "Darkmoon Portals Deck",
+        "faction": "both"
+      }
+    ],
+    "19426": [
+      {
+        "quest_id": 7940,
+        "name": "1200 Tickets - Orb of the Darkmoon",
+        "faction": "both"
+      }
+    ],
+    "19491": [
+      {
+        "quest_id": 7981,
+        "name": "1200 Tickets - Amulet of the Darkmoon",
+        "faction": "both"
+      }
+    ],
+    "19574": [
+      {
+        "quest_id": 8041,
+        "name": "Strength of Mount Mugamba",
+        "faction": "both"
+      }
+    ],
+    "19575": [
+      {
+        "quest_id": 8042,
+        "name": "Strength of Mount Mugamba",
+        "faction": "both"
+      }
+    ],
+    "19576": [
+      {
+        "quest_id": 8043,
+        "name": "Strength of Mount Mugamba",
+        "faction": "both"
+      }
+    ],
+    "19577": [
+      {
+        "quest_id": 8044,
+        "name": "The Rage of Mugamba",
+        "faction": "both"
+      }
+    ],
+    "19579": [
+      {
+        "quest_id": 8045,
+        "name": "The Heathen's Brand",
+        "faction": "alliance"
+      }
+    ],
+    "19585": [
+      {
+        "quest_id": 8046,
+        "name": "The Heathen's Brand",
+        "faction": "alliance"
+      }
+    ],
+    "19586": [
+      {
+        "quest_id": 8047,
+        "name": "The Heathen's Brand",
+        "faction": "alliance"
+      }
+    ],
+    "19588": [
+      {
+        "quest_id": 8048,
+        "name": "The Hero's Brand",
+        "faction": "alliance"
+      }
+    ],
+    "19591": [
+      {
+        "quest_id": 8049,
+        "name": "The Eye of Zuldazar",
+        "faction": "both"
+      }
+    ],
+    "19592": [
+      {
+        "quest_id": 8050,
+        "name": "The Eye of Zuldazar",
+        "faction": "both"
+      }
+    ],
+    "19593": [
+      {
+        "quest_id": 8051,
+        "name": "The Eye of Zuldazar",
+        "faction": "both"
+      }
+    ],
+    "19594": [
+      {
+        "quest_id": 8052,
+        "name": "The All-Seeing Eye of Zuldazar",
+        "faction": "both"
+      }
+    ],
+    "19598": [
+      {
+        "quest_id": 8101,
+        "name": "The Pebble of Kajaro",
+        "faction": "both"
+      }
+    ],
+    "19599": [
+      {
+        "quest_id": 8102,
+        "name": "The Pebble of Kajaro",
+        "faction": "both"
+      }
+    ],
+    "19600": [
+      {
+        "quest_id": 8103,
+        "name": "The Pebble of Kajaro",
+        "faction": "both"
+      }
+    ],
+    "19601": [
+      {
+        "quest_id": 8104,
+        "name": "The Jewel of Kajaro",
+        "faction": "both"
+      }
+    ],
+    "19602": [
+      {
+        "quest_id": 8106,
+        "name": "Kezan's Taint",
+        "faction": "both"
+      }
+    ],
+    "19603": [
+      {
+        "quest_id": 8107,
+        "name": "Kezan's Taint",
+        "faction": "both"
+      }
+    ],
+    "19604": [
+      {
+        "quest_id": 8108,
+        "name": "Kezan's Taint",
+        "faction": "both"
+      }
+    ],
+    "19605": [
+      {
+        "quest_id": 8109,
+        "name": "Kezan's Unstoppable Taint",
+        "faction": "both"
+      }
+    ],
+    "19606": [
+      {
+        "quest_id": 8116,
+        "name": "Vision of Voodress",
+        "faction": "horde"
+      }
+    ],
+    "19607": [
+      {
+        "quest_id": 8117,
+        "name": "Vision of Voodress",
+        "faction": "horde"
+      }
+    ],
+    "19608": [
+      {
+        "quest_id": 8118,
+        "name": "Vision of Voodress",
+        "faction": "horde"
+      }
+    ],
+    "19609": [
+      {
+        "quest_id": 8119,
+        "name": "The Unmarred Vision of Voodress",
+        "faction": "horde"
+      }
+    ],
+    "19610": [
+      {
+        "quest_id": 8110,
+        "name": "Enchanted South Seas Kelp",
+        "faction": "both"
+      }
+    ],
+    "19611": [
+      {
+        "quest_id": 8111,
+        "name": "Enchanted South Seas Kelp",
+        "faction": "both"
+      }
+    ],
+    "19612": [
+      {
+        "quest_id": 8112,
+        "name": "Enchanted South Seas Kelp",
+        "faction": "both"
+      }
+    ],
+    "19613": [
+      {
+        "quest_id": 8113,
+        "name": "Pristine Enchanted South Seas Kelp",
+        "faction": "both"
+      }
+    ],
+    "19614": [
+      {
+        "quest_id": 8141,
+        "name": "Zandalarian Shadow Talisman",
+        "faction": "both"
+      }
+    ],
+    "19615": [
+      {
+        "quest_id": 8142,
+        "name": "Zandalarian Shadow Talisman",
+        "faction": "both"
+      }
+    ],
+    "19616": [
+      {
+        "quest_id": 8143,
+        "name": "Zandalarian Shadow Talisman",
+        "faction": "both"
+      }
+    ],
+    "19617": [
+      {
+        "quest_id": 8144,
+        "name": "Zandalarian Shadow Mastery Talisman",
+        "faction": "both"
+      }
+    ],
+    "19618": [
+      {
+        "quest_id": 8145,
+        "name": "The Maelstrom's Tendril",
+        "faction": "both"
+      }
+    ],
+    "19619": [
+      {
+        "quest_id": 8146,
+        "name": "The Maelstrom's Tendril",
+        "faction": "both"
+      }
+    ],
+    "19620": [
+      {
+        "quest_id": 8147,
+        "name": "The Maelstrom's Tendril",
+        "faction": "both"
+      }
+    ],
+    "19621": [
+      {
+        "quest_id": 8148,
+        "name": "Maelstrom's Wrath",
+        "faction": "both"
+      }
+    ],
+    "19822": [
+      {
+        "quest_id": 8079,
+        "name": "Paragons of Power: The Vindicator's Breastplate",
+        "faction": "both"
+      }
+    ],
+    "19823": [
+      {
+        "quest_id": 8078,
+        "name": "Paragons of Power: The Vindicator's Belt",
+        "faction": "both"
+      }
+    ],
+    "19824": [
+      {
+        "quest_id": 8058,
+        "name": "Paragons of Power: The Vindicator's Armguards",
+        "faction": "both"
+      }
+    ],
+    "19825": [
+      {
+        "quest_id": 8055,
+        "name": "Paragons of Power: The Freethinker's Breastplate",
+        "faction": "alliance"
+      }
+    ],
+    "19826": [
+      {
+        "quest_id": 8054,
+        "name": "Paragons of Power: The Freethinker's Belt",
+        "faction": "alliance"
+      }
+    ],
+    "19827": [
+      {
+        "quest_id": 8053,
+        "name": "Paragons of Power: The Freethinker's Armguards",
+        "faction": "alliance"
+      }
+    ],
+    "19828": [
+      {
+        "quest_id": 8075,
+        "name": "Paragons of Power: The Augur's Hauberk",
+        "faction": "horde"
+      }
+    ],
+    "19829": [
+      {
+        "quest_id": 8074,
+        "name": "Paragons of Power: The Augur's Belt",
+        "faction": "horde"
+      }
+    ],
+    "19830": [
+      {
+        "quest_id": 8056,
+        "name": "Paragons of Power: The Augur's Bracers",
+        "faction": "horde"
+      }
+    ],
+    "19831": [
+      {
+        "quest_id": 8067,
+        "name": "Paragons of Power: The Predator's Mantle",
+        "faction": "both"
+      }
+    ],
+    "19832": [
+      {
+        "quest_id": 8066,
+        "name": "Paragons of Power: The Predator's Belt",
+        "faction": "both"
+      }
+    ],
+    "19833": [
+      {
+        "quest_id": 8062,
+        "name": "Paragons of Power: The Predator's Bracers",
+        "faction": "both"
+      }
+    ],
+    "19834": [
+      {
+        "quest_id": 8073,
+        "name": "Paragons of Power: The Madcap's Tunic",
+        "faction": "both"
+      }
+    ],
+    "19835": [
+      {
+        "quest_id": 8072,
+        "name": "Paragons of Power: The Madcap's Mantle",
+        "faction": "both"
+      }
+    ],
+    "19836": [
+      {
+        "quest_id": 8063,
+        "name": "Paragons of Power: The Madcap's Bracers",
+        "faction": "both"
+      }
+    ],
+    "19838": [
+      {
+        "quest_id": 8065,
+        "name": "Paragons of Power: The Haruspex's Tunic",
+        "faction": "both"
+      }
+    ],
+    "19839": [
+      {
+        "quest_id": 8064,
+        "name": "Paragons of Power: The Haruspex's Belt",
+        "faction": "both"
+      }
+    ],
+    "19840": [
+      {
+        "quest_id": 8057,
+        "name": "Paragons of Power: The Haruspex's Bracers",
+        "faction": "both"
+      }
+    ],
+    "19841": [
+      {
+        "quest_id": 8071,
+        "name": "Paragons of Power: The Confessor's Mantle",
+        "faction": "both"
+      }
+    ],
+    "19842": [
+      {
+        "quest_id": 8070,
+        "name": "Paragons of Power: The Confessor's Bindings",
+        "faction": "both"
+      }
+    ],
+    "19843": [
+      {
+        "quest_id": 8061,
+        "name": "Paragons of Power: The Confessor's Wraps",
+        "faction": "both"
+      }
+    ],
+    "19845": [
+      {
+        "quest_id": 8068,
+        "name": "Paragons of Power: The Illusionist's Mantle",
+        "faction": "both"
+      }
+    ],
+    "19846": [
+      {
+        "quest_id": 8060,
+        "name": "Paragons of Power: The Illusionist's Wraps",
+        "faction": "both"
+      }
+    ],
+    "19848": [
+      {
+        "quest_id": 8059,
+        "name": "Paragons of Power: The Demoniac's Wraps",
+        "faction": "both"
+      }
+    ],
+    "19849": [
+      {
+        "quest_id": 8076,
+        "name": "Paragons of Power: The Demoniac's Mantle",
+        "faction": "both"
+      }
+    ],
+    "19948": [
+      {
+        "quest_id": 8183,
+        "name": "The Heart of Hakkar",
+        "faction": "both"
+      }
+    ],
+    "19949": [
+      {
+        "quest_id": 8183,
+        "name": "The Heart of Hakkar",
+        "faction": "both"
+      }
+    ],
+    "19950": [
+      {
+        "quest_id": 8183,
+        "name": "The Heart of Hakkar",
+        "faction": "both"
+      }
+    ],
+    "19969": [
+      {
+        "quest_id": 8225,
+        "name": "Rare Fish - Brownell's Blue Striped Racer",
+        "faction": "both"
+      }
+    ],
+    "19970": [
+      {
+        "quest_id": 8193,
+        "name": "Master Angler",
+        "faction": "both"
+      }
+    ],
+    "19972": [
+      {
+        "quest_id": 8221,
+        "name": "Rare Fish - Keefer's Angelfish",
+        "faction": "both"
+      }
+    ],
+    "19979": [
+      {
+        "quest_id": 8193,
+        "name": "Master Angler",
+        "faction": "both"
+      }
+    ],
+    "20033": [
+      {
+        "quest_id": 8077,
+        "name": "Paragons of Power: The Demoniac's Robes",
+        "faction": "both"
+      }
+    ],
+    "20034": [
+      {
+        "quest_id": 8069,
+        "name": "Paragons of Power: The Illusionist's Robes",
+        "faction": "both"
+      }
+    ],
+    "20086": [
+      {
+        "quest_id": 8249,
+        "name": "Junkboxes Needed",
+        "faction": "both"
+      }
+    ],
+    "20213": [
+      {
+        "quest_id": 8201,
+        "name": "A Collection of Heads",
+        "faction": "both"
+      }
+    ],
+    "20215": [
+      {
+        "quest_id": 8201,
+        "name": "A Collection of Heads",
+        "faction": "both"
+      }
+    ],
+    "20216": [
+      {
+        "quest_id": 8201,
+        "name": "A Collection of Heads",
+        "faction": "both"
+      }
+    ],
+    "20217": [
+      {
+        "quest_id": 8201,
+        "name": "A Collection of Heads",
+        "faction": "both"
+      }
+    ],
+    "20218": [
+      {
+        "quest_id": 8181,
+        "name": "Confront Yeh'kinya",
+        "faction": "both"
+      }
+    ],
+    "20219": [
+      {
+        "quest_id": 8181,
+        "name": "Confront Yeh'kinya",
+        "faction": "both"
+      }
+    ],
+    "20600": [
+      {
+        "quest_id": 8447,
+        "name": "Waking Legends",
+        "faction": "both"
+      }
+    ],
+    "20640": [
+      {
+        "quest_id": 8366,
+        "name": "Southsea Shakedown",
+        "faction": "both"
+      }
+    ],
+    "20641": [
+      {
+        "quest_id": 8366,
+        "name": "Southsea Shakedown",
+        "faction": "both"
+      }
+    ],
+    "20642": [
+      {
+        "quest_id": 8273,
+        "name": "Oran's Gratitude",
+        "faction": "horde"
+      }
+    ],
+    "20643": [
+      {
+        "quest_id": 8273,
+        "name": "Oran's Gratitude",
+        "faction": "horde"
+      }
+    ],
+    "20646": [
+      {
+        "quest_id": 8283,
+        "name": "Wanted - Deathclasp, Terror of the Sands",
+        "faction": "both"
+      }
+    ],
+    "20647": [
+      {
+        "quest_id": 8283,
+        "name": "Wanted - Deathclasp, Terror of the Sands",
+        "faction": "both"
+      }
+    ],
+    "20649": [
+      {
+        "quest_id": 8321,
+        "name": "Vyral the Vile",
+        "faction": "both"
+      }
+    ],
+    "20650": [
+      {
+        "quest_id": 8321,
+        "name": "Vyral the Vile",
+        "faction": "both"
+      }
+    ],
+    "20699": [
+      {
+        "quest_id": 8316,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20700": [
+      {
+        "quest_id": 8376,
+        "name": "Armaments of War",
+        "faction": "alliance"
+      }
+    ],
+    "20701": [
+      {
+        "quest_id": 8380,
+        "name": "Armaments of War",
+        "faction": "horde"
+      }
+    ],
+    "20702": [
+      {
+        "quest_id": 8377,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20703": [
+      {
+        "quest_id": 8378,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20704": [
+      {
+        "quest_id": 8382,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20705": [
+      {
+        "quest_id": 8381,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20707": [
+      {
+        "quest_id": 8379,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20710": [
+      {
+        "quest_id": 8316,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20711": [
+      {
+        "quest_id": 8376,
+        "name": "Armaments of War",
+        "faction": "alliance"
+      }
+    ],
+    "20712": [
+      {
+        "quest_id": 8380,
+        "name": "Armaments of War",
+        "faction": "horde"
+      }
+    ],
+    "20713": [
+      {
+        "quest_id": 8377,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20714": [
+      {
+        "quest_id": 8382,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20715": [
+      {
+        "quest_id": 8378,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20716": [
+      {
+        "quest_id": 8381,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20717": [
+      {
+        "quest_id": 8379,
+        "name": "Armaments of War",
+        "faction": "both"
+      }
+    ],
+    "20723": [
+      {
+        "quest_id": 8308,
+        "name": "Brann Bronzebeard's Lost Letter",
+        "faction": "both"
+      }
+    ],
+    "20724": [
+      {
+        "quest_id": 8306,
+        "name": "Into The Maw of Madness",
+        "faction": "both"
+      }
+    ],
+    "21178": [
+      {
+        "quest_id": 8548,
+        "name": "Volunteer's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21179": [
+      {
+        "quest_id": 8548,
+        "name": "Volunteer's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21180": [
+      {
+        "quest_id": 8573,
+        "name": "Champion's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21181": [
+      {
+        "quest_id": 8572,
+        "name": "Veteran's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21182": [
+      {
+        "quest_id": 8572,
+        "name": "Veteran's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21183": [
+      {
+        "quest_id": 8572,
+        "name": "Veteran's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21184": [
+      {
+        "quest_id": 8574,
+        "name": "Stalwart's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21185": [
+      {
+        "quest_id": 8574,
+        "name": "Stalwart's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21186": [
+      {
+        "quest_id": 8574,
+        "name": "Stalwart's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21187": [
+      {
+        "quest_id": 8548,
+        "name": "Volunteer's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21188": [
+      {
+        "quest_id": 8573,
+        "name": "Champion's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21189": [
+      {
+        "quest_id": 8574,
+        "name": "Stalwart's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21190": [
+      {
+        "quest_id": 8573,
+        "name": "Champion's Battlegear",
+        "faction": "both"
+      }
+    ],
+    "21196": [
+      {
+        "quest_id": 8747,
+        "name": "The Path of the Protector",
+        "faction": "both"
+      }
+    ],
+    "21197": [
+      {
+        "quest_id": 8748,
+        "name": "The Path of the Protector",
+        "faction": "both"
+      }
+    ],
+    "21198": [
+      {
+        "quest_id": 8749,
+        "name": "The Path of the Protector",
+        "faction": "both"
+      }
+    ],
+    "21199": [
+      {
+        "quest_id": 8750,
+        "name": "The Path of the Protector",
+        "faction": "both"
+      }
+    ],
+    "21201": [
+      {
+        "quest_id": 8752,
+        "name": "The Path of the Conqueror",
+        "faction": "both"
+      }
+    ],
+    "21202": [
+      {
+        "quest_id": 8753,
+        "name": "The Path of the Conqueror",
+        "faction": "both"
+      }
+    ],
+    "21203": [
+      {
+        "quest_id": 8754,
+        "name": "The Path of the Conqueror",
+        "faction": "both"
+      }
+    ],
+    "21204": [
+      {
+        "quest_id": 8755,
+        "name": "The Path of the Conqueror",
+        "faction": "both"
+      }
+    ],
+    "21206": [
+      {
+        "quest_id": 8757,
+        "name": "The Path of the Invoker",
+        "faction": "both"
+      }
+    ],
+    "21207": [
+      {
+        "quest_id": 8758,
+        "name": "The Path of the Invoker",
+        "faction": "both"
+      }
+    ],
+    "21208": [
+      {
+        "quest_id": 8759,
+        "name": "The Path of the Invoker",
+        "faction": "both"
+      }
+    ],
+    "21209": [
+      {
+        "quest_id": 8760,
+        "name": "The Path of the Invoker",
+        "faction": "both"
+      }
+    ],
+    "21242": [
+      {
+        "quest_id": 8789,
+        "name": "Imperial Qiraji Armaments",
+        "faction": "both"
+      }
+    ],
+    "21244": [
+      {
+        "quest_id": 8789,
+        "name": "Imperial Qiraji Armaments",
+        "faction": "both"
+      }
+    ],
+    "21268": [
+      {
+        "quest_id": 8790,
+        "name": "Imperial Qiraji Regalia",
+        "faction": "both"
+      }
+    ],
+    "21269": [
+      {
+        "quest_id": 8789,
+        "name": "Imperial Qiraji Armaments",
+        "faction": "both"
+      }
+    ],
+    "21272": [
+      {
+        "quest_id": 8789,
+        "name": "Imperial Qiraji Armaments",
+        "faction": "both"
+      }
+    ],
+    "21273": [
+      {
+        "quest_id": 8790,
+        "name": "Imperial Qiraji Regalia",
+        "faction": "both"
+      }
+    ],
+    "21275": [
+      {
+        "quest_id": 8790,
+        "name": "Imperial Qiraji Regalia",
+        "faction": "both"
+      }
+    ],
+    "21311": [
+      {
+        "quest_id": 8460,
+        "name": "Timbermaw Ally",
+        "faction": "both"
+      }
+    ],
+    "21312": [
+      {
+        "quest_id": 8460,
+        "name": "Timbermaw Ally",
+        "faction": "both"
+      }
+    ],
+    "21316": [
+      {
+        "quest_id": 8461,
+        "name": "Deadwood of the North",
+        "faction": "both"
+      }
+    ],
+    "21317": [
+      {
+        "quest_id": 8461,
+        "name": "Deadwood of the North",
+        "faction": "both"
+      }
+    ],
+    "21318": [
+      {
+        "quest_id": 8464,
+        "name": "Winterfall Activity",
+        "faction": "both"
+      }
+    ],
+    "21319": [
+      {
+        "quest_id": 8464,
+        "name": "Winterfall Activity",
+        "faction": "both"
+      }
+    ],
+    "21320": [
+      {
+        "quest_id": 8464,
+        "name": "Winterfall Activity",
+        "faction": "both"
+      }
+    ],
+    "21322": [
+      {
+        "quest_id": 8464,
+        "name": "Winterfall Activity",
+        "faction": "both"
+      }
+    ],
+    "21326": [
+      {
+        "quest_id": 8481,
+        "name": "The Root of All Evil",
+        "faction": "both"
+      }
+    ],
+    "21329": [
+      {
+        "quest_id": 8561,
+        "name": "Conqueror's Crown",
+        "faction": "both"
+      }
+    ],
+    "21330": [
+      {
+        "quest_id": 8544,
+        "name": "Conqueror's Spaulders",
+        "faction": "both"
+      }
+    ],
+    "21331": [
+      {
+        "quest_id": 8562,
+        "name": "Conqueror's Breastplate",
+        "faction": "both"
+      }
+    ],
+    "21332": [
+      {
+        "quest_id": 8560,
+        "name": "Conqueror's Legguards",
+        "faction": "both"
+      }
+    ],
+    "21333": [
+      {
+        "quest_id": 8559,
+        "name": "Conqueror's Greaves",
+        "faction": "both"
+      }
+    ],
+    "21334": [
+      {
+        "quest_id": 8661,
+        "name": "Doomcaller's Robes",
+        "faction": "both"
+      }
+    ],
+    "21335": [
+      {
+        "quest_id": 8664,
+        "name": "Doomcaller's Mantle",
+        "faction": "both"
+      }
+    ],
+    "21336": [
+      {
+        "quest_id": 8663,
+        "name": "Doomcaller's Trousers",
+        "faction": "both"
+      }
+    ],
+    "21337": [
+      {
+        "quest_id": 8662,
+        "name": "Doomcaller's Circlet",
+        "faction": "both"
+      }
+    ],
+    "21338": [
+      {
+        "quest_id": 8660,
+        "name": "Doomcaller's Footwraps",
+        "faction": "both"
+      }
+    ],
+    "21343": [
+      {
+        "quest_id": 8633,
+        "name": "Enigma Robes",
+        "faction": "both"
+      }
+    ],
+    "21344": [
+      {
+        "quest_id": 8634,
+        "name": "Enigma Boots",
+        "faction": "both"
+      }
+    ],
+    "21345": [
+      {
+        "quest_id": 8625,
+        "name": "Enigma Shoulderpads",
+        "faction": "both"
+      }
+    ],
+    "21346": [
+      {
+        "quest_id": 8631,
+        "name": "Enigma Leggings",
+        "faction": "both"
+      }
+    ],
+    "21347": [
+      {
+        "quest_id": 8632,
+        "name": "Enigma Circlet",
+        "faction": "both"
+      }
+    ],
+    "21348": [
+      {
+        "quest_id": 8592,
+        "name": "Tiara of the Oracle",
+        "faction": "both"
+      }
+    ],
+    "21349": [
+      {
+        "quest_id": 8596,
+        "name": "Footwraps of the Oracle",
+        "faction": "both"
+      }
+    ],
+    "21350": [
+      {
+        "quest_id": 8594,
+        "name": "Mantle of the Oracle",
+        "faction": "both"
+      }
+    ],
+    "21351": [
+      {
+        "quest_id": 8603,
+        "name": "Vestments of the Oracle",
+        "faction": "both"
+      }
+    ],
+    "21352": [
+      {
+        "quest_id": 8593,
+        "name": "Trousers of the Oracle",
+        "faction": "both"
+      }
+    ],
+    "21353": [
+      {
+        "quest_id": 8667,
+        "name": "Genesis Helm",
+        "faction": "both"
+      }
+    ],
+    "21354": [
+      {
+        "quest_id": 8669,
+        "name": "Genesis Shoulderpads",
+        "faction": "both"
+      }
+    ],
+    "21355": [
+      {
+        "quest_id": 8665,
+        "name": "Genesis Boots",
+        "faction": "both"
+      }
+    ],
+    "21356": [
+      {
+        "quest_id": 8668,
+        "name": "Genesis Trousers",
+        "faction": "both"
+      }
+    ],
+    "21357": [
+      {
+        "quest_id": 8666,
+        "name": "Genesis Vest",
+        "faction": "both"
+      }
+    ],
+    "21359": [
+      {
+        "quest_id": 8637,
+        "name": "Deathdealer's Boots",
+        "faction": "both"
+      }
+    ],
+    "21360": [
+      {
+        "quest_id": 8639,
+        "name": "Deathdealer's Helm",
+        "faction": "both"
+      }
+    ],
+    "21361": [
+      {
+        "quest_id": 8641,
+        "name": "Deathdealer's Spaulders",
+        "faction": "both"
+      }
+    ],
+    "21362": [
+      {
+        "quest_id": 8640,
+        "name": "Deathdealer's Leggings",
+        "faction": "both"
+      }
+    ],
+    "21364": [
+      {
+        "quest_id": 8638,
+        "name": "Deathdealer's Vest",
+        "faction": "both"
+      }
+    ],
+    "21365": [
+      {
+        "quest_id": 8626,
+        "name": "Striker's Footguards",
+        "faction": "both"
+      }
+    ],
+    "21366": [
+      {
+        "quest_id": 8657,
+        "name": "Striker's Diadem",
+        "faction": "both"
+      }
+    ],
+    "21367": [
+      {
+        "quest_id": 8659,
+        "name": "Striker's Pauldrons",
+        "faction": "both"
+      }
+    ],
+    "21368": [
+      {
+        "quest_id": 8658,
+        "name": "Striker's Leggings",
+        "faction": "both"
+      }
+    ],
+    "21370": [
+      {
+        "quest_id": 8656,
+        "name": "Striker's Hauberk",
+        "faction": "both"
+      }
+    ],
+    "21372": [
+      {
+        "quest_id": 8623,
+        "name": "Stormcaller's Diadem",
+        "faction": "horde"
+      }
+    ],
+    "21373": [
+      {
+        "quest_id": 8621,
+        "name": "Stormcaller's Footguards",
+        "faction": "horde"
+      }
+    ],
+    "21374": [
+      {
+        "quest_id": 8622,
+        "name": "Stormcaller's Hauberk",
+        "faction": "horde"
+      }
+    ],
+    "21375": [
+      {
+        "quest_id": 8624,
+        "name": "Stormcaller's Leggings",
+        "faction": "horde"
+      }
+    ],
+    "21376": [
+      {
+        "quest_id": 8602,
+        "name": "Stormcaller's Pauldrons",
+        "faction": "horde"
+      }
+    ],
+    "21387": [
+      {
+        "quest_id": 8628,
+        "name": "Avenger's Crown",
+        "faction": "alliance"
+      }
+    ],
+    "21388": [
+      {
+        "quest_id": 8655,
+        "name": "Avenger's Greaves",
+        "faction": "alliance"
+      }
+    ],
+    "21389": [
+      {
+        "quest_id": 8627,
+        "name": "Avenger's Breastplate",
+        "faction": "alliance"
+      }
+    ],
+    "21390": [
+      {
+        "quest_id": 8629,
+        "name": "Avenger's Legguards",
+        "faction": "alliance"
+      }
+    ],
+    "21391": [
+      {
+        "quest_id": 8630,
+        "name": "Avenger's Pauldrons",
+        "faction": "alliance"
+      }
+    ],
+    "21392": [
+      {
+        "quest_id": 8558,
+        "name": "Sickle of Unyielding Strength",
+        "faction": "both"
+      }
+    ],
+    "21393": [
+      {
+        "quest_id": 8556,
+        "name": "Signet of Unyielding Strength",
+        "faction": "both"
+      }
+    ],
+    "21394": [
+      {
+        "quest_id": 8557,
+        "name": "Drape of Unyielding Strength",
+        "faction": "both"
+      }
+    ],
+    "21395": [
+      {
+        "quest_id": 8711,
+        "name": "Blade of Eternal Justice",
+        "faction": "alliance"
+      }
+    ],
+    "21396": [
+      {
+        "quest_id": 8703,
+        "name": "Ring of Eternal Justice",
+        "faction": "alliance"
+      }
+    ],
+    "21397": [
+      {
+        "quest_id": 8695,
+        "name": "Cape of Eternal Justice",
+        "faction": "alliance"
+      }
+    ],
+    "21398": [
+      {
+        "quest_id": 8706,
+        "name": "Hammer of the Gathering Storm",
+        "faction": "horde"
+      }
+    ],
+    "21399": [
+      {
+        "quest_id": 8698,
+        "name": "Ring of the Gathering Storm",
+        "faction": "horde"
+      }
+    ],
+    "21400": [
+      {
+        "quest_id": 8690,
+        "name": "Cloak of the Gathering Storm",
+        "faction": "horde"
+      }
+    ],
+    "21401": [
+      {
+        "quest_id": 8712,
+        "name": "Scythe of the Unseen Path",
+        "faction": "both"
+      }
+    ],
+    "21402": [
+      {
+        "quest_id": 8704,
+        "name": "Signet of the Unseen Path",
+        "faction": "both"
+      }
+    ],
+    "21403": [
+      {
+        "quest_id": 8696,
+        "name": "Cloak of the Unseen Path",
+        "faction": "both"
+      }
+    ],
+    "21404": [
+      {
+        "quest_id": 8709,
+        "name": "Dagger of Veiled Shadows",
+        "faction": "both"
+      }
+    ],
+    "21405": [
+      {
+        "quest_id": 8701,
+        "name": "Band of Veiled Shadows",
+        "faction": "both"
+      }
+    ],
+    "21406": [
+      {
+        "quest_id": 8693,
+        "name": "Cloak of Veiled Shadows",
+        "faction": "both"
+      }
+    ],
+    "21407": [
+      {
+        "quest_id": 8708,
+        "name": "Mace of Unending Life",
+        "faction": "both"
+      }
+    ],
+    "21408": [
+      {
+        "quest_id": 8700,
+        "name": "Band of Unending Life",
+        "faction": "both"
+      }
+    ],
+    "21409": [
+      {
+        "quest_id": 8692,
+        "name": "Cloak of Unending Life",
+        "faction": "both"
+      }
+    ],
+    "21410": [
+      {
+        "quest_id": 8705,
+        "name": "Gavel of Infinite Wisdom",
+        "faction": "both"
+      }
+    ],
+    "21411": [
+      {
+        "quest_id": 8697,
+        "name": "Ring of Infinite Wisdom",
+        "faction": "both"
+      }
+    ],
+    "21412": [
+      {
+        "quest_id": 8689,
+        "name": "Shroud of Infinite Wisdom",
+        "faction": "both"
+      }
+    ],
+    "21413": [
+      {
+        "quest_id": 8707,
+        "name": "Blade of Vaulted Secrets",
+        "faction": "both"
+      }
+    ],
+    "21414": [
+      {
+        "quest_id": 8699,
+        "name": "Band of Vaulted Secrets",
+        "faction": "both"
+      }
+    ],
+    "21415": [
+      {
+        "quest_id": 8691,
+        "name": "Drape of Vaulted Secrets",
+        "faction": "both"
+      }
+    ],
+    "21416": [
+      {
+        "quest_id": 8710,
+        "name": "Kris of Unspoken Names",
+        "faction": "both"
+      }
+    ],
+    "21417": [
+      {
+        "quest_id": 8702,
+        "name": "Ring of Unspoken Names",
+        "faction": "both"
+      }
+    ],
+    "21418": [
+      {
+        "quest_id": 8694,
+        "name": "Shroud of Unspoken Names",
+        "faction": "both"
+      }
+    ],
+    "21504": [
+      {
+        "quest_id": 8791,
+        "name": "The Fall of Ossirian",
+        "faction": "both"
+      }
+    ],
+    "21505": [
+      {
+        "quest_id": 8791,
+        "name": "The Fall of Ossirian",
+        "faction": "both"
+      }
+    ],
+    "21506": [
+      {
+        "quest_id": 8791,
+        "name": "The Fall of Ossirian",
+        "faction": "both"
+      }
+    ],
+    "21507": [
+      {
+        "quest_id": 8791,
+        "name": "The Fall of Ossirian",
+        "faction": "both"
+      }
+    ],
+    "21517": [
+      {
+        "quest_id": 8620,
+        "name": "The Only Prescription",
+        "faction": "both"
+      }
+    ],
+    "21520": [
+      {
+        "quest_id": 8745,
+        "name": "Treasure of the Timeless One",
+        "faction": "both"
+      }
+    ],
+    "21521": [
+      {
+        "quest_id": 8745,
+        "name": "Treasure of the Timeless One",
+        "faction": "both"
+      }
+    ],
+    "21522": [
+      {
+        "quest_id": 8745,
+        "name": "Treasure of the Timeless One",
+        "faction": "both"
+      }
+    ],
+    "21523": [
+      {
+        "quest_id": 8745,
+        "name": "Treasure of the Timeless One",
+        "faction": "both"
+      }
+    ],
+    "21526": [
+      {
+        "quest_id": 8729,
+        "name": "The Wrath of Neptulon",
+        "faction": "both"
+      }
+    ],
+    "21527": [
+      {
+        "quest_id": 8729,
+        "name": "The Wrath of Neptulon",
+        "faction": "both"
+      }
+    ],
+    "21529": [
+      {
+        "quest_id": 8730,
+        "name": "Nefarius's Corruption",
+        "faction": "both"
+      }
+    ],
+    "21530": [
+      {
+        "quest_id": 8730,
+        "name": "Nefarius's Corruption",
+        "faction": "both"
+      }
+    ],
+    "21531": [
+      {
+        "quest_id": 8736,
+        "name": "The Nightmare Manifests",
+        "faction": "both"
+      }
+    ],
+    "21532": [
+      {
+        "quest_id": 8736,
+        "name": "The Nightmare Manifests",
+        "faction": "both"
+      }
+    ],
+    "21709": [
+      {
+        "quest_id": 8802,
+        "name": "The Savior of Kalimdor",
+        "faction": "both"
+      }
+    ],
+    "21710": [
+      {
+        "quest_id": 8802,
+        "name": "The Savior of Kalimdor",
+        "faction": "both"
+      }
+    ],
+    "21712": [
+      {
+        "quest_id": 8802,
+        "name": "The Savior of Kalimdor",
+        "faction": "both"
+      }
+    ],
+    "22086": [
+      {
+        "quest_id": 8933,
+        "name": "Just Compensation",
+        "faction": "alliance"
+      }
+    ],
+    "22087": [
+      {
+        "quest_id": 8954,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance"
+      }
+    ],
+    "22088": [
+      {
+        "quest_id": 8908,
+        "name": "An Earnest Proposition",
+        "faction": "alliance"
+      }
+    ],
+    "22089": [
+      {
+        "quest_id": 9002,
+        "name": "Saving the Best for Last",
+        "faction": "alliance"
+      }
+    ],
+    "22090": [
+      {
+        "quest_id": 8933,
+        "name": "Just Compensation",
+        "faction": "alliance"
+      }
+    ],
+    "22091": [
+      {
+        "quest_id": 9002,
+        "name": "Saving the Best for Last",
+        "faction": "alliance"
+      }
+    ],
+    "22092": [
+      {
+        "quest_id": 8954,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance"
+      }
+    ],
+    "22093": [
+      {
+        "quest_id": 8954,
+        "name": "Anthion's Parting Words",
+        "faction": "alliance"
+      }
+    ],
+    "22095": [
+      {
+        "quest_id": 8918,
+        "name": "An Earnest Proposition",
+        "faction": "horde"
+      }
+    ],
+    "22096": [
+      {
+        "quest_id": 8957,
+        "name": "Anthion's Parting Words",
+        "faction": "horde"
+      }
+    ],
+    "22097": [
+      {
+        "quest_id": 9011,
+        "name": "Saving the Best for Last",
+        "faction": "horde"
+      }
+    ],
+    "22098": [
+      {
+        "quest_id": 8942,
+        "name": "Just Compensation",
+        "faction": "horde"
+      }
+    ],
+    "22099": [
+      {
+        "quest_id": 8942,
+        "name": "Just Compensation",
+        "faction": "horde"
+      }
+    ],
+    "22100": [
+      {
+        "quest_id": 8957,
+        "name": "Anthion's Parting Words",
+        "faction": "horde"
+      }
+    ],
+    "22101": [
+      {
+        "quest_id": 8957,
+        "name": "Anthion's Parting Words",
+        "faction": "horde"
+      }
+    ],
+    "22102": [
+      {
+        "quest_id": 9011,
+        "name": "Saving the Best for Last",
+        "faction": "horde"
+      }
+    ],
+    "22149": [
+      {
+        "quest_id": 8949,
+        "name": "Falrin's Vendetta",
+        "faction": "both"
+      }
+    ],
+    "22150": [
+      {
+        "quest_id": 8949,
+        "name": "Falrin's Vendetta",
+        "faction": "both"
+      }
+    ],
+    "22347": [
+      {
+        "quest_id": 9023,
+        "name": "The Perfect Poison",
+        "faction": "both"
+      }
+    ],
+    "22348": [
+      {
+        "quest_id": 9023,
+        "name": "The Perfect Poison",
+        "faction": "both"
+      }
+    ],
+    "22377": [
+      {
+        "quest_id": 9023,
+        "name": "The Perfect Poison",
+        "faction": "both"
+      }
+    ],
+    "22378": [
+      {
+        "quest_id": 9023,
+        "name": "The Perfect Poison",
+        "faction": "both"
+      }
+    ],
+    "22379": [
+      {
+        "quest_id": 9023,
+        "name": "The Perfect Poison",
+        "faction": "both"
+      }
+    ],
+    "22380": [
+      {
+        "quest_id": 9023,
+        "name": "The Perfect Poison",
+        "faction": "both"
+      }
+    ],
+    "22416": [
+      {
+        "quest_id": 9034,
+        "name": "Dreadnaught Breastplate",
+        "faction": "both"
+      }
+    ],
+    "22417": [
+      {
+        "quest_id": 9036,
+        "name": "Dreadnaught Legplates",
+        "faction": "both"
+      }
+    ],
+    "22418": [
+      {
+        "quest_id": 9037,
+        "name": "Dreadnaught Helmet",
+        "faction": "both"
+      }
+    ],
+    "22419": [
+      {
+        "quest_id": 9038,
+        "name": "Dreadnaught Pauldrons",
+        "faction": "both"
+      }
+    ],
+    "22420": [
+      {
+        "quest_id": 9039,
+        "name": "Dreadnaught Sabatons",
+        "faction": "both"
+      }
+    ],
+    "22421": [
+      {
+        "quest_id": 9040,
+        "name": "Dreadnaught Gauntlets",
+        "faction": "both"
+      }
+    ],
+    "22422": [
+      {
+        "quest_id": 9041,
+        "name": "Dreadnaught Waistguard",
+        "faction": "both"
+      }
+    ],
+    "22423": [
+      {
+        "quest_id": 9042,
+        "name": "Dreadnaught Bracers",
+        "faction": "both"
+      }
+    ],
+    "22424": [
+      {
+        "quest_id": 9050,
+        "name": "Redemption Wristguards",
+        "faction": "both"
+      }
+    ],
+    "22425": [
+      {
+        "quest_id": 9043,
+        "name": "Redemption Tunic",
+        "faction": "both"
+      }
+    ],
+    "22426": [
+      {
+        "quest_id": 9048,
+        "name": "Redemption Handguards",
+        "faction": "alliance"
+      }
+    ],
+    "22427": [
+      {
+        "quest_id": 9044,
+        "name": "Redemption Legguards",
+        "faction": "alliance"
+      }
+    ],
+    "22428": [
+      {
+        "quest_id": 9045,
+        "name": "Redemption Headpiece",
+        "faction": "both"
+      }
+    ],
+    "22429": [
+      {
+        "quest_id": 9046,
+        "name": "Redemption Spaulders",
+        "faction": "alliance"
+      }
+    ],
+    "22430": [
+      {
+        "quest_id": 9047,
+        "name": "Redemption Boots",
+        "faction": "alliance"
+      }
+    ],
+    "22431": [
+      {
+        "quest_id": 9049,
+        "name": "Redemption Girdle",
+        "faction": "alliance"
+      }
+    ],
+    "22436": [
+      {
+        "quest_id": 9054,
+        "name": "Cryptstalker Tunic",
+        "faction": "both"
+      }
+    ],
+    "22437": [
+      {
+        "quest_id": 9055,
+        "name": "Cryptstalker Legguards",
+        "faction": "both"
+      }
+    ],
+    "22438": [
+      {
+        "quest_id": 9056,
+        "name": "Cryptstalker Headpiece",
+        "faction": "both"
+      }
+    ],
+    "22439": [
+      {
+        "quest_id": 9057,
+        "name": "Cryptstalker Spaulders",
+        "faction": "both"
+      }
+    ],
+    "22440": [
+      {
+        "quest_id": 9058,
+        "name": "Cryptstalker Boots",
+        "faction": "both"
+      }
+    ],
+    "22441": [
+      {
+        "quest_id": 9059,
+        "name": "Cryptstalker Handguards",
+        "faction": "both"
+      }
+    ],
+    "22442": [
+      {
+        "quest_id": 9060,
+        "name": "Cryptstalker Girdle",
+        "faction": "both"
+      }
+    ],
+    "22443": [
+      {
+        "quest_id": 9061,
+        "name": "Cryptstalker Wristguards",
+        "faction": "both"
+      }
+    ],
+    "22464": [
+      {
+        "quest_id": 9068,
+        "name": "Earthshatter Tunic",
+        "faction": "horde"
+      }
+    ],
+    "22465": [
+      {
+        "quest_id": 9069,
+        "name": "Earthshatter Legguards",
+        "faction": "horde"
+      }
+    ],
+    "22466": [
+      {
+        "quest_id": 9070,
+        "name": "Earthshatter Headpiece",
+        "faction": "horde"
+      }
+    ],
+    "22467": [
+      {
+        "quest_id": 9071,
+        "name": "Earthshatter Spaulders",
+        "faction": "horde"
+      }
+    ],
+    "22468": [
+      {
+        "quest_id": 9072,
+        "name": "Earthshatter Boots",
+        "faction": "horde"
+      }
+    ],
+    "22469": [
+      {
+        "quest_id": 9073,
+        "name": "Earthshatter Handguards",
+        "faction": "horde"
+      }
+    ],
+    "22470": [
+      {
+        "quest_id": 9074,
+        "name": "Earthshatter Girdle",
+        "faction": "horde"
+      }
+    ],
+    "22471": [
+      {
+        "quest_id": 9075,
+        "name": "Earthshatter Wristguards",
+        "faction": "horde"
+      }
+    ],
+    "22476": [
+      {
+        "quest_id": 9077,
+        "name": "Bonescythe Breastplate",
+        "faction": "both"
+      }
+    ],
+    "22477": [
+      {
+        "quest_id": 9078,
+        "name": "Bonescythe Legplates",
+        "faction": "both"
+      }
+    ],
+    "22478": [
+      {
+        "quest_id": 9079,
+        "name": "Bonescythe Helmet",
+        "faction": "both"
+      }
+    ],
+    "22479": [
+      {
+        "quest_id": 9080,
+        "name": "Bonescythe Pauldrons",
+        "faction": "both"
+      }
+    ],
+    "22480": [
+      {
+        "quest_id": 9081,
+        "name": "Bonescythe Sabatons",
+        "faction": "both"
+      }
+    ],
+    "22481": [
+      {
+        "quest_id": 9082,
+        "name": "Bonescythe Gauntlets",
+        "faction": "both"
+      }
+    ],
+    "22482": [
+      {
+        "quest_id": 9083,
+        "name": "Bonescythe Waistguard",
+        "faction": "both"
+      }
+    ],
+    "22483": [
+      {
+        "quest_id": 9084,
+        "name": "Bonescythe Bracers",
+        "faction": "both"
+      }
+    ],
+    "22488": [
+      {
+        "quest_id": 9086,
+        "name": "Dreamwalker Tunic",
+        "faction": "both"
+      }
+    ],
+    "22489": [
+      {
+        "quest_id": 9087,
+        "name": "Dreamwalker Legguards",
+        "faction": "both"
+      }
+    ],
+    "22490": [
+      {
+        "quest_id": 9088,
+        "name": "Dreamwalker Headpiece",
+        "faction": "both"
+      }
+    ],
+    "22491": [
+      {
+        "quest_id": 9089,
+        "name": "Dreamwalker Spaulders",
+        "faction": "both"
+      }
+    ],
+    "22492": [
+      {
+        "quest_id": 9090,
+        "name": "Dreamwalker Boots",
+        "faction": "both"
+      }
+    ],
+    "22493": [
+      {
+        "quest_id": 9091,
+        "name": "Dreamwalker Handguards",
+        "faction": "both"
+      }
+    ],
+    "22494": [
+      {
+        "quest_id": 9092,
+        "name": "Dreamwalker Girdle",
+        "faction": "both"
+      }
+    ],
+    "22495": [
+      {
+        "quest_id": 9093,
+        "name": "Dreamwalker Wristguards",
+        "faction": "both"
+      }
+    ],
+    "22496": [
+      {
+        "quest_id": 9095,
+        "name": "Frostfire Robe",
+        "faction": "both"
+      }
+    ],
+    "22497": [
+      {
+        "quest_id": 9096,
+        "name": "Frostfire Leggings",
+        "faction": "both"
+      }
+    ],
+    "22498": [
+      {
+        "quest_id": 9097,
+        "name": "Frostfire Circlet",
+        "faction": "both"
+      }
+    ],
+    "22499": [
+      {
+        "quest_id": 9098,
+        "name": "Frostfire Shoulderpads",
+        "faction": "both"
+      }
+    ],
+    "22500": [
+      {
+        "quest_id": 9099,
+        "name": "Frostfire Sandals",
+        "faction": "both"
+      }
+    ],
+    "22501": [
+      {
+        "quest_id": 9100,
+        "name": "Frostfire Gloves",
+        "faction": "both"
+      }
+    ],
+    "22502": [
+      {
+        "quest_id": 9101,
+        "name": "Frostfire Belt",
+        "faction": "both"
+      }
+    ],
+    "22503": [
+      {
+        "quest_id": 9102,
+        "name": "Frostfire Bindings",
+        "faction": "both"
+      }
+    ],
+    "22504": [
+      {
+        "quest_id": 9103,
+        "name": "Plagueheart Robe",
+        "faction": "both"
+      }
+    ],
+    "22505": [
+      {
+        "quest_id": 9104,
+        "name": "Plagueheart Leggings",
+        "faction": "both"
+      }
+    ],
+    "22506": [
+      {
+        "quest_id": 9105,
+        "name": "Plagueheart Circlet",
+        "faction": "both"
+      }
+    ],
+    "22507": [
+      {
+        "quest_id": 9106,
+        "name": "Plagueheart Shoulderpads",
+        "faction": "both"
+      }
+    ],
+    "22508": [
+      {
+        "quest_id": 9107,
+        "name": "Plagueheart Sandals",
+        "faction": "both"
+      }
+    ],
+    "22509": [
+      {
+        "quest_id": 9108,
+        "name": "Plagueheart Gloves",
+        "faction": "both"
+      }
+    ],
+    "22510": [
+      {
+        "quest_id": 9109,
+        "name": "Plagueheart Belt",
+        "faction": "both"
+      }
+    ],
+    "22511": [
+      {
+        "quest_id": 9110,
+        "name": "Plagueheart Bindings",
+        "faction": "both"
+      }
+    ],
+    "22512": [
+      {
+        "quest_id": 9111,
+        "name": "Robe of Faith",
+        "faction": "both"
+      }
+    ],
+    "22513": [
+      {
+        "quest_id": 9112,
+        "name": "Leggings of Faith",
+        "faction": "both"
+      }
+    ],
+    "22514": [
+      {
+        "quest_id": 9113,
+        "name": "Circlet of Faith",
+        "faction": "both"
+      }
+    ],
+    "22515": [
+      {
+        "quest_id": 9114,
+        "name": "Shoulderpads of Faith",
+        "faction": "both"
+      }
+    ],
+    "22516": [
+      {
+        "quest_id": 9115,
+        "name": "Sandals of Faith",
+        "faction": "both"
+      }
+    ],
+    "22517": [
+      {
+        "quest_id": 9116,
+        "name": "Gloves of Faith",
+        "faction": "both"
+      }
+    ],
+    "22518": [
+      {
+        "quest_id": 9117,
+        "name": "Belt of Faith",
+        "faction": "both"
+      }
+    ],
+    "22519": [
+      {
+        "quest_id": 9118,
+        "name": "Bindings of Faith",
+        "faction": "both"
+      }
+    ],
+    "22589": [
+      {
+        "quest_id": 9270,
+        "name": "Atiesh, Greatstaff of the Guardian",
+        "faction": "both"
+      }
+    ],
+    "22630": [
+      {
+        "quest_id": 9271,
+        "name": "Atiesh, Greatstaff of the Guardian",
+        "faction": "both"
+      }
+    ],
+    "22631": [
+      {
+        "quest_id": 9257,
+        "name": "Atiesh, Greatstaff of the Guardian",
+        "faction": "both"
+      }
+    ],
+    "22632": [
+      {
+        "quest_id": 9269,
+        "name": "Atiesh, Greatstaff of the Guardian",
+        "faction": "both"
+      }
+    ],
+    "22652": [
+      {
+        "quest_id": 9240,
+        "name": "Glacial Vest",
+        "faction": "both"
+      }
+    ],
+    "22654": [
+      {
+        "quest_id": 9239,
+        "name": "Glacial Gloves",
+        "faction": "both"
+      }
+    ],
+    "22655": [
+      {
+        "quest_id": 9238,
+        "name": "Glacial Wrists",
+        "faction": "both"
+      }
+    ],
+    "22658": [
+      {
+        "quest_id": 9237,
+        "name": "Glacial Cloak",
+        "faction": "both"
+      }
+    ],
+    "22661": [
+      {
+        "quest_id": 9243,
+        "name": "Polar Tunic",
+        "faction": "both"
+      }
+    ],
+    "22662": [
+      {
+        "quest_id": 9242,
+        "name": "Polar Gloves",
+        "faction": "both"
+      }
+    ],
+    "22663": [
+      {
+        "quest_id": 9241,
+        "name": "Polar Bracers",
+        "faction": "both"
+      }
+    ],
+    "22664": [
+      {
+        "quest_id": 9246,
+        "name": "Icy Scale Breastplate",
+        "faction": "both"
+      }
+    ],
+    "22665": [
+      {
+        "quest_id": 9244,
+        "name": "Icy Scale Bracers",
+        "faction": "both"
+      }
+    ],
+    "22666": [
+      {
+        "quest_id": 9245,
+        "name": "Icy Scale Gauntlets",
+        "faction": "both"
+      }
+    ],
+    "22669": [
+      {
+        "quest_id": 9236,
+        "name": "Icebane Breastplate",
+        "faction": "both"
+      }
+    ],
+    "22670": [
+      {
+        "quest_id": 9234,
+        "name": "Icebane Gauntlets",
+        "faction": "both"
+      }
+    ],
+    "22671": [
+      {
+        "quest_id": 9235,
+        "name": "Icebane Bracers",
+        "faction": "both"
+      }
+    ],
+    "22699": [
+      {
+        "quest_id": 9232,
+        "name": "The Only Song I Know...",
+        "faction": "both"
+      }
+    ],
+    "22700": [
+      {
+        "quest_id": 9232,
+        "name": "The Only Song I Know...",
+        "faction": "both"
+      }
+    ],
+    "22701": [
+      {
+        "quest_id": 9232,
+        "name": "The Only Song I Know...",
+        "faction": "both"
+      }
+    ],
+    "22702": [
+      {
+        "quest_id": 9232,
+        "name": "The Only Song I Know...",
+        "faction": "both"
+      }
+    ],
+    "22707": [
+      {
+        "quest_id": 9230,
+        "name": "Ramaladni's Icy Grasp",
+        "faction": "both"
+      }
+    ],
+    "22725": [
+      {
+        "quest_id": 9248,
+        "name": "A Humble Offering",
+        "faction": "both"
+      }
+    ],
+    "23206": [
+      {
+        "quest_id": 9120,
+        "name": "The Fall of Kel'Thuzad",
+        "faction": "both"
+      }
+    ],
+    "23207": [
+      {
+        "quest_id": 9120,
+        "name": "The Fall of Kel'Thuzad",
+        "faction": "both"
+      }
+    ]
+  },
+  "factions": {
+    "744": "alliance",
+    "1009": "alliance",
+    "1116": "alliance",
+    "1131": "alliance",
+    "1264": "alliance",
+    "1270": "alliance",
+    "1273": "alliance",
+    "1275": "alliance",
+    "1276": "alliance",
+    "1282": "alliance",
+    "1302": "alliance",
+    "1303": "alliance",
+    "1304": "alliance",
+    "1306": "horde",
+    "1310": "alliance",
+    "1317": "alliance",
+    "1319": "alliance",
+    "1436": "alliance",
+    "1449": "alliance",
+    "1480": "alliance",
+    "1547": "alliance",
+    "1561": "alliance",
+    "1566": "alliance",
+    "1893": "alliance",
+    "2000": "alliance",
+    "2032": "horde",
+    "2033": "alliance",
+    "2036": "alliance",
+    "2037": "alliance",
+    "2041": "alliance",
+    "2042": "alliance",
+    "2043": "alliance",
+    "2044": "alliance",
+    "2074": "alliance",
+    "2089": "alliance",
+    "2218": "alliance",
+    "2230": "horde",
+    "2231": "horde",
+    "2263": "alliance",
+    "2545": "alliance",
+    "2694": "horde",
+    "2805": "alliance",
+    "2817": "alliance",
+    "2818": "horde",
+    "2902": "alliance",
+    "2903": "alliance",
+    "2904": "alliance",
+    "2906": "alliance",
+    "2907": "alliance",
+    "2908": "alliance",
+    "2910": "alliance",
+    "2913": "alliance",
+    "2916": "alliance",
+    "2917": "alliance",
+    "2933": "alliance",
+    "2943": "alliance",
+    "2949": "alliance",
+    "2950": "alliance",
+    "2953": "alliance",
+    "2954": "alliance",
+    "3079": "horde",
+    "3103": "alliance",
+    "3154": "alliance",
+    "3160": "alliance",
+    "3161": "alliance",
+    "3166": "alliance",
+    "3209": "alliance",
+    "3217": "alliance",
+    "3235": "horde",
+    "3324": "horde",
+    "3400": "alliance",
+    "3431": "alliance",
+    "3440": "horde",
+    "3446": "horde",
+    "3449": "horde",
+    "3450": "horde",
+    "3451": "horde",
+    "3452": "horde",
+    "3457": "horde",
+    "3458": "horde",
+    "3461": "horde",
+    "3462": "horde",
+    "3493": "alliance",
+    "3511": "alliance",
+    "3555": "alliance",
+    "3558": "alliance",
+    "3559": "alliance",
+    "3560": "alliance",
+    "3561": "alliance",
+    "3562": "alliance",
+    "3565": "alliance",
+    "3566": "alliance",
+    "3567": "alliance",
+    "3570": "horde",
+    "3572": "alliance",
+    "3578": "alliance",
+    "3581": "horde",
+    "3582": "horde",
+    "3585": "horde",
+    "3586": "horde",
+    "3733": "horde",
+    "3739": "horde",
+    "3741": "horde",
+    "3742": "horde",
+    "3743": "horde",
+    "3747": "horde",
+    "3749": "horde",
+    "3750": "horde",
+    "3751": "horde",
+    "3752": "horde",
+    "3753": "alliance",
+    "3754": "alliance",
+    "3755": "alliance",
+    "3758": "alliance",
+    "3759": "alliance",
+    "3760": "horde",
+    "3761": "horde",
+    "3763": "alliance",
+    "3764": "horde",
+    "3765": "horde",
+    "3822": "horde",
+    "4112": "horde",
+    "4115": "horde",
+    "4120": "alliance",
+    "4122": "alliance",
+    "4123": "alliance",
+    "4124": "alliance",
+    "4125": "alliance",
+    "4126": "alliance",
+    "4127": "alliance",
+    "4132": "horde",
+    "4133": "horde",
+    "4134": "horde",
+    "4135": "horde",
+    "4136": "horde",
+    "4137": "horde",
+    "4139": "alliance",
+    "4140": "alliance",
+    "4430": "horde",
+    "4443": "horde",
+    "4504": "alliance",
+    "4505": "alliance",
+    "4507": "horde",
+    "4508": "horde",
+    "4534": "horde",
+    "4535": "alliance",
+    "4543": "horde",
+    "4545": "horde",
+    "4652": "alliance",
+    "4653": "alliance",
+    "4741": "alliance",
+    "4744": "alliance",
+    "4745": "alliance",
+    "4909": "horde",
+    "4939": "horde",
+    "4947": "horde",
+    "4948": "horde",
+    "4971": "horde",
+    "4974": "horde",
+    "4975": "alliance",
+    "4976": "horde",
+    "4977": "horde",
+    "4978": "alliance",
+    "4983": "alliance",
+    "4987": "alliance",
+    "5241": "alliance",
+    "5242": "horde",
+    "5244": "alliance",
+    "5246": "alliance",
+    "5247": "alliance",
+    "5249": "alliance",
+    "5250": "horde",
+    "5252": "horde",
+    "5274": "alliance",
+    "5275": "horde",
+    "5279": "horde",
+    "5299": "horde",
+    "5302": "horde",
+    "5306": "horde",
+    "5309": "horde",
+    "5310": "horde",
+    "5311": "horde",
+    "5312": "horde",
+    "5313": "horde",
+    "5314": "horde",
+    "5315": "alliance",
+    "5316": "horde",
+    "5317": "horde",
+    "5318": "horde",
+    "5321": "horde",
+    "5322": "horde",
+    "5328": "horde",
+    "5340": "horde",
+    "5344": "horde",
+    "5345": "horde",
+    "5346": "horde",
+    "5351": "horde",
+    "5355": "horde",
+    "5356": "horde",
+    "5357": "horde",
+    "5420": "horde",
+    "5459": "alliance",
+    "5587": "alliance",
+    "5604": "alliance",
+    "5609": "alliance",
+    "5610": "alliance",
+    "5611": "alliance",
+    "5613": "alliance",
+    "5614": "alliance",
+    "5615": "alliance",
+    "5617": "alliance",
+    "5622": "alliance",
+    "5626": "alliance",
+    "5627": "alliance",
+    "5629": "alliance",
+    "5630": "alliance",
+    "5757": "alliance",
+    "5812": "alliance",
+    "5813": "alliance",
+    "5814": "alliance",
+    "5815": "alliance",
+    "5817": "alliance",
+    "5818": "alliance",
+    "5820": "alliance",
+    "5944": "alliance",
+    "6084": "alliance",
+    "6085": "alliance",
+    "6087": "alliance",
+    "6092": "alliance",
+    "6093": "alliance",
+    "6094": "alliance",
+    "6095": "alliance",
+    "6186": "alliance",
+    "6187": "alliance",
+    "6188": "alliance",
+    "6191": "alliance",
+    "6194": "alliance",
+    "6215": "alliance",
+    "6223": "alliance",
+    "6282": "horde",
+    "6335": "horde",
+    "6414": "horde",
+    "6477": "horde",
+    "6482": "horde",
+    "6502": "horde",
+    "6503": "horde",
+    "6504": "horde",
+    "6505": "horde",
+    "6659": "alliance",
+    "6664": "horde",
+    "6665": "horde",
+    "6669": "horde",
+    "6670": "horde",
+    "6671": "horde",
+    "6675": "alliance",
+    "6676": "alliance",
+    "6677": "alliance",
+    "6678": "alliance",
+    "6719": "alliance",
+    "6720": "horde",
+    "6721": "alliance",
+    "6722": "alliance",
+    "6737": "horde",
+    "6738": "horde",
+    "6739": "horde",
+    "6740": "horde",
+    "6743": "alliance",
+    "6744": "horde",
+    "6745": "horde",
+    "6746": "horde",
+    "6747": "horde",
+    "6752": "alliance",
+    "6757": "alliance",
+    "6780": "horde",
+    "6784": "horde",
+    "6790": "alliance",
+    "6791": "alliance",
+    "6792": "alliance",
+    "6793": "alliance",
+    "6794": "alliance",
+    "6797": "horde",
+    "6798": "horde",
+    "6801": "alliance",
+    "6829": "alliance",
+    "6830": "alliance",
+    "6831": "alliance",
+    "6832": "horde",
+    "6953": "alliance",
+    "6966": "alliance",
+    "6967": "alliance",
+    "6968": "alliance",
+    "6969": "alliance",
+    "6970": "alliance",
+    "6971": "alliance",
+    "6972": "alliance",
+    "6973": "alliance",
+    "6974": "alliance",
+    "6978": "alliance",
+    "6979": "alliance",
+    "6980": "alliance",
+    "6981": "alliance",
+    "6982": "alliance",
+    "6983": "alliance",
+    "6984": "alliance",
+    "6985": "alliance",
+    "6998": "alliance",
+    "7000": "alliance",
+    "7003": "alliance",
+    "7004": "alliance",
+    "7106": "alliance",
+    "7107": "alliance",
+    "7115": "horde",
+    "7116": "horde",
+    "7117": "horde",
+    "7118": "horde",
+    "7120": "horde",
+    "7129": "horde",
+    "7130": "horde",
+    "7132": "horde",
+    "7133": "horde",
+    "7229": "alliance",
+    "7326": "horde",
+    "7327": "horde",
+    "7328": "horde",
+    "7329": "horde",
+    "7334": "alliance",
+    "7335": "alliance",
+    "7336": "alliance",
+    "7344": "alliance",
+    "7509": "alliance",
+    "7510": "horde",
+    "7511": "alliance",
+    "7512": "horde",
+    "7606": "alliance",
+    "7607": "alliance",
+    "7738": "alliance",
+    "7739": "alliance",
+    "7746": "alliance",
+    "9515": "horde",
+    "9516": "alliance",
+    "9520": "horde",
+    "9521": "horde",
+    "9538": "alliance",
+    "9598": "alliance",
+    "9599": "alliance",
+    "9603": "alliance",
+    "9604": "alliance",
+    "9605": "alliance",
+    "9607": "alliance",
+    "9608": "alliance",
+    "9609": "alliance",
+    "9630": "alliance",
+    "9631": "alliance",
+    "9632": "horde",
+    "9633": "horde",
+    "9634": "horde",
+    "9635": "horde",
+    "9649": "horde",
+    "9650": "horde",
+    "9651": "alliance",
+    "9652": "alliance",
+    "9654": "alliance",
+    "9655": "alliance",
+    "9656": "alliance",
+    "9657": "alliance",
+    "9658": "horde",
+    "9660": "horde",
+    "9661": "horde",
+    "9662": "horde",
+    "9663": "alliance",
+    "9664": "alliance",
+    "9665": "horde",
+    "9666": "horde",
+    "9678": "horde",
+    "9679": "horde",
+    "9680": "horde",
+    "9682": "horde",
+    "9683": "horde",
+    "9684": "horde",
+    "9686": "horde",
+    "9687": "alliance",
+    "9698": "alliance",
+    "9699": "alliance",
+    "9703": "horde",
+    "9704": "horde",
+    "9705": "horde",
+    "9706": "horde",
+    "10043": "alliance",
+    "10549": "alliance",
+    "10637": "horde",
+    "10638": "horde",
+    "10652": "horde",
+    "10653": "horde",
+    "10654": "horde",
+    "10686": "horde",
+    "10700": "horde",
+    "10701": "horde",
+    "10702": "horde",
+    "10703": "horde",
+    "10704": "horde",
+    "10705": "alliance",
+    "10706": "alliance",
+    "10707": "alliance",
+    "10708": "alliance",
+    "10709": "horde",
+    "10739": "alliance",
+    "10740": "alliance",
+    "10741": "alliance",
+    "10745": "alliance",
+    "10746": "alliance",
+    "10747": "alliance",
+    "10748": "alliance",
+    "10820": "horde",
+    "10821": "horde",
+    "10919": "horde",
+    "11120": "horde",
+    "11229": "alliance",
+    "11262": "alliance",
+    "11265": "horde",
+    "11502": "horde",
+    "11853": "horde",
+    "11854": "horde",
+    "11855": "horde",
+    "11856": "alliance",
+    "11857": "alliance",
+    "11858": "horde",
+    "11859": "horde",
+    "11862": "horde",
+    "11863": "horde",
+    "11864": "horde",
+    "11867": "alliance",
+    "11868": "alliance",
+    "11869": "horde",
+    "11873": "alliance",
+    "11874": "alliance",
+    "11875": "alliance",
+    "11884": "alliance",
+    "11888": "alliance",
+    "11889": "alliance",
+    "11936": "alliance",
+    "12018": "alliance",
+    "12021": "alliance",
+    "12041": "alliance",
+    "12050": "alliance",
+    "12051": "alliance",
+    "12061": "alliance",
+    "12062": "alliance",
+    "12102": "alliance",
+    "12295": "alliance",
+    "12296": "alliance",
+    "12522": "alliance",
+    "15104": "alliance",
+    "15202": "alliance",
+    "15203": "alliance",
+    "15204": "alliance",
+    "15205": "alliance",
+    "15206": "alliance",
+    "15207": "alliance",
+    "15335": "alliance",
+    "15396": "alliance",
+    "15397": "alliance",
+    "15399": "alliance",
+    "15403": "alliance",
+    "15404": "alliance",
+    "15405": "alliance",
+    "15406": "alliance",
+    "15424": "horde",
+    "15443": "horde",
+    "15444": "horde",
+    "15445": "horde",
+    "15449": "horde",
+    "15450": "horde",
+    "15451": "horde",
+    "15452": "horde",
+    "15453": "horde",
+    "15455": "alliance",
+    "15456": "alliance",
+    "15457": "horde",
+    "15458": "horde",
+    "15459": "horde",
+    "15461": "horde",
+    "15462": "horde",
+    "15463": "horde",
+    "15464": "horde",
+    "15465": "horde",
+    "15466": "horde",
+    "15467": "horde",
+    "15468": "horde",
+    "15469": "horde",
+    "15470": "horde",
+    "15471": "horde",
+    "15585": "horde",
+    "15587": "horde",
+    "15588": "horde",
+    "15702": "horde",
+    "15703": "horde",
+    "15704": "horde",
+    "15782": "horde",
+    "15783": "horde",
+    "15791": "alliance",
+    "15792": "alliance",
+    "15795": "alliance",
+    "15796": "horde",
+    "15797": "horde",
+    "16622": "alliance",
+    "16623": "alliance",
+    "16658": "horde",
+    "16659": "horde",
+    "16660": "horde",
+    "16661": "horde",
+    "16740": "horde",
+    "16741": "horde",
+    "16794": "horde",
+    "16873": "horde",
+    "16889": "horde",
+    "16890": "horde",
+    "16891": "horde",
+    "16894": "horde",
+    "16975": "horde",
+    "16977": "horde",
+    "16978": "horde",
+    "16981": "horde",
+    "16985": "horde",
+    "16986": "horde",
+    "16987": "horde",
+    "16990": "horde",
+    "16994": "horde",
+    "16995": "horde",
+    "17002": "horde",
+    "17003": "horde",
+    "17004": "horde",
+    "17005": "horde",
+    "17006": "horde",
+    "17039": "horde",
+    "17046": "alliance",
+    "17047": "alliance",
+    "17690": "horde",
+    "17691": "alliance",
+    "17692": "horde",
+    "17694": "horde",
+    "17695": "horde",
+    "17900": "alliance",
+    "17901": "alliance",
+    "17902": "alliance",
+    "17903": "alliance",
+    "17904": "alliance",
+    "17905": "horde",
+    "17906": "horde",
+    "17907": "horde",
+    "17908": "horde",
+    "17909": "horde",
+    "18585": "horde",
+    "18586": "horde",
+    "18807": "horde",
+    "18957": "alliance",
+    "19022": "horde",
+    "19037": "horde",
+    "19038": "horde",
+    "19041": "alliance",
+    "19042": "horde",
+    "19083": "horde",
+    "19084": "alliance",
+    "19085": "horde",
+    "19086": "alliance",
+    "19087": "horde",
+    "19088": "horde",
+    "19089": "horde",
+    "19090": "horde",
+    "19091": "alliance",
+    "19092": "alliance",
+    "19093": "alliance",
+    "19094": "alliance",
+    "19095": "horde",
+    "19096": "horde",
+    "19097": "alliance",
+    "19098": "alliance",
+    "19099": "horde",
+    "19100": "alliance",
+    "19101": "horde",
+    "19102": "alliance",
+    "19103": "horde",
+    "19104": "alliance",
+    "19114": "horde",
+    "19115": "horde",
+    "19116": "horde",
+    "19117": "horde",
+    "19118": "horde",
+    "19119": "horde",
+    "19120": "horde",
+    "19121": "horde",
+    "19159": "horde",
+    "19510": "horde",
+    "19511": "horde",
+    "19512": "horde",
+    "19513": "horde",
+    "19514": "alliance",
+    "19515": "alliance",
+    "19516": "alliance",
+    "19517": "alliance",
+    "19518": "horde",
+    "19519": "horde",
+    "19520": "horde",
+    "19521": "horde",
+    "19522": "alliance",
+    "19523": "alliance",
+    "19524": "alliance",
+    "19525": "alliance",
+    "19526": "horde",
+    "19527": "horde",
+    "19528": "horde",
+    "19529": "horde",
+    "19530": "alliance",
+    "19531": "alliance",
+    "19532": "alliance",
+    "19533": "alliance",
+    "19534": "horde",
+    "19535": "horde",
+    "19536": "horde",
+    "19537": "horde",
+    "19538": "alliance",
+    "19539": "alliance",
+    "19540": "alliance",
+    "19541": "alliance",
+    "19542": "horde",
+    "19543": "horde",
+    "19544": "horde",
+    "19545": "horde",
+    "19546": "alliance",
+    "19547": "alliance",
+    "19548": "alliance",
+    "19549": "alliance",
+    "19550": "horde",
+    "19551": "horde",
+    "19552": "horde",
+    "19553": "horde",
+    "19554": "alliance",
+    "19555": "alliance",
+    "19556": "alliance",
+    "19557": "alliance",
+    "19558": "horde",
+    "19559": "horde",
+    "19560": "horde",
+    "19561": "horde",
+    "19562": "alliance",
+    "19563": "alliance",
+    "19564": "alliance",
+    "19565": "alliance",
+    "19566": "horde",
+    "19567": "horde",
+    "19568": "horde",
+    "19569": "horde",
+    "19570": "alliance",
+    "19571": "alliance",
+    "19572": "alliance",
+    "19573": "alliance",
+    "19579": "alliance",
+    "19585": "alliance",
+    "19586": "alliance",
+    "19588": "alliance",
+    "19606": "horde",
+    "19607": "horde",
+    "19608": "horde",
+    "19609": "horde",
+    "19825": "alliance",
+    "19826": "alliance",
+    "19827": "alliance",
+    "19828": "horde",
+    "19829": "horde",
+    "19830": "horde",
+    "20041": "alliance",
+    "20042": "alliance",
+    "20043": "alliance",
+    "20045": "alliance",
+    "20046": "alliance",
+    "20047": "alliance",
+    "20048": "alliance",
+    "20049": "alliance",
+    "20050": "alliance",
+    "20052": "alliance",
+    "20053": "alliance",
+    "20054": "alliance",
+    "20055": "alliance",
+    "20057": "alliance",
+    "20058": "alliance",
+    "20059": "alliance",
+    "20060": "alliance",
+    "20061": "alliance",
+    "20068": "horde",
+    "20069": "alliance",
+    "20070": "alliance",
+    "20071": "alliance",
+    "20072": "horde",
+    "20073": "alliance",
+    "20088": "alliance",
+    "20089": "alliance",
+    "20090": "alliance",
+    "20091": "alliance",
+    "20092": "alliance",
+    "20093": "alliance",
+    "20094": "alliance",
+    "20095": "alliance",
+    "20096": "alliance",
+    "20097": "alliance",
+    "20098": "alliance",
+    "20099": "alliance",
+    "20100": "alliance",
+    "20101": "alliance",
+    "20102": "alliance",
+    "20103": "alliance",
+    "20104": "alliance",
+    "20105": "alliance",
+    "20106": "alliance",
+    "20107": "alliance",
+    "20108": "alliance",
+    "20109": "alliance",
+    "20110": "alliance",
+    "20111": "alliance",
+    "20112": "alliance",
+    "20113": "alliance",
+    "20114": "alliance",
+    "20115": "alliance",
+    "20116": "alliance",
+    "20117": "alliance",
+    "20124": "alliance",
+    "20125": "alliance",
+    "20126": "alliance",
+    "20127": "alliance",
+    "20128": "alliance",
+    "20129": "alliance",
+    "20150": "horde",
+    "20151": "horde",
+    "20152": "horde",
+    "20153": "horde",
+    "20154": "horde",
+    "20155": "horde",
+    "20156": "horde",
+    "20157": "horde",
+    "20158": "horde",
+    "20159": "horde",
+    "20160": "horde",
+    "20161": "horde",
+    "20162": "horde",
+    "20163": "horde",
+    "20164": "horde",
+    "20165": "horde",
+    "20166": "horde",
+    "20167": "horde",
+    "20168": "horde",
+    "20169": "horde",
+    "20170": "horde",
+    "20171": "horde",
+    "20172": "horde",
+    "20173": "horde",
+    "20174": "horde",
+    "20175": "horde",
+    "20176": "horde",
+    "20186": "horde",
+    "20187": "horde",
+    "20188": "horde",
+    "20189": "horde",
+    "20190": "horde",
+    "20191": "horde",
+    "20192": "horde",
+    "20193": "horde",
+    "20194": "horde",
+    "20195": "horde",
+    "20196": "horde",
+    "20197": "horde",
+    "20198": "horde",
+    "20199": "horde",
+    "20200": "horde",
+    "20201": "horde",
+    "20202": "horde",
+    "20203": "horde",
+    "20204": "horde",
+    "20205": "horde",
+    "20206": "horde",
+    "20207": "horde",
+    "20208": "horde",
+    "20209": "horde",
+    "20210": "horde",
+    "20211": "horde",
+    "20212": "horde",
+    "20214": "horde",
+    "20220": "horde",
+    "20425": "horde",
+    "20426": "horde",
+    "20427": "horde",
+    "20428": "alliance",
+    "20429": "horde",
+    "20430": "horde",
+    "20431": "alliance",
+    "20434": "alliance",
+    "20437": "horde",
+    "20438": "alliance",
+    "20439": "alliance",
+    "20440": "alliance",
+    "20441": "horde",
+    "20442": "horde",
+    "20443": "alliance",
+    "20444": "alliance",
+    "20642": "horde",
+    "20643": "horde",
+    "20700": "alliance",
+    "20701": "horde",
+    "20711": "alliance",
+    "20712": "horde",
+    "21115": "horde",
+    "21116": "horde",
+    "21117": "alliance",
+    "21118": "alliance",
+    "21119": "alliance",
+    "21120": "horde",
+    "21372": "horde",
+    "21373": "horde",
+    "21374": "horde",
+    "21375": "horde",
+    "21376": "horde",
+    "21387": "alliance",
+    "21388": "alliance",
+    "21389": "alliance",
+    "21390": "alliance",
+    "21391": "alliance",
+    "21395": "alliance",
+    "21396": "alliance",
+    "21397": "alliance",
+    "21398": "horde",
+    "21399": "horde",
+    "21400": "horde",
+    "22086": "alliance",
+    "22087": "alliance",
+    "22088": "alliance",
+    "22089": "alliance",
+    "22090": "alliance",
+    "22091": "alliance",
+    "22092": "alliance",
+    "22093": "alliance",
+    "22095": "horde",
+    "22096": "horde",
+    "22097": "horde",
+    "22098": "horde",
+    "22099": "horde",
+    "22100": "horde",
+    "22101": "horde",
+    "22102": "horde",
+    "22426": "alliance",
+    "22427": "alliance",
+    "22429": "alliance",
+    "22430": "alliance",
+    "22431": "alliance",
+    "22464": "horde",
+    "22465": "horde",
+    "22466": "horde",
+    "22467": "horde",
+    "22468": "horde",
+    "22469": "horde",
+    "22470": "horde",
+    "22471": "horde",
+    "22651": "horde",
+    "22672": "alliance",
+    "22673": "horde",
+    "22676": "horde",
+    "22740": "horde",
+    "22741": "horde",
+    "22747": "horde",
+    "22748": "alliance",
+    "22749": "alliance",
+    "22750": "alliance",
+    "22752": "alliance",
+    "22753": "alliance"
+  }
 }

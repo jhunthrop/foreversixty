@@ -93,5 +93,10 @@ def apply_overlays(
     return LootFile(
         sources=sorted(
             by_id.values(), key=lambda source: (KIND_ORDER.index(source.kind), source.id)
-        )
+        ),
+        # An overlay curates `sources` only; the quests map and the faction
+        # map are generated facts about items, not about sources, and no
+        # overlay operation here touches either.
+        quests=document.quests,
+        factions=document.factions,
     )
