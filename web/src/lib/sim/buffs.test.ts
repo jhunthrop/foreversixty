@@ -23,22 +23,6 @@ describe('the catalogue', () => {
     expect(groups.get('blessing_of_kings')).toBe('player-buffs');
   });
 
-  it('puts the world buffs in their own section rather than among the blessings', () => {
-    const groups = new Map(CATALOGUE.map((row) => [row.id, row.group]));
-    for (const id of [
-      'rallying_cry_of_the_dragonslayer',
-      'songflower_serenade',
-      'spirit_of_zandalar',
-      'warchiefs_blessing',
-      'fengus_ferocity',
-      'moldars_moxie',
-      'slipkiks_savvy',
-      'sayges_fortune',
-    ]) {
-      expect(groups.get(id), id).toBe('world-buffs');
-    }
-  });
-
   it('groups consumables by the Consumes field they set', () => {
     const groups = new Map(CATALOGUE.map((row) => [row.id, row.group]));
     expect(groups.get('flask_of_supreme_power')).toBe('flask');
@@ -77,7 +61,6 @@ describe('the catalogue', () => {
       ],
       consumables: [],
       professions: [],
-      worldBuffs: [],
       stats: [],
     });
     expect(catalogue.map((row) => row.id)).toEqual(['battle_shout', 'thorns']);
@@ -97,7 +80,6 @@ describe('the catalogue', () => {
       ],
       consumables: [],
       professions: [],
-      worldBuffs: [],
       stats: [],
     });
     expect(catalogue.map((row) => row.id)).toEqual(['battle_shout']);

@@ -29,7 +29,8 @@ const BUILD_DIR = path.join(REPO_ROOT, 'data/builds/1.60.1.69893');
  * data/builds/1.60.1.69893/spellconst/<class>.json, which is what the test below actually
  * resolves against.
  *
- * Fourteen of RAID_BUFFS' 54 slugs are deliberately absent:
+ * Twenty-four of RAID_BUFFS' 46 slugs are deliberately absent (the eight world buffs left
+ * the preset on 2026-09-28: Forever has none):
  *   - The twenty debuffs (curse_of_elements .. winters_chill) land on the TARGET, never the
  *     player, and sim/adapter/adapter.go's own comment says a sim result carries aura
  *     metrics for the player only -- a target debuff has no row to resolve in the first
@@ -39,19 +40,11 @@ const BUILD_DIR = path.join(REPO_ROOT, 'data/builds/1.60.1.69893');
  *   - blessing_of_wisdom, leader_of_the_pack, moonkin_aura: each is a flat
  *     character.AddStat(s) call in buffs.go with no RegisterAura at all, so none of the
  *     three ever produces an aura row either.
- * 54 - 20 - 1 - 3 = 30, this table's own size.
+ * 46 - 20 - 1 - 3 = 22, this table's own size.
  */
 const RAID_BUFF_AURA_SPELLS: Readonly<Record<string, number>> = {
   blessing_of_kings: 20217,
   blessing_of_might: 25291,
-  fengus_ferocity: 22817,
-  moldars_moxie: 22818,
-  rallying_cry_of_the_dragonslayer: 22888,
-  sayges_fortune: 23735,
-  slipkiks_savvy: 22820,
-  songflower_serenade: 15366,
-  spirit_of_zandalar: 24425,
-  warchiefs_blessing: 16609,
   arcane_brilliance: 23028,
   battle_shout: 25289,
   blood_pact: 11767,
@@ -75,11 +68,11 @@ const RAID_BUFF_AURA_SPELLS: Readonly<Record<string, number>> = {
 };
 
 describe('RAID_BUFF_AURA_SPELLS', () => {
-  it('is exactly the RAID_BUFFS slugs this task can actually walk (30 of the preset’s 54)', () => {
+  it('is exactly the RAID_BUFFS slugs this task can actually walk (22 of the preset’s 46)', () => {
     for (const slug of Object.keys(RAID_BUFF_AURA_SPELLS)) {
       expect(RAID_BUFFS, `${slug} must be a real RAID_BUFFS slug`).toContain(slug);
     }
-    expect(Object.keys(RAID_BUFF_AURA_SPELLS)).toHaveLength(30);
+    expect(Object.keys(RAID_BUFF_AURA_SPELLS)).toHaveLength(22);
   });
 });
 

@@ -110,6 +110,9 @@ func buffVocabulary() []vocabularyEntry {
 			default:
 				continue
 			}
+			if isWorldBuff(desc, fd) {
+				continue
+			}
 			id := string(fd.Name())
 			if claimed[id] {
 				continue
@@ -195,19 +198,6 @@ not graded has no ` + "`:improved`" + ` form and naming one is an error.
 	}
 
 	b.WriteString(`
-### World buffs
-
-The settings bar groups these separately: they are ` + "`IndividualBuffs`" + `
-fields like any other and take the same ids, but a player ticks them
-as a group — the Dire Maul tribute buffs, the Zandalar and Warchief's
-world enchantments, Rallying Cry, Songflower, Sayge's fortune.
-
-`)
-	for _, id := range WorldBuffs() {
-		fmt.Fprintf(&b, "- `%s`\n", id)
-	}
-
-	b.WriteString(`
 ## Consumables
 
 A consumable id is one of two things.
@@ -290,32 +280,23 @@ func sortedByID(entries []vocabularyEntry) []vocabularyEntry {
 }
 
 // worldBuffFirstField is where IndividualBuffs' world-buff section
-// starts. The engine marks the section with a comment and nothing
-// machine-readable, so the boundary is this number and
-// TestWorldBuffsMatchThePinnedList holds what it produces to the eight
-// names written down there: a world buff the engine gains, and an
-// ordinary buff appended past the boundary that would be published as
-// one, are both a failing test rather than a settings bar that is
-// quietly wrong.
+// starts: the Dire Maul tribute buffs, the Zandalar and Warchief's
+// world enchantments, Rallying Cry, Songflower, Sayge's fortune. The
+// engine marks the section with a comment and nothing machine-readable,
+// so the boundary is this number, and TestWorldBuffsAreRefused holds
+// what it excludes to the eight names written down there.
+//
+// Forever has no world buffs (the owner, 2026-09-28: "there are no world
+// buffs in forever like there was in classic"), so the section is left
+// out of the vocabulary entirely: a request naming one is refused as an
+// unknown buff rather than quietly simmed with a +15% that no Forever
+// character can have.
 const worldBuffFirstField = 7
 
-// WorldBuffs lists the world-buff ids, sorted. They are IndividualBuffs
-// fields like any other - buffsFor needs no special case - but the
-// settings bar groups them, so the grouping is published rather than
-// guessed at from the names.
-func WorldBuffs() []string {
-	desc := (&proto.IndividualBuffs{}).ProtoReflect().Descriptor()
-	fields := desc.Fields()
-	out := make([]string, 0, 8)
-	for i := 0; i < fields.Len(); i++ {
-		fd := fields.Get(i)
-		if fd.Number() < worldBuffFirstField {
-			continue
-		}
-		out = append(out, string(fd.Name()))
-	}
-	sort.Strings(out)
-	return out
+// isWorldBuff says whether fd is a field of IndividualBuffs' world-buff
+// section.
+func isWorldBuff(desc protoreflect.MessageDescriptor, fd protoreflect.FieldDescriptor) bool {
+	return desc.Name() == "IndividualBuffs" && fd.Number() >= worldBuffFirstField
 }
 
 // ParseStat maps a stat id onto the engine's enum.

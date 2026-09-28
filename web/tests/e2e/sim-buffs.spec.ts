@@ -41,7 +41,6 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
     'raid-buffs',
     'party-buffs',
     'player-buffs',
-    'world-buffs',
     'debuffs',
     'flask',
     'battle-elixir',
@@ -63,10 +62,9 @@ test('Custom opens the whole vocabulary, grouped, and every tick reaches the req
   await page.getByTestId('sim-buff-thorns').selectOption('improved');
   await expect(page.getByTestId('sim-buff-thorns')).toHaveValue('improved');
 
-  // A world buff is in its own section, not among the blessings.
-  const world = page.getByTestId('sim-buff-group-world-buffs');
-  await world.locator('summary').click();
-  await expect(page.getByTestId('sim-buff-songflower_serenade')).toBeVisible();
+  // Forever has no world buffs: no section for them, and none among the blessings either.
+  await expect(page.getByTestId('sim-buff-group-world-buffs')).toHaveCount(0);
+  await expect(page.getByTestId('sim-buff-songflower_serenade')).toHaveCount(0);
 
   // Ticking a potion offers it a cooldown timing row, and that row's mode control has a
   // real, per-row accessible name -- not a shared, unassociated label -- so a screen reader

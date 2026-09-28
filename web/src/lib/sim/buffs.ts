@@ -18,7 +18,6 @@ export type BuffGroupId =
   | 'raid-buffs'
   | 'party-buffs'
   | 'player-buffs'
-  | 'world-buffs'
   | 'debuffs'
   | 'flask'
   | 'battle-elixir'
@@ -33,7 +32,6 @@ export const BUFF_GROUPS: readonly BuffGroupId[] = [
   'raid-buffs',
   'party-buffs',
   'player-buffs',
-  'world-buffs',
   'debuffs',
   'flask',
   'battle-elixir',
@@ -48,7 +46,6 @@ export interface SimIdsFile {
   buffs: { id: string; message: string }[];
   consumables: { id: string; sets: string }[];
   professions: string[];
-  worldBuffs: string[];
   /** Contract A7's Stats section. Read by stats.ts, not by the catalogue. */
   stats: string[];
 }
@@ -107,7 +104,6 @@ function consumesField(sets: string): string {
 }
 
 export function buildCatalogue(ids: SimIdsFile): BuffRow[] {
-  const world = new Set(ids.worldBuffs);
   const graded = new Set(
     ids.buffs
       .filter((row) => row.id.endsWith(IMPROVED_SUFFIX))
@@ -118,10 +114,7 @@ export function buildCatalogue(ids: SimIdsFile): BuffRow[] {
     .filter((row) => !row.id.endsWith(IMPROVED_SUFFIX))
     .map((row) => ({
       id: row.id,
-      group:
-        row.message === 'IndividualBuffs' && world.has(row.id)
-          ? ('world-buffs' as BuffGroupId)
-          : (BY_MESSAGE[row.message] ?? 'player-buffs'),
+      group: BY_MESSAGE[row.message] ?? 'player-buffs',
       graded: graded.has(row.id),
       kind: 'buff' as const,
     }));
@@ -144,30 +137,11 @@ export function buildCatalogue(ids: SimIdsFile): BuffRow[] {
   return [...new Map([...buffs, ...consumables].map((row) => [row.id, row])).values()];
 }
 
-/**
- * IDS.md has no world-buff section yet (contract 1.7 adds one). Until it does, these are
- * the `IndividualBuffs` fields that are world buffs, read off IDS.md's own table by hand:
- * the four Dire Maul tribute buffs, the two capital-city buffs, Songflower and Sayge's.
- * `buildCatalogue` prefers the generated list whenever it is non-empty, so this disappears
- * the day the engine publishes the section, without a change to any caller.
- */
-export const FALLBACK_WORLD_BUFFS: readonly string[] = [
-  'fengus_ferocity',
-  'moldars_moxie',
-  'rallying_cry_of_the_dragonslayer',
-  'sayges_fortune',
-  'slipkiks_savvy',
-  'songflower_serenade',
-  'spirit_of_zandalar',
-  'warchiefs_blessing',
-];
-
 const file = generated as SimIdsFile;
 
-export const CATALOGUE: readonly BuffRow[] = buildCatalogue({
-  ...file,
-  worldBuffs: file.worldBuffs.length > 0 ? file.worldBuffs : [...FALLBACK_WORLD_BUFFS],
-});
+// Forever has no world buffs: sim/request's vocabulary leaves IndividualBuffs' world-buff
+// section out (isWorldBuff), so IDS.md, and this catalogue, never carry one.
+export const CATALOGUE: readonly BuffRow[] = buildCatalogue(file);
 
 /** One group's rows, alphabetical by id so the panel's order never depends on IDS.md's. */
 export function rowsIn(group: BuffGroupId): BuffRow[] {

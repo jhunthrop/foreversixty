@@ -573,7 +573,6 @@ export const simCopy = {
     'raid-buffs': 'Raid buffs',
     'party-buffs': 'Party buffs',
     'player-buffs': 'On this player',
-    'world-buffs': 'World buffs',
     debuffs: 'On the target',
     flask: 'Flasks',
     'battle-elixir': 'Battle elixirs',
@@ -813,14 +812,13 @@ export const simCopy = {
    */
   /**
    * Final whole-branch review, I1: the sentence said "Raid-buffed applies the standard set
-   * a 40-player raid provides", which a raid does not: eight of the ids it applies are
-   * world buffs (Songflower, Dragonslayer, Zandalar, Warchief's, the three Dire Maul
-   * buffs) and seven to nine more are consumables out of the player's own bags (settings.ts's
-   * `presetConsumables`) -- neither comes from a raid, and together they are most of the
-   * preset's own gain. This names what actually supplies each part instead.
+   * a 40-player raid provides", which a raid does not: seven to nine of the ids it applies
+   * are consumables out of the player's own bags (settings.ts's `presetConsumables`), which
+   * no raid supplies. This names what actually supplies each part instead. Forever has no
+   * world buffs (2026-09-28), so the preset carries none and this never mentions them.
    */
   buffsHelp:
-    'Which buffs and consumables the run applies. Raid-buffed applies the full standard set: raid, party and self buffs, target debuffs, world buffs, and the consumables in your own bags; Solo applies none; Custom lets you build your own list. "What\'s in it" shows exactly what the selected preset applies.',
+    'Which buffs and consumables the run applies. Raid-buffed applies the full standard set: raid, party and self buffs, target debuffs, and the consumables in your own bags; Solo applies none; Custom lets you build your own list. "What\'s in it" shows exactly what the selected preset applies.',
   targetLevelHelp: 'The boss level the run’s numbers — armor, resistances — are drawn from.',
   /**
    * Newcomer MINOR (213-216): the field showed 3,731 as placeholder text with a `title=`

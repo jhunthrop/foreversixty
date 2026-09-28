@@ -87,6 +87,12 @@ func enableField(targets []protoreflect.ProtoMessage, id string) bool {
 		if fd == nil {
 			continue
 		}
+		// Forever has no world buffs: the field exists in the engine's
+		// message, and is refused here exactly as the vocabulary leaves it
+		// out (isWorldBuff, vocabulary.go).
+		if isWorldBuff(msg.Descriptor(), fd) {
+			return false
+		}
 		if improved {
 			value, ok := gradedValue(fd)
 			if !ok {

@@ -223,19 +223,20 @@ func TestKnownBuffsListsBothForms(t *testing.T) {
 
 // The world buffs are a section of IndividualBuffs, and the engine
 // marks the section with a comment and nothing machine-readable:
-// WorldBuffs() publishes every field numbered worldBuffFirstField or
-// higher, so the list is only ever as good as that boundary. Walking
-// the same message with the same boundary and comparing would prove
-// nothing, so the eight names are pinned here verbatim instead - the
-// way the stat ids are.
+// isWorldBuff excludes every field numbered worldBuffFirstField or
+// higher, so the exclusion is only ever as good as that boundary.
+// Walking the same message with the same boundary and comparing would
+// prove nothing, so the eight names are pinned here verbatim instead -
+// the way the stat ids are.
 //
-// Both directions matter. A world buff the engine gains is a decision
-// to publish and shows up here. And the risk the boundary actually
-// carries, which no derivation can catch: field 15 is reserved, so an
-// ordinary IndividualBuffs field appended at 16 would be published as
-// a world buff and grouped as one in the settings bar. That fails
-// here.
-func TestWorldBuffsMatchThePinnedList(t *testing.T) {
+// Both directions matter. Forever has no world buffs, so each pinned
+// name must be refused. And the risk the boundary actually carries,
+// which no derivation can catch: field 15 is reserved, so an ordinary
+// IndividualBuffs field appended at 16 would be excluded as a world
+// buff and vanish from the settings bar. That fails here too: every
+// IndividualBuffs field the vocabulary leaves out must be one of the
+// eight.
+func TestWorldBuffsAreRefused(t *testing.T) {
 	pinned := []string{
 		"fengus_ferocity",
 		"moldars_moxie",
@@ -246,28 +247,25 @@ func TestWorldBuffsMatchThePinnedList(t *testing.T) {
 		"spirit_of_zandalar",
 		"warchiefs_blessing",
 	}
-	slices.Sort(pinned)
-	got := WorldBuffs()
-	if !slices.Equal(got, pinned) {
-		for _, id := range got {
-			if !slices.Contains(pinned, id) {
-				t.Errorf("WorldBuffs() publishes %q, which is not one of the pinned world buffs; if the engine gained a world buff, add it here deliberately, and if it gained an ordinary buff inside the numbered section, move the boundary", id)
-			}
+	known := KnownBuffs()
+	for _, id := range pinned {
+		if slices.Contains(known, id) {
+			t.Errorf("%q is a world buff and KnownBuffs still lists it", id)
 		}
-		for _, id := range pinned {
-			if !slices.Contains(got, id) {
-				t.Errorf("%q is a world buff and WorldBuffs() does not publish it", id)
-			}
+		if _, err := buffsFor([]string{id}); !errors.Is(err, ErrUnknownBuff) {
+			t.Errorf("buffsFor(%q) = %v, want ErrUnknownBuff: Forever has no world buffs", id, err)
 		}
 	}
-	if !slices.IsSorted(got) {
-		t.Error("WorldBuffs() is not sorted; the list is an interface and must be stable")
-	}
-	// A grouped id is an ordinary buff id: the settings bar sends it
-	// through the same resolver as any other.
-	for _, id := range got {
-		if _, err := buffsFor([]string{id}); err != nil {
-			t.Errorf("WorldBuffs() publishes %q, which does not resolve: %v", id, err)
+	desc := (&proto.IndividualBuffs{}).ProtoReflect().Descriptor()
+	fields := desc.Fields()
+	for i := 0; i < fields.Len(); i++ {
+		fd := fields.Get(i)
+		id := string(fd.Name())
+		if isWorldBuff(desc, fd) && !slices.Contains(pinned, id) {
+			t.Errorf("%q sits past worldBuffFirstField and is excluded as a world buff, but it is not one; if the engine gained an ordinary IndividualBuffs field there, move the boundary", id)
+		}
+		if !isWorldBuff(desc, fd) && slices.Contains(pinned, id) {
+			t.Errorf("%q is a world buff below worldBuffFirstField; move the boundary", id)
 		}
 	}
 }
@@ -380,7 +378,7 @@ func TestSaygesFortuneHasNoImprovedForm(t *testing.T) {
 	if slices.Contains(KnownBuffs(), "sayges_fortune:improved") {
 		t.Error("KnownBuffs lists sayges_fortune:improved, which does not resolve")
 	}
-	if !slices.Contains(KnownBuffs(), "sayges_fortune") {
-		t.Error("KnownBuffs should still list the plain sayges_fortune id")
-	}
+	// The plain id is a world buff and is refused too since 2026-09-28
+	// (TestWorldBuffsAreRefused); what this test still guards is that
+	// no graded twin of a non-tristate field is ever invented.
 }

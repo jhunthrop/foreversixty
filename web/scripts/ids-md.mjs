@@ -7,7 +7,7 @@
 
 /** @typedef {{ id: string, message: string }} BuffIdRow */
 /** @typedef {{ id: string, sets: string }} ConsumableIdRow */
-/** @typedef {{ buffs: BuffIdRow[], consumables: ConsumableIdRow[], professions: string[], worldBuffs: string[], stats: string[] }} SimIds */
+/** @typedef {{ buffs: BuffIdRow[], consumables: ConsumableIdRow[], professions: string[], stats: string[] }} SimIds */
 
 /** A markdown table cell's contents, with the backticks IDS.md wraps every id in removed. */
 function cell(text) {
@@ -54,7 +54,6 @@ export function parseIdsMarkdown(markdown) {
   const buffRows = sections.get('buffs') ?? [];
   const consumableRows = sections.get('consumables') ?? [];
   const professionRows = sections.get('professions') ?? [];
-  const worldRows = sections.get('world buffs') ?? [];
   // Contract A7 adds both of these sections; absent ones read as empty lists, so this
   // parser works against today's IDS.md and against the regenerated one unchanged.
   const statRows = sections.get('stats') ?? [];
@@ -62,7 +61,6 @@ export function parseIdsMarkdown(markdown) {
     buffs: buffRows.map((cells) => ({ id: cells[0], message: cells[1] ?? '' })),
     consumables: consumableRows.map((cells) => ({ id: cells[0], sets: cells[1] ?? '' })),
     professions: professionRows.map((cells) => cells[0]),
-    worldBuffs: worldRows.map((cells) => cells[0]),
     stats: statRows.map((cells) => cells[0]),
   };
 }

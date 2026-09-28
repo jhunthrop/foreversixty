@@ -37,6 +37,6 @@ await mkdir(path.dirname(target), { recursive: true });
 await writeFile(target, `${JSON.stringify(ids, null, 2)}\n`, 'utf8');
 console.log(
   `sync-sim-ids: ${ids.buffs.length} buffs, ${ids.consumables.length} consumables, ` +
-    `${ids.professions.length} professions, ${ids.worldBuffs.length} world buffs, ` +
+    `${ids.professions.length} professions, ` +
     `${ids.stats.length} stats -> ${path.relative(webRoot, target)}`,
 );

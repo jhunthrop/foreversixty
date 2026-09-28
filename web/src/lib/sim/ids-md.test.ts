@@ -16,13 +16,6 @@ Prose the parser must skip, including a | pipe | in a sentence.
 | \`blessing_of_kings\` | IndividualBuffs |
 | \`sunder_armor\` | Debuffs |
 | \`atiesh_mage\` | PartyBuffs |
-| \`songflower_serenade\` | IndividualBuffs |
-
-## World buffs
-
-| id |
-| --- |
-| \`songflower_serenade\` |
 
 ## Consumables
 
@@ -62,10 +55,6 @@ describe('parseIdsMarkdown', () => {
     expect(parsed.buffs).toContainEqual({ id: 'battle_shout:improved', message: 'RaidBuffs' });
   });
 
-  it('reads the world-buff section when there is one', () => {
-    expect(parsed.worldBuffs).toEqual(['songflower_serenade']);
-  });
-
   it('reads consumables with the Consumes field they set', () => {
     expect(parsed.consumables).toContainEqual({
       id: 'main_hand_imbue:shadow_oil',
@@ -87,7 +76,7 @@ describe('parseIdsMarkdown', () => {
   it('skips prose, headings and the separator row rather than reading them as ids', () => {
     expect(parsed.buffs.map((row) => row.id)).not.toContain('---');
     expect(parsed.buffs.map((row) => row.id)).not.toContain('id');
-    expect(parsed.buffs).toHaveLength(6);
+    expect(parsed.buffs).toHaveLength(5);
   });
 
   it('answers empty lists for a document with no tables at all', () => {
@@ -95,7 +84,6 @@ describe('parseIdsMarkdown', () => {
       buffs: [],
       consumables: [],
       professions: [],
-      worldBuffs: [],
       stats: [],
     });
   });

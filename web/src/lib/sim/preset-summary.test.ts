@@ -40,7 +40,7 @@ describe('presetSummary', () => {
    * generically); this names the gap for the two ids the brief's own acceptance test reads
    * off the page, over a names table exactly as sparse as this repo's fixture data really
    * is (src/fixtures/planner/simbuffs.json has three rows, and sunder_armor and
-   * songflower_serenade are not among them).
+   * trueshot_aura are not among them).
    */
   it('never prints a bare id, even for a build whose table has no row for it', () => {
     const groups = presetSummary('raid-buffed', 'attack_power', EMPTY_BUFF_NAMES);
@@ -52,6 +52,6 @@ describe('presetSummary', () => {
     }
     const labels = groups.flatMap((group) => group.rows.map((row) => row.label));
     expect(labels).toContain('Sunder armor');
-    expect(labels).toContain('Songflower serenade');
+    expect(labels).toContain('Trueshot aura');
   });
 });

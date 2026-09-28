@@ -80,14 +80,15 @@ describe('defaultSettings', () => {
 
 /**
  * Task 4 (dps-minmaxer D16 BLOCKER): the old preset was five buffs and two consumables,
- * +6% over Solo. This is the full standard set instead -- the brief's 54 buff ids, copied
- * verbatim from sim/adapter/testdata/warrior-fury.request.json, plus the 9 physical and 7
+ * +6% over Solo. This is the full standard set instead -- the brief's 54 buff ids less the
+ * eight world buffs Forever does not have (2026-09-28), 46, copied verbatim from
+ * sim/adapter/testdata/warrior-fury.request.json, plus the 9 physical and 7
  * caster consumable ids the controller verified against the real engine (8b2169e61): every
  * one of the 70 accepted, no ErrUnknownBuff, no ErrUnknownConsume, no ErrAmbiguousConsume.
  */
 describe('the Raid-buffed preset', () => {
-  it('is exactly the brief’s 54 buff ids, never split by spec (Ruling 2)', () => {
-    expect(RAID_BUFFS).toHaveLength(54);
+  it('is exactly the brief’s 54 buff ids less the eight world buffs, never split by spec (Ruling 2)', () => {
+    expect(RAID_BUFFS).toHaveLength(46);
     expect(PRESET_BUFFS['raid-buffed']).toBe(RAID_BUFFS);
   });
 
@@ -129,13 +130,11 @@ describe('the Raid-buffed preset', () => {
     expect(selectedIn(selection, 'raid-buffs').length).toBeGreaterThan(4);
     expect(selectedIn(selection, 'debuffs').length).toBeGreaterThan(0);
     expect(selectedIn(selection, 'weapon-imbue').length).toBeGreaterThan(0);
-    expect(selectedIn(selection, 'world-buffs').length).toBeGreaterThan(0);
     // No buff id is lost between groups: every group's members sum back to the full list.
     const grouped = [
       ...selectedIn(selection, 'raid-buffs'),
       ...selectedIn(selection, 'party-buffs'),
       ...selectedIn(selection, 'player-buffs'),
-      ...selectedIn(selection, 'world-buffs'),
       ...selectedIn(selection, 'debuffs'),
     ];
     expect(new Set(grouped)).toEqual(new Set(RAID_BUFFS));

@@ -56,7 +56,6 @@ not graded has no `:improved` form and naming one is an error.
 | `expose_armor` | Debuffs |
 | `expose_armor:improved` | Debuffs |
 | `faerie_fire` | Debuffs |
-| `fengus_ferocity` | IndividualBuffs |
 | `fire_resistance_aura` | RaidBuffs |
 | `fire_resistance_totem` | RaidBuffs |
 | `frost_resistance_aura` | RaidBuffs |
@@ -81,17 +80,14 @@ not graded has no `:improved` form and naming one is an error.
 | `mana_spring_totem` | RaidBuffs |
 | `mana_spring_totem:improved` | RaidBuffs |
 | `mana_tide_totems` | PartyBuffs |
-| `moldars_moxie` | IndividualBuffs |
 | `moonkin_aura` | RaidBuffs |
 | `nature_resistance_totem` | RaidBuffs |
 | `power_infusions` | IndividualBuffs |
 | `power_word_fortitude` | RaidBuffs |
 | `power_word_fortitude:improved` | RaidBuffs |
-| `rallying_cry_of_the_dragonslayer` | IndividualBuffs |
 | `retribution_aura` | RaidBuffs |
 | `retribution_aura:improved` | RaidBuffs |
 | `sanctity_aura` | RaidBuffs |
-| `sayges_fortune` | IndividualBuffs |
 | `scorpid_sting` | Debuffs |
 | `scroll_of_agility` | RaidBuffs |
 | `scroll_of_intellect` | RaidBuffs |
@@ -102,9 +98,6 @@ not graded has no `:improved` form and naming one is an error.
 | `shadow_protection` | RaidBuffs |
 | `shadow_resistance_aura` | RaidBuffs |
 | `shadow_weaving` | Debuffs |
-| `slipkiks_savvy` | IndividualBuffs |
-| `songflower_serenade` | IndividualBuffs |
-| `spirit_of_zandalar` | IndividualBuffs |
 | `stoneskin_totem` | RaidBuffs |
 | `stoneskin_totem:improved` | RaidBuffs |
 | `stormstrike` | Debuffs |
@@ -117,24 +110,7 @@ not graded has no `:improved` form and naming one is an error.
 | `thunder_clap:improved` | Debuffs |
 | `thunderfury` | Debuffs |
 | `trueshot_aura` | RaidBuffs |
-| `warchiefs_blessing` | IndividualBuffs |
 | `winters_chill` | Debuffs |
-
-### World buffs
-
-The settings bar groups these separately: they are `IndividualBuffs`
-fields like any other and take the same ids, but a player ticks them
-as a group — the Dire Maul tribute buffs, the Zandalar and Warchief's
-world enchantments, Rallying Cry, Songflower, Sayge's fortune.
-
-- `fengus_ferocity`
-- `moldars_moxie`
-- `rallying_cry_of_the_dragonslayer`
-- `sayges_fortune`
-- `slipkiks_savvy`
-- `songflower_serenade`
-- `spirit_of_zandalar`
-- `warchiefs_blessing`
 
 ## Consumables
 

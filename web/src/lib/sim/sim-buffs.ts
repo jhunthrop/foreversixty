@@ -1,6 +1,6 @@
 // web/src/lib/sim/sim-buffs.ts
 // data/builds/<build>/simbuffs.json: the display name and icon for every IDS.md buff,
-// debuff, world buff and consumable id.
+// debuff and consumable id.
 //
 // The engine's ids are snake case and legible on their own -- "flask_of_supreme_power" --
 // so a missing row is a de-underscored id rather than a blank, and a build that ships no
