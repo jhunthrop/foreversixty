@@ -26,9 +26,36 @@ describe('readSpecCatalog', () => {
 describe('groupByClass', () => {
   it('groups specs by class, class order first-seen, specs in file order', () => {
     const catalog: SpecCatalogEntry[] = [
-      { spec: 'druid-balance', class_slug: 'druid', spec_slug: 'balance', name: 'Balance', role: 'dps', tree_index: 0, reference_stat: 'spell_power', weight_stats: [] },
-      { spec: 'hunter-marksmanship', class_slug: 'hunter', spec_slug: 'marksmanship', name: 'Marksmanship', role: 'dps', tree_index: 1, reference_stat: 'attack_power', weight_stats: [] },
-      { spec: 'druid-feral', class_slug: 'druid', spec_slug: 'feral', name: 'Feral', role: 'dps', tree_index: 1, reference_stat: 'attack_power', weight_stats: [] },
+      {
+        spec: 'druid-balance',
+        class_slug: 'druid',
+        spec_slug: 'balance',
+        name: 'Balance',
+        role: 'dps',
+        tree_index: 0,
+        reference_stat: 'spell_power',
+        weight_stats: [],
+      },
+      {
+        spec: 'hunter-marksmanship',
+        class_slug: 'hunter',
+        spec_slug: 'marksmanship',
+        name: 'Marksmanship',
+        role: 'dps',
+        tree_index: 1,
+        reference_stat: 'attack_power',
+        weight_stats: [],
+      },
+      {
+        spec: 'druid-feral',
+        class_slug: 'druid',
+        spec_slug: 'feral',
+        name: 'Feral',
+        role: 'dps',
+        tree_index: 1,
+        reference_stat: 'attack_power',
+        weight_stats: [],
+      },
     ];
     const grouped = groupByClass(catalog);
     expect(grouped.map((g) => g.classSlug)).toEqual(['druid', 'hunter']);

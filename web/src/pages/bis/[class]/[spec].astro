@@ -85,11 +85,7 @@ const factions: Faction[] = ['alliance', 'horde'];
         </div>
 
         {factions.map((faction) => (
-          <section
-            id={`panel-${faction}`}
-            class="faction-panel"
-            data-testid={`bis-faction-panel-${faction}`}
-          >
+          <section id={`panel-${faction}`} class="faction-panel" data-testid={`bis-faction-panel-${faction}`}>
             <div class="band-panels" id={`bands-${faction}`}>
               <div class="mb-4 flex flex-wrap gap-2" role="group" aria-label={bisCopy.bandPillGroupLabel}>
                 {bands.map((band) => (
@@ -126,8 +122,13 @@ const factions: Faction[] = ['alliance', 'horde'];
                         </thead>
                         <tbody>
                           {rows.map((row) => (
-                            <tr class="border-line-soft border-b" data-testid={`bis-slot-${faction}-${band}-${row.slot}`}>
-                              <td class="text-muted py-2 pr-2">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</td>
+                            <tr
+                              class="border-line-soft border-b"
+                              data-testid={`bis-slot-${faction}-${band}-${row.slot}`}
+                            >
+                              <td class="text-muted py-2 pr-2">
+                                {SLOT_LABELS[row.slot as Slot] ?? row.slot}
+                              </td>
                               {isMissingSlot(row) ? (
                                 <td class="text-muted py-2" colspan="2">
                                   {bisCopy.noKnownSourceForSlot}
@@ -135,7 +136,9 @@ const factions: Faction[] = ['alliance', 'horde'];
                               ) : (
                                 <>
                                   <td class="py-2 pr-2">
-                                    <span class={`font-semibold ${rarityClassFor(qualities.get(row.item_id) ?? 1)}`}>
+                                    <span
+                                      class={`font-semibold ${rarityClassFor(qualities.get(row.item_id) ?? 1)}`}
+                                    >
                                       {row.item_name}
                                     </span>
                                     {row.swap_note && (
@@ -162,19 +165,27 @@ const factions: Faction[] = ['alliance', 'horde'];
                       </table>
                       <aside class="flex flex-col gap-3 text-[13px]">
                         <div>
-                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">{bisCopy.setDpsLabel}</p>
+                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">
+                            {bisCopy.setDpsLabel}
+                          </p>
                           <p class="tabular text-[20px] font-bold">{bandData.set_dps.toFixed(1)}</p>
                         </div>
                         <div>
-                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">{bisCopy.raceLabel}</p>
+                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">
+                            {bisCopy.raceLabel}
+                          </p>
                           <p>{bandData.race}</p>
                         </div>
                         <div>
-                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">{bisCopy.talentsLabel}</p>
+                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">
+                            {bisCopy.talentsLabel}
+                          </p>
                           <p>{bisCopy.talentPointsLabel(bandData.talent_points)}</p>
                         </div>
                         <div>
-                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">{bisCopy.statWeightsLabel}</p>
+                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">
+                            {bisCopy.statWeightsLabel}
+                          </p>
                           <ul class="list-none p-0 m-0">
                             {bandData.weights.map((w) => (
                               <li class="flex justify-between">
@@ -194,7 +205,9 @@ const factions: Faction[] = ['alliance', 'horde'];
                           <p class="text-muted text-[13px]">{bisCopy.newAtBandEmpty}</p>
                         ) : (
                           <ul class="list-disc pl-5 text-[13px]">
-                            {bandData.new_at_band.map((line) => <li>{line}</li>)}
+                            {bandData.new_at_band.map((line) => (
+                              <li>{line}</li>
+                            ))}
                           </ul>
                         )}
                       </div>
