@@ -26,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -142,3 +143,10 @@ jobs:
             sleep 20
           done
           exit 1
+      # A push made with GITHUB_TOKEN never triggers another workflow, so
+      # the site would keep serving last night's picks until someone else
+      # pushed. Dispatch the web deploy explicitly (actions: write above).
+      - name: deploy the site with tonight's picks
+        if: success()
+        env: { GH_TOKEN: '${{ github.token }}' }
+        run: gh workflow run web.yml --ref main
