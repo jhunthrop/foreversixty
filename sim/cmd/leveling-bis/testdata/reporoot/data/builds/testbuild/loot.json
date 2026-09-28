@@ -1,0 +1,18 @@
+{
+  "sources": [
+    {
+      "id": "quest-1",
+      "kind": "quest",
+      "name": "A Test Quest",
+      "items": [1001]
+    },
+    {
+      "id": "dungeon-1",
+      "kind": "dungeon",
+      "name": "A Test Dungeon",
+      "bosses": [
+        {"name": "Test Boss", "items": [1002]}
+      ]
+    }
+  ]
+}
