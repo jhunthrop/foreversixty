@@ -106,6 +106,29 @@ function FollowView.rows(data, build, ranks)
 	}
 end
 
+--- Novice mode's cap on how many "upgrade" inbox rows show at once
+--- (design section 4: advanced detail is what lifts it) -- the same
+--- split Rotation.model already applies to the Overview's rotation card,
+--- so a leveling alt is not shown a raider's whole Top Gear queue.
+FollowView.UPGRADE_NOVICE_ROWS = 3
+
+--- The "upgrade" inbox messages for `key`, newest first (Follow.messages'
+--- own rule), novice-capped to FollowView.UPGRADE_NOVICE_ROWS unless
+--- `advanced` is true. Pure: `inbox` is only read. `hasMore` mirrors
+--- Rotation.model's own field, so the view can reuse its "more" hint
+--- (L.overviewRotationMore) instead of a second copy of the same line.
+function FollowView.upgradeRows(inbox, key, advanced)
+	local messages = Follow.messages(inbox, key, "upgrade")
+	local shown = messages
+	if not advanced and #messages > FollowView.UPGRADE_NOVICE_ROWS then
+		shown = {}
+		for index = 1, FollowView.UPGRADE_NOVICE_ROWS do
+			shown[index] = messages[index]
+		end
+	end
+	return { rows = shown, hasMore = not advanced and #messages > #shown }
+end
+
 local ROW_COLOR = { next = "gold", later = "body", done = "muted" }
 
 --- One row of the order: a gold edge and a raised ground when it is the
@@ -182,6 +205,37 @@ local function slotsRow(parent, onSelect)
 	return row
 end
 
+--- One row of the Top Gear upgrade queue (design section 3 item 2, Wave
+--- C): the slot and item name on top, the source it drops from beneath,
+--- and the delta by the site's own weights on the right. No icon -- a
+--- message carries an item id and a name, not a link, and resolving an
+--- icon from the id alone would need a server round trip this addon has
+--- no network for.
+local function upgradeRow(parent, width)
+	local S = Theme.SIZES
+	local frame = CreateFrame("Frame", nil, parent)
+	frame:SetSize(width, S.rowHeight)
+	local text = Widgets.label(frame, "", "body", "small")
+	text:SetPoint("LEFT", frame, "LEFT", S.gap * 2, 0)
+	local source = Widgets.label(frame, "", "muted", "small")
+	source:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", S.gap * 2, S.gap)
+	local right = Widgets.label(frame, "", "gold", "small")
+	right:SetJustifyH("RIGHT")
+	right:SetPoint("RIGHT", frame, "RIGHT", -S.gap * 2, 0)
+	return { frame = frame, text = text, source = source, right = right }
+end
+
+local function renderUpgradeRow(row, item)
+	row.text:SetText(string.format(L.followUpgradeItem, item.slot, item.item_name))
+	row.source:SetText(string.format(L.followUpgradeSource, item.source))
+	row.right:SetText(string.format(L.followUpgradeDelta, item.delta))
+end
+
+--- How many rows of the upgrade list are drawn on screen at once. Novice
+--- mode never has more than FollowView.UPGRADE_NOVICE_ROWS to show;
+--- advanced mode scrolls past this the same way GuildView's roster does.
+FollowView.UPGRADE_LIST_ROWS = FollowView.UPGRADE_NOVICE_ROWS
+
 local function layout(parent, ctx)
 	local S = Theme.SIZES
 	local gap, padding = S.gap, S.padding
@@ -204,9 +258,19 @@ local function layout(parent, ctx)
 	view.list = Widgets.list(parent, ctx.contentWidth, S.followRows, FollowView.talentRow)
 	view.list.frame:SetPoint("TOPLEFT", view.bar, "BOTTOMLEFT", 0, -gap * 2)
 	view.list:SetRenderer(renderRow)
+	-- Top Gear's upgrade queue (design section 3 item 2, Wave C): the
+	-- companion's "upgrade" inbox messages, newest first, novice-capped
+	-- by FollowView.upgradeRows.
+	view.upgradesTitle = Widgets.label(parent, L.followUpgradesTitle, "muted", "small")
+	view.upgradesTitle:SetPoint("TOPLEFT", view.list.frame, "BOTTOMLEFT", 0, -padding)
+	view.upgrades = Widgets.list(parent, ctx.contentWidth, FollowView.UPGRADE_LIST_ROWS, upgradeRow)
+	view.upgrades.frame:SetPoint("TOPLEFT", view.upgradesTitle, "BOTTOMLEFT", 0, -gap)
+	view.upgrades:SetRenderer(renderUpgradeRow)
+	view.upgradesMore = Widgets.label(parent, L.overviewRotationMore, "muted", "small")
+	view.upgradesMore:SetPoint("TOPLEFT", view.upgrades.frame, "BOTTOMLEFT", 0, -gap)
 	-- Loading a build: a section at the foot, under a hairline.
 	view.loadTitle = Widgets.label(parent, L.followLoadTitle, "muted", "small")
-	view.loadTitle:SetPoint("TOPLEFT", view.list.frame, "BOTTOMLEFT", 0, -padding)
+	view.loadTitle:SetPoint("TOPLEFT", view.upgradesMore, "BOTTOMLEFT", 0, -padding)
 	view.inbox = Widgets.label(parent, L.followInbox, "gold", "small")
 	view.inbox:SetPoint("LEFT", view.loadTitle, "RIGHT", padding, 0)
 	local fieldWidth = ctx.contentWidth - (S.buttonWidth + gap * 2)
@@ -238,7 +302,8 @@ function FollowView.apply(view, model)
 	for index, slot in ipairs(Follow.slotsFor()) do
 		Widgets.setTabActive(view.slots[index].tab, slot.active)
 	end
-	local waiting = Follow.inbox(ForeverSixtyInbox, Export.characterKey())
+	local key = Export.characterKey()
+	local waiting = Follow.inbox(ForeverSixtyInbox, key)
 	view.waiting = waiting[1]
 	if view.waiting == nil then
 		view.inbox:Hide()
@@ -247,6 +312,10 @@ function FollowView.apply(view, model)
 		view.inbox:Show()
 		view.inboxLoad:Show()
 	end
+	local upgrades = FollowView.upgradeRows(ForeverSixtyInbox, key, Prefs.flag("advancedDetail"))
+	view.upgrades:SetItems(upgrades.rows)
+	showAs(view.upgradesTitle, #upgrades.rows > 0)
+	showAs(view.upgradesMore, upgrades.hasMore)
 	Widgets.setEnabled(view.forget, not model.empty)
 	return view
 end

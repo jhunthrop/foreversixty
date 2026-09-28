@@ -71,3 +71,35 @@ describe("Codec.inboxMessages", function()
 		assert.are.equal(1, #usable)
 	end)
 end)
+
+-- Codec.newestFirst: the FollowView inbox list and Tooltip.weightsMessage
+-- both want the companion's own append order reversed, since nothing on
+-- the wire timestamps one message against another.
+describe("Codec.newestFirst", function()
+	local Codec
+
+	before_each(function()
+		Codec = helper.load("Codec")
+	end)
+
+	it("reverses the list, oldest last becomes first", function()
+		local reversed = Codec.newestFirst({ { id = "a" }, { id = "b" }, { id = "c" } })
+		assert.are.same({ "c", "b", "a" }, { reversed[1].id, reversed[2].id, reversed[3].id })
+	end)
+
+	it("returns a new table rather than mutating the one it was given", function()
+		local original = { { id = "a" }, { id = "b" } }
+		local reversed = Codec.newestFirst(original)
+		assert.are.equal("a", original[1].id)
+		assert.are_not.equal(original, reversed)
+	end)
+
+	it("answers an empty list for an empty list", function()
+		assert.are.same({}, Codec.newestFirst({}))
+	end)
+
+	it("answers the one entry for a single-message list", function()
+		local reversed = Codec.newestFirst({ { id = "only" } })
+		assert.are.equal("only", reversed[1].id)
+	end)
+end)

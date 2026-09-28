@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- The Talents page now shows the site's Top Gear upgrade queue for this character (slot,
+  item, source and delta), newest first, three at a time until "Show advanced detail" is
+  on; item tooltips call out a capped stat when the site's saved weights say more of it is
+  wasted. Both read the companion's inbox, addressed per character like a queued build.
 - Turning on "Show advanced detail" in Settings (off by default) widens the personal
   rating card with its top components, alongside the existing gear and rotation detail.
 - A personal rating card on the Overview reads your rating from the Forever Sixty Data

@@ -838,5 +838,20 @@ function Codec.inboxMessages(inbox, key, kind)
 	return usable
 end
 
+--- `messages`, newest first. Codec.inboxMessages answers in the order the
+--- companion wrote them into ForeverSixtyInbox.messages -- the order the
+--- site appended them, oldest first, since nothing on the wire ever
+--- reorders or timestamps one (companion/internal/addon.Message carries
+--- no per-message time). With no timestamp to sort by, append order is
+--- the only signal "newest" can mean, so reversing it is the whole rule.
+--- A new table; `messages` is only read.
+function Codec.newestFirst(messages)
+	local reversed = {}
+	for index = #messages, 1, -1 do
+		reversed[#reversed + 1] = messages[index]
+	end
+	return reversed
+end
+
 ns.Codec = Codec
 return Codec

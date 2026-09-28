@@ -272,6 +272,75 @@ describe("FollowView", function()
 		assert.are.equal(L.followPasteFirst, view.error:GetText())
 	end)
 
+	-- The Top Gear upgrade queue (design section 3 item 2, Wave C): the
+	-- companion's "upgrade" inbox messages, shown newest first and
+	-- novice-capped unless the advanced-detail pref is on.
+	describe("the upgrade queue", function()
+		local function upgradeMessage(slot, delta)
+			return { type = "upgrade", slot = slot, item_name = slot .. " item", source = "Raid", delta = delta }
+		end
+
+		it("caps novice mode at FollowView.UPGRADE_NOVICE_ROWS, newest first", function()
+			start()
+			local model = FollowView.upgradeRows({ messages = {
+				upgradeMessage("head", 1), upgradeMessage("chest", 2), upgradeMessage("legs", 3),
+				upgradeMessage("feet", 4),
+			} }, "US/PvP/Bow Jackzon", false)
+			assert.are.equal(FollowView.UPGRADE_NOVICE_ROWS, #model.rows)
+			assert.are.same({ "feet", "legs", "chest" }, { model.rows[1].slot, model.rows[2].slot, model.rows[3].slot })
+			assert.is_true(model.hasMore)
+		end)
+
+		it("shows every message in advanced mode, with no more to hint at", function()
+			start()
+			local model = FollowView.upgradeRows({ messages = {
+				upgradeMessage("head", 1), upgradeMessage("chest", 2), upgradeMessage("legs", 3),
+				upgradeMessage("feet", 4),
+			} }, "US/PvP/Bow Jackzon", true)
+			assert.are.equal(4, #model.rows)
+			assert.is_false(model.hasMore)
+		end)
+
+		it("does not hint at more when novice mode already shows everything there is", function()
+			start()
+			local model = FollowView.upgradeRows({ messages = { upgradeMessage("head", 1) } },
+				"US/PvP/Bow Jackzon", false)
+			assert.are.equal(1, #model.rows)
+			assert.is_false(model.hasMore)
+		end)
+
+		it("draws the slot, item name, source and delta on the Follow tab", function()
+			start()
+			_G.ForeverSixtyInbox = { messages = { upgradeMessage("chest", 15) } }
+			local view = FollowView.mount(_G.CreateFrame("Frame"), ctxFor())
+			assert.is_true(view.upgradesTitle:IsShown())
+			assert.are.equal(string.format(L.followUpgradeItem, "chest", "chest item"), view.upgrades.rows[1].text:GetText())
+			assert.are.equal(string.format(L.followUpgradeSource, "Raid"), view.upgrades.rows[1].source:GetText())
+			assert.are.equal(string.format(L.followUpgradeDelta, 15), view.upgrades.rows[1].right:GetText())
+		end)
+
+		it("hides the title and the more hint when nothing is waiting", function()
+			start()
+			local view = FollowView.mount(_G.CreateFrame("Frame"), ctxFor())
+			assert.is_false(view.upgradesTitle:IsShown())
+			assert.is_false(view.upgradesMore:IsShown())
+		end)
+
+		it("shows the more hint in novice mode and hides it once advanced detail is on", function()
+			start()
+			_G.ForeverSixtyInbox = { messages = {
+				upgradeMessage("head", 1), upgradeMessage("chest", 2),
+				upgradeMessage("legs", 3), upgradeMessage("feet", 4),
+			} }
+			local view = FollowView.mount(_G.CreateFrame("Frame"), ctxFor())
+			assert.is_true(view.upgradesMore:IsShown())
+			Prefs.setFlag("advancedDetail", true)
+			view.refresh()
+			assert.is_false(view.upgradesMore:IsShown())
+			assert.are.equal(4, #_G.ForeverSixtyInbox.messages)
+		end)
+	end)
+
 	-- Named build slots (design section 1): three tabs, one click switches.
 	describe("named build slots", function()
 		it("draws one tab per slot, named from Locale, raid active by default", function()

@@ -192,6 +192,37 @@ describe("Options", function()
 		assert.are.equal(1, #build.order)
 	end)
 
+	it("hands the newest weights message to Tooltip at login", function()
+		_G.ForeverSixtyInbox = {
+			generated_at = "2026-09-20T00:00:00Z",
+			builds = {},
+			messages = {
+				{ type = "weights", spec = "holy", weights = {}, caps = { "hit" } },
+				{ type = "weights", spec = "protection", weights = {}, caps = { "expertise" } },
+			},
+		}
+		Options.readInbox()
+		-- Follow.messages reverses the companion's append order, so the
+		-- second entry written -- "protection" -- is the newest.
+		assert.are.equal("protection", require("Tooltip").weightsMessage.spec)
+	end)
+
+	it("leaves Tooltip.weightsMessage nil rather than erroring with no weights message queued", function()
+		_G.ForeverSixtyInbox = { generated_at = "2026-09-20T00:00:00Z", builds = {} }
+		Options.readInbox()
+		assert.is_nil(require("Tooltip").weightsMessage)
+	end)
+
+	it("drops a weights message addressed to another character", function()
+		_G.ForeverSixtyInbox = {
+			generated_at = "2026-09-20T00:00:00Z",
+			builds = {},
+			messages = { { type = "weights", character = "US/Ashbringer/Alice", spec = "holy" } },
+		}
+		Options.readInbox()
+		assert.is_nil(require("Tooltip").weightsMessage)
+	end)
+
 	it("register installs the slash commands", function()
 		Options.register()
 		assert.are.equal("/fs", SLASH_FOREVERSIXTY1)
