@@ -1,4 +1,7 @@
 // web/src/lib/bis/load.test.ts
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { SLOTS } from '../planner/types';
 import {
@@ -12,8 +15,14 @@ import {
   loadBisFile,
   readSpecCatalog,
   sourceBadgeLabel,
+  normaliseBisFile,
 } from './load';
 import type { BisSlot, SpecCatalogEntry } from './types';
+
+const FIXTURE = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../data/fixtures/bis/hunter-marksmanship.json',
+);
 
 describe('readSpecCatalog', () => {
   it('reads the master written-spec list, hunter-marksmanship among them', () => {
@@ -79,7 +88,12 @@ describe('loadBisFile', () => {
   });
 
   it('returns null for a spec with neither a real file nor a fixture', () => {
-    expect(loadBisFile('druid-balance', '1.60.1.70009')).toBeNull();
+    expect(loadBisFile('nosuch-spec', '1.60.1.70009')).toBeNull();
+  });
+
+  it('reads an empty "new at this band" list as an array, never null', () => {
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
+    for (const band of file.bands) expect(Array.isArray(band.new_at_band)).toBe(true);
   });
 });
 
@@ -101,8 +115,10 @@ describe('bandEntry', () => {
   });
 
   it('gives band 30 real "new at this band" content against band 25 (the e2e fixture case)', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
-    const band30Horde = bandEntry(file, 30, 'horde')!;
+    // The committed fixture, read directly: once the nightly publishes a real file for
+    // this spec, loadBisFile prefers it and its band 30 may have nothing new.
+    const fixture = normaliseBisFile(JSON.parse(readFileSync(FIXTURE, 'utf8')));
+    const band30Horde = bandEntry(fixture, 30, 'horde')!;
     expect(band30Horde.new_at_band.length).toBeGreaterThan(0);
   });
 });

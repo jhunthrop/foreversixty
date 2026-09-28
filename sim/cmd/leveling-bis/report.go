@@ -149,7 +149,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 		SetDPS:            setDPS,
 		NoSourceCount:     len(noSource),
 		NoSourceSample:    sampleNames,
-		NewAtBand:         newAt,
+		NewAtBand:         nonNil(newAt),
 		WeightsRunSeconds: weightsSeconds,
 		VerifyRunSeconds:  verifySeconds,
 		VerifyErrors:      verifyErrors,
@@ -277,4 +277,14 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 		}
 	}
 	return os.WriteFile(path, []byte(b.String()), 0o644)
+}
+
+// nonNil is xs, or an empty slice for nil: the JSON contract promises an
+// array, and encoding/json writes a nil slice as null, which the site's
+// loader and the addon pipeline would then have to special-case.
+func nonNil(xs []string) []string {
+	if xs == nil {
+		return []string{}
+	}
+	return xs
 }

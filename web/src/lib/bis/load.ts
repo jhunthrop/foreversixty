@@ -68,10 +68,19 @@ function fixtureBisPath(spec: string): string {
  */
 export function loadBisFile(spec: string, build: string): BisFile | null {
   const real = realBisPath(build, spec);
-  if (existsSync(real)) return readJson<BisFile>(real);
+  if (existsSync(real)) return normaliseBisFile(readJson<BisFile>(real));
   const fixture = fixtureBisPath(spec);
-  if (existsSync(fixture)) return readJson<BisFile>(fixture);
+  if (existsSync(fixture)) return normaliseBisFile(readJson<BisFile>(fixture));
   return null;
+}
+
+/** The nightly's first files wrote `null` for an empty "new at this band" list (a Go nil
+ *  slice); the contract is an array, so every band is read as one. */
+export function normaliseBisFile(file: BisFile): BisFile {
+  return {
+    ...file,
+    bands: file.bands.map((band) => ({ ...band, new_at_band: band.new_at_band ?? [] })),
+  };
 }
 
 /** Every spec slug this lane ships a fixture for, read off disk rather than hardcoded, so a
