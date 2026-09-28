@@ -9,8 +9,9 @@ import (
 
 // rewriteRotationRanks rewrites every ranked spell's id in an embedded
 // APL's JSON to the highest rank the character's class has learned by
-// level, and drops any top-level action that casts, or is conditioned
-// on, a ranked spell with no rank learned yet.
+// level, and drops any top-level action that CASTS a ranked spell with
+// no rank learned yet (a condition naming one is the engine's to nil
+// out: see castKeys).
 //
 // It operates on the APL's JSON representation rather than the parsed
 // proto.APLRotation: an ActionID always serializes as a message field
@@ -39,10 +40,10 @@ import (
 // directly on a priorityList entry is.
 //
 // Dropping is all-or-nothing per TOP-LEVEL entry, never per spell
-// inside a compound action: if any ActionID anywhere under a
-// prepullActions/priorityList entry - in its condition, in a nested
-// sequence's steps, wherever - belongs to a ranked spell with no
-// learned rank, the WHOLE entry is dropped, including every step of an
+// inside a compound action: if any CAST ActionID anywhere under a
+// prepullActions/priorityList entry - the action's own spell, or a
+// nested sequence's step - belongs to a ranked spell with no learned
+// rank, the WHOLE entry is dropped, including every step of an
 // enclosing sequence. A sequence is a fixed order of casts; the engine
 // has no notion of "skip step 3 of this strict sequence," so trying to
 // keep the rest of one whose spell dropped out from under it would be
@@ -89,7 +90,7 @@ func filterRankedActions(v any, resolve func(int32) (int32, bool)) any {
 	kept := make([]any, 0, len(arr))
 	for _, item := range arr {
 		drop := false
-		rewriteRankedSpellIDs(item, resolve, &drop)
+		rewriteRankedSpellIDs(item, resolve, &drop, false)
 		if !drop {
 			kept = append(kept, item)
 		}
@@ -97,15 +98,35 @@ func filterRankedActions(v any, resolve func(int32) (int32, bool)) any {
 	return kept
 }
 
+// castKeys are the APLAction fields whose ActionID IS the thing the
+// action casts. An unlearned spell under one of these drops the whole
+// top-level entry; anywhere else - a condition's spellTimeToReady, a
+// dotRemainingTime, a spellIsReady - the id is left as written, and the
+// engine's own rule takes over: rot.GetAPLSpell finds no such spell,
+// the value builds to nil, and newValueAnd/newValueCompare drop a nil
+// operand (sim/core/apl_values_operators.go, wowsims-forever fork). A
+// level-18 hunter's Serpent Sting, conditioned on Aimed Shot's cooldown
+// (learned at 20), used to lose the whole action to that condition and
+// sim on auto shots and Multi-Shot alone (found 2026-09-28).
+var castKeys = map[string]bool{
+	"castSpell":         true,
+	"channelSpell":      true,
+	"castFriendlySpell": true,
+	"multidot":          true,
+	"multishield":       true,
+}
+
 // rewriteRankedSpellIDs walks node (a JSON object, array, or scalar)
 // looking for ActionID objects - {"spellId": <number>, "rank":
 // <number>?} - generically: any map whose OWN "spellId" entry is a
 // JSON number, rather than a hand list of the messages that embed one.
-// A ranked spell resolves to the character's learned rank in place;
-// one belonging to a ranked spell with nothing learned sets *drop and
-// stops recursing into that node (its "rank" annotation is cosmetic
-// and not worth rewriting on the way out).
-func rewriteRankedSpellIDs(node any, resolve func(int32) (int32, bool), drop *bool) {
+// A ranked spell resolves to the character's learned rank in place. One
+// belonging to a ranked spell with nothing learned sets *drop when it
+// is the action's own cast (underCast: the node sits under one of
+// castKeys) and is otherwise left as written for the engine to nil out
+// (see castKeys); either way its "rank" annotation is cosmetic and not
+// worth rewriting on the way out.
+func rewriteRankedSpellIDs(node any, resolve func(int32) (int32, bool), drop *bool, underCast bool) {
 	switch v := node.(type) {
 	case map[string]any:
 		if raw, ok := v["spellId"]; ok {
@@ -113,7 +134,9 @@ func rewriteRankedSpellIDs(node any, resolve func(int32) (int32, bool), drop *bo
 				id := int32(num)
 				newID, learned := resolve(id)
 				if !learned {
-					*drop = true
+					if underCast {
+						*drop = true
+					}
 					return
 				}
 				if newID != id {
@@ -122,12 +145,12 @@ func rewriteRankedSpellIDs(node any, resolve func(int32) (int32, bool), drop *bo
 				return
 			}
 		}
-		for _, val := range v {
-			rewriteRankedSpellIDs(val, resolve, drop)
+		for key, val := range v {
+			rewriteRankedSpellIDs(val, resolve, drop, underCast || castKeys[key])
 		}
 	case []any:
 		for _, item := range v {
-			rewriteRankedSpellIDs(item, resolve, drop)
+			rewriteRankedSpellIDs(item, resolve, drop, underCast)
 		}
 	}
 }

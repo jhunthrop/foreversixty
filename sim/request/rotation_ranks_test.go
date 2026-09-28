@@ -56,6 +56,31 @@ func TestRewriteRotationRanksResolvesAHunterAtLevel38(t *testing.T) {
 	}
 }
 
+// A level-18 hunter has Serpent Sting (rank 3, 13550) and Multi-Shot
+// but not Aimed Shot (learned at 20). Every hunter rotation conditions
+// Serpent Sting and Rapid Fire on Aimed Shot's cooldown, so dropping an
+// action for ANY unlearned spell it named left an 18 with auto shots and
+// Multi-Shot alone (a live level-18 export, 2026-09-28). Only an
+// unlearned CAST drops an action; a condition naming one is left for
+// the engine to nil out.
+func TestRewriteRotationRanksKeepsAnActionWhoseConditionNamesAnUnlearnedSpell(t *testing.T) {
+	raw := readHunterAPL(t)
+	got, err := rewriteRotationRanks(raw, "hunter", 18)
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := string(got)
+	if !strings.Contains(s, `"spellId":13550`) {
+		t.Error("Serpent Sting should be kept at its level-18 rank (13550) although its condition names Aimed Shot")
+	}
+	if !strings.Contains(s, `"spellId":2643`) {
+		t.Error("Multi-Shot (2643, learned at 18) should be kept")
+	}
+	if strings.Contains(s, `"castSpell":{"spellId":{"spellId":20904`) {
+		t.Error("the Aimed Shot cast itself (20904, learned at 20) should have been dropped")
+	}
+}
+
 // At MaxLevel the rewrite is a no-op: every APL is authored against the
 // highest rank of everything it casts, so resolving "the highest rank
 // learned by level 60" always returns the id already there.
@@ -169,7 +194,7 @@ func TestRewriteRankedSpellIDsWalksGenerically(t *testing.T) {
 	t.Run("a bare ActionID rewrites in place", func(t *testing.T) {
 		node := map[string]any{"spellId": float64(200), "rank": float64(3)}
 		drop := false
-		rewriteRankedSpellIDs(node, resolve, &drop)
+		rewriteRankedSpellIDs(node, resolve, &drop, true)
 		if drop {
 			t.Fatal("unexpected drop")
 		}
@@ -185,7 +210,7 @@ func TestRewriteRankedSpellIDsWalksGenerically(t *testing.T) {
 			},
 		}
 		drop := false
-		rewriteRankedSpellIDs(node, resolve, &drop)
+		rewriteRankedSpellIDs(node, resolve, &drop, true)
 		if !drop {
 			t.Fatal("expected drop for an unlearned ranked spell")
 		}
@@ -197,7 +222,7 @@ func TestRewriteRankedSpellIDsWalksGenerically(t *testing.T) {
 			map[string]any{"spellId": float64(200)},
 		}
 		drop := false
-		rewriteRankedSpellIDs(node, resolve, &drop)
+		rewriteRankedSpellIDs(node, resolve, &drop, true)
 		if drop {
 			t.Fatal("unexpected drop")
 		}
@@ -214,7 +239,7 @@ func TestRewriteRankedSpellIDsWalksGenerically(t *testing.T) {
 		// number, so it must never reach resolve.
 		node := map[string]any{"const": map[string]any{"val": "1.5"}}
 		drop := false
-		rewriteRankedSpellIDs(node, resolve, &drop)
+		rewriteRankedSpellIDs(node, resolve, &drop, true)
 		if drop {
 			t.Fatal("unexpected drop from a node with no spellId at all")
 		}
