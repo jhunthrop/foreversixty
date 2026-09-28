@@ -1,0 +1,190 @@
+{
+  "build": "1.15.9.69722",
+  "class_id": 3,
+  "class_slug": "hunter",
+  "trees": [
+    {
+      "id": 301,
+      "name": "Beast Mastery",
+      "position": 0,
+      "talents": [
+        {
+          "id": 3001,
+          "name": "Endurance Training",
+          "icon": "fixture_endurance_training",
+          "max_rank": 5,
+          "tier": 0,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            { "spell_id": 30011, "description": "Increases your pet's health by 4%." },
+            { "spell_id": 30012, "description": "Increases your pet's health by 8%." },
+            { "spell_id": 30013, "description": "Increases your pet's health by 12%." },
+            { "spell_id": 30014, "description": "Increases your pet's health by 16%." },
+            { "spell_id": 30015, "description": "Increases your pet's health by 20%." }
+          ],
+          "spell_id": 30011
+        }
+      ],
+      "background": "fixture_beast_mastery"
+    },
+    {
+      "id": 302,
+      "name": "Marksmanship",
+      "position": 1,
+      "talents": [
+        {
+          "id": 4001,
+          "name": "Lethal Shots",
+          "icon": "fixture_lethal_shots",
+          "max_rank": 5,
+          "tier": 0,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 40011,
+              "description": "Increases your critical strike chance with ranged weapons by 1%."
+            },
+            {
+              "spell_id": 40012,
+              "description": "Increases your critical strike chance with ranged weapons by 2%."
+            },
+            {
+              "spell_id": 40013,
+              "description": "Increases your critical strike chance with ranged weapons by 3%."
+            },
+            {
+              "spell_id": 40014,
+              "description": "Increases your critical strike chance with ranged weapons by 4%."
+            },
+            {
+              "spell_id": 40015,
+              "description": "Increases your critical strike chance with ranged weapons by 5%."
+            }
+          ],
+          "spell_id": 40011
+        },
+        {
+          "id": 4002,
+          "name": "Efficiency",
+          "icon": "fixture_efficiency",
+          "max_rank": 5,
+          "tier": 1,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 40021,
+              "description": "Reduces the mana cost of your ranged and Hunter abilities by 2%."
+            },
+            {
+              "spell_id": 40022,
+              "description": "Reduces the mana cost of your ranged and Hunter abilities by 4%."
+            },
+            {
+              "spell_id": 40023,
+              "description": "Reduces the mana cost of your ranged and Hunter abilities by 6%."
+            },
+            {
+              "spell_id": 40024,
+              "description": "Reduces the mana cost of your ranged and Hunter abilities by 8%."
+            },
+            {
+              "spell_id": 40025,
+              "description": "Reduces the mana cost of your ranged and Hunter abilities by 10%."
+            }
+          ],
+          "spell_id": 40021
+        },
+        {
+          "id": 4003,
+          "name": "Improved Concussive Shot",
+          "icon": "fixture_improved_concussive_shot",
+          "max_rank": 5,
+          "tier": 2,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 40031,
+              "description": "Gives your Concussive Shot a 20% chance to daze the target."
+            },
+            {
+              "spell_id": 40032,
+              "description": "Gives your Concussive Shot a 40% chance to daze the target."
+            },
+            {
+              "spell_id": 40033,
+              "description": "Gives your Concussive Shot a 60% chance to daze the target."
+            },
+            {
+              "spell_id": 40034,
+              "description": "Gives your Concussive Shot a 80% chance to daze the target."
+            },
+            {
+              "spell_id": 40035,
+              "description": "Gives your Concussive Shot a 100% chance to daze the target."
+            }
+          ],
+          "spell_id": 40031
+        },
+        {
+          "id": 4004,
+          "name": "Barrage",
+          "icon": "fixture_barrage",
+          "max_rank": 5,
+          "tier": 3,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 40041,
+              "description": "Increases the damage of your ranged critical strikes by 6%."
+            },
+            {
+              "spell_id": 40042,
+              "description": "Increases the damage of your ranged critical strikes by 12%."
+            },
+            {
+              "spell_id": 40043,
+              "description": "Increases the damage of your ranged critical strikes by 18%."
+            },
+            {
+              "spell_id": 40044,
+              "description": "Increases the damage of your ranged critical strikes by 24%."
+            },
+            {
+              "spell_id": 40045,
+              "description": "Increases the damage of your ranged critical strikes by 30%."
+            }
+          ],
+          "spell_id": 40041
+        },
+        {
+          "id": 4005,
+          "name": "Careful Aim",
+          "icon": "fixture_careful_aim",
+          "max_rank": 1,
+          "tier": 4,
+          "column": 0,
+          "prereq_talent_id": null,
+          "prereq_rank": null,
+          "ranks": [
+            {
+              "spell_id": 40051,
+              "description": "Your ranged attacks have a chance to increase your Intellect."
+            }
+          ],
+          "spell_id": 40051
+        }
+      ],
+      "background": "fixture_marksmanship"
+    }
+  ]
+}

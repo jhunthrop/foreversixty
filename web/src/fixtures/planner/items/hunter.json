@@ -1,0 +1,22 @@
+{
+  "build": "1.15.9.69722",
+  "class_slug": "hunter",
+  "items": [
+    {
+      "id": 10060,
+      "name": "Iron Cap of the Ladder",
+      "icon": "fixture_item_iron_cap_of_the_ladder",
+      "slot": "head",
+      "quality": 2,
+      "required_level": 28,
+      "item_level": 30,
+      "armor": 45,
+      "stats": {
+        "agility": 8,
+        "crit": 1
+      },
+      "set_id": null,
+      "unique": false
+    }
+  ]
+}
