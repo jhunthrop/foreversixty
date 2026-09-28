@@ -128,7 +128,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 	if err != nil {
 		t.Fatal(err)
 	}
-	knownItems, err := loadSimItemIDs(repoRoot, build)
+	knownItems, err := obtainableItemIDs(repoRoot, build)
 	if err != nil {
 		t.Fatal(err)
 	}

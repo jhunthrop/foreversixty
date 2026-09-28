@@ -89,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000-10000000000000000 | main_hand:274270 | 27.4 | 3 | other:attack/1=59.1, spell:25740=21.5, spell:20287=20.0, spell:20280=15.7 | {SpellID: 20375} |
-| 20 | 00000000000000000-0000000000000000-55100000000000000 | main_hand:274270 | 31.0 | 6 | other:attack/1=59.1, spell:25739=18.7, spell:20288=17.2, spell:20281=12.8, spell:20375=4.0 | - |
-| 30 | 00000000000000000-0000000000000000-55225200000000000 | main_hand:274270 | 39.1 | 6 | other:attack/1=59.1, spell:25738=21.0, spell:20289=15.5, spell:20282=11.1, spell:20915=4.0 | - |
-| 38 | 00000000000000000-0000000000000000-55225331101000010 | main_hand:274270 | 43.4 | 6 | other:attack/1=59.1, spell:25737=19.7, spell:20290=14.2, spell:20283=9.7, spell:20915=5.0 | - |
-| 40 | 00000000000000000-0000000000000000-55225331101000021 | main_hand:274270 | 44.4 | 6 | other:attack/1=59.1, spell:25737=21.7, spell:20290=15.0, spell:20283=10.6, spell:20918=4.0 | - |
-| 50 | 00000000000000000-5000500000000000-55225331101000021 | main_hand:274270 | 49.5 | 6 | other:attack/1=59.1, spell:25735=17.2, spell:20292=13.5, spell:20285=9.2, spell:20919=4.0 | - |
-| 60 | 00000000000000000-5000500000000000-55225331101000021 | main_hand:234542 | 91.8 | 6 | other:attack/1=47.1, spell:20375=14.0, spell:20424=10.1, spell:20467=9.5, spell:20293=9.0 | - |
+| 10 | 00000000000000000-0000000000000000-10000000000000000 | main_hand:22348 | 33.0 | 4 | other:attack/1=48.3, spell:20287=19.4, spell:20271=16.0, spell:20280=16.0, spell:25740=14.8 | {SpellID: 20375} |
+| 20 | 00000000000000000-0000000000000000-55100000000000000 | main_hand:22348 | 37.3 | 6 | other:attack/1=48.3, spell:20288=17.4, spell:25739=17.4, spell:20271=14.0, spell:20281=14.0 | - |
+| 30 | 00000000000000000-0000000000000000-55225200000000000 | main_hand:22348 | 45.2 | 6 | other:attack/1=48.3, spell:25738=17.9, spell:20289=16.1, spell:20271=12.8, spell:20282=12.8 | - |
+| 38 | 00000000000000000-0000000000000000-55225331101000010 | main_hand:22348 | 51.6 | 7 | other:attack/1=48.3, spell:25737=16.4, spell:20290=13.7, spell:20271=12.4, spell:20283=10.4 | - |
+| 40 | 00000000000000000-0000000000000000-55225331101000021 | main_hand:22348 | 52.2 | 6 | other:attack/1=48.3, spell:25737=19.3, spell:20290=15.6, spell:20271=12.2, spell:20283=12.2 | - |
+| 50 | 00000000000000000-5000500000000000-55225331101000021 | main_hand:22348 | 57.2 | 6 | other:attack/1=48.3, spell:25735=17.0, spell:20292=14.2, spell:20271=10.8, spell:20285=10.8 | - |
+| 60 | 00000000000000000-5000500000000000-55225331101000021 | main_hand:21134 | 86.2 | 7 | other:attack/1=52.4, spell:20271=14.1, spell:20375=13.6, spell:20467=10.1, spell:20424=10.0 | - |
 
 ## Learned but unused (informational)
 
@@ -109,12 +109,14 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Exorcism (spell 879)
 - Holy Strike (spell 1866)
+- Judgement of Command (spell 20425)
 - Judgement of Fury (spell 1311655)
 
 ### Level 30
 
 - Exorcism (spell 5614)
 - Holy Strike (spell 680)
+- Judgement of Command (spell 20962)
 - Judgement of Fury (spell 20183)
 
 ### Level 38
@@ -127,6 +129,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - Exorcism (spell 5615)
 - Holy Strike (spell 2495)
+- Judgement of Command (spell 20961)
 - Judgement of Fury (spell 20411)
 
 ### Level 50
@@ -135,6 +138,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Hammer of Wrath (spell 24275)
 - Holy Strike (spell 5569)
 - Holy Wrath (spell 2812)
+- Judgement of Command (spell 20965)
 - Judgement of Fury (spell 20413)
 
 ### Level 60
@@ -148,11 +152,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- paladin-retribution level=10 kind=zero_casts id=20271 authored=20271 (untracked ability; not in spellranks.json's rank chains)
-- paladin-retribution level=20 kind=zero_casts id=20271 authored=20271 (untracked ability; not in spellranks.json's rank chains)
-- paladin-retribution level=30 kind=zero_casts id=20271 authored=20271 (untracked ability; not in spellranks.json's rank chains)
-- paladin-retribution level=38 kind=zero_casts id=20271 authored=20271 (untracked ability; not in spellranks.json's rank chains)
-- paladin-retribution level=40 kind=zero_casts id=20271 authored=20271 (untracked ability; not in spellranks.json's rank chains)
-- paladin-retribution level=50 kind=zero_casts id=20271 authored=20271 (untracked ability; not in spellranks.json's rank chains)
-- paladin-retribution level=60 kind=zero_casts id=20271 authored=20271 (untracked ability; not in spellranks.json's rank chains)
 - paladin-retribution level=60 kind=zero_casts spell="Seal of Command" id=20920 authored=20375

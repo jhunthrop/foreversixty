@@ -90,7 +90,7 @@ type writtenRotation struct {
 
 // actionInWarning pulls the action out of an engine validation warning.
 // The engine formats every unresolved reference through
-// core.ActionID.String - see sim/core/agent.go - so "{SpellID: 400574}"
+// core.ActionID.String - see sim/core/agent.go - so "{SpellID: 1239700}"
 // and "{OtherID: 13}" are the engine's own rendering, not one we chose,
 // and using it whole means a non-spell action is expressible too.
 var actionInWarning = regexp.MustCompile(`\{[A-Za-z]+ID: \d+(?:, Tag: \d+)?\}`)
@@ -123,10 +123,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 19574}": "Bestial Wrath is a talent (sim/hunter/talents.go); this build takes none.",
 	},
 	"mage-arcane": {
-		"{SpellID: 400574}": "Arcane Blast is a talent (sim/mage/arcane_blast.go, Forever's tree); this build takes none.",
-		"{SpellID: 400589}": "Missile Barrage's buff only exists with its talent (sim/mage/missile_barrage.go); this build takes none.",
-		"{SpellID: 12042}":  "Arcane Power is a talent (sim/mage/talents.go); this build takes none.",
-		"{SpellID: 12043}":  "Presence of Mind is a talent (sim/mage/talents.go); this build takes none.",
+		"{SpellID: 1239700}": "Arcane Blast is a talent (sim/mage/arcane_blast.go, Forever's tree); this build takes none.",
+		"{SpellID: 400589}":  "Missile Barrage's buff only exists with its talent (sim/mage/missile_barrage.go); this build takes none.",
+		"{SpellID: 12042}":   "Arcane Power is a talent (sim/mage/talents.go); this build takes none.",
+		"{SpellID: 12043}":   "Presence of Mind is a talent (sim/mage/talents.go); this build takes none.",
 	},
 	"mage-fire": {
 		"{SpellID: 11129}": "Combustion is a talent (sim/mage/talents.go); this build takes none.",
@@ -147,7 +147,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 	},
 	"rogue-assassination": {
 		"{SpellID: 1310703}": "Venom is a talent (sim/rogue/venom.go, Forever's tree); this build takes none.",
-		"{SpellID: 1310707}": "Mutilate is a talent (sim/rogue/mutilate.go, Forever's tree); this build takes none.",
+		"{SpellID: 1241584}": "Mutilate is a talent (sim/rogue/mutilate.go, Forever's tree); this build takes none.",
 		"{SpellID: 14177}":   "Cold Blood is a talent (sim/rogue/talents.go); this build takes none.",
 	},
 	"rogue-combat": {
@@ -168,10 +168,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 	},
 	"warlock-demonology": {"{OtherID: 13}": noPotionWarning},
 	"warlock-destruction": {
-		"{SpellID: 412758}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
-		"{OtherID: 13}":     noPotionWarning,
-		"{SpellID: 18871}":  "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
-		"{SpellID: 18932}":  "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",
+		"{SpellID: 1293813}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
+		"{OtherID: 13}":      noPotionWarning,
+		"{SpellID: 18871}":   "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
+		"{SpellID: 18932}":   "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",
 	},
 	"warrior-arms": {
 		"{SpellID: 21553}": "Mortal Strike is gated on its talent (sim/warrior/mortal_strike.go); this build takes none.",

@@ -257,6 +257,72 @@ type simItemsFile struct {
 	Items []int `json:"items"`
 }
 
+// lootSourcesFile is the part of loot.json the ladder reads: every item
+// id any source names, whether as a flat list, an instance's trash, or
+// a boss drop.
+type lootSourcesFile struct {
+	Sources []struct {
+		Items  []int `json:"items"`
+		Trash  []int `json:"trash"`
+		Bosses []struct {
+			Items []int `json:"items"`
+		} `json:"bosses"`
+	} `json:"sources"`
+}
+
+// loadSourcedItemIDs reads loot.json and returns the ids with at least
+// one known source. The ladder equips only such items: the client's item
+// table also carries placeholder weapons no player can obtain ("Bland
+// Dagger", "90 Epic Rogue Dagger" - required_level 0, no source), and
+// once the client's damage curves gave those rows a damage value they
+// outranked every real weapon by item level.
+func loadSourcedItemIDs(repoRoot, build string) (map[int]bool, error) {
+	path := filepath.Join(repoRoot, "data", "builds", build, "loot.json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("ladder: reading %s: %w", path, err)
+	}
+	var f lootSourcesFile
+	if err := json.Unmarshal(b, &f); err != nil {
+		return nil, fmt.Errorf("ladder: parsing %s: %w", path, err)
+	}
+	out := map[int]bool{}
+	for _, source := range f.Sources {
+		for _, id := range source.Items {
+			out[id] = true
+		}
+		for _, id := range source.Trash {
+			out[id] = true
+		}
+		for _, boss := range source.Bosses {
+			for _, id := range boss.Items {
+				out[id] = true
+			}
+		}
+	}
+	return out, nil
+}
+
+// obtainableItemIDs is the ladder's pick pool: items the pinned engine
+// knows (simitems.json) that also have a loot source (loot.json).
+func obtainableItemIDs(repoRoot, build string) (map[int]bool, error) {
+	known, err := loadSimItemIDs(repoRoot, build)
+	if err != nil {
+		return nil, err
+	}
+	sourced, err := loadSourcedItemIDs(repoRoot, build)
+	if err != nil {
+		return nil, err
+	}
+	out := make(map[int]bool, len(sourced))
+	for id := range sourced {
+		if known[id] {
+			out[id] = true
+		}
+	}
+	return out, nil
+}
+
 // loadSimItemIDs reads simitems.json: the item ids the pinned engine's
 // own item database carries. items/<class>.json is already a subset of
 // this set on every build checked, but a gear pick still filters against

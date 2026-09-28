@@ -89,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:274271 | 32.1 | 3 | other:attack/1=107.8, spell:1757=41.7, spell:6760/5=4.4, spell:5171/5=3.0 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:274271 | 33.7 | 3 | other:attack/1=107.9, spell:1758=41.7, spell:6761/5=4.4, spell:5171/5=2.9 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 30 | 00000000000000000-00000000000000000-5323221300000000000 | main_hand:274271 | 35.8 | 3 | other:attack/1=107.9, spell:1760=41.7, spell:6762/5=4.4, spell:5171/5=2.9 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 38 | 00000000000000000-00000000000000000-5323221310003001030 | main_hand:274271 | 40.7 | 4 | other:attack/1=109.9, spell:8621=34.1, spell:14278=9.0, spell:5171/5=3.9, spell:8623/5=3.4 | {SpellID: 14183}, {SpellID: 16511} |
-| 40 | 00000000000000000-00000000000000000-5323221310003001050 | main_hand:274271 | 43.8 | 4 | other:attack/1=109.9, spell:8621=34.1, spell:14278=9.0, spell:5171/5=3.9, spell:8624/5=3.4 | {SpellID: 14183}, {SpellID: 16511} |
-| 50 | 32100000000000000-31000000000000000-5323221310003001050 | main_hand:12061 off_hand:17738 | 71.3 | 4 | other:attack/2=113.0, other:attack/1=84.9, spell:11293=35.1, spell:14278=8.9, spell:11299/5=4.1 | {SpellID: 14183}, {SpellID: 16511} |
-| 60 | 32100000000000000-32003000000000000-5323221310003001050 | main_hand:23577 off_hand:234558 | 103.3 | 4 | other:attack/1=138.5, other:attack/2=71.9, spell:11294=36.9, spell:14278=8.9, spell:6774/5=4.3 | {SpellID: 14183}, {SpellID: 16511} |
+| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:22377 off_hand:13371 | 6.7 | 3 | spell:1757=37.8, spell:6760/5=5.4, spell:5171/5=1.6 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:22377 off_hand:13371 | 8.1 | 3 | spell:1758=36.9, spell:6761/5=6.0, spell:5171/5=1.0 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 30 | 00000000000000000-00000000000000000-5323221300000000000 | main_hand:22377 off_hand:13371 | 9.1 | 3 | spell:1760=36.9, spell:6762/5=6.0, spell:5171/5=1.0 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 38 | 00000000000000000-00000000000000000-5323221310003001030 | main_hand:22377 off_hand:13371 | 4.1 | 4 | spell:16511=37.0, spell:14278=8.9, spell:5171/5=5.4, spell:8623/5=3.2 | {SpellID: 14183} |
+| 40 | 00000000000000000-00000000000000000-5323221310003001050 | main_hand:22377 off_hand:13371 | 7.0 | 4 | spell:16511=37.0, spell:14278=8.9, spell:5171/5=5.4, spell:8624/5=3.2 | {SpellID: 14183} |
+| 50 | 32100000000000000-31000000000000000-5323221310003001050 | main_hand:22377 off_hand:13371 | 10.3 | 4 | spell:16511=37.0, spell:14278=8.9, spell:6774/5=5.4, spell:11299/5=3.2 | {SpellID: 14183} |
+| 60 | 32100000000000000-32003000000000000-5323221310003001050 | main_hand:23577 off_hand:18847 | 104.3 | 4 | other:attack/1=139.0, other:attack/2=72.1, spell:16511=41.5, spell:14278=8.7, spell:6774/5=4.5 | {SpellID: 14183} |
 
 ## Learned but unused (informational)
 
@@ -135,6 +135,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1767)
 - Rupture (spell 8640)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 8621)
 
 ### Level 40
 
@@ -145,6 +146,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1767)
 - Rupture (spell 8640)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 8621)
 
 ### Level 50
 
@@ -155,17 +157,18 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1768)
 - Rupture (spell 11273)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 11293)
 
 ### Level 60
 
 - Ambush (spell 11269)
 - Backstab (spell 25300)
-- Copy of Deadly Poison IV (spell 25348)
 - Garrote (spell 11290)
 - Gouge (spell 11286)
 - Kick (spell 1769)
 - Rupture (spell 11275)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 11294)
 - Test Stab R50 (spell 23959)
 - Test Strike R50 (spell 23960)
 
@@ -173,11 +176,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - rogue-subtlety level=20 kind=zero_casts spell="Ambush" id=8676 authored=11269
 - rogue-subtlety level=30 kind=zero_casts spell="Ambush" id=8724 authored=11269
-- rogue-subtlety level=38 kind=unresolved_id action={SpellID: 16511}
+- rogue-subtlety level=38 kind=dps_regression dps=4.1 prev_dps=9.1
 - rogue-subtlety level=38 kind=zero_casts spell="Ambush" id=8725 authored=11269
-- rogue-subtlety level=40 kind=unresolved_id action={SpellID: 16511}
+- rogue-subtlety level=38 kind=zero_casts spell="Sinister Strike" id=8621 authored=11294
 - rogue-subtlety level=40 kind=zero_casts spell="Ambush" id=8725 authored=11269
-- rogue-subtlety level=50 kind=unresolved_id action={SpellID: 16511}
+- rogue-subtlety level=40 kind=zero_casts spell="Sinister Strike" id=8621 authored=11294
 - rogue-subtlety level=50 kind=zero_casts spell="Ambush" id=11268 authored=11269
-- rogue-subtlety level=60 kind=unresolved_id action={SpellID: 16511}
+- rogue-subtlety level=50 kind=zero_casts spell="Sinister Strike" id=11293 authored=11294
 - rogue-subtlety level=60 kind=zero_casts spell="Ambush" id=11269 authored=11269
+- rogue-subtlety level=60 kind=zero_casts spell="Sinister Strike" id=11294 authored=11294

@@ -89,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-100000000000000000-000000000000000000 | main_hand:274265 | 24.4 | 2 | other:attack/1=65.3, other:rage_gain=38.0, spell:1680=18.5, spell:2687=3.5 | {SpellID: 12328}, {SpellID: 23894}, {SpellID: 284, Tag: 1}, {SpellID: 6673} |
-| 20 | 00000000000000000-551000000000000000-000000000000000000 | main_hand:274265 off_hand:9608 | 28.1 | 2 | other:attack/2=95.8, other:attack/1=65.2, other:rage_gain=37.7, spell:1680=18.3, spell:2687=3.5 | {SpellID: 12328}, {SpellID: 23894}, {SpellID: 285, Tag: 1}, {SpellID: 5242} |
-| 30 | 00000000000000000-555000005010000000-000000000000000000 | main_hand:274265 off_hand:9608 | 38.8 | 2 | other:attack/2=95.8, other:attack/1=65.2, other:rage_gain=38.0, spell:1680=13.9, spell:2687=3.5 | {SpellID: 12328}, {SpellID: 1608, Tag: 1}, {SpellID: 23894}, {SpellID: 6192} |
-| 38 | 00000000000000000-555000005050010030-000000000000000000 | main_hand:274265 off_hand:9608 | 44.1 | 3 | other:attack/2=98.5, other:attack/1=67.0, other:rage_gain=38.0, spell:1680=13.5, spell:2687=3.5 | {SpellID: 11549}, {SpellID: 11564, Tag: 1}, {SpellID: 23894} |
-| 40 | 00000000000000000-555000005050010050-000000000000000000 | main_hand:274265 off_hand:9608 | 44.3 | 3 | other:attack/2=100.1, other:attack/1=68.1, other:rage_gain=38.1, spell:1680=11.4, spell:2687=3.5 | {SpellID: 11549}, {SpellID: 11565, Tag: 1}, {SpellID: 23881} |
-| 50 | 35100000000000000-555000005050010051-000000000000000000 | main_hand:12061 off_hand:17738 | 70.0 | 5 | other:attack/2=107.7, other:attack/1=81.0, other:rage_gain=38.1, spell:23892=11.6, spell:2687=3.5 | {SpellID: 11550}, {SpellID: 11566, Tag: 1} |
-| 60 | 35310003002000000-555000005050010051-000000000000000000 | main_hand:23577 off_hand:234558 | 140.1 | 8 | other:attack/1=129.8, other:attack/2=67.8, other:rage_gain=38.0, spell:23894=15.5, spell:1680=4.3 | - |
+| 10 | 00000000000000000-100000000000000000-000000000000000000 | main_hand:22377 off_hand:13371 | 0.1 | 3 | other:rage_gain=38.1, spell:2687=3.5, spell:1680=2.0, spell:6673=1.5 | {SpellID: 12328}, {SpellID: 23894} |
+| 20 | 00000000000000000-551000000000000000-000000000000000000 | main_hand:22377 off_hand:13371 | 0.2 | 3 | other:rage_gain=38.1, spell:2687=3.5, spell:1680=2.0, spell:5242=1.5 | {SpellID: 12328}, {SpellID: 23894} |
+| 30 | 00000000000000000-555000005010000000-000000000000000000 | main_hand:22377 off_hand:13371 | 0.5 | 4 | other:rage_gain=38.1, spell:2687=3.5, spell:1680=1.6, spell:6192=1.5, spell:5308=0.4 | {SpellID: 12328}, {SpellID: 23894} |
+| 38 | 00000000000000000-555000005050010030-000000000000000000 | main_hand:22377 off_hand:13371 | 1.1 | 5 | other:rage_gain=38.1, spell:2687=3.5, spell:12328=1.5, spell:11549=1.4, spell:20658=1.2 | {SpellID: 23894} |
+| 40 | 00000000000000000-555000005050010050-000000000000000000 | main_hand:22377 off_hand:13371 | 1.7 | 5 | other:rage_gain=38.1, spell:2687=3.5, spell:12328=1.5, spell:11549=1.4, spell:20660=1.2 | {SpellID: 23881} |
+| 50 | 35100000000000000-555000005050010051-000000000000000000 | main_hand:22377 off_hand:13371 | 2.3 | 6 | other:rage_gain=38.1, spell:2687=3.5, spell:12328=1.4, spell:11550=1.0, spell:1719=1.0 | - |
+| 60 | 35310003002000000-555000005050010051-000000000000000000 | main_hand:23577 off_hand:18847 | 140.6 | 9 | other:attack/1=129.9, other:attack/2=67.9, other:rage_gain=38.1, spell:23894=15.6, spell:20662=10.7 | - |
 
 ## Learned but unused (informational)
 
@@ -140,7 +140,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 40
 
 - Bloodthirst (spell 23881)
-- Copy of Mortal Strike (spell 26652)
 - Hamstring (spell 7372)
 - Mocking Blow (spell 7402)
 - Mortal Strike (spell 12294)
@@ -154,7 +153,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
-- Copy of Mortal Strike (spell 26652)
 - Devastate (spell 20243)
 - Hamstring (spell 7372)
 - Mocking Blow (spell 20559)
@@ -169,7 +167,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Copy of Mortal Strike (spell 26652)
 - Devastate (spell 20243)
 - Hamstring (spell 7373)
 - Mocking Blow (spell 20560)
@@ -187,26 +184,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warrior-fury level=10 kind=unresolved_id action={SpellID: 284, Tag: 1}
-- warrior-fury level=10 kind=unresolved_id action={SpellID: 6673}
 - warrior-fury level=10 kind=zero_casts spell="Heroic Strike" id=284 authored=25286
-- warrior-fury level=20 kind=unresolved_id action={SpellID: 285, Tag: 1}
-- warrior-fury level=20 kind=unresolved_id action={SpellID: 5242}
 - warrior-fury level=20 kind=zero_casts spell="Heroic Strike" id=285 authored=25286
-- warrior-fury level=30 kind=unresolved_id action={SpellID: 1608, Tag: 1}
-- warrior-fury level=30 kind=unresolved_id action={SpellID: 6192}
-- warrior-fury level=30 kind=zero_casts spell="Execute" id=5308 authored=20662
 - warrior-fury level=30 kind=zero_casts spell="Heroic Strike" id=1608 authored=25286
-- warrior-fury level=38 kind=unresolved_id action={SpellID: 11549}
-- warrior-fury level=38 kind=unresolved_id action={SpellID: 11564, Tag: 1}
-- warrior-fury level=38 kind=zero_casts spell="Execute" id=20658 authored=20662
 - warrior-fury level=38 kind=zero_casts spell="Heroic Strike" id=11564 authored=25286
-- warrior-fury level=40 kind=unresolved_id action={SpellID: 11549}
-- warrior-fury level=40 kind=unresolved_id action={SpellID: 11565, Tag: 1}
-- warrior-fury level=40 kind=zero_casts spell="Execute" id=20660 authored=20662
 - warrior-fury level=40 kind=zero_casts spell="Heroic Strike" id=11565 authored=25286
-- warrior-fury level=50 kind=unresolved_id action={SpellID: 11550}
-- warrior-fury level=50 kind=unresolved_id action={SpellID: 11566, Tag: 1}
-- warrior-fury level=50 kind=zero_casts spell="Execute" id=20661 authored=20662
+- warrior-fury level=50 kind=zero_casts id=1680 authored=1680 (untracked ability; not in spellranks.json's rank chains)
 - warrior-fury level=50 kind=zero_casts spell="Heroic Strike" id=11566 authored=25286
-- warrior-fury level=60 kind=zero_casts spell="Execute" id=20662 authored=20662

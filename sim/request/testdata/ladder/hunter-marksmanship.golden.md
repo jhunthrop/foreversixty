@@ -89,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-10000000000000000-000000000000000000 | main_hand:274265 ranged:275052 | 60.1 | 3 | other:shoot=74.9, spell:13549=17.3, spell:3044=17.1, other:move=1.0, spell:13165=1.0 | {SpellID: 20904}, {SpellID: 2643}, {SpellID: 3045} |
-| 20 | 0000000000000000-35300000000000000-000000000000000000 | main_hand:274265 off_hand:9608 ranged:275052 | 68.3 | 4 | other:shoot=74.6, spell:19434=17.3, spell:13550=3.0, spell:2643=2.0, other:move=1.0 | {SpellID: 3045} |
-| 30 | 0000000000000000-35305500000000000-000000000000000000 | main_hand:274265 off_hand:9608 ranged:275052 | 73.5 | 5 | other:shoot=77.2, spell:2643=10.0, spell:20900=9.1, spell:13551=3.2, other:move=1.0 | - |
-| 38 | 0000000000000000-35305500115001000-000000000000000000 | main_hand:274265 off_hand:9608 ranged:13138 | 83.2 | 5 | other:shoot=77.3, spell:2643=16.0, spell:20901=4.9, spell:13552=3.2, other:move=1.0 | - |
-| 40 | 0000000000000000-35305500115003000-000000000000000000 | main_hand:274265 off_hand:9608 ranged:15287 | 83.7 | 5 | other:shoot=97.6, spell:2643=15.4, spell:20901=5.8, spell:13552=3.3, other:move=1.0 | - |
-| 50 | 5500000000000000-35305500115003000-000000000000000000 | main_hand:12061 off_hand:17738 ranged:13022 | 101.8 | 5 | other:shoot=79.8, spell:2643=16.4, spell:20902=5.0, spell:13554=3.2, other:move=1.0 | - |
-| 60 | 5522000000000000-35305500115003000-510000000000000000 | main_hand:23577 off_hand:234558 ranged:234559 | 130.5 | 5 | other:shoot=65.8, spell:2643=16.5, spell:20904=4.8, spell:25295=3.2, other:move=1.0 | - |
+| 10 | 0000000000000000-10000000000000000-000000000000000000 | main_hand:22377 off_hand:13371 ranged:22347 | 70.9 | 3 | other:shoot=65.6, spell:13549=17.3, spell:3044=16.8, other:move=1.0, spell:13165=1.0 | {SpellID: 20904}, {SpellID: 2643}, {SpellID: 3045} |
+| 20 | 0000000000000000-35300000000000000-000000000000000000 | main_hand:22377 off_hand:13371 ranged:22347 | 81.7 | 5 | other:shoot=65.0, spell:19434=15.6, spell:13550=3.2, spell:2643=2.0, other:move=1.0 | {SpellID: 3045} |
+| 30 | 0000000000000000-35305500000000000-000000000000000000 | main_hand:22377 off_hand:13371 ranged:22347 | 88.0 | 6 | other:shoot=67.6, spell:2643=10.9, spell:20900=7.7, spell:13551=3.3, other:move=1.0 | - |
+| 38 | 0000000000000000-35305500115001000-000000000000000000 | main_hand:22377 off_hand:13371 ranged:22347 | 94.3 | 6 | other:shoot=67.7, spell:2643=14.9, spell:20901=4.7, spell:13552=3.3, other:move=1.0 | - |
+| 40 | 0000000000000000-35305500115003000-000000000000000000 | main_hand:22377 off_hand:13371 ranged:22347 | 98.8 | 6 | other:shoot=67.7, spell:2643=15.9, spell:20901=5.0, spell:13552=3.3, other:move=1.0 | - |
+| 50 | 5500000000000000-35305500115003000-000000000000000000 | main_hand:22377 off_hand:13371 ranged:22347 | 108.8 | 6 | other:shoot=67.7, spell:2643=16.2, spell:20902=4.8, spell:13554=3.3, other:move=1.0 | - |
+| 60 | 5522000000000000-35305500115003000-510000000000000000 | main_hand:23577 off_hand:18847 ranged:23557 | 130.5 | 6 | other:shoot=72.4, spell:2643=17.3, spell:20904=4.0, spell:25295=3.0, other:move=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -113,7 +113,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 20
 
-- Arcane Shot (spell 14282)
 - Bite (spell 17256)
 - Claw (spell 16829)
 - Dismember (spell 1264758)
@@ -135,7 +134,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
-- Arcane Shot (spell 14283)
 - Bite (spell 17257)
 - Claw (spell 16830)
 - Counterattack (spell 1242634)
@@ -162,7 +160,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 38
 
-- Arcane Shot (spell 14284)
 - Bite (spell 17258)
 - Claw (spell 16831)
 - Counterattack (spell 1242634)
@@ -190,7 +187,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 40
 
-- Arcane Shot (spell 14284)
 - Bite (spell 17259)
 - Claw (spell 16832)
 - Counterattack (spell 1242634)
@@ -219,7 +215,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
-- Arcane Shot (spell 14285)
 - Bite (spell 17260)
 - Claw (spell 3010)
 - Counterattack (spell 20909)
@@ -249,7 +244,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Arcane Shot (spell 14287)
 - Bite (spell 17261)
 - Claw (spell 3009)
 - Counterattack (spell 20910)
@@ -283,9 +277,3 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - hunter-marksmanship level=10 kind=unresolved_id action={SpellID: 2643}
 - hunter-marksmanship level=10 kind=unresolved_id action={SpellID: 3045}
 - hunter-marksmanship level=20 kind=unresolved_id action={SpellID: 3045}
-- hunter-marksmanship level=20 kind=zero_casts spell="Arcane Shot" id=14282 authored=14287
-- hunter-marksmanship level=30 kind=zero_casts spell="Arcane Shot" id=14283 authored=14287
-- hunter-marksmanship level=38 kind=zero_casts spell="Arcane Shot" id=14284 authored=14287
-- hunter-marksmanship level=40 kind=zero_casts spell="Arcane Shot" id=14284 authored=14287
-- hunter-marksmanship level=50 kind=zero_casts spell="Arcane Shot" id=14285 authored=14287
-- hunter-marksmanship level=60 kind=zero_casts spell="Arcane Shot" id=14287 authored=14287

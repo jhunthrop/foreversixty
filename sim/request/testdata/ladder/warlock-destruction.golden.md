@@ -89,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:274271 ranged:279896 | 7.7 | 3 | other:mana_gain=50.0, spell:1454=50.0, spell:695=36.1, spell:707=10.7 | {OtherID: 13} |
-| 20 | 00000000000000000-0000000000000000000-2540000000000000 | main_hand:274271 ranged:7001 | 16.1 | 3 | other:mana_gain=25.9, spell:1455=25.9, spell:1088=20.5, spell:1094=11.4 | {OtherID: 13}, {SpellID: 17877} |
-| 30 | 00000000000000000-0000000000000000000-2555004000000000 | main_hand:274271 ranged:5213 | 32.8 | 3 | other:mana_gain=31.5, spell:1456=31.5, spell:1106=26.6, spell:2941=11.0 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 18867} |
-| 38 | 00000000000000000-0000000000000000000-2555005100101040 | main_hand:274271 ranged:13064 | 55.4 | 4 | other:mana_gain=38.4, spell:11687=38.4, spell:7641=35.9, spell:2941=12.5, spell:18868=2.9 | {OtherID: 13}, {SpellID: 1293818} |
-| 40 | 00000000000000000-0000000000000000000-2555005100101051 | main_hand:274271 ranged:5216 | 73.6 | 5 | other:mana_gain=45.6, spell:11687=45.6, spell:11665=20.7, spell:412758=19.0, spell:17962=16.6 | {OtherID: 13} |
-| 50 | 05500000000000000-0000000000000000000-2555005100101051 | main_hand:12061 ranged:15280 | 95.6 | 5 | other:mana_gain=40.3, spell:11688=40.3, spell:11667=20.5, spell:1293812=17.4, spell:18930=16.7 | {OtherID: 13} |
-| 60 | 05500000000000000-0000000000000000000-2555005100101051 | main_hand:23577 ranged:15282 | 136.9 | 5 | other:mana_gain=37.6, spell:11689=37.6, spell:412758=27.6, spell:25309=20.2, spell:18932=16.1 | {OtherID: 13} |
+| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:22377 ranged:16993 | 7.8 | 3 | other:mana_gain=50.0, spell:1454=50.0, spell:695=36.1, spell:707=10.7 | {OtherID: 13} |
+| 20 | 00000000000000000-0000000000000000000-2540000000000000 | main_hand:22377 ranged:16993 | 16.1 | 3 | other:mana_gain=25.8, spell:1455=25.8, spell:1088=20.4, spell:1094=11.4 | {OtherID: 13}, {SpellID: 17877} |
+| 30 | 00000000000000000-0000000000000000000-2555004000000000 | main_hand:22377 ranged:16993 | 32.9 | 3 | other:mana_gain=31.5, spell:1456=31.5, spell:1106=26.6, spell:2941=11.0 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 18867} |
+| 38 | 00000000000000000-0000000000000000000-2555005100101040 | main_hand:22377 ranged:16993 | 46.9 | 5 | other:mana_gain=38.2, spell:11687=38.2, spell:2941=20.7, spell:7641=19.2, spell:1293818=16.6 | {OtherID: 13} |
+| 40 | 00000000000000000-0000000000000000000-2555005100101051 | main_hand:22377 ranged:16993 | 73.8 | 5 | other:mana_gain=45.6, spell:11687=45.6, spell:11665=20.7, spell:412758=19.0, spell:17962=16.6 | {OtherID: 13} |
+| 50 | 05500000000000000-0000000000000000000-2555005100101051 | main_hand:22377 ranged:16993 | 96.0 | 5 | other:mana_gain=40.3, spell:11688=40.3, spell:11667=20.5, spell:1293812=17.4, spell:18930=16.7 | {OtherID: 13} |
+| 60 | 05500000000000000-0000000000000000000-2555005100101051 | main_hand:22589 ranged:16993 | 199.8 | 5 | other:mana_gain=35.5, spell:11689=35.5, spell:1293813=28.5, spell:25309=20.2, spell:18932=16.4 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
@@ -138,7 +138,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 38
 
 - Bane of Agony (spell 11711)
-- Conflagrate (spell 1293818)
 - Corruption (spell 7648)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
@@ -194,7 +193,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Health Funnel (spell 11695)
 - Hellfire (spell 11684)
 - Hellfire Effect (spell 11682)
-- Incinerate (spell 1293813)
 - Lash of Pain (spell 11780)
 - Searing Pain (spell 17923)
 - Shadow Bolt (spell 25307)
@@ -207,8 +205,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ## Violations found in this run
 
 - warlock-destruction level=30 kind=unresolved_id action={SpellID: 18867}
-- warlock-destruction level=38 kind=unresolved_id action={SpellID: 1293818}
 - warlock-destruction level=40 kind=zero_casts spell="Shadow Bolt" id=7641 authored=25307
 - warlock-destruction level=50 kind=zero_casts spell="Shadow Bolt" id=11659 authored=25307
-- warlock-destruction level=60 kind=zero_casts spell="Incinerate" id=1293813 authored=412758
 - warlock-destruction level=60 kind=zero_casts spell="Shadow Bolt" id=25307 authored=25307

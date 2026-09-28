@@ -89,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 100000000000000000-00000000000000000-0000000000000000000 | main_hand:274271 ranged:279896 | 7.9 | 1 | spell:5143/1=67.5 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589} |
-| 20 | 254000000000000000-00000000000000000-0000000000000000000 | main_hand:274271 ranged:7001 | 13.0 | 1 | spell:5144/1=73.1 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400574}, {SpellID: 400589} |
-| 30 | 255225000000000000-00000000000000000-0000000000000000000 | main_hand:274271 ranged:5213 | 22.9 | 1 | spell:5145/1=86.1, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 1239696}, {SpellID: 400589} |
-| 38 | 255225200000011400-00000000000000000-0000000000000000000 | main_hand:274271 ranged:13064 | 35.7 | 2 | spell:8416/1=87.6, other:mana_gain=2.0, spell:12043=1.3, item:5513=1.0, item:5514=1.0 | {SpellID: 12042}, {SpellID: 1239696} |
-| 40 | 255225200000011501-00000000000000000-0000000000000000000 | main_hand:274271 ranged:5216 | 38.6 | 3 | spell:8417/1=66.0, other:mana_gain=2.0, spell:12042=1.5, spell:12043=1.3, item:5513=1.0 | {SpellID: 1239696} |
-| 50 | 255225200000011501-23050000000000000-0000000000000000000 | main_hand:12061 ranged:15280 | 52.2 | 3 | spell:10211/1=67.1, other:mana_gain=2.0, spell:12042=1.5, spell:12043=1.3, item:5513=1.0 | {SpellID: 1239699} |
-| 60 | 255225200000011501-23050000000000000-0000000000000000000 | main_hand:23577 ranged:15282 | 65.6 | 3 | spell:10212/1=66.1, other:mana_gain=2.0, spell:12042=1.5, spell:12043=1.3, item:5513=1.0 | {SpellID: 400574} |
+| 10 | 100000000000000000-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 7.9 | 1 | spell:5143/1=67.5 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589} |
+| 20 | 254000000000000000-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 12.8 | 1 | spell:5144/1=72.3 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400574}, {SpellID: 400589} |
+| 30 | 255225000000000000-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 22.9 | 1 | spell:5145/1=86.1, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 1239696}, {SpellID: 400589} |
+| 38 | 255225200000011400-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 34.8 | 2 | spell:8416/1=85.6, other:mana_gain=2.0, spell:12043=1.3, item:5513=1.0, item:5514=1.0 | {SpellID: 12042}, {SpellID: 1239696} |
+| 40 | 255225200000011501-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 38.6 | 3 | spell:8417/1=66.0, other:mana_gain=2.0, spell:12042=1.5, spell:12043=1.3, item:5513=1.0 | {SpellID: 1239696} |
+| 50 | 255225200000011501-23050000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 52.2 | 3 | spell:10211/1=67.1, other:mana_gain=2.0, spell:12042=1.5, spell:12043=1.3, item:5513=1.0 | {SpellID: 1239699} |
+| 60 | 255225200000011501-23050000000000000-0000000000000000000 | main_hand:22589 ranged:16993 | 95.0 | 3 | spell:25345/1=67.3, other:mana_gain=2.0, spell:12042=1.5, spell:12043=1.3, item:5513=1.0 | {SpellID: 1239700} |
 
 ## Learned but unused (informational)
 
@@ -103,7 +103,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 10
 
 - Arcane Missile (spell 7268)
-- Copy of Frostbolt (spell 29163)
 - Fire Blast (spell 2136)
 - Fireball (spell 143)
 - Frost Nova (spell 122)
@@ -114,7 +113,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Blast (spell 400574)
 - Arcane Explosion (spell 1449)
 - Arcane Missile (spell 7268)
-- Copy of Frostbolt (spell 29163)
 - Fire Blast (spell 2137)
 - Fireball (spell 3140)
 - Flamestrike (spell 2120)
@@ -130,7 +128,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 11113)
 - Cone of Cold (spell 120)
-- Copy of Frostbolt (spell 29163)
 - Fire Blast (spell 8412)
 - Fireball (spell 8401)
 - Flamestrike (spell 2121)
@@ -147,7 +144,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13018)
 - Cone of Cold (spell 8492)
-- Copy of Frostbolt (spell 29163)
 - Fire Blast (spell 8413)
 - Fireball (spell 8402)
 - Flamestrike (spell 8422)
@@ -164,7 +160,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13018)
 - Cone of Cold (spell 8492)
-- Copy of Frostbolt (spell 29163)
 - Fire Blast (spell 8413)
 - Fireball (spell 8402)
 - Flamestrike (spell 8423)
@@ -182,7 +177,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13019)
 - Cone of Cold (spell 10160)
-- Copy of Frostbolt (spell 29163)
 - Fire Blast (spell 10197)
 - Fireball (spell 10149)
 - Flamestrike (spell 10215)
@@ -200,7 +194,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13021)
 - Cone of Cold (spell 10161)
-- Copy of Frostbolt (spell 29163)
 - Debug Frost Spell (spell 29607)
 - Fire Blast (spell 10199)
 - Fireball (spell 25306)
@@ -221,5 +214,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - mage-arcane level=38 kind=unresolved_id action={SpellID: 1239696}
 - mage-arcane level=40 kind=unresolved_id action={SpellID: 1239696}
 - mage-arcane level=50 kind=unresolved_id action={SpellID: 1239699}
-- mage-arcane level=60 kind=zero_casts spell="Arcane Blast" id=1239700 authored=400574
-- mage-arcane level=60 kind=zero_casts spell="Arcane Missiles" id=25345 authored=10212
+- mage-arcane level=60 kind=unresolved_id action={SpellID: 1239700}
