@@ -325,13 +325,6 @@
           "rank": 0
         }
       ],
-      "Copy of Ferocious Bite": [
-        {
-          "id": 24248,
-          "level": 56,
-          "rank": 4
-        }
-      ],
       "Corrupted Mind": [
         {
           "id": 29194,
@@ -3572,13 +3565,6 @@
         {
           "id": 5116,
           "level": 8,
-          "rank": 0
-        }
-      ],
-      "Copy of Shoot": [
-        {
-          "id": 28317,
-          "level": 20,
           "rank": 0
         }
       ],
@@ -6835,27 +6821,6 @@
           "rank": 0
         }
       ],
-      "Copy of Blink": [
-        {
-          "id": 29207,
-          "level": 20,
-          "rank": 0
-        }
-      ],
-      "Copy of Frostbolt": [
-        {
-          "id": 29163,
-          "level": 4,
-          "rank": 1
-        }
-      ],
-      "Copy of Portal: Undercity": [
-        {
-          "id": 28146,
-          "level": 40,
-          "rank": 0
-        }
-      ],
       "Counterspell": [
         {
           "id": 2139,
@@ -9811,13 +9776,6 @@
           "rank": 5
         }
       ],
-      "Copy of Judgement of Light": [
-        {
-          "id": 25751,
-          "level": 60,
-          "rank": 4
-        }
-      ],
       "Corrupted Mind": [
         {
           "id": 29196,
@@ -12054,13 +12012,6 @@
           "id": 1277640,
           "level": 60,
           "rank": 5
-        }
-      ],
-      "Copy of Corruption": [
-        {
-          "id": 28309,
-          "level": 20,
-          "rank": 0
         }
       ],
       "Corrupted Healing": [
@@ -14677,13 +14628,6 @@
           "id": 432292,
           "level": 1,
           "rank": 0
-        }
-      ],
-      "Copy of Deadly Poison IV": [
-        {
-          "id": 25348,
-          "level": 54,
-          "rank": 4
         }
       ],
       "Coup de Grace": [
@@ -22183,13 +22127,6 @@
           "id": 22427,
           "level": 1,
           "rank": 0
-        }
-      ],
-      "Copy of Mortal Strike": [
-        {
-          "id": 26652,
-          "level": 40,
-          "rank": 1
         }
       ],
       "Corrupted Totems": [

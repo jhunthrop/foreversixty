@@ -315,7 +315,7 @@ they are different stats. There is one `hit` and one `crit`, not a melee
 and a spell form of each. The reference stat is normalised to exactly
 1.0 and must be one of the stats being weighed; its per-spec default
 is `data/curated/specs.json`'s `reference_stat` — `attack_power` for
-melee and hunters, `spell_power` for casters.
+melee, `ranged_attack_power` for hunters, `spell_power` for casters.
 
 | id | engine enum |
 | --- | --- |

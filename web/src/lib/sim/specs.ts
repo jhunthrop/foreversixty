@@ -63,7 +63,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Beast Mastery',
     role: 'dps',
     tree_index: 0,
-    reference_stat: 'attack_power',
+    reference_stat: 'ranged_attack_power',
     weight_stats: ['attack_power', 'ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
@@ -73,7 +73,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Marksmanship',
     role: 'dps',
     tree_index: 1,
-    reference_stat: 'attack_power',
+    reference_stat: 'ranged_attack_power',
     weight_stats: ['attack_power', 'ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
@@ -83,7 +83,7 @@ export const SPECS: readonly Spec[] = [
     name: 'Survival',
     role: 'dps',
     tree_index: 2,
-    reference_stat: 'attack_power',
+    reference_stat: 'ranged_attack_power',
     weight_stats: ['attack_power', 'ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {

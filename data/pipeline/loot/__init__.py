@@ -7,6 +7,9 @@ Parity contract section 6 as corrected by 10.4. Five outputs, one command:
     builds/<build>/suffixes.json    every random suffix and what it is worth
     builds/<build>/simbuffs.json    a name and icon per IDS.md id
     builds/<build>/items.json       gains `suffixes` and `faction_restriction`
+    builds/<build>/items/*.json     weapon rows the fork itemises get its own
+                                     damage_min/damage_max/speed/dps, winning
+                                     over `normalize`'s curve-derived value
 
 Inputs, and why each is where it is:
 
@@ -55,6 +58,7 @@ from pipeline.loot.gear import (
 )
 from pipeline.loot.overlay import apply_overlays, load_overlays
 from pipeline.loot.sources import build_loot, instance_types, pvp_ranks
+from pipeline.loot.weapons import apply_fork_weapon_damage, fork_weapon_damage
 from pipeline.manifest import refresh_manifest
 from pipeline.normalize import write_document, write_records
 from pipeline.normalize.sockets import check_no_sockets
@@ -127,6 +131,7 @@ def write_loot_files(
     with_suffixes, restricted = apply_fork_columns(
         build_dir, suffix_options(fork), faction_restrictions(fork)
     )
+    weapons_won = apply_fork_weapon_damage(build_dir, fork_weapon_damage(fork))
 
     logger.info(
         "loot: %d sources naming %d items (%d quests with faction detail); "
@@ -134,7 +139,8 @@ def write_loot_files(
         "%d fork source entries with no kind dropped, %d zone sources with "
         "a zone id zones[] does not name; "
         "%d enchants, %d suffixes, %d buff ids; "
-        "items.json: %d with suffix options, %d faction-restricted",
+        "items.json: %d with suffix options, %d faction-restricted; "
+        "items/*.json: %d weapon rows won by the fork's own damage",
         len(document.sources),
         stats.items,
         len(document.quests),
@@ -146,6 +152,7 @@ def write_loot_files(
         len(simbuffs.entries),
         with_suffixes,
         restricted,
+        weapons_won,
     )
     refresh_manifest(build_dir)
     return [
@@ -154,4 +161,5 @@ def write_loot_files(
         build_dir / SUFFIXES,
         build_dir / SIMBUFFS,
         build_dir / "items.json",
+        *sorted((build_dir / "items").glob("*.json")),
     ]

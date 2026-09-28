@@ -189,9 +189,9 @@ REFERENCE_BY_SPEC = {
     "druid-balance": "spell_power",
     "druid-feral": "attack_power",
     "druid-restoration": "spell_power",
-    "hunter-beast-mastery": "attack_power",
-    "hunter-marksmanship": "attack_power",
-    "hunter-survival": "attack_power",
+    "hunter-beast-mastery": "ranged_attack_power",
+    "hunter-marksmanship": "ranged_attack_power",
+    "hunter-survival": "ranged_attack_power",
     "mage-arcane": "spell_power",
     "mage-fire": "spell_power",
     "mage-frost": "spell_power",
@@ -261,10 +261,12 @@ def test_both_generated_files_carry_the_reference_stat():
 
 
 #: Task 5(c): specs gain weight_stats, the closed list /sim/weights offers
-#: for a spec. A physical spec (reference_stat attack_power) is never asked
-#: about a caster stat; a caster spec (reference_stat spell_power) is never
-#: asked about a melee-only stat. Named as a table so the test states the
-#: rule rather than re-deriving it.
+#: for a spec. A physical spec (reference_stat attack_power or, for a
+#: ranged-primary hunter spec, ranged_attack_power) is never asked about a
+#: caster stat; a caster spec (reference_stat spell_power) is never asked
+#: about a melee-only stat. Named as a table so the test states the rule
+#: rather than re-deriving it.
+PHYSICAL_REFERENCE_STATS = {"attack_power", "ranged_attack_power"}
 PHYSICAL_FORBIDDEN = {
     "spirit",
     "mp5",
@@ -304,7 +306,9 @@ def test_the_reference_stat_is_always_in_its_own_weight_stats():
 def test_no_physical_spec_carries_a_caster_stat_and_no_caster_spec_carries_a_melee_stat():
     for record in specs():
         forbidden = (
-            PHYSICAL_FORBIDDEN if record.reference_stat == "attack_power" else CASTER_FORBIDDEN
+            PHYSICAL_FORBIDDEN
+            if record.reference_stat in PHYSICAL_REFERENCE_STATS
+            else CASTER_FORBIDDEN
         )
         carried = forbidden & set(record.weight_stats)
         assert not carried, f"{record.spec} carries {carried}"

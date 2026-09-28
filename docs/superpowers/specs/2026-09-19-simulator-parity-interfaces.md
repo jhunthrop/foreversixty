@@ -569,7 +569,10 @@ gains per-slot enchant and suffix.
   no `melee_crit`, `spell_crit`, `melee_hit` or `spell_hit`: the engine
   carries one `hit` and one `crit`. Weight pages offer the subset that
   moves a spec's DPS; `reference_stat` defaults are `attack_power` for
-  melee and hunters, `spell_power` for casters.
+  melee, `ranged_attack_power` for hunters (corrected 2026-09-28: a bare
+  ranged-weapon-only character measures melee `attack_power` as exactly
+  zero, which `sim/adapter.Weights` refuses to normalise against), and
+  `spell_power` for casters.
 - **Client-side server cap.** The page gates the server-run button on
   `Caps.server` before submitting; a server `cap_exceeded` that still
   arrives shows the generic failure sentence. Acceptable: the numbers are

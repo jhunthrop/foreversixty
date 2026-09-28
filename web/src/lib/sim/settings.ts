@@ -245,8 +245,9 @@ export interface SimSettings {
 }
 
 /**
- * `referenceStat` is `Spec.reference_stat` ('attack_power' | 'spell_power'), or the result
- * of `spec-label.ts`'s `referenceStatOf` for a caller that only has the spec slug -- both
+ * `referenceStat` is `Spec.reference_stat` ('attack_power' | 'ranged_attack_power' |
+ * 'spell_power'), or the result of `spec-label.ts`'s `referenceStatOf` for a caller that
+ * only has the spec slug -- both
  * this and `withPreset` stay pure over it rather than resolving a spec themselves, so a
  * store can call them from wherever it already knows the answer (live-dps.svelte.ts and
  * SharePanel.svelte know it from the character in hand; the sim/bulk stores own the

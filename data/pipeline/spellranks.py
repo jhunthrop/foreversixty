@@ -44,9 +44,25 @@ SPELLRANKS_FILE = "spellranks.json"
 #: player presses has, and what the copies beside it lack.
 _Entry = tuple[int, int, int, bool]
 
+#: The client names an NPC's or a scripted event's duplicate of a real player
+#: spell "Copy of <name>" rather than reusing the player's own name (Copy of
+#: Deadly Poison IV, Copy of Frostbolt, Copy of Mortal Strike). It is never a
+#: spell the player learns a rank of, and unlike the rank-0 duplicates the
+#: module docstring's "reference caveat" describes, it does not even share the
+#: real spell's name to be filtered out of that spell's own chain by rank --
+#: it forms a one-name chain of its own instead, which is how these were
+#: found leaking into `sim/request`'s ladder as "learned but unused" abilities
+#: (e.g. "Copy of Mortal Strike" beside the real Mortal Strike). Dropped
+#: before grouping, so it never reaches `_entries_by_name` at all.
+_COPY_NAME_PREFIX = "Copy of "
+
 
 def _castable(spell: SpellConstant) -> bool:
     return spell.cost > 0 or spell.cast_time_ms > 0 or spell.gcd_ms > 0
+
+
+def is_copy_name(name: str) -> bool:
+    return name.startswith(_COPY_NAME_PREFIX)
 
 
 def load_class_spell_constants(spellconst_dir: Path) -> list[ClassSpellConstants]:
@@ -60,8 +76,19 @@ def load_class_spell_constants(spellconst_dir: Path) -> list[ClassSpellConstants
 def _entries_by_name(spells: dict[str, SpellConstant]) -> dict[str, list[_Entry]]:
     groups: dict[str, list[_Entry]] = defaultdict(list)
     for spell_id, spell in spells.items():
+        if is_copy_name(spell.name):
+            continue
         groups[spell.name].append((int(spell_id), spell.rank, spell.spell_level, _castable(spell)))
     return groups
+
+
+def count_copy_names(records: list[ClassSpellConstants]) -> int:
+    """How many "Copy of ..." ids `_entries_by_name` dropped, across every
+    class -- for `write_spell_ranks`' log line, the same way `loot`'s and
+    `normalize`'s own stats count what they filtered or derived."""
+    return sum(
+        1 for record in records for spell in record.spells.values() if is_copy_name(spell.name)
+    )
 
 
 def _rank_chain(entries: list[_Entry]) -> list[_Entry]:
@@ -104,10 +131,17 @@ def write_spell_ranks(build: str, root: Path = Path("builds")) -> Path:
     spellconst_dir = build_dir / SPELLCONST
     if not spellconst_dir.exists():
         raise SystemExit(f"no {spellconst_dir}; run `python -m pipeline simconst` first")
-    result = build_spell_ranks(build, load_class_spell_constants(spellconst_dir))
+    records = load_class_spell_constants(spellconst_dir)
+    result = build_spell_ranks(build, records)
     path = build_dir / SPELLRANKS_FILE
     _write(result.model_dump(), path, sort_keys=True)
     refresh_manifest(build_dir)
     total = sum(len(names) for names in result.classes.values())
-    logger.info("wrote %s: %d ranked spell names over %d classes", path, total, len(result.classes))
+    logger.info(
+        'wrote %s: %d ranked spell names over %d classes; %d "Copy of" ids dropped',
+        path,
+        total,
+        len(result.classes),
+        count_copy_names(records),
+    )
     return path

@@ -22,7 +22,8 @@
     { "id": 109, "name": "Vendor Trash", "icon": "inv_j", "type": 12, "ilvl": 20, "phase": 1, "quality": 1,
       "sources": [{ "soldBy": { "npcId": 905, "npcName": "A Vendor", "zoneId": 16 } }] },
     { "id": 110, "name": "Suffixed Sword", "icon": "inv_k", "type": 13, "ilvl": 45, "phase": 1, "quality": 2,
-      "randomSuffixOptions": [5, 6] },
+      "randomSuffixOptions": [5, 6],
+      "weaponDamageMin": 38, "weaponDamageMax": 71, "weaponSpeed": 2.6 },
     { "id": 112, "name": "Two Sources", "icon": "inv_m", "type": 1, "ilvl": 70, "phase": 1, "quality": 4,
       "sources": [
         { "drop": { "difficulty": 1, "npcId": 900, "zoneId": 2717 } },
