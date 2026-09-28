@@ -90,12 +90,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 100000000000000000-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 7.9 | 1 | spell:5143/1=67.5 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589} |
-| 20 | 254000000000000000-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 12.8 | 1 | spell:5144/1=72.3 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400574}, {SpellID: 400589} |
-| 30 | 255225000000000000-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 22.9 | 1 | spell:5145/1=86.1, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 1239696}, {SpellID: 400589} |
-| 38 | 255225200000011400-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 34.8 | 2 | spell:8416/1=85.6, other:mana_gain=2.0, spell:12043=1.3, item:5513=1.0, item:5514=1.0 | {SpellID: 12042}, {SpellID: 1239696} |
-| 40 | 255225200000011501-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 38.6 | 3 | spell:8417/1=66.0, other:mana_gain=2.0, spell:12042=1.5, spell:12043=1.3, item:5513=1.0 | {SpellID: 1239696} |
-| 50 | 255225200000011501-23050000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 52.2 | 3 | spell:10211/1=67.1, other:mana_gain=2.0, spell:12042=1.5, spell:12043=1.3, item:5513=1.0 | {SpellID: 1239699} |
-| 60 | 255225200000011501-23050000000000000-0000000000000000000 | main_hand:22589 ranged:16993 | 95.0 | 3 | spell:25345/1=67.3, other:mana_gain=2.0, spell:12042=1.5, spell:12043=1.3, item:5513=1.0 | {SpellID: 1239700} |
+| 20 | 253100000000000000-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 12.8 | 1 | spell:5144/1=72.3 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400574}, {SpellID: 400589} |
+| 30 | 253225110000000000-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 22.9 | 1 | spell:5145/1=86.1, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 1239696}, {SpellID: 400589} |
+| 38 | 253225111100011400-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 90.9 | 3 | spell:8416/1=158.4, spell:1239696=41.2, spell:12043=1.5 | {SpellID: 12042} |
+| 40 | 253225111100011501-00000000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 117.1 | 4 | spell:8417/1=158.4, spell:1239696=41.2, spell:12042=1.5, spell:12043=1.5 | - |
+| 50 | 253225111100011501-23500000000000000-0000000000000000000 | main_hand:22377 ranged:16993 | 179.4 | 4 | spell:10211/1=158.4, spell:1239699=41.2, spell:12042=1.5, spell:12043=1.5 | - |
+| 60 | 253225111100011501-23552300000000000-0000000000000000000 | main_hand:22589 ranged:16993 | 332.4 | 4 | spell:25345/1=159.6, spell:1239700=41.0, spell:12042=1.5, spell:12043=1.5 | - |
 
 ## Learned but unused (informational)
 
@@ -139,7 +139,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 38
 
-- Arcane Blast (spell 1239696)
 - Arcane Explosion (spell 8439)
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13018)
@@ -155,7 +154,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 40
 
-- Arcane Blast (spell 1239696)
 - Arcane Explosion (spell 8439)
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13018)
@@ -172,7 +170,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
-- Arcane Blast (spell 1239699)
 - Arcane Explosion (spell 10201)
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13019)
@@ -189,7 +186,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Arcane Blast (spell 1239700)
 - Arcane Explosion (spell 10202)
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13021)
@@ -211,7 +207,3 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - mage-arcane level=20 kind=unresolved_id action={SpellID: 400589}
 - mage-arcane level=30 kind=unresolved_id action={SpellID: 1239696}
 - mage-arcane level=30 kind=unresolved_id action={SpellID: 400589}
-- mage-arcane level=38 kind=unresolved_id action={SpellID: 1239696}
-- mage-arcane level=40 kind=unresolved_id action={SpellID: 1239696}
-- mage-arcane level=50 kind=unresolved_id action={SpellID: 1239699}
-- mage-arcane level=60 kind=unresolved_id action={SpellID: 1239700}

@@ -3,7 +3,7 @@ title: Holy Paladin in Forever
 classSlug: paladin
 spec: holy
 role: healer
-build: 'FS1:1.60.1.69893:paladin:human:255321003025101001/5/0:'
+build: 'FS1:1.60.1.69893:paladin:human:55222113025101001/55325/0:'
 recommendedRaces: [human, undead]
 statPriority: [Healing power, Spell power, Spirit, MP5, Intellect, Critical strike]
 description: 'Talents, rotation, stats, gear, races, and professions for Holy Paladin healing in Forever.'
@@ -42,7 +42,7 @@ Verified against this build's own Paladin talent data:
 5. **Divine Favor** — an activated cooldown that guarantees a critical effect on the next Flash of Light, Holy Light, or Holy Shock, useful for a spike heal or to bank a guaranteed Illumination proc.
 6. **Light's Vigil** — the tree's capstone talent; marking an ally with it drops the cooldown off your very next Holy Shock and turns that cast into a party-wide heal, a strong cooldown-neutral burst tool.
 
-A rough point split at level 60 would put close to 31 points in Holy to reach Light's Vigil, with the remaining points going toward Protection's early survivability talents like Toughness rather than Retribution, which has little to offer a pure healer build. That split is a projection — the beta cap of 30 has not let anyone test it. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
+This build puts 31 points in Holy to reach Light's Vigil, with the remaining 20 toward Protection's early survivability talents — Toughness and Redoubt both maxed, then Anticipation, Precision, and Guardian's Favor for the rest of the budget — rather than Retribution, which has little to offer a pure healer build. That split is a projection — the beta cap of 30 has not let anyone test it. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
 
 ## Rotation and priority
 

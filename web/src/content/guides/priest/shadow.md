@@ -3,7 +3,7 @@ title: Shadow Priest in Forever
 classSlug: priest
 spec: shadow
 role: dps
-build: 'FS1:1.60.1.69893:priest:gnome:5230000003/0/555100500001300251:'
+build: 'FS1:1.60.1.69893:priest:gnome:5241110013/0/443110501201300251:'
 recommendedRaces: [gnome, undead]
 statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Shadow power']
 description: 'Shadow Priest overview, talent priority, rotation, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -32,7 +32,7 @@ Shadow is Priest's damage-over-time and mind-magic DPS spec, built around mainta
 
 In rough priority order: **Mind Flay** (1 point) is a required pick, not an optional one — Forever moved it out of the baseline trainer-taught kit and into this talent, so without it there is no filler spell to fill the GCDs between cooldowns at all. **Improved Mind Flay**, ranked further down the tree, is its scaling once the 1-point prerequisite is in. **Shadow Weaving** stacks a Shadow damage buff from spell crits, a compounding multiplier for a spec casting Shadow spells constantly. **Improved Mind Blast** cuts Mind Blast's cooldown, letting the hardest-hitting single spell in the rotation come up more often. **Darkness** adds a flat percentage to all Shadow damage, a broad multiplier late in the tree. **Early Demise**, new to the tree, raises Shadow Word: Death's critical strike chance against targets below 20% health, turning it into a dedicated execute. **Shadowform**, the tree's capstone, increases Shadow damage by 10% and reduces the mana cost of Shadow spells, at the cost of being unable to cast non-Shadow spells while it's active.
 
-Point allocation runs deep into Shadow to reach Shadowform at the bottom of the tree, roughly 30 points, with the remainder split as a handful of points in Discipline for Meditation's mana regeneration while casting. Open the planner at [/planner?class=priest](/planner?class=priest) to build this out.
+Point allocation runs deep into Shadow to reach Shadowform at the bottom of the tree, 33 points, with the remaining 18 in Discipline: **Inner Focus** (1 point) is a required pick alongside the Meditation talent's mana regeneration while casting — it's the free, empowered Devouring Plague cast this build's Rotation section calls out below, so it has to be taken for that line to be legal, not just Meditation. Open the planner at [/planner?class=priest](/planner?class=priest) to build this out.
 
 ## Rotation and priority
 

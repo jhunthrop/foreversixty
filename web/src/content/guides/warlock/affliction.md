@@ -3,7 +3,7 @@ title: Affliction Warlock in Forever
 classSlug: warlock
 spec: affliction
 role: dps
-build: 'FS1:1.60.1.69893:warlock:gnome:25552000030201051/235523/0:'
+build: 'FS1:1.60.1.69893:warlock:gnome:25552000130201051/235522/0:'
 recommendedRaces: [gnome, troll]
 statPriority: [Spell power, Intellect, Critical strike, Hit, Spell haste, Spell penetration, 'Shadow damage']
 description: 'Talents, rotation, stats, and gear for Affliction Warlock in Forever, and what is confirmed versus projected from the beta.'
@@ -37,6 +37,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 
 - **Suppression** — up to 5% more hit chance and 20% less threat at rank 5, both scarce and valuable for a spec that casts constantly.
 - **Improved Corruption** — cuts Corruption's cast time by up to 2 seconds and adds up to 10% more damage at rank 5.
+- **Amplify Curse** (1 point) — a required pick, not an optional one, and missing from an earlier draft of this guide's talent section: this build's rotation prepull-casts it before the pull, so it has to be taken for that line to be legal.
 - **Pandemic** — up to a 100% critical-strike-damage bonus at rank 3 on Corruption, both Banes, and the drain spells, the tree's biggest damage multiplier.
 - **Nightfall** — up to a 4% chance per DoT tick at rank 2 to make your next Shadow Bolt instant, a real mana and time saver.
 - **Shadow Mastery** — up to 5% more Shadow damage and life drained at rank 5.

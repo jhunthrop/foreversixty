@@ -3,7 +3,7 @@ title: Retribution Paladin in Forever
 classSlug: paladin
 spec: retribution
 role: dps
-build: 'FS1:1.60.1.69893:paladin:human:0/50005/552253311010000021:'
+build: 'FS1:1.60.1.69893:paladin:human:0/55325/55223331211000021:'
 recommendedRaces: [human, dwarf, undead]
 statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
 description: 'Talents, rotation, stats, gear, races, and professions for Retribution Paladin melee damage in Forever.'
@@ -48,7 +48,7 @@ Verified against this build's own Paladin talent data:
 5. **Instrument of Law** — shortens Hammer of Wrath's cast time, which matters specifically for landing it cleanly inside a shrinking execute window.
 6. **Twist of Light** — the tree's capstone talent; swapping off a Seal grants an echo that applies the old Seal's effect on the next melee hit, which is what makes seal twisting possible without a separate swing-timer addon. It demands tight execution, so a Retribution build that would rather not track seal swaps can spend that last point in Holy on the Holy Shock talent instead.
 
-A rough point split at level 60 would put close to 31 points in Retribution to reach Twist of Light, or stop one short of it for a player skipping the twist, with the remaining points typically going into Protection for baseline survivability talents like Toughness and Anticipation, since Retribution has few defensive tools of its own. That split is a projection — the beta cap of 30 has not let anyone test it. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
+This build puts 31 points in Retribution to reach Twist of Light, or would stop one short of it for a player skipping the twist, with the remaining 20 in Protection for baseline survivability — Toughness, Redoubt, and Anticipation all maxed, then Precision and Guardian's Favor for the rest of the budget — since Retribution has few defensive tools of its own. That split is a projection — the beta cap of 30 has not let anyone test it. Open the planner at [/planner?class=paladin](/planner?class=paladin) to build this out.
 
 ## Rotation and priority
 

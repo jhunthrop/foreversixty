@@ -3,7 +3,7 @@ title: Holy Priest in Forever
 classSlug: priest
 spec: holy
 role: healer
-build: 'FS1:1.60.1.69893:priest:gnome:500003/33555000030021031/0:'
+build: 'FS1:1.60.1.69893:priest:gnome:5252231/33554100030021031/0:'
 recommendedRaces: [gnome, troll]
 statPriority: [Healing power, Spell power, Spirit, MP5, Intellect, Critical strike]
 description: 'Holy Priest overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -32,7 +32,7 @@ Holy is the throughput healing tree for Priest, leaning on efficient direct and 
 
 In rough priority order: **Improved Healing** reduces the mana cost of Lesser Heal, Heal, Greater Heal, Penance, and Prayer of Mending, a broad efficiency gain across most of the direct-heal kit. **Holy Specialization** adds flat crit chance to Holy spells, which both increases throughput and, if Divine Aegis is reached through Discipline points, adds incidental shielding. **Spiritual Healing** increases the amount healed by all spells, a flat multiplier that scales with everything else in the build. **Spirit of Redemption**, now lasting 15 seconds rather than 10, gives a dying Holy Priest a longer window to land a last heal or cast before falling. **Litany of Light**, new to the tree, refunds mana whenever you switch which heal you're casting instead of repeating the same one, rewarding a varied toolkit over spamming a single spell. **Prayer of Mending**, the tree's new capstone, places a heal on a target that jumps to a new target each time it triggers, extending single-cast value across a whole group.
 
-Point allocation runs deep into Holy to reach Prayer of Mending at the bottom of the tree, with the remainder split as a handful of points in Discipline for Power Word: Shield support. Open the planner at [/planner?class=priest](/planner?class=priest) to build this out.
+Point allocation runs deep into Holy to reach Prayer of Mending at the bottom of the tree (31 points), with the remaining 20 in Discipline: Improved Power Word: Shield maxed for shield support, then Power in Light, Twin Disciplines, Wand Specialization, Silent Resolve, Holy Precision, and Martyrdom for the rest of the budget. Open the planner at [/planner?class=priest](/planner?class=priest) to build this out.
 
 ## Rotation and priority
 

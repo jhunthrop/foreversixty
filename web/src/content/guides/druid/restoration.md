@@ -3,7 +3,7 @@ title: Restoration Druid in Forever
 classSlug: druid
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.69893:druid:night-elf:503/0/5552005003113001:'
+build: 'FS1:1.60.1.69893:druid:night-elf:5532221/0/5351115103113001:'
 recommendedRaces: [night-elf, tauren]
 statPriority: [Healing power, Spell power, Spirit, MP5, Intellect, Critical strike]
 description: 'Talents, rotation, stats, and gear for Restoration Druid in Forever, and what is confirmed versus projected from the beta.'
@@ -39,7 +39,7 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 - **Nature's Swiftness** — makes your next Nature spell instant on activation, a saved emergency cooldown.
 - **Wild Growth** — the capstone: an area heal on the target and nearby party members, weighted to land more up front and taper off over its duration.
 
-A typical Restoration build spends roughly 31 points in this tree, with the remaining 8 usually going into Balance for Moonglow's mana discount — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
+This build spends 31 points in Restoration to reach Wild Growth, with the remaining 20 in Balance: Moonglow maxed for the mana discount, then Improved Wrath, Genesis, Improved Moonfire, Nature's Majesty, and Nature's Reach for the rest of the budget — a common 1.12 hybrid pattern that likely still applies, though it isn't confirmed for Forever specifically. Open the planner at [/planner?class=druid](/planner?class=druid) to build this out.
 
 ## Rotation and priority
 

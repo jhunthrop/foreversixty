@@ -90,12 +90,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-100000000000000000-000000000000000000 | main_hand:22377 off_hand:13371 | 0.1 | 3 | other:rage_gain=38.1, spell:2687=3.5, spell:1680=2.0, spell:6673=1.5 | {SpellID: 12328}, {SpellID: 23894} |
-| 20 | 00000000000000000-551000000000000000-000000000000000000 | main_hand:22377 off_hand:13371 | 0.2 | 3 | other:rage_gain=38.1, spell:2687=3.5, spell:1680=2.0, spell:5242=1.5 | {SpellID: 12328}, {SpellID: 23894} |
-| 30 | 00000000000000000-555000005010000000-000000000000000000 | main_hand:22377 off_hand:13371 | 0.5 | 4 | other:rage_gain=38.1, spell:2687=3.5, spell:1680=1.6, spell:6192=1.5, spell:5308=0.4 | {SpellID: 12328}, {SpellID: 23894} |
-| 38 | 00000000000000000-555000005050010030-000000000000000000 | main_hand:22377 off_hand:13371 | 1.1 | 5 | other:rage_gain=38.1, spell:2687=3.5, spell:12328=1.5, spell:11549=1.4, spell:20658=1.2 | {SpellID: 23894} |
-| 40 | 00000000000000000-555000005050010050-000000000000000000 | main_hand:22377 off_hand:13371 | 1.7 | 5 | other:rage_gain=38.1, spell:2687=3.5, spell:12328=1.5, spell:11549=1.4, spell:20660=1.2 | {SpellID: 23881} |
-| 50 | 35100000000000000-555000005050010051-000000000000000000 | main_hand:22377 off_hand:13371 | 2.3 | 6 | other:rage_gain=38.1, spell:2687=3.5, spell:12328=1.4, spell:11550=1.0, spell:1719=1.0 | - |
-| 60 | 35310003002000000-555000005050010051-000000000000000000 | main_hand:23577 off_hand:18847 | 140.6 | 9 | other:attack/1=129.9, other:attack/2=67.9, other:rage_gain=38.1, spell:23894=15.6, spell:20662=10.7 | - |
+| 20 | 00000000000000000-353000000000000000-000000000000000000 | main_hand:22377 off_hand:13371 | 0.2 | 3 | other:rage_gain=38.1, spell:2687=3.5, spell:1680=2.0, spell:5242=1.5 | {SpellID: 12328}, {SpellID: 23894} |
+| 30 | 00000000000000000-353211005010000000-000000000000000000 | main_hand:22377 off_hand:13371 | 0.5 | 4 | other:rage_gain=38.1, spell:2687=3.5, spell:1680=1.6, spell:6192=1.6, spell:5308=0.4 | {SpellID: 12328}, {SpellID: 23894} |
+| 38 | 00000000000000000-353211005050010030-000000000000000000 | main_hand:22377 off_hand:13371 | 1.1 | 5 | other:rage_gain=38.1, spell:2687=3.5, spell:12328=1.5, spell:11549=1.4, spell:20658=1.2 | {SpellID: 23894} |
+| 40 | 00000000000000000-353211005050010050-000000000000000000 | main_hand:22377 off_hand:13371 | 1.7 | 5 | other:rage_gain=38.1, spell:2687=3.5, spell:12328=1.5, spell:11549=1.4, spell:20660=1.2 | {SpellID: 23881} |
+| 50 | 35100000000000000-353211005050010051-000000000000000000 | main_hand:22377 off_hand:13371 | 1.4 | 6 | other:rage_gain=38.1, spell:2687=3.5, spell:11550=1.7, spell:12328=1.5, spell:1719=1.0 | - |
+| 60 | 35311103002000000-353211005050010051-000000000000000000 | main_hand:23577 off_hand:18847 | 141.9 | 9 | other:attack/1=129.9, other:rage_gain=72.0, other:attack/2=67.9, spell:23894=15.8, spell:20662=10.8 | - |
 
 ## Learned but unused (informational)
 
@@ -189,5 +189,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - warrior-fury level=30 kind=zero_casts spell="Heroic Strike" id=1608 authored=25286
 - warrior-fury level=38 kind=zero_casts spell="Heroic Strike" id=11564 authored=25286
 - warrior-fury level=40 kind=zero_casts spell="Heroic Strike" id=11565 authored=25286
+- warrior-fury level=50 kind=dps_regression dps=1.4 prev_dps=1.7
 - warrior-fury level=50 kind=zero_casts id=1680 authored=1680 (untracked ability; not in spellranks.json's rank chains)
 - warrior-fury level=50 kind=zero_casts spell="Heroic Strike" id=11566 authored=25286

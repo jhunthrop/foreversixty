@@ -90,12 +90,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 000000000000000000-00000000000000000-100000000000000000 | main_hand:22377 ranged:16993 | 6.5 | 2 | spell:8092=17.5, spell:594=10.5 | {SpellID: 15473} |
-| 20 | 000000000000000000-00000000000000000-551000000000000000 | main_hand:22377 ranged:16993 | 11.5 | 3 | spell:8102=13.2, spell:970=8.9, spell:2944=1.0 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
-| 30 | 000000000000000000-00000000000000000-555100500000000000 | main_hand:22377 ranged:16993 | 18.9 | 3 | spell:8104=10.8, spell:992=7.2, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473}, {SpellID: 17311} |
-| 38 | 000000000000000000-00000000000000000-555100500001300220 | main_hand:22377 ranged:16993 | 25.3 | 4 | spell:8105=12.8, spell:2767=2.2, spell:1309595=1.9, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473}, {SpellID: 17312} |
-| 40 | 000000000000000000-00000000000000000-555100500001300240 | main_hand:22377 ranged:16993 | 31.0 | 4 | spell:8106=7.6, spell:2767=6.4, spell:1309633=2.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473}, {SpellID: 17312} |
-| 50 | 521000000000000000-00000000000000000-555100500001300251 | main_hand:22377 ranged:16993 | 43.2 | 5 | spell:10945=10.8, spell:1309635=2.2, spell:10893=2.0, spell:15473=1.0, spell:19278=1.0 | {SpellID: 14751}, {SpellID: 17313} |
-| 60 | 523000000300000000-00000000000000000-555100500001300251 | main_hand:22589 ranged:16993 | 82.9 | 5 | spell:10947=12.8, spell:10894=3.0, spell:1309636=1.9, spell:15473=1.0, spell:19279=1.0 | {SpellID: 14751}, {SpellID: 18807} |
+| 20 | 000000000000000000-00000000000000000-443000000000000000 | main_hand:22377 ranged:16993 | 11.3 | 3 | spell:8102=13.2, spell:970=8.9, spell:2944=1.0 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
+| 30 | 000000000000000000-00000000000000000-443110501200000000 | main_hand:22377 ranged:16993 | 21.1 | 4 | spell:17311=26.7, spell:8104=2.0, spell:992=1.1, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 38 | 000000000000000000-00000000000000000-443110501201300220 | main_hand:22377 ranged:16993 | 31.5 | 4 | spell:17312=23.7, spell:8105=2.0, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 40 | 000000000000000000-00000000000000000-443110501201300240 | main_hand:22377 ranged:16993 | 33.6 | 4 | spell:17312=24.0, spell:8106=2.0, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 50 | 521000000000000000-00000000000000000-443110501201300251 | main_hand:22377 ranged:16993 | 52.2 | 5 | spell:17313=21.9, spell:10945=2.0, spell:10893=1.1, spell:15473=1.0, spell:19278=1.0 | {SpellID: 14751} |
+| 60 | 524111001300000000-00000000000000000-443110501201300251 | main_hand:22589 ranged:16993 | 121.2 | 6 | spell:18807=24.3, spell:10947=3.6, spell:10894=2.1, spell:14751=1.5, spell:19279=1.5 | - |
 
 ## Learned but unused (informational)
 
@@ -119,7 +119,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Chastise (spell 1277332)
 - Holy Fire (spell 15263)
 - Holy Nova (spell 15430)
-- Mind Flay (spell 17311)
 - Smite (spell 1004)
 - Starshards (spell 19299)
 
@@ -128,7 +127,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Chastise (spell 1277332)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
-- Mind Flay (spell 17312)
+- Shadow Word: Death (spell 1309595)
 - Smite (spell 6060)
 - Starshards (spell 19302)
 
@@ -137,7 +136,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Chastise (spell 1277333)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
-- Mind Flay (spell 17312)
+- Shadow Word: Death (spell 1309633)
 - Smite (spell 6060)
 - Starshards (spell 19302)
 
@@ -146,7 +145,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Chastise (spell 1277334)
 - Holy Fire (spell 15266)
 - Holy Nova (spell 27799)
-- Mind Flay (spell 17313)
+- Shadow Word: Death (spell 1309635)
 - Smite (spell 10933)
 - Starshards (spell 19304)
 
@@ -155,16 +154,15 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Chastise (spell 1277335)
 - Holy Fire (spell 15261)
 - Holy Nova (spell 27801)
-- Mind Flay (spell 18807)
+- Shadow Word: Death (spell 1309636)
 - Smite (spell 10934)
 - Starshards (spell 19305)
 
 ## Violations found in this run
 
 - priest-shadow level=10 kind=zero_casts id=14751 authored=14751 (untracked ability; not in spellranks.json's rank chains)
-- priest-shadow level=30 kind=unresolved_id action={SpellID: 17311}
-- priest-shadow level=38 kind=unresolved_id action={SpellID: 17312}
-- priest-shadow level=40 kind=unresolved_id action={SpellID: 17312}
-- priest-shadow level=50 kind=unresolved_id action={SpellID: 17313}
-- priest-shadow level=60 kind=unresolved_id action={SpellID: 18807}
+- priest-shadow level=38 kind=zero_casts spell="Shadow Word: Death" id=1309595 authored=1309636
+- priest-shadow level=40 kind=zero_casts spell="Shadow Word: Death" id=1309633 authored=1309636
+- priest-shadow level=50 kind=zero_casts spell="Shadow Word: Death" id=1309635 authored=1309636
 - priest-shadow level=60 kind=zero_casts spell="Devouring Plague" id=19280 authored=19279
+- priest-shadow level=60 kind=zero_casts spell="Shadow Word: Death" id=1309636 authored=1309636

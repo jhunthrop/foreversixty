@@ -3,7 +3,7 @@ title: Restoration Shaman in Forever
 classSlug: shaman
 spec: restoration
 role: healer
-build: 'FS1:1.60.1.69893:shaman:dwarf:0/005/5532500010513001:'
+build: 'FS1:1.60.1.69893:shaman:dwarf:0/2552222/5322521010513001:'
 recommendedRaces: [dwarf, tauren]
 statPriority: [Healing power, Spell power, Spirit, MP5, Intellect, Critical strike]
 description: 'Restoration Shaman overview, talent priority, healing priority, stat weights, and race picks for Forever, with beta-versus-projection called out.'
@@ -32,7 +32,7 @@ Restoration is Shaman's dedicated healing tree, centered on Healing Wave and tot
 
 In rough priority order: **Improved Healing Wave** cuts Healing Wave's cast time, a direct throughput gain on the tree's main heal. **Tidal Focus** reduces the mana cost of healing spells and improves hit chance, an efficiency gain that compounds over a full fight. **Restorative Totems** increases the effect of Mana Spring Totem and Healing Stream Totem, raising the value of Restoration's group-support totems specifically. **Mana Tide Totem** is a dedicated raid mana-regeneration cooldown, valuable enough that most Restoration builds reach it. **Water Shield**, new to the tree, surrounds the caster with globes of water that restore mana when the Shaman is hit or lands a healing crit, adding a passive mana-sustain layer that didn't exist in 1.12. **Riptide**, the tree's new capstone, heals a target instantly and again over time while increasing the effectiveness of subsequent heals on that target, combining an instant heal with a HoT and a healing-taken buff in one cast.
 
-Point allocation runs deep into Restoration to reach Riptide at the bottom of the tree, with the remainder split as a handful of points in Enhancement for Ancestral Knowledge or a similar utility talent. Open the planner at [/planner?class=shaman](/planner?class=shaman) to build this out.
+Point allocation runs deep into Restoration to reach Riptide at the bottom of the tree (31 points), with the remaining 20 in Enhancement — Thundering Strikes and Ancestral Knowledge both maxed, then Earth's Grasp, Guardian Totems, Mental Dexterity, Improved Ghost Wolf, and Improved Lightning Shield for the rest of the budget. Open the planner at [/planner?class=shaman](/planner?class=shaman) to build this out.
 
 ## Rotation and priority
 
