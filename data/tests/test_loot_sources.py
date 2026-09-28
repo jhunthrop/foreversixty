@@ -160,7 +160,7 @@ def test_quests_map_prefers_a_quest_levels_entry_over_the_item_level_proxy():
     result can carry either."""
     document, _ = built(
         quest_levels={
-            42: QuestLevelEntry(min_level=12, level=14, source="classic-db", fetched_at="2026-09-28T00:00:00+00:00")
+            42: QuestLevelEntry(min_level=12, level=14, source="classic-db", fetched_at="2026-09-28T00:00:00+00:00")  # noqa: E501
         }
     )
     entry_108 = document.quests["108"][0]
@@ -173,7 +173,7 @@ def test_quests_map_prefers_a_quest_levels_entry_over_the_item_level_proxy():
 def test_quests_map_passes_through_a_wowhead_sourced_entry_unchanged():
     document, _ = built(
         quest_levels={
-            42: QuestLevelEntry(min_level=9, level=11, source="wowhead", fetched_at="2026-09-28T00:00:00+00:00")
+            42: QuestLevelEntry(min_level=9, level=11, source="wowhead", fetched_at="2026-09-28T00:00:00+00:00")  # noqa: E501
         }
     )
     entry_108 = document.quests["108"][0]

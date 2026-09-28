@@ -44,7 +44,7 @@ def test_load_cached_quest_levels_reads_only_what_is_already_cached(tmp_path: Pa
     cache_path.write_text(FIXTURE.read_text(encoding="utf-8"), encoding="utf-8")
 
     result = wq.load_cached_quest_levels("1.60.1.70009", [53, 999], root=tmp_path)
-    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44)}
+    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44)}  # noqa: E501
     assert result.missing == {999}
 
 
@@ -67,7 +67,7 @@ def test_fetch_quest_levels_retries_a_throttled_response_with_backoff(tmp_path: 
     client = httpx.Client(transport=httpx.MockTransport(handler))
     result = wq.fetch_quest_levels("1.60.1.70009", [53], root=tmp_path, client=client, delay=0)
 
-    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44)}
+    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44)}  # noqa: E501
     assert result.missing == set()
     assert attempts["n"] == 3  # two throttled, one success -- same id retried, not skipped
     # Backoff doubled between the two throttled attempts: 30s, then 60s.
@@ -191,7 +191,7 @@ def test_fetch_quest_levels_caches_a_live_fetch_and_skips_a_cache_hit(tmp_path: 
 
     client = httpx.Client(transport=httpx.MockTransport(handler))
     result = wq.fetch_quest_levels("1.60.1.70009", [53, 999], root=tmp_path, client=client, delay=0)
-    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44)}
+    assert result.levels == {53: wq.QuestPageLevel(quest_id=53, name="Sweet Amber", min_level=40, level=44)}  # noqa: E501
     assert result.missing == {999}
     assert calls == [53, 999]
     assert wq.raw_path(tmp_path / "1.60.1.70009", 53).exists()
@@ -203,6 +203,6 @@ def test_fetch_quest_levels_caches_a_live_fetch_and_skips_a_cache_hit(tmp_path: 
     # cache is warm) -- 999 IS retried, since a miss is never cached.
     calls.clear()
     client2 = httpx.Client(transport=httpx.MockTransport(handler))
-    result2 = wq.fetch_quest_levels("1.60.1.70009", [53, 999], root=tmp_path, client=client2, delay=0)
+    result2 = wq.fetch_quest_levels("1.60.1.70009", [53, 999], root=tmp_path, client=client2, delay=0)  # noqa: E501
     assert calls == [999]
     assert result2.levels[53].min_level == 40

@@ -10,7 +10,6 @@ import httpx
 
 from pipeline import quest_levels as ql
 from pipeline.classic_quest_levels import SOURCE_URL
-from pipeline.wowhead_quests import raw_path as wowhead_raw_path
 
 SAMPLE_SQL = (
     "INSERT INTO `quest_template` VALUES "
@@ -52,7 +51,10 @@ def test_merge_classic_db_writes_the_committed_file_tagged_classic_db(tmp_path: 
 def test_fetch_missing_from_wowhead_only_fetches_ids_not_already_covered(tmp_path: Path):
     build_dir = tmp_path / "1.60.1.70009"
     # Quest 53 is already covered (classic-db); 54 is not.
-    ql._write(build_dir, {53: ql.QuestLevelEntry(min_level=40, level=44, source="classic-db", fetched_at="x")})
+    ql._write(
+        build_dir,
+        {53: ql.QuestLevelEntry(min_level=40, level=44, source="classic-db", fetched_at="x")},
+    )  # noqa: E501
 
     requested: list[int] = []
 
@@ -77,7 +79,10 @@ def test_fetch_missing_from_wowhead_only_fetches_ids_not_already_covered(tmp_pat
 
 def test_fetch_missing_from_wowhead_with_nothing_missing_does_not_touch_the_file(tmp_path: Path):
     build_dir = tmp_path / "1.60.1.70009"
-    ql._write(build_dir, {53: ql.QuestLevelEntry(min_level=40, level=44, source="classic-db", fetched_at="x")})
+    ql._write(
+        build_dir,
+        {53: ql.QuestLevelEntry(min_level=40, level=44, source="classic-db", fetched_at="x")},
+    )  # noqa: E501
     before = ql.raw_path(build_dir).read_text(encoding="utf-8")
 
     stats = ql.fetch_missing_from_wowhead("1.60.1.70009", [53], max_pages=10, root=tmp_path)

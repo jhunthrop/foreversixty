@@ -124,10 +124,7 @@ def _write(build_dir: Path, entries: dict[int, QuestLevelEntry]) -> Path:
                 "pipeline.wowhead_quests for the URL pattern and politeness rules.",
             },
         },
-        "quests": {
-            str(entry): entries[entry].model_dump()
-            for entry in sorted(entries)
-        },
+        "quests": {str(entry): entries[entry].model_dump() for entry in sorted(entries)},
     }
     path.write_text(json.dumps(document, indent=1) + "\n", encoding="utf-8")
     return path
@@ -139,9 +136,7 @@ class MergeStats:
     total: int
 
 
-def merge_classic_db(
-    build: str, root: Path = Path("builds"), client=None
-) -> MergeStats:
+def merge_classic_db(build: str, root: Path = Path("builds"), client=None) -> MergeStats:
     """`fetch-classic-quest-levels`: download the pinned classic-db dump
     and merge every entry into the committed `quest-levels.json`,
     tagged `source: "classic-db"`. A one-time (or occasional, only when
@@ -219,4 +214,6 @@ def fetch_missing_from_wowhead(
         len(needed),
         still_missing,
     )
-    return WowheadMergeStats(fetched=len(result.levels), still_missing=still_missing, needed=len(needed))
+    return WowheadMergeStats(
+        fetched=len(result.levels), still_missing=still_missing, needed=len(needed)
+    )

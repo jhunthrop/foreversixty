@@ -187,7 +187,10 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.quest_levels import merge_classic_db
 
         stats = merge_classic_db(args.build)
-        print(f"fetch-classic-quest-levels: merged {stats.added} classic-db entries ({stats.total} total)")
+        print(
+            f"fetch-classic-quest-levels: merged {stats.added} classic-db entries "
+            f"({stats.total} total)"
+        )
     elif args.command == "quest-levels":
         import json
         from pathlib import Path
