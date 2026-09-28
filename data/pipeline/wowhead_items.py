@@ -34,6 +34,7 @@ from pipeline.normalize.gear import (
     PLANNER_QUALITIES,
     SLOT_BY_INVENTORY_TYPE,
     is_junk_name,
+    is_weapon_row,
 )
 from pipeline.proficiency import ARMOR, can_equip
 from pipeline.wago import USER_AGENT
@@ -236,6 +237,16 @@ def planner_stats(item: WowheadItem, untracked: Counter[str] | None = None) -> d
 
 
 def to_gear_item(item: WowheadItem, untracked: Counter[str] | None = None) -> GearItem:
+    """The one gate `normalize/gear.py`'s `build_class_items` does not need a
+    second time here: wowhead itself states a nonzero "speed" stat for real
+    non-weapon items sitting at InventoryType 23 HOLDABLE (Antipodean Rod,
+    2879, and Orb of Mistmantle, 13031, are both real class-4 off-hand items
+    wowhead's own scrape gives `speed: 1.6` with no damage at all) -- the
+    wowhead-side twin of the client-row defect `is_weapon_row` exists to
+    fix, so it gates weapon fields here too rather than trusting wowhead's
+    numbers at face value the way every other field on this row is.
+    """
+    is_weapon = is_weapon_row(item.class_id, item.inventory_type)
     return GearItem(
         id=item.id,
         name=item.name,
@@ -246,11 +257,11 @@ def to_gear_item(item: WowheadItem, untracked: Counter[str] | None = None) -> Ge
         item_level=item.item_level,
         armor=item.armor,
         stats=planner_stats(item, untracked),
-        damage_min=item.damage_min,
-        damage_max=item.damage_max,
-        speed=item.speed,
-        dps=item.dps,
-        two_hand=item.inventory_type == TWO_HAND_INVENTORY_TYPE,
+        damage_min=item.damage_min if is_weapon else 0,
+        damage_max=item.damage_max if is_weapon else 0,
+        speed=item.speed if is_weapon else 0.0,
+        dps=item.dps if is_weapon else 0.0,
+        two_hand=is_weapon and item.inventory_type == TWO_HAND_INVENTORY_TYPE,
         effect_text="",
         set_id=item.set_id,
         unique=item.unique,

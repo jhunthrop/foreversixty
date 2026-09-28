@@ -212,6 +212,39 @@ RESISTANCE_KEYS: dict[int, str] = {
 #: answer different questions and now happen to agree on the answer.
 TWO_HAND_INVENTORY_TYPES = frozenset({17})
 
+#: Item.ClassID 2 (WEAPON) rows whose InventoryType is an actual weapon slot
+#: -- verified by joining build 1.60.1.70009's own Item.csv and
+#: ItemSparse.csv on id: one-hand (13), ranged/bow (15), two-hand (17),
+#: main-hand (21), off-hand weapon (22), thrown (25), ranged-right / wand,
+#: gun, crossbow (26). Of the 1,775 class-2 rows in that build, all but
+#: three sit at one of these seven values; the three (a junk-named "OLD..."
+#: item, a "...Test" item, and one real weapon misfiled at 23 HOLDABLE) are
+#: not worth widening the set for.
+#:
+#: 23 (HOLDABLE) is deliberately absent even though it is also an off-hand
+#: slot: it is where a non-weapon, item-class-4 held item lives (a tome,
+#: idol, relic or -- the defect this set fixes -- Father Flame, item 13371).
+#: InventoryType alone cannot tell a weapon from a non-weapon here: the same
+#: build has non-weapon (class != 2) rows at InventoryType 15, 17, 21, 22
+#: and 26 too, so `is_weapon_row` below checks Item.ClassID first and
+#: InventoryType second, never InventoryType alone.
+WEAPON_INVENTORY_TYPES = frozenset({13, 15, 17, 21, 22, 25, 26})
+
+
+def is_weapon_row(item_class_id: int, inventory_type: int) -> bool:
+    """True when a row is a real weapon: Item.ClassID 2 in a weapon-only
+    InventoryType slot. `weapon_fields` is only meaningful for such a row --
+    a non-weapon that happens to state a nonzero ItemDelay (Father Flame,
+    an off-hand HOLDABLE item, states 2000) is not a weapon and must not
+    get a speed or damage from it, or a picker that ranks by dps equips it
+    as one and hands the engine a "weapon" with a speed the engine's own
+    simdb (gated the same way, see pipeline/simdb/items.py's
+    `class_id == ITEM_CLASS_WEAPON` check) says is zero -- a zero-speed
+    swing loops forever.
+    """
+    return item_class_id == WEAPON and inventory_type in WEAPON_INVENTORY_TYPES
+
+
 #: Stat keys that are a combat-rating point count when ItemSparse states
 #: them (`STAT_BY_MODIFIER_ID`'s 12/13/14/15/31/32/48) but a flat literal
 #: percentage when an on-equip spell states them instead
@@ -326,12 +359,26 @@ class WeaponFields(NamedTuple):
     two_hand: bool
 
 
+#: What every non-weapon row gets instead of `weapon_fields`' curve/literal
+#: resolution -- see `is_weapon_row`. Real zeroes, not "unknown": a
+#: non-weapon has no damage and no swing speed, full stop.
+NOT_A_WEAPON = WeaponFields(damage_min=0, damage_max=0, speed=0.0, dps=0.0, two_hand=False)
+
+
 def weapon_fields(
     row: dict[str, str],
     subclass_id: int,
     curves: WeaponCurves | None = None,
 ) -> WeaponFields:
     """Weapon damage, speed and the two-handed flag for one ItemSparse row.
+
+    Assumes the row is already known to be a real weapon -- call this only
+    when `is_weapon_row(item_class_id, inventory_type)` is True; every other
+    row gets `NOT_A_WEAPON` instead. Nothing here checks Item.ClassID or
+    restricts InventoryType to a weapon slot, so calling it on a non-weapon
+    row (an off-hand HOLDABLE item that happens to state a nonzero
+    ItemDelay, say) reads that column as a swing speed anyway and hands out
+    a real dps for an item that has none.
 
     Classic Era's ItemSparse states damage outright (`MinDamage_0`/
     `MaxDamage_0`); the 1.60 client (Forever beta) states neither and leaves
@@ -429,12 +476,15 @@ def _has_gear_value(armor: int, stats: dict[str, int], item_class_id: int) -> bo
     An item with no armour and no non-zero stat gives the planner nothing to
     reason about, so it is dropped -- for armour and for every other item class.
 
-    Weapons (`Item.ClassID` 2) are exempt. A weapon's value is its damage, and
-    this pipeline does not emit damage yet, so judging a weapon on armour and
-    stats alone drops real gear: Annihilator, Arcanite Champion and the Hakkari
-    warblades all carry nothing but their damage. A weapon therefore survives on
-    the quality and junk-name clauses alone. Remove the exemption once weapon
-    damage is emitted and a damage-less weapon really is valueless.
+    Weapons (`Item.ClassID` 2) are exempt. A weapon's value is its damage,
+    which lives in `weapon_fields`/`is_weapon_row` output the caller checks
+    separately, not in `armor`/`stats` here -- judging a weapon on armour
+    and stats alone would drop real gear: Annihilator, Arcanite Champion and
+    the Hakkari warblades all carry nothing but their damage. A weapon
+    therefore survives on the quality and junk-name clauses alone. A real
+    client weapon the `ItemDamage*` curve tables state no dps for (or a
+    curve-unavailable build) keeps damage 0 and is still not dropped here --
+    see `build_class_items`.
     """
     if item_class_id == WEAPON:
         return True
@@ -613,7 +663,11 @@ def build_class_items(
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
         if not _has_gear_value(armor, stats, item_class_id):
             continue
-        weapon = weapon_fields(row, subclass_id, weapon_curves)
+        weapon = (
+            weapon_fields(row, subclass_id, weapon_curves)
+            if is_weapon_row(item_class_id, inventory_type)
+            else NOT_A_WEAPON
+        )
         item = GearItem(
             id=item_id,
             name=display_name,

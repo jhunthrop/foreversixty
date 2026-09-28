@@ -14,6 +14,7 @@ from pipeline.normalize.gear import (
     is_junk_name,
 )
 from pipeline.normalize.item_curves import load_item_curves
+from pipeline.normalize.weapon_curves import load_weapon_curves
 from pipeline.proficiency import WEAPON
 from pipeline.spelltext import SpellTextError, load_spell_text
 
@@ -42,6 +43,17 @@ def build_all_1_60(curves=None):
         fixture_icons(),
         "1.60.1.69893",
         curves,
+    )
+
+
+def fixture_weapon_curves():
+    sim_fixtures = HERE / "fixtures" / "sim"
+    return load_weapon_curves(
+        read_csv(sim_fixtures / "ItemDamageOneHand.csv"),
+        read_csv(sim_fixtures / "ItemDamageTwoHand.csv"),
+        read_csv(sim_fixtures / "ItemDamageRanged.csv"),
+        read_csv(sim_fixtures / "ItemDamageWand.csv"),
+        read_csv(sim_fixtures / "ItemDamageThrown.csv"),
     )
 
 
@@ -218,6 +230,54 @@ def test_a_damage_only_weapon_survives_the_no_armour_no_stats_clause():
     assert annihilator.stats == {}
     assert annihilator.slot == "main_hand"
     assert warrior[2825].slot == "ranged"
+
+
+def test_a_holdable_off_hand_item_with_a_stated_item_delay_gets_no_weapon_damage():
+    """Father Flame (13371) is a real item: InventoryType 23 HOLDABLE, Item.ClassID
+    4 (armour, not a weapon) -- but its own ItemSparse row states ItemDelay 2000
+    anyway. Before build_class_items gated weapon_fields on is_weapon_row
+    (Item.ClassID 2 in a real weapon slot), that stray delay alone was read as a
+    2-second swing speed and sent through the curve tables for a real dps: the
+    leveling-bis picker then ranked it as a strong off-hand weapon and equipped
+    it, and the engine's own simdb -- which correctly has no weapon damage for a
+    non-weapon item -- spun the rotation loop forever on the resulting
+    zero-speed swing. This is the regression test for that defect.
+    """
+    sparse_rows = read_csv(HERE / "fixtures/ItemSparse_1_60.csv")
+    item_rows = read_csv(HERE / "fixtures/Item.csv")
+    sparse_rows.append(
+        {
+            "ID": "13371",
+            "Display_lang": "Father Flame",
+            "OverallQualityID": "3",
+            "ItemLevel": "60",
+            "RequiredLevel": "55",
+            "InventoryType": "23",
+            "MaxCount": "0",
+            "ItemSet": "0",
+            "AllowableClass": "-1",
+            "Resistances_0": "5",  # a literal armour amount, so it survives
+            "ItemDelay": "2000",  # the stray delay the real item states
+            "DmgVariance": "0",
+        }
+    )
+    item_rows.append({"ID": "13371", "ClassID": "4", "SubclassID": "0", "IconFileDataID": "0"})
+    records = build_class_items(
+        sparse_rows,
+        item_rows,
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.60.1.70009",
+        fixture_curves(),
+        weapon_curves=fixture_weapon_curves(),
+    )
+    father_flame = next(i for record in records for i in record.items if i.id == 13371)
+    assert father_flame.slot == "off_hand"
+    assert father_flame.armor == 5
+    assert (father_flame.damage_min, father_flame.damage_max) == (0, 0)
+    assert father_flame.speed == 0.0
+    assert father_flame.dps == 0.0
+    assert father_flame.two_hand is False
 
 
 def test_a_stat_less_armour_piece_is_still_dropped():

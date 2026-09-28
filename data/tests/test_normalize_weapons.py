@@ -3,8 +3,15 @@ from pathlib import Path
 import pytest
 
 from pipeline.csvio import read_csv
-from pipeline.normalize.gear import TWO_HAND_INVENTORY_TYPES, weapon_fields
+from pipeline.normalize.gear import (
+    NOT_A_WEAPON,
+    TWO_HAND_INVENTORY_TYPES,
+    WEAPON_INVENTORY_TYPES,
+    is_weapon_row,
+    weapon_fields,
+)
 from pipeline.normalize.weapon_curves import WeaponCurves, load_weapon_curves
+from pipeline.proficiency import ARMOR, WEAPON
 
 FIXTURES = Path(__file__).parent / "fixtures" / "sim"
 
@@ -142,3 +149,39 @@ def test_a_schema_with_no_variance_column_resolves_nothing_from_the_curve():
     without_variance = {key: value for key, value in curve_row().items() if key != "DmgVariance"}
     fields = weapon_fields(without_variance, AXE_TWO_HAND, curves())
     assert (fields.damage_min, fields.damage_max) == (0, 0)
+
+
+# --- is_weapon_row (item class 2 + a real weapon slot, not InventoryType alone) --
+
+
+def test_a_real_weapon_in_a_weapon_slot_is_a_weapon_row():
+    for inventory_type in WEAPON_INVENTORY_TYPES:
+        assert is_weapon_row(WEAPON, inventory_type) is True
+
+
+def test_an_armour_class_item_in_the_off_hand_weapon_slot_is_not_a_weapon_row():
+    """22 (WEAPONOFFHAND) is a real weapon slot, but item class 4 there is not
+    a weapon -- Item.ClassID gates first, InventoryType second."""
+    assert is_weapon_row(ARMOR, 22) is False
+
+
+def test_a_holdable_off_hand_item_is_never_a_weapon_row_even_with_a_weapon_class():
+    """23 (HOLDABLE) is Father Flame's own slot (item 13371, a real item, item
+    class 4): it sits directly beside 22 (WEAPONOFFHAND) in the client's own
+    InventoryType enum and is deliberately excluded from WEAPON_INVENTORY_TYPES
+    -- see the constant's docstring. Checking WEAPON here too proves the
+    exclusion is about the slot, not a class 4 the WEAPON check would already
+    have refused."""
+    assert is_weapon_row(WEAPON, 23) is False
+    assert 23 not in WEAPON_INVENTORY_TYPES
+
+
+def test_a_non_weapon_row_with_a_stated_item_delay_gets_the_shared_not_a_weapon_zeroes():
+    """Father Flame's own ItemSparse row states ItemDelay 2000 despite being a
+    held-in-off-hand item, not a weapon -- weapon_fields would read that as a
+    2-second swing speed and a real curve-resolved dps if it were ever called
+    on this row. build_class_items's caller must skip weapon_fields entirely
+    for a non-weapon row and use NOT_A_WEAPON instead; this asserts what that
+    constant actually is, not weapon_fields's own behaviour (weapon_fields has
+    no gate of its own -- see its docstring)."""
+    assert NOT_A_WEAPON == (0, 0, 0.0, 0.0, False)

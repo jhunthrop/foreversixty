@@ -72,6 +72,41 @@ def test_gear_item_carries_weapon_damage_set_and_uniqueness() -> None:
     assert (flat.class_id, flat.subclass_id, flat.inventory_type) == (2, 7, 13)
 
 
+def test_a_holdable_off_hand_item_wowhead_states_a_speed_for_gets_no_weapon_fields() -> None:
+    """Antipodean Rod (2879) and Orb of Mistmantle (13031) are real items:
+    Item.ClassID 4 (armour, not a weapon), InventoryType 23 HOLDABLE -- but
+    wowhead's own scrape states a nonzero "speed" stat for both (1.6, no
+    damage at all) anyway. to_gear_item used to copy every wowhead weapon
+    field at face value; this is the wowhead-side twin of the client-row
+    Father Flame defect (13371, also class 4, also InventoryType 23) that
+    `is_weapon_row` fixes in normalize/gear.py -- the same gate belongs here
+    too, so a non-weapon wowhead row never reports a swing speed.
+    """
+    rod = wh.WowheadItem(
+        id=2879,
+        name="Antipodean Rod",
+        quality=3,
+        item_level=22,
+        required_level=17,
+        class_id=4,
+        subclass_id=0,
+        inventory_type=23,
+        icon="inv_wand_04",
+        class_mask=None,
+        stats={"speed": 1.6},
+        set_id=None,
+        unique=True,
+        armor=0,
+        damage_min=0,
+        damage_max=0,
+        speed=1.6,
+        dps=0.0,
+    )
+    gear = wh.to_gear_item(rod)
+    assert (gear.damage_min, gear.damage_max, gear.speed, gear.dps) == (0, 0, 0.0, 0.0)
+    assert gear.two_hand is False
+
+
 def test_class_allowed_reads_the_mask_and_the_proficiency_table() -> None:
     items = {item.id: item for item in wh.load_items(FIXTURE)}
     sword = items[271218]  # classMask 1029: warrior (1), hunter (4), rogue (1024)? bits 0, 2, 10
