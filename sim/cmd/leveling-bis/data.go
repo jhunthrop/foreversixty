@@ -9,7 +9,9 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -266,14 +268,22 @@ type specInfo struct {
 	WeightStats   []string `json:"weight_stats"`
 }
 
-func loadSpec(repoRoot, spec string) (specInfo, error) {
+func loadAllSpecs(repoRoot string) ([]specInfo, error) {
 	b, err := os.ReadFile(filepath.Join(repoRoot, "data", "curated", "specs.json"))
 	if err != nil {
-		return specInfo{}, fmt.Errorf("reading curated/specs.json: %w", err)
+		return nil, fmt.Errorf("reading curated/specs.json: %w", err)
 	}
 	var specs []specInfo
 	if err := json.Unmarshal(b, &specs); err != nil {
-		return specInfo{}, fmt.Errorf("decoding curated/specs.json: %w", err)
+		return nil, fmt.Errorf("decoding curated/specs.json: %w", err)
+	}
+	return specs, nil
+}
+
+func loadSpec(repoRoot, spec string) (specInfo, error) {
+	specs, err := loadAllSpecs(repoRoot)
+	if err != nil {
+		return specInfo{}, err
 	}
 	for _, s := range specs {
 		if s.Spec == spec {
@@ -283,17 +293,69 @@ func loadSpec(repoRoot, spec string) (specInfo, error) {
 	return specInfo{}, fmt.Errorf("no spec %q in curated/specs.json", spec)
 }
 
-// guideBuild is what this lane reads out of a spec guide's frontmatter:
-// the level-60 build code and the two recommended races, one per
-// faction (guides/*.md's own convention - see marksmanship.md's
-// `recommendedRaces: [dwarf, troll]`, Alliance then Horde).
-type guideBuild struct {
-	// Trees is the build code's three tree strings, in tree position
-	// order (0, 1, 2), digit-per-talent-slot, exactly as the engine's
-	// own positional talent string spells one tree (sim/talents'
-	// package doc) - the guide's `build:` frontmatter uses "/" where
-	// the engine string uses "-".
-	Trees []string
+// aplState is the one field this command needs out of
+// data/curated/apl/<spec>.json - sim/request/ladder_test.go's own
+// ladderCurated reads the same field the same way (loadLadderCurated),
+// duplicated here rather than imported because that type lives in
+// package request's _test.go file, not exported for another command to
+// use.
+type aplState struct {
+	State string `json:"state"`
+}
+
+func loadAPLState(repoRoot, spec string) (string, error) {
+	path := filepath.Join(repoRoot, "data", "curated", "apl", spec+".json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return "", fmt.Errorf("reading %s: %w", path, err)
+	}
+	var f aplState
+	if err := json.Unmarshal(b, &f); err != nil {
+		return "", fmt.Errorf("decoding %s: %w", path, err)
+	}
+	return f.State, nil
+}
+
+// writtenSpecs is -all's spec list: every data/curated/specs.json row
+// whose own data/curated/apl/<spec>.json rotation is state == "written"
+// - the same test sim/request/ladder_test.go's TestRotationLadder
+// applies before it measures a spec, and the same "written" gate
+// docs/superpowers/specs/2026-09-28-leveling-bis-design.md's own
+// pipeline section names. A spec with no apl file at all (not yet
+// curated) is skipped, not an error - this command ranks what is
+// written today, not what will exist eventually.
+func writtenSpecs(repoRoot string) ([]string, error) {
+	specs, err := loadAllSpecs(repoRoot)
+	if err != nil {
+		return nil, err
+	}
+	var out []string
+	for _, s := range specs {
+		state, err := loadAPLState(repoRoot, s.Spec)
+		if err != nil {
+			if errors.Is(err, fs.ErrNotExist) {
+				continue
+			}
+			return nil, err
+		}
+		if state == "written" {
+			out = append(out, s.Spec)
+		}
+	}
+	return out, nil
+}
+
+// guideRaces is what this lane reads out of a spec guide's frontmatter:
+// the two recommended races, one per faction (guides/*.md's own
+// convention - see marksmanship.md's `recommendedRaces: [dwarf,
+// troll]`, Alliance then Horde). The guide's level-60 talent BUILD
+// (the `build:` line this struct used to also carry as Trees) is no
+// longer read here - sim/leveling.GuideBuildTalents reads it directly
+// by stable talent id instead (see runSpec's talent truncation, and
+// sim/leveling's own package doc for why: a positional read here would
+// silently misalign against an active build whose tree lost a talent
+// since the guide was authored).
+type guideRaces struct {
 	// AllianceRace, HordeRace are recommendedRaces[0], [1]: the guide
 	// states Alliance first, Horde second, and bulk/expand.go's
 	// hordeRaces table is what this command checks that against (see
@@ -302,27 +364,21 @@ type guideBuild struct {
 	HordeRace    string
 }
 
-var buildLineRE = regexp.MustCompile(`^build:\s*'FS1:[^:]*:[^:]*:[^:]*:([^:']*):?'\s*$`)
 var racesLineRE = regexp.MustCompile(`^recommendedRaces:\s*\[([^\]]*)\]\s*$`)
 
-// loadGuideBuild reads a spec guide's frontmatter for its level-60
-// talent build and recommended races. It is a small, deliberately
-// line-oriented reader rather than a YAML parser: the frontmatter is
-// two lines this command needs out of a much larger file, and a full
-// YAML dependency for two regexes is not worth adding to the sim
-// module.
-func loadGuideBuild(repoRoot, classSlug, specSlug string) (guideBuild, error) {
+// loadGuideRaces reads a spec guide's frontmatter for its recommended
+// races. It is a small, deliberately line-oriented reader rather than a
+// YAML parser: the frontmatter is one line this command needs out of a
+// much larger file, and a full YAML dependency for one regex is not
+// worth adding to the sim module.
+func loadGuideRaces(repoRoot, classSlug, specSlug string) (guideRaces, error) {
 	path := filepath.Join(repoRoot, "web", "src", "content", "guides", classSlug, specSlug+".md")
 	b, err := os.ReadFile(path)
 	if err != nil {
-		return guideBuild{}, fmt.Errorf("reading %s: %w", path, err)
+		return guideRaces{}, fmt.Errorf("reading %s: %w", path, err)
 	}
-	var out guideBuild
+	var out guideRaces
 	for _, line := range strings.Split(string(b), "\n") {
-		if m := buildLineRE.FindStringSubmatch(line); m != nil {
-			trees := strings.Split(m[1], "/")
-			out.Trees = trees
-		}
 		if m := racesLineRE.FindStringSubmatch(line); m != nil {
 			parts := strings.Split(m[1], ",")
 			for i, p := range parts {
@@ -336,11 +392,8 @@ func loadGuideBuild(repoRoot, classSlug, specSlug string) (guideBuild, error) {
 			}
 		}
 	}
-	if len(out.Trees) != 3 {
-		return guideBuild{}, fmt.Errorf("%s: build: frontmatter did not parse into 3 trees, got %v", path, out.Trees)
-	}
 	if out.AllianceRace == "" || out.HordeRace == "" {
-		return guideBuild{}, fmt.Errorf("%s: recommendedRaces: frontmatter did not parse into 2 races, got %q/%q", path, out.AllianceRace, out.HordeRace)
+		return guideRaces{}, fmt.Errorf("%s: recommendedRaces: frontmatter did not parse into 2 races, got %q/%q", path, out.AllianceRace, out.HordeRace)
 	}
 	return out, nil
 }
