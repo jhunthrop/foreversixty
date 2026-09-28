@@ -89,13 +89,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-100000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 | 35.6 | 5 | other:attack/2=130.0, other:attack/1=61.5, spell:284/1=40.1, spell:284=39.7, other:rage_gain=38.1 | {SpellID: 12328}, {SpellID: 23894} |
-| 20 | 00000000000000000-353000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 | 38.2 | 5 | other:attack/2=130.0, other:attack/1=81.8, other:rage_gain=38.1, spell:285/1=19.6, spell:285=19.5 | {SpellID: 12328}, {SpellID: 23894} |
-| 30 | 00000000000000000-353211005010000000-000000000000000000 | main_hand:22377 off_hand:11863 | 49.2 | 6 | other:attack/2=130.0, other:attack/1=89.4, other:rage_gain=78.8, spell:1680=13.9, spell:1608/1=12.0 | {SpellID: 12328}, {SpellID: 23894} |
-| 38 | 00000000000000000-353211005050010030-000000000000000000 | main_hand:22377 off_hand:11863 | 59.7 | 7 | other:attack/2=134.8, other:attack/1=94.5, other:rage_gain=80.2, spell:1680=13.7, spell:20658=10.6 | {SpellID: 23894} |
-| 40 | 00000000000000000-353211005050010050-000000000000000000 | main_hand:22377 off_hand:11863 | 61.9 | 7 | other:attack/2=137.8, other:attack/1=102.3, other:rage_gain=81.3, spell:1680=13.1, spell:20660=8.8 | {SpellID: 23881} |
-| 50 | 35100000000000000-353211005050010051-000000000000000000 | main_hand:22377 off_hand:11863 | 76.9 | 9 | other:attack/2=140.1, other:attack/1=108.9, other:rage_gain=80.8, spell:23892=13.0, spell:20661=8.5 | - |
-| 60 | 35311103002000000-353211005050010051-000000000000000000 | main_hand:23577 off_hand:18847 | 141.9 | 9 | other:attack/1=129.9, other:rage_gain=72.0, other:attack/2=67.9, spell:23894=15.8, spell:20662=10.8 | - |
+| 10 | 00000000000000000-100000000000000000-000000000000000000 | main_hand:22377 off_hand:22378 | 42.0 | 5 | other:attack/2=65.2, other:attack/1=52.0, spell:284/1=49.7, spell:284=49.2, other:rage_gain=38.1 | {SpellID: 12328}, {SpellID: 23894} |
+| 20 | 00000000000000000-353000000000000000-000000000000000000 | main_hand:22377 off_hand:22378 | 44.6 | 5 | other:attack/1=75.6, other:attack/2=65.2, other:rage_gain=38.1, spell:285/1=25.9, spell:285=25.7 | {SpellID: 12328}, {SpellID: 23894} |
+| 30 | 00000000000000000-353211005010000000-000000000000000000 | main_hand:22377 off_hand:22378 | 58.4 | 6 | other:attack/1=85.0, other:rage_gain=67.7, other:attack/2=65.2, spell:1608/1=16.4, spell:1608=16.3 | {SpellID: 12328}, {SpellID: 23894} |
+| 38 | 00000000000000000-353211005050010030-000000000000000000 | main_hand:22377 off_hand:22378 | 69.4 | 7 | other:attack/1=90.5, other:rage_gain=68.1, other:attack/2=67.3, spell:11564/1=14.1, spell:11564=14.0 | {SpellID: 23894} |
+| 40 | 00000000000000000-353211005050010050-000000000000000000 | main_hand:22377 off_hand:22378 | 70.7 | 7 | other:attack/1=99.3, other:attack/2=68.5, other:rage_gain=68.4, spell:1680=13.3, spell:20660=9.5 | {SpellID: 23881} |
+| 50 | 35100000000000000-353211005050010051-000000000000000000 | main_hand:22377 off_hand:22378 | 87.6 | 9 | other:attack/1=107.9, other:attack/2=69.7, other:rage_gain=68.7, spell:23892=13.9, spell:20661=9.2 | - |
+| 60 | 35311103002000000-353211005050010051-000000000000000000 | main_hand:23577 off_hand:21126 | 144.0 | 9 | other:attack/1=129.8, other:attack/2=109.0, other:rage_gain=79.7, spell:23894=16.4, spell:20662=11.2 | - |
 
 ## Learned but unused (informational)
 

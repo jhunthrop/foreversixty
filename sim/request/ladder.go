@@ -240,6 +240,11 @@ type buildItem struct {
 	// also has to be in simitems.json/loot.json to be picked).
 	WeaponClass    int `json:"-"`
 	WeaponSubclass int `json:"-"`
+	// InventoryType is the client's slot code (13 = a one-hander that
+	// fits either hand, 21 = main hand only, 22 = off hand only), also
+	// joined from items.json; items/<class>.json files every
+	// either-hand weapon under slot "main_hand".
+	InventoryType int `json:"-"`
 }
 
 // Weapon and shield item/subclass ids, per the client's own item
@@ -312,6 +317,7 @@ func loadClassItems(repoRoot, build, class string) ([]buildItem, error) {
 		}
 		f.Items[i].WeaponClass = t.ClassID
 		f.Items[i].WeaponSubclass = t.SubclassID
+		f.Items[i].InventoryType = t.InventoryType
 	}
 	return f.Items, nil
 }
@@ -322,10 +328,16 @@ func loadClassItems(repoRoot, build, class string) ([]buildItem, error) {
 // item's class_id/subclass_id, which is how a weapon's TYPE - dagger,
 // sword, mace, axe, staff, fist, bow, gun, or a shield - is read).
 type itemTypeRow struct {
-	ID         int `json:"id"`
-	ClassID    int `json:"class_id"`
-	SubclassID int `json:"subclass_id"`
+	ID            int `json:"id"`
+	ClassID       int `json:"class_id"`
+	SubclassID    int `json:"subclass_id"`
+	InventoryType int `json:"inventory_type"`
 }
+
+// inventoryTypeEitherHand is the client's INVTYPE_WEAPON: a one-hander
+// that equips in either hand, which the class item files list under
+// slot "main_hand" only.
+const inventoryTypeEitherHand = 13
 
 // loadItemWeaponTypes reads items.json (a bare array, unlike the other
 // build files this ladder reads) into an id -> (class, subclass) map.
@@ -521,22 +533,12 @@ type gearProfile struct {
 // build's ranged table also carries crossbows and thrown weapons a
 // hunter could equip.
 //
-// Assassination's OFF-hand is deliberately left untyped (any weapon,
-// same as every dual-wielder below) despite the brief asking for
-// "dagger MH + dagger OH": this build's rogue.json carries ZERO
-// off_hand rows of class_id 2 / subclass 15 (dagger) at all - checked
-// against every level, not just the ladder's seven - only fist weapons
-// (subclass 13) and held-in-off-hand items (class 4, not a weapon).
-// Constraining OffHandTypes to dagger here leaves off_hand empty at
-// every level, which turns off AutoAttacks.IsDualWielding and makes
-// Mutilate's own ExtraCastCondition false, regressing the fix from
-// "occasional Mutilate at a worse rung" to "Mutilate never casts again"
-// (49 strict violations instead of 48, three new zero_casts rows) -
-// verified by generating the golden with the dagger-OH constraint in
-// place and reverting when it made the count worse. See this lane's
-// report for the decision and a content follow-up (the item pipeline
-// or Forever's own item pool may be missing off-hand daggers rogues
-// need).
+// Assassination's off hand is a dagger too (Mutilate needs one in each
+// hand). The class item files list every either-hand one-hander under
+// slot "main_hand" (the off_hand slot holds only off-hand-only weapons
+// and held items), so fitsSlot lets the off-hand pick draw from those
+// rows: 150 one-hand daggers this build's rogues can wear, none of them
+// filed as off_hand. The two picks may not be the same item.
 var ladderGearProfiles = map[string]gearProfile{
 	"warrior-arms":        {MainHand: handTwo},
 	"warrior-fury":        {MainHand: handOne, OffHand: true},
@@ -546,7 +548,7 @@ var ladderGearProfiles = map[string]gearProfile{
 	"druid-feral":         {Skip: true},
 	"druid-balance":       {MainHand: handAny, MainHandTypes: twoHandWeaponSubclasses},
 	"rogue-assassination": {MainHand: handOne, OffHand: true,
-		MainHandTypes: []int{weaponDagger}},
+		MainHandTypes: []int{weaponDagger}, OffHandTypes: []int{weaponDagger}},
 	"rogue-combat": {MainHand: handOne, OffHand: true,
 		MainHandTypes: []int{weaponSword1H, weaponMace1H}},
 	"rogue-subtlety": {MainHand: handOne, OffHand: true,
@@ -582,11 +584,41 @@ var ladderGearProfiles = map[string]gearProfile{
 // mid-sim rather than simulate a zero-damage weapon (see the report).
 // Ties (equal item_level) break on the lower item id, so the pick is
 // deterministic without depending on the source file's row order.
+// fitsSlot is whether a row can be equipped in slot: its own slot, or,
+// for the off hand, an either-hand one-hander the class item file
+// lists under main_hand (a rogue's off-hand dagger is one of those;
+// the off_hand slot itself holds only off-hand-only weapons and held
+// items).
+func fitsSlot(it buildItem, slot string) bool {
+	if it.Slot == slot {
+		return true
+	}
+	return slot == "off_hand" && it.Slot == "main_hand" && it.InventoryType == inventoryTypeEitherHand && !it.TwoHand
+}
+
+// withoutItem is items minus every id already in gear.
+func withoutItem(items []buildItem, gear []api.GearSlot) []buildItem {
+	if len(gear) == 0 {
+		return items
+	}
+	taken := make(map[int]bool, len(gear))
+	for _, g := range gear {
+		taken[g.ItemID] = true
+	}
+	out := make([]buildItem, 0, len(items))
+	for _, it := range items {
+		if !taken[it.ID] {
+			out = append(out, it)
+		}
+	}
+	return out
+}
+
 func pickGearItem(items []buildItem, known map[int]bool, slot string, level int, hand handedness, allowed []int) (buildItem, bool) {
 	var best buildItem
 	found := false
 	for _, it := range items {
-		if it.Slot != slot || it.WeaponClass != itemClassWeapon || it.Speed <= 0 || it.DamageMax <= 0 || !known[it.ID] {
+		if !fitsSlot(it, slot) || it.WeaponClass != itemClassWeapon || it.Speed <= 0 || it.DamageMax <= 0 || !known[it.ID] {
 			continue
 		}
 		if it.RequiredLevel > level {
@@ -658,7 +690,9 @@ func ladderGear(items []buildItem, known map[int]bool, spec string, level int) [
 		gear = append(gear, api.GearSlot{Slot: "main_hand", ItemID: it.ID})
 	}
 	if profile.OffHand {
-		if it, ok := pickGearItem(items, known, "off_hand", level, handOne, profile.OffHandTypes); ok {
+		// The main hand's item is excluded so a class with one standout
+		// weapon does not hold two copies of it.
+		if it, ok := pickGearItem(withoutItem(items, gear), known, "off_hand", level, handOne, profile.OffHandTypes); ok {
 			gear = append(gear, api.GearSlot{Slot: "off_hand", ItemID: it.ID})
 		}
 	}
