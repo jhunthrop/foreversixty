@@ -213,6 +213,46 @@ describe("Follow.inbox", function()
 	end)
 end)
 
+-- Follow.messages: the typed inbox messages Codec.inboxMessages decodes
+-- (Wave C), addressed and ordered the same way Follow.inbox already
+-- handles builds -- newest first, per character.
+describe("Follow.messages", function()
+	local Follow
+
+	before_each(function()
+		Follow = helper.load("Follow")
+	end)
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("keeps only messages of the requested kind, addressed to this character or to no one", function()
+		local inbox = { messages = {
+			{ type = "upgrade", character = "us/pvp/bow-jackzon", slot = "chest" },
+			{ type = "guild", character = "us/pvp/bow-jackzon", guild_name = "Sanguine" },
+			{ type = "upgrade", character = "us/pvp/someone-else", slot = "legs" },
+			{ type = "upgrade", slot = "feet" },
+		} }
+		local usable = Follow.messages(inbox, "US/PvP/Bow Jackzon", "upgrade")
+		assert.are.equal(2, #usable)
+	end)
+
+	it("orders newest first -- the companion's own append order, reversed", function()
+		local inbox = { messages = {
+			{ type = "upgrade", slot = "first" },
+			{ type = "upgrade", slot = "second" },
+			{ type = "upgrade", slot = "third" },
+		} }
+		local usable = Follow.messages(inbox, "US/PvP/Bow Jackzon", "upgrade")
+		assert.are.same({ "third", "second", "first" }, { usable[1].slot, usable[2].slot, usable[3].slot })
+	end)
+
+	it("reports nothing for an inbox that is not there", function()
+		assert.are.same({}, Follow.messages(nil, "US/PvP/Bow Jackzon", "weights"))
+	end)
+end)
+
 describe("Follow.sameCharacter", function()
 	local Follow
 

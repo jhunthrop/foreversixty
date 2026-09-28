@@ -320,6 +320,19 @@ local L = {
 	inboxUpgradeLine = "Your top upgrade: %s for %s, +%.0f",
 	inboxWeightsLine = "Weights updated for %s",
 	inboxGuildLine = "Guild news: %s",
+
+	-- Lane inbox-wire (2026-09-28): wiring Codec.inboxMessages and
+	-- Tooltip.weightsMessage into the Follow tab and the tooltip hook
+	-- (docs/superpowers/specs/2026-09-28-addon-character-aware-design.md
+	-- section 3 item 2, section 4). Appended after the Wave C block above
+	-- for the same reason it gives: the smallest surface for another
+	-- lane's concurrent edit to merge.
+	followUpgradesTitle = "UPGRADES WAITING",
+	-- "<slot>: <item name>" for one upgrade row's top line.
+	followUpgradeItem = "%s: %s",
+	-- The row's second line: where the item drops.
+	followUpgradeSource = "from %s",
+	followUpgradeDelta = "+%.0f",
 }
 
 ns.L = L

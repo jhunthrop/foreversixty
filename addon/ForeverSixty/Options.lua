@@ -31,6 +31,19 @@ Options.data = Data
 --- diag) has nowhere in the window to land, so it always answers in chat.
 Options.TABS = { export = true, follow = true, gear = true, settings = true }
 
+--- The newest "weights" inbox message for the character currently
+--- logged in, handed to Tooltip so an item's own tooltip can call out a
+--- capped stat (Tooltip.capLines). Read at the same point
+--- Options.readInbox already reads the companion's queued builds: the
+--- companion writes both into the same inbox file on its own ten-minute
+--- sync, so one read covers both. Unaddressed to nil rather than
+--- refusing anything -- the same "no data, no line" rule Tooltip already
+--- follows when there is no message at all.
+function Options.refreshWeightsMessage()
+	Tooltip.weightsMessage = Follow.messages(ForeverSixtyInbox, Export.characterKey(), "weights")[1]
+	return Tooltip.weightsMessage
+end
+
 --- The companion's inbox, read at login and never written.
 --- `companion/internal/addon/addon.go` owns that file; writing to it here
 --- would race the ten-minute sync and lose a build.
@@ -44,6 +57,7 @@ Options.TABS = { export = true, follow = true, gear = true, settings = true }
 --- Later entries are not attempted, so the count on success is the number
 --- of entries that have a `code`, not a guarantee that each one decodes.
 function Options.readInbox()
+	Options.refreshWeightsMessage()
 	local usable = Follow.inbox(ForeverSixtyInbox, Export.characterKey())
 	if #usable == 0 then
 		return 0

@@ -257,6 +257,16 @@ function Follow.inbox(inbox, key)
 	return usable
 end
 
+--- Messages of `kind` addressed to `key`, or to no one, newest first --
+--- Codec.inboxMessages' own character/kind filter, reordered by
+--- Codec.newestFirst (Wave C's messages carry no per-message timestamp,
+--- so the companion's own append order is the only signal "newest" can
+--- mean). Follow.inbox's own contract for builds, extended to the typed
+--- inbox messages Codec.inboxMessages reads beside them.
+function Follow.messages(inbox, key, kind)
+	return Codec.newestFirst(Codec.inboxMessages(inbox, key, kind))
+end
+
 local function cellKey(point)
 	return point.tab .. ":" .. point.tier .. ":" .. point.column
 end
