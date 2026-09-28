@@ -20,9 +20,7 @@ def test_every_class_has_three_tabs_in_position_order():
 
 def test_talents_keep_the_site_array_order_and_are_one_based():
     """The export encodes ranks in this order, so it is the contract, not a detail."""
-    source = json.loads(
-        Path(f"builds/{BUILD}/talents/paladin.json").read_text(encoding="utf-8")
-    )
+    source = json.loads(Path(f"builds/{BUILD}/talents/paladin.json").read_text(encoding="utf-8"))
     holy = next(tree for tree in source["trees"] if tree["position"] == 0)
     tab = build_addon_data(BUILD).classes["paladin"].tabs[0]
     assert [talent.name for talent in tab.talents] == [t["name"] for t in holy["talents"]]
@@ -78,20 +76,25 @@ def test_the_rendered_lua_parses_and_matches_the_golden_paladin_tab():
     assert lua[start : start + len(golden)] == golden
 
 
-def test_the_rendered_lua_is_loadable_by_a_real_lua():
+def test_the_rendered_lua_is_loadable_by_a_real_lua(tmp_path):
     """A generated chunk that does not parse is worse than no chunk at all.
 
     Skipped when no interpreter is installed, the way test_simdb_build.py skips
     its Go round-trip -- a developer without Lua still gets a green suite. CI is
     not allowed that excuse: .github/workflows/data.yml's `test` job installs
     lua5.4 before pytest precisely so this gate runs there.
+
+    The chunk goes through a file, not an argument: Data.lua passed 128 KB once
+    the rotation table joined it, and Linux refuses a single argument that long
+    ("Argument list too long") while macOS does not -- CI red, local green.
     """
     lua_bin = shutil.which("lua") or shutil.which("lua5.4")
     if not lua_bin:
         pytest.skip("no lua interpreter is available")
-    lua = render_lua(build_addon_data(BUILD))
+    chunk = tmp_path / "Data.lua"
+    chunk.write_text(render_lua(build_addon_data(BUILD)), encoding="utf-8")
     result = subprocess.run(
-        [lua_bin, "-e", f"local f, err = load([==[{lua}]==], 'Data.lua'); assert(f, err)"],
+        [lua_bin, "-e", f"local f, err = loadfile({str(chunk)!r}); assert(f, err)"],
         capture_output=True,
         text=True,
     )
