@@ -2,6 +2,7 @@
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
 import type { MeCharacter } from '../../lib/account/api';
+import { guildHref } from '../../lib/characters';
 import CharacterRow from './CharacterRow.svelte';
 
 const GUILDED: MeCharacter = {
@@ -50,6 +51,12 @@ describe('CharacterRow', () => {
 
     const off = render(CharacterRow, { props: { character: GUILDED } });
     expect(off.body).not.toContain('data-testid="character-guild-line"');
+  });
+
+  it("links the guild's name to its page on the character's own region and ruleset", () => {
+    const { body } = render(CharacterRow, { props: { character: GUILDED, guildLine: true } });
+    expect(body).toContain(`href="${guildHref('us', 'hardcore', 'Iron Vanguard')}"`);
+    expect(body).toContain('data-testid="character-guild-link"');
   });
 
   it('omits the guild line for a character with no guild even when guildLine is true', () => {

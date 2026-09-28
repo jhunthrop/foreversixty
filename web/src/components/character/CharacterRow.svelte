@@ -76,7 +76,12 @@
           </span>
         {/if}
         {#if guild !== undefined}
-          <CharacterGuildLine {guild} testid="character-guild" />
+          <CharacterGuildLine
+            {guild}
+            region={character.region}
+            ruleset={character.ruleset}
+            testid="character-guild"
+          />
         {/if}
       {/snippet}
     </CharacterIdentity>

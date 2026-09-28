@@ -127,7 +127,12 @@
         <CharacterIdentity character={hero} size="xl" descriptor="full" heading testid="home-hero">
           {#snippet below()}
             {#if hero.guild !== undefined}
-              <CharacterGuildLine guild={hero.guild} testid="home-hero-guild" />
+              <CharacterGuildLine
+                guild={hero.guild}
+                region={hero.region}
+                ruleset={hero.ruleset}
+                testid="home-hero-guild"
+              />
             {/if}
             {#if noBattlenetData}
               <p class="text-muted text-[13px]" data-testid="home-hero-no-bnet-data">
