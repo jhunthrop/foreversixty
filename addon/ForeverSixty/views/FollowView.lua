@@ -168,8 +168,7 @@ local function slotsRow(parent, onSelect)
 	local row = {}
 	local previous = nil
 	for index, slot in ipairs(Follow.SLOTS) do
-		local text = L["slot" .. slot:sub(1, 1):upper() .. slot:sub(2)] or slot
-		local tab = Widgets.tab(parent, text, function()
+		local tab = Widgets.tab(parent, Follow.slotName(slot), function()
 			onSelect(slot)
 		end)
 		if previous == nil then

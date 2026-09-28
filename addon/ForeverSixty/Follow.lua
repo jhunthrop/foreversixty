@@ -113,6 +113,14 @@ function Follow.restore(data)
 	return Follow.load(active.code, data, active.name, entry.active)
 end
 
+--- A slot id's display name ("raid" -> L.slotRaid), the one lookup rule
+--- both Follow.slotsFor and the Talents page's slot picker use, so a slot
+--- id and its Locale key can never drift into two different rules for
+--- turning one into the other.
+function Follow.slotName(slot)
+	return L["slot" .. slot:sub(1, 1):upper() .. slot:sub(2)] or slot
+end
+
 --- Every named slot for the current character: its id, its localized
 --- name, whether it holds a build, and whether it is the active one. The
 --- Talents page's slot picker draws straight from this.
@@ -122,7 +130,7 @@ function Follow.slotsFor()
 	for index, slot in ipairs(Follow.SLOTS) do
 		list[index] = {
 			id = slot,
-			name = L["slot" .. slot:sub(1, 1):upper() .. slot:sub(2)] or slot,
+			name = Follow.slotName(slot),
 			hasBuild = entry.slots[slot] ~= nil,
 			active = entry.active == slot,
 		}
