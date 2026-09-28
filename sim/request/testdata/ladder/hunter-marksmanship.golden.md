@@ -89,8 +89,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-10000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 68.7 | 3 | other:shoot=77.7, spell:13549=17.3, spell:3044=17.1, other:move=1.0, spell:13165=1.0 | {SpellID: 20904}, {SpellID: 2643}, {SpellID: 3045} |
-| 20 | 0000000000000000-35300000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 77.6 | 5 | other:shoot=77.0, spell:19434=15.2, spell:13550=3.0, spell:2643=2.0, other:move=1.0 | {SpellID: 3045} |
+| 10 | 0000000000000000-10000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 68.7 | 3 | other:shoot=77.7, spell:13549=17.3, spell:3044=17.1, other:move=1.0, spell:13165=1.0 | {SpellID: 20904}, {SpellID: 2643} |
+| 20 | 0000000000000000-35300000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 77.6 | 5 | other:shoot=77.0, spell:19434=15.2, spell:13550=3.0, spell:2643=2.0, other:move=1.0 | - |
 | 30 | 0000000000000000-35305500000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 83.6 | 6 | other:shoot=79.3, spell:2643=10.9, spell:20900=7.8, spell:13551=3.2, other:move=1.0 | - |
 | 38 | 0000000000000000-35305500115001000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 89.7 | 6 | other:shoot=79.9, spell:2643=15.1, spell:20901=4.8, spell:13552=3.2, other:move=1.0 | - |
 | 40 | 0000000000000000-35305500115003000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 93.6 | 6 | other:shoot=79.8, spell:2643=15.4, spell:20901=4.9, spell:13552=3.2, other:move=1.0 | - |
@@ -274,6 +274,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- hunter-marksmanship level=10 kind=unresolved_id action={SpellID: 2643}
-- hunter-marksmanship level=10 kind=unresolved_id action={SpellID: 3045}
-- hunter-marksmanship level=20 kind=unresolved_id action={SpellID: 3045}
+None.

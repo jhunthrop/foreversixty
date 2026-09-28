@@ -157,4 +157,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- shaman-elemental level=10 kind=zero_casts spell="Earth Shock" id=8044 authored=10414
+None.

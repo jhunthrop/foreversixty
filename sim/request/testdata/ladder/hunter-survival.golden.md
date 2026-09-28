@@ -274,4 +274,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- hunter-survival level=10 kind=unresolved_id action={SpellID: 2643}
+None.

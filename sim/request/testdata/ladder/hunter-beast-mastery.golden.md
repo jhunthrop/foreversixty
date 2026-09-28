@@ -89,8 +89,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-00000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 68.7 | 3 | other:shoot=77.7, spell:13549=17.3, spell:3044=17.1, other:move=1.0, spell:13165=1.0 | {SpellID: 19574}, {SpellID: 20904}, {SpellID: 2643}, {SpellID: 3045} |
-| 20 | 5420000000000000-00000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 77.6 | 5 | other:shoot=77.0, spell:19434=15.2, spell:13550=3.0, spell:2643=2.0, other:move=1.0 | {SpellID: 19574}, {SpellID: 3045} |
+| 10 | 1000000000000000-00000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 68.7 | 3 | other:shoot=77.7, spell:13549=17.3, spell:3044=17.1, other:move=1.0, spell:13165=1.0 | {SpellID: 19574}, {SpellID: 20904}, {SpellID: 2643} |
+| 20 | 5420000000000000-00000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 77.6 | 5 | other:shoot=77.0, spell:19434=15.2, spell:13550=3.0, spell:2643=2.0, other:move=1.0 | {SpellID: 19574} |
 | 30 | 5420001504000000-00000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 94.3 | 6 | other:shoot=80.0, spell:20900=11.4, spell:2643=5.4, spell:13551=3.1, other:move=1.0 | {SpellID: 19574} |
 | 38 | 5420001505001240-00000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 107.8 | 6 | other:shoot=80.1, spell:2643=13.7, spell:20901=4.0, spell:13552=3.1, other:move=1.0 | {SpellID: 19574} |
 | 40 | 5420001505001251-00000000000000000-000000000000000000 | main_hand:22377 off_hand:11863 ranged:16992 | 115.9 | 7 | other:shoot=80.1, spell:2643=14.5, spell:20901=4.0, spell:13552=3.1, other:move=1.0 | - |
@@ -274,6 +274,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- hunter-beast-mastery level=10 kind=unresolved_id action={SpellID: 2643}
-- hunter-beast-mastery level=10 kind=unresolved_id action={SpellID: 3045}
-- hunter-beast-mastery level=20 kind=unresolved_id action={SpellID: 3045}
+None.

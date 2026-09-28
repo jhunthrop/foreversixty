@@ -163,6 +163,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 	if err != nil {
 		t.Fatal(err)
 	}
+	talentSpellIDs = expandTalentSpellIDs(talentSpellIDs, abilities)
 	rankLevelByID := idLearnLevel(ranks, class)
 
 	var rows []ladderRow

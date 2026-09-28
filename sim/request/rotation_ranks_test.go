@@ -11,8 +11,15 @@ import (
 )
 
 // The three hunter rotations that reference Serpent Sting's max rank
-// (25295) and Multi-Shot (2643, unranked - both its ids are rank 0 in
-// the reference table, so it never appears in spellranks.json).
+// (25295) and Multi-Shot (2643). Multi-Shot's own spellranks.json row is
+// rank 0 (the reference table never lists this build's higher client
+// ranks 14288/14289/14290/25294 at all), but it is NOT unranked in the
+// engine's own sense: sim/hunter/multi_shot.go gates rank 1 (2643) on
+// RequiredLevel 18. sim/internal/spellranks' singleTierLevelOverrides
+// (rotation-accuracy program, 2026-09-28) carries this id specifically
+// so HighestLearnedSpellID agrees with the engine below level 18,
+// rather than treating 2643 as always-learned the way a genuinely
+// unranked ability (Bloodrage, Judgement) is.
 const hunterSpecForRankTests = "hunter-survival"
 
 func readHunterAPL(t *testing.T) []byte {
@@ -36,8 +43,8 @@ func unmarshalGeneric(t *testing.T, b []byte) any {
 }
 
 // A level-38 hunter has learned Serpent Sting through rank 5 (id
-// 13552, learned at 34; rank 6 needs 42) and has not learned Multi-Shot
-// at all as a RANKED spell - it has none, so its id is untouched.
+// 13552, learned at 34; rank 6 needs 42) and Multi-Shot (2643, learned
+// at 18 - well below 38).
 func TestRewriteRotationRanksResolvesAHunterAtLevel38(t *testing.T) {
 	raw := readHunterAPL(t)
 	got, err := rewriteRotationRanks(raw, "hunter", 38)
@@ -52,7 +59,7 @@ func TestRewriteRotationRanksResolvesAHunterAtLevel38(t *testing.T) {
 		t.Error(`Serpent Sting should resolve to its level-38 rank, 13552 (rank 5, learned at 34)`)
 	}
 	if !strings.Contains(s, `"spellId":2643`) {
-		t.Error("Multi-Shot (2643) is unranked and should stay in the rotation unchanged")
+		t.Error("Multi-Shot (2643, learned at 18) should still be present at level 38")
 	}
 }
 
@@ -125,7 +132,12 @@ func TestRotationAtMaxLevelParsesTheEmbedDirectly(t *testing.T) {
 
 // A level-3 hunter has not learned Serpent Sting at all (its first rank
 // needs level 4): every action that casts it or conditions on it must
-// be dropped, not left pointing at an id nothing can cast.
+// be dropped, not left pointing at an id nothing can cast. Multi-Shot
+// (learned at 18) is dropped for the same reason - rotation-accuracy
+// program (2026-09-28): this used to assert the opposite ("Multi-Shot
+// is unranked and always available regardless of level"), which was the
+// bug sim/internal/spellranks' singleTierLevelOverrides fixes; see that
+// package's own comment and this file's hunterSpecForRankTests comment.
 func TestRewriteRotationRanksDropsAnUnlearnedRankedSpell(t *testing.T) {
 	raw := readHunterAPL(t)
 	got, err := rewriteRotationRanks(raw, "hunter", 3)
@@ -137,14 +149,11 @@ func TestRewriteRotationRanksDropsAnUnlearnedRankedSpell(t *testing.T) {
 		"1978", "425728", "13549", "425729", "13550", "425730",
 		"13551", "425732", "13552", "425733", "13553", "425734",
 		"13554", "425735", "13555", "425736", "25295", "425737",
+		"2643",
 	} {
 		if strings.Contains(s, `"spellId":`+id) {
-			t.Errorf("Serpent Sting id %s survived the rewrite at level 3, where nothing has learned it", id)
+			t.Errorf("id %s survived the rewrite at level 3, where nothing has learned it", id)
 		}
-	}
-	// Multi-Shot is unranked and always available regardless of level.
-	if !strings.Contains(s, `"spellId":2643`) {
-		t.Error("Multi-Shot (2643) should still be present at level 3")
 	}
 }
 

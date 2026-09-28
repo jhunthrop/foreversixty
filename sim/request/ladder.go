@@ -1326,6 +1326,55 @@ func loadTalentSpellIDs(repoRoot, build, class string) (map[int]int, error) {
 	return out, nil
 }
 
+// expandTalentSpellIDs widens loadTalentSpellIDs' map (every id
+// talents.json's own ranks[].spell_id lists) to every id spellranks.json's
+// ability-name grouping (buildClassAbilities' Tiers, keyed by name) shares
+// with one of those literal ids. talents.json names only ONE id per talent
+// node - conventionally the ability's rank 1 - even when the talent gates a
+// whole multi-rank spellranks.json chain: Arcane Blast is talents.json node
+// with ranks[].spell_id 400574 only, but spellranks.json's own "Arcane
+// Blast" grouping carries five ranks (400574, 1239696, 1239697, 1239699,
+// 1239700), and sim/mage/arcane_blast.go's registerArcaneBlastSpell gates
+// every one of those five ranks on the SAME Talents.ArcaneBlast bool, not
+// just rank 1. Without this widening, harness rule 1's "zero points on
+// this talent" exemption only ever recognizes rank 1's id: a ladder level
+// where the truncated build has NOT yet spent the point but IS already
+// past a higher rank's own RequiredLevel (Arcane Blast rank 2, 1239696,
+// RequiredLevel 30) reports a false unresolved_id instead of being
+// silently absorbed the way rank 1 already is. Checked against a second
+// case with the same shape (Shadowburn: talents.json names only 17877,
+// spellranks.json's "Shadowburn" chain carries six ranks 17877..18871, and
+// sim/warlock/shadowburn.go's registerShadowBurnSpell gates every rank on
+// Talents.Shadowburn) before generalizing rather than one-offing Arcane
+// Blast alone.
+func expandTalentSpellIDs(talentSpellIDs map[int]int, abilities classAbilities) map[int]int {
+	out := make(map[int]int, len(talentSpellIDs))
+	for id, node := range talentSpellIDs {
+		out[id] = node
+	}
+	for _, tiers := range abilities.Tiers {
+		node, found := 0, false
+		for _, tier := range tiers {
+			for _, id := range tier.IDs {
+				if n, ok := talentSpellIDs[id]; ok {
+					node, found = n, true
+				}
+			}
+		}
+		if !found {
+			continue
+		}
+		for _, tier := range tiers {
+			for _, id := range tier.IDs {
+				if _, already := out[id]; !already {
+					out[id] = node
+				}
+			}
+		}
+	}
+	return out
+}
+
 // ladderTalentPoints is ladderTalentString's own budget-spending walk
 // (lines ~159-213), recomputed here to return points-per-talent-node
 // rather than a rendered digit string - the shape rule 1 needs and the
@@ -1386,12 +1435,17 @@ func idLearnLevel(ranks spellRanksFile, class string) map[int]int {
 		for _, e := range entries {
 			// A rank <= 0 row is the same "not a rank progression"
 			// signal buildClassAbilities filters on (Bloodrage,
-			// Judgement, Tiger's Fury - a single always-known ability,
-			// not a chain with a learn level): sim/internal/spellranks'
-			// own HighestLearnedSpellID treats such an id as untracked
-			// and always learned, so keeping it here would disagree
-			// with that package about an id that was never a real
-			// above-band rank at all.
+			// Judgement - a single always-known ability, not a chain
+			// with a learn level): sim/internal/spellranks' own
+			// HighestLearnedSpellID treats such an id as untracked and
+			// always learned, so keeping it here would disagree with
+			// that package about an id that was never a real
+			// above-band rank at all - EXCEPT for the small,
+			// engine-verified allowlist idLearnLevelOverrides mirrors
+			// below, which sim/internal/spellranks' own
+			// singleTierLevelOverrides (same allowlist, same reasoning
+			// - see that package's comment) also carries, precisely so
+			// the two stay in agreement.
 			if e.Rank <= 0 {
 				continue
 			}
@@ -1400,7 +1454,25 @@ func idLearnLevel(ranks spellRanksFile, class string) map[int]int {
 			}
 		}
 	}
+	for id, level := range idLearnLevelOverrides[class] {
+		out[id] = level
+	}
 	return out
+}
+
+// idLearnLevelOverrides is this file's own read-only mirror of
+// sim/internal/spellranks' singleTierLevelOverrides (that package's own
+// comment has the full reasoning and the per-id engine citations): a
+// handful of ids whose spellranks.json rows are all rank <= 0 but that
+// the pinned engine still gates behind a real character level. Kept in
+// sync by hand rather than imported, the same "separate, read-only
+// copy" shape this file's own comment on loadTalentSpellIDs and
+// idLearnLevel already documents for the rest of this exemption logic -
+// a second copy of a grouping already computed elsewhere, not a live
+// dependency on it.
+var idLearnLevelOverrides = map[string]map[int]int{
+	"druid":  {5217: 24},
+	"hunter": {2643: 18, 3045: 26},
 }
 
 // warnedSpellID pulls the bare spell id out of an engine warning

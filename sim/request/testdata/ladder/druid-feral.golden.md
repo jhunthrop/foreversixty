@@ -89,8 +89,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-1000000000000000000-0000000000000000 | bare | 28.4 | 1 | other:attack/1=182.1, spell:58984=1.5 | {SpellID: 5217} |
-| 20 | 0000000000000000-5420000000000000000-0000000000000000 | bare | 50.7 | 3 | other:attack/1=182.1, spell:1082=46.6, spell:1079=8.6, spell:58984=1.5 | {SpellID: 5217} |
+| 10 | 0000000000000000-1000000000000000000-0000000000000000 | bare | 28.4 | 1 | other:attack/1=182.1, spell:58984=1.5 | - |
+| 20 | 0000000000000000-5420000000000000000-0000000000000000 | bare | 50.7 | 3 | other:attack/1=182.1, spell:1082=46.6, spell:1079=8.6, spell:58984=1.5 | - |
 | 30 | 0000000000000000-5423222100000000000-0000000000000000 | bare | 63.8 | 6 | other:attack/1=182.1, spell:3029=26.5, spell:1822=19.8, spell:9492=8.9, spell:5217=6.6 | - |
 | 38 | 0000000000000000-5423222121032000000-0000000000000000 | bare | 79.9 | 6 | other:attack/1=182.1, spell:5201=26.5, spell:1823=19.8, spell:9493=8.9, spell:5217=6.6 | - |
 | 40 | 0000000000000000-5423222121032010001-0000000000000000 | bare | 82.4 | 6 | other:attack/1=182.1, spell:5201=26.5, spell:1823=19.8, spell:9493=8.9, spell:5217=6.6 | - |
@@ -188,5 +188,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- druid-feral level=10 kind=unresolved_id action={SpellID: 5217}
-- druid-feral level=20 kind=unresolved_id action={SpellID: 5217}
+None.

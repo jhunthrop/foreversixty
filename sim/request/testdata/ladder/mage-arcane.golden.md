@@ -203,7 +203,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- mage-arcane level=10 kind=unresolved_id action={SpellID: 400589}
-- mage-arcane level=20 kind=unresolved_id action={SpellID: 400589}
-- mage-arcane level=30 kind=unresolved_id action={SpellID: 1239696}
-- mage-arcane level=30 kind=unresolved_id action={SpellID: 400589}
+None.

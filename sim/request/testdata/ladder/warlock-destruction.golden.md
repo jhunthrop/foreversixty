@@ -204,4 +204,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warlock-destruction level=30 kind=unresolved_id action={SpellID: 18867}
+None.

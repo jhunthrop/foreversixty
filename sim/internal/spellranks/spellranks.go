@@ -92,7 +92,7 @@ func parseSpellRanks(b []byte) (map[string]map[int32]*rankChain, error) {
 	for class, spells := range file.Classes {
 		byID := make(map[int32]*rankChain)
 		for _, rows := range spells {
-			chain := buildRankChain(rows)
+			chain := buildRankChain(class, rows)
 			if chain == nil {
 				// Every entry was rank 0 (or the name carried none): not
 				// a ranked spell this table tracks. See the package doc
@@ -119,7 +119,7 @@ func parseSpellRanks(b []byte) (map[string]map[int32]*rankChain, error) {
 // at level 0, alongside its real rank-9 ids at level 60 - widens the
 // tier's id set without ever lowering its level, because only the
 // first-seen row's level is recorded.
-func buildRankChain(rows []spellRankRow) *rankChain {
+func buildRankChain(class string, rows []spellRankRow) *rankChain {
 	levelByRank := make(map[int]int)
 	idsByRank := make(map[int][]int32)
 	var ranks []int
@@ -134,7 +134,7 @@ func buildRankChain(rows []spellRankRow) *rankChain {
 		idsByRank[row.Rank] = append(idsByRank[row.Rank], row.ID)
 	}
 	if len(ranks) == 0 {
-		return nil
+		return singleTierOverrideChain(class, rows)
 	}
 	sort.Ints(ranks)
 	tiers := make([]rankTier, len(ranks))
@@ -142,6 +142,55 @@ func buildRankChain(rows []spellRankRow) *rankChain {
 		tiers[i] = rankTier{level: levelByRank[r], ids: idsByRank[r]}
 	}
 	return &rankChain{tiers: tiers}
+}
+
+// singleTierLevelOverrides names ids whose spellranks.json rows are ALL
+// rank <= 0 - buildRankChain's own rule (rank >= 1 only) finds no real
+// rank progression, the same as Bloodrage (two rank-0 rows, level 10) or
+// Judgement (three rank-0 rows, level 4) - but the pinned engine DOES
+// gate them behind a real character level regardless, verified by
+// reading each class package's own registration code directly rather
+// than trusting spellranks.json's level column for a rank-0 row (that
+// column is NOT a reliable signal on its own: Bloodrage's and
+// Judgement's own rows also carry a nonzero level, 10 and 4, and the
+// engine never level-gates either one at all - sim/warrior/bloodrage.go
+// and sim/paladin/judgement.go both register unconditionally, checked
+// directly). Rotation-accuracy program (2026-09-28): found via the
+// site's ladder harness reporting a false unresolved_id for these three
+// ids below their real gate, where the disagreement this package's own
+// HighestLearnedSpellID assertion is built to catch (ladder_test.go)
+// would otherwise have masked it as "untracked, always learned".
+var singleTierLevelOverrides = map[string]map[int32]int{
+	"druid": {
+		5217: 24, // Tiger's Fury; sim/druid/tigers_fury.go: tigersFuryLearnLevels = []int{24}
+	},
+	"hunter": {
+		2643: 18, // Multi-Shot rank 1; sim/hunter/multi_shot.go's rank table, RequiredLevel 18 (this build's spellranks.json never lists Multi-Shot's higher client ranks 14288/14289/14290/25294 at all, so 2643 is the only id this override, or this table's own callers, ever resolve it to)
+		3045: 26, // Rapid Fire; sim/hunter/rapid_fire.go: registerRapidFire returns immediately if hunter.Level < 26
+	},
+}
+
+// singleTierOverrideChain is buildRankChain's fallback once it has
+// already established a name carries no real rank>=1 progression: most
+// such names stay untracked (nil, unchanged), but a handful of ids in
+// singleTierLevelOverrides get a synthetic one-tier chain instead, so
+// HighestLearnedSpellID treats them as "not learned" below their real
+// engine gate the same way a genuine ranked spell's lowest tier already
+// does. Only the override id itself joins the tier - a companion row at
+// level 0 in the same name (Multi-Shot's 28751, Rapid Fire's 28755, both
+// NPC/internal duplicates, not a player's spell) is left untracked, as
+// before.
+func singleTierOverrideChain(class string, rows []spellRankRow) *rankChain {
+	overrides := singleTierLevelOverrides[class]
+	if overrides == nil {
+		return nil
+	}
+	for _, row := range rows {
+		if level, ok := overrides[row.ID]; ok {
+			return &rankChain{tiers: []rankTier{{level: level, ids: []int32{row.ID}}}}
+		}
+	}
+	return nil
 }
 
 var spellRankTable = sync.OnceValues(func() (map[string]map[int32]*rankChain, error) {

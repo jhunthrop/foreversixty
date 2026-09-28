@@ -188,5 +188,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- mage-fire level=10 kind=unresolved_id action={SpellID: 12873}
-- mage-fire level=20 kind=unresolved_id action={SpellID: 12873}
+None.
