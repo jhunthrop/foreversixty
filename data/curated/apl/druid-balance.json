@@ -1,7 +1,7 @@
 {
   "spec": "druid-balance",
   "state": "written",
-  "notes": "Vanilla Balance at 60 is Moonfire kept ticking and Starfire spammed the rest of the time; the fork's own balance.apl.json already does exactly that, plus two fight-end clips (Wrath, then the instant-cast Moonfire) so the last globals of an encounter are not wasted on a nuke that would not finish. Kept the preset's ranks and structure unchanged; the Forever build's spellconst just confirms Moonfire tops out at rank 10 (9835), Wrath at rank 8 (9912), and Starfire at rank 7 (25298) -- one rank higher on Wrath and Starfire than the classic 1.12 cap, so this is a Forever-only rank, not a vanilla one. The community guide also recommends weaving in Faerie Fire uptime and a second DoT (Insect Swarm) mana permitting; left both out for now, matching the mage-frost precedent of shipping the simpler, measured default and letting the validation job (design section 6) decide whether the extra globals are worth it here. Fix round 1: re-verified the only condition here, Moonfire's dotIsActive check, against sim/druid/moonfire.go -- Moonfire's Dot is registered directly on its own spell with ActionID{SpellID: spellId}, the same self-id pattern as every other simple DoT in this engine, so dotIsActive(9835) correctly finds it. No change needed.",
+  "notes": "Vanilla Balance at 60 is Moonfire kept ticking and Starfire spammed the rest of the time; the fork's own balance.apl.json already does exactly that, plus two fight-end clips (Wrath, then the instant-cast Moonfire) so the last globals of an encounter are not wasted on a nuke that would not finish. Kept the preset's ranks and structure unchanged; the Forever build's spellconst just confirms Moonfire tops out at rank 10 (9835), Wrath at rank 8 (9912), and Starfire at rank 7 (25298) -- one rank higher on Wrath and Starfire than the classic 1.12 cap, so this is a Forever-only rank, not a vanilla one. The community guide also recommends weaving in Faerie Fire uptime and a second DoT (Insect Swarm) mana permitting; left both out for now, matching the mage-frost precedent of shipping the simpler, measured default and letting the validation job (design section 6) decide whether the extra globals are worth it here. Fix round 1: re-verified the only condition here, Moonfire's dotIsActive check, against sim/druid/moonfire.go -- Moonfire's Dot is registered directly on its own spell with ActionID{SpellID: spellId}, the same self-id pattern as every other simple DoT in this engine, so dotIsActive(9835) correctly finds it. No change needed. Fix round 2 (druid.md audit finding 3): Insect Swarm is added back after all -- it is a real, fully engine-implemented level-20 DoT (sim/druid/insect_swarm.go, ranks 5570/24974/24975/24976/24977 at levels 20/30/40/50/60, all real Forever-granted ids, not SoD leftovers) that costs no extra GCD contention beyond its own application/refresh, the same shape as Moonfire's own upkeep line; dotIsActive(24977) resolves the same self-id way Moonfire's does. Faerie Fire is still left out, unrelated to this fix.",
   "sources": [
     {
       "label": "wowsims-forever balance_druid default priority list",
@@ -94,7 +94,30 @@
         }
       },
       {
-        "notes": "Starfire is the whole rest of the rotation once Moonfire is ticking.",
+        "notes": "Keep Insect Swarm ticking alongside Moonfire; it is a second cheap DoT with no GCD contention beyond application (audit finding druid.md #3 -- a real, engine-implemented level-20 DoT that was entirely absent from both this rotation and the guide).",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 24977,
+                    "rank": 5
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 24977,
+              "rank": 5
+            }
+          }
+        }
+      },
+      {
+        "notes": "Starfire is the whole rest of the rotation once Moonfire and Insect Swarm are ticking.",
         "action": {
           "castSpell": {
             "spellId": {
