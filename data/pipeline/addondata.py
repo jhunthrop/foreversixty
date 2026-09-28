@@ -27,6 +27,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from pipeline.addonrotation import build_rotations
 from pipeline.models import AddonClass, AddonData, AddonTab, AddonTalent
 from pipeline.normalize import write_model
 from pipeline.weights import load_weights
@@ -88,7 +89,8 @@ def build_addon_data(
         slug: AddonClass(tabs=_tabs(root, build, slug)) for slug in _class_slugs(root, build)
     }
     weights = {key: entry.weights for key, entry in load_weights(curated_dir).items()}
-    return AddonData(build=build, classes=classes, weights=weights)
+    rotations = build_rotations(root, build, curated_dir=curated_dir)
+    return AddonData(build=build, classes=classes, weights=weights, rotations=rotations)
 
 
 def write_addon_data(

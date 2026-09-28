@@ -14,6 +14,11 @@ local DATA = {
 		{ name = "Retribution", talents = {} },
 	} } },
 	weights = { ["paladin-holy"] = { strength = 1.0, stamina = 0.5 } },
+	rotations = {
+		["paladin-holy"] = {
+			{ level = 10, lines = { { spellId = 1, name = "Holy Light", condition = "The whole rotation." } } },
+		},
+	},
 }
 
 -- Three points in Divine Strength; head planned as item 10 with 10 strength.
@@ -185,5 +190,124 @@ describe("OverviewView", function()
 		})
 		assert.are.equal(4, #view.cards)
 		view.refresh()
+	end)
+
+	-- The "build arrived" banner (design section 1).
+	describe("the build-arrived banner", function()
+		it("is hidden with nothing waiting in the inbox", function()
+			start()
+			assert.is_false(OverviewView.summary(DATA).arrival.visible)
+		end)
+
+		it("names the character and summarises the diff against nothing loaded", function()
+			start()
+			_G.ForeverSixtyInbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
+			local model = OverviewView.summary(DATA).arrival
+			assert.is_true(model.visible)
+			assert.are.equal(string.format(L.buildArrivedTitle, "Tester"), model.title)
+			assert.are.equal(L.buildArrivedFirst, model.diff)
+		end)
+
+		it("stops showing once the pending build is dismissed", function()
+			start()
+			_G.ForeverSixtyInbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
+			assert.is_true(OverviewView.summary(DATA).arrival.visible)
+			Follow.dismissInbox("a")
+			assert.is_false(OverviewView.summary(DATA).arrival.visible)
+		end)
+
+		it("Load it loads the build, dismisses the entry and hides the banner", function()
+			start()
+			_G.ForeverSixtyInbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
+			local refreshed = false
+			local view = OverviewView.mount(_G.CreateFrame("Frame"), {
+				data = DATA, contentWidth = 538, select = function() end,
+				refreshEverything = function() refreshed = true end,
+			})
+			assert.is_true(view.arrival:IsShown())
+			view.arrival.load:GetScript("OnClick")(view.arrival.load)
+			assert.is_not_nil(Follow.build)
+			assert.is_true(refreshed)
+			assert.is_false(view.arrival:IsShown())
+		end)
+
+		it("Dismiss closes the banner without loading the build", function()
+			start()
+			_G.ForeverSixtyInbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
+			local view = OverviewView.mount(_G.CreateFrame("Frame"), {
+				data = DATA, contentWidth = 538, select = function() end,
+				refreshEverything = function() end,
+			})
+			view.arrival.dismiss:GetScript("OnClick")(view.arrival.dismiss)
+			assert.is_nil(Follow.build)
+			assert.is_false(view.arrival:IsShown())
+		end)
+	end)
+
+	-- The personal rating card (design section 3): always shows, its
+	-- detail widened by the advanced-detail toggle (section 4).
+	describe("the personal rating card", function()
+		after_each(function()
+			_G.ForeverSixtyData = nil
+		end)
+
+		it("shows the not-installed reason when the data addon is absent", function()
+			start()
+			local model = OverviewView.summary(DATA).rating
+			assert.is_true(model.empty)
+			assert.are.equal(L.ratingsNotInstalled, model.detail)
+		end)
+
+		it("shows the headline rating in novice mode, without the component breakdown", function()
+			start()
+			_G.UnitName = function() return "Thoradin" end
+			_G.ForeverSixtyData = {
+				format = 1, generated = os.date("!%Y-%m-%dT%H:%M:%SZ"), build = "1.60.1.69893",
+				characters = { ["us:ashbringer:thoradin"] = { rating = 81, output = 90, fights = 24 } },
+				guilds = {},
+			}
+			helper.load("Ratings")
+			OverviewView = helper.load("OverviewView")
+			local model = OverviewView.summary(DATA).rating
+			assert.is_false(model.empty)
+			assert.are.equal(string.format(L.overviewRatingHeadline, 81, 24), model.title)
+			assert.is_nil(model.detail:find(L.ratingsOutput, 1, true))
+		end)
+
+		it("adds the top components once advanced detail is on", function()
+			start()
+			require("Prefs").setFlag("advancedDetail", true)
+			_G.UnitName = function() return "Thoradin" end
+			_G.ForeverSixtyData = {
+				format = 1, generated = os.date("!%Y-%m-%dT%H:%M:%SZ"), build = "1.60.1.69893",
+				characters = { ["us:ashbringer:thoradin"] = { rating = 81, output = 90, fights = 24 } },
+				guilds = {},
+			}
+			helper.load("Ratings")
+			OverviewView = helper.load("OverviewView")
+			local model = OverviewView.summary(DATA).rating
+			assert.is_truthy(model.detail:find(L.ratingsOutput, 1, true))
+			assert.is_truthy(model.detail:find("90", 1, true))
+		end)
+	end)
+
+	-- The rotation card (design section 2 item 3 / section 6 Wave B).
+	describe("the rotation card", function()
+		it("asks for a build when none is loaded", function()
+			start()
+			local model = OverviewView.summary(DATA).rotation
+			assert.is_true(model.empty)
+			assert.are.equal(L.overviewRotationNoBuild, model.reason)
+		end)
+
+		it("shows the current level's lines once a build is loaded", function()
+			start()
+			assert.is_truthy(Follow.load(CODE, DATA))
+			local model = OverviewView.summary(DATA).rotation
+			assert.is_false(model.empty)
+			assert.are.equal(string.format(L.overviewRotationTitle, 10), model.title)
+			assert.are.equal(1, #model.lines)
+			assert.are.equal("Holy Light", model.lines[1].name)
+		end)
 	end)
 end)

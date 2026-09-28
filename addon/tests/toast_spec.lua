@@ -164,3 +164,113 @@ describe("Toast", function()
 		assert.is_true(Toast.frame:IsShown())
 	end)
 end)
+
+-- The rotation toast (design section 2 item 3): "Level 20: Sunder Armor
+-- opens your rotation now." Shares Toast's one frame with the existing
+-- talent-point toast (design section 4), so a level-up firing both reads
+-- as one combined message.
+describe("Toast, the rotation toast", function()
+	local Follow, Toast
+
+	-- Two points into Holy 1:1 -- Holy is the tab with the most points, so
+	-- Gear.specOf reads this build as "paladin-holy".
+	local ROTATION_DATA = {
+		build = "1.60.1.69893",
+		classes = DATA.classes,
+		weights = {},
+		rotations = {
+			["paladin-holy"] = {
+				{ level = 10, lines = { { spellId = 1, name = "Holy Light", condition = "" } } },
+				{ level = 20, lines = {
+					{ spellId = 1, name = "Holy Light", condition = "" },
+					{ spellId = 2, name = "Flash of Light", condition = "" },
+				} },
+			},
+		},
+	}
+
+	local function start(install)
+		mock.install(install or {})
+		helper.load("Theme").reset()
+		helper.load("Widgets")
+		helper.load("Prefs")
+		Follow = helper.load("Follow")
+		helper.load("Export")
+		helper.load("Gear")
+		helper.load("Codec")
+		helper.load("TalentGlow")
+		helper.load("ExportView")
+		helper.load("FollowView")
+		helper.load("GearView")
+		helper.load("SettingsView")
+		helper.load("Tracker")
+		helper.load("Minimap")
+		local Window = helper.load("Window")
+		Window.data = ROTATION_DATA
+		Toast = helper.load("Toast")
+	end
+
+	after_each(function()
+		mock.uninstall()
+	end)
+
+	it("says nothing with no earlier level to diff against", function()
+		start()
+		assert.is_nil(Toast.rotationModel(ROTATION_DATA, nil, 20))
+	end)
+
+	it("names the ability that just entered the rotation", function()
+		start()
+		assert(Follow.load(CODE, ROTATION_DATA))
+		local model = Toast.rotationModel(ROTATION_DATA, 10, 20)
+		assert.are.equal(string.format(L.rotationToastMessage, 20, "Flash of Light"), model.text)
+	end)
+
+	it("says nothing when the level-up crosses no rung", function()
+		start()
+		assert(Follow.load(CODE, ROTATION_DATA))
+		assert.is_nil(Toast.rotationModel(ROTATION_DATA, 11, 15))
+	end)
+
+	it("never fires on the first level-up after the addon loads (no seeded prior level)", function()
+		-- Talent progress already matches the build (Divine Strength rank 2
+		-- of the 2 it wants, Healing Light rank 1 of the 1 it wants), so
+		-- the existing talent-point toast has nothing to say either -- the
+		-- only thing that could produce a message here is the rotation
+		-- toast, and it must not, since Toast.refresh was never called and
+		-- Toast.lastLevel is still nil.
+		start({ level = 20, talents = {
+			{ name = "Holy", talents = {
+				{ name = "Divine Strength", tier = 1, column = 1, rank = 2, maxRank = 5 },
+				{ name = "Healing Light", tier = 2, column = 1, rank = 1, maxRank = 3 },
+			} },
+			{ name = "Protection", talents = {} },
+			{ name = "Retribution", talents = {} },
+		} })
+		assert(Follow.load(CODE, ROTATION_DATA))
+		local model = Toast.onLevelUp(ROTATION_DATA, 20)
+		assert.is_nil(model)
+	end)
+
+	it("combines the talent-point toast and the rotation toast into one message", function()
+		start({ level = 20, traits = { configID = 5, ranks = {} } })
+		_G.C_Traits.GetConfigInfo = function() return { treeIDs = { 1 } } end
+		_G.C_Traits.GetTreeInfo = function() return { pointsAvailable = 0 } end
+		assert(Follow.load(CODE, ROTATION_DATA))
+		Toast.refresh(ROTATION_DATA) -- seeds Toast.lastLevel at 20 (mock's level)
+		local model = Toast.onLevelUp(ROTATION_DATA, 21)
+		-- Still level 20's band at 21 (next rung is 20 already passed, no
+		-- higher rung yet in this fixture): no rotation half, talent half only.
+		assert.is_truthy(model.text:find("Divine Strength", 1, true))
+	end)
+
+	it("advances Toast.lastLevel so the next level-up diffs from the right place", function()
+		start({ level = 10 })
+		assert(Follow.load(CODE, ROTATION_DATA))
+		Toast.refresh(ROTATION_DATA) -- seeds Toast.lastLevel at 10
+		Toast.onLevelUp(ROTATION_DATA, 15) -- no rung crossed; still updates lastLevel
+		assert.are.equal(15, Toast.lastLevel)
+		local model = Toast.onLevelUp(ROTATION_DATA, 20)
+		assert.is_truthy(model.text:find("Flash of Light", 1, true))
+	end)
+end)

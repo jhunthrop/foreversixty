@@ -19,6 +19,9 @@ local Gear = ns.Gear or require("Gear")
 local Talents = ns.Talents or require("Talents")
 local Tracker = ns.Tracker or require("Tracker")
 local Ratings = ns.Ratings or require("Ratings")
+local Compat = ns.Compat or require("Compat")
+local Prefs = ns.Prefs or require("Prefs")
+local Rotation = ns.Rotation or require("Rotation")
 local ExportView = ns.ExportView or require("ExportView")
 local FollowView = ns.FollowView or require("FollowView")
 local GearView = ns.GearView or require("GearView")
@@ -159,15 +162,99 @@ local function syncModel(data)
 	}
 end
 
+--- The "build arrived" banner (design section 1): visible only while
+--- there is a companion build addressed to this character that the
+--- player has neither loaded nor dismissed yet (Follow.pendingArrival).
+--- The diff line compares it against whatever is active right now, so a
+--- retune of the loaded build reads differently from a brand new one.
+local function arrivalModel(data)
+	local pending = Follow.pendingArrival(_G.ForeverSixtyInbox)
+	if pending == nil then
+		return { visible = false }
+	end
+	return {
+		visible = true,
+		id = pending.id,
+		code = pending.code,
+		name = pending.name,
+		title = string.format(L.buildArrivedTitle, Compat.playerName() or ""),
+		diff = Follow.arrivalSummary(data, Follow.build, pending.code) or "",
+	}
+end
+
+--- The personal rating card (design section 3): the Forever Sixty Data
+--- addon's own per-character rating, already read through Ratings.lua for
+--- the sync card's one-line summary elsewhere -- this is the fuller
+--- breakdown. The card itself always shows (empty state when nothing has
+--- arrived: the data addon is missing, or this character has no rating
+--- yet) -- design's cross-cutting rule is that the same surfaces show to
+--- every player, only their DETAIL is gated. `advanced` (Prefs'
+--- advancedDetail flag) only widens the detail line from the rating
+--- headline alone to the rating plus its top components, the
+--- stat-weight-shaped breakdown section 4 names.
+local function ratingModel(advanced)
+	local status = Ratings.status()
+	if not status.available then
+		return { visible = true, empty = true, detail = status.reason }
+	end
+	local name = type(UnitName) == "function" and UnitName("player") or nil
+	local card = Ratings.forCharacter(name)
+	if card == nil then
+		return { visible = true, empty = true, detail = L.ratingsNotRated }
+	end
+	local detail = status.generatedLine
+	if advanced then
+		local parts = {}
+		for index = 1, math.min(3, #card.components) do
+			local component = card.components[index]
+			parts[index] = string.format(L.overviewRatingComponent, component.label, component.score or 0)
+		end
+		detail = table.concat(parts, L.exportTreeSeparator)
+	end
+	return {
+		visible = true,
+		empty = false,
+		title = string.format(L.overviewRatingHeadline, card.rating, card.fights),
+		detail = detail,
+		date = status.generatedLine,
+	}
+end
+
+--- The rotation card (design section 2 item 3 / section 6 Wave B): the
+--- current level's priority list, novice-trimmed to the top four lines
+--- unless the advanced-detail toggle is on. `reason` carries the empty
+--- state's line when there is no build, or the spec has no curated
+--- rotation yet.
+local function rotationModel(data, build, ranks, advanced)
+	if build == nil then
+		return { visible = true, empty = true, reason = L.overviewRotationNoBuild }
+	end
+	local model = Rotation.model(data, build, ranks, Compat.playerLevel(), advanced)
+	if not model.visible or #model.lines == 0 then
+		return { visible = true, empty = true, reason = L.overviewRotationNone }
+	end
+	return {
+		visible = true,
+		empty = false,
+		title = string.format(L.overviewRotationTitle, model.level),
+		lines = model.lines,
+		hasMore = model.hasMore,
+	}
+end
+
 --- Everything the page shows, as plain tables and finished strings.
 function OverviewView.summary(data)
 	local build = Follow.build
 	local ranks = Talents.readRanks(data)
+	local advanced = Prefs.flag("advancedDetail")
 	return {
 		build = buildModel(data, build, ranks),
 		gear = gearModel(data, build, ranks),
 		trees = treeModels(data),
 		sync = syncModel(data),
+		arrival = arrivalModel(data),
+		rating = ratingModel(advanced),
+		rotation = rotationModel(data, build, ranks, advanced),
 	}
 end
 
@@ -245,17 +332,87 @@ end
 
 local MAX_TREES = 3
 
+--- Reserved above and below the 2x2 card grid: the "build arrived" banner
+--- (design section 1), the personal rating card (design section 3) and
+--- the rotation card (design section 2 item 3 / section 6 Wave B). Each
+--- is given fixed space whether or not it has anything to show, so
+--- toggling any of them never reflows what is under it -- the page as a
+--- whole scrolls (Widgets.scrollable) once the six pieces run past the
+--- window's own height.
+OverviewView.BANNER_HEIGHT = 72
+OverviewView.RATING_HEIGHT = 64
+--- The highest line count any curated spec's rotation reaches at any
+--- level band (test_addonrotation.py's own committed-data test would
+--- catch a spec that grew past this without a matching bump here).
+OverviewView.ROTATION_MAX_LINES = 7
+OverviewView.ROTATION_HEIGHT = Theme.SIZES.padding * 2 + 40 + OverviewView.ROTATION_MAX_LINES * Theme.SIZES.rowHeight
+
+local function banner(parent, width, onLoad, onDismiss)
+	local S = Theme.SIZES
+	local frame = Cards.card(parent, width, OverviewView.BANNER_HEIGHT, nil)
+	frame.eyebrow:Hide()
+	frame.title:SetPoint("TOPLEFT", frame, "TOPLEFT", S.padding, -S.padding)
+	frame.detail:SetPoint("TOPLEFT", frame.title, "BOTTOMLEFT", 0, -S.gap)
+	local load = Widgets.button(frame, L.buildArrivedLoad, function()
+		onLoad()
+	end)
+	load:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -S.padding - S.buttonWidth - S.gap * 2, S.padding)
+	local dismiss = Widgets.button(frame, L.buildArrivedDismiss, function()
+		onDismiss()
+	end)
+	dismiss:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -S.padding, S.padding)
+	frame.load, frame.dismiss = load, dismiss
+	return frame
+end
+
+--- The rotation card's line rows: plain labels, recycled and hidden past
+--- however many the current model has (Widgets.list is overkill for a
+--- handful of static rows that never scroll on their own).
+local function rotationRows(card)
+	local S = Theme.SIZES
+	card.rows = {}
+	for index = 1, OverviewView.ROTATION_MAX_LINES do
+		local label = Widgets.label(card, "", "body", "small")
+		label:SetPoint("TOPLEFT", card, "TOPLEFT", S.padding, -(S.padding + 40 + (index - 1) * S.rowHeight))
+		card.rows[index] = label
+	end
+	card.reason = Widgets.label(card, "", "muted", "small")
+	card.reason:SetPoint("TOPLEFT", card, "TOPLEFT", S.padding, -(S.padding + 40))
+	card.more = Widgets.label(card, L.overviewRotationMore, "muted", "small")
+	card.more:SetPoint("BOTTOMLEFT", card, "BOTTOMLEFT", S.padding, S.padding)
+	return card
+end
+
 local function layout(parent, ctx)
 	local S = Theme.SIZES
 	local width = math.floor((ctx.contentWidth - S.cardGap) / 2)
 	local view = { frame = parent, ctx = ctx, cards = {} }
+	local gridTop = S.padding + OverviewView.BANNER_HEIGHT + S.cardGap
 	local function place(card, column, row)
 		card:SetPoint("TOPLEFT", parent, "TOPLEFT",
 			S.padding + column * (width + S.cardGap),
-			-(S.padding + row * (S.cardHeight + S.cardGap)))
+			-(gridTop + row * (S.cardHeight + S.cardGap)))
 		view.cards[#view.cards + 1] = card
 		return card
 	end
+	view.arrival = banner(parent, ctx.contentWidth,
+		function()
+			local pending = view.model and view.model.arrival
+			if pending ~= nil and pending.visible then
+				Follow.load(pending.code, ctx.data, pending.name)
+				Follow.dismissInbox(pending.id)
+				view.refresh()
+				ctx.refreshEverything()
+			end
+		end,
+		function()
+			local pending = view.model and view.model.arrival
+			if pending ~= nil and pending.visible then
+				Follow.dismissInbox(pending.id)
+				view.refresh()
+			end
+		end)
+	view.arrival:SetPoint("TOPLEFT", parent, "TOPLEFT", S.padding, -S.padding)
 	view.build = place(withBar(Cards.card(parent, width, S.cardHeight, L.overviewBuildEyebrow, function()
 		ctx.select("follow")
 	end)), 0, 0)
@@ -278,21 +435,80 @@ local function layout(parent, ctx)
 	view.codeBox = Widgets.editBox(view.sync, view.sync.innerWidth, S.border * 2 + S.gap * 2, true, true)
 	Widgets.field(view.codeBox):SetPoint("BOTTOMLEFT", view.copy, "TOPLEFT", 0, S.gap)
 	Widgets.field(view.codeBox):SetAlpha(0)
+	view.rating = Cards.card(parent, ctx.contentWidth, OverviewView.RATING_HEIGHT, L.overviewRatingEyebrow)
+	local ratingTop = gridTop + 2 * (S.cardHeight + S.cardGap)
+	view.rating:SetPoint("TOPLEFT", parent, "TOPLEFT", S.padding, -ratingTop)
+	view.rating.date = Widgets.label(view.rating, "", "muted", "small")
+	view.rating.date:SetPoint("TOPRIGHT", view.rating, "TOPRIGHT", -S.padding, -S.padding)
+	view.rotation = rotationRows(
+		Cards.card(parent, ctx.contentWidth, OverviewView.ROTATION_HEIGHT, L.overviewRotationEyebrow))
+	view.rotation:SetPoint("TOPLEFT", parent, "TOPLEFT",
+		S.padding, -(ratingTop + OverviewView.RATING_HEIGHT + S.cardGap))
+	view.contentHeight = ratingTop + OverviewView.RATING_HEIGHT + S.cardGap
+		+ OverviewView.ROTATION_HEIGHT + S.padding
 	return view
+end
+
+local function applyArrival(view, model)
+	local frame = view.arrival
+	if model.visible then
+		frame.title:SetText(model.title)
+		frame.detail:SetText(model.diff)
+		frame:Show()
+	else
+		frame:Hide()
+	end
+	return frame
+end
+
+local function applyRating(card, model)
+	card.title:SetText(model.empty and "" or model.title)
+	card.detail:SetText(model.detail or "")
+	card.date:SetText((not model.empty and model.date) or "")
+	return card
+end
+
+local function applyRotation(card, model)
+	card.title:SetText(model.empty and "" or model.title)
+	card.reason:SetText(model.empty and (model.reason or "") or "")
+	for index, row in ipairs(card.rows) do
+		local line = not model.empty and model.lines[index] or nil
+		if line ~= nil then
+			row:SetText(line.condition ~= "" and string.format(L.overviewRotationLine, line.name, line.condition)
+				or line.name)
+			row:Show()
+		else
+			row:Hide()
+		end
+	end
+	if not model.empty and model.hasMore then
+		card.more:Show()
+	else
+		card.more:Hide()
+	end
+	return card
 end
 
 function OverviewView.apply(view, model)
 	view.model = model
+	applyArrival(view, model.arrival)
 	applyCard(view.build, model.build)
 	applyCard(view.gear, model.gear)
 	applyTrees(view.trees, model.trees)
 	applyCard(view.sync, model.sync)
+	applyRating(view.rating, model.rating)
+	applyRotation(view.rotation, model.rotation)
 	Widgets.setEnabled(view.copy, model.sync.canCopy)
+	if view.scroll ~= nil then
+		view.scroll:SetContentHeight(view.contentHeight)
+	end
 	return view
 end
 
 function OverviewView.mount(parent, ctx)
-	local view = layout(parent, ctx)
+	local scroll = Widgets.scrollable(parent)
+	local view = layout(scroll.content, ctx)
+	view.scroll = scroll
 	function view.refresh()
 		return OverviewView.apply(view, OverviewView.summary(ctx.data))
 	end

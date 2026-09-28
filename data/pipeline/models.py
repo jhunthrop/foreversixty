@@ -387,10 +387,31 @@ class AddonClass(BaseModel):
     tabs: list[AddonTab]
 
 
+class AddonRotationLine(BaseModel):
+    """One priority-list entry the rotation card and the rotation toast
+    show: which ability, at the rank this level band actually casts, and
+    why (the curated APL's own one-line `notes`, unedited)."""
+
+    spell_id: int
+    name: str
+    condition: str
+
+
+class AddonRotationBand(BaseModel):
+    """One level band's rotation: `lines` in priority order, each already
+    resolved to the highest rank learned by `level` (pipeline.addonrotation
+    does the resolving; the addon never re-derives a rank from a level)."""
+
+    level: int
+    lines: list[AddonRotationLine]
+
+
 class AddonData(BaseModel):
     build: str
     classes: dict[str, AddonClass]
     weights: dict[str, dict[str, float]]
+    #: Keyed by spec ("warrior-fury"), one band per pipeline.addonrotation.LEVEL_BANDS entry.
+    rotations: dict[str, list[AddonRotationBand]] = {}
 
 
 class PhaseBoundary(BaseModel):

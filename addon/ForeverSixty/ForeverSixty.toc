@@ -20,6 +20,7 @@ Cards.lua
 Export.lua
 Follow.lua
 Gear.lua
+Rotation.lua
 Ratings.lua
 Tooltip.lua
 TalentGlow.lua
