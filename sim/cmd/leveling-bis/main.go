@@ -20,12 +20,16 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
+	"runtime/pprof"
 	"strconv"
 	"strings"
 	"time"
@@ -52,7 +56,12 @@ func run() error {
 	build := flag.String("build", "", "data build to read from data/builds/<build>; defaults to web/src/data/active-build.json's build")
 	weightsIterations := flag.Int("weights-iterations", 100, "iterations PER DIRECTION the weights sweep runs (multiplied by the engine's own WeightsIterationsFactor); the brief allows reducing this to stay under the time budget")
 	out := flag.String("out", "", "output directory; defaults to data/builds/<build>/bis under -repo-root (lane bis-web's read contract)")
+	memProfile := flag.String("memprofile", "", "write a heap profile to this path (a per-spec suffix is added under -all: <path>.<spec>) - diagnostic only, go tool pprof -top <file>")
 	flag.Parse()
+
+	if *memProfile != "" && !*all {
+		defer writeHeapProfile(*memProfile)
+	}
 
 	if _, err := os.Stat(filepath.Join(*repoRoot, "data", "curated", "specs.json")); err != nil {
 		return fmt.Errorf("-repo-root %q does not look like the site repository (data/curated/specs.json not found): %w", *repoRoot, err)
@@ -78,24 +87,102 @@ func run() error {
 		return err
 	}
 
-	specs := []string{*spec}
+	// -all runs each spec in its OWN subprocess (runSpecSubprocess)
+	// rather than looping runSpec in this process. This is a direct
+	// fix for a real incident: a full -all run (20 written specs, the
+	// default 11 bands, both factions) was killed after 1h52min at
+	// ~35GB RSS, starving every other lane on the machine, against
+	// this brief's 30-minute/well-under-memory budget. Bisecting it
+	// (see the lane report) found no single pathological spec - every
+	// spec sampled alone finished in under a minute at a few hundred
+	// MB RSS - which points at slow, sustained growth ACROSS a single
+	// long-lived process issuing many thousands of one-shot engine
+	// sims (weights + verify + trinket-rank, per band, per faction,
+	// per spec), not a bug in any one spec's own data. A subprocess
+	// per spec makes each spec's peak memory the WHOLE process's peak
+	// memory - the OS reclaims everything the moment that subprocess
+	// exits, the same guarantee an explicit in-process GC/
+	// FreeOSMemory call cannot make if something really is being held
+	// reachable across specs. It also gives each spec a hard wall-
+	// clock ceiling (specTimeout) so one hung spec cannot silently
+	// re-create the same incident.
 	if *all {
-		specs, err = writtenSpecs(*repoRoot)
-		if err != nil {
-			return err
-		}
+		return runAllSpecsIsolated(*repoRoot, activeBuild, outDir, *bandsFlag, *weightsIterations, *memProfile)
+	}
+	return runSpec(*repoRoot, buildDir, activeBuild, outDir, *spec, bands, *weightsIterations)
+}
+
+// specTimeout bounds one spec's subprocess: generous next to every
+// measured single-spec run in this lane's report (under a minute
+// each), but short enough that a hang is caught and reported rather
+// than repeating the incident this function's caller documents.
+const specTimeout = 5 * time.Minute
+
+// runAllSpecsIsolated runs writtenSpecs, one subprocess per spec, and
+// reports which (if any) failed or hung - see run()'s own doc for why
+// this is a subprocess loop and not an in-process one.
+func runAllSpecsIsolated(repoRoot, activeBuild, outDir, bandsFlag string, weightsIterations int, memProfile string) error {
+	specs, err := writtenSpecs(repoRoot)
+	if err != nil {
+		return err
 	}
 
 	overallStart := time.Now()
+	var failed []string
 	for _, s := range specs {
 		specStart := time.Now()
-		if err := runSpec(*repoRoot, buildDir, activeBuild, outDir, s, bands, *weightsIterations); err != nil {
-			return fmt.Errorf("spec %s: %w", s, err)
+		if err := runSpecSubprocess(repoRoot, activeBuild, outDir, s, bandsFlag, weightsIterations, memProfile); err != nil {
+			// -all is a nightly batch of independent units of work - a
+			// mage bug returning no engine data this run genuinely
+			// cannot rank should not cost every OTHER spec its BiS
+			// list too (a real failure mode this lane's own -all dry
+			// run hit: hunter-survival's reference stat, character.go's
+			// referenceStatOverride doc). Log it, keep going, and fail
+			// the whole run at the end if anything did not make it -
+			// visible in CI, but never at the cost of the specs that
+			// succeeded.
+			log.Printf("leveling-bis: spec %s FAILED, skipping: %v", s, err)
+			failed = append(failed, s)
+			continue
 		}
 		log.Printf("leveling-bis: spec %s done in %.1fs", s, time.Since(specStart).Seconds())
 	}
-	log.Printf("leveling-bis: %d spec(s), total run time %.1fs", len(specs), time.Since(overallStart).Seconds())
+	log.Printf("leveling-bis: %d spec(s) attempted, %d failed, total run time %.1fs", len(specs), len(failed), time.Since(overallStart).Seconds())
+	if len(failed) > 0 {
+		return fmt.Errorf("%d of %d spec(s) failed: %s", len(failed), len(specs), strings.Join(failed, ", "))
+	}
 	return nil
+}
+
+// runSpecSubprocess re-execs this same binary (os.Args[0] - a real
+// executable in both `go run` (go run builds one to a temp path first)
+// and a built binary, so this works identically in dev and in `make
+// bis`/the nightly workflow) for exactly one spec, forwarding its
+// stdout/stderr live so the parent's log stays one continuous stream.
+// -all is deliberately NOT forwarded (this call always names -spec),
+// which is what keeps this from recursing.
+func runSpecSubprocess(repoRoot, build, outDir, spec, bandsFlag string, weightsIterations int, memProfile string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), specTimeout)
+	defer cancel()
+	args := []string{
+		"-repo-root", repoRoot,
+		"-spec", spec,
+		"-bands", bandsFlag,
+		"-build", build,
+		"-out", outDir,
+		"-weights-iterations", strconv.Itoa(weightsIterations),
+	}
+	if memProfile != "" {
+		args = append(args, "-memprofile", memProfile+"."+spec)
+	}
+	cmd := exec.CommandContext(ctx, os.Args[0], args...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	if ctx.Err() == context.DeadlineExceeded {
+		return fmt.Errorf("spec %s did not finish within %s (killed) - the incident this lane's report documents; this is the safety net, not the fix", spec, specTimeout)
+	}
+	return err
 }
 
 // runSpec ranks one spec across every band and both factions and writes
@@ -184,6 +271,7 @@ func runSpec(repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, 
 			// (trinkets.go; this lane's brief). trinket1 first so
 			// trinket2's own ranking sees trinket1's final pick, not
 			// its score-based placeholder.
+			trinketStart := time.Now()
 			for _, slot := range []string{"trinket1", "trinket2"} {
 				var notes []string
 				picks, notes = rankTrinketSlot(specInfo, f.race, specInfo.ClassSlug, band, picks, bySlot, slot)
@@ -191,6 +279,7 @@ func runSpec(repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, 
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
 			}
+			trinketSeconds := time.Since(trinketStart).Seconds()
 
 			verifyStart := time.Now()
 			setDPS, swaps, verifyErrors, err := verifyBand(specInfo, f.race, specInfo.ClassSlug, band, picks)
@@ -206,7 +295,12 @@ func runSpec(repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, 
 			reports = append(reports, report)
 			previous[f.name] = picks
 
-			log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
+			// This is the per-spec/band/faction breakdown the controller
+			// asked for after the memory incident: weights (once per
+			// band, logged above), trinket-rank and verify seconds
+			// separately per faction, so a slow band/spec is visible
+			// without re-deriving it from timestamps.
+			log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
 		}
 	}
 
@@ -258,6 +352,27 @@ func parseBands(s string) ([]int, error) {
 		out = append(out, n)
 	}
 	return out, nil
+}
+
+// writeHeapProfile writes a pprof heap snapshot to path - `go tool
+// pprof -top <path>` afterward ranks what is still reachable when the
+// process exits (deferred from run(), so this fires on both a clean
+// finish and the early return -all's per-spec failure path can still
+// take). It is diagnostic only: nightly runs do not pass -memprofile,
+// and a failure to write one is logged, not fatal - losing a profile
+// should never be why an otherwise-successful ranking run reports
+// itself as failed.
+func writeHeapProfile(path string) {
+	f, err := os.Create(path)
+	if err != nil {
+		log.Printf("leveling-bis: -memprofile: creating %s: %v", path, err)
+		return
+	}
+	defer f.Close()
+	runtime.GC()
+	if err := pprof.WriteHeapProfile(f); err != nil {
+		log.Printf("leveling-bis: -memprofile: writing %s: %v", path, err)
+	}
 }
 
 func readActiveBuild(repoRoot string) (string, error) {

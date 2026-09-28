@@ -1,0 +1,66 @@
+# .github/workflows/bis.yml
+# Nightly: rank leveling BiS for every written spec (sim/cmd/leveling-bis,
+# docs/superpowers/specs/2026-09-28-leveling-bis-design.md - "built once
+# per spec and band, never per character") and commit the result to main,
+# the same commit/push-with-skip-when-unchanged pattern data.yml's own
+# `fetch` job uses for data/builds/*/ (addon-data-release.yml, the other
+# nightly job in this repo, does not actually commit to main - it commits
+# only to a throwaway packaging checkout for the release zip - so this
+# follows data.yml's shape instead; see the lane report).
+#
+# Scheduled at 06:23 UTC: an off-minute (avoids the top-of-hour pile-up
+# GitHub Actions' own scheduler docs warn about) and after data.yml's
+# nightly-adjacent runs have room to land first, since this job reads
+# data/builds/<build>/items*.json and loot.json.
+name: bis
+on:
+  schedule:
+    - cron: '23 6 * * *'
+  workflow_dispatch:
+permissions: { contents: read }
+concurrency:
+  group: bis
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with: { go-version-file: sim/go.mod, cache-dependency-path: sim/go.sum }
+      - uses: ./.github/actions/pin-engine
+      # //go:embed resolves at compile time, so the active build's item
+      # database has to be in place before `go run` - same as sim.yml's
+      # `rotations`/`artifacts` jobs and this repo's own common-site.md
+      # rule ("cd sim && go test ./request needs the embeds").
+      - run: make simdb
+      # The active build and the pinned engine sha, for the commit
+      # message below - read the same way sim.yml's "the pinned engine
+      # sha" step and the Makefile's own ACTIVE_BUILD do, not
+      # hand-maintained here.
+      - name: build and engine identity
+        id: identity
+        run: |
+          build=$(sed -n 's/.*"build"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' web/src/data/active-build.json)
+          test -n "$build" || { echo "web/src/data/active-build.json names no build"; exit 1; }
+          sha=$(sed -n 's/.*Version = "\(.*\)"/\1/p' sim/enginever/version.go)
+          test -n "$sha" || { echo "sim/enginever/version.go has no Version"; exit 1; }
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      # -all: every data/curated/specs.json spec with a written rotation,
+      # bands 10-60 step 5, both factions. weights-iterations stays at
+      # the command's own default (100 per direction) - this lane's
+      # report measures the whole run at that setting against the 30
+      # minute budget; lower it here (BIS_ARGS="-all -weights-iterations
+      # N") if a future spec count regresses the budget.
+      - name: rank leveling BiS for every written spec
+        run: make bis
+      - name: commit data/builds/*/bis if it changed
+        run: |
+          git config user.name "forever-bis-bot"
+          git config user.email "bot@foreversixty.gg"
+          git add "data/builds/${{ steps.identity.outputs.build }}/bis"
+          git commit -m "chore(bis): nightly leveling BiS for ${{ steps.identity.outputs.build }} @ ${{ steps.identity.outputs.sha }}" || echo "nothing to commit"
+          git push

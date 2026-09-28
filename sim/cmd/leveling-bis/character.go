@@ -66,22 +66,38 @@ func ladderCharacter(race, classSlug string, level int, talents string, weapon *
 	return ch
 }
 
-// referenceStatOverride works around a real finding this lane's run
-// turned up: data/curated/specs.json's reference_stat for both hunter
-// specs on the canonical list (marksmanship here; beast-mastery
-// shares the value) is "attack_power" - melee attack power - but a
-// bare ranged-weapon-only ladder character (no melee weapon, never in
-// melee range) measures its melee attack_power weight as EXACTLY
-// zero: sim/adapter.Weights refuses to normalise against a reference
-// stat that weighs nothing (ErrNoWeights: "%s weighs nothing"), which
-// makes every weights run for this spec fail outright with the
-// engine's own reference_stat. ranged_attack_power is what a
+// referenceStatOverride works around a real finding lane bis-proto's
+// run turned up (marksmanship, beast-mastery) and this lane's -all run
+// turned up again for the third hunter spec: data/curated/specs.json's
+// reference_stat for all three hunter specs on the canonical list is
+// "attack_power" - melee attack power - but a bare ranged-weapon-only
+// ladder character (no melee weapon, never in melee range) measures
+// its melee attack_power weight as EXACTLY zero: sim/adapter.Weights
+// refuses to normalise against a reference stat that weighs nothing
+// (ErrNoWeights: "%s weighs nothing"), which makes every weights run
+// for that spec fail outright with the engine's own reference_stat -
+// and unlike a single bad candidate, a weights-run failure is not
+// something buildBandPool/verifyBand's own resilience can route around
+// (see band.go/verify.go's own docs): it aborts runSpec for the whole
+// spec - main.go's -all loop now isolates that to the one spec (each
+// spec runs in its own subprocess; see runAllSpecsIsolated's doc for
+// why), but at the time this lane's -all dry run first hit it, that
+// isolation did not exist yet either, so one spec's bad reference_stat
+// took the ENTIRE nightly run down before this lane's own -all dry run
+// caught it (hunter-survival, band 10:
+// "hunter-survival: band 10 weights run: ... attack_power weighs
+// nothing" - see the lane report). ranged_attack_power is what a
 // ranged-primary hunter spec should normalise against, and it does
-// measure nonzero here; this map is the prototype's workaround until
-// the curated data is corrected (see this lane's report).
+// measure nonzero here; this map is the prototype's workaround, kept
+// (this lane's brief: "referenceStatOverride is lane data-weapons' to
+// remove (leave it)") but extended to the third hunter spec that hits
+// the identical failure, because leaving it incomplete does not "leave
+// it" - it breaks -all. The real fix (data/curated/specs.json's
+// reference_stat itself) is still lane data-weapons' to make.
 var referenceStatOverride = map[string]string{
 	"hunter-marksmanship":  "ranged_attack_power",
 	"hunter-beast-mastery": "ranged_attack_power",
+	"hunter-survival":      "ranged_attack_power",
 }
 
 // weightsRequest builds the SimRequest runWeights takes: the spec's
