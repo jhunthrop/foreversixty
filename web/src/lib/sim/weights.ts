@@ -85,20 +85,27 @@ const BY_ID = new Map(WEIGHT_STATS.map((stat) => [stat.id, stat]));
 
 /**
  * The fallback reference when the spec list has no row or no column. Contract 10.8 pins
- * the defaults: `attack_power` for melee and hunters, `spell_power` for casters. It is a
+ * the defaults: `attack_power` for melee, `ranged_attack_power` for hunters (corrected
+ * 2026-09-28: a bare ranged-weapon-only character measures melee `attack_power` as exactly
+ * zero, which the engine refuses to normalise against), `spell_power` for casters. It is a
  * fallback only -- `reference_stat` on the spec row is the answer whenever there is one.
  */
 export const DEFAULT_REFERENCE = 'attack_power';
+export const RANGED_REFERENCE = 'ranged_attack_power';
 export const CASTER_REFERENCE = 'spell_power';
 
 /** The classes and specs whose damage scales with spell power rather than attack power. */
 const CASTER_CLASSES = new Set(['mage', 'warlock', 'priest']);
 const CASTER_SPECS = new Set(['druid-balance', 'shaman-elemental', 'paladin-holy']);
 
+/** The one class whose dps specs normalise against ranged, not melee, attack power. */
+const RANGED_CLASSES = new Set(['hunter']);
+
 export function fallbackReferenceFor(spec: string): string {
   const row = specRow(spec);
   if (row === null) return DEFAULT_REFERENCE;
   if (CASTER_SPECS.has(row.spec) || CASTER_CLASSES.has(row.class_slug)) return CASTER_REFERENCE;
+  if (RANGED_CLASSES.has(row.class_slug)) return RANGED_REFERENCE;
   return DEFAULT_REFERENCE;
 }
 
@@ -119,8 +126,9 @@ export function statLabel(id: string): string {
 /**
  * The spec's own reference stat from the spec list. A spec the list has no row for, or a
  * row from a build predating the column, takes contract 10.8's own default for its kind of
- * spec -- attack power for melee and hunters, spell power for casters -- which is the same
- * rule the data lane applies when it writes the column, so the two cannot disagree.
+ * spec -- attack power for melee, ranged attack power for hunters, spell power for casters
+ * -- which is the same rule the data lane applies when it writes the column, so the two
+ * cannot disagree.
  */
 export function referenceFor(spec: string, rows: readonly SpecFidelity[]): string {
   const row = rows.find((entry) => entry.spec === spec);

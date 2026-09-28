@@ -5,6 +5,7 @@ import specsJson from '../../fixtures/sim/specs.json';
 import {
   CASTER_REFERENCE,
   DEFAULT_REFERENCE,
+  RANGED_REFERENCE,
   defaultStatsFor,
   fallbackReferenceFor,
   formatWeightError,
@@ -40,11 +41,12 @@ describe('referenceFor', () => {
   });
 
   it('falls back to the pinned default for the kind of spec, not to one number', () => {
-    // Contract 10.8: attack_power for melee and hunters, spell_power for casters.
+    // Contract 10.8 (corrected 2026-09-28): attack_power for melee, ranged_attack_power
+    // for hunters, spell_power for casters.
     expect(referenceFor('warrior-fury', [])).toBe(DEFAULT_REFERENCE);
     expect(referenceFor('mage-fire', [])).toBe(CASTER_REFERENCE);
     expect(referenceFor('druid-balance', specs)).toBe(CASTER_REFERENCE);
-    expect(fallbackReferenceFor('hunter-marksmanship')).toBe(DEFAULT_REFERENCE);
+    expect(fallbackReferenceFor('hunter-marksmanship')).toBe(RANGED_REFERENCE);
     expect(fallbackReferenceFor('nonesuch-spec')).toBe(DEFAULT_REFERENCE);
   });
 });

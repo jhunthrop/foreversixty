@@ -66,32 +66,18 @@ func ladderCharacter(race, classSlug string, level int, talents string, weapon *
 	return ch
 }
 
-// referenceStatOverride works around a real finding this lane's run
-// turned up: data/curated/specs.json's reference_stat for both hunter
-// specs on the canonical list (marksmanship here; beast-mastery
-// shares the value) is "attack_power" - melee attack power - but a
-// bare ranged-weapon-only ladder character (no melee weapon, never in
-// melee range) measures its melee attack_power weight as EXACTLY
-// zero: sim/adapter.Weights refuses to normalise against a reference
-// stat that weighs nothing (ErrNoWeights: "%s weighs nothing"), which
-// makes every weights run for this spec fail outright with the
-// engine's own reference_stat. ranged_attack_power is what a
-// ranged-primary hunter spec should normalise against, and it does
-// measure nonzero here; this map is the prototype's workaround until
-// the curated data is corrected (see this lane's report).
-var referenceStatOverride = map[string]string{
-	"hunter-marksmanship":  "ranged_attack_power",
-	"hunter-beast-mastery": "ranged_attack_power",
-}
-
-// weightsRequest builds the SimRequest runWeights takes: the spec's
-// own weight_stats (data/curated/specs.json), and its reference_stat
-// unless referenceStatOverride names a different one for this spec.
+// weightsRequest builds the SimRequest runWeights takes: the spec's own
+// weight_stats and reference_stat (data/curated/specs.json). All three
+// hunter dps specs now carry "ranged_attack_power" there (the rotation
+// accuracy program's data-weapons lane, 2026-09-28) rather than melee
+// "attack_power" - a bare ranged-weapon-only ladder character (see
+// ladderCharacter above) never enters melee, so its melee attack_power
+// weight measures EXACTLY zero and sim/adapter.Weights refuses to
+// normalise against a reference stat that weighs nothing (ErrNoWeights:
+// "%s weighs nothing"). A referenceStatOverride map used to work around
+// this here; the curated data is the fix now, so this function just reads
+// the spec's own reference_stat.
 func weightsRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed int64) api.SimRequest {
-	reference := spec.ReferenceStat
-	if override, ok := referenceStatOverride[spec.Spec]; ok {
-		reference = override
-	}
 	return api.SimRequest{
 		EngineVersion: enginever.Version,
 		Spec:          spec.Spec,
@@ -100,7 +86,7 @@ func weightsRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed in
 		Encounter:     api.DefaultEncounter(),
 		Iterations:    iterations,
 		RandomSeed:    seed,
-		Weights:       &api.WeightsSpec{Stats: spec.WeightStats, Reference: reference},
+		Weights:       &api.WeightsSpec{Stats: spec.WeightStats, Reference: spec.ReferenceStat},
 	}
 }
 

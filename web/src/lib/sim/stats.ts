@@ -10,8 +10,8 @@
 //   * haste IS split -- `spell_haste` and `melee_haste` -- so there is no bare `haste`.
 //
 // `MP5` is spelled `mp5`. 10.8 also fixes the reference defaults the weights page starts
-// on: `attack_power` for melee and hunters, `spell_power` for casters, served per spec as
-// `reference_stat` on GET /v1/specs, so no page hard-codes one.
+// on: `attack_power` for melee, `ranged_attack_power` for hunters, `spell_power` for
+// casters, served per spec as `reference_stat` on GET /v1/specs, so no page hard-codes one.
 //
 // This is here rather than in buffs.ts because a stat is not a buff: buffs.ts owns the
 // panel's grouping and nothing else. Part B's /sim/weights is the only reader.
