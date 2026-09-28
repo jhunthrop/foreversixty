@@ -31,7 +31,9 @@ test('Leveling BiS: index links to a spec, faction and band pills switch panels 
 });
 
 test('Leveling BiS: a spec with no ranked list yet shows the empty state, not a 404', async ({ page }) => {
-  await page.goto('/bis/druid/balance');
+  // Healers have no written rotation, so the nightly ranks nothing for them (a dps spec
+  // gained a real file the night the nightly first ran, which is what this test once used).
+  await page.goto('/bis/priest/holy');
   await expect(page.getByTestId('bis-empty-state')).toBeVisible();
   await expect(page.getByTestId('bis-empty-state')).toContainText('No leveling BiS list yet');
 });
