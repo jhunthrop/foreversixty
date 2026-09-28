@@ -46,7 +46,11 @@ export const SYNC_ENTRIES = [
   // design.md): one <spec>.json per written spec, published like loot.json once the
   // pipeline lands it. Optional the same way -- a build the data lane has not run the
   // ranking command for yet ships none, and /bis's own page falls back to this lane's
-  // committed fixture (src/data/fixtures/bis/) instead of failing the sync.
+  // committed fixture (src/data/fixtures/bis/) instead of failing the sync. `copyBuild`
+  // below fills in any spec this entry did not publish from src/data/fixtures/bis/ once
+  // this loop is done (see `publishBisFixtures`), so the planner's BiS hover popover
+  // (lib/bis/hover.ts) can fetch a spec's file the same way the static /bis page's own
+  // loader (lib/bis/load.ts) already falls back for it.
   { name: 'bis', kind: 'dir', required: false },
   { name: 'enchants.json', kind: 'file', required: false },
   { name: 'suffixes.json', kind: 'file', required: false },
@@ -448,10 +452,43 @@ export async function writeSimNames(buildDir, outDir) {
 }
 
 /**
+ * Fills gaps in public/data/<build>/bis/ from this lane's own committed fixture
+ * (src/data/fixtures/bis/) for any spec the SYNC_ENTRIES `bis` entry above did not already
+ * publish -- lib/bis/load.ts's own precedence (a real data/builds/<build>/bis/<spec>.json
+ * wins, else the committed fixture, per spec) applied to the fetchable copy under
+ * public/data/ rather than to the static /bis page's build-time read. Runs for every
+ * published build, fixture source and real alike: a real build the data lane has not run
+ * the ranking command for yet still serves whatever fixture specs are committed, exactly
+ * the way loadBisFile already does for the page itself.
+ * @param {{ webRoot: string, publicDir: string }} options
+ * @returns {Promise<string[]>} `bis/<spec>.json` paths filled in, relative to publicDir
+ */
+async function publishBisFixtures({ webRoot, publicDir }) {
+  const fixtureDir = path.join(webRoot, 'src/data/fixtures/bis');
+  let entries;
+  try {
+    entries = await readdir(fixtureDir);
+  } catch {
+    return [];
+  }
+  const bisDir = path.join(publicDir, 'bis');
+  const filled = [];
+  for (const name of entries.filter((entry) => entry.endsWith('.json'))) {
+    const target = path.join(bisDir, name);
+    if (await exists(target)) continue; // the real build already ranks this spec
+    await mkdir(bisDir, { recursive: true });
+    await cp(path.join(fixtureDir, name), target);
+    filled.push(`bis/${name}`);
+  }
+  return filled;
+}
+
+/**
  * Resets public/data/<build> and copies SYNC_ENTRIES from sourceDir into it, then derives
- * public/data/<build>/simnames/<class>.json from the same sourceDir (see `writeSimNames`).
- * Throws when a required entry is missing from sourceDir. Returns the names actually
- * copied or written, SYNC_ENTRIES first.
+ * public/data/<build>/simnames/<class>.json from the same sourceDir (see `writeSimNames`)
+ * and fills any remaining bis/<spec>.json gaps from this lane's own fixture (see
+ * `publishBisFixtures`). Throws when a required entry is missing from sourceDir. Returns
+ * the names actually copied or written, SYNC_ENTRIES first.
  * @param {{ repoRoot: string, webRoot: string, build: string, sourceDir: string }} options
  */
 async function copyBuild({ repoRoot, webRoot, build, sourceDir }) {
@@ -476,6 +513,7 @@ async function copyBuild({ repoRoot, webRoot, build, sourceDir }) {
   }
 
   copied.push(...(await writeSimNames(sourceDir, publicDir)));
+  copied.push(...(await publishBisFixtures({ webRoot, publicDir })));
 
   return copied;
 }
