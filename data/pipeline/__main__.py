@@ -17,6 +17,53 @@ def build_parser() -> argparse.ArgumentParser:
     )
     fw.add_argument("--build", required=True, help="the build whose raw/ receives the payload")
 
+    fcq = sub.add_parser(
+        "fetch-classic-quest-levels",
+        help="ONE-TIME (or occasional, when SOURCE_COMMIT is repinned): download "
+        "cmangos/classic-db's quest_template table and merge it into the committed "
+        "raw/quests/quest-levels.json `loot` reads, tagged source: classic-db",
+    )
+    fcq.add_argument("--build", required=True, help="the build whose raw/ receives the file")
+
+    qlv = sub.add_parser(
+        "quest-levels",
+        help="THE NIGHTLY STEP (.github/workflows/bis.yml, before `make bis`): fetch "
+        "wowhead pages ONLY for quest ids classic-db does not cover, politely and capped "
+        "at --max-pages, and merge them into quest-levels.json tagged source: wowhead",
+    )
+    qlv.add_argument("--build", required=True, help="the build to fill in quest levels for")
+    qlv.add_argument(
+        "--engine",
+        required=True,
+        help="path to the wowsims-forever checkout, for the quest ids loot.json will need",
+    )
+    qlv.add_argument(
+        "--max-pages",
+        type=int,
+        default=200,
+        help="cap on live wowhead requests this run sends (default 200); remaining ids "
+        "stay missing (item_level_proxy fallback) for a later run to pick up",
+    )
+
+    vwq = sub.add_parser(
+        "verify-wowhead-quests",
+        help="SPOT-CHECK ONLY, never run in CI: fetch a sample of wowhead's Forever quest "
+        "pages (politely, with backoff -- wowhead throttles this address) and report how "
+        "often their min_level/level agree with the committed quest-levels.json",
+    )
+    vwq.add_argument("--build", required=True, help="the build to verify against")
+    vwq.add_argument(
+        "--engine",
+        required=True,
+        help="path to the wowsims-forever checkout, for the quest ids to sample from",
+    )
+    vwq.add_argument(
+        "--sample",
+        type=int,
+        default=20,
+        help="how many quest ids to fetch and compare (default 20)",
+    )
+
     n = sub.add_parser("normalize", help="normalize raw CSVs into JSON")
     n.add_argument("--build", required=True)
 
@@ -136,6 +183,59 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.wowhead_items import fetch_wowhead
 
         fetch_wowhead(args.build)
+    elif args.command == "fetch-classic-quest-levels":
+        from pipeline.quest_levels import merge_classic_db
+
+        stats = merge_classic_db(args.build)
+        print(f"fetch-classic-quest-levels: merged {stats.added} classic-db entries ({stats.total} total)")
+    elif args.command == "quest-levels":
+        import json
+        from pathlib import Path
+
+        from pipeline.forkdb import load_fork_database
+        from pipeline.loot.sources import quest_ids_for_build
+        from pipeline.quest_levels import fetch_missing_from_wowhead
+
+        build_dir = Path("builds") / args.build
+        item_rows = json.loads((build_dir / "items.json").read_text(encoding="utf-8"))
+        build_items = {int(row["id"]) for row in item_rows}
+        fork = load_fork_database(Path(args.engine))
+        ids = quest_ids_for_build(fork, build_items)
+        stats = fetch_missing_from_wowhead(args.build, ids, max_pages=args.max_pages)
+        print(
+            f"quest-levels: {stats.fetched}/{stats.needed} ids classic-db lacked were filled "
+            f"from wowhead ({stats.still_missing} still missing; item_level_proxy fallback "
+            "applies until a later run picks them up)"
+        )
+    elif args.command == "verify-wowhead-quests":
+        import json
+        from pathlib import Path
+
+        from pipeline.forkdb import load_fork_database
+        from pipeline.loot.sources import quest_ids_for_build
+        from pipeline.quest_levels import load_quest_levels
+        from pipeline.wowhead_quests import compare_with_classic_db, fetch_quest_levels
+
+        build_dir = Path("builds") / args.build
+        item_rows = json.loads((build_dir / "items.json").read_text(encoding="utf-8"))
+        build_items = {int(row["id"]) for row in item_rows}
+        fork = load_fork_database(Path(args.engine))
+        all_ids = sorted(quest_ids_for_build(fork, build_items))
+        sample = all_ids[:: max(1, len(all_ids) // args.sample)][: args.sample]
+        result = fetch_quest_levels(args.build, sample, root=build_dir.parent)
+        quest_levels = load_quest_levels(build_dir)
+        stats = compare_with_classic_db(result.levels, quest_levels)
+        print(
+            f"verify-wowhead-quests: fetched {len(result.levels)}/{len(sample)} sample ids "
+            f"({len(result.missing)} missing); compared {stats.compared} against "
+            f"quest-levels.json: min_level {stats.min_level_agrees}/{stats.compared}, "
+            f"level {stats.level_agrees}/{stats.compared}, both {stats.both_agree}/{stats.compared}"
+        )
+        for quest_id, w_min, w_level, c_min, c_level in stats.mismatches:
+            print(
+                f"  mismatch quest {quest_id}: wowhead min={w_min} level={w_level}, "
+                f"classic-db min={c_min} level={c_level}"
+            )
     elif args.command == "itemnames":
         from pipeline.normalize.itemnames import write_item_names_from_build
 

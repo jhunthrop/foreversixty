@@ -10,6 +10,7 @@ One of the handful of tests the Global Constraints allow a build string in.
 """
 
 import json
+from collections import Counter
 from functools import cache
 from pathlib import Path
 
@@ -111,6 +112,17 @@ VENDOR_ITEMS = 497
 #: the design (0 both, 1 alliance, 2 horde).
 QUEST_DETAIL_ITEMS = 1140
 QUEST_FACTION_COUNTS = {"alliance": 326, "horde": 307, "both": 507}
+
+#: 2026-09-28 quest-levels finding: how many of the 1,140 quest-reward
+#: items' quest(s) resolved from cmangos/classic-db's `quest_template`
+#: table (99.7% of this build's 720 distinct quest ids -- Forever
+#: quest ids match 1.12's for old content almost entirely), how many
+#: needed wowhead's fill-in (2 ids classic-db does not have -- Forever-
+#: new quests), and how many fell all the way back to item_level_proxy
+#: (0 -- both sources together cover every quest-reward item this build
+#: has). See pipeline.quest_levels's own doc and this lane's report for
+#: the full source story.
+QUEST_LEVEL_SOURCE_COUNTS = {"classic-db": 1138, "wowhead": 2}
 
 #: `factions` map: item id -> "alliance"/"horde" for every restricted item
 #: this build has, quest items and non-quest items alike. Matches
@@ -443,12 +455,50 @@ def test_quests_map_carries_id_name_and_faction_per_item():
     for item_id, entries in quests.items():
         assert entries, item_id
         for entry in entries:
-            assert sorted(entry) == ["faction", "name", "quest_id"]
+            assert sorted(entry) == [
+                "faction",
+                "level",
+                "level_source",
+                "min_level",
+                "name",
+                "quest_id",
+            ]
             assert entry["faction"] in QUEST_FACTION_VALUES
             assert entry["name"].strip(), item_id
             assert entry["quest_id"] > 0
+            assert entry["level_source"] in {"classic-db", "wowhead", "item_level_proxy"}
+            # min_level is what actually gates eligibility
+            # (leveling.EffectiveRequiredLevel), so it is bounded by
+            # MAX_PLAYER_LEVEL the same way item_level_proxy's own
+            # fallback is. level (the quest's DESIGN level, informational
+            # only) is not: three real classic-db rows ("Paragons of
+            # Power", quest 8053-8055) carry QuestLevel 61 despite
+            # MinLevel 60 -- a real 1.12 data quirk, not a bug here.
+            assert 0 <= entry["min_level"] <= 60
+            assert 0 <= entry["level"] <= 61
             counts[entry["faction"]] += 1
     assert counts == QUEST_FACTION_COUNTS
+
+
+def test_quests_map_level_source_is_almost_entirely_classic_db_2026_09_28():
+    """2026-09-28 quest-levels finding: a quest reward's own
+    required_level is 0 in the client far more often than not (848 of
+    these 1,140 items) -- the quest's OWN level is what actually gates
+    it, and cmangos/classic-db's `quest_template` table
+    (pipeline/classic_quest_levels.py) resolves 99.7% of this build's
+    distinct quest ids (Forever reuses old 1.12 quest ids almost
+    entirely); wowhead fills in the 2 ids classic-db lacks
+    (pipeline/wowhead_quests.py, run only for those ids -- see
+    pipeline/quest_levels.py). QUEST_LEVEL_SOURCE_COUNTS is that split;
+    a build regenerated after wowhead indexes more Forever-new quests
+    (or after a later nightly run backfills more of them) can only move
+    entries from missing/proxied toward one of these two real sources,
+    never away."""
+    quests = loot()["quests"]
+    sources = Counter(
+        entry["level_source"] for entries in quests.values() for entry in entries
+    )
+    assert sources == QUEST_LEVEL_SOURCE_COUNTS
 
 
 def test_factions_map_covers_every_restricted_item_quest_or_not():

@@ -36,7 +36,12 @@ var armorAvailableLevel = map[string]int{
 // eligible reports whether a leveling character of class/level/faction
 // could equip this candidate at all, per this lane's brief:
 //
-//   - required_level <= level
+//   - EffectiveRequiredLevel <= level (2026-09-28 quest-levels lane:
+//     NOT c.RequiredLevel directly - a quest reward or crafted item's
+//     own required_level is very often 0 in the client, gated instead
+//     by the quest's or recipe's own level; applyEffectiveRequiredLevels
+//     (data.go) resolves the real gate once per run, from loot.json's
+//     quests map, before eligible() ever runs).
 //   - class allowed: NOT checked here - candidates are already sourced
 //     from data/builds/<build>/items/<class>.json, the pipeline's own
 //     "per-class equippable items" file (data/README.md), so a
@@ -54,7 +59,7 @@ var armorAvailableLevel = map[string]int{
 // exist" - see band.go's candidatesForBand, which calls this function
 // per item and then applies the source rule once per band.
 func eligible(c candidate, classSlug string, level int, faction string) bool {
-	if c.RequiredLevel > level {
+	if c.EffectiveRequiredLevel > level {
 		return false
 	}
 	if c.ClassID == armorClassID {

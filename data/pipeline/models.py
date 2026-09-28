@@ -253,11 +253,25 @@ class QuestSource(BaseModel):
     awards carries whichever `factionRestriction` the quest's side amounts
     to in practice, so `faction` here is that restriction standing in for
     it, not a fact the quest row itself states.
+
+    min_level/level (2026-09-28 quest-levels finding): the client's own
+    item row for a quest reward almost always states `required_level` 0
+    -- the QUEST's level gates the reward, not the item's. `min_level` is
+    the quest's own minimum level (wowhead's `reqlevel`) and `level` is
+    the level the quest is written for (wowhead's `level`), both from
+    `pipeline.wowhead_quests` scraping
+    `https://www.wowhead.com/forever/quest=<quest_id>`. `level_source` is
+    `"wowhead"` when scraped, or `"item_level_proxy"` when wowhead has no
+    page for the quest and both fields instead fall back to
+    `wowhead_quests.item_level_proxy(item.item_level)`.
     """
 
     quest_id: int
     name: str
     faction: str
+    min_level: int
+    level: int
+    level_source: str
 
 
 class LootFile(BaseModel):

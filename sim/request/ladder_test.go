@@ -133,6 +133,10 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 	if err != nil {
 		t.Fatal(err)
 	}
+	requiredLevelFloors, err := loadRequiredLevelFloors(repoRoot, build, items)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	consts, err := loadSpellConst(repoRoot, build, class)
 	if err != nil {
@@ -175,7 +179,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 	for _, level := range ladderLevels {
 		talents := leveling.LadderTalentString(activeTrees, targets, spec.TreeIndex, level)
 		talentPoints := ladderTalentPoints(activeTrees, targets, spec.TreeIndex, level)
-		gear := ladderGear(items, knownItems, spec.Spec, level)
+		gear := ladderGear(items, knownItems, requiredLevelFloors, spec.Spec, level)
 
 		req := api.SimRequest{
 			EngineVersion: enginever.Version,

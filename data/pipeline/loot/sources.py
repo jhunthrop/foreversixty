@@ -30,11 +30,13 @@ import logging
 from collections import defaultdict
 from dataclasses import dataclass
 
+from pipeline.classic_quest_levels import item_level_proxy
 from pipeline.csvio import populated
 from pipeline.forkdb import FACTION_RESTRICTIONS, PROFESSIONS, REP_LEVELS, ForkDatabase, decode
 from pipeline.models import LootBoss, LootFile, LootSource, QuestSource
 from pipeline.normalize.classes import slugify
 from pipeline.normalize.gear import SLOT_BY_INVENTORY_TYPE
+from pipeline.quest_levels import QuestLevelEntry
 
 logger = logging.getLogger(__name__)
 
@@ -232,8 +234,30 @@ def _drop_sources(
     return out, dropped, unnamed_zones
 
 
+def quest_ids_for_build(fork: ForkDatabase, build_items: set[int]) -> set[int]:
+    """Every quest id `_keyed_sources` will emit a `QuestSource` for --
+    the same `"quest" in source` walk, filtered to items this build
+    actually has. Used by `verify-wowhead-quests` to scope its spot-check
+    to ids this build's loot.json actually needs, rather than every id
+    this pipeline has ever seen.
+    """
+    ids: set[int] = set()
+    for item in fork.items:
+        item_id = int(item["id"])
+        if item_id not in build_items:
+            continue
+        for source in item.get("sources") or []:
+            if "quest" in source:
+                ids.add(int(source["quest"]["id"]))
+    return ids
+
+
 def _keyed_sources(
-    fork: ForkDatabase, build_items: set[int], equippable: set[int], absent: set[int]
+    fork: ForkDatabase,
+    build_items: set[int],
+    equippable: set[int],
+    absent: set[int],
+    quest_levels: dict[int, QuestLevelEntry],
 ) -> tuple[list[LootSource], list[int], dict[int, list[QuestSource]], int]:
     """The crafted, rep, vendor and quest sources, the per-item quest detail
     behind the flat `quest` bucket, and how many entries had no home.
@@ -243,6 +267,14 @@ def _keyed_sources(
     names no source at all (the item still counts toward `absent` if the
     build itself lacks it -- that check runs before the equippable one, the
     same order every other kind here uses).
+
+    `quest_levels` is `pipeline.quest_levels.load_quest_levels`'s
+    result: quest id -> the min_level/level either upstream source
+    (cmangos/classic-db, or wowhead for the ids classic-db lacks)
+    states for it. A quest id absent from it (neither source covers it)
+    falls back to
+    `item_level_proxy(item's own item_level)` for BOTH fields,
+    `level_source` recording which happened.
     """
     crafted: dict[str, set[int]] = defaultdict(set)
     rep: dict[tuple[int, str], set[int]] = defaultdict(set)
@@ -279,11 +311,28 @@ def _keyed_sources(
                 # it hands out carries the quest's side as its own
                 # factionRestriction, so that is what `quests` reports.
                 faction = QUEST_FACTION_BY_RESTRICTION[int(item.get("factionRestriction", 0))]
+                quest_id = int(source["quest"]["id"])
+                known = quest_levels.get(quest_id)
+                if known is not None:
+                    # known.source is "classic-db" or "wowhead" --
+                    # whichever pipeline.quest_levels.load_quest_levels'
+                    # merged file actually resolved this quest id from.
+                    min_level, level, level_source = known.min_level, known.level, known.source
+                else:
+                    # Neither upstream source covers this quest id: the
+                    # item's own item_level stands in for both fields
+                    # (this lane's brief's own fallback), and
+                    # level_source says so.
+                    proxy = item_level_proxy(int(item.get("ilvl") or 0))
+                    min_level, level, level_source = proxy, proxy, "item_level_proxy"
                 quest_detail[item_id].append(
                     QuestSource(
-                        quest_id=int(source["quest"]["id"]),
+                        quest_id=quest_id,
                         name=source["quest"]["name"],
                         faction=faction,
+                        min_level=min_level,
+                        level=level,
+                        level_source=level_source,
                     )
                 )
             elif "soldBy" in source:
@@ -413,6 +462,7 @@ def build_loot(
     ranks: dict[int, int],
     build_items: set[int],
     item_inventory_types: dict[int, int],
+    quest_levels: dict[int, QuestLevelEntry] | None = None,
 ) -> tuple[LootFile, LootStats]:
     absent: set[int] = set()
     # The vendor kind's own filter: a vendor selling only reagents or
@@ -426,7 +476,7 @@ def build_loot(
         fork, zone_names, types, build_items, absent
     )
     keyed, quest, quest_detail, dropped_keyed = _keyed_sources(
-        fork, build_items, equippable, absent
+        fork, build_items, equippable, absent, quest_levels or {}
     )
     sources = [*drops, *keyed, *_pvp_sources(ranks, build_items)]
     if quest:

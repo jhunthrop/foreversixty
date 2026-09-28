@@ -208,16 +208,24 @@ type simItemsFile struct {
 }
 
 // lootSourcesFile is the part of loot.json the ladder reads: every item
-// id any source names, whether as a flat list, an instance's trash, or
-// a boss drop.
+// id any source names (whether as a flat list, an instance's trash, or
+// a boss drop), each source's kind (2026-09-28 quest-levels lane: which
+// items are "crafted", for the item-level-proxy fallback), and the
+// per-item quests map (the quest's own min_level, the real level gate
+// for the 848 of loot.json's 1,140 quest-reward items whose own
+// required_level is 0 in the client).
 type lootSourcesFile struct {
 	Sources []struct {
-		Items  []int `json:"items"`
-		Trash  []int `json:"trash"`
+		Kind   string `json:"kind"`
+		Items  []int  `json:"items"`
+		Trash  []int  `json:"trash"`
 		Bosses []struct {
 			Items []int `json:"items"`
 		} `json:"bosses"`
 	} `json:"sources"`
+	Quests map[string][]struct {
+		MinLevel int `json:"min_level"`
+	} `json:"quests"`
 }
 
 // loadSourcedItemIDs reads loot.json and returns the ids with at least
@@ -271,6 +279,64 @@ func obtainableItemIDs(repoRoot, build string) (map[int]bool, error) {
 		}
 	}
 	return out, nil
+}
+
+// loadRequiredLevelFloors reads loot.json once for the per-item level
+// floor pickGearItem/pickShieldItem/pickWandItem apply on top of a
+// buildItem's own RequiredLevel (leveling.EffectiveRequiredLevel;
+// 2026-09-28 quest-levels lane) -- the client states required_level 0
+// for a quest reward or crafted item far more often than not, gated
+// instead by the quest's own min_level or, for a crafted item with no
+// recipe skill level in loot.json (true of every crafted item today,
+// since the engine fork's own database carries no such field), the
+// item's own item_level run through leveling.ItemLevelProxyRequiredLevel
+// -- the very fix Deadhead Blade (item 274271, item level 58,
+// required_level 0) needed: pickGearItem used to equip it on a
+// level-10 rogue.
+//
+// items is the class's own buildItem rows (already loaded by the
+// caller for loadRequiredLevelFloors' item_level lookups on a crafted
+// id); this function does not re-read items/<class>.json itself.
+func loadRequiredLevelFloors(repoRoot, build string, items []buildItem) (map[int]int, error) {
+	path := filepath.Join(repoRoot, "data", "builds", build, "loot.json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("ladder: reading %s: %w", path, err)
+	}
+	var f lootSourcesFile
+	if err := json.Unmarshal(b, &f); err != nil {
+		return nil, fmt.Errorf("ladder: parsing %s: %w", path, err)
+	}
+	questFloor := make(map[int]int, len(f.Quests))
+	for idStr, entries := range f.Quests {
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			continue
+		}
+		levels := make([]int, len(entries))
+		for i, e := range entries {
+			levels[i] = e.MinLevel
+		}
+		questFloor[id] = leveling.LowestFloor(levels)
+	}
+	crafted := map[int]bool{}
+	for _, source := range f.Sources {
+		if source.Kind != "crafted" {
+			continue
+		}
+		for _, id := range source.Items {
+			crafted[id] = true
+		}
+	}
+	floors := make(map[int]int, len(items))
+	for _, it := range items {
+		if qf, ok := questFloor[it.ID]; ok && qf > 0 {
+			floors[it.ID] = qf
+		} else if crafted[it.ID] {
+			floors[it.ID] = leveling.ItemLevelProxyRequiredLevel(it.ItemLevel)
+		}
+	}
+	return floors, nil
 }
 
 // loadSimItemIDs reads simitems.json: the item ids the pinned engine's
@@ -411,11 +477,16 @@ var ladderGearProfiles = map[string]gearProfile{
 }
 
 // pickGearItem is the highest item_level candidate in slot with
-// required_level <= level, restricted to hand's handedness, to allowed
-// weapon subclasses when the caller names any (harness rule 1's
-// per-spec weapon TYPE table - nil means every type this filter set
-// already allows), and to items this build's sim database knows
-// (known). A candidate must be a real weapon: WeaponClass ==
+// leveling.EffectiveRequiredLevel(RequiredLevel, floors[id]) <= level
+// (2026-09-28 quest-levels lane: NOT RequiredLevel alone -- floors is
+// loadRequiredLevelFloors' result, the quest/crafted level gate a
+// candidate's own RequiredLevel very often does not state, e.g.
+// Deadhead Blade, item 274271, item level 58, required_level 0, that
+// used to be pickGearItem's level-10 pick), restricted to hand's
+// handedness, to allowed weapon subclasses when the caller names any
+// (harness rule 1's per-spec weapon TYPE table - nil means every type
+// this filter set already allows), and to items this build's sim
+// database knows (known). A candidate must be a real weapon: WeaponClass ==
 // itemClassWeapon (joined in from items.json by loadClassItems - a
 // held-in-off-hand item is class 4, not a weapon at all, even on a row
 // that happens to carry nonzero speed/damage fields), speed > 0 (which
@@ -459,14 +530,14 @@ func withoutItem(items []buildItem, gear []api.GearSlot) []buildItem {
 	return out
 }
 
-func pickGearItem(items []buildItem, known map[int]bool, slot string, level int, hand handedness, allowed []int) (buildItem, bool) {
+func pickGearItem(items []buildItem, known map[int]bool, floors map[int]int, slot string, level int, hand handedness, allowed []int) (buildItem, bool) {
 	var best buildItem
 	found := false
 	for _, it := range items {
 		if !fitsSlot(it, slot) || it.WeaponClass != itemClassWeapon || it.Speed <= 0 || it.DamageMax <= 0 || !known[it.ID] {
 			continue
 		}
-		if it.RequiredLevel > level {
+		if leveling.EffectiveRequiredLevel(it.RequiredLevel, floors[it.ID]) > level {
 			continue
 		}
 		if hand == handOne && it.TwoHand {
@@ -504,14 +575,14 @@ func containsInt(haystack []int, needle int) bool {
 // armorSubclassShield, in items.json's own taxonomy, since a shield is
 // armor, not a weapon, and pickGearItem's speed>0/damage_max>0 "is a
 // weapon" checks would always reject one.
-func pickShieldItem(items []buildItem, known map[int]bool, level int) (buildItem, bool) {
+func pickShieldItem(items []buildItem, known map[int]bool, floors map[int]int, level int) (buildItem, bool) {
 	var best buildItem
 	found := false
 	for _, it := range items {
 		if it.Slot != "off_hand" || it.WeaponClass != itemClassArmor || it.WeaponSubclass != armorSubclassShield || !known[it.ID] {
 			continue
 		}
-		if it.RequiredLevel > level {
+		if leveling.EffectiveRequiredLevel(it.RequiredLevel, floors[it.ID]) > level {
 			continue
 		}
 		if !found || it.ItemLevel > best.ItemLevel || (it.ItemLevel == best.ItemLevel && it.ID < best.ID) {
@@ -524,35 +595,39 @@ func pickShieldItem(items []buildItem, known map[int]bool, level int) (buildItem
 // ladderGear is a level-appropriate weapon set for spec: main_hand,
 // and off_hand/ranged where the spec's profile calls for them. Every
 // other slot is bare, as the design's Phase 1a asks ("a bare character
-// shows the rotation, not the raid").
-func ladderGear(items []buildItem, known map[int]bool, spec string, level int) []api.GearSlot {
+// shows the rotation, not the raid"). floors is
+// loadRequiredLevelFloors' result (2026-09-28 quest-levels lane): the
+// quest/crafted level gate a candidate's own RequiredLevel does not
+// state, so a quest-reward or crafted weapon is never equipped below
+// the level it is actually obtainable at.
+func ladderGear(items []buildItem, known map[int]bool, floors map[int]int, spec string, level int) []api.GearSlot {
 	profile := ladderGearProfiles[spec]
 	if profile.Skip {
 		return nil
 	}
 	var gear []api.GearSlot
-	if it, ok := pickGearItem(items, known, "main_hand", level, profile.MainHand, profile.MainHandTypes); ok {
+	if it, ok := pickGearItem(items, known, floors, "main_hand", level, profile.MainHand, profile.MainHandTypes); ok {
 		gear = append(gear, api.GearSlot{Slot: "main_hand", ItemID: it.ID})
 	}
 	if profile.OffHand {
 		// The main hand's item is excluded so a class with one standout
 		// weapon does not hold two copies of it.
-		if it, ok := pickGearItem(withoutItem(items, gear), known, "off_hand", level, handOne, profile.OffHandTypes); ok {
+		if it, ok := pickGearItem(withoutItem(items, gear), known, floors, "off_hand", level, handOne, profile.OffHandTypes); ok {
 			gear = append(gear, api.GearSlot{Slot: "off_hand", ItemID: it.ID})
 		}
 	}
 	if profile.Shield {
-		if it, ok := pickShieldItem(items, known, level); ok {
+		if it, ok := pickShieldItem(items, known, floors, level); ok {
 			gear = append(gear, api.GearSlot{Slot: "off_hand", ItemID: it.ID})
 		}
 	}
 	if profile.Ranged {
-		if it, ok := pickGearItem(items, known, "ranged", level, handAny, profile.RangedTypes); ok {
+		if it, ok := pickGearItem(items, known, floors, "ranged", level, handAny, profile.RangedTypes); ok {
 			gear = append(gear, api.GearSlot{Slot: "ranged", ItemID: it.ID})
 		}
 	}
 	if profile.Wand {
-		if it, ok := pickWandItem(items, known, level); ok {
+		if it, ok := pickWandItem(items, known, floors, level); ok {
 			gear = append(gear, api.GearSlot{Slot: "ranged", ItemID: it.ID})
 		}
 	}
@@ -1404,7 +1479,7 @@ const potionUnresolvedAction = "{OtherID: 13}"
 // check) with required_level <= level, from a build's own item table
 // filtered to its simitems.json-known ids, the same two filters
 // pickGearItem applies.
-func pickWandItem(items []buildItem, known map[int]bool, level int) (buildItem, bool) {
+func pickWandItem(items []buildItem, known map[int]bool, floors map[int]int, level int) (buildItem, bool) {
 	var best buildItem
 	found := false
 	for _, it := range items {
@@ -1414,7 +1489,7 @@ func pickWandItem(items []buildItem, known map[int]bool, level int) (buildItem, 
 		if !strings.HasPrefix(it.Icon, "inv_wand") {
 			continue
 		}
-		if it.RequiredLevel > level {
+		if leveling.EffectiveRequiredLevel(it.RequiredLevel, floors[it.ID]) > level {
 			continue
 		}
 		if !found || it.ItemLevel > best.ItemLevel || (it.ItemLevel == best.ItemLevel && it.ID < best.ID) {

@@ -51,7 +51,23 @@ sim/internal/spellranks/spellranks.json
 design/forever-sixty-look-and-feel.html
 
 # large raw game data (normalized JSON is committed; raw DB2 exports are not)
-data/builds/*/raw/
+# ...except the small, committed merged quest-level table (2026-09-28
+# quest-levels lane): classic-db's ~4,245 quests plus wowhead's fill-in
+# for the ids classic-db lacks, two integers and a source tag each, with
+# a provenance header -- see data/pipeline/quest_levels.py's own doc for
+# why this is committed rather than re-fetched on every `loot` run. The
+# wowhead HTML page cache alongside it (raw/quests/<id>.html) stays
+# ignored -- large, and reconstructable from quest-levels.json's own
+# `source: "wowhead"` entries plus a rerun, unlike the two-source merge
+# itself. A directory-matching pattern (a bare `raw/`) cannot be
+# re-included file by file -- git never descends into an excluded
+# directory node at all -- so this ignores raw/'s CONTENTS (`raw/*`)
+# instead, which still excludes the directory's own listing but lets
+# the two rules below reach inside it.
+data/builds/*/raw/*
+!data/builds/*/raw/quests/
+data/builds/*/raw/quests/*
+!data/builds/*/raw/quests/quest-levels.json
 data/.icon-cache/
 
 # git worktrees for parallel plan execution

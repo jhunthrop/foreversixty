@@ -49,6 +49,50 @@ jobs:
           test -n "$sha" || { echo "sim/enginever/version.go has no Version"; exit 1; }
           echo "build=$build" >> "$GITHUB_OUTPUT"
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      # 2026-09-28 quest-levels lane: fill in the quest ids
+      # cmangos/classic-db does not have (Forever-new quests --
+      # data/pipeline/quest_levels.py's own doc) from wowhead, a FEW at
+      # a time (--max-pages 200) and from THIS runner's own address, not
+      # a contributor's -- wowhead throttles hard (see
+      # pipeline.wowhead_quests's doc), so this fills in over successive
+      # nights rather than trying to finish in one run. Always exits 0
+      # (never fails the job): any id still missing after the budget
+      # just falls back to item_level_proxy at `loot` time, same as
+      # today, and the NEXT night's run resumes from the warm cache.
+      #
+      # The engine fork is cloned at the PINNED sha (actions/checkout
+      # treats a short sha as a branch name and fails to fetch it), the
+      # same pattern data.yml's own `loot` step uses -- both `quest-
+      # levels` and `loot` need the ids/database only a real local
+      # checkout has, which `pin-engine`'s go.mod replace does not
+      # provide.
+      - name: the engine fork at the pin
+        run: |
+          git clone --quiet --filter=blob:none https://github.com/jhunthrop/wowsims-forever .engine
+          git -C .engine checkout --quiet "${{ steps.identity.outputs.sha }}"
+      - uses: astral-sh/setup-uv@v3
+      - name: fill in quest levels from wowhead, then regenerate loot.json
+        working-directory: data
+        run: |
+          uv sync
+          uv run python -m pipeline quest-levels --build "${{ steps.identity.outputs.build }}" --engine ../.engine --max-pages 200
+          uv run python -m pipeline loot --build "${{ steps.identity.outputs.build }}" --engine ../.engine
+      - name: commit quest-levels.json and loot.json if they changed
+        run: |
+          git config user.name "forever-bis-bot"
+          git config user.email "bot@foreversixty.gg"
+          git add "data/builds/${{ steps.identity.outputs.build }}/raw/quests/quest-levels.json" \
+                  "data/builds/${{ steps.identity.outputs.build }}/loot.json" \
+                  "data/builds/${{ steps.identity.outputs.build }}/manifest.json"
+          if ! git commit -m "chore(data): nightly quest-level fill-in for ${{ steps.identity.outputs.build }}"; then
+            echo "nothing to commit"
+          else
+            for attempt in 1 2 3 4 5; do
+              git pull --rebase origin main && git push && break
+              echo "push attempt $attempt failed; retrying"
+              sleep 20
+            done
+          fi
       # -all: every data/curated/specs.json spec with a written rotation,
       # bands 10-60 step 5, both factions. weights-iterations stays at
       # the command's own default (100 per direction) - this lane's
