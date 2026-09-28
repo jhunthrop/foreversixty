@@ -5,22 +5,25 @@
      public page for its name/id and its settings for claimed_by/claim_pending -- the spec
      defines no separate "claim status" read, and GuildSettingsData already carries every
      field this view needs (Task 1's api.ts). GET .../settings is verified-officer/leader-
-     or-moderator only (spec section 2.6): a visitor who cannot read it -- signed out, an
-     unverified officer, a stranger -- simply sees no claim-state section below the
-     heading, the same "fail toward nothing extra" rule Guild.svelte's own member-only
-     section already follows for a gated read that most visitors are expected to be
-     refused. -->
+     or-moderator only (spec section 2.6), so for everyone else the claim STATE comes from
+     the member home (GET .../home, any member) -- lib/guild/claim-view.ts is the one rule
+     -- and the page always says who can act and what to do next. It used to render only
+     its heading to a plain member (found live, 2026-09-28). -->
 <script lang="ts">
   import { fetchMeOnce, type Me } from '../lib/account/api';
-  import { characterSlug, type CharacterPath } from '../lib/characters';
+  import { characterSlug, guildHref, type CharacterPath } from '../lib/characters';
+  import { SETUP_NAV_ITEM } from '../lib/nav';
   import {
     claimGuild,
     confirmClaim,
     contestClaim,
+    fetchGuildHome,
     fetchGuildSettings,
     releaseClaim,
+    type GuildHome,
     type GuildSettingsData,
   } from '../lib/guild/api';
+  import { claimView } from '../lib/guild/claim-view';
   import { guildClaimCopy, guildHomeCopy } from '../lib/guild/copy';
   import { GUILD_LOADING } from '../lib/guild/layout';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
@@ -35,6 +38,7 @@
   let guildId = $state<number | null>(null);
   let guildName = $state('');
   let settings = $state<GuildSettingsData | null>(null);
+  let home = $state<GuildHome | null>(null);
   let status = $state<'loading' | 'ready' | 'failed'>('loading');
   let error = $state('');
   let busy = $state(false);
@@ -60,7 +64,14 @@
       me = session;
       guildId = guildPage.guild.id;
       guildName = guildPage.guild.name;
-      settings = await fetchGuildSettings(guildPage.guild.id).catch(() => null);
+      // Settings answers an officer; the home answers any member. Each is refused with a
+      // 403 for everyone else, which is a state here, not a failure.
+      const id = guildPage.guild.id;
+      const isMember = membershipIn(session) !== null;
+      [settings, home] = await Promise.all([
+        fetchGuildSettings(id).catch(() => null),
+        isMember ? fetchGuildHome(id).catch(() => null) : Promise.resolve(null),
+      ]);
       status = 'ready';
     } catch {
       status = 'failed';
@@ -74,7 +85,6 @@
     void load();
   });
 
-  const signedIn = $derived(me !== null);
   const myBattletag = $derived(me?.user.battletag ?? null);
 
   /**
@@ -85,20 +95,17 @@
    * member -- saw a live Claim/Confirm button that only failed once clicked (a 403 from
    * the API), and `guildClaimCopy.notEligible` existed but was never shown.
    */
-  const membership = $derived(
-    me?.guilds.find(
-      (g) => g.region === path.region && g.ruleset === path.ruleset && characterSlug(g.name) === path.slug,
-    ) ?? null,
-  );
-  const eligible = $derived(
-    membership !== null && (membership.rank === 'officer' || membership.rank === 'leader'),
-  );
-  // Contest is deliberately broader than claim/confirm's officer-or-leader gate above: any
-  // signed-in character in this guild, any rank, may open the contest confirm dialog. The
-  // real API's own eligibility check (contest.go's eligibleClaimRank) is stricter than this
-  // UI gate, so a plain member who goes through anyway sees the API's own honest 403
-  // surfaced verbatim by `run()`'s existing catch-and-display pattern below.
-  const canContest = $derived(membership !== null);
+  function membershipIn(session: Me | null) {
+    return (
+      session?.guilds.find(
+        (g) => g.region === path.region && g.ruleset === path.ruleset && characterSlug(g.name) === path.slug,
+      ) ?? null
+    );
+  }
+  const membership = $derived(membershipIn(me));
+  const view = $derived(claimView({ me, membership, settings, home }));
+  const eligible = $derived(view.viewer === 'eligible');
+  const claimState = $derived(view.claim?.state ?? null);
 
   async function run(action: () => Promise<void>): Promise<void> {
     busy = true;
@@ -143,6 +150,9 @@
 </script>
 
 <div class="reveal flex flex-col gap-4" data-testid="guild-claim">
+  <a class="text-nav w-fit text-[13px]" href={guildHref(path.region, path.ruleset, guildName || path.slug)}>
+    ← {guildClaimCopy.backToGuild(guildName)}
+  </a>
   <h1 class="section-title text-[18px]">{guildClaimCopy.heading(guildName)}</h1>
   {#if status === 'loading' || status === 'failed'}
     <GuildStatus
@@ -153,17 +163,9 @@
       minHeight={GUILD_LOADING.claim.minHeight}
       testid="guild-claim"
     />
-  {:else if settings !== null}
-    <section class="flex flex-col gap-2" data-testid="guild-claim-rules">
-      <h2 class="section-title text-[16px]">{guildClaimCopy.rulesHeading}</h2>
-      <ul class="text-muted flex flex-col gap-1 text-[13px]">
-        {#each guildClaimCopy.rules as rule (rule)}
-          <li>{rule}</li>
-        {/each}
-      </ul>
-    </section>
+  {:else}
     {#snippet contestOffer()}
-      {#if canContest && settings !== null && settings.claim.state !== 'contested'}
+      {#if membership !== null && claimState !== null && claimState !== 'contested'}
         {#if !showContestConfirm}
           <button
             class={`${SECONDARY_BUTTON_FIXED} border-line-warm text-text w-fit px-3 ${busy ? BUSY_CLASS : ''}`}
@@ -210,10 +212,13 @@
         {/if}
       {/if}
     {/snippet}
-    {#if settings.claim.state === 'contested'}
+
+    {#if claimState === 'contested'}
       <p class="text-[14px]" data-testid="guild-claim-contested-notice">{guildClaimCopy.contested}</p>
     {/if}
-    {#if settings.claimed_by !== null}
+
+    {#if settings !== null && settings.claimed_by !== null}
+      <!-- An officer's read: who holds the claim, and release for the holder. -->
       <p class="text-[14px]" data-testid="guild-claim-state">
         {settings.claimed_by.battletag === myBattletag
           ? guildClaimCopy.claimedByYou
@@ -231,11 +236,11 @@
         </button>
       {/if}
       {@render contestOffer()}
-    {:else if settings.claim_pending !== null}
+    {:else if settings !== null && settings.claim_pending !== null}
       <p class="text-[14px]" data-testid="guild-claim-state">
         {guildClaimCopy.pending(settings.claim_pending.expires_at)}
       </p>
-      {#if signedIn && eligible}
+      {#if eligible}
         <button
           class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
           onclick={onConfirm}
@@ -245,15 +250,27 @@
         >
           {guildClaimCopy.confirmButton}
         </button>
-      {:else if signedIn}
+      {:else}
         <p class="text-[14px]" data-testid="guild-claim-not-eligible">{guildClaimCopy.notEligible}</p>
       {/if}
       {@render contestOffer()}
+    {:else if view.viewer === 'signed-out'}
+      <SignInPrompt line={guildClaimCopy.signInLine} testid="guild-claim-signin" />
+    {:else if view.viewer === 'stranger'}
+      <p class="text-[14px]" data-testid="guild-claim-not-member">
+        {guildClaimCopy.notAMember}
+        <a class="text-nav" href={SETUP_NAV_ITEM.href}>{SETUP_NAV_ITEM.label}</a>
+      </p>
     {:else}
-      <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.unclaimed}</p>
-      {#if !signedIn}
-        <SignInPrompt line={guildClaimCopy.signInLine} testid="guild-claim-signin" />
-      {:else if eligible}
+      <!-- A member's read (the home's state, never who) or an officer of an unclaimed guild. -->
+      {#if claimState === 'claimed'}
+        <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.claimedByAnOfficer}</p>
+      {:else if claimState === 'pending'}
+        <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.pending()}</p>
+      {:else if claimState === 'unclaimed'}
+        <p class="text-[14px]" data-testid="guild-claim-state">{guildClaimCopy.unclaimed}</p>
+      {/if}
+      {#if eligible && (claimState === 'unclaimed' || claimState === null)}
         <button
           class={`${SECONDARY_BUTTON_FIXED} border-line-warm-strong text-strong w-fit px-4 ${busy ? BUSY_CLASS : ''}`}
           onclick={onClaim}
@@ -263,10 +280,23 @@
         >
           {guildClaimCopy.claimButton}
         </button>
-      {:else}
-        <p class="text-[14px]" data-testid="guild-claim-not-eligible">{guildClaimCopy.notEligible}</p>
+      {:else if !eligible}
+        <p class="text-[14px]" data-testid="guild-claim-not-eligible">
+          {guildClaimCopy.memberCannotClaim}
+          <a class="text-nav" href={SETUP_NAV_ITEM.href}>{SETUP_NAV_ITEM.label}</a>
+        </p>
       {/if}
+      {@render contestOffer()}
     {/if}
+
+    <section class="flex flex-col gap-2" data-testid="guild-claim-rules">
+      <h2 class="section-title text-[16px]">{guildClaimCopy.rulesHeading}</h2>
+      <ul class="text-muted flex flex-col gap-1 text-[13px]">
+        {#each guildClaimCopy.rules as rule (rule)}
+          <li>{rule}</li>
+        {/each}
+      </ul>
+    </section>
     <div class="min-h-[21px]">
       {#if error !== ''}<p class="text-[14px]" role="alert" data-testid="guild-claim-action-error">
           {error}

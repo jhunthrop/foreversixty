@@ -74,6 +74,16 @@ export const guildClaimCopy = {
   confirmButton: 'Confirm this claim',
   releaseButton: 'Release claim',
   notEligible: 'Only an officer or the guild master of this guild can claim it.',
+  // A plain member, the common visitor here (the guild page's own "Claim this guild" link
+  // brought them): what is true, then what to do, since they cannot act themselves.
+  memberCannotClaim:
+    'You are a member of this guild, so you cannot claim it. Ask the guild master or an officer to save their character on Get set up, then open this page: the guild master claims at once, an officer starts a claim a second officer confirms.',
+  // Signed in, but no character of theirs in this guild as far as the site knows.
+  notAMember:
+    'The site does not know a character of yours in this guild. Save one on Get set up and this page will know your rank.',
+  // The state as a member may read it: the home says claimed, but never by whom.
+  claimedByAnOfficer: 'This guild has been claimed by one of its officers.',
+  backToGuild: (guildName: string): string => (guildName === '' ? 'Guild page' : guildName),
   signInLine: 'Sign in to claim this guild.',
   rulesHeading: 'How claiming works',
   rules: [

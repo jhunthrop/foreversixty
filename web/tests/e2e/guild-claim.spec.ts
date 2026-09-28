@@ -97,13 +97,14 @@ test('a signed-out visitor sees a sign-in prompt, not a claim button', async ({ 
   await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
 });
 
-test('a signed-in visitor with no membership, or member rank, in this guild sees the not-eligible line, not a claim button', async ({
+test('a signed-in visitor with no membership in this guild is told so, and sees no claim button', async ({
   page,
 }) => {
   await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
-  // `ME` above has no membership at all in guild id 501, which is the more common of the
-  // two ineligible shapes (a stranger); a plain `rank: 'member'` entry is refused the same
-  // way, exercised by the `eligible` check reading a matched membership's own rank.
+  // `ME` above has no membership at all in guild id 501: a stranger. Since 2026-09-28 the
+  // page names that case (the site knows no character of theirs here) rather than the
+  // generic not-eligible line; a plain `rank: 'member'` entry gets the member line instead
+  // (the "refused settings" case further down).
   await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
   await page.route('**/v1/guilds/501/settings', (route) =>
     route.fulfill(
@@ -118,9 +119,10 @@ test('a signed-in visitor with no membership, or member rank, in this guild sees
     ),
   );
   await page.goto('/guild/us/hardcore/the-last-watch/claim');
-  await expect(page.getByTestId('guild-claim-not-eligible')).toHaveText(
-    'Only an officer or the guild master of this guild can claim it.',
+  await expect(page.getByTestId('guild-claim-not-member')).toContainText(
+    'does not know a character of yours',
   );
+  await expect(page.getByTestId('guild-claim-not-eligible')).toHaveCount(0);
   await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
 });
 
@@ -227,4 +229,82 @@ test('release stays visible and enabled for the claim holder even while their cl
   await expect(page.getByTestId('guild-claim-state')).toHaveText('You claimed this guild.');
   await expect(page.getByTestId('guild-claim-release')).toBeVisible();
   await expect(page.getByTestId('guild-claim-release')).toBeEnabled();
+});
+
+// Found live (2026-09-28, /guild/us/pvp/olympus-xxvii/claim): GET .../settings is
+// officer-only, so for a plain member it answers 403 -- and the page rendered nothing but
+// its heading. The claim state now comes from the member home for a member, with the
+// honest line about who can act.
+test('a plain member, refused settings, still sees the claim state and who can act', async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      envelope({
+        ...ME,
+        guilds: [
+          {
+            id: 501,
+            region: 'us',
+            ruleset: 'hardcore',
+            name: 'The Last Watch',
+            rank: 'member',
+            verified: false,
+          },
+        ],
+      }),
+    ),
+  );
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill({
+      status: 403,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: false,
+        data: null,
+        error: { code: 'forbidden', message: 'officers only' },
+        request_id: 'r',
+      }),
+    }),
+  );
+  await page.route('**/v1/guilds/501/home', (route) =>
+    route.fulfill(
+      envelope({
+        guild: { id: 501, region: 'us', ruleset: 'hardcore', name: 'The Last Watch' },
+        claim: { state: 'unclaimed', frozen: false },
+        reports: [],
+        roster: [],
+      }),
+    ),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await expect(page.getByTestId('guild-claim-state')).toHaveText('Nobody has claimed this guild yet.');
+  await expect(page.getByTestId('guild-claim-not-eligible')).toContainText('You are a member of this guild');
+  await expect(page.getByTestId('guild-claim-contest-button')).toBeVisible();
+  await expect(page.getByTestId('guild-claim-rules')).toBeVisible();
+  await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
+});
+
+test('a signed-in stranger, refused both reads, is told the site knows no character of theirs here', async ({
+  page,
+}) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
+  await page.route('**/v1/guilds/501/settings', (route) =>
+    route.fulfill({
+      status: 403,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ok: false,
+        data: null,
+        error: { code: 'forbidden', message: 'officers only' },
+        request_id: 'r',
+      }),
+    }),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch/claim');
+  await expect(page.getByTestId('guild-claim-not-member')).toContainText(
+    'does not know a character of yours',
+  );
+  await expect(page.getByTestId('guild-claim-button')).toHaveCount(0);
+  await expect(page.getByTestId('guild-claim-contest-button')).toHaveCount(0);
 });
