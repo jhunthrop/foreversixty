@@ -11,7 +11,6 @@ import ToolCard from '../components/ToolCard.astro';
 import Panel from '../components/Panel.astro';
 import FeedRow from '../components/FeedRow.astro';
 import SubscribeBox from '../components/SubscribeBox.svelte';
-import HomeGuildCard from '../components/HomeGuildCard.svelte';
 import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
 import HomeNextSteps, { HOME_NEXT_STEPS_SIGNED_OUT_ID } from '../components/HomeNextSteps.svelte';
 import HomeGetSetUp, { HOME_GET_SET_UP_SIGNED_OUT_ID } from '../components/HomeGetSetUp.svelte';
@@ -55,8 +54,8 @@ const addonIconPath =
              real content instead of empty decoration; below lg the two stack in the same
              order they always have (hero, then guild card), just one level deeper in the
              DOM. Spec 2026-09-28: the guild card replaces the dates timeline here -- "it's
-             pretty worthless" -- which moved to a full-width row at the bottom of the page
-             instead of being dropped, so the dates stay reachable. -->
+             pretty worthless" -- for a signed-in visitor; a signed-out one still sees the dates
+             here (the block just below). -->
         <div class="flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
           <div class="grid lg:col-span-7" data-testid="home-account-block">
             <div
@@ -80,8 +79,27 @@ const addonIconPath =
             </div>
             <HomeAccountPanel client:visible />
           </div>
-          <div class="lg:col-span-5" data-testid="home-guild-block">
-            <HomeGuildCard client:visible />
+          <!-- The right column is the visitor's guild once signed in (spec 2026-09-28: "use it
+               instead of the scroll header"), and the five site dates while signed out -- a
+               prospective player's launch calendar, and the same server-rendered panel this
+               column always had, so the signed-out page keeps its shape and its paint timing
+               (Lighthouse's index run failed LCP by 70 ms when this column went empty for it,
+               05f3e478). data-session-hide (Base.astro's pre-paint hint) removes the dates the
+               moment a session cookie is present; the card draws nothing without one. -->
+          <div class="grid lg:col-span-5" data-testid="home-guild-block">
+            <!-- Both share one grid cell, the same overlay the account block above uses:
+                 data-session-hide only hides (visibility), so the dates must not also
+                 keep a slot above the card once a signed-in visitor's card takes over. -->
+            <div class="[grid-area:1/1]" data-session-hide data-testid="home-timeline-block">
+              <HomeTimeline dates={dates} updated={updated} />
+            </div>
+            <!-- Not an island: HomeAccountPanel (the hero's own island, already holding the
+                 session) imports and mounts HomeGuildCard.svelte here once /v1/me answers,
+                 so a signed-out page fetches none of the card's code -- every extra module
+                 request in the hero before the largest paint moved Lighthouse's simulated
+                 LCP over budget (05f3e478). .home-guild-slot (global.css) reserves the
+                 card's height from the session hint so a signed-in hero holds still. -->
+            <div class="home-guild-slot [grid-area:1/1]" data-testid="home-guild-slot"></div>
           </div>
         </div>
       </div>
@@ -208,11 +226,6 @@ const addonIconPath =
           </Panel>
         </div>
       </div>
-
-      <!-- The five site dates (spec 2026-09-28): moved out of the hero, where they were "pretty
-           worthless" competing for the guild card's spot, to a full-width quiet row at the very
-           bottom of the page -- still reachable, no longer the first thing a visitor sees. -->
-      <HomeTimeline dates={dates} updated={updated} />
     </div>
   </main>
 </Base>

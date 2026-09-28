@@ -8,6 +8,7 @@
      visually occludes the signed-out block (a solid background over the same cell) instead
      of the two stacking and reflowing the page underneath. -->
 <script lang="ts">
+  import { mount, unmount } from 'svelte';
   import type { MeCharacter } from '../lib/account/api';
   import { classColorVar } from '../lib/report/format';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
@@ -65,6 +66,31 @@
       // account with no characters means the block is the right thing to show after all.
       if (ready) signedOut.removeAttribute('data-session-hide');
     }
+  });
+
+  /**
+   * The hero's right column (index.astro's `home-guild-slot`) is filled from here, not by
+   * its own island: this island already holds the session, and a second island in the hero
+   * put its module requests on the largest paint's path for every visitor (Lighthouse,
+   * 05f3e478). The card's module is imported only once /v1/me has answered signed-in, so a
+   * signed-out page never fetches it. Reaches outside this component's root via `document`,
+   * the same cross-island DOM-reach the signed-out block's `inert` handling above uses.
+   */
+  $effect(() => {
+    if (!ready || me === null) return;
+    const slot = document.querySelector<HTMLElement>('[data-testid="home-guild-slot"]');
+    if (slot === null) return;
+    const account = me;
+    let card: Record<string, unknown> | null = null;
+    let cancelled = false;
+    void import('./HomeGuildCard.svelte').then(({ default: HomeGuildCard }) => {
+      if (cancelled) return;
+      card = mount(HomeGuildCard, { target: slot, props: { me: account } });
+    });
+    return () => {
+      cancelled = true;
+      if (card !== null) void unmount(card);
+    };
   });
 
   /**

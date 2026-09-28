@@ -1,21 +1,19 @@
 <!-- web/src/components/HomeGuildCard.svelte -->
-<!-- The hero's right column (spec 2026-09-28: replaces the horizontally scrolling date
-     strip, "it's pretty worthless"), signed-in only. The left column already carries the
-     signed-out pitch (index.astro's `home-signed-out` block), so this island simply renders
-     nothing once it learns the visitor is signed out -- the same "always-present anchor,
-     conditionally empty" trick `HomeAccountPanel.svelte` uses so `client:visible`
-     (astro/dist/runtime/client/visible.js) always has a real Element to observe from mount.
+<!-- The hero's right column for a signed-in visitor (spec 2026-09-28: replaces the
+     horizontally scrolling date strip, "it's pretty worthless"). Not an Astro island:
+     HomeAccountPanel.svelte imports this module and mounts it into index.astro's
+     `home-guild-slot` once /v1/me has answered, handing over `me`, so a signed-out page
+     never fetches this code (each extra hero module before the largest paint cost
+     Lighthouse's simulated LCP, 05f3e478) and the session is read once, not twice.
 
-     Data: `fetchMeOnce()` for the account's most recent guild membership, then
-     `fetchGuildHome(id)` (member-gated) for the claim state, this week's reports and the
-     roster; `fetchGuild(path)` alongside it for the same `killed / total` progression
+     Data: `fetchGuildHome(id)` (member-gated) for the claim state, this week's reports and
+     the roster; `fetchGuild(path)` alongside it for the same `killed / total` progression
      figure the guild's own public page computes, so a plain member sees the identical
      numbers there. Every rule about which state wins and what it says lives in
      `lib/guild/home-card.ts`'s `homeGuildCardView` -- this component only fetches, and
      renders whatever that pure function returns. -->
 <script lang="ts">
-  import { fetchMeOnce, type Me } from '../lib/account/api';
-  import { sessionHinted } from '../lib/data/query';
+  import type { Me } from '../lib/account/api';
   import { fetchGuild } from '../lib/rankings/api';
   import { fetchGuildHome, type GuildHome } from '../lib/guild/api';
   import { characterSlug, guildHref, type CharacterPath } from '../lib/characters';
@@ -24,26 +22,15 @@
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import Skeleton from './ui/Skeleton.svelte';
 
-  /** `sessionCookie` exists only so the SSR test can pin the pre-paint decision below
-   *  (the same reason HomeTimeline.astro takes `now`); index.astro never passes it, so in
-   *  production the card always reads the real document.cookie. */
-  let { sessionCookie }: { sessionCookie?: string } = $props();
+  /** The account, as the hero island already holds it: never fetched again here. */
+  let { me }: { me: Me } = $props();
 
-  type Status = 'loading' | 'signed-out' | 'guild-loading' | 'ready';
+  type Status = 'guild-loading' | 'ready';
 
-  const hinted = (): boolean =>
-    sessionCookie === undefined ? sessionHinted() : sessionHinted(sessionCookie);
-
-  /**
-   * Decided from the session cookie's readable half before the first paint, never from
-   * the /v1/me round trip: Lighthouse (signed out) saw a skeleton panel appear and then
-   * vanish once /v1/me answered, and on a phone that collapse moved everything under the
-   * hero -- a layout shift over the page's budget (web.yml's verify job, 842aa320). No
-   * cookie means nothing to fetch and nothing to draw, the same pre-paint hint
-   * Base.astro's inline script and lib/data/query.ts's private cache already trust.
-   */
-  let status = $state<Status>(hinted() ? 'loading' : 'signed-out');
-  let me = $state<Me | null>(null);
+  const guild = $derived(me.guilds.length > 0 ? me.guilds[0] : null);
+  // A guild means a fetch is coming, so the first paint is the height-reserving skeleton;
+  // no guild means the finished card at once.
+  let status = $state<Status>(me.guilds.length > 0 ? 'guild-loading' : 'ready');
   let home = $state<GuildHome | null>(null);
   let progression = $state<{ killed: number; total: number } | null>(null);
 
@@ -79,56 +66,27 @@
     status = 'ready';
   }
 
-  async function load(): Promise<void> {
-    if (!hinted()) {
-      status = 'signed-out';
-      return;
-    }
-    status = 'loading';
-    home = null;
-    progression = null;
-    let result: Me | null;
-    try {
-      result = await fetchMeOnce();
-    } catch {
-      result = null;
-    }
-    me = result;
-    if (result === null) {
-      status = 'signed-out';
-      return;
-    }
-    const guild = result.guilds.length > 0 ? result.guilds[0] : null;
-    if (guild === null) {
-      status = 'ready';
-      return;
-    }
-    await loadGuildData(guild.id, guildPath(guild));
-  }
-
   $effect(() => {
-    void load();
+    if (guild === null) return;
+    void loadGuildData(guild.id, guildPath(guild));
   });
 
   const view = $derived(status === 'ready' ? homeGuildCardView(me, home, progression) : null);
-  const guild = $derived(me !== null && me.guilds.length > 0 ? me.guilds[0] : null);
 </script>
 
-<!-- Always-present anchor so `client:visible`'s observer has a real element from mount. -->
-<span aria-hidden="true"></span>
-{#if status === 'loading' || status === 'guild-loading'}
+{#if status === 'guild-loading'}
   <!-- The same min-height as the ready card below, so the skeleton never gives way to a
        taller or shorter panel and the hero's neighbours never move under a signed-in
        visitor either. -->
   <div
-    class="bg-raised/85 border-line rounded-panel min-h-[168px] border px-[18px] py-[14px]"
+    class="bg-raised/85 border-line rounded-panel min-h-[168px] border px-[18px] py-[14px] [grid-area:1/1]"
     data-testid="home-guild-card-skeleton"
   >
     <Skeleton lines={3} rowHeight="h-4" testid="home-guild-card-skeleton-rows" />
   </div>
 {:else if status === 'ready' && view !== null}
   <div
-    class="reveal bg-raised/85 border-line rounded-panel flex min-h-[168px] min-w-0 flex-col gap-3 border px-[18px] py-[14px]"
+    class="reveal bg-raised/85 border-line rounded-panel flex min-h-[168px] min-w-0 flex-col gap-3 border px-[18px] py-[14px] [grid-area:1/1]"
     data-testid="home-guild-card"
   >
     <div class="flex items-center gap-2">

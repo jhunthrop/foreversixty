@@ -219,6 +219,13 @@ html:not([data-session='1']) .session-reserve [data-testid$='-skeleton'] {
   display: none;
 }
 
+/* The homepage hero's guild card slot (index.astro, filled by HomeAccountPanel after
+   /v1/me answers): with a session hinted it keeps the card's height from first paint, so
+   the card's arrival moves nothing; without one it stays empty and flat under the dates. */
+html[data-session='1'] .home-guild-slot {
+  min-height: 168px;
+}
+
 /* /setup as a checklist: what each step shows depends on the two pre-paint hints on <html>
    (data-session from the session cookie, data-pointer from the stored character), so a step
    a visitor has finished reads as done before any island hydrates. */

@@ -1,24 +1,33 @@
 // web/src/components/HomeGuildCard.test.ts
-// svelte/server's render only ever sees pre-$effect state, so these pin what the first
-// paint shows: nothing at all without the session cookie's readable half (Lighthouse's
-// signed-out run saw a skeleton appear and vanish, a layout shift over budget), and the
-// height-reserving skeleton when there is one. The cookie arrives as a prop only because
-// this runs under node, where there is no document to set one on.
+// svelte/server's render only ever sees pre-$effect state, so these pin what the card
+// shows the instant HomeAccountPanel mounts it with the account: the height-reserving
+// skeleton while a guild's data is still to come, and the finished no-guild card at once
+// when there is nothing to fetch.
 import { render } from 'svelte/server';
 import { describe, expect, it } from 'vitest';
+import type { Me } from '../lib/account/api';
 import HomeGuildCard from './HomeGuildCard.svelte';
 
-describe('HomeGuildCard first paint', () => {
-  it('draws nothing when no session cookie hints at a signed-in visitor', () => {
-    const { body } = render(HomeGuildCard, { props: { sessionCookie: '' } });
-    expect(body).not.toContain('data-testid="home-guild-card-skeleton"');
-    expect(body).not.toContain('data-testid="home-guild-card"');
-  });
+const base = { user: { battletag: 'Ash#1' }, characters: [] } as unknown as Me;
 
-  it('reserves the card height with a Skeleton when the session cookie is present', () => {
-    const { body } = render(HomeGuildCard, { props: { sessionCookie: 'fs_csrf=hint' } });
+describe('HomeGuildCard first paint', () => {
+  it('reserves the card height with a Skeleton while a guild is still loading', () => {
+    const me = {
+      ...base,
+      guilds: [
+        { id: 5, region: 'us', ruleset: 'pvp', name: 'The Last Watch', rank: 'member', verified: true },
+      ],
+    } as Me;
+    const { body } = render(HomeGuildCard, { props: { me } });
     expect(body).toContain('data-testid="home-guild-card-skeleton"');
     expect(body).toContain('min-h-[168px]');
     expect(body).not.toContain('data-testid="home-guild-card"');
+  });
+
+  it('draws the no-guild card at once when the account has no guild to fetch', () => {
+    const { body } = render(HomeGuildCard, { props: { me: { ...base, guilds: [] } as Me } });
+    expect(body).toContain('data-testid="home-guild-card"');
+    expect(body).toContain('No guild yet.');
+    expect(body).not.toContain('data-testid="home-guild-card-skeleton"');
   });
 });
