@@ -190,7 +190,3 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - druid-feral level=10 kind=unresolved_id action={SpellID: 5217}
 - druid-feral level=20 kind=unresolved_id action={SpellID: 5217}
-- druid-feral level=38 kind=zero_casts spell="Ferocious Bite" id=22568 authored=31018
-- druid-feral level=40 kind=zero_casts spell="Ferocious Bite" id=22827 authored=31018
-- druid-feral level=50 kind=zero_casts spell="Ferocious Bite" id=22828 authored=31018
-- druid-feral level=60 kind=zero_casts spell="Ferocious Bite" id=31018 authored=31018

@@ -174,18 +174,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- rogue-subtlety level=20 kind=zero_casts spell="Ambush" id=8676 authored=11269
-- rogue-subtlety level=30 kind=zero_casts id=14183 authored=14183 (untracked ability; not in spellranks.json's rank chains)
-- rogue-subtlety level=30 kind=zero_casts spell="Ambush" id=8724 authored=11269
-- rogue-subtlety level=38 kind=zero_casts id=14183 authored=14183 (untracked ability; not in spellranks.json's rank chains)
-- rogue-subtlety level=38 kind=zero_casts spell="Ambush" id=8725 authored=11269
-- rogue-subtlety level=38 kind=zero_casts spell="Sinister Strike" id=8621 authored=11294
-- rogue-subtlety level=40 kind=zero_casts id=14183 authored=14183 (untracked ability; not in spellranks.json's rank chains)
-- rogue-subtlety level=40 kind=zero_casts spell="Ambush" id=8725 authored=11269
-- rogue-subtlety level=40 kind=zero_casts spell="Sinister Strike" id=8621 authored=11294
-- rogue-subtlety level=50 kind=zero_casts id=14183 authored=14183 (untracked ability; not in spellranks.json's rank chains)
-- rogue-subtlety level=50 kind=zero_casts spell="Ambush" id=11268 authored=11269
-- rogue-subtlety level=50 kind=zero_casts spell="Sinister Strike" id=11293 authored=11294
-- rogue-subtlety level=60 kind=zero_casts id=14183 authored=14183 (untracked ability; not in spellranks.json's rank chains)
-- rogue-subtlety level=60 kind=zero_casts spell="Ambush" id=11269 authored=11269
-- rogue-subtlety level=60 kind=zero_casts spell="Sinister Strike" id=11294 authored=11294
+None.
