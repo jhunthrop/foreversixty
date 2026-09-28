@@ -13,6 +13,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/internal/spellranks"
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 	"github.com/jhunthrop/foreversixty/sim/specs"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
@@ -110,19 +111,19 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 	class := spec.ClassSlug
 	race := smokeRace(t, class)
 
-	guideBuild, treeDigits, err := guideBuildTalents(repoRoot, class, spec.SpecSlug)
+	guideBuild, treeDigits, err := leveling.GuideBuildTalents(repoRoot, class, spec.SpecSlug)
 	if err != nil {
 		t.Fatal(err)
 	}
-	guideTrees, err := loadTalentTrees(repoRoot, guideBuild, class)
+	guideTrees, err := leveling.LoadTalentTrees(repoRoot, guideBuild, class)
 	if err != nil {
 		t.Fatal(err)
 	}
-	activeTrees, err := loadTalentTrees(repoRoot, build, class)
+	activeTrees, err := leveling.LoadTalentTrees(repoRoot, build, class)
 	if err != nil {
 		t.Fatal(err)
 	}
-	targets := guideTalentTargets(guideTrees, treeDigits)
+	targets := leveling.GuideTalentTargets(guideTrees, treeDigits)
 
 	items, err := loadClassItems(repoRoot, build, class)
 	if err != nil {
@@ -172,7 +173,7 @@ func runLadderSpec(t *testing.T, build string, spec specs.Spec, curated ladderCu
 	prevDPS, havePrev := 0.0, false
 
 	for _, level := range ladderLevels {
-		talents := ladderTalentString(activeTrees, targets, spec.TreeIndex, level)
+		talents := leveling.LadderTalentString(activeTrees, targets, spec.TreeIndex, level)
 		talentPoints := ladderTalentPoints(activeTrees, targets, spec.TreeIndex, level)
 		gear := ladderGear(items, knownItems, spec.Spec, level)
 

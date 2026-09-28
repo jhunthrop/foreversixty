@@ -361,3 +361,24 @@ loot-check:
 	@(cd data && uv run python -m pipeline phases --check)
 	@(cd data && uv run pytest tests/test_loot_build.py tests/test_loot_overlay.py \
 	  tests/test_loot_buffs.py tests/test_phases.py -q --no-cov)
+
+.PHONY: bis
+# bis runs sim/cmd/leveling-bis (docs/superpowers/specs/2026-09-28-
+# leveling-bis-design.md): once per spec and band, never per character.
+# By default it ranks every spec in data/curated/specs.json with a
+# written rotation, at bands 10-60 step 5, both factions, and writes
+# data/builds/$(ACTIVE_BUILD)/bis/<spec>.json + .md - lane bis-web's
+# read contract. This is the nightly workflow's own command
+# (.github/workflows/bis.yml).
+#
+# Override BIS_ARGS for a single spec or a narrower band list during
+# development - the command's own flags (-spec, -bands, -out, -all) are
+# all still there, `make bis` just defaults to -all:
+#   make bis BIS_ARGS="-spec hunter-marksmanship -bands 20,30"
+#
+# Needs the embedded item database (`make simdb`), the same as
+# `cd sim && go test ./request`.
+BIS_ARGS ?= -all
+bis: simdb
+	@test -n "$(ACTIVE_BUILD)" || { echo "$(ACTIVE_BUILD_JSON) names no build"; exit 1; }
+	go run ./sim/cmd/leveling-bis $(BIS_ARGS)

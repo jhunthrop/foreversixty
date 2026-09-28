@@ -8,6 +8,9 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
+
+	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
 // slotRow is one slot's line in a band's report: the JSON and the
@@ -165,11 +168,35 @@ func titleCase(s string) string {
 	return strings.ToUpper(s[:1]) + s[1:]
 }
 
-func writeJSON(path string, reports []bandReport) error {
+// specReport is data/builds/<build>/bis/<spec>.json's whole shape -
+// lane bis-web's read contract (this lane's brief, step 3): every
+// bandReport field name is kept exactly as the prototype defined it;
+// engine_version is the one field this wrapper adds beyond what wraps
+// the array (spec, build, generated_at, bands).
+type specReport struct {
+	Spec          string       `json:"spec"`
+	Build         string       `json:"build"`
+	EngineVersion string       `json:"engine_version"`
+	GeneratedAt   string       `json:"generated_at"`
+	Bands         []bandReport `json:"bands"`
+}
+
+// writeSpecReport writes path per the specReport contract above.
+// GeneratedAt is RFC3339, in UTC so two runs on different machines (a
+// dev's laptop, the nightly workflow's runner) produce comparable
+// timestamps rather than each in its own local zone.
+func writeSpecReport(path, spec, build string, reports []bandReport) error {
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 		return err
 	}
-	b, err := json.MarshalIndent(reports, "", "  ")
+	out := specReport{
+		Spec:          spec,
+		Build:         build,
+		EngineVersion: enginever.Version,
+		GeneratedAt:   time.Now().UTC().Format(time.RFC3339),
+		Bands:         reports,
+	}
+	b, err := json.MarshalIndent(out, "", "  ")
 	if err != nil {
 		return err
 	}
