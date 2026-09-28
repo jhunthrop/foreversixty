@@ -238,13 +238,38 @@ class LootSource(BaseModel):
     faction_id: int | None = None
     standing: str | None = None
     rank: int | None = None
+    #: The vendor kind's own npc, so the page can link it the way a boss's
+    #: `npc_id` already does.
+    npc_id: int | None = None
     bosses: list[LootBoss] | None = None
     trash: list[int] | None = None
     items: list[int] | None = None
 
 
+class QuestSource(BaseModel):
+    """One quest that hands out an item, for `LootFile.quests`.
+
+    The fork database states no faction on a quest directly; the item it
+    awards carries whichever `factionRestriction` the quest's side amounts
+    to in practice, so `faction` here is that restriction standing in for
+    it, not a fact the quest row itself states.
+    """
+
+    quest_id: int
+    name: str
+    faction: str
+
+
 class LootFile(BaseModel):
     sources: list[LootSource]
+    #: Per-item quest detail (parity contract 6.1's quest kind grew a
+    #: face): item id -> the quest(s) that award it. The `quest` source
+    #: above stays as the flat compatibility bucket; this is additive.
+    quests: dict[str, list[QuestSource]] = {}
+    #: item id -> "alliance" or "horde", for every faction-restricted item
+    #: this build has -- quest items and non-quest items alike (a
+    #: restricted vendor or drop item has no quest to carry the fact on).
+    factions: dict[str, str] = {}
 
 
 class LootSourcePatch(BaseModel):
@@ -268,6 +293,7 @@ class LootSourcePatch(BaseModel):
     faction_id: int | None = None
     standing: str | None = None
     rank: int | None = None
+    npc_id: int | None = None
     bosses: list[LootBoss] | None = None
     trash: list[int] | None = None
     items: list[int] | None = None

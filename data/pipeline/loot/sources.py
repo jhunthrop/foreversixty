@@ -7,8 +7,21 @@ drop" both read this file, so the ids here are stable keys: a candidate's
 Nothing is invented. An item the fork database gives no source and the
 client gives no PvP rank is simply absent; a boss the fork does not name
 is emitted with an empty name; a drop source whose kind has no home in the
-contract's vocabulary -- a vendor with no rank, an unnamed open-world mob --
-is dropped and counted, never guessed into a kind.
+contract's vocabulary -- an open-world drop with neither a named npc nor a
+zone, a vendor sale with no npc id -- is dropped and counted, never guessed
+into a kind.
+
+Two kinds grew a second face here beyond the flat item lists every other
+kind carries. A vendor npc (`soldBy`) becomes a `vendor` source, one per
+npc, of the equippable items it sells -- a vendor selling only reagents or
+consumables names no source at all. A `drop` whose npc is not a dungeon or
+raid boss becomes a `zone` source, one per zone, alongside (not instead of)
+the existing `world` per-npc bucket; an item several creatures in the same
+zone drop appears once in that zone's list. Quests keep their single flat
+`quest` bucket for compatibility, and additionally grow a `quests` map
+(item id -> quest id, name and faction) on `LootFile` itself, and every
+faction-restricted item this build has -- quest or not -- is named in
+`LootFile.factions`.
 """
 
 from __future__ import annotations
@@ -18,21 +31,29 @@ from collections import defaultdict
 from dataclasses import dataclass
 
 from pipeline.csvio import populated
-from pipeline.forkdb import PROFESSIONS, REP_LEVELS, ForkDatabase, decode
-from pipeline.models import LootBoss, LootFile, LootSource
+from pipeline.forkdb import FACTION_RESTRICTIONS, PROFESSIONS, REP_LEVELS, ForkDatabase, decode
+from pipeline.models import LootBoss, LootFile, LootSource, QuestSource
 from pipeline.normalize.classes import slugify
+from pipeline.normalize.gear import SLOT_BY_INVENTORY_TYPE
 
 logger = logging.getLogger(__name__)
 
 #: The order sources are emitted in, which is the order the picker shows
-#: them: instances first, then the things you buy or make.
-KIND_ORDER = ("raid", "dungeon", "world", "crafted", "rep", "pvp", "quest")
+#: them: instances first, then the things you can farm by zone, then the
+#: things you buy or make.
+KIND_ORDER = ("raid", "dungeon", "world", "zone", "vendor", "crafted", "rep", "pvp", "quest")
 
 #: `Map.InstanceType`. 3 (battleground) and 4 (arena) are instances whose
 #: loot the contract has no kind for -- a battleground's rewards are
 #: reputation and rank, which are their own kinds -- so only these two
 #: become drop sources.
 INSTANCE_KIND = {1: "dungeon", 2: "raid"}
+
+#: An item's own `factionRestriction` (0 included, unlike
+#: `pipeline.forkdb.FACTION_RESTRICTIONS`), standing in for the side of the
+#: quest that hands it out -- the fork database states no faction on a
+#: quest directly. 0 means the quest is open to both, per the design.
+QUEST_FACTION_BY_RESTRICTION = {0: "both", 1: "alliance", 2: "horde"}
 
 
 @dataclass(frozen=True)
@@ -47,6 +68,10 @@ class LootStats:
     #: does not have. Contract 10.4 leaves them out; the count is the size
     #: of the re-itemisation gap and is logged and pinned by a test.
     absent_items: int
+    #: `zone` sources whose zone id `zones[]` itself does not name (emitted
+    #: with `name: ""` rather than invented, same policy as an unnamed
+    #: boss).
+    unnamed_zones: int
 
 
 def instance_types(
@@ -107,16 +132,26 @@ def _drop_sources(
     types: dict[int, int],
     build_items: set[int],
     absent: set[int],
-) -> tuple[list[LootSource], int]:
-    """The raid, dungeon and world sources, and how many drops had no home.
+) -> tuple[list[LootSource], int, int]:
+    """The raid, dungeon, world and zone sources, how many drops had no
+    home, and how many zone sources named a zone `zones[]` does not.
 
     `absent` collects, in place, every item id this build's table does not
     have, so the caller can count the re-itemisation gap once across all
     the builders rather than three times.
+
+    A drop whose zone is itself a dungeon or raid instance becomes a boss
+    or trash entry, same as always. Everything else -- a named open-world
+    mob, an unnamed one, a drop with no npc at all -- gets a `zone` entry
+    when it has a zone id, *in addition to* the existing per-npc `world`
+    entry when the npc is one the fork names; the two are complementary
+    views of the same drop, not alternatives. Only a drop with neither a
+    named npc nor any zone id has nowhere at all to go.
     """
     bosses: dict[tuple[int, int], set[int]] = defaultdict(set)
     trash: dict[int, set[int]] = defaultdict(set)
     world: dict[int, set[int]] = defaultdict(set)
+    zone: dict[int, set[int]] = defaultdict(set)
     dropped = 0
     for item in fork.items:
         item_id = int(item["id"])
@@ -126,9 +161,10 @@ def _drop_sources(
                 continue
             zone_id, npc_id = int(drop.get("zoneId", 0)), int(drop.get("npcId", 0))
             kind = INSTANCE_KIND.get(types.get(zone_id, 0))
-            if kind is None and npc_id not in fork.npcs:
-                # An open-world mob the fork does not name, or a drop with no
-                # zone at all. The contract has no kind for either.
+            if kind is None and npc_id not in fork.npcs and not zone_id:
+                # No dungeon/raid boss, no named open-world mob, no zone to
+                # file a zone-drop under either. The contract has no kind
+                # for it.
                 dropped += 1
                 continue
             if item_id not in build_items:
@@ -138,8 +174,11 @@ def _drop_sources(
                 continue
             if kind is not None:
                 (bosses[(zone_id, npc_id)] if npc_id else trash[zone_id]).add(item_id)
-            else:
+                continue
+            if npc_id in fork.npcs:
                 world[npc_id].add(item_id)
+            if zone_id:
+                zone[zone_id].add(item_id)
 
     out: list[LootSource] = []
     for zone_id in sorted({zone for zone, _ in bosses} | set(trash), key=lambda z: (
@@ -176,25 +215,46 @@ def _drop_sources(
         )
         for npc_id, items in sorted(world.items(), key=lambda pair: slugify(fork.npcs[pair[0]]))
     )
-    return out, dropped
+    unnamed_zones = sum(1 for zone_id in zone if zone_id not in zone_names)
+    out.extend(
+        LootSource(
+            id=f"zone:{zone_id}",
+            kind="zone",
+            # A zone id the fork's drops name that `zones[]` itself omits
+            # (the same gap `instance_types`' docstring measures for
+            # instances) gets an empty name rather than an invented one.
+            name=zone_names.get(zone_id, ""),
+            zone_id=zone_id,
+            items=sorted(items),
+        )
+        for zone_id, items in sorted(zone.items())
+    )
+    return out, dropped, unnamed_zones
 
 
 def _keyed_sources(
-    fork: ForkDatabase, build_items: set[int], absent: set[int]
-) -> tuple[list[LootSource], list[int], int]:
-    """The crafted, rep and quest sources, plus how many entries had no home."""
+    fork: ForkDatabase, build_items: set[int], equippable: set[int], absent: set[int]
+) -> tuple[list[LootSource], list[int], dict[int, list[QuestSource]], int]:
+    """The crafted, rep, vendor and quest sources, the per-item quest detail
+    behind the flat `quest` bucket, and how many entries had no home.
+
+    `equippable` gates the vendor kind only: a vendor who sells nothing but
+    reagents or consumables sells nothing this file has a slot for, so it
+    names no source at all (the item still counts toward `absent` if the
+    build itself lacks it -- that check runs before the equippable one, the
+    same order every other kind here uses).
+    """
     crafted: dict[str, set[int]] = defaultdict(set)
     rep: dict[tuple[int, str], set[int]] = defaultdict(set)
+    vendor_items: dict[int, set[int]] = defaultdict(set)
+    vendor_names: dict[int, str] = {}
     quest: set[int] = set()
+    quest_detail: dict[int, list[QuestSource]] = defaultdict(list)
     dropped = 0
     for item in fork.items:
         item_id = int(item["id"])
         for source in item.get("sources") or []:
-            if not ({"crafted", "rep", "quest"} & set(source)):
-                if "soldBy" in source:
-                    # A vendor. Rank vendors are covered by the pvp kind,
-                    # read off the client; anything else has no kind in 6.1.
-                    dropped += 1
+            if not ({"crafted", "rep", "quest", "soldBy"} & set(source)):
                 continue
             if item_id not in build_items:
                 absent.add(item_id)
@@ -215,6 +275,27 @@ def _keyed_sources(
                 rep[(faction_id, standing)].add(item_id)
             elif "quest" in source:
                 quest.add(item_id)
+                # The fork states no faction on the quest itself; the item
+                # it hands out carries the quest's side as its own
+                # factionRestriction, so that is what `quests` reports.
+                faction = QUEST_FACTION_BY_RESTRICTION[int(item.get("factionRestriction", 0))]
+                quest_detail[item_id].append(
+                    QuestSource(
+                        quest_id=int(source["quest"]["id"]),
+                        name=source["quest"]["name"],
+                        faction=faction,
+                    )
+                )
+            elif "soldBy" in source:
+                npc_id = int(source["soldBy"].get("npcId", 0))
+                if not npc_id:
+                    # No npc to key a vendor source on.
+                    dropped += 1
+                    continue
+                if item_id not in equippable:
+                    continue
+                vendor_items[npc_id].add(item_id)
+                vendor_names.setdefault(npc_id, source["soldBy"].get("npcName", ""))
     out = [
         LootSource(
             id=f"crafted:{profession}",
@@ -238,7 +319,17 @@ def _keyed_sources(
             rep.items(), key=lambda pair: (slugify(fork.factions[pair[0][0]]), pair[0][1])
         )
     ]
-    return out, sorted(quest), dropped
+    out += [
+        LootSource(
+            id=f"vendor:{npc_id}",
+            kind="vendor",
+            name=vendor_names[npc_id],
+            npc_id=npc_id,
+            items=sorted(items),
+        )
+        for npc_id, items in sorted(vendor_items.items())
+    ]
+    return out, sorted(quest), dict(quest_detail), dropped
 
 
 def _pvp_sources(ranks: dict[int, int], build_items: set[int]) -> list[LootSource]:
@@ -259,6 +350,26 @@ def _pvp_sources(ranks: dict[int, int], build_items: set[int]) -> list[LootSourc
         )
         for rank, items in sorted(by_rank.items())
     ]
+
+
+def item_factions(fork: ForkDatabase, build_items: set[int]) -> dict[int, str]:
+    """Item id -> "alliance" or "horde", for every faction-restricted item
+    this build has -- quest items and non-quest items alike, since a
+    restricted vendor, drop or crafted item has no quest to carry the fact
+    on. `LootFile.quests`' own per-item `faction` covers the quest items
+    a second time, from the same `factionRestriction` column; this is the
+    general map the design also asks for.
+    """
+    factions: dict[int, str] = {}
+    for item in fork.items:
+        item_id = int(item["id"])
+        restriction = item.get("factionRestriction")
+        if not restriction or item_id not in build_items:
+            continue
+        factions[item_id] = decode(
+            FACTION_RESTRICTIONS, int(restriction), "faction restriction"
+        ).removesuffix("_only")
+    return factions
 
 
 class SourceIdCollision(SystemExit):
@@ -301,10 +412,22 @@ def build_loot(
     types: dict[int, int],
     ranks: dict[int, int],
     build_items: set[int],
+    item_inventory_types: dict[int, int],
 ) -> tuple[LootFile, LootStats]:
     absent: set[int] = set()
-    drops, dropped_drops = _drop_sources(fork, zone_names, types, build_items, absent)
-    keyed, quest, dropped_keyed = _keyed_sources(fork, build_items, absent)
+    # The vendor kind's own filter: a vendor selling only reagents or
+    # consumables sells nothing this file tracks a source for.
+    equippable = {
+        item_id
+        for item_id, inventory_type in item_inventory_types.items()
+        if inventory_type in SLOT_BY_INVENTORY_TYPE
+    }
+    drops, dropped_drops, unnamed_zones = _drop_sources(
+        fork, zone_names, types, build_items, absent
+    )
+    keyed, quest, quest_detail, dropped_keyed = _keyed_sources(
+        fork, build_items, equippable, absent
+    )
     sources = [*drops, *keyed, *_pvp_sources(ranks, build_items)]
     if quest:
         sources.append(LootSource(id="quest", kind="quest", name="Quests", items=quest))
@@ -316,8 +439,17 @@ def build_loot(
     sources.sort(key=lambda source: (KIND_ORDER.index(source.kind), source.id))
     _check_unique_ids(sources)
     named = {item_id for source in sources for item_id in source_item_ids(source)}
-    return LootFile(sources=sources), LootStats(
+    document = LootFile(
+        sources=sources,
+        quests={str(item_id): entries for item_id, entries in sorted(quest_detail.items())},
+        factions={
+            str(item_id): faction
+            for item_id, faction in sorted(item_factions(fork, build_items).items())
+        },
+    )
+    return document, LootStats(
         items=len(named),
         dropped_entries=dropped_drops + dropped_keyed,
         absent_items=len(absent),
+        unnamed_zones=unnamed_zones,
     )
