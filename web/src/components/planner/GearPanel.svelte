@@ -12,6 +12,7 @@
   import { SLOTS, SLOT_LABELS, STAT_LABELS, type Slot, type StatKey } from '../../lib/planner/types';
   import { specLabel } from '../../lib/sim/spec-label';
   import { statLabel } from '../../lib/sim/stats';
+  import BisSlotPopover from './BisSlotPopover.svelte';
   import ItemPicker from './ItemPicker.svelte';
 
   let { store, weights = [] }: { store: PlannerStore; weights?: WeightsFile } = $props();
@@ -34,6 +35,47 @@
   });
 
   let openSlot = $state<Slot | null>(null);
+
+  // The BiS hover popover (design step 1 of the bis-hover-web lane brief). A mouse or
+  // keyboard user gets it for free from hover/focus, exactly like TalentCell's own tooltip;
+  // touch has neither, so the click handler below gives a slot's first tap the same job
+  // hover does for everyone else, and only a second tap on that same slot reaches the
+  // existing open/close-the-item-picker behaviour it always had.
+  let hoveredSlot = $state<Slot | null>(null);
+
+  /**
+   * Set from the pointerdown that precedes a click, never from a media query: Playwright's
+   * `.click()` always synthesizes a mouse-type pointer regardless of viewport or device
+   * emulation, so gating on `event.pointerType` here (rather than `matchMedia('(hover:
+   * none)')`) is what keeps every existing slot-click test -- desktop and the mobile
+   * project alike -- opening the item picker on the first click, exactly as before. Only a
+   * genuine touch pointer (a real phone, or Playwright's own `.tap()`, which nothing here
+   * uses yet) takes the "first tap shows the popover" path.
+   */
+  let lastPointerType = 'mouse';
+
+  function onSlotPointerDown(event: PointerEvent): void {
+    lastPointerType = event.pointerType;
+  }
+
+  function onSlotActivate(slot: Slot): void {
+    if (lastPointerType === 'touch' && hoveredSlot !== slot) {
+      hoveredSlot = slot;
+      return;
+    }
+    openSlot = openSlot === slot ? null : slot;
+  }
+
+  /** Closes the popover only once focus has left the whole slot (button + popover), not
+   *  when it moves from the button onto the popover's own "See the full list" link --
+   *  `focusout` bubbles and carries `relatedTarget`, unlike `blur`, so that distinction is
+   *  checkable here. */
+  function onSlotFocusOut(event: FocusEvent, slot: Slot): void {
+    const related = event.relatedTarget as Node | null;
+    const container = event.currentTarget as HTMLElement;
+    if (related && container.contains(related)) return;
+    if (hoveredSlot === slot) hoveredSlot = null;
+  }
 
   const totals = $derived(
     (Object.entries(store.statTotals) as [StatKey, number][]).sort(([a], [b]) =>
@@ -68,37 +110,54 @@
     {#each SLOTS as slot (slot)}
       {@const equippedId = store.gear[slot]}
       {@const item = equippedId === undefined ? undefined : store.itemIndex.get(equippedId)}
-      <button
-        type="button"
-        class="border-line rounded-control bg-card-top flex min-h-11 items-center gap-2 border px-2 py-1 text-left"
-        data-testid={`slot-${slot}`}
-        aria-label={item ? `${SLOT_LABELS[slot]}: ${item.name}` : `${SLOT_LABELS[slot]}: empty`}
-        disabled={store.readOnly}
-        onclick={() => (openSlot = openSlot === slot ? null : slot)}
+      <div
+        class="relative"
+        role="group"
+        onmouseenter={() => (hoveredSlot = slot)}
+        onmouseleave={() => {
+          if (hoveredSlot === slot) hoveredSlot = null;
+        }}
+        onfocusout={(event) => onSlotFocusOut(event, slot)}
       >
-        {#if item}
-          <!-- The aria-label above names the slot and the item, so the icon is decorative. -->
-          <img
-            src={dataUrl(store.treeVersion, `icons/${item.icon}.webp`)}
-            alt=""
-            width="28"
-            height="28"
-            loading="lazy"
-            decoding="async"
-            class="rounded-control border-line h-7 w-7 border object-cover"
-          />
-        {:else}
-          <span class="rounded-control border-line-soft h-7 w-7 border" aria-hidden="true"></span>
-        {/if}
-        <span class="flex min-w-0 flex-col">
-          <span class="label text-muted">{SLOT_LABELS[slot]}</span>
-          <span
-            class={`truncate text-[13px] font-semibold ${item ? rarityClassFor(item.quality) : 'text-muted'}`}
-          >
-            {wornItemLabel(item?.name, equippedId, outsideNames, plannerCopy)}
+        <button
+          type="button"
+          class="border-line rounded-control bg-card-top flex min-h-11 w-full items-center gap-2 border px-2 py-1 text-left"
+          data-testid={`slot-${slot}`}
+          aria-label={item ? `${SLOT_LABELS[slot]}: ${item.name}` : `${SLOT_LABELS[slot]}: empty`}
+          aria-describedby={hoveredSlot === slot ? `bis-hover-${slot}` : undefined}
+          disabled={store.readOnly}
+          onpointerdown={onSlotPointerDown}
+          onclick={() => onSlotActivate(slot)}
+          onfocus={() => (hoveredSlot = slot)}
+        >
+          {#if item}
+            <!-- The aria-label above names the slot and the item, so the icon is decorative. -->
+            <img
+              src={dataUrl(store.treeVersion, `icons/${item.icon}.webp`)}
+              alt=""
+              width="28"
+              height="28"
+              loading="lazy"
+              decoding="async"
+              class="rounded-control border-line h-7 w-7 border object-cover"
+            />
+          {:else}
+            <span class="rounded-control border-line-soft h-7 w-7 border" aria-hidden="true"></span>
+          {/if}
+          <span class="flex min-w-0 flex-col">
+            <span class="label text-muted">{SLOT_LABELS[slot]}</span>
+            <span
+              class={`truncate text-[13px] font-semibold ${item ? rarityClassFor(item.quality) : 'text-muted'}`}
+            >
+              {wornItemLabel(item?.name, equippedId, outsideNames, plannerCopy)}
+            </span>
           </span>
-        </span>
-      </button>
+        </button>
+
+        {#if hoveredSlot === slot}
+          <BisSlotPopover {store} {slot} spec={specKey} id={`bis-hover-${slot}`} />
+        {/if}
+      </div>
     {/each}
   </div>
 
