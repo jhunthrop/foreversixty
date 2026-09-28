@@ -246,6 +246,14 @@ map is refused rather than dropped: a sim that quietly ran without the
 profession the player counted on would report a wrong number and say
 nothing about why. A character with no professions is legal.
 
+The client's secondary skills — ` + "`cooking`, `fishing` and `first-aid`" + `, as
+the addon slugs ` + "`GetProfessionInfo`" + `'s names — are the one exception: the
+engine models nothing for them, every character can hold all three
+beside two primaries, and the addon lists them, so they are skipped
+before the two-slot rule rather than refused or counted. An export
+reading ` + "`leatherworking,enchanting,cooking`" + ` is a character with two
+professions.
+
 | slug | engine enum |
 | --- | --- |
 `)
