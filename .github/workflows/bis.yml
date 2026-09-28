@@ -75,8 +75,19 @@ jobs:
         working-directory: data
         run: |
           uv sync
-          uv run python -m pipeline quest-levels --build "${{ steps.identity.outputs.build }}" --engine ../.engine --max-pages 200
-          uv run python -m pipeline loot --build "${{ steps.identity.outputs.build }}" --engine ../.engine
+          summary=$(uv run python -m pipeline quest-levels --build "${{ steps.identity.outputs.build }}" --engine ../.engine --max-pages 200 | tee /dev/stderr | grep -E '^quest-levels: [0-9]+/' | tail -1)
+          fetched=$(echo "$summary" | sed -E 's/^quest-levels: ([0-9]+)\/.*/\1/')
+          # loot.json is rebuilt from the client's raw tables, which are not
+          # committed (data.yml's fetch job downloads them from wago.tools).
+          # Only a night that filled in at least one quest level pays for
+          # that download; every other night the committed loot.json is
+          # already what the pipeline would produce.
+          if [ "${fetched:-0}" -gt 0 ]; then
+            uv run python -m pipeline fetch --product wow_classic_era --build "${{ steps.identity.outputs.build }}"
+            uv run python -m pipeline loot --build "${{ steps.identity.outputs.build }}" --engine ../.engine
+          else
+            echo "no quest level filled in tonight; loot.json unchanged"
+          fi
       - name: commit quest-levels.json and loot.json if they changed
         run: |
           git config user.name "forever-bis-bot"
@@ -88,7 +99,7 @@ jobs:
             echo "nothing to commit"
           else
             for attempt in 1 2 3 4 5; do
-              git pull --rebase origin main && git push && break
+              git pull --rebase --autostash origin main && git push && break
               echo "push attempt $attempt failed; retrying"
               sleep 20
             done
