@@ -17,6 +17,8 @@ local Cards = ns.Cards or require("Cards")
 local Follow = ns.Follow or require("Follow")
 local Talents = ns.Talents or require("Talents")
 local Prefs = ns.Prefs or require("Prefs")
+local Export = ns.Export or require("Export")
+local Compat = ns.Compat or require("Compat")
 
 local FollowView = {}
 
@@ -186,14 +188,21 @@ local function layout(parent, ctx)
 	return view
 end
 
+--- Who the empty state names as whose build it would load: the header
+--- shows the same name (Window.headerModel), so a player with more than
+--- one character never wonders which one an empty Follow tab means.
+local function emptyName()
+	return string.format(L.followNoneNamed, Compat.playerName() or "")
+end
+
 function FollowView.apply(view, model)
 	view.model = model
-	view.name:SetText(model.empty and L.followNone or model.name)
+	view.name:SetText(model.empty and emptyName() or model.name)
 	view.progress:SetText(model.empty and ""
 		or string.format(L.followProgress, model.spent, model.total))
 	view.bar:SetValue(model.total > 0 and model.spent / model.total or 0)
 	view.list:SetItems(model.list)
-	local waiting = Follow.inbox(ForeverSixtyInbox)
+	local waiting = Follow.inbox(ForeverSixtyInbox, Export.characterKey())
 	view.waiting = waiting[1]
 	if view.waiting == nil then
 		view.inbox:Hide()
