@@ -122,6 +122,74 @@ describe("Tooltip", function()
 		assert.are.same({}, Tooltip.lines(DATA, nil, "item:999"))
 	end)
 
+	describe("Tooltip.capLines", function()
+		it("names a capped stat the item actually carries", function()
+			start({
+				itemStats = {
+					["item:ring"] = { __itemId = 400, __slot = "INVTYPE_FINGER", ITEM_MOD_HIT_RATING_SHORT = 12 },
+				},
+			})
+			local lines = Tooltip.capLines("item:ring", { caps = { "hit" } })
+			assert.are.same({ string.format(L.tooltipCapped, "hit") }, lines)
+		end)
+
+		it("says nothing for a stat this item does not carry, even if capped", function()
+			start({
+				itemStats = {
+					["item:ring"] = { __itemId = 400, __slot = "INVTYPE_FINGER", ITEM_MOD_CRIT_RATING_SHORT = 12 },
+				},
+			})
+			assert.are.same({}, Tooltip.capLines("item:ring", { caps = { "hit" } }))
+		end)
+
+		it("names every capped stat the item carries, sorted", function()
+			start({
+				itemStats = {
+					["item:ring"] = {
+						__itemId = 400, __slot = "INVTYPE_FINGER",
+						ITEM_MOD_HIT_RATING_SHORT = 8, ITEM_MOD_EXPERTISE_RATING_SHORT = 6,
+					},
+				},
+			})
+			local lines = Tooltip.capLines("item:ring", { caps = { "hit", "expertise" } })
+			assert.are.same({
+				string.format(L.tooltipCapped, "expertise"),
+				string.format(L.tooltipCapped, "hit"),
+			}, lines)
+		end)
+
+		it("says nothing with no weights message at all", function()
+			start({ itemStats = { ["item:ring"] = { __itemId = 400, __slot = "INVTYPE_FINGER" } } })
+			assert.are.same({}, Tooltip.capLines("item:ring", nil))
+		end)
+
+		it("says nothing for a weights message with no caps", function()
+			start({ itemStats = { ["item:ring"] = { __itemId = 400, __slot = "INVTYPE_FINGER" } } })
+			assert.are.same({}, Tooltip.capLines("item:ring", { spec = "fury" }))
+		end)
+
+		it("says nothing with no item link", function()
+			start()
+			assert.are.same({}, Tooltip.capLines(nil, { caps = { "hit" } }))
+		end)
+
+		it("folds into Tooltip.lines' full line list", function()
+			start({
+				class = { name = "Paladin", token = "PALADIN" },
+				equipped = { [5] = nil },
+				itemStats = {
+					["item:111"] = {
+						__itemId = 111, __slot = "INVTYPE_CHEST",
+						ITEM_MOD_INTELLECT_SHORT = 10, ITEM_MOD_HIT_RATING_SHORT = 5,
+					},
+				},
+			})
+			local lines = Tooltip.lines(DATA, BUILD, "item:111", { caps = { "hit" } })
+			assert.are.equal(3, #lines)
+			assert.are.equal(string.format(L.tooltipCapped, "hit"), lines[3])
+		end)
+	end)
+
 	describe("the hook", function()
 		local Prefs, Follow
 

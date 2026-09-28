@@ -27,6 +27,7 @@ describe("GuildView", function()
 
 	after_each(function()
 		_G.ForeverSixtyData = nil
+		_G.ForeverSixtyInbox = nil
 		mock.uninstall()
 	end)
 
@@ -88,11 +89,78 @@ describe("GuildView", function()
 		assert.are.equal(L.guildNotOnSite, model.standingLine)
 	end)
 
+	it("has no state line at all with no inbox message", function()
+		start(DATA, { name = "Iron Vanguard", rankName = "Officer", rankIndex = 1 })
+		local model = GuildView.summary()
+		assert.is_nil(model.stateLine)
+	end)
+
+	it("shows claim state and the approval count from a matching guild inbox message", function()
+		start(DATA, { name = "Iron Vanguard", rankName = "Officer", rankIndex = 1 })
+		_G.ForeverSixtyInbox = { messages = {
+			{ type = "guild", character = "us/ashbringer/tester", guild_name = "Iron Vanguard",
+				claim_state = "claimed", pending_approvals = 3, rank = "officer" },
+		} }
+		local model = GuildView.summary()
+		assert.are.equal(L.guildClaimClaimed .. " · " .. string.format(L.guildPendingApprovals, 3), model.stateLine)
+	end)
+
+	it("omits the approval count when there are none pending", function()
+		start(DATA, { name = "Iron Vanguard", rankName = "Member", rankIndex = 5 })
+		_G.ForeverSixtyInbox = { messages = {
+			{ type = "guild", character = "us/ashbringer/tester", guild_name = "Iron Vanguard",
+				claim_state = "unclaimed", pending_approvals = 0, rank = "member" },
+		} }
+		local model = GuildView.summary()
+		assert.are.equal(L.guildClaimUnclaimed, model.stateLine)
+	end)
+
+	it("ignores a guild message addressed to a different character", function()
+		start(DATA, { name = "Iron Vanguard", rankName = "Officer", rankIndex = 1 })
+		_G.ForeverSixtyInbox = { messages = {
+			{ type = "guild", character = "us/ashbringer/someone-else", guild_name = "Iron Vanguard",
+				claim_state = "claimed", pending_approvals = 3, rank = "officer" },
+		} }
+		assert.is_nil(GuildView.summary().stateLine)
+	end)
+
+	it("ignores a guild message about a different guild -- a stale sync after a transfer", function()
+		start(DATA, { name = "Iron Vanguard", rankName = "Officer", rankIndex = 1 })
+		_G.ForeverSixtyInbox = { messages = {
+			{ type = "guild", character = "us/ashbringer/tester", guild_name = "Old Guild",
+				claim_state = "claimed", pending_approvals = 3, rank = "officer" },
+		} }
+		assert.is_nil(GuildView.summary().stateLine)
+	end)
+
+	it("ignores a message of a different type entirely", function()
+		start(DATA, { name = "Iron Vanguard", rankName = "Officer", rankIndex = 1 })
+		_G.ForeverSixtyInbox = { messages = {
+			{ type = "weights", character = "us/ashbringer/tester", spec = "arms" },
+		} }
+		assert.is_nil(GuildView.summary().stateLine)
+	end)
+
 	it("mounts and refreshes without error in every state", function()
 		start(DATA, { name = "Iron Vanguard", rankName = "Member", rankIndex = 5 })
 		local view = GuildView.mount(_G.CreateFrame("Frame"), { contentWidth = 538, select = function() end })
 		view.refresh()
 		_G.ForeverSixtyData = nil
 		view.refresh()
+	end)
+
+	it("draws the state line onto the frame and hides it again once the message is gone", function()
+		start(DATA, { name = "Iron Vanguard", rankName = "Officer", rankIndex = 1 })
+		_G.ForeverSixtyInbox = { messages = {
+			{ type = "guild", character = "us/ashbringer/tester", guild_name = "Iron Vanguard",
+				claim_state = "claimed", pending_approvals = 1, rank = "officer" },
+		} }
+		local view = GuildView.mount(_G.CreateFrame("Frame"), { contentWidth = 538, select = function() end })
+		assert.is_true(view.state:IsShown())
+		assert.are.equal(L.guildClaimClaimed .. " · " .. string.format(L.guildPendingApprovals, 1), view.state:GetText())
+
+		_G.ForeverSixtyInbox = nil
+		view.refresh()
+		assert.is_false(view.state:IsShown())
 	end)
 end)

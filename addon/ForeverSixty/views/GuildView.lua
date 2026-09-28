@@ -1,16 +1,76 @@
 -- addon/ForeverSixty/views/GuildView.lua
 -- The Guild page: who you are in your guild, from the client; what your
 -- guild has done and how its roster rates, from the Forever Sixty Data
--- addon. Without that addon the page still names the guild and says what
--- to install; it never shows an empty table as if the guild had no data.
+-- addon; and, from the companion's private inbox, this account's own claim
+-- state and (for an officer or leader) the approval queue's size (Wave C,
+-- section 3/4). Without the data addon the page still names the guild and
+-- says what to install; it never shows an empty table as if the guild had
+-- no data, and it never shows the private state block for a guild the
+-- inbox message is not actually about (guildMessage below).
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
 local Theme = ns.Theme or require("Theme")
 local Widgets = ns.Widgets or require("Widgets")
 local Ratings = ns.Ratings or require("Ratings")
+local Codec = ns.Codec or require("Codec")
+local Export = ns.Export or require("Export")
 
 local GuildView = {}
+
+--- Section 3/4's claim-state line, keyed by the "guild" message's own
+--- `claim_state` (guilds.ClaimStateView.State on the API side: unclaimed,
+--- pending, claimed, contested). A state this addon build does not
+--- recognise -- a future phase the site added -- reads as no line at all,
+--- the same forward-compatibility rule Codec.inboxMessages already
+--- applies to a message type it does not recognise.
+local CLAIM_LINES = {
+	unclaimed = L.guildClaimUnclaimed,
+	pending = L.guildClaimPending,
+	claimed = L.guildClaimClaimed,
+	contested = L.guildClaimContested,
+}
+
+--- The "guild" inbox message for the logged-in character, if the
+--- companion has one AND it is about the guild the client itself
+--- reports (`guildName`) -- a stale or mismatched message (an alt that
+--- transferred guilds since the companion's last ten-minute sync) is
+--- dropped rather than shown under the wrong guild's tab, same as this
+--- file already refuses to show an empty roster table as if it were a
+--- guild with no data.
+local function guildMessage(guildName)
+	local key = Export.characterKey and Export.characterKey() or nil
+	for _, message in ipairs(Codec.inboxMessages(_G.ForeverSixtyInbox, key, "guild")) do
+		if message.guild_name == guildName then
+			return message
+		end
+	end
+	return nil
+end
+
+--- The state block's one line, joining whichever of claim state and the
+--- approval count apply -- pending_approvals is 0 (and so this half is
+--- silent) for anyone who is not an officer or leader, per the "guild"
+--- message's own contract. nil, not "", when there is nothing to say,
+--- so the caller can tell "no message" from "a message with nothing to
+--- show" and hide the line either way.
+local function stateLine(message)
+	if message == nil then
+		return nil
+	end
+	local parts = {}
+	local claimText = CLAIM_LINES[message.claim_state]
+	if claimText ~= nil then
+		parts[#parts + 1] = claimText
+	end
+	if (message.pending_approvals or 0) > 0 then
+		parts[#parts + 1] = string.format(L.guildPendingApprovals, message.pending_approvals)
+	end
+	if #parts == 0 then
+		return nil
+	end
+	return table.concat(parts, " · ")
+end
 
 GuildView.ROSTER_ROWS = 10
 
@@ -61,6 +121,7 @@ function GuildView.summary()
 		rankLine = string.format(L.guildRank, info.rankName or ""),
 		data = data,
 		roster = {},
+		stateLine = stateLine(guildMessage(info.name)),
 	}
 	if not data.available then
 		model.standingLine = data.reason
@@ -113,8 +174,15 @@ local function layout(parent, ctx)
 	view.note = Widgets.label(parent, "", "muted", "small")
 	view.note:SetPoint("TOPLEFT", view.rank, "BOTTOMLEFT", 0, -S.padding)
 	view.note:SetWidth(ctx.contentWidth)
+	-- The private state block (claim state, and for an officer or
+	-- leader, the approval queue's size): section 3/4's addition, from
+	-- the companion's inbox rather than the public data addon, so it
+	-- has its own line below the public standing note.
+	view.state = Widgets.label(parent, "", "gold", "small")
+	view.state:SetPoint("TOPLEFT", view.note, "BOTTOMLEFT", 0, -S.gap)
+	view.state:SetWidth(ctx.contentWidth)
 	view.rosterTitle = Widgets.label(parent, L.guildRosterTitle, "muted", "small")
-	view.rosterTitle:SetPoint("TOPLEFT", view.note, "BOTTOMLEFT", 0, -S.padding)
+	view.rosterTitle:SetPoint("TOPLEFT", view.state, "BOTTOMLEFT", 0, -S.padding)
 	view.list = Widgets.list(parent, ctx.contentWidth, GuildView.ROSTER_ROWS, rosterRow)
 	view.list.frame:SetPoint("TOPLEFT", view.rosterTitle, "BOTTOMLEFT", 0, -S.gap * 2)
 	view.list:SetRenderer(renderRow)
@@ -139,6 +207,8 @@ function GuildView.apply(view, model)
 	view.nights:SetText(model.standing and model.standing.nightsLine or "")
 	view.note:SetText(model.standingLine or "")
 	view.note:SetTextColor(Theme.rgb(Theme.HEX[model.data.available and "muted" or "warning"]))
+	view.state:SetText(model.stateLine or "")
+	showAs(view.state, model.stateLine ~= nil)
 	showAs(view.rosterTitle, #model.roster > 0)
 	view.list:SetItems(model.roster)
 	view.generated:SetText(model.data.available and model.data.generatedLine or "")
