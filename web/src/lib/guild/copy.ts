@@ -27,6 +27,12 @@ export const guildHomeCopy = {
   remove: 'Remove',
   settingsLink: 'Guild settings',
   claimLink: 'Claim this guild',
+  // Shown in the same header slot as claimLink, but only once an officer/leader claim is
+  // already pending confirmation (UX review defect 1, 2026-09-28).
+  confirmClaimLink: 'Confirm the claim',
+  // A plain, unverified member has no claim standing at all -- this replaces the claim
+  // link for them in that same slot, rather than leaving it silently absent.
+  notVerifiedNote: 'You are not verified yet. An officer can approve you from the roster.',
   openSim: 'Open in simulator',
   openPlanner: 'Open in planner',
   untitledReport: 'Untitled report',

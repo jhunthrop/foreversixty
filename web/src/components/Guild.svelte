@@ -142,6 +142,18 @@
       (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
   );
 
+  /**
+   * UX review defect 1 (2026-09-28): claiming is itself the corroboration mechanism (spec
+   * section 2.4) and does not require `verified_at` beforehand, so whether the claim link
+   * shows is gated on rank alone, never on `verified`. `canManage` above stays
+   * verified-gated on purpose -- it is a different question (can this viewer use officer
+   * tools on an already-settled guild), not this one (can this viewer claim the guild).
+   */
+  const isOfficerOrLeader = $derived(
+    myGuildMembership !== null &&
+      (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
+  );
+
   /** A raw membership row (any rank, verified or not) is enough to offer contesting --
    *  the API enforces the real officer/leader-or-rank-0 rule server side (spec section
    *  3.3's amendment); a plain member who tries gets a 403 with a sentence. */
@@ -292,7 +304,23 @@
       <section class="border-line-soft flex flex-col gap-4 border-b pb-6" data-testid="guild-home">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <h2 class="section-title text-[18px]">{guildHomeCopy.reportsHeading}</h2>
-          {#if canManage}
+          {#if isOfficerOrLeader && home.claim.state === 'unclaimed'}
+            <a
+              class="text-[13px] font-semibold"
+              href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
+              data-testid="guild-claim-link"
+            >
+              {guildHomeCopy.claimLink}
+            </a>
+          {:else if isOfficerOrLeader && home.claim.state === 'pending'}
+            <a
+              class="text-[13px] font-semibold"
+              href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
+              data-testid="guild-confirm-claim-link"
+            >
+              {guildHomeCopy.confirmClaimLink}
+            </a>
+          {:else if canManage}
             <a
               class="text-[13px] font-semibold"
               href={guildSettingsHref(resolved.region, resolved.ruleset, home.guild.name)}
@@ -301,13 +329,9 @@
               {guildHomeCopy.settingsLink}
             </a>
           {:else if myGuildMembership !== null && !myGuildMembership.verified}
-            <a
-              class="text-[13px] font-semibold"
-              href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
-              data-testid="guild-claim-link"
-            >
-              {guildHomeCopy.claimLink}
-            </a>
+            <p class="text-muted text-[13px]" data-testid="guild-home-not-verified-note">
+              {guildHomeCopy.notVerifiedNote}
+            </p>
           {/if}
         </div>
 

@@ -384,6 +384,58 @@ test('an unverified member sees the public-reports-only note', async ({ page }) 
   await expect(page.getByTestId('guild-home-unverified-note')).toBeVisible();
 });
 
+// UX review defect 1 (2026-09-28): the claim link is gated on rank, not on verification --
+// claiming is itself the corroboration mechanism (spec section 2.4), so an officer or
+// leader can claim before their own account is verified. These four cases replace the old
+// "shows whenever unverified" rule.
+test('an officer of an unclaimed guild sees "Claim this guild", not the settings link', async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
+  await page.route('**/v1/guilds/501/home', (route) =>
+    route.fulfill(envelope({ ...HOME, claim: { state: 'unclaimed', frozen: false } })),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch');
+  await expect(page.getByTestId('guild-claim-link')).toHaveText('Claim this guild');
+  await expect(page.getByTestId('guild-settings-link')).toHaveCount(0);
+});
+
+test('an officer of a guild with a pending claim sees "Confirm the claim"', async ({ page }) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
+  await page.route('**/v1/guilds/501/home', (route) =>
+    route.fulfill(envelope({ ...HOME, claim: { state: 'pending', frozen: false } })),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch');
+  await expect(page.getByTestId('guild-confirm-claim-link')).toHaveText('Confirm the claim');
+});
+
+test('an unverified plain member sees the not-verified note instead of a claim link', async ({ page }) => {
+  const ME_UNVERIFIED_MEMBER = { ...ME, guilds: [{ ...ME.guilds[0], rank: 'member', verified: false }] };
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_UNVERIFIED_MEMBER)));
+  await page.route('**/v1/guilds/501/home', (route) =>
+    route.fulfill(envelope({ ...HOME, claim: { state: 'unclaimed', frozen: false } })),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch');
+  await expect(page.getByTestId('guild-home-not-verified-note')).toHaveText(
+    'You are not verified yet. An officer can approve you from the roster.',
+  );
+  await expect(page.getByTestId('guild-claim-link')).toHaveCount(0);
+});
+
+test('a verified plain member sees no claim link and no settings link', async ({ page }) => {
+  const ME_VERIFIED_MEMBER = { ...ME, guilds: [{ ...ME.guilds[0], rank: 'member', verified: true }] };
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_VERIFIED_MEMBER)));
+  await page.route('**/v1/guilds/501/home', (route) => route.fulfill(envelope(HOME)));
+  await page.goto('/guild/us/hardcore/the-last-watch');
+  await expect(page.getByTestId('guild-home')).toBeVisible();
+  await expect(page.getByTestId('guild-claim-link')).toHaveCount(0);
+  await expect(page.getByTestId('guild-confirm-claim-link')).toHaveCount(0);
+  await expect(page.getByTestId('guild-settings-link')).toHaveCount(0);
+  await expect(page.getByTestId('guild-home-not-verified-note')).toHaveCount(0);
+});
+
 test('contesting a claim calls the contest endpoint after confirming', async ({ page }) => {
   // The home route is stateful: the post-contest re-fetch (Guild.svelte's own onContest,
   // which calls fetchGuildHome again once contestClaim resolves) must see a DIFFERENT
