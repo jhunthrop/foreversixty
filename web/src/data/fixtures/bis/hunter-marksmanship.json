@@ -1,0 +1,4412 @@
+{
+  "spec": "hunter-marksmanship",
+  "build": "1.60.1.70009",
+  "engine_version": "8d39f2b29",
+  "generated_at": "2026-09-28T00:00:00Z",
+  "bands": [
+    {
+      "spec": "hunter-marksmanship",
+      "band": 10,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 1,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10020,
+          "item_name": "Sturdy Cap of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 23.5,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10021,
+          "item_name": "Bone Choker of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 23.9,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10022,
+          "item_name": "Iron Mantle of the Ladder",
+          "source": "Drops in the leveling zone (level 10)",
+          "source_kind": "zone",
+          "score": 24.3,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10023,
+          "item_name": "Rugged Cloak of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 24.7,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10024,
+          "item_name": "Ashen Vest of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 25.1,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10025,
+          "item_name": "Tempered Bracers of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 25.5,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10026,
+          "item_name": "Gilded Gloves of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 25.9,
+          "verified": false
+        },
+        {
+          "slot": "waist",
+          "item_id": 10027,
+          "item_name": "Hardened Belt of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 26.3,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10028,
+          "item_name": "Frayed Leggings of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 26.7,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10029,
+          "item_name": "Silent Boots of the Ladder",
+          "source": "Drops in the leveling zone (level 10)",
+          "source_kind": "zone",
+          "score": 27.1,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10030,
+          "item_name": "Feral Band of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 27.5,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10031,
+          "item_name": "Worn Ring of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 27.9,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10032,
+          "item_name": "Sturdy Charm of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 28.3,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10033,
+          "item_name": "Bone Totem of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 28.7,
+          "verified": false
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10034,
+          "item_name": "Iron Shortsword of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 29.1,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10035,
+          "item_name": "Rugged Buckler of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 29.5,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10036,
+          "item_name": "Ashen Longbow of the Ladder",
+          "source": "Drops in the leveling zone (level 10)",
+          "source_kind": "zone",
+          "score": 29.9,
+          "verified": true
+        }
+      ],
+      "set_dps": 267.0,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 2.6,
+      "verify_run_seconds": 17.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 10,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 1,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15020,
+          "item_name": "Sturdy Cap of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 23.5,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15021,
+          "item_name": "Bone Choker of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 23.9,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15022,
+          "item_name": "Iron Mantle of the Ladder",
+          "source": "Drops in the leveling zone (level 10)",
+          "source_kind": "zone",
+          "score": 24.3,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15023,
+          "item_name": "Rugged Cloak of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 24.7,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15024,
+          "item_name": "Ashen Vest of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 25.1,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15025,
+          "item_name": "Tempered Bracers of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 25.5,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15026,
+          "item_name": "Gilded Gloves of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 25.9,
+          "verified": false
+        },
+        {
+          "slot": "waist",
+          "item_id": 15027,
+          "item_name": "Hardened Belt of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 26.3,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15028,
+          "item_name": "Frayed Leggings of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 26.7,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15029,
+          "item_name": "Silent Boots of the Ladder",
+          "source": "Drops in the leveling zone (level 10)",
+          "source_kind": "zone",
+          "score": 27.1,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15030,
+          "item_name": "Feral Band of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 27.5,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15031,
+          "item_name": "Worn Ring of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 27.9,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15032,
+          "item_name": "Sturdy Charm of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 28.3,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15033,
+          "item_name": "Bone Totem of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 28.7,
+          "verified": false
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15034,
+          "item_name": "Iron Shortsword of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 29.1,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15035,
+          "item_name": "Rugged Buckler of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 29.5,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15036,
+          "item_name": "Ashen Longbow of the Ladder",
+          "source": "Drops in the leveling zone (level 10)",
+          "source_kind": "zone",
+          "score": 29.9,
+          "verified": true
+        }
+      ],
+      "set_dps": 267.0,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 2.6,
+      "verify_run_seconds": 17.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 15,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 6,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10020,
+          "item_name": "Sturdy Cap of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 30.25,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10021,
+          "item_name": "Bone Choker of the Ladder",
+          "source": "Drops in the leveling zone (level 15)",
+          "source_kind": "zone",
+          "score": 30.65,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10022,
+          "item_name": "Iron Mantle of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 31.05,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10023,
+          "item_name": "Rugged Cloak of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 31.45,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10024,
+          "item_name": "Ashen Vest of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 31.85,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10025,
+          "item_name": "Tempered Bracers of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 32.25,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10026,
+          "item_name": "Gilded Gloves of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 32.65,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10027,
+          "item_name": "Hardened Belt of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 33.05,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10028,
+          "item_name": "Frayed Leggings of the Ladder",
+          "source": "Drops in the leveling zone (level 15)",
+          "source_kind": "zone",
+          "score": 33.45,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10029,
+          "item_name": "Silent Boots of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 33.85,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10030,
+          "item_name": "Feral Band of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 34.25,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10031,
+          "item_name": "Worn Ring of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 34.65,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10032,
+          "item_name": "Sturdy Charm of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 35.05,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10033,
+          "item_name": "Bone Totem of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 35.45,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10034,
+          "item_name": "Iron Shortsword of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 35.85,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10035,
+          "item_name": "Rugged Buckler of the Ladder",
+          "source": "Drops in the leveling zone (level 15)",
+          "source_kind": "zone",
+          "score": 36.25,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10036,
+          "item_name": "Ashen Longbow of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 36.65,
+          "verified": true
+        }
+      ],
+      "set_dps": 340.5,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 2.85,
+      "verify_run_seconds": 20.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 15,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 6,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15020,
+          "item_name": "Sturdy Cap of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 30.25,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15021,
+          "item_name": "Bone Choker of the Ladder",
+          "source": "Drops in the leveling zone (level 15)",
+          "source_kind": "zone",
+          "score": 30.65,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15022,
+          "item_name": "Iron Mantle of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 31.05,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15023,
+          "item_name": "Rugged Cloak of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 31.45,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15024,
+          "item_name": "Ashen Vest of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 31.85,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15025,
+          "item_name": "Tempered Bracers of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 32.25,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15026,
+          "item_name": "Gilded Gloves of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 32.65,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 15027,
+          "item_name": "Hardened Belt of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 33.05,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15028,
+          "item_name": "Frayed Leggings of the Ladder",
+          "source": "Drops in the leveling zone (level 15)",
+          "source_kind": "zone",
+          "score": 33.45,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15029,
+          "item_name": "Silent Boots of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 33.85,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15030,
+          "item_name": "Feral Band of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 34.25,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15031,
+          "item_name": "Worn Ring of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 34.65,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15032,
+          "item_name": "Sturdy Charm of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 35.05,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15033,
+          "item_name": "Bone Totem of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 35.45,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15034,
+          "item_name": "Iron Shortsword of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 35.85,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15035,
+          "item_name": "Rugged Buckler of the Ladder",
+          "source": "Drops in the leveling zone (level 15)",
+          "source_kind": "zone",
+          "score": 36.25,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15036,
+          "item_name": "Ashen Longbow of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 36.65,
+          "verified": true
+        }
+      ],
+      "set_dps": 340.5,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 2.85,
+      "verify_run_seconds": 20.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 20,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 11,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10040,
+          "item_name": "Bone Cap of the Ladder",
+          "source": "Drops in the leveling zone (level 20)",
+          "source_kind": "zone",
+          "score": 37.0,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10041,
+          "item_name": "Iron Choker of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 37.4,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10042,
+          "item_name": "Rugged Mantle of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 37.8,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10043,
+          "item_name": "Ashen Cloak of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 38.2,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10044,
+          "item_name": "Tempered Vest of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 38.6,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10045,
+          "item_name": "Gilded Bracers of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 39.0,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10046,
+          "item_name": "Hardened Gloves of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 39.4,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10047,
+          "item_name": "Frayed Belt of the Ladder",
+          "source": "Drops in the leveling zone (level 20)",
+          "source_kind": "zone",
+          "score": 39.8,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10048,
+          "item_name": "Silent Leggings of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 40.2,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10049,
+          "item_name": "Feral Boots of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 40.6,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10050,
+          "item_name": "Worn Band of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 41.0,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10051,
+          "item_name": "Sturdy Ring of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 41.4,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10052,
+          "item_name": "Bone Charm of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 41.8,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10053,
+          "item_name": "Iron Totem of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 42.2,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10054,
+          "item_name": "Rugged Shortsword of the Ladder",
+          "source": "Drops in the leveling zone (level 20)",
+          "source_kind": "zone",
+          "score": 42.6,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10055,
+          "item_name": "Ashen Buckler of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 43.0,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10056,
+          "item_name": "Tempered Longbow of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 43.4,
+          "verified": true
+        }
+      ],
+      "set_dps": 414.0,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Bone Cap of the Ladder",
+        "neck: Iron Choker of the Ladder",
+        "shoulder: Rugged Mantle of the Ladder",
+        "back: Ashen Cloak of the Ladder",
+        "chest: Tempered Vest of the Ladder",
+        "wrist: Gilded Bracers of the Ladder",
+        "hands: Hardened Gloves of the Ladder",
+        "waist: Frayed Belt of the Ladder",
+        "legs: Silent Leggings of the Ladder",
+        "feet: Feral Boots of the Ladder",
+        "finger1: Worn Band of the Ladder",
+        "finger2: Sturdy Ring of the Ladder",
+        "trinket1: Bone Charm of the Ladder",
+        "trinket2: Iron Totem of the Ladder",
+        "main_hand: Rugged Shortsword of the Ladder",
+        "off_hand: Ashen Buckler of the Ladder",
+        "ranged: Tempered Longbow of the Ladder"
+      ],
+      "weights_run_seconds": 3.1,
+      "verify_run_seconds": 23.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 20,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 11,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15040,
+          "item_name": "Bone Cap of the Ladder",
+          "source": "Drops in the leveling zone (level 20)",
+          "source_kind": "zone",
+          "score": 37.0,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15041,
+          "item_name": "Iron Choker of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 37.4,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15042,
+          "item_name": "Rugged Mantle of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 37.8,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15043,
+          "item_name": "Ashen Cloak of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 38.2,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15044,
+          "item_name": "Tempered Vest of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 38.6,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15045,
+          "item_name": "Gilded Bracers of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 39.0,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15046,
+          "item_name": "Hardened Gloves of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 39.4,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 15047,
+          "item_name": "Frayed Belt of the Ladder",
+          "source": "Drops in the leveling zone (level 20)",
+          "source_kind": "zone",
+          "score": 39.8,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15048,
+          "item_name": "Silent Leggings of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 40.2,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15049,
+          "item_name": "Feral Boots of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 40.6,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15050,
+          "item_name": "Worn Band of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 41.0,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15051,
+          "item_name": "Sturdy Ring of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 41.4,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15052,
+          "item_name": "Bone Charm of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 41.8,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15053,
+          "item_name": "Iron Totem of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 42.2,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15054,
+          "item_name": "Rugged Shortsword of the Ladder",
+          "source": "Drops in the leveling zone (level 20)",
+          "source_kind": "zone",
+          "score": 42.6,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15055,
+          "item_name": "Ashen Buckler of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 43.0,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15056,
+          "item_name": "Tempered Longbow of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 43.4,
+          "verified": true
+        }
+      ],
+      "set_dps": 414.0,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Bone Cap of the Ladder",
+        "neck: Iron Choker of the Ladder",
+        "shoulder: Rugged Mantle of the Ladder",
+        "back: Ashen Cloak of the Ladder",
+        "chest: Tempered Vest of the Ladder",
+        "wrist: Gilded Bracers of the Ladder",
+        "hands: Hardened Gloves of the Ladder",
+        "waist: Frayed Belt of the Ladder",
+        "legs: Silent Leggings of the Ladder",
+        "feet: Feral Boots of the Ladder",
+        "finger1: Worn Band of the Ladder",
+        "finger2: Sturdy Ring of the Ladder",
+        "trinket1: Bone Charm of the Ladder",
+        "trinket2: Iron Totem of the Ladder",
+        "main_hand: Rugged Shortsword of the Ladder",
+        "off_hand: Ashen Buckler of the Ladder",
+        "ranged: Tempered Longbow of the Ladder"
+      ],
+      "weights_run_seconds": 3.1,
+      "verify_run_seconds": 23.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 25,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 16,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10040,
+          "item_name": "Bone Cap of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 43.75,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10041,
+          "item_name": "Iron Choker of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 44.15,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10042,
+          "item_name": "Rugged Mantle of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 44.55,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10043,
+          "item_name": "Ashen Cloak of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 44.95,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10044,
+          "item_name": "Tempered Vest of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 45.35,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10045,
+          "item_name": "Gilded Bracers of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 45.75,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10046,
+          "item_name": "Hardened Gloves of the Ladder",
+          "source": "Drops in the leveling zone (level 25)",
+          "source_kind": "zone",
+          "score": 46.15,
+          "verified": false
+        },
+        {
+          "slot": "waist",
+          "item_id": 10047,
+          "item_name": "Frayed Belt of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 46.55,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10048,
+          "item_name": "Silent Leggings of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 46.95,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10049,
+          "item_name": "Feral Boots of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 47.35,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10050,
+          "item_name": "Worn Band of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 47.75,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10051,
+          "item_name": "Sturdy Ring of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 48.15,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10052,
+          "item_name": "Bone Charm of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 48.55,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10053,
+          "item_name": "Iron Totem of the Ladder",
+          "source": "Drops in the leveling zone (level 25)",
+          "source_kind": "zone",
+          "score": 48.95,
+          "verified": false
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10054,
+          "item_name": "Rugged Shortsword of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 49.35,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10055,
+          "item_name": "Ashen Buckler of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 49.75,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10056,
+          "item_name": "Tempered Longbow of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 50.15,
+          "verified": true
+        }
+      ],
+      "set_dps": 487.5,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 3.35,
+      "verify_run_seconds": 26.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 25,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 16,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15040,
+          "item_name": "Bone Cap of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 43.75,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15041,
+          "item_name": "Iron Choker of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 44.15,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15042,
+          "item_name": "Rugged Mantle of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 44.55,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15043,
+          "item_name": "Ashen Cloak of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 44.95,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15044,
+          "item_name": "Tempered Vest of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 45.35,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15045,
+          "item_name": "Gilded Bracers of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 45.75,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15046,
+          "item_name": "Hardened Gloves of the Ladder",
+          "source": "Drops in the leveling zone (level 25)",
+          "source_kind": "zone",
+          "score": 46.15,
+          "verified": false
+        },
+        {
+          "slot": "waist",
+          "item_id": 15047,
+          "item_name": "Frayed Belt of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 46.55,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15048,
+          "item_name": "Silent Leggings of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 46.95,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15049,
+          "item_name": "Feral Boots of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 47.35,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15050,
+          "item_name": "Worn Band of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 47.75,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15051,
+          "item_name": "Sturdy Ring of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 48.15,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15052,
+          "item_name": "Bone Charm of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 48.55,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15053,
+          "item_name": "Iron Totem of the Ladder",
+          "source": "Drops in the leveling zone (level 25)",
+          "source_kind": "zone",
+          "score": 48.95,
+          "verified": false
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15054,
+          "item_name": "Rugged Shortsword of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 49.35,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15055,
+          "item_name": "Ashen Buckler of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 49.75,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15056,
+          "item_name": "Tempered Longbow of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 50.15,
+          "verified": true
+        }
+      ],
+      "set_dps": 487.5,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 3.35,
+      "verify_run_seconds": 26.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 30,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 21,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10060,
+          "item_name": "Iron Cap of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 50.5,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10061,
+          "item_name": "Rugged Choker of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 50.9,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10062,
+          "item_name": "Ashen Mantle of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 51.3,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10063,
+          "item_name": "Tempered Cloak of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 51.7,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10064,
+          "item_name": "Gilded Vest of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 52.1,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10065,
+          "item_name": "Hardened Bracers of the Ladder",
+          "source": "Drops in the leveling zone (level 30)",
+          "source_kind": "zone",
+          "score": 52.5,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10066,
+          "item_name": "Frayed Gloves of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 52.9,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10067,
+          "item_name": "Silent Belt of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 53.3,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10068,
+          "item_name": "Feral Leggings of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 53.7,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10069,
+          "item_name": "Worn Boots of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 54.1,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10070,
+          "item_name": "Sturdy Band of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 54.5,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10071,
+          "item_name": "Bone Ring of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 54.9,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10072,
+          "item_name": "Iron Charm of the Ladder",
+          "source": "Drops in the leveling zone (level 30)",
+          "source_kind": "zone",
+          "score": 55.3,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10073,
+          "item_name": "Rugged Totem of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 55.7,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10074,
+          "item_name": "Ashen Shortsword of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 56.1,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10075,
+          "item_name": "Tempered Buckler of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 56.5,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10076,
+          "item_name": "Gilded Longbow of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 56.9,
+          "verified": true
+        }
+      ],
+      "set_dps": 561.0,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Iron Cap of the Ladder",
+        "neck: Rugged Choker of the Ladder",
+        "shoulder: Ashen Mantle of the Ladder",
+        "back: Tempered Cloak of the Ladder",
+        "chest: Gilded Vest of the Ladder",
+        "wrist: Hardened Bracers of the Ladder",
+        "hands: Frayed Gloves of the Ladder",
+        "waist: Silent Belt of the Ladder",
+        "legs: Feral Leggings of the Ladder",
+        "feet: Worn Boots of the Ladder",
+        "finger1: Sturdy Band of the Ladder",
+        "finger2: Bone Ring of the Ladder",
+        "trinket1: Iron Charm of the Ladder",
+        "trinket2: Rugged Totem of the Ladder",
+        "main_hand: Ashen Shortsword of the Ladder",
+        "off_hand: Tempered Buckler of the Ladder",
+        "ranged: Gilded Longbow of the Ladder"
+      ],
+      "weights_run_seconds": 3.6,
+      "verify_run_seconds": 29.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 30,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 21,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15060,
+          "item_name": "Iron Cap of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 50.5,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15061,
+          "item_name": "Rugged Choker of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 50.9,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15062,
+          "item_name": "Ashen Mantle of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 51.3,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15063,
+          "item_name": "Tempered Cloak of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 51.7,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15064,
+          "item_name": "Gilded Vest of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 52.1,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15065,
+          "item_name": "Hardened Bracers of the Ladder",
+          "source": "Drops in the leveling zone (level 30)",
+          "source_kind": "zone",
+          "score": 52.5,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15066,
+          "item_name": "Frayed Gloves of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 52.9,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 15067,
+          "item_name": "Silent Belt of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 53.3,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15068,
+          "item_name": "Feral Leggings of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 53.7,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15069,
+          "item_name": "Worn Boots of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 54.1,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15070,
+          "item_name": "Sturdy Band of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 54.5,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15071,
+          "item_name": "Bone Ring of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 54.9,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15072,
+          "item_name": "Iron Charm of the Ladder",
+          "source": "Drops in the leveling zone (level 30)",
+          "source_kind": "zone",
+          "score": 55.3,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15073,
+          "item_name": "Rugged Totem of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 55.7,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15074,
+          "item_name": "Ashen Shortsword of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 56.1,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15075,
+          "item_name": "Tempered Buckler of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 56.5,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15076,
+          "item_name": "Gilded Longbow of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 56.9,
+          "verified": true
+        }
+      ],
+      "set_dps": 561.0,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Iron Cap of the Ladder",
+        "neck: Rugged Choker of the Ladder",
+        "shoulder: Ashen Mantle of the Ladder",
+        "back: Tempered Cloak of the Ladder",
+        "chest: Gilded Vest of the Ladder",
+        "wrist: Hardened Bracers of the Ladder",
+        "hands: Frayed Gloves of the Ladder",
+        "waist: Silent Belt of the Ladder",
+        "legs: Feral Leggings of the Ladder",
+        "feet: Worn Boots of the Ladder",
+        "finger1: Sturdy Band of the Ladder",
+        "finger2: Bone Ring of the Ladder",
+        "trinket1: Iron Charm of the Ladder",
+        "trinket2: Rugged Totem of the Ladder",
+        "main_hand: Ashen Shortsword of the Ladder",
+        "off_hand: Tempered Buckler of the Ladder",
+        "ranged: Gilded Longbow of the Ladder"
+      ],
+      "weights_run_seconds": 3.6,
+      "verify_run_seconds": 29.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 35,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 26,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10060,
+          "item_name": "Iron Cap of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 57.25,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10061,
+          "item_name": "Rugged Choker of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 57.65,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10062,
+          "item_name": "Ashen Mantle of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 58.05,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10063,
+          "item_name": "Tempered Cloak of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 58.45,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10064,
+          "item_name": "Gilded Vest of the Ladder",
+          "source": "Drops in the leveling zone (level 35)",
+          "source_kind": "zone",
+          "score": 58.85,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10065,
+          "item_name": "Hardened Bracers of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 59.25,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10066,
+          "item_name": "Frayed Gloves of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 59.65,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10067,
+          "item_name": "Silent Belt of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 60.05,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10068,
+          "item_name": "Feral Leggings of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 60.45,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10069,
+          "item_name": "Worn Boots of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 60.85,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10070,
+          "item_name": "Sturdy Band of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 61.25,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10071,
+          "item_name": "Bone Ring of the Ladder",
+          "source": "Drops in the leveling zone (level 35)",
+          "source_kind": "zone",
+          "score": 61.65,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10072,
+          "item_name": "Iron Charm of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 62.05,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10073,
+          "item_name": "Rugged Totem of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 62.45,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10074,
+          "item_name": "Ashen Shortsword of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 62.85,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10075,
+          "item_name": "Tempered Buckler of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 63.25,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10076,
+          "item_name": "Gilded Longbow of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 63.65,
+          "verified": true
+        }
+      ],
+      "set_dps": 634.5,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 3.85,
+      "verify_run_seconds": 32.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 35,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 26,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15060,
+          "item_name": "Iron Cap of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 57.25,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15061,
+          "item_name": "Rugged Choker of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 57.65,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15062,
+          "item_name": "Ashen Mantle of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 58.05,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15063,
+          "item_name": "Tempered Cloak of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 58.45,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15064,
+          "item_name": "Gilded Vest of the Ladder",
+          "source": "Drops in the leveling zone (level 35)",
+          "source_kind": "zone",
+          "score": 58.85,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15065,
+          "item_name": "Hardened Bracers of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 59.25,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15066,
+          "item_name": "Frayed Gloves of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 59.65,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 15067,
+          "item_name": "Silent Belt of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 60.05,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15068,
+          "item_name": "Feral Leggings of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 60.45,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15069,
+          "item_name": "Worn Boots of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 60.85,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15070,
+          "item_name": "Sturdy Band of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 61.25,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15071,
+          "item_name": "Bone Ring of the Ladder",
+          "source": "Drops in the leveling zone (level 35)",
+          "source_kind": "zone",
+          "score": 61.65,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15072,
+          "item_name": "Iron Charm of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 62.05,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15073,
+          "item_name": "Rugged Totem of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 62.45,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15074,
+          "item_name": "Ashen Shortsword of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 62.85,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15075,
+          "item_name": "Tempered Buckler of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 63.25,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15076,
+          "item_name": "Gilded Longbow of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 63.65,
+          "verified": true
+        }
+      ],
+      "set_dps": 634.5,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 3.85,
+      "verify_run_seconds": 32.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 40,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 31,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10080,
+          "item_name": "Rugged Cap of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 64.0,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10081,
+          "item_name": "Ashen Choker of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 64.4,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10082,
+          "item_name": "Tempered Mantle of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 64.8,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10083,
+          "item_name": "Gilded Cloak of the Ladder",
+          "source": "Drops in the leveling zone (level 40)",
+          "source_kind": "zone",
+          "score": 65.2,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10084,
+          "item_name": "Hardened Vest of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 65.6,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10085,
+          "item_name": "Frayed Bracers of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 66.0,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10086,
+          "item_name": "Silent Gloves of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 66.4,
+          "verified": false
+        },
+        {
+          "slot": "waist",
+          "item_id": 10087,
+          "item_name": "Feral Belt of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 66.8,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10088,
+          "item_name": "Worn Leggings of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 67.2,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10089,
+          "item_name": "Sturdy Boots of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 67.6,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10090,
+          "item_name": "Bone Band of the Ladder",
+          "source": "Drops in the leveling zone (level 40)",
+          "source_kind": "zone",
+          "score": 68.0,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10091,
+          "item_name": "Iron Ring of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 68.4,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10092,
+          "item_name": "Rugged Charm of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 68.8,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10093,
+          "item_name": "Ashen Totem of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 69.2,
+          "verified": false
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10094,
+          "item_name": "Tempered Shortsword of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 69.6,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10095,
+          "item_name": "Gilded Buckler of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 70.0,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10096,
+          "item_name": "Hardened Longbow of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 70.4,
+          "verified": true
+        }
+      ],
+      "set_dps": 708.0,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Rugged Cap of the Ladder",
+        "neck: Ashen Choker of the Ladder",
+        "shoulder: Tempered Mantle of the Ladder",
+        "back: Gilded Cloak of the Ladder",
+        "chest: Hardened Vest of the Ladder",
+        "wrist: Frayed Bracers of the Ladder",
+        "hands: Silent Gloves of the Ladder",
+        "waist: Feral Belt of the Ladder",
+        "legs: Worn Leggings of the Ladder",
+        "feet: Sturdy Boots of the Ladder",
+        "finger1: Bone Band of the Ladder",
+        "finger2: Iron Ring of the Ladder",
+        "trinket1: Rugged Charm of the Ladder",
+        "trinket2: Ashen Totem of the Ladder",
+        "main_hand: Tempered Shortsword of the Ladder",
+        "off_hand: Gilded Buckler of the Ladder",
+        "ranged: Hardened Longbow of the Ladder"
+      ],
+      "weights_run_seconds": 4.1,
+      "verify_run_seconds": 35.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 40,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 31,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15080,
+          "item_name": "Rugged Cap of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 64.0,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15081,
+          "item_name": "Ashen Choker of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 64.4,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15082,
+          "item_name": "Tempered Mantle of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 64.8,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15083,
+          "item_name": "Gilded Cloak of the Ladder",
+          "source": "Drops in the leveling zone (level 40)",
+          "source_kind": "zone",
+          "score": 65.2,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15084,
+          "item_name": "Hardened Vest of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 65.6,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15085,
+          "item_name": "Frayed Bracers of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 66.0,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15086,
+          "item_name": "Silent Gloves of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 66.4,
+          "verified": false
+        },
+        {
+          "slot": "waist",
+          "item_id": 15087,
+          "item_name": "Feral Belt of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 66.8,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15088,
+          "item_name": "Worn Leggings of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 67.2,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15089,
+          "item_name": "Sturdy Boots of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 67.6,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15090,
+          "item_name": "Bone Band of the Ladder",
+          "source": "Drops in the leveling zone (level 40)",
+          "source_kind": "zone",
+          "score": 68.0,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15091,
+          "item_name": "Iron Ring of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 68.4,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15092,
+          "item_name": "Rugged Charm of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 68.8,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15093,
+          "item_name": "Ashen Totem of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 69.2,
+          "verified": false
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15094,
+          "item_name": "Tempered Shortsword of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 69.6,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15095,
+          "item_name": "Gilded Buckler of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 70.0,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15096,
+          "item_name": "Hardened Longbow of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 70.4,
+          "verified": true
+        }
+      ],
+      "set_dps": 708.0,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Rugged Cap of the Ladder",
+        "neck: Ashen Choker of the Ladder",
+        "shoulder: Tempered Mantle of the Ladder",
+        "back: Gilded Cloak of the Ladder",
+        "chest: Hardened Vest of the Ladder",
+        "wrist: Frayed Bracers of the Ladder",
+        "hands: Silent Gloves of the Ladder",
+        "waist: Feral Belt of the Ladder",
+        "legs: Worn Leggings of the Ladder",
+        "feet: Sturdy Boots of the Ladder",
+        "finger1: Bone Band of the Ladder",
+        "finger2: Iron Ring of the Ladder",
+        "trinket1: Rugged Charm of the Ladder",
+        "trinket2: Ashen Totem of the Ladder",
+        "main_hand: Tempered Shortsword of the Ladder",
+        "off_hand: Gilded Buckler of the Ladder",
+        "ranged: Hardened Longbow of the Ladder"
+      ],
+      "weights_run_seconds": 4.1,
+      "verify_run_seconds": 35.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 45,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 36,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10080,
+          "item_name": "Rugged Cap of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 70.75,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10081,
+          "item_name": "Ashen Choker of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 71.15,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10082,
+          "item_name": "Tempered Mantle of the Ladder",
+          "source": "Drops in the leveling zone (level 45)",
+          "source_kind": "zone",
+          "score": 71.55,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10083,
+          "item_name": "Gilded Cloak of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 71.95,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10084,
+          "item_name": "Hardened Vest of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 72.35,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10085,
+          "item_name": "Frayed Bracers of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 72.75,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10086,
+          "item_name": "Silent Gloves of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 73.15,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10087,
+          "item_name": "Feral Belt of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 73.55,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10088,
+          "item_name": "Worn Leggings of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 73.95,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10089,
+          "item_name": "Sturdy Boots of the Ladder",
+          "source": "Drops in the leveling zone (level 45)",
+          "source_kind": "zone",
+          "score": 74.35,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10090,
+          "item_name": "Bone Band of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 74.75,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10091,
+          "item_name": "Iron Ring of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 75.15,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10092,
+          "item_name": "Rugged Charm of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 75.55,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10093,
+          "item_name": "Ashen Totem of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 75.95,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10094,
+          "item_name": "Tempered Shortsword of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 76.35,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10095,
+          "item_name": "Gilded Buckler of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 76.75,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10096,
+          "item_name": "Hardened Longbow of the Ladder",
+          "source": "Drops in the leveling zone (level 45)",
+          "source_kind": "zone",
+          "score": 77.15,
+          "verified": true
+        }
+      ],
+      "set_dps": 781.5,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 4.35,
+      "verify_run_seconds": 38.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 45,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 36,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15080,
+          "item_name": "Rugged Cap of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 70.75,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15081,
+          "item_name": "Ashen Choker of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 71.15,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15082,
+          "item_name": "Tempered Mantle of the Ladder",
+          "source": "Drops in the leveling zone (level 45)",
+          "source_kind": "zone",
+          "score": 71.55,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15083,
+          "item_name": "Gilded Cloak of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 71.95,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15084,
+          "item_name": "Hardened Vest of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 72.35,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15085,
+          "item_name": "Frayed Bracers of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 72.75,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15086,
+          "item_name": "Silent Gloves of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 73.15,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 15087,
+          "item_name": "Feral Belt of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 73.55,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15088,
+          "item_name": "Worn Leggings of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 73.95,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15089,
+          "item_name": "Sturdy Boots of the Ladder",
+          "source": "Drops in the leveling zone (level 45)",
+          "source_kind": "zone",
+          "score": 74.35,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15090,
+          "item_name": "Bone Band of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 74.75,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15091,
+          "item_name": "Iron Ring of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 75.15,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15092,
+          "item_name": "Rugged Charm of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 75.55,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15093,
+          "item_name": "Ashen Totem of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 75.95,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15094,
+          "item_name": "Tempered Shortsword of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 76.35,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15095,
+          "item_name": "Gilded Buckler of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 76.75,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15096,
+          "item_name": "Hardened Longbow of the Ladder",
+          "source": "Drops in the leveling zone (level 45)",
+          "source_kind": "zone",
+          "score": 77.15,
+          "verified": true
+        }
+      ],
+      "set_dps": 781.5,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 4.35,
+      "verify_run_seconds": 38.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 50,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 41,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10100,
+          "item_name": "Ashen Cap of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 77.5,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10101,
+          "item_name": "Tempered Choker of the Ladder",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 77.9,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10102,
+          "item_name": "Gilded Mantle of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 78.3,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10103,
+          "item_name": "Hardened Cloak of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 78.7,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10104,
+          "item_name": "Frayed Vest of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 79.1,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10105,
+          "item_name": "Silent Bracers of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 79.5,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10106,
+          "item_name": "Feral Gloves of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 79.9,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10107,
+          "item_name": "Worn Belt of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 80.3,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10108,
+          "item_name": "Sturdy Leggings of the Ladder",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 80.7,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10109,
+          "item_name": "Bone Boots of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 81.1,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10110,
+          "item_name": "Iron Band of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 81.5,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10111,
+          "item_name": "Rugged Ring of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 81.9,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10112,
+          "item_name": "Ashen Charm of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 82.3,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10113,
+          "item_name": "Tempered Totem of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 82.7,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10114,
+          "item_name": "Gilded Shortsword of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 83.1,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10115,
+          "item_name": "Hardened Buckler of the Ladder",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 83.5,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10116,
+          "item_name": "Frayed Longbow of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 83.9,
+          "verified": true
+        }
+      ],
+      "set_dps": 855.0,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Ashen Cap of the Ladder",
+        "neck: Tempered Choker of the Ladder",
+        "shoulder: Gilded Mantle of the Ladder",
+        "back: Hardened Cloak of the Ladder",
+        "chest: Frayed Vest of the Ladder",
+        "wrist: Silent Bracers of the Ladder",
+        "hands: Feral Gloves of the Ladder",
+        "waist: Worn Belt of the Ladder",
+        "legs: Sturdy Leggings of the Ladder",
+        "feet: Bone Boots of the Ladder",
+        "finger1: Iron Band of the Ladder",
+        "finger2: Rugged Ring of the Ladder",
+        "trinket1: Ashen Charm of the Ladder",
+        "trinket2: Tempered Totem of the Ladder",
+        "main_hand: Gilded Shortsword of the Ladder",
+        "off_hand: Hardened Buckler of the Ladder",
+        "ranged: Frayed Longbow of the Ladder"
+      ],
+      "weights_run_seconds": 4.6,
+      "verify_run_seconds": 41.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 50,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 41,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15100,
+          "item_name": "Ashen Cap of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 77.5,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15101,
+          "item_name": "Tempered Choker of the Ladder",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 77.9,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15102,
+          "item_name": "Gilded Mantle of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 78.3,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15103,
+          "item_name": "Hardened Cloak of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 78.7,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15104,
+          "item_name": "Frayed Vest of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 79.1,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15105,
+          "item_name": "Silent Bracers of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 79.5,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15106,
+          "item_name": "Feral Gloves of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 79.9,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 15107,
+          "item_name": "Worn Belt of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 80.3,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15108,
+          "item_name": "Sturdy Leggings of the Ladder",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 80.7,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15109,
+          "item_name": "Bone Boots of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 81.1,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15110,
+          "item_name": "Iron Band of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 81.5,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15111,
+          "item_name": "Rugged Ring of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 81.9,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15112,
+          "item_name": "Ashen Charm of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 82.3,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15113,
+          "item_name": "Tempered Totem of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 82.7,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15114,
+          "item_name": "Gilded Shortsword of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 83.1,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15115,
+          "item_name": "Hardened Buckler of the Ladder",
+          "source": "Drops in the leveling zone (level 50)",
+          "source_kind": "zone",
+          "score": 83.5,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15116,
+          "item_name": "Frayed Longbow of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 83.9,
+          "verified": true
+        }
+      ],
+      "set_dps": 855.0,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Ashen Cap of the Ladder",
+        "neck: Tempered Choker of the Ladder",
+        "shoulder: Gilded Mantle of the Ladder",
+        "back: Hardened Cloak of the Ladder",
+        "chest: Frayed Vest of the Ladder",
+        "wrist: Silent Bracers of the Ladder",
+        "hands: Feral Gloves of the Ladder",
+        "waist: Worn Belt of the Ladder",
+        "legs: Sturdy Leggings of the Ladder",
+        "feet: Bone Boots of the Ladder",
+        "finger1: Iron Band of the Ladder",
+        "finger2: Rugged Ring of the Ladder",
+        "trinket1: Ashen Charm of the Ladder",
+        "trinket2: Tempered Totem of the Ladder",
+        "main_hand: Gilded Shortsword of the Ladder",
+        "off_hand: Hardened Buckler of the Ladder",
+        "ranged: Frayed Longbow of the Ladder"
+      ],
+      "weights_run_seconds": 4.6,
+      "verify_run_seconds": 41.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 55,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 46,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10100,
+          "item_name": "Ashen Cap of the Ladder",
+          "source": "Drops in the leveling zone (level 55)",
+          "source_kind": "zone",
+          "score": 84.25,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10101,
+          "item_name": "Tempered Choker of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 84.65,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10102,
+          "item_name": "Gilded Mantle of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 85.05,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10103,
+          "item_name": "Hardened Cloak of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 85.45,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10104,
+          "item_name": "Frayed Vest of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 85.85,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10105,
+          "item_name": "Silent Bracers of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 86.25,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10106,
+          "item_name": "Feral Gloves of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 86.65,
+          "verified": false
+        },
+        {
+          "slot": "waist",
+          "item_id": 10107,
+          "item_name": "Worn Belt of the Ladder",
+          "source": "Drops in the leveling zone (level 55)",
+          "source_kind": "zone",
+          "score": 87.05,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10108,
+          "item_name": "Sturdy Leggings of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 87.45,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10109,
+          "item_name": "Bone Boots of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 87.85,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10110,
+          "item_name": "Iron Band of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 88.25,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10111,
+          "item_name": "Rugged Ring of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 88.65,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10112,
+          "item_name": "Ashen Charm of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 89.05,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10113,
+          "item_name": "Tempered Totem of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 89.45,
+          "verified": false
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10114,
+          "item_name": "Gilded Shortsword of the Ladder",
+          "source": "Drops in the leveling zone (level 55)",
+          "source_kind": "zone",
+          "score": 89.85,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10115,
+          "item_name": "Hardened Buckler of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 90.25,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10116,
+          "item_name": "Frayed Longbow of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 90.65,
+          "verified": true
+        }
+      ],
+      "set_dps": 928.5,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 4.85,
+      "verify_run_seconds": 44.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 55,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 46,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15100,
+          "item_name": "Ashen Cap of the Ladder",
+          "source": "Drops in the leveling zone (level 55)",
+          "source_kind": "zone",
+          "score": 84.25,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15101,
+          "item_name": "Tempered Choker of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 84.65,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15102,
+          "item_name": "Gilded Mantle of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 85.05,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15103,
+          "item_name": "Hardened Cloak of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 85.45,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15104,
+          "item_name": "Frayed Vest of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 85.85,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15105,
+          "item_name": "Silent Bracers of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 86.25,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15106,
+          "item_name": "Feral Gloves of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 86.65,
+          "verified": false
+        },
+        {
+          "slot": "waist",
+          "item_id": 15107,
+          "item_name": "Worn Belt of the Ladder",
+          "source": "Drops in the leveling zone (level 55)",
+          "source_kind": "zone",
+          "score": 87.05,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15108,
+          "item_name": "Sturdy Leggings of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 87.45,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15109,
+          "item_name": "Bone Boots of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 87.85,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15110,
+          "item_name": "Iron Band of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 88.25,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15111,
+          "item_name": "Rugged Ring of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 88.65,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15112,
+          "item_name": "Ashen Charm of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 89.05,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15113,
+          "item_name": "Tempered Totem of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 89.45,
+          "verified": false
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15114,
+          "item_name": "Gilded Shortsword of the Ladder",
+          "source": "Drops in the leveling zone (level 55)",
+          "source_kind": "zone",
+          "score": 89.85,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15115,
+          "item_name": "Hardened Buckler of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 90.25,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15116,
+          "item_name": "Frayed Longbow of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 90.65,
+          "verified": true
+        }
+      ],
+      "set_dps": 928.5,
+      "no_source_count": 0,
+      "new_at_band": [],
+      "weights_run_seconds": 4.85,
+      "verify_run_seconds": 44.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 60,
+      "faction": "alliance",
+      "race": "Night Elf",
+      "talents": "0000000000000000000000000",
+      "talent_points": 51,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10120,
+          "item_name": "Tempered Cap of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 91.0,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 10121,
+          "item_name": "Gilded Choker of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 91.4,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10122,
+          "item_name": "Hardened Mantle of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 91.8,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 10123,
+          "item_name": "Frayed Cloak of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 92.2,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 10124,
+          "item_name": "Silent Vest of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 92.6,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 10125,
+          "item_name": "Feral Bracers of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 93.0,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 10126,
+          "item_name": "Worn Gloves of the Ladder",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 93.4,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10127,
+          "item_name": "Sturdy Belt of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 93.8,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10128,
+          "item_name": "Bone Leggings of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 94.2,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10129,
+          "item_name": "Iron Boots of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 94.6,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 10130,
+          "item_name": "Rugged Band of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 95.0,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 10131,
+          "item_name": "Ashen Ring of the Ladder",
+          "source": "Alliance quest reward",
+          "source_kind": "quest",
+          "score": 95.4,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10132,
+          "item_name": "Tempered Charm of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 95.8,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10133,
+          "item_name": "Gilded Totem of the Ladder",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 96.2,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10134,
+          "item_name": "Hardened Shortsword of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 96.6,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 10135,
+          "item_name": "Frayed Buckler of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 97.0,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 10136,
+          "item_name": "Silent Longbow of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 97.4,
+          "verified": true
+        }
+      ],
+      "set_dps": 1002.0,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Tempered Cap of the Ladder",
+        "neck: Gilded Choker of the Ladder",
+        "shoulder: Hardened Mantle of the Ladder",
+        "back: Frayed Cloak of the Ladder",
+        "chest: Silent Vest of the Ladder",
+        "wrist: Feral Bracers of the Ladder",
+        "hands: Worn Gloves of the Ladder",
+        "waist: Sturdy Belt of the Ladder",
+        "legs: Bone Leggings of the Ladder",
+        "feet: Iron Boots of the Ladder",
+        "finger1: Rugged Band of the Ladder",
+        "finger2: Ashen Ring of the Ladder",
+        "trinket1: Tempered Charm of the Ladder",
+        "trinket2: Gilded Totem of the Ladder",
+        "main_hand: Hardened Shortsword of the Ladder",
+        "off_hand: Frayed Buckler of the Ladder",
+        "ranged: Silent Longbow of the Ladder"
+      ],
+      "weights_run_seconds": 5.1,
+      "verify_run_seconds": 47.4
+    },
+    {
+      "spec": "hunter-marksmanship",
+      "band": 60,
+      "faction": "horde",
+      "race": "Troll",
+      "talents": "0000000000000000000000000",
+      "talent_points": 51,
+      "weights": [
+        {
+          "stat": "agility",
+          "weight": 1.0
+        },
+        {
+          "stat": "attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "ranged_attack_power",
+          "weight": 0.32
+        },
+        {
+          "stat": "crit",
+          "weight": 1.9
+        },
+        {
+          "stat": "hit",
+          "weight": 2.1
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15120,
+          "item_name": "Tempered Cap of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 91.0,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 15121,
+          "item_name": "Gilded Choker of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 91.4,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15122,
+          "item_name": "Hardened Mantle of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 91.8,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 15123,
+          "item_name": "Frayed Cloak of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 92.2,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "chest",
+          "item_id": 15124,
+          "item_name": "Silent Vest of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 92.6,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 15125,
+          "item_name": "Feral Bracers of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 93.0,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 15126,
+          "item_name": "Worn Gloves of the Ladder",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 93.4,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 15127,
+          "item_name": "Sturdy Belt of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 93.8,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15128,
+          "item_name": "Bone Leggings of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 94.2,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 15129,
+          "item_name": "Iron Boots of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 94.6,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 15130,
+          "item_name": "Rugged Band of the Ladder",
+          "source": "World drop",
+          "source_kind": "world",
+          "score": 95.0,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 15131,
+          "item_name": "Ashen Ring of the Ladder",
+          "source": "Horde quest reward",
+          "source_kind": "quest",
+          "score": 95.4,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 15132,
+          "item_name": "Tempered Charm of the Ladder",
+          "source": "Vendor: Gearsprocket Munkin",
+          "source_kind": "vendor",
+          "score": 95.8,
+          "verified": true,
+          "swap_note": "Close with the runner-up; either is fine until Top Gear settles it."
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 15133,
+          "item_name": "Gilded Totem of the Ladder",
+          "source": "Drops in the leveling zone (level 60)",
+          "source_kind": "zone",
+          "score": 96.2,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15134,
+          "item_name": "Hardened Shortsword of the Ladder",
+          "source": "Ragefire Chasm",
+          "source_kind": "dungeon",
+          "score": 96.6,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 15135,
+          "item_name": "Frayed Buckler of the Ladder",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 97.0,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 15136,
+          "item_name": "Silent Longbow of the Ladder",
+          "source": "Rep: Darkspear Trolls \u2014 Friendly",
+          "source_kind": "rep",
+          "score": 97.4,
+          "verified": true
+        }
+      ],
+      "set_dps": 1002.0,
+      "no_source_count": 0,
+      "new_at_band": [
+        "head: Tempered Cap of the Ladder",
+        "neck: Gilded Choker of the Ladder",
+        "shoulder: Hardened Mantle of the Ladder",
+        "back: Frayed Cloak of the Ladder",
+        "chest: Silent Vest of the Ladder",
+        "wrist: Feral Bracers of the Ladder",
+        "hands: Worn Gloves of the Ladder",
+        "waist: Sturdy Belt of the Ladder",
+        "legs: Bone Leggings of the Ladder",
+        "feet: Iron Boots of the Ladder",
+        "finger1: Rugged Band of the Ladder",
+        "finger2: Ashen Ring of the Ladder",
+        "trinket1: Tempered Charm of the Ladder",
+        "trinket2: Gilded Totem of the Ladder",
+        "main_hand: Hardened Shortsword of the Ladder",
+        "off_hand: Frayed Buckler of the Ladder",
+        "ranged: Silent Longbow of the Ladder"
+      ],
+      "weights_run_seconds": 5.1,
+      "verify_run_seconds": 47.4
+    }
+  ]
+}

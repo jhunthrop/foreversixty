@@ -1,0 +1,288 @@
+---
+// web/src/pages/bis/[class]/[spec].astro
+// One page per written spec (data/curated/specs.json -- the same catalog the rotation
+// accuracy program measures against), static, no island above the fold: two SSR faction
+// panels toggled by hidden radio inputs and plain CSS (the `has-[:checked]` pattern
+// Upload.svelte already uses), band pills toggled by CSS `:target` within each panel. The
+// only script on the page is a tiny inline one (not a hydrated island) that syncs the
+// faction radios from `?faction=` on load, so a shared `?faction=horde` link opens on the
+// right panel without shipping a framework runtime for it.
+import Base from '../../../layouts/Base.astro';
+import UpdatedStamp from '../../../components/UpdatedStamp.astro';
+import classes from '../../../data/classes.json';
+import activeBuild from '../../../data/active-build.json';
+import { rarityClassFor } from '../../../lib/planner/items';
+import { SLOT_LABELS, type Slot } from '../../../lib/planner/types';
+import { bisCopy } from '../../../lib/bis/copy';
+import {
+  bandEntry,
+  bandLevels,
+  filledSlots,
+  isMissingSlot,
+  itemQualities,
+  loadBisFile,
+  readSpecCatalog,
+  sourceBadgeLabel,
+} from '../../../lib/bis/load';
+import type { Faction } from '../../../lib/bis/types';
+
+export async function getStaticPaths() {
+  return readSpecCatalog().map((spec) => ({
+    params: { class: spec.class_slug, spec: spec.spec_slug },
+    props: { spec },
+  }));
+}
+
+const { spec: specEntry } = Astro.props;
+const className = classes.find((c) => c.slug === specEntry.class_slug)?.name ?? specEntry.class_slug;
+const title = `${className} ${specEntry.name} leveling BiS`;
+const description = bisCopy.metaDescription(specEntry.name, className);
+const path = `/bis/${specEntry.class_slug}/${specEntry.spec_slug}`;
+const guideHref = `/guides/${specEntry.class_slug}/${specEntry.spec_slug}`;
+
+const file = loadBisFile(specEntry.spec, activeBuild.build);
+const bands = file ? bandLevels(file) : [];
+const qualities = itemQualities(activeBuild.build, specEntry.class_slug);
+const factions: Faction[] = ['alliance', 'horde'];
+---
+
+<Base title={title} description={description} path={path}>
+  <main
+    id="main"
+    tabindex="-1"
+    class="mx-auto flex w-full max-w-[1120px] flex-col gap-5 px-[18px] py-10 md:px-12"
+  >
+    <header class="border-line flex flex-col gap-2 border-b pb-5">
+      <p class="text-muted text-[13px]">
+        <a href="/bis">{bisCopy.backToIndex}</a>
+      </p>
+      <h1 class="text-[28px] font-bold tracking-[0.02em]">{title}</h1>
+      {file && <UpdatedStamp date={new Date(file.generated_at)} />}
+      {file && <p class="text-muted text-[13px]">{bisCopy.generatedFrom(file.engine_version)}</p>}
+    </header>
+
+    {!file && (
+      <div class="rounded-control bg-raised border-line border p-6" data-testid="bis-empty-state">
+        <p class="font-semibold">{bisCopy.noDataYet}</p>
+        <p class="text-muted mt-2 text-[14px]">{bisCopy.noDataYetBody}</p>
+        <p class="mt-3 text-[14px]">
+          <a href={guideHref}>{specEntry.name} guide</a>
+        </p>
+      </div>
+    )}
+
+    {file && (
+      <div class="bis-faction-root">
+        <input type="radio" name="faction" id="faction-alliance" class="sr-only" checked />
+        <input type="radio" name="faction" id="faction-horde" class="sr-only" />
+        <div class="mb-4 flex gap-2" role="group" aria-label="Faction">
+          <label for="faction-alliance" class="faction-pill" data-testid="bis-faction-toggle-alliance">
+            {bisCopy.factionAlliance}
+          </label>
+          <label for="faction-horde" class="faction-pill" data-testid="bis-faction-toggle-horde">
+            {bisCopy.factionHorde}
+          </label>
+        </div>
+
+        {factions.map((faction) => (
+          <section
+            id={`panel-${faction}`}
+            class="faction-panel"
+            data-testid={`bis-faction-panel-${faction}`}
+          >
+            <div class="band-panels" id={`bands-${faction}`}>
+              <div class="mb-4 flex flex-wrap gap-2" role="group" aria-label={bisCopy.bandPillGroupLabel}>
+                {bands.map((band) => (
+                  <a
+                    href={`#band-${faction}-${band}`}
+                    class="band-pill"
+                    data-testid={`bis-band-pill-${faction}-${band}`}
+                  >
+                    {bisCopy.levelLabel(band)}
+                  </a>
+                ))}
+              </div>
+
+              {bands.map((band, bandIndex) => {
+                const bandData = bandEntry(file, band, faction);
+                if (bandData === undefined) return null;
+                const rows = filledSlots(bandData);
+                const noSourceLine = bisCopy.noSourceCount(bandData.no_source_count);
+                return (
+                  <div
+                    id={`band-${faction}-${band}`}
+                    class:list={['band-panel', bandIndex === 0 && 'band-panel-default']}
+                    data-testid={`bis-band-${faction}-${band}`}
+                  >
+                    <h2 class="section-title mb-3 text-[16px]">{bisCopy.bandHeading(band)}</h2>
+                    <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_260px]">
+                      <table class="w-full border-collapse text-[13px]">
+                        <thead>
+                          <tr class="border-line text-muted border-b text-left uppercase tracking-[0.06em]">
+                            <th class="py-2 pr-2 font-semibold">{bisCopy.slotHeading}</th>
+                            <th class="py-2 pr-2 font-semibold">{bisCopy.itemHeading}</th>
+                            <th class="py-2 font-semibold">{bisCopy.sourceHeading}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {rows.map((row) => (
+                            <tr class="border-line-soft border-b" data-testid={`bis-slot-${faction}-${band}-${row.slot}`}>
+                              <td class="text-muted py-2 pr-2">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</td>
+                              {isMissingSlot(row) ? (
+                                <td class="text-muted py-2" colspan="2">
+                                  {bisCopy.noKnownSourceForSlot}
+                                </td>
+                              ) : (
+                                <>
+                                  <td class="py-2 pr-2">
+                                    <span class={`font-semibold ${rarityClassFor(qualities.get(row.item_id) ?? 1)}`}>
+                                      {row.item_name}
+                                    </span>
+                                    {row.swap_note && (
+                                      <details class="text-muted mt-1 text-[12px]">
+                                        <summary>{bisCopy.swapNoteSummary}</summary>
+                                        <p>{row.swap_note}</p>
+                                      </details>
+                                    )}
+                                  </td>
+                                  <td class="py-2">
+                                    <span class="badge-source">{sourceBadgeLabel(row, faction)}</span>
+                                    <span
+                                      class="ml-2 text-[12px]"
+                                      title={row.verified ? bisCopy.verifiedTitle : bisCopy.unverifiedTitle}
+                                    >
+                                      {row.verified ? bisCopy.verified : bisCopy.unverified}
+                                    </span>
+                                  </td>
+                                </>
+                              )}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      <aside class="flex flex-col gap-3 text-[13px]">
+                        <div>
+                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">{bisCopy.setDpsLabel}</p>
+                          <p class="tabular text-[20px] font-bold">{bandData.set_dps.toFixed(1)}</p>
+                        </div>
+                        <div>
+                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">{bisCopy.raceLabel}</p>
+                          <p>{bandData.race}</p>
+                        </div>
+                        <div>
+                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">{bisCopy.talentsLabel}</p>
+                          <p>{bisCopy.talentPointsLabel(bandData.talent_points)}</p>
+                        </div>
+                        <div>
+                          <p class="text-muted uppercase tracking-[0.06em] text-[11px]">{bisCopy.statWeightsLabel}</p>
+                          <ul class="list-none p-0 m-0">
+                            {bandData.weights.map((w) => (
+                              <li class="flex justify-between">
+                                <span>{w.stat}</span>
+                                <span class="tabular">{w.weight.toFixed(2)}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        {noSourceLine && <p class="text-muted text-[12px]">{noSourceLine}</p>}
+                      </aside>
+                    </div>
+                    {bandIndex > 0 && (
+                      <div class="mt-4" data-testid={`bis-new-at-${faction}-${band}`}>
+                        <h3 class="section-title mb-2 text-[13px]">{bisCopy.newAtBand(band)}</h3>
+                        {bandData.new_at_band.length === 0 ? (
+                          <p class="text-muted text-[13px]">{bisCopy.newAtBandEmpty}</p>
+                        ) : (
+                          <ul class="list-disc pl-5 text-[13px]">
+                            {bandData.new_at_band.map((line) => <li>{line}</li>)}
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        ))}
+      </div>
+    )}
+  </main>
+</Base>
+
+<style>
+  .bis-faction-root {
+    position: relative;
+  }
+  .faction-panel {
+    display: none;
+  }
+  #faction-alliance:checked ~ #panel-alliance {
+    display: block;
+  }
+  #faction-horde:checked ~ #panel-horde {
+    display: block;
+  }
+  .faction-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border-radius: var(--radius-control, 8px);
+    border: 1px solid var(--color-line, #333);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  #faction-alliance:checked ~ div .faction-pill[for='faction-alliance'],
+  #faction-horde:checked ~ div .faction-pill[for='faction-horde'] {
+    color: var(--color-gold, #c9a35e);
+    border-color: var(--color-gold, #c9a35e);
+  }
+  .band-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.25rem;
+    padding: 0 0.75rem;
+    border-radius: var(--radius-control, 8px);
+    border: 1px solid var(--color-line, #333);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .band-panel {
+    display: none;
+  }
+  .band-panel:target {
+    display: block;
+  }
+  .band-panels:not(:has(.band-panel:target)) .band-panel-default {
+    display: block;
+  }
+  .badge-source {
+    display: inline-flex;
+    align-items: center;
+    border-radius: var(--radius-control, 8px);
+    border: 1px solid var(--color-line, #333);
+    padding: 0.1rem 0.5rem;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+</style>
+
+<script is:inline>
+  // Not an island: a plain inline script, no framework, so `?faction=horde` opens on the
+  // right panel without paying for a hydrated component the way the rest of this page
+  // (two SSR tables plus a CSS radio toggle) never does either.
+  (function () {
+    const faction = new URLSearchParams(window.location.search).get('faction');
+    if (faction === 'horde') {
+      const input = document.getElementById('faction-horde');
+      if (input) input.checked = true;
+    }
+  })();
+</script>
