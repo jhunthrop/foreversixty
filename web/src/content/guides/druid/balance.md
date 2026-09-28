@@ -55,7 +55,7 @@ A typical Balance build spends roughly 31 points in this tree to reach Moonkin F
 
 ## Rotation and priority
 
-Keep Moonfire ticking on the target throughout the fight — it's the cheapest DoT available and, once it's up, everything else is filler. Starfire is that filler: cast it on repeat for the rest of the fight once Moonfire is running. Near the end of a fight, adjust for what will actually land: with less than 3.5 seconds remaining, switch to Wrath, since its 2-second cast still finishes where Starfire's 3.5-second cast would not; with less than 1.5 seconds left, only the instant Moonfire itself will land in time. Eclipse, if talented, rewards weaving in a Wrath cast periodically, since it shortens your next two Starfire casts — worth folding into the priority once you've taken it.
+Keep Moonfire ticking on the target throughout the fight — it's the cheapest DoT available and, once it's up, everything else is filler. Keep Insect Swarm ticking alongside it: it's a second cheap DoT with no real GCD contention beyond applying and refreshing it. Starfire is that filler: cast it on repeat for the rest of the fight once Moonfire and Insect Swarm are both running. Near the end of a fight, adjust for what will actually land: with less than 3.5 seconds remaining, switch to Wrath, since its 2-second cast still finishes where Starfire's 3.5-second cast would not; with less than 1.5 seconds left, only the instant Moonfire itself will land in time. Eclipse, if talented, rewards weaving in a Wrath cast periodically, since it shortens your next two Starfire casts — worth folding into the priority once you've taken it.
 
 ## Stat priority
 
