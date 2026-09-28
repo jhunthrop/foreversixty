@@ -10,6 +10,12 @@ from pipeline.icons import resolve_icon
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
 from pipeline.normalize.classes import slugify
 from pipeline.normalize.item_curves import ItemCurves, resolve_armor, stat_budget
+from pipeline.normalize.weapon_curves import (
+    WeaponCurves,
+    WeaponDamage,
+    resolve_weapon_damage,
+    row_has_literal_weapon_damage,
+)
 from pipeline.proficiency import ARMOR, WEAPON, can_equip
 from pipeline.spelltext import SpellText
 
@@ -199,9 +205,10 @@ RESISTANCE_KEYS: dict[int, str] = {
 #: so including it flagged 169 items, 37 of them wands, as occupying both
 #: hands.
 #:
-#: `pipeline.simdb.weapons.TWO_HAND_INVENTORY_TYPE` is 17 for its own reason --
-#: it picks which melee damage curve a weapon scores on, and a ranged weapon is
-#: resolved by SubclassID before that branch is reached. The two constants
+#: `pipeline.normalize.weapon_curves.TWO_HAND_INVENTORY_TYPE` is 17 for its own
+#: reason -- it picks which melee damage curve a weapon scores on, and a
+#: ranged weapon is resolved by SubclassID before that branch is reached. The
+#: two constants
 #: answer different questions and now happen to agree on the answer.
 TWO_HAND_INVENTORY_TYPES = frozenset({17})
 
@@ -319,35 +326,66 @@ class WeaponFields(NamedTuple):
     two_hand: bool
 
 
-def weapon_fields(row: dict[str, str]) -> WeaponFields:
+def weapon_fields(
+    row: dict[str, str],
+    subclass_id: int,
+    curves: WeaponCurves | None = None,
+) -> WeaponFields:
     """Weapon damage, speed and the two-handed flag for one ItemSparse row.
 
-    Every number is optional: the 1.60 client computes weapon damage from
-    curve tables this pipeline does not resolve, so a missing column is an
-    honest zero rather than a malformed row. A present but non-numeric
-    column is still an ItemDataError, through int_column.
+    Classic Era's ItemSparse states damage outright (`MinDamage_0`/
+    `MaxDamage_0`); the 1.60 client (Forever beta) states neither and leaves
+    it to the `ItemDamage<kind>` curve tables, exactly as armour and stats do
+    in `item_curves.py`. `curves` resolves that case; pass None (the
+    default) or a `WeaponCurves` whose own tables are incomplete and such a
+    row gets damage_min = damage_max = dps = 0, only speed and two_hand
+    real -- the same shape a row with neither column reports.
 
     `pipeline/simdb/weapons.py` resolves the simulator's own weapon damage
-    and speed off the client's ItemDamage* curve tables -- the same numbers
-    this function leaves at zero when ItemSparse states no literal damage
-    column. The two are deliberate siblings, not an oversight: wiring the
-    curve resolver in here is not available, since `simdb/weapons.py`
-    already imports `pipeline.normalize.gear` (this module), so importing it
-    back would be a circular import, and its `WeaponCurves` are a simdb-stage
-    input this normalize stage does not build. On build 1.60.1.69893 every
-    weapon here therefore has damage_min = damage_max = dps = 0 and only
-    speed and two_hand real -- that is the intended, documented behaviour,
-    not a bug.
+    off the same curve tables, through `pipeline.normalize.weapon_curves`'s
+    `resolve_weapon_damage` -- this function's curve branch below is the same
+    call, not a second copy of the formula. `simdb/weapons.py` already
+    imports `column_value`/`int_column` from this module, so importing it
+    back here would be a circular import; `weapon_curves.py` is a module
+    neither of the two imports, which is why the shared pieces live there.
     """
     delay = _optional_int(row, "ItemDelay") or 0
-    damage_min = _optional_int(row, "ItemDamageMin_0") or 0
-    damage_max = _optional_int(row, "ItemDamageMax_0") or 0
     speed = round(delay / 1000, 2)
+    two_hand = int_column(row, "InventoryType") in TWO_HAND_INVENTORY_TYPES
+    if row_has_literal_weapon_damage(row):
+        damage_min = _optional_int(row, "MinDamage_0") or 0
+        damage_max = _optional_int(row, "MaxDamage_0") or 0
+    else:
+        damage = _curve_weapon_damage(row, subclass_id, speed, curves)
+        damage_min = int(damage.minimum) if damage is not None else 0
+        damage_max = int(damage.maximum) if damage is not None else 0
     # Never divide by a zero speed: an item with damage and no delay is a
     # thrown weapon or a malformed row, and either way it has no dps.
     dps = round((damage_min + damage_max) / 2 / speed, 2) if speed > 0 else 0.0
-    two_hand = int_column(row, "InventoryType") in TWO_HAND_INVENTORY_TYPES
     return WeaponFields(damage_min, damage_max, speed, dps, two_hand)
+
+
+def _curve_weapon_damage(
+    row: dict[str, str],
+    subclass_id: int,
+    speed: float,
+    curves: WeaponCurves | None,
+) -> WeaponDamage | None:
+    """`weapon_fields`' curve-resolved damage, or None when there is nothing
+    to resolve (no curves passed, an incomplete curve set, or a build whose
+    schema carries no `DmgVariance` at all -- the same "absent column is a
+    schema, not a malformed row" rule `_optional_int` documents)."""
+    if curves is None or "DmgVariance" not in row:
+        return None
+    return resolve_weapon_damage(
+        curves,
+        subclass_id,
+        inventory_type=int_column(row, "InventoryType"),
+        item_level=int_column(row, "ItemLevel"),
+        quality=int_column(row, "OverallQualityID"),
+        speed=speed,
+        variance=float(column_value(row, "DmgVariance")),
+    )
 
 
 def _curve_stats(
@@ -523,6 +561,7 @@ def build_class_items(
     build: str,
     curves: ItemCurves | None = None,
     effects: EffectIndex | None = None,
+    weapon_curves: WeaponCurves | None = None,
 ) -> list[ClassItems]:
     """One equippable item list per class. Raises ItemDataError if a row is unreadable.
 
@@ -530,6 +569,13 @@ def build_class_items(
     literal amounts (the 1.60 client / Forever beta); pass None (the default)
     or an `ItemCurves` whose own tables are incomplete and such a row simply
     gets no armour and no stats, exactly as before curve support existed.
+
+    `weapon_curves` is the same idea for a weapon's damage (`weapon_fields`);
+    pass None (the default) or a `WeaponCurves` whose own tables are
+    incomplete and such a weapon keeps damage_min = damage_max = dps = 0 --
+    a real client weapon the `ItemDamage*` tables state no dps for stays at
+    zero and is not dropped (see `_has_gear_value`'s weapon exemption); a
+    caller counts those to report the before/after zero-damage rate.
 
     `effects` folds an item's on-equip spell stats (`pipeline.normalize.
     effects.EffectIndex`) into the same `stats` dict ItemSparse's own columns
@@ -567,7 +613,7 @@ def build_class_items(
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
         if not _has_gear_value(armor, stats, item_class_id):
             continue
-        weapon = weapon_fields(row)
+        weapon = weapon_fields(row, subclass_id, weapon_curves)
         item = GearItem(
             id=item_id,
             name=display_name,

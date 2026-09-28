@@ -91,6 +91,7 @@ def normalize_build(
     from pipeline.normalize.talents import flat_talents, normalize_talents
     from pipeline.normalize.trait_trees import build_trait_talent_trees
     from pipeline.normalize.traits import TraitDataError, TraitRows, has_trait_trees
+    from pipeline.normalize.weapon_curves import load_weapon_curves
     from pipeline.normalize.wowhead import (
         load_supplement,
         merge_class_items,
@@ -212,6 +213,12 @@ def normalize_build(
         t("ArmorLocation"),
         t("RandPropPoints"),
     )
+    weapon_curves = load_weapon_curves(
+        *(
+            optional(f"ItemDamage{kind}")
+            for kind in ("OneHand", "TwoHand", "Ranged", "Wand", "Thrown")
+        )
+    )
     effects = EffectIndex(
         t("ItemEffect"),
         optional("ItemXItemEffect"),
@@ -220,7 +227,14 @@ def normalize_build(
     )
     try:
         class_items = build_class_items(
-            t("ItemSparse"), t("Item"), class_rows, icons, build, curves, effects=effects
+            t("ItemSparse"),
+            t("Item"),
+            class_rows,
+            icons,
+            build,
+            curves,
+            effects=effects,
+            weapon_curves=weapon_curves,
         )
     except ItemDataError as error:
         logger.warning("items not emitted for build %s: %s", build, error)

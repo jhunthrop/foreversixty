@@ -174,14 +174,41 @@ consumables are a hand-written enum table, so the raw material for regenerating 
 table is written beside the protobuf as `simconsumes.json`. `random_suffixes` is empty
 because `ItemRandomSuffix` 404s on build 1.60.1.69893.
 
+**Weapon damage and speed** used to be simdb-only, resolved from
+`ItemDamage{OneHand,TwoHand,Ranged,Wand,Thrown}` the way `item_curves.py` resolves
+armour: `dps = ItemDamage<kind>[ilvl][quality]`, `avg = dps × ItemDelay / 1000`,
+`min = int(avg × (1 − DmgVariance/2))`, `max = round(avg × (1 + DmgVariance/2))`.
+Verified against Classic Era's own literal `MinDamage_0`/`MaxDamage_0` on the 478
+weapons unchanged between the builds: 471 exact (98.5%). `pipeline/normalize/
+weapon_curves.py` (2026-09-28) is now the one copy of the tables and the formula --
+`pipeline/simdb/weapons.py` and `pipeline/normalize/gear.py`'s `weapon_fields` both
+read it, since `gear.py` cannot import `simdb/weapons.py` (that module already
+imports `column_value`/`int_column` from `gear.py`, so the reverse would be
+circular) and duplicating the formula was worse. `items/<class-slug>.json` carries
+real damage for a weapon its own `ItemSparse` row states no literal
+`MinDamage_0`/`MaxDamage_0` for as a result: 3,574 rows across the 9 classes moved
+off the honest zero `normalize` used to leave them at, on build 1.60.1.70009 --
+`hunter.json` alone gained 527. A weapon whose `ItemDamage*` row itself has no
+entry for its (item level, quality) pair -- the curve tables are gapless from 1 to
+their max item level on every build measured so far, so this has not actually
+happened yet -- would stay 0, on purpose, rather than be guessed at.
+
+`make loot`'s `pipeline/loot/weapons.py` then overlays the engine fork's own
+`weaponDamageMin`/`weaponDamageMax`/`weaponSpeed` (`assets/database/db.json`'s
+`items[]`, read the same way `pipeline/loot/gear.py` reads its suffix and faction
+columns) onto every `items/<class-slug>.json` id the fork itemises by hand, winning
+over the curve-derived value there -- "the fork's own numbers win where present"
+(rotation accuracy program design, item 1). A 30-row spot check of ids both sides
+know, on the pinned fork (2026-09-28): 29 of 30 exact. The one miss, Balanced
+Fighting Stick (6215): the curve derives 15-24, the fork states 18-21 -- real
+hand-authored data the generic formula cannot reproduce, not a bug in either side,
+and exactly what the overlay exists to prefer. 4,695 `items/*.json` rows won by the
+fork's own numbers on build 1.60.1.70009's `loot` run; a fork row with `weaponType`
+set but no damage (403 of the pinned fork's 7,553 items) is left alone rather than
+mapped to zero, since that is the gap the curve derivation exists to fill.
+
 Three things the sim needs that the planner's `items/` does not carry:
 
-- **Weapon damage and speed.** `pipeline/simdb/weapons.py` resolves them from
-  `ItemDamage{OneHand,TwoHand,Ranged,Wand,Thrown}` the way `item_curves.py` resolves
-  armour: `dps = ItemDamage<kind>[ilvl][quality]`, `avg = dps × ItemDelay / 1000`,
-  `min = int(avg × (1 − DmgVariance/2))`, `max = round(avg × (1 + DmgVariance/2))`.
-  Verified against Classic Era's own literal `MinDamage_0`/`MaxDamage_0` on the 478
-  weapons unchanged between the builds: 471 exact (98.5%).
 - **Stats that live in a spell.** `pipeline/simdb/equip.py` resolves `ItemEffect` (linked
   through `ItemXItemEffect` on a modern client, `ParentItemID` on an older one) and
   `SpellItemEnchantment` equip spells through `SpellEffect`. On build 1.60.1.69893 that
