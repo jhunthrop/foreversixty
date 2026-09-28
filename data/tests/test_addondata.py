@@ -141,6 +141,11 @@ def test_check_addon_data_agrees_with_a_deliberately_drifted_copy(tmp_path):
         json.dumps([{"id": 2, "name": "Paladin", "slug": "paladin", "color": "#f58cba"}]),
         encoding="utf-8",
     )
+    # build_rotations reads root/<build>/spellranks.json; an empty-but-well-formed
+    # one is enough (every rotation line resolves to nothing, which is not an error).
+    (tmp_path / BUILD / "spellranks.json").write_text(
+        json.dumps({"build": BUILD, "classes": {}}), encoding="utf-8"
+    )
     write_addon_data(BUILD, root=tmp_path)
     assert not check_addon_data(BUILD, root=tmp_path)
     (tmp_path / BUILD / "addon-data.json").write_text('{"build": "drifted"}', encoding="utf-8")

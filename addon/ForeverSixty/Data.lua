@@ -593,6 +593,1057 @@ ns.Data = {
 		["warrior-fury"] = { ["agility"] = 0.7, ["attack_power"] = 1, ["crit"] = 18, ["expertise"] = 18, ["hit"] = 32, ["strength"] = 1.9 },
 		["warrior-protection"] = { ["agility"] = 1.1, ["armor"] = 0.12, ["attack_power"] = 1, ["block"] = 3, ["block_value"] = 0.6, ["defense"] = 6.5, ["dodge"] = 4.5, ["expertise"] = 10, ["hit"] = 10, ["parry"] = 4.5, ["stamina"] = 3.2, ["strength"] = 1 },
 	},
+	rotations = {
+		["druid-balance"] = {
+			{ level = 10, lines = {
+				{ spellId = 8924, name = "Moonfire", condition = "Less than 1.5 seconds left in the fight: only the instant-cast Moonfire will land in time." },
+				{ spellId = 5177, name = "Wrath", condition = "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not." },
+				{ spellId = 8924, name = "Moonfire", condition = "Keep Moonfire on the target; it is the cheapest DoT available and ticks the whole fight." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 8925, name = "Moonfire", condition = "Less than 1.5 seconds left in the fight: only the instant-cast Moonfire will land in time." },
+				{ spellId = 5178, name = "Wrath", condition = "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not." },
+				{ spellId = 8925, name = "Moonfire", condition = "Keep Moonfire on the target; it is the cheapest DoT available and ticks the whole fight." },
+				{ spellId = 5570, name = "Insect Swarm", condition = "Keep Insect Swarm ticking alongside Moonfire; it is a second cheap DoT with no GCD contention beyond application (audit finding druid.md #3 -- a real, engine-i…" },
+				{ spellId = 2912, name = "Starfire", condition = "Starfire is the whole rest of the rotation once Moonfire and Insect Swarm are ticking." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 8927, name = "Moonfire", condition = "Less than 1.5 seconds left in the fight: only the instant-cast Moonfire will land in time." },
+				{ spellId = 5180, name = "Wrath", condition = "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not." },
+				{ spellId = 8927, name = "Moonfire", condition = "Keep Moonfire on the target; it is the cheapest DoT available and ticks the whole fight." },
+				{ spellId = 24974, name = "Insect Swarm", condition = "Keep Insect Swarm ticking alongside Moonfire; it is a second cheap DoT with no GCD contention beyond application (audit finding druid.md #3 -- a real, engine-i…" },
+				{ spellId = 8949, name = "Starfire", condition = "Starfire is the whole rest of the rotation once Moonfire and Insect Swarm are ticking." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 8928, name = "Moonfire", condition = "Less than 1.5 seconds left in the fight: only the instant-cast Moonfire will land in time." },
+				{ spellId = 6780, name = "Wrath", condition = "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not." },
+				{ spellId = 8928, name = "Moonfire", condition = "Keep Moonfire on the target; it is the cheapest DoT available and ticks the whole fight." },
+				{ spellId = 24974, name = "Insect Swarm", condition = "Keep Insect Swarm ticking alongside Moonfire; it is a second cheap DoT with no GCD contention beyond application (audit finding druid.md #3 -- a real, engine-i…" },
+				{ spellId = 8950, name = "Starfire", condition = "Starfire is the whole rest of the rotation once Moonfire and Insect Swarm are ticking." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 8929, name = "Moonfire", condition = "Less than 1.5 seconds left in the fight: only the instant-cast Moonfire will land in time." },
+				{ spellId = 6780, name = "Wrath", condition = "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not." },
+				{ spellId = 8929, name = "Moonfire", condition = "Keep Moonfire on the target; it is the cheapest DoT available and ticks the whole fight." },
+				{ spellId = 24975, name = "Insect Swarm", condition = "Keep Insect Swarm ticking alongside Moonfire; it is a second cheap DoT with no GCD contention beyond application (audit finding druid.md #3 -- a real, engine-i…" },
+				{ spellId = 8950, name = "Starfire", condition = "Starfire is the whole rest of the rotation once Moonfire and Insect Swarm are ticking." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 9833, name = "Moonfire", condition = "Less than 1.5 seconds left in the fight: only the instant-cast Moonfire will land in time." },
+				{ spellId = 8905, name = "Wrath", condition = "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not." },
+				{ spellId = 9833, name = "Moonfire", condition = "Keep Moonfire on the target; it is the cheapest DoT available and ticks the whole fight." },
+				{ spellId = 24976, name = "Insect Swarm", condition = "Keep Insect Swarm ticking alongside Moonfire; it is a second cheap DoT with no GCD contention beyond application (audit finding druid.md #3 -- a real, engine-i…" },
+				{ spellId = 9875, name = "Starfire", condition = "Starfire is the whole rest of the rotation once Moonfire and Insect Swarm are ticking." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 9835, name = "Moonfire", condition = "Less than 1.5 seconds left in the fight: only the instant-cast Moonfire will land in time." },
+				{ spellId = 9912, name = "Wrath", condition = "Less than 3.5 seconds left: Wrath's 2 second cast still finishes, Starfire's 3.5 second cast would not." },
+				{ spellId = 9835, name = "Moonfire", condition = "Keep Moonfire on the target; it is the cheapest DoT available and ticks the whole fight." },
+				{ spellId = 24977, name = "Insect Swarm", condition = "Keep Insect Swarm ticking alongside Moonfire; it is a second cheap DoT with no GCD contention beyond application (audit finding druid.md #3 -- a real, engine-i…" },
+				{ spellId = 25298, name = "Starfire", condition = "Starfire is the whole rest of the rotation once Moonfire and Insect Swarm are ticking." },
+			} },
+		},
+		["druid-feral"] = {
+			{ level = 10, lines = {
+				{ spellId = 1312152, name = "Tiger's Fury", condition = "Tiger's Fury on cooldown for the free energy; it costs nothing and the engine gates it on its own 30 second cooldown." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 1312152, name = "Tiger's Fury", condition = "Tiger's Fury on cooldown for the free energy; it costs nothing and the engine gates it on its own 30 second cooldown." },
+				{ spellId = 1079, name = "Rip", condition = "At 5 combo points, Rip once it has under 6s left." },
+				{ spellId = 1082, name = "Claw", condition = "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 5217, name = "Tiger's Fury", condition = "Tiger's Fury on cooldown for the free energy; it costs nothing and the engine gates it on its own 30 second cooldown." },
+				{ spellId = 1822, name = "Rake", condition = "Keep Rake ticking; it is a strong bleed that costs no combo point." },
+				{ spellId = 9492, name = "Rip", condition = "At 5 combo points, Rip once it has under 6s left." },
+				{ spellId = 6800, name = "Shred", condition = "Shred builds combo points the rest of the time." },
+				{ spellId = 3029, name = "Claw", condition = "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 5217, name = "Tiger's Fury", condition = "Tiger's Fury on cooldown for the free energy; it costs nothing and the engine gates it on its own 30 second cooldown." },
+				{ spellId = 1823, name = "Rake", condition = "Keep Rake ticking; it is a strong bleed that costs no combo point." },
+				{ spellId = 9493, name = "Rip", condition = "At 5 combo points, Rip once it has under 6s left." },
+				{ spellId = 22568, name = "Ferocious Bite", condition = "At 5 combo points with Rip having more than 6s left, Ferocious Bite dumps them instead of capping out." },
+				{ spellId = 8992, name = "Shred", condition = "Shred builds combo points the rest of the time." },
+				{ spellId = 5201, name = "Claw", condition = "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 5217, name = "Tiger's Fury", condition = "Tiger's Fury on cooldown for the free energy; it costs nothing and the engine gates it on its own 30 second cooldown." },
+				{ spellId = 1823, name = "Rake", condition = "Keep Rake ticking; it is a strong bleed that costs no combo point." },
+				{ spellId = 9493, name = "Rip", condition = "At 5 combo points, Rip once it has under 6s left." },
+				{ spellId = 22827, name = "Ferocious Bite", condition = "At 5 combo points with Rip having more than 6s left, Ferocious Bite dumps them instead of capping out." },
+				{ spellId = 8992, name = "Shred", condition = "Shred builds combo points the rest of the time." },
+				{ spellId = 5201, name = "Claw", condition = "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 5217, name = "Tiger's Fury", condition = "Tiger's Fury on cooldown for the free energy; it costs nothing and the engine gates it on its own 30 second cooldown." },
+				{ spellId = 1824, name = "Rake", condition = "Keep Rake ticking; it is a strong bleed that costs no combo point." },
+				{ spellId = 9752, name = "Rip", condition = "At 5 combo points, Rip once it has under 6s left." },
+				{ spellId = 22828, name = "Ferocious Bite", condition = "At 5 combo points with Rip having more than 6s left, Ferocious Bite dumps them instead of capping out." },
+				{ spellId = 9829, name = "Shred", condition = "Shred builds combo points the rest of the time." },
+				{ spellId = 9849, name = "Claw", condition = "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 5217, name = "Tiger's Fury", condition = "Tiger's Fury on cooldown for the free energy; it costs nothing and the engine gates it on its own 30 second cooldown." },
+				{ spellId = 9904, name = "Rake", condition = "Keep Rake ticking; it is a strong bleed that costs no combo point." },
+				{ spellId = 9896, name = "Rip", condition = "At 5 combo points, Rip once it has under 6s left." },
+				{ spellId = 31018, name = "Ferocious Bite", condition = "At 5 combo points with Rip having more than 6s left, Ferocious Bite dumps them instead of capping out." },
+				{ spellId = 9830, name = "Shred", condition = "Shred builds combo points the rest of the time." },
+				{ spellId = 9850, name = "Claw", condition = "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)." },
+			} },
+		},
+		["druid-restoration"] = {
+			{ level = 10, lines = {
+			} },
+			{ level = 20, lines = {
+			} },
+			{ level = 30, lines = {
+			} },
+			{ level = 38, lines = {
+			} },
+			{ level = 40, lines = {
+			} },
+			{ level = 50, lines = {
+			} },
+			{ level = 60, lines = {
+			} },
+		},
+		["hunter-beast-mastery"] = {
+			{ level = 10, lines = {
+				{ spellId = 28755, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 1236188, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped." },
+				{ spellId = 28751, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 3044, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 28755, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 19434, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13550, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14282, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 3045, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 20900, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13551, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14283, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 3045, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 20901, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13552, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14284, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 19574, name = "Bestial Wrath", condition = "Bestial Wrath on cooldown: with Rapid Fire below, this is the one burst window a Classic-length fight allows." },
+				{ spellId = 3045, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 20901, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13552, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14284, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 19574, name = "Bestial Wrath", condition = "Bestial Wrath on cooldown: with Rapid Fire below, this is the one burst window a Classic-length fight allows." },
+				{ spellId = 3045, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 20902, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13554, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14285, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 19574, name = "Bestial Wrath", condition = "Bestial Wrath on cooldown: with Rapid Fire below, this is the one burst window a Classic-length fight allows." },
+				{ spellId = 3045, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 27632, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 25295, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14287, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+		},
+		["hunter-marksmanship"] = {
+			{ level = 10, lines = {
+				{ spellId = 28755, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 1236188, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready." },
+				{ spellId = 28751, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 3044, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 28755, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 19434, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13550, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14282, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 3045, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 20900, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13551, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14283, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 3045, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 20901, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13552, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14284, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 3045, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 20901, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13552, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14284, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 3045, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 20902, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 13554, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14285, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 3045, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
+				{ spellId = 27632, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 25295, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 14287, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+		},
+		["hunter-survival"] = {
+			{ level = 10, lines = {
+				{ spellId = 1236188, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 415336, name = "Raptor Strike", condition = "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities." },
+				{ spellId = 28751, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide." },
+				{ spellId = 3044, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 19434, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 415337, name = "Raptor Strike", condition = "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 13550, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide." },
+				{ spellId = 14282, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 20900, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 415338, name = "Raptor Strike", condition = "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 13551, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide." },
+				{ spellId = 14283, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 20901, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 415340, name = "Raptor Strike", condition = "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 13552, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide." },
+				{ spellId = 14284, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 20901, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 415341, name = "Raptor Strike", condition = "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 13552, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide." },
+				{ spellId = 14284, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 20902, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 415342, name = "Raptor Strike", condition = "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 13554, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide." },
+				{ spellId = 14285, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 27632, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
+				{ spellId = 415343, name = "Raptor Strike", condition = "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities." },
+				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
+				{ spellId = 25295, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide." },
+				{ spellId = 14287, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
+			} },
+		},
+		["mage-arcane"] = {
+			{ level = 10, lines = {
+				{ spellId = 12042, name = "Arcane Power", condition = "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own." },
+				{ spellId = 12043, name = "Presence of Mind", condition = "Presence of Mind on cooldown: free (no GCD) and makes the next cast instant." },
+				{ spellId = 5143, name = "Arcane Missiles", condition = "Missile Barrage (400589) is the talent proc the engine registers since 2026-09-28; the empowered Missiles fire under it, where the Arcane guide places the payo…" },
+				{ spellId = 5143, name = "Arcane Missiles", condition = "Arcane Missiles is the engine-castable Era filler that keeps this rotation dealing damage when the build has not taken Arcane Blast and Missile Barrage (both l…" },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 12042, name = "Arcane Power", condition = "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own." },
+				{ spellId = 12043, name = "Presence of Mind", condition = "Presence of Mind on cooldown: free (no GCD) and makes the next cast instant." },
+				{ spellId = 5144, name = "Arcane Missiles", condition = "Missile Barrage (400589) is the talent proc the engine registers since 2026-09-28; the empowered Missiles fire under it, where the Arcane guide places the payo…" },
+				{ spellId = 400574, name = "Arcane Blast", condition = "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one." },
+				{ spellId = 5144, name = "Arcane Missiles", condition = "Arcane Missiles is the engine-castable Era filler that keeps this rotation dealing damage when the build has not taken Arcane Blast and Missile Barrage (both l…" },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 12042, name = "Arcane Power", condition = "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own." },
+				{ spellId = 12043, name = "Presence of Mind", condition = "Presence of Mind on cooldown: free (no GCD) and makes the next cast instant." },
+				{ spellId = 5145, name = "Arcane Missiles", condition = "Missile Barrage (400589) is the talent proc the engine registers since 2026-09-28; the empowered Missiles fire under it, where the Arcane guide places the payo…" },
+				{ spellId = 1239696, name = "Arcane Blast", condition = "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one." },
+				{ spellId = 5145, name = "Arcane Missiles", condition = "Arcane Missiles is the engine-castable Era filler that keeps this rotation dealing damage when the build has not taken Arcane Blast and Missile Barrage (both l…" },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 12042, name = "Arcane Power", condition = "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own." },
+				{ spellId = 12043, name = "Presence of Mind", condition = "Presence of Mind on cooldown: free (no GCD) and makes the next cast instant." },
+				{ spellId = 8416, name = "Arcane Missiles", condition = "Missile Barrage (400589) is the talent proc the engine registers since 2026-09-28; the empowered Missiles fire under it, where the Arcane guide places the payo…" },
+				{ spellId = 1239696, name = "Arcane Blast", condition = "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one." },
+				{ spellId = 8416, name = "Arcane Missiles", condition = "Arcane Missiles is the engine-castable Era filler that keeps this rotation dealing damage when the build has not taken Arcane Blast and Missile Barrage (both l…" },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 12042, name = "Arcane Power", condition = "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own." },
+				{ spellId = 12043, name = "Presence of Mind", condition = "Presence of Mind on cooldown: free (no GCD) and makes the next cast instant." },
+				{ spellId = 8417, name = "Arcane Missiles", condition = "Missile Barrage (400589) is the talent proc the engine registers since 2026-09-28; the empowered Missiles fire under it, where the Arcane guide places the payo…" },
+				{ spellId = 1239697, name = "Arcane Blast", condition = "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one." },
+				{ spellId = 8417, name = "Arcane Missiles", condition = "Arcane Missiles is the engine-castable Era filler that keeps this rotation dealing damage when the build has not taken Arcane Blast and Missile Barrage (both l…" },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 12042, name = "Arcane Power", condition = "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own." },
+				{ spellId = 12043, name = "Presence of Mind", condition = "Presence of Mind on cooldown: free (no GCD) and makes the next cast instant." },
+				{ spellId = 10211, name = "Arcane Missiles", condition = "Missile Barrage (400589) is the talent proc the engine registers since 2026-09-28; the empowered Missiles fire under it, where the Arcane guide places the payo…" },
+				{ spellId = 1239699, name = "Arcane Blast", condition = "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one." },
+				{ spellId = 10211, name = "Arcane Missiles", condition = "Arcane Missiles is the engine-castable Era filler that keeps this rotation dealing damage when the build has not taken Arcane Blast and Missile Barrage (both l…" },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 12042, name = "Arcane Power", condition = "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own." },
+				{ spellId = 12043, name = "Presence of Mind", condition = "Presence of Mind on cooldown: free (no GCD) and makes the next cast instant." },
+				{ spellId = 25345, name = "Arcane Missiles", condition = "Missile Barrage (400589) is the talent proc the engine registers since 2026-09-28; the empowered Missiles fire under it, where the Arcane guide places the payo…" },
+				{ spellId = 1239700, name = "Arcane Blast", condition = "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one." },
+				{ spellId = 25345, name = "Arcane Missiles", condition = "Arcane Missiles is the engine-castable Era filler that keeps this rotation dealing damage when the build has not taken Arcane Blast and Missile Barrage (both l…" },
+			} },
+		},
+		["mage-fire"] = {
+			{ level = 10, lines = {
+				{ spellId = 400618, name = "Fire Blast", condition = "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts." },
+				{ spellId = 143, name = "Fireball", condition = "Fireball is the primary filler once Improved Scorch's debuff is up." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 400619, name = "Fire Blast", condition = "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts." },
+				{ spellId = 3140, name = "Fireball", condition = "Fireball is the primary filler once Improved Scorch's debuff is up." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 8444, name = "Scorch", condition = "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off." },
+				{ spellId = 400620, name = "Fire Blast", condition = "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts." },
+				{ spellId = 8401, name = "Fireball", condition = "Fireball is the primary filler once Improved Scorch's debuff is up." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 8445, name = "Scorch", condition = "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off." },
+				{ spellId = 400621, name = "Fire Blast", condition = "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts." },
+				{ spellId = 8402, name = "Fireball", condition = "Fireball is the primary filler once Improved Scorch's debuff is up." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 28682, name = "Combustion", condition = "Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits." },
+				{ spellId = 8446, name = "Scorch", condition = "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off." },
+				{ spellId = 400621, name = "Fire Blast", condition = "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts." },
+				{ spellId = 8402, name = "Fireball", condition = "Fireball is the primary filler once Improved Scorch's debuff is up." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 28682, name = "Combustion", condition = "Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits." },
+				{ spellId = 10205, name = "Scorch", condition = "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off." },
+				{ spellId = 400622, name = "Fire Blast", condition = "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts." },
+				{ spellId = 10149, name = "Fireball", condition = "Fireball is the primary filler once Improved Scorch's debuff is up." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 28682, name = "Combustion", condition = "Pop Combustion once Improved Scorch's debuff is fully stacked on the current target, for a guaranteed run of Fire crits." },
+				{ spellId = 10207, name = "Scorch", condition = "Scorch to apply or refresh the five stacks of Improved Scorch's debuff before it falls off." },
+				{ spellId = 400623, name = "Fire Blast", condition = "Fire Blast on cooldown as a free extra nuke that does not compete for Scorch or Fireball casts." },
+				{ spellId = 25306, name = "Fireball", condition = "Fireball is the primary filler once Improved Scorch's debuff is up." },
+			} },
+		},
+		["mage-frost"] = {
+			{ level = 10, lines = {
+				{ spellId = 205, name = "Frostbolt", condition = "Frostbolt is the whole rotation." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 7322, name = "Frostbolt", condition = "Frostbolt is the whole rotation." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 8406, name = "Frostbolt", condition = "Frostbolt is the whole rotation." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 8408, name = "Frostbolt", condition = "Frostbolt is the whole rotation." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 8408, name = "Frostbolt", condition = "Frostbolt is the whole rotation." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 10180, name = "Frostbolt", condition = "Frostbolt is the whole rotation." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 25304, name = "Frostbolt", condition = "Frostbolt is the whole rotation." },
+			} },
+		},
+		["paladin-holy"] = {
+			{ level = 10, lines = {
+			} },
+			{ level = 20, lines = {
+			} },
+			{ level = 30, lines = {
+			} },
+			{ level = 38, lines = {
+			} },
+			{ level = 40, lines = {
+			} },
+			{ level = 50, lines = {
+			} },
+			{ level = 60, lines = {
+			} },
+		},
+		["paladin-protection"] = {
+			{ level = 10, lines = {
+			} },
+			{ level = 20, lines = {
+			} },
+			{ level = 30, lines = {
+			} },
+			{ level = 38, lines = {
+			} },
+			{ level = 40, lines = {
+			} },
+			{ level = 50, lines = {
+			} },
+			{ level = 60, lines = {
+			} },
+		},
+		["paladin-retribution"] = {
+			{ level = 10, lines = {
+				{ spellId = 20271, name = "Judgement", condition = "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again." },
+				{ spellId = 20287, name = "Seal of Righteousness", condition = "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 20271, name = "Judgement", condition = "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again." },
+				{ spellId = 415068, name = "Exorcism", condition = "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's…" },
+				{ spellId = 20375, name = "Seal of Command", condition = "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up." },
+				{ spellId = 20288, name = "Seal of Righteousness", condition = "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up." },
+				{ spellId = 20375, name = "Seal of Command", condition = "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 20271, name = "Judgement", condition = "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again." },
+				{ spellId = 415069, name = "Exorcism", condition = "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's…" },
+				{ spellId = 20915, name = "Seal of Command", condition = "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up." },
+				{ spellId = 20289, name = "Seal of Righteousness", condition = "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up." },
+				{ spellId = 20915, name = "Seal of Command", condition = "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 20271, name = "Judgement", condition = "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again." },
+				{ spellId = 415070, name = "Exorcism", condition = "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's…" },
+				{ spellId = 20915, name = "Seal of Command", condition = "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up." },
+				{ spellId = 20290, name = "Seal of Righteousness", condition = "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up." },
+				{ spellId = 20915, name = "Seal of Command", condition = "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 20271, name = "Judgement", condition = "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again." },
+				{ spellId = 415070, name = "Exorcism", condition = "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's…" },
+				{ spellId = 20918, name = "Seal of Command", condition = "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up." },
+				{ spellId = 20290, name = "Seal of Righteousness", condition = "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up." },
+				{ spellId = 20918, name = "Seal of Command", condition = "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 20271, name = "Judgement", condition = "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again." },
+				{ spellId = 415071, name = "Exorcism", condition = "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's…" },
+				{ spellId = 24275, name = "Hammer of Wrath", condition = "Hammer of Wrath below 20 percent: the other button Retribution has besides seals and Judgement." },
+				{ spellId = 20919, name = "Seal of Command", condition = "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up." },
+				{ spellId = 20292, name = "Seal of Righteousness", condition = "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up." },
+				{ spellId = 20919, name = "Seal of Command", condition = "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 20271, name = "Judgement", condition = "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again." },
+				{ spellId = 415073, name = "Exorcism", condition = "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's…" },
+				{ spellId = 24239, name = "Hammer of Wrath", condition = "Hammer of Wrath below 20 percent: the other button Retribution has besides seals and Judgement." },
+				{ spellId = 20920, name = "Seal of Command", condition = "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up." },
+				{ spellId = 20293, name = "Seal of Righteousness", condition = "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up." },
+				{ spellId = 20920, name = "Seal of Command", condition = "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less." },
+			} },
+		},
+		["priest-discipline"] = {
+			{ level = 10, lines = {
+			} },
+			{ level = 20, lines = {
+			} },
+			{ level = 30, lines = {
+			} },
+			{ level = 38, lines = {
+			} },
+			{ level = 40, lines = {
+			} },
+			{ level = 50, lines = {
+			} },
+			{ level = 60, lines = {
+			} },
+		},
+		["priest-holy"] = {
+			{ level = 10, lines = {
+			} },
+			{ level = 20, lines = {
+			} },
+			{ level = 30, lines = {
+			} },
+			{ level = 38, lines = {
+			} },
+			{ level = 40, lines = {
+			} },
+			{ level = 50, lines = {
+			} },
+			{ level = 60, lines = {
+			} },
+		},
+		["priest-shadow"] = {
+			{ level = 10, lines = {
+				{ spellId = 594, name = "Shadow Word: Pain", condition = "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT." },
+				{ spellId = 8092, name = "Mind Blast", condition = "Era fallback for the execute window when Shadow Word: Death is on its own 15 s cooldown: Mind Blast on cooldown, else Mind Flay." },
+				{ spellId = 8092, name = "Mind Blast", condition = "Mind Blast on cooldown." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 970, name = "Shadow Word: Pain", condition = "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT." },
+				{ spellId = 8102, name = "Mind Blast", condition = "Era fallback for the execute window when Shadow Word: Death is on its own 15 s cooldown: Mind Blast on cooldown, else Mind Flay." },
+				{ spellId = 2944, name = "Devouring Plague", condition = "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke." },
+				{ spellId = 8102, name = "Mind Blast", condition = "Mind Blast on cooldown." },
+				{ spellId = 15407, name = "Mind Flay", condition = "Mind Flay fills every remaining global, including the rest of the execute fallback above." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 992, name = "Shadow Word: Pain", condition = "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT." },
+				{ spellId = 8104, name = "Mind Blast", condition = "Era fallback for the execute window when Shadow Word: Death is on its own 15 s cooldown: Mind Blast on cooldown, else Mind Flay." },
+				{ spellId = 19276, name = "Devouring Plague", condition = "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke." },
+				{ spellId = 8104, name = "Mind Blast", condition = "Mind Blast on cooldown." },
+				{ spellId = 17311, name = "Mind Flay", condition = "Mind Flay fills every remaining global, including the rest of the execute fallback above." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 2767, name = "Shadow Word: Pain", condition = "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT." },
+				{ spellId = 1309595, name = "Shadow Word: Death", condition = "Shadow Word: Death (sim/priest/shadow_word_death.go): Forever's tier 5 Early Demise talent gives it bonus crit chance below 20% target health, read through the…" },
+				{ spellId = 8105, name = "Mind Blast", condition = "Era fallback for the execute window when Shadow Word: Death is on its own 15 s cooldown: Mind Blast on cooldown, else Mind Flay." },
+				{ spellId = 19277, name = "Devouring Plague", condition = "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke." },
+				{ spellId = 8105, name = "Mind Blast", condition = "Mind Blast on cooldown." },
+				{ spellId = 17312, name = "Mind Flay", condition = "Mind Flay fills every remaining global, including the rest of the execute fallback above." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 2767, name = "Shadow Word: Pain", condition = "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT." },
+				{ spellId = 1309633, name = "Shadow Word: Death", condition = "Shadow Word: Death (sim/priest/shadow_word_death.go): Forever's tier 5 Early Demise talent gives it bonus crit chance below 20% target health, read through the…" },
+				{ spellId = 8106, name = "Mind Blast", condition = "Era fallback for the execute window when Shadow Word: Death is on its own 15 s cooldown: Mind Blast on cooldown, else Mind Flay." },
+				{ spellId = 19277, name = "Devouring Plague", condition = "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke." },
+				{ spellId = 8106, name = "Mind Blast", condition = "Mind Blast on cooldown." },
+				{ spellId = 17312, name = "Mind Flay", condition = "Mind Flay fills every remaining global, including the rest of the execute fallback above." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 10893, name = "Shadow Word: Pain", condition = "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT." },
+				{ spellId = 1309635, name = "Shadow Word: Death", condition = "Shadow Word: Death (sim/priest/shadow_word_death.go): Forever's tier 5 Early Demise talent gives it bonus crit chance below 20% target health, read through the…" },
+				{ spellId = 10945, name = "Mind Blast", condition = "Era fallback for the execute window when Shadow Word: Death is on its own 15 s cooldown: Mind Blast on cooldown, else Mind Flay." },
+				{ spellId = 19278, name = "Devouring Plague", condition = "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke." },
+				{ spellId = 10945, name = "Mind Blast", condition = "Mind Blast on cooldown." },
+				{ spellId = 17313, name = "Mind Flay", condition = "Mind Flay fills every remaining global, including the rest of the execute fallback above." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 27605, name = "Shadow Word: Pain", condition = "Shadow Word: Pain is kept up unless the fight is about to end, when refreshing it would waste most of the DoT." },
+				{ spellId = 1309636, name = "Shadow Word: Death", condition = "Shadow Word: Death (sim/priest/shadow_word_death.go): Forever's tier 5 Early Demise talent gives it bonus crit chance below 20% target health, read through the…" },
+				{ spellId = 10947, name = "Mind Blast", condition = "Era fallback for the execute window when Shadow Word: Death is on its own 15 s cooldown: Mind Blast on cooldown, else Mind Flay." },
+				{ spellId = 19280, name = "Devouring Plague", condition = "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke." },
+				{ spellId = 10947, name = "Mind Blast", condition = "Mind Blast on cooldown." },
+				{ spellId = 18807, name = "Mind Flay", condition = "Mind Flay fills every remaining global, including the rest of the execute fallback above." },
+			} },
+		},
+		["rogue-assassination"] = {
+			{ level = 10, lines = {
+				{ spellId = 6760, name = "Eviscerate", condition = "Eviscerate at five combo points: the functional finisher while Venom is not yet implemented." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1757, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder for a rogue without the Mutilate talent." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 6761, name = "Eviscerate", condition = "Eviscerate at five combo points: the functional finisher while Venom is not yet implemented." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1758, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder for a rogue without the Mutilate talent." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 6762, name = "Eviscerate", condition = "Eviscerate at five combo points: the functional finisher while Venom is not yet implemented." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1310707, name = "Mutilate", condition = "Mutilate as the Forever Assassination talent's intended combo-point builder (sim/rogue/mutilate.go): a talented rogue strikes with both weapons here for 2 comb…" },
+				{ spellId = 1760, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder for a rogue without the Mutilate talent." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 8623, name = "Eviscerate", condition = "Eviscerate at five combo points: the functional finisher while Venom is not yet implemented." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1310707, name = "Mutilate", condition = "Mutilate as the Forever Assassination talent's intended combo-point builder (sim/rogue/mutilate.go): a talented rogue strikes with both weapons here for 2 comb…" },
+				{ spellId = 8621, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder for a rogue without the Mutilate talent." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 1310703, name = "Venom", condition = "Venom as an alternate finisher the Forever Assassination tree grants (sim/rogue/venom.go): a talented rogue spends 5 combo points here instead of on Eviscerate…" },
+				{ spellId = 8624, name = "Eviscerate", condition = "Eviscerate at five combo points: the functional finisher while Venom is not yet implemented." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 399956, name = "Mutilate", condition = "Mutilate as the Forever Assassination talent's intended combo-point builder (sim/rogue/mutilate.go): a talented rogue strikes with both weapons here for 2 comb…" },
+				{ spellId = 8621, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder for a rogue without the Mutilate talent." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 1310703, name = "Venom", condition = "Venom as an alternate finisher the Forever Assassination tree grants (sim/rogue/venom.go): a talented rogue spends 5 combo points here instead of on Eviscerate…" },
+				{ spellId = 11299, name = "Eviscerate", condition = "Eviscerate at five combo points: the functional finisher while Venom is not yet implemented." },
+				{ spellId = 6774, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1241582, name = "Mutilate", condition = "Mutilate as the Forever Assassination talent's intended combo-point builder (sim/rogue/mutilate.go): a talented rogue strikes with both weapons here for 2 comb…" },
+				{ spellId = 11293, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder for a rogue without the Mutilate talent." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 1310703, name = "Venom", condition = "Venom as an alternate finisher the Forever Assassination tree grants (sim/rogue/venom.go): a talented rogue spends 5 combo points here instead of on Eviscerate…" },
+				{ spellId = 31016, name = "Eviscerate", condition = "Eviscerate at five combo points: the functional finisher while Venom is not yet implemented." },
+				{ spellId = 6774, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1241584, name = "Mutilate", condition = "Mutilate as the Forever Assassination talent's intended combo-point builder (sim/rogue/mutilate.go): a talented rogue strikes with both weapons here for 2 comb…" },
+				{ spellId = 11294, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder for a rogue without the Mutilate talent." },
+			} },
+		},
+		["rogue-combat"] = {
+			{ level = 10, lines = {
+				{ spellId = 6760, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1757, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 6761, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1758, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 6762, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1760, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 8623, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 8621, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 8624, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 8621, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 11299, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 6774, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 11293, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 31016, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 6774, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 11294, name = "Sinister Strike", condition = "Sinister Strike as the combo point builder." },
+			} },
+		},
+		["rogue-subtlety"] = {
+			{ level = 10, lines = {
+				{ spellId = 6760, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1757, name = "Sinister Strike", condition = "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point bu…" },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 6761, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 1758, name = "Sinister Strike", condition = "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point bu…" },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 6762, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 16511, name = "Hemorrhage", condition = "Hemorrhage as the combo point builder: Subtlety's talent-granted replacement for Sinister Strike, and its bleed needs reapplying once its charges run out." },
+				{ spellId = 1760, name = "Sinister Strike", condition = "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point bu…" },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 8623, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 16511, name = "Hemorrhage", condition = "Hemorrhage as the combo point builder: Subtlety's talent-granted replacement for Sinister Strike, and its bleed needs reapplying once its charges run out." },
+				{ spellId = 8621, name = "Sinister Strike", condition = "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point bu…" },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 8624, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 5171, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 16511, name = "Hemorrhage", condition = "Hemorrhage as the combo point builder: Subtlety's talent-granted replacement for Sinister Strike, and its bleed needs reapplying once its charges run out." },
+				{ spellId = 8621, name = "Sinister Strike", condition = "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point bu…" },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 11299, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 6774, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 16511, name = "Hemorrhage", condition = "Hemorrhage as the combo point builder: Subtlety's talent-granted replacement for Sinister Strike, and its bleed needs reapplying once its charges run out." },
+				{ spellId = 11293, name = "Sinister Strike", condition = "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point bu…" },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 31016, name = "Eviscerate", condition = "Eviscerate at five combo points, checked ahead of Slice and Dice's refresh so a full five-point finisher is never given up in favor of a refresh." },
+				{ spellId = 6774, name = "Slice and Dice", condition = "Slice and Dice: only ever spend combo points on it once there are five banked, and only when it actually needs it -- down entirely, or under 3s remaining." },
+				{ spellId = 16511, name = "Hemorrhage", condition = "Hemorrhage as the combo point builder: Subtlety's talent-granted replacement for Sinister Strike, and its bleed needs reapplying once its charges run out." },
+				{ spellId = 11294, name = "Sinister Strike", condition = "Fix round: the ladder's bare build has zero points in Hemorrhage below the level its tier is reachable (tier 4 of the Subtlety tree), leaving no combo-point bu…" },
+			} },
+		},
+		["shaman-elemental"] = {
+			{ level = 10, lines = {
+				{ spellId = 3599, name = "Searing Totem", condition = "Single target: Searing Totem is the higher damage fire totem." },
+				{ spellId = 8050, name = "Flame Shock", condition = "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much." },
+				{ spellId = 1220746, name = "Earth Shock", condition = "Earth Shock is a mana dump once mana is comfortably above half; it shares a cooldown with Flame Shock only, not Chain Lightning, so it is safe to slot in here." },
+				{ spellId = 529, name = "Lightning Bolt", condition = "Lightning Bolt is the rest of the single-target rotation." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 6363, name = "Searing Totem", condition = "Single target: Searing Totem is the higher damage fire totem." },
+				{ spellId = 8052, name = "Flame Shock", condition = "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much." },
+				{ spellId = 1220747, name = "Earth Shock", condition = "Earth Shock is a mana dump once mana is comfortably above half; it shares a cooldown with Flame Shock only, not Chain Lightning, so it is safe to slot in here." },
+				{ spellId = 915, name = "Lightning Bolt", condition = "Lightning Bolt is the rest of the single-target rotation." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 6364, name = "Searing Totem", condition = "Single target: Searing Totem is the higher damage fire totem." },
+				{ spellId = 8190, name = "Magma Totem", condition = "2 or more targets: Magma Totem hits everyone standing in it instead." },
+				{ spellId = 8053, name = "Flame Shock", condition = "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much." },
+				{ spellId = 1220748, name = "Earth Shock", condition = "Earth Shock is a mana dump once mana is comfortably above half; it shares a cooldown with Flame Shock only, not Chain Lightning, so it is safe to slot in here." },
+				{ spellId = 943, name = "Lightning Bolt", condition = "Lightning Bolt is the rest of the single-target rotation." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 6364, name = "Searing Totem", condition = "Single target: Searing Totem is the higher damage fire totem." },
+				{ spellId = 10585, name = "Magma Totem", condition = "2 or more targets: Magma Totem hits everyone standing in it instead." },
+				{ spellId = 8053, name = "Flame Shock", condition = "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much." },
+				{ spellId = 421, name = "Chain Lightning", condition = "2 or more targets: Chain Lightning hits all of them for close to single-target Lightning Bolt damage." },
+				{ spellId = 1220749, name = "Earth Shock", condition = "Earth Shock is a mana dump once mana is comfortably above half; it shares a cooldown with Flame Shock only, not Chain Lightning, so it is safe to slot in here." },
+				{ spellId = 10391, name = "Lightning Bolt", condition = "Lightning Bolt is the rest of the single-target rotation." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 6365, name = "Searing Totem", condition = "Single target: Searing Totem is the higher damage fire totem." },
+				{ spellId = 10585, name = "Magma Totem", condition = "2 or more targets: Magma Totem hits everyone standing in it instead." },
+				{ spellId = 10447, name = "Flame Shock", condition = "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much." },
+				{ spellId = 930, name = "Chain Lightning", condition = "2 or more targets: Chain Lightning hits all of them for close to single-target Lightning Bolt damage." },
+				{ spellId = 1220749, name = "Earth Shock", condition = "Earth Shock is a mana dump once mana is comfortably above half; it shares a cooldown with Flame Shock only, not Chain Lightning, so it is safe to slot in here." },
+				{ spellId = 10391, name = "Lightning Bolt", condition = "Lightning Bolt is the rest of the single-target rotation." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 10437, name = "Searing Totem", condition = "Single target: Searing Totem is the higher damage fire totem." },
+				{ spellId = 10586, name = "Magma Totem", condition = "2 or more targets: Magma Totem hits everyone standing in it instead." },
+				{ spellId = 10447, name = "Flame Shock", condition = "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much." },
+				{ spellId = 2860, name = "Chain Lightning", condition = "2 or more targets: Chain Lightning hits all of them for close to single-target Lightning Bolt damage." },
+				{ spellId = 1220750, name = "Earth Shock", condition = "Earth Shock is a mana dump once mana is comfortably above half; it shares a cooldown with Flame Shock only, not Chain Lightning, so it is safe to slot in here." },
+				{ spellId = 15207, name = "Lightning Bolt", condition = "Lightning Bolt is the rest of the single-target rotation." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 10438, name = "Searing Totem", condition = "Single target: Searing Totem is the higher damage fire totem." },
+				{ spellId = 10587, name = "Magma Totem", condition = "2 or more targets: Magma Totem hits everyone standing in it instead." },
+				{ spellId = 29228, name = "Flame Shock", condition = "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much." },
+				{ spellId = 10605, name = "Chain Lightning", condition = "2 or more targets: Chain Lightning hits all of them for close to single-target Lightning Bolt damage." },
+				{ spellId = 1220751, name = "Earth Shock", condition = "Earth Shock is a mana dump once mana is comfortably above half; it shares a cooldown with Flame Shock only, not Chain Lightning, so it is safe to slot in here." },
+				{ spellId = 15208, name = "Lightning Bolt", condition = "Lightning Bolt is the rest of the single-target rotation." },
+			} },
+		},
+		["shaman-enhancement"] = {
+			{ level = 10, lines = {
+				{ spellId = 8075, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
+				{ spellId = 3599, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
+				{ spellId = 1220746, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 8075, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
+				{ spellId = 6363, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
+				{ spellId = 1220747, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 8160, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
+				{ spellId = 6364, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
+				{ spellId = 1220748, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 8161, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
+				{ spellId = 8512, name = "Windfury Totem", condition = "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would." },
+				{ spellId = 6364, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
+				{ spellId = 1220749, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 8161, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
+				{ spellId = 8512, name = "Windfury Totem", condition = "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would." },
+				{ spellId = 6365, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
+				{ spellId = 1220749, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 8161, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
+				{ spellId = 10613, name = "Windfury Totem", condition = "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would." },
+				{ spellId = 10437, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
+				{ spellId = 1220750, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 25361, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
+				{ spellId = 27621, name = "Windfury Totem", condition = "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would." },
+				{ spellId = 10438, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
+				{ spellId = 1220751, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
+			} },
+		},
+		["shaman-restoration"] = {
+			{ level = 10, lines = {
+			} },
+			{ level = 20, lines = {
+			} },
+			{ level = 30, lines = {
+			} },
+			{ level = 38, lines = {
+			} },
+			{ level = 40, lines = {
+			} },
+			{ level = 50, lines = {
+			} },
+			{ level = 60, lines = {
+			} },
+		},
+		["warlock-affliction"] = {
+			{ level = 10, lines = {
+				{ spellId = 1454, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low; health is not a concern with three DoTs and Drain Life available." },
+				{ spellId = 980, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed on cooldown." },
+				{ spellId = 172, name = "Corruption", condition = "Corruption is the cheapest DoT per damage and is kept up throughout." },
+				{ spellId = 695, name = "Shadow Bolt", condition = "Shadow Bolt fills every remaining global while the DoTs run their course." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 1455, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low; health is not a concern with three DoTs and Drain Life available." },
+				{ spellId = 1014, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed on cooldown." },
+				{ spellId = 6222, name = "Corruption", condition = "Corruption is the cheapest DoT per damage and is kept up throughout." },
+				{ spellId = 1088, name = "Shadow Bolt", condition = "Shadow Bolt fills every remaining global while the DoTs run their course." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 1456, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low; health is not a concern with three DoTs and Drain Life available." },
+				{ spellId = 6217, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed on cooldown." },
+				{ spellId = 6223, name = "Corruption", condition = "Corruption is the cheapest DoT per damage and is kept up throughout." },
+				{ spellId = 1106, name = "Shadow Bolt", condition = "Shadow Bolt fills every remaining global while the DoTs run their course." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 11687, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low; health is not a concern with three DoTs and Drain Life available." },
+				{ spellId = 11711, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed on cooldown." },
+				{ spellId = 7648, name = "Corruption", condition = "Corruption is the cheapest DoT per damage and is kept up throughout." },
+				{ spellId = 7641, name = "Shadow Bolt", condition = "Shadow Bolt fills every remaining global while the DoTs run their course." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 11687, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low; health is not a concern with three DoTs and Drain Life available." },
+				{ spellId = 11711, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed on cooldown." },
+				{ spellId = 7648, name = "Corruption", condition = "Corruption is the cheapest DoT per damage and is kept up throughout." },
+				{ spellId = 1316697, name = "Wrack", condition = "Inert until the engine registers Wrack (found only in sim/warlock's talent metadata table, no spell registration)." },
+				{ spellId = 7641, name = "Shadow Bolt", condition = "Shadow Bolt fills every remaining global while the DoTs run their course." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 11688, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low; health is not a concern with three DoTs and Drain Life available." },
+				{ spellId = 11712, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed on cooldown." },
+				{ spellId = 11671, name = "Corruption", condition = "Corruption is the cheapest DoT per damage and is kept up throughout." },
+				{ spellId = 1316697, name = "Wrack", condition = "Inert until the engine registers Wrack (found only in sim/warlock's talent metadata table, no spell registration)." },
+				{ spellId = 11659, name = "Shadow Bolt", condition = "Shadow Bolt fills every remaining global while the DoTs run their course." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 11689, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low; health is not a concern with three DoTs and Drain Life available." },
+				{ spellId = 11713, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed on cooldown." },
+				{ spellId = 25311, name = "Corruption", condition = "Corruption is the cheapest DoT per damage and is kept up throughout." },
+				{ spellId = 1316697, name = "Wrack", condition = "Inert until the engine registers Wrack (found only in sim/warlock's talent metadata table, no spell registration)." },
+				{ spellId = 25307, name = "Shadow Bolt", condition = "Shadow Bolt fills every remaining global while the DoTs run their course." },
+			} },
+		},
+		["warlock-demonology"] = {
+			{ level = 10, lines = {
+				{ spellId = 1454, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 172, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
+				{ spellId = 695, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 1455, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 6222, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
+				{ spellId = 1088, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 1456, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 6223, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
+				{ spellId = 1106, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 11687, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 7648, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
+				{ spellId = 7641, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 11687, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 7648, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
+				{ spellId = 7641, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 11688, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11671, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
+				{ spellId = 6353, name = "Soul Fire", condition = "Soul Fire on cooldown." },
+				{ spellId = 11659, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 11689, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 25311, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
+				{ spellId = 17924, name = "Soul Fire", condition = "Soul Fire on cooldown." },
+				{ spellId = 25307, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
+			} },
+		},
+		["warlock-destruction"] = {
+			{ level = 10, lines = {
+				{ spellId = 1454, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 707, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
+				{ spellId = 695, name = "Shadow Bolt", condition = "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…" },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 1455, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 1094, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
+				{ spellId = 17877, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
+				{ spellId = 1088, name = "Shadow Bolt", condition = "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…" },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 1456, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 2941, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
+				{ spellId = 1293817, name = "Conflagrate", condition = "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up." },
+				{ spellId = 18867, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
+				{ spellId = 1106, name = "Shadow Bolt", condition = "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…" },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 11687, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 2941, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
+				{ spellId = 1293818, name = "Conflagrate", condition = "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up." },
+				{ spellId = 18868, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
+				{ spellId = 7641, name = "Shadow Bolt", condition = "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…" },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 11687, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11665, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
+				{ spellId = 17962, name = "Conflagrate", condition = "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up." },
+				{ spellId = 18869, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
+				{ spellId = 412758, name = "Incinerate", condition = "Inert until the engine registers Incinerate (found only in sim/warlock's talent metadata table, no spell registration)." },
+				{ spellId = 7641, name = "Shadow Bolt", condition = "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…" },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 11688, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11667, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
+				{ spellId = 18930, name = "Conflagrate", condition = "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up." },
+				{ spellId = 18870, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
+				{ spellId = 1293812, name = "Incinerate", condition = "Inert until the engine registers Incinerate (found only in sim/warlock's talent metadata table, no spell registration)." },
+				{ spellId = 11659, name = "Shadow Bolt", condition = "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…" },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 11689, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 25309, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
+				{ spellId = 18932, name = "Conflagrate", condition = "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up." },
+				{ spellId = 18871, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
+				{ spellId = 1293813, name = "Incinerate", condition = "Inert until the engine registers Incinerate (found only in sim/warlock's talent metadata table, no spell registration)." },
+				{ spellId = 25307, name = "Shadow Bolt", condition = "Shadow Bolt is the engine-castable Era filler while Incinerate is inert -- without it this rotation has nothing left to cast once Immolate is up and Conflagrat…" },
+			} },
+		},
+		["warrior-arms"] = {
+			{ level = 10, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource, same as Fury." },
+				{ spellId = 6673, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 6546, name = "Rend", condition = "Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking." },
+				{ spellId = 284, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource, same as Fury." },
+				{ spellId = 5242, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 6547, name = "Rend", condition = "Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking." },
+				{ spellId = 7384, name = "Overpower", condition = "Overpower is a bare cast: the engine's ExtraCastCondition only lets it land while the dodge-triggered proc aura is up, so it is a free line that falls through…" },
+				{ spellId = 285, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource, same as Fury." },
+				{ spellId = 6192, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 6548, name = "Rend", condition = "Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking." },
+				{ spellId = 7887, name = "Overpower", condition = "Overpower is a bare cast: the engine's ExtraCastCondition only lets it land while the dodge-triggered proc aura is up, so it is a free line that falls through…" },
+				{ spellId = 5308, name = "Execute", condition = "Execute below 20 percent." },
+				{ spellId = 1608, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource, same as Fury." },
+				{ spellId = 11549, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 6548, name = "Rend", condition = "Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking." },
+				{ spellId = 7887, name = "Overpower", condition = "Overpower is a bare cast: the engine's ExtraCastCondition only lets it land while the dodge-triggered proc aura is up, so it is a free line that falls through…" },
+				{ spellId = 20658, name = "Execute", condition = "Execute below 20 percent." },
+				{ spellId = 11564, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource, same as Fury." },
+				{ spellId = 11549, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 11572, name = "Rend", condition = "Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking." },
+				{ spellId = 12294, name = "Mortal Strike", condition = "Mortal Strike is the highest damage per rage button and comes off a six second cooldown." },
+				{ spellId = 7887, name = "Overpower", condition = "Overpower is a bare cast: the engine's ExtraCastCondition only lets it land while the dodge-triggered proc aura is up, so it is a free line that falls through…" },
+				{ spellId = 20660, name = "Execute", condition = "Execute below 20 percent." },
+				{ spellId = 11565, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource, same as Fury." },
+				{ spellId = 11550, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 11573, name = "Rend", condition = "Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking." },
+				{ spellId = 21551, name = "Mortal Strike", condition = "Mortal Strike is the highest damage per rage button and comes off a six second cooldown." },
+				{ spellId = 11584, name = "Overpower", condition = "Overpower is a bare cast: the engine's ExtraCastCondition only lets it land while the dodge-triggered proc aura is up, so it is a free line that falls through…" },
+				{ spellId = 20661, name = "Execute", condition = "Execute below 20 percent." },
+				{ spellId = 11566, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource, same as Fury." },
+				{ spellId = 25289, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 11574, name = "Rend", condition = "Keep Rend up: Improved Rend and Deep Wounds both want the bleed ticking." },
+				{ spellId = 27580, name = "Mortal Strike", condition = "Mortal Strike is the highest damage per rage button and comes off a six second cooldown." },
+				{ spellId = 11585, name = "Overpower", condition = "Overpower is a bare cast: the engine's ExtraCastCondition only lets it land while the dodge-triggered proc aura is up, so it is a free line that falls through…" },
+				{ spellId = 20662, name = "Execute", condition = "Execute below 20 percent." },
+				{ spellId = 25286, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+		},
+		["warrior-fury"] = {
+			{ level = 10, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource for Fury." },
+				{ spellId = 12328, name = "Death Wish", condition = "Death Wish on cooldown." },
+				{ spellId = 6673, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 284, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 20, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource for Fury." },
+				{ spellId = 12328, name = "Death Wish", condition = "Death Wish on cooldown." },
+				{ spellId = 5242, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 285, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 30, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource for Fury." },
+				{ spellId = 12328, name = "Death Wish", condition = "Death Wish on cooldown." },
+				{ spellId = 6192, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 5308, name = "Execute", condition = "Execute below 20 percent." },
+				{ spellId = 1608, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 38, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource for Fury." },
+				{ spellId = 12328, name = "Death Wish", condition = "Death Wish on cooldown." },
+				{ spellId = 11549, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 462891, name = "Whirlwind", condition = "Whirlwind while Bloodthirst is down." },
+				{ spellId = 20658, name = "Execute", condition = "Execute below 20 percent." },
+				{ spellId = 11564, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 40, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource for Fury." },
+				{ spellId = 12328, name = "Death Wish", condition = "Death Wish on cooldown." },
+				{ spellId = 11549, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 23881, name = "Bloodthirst", condition = "Bloodthirst is the highest damage per rage button and comes off a six second cooldown." },
+				{ spellId = 462891, name = "Whirlwind", condition = "Whirlwind while Bloodthirst is down." },
+				{ spellId = 20660, name = "Execute", condition = "Execute below 20 percent." },
+				{ spellId = 11565, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 50, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource for Fury." },
+				{ spellId = 12328, name = "Death Wish", condition = "Death Wish on cooldown." },
+				{ spellId = 11550, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 23892, name = "Bloodthirst", condition = "Bloodthirst is the highest damage per rage button and comes off a six second cooldown." },
+				{ spellId = 462891, name = "Whirlwind", condition = "Whirlwind while Bloodthirst is down." },
+				{ spellId = 20661, name = "Execute", condition = "Execute below 20 percent." },
+				{ spellId = 11566, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+			{ level = 60, lines = {
+				{ spellId = 29131, name = "Bloodrage", condition = "Bloodrage on cooldown: rage is the limiting resource for Fury." },
+				{ spellId = 12328, name = "Death Wish", condition = "Death Wish on cooldown." },
+				{ spellId = 25289, name = "Battle Shout", condition = "Keep Battle Shout up." },
+				{ spellId = 23894, name = "Bloodthirst", condition = "Bloodthirst is the highest damage per rage button and comes off a six second cooldown." },
+				{ spellId = 462891, name = "Whirlwind", condition = "Whirlwind while Bloodthirst is down." },
+				{ spellId = 20662, name = "Execute", condition = "Execute below 20 percent." },
+				{ spellId = 25286, name = "Heroic Strike", condition = "Heroic Strike as the rage dump, never below 40 rage." },
+			} },
+		},
+		["warrior-protection"] = {
+			{ level = 10, lines = {
+			} },
+			{ level = 20, lines = {
+			} },
+			{ level = 30, lines = {
+			} },
+			{ level = 38, lines = {
+			} },
+			{ level = 40, lines = {
+			} },
+			{ level = 50, lines = {
+			} },
+			{ level = 60, lines = {
+			} },
+		},
+	},
 }
 
 return ns.Data

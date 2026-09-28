@@ -17,6 +17,8 @@ local Theme = ns.Theme or require("Theme")
 local Widgets = ns.Widgets or require("Widgets")
 local Prefs = ns.Prefs or require("Prefs")
 local Window = ns.Window or require("Window")
+local Compat = ns.Compat or require("Compat")
+local Rotation = ns.Rotation or require("Rotation")
 
 local Toast = {}
 
@@ -136,23 +138,63 @@ function Toast.flushPending()
 end
 
 local function currentLevel()
-	if type(UnitLevel) ~= "function" then
+	return Compat.playerLevel()
+end
+
+--- The rotation toast (design section 2 item 3): "Level 20: Sunder Armor
+--- opens your rotation now." `previousLevel` is nil until Toast.refresh
+--- has seeded Toast.lastLevel at least once (mirrors Toast.baseline's own
+--- nil-means-cannot-tell rule for the talent-point toast just below);
+--- Rotation.newAbilities itself treats a nil previous level as "nothing
+--- to diff against" and answers no fresh lines, so this never fires on
+--- the very first event after the addon loads.
+function Toast.rotationModel(data, previousLevel, level)
+	local fresh = Rotation.newAbilities(data, Follow.build, Talents.readRanks(data), previousLevel, level)
+	if #fresh == 0 then
 		return nil
 	end
-	return UnitLevel("player")
+	return { text = string.format(L.rotationToastMessage, level or 0, fresh[1].name) }
+end
+
+--- Both toasts share one frame (design section 4: "the toast is
+--- underused... use the same mechanism"), so a level-up that fires both
+--- the talent-point toast and the rotation toast shows one message, not a
+--- second popup stepping on the first's fade timer.
+local function combined(talent, rotation)
+	local parts = {}
+	if talent ~= nil then
+		parts[#parts + 1] = talent.text
+	end
+	if rotation ~= nil then
+		parts[#parts + 1] = rotation.text
+	end
+	if #parts == 0 then
+		return nil
+	end
+	return { text = table.concat(parts, "  ") }
 end
 
 --- Always fires (if a build is loaded): PLAYER_LEVEL_UP is never
 --- ambiguous. Resets the baseline so the very next refresh() does not
 --- immediately fire again for the same point.
 function Toast.onLevelUp(data, level)
+	local resolvedLevel = level or currentLevel()
+	local previousLevel = Toast.lastLevel
+	Toast.lastLevel = resolvedLevel
 	Toast.baseline = Toast.unspentPoints()
-	return Toast.show(Toast.model(data, Follow.build, Talents.readRanks(data), level or currentLevel()))
+	local talent = Toast.model(data, Follow.build, Talents.readRanks(data), resolvedLevel)
+	local rotation = Toast.rotationModel(data, previousLevel, resolvedLevel)
+	return Toast.show(combined(talent, rotation))
 end
 
 --- Called on every talent-ish event; fires only on a confirmed rise in the
---- unspent count.
+--- unspent count. Also where Toast.lastLevel is first seeded (the level
+--- read at the first client event after login), since nothing before
+--- PLAYER_LOGIN can plausibly be a level-up to diff against.
 function Toast.refresh(data)
+	if Toast.lastLevel == nil then
+		Toast.lastLevel = currentLevel()
+	end
 	local current = Toast.unspentPoints()
 	local fire = Toast.grewSince(Toast.baseline, current)
 	Toast.baseline = current

@@ -102,6 +102,13 @@ function Compat.playerName()
 	return first .. " " .. surname
 end
 
+--- The player's level, or nil on a test double with no UnitLevel. The one
+--- place that reads it, so Toast.lua and the rotation card can never read
+--- it two different ways.
+function Compat.playerLevel()
+	return type(UnitLevel) == "function" and UnitLevel("player") or nil
+end
+
 --- A unit's name and realm as the rest of the addon reads them: on a client
 --- with last names the second value UnitName gives is the last name, not a
 --- realm, so it joins the name and the realm comes back nil.

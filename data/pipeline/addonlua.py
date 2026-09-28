@@ -52,6 +52,23 @@ def _class_lua(slug: str, tabs: list) -> str:
     return "\n".join(lines)
 
 
+def _rotations_lua(rotations: dict) -> list[str]:
+    lines = ["\trotations = {"]
+    for spec in sorted(rotations):
+        lines.append(f"\t\t[{_quote(spec)}] = {{")
+        for band in rotations[spec]:
+            lines.append(f"\t\t\t{{ level = {band.level}, lines = {{")
+            for line in band.lines:
+                lines.append(
+                    f"\t\t\t\t{{ spellId = {line.spell_id}, name = {_quote(line.name)}, "
+                    f"condition = {_quote(line.condition)} }},"
+                )
+            lines.append("\t\t\t} },")
+        lines.append("\t\t},")
+    lines.append("\t},")
+    return lines
+
+
 def render_lua(data: AddonData) -> str:
     lines = [
         GENERATED,
@@ -74,6 +91,7 @@ def render_lua(data: AddonData) -> str:
         )
         lines.append(f"\t\t[{_quote(spec)}] = {{ {pairs} }},")
     lines.append("\t},")
+    lines.extend(_rotations_lua(data.rotations))
     lines.append("}")
     lines.append("")
     lines.append("return ns.Data")

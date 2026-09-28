@@ -160,6 +160,28 @@ local function renderRow(row, item)
 	row.right:SetTextColor(Theme.rgb(Theme.HEX[done and "success" or (isNext and "gold" or "muted")]))
 end
 
+--- The named build slots row (design section 1: "Raid", "Leveling",
+--- "PvP" -- switching is one click). One Widgets.tab per Follow.SLOTS
+--- entry, left to right in that order.
+local function slotsRow(parent, onSelect)
+	local S = Theme.SIZES
+	local row = {}
+	local previous = nil
+	for index, slot in ipairs(Follow.SLOTS) do
+		local tab = Widgets.tab(parent, Follow.slotName(slot), function()
+			onSelect(slot)
+		end)
+		if previous == nil then
+			tab:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 0)
+		else
+			tab:SetPoint("LEFT", previous, "RIGHT", S.gap, 0)
+		end
+		row[index] = { id = slot, tab = tab }
+		previous = tab
+	end
+	return row
+end
+
 local function layout(parent, ctx)
 	local S = Theme.SIZES
 	local gap, padding = S.gap, S.padding
@@ -168,8 +190,17 @@ local function layout(parent, ctx)
 	view.name:SetPoint("TOPLEFT", parent, "TOPLEFT", padding, -padding)
 	view.progress = Widgets.label(parent, "", "muted", "small")
 	view.progress:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -padding, -padding)
+	local slotsHolder = CreateFrame("Frame", nil, parent)
+	slotsHolder:SetPoint("TOPLEFT", view.name, "BOTTOMLEFT", 0, -gap)
+	slotsHolder:SetSize(ctx.contentWidth, S.tabHeight)
+	view.slots = slotsRow(slotsHolder, function(slot)
+		Follow.setActiveSlot(ctx.data, slot)
+		FollowView.setError(view, "")
+		view.refresh()
+		ctx.refreshEverything()
+	end)
 	view.bar = Cards.progressBar(parent, ctx.contentWidth)
-	view.bar:SetPoint("TOPLEFT", view.name, "BOTTOMLEFT", 0, -gap * 2)
+	view.bar:SetPoint("TOPLEFT", slotsHolder, "BOTTOMLEFT", 0, -gap * 2)
 	view.list = Widgets.list(parent, ctx.contentWidth, S.followRows, FollowView.talentRow)
 	view.list.frame:SetPoint("TOPLEFT", view.bar, "BOTTOMLEFT", 0, -gap * 2)
 	view.list:SetRenderer(renderRow)
@@ -202,6 +233,11 @@ function FollowView.apply(view, model)
 		or string.format(L.followProgress, model.spent, model.total))
 	view.bar:SetValue(model.total > 0 and model.spent / model.total or 0)
 	view.list:SetItems(model.list)
+	-- Follow.slotsFor() walks Follow.SLOTS in the same order slotsRow built
+	-- view.slots in, so the two line up by index with no lookup needed.
+	for index, slot in ipairs(Follow.slotsFor()) do
+		Widgets.setTabActive(view.slots[index].tab, slot.active)
+	end
 	local waiting = Follow.inbox(ForeverSixtyInbox, Export.characterKey())
 	view.waiting = waiting[1]
 	if view.waiting == nil then
@@ -251,6 +287,9 @@ function FollowView.mount(parent, ctx)
 	view.inboxLoad = Widgets.button(parent, L.followInboxLoad, function()
 		if view.waiting ~= nil then
 			loadCode(view, view.waiting.code, view.waiting.name)
+			-- Loaded from here rather than the Overview banner: it is
+			-- handled all the same, so the banner must not offer it again.
+			Follow.dismissInbox(view.waiting.id)
 		end
 	end)
 	view.inboxLoad:SetPoint("LEFT", view.inbox, "RIGHT", Theme.SIZES.gap * 2, 0)

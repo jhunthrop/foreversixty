@@ -32,6 +32,7 @@ SettingsView.TOGGLES = {
 	{ flag = "autoSave", label = "settingsAutoSave", hint = "settingsAutoSaveHint",
 		group = "settingsGroupData" },
 	{ flag = "chat", label = "settingsChat", hint = "settingsChatHint" },
+	{ flag = "advancedDetail", label = "settingsAdvancedDetail", hint = "settingsAdvancedDetailHint" },
 }
 
 --- A toggle's value can legitimately be false. An explicit if, not an
