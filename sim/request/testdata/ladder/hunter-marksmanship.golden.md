@@ -50,8 +50,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   with three standing exceptions before anything counts as a
   violation: (1) data/curated/apl/<spec>.json's own inert array names
   it; (2) it is the potion action ({OtherID: 13}) - the ladder
-  character carries no consumes, so this can never resolve, at any
-  level, any spec; (3) it is a talent-granted spell
+  character carries no consumes (a rogue's poisons, class kit from
+  level 20, are the one exception: ladderKitConsumes), so this can
+  never resolve, at any level, any spec; (3) it is a talent-granted spell
   (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
   and the ladder's own truncated build (ladderTalentString's budget
   walk) has spent zero points on that talent at this level - expected

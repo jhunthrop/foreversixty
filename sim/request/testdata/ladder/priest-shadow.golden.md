@@ -50,8 +50,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   with three standing exceptions before anything counts as a
   violation: (1) data/curated/apl/<spec>.json's own inert array names
   it; (2) it is the potion action ({OtherID: 13}) - the ladder
-  character carries no consumes, so this can never resolve, at any
-  level, any spec; (3) it is a talent-granted spell
+  character carries no consumes (a rogue's poisons, class kit from
+  level 20, are the one exception: ladderKitConsumes), so this can
+  never resolve, at any level, any spec; (3) it is a talent-granted spell
   (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
   and the ladder's own truncated build (ladderTalentString's budget
   walk) has spent zero points on that talent at this level - expected
@@ -95,7 +96,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 38 | 000000000000000000-00000000000000000-443110501201300220 | main_hand:22377 ranged:16993 | 31.5 | 4 | spell:17312=23.7, spell:8105=2.0, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
 | 40 | 000000000000000000-00000000000000000-443110501201300240 | main_hand:22377 ranged:16993 | 33.6 | 4 | spell:17312=24.0, spell:8106=2.0, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
 | 50 | 521000000000000000-00000000000000000-443110501201300251 | main_hand:22377 ranged:16993 | 52.2 | 5 | spell:17313=21.9, spell:10945=2.0, spell:10893=1.1, spell:15473=1.0, spell:19278=1.0 | {SpellID: 14751} |
-| 60 | 524111001300000000-00000000000000000-443110501201300251 | main_hand:22589 ranged:16993 | 121.2 | 6 | spell:18807=24.3, spell:10947=3.6, spell:10894=2.1, spell:14751=1.5, spell:19279=1.5 | - |
+| 60 | 524111001300000000-00000000000000000-443110501201300251 | main_hand:22589 ranged:16993 | 122.8 | 6 | spell:18807=24.3, spell:10947=3.6, spell:10894=2.1, spell:14751=1.5, spell:19280=1.5 | - |
 
 ## Learned but unused (informational)
 

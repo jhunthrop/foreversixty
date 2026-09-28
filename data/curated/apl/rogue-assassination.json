@@ -4,7 +4,8 @@
   "notes": "Vanilla Assassination at 60 does not have Envenom or a real Mutilate rotation -- those are later-expansion redesigns. The Forever talent tree adds a talent-granted Mutilate (a four-rank chain 1310707/399956/1241582/1241584 at 30/40/50/60, registered per rank in sim/rogue/mutilate.go since the accuracy program's engine-melee lane; this file names the top rank and the level rewrite picks the learned one) and a Venom finisher (1310703, sim/rogue/venom.go) to this tree, named here as the intended combo-point builder ahead of Sinister Strike, and as an alternate finisher choice ahead of Eviscerate. Both are now implemented (rotation-accuracy program, 2026-09-28): a rogue who has spent the talent point casts them; a bare-build rogue who has not falls through to the vanilla Sinister Strike / Eviscerate loop underneath exactly as before, since the engine simply doesn't register the spell without the talent. Cold Blood is popped right before the finisher for a guaranteed crit. Every rank named here is checked against this build's own spellconst.",
   "expected_idle": [
     { "id": 31016, "reason": "once Mutilate is talented, Venom (entry 2, spellId 1310703, condition currentComboPoints >= 5) sits ahead of this line in the priority list and claims the finisher slot every time (notes on entry 2: 'a talented rogue spends 5 combo points here instead of on Eviscerate below'), by design from an earlier fix round -- the ladder's level 50/60 rungs have the Mutilate talent, so this line never gets a combo point once Venom is live." },
-    { "id": 6774, "reason": "Slice and Dice shares Eviscerate's own five-combo-point floor and Eviscerate (or, once talented, Venom) claims the combo points whenever both are ready in the same instant (this line's own notes, from an earlier fix round); once Venom is talented at level 50/60 it wins that race every time, so Slice and Dice is never reached -- a real DPS cost of the current priority order, not something this diagnosis pass redesigns." }
+    { "id": 6774, "reason": "Slice and Dice shares Eviscerate's own five-combo-point floor and Eviscerate (or, once talented, Venom) claims the combo points whenever both are ready in the same instant (this line's own notes, from an earlier fix round); once Venom is talented at level 50/60 it wins that race every time, so Slice and Dice is never reached -- a real DPS cost of the current priority order, not something this diagnosis pass redesigns." },
+    {"id": 11294, "reason": "Sinister Strike is the builder only for a rogue without Mutilate (its line is gated on Mutilate being unknown); from the rung where the talent is taken, Mutilate builds every combo point and Sinister Strike is idle by design."}
   ],
   "sources": [
     { "label": "wowsims-forever default rogue priority list (Sinister Strike builder / Eviscerate finisher; no Assassination-specific preset exists upstream)", "url": "https://github.com/wowsims/classic/blob/master/ui/rogue/apls/combat_sinister_strike.apl.json", "kind": "community" },
@@ -58,8 +59,11 @@
         "action": { "castSpell": { "spellId": { "spellId": 1241584, "rank": 4 } } }
       },
       {
-        "notes": "Sinister Strike as the combo point builder for a rogue without the Mutilate talent.",
-        "action": { "castSpell": { "spellId": { "spellId": 11294, "rank": 8 } } }
+        "notes": "Sinister Strike as the combo point builder for a rogue without the Mutilate talent. Gated on Mutilate being unknown: once the talent is taken, an unguarded Sinister Strike (cheaper still with Improved Sinister Strike) out-competes Mutilate for the energy pool and Mutilate fires once per fight (the ladder's level-50 rung lost 3.4 dps to exactly that).",
+        "action": {
+          "condition": { "not": { "val": { "spellIsKnown": { "spellId": { "spellId": 1241584, "rank": 4 } } } } },
+          "castSpell": { "spellId": { "spellId": 11294, "rank": 8 } }
+        }
       }
     ]
   }

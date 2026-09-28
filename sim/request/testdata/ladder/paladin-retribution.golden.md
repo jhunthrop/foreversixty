@@ -50,8 +50,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   with three standing exceptions before anything counts as a
   violation: (1) data/curated/apl/<spec>.json's own inert array names
   it; (2) it is the potion action ({OtherID: 13}) - the ladder
-  character carries no consumes, so this can never resolve, at any
-  level, any spec; (3) it is a talent-granted spell
+  character carries no consumes (a rogue's poisons, class kit from
+  level 20, are the one exception: ladderKitConsumes), so this can
+  never resolve, at any level, any spec; (3) it is a talent-granted spell
   (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
   and the ladder's own truncated build (ladderTalentString's budget
   walk) has spent zero points on that talent at this level - expected
@@ -89,13 +90,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000-10000000000000000 | main_hand:22348 | 33.0 | 4 | other:attack/1=48.3, spell:20287=19.4, spell:20271=16.0, spell:20280=16.0, spell:25740=14.8 | {SpellID: 20375} |
+| 10 | 00000000000000000-0000000000000000-10000000000000000 | main_hand:22348 | 33.0 | 4 | other:attack/1=48.3, spell:20287=19.4, spell:20271=16.0, spell:20280=16.0, spell:25740=14.8 | {SpellID: 20920} |
 | 20 | 00000000000000000-0000000000000000-55100000000000000 | main_hand:22348 | 37.3 | 6 | other:attack/1=48.3, spell:20288=17.4, spell:25739=17.4, spell:20271=14.0, spell:20281=14.0 | - |
 | 30 | 00000000000000000-0000000000000000-55223310000000000 | main_hand:22348 | 44.5 | 6 | other:attack/1=48.3, spell:25738=17.9, spell:20289=16.1, spell:20271=12.8, spell:20282=12.8 | - |
 | 38 | 00000000000000000-0000000000000000-55223331211000100 | main_hand:22348 | 50.4 | 7 | other:attack/1=48.3, spell:25737=16.4, spell:20290=13.7, spell:20271=12.4, spell:20283=10.4 | - |
 | 40 | 00000000000000000-0000000000000000-55223331211000210 | main_hand:22348 | 51.0 | 6 | other:attack/1=48.3, spell:25737=19.3, spell:20290=15.6, spell:20271=12.2, spell:20283=12.2 | - |
 | 50 | 00000000000000000-5500000000000000-55223331211000210 | main_hand:22348 | 55.9 | 6 | other:attack/1=48.3, spell:25735=17.0, spell:20292=14.2, spell:20271=10.8, spell:20285=10.8 | - |
-| 60 | 00000000000000000-5532500000000000-55223331211000210 | main_hand:21134 | 86.7 | 7 | other:attack/1=52.4, spell:20271=14.1, spell:20375=13.6, spell:20424=10.3, spell:20467=10.1 | - |
+| 60 | 00000000000000000-5532500000000000-55223331211000210 | main_hand:21134 | 81.6 | 7 | other:attack/1=52.4, spell:25713=19.3, spell:20293=13.1, spell:20271=10.6, spell:20286=8.6 | - |
 
 ## Learned but unused (informational)
 
@@ -147,7 +148,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Hammer of Wrath (spell 24239)
 - Holy Strike (spell 10333)
 - Holy Wrath (spell 10318)
-- Judgement of Command (spell 20966)
 - Judgement of Fury (spell 20414)
 
 ## Violations found in this run

@@ -50,8 +50,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   with three standing exceptions before anything counts as a
   violation: (1) data/curated/apl/<spec>.json's own inert array names
   it; (2) it is the potion action ({OtherID: 13}) - the ladder
-  character carries no consumes, so this can never resolve, at any
-  level, any spec; (3) it is a talent-granted spell
+  character carries no consumes (a rogue's poisons, class kit from
+  level 20, are the one exception: ladderKitConsumes), so this can
+  never resolve, at any level, any spec; (3) it is a talent-granted spell
   (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
   and the ladder's own truncated build (ladderTalentString's budget
   walk) has spent zero points on that talent at this level - expected
@@ -90,12 +91,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-10000000000000000-0000000000000000000 | main_hand:22378 off_hand:22377 | 52.0 | 3 | other:attack/2=106.9, other:attack/1=68.9, spell:1757=40.9, spell:6760/5=4.6, spell:5171/5=2.6 | {SpellID: 13750} |
-| 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:22378 off_hand:22377 | 57.0 | 3 | other:attack/2=110.8, other:attack/1=71.4, spell:1758=45.8, spell:5171/5=4.3, spell:6761/5=3.8 | {SpellID: 13750} |
-| 30 | 00000000000000000-32531300000400000-0000000000000000000 | main_hand:22378 off_hand:22377 | 65.7 | 3 | other:attack/2=110.7, other:attack/1=71.3, spell:1760=44.8, spell:5171/5=4.3, spell:6762/5=3.7 | {SpellID: 13750} |
-| 38 | 00000000000000000-32531300000515100-0000000000000000000 | main_hand:22378 off_hand:22377 | 76.1 | 4 | other:attack/2=112.7, other:attack/1=72.6, spell:8621=43.2, spell:8623/5=4.1, spell:5171/5=3.7 | {SpellID: 13750} |
-| 40 | 00000000000000000-32531300000515201-0000000000000000000 | main_hand:22378 off_hand:22377 | 85.4 | 5 | other:attack/2=112.8, other:attack/1=72.7, spell:8621=46.3, spell:8624/5=4.7, spell:5171/5=3.7 | - |
-| 50 | 32500000000000000-32531300000515201-0000000000000000000 | main_hand:22378 off_hand:22377 | 103.0 | 5 | other:attack/2=117.4, other:attack/1=75.6, spell:11293=46.6, spell:11299/5=4.6, spell:6774/5=3.8 | - |
-| 60 | 32531000000000000-32531300000515201-5100000000000000000 | main_hand:23577 off_hand:21126 | 139.9 | 5 | other:attack/1=142.3, other:attack/2=118.7, spell:11294=45.7, spell:31016/5=5.0, spell:6774/5=4.3 | - |
+| 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:22378 off_hand:22377 | 60.0 | 3 | other:attack/2=110.6, other:attack/1=71.3, spell:1758=45.9, spell:5171/5=4.3, spell:6761/5=3.8 | {SpellID: 13750} |
+| 30 | 00000000000000000-32531300000400000-0000000000000000000 | main_hand:22378 off_hand:22377 | 69.0 | 3 | other:attack/2=110.8, other:attack/1=71.4, spell:1760=44.7, spell:5171/5=4.3, spell:6762/5=3.7 | {SpellID: 13750} |
+| 38 | 00000000000000000-32531300000515100-0000000000000000000 | main_hand:22378 off_hand:22377 | 83.9 | 4 | other:attack/2=112.9, other:attack/1=72.7, spell:8621=43.3, spell:8623/5=4.1, spell:5171/5=3.7 | {SpellID: 13750} |
+| 40 | 00000000000000000-32531300000515201-0000000000000000000 | main_hand:22378 off_hand:22377 | 93.3 | 5 | other:attack/2=113.0, other:attack/1=72.8, spell:8621=46.3, spell:8624/5=4.6, spell:5171/5=3.9 | - |
+| 50 | 32500000000000000-32531300000515201-0000000000000000000 | main_hand:22378 off_hand:22377 | 115.7 | 5 | other:attack/2=117.7, other:attack/1=75.9, spell:11293=46.3, spell:11299/5=4.5, spell:6774/5=3.9 | - |
+| 60 | 32531000000000000-32531300000515201-5100000000000000000 | main_hand:23577 off_hand:21126 | 168.6 | 5 | other:attack/1=142.5, other:attack/2=118.8, spell:11294=45.6, spell:31016/5=5.1, spell:6774/5=4.3 | - |
 
 ## Learned but unused (informational)
 

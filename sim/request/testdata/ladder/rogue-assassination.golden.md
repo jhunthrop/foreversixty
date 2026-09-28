@@ -50,8 +50,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   with three standing exceptions before anything counts as a
   violation: (1) data/curated/apl/<spec>.json's own inert array names
   it; (2) it is the potion action ({OtherID: 13}) - the ladder
-  character carries no consumes, so this can never resolve, at any
-  level, any spec; (3) it is a talent-granted spell
+  character carries no consumes (a rogue's poisons, class kit from
+  level 20, are the one exception: ladderKitConsumes), so this can
+  never resolve, at any level, any spec; (3) it is a talent-granted spell
   (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
   and the ladder's own truncated build (ladderTalentString's budget
   walk) has spent zero points on that talent at this level - expected
@@ -89,13 +90,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 40.4 | 3 | other:attack/2=129.5, other:attack/1=108.0, spell:1757=41.7, spell:6760/5=4.3, spell:5171/5=3.1 | {SpellID: 1310703}, {SpellID: 14177} |
-| 20 | 32500000100000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 43.4 | 3 | other:attack/2=129.5, other:attack/1=108.0, spell:1758=41.7, spell:6761/5=4.3, spell:5171/5=3.1 | {SpellID: 1310703}, {SpellID: 14177} |
-| 30 | 32500000551000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 46.7 | 4 | other:attack/2=129.5, other:attack/1=108.0, spell:1760=41.7, spell:6762/5=4.3, spell:5171/5=3.1 | {SpellID: 1310703} |
-| 38 | 32500000551501020-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 51.5 | 4 | other:attack/2=129.6, other:attack/1=108.1, spell:8621=41.5, spell:8623/5=4.3, spell:5171/5=3.1 | {SpellID: 1310703} |
-| 40 | 32500000551501040-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 59.2 | 5 | other:attack/2=125.9, other:attack/1=104.9, spell:399956=19.0, spell:8621=11.7, spell:8624/5=7.5 | {SpellID: 1310703} |
-| 50 | 32500000551501051-32300000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 55.8 | 4 | other:attack/2=121.4, other:attack/1=101.2, spell:11293=44.2, spell:1310703/5=8.3, spell:1241582=1.9 | - |
-| 60 | 32500000551501051-32520000000000000-5100000000000000000 | main_hand:21126 off_hand:21244 | 81.5 | 4 | other:attack/2=107.2, other:attack/1=101.2, spell:11294=44.5, spell:1310703/5=8.4, spell:1241584=1.9 | - |
+| 10 | 10000000000000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 40.4 | 3 | other:attack/2=129.5, other:attack/1=108.0, spell:1757=41.7, spell:6760/5=4.3, spell:5171/5=3.1 | {SpellID: 1241584}, {SpellID: 1310703}, {SpellID: 14177} |
+| 20 | 32500000100000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 47.3 | 3 | other:attack/2=129.5, other:attack/1=108.0, spell:1758=41.9, spell:6761/5=4.3, spell:5171/5=3.1 | {SpellID: 1241584}, {SpellID: 1310703}, {SpellID: 14177} |
+| 30 | 32500000551000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 51.4 | 4 | other:attack/2=129.5, other:attack/1=108.0, spell:1760=41.9, spell:6762/5=4.3, spell:5171/5=3.1 | {SpellID: 1241584}, {SpellID: 1310703} |
+| 38 | 32500000551501020-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 67.4 | 4 | other:attack/2=129.4, other:attack/1=107.9, spell:8621=41.6, spell:8623/5=4.4, spell:5171/5=3.0 | {SpellID: 1241584}, {SpellID: 1310703} |
+| 40 | 32500000551501040-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 73.5 | 4 | other:attack/2=136.3, other:attack/1=113.7, spell:399956=27.6, spell:5171/5=5.8, spell:8624/5=3.3 | {SpellID: 1310703} |
+| 50 | 32500000551501051-32300000000000000-0000000000000000000 | main_hand:22377 off_hand:10697 | 93.3 | 3 | other:attack/2=121.4, other:attack/1=101.2, spell:1241582=28.2, spell:1310703/5=8.8, spell:14177=1.3 | - |
+| 60 | 32500000551501051-32520000000000000-5100000000000000000 | main_hand:21126 off_hand:21244 | 145.1 | 3 | other:attack/2=107.2, other:attack/1=101.2, spell:1241584=28.3, spell:1310703/5=8.8, spell:14177=1.4 | - |
 
 ## Learned but unused (informational)
 
@@ -145,6 +146,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1767)
 - Rupture (spell 8640)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 8621)
 
 ### Level 50
 
@@ -156,6 +158,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1768)
 - Rupture (spell 11273)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 11293)
 
 ### Level 60
 
@@ -167,9 +170,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Kick (spell 1769)
 - Rupture (spell 11275)
 - Serrated Blades (spell 461327)
+- Sinister Strike (spell 11294)
 - Test Stab R50 (spell 23959)
 - Test Strike R50 (spell 23960)
 
 ## Violations found in this run
 
-- rogue-assassination level=50 kind=dps_regression dps=55.8 prev_dps=59.2
+None.

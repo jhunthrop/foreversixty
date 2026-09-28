@@ -982,6 +982,19 @@ type unusedEntry struct {
 	ID    int
 }
 
+// ladderKitConsumes is the one exception to the ladder's "no consumes"
+// rule: a rogue's poisons are class kit, taught by the level-20 poison
+// quest, and Assassination's whole design (Mutilate's bonus against a
+// poisoned target, Venom) assumes them; a poison-less rogue sims a
+// rotation no real rogue runs. Instant Poison on both weapons from 20.
+// Everything else (flasks, food, oils, potions) stays off.
+func ladderKitConsumes(class string, level int) []string {
+	if class != "rogue" || level < 20 {
+		return nil
+	}
+	return []string{"main_hand_imbue:instant_poison", "off_hand_imbue:instant_poison"}
+}
+
 // ladderRulesHeader documents, once, the rules every golden in this
 // directory was generated under. It is repeated verbatim into each
 // file rather than referenced, so a reader of one golden never has to
@@ -1036,8 +1049,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
   with three standing exceptions before anything counts as a
   violation: (1) data/curated/apl/<spec>.json's own inert array names
   it; (2) it is the potion action ({OtherID: 13}) - the ladder
-  character carries no consumes, so this can never resolve, at any
-  level, any spec; (3) it is a talent-granted spell
+  character carries no consumes (a rogue's poisons, class kit from
+  level 20, are the one exception: ladderKitConsumes), so this can
+  never resolve, at any level, any spec; (3) it is a talent-granted spell
   (data/builds/<build>/talents/<class>.json's own "ranks[].spell_id")
   and the ladder's own truncated build (ladderTalentString's budget
   walk) has spent zero points on that talent at this level - expected
