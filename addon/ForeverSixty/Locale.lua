@@ -333,6 +333,19 @@ local L = {
 	-- The row's second line: where the item drops.
 	followUpgradeSource = "from %s",
 	followUpgradeDelta = "+%.0f",
+
+	-- Lane bis-hover-addon (2026-09-28): the character-frame equipment
+	-- slot hover (design/lane-bis-hover-addon.md item 2). Appended after
+	-- the inbox-wire block above for the same reason it gives: two other
+	-- lanes are editing this same file today, and an appended block is
+	-- the smallest surface for the controller to merge.
+	-- "Best in slot · <band> · <spec>".
+	tooltipBisHeader = "Best in slot · %d · %s",
+	tooltipBisEquipped = "(equipped)",
+	-- "(new at <band>)".
+	tooltipBisNew = "(new at %d)",
+	-- Advanced detail only: "Source: <kind>".
+	tooltipBisSource = "Source: %s",
 }
 
 ns.L = L

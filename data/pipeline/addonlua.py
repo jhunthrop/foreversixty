@@ -18,6 +18,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from pipeline.addonbis import SOURCE_KIND_CODES, AddonBisError
 from pipeline.addondata import build_addon_data
 from pipeline.models import AddonData
 
@@ -69,6 +70,58 @@ def _rotations_lua(rotations: dict) -> list[str]:
     return lines
 
 
+def _source_kind_code(source_kind: str) -> str:
+    code = SOURCE_KIND_CODES.get(source_kind)
+    if code is None:
+        raise AddonBisError(
+            f"no Lua code for source_kind {source_kind!r}; add it to SOURCE_KIND_CODES"
+        )
+    return code
+
+
+def _bis_lua(bis: dict) -> list[str]:
+    """`bis[spec][band][faction][slot] = { itemId, sourceKindCode }` -- ids
+    only (addonbis.py's own load-bearing decision) and positional rather
+    than named fields, and faction/slot as bare Lua identifiers rather than
+    quoted keys, because this table is the addition the lane brief's size
+    budget is about: named fields alone would nearly double it across 27
+    specs. Tooltip.lua's SOURCE_KIND_NAMES decodes the single-letter code
+    back for advanced detail."""
+    lines = ["\tbis = {"]
+    for spec in sorted(bis):
+        lines.append(f"\t\t[{_quote(spec)}] = {{")
+        for band in bis[spec]:
+            lines.append(f"\t\t\t[{band.level}] = {{")
+            for faction in sorted(band.factions):
+                lines.append(f"\t\t\t\t{faction} = {{")
+                for slot in sorted(band.factions[faction]):
+                    item = band.factions[faction][slot]
+                    code = _source_kind_code(item.source_kind)
+                    lines.append(f"\t\t\t\t\t{slot} = {{ {item.item_id}, {_quote(code)} }},")
+                lines.append("\t\t\t\t},")
+            lines.append("\t\t\t},")
+        lines.append("\t\t},")
+    lines.append("\t},")
+    return lines
+
+
+def _bis_new_lua(bis: dict) -> list[str]:
+    """`bis_new[spec][band][faction] = { itemId, ... }` -- the item ids
+    newly best at that band, for the tooltip's "(new at <band>)" tag."""
+    lines = ["\tbis_new = {"]
+    for spec in sorted(bis):
+        lines.append(f"\t\t[{_quote(spec)}] = {{")
+        for band in bis[spec]:
+            lines.append(f"\t\t\t[{band.level}] = {{")
+            for faction in sorted(band.new_at_band):
+                ids = ", ".join(str(item_id) for item_id in band.new_at_band[faction])
+                lines.append(f"\t\t\t\t{faction} = {{ {ids} }},")
+            lines.append("\t\t\t},")
+        lines.append("\t\t},")
+    lines.append("\t},")
+    return lines
+
+
 def render_lua(data: AddonData) -> str:
     lines = [
         GENERATED,
@@ -92,6 +145,8 @@ def render_lua(data: AddonData) -> str:
         lines.append(f"\t\t[{_quote(spec)}] = {{ {pairs} }},")
     lines.append("\t},")
     lines.extend(_rotations_lua(data.rotations))
+    lines.extend(_bis_lua(data.bis))
+    lines.extend(_bis_new_lua(data.bis))
     lines.append("}")
     lines.append("")
     lines.append("return ns.Data")
