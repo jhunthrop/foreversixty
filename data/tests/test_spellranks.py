@@ -20,7 +20,7 @@ import pytest
 
 from pipeline import spellranks
 from pipeline.models import SpellConstant
-from pipeline.spellranks import _spell_ranks_for_class
+from pipeline.spellranks import _spell_ranks_for_class, count_copy_names, is_copy_name
 
 FIXTURES = Path(__file__).parent / "fixtures" / "spellconst"
 
@@ -111,6 +111,45 @@ def test_an_unranked_duplicate_pair_is_kept_sorted_by_id_not_collapsed():
     than one being picked as canonical or the pair being dropped outright."""
     chain = _result().classes["rogue"]["Improved Sap"]
     assert [(rank.id, rank.rank, rank.level) for rank in chain] == [(2070, 0, 0), (2071, 0, 0)]
+
+
+def test_is_copy_name_matches_only_the_prefix():
+    assert is_copy_name("Copy of Mortal Strike") is True
+    assert is_copy_name("Copy of Frostbolt") is True
+    assert is_copy_name("Mortal Strike") is False
+    # A name that merely contains the words, not at the start, is a real
+    # (if oddly named) player ability and must survive.
+    assert is_copy_name("Blueprint: Copy of a Key") is False
+
+
+def test_a_copy_of_name_never_forms_its_own_chain():
+    """Copy of Deadly Poison IV (25348) is the ladder's own real example
+    (see sim/request/testdata/ladder/rogue-*.golden.md's "learned but
+    unused" sections before this filter existed). It has a nonzero learn
+    level -- the one inclusion rule a lone, unranked id can pass on its
+    own -- so this proves the name filter runs before that rule, not that
+    the level happens to be zero."""
+    spells = {
+        "25348": _spell("Copy of Deadly Poison IV", rank=0, level=30),
+    }
+    assert _spell_ranks_for_class(spells) == {}
+
+
+def test_the_rogue_fixtures_copy_of_entry_is_absent_from_the_result():
+    assert "Copy of Deadly Poison IV" not in _result().classes["rogue"]
+
+
+def test_count_copy_names_counts_across_every_class():
+    assert count_copy_names(spellranks.load_class_spell_constants(FIXTURES)) == 1
+
+
+def test_count_copy_names_is_zero_when_none_are_present():
+    records = [
+        record
+        for record in spellranks.load_class_spell_constants(FIXTURES)
+        if record.class_slug == "warrior"
+    ]
+    assert count_copy_names(records) == 0
 
 
 def test_classes_do_not_leak_into_each_other():
