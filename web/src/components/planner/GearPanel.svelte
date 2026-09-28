@@ -2,6 +2,7 @@
 <!-- The 17-slot grid, the summed stats, and the active set bonuses. Two columns of slots on
      phone, four from md up; every slot button clears 44px. -->
 <script lang="ts">
+  import { mount, unmount, type Component } from 'svelte';
   import { plannerCopy } from '../../lib/planner/copy';
   import { addonCopy } from '../../lib/addon/copy';
   import { scoreItem, specKeyFor, weightsFor, type WeightsFile } from '../../lib/addon/score';
@@ -12,7 +13,6 @@
   import { SLOTS, SLOT_LABELS, STAT_LABELS, type Slot, type StatKey } from '../../lib/planner/types';
   import { specLabel } from '../../lib/sim/spec-label';
   import { statLabel } from '../../lib/sim/stats';
-  import BisSlotPopover from './BisSlotPopover.svelte';
   import ItemPicker from './ItemPicker.svelte';
 
   let { store, weights = [] }: { store: PlannerStore; weights?: WeightsFile } = $props();
@@ -40,7 +40,73 @@
   // keyboard get it from hover/focus, exactly like TalentCell's own tooltip; a tap on touch
   // focuses the button too (every mobile browser does this for a plain <button>), which
   // shows the popover the same way, alongside the item picker the tap always opened.
+  //
+  // Loaded and mounted imperatively with svelte's own mount()/unmount() (already bundled --
+  // planner-island.ts's own boot calls mount(Planner, ...)), not a reactive `{#if}` around a
+  // `$state`-held component reference: a dynamically resolved component tag compiles to
+  // Svelte's generic dynamic-component runtime, which cost roughly as much as the popover
+  // itself saved by moving out of the boot chunk. mount()/unmount() sidesteps that runtime
+  // entirely -- see this lane's final report for the measured before/after.
   let hoveredSlot = $state<Slot | null>(null);
+  const popoverHosts: Partial<Record<Slot, HTMLDivElement>> = {};
+  let PopoverComponent: Component<{ store: PlannerStore; slot: Slot; spec: string; id: string }> | null =
+    null;
+  let popoverModuleLoad: Promise<unknown> | null = null;
+  let mountedSlot: Slot | null = null;
+  let mountedInstance: object | null = null;
+
+  function unmountPopover(): void {
+    if (mountedInstance === null) return;
+    unmount(mountedInstance);
+    mountedInstance = null;
+    mountedSlot = null;
+  }
+
+  /**
+   * Mounts the popover into `slot`'s own host div, replacing whichever slot's instance was
+   * showing (only one is ever visible: hover and focus both move `hoveredSlot`, never add to
+   * it). `store` is passed by reference -- the popover's own $derived/$effect read its
+   * getters directly, the same reactivity every other reader of `store` gets, imperative
+   * mount or not -- but `spec` is a plain string snapshot at mount time; a talent edit made
+   * while a slot happens to still be hovered will not retarget an open popover, which the
+   * hover/hide lifecycle here makes a narrow enough window to accept.
+   */
+  function mountPopoverFor(slot: Slot): void {
+    if (mountedSlot === slot) return;
+    unmountPopover();
+    if (PopoverComponent === null) return;
+    const host = popoverHosts[slot];
+    if (host === undefined) return;
+    mountedInstance = mount(PopoverComponent, {
+      target: host,
+      props: { store, slot, spec: specKey, id: `bis-hover-${slot}` },
+    });
+    mountedSlot = slot;
+  }
+
+  function showPopover(slot: Slot): void {
+    hoveredSlot = slot;
+    if (PopoverComponent !== null) {
+      mountPopoverFor(slot);
+      return;
+    }
+    if (popoverModuleLoad !== null) return;
+    popoverModuleLoad = import('./BisSlotPopover.svelte').then((mod) => {
+      PopoverComponent = mod.default;
+      if (hoveredSlot !== null) mountPopoverFor(hoveredSlot);
+    });
+  }
+
+  function hidePopoverIfShown(slot: Slot): void {
+    if (hoveredSlot !== slot) return;
+    hoveredSlot = null;
+    unmountPopover();
+  }
+
+  // GearPanel itself can unmount with a popover still showing (navigating away from the
+  // planner); mount() instances live outside the normal component tree and need their own
+  // teardown.
+  $effect(() => () => unmountPopover());
 
   /** Closes the popover only once focus has left the whole slot (button + popover), not
    *  when it moves from the button onto the popover's own "See the full list" link --
@@ -50,7 +116,7 @@
     const related = event.relatedTarget as Node | null;
     const container = event.currentTarget as HTMLElement;
     if (related && container.contains(related)) return;
-    if (hoveredSlot === slot) hoveredSlot = null;
+    hidePopoverIfShown(slot);
   }
 
   const totals = $derived(
@@ -89,10 +155,8 @@
       <div
         class="relative"
         role="group"
-        onmouseenter={() => (hoveredSlot = slot)}
-        onmouseleave={() => {
-          if (hoveredSlot === slot) hoveredSlot = null;
-        }}
+        onmouseenter={() => showPopover(slot)}
+        onmouseleave={() => hidePopoverIfShown(slot)}
         onfocusout={(event) => onSlotFocusOut(event, slot)}
       >
         <button
@@ -103,7 +167,7 @@
           aria-describedby={hoveredSlot === slot ? `bis-hover-${slot}` : undefined}
           disabled={store.readOnly}
           onclick={() => (openSlot = openSlot === slot ? null : slot)}
-          onfocus={() => (hoveredSlot = slot)}
+          onfocus={() => showPopover(slot)}
         >
           {#if item}
             <!-- The aria-label above names the slot and the item, so the icon is decorative. -->
@@ -129,9 +193,7 @@
           </span>
         </button>
 
-        {#if hoveredSlot === slot}
-          <BisSlotPopover {store} {slot} spec={specKey} id={`bis-hover-${slot}`} />
-        {/if}
+        <div bind:this={popoverHosts[slot]}></div>
       </div>
     {/each}
   </div>
