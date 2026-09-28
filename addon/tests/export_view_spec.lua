@@ -143,6 +143,9 @@ describe("ExportView", function()
 			{ data = DATA, contentWidth = 520, select = function() end })
 		assert.is_truthy(view.box:GetText():find("FS1:", 1, true))
 		assert.is_false(view.box.focused)
+		-- A single-line box scrolls to its cursor, and SetText leaves that at
+		-- the end: the start of the code is what the player must see.
+		assert.are.equal(0, mock.firstCall(view.box, "SetCursorPosition")[1])
 		ExportView.apply(view, ExportView.summary(DATA))
 		assert.is_false(view.box.focused)
 	end)

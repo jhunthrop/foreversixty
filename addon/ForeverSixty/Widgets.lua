@@ -238,6 +238,13 @@ end
 function Widgets.setText(box, text)
 	box.foreverSixtyValue = text
 	box:SetText(text)
+	-- SetText leaves the cursor at the end, and a single-line box scrolls to
+	-- its cursor, so a code longer than the box showed only its tail (found
+	-- in game: the Export page's box looked empty of anything recognisable).
+	-- The start is the part a player recognises -- "FS1:" -- so show that.
+	if type(box.SetCursorPosition) == "function" then
+		box:SetCursorPosition(0)
+	end
 	return text
 end
 

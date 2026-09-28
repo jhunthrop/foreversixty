@@ -154,7 +154,11 @@ describe("OverviewView", function()
 			local sync = OverviewView.summary(DATA).sync
 			assert.is_true(sync.canCopy)
 			assert.is_truthy(sync.code:find("FS1:", 1, true))
-			assert.are.equal(string.format(L.exportSavedAt, L.exportNotYet), sync.detail)
+			-- The card's own code box is invisible, so the line under the title
+			-- has to prove the code is there: its head, and how long it is.
+			assert.are.equal(OverviewView.preview(sync.code), sync.detail)
+			assert.is_truthy(sync.detail:find("^FS1:"))
+			assert.is_truthy(sync.detail:find(string.format("(%d characters)", #sync.code), 1, true))
 		end)
 	end)
 

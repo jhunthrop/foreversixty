@@ -201,6 +201,9 @@ local L = {
 	overviewSyncTitle = "Your character, for the planner and the simulator",
 	overviewSyncNothing = "There is nothing to send yet.",
 	overviewSyncCopy = "Copy code",
+	-- The first characters of the code and its length: proof the code is
+	-- there, on a card too small to show all of it (the Export page does).
+	overviewSyncPreview = "%s… (%d characters)",
 	overviewSyncCopied = "Selected. Press Ctrl+C",
 	siteName = "foreversixty.gg",
 	headerLevelLine = "Level %d %s %s",

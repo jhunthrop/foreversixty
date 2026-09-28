@@ -134,13 +134,27 @@ local function ratingLine()
 	return string.format(L.overviewRating, card.rating, card.fights)
 end
 
+--- How much of the code the sync card shows: enough to read the head
+--- ("FS1:<build>:<class>") and see it is a real code, not the whole thing.
+OverviewView.PREVIEW_CHARS = 28
+
+--- The card's line under its title when there is a code: its first
+--- characters and its length. The card's code box is off-card and
+--- invisible (it exists for Ctrl+C), so without this the player saw a
+--- Copy button and nothing to copy; the readable code stays on the Export
+--- page.
+function OverviewView.preview(code)
+	return string.format(L.overviewSyncPreview, code:sub(1, OverviewView.PREVIEW_CHARS), #code)
+end
+
 local function syncModel(data)
 	local summary = ExportView.summary(data)
 	return {
 		canCopy = summary.code ~= nil,
 		code = summary.code,
 		title = L.overviewSyncTitle,
-		detail = summary.code ~= nil and summary.savedLine or (summary.reason or L.overviewSyncNothing),
+		detail = summary.code ~= nil and OverviewView.preview(summary.code)
+			or (summary.reason or L.overviewSyncNothing),
 		progress = ratingLine(),
 	}
 end
