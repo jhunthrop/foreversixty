@@ -393,6 +393,9 @@ test('a guild page leads with progression, pull counts and kill dates', async ({
     page.getByTestId('guild-roster').getByRole('link', { name: 'Elyra Duskvale' }),
   ).toHaveAttribute('href', '/character/us/hardcore/elyra-duskvale');
   await expect(page.getByTestId('guild-reports')).toContainText('Sanguine Depths, fixture night');
+  // UX review defect 2 (2026-09-28): renamed from the bare "Reports" so this public block
+  // reads as distinct from the member section's own "This week's reports" heading.
+  await expect(page.getByRole('heading', { name: 'All reports' })).toBeVisible();
   // The same one derivation, for the same reason as on the character page.
   await expect(
     page.getByTestId('guild-progression').getByRole('link', { name: 'Emeriss (Dream)' }),

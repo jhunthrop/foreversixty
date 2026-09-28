@@ -558,7 +558,11 @@
 
     {#if data.reports.length > 0}
       <section class="flex flex-col gap-2">
-        <h2 class="section-title text-[18px]">Reports</h2>
+        <!-- UX review defect 2 (2026-09-28): renamed from the bare "Reports" so it reads as
+             distinct from the member section's "This week's reports" above when both render
+             on the same page -- no dedupe logic beyond this heading change; the two lists
+             can and do repeat the same rows today. -->
+        <h2 class="section-title text-[18px]">{guildHomeCopy.allReportsHeading}</h2>
         <ul class="flex flex-col" data-testid="guild-reports">
           {#each data.reports as report (report.id)}
             <li

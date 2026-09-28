@@ -4,6 +4,10 @@
 // tool. Wording quoted directly from the spec is marked as such below.
 export const guildHomeCopy = {
   reportsHeading: "This week's reports",
+  // The public block's own reports heading (UX review defect 2, 2026-09-28): distinguishes
+  // it from the member section's "This week's reports" above -- both can render on the same
+  // page and, until now, both said the bare "Reports".
+  allReportsHeading: 'All reports',
   // Spec section 4.1, exact wording.
   noReports: 'No reports this week yet.',
   // One report row's kill/wipe tally -- combined here rather than as two separate labels
