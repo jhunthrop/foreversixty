@@ -11,7 +11,9 @@ from pipeline.loot.sources import (
     build_loot,
     instance_types,
     pvp_ranks,
+    quest_ids_for_build,
 )
+from pipeline.quest_levels import QuestLevelEntry
 
 HERE = Path(__file__).parent
 ENGINE = HERE / "fixtures/loot"
@@ -21,7 +23,7 @@ def zone_rows():
     return json.loads((ENGINE / "zones.json").read_text(encoding="utf-8"))
 
 
-def built():
+def built(quest_levels=None):
     fork = load_fork_database(ENGINE)
     rows = zone_rows()
     build_items = {
@@ -34,6 +36,7 @@ def built():
         pvp_ranks(read_csv(ENGINE / "ItemSparse.csv")),
         build_items,
         {},
+        quest_levels,
     )
 
 
@@ -121,6 +124,60 @@ def test_crafted_rep_pvp_and_quest_carry_the_keys_their_kind_needs():
     pvp = source("pvp:rank-11")
     assert (pvp.rank, pvp.items) == (11, [111])
     assert source("quest").items == [108, 112]
+
+
+def test_quest_ids_for_build_is_every_quest_a_build_item_names():
+    fork = load_fork_database(ENGINE)
+    build_items = {
+        row["id"] for row in json.loads((ENGINE / "items.json").read_text(encoding="utf-8"))
+    }
+    assert quest_ids_for_build(fork, build_items) == {42, 43}
+    # An item the build does not have (113) names no quest here, but this
+    # fixture's only quest items (108, 112) are both in the build, so the
+    # id set does not change -- proven by narrowing build_items instead.
+    assert quest_ids_for_build(fork, {108}) == {42}
+
+
+def test_quests_map_falls_back_to_the_item_level_proxy_with_no_quest_levels_entry():
+    """Item 108 (quest 42, item_level 40) and item 112 (quest 43, item_level
+    70) both have no entry in this test's quest_levels (empty/None) --
+    neither classic-db nor wowhead covers them here -- so both fall back
+    to item_level_proxy: min(60, item_level - 5)."""
+    document, _ = built()
+    entry_108 = document.quests["108"][0]
+    assert (entry_108.quest_id, entry_108.min_level, entry_108.level) == (42, 35, 35)
+    assert entry_108.level_source == "item_level_proxy"
+    entry_112 = document.quests["112"][0]
+    # item_level 70 - 5 = 65, floored at MAX_QUEST_LEVEL (60).
+    assert (entry_112.quest_id, entry_112.min_level, entry_112.level) == (43, 60, 60)
+    assert entry_112.level_source == "item_level_proxy"
+
+
+def test_quests_map_prefers_a_quest_levels_entry_over_the_item_level_proxy():
+    """The entry's own `.source` (classic-db, or wowhead for an id
+    classic-db lacks) passes straight through to level_source -- not a
+    hardcoded label, since pipeline.quest_levels.load_quest_levels's
+    result can carry either."""
+    document, _ = built(
+        quest_levels={
+            42: QuestLevelEntry(min_level=12, level=14, source="classic-db", fetched_at="2026-09-28T00:00:00+00:00")
+        }
+    )
+    entry_108 = document.quests["108"][0]
+    assert (entry_108.min_level, entry_108.level, entry_108.level_source) == (12, 14, "classic-db")
+    # Quest 43 still has no entry, so it is unaffected.
+    entry_112 = document.quests["112"][0]
+    assert entry_112.level_source == "item_level_proxy"
+
+
+def test_quests_map_passes_through_a_wowhead_sourced_entry_unchanged():
+    document, _ = built(
+        quest_levels={
+            42: QuestLevelEntry(min_level=9, level=11, source="wowhead", fetched_at="2026-09-28T00:00:00+00:00")
+        }
+    )
+    entry_108 = document.quests["108"][0]
+    assert (entry_108.min_level, entry_108.level, entry_108.level_source) == (9, 11, "wowhead")
 
 
 def test_an_item_with_two_sources_appears_under_both():

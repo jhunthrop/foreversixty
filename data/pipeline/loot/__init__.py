@@ -62,6 +62,7 @@ from pipeline.loot.weapons import apply_fork_weapon_damage, fork_weapon_damage
 from pipeline.manifest import refresh_manifest
 from pipeline.normalize import write_document, write_records
 from pipeline.normalize.sockets import check_no_sockets
+from pipeline.quest_levels import load_quest_levels
 
 logger = logging.getLogger(__name__)
 
@@ -101,6 +102,16 @@ def write_loot_files(
     build_items = {int(row["id"]) for row in item_rows}
     item_inventory_types = {int(row["id"]): int(row["inventory_type"]) for row in item_rows}
 
+    # Quest levels come from the committed, merged quest-levels.json
+    # (never fetched here): `loot` builds the site's committed data and
+    # must run offline in CI the same way `simdb`/`normalize` do -- run
+    # `python -m pipeline fetch-classic-quest-levels` once and
+    # `python -m pipeline quest-levels` (the nightly step) to (re)write
+    # it. A quest id absent from it (neither classic-db nor wowhead
+    # covers it) falls back to the item-level proxy inside
+    # build_loot/_keyed_sources.
+    quest_levels = load_quest_levels(build_dir)
+
     # Contract 10.4's build filter happens inside build_loot, and its
     # pruning sweep with it -- so this runs BEFORE the overlay, which is
     # what lets a curated source with a deliberately empty item list (the
@@ -112,6 +123,7 @@ def write_loot_files(
         pvp_ranks(sparse_rows),
         build_items,
         item_inventory_types,
+        quest_levels,
     )
     document = apply_overlays(document, load_overlays(overlay_dir))
 

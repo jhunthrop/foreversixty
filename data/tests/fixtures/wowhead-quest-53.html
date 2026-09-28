@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<!--
+  A trimmed, real-shaped fixture: the one line test_wowhead_quests.py
+  reads, taken verbatim from https://www.wowhead.com/forever/quest=53
+  (2026-09-28) -- the rest of that ~68KB page (ads, nav, tooltip css,
+  unrelated Listview blocks) is not this module's concern, the same way
+  wowhead-gear-planner.js trims the gear planner payload down to the
+  handful of records its own tests need.
+-->
+<html lang="en-US">
+<head><title>Sweet Amber - Quest - Forever</title></head>
+<body>
+<script type="text/javascript">
+//<![CDATA[
+if (typeof g_quests == 'undefined') g_quests = {};
+if (!g_quests[53]) g_quests[53] = {};
+$.extend(g_quests[53], {"category":40,"category2":0,"id":53,"itemrewards":[[744,1]],"level":44,"name":"Sweet Amber","reqlevel":40,"side":1,"xp":5600,"envChange":{"status":"unchanged","labels":[],"lines":[]}});
+//]]>
+</script>
+</body>
+</html>
