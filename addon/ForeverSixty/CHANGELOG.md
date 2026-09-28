@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Hovering an equipment slot on the character frame now names the best-in-slot item for
+  your spec, faction and level, marked equipped when it is what you already wear or newly
+  the pick since your last level; an empty slot shows it directly, since it has no item
+  tooltip of its own to add to. "Show advanced detail" adds where it comes from (quest,
+  dungeon, crafted...).
 - The Talents page now shows the site's Top Gear upgrade queue for this character (slot,
   item, source and delta), newest first, three at a time until "Show advanced detail" is
   on; item tooltips call out a capped stat when the site's saved weights say more of it is

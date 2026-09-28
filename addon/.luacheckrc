@@ -22,7 +22,7 @@ read_globals = {
 	"C_Traits", "C_ClassTalents",
 	-- Items
 	"GetInventoryItemLink", "GetContainerItemLink", "GetContainerNumSlots",
-	"GetItemStats", "GetItemInfo", "GetItemInfoInstant",
+	"GetItemStats", "GetItemInfo", "GetItemInfoInstant", "RequestLoadItemDataByID",
 	"C_Container",
 	-- Character
 	"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
@@ -70,6 +70,7 @@ files["tests/"] = {
 		"C_Traits", "C_ClassTalents",
 		"GetInventoryItemLink", "GetContainerItemLink", "GetContainerNumSlots",
 		"GetItemStats", "GetItemInfo", "GetItemInfoInstant", "C_Container",
+		"RequestLoadItemDataByID",
 		"UnitClass", "UnitRace", "UnitLevel", "UnitName", "GetRealmName", "GetCurrentRegion",
 		"GetProfessions", "GetProfessionInfo", "GetBuildInfo",
 		"CreateFrame", "UIParent", "SlashCmdList",

@@ -50,6 +50,25 @@ local function equippedLinkFor(slot)
 	return GetInventoryItemLink("player", slotId)
 end
 
+--- The site slot currently holding `itemLink`, or nil (a bag item, another
+--- unit's item, or nothing equipped there). Iterates every SLOT_IDS entry
+--- rather than reading a "which slot was this tooltip set from" API,
+--- because no such API is documented for SetInventoryItem's item variant;
+--- comparing the exact link (enchant and suffix included) against what is
+--- worn is exact where it matters -- whether THIS item is THIS character's
+--- current pick for the slot.
+function Tooltip.equippedSlotFor(itemLink)
+	if itemLink == nil then
+		return nil
+	end
+	for slot in pairs(SLOT_IDS) do
+		if equippedLinkFor(slot) == itemLink then
+			return slot
+		end
+	end
+	return nil
+end
+
 --- "Planned for your <slot>" when the loaded build wants this exact item.
 function Tooltip.plannedLine(build, itemId)
 	if build == nil or itemId == nil then
@@ -132,6 +151,191 @@ function Tooltip.capLines(itemLink, weightsMessage)
 	return lines
 end
 
+--- Site slot name -> the Blizzard PaperDoll button's global frame name
+--- (Gear.lua's own slot vocabulary). Shirt and Tabard carry no stats and
+--- are not in that vocabulary at all, so they get no BiS hover.
+Tooltip.BIS_SLOT_BUTTONS = {
+	head = "CharacterHeadSlot",
+	neck = "CharacterNeckSlot",
+	shoulder = "CharacterShoulderSlot",
+	back = "CharacterBackSlot",
+	chest = "CharacterChestSlot",
+	wrist = "CharacterWristSlot",
+	hands = "CharacterHandsSlot",
+	waist = "CharacterWaistSlot",
+	legs = "CharacterLegsSlot",
+	feet = "CharacterFeetSlot",
+	finger1 = "CharacterFinger0Slot",
+	finger2 = "CharacterFinger1Slot",
+	trinket1 = "CharacterTrinket0Slot",
+	trinket2 = "CharacterTrinket1Slot",
+	main_hand = "CharacterMainHandSlot",
+	off_hand = "CharacterSecondaryHandSlot",
+	ranged = "CharacterRangedSlot",
+}
+
+--- Below this level a character has no ladder band yet (design: "below 10
+--- shows nothing" -- pipeline.addonbis.BIS_LEVEL_BANDS' own floor).
+Tooltip.BIS_MIN_LEVEL = 10
+
+--- data/pipeline/addonlua.py's SOURCE_KIND_CODES, decoded back for the
+--- advanced-detail line. Kept beside BIS_SLOT_BUTTONS as the addon's own
+--- half of a contract data/pipeline/addonbis.py's SOURCE_KIND_CODES
+--- states in full; tests/tooltip_bis_spec.lua pins this table's key set
+--- against that same set of source kinds independently, the way
+--- rotation_spec.lua pins LEVEL_BANDS against ladder.go's literal.
+Tooltip.SOURCE_KIND_NAMES = {
+	Q = "Quest",
+	D = "Dungeon",
+	C = "Crafted",
+	R = "Reputation",
+	P = "PvP",
+	W = "World",
+	A = "Raid",
+}
+
+--- The highest bis band <= level, tolerating gaps in a partially-generated
+--- spec (the nightly bis.yml workflow may not have finished every band
+--- yet). Below BIS_MIN_LEVEL, or with no bis table for this spec at all:
+--- nil, nil.
+local function bisBandFor(specBis, level)
+	if type(specBis) ~= "table" or type(level) ~= "number" or level < Tooltip.BIS_MIN_LEVEL then
+		return nil, nil
+	end
+	local rounded = math.floor(level / 5) * 5
+	if rounded > 60 then
+		rounded = 60
+	end
+	for candidate = rounded, Tooltip.BIS_MIN_LEVEL, -5 do
+		if specBis[candidate] ~= nil then
+			return candidate, specBis[candidate]
+		end
+	end
+	return nil, nil
+end
+
+--- "alliance"/"horde", the bis table's own faction keys, or nil on a test
+--- double with no UnitFactionGroup.
+local function playerFaction()
+	if type(UnitFactionGroup) ~= "function" then
+		return nil
+	end
+	local token = UnitFactionGroup("player")
+	if token == "Alliance" then
+		return "alliance"
+	end
+	if token == "Horde" then
+		return "horde"
+	end
+	return nil
+end
+
+--- The item ids newly best at `band` for `faction`, or {} with no
+--- bis_new table for this spec/band/faction at all.
+local function newAtBand(data, spec, band, faction)
+	local bySpec = type(data.bis_new) == "table" and data.bis_new[spec] or nil
+	local byBand = bySpec ~= nil and bySpec[band] or nil
+	return (byBand ~= nil and byBand[faction]) or {}
+end
+
+local function isAmong(ids, itemId)
+	for _, id in ipairs(ids) do
+		if id == itemId then
+			return true
+		end
+	end
+	return false
+end
+
+--- "(equipped)" beats "(new at <band>)" when both would apply -- an item
+--- already worn cannot also be new to put on.
+local function bisTag(itemId, band, equippedItemId, newIds)
+	if equippedItemId == itemId then
+		return L.tooltipBisEquipped
+	end
+	if isAmong(newIds, itemId) then
+		return string.format(L.tooltipBisNew, band)
+	end
+	return ""
+end
+
+--- item id -> true once RequestLoadItemDataByID (or the legacy global) has
+--- been asked for it, so re-hovering the same uncached item never asks
+--- the client twice.
+Tooltip.bisRequested = {}
+
+local function requestItemLoad(itemId)
+	if Tooltip.bisRequested[itemId] then
+		return
+	end
+	Tooltip.bisRequested[itemId] = true
+	local fn = (type(C_Item) == "table" and C_Item.RequestLoadItemDataByID)
+		or _G.RequestLoadItemDataByID
+	if type(fn) == "function" then
+		fn(itemId)
+	end
+end
+
+--- The item's link once GetItemInfo knows it, else the "item:<id>" form
+--- (still a valid hyperlink target) while the client fills its cache --
+--- RequestLoadItemDataByID/GetItemInfo asked for the id exactly once,
+--- never per hover.
+function Tooltip.bisItemLink(itemId)
+	local _, link = Compat.itemInfo(itemId)
+	if link ~= nil then
+		return link
+	end
+	requestItemLoad(itemId)
+	return "item:" .. itemId
+end
+
+--- The BiS hover section for one site slot: a header ("Best in slot ·
+--- <band> · <spec>") and the slot's pick as an item link, tagged
+--- "(equipped)" or "(new at <band>)"; advanced detail
+--- (Prefs.flag("advancedDetail")) adds the source kind. Empty (no
+--- section) while InCombatLockdown, with no resolvable class or spec, no
+--- bis band at or above BIS_MIN_LEVEL for this character's level, or the
+--- band names nothing for this slot -- design/lane-bis-hover-addon.md
+--- item 2's own rules.
+function Tooltip.bisLines(data, slot)
+	if data == nil or slot == nil then
+		return {}
+	end
+	if type(InCombatLockdown) == "function" and InCombatLockdown() then
+		return {}
+	end
+	local classSlug = Talents.playerClassSlug()
+	if classSlug == nil then
+		return {}
+	end
+	local ranks = Talents.readRanks(data)
+	local spec = Gear.specOf(data, classSlug, ranks)
+	local specBis = spec ~= nil and type(data.bis) == "table" and data.bis[spec] or nil
+	local band, bandData = bisBandFor(specBis, Compat.playerLevel())
+	if band == nil then
+		return {}
+	end
+	local faction = playerFaction()
+	local factionBis = faction ~= nil and bandData[faction] or nil
+	local entry = factionBis ~= nil and factionBis[slot] or nil
+	if entry == nil then
+		return {}
+	end
+	-- entry is { itemId, sourceKindCode } -- addonlua.py's positional,
+	-- unnamed-field encoding (the lane brief's size budget).
+	local itemId, sourceCode = entry[1], entry[2]
+	local tag = bisTag(itemId, band, itemIdOf(equippedLinkFor(slot)), newAtBand(data, spec, band, faction))
+	local link = Tooltip.bisItemLink(itemId)
+	local lines = {
+		string.format(L.tooltipBisHeader, band, spec),
+		tag == "" and link or (link .. " " .. tag),
+	}
+	if Prefs.flag("advancedDetail") then
+		lines[#lines + 1] = string.format(L.tooltipBisSource, Tooltip.SOURCE_KIND_NAMES[sourceCode] or sourceCode)
+	end
+	return lines
+end
+
 --- Every line this addon ever adds, 0 or more. Pure; the hook this
 --- file grows next only draws what this returns. weightsMessage is
 --- optional (nil is "no weights message for this character yet"), so
@@ -149,6 +353,17 @@ function Tooltip.lines(data, build, itemLink, weightsMessage)
 	end
 	for _, capLine in ipairs(Tooltip.capLines(itemLink, weightsMessage)) do
 		lines[#lines + 1] = capLine
+	end
+	-- The BiS section only for an item that IS what this character wears
+	-- right now in one of its own slots -- a bag item or someone else's
+	-- gear names no site slot and gets nothing here.
+	if data ~= nil then
+		local slot = Tooltip.equippedSlotFor(itemLink)
+		if slot ~= nil then
+			for _, bisLine in ipairs(Tooltip.bisLines(data, slot)) do
+				lines[#lines + 1] = bisLine
+			end
+		end
 	end
 	return lines
 end
@@ -291,6 +506,56 @@ function Tooltip.registerUnit()
 	return nil
 end
 
+--- An EMPTY slot's own BiS section: PaperDollItemSlotButton_OnEnter's own
+--- GameTooltip:SetInventoryItem call adds nothing and never shows the
+--- tooltip when the slot has no item, so OnTooltipSetItem (Tooltip.lines,
+--- above) never fires for it at all -- this hook is the only place an
+--- empty slot's hover gets drawn. A slot that DOES have an item is left
+--- alone here: its section already came from the item hook, and drawing
+--- it twice is not this hook's job.
+function Tooltip.onSlotEnter(slot, button)
+	if Tooltip.slotDisabled or not Prefs.flag("tooltip") then
+		return
+	end
+	if equippedLinkFor(slot) ~= nil then
+		return
+	end
+	local ok, err = pcall(function()
+		local lines = Tooltip.bisLines(Tooltip.data, slot)
+		if #lines == 0 then
+			return
+		end
+		GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+		GameTooltip:ClearLines()
+		for _, line in ipairs(lines) do
+			GameTooltip:AddLine(line, Theme.rgb(Theme.HEX.body))
+		end
+		GameTooltip:Show()
+	end)
+	if not ok then
+		Tooltip.slotDisabled = true
+		Theme.note(string.format(L.diagTooltipHookFailed, tostring(err)))
+	end
+end
+
+--- Hooks every BIS_SLOT_BUTTONS global this client actually has (a test
+--- double, or a future client that renames one, simply gets no hook for
+--- that slot rather than an error). Idempotent, like registerUnit.
+function Tooltip.registerBisSlotButtons()
+	if Tooltip.bisButtonsRegistered then
+		return
+	end
+	Tooltip.bisButtonsRegistered = true
+	for slot, buttonName in pairs(Tooltip.BIS_SLOT_BUTTONS) do
+		local button = _G[buttonName]
+		if type(button) == "table" and type(button.HookScript) == "function" then
+			button:HookScript("OnEnter", function(self)
+				Tooltip.onSlotEnter(slot, self)
+			end)
+		end
+	end
+end
+
 function Tooltip.hasProcessor()
 	return type(TooltipDataProcessor) == "table"
 		and type(TooltipDataProcessor.AddTooltipPostCall) == "function"
@@ -308,6 +573,7 @@ function Tooltip.register()
 	end
 	Tooltip.registered = true
 	Tooltip.registerUnit()
+	Tooltip.registerBisSlotButtons()
 	if Tooltip.hasProcessor() then
 		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip)
 			Tooltip.onTooltip(tooltip, Tooltip.itemLinkFrom(tooltip))

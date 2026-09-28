@@ -177,6 +177,10 @@ function Options.onEvent(_, event, ...)
 	end
 	if event == "PLAYER_LEVEL_UP" then
 		Toast.onLevelUp(Options.data, ...)
+		-- The tooltip cache is keyed by item link alone (Tooltip.lua); a
+		-- BiS band is chosen by level, so a link cached before this level-up
+		-- would otherwise go on answering the band the character just left.
+		Tooltip.resetCache()
 	end
 	Toast.refresh(Options.data)
 	Window.refreshEverything(Options.data)
