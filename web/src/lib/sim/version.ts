@@ -18,8 +18,10 @@ export const ENGINE_VERSION = 'f29a73753';
  * year, so the name has to change whenever the bytes do. A build with no artifact (the
  * fake engine, tests) falls back to the bare version.
  */
-export const ENGINE_ARTIFACT: string =
-  (import.meta.env.PUBLIC_SIM_ARTIFACT as string | undefined) ?? ENGINE_VERSION;
+// `import.meta.env` is Vite's: astro/vitest define it, but this module is also loaded by
+// plain Node (Playwright's config and the e2e specs import it), where it is undefined.
+const viteEnv: Record<string, string | undefined> | undefined = import.meta.env;
+export const ENGINE_ARTIFACT: string = viteEnv?.PUBLIC_SIM_ARTIFACT ?? ENGINE_VERSION;
 
 /** Where the browser artifacts live. Cached immutably, so the path carries the bytes' name. */
 export function engineAssetUrl(file: 'sim.wasm' | 'sim.js', artifact: string = ENGINE_ARTIFACT): string {
