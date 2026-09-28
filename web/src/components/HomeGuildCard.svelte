@@ -15,6 +15,7 @@
      renders whatever that pure function returns. -->
 <script lang="ts">
   import { fetchMeOnce, type Me } from '../lib/account/api';
+  import { sessionHinted } from '../lib/data/query';
   import { fetchGuild } from '../lib/rankings/api';
   import { fetchGuildHome, type GuildHome } from '../lib/guild/api';
   import { characterSlug, guildHref, type CharacterPath } from '../lib/characters';
@@ -23,9 +24,25 @@
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import Skeleton from './ui/Skeleton.svelte';
 
+  /** `sessionCookie` exists only so the SSR test can pin the pre-paint decision below
+   *  (the same reason HomeTimeline.astro takes `now`); index.astro never passes it, so in
+   *  production the card always reads the real document.cookie. */
+  let { sessionCookie }: { sessionCookie?: string } = $props();
+
   type Status = 'loading' | 'signed-out' | 'guild-loading' | 'ready';
 
-  let status = $state<Status>('loading');
+  const hinted = (): boolean =>
+    sessionCookie === undefined ? sessionHinted() : sessionHinted(sessionCookie);
+
+  /**
+   * Decided from the session cookie's readable half before the first paint, never from
+   * the /v1/me round trip: Lighthouse (signed out) saw a skeleton panel appear and then
+   * vanish once /v1/me answered, and on a phone that collapse moved everything under the
+   * hero -- a layout shift over the page's budget (web.yml's verify job, 842aa320). No
+   * cookie means nothing to fetch and nothing to draw, the same pre-paint hint
+   * Base.astro's inline script and lib/data/query.ts's private cache already trust.
+   */
+  let status = $state<Status>(hinted() ? 'loading' : 'signed-out');
   let me = $state<Me | null>(null);
   let home = $state<GuildHome | null>(null);
   let progression = $state<{ killed: number; total: number } | null>(null);
@@ -63,6 +80,10 @@
   }
 
   async function load(): Promise<void> {
+    if (!hinted()) {
+      status = 'signed-out';
+      return;
+    }
     status = 'loading';
     home = null;
     progression = null;
@@ -96,15 +117,18 @@
 <!-- Always-present anchor so `client:visible`'s observer has a real element from mount. -->
 <span aria-hidden="true"></span>
 {#if status === 'loading' || status === 'guild-loading'}
+  <!-- The same min-height as the ready card below, so the skeleton never gives way to a
+       taller or shorter panel and the hero's neighbours never move under a signed-in
+       visitor either. -->
   <div
-    class="bg-raised/85 border-line rounded-panel border px-[18px] py-[14px]"
+    class="bg-raised/85 border-line rounded-panel min-h-[168px] border px-[18px] py-[14px]"
     data-testid="home-guild-card-skeleton"
   >
     <Skeleton lines={3} rowHeight="h-4" testid="home-guild-card-skeleton-rows" />
   </div>
 {:else if status === 'ready' && view !== null}
   <div
-    class="reveal bg-raised/85 border-line rounded-panel flex min-w-0 flex-col gap-3 border px-[18px] py-[14px]"
+    class="reveal bg-raised/85 border-line rounded-panel flex min-h-[168px] min-w-0 flex-col gap-3 border px-[18px] py-[14px]"
     data-testid="home-guild-card"
   >
     <div class="flex items-center gap-2">

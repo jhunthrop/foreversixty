@@ -404,7 +404,14 @@ test('a returning signed-in visitor sees the hub from the session snapshot befor
 // Its rules live in lib/guild/home-card.ts and are unit-tested there exhaustively; these
 // two e2e cases only prove the island wires that pure function to the real fetches.
 
-test('an officer of an unclaimed guild sees "Claim this guild" on the hero card', async ({ page }) => {
+test('an officer of an unclaimed guild sees "Claim this guild" on the hero card', async ({
+  page,
+  context,
+}) => {
+  // The card decides signed-in from the session cookie's readable half before its first
+  // paint (Lighthouse's signed-out run must never see its skeleton), so a mocked /v1/me
+  // alone is not enough here.
+  await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       fulfil({
@@ -464,7 +471,12 @@ test('an officer of an unclaimed guild sees "Claim this guild" on the hero card'
 
 test('a member sees the stats line with how many logged in, reports this week and bosses down', async ({
   page,
+  context,
 }) => {
+  // The card decides signed-in from the session cookie's readable half before its first
+  // paint (Lighthouse's signed-out run must never see its skeleton), so a mocked /v1/me
+  // alone is not enough here.
+  await context.addCookies([{ name: 'fs_csrf', value: 'token', domain: 'localhost', path: '/' }]);
   await page.route('**/v1/me', (route) =>
     route.fulfill(
       fulfil({
