@@ -25,6 +25,7 @@
     type GuildRosterRow,
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
+  import { orderRoster, unverifiedRosterCount } from '../lib/guild/roster';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { classColorVar, formatAmount, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchGuild, type GuildPage } from '../lib/rankings/api';
@@ -142,6 +143,18 @@
       (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
   );
 
+  /**
+   * UX review defect 1 (2026-09-28): claiming is itself the corroboration mechanism (spec
+   * section 2.4) and does not require `verified_at` beforehand, so whether the claim link
+   * shows is gated on rank alone, never on `verified`. `canManage` above stays
+   * verified-gated on purpose -- it is a different question (can this viewer use officer
+   * tools on an already-settled guild), not this one (can this viewer claim the guild).
+   */
+  const isOfficerOrLeader = $derived(
+    myGuildMembership !== null &&
+      (myGuildMembership.rank === 'officer' || myGuildMembership.rank === 'leader'),
+  );
+
   /** A raw membership row (any rank, verified or not) is enough to offer contesting --
    *  the API enforces the real officer/leader-or-rank-0 rule server side (spec section
    *  3.3's amendment); a plain member who tries gets a 403 with a sentence. */
@@ -226,6 +239,14 @@
     home === null ? true : home.roster.every((row) => myCharacterKeys.has(row.character_key)),
   );
 
+  /**
+   * UX review defect 3 (2026-09-28): unverified rows were buried wherever the API happened
+   * to return them. `orderRoster` puts them first, stable otherwise, so an officer scanning
+   * the list sees who needs approval without hunting for the "Unverified" pill.
+   */
+  const orderedRoster = $derived(home === null ? [] : orderRoster(home.roster));
+  const waitingForApprovalCount = $derived(home === null ? 0 : unverifiedRosterCount(home.roster));
+
   const reportWipeCount = (report: GuildHomeReport): number =>
     Math.max(0, report.fight_count - report.kill_count);
 
@@ -292,7 +313,23 @@
       <section class="border-line-soft flex flex-col gap-4 border-b pb-6" data-testid="guild-home">
         <div class="flex flex-wrap items-center justify-between gap-3">
           <h2 class="section-title text-[18px]">{guildHomeCopy.reportsHeading}</h2>
-          {#if canManage}
+          {#if isOfficerOrLeader && home.claim.state === 'unclaimed'}
+            <a
+              class="text-[13px] font-semibold"
+              href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
+              data-testid="guild-claim-link"
+            >
+              {guildHomeCopy.claimLink}
+            </a>
+          {:else if isOfficerOrLeader && home.claim.state === 'pending'}
+            <a
+              class="text-[13px] font-semibold"
+              href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
+              data-testid="guild-confirm-claim-link"
+            >
+              {guildHomeCopy.confirmClaimLink}
+            </a>
+          {:else if canManage}
             <a
               class="text-[13px] font-semibold"
               href={guildSettingsHref(resolved.region, resolved.ruleset, home.guild.name)}
@@ -301,13 +338,9 @@
               {guildHomeCopy.settingsLink}
             </a>
           {:else if myGuildMembership !== null && !myGuildMembership.verified}
-            <a
-              class="text-[13px] font-semibold"
-              href={guildClaimHref(resolved.region, resolved.ruleset, home.guild.name)}
-              data-testid="guild-claim-link"
-            >
-              {guildHomeCopy.claimLink}
-            </a>
+            <p class="text-muted text-[13px]" data-testid="guild-home-not-verified-note">
+              {guildHomeCopy.notVerifiedNote}
+            </p>
           {/if}
         </div>
 
@@ -394,6 +427,11 @@
         {/if}
 
         <h2 class="section-title text-[18px]">{guildHomeCopy.rosterHeading}</h2>
+        {#if canManage && waitingForApprovalCount > 0}
+          <p class="text-muted text-[13px]" data-testid="guild-roster-waiting">
+            {guildHomeCopy.waitingForApproval(waitingForApprovalCount)}
+          </p>
+        {/if}
         {#if soloRoster}
           <EmptyState
             message={canManage ? guildHomeCopy.emptyRosterOfficer : guildHomeCopy.emptyRosterMember}
@@ -407,7 +445,7 @@
           />
         {:else}
           <ul class="flex flex-col" data-testid="guild-home-roster">
-            {#each home.roster as row (row.character_key)}
+            {#each orderedRoster as row (row.character_key)}
               <li
                 class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-2 text-[14px]"
               >
@@ -534,7 +572,11 @@
 
     {#if data.reports.length > 0}
       <section class="flex flex-col gap-2">
-        <h2 class="section-title text-[18px]">Reports</h2>
+        <!-- UX review defect 2 (2026-09-28): renamed from the bare "Reports" so it reads as
+             distinct from the member section's "This week's reports" above when both render
+             on the same page -- no dedupe logic beyond this heading change; the two lists
+             can and do repeat the same rows today. -->
+        <h2 class="section-title text-[18px]">{guildHomeCopy.allReportsHeading}</h2>
         <ul class="flex flex-col" data-testid="guild-reports">
           {#each data.reports as report (report.id)}
             <li

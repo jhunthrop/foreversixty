@@ -4,6 +4,10 @@
 // tool. Wording quoted directly from the spec is marked as such below.
 export const guildHomeCopy = {
   reportsHeading: "This week's reports",
+  // The public block's own reports heading (UX review defect 2, 2026-09-28): distinguishes
+  // it from the member section's "This week's reports" above -- both can render on the same
+  // page and, until now, both said the bare "Reports".
+  allReportsHeading: 'All reports',
   // Spec section 4.1, exact wording.
   noReports: 'No reports this week yet.',
   // One report row's kill/wipe tally -- combined here rather than as two separate labels
@@ -22,11 +26,20 @@ export const guildHomeCopy = {
   manageInvite: 'Guild settings',
   loggedRecently: 'Logged in the last day',
   unverified: 'Unverified',
+  // UX review defect 3 (2026-09-28): the roster summary an officer sees above the (now
+  // unverified-first) roster list, so waiting rows are announced, not just sorted forward.
+  waitingForApproval: (count: number): string => `${count} waiting for approval`,
   itemLevelLabel: 'ilvl',
   approve: 'Approve',
   remove: 'Remove',
   settingsLink: 'Guild settings',
   claimLink: 'Claim this guild',
+  // Shown in the same header slot as claimLink, but only once an officer/leader claim is
+  // already pending confirmation (UX review defect 1, 2026-09-28).
+  confirmClaimLink: 'Confirm the claim',
+  // A plain, unverified member has no claim standing at all -- this replaces the claim
+  // link for them in that same slot, rather than leaving it silently absent.
+  notVerifiedNote: 'You are not verified yet. An officer can approve you from the roster.',
   openSim: 'Open in simulator',
   openPlanner: 'Open in planner',
   untitledReport: 'Untitled report',
