@@ -154,8 +154,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
+- rogue-assassination level=10 kind=unresolved_id action={SpellID: 1310703}
 - rogue-assassination level=10 kind=unresolved_id action={SpellID: 14177}
+- rogue-assassination level=20 kind=unresolved_id action={SpellID: 1310703}
 - rogue-assassination level=20 kind=unresolved_id action={SpellID: 14177}
+- rogue-assassination level=30 kind=unresolved_id action={SpellID: 1310703}
+- rogue-assassination level=38 kind=unresolved_id action={SpellID: 1310703}
+- rogue-assassination level=40 kind=unresolved_id action={SpellID: 1310703}
 - rogue-assassination level=40 kind=unresolved_id action={SpellID: 399956}
 - rogue-assassination level=50 kind=unresolved_id action={SpellID: 1241582}
 - rogue-assassination level=50 kind=zero_casts spell="Eviscerate" id=11299 authored=31016

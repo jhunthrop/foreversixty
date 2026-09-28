@@ -25,8 +25,7 @@ def built():
     fork = load_fork_database(ENGINE)
     rows = zone_rows()
     build_items = {
-        row["id"]
-        for row in json.loads((ENGINE / "items.json").read_text(encoding="utf-8"))
+        row["id"] for row in json.loads((ENGINE / "items.json").read_text(encoding="utf-8"))
     }
     return build_loot(
         fork,
@@ -34,6 +33,7 @@ def built():
         instance_types(read_csv(ENGINE / "Map.csv"), rows),
         pvp_ranks(read_csv(ENGINE / "ItemSparse.csv")),
         build_items,
+        {},
     )
 
 
@@ -70,12 +70,16 @@ def test_every_kind_is_emitted_once_and_in_the_contracts_order():
         "raid:molten-core",
         "dungeon:the-deadmines",
         "world:azuregos",
+        "zone:16",
         "crafted:blacksmithing",
         "rep:argent-dawn:exalted",
         "pvp:rank-11",
         "quest",
     ]
-    assert [s.kind for s in document.sources] == list(KIND_ORDER)
+    # The fixture has no vendor rows, so every kind but `vendor` is emitted
+    # once, in the contract's order (Azuregos in Azshara is also zone 16's
+    # one open-world drop).
+    assert [s.kind for s in document.sources] == [k for k in KIND_ORDER if k != "vendor"]
 
 
 def test_a_raid_lists_a_boss_per_npc_and_everything_else_as_trash():
@@ -104,9 +108,7 @@ def test_only_a_named_npc_outside_an_instance_becomes_a_world_boss():
     assert world.name == "Azuregos"
     assert world.items == [104]
     document, _ = built()
-    others = [
-        s for s in document.sources if s.id.startswith("world:") and s.id != "world:azuregos"
-    ]
+    others = [s for s in document.sources if s.id.startswith("world:") and s.id != "world:azuregos"]
     assert not others
 
 
@@ -139,10 +141,13 @@ def test_the_stats_count_what_was_emitted_dropped_and_absent():
     _, stats = built()
     # 100, 101, 102, 103, 104, 106, 107, 108, 111, 112
     assert stats.items == 10
-    # the vendor-only item and the unnamed open-world mob's drop
-    assert stats.dropped_entries == 2
-    # item 113, which the build's item table does not have
-    assert stats.absent_items == 1
+    # Every fixture entry now has a kind: the unnamed open-world mob's drop
+    # files under zone:16 and the vendor sale under its npc.
+    assert stats.dropped_entries == 0
+    # 105 (zone 16), 109 (the vendor) and 113 (the raid boss): the build's
+    # item table has none of them, so they are counted before any kind
+    # could take them.
+    assert stats.absent_items == 3
 
 
 def test_two_world_bosses_with_the_same_name_raise_instead_of_silently_colliding():
@@ -167,4 +172,4 @@ def test_two_world_bosses_with_the_same_name_raise_instead_of_silently_colliding
         item_icon_rows=(),
     )
     with pytest.raises(SourceIdCollision, match="world:doomsayer"):
-        build_loot(fork, {}, {}, {}, {1, 2})
+        build_loot(fork, {}, {}, {}, {1, 2}, {})

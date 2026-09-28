@@ -43,6 +43,7 @@ GENERATED_SOURCE_IDS = [
     "raid:molten-core",
     "dungeon:the-deadmines",
     "world:azuregos",
+    "zone:16",
     "crafted:blacksmithing",
     "rep:argent-dawn:exalted",
     "pvp:rank-11",

@@ -197,14 +197,19 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 - mage-arcane level=10 kind=unresolved_id action={SpellID: 12042}
 - mage-arcane level=10 kind=unresolved_id action={SpellID: 12043}
+- mage-arcane level=10 kind=unresolved_id action={SpellID: 400589}
 - mage-arcane level=20 kind=unresolved_id action={SpellID: 12042}
 - mage-arcane level=20 kind=unresolved_id action={SpellID: 12043}
+- mage-arcane level=20 kind=unresolved_id action={SpellID: 400574}
+- mage-arcane level=20 kind=unresolved_id action={SpellID: 400589}
 - mage-arcane level=30 kind=unresolved_id action={SpellID: 12042}
 - mage-arcane level=30 kind=unresolved_id action={SpellID: 12043}
 - mage-arcane level=30 kind=unresolved_id action={SpellID: 1239696}
+- mage-arcane level=30 kind=unresolved_id action={SpellID: 400589}
 - mage-arcane level=38 kind=unresolved_id action={SpellID: 12042}
 - mage-arcane level=38 kind=unresolved_id action={SpellID: 1239696}
 - mage-arcane level=40 kind=unresolved_id action={SpellID: 1239696}
 - mage-arcane level=50 kind=unresolved_id action={SpellID: 1239699}
+- mage-arcane level=60 kind=unresolved_id action={SpellID: 400574}
 - mage-arcane level=60 kind=zero_casts spell="Arcane Blast" id=1239700 authored=400574
 - mage-arcane level=60 kind=zero_casts spell="Arcane Missiles" id=25345 authored=10212
