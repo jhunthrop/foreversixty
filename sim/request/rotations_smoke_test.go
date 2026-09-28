@@ -123,8 +123,10 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 19574}": "Bestial Wrath is a talent (sim/hunter/talents.go); this build takes none.",
 	},
 	"mage-arcane": {
-		"{SpellID: 12042}": "Arcane Power is a talent (sim/mage/talents.go); this build takes none.",
-		"{SpellID: 12043}": "Presence of Mind is a talent (sim/mage/talents.go); this build takes none.",
+		"{SpellID: 400574}": "Arcane Blast is a talent (sim/mage/arcane_blast.go, Forever's tree); this build takes none.",
+		"{SpellID: 400589}": "Missile Barrage's buff only exists with its talent (sim/mage/missile_barrage.go); this build takes none.",
+		"{SpellID: 12042}":  "Arcane Power is a talent (sim/mage/talents.go); this build takes none.",
+		"{SpellID: 12043}":  "Presence of Mind is a talent (sim/mage/talents.go); this build takes none.",
 	},
 	"mage-fire": {
 		"{SpellID: 11129}": "Combustion is a talent (sim/mage/talents.go); this build takes none.",
@@ -144,7 +146,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 18807}": "Mind Flay is gated on its talent (sim/priest/mind_flay.go); this build takes none.",
 	},
 	"rogue-assassination": {
-		"{SpellID: 14177}": "Cold Blood is a talent (sim/rogue/talents.go); this build takes none.",
+		"{SpellID: 1310703}": "Venom is a talent (sim/rogue/venom.go, Forever's tree); this build takes none.",
+		"{SpellID: 1310707}": "Mutilate is a talent (sim/rogue/mutilate.go, Forever's tree); this build takes none.",
+		"{SpellID: 14177}":   "Cold Blood is a talent (sim/rogue/talents.go); this build takes none.",
 	},
 	"rogue-combat": {
 		"{SpellID: 13750}": "Adrenaline Rush is a talent (sim/rogue/talents.go); this build takes none.",
@@ -158,14 +162,16 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 17364}": "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
 	},
 	"warlock-affliction": {
-		"{OtherID: 13}":    noPotionWarning,
-		"{SpellID: 18288}": "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
+		"{SpellID: 1316697}": "Wrack is a talent (sim/warlock/wrack.go, Forever's tree); this build takes none.",
+		"{OtherID: 13}":      noPotionWarning,
+		"{SpellID: 18288}":   "Amplify Curse is a talent (sim/warlock/curses.go); this build takes none.",
 	},
 	"warlock-demonology": {"{OtherID: 13}": noPotionWarning},
 	"warlock-destruction": {
-		"{OtherID: 13}":    noPotionWarning,
-		"{SpellID: 18871}": "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
-		"{SpellID: 18932}": "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",
+		"{SpellID: 412758}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
+		"{OtherID: 13}":     noPotionWarning,
+		"{SpellID: 18871}":  "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
+		"{SpellID: 18932}":  "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",
 	},
 	"warrior-arms": {
 		"{SpellID: 21553}": "Mortal Strike is gated on its talent (sim/warrior/mortal_strike.go); this build takes none.",

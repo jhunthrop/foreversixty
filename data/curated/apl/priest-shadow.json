@@ -1,8 +1,7 @@
 {
   "spec": "priest-shadow",
   "state": "written",
-  "notes": "Adapted from the fork's shadow_priest/apls/p1.apl.json. Fix round 1: Devouring Plague's rank was moved back to 5 (19279), not forward to spellconst's top rank 6 (19280) -- sim/priest/devouring_plague.go's registration loop (`for rank := 1; rank < DevouringPlagueRanks; rank++` with DevouringPlagueRanks = 6) never registers rank 6, so 19280 is not castable in this engine build even though it is the client's current top rank; 19279 is the highest rank the engine actually registers. The excluded rank is recorded as an engine follow-up, not fixed here by reverting spellconst's own answer. Shadow Word: Death (1309636) is not registered under any candidate id anywhere in sim/priest -- the execute line naming it is kept because Forever's own tier 5 talent, Early Demise, clearly intends a below-20-percent execute the base classic Shadow tree never had, but it casts nothing today; an explicit Mind Blast-then-Mind Flay fallback is added immediately beneath it so the execute window is not wasted while the engine catches up. Shadowform is still cast at prepull, Shadow Word: Pain is maintained with the same fight-end guard as the source preset, and Inner Focus into Devouring Plague, Mind Blast on cooldown, and Mind Flay as filler are otherwise unchanged. Every rank named here (other than the flagged inert Shadow Word: Death line) is checked against the spellconst of the newest client build in builds/.",
-  "inert": [1309636],
+  "notes": "Adapted from the fork's shadow_priest/apls/p1.apl.json. Fix round 1: Devouring Plague's rank was moved back to 5 (19279), not forward to spellconst's top rank 6 (19280) -- sim/priest/devouring_plague.go's registration loop (`for rank := 1; rank < DevouringPlagueRanks; rank++` with DevouringPlagueRanks = 6) never registers rank 6, so 19280 is not castable in this engine build even though it is the client's current top rank; 19279 is the highest rank the engine actually registers. The excluded rank is recorded as an engine follow-up, not fixed here by reverting spellconst's own answer. Shadow Word: Death (1309636, sim/priest/shadow_word_death.go) is now implemented (rotation-accuracy program, 2026-09-28), with Forever's tier 5 Early Demise talent's below-20-percent crit bonus read through the engine's execute-phase approximation; the Mind Blast-then-Mind Flay fallback immediately beneath it stays in place for when Shadow Word: Death is still on its 15 s cooldown inside the same execute window. Shadowform is still cast at prepull, Shadow Word: Pain is maintained with the same fight-end guard as the source preset, and Inner Focus into Devouring Plague, Mind Blast on cooldown, and Mind Flay as filler are otherwise unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/.",
   "sources": [
     { "label": "wowsims-forever shadow priest default priority list", "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/shadow_priest/apls/p1.apl.json", "kind": "community" },
     { "label": "Warcraft Tavern: Classic Shadow Priest DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/shadow-priest-dps-rotation/", "kind": "community" }
@@ -32,14 +31,14 @@
         }
       },
       {
-        "notes": "Inert until the engine registers Shadow Word: Death (not found under any candidate id in sim/priest). Kept because Forever's Early Demise talent (tier 5) clearly intends a below-20-percent execute that the base classic Shadow tree has no equivalent for.",
+        "notes": "Shadow Word: Death (sim/priest/shadow_word_death.go): Forever's tier 5 Early Demise talent gives it bonus crit chance below 20% target health, read through the engine's execute-phase approximation (isExecutePhase E20, the same primitive this line already used).",
         "action": {
           "condition": { "isExecutePhase": { "threshold": "E20" } },
           "castSpell": { "spellId": { "spellId": 1309636, "rank": 4 } }
         }
       },
       {
-        "notes": "Engine-castable Era fallback for the execute window while Shadow Word: Death is inert: Mind Blast on cooldown, else Mind Flay.",
+        "notes": "Era fallback for the execute window when Shadow Word: Death is on its own 15 s cooldown: Mind Blast on cooldown, else Mind Flay.",
         "action": {
           "condition": { "isExecutePhase": { "threshold": "E20" } },
           "castSpell": { "spellId": { "spellId": 10947, "rank": 9 } }
