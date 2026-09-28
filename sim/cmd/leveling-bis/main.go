@@ -38,7 +38,7 @@ import (
 )
 
 func main() {
-	if err := run(); err != nil {
+	if err := run(os.Args[0], os.Args[1:]); err != nil {
 		log.Fatalf("leveling-bis: %v", err)
 	}
 }
@@ -48,16 +48,28 @@ func main() {
 // per rung a leveling character actually stops on to gear up.
 const defaultBandsFlag = "10,15,20,25,30,35,40,45,50,55,60"
 
-func run() error {
-	repoRoot := flag.String("repo-root", ".", "the site repository root (data/curated/specs.json must be under it)")
-	spec := flag.String("spec", "hunter-marksmanship", "the spec to rank (data/curated/specs.json's spec slug); ignored when -all is set")
-	all := flag.Bool("all", false, "rank every spec in data/curated/specs.json with a written rotation (data/curated/apl/<spec>.json state == \"written\"), one output file per spec - what make bis and the nightly workflow run")
-	bandsFlag := flag.String("bands", defaultBandsFlag, "comma-separated level bands")
-	build := flag.String("build", "", "data build to read from data/builds/<build>; defaults to web/src/data/active-build.json's build")
-	weightsIterations := flag.Int("weights-iterations", 100, "iterations PER DIRECTION the weights sweep runs (multiplied by the engine's own WeightsIterationsFactor); the brief allows reducing this to stay under the time budget")
-	out := flag.String("out", "", "output directory; defaults to data/builds/<build>/bis under -repo-root (lane bis-web's read contract)")
-	memProfile := flag.String("memprofile", "", "write a heap profile to this path (a per-spec suffix is added under -all: <path>.<spec>) - diagnostic only, go tool pprof -top <file>")
-	flag.Parse()
+// run takes execPath and args explicitly (main passes os.Args[0] and
+// os.Args[1:]) rather than reading the process's own os.Args and the
+// package-global flag.CommandLine directly: a dedicated flag.FlagSet
+// per call is what lets a test invoke run more than once in the same
+// process (flag.CommandLine is shared package state - a second
+// flag.String("repo-root", ...) against it panics with "flag
+// redefined") - this codebase's own rule, explicit dependencies over
+// globals, applied to the one dependency run() has that a fake could
+// not otherwise replace: which binary runAllSpecsIsolated re-execs.
+func run(execPath string, args []string) error {
+	fs := flag.NewFlagSet("leveling-bis", flag.ContinueOnError)
+	repoRoot := fs.String("repo-root", ".", "the site repository root (data/curated/specs.json must be under it)")
+	spec := fs.String("spec", "hunter-marksmanship", "the spec to rank (data/curated/specs.json's spec slug); ignored when -all is set")
+	all := fs.Bool("all", false, "rank every spec in data/curated/specs.json with a written rotation (data/curated/apl/<spec>.json state == \"written\"), one output file per spec - what make bis and the nightly workflow run")
+	bandsFlag := fs.String("bands", defaultBandsFlag, "comma-separated level bands")
+	build := fs.String("build", "", "data build to read from data/builds/<build>; defaults to web/src/data/active-build.json's build")
+	weightsIterations := fs.Int("weights-iterations", 100, "iterations PER DIRECTION the weights sweep runs (multiplied by the engine's own WeightsIterationsFactor); the brief allows reducing this to stay under the time budget")
+	out := fs.String("out", "", "output directory; defaults to data/builds/<build>/bis under -repo-root (lane bis-web's read contract)")
+	memProfile := fs.String("memprofile", "", "write a heap profile to this path (a per-spec suffix is added under -all: <path>.<spec>) - diagnostic only, go tool pprof -top <file>")
+	if err := fs.Parse(args); err != nil {
+		return err
+	}
 
 	if *memProfile != "" && !*all {
 		defer writeHeapProfile(*memProfile)
@@ -107,9 +119,9 @@ func run() error {
 	// clock ceiling (specTimeout) so one hung spec cannot silently
 	// re-create the same incident.
 	if *all {
-		return runAllSpecsIsolated(*repoRoot, activeBuild, outDir, *bandsFlag, *weightsIterations, *memProfile)
+		return runAllSpecsIsolated(execPath, specTimeout, *repoRoot, activeBuild, outDir, *bandsFlag, *weightsIterations, *memProfile)
 	}
-	return runSpec(*repoRoot, buildDir, activeBuild, outDir, *spec, bands, *weightsIterations)
+	return runSpec(realEngine{}, *repoRoot, buildDir, activeBuild, outDir, *spec, bands, *weightsIterations)
 }
 
 // specTimeout bounds one spec's subprocess: generous next to every
@@ -120,8 +132,12 @@ const specTimeout = 5 * time.Minute
 
 // runAllSpecsIsolated runs writtenSpecs, one subprocess per spec, and
 // reports which (if any) failed or hung - see run()'s own doc for why
-// this is a subprocess loop and not an in-process one.
-func runAllSpecsIsolated(repoRoot, activeBuild, outDir, bandsFlag string, weightsIterations int, memProfile string) error {
+// this is a subprocess loop and not an in-process one. execPath and
+// timeout are run()'s own explicit dependencies threaded one level
+// further (execPath is normally os.Args[0]; timeout is normally
+// specTimeout) so a test can point both at a fast, scripted stand-in
+// process instead of re-execing the real, slow ranking binary.
+func runAllSpecsIsolated(execPath string, timeout time.Duration, repoRoot, activeBuild, outDir, bandsFlag string, weightsIterations int, memProfile string) error {
 	specs, err := writtenSpecs(repoRoot)
 	if err != nil {
 		return err
@@ -131,7 +147,7 @@ func runAllSpecsIsolated(repoRoot, activeBuild, outDir, bandsFlag string, weight
 	var failed []string
 	for _, s := range specs {
 		specStart := time.Now()
-		if err := runSpecSubprocess(repoRoot, activeBuild, outDir, s, bandsFlag, weightsIterations, memProfile); err != nil {
+		if err := runSpecSubprocess(execPath, timeout, repoRoot, activeBuild, outDir, s, bandsFlag, weightsIterations, memProfile); err != nil {
 			// -all is a nightly batch of independent units of work - a
 			// mage bug returning no engine data this run genuinely
 			// cannot rank should not cost every OTHER spec its BiS
@@ -154,15 +170,15 @@ func runAllSpecsIsolated(repoRoot, activeBuild, outDir, bandsFlag string, weight
 	return nil
 }
 
-// runSpecSubprocess re-execs this same binary (os.Args[0] - a real
+// runSpecSubprocess re-execs execPath (run()'s own os.Args[0] - a real
 // executable in both `go run` (go run builds one to a temp path first)
 // and a built binary, so this works identically in dev and in `make
 // bis`/the nightly workflow) for exactly one spec, forwarding its
 // stdout/stderr live so the parent's log stays one continuous stream.
 // -all is deliberately NOT forwarded (this call always names -spec),
 // which is what keeps this from recursing.
-func runSpecSubprocess(repoRoot, build, outDir, spec, bandsFlag string, weightsIterations int, memProfile string) error {
-	ctx, cancel := context.WithTimeout(context.Background(), specTimeout)
+func runSpecSubprocess(execPath string, timeout time.Duration, repoRoot, build, outDir, spec, bandsFlag string, weightsIterations int, memProfile string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	args := []string{
 		"-repo-root", repoRoot,
@@ -175,19 +191,19 @@ func runSpecSubprocess(repoRoot, build, outDir, spec, bandsFlag string, weightsI
 	if memProfile != "" {
 		args = append(args, "-memprofile", memProfile+"."+spec)
 	}
-	cmd := exec.CommandContext(ctx, os.Args[0], args...)
+	cmd := exec.CommandContext(ctx, execPath, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
 	if ctx.Err() == context.DeadlineExceeded {
-		return fmt.Errorf("spec %s did not finish within %s (killed) - the incident this lane's report documents; this is the safety net, not the fix", spec, specTimeout)
+		return fmt.Errorf("spec %s did not finish within %s (killed) - the incident this lane's report documents; this is the safety net, not the fix", spec, timeout)
 	}
 	return err
 }
 
 // runSpec ranks one spec across every band and both factions and writes
 // its two output files (json, md) under outDir.
-func runSpec(repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, weightsIterations int) error {
+func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, weightsIterations int) error {
 	specInfo, err := loadSpec(repoRoot, spec)
 	if err != nil {
 		return err
@@ -248,7 +264,7 @@ func runSpec(repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, 
 
 		weightsStart := time.Now()
 		wreq := weightsRequest(specInfo, ladderCh, weightsIterations, 3)
-		wresult, err := runWeights(wreq)
+		wresult, err := runner.RunWeights(wreq)
 		if err != nil {
 			return fmt.Errorf("band %d weights run: %w", band, err)
 		}
@@ -274,7 +290,7 @@ func runSpec(repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, 
 			trinketStart := time.Now()
 			for _, slot := range []string{"trinket1", "trinket2"} {
 				var notes []string
-				picks, notes = rankTrinketSlot(specInfo, f.race, specInfo.ClassSlug, band, picks, bySlot, slot)
+				picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, bySlot, slot)
 				for _, n := range notes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
@@ -282,7 +298,7 @@ func runSpec(repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, 
 			trinketSeconds := time.Since(trinketStart).Seconds()
 
 			verifyStart := time.Now()
-			setDPS, swaps, verifyErrors, err := verifyBand(specInfo, f.race, specInfo.ClassSlug, band, picks)
+			setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, picks)
 			if err != nil {
 				return fmt.Errorf("band %d %s verify run (baseline): %w", band, f.name, err)
 			}

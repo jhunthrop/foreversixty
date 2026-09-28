@@ -152,9 +152,9 @@ func swapSlot(picks map[string]slotPick, slot string, itemID int, itemIsTwoHand 
 // bad candidate. A baseline failure is different: with no baseline
 // DPS there is nothing to compare a swap against, so that error
 // still propagates and the caller reports the band as unverified.
-func verifyBand(spec specInfo, race, classSlug string, level int, picks map[string]slotPick) (baselineDPS float64, swaps []swapResult, verifyErrors []string, err error) {
+func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, level int, picks map[string]slotPick) (baselineDPS float64, swaps []swapResult, verifyErrors []string, err error) {
 	baseline := plainRequest(spec, api.CharacterSpec{Name: "verify", Race: race, Class: classSlug, Level: level, Gear: buildGear(picks)}, verifyIterations, verifySeed)
-	baselineDPS, err = runPlainDPS(baseline)
+	baselineDPS, err = runner.RunPlainDPS(baseline)
 	if err != nil {
 		return 0, nil, nil, err
 	}
@@ -171,7 +171,7 @@ func verifyBand(spec specInfo, race, classSlug string, level int, picks map[stri
 		runnerUp := picks[slot].RunnerUp
 		gear := swapSlot(picks, slot, runnerUp.ID, runnerUp.TwoHand)
 		req := plainRequest(spec, api.CharacterSpec{Name: "verify", Race: race, Class: classSlug, Level: level, Gear: gear}, verifyIterations, verifySeed)
-		dps, runErr := runPlainDPS(req)
+		dps, runErr := runner.RunPlainDPS(req)
 		if runErr != nil {
 			verifyErrors = append(verifyErrors, fmt.Sprintf("%s: runner-up %s (id %d): %v", slot, runnerUp.Name, runnerUp.ID, runErr))
 			continue

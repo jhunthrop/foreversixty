@@ -1,0 +1,22 @@
+{
+  "trees": [
+    {
+      "position": 0,
+      "talents": [
+        {"id": 1, "tier": 0, "column": 0, "max_rank": 5}
+      ]
+    },
+    {
+      "position": 1,
+      "talents": [
+        {"id": 2, "tier": 0, "column": 0, "max_rank": 5}
+      ]
+    },
+    {
+      "position": 2,
+      "talents": [
+        {"id": 3, "tier": 0, "column": 0, "max_rank": 5}
+      ]
+    }
+  ]
+}

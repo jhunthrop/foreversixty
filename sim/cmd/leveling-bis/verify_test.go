@@ -119,3 +119,94 @@ func TestSwapSlotKeepsThePairMateWhenTheRunnerUpDiffers(t *testing.T) {
 func TestBuildGearProducesAPIGearSlots(t *testing.T) {
 	var _ []api.GearSlot = buildGear(map[string]slotPick{})
 }
+
+func TestVerifyBandNoRunnerUpsReturnsBaselineOnly(t *testing.T) {
+	picks := map[string]slotPick{"head": {Item: p(1, false)}}
+	fake := &fakeEngine{DefaultDPS: 100}
+	dps, swaps, verifyErrors, err := verifyBand(fake, specInfo{Spec: "hunter-marksmanship"}, "dwarf", "hunter", 20, picks)
+	if err != nil {
+		t.Fatalf("verifyBand: %v", err)
+	}
+	if dps != 100 {
+		t.Errorf("baseline dps = %v, want 100", dps)
+	}
+	if len(swaps) != 0 || len(verifyErrors) != 0 {
+		t.Fatalf("swaps/verifyErrors = %v/%v, want both empty: no runner-ups", swaps, verifyErrors)
+	}
+}
+
+func TestVerifyBandRunnerUpBeatsThePick(t *testing.T) {
+	picks := map[string]slotPick{
+		"head": {Item: p(1, false), RunnerUp: p(2, false)},
+	}
+	fake := &fakeEngine{
+		DefaultDPS: 100, // the baseline (head=1)
+		DPSByGear:  map[string]float64{gearKey([]api.GearSlot{{Slot: "head", ItemID: 2}}): 150},
+	}
+	dps, swaps, verifyErrors, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, picks)
+	if err != nil {
+		t.Fatalf("verifyBand: %v", err)
+	}
+	if dps != 100 {
+		t.Fatalf("baseline dps = %v, want 100", dps)
+	}
+	if len(swaps) != 1 || swaps[0].Slot != "head" || !swaps[0].Beat || swaps[0].SwapDPS != 150 {
+		t.Fatalf("swaps = %+v, want head beaten by 150", swaps)
+	}
+	if len(verifyErrors) != 0 {
+		t.Fatalf("verifyErrors = %v, want none", verifyErrors)
+	}
+}
+
+func TestVerifyBandRunnerUpLosesToThePick(t *testing.T) {
+	picks := map[string]slotPick{
+		"head": {Item: p(1, false), RunnerUp: p(2, false)},
+	}
+	fake := &fakeEngine{
+		DefaultDPS: 100,
+		DPSByGear:  map[string]float64{gearKey([]api.GearSlot{{Slot: "head", ItemID: 2}}): 50},
+	}
+	_, swaps, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, picks)
+	if err != nil {
+		t.Fatalf("verifyBand: %v", err)
+	}
+	if len(swaps) != 1 || swaps[0].Beat {
+		t.Fatalf("swaps = %+v, want head NOT beaten", swaps)
+	}
+}
+
+func TestVerifyBandBaselineFailurePropagates(t *testing.T) {
+	picks := map[string]slotPick{"head": {Item: p(1, false)}}
+	fake := &fakeEngine{FailGear: gearKey(buildGear(picks))}
+	_, _, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, picks)
+	if err == nil {
+		t.Fatal("verifyBand with a failing baseline: want an error, got nil")
+	}
+}
+
+func TestVerifyBandSwapFailureIsCollectedNotFatal(t *testing.T) {
+	// Two slots each carry a runner-up; one runner-up's own sim fails
+	// (an engine-side error, per verify.go's own doc). The OTHER slot's
+	// swap must still be tried and reported - one bad candidate must
+	// not lose the whole band's verification.
+	picks := map[string]slotPick{
+		"head": {Item: p(1, false), RunnerUp: p(2, false)},
+		"neck": {Item: p(3, false), RunnerUp: p(4, false)},
+	}
+	failingGear := gearKey(swapSlot(picks, "head", 2, false))
+	fake := &fakeEngine{
+		DefaultDPS: 100,
+		FailGear:   failingGear,
+		DPSByGear:  map[string]float64{gearKey(swapSlot(picks, "neck", 4, false)): 200},
+	}
+	_, swaps, verifyErrors, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, picks)
+	if err != nil {
+		t.Fatalf("verifyBand: %v", err)
+	}
+	if len(verifyErrors) != 1 {
+		t.Fatalf("verifyErrors = %v, want exactly 1 (head's failed swap)", verifyErrors)
+	}
+	if len(swaps) != 1 || swaps[0].Slot != "neck" || !swaps[0].Beat {
+		t.Fatalf("swaps = %+v, want neck alone, beaten", swaps)
+	}
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "spec": "hunter-marksmanship",
+    "class_slug": "hunter",
+    "spec_slug": "marksmanship",
+    "name": "Marksmanship",
+    "tree_index": 1,
+    "reference_stat": "ranged_attack_power",
+    "weight_stats": ["ranged_attack_power", "agility", "crit"]
+  },
+  {
+    "spec": "mage-fire",
+    "class_slug": "mage",
+    "spec_slug": "fire",
+    "name": "Fire",
+    "tree_index": 0,
+    "reference_stat": "spell_power",
+    "weight_stats": ["spell_power"]
+  },
+  {
+    "spec": "priest-shadow",
+    "class_slug": "priest",
+    "spec_slug": "shadow",
+    "name": "Shadow",
+    "tree_index": 2,
+    "reference_stat": "spell_power",
+    "weight_stats": ["spell_power"]
+  }
+]

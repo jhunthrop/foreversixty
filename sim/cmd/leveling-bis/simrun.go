@@ -35,6 +35,32 @@ import (
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
+// engineRunner is what runSpec, verifyBand and rankTrinketSlot need
+// from the engine: a plain DPS run and a stat-weights run. It exists
+// so those functions take an explicit dependency (this codebase's own
+// rule: explicit dependencies over globals) rather than calling
+// runPlainDPS/runWeights directly - a test can then inject a fake that
+// returns canned results instead of spawning the real engine, which
+// for a weights or verify run is the whole reason
+// sim/cmd/leveling-bis's own tests could not exercise runSpec/
+// verifyBand/rankTrinketSlot before this type existed. realEngine
+// below is the only production implementation.
+type engineRunner interface {
+	RunPlainDPS(req api.SimRequest) (float64, error)
+	RunWeights(req api.SimRequest) (map[string]api.StatWeight, error)
+}
+
+// realEngine is the engineRunner backed by the actual wowsims-classic
+// engine (runPlainDPS/runWeights below) - the only production
+// implementation; main's run() is the only place that constructs one.
+type realEngine struct{}
+
+func (realEngine) RunPlainDPS(req api.SimRequest) (float64, error) { return runPlainDPS(req) }
+
+func (realEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, error) {
+	return runWeights(req)
+}
+
 var registerEngineOnce sync.Once
 
 // registerEngine registers every spec's agent factory exactly once

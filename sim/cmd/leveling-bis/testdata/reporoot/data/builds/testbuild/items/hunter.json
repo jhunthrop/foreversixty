@@ -1,0 +1,60 @@
+{
+  "build": "testbuild",
+  "class_slug": "hunter",
+  "items": [
+    {
+      "id": 1001,
+      "name": "Test Helm",
+      "slot": "head",
+      "quality": 3,
+      "required_level": 10,
+      "item_level": 20,
+      "armor": 40,
+      "stats": {"agility": 5},
+      "damage_min": 0,
+      "damage_max": 0,
+      "speed": 0,
+      "dps": 0,
+      "two_hand": false,
+      "effect_text": "",
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 1002,
+      "name": "Test Bow",
+      "slot": "ranged",
+      "quality": 3,
+      "required_level": 15,
+      "item_level": 25,
+      "armor": 0,
+      "stats": {"agility": 2},
+      "damage_min": 10,
+      "damage_max": 20,
+      "speed": 2.8,
+      "dps": 5.3,
+      "two_hand": false,
+      "effect_text": "",
+      "set_id": null,
+      "unique": false
+    },
+    {
+      "id": 1003,
+      "name": "Ghost Item",
+      "slot": "waist",
+      "quality": 1,
+      "required_level": 5,
+      "item_level": 5,
+      "armor": 1,
+      "stats": {},
+      "damage_min": 0,
+      "damage_max": 0,
+      "speed": 0,
+      "dps": 0,
+      "two_hand": false,
+      "effect_text": "",
+      "set_id": null,
+      "unique": false
+    }
+  ]
+}
