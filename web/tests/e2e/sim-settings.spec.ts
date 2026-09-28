@@ -135,7 +135,9 @@ test('Raid-buffed is the full standard set: "what’s in it" names it, Custom’
   await expect(panel).toBeVisible();
   await expect(trigger).toHaveAttribute('aria-expanded', 'true');
   await expect(panel).toContainText(/sunder armor/i);
-  await expect(panel).toContainText(/songflower/i);
+  // Forever has no world buffs (2026-09-28): the preset carries none, so a raid buff stands in.
+  await expect(panel).toContainText(/trueshot aura/i);
+  await expect(panel).not.toContainText(/songflower/i);
 
   // Escape closes it and returns focus to the trigger, wherever the panel's own content
   // put it (Ruling 3's keyboard requirement).
