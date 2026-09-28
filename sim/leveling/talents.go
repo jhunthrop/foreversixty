@@ -1,15 +1,19 @@
-// Package leveling holds the talent-truncation rule shared by the
-// rotation ladder (sim/request/ladder.go, Phase 1a of
+// Package leveling holds rules shared by the rotation ladder
+// (sim/request/ladder.go, Phase 1a of
 // docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md)
 // and the leveling BiS pipeline (sim/cmd/leveling-bis,
-// docs/superpowers/specs/2026-09-28-leveling-bis-design.md): a guide's
-// level-60 build, truncated to the points a leveling character of a
-// given level would actually have spent.
+// docs/superpowers/specs/2026-09-28-leveling-bis-design.md):
 //
-// Moved verbatim out of sim/request/ladder.go (lane bis-all's brief)
-// so a second caller does not have to re-derive or duplicate it;
-// sim/request/ladder.go now imports this package instead of defining
-// these symbols itself.
+//   - Talent truncation (this file): a guide's level-60 build, truncated
+//     to the points a leveling character of a given level would
+//     actually have spent. Moved verbatim out of sim/request/ladder.go
+//     (lane bis-all's brief) so a second caller does not have to
+//     re-derive or duplicate it; sim/request/ladder.go now imports this
+//     package instead of defining these symbols itself.
+//   - Effective required level (required_level.go; 2026-09-28
+//     quest-levels lane): a candidate item's REAL level gate, which a
+//     quest reward's or crafted item's own client required_level (very
+//     often 0) does not state.
 package leveling
 
 import (

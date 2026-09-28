@@ -14,5 +14,17 @@
         {"name": "Test Boss", "items": [1002]}
       ]
     }
-  ]
+  ],
+  "quests": {
+    "1001": [
+      {
+        "quest_id": 1,
+        "name": "A Test Quest",
+        "faction": "both",
+        "min_level": 25,
+        "level": 27,
+        "level_source": "wowhead"
+      }
+    ]
+  }
 }

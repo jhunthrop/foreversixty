@@ -13,7 +13,7 @@ func TestEligible(t *testing.T) {
 	}{
 		{
 			name:    "a required level above the character's is refused",
-			c:       candidate{RequiredLevel: 25},
+			c:       candidate{RequiredLevel: 25, EffectiveRequiredLevel: 25},
 			class:   "hunter",
 			level:   20,
 			faction: "horde",
@@ -21,11 +21,23 @@ func TestEligible(t *testing.T) {
 		},
 		{
 			name:    "a required level at or below the character's is allowed",
-			c:       candidate{RequiredLevel: 20},
+			c:       candidate{RequiredLevel: 20, EffectiveRequiredLevel: 20},
 			class:   "hunter",
 			level:   20,
 			faction: "horde",
 			want:    true,
+		},
+		{
+			// 2026-09-28 quest-levels lane: eligible() gates on
+			// EffectiveRequiredLevel, not RequiredLevel - a quest
+			// reward's own required_level (0 here, the Deadhead Blade
+			// shape) is not the real gate once a quest floors it higher.
+			name:    "a quest-floored effective level above the character's is refused even when required_level is 0",
+			c:       candidate{RequiredLevel: 0, EffectiveRequiredLevel: 60},
+			class:   "hunter",
+			level:   10,
+			faction: "horde",
+			want:    false,
 		},
 		{
 			name:    "mail before 40 is refused for a hunter",

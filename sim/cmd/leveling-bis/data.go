@@ -15,7 +15,10 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
+
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
 // flatItem is one row of data/builds/<build>/items.json: the fields
@@ -101,6 +104,14 @@ type candidate struct {
 	Unique             bool
 	Slots              []string
 	SetID              *int
+	// EffectiveRequiredLevel is the level gate this candidate really
+	// has: RequiredLevel unless a quest or crafted source floors it
+	// higher (leveling.EffectiveRequiredLevel; see
+	// applyEffectiveRequiredLevels, which sets this once per run,
+	// right after loadCandidates+loadLootIndex, from loot.json's
+	// quests map). eligible() gates on THIS field, not RequiredLevel
+	// directly -- see this lane's brief and eligible.go's own doc.
+	EffectiveRequiredLevel int
 }
 
 // loadCandidates merges items.json and items/<class>.json for one
@@ -130,23 +141,27 @@ func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 			continue
 		}
 		out = append(out, candidate{
-			ID:                 ci.ID,
-			Name:               ci.Name,
-			Quality:            ci.Quality,
-			RequiredLevel:      ci.RequiredLevel,
-			ItemLevel:          ci.ItemLevel,
-			ClassID:            fi.ClassID,
-			SubclassID:         fi.SubclassID,
-			FactionRestriction: fi.FactionRestriction,
-			Stats:              ci.Stats,
-			DamageMin:          ci.DamageMin,
-			DamageMax:          ci.DamageMax,
-			Speed:              ci.Speed,
-			DPS:                ci.DPS,
-			TwoHand:            ci.TwoHand,
-			Unique:             ci.Unique,
-			Slots:              plannerSlots(ci.Slot),
-			SetID:              ci.SetID,
+			ID:            ci.ID,
+			Name:          ci.Name,
+			Quality:       ci.Quality,
+			RequiredLevel: ci.RequiredLevel,
+			// Defaulted to the item's own required_level; applyEffectiveRequiredLevels
+			// (called once the loot index is loaded) raises this for a
+			// quest/crafted candidate whose true gate is higher.
+			EffectiveRequiredLevel: ci.RequiredLevel,
+			ItemLevel:              ci.ItemLevel,
+			ClassID:                fi.ClassID,
+			SubclassID:             fi.SubclassID,
+			FactionRestriction:     fi.FactionRestriction,
+			Stats:                  ci.Stats,
+			DamageMin:              ci.DamageMin,
+			DamageMax:              ci.DamageMax,
+			Speed:                  ci.Speed,
+			DPS:                    ci.DPS,
+			TwoHand:                ci.TwoHand,
+			Unique:                 ci.Unique,
+			Slots:                  plannerSlots(ci.Slot),
+			SetID:                  ci.SetID,
 		})
 	}
 	return out, missing, nil
@@ -198,8 +213,26 @@ type lootSource struct {
 	} `json:"bosses"`
 }
 
+// lootQuestEntry is one entry of loot.json's `quests` map: one quest
+// that hands out an item, with the level fields
+// data/pipeline/wowhead_quests.py resolves (2026-09-28 quest-levels
+// lane) -- min_level is the quest's own minimum level, which gates the
+// reward far more often than the item's own required_level does (see
+// applyEffectiveRequiredLevels).
+type lootQuestEntry struct {
+	QuestID     int    `json:"quest_id"`
+	Name        string `json:"name"`
+	Faction     string `json:"faction"`
+	MinLevel    int    `json:"min_level"`
+	Level       int    `json:"level"`
+	LevelSource string `json:"level_source"`
+}
+
 type lootFile struct {
 	Sources []lootSource `json:"sources"`
+	// Quests is item id (as a string key, matching loot.json's own
+	// encoding) -> every quest that hands it out.
+	Quests map[string][]lootQuestEntry `json:"quests"`
 }
 
 // itemSource is what loot.json says about one item: which kind of
@@ -215,7 +248,9 @@ type itemSource struct {
 // "Quests" in general.
 type lootIndex map[int][]itemSource
 
-// loadLootIndex builds the item -> source index from loot.json.
+// loadLootIndex builds the item -> source index from loot.json, plus
+// the item -> quest-level-floor map (2026-09-28 quest-levels lane;
+// applyEffectiveRequiredLevels uses it).
 //
 // TODO(bis-data): loot.json's "quest" kind is one flattened bucket
 // with no per-item faction or quest name (see this lane's brief and
@@ -226,14 +261,14 @@ type lootIndex map[int][]itemSource
 // (unsourced-but-a-known-zone-drop) distinction becomes possible.
 // Today an item absent from every source here is reported as having
 // no known source, full stop - see report.go's noSource accounting.
-func loadLootIndex(buildDir string) (lootIndex, error) {
+func loadLootIndex(buildDir string) (lootIndex, map[int]int, error) {
 	b, err := os.ReadFile(filepath.Join(buildDir, "loot.json"))
 	if err != nil {
-		return nil, fmt.Errorf("reading loot.json: %w", err)
+		return nil, nil, fmt.Errorf("reading loot.json: %w", err)
 	}
 	var f lootFile
 	if err := json.Unmarshal(b, &f); err != nil {
-		return nil, fmt.Errorf("decoding loot.json: %w", err)
+		return nil, nil, fmt.Errorf("decoding loot.json: %w", err)
 	}
 	idx := make(lootIndex)
 	add := func(id int, kind, label string) {
@@ -253,7 +288,47 @@ func loadLootIndex(buildDir string) (lootIndex, error) {
 			}
 		}
 	}
-	return idx, nil
+	questFloors := make(map[int]int, len(f.Quests))
+	for idStr, entries := range f.Quests {
+		id, err := strconv.Atoi(idStr)
+		if err != nil {
+			continue
+		}
+		levels := make([]int, len(entries))
+		for i, e := range entries {
+			levels[i] = e.MinLevel
+		}
+		questFloors[id] = leveling.LowestFloor(levels)
+	}
+	return idx, questFloors, nil
+}
+
+// applyEffectiveRequiredLevels returns a copy of items with each
+// candidate's EffectiveRequiredLevel set from leveling.
+// EffectiveRequiredLevel (2026-09-28 quest-levels lane): a quest-reward
+// candidate's floor is questFloors[c.ID] (loot.json's quests map, the
+// LOWEST min_level among the quests that award it -- any one suffices);
+// a crafted candidate (idx[c.ID] names a "crafted" source) with no
+// quest floor uses leveling.ItemLevelProxyRequiredLevel(c.ItemLevel),
+// since loot.json's crafted source carries no recipe skill level today.
+// Called once per run, right after loadCandidates+loadLootIndex, before
+// any band is built - see main.go's runSpec.
+func applyEffectiveRequiredLevels(items []candidate, idx lootIndex, questFloors map[int]int) []candidate {
+	out := make([]candidate, len(items))
+	for i, c := range items {
+		floor := questFloors[c.ID]
+		if floor == 0 {
+			for _, src := range idx[c.ID] {
+				if src.Kind == "crafted" {
+					floor = leveling.ItemLevelProxyRequiredLevel(c.ItemLevel)
+					break
+				}
+			}
+		}
+		c.EffectiveRequiredLevel = leveling.EffectiveRequiredLevel(c.RequiredLevel, floor)
+		out[i] = c
+	}
+	return out
 }
 
 // specInfo is the fields of one data/curated/specs.json row this

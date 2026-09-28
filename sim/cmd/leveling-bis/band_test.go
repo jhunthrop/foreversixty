@@ -90,18 +90,18 @@ func TestBuildBandPoolSeparatesEligibleSourcedCrossClassAndUnsourced(t *testing.
 	rogueSet := 204
 	items := []candidate{
 		// Eligible, sourced, scorable: goes to Scored.
-		{ID: 1, Name: "Sourced Helm", RequiredLevel: 10, Stats: map[string]float64{"agility": 1}, Slots: []string{"head"}},
+		{ID: 1, Name: "Sourced Helm", RequiredLevel: 10, EffectiveRequiredLevel: 10, Stats: map[string]float64{"agility": 1}, Slots: []string{"head"}},
 		// Eligible but no loot.json source: goes to NoSource.
-		{ID: 2, Name: "Mystery Cloak", RequiredLevel: 10, Slots: []string{"back"}},
+		{ID: 2, Name: "Mystery Cloak", RequiredLevel: 10, EffectiveRequiredLevel: 10, Slots: []string{"back"}},
 		// Not eligible at all (required level too high): excluded
 		// entirely, appears in neither bucket.
-		{ID: 3, Name: "Too High Level", RequiredLevel: 90, Slots: []string{"waist"}},
+		{ID: 3, Name: "Too High Level", RequiredLevel: 90, EffectiveRequiredLevel: 90, Slots: []string{"waist"}},
 		// A rogue-set item on a hunter pool: goes to CrossClassSet, not
 		// Scored, even though it has a loot source.
-		{ID: 4, Name: "Bonescythe Leggings", RequiredLevel: 10, SetID: &rogueSet, Slots: []string{"legs"}},
+		{ID: 4, Name: "Bonescythe Leggings", RequiredLevel: 10, EffectiveRequiredLevel: 10, SetID: &rogueSet, Slots: []string{"legs"}},
 		// A weapon with no dps: still scored, but also collected into
 		// NoDPSWeapon.
-		{ID: 5, Name: "Blunt Bow", RequiredLevel: 10, DPS: 0, Slots: []string{"ranged"}},
+		{ID: 5, Name: "Blunt Bow", RequiredLevel: 10, EffectiveRequiredLevel: 10, DPS: 0, Slots: []string{"ranged"}},
 	}
 	idx := lootIndex{
 		1: {{Kind: "quest", Label: "A Quest"}},

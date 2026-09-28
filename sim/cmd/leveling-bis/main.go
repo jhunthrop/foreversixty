@@ -243,10 +243,15 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	for _, m := range missing {
 		log.Printf("leveling-bis: %s: %s", spec, m)
 	}
-	lootIdx, err := loadLootIndex(buildDir)
+	lootIdx, questFloors, err := loadLootIndex(buildDir)
 	if err != nil {
 		return err
 	}
+	// 2026-09-28 quest-levels lane: resolve each candidate's REAL level
+	// gate (quest min_level / crafted item-level proxy, not just the
+	// item's own required_level, which a quest or crafted reward almost
+	// always states as 0) once, before any band uses eligible().
+	items = applyEffectiveRequiredLevels(items, lootIdx, questFloors)
 
 	factions := []struct{ name, race string }{
 		{"alliance", guide.AllianceRace},

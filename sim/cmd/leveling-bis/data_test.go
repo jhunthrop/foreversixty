@@ -112,7 +112,7 @@ func TestLoadCandidatesMergesFlatAndClassFiles(t *testing.T) {
 }
 
 func TestLoadLootIndex(t *testing.T) {
-	idx, err := loadLootIndex(buildDirFixture())
+	idx, questFloors, err := loadLootIndex(buildDirFixture())
 	if err != nil {
 		t.Fatalf("loadLootIndex: %v", err)
 	}
@@ -127,11 +127,62 @@ func TestLoadLootIndex(t *testing.T) {
 	if _, ok := idx[9999]; ok {
 		t.Error("idx[9999] present, want absent (no source names it)")
 	}
+	// The fixture's item 1001 (required_level 10) is a quest reward
+	// whose quest ("A Test Quest") states min_level 25 in loot.json's
+	// quests map - the Polar Leggings shape this lane's brief names.
+	if questFloors[1001] != 25 {
+		t.Errorf("questFloors[1001] = %d, want 25 (from loot.json's quests map)", questFloors[1001])
+	}
+	if questFloors[1002] != 0 {
+		t.Errorf("questFloors[1002] = %d, want 0 (not a quest reward)", questFloors[1002])
+	}
 }
 
 func TestLoadLootIndexMissingFile(t *testing.T) {
-	if _, err := loadLootIndex(t.TempDir()); err == nil {
+	if _, _, err := loadLootIndex(t.TempDir()); err == nil {
 		t.Fatal("loadLootIndex on an empty dir: want an error, got nil")
+	}
+}
+
+func TestApplyEffectiveRequiredLevelsRaisesAQuestRewardsGate(t *testing.T) {
+	idx, questFloors, err := loadLootIndex(buildDirFixture())
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	items := []candidate{
+		{ID: 1001, RequiredLevel: 10, ItemLevel: 20, EffectiveRequiredLevel: 10},
+		{ID: 1002, RequiredLevel: 15, ItemLevel: 25, EffectiveRequiredLevel: 15},
+	}
+	got := applyEffectiveRequiredLevels(items, idx, questFloors)
+	byID := map[int]candidate{}
+	for _, c := range got {
+		byID[c.ID] = c
+	}
+	// 1001's own required_level (10) is well under its quest's min_level
+	// (25): the quest floor wins, the same shape as this lane's Polar
+	// Leggings finding (item level 80, required_level 0, but level-60
+	// quest-gated in the client).
+	if byID[1001].EffectiveRequiredLevel != 25 {
+		t.Errorf("candidate 1001 EffectiveRequiredLevel = %d, want 25", byID[1001].EffectiveRequiredLevel)
+	}
+	// 1002 is a dungeon drop, not a quest reward: no floor, unchanged.
+	if byID[1002].EffectiveRequiredLevel != 15 {
+		t.Errorf("candidate 1002 EffectiveRequiredLevel = %d, want 15 (unchanged)", byID[1002].EffectiveRequiredLevel)
+	}
+	// applyEffectiveRequiredLevels must not mutate its input slice
+	// in place (immutability: this lane returns a new slice).
+	if items[0].EffectiveRequiredLevel != 10 {
+		t.Errorf("input slice was mutated: items[0].EffectiveRequiredLevel = %d, want unchanged 10", items[0].EffectiveRequiredLevel)
+	}
+}
+
+func TestApplyEffectiveRequiredLevelsFallsBackToItemLevelProxyForACraftedItem(t *testing.T) {
+	idx := lootIndex{2001: {{Kind: "crafted", Label: "Blacksmithing"}}}
+	items := []candidate{{ID: 2001, RequiredLevel: 0, ItemLevel: 44, EffectiveRequiredLevel: 0}}
+	got := applyEffectiveRequiredLevels(items, idx, map[int]int{})
+	// leveling.ItemLevelProxyRequiredLevel(44) = min(60, 39) = 39.
+	if got[0].EffectiveRequiredLevel != 39 {
+		t.Errorf("crafted candidate EffectiveRequiredLevel = %d, want 39 (item_level_proxy)", got[0].EffectiveRequiredLevel)
 	}
 }
 
