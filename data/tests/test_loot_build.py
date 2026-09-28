@@ -93,7 +93,7 @@ ENCHANT_EFFECT_IDS = 150
 SUFFIX_ROWS = 1168
 ITEMS_WITH_SUFFIXES = 1628
 ITEMS_FACTION_RESTRICTED = 870
-SIMBUFF_ENTRIES = 165
+SIMBUFF_ENTRIES = 157
 
 #: The stat keys `enchants.json` and `suffixes.json` emit, measured on the
 #: committed build. Both files use the planner's own stat vocabulary --

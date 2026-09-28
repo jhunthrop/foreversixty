@@ -244,10 +244,6 @@
       "name": "Faerie Fire",
       "icon": "spell_nature_faeriefire"
     },
-    "fengus_ferocity": {
-      "name": "Fengus' Ferocity",
-      "icon": "spell_nature_undyingstrength"
-    },
     "fire_resistance_aura": {
       "name": "Fire Resistance Aura",
       "icon": "spell_fire_sealoffire"
@@ -496,10 +492,6 @@
       "name": "Mighty Rage Potion",
       "icon": "temp"
     },
-    "moldars_moxie": {
-      "name": "Mol'dar's Moxie",
-      "icon": "spell_nature_massteleport"
-    },
     "moonkin_aura": {
       "name": "Moonkin Aura",
       "icon": "spell_nature_moonglow"
@@ -524,10 +516,6 @@
       "name": "Rage Potion",
       "icon": "temp"
     },
-    "rallying_cry_of_the_dragonslayer": {
-      "name": "Rallying Cry of the Dragonslayer",
-      "icon": "inv_misc_head_dragon_01"
-    },
     "retribution_aura": {
       "name": "Retribution Aura",
       "icon": "spell_holy_auraoflight"
@@ -539,10 +527,6 @@
     "sapper_goblin_sapper": {
       "name": "Goblin Sapper Charge",
       "icon": "spell_fire_selfdestruct"
-    },
-    "sayges_fortune": {
-      "name": "Sayge's Dark Fortune",
-      "icon": "inv_misc_orb_02"
     },
     "scorpid_sting": {
       "name": "Scorpid Sting",
@@ -587,18 +571,6 @@
     "sheen_of_zanza": {
       "name": "Sheen of Zanza",
       "icon": "inv_potion_29"
-    },
-    "slipkiks_savvy": {
-      "name": "Slip'kik's Savvy",
-      "icon": "spell_holy_lesserheal02"
-    },
-    "songflower_serenade": {
-      "name": "Songflower Serenade",
-      "icon": "spell_holy_mindvision"
-    },
-    "spirit_of_zandalar": {
-      "name": "Spirit of Zandalar",
-      "icon": "ability_creature_poison_05"
     },
     "spirit_of_zanza": {
       "name": "Spirit of Zanza",
@@ -647,10 +619,6 @@
     "trueshot_aura": {
       "name": "Trueshot Aura",
       "icon": "ability_trueshot"
-    },
-    "warchiefs_blessing": {
-      "name": "Warchief's Blessing",
-      "icon": "spell_arcane_teleportorgrimmar"
     },
     "winterfall_firewater": {
       "name": "Winterfall Firewater",
