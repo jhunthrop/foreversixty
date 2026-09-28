@@ -2,6 +2,7 @@
 <!-- The 17-slot grid, the summed stats, and the active set bonuses. Two columns of slots on
      phone, four from md up; every slot button clears 44px. -->
 <script lang="ts">
+  import { mount, unmount, type Component } from 'svelte';
   import { plannerCopy } from '../../lib/planner/copy';
   import { addonCopy } from '../../lib/addon/copy';
   import { scoreItem, specKeyFor, weightsFor, type WeightsFile } from '../../lib/addon/score';
@@ -34,6 +35,89 @@
   });
 
   let openSlot = $state<Slot | null>(null);
+
+  // The BiS hover popover (design step 1 of the bis-hover-web lane brief). Mouse and
+  // keyboard get it from hover/focus, exactly like TalentCell's own tooltip; a tap on touch
+  // focuses the button too (every mobile browser does this for a plain <button>), which
+  // shows the popover the same way, alongside the item picker the tap always opened.
+  //
+  // Loaded and mounted imperatively with svelte's own mount()/unmount() (already bundled --
+  // planner-island.ts's own boot calls mount(Planner, ...)), not a reactive `{#if}` around a
+  // `$state`-held component reference: a dynamically resolved component tag compiles to
+  // Svelte's generic dynamic-component runtime, which cost roughly as much as the popover
+  // itself saved by moving out of the boot chunk. mount()/unmount() sidesteps that runtime
+  // entirely -- see this lane's final report for the measured before/after.
+  let hoveredSlot = $state<Slot | null>(null);
+  const popoverHosts: Partial<Record<Slot, HTMLDivElement>> = {};
+  let PopoverComponent: Component<{ store: PlannerStore; slot: Slot; spec: string; id: string }> | null =
+    null;
+  let popoverModuleLoad: Promise<unknown> | null = null;
+  let mountedSlot: Slot | null = null;
+  let mountedInstance: object | null = null;
+
+  function unmountPopover(): void {
+    if (mountedInstance === null) return;
+    unmount(mountedInstance);
+    mountedInstance = null;
+    mountedSlot = null;
+  }
+
+  /**
+   * Mounts the popover into `slot`'s own host div, replacing whichever slot's instance was
+   * showing (only one is ever visible: hover and focus both move `hoveredSlot`, never add to
+   * it). `store` is passed by reference -- the popover's own $derived/$effect read its
+   * getters directly, the same reactivity every other reader of `store` gets, imperative
+   * mount or not -- but `spec` is a plain string snapshot at mount time; a talent edit made
+   * while a slot happens to still be hovered will not retarget an open popover, which the
+   * hover/hide lifecycle here makes a narrow enough window to accept.
+   */
+  function mountPopoverFor(slot: Slot): void {
+    if (mountedSlot === slot) return;
+    unmountPopover();
+    if (PopoverComponent === null) return;
+    const host = popoverHosts[slot];
+    if (host === undefined) return;
+    mountedInstance = mount(PopoverComponent, {
+      target: host,
+      props: { store, slot, spec: specKey, id: `bis-hover-${slot}` },
+    });
+    mountedSlot = slot;
+  }
+
+  function showPopover(slot: Slot): void {
+    hoveredSlot = slot;
+    if (PopoverComponent !== null) {
+      mountPopoverFor(slot);
+      return;
+    }
+    if (popoverModuleLoad !== null) return;
+    popoverModuleLoad = import('./BisSlotPopover.svelte').then((mod) => {
+      PopoverComponent = mod.default;
+      if (hoveredSlot !== null) mountPopoverFor(hoveredSlot);
+    });
+  }
+
+  function hidePopoverIfShown(slot: Slot): void {
+    if (hoveredSlot !== slot) return;
+    hoveredSlot = null;
+    unmountPopover();
+  }
+
+  // GearPanel itself can unmount with a popover still showing (navigating away from the
+  // planner); mount() instances live outside the normal component tree and need their own
+  // teardown.
+  $effect(() => () => unmountPopover());
+
+  /** Closes the popover only once focus has left the whole slot (button + popover), not
+   *  when it moves from the button onto the popover's own "See the full list" link --
+   *  `focusout` bubbles and carries `relatedTarget`, unlike `blur`, so that distinction is
+   *  checkable here. */
+  function onSlotFocusOut(event: FocusEvent, slot: Slot): void {
+    const related = event.relatedTarget as Node | null;
+    const container = event.currentTarget as HTMLElement;
+    if (related && container.contains(related)) return;
+    hidePopoverIfShown(slot);
+  }
 
   const totals = $derived(
     (Object.entries(store.statTotals) as [StatKey, number][]).sort(([a], [b]) =>
@@ -68,37 +152,48 @@
     {#each SLOTS as slot (slot)}
       {@const equippedId = store.gear[slot]}
       {@const item = equippedId === undefined ? undefined : store.itemIndex.get(equippedId)}
-      <button
-        type="button"
-        class="border-line rounded-control bg-card-top flex min-h-11 items-center gap-2 border px-2 py-1 text-left"
-        data-testid={`slot-${slot}`}
-        aria-label={item ? `${SLOT_LABELS[slot]}: ${item.name}` : `${SLOT_LABELS[slot]}: empty`}
-        disabled={store.readOnly}
-        onclick={() => (openSlot = openSlot === slot ? null : slot)}
+      <div
+        class="relative"
+        role="group"
+        bind:this={popoverHosts[slot]}
+        onmouseenter={() => showPopover(slot)}
+        onmouseleave={() => hidePopoverIfShown(slot)}
+        onfocusout={(event) => onSlotFocusOut(event, slot)}
       >
-        {#if item}
-          <!-- The aria-label above names the slot and the item, so the icon is decorative. -->
-          <img
-            src={dataUrl(store.treeVersion, `icons/${item.icon}.webp`)}
-            alt=""
-            width="28"
-            height="28"
-            loading="lazy"
-            decoding="async"
-            class="rounded-control border-line h-7 w-7 border object-cover"
-          />
-        {:else}
-          <span class="rounded-control border-line-soft h-7 w-7 border" aria-hidden="true"></span>
-        {/if}
-        <span class="flex min-w-0 flex-col">
-          <span class="label text-muted">{SLOT_LABELS[slot]}</span>
-          <span
-            class={`truncate text-[13px] font-semibold ${item ? rarityClassFor(item.quality) : 'text-muted'}`}
-          >
-            {wornItemLabel(item?.name, equippedId, outsideNames, plannerCopy)}
+        <button
+          type="button"
+          class="border-line rounded-control bg-card-top flex min-h-11 w-full items-center gap-2 border px-2 py-1 text-left"
+          data-testid={`slot-${slot}`}
+          aria-label={item ? `${SLOT_LABELS[slot]}: ${item.name}` : `${SLOT_LABELS[slot]}: empty`}
+          aria-describedby={hoveredSlot === slot ? `bis-hover-${slot}` : undefined}
+          disabled={store.readOnly}
+          onclick={() => (openSlot = openSlot === slot ? null : slot)}
+          onfocus={() => showPopover(slot)}
+        >
+          {#if item}
+            <!-- The aria-label above names the slot and the item, so the icon is decorative. -->
+            <img
+              src={dataUrl(store.treeVersion, `icons/${item.icon}.webp`)}
+              alt=""
+              width="28"
+              height="28"
+              loading="lazy"
+              decoding="async"
+              class="rounded-control border-line h-7 w-7 border object-cover"
+            />
+          {:else}
+            <span class="rounded-control border-line-soft h-7 w-7 border" aria-hidden="true"></span>
+          {/if}
+          <span class="flex min-w-0 flex-col">
+            <span class="label text-muted">{SLOT_LABELS[slot]}</span>
+            <span
+              class={`truncate text-[13px] font-semibold ${item ? rarityClassFor(item.quality) : 'text-muted'}`}
+            >
+              {wornItemLabel(item?.name, equippedId, outsideNames, plannerCopy)}
+            </span>
           </span>
-        </span>
-      </button>
+        </button>
+      </div>
     {/each}
   </div>
 
