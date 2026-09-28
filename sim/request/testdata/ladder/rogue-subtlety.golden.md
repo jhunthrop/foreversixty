@@ -89,12 +89,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:22377 off_hand:13371 | 6.7 | 3 | spell:1757=37.8, spell:6760/5=5.4, spell:5171/5=1.6 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:22377 off_hand:13371 | 8.1 | 3 | spell:1758=36.9, spell:6761/5=6.0, spell:5171/5=1.0 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
-| 30 | 00000000000000000-00000000000000000-5322210310011000000 | main_hand:22377 off_hand:13371 | 5.7 | 4 | spell:1760=29.7, spell:14278=8.9, spell:5171/5=4.7, spell:6762/5=2.3 | {SpellID: 16511} |
-| 38 | 00000000000000000-00000000000000000-5322210310013011040 | main_hand:22377 off_hand:13371 | 4.1 | 4 | spell:16511=37.0, spell:14278=8.9, spell:5171/5=5.4, spell:8623/5=3.2 | - |
-| 40 | 00000000000000000-00000000000000000-5322210310013011051 | main_hand:22377 off_hand:13371 | 7.0 | 4 | spell:16511=37.0, spell:14278=8.9, spell:5171/5=5.4, spell:8624/5=3.2 | - |
-| 50 | 00500000000000000-32000000000000000-5322210310013011051 | main_hand:22377 off_hand:13371 | 10.6 | 4 | spell:16511=37.0, spell:14278=8.9, spell:6774/5=5.4, spell:11299/5=3.2 | - |
+| 10 | 00000000000000000-00000000000000000-1000000000000000000 | main_hand:22377 off_hand:11863 | 39.3 | 3 | other:attack/2=138.5, other:attack/1=107.8, spell:1757=41.7, spell:6760/5=4.3, spell:5171/5=3.0 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 20 | 00000000000000000-00000000000000000-5321000000000000000 | main_hand:22377 off_hand:11863 | 40.6 | 3 | other:attack/2=138.3, other:attack/1=107.7, spell:1758=42.0, spell:6761/5=4.4, spell:5171/5=2.9 | {SpellID: 14183}, {SpellID: 14278}, {SpellID: 16511} |
+| 30 | 00000000000000000-00000000000000000-5322210310011000000 | main_hand:22377 off_hand:11863 | 44.0 | 4 | other:attack/2=140.8, other:attack/1=109.6, spell:1760=34.1, spell:14278=9.0, spell:5171/5=3.9 | {SpellID: 16511} |
+| 38 | 00000000000000000-00000000000000000-5322210310013011040 | main_hand:22377 off_hand:11863 | 55.4 | 4 | other:attack/2=142.7, other:attack/1=111.1, spell:16511=42.7, spell:14278=8.8, spell:5171/5=4.5 | - |
+| 40 | 00000000000000000-00000000000000000-5322210310013011051 | main_hand:22377 off_hand:11863 | 59.3 | 4 | other:attack/2=142.7, other:attack/1=111.1, spell:16511=42.7, spell:14278=8.8, spell:5171/5=4.5 | - |
+| 50 | 00500000000000000-32000000000000000-5322210310013011051 | main_hand:22377 off_hand:11863 | 72.3 | 4 | other:attack/2=149.3, other:attack/1=116.2, spell:16511=42.5, spell:14278=8.8, spell:6774/5=4.6 | - |
 | 60 | 00500000000000000-32513100000000000-5322210310013011051 | main_hand:23577 off_hand:18847 | 111.2 | 4 | other:attack/1=139.2, other:attack/2=72.2, spell:16511=41.2, spell:14278=8.7, spell:6774/5=4.5 | - |
 
 ## Learned but unused (informational)
@@ -175,10 +175,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ## Violations found in this run
 
 - rogue-subtlety level=20 kind=zero_casts spell="Ambush" id=8676 authored=11269
-- rogue-subtlety level=30 kind=dps_regression dps=5.7 prev_dps=8.1
 - rogue-subtlety level=30 kind=zero_casts id=14183 authored=14183 (untracked ability; not in spellranks.json's rank chains)
 - rogue-subtlety level=30 kind=zero_casts spell="Ambush" id=8724 authored=11269
-- rogue-subtlety level=38 kind=dps_regression dps=4.1 prev_dps=5.7
 - rogue-subtlety level=38 kind=zero_casts id=14183 authored=14183 (untracked ability; not in spellranks.json's rank chains)
 - rogue-subtlety level=38 kind=zero_casts spell="Ambush" id=8725 authored=11269
 - rogue-subtlety level=38 kind=zero_casts spell="Sinister Strike" id=8621 authored=11294

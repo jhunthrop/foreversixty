@@ -89,12 +89,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 10000000000000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:13371 | 6.7 | 3 | spell:1757=37.8, spell:6760/5=5.4, spell:5171/5=1.6 | {SpellID: 1310703}, {SpellID: 14177} |
-| 20 | 32500000100000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:13371 | 8.2 | 3 | spell:1758=36.9, spell:6761/5=6.0, spell:5171/5=1.0 | {SpellID: 1310703}, {SpellID: 14177} |
-| 30 | 32500000551000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:13371 | 10.2 | 4 | spell:1760=36.9, spell:6762/5=6.0, spell:14177=1.3, spell:5171/5=1.0 | {SpellID: 1310703} |
-| 38 | 32500000551501020-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:13371 | 13.4 | 4 | spell:8621=36.9, spell:8623/5=5.8, spell:14177=1.3, spell:5171/5=1.3 | {SpellID: 1310703} |
-| 40 | 32500000551501040-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:13371 | 19.6 | 4 | spell:8621=36.9, spell:8624/5=5.6, spell:5171/5=1.4, spell:14177=1.2 | {SpellID: 1310703} |
-| 50 | 32500000551501051-32300000000000000-0000000000000000000 | main_hand:22377 off_hand:13371 | 14.7 | 3 | spell:11293=42.1, spell:1310703/5=8.4, spell:14177=1.2 | - |
+| 10 | 10000000000000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:11863 | 39.3 | 3 | other:attack/2=138.5, other:attack/1=107.8, spell:1757=41.7, spell:6760/5=4.3, spell:5171/5=3.0 | {SpellID: 1310703}, {SpellID: 14177} |
+| 20 | 32500000100000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:11863 | 42.5 | 3 | other:attack/2=138.5, other:attack/1=107.8, spell:1758=41.7, spell:6761/5=4.3, spell:5171/5=3.0 | {SpellID: 1310703}, {SpellID: 14177} |
+| 30 | 32500000551000000-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:11863 | 45.9 | 4 | other:attack/2=138.5, other:attack/1=107.8, spell:1760=41.7, spell:6762/5=4.3, spell:5171/5=3.0 | {SpellID: 1310703} |
+| 38 | 32500000551501020-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:11863 | 50.5 | 4 | other:attack/2=138.5, other:attack/1=107.8, spell:8621=41.7, spell:8623/5=4.4, spell:5171/5=3.0 | {SpellID: 1310703} |
+| 40 | 32500000551501040-00000000000000000-0000000000000000000 | main_hand:22377 off_hand:11863 | 58.2 | 5 | other:attack/2=135.0, other:attack/1=105.1, spell:399956=19.0, spell:8621=11.6, spell:8624/5=7.5 | {SpellID: 1310703} |
+| 50 | 32500000551501051-32300000000000000-0000000000000000000 | main_hand:22377 off_hand:11863 | 55.0 | 4 | other:attack/2=130.0, other:attack/1=101.2, spell:11293=44.4, spell:1310703/5=8.3, spell:1241582=1.9 | - |
 | 60 | 32500000551501051-32520000000000000-5100000000000000000 | main_hand:23577 off_hand:18847 | 89.8 | 4 | other:attack/1=121.4, other:attack/2=63.0, spell:11294=43.2, spell:1310703/5=8.5, spell:1241584=1.9 | - |
 
 ## Learned but unused (informational)
@@ -172,6 +172,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- rogue-assassination level=40 kind=zero_casts spell="Mutilate" id=399956 authored=1241584
-- rogue-assassination level=50 kind=dps_regression dps=14.7 prev_dps=19.6
-- rogue-assassination level=50 kind=zero_casts spell="Mutilate" id=1241582 authored=1241584
+- rogue-assassination level=50 kind=dps_regression dps=55.0 prev_dps=58.2
