@@ -57,11 +57,21 @@ jobs:
       # N") if a future spec count regresses the budget.
       - name: rank leveling BiS for every written spec
         run: make bis
+      # The addon ships the picks (Data.lua's bis/bis_new tables, ids only),
+      # and data.yml's drift check compares the committed Data.lua with what
+      # the pipeline renders -- so the same commit that adds bis/*.json must
+      # carry the regenerated Data.lua and addon-data.json.
+      - uses: astral-sh/setup-uv@v3
+      - name: regenerate the addon data with the new picks
+        working-directory: data
+        run: |
+          uv sync
+          uv run python -m pipeline addon-data --build "${{ steps.identity.outputs.build }}"
       - name: commit data/builds/*/bis if it changed
         run: |
           git config user.name "forever-bis-bot"
           git config user.email "bot@foreversixty.gg"
-          git add "data/builds/${{ steps.identity.outputs.build }}/bis"
+          git add "data/builds/${{ steps.identity.outputs.build }}/bis" "data/builds/${{ steps.identity.outputs.build }}/addon-data.json" addon/ForeverSixty/Data.lua
           if ! git commit -m "chore(bis): nightly leveling BiS for ${{ steps.identity.outputs.build }} @ ${{ steps.identity.outputs.sha }}"; then
             echo "nothing to commit"; exit 0
           fi
