@@ -32,6 +32,7 @@ import (
 	"runtime/pprof"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/jhunthrop/foreversixty/sim/leveling"
@@ -194,6 +195,14 @@ func runSpecSubprocess(execPath string, timeout time.Duration, repoRoot, build, 
 	cmd := exec.CommandContext(ctx, execPath, args...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	// The spec runs in its own process group so a timeout kills every
+	// descendant, not just the direct child: a grandchild left holding
+	// stdout kept CI's test binary waiting a full minute ("Test I/O
+	// incomplete 1m0s after exiting"). WaitDelay bounds that wait for
+	// anything the group kill still misses.
+	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	cmd.Cancel = func() error { return syscall.Kill(-cmd.Process.Pid, syscall.SIGKILL) }
+	cmd.WaitDelay = 5 * time.Second
 	err := cmd.Run()
 	if ctx.Err() == context.DeadlineExceeded {
 		return fmt.Errorf("spec %s did not finish within %s (killed) - the incident this lane's report documents; this is the safety net, not the fix", spec, timeout)
