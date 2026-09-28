@@ -90,12 +90,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:22377 off_hand:10686 | 20.3 | 5 | other:attack/1=62.4, spell:3606=61.7, spell:529=28.4, spell:3599=5.6, spell:20572=2.0 | - |
-| 20 | 4520000000000000-000000000000000000-0000000000000000 | main_hand:22377 off_hand:10686 | 27.9 | 6 | other:attack/1=66.2, spell:6350=65.7, spell:915=15.5, spell:6363=5.2, spell:8052=3.5 | - |
-| 30 | 4532310300000000-000000000000000000-0000000000000000 | main_hand:22377 off_hand:10686 | 36.6 | 6 | other:attack/1=68.8, spell:6351=64.2, spell:943=16.0, spell:6364=4.5, spell:8053=2.0 | - |
-| 38 | 4532310300103031-000000000000000000-0000000000000000 | main_hand:22377 off_hand:10686 | 46.8 | 6 | other:attack/1=89.7, spell:6351=67.3, spell:8053=10.3, spell:10391=6.0, spell:6364=4.6 | - |
-| 40 | 4532310300103031-000000000000000000-2000000000000000 | main_hand:22377 off_hand:10686 | 48.4 | 6 | other:attack/1=74.6, spell:6352=60.2, spell:10391=13.7, spell:6365=3.7, spell:10447=2.0 | - |
-| 50 | 4532310300103031-000000000000000000-5520000000000000 | main_hand:22377 off_hand:10686 | 61.2 | 6 | other:attack/1=82.3, spell:10435=65.7, spell:15207=9.6, spell:10447=4.9, spell:10437=3.7 | - |
+| 10 | 1000000000000000-000000000000000000-0000000000000000 | main_hand:15443 off_hand:5357 | 10.8 | 6 | other:attack/1=77.5, spell:3606=64.3, spell:529=29.2, spell:3599=5.9, spell:20572=2.0 | - |
+| 20 | 4520000000000000-000000000000000000-0000000000000000 | main_hand:17046 off_hand:6223 | 21.6 | 6 | spell:6350=65.7, other:attack/1=57.7, spell:915=15.5, spell:6363=5.2, spell:8052=3.5 | - |
+| 30 | 4532310300000000-000000000000000000-0000000000000000 | main_hand:9520 off_hand:4129 | 30.5 | 6 | other:attack/1=68.8, spell:6351=64.2, spell:943=16.0, spell:6364=4.5, spell:8053=2.0 | - |
+| 38 | 4532310300103031-000000000000000000-0000000000000000 | main_hand:10703 off_hand:4652 | 41.4 | 6 | other:attack/1=85.2, spell:6351=66.2, spell:8053=10.4, spell:10391=6.0, spell:6364=4.6 | - |
+| 40 | 4532310300103031-000000000000000000-2000000000000000 | main_hand:10750 off_hand:10686 | 45.2 | 6 | other:attack/1=82.3, spell:6352=60.2, spell:10391=13.7, spell:6365=3.7, spell:10447=2.0 | - |
+| 50 | 4532310300103031-000000000000000000-5520000000000000 | main_hand:10697 off_hand:10686 | 59.6 | 6 | other:attack/1=100.2, spell:10435=68.4, spell:15207=9.8, spell:10447=4.5, spell:10437=3.8 | - |
 | 60 | 4532310300103031-000000000000000000-5533220000000000 | main_hand:21126 off_hand:21610 | 84.6 | 6 | other:attack/1=73.9, spell:10436=68.8, spell:15208=13.4, spell:10438=3.6, spell:29228=2.0 | - |
 
 ## Learned but unused (informational)
@@ -103,7 +103,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 10
 
-- Earth Shock (spell 8044)
 - Flametongue Attack (spell 10444)
 - Stormstrike (spell 410156)
 
