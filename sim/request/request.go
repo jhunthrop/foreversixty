@@ -256,15 +256,33 @@ func checkSpecClass(spec, class string) error {
 	return nil
 }
 
-// professionsFor maps the character's professions onto the engine's two
-// slots. The engine carries exactly two, so a third is an error rather
-// than a silently dropped profession.
+// secondaryProfessions are the client's secondary skills as the addon
+// slugs them (Export.slugify of GetProfessionInfo's name): every
+// character can hold all of them beside two primaries, and the engine
+// models nothing for any of them. They are skipped, not refused -- an
+// export listing leatherworking, enchanting and cooking is a character
+// with two professions, not three.
+var secondaryProfessions = map[string]bool{
+	"cooking":   true,
+	"fishing":   true,
+	"first-aid": true,
+}
+
+// professionsFor maps the character's primary professions onto the
+// engine's two slots. The engine carries exactly two, so a third primary
+// is an error rather than a silently dropped profession.
 func professionsFor(slugs []string) (proto.Profession, proto.Profession, error) {
-	if len(slugs) > 2 {
-		return 0, 0, fmt.Errorf("%w, got %d: %v", ErrTooManyProfession, len(slugs), slugs)
+	primaries := make([]string, 0, len(slugs))
+	for _, slug := range slugs {
+		if !secondaryProfessions[slug] {
+			primaries = append(primaries, slug)
+		}
+	}
+	if len(primaries) > 2 {
+		return 0, 0, fmt.Errorf("%w, got %d: %v", ErrTooManyProfession, len(primaries), primaries)
 	}
 	var out [2]proto.Profession
-	for i, slug := range slugs {
+	for i, slug := range primaries {
 		p, ok := ParseProfession(slug)
 		if !ok {
 			return 0, 0, fmt.Errorf("%w: %q", ErrUnknownProfession, slug)

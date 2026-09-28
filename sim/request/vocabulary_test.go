@@ -136,8 +136,13 @@ func TestTheVocabularyAndTheResolverAgree(t *testing.T) {
 	if _, err := buffsFor([]string{"blessing_of_vulpera"}); !errors.Is(err, ErrUnknownBuff) {
 		t.Errorf("an unlisted buff id resolved: %v", err)
 	}
-	if _, _, err := professionsFor([]string{"cooking"}); !errors.Is(err, ErrUnknownProfession) {
+	if _, _, err := professionsFor([]string{"jewelcrafting"}); !errors.Is(err, ErrUnknownProfession) {
 		t.Errorf("an unlisted profession slug resolved: %v", err)
+	}
+	// The client's secondary skills are the one exception: unlisted, skipped, never
+	// an error (TestSecondaryProfessionsAreSkippedNotCounted).
+	if p1, p2, err := professionsFor([]string{"cooking"}); err != nil || p1 != 0 || p2 != 0 {
+		t.Errorf("cooking = %v, %v, %v; want skipped", p1, p2, err)
 	}
 }
 

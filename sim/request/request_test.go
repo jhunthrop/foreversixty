@@ -244,7 +244,7 @@ func TestProfessionsReachThePlayer(t *testing.T) {
 		list []string
 		want error
 	}{
-		{"a profession the engine has no enum for", []string{"cooking"}, ErrUnknownProfession},
+		{"a profession the engine has no enum for", []string{"jewelcrafting"}, ErrUnknownProfession},
 		{"a typo", []string{"Engineering"}, ErrUnknownProfession},
 		{"three of them", []string{"mining", "tailoring", "alchemy"}, ErrTooManyProfession},
 		{"one of them twice", []string{"mining", "mining"}, ErrDuplicateProfess},
@@ -256,6 +256,34 @@ func TestProfessionsReachThePlayer(t *testing.T) {
 				t.Errorf("Build returned %v, want %v", err, tc.want)
 			}
 		})
+	}
+}
+
+// The addon lists every skill GetProfessions returns, secondaries
+// included, so a real export reads leatherworking, enchanting, cooking.
+// That is a character with two professions; refusing it as three kept a
+// live export (2026-09-28) from ever reaching the engine.
+func TestSecondaryProfessionsAreSkippedNotCounted(t *testing.T) {
+	req := fury()
+	req.Character.Profession = []string{"leatherworking", "enchanting", "cooking", "first-aid", "fishing"}
+	got, err := Build(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := got.Raid.Parties[0].Players[0]
+	if p.Profession1 != proto.Profession_Leatherworking || p.Profession2 != proto.Profession_Enchanting {
+		t.Errorf("professions = %v, %v; want Leatherworking, Enchanting", p.Profession1, p.Profession2)
+	}
+
+	only := fury()
+	only.Character.Profession = []string{"cooking"}
+	got, err = Build(only)
+	if err != nil {
+		t.Fatal(err)
+	}
+	p = got.Raid.Parties[0].Players[0]
+	if p.Profession1 != proto.Profession_ProfessionUnknown || p.Profession2 != proto.Profession_ProfessionUnknown {
+		t.Errorf("cooking alone filled a slot: %v, %v", p.Profession1, p.Profession2)
 	}
 }
 
