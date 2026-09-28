@@ -160,9 +160,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- priest-shadow level=10 kind=zero_casts id=14751 authored=14751 (untracked ability; not in spellranks.json's rank chains)
-- priest-shadow level=38 kind=zero_casts spell="Shadow Word: Death" id=1309595 authored=1309636
-- priest-shadow level=40 kind=zero_casts spell="Shadow Word: Death" id=1309633 authored=1309636
-- priest-shadow level=50 kind=zero_casts spell="Shadow Word: Death" id=1309635 authored=1309636
-- priest-shadow level=60 kind=zero_casts spell="Devouring Plague" id=19280 authored=19279
-- priest-shadow level=60 kind=zero_casts spell="Shadow Word: Death" id=1309636 authored=1309636
+None.

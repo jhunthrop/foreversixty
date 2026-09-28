@@ -152,4 +152,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- paladin-retribution level=60 kind=zero_casts spell="Seal of Command" id=20920 authored=20375
+None.

@@ -169,6 +169,7 @@ var smokeBuildWarnings = map[string]map[string]string{
 	"warlock-demonology": {"{OtherID: 13}": noPotionWarning},
 	"warlock-destruction": {
 		"{SpellID: 1293813}": "Incinerate is a talent (sim/warlock/incinerate.go, Forever's tree); this build takes none.",
+		"{SpellID: 412758}":  "Shadow Bolt's spellIsKnown(412758) gate (rotation-accuracy program, 2026-09-28) checks Incinerate's rank-1 id directly; this build takes no Incinerate talent, so the id it checks is as unregistered as 1293813 above.",
 		"{OtherID: 13}":      noPotionWarning,
 		"{SpellID: 18871}":   "Shadowburn is gated on its talent (sim/warlock/shadowburn.go); this build takes none.",
 		"{SpellID: 18932}":   "Conflagrate is gated on its talent (sim/warlock/conflagrate.go); this build takes none.",

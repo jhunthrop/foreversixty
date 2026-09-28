@@ -1,38 +1,89 @@
 {
   "spec": "mage-arcane",
   "state": "written",
-  "notes": "Vanilla wowsims does not model an Arcane-specific preset (the fork's mage/apls/p1.apl.json is Fire, ui/mage/apls/forever_frost.apl.json is Frost), so this was built from Forever's own Arcane talent tree plus a community guide, not a direct port. Fix round 1: two of this guide's own lines are presently inert in this engine build and are kept anyway per the fix-round-1 controller ruling, so the file states the intended design and upgrades itself once the engine catches up -- (1) Arcane Blast (400574): sim/mage/talents.go says outright the package does not register this spell yet; (2) the Missile Barrage gate on Arcane Missiles (400589): no aura is ever created under that id, because this package's Arcane Missiles channel is not re-costed/re-timed for the proc (also noted in sim/mage/talents.go). Both lines cast nothing today -- `notes` on each says so -- and an unconditional Arcane Missiles cast is added at the bottom of the priority list as the engine-castable Era filler that keeps this rotation actually dealing damage in the meantime; Era Arcane (before Arcane Blast existed) was itself an Arcane Missiles-spam rotation, so this is not a downgrade in spirit, only in ceiling. Arcane Missiles' own top rank (25345, rank 8) is also excluded by an off-by-one in the engine's registration loop (sim/mage/arcane_missiles.go: `for rank := 1; rank < ArcaneMissilesRanks; rank++`, so rank 8 never registers); every Arcane Missiles reference here uses 10212 (rank 7), the highest rank the engine actually registers, with the missing rank 8 recorded as an engine follow-up. Arcane Power and Presence of Mind are both confirmed castable and are kept on cooldown, off the GCD-costing category, ahead of a specific nuke. Every rank named here (other than the two flagged inert conditions) is checked against the spellconst of the newest client build in builds/.",
-  "inert": [],
+  "notes": "Vanilla wowsims does not model an Arcane-specific preset (the fork's mage/apls/p1.apl.json is Fire, ui/mage/apls/forever_frost.apl.json is Frost), so this was built from Forever's own Arcane talent tree plus a community guide, not a direct port. Fix round 1: two of this guide's own lines are presently inert in this engine build and are kept anyway per the fix-round-1 controller ruling, so the file states the intended design and upgrades itself once the engine catches up -- (1) Arcane Blast (400574): sim/mage/talents.go says outright the package does not register this spell yet; (2) the Missile Barrage gate on Arcane Missiles (400589): no aura is ever created under that id, because this package's Arcane Missiles channel is not re-costed/re-timed for the proc (also noted in sim/mage/talents.go). Both lines cast nothing today -- `notes` on each says so -- and an unconditional Arcane Missiles cast is added at the bottom of the priority list as the engine-castable Era filler that keeps this rotation actually dealing damage in the meantime; Era Arcane (before Arcane Blast existed) was itself an Arcane Missiles-spam rotation, so this is not a downgrade in spirit, only in ceiling. Arcane Missiles' own top rank (25345, rank 8) is also excluded by an off-by-one in the engine's registration loop (sim/mage/arcane_missiles.go: `for rank := 1; rank < ArcaneMissilesRanks; rank++`, so rank 8 never registers); every Arcane Missiles reference here uses 10212 (rank 7), the highest rank the engine actually registers, with the missing rank 8 recorded as an engine follow-up. Arcane Power and Presence of Mind are both confirmed castable and are kept on cooldown, off the GCD-costing category, ahead of a specific nuke. Every rank named here (other than the two flagged inert conditions) is checked against the spellconst of the newest client build in builds/. Rotation-accuracy program diagnosis (2026-09-28), inert 1239696 and 400589: Arcane Blast (sim/mage/arcane_blast.go) and Missile Barrage (sim/mage/missile_barrage.go) are both fully implemented now -- the two per-line notes below already say so -- but every rank of Arcane Blast beyond rank 1 (1239696/1239697/1239699/1239700) and every one of Missile Barrage's proc ids (400588/400589/401736/467409) are absent from talents/mage.json's own ranks[].spell_id table, which only names rank 1 (400574) as 'the id this talent point grants'. The ladder harness's talent-zero-points exemption (talentSpellIDs) therefore only recognizes 400574 as talent-gated, not the ids above it in the same chain or the proc aura id, even though registerArcaneBlastSpell gates EVERY rank on the same single Talents.ArcaneBlast bool. At level 30 exactly (the first level Arcane Blast rank 2's own RequiredLevel(30) would let it register) the ladder's own truncated talent walk has not yet reached that node, so the engine correctly does not resolve 1239696 -- and by level 38 it has (the golden's own level-38 cast set shows spell:1239696=41.2, the dominant cast), so this is not a persistent engine bug, just a harness talent-chain-tracking gap that happens to land exactly on level 30's rung. Missile Barrage (400589) shows the identical shape at levels 10 and 20, clear by level 30. Fix round: 1239696 is not declared inert here after all -- the pinned engine resolves it fine once both the level and the talent are met (confirmed by the level-38+ rungs of the ladder, and inert would have wrongly told the level-60 zero-talent smoke test to expect it unresolved, which it is not, since spellranks.json alone -- ignoring the talent -- already treats a level-60 character as having every rank). Fixed instead in sim/request/ladder.go: expandTalentSpellIDs widens the harness's zero-points exemption from talents.json's single named id per node (400574 only) to every id spellranks.json's own 'Arcane Blast' rank grouping shares with it, so rank 2 (1239696) is recognized as gated by the same talent rank 1 is. 400589 (Missile Barrage) stays declared inert: it is a bare aura id with no ranked chain at all (spellranks.json's four rows are all rank 0), so there is no ability-name grouping for expandTalentSpellIDs to walk, and it is never referenced by a level-60 zero-talent smoke run either way (the smoke build's own Missile Barrage condition is untalented and silent, not warned).",
+  "inert": [
+    400589
+  ],
   "sources": [
-    { "label": "wowsims-forever mage default priority list (Fire-leaning, no Arcane preset exists)", "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/mage/apls/p1.apl.json", "kind": "community" },
-    { "label": "Wowhead Classic: Arcane Mage DPS Rotation, Cooldowns, and Abilities", "url": "https://www.wowhead.com/classic/guide/mage-arcane-dps-rotation-cooldowns-abilities", "kind": "community" }
+    {
+      "label": "wowsims-forever mage default priority list (Fire-leaning, no Arcane preset exists)",
+      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/mage/apls/p1.apl.json",
+      "kind": "community"
+    },
+    {
+      "label": "Wowhead Classic: Arcane Mage DPS Rotation, Cooldowns, and Abilities",
+      "url": "https://www.wowhead.com/classic/guide/mage-arcane-dps-rotation-cooldowns-abilities",
+      "kind": "community"
+    }
   ],
   "rotation": {
     "type": "TypeAPL",
     "priorityList": [
-      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "action": {
+          "autocastOtherCooldowns": {}
+        }
+      },
       {
         "notes": "Arcane Power on cooldown: a flat 30 percent damage cooldown with no cast time of its own.",
-        "action": { "castSpell": { "spellId": { "spellId": 12042 } } }
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 12042
+            }
+          }
+        }
       },
       {
         "notes": "Presence of Mind on cooldown: free (no GCD) and makes the next cast instant.",
-        "action": { "castSpell": { "spellId": { "spellId": 12043 } } }
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 12043
+            }
+          }
+        }
       },
       {
         "notes": "Missile Barrage (400589) is the talent proc the engine registers since 2026-09-28; the empowered Missiles fire under it, where the Arcane guide places the payoff.",
         "action": {
-          "condition": { "auraIsActive": { "auraId": { "spellId": 400589 } } },
-          "castSpell": { "spellId": { "spellId": 25345, "rank": 8 } }
+          "condition": {
+            "auraIsActive": {
+              "auraId": {
+                "spellId": 400589
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 25345,
+              "rank": 8
+            }
+          }
         }
       },
       {
-        "notes": "Arcane Blast is the client rank chain 1239696..1239700 (levels 40..60); this file names the top rank and the level rewrite picks the learned one. The engine registers the chain since the accuracy program (engine-caster lane).",
-        "action": { "castSpell": { "spellId": { "spellId": 1239700, "rank": 5 } } }
+        "notes": "Arcane Blast is the client rank chain 400574..1239700 (levels 20/30/40/50/60 per spellranks.json); this file names the top rank and the level rewrite picks the learned one. The engine registers the chain since the accuracy program (engine-caster lane). Rotation-accuracy program correction (2026-09-28): this note previously said the 1239696..1239700 portion covers levels 40..60 -- spellranks.json actually puts rank 2 (1239696) at level 30, not 40; see the top-level notes' inert entry for the level-30 harness gap this produces.",
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 1239700,
+              "rank": 5
+            }
+          }
+        }
       },
       {
         "notes": "Arcane Missiles is the engine-castable Era filler that keeps this rotation dealing damage when the build has not taken Arcane Blast and Missile Barrage (both live in the engine since 2026-09-28) -- the pre-Arcane-Blast Era Arcane rotation was itself Missiles spam. Uses the top rank (25345, rank 8); the engine's rank loop registers all eight since 2026-09-28.",
-        "action": { "castSpell": { "spellId": { "spellId": 25345, "rank": 8 } } }
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 25345,
+              "rank": 8
+            }
+          }
+        }
       }
     ]
   }
