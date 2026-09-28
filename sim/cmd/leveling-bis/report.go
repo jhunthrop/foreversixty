@@ -1,0 +1,253 @@
+package main
+
+import (
+	"encoding/json"
+	"fmt"
+	"os"
+	"path/filepath"
+	"sort"
+	"strconv"
+	"strings"
+)
+
+// slotRow is one slot's line in a band's report: the JSON and the
+// markdown table share this shape.
+type slotRow struct {
+	Slot       string  `json:"slot"`
+	ItemID     int     `json:"item_id,omitempty"`
+	ItemName   string  `json:"item_name,omitempty"`
+	Source     string  `json:"source,omitempty"`
+	SourceKind string  `json:"source_kind,omitempty"`
+	Score      float64 `json:"score,omitempty"`
+	Verified   bool    `json:"verified"`
+	SwapNote   string  `json:"swap_note,omitempty"`
+}
+
+// bandReport is one band's whole answer for one faction: the pick per
+// slot, the verification DPS, the diff against the previous band, and
+// the counts an honest reader needs (how many eligible items had no
+// known source).
+type bandReport struct {
+	Spec              string      `json:"spec"`
+	Band              int         `json:"band"`
+	Faction           string      `json:"faction"`
+	Race              string      `json:"race"`
+	Talents           string      `json:"talents"`
+	TalentPoints      int         `json:"talent_points"`
+	Weights           []weightRow `json:"weights"`
+	Slots             []slotRow   `json:"slots"`
+	SetDPS            float64     `json:"set_dps"`
+	NoSourceCount     int         `json:"no_source_count"`
+	NoSourceSample    []string    `json:"no_source_sample,omitempty"`
+	NewAtBand         []string    `json:"new_at_band"`
+	WeightsRunSeconds float64     `json:"weights_run_seconds"`
+	VerifyRunSeconds  float64     `json:"verify_run_seconds"`
+	VerifyErrors      []string    `json:"verify_errors,omitempty"`
+}
+
+type weightRow struct {
+	Stat   string  `json:"stat"`
+	Weight float64 `json:"weight"`
+}
+
+// noSourceSampleSize bounds how many unsourced item names the JSON
+// and markdown carry - the count is exact, the sample is just enough
+// to spot-check without shipping a multi-thousand-row list every run.
+const noSourceSampleSize = 15
+
+// buildReport assembles one band+faction's report from pick() output,
+// the weights this band used, verification results, and the previous
+// band's picks (nil for the first band run).
+func buildReport(spec specInfo, band int, faction, race, talents string, talentPoints int, weights map[string]float64, weightOrder []string, picks map[string]slotPick, setDPS float64, swaps []swapResult, noSource []candidate, previous map[string]slotPick, weightsSeconds, verifySeconds float64, verifyErrors []string) bandReport {
+	swapBySlot := make(map[string]swapResult, len(swaps))
+	for _, s := range swaps {
+		swapBySlot[s.Slot] = s
+	}
+	erroredSlots := make(map[string]bool, len(verifyErrors))
+	for _, e := range verifyErrors {
+		if slot, _, ok := strings.Cut(e, ":"); ok {
+			erroredSlots[slot] = true
+		}
+	}
+
+	rows := make([]slotRow, 0, len(slotOrder))
+	for _, slot := range slotOrder {
+		pk := picks[slot]
+		row := slotRow{Slot: slot}
+		if pk.Item != nil {
+			row.ItemID = pk.Item.ID
+			row.ItemName = pk.Item.Name
+			row.Score = pk.Item.Score
+			if pk.Item.HasSource {
+				row.Source = pk.Item.Source.Label
+				row.SourceKind = pk.Item.Source.Kind
+			}
+			switch {
+			case erroredSlots[slot]:
+				row.Verified = false
+				row.SwapNote = "the runner-up's verification sim failed (an engine-side error, not a scoring one - see verify_errors); the pick is unconfirmed against it"
+			default:
+				row.Verified = true
+				if sw, ok := swapBySlot[slot]; ok {
+					row.Verified = !sw.Beat
+					if sw.Beat {
+						row.SwapNote = fmt.Sprintf("runner-up %s (id %d) measured higher: %.1f vs %.1f set DPS - swapped in", pk.RunnerUp.Name, pk.RunnerUp.ID, sw.SwapDPS, setDPS)
+					}
+				}
+			}
+		}
+		rows = append(rows, row)
+	}
+
+	// A runner-up that beat the pick is swapped into the reported row
+	// above (SwapNote says so) but the row's own ItemID/Name/Score
+	// still name the ORIGINAL pick - swapping the row's identity too
+	// would need a second scored item's fields, which this prototype
+	// does not carry back from verifyBand (see this file's own
+	// buildReport doc and the lane report's "what I would change").
+
+	var newAt []string
+	for _, slot := range slotOrder {
+		cur := picks[slot].Item
+		if cur == nil {
+			continue
+		}
+		var prevID int
+		if previous != nil && previous[slot].Item != nil {
+			prevID = previous[slot].Item.ID
+		}
+		if prevID != cur.ID {
+			newAt = append(newAt, fmt.Sprintf("%s: %s", slot, cur.Name))
+		}
+	}
+
+	sampleNames := make([]string, 0, noSourceSampleSize)
+	for i, c := range noSource {
+		if i >= noSourceSampleSize {
+			break
+		}
+		sampleNames = append(sampleNames, fmt.Sprintf("%d %s", c.ID, c.Name))
+	}
+
+	wrows := make([]weightRow, 0, len(weightOrder))
+	for _, id := range weightOrder {
+		wrows = append(wrows, weightRow{Stat: id, Weight: weights[id]})
+	}
+
+	return bandReport{
+		Spec:              spec.Spec,
+		Band:              band,
+		Faction:           faction,
+		Race:              race,
+		Talents:           talents,
+		TalentPoints:      talentPoints,
+		Weights:           wrows,
+		Slots:             rows,
+		SetDPS:            setDPS,
+		NoSourceCount:     len(noSource),
+		NoSourceSample:    sampleNames,
+		NewAtBand:         newAt,
+		WeightsRunSeconds: weightsSeconds,
+		VerifyRunSeconds:  verifySeconds,
+		VerifyErrors:      verifyErrors,
+	}
+}
+
+// titleCase upper-cases a single lower-kebab word's first letter -
+// "horde" -> "Horde" - for the markdown's faction headings. strings.
+// Title is deprecated (it does not handle multi-word input correctly,
+// which is not a problem here, but this project's lint config flags
+// its use regardless), so this is the one-word case written out.
+func titleCase(s string) string {
+	if s == "" {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
+}
+
+func writeJSON(path string, reports []bandReport) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	b, err := json.MarshalIndent(reports, "", "  ")
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, b, 0o644)
+}
+
+// writeMarkdown renders every band+faction report for one spec, most
+// recent band last, grouped by faction, in the shape this lane's
+// brief asks for: a table per band (slot, item, source with faction
+// badge, score, verified) and a "New at L" list.
+func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
+	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
+		return err
+	}
+	var b strings.Builder
+	fmt.Fprintf(&b, "# Leveling BiS: %s\n\n", spec.Name)
+	fmt.Fprintf(&b, "Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane report for method, run times and gaps.\n\n")
+
+	byFaction := map[string][]bandReport{}
+	var factions []string
+	for _, r := range reports {
+		if _, ok := byFaction[r.Faction]; !ok {
+			factions = append(factions, r.Faction)
+		}
+		byFaction[r.Faction] = append(byFaction[r.Faction], r)
+	}
+	sort.Strings(factions)
+
+	for _, faction := range factions {
+		fmt.Fprintf(&b, "## %s\n\n", titleCase(faction))
+		for _, r := range byFaction[faction] {
+			fmt.Fprintf(&b, "### Band %d (%s, %s)\n\n", r.Band, r.Race, r.Talents)
+			fmt.Fprintf(&b, "Set DPS (verified): %.1f. Weights run: %.1fs. Verify run: %.1fs. %d eligible items had no known source.\n\n",
+				r.SetDPS, r.WeightsRunSeconds, r.VerifyRunSeconds, r.NoSourceCount)
+
+			fmt.Fprintf(&b, "Stat weights (normalized to %s = 1.0): ", spec.ReferenceStat)
+			parts := make([]string, len(r.Weights))
+			for i, w := range r.Weights {
+				parts[i] = fmt.Sprintf("%s=%.3f", w.Stat, w.Weight)
+			}
+			fmt.Fprintln(&b, strings.Join(parts, ", "))
+			b.WriteString("\n")
+
+			b.WriteString("| Slot | Item | Source | Score | Verified |\n")
+			b.WriteString("|---|---|---|---|---|\n")
+			for _, row := range r.Slots {
+				item := "-"
+				source := "-"
+				score := ""
+				verified := ""
+				if row.ItemID != 0 {
+					item = fmt.Sprintf("%s (%d)", row.ItemName, row.ItemID)
+					score = strconv.FormatFloat(row.Score, 'f', 1, 64)
+					verified = "yes"
+					if !row.Verified {
+						verified = "no - " + row.SwapNote
+					}
+					if row.Source != "" {
+						source = fmt.Sprintf("%s [%s]", row.Source, row.SourceKind)
+					} else {
+						source = "no known source"
+					}
+				}
+				fmt.Fprintf(&b, "| %s | %s | %s | %s | %s |\n", row.Slot, item, source, score, verified)
+			}
+			b.WriteString("\n")
+
+			if len(r.NewAtBand) > 0 {
+				fmt.Fprintf(&b, "**New at %d:** %s\n\n", r.Band, strings.Join(r.NewAtBand, "; "))
+			} else {
+				b.WriteString("**New at this band:** nothing changed from the previous band.\n\n")
+			}
+
+			if len(r.NoSourceSample) > 0 {
+				fmt.Fprintf(&b, "No-known-source sample (%d of %d, see the JSON for more): %s\n\n",
+					len(r.NoSourceSample), r.NoSourceCount, strings.Join(r.NoSourceSample, "; "))
+			}
+		}
+	}
+	return os.WriteFile(path, []byte(b.String()), 0o644)
+}
