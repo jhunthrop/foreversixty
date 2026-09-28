@@ -151,6 +151,49 @@ test('approving an unverified character calls the approve endpoint and removes t
   await expect(page.getByTestId('guild-roster-unverified')).toHaveCount(0);
 });
 
+// UX review defect 3 (2026-09-28): unverified rows were buried wherever the API happened to
+// return them. The roster now sorts unverified-first (stable otherwise, via orderRoster),
+// and an officer sees a summary line above the list.
+test('the roster sorts unverified rows first and shows a waiting-for-approval summary to an officer', async ({
+  page,
+}) => {
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME)));
+  await page.route('**/v1/guilds/501/home', (route) =>
+    route.fulfill(
+      envelope({
+        ...HOME,
+        // API order here is verified-first, on purpose: the assertion below only holds if
+        // the page itself reorders, rather than happening to already match API order.
+        roster: [
+          { ...HOME.roster[0], character_key: 'us/hardcore/simfury', name: 'Simfury', verified: true },
+          { ...HOME.roster[1], character_key: 'us/hardcore/newbie', name: 'Newbie', verified: false },
+          { ...HOME.roster[1], character_key: 'us/hardcore/second', name: 'Secondbie', verified: false },
+        ],
+      }),
+    ),
+  );
+  await page.goto('/guild/us/hardcore/the-last-watch');
+  const rows = page.getByTestId('guild-home-roster').getByRole('listitem');
+  await expect(rows).toHaveCount(3);
+  await expect(rows.nth(0)).toContainText('Newbie');
+  await expect(rows.nth(1)).toContainText('Secondbie');
+  await expect(rows.nth(2)).toContainText('Simfury');
+  await expect(page.getByTestId('guild-roster-waiting')).toHaveText('2 waiting for approval');
+});
+
+test('the waiting-for-approval summary is absent for a plain member and when nobody is waiting', async ({
+  page,
+}) => {
+  const ME_MEMBER = { ...ME, guilds: [{ ...ME.guilds[0], rank: 'member', verified: true }] };
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) => route.fulfill(envelope(GUILD_PAGE)));
+  await page.route('**/v1/me', (route) => route.fulfill(envelope(ME_MEMBER)));
+  await page.route('**/v1/guilds/501/home', (route) => route.fulfill(envelope(HOME)));
+  await page.goto('/guild/us/hardcore/the-last-watch');
+  await expect(page.getByTestId('guild-home-roster')).toContainText('Newbie');
+  await expect(page.getByTestId('guild-roster-waiting')).toHaveCount(0);
+});
+
 test('a roster row at roster-only consent gets no hand-off links; gear consent does', async ({ page }) => {
   await stub(page);
   await page.route('**/v1/characters/us/hardcore/simfury/sim-input', (route) =>

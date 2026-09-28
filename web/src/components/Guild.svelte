@@ -25,6 +25,7 @@
     type GuildRosterRow,
   } from '../lib/guild/api';
   import { guildHomeCopy } from '../lib/guild/copy';
+  import { orderRoster, unverifiedRosterCount } from '../lib/guild/roster';
   import { SECONDARY_BUTTON_FIXED } from '../lib/planner/styles';
   import { classColorVar, formatAmount, rowLink } from '../lib/report/format';
   import { encounterSlug, fetchGuild, type GuildPage } from '../lib/rankings/api';
@@ -238,6 +239,14 @@
     home === null ? true : home.roster.every((row) => myCharacterKeys.has(row.character_key)),
   );
 
+  /**
+   * UX review defect 3 (2026-09-28): unverified rows were buried wherever the API happened
+   * to return them. `orderRoster` puts them first, stable otherwise, so an officer scanning
+   * the list sees who needs approval without hunting for the "Unverified" pill.
+   */
+  const orderedRoster = $derived(home === null ? [] : orderRoster(home.roster));
+  const waitingForApprovalCount = $derived(home === null ? 0 : unverifiedRosterCount(home.roster));
+
   const reportWipeCount = (report: GuildHomeReport): number =>
     Math.max(0, report.fight_count - report.kill_count);
 
@@ -418,6 +427,11 @@
         {/if}
 
         <h2 class="section-title text-[18px]">{guildHomeCopy.rosterHeading}</h2>
+        {#if canManage && waitingForApprovalCount > 0}
+          <p class="text-muted text-[13px]" data-testid="guild-roster-waiting">
+            {guildHomeCopy.waitingForApproval(waitingForApprovalCount)}
+          </p>
+        {/if}
         {#if soloRoster}
           <EmptyState
             message={canManage ? guildHomeCopy.emptyRosterOfficer : guildHomeCopy.emptyRosterMember}
@@ -431,7 +445,7 @@
           />
         {:else}
           <ul class="flex flex-col" data-testid="guild-home-roster">
-            {#each home.roster as row (row.character_key)}
+            {#each orderedRoster as row (row.character_key)}
               <li
                 class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-2 text-[14px]"
               >

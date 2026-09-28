@@ -26,6 +26,9 @@ export const guildHomeCopy = {
   manageInvite: 'Guild settings',
   loggedRecently: 'Logged in the last day',
   unverified: 'Unverified',
+  // UX review defect 3 (2026-09-28): the roster summary an officer sees above the (now
+  // unverified-first) roster list, so waiting rows are announced, not just sorted forward.
+  waitingForApproval: (count: number): string => `${count} waiting for approval`,
   itemLevelLabel: 'ilvl',
   approve: 'Approve',
   remove: 'Remove',
