@@ -493,6 +493,27 @@ describe('createSimStore', () => {
       random_seed: 0,
     };
 
+    // The drawer previews `buildRequest()` and its Run sends that text verbatim. A stored
+    // target level is an offset above the character (settings.ts), and `run()` resolved it
+    // while `buildRequest()` sent the raw 63 -- so a level-18 export previewed, and ran from
+    // the drawer with, a level-63 target the engine refuses (found live, 2026-09-28).
+    it('buildRequest resolves the stored target level against the character, as run() does', async () => {
+      const sim = createSimStore({
+        treeVersion: '1.15.9.69722',
+        apiBase: 'https://api.test',
+        pool: createPool({ hardwareConcurrency: 2, spawn: () => fakeWorker() }),
+        request: {
+          ...validRequest,
+          character: { ...validRequest.character, level: 18, talents: '-55305-' },
+          encounter: { ...validRequest.encounter, target_level: 63 },
+        },
+      });
+      await sim.ready;
+      expect(sim.character?.level).toBe(18);
+      expect(sim.settings.encounter.target_level).toBe(63);
+      expect(sim.buildRequest()?.encounter.target_level).toBe(21);
+    });
+
     it('adopts a request bootstrap (design 8) at init, settings and all', async () => {
       const sim = createSimStore({
         treeVersion: '1.15.9.69722',

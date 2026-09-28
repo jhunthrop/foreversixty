@@ -21,7 +21,7 @@ import { EMPTY_ESTIMATE } from './estimate';
 import { precisionOf, precisionPlan, STEP_ITERATIONS, type PrecisionId } from './precision';
 import { settingsFromRequest } from './request-json';
 import { buildSimRequest, runSim, SimRunError, type RunHandle, type RunInput, type RunUpdate } from './run';
-import type { SimSettings } from './settings';
+import { encounterFor, type SimSettings } from './settings';
 import type { SourceResult } from './sources';
 import type { SimPhase } from './store.svelte';
 import type { SimRequest, SimResult } from './types';
@@ -164,7 +164,10 @@ export function createRequestMethods(deps: StoreRequestDeps): RequestMethods {
           settings.consumables,
           settings.cooldowns,
         ),
-        encounter: settings.encounter,
+        // The same resolution `run()` makes (store.svelte.ts): the stored target level is
+        // an offset above the character. Left raw, the drawer previewed -- and "Run" from
+        // it sent -- a level-63 target for a level-18 export, which the engine refuses.
+        encounter: encounterFor(settings.encounter, character.level),
         iterations: plan.iterations,
         targetError: plan.targetError,
         stepIterations: plan.step,
