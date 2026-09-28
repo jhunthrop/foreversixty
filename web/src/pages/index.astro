@@ -11,7 +11,7 @@ import ToolCard from '../components/ToolCard.astro';
 import Panel from '../components/Panel.astro';
 import FeedRow from '../components/FeedRow.astro';
 import SubscribeBox from '../components/SubscribeBox.svelte';
-import HomeGuildLink from '../components/HomeGuildLink.svelte';
+import HomeGuildCard from '../components/HomeGuildCard.svelte';
 import HomeAccountPanel from '../components/HomeAccountPanel.svelte';
 import HomeNextSteps, { HOME_NEXT_STEPS_SIGNED_OUT_ID } from '../components/HomeNextSteps.svelte';
 import HomeGetSetUp, { HOME_GET_SET_UP_SIGNED_OUT_ID } from '../components/HomeGetSetUp.svelte';
@@ -21,7 +21,6 @@ import { HOME_SIGNED_OUT_ID, homePanelCopy } from '../lib/home-panel-copy';
 import {
   homeAroundTheSiteCopy,
   homeCompanionRow,
-  homeGuildPanelCopy,
   homeHeroCopy,
   homeProductPanels,
 } from '../lib/home-landing-copy';
@@ -52,9 +51,12 @@ const addonIconPath =
       <div class="flex w-full max-w-[1344px] flex-col gap-[18px] px-[18px] py-7 mx-auto md:px-12 lg:py-8">
         <p class="label text-gold font-body">{homeHeroCopy.eyebrow}</p>
         <!-- Review round 1 fix item 4: at lg this becomes a two-column band (the character
-             card/sign-in block 7/12, the dates timeline 5/12) so the art's right half carries
+             card/sign-in block 7/12, the guild card 5/12) so the art's right half carries
              real content instead of empty decoration; below lg the two stack in the same
-             order they always have (hero, then timeline), just one level deeper in the DOM. -->
+             order they always have (hero, then guild card), just one level deeper in the
+             DOM. Spec 2026-09-28: the guild card replaces the dates timeline here -- "it's
+             pretty worthless" -- which moved to a full-width row at the bottom of the page
+             instead of being dropped, so the dates stay reachable. -->
         <div class="flex flex-col gap-8 lg:grid lg:grid-cols-12 lg:items-start lg:gap-8">
           <div class="grid lg:col-span-7" data-testid="home-account-block">
             <div
@@ -78,8 +80,8 @@ const addonIconPath =
             </div>
             <HomeAccountPanel client:visible />
           </div>
-          <div class="lg:col-span-5">
-            <HomeTimeline dates={dates} updated={updated} />
+          <div class="lg:col-span-5" data-testid="home-guild-block">
+            <HomeGuildCard client:visible />
           </div>
         </div>
       </div>
@@ -135,12 +137,6 @@ const addonIconPath =
           </div>
         </Panel>
       </section>
-
-      <Panel title={homeGuildPanelCopy.label}>
-        <div class="p-[18px]">
-          <HomeGuildLink client:visible />
-        </div>
-      </Panel>
 
       <section class="flex flex-col" data-testid="home-companion-row">
         <div
@@ -212,6 +208,11 @@ const addonIconPath =
           </Panel>
         </div>
       </div>
+
+      <!-- The five site dates (spec 2026-09-28): moved out of the hero, where they were "pretty
+           worthless" competing for the guild card's spot, to a full-width quiet row at the very
+           bottom of the page -- still reachable, no longer the first thing a visitor sees. -->
+      <HomeTimeline dates={dates} updated={updated} />
     </div>
   </main>
 </Base>

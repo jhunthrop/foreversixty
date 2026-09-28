@@ -55,7 +55,9 @@ test('homepage states the product and stops, not a marketing slogan', async ({ p
   await expect(page.getByTestId('recent-reports')).toBeVisible();
   await page.getByTestId('home-around-the-site').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('home-top-guilds')).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Your guild' })).toBeVisible();
+  // The "Your guild" panel is gone (spec 2026-09-28): the hero's own guild card replaced
+  // it, and that card is signed-in only, so a signed-out visitor sees no trace of it.
+  await expect(page.getByTestId('home-guild-card')).toHaveCount(0);
   await expect(page.getByRole('heading', { name: 'What changed' })).toBeVisible();
   await expect(page.getByText('Not affiliated with or endorsed by Blizzard Entertainment')).toBeVisible();
   expect(errors).toEqual([]);

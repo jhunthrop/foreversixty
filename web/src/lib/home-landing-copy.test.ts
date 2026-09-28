@@ -1,12 +1,6 @@
 // web/src/lib/home-landing-copy.test.ts
 import { describe, expect, it } from 'vitest';
-import {
-  homeCompanionRow,
-  homeGetSetUpCopy,
-  homeGuildPanelCopy,
-  homeHeroCopy,
-  homeProductPanels,
-} from './home-landing-copy';
+import { homeCompanionRow, homeGetSetUpCopy, homeHeroCopy, homeProductPanels } from './home-landing-copy';
 
 function nonEmpty(value: string): boolean {
   return value.trim().length > 0;
@@ -32,15 +26,6 @@ describe('home-landing-copy', () => {
       expect(nonEmpty(panel.linkLabel)).toBe(true);
       expect(panel.href.startsWith('/')).toBe(true);
     }
-  });
-
-  it('formats the guild progression sentence honestly from real counts', () => {
-    expect(homeGuildPanelCopy.progressionOf(3, 12)).toBe('3 of 12 bosses down');
-    expect(homeGuildPanelCopy.progressionOf(0, 0)).toBe('0 of 0 bosses down');
-  });
-
-  it('points the claim CTA at Battle.net sign-in, since no guild directory page exists', () => {
-    expect(homeGuildPanelCopy.claimHref).toMatch(/\/v1\/auth\/battlenet\/start\?next=/);
   });
 
   it('collapses the addon and companion row into one "Get set up" card', () => {

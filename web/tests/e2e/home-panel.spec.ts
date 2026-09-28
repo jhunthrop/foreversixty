@@ -399,3 +399,191 @@ test('a returning signed-in visitor sees the hub from the session snapshot befor
   await expect(page.getByTestId('home-account-panel')).toBeVisible({ timeout: 3000 });
   await expect(page.getByTestId('home-signed-out')).toBeHidden();
 });
+
+// The hero's guild card (spec 2026-09-28) replaces the old date strip in this same slot.
+// Its rules live in lib/guild/home-card.ts and are unit-tested there exhaustively; these
+// two e2e cases only prove the island wires that pure function to the real fetches.
+
+test('an officer of an unclaimed guild sees "Claim this guild" on the hero card', async ({ page }) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+          characters: [],
+          guilds: [
+            {
+              id: 501,
+              region: 'us',
+              ruleset: 'hardcore',
+              name: 'The Last Watch',
+              rank: 'officer',
+              verified: true,
+            },
+          ],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.route('**/v1/guilds/501/home', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          guild: { id: 501, name: 'The Last Watch', region: 'us', ruleset: 'hardcore' },
+          claim: { state: 'unclaimed', frozen: false },
+          reports: [],
+          roster: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  // The public guild page (the progression figure) is irrelevant to this state's line, but
+  // the card fetches it alongside home regardless -- stub it refused so that fetch settles
+  // without reaching the real network.
+  await page.route('**/v1/guilds/us/hardcore/the-last-watch', (route) =>
+    route.fulfill(fulfil({ ok: false, data: null, error: { message: 'none' }, request_id: 'r' }, 404)),
+  );
+  await page.goto('/');
+  const card = page.getByTestId('home-guild-card');
+  await card.scrollIntoViewIfNeeded();
+  await expect(card.getByTestId('home-guild-card-name')).toHaveText('The Last Watch');
+  await expect(card).toContainText(
+    'Nobody has claimed The Last Watch yet. Claiming unlocks settings, the invite link and roster approval.',
+  );
+  await expect(card.getByRole('link', { name: 'Claim this guild' })).toHaveAttribute(
+    'href',
+    '/guild/us/hardcore/the-last-watch/claim',
+  );
+});
+
+test('a member sees the stats line with how many logged in, reports this week and bosses down', async ({
+  page,
+}) => {
+  await page.route('**/v1/me', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          user: { id: 1, battletag: 'Fixture#1', email: null, role: 'user', anonymize: false },
+          characters: [],
+          guilds: [
+            {
+              id: 502,
+              region: 'us',
+              ruleset: 'normal',
+              name: 'Emerald Dream',
+              rank: 'member',
+              verified: true,
+            },
+          ],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.route('**/v1/guilds/502/home', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          guild: { id: 502, name: 'Emerald Dream', region: 'us', ruleset: 'normal' },
+          claim: { state: 'claimed', frozen: false },
+          reports: [
+            {
+              id: 'r1',
+              title: 'Night one',
+              zone: 'Onyxia',
+              created_at: '2026-09-20T00:00:00Z',
+              fight_count: 5,
+              kill_count: 3,
+            },
+          ],
+          roster: [
+            {
+              character_key: 'us/normal/a',
+              region: 'us',
+              ruleset: 'normal',
+              name: 'A',
+              rank: 'member',
+              verified: true,
+              logged_recently: true,
+              consent: 'roster',
+              may_remove: false,
+            },
+            {
+              character_key: 'us/normal/b',
+              region: 'us',
+              ruleset: 'normal',
+              name: 'B',
+              rank: 'member',
+              verified: true,
+              logged_recently: true,
+              consent: 'roster',
+              may_remove: false,
+            },
+            {
+              character_key: 'us/normal/c',
+              region: 'us',
+              ruleset: 'normal',
+              name: 'C',
+              rank: 'member',
+              verified: true,
+              logged_recently: true,
+              consent: 'roster',
+              may_remove: false,
+            },
+            {
+              character_key: 'us/normal/d',
+              region: 'us',
+              ruleset: 'normal',
+              name: 'D',
+              rank: 'member',
+              verified: true,
+              logged_recently: false,
+              consent: 'roster',
+              may_remove: false,
+            },
+          ],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.route('**/v1/guilds/us/normal/emerald-dream', (route) =>
+    route.fulfill(
+      fulfil({
+        ok: true,
+        data: {
+          guild: { id: 502, name: 'Emerald Dream', region: 'us', ruleset: 'normal' },
+          progression: [
+            { encounter: 'Skolex', encounter_id: 1, difficulty: 1, kills: 2, pull_count: 5 },
+            { encounter: 'Warden Kelthas', encounter_id: 2, difficulty: 1, kills: 0, pull_count: 3 },
+          ],
+          roster_best: [],
+          reports: [],
+        },
+        error: null,
+        request_id: 'r',
+      }),
+    ),
+  );
+  await page.goto('/');
+  const card = page.getByTestId('home-guild-card');
+  await card.scrollIntoViewIfNeeded();
+  await expect(card.getByTestId('home-guild-card-name')).toHaveText('Emerald Dream');
+  await expect(card.getByTestId('home-guild-card-line')).toHaveText(
+    '3 logged in the last day · 1 reports this week · 1/2 bosses',
+  );
+  await expect(card.getByRole('link', { name: 'View guild' })).toHaveAttribute(
+    'href',
+    '/guild/us/normal/emerald-dream',
+  );
+});

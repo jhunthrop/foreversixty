@@ -1,10 +1,11 @@
 // web/src/lib/home-landing-copy.ts
 // The home page's own words (spec 2026-09-23, "the landing page is the product, not the
-// wiki"; spec 2026-09-25 §3.5 drops the Reference band): the sky-band hero, the four product
-// panels, the Your guild panel, and the "Get set up" card. `home-panel-copy.ts` stays the
-// account-aware strip's own copy (the signed-out sentence there is now also the hero's
-// sentence, so it stays the one source rather than a second copy of the same words here).
-import { battlenetStartUrl } from './account/api';
+// wiki"; spec 2026-09-25 §3.5 drops the Reference band; spec 2026-09-28 drops the "Your
+// guild" panel, replaced by the hero's own guild card -- see `lib/guild/copy.ts`'s
+// `homeGuildCardCopy` for that card's words): the sky-band hero, the four product panels,
+// and the "Get set up" card. `home-panel-copy.ts` stays the account-aware strip's own copy
+// (the signed-out sentence there is now also the hero's sentence, so it stays the one
+// source rather than a second copy of the same words here).
 
 export const homeHeroCopy = {
   eyebrow: 'World of Warcraft: Forever',
@@ -62,19 +63,6 @@ export const homeAroundTheSiteCopy = {
   reportsLabel: 'Recent reports',
   guildsLabel: 'Top guilds',
   seeAll: 'See all',
-} as const;
-
-export const homeGuildPanelCopy = {
-  label: 'Your guild',
-  /** Signed out, or signed in with no guild yet: the same claim invitation either way. */
-  claimSentence:
-    'Claim your guild with a Battle.net sign-in: a home page, roster, progression and officer tools.',
-  /** Ruling 3 (plan): no generic guild directory exists, so the claim CTA is the sign-in
-   *  itself, the same helper the hero button uses. */
-  claimHref: battlenetStartUrl('/account?signed_in=1'),
-  claimLinkLabel: 'Sign in with Battle.net',
-  failed: 'Your guild did not load.',
-  progressionOf: (killed: number, total: number): string => `${killed} of ${total} bosses down`,
 } as const;
 
 export interface HomeCompanionRowCard {
