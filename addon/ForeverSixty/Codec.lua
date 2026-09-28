@@ -775,5 +775,68 @@ function Codec.loadBuild(code, data)
 	return build
 end
 
+-- -------------------------------------------------------------- inbox --
+--
+-- Wave C's typed inbox messages (docs/superpowers/specs/2026-09-28-addon-
+-- character-aware-design.md §3, §4): upgrade, weights, guild. The
+-- companion writes them into ForeverSixtyInbox.messages beside the
+-- existing .builds (companion/internal/addon/addon.go's Message), each
+-- one carrying an optional `character` exactly like a build does.
+--
+-- normaliseSegment/sameCharacter below are a deliberate, small
+-- duplication of Follow.sameCharacter rather than a require of Follow:
+-- Follow.lua already requires Codec (for Codec.loadBuild), so the other
+-- direction would be a circular require, and Follow.lua is a different
+-- lane's file this wave. If the two ever want one copy, the controller
+-- is the one positioned to move it.
+local function normaliseSegment(segment)
+	return (segment or ""):lower():gsub("%s+", "-")
+end
+
+local function sameCharacter(a, b)
+	if type(a) ~= "string" or type(b) ~= "string" then
+		return false
+	end
+	local aRegion, aMid, aName = a:match("^([^/]*)/([^/]*)/(.*)$")
+	local bRegion, bMid, bName = b:match("^([^/]*)/([^/]*)/(.*)$")
+	if aRegion == nil or bRegion == nil then
+		return false
+	end
+	return normaliseSegment(aRegion) == normaliseSegment(bRegion)
+		and normaliseSegment(aMid) == normaliseSegment(bMid)
+		and normaliseSegment(aName) == normaliseSegment(bName)
+end
+
+--- The message kinds this addon build understands. A message whose
+--- `type` is not one of these -- a future kind the site started sending
+--- before this addon was updated -- is silently dropped by
+--- Codec.inboxMessages, the same forward-compatibility rule Follow.inbox
+--- already applies to a build the addon does not recognise.
+Codec.MESSAGE_TYPES = { upgrade = true, weights = true, guild = true }
+
+--- Messages of `kind` from `inbox.messages`, addressed to `key` or to no
+--- one in particular, in the order the companion wrote them. Pure: never
+--- reads or writes ForeverSixtyInbox itself, mirroring Follow.inbox's
+--- own contract for builds. An unknown `kind` (a typo, not a message
+--- from the wire) and a malformed or missing `inbox.messages` both
+--- answer an empty list rather than erroring, since a spec that fires
+--- this before the addon has ever synced must see "nothing waiting",
+--- not a crash.
+function Codec.inboxMessages(inbox, key, kind)
+	local usable = {}
+	if not Codec.MESSAGE_TYPES[kind] or type(inbox) ~= "table" or type(inbox.messages) ~= "table" then
+		return usable
+	end
+	for _, message in ipairs(inbox.messages) do
+		if type(message) == "table" and message.type == kind then
+			local addressed = message.character
+			if addressed == nil or sameCharacter(addressed, key) then
+				usable[#usable + 1] = message
+			end
+		end
+	end
+	return usable
+end
+
 ns.Codec = Codec
 return Codec

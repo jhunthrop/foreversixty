@@ -103,9 +103,41 @@ function Tooltip.upgradeLine(data, itemLink)
 	return L.tooltipNotUpgrade
 end
 
---- Both lines this addon ever adds, 0 to 2 of them. Pure; the hook this
---- file grows next only draws what this returns.
-function Tooltip.lines(data, build, itemLink)
+--- "<Stat> capped: more is wasted" for each stat this item carries that
+--- `weightsMessage` (a "weights" inbox message -- Codec.inboxMessages(
+--- inbox, key, "weights"), section 4's breakpoint call-out) already
+--- names in its `caps` list. With no message, or one carrying no caps
+--- at all, this answers no lines rather than guessing -- the same "no
+--- data, no line" rule Tooltip.upgradeLine already follows for a spec
+--- with no weights.
+function Tooltip.capLines(itemLink, weightsMessage)
+	local lines = {}
+	if itemLink == nil or type(weightsMessage) ~= "table" or type(weightsMessage.caps) ~= "table" then
+		return lines
+	end
+	local capped = {}
+	for _, stat in ipairs(weightsMessage.caps) do
+		capped[stat] = true
+	end
+	for stat in pairs(Gear.statsOf(itemLink)) do
+		if capped[stat] then
+			lines[#lines + 1] = string.format(L.tooltipCapped, stat)
+		end
+	end
+	-- Gear.statsOf is a plain table, so iterating it in pairs() order
+	-- is not deterministic; sorted once here rather than left to
+	-- whatever pairs() happened to visit first, so two runs against
+	-- the same item read the same tooltip.
+	table.sort(lines)
+	return lines
+end
+
+--- Every line this addon ever adds, 0 or more. Pure; the hook this
+--- file grows next only draws what this returns. weightsMessage is
+--- optional (nil is "no weights message for this character yet"), so
+--- every existing three-argument call site keeps behaving exactly as
+--- it did before Tooltip.capLines existed.
+function Tooltip.lines(data, build, itemLink, weightsMessage)
 	local lines = {}
 	local planned = Tooltip.plannedLine(build, itemIdOf(itemLink))
 	if planned ~= nil then
@@ -115,6 +147,9 @@ function Tooltip.lines(data, build, itemLink)
 	if upgrade ~= nil then
 		lines[#lines + 1] = upgrade
 	end
+	for _, capLine in ipairs(Tooltip.capLines(itemLink, weightsMessage)) do
+		lines[#lines + 1] = capLine
+	end
 	return lines
 end
 
@@ -123,6 +158,18 @@ end
 --- spec can hand the hook a fixture instead of the real Data.lua, and the
 --- hook does nothing (rather than erroring) before login has set it.
 Tooltip.data = nil
+
+--- The "weights" inbox message for the character currently logged in --
+--- set once, the same way and by the same caller as Tooltip.data, once
+--- something reads the companion's inbox at login and resolves it with
+--- Codec.inboxMessages(inbox, Export.characterKey(), "weights") to the
+--- one message (if any) addressed to this character. Wiring that call
+--- is a documented hook rather than done in this file: it belongs where
+--- Tooltip.data itself is set (Options.register(), a different lane's
+--- file this wave), not in Tooltip.lua, which only ever reads the
+--- result. Nil until then, and Tooltip.capLines answers no lines --
+--- exactly this feature's behaviour before the hook is wired.
+Tooltip.weightsMessage = nil
 
 --- Computed once per item link for the session: the mouse crossing the
 --- same item repeatedly must not re-run the scoring walk every time.
@@ -138,7 +185,7 @@ local function cachedLines(itemLink)
 	if cached ~= nil then
 		return cached
 	end
-	local lines = Tooltip.lines(Tooltip.data, Follow.build, itemLink)
+	local lines = Tooltip.lines(Tooltip.data, Follow.build, itemLink, Tooltip.weightsMessage)
 	Tooltip.cache[itemLink] = lines
 	return lines
 end

@@ -9,6 +9,7 @@ import (
 	"errors"
 	"io/fs"
 	"log/slog"
+	"reflect"
 	"slices"
 	"time"
 )
@@ -48,11 +49,12 @@ type Sync struct {
 	// consume the change the sync is waiting for. An upload that
 	// failed is simply not recorded, so the next pass retries it.
 	uploaded map[string]Stamp
-	// builds and body are the inbox as it was last rendered. The
-	// render is stamped with the time the builds changed, not the
+	// builds, messages and body are the inbox as it was last rendered.
+	// The render is stamped with the time the content changed, not the
 	// time the file is written, so an unchanged inbox is the same
 	// bytes pass after pass and WriteInbox's identity check fires.
 	builds   []Build
+	messages []Message
 	body     []byte
 	rendered bool
 }
@@ -109,8 +111,14 @@ func (s *Sync) Poll(ctx context.Context, now time.Time) error {
 		return errors.Join(append(errs, err)...)
 	}
 	s.lastInbox = now
-	if !s.rendered || !slices.Equal(s.builds, inbox.Builds) {
+	// Message carries slices of its own (Weights, Caps), which are not
+	// comparable with slices.Equal's default ==, so the messages half
+	// of this check is a deep-equal rather than the builds half's
+	// cheap one; the inbox is small (InboxLimit builds plus a handful
+	// of messages) and this runs once every ten minutes, not per poll.
+	if !s.rendered || !slices.Equal(s.builds, inbox.Builds) || !reflect.DeepEqual(s.messages, inbox.Messages) {
 		s.builds = slices.Clone(inbox.Builds)
+		s.messages = slices.Clone(inbox.Messages)
 		s.body, s.rendered = RenderInbox(inbox, now), true
 	}
 	for _, p := range paths {

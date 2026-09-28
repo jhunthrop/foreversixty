@@ -258,3 +258,44 @@ cross-check table; the api plan is the server and the web and companion plans fo
 - `POST /v1/addon/exports` normalises an unrecognised `ruleset` value through the API's single
   realm-to-ruleset mapping function instead of rejecting it; the companion forwards whatever the
   addon wrote.
+
+## Amendments (Sept 28, Wave C of the addon design — typed inbox messages)
+
+Extends the `GET /v1/addon/inbox` shape above rather than replacing it: `builds` is unchanged, and
+an addon build from before this date reads exactly what it always did, because it never looks at
+the new key. See `docs/superpowers/specs/2026-09-28-addon-character-aware-design.md` §3, §4, §6.
+
+- `GET /v1/addon/inbox` (device) now returns `{ builds: [...], messages: [ { type, character?, ... }
+  ] }`. `messages` is the typed half: `character` is optional, exactly like a build's (omitted
+  reaches every character on the account, present reaches one — the addon's
+  `Follow.sameCharacter`/`Codec.inboxMessages` matching rule). `type` is one of:
+  - `upgrade` — the best upgrade a character's last Top Gear run found for one slot:
+    `{ type: "upgrade", character, slot, item_id, item_name, source, delta }`. `delta` is the DPS
+    gain over what is equipped, from `Combo.Delta` (`sim/api/envelope.go`). Produced from Top Gear
+    (`SimResult.Combos`) alone today; the design's leveling BiS files
+    (`data/builds/<build>/bis/<spec>.json`) do not exist on `main` yet, so a build that adds them
+    is expected to widen this producer rather than replace it — the message shape does not change
+    either way.
+  - `weights` — a character's saved stat weights and which of those stats are already capped
+    (further points wasted): `{ type: "weights", character, spec, weights: [ { stat, weight } ],
+    caps: [ stat, ... ] }`. `weights` comes from `SimResult.Weights` (`sim/api/weights.go`)'s
+    `StatWeight.Weight`. `caps` names every rating stat (`hit`, `expertise`) the same saved run
+    reports as `Insignificant` with a zero weight and a zero error — the engine's own signal that
+    its sweep skipped the stat because the character was already past its cap, not a new
+    server-computed breakpoint table. A future spec-level cap table (an exact rating number, not
+    just "capped or not") is a widening of the same field, not a shape change.
+  - `guild` — the character's private guild state, section 3/4's Guild tab block:
+    `{ type: "guild", character, guild_name, claim_state, pending_approvals, rank }`.
+    `claim_state` is one of `unclaimed`, `pending`, `claimed`, `contested`
+    (`guilds.ClaimStateView.State`). `pending_approvals` is the guild's unverified-roster count,
+    present (non-zero) only when this character is an officer or leader — a member sees `0`, never
+    another member's approval queue. `rank` is this character's own `member`/`officer`/`leader`.
+    This is deliberately narrower than the roster-wide public data the nightly Data addon already
+    carries (progress, nights, roster size, ratings — `GuildView.lua`'s existing `Ratings.forGuild`
+    path): claim state and a private approval count are per-account facts the public nightly export
+    must not carry, so they travel the private companion inbox instead.
+- The companion (`companion/internal/addon`) carries `messages` opaquely, exactly as it already
+  carries `builds`: `Sync.Poll` re-renders `ForeverSixtyInbox.lua` whenever either changes.
+  `RenderInbox` also now writes a top-level `version` field (`InboxVersion`, currently `2`) that
+  nothing reads back — informational only, for a support request to name what schema a player's
+  companion last wrote.

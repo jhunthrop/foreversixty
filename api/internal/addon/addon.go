@@ -364,7 +364,16 @@ type Service struct {
 	// (the response carries an empty characters list) for a test
 	// harness that does not exercise it.
 	Accounts CharacterReader
-	Log      *slog.Logger
+	// Guilds and Sims produce the Wave C typed inbox messages
+	// (messages.go): guild state per character, and the account's
+	// upgrade/weights messages from its saved sims. Either or both nil
+	// is safe — the inbox still answers with builds and whatever
+	// messages the ones that are wired can produce, never an error, the
+	// same "degrade, don't fail the sync" rule Builds/Data already
+	// follow for a build's code.
+	Guilds GuildSource
+	Sims   SimSource
+	Log    *slog.Logger
 }
 
 // Mount registers the addon routes. The companion reads and writes with
@@ -511,7 +520,8 @@ func (s *Service) writtenCharacters(ctx context.Context, exports []Export) ([]au
 }
 
 func (s *Service) inbox(w http.ResponseWriter, r *http.Request) {
-	rows, err := s.Store.Inbox(r.Context(), auth.ActorFrom(r.Context()).UserID)
+	userID := auth.ActorFrom(r.Context()).UserID
+	rows, err := s.Store.Inbox(r.Context(), userID)
 	if err != nil {
 		s.fail(w, r, "inbox", err, "could not read the inbox just now")
 		return
@@ -521,7 +531,9 @@ func (s *Service) inbox(w http.ResponseWriter, r *http.Request) {
 		s.fail(w, r, "inbox", err, "could not read the inbox just now")
 		return
 	}
-	httpx.WriteOK(w, r, http.StatusOK, map[string]any{"builds": entries})
+	httpx.WriteOK(w, r, http.StatusOK, map[string]any{
+		"builds": entries, "messages": s.messages(r.Context(), userID),
+	})
 }
 
 // entries turns stored rows into what the companion writes into the
