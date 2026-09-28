@@ -18,6 +18,19 @@ describe("Prefs", function()
 		assert.are.same(Prefs.DEFAULTS, ui)
 	end)
 
+	-- Design section 4: "off until the account has a level-60 export".
+	-- Prefs itself does not know about exports; it only owns the default,
+	-- which is off.
+	it("defaults advancedDetail to off", function()
+		assert.is_false(Prefs.DEFAULTS.advancedDetail)
+		assert.is_false(Prefs.flag("advancedDetail"))
+	end)
+
+	it("remembers advancedDetail once the player turns it on", function()
+		Prefs.setFlag("advancedDetail", true)
+		assert.is_true(Prefs.flag("advancedDetail"))
+	end)
+
 	it("keeps a value the player already chose", function()
 		local ui = Prefs.withDefaults({ chat = true, minimap = { angle = 45 } })
 		assert.is_true(ui.chat)

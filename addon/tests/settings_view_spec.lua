@@ -182,6 +182,35 @@ describe("SettingsView", function()
 			assert.are.equal(left, point[4])
 		end
 	end)
+	-- Design section 4: a Prefs flag, default off, every card respects it.
+	it("lists the advanced-detail toggle, off by default", function()
+		start()
+		local rows = SettingsView.toggles()
+		local found
+		for _, row in ipairs(rows) do
+			if row.flag == "advancedDetail" then
+				found = row
+			end
+		end
+		assert.is_not_nil(found)
+		assert.is_false(found.checked)
+		assert.are.equal(L.settingsAdvancedDetail, found.label)
+	end)
+
+	it("turning the advanced-detail toggle on writes the flag and notifies ctx", function()
+		start()
+		local view = SettingsView.build(_G.CreateFrame("Frame"), ctxFor())
+		local index
+		for i, entry in ipairs(SettingsView.TOGGLES) do
+			if entry.flag == "advancedDetail" then
+				index = i
+			end
+		end
+		view.toggles[index].frame:GetScript("OnClick")(view.toggles[index].frame)
+		assert.is_true(Prefs.flag("advancedDetail"))
+		assert.are.equal("advancedDetail", changes[#changes].entry.flag)
+	end)
+
 	-- Seen in game: the settings ran off the bottom of the page.
 	it("tells the page how tall it is so the page can scroll", function()
 		start()

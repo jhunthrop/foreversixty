@@ -29,6 +29,12 @@ Prefs.DEFAULTS = {
 	-- this pass (design "Addon premium pass").
 	tooltip = true,
 	toast = true,
+	-- Off by default (design section 4: "off until the account has a
+	-- level-60 export"): stat-weight breakdowns and cap call-outs are
+	-- noise to a leveling alt. Every card that has an advanced layer reads
+	-- this flag itself rather than a second, page-local copy of it, so
+	-- turning it on or off is consistent everywhere in the same frame.
+	advancedDetail = false,
 }
 
 --- The sections resetPositions puts back.
