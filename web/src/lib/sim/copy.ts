@@ -1042,6 +1042,8 @@ export const bulkCopy = {
   sourcesRaids: 'Raids',
   sourcesDungeons: 'Dungeons',
   sourcesWorld: 'World bosses',
+  sourcesZone: 'Zone drops',
+  sourcesVendor: 'Vendors',
   sourcesCrafted: 'Crafted',
   sourcesRep: 'Reputation',
   sourcesPvp: 'PvP',
