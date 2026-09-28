@@ -1,0 +1,4974 @@
+{
+  "spec": "warlock-destruction",
+  "build": "1.60.1.70009",
+  "engine_version": "dd71eb7da",
+  "generated_at": "2026-09-28T20:39:10Z",
+  "bands": [
+    {
+      "spec": "warlock-destruction",
+      "band": 10,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "00000000000000000-0000000000000000000-1000000000000000",
+      "talent_points": 1,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.5174257738157481
+        },
+        {
+          "stat": "crit",
+          "weight": 0.2768870079455768
+        },
+        {
+          "stat": "hit",
+          "weight": 0.769736377650501
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.15016061395838526
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.7617143598016144
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.2405395455147207
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22149,
+          "item_name": "Beads of Ogre Mojo",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 19.209109285788976,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 21.831089702499213,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.69736377650501,
+          "verified": false,
+          "swap_note": "runner-up Faded Hakkari Cloak (id 20218) measured higher: 35.7 vs 35.4 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 40.25978513518453,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 36.8 vs 35.4 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 34.69736377650501,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Wraps (id 19848) measured higher: 35.5 vs 35.4 set DPS - swapped in"
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 29.58712886907874,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 20217,
+          "item_name": "Belt of Tiny Heads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.796238154867718,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 13.691683511973228,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 11.573781887743085,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.01582430176406,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15106,
+          "item_name": "Staff of Dar'Orahil",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 13.389047288478238,
+          "verified": false,
+          "swap_note": "runner-up Corrupted Blackwood Staff (id 20724) measured higher: 35.5 vs 35.4 set DPS - swapped in"
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.069703095262993,
+          "verified": true
+        }
+      ],
+      "set_dps": 35.44089826396445,
+      "no_source_count": 442,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "816 Small Hand Blade",
+        "1287 Giant Tarantula Fang",
+        "1917 Jeweled Dagger",
+        "1933 Staff of Conjuring",
+        "2088 Long Crawler Limb",
+        "2140 Carving Knife",
+        "2266 Stonesplinter Dagger",
+        "2283 Rat Cloth Belt",
+        "2310 Embossed Leather Cloak",
+        "2569 Linen Boots",
+        "2580 Reinforced Linen Cape",
+        "2632 Curved Dagger",
+        "2847 Copper Shortsword",
+        "2957 Journeyman's Vest"
+      ],
+      "new_at_band": [
+        "head: Spellpower Goggles Xtreme Plus",
+        "neck: Beads of Ogre Mojo",
+        "shoulder: Zandalar Demoniac's Mantle",
+        "back: Earthweave Cloak",
+        "chest: Earthpower Vest",
+        "wrist: Rockfury Bracers",
+        "hands: Sandworm Skin Gloves",
+        "waist: Belt of Tiny Heads",
+        "legs: Glacial Leggings",
+        "feet: Southsea Mojo Boots",
+        "finger1: Band of Earthen Might",
+        "finger2: Band of Earthen Wrath",
+        "trinket1: Shard of the Splithooves",
+        "trinket2: Demon's Blood",
+        "main_hand: Staff of Dar'Orahil",
+        "ranged: Charged Lightning Rod"
+      ],
+      "weights_run_seconds": 0.949728131,
+      "verify_run_seconds": 0.725785706
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 10,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "00000000000000000-0000000000000000000-1000000000000000",
+      "talent_points": 1,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.5174257738157481
+        },
+        {
+          "stat": "crit",
+          "weight": 0.2768870079455768
+        },
+        {
+          "stat": "hit",
+          "weight": 0.769736377650501
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.15016061395838526
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.7617143598016144
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.2405395455147207
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22149,
+          "item_name": "Beads of Ogre Mojo",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 19.209109285788976,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 21.831089702499213,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.69736377650501,
+          "verified": false,
+          "swap_note": "runner-up Faded Hakkari Cloak (id 20218) measured higher: 34.9 vs 34.7 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 40.25978513518453,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 36.1 vs 34.7 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 34.69736377650501,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Wraps (id 19848) measured higher: 34.8 vs 34.7 set DPS - swapped in"
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 29.58712886907874,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 20217,
+          "item_name": "Belt of Tiny Heads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.796238154867718,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 13.691683511973228,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 11.573781887743085,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.01582430176406,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15106,
+          "item_name": "Staff of Dar'Orahil",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 13.389047288478238,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.069703095262993,
+          "verified": true
+        }
+      ],
+      "set_dps": 34.747814313732675,
+      "no_source_count": 442,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "816 Small Hand Blade",
+        "1287 Giant Tarantula Fang",
+        "1917 Jeweled Dagger",
+        "1933 Staff of Conjuring",
+        "2088 Long Crawler Limb",
+        "2140 Carving Knife",
+        "2266 Stonesplinter Dagger",
+        "2283 Rat Cloth Belt",
+        "2310 Embossed Leather Cloak",
+        "2569 Linen Boots",
+        "2580 Reinforced Linen Cape",
+        "2632 Curved Dagger",
+        "2847 Copper Shortsword",
+        "2957 Journeyman's Vest"
+      ],
+      "new_at_band": [
+        "head: Spellpower Goggles Xtreme Plus",
+        "neck: Beads of Ogre Mojo",
+        "shoulder: Zandalar Demoniac's Mantle",
+        "back: Earthweave Cloak",
+        "chest: Earthpower Vest",
+        "wrist: Rockfury Bracers",
+        "hands: Sandworm Skin Gloves",
+        "waist: Belt of Tiny Heads",
+        "legs: Glacial Leggings",
+        "feet: Southsea Mojo Boots",
+        "finger1: Band of Earthen Might",
+        "finger2: Band of Earthen Wrath",
+        "trinket1: Shard of the Splithooves",
+        "trinket2: Demon's Blood",
+        "main_hand: Staff of Dar'Orahil",
+        "ranged: Charged Lightning Rod"
+      ],
+      "weights_run_seconds": 0.949728131,
+      "verify_run_seconds": 0.725323656
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 15,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "00000000000000000-0000000000000000000-2310000000000000",
+      "talent_points": 6,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.6430953981753803
+        },
+        {
+          "stat": "crit",
+          "weight": 0.1965128720190863
+        },
+        {
+          "stat": "hit",
+          "weight": 0.488914384269071
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.03691263387368737
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.8953317580085756
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.10681361220601489
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22149,
+          "item_name": "Beads of Ogre Mojo",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 20.71714477810456,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 24.218812565332225,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 20218,
+          "item_name": "Faded Hakkari Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5.1447631854030424,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 41.89927896812557,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 47.9 vs 45.9 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.88914384269071,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Wraps (id 19848) measured higher: 46.0 vs 45.9 set DPS - swapped in"
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 30.2154769908769,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 20217,
+          "item_name": "Belt of Tiny Heads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 10.932621768981464,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 15.074049379929184,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.895943393670251,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 18402,
+          "item_name": "Glowing Crystal Ring",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.717144778104563,
+          "verified": false,
+          "swap_note": "runner-up Band of Earthen Might (id 21182) measured higher: 46.2 vs 45.9 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 20724,
+          "item_name": "Corrupted Blackwood Staff",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 14.148098759858367,
+          "verified": false,
+          "swap_note": "runner-up Staff of Dar'Orahil (id 15106) measured higher: 46.0 vs 45.9 set DPS - swapped in"
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.572381592701522,
+          "verified": true
+        }
+      ],
+      "set_dps": 45.94730396609391,
+      "no_source_count": 576,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "1189 Overseer's Ring",
+        "1190 Overseer's Cloak",
+        "1219 Redridge Machete",
+        "1287 Giant Tarantula Fang",
+        "1300 Lesser Staff of the Spire",
+        "1355 Buckskin Cape",
+        "1391 Riverpaw Mystic Staff",
+        "1405 Foamspittle Staff",
+        "1473 Riverside Staff",
+        "1917 Jeweled Dagger"
+      ],
+      "new_at_band": [
+        "back: Faded Hakkari Cloak",
+        "finger1: Band of Earthen Wrath",
+        "finger2: Glowing Crystal Ring",
+        "main_hand: Corrupted Blackwood Staff"
+      ],
+      "weights_run_seconds": 1.001729416,
+      "verify_run_seconds": 0.722045086
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 15,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "00000000000000000-0000000000000000000-2310000000000000",
+      "talent_points": 6,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.6430953981753803
+        },
+        {
+          "stat": "crit",
+          "weight": 0.1965128720190863
+        },
+        {
+          "stat": "hit",
+          "weight": 0.488914384269071
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.03691263387368737
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.8953317580085756
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.10681361220601489
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22149,
+          "item_name": "Beads of Ogre Mojo",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 20.71714477810456,
+          "verified": false,
+          "swap_note": "runner-up Kezan's Taint (id 19604) measured higher: 44.7 vs 44.6 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 24.218812565332225,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 20218,
+          "item_name": "Faded Hakkari Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5.1447631854030424,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 41.89927896812557,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 46.6 vs 44.6 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.88914384269071,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Wraps (id 19848) measured higher: 44.7 vs 44.6 set DPS - swapped in"
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 30.2154769908769,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 20217,
+          "item_name": "Belt of Tiny Heads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 10.932621768981464,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 15.074049379929184,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.895943393670251,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 18402,
+          "item_name": "Glowing Crystal Ring",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.717144778104563,
+          "verified": false,
+          "swap_note": "runner-up Band of Earthen Might (id 21182) measured higher: 44.9 vs 44.6 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 20724,
+          "item_name": "Corrupted Blackwood Staff",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 14.148098759858367,
+          "verified": false,
+          "swap_note": "runner-up Staff of Dar'Orahil (id 15106) measured higher: 44.8 vs 44.6 set DPS - swapped in"
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.572381592701522,
+          "verified": true
+        }
+      ],
+      "set_dps": 44.632727050864254,
+      "no_source_count": 576,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "1189 Overseer's Ring",
+        "1190 Overseer's Cloak",
+        "1219 Redridge Machete",
+        "1287 Giant Tarantula Fang",
+        "1300 Lesser Staff of the Spire",
+        "1355 Buckskin Cape",
+        "1391 Riverpaw Mystic Staff",
+        "1405 Foamspittle Staff",
+        "1473 Riverside Staff",
+        "1917 Jeweled Dagger"
+      ],
+      "new_at_band": [
+        "back: Faded Hakkari Cloak",
+        "finger1: Band of Earthen Wrath",
+        "finger2: Glowing Crystal Ring",
+        "main_hand: Corrupted Blackwood Staff"
+      ],
+      "weights_run_seconds": 1.001729416,
+      "verify_run_seconds": 0.717398965
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 20,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "00000000000000000-0000000000000000000-2351000000000000",
+      "talent_points": 11,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": -2.433358095059629
+        },
+        {
+          "stat": "crit",
+          "weight": -0.3976096759608928
+        },
+        {
+          "stat": "hit",
+          "weight": -0.7378101361939827
+        },
+        {
+          "stat": "spell_haste",
+          "weight": -0.12706919729226107
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": -0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 1.221077832954334
+        },
+        {
+          "stat": "fire_power",
+          "weight": -0.21539812358297117
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 19602,
+          "item_name": "Kezan's Taint",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 12,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 6461,
+          "item_name": "Slime-encrusted Pads",
+          "source": "Wailing Caverns: Mutanus the Devourer",
+          "source_kind": "dungeon",
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 4311,
+          "item_name": "Heavy Woolen Cloak",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 4,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 20033,
+          "item_name": "Zandalar Demoniac's Robe",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 19.621898638060173,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 19.621898638060173,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 21318,
+          "item_name": "Earth Warder's Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 22,
+          "verified": false,
+          "swap_note": "runner-up Sandworm Skin Gloves (id 20716) measured higher: 57.4 vs 52.8 set DPS - swapped in"
+        },
+        {
+          "slot": "waist",
+          "item_id": 3344,
+          "item_name": "Captain Sander's Sash",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": false,
+          "swap_note": "runner-up Scorching Sash (id 4117) measured higher: 53.2 vs 52.8 set DPS - swapped in"
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 4313,
+          "item_name": "Red Woolen Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 4,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 4549,
+          "item_name": "Seafire Band",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 6463,
+          "item_name": "Deep Fathom Ring",
+          "source": "Wailing Caverns: Mutanus the Devourer",
+          "source_kind": "dungeon",
+          "verified": false,
+          "swap_note": "runner-up Dalson Family Wedding Ring (id 13475) measured higher: 53.7 vs 52.8 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 1925,
+          "item_name": "Defias Rapier",
+          "source": "The Deadmines",
+          "source_kind": "dungeon",
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 1172,
+          "item_name": "Grayson's Torch",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": false,
+          "swap_note": "runner-up Eerie Stable Lantern (id 6341) measured higher: 53.6 vs 52.8 set DPS - swapped in"
+        },
+        {
+          "slot": "ranged",
+          "item_id": 8071,
+          "item_name": "Sizzle Stick",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5,
+          "verified": true
+        }
+      ],
+      "set_dps": 52.81362971441499,
+      "no_source_count": 749,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "880 Staff of Horrors",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "1189 Overseer's Ring",
+        "1190 Overseer's Cloak",
+        "1219 Redridge Machete",
+        "1287 Giant Tarantula Fang",
+        "1299 Lesser Belt of the Spire",
+        "1300 Lesser Staff of the Spire",
+        "1355 Buckskin Cape"
+      ],
+      "new_at_band": [
+        "neck: Kezan's Taint",
+        "shoulder: Slime-encrusted Pads",
+        "back: Heavy Woolen Cloak",
+        "chest: Zandalar Demoniac's Robe",
+        "hands: Earth Warder's Gloves",
+        "waist: Captain Sander's Sash",
+        "feet: Red Woolen Boots",
+        "finger1: Seafire Band",
+        "finger2: Deep Fathom Ring",
+        "main_hand: Defias Rapier",
+        "off_hand: Grayson's Torch",
+        "ranged: Sizzle Stick"
+      ],
+      "weights_run_seconds": 1.092924219,
+      "verify_run_seconds": 0.899524337
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 20,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "00000000000000000-0000000000000000000-2351000000000000",
+      "talent_points": 11,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": -2.433358095059629
+        },
+        {
+          "stat": "crit",
+          "weight": -0.3976096759608928
+        },
+        {
+          "stat": "hit",
+          "weight": -0.7378101361939827
+        },
+        {
+          "stat": "spell_haste",
+          "weight": -0.12706919729226107
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": -0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 1.221077832954334
+        },
+        {
+          "stat": "fire_power",
+          "weight": -0.21539812358297117
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 19602,
+          "item_name": "Kezan's Taint",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 12,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 6461,
+          "item_name": "Slime-encrusted Pads",
+          "source": "Wailing Caverns: Mutanus the Devourer",
+          "source_kind": "dungeon",
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 4311,
+          "item_name": "Heavy Woolen Cloak",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 4,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 20033,
+          "item_name": "Zandalar Demoniac's Robe",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 19.621898638060173,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 19.621898638060173,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 21318,
+          "item_name": "Earth Warder's Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 22,
+          "verified": false,
+          "swap_note": "runner-up Sandworm Skin Gloves (id 20716) measured higher: 52.9 vs 51.7 set DPS - swapped in"
+        },
+        {
+          "slot": "waist",
+          "item_id": 3344,
+          "item_name": "Captain Sander's Sash",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": false,
+          "swap_note": "runner-up Scorching Sash (id 4117) measured higher: 51.9 vs 51.7 set DPS - swapped in"
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 4313,
+          "item_name": "Red Woolen Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 4,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 4549,
+          "item_name": "Seafire Band",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 6463,
+          "item_name": "Deep Fathom Ring",
+          "source": "Wailing Caverns: Mutanus the Devourer",
+          "source_kind": "dungeon",
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 1925,
+          "item_name": "Defias Rapier",
+          "source": "The Deadmines",
+          "source_kind": "dungeon",
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 1172,
+          "item_name": "Grayson's Torch",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 8071,
+          "item_name": "Sizzle Stick",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5,
+          "verified": true
+        }
+      ],
+      "set_dps": 51.66489708244499,
+      "no_source_count": 749,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "880 Staff of Horrors",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "1189 Overseer's Ring",
+        "1190 Overseer's Cloak",
+        "1219 Redridge Machete",
+        "1287 Giant Tarantula Fang",
+        "1299 Lesser Belt of the Spire",
+        "1300 Lesser Staff of the Spire",
+        "1355 Buckskin Cape"
+      ],
+      "new_at_band": [
+        "neck: Kezan's Taint",
+        "shoulder: Slime-encrusted Pads",
+        "back: Heavy Woolen Cloak",
+        "chest: Zandalar Demoniac's Robe",
+        "hands: Earth Warder's Gloves",
+        "waist: Captain Sander's Sash",
+        "feet: Red Woolen Boots",
+        "finger1: Seafire Band",
+        "finger2: Deep Fathom Ring",
+        "main_hand: Defias Rapier",
+        "off_hand: Grayson's Torch",
+        "ranged: Sizzle Stick"
+      ],
+      "weights_run_seconds": 1.092924219,
+      "verify_run_seconds": 0.901407625
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 25,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "00000000000000000-0000000000000000000-2353210000000000",
+      "talent_points": 16,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 1.0470016546722642
+        },
+        {
+          "stat": "crit",
+          "weight": 0.6198951281718429
+        },
+        {
+          "stat": "hit",
+          "weight": 1.4343564968493852
+        },
+        {
+          "stat": "spell_haste",
+          "weight": -0.4778637812393634
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.7394158242500558
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.2604152755426972
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22149,
+          "item_name": "Beads of Ogre Mojo",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 25.56401985606717,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.893031438773022,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 14.343564968493851,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 56.71256819719561,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 84.3 vs 81.0 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 41.34356496849385,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 32.23500827336132,
+          "verified": false,
+          "swap_note": "runner-up Desert Bloom Gloves (id 20717) measured higher: 82.9 vs 81.0 set DPS - swapped in"
+        },
+        {
+          "slot": "waist",
+          "item_id": 20217,
+          "item_name": "Belt of Tiny Heads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 17.799028129428493,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 19.517018201394905,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 23.02209676289965,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 17.054545031783917,
+          "verified": false,
+          "swap_note": "runner-up Might of Cenarius (id 21189) measured higher: 81.0 vs 81.0 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15106,
+          "item_name": "Staff of Dar'Orahil",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 25.860583169888756,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 9.188006618689057,
+          "verified": true
+        }
+      ],
+      "set_dps": 80.98113002140643,
+      "no_source_count": 941,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "1076 Defias Renegade Ring",
+        "1077 Defias Mage Ring",
+        "1189 Overseer's Ring",
+        "1190 Overseer's Cloak",
+        "1219 Redridge Machete"
+      ],
+      "new_at_band": [
+        "neck: Beads of Ogre Mojo",
+        "shoulder: Zandalar Demoniac's Mantle",
+        "back: Earthweave Cloak",
+        "chest: Earthpower Vest",
+        "hands: Sandworm Skin Gloves",
+        "waist: Belt of Tiny Heads",
+        "feet: Southsea Mojo Boots",
+        "finger1: Band of Earthen Might",
+        "finger2: Band of Earthen Wrath",
+        "main_hand: Staff of Dar'Orahil",
+        "ranged: Charged Lightning Rod"
+      ],
+      "weights_run_seconds": 0.842188924,
+      "verify_run_seconds": 0.660999147
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 25,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "00000000000000000-0000000000000000000-2353210000000000",
+      "talent_points": 16,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 1.0470016546722642
+        },
+        {
+          "stat": "crit",
+          "weight": 0.6198951281718429
+        },
+        {
+          "stat": "hit",
+          "weight": 1.4343564968493852
+        },
+        {
+          "stat": "spell_haste",
+          "weight": -0.4778637812393634
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.7394158242500558
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.2604152755426972
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22149,
+          "item_name": "Beads of Ogre Mojo",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 25.56401985606717,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.893031438773022,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 14.343564968493851,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 56.712568197195615,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 82.4 vs 79.0 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 41.34356496849385,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 32.23500827336132,
+          "verified": false,
+          "swap_note": "runner-up Desert Bloom Gloves (id 20717) measured higher: 80.8 vs 79.0 set DPS - swapped in"
+        },
+        {
+          "slot": "waist",
+          "item_id": 20217,
+          "item_name": "Belt of Tiny Heads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 17.799028129428493,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 19.517018201394905,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 23.02209676289965,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 17.054545031783917,
+          "verified": false,
+          "swap_note": "runner-up Might of Cenarius (id 21189) measured higher: 79.3 vs 79.0 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15106,
+          "item_name": "Staff of Dar'Orahil",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 25.860583169888756,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 9.188006618689057,
+          "verified": true
+        }
+      ],
+      "set_dps": 79.01932272632583,
+      "no_source_count": 941,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "1076 Defias Renegade Ring",
+        "1077 Defias Mage Ring",
+        "1189 Overseer's Ring",
+        "1190 Overseer's Cloak",
+        "1219 Redridge Machete"
+      ],
+      "new_at_band": [
+        "neck: Beads of Ogre Mojo",
+        "shoulder: Zandalar Demoniac's Mantle",
+        "back: Earthweave Cloak",
+        "chest: Earthpower Vest",
+        "hands: Sandworm Skin Gloves",
+        "waist: Belt of Tiny Heads",
+        "feet: Southsea Mojo Boots",
+        "finger1: Band of Earthen Might",
+        "finger2: Band of Earthen Wrath",
+        "main_hand: Staff of Dar'Orahil",
+        "ranged: Charged Lightning Rod"
+      ],
+      "weights_run_seconds": 0.842188924,
+      "verify_run_seconds": 0.665468603
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 30,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "00000000000000000-0000000000000000000-2353224000000000",
+      "talent_points": 21,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.8472932799344032
+        },
+        {
+          "stat": "crit",
+          "weight": 0.42292828960860773
+        },
+        {
+          "stat": "hit",
+          "weight": 0.5890597663153563
+        },
+        {
+          "stat": "spell_haste",
+          "weight": -0.2505016672003023
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.9361587039724644
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.06394973630373156
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22149,
+          "item_name": "Beads of Ogre Mojo",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 23.16751935921284,
+          "verified": false,
+          "swap_note": "runner-up Kezan's Taint (id 19604) measured higher: 85.0 vs 84.9 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 28.09857231875366,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 20218,
+          "item_name": "Faded Hakkari Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 6.778346239475225,
+          "verified": false,
+          "swap_note": "runner-up Earthweave Cloak (id 21187) measured higher: 85.4 vs 84.9 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 49.56144821307738,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 88.2 vs 84.9 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 32.890597663153564,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.236466399672015,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 20217,
+          "item_name": "Belt of Tiny Heads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 14.403985758884854,
+          "verified": false,
+          "swap_note": "runner-up Crimson Silk Belt (id 7055) measured higher: 85.8 vs 84.9 set DPS - swapped in"
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 17.320226079278434,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 12.699342293995734,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 11.811593717674072,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 20724,
+          "item_name": "Corrupted Blackwood Staff",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18.64045215855687,
+          "verified": false,
+          "swap_note": "runner-up Staff of Dar'Orahil (id 15106) measured higher: 85.4 vs 84.9 set DPS - swapped in"
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.389173119737613,
+          "verified": true
+        }
+      ],
+      "set_dps": 84.89632952198073,
+      "no_source_count": 1105,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "1076 Defias Renegade Ring",
+        "1077 Defias Mage Ring",
+        "1189 Overseer's Ring",
+        "1190 Overseer's Cloak"
+      ],
+      "new_at_band": [
+        "back: Faded Hakkari Cloak",
+        "finger1: Band of Earthen Wrath",
+        "finger2: Band of Earthen Might",
+        "main_hand: Corrupted Blackwood Staff"
+      ],
+      "weights_run_seconds": 1.044430943,
+      "verify_run_seconds": 0.826708215
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 30,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "00000000000000000-0000000000000000000-2353224000000000",
+      "talent_points": 21,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.8472932799344032
+        },
+        {
+          "stat": "crit",
+          "weight": 0.42292828960860773
+        },
+        {
+          "stat": "hit",
+          "weight": 0.5890597663153563
+        },
+        {
+          "stat": "spell_haste",
+          "weight": -0.2505016672003023
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.9361587039724644
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.06394973630373156
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22149,
+          "item_name": "Beads of Ogre Mojo",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 23.16751935921284,
+          "verified": false,
+          "swap_note": "runner-up Kezan's Taint (id 19604) measured higher: 82.9 vs 82.7 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 28.09857231875366,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 20218,
+          "item_name": "Faded Hakkari Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 6.778346239475225,
+          "verified": false,
+          "swap_note": "runner-up Earthweave Cloak (id 21187) measured higher: 83.2 vs 82.7 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 49.56144821307738,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 85.8 vs 82.7 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 32.890597663153564,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.236466399672015,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 20217,
+          "item_name": "Belt of Tiny Heads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 14.403985758884854,
+          "verified": false,
+          "swap_note": "runner-up Crimson Silk Belt (id 7055) measured higher: 83.3 vs 82.7 set DPS - swapped in"
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 17.320226079278434,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 12.699342293995734,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 11.811593717674072,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 20724,
+          "item_name": "Corrupted Blackwood Staff",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18.64045215855687,
+          "verified": false,
+          "swap_note": "runner-up Staff of Dar'Orahil (id 15106) measured higher: 83.3 vs 82.7 set DPS - swapped in"
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.389173119737613,
+          "verified": true
+        }
+      ],
+      "set_dps": 82.72484704773063,
+      "no_source_count": 1105,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "1076 Defias Renegade Ring",
+        "1077 Defias Mage Ring",
+        "1189 Overseer's Ring",
+        "1190 Overseer's Cloak"
+      ],
+      "new_at_band": [
+        "back: Faded Hakkari Cloak",
+        "finger1: Band of Earthen Wrath",
+        "finger2: Band of Earthen Might",
+        "main_hand: Corrupted Blackwood Staff"
+      ],
+      "weights_run_seconds": 1.044430943,
+      "verify_run_seconds": 0.839657412
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 35,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "00000000000000000-0000000000000000000-2353225100101010",
+      "talent_points": 26,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.46500457857180316
+        },
+        {
+          "stat": "crit",
+          "weight": 1.3497131445910429
+        },
+        {
+          "stat": "hit",
+          "weight": 2.076272891935591
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 4.014962591704022
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.7066860157192631
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.29439693958005403
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 20.76272891935591,
+          "verified": false,
+          "swap_note": "runner-up Beads of Ogre Mojo (id 22149) measured higher: 88.2 vs 85.2 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 20.835086992864262,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 20.76272891935591,
+          "verified": false,
+          "swap_note": "runner-up Long Silken Cloak (id 4326) measured higher: 85.9 vs 85.2 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 54.12608475285427,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 88.5 vs 85.2 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 47.76272891935591,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 29.325022892859018,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 4329,
+          "item_name": "Star Belt",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 13,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 13.115050364289836,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 39.65871294363051,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 22.616020652849027,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15106,
+          "item_name": "Staff of Dar'Orahil",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 25.877779283645747,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 6.860018314287212,
+          "verified": true
+        }
+      ],
+      "set_dps": 85.16236198092982,
+      "no_source_count": 1242,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "937 Black Duskwood Staff",
+        "1076 Defias Renegade Ring"
+      ],
+      "new_at_band": [
+        "neck: Beads of Ogre Might",
+        "back: Earthweave Cloak",
+        "waist: Star Belt",
+        "finger1: Band of Earthen Might",
+        "finger2: Band of Earthen Wrath",
+        "main_hand: Staff of Dar'Orahil"
+      ],
+      "weights_run_seconds": 0.978228353,
+      "verify_run_seconds": 0.825976459
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 35,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "00000000000000000-0000000000000000000-2353225100101010",
+      "talent_points": 26,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.46500457857180316
+        },
+        {
+          "stat": "crit",
+          "weight": 1.3497131445910429
+        },
+        {
+          "stat": "hit",
+          "weight": 2.076272891935591
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 4.014962591704022
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.7066860157192631
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.29439693958005403
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 20.76272891935591,
+          "verified": false,
+          "swap_note": "runner-up Beads of Ogre Mojo (id 22149) measured higher: 86.0 vs 83.0 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 20.835086992864262,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 20.76272891935591,
+          "verified": false,
+          "swap_note": "runner-up Long Silken Cloak (id 4326) measured higher: 83.7 vs 83.0 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 54.12608475285427,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 86.3 vs 83.0 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 47.76272891935591,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 29.325022892859018,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 4329,
+          "item_name": "Star Belt",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 13,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 13.115050364289836,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 39.65871294363051,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 22.616020652849027,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15106,
+          "item_name": "Staff of Dar'Orahil",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 25.877779283645747,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 6.860018314287212,
+          "verified": true
+        }
+      ],
+      "set_dps": 82.98207881896897,
+      "no_source_count": 1242,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "937 Black Duskwood Staff",
+        "1076 Defias Renegade Ring"
+      ],
+      "new_at_band": [
+        "neck: Beads of Ogre Might",
+        "back: Earthweave Cloak",
+        "waist: Star Belt",
+        "finger1: Band of Earthen Might",
+        "finger2: Band of Earthen Wrath",
+        "main_hand: Staff of Dar'Orahil"
+      ],
+      "weights_run_seconds": 0.978228353,
+      "verify_run_seconds": 0.80830666
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 40,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "00000000000000000-0000000000000000000-2353225100101051",
+      "talent_points": 31,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.7770731674698339
+        },
+        {
+          "stat": "crit",
+          "weight": 1.6863003564061236
+        },
+        {
+          "stat": "hit",
+          "weight": 2.305596499169815
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 1.3905756133995955
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.41365182502274006
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.5805063926912417
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 23.055964991698147,
+          "verified": false,
+          "swap_note": "runner-up Beads of Ogre Mojo (id 22149) measured higher: 125.8 vs 123.4 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 26.764390181926842,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 23.055964991698147,
+          "verified": false,
+          "swap_note": "runner-up Long Silken Cloak (id 4326) measured higher: 123.9 vs 123.4 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 65.70381467402208,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 126.5 vs 123.4 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 50.05596499169815,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 30.88536583734917,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10771,
+          "item_name": "Deathmage Sash",
+          "source": "Razorfen Downs: Mordresh Fire Eye",
+          "source_kind": "dungeon",
+          "score": 18.65609751204751,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10009,
+          "item_name": "Red Mageweave Pants",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 23.324878009638006,
+          "verified": false,
+          "swap_note": "runner-up Glacial Leggings (id 22700) measured higher: 123.7 vs 123.4 set DPS - swapped in"
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 16.547804842168173,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 46.66416998138388,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 29.824790329444404,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15106,
+          "item_name": "Staff of Dar'Orahil",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.60376983386632,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.108292669879337,
+          "verified": true
+        }
+      ],
+      "set_dps": 123.35486305127,
+      "no_source_count": 1399,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "937 Black Duskwood Staff"
+      ],
+      "new_at_band": [
+        "waist: Deathmage Sash",
+        "legs: Red Mageweave Pants"
+      ],
+      "weights_run_seconds": 0.92132004,
+      "verify_run_seconds": 0.655299398
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 40,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "00000000000000000-0000000000000000000-2353225100101051",
+      "talent_points": 31,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.7770731674698339
+        },
+        {
+          "stat": "crit",
+          "weight": 1.6863003564061236
+        },
+        {
+          "stat": "hit",
+          "weight": 2.305596499169815
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 1.3905756133995955
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.41365182502274006
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.5805063926912417
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 23.055964991698147,
+          "verified": false,
+          "swap_note": "runner-up Beads of Ogre Mojo (id 22149) measured higher: 123.4 vs 120.7 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 26.764390181926842,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 23.055964991698147,
+          "verified": false,
+          "swap_note": "runner-up Long Silken Cloak (id 4326) measured higher: 121.1 vs 120.7 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 65.70381467402208,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 124.4 vs 120.7 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 50.05596499169815,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 30.88536583734917,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10771,
+          "item_name": "Deathmage Sash",
+          "source": "Razorfen Downs: Mordresh Fire Eye",
+          "source_kind": "dungeon",
+          "score": 18.65609751204751,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10009,
+          "item_name": "Red Mageweave Pants",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 23.324878009638006,
+          "verified": false,
+          "swap_note": "runner-up Glacial Leggings (id 22700) measured higher: 121.0 vs 120.7 set DPS - swapped in"
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 16.547804842168173,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 46.66416998138388,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 29.824790329444404,
+          "verified": false,
+          "swap_note": "runner-up Might of Cenarius (id 21189) measured higher: 121.0 vs 120.7 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15106,
+          "item_name": "Staff of Dar'Orahil",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.60376983386632,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.108292669879337,
+          "verified": true
+        }
+      ],
+      "set_dps": 120.66931982047532,
+      "no_source_count": 1399,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword",
+        "937 Black Duskwood Staff"
+      ],
+      "new_at_band": [
+        "waist: Deathmage Sash",
+        "legs: Red Mageweave Pants"
+      ],
+      "weights_run_seconds": 0.92132004,
+      "verify_run_seconds": 0.664007992
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 45,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "23000000000000000-0000000000000000000-2353225100101051",
+      "talent_points": 36,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.1570348233709333
+        },
+        {
+          "stat": "crit",
+          "weight": 3.4049698345046613
+        },
+        {
+          "stat": "hit",
+          "weight": 4.71152194916803
+        },
+        {
+          "stat": "spell_haste",
+          "weight": -1.7127848892303557
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": -0.3108769123395414
+        },
+        {
+          "stat": "fire_power",
+          "weight": 1.3122164315017855
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 47.1152194916803,
+          "verified": false,
+          "swap_note": "runner-up Kezan's Taint (id 19604) measured higher: 120.7 vs 117.8 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 14.983661644047732,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 47.1152194916803,
+          "verified": false,
+          "swap_note": "runner-up Icy Cloak (id 4327) measured higher: 118.2 vs 117.8 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 76.12434379722579,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 121.2 vs 117.8 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 74.1152194916803,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 27.785174116854666,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 17755,
+          "item_name": "Satyrmane Sash",
+          "source": "Maraudon: Lord Vyletongue",
+          "source_kind": "dungeon",
+          "score": 15.570348233709334,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10026,
+          "item_name": "Black Mageweave Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 12.099243763596533,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 94.78479717474556,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 48.925856270032725,
+          "verified": false,
+          "swap_note": "runner-up Might of Cenarius (id 21189) measured higher: 118.0 vs 117.8 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15106,
+          "item_name": "Staff of Dar'Orahil",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 48.84260254876057,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5.628139293483733,
+          "verified": true
+        }
+      ],
+      "set_dps": 117.76662480071518,
+      "no_source_count": 1542,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "waist: Satyrmane Sash",
+        "legs: Glacial Leggings",
+        "feet: Black Mageweave Boots"
+      ],
+      "weights_run_seconds": 1.009252421,
+      "verify_run_seconds": 0.809376501
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 45,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "23000000000000000-0000000000000000000-2353225100101051",
+      "talent_points": 36,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.1570348233709333
+        },
+        {
+          "stat": "crit",
+          "weight": 3.4049698345046613
+        },
+        {
+          "stat": "hit",
+          "weight": 4.71152194916803
+        },
+        {
+          "stat": "spell_haste",
+          "weight": -1.7127848892303557
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": -0.3108769123395414
+        },
+        {
+          "stat": "fire_power",
+          "weight": 1.3122164315017855
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 47.1152194916803,
+          "verified": false,
+          "swap_note": "runner-up Kezan's Taint (id 19604) measured higher: 117.6 vs 114.9 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 19849,
+          "item_name": "Zandalar Demoniac's Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 14.983661644047732,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 47.1152194916803,
+          "verified": false,
+          "swap_note": "runner-up Icy Cloak (id 4327) measured higher: 115.1 vs 114.9 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 21183,
+          "item_name": "Earthpower Vest",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 76.12434379722579,
+          "verified": false,
+          "swap_note": "runner-up Zandalar Demoniac's Robe (id 20033) measured higher: 118.0 vs 114.9 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 74.1152194916803,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 27.785174116854666,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 17755,
+          "item_name": "Satyrmane Sash",
+          "source": "Maraudon: Lord Vyletongue",
+          "source_kind": "dungeon",
+          "score": 15.570348233709334,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22700,
+          "item_name": "Glacial Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10026,
+          "item_name": "Black Mageweave Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 12.099243763596533,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 94.78479717474556,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21179,
+          "item_name": "Band of Earthen Wrath",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 48.925856270032725,
+          "verified": false,
+          "swap_note": "runner-up Might of Cenarius (id 21189) measured higher: 115.1 vs 114.9 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 15106,
+          "item_name": "Staff of Dar'Orahil",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 48.84260254876057,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5.628139293483733,
+          "verified": true
+        }
+      ],
+      "set_dps": 114.90778487697979,
+      "no_source_count": 1542,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "waist: Satyrmane Sash",
+        "legs: Glacial Leggings",
+        "feet: Black Mageweave Boots"
+      ],
+      "weights_run_seconds": 1.009252421,
+      "verify_run_seconds": 0.820674269
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 50,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "25300000000000000-0000000000000000000-2353225100101051",
+      "talent_points": 41,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": -0.9411336892197891
+        },
+        {
+          "stat": "crit",
+          "weight": 1.1297555414674236
+        },
+        {
+          "stat": "hit",
+          "weight": 1.6181358857126065
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.41429249391990774
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.6904173728666914
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.305702137579302
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 16.181358857126064,
+          "verified": false,
+          "swap_note": "runner-up Kezan's Taint (id 19602) measured higher: 154.6 vs 152.2 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10038,
+          "item_name": "Stormcloth Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 7,
+          "verified": false,
+          "swap_note": "runner-up Black Mageweave Shoulders (id 10027) measured higher: 157.8 vs 152.2 set DPS - swapped in"
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 16.181358857126064,
+          "verified": false,
+          "swap_note": "runner-up Spritecaster Cape (id 11623) measured higher: 159.0 vs 152.2 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 20033,
+          "item_name": "Zandalar Demoniac's Robe",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 43.181358857126064,
+          "verified": false,
+          "swap_note": "runner-up Earthpower Vest (id 21183) measured higher: 158.8 vs 152.2 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 43.181358857126064,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 22.294331553901053,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 4329,
+          "item_name": "Star Belt",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 13,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 14132,
+          "item_name": "Wizardweave Leggings",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 19,
+          "verified": false,
+          "swap_note": "runner-up Glacial Leggings (id 22700) measured higher: 152.4 vs 152.2 set DPS - swapped in"
+        },
+        {
+          "slot": "feet",
+          "item_id": 10039,
+          "item_name": "Stormcloth Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 8,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.997936437669996,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 17713,
+          "item_name": "Blackstone Ring",
+          "source": "Maraudon: Princess Theradras",
+          "source_kind": "dungeon",
+          "score": 16.181358857126064,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 11811,
+          "item_name": "Smoking Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 17719,
+          "item_name": "Inventor's Focal Sword",
+          "source": "Maraudon: Tinkerer Gizlock",
+          "source_kind": "dungeon",
+          "score": 15.816577580543932,
+          "verified": false,
+          "swap_note": "runner-up Staff of Noh'Orahil (id 15105) measured higher: 152.8 vs 152.2 set DPS - swapped in"
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 11904,
+          "item_name": "Spirit of Aquementas",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 21,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 8071,
+          "item_name": "Sizzle Stick",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5,
+          "verified": true
+        }
+      ],
+      "set_dps": 152.16061473341458,
+      "no_source_count": 1714,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "shoulder: Stormcloth Shoulders",
+        "chest: Zandalar Demoniac's Robe",
+        "waist: Star Belt",
+        "legs: Wizardweave Leggings",
+        "feet: Stormcloth Boots",
+        "finger2: Blackstone Ring",
+        "trinket1: Smoking Heart of the Mountain",
+        "main_hand: Inventor's Focal Sword",
+        "off_hand: Spirit of Aquementas",
+        "ranged: Sizzle Stick"
+      ],
+      "weights_run_seconds": 0.858067855,
+      "verify_run_seconds": 0.725252708
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 50,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "25300000000000000-0000000000000000000-2353225100101051",
+      "talent_points": 41,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": -0.9411336892197891
+        },
+        {
+          "stat": "crit",
+          "weight": 1.1297555414674236
+        },
+        {
+          "stat": "hit",
+          "weight": 1.6181358857126065
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.41429249391990774
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.6904173728666914
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.305702137579302
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 22150,
+          "item_name": "Beads of Ogre Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 16.181358857126064,
+          "verified": false,
+          "swap_note": "runner-up Kezan's Taint (id 19602) measured higher: 138.3 vs 136.9 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10038,
+          "item_name": "Stormcloth Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 7,
+          "verified": false,
+          "swap_note": "runner-up Black Mageweave Shoulders (id 10027) measured higher: 137.6 vs 136.9 set DPS - swapped in"
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 16.181358857126064,
+          "verified": false,
+          "swap_note": "runner-up Spritecaster Cape (id 11623) measured higher: 141.5 vs 136.9 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 20033,
+          "item_name": "Zandalar Demoniac's Robe",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 43.181358857126064,
+          "verified": false,
+          "swap_note": "runner-up Earthpower Vest (id 21183) measured higher: 150.2 vs 136.9 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 43.181358857126064,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 20716,
+          "item_name": "Sandworm Skin Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 22.294331553901053,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 4329,
+          "item_name": "Star Belt",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 13,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 14132,
+          "item_name": "Wizardweave Leggings",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 19,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10039,
+          "item_name": "Stormcloth Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 8,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 21182,
+          "item_name": "Band of Earthen Might",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.997936437669996,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 17713,
+          "item_name": "Blackstone Ring",
+          "source": "Maraudon: Princess Theradras",
+          "source_kind": "dungeon",
+          "score": 16.181358857126064,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 11811,
+          "item_name": "Smoking Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 17719,
+          "item_name": "Inventor's Focal Sword",
+          "source": "Maraudon: Tinkerer Gizlock",
+          "source_kind": "dungeon",
+          "score": 15.816577580543932,
+          "verified": false,
+          "swap_note": "runner-up Staff of Noh'Orahil (id 15105) measured higher: 145.3 vs 136.9 set DPS - swapped in"
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 11904,
+          "item_name": "Spirit of Aquementas",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 21,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 8071,
+          "item_name": "Sizzle Stick",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5,
+          "verified": true
+        }
+      ],
+      "set_dps": 136.87283480565083,
+      "no_source_count": 1714,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "shoulder: Stormcloth Shoulders",
+        "chest: Zandalar Demoniac's Robe",
+        "waist: Star Belt",
+        "legs: Wizardweave Leggings",
+        "feet: Stormcloth Boots",
+        "finger2: Blackstone Ring",
+        "trinket1: Smoking Heart of the Mountain",
+        "main_hand: Inventor's Focal Sword",
+        "off_hand: Spirit of Aquementas",
+        "ranged: Sizzle Stick"
+      ],
+      "weights_run_seconds": 0.858067855,
+      "verify_run_seconds": 0.834216803
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 55,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "25530000000000000-0000000000000000000-2353225100101051",
+      "talent_points": 46,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": -1.0712520083642405
+        },
+        {
+          "stat": "crit",
+          "weight": -7.728641214038991
+        },
+        {
+          "stat": "hit",
+          "weight": -10.9812629472053
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.6029947029640923
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": -0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 3.064458911926313
+        },
+        {
+          "stat": "fire_power",
+          "weight": -2.0641527901620083
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 23125,
+          "item_name": "Chains of the Lich",
+          "source": "Stratholme: Balzaphon",
+          "source_kind": "dungeon",
+          "score": 22,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10038,
+          "item_name": "Stormcloth Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 7,
+          "verified": false,
+          "swap_note": "runner-up Black Mageweave Shoulders (id 10027) measured higher: 137.7 vs 136.5 set DPS - swapped in"
+        },
+        {
+          "slot": "back",
+          "item_id": 11623,
+          "item_name": "Spritecaster Cape",
+          "source": "Blackrock Depths: High Interrogator Gerstahn ",
+          "source_kind": "dungeon",
+          "score": 7.5724879498145565,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 14128,
+          "item_name": "Wizardweave Robe",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 20,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 19596,
+          "item_name": "Dryad's Wrist Bindings",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 13.572487949814557,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 21318,
+          "item_name": "Earth Warder's Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 22,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 4329,
+          "item_name": "Star Belt",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 13,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 14144,
+          "item_name": "Ghostweave Pants",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 26,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 13864,
+          "item_name": "Runecloth Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 11,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 9447,
+          "item_name": "Electrocutioner Lagnut",
+          "source": "Gnomeregan",
+          "source_kind": "dungeon",
+          "score": 3,
+          "verified": false,
+          "swap_note": "runner-up Seafire Band (id 4549) measured higher: 136.8 vs 136.5 set DPS - swapped in"
+        },
+        {
+          "slot": "finger2",
+          "item_id": 4549,
+          "item_name": "Seafire Band",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 13171,
+          "item_name": "Smokey's Lighter",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 1155,
+          "item_name": "Rod of the Sleepwalker",
+          "source": "Blackfathom Deeps: Twilight Lord Kelris",
+          "source_kind": "dungeon",
+          "verified": false,
+          "swap_note": "runner-up Defias Rapier (id 1925) measured higher: 136.6 vs 136.5 set DPS - swapped in"
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 8071,
+          "item_name": "Sizzle Stick",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5,
+          "verified": true
+        }
+      ],
+      "set_dps": 136.46678571200553,
+      "no_source_count": 1864,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "neck: Chains of the Lich",
+        "back: Spritecaster Cape",
+        "chest: Wizardweave Robe",
+        "wrist: Dryad's Wrist Bindings",
+        "hands: Earth Warder's Gloves",
+        "legs: Ghostweave Pants",
+        "feet: Runecloth Boots",
+        "finger1: Electrocutioner Lagnut",
+        "finger2: Seafire Band",
+        "trinket1: Smokey's Lighter",
+        "main_hand: Rod of the Sleepwalker"
+      ],
+      "weights_run_seconds": 1.035929211,
+      "verify_run_seconds": 0.85439031
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 55,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "25530000000000000-0000000000000000000-2353225100101051",
+      "talent_points": 46,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": -1.0712520083642405
+        },
+        {
+          "stat": "crit",
+          "weight": -7.728641214038991
+        },
+        {
+          "stat": "hit",
+          "weight": -10.9812629472053
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.6029947029640923
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": -0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 3.064458911926313
+        },
+        {
+          "stat": "fire_power",
+          "weight": -2.0641527901620083
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 15999,
+          "item_name": "Spellpower Goggles Xtreme Plus",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 27,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 23125,
+          "item_name": "Chains of the Lich",
+          "source": "Stratholme: Balzaphon",
+          "source_kind": "dungeon",
+          "score": 22,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10038,
+          "item_name": "Stormcloth Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 7,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 11623,
+          "item_name": "Spritecaster Cape",
+          "source": "Blackrock Depths: High Interrogator Gerstahn ",
+          "source_kind": "dungeon",
+          "score": 7.5724879498145565,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 14128,
+          "item_name": "Wizardweave Robe",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 20,
+          "verified": false,
+          "swap_note": "runner-up Brightcloth Robe (id 14100) measured higher: 133.4 vs 132.4 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 19596,
+          "item_name": "Dryad's Wrist Bindings",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 13.572487949814557,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 21318,
+          "item_name": "Earth Warder's Gloves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 22,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 4329,
+          "item_name": "Star Belt",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 13,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 14144,
+          "item_name": "Ghostweave Pants",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 26,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 13864,
+          "item_name": "Runecloth Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 11,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 9447,
+          "item_name": "Electrocutioner Lagnut",
+          "source": "Gnomeregan",
+          "source_kind": "dungeon",
+          "score": 3,
+          "verified": false,
+          "swap_note": "runner-up Seafire Band (id 4549) measured higher: 133.6 vs 132.4 set DPS - swapped in"
+        },
+        {
+          "slot": "finger2",
+          "item_id": 4549,
+          "item_name": "Seafire Band",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 13171,
+          "item_name": "Smokey's Lighter",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 1155,
+          "item_name": "Rod of the Sleepwalker",
+          "source": "Blackfathom Deeps: Twilight Lord Kelris",
+          "source_kind": "dungeon",
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 8071,
+          "item_name": "Sizzle Stick",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5,
+          "verified": true
+        }
+      ],
+      "set_dps": 132.3682657372973,
+      "no_source_count": 1864,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "neck: Chains of the Lich",
+        "back: Spritecaster Cape",
+        "chest: Wizardweave Robe",
+        "wrist: Dryad's Wrist Bindings",
+        "hands: Earth Warder's Gloves",
+        "legs: Ghostweave Pants",
+        "feet: Runecloth Boots",
+        "finger1: Electrocutioner Lagnut",
+        "finger2: Seafire Band",
+        "trinket1: Smokey's Lighter",
+        "main_hand: Rod of the Sleepwalker"
+      ],
+      "weights_run_seconds": 1.035929211,
+      "verify_run_seconds": 0.842575446
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 60,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "25532300000000000-0000000000000000000-2353225100101051",
+      "talent_points": 51,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 2.6873898258136215
+        },
+        {
+          "stat": "crit",
+          "weight": 4.025745385311188
+        },
+        {
+          "stat": "hit",
+          "weight": 4.904179318479735
+        },
+        {
+          "stat": "spell_haste",
+          "weight": -0.12370319574295786
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.24297827992948692
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.7631475866865708
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 22506,
+          "item_name": "Plagueheart Circlet",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 261.9474096188511,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 23057,
+          "item_name": "Gem of Trapped Innocents",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 146.5325995694086,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 22507,
+          "item_name": "Plagueheart Shoulderpads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 117.29047109456081,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 18509,
+          "item_name": "Chromatic Cloak",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 56.36043539435663,
+          "verified": false,
+          "swap_note": "runner-up Earthweave Cloak (id 21187) measured higher: 361.2 vs 358.4 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 22504,
+          "item_name": "Plagueheart Robe",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 215.52480474705365,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 76.04179318479734,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 14146,
+          "item_name": "Gloves of Spell Mastery",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 148.59476904684948,
+          "verified": false,
+          "swap_note": "runner-up Plagueheart Gloves (id 22509) measured higher: 362.6 vs 358.4 set DPS - swapped in"
+        },
+        {
+          "slot": "waist",
+          "item_id": 22510,
+          "item_name": "Plagueheart Belt",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 122.60911330412009,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22505,
+          "item_name": "Plagueheart Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 160.54518103969718,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 22508,
+          "item_name": "Plagueheart Sandals",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 131.35867260737456,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 23025,
+          "item_name": "Seal of the Damned",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 126.40222857915397,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21417,
+          "item_name": "Ring of Unspoken Names",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 119.40222857915398,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 23046,
+          "item_name": "The Restrained Essence of Sapphiron",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 40,
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 22954,
+          "item_name": "Kiss of the Spider",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 105.40222857915398,
+          "verified": false,
+          "swap_note": "runner-up Eye of the Dead (id 23047) measured higher: 359.5 vs 358.4 set DPS - swapped in"
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 22630,
+          "item_name": "Atiesh, Greatstaff of the Guardian",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 340.6551757373083,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 15.749559303254486,
+          "verified": false,
+          "swap_note": "runner-up Fizzle's Zippy Lighter (id 6729) measured higher: 358.5 vs 358.4 set DPS - swapped in"
+        }
+      ],
+      "set_dps": 358.39643215000467,
+      "no_source_count": 2208,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "head: Plagueheart Circlet",
+        "neck: Gem of Trapped Innocents",
+        "shoulder: Plagueheart Shoulderpads",
+        "back: Chromatic Cloak",
+        "chest: Plagueheart Robe",
+        "wrist: Rockfury Bracers",
+        "hands: Gloves of Spell Mastery",
+        "waist: Plagueheart Belt",
+        "legs: Plagueheart Leggings",
+        "feet: Plagueheart Sandals",
+        "finger1: Seal of the Damned",
+        "finger2: Ring of Unspoken Names",
+        "trinket1: The Restrained Essence of Sapphiron",
+        "trinket2: Kiss of the Spider",
+        "main_hand: Atiesh, Greatstaff of the Guardian",
+        "ranged: Charged Lightning Rod"
+      ],
+      "weights_run_seconds": 0.868583208,
+      "verify_run_seconds": 0.700006083
+    },
+    {
+      "spec": "warlock-destruction",
+      "band": 60,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "25532300000000000-0000000000000000000-2353225100101051",
+      "talent_points": 51,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1
+        },
+        {
+          "stat": "intellect",
+          "weight": 2.6873898258136215
+        },
+        {
+          "stat": "crit",
+          "weight": 4.025745385311188
+        },
+        {
+          "stat": "hit",
+          "weight": 4.904179318479735
+        },
+        {
+          "stat": "spell_haste",
+          "weight": -0.12370319574295786
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.24297827992948692
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.7631475866865708
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 22506,
+          "item_name": "Plagueheart Circlet",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 261.94740961885117,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 23057,
+          "item_name": "Gem of Trapped Innocents",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 146.5325995694086,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 22507,
+          "item_name": "Plagueheart Shoulderpads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 117.29047109456081,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 18509,
+          "item_name": "Chromatic Cloak",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 56.36043539435663,
+          "verified": false,
+          "swap_note": "runner-up Earthweave Cloak (id 21187) measured higher: 359.5 vs 356.3 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 22504,
+          "item_name": "Plagueheart Robe",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 215.52480474705362,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 76.04179318479734,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 14146,
+          "item_name": "Gloves of Spell Mastery",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 148.59476904684948,
+          "verified": false,
+          "swap_note": "runner-up Plagueheart Gloves (id 22509) measured higher: 359.8 vs 356.3 set DPS - swapped in"
+        },
+        {
+          "slot": "waist",
+          "item_id": 22510,
+          "item_name": "Plagueheart Belt",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 122.60911330412009,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22505,
+          "item_name": "Plagueheart Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 160.54518103969718,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 22508,
+          "item_name": "Plagueheart Sandals",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 131.35867260737456,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 23025,
+          "item_name": "Seal of the Damned",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 126.40222857915397,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21417,
+          "item_name": "Ring of Unspoken Names",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 119.40222857915398,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 23046,
+          "item_name": "The Restrained Essence of Sapphiron",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 40,
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 23047,
+          "item_name": "Eye of the Dead",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 22630,
+          "item_name": "Atiesh, Greatstaff of the Guardian",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 340.6551757373083,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 15.749559303254486,
+          "verified": true
+        }
+      ],
+      "set_dps": 356.2856147184549,
+      "no_source_count": 2208,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "head: Plagueheart Circlet",
+        "neck: Gem of Trapped Innocents",
+        "shoulder: Plagueheart Shoulderpads",
+        "back: Chromatic Cloak",
+        "chest: Plagueheart Robe",
+        "wrist: Rockfury Bracers",
+        "hands: Gloves of Spell Mastery",
+        "waist: Plagueheart Belt",
+        "legs: Plagueheart Leggings",
+        "feet: Plagueheart Sandals",
+        "finger1: Seal of the Damned",
+        "finger2: Ring of Unspoken Names",
+        "trinket1: The Restrained Essence of Sapphiron",
+        "trinket2: Eye of the Dead",
+        "main_hand: Atiesh, Greatstaff of the Guardian",
+        "ranged: Charged Lightning Rod"
+      ],
+      "weights_run_seconds": 0.868583208,
+      "verify_run_seconds": 0.690655152
+    }
+  ]
+}
