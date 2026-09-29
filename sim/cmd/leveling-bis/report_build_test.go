@@ -26,7 +26,7 @@ func reportSpec() specInfo {
 
 func TestBuildReportFirstBandHasNoPreviousSoEveryPickIsNew(t *testing.T) {
 	picks := map[string]slotPick{
-		"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Helm"}, HasSource: true, Source: itemSource{Kind: "quest", Label: "A Quest"}}},
+		"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Helm"}, Score: 10, HasSource: true, Source: itemSource{Kind: "quest", Label: "A Quest"}}},
 	}
 	r := buildReport(reportSpec(), 20, "horde", "troll", "0500000", 5, map[string]api.StatWeight{"agility": {Stat: "agility", Weight: 1.5, Error: 0.1}}, reportSpec().WeightStats, picks, 500, nil, nil, nil, 1.2, 3.4, nil, nil, nil, 0)
 	if r.Band != 20 || r.Faction != "horde" || r.Race != "troll" || r.TalentPoints != 5 {
@@ -100,7 +100,7 @@ func TestBuildReportSwapBeatenRowIsTheWinnerVerifiedWithNote(t *testing.T) {
 }
 
 func TestBuildReportSwapLostKeepsSlotVerified(t *testing.T) {
-	pick := &scored{candidate: candidate{ID: 1, Name: "Helm"}}
+	pick := &scored{candidate: candidate{ID: 1, Name: "Helm"}, Score: 10}
 	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Worse Helm"}}
 	picks := map[string]slotPick{"head": {Item: pick, RunnerUp: runnerUp}}
 	swaps := []swapResult{{Slot: "head", SwapDPS: 50, Beat: false}}
@@ -117,7 +117,7 @@ func TestBuildReportSwapLostKeepsSlotVerified(t *testing.T) {
 }
 
 func TestBuildReportVerifyErrorMarksSlotUnconfirmed(t *testing.T) {
-	pick := &scored{candidate: candidate{ID: 1, Name: "Helm"}}
+	pick := &scored{candidate: candidate{ID: 1, Name: "Helm"}, Score: 10}
 	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Other Helm"}}
 	picks := map[string]slotPick{"head": {Item: pick, RunnerUp: runnerUp}}
 	verifyErrors := []string{"head: runner-up Other Helm (id 2): the engine reported an error: boom"}
@@ -277,6 +277,69 @@ func TestBuildReportCarriesTiedAlternatives(t *testing.T) {
 	}
 }
 
+// This lane's brief, item 2 (bis-ranker-integrity, 2026-09-29):
+// Sentinel's Medallion (Agility/Stamina) scoring exactly 0 for a caster
+// spec must publish empty with empty_reason "no_dps_value", not as a
+// "verified" pick - the exact defect every caster spec's own band-20
+// neck carried before this fix.
+func TestBuildReportPublishesEmptySlotWithNoDPSValueReason(t *testing.T) {
+	picks := map[string]slotPick{
+		"neck": {Item: &scored{candidate: candidate{ID: 1, Name: "Sentinel's Medallion"}, Score: 0}},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var neckRow slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "neck" {
+			neckRow = s
+		}
+	}
+	if neckRow.ItemID != 0 || neckRow.ItemName != "" {
+		t.Fatalf("neck row = %+v, want empty (no item published)", neckRow)
+	}
+	if neckRow.EmptyReason != noDPSValueReason {
+		t.Fatalf("neck row EmptyReason = %q, want %q", neckRow.EmptyReason, noDPSValueReason)
+	}
+}
+
+// A trinket slot's own Score is near-meaningless (score() cannot value a
+// proc/on-use effect at all - trinkets.go's own doc): rankTrinketSlot's
+// real-sim decision is authoritative regardless of what score() says, so
+// a trinket at Score 0 must NOT be emptied.
+func TestBuildReportKeepsATrinketAtScoreZero(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "A Proc Trinket"}, Score: 0}},
+	}
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket1" {
+			row = s
+		}
+	}
+	if row.ItemID != 1 || row.EmptyReason != "" {
+		t.Fatalf("trinket1 row = %+v, want item 1 published with no EmptyReason (trinkets are exempt from the score-zero gate)", row)
+	}
+}
+
+// A candidate whose effect the engine does NOT implement (EffectUnmodelled)
+// might have real, unmeasured value score() cannot see either - it must
+// not be emptied just because its plain stat score happens to be 0.
+func TestBuildReportKeepsAnEffectUnmodelledPickAtScoreZero(t *testing.T) {
+	picks := map[string]slotPick{
+		"back": {Item: &scored{candidate: candidate{ID: 1, Name: "Mystery Cloak", EffectText: "Does something unimplemented"}, Score: 0}},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "back" {
+			row = s
+		}
+	}
+	if row.ItemID != 1 || row.EmptyReason != "" {
+		t.Fatalf("back row = %+v, want item 1 published with no EmptyReason (effect_unmodelled is exempt)", row)
+	}
+}
+
 // This lane's brief, item 1 (owner defect A, 2026-09-29): a slot's
 // alternatives must carry the next-best sourced candidates after the
 // pick, so a player who cannot get the pick's own source has a real
@@ -288,15 +351,18 @@ func TestBuildReportCarriesTiedAlternatives(t *testing.T) {
 // dps_delta, descending, not "ties then score order" - the two agree
 // whenever nothing outscores the pick (the overwhelmingly common case:
 // bySlot's own list is best-score-first, so the pick IS the top entry
-// and every tie sits at the exact same score right behind it), but
-// Hammerbone here legitimately outscores this test's pick with NO
-// swap correction applied (this fixture deliberately leaves sw nil -
+// and every tie sits at the exact same score right behind it).
+// Hammerbone here DOES outscore this test's pick with no swap
+// correction applied (this fixture deliberately leaves sw nil), but
+// this lane's brief (bis-ranker-integrity, 2026-09-29) caps exactly
+// this case at 0 rather than publishing the raw positive estimate as a
+// fact: nothing has actually simmed Hammerbone against the pick (see
 // TestBuildAlternativesSwapBeatOverridesTheDemotedRunnerUpsDelta below
-// is the same numbers WITH the real-sim correction, where Hammerbone's
-// positive estimate flips negative and drops behind Smite's Mighty
-// Hammer instead), so its own positive, uncorrected estimate correctly
-// outranks a flat 0 tie: the estimate says "this scores better than
-// the pick", and nothing has told buildAlternatives otherwise yet.
+// for the same numbers WITH that real-sim correction, where Hammerbone's
+// delta is real and allowed to be negative), so its unverified estimate
+// ties with 0 - a real tie (Tied Greataxe) and an unverified "maybe
+// better" both read as "at best equal to the pick" - and the two tie-
+// break by item id, ascending, same as every other tie in this file.
 func TestBuildAlternativesSortsByDPSDeltaDescendingTiesIncluded(t *testing.T) {
 	pick := &scored{candidate: candidate{ID: 1, Name: "Forsaken Greataxe"}, Score: 302.9}
 	pk := slotPick{
@@ -322,8 +388,11 @@ func TestBuildAlternativesSortsByDPSDeltaDescendingTiesIncluded(t *testing.T) {
 	// ordering and exclusion, not arithmetic.
 	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 1.0, nil)
 	want := []alternativeRow{
-		{ItemID: 6, ItemName: "Hammerbone", Score: 306.05, SourceKind: "quest", Source: "Quests", ScoreDelta: 306.05 - 302.9, DPSDelta: 306.05 - 302.9},
+		// Tied Greataxe (id 5) and Hammerbone (id 6) both read DPSDelta 0
+		// (an unverified positive estimate is capped, not published),
+		// so they tie-break by item id ascending.
 		{ItemID: 5, ItemName: "Tied Greataxe", Score: 302.9, SourceKind: "quest", Source: "Quests", ScoreDelta: 0, DPSDelta: 0},
+		{ItemID: 6, ItemName: "Hammerbone", Score: 306.05, SourceKind: "quest", Source: "Quests", ScoreDelta: 306.05 - 302.9, DPSDelta: 0},
 		{ItemID: 7230, ItemName: "Smite's Mighty Hammer", Score: 297.82, SourceKind: "dungeon", Source: "The Deadmines: Mr. Smite", ScoreDelta: 297.82 - 302.9, DPSDelta: 297.82 - 302.9},
 	}
 	if len(got) != len(want) {

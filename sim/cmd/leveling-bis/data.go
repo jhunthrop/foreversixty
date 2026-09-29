@@ -238,6 +238,20 @@ type lootSource struct {
 	Items       []int              `json:"items"`
 	ItemChances map[string]float64 `json:"item_chances"`
 	Bosses      []lootBoss         `json:"bosses"`
+	// Opens is the content phase this source unlocks in
+	// (data/curated/loot/forever-raid-phases.json's own curated fact,
+	// "later" for every Era raid this build's generator emits and
+	// "raids-1" for Onyxia's Lair - none of them launch-day open: that
+	// file's own notes say plainly "Nothing raids at launch on 4
+	// November; the first tier opens on 9 December"). Empty for every
+	// source this build has NOT curated a phase for - a dungeon, quest,
+	// reputation, crafted, PvP or open-world source, every one of which
+	// this lane's brief (item 3) confirms IS open at launch. sourceObtainable
+	// (band.go) reads this to gate a leveling list on it directly, so a
+	// leveling character's OWN band-60 list stops naming raid gear no
+	// launch-day 60 could possibly have - see this lane's report for
+	// which band-60 picks moved once this landed.
+	Opens string `json:"opens,omitempty"`
 }
 
 // lootQuestEntry is one entry of loot.json's `quests` map: one quest
@@ -283,6 +297,10 @@ type itemSource struct {
 	// never preferred over a source that does state one" rather than as
 	// a real 0% chance.
 	Chance float64
+	// Opens is lootSource.Opens, carried through unchanged - this lane's
+	// brief, item 3: sourceObtainable (band.go) refuses any source this
+	// is non-empty for, at every band, not only below 60.
+	Opens string
 }
 
 // repSide names the reputations only one side can earn, by the client's
@@ -315,6 +333,54 @@ var repSide = map[int]string{
 // Side (always "", since its id is literally "quest") - see loadLootIndex's
 // own doc for why a per-quest record, not a per-item merge, is required.
 var questFactionSide = map[string]string{"alliance": "alliance", "horde": "horde", "both": ""}
+
+// raidLockedQuestOpens is quest_id -> the content phase it needs, for a
+// quest reward whose own loot.json entry reads "kind": "quest" (so the
+// general Opens-from-a-raid-source gate in sourceObtainable never sees
+// it - loadLootIndex skips "quest"-kind rows from that loop entirely
+// and builds this one's itemSource separately, below) but whose quest
+// chain is actually gated behind raid boss kills - this lane's brief,
+// item 3's own named example: "Atiesh, Greatstaff of the Guardian" is
+// the Naxxramas class-quest chain's reward, not obtainable without
+// having already killed Kel'Thuzad, so it is exactly as launch-
+// unavailable as a direct Naxxramas drop even though loot.json's own
+// "kind" says "quest".
+//
+// Quest ids 9270/9271 (Wowhead's Alliance/Horde quest ids for "Atiesh,
+// Greatstaff of the Guardian", confirmed against loot.json's own
+// quests map for items 22589/22630) are the brief's own named case;
+// this lane's own dogfood run (re-checking mage-fire band 60 after
+// gating those two alone) immediately found the SAME shape one level
+// down the same reward's own alternatives list - "Blessed Qiraji
+// Acolyte Staff" (quest 8790, "Imperial Qiraji Regalia") became the
+// new band-60 main_hand pick, itself gated behind the Ahn'Qiraj War
+// Effort - a raid-tier community event this build's own
+// forever-raid-phases.json already curates "later" for the raid
+// itself (`raid:ahnqiraj`), but which never touches its OWN
+// quest-kind rewards the same way Atiesh's chain does not. 8789/8756
+// are that same War Effort's other two reward-item quests
+// ("Imperial Qiraji Armaments", "The Qiraji Conqueror"), added
+// together rather than one at a time once the pattern was clear. 7787
+// ("Rise, Thunderfury!") is the same shape again, found the same way
+// re-checking warrior/rogue/hunter band 60 main_hand after the Qiraji
+// fix: the quest itself needs 8 Bindings of the Windseeker, which drop
+// randomly off EVERY Molten Core boss (`raid:molten-core`, already
+// "later") - the legendary is exactly as launch-unobtainable as a
+// direct MC drop.
+//
+// A broader systematic audit of every OTHER quest-kind reward that
+// turns out to be raid-gated (the same category of gap
+// forever-raid-phases.json's own curated facts fill for direct raid
+// sources) is a follow-up beyond this lane's scope - see this lane's
+// report for exactly what was and was not checked.
+var raidLockedQuestOpens = map[int]string{
+	9270: "later", // Atiesh, Greatstaff of the Guardian (Alliance) - Naxxramas class quest chain
+	9271: "later", // Atiesh, Greatstaff of the Guardian (Horde) - Naxxramas class quest chain
+	8756: "later", // The Qiraji Conqueror - Ahn'Qiraj War Effort reward
+	8789: "later", // Imperial Qiraji Armaments - Ahn'Qiraj War Effort reward
+	8790: "later", // Imperial Qiraji Regalia - Ahn'Qiraj War Effort reward
+	7787: "later", // Rise, Thunderfury! - needs 8 Bindings of the Windseeker (Molten Core boss drops)
+}
 
 // repFactionSwap pairs the six battleground faction ids with their
 // opposite number, for correctedRepSource's fix below.
@@ -422,7 +488,7 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		}
 		add := func(id int, label string, chance float64) {
 			is := itemSource{
-				Kind: src.Kind, Label: label, Side: factionExclusiveDungeons[src.ID], Chance: chance,
+				Kind: src.Kind, Label: label, Side: factionExclusiveDungeons[src.ID], Chance: chance, Opens: src.Opens,
 			}
 			if src.Kind == "rep" {
 				factionID := src.FactionID
@@ -465,6 +531,7 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				Kind:  "quest",
 				Label: e.Name,
 				Side:  questFactionSide[e.Faction],
+				Opens: raidLockedQuestOpens[e.QuestID],
 			})
 		}
 		questFloors[id] = leveling.LowestFloor(levels)
@@ -652,43 +719,101 @@ func writtenSpecs(repoRoot string) ([]string, error) {
 // since the guide was authored).
 type guideRaces struct {
 	// AllianceRace, HordeRace are recommendedRaces[0], [1]: the guide
-	// states Alliance first, Horde second, and bulk/expand.go's
-	// hordeRaces table is what this command checks that against (see
-	// main.go's loadGuide caller).
+	// states Alliance first, Horde second, and loadGuideRaces itself now
+	// checks each against data/builds/<build>/races.json's own
+	// slug->faction fact before returning (this lane's brief, item 4) -
+	// a caller holding a guideRaces value already knows both races are
+	// real and on the faction the field name says.
 	AllianceRace string
 	HordeRace    string
 }
 
 var racesLineRE = regexp.MustCompile(`^recommendedRaces:\s*\[([^\]]*)\]\s*$`)
 
+// raceFaction is race slug -> "alliance"/"horde", from
+// data/builds/<build>/races.json - the client's own, single source of
+// truth for which faction can play which race (this lane's brief,
+// item 4: "fix it for every class/faction against races.json").
+type raceFaction map[string]string
+
+type raceFile struct {
+	Slug    string `json:"slug"`
+	Faction string `json:"faction"`
+}
+
+func loadRaceFactions(buildDir string) (raceFaction, error) {
+	path := filepath.Join(buildDir, "races.json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("reading %s: %w", path, err)
+	}
+	var rows []raceFile
+	if err := json.Unmarshal(b, &rows); err != nil {
+		return nil, fmt.Errorf("decoding %s: %w", path, err)
+	}
+	out := make(raceFaction, len(rows))
+	for _, r := range rows {
+		out[r.Slug] = r.Faction
+	}
+	return out, nil
+}
+
 // loadGuideRaces reads a spec guide's frontmatter for its recommended
 // races. It is a small, deliberately line-oriented reader rather than a
 // YAML parser: the frontmatter is one line this command needs out of a
 // much larger file, and a full YAML dependency for one regex is not
 // worth adding to the sim module.
-func loadGuideRaces(repoRoot, classSlug, specSlug string) (guideRaces, error) {
+//
+// The guide's own convention (guideRaces' own doc) is exactly 2 races,
+// Alliance then Horde - racesLineRE's own match is split on every comma
+// with no bound on how many. Before this lane, a third entry (a copy-
+// paste slip, not a typo: paladin/retribution.md's own frontmatter read
+// "recommendedRaces: [human, dwarf, undead]" - three viable-looking
+// races, but position [1] silently became HordeRace) was accepted
+// without complaint, positions [0]/[1] taken and everything after
+// dropped on the floor - reading Alliance-only Dwarf into HordeRace for
+// every band of paladin-retribution's Horde list (Forever's actual new
+// Horde Paladin race is Undead, research/01-official-facts.md; the
+// guide's own prose already said so, just not its frontmatter). Fixed
+// two ways: parts is now rejected outright unless it has exactly 2
+// entries (fail fast on the shape this bug actually took), and each
+// race is checked against raceFactions - the client's own
+// faction_restriction fact, not another hand-maintained guess - so a
+// future guide naming a Horde race for Alliance (or vice versa) fails
+// the same load instead of silently mis-racing every band it publishes.
+func loadGuideRaces(repoRoot, buildDir, classSlug, specSlug string) (guideRaces, error) {
 	path := filepath.Join(repoRoot, "web", "src", "content", "guides", classSlug, specSlug+".md")
 	b, err := os.ReadFile(path)
 	if err != nil {
 		return guideRaces{}, fmt.Errorf("reading %s: %w", path, err)
 	}
-	var out guideRaces
-	for _, line := range strings.Split(string(b), "\n") {
-		if m := racesLineRE.FindStringSubmatch(line); m != nil {
-			parts := strings.Split(m[1], ",")
-			for i, p := range parts {
-				p = strings.TrimSpace(p)
-				p = strings.Trim(p, "'\"")
-				if i == 0 {
-					out.AllianceRace = p
-				} else if i == 1 {
-					out.HordeRace = p
-				}
-			}
-		}
+	factions, err := loadRaceFactions(buildDir)
+	if err != nil {
+		return guideRaces{}, err
 	}
-	if out.AllianceRace == "" || out.HordeRace == "" {
+	var out guideRaces
+	var found bool
+	for _, line := range strings.Split(string(b), "\n") {
+		m := racesLineRE.FindStringSubmatch(line)
+		if m == nil {
+			continue
+		}
+		found = true
+		parts := strings.Split(m[1], ",")
+		if len(parts) != 2 {
+			return guideRaces{}, fmt.Errorf("%s: recommendedRaces: want exactly 2 races (Alliance, Horde), got %d: %q", path, len(parts), m[1])
+		}
+		out.AllianceRace = strings.Trim(strings.TrimSpace(parts[0]), "'\"")
+		out.HordeRace = strings.Trim(strings.TrimSpace(parts[1]), "'\"")
+	}
+	if !found || out.AllianceRace == "" || out.HordeRace == "" {
 		return guideRaces{}, fmt.Errorf("%s: recommendedRaces: frontmatter did not parse into 2 races, got %q/%q", path, out.AllianceRace, out.HordeRace)
+	}
+	if f := factions[out.AllianceRace]; f != "alliance" {
+		return guideRaces{}, fmt.Errorf("%s: recommendedRaces: %q is not an Alliance race per races.json (faction %q)", path, out.AllianceRace, f)
+	}
+	if f := factions[out.HordeRace]; f != "horde" {
+		return guideRaces{}, fmt.Errorf("%s: recommendedRaces: %q is not a Horde race per races.json (faction %q)", path, out.HordeRace, f)
 	}
 	return out, nil
 }

@@ -63,7 +63,30 @@ type slotRow struct {
 	// pick can score higher yet measure worse, and must not publish a
 	// dps_delta that outranks a tie or the pick it lost to).
 	Alternatives []alternativeRow `json:"alternatives,omitempty"`
+	// EmptyReason explains a slot with no ItemID at all beyond "nothing
+	// eligible/sourced existed" (band.go's own NoSourceCount already
+	// covers that case): "no_dps_value" means at least one candidate WAS
+	// eligible and sourced, but every one of them contributed exactly
+	// zero to this spec's own score() (score.go's weighted-stat-plus-
+	// weapon-dps total) - this lane's brief, item 2: Sentinel's Medallion
+	// (Agility/Stamina) for a mage, Eye of the Dead (pure healing) for a
+	// DPS shadow priest, both published as "verified" BiS across every
+	// caster spec this build carries before this fix, scoring exactly 0
+	// against weights that never priced agility or healing at all. Never
+	// set for trinket1/trinket2 (score() cannot value a trinket at all --
+	// rankTrinketSlot's own real-sim decision is authoritative regardless
+	// of the published Score field, trinkets.go's own doc) or for a
+	// candidate carrying an unmodelled effect (EffectUnmodelled, above --
+	// its own real value might not be zero at all, score() simply cannot
+	// see it) or for a slot a real swap sim actually promoted (SwapNote
+	// non-empty - a real, measured DPS gain, whatever score() says).
+	EmptyReason string `json:"empty_reason,omitempty"`
 }
+
+// noDPSValueReason is EmptyReason's own published value for this lane's
+// brief item 2 - a named constant so buildReport's own check and any
+// consumer testing for it read the identical string.
+const noDPSValueReason = "no_dps_value"
 
 // tieAlternative is one equally-scored item slotRow.Ties names.
 type tieAlternative struct {
@@ -99,13 +122,29 @@ type alternativeRow struct {
 	// score-unit delta under a "dps_delta" name with nothing saying it
 	// was not actually DPS (warrior-arms horde band 20 read "Smite's
 	// Mighty Hammer -5.09" when the real gap is 0.23 DPS - 5.09 SCORE
-	// points at this band's reference_dps_per_point of 0.0444). Usually
-	// negative (bySlot's own list is score-sorted, so most candidates
-	// after the pick score, and therefore convert, lower), but can be
-	// positive for a candidate this command never actually simmed
-	// against the pick - see Verified's own doc for the one row that
-	// IS simmed, and why that row's DPSDelta is not this conversion at
-	// all.
+	// points at this band's reference_dps_per_point of 0.0444).
+	//
+	// This lane's brief (bis-ranker-integrity, 2026-09-29): score() is
+	// not the unit a trinket-rank/effect-rank/set-completion pick was
+	// actually decided by (rankTrinketSlot, rankSlotWithEffects,
+	// trySetCompletion each replace a slot's pick with a REAL sim's
+	// winner, which score() cannot see the reason for at all - the exact
+	// gap rank.go's own doc calls "no notion of a proc at all"), so an
+	// alternative that never entered that real comparison - Neltharion's
+	// Tear against mage-fire's Naxxramas trinket1, Kindling Stave against
+	// warrior-arms' Blight, both true dogfood finds this lane's report
+	// names - is not a fair, tested claim of "beats the pick" merely
+	// because its raw stat score() is higher; score() structurally
+	// undervalues exactly what made the real pick win. Tenet 8:
+	// unverified data is never shown as fact, so buildAlternatives caps
+	// every UNVERIFIED row's own DPSDelta at 0 (a candidate can publish
+	// "at most a tie," never a positive, untested "beats the pick" claim)
+	// - only Verified's own row, below, is allowed a positive number,
+	// because it is the one candidate this command actually simmed
+	// against the pick. A negative, unverified DPSDelta is left alone:
+	// "this scores worse" is still useful fallback-ranking information,
+	// and score() undervaluing the PICK's own real strength never makes
+	// a genuinely-worse alternative look better than it is.
 	DPSDelta float64 `json:"dps_delta"`
 	// Verified is true for the one alternative (at most) verify.go's
 	// own swap pass actually simmed against the pick (pk.RunnerUp at
@@ -193,6 +232,17 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 	add := func(out []alternativeRow, c scored) []alternativeRow {
 		seen[c.ID] = true
 		scoreDelta := c.Score - pk.Item.Score
+		// DPSDelta's own doc, above: this row is not (yet) the one
+		// candidate verify.go actually simmed against the pick (the
+		// swap-override pass below is what promotes exactly one row to
+		// that), so a positive score-unit delta here is never published
+		// as a real, measured "beats the pick" claim - capped at 0. A
+		// negative delta is left alone; only the positive/untested
+		// direction is the tenet-8 problem this cap exists for.
+		dpsDelta := scoreDelta * referenceDPSPerPoint
+		if dpsDelta > 0 {
+			dpsDelta = 0
+		}
 		return append(out, alternativeRow{
 			ItemID:     c.ID,
 			ItemName:   c.Name,
@@ -200,7 +250,7 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 			SourceKind: c.Source.Kind,
 			Source:     c.Source.Label,
 			ScoreDelta: scoreDelta,
-			DPSDelta:   scoreDelta * referenceDPSPerPoint,
+			DPSDelta:   dpsDelta,
 		})
 	}
 
@@ -381,6 +431,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 				row.Source = pk.Item.Source.Label
 				row.SourceKind = pk.Item.Source.Kind
 			}
+			var realSimPromotion bool
 			switch {
 			case erroredSlots[slot]:
 				row.Verified = false
@@ -392,7 +443,20 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 					// demoted the scored pick to pk.RunnerUp: this row IS the
 					// measured winner, verified by that very run.
 					row.SwapNote = fmt.Sprintf("beat the scored pick %s (id %d) in the sim: %.1f vs %.1f set DPS", pk.RunnerUp.Name, pk.RunnerUp.ID, sw.SwapDPS, sw.BaselineDPS)
+					realSimPromotion = true
 				}
+			}
+			// This lane's brief, item 2: a slot score() alone decided
+			// (never touched by rankTrinketSlot's own real-sim tournament,
+			// and never redeemed by an unmodelled effect or a real swap
+			// promotion) whose winning candidate still scored exactly 0
+			// contributes nothing this spec's own weights can measure at
+			// all - publish the slot empty rather than a "verified" pick
+			// that is really just the least-bad of several worthless
+			// items (Sentinel's/Scout's Medallion, Agility+Stamina, on
+			// every caster spec's own band-20 neck before this fix).
+			if row.Score == 0 && slot != "trinket1" && slot != "trinket2" && !row.EffectUnmodelled && !realSimPromotion {
+				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason}
 			}
 		}
 		rows = append(rows, row)

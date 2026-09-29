@@ -137,6 +137,16 @@
         "item_id": 16499,
         "item_name": "Blood Guard's Leather Vices",
         "reason": "A PvP-rank leather glove reward with attack power, a common pre-raid rogue hands pick."
+      },
+      {
+        "item_id": 234553,
+        "item_name": "High Warlord's Quickblade",
+        "reason": "This lane's brief (bis-ranker-integrity, 2026-09-29), item 3: a launch-open PvP rank weapon, now that Thunderfury's own quest chain (\"Rise, Thunderfury!\", gated behind random Molten Core drops) is correctly excluded from a level-60 leveling list - see this lane's report for the before/after."
+      },
+      {
+        "item_id": 234579,
+        "item_name": "Grand Marshal's Swiftblade",
+        "reason": "This lane's brief (bis-ranker-integrity, 2026-09-29), item 3: a launch-open PvP rank weapon, now that Thunderfury's own quest chain (\"Rise, Thunderfury!\", gated behind random Molten Core drops) is correctly excluded from a level-60 leveling list - see this lane's report for the before/after."
       }
     ]
   },
@@ -205,6 +215,11 @@
         "item_id": 19043,
         "item_name": "Heavy Timbermaw Belt",
         "reason": "Timbermaw Hold reputation mail belt, a common pre-raid melee-DPS waist recommendation."
+      },
+      {
+        "item_id": 234542,
+        "item_name": "High Warlord's Greatsword",
+        "reason": "This lane's brief (bis-ranker-integrity, 2026-09-29), item 3: a launch-open PvP rank weapon, now that Thunderfury's own quest chain (\"Rise, Thunderfury!\", gated behind random Molten Core drops) is correctly excluded from a level-60 leveling list - see this lane's report for the before/after."
       }
     ]
   },
@@ -409,6 +424,48 @@
         "item_id": 10033,
         "item_name": "Red Mageweave Headband",
         "reason": "Tailoring-crafted Mageweave head piece, a common pre-raid caster head slot before a better drop."
+      }
+    ]
+  },
+  "warrior-fury": {
+    "60": [
+      {
+        "item_id": 234553,
+        "item_name": "High Warlord's Quickblade",
+        "reason": "This lane's brief (bis-ranker-integrity, 2026-09-29), item 3: a launch-open PvP rank weapon, now that Thunderfury's own quest chain (\"Rise, Thunderfury!\", gated behind random Molten Core drops) is correctly excluded from a level-60 leveling list - see this lane's report for the before/after."
+      },
+      {
+        "item_id": 234579,
+        "item_name": "Grand Marshal's Swiftblade",
+        "reason": "This lane's brief (bis-ranker-integrity, 2026-09-29), item 3: a launch-open PvP rank weapon, now that Thunderfury's own quest chain (\"Rise, Thunderfury!\", gated behind random Molten Core drops) is correctly excluded from a level-60 leveling list - see this lane's report for the before/after."
+      }
+    ]
+  },
+  "rogue-assassination": {
+    "60": [
+      {
+        "item_id": 234553,
+        "item_name": "High Warlord's Quickblade",
+        "reason": "This lane's brief (bis-ranker-integrity, 2026-09-29), item 3: a launch-open PvP rank weapon, now that Thunderfury's own quest chain (\"Rise, Thunderfury!\", gated behind random Molten Core drops) is correctly excluded from a level-60 leveling list - see this lane's report for the before/after."
+      },
+      {
+        "item_id": 234579,
+        "item_name": "Grand Marshal's Swiftblade",
+        "reason": "This lane's brief (bis-ranker-integrity, 2026-09-29), item 3: a launch-open PvP rank weapon, now that Thunderfury's own quest chain (\"Rise, Thunderfury!\", gated behind random Molten Core drops) is correctly excluded from a level-60 leveling list - see this lane's report for the before/after."
+      }
+    ]
+  },
+  "hunter-survival": {
+    "60": [
+      {
+        "item_id": 234553,
+        "item_name": "High Warlord's Quickblade",
+        "reason": "This lane's brief (bis-ranker-integrity, 2026-09-29), item 3: a launch-open PvP rank weapon, now that Thunderfury's own quest chain (\"Rise, Thunderfury!\", gated behind random Molten Core drops) is correctly excluded from a level-60 leveling list - see this lane's report for the before/after."
+      },
+      {
+        "item_id": 234579,
+        "item_name": "Grand Marshal's Swiftblade",
+        "reason": "This lane's brief (bis-ranker-integrity, 2026-09-29), item 3: a launch-open PvP rank weapon, now that Thunderfury's own quest chain (\"Rise, Thunderfury!\", gated behind random Molten Core drops) is correctly excluded from a level-60 leveling list - see this lane's report for the before/after."
       }
     ]
   }

@@ -170,6 +170,71 @@ func TestLoadLootIndex(t *testing.T) {
 	}
 }
 
+// This lane's brief (bis-ranker-integrity, 2026-09-29), item 3:
+// loadLootIndex must carry a source's own "opens" field through to its
+// itemSource unchanged, so band.go's sourceObtainable can gate a
+// leveling list on it. A self-contained fixture (not the shared
+// testdata/reporoot one, which no test may add a new item id to
+// without touching every other test's exact counts) with one raid
+// source curated "later" and one dungeon source with no opens tag at
+// all - the shape data/curated/loot/forever-raid-phases.json's own
+// real rows take.
+func TestLoadLootIndexCarriesOpensThrough(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "raid:naxxramas", "kind": "raid", "name": "Naxxramas", "opens": "later", "bosses": [{"name": "Kel'Thuzad", "items": [2001]}]},
+			{"id": "dungeon-1", "kind": "dungeon", "name": "A Test Dungeon", "bosses": [{"name": "Test Boss", "items": [2002]}]}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	raidSrc, ok := idx[2001]
+	if !ok || len(raidSrc) != 1 || raidSrc[0].Opens != "later" {
+		t.Fatalf("idx[2001] = %+v, want one source with Opens \"later\"", raidSrc)
+	}
+	dungeonSrc, ok := idx[2002]
+	if !ok || len(dungeonSrc) != 1 || dungeonSrc[0].Opens != "" {
+		t.Fatalf("idx[2002] = %+v, want one source with Opens empty (not phase-gated)", dungeonSrc)
+	}
+}
+
+// This lane's brief, item 3's own named case: Atiesh's own quest (id
+// 9270) is a "kind": "quest" loot.json row, which the general
+// raid-source Opens gate never sees at all (that loop skips "quest"
+// rows entirely) - raidLockedQuestOpens is the separate table that
+// catches it, and this test is the exact regression a future edit to
+// either table could otherwise reintroduce silently.
+func TestLoadLootIndexGatesAtieshsOwnRaidLockedQuest(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [],
+		"quests": {
+			"22589": [{"quest_id": 9270, "name": "Atiesh, Greatstaff of the Guardian", "faction": "both", "min_level": 60, "level": 60}]
+		}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	src, ok := idx[22589]
+	if !ok || len(src) != 1 || src[0].Opens != "later" {
+		t.Fatalf("idx[22589] = %+v, want one source with Opens \"later\"", src)
+	}
+	if _, ok := sourceFor(22589, 60, "alliance", "", idx); ok {
+		t.Fatal("sourceFor(22589, level 60) = ok, want ok=false: Atiesh's own quest is Naxxramas-locked")
+	}
+}
+
 func TestLoadLootIndexMissingFile(t *testing.T) {
 	if _, _, err := loadLootIndex(t.TempDir(), nil); err == nil {
 		t.Fatal("loadLootIndex on an empty dir: want an error, got nil")
@@ -340,7 +405,7 @@ func TestWrittenSpecs(t *testing.T) {
 }
 
 func TestLoadGuideRaces(t *testing.T) {
-	races, err := loadGuideRaces(repoRootFixture, "hunter", "marksmanship")
+	races, err := loadGuideRaces(repoRootFixture, buildDirFixture(), "hunter", "marksmanship")
 	if err != nil {
 		t.Fatalf("loadGuideRaces: %v", err)
 	}
@@ -350,7 +415,7 @@ func TestLoadGuideRaces(t *testing.T) {
 }
 
 func TestLoadGuideRacesMissingFile(t *testing.T) {
-	if _, err := loadGuideRaces(repoRootFixture, "hunter", "nonexistent-spec"); err == nil {
+	if _, err := loadGuideRaces(repoRootFixture, buildDirFixture(), "hunter", "nonexistent-spec"); err == nil {
 		t.Fatal("loadGuideRaces for a missing guide: want an error, got nil")
 	}
 }
@@ -361,8 +426,40 @@ func TestLoadGuideRacesNoFrontmatterLine(t *testing.T) {
 	if err := writeFile(t, filepath.Join(guideDir, "broken.md"), "---\ntitle: no races here\n---\n"); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := loadGuideRaces(dir, "hunter", "broken"); err == nil {
+	if _, err := loadGuideRaces(dir, buildDirFixture(), "hunter", "broken"); err == nil {
 		t.Fatal("loadGuideRaces with no recommendedRaces line: want an error, got nil")
+	}
+}
+
+// This lane's brief (bis-ranker-integrity, 2026-09-29), item 4: the
+// exact shape of the paladin-retribution defect - a third race in the
+// list silently taking HordeRace's slot instead of the real Horde race
+// - must fail to load, not silently publish the wrong faction's race.
+func TestLoadGuideRacesRejectsMoreThanTwoRaces(t *testing.T) {
+	dir := t.TempDir()
+	guideDir := filepath.Join(dir, "web", "src", "content", "guides", "paladin")
+	if err := writeFile(t, filepath.Join(guideDir, "retribution.md"), "---\ntitle: broken\nrecommendedRaces: [human, dwarf, undead]\n---\n"); err != nil {
+		t.Fatal(err)
+	}
+	_, err := loadGuideRaces(dir, buildDirFixture(), "paladin", "retribution")
+	if err == nil {
+		t.Fatal("loadGuideRaces with 3 races: want an error, got nil")
+	}
+}
+
+// The other half of item 4: a race that IS a real race, but not on the
+// faction the slot claims (a copy-paste of an Alliance-only race into
+// HordeRace, or vice versa), must fail against races.json rather than
+// publish an unplayable faction/race pairing.
+func TestLoadGuideRacesRejectsAllianceRaceInHordeSlot(t *testing.T) {
+	dir := t.TempDir()
+	guideDir := filepath.Join(dir, "web", "src", "content", "guides", "paladin")
+	if err := writeFile(t, filepath.Join(guideDir, "retribution.md"), "---\ntitle: broken\nrecommendedRaces: [human, dwarf]\n---\n"); err != nil {
+		t.Fatal(err)
+	}
+	_, err := loadGuideRaces(dir, buildDirFixture(), "paladin", "retribution")
+	if err == nil {
+		t.Fatal("loadGuideRaces with an Alliance-only race (dwarf) in the Horde slot: want an error, got nil")
 	}
 }
 

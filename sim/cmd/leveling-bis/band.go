@@ -110,6 +110,22 @@ var repStandingObtainable = map[string]bool{"friendly": true, "honored": true}
 // Medallion was excluded for its own faction by the Side check below,
 // and for the other faction by the item's own restriction).
 func sourceObtainable(s itemSource, level int, faction, itemFactionRestriction string) bool {
+	// This lane's brief, item 3: a source data/curated/loot/forever-raid-
+	// phases.json curated a content phase for (Opens non-empty - every
+	// Era raid this build's generator emits, "later" for six of them and
+	// "raids-1" for Onyxia's Lair) is refused at EVERY band, not only
+	// below 60: that file's own notes say plainly "Nothing raids at
+	// launch on 4 November; the first tier opens on 9 December" - a
+	// leveling list is about what a launch-day character can get
+	// (band.go's own sourceFor doc), and no raid is open on launch day
+	// at all, band 60 included. Fixes the worst finding in this lane's
+	// brief: all nine caster specs' band-60 main_hand was Atiesh
+	// (Naxxramas' own legendary quest chain), and every trinket slot's
+	// "verified" pick across every melee/caster spec reviewed was a
+	// Naxxramas/BWL/AQ trinket.
+	if s.Opens != "" {
+		return false
+	}
 	if s.Side != "" && s.Side != faction && itemFactionRestriction != faction {
 		return false
 	}

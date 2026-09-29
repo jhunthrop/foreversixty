@@ -220,7 +220,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	if err != nil {
 		return err
 	}
-	guide, err := loadGuideRaces(repoRoot, specInfo.ClassSlug, specInfo.SpecSlug)
+	guide, err := loadGuideRaces(repoRoot, buildDir, specInfo.ClassSlug, specInfo.SpecSlug)
 	if err != nil {
 		return err
 	}
@@ -276,6 +276,16 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	// always states as 0) once, before any band uses eligible().
 	items = applyEffectiveRequiredLevels(items, lootIdx, questFloors)
 
+	// This lane's brief, item 5's second half: read once per spec (the
+	// rotation does not change per band/faction) whether this spec's own
+	// APL casts Backstab or Ambush anywhere - weapon_requirements.go's
+	// own doc for why that, not a hand-maintained spec list, is what
+	// decides whether main_hand/off_hand get restricted to daggers below.
+	requiresDagger, err := aplRotationRequiresDagger(repoRoot, spec)
+	if err != nil {
+		return fmt.Errorf("checking %s's rotation for a dagger requirement: %w", spec, err)
+	}
+
 	factions := []struct{ name, race string }{
 		{"alliance", guide.AllianceRace},
 		{"horde", guide.HordeRace},
@@ -312,6 +322,19 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		for _, f := range factions {
 			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights)
 			bySlot := candidatesBySlot(pool.Scored)
+			if requiresDagger {
+				// weapon_requirements.go's own doc: a mace or sword is a
+				// real, legally-equippable item this class file already
+				// passed (eligible.go delegates weapon proficiency to the
+				// per-class file entirely), but this spec's own rotation
+				// cannot cast its dagger-only opener/builder without one -
+				// restricted here, before pick() or any later pass ever
+				// sees either weapon slot, so a dual-wielder's off_hand
+				// (pick()'s own case, which merges main_hand's one-handers
+				// in) inherits the restriction for free.
+				bySlot["main_hand"] = restrictToDaggers(bySlot["main_hand"])
+				bySlot["off_hand"] = restrictToDaggers(bySlot["off_hand"])
+			}
 			picks := pick(spec, bySlot)
 
 			// Trinkets carry no scorable stats (score.go's own doc), so

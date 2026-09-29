@@ -112,6 +112,59 @@ func TestSourceForFallsBackWhenNoNonRaidKindPresent(t *testing.T) {
 	}
 }
 
+// This lane's brief (bis-ranker-integrity, 2026-09-29), item 3: a
+// source data/curated/loot/forever-raid-phases.json curated a content
+// phase for (Opens non-empty) is refused at EVERY band, including 60 -
+// the real defect this guards against: all nine caster specs' band-60
+// main_hand published Atiesh (a Naxxramas legendary quest reward) with
+// every trinket slot's "verified" pick also a Naxxramas/BWL/AQ trinket,
+// because sourceFor's OWN level<60 raid check let every one of them
+// through once the character hit the leveling list's top band.
+func TestSourceForRefusesAnOpensTaggedSourceEvenAtLevel60(t *testing.T) {
+	idx := lootIndex{1: {{Kind: "raid", Label: "Naxxramas", Opens: "later"}}}
+	if _, ok := sourceFor(1, 60, "alliance", "", idx); ok {
+		t.Fatal("sourceFor at level 60 with only an Opens:\"later\" raid source: want ok=false")
+	}
+}
+
+// "raids-1" (Onyxia's Lair, per forever-raid-phases.json's own notes:
+// "the first tier opens on 9 December", over a month after launch) is
+// refused the same way "later" is - any non-empty Opens value means
+// "not open on launch day", not only the literal string "later".
+func TestSourceForRefusesRaidsOneTaggedSourceToo(t *testing.T) {
+	idx := lootIndex{1: {{Kind: "raid", Label: "Onyxia's Lair", Opens: "raids-1"}}}
+	if _, ok := sourceFor(1, 60, "alliance", "", idx); ok {
+		t.Fatal("sourceFor with an Opens:\"raids-1\" source: want ok=false")
+	}
+}
+
+// A non-raid, launch-open source kind (this lane's brief: "dungeons,
+// quests, rep, crafted, PvP, world") carries no Opens tag at all and
+// must stay obtainable exactly as before - the gate is Opens-based, not
+// a blanket new restriction on every source.
+func TestSourceForOpensGateDoesNotAffectUntaggedSources(t *testing.T) {
+	idx := lootIndex{1: {{Kind: "dungeon", Label: "Blackrock Depths: Some Boss"}}}
+	if _, ok := sourceFor(1, 20, "alliance", "", idx); !ok {
+		t.Fatal("sourceFor for an untagged dungeon source: want ok=true, unaffected by the Opens gate")
+	}
+}
+
+// The gate falls back to a later-priority, launch-open source when one
+// exists alongside the phase-gated raid drop - an item with both a
+// dungeon and a Naxxramas source (rare, but the same shape sourceFor
+// already handles for rep/vendor/crafted overlaps) still gets its
+// obtainable, non-raid source rather than reporting no source at all.
+func TestSourceForFallsBackToANonRaidSourceWhenTheRaidOneIsPhaseGated(t *testing.T) {
+	idx := lootIndex{1: {
+		{Kind: "raid", Label: "Naxxramas", Opens: "later"},
+		{Kind: "crafted", Label: "Blacksmithing"},
+	}}
+	src, ok := sourceFor(1, 60, "alliance", "", idx)
+	if !ok || src.Kind != "crafted" {
+		t.Fatalf("sourceFor = %+v, %v, want the crafted source (the raid one is phase-gated)", src, ok)
+	}
+}
+
 // wowhead-world-drops lane, 2026-09-29: the priority reorder's own
 // point - a real dungeon boss now outranks rep/vendor/crafted, so the
 // report says "kill this boss" rather than "buy this off a vendor" (or

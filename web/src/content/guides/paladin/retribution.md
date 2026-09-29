@@ -4,7 +4,7 @@ classSlug: paladin
 spec: retribution
 role: dps
 build: 'FS1:1.60.1.69893:paladin:human:0/55325/55223331211000021:'
-recommendedRaces: [human, dwarf, undead]
+recommendedRaces: [human, undead]
 statPriority: [Attack power, Strength, Agility, Critical strike, Hit, Melee haste]
 description: 'Talents, rotation, stats, gear, races, and professions for Retribution Paladin melee damage in Forever.'
 updated: 2026-09-24
