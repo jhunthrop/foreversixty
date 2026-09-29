@@ -6,29 +6,29 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (gnome, 00000000000000000-0000000000000000000-2351000000000000)
 
-Set DPS (verified): 43.6. Weights run: 1.1s. Verify run: 0.9s. 253 eligible items had no known source.
+Set DPS (verified): 43.6. Weights run: 1.5s. Verify run: 1.1s. 253 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 4.526), intellect=not significant (-6.373 ± 5.311), crit=26.443 ± 1.099, hit=65.807 ± 2.970, spell_haste=not significant (14.513 ± 4.528), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (-7.626 ± 4.527), fire_power=8.686 ± 0.016
 
-| Slot | Item | Source | Score | Verified |
-|---|---|---|---|---|
-| head | Pristine Circlet (253949) | Tailoring [crafted] | 6.0 | yes |
-| neck | Sentinel's Medallion (20444) (or Tarnished Locket (279870)) | Silverwing Sentinels [rep] | 0.0 | yes |
-| shoulder | Reinforced Woolen Shoulders (4315) | Tailoring [crafted] | 5.0 | yes |
-| back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 | yes |
-| chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 5.0 | yes |
-| wrist | Mindthrust Bracers (1974) (or Silver-lined Bracers (3224), Seer's Cuffs (3645), Bright Bracers (3647), Green Linen Bracers (4308), Timberland Armguards (5315), Willow Bracers (6543), Shimmering Bracers (6563), Tabitha's Cuffs (251486), Cloudy Stormsewn Cuffs (277011), Azure Stormsewn Cuffs (277035), Al'aketh Cuffs (277075), Fellicent's Bindings (283471)) | Shadowfang Keep: Son of Arugal [dungeon] | 0.0 | yes |
-| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes |
-| waist | Pristine Sash (253925) | Tailoring [crafted] | 4.0 | yes |
-| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 9.0 | yes |
-| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 7.0 | yes |
-| finger1 | Minor Channeling Ring (1449) (or Lorekeeper's Ring (20431)) | Quests [quest] | 5.0 | yes |
-| finger2 | Lorekeeper's Ring (20431) | Silverwing Sentinels [rep] | 5.0 | yes |
-| trinket1 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | 0.0 | yes |
-| trinket2 | Rune of Duty (21568) | Silverwing Sentinels [rep] | 0.0 | yes |
-| main_hand | Notched Shortsword (727) (or Small Hand Blade (816), Slicer Blade (820), Staff of Horrors (880), Twisted Chanter's Staff (890), Venom Web Fang (899), Night Watch Shortsword (935), Redridge Machete (1219), Giant Tarantula Fang (1287), Lesser Staff of the Spire (1300), Riverpaw Mystic Staff (1391), Foamspittle Staff (1405), Scimitar of Atun (1469), Riverside Staff (1473), Shadowfang (1482), Witching Stave (1484), Gnarled Hermit's Staff (1539), Jeweled Dagger (1917), Defias Rapier (1925), Defias Mage Staff (1928), Staff of Conjuring (1933), Assassin's Blade (1935), Goblin Screwdriver (1936), Buzz Saw (1937), Blackwater Cutlass (1951), Hollowfang Blade (2020), Staff of Westfall (2042), Bluegill Kukri (2046), Solid Shortblade (2074), Northern Shortsword (2078), Long Crawler Limb (2088), Scrimshaw Dagger (2089), Carving Knife (2140), Buzzer Blade (2169), Craftsman's Dagger (2218), Brackclaw (2235), Blackfang (2236), Stonesplinter Dagger (2266), Staff of the Blessed Seer (2271), Evocator's Blade (2567), Curved Dagger (2632), Copper Shortsword (2847), Bronze Shortsword (2850), Thornblade (2908), Hook Dagger (3184), Bloodstained Knife (3225), Nightbane Staff (3227), Deadly Bronze Poniard (3490), Daryl's Shortsword (3572), Decapitating Sword (3740), Big Bronze Knife (3848), Staff of Nobles (3902), Small Green Dagger (4302), Channeler's Staff (4437), Sturdy Quarterstaff (4566), War Knife (4571), Medicine Staff (4575), Enamelled Broadsword (4765), Feral Blade (4766), Ritual Blade (5112), Cruel Barb (5191), Thief's Blade (5192), Emberstone Staff (5201), Pearl-handled Dagger (5540), Pale Skinner (5744), Balanced Fighting Stick (6215), Spikelash Dagger (6333), Tail Spike (6448), Living Root (6631), Butcher's Slicer (6633), Copper Dagger (7166), Gritroot Staff (9603), Briarsteel Shortsword (15335), Curvewood Dagger (15396), Oakthrush Staff (15397), Brushwood Blade (18957), Edward's Knife (251485), Gnarled Necromancer's Staff (251534), Skyseeker's Greatstaff (263937), Chol'aruk's Trophy Sword (276886), Quilboar Toothpick (276888), Plaguefang (279876), Webwood Slicer (282284), Bayne's Bite (283462), Gnarlpine War Staff (284166), Felweaver's Staff (284287), Chipped Spellstaff (285238), Explorer's Shortsword (285239), Pristine Orcish Dagger (286730), Ukta's Conduit (286754), Helm Splitter (286755)) | Al'Aketh Honor Guard [world] | 0.0 | yes |
-| off_hand | Dwarven Tome (279898) | Quests [quest] | 5.0 | yes |
-| ranged | Cookie's Stirring Rod (5198) | The Deadmines: Cookie [dungeon] | 3.0 | yes |
+| Slot | Item | Source | Score | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Pristine Circlet (253949) | Tailoring [crafted] | 6.0 | yes | Flying Tiger Goggles (4368, -6.0) [crafted]; Shadow Goggles (4373, -6.0) [crafted]; Lucky Fishing Hat (19972, -6.0) [quest] |
+| neck | Sentinel's Medallion (20444) (or Tarnished Locket (279870)) | Silverwing Sentinels [rep] | 0.0 | yes | Tarnished Locket (279870, +0.0) [quest] |
+| shoulder | Reinforced Woolen Shoulders (4315) | Tailoring [crafted] | 5.0 | yes | Double-Stitched Woolen Shoulders (4314, -1.0) [crafted]; Slime-encrusted Pads (6461, -5.0) [dungeon] |
+| back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 | yes | Feyscale Cloak (6632, -1.0) [dungeon]; Black Whelp Cloak (7283, -1.0) [crafted]; Caretaker's Cape (20428, -1.0) [rep] |
+| chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 5.0 | yes | Green Woolen Vest (2582, -1.0) [crafted]; Gray Woolen Robe (2585, -1.0) [crafted]; Bloody Apron (6226, -1.0) [dungeon] |
+| wrist | Mindthrust Bracers (1974) (or Silver-lined Bracers (3224), Seer's Cuffs (3645), Bright Bracers (3647), Green Linen Bracers (4308), Timberland Armguards (5315), Willow Bracers (6543), Shimmering Bracers (6563), Tabitha's Cuffs (251486), Cloudy Stormsewn Cuffs (277011), Azure Stormsewn Cuffs (277035), Al'aketh Cuffs (277075), Fellicent's Bindings (283471)) | Shadowfang Keep: Son of Arugal [dungeon] | 0.0 | yes | Silver-lined Bracers (3224, +0.0) [world]; Seer's Cuffs (3645, +0.0) [dungeon]; Bright Bracers (3647, +0.0) [dungeon] |
+| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes | Gnoll Casting Gloves (892, -1.0) [world]; Pristine Gloves (253913, -3.0) [crafted]; Heavy Woolen Gloves (4310, -5.0) [crafted] |
+| waist | Pristine Sash (253925) | Tailoring [crafted] | 4.0 | yes | Novice Arcanist's Sash (253885, +0.0) [crafted]; Novice Ardent's Sash (253887, -2.0) [crafted]; Lesser Belt of the Spire (1299, -4.0) [world] |
+| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 9.0 | yes | Silk-threaded Trousers (1929, -2.0) [dungeon]; Filigreed Pristine Leggings (253937, -3.0) [crafted]; Colorful Kilt (10048, -4.0) [crafted] |
+| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 7.0 | yes | Feather Padded Treads (285345, -2.0) [world]; Red Woolen Boots (4313, -3.0) [crafted]; Pristine Boots (253889, -4.0) [crafted] |
+| finger1 | Minor Channeling Ring (1449) (or Lorekeeper's Ring (20431)) | Quests [quest] | 5.0 | yes | Sludge-Stained Band (286535, -2.0) [world]; Lavishly Jeweled Ring (1156, -5.0) [dungeon]; Ring of the Shadow (1462, -5.0) [world] |
+| finger2 | Lorekeeper's Ring (20431) | Silverwing Sentinels [rep] | 5.0 | yes | Sludge-Stained Band (286535, -2.0) [world]; Lavishly Jeweled Ring (1156, -5.0) [dungeon]; Ring of the Shadow (1462, -5.0) [world] |
+| trinket1 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | 0.0 | yes | - |
+| trinket2 | Rune of Duty (21568) | Silverwing Sentinels [rep] | 0.0 | yes | - |
+| main_hand | Notched Shortsword (727) (or Small Hand Blade (816), Slicer Blade (820), Staff of Horrors (880), Twisted Chanter's Staff (890), Venom Web Fang (899), Night Watch Shortsword (935), Redridge Machete (1219), Giant Tarantula Fang (1287), Lesser Staff of the Spire (1300), Riverpaw Mystic Staff (1391), Foamspittle Staff (1405), Scimitar of Atun (1469), Riverside Staff (1473), Shadowfang (1482), Witching Stave (1484), Gnarled Hermit's Staff (1539), Jeweled Dagger (1917), Defias Rapier (1925), Defias Mage Staff (1928), Staff of Conjuring (1933), Assassin's Blade (1935), Goblin Screwdriver (1936), Buzz Saw (1937), Blackwater Cutlass (1951), Hollowfang Blade (2020), Staff of Westfall (2042), Bluegill Kukri (2046), Solid Shortblade (2074), Northern Shortsword (2078), Long Crawler Limb (2088), Scrimshaw Dagger (2089), Carving Knife (2140), Buzzer Blade (2169), Craftsman's Dagger (2218), Brackclaw (2235), Blackfang (2236), Stonesplinter Dagger (2266), Staff of the Blessed Seer (2271), Evocator's Blade (2567), Curved Dagger (2632), Copper Shortsword (2847), Bronze Shortsword (2850), Thornblade (2908), Hook Dagger (3184), Bloodstained Knife (3225), Nightbane Staff (3227), Deadly Bronze Poniard (3490), Daryl's Shortsword (3572), Decapitating Sword (3740), Big Bronze Knife (3848), Staff of Nobles (3902), Small Green Dagger (4302), Channeler's Staff (4437), Sturdy Quarterstaff (4566), War Knife (4571), Medicine Staff (4575), Enamelled Broadsword (4765), Feral Blade (4766), Ritual Blade (5112), Cruel Barb (5191), Thief's Blade (5192), Emberstone Staff (5201), Pearl-handled Dagger (5540), Pale Skinner (5744), Balanced Fighting Stick (6215), Spikelash Dagger (6333), Tail Spike (6448), Living Root (6631), Butcher's Slicer (6633), Copper Dagger (7166), Gritroot Staff (9603), Briarsteel Shortsword (15335), Curvewood Dagger (15396), Oakthrush Staff (15397), Brushwood Blade (18957), Edward's Knife (251485), Gnarled Necromancer's Staff (251534), Skyseeker's Greatstaff (263937), Chol'aruk's Trophy Sword (276886), Quilboar Toothpick (276888), Plaguefang (279876), Webwood Slicer (282284), Bayne's Bite (283462), Gnarlpine War Staff (284166), Felweaver's Staff (284287), Chipped Spellstaff (285238), Explorer's Shortsword (285239), Pristine Orcish Dagger (286730), Ukta's Conduit (286754), Helm Splitter (286755)) | Al'Aketh Honor Guard [world] | 0.0 | yes | Small Hand Blade (816, +0.0) [world]; Slicer Blade (820, +0.0) [world]; Staff of Horrors (880, +0.0) [world] |
+| off_hand | Dwarven Tome (279898) | Quests [quest] | 5.0 | yes | Grayson's Torch (1172, -5.0) [quest]; Pulsating Hydra Heart (5183, -5.0) [world]; Tear of Grief (5611, -5.0) [quest] |
+| ranged | Cookie's Stirring Rod (5198) | The Deadmines: Cookie [dungeon] | 3.0 | yes | Sizzle Stick (8071, +2.0) [quest]; Sable Wand (7607, +0.0) [quest]; Torchlight Wand (5240, -1.0) [quest] |
 
 **New at 20:** head: Pristine Circlet; neck: Sentinel's Medallion; shoulder: Reinforced Woolen Shoulders; back: Heavy Woolen Cloak; chest: Filigreed Pristine Gown; wrist: Mindthrust Bracers; hands: Serpent Gloves; waist: Pristine Sash; legs: Abomination Skin Leggings; feet: Spidersilk Boots; finger1: Minor Channeling Ring; finger2: Lorekeeper's Ring; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Notched Shortsword; off_hand: Dwarven Tome; ranged: Cookie's Stirring Rod
 
@@ -36,29 +36,29 @@ No-known-source sample (15 of 253, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 00000000000000000-0000000000000000000-2353224000000000)
 
-Set DPS (verified): 66.9. Weights run: 1.2s. Verify run: 0.9s. 475 eligible items had no known source.
+Set DPS (verified): 66.9. Weights run: 1.4s. Verify run: 1.3s. 475 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.132, intellect=not significant (-0.254 ± 0.146), crit=1.140 ± 0.054, hit=2.044 ± 0.097, spell_haste=not significant (0.104 ± 0.127), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.768 ± 0.132, fire_power=0.234 ± 0.000
 
-| Slot | Item | Source | Score | Verified |
-|---|---|---|---|---|
-| head | Holy Shroud (2721) | Razorfen Downs: Withered Battle Boar [dungeon] | 11.0 | yes |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 7.0 | yes |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 9.0 | yes |
-| back | Hillman's Cloak (3719) | Leatherworking [crafted] | 5.0 | yes |
-| chest | Tree Bark Jacket (1486) | Blackfathom Deeps: Fallenroot Shadowstalker [dungeon] | 13.0 | yes |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes |
-| hands | Serpent Gloves (5970) (or Shilly Mitts (9609)) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes |
-| waist | Highlander's Cloth Girdle (20099) | The League of Arathor [rep] | 11.0 | yes |
-| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 12.0 | yes |
-| feet | Gilded Slippers (254001) | Tailoring [crafted] | 7.0 | yes |
-| finger1 | Lorekeeper's Ring (19525) | Silverwing Sentinels [rep] | 7.0 | yes |
-| finger2 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | 6.0 | yes |
-| trinket1 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | 0.0 | yes |
-| trinket2 | Talisman of Arathor (21119) | The League of Arathor [rep] | 0.0 | yes |
-| main_hand | Notched Shortsword (727) (or Dragonmaw Shortsword (753), Gnarled Ash Staff (791), Small Hand Blade (816), Slicer Blade (820), Staff of Horrors (880), Black Metal Shortsword (886), Twisted Chanter's Staff (890), Venom Web Fang (899), Night Watch Shortsword (935), Rod of the Sleepwalker (1155), Redridge Machete (1219), Giant Tarantula Fang (1287), Lesser Staff of the Spire (1300), Hardened Root Staff (1317), Riverpaw Mystic Staff (1391), Foamspittle Staff (1405), Scimitar of Atun (1469), Riverside Staff (1473), Shadowfang (1482), Witching Stave (1484), Heavy Marauder Scimitar (1493), Gnarled Hermit's Staff (1539), Jeweled Dagger (1917), Defias Rapier (1925), Defias Mage Staff (1928), Staff of Conjuring (1933), Assassin's Blade (1935), Goblin Screwdriver (1936), Buzz Saw (1937), Blackwater Cutlass (1951), Bloodscalp Channeling Staff (1998), Twisted Sabre (2011), Cryptbone Staff (2013), Skeletal Longsword (2018), Hollowfang Blade (2020), Sword of the Night Sky (2035), Staff of Westfall (2042), Bluegill Kukri (2046), Dwarven Magestaff (2072), Solid Shortblade (2074), Magician Staff (2077), Northern Shortsword (2078), Long Crawler Limb (2088), Scrimshaw Dagger (2089), Carving Knife (2140), Buzzer Blade (2169), Craftsman's Dagger (2218), Ogremage Staff (2226), Brackclaw (2235), Blackfang (2236), Phytoblade (2263), Stonesplinter Dagger (2266), Staff of the Blessed Seer (2271), Kam's Walking Stick (2280), Staff of the Shade (2549), Evocator's Blade (2567), Curved Dagger (2632), Cross Dagger (2819), Copper Shortsword (2847), Bronze Shortsword (2850), Thornblade (2908), Claw of the Shadowmancer (2912), Prison Shank (2941), Icicle Rod (2950), Hook Dagger (3184), Acrobatic Staff (3185), Viking Sword (3186), Bloodstained Knife (3225), Nightbane Staff (3227), Flesh Piercer (3336), Lucine Longsword (3400), Doomspike (3413), Staff of the Friar (3415), Deadly Bronze Poniard (3490), Daryl's Shortsword (3572), Decapitating Sword (3740), Big Bronze Knife (3848), Hardened Iron Shortsword (3849), Jade Serpentblade (3850), Staff of Nobles (3902), Small Green Dagger (4302), Channeler's Staff (4437), Blackvenom Blade (4446), Naraxis' Fang (4449), Talon of Vultros (4454), Sturdy Quarterstaff (4566), War Knife (4571), Medicine Staff (4575), Enamelled Broadsword (4765), Feral Blade (4766), Ritual Blade (5112), Cruel Barb (5191), Thief's Blade (5192), Emberstone Staff (5201), Pearl-handled Dagger (5540), Staff of the Purifier (5613), Relic Blade (5627), Pale Skinner (5744), Wyvern Tailspike (5752), Balanced Fighting Stick (6215), Meteor Shard (6220), Odo's Ley Staff (6318), Spikelash Dagger (6333), Tail Spike (6448), Living Root (6631), Butcher's Slicer (6633), Thornspike (6681), Swinetusk Shank (6691), Bite of Serra'kis (6904), Copper Dagger (7166), Torturing Poker (7682), Electrocutioner Leg (9446), Hydrocane (9452), Toxic Revenger (9453), Gritroot Staff (9603), Darkwater Talwar (11121), Broad Bladed Knife (12247), Daring Dirk (12248), Staff of Soran'ruk (15109), Briarsteel Shortsword (15335), Curvewood Dagger (15396), Oakthrush Staff (15397), Brushwood Blade (18957), Lorekeeper's Staff (212580), Protector's Sword (212582), Sentinel's Blade (212583), Advisor's Gnarled Staff (212584), Legionnaire's Sword (212586), Scout's Blade (212587), Glimmering Staff (249392), Soulstaff (249393), Edward's Knife (251485), Gnarled Necromancer's Staff (251534), Skyseeker's Greatstaff (263937), Darkspear Insurgent's Spellblade (272086), Chol'aruk's Trophy Sword (276886), Quilboar Toothpick (276888), Plaguefang (279876), Webwood Slicer (282284), Bayne's Bite (283462), Gnarlpine War Staff (284166), Felweaver's Staff (284287), Chipped Spellstaff (285238), Explorer's Shortsword (285239), Alliance Outrunner's Sword (285346), Alliance Outrunner Staff (285350), Pristine Orcish Dagger (286730), Ukta's Conduit (286754), Helm Splitter (286755)) | Al'Aketh Honor Guard [world] | 0.0 | yes |
-| off_hand | Orb of Mystic Insight (249394) | Enchanting [crafted] | 7.0 | yes |
-| ranged | Wand of Eventide (5214) (or Sizzle Stick (8071), Greater Mystic Wand (217287)) | Gnomeregan: Dark Iron Agent [dungeon] | 5.0 | yes |
+| Slot | Item | Source | Score | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Holy Shroud (2721) | Razorfen Downs: Withered Battle Boar [dungeon] | 11.0 | yes | Silk Headband (7050, -2.0) [crafted]; Embalmed Shroud (7691, -3.0) [dungeon]; Filigreed Pristine Circlet (253975, -3.0) [crafted] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 7.0 | yes | Pendant of Myzrael (4614, -7.0) [dungeon]; Glowing Green Talisman (5002, -7.0) [dungeon]; Crystal Starfire Medallion (5003, -7.0) [dungeon] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 9.0 | yes | Moonlit Amice (11884, -2.0) [quest]; Invoker's Mantle (215365, -2.0) [crafted]; Death Speaker Mantle (6685, -3.0) [dungeon] |
+| back | Hillman's Cloak (3719) | Leatherworking [crafted] | 5.0 | yes | Heavy Woolen Cloak (4311, -1.0) [crafted]; Prelacy Cape (7004, -1.0) [quest]; Caretaker's Cape (19533, -1.0) [rep] |
+| chest | Tree Bark Jacket (1486) | Blackfathom Deeps: Fallenroot Shadowstalker [dungeon] | 13.0 | yes | Green Silk Armor (7065, -4.0) [crafted]; Robes of Arcana (5770, -5.0) [crafted]; Death Speaker Robes (6682, -6.0) [dungeon] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes | Mindthrust Bracers (1974, -9.0) [dungeon]; Silver-lined Bracers (3224, -9.0) [world]; Seer's Cuffs (3645, -9.0) [dungeon] |
+| hands | Serpent Gloves (5970) (or Shilly Mitts (9609)) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes | Shilly Mitts (9609, +0.0) [quest]; Gnoll Casting Gloves (892, -1.0) [world]; Gloves of Meditation (4318, -2.0) [crafted] |
+| waist | Highlander's Cloth Girdle (20099) | The League of Arathor [rep] | 11.0 | yes | Belt of Arugal (6392, -2.0) [dungeon]; Ghamoo-ra's Bind (6908, -3.0) [dungeon]; Invoker's Cord (215366, -4.0) [crafted] |
+| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 12.0 | yes | Abomination Skin Leggings (23173, -3.0) [dungeon]; Silk-threaded Trousers (1929, -5.0) [dungeon]; Pristine Leggings (253987, -5.0) [crafted] |
+| feet | Gilded Slippers (254001) | Tailoring [crafted] | 7.0 | yes | Spidersilk Boots (4320, +0.0) [crafted]; Nimbus Boots (6998, -1.0) [quest]; Boots of the Enchanter (4325, -2.0) [crafted] |
+| finger1 | Lorekeeper's Ring (19525) | Silverwing Sentinels [rep] | 7.0 | yes | Minor Channeling Ring (1449, -2.0) [quest]; Lorekeeper's Ring (20431, -2.0) [rep]; Electrocutioner Lagnut (9447, -4.0) [dungeon] |
+| finger2 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | 6.0 | yes | Minor Channeling Ring (1449, -1.0) [quest]; Electrocutioner Lagnut (9447, -3.0) [dungeon]; Sludge-Stained Band (286535, -3.0) [world] |
+| trinket1 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | 0.0 | yes | Rune of Perfection (21566, +0.0) [rep]; Rune of Duty (21568, +0.0) [rep]; Relentless Raider's Seal (272062, +0.0) [vendor] |
+| trinket2 | Talisman of Arathor (21119) | The League of Arathor [rep] | 0.0 | yes | Rune of Perfection (21566, +0.0) [rep]; Rune of Duty (21568, +0.0) [rep]; Relentless Raider's Seal (272062, +0.0) [vendor] |
+| main_hand | Notched Shortsword (727) (or Dragonmaw Shortsword (753), Gnarled Ash Staff (791), Small Hand Blade (816), Slicer Blade (820), Staff of Horrors (880), Black Metal Shortsword (886), Twisted Chanter's Staff (890), Venom Web Fang (899), Night Watch Shortsword (935), Rod of the Sleepwalker (1155), Redridge Machete (1219), Giant Tarantula Fang (1287), Lesser Staff of the Spire (1300), Hardened Root Staff (1317), Riverpaw Mystic Staff (1391), Foamspittle Staff (1405), Scimitar of Atun (1469), Riverside Staff (1473), Shadowfang (1482), Witching Stave (1484), Heavy Marauder Scimitar (1493), Gnarled Hermit's Staff (1539), Jeweled Dagger (1917), Defias Rapier (1925), Defias Mage Staff (1928), Staff of Conjuring (1933), Assassin's Blade (1935), Goblin Screwdriver (1936), Buzz Saw (1937), Blackwater Cutlass (1951), Bloodscalp Channeling Staff (1998), Twisted Sabre (2011), Cryptbone Staff (2013), Skeletal Longsword (2018), Hollowfang Blade (2020), Sword of the Night Sky (2035), Staff of Westfall (2042), Bluegill Kukri (2046), Dwarven Magestaff (2072), Solid Shortblade (2074), Magician Staff (2077), Northern Shortsword (2078), Long Crawler Limb (2088), Scrimshaw Dagger (2089), Carving Knife (2140), Buzzer Blade (2169), Craftsman's Dagger (2218), Ogremage Staff (2226), Brackclaw (2235), Blackfang (2236), Phytoblade (2263), Stonesplinter Dagger (2266), Staff of the Blessed Seer (2271), Kam's Walking Stick (2280), Staff of the Shade (2549), Evocator's Blade (2567), Curved Dagger (2632), Cross Dagger (2819), Copper Shortsword (2847), Bronze Shortsword (2850), Thornblade (2908), Claw of the Shadowmancer (2912), Prison Shank (2941), Icicle Rod (2950), Hook Dagger (3184), Acrobatic Staff (3185), Viking Sword (3186), Bloodstained Knife (3225), Nightbane Staff (3227), Flesh Piercer (3336), Lucine Longsword (3400), Doomspike (3413), Staff of the Friar (3415), Deadly Bronze Poniard (3490), Daryl's Shortsword (3572), Decapitating Sword (3740), Big Bronze Knife (3848), Hardened Iron Shortsword (3849), Jade Serpentblade (3850), Staff of Nobles (3902), Small Green Dagger (4302), Channeler's Staff (4437), Blackvenom Blade (4446), Naraxis' Fang (4449), Talon of Vultros (4454), Sturdy Quarterstaff (4566), War Knife (4571), Medicine Staff (4575), Enamelled Broadsword (4765), Feral Blade (4766), Ritual Blade (5112), Cruel Barb (5191), Thief's Blade (5192), Emberstone Staff (5201), Pearl-handled Dagger (5540), Staff of the Purifier (5613), Relic Blade (5627), Pale Skinner (5744), Wyvern Tailspike (5752), Balanced Fighting Stick (6215), Meteor Shard (6220), Odo's Ley Staff (6318), Spikelash Dagger (6333), Tail Spike (6448), Living Root (6631), Butcher's Slicer (6633), Thornspike (6681), Swinetusk Shank (6691), Bite of Serra'kis (6904), Copper Dagger (7166), Torturing Poker (7682), Electrocutioner Leg (9446), Hydrocane (9452), Toxic Revenger (9453), Gritroot Staff (9603), Darkwater Talwar (11121), Broad Bladed Knife (12247), Daring Dirk (12248), Staff of Soran'ruk (15109), Briarsteel Shortsword (15335), Curvewood Dagger (15396), Oakthrush Staff (15397), Brushwood Blade (18957), Lorekeeper's Staff (212580), Protector's Sword (212582), Sentinel's Blade (212583), Advisor's Gnarled Staff (212584), Legionnaire's Sword (212586), Scout's Blade (212587), Glimmering Staff (249392), Soulstaff (249393), Edward's Knife (251485), Gnarled Necromancer's Staff (251534), Skyseeker's Greatstaff (263937), Darkspear Insurgent's Spellblade (272086), Chol'aruk's Trophy Sword (276886), Quilboar Toothpick (276888), Plaguefang (279876), Webwood Slicer (282284), Bayne's Bite (283462), Gnarlpine War Staff (284166), Felweaver's Staff (284287), Chipped Spellstaff (285238), Explorer's Shortsword (285239), Alliance Outrunner's Sword (285346), Alliance Outrunner Staff (285350), Pristine Orcish Dagger (286730), Ukta's Conduit (286754), Helm Splitter (286755)) | Al'Aketh Honor Guard [world] | 0.0 | yes | Dragonmaw Shortsword (753, +0.0) [world]; Gnarled Ash Staff (791, +0.0) [dungeon]; Small Hand Blade (816, +0.0) [world] |
+| off_hand | Orb of Mystic Insight (249394) | Enchanting [crafted] | 7.0 | yes | Dwarven Tome (279898, -2.0) [quest]; Eye of Paleth (2943, -3.0) [quest]; Orb of Souls (249395, -3.0) [crafted] |
+| ranged | Wand of Eventide (5214) (or Sizzle Stick (8071), Greater Mystic Wand (217287)) | Gnomeregan: Dark Iron Agent [dungeon] | 5.0 | yes | Sizzle Stick (8071, +0.0) [quest]; Greater Mystic Wand (217287, +0.0) [crafted]; Spellcrafter Wand (6677, -1.0) [quest] |
 
 **New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Hillman's Cloak; chest: Tree Bark Jacket; wrist: Spidertank Oilrag; waist: Highlander's Cloth Girdle; legs: Gaze Dreamer Pants; feet: Gilded Slippers; finger1: Lorekeeper's Ring; finger2: Sea Giant's Toe Ring; trinket1: Darkspear Voodoo Seal; trinket2: Talisman of Arathor; off_hand: Orb of Mystic Insight; ranged: Wand of Eventide
 
@@ -66,121 +66,121 @@ No-known-source sample (15 of 475, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (gnome, 00000000000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 114.5. Weights run: 1.1s. Verify run: 0.9s. 649 eligible items had no known source.
+Set DPS (verified): 114.5. Weights run: 1.4s. Verify run: 1.1s. 641 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.258), intellect=not significant (0.900 ± 0.309), crit=1.426 ± 0.062, hit=2.298 ± 0.162, spell_haste=not significant (0.621 ± 0.236), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.451 ± 0.258), fire_power=0.545 ± 0.002
 
-| Slot | Item | Source | Score | Verified |
-|---|---|---|---|---|
-| head | Spellpower Goggles Xtreme (10502) | Engineering [crafted] | 21.0 | yes |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 12.4 | yes |
-| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 18.7 | yes |
-| back | Long Silken Cloak (4326) (or Guardian Cloak (5965)) | Tailoring [crafted] | 10.5 | yes |
-| chest | Robe of the Magi (1716) | Gnomeregan: Leprous Assistant [dungeon] | 27.4 | yes |
-| wrist | Arcane Runed Bracers (4744) (or Spidertank Oilrag (9448)) | Quests [quest] | 9.0 | yes |
-| hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 21.6 | yes |
-| waist | Deathmage Sash (10771) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 20.5 | yes |
-| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 24.8 | yes |
-| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 | yes |
-| finger1 | Lorekeeper's Ring (19524) | Silverwing Sentinels [rep] | 9.0 | yes |
-| finger2 | Ring of Forlorn Spirits (2043) | Quests [quest] | 8.0 | yes |
-| trinket1 | Rune of Perfection (21565) | Silverwing Sentinels [rep] | 0.0 | yes |
-| trinket2 | Ankh of Life (1713) | Maraudon: Theradrim Shardling [dungeon] | 0.0 | yes |
-| main_hand | Staff of Dar'Orahil (15106) | Quests [quest] | 32.9 | yes |
-| off_hand | - | - |  |  |
-| ranged | Burning Sliver (5249) | Quests [quest] | 6.0 | yes |
+| Slot | Item | Source | Score | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Spellpower Goggles Xtreme (10502) | Engineering [crafted] | 21.0 | yes | Augural Shroud (2620, -1.0) [world]; Enchanter's Cowl (4322, -6.0) [crafted]; Craftsman's Monocle (4393, -7.5) [crafted] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 12.4 | yes | Necklace of Calisea (1714, -6.1) [dungeon]; Darkspear Warding Pendant (272074, -6.1) [vendor]; Darkspear Warding Pendant (272075, -7.9) [vendor] |
+| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 18.7 | yes | Green Silken Shoulders (7057, -0.8) [crafted]; Bloodmage Mantle (7684, -1.6) [dungeon]; Berylline Pads (4197, -2.7) [quest] |
+| back | Long Silken Cloak (4326) (or Guardian Cloak (5965)) | Tailoring [crafted] | 10.5 | yes | Guardian Cloak (5965, +0.0) [crafted]; Darkspear Raider's Cloak (272077, -0.6) [vendor]; Cloak of Rot (4462, -3.3) [world] |
+| chest | Robe of the Magi (1716) | Gnomeregan: Leprous Assistant [dungeon] | 27.4 | yes | Dreamweave Vest (10021, -1.3) [crafted]; Robe of Power (7054, -2.6) [crafted]; Crimson Silk Vest (7058, -6.4) [crafted] |
+| wrist | Arcane Runed Bracers (4744) (or Spidertank Oilrag (9448)) | Quests [quest] | 9.0 | yes | Spidertank Oilrag (9448, +0.0) [dungeon]; Aurora Bracers (4043, -1.8) [dungeon]; Mistscape Bracers (4045, -1.8) [dungeon] |
+| hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 21.6 | yes | Red Mageweave Gloves (10018, -1.6) [crafted]; Black Mageweave Gloves (10003, -6.6) [crafted]; Stormcloth Gloves (10011, -6.8) [crafted] |
+| waist | Deathmage Sash (10771) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 20.5 | yes | Highlander's Cloth Girdle (20098, -2.9) [rep]; Gilded Cord (254037, -5.3) [crafted]; Highlander's Cloth Girdle (20099, -6.8) [rep] |
+| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 24.8 | yes | Crimson Silk Pantaloons (7062, -5.1) [crafted]; Abomination Skin Leggings (23173, -8.6) [dungeon]; Stoneweaver Leggings (9407, -10.6) [dungeon] |
+| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 | yes | Gilded Slippers (254001, -10.7) [crafted]; Acidic Walkers (9454, -11.8) [dungeon]; Spidersilk Boots (4320, -13.4) [crafted] |
+| finger1 | Lorekeeper's Ring (19524) | Silverwing Sentinels [rep] | 9.0 | yes | Reedknot Ring (9622, -2.0) [quest]; Lorekeeper's Ring (19525, -2.0) [rep]; Minor Channeling Ring (1449, -2.2) [quest] |
+| finger2 | Ring of Forlorn Spirits (2043) | Quests [quest] | 8.0 | yes | Reedknot Ring (9622, -1.0) [quest]; Minor Channeling Ring (1449, -1.2) [quest]; Ogremind Ring (1993, -1.7) [world] |
+| trinket1 | Rune of Perfection (21565) | Silverwing Sentinels [rep] | 0.0 | yes | Tidal Charm (1404, +0.0) [vendor]; Blazing Emblem (2802, +0.0) [dungeon]; Cold Basilisk Eye (5079, +0.0) [world] |
+| trinket2 | Ankh of Life (1713) | Maraudon: Theradrim Shardling [dungeon] | 0.0 | yes | Tidal Charm (1404, +0.0) [vendor]; Blazing Emblem (2802, +0.0) [dungeon]; Cold Basilisk Eye (5079, +0.0) [world] |
+| main_hand | Staff of Dar'Orahil (15106) | Quests [quest] | 32.9 | yes | Illusionary Rod (7713, -7.5) [dungeon]; Staff of Noh'Orahil (15105, -9.3) [quest]; Windweaver Staff (7757, -19.4) [dungeon] |
+| off_hand | - | - |  |  |  |
+| ranged | Burning Sliver (5249) | Quests [quest] | 6.0 | yes | Fizzle's Zippy Lighter (6729, +0.7) [quest]; Twisted Nether Wand (249144, +0.0) [crafted]; Wand of Eventide (5214, -1.0) [dungeon] |
 
 **New at 40:** head: Spellpower Goggles Xtreme; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Robe of the Magi; wrist: Arcane Runed Bracers; hands: Dreamweave Gloves; waist: Deathmage Sash; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Lorekeeper's Ring; finger2: Ring of Forlorn Spirits; trinket1: Rune of Perfection; trinket2: Ankh of Life; main_hand: Staff of Dar'Orahil; ranged: Burning Sliver
 
-No-known-source sample (15 of 649, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots; 7473 Regal Mantle
+No-known-source sample (15 of 641, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots; 7473 Regal Mantle
 
 ### Band 50 (gnome, 25300000000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 147.4. Weights run: 1.1s. Verify run: 0.9s. 880 eligible items had no known source.
+Set DPS (verified): 146.4. Weights run: 1.4s. Verify run: 1.1s. 834 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.389), intellect=not significant (1.144 ± 0.464), crit=1.848 ± 0.086, hit=2.789 ± 0.228, spell_haste=not significant (0.636 ± 0.343), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.417 ± 0.389), fire_power=0.581 ± 0.002
 
-| Slot | Item | Source | Score | Verified |
-|---|---|---|---|---|
-| head | Red Mageweave Headband (10033) | Tailoring [crafted] | 41.9 | yes |
-| neck | Horizon Choker (13085) | Azuregos [world] | 16.0 | yes |
-| shoulder | Rotgrip Mantle (17732) | Maraudon: Rotgrip [dungeon] | 33.6 | yes |
-| back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 20.9 | yes |
-| chest | Acumen Robes (17775) | Quests [quest] | 41.9 | yes |
-| wrist | Bloodband Bracers (11469) | Quests [quest] | 15.3 | yes |
-| hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 22.6 | yes |
-| waist | Highlander's Cloth Girdle (20097) | The League of Arathor [rep] | 40.6 | yes |
-| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 27.7 | yes |
-| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 | yes |
-| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 27.9 | yes |
-| finger2 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | 12.0 | yes |
-| trinket1 | Abyss Shard (20534) | Quests [quest] | 12.0 | yes |
-| trinket2 | Uther's Strength (11302) | Azuregos [world] | 6.0 | yes |
-| main_hand | Soul Harvester (20536) | Quests [quest] | 46.2 | yes |
-| off_hand | - | - |  |  |
-| ranged | Charged Lightning Rod (11860) | Quests [quest] | 9.6 | yes |
+| Slot | Item | Source | Score | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Red Mageweave Headband (10033) | Tailoring [crafted] | 41.9 | yes | Eye of Theradras (17715, +5.7) [dungeon]; Dreamweave Circlet (10041, -9.4) [crafted]; Spellpower Goggles Xtreme Plus (15999, -14.9) [crafted] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 13.9 | yes | Horizon Choker (13085, +2.2) [world]; Mindburst Medallion (11196, -1.0) [quest]; Darkspear Warding Pendant (272073, -3.6) [vendor] |
+| shoulder | Rotgrip Mantle (17732) | Maraudon: Rotgrip [dungeon] | 33.6 | yes | Red Mageweave Shoulders (10029, -9.4) [crafted]; Inquisitor's Shawl (19507, -11.7) [dungeon]; Green Silken Shoulders (7057, -13.0) [crafted] |
+| back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 20.9 | yes | Runecloth Cloak (13860, -2.7) [crafted]; Darkspear Raider's Cloak (272076, -4.8) [vendor]; Big Voodoo Cloak (8216, -5.6) [crafted] |
+| chest | Acumen Robes (17775) | Quests [quest] | 41.9 | yes | Runecloth Robe (13858, -11.4) [crafted]; Runecloth Tunic (13857, -12.3) [crafted]; Robe of the Magi (1716, -13.0) [dungeon] |
+| wrist | Bloodband Bracers (11469) | Quests [quest] | 15.3 | yes | Nethergeld Cuffs (254061, -0.3) [crafted]; Shizzle's Nozzle Wiper (11917, -1.6) [quest]; Imperial Red Bracers (8247, -2.7) [dungeon] |
+| hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 22.6 | yes | Red Mageweave Gloves (10018, -0.1) [crafted]; Runecloth Gloves (13863, -0.3) [crafted]; Stormcloth Gloves (10011, -4.8) [crafted] |
+| waist | Highlander's Cloth Girdle (20097) | The League of Arathor [rep] | 40.6 | yes | Dawnspire Cord (12466, -12.9) [world]; Satyrmane Sash (17755, -15.2) [dungeon]; Deathmage Sash (10771, -16.4) [dungeon] |
+| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 27.7 | yes | Kilt of the Atal'ai Prophet (10807, -4.1) [dungeon]; Crimson Silk Pantaloons (7062, -4.9) [crafted]; Senior Designer's Pantaloons (11841, -7.7) [dungeon] |
+| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 | yes | Southsea Mojo Boots (20641, -3.4) [quest]; Black Mageweave Boots (10026, -5.0) [crafted]; Vinerot Sandals (17748, -7.7) [dungeon] |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 27.9 | yes | Ogremind Ring (1993, -19.9) [world]; Voodoo Band (1996, -19.9) [world]; Mindbender Loop (5009, -19.9) [dungeon] |
+| finger2 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | 12.0 | yes | Lorekeeper's Ring (19524, -3.0) [rep]; Ogremind Ring (1993, -4.0) [world]; Voodoo Band (1996, -4.0) [world] |
+| trinket1 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | 0.0 | yes | Abyss Shard (20534, +12.0) [quest]; Thunderbrew's Boot Flask (744, +0.0) [quest]; Tidal Charm (1404, +0.0) [vendor] |
+| trinket2 | Uther's Strength (11302) | Azuregos [world] | 6.0 | yes | Abyss Shard (20534, +6.0) [quest]; Thunderbrew's Boot Flask (744, -6.0) [quest]; Tidal Charm (1404, -6.0) [vendor] |
+| main_hand | Soul Harvester (20536) | Quests [quest] | 46.2 | yes | Staff of Dar'Orahil (15106, -5.7) [quest]; Kindling Stave (11750, -6.6) [dungeon]; Illusionary Rod (7713, -13.5) [dungeon] |
+| off_hand | - | - |  |  |  |
+| ranged | Charged Lightning Rod (11860) | Quests [quest] | 9.6 | yes | Lesser Eternal Wand (249232, -1.6) [crafted]; Fizzle's Zippy Lighter (6729, -2.1) [quest]; Dreambough Wand (249234, -2.6) [crafted] |
 
-**New at 50:** head: Red Mageweave Headband; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Spritecaster Cape; chest: Acumen Robes; wrist: Bloodband Bracers; waist: Highlander's Cloth Girdle; finger1: Blackstone Ring; finger2: Lorekeeper's Ring; trinket1: Abyss Shard; trinket2: Uther's Strength; main_hand: Soul Harvester; ranged: Charged Lightning Rod
+**New at 50:** head: Red Mageweave Headband; shoulder: Rotgrip Mantle; back: Spritecaster Cape; chest: Acumen Robes; wrist: Bloodband Bracers; waist: Highlander's Cloth Girdle; finger1: Blackstone Ring; finger2: Lorekeeper's Ring; trinket1: Darkspear Voodoo Seal; trinket2: Uther's Strength; main_hand: Soul Harvester; ranged: Charged Lightning Rod
 
-No-known-source sample (15 of 880, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 834, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 
 ### Band 60 (gnome, 25532300000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 371.5. Weights run: 1.1s. Verify run: 0.9s. 1246 eligible items had no known source.
+Set DPS (verified): 371.5. Weights run: 1.4s. Verify run: 1.1s. 1200 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.964), intellect=not significant (1.610 ± 0.952), crit=5.970 ± 0.274, hit=10.408 ± 0.660, spell_haste=not significant (1.990 ± 0.697), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (-0.383 ± 0.964), fire_power=1.387 ± 0.004
 
-| Slot | Item | Source | Score | Verified |
-|---|---|---|---|---|
-| head | Plagueheart Circlet (22506) | Quests [quest] | 344.5 | yes |
-| neck | Gem of Trapped Innocents (23057) | Naxxramas [raid] | 193.4 | yes |
-| shoulder | Plagueheart Shoulderpads (22507) | Quests [quest] | 159.4 | yes |
-| back | Earthweave Cloak (21187) | Quests [quest] | 104.1 | yes |
-| chest | Plagueheart Robe (22504) | Quests [quest] | 274.1 | yes |
-| wrist | Rockfury Bracers (21186) | Quests [quest] | 131.1 | yes |
-| hands | Dark Storm Gauntlets (21585) | Ahn'Qiraj [raid] | 165.2 | yes |
-| waist | Plagueheart Belt (22510) | Quests [quest] | 136.9 | yes |
-| legs | Plagueheart Leggings (22505) | Quests [quest] | 160.8 | yes |
-| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 148.8 | yes |
-| finger1 | Seal of the Damned (23025) | Naxxramas [raid] | 208.7 | yes |
-| finger2 | Ring of Unspoken Names (21417) | Quests [quest] | 201.7 | yes |
-| trinket1 | The Restrained Essence of Sapphiron (23046) | Naxxramas [raid] | 40.0 | yes |
-| trinket2 | Eye of the Dead (23047) | Naxxramas [raid] | 0.0 | yes |
-| main_hand | Atiesh, Greatstaff of the Guardian (22589) | Quests [quest] | 409.7 | yes |
-| off_hand | - | - |  |  |
-| ranged | Charged Lightning Rod (11860) | Quests [quest] | 11.4 | yes |
+| Slot | Item | Source | Score | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Plagueheart Circlet (22506) | Quests [quest] | 344.5 | yes | Bloodvine Goggles (19999, -52.8) [crafted]; Doomcaller's Circlet (21337, -85.2) [quest]; Deathmist Mask (226909, -183.8) [quest] |
+| neck | Gem of Trapped Innocents (23057) | Naxxramas [raid] | 193.4 | yes | Onyxia Tooth Pendant (18404, -5.8) [quest]; Fury of the Forgotten Swarm (21809, -5.8) [raid]; Stormrage's Talisman of Seething (23053, -26.3) [raid] |
+| shoulder | Plagueheart Shoulderpads (22507) | Quests [quest] | 159.4 | yes | Doomcaller's Mantle (21335, -9.6) [quest]; Mantle of the Timbermaw (19050, -37.9) [crafted]; Champion's Dreadweave Spaulders (23256, -42.9) [vendor] |
+| back | Earthweave Cloak (21187) | Quests [quest] | 104.1 | yes | Chromatic Cloak (18509, -20.5) [crafted]; Shroud of Unspoken Names (21418, -71.6) [quest]; Hide of the Wild (18510, -74.0) [crafted] |
+| chest | Plagueheart Robe (22504) | Quests [quest] | 274.1 | yes | Bloodvine Vest (19682, -18.0) [crafted]; Doomcaller's Robes (21334, -122.1) [quest]; Earthpower Vest (21183, -130.1) [quest] |
+| wrist | Rockfury Bracers (21186) | Quests [quest] | 131.1 | yes | Burrower Bracers (21611, -82.1) [raid]; Plagueheart Bindings (22511, -85.5) [quest]; Dryad's Wrist Bindings (19595, -96.2) [rep] |
+| hands | Dark Storm Gauntlets (21585) | Ahn'Qiraj [raid] | 165.2 | yes | Gloves of Spell Mastery (14146, +27.0) [crafted]; Deathmist Wraps (22077, -27.2) [quest]; Deathmist Wraps (226911, -27.2) [quest] |
+| waist | Plagueheart Belt (22510) | Quests [quest] | 136.9 | yes | Belt of the Archmage (18405, -7.6) [crafted]; Highlander's Cloth Girdle (20047, -29.7) [rep]; Highlander's Cloth Girdle (20097, -36.3) [rep] |
+| legs | Plagueheart Leggings (22505) | Quests [quest] | 160.8 | yes | Doomcaller's Trousers (21336, -4.6) [quest]; Bloodvine Leggings (19683, -10.1) [crafted]; Deathmist Leggings (226910, -12.8) [quest] |
+| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 148.8 | yes | Plagueheart Sandals (22508, -7.5) [quest]; Boots of Epiphany (21600, -84.2) [raid]; Doomcaller's Footwraps (21338, -95.1) [quest] |
+| finger1 | Seal of the Damned (23025) | Naxxramas [raid] | 208.7 | yes | Don Julio's Band (19325, -21.0) [rep]; Band of Earthen Might (21182, -21.0) [quest]; Band of Unnatural Forces (23038, -21.0) [raid] |
+| finger2 | Ring of Unspoken Names (21417) | Quests [quest] | 201.7 | yes | Don Julio's Band (19325, -14.0) [rep]; Band of Earthen Might (21182, -14.0) [quest]; Band of Unnatural Forces (23038, -14.0) [raid] |
+| trinket1 | The Restrained Essence of Sapphiron (23046) | Naxxramas [raid] | 40.0 | yes | Neltharion's Tear (19379, +212.2) [raid]; Drake Fang Talisman (19406, +168.2) [raid]; Kiss of the Spider (22954, +147.7) [raid] |
+| trinket2 | Eye of the Dead (23047) | Naxxramas [raid] | 0.0 | yes | Neltharion's Tear (19379, +252.2) [raid]; Drake Fang Talisman (19406, +208.2) [raid]; Kiss of the Spider (22954, +187.7) [raid] |
+| main_hand | Atiesh, Greatstaff of the Guardian (22589) | Quests [quest] | 409.7 | yes | Atiesh, Greatstaff of the Guardian (22630, -45.8) [quest]; Blessed Qiraji Acolyte Staff (21273, -64.8) [quest]; High Warlord's War Staff (234549, -124.5) [pvp] |
+| off_hand | - | - |  |  |  |
+| ranged | Charged Lightning Rod (11860) | Quests [quest] | 11.4 | yes | Fizzle's Zippy Lighter (6729, -2.6) [quest]; Cairnstone Sliver (9654, -3.4) [quest]; Stormrager (16997, -3.4) [quest] |
 
 **New at 60:** head: Plagueheart Circlet; neck: Gem of Trapped Innocents; shoulder: Plagueheart Shoulderpads; back: Earthweave Cloak; chest: Plagueheart Robe; wrist: Rockfury Bracers; hands: Dark Storm Gauntlets; waist: Plagueheart Belt; legs: Plagueheart Leggings; feet: Bloodvine Boots; finger1: Seal of the Damned; finger2: Ring of Unspoken Names; trinket1: The Restrained Essence of Sapphiron; trinket2: Eye of the Dead; main_hand: Atiesh, Greatstaff of the Guardian
 
-No-known-source sample (15 of 1246, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 1200, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 
 ## Horde
 
 ### Band 20 (troll, 00000000000000000-0000000000000000000-2351000000000000)
 
-Set DPS (verified): 41.2. Weights run: 1.1s. Verify run: 0.9s. 248 eligible items had no known source.
+Set DPS (verified): 41.2. Weights run: 1.5s. Verify run: 1.1s. 248 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 4.526), intellect=not significant (-6.373 ± 5.311), crit=26.443 ± 1.099, hit=65.807 ± 2.970, spell_haste=not significant (14.513 ± 4.528), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (-7.626 ± 4.527), fire_power=8.686 ± 0.016
 
-| Slot | Item | Source | Score | Verified |
-|---|---|---|---|---|
-| head | Pristine Circlet (253949) | Tailoring [crafted] | 6.0 | yes |
-| neck | Scout's Medallion (20442) (or Tarnished Locket (279870)) | Warsong Outriders [rep] | 0.0 | yes |
-| shoulder | Reinforced Woolen Shoulders (4315) | Tailoring [crafted] | 5.0 | yes |
-| back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 | yes |
-| chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 5.0 | yes |
-| wrist | Owlbeard Bracers (16981) | Quests [quest] | 1.0 | yes |
-| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes |
-| waist | Pristine Sash (253925) | Tailoring [crafted] | 4.0 | yes |
-| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 9.0 | yes |
-| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 7.0 | yes |
-| finger1 | Advisor's Ring (20426) | Warsong Outriders [rep] | 5.0 | yes |
-| finger2 | Sludge-Stained Band (286535) | Sludge Beast [world] | 3.0 | yes |
-| trinket1 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes |
-| trinket2 | Rune of Duty (21568) | Warsong Outriders [rep] | 0.0 | yes |
-| main_hand | Notched Shortsword (727) (or Small Hand Blade (816), Slicer Blade (820), Staff of Horrors (880), Twisted Chanter's Staff (890), Venom Web Fang (899), Night Watch Shortsword (935), Redridge Machete (1219), Giant Tarantula Fang (1287), Lesser Staff of the Spire (1300), Riverpaw Mystic Staff (1391), Foamspittle Staff (1405), Scimitar of Atun (1469), Riverside Staff (1473), Shadowfang (1482), Witching Stave (1484), Gnarled Hermit's Staff (1539), Jeweled Dagger (1917), Defias Rapier (1925), Defias Mage Staff (1928), Staff of Conjuring (1933), Assassin's Blade (1935), Goblin Screwdriver (1936), Buzz Saw (1937), Blackwater Cutlass (1951), Hollowfang Blade (2020), Bluegill Kukri (2046), Northern Shortsword (2078), Long Crawler Limb (2088), Carving Knife (2140), Buzzer Blade (2169), Brackclaw (2235), Blackfang (2236), Stonesplinter Dagger (2266), Staff of the Blessed Seer (2271), Evocator's Blade (2567), Curved Dagger (2632), Copper Shortsword (2847), Bronze Shortsword (2850), Hook Dagger (3184), Bloodstained Knife (3225), Nightbane Staff (3227), Darkwood Staff (3446), Ceranium Rod (3452), Deadly Bronze Poniard (3490), Serrated Knife (3581), Decapitating Sword (3740), Big Bronze Knife (3848), Staff of Nobles (3902), Small Green Dagger (4302), Channeler's Staff (4437), Sturdy Quarterstaff (4566), War Knife (4571), Medicine Staff (4575), Enamelled Broadsword (4765), Feral Blade (4766), Jagged Dagger (4947), Compact Fighting Knife (4974), Ritual Blade (5112), Cruel Barb (5191), Thief's Blade (5192), Emberstone Staff (5201), Harpy Skinner (5279), Wind Rider Staff (5306), Elegant Shortsword (5321), Cauldron Stirrer (5340), Pearl-handled Dagger (5540), Pale Skinner (5744), Spikelash Dagger (6333), Tail Spike (6448), Wingblade (6504), Crescent Staff (6505), Living Root (6631), Butcher's Slicer (6633), Copper Dagger (7166), Cursed Felblade (14145), Chanting Blade (14151), Kris of Orgrimmar (15443), Staff of Orgrimmar (15444), Claystone Shortsword (16891), Clear Crystal Rod (16894), Edward's Knife (251485), Gnarled Necromancer's Staff (251534), Skyseeker's Greatstaff (263937), Chol'aruk's Trophy Sword (276886), Quilboar Toothpick (276888), Plaguefang (279876), Webwood Slicer (282284), Bayne's Bite (283462), Gnarlpine War Staff (284166), Felweaver's Staff (284287), Chipped Spellstaff (285238), Explorer's Shortsword (285239), Pristine Orcish Dagger (286730), Ukta's Conduit (286754), Helm Splitter (286755)) | Al'Aketh Honor Guard [world] | 0.0 | yes |
-| off_hand | Dwarven Tome (279898) | Quests [quest] | 5.0 | yes |
-| ranged | Cookie's Stirring Rod (5198) | The Deadmines: Cookie [dungeon] | 3.0 | yes |
+| Slot | Item | Source | Score | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Pristine Circlet (253949) | Tailoring [crafted] | 6.0 | yes | Flying Tiger Goggles (4368, -6.0) [crafted]; Shadow Goggles (4373, -6.0) [crafted]; Lucky Fishing Hat (19972, -6.0) [quest] |
+| neck | Scout's Medallion (20442) (or Tarnished Locket (279870)) | Warsong Outriders [rep] | 0.0 | yes | Tarnished Locket (279870, +0.0) [quest] |
+| shoulder | Reinforced Woolen Shoulders (4315) | Tailoring [crafted] | 5.0 | yes | Double-Stitched Woolen Shoulders (4314, -1.0) [crafted]; Slime-encrusted Pads (6461, -5.0) [dungeon] |
+| back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 | yes | Feyscale Cloak (6632, -1.0) [dungeon]; Black Whelp Cloak (7283, -1.0) [crafted]; Battle Healer's Cloak (20427, -1.0) [rep] |
+| chest | Filigreed Pristine Gown (253901) | Tailoring [crafted] | 5.0 | yes | Green Woolen Vest (2582, -1.0) [crafted]; Gray Woolen Robe (2585, -1.0) [crafted]; Bloody Apron (6226, -1.0) [dungeon] |
+| wrist | Owlbeard Bracers (16981) | Quests [quest] | 1.0 | yes | Mindthrust Bracers (1974, -1.0) [dungeon]; Silver-lined Bracers (3224, -1.0) [world]; Seer's Cuffs (3645, -1.0) [dungeon] |
+| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes | Gnoll Casting Gloves (892, -1.0) [world]; Apothecary Gloves (10919, -3.0) [quest]; Pristine Gloves (253913, -3.0) [crafted] |
+| waist | Pristine Sash (253925) | Tailoring [crafted] | 4.0 | yes | Novice Arcanist's Sash (253885, +0.0) [crafted]; Novice Ardent's Sash (253887, -2.0) [crafted]; Lesser Belt of the Spire (1299, -4.0) [world] |
+| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 9.0 | yes | Silk-threaded Trousers (1929, -2.0) [dungeon]; Filigreed Pristine Leggings (253937, -3.0) [crafted]; Colorful Kilt (10048, -4.0) [crafted] |
+| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 7.0 | yes | Feather Padded Treads (285345, -2.0) [world]; Red Woolen Boots (4313, -3.0) [crafted]; Pristine Boots (253889, -4.0) [crafted] |
+| finger1 | Advisor's Ring (20426) | Warsong Outriders [rep] | 5.0 | yes | Lavishly Jeweled Ring (1156, -5.0) [dungeon]; Ring of the Shadow (1462, -5.0) [world]; Ring of Scorn (3235, -5.0) [quest] |
+| finger2 | Sludge-Stained Band (286535) | Sludge Beast [world] | 3.0 | yes | Lavishly Jeweled Ring (1156, -3.0) [dungeon]; Ring of the Shadow (1462, -3.0) [world]; Ring of Scorn (3235, -3.0) [quest] |
+| trinket1 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes | - |
+| trinket2 | Rune of Duty (21568) | Warsong Outriders [rep] | 0.0 | yes | - |
+| main_hand | Notched Shortsword (727) (or Small Hand Blade (816), Slicer Blade (820), Staff of Horrors (880), Twisted Chanter's Staff (890), Venom Web Fang (899), Night Watch Shortsword (935), Redridge Machete (1219), Giant Tarantula Fang (1287), Lesser Staff of the Spire (1300), Riverpaw Mystic Staff (1391), Foamspittle Staff (1405), Scimitar of Atun (1469), Riverside Staff (1473), Shadowfang (1482), Witching Stave (1484), Gnarled Hermit's Staff (1539), Jeweled Dagger (1917), Defias Rapier (1925), Defias Mage Staff (1928), Staff of Conjuring (1933), Assassin's Blade (1935), Goblin Screwdriver (1936), Buzz Saw (1937), Blackwater Cutlass (1951), Hollowfang Blade (2020), Bluegill Kukri (2046), Northern Shortsword (2078), Long Crawler Limb (2088), Carving Knife (2140), Buzzer Blade (2169), Brackclaw (2235), Blackfang (2236), Stonesplinter Dagger (2266), Staff of the Blessed Seer (2271), Evocator's Blade (2567), Curved Dagger (2632), Copper Shortsword (2847), Bronze Shortsword (2850), Hook Dagger (3184), Bloodstained Knife (3225), Nightbane Staff (3227), Darkwood Staff (3446), Ceranium Rod (3452), Deadly Bronze Poniard (3490), Serrated Knife (3581), Decapitating Sword (3740), Big Bronze Knife (3848), Staff of Nobles (3902), Small Green Dagger (4302), Channeler's Staff (4437), Sturdy Quarterstaff (4566), War Knife (4571), Medicine Staff (4575), Enamelled Broadsword (4765), Feral Blade (4766), Jagged Dagger (4947), Compact Fighting Knife (4974), Ritual Blade (5112), Cruel Barb (5191), Thief's Blade (5192), Emberstone Staff (5201), Harpy Skinner (5279), Wind Rider Staff (5306), Elegant Shortsword (5321), Cauldron Stirrer (5340), Pearl-handled Dagger (5540), Pale Skinner (5744), Spikelash Dagger (6333), Tail Spike (6448), Wingblade (6504), Crescent Staff (6505), Living Root (6631), Butcher's Slicer (6633), Copper Dagger (7166), Cursed Felblade (14145), Chanting Blade (14151), Kris of Orgrimmar (15443), Staff of Orgrimmar (15444), Claystone Shortsword (16891), Clear Crystal Rod (16894), Edward's Knife (251485), Gnarled Necromancer's Staff (251534), Skyseeker's Greatstaff (263937), Chol'aruk's Trophy Sword (276886), Quilboar Toothpick (276888), Plaguefang (279876), Webwood Slicer (282284), Bayne's Bite (283462), Gnarlpine War Staff (284166), Felweaver's Staff (284287), Chipped Spellstaff (285238), Explorer's Shortsword (285239), Pristine Orcish Dagger (286730), Ukta's Conduit (286754), Helm Splitter (286755)) | Al'Aketh Honor Guard [world] | 0.0 | yes | Small Hand Blade (816, +0.0) [world]; Slicer Blade (820, +0.0) [world]; Staff of Horrors (880, +0.0) [world] |
+| off_hand | Dwarven Tome (279898) | Quests [quest] | 5.0 | yes | Grayson's Torch (1172, -5.0) [quest]; Nightglow Concoction (3451, -5.0) [quest]; Pulsating Hydra Heart (5183, -5.0) [world] |
+| ranged | Cookie's Stirring Rod (5198) | The Deadmines: Cookie [dungeon] | 3.0 | yes | Sizzle Stick (8071, +2.0) [quest]; Torchlight Wand (5240, -1.0) [quest]; Greater Magic Wand (11288, -1.0) [crafted] |
 
 **New at 20:** head: Pristine Circlet; neck: Scout's Medallion; shoulder: Reinforced Woolen Shoulders; back: Heavy Woolen Cloak; chest: Filigreed Pristine Gown; wrist: Owlbeard Bracers; hands: Serpent Gloves; waist: Pristine Sash; legs: Abomination Skin Leggings; feet: Spidersilk Boots; finger1: Advisor's Ring; finger2: Sludge-Stained Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Notched Shortsword; off_hand: Dwarven Tome; ranged: Cookie's Stirring Rod
 
@@ -188,29 +188,29 @@ No-known-source sample (15 of 248, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-0000000000000000000-2353224000000000)
 
-Set DPS (verified): 64.5. Weights run: 1.2s. Verify run: 1.0s. 470 eligible items had no known source.
+Set DPS (verified): 64.5. Weights run: 1.4s. Verify run: 1.3s. 470 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.132, intellect=not significant (-0.254 ± 0.146), crit=1.140 ± 0.054, hit=2.044 ± 0.097, spell_haste=not significant (0.104 ± 0.127), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.768 ± 0.132, fire_power=0.234 ± 0.000
 
-| Slot | Item | Source | Score | Verified |
-|---|---|---|---|---|
-| head | Holy Shroud (2721) | Razorfen Downs: Withered Battle Boar [dungeon] | 11.0 | yes |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 7.0 | yes |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 9.0 | yes |
-| back | Hillman's Cloak (3719) (or Windsong Drape (15468)) | Leatherworking [crafted] | 5.0 | yes |
-| chest | Green Silk Armor (7065) | Tailoring [crafted] | 9.0 | yes |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes |
-| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes |
-| waist | Warsong Sash (16975) (or Defiler's Cloth Girdle (20164)) | Quests [quest] | 11.0 | yes |
-| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 12.0 | yes |
-| feet | Gilded Slippers (254001) | Tailoring [crafted] | 7.0 | yes |
-| finger1 | Advisor's Ring (19521) | Warsong Outriders [rep] | 7.0 | yes |
-| finger2 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | 6.0 | yes |
-| trinket1 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | 0.0 | yes |
-| trinket2 | Defiler's Talisman (21120) | The Defilers [rep] | 0.0 | yes |
-| main_hand | Notched Shortsword (727) (or Dragonmaw Shortsword (753), Gnarled Ash Staff (791), Small Hand Blade (816), Slicer Blade (820), Staff of Horrors (880), Black Metal Shortsword (886), Twisted Chanter's Staff (890), Venom Web Fang (899), Night Watch Shortsword (935), Rod of the Sleepwalker (1155), Redridge Machete (1219), Giant Tarantula Fang (1287), Lesser Staff of the Spire (1300), Riverpaw Mystic Staff (1391), Foamspittle Staff (1405), Scimitar of Atun (1469), Riverside Staff (1473), Shadowfang (1482), Witching Stave (1484), Heavy Marauder Scimitar (1493), Gnarled Hermit's Staff (1539), Jeweled Dagger (1917), Defias Rapier (1925), Defias Mage Staff (1928), Staff of Conjuring (1933), Assassin's Blade (1935), Goblin Screwdriver (1936), Buzz Saw (1937), Blackwater Cutlass (1951), Bloodscalp Channeling Staff (1998), Twisted Sabre (2011), Cryptbone Staff (2013), Skeletal Longsword (2018), Hollowfang Blade (2020), Sword of the Night Sky (2035), Bluegill Kukri (2046), Dwarven Magestaff (2072), Magician Staff (2077), Northern Shortsword (2078), Long Crawler Limb (2088), Carving Knife (2140), Buzzer Blade (2169), Ogremage Staff (2226), Brackclaw (2235), Blackfang (2236), Stonesplinter Dagger (2266), Staff of the Blessed Seer (2271), Kam's Walking Stick (2280), Staff of the Shade (2549), Evocator's Blade (2567), Curved Dagger (2632), Cross Dagger (2819), Copper Shortsword (2847), Bronze Shortsword (2850), Claw of the Shadowmancer (2912), Prison Shank (2941), Hook Dagger (3184), Acrobatic Staff (3185), Viking Sword (3186), Bloodstained Knife (3225), Nightbane Staff (3227), Flesh Piercer (3336), Doomspike (3413), Staff of the Friar (3415), Darkwood Staff (3446), Ceranium Rod (3452), Talonstrike (3462), Deadly Bronze Poniard (3490), Serrated Knife (3581), Decapitating Sword (3740), Big Bronze Knife (3848), Hardened Iron Shortsword (3849), Jade Serpentblade (3850), Staff of Nobles (3902), Small Green Dagger (4302), Channeler's Staff (4437), Blackvenom Blade (4446), Naraxis' Fang (4449), Talon of Vultros (4454), Sturdy Quarterstaff (4566), War Knife (4571), Medicine Staff (4575), Enamelled Broadsword (4765), Feral Blade (4766), Jagged Dagger (4947), Compact Fighting Knife (4974), Ritual Blade (5112), Cruel Barb (5191), Thief's Blade (5192), Emberstone Staff (5201), Harpy Skinner (5279), Wind Rider Staff (5306), Elegant Shortsword (5321), Cauldron Stirrer (5340), Pearl-handled Dagger (5540), Pale Skinner (5744), Wyvern Tailspike (5752), Meteor Shard (6220), Odo's Ley Staff (6318), Spikelash Dagger (6333), Tail Spike (6448), Wingblade (6504), Crescent Staff (6505), Living Root (6631), Butcher's Slicer (6633), Thornspike (6681), Swinetusk Shank (6691), Bite of Serra'kis (6904), Copper Dagger (7166), Torturing Poker (7682), Electrocutioner Leg (9446), Hydrocane (9452), Toxic Revenger (9453), Darkwater Talwar (11121), Broad Bladed Knife (12247), Daring Dirk (12248), Cursed Felblade (14145), Chanting Blade (14151), Staff of Soran'ruk (15109), Kris of Orgrimmar (15443), Staff of Orgrimmar (15444), Polished Walking Staff (16889), Slatemetal Cutlass (16890), Claystone Shortsword (16891), Clear Crystal Rod (16894), Lorekeeper's Staff (212580), Protector's Sword (212582), Sentinel's Blade (212583), Advisor's Gnarled Staff (212584), Legionnaire's Sword (212586), Scout's Blade (212587), Glimmering Staff (249392), Soulstaff (249393), Edward's Knife (251485), Gnarled Necromancer's Staff (251534), Skyseeker's Greatstaff (263937), Darkspear Insurgent's Spellblade (272086), Chol'aruk's Trophy Sword (276886), Quilboar Toothpick (276888), Plaguefang (279876), Webwood Slicer (282284), Bayne's Bite (283462), Gnarlpine War Staff (284166), Felweaver's Staff (284287), Chipped Spellstaff (285238), Explorer's Shortsword (285239), Alliance Outrunner's Sword (285346), Alliance Outrunner Staff (285350), Pristine Orcish Dagger (286730), Ukta's Conduit (286754), Helm Splitter (286755)) | Al'Aketh Honor Guard [world] | 0.0 | yes |
-| off_hand | Orb of Mystic Insight (249394) | Enchanting [crafted] | 7.0 | yes |
-| ranged | Wand of Eventide (5214) (or Sizzle Stick (8071), Greater Mystic Wand (217287)) | Gnomeregan: Dark Iron Agent [dungeon] | 5.0 | yes |
+| Slot | Item | Source | Score | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Holy Shroud (2721) | Razorfen Downs: Withered Battle Boar [dungeon] | 11.0 | yes | Silk Headband (7050, -2.0) [crafted]; Embalmed Shroud (7691, -3.0) [dungeon]; Filigreed Pristine Circlet (253975, -3.0) [crafted] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 7.0 | yes | Pendant of Myzrael (4614, -7.0) [dungeon]; Glowing Green Talisman (5002, -7.0) [dungeon]; Crystal Starfire Medallion (5003, -7.0) [dungeon] |
+| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 9.0 | yes | Chestnut Mantle (17695, -1.0) [quest]; Invoker's Mantle (215365, -2.0) [crafted]; Death Speaker Mantle (6685, -3.0) [dungeon] |
+| back | Hillman's Cloak (3719) (or Windsong Drape (15468)) | Leatherworking [crafted] | 5.0 | yes | Windsong Drape (15468, +0.0) [quest]; Heavy Woolen Cloak (4311, -1.0) [crafted]; Battle Healer's Cloak (19529, -1.0) [rep] |
+| chest | Green Silk Armor (7065) | Tailoring [crafted] | 9.0 | yes | Tree Bark Jacket (1486, +4.0) [dungeon]; High Robe of the Adjudicator (3461, -1.0) [quest]; Robes of Arcana (5770, -1.0) [crafted] |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes | Owlbeard Bracers (16981, -8.0) [quest]; Mindthrust Bracers (1974, -9.0) [dungeon]; Silver-lined Bracers (3224, -9.0) [world] |
+| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes | Gnoll Casting Gloves (892, -1.0) [world]; Jutebraid Gloves (10654, -1.0) [quest]; Gloves of Meditation (4318, -2.0) [crafted] |
+| waist | Warsong Sash (16975) (or Defiler's Cloth Girdle (20164)) | Quests [quest] | 11.0 | yes | Defiler's Cloth Girdle (20164, +0.0) [rep]; Belt of Arugal (6392, -2.0) [dungeon]; Ghamoo-ra's Bind (6908, -3.0) [dungeon] |
+| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 12.0 | yes | Abomination Skin Leggings (23173, -3.0) [dungeon]; Silk-threaded Trousers (1929, -5.0) [dungeon]; Pristine Leggings (253987, -5.0) [crafted] |
+| feet | Gilded Slippers (254001) | Tailoring [crafted] | 7.0 | yes | Spidersilk Boots (4320, +0.0) [crafted]; Boots of the Enchanter (4325, -2.0) [crafted]; Acidic Walkers (9454, -2.0) [dungeon] |
+| finger1 | Advisor's Ring (19521) | Warsong Outriders [rep] | 7.0 | yes | Advisor's Ring (20426, -2.0) [rep]; Electrocutioner Lagnut (9447, -4.0) [dungeon]; Sludge-Stained Band (286535, -4.0) [world] |
+| finger2 | Sea Giant's Toe Ring (274746) | Gezzy Gunkgear [vendor] | 6.0 | yes | Electrocutioner Lagnut (9447, -3.0) [dungeon]; Sludge-Stained Band (286535, -3.0) [world]; Sacred Band (6669, -4.0) [quest] |
+| trinket1 | Darkspear Voodoo Seal (272059) | Creeg Bothunk [vendor] | 0.0 | yes | Rune of Perfection (21566, +0.0) [rep]; Rune of Duty (21568, +0.0) [rep]; Relentless Raider's Seal (272062, +0.0) [vendor] |
+| trinket2 | Defiler's Talisman (21120) | The Defilers [rep] | 0.0 | yes | Rune of Perfection (21566, +0.0) [rep]; Rune of Duty (21568, +0.0) [rep]; Relentless Raider's Seal (272062, +0.0) [vendor] |
+| main_hand | Notched Shortsword (727) (or Dragonmaw Shortsword (753), Gnarled Ash Staff (791), Small Hand Blade (816), Slicer Blade (820), Staff of Horrors (880), Black Metal Shortsword (886), Twisted Chanter's Staff (890), Venom Web Fang (899), Night Watch Shortsword (935), Rod of the Sleepwalker (1155), Redridge Machete (1219), Giant Tarantula Fang (1287), Lesser Staff of the Spire (1300), Riverpaw Mystic Staff (1391), Foamspittle Staff (1405), Scimitar of Atun (1469), Riverside Staff (1473), Shadowfang (1482), Witching Stave (1484), Heavy Marauder Scimitar (1493), Gnarled Hermit's Staff (1539), Jeweled Dagger (1917), Defias Rapier (1925), Defias Mage Staff (1928), Staff of Conjuring (1933), Assassin's Blade (1935), Goblin Screwdriver (1936), Buzz Saw (1937), Blackwater Cutlass (1951), Bloodscalp Channeling Staff (1998), Twisted Sabre (2011), Cryptbone Staff (2013), Skeletal Longsword (2018), Hollowfang Blade (2020), Sword of the Night Sky (2035), Bluegill Kukri (2046), Dwarven Magestaff (2072), Magician Staff (2077), Northern Shortsword (2078), Long Crawler Limb (2088), Carving Knife (2140), Buzzer Blade (2169), Ogremage Staff (2226), Brackclaw (2235), Blackfang (2236), Stonesplinter Dagger (2266), Staff of the Blessed Seer (2271), Kam's Walking Stick (2280), Staff of the Shade (2549), Evocator's Blade (2567), Curved Dagger (2632), Cross Dagger (2819), Copper Shortsword (2847), Bronze Shortsword (2850), Claw of the Shadowmancer (2912), Prison Shank (2941), Hook Dagger (3184), Acrobatic Staff (3185), Viking Sword (3186), Bloodstained Knife (3225), Nightbane Staff (3227), Flesh Piercer (3336), Doomspike (3413), Staff of the Friar (3415), Darkwood Staff (3446), Ceranium Rod (3452), Talonstrike (3462), Deadly Bronze Poniard (3490), Serrated Knife (3581), Decapitating Sword (3740), Big Bronze Knife (3848), Hardened Iron Shortsword (3849), Jade Serpentblade (3850), Staff of Nobles (3902), Small Green Dagger (4302), Channeler's Staff (4437), Blackvenom Blade (4446), Naraxis' Fang (4449), Talon of Vultros (4454), Sturdy Quarterstaff (4566), War Knife (4571), Medicine Staff (4575), Enamelled Broadsword (4765), Feral Blade (4766), Jagged Dagger (4947), Compact Fighting Knife (4974), Ritual Blade (5112), Cruel Barb (5191), Thief's Blade (5192), Emberstone Staff (5201), Harpy Skinner (5279), Wind Rider Staff (5306), Elegant Shortsword (5321), Cauldron Stirrer (5340), Pearl-handled Dagger (5540), Pale Skinner (5744), Wyvern Tailspike (5752), Meteor Shard (6220), Odo's Ley Staff (6318), Spikelash Dagger (6333), Tail Spike (6448), Wingblade (6504), Crescent Staff (6505), Living Root (6631), Butcher's Slicer (6633), Thornspike (6681), Swinetusk Shank (6691), Bite of Serra'kis (6904), Copper Dagger (7166), Torturing Poker (7682), Electrocutioner Leg (9446), Hydrocane (9452), Toxic Revenger (9453), Darkwater Talwar (11121), Broad Bladed Knife (12247), Daring Dirk (12248), Cursed Felblade (14145), Chanting Blade (14151), Staff of Soran'ruk (15109), Kris of Orgrimmar (15443), Staff of Orgrimmar (15444), Polished Walking Staff (16889), Slatemetal Cutlass (16890), Claystone Shortsword (16891), Clear Crystal Rod (16894), Lorekeeper's Staff (212580), Protector's Sword (212582), Sentinel's Blade (212583), Advisor's Gnarled Staff (212584), Legionnaire's Sword (212586), Scout's Blade (212587), Glimmering Staff (249392), Soulstaff (249393), Edward's Knife (251485), Gnarled Necromancer's Staff (251534), Skyseeker's Greatstaff (263937), Darkspear Insurgent's Spellblade (272086), Chol'aruk's Trophy Sword (276886), Quilboar Toothpick (276888), Plaguefang (279876), Webwood Slicer (282284), Bayne's Bite (283462), Gnarlpine War Staff (284166), Felweaver's Staff (284287), Chipped Spellstaff (285238), Explorer's Shortsword (285239), Alliance Outrunner's Sword (285346), Alliance Outrunner Staff (285350), Pristine Orcish Dagger (286730), Ukta's Conduit (286754), Helm Splitter (286755)) | Al'Aketh Honor Guard [world] | 0.0 | yes | Dragonmaw Shortsword (753, +0.0) [world]; Gnarled Ash Staff (791, +0.0) [dungeon]; Small Hand Blade (816, +0.0) [world] |
+| off_hand | Orb of Mystic Insight (249394) | Enchanting [crafted] | 7.0 | yes | Dwarven Tome (279898, -2.0) [quest]; Orb of Souls (249395, -3.0) [crafted]; Alliance Outrunner Healing Rod (285348, -3.0) [world] |
+| ranged | Wand of Eventide (5214) (or Sizzle Stick (8071), Greater Mystic Wand (217287)) | Gnomeregan: Dark Iron Agent [dungeon] | 5.0 | yes | Sizzle Stick (8071, +0.0) [quest]; Greater Mystic Wand (217287, +0.0) [crafted]; Cookie's Stirring Rod (5198, -2.0) [dungeon] |
 
 **New at 30:** head: Holy Shroud; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Hillman's Cloak; chest: Green Silk Armor; wrist: Spidertank Oilrag; waist: Warsong Sash; legs: Gaze Dreamer Pants; feet: Gilded Slippers; finger1: Advisor's Ring; finger2: Sea Giant's Toe Ring; trinket1: Darkspear Voodoo Seal; trinket2: Defiler's Talisman; off_hand: Orb of Mystic Insight; ranged: Wand of Eventide
 
@@ -218,91 +218,91 @@ No-known-source sample (15 of 470, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (troll, 00000000000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 107.6. Weights run: 1.1s. Verify run: 0.9s. 644 eligible items had no known source.
+Set DPS (verified): 107.6. Weights run: 1.4s. Verify run: 1.1s. 636 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.258), intellect=not significant (0.900 ± 0.309), crit=1.426 ± 0.062, hit=2.298 ± 0.162, spell_haste=not significant (0.621 ± 0.236), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.451 ± 0.258), fire_power=0.545 ± 0.002
 
-| Slot | Item | Source | Score | Verified |
-|---|---|---|---|---|
-| head | Spellpower Goggles Xtreme (10502) | Engineering [crafted] | 21.0 | yes |
-| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 12.4 | yes |
-| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 18.7 | yes |
-| back | Long Silken Cloak (4326) (or Guardian Cloak (5965)) | Tailoring [crafted] | 10.5 | yes |
-| chest | Robe of the Magi (1716) | Gnomeregan: Leprous Assistant [dungeon] | 27.4 | yes |
-| wrist | Radiant Silver Bracers (4545) | Quests [quest] | 11.2 | yes |
-| hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 21.6 | yes |
-| waist | Deathmage Sash (10771) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 20.5 | yes |
-| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 24.8 | yes |
-| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 | yes |
-| finger1 | Advisor's Ring (19520) | Warsong Outriders [rep] | 9.0 | yes |
-| finger2 | Reedknot Ring (9622) | Quests [quest] | 7.0 | yes |
-| trinket1 | Rune of Perfection (21565) | Warsong Outriders [rep] | 0.0 | yes |
-| trinket2 | Rune of Duty (21567) | Warsong Outriders [rep] | 0.0 | yes |
-| main_hand | Staff of Dar'Orahil (15106) | Quests [quest] | 32.9 | yes |
-| off_hand | - | - |  |  |
-| ranged | Fizzle's Zippy Lighter (6729) | Quests [quest] | 6.7 | yes |
+| Slot | Item | Source | Score | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Spellpower Goggles Xtreme (10502) | Engineering [crafted] | 21.0 | yes | Augural Shroud (2620, -1.0) [world]; Enchanter's Cowl (4322, -6.0) [crafted]; Craftsman's Monocle (4393, -7.5) [crafted] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 12.4 | yes | Necklace of Calisea (1714, -6.1) [dungeon]; Darkspear Warding Pendant (272074, -6.1) [vendor]; Darkspear Warding Pendant (272075, -7.9) [vendor] |
+| shoulder | Inquisitor's Shawl (19507) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 18.7 | yes | Green Silken Shoulders (7057, -0.8) [crafted]; Bloodmage Mantle (7684, -1.6) [dungeon]; Berylline Pads (4197, -2.7) [quest] |
+| back | Long Silken Cloak (4326) (or Guardian Cloak (5965)) | Tailoring [crafted] | 10.5 | yes | Guardian Cloak (5965, +0.0) [crafted]; Darkspear Raider's Cloak (272077, -0.6) [vendor]; Cloak of Rot (4462, -3.3) [world] |
+| chest | Robe of the Magi (1716) | Gnomeregan: Leprous Assistant [dungeon] | 27.4 | yes | Dreamweave Vest (10021, -1.3) [crafted]; Robe of Power (7054, -2.6) [crafted]; Crimson Silk Vest (7058, -6.4) [crafted] |
+| wrist | Radiant Silver Bracers (4545) | Quests [quest] | 11.2 | yes | Spidertank Oilrag (9448, -2.2) [dungeon]; Aurora Bracers (4043, -4.0) [dungeon]; Mistscape Bracers (4045, -4.0) [dungeon] |
+| hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 21.6 | yes | Red Mageweave Gloves (10018, -1.6) [crafted]; Black Mageweave Gloves (10003, -6.6) [crafted]; Stormcloth Gloves (10011, -6.8) [crafted] |
+| waist | Deathmage Sash (10771) | Razorfen Downs: Mordresh Fire Eye [dungeon] | 20.5 | yes | Defiler's Cloth Girdle (20166, -2.9) [rep]; Gilded Cord (254037, -5.3) [crafted]; Defiler's Cloth Girdle (20164, -6.8) [rep] |
+| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 24.8 | yes | Crimson Silk Pantaloons (7062, -5.1) [crafted]; Abomination Skin Leggings (23173, -8.6) [dungeon]; Stoneweaver Leggings (9407, -10.6) [dungeon] |
+| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 | yes | Gilded Slippers (254001, -10.7) [crafted]; Acidic Walkers (9454, -11.8) [dungeon]; Spidersilk Boots (4320, -13.4) [crafted] |
+| finger1 | Advisor's Ring (19520) | Warsong Outriders [rep] | 9.0 | yes | Advisor's Ring (19521, -2.0) [rep]; Ogremind Ring (1993, -2.7) [world]; Voodoo Band (1996, -2.7) [world] |
+| finger2 | Reedknot Ring (9622) | Quests [quest] | 7.0 | yes | Ogremind Ring (1993, -0.7) [world]; Voodoo Band (1996, -0.7) [world]; Mindbender Loop (5009, -0.7) [dungeon] |
+| trinket1 | Rune of Perfection (21565) | Warsong Outriders [rep] | 0.0 | yes | Tidal Charm (1404, +0.0) [vendor]; Ankh of Life (1713, +0.0) [dungeon]; Blazing Emblem (2802, +0.0) [dungeon] |
+| trinket2 | Rune of Duty (21567) | Warsong Outriders [rep] | 0.0 | yes | Tidal Charm (1404, +0.0) [vendor]; Ankh of Life (1713, +0.0) [dungeon]; Blazing Emblem (2802, +0.0) [dungeon] |
+| main_hand | Staff of Dar'Orahil (15106) | Quests [quest] | 32.9 | yes | Illusionary Rod (7713, -7.5) [dungeon]; Staff of Noh'Orahil (15105, -9.3) [quest]; Windweaver Staff (7757, -19.4) [dungeon] |
+| off_hand | - | - |  |  |  |
+| ranged | Fizzle's Zippy Lighter (6729) | Quests [quest] | 6.7 | yes | Twisted Nether Wand (249144, -0.7) [crafted]; Wand of Eventide (5214, -1.7) [dungeon]; Sizzle Stick (8071, -1.7) [quest] |
 
 **New at 40:** head: Spellpower Goggles Xtreme; shoulder: Inquisitor's Shawl; back: Long Silken Cloak; chest: Robe of the Magi; wrist: Radiant Silver Bracers; hands: Dreamweave Gloves; waist: Deathmage Sash; legs: Red Mageweave Pants; feet: Earthen Silk Slippers; finger1: Advisor's Ring; finger2: Reedknot Ring; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Staff of Dar'Orahil; ranged: Fizzle's Zippy Lighter
 
-No-known-source sample (15 of 644, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots; 7473 Regal Mantle
+No-known-source sample (15 of 636, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves; 7472 Regal Boots; 7473 Regal Mantle
 
 ### Band 50 (troll, 25300000000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 144.3. Weights run: 1.1s. Verify run: 0.9s. 875 eligible items had no known source.
+Set DPS (verified): 146.2. Weights run: 1.4s. Verify run: 1.2s. 829 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.389), intellect=not significant (1.144 ± 0.464), crit=1.848 ± 0.086, hit=2.789 ± 0.228, spell_haste=not significant (0.636 ± 0.343), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (0.417 ± 0.389), fire_power=0.581 ± 0.002
 
-| Slot | Item | Source | Score | Verified |
-|---|---|---|---|---|
-| head | Red Mageweave Headband (10033) | Tailoring [crafted] | 41.9 | yes |
-| neck | Horizon Choker (13085) | Azuregos [world] | 16.0 | yes |
-| shoulder | Rotgrip Mantle (17732) | Maraudon: Rotgrip [dungeon] | 33.6 | yes |
-| back | Deep Woodlands Cloak (19121) | Quests [quest] | 22.3 | yes |
-| chest | Acumen Robes (17775) | Quests [quest] | 41.9 | yes |
-| wrist | Bloodband Bracers (11469) | Quests [quest] | 15.3 | yes |
-| hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 22.6 | yes |
-| waist | Defiler's Cloth Girdle (20165) | The Defilers [rep] | 40.6 | yes |
-| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 27.7 | yes |
-| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 | yes |
-| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 27.9 | yes |
-| finger2 | Advisor's Ring (19519) | Warsong Outriders [rep] | 12.0 | yes |
-| trinket1 | Uther's Strength (11302) | Azuregos [world] | 6.0 | yes |
-| trinket2 | Abyss Shard (20534) | Quests [quest] | 12.0 | yes |
-| main_hand | Soul Harvester (20536) | Quests [quest] | 46.2 | yes |
-| off_hand | - | - |  |  |
-| ranged | Charged Lightning Rod (11860) | Quests [quest] | 9.6 | yes |
+| Slot | Item | Source | Score | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Red Mageweave Headband (10033) | Tailoring [crafted] | 41.9 | yes | Eye of Theradras (17715, +5.7) [dungeon]; Dreamweave Circlet (10041, -9.4) [crafted]; Spellpower Goggles Xtreme Plus (15999, -14.9) [crafted] |
+| neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 13.9 | yes | Horizon Choker (13085, +2.2) [world]; Mindburst Medallion (11196, -1.0) [quest]; Darkspear Warding Pendant (272073, -3.6) [vendor] |
+| shoulder | Rotgrip Mantle (17732) | Maraudon: Rotgrip [dungeon] | 33.6 | yes | Red Mageweave Shoulders (10029, -9.4) [crafted]; Inquisitor's Shawl (19507, -11.7) [dungeon]; Green Silken Shoulders (7057, -13.0) [crafted] |
+| back | Deep Woodlands Cloak (19121) | Quests [quest] | 22.3 | yes | Spritecaster Cape (11623, -1.4) [dungeon]; Runecloth Cloak (13860, -4.1) [crafted]; Darkspear Raider's Cloak (272076, -6.3) [vendor] |
+| chest | Acumen Robes (17775) | Quests [quest] | 41.9 | yes | Runecloth Robe (13858, -11.4) [crafted]; Runecloth Tunic (13857, -12.3) [crafted]; Robe of the Magi (1716, -13.0) [dungeon] |
+| wrist | Nethergeld Cuffs (254061) | Tailoring [crafted] | 15.0 | yes | Bloodband Bracers (11469, +0.3) [quest]; Shizzle's Nozzle Wiper (11917, -1.3) [quest]; Radiant Silver Bracers (4545, -1.9) [quest] |
+| hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 22.6 | yes | Red Mageweave Gloves (10018, -0.1) [crafted]; Runecloth Gloves (13863, -0.3) [crafted]; Greenleaf Handwraps (19116, -3.0) [quest] |
+| waist | Defiler's Cloth Girdle (20165) | The Defilers [rep] | 40.6 | yes | Dawnspire Cord (12466, -12.9) [world]; Satyrmane Sash (17755, -15.2) [dungeon]; Deathmage Sash (10771, -16.4) [dungeon] |
+| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 27.7 | yes | Kilt of the Atal'ai Prophet (10807, -4.1) [dungeon]; Crimson Silk Pantaloons (7062, -4.9) [crafted]; Senior Designer's Pantaloons (11841, -7.7) [dungeon] |
+| feet | Earthen Silk Slippers (254013) | Tailoring [crafted] | 24.0 | yes | Southsea Mojo Boots (20641, -3.4) [quest]; Black Mageweave Boots (10026, -5.0) [crafted]; Vinerot Sandals (17748, -7.7) [dungeon] |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 27.9 | yes | Ogremind Ring (1993, -19.9) [world]; Voodoo Band (1996, -19.9) [world]; Mindbender Loop (5009, -19.9) [dungeon] |
+| finger2 | Advisor's Ring (19519) | Warsong Outriders [rep] | 12.0 | yes | Advisor's Ring (19520, -3.0) [rep]; Ogremind Ring (1993, -4.0) [world]; Voodoo Band (1996, -4.0) [world] |
+| trinket1 | Uther's Strength (11302) | Azuregos [world] | 6.0 | yes | Rune of the Guard Captain (19120, +13.5) [quest]; Abyss Shard (20534, +6.0) [quest]; Tidal Charm (1404, -6.0) [vendor] |
+| trinket2 | Darkspear Voodoo Seal (272061) | Creeg Bothunk [vendor] | 0.0 | yes | Rune of the Guard Captain (19120, +19.5) [quest]; Abyss Shard (20534, +12.0) [quest]; Tidal Charm (1404, +0.0) [vendor] |
+| main_hand | Soul Harvester (20536) | Quests [quest] | 46.2 | yes | Staff of Dar'Orahil (15106, -5.7) [quest]; Kindling Stave (11750, -6.6) [dungeon]; Illusionary Rod (7713, -13.5) [dungeon] |
+| off_hand | - | - |  |  |  |
+| ranged | Charged Lightning Rod (11860) | Quests [quest] | 9.6 | yes | Lesser Eternal Wand (249232, -1.6) [crafted]; Fizzle's Zippy Lighter (6729, -2.1) [quest]; Dreambough Wand (249234, -2.6) [crafted] |
 
-**New at 50:** head: Red Mageweave Headband; neck: Horizon Choker; shoulder: Rotgrip Mantle; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Bloodband Bracers; waist: Defiler's Cloth Girdle; finger1: Blackstone Ring; finger2: Advisor's Ring; trinket1: Uther's Strength; trinket2: Abyss Shard; main_hand: Soul Harvester; ranged: Charged Lightning Rod
+**New at 50:** head: Red Mageweave Headband; shoulder: Rotgrip Mantle; back: Deep Woodlands Cloak; chest: Acumen Robes; wrist: Nethergeld Cuffs; waist: Defiler's Cloth Girdle; finger1: Blackstone Ring; finger2: Advisor's Ring; trinket1: Uther's Strength; trinket2: Darkspear Voodoo Seal; main_hand: Soul Harvester; ranged: Charged Lightning Rod
 
-No-known-source sample (15 of 875, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 829, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 
 ### Band 60 (troll, 25532300000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 367.0. Weights run: 1.1s. Verify run: 0.9s. 1241 eligible items had no known source.
+Set DPS (verified): 367.0. Weights run: 1.4s. Verify run: 1.1s. 1195 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.964), intellect=not significant (1.610 ± 0.952), crit=5.970 ± 0.274, hit=10.408 ± 0.660, spell_haste=not significant (1.990 ± 0.697), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (-0.383 ± 0.964), fire_power=1.387 ± 0.004
 
-| Slot | Item | Source | Score | Verified |
-|---|---|---|---|---|
-| head | Plagueheart Circlet (22506) | Quests [quest] | 344.5 | yes |
-| neck | Gem of Trapped Innocents (23057) | Naxxramas [raid] | 193.4 | yes |
-| shoulder | Plagueheart Shoulderpads (22507) | Quests [quest] | 159.4 | yes |
-| back | Earthweave Cloak (21187) | Quests [quest] | 104.1 | yes |
-| chest | Plagueheart Robe (22504) | Quests [quest] | 274.1 | yes |
-| wrist | Rockfury Bracers (21186) | Quests [quest] | 131.1 | yes |
-| hands | Dark Storm Gauntlets (21585) | Ahn'Qiraj [raid] | 165.2 | yes |
-| waist | Plagueheart Belt (22510) | Quests [quest] | 136.9 | yes |
-| legs | Plagueheart Leggings (22505) | Quests [quest] | 160.8 | yes |
-| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 148.8 | yes |
-| finger1 | Seal of the Damned (23025) | Naxxramas [raid] | 208.7 | yes |
-| finger2 | Ring of Unspoken Names (21417) | Quests [quest] | 201.7 | yes |
-| trinket1 | The Restrained Essence of Sapphiron (23046) | Naxxramas [raid] | 40.0 | yes |
-| trinket2 | Eye of the Dead (23047) | Naxxramas [raid] | 0.0 | yes |
-| main_hand | Atiesh, Greatstaff of the Guardian (22589) | Quests [quest] | 409.7 | yes |
-| off_hand | - | - |  |  |
-| ranged | Charged Lightning Rod (11860) | Quests [quest] | 11.4 | yes |
+| Slot | Item | Source | Score | Verified | Alternatives |
+|---|---|---|---|---|---|
+| head | Plagueheart Circlet (22506) | Quests [quest] | 344.5 | yes | Bloodvine Goggles (19999, -52.8) [crafted]; Doomcaller's Circlet (21337, -85.2) [quest]; Deathmist Mask (226909, -183.8) [quest] |
+| neck | Gem of Trapped Innocents (23057) | Naxxramas [raid] | 193.4 | yes | Onyxia Tooth Pendant (18404, -5.8) [quest]; Fury of the Forgotten Swarm (21809, -5.8) [raid]; Stormrage's Talisman of Seething (23053, -26.3) [raid] |
+| shoulder | Plagueheart Shoulderpads (22507) | Quests [quest] | 159.4 | yes | Doomcaller's Mantle (21335, -9.6) [quest]; Mantle of the Timbermaw (19050, -37.9) [crafted]; Champion's Dreadweave Spaulders (23256, -42.9) [vendor] |
+| back | Earthweave Cloak (21187) | Quests [quest] | 104.1 | yes | Chromatic Cloak (18509, -20.5) [crafted]; Shroud of Unspoken Names (21418, -71.6) [quest]; Hide of the Wild (18510, -74.0) [crafted] |
+| chest | Plagueheart Robe (22504) | Quests [quest] | 274.1 | yes | Bloodvine Vest (19682, -18.0) [crafted]; Doomcaller's Robes (21334, -122.1) [quest]; Earthpower Vest (21183, -130.1) [quest] |
+| wrist | Rockfury Bracers (21186) | Quests [quest] | 131.1 | yes | Burrower Bracers (21611, -82.1) [raid]; Plagueheart Bindings (22511, -85.5) [quest]; Dryad's Wrist Bindings (19595, -96.2) [rep] |
+| hands | Dark Storm Gauntlets (21585) | Ahn'Qiraj [raid] | 165.2 | yes | Gloves of Spell Mastery (14146, +27.0) [crafted]; Deathmist Wraps (22077, -27.2) [quest]; Deathmist Wraps (226911, -27.2) [quest] |
+| waist | Plagueheart Belt (22510) | Quests [quest] | 136.9 | yes | Belt of the Archmage (18405, -7.6) [crafted]; Defiler's Cloth Girdle (20163, -29.7) [rep]; Defiler's Cloth Girdle (20165, -36.3) [rep] |
+| legs | Plagueheart Leggings (22505) | Quests [quest] | 160.8 | yes | Doomcaller's Trousers (21336, -4.6) [quest]; Bloodvine Leggings (19683, -10.1) [crafted]; Deathmist Leggings (226910, -12.8) [quest] |
+| feet | Bloodvine Boots (19684) | Tailoring [crafted] | 148.8 | yes | Plagueheart Sandals (22508, -7.5) [quest]; Boots of Epiphany (21600, -84.2) [raid]; Doomcaller's Footwraps (21338, -95.1) [quest] |
+| finger1 | Seal of the Damned (23025) | Naxxramas [raid] | 208.7 | yes | Don Julio's Band (19325, -21.0) [rep]; Band of Earthen Might (21182, -21.0) [quest]; Band of Unnatural Forces (23038, -21.0) [raid] |
+| finger2 | Ring of Unspoken Names (21417) | Quests [quest] | 201.7 | yes | Don Julio's Band (19325, -14.0) [rep]; Band of Earthen Might (21182, -14.0) [quest]; Band of Unnatural Forces (23038, -14.0) [raid] |
+| trinket1 | The Restrained Essence of Sapphiron (23046) | Naxxramas [raid] | 40.0 | yes | Neltharion's Tear (19379, +212.2) [raid]; Drake Fang Talisman (19406, +168.2) [raid]; Kiss of the Spider (22954, +147.7) [raid] |
+| trinket2 | Eye of the Dead (23047) | Naxxramas [raid] | 0.0 | yes | Neltharion's Tear (19379, +252.2) [raid]; Drake Fang Talisman (19406, +208.2) [raid]; Kiss of the Spider (22954, +187.7) [raid] |
+| main_hand | Atiesh, Greatstaff of the Guardian (22589) | Quests [quest] | 409.7 | yes | Atiesh, Greatstaff of the Guardian (22630, -45.8) [quest]; Blessed Qiraji Acolyte Staff (21273, -64.8) [quest]; High Warlord's War Staff (234549, -124.5) [pvp] |
+| off_hand | - | - |  |  |  |
+| ranged | Charged Lightning Rod (11860) | Quests [quest] | 11.4 | yes | Nature's Breath (19118, -1.8) [quest]; Fizzle's Zippy Lighter (6729, -2.6) [quest]; Stormrager (16997, -3.4) [quest] |
 
 **New at 60:** head: Plagueheart Circlet; neck: Gem of Trapped Innocents; shoulder: Plagueheart Shoulderpads; back: Earthweave Cloak; chest: Plagueheart Robe; wrist: Rockfury Bracers; hands: Dark Storm Gauntlets; waist: Plagueheart Belt; legs: Plagueheart Leggings; feet: Bloodvine Boots; finger1: Seal of the Damned; finger2: Ring of Unspoken Names; trinket1: The Restrained Essence of Sapphiron; trinket2: Eye of the Dead; main_hand: Atiesh, Greatstaff of the Guardian
 
-No-known-source sample (15 of 1241, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
+No-known-source sample (15 of 1195, see the JSON for more): 1189 Overseer's Ring; 2277 Necromancer Leggings; 2879 Antipodean Rod; 2944 Cursed Eye of Paleth; 3738 Brewing Rod; 4116 Olmann Sewar; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 5000 Coral Band; 5008 Quicksilver Ring; 5743 Prismstone Ring; 5971 Feathered Cape; 6478 Rat Stompers; 7470 Regal Wizard Hat; 7471 Regal Gloves
 

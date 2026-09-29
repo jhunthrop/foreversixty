@@ -8454,14 +8454,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 7959,
@@ -8531,9 +8531,9 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "trinket2": {
               "item_id": 11302,
@@ -8558,8 +8558,8 @@
             20097,
             17713,
             19523,
+            272061,
             11302,
-            11811,
             7959
           ],
           "horde": [
@@ -8572,7 +8572,7 @@
             20165,
             17713,
             19519,
-            19120,
+            272061,
             11302,
             7959
           ]
@@ -9207,9 +9207,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 16336,
@@ -9267,9 +9267,9 @@
               "source": "Maraudon: Theradrim Shardling"
             },
             "main_hand": {
-              "item_id": 1722,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Leprous Assistant"
+              "item_id": 276203,
+              "source_kind": "vendor",
+              "source": "Friz Frazzlespark"
             }
           },
           "horde": {
@@ -9284,9 +9284,9 @@
               "source": "Quests"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 16336,
@@ -9344,9 +9344,9 @@
               "source": "Maraudon: Theradrim Shardling"
             },
             "main_hand": {
-              "item_id": 1722,
+              "item_id": 7713,
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Leprous Assistant"
+              "source": "Scarlet Monastery: Arcanist Doan"
             }
           }
         },
@@ -9354,6 +9354,7 @@
           "alliance": [
             10008,
             19540,
+            274751,
             16336,
             5739,
             19508,
@@ -9363,11 +9364,12 @@
             19515,
             21565,
             1713,
-            1722
+            276203
           ],
           "horde": [
             10008,
             4430,
+            274751,
             16336,
             5739,
             19508,
@@ -9378,7 +9380,7 @@
             19512,
             21565,
             1713,
-            1722
+            7713
           ]
         },
         "weights": {
@@ -9405,9 +9407,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 9647,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 252534,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 16336,
@@ -9440,9 +9442,9 @@
               "source": "Quests"
             },
             "feet": {
-              "item_id": 12470,
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Zerillis"
+              "item_id": 252468,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 19516,
@@ -9482,9 +9484,9 @@
               "source": "Quests"
             },
             "shoulder": {
-              "item_id": 9647,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 252534,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 16336,
@@ -9517,9 +9519,9 @@
               "source": "Maraudon: Princess Theradras"
             },
             "feet": {
-              "item_id": 12470,
-              "source_kind": "dungeon",
-              "source": "Zul'Farrak: Zerillis"
+              "item_id": 252468,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 19511,
@@ -9537,9 +9539,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 21115,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "main_hand": {
               "item_id": 7959,
@@ -9551,12 +9553,12 @@
         "new_at_band": {
           "alliance": [
             19539,
-            9647,
+            252534,
             15064,
             13120,
             20115,
             9652,
-            12470,
+            252468,
             19516,
             11811,
             21117,
@@ -9564,16 +9566,16 @@
           ],
           "horde": [
             19159,
-            9647,
+            252534,
             15064,
             13120,
             20193,
             8262,
-            12470,
+            252468,
             19511,
             11862,
             11811,
-            19120,
+            21115,
             7959
           ]
         },
@@ -10240,9 +10242,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6432,
@@ -10322,9 +10324,9 @@
               "source": "Warsong Outriders"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6432,
@@ -10397,6 +10399,7 @@
           "alliance": [
             7719,
             19540,
+            274751,
             6432,
             8175,
             19508,
@@ -10414,6 +10417,7 @@
           "horde": [
             7719,
             19536,
+            274751,
             6432,
             8175,
             19508,
@@ -10441,9 +10445,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 17715,
+              "item_id": 7719,
               "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source": "Scarlet Monastery: Herod"
             },
             "neck": {
               "item_id": 19539,
@@ -10451,9 +10455,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 8259,
@@ -10501,14 +10505,14 @@
               "source": "Quests"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 12774,
@@ -10521,16 +10525,16 @@
               "source": "Maraudon: Tinkerer Gizlock"
             },
             "ranged": {
-              "item_id": 16004,
+              "item_id": 285281,
               "source_kind": "crafted",
-              "source": "Engineering"
+              "source": "Blacksmithing"
             }
           },
           "horde": {
             "head": {
-              "item_id": 7719,
+              "item_id": 17715,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "source": "Maraudon: Princess Theradras"
             },
             "neck": {
               "item_id": 19535,
@@ -10538,9 +10542,9 @@
               "source": "Warsong Outriders"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 8259,
@@ -10588,14 +10592,14 @@
               "source": "Quests"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
             },
             "main_hand": {
               "item_id": 12774,
@@ -10608,15 +10612,14 @@
               "source": "Maraudon: Tinkerer Gizlock"
             },
             "ranged": {
-              "item_id": 16004,
+              "item_id": 285281,
               "source_kind": "crafted",
-              "source": "Engineering"
+              "source": "Blacksmithing"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            17715,
             19539,
             8259,
             11193,
@@ -10626,13 +10629,14 @@
             22240,
             17713,
             9533,
+            272061,
             11302,
-            11811,
             12774,
             17719,
-            16004
+            285281
           ],
           "horde": [
+            17715,
             19535,
             8259,
             11193,
@@ -10642,11 +10646,11 @@
             22240,
             17713,
             9533,
+            272061,
             11302,
-            19120,
             12774,
             17719,
-            16004
+            285281
           ]
         },
         "weights": {
@@ -11333,9 +11337,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6432,
@@ -11415,9 +11419,9 @@
               "source": "Warsong Outriders"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6432,
@@ -11490,6 +11494,7 @@
           "alliance": [
             7719,
             19540,
+            274751,
             6432,
             8175,
             19508,
@@ -11507,6 +11512,7 @@
           "horde": [
             7719,
             19536,
+            274751,
             6432,
             8175,
             19508,
@@ -11545,9 +11551,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 8259,
@@ -11560,9 +11566,9 @@
               "source": "Quests"
             },
             "wrist": {
-              "item_id": 17714,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 13120,
+              "source_kind": "world",
+              "source": "Azuregos"
             },
             "hands": {
               "item_id": 867,
@@ -11575,9 +11581,9 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 1718,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Leprous Machinesmith"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 17728,
@@ -11595,14 +11601,14 @@
               "source": "Quests"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 12774,
@@ -11615,9 +11621,9 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 16004,
+              "item_id": 285281,
               "source_kind": "crafted",
-              "source": "Engineering"
+              "source": "Blacksmithing"
             }
           },
           "horde": {
@@ -11632,9 +11638,9 @@
               "source": "Warsong Outriders"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 8259,
@@ -11682,14 +11688,14 @@
               "source": "Quests"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
             },
             "main_hand": {
               "item_id": 12774,
@@ -11702,9 +11708,9 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 16004,
+              "item_id": 285281,
               "source_kind": "crafted",
-              "source": "Engineering"
+              "source": "Blacksmithing"
             }
           }
         },
@@ -11714,16 +11720,17 @@
             19539,
             8259,
             11193,
-            17714,
+            13120,
             20088,
+            15057,
             17728,
             17713,
             9533,
+            272061,
             11302,
-            11811,
             12774,
             10823,
-            16004
+            285281
           ],
           "horde": [
             17715,
@@ -11736,11 +11743,11 @@
             22240,
             17713,
             9533,
+            272061,
             11302,
-            19120,
             12774,
             10823,
-            16004
+            285281
           ]
         },
         "weights": {
@@ -12441,9 +12448,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 16336,
@@ -12506,9 +12513,9 @@
               "source": "Quests"
             },
             "off_hand": {
-              "item_id": 6829,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 274753,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "ranged": {
               "item_id": 4383,
@@ -12528,9 +12535,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 16336,
@@ -12553,7 +12560,7 @@
               "source": "Gnomeregan: Dark Iron Ambassador"
             },
             "waist": {
-              "item_id": 20192,
+              "item_id": 20153,
               "source_kind": "rep",
               "source": "The Defilers"
             },
@@ -12593,9 +12600,9 @@
               "source": "Quests"
             },
             "off_hand": {
-              "item_id": 10761,
-              "source_kind": "dungeon",
-              "source": "Razorfen Downs: Amnennar the Coldbringer"
+              "item_id": 274753,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "ranged": {
               "item_id": 4383,
@@ -12607,6 +12614,7 @@
         "new_at_band": {
           "alliance": [
             7719,
+            274751,
             16336,
             6773,
             19508,
@@ -12618,22 +12626,23 @@
             21565,
             1713,
             10823,
-            6829
+            274753
           ],
           "horde": [
             7719,
+            274751,
             16336,
             6773,
             19508,
             867,
-            20192,
+            20153,
             6423,
             19512,
             7686,
             21565,
             1713,
             10823,
-            10761
+            274753
           ]
         },
         "weights": {
@@ -12659,9 +12668,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 9647,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 14673,
@@ -12709,14 +12718,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11811,
               "source_kind": "crafted",
               "source": "Enchanting"
-            },
-            "trinket2": {
-              "item_id": 21117,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
             },
             "main_hand": {
               "item_id": 12774,
@@ -12746,9 +12755,9 @@
               "source": "Quests"
             },
             "shoulder": {
-              "item_id": 9647,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 14673,
@@ -12796,14 +12805,14 @@
               "source": "Quests"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11811,
               "source_kind": "crafted",
               "source": "Enchanting"
-            },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
             },
             "main_hand": {
               "item_id": 12774,
@@ -12826,7 +12835,6 @@
           "alliance": [
             17715,
             19539,
-            9647,
             14673,
             15064,
             17714,
@@ -12835,8 +12843,8 @@
             22240,
             17713,
             19516,
+            272061,
             11811,
-            21117,
             12774,
             6660,
             2100
@@ -12844,7 +12852,6 @@
           "horde": [
             17715,
             19159,
-            9647,
             14673,
             15064,
             17714,
@@ -12853,8 +12860,8 @@
             22240,
             17713,
             11862,
+            272061,
             11811,
-            19120,
             12774,
             6660,
             2100
@@ -13823,9 +13830,9 @@
               "source": "Blackrock Depths: Pyromancer Loregrain"
             },
             "ranged": {
-              "item_id": 5249,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 249232,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -13890,9 +13897,9 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 11811,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
               "item_id": 11302,
@@ -13905,7 +13912,7 @@
               "source": "Blackrock Depths: Pyromancer Loregrain"
             },
             "ranged": {
-              "item_id": 249144,
+              "item_id": 249232,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -13922,7 +13929,8 @@
             19523,
             11302,
             11811,
-            11750
+            11750,
+            249232
           ],
           "horde": [
             15999,
@@ -13932,9 +13940,10 @@
             14132,
             17713,
             19519,
-            19120,
+            11811,
             11302,
-            11750
+            11750,
+            249232
           ]
         },
         "weights": {
@@ -14026,9 +14035,9 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 5249,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 249232,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -14108,7 +14117,7 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 249144,
+              "item_id": 249232,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -14866,14 +14875,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 11750,
@@ -14881,9 +14890,9 @@
               "source": "Blackrock Depths: Pyromancer Loregrain"
             },
             "ranged": {
-              "item_id": 5249,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 249232,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -14948,9 +14957,9 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "trinket2": {
               "item_id": 11302,
@@ -14963,9 +14972,9 @@
               "source": "Blackrock Depths: Pyromancer Loregrain"
             },
             "ranged": {
-              "item_id": 11860,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 249232,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -14980,9 +14989,10 @@
             20097,
             17713,
             19523,
+            272061,
             11302,
-            11811,
-            11750
+            11750,
+            249232
           ],
           "horde": [
             17715,
@@ -14995,10 +15005,10 @@
             14132,
             17713,
             19519,
-            19120,
+            272061,
             11302,
             11750,
-            11860
+            249232
           ]
         },
         "weights": {
@@ -15211,7 +15221,8 @@
             19325,
             23046,
             23001,
-            22589
+            22589,
+            11860
           ]
         },
         "weights": {
@@ -15877,9 +15888,9 @@
               "source": "Maraudon: Rotgrip"
             },
             "back": {
-              "item_id": 11623,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: High Interrogator Gerstahn "
+              "item_id": 272076,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "chest": {
               "item_id": 17775,
@@ -15897,9 +15908,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 12466,
-              "source_kind": "world",
-              "source": "Dreamscythe"
+              "item_id": 20097,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "legs": {
               "item_id": 10009,
@@ -15907,9 +15918,9 @@
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 254013,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 20641,
+              "source_kind": "quest",
+              "source": "Quests"
             },
             "finger1": {
               "item_id": 17713,
@@ -15922,14 +15933,14 @@
               "source": "Boulderfist Magus"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 11750,
@@ -15979,9 +15990,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 12466,
-              "source_kind": "world",
-              "source": "Dreamscythe"
+              "item_id": 20165,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "legs": {
               "item_id": 10009,
@@ -15989,9 +16000,9 @@
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 20641,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 254013,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "finger1": {
               "item_id": 17713,
@@ -16004,9 +16015,9 @@
               "source": "Boulderfist Magus"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "trinket2": {
               "item_id": 11302,
@@ -16030,15 +16041,16 @@
             10033,
             13085,
             17732,
-            11623,
+            272076,
             17775,
             11917,
             10018,
-            12466,
+            20097,
+            20641,
             17713,
             1993,
+            272061,
             11302,
-            11811,
             11750,
             11860
           ],
@@ -16050,11 +16062,10 @@
             17775,
             11917,
             10018,
-            12466,
-            20641,
+            20165,
             17713,
             1993,
-            19120,
+            272061,
             11302,
             11750,
             11860
@@ -16147,9 +16158,9 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 5249,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 249232,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -16179,9 +16190,9 @@
               "source": "Quests"
             },
             "wrist": {
-              "item_id": 21611,
-              "source_kind": "raid",
-              "source": "Ahn'Qiraj"
+              "item_id": 21186,
+              "source_kind": "quest",
+              "source": "Quests"
             },
             "hands": {
               "item_id": 21585,
@@ -16219,7 +16230,7 @@
               "source": "Naxxramas"
             },
             "trinket2": {
-              "item_id": 22954,
+              "item_id": 23047,
               "source_kind": "raid",
               "source": "Naxxramas"
             },
@@ -16229,9 +16240,9 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 11860,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 249232,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -16252,7 +16263,7 @@
             23046,
             23047,
             22589,
-            5249
+            249232
           ],
           "horde": [
             22498,
@@ -16260,7 +16271,7 @@
             19050,
             21187,
             22496,
-            21611,
+            21186,
             21585,
             22502,
             22497,
@@ -16268,8 +16279,9 @@
             23025,
             19325,
             23046,
-            22954,
-            22589
+            23047,
+            22589,
+            249232
           ]
         },
         "weights": {
@@ -16746,9 +16758,9 @@
               "source": "Silverwing Sentinels"
             },
             "finger2": {
-              "item_id": 272066,
+              "item_id": 274754,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Rettrick"
             },
             "trinket1": {
               "item_id": 21565,
@@ -16823,9 +16835,9 @@
               "source": "Warsong Outriders"
             },
             "finger2": {
-              "item_id": 272066,
+              "item_id": 274754,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Rettrick"
             },
             "trinket1": {
               "item_id": 21565,
@@ -16856,7 +16868,7 @@
             10330,
             250546,
             19515,
-            272066,
+            274754,
             21565,
             1713,
             6830
@@ -16872,7 +16884,7 @@
             10330,
             250546,
             19512,
-            272066,
+            274754,
             21565,
             1713,
             272081
@@ -16892,9 +16904,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 7719,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 220803,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 7731,
@@ -16902,19 +16914,19 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 11632,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Lord Roccor"
+              "item_id": 220795,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "back": {
-              "item_id": 16336,
-              "source_kind": "pvp",
-              "source": "Rank 9"
+              "item_id": 14801,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "chest": {
-              "item_id": 11195,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 220794,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "wrist": {
               "item_id": 17714,
@@ -16952,14 +16964,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 7959,
@@ -16969,9 +16981,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 7719,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 220803,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 19159,
@@ -16979,19 +16991,19 @@
               "source": "Quests"
             },
             "shoulder": {
-              "item_id": 11632,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Lord Roccor"
+              "item_id": 220795,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "back": {
-              "item_id": 14801,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 16336,
+              "source_kind": "pvp",
+              "source": "Rank 9"
             },
             "chest": {
-              "item_id": 11195,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 220794,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "wrist": {
               "item_id": 17714,
@@ -17009,9 +17021,9 @@
               "source": "The Defilers"
             },
             "legs": {
-              "item_id": 15057,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 220797,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "feet": {
               "item_id": 22240,
@@ -17029,14 +17041,14 @@
               "source": "Quests"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
             },
             "main_hand": {
               "item_id": 7959,
@@ -17047,31 +17059,33 @@
         },
         "new_at_band": {
           "alliance": [
-            11632,
-            11195,
+            220803,
+            220795,
+            14801,
+            220794,
             17714,
             20106,
             15057,
             22240,
             17713,
             19516,
+            272061,
             11302,
-            11811,
             7959
           ],
           "horde": [
+            220803,
             19159,
-            11632,
-            14801,
-            11195,
+            220795,
+            220794,
             17714,
             20151,
-            15057,
+            220797,
             22240,
             17713,
             11862,
+            272061,
             11302,
-            19120,
             7959
           ]
         },
@@ -17099,9 +17113,9 @@
               "source": "Lord Kazzak"
             },
             "shoulder": {
-              "item_id": 16729,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: The Beast"
+              "item_id": 220795,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 21187,
@@ -17171,14 +17185,14 @@
               "source": "Blacksmithing"
             },
             "neck": {
-              "item_id": 17111,
-              "source_kind": "world",
-              "source": "Lord Kazzak"
+              "item_id": 23053,
+              "source_kind": "raid",
+              "source": "Naxxramas"
             },
             "shoulder": {
-              "item_id": 16729,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: The Beast"
+              "item_id": 220795,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 21187,
@@ -17246,7 +17260,6 @@
           "alliance": [
             12640,
             17111,
-            16729,
             21187,
             19690,
             21602,
@@ -17262,8 +17275,7 @@
           ],
           "horde": [
             12640,
-            17111,
-            16729,
+            23053,
             21187,
             19690,
             21602,
@@ -17974,9 +17986,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 20097,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 17755,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Lord Vyletongue"
             },
             "legs": {
               "item_id": 10009,
@@ -17999,14 +18011,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 10838,
@@ -18019,16 +18031,16 @@
               "source": "Scarlet Monastery: Bloodmage Thalnos"
             },
             "ranged": {
-              "item_id": 249144,
+              "item_id": 249232,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
           },
           "horde": {
             "head": {
-              "item_id": 15999,
-              "source_kind": "crafted",
-              "source": "Engineering"
+              "item_id": 17715,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "neck": {
               "item_id": 23169,
@@ -18086,9 +18098,9 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "trinket2": {
               "item_id": 11302,
@@ -18106,7 +18118,7 @@
               "source": "Scarlet Monastery: Bloodmage Thalnos"
             },
             "ranged": {
-              "item_id": 249144,
+              "item_id": 249232,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -18118,26 +18130,28 @@
             17732,
             11623,
             17775,
-            20097,
+            17755,
             17713,
             19523,
+            272061,
             11302,
-            11811,
             10838,
-            7685
+            7685,
+            249232
           ],
           "horde": [
-            15999,
+            17715,
             17732,
             11623,
             17775,
             17755,
             17713,
             19519,
-            19120,
+            272061,
             11302,
             10838,
-            7685
+            7685,
+            249232
           ]
         },
         "weights": {
@@ -18192,14 +18206,14 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 19683,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 16687,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Baron Rivendare"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 21600,
+              "source_kind": "raid",
+              "source": "Ahn'Qiraj"
             },
             "finger1": {
               "item_id": 23025,
@@ -18309,9 +18323,9 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 11860,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 249232,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           }
         },
@@ -18325,8 +18339,8 @@
             21611,
             21585,
             18405,
-            19683,
-            19684,
+            16687,
+            21600,
             23025,
             21709,
             23046,
@@ -18349,8 +18363,7 @@
             21709,
             23046,
             23047,
-            22589,
-            11860
+            22589
           ]
         },
         "weights": {
@@ -18823,9 +18836,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6314,
@@ -18910,9 +18923,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6314,
@@ -18989,6 +19002,7 @@
         "new_at_band": {
           "alliance": [
             8176,
+            274751,
             8175,
             19508,
             867,
@@ -19003,6 +19017,7 @@
           ],
           "horde": [
             8176,
+            274751,
             8175,
             19508,
             867,
@@ -19039,9 +19054,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 8259,
@@ -19126,9 +19141,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 8259,
@@ -19181,9 +19196,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 21115,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "main_hand": {
               "item_id": 810,
@@ -19228,7 +19243,7 @@
             17713,
             11862,
             11811,
-            19120,
+            21115,
             810,
             6660,
             2100
@@ -19929,9 +19944,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6314,
@@ -20016,9 +20031,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6314,
@@ -20095,6 +20110,7 @@
         "new_at_band": {
           "alliance": [
             8176,
+            274751,
             19508,
             867,
             20116,
@@ -20109,6 +20125,7 @@
           ],
           "horde": [
             8176,
+            274751,
             8175,
             19508,
             867,
@@ -20145,9 +20162,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 8259,
@@ -20232,9 +20249,9 @@
               "source": "Warsong Outriders"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 8259,
@@ -20287,9 +20304,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 21115,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "main_hand": {
               "item_id": 17719,
@@ -20336,7 +20353,7 @@
             17713,
             11862,
             11811,
-            19120,
+            21115,
             17719,
             810,
             2100
@@ -20393,9 +20410,9 @@
               "source": "Ahn'Qiraj"
             },
             "legs": {
-              "item_id": 16456,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 231548,
+              "source_kind": "pvp",
+              "source": "Rank 16"
             },
             "feet": {
               "item_id": 22480,
@@ -20536,7 +20553,7 @@
             22483,
             22481,
             21586,
-            16456,
+            231548,
             22480,
             23038,
             19325,
@@ -21036,9 +21053,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6314,
@@ -21123,9 +21140,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6314,
@@ -21202,6 +21219,7 @@
         "new_at_band": {
           "alliance": [
             8176,
+            274751,
             19508,
             867,
             20116,
@@ -21215,6 +21233,7 @@
           ],
           "horde": [
             8176,
+            274751,
             8175,
             19508,
             867,
@@ -21249,9 +21268,9 @@
               "source": "Silverwing Sentinels"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 8259,
@@ -21336,9 +21355,9 @@
               "source": "Warsong Outriders"
             },
             "shoulder": {
-              "item_id": 2278,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Mechanized Sentry"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 8259,
@@ -21391,9 +21410,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 21115,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "main_hand": {
               "item_id": 17719,
@@ -21442,7 +21461,7 @@
             17713,
             11862,
             11811,
-            19120,
+            21115,
             17719,
             810,
             2100
@@ -22304,9 +22323,9 @@
               "source": "Leatherworking"
             },
             "back": {
-              "item_id": 8248,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 272076,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "chest": {
               "item_id": 17775,
@@ -22349,14 +22368,14 @@
               "source": "Boulderfist Magus"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 810,
@@ -22381,9 +22400,9 @@
               "source": "Leatherworking"
             },
             "back": {
-              "item_id": 19121,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 272076,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "chest": {
               "item_id": 17775,
@@ -22406,9 +22425,9 @@
               "source": "Samuel Hawke"
             },
             "legs": {
-              "item_id": 10807,
-              "source_kind": "dungeon",
-              "source": "The Temple of Atal'Hakkar"
+              "item_id": 15057,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
               "item_id": 22240,
@@ -22426,9 +22445,9 @@
               "source": "Boulderfist Magus"
             },
             "trinket1": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "trinket2": {
               "item_id": 11302,
@@ -22447,7 +22466,7 @@
             17715,
             13085,
             15067,
-            8248,
+            272076,
             17775,
             15092,
             20103,
@@ -22455,23 +22474,23 @@
             22240,
             17713,
             1993,
+            272061,
             11302,
-            11811,
             810
           ],
           "horde": [
             17715,
             13085,
             15067,
-            19121,
+            272076,
             17775,
             15092,
             20118,
-            10807,
+            15057,
             22240,
             17713,
             1993,
-            19120,
+            272061,
             11302,
             11750
           ]
@@ -23177,9 +23196,9 @@
               "source": "Silverwing Sentinels"
             },
             "finger2": {
-              "item_id": 272066,
+              "item_id": 274754,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Rettrick"
             },
             "trinket1": {
               "item_id": 21565,
@@ -23197,9 +23216,9 @@
               "source": "Gnomeregan: Dark Iron Ambassador"
             },
             "off_hand": {
-              "item_id": 2815,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Theradrim Shardling"
+              "item_id": 274753,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             }
           },
           "horde": {
@@ -23259,9 +23278,9 @@
               "source": "Warsong Outriders"
             },
             "finger2": {
-              "item_id": 272066,
+              "item_id": 274754,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Rettrick"
             },
             "trinket1": {
               "item_id": 21565,
@@ -23297,11 +23316,11 @@
             10330,
             252465,
             19515,
-            272066,
+            274754,
             21565,
             1713,
             868,
-            2815
+            274753
           ],
           "horde": [
             7719,
@@ -23314,7 +23333,7 @@
             10330,
             252465,
             19512,
-            272066,
+            274754,
             21565,
             1713,
             868,
@@ -23335,9 +23354,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 7719,
+              "item_id": 17715,
               "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "source": "Maraudon: Princess Theradras"
             },
             "neck": {
               "item_id": 7731,
@@ -23345,14 +23364,14 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 9647,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 252534,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
-              "item_id": 16336,
-              "source_kind": "pvp",
-              "source": "Rank 9"
+              "item_id": 14801,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "chest": {
               "item_id": 12624,
@@ -23395,14 +23414,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 11811,
-              "source_kind": "crafted",
-              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 12774,
@@ -23417,9 +23436,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 17715,
+              "item_id": 7719,
               "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "source": "Scarlet Monastery: Herod"
             },
             "neck": {
               "item_id": 19159,
@@ -23427,19 +23446,19 @@
               "source": "Quests"
             },
             "shoulder": {
-              "item_id": 9647,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 252534,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
-              "item_id": 14801,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras"
+              "item_id": 16336,
+              "source_kind": "pvp",
+              "source": "Rank 9"
             },
             "chest": {
-              "item_id": 12624,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 6773,
+              "source_kind": "quest",
+              "source": "Quests"
             },
             "wrist": {
               "item_id": 17714,
@@ -23477,14 +23496,14 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
+            },
+            "trinket2": {
               "item_id": 11302,
               "source_kind": "world",
               "source": "Azuregos"
-            },
-            "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
             },
             "main_hand": {
               "item_id": 12774,
@@ -23500,7 +23519,9 @@
         },
         "new_at_band": {
           "alliance": [
-            9647,
+            17715,
+            252534,
+            14801,
             12624,
             17714,
             20088,
@@ -23508,25 +23529,22 @@
             22240,
             17713,
             19516,
+            272061,
             11302,
-            11811,
             12774,
             810
           ],
           "horde": [
-            17715,
             19159,
-            9647,
-            14801,
-            12624,
+            252534,
             17714,
             20151,
             15057,
             22240,
             17713,
             19511,
+            272061,
             11302,
-            19120,
             12774,
             810
           ]
@@ -24443,9 +24461,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 20097,
-              "source_kind": "rep",
-              "source": "The League of Arathor"
+              "item_id": 17755,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Lord Vyletongue"
             },
             "legs": {
               "item_id": 14132,
@@ -24468,9 +24486,9 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 11811,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "trinket2": {
               "item_id": 11302,
@@ -24483,7 +24501,7 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 249144,
+              "item_id": 249234,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -24525,9 +24543,9 @@
               "source": "Tailoring"
             },
             "waist": {
-              "item_id": 17755,
-              "source_kind": "dungeon",
-              "source": "Maraudon: Lord Vyletongue"
+              "item_id": 20165,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "legs": {
               "item_id": 14132,
@@ -24555,9 +24573,9 @@
               "source": "Azuregos"
             },
             "trinket2": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "main_hand": {
               "item_id": 20536,
@@ -24565,7 +24583,7 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 249144,
+              "item_id": 249232,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -24576,28 +24594,28 @@
             15999,
             17732,
             11623,
-            20097,
+            17755,
             14132,
             17713,
             19523,
-            20534,
+            11811,
             11302,
             20536,
-            249144
+            249234
           ],
           "horde": [
             15999,
             17732,
             11623,
             9448,
-            17755,
+            20165,
             14132,
             17713,
             19519,
             11302,
-            20534,
+            272061,
             20536,
-            249144
+            249232
           ]
         },
         "weights": {
@@ -24658,9 +24676,9 @@
               "source": "Tailoring"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 22508,
+              "source_kind": "quest",
+              "source": "Quests"
             },
             "finger1": {
               "item_id": 23025,
@@ -24688,9 +24706,9 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 5249,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 249232,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -24770,7 +24788,7 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 249144,
+              "item_id": 249234,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -24787,13 +24805,13 @@
             21585,
             22510,
             19683,
-            19684,
+            22508,
             23025,
             21709,
             23046,
             23047,
             22589,
-            5249
+            249232
           ],
           "horde": [
             22506,
@@ -24810,7 +24828,8 @@
             21709,
             23046,
             23047,
-            22589
+            22589,
+            249234
           ]
         },
         "weights": {
@@ -25532,9 +25551,9 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "trinket2": {
               "item_id": 11302,
@@ -25547,9 +25566,9 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 5249,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 249232,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -25619,9 +25638,9 @@
               "source": "Azuregos"
             },
             "trinket2": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 11811,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             },
             "main_hand": {
               "item_id": 15106,
@@ -25629,7 +25648,7 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 249144,
+              "item_id": 249232,
               "source_kind": "crafted",
               "source": "Enchanting"
             }
@@ -25644,8 +25663,9 @@
             14132,
             17713,
             19523,
-            20534,
-            11302
+            272061,
+            11302,
+            249232
           ],
           "horde": [
             15999,
@@ -25656,7 +25676,8 @@
             17713,
             19519,
             11302,
-            20534
+            11811,
+            249232
           ]
         },
         "weights": {
@@ -25827,7 +25848,7 @@
               "source": "Quests"
             },
             "ranged": {
-              "item_id": 11860,
+              "item_id": 19118,
               "source_kind": "quest",
               "source": "Quests"
             }
@@ -25868,7 +25889,7 @@
             23047,
             23046,
             22589,
-            11860
+            19118
           ]
         },
         "weights": {
@@ -26549,9 +26570,9 @@
               "source": "Tailoring"
             },
             "neck": {
-              "item_id": 13085,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "item_id": 23169,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Scorn"
             },
             "shoulder": {
               "item_id": 17732,
@@ -26604,9 +26625,9 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "trinket2": {
               "item_id": 11302,
@@ -26631,9 +26652,9 @@
               "source": "Tailoring"
             },
             "neck": {
-              "item_id": 13085,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "item_id": 23169,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Scorn"
             },
             "shoulder": {
               "item_id": 17732,
@@ -26651,9 +26672,9 @@
               "source": "Quests"
             },
             "wrist": {
-              "item_id": 11469,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 254061,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "hands": {
               "item_id": 10019,
@@ -26691,9 +26712,9 @@
               "source": "Azuregos"
             },
             "trinket2": {
-              "item_id": 20534,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 272061,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "main_hand": {
               "item_id": 20536,
@@ -26710,7 +26731,6 @@
         "new_at_band": {
           "alliance": [
             10033,
-            13085,
             17732,
             11623,
             17775,
@@ -26718,23 +26738,22 @@
             20097,
             17713,
             19523,
-            20534,
+            272061,
             11302,
             20536,
             11860
           ],
           "horde": [
             10033,
-            13085,
             17732,
             19121,
             17775,
-            11469,
+            254061,
             20165,
             17713,
             19519,
             11302,
-            20534,
+            272061,
             20536,
             11860
           ]
@@ -27444,9 +27463,9 @@
               "source": "Silverwing Sentinels"
             },
             "finger2": {
-              "item_id": 6321,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Baron Silverlaine"
+              "item_id": 274754,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "trinket1": {
               "item_id": 21565,
@@ -27526,9 +27545,9 @@
               "source": "Warsong Outriders"
             },
             "finger2": {
-              "item_id": 6321,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Baron Silverlaine"
+              "item_id": 274754,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "trinket1": {
               "item_id": 21565,
@@ -27564,6 +27583,7 @@
             10330,
             250546,
             19515,
+            274754,
             21565,
             1713,
             6830,
@@ -27580,6 +27600,7 @@
             10330,
             250546,
             19512,
+            274754,
             21565,
             1713,
             272081,
@@ -27598,9 +27619,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 7719,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 220803,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 7731,
@@ -27608,9 +27629,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 13066,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "item_id": 220795,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 14801,
@@ -27618,9 +27639,9 @@
               "source": "Maraudon: Princess Theradras"
             },
             "chest": {
-              "item_id": 11195,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 220794,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "wrist": {
               "item_id": 17714,
@@ -27638,14 +27659,14 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 15057,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 220797,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 250546,
+              "item_id": 252468,
               "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 17713,
@@ -27680,29 +27701,29 @@
           },
           "horde": {
             "head": {
-              "item_id": 7719,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 220804,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "neck": {
-              "item_id": 19159,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 7731,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 13066,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "item_id": 220795,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "back": {
-              "item_id": 16336,
-              "source_kind": "pvp",
-              "source": "Rank 9"
+              "item_id": 14801,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "chest": {
-              "item_id": 11195,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 220794,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "wrist": {
               "item_id": 17714,
@@ -27725,9 +27746,9 @@
               "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 250546,
+              "item_id": 252468,
               "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 17713,
@@ -27735,9 +27756,9 @@
               "source": "Maraudon: Princess Theradras"
             },
             "finger2": {
-              "item_id": 19511,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 11862,
+              "source_kind": "quest",
+              "source": "Quests"
             },
             "trinket1": {
               "item_id": 11811,
@@ -27745,9 +27766,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 21115,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "main_hand": {
               "item_id": 7959,
@@ -27763,13 +27784,15 @@
         },
         "new_at_band": {
           "alliance": [
-            13066,
+            220803,
+            220795,
             14801,
-            11195,
+            220794,
             17714,
             867,
             20088,
-            15057,
+            220797,
+            252468,
             17713,
             19516,
             11811,
@@ -27778,17 +27801,19 @@
             11628
           ],
           "horde": [
-            19159,
-            13066,
-            11195,
+            220804,
+            220795,
+            14801,
+            220794,
             17714,
             867,
             20151,
             15057,
+            252468,
             17713,
-            19511,
+            11862,
             11811,
-            19120,
+            21115,
             7959,
             11628
           ]
@@ -28479,14 +28504,14 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 250539,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
-              "item_id": 6314,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Wolf Master Nandos"
+              "item_id": 16336,
+              "source_kind": "pvp",
+              "source": "Rank 9"
             },
             "chest": {
               "item_id": 6773,
@@ -28566,9 +28591,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 250539,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 274751,
+              "source_kind": "vendor",
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 6314,
@@ -28645,7 +28670,8 @@
         "new_at_band": {
           "alliance": [
             7719,
-            250539,
+            274751,
+            16336,
             6773,
             19508,
             867,
@@ -28661,7 +28687,7 @@
           ],
           "horde": [
             7719,
-            250539,
+            274751,
             6773,
             19508,
             867,
@@ -28689,9 +28715,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 7719,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 220803,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "neck": {
               "item_id": 7731,
@@ -28699,9 +28725,9 @@
               "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 13066,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "item_id": 220795,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 14801,
@@ -28709,9 +28735,9 @@
               "source": "Maraudon: Princess Theradras"
             },
             "chest": {
-              "item_id": 11195,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 220794,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "wrist": {
               "item_id": 17714,
@@ -28729,14 +28755,14 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 10330,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 220797,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 250546,
+              "item_id": 252468,
               "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 17713,
@@ -28776,19 +28802,19 @@
           },
           "horde": {
             "head": {
-              "item_id": 7719,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 220803,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "neck": {
-              "item_id": 19159,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 7731,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
-              "item_id": 13066,
-              "source_kind": "world",
-              "source": "Azuregos"
+              "item_id": 220795,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "back": {
               "item_id": 14801,
@@ -28796,9 +28822,9 @@
               "source": "Maraudon: Princess Theradras"
             },
             "chest": {
-              "item_id": 11195,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 220794,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "wrist": {
               "item_id": 17714,
@@ -28816,14 +28842,14 @@
               "source": "The Defilers"
             },
             "legs": {
-              "item_id": 10330,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Herod"
+              "item_id": 220797,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "feet": {
-              "item_id": 250546,
+              "item_id": 252468,
               "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 17713,
@@ -28831,9 +28857,9 @@
               "source": "Maraudon: Princess Theradras"
             },
             "finger2": {
-              "item_id": 19511,
-              "source_kind": "rep",
-              "source": "Warsong Outriders"
+              "item_id": 11862,
+              "source_kind": "quest",
+              "source": "Quests"
             },
             "trinket1": {
               "item_id": 11811,
@@ -28841,9 +28867,9 @@
               "source": "Enchanting"
             },
             "trinket2": {
-              "item_id": 19120,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 21115,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "main_hand": {
               "item_id": 12774,
@@ -28864,11 +28890,14 @@
         },
         "new_at_band": {
           "alliance": [
-            13066,
+            220803,
+            220795,
             14801,
-            11195,
+            220794,
             17714,
             20088,
+            220797,
+            252468,
             17713,
             19516,
             11811,
@@ -28878,16 +28907,18 @@
             11628
           ],
           "horde": [
-            19159,
-            13066,
+            220803,
+            220795,
             14801,
-            11195,
+            220794,
             17714,
             20151,
+            220797,
+            252468,
             17713,
-            19511,
+            11862,
             11811,
-            19120,
+            21115,
             12774,
             810,
             11628
