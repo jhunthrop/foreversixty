@@ -354,6 +354,13 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			}
 			effectSeconds := time.Since(effectStart).Seconds()
 
+			// Re-assert pick()'s own two-hand/off-hand rule: either of
+			// the two passes just above can replace main_hand's pick
+			// with a two-hander without knowing off_hand exists (see
+			// pick.go's enforceTwoHandOffHandInvariant doc - this
+			// lane's report names every spec it found the gap on).
+			picks = enforceTwoHandOffHandInvariant(picks)
+
 			verifyStart := time.Now()
 			setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, picks)
 			if err != nil {
@@ -366,7 +373,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// pick: swap it into the slot and re-measure the whole set once,
 			// so the published row, the set DPS and the next band's diff all
 			// name the item a player should actually wear.
-			picks, setDPS, err = applySwaps(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, swaps, setDPS)
+			picks, setDPS, swaps, err = applySwaps(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, swaps, setDPS)
 			if err != nil {
 				return fmt.Errorf("band %d %s verify run (after swaps): %w", band, f.name, err)
 			}

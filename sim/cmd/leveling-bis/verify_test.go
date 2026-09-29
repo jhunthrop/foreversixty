@@ -54,6 +54,31 @@ func TestSwapSlotDropsOffHandWhenTheSwappedInMainHandIsTwoHanded(t *testing.T) {
 	}
 }
 
+// Real bug this run's own dogfood run hit (this lane's report):
+// hunter-survival's level-35 horde main_hand runner-up was the exact
+// weapon already worn in off_hand (a dual-wield spec's off_hand pool
+// borrows main_hand's one-handers - pick.go's own "off_hand" case) -
+// swapSlot must drop off_hand from the trial the same way it already
+// drops off_hand for a two-hand swap, or the trial (and the swap
+// decision made from it) doubly equips one physical weapon.
+func TestSwapSlotDropsOffHandWhenTheSwappedInMainHandMatchesItsCurrentItem(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {Item: p(1, false), RunnerUp: p(9, false)},
+		"off_hand":  {Item: p(9, false)},
+	}
+	gear := swapSlot(picks, "main_hand", 9, false)
+	byID := map[string]int{}
+	for _, g := range gear {
+		byID[g.Slot] = g.ItemID
+	}
+	if byID["main_hand"] != 9 {
+		t.Fatalf("main_hand = %d, want 9", byID["main_hand"])
+	}
+	if _, ok := byID["off_hand"]; ok {
+		t.Fatalf("gear = %+v, off_hand should be dropped (same physical weapon as main_hand's swap)", byID)
+	}
+}
+
 func TestSwapSlotOnANonWeaponSlotLeavesHandsAlone(t *testing.T) {
 	picks := map[string]slotPick{
 		"main_hand": {Item: p(1, false)},
@@ -221,7 +246,7 @@ func TestApplySwapsPromotesTheMeasuredWinnerAndRemeasuresTheSet(t *testing.T) {
 	engine := &fakeEngine{DPSByGear: map[string]float64{gearKey(buildGear(map[string]slotPick{"head": {Item: better}})): 200}, DefaultDPS: 150}
 	spec := specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}
 
-	out, dps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, picks, []swapResult{{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, picks, []swapResult{{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -231,6 +256,9 @@ func TestApplySwapsPromotesTheMeasuredWinnerAndRemeasuresTheSet(t *testing.T) {
 	if dps != 200 {
 		t.Fatalf("set DPS after the swap = %v, want the re-measured 200", dps)
 	}
+	if len(gotSwaps) != 1 || !gotSwaps[0].Beat {
+		t.Fatalf("adjusted swaps = %+v, want the one promoted swap still marked Beat", gotSwaps)
+	}
 	if len(engine.Calls) != 1 {
 		t.Fatalf("engine calls = %d, want exactly one re-measure", len(engine.Calls))
 	}
@@ -238,8 +266,81 @@ func TestApplySwapsPromotesTheMeasuredWinnerAndRemeasuresTheSet(t *testing.T) {
 		t.Fatal("applySwaps mutated its input picks")
 	}
 
-	same, sameDPS, err := applySwaps(engine, spec, "dwarf", "hunter", 30, picks, []swapResult{{Slot: "head", SwapDPS: 100, BaselineDPS: 150, Beat: false}}, 150)
+	same, sameDPS, sameSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, picks, []swapResult{{Slot: "head", SwapDPS: 100, BaselineDPS: 150, Beat: false}}, 150)
 	if err != nil || sameDPS != 150 || same["head"].Item.ID != 1 || len(engine.Calls) != 1 {
 		t.Fatalf("a losing swap must leave picks and DPS alone without a sim: dps=%v item=%d calls=%d err=%v", sameDPS, same["head"].Item.ID, len(engine.Calls), err)
+	}
+	if len(sameSwaps) != 1 || sameSwaps[0].Beat {
+		t.Fatalf("adjusted swaps = %+v, want the losing swap still marked not-beat", sameSwaps)
+	}
+}
+
+// The literal bug this lane's audit caught by eye: a finger/trinket
+// pair-mate's runner-up is ranked before the OTHER half of the pair is
+// final (pick.go/trinkets.go), so it can freely equal what the mate
+// later becomes; applySwaps must refuse to promote that runner-up
+// rather than equip the same physical ring/trinket in both slots.
+func TestApplySwapsRefusesToPromoteADuplicateOfItsPairMate(t *testing.T) {
+	ring := &scored{candidate: candidate{ID: 5351, Name: "Bounty Hunter's Ring"}}
+	otherRing := &scored{candidate: candidate{ID: 3235, Name: "Ring of Scorn"}}
+	picks := map[string]slotPick{
+		"finger1": {Item: otherRing, RunnerUp: ring},
+		// finger2 already settled on the exact item finger1's own
+		// (stale) runner-up now points at - decided by a later,
+		// independent ranking pass finger1's own runner-up ranking
+		// never saw (pick.go's own rule: finger2 excludes finger1's
+		// FINAL pick, not the other way around).
+		"finger2": {Item: ring},
+	}
+	engine := &fakeEngine{DefaultDPS: 999} // must never be called: nothing to re-measure once the only swap is refused
+	spec := specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}
+
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, picks, []swapResult{{Slot: "finger1", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out["finger1"].Item.ID != otherRing.ID {
+		t.Fatalf("finger1 = item %d, want the original pick (%d) kept - promoting %d would duplicate finger2", out["finger1"].Item.ID, otherRing.ID, ring.ID)
+	}
+	if out["finger2"].Item.ID != ring.ID {
+		t.Fatalf("finger2 = item %d, want it untouched", out["finger2"].Item.ID)
+	}
+	if dps != 150 {
+		t.Fatalf("set DPS = %v, want the pre-swap baseline (150): nothing was promoted, so nothing should re-measure", dps)
+	}
+	if len(engine.Calls) != 0 {
+		t.Fatalf("engine calls = %d, want 0: a refused promotion must not re-measure the set", len(engine.Calls))
+	}
+	if len(gotSwaps) != 1 || gotSwaps[0].Beat {
+		t.Fatalf("adjusted swaps = %+v, want the refused swap reported as not-beat, so report.go's swap_note does not claim a promotion that did not happen", gotSwaps)
+	}
+}
+
+// The same refusal, for the main_hand/off_hand pair (pairSlot's own
+// newer entry) - the real hunter-survival level-35 horde defect this
+// lane's report names: main_hand's runner-up was the exact weapon
+// off_hand already wore.
+func TestApplySwapsRefusesToPromoteAMainHandDuplicateOfOffHand(t *testing.T) {
+	current := &scored{candidate: candidate{ID: 7714, Name: "Hypnotic Blade"}}
+	runnerUp := &scored{candidate: candidate{ID: 9680, Name: "Tok'kar's Murloc Shanker"}}
+	picks := map[string]slotPick{
+		"main_hand": {Item: current, RunnerUp: runnerUp},
+		"off_hand":  {Item: runnerUp},
+	}
+	engine := &fakeEngine{DefaultDPS: 999}
+	spec := specInfo{Spec: "hunter-survival", ClassSlug: "hunter"}
+
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 35, picks, []swapResult{{Slot: "main_hand", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out["main_hand"].Item.ID != current.ID {
+		t.Fatalf("main_hand = item %d, want the original pick (%d) kept - promoting %d would duplicate off_hand", out["main_hand"].Item.ID, current.ID, runnerUp.ID)
+	}
+	if dps != 150 || len(engine.Calls) != 0 {
+		t.Fatalf("a refused promotion must not re-measure the set: dps=%v calls=%d", dps, len(engine.Calls))
+	}
+	if len(gotSwaps) != 1 || gotSwaps[0].Beat {
+		t.Fatalf("adjusted swaps = %+v, want the refused swap reported as not-beat", gotSwaps)
 	}
 }

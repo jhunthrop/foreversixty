@@ -77,22 +77,36 @@ func buildGear(picks map[string]slotPick) []api.GearSlot {
 	return out
 }
 
-// pairSlot is each ring/trinket slot's partner: pick() only ever
-// excludes a pair-mate's own id/name from the OTHER slot's candidate
-// list going forward (finger1 decided before finger2), so a slot's
-// own runner-up can still be the exact item its pair-mate already
-// wears - finger1's runner-up is only ever ranked against finger1's
-// OWN list, which was never told what finger2 took. Trying that
-// runner-up alone, without checking this, would equip the same ring
-// in both finger slots at once during verification: a real, invalid
-// gear list (sim/bulk/expand.go's valid() refuses exactly this shape)
-// that would silently double the item's stats and misreport the
-// runner-up as stronger than it is.
+// pairSlot is each slot's partner that can never physically hold the
+// same item at once: pick() only ever excludes a pair-mate's own
+// id/name from the OTHER slot's candidate list going forward (finger1
+// decided before finger2), so a slot's own runner-up can still be the
+// exact item its pair-mate already wears - finger1's runner-up is
+// only ever ranked against finger1's OWN list, which was never told
+// what finger2 took. Trying that runner-up alone, without checking
+// this, would equip the same ring in both finger slots at once during
+// verification: a real, invalid gear list (sim/bulk/expand.go's
+// valid() refuses exactly this shape) that would silently double the
+// item's stats and misreport the runner-up as stronger than it is.
+//
+// main_hand/off_hand carries the identical risk for a
+// leveling.DualWieldSpecs member: off_hand's own candidate pool is
+// main_hand's one-handed weapons merged in (pick.go's own "off_hand"
+// case), so the very same physical one-hander can be main_hand's
+// runner-up while off_hand already wears it (found in this run's own
+// dogfood: hunter-survival's level-35 horde list published Tok'kar's
+// Murloc Shanker in BOTH hands after main_hand's runner-up swap
+// promoted it, wouldDuplicatePairMate's own new test). A one-hand
+// spec (shield or two-hand) never collides here: its off_hand pool
+// (shields/held items, or none at all) shares no ids with main_hand's
+// weapons.
 var pairSlot = map[string]string{
-	"finger1":  "finger2",
-	"finger2":  "finger1",
-	"trinket1": "trinket2",
-	"trinket2": "trinket1",
+	"finger1":   "finger2",
+	"finger2":   "finger1",
+	"trinket1":  "trinket2",
+	"trinket2":  "trinket1",
+	"main_hand": "off_hand",
+	"off_hand":  "main_hand",
 }
 
 // swapSlot rebuilds the gear list with one slot's item replaced by
@@ -183,33 +197,74 @@ func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, leve
 	return baselineDPS, swaps, verifyErrors, nil
 }
 
+// wouldDuplicatePairMate reports whether promoting itemID/itemName
+// into slot would leave it wearing the exact same physical item (by
+// id, or by name for a lower/higher-quality reprint) as its own
+// finger/trinket pair-mate already does in out -- pick()'s and
+// rankTrinketSlot's own pairing rule (excludePaired, topByItemLevel),
+// which this file's own swap trial can otherwise defeat: swapSlot
+// already drops the pair-mate from the TRIAL GEAR so the sim measures
+// one ring/trinket cleanly (this file's own doc above swapSlot), but
+// that trial result is "wearing one fewer paired item than the
+// baseline had", not "this item in this slot is an improvement" -- a
+// slot's own runner-up is only ever ranked against ITS OWN pool at
+// the time it was ranked (pick.go/trinkets.go), which for finger1 in
+// particular runs before finger2's final item is known, so finger1's
+// runner-up can freely be whatever finger2 later becomes. Promoting
+// it anyway would equip the one physical item in both slots at once
+// -- a real, invalid gear list (bulk/expand.go's valid() refuses
+// exactly this shape) and the literal "same trinket twice" defect
+// this lane's brief names as a published output the owner caught by
+// eye (mage-arcane/mage-frost/priest-shadow/shaman-elemental/warlock-
+// destruction's finger or trinket pair, this run).
+func wouldDuplicatePairMate(out map[string]slotPick, slot string, itemID int, itemName string) bool {
+	mate, ok := pairSlot[slot]
+	if !ok || out[mate].Item == nil {
+		return false
+	}
+	return out[mate].Item.ID == itemID || out[mate].Item.Name == itemName
+}
+
 // applySwaps promotes every runner-up that beat its slot's scored pick
 // into the pick (the scored pick becomes the row's runner-up, so the
 // report can say what was beaten), then measures the resulting set once
 // more so the published set DPS is the set's own, not the pre-swap
 // baseline. With no swap that beat, picks and setDPS come back as they
 // were and no sim runs.
-func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, level int, picks map[string]slotPick, swaps []swapResult, setDPS float64) (map[string]slotPick, float64, error) {
+//
+// The returned []swapResult is swaps with Beat forced false for any
+// slot wouldDuplicatePairMate rejected, so report.go's own swap_note
+// (built from this same slice) never claims a promotion that did not
+// happen -- see that function's own doc for why silently declining a
+// duplicate here but leaving the original swaps slice unchanged would
+// print a swap_note for an item the row no longer shows.
+func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, level int, picks map[string]slotPick, swaps []swapResult, setDPS float64) (map[string]slotPick, float64, []swapResult, error) {
 	promoted := false
 	out := make(map[string]slotPick, len(picks))
 	for slot, pk := range picks {
 		out[slot] = pk
 	}
-	for _, sw := range swaps {
+	adjusted := make([]swapResult, len(swaps))
+	for i, sw := range swaps {
+		adjusted[i] = sw
 		pk, ok := out[sw.Slot]
 		if !sw.Beat || !ok || pk.RunnerUp == nil {
+			continue
+		}
+		if wouldDuplicatePairMate(out, sw.Slot, pk.RunnerUp.ID, pk.RunnerUp.Name) {
+			adjusted[i].Beat = false
 			continue
 		}
 		out[sw.Slot] = slotPick{Item: pk.RunnerUp, RunnerUp: pk.Item}
 		promoted = true
 	}
 	if !promoted {
-		return picks, setDPS, nil
+		return picks, setDPS, adjusted, nil
 	}
 	final := plainRequest(spec, api.CharacterSpec{Name: "verify", Race: race, Class: classSlug, Level: level, Gear: buildGear(out)}, verifyIterations, verifySeed)
 	dps, err := runner.RunPlainDPS(final)
 	if err != nil {
-		return nil, 0, err
+		return nil, 0, nil, err
 	}
-	return out, dps, nil
+	return out, dps, adjusted, nil
 }

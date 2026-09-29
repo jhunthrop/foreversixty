@@ -83,6 +83,50 @@ func TestRankSlotWithEffectsPicksTheHighestMeasuredDPSAmongImplementedCandidates
 	}
 }
 
+// The real bug this test guards, found in tonight's published output:
+// hunter-survival (a leveling.DualWieldSpecs member - its off hand
+// holds a real weapon) picked Frost Tiger Blade, a TWO-HAND weapon
+// whose frost-bolt proc IS engine-implemented, as its level-35 main
+// hand - beating the dual-wield pick on measured DPS alone, with no
+// term anywhere in this function for what a two-hander costs a
+// dual-wielder (an entire second weapon, buildGear's own off_hand-
+// drop rule) - while leaving the off_hand slot's own one-hander pick
+// untouched, publishing a two-hand main hand next to an off-hand item
+// the character was never actually simmed wearing at once. A
+// dual-wielder's main hand must never be offered a two-hander here,
+// full stop, the same rule pick.go's own "main_hand" case already
+// enforces for the plain score()-based pick.
+func TestRankSlotWithEffectsExcludesTwoHandersForADualWieldSpec(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {Item: &scored{candidate: candidate{ID: 1, Name: "Black Menace (one-hand, dual-wield pick)"}}},
+	}
+	bySlot := map[string][]scored{
+		"main_hand": {
+			{candidate: candidate{ID: 3854, Name: "Frost Tiger Blade", EffectText: "text", Slots: []string{"main_hand"}, TwoHand: true}},
+		},
+	}
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			// Frost Tiger Blade would win on raw measured DPS alone if it
+			// were ever simmed - it must not be.
+			gearKey([]api.GearSlot{{Slot: "main_hand", ItemID: 3854}}): 9999,
+		},
+		DefaultDPS: 100,
+	}
+	out, notes := rankSlotWithEffects(fake, specInfo{Spec: "hunter-survival"}, "dwarf", "hunter", 35, picks, bySlot, "main_hand")
+	if len(notes) != 0 {
+		t.Fatalf("notes = %v, want none (nothing left to compare the pick against)", notes)
+	}
+	if out["main_hand"].Item.ID != 1 {
+		t.Fatalf("main_hand = %+v, want the dual-wield pick (1) kept - the two-hander must never be offered", out["main_hand"].Item)
+	}
+	for _, call := range fake.Calls {
+		if call == gearKey([]api.GearSlot{{Slot: "main_hand", ItemID: 3854}}) {
+			t.Fatalf("rankSlotWithEffects simmed a two-hander for a dual-wield spec: %v", fake.Calls)
+		}
+	}
+}
+
 func TestRankSlotWithEffectsLeavesTheSlotAloneWhenOnlyOneCandidateQualifies(t *testing.T) {
 	original := &scored{candidate: candidate{ID: 3854, Name: "Frost Tiger Blade", EffectText: "text"}}
 	picks := map[string]slotPick{"main_hand": {Item: original}}

@@ -20,7 +20,7 @@ func TestBestSetPiecesKeepsOnlyEngineImplementedSetsAndSkipsTrinkets(t *testing.
 		"trinket1":  {setItem(3, "Set Trinket", 41, "trinket1")}, // excluded: trinkets ranked separately
 		"main_hand": {effectItem(4, "No Set Weapon", "", "main_hand")},
 	}
-	got := bestSetPieces(bySlot)
+	got := bestSetPieces(bySlot, "")
 	if len(got) != 1 {
 		t.Fatalf("bestSetPieces = %+v, want exactly one implemented set (41)", got)
 	}
@@ -29,6 +29,58 @@ func TestBestSetPiecesKeepsOnlyEngineImplementedSetsAndSkipsTrinkets(t *testing.
 		t.Fatalf("bestSetPieces[41] = %+v, want the one head candidate", pieces)
 	}
 }
+
+// The real bug this test guards: finger1 and finger2 fan out from the
+// exact same candidate list (data.go's plannerSlots - a ring's Slots
+// is always both), so their own #1-scored item is the identical
+// physical ring in both. Before this dedup, bestSetPieces counted
+// that one ring as TWO of its own set's pieces, and
+// trySetCompletion's trial equipped it in finger1 AND finger2 at
+// once - the literal "same trinket twice" shape (there, a ring
+// instead) this lane's audit found by eye elsewhere in tonight's
+// output (applySwaps' own new test, verify_test.go).
+func TestBestSetPiecesNeverCountsTheSamePhysicalRingTwice(t *testing.T) {
+	ring := setItem(50, "Set Ring", 41, "finger1", "finger2")
+	bySlot := map[string][]scored{
+		"finger1": {ring},
+		"finger2": {ring},
+		"chest":   {setItem(51, "Set Chest", 41, "chest")},
+	}
+	got := bestSetPieces(bySlot, "")
+	pieces, ok := got[41]
+	if !ok {
+		t.Fatalf("bestSetPieces = %+v, want set 41", got)
+	}
+	seenRing := 0
+	for _, p := range pieces {
+		if p.item.ID == ring.ID {
+			seenRing++
+		}
+	}
+	if seenRing != 1 {
+		t.Fatalf("set 41's pieces = %+v, want the ring counted exactly once (finger1 and finger2 share one candidate list)", pieces)
+	}
+	if len(pieces) != 2 {
+		t.Fatalf("set 41's pieces = %+v, want the ring once plus the chest piece (2 total)", pieces)
+	}
+}
+
+// Mirrors rank.go's own dual-wield defense: a two-hander must never be
+// offered as a dual-wield spec's main-hand set piece either, or
+// trySetCompletion could equip it alongside an off-hand item from a
+// completely different, independently-scored trial.
+func TestBestSetPiecesExcludesTwoHandMainHandForADualWieldSpec(t *testing.T) {
+	twoHander := scored{candidate: candidate{ID: 60, Name: "Two-Hand Set Sword", SetID: intPtr(41), Slots: []string{"main_hand"}, TwoHand: true}}
+	bySlot := map[string][]scored{
+		"main_hand": {twoHander},
+	}
+	got := bestSetPieces(bySlot, "hunter-survival")
+	if len(got) != 0 {
+		t.Fatalf("bestSetPieces = %+v, want no set pieces (the only main_hand candidate is a two-hander, excluded for a dual-wield spec)", got)
+	}
+}
+
+func intPtr(n int) *int { return &n }
 
 func TestTrySetCompletionAdoptsTheSetWhenItVerifiesHigher(t *testing.T) {
 	picks := map[string]slotPick{
