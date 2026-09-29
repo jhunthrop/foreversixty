@@ -58,3 +58,18 @@ func TestItemLevelProxyRequiredLevelMatchesThePythonFormula(t *testing.T) {
 		}
 	}
 }
+
+func TestQuestFloorRaisesTheAcceptLevelToFiveBelowTheQuestLevel(t *testing.T) {
+	// Bride of the Embalmer: accept at 20, quest level 30 -> realistic at 25.
+	if got := QuestFloor(20, 30); got != 25 {
+		t.Fatalf("QuestFloor(20, 30) = %d, want 25", got)
+	}
+	// Wanted: Murkdeep: accept at 15, level 18 -> the accept level still gates.
+	if got := QuestFloor(15, 18); got != 15 {
+		t.Fatalf("QuestFloor(15, 18) = %d, want 15", got)
+	}
+	// Unknown quest level: only the accept level.
+	if got := QuestFloor(20, 0); got != 20 {
+		t.Fatalf("QuestFloor(20, 0) = %d, want 20", got)
+	}
+}

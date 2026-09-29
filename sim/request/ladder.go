@@ -237,6 +237,7 @@ type lootSourcesFile struct {
 	} `json:"sources"`
 	Quests map[string][]struct {
 		MinLevel int `json:"min_level"`
+		Level    int `json:"level"`
 	} `json:"quests"`
 }
 
@@ -327,7 +328,7 @@ func loadRequiredLevelFloors(repoRoot, build string, items []buildItem) (map[int
 		}
 		levels := make([]int, len(entries))
 		for i, e := range entries {
-			levels[i] = e.MinLevel
+			levels[i] = leveling.QuestFloor(e.MinLevel, e.Level)
 		}
 		questFloor[id] = leveling.LowestFloor(levels)
 	}

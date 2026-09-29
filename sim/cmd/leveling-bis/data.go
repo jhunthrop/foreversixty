@@ -408,7 +408,7 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		}
 		levels := make([]int, len(entries))
 		for i, e := range entries {
-			levels[i] = e.MinLevel
+			levels[i] = leveling.QuestFloor(e.MinLevel, e.Level)
 		}
 		questFloors[id] = leveling.LowestFloor(levels)
 	}
