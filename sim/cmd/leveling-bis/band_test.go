@@ -161,3 +161,16 @@ func TestSourceForGatesReputationBySideAndStanding(t *testing.T) {
 		t.Fatal("an honored reward of the character's own side is obtainable while leveling")
 	}
 }
+
+// A dungeon inside the other side's capital is no source for this side:
+// Ragefire Chasm's cloak falls through to a later source kind or to no
+// source at all rather than heading an Alliance list.
+func TestSourceForSkipsAFactionExclusiveDungeonForTheOtherSide(t *testing.T) {
+	idx := lootIndex{14149: {{Kind: "dungeon", Label: "Ragefire Chasm: Taragaman the Hungerer", Side: "horde"}}}
+	if _, ok := sourceFor(14149, 20, "alliance", idx); ok {
+		t.Fatal("an Orgrimmar dungeon drop was offered to an alliance character")
+	}
+	if src, ok := sourceFor(14149, 20, "horde", idx); !ok || src.Kind != "dungeon" {
+		t.Fatalf("horde source = %+v, %v; want the dungeon", src, ok)
+	}
+}

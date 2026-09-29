@@ -33,11 +33,11 @@ var repStandingObtainable = map[string]bool{"friendly": true, "honored": true}
 // character of this faction and level: a reputation only the other side
 // can earn never is; a revered/exalted reward is only at 60.
 func sourceObtainable(s itemSource, level int, faction string) bool {
-	if s.Kind != "rep" {
-		return true
-	}
 	if s.Side != "" && s.Side != faction {
 		return false
+	}
+	if s.Kind != "rep" {
+		return true
 	}
 	return level >= 60 || repStandingObtainable[s.Standing]
 }

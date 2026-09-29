@@ -253,8 +253,10 @@ type lootFile struct {
 type itemSource struct {
 	Kind  string
 	Label string
-	// Side is "alliance" or "horde" for a reputation only one side can
-	// earn (the battleground factions), "" for every other source.
+	// Side is "alliance" or "horde" for a source only one side can use:
+	// a reputation only that side earns (the battleground factions) or a
+	// dungeon inside the other side's capital (factionExclusiveDungeons);
+	// "" for every other source.
 	Side string
 	// Standing is a rep source's required standing ("friendly" ..
 	// "exalted"), "" for every other kind.
@@ -266,6 +268,18 @@ type itemSource struct {
 // Silverwing Sentinels 889, The Defilers 510 / The League of Arathor 509,
 // Frostwolf Clan 729 / Stormpike Guard 730. Outrunner's Bow (a Warsong
 // Outriders reward) was once the ALLIANCE level-20 hunter's bow.
+// factionExclusiveDungeons is every dungeon source id (lootSource.ID)
+// inside the opposite faction's capital, which the other faction cannot
+// enter no matter what the item itself allows: Ragefire Chasm sits in
+// Orgrimmar. Found by the warrior audit: Subterranean Cape (14149) has
+// Taragaman the Hungerer as its only source and was the ALLIANCE level-20
+// back pick. Vanilla has no Alliance-side mirror (Deadmines, Wailing
+// Caverns and Shadowfang Keep are open-world instances either side walks
+// to), so this table is one entry until another is found.
+var factionExclusiveDungeons = map[string]string{
+	"dungeon:ragefire-chasm": "horde",
+}
+
 var repSide = map[int]string{
 	890: "horde", 510: "horde", 729: "horde",
 	889: "alliance", 509: "alliance", 730: "alliance",
@@ -302,7 +316,7 @@ func loadLootIndex(buildDir string) (lootIndex, map[int]int, error) {
 	idx := make(lootIndex)
 	for _, src := range f.Sources {
 		add := func(id int, label string) {
-			is := itemSource{Kind: src.Kind, Label: label}
+			is := itemSource{Kind: src.Kind, Label: label, Side: factionExclusiveDungeons[src.ID]}
 			if src.Kind == "rep" {
 				is.Side = repSide[src.FactionID]
 				is.Standing = src.Standing

@@ -134,13 +134,13 @@ func TestLoadLootIndex(t *testing.T) {
 	// itemSource must carry Faction "horde", the same as the real
 	// build's Subterranean Cape (14149) does.
 	ragefire, ok := idx[1004]
-	if !ok || len(ragefire) != 1 || ragefire[0].Faction != "horde" {
+	if !ok || len(ragefire) != 1 || ragefire[0].Side != "horde" {
 		t.Errorf("idx[1004] = %+v, want one source with Faction \"horde\"", ragefire)
 	}
 	// An ordinary dungeon source (not in factionExclusiveDungeons)
 	// carries no Faction at all - it must not inherit one by accident.
-	if boss[0].Faction != "" {
-		t.Errorf("idx[1002][0].Faction = %q, want empty (not a faction-exclusive source)", boss[0].Faction)
+	if boss[0].Side != "" {
+		t.Errorf("idx[1002][0].Side = %q, want empty (not a faction-exclusive source)", boss[0].Side)
 	}
 	// The fixture's item 1001 (required_level 10) is a quest reward
 	// whose quest ("A Test Quest") states min_level 25 in loot.json's
