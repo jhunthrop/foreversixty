@@ -1304,40 +1304,47 @@ ns.Data = {
 		["shaman-enhancement"] = {
 			{ level = 10, lines = {
 				{ spellId = 8075, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
+				{ spellId = 8050, name = "Flame Shock", condition = "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…" },
 				{ spellId = 3599, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
 				{ spellId = 1220746, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
 			} },
 			{ level = 20, lines = {
 				{ spellId = 8075, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
+				{ spellId = 8052, name = "Flame Shock", condition = "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…" },
 				{ spellId = 6363, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
 				{ spellId = 1220747, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
 			} },
 			{ level = 30, lines = {
 				{ spellId = 8160, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
+				{ spellId = 8053, name = "Flame Shock", condition = "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…" },
 				{ spellId = 6364, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
 				{ spellId = 1220748, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
 			} },
 			{ level = 38, lines = {
 				{ spellId = 8161, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
 				{ spellId = 8512, name = "Windfury Totem", condition = "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would." },
+				{ spellId = 8053, name = "Flame Shock", condition = "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…" },
 				{ spellId = 6364, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
 				{ spellId = 1220749, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
 			} },
 			{ level = 40, lines = {
 				{ spellId = 8161, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
 				{ spellId = 8512, name = "Windfury Totem", condition = "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would." },
+				{ spellId = 10447, name = "Flame Shock", condition = "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…" },
 				{ spellId = 6365, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
 				{ spellId = 1220749, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
 			} },
 			{ level = 50, lines = {
 				{ spellId = 8161, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
 				{ spellId = 10613, name = "Windfury Totem", condition = "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would." },
+				{ spellId = 10447, name = "Flame Shock", condition = "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…" },
 				{ spellId = 10437, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
 				{ spellId = 1220750, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
 			} },
 			{ level = 60, lines = {
 				{ spellId = 25361, name = "Strength of Earth Totem", condition = "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…" },
 				{ spellId = 27621, name = "Windfury Totem", condition = "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would." },
+				{ spellId = 29228, name = "Flame Shock", condition = "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…" },
 				{ spellId = 10438, name = "Searing Totem", condition = "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick." },
 				{ spellId = 1220751, name = "Earth Shock", condition = "Earth Shock is the mana dump once mana is comfortably above half." },
 			} },
@@ -1408,37 +1415,44 @@ ns.Data = {
 		["warlock-demonology"] = {
 			{ level = 10, lines = {
 				{ spellId = 1454, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 980, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 172, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
 				{ spellId = 695, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
 			} },
 			{ level = 20, lines = {
 				{ spellId = 1455, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 1014, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 6222, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
 				{ spellId = 1088, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
 			} },
 			{ level = 30, lines = {
 				{ spellId = 1456, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 6217, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 6223, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
 				{ spellId = 1106, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
 			} },
 			{ level = 38, lines = {
 				{ spellId = 11687, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11711, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 7648, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
 				{ spellId = 7641, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
 			} },
 			{ level = 40, lines = {
 				{ spellId = 11687, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11711, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 7648, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
 				{ spellId = 7641, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
 			} },
 			{ level = 50, lines = {
 				{ spellId = 11688, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11712, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 11671, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
 				{ spellId = 6353, name = "Soul Fire", condition = "Soul Fire on cooldown." },
 				{ spellId = 11659, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
 			} },
 			{ level = 60, lines = {
 				{ spellId = 11689, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11713, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 25311, name = "Corruption", condition = "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts." },
 				{ spellId = 17924, name = "Soul Fire", condition = "Soul Fire on cooldown." },
 				{ spellId = 25307, name = "Shadow Bolt", condition = "Shadow Bolt is the default filler and what feeds Decimation's proc." },
@@ -1447,17 +1461,20 @@ ns.Data = {
 		["warlock-destruction"] = {
 			{ level = 10, lines = {
 				{ spellId = 1454, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 980, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 707, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
 				{ spellId = 695, name = "Shadow Bolt", condition = "Shadow Bolt as the pre-Incinerate filler: this line always sat directly beneath Incinerate's unconditional cast, so once Incinerate stopped being inert (see ab…" },
 			} },
 			{ level = 20, lines = {
 				{ spellId = 1455, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 1014, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 1094, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
 				{ spellId = 17877, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
 				{ spellId = 1088, name = "Shadow Bolt", condition = "Shadow Bolt as the pre-Incinerate filler: this line always sat directly beneath Incinerate's unconditional cast, so once Incinerate stopped being inert (see ab…" },
 			} },
 			{ level = 30, lines = {
 				{ spellId = 1456, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 6217, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 2941, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
 				{ spellId = 1293817, name = "Conflagrate", condition = "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up." },
 				{ spellId = 18867, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
@@ -1465,6 +1482,7 @@ ns.Data = {
 			} },
 			{ level = 38, lines = {
 				{ spellId = 11687, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11711, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 2941, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
 				{ spellId = 1293818, name = "Conflagrate", condition = "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up." },
 				{ spellId = 18868, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
@@ -1472,6 +1490,7 @@ ns.Data = {
 			} },
 			{ level = 40, lines = {
 				{ spellId = 11687, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11711, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 11665, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
 				{ spellId = 17962, name = "Conflagrate", condition = "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up." },
 				{ spellId = 18869, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
@@ -1480,6 +1499,7 @@ ns.Data = {
 			} },
 			{ level = 50, lines = {
 				{ spellId = 11688, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11712, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 11667, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
 				{ spellId = 18930, name = "Conflagrate", condition = "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up." },
 				{ spellId = 18870, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },
@@ -1488,6 +1508,7 @@ ns.Data = {
 			} },
 			{ level = 60, lines = {
 				{ spellId = 11689, name = "Life Tap", condition = "Life Tap to keep casting once mana runs low." },
+				{ spellId = 11713, name = "Bane of Agony", condition = "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…" },
 				{ spellId = 25309, name = "Immolate", condition = "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off." },
 				{ spellId = 18932, name = "Conflagrate", condition = "Conflagrate consumes part of Immolate's remaining damage as instant burst; only worth casting while Immolate is up." },
 				{ spellId = 18871, name = "Shadowburn", condition = "Shadowburn as the execute finisher below 20 percent target health." },

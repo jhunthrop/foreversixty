@@ -6379,6 +6379,11 @@
             "condition": "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…"
           },
           {
+            "spell_id": 8050,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…"
+          },
+          {
             "spell_id": 3599,
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick."
@@ -6399,6 +6404,11 @@
             "condition": "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…"
           },
           {
+            "spell_id": 8052,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…"
+          },
+          {
             "spell_id": 6363,
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick."
@@ -6417,6 +6427,11 @@
             "spell_id": 8160,
             "name": "Strength of Earth Totem",
             "condition": "Keep Strength of Earth Totem down; totemRemainingTime is the engine's own primitive for 'does this totem slot need refreshing', and needs no aura or spell id t…"
+          },
+          {
+            "spell_id": 8053,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…"
           },
           {
             "spell_id": 6364,
@@ -6444,6 +6459,11 @@
             "condition": "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would."
           },
           {
+            "spell_id": 8053,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…"
+          },
+          {
             "spell_id": 6364,
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick."
@@ -6467,6 +6487,11 @@
             "spell_id": 8512,
             "name": "Windfury Totem",
             "condition": "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would."
+          },
+          {
+            "spell_id": 10447,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…"
           },
           {
             "spell_id": 6365,
@@ -6494,6 +6519,11 @@
             "condition": "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would."
           },
           {
+            "spell_id": 10447,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…"
+          },
+          {
             "spell_id": 10437,
             "name": "Searing Totem",
             "condition": "Keep Searing Totem down for the extra fire damage, but not with less than 20 seconds left -- no point paying for a totem that will barely tick."
@@ -6517,6 +6547,11 @@
             "spell_id": 27621,
             "name": "Windfury Totem",
             "condition": "Keep Windfury Totem down; it is the melee group's biggest damage totem and occupies the same Air slot Grace of Air would."
+          },
+          {
+            "spell_id": 29228,
+            "name": "Flame Shock",
+            "condition": "Keep Flame Shock ticking: this file's own notes above cite the community guide's order as totems, Stormstrike, Flame Shock (dot), then Frost/Earth Shock, but t…"
           },
           {
             "spell_id": 10438,
@@ -6763,6 +6798,11 @@
             "condition": "Life Tap to keep casting once mana runs low."
           },
           {
+            "spell_id": 980,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
+          },
+          {
             "spell_id": 172,
             "name": "Corruption",
             "condition": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts."
@@ -6781,6 +6821,11 @@
             "spell_id": 1455,
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low."
+          },
+          {
+            "spell_id": 1014,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
           },
           {
             "spell_id": 6222,
@@ -6803,6 +6848,11 @@
             "condition": "Life Tap to keep casting once mana runs low."
           },
           {
+            "spell_id": 6217,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
+          },
+          {
             "spell_id": 6223,
             "name": "Corruption",
             "condition": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts."
@@ -6821,6 +6871,11 @@
             "spell_id": 11687,
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low."
+          },
+          {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
           },
           {
             "spell_id": 7648,
@@ -6843,6 +6898,11 @@
             "condition": "Life Tap to keep casting once mana runs low."
           },
           {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
+          },
+          {
             "spell_id": 7648,
             "name": "Corruption",
             "condition": "Corruption is cheap sustained damage that does not compete with Shadow Bolt casts."
@@ -6861,6 +6921,11 @@
             "spell_id": 11688,
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low."
+          },
+          {
+            "spell_id": 11712,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
           },
           {
             "spell_id": 11671,
@@ -6886,6 +6951,11 @@
             "spell_id": 11689,
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low."
+          },
+          {
+            "spell_id": 11713,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
           },
           {
             "spell_id": 25311,
@@ -6915,6 +6985,11 @@
             "condition": "Life Tap to keep casting once mana runs low."
           },
           {
+            "spell_id": 980,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
+          },
+          {
             "spell_id": 707,
             "name": "Immolate",
             "condition": "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off."
@@ -6933,6 +7008,11 @@
             "spell_id": 1455,
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low."
+          },
+          {
+            "spell_id": 1014,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
           },
           {
             "spell_id": 1094,
@@ -6958,6 +7038,11 @@
             "spell_id": 1456,
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low."
+          },
+          {
+            "spell_id": 6217,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
           },
           {
             "spell_id": 2941,
@@ -6990,6 +7075,11 @@
             "condition": "Life Tap to keep casting once mana runs low."
           },
           {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
+          },
+          {
             "spell_id": 2941,
             "name": "Immolate",
             "condition": "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off."
@@ -7018,6 +7108,11 @@
             "spell_id": 11687,
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low."
+          },
+          {
+            "spell_id": 11711,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
           },
           {
             "spell_id": 11665,
@@ -7055,6 +7150,11 @@
             "condition": "Life Tap to keep casting once mana runs low."
           },
           {
+            "spell_id": 11712,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
+          },
+          {
             "spell_id": 11667,
             "name": "Immolate",
             "condition": "Immolate is the DoT both Conflagrate and Incinerate need on the target, so it is refreshed the moment it falls off."
@@ -7088,6 +7188,11 @@
             "spell_id": 11689,
             "name": "Life Tap",
             "condition": "Life Tap to keep casting once mana runs low."
+          },
+          {
+            "spell_id": 11713,
+            "name": "Bane of Agony",
+            "condition": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed the moment it drops; the fork's own shared warlock preset (ui/warlock/apls/rot…"
           },
           {
             "spell_id": 25309,
