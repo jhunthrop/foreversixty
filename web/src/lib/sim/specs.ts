@@ -64,7 +64,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 0,
     reference_stat: 'ranged_attack_power',
-    weight_stats: ['attack_power', 'ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
+    weight_stats: ['ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
     spec: 'hunter-marksmanship',
@@ -74,7 +74,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 1,
     reference_stat: 'ranged_attack_power',
-    weight_stats: ['attack_power', 'ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
+    weight_stats: ['ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
     spec: 'hunter-survival',

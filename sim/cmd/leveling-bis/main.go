@@ -35,6 +35,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
@@ -283,11 +284,17 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			return fmt.Errorf("band %d weights run: %w", band, err)
 		}
 		weightsSeconds := time.Since(weightsStart).Seconds()
+		// buildBandPool/score() only ever need the plain number (a
+		// candidate's stats dotted against it); wresult itself (with
+		// Error and Insignificant) rides through to buildReport
+		// unchanged, so the report can publish what this command's own
+		// significance bar (report.go's isWeightSignificant) says about
+		// each one instead of a bare, unqualified number.
 		weights := make(map[string]float64, len(wresult))
 		for stat, w := range wresult {
 			weights[stat] = w.Weight
 		}
-		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, weights))
+		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
 
 		for _, f := range factions {
 			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights)
@@ -311,6 +318,31 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			}
 			trinketSeconds := time.Since(trinketStart).Seconds()
 
+			// Every other slot with an engine-implemented effect
+			// candidate (rank.go; this lane's brief, item 3): score()
+			// cannot see a proc at all, so a slot score() would
+			// otherwise decide on stats alone gets a real verify pass
+			// against its own implemented-effect candidates.
+			effectStart := time.Now()
+			for _, slot := range slotsNeedingEffectVerification(bySlot) {
+				var notes []string
+				picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, bySlot, slot)
+				for _, n := range notes {
+					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
+				}
+			}
+
+			// A pick that would complete an engine-implemented 2- or
+			// 3-piece set is tried together and kept only if it
+			// verifies ahead of the independently-scored picks (sets.go;
+			// this lane's brief, item 3's second half).
+			var setNotes []string
+			picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, bySlot)
+			for _, n := range setNotes {
+				log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
+			}
+			effectSeconds := time.Since(effectStart).Seconds()
+
 			verifyStart := time.Now()
 			setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, picks)
 			if err != nil {
@@ -321,7 +353,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				log.Printf("leveling-bis: %s band %d %s: could not verify %s", spec, band, f.name, e)
 			}
 
-			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, weights, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors)
+			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors)
 			reports = append(reports, report)
 			previous[f.name] = picks
 
@@ -330,7 +362,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// band, logged above), trinket-rank and verify seconds
 			// separately per faction, so a slow band/spec is visible
 			// without re-deriving it from timestamps.
-			log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
+			log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, effect-rank+set-completion %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, effectSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
 		}
 	}
 
@@ -346,10 +378,20 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	return nil
 }
 
-func formatWeights(order []string, weights map[string]float64) string {
+// formatWeights renders the log line a nightly run's own console shows
+// per band: every weight with its ± error, and "not significant" for
+// one report.go's isWeightSignificant would grey out on the page - so
+// a reader watching the run does not have to open the JSON to see the
+// same honesty the page shows.
+func formatWeights(order []string, weights map[string]api.StatWeight) string {
 	parts := make([]string, len(order))
 	for i, id := range order {
-		parts[i] = fmt.Sprintf("%s=%.3f", id, weights[id])
+		w := weights[id]
+		if !isWeightSignificant(w) {
+			parts[i] = fmt.Sprintf("%s=not significant (%.3f ± %.3f)", id, w.Weight, w.Error)
+			continue
+		}
+		parts[i] = fmt.Sprintf("%s=%.3f ± %.3f", id, w.Weight, w.Error)
 	}
 	return strings.Join(parts, ", ")
 }

@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
   "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:01:29Z",
+  "generated_at": "2026-09-29T00:49:18Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -13,28 +13,34 @@
       "talent_points": 11,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.005523343084967411,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.999999999999932
+          "weight": 1.999999999999932,
+          "error": 0.011046686169922337,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.119780718712233
+          "weight": 7.119780718712233,
+          "error": 1.713176391067129,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.069173606216623
+          "weight": 4.069173606216623,
+          "error": 1.5548197589864463,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 19.9989525720192
+          "weight": 19.9989525720192,
+          "error": 5.119815716051835,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -215,8 +221,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Lovingly Crafted Boomstick"
       ],
-      "weights_run_seconds": 0.875480625,
-      "verify_run_seconds": 0.865273625
+      "weights_run_seconds": 0.652579625,
+      "verify_run_seconds": 0.70028875
     },
     {
       "spec": "hunter-marksmanship",
@@ -227,28 +233,34 @@
       "talent_points": 11,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.005523343084967411,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.999999999999932
+          "weight": 1.999999999999932,
+          "error": 0.011046686169922337,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.119780718712233
+          "weight": 7.119780718712233,
+          "error": 1.713176391067129,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.069173606216623
+          "weight": 4.069173606216623,
+          "error": 1.5548197589864463,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 19.9989525720192
+          "weight": 19.9989525720192,
+          "error": 5.119815716051835,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -429,8 +441,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Lovingly Crafted Boomstick"
       ],
-      "weights_run_seconds": 0.875480625,
-      "verify_run_seconds": 0.867614833
+      "weights_run_seconds": 0.652579625,
+      "verify_run_seconds": 0.751546584
     },
     {
       "spec": "hunter-marksmanship",
@@ -441,28 +453,34 @@
       "talent_points": 31,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.007531350953165388,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.9999999999999942
+          "weight": 1.9999999999999942,
+          "error": 0.015062701906326014,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 11.241015583438015
+          "weight": 11.241015583438015,
+          "error": 2.5223792376864007,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 7.1954272691826215
+          "weight": 7.1954272691826215,
+          "error": 2.872657517148585,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 7.826192595664281
+          "weight": 7.826192595664281,
+          "error": 5.60849077524622,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -500,7 +518,8 @@
           "source": "Engineering",
           "source_kind": "crafted",
           "score": 15.999999999999954,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "chest",
@@ -654,8 +673,8 @@
         "main_hand: Frost Tiger Blade",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 0.832909292,
-      "verify_run_seconds": 1.632424667
+      "weights_run_seconds": 0.607941167,
+      "verify_run_seconds": 1.1709585
     },
     {
       "spec": "hunter-marksmanship",
@@ -666,28 +685,34 @@
       "talent_points": 31,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.007531350953165388,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.9999999999999942
+          "weight": 1.9999999999999942,
+          "error": 0.015062701906326014,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 11.241015583438015
+          "weight": 11.241015583438015,
+          "error": 2.5223792376864007,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 7.1954272691826215
+          "weight": 7.1954272691826215,
+          "error": 2.872657517148585,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 7.826192595664281
+          "weight": 7.826192595664281,
+          "error": 5.60849077524622,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -725,7 +750,8 @@
           "source": "Engineering",
           "source_kind": "crafted",
           "score": 15.999999999999954,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "chest",
@@ -879,8 +905,8 @@
         "main_hand: Frost Tiger Blade",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 0.832909292,
-      "verify_run_seconds": 1.274774125
+      "weights_run_seconds": 0.607941167,
+      "verify_run_seconds": 1.1506182919999999
     },
     {
       "spec": "hunter-marksmanship",
@@ -891,28 +917,34 @@
       "talent_points": 51,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004569512341229221,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.000000000000197
+          "weight": 2.000000000000197,
+          "error": 0.009139024682463536,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 16.61852110153061
+          "weight": 16.61852110153061,
+          "error": 3.0693120331403083,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 9.43946936978906
+          "weight": 9.43946936978906,
+          "error": 6.5922834973553375,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -932,8 +964,7 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "score": 465.31859084285713,
-          "verified": false,
-          "swap_note": "runner-up Gem of Trapped Innocents (id 23057) measured higher: 219.1 vs 216.9 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -960,7 +991,7 @@
           "item_name": "Legionnaire's Chain Hauberk",
           "source": "Rank 12",
           "source_kind": "pvp",
-          "score": 497.31859084286026,
+          "score": 497.3185908428603,
           "verified": true
         },
         {
@@ -1051,7 +1082,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 465.31859084285713,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -1104,8 +1136,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 0.894873166,
-      "verify_run_seconds": 1.5119518749999998
+      "weights_run_seconds": 0.625825167,
+      "verify_run_seconds": 1.262218208
     },
     {
       "spec": "hunter-marksmanship",
@@ -1116,28 +1148,34 @@
       "talent_points": 51,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004569512341229221,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.000000000000197
+          "weight": 2.000000000000197,
+          "error": 0.009139024682463536,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 16.61852110153061
+          "weight": 16.61852110153061,
+          "error": 3.0693120331403083,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 9.43946936978906
+          "weight": 9.43946936978906,
+          "error": 6.5922834973553375,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1147,7 +1185,7 @@
           "item_name": "Cryptstalker Headpiece",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 527.3185908428633,
+          "score": 527.3185908428632,
           "verified": true
         },
         {
@@ -1157,8 +1195,7 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "score": 465.31859084285713,
-          "verified": false,
-          "swap_note": "runner-up Gem of Trapped Innocents (id 23057) measured higher: 215.2 vs 214.3 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -1166,7 +1203,7 @@
           "item_name": "Cryptstalker Spaulders",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 290.65929542143425,
+          "score": 290.6592954214343,
           "verified": true
         },
         {
@@ -1177,17 +1214,16 @@
           "source_kind": "crafted",
           "score": 232.65929542142857,
           "verified": false,
-          "swap_note": "runner-up Cloak of the Fallen God (id 21710) measured higher: 217.6 vs 214.3 set DPS - swapped in"
+          "swap_note": "runner-up Cloak of the Fallen God (id 21710) measured higher: 221.7 vs 218.2 set DPS - swapped in"
         },
         {
           "slot": "chest",
-          "item_id": 23292,
-          "item_name": "Knight-Captain's Chain Hauberk",
+          "item_id": 22874,
+          "item_name": "Legionnaire's Chain Hauberk",
           "source": "Rank 12",
           "source_kind": "pvp",
-          "score": 497.3185908428603,
-          "verified": false,
-          "swap_note": "runner-up Legionnaire's Chain Hauberk (id 22874) measured higher: 218.2 vs 214.3 set DPS - swapped in"
+          "score": 497.31859084286026,
+          "verified": true
         },
         {
           "slot": "wrist",
@@ -1222,9 +1258,8 @@
           "item_name": "Legionnaire's Chain Legguards",
           "source": "Rank 12",
           "source_kind": "pvp",
-          "score": 497.31859084286026,
-          "verified": false,
-          "swap_note": "runner-up Knight-Captain's Chain Legguards (id 23293) measured higher: 218.2 vs 214.3 set DPS - swapped in"
+          "score": 497.3185908428603,
+          "verified": true
         },
         {
           "slot": "feet",
@@ -1252,7 +1287,7 @@
           "source_kind": "world",
           "score": 232.65929542142857,
           "verified": false,
-          "swap_note": "runner-up Don Julio's Band (id 19325) measured higher: 214.5 vs 214.3 set DPS - swapped in"
+          "swap_note": "runner-up Don Julio's Band (id 19325) measured higher: 218.2 vs 218.2 set DPS - swapped in"
         },
         {
           "slot": "trinket1",
@@ -1278,7 +1313,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 465.31859084285713,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -1294,7 +1330,7 @@
           "verified": true
         }
       ],
-      "set_dps": 214.2954359996866,
+      "set_dps": 218.15091252482034,
       "no_source_count": 4389,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -1318,7 +1354,7 @@
         "neck: Stormrage's Talisman of Seething",
         "shoulder: Cryptstalker Spaulders",
         "back: Chromatic Cloak",
-        "chest: Knight-Captain's Chain Hauberk",
+        "chest: Legionnaire's Chain Hauberk",
         "wrist: Cryptstalker Wristguards",
         "hands: Cryptstalker Handguards",
         "waist: Cryptstalker Girdle",
@@ -1331,8 +1367,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 0.894873166,
-      "verify_run_seconds": 1.298978083
+      "weights_run_seconds": 0.625825167,
+      "verify_run_seconds": 1.268921708
     }
   ]
 }
