@@ -99,6 +99,24 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 			if trinketHasPick {
 				list = excludePaired(list, trinketUsedID, trinketUsedName)
 			}
+		case "main_hand":
+			// score() (see its own comment) converts a weapon's DPS to
+			// attack power per slot in isolation, with no term for the
+			// off hand a two-hander forfeits - so a two-hander's higher
+			// raw dps routinely outscores a one-hander here even though
+			// a dual-wielder loses an entire second weapon's worth of
+			// attack power, and for a spec whose kit assumes two
+			// imbued weapons (Enhancement's Windfury/Rockbiter,
+			// leveling.KitConsumes) also loses the off-hand imbue
+			// entirely. A dual-wielder's main hand is never a
+			// two-hander in practice; this kept picking Smite's Mighty
+			// Hammer (a two-hand hammer, item 7230) for shaman-
+			// enhancement's level-20 main hand, leaving off_hand
+			// permanently empty rather than the dual-wield set a real
+			// Enhancement shaman runs.
+			if leveling.DualWieldSpecs[spec] {
+				list = excludeTwoHand(list)
+			}
 		case "off_hand":
 			if mainHandTwoHand {
 				out[slot] = slotPick{}
@@ -202,6 +220,19 @@ func oneHandedWeapons(list []scored) []scored {
 	out := make([]scored, 0, len(list))
 	for _, sc := range list {
 		if sc.ClassID == itemClassWeapon && !sc.TwoHand {
+			out = append(out, sc)
+		}
+	}
+	return out
+}
+
+// excludeTwoHand drops two-handed weapons from a dual-wielder's main-
+// hand candidates: see pick()'s own "main_hand" case for why score()'s
+// per-slot heuristic cannot be trusted to make this call by itself.
+func excludeTwoHand(list []scored) []scored {
+	out := make([]scored, 0, len(list))
+	for _, sc := range list {
+		if !sc.TwoHand {
 			out = append(out, sc)
 		}
 	}

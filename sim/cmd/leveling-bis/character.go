@@ -97,9 +97,11 @@ func weightsRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed in
 func plainRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed int64) api.SimRequest {
 	if ch.Consumes == nil {
 		// The class kit the ladder's character carries too (rogue
-		// poisons from 20): a rogue verified without poisons ranked its
-		// level-20 set at a tenth of a hunter's.
-		ch.Consumes = leveling.KitConsumes(ch.Class, ch.Level)
+		// poisons from 20, shaman-enhancement's weapon imbues
+		// throughout): a rogue verified without poisons ranked its
+		// level-20 set at a tenth of a hunter's. Keyed by the full spec
+		// slug, not ch.Class, because the kit is a spec property.
+		ch.Consumes = leveling.KitConsumes(spec.Spec, ch.Level)
 	}
 	return api.SimRequest{
 		EngineVersion: enginever.Version,

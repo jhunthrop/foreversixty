@@ -116,6 +116,37 @@ func TestPickTwoHandedMainHandLeavesOffHandEmpty(t *testing.T) {
 	}
 }
 
+// A dual-wield spec's main hand never holds a two-hander either, even
+// when one outscores every one-hander: score() converts a weapon's raw
+// DPS to attack power per slot with no term for the off hand a
+// two-hander forfeits, so a two-hander routinely wins this comparison
+// even though a real dual-wielder loses an entire second weapon (and,
+// for shaman-enhancement, its off-hand imbue) by wearing one. This is
+// the bug behind shaman-enhancement's level-20 list picking Smite's
+// Mighty Hammer (item 7230, two-hand) for main hand and leaving
+// off_hand permanently empty.
+func TestPickExcludesTwoHandFromADualWieldersMainHand(t *testing.T) {
+	hammer := scored{candidate: candidate{ID: 7230, Name: "Smite's Mighty Hammer", Slots: []string{"main_hand"}, TwoHand: true, ClassID: itemClassWeapon}, Score: 300}
+	axe := scored{candidate: candidate{ID: 2, Name: "One-Hand Axe", Slots: []string{"main_hand", "off_hand"}, ClassID: itemClassWeapon}, Score: 20}
+	dagger := scored{candidate: candidate{ID: 3, Name: "One-Hand Dagger", Slots: []string{"main_hand", "off_hand"}, ClassID: itemClassWeapon}, Score: 15}
+	bySlot := candidatesBySlot([]scored{hammer, axe, dagger})
+
+	result := pick("shaman-enhancement", bySlot)
+	if result["main_hand"].Item == nil || result["main_hand"].Item.ID != 2 {
+		t.Fatalf("shaman-enhancement main_hand = %+v, want the one-hand axe (2), not the two-hand hammer despite its higher score", result["main_hand"].Item)
+	}
+	if result["off_hand"].Item == nil || result["off_hand"].Item.ID != 3 {
+		t.Fatalf("shaman-enhancement off_hand = %+v, want the one-hand dagger (3), the next best one-hander", result["off_hand"].Item)
+	}
+
+	// A spec that is not a dual-wielder still takes the higher-scoring
+	// two-hander: this rule is specific to DualWieldSpecs.
+	notDualWield := pick("shaman-elemental", candidatesBySlot([]scored{hammer, axe, dagger}))
+	if notDualWield["main_hand"].Item == nil || notDualWield["main_hand"].Item.ID != 7230 {
+		t.Fatalf("shaman-elemental main_hand = %+v, want the two-hand hammer (elemental is not a dual-wielder)", notDualWield["main_hand"].Item)
+	}
+}
+
 func TestPickOneHandedMainHandStillFillsOffHand(t *testing.T) {
 	pool := []scored{
 		{candidate: candidate{ID: 1, Name: "Dagger", Slots: []string{"main_hand", "off_hand"}}, Score: 20},
