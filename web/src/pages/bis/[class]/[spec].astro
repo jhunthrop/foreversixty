@@ -21,6 +21,7 @@ import Base from '../../../layouts/Base.astro';
 import UpdatedStamp from '../../../components/UpdatedStamp.astro';
 import ItemHover from '../../../components/ItemHover.svelte';
 import { readItemTooltipModel } from '../../../lib/items/lookup';
+import { buildWeightDisplayRows } from '../../../lib/sim/weights-display';
 import type { ItemTooltipModel } from '../../../lib/items/tooltip';
 import SlotIcon from '../../../components/bis/SlotIcon.astro';
 import classes from '../../../data/classes.json';
@@ -425,13 +426,29 @@ function bandInfosFor(faction: Faction): BandInfo[] {
                             <p class="text-muted uppercase tracking-[0.06em] text-[11px]">
                               {bisCopy.statWeightsLabel}
                             </p>
-                            <div class="flex flex-wrap gap-1">
-                              {weights.map((w) => (
-                                <span class="weight-chip">
-                                  {w.stat} <span class="tabular">{w.weight.toFixed(2)}</span>
-                                </span>
+                            <ul class="weight-rows" data-testid={`bis-weights-${faction}-${band}`}>
+                              {buildWeightDisplayRows(
+                                weights.map((w) => ({
+                                  stat: w.stat,
+                                  weight: w.weight,
+                                  error: w.error ?? 0,
+                                  insignificant: w.insignificant ?? false,
+                                })),
+                                specEntry.reference_stat,
+                                specEntry.spec,
+                              ).map((row) => (
+                                <li
+                                  class:list={['weight-row', !row.significant && 'weight-row-faint']}
+                                  title={row.sentence}
+                                >
+                                  <span>{row.label}</span>
+                                  <span class="tabular">
+                                    {row.weight.toFixed(2)}
+                                    {row.isReference ? '' : ` ±${row.error.toFixed(2)}`}
+                                  </span>
+                                </li>
                               ))}
-                            </div>
+                            </ul>
                           </div>
                           {noSourceLine && <p class="text-muted text-[12px]">{noSourceLine}</p>}
                         </aside>
@@ -524,6 +541,20 @@ function bandInfosFor(faction: Faction): BandInfo[] {
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+  }
+  .weight-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 12px;
+  }
+  .weight-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .weight-row-faint {
+    opacity: 0.5;
   }
   .weight-chip {
     display: inline-flex;

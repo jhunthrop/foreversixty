@@ -10,6 +10,10 @@ export type Faction = 'alliance' | 'horde';
 export interface BisStatWeight {
   stat: string;
   weight: number;
+  /** The sweep's standard error on `weight` (leveling-bis writes it since 2026-09-28). */
+  error?: number;
+  /** `true` when the error is over a quarter of the weight: shown faint, never trusted. */
+  insignificant?: boolean;
 }
 
 /**
