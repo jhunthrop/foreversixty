@@ -110,7 +110,10 @@ function findBoss(source: LootSource, itemId: number): string | undefined {
 function findChance(source: LootSource, itemId: number): number | undefined {
   const boss = findBossEntry(source, itemId);
   const chances = boss?.item_chances ?? source.item_chances;
-  return chances?.[String(itemId)];
+  const chance = chances?.[String(itemId)];
+  // A published 0 is "unknown", not "never drops" (classic-db rows with no chance column
+  // came through as 0 before the wowhead-world-drops lane started omitting them).
+  return chance === undefined || chance <= 0 ? undefined : chance;
 }
 
 /** The quest matching this band's own faction when `loot.json` lists more than one (a

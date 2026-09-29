@@ -1,6 +1,7 @@
 // web/src/lib/bis/source-cell.test.ts
 import { describe, expect, it } from 'vitest';
 import type { LootFile } from '../sim/loot';
+import { bisCopy } from './copy';
 import { describeSourceCell, hasKnownSource, resolveSourceCell } from './source-cell';
 import type { BisSlot, LootQuestsFile } from './types';
 
@@ -237,6 +238,12 @@ describe('resolveSourceCell', () => {
 });
 
 describe('describeSourceCell', () => {
+  it('rounds a drop chance to a whole percent and says "<1%" below one', () => {
+    expect(bisCopy.dropChanceLabel(1.6358, 'Blackwing Spellbinder')).toBe('2% from Blackwing Spellbinder');
+    expect(bisCopy.dropChanceLabel(0.02, 'Deadmines trash')).toBe('<1% from Deadmines trash');
+    expect(bisCopy.dropChanceLabel(20, 'Mr. Smite')).toBe('20% from Mr. Smite');
+  });
+
   it('formats every kind as the one line the row shows', () => {
     expect(describeSourceCell({ kind: 'quest', questName: 'Foo', faction: 'alliance', level: 12 })).toBe(
       'Quest: Foo · Level 12',

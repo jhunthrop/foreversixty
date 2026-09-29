@@ -26,7 +26,11 @@ import { gzipSync } from 'node:zlib';
 // for the fixture/CI gap this file's own history already shows (the character spine line
 // above is ~3 KB apart between the two).
 const BUDGETS = [
-  { file: 'dist/planner-island.js', limitBytes: 72 * 1024 },
+  // 73 KB since 2026-09-29: the shared item tooltip now renders damage, speed, armor,
+  // "Requires Level" and a capped source block the way the client does (tooltip-polish
+  // lane), and the BiS popover normalises the ranker's alternatives; the growth was
+  // measured at 73,951 bytes gzipped against the earlier 72 KB line.
+  { file: 'dist/planner-island.js', limitBytes: 73 * 1024 },
   { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's

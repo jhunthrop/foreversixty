@@ -61,7 +61,14 @@ export const bisCopy = {
   /** "40% from Lord Serpentis", "6% from Deadmines trash" -- classic-db's own drop
    *  chance (src-classicdb lane, 2026-09-29), shown in front of the place a source cell
    *  would otherwise just name plainly. */
-  dropChanceLabel: (chance: number, from: string): string => `${chance}% from ${from}`,
+  /** Rounded the way the client and Wowhead show it: whole percent, "<1%" below one, and
+   *  never "0%" -- a chance of 0 means unknown and the caller omits the label. */
+  dropChanceLabel: (chance: number, from: string): string =>
+    `${chance < 1 ? '<1' : Math.round(chance)}% from ${from}`,
+  worldDropSourceLabel: (levelMin?: number, levelMax?: number): string =>
+    levelMin === undefined || levelMax === undefined
+      ? 'World drop (BoE)'
+      : `World drop (BoE) · levels ${levelMin}-${levelMax}`,
 
   // --- band navigation (step 2) ------------------------------------------------------------
   bandStripGroupLabel: 'Jump to level',
