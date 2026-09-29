@@ -296,15 +296,15 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		}
 		weightsSeconds := time.Since(weightsStart).Seconds()
 		// buildBandPool/score() only ever need the plain number (a
-		// candidate's stats dotted against it); wresult itself (with
-		// Error and Insignificant) rides through to buildReport
-		// unchanged, so the report can publish what this command's own
-		// significance bar (report.go's isWeightSignificant) says about
-		// each one instead of a bare, unqualified number.
-		weights := make(map[string]float64, len(wresult))
-		for stat, w := range wresult {
-			weights[stat] = w.Weight
-		}
+		// candidate's stats dotted against it), and only for a weight
+		// this command's own significance bar trusts -- effectiveWeights
+		// (weights.go) zeros the rest, so an insignificant (possibly
+		// negative) weight cannot move a ranking. wresult itself (with
+		// Error and Insignificant) still rides through to buildReport
+		// unchanged, so the published JSON keeps publishing what
+		// isWeightSignificant says about each one instead of a bare,
+		// unqualified number.
+		weights := effectiveWeights(wresult)
 		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
 
 		for _, f := range factions {

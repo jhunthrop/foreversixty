@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"math"
 	"os"
 	"path/filepath"
 	"sort"
@@ -79,34 +78,11 @@ type weightRow struct {
 	Insignificant bool `json:"insignificant"`
 }
 
-// significanceErrorFraction is this command's own publication bar
-// (2026-09-28 weights-effects lane; owner, looking at a level-20
-// hunter's weights: "these stat weights look like garbage"). The
-// general-purpose /sim/weights tool's own bar
-// (sim/adapter.go's `Insignificant: errAmt >= math.Abs(weight)`) only
-// catches a weight the error swallows entirely -- appropriate for a
-// tool a player can re-run at higher precision on demand. This
-// command's sweep runs a fixed, small budget (100 iterations per
-// direction by default -- see weightsIterations's own flag doc) and
-// publishes every weight on the BiS page's aside as a fact a player
-// acts on without re-running anything, so it holds every row to a
-// tighter bar: an error under 25% of the weight's own value, or the
-// row reports "not significant" instead of a number nobody should
-// trust.
-const significanceErrorFraction = 0.25
-
-// isWeightSignificant applies significanceErrorFraction to one
-// engine-reported weight. A weight of exactly zero is never
-// significant (there is nothing for a 25%-of-value bar to compare
-// against, and a hard-capped or unmoved stat reads back as
-// weight=0, error=0 the same way sim/adapter.go's own comment
-// describes for its own field).
-func isWeightSignificant(w api.StatWeight) bool {
-	if w.Weight == 0 {
-		return false
-	}
-	return w.Error < significanceErrorFraction*math.Abs(w.Weight)
-}
+// significanceErrorFraction and isWeightSignificant now live in
+// weights.go, alongside effectiveWeights -- the one function that
+// turns a raw stat-weights result into the plain numbers score()
+// ranks by, zeroing exactly the weights this file's own
+// isWeightSignificant call marks Insignificant below.
 
 // noSourceSampleSize bounds how many unsourced item names the JSON
 // and markdown carry - the count is exact, the sample is just enough
