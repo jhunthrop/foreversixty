@@ -47,7 +47,7 @@ This build spends 31 points in Arcane to reach Arcane Power at the bottom, with 
 
 ## Rotation and priority
 
-Use Arcane Power the instant it's off cooldown — it has no cast time, so there's never a reason to hold it. Presence of Mind is the same: free to activate, so pop it whenever it's up and spend the instant cast on whichever spell benefits most in the moment. The designed loop around those two cooldowns is a Missile Barrage proc feeding an empowered Arcane Missiles, with Arcane Blast as the default filler between procs, stacking a damage buff on your other spells before you spend it. This site's simulator doesn't have Arcane Blast or Missile Barrage wired up yet, so the rotation it currently models falls back to plain Arcane Missiles as filler — close to the pre-Arcane-Blast Classic Arcane playstyle. Treat the Missile Barrage loop as the intended rotation once the client and simulator catch up, and the current Missiles-filler behavior as a placeholder.
+Use Arcane Power the instant it's off cooldown — it has no cast time, so there's never a reason to hold it. Presence of Mind is the same: free to activate, so pop it whenever it's up and spend the instant cast on whichever spell benefits most in the moment. This site's simulator now has both Arcane Blast and Missile Barrage wired up: whenever Missile Barrage's proc is active, it fires an empowered Arcane Missiles at top rank (half the channel time, no mana cost) to cash in the proc; otherwise Arcane Blast is the default filler, stacking its own damage buff with every cast. If the build hasn't taken Arcane Blast yet, plain Arcane Missiles fills instead, the same way pre-Arcane-Blast Era Arcane played.
 
 ## Stat priority
 

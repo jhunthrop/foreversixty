@@ -55,7 +55,7 @@ This build spends 31 points in Destruction to reach Incinerate at the bottom, wi
 
 ## Rotation and priority
 
-Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Immolate is the DoT this whole rotation is built around: refresh it the instant it falls off, since both Conflagrate and Incinerate depend on it being active. Conflagrate is only worth casting while Immolate is up, since it consumes the DoT for an instant burst of damage — cast it as soon as it's off cooldown with Immolate running. Once a target drops below 20% health, Shadowburn becomes the priority finisher. Incinerate is meant to be the default filler for every other global, dealing bonus damage while Immolate is active; this site's simulator doesn't have it wired up yet, so today Shadow Bolt fills that role instead — without it, once Immolate is up and Conflagrate is on cooldown, there would be nothing else to cast.
+Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Immolate is the DoT this whole rotation is built around: refresh it the instant it falls off, since both Conflagrate and Incinerate depend on it being active. Conflagrate is only worth casting while Immolate is up, since it consumes the DoT for an instant burst of damage — cast it as soon as it's off cooldown with Immolate running. Once a target drops below 20% health, Shadowburn becomes the priority finisher. Incinerate is now live in this site's simulator and is the default filler for every other global once talented, dealing bonus damage while Immolate is active; for a build that hasn't taken the Incinerate talent, Shadow Bolt fills that role instead.
 
 ## Stat priority
 

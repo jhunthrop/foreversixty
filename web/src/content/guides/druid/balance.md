@@ -3,7 +3,7 @@ title: Balance Druid in Forever
 classSlug: druid
 spec: balance
 role: dps
-build: 'FS1:1.60.1.69893:druid:night-elf:5222211005501051/0/55333:'
+build: 'FS1:1.60.1.69893:druid:night-elf:5222211015401051/0/55333:'
 recommendedRaces: [night-elf, tauren]
 statPriority:
   [
@@ -46,7 +46,8 @@ Blizzard confirmed the tree keeps its seven rows and 51 points, with a fourth on
 
 - **Improved Wrath** — up to 0.5 seconds off Wrath's cast time and 50% off its mana cost at rank 5, a heavy early investment in the tree's other nuke.
 - **Vengeance** — up to a 100% critical-strike-damage bonus at rank 5 on Arcane and Nature spells, the tree's biggest single multiplier.
-- **Improved Starfire** — up to 0.5 seconds off Starfire's cast time and a 15% chance to stun the target at rank 5.
+- **Improved Starfire** — up to 0.5 seconds off Starfire's cast time and a 15% chance to stun the target at rank 5; this build takes rank 4 (0.4 seconds, 12% stun chance) to free a point for Insect Swarm below, since a stun rarely lands on a raid boss anyway.
+- **Insect Swarm** (1 point) — a second cheap DoT the rotation keeps running alongside Moonfire; skipping it was an earlier error in this build, fixed by moving a point off Improved Starfire's last rank.
 - **Nature's Grace** — a non-periodic spell crit speeds up your casting and cuts your next global cooldown by 10% for 3 seconds.
 - **Moonfury** — up to 10% more Arcane and Nature damage at rank 5.
 - **Moonkin Form** — the capstone: 360% more armor from items while shapeshifted, a doubled Omen of Clarity proc chance, and 3% more critical strike chance for party members within 45 yards.
