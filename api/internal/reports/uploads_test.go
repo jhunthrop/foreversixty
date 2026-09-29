@@ -195,6 +195,45 @@ func TestUploadsNeedABrowserSession(t *testing.T) {
 	}
 }
 
+// TestUploadsStartBudgetIsPerAccountNotPerRequest pins the
+// night-api-security fix: POST /v1/uploads opens a real R2 multipart
+// upload per call, so an account is capped at uploadsStartPerHour of
+// them an hour on top of the router's shared per-IP budget - a spent
+// budget answers 429 instead of opening (and having to later abort or
+// orphan) another one.
+func TestUploadsStartBudgetIsPerAccountNotPerRequest(t *testing.T) {
+	h := newHarness(t)
+	h.asSession()
+	start := func() int {
+		res := h.json(http.MethodPost, "/v1/uploads", `{"size_bytes":10,"filename":"x"}`)
+		defer res.Body.Close()
+		return res.StatusCode
+	}
+	for i := 0; i < uploadsStartPerHour; i++ {
+		if code := start(); code != http.StatusCreated {
+			t.Fatalf("request %d: status %d, want 201", i+1, code)
+		}
+	}
+	if code := start(); code != http.StatusTooManyRequests {
+		t.Fatalf("request %d: status %d, want 429", uploadsStartPerHour+1, code)
+	}
+	if n := len(h.parts.started); n != uploadsStartPerHour {
+		t.Fatalf("%d multipart uploads started, want %d: the request over budget must not reach R2",
+			n, uploadsStartPerHour)
+	}
+
+	// A different account has its own, untouched budget.
+	accounts := &auth.Store{Pool: h.store.Pool}
+	other, err := accounts.UpsertEmailUser(context.Background(), "other-raider@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	h.actor = auth.Actor{UserID: other.ID, Role: "user", Method: "session"}
+	if code := start(); code != http.StatusCreated {
+		t.Fatalf("other account: status %d, want 201", code)
+	}
+}
+
 func TestTrimFilenameKeepsTheBaseName(t *testing.T) {
 	for in, want := range map[string]string{
 		`C:\Games\WoW\Logs\WoWCombatLog.txt`: "WoWCombatLog.txt",

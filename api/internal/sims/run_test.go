@@ -438,3 +438,41 @@ func TestTheRunRouteNeedsASession(t *testing.T) {
 		t.Fatalf("status %d, want 401", res.StatusCode)
 	}
 }
+
+// TestARunRouteBudgetIsPerAccountNotPerRequest pins the night-api-security
+// fix: POST /v1/sims/run dispatches a real Cloud Run job per call, so an
+// account is capped at simsRunPerMinute of them a minute on top of the
+// router's shared per-IP budget - a spent budget answers 429 instead of
+// queuing (and dispatching) another job.
+func TestARunRouteBudgetIsPerAccountNotPerRequest(t *testing.T) {
+	h := newHarness(t)
+	h.entitlements.allowed = true
+	for i := 0; i < simsRunPerMinute; i++ {
+		res := h.json(http.MethodPost, "/v1/sims/run", runBody(t))
+		if res.StatusCode != http.StatusAccepted {
+			t.Fatalf("request %d: status %d, want 202", i+1, res.StatusCode)
+		}
+	}
+	res := h.json(http.MethodPost, "/v1/sims/run", runBody(t))
+	if res.StatusCode != http.StatusTooManyRequests {
+		t.Fatalf("request %d: status %d, want 429", simsRunPerMinute+1, res.StatusCode)
+	}
+	if code := h.errorCode(res); code != "rate_limited" {
+		t.Fatalf("code %q, want rate_limited", code)
+	}
+	if ran := len(h.jobs.Ran()); ran != simsRunPerMinute {
+		t.Fatalf("%d jobs dispatched, want %d: the request over budget must not reach the job runner",
+			ran, simsRunPerMinute)
+	}
+
+	// A different account has its own, untouched budget.
+	accounts := &auth.Store{Pool: h.store.Pool}
+	other, err := accounts.UpsertEmailUser(context.Background(), "other-simmer@example.com")
+	if err != nil {
+		t.Fatal(err)
+	}
+	h.actor = auth.Actor{UserID: other.ID, Role: "user", Method: "session"}
+	if res := h.json(http.MethodPost, "/v1/sims/run", runBody(t)); res.StatusCode != http.StatusAccepted {
+		t.Fatalf("other account: status %d, want 202", res.StatusCode)
+	}
+}

@@ -27,6 +27,16 @@ const (
 	ParseJobCommand = "parse-report"
 	// maxFilename bounds the filename an upload is remembered by.
 	maxFilename = 120
+	// uploadsStartPerHour bounds how often one signed-in account may call
+	// POST /v1/uploads: each call opens a real R2 multipart upload, so
+	// this is a per-account cost cap on top of the router-wide 120/min
+	// per-IP budget (night-api-security finding, LOW - a compromised
+	// session could otherwise open up many uploads from a rotating set
+	// of addresses). Uploads carry no entitlement tier of their own -
+	// every signed-in account may upload a log regardless of plan - so
+	// this cap is flat rather than tiered; one raid night's worth of
+	// logs, with generous room for a retried or split upload.
+	uploadsStartPerHour = 20
 )
 
 // Multipart is the part of the R2 client the upload routes use.
@@ -49,7 +59,8 @@ type Uploads struct {
 
 // MountUploads registers the upload routes.
 func MountUploads(mux *http.ServeMux, u *Uploads) {
-	mux.HandleFunc("POST /v1/uploads", auth.RequireSession(u.start))
+	limit := httpx.RateLimitByKey(uploadsStartPerHour, time.Hour, auth.AccountRateLimitKey)
+	mux.Handle("POST /v1/uploads", limit(auth.RequireSession(u.start)))
 	mux.HandleFunc("POST /v1/uploads/{upload_id}/complete", auth.RequireSession(u.complete))
 }
 
