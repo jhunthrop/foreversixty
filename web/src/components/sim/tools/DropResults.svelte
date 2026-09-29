@@ -133,7 +133,12 @@
               class="border-line-soft flex min-h-11 items-center gap-3 border-b px-2 py-1 last:border-b-0"
               data-testid="sim-combo-row"
             >
-              <SubstitutionChips substitutions={row.combo.substitutions} {items} {treeVersion} />
+              <SubstitutionChips
+                substitutions={row.combo.substitutions}
+                {items}
+                {treeVersion}
+                classSlug={result.request.character.class}
+              />
               <span class="tabular text-gold ml-auto font-mono text-[13px]">
                 {deltaLabel(row.combo.delta)}
               </span>
@@ -166,7 +171,12 @@
           <li
             class="border-line-soft flex min-h-11 flex-wrap items-center gap-3 border-b px-2 py-1 last:border-b-0"
           >
-            <SubstitutionChips substitutions={row.combo.substitutions} {items} {treeVersion} />
+            <SubstitutionChips
+              substitutions={row.combo.substitutions}
+              {items}
+              {treeVersion}
+              classSlug={result.request.character.class}
+            />
             <span class="tabular text-gold ml-auto font-mono text-[13px]">
               {deltaLabel(row.combo.delta)}
             </span>

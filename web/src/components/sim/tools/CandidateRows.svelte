@@ -3,6 +3,7 @@
      menu, grouped by where each came from. A locked slot disables every checkbox in it
      rather than hiding the rows -- the player has to see what they locked away. -->
 <script lang="ts">
+  import ItemHover from '../../ItemHover.svelte';
   import { rarityClassFor } from '../../../lib/planner/items';
   import { dataUrl } from '../../../lib/planner/load';
   import { SECONDARY_BUTTON } from '../../../lib/planner/styles';
@@ -83,18 +84,20 @@
           disabled={locked || !row.known}
           onchange={() => ontoggle(candidateKey(row))}
         />
-        <img
-          src={dataUrl(treeVersion, `icons/${row.item.icon}.webp`)}
-          alt=""
-          width="28"
-          height="28"
-          loading="lazy"
-          decoding="async"
-          class="rounded-control border-line h-7 w-7 border object-cover"
-        />
-        <span class={`text-[14px] font-semibold ${rarityClassFor(row.item.quality)}`}>
-          {row.item.name}
-        </span>
+        <ItemHover itemId={row.item.id} {classSlug} build={treeVersion}>
+          <img
+            src={dataUrl(treeVersion, `icons/${row.item.icon}.webp`)}
+            alt=""
+            width="28"
+            height="28"
+            loading="lazy"
+            decoding="async"
+            class="rounded-control border-line h-7 w-7 border object-cover"
+          />
+          <span class={`text-[14px] font-semibold ${rarityClassFor(row.item.quality)}`}>
+            {row.item.name}
+          </span>
+        </ItemHover>
         <span class="text-muted text-[12px]">{originLabel(row.origin)}</span>
         <!-- The engine's SimDatabase does not carry this item id (sim-items.ts's
              `isKnownItem`, set on the row when it was added). The checkbox above is

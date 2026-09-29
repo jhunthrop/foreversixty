@@ -5,7 +5,8 @@
      id the build does not know (a retail log, an item the data lacks) is shown by number
      rather than dropped: the row still says which slot it was and what level it had. -->
 <script lang="ts">
-  import { loadItems } from '../../lib/planner/load';
+  import ItemHover from '../ItemHover.svelte';
+  import { loadItems, dataUrl } from '../../lib/planner/load';
   import { rarityClassFor } from '../../lib/planner/items';
   import type { Item } from '../../lib/planner/types';
   import { LOG_GEAR_SLOTS, classSlugOf } from '../../lib/report/planner-link';
@@ -16,6 +17,7 @@
 
   let items = $state<Map<number, Item> | null>(null);
   let failed = $state(false);
+  const classSlug = $derived(classSlugOf(className) ?? '');
 
   $effect(() => {
     const slug = classSlugOf(className);
@@ -45,7 +47,18 @@
     <li class="border-line-soft flex min-h-8 items-center gap-2 border-b py-1">
       <span class="text-muted label w-[72px] shrink-0">{slot}</span>
       {#if item}
-        <span class="truncate font-semibold {rarityClassFor(item.quality)}">{item.name}</span>
+        <ItemHover itemId={item.id} {classSlug} build={dataBuild} class="min-w-0 flex-1">
+          <img
+            src={dataUrl(dataBuild, `icons/${item.icon}.webp`)}
+            alt=""
+            width="18"
+            height="18"
+            loading="lazy"
+            decoding="async"
+            class="rounded-control border-line h-[18px] w-[18px] shrink-0 border object-cover"
+          />
+          <span class="truncate font-semibold {rarityClassFor(item.quality)}">{item.name}</span>
+        </ItemHover>
       {:else}
         <span
           class="text-muted truncate"

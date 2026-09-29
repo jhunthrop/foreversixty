@@ -18,6 +18,7 @@
     type SlotHoverDiff,
   } from '../../lib/bis/hover';
   import type { BisFile, Faction } from '../../lib/bis/types';
+  import ItemHover from '../ItemHover.svelte';
   import { rarityClassFor } from '../../lib/planner/items';
   import type { PlannerStore } from '../../lib/planner/store.svelte';
   import { SLOT_LABELS, type Slot } from '../../lib/planner/types';
@@ -80,11 +81,13 @@
     <p class="text-muted" data-testid="bis-hover-empty">{view.message}</p>
   {:else if view.diff}
     <div class="flex flex-col gap-1">
-      <span
-        class={`font-semibold ${rarityClassFor(store.itemIndex.get(view.diff.pick.item_id)?.quality ?? 1)}`}
-      >
-        {view.diff.pick.item_name}
-      </span>
+      <ItemHover itemId={view.diff.pick.item_id} classSlug={store.classSlug} build={store.treeVersion}>
+        <span
+          class={`font-semibold ${rarityClassFor(store.itemIndex.get(view.diff.pick.item_id)?.quality ?? 1)}`}
+        >
+          {view.diff.pick.item_name}
+        </span>
+      </ItemHover>
       <span class="text-muted text-[11px] uppercase">{view.diff.pick.source}</span>
       {#if view.diff.isNewAtBand}
         <span class="text-gold text-[11px] font-semibold" data-testid="bis-hover-new">New at {band}</span>

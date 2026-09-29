@@ -236,7 +236,12 @@
             {row.rank}
           </span>
           <span role="cell">
-            <SubstitutionChips substitutions={row.combo.substitutions} {items} {treeVersion} />
+            <SubstitutionChips
+              substitutions={row.combo.substitutions}
+              {items}
+              {treeVersion}
+              classSlug={result.request.character.class}
+            />
           </span>
           <span
             class="tabular text-strong ml-auto font-mono text-[13px]"

@@ -15,12 +15,18 @@ import { gzipSync } from 'node:zlib';
 // same island; 67 KB since the addon import round of 2026-09-26 (the planner switches
 // class itself on a mismatched export and imports once the talents load, plus the
 // unknown-item and character-name copy), which read 67,641 bytes on CI against 67,584.
-// The report island is larger by design -- twelve tabs, a canvas chart and a filter bar --
-// and 140 KB gzipped is the ceiling that keeps /reports/<id> inside its Lighthouse
-// performance budget of 0.90 on a throttled phone. DuckDB-WASM is not counted: it is
-// loaded lazily from separate files and never on page load.
+// 70 KB since the web-item-tooltips lane (2026-09-28, rotation-accuracy program): every
+// gear slot's icon is now its own ItemHover (tenet 2's "an item is never just a name"),
+// which eagerly ships the hover/focus/tap open-close state machine and the edge-aware
+// positioning math GearPanel's own BisSlotPopover trigger already paid for once, now
+// duplicated for a second, independent tooltip. The heavy panel itself
+// (ItemTooltip.svelte) stays code-split behind a dynamic import exactly like
+// BisSlotPopover, so only ItemHover's small shell rides here. Measured 69,975 bytes
+// gzipped on a fixture build (FOREVER_DATA=fixture) on 2026-09-28; 72 KB leaves headroom
+// for the fixture/CI gap this file's own history already shows (the character spine line
+// above is ~3 KB apart between the two).
 const BUDGETS = [
-  { file: 'dist/planner-island.js', limitBytes: 67 * 1024 },
+  { file: 'dist/planner-island.js', limitBytes: 72 * 1024 },
   { file: 'dist/report-island.js', limitBytes: 140 * 1024 },
   // The sim island is the planner's gear grid plus the report's tables plus a run control.
   // 90 KB gzipped is roughly twice what those parts weigh today and well under the report's
