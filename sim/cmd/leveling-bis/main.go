@@ -299,7 +299,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		for _, f := range factions {
 			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights)
 			bySlot := candidatesBySlot(pool.Scored)
-			picks := pick(bySlot)
+			picks := pick(spec, bySlot)
 
 			// Trinkets carry no scorable stats (score.go's own doc), so
 			// pick()'s score-based choice for trinket1/trinket2 is

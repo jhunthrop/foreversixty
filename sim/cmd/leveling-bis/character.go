@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
 // ladderWeapon is the highest item-level ranged weapon this class,
@@ -94,6 +95,12 @@ func weightsRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed in
 // iterations/seed - used by verify.go for the baseline and each
 // per-slot swap.
 func plainRequest(spec specInfo, ch api.CharacterSpec, iterations int, seed int64) api.SimRequest {
+	if ch.Consumes == nil {
+		// The class kit the ladder's character carries too (rogue
+		// poisons from 20): a rogue verified without poisons ranked its
+		// level-20 set at a tenth of a hunter's.
+		ch.Consumes = leveling.KitConsumes(ch.Class, ch.Level)
+	}
 	return api.SimRequest{
 		EngineVersion: enginever.Version,
 		Spec:          spec.Spec,

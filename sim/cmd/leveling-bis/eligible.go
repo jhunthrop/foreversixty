@@ -12,6 +12,7 @@ import (
 // the per-class file's own "equippable" filter already excludes. Mail
 // is the only one this lane's rule gates further, by level.
 const (
+	itemClassWeapon   = 2
 	armorClassID      = 4
 	armorSubclothID   = 1
 	armorSubleatherID = 2

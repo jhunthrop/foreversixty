@@ -1057,18 +1057,10 @@ type unusedEntry struct {
 	ID    int
 }
 
-// ladderKitConsumes is the one exception to the ladder's "no consumes"
-// rule: a rogue's poisons are class kit, taught by the level-20 poison
-// quest, and Assassination's whole design (Mutilate's bonus against a
-// poisoned target, Venom) assumes them; a poison-less rogue sims a
-// rotation no real rogue runs. Instant Poison on both weapons from 20.
-// Everything else (flasks, food, oils, potions) stays off.
-func ladderKitConsumes(class string, level int) []string {
-	if class != "rogue" || level < 20 {
-		return nil
-	}
-	return []string{"main_hand_imbue:instant_poison", "off_hand_imbue:instant_poison"}
-}
+// ladderKitConsumes is the class kit the ladder character carries
+// (sim/leveling.KitConsumes: a rogue's poisons from 20, nothing else),
+// shared with the leveling BiS ranker so both measure the same character.
+func ladderKitConsumes(class string, level int) []string { return leveling.KitConsumes(class, level) }
 
 // ladderRulesHeader documents, once, the rules every golden in this
 // directory was generated under. It is repeated verbatim into each

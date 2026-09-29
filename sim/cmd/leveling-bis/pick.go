@@ -1,5 +1,7 @@
 package main
 
+import "github.com/jhunthrop/foreversixty/sim/leveling"
+
 import "sort"
 
 // scored is one candidate with its score and source already resolved,
@@ -73,7 +75,7 @@ func candidatesBySlot(pool []scored) map[string][]scored {
 //     refuses `mainHand.HandType == HandTwo && offHand.ID != 0` as a
 //     GEAR LIST, which for a greedy picker translates to "do not pick
 //     an off_hand item at all" once main_hand's pick is two-handed.
-func pick(bySlot map[string][]scored) map[string]slotPick {
+func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 	out := make(map[string]slotPick, len(slotOrder))
 	var fingerUsedID int
 	var fingerUsedName string
@@ -115,6 +117,9 @@ func pick(bySlot map[string][]scored) map[string]slotPick {
 			if mainHandHasPick {
 				list = excludePaired(list, mainHandID, mainHandName)
 			}
+			if leveling.DualWieldSpecs[spec] {
+				list = weaponsOnly(list)
+			}
 		}
 		var sp slotPick
 		if len(list) > 0 {
@@ -155,6 +160,18 @@ func excludePaired(list []scored, usedID int, usedName string) []scored {
 			continue
 		}
 		out = append(out, s)
+	}
+	return out
+}
+
+// weaponsOnly keeps the candidates that are weapons (the client's item
+// class 2): a dual-wielder's off hand is never a held item or a shield.
+func weaponsOnly(list []scored) []scored {
+	out := make([]scored, 0, len(list))
+	for _, sc := range list {
+		if sc.ClassID == itemClassWeapon {
+			out = append(out, sc)
+		}
 	}
 	return out
 }
