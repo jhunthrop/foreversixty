@@ -44,6 +44,7 @@ import { buildWeightDisplayRows, type WeightDisplayRow } from '../../../lib/sim/
 import type { ItemTooltipModel } from '../../../lib/items/tooltip';
 import SlotIcon from '../../../components/bis/SlotIcon.astro';
 import SourceKindIcon from '../../../components/bis/SourceKindIcon.astro';
+import GlyphSheet from '../../../components/bis/GlyphSheet.astro';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
 import { classIconUrl } from '../../../lib/account/character-descriptor';
@@ -324,6 +325,7 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
     tabindex="-1"
     class="mx-auto flex w-full max-w-[1120px] flex-col gap-5 px-[18px] py-10 md:px-12"
   >
+    <GlyphSheet />
     <header class="border-line flex flex-col gap-2 border-b pb-5">
       <p class="text-muted text-[13px]">
         <a href="/bis">{bisCopy.backToIndex}</a>
@@ -541,7 +543,7 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                                                   stroke-linejoin="round"
                                                   aria-hidden="true"
                                                 >
-                                                  <path d="M5 13l4 4L19 7" />
+                                                  <use href="#bis-verified" />
                                                 </svg>
                                               </span>
                                             ) : row.runnerUp ? (
