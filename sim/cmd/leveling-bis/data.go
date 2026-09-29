@@ -481,6 +481,13 @@ func applyEffectiveRequiredLevels(items []candidate, idx lootIndex, questFloors 
 				}
 			}
 		}
+		if floor == 0 && c.RequiredLevel == 0 {
+			// A row with no required level at all (772 Forever-new items on
+			// 1.60.1.70009 ship required_level 0 -- a data gap, not "usable at
+			// 1": Swamp Ring 270052, item level 35, headed a level-20 list) is
+			// gated by its item level the same way an unfloored recipe is.
+			floor = leveling.ItemLevelProxyRequiredLevel(c.ItemLevel)
+		}
 		c.EffectiveRequiredLevel = leveling.EffectiveRequiredLevel(c.RequiredLevel, floor)
 		out[i] = c
 	}

@@ -345,7 +345,11 @@ func loadRequiredLevelFloors(repoRoot, build string, items []buildItem) (map[int
 	for _, it := range items {
 		if qf, ok := questFloor[it.ID]; ok && qf > 0 {
 			floors[it.ID] = qf
-		} else if crafted[it.ID] {
+		} else if crafted[it.ID] || it.RequiredLevel == 0 {
+			// A recipe's product, or a row with no required level at all
+			// (Forever-new items ship required_level 0 -- a data gap, the
+			// same gate sim/cmd/leveling-bis applies), floors at its item
+			// level's proxy.
 			floors[it.ID] = leveling.ItemLevelProxyRequiredLevel(it.ItemLevel)
 		}
 	}

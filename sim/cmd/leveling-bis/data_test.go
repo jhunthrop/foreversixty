@@ -7,6 +7,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
 // repoRootFixture is testdata/reporoot: a minimal, hand-built stand-in
@@ -360,5 +362,17 @@ func TestCorrectedRepSourceSwapsWheneverTheItemsOwnRestrictionDisagreesWithTheMi
 	// alone (nothing to correct).
 	if id, _, swapped := correctedRepSource("alliance", 889, names); swapped || id != 889 {
 		t.Errorf("correctedRepSource(alliance, 889) swapped an already-consistent item: id=%d swapped=%v", id, swapped)
+	}
+}
+
+func TestAnItemWithNoRequiredLevelIsGatedByItsItemLevel(t *testing.T) {
+	items := []candidate{{ID: 270052, Name: "Swamp Ring", ItemLevel: 35, RequiredLevel: 0}}
+	out := applyEffectiveRequiredLevels(items, lootIndex{}, map[int]int{})
+	if got := out[0].EffectiveRequiredLevel; got != leveling.ItemLevelProxyRequiredLevel(35) {
+		t.Fatalf("EffectiveRequiredLevel = %d, want the item-level proxy %d", got, leveling.ItemLevelProxyRequiredLevel(35))
+	}
+	stated := []candidate{{ID: 1, Name: "Stated", ItemLevel: 35, RequiredLevel: 12}}
+	if got := applyEffectiveRequiredLevels(stated, lootIndex{}, map[int]int{})[0].EffectiveRequiredLevel; got != 12 {
+		t.Fatalf("a stated required level must stand: got %d", got)
 	}
 }
