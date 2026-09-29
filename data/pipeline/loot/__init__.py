@@ -188,7 +188,8 @@ def write_loot_files(
         "%d quests with faction detail); "
         "%d fork ids left out because this build has no such item, "
         "%d fork source entries with no kind dropped, %d zone sources with "
-        "a zone id zones[] does not name; "
+        "a zone id zones[] does not name, %d bosses dropped for having no name in "
+        "either database; "
         "%d enchants, %d suffixes, %d buff ids; "
         "items.json: %d with suffix options, %d faction-restricted; "
         "items/*.json: %d weapon rows won by the fork's own damage",
@@ -201,6 +202,7 @@ def write_loot_files(
         stats.absent_items,
         stats.dropped_entries,
         stats.unnamed_zones,
+        stats.dropped_unnamed_bosses,
         len(enchants),
         len(suffixes),
         len(simbuffs.entries),
@@ -339,7 +341,7 @@ def merge_loot_files(
     logger.info(
         "loot-merge: %d sources naming %d items (%d from classic-db, %d from wowhead, %d "
         "from re-itemisation inheritance); %d fork ids left out, %d fork entries with no "
-        "kind dropped",
+        "kind dropped, %d bosses dropped for having no name in either database",
         len(document.sources),
         stats.items,
         stats.classicdb_items,
@@ -347,6 +349,7 @@ def merge_loot_files(
         reitemised,
         stats.absent_items,
         stats.dropped_entries,
+        stats.dropped_unnamed_bosses,
     )
     refresh_manifest(build_dir)
     return [build_dir / LOOT]

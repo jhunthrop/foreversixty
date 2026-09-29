@@ -263,3 +263,59 @@ def test_classic_db_fills_the_gap_before_wowhead_and_wowhead_unions_into_it():
     assert world.source_origin == "classic-db"
     assert stats.classicdb_items == 1
     assert stats.wowhead_items == 0  # already named by classic-db, not counted again
+
+
+def test_a_fork_bosss_empty_name_resolves_from_classic_dbs_own_creature_template():
+    """npc 901 is `test_loot_sources.py`'s own Molten Core fixture boss
+    with no fork-stated name (raid:molten-core's second boss, item 102's
+    only drop -- see that file's own `test_a_raid_lists_a_named_boss_
+    per_npc_and_drops_an_unnamed_one` for the case with no classic-db
+    fallback at all). A classic-db VENDOR record naming that SAME
+    npc_id for an unrelated item (110, UNSOURCED_ITEM) is enough for
+    `classic_db_npc_names` to resolve the name globally
+    (wowhead-world-drops lane, 2026-09-29's own addendum) -- a vendor
+    sale and a raid boss are unrelated buckets, so no union between the
+    two records happens; the raid's own boss simply gets the name."""
+    classic_sources = {
+        UNSOURCED_ITEM: [
+            ClassicDbSourceRecord(kind="vendor", npc_id=901, name="Baron Geddon"),
+        ]
+    }
+    document, stats = built(classic_sources)
+    raid = source(document, "raid:molten-core")
+    boss = next(b for b in raid.bosses if b.npc_id == 901)
+    assert boss.name == "Baron Geddon"
+    assert boss.items == [102]
+    assert stats.dropped_unnamed_bosses == 0
+    vendor = source(document, "vendor:901")
+    assert vendor.name == "Baron Geddon"
+    assert vendor.items == [UNSOURCED_ITEM]
+
+
+def test_a_chance_of_exactly_zero_is_omitted_never_published_as_a_real_zero():
+    """cmangos/classic-db's own `ChanceOrQuestChance` uses 0 as ITS OWN
+    "no chance recorded" sentinel, not a real 0% -- wowhead-world-drops
+    lane, 2026-09-29's own addendum. A record with chance=0.0 is omitted
+    from item_chances/boss item_chances entirely (absent key = unknown),
+    never published as a real 0, which the site would otherwise show as
+    "0% from ...", a fact this dump never actually states."""
+    classic_sources = {
+        UNSOURCED_ITEM: [
+            ClassicDbSourceRecord(
+                kind="creature_drop", npc_id=657, name="Defias Pirate", map_id=36, chance=0.0,
+            )
+        ],
+        104: [
+            ClassicDbSourceRecord(
+                kind="creature_drop", npc_id=9999, name="Zero Chance Mob", map_id=1, chance=0.0,
+            )
+        ],
+    }
+    document, _ = built(classic_sources)
+    dungeon = source(document, "dungeon:the-deadmines")
+    boss = next(b for b in dungeon.bosses if b.npc_id == 657)
+    assert boss.items == [UNSOURCED_ITEM]
+    assert boss.item_chances is None
+    world = source(document, "world:zero-chance-mob")
+    assert world.items == [104]
+    assert world.item_chances is None
