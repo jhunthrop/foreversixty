@@ -71,6 +71,10 @@ export interface BisBand {
   new_at_band: string[];
   weights_run_seconds: number;
   verify_run_seconds: number;
+  /** Not published by any pipeline yet (a rank-guardrails follow-up): how many of this
+   *  band's candidate items have a known source vs. how many exist. When present, the page
+   *  reads the "no source" line as a positive coverage count instead of the plain total. */
+  coverage?: { known: number; total: number };
 }
 
 export interface BisFile {

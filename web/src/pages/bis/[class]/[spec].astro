@@ -5,29 +5,43 @@
 // panels toggled by hidden radio inputs and plain CSS (the `has-[:checked]` pattern
 // Upload.svelte already uses), band pills toggled by CSS `:target` within each panel. The
 // only scripts on the page are tiny inline ones (never a hydrated island): one syncs the
-// faction radios from `?faction=` on load, the other lets arrow keys move focus along the
-// level strip -- so a shared `?faction=horde` link and keyboard band navigation both work
-// without shipping a framework runtime for either.
+// faction radios from `?faction=` on load, one lets arrow keys move focus along the level
+// scale, and one shows/hides the level scale's own edge fades on narrow screens (the same
+// pattern SimTabs.astro uses for its tab strip) -- so a shared `?faction=horde` link,
+// keyboard band navigation and a scrollable phone-width level scale all work without
+// shipping a framework runtime for any of them.
+//
+// Redesign (lane bis-ux, 2026-09-29 -- owner: "still looks like shit" on a level-20 hunter
+// screenshot at 1280px): the list of gear is the product (docs/tenets.md), so it now comes
+// first, one row per slot with the item's own icon, quality colour, key stats and a single
+// real source line -- never a repeated-word chip stack. The level scale is a compact,
+// single-row tab strip (numbers only) instead of the twelve wrapping buttons the screenshot
+// showed, and "what changed since level N" is a single disclosure line under the list
+// instead of a wall of diff rows sitting above it.
 //
 // `ItemHover` (icon + quality-coloured name, full tooltip on hover/focus) is lane
 // `web-item-tooltips`'s own component (`components/ItemHover.svelte`, `components/
-// ItemTooltip.svelte`, `lib/items/*`). It was not on this branch when this page was built,
-// so `components/ItemHover.svelte` here is this lane's own minimal stub (its own header
-// says so) -- the controller replaces it with the real file. This page passes it a
-// pre-resolved `model` (the shared `ItemTooltipModel`, `lib/items/tooltip.ts`) built from
-// `itemDetails` at build time, per the stub's documented `{ itemId, classSlug, build, model?
-// }` prop contract, rather than making the component re-resolve data this page already has.
+// ItemTooltip.svelte`, `lib/items/*`). This page passes it a pre-resolved `model` (the
+// shared `ItemTooltipModel`, `lib/items/tooltip.ts`) built from `itemDetails` at build time,
+// per its documented `{ itemId, classSlug, build, model? }` prop contract, rather than
+// making the component re-resolve data this page already has. This page also supplies its
+// own `children` snippet for the 36px row icon (the same pattern `GearList.svelte` already
+// uses for its own custom-sized pill), so `ItemHover`'s built-in small pill is only used for
+// the smaller inline mentions (the "what changed" disclosure, the runner-up detail).
 import Base from '../../../layouts/Base.astro';
 import UpdatedStamp from '../../../components/UpdatedStamp.astro';
 import ItemHover from '../../../components/ItemHover.svelte';
 import { readItemTooltipModel } from '../../../lib/items/lookup';
-import { buildWeightDisplayRows } from '../../../lib/sim/weights-display';
+import { buildWeightDisplayRows, type WeightDisplayRow } from '../../../lib/sim/weights-display';
 import type { ItemTooltipModel } from '../../../lib/items/tooltip';
 import SlotIcon from '../../../components/bis/SlotIcon.astro';
+import SourceKindIcon from '../../../components/bis/SourceKindIcon.astro';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
 import { classIconUrl } from '../../../lib/account/character-descriptor';
 import { SLOT_LABELS, type Slot } from '../../../lib/planner/types';
+import { rarityClassFor } from '../../../lib/planner/items';
+import { dataUrl } from '../../../lib/planner/load';
 import { bisCopy } from '../../../lib/bis/copy';
 import {
   bandEntry,
@@ -48,6 +62,7 @@ import {
   hasKnownSource,
   parseSwapNote,
   resolveSourceCell,
+  type SourceCell,
 } from '../../../lib/bis/source-cell';
 import type { BisFile, ChangedSlot, Faction, ItemDetail, LootQuestsFile } from '../../../lib/bis/types';
 import type { LootFile } from '../../../lib/sim/loot';
@@ -73,19 +88,25 @@ const details = itemDetails(activeBuild.build, specEntry.class_slug);
 const loot = loadLootFile(activeBuild.build);
 const factions: Faction[] = ['alliance', 'horde'];
 
-// --- per-row view: the source cell, the verified badge or the runner-up pill, the item
-// itself -- everything the table needs, resolved once here rather than in the template. ---
+// --- per-row view: the source cell, the verified glyph or the runner-up detail, the item
+// itself -- everything the row needs, resolved once here rather than in the template. ---
 interface RowView {
   slot: string;
   empty: boolean;
   itemId?: number;
+  itemName?: string;
   model?: ItemTooltipModel;
   itemLevel?: number;
-  badgeLabel?: string;
+  sourceKind?: SourceCell['kind'];
   sourceDetail?: string;
+  keyStatsLine?: string;
   verified?: boolean;
   runnerUp?: { itemId: number; model?: ItemTooltipModel; deltaDps: number; title: string };
   swapNoteRaw?: string;
+  /** The item this slot's NEW pill replaced -- undefined at the file's first band (nothing
+   *  was equipped before) or when the slot did not change this band. Feeds the pill's own
+   *  tooltip (`bisCopy.newPillTitle`) instead of a second "was: …" row. */
+  replacedName?: string;
 }
 
 // The shared item tooltip (lib/items) built off disk for this page's class; undefined
@@ -99,21 +120,26 @@ function buildRowView(
   faction: Faction,
   itemDetailsMap: ReadonlyMap<number, ItemDetail>,
   lootFile: LootFile & Partial<LootQuestsFile>,
+  replacedBySlot: ReadonlyMap<string, string | undefined>,
 ): RowView {
   if (isMissingSlot(row) || !hasKnownSource(row)) {
     return { slot: row.slot, empty: true };
   }
   const badgeLabel = sourceBadgeLabel(row, faction);
   const cell = resolveSourceCell(row, faction, lootFile, badgeLabel);
+  const model = tooltipFor(row.item_id);
   const base: RowView = {
     slot: row.slot,
     empty: false,
     itemId: row.item_id,
-    model: tooltipFor(row.item_id),
+    itemName: row.item_name,
+    model,
     itemLevel: itemDetailsMap.get(row.item_id)?.item_level,
-    badgeLabel,
+    sourceKind: cell.kind,
     sourceDetail: describeSourceCell(cell),
+    keyStatsLine: model && model.stats.length > 0 ? model.stats.slice(0, 4).join(', ') : undefined,
     verified: row.verified,
+    replacedName: replacedBySlot.get(row.slot),
   };
   if (row.verified || row.swap_note === undefined) return base;
   const parsed = parseSwapNote(row.swap_note);
@@ -129,6 +155,37 @@ function buildRowView(
   };
 }
 
+interface WeightBarRow {
+  row: WeightDisplayRow;
+  /** 4-100: `%` width for the row's horizontal bar, scaled against the loudest non-reference
+   *  weight in the band (never 0 -- even a near-zero weight still draws a sliver, tenet 4's
+   *  "nothing clipped" applied to a bar chart). The reference row is always the full-width
+   *  unit row the design asks for ("Ranged attack power = 1"). */
+  barPercent: number;
+}
+
+function weightBarsFor(
+  weights: BisFile['bands'][number]['weights'],
+  referenceStat: string,
+  spec: string,
+): WeightBarRow[] {
+  const rows = buildWeightDisplayRows(
+    weights.map((w) => ({
+      stat: w.stat,
+      weight: w.weight,
+      error: w.error ?? 0,
+      insignificant: w.insignificant ?? false,
+    })),
+    referenceStat,
+    spec,
+  );
+  const maxWeight = Math.max(...rows.filter((r) => !r.isReference).map((r) => Math.abs(r.weight)), 0.0001);
+  return rows.map((row) => ({
+    row,
+    barPercent: row.isReference ? 100 : Math.min(100, Math.max(4, (Math.abs(row.weight) / maxWeight) * 100)),
+  }));
+}
+
 interface BandInfo {
   band: number;
   bandIndex: number;
@@ -136,10 +193,13 @@ interface BandInfo {
   newSlots: ReadonlySet<string>;
   changed: ChangedSlot[] | undefined;
   previousBand: number | undefined;
+  upgradesCount: number;
   setDps: number;
+  dpsDelta: number | undefined;
   race: string;
   talentPoints: number;
-  weights: BisFile['bands'][number]['weights'];
+  weightBars: WeightBarRow[];
+  referenceLabel: string;
   noSourceLine: string;
 }
 
@@ -148,13 +208,24 @@ function bandInfosFor(faction: Faction): BandInfo[] {
   return bands.flatMap((band, bandIndex): BandInfo[] => {
     const bandData = bandEntry(file, band, faction);
     if (bandData === undefined) return [];
-    const rows = filledSlots(bandData).map((row) => buildRowView(row, faction, details, loot));
     const changed = changedSinceBand(file, band, faction);
+    const replacedBySlot = new Map<string, string | undefined>(
+      (changed ?? [])
+        .filter((entry) => entry.after !== undefined)
+        .map((entry) => [entry.slot, entry.before?.item_name]),
+    );
+    const rows = filledSlots(bandData).map((row) =>
+      buildRowView(row, faction, details, loot, replacedBySlot),
+    );
     const newSlots = new Set(
       bandIndex === 0
         ? rows.filter((row) => !row.empty).map((row) => row.slot)
         : (changed ?? []).filter((entry) => entry.after !== undefined).map((entry) => entry.slot),
     );
+    const previousBand = previousBandLevel(file, band);
+    const previousSetDps =
+      previousBand === undefined ? undefined : bandEntry(file, previousBand, faction)?.set_dps;
+    const weightBars = weightBarsFor(bandData.weights, specEntry.reference_stat, specEntry.spec);
     return [
       {
         band,
@@ -162,12 +233,18 @@ function bandInfosFor(faction: Faction): BandInfo[] {
         rows,
         newSlots,
         changed,
-        previousBand: previousBandLevel(file, band),
+        previousBand,
+        upgradesCount: changed?.length ?? 0,
         setDps: bandData.set_dps,
+        dpsDelta: previousSetDps === undefined ? undefined : bandData.set_dps - previousSetDps,
         race: bandData.race,
         talentPoints: bandData.talent_points,
-        weights: bandData.weights,
-        noSourceLine: bisCopy.noSourceCount(bandData.no_source_count),
+        weightBars,
+        referenceLabel: weightBars[0]?.row.label ?? specEntry.reference_stat,
+        noSourceLine:
+          bandData.coverage !== undefined
+            ? bisCopy.coverageLine(bandData.coverage.known, bandData.coverage.total)
+            : bisCopy.noSourceLine(bandData.no_source_count),
       },
     ];
   });
@@ -208,7 +285,7 @@ function bandInfosFor(faction: Faction): BandInfo[] {
       <div class="bis-faction-root">
         <input type="radio" name="faction" id="faction-alliance" class="sr-only" checked />
         <input type="radio" name="faction" id="faction-horde" class="sr-only" />
-        <div class="mb-4 flex gap-2" role="group" aria-label="Faction">
+        <div class="mb-3 flex gap-2" role="group" aria-label="Faction">
           <label for="faction-alliance" class="faction-pill" data-testid="bis-faction-toggle-alliance">
             {bisCopy.factionAlliance}
           </label>
@@ -226,27 +303,41 @@ function bandInfosFor(faction: Faction): BandInfo[] {
               data-testid={`bis-faction-panel-${faction}`}
             >
               <div class="band-panels" id={`bands-${faction}`}>
-                <div
-                  class="band-strip mb-4 flex flex-wrap gap-2"
-                  role="group"
-                  aria-label={bisCopy.bandStripGroupLabel}
-                  data-band-strip
-                >
-                  {bandInfos.map(({ band, newSlots }) => (
-                    <a
-                      href={`#band-${faction}-${band}`}
-                      class="band-pill"
-                      data-band-link
-                      data-testid={`bis-band-pill-${faction}-${band}`}
-                    >
-                      {bisCopy.levelLabel(band)}
-                      {newSlots.size > 0 && (
-                        <span class="band-new-badge" data-testid={`bis-band-pill-new-${faction}-${band}`}>
-                          {bisCopy.bandNewCount(newSlots.size)}
-                        </span>
-                      )}
-                    </a>
-                  ))}
+                <div class="level-scale-wrap relative mb-5">
+                  <div
+                    class="level-scale flex flex-nowrap items-center gap-1 overflow-x-auto overscroll-x-contain"
+                    role="group"
+                    aria-label={bisCopy.levelScaleGroupLabel}
+                    data-band-strip
+                  >
+                    {bandInfos.map(({ band, newSlots }) => (
+                      <a
+                        href={`#band-${faction}-${band}`}
+                        class="level-tab"
+                        data-band-link
+                        data-testid={`bis-band-pill-${faction}-${band}`}
+                      >
+                        <span aria-hidden="true">{band}</span>
+                        <span class="sr-only">{bisCopy.levelLabel(band)}</span>
+                        {newSlots.size > 0 && (
+                          <span class="level-tab-badge" data-testid={`bis-band-pill-new-${faction}-${band}`}>
+                            <span class="sr-only">{bisCopy.newAtBandCount(newSlots.size)}</span>
+                            <span aria-hidden="true">{newSlots.size}</span>
+                          </span>
+                        )}
+                      </a>
+                    ))}
+                  </div>
+                  <div
+                    aria-hidden="true"
+                    data-testid={`bis-level-scale-fade-start-${faction}`}
+                    class="edge-fade edge-fade-start pointer-events-none absolute inset-y-0 left-0 w-6 opacity-0 transition-opacity duration-150"
+                  />
+                  <div
+                    aria-hidden="true"
+                    data-testid={`bis-level-scale-fade-end-${faction}`}
+                    class="edge-fade edge-fade-end pointer-events-none absolute inset-y-0 right-0 w-6 opacity-0 transition-opacity duration-150"
+                  />
                 </div>
 
                 {bandInfos.map(
@@ -257,10 +348,13 @@ function bandInfosFor(faction: Faction): BandInfo[] {
                     newSlots,
                     changed,
                     previousBand,
+                    upgradesCount,
                     setDps,
+                    dpsDelta,
                     race,
                     talentPoints,
-                    weights,
+                    weightBars,
+                    referenceLabel,
                     noSourceLine,
                   }) => (
                     <div
@@ -268,188 +362,235 @@ function bandInfosFor(faction: Faction): BandInfo[] {
                       class:list={['band-panel', bandIndex === 0 && 'band-panel-default']}
                       data-testid={`bis-band-${faction}-${band}`}
                     >
-                      <h2 class="section-title mb-3 text-[16px]">{bisCopy.bandHeading(band)}</h2>
-
-                      <div class="mb-4" data-testid={`bis-changed-since-${faction}-${band}`}>
-                        {bandIndex === 0 ? (
-                          <p class="text-muted text-[13px]">{bisCopy.changedSinceFirst}</p>
-                        ) : (
-                          <>
-                            <h3 class="section-title mb-2 text-[13px]">
-                              {bisCopy.changedSinceHeading(previousBand ?? band)}
-                            </h3>
-                            {changed === undefined || changed.length === 0 ? (
-                              <p class="text-muted text-[13px]">{bisCopy.changedSinceEmpty}</p>
-                            ) : (
-                              <ul class="changed-since-list flex flex-col gap-1 text-[13px]">
-                                {changed.map((entry) => (
-                                  <li class="flex flex-wrap items-center gap-2">
-                                    <span class="text-muted uppercase tracking-[0.04em] text-[11px]">
-                                      {SLOT_LABELS[entry.slot as Slot] ?? entry.slot}
-                                    </span>
-                                    {entry.before ? (
-                                      <ItemHover
-                                        itemId={entry.before.item_id}
-                                        classSlug={specEntry.class_slug}
-                                        build={activeBuild.build}
-                                        model={tooltipFor(entry.before.item_id)}
-                                      />
-                                    ) : (
-                                      <span class="text-muted text-[12px]">
-                                        {bisCopy.noKnownSourceForSlot}
-                                      </span>
-                                    )}
-                                    <span aria-hidden="true">&rarr;</span>
-                                    {entry.after ? (
-                                      <ItemHover
-                                        itemId={entry.after.item_id}
-                                        classSlug={specEntry.class_slug}
-                                        build={activeBuild.build}
-                                        model={tooltipFor(entry.after.item_id)}
-                                      />
-                                    ) : (
-                                      <span class="text-muted text-[12px]">
-                                        {bisCopy.noKnownSourceForSlot}
-                                      </span>
-                                    )}
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </>
-                        )}
-                      </div>
+                      <h2 class="band-heading mb-2 text-[13px]">{bisCopy.bandHeading(band)}</h2>
 
                       <div class="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_260px]">
-                        <table class="w-full border-collapse text-[13px]">
-                          <thead>
-                            <tr class="border-line text-muted border-b text-left uppercase tracking-[0.06em]">
-                              <th class="py-2 pr-2 font-semibold">{bisCopy.slotHeading}</th>
-                              <th class="py-2 pr-2 font-semibold">{bisCopy.itemHeading}</th>
-                              <th class="py-2 pr-2 font-semibold">{bisCopy.levelHeading}</th>
-                              <th class="py-2 font-semibold">{bisCopy.sourceHeading}</th>
-                            </tr>
-                          </thead>
-                          <tbody>
+                        <div class="min-w-0">
+                          <ul class="gear-rows" data-testid={`bis-band-${faction}-${band}-rows`}>
                             {rows.map((row) => (
-                              <tr
-                                class:list={[
-                                  'border-line-soft border-b',
-                                  newSlots.has(row.slot) && 'row-new',
-                                ]}
+                              <li
+                                class:list={['gear-row', newSlots.has(row.slot) && 'gear-row-new']}
                                 data-testid={`bis-slot-${faction}-${band}-${row.slot}`}
                               >
-                                <td class="text-muted py-2 pr-2">
-                                  <span class="flex items-center gap-2">
-                                    <SlotIcon slot={row.slot as Slot} />
-                                    {SLOT_LABELS[row.slot as Slot] ?? row.slot}
-                                    {newSlots.has(row.slot) && (
-                                      <span class="row-new-badge" data-testid="bis-row-new">
-                                        {bisCopy.newRowMarker}
-                                      </span>
-                                    )}
-                                  </span>
-                                </td>
+                                <span class="gear-row-lead" aria-hidden="true">
+                                  <SlotIcon slot={row.slot as Slot} class="gear-row-slot-icon" />
+                                </span>
                                 {row.empty ? (
-                                  <td class="text-muted py-2" colspan="3">
-                                    {bisCopy.noKnownSourceForSlot}
-                                  </td>
+                                  <div class="gear-row-empty">
+                                    <span class="gear-row-slot-label">
+                                      {SLOT_LABELS[row.slot as Slot] ?? row.slot}
+                                    </span>
+                                    <span class="text-muted text-[12px]">{bisCopy.noKnownSourceForSlot}</span>
+                                  </div>
                                 ) : (
                                   <>
-                                    <td class="py-2 pr-2">
+                                    <span class="gear-row-body">
                                       <ItemHover
                                         itemId={row.itemId!}
                                         classSlug={specEntry.class_slug}
                                         build={activeBuild.build}
                                         model={row.model}
-                                      />
-                                    </td>
-                                    <td class="tabular py-2 pr-2">{row.itemLevel ?? '—'}</td>
-                                    <td class="py-2">
-                                      <span class="badge-source">{row.badgeLabel}</span>
-                                      <span class="ml-2">{row.sourceDetail}</span>
-                                      <div class="mt-1">
-                                        {row.verified ? (
-                                          <span class="verified-badge" title={bisCopy.verifiedTitle}>
-                                            {bisCopy.verified}
-                                          </span>
-                                        ) : row.runnerUp ? (
-                                          <span
-                                            class="runner-up flex items-center gap-1 text-[12px]"
-                                            title={row.runnerUp.title}
-                                          >
-                                            {bisCopy.runnerUpLabel}:
-                                            <ItemHover
-                                              itemId={row.runnerUp.itemId}
-                                              classSlug={specEntry.class_slug}
-                                              build={activeBuild.build}
-                                              model={row.runnerUp.model}
-                                            />
-                                            <span class="text-muted">
-                                              {bisCopy.runnerUpBeatBy(row.runnerUp.deltaDps)}
-                                            </span>
-                                          </span>
+                                        class="gear-row-item"
+                                      >
+                                        {/* `inv_misc_questionmark` is the item pipeline's own
+                                            placeholder for an id it has no real icon for
+                                            (thousands of ids across every class file) -- the
+                                            client's literal red-bordered "?" texture, and the
+                                            exact icon the owner's screenshot review named
+                                            (tenet 4: "never a red '?' icon"). Drawing it would
+                                            be honest about the id but not about the icon, so a
+                                            row with it falls back to the same neutral slot
+                                            glyph an unresolved item gets below. */}
+                                        {row.model && row.model.icon !== 'inv_misc_questionmark' ? (
+                                          <img
+                                            src={dataUrl(activeBuild.build, `icons/${row.model.icon}.webp`)}
+                                            alt=""
+                                            width="36"
+                                            height="36"
+                                            loading="lazy"
+                                            decoding="async"
+                                            class="gear-row-icon rounded-control border-line border object-cover"
+                                          />
                                         ) : (
-                                          <span class="text-muted" title={bisCopy.unverifiedTitle}>
-                                            {bisCopy.unverified}
-                                            {row.swapNoteRaw && `: ${row.swapNoteRaw}`}
+                                          <span
+                                            class="gear-row-icon gear-row-icon-placeholder rounded-control border-line border"
+                                            aria-hidden="true"
+                                          >
+                                            <SlotIcon slot={row.slot as Slot} />
                                           </span>
                                         )}
-                                      </div>
-                                    </td>
+                                        <span class="gear-row-content">
+                                          <span class="gear-row-name-line">
+                                            <span class="sr-only">
+                                              {SLOT_LABELS[row.slot as Slot] ?? row.slot}:
+                                            </span>
+                                            <span
+                                              class:list={[
+                                                'gear-row-name',
+                                                rarityClassFor(row.model?.quality ?? 1),
+                                              ]}
+                                            >
+                                              {row.itemName}
+                                            </span>
+                                            {newSlots.has(row.slot) && (
+                                              <span
+                                                class="new-pill"
+                                                data-testid="bis-row-new"
+                                                title={bisCopy.newPillTitle(row.replacedName)}
+                                              >
+                                                {bisCopy.newPillLabel}
+                                              </span>
+                                            )}
+                                            {row.verified ? (
+                                              <span
+                                                class="verified-glyph"
+                                                title={bisCopy.verifiedGlyphTitle}
+                                                aria-label={bisCopy.verifiedGlyphTitle}
+                                              >
+                                                <svg
+                                                  width="13"
+                                                  height="13"
+                                                  viewBox="0 0 24 24"
+                                                  fill="none"
+                                                  stroke="currentColor"
+                                                  stroke-width="2.4"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  aria-hidden="true"
+                                                >
+                                                  <path d="M5 13l4 4L19 7" />
+                                                </svg>
+                                              </span>
+                                            ) : row.runnerUp ? (
+                                              <details class="runner-up-details">
+                                                <summary title={row.runnerUp.title}>
+                                                  {bisCopy.runnerUpSummary}
+                                                </summary>
+                                                <span class="runner-up-body">
+                                                  <ItemHover
+                                                    itemId={row.runnerUp.itemId}
+                                                    classSlug={specEntry.class_slug}
+                                                    build={activeBuild.build}
+                                                    model={row.runnerUp.model}
+                                                  />
+                                                  <span class="text-muted">
+                                                    {bisCopy.runnerUpBeatBy(row.runnerUp.deltaDps)}
+                                                  </span>
+                                                </span>
+                                              </details>
+                                            ) : (
+                                              <span
+                                                class="text-muted text-[11px]"
+                                                title={row.swapNoteRaw ?? bisCopy.unverifiedGlyphTitle}
+                                              >
+                                                {bisCopy.unverified}
+                                              </span>
+                                            )}
+                                          </span>
+                                          {row.keyStatsLine && (
+                                            <span class="gear-row-stats text-muted">{row.keyStatsLine}</span>
+                                          )}
+                                          <span class="gear-row-source text-muted">
+                                            <SourceKindIcon kind={row.sourceKind ?? 'unknown'} />
+                                            {row.sourceDetail}
+                                          </span>
+                                        </span>
+                                      </ItemHover>
+                                    </span>
+                                    <span
+                                      class="gear-row-ilvl tabular text-muted"
+                                      title={bisCopy.levelHeading}
+                                    >
+                                      {row.itemLevel ?? '—'}
+                                    </span>
                                   </>
                                 )}
-                              </tr>
+                              </li>
                             ))}
-                          </tbody>
-                        </table>
-                        <aside class="flex flex-col gap-3 text-[13px]">
+                          </ul>
+
+                          <div class="mt-3" data-testid={`bis-changed-since-${faction}-${band}`}>
+                            {bandIndex === 0 ? (
+                              <p class="text-muted text-[13px]">{bisCopy.changedSinceFirst}</p>
+                            ) : upgradesCount === 0 ? (
+                              <p class="text-muted text-[13px]">
+                                {bisCopy.upgradesSinceHeading(0, previousBand ?? band)}
+                              </p>
+                            ) : (
+                              <details class="upgrades-disclosure">
+                                <summary class="upgrades-summary">
+                                  {bisCopy.upgradesSinceHeading(upgradesCount, previousBand ?? band)}
+                                </summary>
+                                <ul class="upgrades-list">
+                                  {(changed ?? []).map((entry) => (
+                                    <li class="upgrade-row">
+                                      <span class="upgrade-slot">
+                                        {SLOT_LABELS[entry.slot as Slot] ?? entry.slot}
+                                      </span>
+                                      {entry.before === undefined ? (
+                                        <span class="upgrade-new-slot">{bisCopy.newSlotLabel}</span>
+                                      ) : (
+                                        <ItemHover
+                                          itemId={entry.before.item_id}
+                                          classSlug={specEntry.class_slug}
+                                          build={activeBuild.build}
+                                          model={tooltipFor(entry.before.item_id)}
+                                        />
+                                      )}
+                                      {entry.before !== undefined && <span aria-hidden="true">&rarr;</span>}
+                                      {entry.after ? (
+                                        <ItemHover
+                                          itemId={entry.after.item_id}
+                                          classSlug={specEntry.class_slug}
+                                          build={activeBuild.build}
+                                          model={tooltipFor(entry.after.item_id)}
+                                        />
+                                      ) : (
+                                        <span class="text-muted text-[12px]">
+                                          {bisCopy.noKnownSourceForSlot}
+                                        </span>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </details>
+                            )}
+                          </div>
+                        </div>
+
+                        <aside class="band-aside flex flex-col gap-4 text-[13px]">
                           <div>
-                            <p class="text-muted uppercase tracking-[0.06em] text-[11px]">
-                              {bisCopy.setDpsLabel}
-                            </p>
-                            <p class="tabular text-[20px] font-bold">{setDps.toFixed(1)}</p>
+                            <p class="aside-label">{bisCopy.setDpsLabel}</p>
+                            <p class="dps-value tabular">{setDps.toFixed(1)}</p>
+                            {dpsDelta !== undefined && (
+                              <p class="dps-delta text-muted tabular">{bisCopy.setDpsDelta(dpsDelta)}</p>
+                            )}
                           </div>
                           <div>
-                            <p class="text-muted uppercase tracking-[0.06em] text-[11px]">
-                              {bisCopy.raceLabel}
+                            <p class="aside-label">{bisCopy.statWeightsLabel}</p>
+                            <p class="weights-explainer text-muted">
+                              {bisCopy.weightsExplainer(referenceLabel)}
                             </p>
-                            <p>{race}</p>
-                          </div>
-                          <div>
-                            <p class="text-muted uppercase tracking-[0.06em] text-[11px]">
-                              {bisCopy.talentsLabel}
-                            </p>
-                            <p>{bisCopy.talentPointsLabel(talentPoints)}</p>
-                          </div>
-                          <div>
-                            <p class="text-muted uppercase tracking-[0.06em] text-[11px]">
-                              {bisCopy.statWeightsLabel}
-                            </p>
-                            <ul class="weight-rows" data-testid={`bis-weights-${faction}-${band}`}>
-                              {buildWeightDisplayRows(
-                                weights.map((w) => ({
-                                  stat: w.stat,
-                                  weight: w.weight,
-                                  error: w.error ?? 0,
-                                  insignificant: w.insignificant ?? false,
-                                })),
-                                specEntry.reference_stat,
-                                specEntry.spec,
-                              ).map((row) => (
+                            <ul class="weight-bars" data-testid={`bis-weights-${faction}-${band}`}>
+                              {weightBars.map(({ row, barPercent }) => (
                                 <li
-                                  class:list={['weight-row', !row.significant && 'weight-row-faint']}
+                                  class:list={['weight-bar-row', !row.significant && 'weight-bar-row-faint']}
                                   title={row.sentence}
                                 >
-                                  <span>{row.label}</span>
-                                  <span class="tabular">
-                                    {row.weight.toFixed(2)}
-                                    {row.isReference ? '' : ` ±${row.error.toFixed(2)}`}
+                                  <span class="weight-bar-top">
+                                    <span class="weight-bar-label">{row.label}</span>
+                                    <span class="weight-bar-value tabular">
+                                      {row.isReference ? '= 1' : row.weight.toFixed(2)}
+                                    </span>
+                                  </span>
+                                  <span class="weight-bar-track">
+                                    <span class="weight-bar-fill" style={`width:${barPercent}%`} />
                                   </span>
                                 </li>
                               ))}
                             </ul>
                           </div>
+                          <p class="text-muted">{bisCopy.raceTalentsLine(race, talentPoints)}</p>
                           {noSourceLine && <p class="text-muted text-[12px]">{noSourceLine}</p>}
                         </aside>
                       </div>
@@ -482,13 +623,13 @@ function bandInfosFor(faction: Faction): BandInfo[] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 2.75rem;
-    padding: 0 1rem;
+    min-height: 2.25rem;
+    padding: 0 0.85rem;
     border-radius: var(--radius-control, 8px);
     border: 1px solid var(--color-line, #333);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     cursor: pointer;
   }
@@ -497,32 +638,62 @@ function bandInfosFor(faction: Faction): BandInfo[] {
     color: var(--color-gold, #c9a35e);
     border-color: var(--color-gold, #c9a35e);
   }
-  .band-pill {
+
+  /* --- level scale: a compact single-row tab strip, numbers only, that scrolls (never
+     wraps to a second row) on a phone -- the fix for "twelve chunky buttons wrapping onto
+     two rows" at 1280 and the same edge-fade pattern SimTabs.astro uses at 390. --- */
+  .level-scale {
+    scrollbar-width: none;
+  }
+  .level-scale::-webkit-scrollbar {
+    display: none;
+  }
+  .level-tab {
+    position: relative;
     display: inline-flex;
+    flex-shrink: 0;
     align-items: center;
-    gap: 0.35rem;
     justify-content: center;
-    min-height: 2.25rem;
-    padding: 0 0.75rem;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.5rem;
     border-radius: var(--radius-control, 8px);
     border: 1px solid var(--color-line, #333);
     font-size: 12px;
     font-weight: 600;
+    font-variant-numeric: tabular-nums;
   }
-  .band-pill:focus-visible {
+  .level-tab:focus-visible {
     outline: 2px solid var(--color-gold, #c9a35e);
     outline-offset: 2px;
   }
-  .band-new-badge {
+  .level-tab-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
     display: inline-flex;
+    min-width: 14px;
+    height: 14px;
     align-items: center;
+    justify-content: center;
     border-radius: 999px;
     background: var(--color-gold, #c9a35e);
     color: #1a1400;
-    padding: 0 0.4rem;
-    font-size: 10px;
+    padding: 0 3px;
+    font-size: 9px;
     font-weight: 700;
+    line-height: 1;
   }
+  .edge-fade-start {
+    background: linear-gradient(to right, var(--color-bg), transparent);
+  }
+  .edge-fade-end {
+    background: linear-gradient(to left, var(--color-bg), transparent);
+  }
+  .edge-fade.is-visible {
+    opacity: 1;
+  }
+
   .band-panel {
     display: none;
   }
@@ -532,45 +703,118 @@ function bandInfosFor(faction: Faction): BandInfo[] {
   .band-panels:not(:has(.band-panel:target)) .band-panel-default {
     display: block;
   }
-  .badge-source {
-    display: inline-flex;
-    align-items: center;
-    border-radius: var(--radius-control, 8px);
-    border: 1px solid var(--color-line, #333);
-    padding: 0.1rem 0.5rem;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+  .band-heading {
+    font-family: var(--font-body);
+    font-weight: 700;
+    color: var(--color-strong);
+    text-transform: none;
+    letter-spacing: normal;
   }
-  .weight-rows {
+
+  /* --- the gear list itself: the hero, tenet 1 and 2 applied to a row instead of a plain
+     table -- a slot glyph, a 36px item icon, the quality-coloured name with its real
+     tooltip, the item's own key stats, item level, and one real source line. --- */
+  .gear-rows {
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    font-size: 12px;
   }
-  .weight-row {
+  .gear-row {
     display: flex;
-    justify-content: space-between;
-    gap: 12px;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--color-line-soft, #222);
   }
-  .weight-row-faint {
-    opacity: 0.5;
+  .gear-row-new {
+    background: color-mix(in srgb, var(--color-gold, #c9a35e) 6%, transparent);
   }
-  .weight-chip {
-    display: inline-flex;
+  .gear-row-lead {
+    display: flex;
+    flex-shrink: 0;
     align-items: center;
-    gap: 0.25rem;
-    border-radius: 999px;
-    border: 1px solid var(--color-line, #333);
-    padding: 0.1rem 0.55rem;
-    font-size: 11px;
+    height: 36px;
   }
-  .verified-badge {
-    color: var(--color-gold, #c9a35e);
+  .gear-row-empty {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+  .gear-row-slot-label {
+    color: var(--color-muted, #999);
+    font-size: 12px;
     font-weight: 600;
+  }
+  /* ItemHover's own two wrapper spans (components/ItemHover.svelte) carry none of this
+     page's classes except the innermost one (the documented `class` prop) -- `:global()`
+     reaches into that Svelte-rendered markup, and the plain `span` child selector reaches
+     the one wrapper further out that never receives a class at all, so the whole chain from
+     `.gear-row-body` down to the icon/content children stretches to fill the row instead of
+     shrinking to its content's width. */
+  .gear-row-body {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+  }
+  .gear-row-body > :global(span) {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+  }
+  :global(.gear-row-item) {
+    display: flex !important;
+    flex: 1;
+    min-width: 0;
+    align-items: flex-start !important;
+    gap: 0.6rem !important;
+  }
+  :global(.gear-row-icon) {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    object-fit: cover;
+  }
+  .gear-row-icon-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-raised, #111);
+    color: var(--color-muted, #999);
+  }
+  .gear-row-content {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .gear-row-name-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .gear-row-name {
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .gear-row-stats {
     font-size: 12px;
   }
-  .row-new-badge {
+  .gear-row-source {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 12px;
+  }
+  .gear-row-ilvl {
+    flex-shrink: 0;
+    padding-top: 2px;
+    font-size: 12px;
+  }
+  .new-pill {
     display: inline-flex;
     align-items: center;
     border-radius: 999px;
@@ -581,18 +825,142 @@ function bandInfosFor(faction: Faction): BandInfo[] {
     font-weight: 700;
     text-transform: uppercase;
   }
-  tr.row-new {
-    background: color-mix(in srgb, var(--color-gold, #c9a35e) 8%, transparent);
+  .verified-glyph {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-gold, #c9a35e);
   }
-  table {
-    overflow: visible;
+  .runner-up-details {
+    display: inline-flex;
+  }
+  .runner-up-details summary {
+    font-size: 11px;
+    color: var(--color-muted, #999);
+    list-style: none;
+  }
+  .runner-up-details summary::-webkit-details-marker {
+    display: none;
+  }
+  .runner-up-details summary::before {
+    content: '▸ ';
+  }
+  .runner-up-details[open] summary::before {
+    content: '▾ ';
+  }
+  .runner-up-body {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 0.25rem;
+    font-size: 12px;
+  }
+
+  /* --- what changed: one disclosure line, never a wall of rows above the list. --- */
+  .upgrades-disclosure summary {
+    cursor: pointer;
+    color: var(--color-muted, #999);
+    font-size: 13px;
+    list-style: none;
+  }
+  .upgrades-disclosure summary::-webkit-details-marker {
+    display: none;
+  }
+  .upgrades-disclosure summary::before {
+    content: '▸ ';
+  }
+  .upgrades-disclosure[open] summary::before {
+    content: '▾ ';
+  }
+  .upgrades-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.5rem;
+    font-size: 13px;
+  }
+  .upgrade-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .upgrade-slot {
+    color: var(--color-muted, #999);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+  }
+  .upgrade-new-slot {
+    color: var(--color-muted, #999);
+    font-size: 12px;
+    font-style: italic;
+  }
+
+  /* --- right rail --- */
+  .aside-label {
+    color: var(--color-muted, #999);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+  .dps-value {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .dps-delta {
+    font-size: 12px;
+  }
+  .weights-explainer {
+    font-size: 11px;
+    margin-bottom: 0.4rem;
+  }
+  .weight-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  /* Label above its own bar, not squeezed into a fixed-width grid column -- a stat name as
+     long as "Ranged attack power" (the reference row itself, the unit every other row is
+     measured against) must never truncate; that is the one row tenet 4's "nothing clipped"
+     most directly applies to here. */
+  .weight-bar-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 11px;
+  }
+  .weight-bar-row-faint {
+    opacity: 0.5;
+  }
+  .weight-bar-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .weight-bar-track {
+    position: relative;
+    height: 6px;
+    border-radius: 999px;
+    background: var(--color-line-soft, #222);
+    overflow: hidden;
+  }
+  .weight-bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: var(--color-gold, #c9a35e);
+  }
+  .weight-bar-value {
+    flex-shrink: 0;
   }
 </style>
 
 <script is:inline>
   // Not an island: a plain inline script, no framework, so `?faction=horde` opens on the
   // right panel without paying for a hydrated component the way the rest of this page
-  // (two SSR tables plus a CSS radio toggle) never does either.
+  // (two SSR lists plus a CSS radio toggle) never does either.
   (function () {
     const faction = new URLSearchParams(window.location.search).get('faction');
     if (faction === 'horde') {
@@ -601,7 +969,7 @@ function bandInfosFor(faction: Faction): BandInfo[] {
     }
   })();
 
-  // Arrow-key band navigation: focus never leaves the level strip's own links, and moving
+  // Arrow-key band navigation: focus never leaves the level scale's own links, and moving
   // focus also follows the link (the same `#band-<faction>-<band>` CSS `:target` toggle a
   // click already drives), so the keyboard path and the pointer path land on the exact same
   // state rather than two behaviours to keep in sync.
@@ -620,6 +988,29 @@ function bandInfosFor(faction: Faction): BandInfo[] {
         next.focus();
         next.click();
       });
+    });
+  })();
+
+  // Edge fades for the level scale on a narrow screen (night-sim-tabs' own pattern,
+  // SimTabs.astro): only present on whichever side still has tabs scrolled out of view, and
+  // desktop never overflows (the level scale fits one row well under 1120px), so the fades
+  // stay hidden there without a breakpoint check.
+  (function () {
+    const EPSILON_PX = 1;
+    document.querySelectorAll('[data-band-strip]').forEach(function (nav) {
+      const wrap = nav.parentElement;
+      const fadeStart = wrap && wrap.querySelector('.edge-fade-start');
+      const fadeEnd = wrap && wrap.querySelector('.edge-fade-end');
+      if (!fadeStart || !fadeEnd) return;
+      const updateFades = function () {
+        const hiddenStart = nav.scrollLeft > EPSILON_PX;
+        const hiddenEnd = nav.scrollLeft + nav.clientWidth < nav.scrollWidth - EPSILON_PX;
+        fadeStart.classList.toggle('is-visible', hiddenStart);
+        fadeEnd.classList.toggle('is-visible', hiddenEnd);
+      };
+      nav.addEventListener('scroll', updateFades, { passive: true });
+      window.addEventListener('resize', updateFades);
+      updateFades();
     });
   })();
 </script>
