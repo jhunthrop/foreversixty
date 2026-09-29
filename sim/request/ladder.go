@@ -531,21 +531,32 @@ func specWeaponDPSMatters(spec string) bool {
 	}
 }
 
-// weaponScore is one candidate's rank for a spec's ladder gear pick:
-// primaryStat (the sum of every stat point on specWeaponPrimaryStats'
-// list) outranks everything else, so a candidate with even one point of
-// the spec's own primary stat always beats a stat-less item at a higher
-// item level or DPS - the gap this lane's brief names ("item-level only
-// ... generally ignores the spec's stats"). dps (specWeaponDPSMatters
-// only) and finally itemLevel break a tie on primaryStat; id is the last,
-// fully deterministic tiebreaker, so two candidates that also tie on
-// itemLevel still resolve without depending on the source file's row
-// order.
+// weaponScore is one candidate's rank for a spec's ladder gear pick. The
+// order the two throughput numbers are compared in depends on
+// weightDPS (specWeaponDPSMatters(spec)):
+//
+//   - A caster or healer spec (weightDPS false, dps always left at 0 by
+//     scoreWeapon) ranks purely on primaryStat (the sum of every stat
+//     point on specWeaponPrimaryStats' list) - a candidate with even one
+//     point of the spec's own primary stat always beats a stat-less item
+//     at a higher item level, the gap this lane's brief names
+//     ("item-level only ... generally ignores the spec's stats").
+//   - A melee or hunter spec (weightDPS true) ranks on dps FIRST: white
+//     damage and most weapon-damage-coefficient abilities scale off the
+//     weapon's own raw output, which a str/agi/AP stat point does not
+//     convert 1:1 against (a 35-strength, 86 DPS axe is a clear upgrade
+//     over a 62-attack-power, 54 DPS one - primaryStat alone would get
+//     that backwards). primaryStat only breaks a tie in DPS.
+//
+// itemLevel and finally id are the last, fully deterministic tiebreaks,
+// so two candidates that also tie on the throughput numbers above still
+// resolve without depending on the source file's row order.
 type weaponScore struct {
 	primaryStat float64
 	dps         float64
 	itemLevel   int
 	id          int
+	weightDPS   bool
 }
 
 func scoreWeapon(it buildItem, primaryStats []string, weightDPS bool) weaponScore {
@@ -557,17 +568,21 @@ func scoreWeapon(it buildItem, primaryStats []string, weightDPS bool) weaponScor
 	if weightDPS {
 		dps = it.DPS
 	}
-	return weaponScore{primaryStat: stat, dps: dps, itemLevel: it.ItemLevel, id: it.ID}
+	return weaponScore{primaryStat: stat, dps: dps, itemLevel: it.ItemLevel, id: it.ID, weightDPS: weightDPS}
 }
 
 // betterThan reports whether a is weaponScore's preferred candidate over
 // b: see weaponScore's own comment for the tiebreak order.
 func (a weaponScore) betterThan(b weaponScore) bool {
-	if a.primaryStat != b.primaryStat {
+	if a.weightDPS {
+		if a.dps != b.dps {
+			return a.dps > b.dps
+		}
+		if a.primaryStat != b.primaryStat {
+			return a.primaryStat > b.primaryStat
+		}
+	} else if a.primaryStat != b.primaryStat {
 		return a.primaryStat > b.primaryStat
-	}
-	if a.dps != b.dps {
-		return a.dps > b.dps
 	}
 	if a.itemLevel != b.itemLevel {
 		return a.itemLevel > b.itemLevel

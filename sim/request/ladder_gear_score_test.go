@@ -66,3 +66,37 @@ func TestPickGearItemWeightsWeaponDPSForAPhysicalSpec(t *testing.T) {
 		t.Fatalf("pickGearItem(warrior-arms) = (%+v, %v), want item 1 (the higher-DPS weapon, despite the lower item level)", got, ok)
 	}
 }
+
+// TestPickGearItemPrefersDPSOverRawStatPointsForAPhysicalSpec pins the
+// regression this lane's own first cut of weaponScore hit: paladin
+// item 21134 (Dark Edge of Insanity - 35 strength, 19 agility, 86.6 DPS)
+// against item 12784 (Arcanite Reaper - 62 attack_power, 53.8 DPS),
+// shaped directly from data/builds/1.60.1.70009/items/paladin.json.
+// Summing raw stat points (35+19=54 against 62) picks the Reaper - the
+// wrong weapon, since strength and agility do not convert to attack
+// power 1:1 and the comparison ignores the Edge's far higher DPS
+// entirely. A physical spec's score must rank DPS first so this stays
+// the Edge, matching what the item-level-only rule (correctly, by
+// accident) picked before this lane's fix.
+func TestPickGearItemPrefersDPSOverRawStatPointsForAPhysicalSpec(t *testing.T) {
+	items := []buildItem{
+		{
+			ID: 12784, Slot: "main_hand", ItemLevel: 63,
+			WeaponClass: itemClassWeapon, Speed: 3.8, DamageMax: 256, DPS: 53.82,
+			Stats: map[string]float64{"stamina": 13, "attack_power": 62},
+		},
+		{
+			ID: 21134, Slot: "main_hand", ItemLevel: 84,
+			WeaponClass: itemClassWeapon, Speed: 3.5, DamageMax: 364, DPS: 86.57,
+			Stats: map[string]float64{"strength": 35, "agility": 19, "stamina": 25},
+		},
+	}
+	known := map[int]bool{12784: true, 21134: true}
+	primaryStats := specWeaponPrimaryStats("paladin-retribution")
+	weightDPS := specWeaponDPSMatters("paladin-retribution")
+
+	got, ok := pickGearItem(items, known, nil, "main_hand", 60, handAny, nil, primaryStats, weightDPS)
+	if !ok || got.ID != 21134 {
+		t.Fatalf("pickGearItem(paladin-retribution) = (%+v, %v), want item 21134 (Dark Edge of Insanity, the far higher-DPS weapon)", got, ok)
+	}
+}
