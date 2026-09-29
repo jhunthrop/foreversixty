@@ -36,6 +36,8 @@ Point allocation runs deep into Enhancement to reach Maelstrom Weapon and Rage o
 
 ## Rotation and priority
 
+Weapon imbues are class kit, not a rotation line — applied before the pull and reapplied whenever they fall off, the same way a Rogue keeps poisons up. Rockbiter Weapon goes on both weapons from level 1 (it's the only imbue learned that early); Windfury Weapon replaces it on the main hand once learned at level 30, since a shaman has no talent that removes the innate dual-wield miss penalty and this site's simulator carries no such kit-less bare-weapon runs of the spec — Rockbiter stays on the off hand throughout, including at 60.
+
 The loop this site's simulator plays: keep Strength of Earth Totem down throughout the fight — the engine tracks totem uptime directly rather than needing an aura check, so it's treated as a simple refresh condition. Keep Windfury Totem down as well, since it's the melee group's largest damage totem and occupies the same Air-totem slot Grace of Air would otherwise use. Stormstrike is used on cooldown as the highest damage-per-global ability in the kit. Searing Totem is kept down for extra fire damage, but not refreshed with less than 20 seconds left on the fight, since there's no point paying totem mana for a totem that will barely tick before the encounter ends. Earth Shock is used as a mana dump once mana is comfortably above half.
 
 ## Stat priority

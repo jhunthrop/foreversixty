@@ -1058,9 +1058,11 @@ type unusedEntry struct {
 }
 
 // ladderKitConsumes is the class kit the ladder character carries
-// (sim/leveling.KitConsumes: a rogue's poisons from 20, nothing else),
-// shared with the leveling BiS ranker so both measure the same character.
-func ladderKitConsumes(class string, level int) []string { return leveling.KitConsumes(class, level) }
+// (sim/leveling.KitConsumes: a rogue's poisons from 20, shaman-
+// enhancement's weapon imbues throughout), shared with the leveling
+// BiS ranker so both measure the same character. It takes the full
+// spec slug, not the bare class, because the kit is a spec property.
+func ladderKitConsumes(spec string, level int) []string { return leveling.KitConsumes(spec, level) }
 
 // ladderRulesHeader documents, once, the rules every golden in this
 // directory was generated under. It is repeated verbatim into each
