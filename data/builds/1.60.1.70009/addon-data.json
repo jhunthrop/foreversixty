@@ -6312,6 +6312,11 @@
             "condition": "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much."
           },
           {
+            "spell_id": 408490,
+            "name": "Lava Burst",
+            "condition": "Lava Burst on cooldown while Flame Shock is up: the talent's own tooltip is a flat +20% damage bonus against a Flame-Shocked target, and Flame Shock is kept up…"
+          },
+          {
             "spell_id": 930,
             "name": "Chain Lightning",
             "condition": "2 or more targets: Chain Lightning hits all of them for close to single-target Lightning Bolt damage."
@@ -6347,6 +6352,11 @@
             "condition": "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much."
           },
           {
+            "spell_id": 1238299,
+            "name": "Lava Burst",
+            "condition": "Lava Burst on cooldown while Flame Shock is up: the talent's own tooltip is a flat +20% damage bonus against a Flame-Shocked target, and Flame Shock is kept up…"
+          },
+          {
             "spell_id": 2860,
             "name": "Chain Lightning",
             "condition": "2 or more targets: Chain Lightning hits all of them for close to single-target Lightning Bolt damage."
@@ -6380,6 +6390,11 @@
             "spell_id": 29228,
             "name": "Flame Shock",
             "condition": "Keep Flame Shock on the target; it is cheap relative to its damage and does not compete with the GCD budget much."
+          },
+          {
+            "spell_id": 1238300,
+            "name": "Lava Burst",
+            "condition": "Lava Burst on cooldown while Flame Shock is up: the talent's own tooltip is a flat +20% damage bonus against a Flame-Shocked target, and Flame Shock is kept up…"
           },
           {
             "spell_id": 10605,
