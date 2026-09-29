@@ -1,4 +1,5 @@
 import json
+import logging
 import shutil
 from pathlib import Path
 
@@ -137,6 +138,49 @@ def test_the_cli_exits_zero_when_every_output_was_emitted(tmp_path: Path, monkey
     build_dir = cli_workspace(tmp_path, monkeypatch)
     assert main(["normalize", "--build", "1.0.0.1"]) == 0
     assert (build_dir / "items" / "warrior.json").exists()
+
+
+def drop_a_warrior_only_item(root: Path) -> None:
+    """Remove Helm of Might (16866, AllowableClass=1 -- warrior only) from the
+    raw ItemSparse export, shrinking warrior's committed items.json from 7 to
+    6 items (below the 90% floor) without touching any other class's count --
+    the same shape as a wago.tools export that quietly drops rows (night-
+    relics finding, 2026-09-29), isolated to one class so this test pins
+    exactly which file the shrink gate should block."""
+    sparse = root / "1.0.0.1" / "raw" / "ItemSparse.csv"
+    lines = sparse.read_text().splitlines(keepends=True)
+    kept = [line for line in lines if not line.startswith("16866,")]
+    assert len(kept) == len(lines) - 1
+    sparse.write_text("".join(kept))
+
+
+def test_items_shrink_gate_blocks_a_class_file_that_lost_too_many_items(tmp_path: Path):
+    """The second half of the night-fetch-guard fix: even a build whose raw
+    ItemSparse still clears csvio.check_item_sparse_completeness's ratio can
+    lose one class's items to a narrower regression (a curated override, a
+    filter change) -- caught here, against the committed file, before it is
+    overwritten."""
+    out = run(tmp_path)
+    assert len(json.loads((out / "items" / "warrior.json").read_text())["items"]) == 7
+    drop_a_warrior_only_item(tmp_path)
+    with pytest.raises(SystemExit, match=r"would shrink from 7 to 6 items"):
+        normalize_build("1.0.0.1", root=tmp_path, curated_dir=HERE / "fixtures/curated")
+    # The failed run must not have overwritten the committed file with the shrunk one.
+    assert len(json.loads((out / "items" / "warrior.json").read_text())["items"]) == 7
+
+
+def test_items_shrink_gate_allow_shrink_bypasses_it_and_logs_loudly(
+    tmp_path: Path, caplog
+):
+    caplog.set_level(logging.WARNING)
+    out = run(tmp_path)
+    drop_a_warrior_only_item(tmp_path)
+    result = normalize_build(
+        "1.0.0.1", root=tmp_path, curated_dir=HERE / "fixtures/curated", allow_shrink=True
+    )
+    assert result.skipped == ()
+    assert len(json.loads((out / "items" / "warrior.json").read_text())["items"]) == 6
+    assert "items shrink gate skipped (--allow-shrink)" in caplog.text
 
 
 def trait_switch_workspace(tmp_path: Path) -> Path:

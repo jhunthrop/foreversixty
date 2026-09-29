@@ -38,7 +38,7 @@ import json
 import logging
 from pathlib import Path
 
-from pipeline.csvio import read_csv
+from pipeline.csvio import check_item_sparse_completeness, read_csv
 from pipeline.forkdb import load_fork_database
 from pipeline.loot.buffs import (
     IDS_MD,
@@ -83,6 +83,8 @@ def write_loot_files(
     overlay_dir: Path = Path("curated/loot"),
     curated_dir: Path = Path("curated"),
     ids_md: Path = IDS_MD,
+    *,
+    allow_shrink: bool = False,
 ) -> list[Path]:
     build_dir = root / build
     raw = build_dir / "raw"
@@ -90,6 +92,7 @@ def write_loot_files(
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
     for name in ("zones.json", "items.json", "spells.json"):
         _require(build_dir / name, "normalize")
+    check_item_sparse_completeness(raw, allow_shrink=allow_shrink)
 
     fork = load_fork_database(engine_dir)
     sparse_rows = read_csv(raw / "ItemSparse.csv")

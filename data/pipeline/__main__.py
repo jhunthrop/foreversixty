@@ -66,6 +66,13 @@ def build_parser() -> argparse.ArgumentParser:
 
     n = sub.add_parser("normalize", help="normalize raw CSVs into JSON")
     n.add_argument("--build", required=True)
+    n.add_argument(
+        "--allow-shrink",
+        action="store_true",
+        help="skip the ItemSparse-completeness and items/<class>.json-shrink gates "
+        "(csvio.check_item_sparse_completeness / normalize._check_class_items_not_shrunk) "
+        "for a deliberate re-baseline; logs loudly when used",
+    )
 
     inm = sub.add_parser(
         "itemnames", help="write itemnames.json from a build's committed items (no raw/ needed)"
@@ -135,6 +142,12 @@ def build_parser() -> argparse.ArgumentParser:
         "--engine",
         required=True,
         help="path to the wowsims-forever checkout, e.g. $FOREVER_ENGINE_PATH",
+    )
+    lt.add_argument(
+        "--allow-shrink",
+        action="store_true",
+        help="skip the ItemSparse-completeness gate (csvio.check_item_sparse_completeness) "
+        "for a deliberate re-baseline; logs loudly when used",
     )
 
     sp = sub.add_parser("specs", help="generate the Go and TypeScript spec lists")
@@ -246,7 +259,7 @@ def main(argv: list[str] | None = None) -> int:
     elif args.command == "normalize":
         from pipeline.normalize import normalize_build
 
-        result = normalize_build(args.build)
+        result = normalize_build(args.build, allow_shrink=args.allow_shrink)
         if result.skipped:
             # The build directory is incomplete. Exiting non-zero stops the CI
             # job before it can commit and push a build the site cannot render.
@@ -309,7 +322,9 @@ def main(argv: list[str] | None = None) -> int:
 
         from pipeline.loot import write_loot_files
 
-        for path in write_loot_files(args.build, Path(args.engine)):
+        for path in write_loot_files(
+            args.build, Path(args.engine), allow_shrink=args.allow_shrink
+        ):
             print(path)
     elif args.command == "simproto":
         from pathlib import Path
