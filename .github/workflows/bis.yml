@@ -83,6 +83,14 @@ jobs:
           # Only a night that filled in at least one quest level pays for
           # that download; every other night the committed loot.json is
           # already what the pipeline would produce.
+          # `fetch` and `loot` each carry a completeness gate over ItemSparse.csv
+          # (pipeline/csvio.py's check_item_sparse_completeness -- night-fetch-guard,
+          # 2026-09-29: wago.tools silently served a truncated ItemSparse export that
+          # would have halved every class's committed items/<class>.json). A gate that
+          # trips raises SystemExit, which -- under this step's default `bash -eo
+          # pipefail` -- fails this step and the job, skipping the commit step below,
+          # so the truncated data is never written to a committed file. Do not add
+          # `|| true` or `continue-on-error` here.
           if [ "${fetched:-0}" -gt 0 ]; then
             uv run python -m pipeline fetch --product wow_classic_era --build "${{ steps.identity.outputs.build }}"
             uv run python -m pipeline loot --build "${{ steps.identity.outputs.build }}" --engine ../.engine

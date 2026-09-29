@@ -26,6 +26,40 @@ class NormalizeResult:
     skipped: tuple[str, ...] = ()
 
 
+#: Minimum fraction of a committed `items/<class>.json`'s previous item count
+#: a regenerated file may keep. `csvio.check_item_sparse_completeness` guards
+#: the raw ItemSparse export itself; this is the second half of the same
+#: incident's fix (night-fetch-guard, 2026-09-29) -- a per-build loss (a
+#: curated override, a filter regression) that does not trip the raw-table
+#: ratio would still shrink one class's file, and this catches it right
+#: before that file would be overwritten.
+CLASS_ITEMS_SHRINK_RATIO = 0.9
+
+
+def _check_class_items_not_shrunk(
+    path: Path, previous_count: int, new_count: int, *, allow_shrink: bool
+) -> None:
+    """Refuse to overwrite `path` with a class item list that shrank too much.
+
+    `previous_count` is 0 for a class with no committed file yet (a new
+    class, or the first build ever normalized), which is never a shrink and
+    always passes. `allow_shrink=True` (the CLI's `--allow-shrink`) skips
+    the check for a deliberate re-baseline and logs loudly that it did.
+    """
+    if previous_count == 0:
+        return
+    if allow_shrink:
+        logger.warning("items shrink gate skipped (--allow-shrink) for %s", path)
+        return
+    if new_count < previous_count * CLASS_ITEMS_SHRINK_RATIO:
+        raise SystemExit(
+            f"{path} would shrink from {previous_count} to {new_count} items "
+            f"({new_count / previous_count:.0%}, need {CLASS_ITEMS_SHRINK_RATIO:.0%}); "
+            f"refusing to overwrite the committed file -- re-fetch the build, or pass "
+            f"--allow-shrink to force a deliberate re-baseline"
+        )
+
+
 def _write(payload: Any, path: Path, sort_keys: bool = False) -> None:
     """Write one JSON payload in the pipeline's only serialization format.
 
@@ -72,8 +106,10 @@ def normalize_build(
     build: str,
     root: Path = Path("builds"),
     curated_dir: Path = Path("curated"),
+    *,
+    allow_shrink: bool = False,
 ) -> NormalizeResult:
-    from pipeline.csvio import read_csv
+    from pipeline.csvio import check_item_sparse_completeness, read_csv
     from pipeline.curated import merge_curated
     from pipeline.curves import load_rank_points
     from pipeline.icons import icon_names
@@ -105,6 +141,7 @@ def normalize_build(
     raw = build_dir / "raw"
     if not raw.exists():
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
+    check_item_sparse_completeness(raw, allow_shrink=allow_shrink)
     t = lambda name: read_csv(raw / f"{name}.csv")  # noqa: E731
 
     # A table a build's client simply does not have (see wago.OPTIONAL_TABLES)
@@ -204,7 +241,15 @@ def normalize_build(
     if wowhead_supplement is not None:
         item_sets = merge_sets(item_sets, wowhead_supplement)
     write_json(item_sets, build_dir / "sets.json")
-    shutil.rmtree(build_dir / "items", ignore_errors=True)
+    # Captured now, before anything below can delete or overwrite the
+    # committed items/ directory, so the shrink gate has the old counts to
+    # compare a regenerated file against -- and so a build that trips it
+    # never even reaches the rmtree that would otherwise take the good,
+    # committed files down with it (checked before writing, not after).
+    previous_item_counts = {
+        path.stem: len(json.loads(path.read_text(encoding="utf-8")).get("items", []))
+        for path in sorted((build_dir / "items").glob("*.json"))
+    }
     skipped: list[str] = []
     curves = load_item_curves(
         t("ItemArmorTotal"),
@@ -239,9 +284,21 @@ def normalize_build(
     except ItemDataError as error:
         logger.warning("items not emitted for build %s: %s", build, error)
         skipped.append(f"items/: {error}")
+        shutil.rmtree(build_dir / "items", ignore_errors=True)
     else:
         if wowhead_supplement is not None:
             class_items = merge_class_items(class_items, wowhead_supplement, class_rows)
+        # Every class is checked against its own previous count before any of
+        # them is written -- one class failing the gate must not leave a
+        # directory that is half regenerated and half deleted.
+        for record in class_items:
+            _check_class_items_not_shrunk(
+                build_dir / "items" / f"{record.class_slug}.json",
+                previous_item_counts.get(record.class_slug, 0),
+                len(record.items),
+                allow_shrink=allow_shrink,
+            )
+        shutil.rmtree(build_dir / "items", ignore_errors=True)
         for record in class_items:
             write_model(record, build_dir / "items" / f"{record.class_slug}.json")
         write_item_names(build, items, class_items, build_dir)
