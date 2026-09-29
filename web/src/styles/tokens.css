@@ -33,6 +33,11 @@
      parse", and those words have to point at the same hues here. Grey under 25, green
      from 25, blue from 50, purple from 75, orange from 95, pink at 99, gold at 100. */
   --color-parse-grey: #666666;
+  /* Every call site colours real text (a rank or a percentile figure, not a bar or swatch)
+     with percentileToken()'s return value, and #666666 falls short of WCAG AA as text on
+     --color-raised (3.29:1) -- the same shortfall the rarity tokens below already have a
+     lightened `-text` variant for. This is that variant for the grey parse band. */
+  --color-parse-grey-text: #8c8c8c;
   --color-parse-green: #1eff00;
   --color-parse-blue: #0070ff;
   --color-parse-purple: #a335ee;

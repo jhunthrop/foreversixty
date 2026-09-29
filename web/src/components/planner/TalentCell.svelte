@@ -110,7 +110,13 @@
 
 {#snippet face()}
   {#if iconBroken}
-    <span class={`text-muted font-display text-[13px] font-bold ${CELL_FACE[state]}`} aria-hidden="true">
+    <!-- CELL_FACE's opacity-40 (locked state) is left off this span deliberately: on an
+         <img> it lets the tree's own art show through a hair, which is fine since images
+         carry no text contrast requirement, but blended onto this span's actual glyphs it
+         drops --color-muted on --color-card-top from ~5.9:1 to ~2:1 (axe color-contrast) --
+         real text a low-vision reader still needs to make out. The frame and pill already
+         carry the locked state; the mark itself stays fully legible. -->
+    <span class="text-muted font-display text-[13px] font-bold" aria-hidden="true">
       {talent.name.slice(0, 2)}
     </span>
   {:else}
@@ -175,6 +181,15 @@
       onpointerdown={startPress}
       onpointerup={disarmPress}
       onpointercancel={abandonPress}
+      onkeydown={(event) => {
+        // Escape dismisses the tooltip without moving focus off the cell -- the same
+        // contract ItemHover's own tooltip already keeps. Without this, a keyboard user
+        // has no way to close it short of tabbing or arrowing to a different cell, which
+        // dismisses it as a side effect of blur rather than on request.
+        if (event.key !== 'Escape' || !open) return;
+        event.stopPropagation();
+        open = false;
+      }}
     >
       {@render face()}
     </button>

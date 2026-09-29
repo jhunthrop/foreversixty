@@ -62,7 +62,7 @@ describe('report formatting', () => {
   });
 
   it('maps a parse percentile onto the ladder the community reads', () => {
-    expect(percentileToken(3)).toBe('var(--color-parse-grey)');
+    expect(percentileToken(3)).toBe('var(--color-parse-grey-text)');
     expect(percentileToken(40)).toBe('var(--color-parse-green)');
     expect(percentileToken(60)).toBe('var(--color-parse-blue)');
     expect(percentileToken(80)).toBe('var(--color-parse-purple)');

@@ -110,6 +110,14 @@
 }
 
 @layer components {
+  /* A link inside guide prose sits next to plain text of a similar weight, so gold-on-text
+     colour alone isn't a discernible difference for someone who can't see colour (WCAG
+     1.4.1) -- axe's link-in-text-block. Nav links, buttons and cards carry their own shape,
+     position or icon and stay colour-only; only body-copy links need the underline. */
+  .prose-forever a {
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--color-gold) 50%, transparent);
+  }
   .prose-forever h2 {
     font-size: 18px;
     letter-spacing: 0.06em;

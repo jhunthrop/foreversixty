@@ -491,3 +491,19 @@ test('opening /planner bare with a stored, non-restorable (armory) pointer still
   await expect(page.getByTestId('current-character-restored')).toHaveCount(0);
   await expect(page.getByTestId('planner')).toBeVisible();
 });
+
+test('focusing a talent cell opens its tooltip, and Escape dismisses it without moving focus', async ({
+  page,
+}) => {
+  await page.goto('/planner');
+  const cell = page.getByTestId('talent-1001');
+  await cell.focus();
+  const tooltipId = await cell.getAttribute('aria-describedby');
+  expect(tooltipId).not.toBeNull();
+  const tooltip = page.locator(`#${tooltipId}`);
+  await expect(tooltip).toBeVisible();
+
+  await page.keyboard.press('Escape');
+  await expect(tooltip).toBeHidden();
+  await expect(cell).toBeFocused();
+});

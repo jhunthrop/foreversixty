@@ -284,11 +284,17 @@
 </script>
 
 {#if status === 'missing'}
+  <!-- The ready branch below is the only one that names the guild, so it owns the page's
+       one visible h1 (`data.guild.name`). Every other branch reaches this page before that
+       name exists, but a page still needs exactly one h1 for a screen-reader user to land
+       on -- axe's page-has-heading-one flags a bare /guild (no path segments) without this. -->
+  <h1 class="sr-only">Guild</h1>
   <p class="text-[14px]" data-testid="guild-missing">
     That is not a guild address. They look like <code class="font-mono">/guild/eu/normal/the-last-watch</code
     >.
   </p>
 {:else if status === 'loading' || status === 'failed'}
+  <h1 class="sr-only">Guild</h1>
   <GuildStatus
     status={status === 'loading' ? 'loading' : 'failed'}
     error={status === 'failed' ? error : ''}
