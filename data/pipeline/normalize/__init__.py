@@ -121,6 +121,7 @@ def normalize_build(
     from pipeline.csvio import check_item_sparse_completeness, read_csv
     from pipeline.curated import merge_curated
     from pipeline.curves import load_rank_points
+    from pipeline.hotfix_merge import merge_hotfix_table
     from pipeline.icons import icon_names
     from pipeline.icons_fix import load_fork_icons, load_wowhead_icons
     from pipeline.manifest import write_manifest
@@ -151,8 +152,23 @@ def normalize_build(
     raw = build_dir / "raw"
     if not raw.exists():
         raise SystemExit(f"no raw data at {raw}; run `python -m pipeline fetch` first")
-    check_item_sparse_completeness(raw, allow_shrink=allow_shrink)
-    t = lambda name: read_csv(raw / f"{name}.csv")  # noqa: E731
+    # ItemSparse/Item are merged with any `raw/hotfixes/*.csv`
+    # (`python -m pipeline hotfixes`, hotfix-cache lane 2026-09-29) before
+    # anything -- including the completeness gate -- reads them, so a row
+    # the client only carries as a runtime hotfix counts the same as one the
+    # shipped .db2 has outright.
+    sparse_rows = merge_hotfix_table(raw, "ItemSparse")
+    item_rows = merge_hotfix_table(raw, "Item")
+    check_item_sparse_completeness(
+        raw, allow_shrink=allow_shrink, item_rows=item_rows, sparse_rows=sparse_rows
+    )
+
+    def t(name: str) -> list[dict[str, str]]:
+        if name == "ItemSparse":
+            return sparse_rows
+        if name == "Item":
+            return item_rows
+        return read_csv(raw / f"{name}.csv")
 
     # A table a build's client simply does not have (see wago.OPTIONAL_TABLES)
     # is written as a header-only CSV by the fetch, but a build fetched before

@@ -19,7 +19,13 @@ def read_csv(path: Path) -> list[dict[str, str]]:
         return [dict(row) for row in csv.DictReader(f)]
 
 
-def check_item_sparse_completeness(raw: Path, *, allow_shrink: bool = False) -> None:
+def check_item_sparse_completeness(
+    raw: Path,
+    *,
+    allow_shrink: bool = False,
+    item_rows: list[dict[str, str]] | None = None,
+    sparse_rows: list[dict[str, str]] | None = None,
+) -> None:
     """Fail fast when `raw/ItemSparse.csv` is a truncated wago.tools export.
 
     Both `normalize.normalize_build` and `loot.write_loot_files` build the
@@ -29,6 +35,13 @@ def check_item_sparse_completeness(raw: Path, *, allow_shrink: bool = False) -> 
     is not this function's problem -- something upstream of it already
     failed -- so it is left alone here rather than divided by zero.
 
+    `item_rows`/`sparse_rows`, when given, are counted instead of re-reading
+    `raw/Item.csv`/`raw/ItemSparse.csv` from disk -- `normalize_build` passes
+    its hotfix-merged rows (`pipeline.hotfix_merge.merge_hotfix_table`) so a
+    row the client only has as a hotfix counts toward completeness too
+    (hotfix-cache lane, 2026-09-29), the same rows the rest of the build
+    actually uses.
+
     `allow_shrink=True` (the CLI's `--allow-shrink`) skips the check for a
     deliberate re-baseline, and always logs that it did, loudly, so a
     silent flip of this flag can't hide a real regression in CI logs.
@@ -36,8 +49,10 @@ def check_item_sparse_completeness(raw: Path, *, allow_shrink: bool = False) -> 
     if allow_shrink:
         logger.warning("ItemSparse completeness gate skipped (--allow-shrink) for %s", raw)
         return
-    item_count = len(read_csv(raw / "Item.csv"))
-    sparse_count = len(read_csv(raw / "ItemSparse.csv"))
+    item_count = len(item_rows) if item_rows is not None else len(read_csv(raw / "Item.csv"))
+    sparse_count = (
+        len(sparse_rows) if sparse_rows is not None else len(read_csv(raw / "ItemSparse.csv"))
+    )
     if item_count and sparse_count < item_count * ITEM_SPARSE_COMPLETENESS_RATIO:
         raise SystemExit(
             f"{raw / 'ItemSparse.csv'} has only {sparse_count} rows against "
