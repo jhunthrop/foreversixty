@@ -235,7 +235,9 @@ describe('normaliseBisFile', () => {
         score: 8,
         source_kind: 'quest',
         source: 'A Quest',
+        score_delta: -45,
         dps_delta: -2,
+        verified: true,
       },
     ];
     const file = {

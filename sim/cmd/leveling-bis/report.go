@@ -52,16 +52,16 @@ type slotRow struct {
 	// main_hand published Forsaken Greataxe with no record that Smite's
 	// Mighty Hammer (a Deadmines drop, item 7230) was ever considered,
 	// leaving a player who cannot or will not run that quest nothing to
-	// fall back on. Every Ties entry (score identical to the pick) is
-	// listed first, dps_delta 0, ranked ahead of every lower-scoring
-	// alternative (the wow-player review's own addendum to this lane's
-	// brief) - a tie is exactly as good as the pick, and bySlot's own
-	// score-sorted order does not otherwise distinguish a tie's rank
-	// from a strictly-lower scorer's. The list is then filled to
-	// alternativesLimit with the next-best sourced candidates by
-	// score() (buildAlternatives, this file). See that function's own
+	// fall back on. Candidates are Ties (score identical to the pick,
+	// this lane's brief addendum) plus the next-best sourced candidates
+	// by score() (buildAlternatives, this file), ordered by dps_delta
+	// (alternativeRow.DPSDelta) descending - see that function's own
 	// doc for exactly what "next-best" excludes (the pick itself, its
-	// pair-mate, and anything already listed as a tie).
+	// pair-mate, anything already listed as a tie) and why the final
+	// order is not simply "ties, then score order" (owner review, tenet
+	// 8, 2026-09-29: a runner-up verify.go actually simmed against the
+	// pick can score higher yet measure worse, and must not publish a
+	// dps_delta that outranks a tie or the pick it lost to).
 	Alternatives []alternativeRow `json:"alternatives,omitempty"`
 }
 
@@ -86,21 +86,39 @@ type alternativeRow struct {
 	Score      float64 `json:"score"`
 	SourceKind string  `json:"source_kind"`
 	Source     string  `json:"source"`
-	// DPSDelta is Score minus the pick's own published Score, in the
+	// ScoreDelta is Score minus the pick's own published Score, in the
 	// band's score unit (score.go's weighted-stat-plus-weapon-dps
-	// total, not a measured DPS figure - buildAlternatives is built
-	// from the scoring pass alone, per this lane's brief: "Reuse
-	// slotPick.Ties/the existing scoring path; do not re-sim"). Exactly
-	// 0 for a tie (this row came from pk.Ties, whose whole definition
-	// is "scored identically to the pick"). Usually negative for every
-	// other entry (bySlot's own list is score-sorted, so most
-	// candidates after the pick score lower), but CAN be positive: a
-	// runner-up whose own score() total is lower than the item it beat
-	// can still be promoted into the pick by applySwaps' real-sim swap
-	// pass (verify.go) - the demoted, higher-scoring item still belongs
-	// in the published pick's alternatives list, just with a positive
-	// delta.
+	// total) - the raw number DPSDelta below is derived from, kept
+	// here so a consumer that wants the un-converted figure still has
+	// it. Exactly 0 for a tie (this row came from pk.Ties, whose whole
+	// definition is "scored identically to the pick").
+	ScoreDelta float64 `json:"score_delta"`
+	// DPSDelta is ScoreDelta converted to real DPS (ScoreDelta *
+	// bandReport.ReferenceDPSPerPoint) - owner review, tenet 8
+	// (2026-09-29): the first cut of this field published the raw
+	// score-unit delta under a "dps_delta" name with nothing saying it
+	// was not actually DPS (warrior-arms horde band 20 read "Smite's
+	// Mighty Hammer -5.09" when the real gap is 0.23 DPS - 5.09 SCORE
+	// points at this band's reference_dps_per_point of 0.0444). Usually
+	// negative (bySlot's own list is score-sorted, so most candidates
+	// after the pick score, and therefore convert, lower), but can be
+	// positive for a candidate this command never actually simmed
+	// against the pick - see Verified's own doc for the one row that
+	// IS simmed, and why that row's DPSDelta is not this conversion at
+	// all.
 	DPSDelta float64 `json:"dps_delta"`
+	// Verified is true for the one alternative (at most) verify.go's
+	// own swap pass actually simmed against the pick (pk.RunnerUp at
+	// buildAlternatives' own call site) - its DPSDelta is that sim's
+	// REAL measured delta (swapMeasuredDelta), not the score-based
+	// conversion above, and takes precedence: a runner-up that scored
+	// higher than the pick but LOST the real sim (owner review, tenet
+	// 8: warrior-arms horde band 20's Hammerbone scored 3.14 points
+	// above the published Forsaken Greataxe pick, but measured 29.9 vs
+	// 32.2 DPS and lost) must never publish a DPSDelta that makes it
+	// look like the better fallback. Omitted (false) for every other
+	// row - a score estimate this command never simmed at all.
+	Verified bool `json:"verified,omitempty"`
 }
 
 // buildAlternatives is slotRow.Alternatives' own builder: pk.Ties
@@ -129,7 +147,32 @@ type alternativeRow struct {
 // slot whose pk.Item is non-nil, and enforceTwoHandOffHandInvariant
 // (pick.go) guarantees off_hand's own Item is nil whenever main_hand
 // is two-handed.
-func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string]slotPick) []alternativeRow {
+//
+// referenceDPSPerPoint converts every score-based ScoreDelta into a
+// real DPSDelta (owner review, tenet 8). sw is verify.go's own
+// swapResult for this slot, or nil when this slot had no runner-up to
+// sim at all - when present, the ONE row matching pk.RunnerUp's own
+// item id gets its DPSDelta and Verified overridden from that real sim
+// rather than the score conversion (same owner review): a runner-up
+// that outscored the pick but lost the real sim must never publish a
+// DPSDelta that makes it look better than the item that beat it.
+//
+// The whole list is re-sorted by DPSDelta, descending, once every
+// adjustment above is applied - not "ties, then score order": in the
+// overwhelmingly common case those agree (bySlot's own list is
+// best-score-first, the pick IS its own top entry, and a tie sits
+// right behind it at the identical score, so nothing else can outscore
+// either), but a tie is not guaranteed to be the effective maximum any
+// more than list's own top-scoring non-pick entry is - either can be
+// ahead of the other depending on the numbers, and a swap-corrected
+// row in particular is the entire point of sorting at all: it was very
+// likely appended near the top of the list (a demoted item usually
+// scored ABOVE the pick, which is exactly why applySwaps had a runner-
+// up worth testing in the first place), and its corrected DPSDelta is
+// very likely now negative, so it must fall behind everything that
+// still outranks it - including a tie at 0.
+
+func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string]slotPick, referenceDPSPerPoint float64, sw *swapResult) []alternativeRow {
 	if pk.Item == nil {
 		return nil
 	}
@@ -149,20 +192,22 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 	}
 	add := func(out []alternativeRow, c scored) []alternativeRow {
 		seen[c.ID] = true
+		scoreDelta := c.Score - pk.Item.Score
 		return append(out, alternativeRow{
 			ItemID:     c.ID,
 			ItemName:   c.Name,
 			Score:      c.Score,
 			SourceKind: c.Source.Kind,
 			Source:     c.Source.Label,
-			DPSDelta:   c.Score - pk.Item.Score,
+			ScoreDelta: scoreDelta,
+			DPSDelta:   scoreDelta * referenceDPSPerPoint,
 		})
 	}
 
 	out := make([]alternativeRow, 0, alternativesLimit)
 	for _, tie := range pk.Ties {
 		if len(out) >= alternativesLimit {
-			return out
+			break
 		}
 		if excluded(tie) {
 			continue
@@ -171,14 +216,53 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 	}
 	for _, c := range list {
 		if len(out) >= alternativesLimit {
-			return out
+			break
 		}
 		if excluded(c) {
 			continue
 		}
 		out = add(out, c)
 	}
+
+	if sw != nil && pk.RunnerUp != nil {
+		measured := swapMeasuredDelta(*sw)
+		for i := range out {
+			if out[i].ItemID == pk.RunnerUp.ID {
+				out[i].DPSDelta = measured
+				out[i].Verified = true
+				break
+			}
+		}
+	}
+
+	sort.SliceStable(out, func(i, j int) bool {
+		if out[i].DPSDelta != out[j].DPSDelta {
+			return out[i].DPSDelta > out[j].DPSDelta
+		}
+		return out[i].ItemID < out[j].ItemID
+	})
 	return out
+}
+
+// swapMeasuredDelta is the real, sim-measured DPS delta between
+// whichever item verify.go's own swap sim (sw) tried against the pick
+// and the pick's own measured DPS - owner review, tenet 8. sw.SwapDPS
+// is always the runner-up-at-verify-time's own measured DPS and
+// sw.BaselineDPS is always the then-current pick's; applySwaps
+// (verify.go) swaps which physical item plays "pick" versus
+// "runner-up" once sw.Beat, but never re-labels these two numbers, so
+// the item that is NOT the currently-published pick owns BaselineDPS
+// when sw.Beat promoted the other one into the pick, and owns SwapDPS
+// otherwise. Either way this is "the other item's measured DPS minus
+// the pick's own measured DPS", negative whenever the pick's own real
+// DPS is the higher of the two (always true when sw.Beat, since Beat
+// means the promoted item's SwapDPS beat the demoted item's
+// BaselineDPS; usually true, within swapMargin, when !sw.Beat too).
+func swapMeasuredDelta(sw swapResult) float64 {
+	if sw.Beat {
+		return sw.BaselineDPS - sw.SwapDPS
+	}
+	return sw.SwapDPS - sw.BaselineDPS
 }
 
 // bandReport is one band's whole answer for one faction: the pick per
@@ -288,7 +372,11 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			for _, tie := range pk.Ties {
 				row.Ties = append(row.Ties, tieAlternative{ItemID: tie.ID, ItemName: tie.Name})
 			}
-			row.Alternatives = buildAlternatives(pk, slot, bySlot[slot], picks)
+			var swForSlot *swapResult
+			if s, ok := swapBySlot[slot]; ok {
+				swForSlot = &s
+			}
+			row.Alternatives = buildAlternatives(pk, slot, bySlot[slot], picks, referenceDPSPerPoint, swForSlot)
 			if pk.Item.HasSource {
 				row.Source = pk.Item.Source.Label
 				row.SourceKind = pk.Item.Source.Kind
@@ -546,7 +634,11 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 					if len(row.Alternatives) > 0 {
 						alts := make([]string, len(row.Alternatives))
 						for i, a := range row.Alternatives {
-							alts[i] = fmt.Sprintf("%s (%d, %+.1f) [%s]", a.ItemName, a.ItemID, a.DPSDelta, a.SourceKind)
+							verifiedNote := ""
+							if a.Verified {
+								verifiedNote = ", sim-verified"
+							}
+							alts[i] = fmt.Sprintf("%s (%d, %+.2f DPS%s) [%s]", a.ItemName, a.ItemID, a.DPSDelta, verifiedNote, a.SourceKind)
 						}
 						alternatives = strings.Join(alts, "; ")
 					}

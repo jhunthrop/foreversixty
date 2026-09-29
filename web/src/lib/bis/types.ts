@@ -53,10 +53,23 @@ export interface BisAlternative {
   score: number;
   source_kind: string;
   source: string;
-  /** `score` minus the pick's own `score`, in the band's score unit (not a measured DPS
-   *  figure) -- exactly 0 for a tie, usually negative, occasionally positive for a
-   *  runner-up the ranker's real-sim swap pass promoted over a higher-scoring item. */
+  /** `score` minus the pick's own `score`, in the band's score unit -- the raw number
+   *  `dps_delta` is converted from, kept here for a consumer that wants the un-converted
+   *  figure. Exactly 0 for a tie. */
+  score_delta: number;
+  /** `score_delta` converted to real DPS (`score_delta * BisBand.reference_dps_per_point`) --
+   *  owner review, tenet 8 (2026-09-29): the first cut of this field published the raw
+   *  score-unit delta under this same name with nothing saying it was not DPS. Usually
+   *  negative. For the one alternative `verified` is true on, this is instead the real,
+   *  sim-measured delta (not a score conversion at all) -- see `verified`'s own doc. */
   dps_delta: number;
+  /** True for at most one alternative per slot: the runner-up the ranker's own verify pass
+   *  actually simmed against the pick, whose `dps_delta` above is that sim's real measured
+   *  delta rather than a score estimate -- a runner-up that scored higher than the pick but
+   *  lost the real sim must never publish a `dps_delta` that makes it look like the better
+   *  fallback (owner review, tenet 8). Omitted (falsy) for every other row: a score estimate
+   *  the ranker never simmed at all. */
+  verified?: boolean;
 }
 
 /** One planner slot's coverage: how many items `eligible()` (sim/cmd/leveling-bis/eligible.go)
