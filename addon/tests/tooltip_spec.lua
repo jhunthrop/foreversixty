@@ -12,12 +12,6 @@ local DATA = {
 	weights = { ["paladin-holy"] = { intellect = 1.0, spirit = 0.5 } },
 }
 
-local BUILD = {
-	classSlug = "paladin",
-	order = {},
-	gear = { { slot = "chest", itemId = 111, stats = { intellect = 10 } } },
-}
-
 describe("Tooltip", function()
 	local Theme, Tooltip
 
@@ -28,7 +22,6 @@ describe("Tooltip", function()
 		helper.load("Export")
 		helper.load("Gear")
 		helper.load("Prefs")
-		helper.load("Follow")
 		Tooltip = helper.load("Tooltip")
 		return Tooltip
 	end
@@ -37,89 +30,178 @@ describe("Tooltip", function()
 		mock.uninstall()
 	end)
 
-	it("names the slot a planned item is for", function()
-		start()
-		assert.are.equal(string.format(L.tooltipPlanned, "chest"), Tooltip.plannedLine(BUILD, 111))
-	end)
-
-	it("says nothing for an item the build does not want", function()
-		start()
-		assert.is_nil(Tooltip.plannedLine(BUILD, 999))
-	end)
-
-	it("says nothing with no build loaded", function()
-		start()
-		assert.is_nil(Tooltip.plannedLine(nil, 111))
-	end)
-
-	it("scores an equippable item against what is worn in its slot", function()
-		start({
-			class = { name = "Paladin", token = "PALADIN" },
-			equipped = { [5] = "item:equipped" }, -- slot id 5 is chest
-			itemStats = {
-				["item:candidate"] = {
-					__itemId = 200, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 20,
+	describe("Tooltip.verdict", function()
+		it("scores an equippable item against what is worn, as a percentage of it", function()
+			start({
+				class = { name = "Paladin", token = "PALADIN" },
+				equipped = { [5] = "item:equipped" }, -- slot id 5 is chest
+				itemStats = {
+					["item:candidate"] = {
+						__itemId = 200, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 20,
+					},
+					["item:equipped"] = {
+						__itemId = 100, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 5,
+					},
 				},
-				["item:equipped"] = {
-					__itemId = 100, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 5,
+			})
+			local verdict = Tooltip.verdict(DATA, "item:candidate")
+			assert.are.equal("upgrade", verdict.kind)
+			assert.are.equal(string.format(L.tooltipVerdictUpgrade, 300.0), verdict.text)
+		end)
+
+		it("scores a downgrade as a percentage too, never a bare negative number", function()
+			start({
+				class = { name = "Paladin", token = "PALADIN" },
+				equipped = { [5] = "item:equipped" },
+				itemStats = {
+					["item:candidate"] = {
+						__itemId = 200, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 1,
+					},
+					["item:equipped"] = {
+						__itemId = 100, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 5,
+					},
 				},
-			},
-		})
-		assert.are.equal(string.format(L.tooltipUpgrade, "chest", 15),
-			Tooltip.upgradeLine(DATA, "item:candidate"))
-	end)
+			})
+			local verdict = Tooltip.verdict(DATA, "item:candidate")
+			assert.are.equal("downgrade", verdict.kind)
+			assert.are.equal(string.format(L.tooltipVerdictDowngrade, 80.0), verdict.text)
+		end)
 
-	it("says not an upgrade rather than a negative number", function()
-		start({
-			class = { name = "Paladin", token = "PALADIN" },
-			equipped = { [5] = "item:equipped" },
-			itemStats = {
-				["item:candidate"] = {
-					__itemId = 200, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 1,
+		it("calls a near-equal delta a Sidegrade rather than a coin-flip", function()
+			start({
+				class = { name = "Paladin", token = "PALADIN" },
+				equipped = { [5] = "item:equipped" },
+				itemStats = {
+					["item:candidate"] = {
+						__itemId = 200, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 100,
+					},
+					["item:equipped"] = {
+						__itemId = 100, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 100,
+					},
 				},
-				["item:equipped"] = {
-					__itemId = 100, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 5,
+			})
+			local verdict = Tooltip.verdict(DATA, "item:candidate")
+			assert.are.equal("sidegrade", verdict.kind)
+			assert.are.equal(L.tooltipVerdictSidegrade, verdict.text)
+		end)
+
+		it("falls back to absolute points with nothing worn to be a percentage of", function()
+			start({
+				class = { name = "Paladin", token = "PALADIN" },
+				itemStats = {
+					["item:111"] = { __itemId = 111, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 10 },
 				},
-			},
-		})
-		assert.are.equal(L.tooltipNotUpgrade, Tooltip.upgradeLine(DATA, "item:candidate"))
-	end)
+			})
+			local verdict = Tooltip.verdict(DATA, "item:111")
+			assert.are.equal("upgrade", verdict.kind)
+			assert.are.equal(string.format(L.tooltipUpgrade, "chest", 10), verdict.text)
+		end)
 
-	it("says nothing for an item with no equip slot at all", function()
-		start({
-			class = { name = "Paladin", token = "PALADIN" },
-			itemStats = { ["item:reagent"] = { __itemId = 300, __slot = "" } },
-		})
-		assert.is_nil(Tooltip.upgradeLine(DATA, "item:reagent"))
-	end)
+		it("says nothing for an item with no equip slot at all", function()
+			start({
+				class = { name = "Paladin", token = "PALADIN" },
+				itemStats = { ["item:reagent"] = { __itemId = 300, __slot = "" } },
+			})
+			assert.is_nil(Tooltip.verdict(DATA, "item:reagent"))
+		end)
 
-	it("says nothing with no stat weights for the spec", function()
-		start({ class = { name = "Paladin", token = "PALADIN" } })
-		assert.is_nil(Tooltip.upgradeLine({ build = "x", classes = DATA.classes, weights = {} },
-			"item:candidate"))
-	end)
+		it("says nothing with no stat weights for the spec at any band", function()
+			start({ class = { name = "Paladin", token = "PALADIN" } })
+			assert.is_nil(Tooltip.verdict({ build = "x", classes = DATA.classes, weights = {} },
+				"item:candidate"))
+		end)
 
-	it("says nothing rather than erroring with no data table at all", function()
-		start({ class = { name = "Paladin", token = "PALADIN" } })
-		assert.is_nil(Tooltip.upgradeLine(nil, "item:candidate"))
-	end)
+		it("says nothing rather than erroring with no data table at all", function()
+			start({ class = { name = "Paladin", token = "PALADIN" } })
+			assert.is_nil(Tooltip.verdict(nil, "item:candidate"))
+		end)
 
-	it("combines both lines when both apply", function()
-		start({
-			class = { name = "Paladin", token = "PALADIN" },
-			equipped = { [5] = nil },
-			itemStats = {
-				["item:111"] = { __itemId = 111, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 10 },
-			},
-		})
-		local lines = Tooltip.lines(DATA, BUILD, "item:111")
-		assert.are.equal(2, #lines)
-		assert.are.equal(string.format(L.tooltipPlanned, "chest"), lines[1])
-	end)
+		it("prefers the nightly band weights over the static table when they exist", function()
+			start({
+				class = { name = "Paladin", token = "PALADIN" },
+				level = 20,
+				equipped = { [5] = "item:equipped" },
+				itemStats = {
+					["item:candidate"] = {
+						__itemId = 200, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 10,
+					},
+					["item:equipped"] = {
+						__itemId = 100, __slot = "INVTYPE_CHEST", ITEM_MOD_SPIRIT_SHORT = 10,
+					},
+				},
+			})
+			-- Equal under the static table (10 intellect vs 10 spirit both
+			-- worth 1.0 -- a Sidegrade), but the band table weights spirit
+			-- five times higher, which only shows up if the band table is
+			-- the one actually used.
+			local data = {
+				build = DATA.build,
+				classes = DATA.classes,
+				weights = { ["paladin-holy"] = { intellect = 1.0, spirit = 1.0 } },
+				bis_weights = { ["paladin-holy"] = { [20] = { intellect = 1.0, spirit = 5.0 } } },
+			}
+			assert.are.equal("downgrade", Tooltip.verdict(data, "item:candidate").kind)
+		end)
 
-	it("returns an empty list rather than nil for an item with nothing to say", function()
-		start({ class = { name = "Paladin", token = "PALADIN" } })
-		assert.are.same({}, Tooltip.lines(DATA, nil, "item:999"))
+		it("falls back to the static table when the band has not measured this spec yet", function()
+			start({
+				class = { name = "Paladin", token = "PALADIN" },
+				level = 20,
+				equipped = { [5] = "item:equipped" },
+				itemStats = {
+					["item:candidate"] = {
+						__itemId = 200, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 10,
+					},
+					["item:equipped"] = {
+						__itemId = 100, __slot = "INVTYPE_CHEST", ITEM_MOD_SPIRIT_SHORT = 10,
+					},
+				},
+			})
+			local data = {
+				build = DATA.build,
+				classes = DATA.classes,
+				weights = { ["paladin-holy"] = { intellect = 1.0, spirit = 1.0 } },
+				bis_weights = {},
+			}
+			assert.are.equal("sidegrade", Tooltip.verdict(data, "item:candidate").kind)
+		end)
+
+		it("gets a bigger-agility chest obviously right, the owner's own screenshot case", function()
+			-- Tunic of Westfall (2041): agility 11, stamina 5. Dark Leather
+			-- Tunic (2317, hunter-beast-mastery's own band 20 BiS chest and
+			-- what this fixture wears): agility 6. hunter-beast-mastery's
+			-- own measured band 20 weights (data/builds/1.60.1.70009/bis/
+			-- hunter-beast-mastery.json) put agility at 2.045 and do not
+			-- weight stamina at all.
+			start({
+				class = { name = "Hunter", token = "HUNTER" },
+				level = 20,
+				equipped = { [5] = "item:2317" },
+				itemStats = {
+					["item:2041"] = {
+						__itemId = 2041, __slot = "INVTYPE_CHEST",
+						ITEM_MOD_AGILITY_SHORT = 11, ITEM_MOD_STAMINA_SHORT = 5,
+					},
+					["item:2317"] = {
+						__itemId = 2317, __slot = "INVTYPE_CHEST", ITEM_MOD_AGILITY_SHORT = 6,
+					},
+				},
+			})
+			local data = {
+				build = "1.60.1.70009",
+				classes = { hunter = { tabs = {
+					{ name = "Beast Mastery", talents = {} },
+					{ name = "Marksmanship", talents = {} },
+					{ name = "Survival", talents = {} },
+				} } },
+				weights = {},
+				bis_weights = { ["hunter-beast-mastery"] = { [20] = { agility = 2.045 } } },
+			}
+			local verdict = Tooltip.verdict(data, "item:2041")
+			assert.are.equal("upgrade", verdict.kind)
+			local expectedPercent = (11 * 2.045 - 6 * 2.045) / (6 * 2.045) * 100
+			assert.are.equal(string.format(L.tooltipVerdictUpgrade, expectedPercent), verdict.text)
+		end)
 	end)
 
 	describe("Tooltip.capLines", function()
@@ -172,8 +254,10 @@ describe("Tooltip", function()
 			start()
 			assert.are.same({}, Tooltip.capLines(nil, { caps = { "hit" } }))
 		end)
+	end)
 
-		it("folds into Tooltip.lines' full line list", function()
+	describe("Tooltip.sections", function()
+		it("folds the verdict and the capped-stat call-outs into one op list", function()
 			start({
 				class = { name = "Paladin", token = "PALADIN" },
 				equipped = { [5] = nil },
@@ -184,25 +268,29 @@ describe("Tooltip", function()
 					},
 				},
 			})
-			local lines = Tooltip.lines(DATA, BUILD, "item:111", { caps = { "hit" } })
-			assert.are.equal(3, #lines)
-			assert.are.equal(string.format(L.tooltipCapped, "hit"), lines[3])
+			local ops = Tooltip.sections(DATA, "item:111", { caps = { "hit" } })
+			assert.are.equal(2, #ops)
+			assert.are.equal("line", ops[1].kind)
+			assert.are.equal(string.format(L.tooltipCapped, "hit"), ops[2].text)
+		end)
+
+		it("returns an empty list rather than nil for an item with nothing to say", function()
+			start({ class = { name = "Paladin", token = "PALADIN" } })
+			assert.are.same({}, Tooltip.sections(DATA, "item:999"))
 		end)
 	end)
 
 	describe("the hook", function()
-		local Prefs, Follow
+		local Prefs
 
 		local function startHook(install)
 			start(install)
-			-- require, not helper.load: start() already loaded Prefs and
-			-- Follow fresh (in that order, before Tooltip), and Tooltip
-			-- captured those exact instances at its own load time.
-			-- Reloading them here would hand this describe block a second,
+			-- require, not helper.load: start() already loaded Prefs fresh,
+			-- and Tooltip captured that exact instance at its own load time.
+			-- Reloading it here would hand this describe block a second,
 			-- disconnected copy that Tooltip never sees.
 			Prefs = require("Prefs")
-			Follow = require("Follow")
-			return Prefs, Follow
+			return Prefs
 		end
 
 		it("reads the link GetItem hands back", function()
@@ -216,7 +304,7 @@ describe("Tooltip", function()
 			assert.is_nil(Tooltip.itemLinkFrom({}))
 		end)
 
-		it("adds a Forever Sixty heading and the lines onto the tooltip", function()
+		it("adds a Forever Sixty heading and the verdict onto the tooltip", function()
 			startHook({
 				class = { name = "Paladin", token = "PALADIN" },
 				itemStats = {
@@ -224,15 +312,14 @@ describe("Tooltip", function()
 				},
 			})
 			Tooltip.data = DATA
-			Follow.build = BUILD
 			local calls = {}
 			local tooltip = {
 				AddLine = function(_, text) calls[#calls + 1] = text end,
 				Show = function() end,
 			}
 			Tooltip.onTooltip(tooltip, "item:111")
-			assert.are.equal(L.addonName, calls[1])
-			assert.are.equal(string.format(L.tooltipPlanned, "chest"), calls[2])
+			assert.is_truthy(calls[1]:find(L.addonName, 1, true))
+			assert.are.equal(string.format(L.tooltipUpgrade, "chest", 10), calls[2])
 		end)
 
 		it("adds nothing when the tooltip pref is off", function()
@@ -251,6 +338,7 @@ describe("Tooltip", function()
 					["item:111"] = { __itemId = 111, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 10 },
 				},
 			})
+			Tooltip.data = DATA
 			local tooltip = { AddLine = function() end, Show = function() end }
 			Tooltip.onTooltip(tooltip, "item:111")
 			local before = Tooltip.cache["item:111"]
@@ -259,10 +347,15 @@ describe("Tooltip", function()
 		end)
 
 		it("disables itself after one failure rather than erroring again", function()
-			startHook({ class = { name = "Paladin", token = "PALADIN" } })
-			-- A planned item, so lines is non-empty and addLines actually
+			startHook({
+				class = { name = "Paladin", token = "PALADIN" },
+				itemStats = {
+					["item:111"] = { __itemId = 111, __slot = "INVTYPE_CHEST", ITEM_MOD_INTELLECT_SHORT = 10 },
+				},
+			})
+			-- A verdict, so sections is non-empty and addLines actually
 			-- reaches AddLine, which is what this example throws from.
-			Follow.build = BUILD
+			Tooltip.data = DATA
 			local tooltip = {
 				AddLine = function() error("boom") end,
 				Show = function() end,
@@ -320,7 +413,11 @@ describe("Tooltip", function()
 			startHook()
 			Tooltip.register()
 			Tooltip.register()
-			assert.are.equal(2, mock.countCalls(_G.GameTooltip, "HookScript"))
+			-- OnTooltipSetItem, OnTooltipSetUnit (both legacy, no
+			-- processor here), and OnTooltipCleared/OnShow (item 2's
+			-- empty-slot-flash fix, registerEmptySlotRefresh) -- four
+			-- GameTooltip hooks total, each exactly once.
+			assert.are.equal(4, mock.countCalls(_G.GameTooltip, "HookScript"))
 		end)
 
 		it("hooks the unit tooltip through the processor when the client has it", function()
@@ -350,7 +447,6 @@ describe("Tooltip", function()
 			helper.load("Export")
 			helper.load("Gear")
 			helper.load("Prefs")
-			helper.load("Follow")
 			helper.load("Ratings")
 			Tooltip = helper.load("Tooltip")
 			_G.UnitIsPlayer = function() return true end
