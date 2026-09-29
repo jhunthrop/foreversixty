@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "b5ac36a52",
-  "generated_at": "2026-09-29T01:40:23Z",
+  "generated_at": "2026-09-29T02:18:38Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -206,8 +206,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 0.988666556,
-      "verify_run_seconds": 0.559304511
+      "weights_run_seconds": 1.015380223,
+      "verify_run_seconds": 0.542307166
     },
     {
       "spec": "mage-frost",
@@ -413,8 +413,8 @@
         "main_hand: Staff of Orgrimmar",
         "ranged: Branding Rod"
       ],
-      "weights_run_seconds": 0.988666556,
-      "verify_run_seconds": 0.454264306
+      "weights_run_seconds": 1.015380223,
+      "verify_run_seconds": 0.471995056
     },
     {
       "spec": "mage-frost",
@@ -629,8 +629,8 @@
         "main_hand: Staff of Westfall",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.004419818,
-      "verify_run_seconds": 0.719227209
+      "weights_run_seconds": 0.98026987,
+      "verify_run_seconds": 0.723391355
     },
     {
       "spec": "mage-frost",
@@ -844,8 +844,8 @@
         "finger2: Bounty Hunter's Ring",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.004419818,
-      "verify_run_seconds": 0.707285794
+      "weights_run_seconds": 0.98026987,
+      "verify_run_seconds": 0.717472803
     },
     {
       "spec": "mage-frost",
@@ -910,11 +910,7 @@
         },
         {
           "slot": "neck",
-          "item_id": 20444,
-          "item_name": "Sentinel's Medallion",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "verified": true
+          "verified": false
         },
         {
           "slot": "shoulder",
@@ -933,7 +929,7 @@
           "source_kind": "quest",
           "score": 4,
           "verified": true,
-          "swap_note": "beat the scored pick Heavy Woolen Cloak (id 4311) in the sim: 25.9 vs 25.8 set DPS"
+          "swap_note": "beat the scored pick Heavy Woolen Cloak (id 4311) in the sim: 25.1 vs 25.0 set DPS"
         },
         {
           "slot": "chest",
@@ -961,7 +957,7 @@
           "source_kind": "quest",
           "score": 7,
           "verified": true,
-          "swap_note": "beat the scored pick Serpent Gloves (id 5970) in the sim: 25.9 vs 25.8 set DPS"
+          "swap_note": "beat the scored pick Serpent Gloves (id 5970) in the sim: 25.3 vs 25.0 set DPS"
         },
         {
           "slot": "waist",
@@ -1001,11 +997,11 @@
         },
         {
           "slot": "finger2",
-          "item_id": 20431,
-          "item_name": "Lorekeeper's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 5,
+          "item_id": 1156,
+          "item_name": "Lavishly Jeweled Ring",
+          "source": "The Deadmines: Gilnid",
+          "source_kind": "dungeon",
+          "score": 3.0093129772703078,
           "verified": true
         },
         {
@@ -1047,8 +1043,8 @@
           "verified": true
         }
       ],
-      "set_dps": 25.91939123907316,
-      "no_source_count": 753,
+      "set_dps": 25.300391249797354,
+      "no_source_count": 760,
       "no_source_sample": [
         "727 Notched Shortsword",
         "816 Small Hand Blade",
@@ -1068,7 +1064,6 @@
       ],
       "new_at_band": [
         "head: Shadow Goggles",
-        "neck: Sentinel's Medallion",
         "shoulder: Rose Mantle",
         "back: Prelacy Cape",
         "chest: Gray Woolen Robe",
@@ -1076,12 +1071,12 @@
         "legs: Abomination Skin Leggings",
         "feet: Spidersilk Boots",
         "finger1: Minor Channeling Ring",
-        "finger2: Lorekeeper's Ring",
+        "finger2: Lavishly Jeweled Ring",
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 0.980348193,
-      "verify_run_seconds": 0.743248419
+      "weights_run_seconds": 0.983861102,
+      "verify_run_seconds": 0.747717724
     },
     {
       "spec": "mage-frost",
@@ -1146,11 +1141,7 @@
         },
         {
           "slot": "neck",
-          "item_id": 20442,
-          "item_name": "Scout's Medallion",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "verified": true
+          "verified": false
         },
         {
           "slot": "shoulder",
@@ -1181,12 +1172,13 @@
         },
         {
           "slot": "wrist",
-          "item_id": 15452,
-          "item_name": "Featherbead Bracers",
+          "item_id": 16981,
+          "item_name": "Owlbeard Bracers",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 2.5077608143919234,
-          "verified": true
+          "score": 2.0031043257567696,
+          "verified": true,
+          "swap_note": "beat the scored pick Featherbead Bracers (id 15452) in the sim: 22.3 vs 22.3 set DPS"
         },
         {
           "slot": "hands",
@@ -1226,15 +1218,6 @@
         },
         {
           "slot": "finger1",
-          "item_id": 20426,
-          "item_name": "Advisor's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 5,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 1156,
           "item_name": "Lavishly Jeweled Ring",
           "source": "The Deadmines: Gilnid",
@@ -1243,10 +1226,19 @@
           "verified": true
         },
         {
+          "slot": "finger2",
+          "item_id": 6669,
+          "item_name": "Sacred Band",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 2,
+          "verified": true
+        },
+        {
           "slot": "trinket1",
           "item_id": 21566,
           "item_name": "Rune of Perfection",
-          "source": "Silverwing Sentinels",
+          "source": "Warsong Outriders",
           "source_kind": "rep",
           "verified": true
         },
@@ -1254,7 +1246,7 @@
           "slot": "trinket2",
           "item_id": 21568,
           "item_name": "Rune of Duty",
-          "source": "Silverwing Sentinels",
+          "source": "Warsong Outriders",
           "source_kind": "rep",
           "verified": true
         },
@@ -1273,16 +1265,17 @@
         },
         {
           "slot": "ranged",
-          "item_id": 8071,
-          "item_name": "Sizzle Stick",
+          "item_id": 5250,
+          "item_name": "Charred Wand",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 5,
-          "verified": true
+          "score": 3.0031043257567696,
+          "verified": true,
+          "swap_note": "beat the scored pick Sizzle Stick (id 8071) in the sim: 22.3 vs 22.3 set DPS"
         }
       ],
-      "set_dps": 23.193323329071216,
-      "no_source_count": 754,
+      "set_dps": 22.048895198918867,
+      "no_source_count": 761,
       "no_source_sample": [
         "727 Notched Shortsword",
         "816 Small Hand Blade",
@@ -1302,19 +1295,20 @@
       ],
       "new_at_band": [
         "head: Shadow Goggles",
-        "neck: Scout's Medallion",
         "shoulder: Chestnut Mantle",
         "back: Heavy Woolen Cloak",
+        "wrist: Owlbeard Bracers",
         "legs: Abomination Skin Leggings",
         "feet: Spidersilk Boots",
-        "finger1: Advisor's Ring",
-        "finger2: Lavishly Jeweled Ring",
+        "finger1: Lavishly Jeweled Ring",
+        "finger2: Sacred Band",
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty",
-        "main_hand: Polished Walking Staff"
+        "main_hand: Polished Walking Staff",
+        "ranged: Charred Wand"
       ],
-      "weights_run_seconds": 0.980348193,
-      "verify_run_seconds": 0.729446439
+      "weights_run_seconds": 0.983861102,
+      "verify_run_seconds": 0.785766481
     },
     {
       "spec": "mage-frost",
@@ -1379,11 +1373,7 @@
         },
         {
           "slot": "neck",
-          "item_id": 20444,
-          "item_name": "Sentinel's Medallion",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "verified": true
+          "verified": false
         },
         {
           "slot": "shoulder",
@@ -1468,13 +1458,12 @@
         },
         {
           "slot": "finger2",
-          "item_id": 20431,
-          "item_name": "Lorekeeper's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 5,
-          "verified": true,
-          "swap_note": "beat the scored pick Minor Channeling Ring (id 1449) in the sim: 33.0 vs 32.8 set DPS"
+          "item_id": 1449,
+          "item_name": "Minor Channeling Ring",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 6.363059935123556,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -1515,8 +1504,8 @@
           "verified": true
         }
       ],
-      "set_dps": 33.02581123454809,
-      "no_source_count": 946,
+      "set_dps": 32.8249006983214,
+      "no_source_count": 953,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -1540,10 +1529,11 @@
         "chest: Lesser Wizard's Robe",
         "hands: Truefaith Gloves",
         "waist: Belt of Arugal",
-        "finger1: Ring of Forlorn Spirits"
+        "finger1: Ring of Forlorn Spirits",
+        "finger2: Minor Channeling Ring"
       ],
-      "weights_run_seconds": 0.94505143,
-      "verify_run_seconds": 0.699777901
+      "weights_run_seconds": 0.915338549,
+      "verify_run_seconds": 0.661195016
     },
     {
       "spec": "mage-frost",
@@ -1608,11 +1598,7 @@
         },
         {
           "slot": "neck",
-          "item_id": 20442,
-          "item_name": "Scout's Medallion",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "verified": true
+          "verified": false
         },
         {
           "slot": "shoulder",
@@ -1658,7 +1644,7 @@
           "source_kind": "crafted",
           "score": 7.044589902685334,
           "verified": true,
-          "swap_note": "beat the scored pick Jutebraid Gloves (id 10654) in the sim: 29.4 vs 29.0 set DPS"
+          "swap_note": "beat the scored pick Jutebraid Gloves (id 10654) in the sim: 28.8 vs 28.3 set DPS"
         },
         {
           "slot": "waist",
@@ -1671,13 +1657,12 @@
         },
         {
           "slot": "legs",
-          "item_id": 6903,
-          "item_name": "Gaze Dreamer Pants",
-          "source": "Blackfathom Deeps: Twilight Lord Kelris",
+          "item_id": 23173,
+          "item_name": "Abomination Skin Leggings",
+          "source": "Shadowfang Keep: Sever",
           "source_kind": "dungeon",
-          "score": 12,
-          "verified": true,
-          "swap_note": "beat the scored pick Abomination Skin Leggings (id 23173) in the sim: 29.0 vs 29.0 set DPS"
+          "score": 14.452239740494225,
+          "verified": true
         },
         {
           "slot": "feet",
@@ -1690,15 +1675,6 @@
         },
         {
           "slot": "finger1",
-          "item_id": 20426,
-          "item_name": "Advisor's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 5,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 6750,
           "item_name": "Snake Hoop",
           "source": "Quests",
@@ -1707,10 +1683,19 @@
           "verified": true
         },
         {
+          "slot": "finger2",
+          "item_id": 1156,
+          "item_name": "Lavishly Jeweled Ring",
+          "source": "The Deadmines: Gilnid",
+          "source_kind": "dungeon",
+          "score": 4.089179805370668,
+          "verified": true
+        },
+        {
           "slot": "trinket1",
           "item_id": 21566,
           "item_name": "Rune of Perfection",
-          "source": "Silverwing Sentinels",
+          "source": "Warsong Outriders",
           "source_kind": "rep",
           "verified": true
         },
@@ -1718,7 +1703,7 @@
           "slot": "trinket2",
           "item_id": 21568,
           "item_name": "Rune of Duty",
-          "source": "Silverwing Sentinels",
+          "source": "Warsong Outriders",
           "source_kind": "rep",
           "verified": true
         },
@@ -1745,8 +1730,8 @@
           "verified": true
         }
       ],
-      "set_dps": 29.390348437271058,
-      "no_source_count": 947,
+      "set_dps": 28.77106516069513,
+      "no_source_count": 954,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -1768,13 +1753,15 @@
         "shoulder: Feline Mantle",
         "back: Windsong Drape",
         "chest: Lesser Wizard's Robe",
+        "wrist: Featherbead Bracers",
         "hands: Truefaith Gloves",
         "waist: Belt of Arugal",
-        "legs: Gaze Dreamer Pants",
-        "finger2: Snake Hoop"
+        "finger1: Snake Hoop",
+        "finger2: Lavishly Jeweled Ring",
+        "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.94505143,
-      "verify_run_seconds": 0.740879059
+      "weights_run_seconds": 0.915338549,
+      "verify_run_seconds": 0.753874213
     },
     {
       "spec": "mage-frost",
@@ -1881,7 +1868,7 @@
           "source_kind": "dungeon",
           "score": 9,
           "verified": true,
-          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 46.5 vs 45.7 set DPS"
+          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 45.0 vs 44.2 set DPS"
         },
         {
           "slot": "hands",
@@ -1891,7 +1878,7 @@
           "source_kind": "quest",
           "score": 7,
           "verified": true,
-          "swap_note": "beat the scored pick Serpent Gloves (id 5970) in the sim: 46.0 vs 45.7 set DPS"
+          "swap_note": "beat the scored pick Serpent Gloves (id 5970) in the sim: 44.4 vs 44.2 set DPS"
         },
         {
           "slot": "waist",
@@ -1931,12 +1918,13 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19525,
-          "item_name": "Lorekeeper's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 7,
-          "verified": true
+          "item_id": 6750,
+          "item_name": "Snake Hoop",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 4.543762107473018,
+          "verified": true,
+          "swap_note": "beat the scored pick Minor Channeling Ring (id 1449) in the sim: 44.3 vs 44.2 set DPS"
         },
         {
           "slot": "trinket1",
@@ -1957,11 +1945,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 19573,
-          "item_name": "Lorekeeper's Staff",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 4.543762107473018,
+          "item_id": 2042,
+          "item_name": "Staff of Westfall",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 3.2455443624807274,
           "verified": true
         },
         {
@@ -1976,11 +1964,11 @@
           "source_kind": "quest",
           "score": 5.947326617488436,
           "verified": true,
-          "swap_note": "beat the scored pick Burning Sliver (id 5249) in the sim: 45.8 vs 45.7 set DPS"
+          "swap_note": "beat the scored pick Burning Sliver (id 5249) in the sim: 44.2 vs 44.2 set DPS"
         }
       ],
-      "set_dps": 46.78162656295716,
-      "no_source_count": 1110,
+      "set_dps": 45.137252763448586,
+      "no_source_count": 1125,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -2007,14 +1995,13 @@
         "hands: Shilly Mitts",
         "waist: Highlander's Cloth Girdle",
         "feet: Acidic Walkers",
-        "finger2: Lorekeeper's Ring",
+        "finger2: Snake Hoop",
         "trinket1: Talisman of Arathor",
         "trinket2: Rune of Perfection",
-        "main_hand: Lorekeeper's Staff",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.977532334,
-      "verify_run_seconds": 0.86263554
+      "weights_run_seconds": 0.932289855,
+      "verify_run_seconds": 0.869138241
     },
     {
       "spec": "mage-frost",
@@ -2160,21 +2147,22 @@
         },
         {
           "slot": "finger1",
-          "item_id": 19521,
-          "item_name": "Advisor's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 7,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 6750,
           "item_name": "Snake Hoop",
           "source": "Quests",
           "source_kind": "quest",
           "score": 4.543762107473018,
           "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 18586,
+          "item_name": "Lonetree's Circle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 3.8946532349768725,
+          "verified": true,
+          "swap_note": "beat the scored pick Lavishly Jeweled Ring (id 1156) in the sim: 39.2 vs 39.1 set DPS"
         },
         {
           "slot": "trinket1",
@@ -2189,7 +2177,7 @@
           "slot": "trinket2",
           "item_id": 21566,
           "item_name": "Rune of Perfection",
-          "source": "Silverwing Sentinels",
+          "source": "Warsong Outriders",
           "source_kind": "rep",
           "verified": true
         },
@@ -2216,8 +2204,8 @@
           "verified": true
         }
       ],
-      "set_dps": 39.85121007626344,
-      "no_source_count": 1111,
+      "set_dps": 39.21959730958898,
+      "no_source_count": 1126,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -2243,16 +2231,15 @@
         "wrist: Spidertank Oilrag",
         "hands: Jutebraid Gloves",
         "waist: Defiler's Cloth Girdle",
-        "legs: Abomination Skin Leggings",
         "feet: Acidic Walkers",
-        "finger1: Advisor's Ring",
+        "finger2: Lonetree's Circle",
         "trinket1: Defiler's Talisman",
         "trinket2: Rune of Perfection",
         "main_hand: Nimboya's Mystical Staff",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.977532334,
-      "verify_run_seconds": 0.857659612
+      "weights_run_seconds": 0.932289855,
+      "verify_run_seconds": 0.90717437
     },
     {
       "spec": "mage-frost",
@@ -2359,7 +2346,7 @@
           "source_kind": "dungeon",
           "score": 9,
           "verified": true,
-          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 51.8 vs 51.1 set DPS"
+          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 51.2 vs 50.6 set DPS"
         },
         {
           "slot": "hands",
@@ -2378,7 +2365,7 @@
           "source_kind": "crafted",
           "score": 13,
           "verified": true,
-          "swap_note": "beat the scored pick Highlander's Cloth Girdle (id 20099) in the sim: 51.2 vs 51.1 set DPS"
+          "swap_note": "beat the scored pick Highlander's Cloth Girdle (id 20099) in the sim: 50.7 vs 50.6 set DPS"
         },
         {
           "slot": "legs",
@@ -2409,12 +2396,13 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19525,
-          "item_name": "Lorekeeper's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 7,
-          "verified": true
+          "item_id": 6750,
+          "item_name": "Snake Hoop",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 4.840903727151698,
+          "verified": true,
+          "swap_note": "beat the scored pick Minor Channeling Ring (id 1449) in the sim: 50.7 vs 50.6 set DPS"
         },
         {
           "slot": "trinket1",
@@ -2448,17 +2436,16 @@
         },
         {
           "slot": "ranged",
-          "item_id": 5249,
-          "item_name": "Burning Sliver",
+          "item_id": 6729,
+          "item_name": "Fizzle's Zippy Lighter",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 6,
-          "verified": true,
-          "swap_note": "beat the scored pick Fizzle's Zippy Lighter (id 6729) in the sim: 51.1 vs 51.1 set DPS"
+          "score": 6.074673025922156,
+          "verified": true
         }
       ],
-      "set_dps": 51.88391348245743,
-      "no_source_count": 1247,
+      "set_dps": 51.55504306202447,
+      "no_source_count": 1262,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -2482,11 +2469,10 @@
         "chest: Robe of Power",
         "hands: Truefaith Gloves",
         "waist: Star Belt",
-        "main_hand: Illusionary Rod",
-        "ranged: Burning Sliver"
+        "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 1.004291969,
-      "verify_run_seconds": 0.900376096
+      "weights_run_seconds": 1.016966393,
+      "verify_run_seconds": 0.899413308
     },
     {
       "spec": "mage-frost",
@@ -2593,7 +2579,7 @@
           "source_kind": "dungeon",
           "score": 9,
           "verified": true,
-          "swap_note": "beat the scored pick Radiant Silver Bracers (id 4545) in the sim: 44.0 vs 43.7 set DPS"
+          "swap_note": "beat the scored pick Radiant Silver Bracers (id 4545) in the sim: 43.5 vs 43.0 set DPS"
         },
         {
           "slot": "hands",
@@ -2603,7 +2589,7 @@
           "source_kind": "crafted",
           "score": 7.074673025922156,
           "verified": true,
-          "swap_note": "beat the scored pick Jutebraid Gloves (id 10654) in the sim: 44.1 vs 43.7 set DPS"
+          "swap_note": "beat the scored pick Jutebraid Gloves (id 10654) in the sim: 43.3 vs 43.0 set DPS"
         },
         {
           "slot": "waist",
@@ -2613,7 +2599,7 @@
           "source_kind": "crafted",
           "score": 13,
           "verified": true,
-          "swap_note": "beat the scored pick Defiler's Cloth Girdle (id 20164) in the sim: 43.8 vs 43.7 set DPS"
+          "swap_note": "beat the scored pick Defiler's Cloth Girdle (id 20164) in the sim: 43.1 vs 43.0 set DPS"
         },
         {
           "slot": "legs",
@@ -2635,21 +2621,22 @@
         },
         {
           "slot": "finger1",
-          "item_id": 19521,
-          "item_name": "Advisor's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 7,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 6750,
           "item_name": "Snake Hoop",
           "source": "Quests",
           "source_kind": "quest",
           "score": 4.840903727151698,
           "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 18586,
+          "item_name": "Lonetree's Circle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 4.149346051844312,
+          "verified": true,
+          "swap_note": "beat the scored pick Lavishly Jeweled Ring (id 1156) in the sim: 43.2 vs 43.0 set DPS"
         },
         {
           "slot": "trinket1",
@@ -2664,7 +2651,7 @@
           "slot": "trinket2",
           "item_id": 21566,
           "item_name": "Rune of Perfection",
-          "source": "Silverwing Sentinels",
+          "source": "Warsong Outriders",
           "source_kind": "rep",
           "verified": true
         },
@@ -2676,7 +2663,7 @@
           "source_kind": "quest",
           "score": 5.5324614024590835,
           "verified": true,
-          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 44.1 vs 43.7 set DPS"
+          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 43.3 vs 43.0 set DPS"
         },
         {
           "slot": "off_hand",
@@ -2692,8 +2679,8 @@
           "verified": true
         }
       ],
-      "set_dps": 44.578033141909835,
-      "no_source_count": 1248,
+      "set_dps": 44.14481790950005,
+      "no_source_count": 1263,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -2718,8 +2705,8 @@
         "hands: Truefaith Gloves",
         "waist: Star Belt"
       ],
-      "weights_run_seconds": 1.004291969,
-      "verify_run_seconds": 0.945940411
+      "weights_run_seconds": 1.016966393,
+      "verify_run_seconds": 0.974414606
     },
     {
       "spec": "mage-frost",
@@ -2799,7 +2786,7 @@
           "source_kind": "crafted",
           "score": 9.762962875300301,
           "verified": true,
-          "swap_note": "beat the scored pick Bloodmage Mantle (id 7684) in the sim: 68.0 vs 67.8 set DPS"
+          "swap_note": "beat the scored pick Bloodmage Mantle (id 7684) in the sim: 64.8 vs 64.7 set DPS"
         },
         {
           "slot": "back",
@@ -2809,7 +2796,7 @@
           "source_kind": "crafted",
           "score": 6.801346761500136,
           "verified": true,
-          "swap_note": "beat the scored pick Icy Cloak (id 4327) in the sim: 68.0 vs 67.8 set DPS"
+          "swap_note": "beat the scored pick Icy Cloak (id 4327) in the sim: 64.9 vs 64.7 set DPS"
         },
         {
           "slot": "chest",
@@ -2822,12 +2809,13 @@
         },
         {
           "slot": "wrist",
-          "item_id": 19597,
-          "item_name": "Dryad's Wrist Bindings",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 16.961616113800165,
-          "verified": true
+          "item_id": 9448,
+          "item_name": "Spidertank Oilrag",
+          "source": "Gnomeregan",
+          "source_kind": "dungeon",
+          "score": 9,
+          "verified": true,
+          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 65.4 vs 64.7 set DPS"
         },
         {
           "slot": "hands",
@@ -2867,20 +2855,20 @@
         },
         {
           "slot": "finger1",
-          "item_id": 19524,
-          "item_name": "Lorekeeper's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 9,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 2043,
           "item_name": "Ring of Forlorn Spirits",
           "source": "Quests",
           "source_kind": "quest",
           "score": 8,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 1449,
+          "item_name": "Minor Channeling Ring",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5.320538704600055,
           "verified": true
         },
         {
@@ -2908,7 +2896,7 @@
           "source_kind": "quest",
           "score": 3.686195102900629,
           "verified": true,
-          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 69.6 vs 67.8 set DPS"
+          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 66.3 vs 64.7 set DPS"
         },
         {
           "slot": "off_hand",
@@ -2924,8 +2912,8 @@
           "verified": true
         }
       ],
-      "set_dps": 69.89158279563574,
-      "no_source_count": 1404,
+      "set_dps": 67.47664688197369,
+      "no_source_count": 1428,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -2946,19 +2934,18 @@
       "new_at_band": [
         "head: Spellpower Goggles Xtreme",
         "chest: Dreamweave Vest",
-        "wrist: Dryad's Wrist Bindings",
         "hands: Dreamweave Gloves",
         "waist: Highlander's Cloth Girdle",
         "legs: Red Mageweave Pants",
         "feet: Southsea Mojo Boots",
-        "finger1: Lorekeeper's Ring",
-        "finger2: Ring of Forlorn Spirits",
+        "finger2: Minor Channeling Ring",
         "trinket1: Thunderbrew's Boot Flask",
         "trinket2: Carrot on a Stick",
-        "main_hand: Spellshifter Rod"
+        "main_hand: Spellshifter Rod",
+        "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 0.993065847,
-      "verify_run_seconds": 0.879353184
+      "weights_run_seconds": 0.995744118,
+      "verify_run_seconds": 0.90947418
     },
     {
       "spec": "mage-frost",
@@ -3038,7 +3025,7 @@
           "source_kind": "crafted",
           "score": 9.762962875300301,
           "verified": true,
-          "swap_note": "beat the scored pick Bloodmage Mantle (id 7684) in the sim: 57.6 vs 57.6 set DPS"
+          "swap_note": "beat the scored pick Bloodmage Mantle (id 7684) in the sim: 54.8 vs 54.4 set DPS"
         },
         {
           "slot": "back",
@@ -3048,7 +3035,7 @@
           "source_kind": "crafted",
           "score": 6.801346761500136,
           "verified": true,
-          "swap_note": "beat the scored pick Icy Cloak (id 4327) in the sim: 57.6 vs 57.6 set DPS"
+          "swap_note": "beat the scored pick Icy Cloak (id 4327) in the sim: 55.2 vs 54.4 set DPS"
         },
         {
           "slot": "chest",
@@ -3061,11 +3048,11 @@
         },
         {
           "slot": "wrist",
-          "item_id": 19597,
-          "item_name": "Dryad's Wrist Bindings",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 16.961616113800165,
+          "item_id": 9448,
+          "item_name": "Spidertank Oilrag",
+          "source": "Gnomeregan",
+          "source_kind": "dungeon",
+          "score": 9,
           "verified": true
         },
         {
@@ -3106,21 +3093,22 @@
         },
         {
           "slot": "finger1",
-          "item_id": 19520,
-          "item_name": "Advisor's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 9,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 9447,
           "item_name": "Electrocutioner Lagnut",
           "source": "Gnomeregan",
           "source_kind": "dungeon",
           "score": 3,
           "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 6750,
+          "item_name": "Snake Hoop",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 1.1218854661001914,
+          "verified": true,
+          "swap_note": "beat the scored pick Sacred Band (id 6669) in the sim: 55.7 vs 54.4 set DPS"
         },
         {
           "slot": "trinket1",
@@ -3146,7 +3134,7 @@
           "source_kind": "quest",
           "score": 3.686195102900629,
           "verified": true,
-          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 59.1 vs 57.6 set DPS"
+          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 56.2 vs 54.4 set DPS"
         },
         {
           "slot": "off_hand",
@@ -3160,11 +3148,11 @@
           "source_kind": "quest",
           "score": 4.480808056900082,
           "verified": true,
-          "swap_note": "beat the scored pick Sizzle Stick (id 8071) in the sim: 57.7 vs 57.6 set DPS"
+          "swap_note": "beat the scored pick Sizzle Stick (id 8071) in the sim: 55.1 vs 54.4 set DPS"
         }
       ],
-      "set_dps": 59.749814981400405,
-      "no_source_count": 1405,
+      "set_dps": 57.825644604255885,
+      "no_source_count": 1429,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -3185,19 +3173,18 @@
       "new_at_band": [
         "head: Spellpower Goggles Xtreme",
         "chest: Dreamweave Vest",
-        "wrist: Dryad's Wrist Bindings",
         "hands: Dreamweave Gloves",
         "waist: Defiler's Cloth Girdle",
         "legs: Red Mageweave Pants",
         "feet: Southsea Mojo Boots",
-        "finger1: Advisor's Ring",
-        "finger2: Electrocutioner Lagnut",
+        "finger1: Electrocutioner Lagnut",
+        "finger2: Snake Hoop",
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 0.993065847,
-      "verify_run_seconds": 0.966135895
+      "weights_run_seconds": 0.995744118,
+      "verify_run_seconds": 0.982068055
     },
     {
       "spec": "mage-frost",
@@ -3298,11 +3285,11 @@
         },
         {
           "slot": "wrist",
-          "item_id": 19597,
-          "item_name": "Dryad's Wrist Bindings",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 21.879653282388986,
+          "item_id": 10705,
+          "item_name": "Firwillow Wristbands",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 9.799422137314979,
           "verified": true
         },
         {
@@ -3313,7 +3300,7 @@
           "source_kind": "crafted",
           "score": 21.91976885492599,
           "verified": true,
-          "swap_note": "beat the scored pick Earth Warder's Gloves (id 21318) in the sim: 81.0 vs 80.7 set DPS"
+          "swap_note": "beat the scored pick Earth Warder's Gloves (id 21318) in the sim: 77.7 vs 77.5 set DPS"
         },
         {
           "slot": "waist",
@@ -3344,11 +3331,490 @@
         },
         {
           "slot": "finger1",
-          "item_id": 19524,
-          "item_name": "Lorekeeper's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "item_id": 2043,
+          "item_name": "Ring of Forlorn Spirits",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 6750,
+          "item_name": "Snake Hoop",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 6.859595496120485,
+          "verified": true,
+          "swap_note": "beat the scored pick Minor Channeling Ring (id 1449) in the sim: 77.6 vs 77.5 set DPS"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 7713,
+          "item_name": "Illusionary Rod",
+          "source": "Scarlet Monastery: Arcanist Doan",
+          "source_kind": "dungeon",
+          "score": 57.68590138774217,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.91976885492599,
+          "verified": true
+        }
+      ],
+      "set_dps": 77.83719392992943,
+      "no_source_count": 1571,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "head: Red Mageweave Headband",
+        "shoulder: Red Mageweave Shoulders",
+        "back: Big Voodoo Cloak",
+        "chest: Acumen Robes",
+        "wrist: Firwillow Wristbands",
+        "waist: Satyrmane Sash",
+        "finger2: Snake Hoop",
+        "trinket1: Demon's Blood",
+        "trinket2: Shard of the Splithooves",
+        "main_hand: Illusionary Rod",
+        "ranged: Charged Lightning Rod"
+      ],
+      "weights_run_seconds": 1.014712962,
+      "verify_run_seconds": 0.899394829
+    },
+    {
+      "spec": "mage-frost",
+      "band": 45,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "000000000000000000-23000000000000000-2535111300000301051",
+      "talent_points": 36,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1,
+          "error": 0.004179490957944694,
+          "insignificant": false
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.9799422137314978,
+          "error": 0.22924630936559065,
+          "insignificant": false
+        },
+        {
+          "stat": "crit",
+          "weight": 3.700446293239513,
+          "error": 0.24094559583006686,
+          "insignificant": false
+        },
+        {
+          "stat": "hit",
+          "weight": 4.981993476985656,
+          "error": 0.3539633290673636,
+          "insignificant": false
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
+        },
+        {
+          "stat": "frost_power",
+          "weight": 1,
+          "error": 0.004179490957944694,
+          "insignificant": false
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10033,
+          "item_name": "Red Mageweave Headband",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 38.598844274629954,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 23169,
+          "item_name": "Scorn's Icy Choker",
+          "source": "Scarlet Monastery: Scorn",
+          "source_kind": "dungeon",
+          "score": 12.879653282388986,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10029,
+          "item_name": "Red Mageweave Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 21.699133205972466,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 8216,
+          "item_name": "Big Voodoo Cloak",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 13.819479923583481,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 17775,
+          "item_name": "Acumen Robes",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 38.598844274629954,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 9448,
+          "item_name": "Spidertank Oilrag",
+          "source": "Gnomeregan",
+          "source_kind": "dungeon",
           "score": 9,
+          "verified": true,
+          "swap_note": "beat the scored pick Radiant Silver Bracers (id 4545) in the sim: 67.3 vs 66.7 set DPS"
+        },
+        {
+          "slot": "hands",
+          "item_id": 10019,
+          "item_name": "Dreamweave Gloves",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 21.91976885492599,
+          "verified": true,
+          "swap_note": "beat the scored pick Earth Warder's Gloves (id 21318) in the sim: 67.1 vs 66.7 set DPS"
+        },
+        {
+          "slot": "waist",
+          "item_id": 17755,
+          "item_name": "Satyrmane Sash",
+          "source": "Maraudon: Lord Vyletongue",
+          "source_kind": "dungeon",
+          "score": 23.799422137314977,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10009,
+          "item_name": "Red Mageweave Pants",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 25.759306564777972,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 10026,
+          "item_name": "Black Mageweave Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 17.859595496120484,
+          "verified": true,
+          "swap_note": "beat the scored pick Southsea Mojo Boots (id 20641) in the sim: 66.8 vs 66.7 set DPS"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 6750,
+          "item_name": "Snake Hoop",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 6.859595496120485,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 18586,
+          "item_name": "Lonetree's Circle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5.879653282388987,
+          "verified": true,
+          "swap_note": "beat the scored pick Lavishly Jeweled Ring (id 1156) in the sim: 66.8 vs 66.7 set DPS"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 7713,
+          "item_name": "Illusionary Rod",
+          "source": "Scarlet Monastery: Arcanist Doan",
+          "source_kind": "dungeon",
+          "score": 57.68590138774217,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11860,
+          "item_name": "Charged Lightning Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.91976885492599,
+          "verified": true
+        }
+      ],
+      "set_dps": 67.46007954597194,
+      "no_source_count": 1572,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "head: Red Mageweave Headband",
+        "shoulder: Red Mageweave Shoulders",
+        "back: Big Voodoo Cloak",
+        "chest: Acumen Robes",
+        "waist: Satyrmane Sash",
+        "feet: Black Mageweave Boots",
+        "finger1: Snake Hoop",
+        "finger2: Lonetree's Circle",
+        "trinket1: Shard of the Splithooves",
+        "trinket2: Demon's Blood",
+        "main_hand: Illusionary Rod",
+        "ranged: Charged Lightning Rod"
+      ],
+      "weights_run_seconds": 1.014712962,
+      "verify_run_seconds": 0.969668316
+    },
+    {
+      "spec": "mage-frost",
+      "band": 50,
+      "faction": "alliance",
+      "race": "gnome",
+      "talents": "000000000000000000-23500000000000000-2535111300000301051",
+      "talent_points": 41,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1,
+          "error": 0.004241809286879367,
+          "insignificant": false
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.6272920882825829,
+          "error": 0.19030568902184056,
+          "insignificant": true
+        },
+        {
+          "stat": "crit",
+          "weight": 4.673520416205103,
+          "error": 0.2968555597329665,
+          "insignificant": false
+        },
+        {
+          "stat": "hit",
+          "weight": 5.869308796230101,
+          "error": 0.4214227893753818,
+          "insignificant": false
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.3445527914916721,
+          "error": 0.08306547058377053,
+          "insignificant": false
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
+        },
+        {
+          "stat": "frost_power",
+          "weight": 1,
+          "error": 0.004241809286879367,
+          "insignificant": false
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10033,
+          "item_name": "Red Mageweave Headband",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 31.54584176565166,
+          "verified": true,
+          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 85.9 vs 84.1 set DPS"
+        },
+        {
+          "slot": "neck",
+          "item_id": 15856,
+          "item_name": "Archlight Talisman",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18.27292088282583,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 17732,
+          "item_name": "Rotgrip Mantle",
+          "source": "Maraudon: Rotgrip",
+          "source_kind": "dungeon",
+          "score": 24.29125758908649,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 11623,
+          "item_name": "Spritecaster Cape",
+          "source": "Blackrock Depths: High Interrogator Gerstahn ",
+          "source_kind": "dungeon",
+          "score": 17.7637525296955,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 17775,
+          "item_name": "Acumen Robes",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 31.54584176565166,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 9448,
+          "item_name": "Spidertank Oilrag",
+          "source": "Gnomeregan",
+          "source_kind": "dungeon",
+          "score": 9,
+          "verified": true,
+          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 84.9 vs 84.1 set DPS"
+        },
+        {
+          "slot": "hands",
+          "item_id": 10019,
+          "item_name": "Dreamweave Gloves",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 20.50916835313033,
+          "verified": true,
+          "swap_note": "beat the scored pick Earth Warder's Gloves (id 21318) in the sim: 84.6 vs 84.1 set DPS"
+        },
+        {
+          "slot": "waist",
+          "item_id": 17755,
+          "item_name": "Satyrmane Sash",
+          "source": "Maraudon: Lord Vyletongue",
+          "source_kind": "dungeon",
+          "score": 20.27292088282583,
+          "verified": true,
+          "swap_note": "beat the scored pick Highlander's Cloth Girdle (id 20097) in the sim: 85.2 vs 84.1 set DPS"
+        },
+        {
+          "slot": "legs",
+          "item_id": 10009,
+          "item_name": "Red Mageweave Pants",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 21.527505059390997,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 14.900212971108411,
+          "verified": true,
+          "swap_note": "beat the scored pick Black Mageweave Boots (id 10026) in the sim: 84.3 vs 84.1 set DPS"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 17713,
+          "item_name": "Blackstone Ring",
+          "source": "Maraudon: Princess Theradras",
+          "source_kind": "dungeon",
+          "score": 58.69308796230101,
           "verified": true
         },
         {
@@ -3378,475 +3844,6 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7713,
-          "item_name": "Illusionary Rod",
-          "source": "Scarlet Monastery: Arcanist Doan",
-          "source_kind": "dungeon",
-          "score": 57.68590138774217,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "item_id": 11860,
-          "item_name": "Charged Lightning Rod",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 8.91976885492599,
-          "verified": true
-        }
-      ],
-      "set_dps": 80.96243400662398,
-      "no_source_count": 1547,
-      "no_source_sample": [
-        "727 Notched Shortsword",
-        "753 Dragonmaw Shortsword",
-        "754 Shortsword of Vengeance",
-        "791 Gnarled Ash Staff",
-        "816 Small Hand Blade",
-        "820 Slicer Blade",
-        "864 Knightly Longsword",
-        "866 Monk's Staff",
-        "873 Staff of Jordan",
-        "880 Staff of Horrors",
-        "886 Black Metal Shortsword",
-        "890 Twisted Chanter's Staff",
-        "892 Gnoll Casting Gloves",
-        "899 Venom Web Fang",
-        "935 Night Watch Shortsword"
-      ],
-      "new_at_band": [
-        "head: Red Mageweave Headband",
-        "shoulder: Red Mageweave Shoulders",
-        "back: Big Voodoo Cloak",
-        "chest: Acumen Robes",
-        "waist: Satyrmane Sash",
-        "trinket1: Demon's Blood",
-        "trinket2: Shard of the Splithooves",
-        "main_hand: Illusionary Rod",
-        "ranged: Charged Lightning Rod"
-      ],
-      "weights_run_seconds": 1.021841427,
-      "verify_run_seconds": 0.882982232
-    },
-    {
-      "spec": "mage-frost",
-      "band": 45,
-      "faction": "horde",
-      "race": "troll",
-      "talents": "000000000000000000-23000000000000000-2535111300000301051",
-      "talent_points": 36,
-      "weights": [
-        {
-          "stat": "spell_power",
-          "weight": 1,
-          "error": 0.004179490957944694,
-          "insignificant": false
-        },
-        {
-          "stat": "intellect",
-          "weight": 0.9799422137314978,
-          "error": 0.22924630936559065,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 3.700446293239513,
-          "error": 0.24094559583006686,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 4.981993476985656,
-          "error": 0.3539633290673636,
-          "insignificant": false
-        },
-        {
-          "stat": "spell_haste",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "spell_penetration",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "frost_power",
-          "weight": 1,
-          "error": 0.004179490957944694,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 10033,
-          "item_name": "Red Mageweave Headband",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 38.598844274629954,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 23169,
-          "item_name": "Scorn's Icy Choker",
-          "source": "Scarlet Monastery: Scorn",
-          "source_kind": "dungeon",
-          "score": 12.879653282388986,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 10029,
-          "item_name": "Red Mageweave Shoulders",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 21.699133205972466,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 8216,
-          "item_name": "Big Voodoo Cloak",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 13.819479923583481,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 17775,
-          "item_name": "Acumen Robes",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 38.598844274629954,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 19597,
-          "item_name": "Dryad's Wrist Bindings",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 21.879653282388986,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 10019,
-          "item_name": "Dreamweave Gloves",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 21.91976885492599,
-          "verified": true,
-          "swap_note": "beat the scored pick Earth Warder's Gloves (id 21318) in the sim: 69.6 vs 69.6 set DPS"
-        },
-        {
-          "slot": "waist",
-          "item_id": 17755,
-          "item_name": "Satyrmane Sash",
-          "source": "Maraudon: Lord Vyletongue",
-          "source_kind": "dungeon",
-          "score": 23.799422137314977,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 10009,
-          "item_name": "Red Mageweave Pants",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 25.759306564777972,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 20641,
-          "item_name": "Southsea Mojo Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 18.779364351046475,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 19520,
-          "item_name": "Advisor's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 9,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 6750,
-          "item_name": "Snake Hoop",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6.859595496120485,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 10659,
-          "item_name": "Shard of the Splithooves",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 7713,
-          "item_name": "Illusionary Rod",
-          "source": "Scarlet Monastery: Arcanist Doan",
-          "source_kind": "dungeon",
-          "score": 57.68590138774217,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "item_id": 11860,
-          "item_name": "Charged Lightning Rod",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 8.91976885492599,
-          "verified": true
-        }
-      ],
-      "set_dps": 69.61820951799858,
-      "no_source_count": 1548,
-      "no_source_sample": [
-        "727 Notched Shortsword",
-        "753 Dragonmaw Shortsword",
-        "754 Shortsword of Vengeance",
-        "791 Gnarled Ash Staff",
-        "816 Small Hand Blade",
-        "820 Slicer Blade",
-        "864 Knightly Longsword",
-        "866 Monk's Staff",
-        "873 Staff of Jordan",
-        "880 Staff of Horrors",
-        "886 Black Metal Shortsword",
-        "890 Twisted Chanter's Staff",
-        "892 Gnoll Casting Gloves",
-        "899 Venom Web Fang",
-        "935 Night Watch Shortsword"
-      ],
-      "new_at_band": [
-        "head: Red Mageweave Headband",
-        "shoulder: Red Mageweave Shoulders",
-        "back: Big Voodoo Cloak",
-        "chest: Acumen Robes",
-        "waist: Satyrmane Sash",
-        "finger2: Snake Hoop",
-        "trinket1: Shard of the Splithooves",
-        "trinket2: Demon's Blood",
-        "main_hand: Illusionary Rod",
-        "ranged: Charged Lightning Rod"
-      ],
-      "weights_run_seconds": 1.021841427,
-      "verify_run_seconds": 0.975049494
-    },
-    {
-      "spec": "mage-frost",
-      "band": 50,
-      "faction": "alliance",
-      "race": "gnome",
-      "talents": "000000000000000000-23500000000000000-2535111300000301051",
-      "talent_points": 41,
-      "weights": [
-        {
-          "stat": "spell_power",
-          "weight": 1,
-          "error": 0.004241809286879367,
-          "insignificant": false
-        },
-        {
-          "stat": "intellect",
-          "weight": 0.6272920882825829,
-          "error": 0.19030568902184056,
-          "insignificant": true
-        },
-        {
-          "stat": "crit",
-          "weight": 4.673520416205103,
-          "error": 0.2968555597329665,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 5.869308796230101,
-          "error": 0.4214227893753818,
-          "insignificant": false
-        },
-        {
-          "stat": "spell_haste",
-          "weight": 0.3445527914916721,
-          "error": 0.08306547058377053,
-          "insignificant": false
-        },
-        {
-          "stat": "spell_penetration",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "frost_power",
-          "weight": 1,
-          "error": 0.004241809286879367,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 10033,
-          "item_name": "Red Mageweave Headband",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 31.54584176565166,
-          "verified": true,
-          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 90.9 vs 88.9 set DPS"
-        },
-        {
-          "slot": "neck",
-          "item_id": 15856,
-          "item_name": "Archlight Talisman",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 18.27292088282583,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 17732,
-          "item_name": "Rotgrip Mantle",
-          "source": "Maraudon: Rotgrip",
-          "source_kind": "dungeon",
-          "score": 24.29125758908649,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 11623,
-          "item_name": "Spritecaster Cape",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
-          "source_kind": "dungeon",
-          "score": 17.7637525296955,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 17775,
-          "item_name": "Acumen Robes",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 31.54584176565166,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 19596,
-          "item_name": "Dryad's Wrist Bindings",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 23.7637525296955,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 10019,
-          "item_name": "Dreamweave Gloves",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 20.50916835313033,
-          "verified": true,
-          "swap_note": "beat the scored pick Earth Warder's Gloves (id 21318) in the sim: 89.2 vs 88.9 set DPS"
-        },
-        {
-          "slot": "waist",
-          "item_id": 17755,
-          "item_name": "Satyrmane Sash",
-          "source": "Maraudon: Lord Vyletongue",
-          "source_kind": "dungeon",
-          "score": 20.27292088282583,
-          "verified": true,
-          "swap_note": "beat the scored pick Highlander's Cloth Girdle (id 20097) in the sim: 89.8 vs 88.9 set DPS"
-        },
-        {
-          "slot": "legs",
-          "item_id": 10009,
-          "item_name": "Red Mageweave Pants",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 21.527505059390997,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 10026,
-          "item_name": "Black Mageweave Boots",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 15.39104461797808,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 17713,
-          "item_name": "Blackstone Ring",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
-          "score": 58.69308796230101,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 19523,
-          "item_name": "Lorekeeper's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 12,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 10659,
-          "item_name": "Shard of the Splithooves",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
           "item_id": 11750,
           "item_name": "Kindling Stave",
           "source": "Blackrock Depths: Pyromancer Loregrain",
@@ -3868,8 +3865,8 @@
           "verified": true
         }
       ],
-      "set_dps": 92.15315107096328,
-      "no_source_count": 1728,
+      "set_dps": 88.58922773883046,
+      "no_source_count": 1761,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -3891,14 +3888,13 @@
         "neck: Archlight Talisman",
         "shoulder: Rotgrip Mantle",
         "back: Spritecaster Cape",
-        "wrist: Dryad's Wrist Bindings",
-        "feet: Black Mageweave Boots",
+        "wrist: Spidertank Oilrag",
         "finger1: Blackstone Ring",
-        "finger2: Lorekeeper's Ring",
+        "finger2: Ring of Forlorn Spirits",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.040423424,
-      "verify_run_seconds": 0.933978826
+      "weights_run_seconds": 1.015409112,
+      "verify_run_seconds": 0.925520808
     },
     {
       "spec": "mage-frost",
@@ -3960,7 +3956,7 @@
           "source_kind": "crafted",
           "score": 31.54584176565166,
           "verified": true,
-          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 78.2 vs 76.5 set DPS"
+          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 74.9 vs 73.1 set DPS"
         },
         {
           "slot": "neck",
@@ -4000,12 +3996,13 @@
         },
         {
           "slot": "wrist",
-          "item_id": 19596,
-          "item_name": "Dryad's Wrist Bindings",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 23.7637525296955,
-          "verified": true
+          "item_id": 9448,
+          "item_name": "Spidertank Oilrag",
+          "source": "Gnomeregan",
+          "source_kind": "dungeon",
+          "score": 9,
+          "verified": true,
+          "swap_note": "beat the scored pick Radiant Silver Bracers (id 4545) in the sim: 73.8 vs 73.1 set DPS"
         },
         {
           "slot": "hands",
@@ -4015,7 +4012,7 @@
           "source_kind": "crafted",
           "score": 20.50916835313033,
           "verified": true,
-          "swap_note": "beat the scored pick Earth Warder's Gloves (id 21318) in the sim: 76.7 vs 76.5 set DPS"
+          "swap_note": "beat the scored pick Earth Warder's Gloves (id 21318) in the sim: 73.4 vs 73.1 set DPS"
         },
         {
           "slot": "waist",
@@ -4025,7 +4022,7 @@
           "source_kind": "dungeon",
           "score": 20.27292088282583,
           "verified": true,
-          "swap_note": "beat the scored pick Defiler's Cloth Girdle (id 20165) in the sim: 77.3 vs 76.5 set DPS"
+          "swap_note": "beat the scored pick Defiler's Cloth Girdle (id 20165) in the sim: 74.0 vs 73.1 set DPS"
         },
         {
           "slot": "legs",
@@ -4044,7 +4041,7 @@
           "source_kind": "quest",
           "score": 14.900212971108411,
           "verified": true,
-          "swap_note": "beat the scored pick Black Mageweave Boots (id 10026) in the sim: 76.7 vs 76.5 set DPS"
+          "swap_note": "beat the scored pick Black Mageweave Boots (id 10026) in the sim: 73.2 vs 73.1 set DPS"
         },
         {
           "slot": "finger1",
@@ -4057,12 +4054,13 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19519,
-          "item_name": "Advisor's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 12,
-          "verified": true
+          "item_id": 6750,
+          "item_name": "Snake Hoop",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 4.39104461797808,
+          "verified": true,
+          "swap_note": "beat the scored pick Chemist's Ring (id 15702) in the sim: 73.2 vs 73.1 set DPS"
         },
         {
           "slot": "trinket1",
@@ -4103,8 +4101,8 @@
           "verified": true
         }
       ],
-      "set_dps": 79.37961409147012,
-      "no_source_count": 1729,
+      "set_dps": 76.33622688093809,
+      "no_source_count": 1762,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -4126,15 +4124,15 @@
         "neck: Archlight Talisman",
         "shoulder: Rotgrip Mantle",
         "back: Spritecaster Cape",
-        "wrist: Dryad's Wrist Bindings",
+        "feet: Southsea Mojo Boots",
         "finger1: Blackstone Ring",
-        "finger2: Advisor's Ring",
+        "finger2: Snake Hoop",
         "trinket1: Demon's Blood",
         "trinket2: Shard of the Splithooves",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.040423424,
-      "verify_run_seconds": 1.010283404
+      "weights_run_seconds": 1.015409112,
+      "verify_run_seconds": 0.979744187
     },
     {
       "spec": "mage-frost",
@@ -4196,7 +4194,7 @@
           "source_kind": "crafted",
           "score": 32.78602257362681,
           "verified": true,
-          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 92.4 vs 90.3 set DPS"
+          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 89.7 vs 87.6 set DPS"
         },
         {
           "slot": "neck",
@@ -4236,12 +4234,13 @@
         },
         {
           "slot": "wrist",
-          "item_id": 19596,
-          "item_name": "Dryad's Wrist Bindings",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 24.135806772088042,
-          "verified": true
+          "item_id": 9448,
+          "item_name": "Spidertank Oilrag",
+          "source": "Gnomeregan",
+          "source_kind": "dungeon",
+          "score": 9,
+          "verified": true,
+          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 88.3 vs 87.6 set DPS"
         },
         {
           "slot": "hands",
@@ -4251,7 +4250,7 @@
           "source_kind": "quest",
           "score": 22,
           "verified": true,
-          "swap_note": "beat the scored pick Dreadmist Wraps (id 16705) in the sim: 90.5 vs 90.3 set DPS"
+          "swap_note": "beat the scored pick Dreadmist Wraps (id 16705) in the sim: 87.8 vs 87.6 set DPS"
         },
         {
           "slot": "waist",
@@ -4261,7 +4260,7 @@
           "source_kind": "rep",
           "score": 24.893011286813405,
           "verified": true,
-          "swap_note": "beat the scored pick Highlander's Cloth Girdle (id 20097) in the sim: 92.0 vs 90.3 set DPS"
+          "swap_note": "beat the scored pick Highlander's Cloth Girdle (id 20097) in the sim: 89.1 vs 87.6 set DPS"
         },
         {
           "slot": "legs",
@@ -4292,13 +4291,13 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19523,
-          "item_name": "Lorekeeper's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 12,
+          "item_id": 18402,
+          "item_name": "Glowing Crystal Ring",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.271613544176084,
           "verified": true,
-          "swap_note": "beat the scored pick Blackstone Ring (id 17713) in the sim: 92.6 vs 90.3 set DPS"
+          "swap_note": "beat the scored pick Blackstone Ring (id 17713) in the sim: 88.4 vs 87.6 set DPS"
         },
         {
           "slot": "trinket1",
@@ -4339,8 +4338,8 @@
           "verified": true
         }
       ],
-      "set_dps": 96.06477585198726,
-      "no_source_count": 1878,
+      "set_dps": 92.95251217678485,
+      "no_source_count": 1911,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -4365,11 +4364,12 @@
         "legs: Ghostweave Pants",
         "feet: Omnicast Boots",
         "finger1: Band of the Penitent",
+        "finger2: Glowing Crystal Ring",
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.032509295,
-      "verify_run_seconds": 0.898996412
+      "weights_run_seconds": 1.041571516,
+      "verify_run_seconds": 0.915223274
     },
     {
       "spec": "mage-frost",
@@ -4431,16 +4431,17 @@
           "source_kind": "crafted",
           "score": 32.78602257362681,
           "verified": true,
-          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 79.1 vs 77.3 set DPS"
+          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 76.9 vs 75.2 set DPS"
         },
         {
           "slot": "neck",
-          "item_id": 23125,
-          "item_name": "Chains of the Lich",
-          "source": "Stratholme: Balzaphon",
-          "source_kind": "dungeon",
-          "score": 22,
-          "verified": true
+          "item_id": 15856,
+          "item_name": "Archlight Talisman",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18.893011286813405,
+          "verified": true,
+          "swap_note": "beat the scored pick Chains of the Lich (id 23125) in the sim: 75.3 vs 75.2 set DPS"
         },
         {
           "slot": "shoulder",
@@ -4459,7 +4460,7 @@
           "source_kind": "dungeon",
           "score": 18.135806772088042,
           "verified": true,
-          "swap_note": "beat the scored pick Deep Woodlands Cloak (id 19121) in the sim: 77.5 vs 77.3 set DPS"
+          "swap_note": "beat the scored pick Deep Woodlands Cloak (id 19121) in the sim: 75.5 vs 75.2 set DPS"
         },
         {
           "slot": "chest",
@@ -4472,12 +4473,13 @@
         },
         {
           "slot": "wrist",
-          "item_id": 19596,
-          "item_name": "Dryad's Wrist Bindings",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 24.135806772088042,
-          "verified": true
+          "item_id": 9448,
+          "item_name": "Spidertank Oilrag",
+          "source": "Gnomeregan",
+          "source_kind": "dungeon",
+          "score": 9,
+          "verified": true,
+          "swap_note": "beat the scored pick Radiant Silver Bracers (id 4545) in the sim: 75.8 vs 75.2 set DPS"
         },
         {
           "slot": "hands",
@@ -4487,7 +4489,7 @@
           "source_kind": "quest",
           "score": 22,
           "verified": true,
-          "swap_note": "beat the scored pick Dreadmist Wraps (id 16705) in the sim: 77.5 vs 77.3 set DPS"
+          "swap_note": "beat the scored pick Dreadmist Wraps (id 16705) in the sim: 75.3 vs 75.2 set DPS"
         },
         {
           "slot": "waist",
@@ -4497,7 +4499,7 @@
           "source_kind": "rep",
           "score": 24.893011286813405,
           "verified": true,
-          "swap_note": "beat the scored pick Defiler's Cloth Girdle (id 20165) in the sim: 78.8 vs 77.3 set DPS"
+          "swap_note": "beat the scored pick Defiler's Cloth Girdle (id 20165) in the sim: 76.6 vs 75.2 set DPS"
         },
         {
           "slot": "legs",
@@ -4528,13 +4530,13 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19519,
-          "item_name": "Advisor's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 12,
+          "item_id": 18402,
+          "item_name": "Glowing Crystal Ring",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 8.271613544176084,
           "verified": true,
-          "swap_note": "beat the scored pick Blackstone Ring (id 17713) in the sim: 79.2 vs 77.3 set DPS"
+          "swap_note": "beat the scored pick Blackstone Ring (id 17713) in the sim: 76.3 vs 75.2 set DPS"
         },
         {
           "slot": "trinket1",
@@ -4575,8 +4577,8 @@
           "verified": true
         }
       ],
-      "set_dps": 82.55622015741564,
-      "no_source_count": 1879,
+      "set_dps": 79.68983222121526,
+      "no_source_count": 1912,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -4595,17 +4597,17 @@
         "935 Night Watch Shortsword"
       ],
       "new_at_band": [
-        "neck: Chains of the Lich",
         "hands: Earth Warder's Gloves",
         "waist: Frostwolf Cloth Belt",
         "legs: Ghostweave Pants",
         "feet: Omnicast Boots",
         "finger1: Band of the Penitent",
+        "finger2: Glowing Crystal Ring",
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.032509295,
-      "verify_run_seconds": 0.996503066
+      "weights_run_seconds": 1.041571516,
+      "verify_run_seconds": 0.998785297
     },
     {
       "spec": "mage-frost",
@@ -4766,7 +4768,7 @@
           "slot": "finger2",
           "item_id": 19325,
           "item_name": "Don Julio's Band",
-          "source": "Frostwolf Clan",
+          "source": "Stormpike Guard",
           "source_kind": "rep",
           "score": 172.58190737951128,
           "verified": true
@@ -4814,7 +4816,7 @@
         }
       ],
       "set_dps": 205.87637688420085,
-      "no_source_count": 2217,
+      "no_source_count": 2253,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -4849,8 +4851,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.044454982,
-      "verify_run_seconds": 0.94619671
+      "weights_run_seconds": 1.056857619,
+      "verify_run_seconds": 0.945423146
     },
     {
       "spec": "mage-frost",
@@ -5060,7 +5062,7 @@
         }
       ],
       "set_dps": 179.11707136976793,
-      "no_source_count": 2218,
+      "no_source_count": 2254,
       "no_source_sample": [
         "727 Notched Shortsword",
         "753 Dragonmaw Shortsword",
@@ -5095,8 +5097,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.044454982,
-      "verify_run_seconds": 1.008840907
+      "weights_run_seconds": 1.056857619,
+      "verify_run_seconds": 1.027884043
     }
   ]
 }
