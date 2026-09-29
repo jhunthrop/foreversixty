@@ -38,11 +38,11 @@ from pathlib import Path
 
 from pipeline.models import AddonBisBand, AddonBisItem
 
-#: sim/cmd/leveling-bis/main.go's own defaultBandsFlag: 10 through 60 step
-#: 5. Not the rotation ladder's seven rungs (pipeline.addonrotation.
-#: LEVEL_BANDS) -- leveling-bis ranks gear far more often than the ladder
-#: samples accuracy, so it keeps its own, finer band list.
-BIS_LEVEL_BANDS = list(range(10, 61, 5))
+#: sim/cmd/leveling-bis/main.go's own defaultBandsFlag: 20 through 60 step
+#: 10 (owner ruling 2026-09-29). Not the rotation ladder's seven rungs
+#: (pipeline.addonrotation.LEVEL_BANDS) -- the two lists are kept
+#: separately on purpose and only happen to share 20/30/40/50/60.
+BIS_LEVEL_BANDS = list(range(20, 61, 10))
 
 #: leveling-bis's closed source_kind vocabulary (sim/cmd/leveling-bis/
 #: band.go's sourceKindPriority). pipeline.addonlua encodes a value from

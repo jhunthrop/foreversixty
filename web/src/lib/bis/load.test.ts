@@ -23,7 +23,7 @@ import {
   sourceBadgeLabel,
   normaliseBisFile,
 } from './load';
-import type { BisBand, BisSlot, SpecCatalogEntry } from './types';
+import type { BisBand, BisFile, BisSlot, SpecCatalogEntry } from './types';
 
 const FIXTURE = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -108,24 +108,24 @@ describe('loadBisFile', () => {
   });
 });
 
-describe('normaliseBisFile', () => {
-  const baseBand: BisBand = {
-    spec: 'hunter-marksmanship',
-    band: 20,
-    faction: 'horde',
-    race: 'troll',
-    talents: '',
-    talent_points: 0,
-    weights: [],
-    slots: [],
-    set_dps: 0,
-    no_source_count: 0,
-    new_at_band: [],
-    weights_run_seconds: 0,
-    verify_run_seconds: 0,
-    coverage: {},
-  };
+const baseBand: BisBand = {
+  spec: 'hunter-marksmanship',
+  band: 20,
+  faction: 'horde',
+  race: 'troll',
+  talents: '',
+  talent_points: 0,
+  weights: [],
+  slots: [],
+  set_dps: 0,
+  no_source_count: 0,
+  new_at_band: [],
+  weights_run_seconds: 0,
+  verify_run_seconds: 0,
+  coverage: {},
+};
 
+describe('normaliseBisFile', () => {
   it('defaults a missing coverage field to {} (a file published before guardrail A landed)', () => {
     const { coverage: _coverage, ...bandWithoutCoverage } = baseBand;
     const file = {
@@ -167,9 +167,19 @@ describe('normaliseBisFile', () => {
 
 describe('bandLevels', () => {
   it('lists every band once, ascending, deduplicated across factions', () => {
-    const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
-    const levels = bandLevels(file);
-    expect(levels).toEqual([10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60]);
+    const file: BisFile = {
+      spec: 'hunter-marksmanship',
+      build: '1.60.1.70009',
+      engine_version: 'e1',
+      generated_at: 'test',
+      bands: [
+        { ...baseBand, band: 40, faction: 'horde' },
+        { ...baseBand, band: 20, faction: 'alliance' },
+        { ...baseBand, band: 40, faction: 'alliance' },
+        { ...baseBand, band: 20, faction: 'horde' },
+      ],
+    };
+    expect(bandLevels(file)).toEqual([20, 40]);
   });
 });
 

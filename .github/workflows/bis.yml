@@ -153,7 +153,7 @@ jobs:
             done
           fi
       # -all: every data/curated/specs.json spec with a written rotation,
-      # bands 10-60 step 5, both factions. weights-iterations stays at
+      # bands 20-60 step 10, both factions. weights-iterations stays at
       # the command's own default (100 per direction) - this lane's
       # report measures the whole run at that setting against the 30
       # minute budget; lower it here (BIS_ARGS="-all -weights-iterations

@@ -45,10 +45,12 @@ func main() {
 	}
 }
 
-// defaultBands is the design doc's own leveling-bis band list: 10
-// through 60, step 5 - "the best you can wear at level L", one list
-// per rung a leveling character actually stops on to gear up.
-const defaultBandsFlag = "10,15,20,25,30,35,40,45,50,55,60"
+// defaultBandsFlag is the leveling-bis band list: 20 through 60, step
+// 10 - "the best you can wear at level L", one list per rung a leveling
+// character actually stops on to gear up. Owner ruling 2026-09-29: five
+// bands, not the earlier 10..60 step 5 (a list every five levels was
+// noise, and nothing below 20 is worth gearing for).
+const defaultBandsFlag = "20,30,40,50,60"
 
 // run takes execPath and args explicitly (main passes os.Args[0] and
 // os.Args[1:]) rather than reading the process's own os.Args and the

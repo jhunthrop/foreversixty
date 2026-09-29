@@ -26,7 +26,7 @@ local DATA = {
 	weights = {},
 	bis = {
 		["paladin-holy"] = {
-			[10] = {
+			[20] = {
 				alliance = {
 					head = { 111, "Q" },
 					chest = { 333, "D", "Wailing Caverns: Mutanus the Devourer" },
@@ -144,7 +144,7 @@ describe("Tooltip's BiS hover section", function()
 			assert.are.equal(1, #ops)
 			assert.are.equal("doubleline", ops[1].kind)
 			assert.are.equal(unknownIcon() .. " item:111:link", ops[1].left)
-			assert.are.equal(string.format(L.tooltipBisDefaultTag, 10), ops[1].right)
+			assert.are.equal(string.format(L.tooltipBisDefaultTag, 20), ops[1].right)
 			assert.are.equal("muted", ops[1].rightColor)
 		end)
 
@@ -153,14 +153,14 @@ describe("Tooltip's BiS hover section", function()
 				GetItemInfo = function() return nil end,
 			} })
 			-- Level 25 has no band of its own; the highest one <= 25 among
-			-- {10, 30} is 10, whose head pick is item 111.
+			-- {20, 30} is 20, whose head pick is item 111.
 			local ops = Tooltip.bisLines(DATA, "head")
 			assert.are.equal(unknownIcon() .. " item:111", ops[1].left)
 		end)
 
 		it("reaches band 30 once the level clears it", function()
 			start({ level = 35, globals = { GetItemInfo = function() return nil end } })
-			-- Band 30's own head pick is item 222, not band 10's item 111.
+			-- Band 30's own head pick is item 222, not band 20's item 111.
 			local ops = Tooltip.bisLines(DATA, "head")
 			assert.are.equal(unknownIcon() .. " item:222", ops[1].left)
 		end)

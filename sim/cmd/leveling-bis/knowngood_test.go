@@ -151,7 +151,7 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 		for _, faction := range []string{"alliance", "horde"} {
 			bandRow, ok := findBandReport(report, band, faction)
 			if !ok {
-				t.Errorf("%s: published %s.json has no band %d %s entry (bandRow contract: every written spec covers 10..60 step 5, both factions)", specName, specName, band, faction)
+				t.Errorf("%s: published %s.json has no band %d %s entry (bandRow contract: every written spec covers 20..60 step 10, both factions)", specName, specName, band, faction)
 				continue
 			}
 			weights := reconstructWeights(bandRow.Weights)

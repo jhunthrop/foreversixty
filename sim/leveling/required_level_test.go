@@ -59,10 +59,15 @@ func TestItemLevelProxyRequiredLevelMatchesThePythonFormula(t *testing.T) {
 	}
 }
 
-func TestQuestFloorRaisesTheAcceptLevelToFiveBelowTheQuestLevel(t *testing.T) {
-	// Bride of the Embalmer: accept at 20, quest level 30 -> realistic at 25.
-	if got := QuestFloor(20, 30); got != 25 {
-		t.Fatalf("QuestFloor(20, 30) = %d, want 25", got)
+func TestQuestFloorRaisesTheAcceptLevelToThreeBelowTheQuestLevel(t *testing.T) {
+	// Bride of the Embalmer: accept at 20, quest level 30 -> realistic at 27.
+	if got := QuestFloor(20, 30); got != 27 {
+		t.Fatalf("QuestFloor(20, 30) = %d, want 27", got)
+	}
+	// Scramble (Forever): accept at 14, quest level 24 -> 21, so its Silver
+	// Star never heads a level-20 list.
+	if got := QuestFloor(14, 24); got != 21 {
+		t.Fatalf("QuestFloor(14, 24) = %d, want 21", got)
 	}
 	// Wanted: Murkdeep: accept at 15, level 18 -> the accept level still gates.
 	if got := QuestFloor(15, 18); got != 15 {

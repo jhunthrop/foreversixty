@@ -12,14 +12,14 @@
 import { specRow } from '../sim/spec-label';
 import type { BisBand, BisFile, BisSlot, Faction } from './types';
 
-/** Bands run 10..60 in steps of 5 (data/curated's own leveling BiS contract). */
-export const MIN_BAND = 10;
+/** Bands run 20..60 in steps of 10 (sim/cmd/leveling-bis's own defaultBandsFlag). */
+export const MIN_BAND = 20;
 export const MAX_BAND = 60;
-const BAND_STEP = 5;
+const BAND_STEP = 10;
 
 /**
  * The band a character level falls into: rounded down to the nearest step, clamped to the
- * range the BiS files cover. A level below 10 (no points spent yet) still gets the level 10
+ * range the BiS files cover. A level below 20 still gets the level 20
  * band -- the earliest gear list is the honest answer for "not leveled yet" -- and a level
  * at or above 60 gets the level 60 band.
  */

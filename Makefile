@@ -366,7 +366,7 @@ loot-check:
 # bis runs sim/cmd/leveling-bis (docs/superpowers/specs/2026-09-28-
 # leveling-bis-design.md): once per spec and band, never per character.
 # By default it ranks every spec in data/curated/specs.json with a
-# written rotation, at bands 10-60 step 5, both factions, and writes
+# written rotation, at bands 20-60 step 10, both factions, and writes
 # data/builds/$(ACTIVE_BUILD)/bis/<spec>.json + .md - lane bis-web's
 # read contract. This is the nightly workflow's own command
 # (.github/workflows/bis.yml).

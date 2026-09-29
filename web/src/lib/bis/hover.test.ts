@@ -54,15 +54,15 @@ function fileWith(bands: BisBand[]): BisFile {
 }
 
 describe('bandForLevel', () => {
-  it('rounds down to the nearest 5', () => {
-    expect(bandForLevel(27)).toBe(25);
+  it('rounds down to the nearest 10', () => {
+    expect(bandForLevel(27)).toBe(20);
     expect(bandForLevel(30)).toBe(30);
-    expect(bandForLevel(34)).toBe(30);
+    expect(bandForLevel(39)).toBe(30);
   });
 
   it('clamps below the lowest band to the lowest band', () => {
     expect(bandForLevel(1)).toBe(MIN_BAND);
-    expect(bandForLevel(9)).toBe(MIN_BAND);
+    expect(bandForLevel(19)).toBe(MIN_BAND);
   });
 
   it('clamps at and above the top band to the top band', () => {
@@ -90,12 +90,12 @@ describe('slotHoverDiff', () => {
 
   it('marks a slot new when the pick changes from the previous band', () => {
     const file = fileWith([
-      band(10, 'alliance', [slot(1, 'Old Cap')]),
-      band(15, 'alliance', [slot(2, 'New Cap')]),
+      band(20, 'alliance', [slot(1, 'Old Cap')]),
+      band(30, 'alliance', [slot(2, 'New Cap')]),
     ]);
-    const diff = slotHoverDiff(file, 15, 'alliance', 'head');
+    const diff = slotHoverDiff(file, 30, 'alliance', 'head');
     expect(diff.pick?.item_name).toBe('New Cap');
-    expect(diff.previous).toEqual({ band: 10, pick: expect.objectContaining({ item_name: 'Old Cap' }) });
+    expect(diff.previous).toEqual({ band: 20, pick: expect.objectContaining({ item_name: 'Old Cap' }) });
     expect(diff.isNewAtBand).toBe(true);
   });
 
@@ -109,28 +109,28 @@ describe('slotHoverDiff', () => {
   });
 
   it('is new when the slot had no known source at the previous band', () => {
-    const file = fileWith([band(10, 'alliance', []), band(15, 'alliance', [slot(1, 'First Cap')])]);
-    const diff = slotHoverDiff(file, 15, 'alliance', 'head');
+    const file = fileWith([band(20, 'alliance', []), band(30, 'alliance', [slot(1, 'First Cap')])]);
+    const diff = slotHoverDiff(file, 30, 'alliance', 'head');
     expect(diff.isNewAtBand).toBe(true);
     expect(diff.previous?.pick).toBeUndefined();
   });
 
   it('is not new when the slot still has no known source', () => {
-    const file = fileWith([band(10, 'alliance', []), band(15, 'alliance', [])]);
-    const diff = slotHoverDiff(file, 15, 'alliance', 'head');
+    const file = fileWith([band(20, 'alliance', []), band(30, 'alliance', [])]);
+    const diff = slotHoverDiff(file, 30, 'alliance', 'head');
     expect(diff.pick).toBeUndefined();
     expect(diff.isNewAtBand).toBe(false);
   });
 
-  it('the previous band is band - 5 by arithmetic, not a walk back through whichever bands the file has', () => {
-    // No band 15 alliance entry at all; the previous band for 20 is still exactly 15 (with
-    // no pick), never band 10, even though the file does carry one.
+  it('the previous band is band - 10 by arithmetic, not a walk back through whichever bands the file has', () => {
+    // No band 30 alliance entry at all; the previous band for 40 is still exactly 30 (with
+    // no pick), never band 20, even though the file does carry one.
     const file = fileWith([
-      band(10, 'alliance', [slot(1, 'Old Cap')]),
-      band(20, 'alliance', [slot(2, 'New Cap')]),
+      band(20, 'alliance', [slot(1, 'Old Cap')]),
+      band(40, 'alliance', [slot(2, 'New Cap')]),
     ]);
-    const diff = slotHoverDiff(file, 20, 'alliance', 'head');
-    expect(diff.previous?.band).toBe(15);
+    const diff = slotHoverDiff(file, 40, 'alliance', 'head');
+    expect(diff.previous?.band).toBe(30);
     expect(diff.previous?.pick).toBeUndefined();
     expect(diff.isNewAtBand).toBe(true);
   });

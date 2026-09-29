@@ -231,7 +231,7 @@ export function loadLootFile(build: string): LootFile & LootQuestsFile {
 }
 
 /** The band immediately before this one in `bandLevels(file)`'s own order (the contract's
- *  bands are dense, 10..60 step 5, so this is always `band - 5`, but reading it off the
+ *  bands are dense, 20..60 step 10, so this is always `band - 10`, but reading it off the
  *  file's own band list rather than hardcoding the step means a file that ever changed its
  *  cadence would still diff correctly). Undefined at the file's first band. */
 export function previousBandLevel(file: BisFile, band: number): number | undefined {

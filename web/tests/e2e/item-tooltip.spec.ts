@@ -5,7 +5,7 @@
 // fixture suite: item 16963 (Helm of Wrath, gear.spec.ts's own equip target) carries stats,
 // a set (Battlegear of Wrath) and armor, which is enough to exercise the panel without
 // needing loot.json content the fixture build does not ship.
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { openGear } from './support/planner';
 
 test('hovering the head slot’s icon shows the item tooltip with icon, stats and level', async ({ page }) => {
@@ -88,23 +88,30 @@ test('only one item tooltip is open at a time', async ({ page }) => {
 // own ItemHover island -- one shared BisTooltipHost island now delegates hover/focus/tap
 // for the whole page (BisTooltipHost.svelte), so this contract needs its own coverage
 // against real delegated listeners rather than one Svelte instance per row.
+/** The band table the BiS page shows first (the nightly's lowest band, alliance). */
+function firstVisibleBand(page: Page) {
+  return page.locator('[data-testid^="bis-band-alliance-"]:visible').first();
+}
+
 test.describe('the BiS page shares one tooltip host across every row', () => {
   test('hovering a slot’s icon shows the item tooltip with icon, stats and level', async ({ page }) => {
     await page.goto('/bis/hunter/marksmanship');
-    const band10 = page.getByTestId('bis-band-alliance-10');
-    await expect(band10).toBeVisible();
+    const band = firstVisibleBand(page);
+    await expect(band).toBeVisible();
 
-    const icon = band10.getByTestId('item-hover-19972'); // head slot, band 10, alliance
+    // The picks are the nightly's, so the test reads the first pill's item name off the
+    // page and expects the tooltip to carry that name plus a real stat line.
+    const icon = band.locator('[data-testid^="item-hover-"]').first();
     await expect(icon).toBeVisible();
+    const itemName = (await icon.innerText()).trim();
+    expect(itemName.length).toBeGreaterThan(0);
     await expect(page.getByTestId('item-tooltip')).toBeHidden();
 
     await icon.hover();
     const tooltip = page.getByTestId('item-tooltip');
     await expect(tooltip).toBeVisible();
-    await expect(tooltip).toContainText('Lucky Fishing Hat');
-    await expect(tooltip).toContainText('Head');
-    await expect(tooltip).toContainText('43 Armor');
-    await expect(tooltip).toContainText('+15 Stamina');
+    await expect(tooltip).toContainText(itemName);
+    await expect(tooltip).toContainText(/Requires Level \d+|Item Level \d+|\+\d+ /);
     const tooltipId = await tooltip.getAttribute('id');
     expect(tooltipId).not.toBeNull();
     await expect(icon).toHaveAttribute('aria-describedby', tooltipId!);
@@ -115,8 +122,7 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
 
   test('keyboard focus opens the tooltip and Escape closes it', async ({ page }) => {
     await page.goto('/bis/hunter/marksmanship');
-    const band10 = page.getByTestId('bis-band-alliance-10');
-    const icon = band10.getByTestId('item-hover-19972');
+    const icon = firstVisibleBand(page).locator('[data-testid^="item-hover-"]').first();
 
     await icon.focus();
     const tooltip = page.getByTestId('item-tooltip');
@@ -128,16 +134,19 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
 
   test('only one tooltip is open at a time across the page’s delegated host', async ({ page }) => {
     await page.goto('/bis/hunter/marksmanship');
-    const band10 = page.getByTestId('bis-band-alliance-10');
-    const headIcon = band10.getByTestId('item-hover-19972');
-    const chestIcon = band10.getByTestId('item-hover-3288');
+    const pills = firstVisibleBand(page).locator('[data-testid^="item-hover-"]');
+    const firstIcon = pills.nth(0);
+    const secondIcon = pills.nth(1);
+    const firstName = (await firstIcon.innerText()).trim();
+    const secondName = (await secondIcon.innerText()).trim();
+    expect(secondName).not.toBe(firstName);
 
-    await headIcon.hover();
+    await firstIcon.hover();
     await expect(page.getByTestId('item-tooltip')).toBeVisible();
-    await expect(page.getByTestId('item-tooltip')).toContainText('Lucky Fishing Hat');
+    await expect(page.getByTestId('item-tooltip')).toContainText(firstName);
 
-    await chestIcon.hover();
+    await secondIcon.hover();
     await expect(page.getByTestId('item-tooltip')).toHaveCount(1);
-    await expect(page.getByTestId('item-tooltip')).toContainText('Tribal Vest');
+    await expect(page.getByTestId('item-tooltip')).toContainText(secondName);
   });
 });

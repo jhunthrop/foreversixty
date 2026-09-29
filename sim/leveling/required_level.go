@@ -81,10 +81,11 @@ func ItemLevelProxyRequiredLevel(itemLevel int) int {
 
 // QuestRewardLevelSlack is how far below a quest's own level a character
 // is still assumed able to finish it (a "yellow" quest): a level-30 quest
-// is realistic at 25, not at the level-20 the quest lets you accept it
-// at. Owner ruling, 2026-09-29: a quest reward more than this many
-// levels above the character is not a leveling-BiS pick.
-const QuestRewardLevelSlack = 5
+// is realistic at 27, not at the level-20 the quest lets you accept it
+// at. Owner ruling, 2026-09-29 (tightened from 5 the same day): a quest
+// reward more than this many levels above the character is not a
+// leveling-BiS pick -- a level-30 quest reward never heads a level-20 list.
+const QuestRewardLevelSlack = 3
 
 // QuestFloor is the level a character must reach before a quest's
 // reward counts as obtainable: the quest's own accept level, raised to

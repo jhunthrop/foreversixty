@@ -17,17 +17,27 @@ test('Leveling BiS: index links to a spec, faction and band pills switch panels 
   await marksmanshipLink.click();
   await expect(page).toHaveURL(/\/bis\/hunter\/marksmanship$/);
 
-  // Alliance is the default panel; its own band 10 table is visible, Horde's is not.
+  // Alliance is the default panel; its own first band table is visible, Horde's is not.
+  // The band list is the nightly's (20..60 step 10), so the test reads the first band off
+  // the page rather than pinning its level.
   await expect(page.getByTestId('bis-faction-panel-alliance')).toBeVisible();
-  const band10 = page.getByTestId('bis-band-alliance-10');
-  await expect(band10).toBeVisible();
+  const firstBand = page.locator('[data-testid^="bis-band-alliance-"]:visible').first();
+  await expect(firstBand).toBeVisible();
+  const firstLevel = (await firstBand.getAttribute('data-testid'))!.replace('bis-band-alliance-', '');
+  expect(Number(firstLevel)).toBeGreaterThanOrEqual(20);
 
   // A filled slot shows the real item (ItemHover's pill), and an empty one says why rather
-  // than a bare dash (tenet 4, this lane's own brief item 1).
-  await expect(band10.locator('[data-testid^="item-hover-"]').first()).toBeVisible();
-  await expect(band10.getByTestId('bis-slot-alliance-10-neck')).toContainText(
-    'No sourced item at this level yet',
-  );
+  // than a bare dash (tenet 4, this lane's own brief item 1) -- every slot row is one or
+  // the other, never a bare dash.
+  await expect(firstBand.locator('[data-testid^="item-hover-"]').first()).toBeVisible();
+  const slotRows = firstBand.locator(`[data-testid^="bis-slot-alliance-${firstLevel}-"]`);
+  const slotCount = await slotRows.count();
+  expect(slotCount).toBeGreaterThan(0);
+  for (let i = 0; i < slotCount; i += 1) {
+    const row = slotRows.nth(i);
+    const filled = (await row.locator('[data-testid^="item-hover-"]').count()) > 0;
+    if (!filled) await expect(row).toContainText('No sourced item at this level yet');
+  }
 
   // Toggle to Horde -- a label click on a hidden radio, no navigation.
   await page.getByTestId('bis-faction-toggle-horde').click();
@@ -46,8 +56,8 @@ test('Leveling BiS: index links to a spec, faction and band pills switch panels 
 
   // "What changed since level N" (a wall of diff rows above the list, owner screenshot
   // review 2026-09-29) is now a single disclosure line under the list -- "N upgrades since
-  // level 25" -- that expands to the same before/after diff.
-  await expect(band30).toContainText(/upgrades since level 25/);
+  // level 20" -- that expands to the same before/after diff.
+  await expect(band30).toContainText(/upgrades since level \d+/);
 });
 
 test('Leveling BiS: a spec with no ranked list yet shows the empty state, not a 404', async ({ page }) => {

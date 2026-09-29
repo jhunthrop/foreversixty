@@ -69,8 +69,11 @@ function Tooltip.equippedSlotFor(itemLink)
 	return nil
 end
 
+--- pipeline.addonbis.BIS_LEVEL_BANDS' own spacing: one BiS band every ten levels.
+local BIS_BAND_STEP = 10
+
 --- The highest band key at or below `level` in a band-keyed table (bands
---- run 10..60 step 5, and a build in progress may skip one) -- shared by
+--- run 20..60 step 10, and a build in progress may skip one) -- shared by
 --- the BiS lookup and the verdict's own band-weights lookup, so both
 --- round down to the same rung. nil below `floor`, or with no table (or no
 --- entry at all) to look in.
@@ -78,8 +81,8 @@ local function highestBandAtOrBelow(bands, level, floor)
 	if type(bands) ~= "table" or type(level) ~= "number" or level < floor then
 		return nil
 	end
-	local rounded = math.min(60, math.floor(level / 5) * 5)
-	for candidate = rounded, floor, -5 do
+	local rounded = math.min(60, math.floor(level / BIS_BAND_STEP) * BIS_BAND_STEP)
+	for candidate = rounded, floor, -BIS_BAND_STEP do
 		if bands[candidate] ~= nil then
 			return candidate
 		end
@@ -87,9 +90,9 @@ local function highestBandAtOrBelow(bands, level, floor)
 	return nil
 end
 
---- Below this level a character has no ladder band yet (design: "below 10
+--- Below this level a character has no BiS band yet (design: "below 20
 --- shows nothing" -- pipeline.addonbis.BIS_LEVEL_BANDS' own floor).
-Tooltip.BIS_MIN_LEVEL = 10
+Tooltip.BIS_MIN_LEVEL = 20
 
 --- This spec's stat weights at `level`: the nightly-measured band weights
 --- (ns.Data.bis_weights, lane addon-tooltip-polish item 4) when the

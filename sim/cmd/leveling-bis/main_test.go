@@ -83,8 +83,8 @@ func TestParseBandsDefaultFlag(t *testing.T) {
 	if err != nil {
 		t.Fatalf("parseBands(defaultBandsFlag): %v", err)
 	}
-	if len(got) != 11 || got[0] != 10 || got[len(got)-1] != 60 {
-		t.Fatalf("parseBands(defaultBandsFlag) = %v, want 11 bands from 10 to 60", got)
+	if len(got) != 5 || got[0] != 20 || got[len(got)-1] != 60 {
+		t.Fatalf("parseBands(defaultBandsFlag) = %v, want 5 bands from 20 to 60", got)
 	}
 }
 
