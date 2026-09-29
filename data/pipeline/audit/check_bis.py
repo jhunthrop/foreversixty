@@ -63,6 +63,13 @@ def _source_name_index(loot: dict) -> dict[str, set[int]]:
             bucket.update(boss.get("items", []))
             boss_name = f"{name}: {boss.get('name', '')}"
             index.setdefault(boss_name, set()).update(boss.get("items", []))
+    # quest-faction lane, 2026-09-29: a quest pick's `source` is now the
+    # quest's own name (one itemSource per quest in leveling-bis's loader),
+    # not the flat "Quests" bucket, so every quest name maps to the items
+    # its records reward.
+    for item_id, quests in (loot.get("quests") or {}).items():
+        for quest in quests:
+            index.setdefault(quest.get("name", ""), set()).add(int(item_id))
     return index
 
 

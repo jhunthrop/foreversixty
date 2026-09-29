@@ -182,15 +182,19 @@ def apply_reitemisation(document: LootFile, item_rows: list[dict]) -> tuple[Loot
         if touched:
             filled.add(new_id)
 
-    # A quest's faction detail is the ITEM's own truth, not the quest's
-    # (models.QuestSource's own doc, and the same fix
-    # pipeline.loot.classicdb/wowhead both apply for the identical
-    # reason) -- the new item can carry a DIFFERENT factionRestriction
-    # than the classic one it inherits sources from (measured while
-    # regenerating loot.json for 1.60.1.70009: item 226969 inherits
-    # quest detail from an alliance-restricted classic item while being
-    # unrestricted itself), so a copied `QuestSource` gets its own
-    # `faction` re-derived from the NEW item, never copied verbatim.
+    # A quest's faction is the QUEST's own truth when classic-db's
+    # RequiredRaces settled it (quest-faction lane, 2026-09-29:
+    # `QuestSource.faction_source == "classic-db"`): the Naxxramas
+    # attunement pair Saving the Best for Last, 9004 alliance / 9010 horde,
+    # rewards both classic item 22005 and its Forever twin 226825, and the
+    # twin's copied records must keep alliance/horde, never collapse to
+    # "both" (the audit's remaining 128 quest-faction findings on
+    # 1.60.1.70009 were exactly these copies). Only a record whose faction
+    # was itself item-derived (`faction_source == "item"`) is re-derived
+    # from the NEW item's own factionRestriction, since the new item can
+    # carry a different one than the classic item it inherits from (item
+    # 226969 inherits from an alliance-restricted classic item while being
+    # unrestricted itself).
     new_item_faction = {
         int(row["id"]): _RESTRICTION_TO_FACTION.get(row.get("faction_restriction") or "", "both")
         for row in item_rows
@@ -201,9 +205,12 @@ def apply_reitemisation(document: LootFile, item_rows: list[dict]) -> tuple[Loot
         classic_id = pairs[new_id]
         detail = quests.get(str(classic_id))
         if detail is not None:
-            faction = new_item_faction.get(new_id, "both")
+            item_faction = new_item_faction.get(new_id, "both")
             quests[str(new_id)] = [
-                entry.model_copy(update={"faction": faction}) for entry in detail
+                entry
+                if entry.faction_source == "classic-db"
+                else entry.model_copy(update={"faction": item_faction})
+                for entry in detail
             ]
 
     return document.model_copy(update={"sources": sources, "quests": quests}), len(filled)

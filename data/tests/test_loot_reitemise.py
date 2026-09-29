@@ -148,6 +148,37 @@ def test_apply_reitemisation_re_derives_faction_from_the_new_items_own_restricti
     assert updated.quests[str(CLASSIC_ID)][0].faction == "alliance"  # untouched
 
 
+def test_apply_reitemisation_keeps_a_classic_db_quest_faction_on_the_copy():
+    """Saving the Best for Last is an alliance/horde pair (9004/9010) that
+    rewards classic item 22005 and its Forever twin; the twin's copies keep
+    the quest's own classic-db faction, never collapse to "both"."""
+    rows = [
+        {"id": CLASSIC_ID, "name": "Beastmaster's Mantle", "inventory_type": 3,
+         "item_level": 61, "class_id": 4, "subclass_id": 1, "faction_restriction": ""},
+        {"id": NEW_ID, "name": "Beastmaster's Mantle", "inventory_type": 3,
+         "item_level": 61, "class_id": 4, "subclass_id": 1, "faction_restriction": ""},
+    ]
+    document = LootFile(
+        sources=[LootSource(id="quest", kind="quest", name="Quests", items=[CLASSIC_ID])],
+        quests={
+            str(CLASSIC_ID): [
+                QuestSource(
+                    quest_id=9004, name="Saving the Best for Last", faction="alliance",
+                    faction_source="classic-db", min_level=58, level=60,
+                    level_source="classic-db",
+                ),
+                QuestSource(
+                    quest_id=9010, name="Saving the Best for Last", faction="horde",
+                    faction_source="classic-db", min_level=58, level=60,
+                    level_source="classic-db",
+                ),
+            ]
+        },
+    )
+    updated, _ = apply_reitemisation(document, rows)
+    assert [q.faction for q in updated.quests[str(NEW_ID)]] == ["alliance", "horde"]
+
+
 def test_apply_reitemisation_never_touches_an_item_that_already_has_its_own_source():
     document = LootFile(
         sources=[

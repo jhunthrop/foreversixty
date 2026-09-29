@@ -69,8 +69,11 @@ def _write_build(root: Path, build: str) -> Path:
     loot = {
         "sources": [
             {
-                "id": "crafted:blacksmithing", "kind": "crafted", "name": "Blacksmithing",
-                "profession": "blacksmithing", "items": [101, 200],
+                "id": "crafted:blacksmithing",
+                "kind": "crafted",
+                "name": "Blacksmithing",
+                "profession": "blacksmithing",
+                "items": [101, 200],
             },
             {"id": "quest", "kind": "quest", "name": "Quests", "items": [300]},
         ],
@@ -179,3 +182,16 @@ def test_quest_floor_ignores_the_other_factions_quest(tmp_path):
     star = [f for f in result.findings if f.subject == "300"]
     assert star[0].theirs == "32"
 
+
+def test_a_quest_picks_source_may_be_the_quest_name(tmp_path):
+    root = tmp_path / "builds"
+    build_dir = _write_build(root, "testbuild")
+    bis = json.loads((build_dir / "bis" / "warrior-fury.json").read_text())
+    ranged = next(s for s in bis["bands"][0]["slots"] if s["slot"] == "ranged")
+    ranged["source"] = "Early"
+    (build_dir / "bis" / "warrior-fury.json").write_text(json.dumps(bis))
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_bis.check(ctx)
+    assert not any(
+        "does not list the item" in f.message for f in result.findings if f.subject == "300"
+    )
