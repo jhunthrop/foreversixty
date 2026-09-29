@@ -3893,6 +3893,16 @@
         "level": 10,
         "lines": [
           {
+            "spell_id": 8924,
+            "name": "Moonfire",
+            "condition": "Rotation-accuracy program finding (2026-09-28): below level 20 a feral druid has no Cat Form yet (spellconst: Cat Form, spell 768, learn level 20) and Bear For…"
+          },
+          {
+            "spell_id": 5177,
+            "name": "Wrath",
+            "condition": "Wrath as the pre-Cat-Form filler once Moonfire is already ticking; see the Moonfire line above for the full diagnosis."
+          },
+          {
             "spell_id": 1312152,
             "name": "Tiger's Fury",
             "condition": "Tiger's Fury on cooldown for the free energy; it costs nothing and the engine gates it on its own 30 second cooldown."
@@ -3902,6 +3912,16 @@
       {
         "level": 20,
         "lines": [
+          {
+            "spell_id": 8925,
+            "name": "Moonfire",
+            "condition": "Rotation-accuracy program finding (2026-09-28): below level 20 a feral druid has no Cat Form yet (spellconst: Cat Form, spell 768, learn level 20) and Bear For…"
+          },
+          {
+            "spell_id": 5178,
+            "name": "Wrath",
+            "condition": "Wrath as the pre-Cat-Form filler once Moonfire is already ticking; see the Moonfire line above for the full diagnosis."
+          },
           {
             "spell_id": 1312152,
             "name": "Tiger's Fury",
@@ -3915,13 +3935,23 @@
           {
             "spell_id": 1082,
             "name": "Claw",
-            "condition": "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)."
+            "condition": "Claw is meant only as the fallback builder below level 22, before Shred is learned (druid.md audit finding 2) -- the earlier notes here (superseded) diagnosed…"
           }
         ]
       },
       {
         "level": 30,
         "lines": [
+          {
+            "spell_id": 8927,
+            "name": "Moonfire",
+            "condition": "Rotation-accuracy program finding (2026-09-28): below level 20 a feral druid has no Cat Form yet (spellconst: Cat Form, spell 768, learn level 20) and Bear For…"
+          },
+          {
+            "spell_id": 5180,
+            "name": "Wrath",
+            "condition": "Wrath as the pre-Cat-Form filler once Moonfire is already ticking; see the Moonfire line above for the full diagnosis."
+          },
           {
             "spell_id": 5217,
             "name": "Tiger's Fury",
@@ -3945,13 +3975,23 @@
           {
             "spell_id": 3029,
             "name": "Claw",
-            "condition": "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)."
+            "condition": "Claw is meant only as the fallback builder below level 22, before Shred is learned (druid.md audit finding 2) -- the earlier notes here (superseded) diagnosed…"
           }
         ]
       },
       {
         "level": 38,
         "lines": [
+          {
+            "spell_id": 8928,
+            "name": "Moonfire",
+            "condition": "Rotation-accuracy program finding (2026-09-28): below level 20 a feral druid has no Cat Form yet (spellconst: Cat Form, spell 768, learn level 20) and Bear For…"
+          },
+          {
+            "spell_id": 6780,
+            "name": "Wrath",
+            "condition": "Wrath as the pre-Cat-Form filler once Moonfire is already ticking; see the Moonfire line above for the full diagnosis."
+          },
           {
             "spell_id": 5217,
             "name": "Tiger's Fury",
@@ -3980,13 +4020,23 @@
           {
             "spell_id": 5201,
             "name": "Claw",
-            "condition": "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)."
+            "condition": "Claw is meant only as the fallback builder below level 22, before Shred is learned (druid.md audit finding 2) -- the earlier notes here (superseded) diagnosed…"
           }
         ]
       },
       {
         "level": 40,
         "lines": [
+          {
+            "spell_id": 8929,
+            "name": "Moonfire",
+            "condition": "Rotation-accuracy program finding (2026-09-28): below level 20 a feral druid has no Cat Form yet (spellconst: Cat Form, spell 768, learn level 20) and Bear For…"
+          },
+          {
+            "spell_id": 6780,
+            "name": "Wrath",
+            "condition": "Wrath as the pre-Cat-Form filler once Moonfire is already ticking; see the Moonfire line above for the full diagnosis."
+          },
           {
             "spell_id": 5217,
             "name": "Tiger's Fury",
@@ -4015,13 +4065,23 @@
           {
             "spell_id": 5201,
             "name": "Claw",
-            "condition": "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)."
+            "condition": "Claw is meant only as the fallback builder below level 22, before Shred is learned (druid.md audit finding 2) -- the earlier notes here (superseded) diagnosed…"
           }
         ]
       },
       {
         "level": 50,
         "lines": [
+          {
+            "spell_id": 9833,
+            "name": "Moonfire",
+            "condition": "Rotation-accuracy program finding (2026-09-28): below level 20 a feral druid has no Cat Form yet (spellconst: Cat Form, spell 768, learn level 20) and Bear For…"
+          },
+          {
+            "spell_id": 8905,
+            "name": "Wrath",
+            "condition": "Wrath as the pre-Cat-Form filler once Moonfire is already ticking; see the Moonfire line above for the full diagnosis."
+          },
           {
             "spell_id": 5217,
             "name": "Tiger's Fury",
@@ -4050,13 +4110,23 @@
           {
             "spell_id": 9849,
             "name": "Claw",
-            "condition": "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)."
+            "condition": "Claw is meant only as the fallback builder below level 22, before Shred is learned (druid.md audit finding 2) -- the earlier notes here (superseded) diagnosed…"
           }
         ]
       },
       {
         "level": 60,
         "lines": [
+          {
+            "spell_id": 9835,
+            "name": "Moonfire",
+            "condition": "Rotation-accuracy program finding (2026-09-28): below level 20 a feral druid has no Cat Form yet (spellconst: Cat Form, spell 768, learn level 20) and Bear For…"
+          },
+          {
+            "spell_id": 9912,
+            "name": "Wrath",
+            "condition": "Wrath as the pre-Cat-Form filler once Moonfire is already ticking; see the Moonfire line above for the full diagnosis."
+          },
           {
             "spell_id": 5217,
             "name": "Tiger's Fury",
@@ -4085,7 +4155,7 @@
           {
             "spell_id": 9850,
             "name": "Claw",
-            "condition": "Claw is a fallback builder below level 22, before Shred is learned (druid.md audit finding 2)."
+            "condition": "Claw is meant only as the fallback builder below level 22, before Shred is learned (druid.md audit finding 2) -- the earlier notes here (superseded) diagnosed…"
           }
         ]
       }
