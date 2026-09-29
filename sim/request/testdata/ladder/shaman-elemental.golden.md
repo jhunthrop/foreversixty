@@ -94,9 +94,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 4520000000000000-000000000000000000-0000000000000000 | main_hand:2567 off_hand:6223 | 19.3 | 6 | other:attack/1=82.1, spell:6350=67.2, spell:915=13.9, spell:8052=5.4, spell:6363=5.3 | - |
 | 30 | 4532310300000000-000000000000000000-0000000000000000 | main_hand:17039 off_hand:4129 | 29.0 | 6 | spell:6351=66.5, other:attack/1=46.4, spell:943=17.1, spell:6364=4.6, spell:8053=2.0 | - |
 | 38 | 4532310300103031-000000000000000000-0000000000000000 | main_hand:7714 off_hand:4652 | 38.2 | 6 | other:attack/1=117.5, spell:6351=68.1, spell:8053=10.9, spell:10391=6.2, spell:6364=4.7 | - |
-| 40 | 4532310300103031-000000000000000000-2000000000000000 | main_hand:7714 off_hand:10686 | 40.7 | 6 | other:attack/1=93.5, spell:6352=63.3, spell:10391=14.3, spell:6365=3.9, spell:10447=2.0 | - |
-| 50 | 4532310300103031-000000000000000000-5520000000000000 | main_hand:17710 off_hand:10686 | 55.2 | 6 | other:attack/1=95.7, spell:10435=66.5, spell:15207=8.4, spell:10447=6.9, spell:10437=3.7 | - |
-| 60 | 4532310300103031-000000000000000000-5533220000000000 | main_hand:21839 off_hand:21610 | 86.0 | 6 | other:attack/1=71.8, spell:10436=66.1, spell:15208=14.6, spell:10438=3.5, spell:29228=2.0 | - |
+| 40 | 4532310300103031-000000000000000000-2000000000000000 | main_hand:7714 off_hand:10686 | 40.6 | 7 | other:attack/1=94.3, spell:6352=63.3, spell:10391=12.6, spell:6365=3.9, spell:10447=2.0 | - |
+| 50 | 4532310300103031-000000000000000000-5520000000000000 | main_hand:17710 off_hand:10686 | 54.7 | 7 | other:attack/1=91.8, spell:10435=67.1, spell:15207=8.4, spell:10447=5.3, spell:10437=3.8 | - |
+| 60 | 4532310300103031-000000000000000000-5533220000000000 | main_hand:21839 off_hand:21610 | 84.8 | 7 | other:attack/1=72.5, spell:10436=66.1, spell:15208=13.0, spell:10438=3.5, spell:29228=2.0 | - |
 
 ## Learned but unused (informational)
 
@@ -134,7 +134,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 8058)
 - Frostbrand Attack (spell 10458)
-- Lava Burst (spell 408490)
 - Stormstrike (spell 410156)
 
 ### Level 50
@@ -143,7 +142,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10472)
 - Frostbrand Attack (spell 16352)
-- Lava Burst (spell 1238299)
 - Stormstrike (spell 410156)
 
 ### Level 60
@@ -152,7 +150,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10473)
 - Frostbrand Attack (spell 16353)
-- Lava Burst (spell 1238300)
 - Stormstrike (spell 410156)
 
 ## Violations found in this run
