@@ -104,6 +104,21 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 				out[slot] = slotPick{}
 				continue
 			}
+			// A dual-wielder's off hand is a weapon (DualWieldSpecs'
+			// own doc), but a one-hander's raw item row carries only
+			// "main_hand" as its .Slot - data.go's plannerSlots fans
+			// finger/trinket into their numbered pair, never a
+			// one-hander into its second equippable hand - so
+			// bySlot["off_hand"] never held a weapon at all; every
+			// dual-wield spec's off hand came back unpicked at every
+			// band (audit-rogue, 2026-09-28: assassination, combat and
+			// subtlety all showed an empty off_hand at 20, 30 and 40).
+			// Fixed here, not in plannerSlots, because only a
+			// DualWieldSpecs member ever wants a weapon in both hands
+			// and plannerSlots has no spec to check against.
+			if leveling.DualWieldSpecs[spec] {
+				list = mergeByScore(list, oneHandedWeapons(bySlot["main_hand"]))
+			}
 			// A one-hander already worn in the main hand is not
 			// offered again for the off hand: this lane's prototype
 			// assumes the character owns one copy of any BiS
@@ -173,5 +188,41 @@ func weaponsOnly(list []scored) []scored {
 			out = append(out, sc)
 		}
 	}
+	return out
+}
+
+// oneHandedWeapons keeps the candidates from a "main_hand" list that
+// are weapons AND not two-handed - the pool the off_hand case above
+// borrows from for a dual-wield spec. A two-hander is excluded here
+// even though the mainHandTwoHand check above already stops this case
+// once the CHOSEN main-hand item is two-handed: this list holds every
+// eligible main_hand candidate, chosen or not, and a two-hander among
+// the others offered no off-hand slot in the real game either.
+func oneHandedWeapons(list []scored) []scored {
+	out := make([]scored, 0, len(list))
+	for _, sc := range list {
+		if sc.ClassID == itemClassWeapon && !sc.TwoHand {
+			out = append(out, sc)
+		}
+	}
+	return out
+}
+
+// mergeByScore concatenates two already best-score-first lists (the
+// same ordering candidatesBySlot gives every bySlot[slot] entry) and
+// re-sorts the result, since interleaving two independently sorted
+// lists is not itself sorted. Ties break on item id, matching
+// candidatesBySlot's own tiebreak, so which of two equally-scored
+// items is "the pick" stays stable across runs.
+func mergeByScore(a, b []scored) []scored {
+	out := make([]scored, 0, len(a)+len(b))
+	out = append(out, a...)
+	out = append(out, b...)
+	sort.SliceStable(out, func(i, j int) bool {
+		if out[i].Score != out[j].Score {
+			return out[i].Score > out[j].Score
+		}
+		return out[i].ID < out[j].ID
+	})
 	return out
 }

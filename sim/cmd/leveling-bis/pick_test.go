@@ -130,6 +130,62 @@ func TestPickOneHandedMainHandStillFillsOffHand(t *testing.T) {
 	}
 }
 
+// TestPickOffersMainHandOneHandersToADualWielderSOffHand pins the real
+// bug audit-rogue found 2026-09-28: a real one-handed weapon's own
+// classItem row carries only "main_hand" as its .Slot -
+// data.go's plannerSlots fans finger/trinket into their numbered pair
+// but has no alias that fans a one-hander into "off_hand" too - so
+// bySlot["off_hand"] never held a weapon at all and every dual-wield
+// spec's off hand came back permanently unpicked at every level band.
+// The tests above (TestPickTwoHandedMainHandLeavesOffHandEmpty aside)
+// hand-construct candidates whose Slots already lists BOTH hands,
+// which never exercised this real, single-slot shape.
+func TestPickOffersMainHandOneHandersToADualWielderSOffHand(t *testing.T) {
+	pool := []scored{
+		{candidate: candidate{ID: 1, Name: "Dagger", ClassID: itemClassWeapon, Slots: []string{"main_hand"}}, Score: 20},
+		{candidate: candidate{ID: 2, Name: "Sword", ClassID: itemClassWeapon, Slots: []string{"main_hand"}}, Score: 15},
+	}
+	result := pick("rogue-assassination", candidatesBySlot(pool))
+	if result["main_hand"].Item == nil || result["main_hand"].Item.ID != 1 {
+		t.Fatalf("main_hand = %+v, want item 1", result["main_hand"].Item)
+	}
+	if result["off_hand"].Item == nil || result["off_hand"].Item.ID != 2 {
+		t.Fatalf("off_hand = %+v, want item 2 (the next best one-hander), even though its own .Slots names only \"main_hand\"", result["off_hand"].Item)
+	}
+}
+
+// TestPickDoesNotOfferMainHandOneHandersToANonDualWieldersOffHand is the
+// other side of the fix above: a spec absent from DualWieldSpecs must
+// not suddenly grow a weapon in its off hand just because one main_hand
+// candidate exists.
+func TestPickDoesNotOfferMainHandOneHandersToANonDualWieldersOffHand(t *testing.T) {
+	pool := []scored{
+		{candidate: candidate{ID: 1, Name: "Sword", ClassID: itemClassWeapon, Slots: []string{"main_hand"}}, Score: 20},
+	}
+	result := pick("mage-fire", candidatesBySlot(pool))
+	if result["off_hand"].Item != nil {
+		t.Fatalf("off_hand = %+v, want nil: mage-fire does not dual-wield", result["off_hand"].Item)
+	}
+}
+
+// TestPickExcludesTwoHandersFromTheMergedOffHandPool covers the merge
+// helper's own TwoHand filter: a two-hander sitting among the OTHER
+// main_hand candidates (not the one actually chosen for main hand) must
+// still never reach the off-hand pool.
+func TestPickExcludesTwoHandersFromTheMergedOffHandPool(t *testing.T) {
+	pool := []scored{
+		{candidate: candidate{ID: 1, Name: "Dagger", ClassID: itemClassWeapon, Slots: []string{"main_hand"}}, Score: 20},
+		{candidate: candidate{ID: 2, Name: "Great Axe", ClassID: itemClassWeapon, TwoHand: true, Slots: []string{"main_hand"}}, Score: 15},
+	}
+	result := pick("rogue-assassination", candidatesBySlot(pool))
+	if result["main_hand"].Item == nil || result["main_hand"].Item.ID != 1 {
+		t.Fatalf("main_hand = %+v, want item 1 (the dagger)", result["main_hand"].Item)
+	}
+	if result["off_hand"].Item != nil {
+		t.Fatalf("off_hand = %+v, want nil: the only other main_hand candidate is a two-hander", result["off_hand"].Item)
+	}
+}
+
 // A dual-wield spec's off hand never holds a held item or a shield, even
 // when one scores above every one-hander (Grayson's Torch's spirit once
 // beat every level-20 dagger on the assassination list).
