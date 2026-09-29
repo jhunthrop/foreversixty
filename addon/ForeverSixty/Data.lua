@@ -710,14 +710,10 @@ ns.Data = {
 		},
 		["hunter-beast-mastery"] = {
 			{ level = 10, lines = {
-				{ spellId = 28755, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
-				{ spellId = 1236188, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
 				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped." },
-				{ spellId = 28751, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
 				{ spellId = 3044, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
 			} },
 			{ level = 20, lines = {
-				{ spellId = 28755, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
 				{ spellId = 19434, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
 				{ spellId = 13550, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped." },
 				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
@@ -764,14 +760,10 @@ ns.Data = {
 		},
 		["hunter-marksmanship"] = {
 			{ level = 10, lines = {
-				{ spellId = 28755, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
-				{ spellId = 1236188, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
 				{ spellId = 13549, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready." },
-				{ spellId = 28751, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },
 				{ spellId = 3044, name = "Arcane Shot", condition = "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…" },
 			} },
 			{ level = 20, lines = {
-				{ spellId = 28755, name = "Rapid Fire", condition = "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit." },
 				{ spellId = 19434, name = "Aimed Shot", condition = "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot." },
 				{ spellId = 13550, name = "Serpent Sting", condition = "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready." },
 				{ spellId = 2643, name = "Multi-Shot", condition = "Multi-Shot as the filler between Aimed Shots." },

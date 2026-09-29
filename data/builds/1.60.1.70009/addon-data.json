@@ -4125,24 +4125,9 @@
         "level": 10,
         "lines": [
           {
-            "spell_id": 28755,
-            "name": "Rapid Fire",
-            "condition": "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit."
-          },
-          {
-            "spell_id": 1236188,
-            "name": "Aimed Shot",
-            "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot."
-          },
-          {
             "spell_id": 13549,
             "name": "Serpent Sting",
             "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready -- the cited guide's own rotation step, not skipped."
-          },
-          {
-            "spell_id": 28751,
-            "name": "Multi-Shot",
-            "condition": "Multi-Shot as the filler between Aimed Shots."
           },
           {
             "spell_id": 3044,
@@ -4154,11 +4139,6 @@
       {
         "level": 20,
         "lines": [
-          {
-            "spell_id": 28755,
-            "name": "Rapid Fire",
-            "condition": "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit."
-          },
           {
             "spell_id": 19434,
             "name": "Aimed Shot",
@@ -4352,24 +4332,9 @@
         "level": 10,
         "lines": [
           {
-            "spell_id": 28755,
-            "name": "Rapid Fire",
-            "condition": "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit."
-          },
-          {
-            "spell_id": 1236188,
-            "name": "Aimed Shot",
-            "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot."
-          },
-          {
             "spell_id": 13549,
             "name": "Serpent Sting",
             "condition": "Serpent Sting kept up whenever it is about to fall off and neither shot above is close to ready."
-          },
-          {
-            "spell_id": 28751,
-            "name": "Multi-Shot",
-            "condition": "Multi-Shot as the filler between Aimed Shots."
           },
           {
             "spell_id": 3044,
@@ -4381,11 +4346,6 @@
       {
         "level": 20,
         "lines": [
-          {
-            "spell_id": 28755,
-            "name": "Rapid Fire",
-            "condition": "Rapid Fire timed to land with an incoming auto shot just as Aimed Shot is about to come off cooldown, so both benefit."
-          },
           {
             "spell_id": 19434,
             "name": "Aimed Shot",

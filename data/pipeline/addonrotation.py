@@ -83,7 +83,15 @@ def _family_ranks(spellranks: dict, class_slug: str) -> dict[str, list[tuple[int
     and either is a real, castable id for that rank."""
     families: dict[str, list[tuple[int, int]]] = {}
     for name, ranks in spellranks.get("classes", {}).get(class_slug, {}).items():
-        families[name] = sorted((rank["level"], rank["id"]) for rank in ranks)
+        pairs = sorted((rank["level"], rank["id"]) for rank in ranks)
+        # A level-0 row is an alternate id the client carries with no learn
+        # level of its own (Rapid Fire's 28755 beside the real 3045 at 26,
+        # Aimed Shot's 1236188 beside rank 6 at 60). Left in, it made the
+        # family "learned" from level 1, so the addon showed a level-20
+        # Beast Mastery hunter a Rapid Fire it cannot train until 26.
+        # Keep them only when the family states no level at all.
+        levelled = [pair for pair in pairs if pair[0] > 0]
+        families[name] = levelled or pairs
     return families
 
 
