@@ -17,7 +17,7 @@ from collections import defaultdict
 
 from pipeline.classic_sources import ClassicDbSourceRecord
 from pipeline.forkdb import ForkDatabase
-from pipeline.loot.constants import INSTANCE_KIND
+from pipeline.loot.constants import INSTANCE_KIND, world_drop_id
 from pipeline.loot.wowhead import merge_wowhead_sources as merge_classicdb_sources  # noqa: F401
 from pipeline.models import LootBoss, LootSource, QuestSource
 from pipeline.normalize.classes import slugify
@@ -29,17 +29,6 @@ from pipeline.quest_levels import QuestLevelEntry
 #: identically (this lane's own brief: "classify as world" is what
 #: distinguishes them from a `creature_drop`, not a separate bucket kind).
 _CREATURE_KINDS = frozenset({"creature_drop", "skinning", "pickpocketing"})
-
-
-def _world_drop_id(level_min: int | None, level_max: int | None) -> str:
-    """`world_drop:<level_min>-<level_max>`, or `world_drop:unknown` for a
-    pool the pinned dump's own comments name no level range for at all
-    (`pipeline.classic_sources._world_drop_pools`' own doc) -- never a
-    raw reference-template id, which is an implementation detail of the
-    dump, not a fact the site should ever show or key a URL on."""
-    if level_min is None or level_max is None:
-        return "world_drop:unknown"
-    return f"world_drop:{level_min}-{level_max}"
 
 
 def instance_zone_by_map(zone_rows: list[dict], types: dict[int, int]) -> dict[int, int]:
@@ -318,7 +307,7 @@ def classicdb_additions(
     )
     out.extend(
         LootSource(
-            id=_world_drop_id(level_min, level_max),
+            id=world_drop_id(level_min, level_max),
             kind="world_drop",
             name="World drop",
             items=sorted(items),

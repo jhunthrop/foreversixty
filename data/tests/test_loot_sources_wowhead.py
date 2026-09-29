@@ -9,6 +9,7 @@ in tests/fixtures/loot/items.json -- its fork db.json row states
 import json
 from pathlib import Path
 
+from pipeline.classic_sources import ClassicDbSourceRecord
 from pipeline.csvio import read_csv
 from pipeline.forkdb import load_fork_database
 from pipeline.item_sources import ItemSourceEntry
@@ -28,12 +29,13 @@ ENGINE = HERE / "fixtures/loot"
 UNSOURCED_ITEM = 110  # "Suffixed Sword" -- the fixture's one fork-unsourced item
 
 
-def built(item_sources=None):
+def built(item_sources=None, classic_sources=None):
     fork = load_fork_database(ENGINE)
     rows = json.loads((ENGINE / "zones.json").read_text(encoding="utf-8"))
     item_rows = json.loads((ENGINE / "items.json").read_text(encoding="utf-8"))
     build_items = {row["id"] for row in item_rows}
     item_inventory_types = {row["id"]: row["inventory_type"] for row in item_rows}
+    required_levels = {row["id"]: row.get("required_level") or 0 for row in item_rows}
     return build_loot(
         fork,
         {row["id"]: row["name"] for row in rows},
@@ -43,6 +45,9 @@ def built(item_sources=None):
         item_inventory_types,
         None,
         item_sources,
+        classic_sources,
+        rows,
+        required_levels,
     )
 
 
@@ -284,3 +289,125 @@ def test_dnt_and_template_rows_are_placeholders():
 
     for name in ("DNT CHEST", "Template Item"):
         assert is_placeholder_item({"id": 1, "name": name, "armor": 25, "stats": {"stamina": 1}})
+
+
+# wowhead-world-drops lane, 2026-09-29: the owner's own report case. These
+# ten rows are copied verbatim from build 1.60.1.70009's committed
+# `raw/items/item-sources.json`, item 4706 ("Lambent Scale Cloak")'s own
+# `dropped_by` list (Flesh Eater/Skeletal Warrior/... in Westfall (zone
+# 10), Singe/Bellygrub/... in Burning Steppes (zone 44), Targorr the
+# Dread in The Stockade (zone 717)) -- verified against that file
+# directly. The real list has 111 creatures across 15 zones; a 10-row,
+# 3-zone slice already clears both count and zone thresholds, so it
+# exercises the same classification the full list does without
+# hardcoding all 111 rows.
+_ITEM_4706_DROPPED_BY_SLICE = [
+    NpcSource(npc_id=3, name="Flesh Eater", zone_ids=[10]),
+    NpcSource(npc_id=48, name="Skeletal Warrior", zone_ids=[10]),
+    NpcSource(npc_id=202, name="Skeletal Horror", zone_ids=[10]),
+    NpcSource(npc_id=203, name="Skeletal Mage", zone_ids=[10]),
+    NpcSource(npc_id=215, name="Defias Night Runner", zone_ids=[10]),
+    NpcSource(npc_id=218, name="Grave Robber", zone_ids=[10]),
+    NpcSource(npc_id=335, name="Singe", zone_ids=[44]),
+    NpcSource(npc_id=345, name="Bellygrub", zone_ids=[44]),
+    NpcSource(npc_id=429, name="Shadowhide Darkweaver", zone_ids=[44]),
+    NpcSource(npc_id=1696, name="Targorr the Dread", zone_ids=[717]),
+]
+
+
+def test_item_4706s_own_dropped_by_slice_becomes_exactly_one_world_drop_source():
+    """Ten distinct creatures across three zones -- both the creature-
+    count (>= 6) and zone-count (>= 2) thresholds fire independently.
+    None of these rows carries a level (this build's committed scrape
+    predates level/chance parsing), so the level range falls back to
+    item 110's own `required_level` (40, tests/fixtures/loot/items.json)
+    to `+10` -- `world_drop:40-50`. No per-creature dungeon/world/zone
+    source is created for the item at all."""
+    item_sources = {
+        UNSOURCED_ITEM: ItemSourceEntry(
+            dropped_by=_ITEM_4706_DROPPED_BY_SLICE, source="wowhead", fetched_at="x"
+        )
+    }
+    document, _ = built(item_sources)
+    world_drop = source(document, "world_drop:40-50")
+    assert world_drop.kind == "world_drop"
+    assert world_drop.name == "World drop"
+    assert world_drop.items == [UNSOURCED_ITEM]
+    assert world_drop.level_min == 40
+    assert world_drop.level_max == 50
+    assert not any(
+        candidate.id.startswith(("world:", "zone:", "dungeon:", "raid:"))
+        and UNSOURCED_ITEM in source_item_ids(candidate)
+        for candidate in document.sources
+    )
+
+
+def test_a_named_boss_with_a_real_chance_stays_alongside_the_pool():
+    """Five trash rows in the fixture's open-world zone (16, Azshara) plus
+    one dungeon row (zone 1581, The Deadmines) with a stated chance of
+    20% -- six creatures, two zones, either threshold alone would
+    classify this a world-drop pattern. The dungeon row's own chance
+    (>= 5%) is tenet 7's "a boss that genuinely drops it" exception: it
+    keeps its own boss source in `dungeon:the-deadmines`, while the five
+    chance-less trash rows fold into one `world_drop` pool (level range
+    falls back to item 110's own required_level, 40-50, same as the
+    slice test above)."""
+    item_sources = {
+        UNSOURCED_ITEM: ItemSourceEntry(
+            dropped_by=[
+                NpcSource(npc_id=901, name="Trash One", zone_ids=[16]),
+                NpcSource(npc_id=902, name="Trash Two", zone_ids=[16]),
+                NpcSource(npc_id=903, name="Trash Three", zone_ids=[16]),
+                NpcSource(npc_id=904, name="Trash Four", zone_ids=[16]),
+                NpcSource(npc_id=905, name="Trash Five", zone_ids=[16]),
+                NpcSource(npc_id=657, name="A Real Boss", zone_ids=[1581], chance=20.0),
+            ],
+            source="wowhead",
+            fetched_at="x",
+        )
+    }
+    document, _ = built(item_sources)
+    dungeon = source(document, "dungeon:the-deadmines")
+    boss = next(b for b in dungeon.bosses if b.npc_id == 657)
+    assert boss.items == [UNSOURCED_ITEM]
+
+    world_drop = source(document, "world_drop:40-50")
+    assert world_drop.items == [UNSOURCED_ITEM]
+
+    world_buckets = [c for c in document.sources if c.id.startswith("world:")]
+    assert not any(UNSOURCED_ITEM in (c.items or []) for c in world_buckets)
+
+
+def test_classicdb_world_drop_precedence_wins_and_wowhead_is_not_resurrected():
+    """Item 110 is classified `world_drop:18-25` by classic-db (same
+    fixture shape as `test_loot_sources_classicdb.
+    test_a_world_drop_pool_record_becomes_one_world_drop_source_and_a_
+    real_boss_drop_stays_put`) AND independently ALSO matches wowhead's
+    own world-drop pattern (the ten-row 4706 slice above). After merge:
+    exactly ONE `world_drop` source for item 110, classic-db's own
+    `18-25` range -- never a second `world_drop:40-50` from wowhead's own
+    (would-be) classification, and no per-creature wowhead source is
+    resurrected for it either."""
+    classic_sources = {
+        UNSOURCED_ITEM: [
+            ClassicDbSourceRecord(
+                kind="world_drop", name="World drop", chance=1.5, level_min=18, level_max=25,
+            )
+        ]
+    }
+    item_sources = {
+        UNSOURCED_ITEM: ItemSourceEntry(
+            dropped_by=_ITEM_4706_DROPPED_BY_SLICE, source="wowhead", fetched_at="x"
+        )
+    }
+    document, _ = built(item_sources, classic_sources)
+    world_drop_sources = [
+        candidate for candidate in document.sources if candidate.kind == "world_drop"
+    ]
+    assert [s.id for s in world_drop_sources] == ["world_drop:18-25"]
+    assert world_drop_sources[0].items == [UNSOURCED_ITEM]
+    assert not any(
+        candidate.id.startswith(("world:", "zone:", "dungeon:", "raid:"))
+        and UNSOURCED_ITEM in source_item_ids(candidate)
+        for candidate in document.sources
+    )

@@ -23,9 +23,21 @@ NOT_FOUND = FIXTURES / "wowhead-item-notfound.html"
 
 
 def test_parse_item_page_reads_dropped_by():
+    """The fixture row also states `minlevel: 28, maxlevel: 29, count: 7,
+    outof: 29824` -- wowhead-world-drops lane, 2026-09-29: parsed into
+    `NpcSource.min_level`/`max_level`/`chance` (100 * 7/29824, rounded to
+    4 decimal places), which `pipeline.loot.wowhead`'s world-drop pattern
+    detector reads."""
     sources = wis.parse_item_page(720, DROPPED_BY.read_text(encoding="utf-8"))
     assert sources.dropped_by == [
-        wis.NpcSource(npc_id=205, name="Nightbane Dark Runner", zone_ids=[10])
+        wis.NpcSource(
+            npc_id=205,
+            name="Nightbane Dark Runner",
+            zone_ids=[10],
+            min_level=28,
+            max_level=29,
+            chance=0.0235,
+        )
     ]
     assert sources.sold_by == []
     assert sources.crafted_by == []
@@ -34,9 +46,14 @@ def test_parse_item_page_reads_dropped_by():
 
 
 def test_parse_item_page_reads_sold_by():
+    """A `sold-by` row states no `count`/`outof` (wowhead has a
+    stock/cost there instead), so `chance` stays `None` even though
+    `minlevel`/`maxlevel` are present."""
     sources = wis.parse_item_page(16769, SOLD_BY.read_text(encoding="utf-8"))
     assert sources.sold_by == [
-        wis.NpcSource(npc_id=11555, name="Gorn One Eye", zone_ids=[361])
+        wis.NpcSource(
+            npc_id=11555, name="Gorn One Eye", zone_ids=[361], min_level=55, max_level=55
+        )
     ]
 
 

@@ -550,6 +550,7 @@ def build_loot(
     item_sources: dict[int, ItemSourceEntry] | None = None,
     classic_sources: dict[int, list[ClassicDbSourceRecord]] | None = None,
     zone_rows: list[dict] | None = None,
+    required_levels: dict[int, int] | None = None,
 ) -> tuple[LootFile, LootStats]:
     absent: set[int] = set()
     # The vendor kind's own filter: a vendor selling only reagents or
@@ -602,9 +603,24 @@ def build_loot(
         # night-item-sources lane, 2026-09-28: fills the gap ABOVE, never
         # replaces a fork-found source -- `merge_wowhead_sources` unions
         # into an existing id and only appends a wholly new one.
+        #
+        # wowhead-world-drops lane, 2026-09-29: every item id ALREADY in
+        # a `world_drop` source at this point got there from classic-db
+        # (fork itself never emits the kind) -- `wowhead_additions`' own
+        # precedence rule skips these entirely rather than resurrecting
+        # their per-creature wowhead rows or appending a second,
+        # differently-leveled `world_drop` source under a different id.
+        classicdb_world_drop_items = {
+            item_id
+            for existing in sources
+            if existing.kind == "world_drop"
+            for item_id in source_item_ids(existing)
+        }
         wowhead_sources, wowhead_quest, wowhead_quest_detail = wowhead_additions(
             item_sources, build_items, equippable, zone_names, types,
             item_factions(fork, build_items),
+            required_levels,
+            classicdb_world_drop_items,
         )
         sources = merge_wowhead_sources(sources, wowhead_sources)
         quest = sorted(set(quest) | set(wowhead_quest))

@@ -96,6 +96,34 @@ function findSource(sources: readonly LootSource[], kind: string, itemId: number
   return sources.find((source) => source.kind === kind && itemsOfSource(source).includes(itemId));
 }
 
+/**
+ * Among every `kind`-matching source naming `itemId`, the one whose own drop chance for it
+ * is highest -- `findSource`'s plain "first array match" is not the same choice
+ * `sim/cmd/leveling-bis/band.go`'s `bestBoss` makes when an item drops from bosses in more
+ * than one dungeon/raid zone. Mirrors that choice (wowhead-world-drops lane, 2026-09-29) so
+ * the row never shows an arbitrary trash-mob source when a higher-chance boss source exists
+ * elsewhere in the array (tenet 7). A source with no chance data (`findChance` undefined,
+ * treated as -1) never beats one that states a chance, and ties keep the first array match,
+ * same fallback `findSource` always had.
+ */
+function findBestChanceSource(
+  sources: readonly LootSource[],
+  kind: string,
+  itemId: number,
+): LootSource | undefined {
+  let best: LootSource | undefined;
+  let bestChance = -1;
+  for (const candidate of sources) {
+    if (candidate.kind !== kind || !itemsOfSource(candidate).includes(itemId)) continue;
+    const chance = findChance(candidate, itemId) ?? -1;
+    if (best === undefined || chance > bestChance) {
+      best = candidate;
+      bestChance = chance;
+    }
+  }
+  return best;
+}
+
 function findBossEntry(source: LootSource, itemId: number) {
   return (source.bosses ?? []).find((entry) => entry.items.includes(itemId));
 }
@@ -146,7 +174,7 @@ export function resolveSourceCell(
   }
 
   if (slot.source_kind === 'dungeon' || slot.source_kind === 'raid') {
-    const source = findSource(loot.sources, slot.source_kind, itemId);
+    const source = findBestChanceSource(loot.sources, slot.source_kind, itemId);
     return source === undefined
       ? fallback
       : {

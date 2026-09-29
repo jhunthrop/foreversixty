@@ -19,9 +19,10 @@ from collections import defaultdict
 from pathlib import Path
 
 from pipeline.item_sources import ItemSourceEntry
-from pipeline.loot.constants import INSTANCE_KIND
+from pipeline.loot.constants import INSTANCE_KIND, world_drop_id
 from pipeline.models import LootBoss, LootSource, QuestSource
 from pipeline.normalize.classes import slugify
+from pipeline.wowhead_item_sources import NpcSource
 
 #: A client placeholder row -- night-item-sources' 2026-09-28 measurement:
 #: "90 Epic Rogue Dagger", "Bland Dagger", "Copy of X" and the like, none
@@ -163,6 +164,110 @@ def unsourced_real_item_ids(item_rows: list[dict], named: set[int]) -> list[int]
     return [int(row["id"]) for row in unsourced]
 
 
+#: wowhead-world-drops lane, 2026-09-29: a wowhead item page's own
+#: `dropped-by` listview names EVERY creature wowhead's community
+#: database has ever recorded a BoE world drop from -- for a generic
+#: green/white drop that is dozens to hundreds of unrelated trash mobs
+#: across a dozen zones, each individually correct (that creature CAN
+#: drop it) but together not a source a player recognises (tenet 7:
+#: "one line a player recognises... never a dump of every mob"). Item
+#: 4706 (Lambent Scale Cloak) measured on build 1.60.1.70009's committed
+#: `item-sources.json`: 111 distinct creatures across 15 zones -- the
+#: owner's own screenshot of this item's per-creature listing is the
+#: report this lane closes. Three independent signals, any ONE of which
+#: is enough (a real pool practically never needs all three to agree):
+#: naming this many distinct creatures, spanning this many distinct
+#: zones/instances (dungeon and open-world alike -- a pool does not stay
+#: confined to one), or -- only when the scrape carries a chance for
+#: every single row -- every one of them being below the "this could
+#: plausibly be someone's normal boss kill" floor. An unknown chance
+#: never counts toward "every listed chance is low"; this pipeline never
+#: guesses one to justify the classification.
+WORLD_DROP_MIN_CREATURES = 6
+WORLD_DROP_MIN_ZONES = 2
+WORLD_DROP_MAX_CHANCE_PERCENT = 1.0
+
+#: A row inside an item classified as a world-drop pattern above this
+#: chance still reads as a real, intentional boss drop (tenet 7's own
+#: exception: "a named boss with a chance >= 5% ... keeps its own source
+#: alongside") and is kept as its own boss source next to the pool --
+#: only when the scrape states a chance for it AND it resolves to a
+#: dungeon/raid zone; a trash-tier chance, or an unknown one, folds into
+#: the pool like every other row.
+WORLD_DROP_BOSS_MIN_CHANCE_PERCENT = 5.0
+
+#: `pipeline.classic_sources._world_drop_records`' own doc: when neither
+#: origin states a per-creature level for a world-drop pool, the item's
+#: own client `required_level` (to +10) is the honest proxy a player
+#: would use for "when do I outlevel this" -- this module's version of
+#: that same fallback, for when wowhead's own `dropped-by` rows carry no
+#: `minlevel`/`maxlevel` either (every entry fetched before this lane
+#: never does: `NpcSource.min_level`/`max_level` postdate it).
+WORLD_DROP_LEVEL_RANGE_PAD = 10
+
+
+def _is_world_drop_pattern(rows: list[NpcSource]) -> bool:
+    """Whether one item's own `dropped-by` rows read as a generic
+    world-drop pool rather than a set of real, individually-sourced
+    kills -- see `WORLD_DROP_MIN_CREATURES`'s own doc for the three
+    signals."""
+    if not rows:
+        return False
+    distinct_creatures = len({row.npc_id for row in rows if row.npc_id})
+    distinct_zones = len({row.zone_ids[0] for row in rows if row.zone_ids})
+    every_chance_known_and_low = all(
+        row.chance is not None and row.chance < WORLD_DROP_MAX_CHANCE_PERCENT for row in rows
+    )
+    return (
+        distinct_creatures >= WORLD_DROP_MIN_CREATURES
+        or distinct_zones >= WORLD_DROP_MIN_ZONES
+        or every_chance_known_and_low
+    )
+
+
+def _split_world_drop_rows(
+    rows: list[NpcSource], types: dict[int, int]
+) -> tuple[list[NpcSource], list[NpcSource]]:
+    """`(boss_rows, pool_rows)` for a `dropped-by` list already
+    classified a world-drop pattern -- `WORLD_DROP_BOSS_MIN_CHANCE_
+    PERCENT`'s own doc: a row resolving to a dungeon/raid zone with a
+    stated chance at or above that floor is a real boss kill and stays
+    its own source; every other row (world zone, unknown chance, or
+    below the floor) folds into the pool."""
+    boss_rows: list[NpcSource] = []
+    pool_rows: list[NpcSource] = []
+    for row in rows:
+        zone_id = row.zone_ids[0] if row.zone_ids else 0
+        kind = INSTANCE_KIND.get(types.get(zone_id, 0)) if zone_id else None
+        if (
+            kind is not None
+            and row.chance is not None
+            and row.chance >= WORLD_DROP_BOSS_MIN_CHANCE_PERCENT
+        ):
+            boss_rows.append(row)
+        else:
+            pool_rows.append(row)
+    return boss_rows, pool_rows
+
+
+def _world_drop_level_range(
+    rows: list[NpcSource], required_level: int | None
+) -> tuple[int | None, int | None]:
+    """The pool's own level range: the min/max of every row's own
+    `min_level`/`max_level` wowhead states, when any row states one; the
+    item's own `required_level` (to `required_level +
+    WORLD_DROP_LEVEL_RANGE_PAD`) when no row does; `(None, None)`
+    (`world_drop:unknown`) when neither this pipeline nor the client
+    states a required level for the item either."""
+    mins = [row.min_level for row in rows if row.min_level is not None]
+    maxes = [row.max_level for row in rows if row.max_level is not None]
+    if mins or maxes:
+        return (min(mins) if mins else None, max(maxes) if maxes else None)
+    if required_level:
+        return required_level, required_level + WORLD_DROP_LEVEL_RANGE_PAD
+    return None, None
+
+
 def wowhead_additions(
     item_sources: dict[int, ItemSourceEntry],
     build_items: set[int],
@@ -170,6 +275,8 @@ def wowhead_additions(
     zone_names: dict[int, str],
     types: dict[int, int],
     item_factions: dict[int, str],
+    required_levels: dict[int, int] | None = None,
+    classicdb_world_drop_items: set[int] | None = None,
 ) -> tuple[list[LootSource], list[int], dict[int, list[QuestSource]]]:
     """Extra sources `pipeline.item_sources`' wowhead scrape names for an
     item the fork database itself named NO source for at all. Every
@@ -193,12 +300,28 @@ def wowhead_additions(
     1490, "Guardian Talisman", quests 1445/1475, measured while
     regenerating loot.json for 1.60.1.70009) -- `QuestSource.faction`'s
     own contract is always the item's side, every origin agreeing.
+
+    `required_levels` (item id -> the client's own `required_level`) is
+    `_world_drop_level_range`'s fallback when wowhead states no
+    per-creature level for a world-drop pool. `classicdb_world_drop_items`
+    (every item id `pipeline.loot.classicdb.classicdb_additions` already
+    put in a `world_drop` source THIS `build_loot` call) is
+    wowhead-world-drops lane, 2026-09-29's own precedence rule: an item
+    classic-db already classified as `world_drop` is skipped here
+    entirely (not even re-bucketed into wowhead's OWN world_drop pool) --
+    one `world_drop` source per item after merge, its level range from
+    classic-db, never a second wowhead-derived one under a different id
+    that `merge_wowhead_sources` (id-keyed) would append rather than
+    union.
     """
+    classicdb_world_drop_items = classicdb_world_drop_items or set()
+    required_levels = required_levels or {}
     bosses: dict[tuple[int, int], set[int]] = defaultdict(set)
     boss_names: dict[int, str] = {}
     world: dict[int, set[int]] = defaultdict(set)
     world_names: dict[int, str] = {}
     zone: dict[int, set[int]] = defaultdict(set)
+    world_drop: dict[tuple[int | None, int | None], set[int]] = defaultdict(set)
     vendor_items: dict[int, set[int]] = defaultdict(set)
     vendor_names: dict[int, str] = {}
     crafted: dict[str, set[int]] = defaultdict(set)
@@ -208,18 +331,28 @@ def wowhead_additions(
     for item_id, page in item_sources.items():
         if item_id not in build_items:
             continue
-        for row in page.dropped_by:
-            zone_id = row.zone_ids[0] if row.zone_ids else 0
-            kind = INSTANCE_KIND.get(types.get(zone_id, 0)) if zone_id else None
-            if kind is not None:
+        if item_id not in classicdb_world_drop_items and _is_world_drop_pattern(page.dropped_by):
+            boss_rows, pool_rows = _split_world_drop_rows(page.dropped_by, types)
+            for row in boss_rows:
+                zone_id = row.zone_ids[0] if row.zone_ids else 0
                 bosses[(zone_id, row.npc_id)].add(item_id)
                 boss_names[row.npc_id] = row.name
-                continue
-            if row.npc_id:
-                world[row.npc_id].add(item_id)
-                world_names[row.npc_id] = row.name
-            if zone_id:
-                zone[zone_id].add(item_id)
+            if pool_rows:
+                level_range = _world_drop_level_range(pool_rows, required_levels.get(item_id))
+                world_drop[level_range].add(item_id)
+        elif item_id not in classicdb_world_drop_items:
+            for row in page.dropped_by:
+                zone_id = row.zone_ids[0] if row.zone_ids else 0
+                kind = INSTANCE_KIND.get(types.get(zone_id, 0)) if zone_id else None
+                if kind is not None:
+                    bosses[(zone_id, row.npc_id)].add(item_id)
+                    boss_names[row.npc_id] = row.name
+                    continue
+                if row.npc_id:
+                    world[row.npc_id].add(item_id)
+                    world_names[row.npc_id] = row.name
+                if zone_id:
+                    zone[zone_id].add(item_id)
         for row in page.sold_by:
             if not row.npc_id or item_id not in equippable:
                 continue
@@ -289,6 +422,28 @@ def wowhead_additions(
             source_origin="wowhead",
         )
         for zone_id, items in sorted(zone.items())
+    )
+    out.extend(
+        LootSource(
+            id=world_drop_id(level_min, level_max),
+            kind="world_drop",
+            name="World drop",
+            items=sorted(items),
+            level_min=level_min,
+            level_max=level_max,
+            source_origin="wowhead",
+        )
+        # Sorted low-to-high by level_min (unknown-level buckets, `None`,
+        # last), matching `pipeline.loot.classicdb.classicdb_additions`'
+        # own `world_drop` sort -- the picker's per-kind list reads the
+        # same way regardless of which origin found the pool.
+        for (level_min, level_max), items in sorted(
+            world_drop.items(),
+            key=lambda pair: (
+                pair[0][0] is None, pair[0][0] or 0,
+                pair[0][1] is None, pair[0][1] or 0,
+            ),
+        )
     )
     out.extend(
         LootSource(

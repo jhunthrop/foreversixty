@@ -136,14 +136,31 @@ _QUEST_SIDE_FACTION = {1: "alliance", 2: "horde", 3: "both"}
 
 
 class NpcSource(BaseModel):
-    """One `dropped-by` or `sold-by` row: an npc, where it is, and
-    (dropped-by only) the level range wowhead states for it -- not used
-    by this pipeline today, kept because it costs nothing to keep and a
-    future leveling-relevance filter may want it."""
+    """One `dropped-by` or `sold-by` row: an npc, where it is, and the
+    level range and (dropped-by only, most rows) drop chance wowhead
+    states for it.
+
+    wowhead-world-drops lane, 2026-09-29: `min_level`/`max_level`
+    (the row's own `minlevel`/`maxlevel`) and `chance` (`100 *
+    count/outof`, wowhead's own "N of M recorded kills" tally, rounded
+    to 4 decimal places) feed `pipeline.loot.wowhead`'s world-drop
+    pattern detector -- a `dropped-by` list naming dozens of creatures
+    across a dozen zones, each with a chance under 1%, is a generic BoE
+    world drop, not a source a player recognises (tenet 7). `sold-by`
+    rows carry `minlevel`/`maxlevel` too (harmless to keep) but never
+    `count`/`outof` (wowhead states a vendor's stock/cost there
+    instead), so `chance` is always `None` for one. Every committed
+    `item-sources.json` entry fetched before this lane predates these
+    three fields and simply has them `None` -- the pattern detector's
+    other two signals (creature count, zone count) still fire without
+    them."""
 
     npc_id: int
     name: str
     zone_ids: list[int]
+    min_level: int | None = None
+    max_level: int | None = None
+    chance: float | None = None
 
 
 class CraftedSource(BaseModel):
@@ -209,6 +226,17 @@ def _listview_data(html: str, listview_id: str) -> list | None:
     return data
 
 
+def _row_chance(row: dict) -> float | None:
+    """`100 * count/outof` -- wowhead's own "N of M recorded kills"
+    tally on a `dropped-by` row, or `None` for a `sold-by` row (never
+    states `outof`) or a `dropped-by` row wowhead itself states no
+    tally for."""
+    count, outof = row.get("count"), row.get("outof")
+    if not outof:
+        return None
+    return round(100 * count / outof, 4)
+
+
 def _npc_rows(html: str, listview_id: str) -> list[NpcSource]:
     rows = _listview_data(html, listview_id) or []
     return [
@@ -216,6 +244,9 @@ def _npc_rows(html: str, listview_id: str) -> list[NpcSource]:
             npc_id=int(row["id"]),
             name=str(row.get("name") or row.get("displayName") or ""),
             zone_ids=[int(z) for z in (row.get("location") or [])],
+            min_level=row.get("minlevel"),
+            max_level=row.get("maxlevel"),
+            chance=_row_chance(row),
         )
         for row in rows
     ]

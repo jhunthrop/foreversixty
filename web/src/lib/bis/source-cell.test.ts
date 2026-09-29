@@ -33,7 +33,11 @@ const LOOT: LootFile & LootQuestsFile = {
       name: 'The Deadmines',
       zone_id: 2,
       bosses: [],
-      trash: [20],
+      // item 82 also appears (with a real chance) as a boss drop in
+      // `dungeon:the-deadmines` below -- see the
+      // `findBestChanceSource`-covering tests: this trash-only, no-chance
+      // entry must never win just because it comes first in the array.
+      trash: [20, 82],
     },
     { id: 'crafted:tailoring', kind: 'crafted', name: 'Tailoring', profession: 'tailoring', items: [30] },
     { id: 'vendor:123', kind: 'vendor', name: 'Gorn One Eye', items: [40] },
@@ -58,6 +62,13 @@ const LOOT: LootFile & LootQuestsFile = {
           npc_id: 1,
           items: [80],
           item_chances: { '80': 40 },
+        },
+        {
+          id: 'dungeon:the-deadmines:2',
+          name: 'Mr. Smite',
+          npc_id: 2,
+          items: [82],
+          item_chances: { '82': 15 },
         },
       ],
     },
@@ -143,6 +154,28 @@ describe('resolveSourceCell', () => {
       'fallback',
     );
     expect(cell).toEqual({ kind: 'dungeon', instance: 'The Deadmines', boss: undefined });
+  });
+
+  it('picks the higher-chance boss source when the same item names more than one dungeon source, never the first array match', () => {
+    // Item 82 is a chance-less trash entry in `dungeon:deadmines` (which
+    // comes FIRST in LOOT.sources) and a real, 15%-chance boss drop in
+    // `dungeon:the-deadmines` (which comes after). findSource's plain
+    // "first match" would have picked the trash-only source and reported
+    // no boss and no chance at all -- wowhead-world-drops lane,
+    // 2026-09-29, tenet 7's "never show an arbitrary trash mob when a
+    // boss ... exists".
+    const cell = resolveSourceCell(
+      slot({ item_id: 82, source_kind: 'dungeon' }),
+      'alliance',
+      LOOT,
+      'fallback',
+    );
+    expect(cell).toEqual({
+      kind: 'dungeon',
+      instance: 'The Deadmines',
+      boss: 'Mr. Smite',
+      dropChance: 15,
+    });
   });
 
   it('resolves a crafted item to its profession', () => {

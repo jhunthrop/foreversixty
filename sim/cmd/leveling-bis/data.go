@@ -204,26 +204,40 @@ func loadClassItems(buildDir, classSlug string) (classItemFile, error) {
 	return f, nil
 }
 
+// lootBoss is one entry of a raid/dungeon lootSource's own Bosses list.
+// ItemChances (src-classicdb lane, 2026-09-29; wowhead-world-drops lane,
+// 2026-09-29 for the wowhead-scraped case) is item id (string key,
+// matching loot.json's own encoding) -> percent drop chance (0-100),
+// present only for an item classic-db or wowhead itself states a chance
+// for -- band.go's sourceFor reads it to pick the highest-chance boss
+// among several naming the same item, rather than whichever the array
+// happens to list first.
+type lootBoss struct {
+	Name        string             `json:"name"`
+	Items       []int              `json:"items"`
+	ItemChances map[string]float64 `json:"item_chances"`
+}
+
 // lootSource is one row of data/builds/<build>/loot.json's sources
 // array. Bosses carries a raid/dungeon's per-boss item lists; Items
 // carries every other kind's flat list (today: quest - one bucket for
-// every quest reward, crafted, rep, pvp, world). See loot.json's own
-// "kind" values; this struct is deliberately permissive about which
-// fields are present so a kind this file has never carried yet
-// decodes instead of failing the whole load.
+// every quest reward, crafted, rep, pvp, world). ItemChances is Items'
+// own per-item chance map, same shape and source as lootBoss.ItemChances
+// above, for a flat (non-bossed) source such as a `world` mob or a
+// `world_drop` pool. See loot.json's own "kind" values; this struct is
+// deliberately permissive about which fields are present so a kind this
+// file has never carried yet decodes instead of failing the whole load.
 type lootSource struct {
-	ID         string `json:"id"`
-	Kind       string `json:"kind"`
-	Name       string `json:"name"`
-	Profession string `json:"profession"`
-	FactionID  int    `json:"faction_id"`
-	Standing   string `json:"standing"`
-	Rank       int    `json:"rank"`
-	Items      []int  `json:"items"`
-	Bosses     []struct {
-		Name  string `json:"name"`
-		Items []int  `json:"items"`
-	} `json:"bosses"`
+	ID          string             `json:"id"`
+	Kind        string             `json:"kind"`
+	Name        string             `json:"name"`
+	Profession  string             `json:"profession"`
+	FactionID   int                `json:"faction_id"`
+	Standing    string             `json:"standing"`
+	Rank        int                `json:"rank"`
+	Items       []int              `json:"items"`
+	ItemChances map[string]float64 `json:"item_chances"`
+	Bosses      []lootBoss         `json:"bosses"`
 }
 
 // lootQuestEntry is one entry of loot.json's `quests` map: one quest
@@ -261,6 +275,14 @@ type itemSource struct {
 	// Standing is a rep source's required standing ("friendly" ..
 	// "exalted"), "" for every other kind.
 	Standing string
+	// Chance is the item's own percent drop chance (0-100) at this
+	// source, from lootSource.ItemChances/lootBoss.ItemChances --
+	// wowhead-world-drops lane, 2026-09-29. 0 when this source states
+	// none (the fork database and wowhead's dropped-by scrape usually
+	// carry none), which sourceFor's bestBoss/bestOf treat as "lowest,
+	// never preferred over a source that does state one" rather than as
+	// a real 0% chance.
+	Chance float64
 }
 
 // repSide names the reputations only one side can earn, by the client's
@@ -375,8 +397,10 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 	}
 	idx := make(lootIndex)
 	for _, src := range f.Sources {
-		add := func(id int, label string) {
-			is := itemSource{Kind: src.Kind, Label: label, Side: factionExclusiveDungeons[src.ID]}
+		add := func(id int, label string, chance float64) {
+			is := itemSource{
+				Kind: src.Kind, Label: label, Side: factionExclusiveDungeons[src.ID], Chance: chance,
+			}
 			if src.Kind == "rep" {
 				factionID := src.FactionID
 				if correctedID, correctedLabel, swapped := correctedRepSource(itemFactionRestriction[id], factionID, factionNames); swapped {
@@ -388,7 +412,7 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 			idx[id] = append(idx[id], is)
 		}
 		for _, id := range src.Items {
-			add(id, src.Name)
+			add(id, src.Name, src.ItemChances[strconv.Itoa(id)])
 		}
 		for _, boss := range src.Bosses {
 			label := src.Name
@@ -396,7 +420,7 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				label = src.Name + ": " + boss.Name
 			}
 			for _, id := range boss.Items {
-				add(id, label)
+				add(id, label, boss.ItemChances[strconv.Itoa(id)])
 			}
 		}
 	}

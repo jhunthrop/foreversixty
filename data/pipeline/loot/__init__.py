@@ -107,6 +107,12 @@ def write_loot_files(
     item_rows = json.loads((build_dir / "items.json").read_text(encoding="utf-8"))
     build_items = {int(row["id"]) for row in item_rows}
     item_inventory_types = {int(row["id"]): int(row["inventory_type"]) for row in item_rows}
+    # wowhead-world-drops lane, 2026-09-29: `pipeline.loot.wowhead.
+    # wowhead_additions`' own world-drop level-range fallback, for when
+    # wowhead's own `dropped-by` rows state no per-creature level at all.
+    item_required_levels = {
+        int(row["id"]): int(row.get("required_level") or 0) for row in item_rows
+    }
 
     # Quest levels come from the committed, merged quest-levels.json
     # (never fetched here): `loot` builds the site's committed data and
@@ -147,6 +153,7 @@ def write_loot_files(
         item_sources,
         classic_sources,
         zone_rows,
+        item_required_levels,
     )
     # src-classicdb lane item 3: a Forever-new item sharing its name and
     # slot with a Classic item, still unsourced after fork+classic-db+
@@ -306,6 +313,9 @@ def merge_loot_files(
     item_rows = json.loads((build_dir / "items.json").read_text(encoding="utf-8"))
     build_items = {int(row["id"]) for row in item_rows}
     item_inventory_types = {int(row["id"]): int(row["inventory_type"]) for row in item_rows}
+    item_required_levels = {
+        int(row["id"]): int(row.get("required_level") or 0) for row in item_rows
+    }
     quest_levels = load_quest_levels(build_dir)
     item_sources = load_item_sources(build_dir)
     classic_sources = load_classic_sources(build_dir)
@@ -321,6 +331,7 @@ def merge_loot_files(
         item_sources,
         classic_sources,
         zone_rows,
+        item_required_levels,
     )
     document, reitemised = apply_reitemisation(document, item_rows)
     document = apply_overlays(document, load_overlays(overlay_dir))
