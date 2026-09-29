@@ -204,14 +204,14 @@ describe('bandEntry', () => {
 describe('filledSlots', () => {
   it('returns all 17 planner slots, in the planner’s own order', () => {
     const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
-    const band = bandEntry(file, 10, 'alliance')!;
+    const band = bandEntry(file, 20, 'alliance')!;
     const rows = filledSlots(band);
     expect(rows.map((row) => row.slot)).toEqual([...SLOTS]);
   });
 
   it('marks a slot the band has no pick for as missing, rather than dropping the row', () => {
     const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
-    const band = bandEntry(file, 10, 'alliance')!;
+    const band = bandEntry(file, 20, 'alliance')!;
     const thin = { ...band, slots: band.slots.filter((slot) => slot.slot !== 'ranged') };
     const rows = filledSlots(thin);
     const ranged = rows.find((row) => row.slot === 'ranged')!;
@@ -340,12 +340,12 @@ describe('loadLootFile', () => {
 describe('previousBandLevel', () => {
   it('is undefined at the file’s first band', () => {
     const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
-    expect(previousBandLevel(file, 10)).toBeUndefined();
+    expect(previousBandLevel(file, 20)).toBeUndefined();
   });
 
   it('is the band immediately before, per bandLevels', () => {
     const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
-    expect(previousBandLevel(file, 30)).toBe(25);
+    expect(previousBandLevel(file, 30)).toBe(20);
   });
 
   it('is undefined for a band the file does not carry', () => {
@@ -357,7 +357,7 @@ describe('previousBandLevel', () => {
 describe('changedSinceBand', () => {
   it('is undefined at the file’s first band', () => {
     const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
-    expect(changedSinceBand(file, 10, 'alliance')).toBeUndefined();
+    expect(changedSinceBand(file, 20, 'alliance')).toBeUndefined();
   });
 
   it('lists only the slots whose item id changed from the previous band, faction held constant', () => {
@@ -372,7 +372,7 @@ describe('changedSinceBand', () => {
   it('does not list a slot whose pick is unchanged between bands', () => {
     const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
     const changed = changedSinceBand(file, 30, 'horde')!;
-    const trinket1Before = bandEntry(file, 25, 'horde')?.slots.find((s) => s.slot === 'trinket1');
+    const trinket1Before = bandEntry(file, 20, 'horde')?.slots.find((s) => s.slot === 'trinket1');
     const trinket1After = bandEntry(file, 30, 'horde')?.slots.find((s) => s.slot === 'trinket1');
     if (trinket1Before?.item_id === trinket1After?.item_id) {
       expect(changed.some((entry) => entry.slot === 'trinket1')).toBe(false);
