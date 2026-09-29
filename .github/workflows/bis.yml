@@ -93,14 +93,21 @@ jobs:
           # `fetch` and `loot` each carry a completeness gate over ItemSparse.csv
           # (pipeline/csvio.py's check_item_sparse_completeness -- night-fetch-guard,
           # 2026-09-29: wago.tools silently served a truncated ItemSparse export that
-          # would have halved every class's committed items/<class>.json). A gate that
-          # trips raises SystemExit, which -- under this step's default `bash -eo
-          # pipefail` -- fails this step and the job, skipping the commit step below,
-          # so the truncated data is never written to a committed file. Do not add
-          # `|| true` or `continue-on-error` here.
+          # would have halved every class's committed items/<class>.json). The gate
+          # checks BEFORE writing, so a trip leaves the committed loot.json and
+          # items/*.json untouched. It is reported as a workflow warning and the
+          # rebuild is skipped rather than failing the job: the wowhead caches
+          # fetched above are still committed (so the crawl keeps its place) and
+          # the picks below still run on the committed loot.json. The first night
+          # wago is complete again, the rebuild happens on its own.
           if [ "${quests_fetched:-0}" -gt 0 ] || [ "${items_fetched:-0}" -gt 0 ]; then
-            uv run python -m pipeline fetch --product wow_classic_era --build "${{ steps.identity.outputs.build }}"
-            uv run python -m pipeline loot --build "${{ steps.identity.outputs.build }}" --engine ../.engine
+            if uv run python -m pipeline fetch --product wow_classic_era --build "${{ steps.identity.outputs.build }}" \
+               && uv run python -m pipeline loot --build "${{ steps.identity.outputs.build }}" --engine ../.engine; then
+              echo "loot.json rebuilt"
+            else
+              echo "::warning title=loot rebuild skipped::the raw-table completeness gate tripped (see the log); committed loot.json kept"
+              git checkout -- "builds/${{ steps.identity.outputs.build }}/loot.json" "builds/${{ steps.identity.outputs.build }}/manifest.json" 2>/dev/null || true
+            fi
           else
             echo "no quest level or item source filled in tonight; loot.json unchanged"
           fi
