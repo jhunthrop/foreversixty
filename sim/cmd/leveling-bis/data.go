@@ -248,10 +248,38 @@ type lootFile struct {
 }
 
 // itemSource is what loot.json says about one item: which kind of
-// source named it, and a human label for the report/output badge.
+// source named it, a human label for the report/output badge, and
+// which faction (if any) can actually reach that source. Faction is
+// empty for every ordinary source (crafted, quest, most dungeons and
+// raids) - it is only set for a source this lane knows in advance is
+// physically closed to one faction regardless of what the item itself
+// allows (see factionExclusiveDungeons below); items.json's own
+// faction_restriction column already covers "who can equip this item"
+// and is read straight into candidate.FactionRestriction in
+// loadCandidates, so Faction here is deliberately a narrower, separate
+// concept: "who can reach this drop location at all."
 type itemSource struct {
-	Kind  string
-	Label string
+	Kind    string
+	Label   string
+	Faction string
+}
+
+// factionExclusiveDungeons is every dungeon/raid source id
+// (lootSource.ID, e.g. "dungeon:ragefire-chasm") this lane knows is
+// inside the opposite faction's capital city and so cannot be entered
+// by the other faction at all, no matter the item's own faction_restriction.
+// Ragefire Chasm sits in the Ragefire Chasm entrance inside Orgrimmar
+// itself; an Alliance character cannot walk past Orgrimmar's guards to
+// reach it. Found via this lane's own band-20 warrior-arms audit: item
+// 14149 (Subterranean Cape, faction_restriction "") has Ragefire
+// Chasm's Taragaman the Hungerer as its ONLY loot.json source, so an
+// Alliance character was being handed a cloak it can never farm.
+// Vanilla has no Alliance-side mirror of this (Deadmines, Wailing
+// Caverns and Shadowfang Keep are all open-world instances either
+// faction can walk to), so this table is one entry until a second
+// capital-city-only dungeon is found.
+var factionExclusiveDungeons = map[string]string{
+	"dungeon:ragefire-chasm": "horde",
 }
 
 // lootIndex is item id -> every source that names it. An item can
@@ -283,12 +311,13 @@ func loadLootIndex(buildDir string) (lootIndex, map[int]int, error) {
 		return nil, nil, fmt.Errorf("decoding loot.json: %w", err)
 	}
 	idx := make(lootIndex)
-	add := func(id int, kind, label string) {
-		idx[id] = append(idx[id], itemSource{Kind: kind, Label: label})
+	add := func(id int, kind, label, faction string) {
+		idx[id] = append(idx[id], itemSource{Kind: kind, Label: label, Faction: faction})
 	}
 	for _, src := range f.Sources {
+		faction := factionExclusiveDungeons[src.ID]
 		for _, id := range src.Items {
-			add(id, src.Kind, src.Name)
+			add(id, src.Kind, src.Name, faction)
 		}
 		for _, boss := range src.Bosses {
 			label := src.Name
@@ -296,7 +325,7 @@ func loadLootIndex(buildDir string) (lootIndex, map[int]int, error) {
 				label = src.Name + ": " + boss.Name
 			}
 			for _, id := range boss.Items {
-				add(id, src.Kind, label)
+				add(id, src.Kind, label, faction)
 			}
 		}
 	}

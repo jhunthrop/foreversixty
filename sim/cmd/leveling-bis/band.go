@@ -3,15 +3,21 @@ package main
 import "sort"
 
 // sourceFor answers loot.json's own question for one item at one
-// band: does it have a source usable at this level, and if so which.
+// band and faction: does it have a source usable at this level by a
+// character of this faction, and if so which.
 //
 // Raid sources are excluded below level 60 (this lane's brief: "a
 // leveling list is about what a leveling character can get" - the
-// leveling-bis design doc's own words). An item with more than one
-// source (rare in today's data; loot.json's kinds barely overlap)
-// takes the first non-raid one in a fixed kind order, so the choice
-// is deterministic across runs rather than dependent on loot.json's
-// row order.
+// leveling-bis design doc's own words). A source whose own zone is
+// faction-exclusive (factionExclusiveDungeons, data.go) is skipped for
+// the other faction the same way a raid source is skipped below 60 -
+// the item itself can be faction-neutral (items.json's own
+// faction_restriction empty) while the one place it drops from is a
+// capital-city instance the opposite faction cannot physically enter.
+// An item with more than one source (rare in today's data; loot.json's
+// kinds barely overlap) takes the first usable one in a fixed kind
+// order, so the choice is deterministic across runs rather than
+// dependent on loot.json's row order.
 //
 // TODO(bis-data): "no usable source" is reported as "no known
 // source" full stop. The design doc's "zone drop, flagged lucky"
@@ -23,13 +29,21 @@ import "sort"
 // describes, rather than dropping it silently as this prototype does.
 var sourceKindPriority = []string{"quest", "dungeon", "crafted", "rep", "pvp", "world", "raid"}
 
-func sourceFor(id, level int, idx lootIndex) (itemSource, bool) {
+func sourceFor(id, level int, idx lootIndex, faction string) (itemSource, bool) {
 	srcs := idx[id]
 	if len(srcs) == 0 {
 		return itemSource{}, false
 	}
 	byKind := make(map[string]itemSource, len(srcs))
 	for _, s := range srcs {
+		if s.Faction != "" && s.Faction != faction {
+			// A source this faction cannot reach at all (e.g. Ragefire
+			// Chasm for Alliance): never let it win the kind, even as
+			// the only row of its kind, so a later kind still gets a
+			// chance rather than the item falling to NoSource on a
+			// technicality it could otherwise clear.
+			continue
+		}
 		if _, seen := byKind[s.Kind]; !seen {
 			byKind[s.Kind] = s
 		}
@@ -176,7 +190,7 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 			out.CrossClassSet = append(out.CrossClassSet, c)
 			continue
 		}
-		src, ok := sourceFor(c.ID, level, idx)
+		src, ok := sourceFor(c.ID, level, idx, faction)
 		if !ok {
 			out.NoSource = append(out.NoSource, c)
 			continue

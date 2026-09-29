@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (human, 10000000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 13.9. Weights run: 1.6s. Verify run: 0.6s. 964 eligible items had no known source.
+Set DPS (verified): 13.9. Weights run: 1.0s. Verify run: 0.5s. 964 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.026, strength=2.016 ± 0.031, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=0.684 ± 0.036, melee_haste=0.929 ± 0.041
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 964, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (human, 33000000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 25.0. Weights run: 1.6s. Verify run: 1.0s. 1275 eligible items had no known source.
+Set DPS (verified): 24.5. Weights run: 0.9s. Verify run: 0.8s. 1281 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.037, strength=2.041 ± 0.046, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=1.048 ± 0.063, melee_haste=1.469 ± 0.053
 
@@ -45,9 +45,9 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | head | Flying Tiger Goggles (4368) | Engineering [crafted] | 0.0 | yes |
 | neck | - | - |  |  |
 | shoulder | - | - |  |  |
-| back | Subterranean Cape (14149) | Ragefire Chasm: Taragaman the Hungerer [dungeon] | 6.1 | yes |
+| back | Finely Woven Cloak (1270) | Quests [quest] | 0.0 | yes |
 | chest | Murloc Scale Breastplate (5781) | Leatherworking [crafted] | 10.2 | yes |
-| wrist | Cavedweller Bracers (14147) | Ragefire Chasm: Jergosh the Invoker [dungeon] | 4.1 | yes |
+| wrist | Timberland Armguards (5315) | Quests [quest] | 0.0 | yes |
 | hands | Polar Gauntlets (7606) | Quests [quest] | 12.2 | yes |
 | waist | Steadfast Cinch (5609) | Quests [quest] | 8.2 | yes |
 | legs | Chausses of Westfall (6087) | Quests [quest] | 22.5 | yes |
@@ -60,13 +60,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | - | - |  |  |
 | ranged | Daryl's Hunting Rifle (2904) | Quests [quest] | 2.0 | yes |
 
-**New at 15:** head: Flying Tiger Goggles; back: Subterranean Cape; chest: Murloc Scale Breastplate; wrist: Cavedweller Bracers; hands: Polar Gauntlets; legs: Chausses of Westfall; feet: Gold Militia Boots; finger1: Ring of Iron Will; finger2: Clergy Ring; main_hand: Seraph's Strike; ranged: Daryl's Hunting Rifle
+**New at 15:** head: Flying Tiger Goggles; back: Finely Woven Cloak; chest: Murloc Scale Breastplate; wrist: Timberland Armguards; hands: Polar Gauntlets; legs: Chausses of Westfall; feet: Gold Militia Boots; finger1: Ring of Iron Will; finger2: Clergy Ring; main_hand: Seraph's Strike; ranged: Daryl's Hunting Rifle
 
-No-known-source sample (15 of 1275, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 899 Venom Web Fang; 935 Night Watch Shortsword; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1211 Gnoll War Harness; 1214 Gnoll Punisher; 1219 Redridge Machete; 1220 Lupine Axe
+No-known-source sample (15 of 1281, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 899 Venom Web Fang; 935 Night Watch Shortsword; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1211 Gnoll War Harness; 1214 Gnoll Punisher; 1219 Redridge Machete; 1220 Lupine Axe
 
 ### Band 20 (human, 35300000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 30.1. Weights run: 1.6s. Verify run: 1.1s. 1667 eligible items had no known source.
+Set DPS (verified): 30.1. Weights run: 1.0s. Verify run: 0.9s. 1673 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.047, strength=1.989 ± 0.061, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=1.179 ± 0.084, melee_haste=1.664 ± 0.075
 
@@ -75,7 +75,7 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | head | Sparkmetal Coif (1282) | Quests [quest] | 17.9 | yes |
 | neck | Sentinel's Medallion (20444) | Warsong Outriders [rep] | 0.0 | yes |
 | shoulder | Silvered Bronze Shoulders (3481) | Blacksmithing [crafted] | 6.0 | yes |
-| back | Subterranean Cape (14149) | Ragefire Chasm: Taragaman the Hungerer [dungeon] | 6.0 | yes |
+| back | Miner's Cape (5444) | The Deadmines: Miner Johnson [dungeon] | 4.0 | yes |
 | chest | Mutant Scale Breastplate (6627) | Wailing Caverns: Mutanus the Devourer [dungeon] | 19.9 | yes |
 | wrist | Patterned Bronze Bracers (2868) | Blacksmithing [crafted] | 9.9 | yes |
 | hands | Gold-flecked Gloves (5195) | The Deadmines: Sneed [dungeon] | 13.9 | yes |
@@ -90,13 +90,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | - | - |  |  |
 | ranged | Dwarven Fishing Pole (3567) | Quests [quest] | 4.0 | yes |
 
-**New at 20:** head: Sparkmetal Coif; neck: Sentinel's Medallion; shoulder: Silvered Bronze Shoulders; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Gold-flecked Gloves; waist: Blackened Defias Belt; feet: Draftsman Boots; finger1: Protector's Band; finger2: Seal of Wrynn; trinket1: Rune of Perfection; trinket2: Rune of Duty; ranged: Dwarven Fishing Pole
+**New at 20:** head: Sparkmetal Coif; neck: Sentinel's Medallion; shoulder: Silvered Bronze Shoulders; back: Miner's Cape; chest: Mutant Scale Breastplate; wrist: Patterned Bronze Bracers; hands: Gold-flecked Gloves; waist: Blackened Defias Belt; feet: Draftsman Boots; finger1: Protector's Band; finger2: Seal of Wrynn; trinket1: Rune of Perfection; trinket2: Rune of Duty; ranged: Dwarven Fishing Pole
 
-No-known-source sample (15 of 1667, see the JSON for more): 727 Notched Shortsword; 789 Stout Battlehammer; 790 Forester's Axe; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 880 Staff of Horrors; 885 Black Metal Axe; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 911 Ironwood Treebranch
+No-known-source sample (15 of 1673, see the JSON for more): 727 Notched Shortsword; 789 Stout Battlehammer; 790 Forester's Axe; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 880 Staff of Horrors; 885 Black Metal Axe; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 911 Ironwood Treebranch
 
 ### Band 25 (human, 35323000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 37.1. Weights run: 1.7s. Verify run: 1.3s. 2087 eligible items had no known source.
+Set DPS (verified): 37.1. Weights run: 1.1s. Verify run: 1.1s. 2093 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.083, strength=1.845 ± 0.112, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=1.203 ± 0.125, melee_haste=1.848 ± 0.133
 
@@ -122,11 +122,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 25:** back: Wolfmaster Cape; chest: Shining Silver Breastplate; wrist: Bands of Serra'kis; hands: Heavy Earthen Gloves; finger1: Silverlaine's Family Seal; finger2: Protector's Band; main_hand: Emil's Brand
 
-No-known-source sample (15 of 2087, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 789 Stout Battlehammer; 790 Forester's Axe; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 880 Staff of Horrors; 885 Black Metal Axe; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff
+No-known-source sample (15 of 2093, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 789 Stout Battlehammer; 790 Forester's Axe; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 880 Staff of Horrors; 885 Black Metal Axe; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff
 
 ### Band 30 (human, 35325210000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 47.7. Weights run: 1.8s. Verify run: 1.4s. 2468 eligible items had no known source.
+Set DPS (verified): 47.7. Weights run: 1.1s. Verify run: 1.2s. 2474 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.109, strength=2.168 ± 0.133, agility=not significant (0.010 ± 0.006), crit=0.185 ± 0.024, hit=1.849 ± 0.270, melee_haste=2.981 ± 0.386
 
@@ -152,11 +152,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 30:** head: Tusken Helm; neck: Ghostshard Talisman; shoulder: Wrangling Spaulders; chest: Kolkar Marauder Chain; hands: Stormfire Gauntlets; waist: Highlander's Plate Girdle; legs: Ferine Leggings; feet: Jungle Boots; finger1: Protector's Band; finger2: Silverlaine's Family Seal; trinket1: Talisman of Arathor; trinket2: Rune of Perfection; main_hand: Whirlwind Warhammer; ranged: Master Hunter's Rifle
 
-No-known-source sample (15 of 2468, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 865 Leaden Mace; 880 Staff of Horrors; 885 Black Metal Axe
+No-known-source sample (15 of 2474, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 865 Leaden Mace; 880 Staff of Horrors; 885 Black Metal Axe
 
 ### Band 35 (human, 35325213020000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 54.4. Weights run: 1.9s. Verify run: 1.5s. 2794 eligible items had no known source.
+Set DPS (verified): 54.4. Weights run: 1.2s. Verify run: 1.2s. 2800 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.103, strength=2.131 ± 0.143, agility=not significant (0.016 ± 0.010), crit=0.298 ± 0.039, hit=2.264 ± 0.315, melee_haste=3.874 ± 0.442
 
@@ -182,11 +182,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 35:** hands: Scarlet Gauntlets; feet: Ironheel Boots; main_hand: Bonebiter
 
-No-known-source sample (15 of 2794, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 865 Leaden Mace
+No-known-source sample (15 of 2800, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 865 Leaden Mace
 
 ### Band 40 (human, 35325213032010001-000000000000000000-000000000000000000)
 
-Set DPS (verified): 60.3. Weights run: 2.2s. Verify run: 1.6s. 3220 eligible items had no known source.
+Set DPS (verified): 60.3. Weights run: 1.0s. Verify run: 1.6s. 3226 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.464), strength=2.494 ± 0.609, agility=not significant (0.029 ± 0.017), crit=0.602 ± 0.078, hit=3.239 ± 0.736, melee_haste=5.214 ± 0.852
 
@@ -212,11 +212,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 40:** head: Raging Berserker's Helm; shoulder: Failed Flying Experiment; back: Tattered Hakkari Cape; wrist: Berserker Bracers; hands: Truesilver Gauntlets; waist: Highlander's Plate Girdle; legs: Scarlet Leggings; feet: Shinkicker Boots; finger1: Protector's Band; finger2: Ironspine's Eye; trinket1: Mark of the Chosen; trinket2: Carrot on a Stick
 
-No-known-source sample (15 of 3220, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 865 Leaden Mace
+No-known-source sample (15 of 3226, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 865 Leaden Mace
 
 ### Band 45 (human, 35325213032010001-050000000000000000-000000000000000000)
 
-Set DPS (verified): 69.5. Weights run: 2.2s. Verify run: 1.6s. 3620 eligible items had no known source.
+Set DPS (verified): 69.5. Weights run: 1.2s. Verify run: 1.4s. 3626 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.338), strength=2.310 ± 0.484, agility=0.830 ± 0.181, crit=7.411 ± 0.604, hit=3.919 ± 0.683, melee_haste=not significant (2.468 ± 0.716)
 
@@ -242,11 +242,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 45:** hands: Dragonscale Gauntlets; legs: Leggings of the Ursa; feet: Sandstalker Ankleguards; trinket1: Demon's Blood; trinket2: Shard of the Splithooves; main_hand: Blight
 
-No-known-source sample (15 of 3620, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword
+No-known-source sample (15 of 3626, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword
 
 ### Band 50 (human, 35325213032010001-050500000000000000-000000000000000000)
 
-Set DPS (verified): 75.7. Weights run: 2.3s. Verify run: 1.7s. 4050 eligible items had no known source.
+Set DPS (verified): 75.7. Weights run: 1.1s. Verify run: 1.3s. 4056 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.319), strength=not significant (1.519 ± 0.428), agility=not significant (0.418 ± 0.179), crit=6.962 ± 0.582, hit=not significant (2.066 ± 0.599), melee_haste=3.543 ± 0.685
 
@@ -272,11 +272,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 50:** shoulder: Clouddrift Mantle; back: Sergeant Major's Cape; chest: Relentless Chain; wrist: Berserker Bracers; waist: Highlander's Chain Girdle; feet: Highlander's Lamellar Greaves; finger1: Blackstone Ring; finger2: Protector's Band; ranged: Houndmaster's Bow
 
-No-known-source sample (15 of 4050, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 810 Hammer of the Northern Wind; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper
+No-known-source sample (15 of 4056, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 810 Hammer of the Northern Wind; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper
 
 ### Band 55 (human, 35325213032010001-050500000000000000-500000000000000000)
 
-Set DPS (verified): 85.7. Weights run: 2.3s. Verify run: 1.7s. 4436 eligible items had no known source.
+Set DPS (verified): 85.7. Weights run: 1.0s. Verify run: 1.6s. 4442 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.453), strength=not significant (2.208 ± 0.617), agility=not significant (0.433 ± 0.161), crit=12.702 ± 0.809, hit=not significant (3.301 ± 0.877), melee_haste=5.543 ± 0.943
 
@@ -302,11 +302,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 55:** head: Ragefury Eyepatch; neck: Stormpike Soldier's Pendant; shoulder: Lightforge Spaulders; back: Stormpike Soldier's Cloak; chest: Savage Gladiator Chain; wrist: Vambraces of the Sadist; hands: Devilsaur Gauntlets; waist: Highlander's Lamellar Girdle; legs: Titanic Leggings; feet: Imperial Plate Boots; finger1: Band of the Penitent; finger2: Blackstone Ring; trinket1: Smokey's Lighter; trinket2: Demon's Blood; ranged: Blackcrow
 
-No-known-source sample (15 of 4436, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 810 Hammer of the Northern Wind; 811 Axe of the Deep Woods; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt
+No-known-source sample (15 of 4442, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 810 Hammer of the Northern Wind; 811 Axe of the Deep Woods; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt
 
 ### Band 60 (human, 35325213032010001-050500000000000000-500500000000000000)
 
-Set DPS (verified): 184.7. Weights run: 2.3s. Verify run: 1.8s. 5154 eligible items had no known source.
+Set DPS (verified): 184.7. Weights run: 1.1s. Verify run: 1.7s. 5160 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.801), strength=not significant (3.886 ± 1.021), agility=not significant (0.959 ± 0.373), crit=20.276 ± 1.619, hit=not significant (0.000 ± 0.000), melee_haste=9.244 ± 1.838
 
@@ -332,13 +332,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Lionheart Helm; neck: Stormrage's Talisman of Seething; shoulder: Champion's Plate Shoulders; back: Cloak of the Fallen God; chest: Bloodsoul Breastplate; wrist: Hive Defiler Wristguards; hands: Gauntlets of Annihilation; waist: Zandalar Vindicator's Belt; legs: Marshal's Plate Legguards; feet: Conqueror's Greaves; finger1: Band of Unnatural Forces; finger2: Ring of the Qiraji Fury; trinket1: Slayer's Crest; trinket2: Kiss of the Spider; main_hand: Thunderfury, Blessed Blade of the Windseeker; ranged: Larvae of the Great Worm
 
-No-known-source sample (15 of 5154, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 810 Hammer of the Northern Wind; 811 Axe of the Deep Woods; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt
+No-known-source sample (15 of 5160, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 791 Gnarled Ash Staff; 810 Hammer of the Northern Wind; 811 Axe of the Deep Woods; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt
 
 ## Horde
 
 ### Band 10 (orc, 10000000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 14.9. Weights run: 1.6s. Verify run: 0.8s. 964 eligible items had no known source.
+Set DPS (verified): 14.9. Weights run: 1.0s. Verify run: 0.6s. 964 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.026, strength=2.016 ± 0.031, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=0.684 ± 0.036, melee_haste=0.929 ± 0.041
 
@@ -368,7 +368,7 @@ No-known-source sample (15 of 964, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (orc, 33000000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 19.1. Weights run: 1.6s. Verify run: 1.0s. 1276 eligible items had no known source.
+Set DPS (verified): 19.1. Weights run: 0.9s. Verify run: 0.8s. 1276 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.037, strength=2.041 ± 0.046, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=1.048 ± 0.063, melee_haste=1.469 ± 0.053
 
@@ -398,7 +398,7 @@ No-known-source sample (15 of 1276, see the JSON for more): 727 Notched Shortswo
 
 ### Band 20 (orc, 35300000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 27.6. Weights run: 1.6s. Verify run: 1.1s. 1668 eligible items had no known source.
+Set DPS (verified): 27.6. Weights run: 1.0s. Verify run: 1.0s. 1668 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.047, strength=1.989 ± 0.061, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=1.179 ± 0.084, melee_haste=1.664 ± 0.075
 
@@ -428,7 +428,7 @@ No-known-source sample (15 of 1668, see the JSON for more): 727 Notched Shortswo
 
 ### Band 25 (orc, 35323000000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 30.5. Weights run: 1.7s. Verify run: 1.2s. 2088 eligible items had no known source.
+Set DPS (verified): 30.5. Weights run: 1.1s. Verify run: 1.0s. 2088 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.083, strength=1.845 ± 0.112, agility=not significant (0.000 ± 0.000), crit=not significant (0.000 ± 0.000), hit=1.203 ± 0.125, melee_haste=1.848 ± 0.133
 
@@ -458,7 +458,7 @@ No-known-source sample (15 of 2088, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (orc, 35325210000000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 54.1. Weights run: 1.8s. Verify run: 1.5s. 2469 eligible items had no known source.
+Set DPS (verified): 54.1. Weights run: 1.1s. Verify run: 1.3s. 2469 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.109, strength=2.168 ± 0.133, agility=not significant (0.010 ± 0.006), crit=0.185 ± 0.024, hit=1.849 ± 0.270, melee_haste=2.981 ± 0.386
 
@@ -488,7 +488,7 @@ No-known-source sample (15 of 2469, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (orc, 35325213020000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 53.2. Weights run: 1.9s. Verify run: 1.5s. 2795 eligible items had no known source.
+Set DPS (verified): 53.2. Weights run: 1.2s. Verify run: 1.2s. 2795 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.103, strength=2.131 ± 0.143, agility=not significant (0.016 ± 0.010), crit=0.298 ± 0.039, hit=2.264 ± 0.315, melee_haste=3.874 ± 0.442
 
@@ -518,7 +518,7 @@ No-known-source sample (15 of 2795, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (orc, 35325213032010001-000000000000000000-000000000000000000)
 
-Set DPS (verified): 68.8. Weights run: 2.2s. Verify run: 1.5s. 3221 eligible items had no known source.
+Set DPS (verified): 68.8. Weights run: 1.0s. Verify run: 1.3s. 3221 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.464), strength=2.494 ± 0.609, agility=not significant (0.029 ± 0.017), crit=0.602 ± 0.078, hit=3.239 ± 0.736, melee_haste=5.214 ± 0.852
 
@@ -548,7 +548,7 @@ No-known-source sample (15 of 3221, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (orc, 35325213032010001-050000000000000000-000000000000000000)
 
-Set DPS (verified): 70.6. Weights run: 2.2s. Verify run: 1.6s. 3621 eligible items had no known source.
+Set DPS (verified): 70.6. Weights run: 1.2s. Verify run: 1.8s. 3621 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.338), strength=2.310 ± 0.484, agility=0.830 ± 0.181, crit=7.411 ± 0.604, hit=3.919 ± 0.683, melee_haste=not significant (2.468 ± 0.716)
 
@@ -578,7 +578,7 @@ No-known-source sample (15 of 3621, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (orc, 35325213032010001-050500000000000000-000000000000000000)
 
-Set DPS (verified): 78.0. Weights run: 2.3s. Verify run: 1.7s. 4051 eligible items had no known source.
+Set DPS (verified): 78.0. Weights run: 1.1s. Verify run: 1.2s. 4051 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.319), strength=not significant (1.519 ± 0.428), agility=not significant (0.418 ± 0.179), crit=6.962 ± 0.582, hit=not significant (2.066 ± 0.599), melee_haste=3.543 ± 0.685
 
@@ -608,7 +608,7 @@ No-known-source sample (15 of 4051, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 55 (orc, 35325213032010001-050500000000000000-500000000000000000)
 
-Set DPS (verified): 87.5. Weights run: 2.3s. Verify run: 1.7s. 4437 eligible items had no known source.
+Set DPS (verified): 87.5. Weights run: 1.0s. Verify run: 1.3s. 4437 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.453), strength=not significant (2.208 ± 0.617), agility=not significant (0.433 ± 0.161), crit=12.702 ± 0.809, hit=not significant (3.301 ± 0.877), melee_haste=5.543 ± 0.943
 
@@ -638,7 +638,7 @@ No-known-source sample (15 of 4437, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (orc, 35325213032010001-050500000000000000-500500000000000000)
 
-Set DPS (verified): 174.9. Weights run: 2.3s. Verify run: 1.7s. 5155 eligible items had no known source.
+Set DPS (verified): 174.9. Weights run: 1.1s. Verify run: 1.2s. 5155 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=not significant (1.000 ± 0.801), strength=not significant (3.886 ± 1.021), agility=not significant (0.959 ± 0.373), crit=20.276 ± 1.619, hit=not significant (0.000 ± 0.000), melee_haste=9.244 ± 1.838
 

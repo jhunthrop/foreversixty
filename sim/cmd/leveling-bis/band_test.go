@@ -4,7 +4,7 @@ import "testing"
 
 func TestSourceForNoSource(t *testing.T) {
 	idx := lootIndex{}
-	if _, ok := sourceFor(1, 30, idx); ok {
+	if _, ok := sourceFor(1, 30, idx, "horde"); ok {
 		t.Fatal("sourceFor with an empty index: want ok=false")
 	}
 }
@@ -19,7 +19,7 @@ func TestSourceForPicksHighestPriorityKind(t *testing.T) {
 			{Kind: "dungeon", Label: "A Dungeon"},
 		},
 	}
-	src, ok := sourceFor(1, 30, idx)
+	src, ok := sourceFor(1, 30, idx, "horde")
 	if !ok || src.Kind != "dungeon" || src.Label != "A Dungeon" {
 		t.Fatalf("sourceFor = %+v, %v, want dungeon/A Dungeon", src, ok)
 	}
@@ -27,10 +27,10 @@ func TestSourceForPicksHighestPriorityKind(t *testing.T) {
 
 func TestSourceForRaidExcludedBelow60(t *testing.T) {
 	idx := lootIndex{1: {{Kind: "raid", Label: "Molten Core"}}}
-	if _, ok := sourceFor(1, 59, idx); ok {
+	if _, ok := sourceFor(1, 59, idx, "horde"); ok {
 		t.Fatal("sourceFor at level 59 with only a raid source: want ok=false")
 	}
-	src, ok := sourceFor(1, 60, idx)
+	src, ok := sourceFor(1, 60, idx, "horde")
 	if !ok || src.Kind != "raid" {
 		t.Fatalf("sourceFor at level 60 = %+v, %v, want the raid source", src, ok)
 	}
@@ -38,8 +38,42 @@ func TestSourceForRaidExcludedBelow60(t *testing.T) {
 
 func TestSourceForFallsBackWhenNoNonRaidKindPresent(t *testing.T) {
 	idx := lootIndex{1: {{Kind: "raid", Label: "Molten Core"}}}
-	if _, ok := sourceFor(1, 30, idx); ok {
+	if _, ok := sourceFor(1, 30, idx, "horde"); ok {
 		t.Fatal("sourceFor with only a below-60-excluded raid source: want ok=false, not falling through to it anyway")
+	}
+}
+
+func TestSourceForSkipsAFactionExclusiveSourceForTheOtherFaction(t *testing.T) {
+	// Subterranean Cape (14149): its only loot.json source is Ragefire
+	// Chasm, and factionExclusiveDungeons marks that dungeon horde-only
+	// - an Alliance character must not be handed it as a usable source,
+	// even though the item's own faction_restriction is empty.
+	idx := lootIndex{
+		1: {{Kind: "dungeon", Label: "Ragefire Chasm: Taragaman the Hungerer", Faction: "horde"}},
+	}
+	if _, ok := sourceFor(1, 30, idx, "alliance"); ok {
+		t.Fatal("sourceFor(faction=alliance) against a horde-only dungeon source: want ok=false")
+	}
+	src, ok := sourceFor(1, 30, idx, "horde")
+	if !ok || src.Kind != "dungeon" {
+		t.Fatalf("sourceFor(faction=horde) against its own horde-only dungeon source = %+v, %v, want the dungeon source", src, ok)
+	}
+}
+
+func TestSourceForFallsThroughToALowerPriorityKindWhenTheHigherOneIsFactionExclusive(t *testing.T) {
+	// A dungeon source only the opposite faction can reach must not
+	// block a real, reachable crafted source further down the priority
+	// order - see sourceFor's own doc for why the exclusion lives
+	// inside the byKind build rather than as a final all-or-nothing gate.
+	idx := lootIndex{
+		1: {
+			{Kind: "dungeon", Label: "Ragefire Chasm: Taragaman the Hungerer", Faction: "horde"},
+			{Kind: "crafted", Label: "Tailoring"},
+		},
+	}
+	src, ok := sourceFor(1, 30, idx, "alliance")
+	if !ok || src.Kind != "crafted" {
+		t.Fatalf("sourceFor(faction=alliance) = %+v, %v, want it to fall through to the crafted source", src, ok)
 	}
 }
 
