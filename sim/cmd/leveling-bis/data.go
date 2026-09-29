@@ -216,6 +216,7 @@ type lootSource struct {
 	Kind       string `json:"kind"`
 	Name       string `json:"name"`
 	Profession string `json:"profession"`
+	FactionID  int    `json:"faction_id"`
 	Standing   string `json:"standing"`
 	Rank       int    `json:"rank"`
 	Items      []int  `json:"items"`
@@ -252,6 +253,22 @@ type lootFile struct {
 type itemSource struct {
 	Kind  string
 	Label string
+	// Side is "alliance" or "horde" for a reputation only one side can
+	// earn (the battleground factions), "" for every other source.
+	Side string
+	// Standing is a rep source's required standing ("friendly" ..
+	// "exalted"), "" for every other kind.
+	Standing string
+}
+
+// repSide names the reputations only one side can earn, by the client's
+// faction id as this build's loot.json carries it: Warsong Outriders 890 /
+// Silverwing Sentinels 889, The Defilers 510 / The League of Arathor 509,
+// Frostwolf Clan 729 / Stormpike Guard 730. Outrunner's Bow (a Warsong
+// Outriders reward) was once the ALLIANCE level-20 hunter's bow.
+var repSide = map[int]string{
+	890: "horde", 510: "horde", 729: "horde",
+	889: "alliance", 509: "alliance", 730: "alliance",
 }
 
 // lootIndex is item id -> every source that names it. An item can
@@ -283,12 +300,17 @@ func loadLootIndex(buildDir string) (lootIndex, map[int]int, error) {
 		return nil, nil, fmt.Errorf("decoding loot.json: %w", err)
 	}
 	idx := make(lootIndex)
-	add := func(id int, kind, label string) {
-		idx[id] = append(idx[id], itemSource{Kind: kind, Label: label})
-	}
 	for _, src := range f.Sources {
+		add := func(id int, label string) {
+			is := itemSource{Kind: src.Kind, Label: label}
+			if src.Kind == "rep" {
+				is.Side = repSide[src.FactionID]
+				is.Standing = src.Standing
+			}
+			idx[id] = append(idx[id], is)
+		}
 		for _, id := range src.Items {
-			add(id, src.Kind, src.Name)
+			add(id, src.Name)
 		}
 		for _, boss := range src.Bosses {
 			label := src.Name
@@ -296,7 +318,7 @@ func loadLootIndex(buildDir string) (lootIndex, map[int]int, error) {
 				label = src.Name + ": " + boss.Name
 			}
 			for _, id := range boss.Items {
-				add(id, src.Kind, label)
+				add(id, label)
 			}
 		}
 	}

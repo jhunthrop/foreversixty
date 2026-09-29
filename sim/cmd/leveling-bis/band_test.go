@@ -4,7 +4,7 @@ import "testing"
 
 func TestSourceForNoSource(t *testing.T) {
 	idx := lootIndex{}
-	if _, ok := sourceFor(1, 30, idx); ok {
+	if _, ok := sourceFor(1, 30, "alliance", idx); ok {
 		t.Fatal("sourceFor with an empty index: want ok=false")
 	}
 }
@@ -19,7 +19,7 @@ func TestSourceForPicksHighestPriorityKind(t *testing.T) {
 			{Kind: "dungeon", Label: "A Dungeon"},
 		},
 	}
-	src, ok := sourceFor(1, 30, idx)
+	src, ok := sourceFor(1, 30, "alliance", idx)
 	if !ok || src.Kind != "dungeon" || src.Label != "A Dungeon" {
 		t.Fatalf("sourceFor = %+v, %v, want dungeon/A Dungeon", src, ok)
 	}
@@ -27,10 +27,10 @@ func TestSourceForPicksHighestPriorityKind(t *testing.T) {
 
 func TestSourceForRaidExcludedBelow60(t *testing.T) {
 	idx := lootIndex{1: {{Kind: "raid", Label: "Molten Core"}}}
-	if _, ok := sourceFor(1, 59, idx); ok {
+	if _, ok := sourceFor(1, 59, "alliance", idx); ok {
 		t.Fatal("sourceFor at level 59 with only a raid source: want ok=false")
 	}
-	src, ok := sourceFor(1, 60, idx)
+	src, ok := sourceFor(1, 60, "alliance", idx)
 	if !ok || src.Kind != "raid" {
 		t.Fatalf("sourceFor at level 60 = %+v, %v, want the raid source", src, ok)
 	}
@@ -38,7 +38,7 @@ func TestSourceForRaidExcludedBelow60(t *testing.T) {
 
 func TestSourceForFallsBackWhenNoNonRaidKindPresent(t *testing.T) {
 	idx := lootIndex{1: {{Kind: "raid", Label: "Molten Core"}}}
-	if _, ok := sourceFor(1, 30, idx); ok {
+	if _, ok := sourceFor(1, 30, "alliance", idx); ok {
 		t.Fatal("sourceFor with only a below-60-excluded raid source: want ok=false, not falling through to it anyway")
 	}
 }
@@ -139,5 +139,25 @@ func TestBuildBandPoolSkipsItemsWithNoSlots(t *testing.T) {
 	pool := buildBandPool(items, idx, "hunter", 20, "horde", nil)
 	if len(pool.Scored) != 0 || len(pool.NoSource) != 0 {
 		t.Fatalf("pool = %+v, want everything empty for a slotless item", pool)
+	}
+}
+
+// A battleground reputation's reward is obtainable only by its own side,
+// and only at friendly/honored below 60: Outrunner's Bow (Warsong
+// Outriders, revered) must never head an ALLIANCE level-20 list.
+func TestSourceForGatesReputationBySideAndStanding(t *testing.T) {
+	idx := lootIndex{20438: {{Kind: "rep", Label: "Warsong Outriders", Side: "horde", Standing: "revered"}}}
+	if _, ok := sourceFor(20438, 20, "alliance", idx); ok {
+		t.Fatal("a Horde reputation reward was offered to an alliance character")
+	}
+	if _, ok := sourceFor(20438, 20, "horde", idx); ok {
+		t.Fatal("a revered reward was offered at level 20")
+	}
+	if _, ok := sourceFor(20438, 60, "horde", idx); !ok {
+		t.Fatal("a revered reward must be obtainable by its own side at 60")
+	}
+	idx[7731] = []itemSource{{Kind: "rep", Label: "Silverwing Sentinels", Side: "alliance", Standing: "honored"}}
+	if _, ok := sourceFor(7731, 20, "alliance", idx); !ok {
+		t.Fatal("an honored reward of the character's own side is obtainable while leveling")
 	}
 }

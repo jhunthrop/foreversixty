@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"io/fs"
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -272,5 +274,36 @@ func TestLoadGuideRacesNoFrontmatterLine(t *testing.T) {
 	}
 	if _, err := loadGuideRaces(dir, "hunter", "broken"); err == nil {
 		t.Fatal("loadGuideRaces with no recommendedRaces line: want an error, got nil")
+	}
+}
+
+// The battleground reputations' sides, keyed by the faction ids this
+// build's loot.json carries (Silverwing Sentinels is 889, Warsong
+// Outriders 890 -- easy to swap, and swapping them hands every Horde
+// bow to Alliance lists). Read off the real build when it is checked
+// out beside the module; skipped otherwise.
+func TestRepSideMatchesTheBuildsFactionIDs(t *testing.T) {
+	b, err := os.ReadFile(filepath.Join("..", "..", "..", "data", "builds", "1.60.1.70009", "loot.json"))
+	if err != nil {
+		t.Skip("no real build beside the module: " + err.Error())
+	}
+	var f lootFile
+	if err := json.Unmarshal(b, &f); err != nil {
+		t.Fatal(err)
+	}
+	want := map[string]string{"Warsong Outriders": "horde", "The Defilers": "horde", "Frostwolf Clan": "horde", "Silverwing Sentinels": "alliance", "The League of Arathor": "alliance", "Stormpike Guard": "alliance"}
+	checked := 0
+	for _, src := range f.Sources {
+		side, named := want[src.Name]
+		if src.Kind != "rep" || !named {
+			continue
+		}
+		if got := repSide[src.FactionID]; got != side {
+			t.Fatalf("%s (faction %d) maps to %q, want %q", src.Name, src.FactionID, got, side)
+		}
+		checked++
+	}
+	if checked == 0 {
+		t.Fatal("the build's loot.json names none of the six battleground reputations")
 	}
 }

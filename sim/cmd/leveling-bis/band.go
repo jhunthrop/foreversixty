@@ -23,13 +23,35 @@ import "sort"
 // describes, rather than dropping it silently as this prototype does.
 var sourceKindPriority = []string{"quest", "dungeon", "crafted", "rep", "pvp", "world", "raid"}
 
-func sourceFor(id, level int, idx lootIndex) (itemSource, bool) {
+// repStandingObtainable is the highest reputation standing a leveling
+// character is assumed to reach: friendly and honored come from playing
+// the zone or a few battlegrounds; revered and exalted are endgame grinds,
+// so a rep reward behind them counts as obtainable only at 60.
+var repStandingObtainable = map[string]bool{"friendly": true, "honored": true}
+
+// sourceObtainable is whether one source can actually be used by a
+// character of this faction and level: a reputation only the other side
+// can earn never is; a revered/exalted reward is only at 60.
+func sourceObtainable(s itemSource, level int, faction string) bool {
+	if s.Kind != "rep" {
+		return true
+	}
+	if s.Side != "" && s.Side != faction {
+		return false
+	}
+	return level >= 60 || repStandingObtainable[s.Standing]
+}
+
+func sourceFor(id, level int, faction string, idx lootIndex) (itemSource, bool) {
 	srcs := idx[id]
 	if len(srcs) == 0 {
 		return itemSource{}, false
 	}
 	byKind := make(map[string]itemSource, len(srcs))
 	for _, s := range srcs {
+		if !sourceObtainable(s, level, faction) {
+			continue
+		}
 		if _, seen := byKind[s.Kind]; !seen {
 			byKind[s.Kind] = s
 		}
@@ -176,7 +198,7 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 			out.CrossClassSet = append(out.CrossClassSet, c)
 			continue
 		}
-		src, ok := sourceFor(c.ID, level, idx)
+		src, ok := sourceFor(c.ID, level, faction, idx)
 		if !ok {
 			out.NoSource = append(out.NoSource, c)
 			continue
