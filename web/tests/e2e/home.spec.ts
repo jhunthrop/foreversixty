@@ -119,3 +119,50 @@ test('the header and footer navigations are distinguishable landmarks', async ({
   await expect(page.getByRole('navigation', { name: 'Primary' })).toBeVisible();
   await expect(page.getByRole('navigation', { name: 'Footer' })).toBeVisible();
 });
+
+test('at desktop width, the hero timeline card stays inside its own column instead of the page', async ({
+  page,
+}, testInfo) => {
+  // Fix round (night-site-ux, 2026-09-28): the timeline's grid-area:1/1 overlay wrapper had
+  // no min-width:0, so a CSS grid item's default min-width (its own content, not the
+  // track) forced the whole lg:col-span-5 column -- and the Nov 4 Launch date, Dec 9 First
+  // raids date and "Updated" stamp inside it -- past the viewport and into SkyBand's
+  // overflow-hidden, invisible and unreachable by any scroll. Only reproduces at the `lg`
+  // breakpoint (1024px+) the two-column hero uses, so this is desktop-only; the mobile
+  // project stacks the column full-width and never hit this.
+  test.skip(testInfo.project.name !== 'desktop', 'lg two-column hero only');
+  await page.goto('/');
+
+  const viewport = page.viewportSize();
+  expect(viewport, 'desktop project always sets a viewport').not.toBeNull();
+  const viewportWidth = viewport!.width;
+
+  const guildBlock = page.getByTestId('home-guild-block');
+  const guildBlockBox = await guildBlock.boundingBox();
+  expect(guildBlockBox?.x ?? 0, 'the hero column itself starts on-screen').toBeGreaterThanOrEqual(0);
+  expect(
+    guildBlockBox!.x + guildBlockBox!.width,
+    'the hero column stays inside the viewport',
+  ).toBeLessThanOrEqual(viewportWidth + 1);
+
+  // The card that holds the timeline rows must be contained the same way -- not merely the
+  // grid cell around it -- since the original bug had the grid cell measuring correctly
+  // while its overlaid child still blew out past it.
+  const timeline = page.getByTestId('home-timeline');
+  const timelineBox = await timeline.boundingBox();
+  expect(
+    timelineBox!.x + timelineBox!.width,
+    'the timeline card stays inside the viewport, not clipped by an ancestor',
+  ).toBeLessThanOrEqual(viewportWidth + 1);
+
+  // The last row and the updated stamp are the two elements the original bug hid entirely
+  // (they sat past 1280px, inside SkyBand's overflow-hidden, on every viewport narrower
+  // than ~1500px) -- both must at least be reachable by scrolling the card horizontally.
+  const rows = page.getByTestId('home-timeline-row');
+  await expect(rows.last()).toBeAttached();
+  await rows.last().scrollIntoViewIfNeeded();
+  await expect(rows.last()).toBeInViewport();
+  const updated = page.getByTestId('home-timeline-updated');
+  await updated.scrollIntoViewIfNeeded();
+  await expect(updated).toBeInViewport();
+});
