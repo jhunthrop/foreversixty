@@ -253,7 +253,18 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	for _, m := range missing {
 		log.Printf("leveling-bis: %s: %s", spec, m)
 	}
-	lootIdx, questFloors, err := loadLootIndex(buildDir)
+	// itemFactionRestriction: item id -> its own client-stated
+	// faction_restriction, for correctedRepSource's general check
+	// (data.go's own doc: a mined rep source's Side is wrong for a real
+	// handful of WSG honored-tier items, and the item's own hard
+	// restriction outranks it whenever they disagree).
+	itemFactionRestriction := make(map[int]string, len(items))
+	for _, c := range items {
+		if c.FactionRestriction != "" {
+			itemFactionRestriction[c.ID] = c.FactionRestriction
+		}
+	}
+	lootIdx, questFloors, err := loadLootIndex(buildDir, itemFactionRestriction)
 	if err != nil {
 		return err
 	}

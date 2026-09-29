@@ -285,6 +285,51 @@ var repSide = map[int]string{
 	889: "alliance", 509: "alliance", 730: "alliance",
 }
 
+// repFactionSwap pairs the six battleground faction ids with their
+// opposite number, for correctedRepSource's fix below.
+var repFactionSwap = map[int]int{
+	890: 889, 889: 890,
+	510: 509, 509: 510,
+	729: 730, 730: 729,
+}
+
+// correctedRepSource swaps a rep source to its actual battleground
+// faction whenever the item's own client-stated faction_restriction
+// (itemFactionRestriction, from items.json, "" for an unrestricted
+// item) disagrees with repSide[factionID] - a general rule, not a
+// per-item allowlist, because this data error is not confined to one
+// or two ids: Scout's Medallion (20442, horde_only, sold by Kelm
+// Hargunth in the Barrens per wowhead) is mined under Silverwing
+// Sentinels/alliance; Sentinel's Medallion (20444, alliance_only, sold
+// by Illiyana Moonblaze in Ashenvale) is mined under Warsong
+// Outriders/horde; the honored-tier Sentinel's Medallion (19541,
+// alliance_only) is ALSO mined only under Warsong Outriders/horde -
+// three items, two different WSG "honored" batches, each the exact
+// inverse of the item's own restriction. A restricted item can only
+// ever be equipped by the one faction it names, so that hard client
+// fact outranks a mined rep source's Side whenever they disagree,
+// rather than leaving the item unobtainable by anyone (band.go's
+// sourceObtainable already trusts a matching itemFactionRestriction
+// over a mismatched Side, which fixes obtainability alone; this
+// function additionally corrects the DISPLAYED source name and
+// standing side for the same disagreement, since a right item under a
+// wrong-sounding source name still fails tenets.md #2's "the source
+// line is right"). factionNames is the FactionID -> the fork's own
+// name for the CORRECTED id (loadLootIndex's own pre-pass), so the
+// label never hand-spells a name that could drift from the fork's own
+// spelling. An unrestricted item, or one whose restriction already
+// agrees with the mined Side, is returned unchanged.
+func correctedRepSource(itemFactionRestriction string, factionID int, factionNames map[int]string) (int, string, bool) {
+	if itemFactionRestriction == "" || repSide[factionID] == itemFactionRestriction {
+		return factionID, "", false
+	}
+	swapped, ok := repFactionSwap[factionID]
+	if !ok || repSide[swapped] != itemFactionRestriction {
+		return factionID, "", false
+	}
+	return swapped, factionNames[swapped], true
+}
+
 // lootIndex is item id -> every source that names it. An item can
 // have more than one (a quest reward that is also a vendor item), so
 // eligible() and the report pick the most specific: a boss kill over
@@ -304,7 +349,7 @@ type lootIndex map[int][]itemSource
 // (unsourced-but-a-known-zone-drop) distinction becomes possible.
 // Today an item absent from every source here is reported as having
 // no known source, full stop - see report.go's noSource accounting.
-func loadLootIndex(buildDir string) (lootIndex, map[int]int, error) {
+func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (lootIndex, map[int]int, error) {
 	b, err := os.ReadFile(filepath.Join(buildDir, "loot.json"))
 	if err != nil {
 		return nil, nil, fmt.Errorf("reading loot.json: %w", err)
@@ -313,12 +358,27 @@ func loadLootIndex(buildDir string) (lootIndex, map[int]int, error) {
 	if err := json.Unmarshal(b, &f); err != nil {
 		return nil, nil, fmt.Errorf("decoding loot.json: %w", err)
 	}
+	// factionNames is faction id -> the fork's own name for it (e.g. 889
+	// -> "Silverwing Sentinels"), read from every rep source's own Name
+	// before any item is added, so correctedRepSource can name a
+	// misattributed item's ACTUAL faction without hand-spelling a label
+	// that could drift from the fork's own spelling.
+	factionNames := make(map[int]string)
+	for _, src := range f.Sources {
+		if src.Kind == "rep" {
+			factionNames[src.FactionID] = src.Name
+		}
+	}
 	idx := make(lootIndex)
 	for _, src := range f.Sources {
 		add := func(id int, label string) {
 			is := itemSource{Kind: src.Kind, Label: label, Side: factionExclusiveDungeons[src.ID]}
 			if src.Kind == "rep" {
-				is.Side = repSide[src.FactionID]
+				factionID := src.FactionID
+				if correctedID, correctedLabel, swapped := correctedRepSource(itemFactionRestriction[id], factionID, factionNames); swapped {
+					factionID, is.Label = correctedID, correctedLabel
+				}
+				is.Side = repSide[factionID]
 				is.Standing = src.Standing
 			}
 			idx[id] = append(idx[id], is)

@@ -114,7 +114,7 @@ func TestLoadCandidatesMergesFlatAndClassFiles(t *testing.T) {
 }
 
 func TestLoadLootIndex(t *testing.T) {
-	idx, questFloors, err := loadLootIndex(buildDirFixture())
+	idx, questFloors, err := loadLootIndex(buildDirFixture(), nil)
 	if err != nil {
 		t.Fatalf("loadLootIndex: %v", err)
 	}
@@ -154,13 +154,13 @@ func TestLoadLootIndex(t *testing.T) {
 }
 
 func TestLoadLootIndexMissingFile(t *testing.T) {
-	if _, _, err := loadLootIndex(t.TempDir()); err == nil {
+	if _, _, err := loadLootIndex(t.TempDir(), nil); err == nil {
 		t.Fatal("loadLootIndex on an empty dir: want an error, got nil")
 	}
 }
 
 func TestApplyEffectiveRequiredLevelsRaisesAQuestRewardsGate(t *testing.T) {
-	idx, questFloors, err := loadLootIndex(buildDirFixture())
+	idx, questFloors, err := loadLootIndex(buildDirFixture(), nil)
 	if err != nil {
 		t.Fatalf("loadLootIndex: %v", err)
 	}
@@ -318,5 +318,32 @@ func TestRepSideMatchesTheBuildsFactionIDs(t *testing.T) {
 	}
 	if checked == 0 {
 		t.Fatal("the build's loot.json names none of the six battleground reputations")
+	}
+}
+
+func TestCorrectedRepSourceSwapsWheneverTheItemsOwnRestrictionDisagreesWithTheMinedSide(t *testing.T) {
+	names := map[int]string{889: "Silverwing Sentinels", 890: "Warsong Outriders"}
+	// Scout's Medallion (20442, horde_only) mined under Silverwing
+	// Sentinels/889 (alliance): corrected to Warsong Outriders/890.
+	if id, label, swapped := correctedRepSource("horde", 889, names); !swapped || id != 890 || label != "Warsong Outriders" {
+		t.Errorf("correctedRepSource(horde, 889) = %d, %q, %v, want 890, Warsong Outriders, true", id, label, swapped)
+	}
+	// Sentinel's Medallion (20444 AND, separately, 19541 - two
+	// different items, same name and restriction) mined under Warsong
+	// Outriders/890 (horde): corrected to Silverwing Sentinels/889. The
+	// rule is driven by the item's own restriction, not its id, so it
+	// catches every item this shape without needing to enumerate them.
+	if id, label, swapped := correctedRepSource("alliance", 890, names); !swapped || id != 889 || label != "Silverwing Sentinels" {
+		t.Errorf("correctedRepSource(alliance, 890) = %d, %q, %v, want 889, Silverwing Sentinels, true", id, label, swapped)
+	}
+	// An unrestricted item (most items, e.g. Rune of Perfection) is left
+	// alone: there is no restriction to disagree with the mined Side.
+	if id, _, swapped := correctedRepSource("", 889, names); swapped || id != 889 {
+		t.Errorf("correctedRepSource(\"\", 889) swapped an unrestricted item: id=%d swapped=%v", id, swapped)
+	}
+	// A restriction that already agrees with the mined Side is left
+	// alone (nothing to correct).
+	if id, _, swapped := correctedRepSource("alliance", 889, names); swapped || id != 889 {
+		t.Errorf("correctedRepSource(alliance, 889) swapped an already-consistent item: id=%d swapped=%v", id, swapped)
 	}
 }
