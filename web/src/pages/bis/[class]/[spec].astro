@@ -14,17 +14,18 @@
 // ItemTooltip.svelte`, `lib/items/*`). It was not on this branch when this page was built,
 // so `components/ItemHover.svelte` here is this lane's own minimal stub (its own header
 // says so) -- the controller replaces it with the real file. This page passes it a
-// pre-resolved `model` (this lane's own `ItemHoverModel`, `lib/bis/types.ts`) built from
+// pre-resolved `model` (the shared `ItemTooltipModel`, `lib/items/tooltip.ts`) built from
 // `itemDetails` at build time, per the stub's documented `{ itemId, classSlug, build, model?
 // }` prop contract, rather than making the component re-resolve data this page already has.
 import Base from '../../../layouts/Base.astro';
 import UpdatedStamp from '../../../components/UpdatedStamp.astro';
 import ItemHover from '../../../components/ItemHover.svelte';
+import { readItemTooltipModel } from '../../../lib/items/lookup';
+import type { ItemTooltipModel } from '../../../lib/items/tooltip';
 import SlotIcon from '../../../components/bis/SlotIcon.astro';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
 import { classIconUrl } from '../../../lib/account/character-descriptor';
-import ItemHover from '../../../components/ItemHover.svelte';
 import { SLOT_LABELS, type Slot } from '../../../lib/planner/types';
 import { bisCopy } from '../../../lib/bis/copy';
 import {
@@ -34,7 +35,6 @@ import {
   filledSlots,
   isMissingSlot,
   itemDetails,
-  itemHoverModel,
   loadBisFile,
   loadLootFile,
   previousBandLevel,
@@ -48,14 +48,7 @@ import {
   parseSwapNote,
   resolveSourceCell,
 } from '../../../lib/bis/source-cell';
-import type {
-  BisFile,
-  ChangedSlot,
-  Faction,
-  ItemDetail,
-  ItemHoverModel,
-  LootQuestsFile,
-} from '../../../lib/bis/types';
+import type { BisFile, ChangedSlot, Faction, ItemDetail, LootQuestsFile } from '../../../lib/bis/types';
 import type { LootFile } from '../../../lib/sim/loot';
 
 export async function getStaticPaths() {
@@ -85,13 +78,19 @@ interface RowView {
   slot: string;
   empty: boolean;
   itemId?: number;
-  model?: ItemHoverModel;
+  model?: ItemTooltipModel;
   itemLevel?: number;
   badgeLabel?: string;
   sourceDetail?: string;
   verified?: boolean;
-  runnerUp?: { itemId: number; model: ItemHoverModel; deltaDps: number; title: string };
+  runnerUp?: { itemId: number; model?: ItemTooltipModel; deltaDps: number; title: string };
   swapNoteRaw?: string;
+}
+
+// The shared item tooltip (lib/items) built off disk for this page's class; undefined
+// when the item table has no row, and ItemHover then fetches at runtime.
+function tooltipFor(itemId: number): ItemTooltipModel | undefined {
+  return readItemTooltipModel(activeBuild.build, specEntry.class_slug, itemId) ?? undefined;
 }
 
 function buildRowView(
@@ -109,7 +108,7 @@ function buildRowView(
     slot: row.slot,
     empty: false,
     itemId: row.item_id,
-    model: itemHoverModel(row.item_id, row.item_name, itemDetailsMap),
+    model: tooltipFor(row.item_id),
     itemLevel: itemDetailsMap.get(row.item_id)?.item_level,
     badgeLabel,
     sourceDetail: describeSourceCell(cell),
@@ -122,7 +121,7 @@ function buildRowView(
     ...base,
     runnerUp: {
       itemId: parsed.runnerUpItemId,
-      model: itemHoverModel(parsed.runnerUpItemId, parsed.runnerUpName, itemDetailsMap),
+      model: tooltipFor(parsed.runnerUpItemId),
       deltaDps: parsed.higherDps - parsed.lowerDps,
       title: bisCopy.runnerUpTitle(parsed.runnerUpName, parsed.higherDps, parsed.lowerDps),
     },
@@ -292,11 +291,7 @@ function bandInfosFor(faction: Faction): BandInfo[] {
                                         itemId={entry.before.item_id}
                                         classSlug={specEntry.class_slug}
                                         build={activeBuild.build}
-                                        model={itemHoverModel(
-                                          entry.before.item_id,
-                                          entry.before.item_name,
-                                          details,
-                                        )}
+                                        model={tooltipFor(entry.before.item_id)}
                                       />
                                     ) : (
                                       <span class="text-muted text-[12px]">
@@ -309,11 +304,7 @@ function bandInfosFor(faction: Faction): BandInfo[] {
                                         itemId={entry.after.item_id}
                                         classSlug={specEntry.class_slug}
                                         build={activeBuild.build}
-                                        model={itemHoverModel(
-                                          entry.after.item_id,
-                                          entry.after.item_name,
-                                          details,
-                                        )}
+                                        model={tooltipFor(entry.after.item_id)}
                                       />
                                     ) : (
                                       <span class="text-muted text-[12px]">
