@@ -38,7 +38,11 @@ test('there is no slot grid, no item search and no named sets — only the talen
 test('ticking the character’s own build makes the run button live and ranks it', async ({ page }) => {
   await loadTalents(page);
   await page.getByTestId('sim-loadout-current').check();
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1));
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1), {
+    // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
+    // give it the same allowance a run gets, not the 5 s default.
+    timeout: 20_000,
+  });
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 20_000 });
   await expect(page.getByTestId('sim-combo-row').first()).toContainText(bulkCopy.talentsOwn);
@@ -103,7 +107,11 @@ test('signed out, the copy is guidance and a pasted build can be ranked beside t
   // The original bug (E2): RUN still reported "1 valid combination" no matter what was
   // pasted, because the pasted build was never offered a checkbox to tick in the first
   // place. Both are ticked now, so both are submitted.
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(2));
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(2), {
+    // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
+    // give it the same allowance a run gets, not the 5 s default.
+    timeout: 20_000,
+  });
 
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 20_000 });
@@ -150,5 +158,9 @@ test('the two ADD A BUILD buttons read differently, and RUN blocks on an unadded
   await page.getByTestId('sim-loadout-accept').click();
   await expect(page.getByTestId('sim-run-pending-custom')).toHaveCount(0);
   await expect(page.getByTestId('sim-run-bulk')).toBeEnabled();
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(2));
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(2), {
+    // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
+    // give it the same allowance a run gets, not the 5 s default.
+    timeout: 20_000,
+  });
 });

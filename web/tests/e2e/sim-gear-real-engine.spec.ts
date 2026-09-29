@@ -165,7 +165,11 @@ test('two candidates plan, run and rank against the equipped set', async ({ page
   await page.getByTestId(`sim-search-add-${firstId}`).click();
   await page.getByTestId(`sim-search-add-${secondId}`).click();
 
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(/[1-9]\d* valid combinations?/);
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(/[1-9]\d* valid combinations?/, {
+    // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
+    // give it the same allowance a run gets, not the 5 s default.
+    timeout: 20_000,
+  });
 
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-stage-progress')).toBeVisible();

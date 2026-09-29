@@ -235,7 +235,11 @@ test('picking a boss counts its drops, and running ranks them by source', async 
   await loadDrops(page);
   await page.getByTestId('sim-upcoming').check();
   await page.getByTestId('sim-source-raid:molten-core:11502').check();
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(/\d+ valid combinations?/);
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(/\d+ valid combinations?/, {
+    // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
+    // give it the same allowance a run gets, not the 5 s default.
+    timeout: 20_000,
+  });
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-drops-by-boss')).toBeVisible({ timeout: 25_000 });
   // The boss is named from Substitution.SourceName, which the candidate carried in

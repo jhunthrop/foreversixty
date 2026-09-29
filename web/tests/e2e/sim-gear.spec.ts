@@ -80,7 +80,11 @@ test('the combination count moves as candidates are ticked', async ({ page }) =>
     ),
   );
   await page.getByTestId('sim-candidate-head-12640').getByRole('checkbox').check();
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1));
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1), {
+    // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
+    // give it the same allowance a run gets, not the 5 s default.
+    timeout: 20_000,
+  });
 });
 
 test('an empty grid says so, rather than rendering as an empty section', async ({ page }) => {
@@ -124,7 +128,11 @@ test('usable-only is on by default and can be turned off', async ({ page }) => {
 test('a ticked consumable multiplies the combination count (contract 10.1 A5)', async ({ page }) => {
   await loadGear(page);
   await page.getByTestId('sim-search-add-16963').click();
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1));
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(1), {
+    // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
+    // give it the same allowance a run gets, not the 5 s default.
+    timeout: 20_000,
+  });
   // FURY is warrior-fury (reference_stat attack_power), so the candidates offered are the
   // physical consumable set (settings.ts's PHYSICAL_CONSUMABLES) -- flask_of_the_titans and
   // elixir_of_the_mongoose replace the pre-Task-4 flask_of_supreme_power (now caster-only),
@@ -132,7 +140,11 @@ test('a ticked consumable multiplies the combination count (contract 10.1 A5)', 
   await page.getByTestId('sim-consumable-flask_of_the_titans').check();
   await page.getByTestId('sim-consumable-elixir_of_the_mongoose').check();
   // (1 head + 1) x 2 alternatives
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(4));
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(bulkCopy.combinations(4), {
+    // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
+    // give it the same allowance a run gets, not the 5 s default.
+    timeout: 20_000,
+  });
 });
 
 test('a consumable candidate is named, not spelled as an id', async ({ page }) => {

@@ -82,7 +82,11 @@ test('a pasted talent build joins the current build in one ranked table', async 
   const pastedBuild = page.getByTestId('sim-loadout-Build 1');
   await expect(pastedBuild).toBeChecked();
   await page.getByTestId('sim-loadout-current').check();
-  await expect(page.getByTestId('sim-combo-count')).toHaveText(/^2 valid combinations$/);
+  await expect(page.getByTestId('sim-combo-count')).toHaveText(/^2 valid combinations$/, {
+    // The count comes back from the engine's own plan pass, and CI loads a 4 MB wasm per worker:
+    // give it the same allowance a run gets, not the 5 s default.
+    timeout: 20_000,
+  });
 
   await page.getByTestId('sim-run-bulk').click();
   await expect(page.getByTestId('sim-combos')).toBeVisible({ timeout: 180_000 });
