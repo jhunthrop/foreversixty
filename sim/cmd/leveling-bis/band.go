@@ -32,24 +32,45 @@ var repStandingObtainable = map[string]bool{"friendly": true, "honored": true}
 // sourceObtainable is whether one source can actually be used by a
 // character of this faction and level: a reputation only the other side
 // can earn never is; a revered/exalted reward is only at 60.
-func sourceObtainable(s itemSource, level int, faction string) bool {
+//
+// itemFactionRestriction is the CANDIDATE ITEM's own faction_restriction
+// (candidate.FactionRestriction, "" for an unrestricted item) - the
+// client's own hard gate, already checked once by eligible.go before this
+// item's candidate ever reaches buildBandPool. A mined rep source's Side
+// is wrong for a real pair of items in today's loot.json: Scout's
+// Medallion (item 20442, horde_only) and Sentinel's Medallion (item
+// 20444, alliance_only) are both battleground-reputation honored
+// rewards, sold by an in-faction vendor (Kelm Hargunth in the Barrens;
+// Illiyana Moonblaze in Ashenvale - wowhead's own pages confirm Scout's
+// is Horde and Sentinel's is Alliance), but loot.json's mined rep source
+// has each under the OTHER side's WSG faction (Scout's under Silverwing
+// Sentinels/889, Sentinel's under Warsong Outriders/890) - the exact
+// inverse of the item's own client-stated restriction. Since a
+// faction-restricted item can only ever reach this function already
+// carrying the one faction that can equip it, that hard restriction is
+// trusted over a mined rep Side that contradicts it, rather than
+// rejecting the item's only source and leaving the slot empty (this is
+// what emptied hunter's level-20 neck slot for both sides at once: each
+// Medallion was excluded for its own faction by the Side check below,
+// and for the other faction by the item's own restriction).
+func sourceObtainable(s itemSource, level int, faction, itemFactionRestriction string) bool {
 	if s.Kind != "rep" {
 		return true
 	}
-	if s.Side != "" && s.Side != faction {
+	if s.Side != "" && s.Side != faction && itemFactionRestriction != faction {
 		return false
 	}
 	return level >= 60 || repStandingObtainable[s.Standing]
 }
 
-func sourceFor(id, level int, faction string, idx lootIndex) (itemSource, bool) {
+func sourceFor(id, level int, faction, itemFactionRestriction string, idx lootIndex) (itemSource, bool) {
 	srcs := idx[id]
 	if len(srcs) == 0 {
 		return itemSource{}, false
 	}
 	byKind := make(map[string]itemSource, len(srcs))
 	for _, s := range srcs {
-		if !sourceObtainable(s, level, faction) {
+		if !sourceObtainable(s, level, faction, itemFactionRestriction) {
 			continue
 		}
 		if _, seen := byKind[s.Kind]; !seen {
@@ -198,7 +219,7 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 			out.CrossClassSet = append(out.CrossClassSet, c)
 			continue
 		}
-		src, ok := sourceFor(c.ID, level, faction, idx)
+		src, ok := sourceFor(c.ID, level, faction, c.FactionRestriction, idx)
 		if !ok {
 			out.NoSource = append(out.NoSource, c)
 			continue

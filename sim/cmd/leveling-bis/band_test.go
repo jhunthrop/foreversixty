@@ -4,7 +4,7 @@ import "testing"
 
 func TestSourceForNoSource(t *testing.T) {
 	idx := lootIndex{}
-	if _, ok := sourceFor(1, 30, "alliance", idx); ok {
+	if _, ok := sourceFor(1, 30, "alliance", "", idx); ok {
 		t.Fatal("sourceFor with an empty index: want ok=false")
 	}
 }
@@ -19,7 +19,7 @@ func TestSourceForPicksHighestPriorityKind(t *testing.T) {
 			{Kind: "dungeon", Label: "A Dungeon"},
 		},
 	}
-	src, ok := sourceFor(1, 30, "alliance", idx)
+	src, ok := sourceFor(1, 30, "alliance", "", idx)
 	if !ok || src.Kind != "dungeon" || src.Label != "A Dungeon" {
 		t.Fatalf("sourceFor = %+v, %v, want dungeon/A Dungeon", src, ok)
 	}
@@ -27,10 +27,10 @@ func TestSourceForPicksHighestPriorityKind(t *testing.T) {
 
 func TestSourceForRaidExcludedBelow60(t *testing.T) {
 	idx := lootIndex{1: {{Kind: "raid", Label: "Molten Core"}}}
-	if _, ok := sourceFor(1, 59, "alliance", idx); ok {
+	if _, ok := sourceFor(1, 59, "alliance", "", idx); ok {
 		t.Fatal("sourceFor at level 59 with only a raid source: want ok=false")
 	}
-	src, ok := sourceFor(1, 60, "alliance", idx)
+	src, ok := sourceFor(1, 60, "alliance", "", idx)
 	if !ok || src.Kind != "raid" {
 		t.Fatalf("sourceFor at level 60 = %+v, %v, want the raid source", src, ok)
 	}
@@ -38,7 +38,7 @@ func TestSourceForRaidExcludedBelow60(t *testing.T) {
 
 func TestSourceForFallsBackWhenNoNonRaidKindPresent(t *testing.T) {
 	idx := lootIndex{1: {{Kind: "raid", Label: "Molten Core"}}}
-	if _, ok := sourceFor(1, 30, "alliance", idx); ok {
+	if _, ok := sourceFor(1, 30, "alliance", "", idx); ok {
 		t.Fatal("sourceFor with only a below-60-excluded raid source: want ok=false, not falling through to it anyway")
 	}
 }
@@ -147,17 +147,53 @@ func TestBuildBandPoolSkipsItemsWithNoSlots(t *testing.T) {
 // Outriders, revered) must never head an ALLIANCE level-20 list.
 func TestSourceForGatesReputationBySideAndStanding(t *testing.T) {
 	idx := lootIndex{20438: {{Kind: "rep", Label: "Warsong Outriders", Side: "horde", Standing: "revered"}}}
-	if _, ok := sourceFor(20438, 20, "alliance", idx); ok {
+	if _, ok := sourceFor(20438, 20, "alliance", "", idx); ok {
 		t.Fatal("a Horde reputation reward was offered to an alliance character")
 	}
-	if _, ok := sourceFor(20438, 20, "horde", idx); ok {
+	if _, ok := sourceFor(20438, 20, "horde", "", idx); ok {
 		t.Fatal("a revered reward was offered at level 20")
 	}
-	if _, ok := sourceFor(20438, 60, "horde", idx); !ok {
+	if _, ok := sourceFor(20438, 60, "horde", "", idx); !ok {
 		t.Fatal("a revered reward must be obtainable by its own side at 60")
 	}
 	idx[7731] = []itemSource{{Kind: "rep", Label: "Silverwing Sentinels", Side: "alliance", Standing: "honored"}}
-	if _, ok := sourceFor(7731, 20, "alliance", idx); !ok {
+	if _, ok := sourceFor(7731, 20, "alliance", "", idx); !ok {
 		t.Fatal("an honored reward of the character's own side is obtainable while leveling")
+	}
+}
+
+// Scout's Medallion (item 20442, horde_only) and Sentinel's Medallion
+// (item 20444, alliance_only) are both real Forever items whose mined
+// rep source has the WSG faction backwards versus the item's own
+// client-stated restriction (wowhead: Scout's is Horde, sold by Kelm
+// Hargunth in the Barrens; Sentinel's is Alliance, sold by Illiyana
+// Moonblaze in Ashenvale - loot.json's rep source nonetheless lists
+// Scout's under Silverwing Sentinels/alliance and Sentinel's under
+// Warsong Outriders/horde). Without the item's own restriction
+// breaking the tie, each Medallion is unobtainable by EITHER faction:
+// its own side rejects it on the mined Side mismatch, and the other
+// side never reaches sourceFor at all (eligible.go's own faction
+// filter already excludes it there). This emptied hunter's level-20
+// neck slot for both factions at once.
+func TestSourceForTrustsItemFactionRestrictionOverAMinedRepSideMismatch(t *testing.T) {
+	idx := lootIndex{
+		20442: {{Kind: "rep", Label: "Silverwing Sentinels", Side: "alliance", Standing: "honored"}},
+		20444: {{Kind: "rep", Label: "Warsong Outriders", Side: "horde", Standing: "honored"}},
+	}
+	if _, ok := sourceFor(20442, 20, "horde", "horde", idx); !ok {
+		t.Fatal("Scout's Medallion (horde_only) must be obtainable by a horde character despite the mined rep source's alliance Side")
+	}
+	// An alliance query never reaches sourceFor for a horde_only item in
+	// production - eligible.go's own FactionRestriction check excludes
+	// it first - so sourceFor is not the layer responsible for that
+	// gate; this override only widens what a MATCHING faction can see.
+	if _, ok := sourceFor(20444, 20, "alliance", "alliance", idx); !ok {
+		t.Fatal("Sentinel's Medallion (alliance_only) must be obtainable by an alliance character despite the mined rep source's horde Side")
+	}
+	// An unrestricted item still obeys the mined Side: the override only
+	// applies when the item's OWN restriction names this faction.
+	idx[1] = []itemSource{{Kind: "rep", Label: "Warsong Outriders", Side: "horde", Standing: "honored"}}
+	if _, ok := sourceFor(1, 20, "alliance", "", idx); ok {
+		t.Fatal("an unrestricted item's mined rep Side must still gate a mismatched faction")
 	}
 }
