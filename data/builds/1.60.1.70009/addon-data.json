@@ -4202,7 +4202,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4227,7 +4227,7 @@
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4257,7 +4257,7 @@
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4287,7 +4287,7 @@
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4322,7 +4322,7 @@
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4357,7 +4357,7 @@
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4392,7 +4392,7 @@
           {
             "spell_id": 14287,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       }
@@ -4409,7 +4409,7 @@
           {
             "spell_id": 3044,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4434,7 +4434,7 @@
           {
             "spell_id": 14282,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4464,7 +4464,7 @@
           {
             "spell_id": 14283,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4494,7 +4494,7 @@
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4524,7 +4524,7 @@
           {
             "spell_id": 14284,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4554,7 +4554,7 @@
           {
             "spell_id": 14285,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       },
@@ -4584,7 +4584,7 @@
           {
             "spell_id": 14287,
             "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Arcane Shot as the last filler, only when Aimed Shot will not be ready within a global and mana is above a 25% reserve (Multi-Shot and Serpent Sting are the sh…"
           }
         ]
       }
