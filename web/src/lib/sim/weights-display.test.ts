@@ -1,6 +1,6 @@
 // web/src/lib/sim/weights-display.test.ts
 import { describe, expect, it } from 'vitest';
-import { buildWeightDisplayRows, statLabelForSpec } from './weights-display';
+import { buildWeightDisplayRows, refAbbrev, statLabelForSpec } from './weights-display';
 import type { StatWeight } from './types';
 
 // The owner's own repro (2026-09-28): a level-20 hunter-marksmanship weights run --
@@ -85,5 +85,18 @@ describe('buildWeightDisplayRows', () => {
     const fallback = buildWeightDisplayRows(hunterWeights, 'ranged_attack_power', 'nobody-heard-of-this');
     const meleeHaste = fallback.find((row) => row.stat === 'melee_haste');
     expect(meleeHaste?.label).toBe('Melee haste');
+  });
+});
+
+describe('refAbbrev', () => {
+  it('takes one initial per word 3+ letters long for a multi-word label', () => {
+    expect(refAbbrev('Attack power')).toBe('AP');
+    expect(refAbbrev('Ranged attack power')).toBe('RAP');
+    expect(refAbbrev('Spell power')).toBe('SP');
+  });
+
+  it('keeps a one-word label’s own first two letters, capitalised, rather than a single initial', () => {
+    expect(refAbbrev('Strength')).toBe('ST');
+    expect(refAbbrev('Agility')).toBe('AG');
   });
 });

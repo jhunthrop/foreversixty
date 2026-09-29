@@ -1,0 +1,350 @@
+---
+// web/src/components/bis/GearRow.astro
+// One paperdoll slot row (lane bis-character-panel, 2026-09-29): the left/right gear
+// columns and the bottom weapon row all render the identical row, so it lives once here
+// rather than three times in the page -- filled, empty, and empty-because-a-two-hander-is-
+// equipped (ruling 4) are its only three shapes.
+import type { RowView } from '../../lib/bis/panel-view';
+import { bisCopy } from '../../lib/bis/copy';
+import { dataUrl } from '../../lib/planner/load';
+import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
+import { SLOT_LABELS, type Slot } from '../../lib/planner/types';
+import SlotIcon from './SlotIcon.astro';
+import SourceKindIcon from './SourceKindIcon.astro';
+
+interface Props {
+  row: RowView;
+  isNew: boolean;
+  build: string;
+  /** `bis-slot-<faction>-<band>-<slot>` -- assembled by the caller, which alone knows the
+   *  faction and band this row belongs to. */
+  slotTestId: string;
+}
+
+const { row, isNew, build, slotTestId } = Astro.props;
+
+// `inv_misc_questionmark` is the item pipeline's own placeholder for an id it has no real
+// icon for -- the client's literal red-bordered "?" texture, and the exact icon the owner's
+// screenshot review named (tenet 4: "never a red '?' icon"). A row with it falls back to
+// the same neutral slot glyph an unresolved item gets.
+function hasRealIcon(icon: string | undefined): icon is string {
+  return icon !== undefined && icon !== 'inv_misc_questionmark';
+}
+---
+
+<li class:list={['gear-row', isNew && 'gear-row-new']} data-testid={slotTestId}>
+  <span class="gear-row-lead" aria-hidden="true">
+    <SlotIcon slot={row.slot as Slot} size={16} />
+  </span>
+  {row.empty ? (
+    <div class="gear-row-empty">
+      <span class="gear-row-icon gear-row-icon-empty rounded-control border" aria-hidden="true" />
+      <span class="gear-row-empty-body">
+        <span class="gear-row-slot-label">{SLOT_LABELS[row.slot as Slot] ?? row.slot}</span>
+        <span class="text-muted text-[12px]">{row.emptyCopy}</span>
+      </span>
+    </div>
+  ) : (
+    <>
+      <span class="gear-row-body">
+        <span
+          class="gear-row-item"
+          data-testid={`item-hover-${row.itemId}`}
+          data-bis-item={row.itemId}
+          tabindex="0"
+          role="button"
+          aria-haspopup="true"
+        >
+          {hasRealIcon(row.model?.icon) ? (
+            <img
+              src={dataUrl(build, `icons/${row.model!.icon}.webp`)}
+              alt=""
+              width="40"
+              height="40"
+              loading="lazy"
+              decoding="async"
+              class="gear-row-icon rounded-control border object-cover"
+              style={`border-color:${rarityBorderColorFor(row.model?.quality ?? 1)}`}
+            />
+          ) : (
+            <span
+              class="gear-row-icon gear-row-icon-placeholder rounded-control border"
+              style={`border-color:${rarityBorderColorFor(row.model?.quality ?? 1)}`}
+              aria-hidden="true"
+            >
+              <SlotIcon slot={row.slot as Slot} />
+            </span>
+          )}
+          <span class="gear-row-content">
+            <span class="gear-row-name-line">
+              <span class="sr-only">{SLOT_LABELS[row.slot as Slot] ?? row.slot}:</span>
+              <span class:list={['gear-row-name', rarityClassFor(row.model?.quality ?? 1)]}>
+                {row.itemName}
+              </span>
+              {isNew && (
+                <span
+                  class="new-pill"
+                  data-testid="bis-row-new"
+                  title={bisCopy.newPillTitle(row.replacedName)}
+                >
+                  {bisCopy.newPillLabel}
+                </span>
+              )}
+              {row.verified ? (
+                <span
+                  class="verified-glyph"
+                  title={bisCopy.verifiedGlyphTitle}
+                  aria-label={bisCopy.verifiedGlyphTitle}
+                >
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.4"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <use href="#bis-verified" />
+                  </svg>
+                </span>
+              ) : (
+                <span class="text-muted text-[11px]" title={bisCopy.unverifiedGlyphTitle}>
+                  {bisCopy.unverified}
+                </span>
+              )}
+            </span>
+            {row.keyStatsLine && <span class="gear-row-stats text-muted">{row.keyStatsLine}</span>}
+            <span class="gear-row-source text-muted">
+              <SourceKindIcon kind={row.sourceKind ?? 'unknown'} />
+              {row.sourceDetail}
+            </span>
+            {row.alternatives && row.alternatives.length > 0 && (
+              <span class="gear-row-alts">
+                <span class="gear-row-alts-label label text-muted">{bisCopy.alternativesLabel}</span>
+                <span class="gear-row-alts-list">
+                  {row.alternatives.map((alt) => (
+                    <span
+                      class="gear-row-alt"
+                      data-testid={`item-hover-${alt.itemId}`}
+                      data-bis-item={alt.itemId}
+                      tabindex="0"
+                      role="button"
+                      aria-haspopup="true"
+                      title={`${alt.itemName} · ${bisCopy.alternativeGapLabel(alt.dpsDelta)}`}
+                    >
+                      {hasRealIcon(alt.model?.icon) ? (
+                        <img
+                          src={dataUrl(build, `icons/${alt.model!.icon}.webp`)}
+                          alt=""
+                          width="20"
+                          height="20"
+                          loading="lazy"
+                          decoding="async"
+                          class="gear-row-alt-icon rounded-control border object-cover"
+                          style={`border-color:${rarityBorderColorFor(alt.model?.quality ?? 1)}`}
+                        />
+                      ) : (
+                        <span
+                          class="gear-row-alt-icon gear-row-icon-placeholder rounded-control border"
+                          style={`border-color:${rarityBorderColorFor(alt.model?.quality ?? 1)}`}
+                          aria-hidden="true"
+                        >
+                          <SlotIcon slot={row.slot as Slot} size={12} />
+                        </span>
+                      )}
+                      <span class:list={['gear-row-alt-name', rarityClassFor(alt.model?.quality ?? 1)]}>
+                        {alt.itemName}
+                      </span>
+                      <span class="gear-row-alt-source text-muted">
+                        <SourceKindIcon kind={alt.sourceKind} />
+                        {alt.sourceDetail}
+                      </span>
+                      <span class="gear-row-alt-gap text-muted">
+                        {bisCopy.alternativeGapLabel(alt.dpsDelta)}
+                      </span>
+                    </span>
+                  ))}
+                </span>
+              </span>
+            )}
+          </span>
+        </span>
+      </span>
+      <span class="gear-row-ilvl tabular text-muted" title={bisCopy.levelHeading}>
+        {row.itemLevel === undefined ? '—' : bisCopy.itemLevelShort(row.itemLevel)}
+      </span>
+    </>
+  )}
+</li>
+
+<style>
+  .gear-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--color-line-soft, #222);
+  }
+  .gear-row-new {
+    background: color-mix(in srgb, var(--color-gold, #c9a35e) 6%, transparent);
+  }
+  .gear-row-lead {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: 40px;
+  }
+  .gear-row-empty {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .gear-row-empty-body {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+  }
+  .gear-row-icon-empty {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border-color: var(--color-line-soft, #222);
+  }
+  .gear-row-slot-label {
+    color: var(--color-muted, #999);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  /* `position: relative` is BisTooltipHost's own mount point: the one shared tooltip panel
+     is appended inside whichever row is open, and its `position: absolute` needs this row
+     to be its containing block. */
+  .gear-row-body {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+  }
+  .gear-row-item {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: flex-start;
+    gap: 0.6rem;
+    cursor: pointer;
+  }
+  /* 40px, 1px border in the item's own quality colour -- the in-game socket look (ruling
+     6): a worn slot's icon is bordered in the colour of what fills it, the same way the
+     client's own paperdoll frame does. */
+  .gear-row-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+  }
+  .gear-row-icon-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-raised, #111);
+    color: var(--color-muted, #999);
+  }
+  .gear-row-content {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .gear-row-name-line {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .gear-row-name {
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .gear-row-stats {
+    font-size: 12px;
+  }
+  .gear-row-source {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 12px;
+  }
+  .gear-row-ilvl {
+    flex-shrink: 0;
+    padding-top: 2px;
+    font-size: 12px;
+  }
+  .new-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--color-gold, #c9a35e);
+    background: transparent;
+    color: var(--color-gold, #c9a35e);
+    padding: 0 0.4rem;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .verified-glyph {
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-gold, #c9a35e);
+  }
+
+  /* --- alternatives row (ruling 2): a compact row under the pick, not a bare chip. --- */
+  .gear-row-alts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-top: 0.15rem;
+  }
+  .gear-row-alts-label {
+    color: var(--color-muted, #999);
+  }
+  .gear-row-alts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .gear-row-alt {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    cursor: pointer;
+  }
+  .gear-row-alt-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+  }
+  .gear-row-alt-name {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .gear-row-alt-source {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 11px;
+  }
+  .gear-row-alt-gap {
+    font-size: 11px;
+  }
+</style>

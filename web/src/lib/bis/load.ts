@@ -220,8 +220,10 @@ export function itemHoverModel(
 /** The picker's own badge word for a source kind (loot.ts's SOURCE_KIND_LABELS), except a
  *  quest -- design 6.1's isolation-by-faction is the whole point of this page, so a quest
  *  row names the band's own faction instead of the generic "Quests" label every kind here
- *  otherwise shares with the Droptimizer's picker. */
-export function sourceBadgeLabel(slot: BisSlot, faction: Faction): string {
+ *  otherwise shares with the Droptimizer's picker. `slot` only needs `source_kind` -- a
+ *  `Pick`, not the full `BisSlot`, so an alternative (`item_id`/`source_kind` alone) reads
+ *  its own badge word through this exact function too. */
+export function sourceBadgeLabel(slot: Pick<BisSlot, 'source_kind'>, faction: Faction): string {
   if (slot.source_kind === 'quest') return bisCopy.questFactionBadge(faction);
   return isLootKind(slot.source_kind) ? SOURCE_KIND_LABELS[slot.source_kind] : slot.source_kind;
 }
