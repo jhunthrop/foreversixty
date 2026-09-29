@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"math"
 	"os"
 	"path/filepath"
 	"strings"
@@ -282,14 +283,25 @@ func TestBuildReportCarriesTiedAlternatives(t *testing.T) {
 // fallback instead of an empty page - warrior-arms horde band 20's
 // main_hand published Forsaken Greataxe with no record that Smite's
 // Mighty Hammer (a Deadmines drop) was ever considered.
-func TestBuildAlternativesRanksTiesFirstThenNextBestSourcedByScore(t *testing.T) {
+//
+// Owner review, tenet 8 (2026-09-29): the final list is sorted by
+// dps_delta, descending, not "ties then score order" - the two agree
+// whenever nothing outscores the pick (the overwhelmingly common case:
+// bySlot's own list is best-score-first, so the pick IS the top entry
+// and every tie sits at the exact same score right behind it), but
+// Hammerbone here legitimately outscores this test's pick with NO
+// swap correction applied (this fixture deliberately leaves sw nil -
+// TestBuildAlternativesSwapBeatOverridesTheDemotedRunnerUpsDelta below
+// is the same numbers WITH the real-sim correction, where Hammerbone's
+// positive estimate flips negative and drops behind Smite's Mighty
+// Hammer instead), so its own positive, uncorrected estimate correctly
+// outranks a flat 0 tie: the estimate says "this scores better than
+// the pick", and nothing has told buildAlternatives otherwise yet.
+func TestBuildAlternativesSortsByDPSDeltaDescendingTiesIncluded(t *testing.T) {
 	pick := &scored{candidate: candidate{ID: 1, Name: "Forsaken Greataxe"}, Score: 302.9}
 	pk := slotPick{
 		Item: pick,
-		// A tie (this lane's brief addendum, wow-player review):
-		// scores identically to the pick, so it must rank ahead of
-		// every lower-scoring alternative even though bySlot's own
-		// score order does not itself distinguish the two.
+		// A tie: scores identically to the pick, dps_delta exactly 0.
 		Ties: []scored{
 			{candidate: candidate{ID: 5, Name: "Tied Greataxe"}, Score: 302.9, Source: itemSource{Kind: "quest", Label: "Quests"}},
 		},
@@ -303,11 +315,16 @@ func TestBuildAlternativesRanksTiesFirstThenNextBestSourcedByScore(t *testing.T)
 		{candidate: candidate{ID: 8, Name: "Living Root"}, Score: 296.94, Source: itemSource{Kind: "dungeon", Label: "Wailing Caverns: Verdan the Everliving"}},
 		{candidate: candidate{ID: 9, Name: "Too Far Down"}, Score: 100, Source: itemSource{Kind: "quest", Label: "Quests"}},
 	}
-	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk})
+	// referenceDPSPerPoint 1.0 here so DPSDelta and ScoreDelta read
+	// identically - the dedicated DPS-conversion contract test below
+	// (TestBuildAlternativesConvertsScoreDeltaToRealDPS) is where a
+	// non-trivial referenceDPSPerPoint is exercised; this test is about
+	// ordering and exclusion, not arithmetic.
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 1.0, nil)
 	want := []alternativeRow{
-		{ItemID: 5, ItemName: "Tied Greataxe", Score: 302.9, SourceKind: "quest", Source: "Quests", DPSDelta: 0},
-		{ItemID: 6, ItemName: "Hammerbone", Score: 306.05, SourceKind: "quest", Source: "Quests", DPSDelta: 306.05 - 302.9},
-		{ItemID: 7230, ItemName: "Smite's Mighty Hammer", Score: 297.82, SourceKind: "dungeon", Source: "The Deadmines: Mr. Smite", DPSDelta: 297.82 - 302.9},
+		{ItemID: 6, ItemName: "Hammerbone", Score: 306.05, SourceKind: "quest", Source: "Quests", ScoreDelta: 306.05 - 302.9, DPSDelta: 306.05 - 302.9},
+		{ItemID: 5, ItemName: "Tied Greataxe", Score: 302.9, SourceKind: "quest", Source: "Quests", ScoreDelta: 0, DPSDelta: 0},
+		{ItemID: 7230, ItemName: "Smite's Mighty Hammer", Score: 297.82, SourceKind: "dungeon", Source: "The Deadmines: Mr. Smite", ScoreDelta: 297.82 - 302.9, DPSDelta: 297.82 - 302.9},
 	}
 	if len(got) != len(want) {
 		t.Fatalf("buildAlternatives = %+v (%d entries), want %d", got, len(got), len(want))
@@ -320,9 +337,128 @@ func TestBuildAlternativesRanksTiesFirstThenNextBestSourcedByScore(t *testing.T)
 		if diff := got[i].DPSDelta - want[i].DPSDelta; diff > 1e-9 || diff < -1e-9 {
 			t.Errorf("alternative[%d] (%s) DPSDelta = %v, want %v", i, got[i].ItemName, got[i].DPSDelta, want[i].DPSDelta)
 		}
+		if diff := got[i].ScoreDelta - want[i].ScoreDelta; diff > 1e-9 || diff < -1e-9 {
+			t.Errorf("alternative[%d] (%s) ScoreDelta = %v, want %v", i, got[i].ItemName, got[i].ScoreDelta, want[i].ScoreDelta)
+		}
 		if got[i].Source != want[i].Source || got[i].SourceKind != want[i].SourceKind {
 			t.Errorf("alternative[%d] (%s) source = %q/%q, want %q/%q", i, got[i].ItemName, got[i].Source, got[i].SourceKind, want[i].Source, want[i].SourceKind)
 		}
+	}
+}
+
+// Owner review, tenet 8 (2026-09-29): dps_delta must be real DPS, not
+// a bare score-unit number with nothing saying so. Contract: a 5-point
+// score gap at this band's own reference_dps_per_point of 0.0444
+// converts to 0.22 DPS (5 * 0.0444 = 0.222, rounds to 0.22) - the
+// exact figure the owner's own repro named.
+func TestBuildAlternativesConvertsScoreDeltaToRealDPS(t *testing.T) {
+	const referenceDPSPerPoint = 0.0444
+	pick := &scored{candidate: candidate{ID: 1, Name: "Pick"}, Score: 302.91}
+	pk := slotPick{Item: pick}
+	list := []scored{
+		{candidate: candidate{ID: 1, Name: "Pick"}, Score: 302.91},
+		{candidate: candidate{ID: 2, Name: "Five Points Back"}, Score: 302.91 - 5},
+	}
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, referenceDPSPerPoint, nil)
+	if len(got) != 1 {
+		t.Fatalf("buildAlternatives = %+v, want exactly 1 alternative", got)
+	}
+	if got[0].ScoreDelta != -5 {
+		t.Fatalf("ScoreDelta = %v, want -5 (the raw score-unit gap kept alongside dps_delta)", got[0].ScoreDelta)
+	}
+	wantDPSDelta := -5 * referenceDPSPerPoint
+	if diff := got[0].DPSDelta - wantDPSDelta; diff > 1e-9 || diff < -1e-9 {
+		t.Fatalf("DPSDelta = %v, want %v (score_delta * reference_dps_per_point)", got[0].DPSDelta, wantDPSDelta)
+	}
+	rounded := math.Round(math.Abs(got[0].DPSDelta)*100) / 100
+	if rounded != 0.22 {
+		t.Fatalf("|dps_delta| rounded to 2dp = %v, want 0.22 (the owner's own contract number)", rounded)
+	}
+}
+
+// Owner review, tenet 8: a runner-up verify.go's own swap pass actually
+// simmed against the pick, but which LOST that sim, must publish the
+// real measured delta (negative) rather than the score estimate that
+// made it look better than the winning pick - the exact warrior-arms
+// horde band 20 defect (Hammerbone scored 3.14 points above Forsaken
+// Greataxe, but measured 29.9 vs 32.2 DPS and lost).
+func TestBuildAlternativesSwapBeatOverridesTheDemotedRunnerUpsDelta(t *testing.T) {
+	// Forsaken Greataxe: the promoted pick (post-applySwaps, Item is the
+	// former runner-up; RunnerUp is the demoted, higher-scoring original
+	// pick - buildReport's own doc for why Ties/RunnerUp still name the
+	// physical items this way after a promotion).
+	promoted := &scored{candidate: candidate{ID: 251533, Name: "Forsaken Greataxe"}, Score: 302.91}
+	demoted := &scored{candidate: candidate{ID: 270018, Name: "Hammerbone"}, Score: 306.05}
+	pk := slotPick{Item: promoted, RunnerUp: demoted}
+	list := []scored{
+		{candidate: candidate{ID: 270018, Name: "Hammerbone"}, Score: 306.05, Source: itemSource{Kind: "quest", Label: "Quests"}},
+		{candidate: candidate{ID: 251533, Name: "Forsaken Greataxe"}, Score: 302.91, Source: itemSource{Kind: "quest", Label: "Quests"}}, // the pick itself
+		{candidate: candidate{ID: 7230, Name: "Smite's Mighty Hammer"}, Score: 297.82, Source: itemSource{Kind: "dungeon", Label: "The Deadmines: Mr. Smite"}},
+	}
+	// The real swap sim: Forsaken (SwapDPS, the runner-up-at-verify-time
+	// that got promoted) measured 32.2, Hammerbone (BaselineDPS, the
+	// then-current pick) measured 29.9 - the owner's own numbers.
+	sw := &swapResult{Slot: "main_hand", SwapDPS: 32.2, BaselineDPS: 29.9, Beat: true}
+
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 0.0444, sw)
+
+	var hammerbone, smite *alternativeRow
+	for i := range got {
+		switch got[i].ItemID {
+		case 270018:
+			hammerbone = &got[i]
+		case 7230:
+			smite = &got[i]
+		}
+	}
+	if hammerbone == nil {
+		t.Fatalf("buildAlternatives = %+v, want Hammerbone (the demoted runner-up) among the alternatives", got)
+	}
+	wantDelta := 29.9 - 32.2
+	if diff := hammerbone.DPSDelta - wantDelta; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("Hammerbone DPSDelta = %v, want %v (BaselineDPS - SwapDPS, the real measured loss)", hammerbone.DPSDelta, wantDelta)
+	}
+	if hammerbone.DPSDelta >= 0 {
+		t.Errorf("Hammerbone DPSDelta = %v, want negative: it LOST the real sim and must never look better than the pick", hammerbone.DPSDelta)
+	}
+	if !hammerbone.Verified {
+		t.Error("Hammerbone Verified = false, want true: this row's delta came from a real swap sim, not a score estimate")
+	}
+	// Ordering: after the swap correction, Hammerbone's real delta
+	// (-2.3) is worse than Smite's Mighty Hammer's plain score estimate
+	// (-5.09 score points ~ -0.226 DPS at this reference_dps_per_point),
+	// so Smite's Mighty Hammer must now rank ahead of it.
+	if smite == nil {
+		t.Fatal("buildAlternatives did not include Smite's Mighty Hammer at all")
+	}
+	if got[0].ItemID != smite.ItemID {
+		t.Errorf("alternatives[0] = %+v, want Smite's Mighty Hammer first (dps_delta descending after the swap correction)", got[0])
+	}
+}
+
+// The symmetric !Beat case: the runner-up verify.go simmed did NOT
+// beat the pick, so no promotion happened, but the sim still measured
+// a real delta for it that should override the score estimate the
+// same way.
+func TestBuildAlternativesSwapNotBeatOverridesTheRunnerUpsDelta(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Pick"}, Score: 100}
+	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Runner Up"}, Score: 95}
+	pk := slotPick{Item: pick, RunnerUp: runnerUp}
+	list := []scored{
+		{candidate: candidate{ID: 1, Name: "Pick"}, Score: 100},
+		{candidate: candidate{ID: 2, Name: "Runner Up"}, Score: 95, Source: itemSource{Kind: "quest", Label: "Quests"}},
+	}
+	sw := &swapResult{Slot: "head", SwapDPS: 40, BaselineDPS: 50, Beat: false}
+	got := buildAlternatives(pk, "head", list, map[string]slotPick{"head": pk}, 0.05, sw)
+	if len(got) != 1 || got[0].ItemID != 2 {
+		t.Fatalf("buildAlternatives = %+v, want exactly the runner-up", got)
+	}
+	if !got[0].Verified {
+		t.Error("Verified = false, want true")
+	}
+	wantDelta := 40.0 - 50.0
+	if got[0].DPSDelta != wantDelta {
+		t.Errorf("DPSDelta = %v, want %v (SwapDPS - BaselineDPS)", got[0].DPSDelta, wantDelta)
 	}
 }
 
@@ -341,7 +477,7 @@ func TestBuildAlternativesExcludesThePairMate(t *testing.T) {
 		{candidate: candidate{ID: 2, Name: "Ring B"}, Score: 9}, // finger2's own pick - must not appear
 		{candidate: candidate{ID: 3, Name: "Ring C"}, Score: 8},
 	}
-	got := buildAlternatives(picks["finger1"], "finger1", list, picks)
+	got := buildAlternatives(picks["finger1"], "finger1", list, picks, 1.0, nil)
 	if len(got) != 1 || got[0].ItemID != 3 {
 		t.Fatalf("finger1 alternatives = %+v, want only Ring C (finger2's own pick excluded)", got)
 	}
@@ -353,7 +489,7 @@ func TestBuildAlternativesExcludesThePairMate(t *testing.T) {
 // fallbacks for.
 func TestBuildAlternativesNilForAnUnfilledSlot(t *testing.T) {
 	list := []scored{{candidate: candidate{ID: 1, Name: "Anything"}, Score: 5}}
-	got := buildAlternatives(slotPick{}, "off_hand", list, map[string]slotPick{})
+	got := buildAlternatives(slotPick{}, "off_hand", list, map[string]slotPick{}, 1.0, nil)
 	if got != nil {
 		t.Fatalf("buildAlternatives on an unfilled slot = %+v, want nil", got)
 	}
@@ -370,7 +506,7 @@ func TestBuildAlternativesMainHandMixesOneAndTwoHanders(t *testing.T) {
 		{candidate: candidate{ID: 1, Name: "Greataxe", TwoHand: true}, Score: 20},
 		{candidate: candidate{ID: 2, Name: "Rusty Sword", TwoHand: false}, Score: 15},
 	}
-	got := buildAlternatives(slotPick{Item: pick}, "main_hand", list, map[string]slotPick{"main_hand": {Item: pick}})
+	got := buildAlternatives(slotPick{Item: pick}, "main_hand", list, map[string]slotPick{"main_hand": {Item: pick}}, 1.0, nil)
 	if len(got) != 1 || got[0].ItemID != 2 {
 		t.Fatalf("main_hand alternatives = %+v, want the one-hander Rusty Sword offered alongside the two-handed pick", got)
 	}
@@ -447,8 +583,11 @@ func TestWriteMarkdownRendersFactionsSortedWithTablesAndNotes(t *testing.T) {
 			Slots: []slotRow{
 				{
 					Slot: "head", ItemID: 1, ItemName: "Helm", Score: 10, Verified: true, Source: "A Quest", SourceKind: "quest",
-					Ties:         []tieAlternative{{ItemID: 5, ItemName: "Tied Cap"}},
-					Alternatives: []alternativeRow{{ItemID: 6, ItemName: "Runner Up Helm", Score: 8, SourceKind: "dungeon", Source: "Some Dungeon", DPSDelta: -2}},
+					Ties: []tieAlternative{{ItemID: 5, ItemName: "Tied Cap"}},
+					Alternatives: []alternativeRow{
+						{ItemID: 6, ItemName: "Runner Up Helm", Score: 8, SourceKind: "dungeon", Source: "Some Dungeon", DPSDelta: -2},
+						{ItemID: 7, ItemName: "Sim-Verified Cap", Score: 12, SourceKind: "quest", Source: "Quests", DPSDelta: -1.5, Verified: true},
+					},
 				},
 				{Slot: "neck"}, // unpicked slot renders as "-"
 			},
@@ -492,7 +631,10 @@ func TestWriteMarkdownRendersFactionsSortedWithTablesAndNotes(t *testing.T) {
 	if !strings.Contains(content, "No-known-source sample") {
 		t.Error("markdown missing the no-known-source sample line")
 	}
-	if !strings.Contains(content, "Runner Up Helm (6, -2.0) [dungeon]") {
+	if !strings.Contains(content, "Runner Up Helm (6, -2.00 DPS) [dungeon]") {
 		t.Error("markdown missing the head slot's own Alternatives column entry (this lane's brief, item 1)")
+	}
+	if !strings.Contains(content, "Sim-Verified Cap (7, -1.50 DPS, sim-verified) [quest]") {
+		t.Error("markdown missing the sim-verified note on a swap-corrected alternative (owner review, tenet 8)")
 	}
 }
