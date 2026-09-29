@@ -40,6 +40,7 @@ from pathlib import Path
 
 from pipeline.csvio import check_item_sparse_completeness, read_csv
 from pipeline.forkdb import load_fork_database
+from pipeline.item_sources import load_item_sources
 from pipeline.loot.buffs import (
     IDS_MD,
     SIMBUFFS,
@@ -115,6 +116,14 @@ def write_loot_files(
     # build_loot/_keyed_sources.
     quest_levels = load_quest_levels(build_dir)
 
+    # night-item-sources lane, 2026-09-28: the committed wowhead scrape
+    # for items the fork database itself names no source for at all
+    # (pipeline.item_sources' own doc). Same offline-in-CI contract as
+    # quest_levels above -- `loot` reads the committed cache and never
+    # touches the network; `python -m pipeline item-sources` is the only
+    # step allowed to.
+    item_sources = load_item_sources(build_dir)
+
     # Contract 10.4's build filter happens inside build_loot, and its
     # pruning sweep with it -- so this runs BEFORE the overlay, which is
     # what lets a curated source with a deliberately empty item list (the
@@ -127,6 +136,7 @@ def write_loot_files(
         build_items,
         item_inventory_types,
         quest_levels,
+        item_sources,
     )
     document = apply_overlays(document, load_overlays(overlay_dir))
 
@@ -149,7 +159,8 @@ def write_loot_files(
     weapons_won = apply_fork_weapon_damage(build_dir, fork_weapon_damage(fork))
 
     logger.info(
-        "loot: %d sources naming %d items (%d quests with faction detail); "
+        "loot: %d sources naming %d items (%d from wowhead's item-sources.json scrape, "
+        "%d quests with faction detail); "
         "%d fork ids left out because this build has no such item, "
         "%d fork source entries with no kind dropped, %d zone sources with "
         "a zone id zones[] does not name; "
@@ -158,6 +169,7 @@ def write_loot_files(
         "items/*.json: %d weapon rows won by the fork's own damage",
         len(document.sources),
         stats.items,
+        stats.wowhead_items,
         len(document.quests),
         stats.absent_items,
         stats.dropped_entries,

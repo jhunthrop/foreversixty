@@ -64,6 +64,24 @@ def build_parser() -> argparse.ArgumentParser:
         help="how many quest ids to fetch and compare (default 20)",
     )
 
+    ivs = sub.add_parser(
+        "item-sources",
+        help="THE NIGHTLY STEP (.github/workflows/bis.yml, before `fetch`/`loot`): fetch "
+        "wowhead item pages ONLY for real (non-placeholder) item ids the COMMITTED "
+        "loot.json names no source for at all, politely and capped at --max-pages, and "
+        "merge them into the committed raw/items/item-sources.json `loot` reads. Needs "
+        "no raw/ CSVs and no engine checkout -- items/<class>.json and loot.json are "
+        "both already committed for the active build.",
+    )
+    ivs.add_argument("--build", required=True, help="the build to fill in item sources for")
+    ivs.add_argument(
+        "--max-pages",
+        type=int,
+        default=200,
+        help="cap on live wowhead requests this run sends (default 200); remaining ids "
+        "stay unsourced for a later run to pick up",
+    )
+
     n = sub.add_parser("normalize", help="normalize raw CSVs into JSON")
     n.add_argument("--build", required=True)
     n.add_argument(
@@ -252,6 +270,25 @@ def main(argv: list[str] | None = None) -> int:
                 f"  mismatch quest {quest_id}: wowhead min={w_min} level={w_level}, "
                 f"classic-db min={c_min} level={c_level}"
             )
+    elif args.command == "item-sources":
+        from pathlib import Path
+
+        from pipeline.item_sources import fetch_missing_from_wowhead
+        from pipeline.loot.wowhead import (
+            load_class_item_rows,
+            named_items_in_committed_loot,
+            unsourced_real_item_ids,
+        )
+
+        build_dir = Path("builds") / args.build
+        named = named_items_in_committed_loot(build_dir)
+        ids = unsourced_real_item_ids(load_class_item_rows(build_dir), named)
+        stats = fetch_missing_from_wowhead(args.build, ids, max_pages=args.max_pages)
+        print(
+            f"item-sources: wowhead resolved a page for {stats.fetched}/{stats.needed} "
+            f"unsourced real item ids ({stats.still_missing} still missing; rerun later to "
+            "resume from the warm cache)"
+        )
     elif args.command == "itemnames":
         from pipeline.normalize.itemnames import write_item_names_from_build
 

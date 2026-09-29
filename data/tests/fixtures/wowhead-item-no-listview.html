@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<!--
+  A real item page with only a listview this module does not read (see
+  pipeline.wowhead_item_sources's own doc for why "contained-in-item" is
+  skipped) -- a NORMAL, cacheable outcome (parse_item_page returns an
+  ItemPageSources with all four lists empty), distinct from a true 404
+  (wowhead-item-notfound.html), which raises ItemPageNotFound.
+-->
+<html lang="en-US">
+<head><title>Captain Sander's Locker - Object - Forever</title></head>
+<body>
+<script type="text/javascript">
+new Listview({
+    template: 'item',
+    id: 'contained-in-item',
+    name: WH.TERMS.containedin,
+    tabs: 'tabsRelated',
+    parent: 'lkljbjkb574',
+        extraCols: ['count', 'percent', 'popularity'],
+    sort: ['-percent', 'name'],
+    computeDataFunc: Listview.funcBox.initLootTable,
+    data: [{"classs":15,"displayName":"Captain Sander's Locker","id":270257,"level":15,"name":"Captain Sander's Locker","quality":2,"reqlevel":10,"count":118,"outof":125}],
+});
+</script>
+</body>
+</html>

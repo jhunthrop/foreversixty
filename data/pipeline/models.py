@@ -244,6 +244,15 @@ class LootSource(BaseModel):
     bosses: list[LootBoss] | None = None
     trash: list[int] | None = None
     items: list[int] | None = None
+    #: "wowhead" when this source exists ONLY because
+    #: `pipeline.item_sources`/`pipeline.wowhead_item_sources` scraped it
+    #: for an item the engine fork's own database named no source for at
+    #: all (night-item-sources lane, 2026-09-28); omitted (None) for
+    #: every source the fork database itself names, which is still most
+    #: of them. A source both the fork and a wowhead scrape name (an
+    #: item added to an existing `world:`/`vendor:`/`crafted:` bucket)
+    #: keeps this unset -- the fork found it first.
+    source_origin: str | None = None
 
 
 class QuestSource(BaseModel):
