@@ -105,8 +105,41 @@ def test_an_unknown_weapon_skill_is_an_error():
 
 
 def test_stat_keys_is_the_inverse_of_stat_array():
-    array = stat_array({"strength": 10, "crit": 2.5, "attack_power": 40})
-    assert stat_keys(array) == {"strength": 10.0, "crit": 2.5, "attack_power": 40.0}
+    """True for every key except `attack_power` - see
+    test_generic_attack_power_mirrors_into_ranged_attack_power below, which
+    is the one place `stat_array` is not injective on its input keys."""
+    array = stat_array({"strength": 10, "crit": 2.5, "stamina": 20})
+    assert stat_keys(array) == {"strength": 10.0, "crit": 2.5, "stamina": 20.0}
+
+
+def test_generic_attack_power_mirrors_into_ranged_attack_power():
+    """Classic Era's generic "+X Attack Power" raises a character's melee AND
+    ranged attack power at once; the fork's own item database states every
+    generic-AP item as both `Stat_StatAttackPower` and
+    `Stat_StatRangedAttackPower` (tools/database/wowhead_tooltips.go's
+    `GetStats`). `stat_array` mirrors that for every caller - items,
+    enchants and consumes alike - rather than each source doing it itself."""
+    array = stat_array({"attack_power": 40})
+    assert array[pb.Stat.Value("StatAttackPower")] == 40.0
+    assert array[pb.Stat.Value("StatRangedAttackPower")] == 40.0
+    # The mirror also shows up reading the array back, since stat_keys has
+    # no way to tell a mirrored amount from one stat_array was handed
+    # directly - both are real amounts in the same array position.
+    assert stat_keys(array) == {"attack_power": 40.0, "ranged_attack_power": 40.0}
+
+
+def test_an_explicit_ranged_attack_power_amount_stays_additive_on_top_of_the_mirror():
+    """Rune of the Guard Captain's tooltip states a flat +42 Attack Power
+    line and a separate +42 Ranged Attack Power line
+    (pipeline/simdb/equip.py's module docstring and its aura 99 vs aura 124
+    - the ranged-only one). The fork's own `GetStats` computes
+    `Stat_StatRangedAttackPower` as `baseAP + <ranged-only tooltip lines>`,
+    i.e. 42 mirrored plus 42 explicit = 84, not 42 - this pins that sum
+    rather than the mirror silently overwriting or being overwritten by an
+    explicit ranged_attack_power pair."""
+    array = stat_array([("attack_power", 42.0), ("ranged_attack_power", 42.0)])
+    assert array[pb.Stat.Value("StatAttackPower")] == 42.0
+    assert array[pb.Stat.Value("StatRangedAttackPower")] == 84.0
 
 
 def test_stat_keys_drops_zero_amounts():
