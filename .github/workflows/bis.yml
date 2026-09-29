@@ -72,17 +72,24 @@ jobs:
           git clone --quiet --filter=blob:none https://github.com/jhunthrop/wowsims-forever .engine
           git -C .engine checkout --quiet "${{ steps.identity.outputs.sha }}"
       - uses: astral-sh/setup-uv@v3
-      - name: fill in quest levels from wowhead, then regenerate loot.json
+      - name: fill in quest levels and item sources from wowhead, then regenerate loot.json
         working-directory: data
         run: |
           uv sync
           summary=$(uv run python -m pipeline quest-levels --build "${{ steps.identity.outputs.build }}" --engine ../.engine --max-pages 200 | tee /dev/stderr | grep -E '^quest-levels: [0-9]+/' | tail -1)
-          fetched=$(echo "$summary" | sed -E 's/^quest-levels: ([0-9]+)\/.*/\1/')
+          quests_fetched=$(echo "$summary" | sed -E 's/^quest-levels: ([0-9]+)\/.*/\1/')
+          # night-item-sources lane, 2026-09-28: the same fill-in, for items
+          # the fork database names NO source for at all (pipeline.item_sources'
+          # own doc). Needs no raw/ CSVs or engine checkout -- it reads the
+          # already-committed items/<class>.json and loot.json for this build --
+          # so it runs unconditionally, same as quest-levels above.
+          items_summary=$(uv run python -m pipeline item-sources --build "${{ steps.identity.outputs.build }}" --max-pages 200 | tee /dev/stderr)
+          items_fetched=$(echo "$items_summary" | sed -E 's/^item-sources: wowhead resolved a page for ([0-9]+)\/.*/\1/')
           # loot.json is rebuilt from the client's raw tables, which are not
           # committed (data.yml's fetch job downloads them from wago.tools).
-          # Only a night that filled in at least one quest level pays for
-          # that download; every other night the committed loot.json is
-          # already what the pipeline would produce.
+          # Only a night that filled in at least one quest level or item
+          # source pays for that download; every other night the committed
+          # loot.json is already what the pipeline would produce.
           # `fetch` and `loot` each carry a completeness gate over ItemSparse.csv
           # (pipeline/csvio.py's check_item_sparse_completeness -- night-fetch-guard,
           # 2026-09-29: wago.tools silently served a truncated ItemSparse export that
@@ -91,20 +98,21 @@ jobs:
           # pipefail` -- fails this step and the job, skipping the commit step below,
           # so the truncated data is never written to a committed file. Do not add
           # `|| true` or `continue-on-error` here.
-          if [ "${fetched:-0}" -gt 0 ]; then
+          if [ "${quests_fetched:-0}" -gt 0 ] || [ "${items_fetched:-0}" -gt 0 ]; then
             uv run python -m pipeline fetch --product wow_classic_era --build "${{ steps.identity.outputs.build }}"
             uv run python -m pipeline loot --build "${{ steps.identity.outputs.build }}" --engine ../.engine
           else
-            echo "no quest level filled in tonight; loot.json unchanged"
+            echo "no quest level or item source filled in tonight; loot.json unchanged"
           fi
-      - name: commit quest-levels.json and loot.json if they changed
+      - name: commit quest-levels.json, item-sources.json and loot.json if they changed
         run: |
           git config user.name "forever-bis-bot"
           git config user.email "bot@foreversixty.gg"
           git add "data/builds/${{ steps.identity.outputs.build }}/raw/quests/quest-levels.json" \
+                  "data/builds/${{ steps.identity.outputs.build }}/raw/items/item-sources.json" \
                   "data/builds/${{ steps.identity.outputs.build }}/loot.json" \
                   "data/builds/${{ steps.identity.outputs.build }}/manifest.json"
-          if ! git commit -m "chore(data): nightly quest-level fill-in for ${{ steps.identity.outputs.build }}"; then
+          if ! git commit -m "chore(data): nightly quest-level and item-source fill-in for ${{ steps.identity.outputs.build }}"; then
             echo "nothing to commit"
           else
             for attempt in 1 2 3 4 5; do

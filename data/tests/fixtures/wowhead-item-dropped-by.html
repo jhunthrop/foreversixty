@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<!--
+  A trimmed, real-shaped fixture: one row of the "Dropped by" listview
+  taken verbatim from https://www.wowhead.com/forever/item=720
+  (2026-09-28) -- the rest of that ~211KB page (ads, nav, tooltip css,
+  the other listviews on the same page) is not this fixture's concern,
+  the same way wowhead-quest-53.html trims a quest page down to its one
+  `g_quests` line.
+-->
+<html lang="en-US">
+<head><title>Nightbane Dark Runner - Item - Forever</title></head>
+<body>
+<script type="text/javascript">
+new Listview({
+    template: 'npc',
+    id: 'dropped-by',
+    name: WH.TERMS.droppedby,
+    tabs: 'tabsRelated',
+    parent: 'lkljbjkb574',
+    hiddenCols: ['type'],
+    extraCols: [Listview.extraCols.count, Listview.extraCols.percent, Listview.extraCols.popularity],
+    sort: ['-percent', '-count', 'name'],
+    computeDataFunc: Listview.funcBox.initLootTable,
+        data: [{"classification":0,"displayName":"Nightbane Dark Runner","displayNames":[],"id":205,"location":[10],"maxlevel":29,"minlevel":28,"name":"Nightbane Dark Runner","names":[],"react":[-1,-1],"type":7,"count":7,"outof":29824}],
+});
+</script>
+</body>
+</html>

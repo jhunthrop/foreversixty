@@ -74,6 +74,13 @@ data/builds/*/raw/*
 !data/builds/*/raw/quests/
 data/builds/*/raw/quests/*
 !data/builds/*/raw/quests/quest-levels.json
+# night-item-sources lane, 2026-09-28: the same exception, for the
+# wowhead item-source scrape's own committed merge table
+# (pipeline.item_sources) -- raw/items/<id>.html stays ignored (large,
+# reconstructable from item-sources.json plus a rerun).
+!data/builds/*/raw/items/
+data/builds/*/raw/items/*
+!data/builds/*/raw/items/item-sources.json
 data/.icon-cache/
 
 # git worktrees for parallel plan execution

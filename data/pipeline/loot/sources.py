@@ -33,6 +33,9 @@ from dataclasses import dataclass
 from pipeline.classic_quest_levels import item_level_proxy
 from pipeline.csvio import populated
 from pipeline.forkdb import FACTION_RESTRICTIONS, PROFESSIONS, REP_LEVELS, ForkDatabase, decode
+from pipeline.item_sources import ItemSourceEntry
+from pipeline.loot.constants import INSTANCE_KIND
+from pipeline.loot.wowhead import merge_wowhead_sources, wowhead_additions
 from pipeline.models import LootBoss, LootFile, LootSource, QuestSource
 from pipeline.normalize.classes import slugify
 from pipeline.normalize.gear import SLOT_BY_INVENTORY_TYPE
@@ -44,12 +47,6 @@ logger = logging.getLogger(__name__)
 #: them: instances first, then the things you can farm by zone, then the
 #: things you buy or make.
 KIND_ORDER = ("raid", "dungeon", "world", "zone", "vendor", "crafted", "rep", "pvp", "quest")
-
-#: `Map.InstanceType`. 3 (battleground) and 4 (arena) are instances whose
-#: loot the contract has no kind for -- a battleground's rewards are
-#: reputation and rank, which are their own kinds -- so only these two
-#: become drop sources.
-INSTANCE_KIND = {1: "dungeon", 2: "raid"}
 
 #: An item's own `factionRestriction` (0 included, unlike
 #: `pipeline.forkdb.FACTION_RESTRICTIONS`), standing in for the side of the
@@ -134,6 +131,12 @@ class LootStats:
     #: with `name: ""` rather than invented, same policy as an unnamed
     #: boss).
     unnamed_zones: int
+    #: Distinct item ids sourced ONLY because `item_sources` (a wowhead
+    #: scrape, night-item-sources lane) named one for an item the fork
+    #: database itself named none for at all -- disjoint from `items`'
+    #: fork-derived count above, for the report this lane's brief asks
+    #: for.
+    wowhead_items: int = 0
 
 
 def instance_types(
@@ -525,6 +528,7 @@ def build_loot(
     build_items: set[int],
     item_inventory_types: dict[int, int],
     quest_levels: dict[int, QuestLevelEntry] | None = None,
+    item_sources: dict[int, ItemSourceEntry] | None = None,
 ) -> tuple[LootFile, LootStats]:
     absent: set[int] = set()
     # The vendor kind's own filter: a vendor selling only reagents or
@@ -541,6 +545,26 @@ def build_loot(
         fork, build_items, equippable, absent, quest_levels or {}
     )
     sources = [*drops, *keyed, *_pvp_sources(ranks, build_items)]
+    # Fork-only coverage, INCLUDING the quest items `quest`/`quest_detail`
+    # already name at this point (the flat "quest" LootSource itself is
+    # appended below, after any wowhead quest items join `quest`) --
+    # `LootStats.wowhead_items` below is what a wowhead scrape adds ON
+    # TOP of this set, so quest items the fork itself already covers
+    # must count as fork's, not wowhead's.
+    fork_named = {
+        item_id for source in sources for item_id in source_item_ids(source)
+    } | set(quest)
+    if item_sources:
+        # night-item-sources lane, 2026-09-28: fills the gap ABOVE, never
+        # replaces a fork-found source -- `merge_wowhead_sources` unions
+        # into an existing id and only appends a wholly new one.
+        wowhead_sources, wowhead_quest, wowhead_quest_detail = wowhead_additions(
+            item_sources, build_items, equippable, zone_names, types
+        )
+        sources = merge_wowhead_sources(sources, wowhead_sources)
+        quest = sorted(set(quest) | set(wowhead_quest))
+        for item_id, entries in wowhead_quest_detail.items():
+            quest_detail[item_id] = [*quest_detail.get(item_id, []), *entries]
     if quest:
         sources.append(LootSource(id="quest", kind="quest", name="Quests", items=quest))
     # A source the filter emptied is not a source. `_drop_sources` already
@@ -564,4 +588,5 @@ def build_loot(
         dropped_entries=dropped_drops + dropped_keyed,
         absent_items=len(absent),
         unnamed_zones=unnamed_zones,
+        wowhead_items=len(named - fork_named),
     )
