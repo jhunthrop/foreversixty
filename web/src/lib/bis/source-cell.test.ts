@@ -1,7 +1,7 @@
 // web/src/lib/bis/source-cell.test.ts
 import { describe, expect, it } from 'vitest';
 import type { LootFile } from '../sim/loot';
-import { describeSourceCell, hasKnownSource, parseSwapNote, resolveSourceCell } from './source-cell';
+import { describeSourceCell, hasKnownSource, resolveSourceCell } from './source-cell';
 import type { BisSlot, LootQuestsFile } from './types';
 
 function slot(overrides: Partial<BisSlot> = {}): BisSlot {
@@ -243,26 +243,5 @@ describe('describeSourceCell', () => {
     expect(describeSourceCell({ kind: 'dungeon', instance: 'The Deadmines', dropChance: 6 })).toBe(
       '6% from The Deadmines trash',
     );
-  });
-});
-
-describe('parseSwapNote', () => {
-  it('parses the nightly’s own sentence shape', () => {
-    const note = 'runner-up Red Linen Robe (id 2572) measured higher: 50.7 vs 50.4 set DPS - swapped in';
-    expect(parseSwapNote(note)).toEqual({
-      runnerUpName: 'Red Linen Robe',
-      runnerUpItemId: 2572,
-      higherDps: 50.7,
-      lowerDps: 50.4,
-    });
-  });
-
-  it('parses the sentence without the trailing "- swapped in"', () => {
-    const note = 'runner-up Red Linen Robe (id 2572) measured higher: 50.7 vs 50.4 set DPS';
-    expect(parseSwapNote(note)?.runnerUpItemId).toBe(2572);
-  });
-
-  it('returns null for a note that does not match, rather than throwing', () => {
-    expect(parseSwapNote('a free-text note the nightly never actually writes')).toBeNull();
   });
 });

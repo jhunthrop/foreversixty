@@ -1,7 +1,7 @@
 // web/src/lib/planner/items.test.ts
 import { describe, expect, it } from 'vitest';
 import fixtureItems from '../../fixtures/planner/items/warrior.json';
-import { itemsForSlot, rarityClassFor, searchItems, wornItemLabel } from './items';
+import { itemsForSlot, rarityBorderColorFor, rarityClassFor, searchItems, wornItemLabel } from './items';
 import type { ItemFile } from './types';
 
 const items = (fixtureItems as ItemFile).items;
@@ -18,6 +18,20 @@ describe('rarityClassFor', () => {
 
   it('falls back to common for a quality it does not know', () => {
     expect(rarityClassFor(9)).toBe('text-rarity-common');
+  });
+});
+
+describe('rarityBorderColorFor', () => {
+  it('maps the client quality values onto the raw (unlightened) rarity tokens', () => {
+    expect(rarityBorderColorFor(0)).toBe('var(--color-rarity-poor)');
+    expect(rarityBorderColorFor(2)).toBe('var(--color-rarity-uncommon)');
+    expect(rarityBorderColorFor(3)).toBe('var(--color-rarity-rare)');
+    expect(rarityBorderColorFor(4)).toBe('var(--color-rarity-epic)');
+    expect(rarityBorderColorFor(5)).toBe('var(--color-rarity-legendary)');
+  });
+
+  it('falls back to common for a quality it does not know', () => {
+    expect(rarityBorderColorFor(9)).toBe('var(--color-rarity-common)');
   });
 });
 

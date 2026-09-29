@@ -14,17 +14,22 @@ import { slotGlyphKey } from '../../lib/bis/glyphs';
 interface Props {
   slot: Slot;
   class?: string;
+  /** Square size in px -- 18 by default (the row's own lead glyph and its icon-less
+   *  placeholder fallback); the paperdoll redesign's 16px lead and 12px alternative-chip
+   *  placeholder both pass their own size rather than scaling the default via CSS, which
+   *  would fight the SVG's own `width`/`height` attributes. */
+  size?: number;
 }
 
-const { slot, class: className = '' } = Astro.props;
+const { slot, class: className = '', size = 18 } = Astro.props;
 
 const glyphKey = slotGlyphKey(slot);
 ---
 
 <svg
   class={`bis-slot-icon ${className}`}
-  width="18"
-  height="18"
+  width={size}
+  height={size}
   viewBox="0 0 24 24"
   fill="none"
   stroke="currentColor"

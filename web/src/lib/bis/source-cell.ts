@@ -115,9 +115,13 @@ function questFor(options: readonly LootQuestOption[], faction: Faction): LootQu
  * The row's real source, honestly falling back to `slot.source_kind`'s generic label
  * (`fallbackLabel`) when `loot.json` has nothing keyed to this exact item -- never a guess,
  * and never a throw for an item this build's loot table does not carry.
+ *
+ * `slot` only needs `item_id` and `source_kind` -- a `Pick`, not the full `BisSlot`, so a
+ * pick's own `alternatives` (`item_id`/`source_kind` alone, no `score`/`verified`/`slot`)
+ * resolves through this exact same function rather than a second copy of it.
  */
 export function resolveSourceCell(
-  slot: BisSlot,
+  slot: Pick<BisSlot, 'item_id' | 'source_kind'>,
   faction: Faction,
   loot: LootFile & Partial<LootQuestsFile>,
   fallbackLabel: string,
@@ -203,32 +207,4 @@ export function describeSourceCell(cell: SourceCell): string {
     case 'unknown':
       return cell.label;
   }
-}
-
-export interface ParsedSwapNote {
-  runnerUpName: string;
-  runnerUpItemId: number;
-  higherDps: number;
-  lowerDps: number;
-}
-
-const SWAP_NOTE_PATTERN =
-  /^runner-up (.+) \(id (\d+)\) measured higher: ([\d.]+) vs ([\d.]+) set DPS(?: - swapped in)?$/;
-
-/**
- * `swap_note`'s free text, structured: every unverified slot in every band file this lane
- * has read carries exactly this shape (`runner-up <name> (id <id>) measured higher: <a> vs
- * <b> set DPS[ - swapped in]`), one sentence the nightly's own writer composes. Returns null
- * for a note that does not match rather than throwing -- a future pipeline change to the
- * sentence should degrade to the plain "Unverified" badge, not break the page.
- */
-export function parseSwapNote(note: string): ParsedSwapNote | null {
-  const match = SWAP_NOTE_PATTERN.exec(note);
-  if (match === null) return null;
-  return {
-    runnerUpName: match[1],
-    runnerUpItemId: Number(match[2]),
-    higherDps: Number(match[3]),
-    lowerDps: Number(match[4]),
-  };
 }

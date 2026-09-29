@@ -14,6 +14,19 @@ const RARITY_CLASS: Record<number, string> = {
   5: 'text-rarity-legendary',
 };
 
+/** The raw (unlightened) rarity tokens -- tokens.css's own comment names these "for bars,
+ *  borders and icons" as distinct from the lightened `-text` variants `RARITY_CLASS` above
+ *  uses for on-screen text. A quality-coloured item icon border (the in-game socket look,
+ *  the BiS paperdoll's own gear row and alternative chips) reads from this map instead. */
+const RARITY_BORDER_VAR: Record<number, string> = {
+  0: 'var(--color-rarity-poor)',
+  1: 'var(--color-rarity-common)',
+  2: 'var(--color-rarity-uncommon)',
+  3: 'var(--color-rarity-rare)',
+  4: 'var(--color-rarity-epic)',
+  5: 'var(--color-rarity-legendary)',
+};
+
 /**
  * The line a worn slot shows: the item's name when the planner files carry it; the name
  * from the build's itemnames.json with "not simmed" when they do not (a keepsake ring, a
@@ -33,6 +46,13 @@ export function wornItemLabel(
 
 export function rarityClassFor(quality: number): string {
   return RARITY_CLASS[quality] ?? RARITY_CLASS[1];
+}
+
+/** A CSS `border-color` value for `quality` -- an inline-style pair for `rarityClassFor`
+ *  wherever a border, not text, needs to carry the item's rarity (see `RARITY_BORDER_VAR`'s
+ *  own doc). Falls back to common the same way `rarityClassFor` does. */
+export function rarityBorderColorFor(quality: number): string {
+  return RARITY_BORDER_VAR[quality] ?? RARITY_BORDER_VAR[1];
 }
 
 /** The items that fit a slot, sorted the way the spec asks: required level, then name. */

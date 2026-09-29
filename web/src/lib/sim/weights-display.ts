@@ -70,6 +70,25 @@ export interface WeightDisplayRow {
   sentence: string;
 }
 
+/**
+ * The reference stat's own short form for the weight rail's "1 Agility = 2.05 RAP" sentence
+ * (the BiS paperdoll's weight rail, 2026-09-29 -- owner: only the RAIL's own unit needs
+ * shortening, every other stat keeps its full label so the sentence still reads as English).
+ * Multi-word labels ("Ranged attack power") take the initials of every word 3+ letters long
+ * ("RAP" -- "attack" and "power" both qualify, a connector like "of" would not); a one-word
+ * label ("Strength") has no second word to take an initial from, so it keeps its own first
+ * two letters instead, capitalised the same way the acronym form always is.
+ */
+export function refAbbrev(label: string): string {
+  const words = label
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word.length >= 3);
+  if (words.length >= 2) return words.map((word) => word[0]!.toUpperCase()).join('');
+  const singleWord = words[0] ?? label.trim();
+  return singleWord.slice(0, 2).toUpperCase();
+}
+
 function referenceSentence(label: string): string {
   return `${label} is the reference stat this spec's weights are measured against.`;
 }

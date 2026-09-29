@@ -62,9 +62,6 @@ export const bisCopy = {
    *  chance (src-classicdb lane, 2026-09-29), shown in front of the place a source cell
    *  would otherwise just name plainly. */
   dropChanceLabel: (chance: number, from: string): string => `${chance}% from ${from}`,
-  runnerUpBeatBy: (dps: number): string => `+${dps.toFixed(1)} DPS`,
-  runnerUpTitle: (name: string, higherDps: number, lowerDps: number): string =>
-    `${name} measured higher at this band: ${higherDps.toFixed(1)} vs ${lowerDps.toFixed(1)} set DPS.`,
 
   // --- band navigation (step 2) ------------------------------------------------------------
   bandStripGroupLabel: 'Jump to level',
@@ -88,7 +85,6 @@ export const bisCopy = {
     replaced === undefined ? 'New this band -- nothing was equipped here before.' : `Replaces ${replaced}.`,
   verifiedGlyphTitle: 'Confirmed by a Top Gear simulation pass at this band.',
   unverifiedGlyphTitle: 'Ranked by stat weights only; not yet settled by a Top Gear pass.',
-  runnerUpSummary: 'Runner-up',
   upgradesSinceHeading: (count: number, previousBand: number): string =>
     count === 0
       ? `Nothing changed since level ${previousBand}`
@@ -96,14 +92,25 @@ export const bisCopy = {
   newSlotLabel: 'New slot',
   setDpsDelta: (delta: number): string =>
     `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} DPS since the last band`,
-  weightsExplainer: (referenceLabel: string): string =>
-    `Value of one point of each stat, in ${referenceLabel.toLowerCase()}.`,
   raceTalentsLine: (race: string, points: number): string =>
     `${capitalise(race)} · ${points} talent point${points === 1 ? '' : 's'} spent`,
-  noSourceLine: (count: number): string =>
-    count === 0 ? '' : `${count} item${count === 1 ? '' : 's'} at this band have no known source yet.`,
-  coverageLine: (known: number, total: number): string =>
-    `Sources known for ${known.toLocaleString()} of ${total.toLocaleString()} items at this band.`,
+
+  // --- character panel redesign (bis-character-panel, 2026-09-29) -------------------------
+  alternativesLabel: 'Also:',
+  /** The alternative row's own gap-from-the-pick line: an exact tie (the ranker's own
+   *  `dps_delta` 0) reads as "same DPS" rather than "+0.0 DPS behind" -- a signed zero is
+   *  never a real distinction a player should have to parse. */
+  alternativeGapLabel: (dpsDelta: number): string =>
+    dpsDelta === 0 ? 'same DPS' : `${dpsDelta > 0 ? '+' : '−'}${Math.abs(dpsDelta).toFixed(1)} DPS`,
+  weightsReferenceDpsLine: (label: string, dpsPerPoint: number): string =>
+    `1 ${label} = ${dpsPerPoint.toFixed(2)} DPS`,
+  weightsRowDpsLine: (label: string, weight: number, refAbbrev: string, dpsPerPoint: number): string =>
+    `${label} ${weight.toFixed(2)} ${refAbbrev} · ${dpsPerPoint.toFixed(2)} DPS per point`,
+  weightsNoEffect: 'No effect',
+  /** The empty off-hand row when the main hand is a two-hander -- never
+   *  `noKnownSourceForSlot`, which would read as a data gap rather than the game rule it
+   *  actually is (wow-player fix 4). */
+  twoHanderEquippedLabel: 'Two-hander equipped',
 } as const;
 
 /** `dwarf` -> `Dwarf`: the pipeline's own race strings are not reliably capitalised (owner
