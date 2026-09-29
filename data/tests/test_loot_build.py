@@ -40,18 +40,26 @@ IDS_MD = Path("../sim/request/IDS.md")
 #: ranks, one quest list are all fork-derived buckets, unaffected by kind
 #: COUNT (their own item counts still grew -- see the per-kind constants
 #: below).
+#:
+#: src-classicdb-fixes lane, 2026-09-29: `world` dropped again (3,993 ->
+#: 3,905) once `pipeline.loot.classicdb.fork_instance_npc_zones` stopped
+#: stranding a scripted/summoned dungeon or raid boss with no static
+#: `creature` spawn row -- Darkmaster Gandling (Scholomance) and Onyxia
+#: herself among them -- on a flat `world:<name>` bucket; those 88 bucket
+#: ids' items now live under their own `dungeon`/`raid` source instead
+#: (see this lane's own report for the exact before/after counts).
 SOURCES_PER_KIND = {
     "raid": 7,
     "dungeon": 18,
-    "world": 3993,
+    "world": 3905,
     "zone": 55,
-    "vendor": 518,
+    "vendor": 520,
     "crafted": 5,
     "rep": 31,
     "pvp": 13,
     "quest": 1,
 }
-TOTAL_SOURCES = 4641
+TOTAL_SOURCES = 4555
 
 RAID_SOURCE_IDS = [
     "raid:ahnqiraj",
@@ -66,22 +74,25 @@ RAID_SOURCE_IDS = [
 #: classic-db over the fork-only shape (Molten Core was 4 bosses/10
 #: items; the fork's own gap against its OWN sources -- 139 named, only
 #: 10 kept -- was Forever's re-itemisation, unchanged by this lane).
-#: Onyxia's Lair stays (0, 0, 0): classic-db's only `zones.json` row for
-#: it states `map_id: 1` (a bare continent id, `AreaTable.ContinentID`
-#: fallback, not a real instance map -- pipeline.loot.classicdb.
-#: instance_zone_by_map's own doc), so no classic-db creature/object
-#: drop can resolve to it at all; it stays the curated placeholder.
+#:
+#: src-classicdb-fixes lane, 2026-09-29: Onyxia's Lair moves off (0, 0, 0)
+#: -- `fork_instance_npc_zones`' fallback (this lane's own report) stops
+#: stranding Onyxia's own classic-db creature_loot_template rows on
+#: `world:onyxia` (she has no static `creature` spawn row, only a
+#: scripted encounter, the same reason Scholomance's Darkmaster Gandling
+#: needed the fallback); Blackwing Lair and Zul'Gurub also grow the same
+#: way (a boss or two each rescued off `world:`).
 RAID_SHAPE = {
-    "raid:ahnqiraj": (31, 7, 181),
-    "raid:blackwing-lair": (18, 3, 146),
-    "raid:molten-core": (27, 5, 115),
-    "raid:naxxramas": (50, 7, 148),
-    "raid:onyxias-lair": (0, 0, 0),
-    "raid:ruins-of-ahnqiraj": (28, 1, 181),
-    "raid:zulgurub": (44, 1, 209),
+    "raid:ahnqiraj": (31, 7, 183),
+    "raid:blackwing-lair": (18, 3, 325),
+    "raid:molten-core": (27, 5, 177),
+    "raid:naxxramas": (50, 7, 152),
+    "raid:onyxias-lair": (1, 0, 205),
+    "raid:ruins-of-ahnqiraj": (29, 1, 179),
+    "raid:zulgurub": (50, 1, 333),
 }
-RAID_BOSSES = 198
-RAID_ITEMS = 581
+RAID_BOSSES = 206
+RAID_ITEMS = 775
 #: Bosses the fork database names no NPC for. An invented name would be
 #: worse than a blank one, so this is measured rather than forbidden.
 #: Unchanged by classic-db: a classic-db boss ALWAYS carries a
@@ -91,23 +102,27 @@ RAID_ITEMS = 581
 UNNAMED_RAID_BOSSES = 31
 UNNAMED_DUNGEON_BOSSES = 27
 
-DUNGEON_BOSSES = 625
+DUNGEON_BOSSES = 648
 DUNGEONS_WITH_TRASH = 14
 #: `world` sources: one per named open-world creature (or gameobject/
 #: fishing bucket) classic-db or the fork names at least one item for.
-#: 3,993 up from 1 (Lord Kazzak alone, fork-only) -- src-classicdb lane's
-#: whole point. Too many to enumerate here; this lane's report and
+#: Up from 1 (Lord Kazzak alone, fork-only) -- src-classicdb lane's whole
+#: point. Down again, 3,997 -> 3,905, src-classicdb-fixes lane,
+#: 2026-09-29: 92 npc/object buckets whose npc the fork already places in
+#: a dungeon or raid moved to that instance's own source instead of
+#: staying a flat `world:<name>` bucket (this lane's own report has the
+#: exact count). Too many to enumerate here; this lane's report and
 #: `test_the_world_sources_include_every_fork_named_one_and_grew_a_lot`
 #: below are the coverage evidence instead of a hardcoded id list.
-WORLD_SOURCES = 3993
+WORLD_SOURCES = 3905
 CRAFTED_ITEMS = {
-    "crafted:blacksmithing": 210,
+    "crafted:blacksmithing": 218,
     "crafted:enchanting": 4,
     "crafted:engineering": 48,
-    "crafted:leatherworking": 207,
-    "crafted:tailoring": 171,
+    "crafted:leatherworking": 223,
+    "crafted:tailoring": 177,
 }
-QUEST_ITEMS = 2060
+QUEST_ITEMS = 2082
 PVP_ITEMS_PER_RANK = {5: 4, 6: 16, 7: 6, 8: 6, 9: 23, 10: 4, 11: 98, 12: 122,
                       14: 97, 15: 2, 16: 117, 17: 82, 18: 82}
 
@@ -116,7 +131,12 @@ PVP_ITEMS_PER_RANK = {5: 4, 6: 16, 7: 6, 8: 6, 9: 23, 10: 4, 11: 98, 12: 122,
 #: having been left out. Up from 3,172 once classic-db
 #: (pipeline.classic_sources) joined as a third origin and re-itemisation
 #: inheritance (pipeline.loot.reitemise) started filling Forever-new ids.
-NAMED_ITEMS = 8827
+#: src-classicdb-fixes lane, 2026-09-29: down slightly (8,911 -> 8,882)
+#: once re-itemisation inheritance stopped copying a classic item's
+#: sources onto a Forever-new item whose item level or armor/weapon
+#: subclass no longer matches (Swamp Ring 270052, this lane's own report,
+#: among the ~38 pairs the item-level/subclass gate now rejects).
+NAMED_ITEMS = 8882
 
 #: `zone` sources: one per non-instance zone a `drop` source names,
 #: alongside (not instead of) the existing per-npc `world` bucket. Grown
@@ -124,33 +144,33 @@ NAMED_ITEMS = 8827
 #: them are ones `zones.json` itself does not name (UNNAMED_ZONES),
 #: same "never invent" policy as an unnamed boss.
 ZONE_SOURCES = 55
-ZONE_ITEMS = 5106
+ZONE_ITEMS = 5104
 UNNAMED_ZONES = 2
 
 #: `vendor` sources: one per npc selling at least one equippable item.
-VENDOR_SOURCES = 518
-VENDOR_ITEMS = 4613
+VENDOR_SOURCES = 520
+VENDOR_ITEMS = 4618
 
-#: `quests` map: item id -> its quest(s). Same 2,060 items as the flat
-#: `quest` bucket, now with the quest's own id, name and faction -- the
-#: item's own `factionRestriction` standing in for the quest's side, per
-#: the design (0 both, 1 alliance, 2 horde) -- true for a classic-db
-#: quest reward too (pipeline.loot.classicdb.classicdb_additions' own
-#: doc: the item's restriction wins even when classic-db's OWN
-#: RequiredRaces reading for the quest disagrees).
-QUEST_DETAIL_ITEMS = 2060
-QUEST_FACTION_COUNTS = {"alliance": 652, "horde": 615, "both": 2785}
+#: `quests` map: item id -> its quest(s). Same items as the flat `quest`
+#: bucket, now with the quest's own id, name and faction -- the item's
+#: own `factionRestriction` standing in for the quest's side, per the
+#: design (0 both, 1 alliance, 2 horde) -- true for a classic-db quest
+#: reward too (pipeline.loot.classicdb.classicdb_additions' own doc: the
+#: item's restriction wins even when classic-db's OWN RequiredRaces
+#: reading for the quest disagrees).
+QUEST_DETAIL_ITEMS = 2082
+QUEST_FACTION_COUNTS = {"alliance": 652, "horde": 615, "both": 2805}
 
 #: 2026-09-28 quest-levels finding, re-measured after src-classicdb: how
-#: many of the 2,060 quest-reward items' quest(s) resolved from
-#: cmangos/classic-db's `quest_template` table, how many needed
-#: wowhead's fill-in, and how many fell all the way back to
-#: item_level_proxy (0 -- both sources together still cover every
-#: quest-reward item this build has, now that classic-db's OWN
-#: quest_reward records feed far more quest ids into this map than the
-#: fork alone ever named). See pipeline.quest_levels's own doc and this
-#: lane's report for the full source story.
-QUEST_LEVEL_SOURCE_COUNTS = {"classic-db": 4023, "wowhead": 29}
+#: many of these quest-reward items' quest(s) resolved from cmangos/
+#: classic-db's `quest_template` table, how many needed wowhead's
+#: fill-in, and how many fell all the way back to item_level_proxy (0 --
+#: both sources together still cover every quest-reward item this build
+#: has, now that classic-db's OWN quest_reward records feed far more
+#: quest ids into this map than the fork alone ever named). See
+#: pipeline.quest_levels's own doc and this lane's report for the full
+#: source story.
+QUEST_LEVEL_SOURCE_COUNTS = {"classic-db": 4011, "wowhead": 61}
 
 #: `factions` map: item id -> "alliance"/"horde" for every restricted item
 #: this build has, quest items and non-quest items alike. Matches
@@ -275,11 +295,23 @@ def test_the_raid_sources_are_the_seven_measured_with_their_shape():
 
 def test_the_one_curated_raid_survives_the_generators_pruning():
     """`build_loot` drops a source the build filter emptied; the overlay
-    runs after it, so an announced raid whose loot table nobody knows
-    stays in the picker with an empty item list."""
+    runs after it, so an announced raid stays in the picker even when the
+    fork's own AtlasLoot table for it is gone from this client entirely.
+
+    src-classicdb-fixes lane, 2026-09-29: Onyxia's Lair's fork-database
+    drops (16 ids, all absent from 1.60) are still gone, but the raid is
+    no longer an empty placeholder -- `fork_instance_npc_zones`' fallback
+    (this lane's own report) stops stranding Onyxia's own classic-db loot
+    table on `world:onyxia`, so the overlay only patches `opens` onto a
+    source the generator now emits with a real boss and real items."""
     onyxia = by_id()[DATED_RAID]
-    assert onyxia["items"] == []
+    assert "items" not in onyxia  # a boss-shaped raid carries no flat items list
     assert onyxia["zone_id"] == 2159
+    assert onyxia["source_origin"] == "classic-db"
+    bosses = onyxia["bosses"]
+    assert len(bosses) == 1
+    assert bosses[0]["name"] == "Onyxia"
+    assert bosses[0]["items"]
 
 
 def test_a_boss_without_a_name_is_blank_and_counted_not_invented():

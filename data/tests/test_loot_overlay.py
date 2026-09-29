@@ -166,14 +166,20 @@ def test_the_real_curated_overlays_all_load_and_apply_cleanly():
 
 
 #: The raid sources the generator emits for build 1.60.1.69893 after
-#: contract 10.4's build filter. Onyxia's Lair is absent -- all sixteen
-#: of her fork-database drops are gone from the client -- which is why
-#: the overlay adds her rather than patching her.
+#: contract 10.4's build filter. Onyxia's Lair's own sixteen fork-database
+#: drops are all gone from the client, but classic-db's own creature_loot_
+#: template for Onyxia (npc 10184) still names a real table once she stops
+#: being stranded on `world:onyxia` (src-classicdb-fixes lane, 2026-09-29:
+#: `fork_instance_npc_zones`' fallback for a scripted boss with no static
+#: spawn row) -- so the generator emits `raid:onyxias-lair` on its own now,
+#: and every one of the seven raids, Onyxia included, is patched rather
+#: than added.
 GENERATED_RAID_IDS = [
     "raid:ahnqiraj",
     "raid:blackwing-lair",
     "raid:molten-core",
     "raid:naxxramas",
+    "raid:onyxias-lair",
     "raid:ruins-of-ahnqiraj",
     "raid:zulgurub",
 ]
@@ -189,21 +195,25 @@ def raid_phase_overlay():
     raise AssertionError("no forever-raid-phases.json under curated/loot")
 
 
-def test_the_six_generated_raids_are_gated_as_unreleased_without_a_date():
+def test_the_seven_generated_raids_are_all_patched_not_added():
+    """Every raid the generator itself emits -- Onyxia's Lair included,
+    src-classicdb-fixes lane, 2026-09-29 -- gets only its phase patched
+    here, never re-added: `apply_overlays.add` is an error on a source
+    that already exists."""
     document = raid_phase_overlay()
     assert sorted(patch.id for patch in document.replace) == GENERATED_RAID_IDS
-    assert {patch.opens for patch in document.replace} == {OPENS_LATER}
+    assert document.add == []
 
 
-def test_onyxia_is_added_with_the_announced_date_and_no_items():
-    """The one raid the phase calendar has a date for, and the one the
-    build filter removed entirely. An empty item list is the honest
-    statement: the raid is announced, its loot table is not known."""
+def test_six_raids_are_gated_as_unreleased_and_onyxia_carries_the_announced_date():
     document = raid_phase_overlay()
-    assert [source.id for source in document.add] == ["raid:onyxias-lair"]
-    onyxia = document.add[0]
-    assert (onyxia.kind, onyxia.zone_id, onyxia.opens) == ("raid", 2159, "raids-1")
-    assert onyxia.items == []
+    by_id = {patch.id: patch for patch in document.replace}
+    assert by_id["raid:onyxias-lair"].opens == "raids-1"
+    unreleased = {
+        patch.id: patch.opens for patch in document.replace if patch.id != "raid:onyxias-lair"
+    }
+    assert set(unreleased.values()) == {OPENS_LATER}
+    assert len(unreleased) == 6
 
 
 def test_the_raid_phase_overlay_removes_nothing():
