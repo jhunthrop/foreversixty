@@ -21,6 +21,7 @@ import (
 
 	"github.com/jhunthrop/foreversixty/sim/adapter"
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/specs"
 	"github.com/wowsims/classic/sim/core/proto"
 )
 
@@ -90,6 +91,17 @@ type buildItem struct {
 	// joined from items.json; items/<class>.json files every
 	// either-hand weapon under slot "main_hand".
 	InventoryType int `json:"-"`
+	// Stats is the row's own stats map (spell_power, attack_power,
+	// strength, agility, ...), read directly off
+	// data/builds/<build>/items/<class>.json rather than recomputed -
+	// weaponScore (harness rule 2, this wave's brief) sums whichever of
+	// these keys the picking spec's own WeightStats names.
+	Stats map[string]float64 `json:"stats"`
+	// DPS is the row's own precomputed damage-per-second
+	// (damage_avg/speed, already carried by this build's item table),
+	// weaponScore's tiebreak for a melee or hunter spec, whose damage
+	// scales with the weapon's raw output rather than a stat on it.
+	DPS float64 `json:"dps"`
 }
 
 // Weapon and shield item/subclass ids, per the client's own item
@@ -476,7 +488,94 @@ var ladderGearProfiles = map[string]gearProfile{
 	"warlock-destruction":  {Wand: true},
 }
 
-// pickGearItem is the highest item_level candidate in slot with
+// weaponRelevantStats restricts a spec's own WeightStats
+// (data/curated/specs.json, via sim/specs) to the stat keys an actual
+// weapon row's own stats map (data/builds/<build>/items/<class>.json)
+// can carry. WeightStats also lists throughput stats - crit, hit,
+// spell_haste, melee_haste, spell_penetration - that a weapon row in
+// this build's item table essentially never carries, so scoring on them
+// would only add noise to weaponScore below.
+var weaponRelevantStats = map[string]bool{
+	"spell_power": true, "healing_power": true,
+	"attack_power": true, "ranged_attack_power": true, "feral_attack_power": true,
+	"strength": true, "agility": true, "intellect": true,
+}
+
+// specWeaponPrimaryStats is spec's WeightStats filtered to
+// weaponRelevantStats, in the order specs.json lists them - a caster's
+// spell_power/healing_power sorts ahead of the strength/agility its own
+// stats map can also carry, though weaponScore below sums the whole
+// list rather than reading only the first entry.
+func specWeaponPrimaryStats(spec string) []string {
+	var out []string
+	for _, s := range specs.ByKey[spec].WeightStats {
+		if weaponRelevantStats[s] {
+			out = append(out, s)
+		}
+	}
+	return out
+}
+
+// specWeaponDPSMatters is harness rule 2 (this wave's brief): a melee or
+// hunter spec's damage scales with the weapon's own raw DPS (Auto
+// Attack, White damage windows, weapon-damage-effect abilities), where a
+// caster or healer spec's does not - spellpower is what does there - so
+// only a spec whose ReferenceStat is a physical one credits a
+// candidate's DPS field in weaponScore.
+func specWeaponDPSMatters(spec string) bool {
+	switch specs.ByKey[spec].ReferenceStat {
+	case "attack_power", "ranged_attack_power":
+		return true
+	default:
+		return false
+	}
+}
+
+// weaponScore is one candidate's rank for a spec's ladder gear pick:
+// primaryStat (the sum of every stat point on specWeaponPrimaryStats'
+// list) outranks everything else, so a candidate with even one point of
+// the spec's own primary stat always beats a stat-less item at a higher
+// item level or DPS - the gap this lane's brief names ("item-level only
+// ... generally ignores the spec's stats"). dps (specWeaponDPSMatters
+// only) and finally itemLevel break a tie on primaryStat; id is the last,
+// fully deterministic tiebreaker, so two candidates that also tie on
+// itemLevel still resolve without depending on the source file's row
+// order.
+type weaponScore struct {
+	primaryStat float64
+	dps         float64
+	itemLevel   int
+	id          int
+}
+
+func scoreWeapon(it buildItem, primaryStats []string, weightDPS bool) weaponScore {
+	var stat float64
+	for _, s := range primaryStats {
+		stat += it.Stats[s]
+	}
+	dps := 0.0
+	if weightDPS {
+		dps = it.DPS
+	}
+	return weaponScore{primaryStat: stat, dps: dps, itemLevel: it.ItemLevel, id: it.ID}
+}
+
+// betterThan reports whether a is weaponScore's preferred candidate over
+// b: see weaponScore's own comment for the tiebreak order.
+func (a weaponScore) betterThan(b weaponScore) bool {
+	if a.primaryStat != b.primaryStat {
+		return a.primaryStat > b.primaryStat
+	}
+	if a.dps != b.dps {
+		return a.dps > b.dps
+	}
+	if a.itemLevel != b.itemLevel {
+		return a.itemLevel > b.itemLevel
+	}
+	return a.id < b.id
+}
+
+// pickGearItem is weaponScore's best candidate in slot with
 // leveling.EffectiveRequiredLevel(RequiredLevel, floors[id]) <= level
 // (2026-09-28 quest-levels lane: NOT RequiredLevel alone -- floors is
 // loadRequiredLevelFloors' result, the quest/crafted level gate a
@@ -498,8 +597,10 @@ var ladderGearProfiles = map[string]gearProfile{
 // 24071, is one) - unfinished or placeholder rows, not a character's
 // real choice, and equipping one of them is what made the engine hang
 // mid-sim rather than simulate a zero-damage weapon (see the report).
-// Ties (equal item_level) break on the lower item id, so the pick is
-// deterministic without depending on the source file's row order.
+// primaryStats/weightDPS are specWeaponPrimaryStats(spec)/
+// specWeaponDPSMatters(spec) - passed in rather than a spec string so
+// this function (and its existing fixture tests, which pass nil/false
+// for "no stat preference") stays independent of the specs package.
 // fitsSlot is whether a row can be equipped in slot: its own slot, or,
 // for the off hand, an either-hand one-hander the class item file
 // lists under main_hand (a rogue's off-hand dagger is one of those;
@@ -530,8 +631,9 @@ func withoutItem(items []buildItem, gear []api.GearSlot) []buildItem {
 	return out
 }
 
-func pickGearItem(items []buildItem, known map[int]bool, floors map[int]int, slot string, level int, hand handedness, allowed []int) (buildItem, bool) {
+func pickGearItem(items []buildItem, known map[int]bool, floors map[int]int, slot string, level int, hand handedness, allowed []int, primaryStats []string, weightDPS bool) (buildItem, bool) {
 	var best buildItem
+	var bestScore weaponScore
 	found := false
 	for _, it := range items {
 		if !fitsSlot(it, slot) || it.WeaponClass != itemClassWeapon || it.Speed <= 0 || it.DamageMax <= 0 || !known[it.ID] {
@@ -549,8 +651,9 @@ func pickGearItem(items []buildItem, known map[int]bool, floors map[int]int, slo
 		if len(allowed) > 0 && !containsInt(allowed, it.WeaponSubclass) {
 			continue
 		}
-		if !found || it.ItemLevel > best.ItemLevel || (it.ItemLevel == best.ItemLevel && it.ID < best.ID) {
-			best, found = it, true
+		score := scoreWeapon(it, primaryStats, weightDPS)
+		if !found || score.betterThan(bestScore) {
+			best, bestScore, found = it, score, true
 		}
 	}
 	return best, found
@@ -599,20 +702,25 @@ func pickShieldItem(items []buildItem, known map[int]bool, floors map[int]int, l
 // loadRequiredLevelFloors' result (2026-09-28 quest-levels lane): the
 // quest/crafted level gate a candidate's own RequiredLevel does not
 // state, so a quest-reward or crafted weapon is never equipped below
-// the level it is actually obtainable at.
+// the level it is actually obtainable at. primaryStats/weightDPS
+// (harness rule 2, this wave's brief) are the same for every slot this
+// spec fills - main_hand, off_hand and ranged all score against the
+// spec's own stats, not a per-slot preference.
 func ladderGear(items []buildItem, known map[int]bool, floors map[int]int, spec string, level int) []api.GearSlot {
 	profile := ladderGearProfiles[spec]
 	if profile.Skip {
 		return nil
 	}
+	primaryStats := specWeaponPrimaryStats(spec)
+	weightDPS := specWeaponDPSMatters(spec)
 	var gear []api.GearSlot
-	if it, ok := pickGearItem(items, known, floors, "main_hand", level, profile.MainHand, profile.MainHandTypes); ok {
+	if it, ok := pickGearItem(items, known, floors, "main_hand", level, profile.MainHand, profile.MainHandTypes, primaryStats, weightDPS); ok {
 		gear = append(gear, api.GearSlot{Slot: "main_hand", ItemID: it.ID})
 	}
 	if profile.OffHand {
 		// The main hand's item is excluded so a class with one standout
 		// weapon does not hold two copies of it.
-		if it, ok := pickGearItem(withoutItem(items, gear), known, floors, "off_hand", level, handOne, profile.OffHandTypes); ok {
+		if it, ok := pickGearItem(withoutItem(items, gear), known, floors, "off_hand", level, handOne, profile.OffHandTypes, primaryStats, weightDPS); ok {
 			gear = append(gear, api.GearSlot{Slot: "off_hand", ItemID: it.ID})
 		}
 	}
@@ -622,7 +730,7 @@ func ladderGear(items []buildItem, known map[int]bool, floors map[int]int, spec 
 		}
 	}
 	if profile.Ranged {
-		if it, ok := pickGearItem(items, known, floors, "ranged", level, handAny, profile.RangedTypes); ok {
+		if it, ok := pickGearItem(items, known, floors, "ranged", level, handAny, profile.RangedTypes, primaryStats, weightDPS); ok {
 			gear = append(gear, api.GearSlot{Slot: "ranged", ItemID: it.ID})
 		}
 	}
@@ -821,16 +929,22 @@ func loadSpellConst(repoRoot, build, class string) (map[int]spellConstEntry, err
 
 // isDamageEffect is the design's own rule for "this effect deals
 // damage": type 2 (school damage), type 6 with aura 3 (periodic
-// damage), or type 121, 31 or 58 (the three weapon-damage effect types).
-// It is deliberately narrow - Heroic Strike's own bonus-weapon-damage
-// effect is type 17 and does not match, which the report calls out as a
-// gap in the rule rather than something this code quietly widens to
-// cover.
+// damage) or aura 226 (periodic trigger spell - the ground-effect
+// pattern Consecration, Blizzard, Rain of Fire, Hurricane and Volley
+// all use in this build's spellconst: an effect 6/aura 226 entry
+// applies an aura whose own tick casts the real damage spell, so the
+// container spell itself never carries an effect 2 or an aura-3 row of
+// its own, and the old rule missed it entirely - a learned Consecration
+// showed up as a false "learned but unused"), or type 121, 31 or 58
+// (the three weapon-damage effect types). It is deliberately narrow -
+// Heroic Strike's own bonus-weapon-damage effect is type 17 and does
+// not match, which the report calls out as a gap in the rule rather
+// than something this code quietly widens to cover.
 func isDamageEffect(e spellEffectConst) bool {
 	if e.Effect == 2 {
 		return true
 	}
-	if e.Effect == 6 && e.Aura == 3 {
+	if e.Effect == 6 && (e.Aura == 3 || e.Aura == 226) {
 		return true
 	}
 	switch e.Effect {

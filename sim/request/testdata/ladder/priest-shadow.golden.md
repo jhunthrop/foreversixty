@@ -90,12 +90,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-100000000000000000 | main_hand:3452 | 6.5 | 2 | spell:8092=17.5, spell:594=10.5 | {SpellID: 15473} |
-| 20 | 000000000000000000-00000000000000000-443000000000000000 | main_hand:920 ranged:6677 | 11.6 | 3 | spell:8102=13.2, spell:970=8.9, spell:2944=1.0 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
+| 10 | 000000000000000000-00000000000000000-100000000000000000 | main_hand:15444 | 7.0 | 2 | spell:8092=18.9, spell:594=11.3 | {SpellID: 15473} |
+| 20 | 000000000000000000-00000000000000000-443000000000000000 | main_hand:4437 ranged:6677 | 11.9 | 3 | spell:8102=14.2, spell:970=8.7, spell:2944=1.0 | {SpellID: 14751}, {SpellID: 15407}, {SpellID: 15473} |
 | 30 | 000000000000000000-00000000000000000-443110501200000000 | main_hand:4134 ranged:5249 | 22.7 | 4 | spell:17311=27.1, spell:8104=2.9, spell:992=1.1, spell:19276=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 38 | 000000000000000000-00000000000000000-443110501201300220 | main_hand:4134 ranged:10704 | 33.4 | 4 | spell:17312=24.5, spell:8105=2.9, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 40 | 000000000000000000-00000000000000000-443110501201300240 | main_hand:10750 ranged:10704 | 34.0 | 4 | spell:17312=24.3, spell:8106=2.0, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
-| 50 | 521000000000000000-00000000000000000-443110501201300251 | main_hand:10697 ranged:17745 | 52.7 | 5 | spell:17313=21.9, spell:10945=2.0, spell:10893=1.1, spell:15473=1.0, spell:19278=1.0 | {SpellID: 14751} |
+| 38 | 000000000000000000-00000000000000000-443110501201300220 | main_hand:7757 ranged:10704 | 33.4 | 4 | spell:17312=24.4, spell:8105=2.9, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 40 | 000000000000000000-00000000000000000-443110501201300240 | main_hand:9527 ranged:10704 | 36.5 | 4 | spell:17312=25.0, spell:8106=2.9, spell:2767=1.1, spell:19277=1.0 | {SpellID: 14751}, {SpellID: 15473} |
+| 50 | 521000000000000000-00000000000000000-443110501201300251 | main_hand:9527 ranged:17745 | 55.9 | 5 | spell:17313=22.3, spell:10945=2.9, spell:10893=1.1, spell:15473=1.0, spell:19278=1.0 | {SpellID: 14751} |
 | 60 | 524111001300000000-00000000000000000-443110501201300251 | main_hand:22589 ranged:16993 | 123.7 | 6 | spell:18807=24.3, spell:10947=3.6, spell:10894=2.1, spell:14751=1.5, spell:19280=1.5 | - |
 
 ## Learned but unused (informational)
@@ -109,6 +109,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 20
 
 - Chastise (spell 1277331)
+- Dark Sacrifice (spell 1277324)
 - Holy Fire (spell 14914)
 - Holy Nova (spell 15237)
 - Mind Flay (spell 15407)
@@ -118,6 +119,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 30
 
 - Chastise (spell 1277332)
+- Dark Sacrifice (spell 1277325)
 - Holy Fire (spell 15263)
 - Holy Nova (spell 15430)
 - Smite (spell 1004)
@@ -126,6 +128,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 38
 
 - Chastise (spell 1277332)
+- Dark Sacrifice (spell 1277325)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
 - Shadow Word: Death (spell 1309595)
@@ -135,6 +138,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 40
 
 - Chastise (spell 1277333)
+- Dark Sacrifice (spell 1277326)
 - Holy Fire (spell 15264)
 - Holy Nova (spell 15431)
 - Shadow Word: Death (spell 1309633)
@@ -144,6 +148,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 50
 
 - Chastise (spell 1277334)
+- Dark Sacrifice (spell 1277327)
 - Holy Fire (spell 15266)
 - Holy Nova (spell 27799)
 - Shadow Word: Death (spell 1309635)
@@ -153,6 +158,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Chastise (spell 1277335)
+- Dark Sacrifice (spell 1277328)
 - Holy Fire (spell 15261)
 - Holy Nova (spell 27801)
 - Shadow Word: Death (spell 1309636)

@@ -90,13 +90,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-00000000000000000-100000000000000000 | main_hand:3462 off_hand:15443 ranged:5346 | 39.3 | 3 | other:attack/2=121.4, other:attack/1=86.8, spell:14260/3=27.2, spell:14260=27.0, spell:14260/1=27.0 | - |
-| 20 | 0000000000000000-00000000000000000-500230100000000000 | main_hand:17046 off_hand:9608 ranged:6739 | 49.7 | 4 | other:attack/2=95.9, other:attack/1=74.9, spell:1495=31.4, spell:14261=8.0, spell:14261/1=8.0 | - |
-| 30 | 0000000000000000-00000000000000000-500230131051000000 | main_hand:4977 off_hand:9520 ranged:17686 | 71.9 | 5 | other:attack/2=101.2, other:attack/1=71.3, spell:14269=30.5, spell:14262=8.0, spell:14262/1=8.0 | {SpellID: 1317257} |
-| 38 | 0000000000000000-00000000000000000-500230131051120140 | main_hand:4987 off_hand:10703 ranged:17686 | 88.9 | 6 | other:attack/2=95.8, other:attack/1=63.0, spell:14269=31.6, spell:1317257=23.0, spell:14263=10.0 | - |
-| 40 | 0000000000000000-00000000000000000-500230131051120151 | main_hand:10750 off_hand:4987 ranged:10510 | 87.7 | 6 | other:attack/1=103.9, other:attack/2=73.0, spell:14269=30.4, spell:1317257=23.0, spell:14264=10.0 | - |
-| 50 | 0000000000000000-32005000000000000-500230131051120151 | main_hand:10696 off_hand:10697 ranged:16004 | 113.2 | 6 | other:attack/2=121.4, other:attack/1=80.2, spell:14270=30.1, spell:1317257=23.0, spell:14265=11.0 | - |
-| 60 | 0000000000000000-32005500005000000-500230131051120151 | main_hand:23577 off_hand:21126 ranged:23557 | 159.8 | 6 | other:attack/1=110.4, other:attack/2=101.3, spell:14271=29.4, spell:1317257=23.0, spell:14266=11.0 | - |
+| 10 | 0000000000000000-00000000000000000-100000000000000000 | main_hand:3462 off_hand:2266 ranged:5346 | 39.2 | 3 | other:attack/2=121.4, other:attack/1=86.9, spell:14260/3=27.1, spell:14260=27.0, spell:14260/1=27.0 | - |
+| 20 | 0000000000000000-00000000000000000-500230100000000000 | main_hand:5191 off_hand:1292 ranged:6739 | 52.6 | 4 | other:attack/2=107.0, other:attack/1=58.2, spell:1495=31.5, spell:14261=7.0, spell:14261/1=7.0 | - |
+| 30 | 0000000000000000-00000000000000000-500230131051000000 | main_hand:5191 off_hand:3850 ranged:17687 | 68.2 | 5 | other:attack/2=65.2, other:attack/1=57.2, spell:14269=30.0, spell:14262=8.0, spell:14262/1=8.0 | {SpellID: 1317257} |
+| 38 | 0000000000000000-00000000000000000-500230131051120140 | main_hand:12259 off_hand:5191 ranged:17687 | 70.2 | 6 | other:attack/1=97.1, other:attack/2=65.2, spell:14269=31.5, spell:1317257=23.0, spell:14263=10.1 | - |
+| 40 | 0000000000000000-00000000000000000-500230131051120151 | main_hand:12259 off_hand:5191 ranged:17687 | 74.2 | 6 | other:attack/1=97.2, other:attack/2=65.2, spell:14269=31.0, spell:1317257=23.0, spell:14264=10.0 | - |
+| 50 | 0000000000000000-32005000000000000-500230131051120151 | main_hand:12061 off_hand:15862 ranged:11628 | 123.4 | 6 | other:attack/2=82.9, other:attack/1=65.0, spell:14270=30.7, spell:1317257=23.0, spell:14265=11.0 | - |
+| 60 | 0000000000000000-32005500005000000-500230131051120151 | main_hand:21126 off_hand:18838 ranged:23557 | 150.3 | 6 | other:attack/2=91.1, other:attack/1=90.5, spell:14271=29.6, spell:1317257=23.0, spell:14266=10.8 | - |
 
 ## Learned but unused (informational)
 
@@ -212,6 +212,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Swipe (spell 1264498)
 - Tendon Rip (spell 1265040)
 - Thunderstomp (spell 26187)
+- Volley (spell 1510)
 - Web (spell 1265880)
 - Widow Bite (spell 26226)
 - Wing Clip (spell 14267)
@@ -241,6 +242,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Swipe (spell 1264501)
 - Tendon Rip (spell 1265041)
 - Thunderstomp (spell 26188)
+- Volley (spell 14294)
 - Web (spell 1265881)
 - Widow Bite (spell 26226)
 - Wing Clip (spell 14267)
@@ -271,6 +273,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Swipe (spell 1264502)
 - Tendon Rip (spell 1265042)
 - Thunderstomp (spell 1264455)
+- Volley (spell 14295)
 - Web (spell 1265883)
 - Widow Bite (spell 26226)
 - Wing Clip (spell 14268)
@@ -278,4 +281,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- hunter-survival level=40 kind=dps_regression dps=87.7 prev_dps=88.9
+None.
