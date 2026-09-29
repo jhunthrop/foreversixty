@@ -90,20 +90,19 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:15444 | 6.0 | 3 | other:mana_gain=60.2, spell:1454=60.2, spell:695=31.9, spell:707=11.3 | {OtherID: 13}, {SpellID: 412758}, {SpellID: 5019} |
-| 20 | 00000000000000000-0000000000000000000-2351000000000000 | main_hand:4437 ranged:6677 | 17.7 | 4 | spell:5019=62.1, other:mana_gain=36.0, spell:1455=36.0, spell:1088=23.3, spell:1094=12.2 | {OtherID: 13}, {SpellID: 17877}, {SpellID: 412758} |
-| 30 | 00000000000000000-0000000000000000000-2353224000000000 | main_hand:4134 ranged:5249 | 27.7 | 4 | spell:5019=74.0, other:mana_gain=32.0, spell:1456=32.0, spell:1106=27.5, spell:2941=11.5 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 18867}, {SpellID: 412758} |
-| 38 | 00000000000000000-0000000000000000000-2353225100101040 | main_hand:7757 ranged:10704 | 38.7 | 6 | spell:5019=56.9, other:mana_gain=41.7, spell:11687=41.7, spell:7641=23.8, spell:2941=19.7 | {OtherID: 13}, {SpellID: 412758} |
-| 40 | 00000000000000000-0000000000000000000-2353225100101051 | main_hand:9527 ranged:10704 | 65.7 | 6 | spell:5019=63.1, other:mana_gain=48.6, spell:11687=48.6, spell:412758=25.1, spell:11665=18.6 | {OtherID: 13} |
-| 50 | 25300000000000000-0000000000000000000-2353225100101051 | main_hand:9527 ranged:17745 | 86.2 | 6 | spell:5019=39.7, other:mana_gain=38.0, spell:11688=38.0, spell:1293812=25.9, spell:11667=19.4 | {OtherID: 13} |
-| 60 | 25532300000000000-0000000000000000000-2353225100101051 | main_hand:22589 ranged:16993 | 167.2 | 6 | other:mana_gain=29.7, spell:11689=29.7, spell:1293813=29.6, spell:25309=20.1, spell:18932=16.6 | {OtherID: 13} |
+| 10 | 00000000000000000-0000000000000000000-1000000000000000 | main_hand:15444 | 7.6 | 4 | other:mana_gain=60.3, spell:1454=60.3, spell:695=26.6, spell:707=10.8, spell:980=8.4 | {OtherID: 13}, {SpellID: 412758}, {SpellID: 5019} |
+| 20 | 00000000000000000-0000000000000000000-2351000000000000 | main_hand:4437 ranged:6677 | 21.3 | 5 | spell:5019=66.0, other:mana_gain=38.0, spell:1455=38.0, spell:1088=20.3, spell:1094=11.6 | {OtherID: 13}, {SpellID: 17877}, {SpellID: 412758} |
+| 30 | 00000000000000000-0000000000000000000-2353224000000000 | main_hand:4134 ranged:5249 | 33.6 | 5 | spell:5019=75.1, other:mana_gain=38.1, spell:1456=38.1, spell:1106=26.2, spell:2941=11.4 | {OtherID: 13}, {SpellID: 1293817}, {SpellID: 18867}, {SpellID: 412758} |
+| 38 | 00000000000000000-0000000000000000000-2353225100101040 | main_hand:7757 ranged:10704 | 45.8 | 7 | spell:5019=65.2, other:mana_gain=41.7, spell:11687=41.7, spell:7641=19.5, spell:2941=18.9 | {OtherID: 13}, {SpellID: 412758} |
+| 40 | 00000000000000000-0000000000000000000-2353225100101051 | main_hand:9527 ranged:10704 | 72.5 | 7 | spell:5019=70.7, other:mana_gain=49.0, spell:11687=49.0, spell:412758=20.0, spell:11665=18.6 | {OtherID: 13} |
+| 50 | 25300000000000000-0000000000000000000-2353225100101051 | main_hand:9527 ranged:17745 | 96.7 | 7 | spell:5019=44.2, other:mana_gain=38.0, spell:11688=38.0, spell:1293812=21.9, spell:11667=18.7 | {OtherID: 13} |
+| 60 | 25532300000000000-0000000000000000000-2353225100101051 | main_hand:22589 ranged:16993 | 183.3 | 7 | other:mana_gain=29.3, spell:11689=29.3, spell:1293813=25.7, spell:5019=20.0, spell:25309=18.8 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
-- Bane of Agony (spell 980)
 - Corruption (spell 172)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7799)
@@ -111,7 +110,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 20
 
-- Bane of Agony (spell 1014)
 - Corruption (spell 6222)
 - Drain Soul (spell 1120)
 - Firebolt (spell 7800)
@@ -124,7 +122,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
-- Bane of Agony (spell 6217)
 - Conflagrate (spell 1293817)
 - Corruption (spell 6223)
 - Drain Soul (spell 8288)
@@ -140,7 +137,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 38
 
-- Bane of Agony (spell 11711)
 - Corruption (spell 7648)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
@@ -154,7 +150,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 40
 
-- Bane of Agony (spell 11711)
 - Corruption (spell 7648)
 - Drain Soul (spell 8289)
 - Firebolt (spell 7802)
@@ -172,7 +167,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
-- Bane of Agony (spell 11712)
 - Corruption (spell 11671)
 - Drain Soul (spell 8289)
 - Firebolt (spell 11762)
@@ -191,7 +185,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
-- Bane of Agony (spell 11713)
 - Corruption (spell 25311)
 - Drain Soul (spell 11675)
 - Firebolt (spell 11763)
