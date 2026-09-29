@@ -266,6 +266,23 @@ func checkAlternatives(t *testing.T, slotLabel func(string) string, byID map[int
 			if hasMate && mateRow.ItemID != 0 && (alt.ItemID == mateRow.ItemID || (alt.ItemName != "" && alt.ItemName == mateRow.ItemName)) {
 				t.Errorf("%s: alternative %d (%s) is this slot's own pair-mate (%s, id %d) - the same physical item cannot be offered as a fallback here", slotLabel(row.Slot), alt.ItemID, alt.ItemName, mateRow.ItemName, mateRow.ItemID)
 			}
+
+			// (10) this lane's brief (bis-ranker-integrity, 2026-09-29),
+			// item 1: a positive dps_delta is a claim that this
+			// alternative actually beats the verified pick - the ONE
+			// claim tenet 8 demands real evidence for. buildAlternatives'
+			// own cap (report.go) is supposed to guarantee this never
+			// happens for a row verify.go did not actually sim against
+			// the pick; this check holds that guarantee to the published
+			// output itself; not the field the ranker set out to
+			// produce, so a future regression in either place fails
+			// here instead of waiting for another wow-player pass to
+			// catch it by eye (mage-fire band 60 trinket1's own Neltharion's
+			// Tear alternative, +345 "DPS", unverified, is exactly the
+			// defect this guards against).
+			if alt.DPSDelta > 0 && !alt.Verified {
+				t.Errorf("%s: alternative %d (%s) publishes a positive dps_delta (%.2f) with verified omitted - an unverified candidate must never claim to beat the pick", slotLabel(row.Slot), alt.ItemID, alt.ItemName, alt.DPSDelta)
+			}
 		}
 	}
 }

@@ -33,6 +33,80 @@ func TestTopByItemLevelOrdersHighestFirstAndBoundsToTopN(t *testing.T) {
 	}
 }
 
+// trinketScored is trinket() plus an explicit Score, for the score-axis
+// half of trinketShortlist's own test.
+func trinketScored(id int, name string, itemLevel int, sc float64) scored {
+	s := trinket(id, name, itemLevel)
+	s.Score = sc
+	return s
+}
+
+// This lane's brief (bis-ranker-integrity, 2026-09-29): a candidate
+// that is far ahead on SCORE but far behind on item level must still
+// enter the real-sim pool, not just the item-level winners -
+// Neltharion's Tear (mage-fire's own dogfood case) is exactly this
+// shape: low item level, by far the best score() in the pool.
+func TestTrinketShortlistUnionsTopByItemLevelAndTopByScore(t *testing.T) {
+	// list is already score-sorted, matching candidatesBySlot's own
+	// contract (trinketShortlist's doc): item 100 is the best SCORE by
+	// far, but its item level (10) would never make topByItemLevel's own
+	// top trinketTopN (5) against items 2-6, all higher item level.
+	list := []scored{
+		trinketScored(100, "Best Score, Low ItemLevel", 10, 999),
+		trinketScored(2, "ItemLevel 90", 90, 5),
+		trinketScored(3, "ItemLevel 85", 85, 4),
+		trinketScored(4, "ItemLevel 83", 83, 3),
+		trinketScored(5, "ItemLevel 80", 80, 2),
+		trinketScored(6, "ItemLevel 78", 78, 1),
+		trinketScored(7, "ItemLevel 70", 70, 0),
+	}
+	got := trinketShortlist(list, 0, "")
+	found := false
+	for _, c := range got {
+		if c.ID == 100 {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatalf("trinketShortlist = %+v, want item 100 (best score, never top-item-level) included", got)
+	}
+	// Every item-level-top-trinketTopN candidate is still present too -
+	// this is a union, not a replacement.
+	for _, id := range []int{2, 3, 4, 5, 6} {
+		hasIt := false
+		for _, c := range got {
+			if c.ID == id {
+				hasIt = true
+			}
+		}
+		if !hasIt {
+			t.Errorf("trinketShortlist = %+v, want item %d (top-item-level) still included", got, id)
+		}
+	}
+	// item 7 (item level 70, worst score) makes neither top-N: excluded.
+	for _, c := range got {
+		if c.ID == 7 {
+			t.Errorf("trinketShortlist = %+v, want item 7 excluded (bottom of both axes)", got)
+		}
+	}
+}
+
+func TestTrinketShortlistExcludesPairMateByIDAndName(t *testing.T) {
+	list := []scored{trinket(1, "Same Name", 10), trinket(2, "Same Name", 20), trinket(3, "Other", 5)}
+	got := trinketShortlist(list, 1, "")
+	for _, c := range got {
+		if c.ID == 1 {
+			t.Fatalf("trinketShortlist still carries excluded id 1: %+v", got)
+		}
+	}
+	got2 := trinketShortlist(list, 0, "Same Name")
+	for _, c := range got2 {
+		if c.Name == "Same Name" {
+			t.Fatalf("trinketShortlist still carries an item sharing the excluded name: %+v", got2)
+		}
+	}
+}
+
 func TestTopByItemLevelExcludesPairMateByIDAndName(t *testing.T) {
 	list := []scored{trinket(1, "Same Name", 10), trinket(2, "Same Name", 20), trinket(3, "Other", 5)}
 	got := topByItemLevel(list, 1, "")
