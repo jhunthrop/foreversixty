@@ -91,12 +91,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:15445 off_hand:15443 | 23.6 | 6 | other:attack/2=121.3, spell:3606=67.8, other:attack/1=63.0, spell:8050=15.5, spell:3599=5.7 | {SpellID: 17364} |
-| 20 | 0000000000000000-253100000000000000-0000000000000000 | main_hand:1292 off_hand:17046 | 40.0 | 6 | other:attack/1=107.2, other:attack/2=82.9, spell:6350=65.5, spell:8052=14.0, spell:6363=4.8 | {SpellID: 17364} |
+| 20 | 0000000000000000-253100000000000000-0000000000000000 | main_hand:2236 off_hand:2194 | 35.1 | 6 | other:attack/1=121.4, other:attack/2=73.0, spell:6350=66.3, spell:8052=14.1, spell:6363=4.8 | {SpellID: 17364} |
 | 30 | 0000000000000000-253130030004000000-0000000000000000 | main_hand:6692 off_hand:9520 | 56.3 | 6 | other:attack/2=106.1, other:attack/1=79.8, spell:6351=64.3, spell:8053=11.4, spell:6364=4.2 | {SpellID: 17364} |
-| 38 | 0000000000000000-253130030005102040-0000000000000000 | main_hand:6831 off_hand:10761 | 57.3 | 8 | other:attack/1=130.1, other:attack/2=129.8, spell:6351=68.5, spell:8053=9.3, spell:6364=4.4 | - |
+| 38 | 0000000000000000-253130030005102040-0000000000000000 | main_hand:868 off_hand:6831 | 59.4 | 8 | other:attack/2=128.5, other:attack/1=91.9, spell:6351=68.6, spell:8053=9.3, spell:6364=4.4 | - |
 | 40 | 0000000000000000-253130030005102051-0000000000000000 | main_hand:10750 off_hand:9359 | 62.4 | 8 | other:attack/1=121.0, other:attack/2=84.3, spell:6352=61.5, spell:17364=6.7, spell:6365=3.5 | - |
-| 50 | 5500000000000000-253130030005102051-0000000000000000 | main_hand:12774 off_hand:10750 | 86.9 | 8 | other:attack/2=121.9, other:attack/1=93.1, spell:10435=64.3, spell:10447=8.1, spell:10437=3.4 | - |
-| 60 | 5533220000000000-253130030005102051-0000000000000000 | main_hand:21126 off_hand:21268 | 109.5 | 7 | other:attack/1=108.2, other:attack/2=92.8, spell:10436=64.9, spell:17364=5.5, spell:29228=4.0 | - |
+| 50 | 5500000000000000-253130030005102051-0000000000000000 | main_hand:810 off_hand:6660 | 82.3 | 8 | other:attack/2=148.7, other:attack/1=92.2, spell:10435=64.2, spell:10447=8.1, spell:10437=3.4 | - |
+| 60 | 5533220000000000-253130030005102051-0000000000000000 | main_hand:21126 off_hand:234554 | 114.8 | 7 | other:attack/1=108.7, other:attack/2=67.6, spell:10436=64.9, spell:17364=5.5, spell:29228=4.0 | - |
 
 ## Learned but unused (informational)
 

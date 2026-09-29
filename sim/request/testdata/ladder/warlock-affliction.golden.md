@@ -91,12 +91,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 10000000000000000-0000000000000000000-0000000000000000 | main_hand:15444 | 7.5 | 4 | other:mana_gain=56.3, spell:1454=56.3, spell:695=27.2, spell:172=12.0, spell:980=8.9 | {OtherID: 13}, {SpellID: 18288}, {SpellID: 5019} |
-| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:4437 ranged:6677 | 20.2 | 5 | spell:5019=57.5, other:mana_gain=33.8, spell:1455=33.8, spell:1088=25.1, spell:6222=11.2 | {OtherID: 13}, {SpellID: 18288} |
-| 30 | 25552000110000000-0000000000000000000-0000000000000000 | main_hand:4134 ranged:5249 | 31.3 | 6 | spell:5019=54.6, other:mana_gain=34.4, spell:1456=34.4, spell:1106=32.5, spell:6223=9.8 | {OtherID: 13} |
+| 20 | 25400000000000000-0000000000000000000-0000000000000000 | main_hand:890 ranged:7001 | 22.3 | 5 | spell:5019=65.8, other:mana_gain=34.7, spell:1455=34.7, spell:1088=24.5, spell:6222=11.9 | {OtherID: 13}, {SpellID: 18288} |
+| 30 | 25552000110000000-0000000000000000000-0000000000000000 | main_hand:890 ranged:5249 | 31.5 | 6 | spell:5019=52.1, other:mana_gain=35.8, spell:1456=35.8, spell:1106=33.6, spell:6223=9.9 | {OtherID: 13} |
 | 38 | 25552000130201030-0000000000000000000-0000000000000000 | main_hand:7757 ranged:10704 | 40.8 | 6 | spell:5019=43.6, spell:7641=33.6, other:mana_gain=29.7, spell:11687=29.7, spell:7648=10.0 | {OtherID: 13} |
 | 40 | 25552000130201050-0000000000000000000-0000000000000000 | main_hand:9527 ranged:10704 | 62.7 | 6 | spell:7641=37.6, spell:5019=37.0, other:mana_gain=31.3, spell:11687=31.3, spell:7648=9.8 | {OtherID: 13}, {SpellID: 1316697} |
-| 50 | 25552000130201051-2340000000000000000-0000000000000000 | main_hand:9527 ranged:17745 | 114.0 | 7 | spell:5019=52.1, other:mana_gain=30.5, spell:11688=30.5, spell:1316697=24.0, spell:11659=23.1 | {OtherID: 13} |
-| 60 | 25552000130201051-2355220000000000000-0000000000000000 | main_hand:22589 ranged:16993 | 219.0 | 7 | spell:5019=36.3, spell:1316697=23.1, spell:25307=22.5, other:mana_gain=21.6, spell:11689=21.6 | {OtherID: 13} |
+| 50 | 25552000130201051-2340000000000000000-0000000000000000 | main_hand:9527 ranged:15280 | 108.7 | 7 | spell:5019=49.6, other:mana_gain=28.9, spell:11688=28.9, spell:1316697=22.5, spell:11659=21.4 | {OtherID: 13} |
+| 60 | 25552000130201051-2355220000000000000-0000000000000000 | main_hand:22589 ranged:19108 | 230.5 | 7 | spell:5019=39.4, spell:1316697=25.7, spell:25307=24.4, other:mana_gain=23.7, spell:11689=23.7 | {OtherID: 13} |
 
 ## Learned but unused (informational)
 
