@@ -54,17 +54,36 @@ func ladderWeapon(items []candidate, level int) *candidate {
 // measures: no armor, the truncated talent build, and the best
 // ranged weapon this level and faction allow (see ladderWeapon).
 func ladderCharacter(race, classSlug string, level int, talents string, weapon *candidate) api.CharacterSpec {
-	ch := api.CharacterSpec{
-		Name:    "ladder",
+	var gear []api.GearSlot
+	if weapon != nil {
+		gear = []api.GearSlot{{Slot: "ranged", ItemID: weapon.ID}}
+	}
+	return bandCharacter("ladder", race, classSlug, level, talents, gear)
+}
+
+// bandCharacter is the one constructor every plain-DPS site in this
+// band's rank/verify passes (trinkets.go, rank.go, sets.go, verify.go)
+// builds its api.CharacterSpec from. Before this existed, each of those
+// sites built its own literal and none of them set Talents, so every
+// verify/rank/set-completion sim ran the band's gear on a bare,
+// talent-less character while ladderCharacter's own weights run (above)
+// carried the band's real talent string - a direct sim of the published
+// BM level-60 set found this: 227 DPS with talents equipped, 201
+// without, yet the published set_dps was 200.15 for BOTH BM and MM at
+// every band (two different talent builds producing an identical DPS to
+// 14 decimals is the tell that talents were never in the request at
+// all). One constructor used by every site closes the gap the same way
+// everywhere, and gives the guard in character_test.go one place to
+// assert Talents is always set from the band's own string.
+func bandCharacter(name, race, classSlug string, level int, talents string, gear []api.GearSlot) api.CharacterSpec {
+	return api.CharacterSpec{
+		Name:    name,
 		Race:    race,
 		Class:   classSlug,
 		Level:   level,
 		Talents: talents,
+		Gear:    gear,
 	}
-	if weapon != nil {
-		ch.Gear = []api.GearSlot{{Slot: "ranged", ItemID: weapon.ID}}
-	}
-	return ch
 }
 
 // weightsRequest builds the SimRequest runWeights takes: the spec's own

@@ -116,24 +116,27 @@ func TestPickTwoHandedMainHandLeavesOffHandEmpty(t *testing.T) {
 	}
 }
 
-// A dual-wield spec's main hand never holds a two-hander either, even
-// when one outscores every one-hander: score() converts a weapon's raw
-// DPS to attack power per slot with no term for the off hand a
-// two-hander forfeits, so a two-hander routinely wins this comparison
-// even though a real dual-wielder loses an entire second weapon (and,
-// for shaman-enhancement, its off-hand imbue) by wearing one. This is
-// the bug behind shaman-enhancement's level-20 list picking Smite's
-// Mighty Hammer (item 7230, two-hand) for main hand and leaving
-// off_hand permanently empty.
+// A dual-wield spec's main hand does not hold a two-hander that scores
+// below the full one-hand PAIR it would replace (twoHandBeatsPair,
+// pick.go): score() converts a weapon's raw DPS to attack power per
+// slot with no term for the off hand a two-hander forfeits, so a
+// two-hander can outscore a SINGLE one-hander even though a real
+// dual-wielder loses an entire second weapon (and, for shaman-
+// enhancement, its off-hand imbue) by wearing one - comparing against
+// the full pair's combined score (main + its own off-hand partner)
+// closes that gap. This is the bug behind shaman-enhancement's level-20
+// list picking Smite's Mighty Hammer (item 7230, two-hand, scored
+// higher than the axe ALONE but lower than the axe+dagger pair) for
+// main hand and leaving off_hand permanently empty.
 func TestPickExcludesTwoHandFromADualWieldersMainHand(t *testing.T) {
-	hammer := scored{candidate: candidate{ID: 7230, Name: "Smite's Mighty Hammer", Slots: []string{"main_hand"}, TwoHand: true, ClassID: itemClassWeapon}, Score: 300}
+	hammer := scored{candidate: candidate{ID: 7230, Name: "Smite's Mighty Hammer", Slots: []string{"main_hand"}, TwoHand: true, ClassID: itemClassWeapon}, Score: 30}
 	axe := scored{candidate: candidate{ID: 2, Name: "One-Hand Axe", Slots: []string{"main_hand", "off_hand"}, ClassID: itemClassWeapon}, Score: 20}
 	dagger := scored{candidate: candidate{ID: 3, Name: "One-Hand Dagger", Slots: []string{"main_hand", "off_hand"}, ClassID: itemClassWeapon}, Score: 15}
 	bySlot := candidatesBySlot([]scored{hammer, axe, dagger})
 
 	result := pick("shaman-enhancement", bySlot)
 	if result["main_hand"].Item == nil || result["main_hand"].Item.ID != 2 {
-		t.Fatalf("shaman-enhancement main_hand = %+v, want the one-hand axe (2), not the two-hand hammer despite its higher score", result["main_hand"].Item)
+		t.Fatalf("shaman-enhancement main_hand = %+v, want the one-hand axe (2): the hammer (30) beats the axe alone (20) but loses to the axe+dagger pair (35)", result["main_hand"].Item)
 	}
 	if result["off_hand"].Item == nil || result["off_hand"].Item.ID != 3 {
 		t.Fatalf("shaman-enhancement off_hand = %+v, want the one-hand dagger (3), the next best one-hander", result["off_hand"].Item)
@@ -144,6 +147,39 @@ func TestPickExcludesTwoHandFromADualWieldersMainHand(t *testing.T) {
 	notDualWield := pick("shaman-elemental", candidatesBySlot([]scored{hammer, axe, dagger}))
 	if notDualWield["main_hand"].Item == nil || notDualWield["main_hand"].Item.ID != 7230 {
 		t.Fatalf("shaman-elemental main_hand = %+v, want the two-hand hammer (elemental is not a dual-wielder)", notDualWield["main_hand"].Item)
+	}
+}
+
+// The other side of the fix (this lane's brief, defect 3, the owner's
+// level-20 hunter review): a hunter's melee weapon is a stat stick, not
+// its damage source, so its weight run zeros out melee attack_power
+// entirely (character.go's weightsRequest doc) and score() is not
+// inflating the two-hander's score with an unfairly high dps-derived
+// term the way it does for a real melee dual-wielder like
+// TestPickExcludesTwoHandFromADualWieldersMainHand above. When the
+// two-hander's own score legitimately beats the full pair it would
+// replace, hunter-beast-mastery/-marksmanship (both in DualWieldSpecs)
+// take it - the actual owner-reported shape: Impaling Harpoon (+9
+// agility, scored 18.6) beat Goblin Screwdriver+Poniard (8.3 each,
+// 16.6 combined).
+func TestPickTakesATwoHanderThatBeatsTheFullPairForAStatStickWeaponSpec(t *testing.T) {
+	harpoon := scored{candidate: candidate{ID: 100, Name: "Impaling Harpoon", Slots: []string{"main_hand"}, TwoHand: true, ClassID: itemClassWeapon}, Score: 18.6}
+	screwdriver := scored{candidate: candidate{ID: 101, Name: "Goblin Screwdriver", Slots: []string{"main_hand", "off_hand"}, ClassID: itemClassWeapon}, Score: 8.3}
+	poniard := scored{candidate: candidate{ID: 102, Name: "Poniard", Slots: []string{"main_hand", "off_hand"}, ClassID: itemClassWeapon}, Score: 8.3}
+	bySlot := candidatesBySlot([]scored{harpoon, screwdriver, poniard})
+
+	result := pick("hunter-beast-mastery", bySlot)
+	if result["main_hand"].Item == nil || result["main_hand"].Item.ID != 100 {
+		t.Fatalf("hunter-beast-mastery main_hand = %+v, want the two-hand Impaling Harpoon (100): 18.6 beats the 8.3+8.3 pair", result["main_hand"].Item)
+	}
+	if result["off_hand"].Item != nil {
+		t.Fatalf("hunter-beast-mastery off_hand = %+v, want nil: the main hand is two-handed", result["off_hand"].Item)
+	}
+	// The pair's own best one-hander is still the runner-up - the swap
+	// pass (verify.go) is what would settle a real close call with an
+	// actual sim, same as every other pick() decision.
+	if result["main_hand"].RunnerUp == nil || result["main_hand"].RunnerUp.ID != 101 {
+		t.Fatalf("hunter-beast-mastery main_hand runner-up = %+v, want the Goblin Screwdriver (101)", result["main_hand"].RunnerUp)
 	}
 }
 
@@ -262,5 +298,49 @@ func TestEnforceTwoHandOffHandInvariantLeavesAOneHandedMainHandAlone(t *testing.
 	out := enforceTwoHandOffHandInvariant(picks)
 	if out["off_hand"].Item == nil || out["off_hand"].Item.ID != 2 {
 		t.Fatalf("off_hand = %+v, want untouched (main_hand is one-handed)", out["off_hand"].Item)
+	}
+}
+
+// This lane's brief, defect 4: three one-handers scoring identically
+// (8.28 apiece) must all be recorded, not just the lowest-id winner -
+// pick()'s own tie-break silently discarded the other two equally-good
+// items before this.
+func TestPickRecordsEveryEquallyScoredAlternativeAsATie(t *testing.T) {
+	pool := []scored{
+		item(3, "Bent Blade", 8.28, "head"),
+		item(1, "Rusty Sword", 8.28, "head"),
+		item(2, "Blackwater Cutlass", 8.28, "head"),
+		item(9, "Plain Cap", 5, "head"),
+	}
+	result := pick("", candidatesBySlot(pool))
+	head := result["head"]
+	if head.Item == nil || head.Item.ID != 1 {
+		t.Fatalf("head pick = %+v, want item 1 (lowest id among the 8.28 tie)", head.Item)
+	}
+	if len(head.Ties) != 2 {
+		t.Fatalf("head ties = %+v, want 2 (items 2 and 3, the other 8.28-scored candidates)", head.Ties)
+	}
+	gotIDs := map[int]bool{}
+	for _, tie := range head.Ties {
+		gotIDs[tie.ID] = true
+	}
+	if !gotIDs[2] || !gotIDs[3] {
+		t.Fatalf("head ties = %+v, want ids 2 and 3", head.Ties)
+	}
+	if gotIDs[9] {
+		t.Fatalf("head ties = %+v, want the lower-scored item (9) excluded", head.Ties)
+	}
+}
+
+// A slot with no tie (the runner-up scores strictly lower) must report
+// none.
+func TestPickRecordsNoTiesWhenTheRunnerUpScoresLower(t *testing.T) {
+	pool := []scored{
+		item(1, "Good Helm", 10, "head"),
+		item(2, "Bad Helm", 5, "head"),
+	}
+	result := pick("", candidatesBySlot(pool))
+	if len(result["head"].Ties) != 0 {
+		t.Fatalf("head ties = %+v, want none: no candidate matched the winner's score", result["head"].Ties)
 	}
 }

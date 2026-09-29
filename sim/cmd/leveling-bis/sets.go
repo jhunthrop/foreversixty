@@ -12,7 +12,6 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
@@ -106,7 +105,7 @@ func setAlreadyFullyEquipped(picks map[string]slotPick, cands []setCandidate) bo
 // (logged by the caller, not fatal -- the same resilience
 // rankTrinketSlot/rankSlotWithEffects already give a single bad
 // candidate).
-func trySetCompletion(runner engineRunner, spec specInfo, race, classSlug string, level int, picks map[string]slotPick, bySlot map[string][]scored) (map[string]slotPick, []string) {
+func trySetCompletion(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, bySlot map[string][]scored) (map[string]slotPick, []string) {
 	bySet := bestSetPieces(bySlot, spec.Spec)
 	setIDs := make([]int, 0, len(bySet))
 	for id, cands := range bySet {
@@ -124,7 +123,7 @@ func trySetCompletion(runner engineRunner, spec specInfo, race, classSlug string
 	}
 	sort.Ints(setIDs)
 
-	baselineReq := plainRequest(spec, api.CharacterSpec{Name: "set-completion-baseline", Race: race, Class: classSlug, Level: level, Gear: buildGear(picks)}, trinketRankIterations, verifySeed)
+	baselineReq := plainRequest(spec, bandCharacter("set-completion-baseline", race, classSlug, level, talents, buildGear(picks)), trinketRankIterations, verifySeed)
 	baselineDPS, err := runner.RunPlainDPS(baselineReq)
 	if err != nil {
 		return picks, []string{fmt.Sprintf("set completion: baseline verify failed: %v", err)}
@@ -148,7 +147,7 @@ func trySetCompletion(runner engineRunner, spec specInfo, race, classSlug string
 			trial[c.slot] = slotPick{Item: &item}
 		}
 
-		req := plainRequest(spec, api.CharacterSpec{Name: "set-completion", Race: race, Class: classSlug, Level: level, Gear: buildGear(trial)}, trinketRankIterations, verifySeed)
+		req := plainRequest(spec, bandCharacter("set-completion", race, classSlug, level, talents, buildGear(trial)), trinketRankIterations, verifySeed)
 		dps, err := runner.RunPlainDPS(req)
 		if err != nil {
 			notes = append(notes, fmt.Sprintf("set %d completion (%d pieces): verify failed: %v", setID, len(cands), err))
