@@ -1,8 +1,8 @@
 {
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
-  "engine_version": "cfbb7f945",
-  "generated_at": "2026-09-29T03:00:45Z",
+  "engine_version": "84575e84b",
+  "generated_at": "2026-09-29T04:04:18Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -195,8 +195,8 @@
         "main_hand: Edge of the People's Militia",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.498120298,
-      "verify_run_seconds": 0.586985992
+      "weights_run_seconds": 1.504535076,
+      "verify_run_seconds": 0.570374631
     },
     {
       "spec": "warrior-arms",
@@ -396,8 +396,8 @@
         "main_hand: Ceranium Rod",
         "ranged: Orcish Battle Bow"
       ],
-      "weights_run_seconds": 1.498120298,
-      "verify_run_seconds": 0.720032158
+      "weights_run_seconds": 1.504535076,
+      "verify_run_seconds": 0.736512342
     },
     {
       "spec": "warrior-arms",
@@ -601,8 +601,8 @@
         "main_hand: Seraph's Strike",
         "ranged: Daryl's Hunting Rifle"
       ],
-      "weights_run_seconds": 1.53305004,
-      "verify_run_seconds": 0.994797868
+      "weights_run_seconds": 1.5809285499999999,
+      "verify_run_seconds": 0.995664916
     },
     {
       "spec": "warrior-arms",
@@ -806,8 +806,8 @@
         "finger2: Bounty Hunter's Ring",
         "main_hand: Wingblade"
       ],
-      "weights_run_seconds": 1.53305004,
-      "verify_run_seconds": 0.961886245
+      "weights_run_seconds": 1.5809285499999999,
+      "verify_run_seconds": 0.980833011
     },
     {
       "spec": "warrior-arms",
@@ -868,8 +868,8 @@
           "slot": "neck",
           "item_id": 20444,
           "item_name": "Sentinel's Medallion",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "verified": true
         },
         {
@@ -948,8 +948,8 @@
           "slot": "finger1",
           "item_id": 20439,
           "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 7.957977997609476,
           "verified": true
         },
@@ -1002,7 +1002,7 @@
         }
       ],
       "set_dps": 30.055588049126513,
-      "no_source_count": 1677,
+      "no_source_count": 1673,
       "no_source_sample": [
         "727 Notched Shortsword",
         "789 Stout Battlehammer",
@@ -1036,8 +1036,8 @@
         "trinket2: Rune of Duty",
         "ranged: Dwarven Fishing Pole"
       ],
-      "weights_run_seconds": 1.575718713,
-      "verify_run_seconds": 1.089270297
+      "weights_run_seconds": 1.547998018,
+      "verify_run_seconds": 1.093263874
     },
     {
       "spec": "warrior-arms",
@@ -1097,8 +1097,8 @@
           "slot": "neck",
           "item_id": 20442,
           "item_name": "Scout's Medallion",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "verified": true
         },
         {
@@ -1186,8 +1186,8 @@
           "slot": "finger2",
           "item_id": 20429,
           "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 7.957977997609476,
           "verified": true
         },
@@ -1232,7 +1232,7 @@
         }
       ],
       "set_dps": 27.643170093892934,
-      "no_source_count": 1672,
+      "no_source_count": 1668,
       "no_source_sample": [
         "727 Notched Shortsword",
         "789 Stout Battlehammer",
@@ -1266,8 +1266,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Runic Darkblade"
       ],
-      "weights_run_seconds": 1.575718713,
-      "verify_run_seconds": 1.086659709
+      "weights_run_seconds": 1.547998018,
+      "verify_run_seconds": 1.077586363
     },
     {
       "spec": "warrior-arms",
@@ -1328,8 +1328,8 @@
           "slot": "neck",
           "item_id": 20444,
           "item_name": "Sentinel's Medallion",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "verified": true
         },
         {
@@ -1417,8 +1417,8 @@
           "slot": "finger2",
           "item_id": 20439,
           "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 7.378712006767308,
           "verified": true
         },
@@ -1463,7 +1463,7 @@
         }
       ],
       "set_dps": 37.088352386797524,
-      "no_source_count": 2097,
+      "no_source_count": 2093,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -1490,8 +1490,8 @@
         "finger2: Protector's Band",
         "main_hand: Emil's Brand"
       ],
-      "weights_run_seconds": 1.6749960050000001,
-      "verify_run_seconds": 1.176135785
+      "weights_run_seconds": 1.64786163,
+      "verify_run_seconds": 1.179029057
     },
     {
       "spec": "warrior-arms",
@@ -1551,8 +1551,8 @@
           "slot": "neck",
           "item_id": 20442,
           "item_name": "Scout's Medallion",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "verified": true
         },
         {
@@ -1686,7 +1686,7 @@
         }
       ],
       "set_dps": 30.502963820638183,
-      "no_source_count": 2092,
+      "no_source_count": 2088,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -1714,8 +1714,8 @@
         "finger2: Band of the Fist",
         "main_hand: Rod of the Sleepwalker"
       ],
-      "weights_run_seconds": 1.6749960050000001,
-      "verify_run_seconds": 1.167802862
+      "weights_run_seconds": 1.64786163,
+      "verify_run_seconds": 1.167704304
     },
     {
       "spec": "warrior-arms",
@@ -1830,8 +1830,8 @@
           "slot": "waist",
           "item_id": 20126,
           "item_name": "Highlander's Plate Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "score": 26.016819044418035,
           "verified": true
         },
@@ -1857,8 +1857,8 @@
           "slot": "finger1",
           "item_id": 19517,
           "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 13.06767989168315,
           "verified": true
         },
@@ -1875,8 +1875,8 @@
           "slot": "trinket1",
           "item_id": 21119,
           "item_name": "Talisman of Arathor",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "verified": true,
           "effect_unmodelled": true
         },
@@ -1912,7 +1912,7 @@
         }
       ],
       "set_dps": 47.68765458881607,
-      "no_source_count": 2488,
+      "no_source_count": 2474,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -1946,8 +1946,8 @@
         "main_hand: Whirlwind Warhammer",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 1.674428494,
-      "verify_run_seconds": 1.3610537950000001
+      "weights_run_seconds": 1.705519143,
+      "verify_run_seconds": 1.3486553510000001
     },
     {
       "spec": "warrior-arms",
@@ -2062,8 +2062,8 @@
           "slot": "waist",
           "item_id": 20207,
           "item_name": "Defiler's Plate Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "score": 26.016819044418035,
           "verified": true
         },
@@ -2098,8 +2098,8 @@
           "slot": "finger2",
           "item_id": 19513,
           "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 13.06767989168315,
           "verified": true
         },
@@ -2107,8 +2107,8 @@
           "slot": "trinket1",
           "item_id": 21120,
           "item_name": "Defiler's Talisman",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "verified": true,
           "effect_unmodelled": true
         },
@@ -2145,7 +2145,7 @@
         }
       ],
       "set_dps": 54.10951182452028,
-      "no_source_count": 2483,
+      "no_source_count": 2469,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -2179,8 +2179,8 @@
         "main_hand: Whirlwind Axe",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 1.674428494,
-      "verify_run_seconds": 1.426368465
+      "weights_run_seconds": 1.705519143,
+      "verify_run_seconds": 1.413021887
     },
     {
       "spec": "warrior-arms",
@@ -2295,8 +2295,8 @@
           "slot": "waist",
           "item_id": 20126,
           "item_name": "Highlander's Plate Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "score": 25.570543259016574,
           "verified": true
         },
@@ -2322,8 +2322,8 @@
           "slot": "finger1",
           "item_id": 19517,
           "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 12.882361837093377,
           "verified": true
         },
@@ -2340,8 +2340,8 @@
           "slot": "trinket1",
           "item_id": 21119,
           "item_name": "Talisman of Arathor",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "verified": true,
           "effect_unmodelled": true
         },
@@ -2377,7 +2377,7 @@
         }
       ],
       "set_dps": 54.409966520094365,
-      "no_source_count": 2814,
+      "no_source_count": 2799,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -2400,8 +2400,8 @@
         "feet: Ironheel Boots",
         "main_hand: Bonebiter"
       ],
-      "weights_run_seconds": 1.8108748270000001,
-      "verify_run_seconds": 1.401228226
+      "weights_run_seconds": 1.826040372,
+      "verify_run_seconds": 1.402696142
     },
     {
       "spec": "warrior-arms",
@@ -2516,8 +2516,8 @@
           "slot": "waist",
           "item_id": 20207,
           "item_name": "Defiler's Plate Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "score": 25.570543259016574,
           "verified": true
         },
@@ -2552,8 +2552,8 @@
           "slot": "finger2",
           "item_id": 19513,
           "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 12.882361837093377,
           "verified": true
         },
@@ -2561,8 +2561,8 @@
           "slot": "trinket1",
           "item_id": 21120,
           "item_name": "Defiler's Talisman",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "verified": true,
           "effect_unmodelled": true
         },
@@ -2598,7 +2598,7 @@
         }
       ],
       "set_dps": 53.24764717555702,
-      "no_source_count": 2809,
+      "no_source_count": 2794,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -2620,8 +2620,8 @@
         "hands: Scarlet Gauntlets",
         "main_hand: Whirlwind Warhammer"
       ],
-      "weights_run_seconds": 1.8108748270000001,
-      "verify_run_seconds": 1.4123585730000001
+      "weights_run_seconds": 1.826040372,
+      "verify_run_seconds": 1.4528759039999999
     },
     {
       "spec": "warrior-arms",
@@ -2737,8 +2737,8 @@
           "slot": "waist",
           "item_id": 20125,
           "item_name": "Highlander's Plate Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "score": 37.41390942426788,
           "verified": true
         },
@@ -2764,8 +2764,8 @@
           "slot": "finger1",
           "item_id": 19515,
           "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 20.182883606623687,
           "verified": true
         },
@@ -2781,16 +2781,16 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 17774,
-          "item_name": "Mark of the Chosen",
+          "item_id": 11122,
+          "item_name": "Carrot on a Stick",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
         },
         {
           "slot": "trinket2",
-          "item_id": 11122,
-          "item_name": "Carrot on a Stick",
+          "item_id": 17774,
+          "item_name": "Mark of the Chosen",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
@@ -2819,7 +2819,7 @@
         }
       ],
       "set_dps": 59.75853445892892,
-      "no_source_count": 3254,
+      "no_source_count": 3227,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -2848,11 +2848,11 @@
         "feet: Shinkicker Boots",
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye",
-        "trinket1: Mark of the Chosen",
-        "trinket2: Carrot on a Stick"
+        "trinket1: Carrot on a Stick",
+        "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 2.099402986,
-      "verify_run_seconds": 1.491390509
+      "weights_run_seconds": 2.114064842,
+      "verify_run_seconds": 1.5174028929999999
     },
     {
       "spec": "warrior-arms",
@@ -2967,8 +2967,8 @@
           "slot": "waist",
           "item_id": 20206,
           "item_name": "Defiler's Plate Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "score": 37.41390942426788,
           "verified": true
         },
@@ -3003,23 +3003,23 @@
           "slot": "finger2",
           "item_id": 19512,
           "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 20.182883606623687,
           "verified": true
         },
         {
           "slot": "trinket1",
-          "item_id": 11122,
-          "item_name": "Carrot on a Stick",
+          "item_id": 17774,
+          "item_name": "Mark of the Chosen",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
         },
         {
           "slot": "trinket2",
-          "item_id": 17774,
-          "item_name": "Mark of the Chosen",
+          "item_id": 11122,
+          "item_name": "Carrot on a Stick",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
@@ -3048,7 +3048,7 @@
         }
       ],
       "set_dps": 68.04127072366275,
-      "no_source_count": 3249,
+      "no_source_count": 3222,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -3077,12 +3077,12 @@
         "legs: Scarlet Leggings",
         "feet: Shinkicker Boots",
         "finger2: Legionnaire's Band",
-        "trinket1: Carrot on a Stick",
-        "trinket2: Mark of the Chosen",
+        "trinket1: Mark of the Chosen",
+        "trinket2: Carrot on a Stick",
         "main_hand: Will of the Mountain Giant"
       ],
-      "weights_run_seconds": 2.099402986,
-      "verify_run_seconds": 1.4259126
+      "weights_run_seconds": 2.114064842,
+      "verify_run_seconds": 1.446147849
     },
     {
       "spec": "warrior-arms",
@@ -3198,8 +3198,8 @@
           "slot": "waist",
           "item_id": 20125,
           "item_name": "Highlander's Plate Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "score": 34.65396743072593,
           "verified": true,
           "swap_note": "beat the scored pick Highlander's Chain Girdle (id 20089) in the sim: 67.3 vs 67.3 set DPS"
@@ -3227,8 +3227,8 @@
           "slot": "finger1",
           "item_id": 19515,
           "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 25.122110531428614,
           "verified": true
         },
@@ -3282,7 +3282,7 @@
         }
       ],
       "set_dps": 68.63332562675524,
-      "no_source_count": 3654,
+      "no_source_count": 3627,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -3308,8 +3308,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.122060627,
-      "verify_run_seconds": 1.509079516
+      "weights_run_seconds": 2.074631404,
+      "verify_run_seconds": 1.5185864580000001
     },
     {
       "spec": "warrior-arms",
@@ -3425,8 +3425,8 @@
           "slot": "waist",
           "item_id": 20153,
           "item_name": "Defiler's Chain Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "score": 111.75788265161388,
           "verified": true
         },
@@ -3453,8 +3453,8 @@
           "slot": "finger1",
           "item_id": 19512,
           "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 25.122110531428614,
           "verified": true
         },
@@ -3469,16 +3469,16 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 10659,
-          "item_name": "Shard of the Splithooves",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
         },
         {
           "slot": "trinket2",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
@@ -3507,7 +3507,7 @@
         }
       ],
       "set_dps": 70.30371612626027,
-      "no_source_count": 3649,
+      "no_source_count": 3622,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -3533,12 +3533,12 @@
         "feet: Sandstalker Ankleguards",
         "finger1: Legionnaire's Band",
         "finger2: Band of Allegiance",
-        "trinket1: Shard of the Splithooves",
-        "trinket2: Demon's Blood",
+        "trinket1: Demon's Blood",
+        "trinket2: Shard of the Splithooves",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.122060627,
-      "verify_run_seconds": 1.5366988
+      "weights_run_seconds": 2.074631404,
+      "verify_run_seconds": 1.520477786
     },
     {
       "spec": "warrior-arms",
@@ -3630,7 +3630,7 @@
           "source_kind": "quest",
           "score": 28,
           "verified": true,
-          "swap_note": "beat the scored pick Ornate Mithril Breastplate (id 7935) in the sim: 74.2 vs 73.7 set DPS"
+          "swap_note": "beat the scored pick Ornate Mithril Breastplate (id 7935) in the sim: 74.6 vs 74.4 set DPS"
         },
         {
           "slot": "wrist",
@@ -3654,8 +3654,8 @@
           "slot": "waist",
           "item_id": 20088,
           "item_name": "Highlander's Chain Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "score": 117.47315451395298,
           "verified": true
         },
@@ -3667,17 +3667,17 @@
           "source_kind": "quest",
           "score": 123.3036548845204,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 74.6 vs 73.7 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 74.9 vs 74.4 set DPS"
         },
         {
           "slot": "feet",
-          "item_id": 9637,
-          "item_name": "Shinkicker Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 18.95634709965011,
+          "item_id": 20109,
+          "item_name": "Highlander's Lamellar Greaves",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
+          "score": 20.89378108869249,
           "verified": true,
-          "swap_note": "beat the scored pick Greaves of Withering Despair (id 22240) in the sim: 74.4 vs 73.7 set DPS"
+          "effect_unmodelled": true
         },
         {
           "slot": "finger1",
@@ -3692,8 +3692,8 @@
           "slot": "finger2",
           "item_id": 19516,
           "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 18.95634709965011,
           "verified": true
         },
@@ -3736,8 +3736,8 @@
           "verified": true
         }
       ],
-      "set_dps": 75.30707125008414,
-      "no_source_count": 4098,
+      "set_dps": 75.54272183287159,
+      "no_source_count": 4059,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -3760,13 +3760,13 @@
         "chest: Relentless Chain",
         "wrist: Bracers of the Stone Princess",
         "waist: Highlander's Chain Girdle",
-        "feet: Shinkicker Boots",
+        "feet: Highlander's Lamellar Greaves",
         "finger1: Blackstone Ring",
         "finger2: Protector's Band",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.174073167,
-      "verify_run_seconds": 1.588641137
+      "weights_run_seconds": 2.181853281,
+      "verify_run_seconds": 1.591052211
     },
     {
       "spec": "warrior-arms",
@@ -3831,7 +3831,7 @@
           "source_kind": "quest",
           "score": 12.87858230657542,
           "verified": true,
-          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 74.9 vs 74.4 set DPS"
+          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 75.2 vs 74.8 set DPS"
         },
         {
           "slot": "shoulder",
@@ -3841,7 +3841,7 @@
           "source_kind": "quest",
           "score": 19.37433989042382,
           "verified": true,
-          "swap_note": "beat the scored pick Earthslag Shoulders (id 11632) in the sim: 74.6 vs 74.4 set DPS"
+          "swap_note": "beat the scored pick Earthslag Shoulders (id 11632) in the sim: 75.2 vs 74.8 set DPS"
         },
         {
           "slot": "back",
@@ -3860,7 +3860,7 @@
           "source_kind": "quest",
           "score": 33.427706361910786,
           "verified": true,
-          "swap_note": "beat the scored pick Ornate Mithril Breastplate (id 7935) in the sim: 75.5 vs 74.4 set DPS"
+          "swap_note": "beat the scored pick Ornate Mithril Breastplate (id 7935) in the sim: 76.2 vs 74.8 set DPS"
         },
         {
           "slot": "wrist",
@@ -3884,8 +3884,8 @@
           "slot": "waist",
           "item_id": 20151,
           "item_name": "Defiler's Chain Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "score": 117.47315451395298,
           "verified": true
         },
@@ -3897,17 +3897,17 @@
           "source_kind": "quest",
           "score": 123.3036548845204,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 75.3 vs 74.4 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 75.5 vs 74.8 set DPS"
         },
         {
           "slot": "feet",
-          "item_id": 9637,
-          "item_name": "Shinkicker Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 18.95634709965011,
+          "item_id": 20211,
+          "item_name": "Defiler's Plate Greaves",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
+          "score": 20.89378108869249,
           "verified": true,
-          "swap_note": "beat the scored pick Greaves of Withering Despair (id 22240) in the sim: 74.6 vs 74.4 set DPS"
+          "effect_unmodelled": true
         },
         {
           "slot": "finger1",
@@ -3922,11 +3922,11 @@
           "slot": "finger2",
           "item_id": 19511,
           "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 18.95634709965011,
           "verified": true,
-          "swap_note": "beat the scored pick White Bone Band (id 11862) in the sim: 74.8 vs 74.4 set DPS"
+          "swap_note": "beat the scored pick White Bone Band (id 11862) in the sim: 75.2 vs 74.8 set DPS"
         },
         {
           "slot": "trinket1",
@@ -3967,8 +3967,8 @@
           "verified": true
         }
       ],
-      "set_dps": 77.35032806397925,
-      "no_source_count": 4093,
+      "set_dps": 77.61652948964584,
+      "no_source_count": 4054,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -3990,15 +3990,13 @@
         "neck: Woven Ivy Necklace",
         "wrist: Bracers of the Stone Princess",
         "waist: Defiler's Chain Girdle",
-        "feet: Shinkicker Boots",
+        "feet: Defiler's Plate Greaves",
         "finger1: Blackstone Ring",
         "finger2: Legionnaire's Band",
-        "trinket1: Demon's Blood",
-        "trinket2: Shard of the Splithooves",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.174073167,
-      "verify_run_seconds": 1.595894821
+      "weights_run_seconds": 2.181853281,
+      "verify_run_seconds": 1.59120966
     },
     {
       "spec": "warrior-arms",
@@ -4116,8 +4114,8 @@
           "slot": "waist",
           "item_id": 20106,
           "item_name": "Highlander's Lamellar Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "score": 202.11816344158615,
           "verified": true
         },
@@ -4199,7 +4197,7 @@
         }
       ],
       "set_dps": 85.68697659686657,
-      "no_source_count": 4484,
+      "no_source_count": 4445,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -4234,8 +4232,8 @@
         "trinket2: Demon's Blood",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.18707439,
-      "verify_run_seconds": 1.608181746
+      "weights_run_seconds": 2.207925414,
+      "verify_run_seconds": 1.592285795
     },
     {
       "spec": "warrior-arms",
@@ -4353,8 +4351,8 @@
           "slot": "waist",
           "item_id": 20205,
           "item_name": "Defiler's Plate Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "score": 199.90996946983643,
           "verified": true
         },
@@ -4436,7 +4434,7 @@
         }
       ],
       "set_dps": 87.54899889175837,
-      "no_source_count": 4479,
+      "no_source_count": 4440,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -4470,8 +4468,8 @@
         "trinket2: Demon's Blood",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.18707439,
-      "verify_run_seconds": 1.6095943510000001
+      "weights_run_seconds": 2.207925414,
+      "verify_run_seconds": 1.582950398
     },
     {
       "spec": "warrior-arms",
@@ -4541,8 +4539,8 @@
           "slot": "shoulder",
           "item_id": 23243,
           "item_name": "Champion's Plate Shoulders",
-          "source": "Rank 14",
-          "source_kind": "pvp",
+          "source": "Lady Palanseer",
+          "source_kind": "vendor",
           "score": 349.92711649946233,
           "verified": true
         },
@@ -4597,8 +4595,8 @@
           "slot": "legs",
           "item_id": 16479,
           "item_name": "Marshal's Plate Legguards",
-          "source": "Rank 16",
-          "source_kind": "pvp",
+          "source": "Captain Dirgehammer",
+          "source_kind": "vendor",
           "score": 645.4477464154216,
           "verified": true
         },
@@ -4672,7 +4670,7 @@
         }
       ],
       "set_dps": 184.6798329455604,
-      "no_source_count": 5160,
+      "no_source_count": 5155,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -4708,8 +4706,8 @@
         "main_hand: Thunderfury, Blessed Blade of the Windseeker",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.186038817,
-      "verify_run_seconds": 1.6867542869999999
+      "weights_run_seconds": 2.185945891,
+      "verify_run_seconds": 1.66708846
     },
     {
       "spec": "warrior-arms",
@@ -4779,8 +4777,8 @@
           "slot": "shoulder",
           "item_id": 23243,
           "item_name": "Champion's Plate Shoulders",
-          "source": "Rank 14",
-          "source_kind": "pvp",
+          "source": "Lady Palanseer",
+          "source_kind": "vendor",
           "score": 349.92711649946233,
           "verified": true
         },
@@ -4835,8 +4833,8 @@
           "slot": "legs",
           "item_id": 16479,
           "item_name": "Marshal's Plate Legguards",
-          "source": "Rank 16",
-          "source_kind": "pvp",
+          "source": "Captain Dirgehammer",
+          "source_kind": "vendor",
           "score": 645.4477464154216,
           "verified": true
         },
@@ -4844,8 +4842,8 @@
           "slot": "feet",
           "item_id": 16483,
           "item_name": "Marshal's Plate Boots",
-          "source": "Rank 16",
-          "source_kind": "pvp",
+          "source": "Captain Dirgehammer",
+          "source_kind": "vendor",
           "score": 81.46443237175208,
           "verified": true,
           "swap_note": "beat the scored pick Conqueror's Greaves (id 21333) in the sim: 168.7 vs 167.2 set DPS"
@@ -4911,7 +4909,7 @@
         }
       ],
       "set_dps": 174.90775460639136,
-      "no_source_count": 5155,
+      "no_source_count": 5150,
       "no_source_sample": [
         "720 Brawler Gloves",
         "727 Notched Shortsword",
@@ -4947,8 +4945,8 @@
         "main_hand: Thunderfury, Blessed Blade of the Windseeker",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.186038817,
-      "verify_run_seconds": 1.68634264
+      "weights_run_seconds": 2.185945891,
+      "verify_run_seconds": 1.695076531
     }
   ]
 }
