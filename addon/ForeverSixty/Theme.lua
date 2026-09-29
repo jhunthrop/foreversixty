@@ -98,6 +98,12 @@ Theme.SIZES = {
 	--- complete" stays on the tracker before it hides.
 	copiedSeconds = 2,
 	completeSeconds = 5,
+	--- The rotation card's own row height: an icon-height line for the
+	--- ability's name and rank, a small-font line under it for the
+	--- condition, and the gap between them.
+	rotationRowHeight = 34,
+	--- The rotation card's header strip icon.
+	rotationHeaderIcon = 14,
 }
 
 --- The client's own font objects, and what to use when one is missing.

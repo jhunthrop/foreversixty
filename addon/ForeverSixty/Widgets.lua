@@ -89,6 +89,40 @@ function Widgets.button(parent, text, onClick)
 	return button
 end
 
+--- A label the player can click, with no border or background of its own
+--- -- a "+N more" or "Show fewer" affordance sitting inside a card,
+--- muted at rest and gold under the cursor like a plain text link. Sizes
+--- itself to the text's own width (GetStringWidth), so the caller only
+--- ever positions it, never sizes it.
+function Widgets.textButton(parent, text, onClick)
+	local button = Theme.createFrame("Button", nil, parent)
+	local label = Widgets.label(button, "", "muted", "small")
+	label:SetPoint("LEFT", button, "LEFT", 0, 0)
+	button.foreverSixtyLabel = label
+	button:SetHeight(Theme.SIZES.rowHeight)
+	button.SetText = function(self, value)
+		self.foreverSixtyLabel:SetText(value or "")
+		local width = type(label.GetStringWidth) == "function" and label:GetStringWidth() or 0
+		self:SetWidth(math.max(width, 1))
+	end
+	button.GetText = function(self)
+		return self.foreverSixtyLabel:GetText()
+	end
+	button:SetScript("OnEnter", function()
+		label:SetTextColor(Theme.rgb(Theme.HEX.gold))
+	end)
+	button:SetScript("OnLeave", function()
+		label:SetTextColor(Theme.rgb(Theme.HEX.muted))
+	end)
+	button:SetScript("OnClick", function(self, ...)
+		if self:IsEnabled() then
+			onClick(self, ...)
+		end
+	end)
+	button:SetText(text)
+	return button
+end
+
 --- The small X in the title bar.
 function Widgets.closeButton(parent, onClick)
 	local button = Theme.createFrame("Button", nil, parent)
@@ -295,6 +329,42 @@ function Widgets.itemRow(parent, width)
 		return row.itemId, row.link
 	end)
 	return row
+end
+
+--- One rotation-card priority row (docs/tenets.md's standard, replacing
+--- the plain single-line label the card drew before): a number, the
+--- ability's icon, its name, its rank in muted text beside the name, and
+--- the condition in muted text on a second line. Hovering highlights the
+--- row; the row for the ability the player just learned this level glows
+--- (Theme.showGlow/hideGlow, the toast's own event) -- both are the
+--- caller's to drive, this only builds the frame they act on.
+function Widgets.rotationRow(parent, width)
+	local S = Theme.SIZES
+	local frame = CreateFrame("Button", nil, parent)
+	frame:SetSize(width, S.rotationRowHeight)
+	frame:EnableMouse(true)
+	local highlight = Theme.texture(frame, "BACKGROUND", "hover")
+	highlight:SetAllPoints(frame)
+	highlight:Hide()
+	frame:SetScript("OnEnter", function()
+		highlight:Show()
+	end)
+	frame:SetScript("OnLeave", function()
+		highlight:Hide()
+	end)
+	local number = Widgets.label(frame, "", "muted", "small")
+	number:SetPoint("TOPLEFT", frame, "TOPLEFT", 0, 0)
+	number:SetWidth(S.gap * 5)
+	local icon = Theme.icon(frame, "ARTWORK", nil, S.iconSize)
+	icon:SetPoint("LEFT", number, "RIGHT", S.gap, 0)
+	local name = Widgets.label(frame, "", "body", "small")
+	name:SetPoint("TOPLEFT", icon, "TOPRIGHT", S.gap, 0)
+	local rank = Widgets.label(frame, "", "muted", "small")
+	rank:SetPoint("LEFT", name, "RIGHT", S.gap, 0)
+	local condition = Widgets.label(frame, "", "muted", "small")
+	condition:SetPoint("TOPLEFT", name, "BOTTOMLEFT", 0, -S.gap)
+	condition:SetWidth(math.max(1, width - S.iconSize - S.gap * 7))
+	return { frame = frame, number = number, icon = icon, name = name, rank = rank, condition = condition }
 end
 
 --- A page taller than its holder scrolls with the mouse wheel. The

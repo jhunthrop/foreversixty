@@ -150,6 +150,13 @@ end
 --- the very first event after the addon loads.
 function Toast.rotationModel(data, previousLevel, level)
 	local fresh = Rotation.newAbilities(data, Follow.build, Talents.readRanks(data), previousLevel, level)
+	-- docs/tenets.md's standard: the rotation card glows the row for the
+	-- ability the player just learned, off this same event. Recorded on
+	-- Rotation itself (rather than read from Toast, which loads after
+	-- Window and so after the Overview in the TOC, and would need a
+	-- require the real client cannot satisfy that late) since both this
+	-- file and the Overview already depend on Rotation directly.
+	Rotation.markLearned(fresh)
 	if #fresh == 0 then
 		return nil
 	end

@@ -7,6 +7,12 @@
   frame width that could disagree with it; Load now anchors directly off Dismiss instead,
   so the two can never drift apart, with a layout test pinning every banner child inside
   the page's own width.
+- Redesigned the Overview's rotation card: each priority row now carries the ability's own
+  icon, its name, its rank, and the condition on its own muted line beneath, numbered
+  top to bottom; a compact header strip names your spec (with its icon), your level band
+  and which data build it is from; the row for whatever you just learned this level glows,
+  off the same event as the toast; novice mode's "+N more" expands the card in place
+  instead of sending you to Settings, and advanced detail adds the spell id and cooldown.
 - The best-in-slot hover now shows the recommended item properly: its own icon inline, its
   name in its real quality colour, and its item level, plus a second tooltip beside it
   showing the item's own full details, the way shift-to-compare already does. An item the

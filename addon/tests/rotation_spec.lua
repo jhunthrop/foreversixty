@@ -125,4 +125,28 @@ describe("Rotation", function()
 			assert.are.same({}, Rotation.newAbilities(DATA, BUILD, RANKS, nil, 40))
 		end)
 	end)
+
+	-- docs/tenets.md's standard: the rotation card glows the row for the
+	-- ability the player just learned, off the toast's own event.
+	describe("markLearned/recentlyLearned", function()
+		it("marks every fresh line's spellId", function()
+			local fresh = Rotation.newAbilities(DATA, BUILD, RANKS, 20, 40)
+			Rotation.markLearned(fresh)
+			assert.is_true(Rotation.recentlyLearned[12328]) -- Death Wish
+			assert.is_true(Rotation.recentlyLearned[23881]) -- Bloodthirst
+			assert.is_nil(Rotation.recentlyLearned[2687]) -- Bloodrage: not fresh
+		end)
+
+		it("replaces the previous mark rather than accumulating it", function()
+			Rotation.markLearned(Rotation.newAbilities(DATA, BUILD, RANKS, 20, 40))
+			Rotation.markLearned(Rotation.newAbilities(DATA, BUILD, RANKS, 11, 15))
+			assert.are.same({}, Rotation.recentlyLearned)
+		end)
+
+		it("treats a nil list the same as an empty one", function()
+			Rotation.markLearned(Rotation.newAbilities(DATA, BUILD, RANKS, 20, 40))
+			Rotation.markLearned(nil)
+			assert.are.same({}, Rotation.recentlyLearned)
+		end)
+	end)
 end)
