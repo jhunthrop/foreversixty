@@ -2,1107 +2,8 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T19:07:23Z",
+  "generated_at": "2026-09-29T20:28:21Z",
   "bands": [
-    {
-      "spec": "druid-feral",
-      "band": 10,
-      "faction": "alliance",
-      "race": "night-elf",
-      "talents": "0000000000000000-1000000000000000000-0000000000000000",
-      "talent_points": 1,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.0018972695693006542,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 0.007882888190593029,
-          "error": 0.00014250867797937347,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 1.9999999999999865,
-          "error": 0.0037945391386022876,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 0.07492832029950833,
-          "error": 0.017068956663167607,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 1.3124571138408019,
-          "error": 0.06708008923008785,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 2.964779299455737,
-          "error": 0.18697087377353028,
-          "insignificant": false
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 0.7012159080906594,
-          "error": 0.026067696587243318,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 19972,
-          "item_name": "Lucky Fishing Hat",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 21524,
-              "item_name": "Red Winter Hat"
-            },
-            {
-              "item_id": 21525,
-              "item_name": "Green Winter Hat"
-            }
-          ]
-        },
-        {
-          "slot": "neck",
-          "verified": false
-        },
-        {
-          "slot": "shoulder",
-          "verified": false
-        },
-        {
-          "slot": "back",
-          "item_id": 279899,
-          "item_name": "Catacomb Cloak",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 10553,
-          "item_name": "Foreman Vest",
-          "source": "Gibblewilt",
-          "source_kind": "world",
-          "score": 5.999999999999959,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 7281,
-          "item_name": "Light Leather Bracers",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 2.074928320299495,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 4767,
-          "item_name": "Coppercloth Gloves",
-          "source": "Dalaran Miner",
-          "source_kind": "world",
-          "score": 5.999999999999959,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 2899,
-          "item_name": "Wendigo Collar",
-          "source": "Old Icebeard",
-          "source_kind": "world",
-          "score": 5.999999999999959,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 279900,
-          "item_name": "Deepgrave Trousers",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 14.22478496089843,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 252426,
-          "item_name": "Murloc Scale Shoes",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 7.999999999999946,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 8350,
-          "item_name": "The 1 Ring",
-          "source": "Fishing",
-          "source_kind": "world",
-          "score": 2.074928320299495,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "verified": false
-        },
-        {
-          "slot": "trinket1",
-          "verified": false
-        },
-        {
-          "slot": "trinket2",
-          "verified": false
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 4570,
-          "item_name": "Birchwood Maul",
-          "source": "The Deadmines: Defias Pirate",
-          "source_kind": "dungeon",
-          "score": 140,
-          "verified": true,
-          "swap_note": "beat the scored pick Staff of Conjuring (id 1933) in the sim: 9.9 vs 9.4 set DPS"
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 9.92852006238941,
-      "no_source_count": 141,
-      "no_source_sample": [
-        "9747 Simple Britches",
-        "9748 Simple Robe",
-        "9749 Simple Blouse",
-        "9756 Nomad Trousers",
-        "9757 Nomad Tunic",
-        "10047 Simple Kilt",
-        "14389 Durability Shoulderpads",
-        "15309 Feral Cloak",
-        "15925 Journeyman's Stave",
-        "241089 Scarlet Dagger",
-        "246164 Skullthumper",
-        "246165 Driftwood Smasher",
-        "248005 Northshire Hammer",
-        "248007 Militia Shortblade",
-        "248008 Apprentice's Spellstaff"
-      ],
-      "new_at_band": [
-        "head: Lucky Fishing Hat",
-        "back: Catacomb Cloak",
-        "chest: Foreman Vest",
-        "wrist: Light Leather Bracers",
-        "hands: Coppercloth Gloves",
-        "waist: Wendigo Collar",
-        "legs: Deepgrave Trousers",
-        "feet: Murloc Scale Shoes",
-        "finger1: The 1 Ring",
-        "main_hand: Birchwood Maul"
-      ],
-      "weights_run_seconds": 1.423548099,
-      "verify_run_seconds": 0.681862069,
-      "coverage": {
-        "back": {
-          "eligible": 23,
-          "sourced": 10
-        },
-        "chest": {
-          "eligible": 59,
-          "sourced": 45
-        },
-        "feet": {
-          "eligible": 32,
-          "sourced": 22
-        },
-        "finger1": {
-          "eligible": 11,
-          "sourced": 1
-        },
-        "finger2": {
-          "eligible": 11,
-          "sourced": 1
-        },
-        "hands": {
-          "eligible": 29,
-          "sourced": 21
-        },
-        "head": {
-          "eligible": 7,
-          "sourced": 3
-        },
-        "legs": {
-          "eligible": 42,
-          "sourced": 34
-        },
-        "main_hand": {
-          "eligible": 81,
-          "sourced": 38
-        },
-        "neck": {
-          "eligible": 6,
-          "sourced": 0
-        },
-        "off_hand": {
-          "eligible": 8,
-          "sourced": 2
-        },
-        "shoulder": {
-          "eligible": 3,
-          "sourced": 0
-        },
-        "waist": {
-          "eligible": 28,
-          "sourced": 22
-        },
-        "wrist": {
-          "eligible": 26,
-          "sourced": 16
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 10,
-      "faction": "horde",
-      "race": "tauren",
-      "talents": "0000000000000000-1000000000000000000-0000000000000000",
-      "talent_points": 1,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.0018972695693006542,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 0.007882888190593029,
-          "error": 0.00014250867797937347,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 1.9999999999999865,
-          "error": 0.0037945391386022876,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 0.07492832029950833,
-          "error": 0.017068956663167607,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 1.3124571138408019,
-          "error": 0.06708008923008785,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 2.964779299455737,
-          "error": 0.18697087377353028,
-          "insignificant": false
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 0.7012159080906594,
-          "error": 0.026067696587243318,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 19972,
-          "item_name": "Lucky Fishing Hat",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 21524,
-              "item_name": "Red Winter Hat"
-            },
-            {
-              "item_id": 21525,
-              "item_name": "Green Winter Hat"
-            }
-          ]
-        },
-        {
-          "slot": "neck",
-          "verified": false
-        },
-        {
-          "slot": "shoulder",
-          "verified": false
-        },
-        {
-          "slot": "back",
-          "item_id": 279899,
-          "item_name": "Catacomb Cloak",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 10553,
-          "item_name": "Foreman Vest",
-          "source": "Gibblewilt",
-          "source_kind": "world",
-          "score": 5.999999999999959,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 7281,
-          "item_name": "Light Leather Bracers",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 2.074928320299495,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 4767,
-          "item_name": "Coppercloth Gloves",
-          "source": "Dalaran Miner",
-          "source_kind": "world",
-          "score": 5.999999999999959,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 2899,
-          "item_name": "Wendigo Collar",
-          "source": "Old Icebeard",
-          "source_kind": "world",
-          "score": 5.999999999999959,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 279900,
-          "item_name": "Deepgrave Trousers",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 14.22478496089843,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 252426,
-          "item_name": "Murloc Scale Shoes",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 7.999999999999946,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 8350,
-          "item_name": "The 1 Ring",
-          "source": "Fishing",
-          "source_kind": "world",
-          "score": 2.074928320299495,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "verified": false
-        },
-        {
-          "slot": "trinket1",
-          "verified": false
-        },
-        {
-          "slot": "trinket2",
-          "verified": false
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 5340,
-          "item_name": "Cauldron Stirrer",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 142.24,
-          "verified": true,
-          "swap_note": "beat the scored pick Staff of Conjuring (id 1933) in the sim: 10.1 vs 9.3 set DPS"
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 10.079114344325902,
-      "no_source_count": 141,
-      "no_source_sample": [
-        "9747 Simple Britches",
-        "9748 Simple Robe",
-        "9749 Simple Blouse",
-        "9756 Nomad Trousers",
-        "9757 Nomad Tunic",
-        "10047 Simple Kilt",
-        "14389 Durability Shoulderpads",
-        "15309 Feral Cloak",
-        "15925 Journeyman's Stave",
-        "241089 Scarlet Dagger",
-        "246164 Skullthumper",
-        "246165 Driftwood Smasher",
-        "248005 Northshire Hammer",
-        "248007 Militia Shortblade",
-        "248008 Apprentice's Spellstaff"
-      ],
-      "new_at_band": [
-        "head: Lucky Fishing Hat",
-        "back: Catacomb Cloak",
-        "chest: Foreman Vest",
-        "wrist: Light Leather Bracers",
-        "hands: Coppercloth Gloves",
-        "waist: Wendigo Collar",
-        "legs: Deepgrave Trousers",
-        "feet: Murloc Scale Shoes",
-        "finger1: The 1 Ring",
-        "main_hand: Cauldron Stirrer"
-      ],
-      "weights_run_seconds": 1.423548099,
-      "verify_run_seconds": 0.721080644,
-      "coverage": {
-        "back": {
-          "eligible": 24,
-          "sourced": 11
-        },
-        "chest": {
-          "eligible": 55,
-          "sourced": 41
-        },
-        "feet": {
-          "eligible": 32,
-          "sourced": 22
-        },
-        "finger1": {
-          "eligible": 11,
-          "sourced": 1
-        },
-        "finger2": {
-          "eligible": 11,
-          "sourced": 1
-        },
-        "hands": {
-          "eligible": 30,
-          "sourced": 22
-        },
-        "head": {
-          "eligible": 7,
-          "sourced": 3
-        },
-        "legs": {
-          "eligible": 39,
-          "sourced": 31
-        },
-        "main_hand": {
-          "eligible": 84,
-          "sourced": 41
-        },
-        "neck": {
-          "eligible": 6,
-          "sourced": 0
-        },
-        "off_hand": {
-          "eligible": 8,
-          "sourced": 2
-        },
-        "shoulder": {
-          "eligible": 3,
-          "sourced": 0
-        },
-        "waist": {
-          "eligible": 29,
-          "sourced": 23
-        },
-        "wrist": {
-          "eligible": 26,
-          "sourced": 16
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 15,
-      "faction": "alliance",
-      "race": "night-elf",
-      "talents": "0000000000000000-5100000000000000000-0000000000000000",
-      "talent_points": 6,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.002011444027724323,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 0.008535945294855478,
-          "error": 0.00015288459828861618,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 2.0006828756236312,
-          "error": 0.0040217420435519355,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 0.07818906908005893,
-          "error": 0.017609312881965485,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 2.008942337994449,
-          "error": 0.11031481809751136,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 4.736979266023796,
-          "error": 0.3043832797132911,
-          "insignificant": false
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 1.9546564432844662,
-          "error": 0.08911786627283438,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 4368,
-          "item_name": "Flying Tiger Goggles",
-          "source": "Engineering",
-          "source_kind": "crafted",
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 19972,
-              "item_name": "Lucky Fishing Hat"
-            },
-            {
-              "item_id": 21524,
-              "item_name": "Red Winter Hat"
-            },
-            {
-              "item_id": 21525,
-              "item_name": "Green Winter Hat"
-            }
-          ]
-        },
-        {
-          "slot": "neck",
-          "verified": false
-        },
-        {
-          "slot": "shoulder",
-          "verified": false
-        },
-        {
-          "slot": "back",
-          "item_id": 279899,
-          "item_name": "Catacomb Cloak",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 252435,
-          "item_name": "Totemic Leather Armor",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 14.004780129365418,
-          "verified": true,
-          "swap_note": "beat the scored pick Defender's Leather Armor (id 252434) in the sim: 15.1 vs 14.4 set DPS"
-        },
-        {
-          "slot": "wrist",
-          "item_id": 270015,
-          "item_name": "Bravo's Armbands",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 4.314122027567498,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 10401,
-          "item_name": "Blackened Defias Gloves",
-          "source": "The Deadmines: Defias Overseer",
-          "source_kind": "dungeon",
-          "score": 12.004097253741786,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 252428,
-          "item_name": "Brawler's Leather Belt",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 8.315487778814761,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 279900,
-          "item_name": "Deepgrave Trousers",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 14.239347336605595,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 252426,
-          "item_name": "Murloc Scale Shoes",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 8.002731502494525,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 8350,
-          "item_name": "The 1 Ring",
-          "source": "Fishing",
-          "source_kind": "world",
-          "score": 2.0788719447036903,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "verified": false
-        },
-        {
-          "slot": "trinket1",
-          "verified": false
-        },
-        {
-          "slot": "trinket2",
-          "verified": false
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 279895,
-          "item_name": "Ironforge Greathammer",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 231.58273150249454,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 15.093035488101991,
-      "no_source_count": 240,
-      "no_source_sample": [
-        "1189 Overseer's Ring",
-        "9747 Simple Britches",
-        "9748 Simple Robe",
-        "9749 Simple Blouse",
-        "9756 Nomad Trousers",
-        "9757 Nomad Tunic",
-        "9770 Greenweave Cloak",
-        "9775 Bandit Cinch",
-        "9776 Bandit Boots",
-        "9777 Bandit Bracers",
-        "9779 Bandit Cloak",
-        "9780 Bandit Gloves",
-        "9786 Raider's Cloak",
-        "10047 Simple Kilt",
-        "11965 Quartz Ring"
-      ],
-      "new_at_band": [
-        "head: Flying Tiger Goggles",
-        "chest: Totemic Leather Armor",
-        "wrist: Bravo's Armbands",
-        "hands: Blackened Defias Gloves",
-        "waist: Brawler's Leather Belt",
-        "main_hand: Ironforge Greathammer"
-      ],
-      "weights_run_seconds": 1.427649626,
-      "verify_run_seconds": 0.687000273,
-      "coverage": {
-        "back": {
-          "eligible": 58,
-          "sourced": 30
-        },
-        "chest": {
-          "eligible": 105,
-          "sourced": 80
-        },
-        "feet": {
-          "eligible": 63,
-          "sourced": 41
-        },
-        "finger1": {
-          "eligible": 14,
-          "sourced": 1
-        },
-        "finger2": {
-          "eligible": 14,
-          "sourced": 1
-        },
-        "hands": {
-          "eligible": 76,
-          "sourced": 55
-        },
-        "head": {
-          "eligible": 8,
-          "sourced": 4
-        },
-        "legs": {
-          "eligible": 70,
-          "sourced": 55
-        },
-        "main_hand": {
-          "eligible": 128,
-          "sourced": 71
-        },
-        "neck": {
-          "eligible": 8,
-          "sourced": 0
-        },
-        "off_hand": {
-          "eligible": 14,
-          "sourced": 6
-        },
-        "shoulder": {
-          "eligible": 3,
-          "sourced": 0
-        },
-        "waist": {
-          "eligible": 52,
-          "sourced": 38
-        },
-        "wrist": {
-          "eligible": 44,
-          "sourced": 22
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 15,
-      "faction": "horde",
-      "race": "tauren",
-      "talents": "0000000000000000-5100000000000000000-0000000000000000",
-      "talent_points": 6,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.002011444027724323,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 0.008535945294855478,
-          "error": 0.00015288459828861618,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 2.0006828756236312,
-          "error": 0.0040217420435519355,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 0.07818906908005893,
-          "error": 0.017609312881965485,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 2.008942337994449,
-          "error": 0.11031481809751136,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 4.736979266023796,
-          "error": 0.3043832797132911,
-          "insignificant": false
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 1.9546564432844662,
-          "error": 0.08911786627283438,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 4368,
-          "item_name": "Flying Tiger Goggles",
-          "source": "Engineering",
-          "source_kind": "crafted",
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 19972,
-              "item_name": "Lucky Fishing Hat"
-            },
-            {
-              "item_id": 21524,
-              "item_name": "Red Winter Hat"
-            },
-            {
-              "item_id": 21525,
-              "item_name": "Green Winter Hat"
-            }
-          ]
-        },
-        {
-          "slot": "neck",
-          "verified": false
-        },
-        {
-          "slot": "shoulder",
-          "verified": false
-        },
-        {
-          "slot": "back",
-          "item_id": 14149,
-          "item_name": "Subterranean Cape",
-          "source": "Ragefire Chasm: Taragaman the Hungerer",
-          "source_kind": "dungeon",
-          "score": 6.002048626870893,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 252435,
-          "item_name": "Totemic Leather Armor",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 14.004780129365418,
-          "verified": true,
-          "swap_note": "beat the scored pick Defender's Leather Armor (id 252434) in the sim: 14.9 vs 14.2 set DPS"
-        },
-        {
-          "slot": "wrist",
-          "item_id": 270015,
-          "item_name": "Bravo's Armbands",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 4.314122027567498,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 10401,
-          "item_name": "Blackened Defias Gloves",
-          "source": "The Deadmines: Defias Overseer",
-          "source_kind": "dungeon",
-          "score": 12.004097253741786,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 252428,
-          "item_name": "Brawler's Leather Belt",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 8.315487778814761,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 279900,
-          "item_name": "Deepgrave Trousers",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 14.239347336605595,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 252426,
-          "item_name": "Murloc Scale Shoes",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 8.002731502494525,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 8350,
-          "item_name": "The 1 Ring",
-          "source": "Fishing",
-          "source_kind": "world",
-          "score": 2.0788719447036903,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 5351,
-          "item_name": "Bounty Hunter's Ring",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 0.2345672072401768,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "verified": false
-        },
-        {
-          "slot": "trinket2",
-          "verified": false
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 279895,
-          "item_name": "Ironforge Greathammer",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 231.58273150249454,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 14.937975467237962,
-      "no_source_count": 236,
-      "no_source_sample": [
-        "1189 Overseer's Ring",
-        "9747 Simple Britches",
-        "9748 Simple Robe",
-        "9749 Simple Blouse",
-        "9756 Nomad Trousers",
-        "9757 Nomad Tunic",
-        "9770 Greenweave Cloak",
-        "9775 Bandit Cinch",
-        "9776 Bandit Boots",
-        "9777 Bandit Bracers",
-        "9779 Bandit Cloak",
-        "9780 Bandit Gloves",
-        "9786 Raider's Cloak",
-        "10047 Simple Kilt",
-        "11965 Quartz Ring"
-      ],
-      "new_at_band": [
-        "head: Flying Tiger Goggles",
-        "back: Subterranean Cape",
-        "chest: Totemic Leather Armor",
-        "wrist: Bravo's Armbands",
-        "hands: Blackened Defias Gloves",
-        "waist: Brawler's Leather Belt",
-        "finger2: Bounty Hunter's Ring",
-        "main_hand: Ironforge Greathammer"
-      ],
-      "weights_run_seconds": 1.427649626,
-      "verify_run_seconds": 0.832187965,
-      "coverage": {
-        "back": {
-          "eligible": 59,
-          "sourced": 32
-        },
-        "chest": {
-          "eligible": 101,
-          "sourced": 77
-        },
-        "feet": {
-          "eligible": 64,
-          "sourced": 42
-        },
-        "finger1": {
-          "eligible": 16,
-          "sourced": 3
-        },
-        "finger2": {
-          "eligible": 16,
-          "sourced": 3
-        },
-        "hands": {
-          "eligible": 71,
-          "sourced": 50
-        },
-        "head": {
-          "eligible": 8,
-          "sourced": 4
-        },
-        "legs": {
-          "eligible": 68,
-          "sourced": 53
-        },
-        "main_hand": {
-          "eligible": 132,
-          "sourced": 76
-        },
-        "neck": {
-          "eligible": 8,
-          "sourced": 0
-        },
-        "off_hand": {
-          "eligible": 15,
-          "sourced": 7
-        },
-        "shoulder": {
-          "eligible": 3,
-          "sourced": 0
-        },
-        "waist": {
-          "eligible": 52,
-          "sourced": 38
-        },
-        "wrist": {
-          "eligible": 46,
-          "sourced": 25
-        }
-      }
-    },
     {
       "spec": "druid-feral",
       "band": 20,
@@ -1328,6 +229,7 @@
         "shoulder: Serpent's Shoulders",
         "back: Grave Shroud",
         "chest: Brawler's Leather Armor",
+        "wrist: Bravo's Armbands",
         "hands: Fletcher's Gloves",
         "waist: Blackened Defias Belt",
         "legs: Brawler's Leather Pants",
@@ -1338,28 +240,28 @@
         "trinket2: Rune of Duty",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.808034836,
-      "verify_run_seconds": 1.434160612,
+      "weights_run_seconds": 1.425902993,
+      "verify_run_seconds": 1.068006907,
       "coverage": {
         "back": {
-          "eligible": 99,
-          "sourced": 58
+          "eligible": 98,
+          "sourced": 57
         },
         "chest": {
-          "eligible": 140,
-          "sourced": 102
+          "eligible": 137,
+          "sourced": 99
         },
         "feet": {
-          "eligible": 96,
-          "sourced": 63
+          "eligible": 93,
+          "sourced": 60
         },
         "finger1": {
-          "eligible": 40,
-          "sourced": 16
+          "eligible": 38,
+          "sourced": 14
         },
         "finger2": {
-          "eligible": 40,
-          "sourced": 16
+          "eligible": 38,
+          "sourced": 14
         },
         "hands": {
           "eligible": 100,
@@ -1374,20 +276,20 @@
           "sourced": 82
         },
         "main_hand": {
-          "eligible": 204,
-          "sourced": 129
+          "eligible": 200,
+          "sourced": 125
         },
         "neck": {
           "eligible": 15,
           "sourced": 2
         },
         "off_hand": {
-          "eligible": 27,
-          "sourced": 11
+          "eligible": 26,
+          "sourced": 10
         },
         "shoulder": {
-          "eligible": 13,
-          "sourced": 8
+          "eligible": 11,
+          "sourced": 6
         },
         "trinket1": {
           "eligible": 3,
@@ -1398,12 +300,12 @@
           "sourced": 2
         },
         "waist": {
-          "eligible": 86,
-          "sourced": 63
+          "eligible": 85,
+          "sourced": 62
         },
         "wrist": {
-          "eligible": 64,
-          "sourced": 33
+          "eligible": 63,
+          "sourced": 32
         }
       }
     },
@@ -1632,6 +534,7 @@
         "shoulder: Serpent's Shoulders",
         "back: Grave Shroud",
         "chest: Brawler's Leather Armor",
+        "wrist: Bravo's Armbands",
         "hands: Fletcher's Gloves",
         "waist: Blackened Defias Belt",
         "legs: Brawler's Leather Pants",
@@ -1642,28 +545,28 @@
         "trinket2: Rune of Duty",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.808034836,
-      "verify_run_seconds": 1.433032312,
+      "weights_run_seconds": 1.425902993,
+      "verify_run_seconds": 1.093648444,
       "coverage": {
         "back": {
           "eligible": 99,
           "sourced": 59
         },
         "chest": {
-          "eligible": 138,
-          "sourced": 101
+          "eligible": 135,
+          "sourced": 98
         },
         "feet": {
-          "eligible": 94,
-          "sourced": 61
+          "eligible": 93,
+          "sourced": 60
         },
         "finger1": {
-          "eligible": 40,
-          "sourced": 16
+          "eligible": 39,
+          "sourced": 15
         },
         "finger2": {
-          "eligible": 40,
-          "sourced": 16
+          "eligible": 39,
+          "sourced": 15
         },
         "hands": {
           "eligible": 94,
@@ -1678,20 +581,20 @@
           "sourced": 80
         },
         "main_hand": {
-          "eligible": 207,
-          "sourced": 133
+          "eligible": 205,
+          "sourced": 131
         },
         "neck": {
           "eligible": 15,
           "sourced": 2
         },
         "off_hand": {
-          "eligible": 27,
-          "sourced": 11
+          "eligible": 26,
+          "sourced": 10
         },
         "shoulder": {
-          "eligible": 14,
-          "sourced": 9
+          "eligible": 11,
+          "sourced": 6
         },
         "trinket1": {
           "eligible": 3,
@@ -1706,600 +609,8 @@
           "sourced": 61
         },
         "wrist": {
-          "eligible": 66,
-          "sourced": 36
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 25,
-      "faction": "alliance",
-      "race": "night-elf",
-      "talents": "0000000000000000-5423200000000000000-0000000000000000",
-      "talent_points": 16,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.0009993114547996633,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 1,
-          "error": 0.0009993114547996633,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 2.320000000000082,
-          "error": 0.0023184025751371864,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 1.5028016379622706,
-          "error": 0.06171152725490334,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 10.017872123364901,
-          "error": 0.28703163876330756,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 6.119919010204549,
-          "error": 0.6016794483219557,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 252455,
-          "item_name": "Defender's Leather Helm",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 27.840000000000984,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 20444,
-          "item_name": "Sentinel's Medallion",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 9.016809827773624,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 2264,
-          "item_name": "Mantle of Thieves",
-          "source": "Razorfen Kraul: Overlord Ramtusk",
-          "source_kind": "dungeon",
-          "score": 15.028016379622706,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 16315,
-          "item_name": "Sergeant Major's Cape",
-          "source": "Rank 9",
-          "source_kind": "pvp",
-          "score": 15.29120655184941,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 252508,
-          "item_name": "Brawler's Leather Tunic",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 25.942413103698655,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 6902,
-          "item_name": "Bands of Serra'kis",
-          "source": "Blackfathom Deeps",
-          "source_kind": "dungeon",
-          "score": 13.920000000000492,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 7348,
-          "item_name": "Fletcher's Gloves",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 140.25020972710863,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 10403,
-          "item_name": "Blackened Defias Belt",
-          "source": "The Deadmines: Captain Greenskin",
-          "source_kind": "dungeon",
-          "score": 18,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 252516,
-          "item_name": "Brawler's Leather Legguards",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 29.765214741661012,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 252439,
-          "item_name": "Brawler's Leather Boots",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 19.114008189811763,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 20439,
-          "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 15.29120655184941,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 6321,
-          "item_name": "Silverlaine's Family Seal",
-          "source": "Shadowfang Keep: Baron Silverlaine",
-          "source_kind": "dungeon",
-          "score": 11.60000000000041,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 21566,
-          "item_name": "Rune of Perfection",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 21568,
-          "item_name": "Rune of Duty",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 1976,
-          "item_name": "Slaghammer",
-          "source": "Razorfen Kraul: Overlord Ramtusk",
-          "source_kind": "dungeon",
-          "score": 358.0200000000009,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 69.32819919916462,
-      "no_source_count": 508,
-      "no_source_sample": [
-        "1189 Overseer's Ring",
-        "2879 Antipodean Rod",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "5000 Coral Band",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "7608 Seer's Fine Stein",
-        "7956 Bronze Warhammer",
-        "9747 Simple Britches",
-        "9748 Simple Robe",
-        "9749 Simple Blouse",
-        "9756 Nomad Trousers",
-        "9757 Nomad Tunic"
-      ],
-      "new_at_band": [
-        "head: Defender's Leather Helm",
-        "shoulder: Mantle of Thieves",
-        "back: Sergeant Major's Cape",
-        "chest: Brawler's Leather Tunic",
-        "wrist: Bands of Serra'kis",
-        "legs: Brawler's Leather Legguards",
-        "finger2: Silverlaine's Family Seal",
-        "main_hand: Slaghammer"
-      ],
-      "weights_run_seconds": 2.153917729,
-      "verify_run_seconds": 1.610376734,
-      "coverage": {
-        "back": {
-          "eligible": 132,
-          "sourced": 76
-        },
-        "chest": {
-          "eligible": 185,
-          "sourced": 132
-        },
-        "feet": {
-          "eligible": 117,
-          "sourced": 74
-        },
-        "finger1": {
-          "eligible": 67,
-          "sourced": 28
-        },
-        "finger2": {
-          "eligible": 67,
-          "sourced": 28
-        },
-        "hands": {
-          "eligible": 132,
-          "sourced": 95
-        },
-        "head": {
-          "eligible": 42,
-          "sourced": 33
-        },
-        "legs": {
-          "eligible": 148,
-          "sourced": 106
-        },
-        "main_hand": {
-          "eligible": 257,
-          "sourced": 170
-        },
-        "neck": {
-          "eligible": 18,
-          "sourced": 3
-        },
-        "off_hand": {
-          "eligible": 41,
-          "sourced": 18
-        },
-        "shoulder": {
-          "eligible": 45,
-          "sourced": 24
-        },
-        "trinket1": {
-          "eligible": 6,
-          "sourced": 2
-        },
-        "trinket2": {
-          "eligible": 6,
-          "sourced": 2
-        },
-        "waist": {
-          "eligible": 112,
-          "sourced": 78
-        },
-        "wrist": {
-          "eligible": 90,
-          "sourced": 45
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 25,
-      "faction": "horde",
-      "race": "tauren",
-      "talents": "0000000000000000-5423200000000000000-0000000000000000",
-      "talent_points": 16,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.0009993114547996633,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 1,
-          "error": 0.0009993114547996633,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 2.320000000000082,
-          "error": 0.0023184025751371864,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 1.5028016379622706,
-          "error": 0.06171152725490334,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 10.017872123364901,
-          "error": 0.28703163876330756,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 6.119919010204549,
-          "error": 0.6016794483219557,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 252455,
-          "item_name": "Defender's Leather Helm",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 27.840000000000984,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 20442,
-          "item_name": "Scout's Medallion",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 9.016809827773624,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 2264,
-          "item_name": "Mantle of Thieves",
-          "source": "Razorfen Kraul: Overlord Ramtusk",
-          "source_kind": "dungeon",
-          "score": 15.028016379622706,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 16315,
-          "item_name": "Sergeant Major's Cape",
-          "source": "Rank 9",
-          "source_kind": "pvp",
-          "score": 15.29120655184941,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 252508,
-          "item_name": "Brawler's Leather Tunic",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 25.942413103698655,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 6902,
-          "item_name": "Bands of Serra'kis",
-          "source": "Blackfathom Deeps",
-          "source_kind": "dungeon",
-          "score": 13.920000000000492,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 7348,
-          "item_name": "Fletcher's Gloves",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 140.25020972710863,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 16659,
-          "item_name": "Deftkin Belt",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 18.01120655184908,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 252516,
-          "item_name": "Brawler's Leather Legguards",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 29.765214741661012,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 252439,
-          "item_name": "Brawler's Leather Boots",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 19.114008189811763,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 17694,
-          "item_name": "Band of the Fist",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 15.29120655184941,
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 20429,
-              "item_name": "Legionnaire's Band"
-            }
-          ]
-        },
-        {
-          "slot": "finger2",
-          "item_id": 20429,
-          "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 15.29120655184941,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 21566,
-          "item_name": "Rune of Perfection",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 21568,
-          "item_name": "Rune of Duty",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 1976,
-          "item_name": "Slaghammer",
-          "source": "Razorfen Kraul: Overlord Ramtusk",
-          "source_kind": "dungeon",
-          "score": 358.0200000000009,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 68.7326742622878,
-      "no_source_count": 504,
-      "no_source_sample": [
-        "1189 Overseer's Ring",
-        "2879 Antipodean Rod",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "5000 Coral Band",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "7608 Seer's Fine Stein",
-        "7956 Bronze Warhammer",
-        "9747 Simple Britches",
-        "9748 Simple Robe",
-        "9749 Simple Blouse",
-        "9756 Nomad Trousers",
-        "9757 Nomad Tunic"
-      ],
-      "new_at_band": [
-        "head: Defender's Leather Helm",
-        "shoulder: Mantle of Thieves",
-        "back: Sergeant Major's Cape",
-        "chest: Brawler's Leather Tunic",
-        "wrist: Bands of Serra'kis",
-        "waist: Deftkin Belt",
-        "legs: Brawler's Leather Legguards",
-        "finger1: Band of the Fist",
-        "finger2: Legionnaire's Band",
-        "main_hand: Slaghammer"
-      ],
-      "weights_run_seconds": 2.153917729,
-      "verify_run_seconds": 1.574716037,
-      "coverage": {
-        "back": {
-          "eligible": 135,
-          "sourced": 80
-        },
-        "chest": {
-          "eligible": 181,
-          "sourced": 129
-        },
-        "feet": {
-          "eligible": 120,
-          "sourced": 77
-        },
-        "finger1": {
-          "eligible": 70,
-          "sourced": 31
-        },
-        "finger2": {
-          "eligible": 70,
-          "sourced": 31
-        },
-        "hands": {
-          "eligible": 127,
-          "sourced": 90
-        },
-        "head": {
-          "eligible": 42,
-          "sourced": 33
-        },
-        "legs": {
-          "eligible": 146,
-          "sourced": 104
-        },
-        "main_hand": {
-          "eligible": 257,
-          "sourced": 171
-        },
-        "neck": {
-          "eligible": 18,
-          "sourced": 3
-        },
-        "off_hand": {
-          "eligible": 40,
-          "sourced": 17
-        },
-        "shoulder": {
-          "eligible": 45,
-          "sourced": 24
-        },
-        "trinket1": {
-          "eligible": 6,
-          "sourced": 2
-        },
-        "trinket2": {
-          "eligible": 6,
-          "sourced": 2
-        },
-        "waist": {
-          "eligible": 115,
-          "sourced": 81
-        },
-        "wrist": {
-          "eligible": 93,
-          "sourced": 49
+          "eligible": 65,
+          "sourced": 35
         }
       }
     },
@@ -2384,11 +695,11 @@
         },
         {
           "slot": "back",
-          "item_id": 2805,
-          "item_name": "Yeti Fur Cloak",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 15.924705015078274,
+          "item_id": 16315,
+          "item_name": "Sergeant Major's Cape",
+          "source": "Rank 9",
+          "source_kind": "pvp",
+          "score": 15.256470010052507,
           "verified": true
         },
         {
@@ -2420,26 +731,20 @@
         },
         {
           "slot": "waist",
-          "item_id": 20090,
-          "item_name": "Highlander's Chain Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
-          "score": 24,
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 20117,
-              "item_name": "Highlander's Leather Girdle"
-            }
-          ]
+          "item_id": 252459,
+          "item_name": "Prowler's Leather Belt",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 29.84470501507925,
+          "verified": true
         },
         {
           "slot": "legs",
-          "item_id": 9624,
-          "item_name": "Triprunner Dungarees",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 33.85411504523385,
+          "item_id": 252516,
+          "item_name": "Brawler's Leather Legguards",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 29.687057522617813,
           "verified": true
         },
         {
@@ -2480,10 +785,10 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 21566,
-          "item_name": "Rune of Perfection",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "item_id": 272059,
+          "item_name": "Darkspear Voodoo Seal",
+          "source": "Creeg Bothunk",
+          "source_kind": "vendor",
           "verified": true
         },
         {
@@ -2504,8 +809,8 @@
           "verified": false
         }
       ],
-      "set_dps": 100.85558367231168,
-      "no_source_count": 722,
+      "set_dps": 101.18338303698314,
+      "no_source_count": 679,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -2524,80 +829,82 @@
         "9747 Simple Britches"
       ],
       "new_at_band": [
+        "head: Defender's Leather Helm",
         "neck: Ghostshard Talisman",
         "shoulder: Forest Tracker Epaulets",
-        "back: Yeti Fur Cloak",
+        "back: Sergeant Major's Cape",
+        "chest: Brawler's Leather Tunic",
         "wrist: Barbaric Bracers",
-        "waist: Highlander's Chain Girdle",
-        "legs: Triprunner Dungarees",
+        "waist: Prowler's Leather Belt",
+        "legs: Brawler's Leather Legguards",
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye",
         "trinket1: Talisman of Arathor",
-        "trinket2: Rune of Perfection",
+        "trinket2: Darkspear Voodoo Seal",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.134863077,
-      "verify_run_seconds": 1.995920419,
+      "weights_run_seconds": 1.559694399,
+      "verify_run_seconds": 1.465962381,
       "coverage": {
         "back": {
-          "eligible": 174,
+          "eligible": 173,
           "sourced": 92
         },
         "chest": {
-          "eligible": 218,
-          "sourced": 151
+          "eligible": 217,
+          "sourced": 150
         },
         "feet": {
-          "eligible": 148,
-          "sourced": 83
+          "eligible": 147,
+          "sourced": 89
         },
         "finger1": {
-          "eligible": 97,
-          "sourced": 41
+          "eligible": 92,
+          "sourced": 39
         },
         "finger2": {
-          "eligible": 97,
-          "sourced": 41
+          "eligible": 92,
+          "sourced": 39
         },
         "hands": {
-          "eligible": 154,
-          "sourced": 104
+          "eligible": 153,
+          "sourced": 103
         },
         "head": {
           "eligible": 73,
-          "sourced": 48
+          "sourced": 54
         },
         "legs": {
-          "eligible": 176,
-          "sourced": 121
+          "eligible": 174,
+          "sourced": 122
         },
         "main_hand": {
           "eligible": 295,
-          "sourced": 190
+          "sourced": 193
         },
         "neck": {
           "eligible": 38,
-          "sourced": 11
+          "sourced": 13
         },
         "off_hand": {
           "eligible": 51,
-          "sourced": 20
+          "sourced": 21
         },
         "shoulder": {
-          "eligible": 75,
-          "sourced": 37
+          "eligible": 73,
+          "sourced": 41
         },
         "trinket1": {
           "eligible": 11,
-          "sourced": 3
+          "sourced": 5
         },
         "trinket2": {
           "eligible": 11,
-          "sourced": 3
+          "sourced": 5
         },
         "waist": {
-          "eligible": 151,
-          "sourced": 95
+          "eligible": 150,
+          "sourced": 103
         },
         "wrist": {
           "eligible": 109,
@@ -2722,26 +1029,20 @@
         },
         {
           "slot": "waist",
-          "item_id": 20152,
-          "item_name": "Defiler's Chain Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
-          "score": 24,
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 20191,
-              "item_name": "Defiler's Leather Girdle"
-            }
-          ]
+          "item_id": 252459,
+          "item_name": "Prowler's Leather Belt",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 29.84470501507925,
+          "verified": true
         },
         {
           "slot": "legs",
-          "item_id": 9624,
-          "item_name": "Triprunner Dungarees",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 33.85411504523385,
+          "item_id": 252516,
+          "item_name": "Brawler's Leather Legguards",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 29.687057522617813,
           "verified": true
         },
         {
@@ -2782,10 +1083,10 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 21566,
-          "item_name": "Rune of Perfection",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "item_id": 272059,
+          "item_name": "Darkspear Voodoo Seal",
+          "source": "Creeg Bothunk",
+          "source_kind": "vendor",
           "verified": true
         },
         {
@@ -2806,8 +1107,8 @@
           "verified": false
         }
       ],
-      "set_dps": 99.58927513296095,
-      "no_source_count": 719,
+      "set_dps": 99.82340654524728,
+      "no_source_count": 676,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -2826,39 +1127,42 @@
         "9747 Simple Britches"
       ],
       "new_at_band": [
+        "head: Defender's Leather Helm",
         "neck: Ghostshard Talisman",
         "shoulder: Forest Tracker Epaulets",
+        "back: Sergeant Major's Cape",
+        "chest: Brawler's Leather Tunic",
         "wrist: Barbaric Bracers",
-        "waist: Defiler's Chain Girdle",
-        "legs: Triprunner Dungarees",
+        "waist: Prowler's Leather Belt",
+        "legs: Brawler's Leather Legguards",
         "finger1: Legionnaire's Band",
         "finger2: Ironspine's Eye",
         "trinket1: Defiler's Talisman",
-        "trinket2: Rune of Perfection",
+        "trinket2: Darkspear Voodoo Seal",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.134863077,
-      "verify_run_seconds": 2.004149889,
+      "weights_run_seconds": 1.559694399,
+      "verify_run_seconds": 1.466220587,
       "coverage": {
         "back": {
           "eligible": 173,
-          "sourced": 92
+          "sourced": 93
         },
         "chest": {
-          "eligible": 215,
-          "sourced": 149
+          "eligible": 214,
+          "sourced": 148
         },
         "feet": {
-          "eligible": 152,
-          "sourced": 86
+          "eligible": 151,
+          "sourced": 92
         },
         "finger1": {
-          "eligible": 95,
-          "sourced": 39
+          "eligible": 93,
+          "sourced": 40
         },
         "finger2": {
-          "eligible": 95,
-          "sourced": 39
+          "eligible": 93,
+          "sourced": 40
         },
         "hands": {
           "eligible": 148,
@@ -2866,645 +1170,43 @@
         },
         "head": {
           "eligible": 73,
-          "sourced": 48
+          "sourced": 54
         },
         "legs": {
-          "eligible": 173,
+          "eligible": 170,
           "sourced": 118
         },
         "main_hand": {
           "eligible": 295,
-          "sourced": 191
+          "sourced": 194
         },
         "neck": {
           "eligible": 38,
-          "sourced": 11
+          "sourced": 13
         },
         "off_hand": {
           "eligible": 49,
-          "sourced": 18
+          "sourced": 19
         },
         "shoulder": {
-          "eligible": 72,
-          "sourced": 34
+          "eligible": 71,
+          "sourced": 39
         },
         "trinket1": {
           "eligible": 11,
-          "sourced": 3
+          "sourced": 5
         },
         "trinket2": {
           "eligible": 11,
-          "sourced": 3
+          "sourced": 5
         },
         "waist": {
           "eligible": 154,
-          "sourced": 98
+          "sourced": 107
         },
         "wrist": {
           "eligible": 112,
           "sourced": 56
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 35,
-      "faction": "alliance",
-      "race": "night-elf",
-      "talents": "0000000000000000-5423222121020000000-0000000000000000",
-      "talent_points": 26,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.001106757930435591,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 1,
-          "error": 0.001106757930435591,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 2.320000000000169,
-          "error": 0.0025676783986111305,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 1.578280446669148,
-          "error": 0.06350211199283319,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 11.097633159975294,
-          "error": 0.3004129502141687,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 6.83600888065648,
-          "error": 0.7824959964379825,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 252455,
-          "item_name": "Defender's Leather Helm",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 27.84000000000203,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 7731,
-          "item_name": "Ghostshard Talisman",
-          "source": "Scarlet Monastery: Azshir the Sleepless",
-          "source_kind": "dungeon",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 2278,
-          "item_name": "Forest Tracker Epaulets",
-          "source": "Gnomeregan: Mechanized Sentry",
-          "source_kind": "dungeon",
-          "score": 28.961084913361475,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 2805,
-          "item_name": "Yeti Fur Cloak",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 16.429682680015397,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 5739,
-          "item_name": "Barbaric Harness",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 28.866243573354367,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 18948,
-          "item_name": "Barbaric Bracers",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 15.59312178667727,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 7348,
-          "item_name": "Fletcher's Gloves",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 155.36686423965412,
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 18238,
-              "item_name": "Shadowskin Gloves"
-            }
-          ]
-        },
-        {
-          "slot": "waist",
-          "item_id": 4264,
-          "item_name": "Barbaric Belt",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 25.520000000001858,
-          "verified": true,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 9624,
-          "item_name": "Triprunner Dungarees",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 35.36904804004517,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 4109,
-          "item_name": "Excelsior Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 30.444524020023515,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 23.48452402002301,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 19517,
-          "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 23.389682680015902,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 5079,
-          "item_name": "Cold Basilisk Eye",
-          "source": "Cold Eye Basilisk",
-          "source_kind": "world",
-          "verified": true,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 21119,
-          "item_name": "Talisman of Arathor",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
-          "verified": true,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 7713,
-          "item_name": "Illusionary Rod",
-          "source": "Scarlet Monastery: Arcanist Doan",
-          "source_kind": "dungeon",
-          "score": 641.3068642396541,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 87.07896242016594,
-      "no_source_count": 779,
-      "no_source_sample": [
-        "1189 Overseer's Ring",
-        "2277 Necromancer Leggings",
-        "2879 Antipodean Rod",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "7608 Seer's Fine Stein",
-        "7956 Bronze Warhammer",
-        "8006 The Ziggler"
-      ],
-      "new_at_band": [
-        "chest: Barbaric Harness",
-        "waist: Barbaric Belt",
-        "feet: Excelsior Boots",
-        "finger1: Ironspine's Eye",
-        "finger2: Protector's Band",
-        "trinket1: Cold Basilisk Eye",
-        "trinket2: Talisman of Arathor",
-        "main_hand: Illusionary Rod"
-      ],
-      "weights_run_seconds": 2.210956618,
-      "verify_run_seconds": 1.895539458,
-      "coverage": {
-        "back": {
-          "eligible": 201,
-          "sourced": 117
-        },
-        "chest": {
-          "eligible": 248,
-          "sourced": 178
-        },
-        "feet": {
-          "eligible": 174,
-          "sourced": 105
-        },
-        "finger1": {
-          "eligible": 116,
-          "sourced": 53
-        },
-        "finger2": {
-          "eligible": 116,
-          "sourced": 53
-        },
-        "hands": {
-          "eligible": 192,
-          "sourced": 127
-        },
-        "head": {
-          "eligible": 97,
-          "sourced": 69
-        },
-        "legs": {
-          "eligible": 195,
-          "sourced": 138
-        },
-        "main_hand": {
-          "eligible": 334,
-          "sourced": 219
-        },
-        "neck": {
-          "eligible": 43,
-          "sourced": 16
-        },
-        "off_hand": {
-          "eligible": 58,
-          "sourced": 26
-        },
-        "shoulder": {
-          "eligible": 93,
-          "sourced": 54
-        },
-        "trinket1": {
-          "eligible": 13,
-          "sourced": 4
-        },
-        "trinket2": {
-          "eligible": 13,
-          "sourced": 4
-        },
-        "waist": {
-          "eligible": 175,
-          "sourced": 116
-        },
-        "wrist": {
-          "eligible": 134,
-          "sourced": 72
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 35,
-      "faction": "horde",
-      "race": "tauren",
-      "talents": "0000000000000000-5423222121020000000-0000000000000000",
-      "talent_points": 26,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.001106757930435591,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 1,
-          "error": 0.001106757930435591,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 2.320000000000169,
-          "error": 0.0025676783986111305,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 1.578280446669148,
-          "error": 0.06350211199283319,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 11.097633159975294,
-          "error": 0.3004129502141687,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 6.83600888065648,
-          "error": 0.7824959964379825,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 252455,
-          "item_name": "Defender's Leather Helm",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 27.84000000000203,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 7731,
-          "item_name": "Ghostshard Talisman",
-          "source": "Scarlet Monastery: Azshir the Sleepless",
-          "source_kind": "dungeon",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 2278,
-          "item_name": "Forest Tracker Epaulets",
-          "source": "Gnomeregan: Mechanized Sentry",
-          "source_kind": "dungeon",
-          "score": 28.961084913361475,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 16315,
-          "item_name": "Sergeant Major's Cape",
-          "source": "Rank 9",
-          "source_kind": "pvp",
-          "score": 15.59312178667727,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 5739,
-          "item_name": "Barbaric Harness",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 28.866243573354367,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 18948,
-          "item_name": "Barbaric Bracers",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 15.59312178667727,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 7348,
-          "item_name": "Fletcher's Gloves",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 155.36686423965412,
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 18238,
-              "item_name": "Shadowskin Gloves"
-            }
-          ]
-        },
-        {
-          "slot": "waist",
-          "item_id": 4264,
-          "item_name": "Barbaric Belt",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 25.520000000001858,
-          "verified": true,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 9624,
-          "item_name": "Triprunner Dungarees",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 35.36904804004517,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 4109,
-          "item_name": "Excelsior Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 30.444524020023515,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 23.48452402002301,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 19513,
-          "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 23.389682680015902,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 5079,
-          "item_name": "Cold Basilisk Eye",
-          "source": "Cold Eye Basilisk",
-          "source_kind": "world",
-          "verified": true,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 21120,
-          "item_name": "Defiler's Talisman",
-          "source": "The Defilers",
-          "source_kind": "rep",
-          "verified": true,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 7713,
-          "item_name": "Illusionary Rod",
-          "source": "Scarlet Monastery: Arcanist Doan",
-          "source_kind": "dungeon",
-          "score": 641.3068642396541,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 86.22268020234618,
-      "no_source_count": 776,
-      "no_source_sample": [
-        "1189 Overseer's Ring",
-        "2277 Necromancer Leggings",
-        "2879 Antipodean Rod",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "7608 Seer's Fine Stein",
-        "7956 Bronze Warhammer",
-        "8006 The Ziggler"
-      ],
-      "new_at_band": [
-        "chest: Barbaric Harness",
-        "waist: Barbaric Belt",
-        "feet: Excelsior Boots",
-        "finger1: Ironspine's Eye",
-        "finger2: Legionnaire's Band",
-        "trinket1: Cold Basilisk Eye",
-        "trinket2: Defiler's Talisman",
-        "main_hand: Illusionary Rod"
-      ],
-      "weights_run_seconds": 2.210956618,
-      "verify_run_seconds": 1.889911272,
-      "coverage": {
-        "back": {
-          "eligible": 200,
-          "sourced": 117
-        },
-        "chest": {
-          "eligible": 243,
-          "sourced": 174
-        },
-        "feet": {
-          "eligible": 176,
-          "sourced": 106
-        },
-        "finger1": {
-          "eligible": 114,
-          "sourced": 51
-        },
-        "finger2": {
-          "eligible": 114,
-          "sourced": 51
-        },
-        "hands": {
-          "eligible": 187,
-          "sourced": 122
-        },
-        "head": {
-          "eligible": 98,
-          "sourced": 70
-        },
-        "legs": {
-          "eligible": 192,
-          "sourced": 135
-        },
-        "main_hand": {
-          "eligible": 333,
-          "sourced": 219
-        },
-        "neck": {
-          "eligible": 42,
-          "sourced": 15
-        },
-        "off_hand": {
-          "eligible": 55,
-          "sourced": 23
-        },
-        "shoulder": {
-          "eligible": 90,
-          "sourced": 51
-        },
-        "trinket1": {
-          "eligible": 13,
-          "sourced": 4
-        },
-        "trinket2": {
-          "eligible": 13,
-          "sourced": 4
-        },
-        "waist": {
-          "eligible": 179,
-          "sourced": 120
-        },
-        "wrist": {
-          "eligible": 139,
-          "sourced": 78
         }
       }
     },
@@ -3580,11 +1282,11 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 9647,
-          "item_name": "Failed Flying Experiment",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 38.54342431860047,
+          "item_id": 2278,
+          "item_name": "Forest Tracker Epaulets",
+          "source": "Gnomeregan: Mechanized Sentry",
+          "source_kind": "dungeon",
+          "score": 28.477766750459725,
           "verified": true
         },
         {
@@ -3625,11 +1327,11 @@
         },
         {
           "slot": "waist",
-          "item_id": 20116,
-          "item_name": "Highlander's Leather Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
-          "score": 30,
+          "item_id": 252459,
+          "item_name": "Prowler's Leather Belt",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 30.086054591160682,
           "verified": true
         },
         {
@@ -3643,11 +1345,11 @@
         },
         {
           "slot": "feet",
-          "item_id": 4109,
-          "item_name": "Excelsior Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 30.04908188674016,
+          "item_id": 252465,
+          "item_name": "Prowler's Leather Shoes",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 36.260397023020865,
           "verified": true
         },
         {
@@ -3670,18 +1372,18 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 1713,
-          "item_name": "Ankh of Life",
-          "source": "Maraudon: Theradrim Shardling",
-          "source_kind": "dungeon",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
           "item_id": 21565,
           "item_name": "Rune of Perfection",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 1713,
+          "item_name": "Ankh of Life",
+          "source": "Maraudon: Theradrim Shardling",
+          "source_kind": "dungeon",
           "verified": true
         },
         {
@@ -3692,7 +1394,7 @@
           "source_kind": "dungeon",
           "score": 567.0600000000027,
           "verified": true,
-          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 104.2 vs 102.4 set DPS"
+          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 104.3 vs 102.4 set DPS"
         },
         {
           "slot": "off_hand",
@@ -3703,8 +1405,8 @@
           "verified": false
         }
       ],
-      "set_dps": 104.19057770647709,
-      "no_source_count": 1024,
+      "set_dps": 104.2881644572967,
+      "no_source_count": 942,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -3725,22 +1427,22 @@
       "new_at_band": [
         "head: White Bandit Mask",
         "neck: Sentinel's Medallion",
-        "shoulder: Failed Flying Experiment",
         "back: Sergeant Major's Cape",
+        "chest: Barbaric Harness",
         "wrist: Branded Leather Bracers",
         "hands: Gloves of Holy Might",
-        "waist: Highlander's Leather Girdle",
+        "legs: Triprunner Dungarees",
+        "feet: Prowler's Leather Shoes",
         "finger1: Protector's Band",
-        "finger2: Ironspine's Eye",
-        "trinket1: Ankh of Life",
-        "trinket2: Rune of Perfection",
+        "trinket1: Rune of Perfection",
+        "trinket2: Ankh of Life",
         "main_hand: Thornstone Sledgehammer"
       ],
-      "weights_run_seconds": 2.193675675,
-      "verify_run_seconds": 2.012912348,
+      "weights_run_seconds": 1.6035865230000002,
+      "verify_run_seconds": 1.528642718,
       "coverage": {
         "back": {
-          "eligible": 236,
+          "eligible": 234,
           "sourced": 129
         },
         "chest": {
@@ -3748,60 +1450,60 @@
           "sourced": 196
         },
         "feet": {
-          "eligible": 202,
-          "sourced": 111
+          "eligible": 201,
+          "sourced": 123
         },
         "finger1": {
-          "eligible": 139,
-          "sourced": 57
+          "eligible": 137,
+          "sourced": 60
         },
         "finger2": {
-          "eligible": 139,
-          "sourced": 57
+          "eligible": 137,
+          "sourced": 60
         },
         "hands": {
           "eligible": 221,
-          "sourced": 139
+          "sourced": 153
         },
         "head": {
           "eligible": 126,
-          "sourced": 81
+          "sourced": 88
         },
         "legs": {
           "eligible": 221,
-          "sourced": 147
+          "sourced": 150
         },
         "main_hand": {
           "eligible": 382,
-          "sourced": 230
+          "sourced": 240
         },
         "neck": {
           "eligible": 56,
-          "sourced": 19
+          "sourced": 22
         },
         "off_hand": {
           "eligible": 67,
-          "sourced": 27
+          "sourced": 29
         },
         "shoulder": {
-          "eligible": 118,
-          "sourced": 62
+          "eligible": 117,
+          "sourced": 68
         },
         "trinket1": {
-          "eligible": 20,
-          "sourced": 11
+          "eligible": 19,
+          "sourced": 12
         },
         "trinket2": {
-          "eligible": 20,
-          "sourced": 11
+          "eligible": 19,
+          "sourced": 12
         },
         "waist": {
-          "eligible": 206,
-          "sourced": 129
+          "eligible": 204,
+          "sourced": 140
         },
         "wrist": {
           "eligible": 157,
-          "sourced": 76
+          "sourced": 77
         }
       }
     },
@@ -3877,11 +1579,11 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 9647,
-          "item_name": "Failed Flying Experiment",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 38.54342431860047,
+          "item_id": 2278,
+          "item_name": "Forest Tracker Epaulets",
+          "source": "Gnomeregan: Mechanized Sentry",
+          "source_kind": "dungeon",
+          "score": 28.477766750459725,
           "verified": true
         },
         {
@@ -3940,11 +1642,11 @@
         },
         {
           "slot": "feet",
-          "item_id": 4109,
-          "item_name": "Excelsior Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 30.04908188674016,
+          "item_id": 252465,
+          "item_name": "Prowler's Leather Shoes",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 36.260397023020865,
           "verified": true
         },
         {
@@ -3989,7 +1691,7 @@
           "source_kind": "dungeon",
           "score": 567.0600000000027,
           "verified": true,
-          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 103.1 vs 101.4 set DPS"
+          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 103.0 vs 101.3 set DPS"
         },
         {
           "slot": "off_hand",
@@ -4000,8 +1702,8 @@
           "verified": false
         }
       ],
-      "set_dps": 103.11726224198225,
-      "no_source_count": 1021,
+      "set_dps": 102.99903485301171,
+      "no_source_count": 939,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -4022,664 +1724,84 @@
       "new_at_band": [
         "head: White Bandit Mask",
         "neck: Ethereal Talisman",
-        "shoulder: Failed Flying Experiment",
         "back: Sergeant Major's Cape",
+        "chest: Barbaric Harness",
         "wrist: Branded Leather Bracers",
         "hands: Gloves of Holy Might",
         "waist: Tharg's Shoelace",
+        "legs: Triprunner Dungarees",
+        "feet: Prowler's Leather Shoes",
         "finger1: Legionnaire's Band",
-        "finger2: Ironspine's Eye",
         "trinket1: Rune of Perfection",
         "trinket2: Ankh of Life",
         "main_hand: Thornstone Sledgehammer"
       ],
-      "weights_run_seconds": 2.193675675,
-      "verify_run_seconds": 2.040003343,
+      "weights_run_seconds": 1.6035865230000002,
+      "verify_run_seconds": 1.490376032,
       "coverage": {
         "back": {
-          "eligible": 239,
-          "sourced": 133
+          "eligible": 236,
+          "sourced": 132
         },
         "chest": {
           "eligible": 282,
           "sourced": 192
         },
         "feet": {
-          "eligible": 207,
-          "sourced": 115
+          "eligible": 205,
+          "sourced": 126
         },
         "finger1": {
-          "eligible": 139,
-          "sourced": 57
+          "eligible": 135,
+          "sourced": 58
         },
         "finger2": {
-          "eligible": 139,
-          "sourced": 57
+          "eligible": 135,
+          "sourced": 58
         },
         "hands": {
           "eligible": 217,
-          "sourced": 135
+          "sourced": 149
         },
         "head": {
           "eligible": 127,
-          "sourced": 82
+          "sourced": 89
         },
         "legs": {
           "eligible": 218,
-          "sourced": 144
+          "sourced": 147
         },
         "main_hand": {
-          "eligible": 384,
-          "sourced": 233
+          "eligible": 383,
+          "sourced": 242
         },
         "neck": {
-          "eligible": 57,
-          "sourced": 20
+          "eligible": 56,
+          "sourced": 22
         },
         "off_hand": {
-          "eligible": 65,
-          "sourced": 25
+          "eligible": 64,
+          "sourced": 26
         },
         "shoulder": {
-          "eligible": 115,
-          "sourced": 59
+          "eligible": 114,
+          "sourced": 65
         },
         "trinket1": {
           "eligible": 19,
-          "sourced": 10
+          "sourced": 12
         },
         "trinket2": {
           "eligible": 19,
-          "sourced": 10
+          "sourced": 12
         },
         "waist": {
-          "eligible": 211,
-          "sourced": 134
+          "eligible": 208,
+          "sourced": 144
         },
         "wrist": {
           "eligible": 162,
-          "sourced": 82
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 45,
-      "faction": "alliance",
-      "race": "night-elf",
-      "talents": "0000000000000000-5423222121032010001-5000000000000000",
-      "talent_points": 36,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.00119246446136036,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 1,
-          "error": 0.00119246446136036,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 2.3199999999999883,
-          "error": 0.002766517550357349,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 1.5400105788119305,
-          "error": 0.0667248966057235,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 12.000646115195016,
-          "error": 0.3317904479477684,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 7.435143264147525,
-          "error": 1.14368215501065,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 10008,
-          "item_name": "White Bandit Mask",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 42.4601163669311,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 19540,
-          "item_name": "Sentinel's Medallion",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 16.940116366931235,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 9647,
-          "item_name": "Failed Flying Experiment",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 38.60010578811919,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 16336,
-          "item_name": "Sergeant Major's Cape",
-          "source": "Rank 9",
-          "source_kind": "pvp",
-          "score": 23.160063472871514,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 11193,
-          "item_name": "Blazewind Breastplate",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 42.38024331267437,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 19508,
-          "item_name": "Branded Leather Bracers",
-          "source": "Scarlet Monastery: High Inquisitor Fairbanks",
-          "source_kind": "dungeon",
-          "score": 20,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 867,
-          "item_name": "Gloves of Holy Might",
-          "source": "Gnomeregan: Dark Iron Ambassador",
-          "source_kind": "dungeon",
-          "score": 188.00904561273023,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 9657,
-          "item_name": "Vinehedge Cinch",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 32.47999999999983,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 9624,
-          "item_name": "Triprunner Dungarees",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 34.680190418614714,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 12470,
-          "item_name": "Sandstalker Ankleguards",
-          "source": "Zul'Farrak: Zerillis",
-          "source_kind": "dungeon",
-          "score": 40.10017983980275,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 19515,
-          "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 30.88008463049535,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 23.140095209307326,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 1490,
-          "item_name": "Guardian Talisman",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 4130,
-          "item_name": "Smotts' Compass",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 7959,
-          "item_name": "Blight",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 606.62,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 120.94488598144025,
-      "no_source_count": 1216,
-      "no_source_sample": [
-        "1189 Overseer's Ring",
-        "2277 Necromancer Leggings",
-        "2879 Antipodean Rod",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "7470 Regal Wizard Hat"
-      ],
-      "new_at_band": [
-        "chest: Blazewind Breastplate",
-        "waist: Vinehedge Cinch",
-        "feet: Sandstalker Ankleguards",
-        "trinket1: Guardian Talisman",
-        "trinket2: Smotts' Compass",
-        "main_hand: Blight"
-      ],
-      "weights_run_seconds": 2.170066103,
-      "verify_run_seconds": 1.919904662,
-      "coverage": {
-        "back": {
-          "eligible": 266,
-          "sourced": 138
-        },
-        "chest": {
-          "eligible": 319,
-          "sourced": 212
-        },
-        "feet": {
-          "eligible": 227,
-          "sourced": 123
-        },
-        "finger1": {
-          "eligible": 153,
-          "sourced": 60
-        },
-        "finger2": {
-          "eligible": 153,
-          "sourced": 60
-        },
-        "hands": {
-          "eligible": 238,
-          "sourced": 146
-        },
-        "head": {
-          "eligible": 163,
-          "sourced": 101
-        },
-        "legs": {
-          "eligible": 243,
-          "sourced": 156
-        },
-        "main_hand": {
-          "eligible": 419,
-          "sourced": 253
-        },
-        "neck": {
-          "eligible": 65,
-          "sourced": 25
-        },
-        "off_hand": {
-          "eligible": 75,
-          "sourced": 31
-        },
-        "shoulder": {
-          "eligible": 151,
-          "sourced": 70
-        },
-        "trinket1": {
-          "eligible": 29,
-          "sourced": 16
-        },
-        "trinket2": {
-          "eligible": 29,
-          "sourced": 16
-        },
-        "waist": {
-          "eligible": 225,
-          "sourced": 134
-        },
-        "wrist": {
-          "eligible": 192,
-          "sourced": 84
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 45,
-      "faction": "horde",
-      "race": "tauren",
-      "talents": "0000000000000000-5423222121032010001-5000000000000000",
-      "talent_points": 36,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.00119246446136036,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 1,
-          "error": 0.00119246446136036,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 2.3199999999999883,
-          "error": 0.002766517550357349,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 1.5400105788119305,
-          "error": 0.0667248966057235,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 12.000646115195016,
-          "error": 0.3317904479477684,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 7.435143264147525,
-          "error": 1.14368215501065,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 10008,
-          "item_name": "White Bandit Mask",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 42.4601163669311,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 4430,
-          "item_name": "Ethereal Talisman",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 17.760042315247663,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 9647,
-          "item_name": "Failed Flying Experiment",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 38.60010578811919,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 16336,
-          "item_name": "Sergeant Major's Cape",
-          "source": "Rank 9",
-          "source_kind": "pvp",
-          "score": 23.160063472871514,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 11193,
-          "item_name": "Blazewind Breastplate",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 42.38024331267437,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 19508,
-          "item_name": "Branded Leather Bracers",
-          "source": "Scarlet Monastery: High Inquisitor Fairbanks",
-          "source_kind": "dungeon",
-          "score": 20,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 867,
-          "item_name": "Gloves of Holy Might",
-          "source": "Gnomeregan: Dark Iron Ambassador",
-          "source_kind": "dungeon",
-          "score": 188.00904561273023,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 9705,
-          "item_name": "Tharg's Shoelace",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 30.159999999999847,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 9624,
-          "item_name": "Triprunner Dungarees",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 34.680190418614714,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 12470,
-          "item_name": "Sandstalker Ankleguards",
-          "source": "Zul'Farrak: Zerillis",
-          "source_kind": "dungeon",
-          "score": 40.10017983980275,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 19512,
-          "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 30.88008463049535,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 23.140095209307326,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 4130,
-          "item_name": "Smotts' Compass",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 1490,
-          "item_name": "Guardian Talisman",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 7959,
-          "item_name": "Blight",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 606.62,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 119.82936556999532,
-      "no_source_count": 1213,
-      "no_source_sample": [
-        "1189 Overseer's Ring",
-        "2277 Necromancer Leggings",
-        "2879 Antipodean Rod",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "7470 Regal Wizard Hat"
-      ],
-      "new_at_band": [
-        "chest: Blazewind Breastplate",
-        "feet: Sandstalker Ankleguards",
-        "trinket1: Smotts' Compass",
-        "trinket2: Guardian Talisman",
-        "main_hand: Blight"
-      ],
-      "weights_run_seconds": 2.170066103,
-      "verify_run_seconds": 1.9504850999999999,
-      "coverage": {
-        "back": {
-          "eligible": 270,
-          "sourced": 143
-        },
-        "chest": {
-          "eligible": 315,
-          "sourced": 209
-        },
-        "feet": {
-          "eligible": 232,
-          "sourced": 127
-        },
-        "finger1": {
-          "eligible": 153,
-          "sourced": 60
-        },
-        "finger2": {
-          "eligible": 153,
-          "sourced": 60
-        },
-        "hands": {
-          "eligible": 237,
-          "sourced": 145
-        },
-        "head": {
-          "eligible": 165,
-          "sourced": 103
-        },
-        "legs": {
-          "eligible": 240,
-          "sourced": 153
-        },
-        "main_hand": {
-          "eligible": 422,
-          "sourced": 257
-        },
-        "neck": {
-          "eligible": 66,
-          "sourced": 26
-        },
-        "off_hand": {
-          "eligible": 72,
-          "sourced": 28
-        },
-        "shoulder": {
-          "eligible": 148,
-          "sourced": 67
-        },
-        "trinket1": {
-          "eligible": 28,
-          "sourced": 15
-        },
-        "trinket2": {
-          "eligible": 28,
-          "sourced": 15
-        },
-        "waist": {
-          "eligible": 229,
-          "sourced": 138
-        },
-        "wrist": {
-          "eligible": 196,
-          "sourced": 89
+          "sourced": 83
         }
       }
     },
@@ -4737,18 +1859,13 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 17715,
-          "item_name": "Eye of Theradras",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
-          "score": 180.71744496652306,
+          "item_id": 10008,
+          "item_name": "White Bandit Mask",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 43.08826838936434,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 21317,
-              "item_name": "Helm of the Pathfinder"
-            }
-          ]
+          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 127.2 vs 125.7 set DPS"
         },
         {
           "slot": "neck",
@@ -4860,10 +1977,10 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 19024,
-          "item_name": "Arena Grand Master",
-          "source": "Quests",
-          "source_kind": "quest",
+          "item_id": 21117,
+          "item_name": "Talisman of Arathor",
+          "source": "The League of Arathor",
+          "source_kind": "rep",
           "verified": true,
           "effect_unmodelled": true
         },
@@ -4885,8 +2002,8 @@
           "verified": false
         }
       ],
-      "set_dps": 127.77919052623017,
-      "no_source_count": 1409,
+      "set_dps": 129.15039252853396,
+      "no_source_count": 1327,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -4905,81 +2022,83 @@
         "7470 Regal Wizard Hat"
       ],
       "new_at_band": [
-        "head: Eye of Theradras",
         "neck: Sentinel's Medallion",
+        "shoulder: Failed Flying Experiment",
         "chest: Warbear Harness",
         "wrist: Deepfury Bracers",
         "waist: Highlander's Leather Girdle",
         "legs: Gryphon Rider's Leggings",
+        "feet: Sandstalker Ankleguards",
         "finger1: Protector's Band",
         "trinket1: Smoking Heart of the Mountain",
-        "trinket2: Arena Grand Master"
+        "trinket2: Talisman of Arathor",
+        "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.217860718,
-      "verify_run_seconds": 2.052822903,
+      "weights_run_seconds": 1.573354706,
+      "verify_run_seconds": 1.5515123229999999,
       "coverage": {
         "back": {
           "eligible": 299,
-          "sourced": 161
+          "sourced": 163
         },
         "chest": {
           "eligible": 356,
           "sourced": 237
         },
         "feet": {
-          "eligible": 271,
-          "sourced": 142
+          "eligible": 270,
+          "sourced": 154
         },
         "finger1": {
-          "eligible": 172,
-          "sourced": 73
+          "eligible": 171,
+          "sourced": 77
         },
         "finger2": {
-          "eligible": 172,
-          "sourced": 73
+          "eligible": 171,
+          "sourced": 77
         },
         "hands": {
           "eligible": 289,
-          "sourced": 166
+          "sourced": 180
         },
         "head": {
-          "eligible": 192,
-          "sourced": 114
+          "eligible": 191,
+          "sourced": 120
         },
         "legs": {
-          "eligible": 276,
-          "sourced": 177
+          "eligible": 274,
+          "sourced": 178
         },
         "main_hand": {
-          "eligible": 466,
-          "sourced": 280
+          "eligible": 463,
+          "sourced": 287
         },
         "neck": {
-          "eligible": 77,
-          "sourced": 32
+          "eligible": 76,
+          "sourced": 34
         },
         "off_hand": {
-          "eligible": 91,
+          "eligible": 89,
           "sourced": 40
         },
         "shoulder": {
-          "eligible": 176,
-          "sourced": 86
+          "eligible": 174,
+          "sourced": 91
         },
         "trinket1": {
-          "eligible": 49,
-          "sourced": 22
+          "eligible": 48,
+          "sourced": 23
         },
         "trinket2": {
-          "eligible": 49,
-          "sourced": 22
+          "eligible": 48,
+          "sourced": 23
         },
         "waist": {
           "eligible": 263,
-          "sourced": 152
+          "sourced": 165
         },
         "wrist": {
-          "eligible": 213,
+          "eligible": 212,
           "sourced": 99
         }
       }
@@ -5038,18 +2157,13 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 17715,
-          "item_name": "Eye of Theradras",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
-          "score": 180.71744496652306,
+          "item_id": 10008,
+          "item_name": "White Bandit Mask",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 43.08826838936434,
           "verified": true,
-          "ties": [
-            {
-              "item_id": 21317,
-              "item_name": "Helm of the Pathfinder"
-            }
-          ]
+          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 130.0 vs 128.5 set DPS"
         },
         {
           "slot": "neck",
@@ -5122,7 +2236,7 @@
           "source_kind": "dungeon",
           "score": 55.71384492998319,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 127.1 vs 125.3 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 130.3 vs 128.5 set DPS"
         },
         {
           "slot": "feet",
@@ -5161,12 +2275,12 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 19024,
-          "item_name": "Arena Grand Master",
+          "item_id": 19120,
+          "item_name": "Rune of the Guard Captain",
           "source": "Quests",
           "source_kind": "quest",
-          "verified": true,
-          "effect_unmodelled": true
+          "score": 42,
+          "verified": true
         },
         {
           "slot": "main_hand",
@@ -5186,8 +2300,8 @@
           "verified": false
         }
       ],
-      "set_dps": 127.05228693210314,
-      "no_source_count": 1406,
+      "set_dps": 131.60298402173765,
+      "no_source_count": 1324,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -5206,677 +2320,85 @@
         "7470 Regal Wizard Hat"
       ],
       "new_at_band": [
-        "head: Eye of Theradras",
         "neck: Woven Ivy Necklace",
+        "shoulder: Failed Flying Experiment",
         "chest: Warbear Harness",
         "wrist: Deepfury Bracers",
         "waist: Defiler's Leather Girdle",
         "legs: Serpentskin Leggings",
+        "feet: Sandstalker Ankleguards",
         "finger1: Legionnaire's Band",
         "finger2: White Bone Band",
         "trinket1: Smoking Heart of the Mountain",
-        "trinket2: Arena Grand Master"
+        "trinket2: Rune of the Guard Captain",
+        "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.217860718,
-      "verify_run_seconds": 2.04025064,
+      "weights_run_seconds": 1.573354706,
+      "verify_run_seconds": 1.5399655129999998,
       "coverage": {
         "back": {
-          "eligible": 305,
-          "sourced": 168
+          "eligible": 304,
+          "sourced": 169
         },
         "chest": {
-          "eligible": 353,
-          "sourced": 235
+          "eligible": 352,
+          "sourced": 234
         },
         "feet": {
           "eligible": 275,
-          "sourced": 145
+          "sourced": 158
         },
         "finger1": {
-          "eligible": 172,
-          "sourced": 73
+          "eligible": 171,
+          "sourced": 77
         },
         "finger2": {
-          "eligible": 172,
-          "sourced": 73
+          "eligible": 171,
+          "sourced": 77
         },
         "hands": {
           "eligible": 288,
-          "sourced": 165
+          "sourced": 179
         },
         "head": {
-          "eligible": 193,
-          "sourced": 115
+          "eligible": 192,
+          "sourced": 121
         },
         "legs": {
-          "eligible": 271,
-          "sourced": 172
+          "eligible": 270,
+          "sourced": 174
         },
         "main_hand": {
-          "eligible": 469,
-          "sourced": 284
+          "eligible": 466,
+          "sourced": 291
         },
         "neck": {
-          "eligible": 79,
-          "sourced": 34
+          "eligible": 78,
+          "sourced": 36
         },
         "off_hand": {
-          "eligible": 89,
+          "eligible": 87,
           "sourced": 38
         },
         "shoulder": {
-          "eligible": 173,
-          "sourced": 83
+          "eligible": 171,
+          "sourced": 88
         },
         "trinket1": {
-          "eligible": 49,
-          "sourced": 22
+          "eligible": 48,
+          "sourced": 23
         },
         "trinket2": {
-          "eligible": 49,
-          "sourced": 22
+          "eligible": 48,
+          "sourced": 23
         },
         "waist": {
           "eligible": 267,
-          "sourced": 156
+          "sourced": 169
         },
         "wrist": {
           "eligible": 216,
-          "sourced": 103
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 55,
-      "faction": "alliance",
-      "race": "night-elf",
-      "talents": "0000000000000000-5423222121032010001-5550000000000000",
-      "talent_points": 46,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.001204525929307376,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 1,
-          "error": 0.001204525929307376,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 2.3199999999996326,
-          "error": 0.002794500155993129,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 1.6698735033939804,
-          "error": 0.08321000142789094,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 13.847041548662512,
-          "error": 0.4064779773056122,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 7.531265815182093,
-          "error": 1.5217581499732167,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 11735,
-          "item_name": "Ragefury Eyepatch",
-          "source": "Blackrock Depths: Guzzler",
-          "source_kind": "dungeon",
-          "score": 401.6371633625481,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 22659,
-          "item_name": "Medallion of the Dawn",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 217.85858168127515,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 15058,
-          "item_name": "Stormshroud Shoulders",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 193.85858168127515,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 16337,
-          "item_name": "Sergeant Major's Cape",
-          "source": "Rank 9",
-          "source_kind": "pvp",
-          "score": 31.918988027148906,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 15056,
-          "item_name": "Stormshroud Armor",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 387.7171633625503,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 22668,
-          "item_name": "Bracers of Subterfuge",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 48.24810255090603,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 15063,
-          "item_name": "Devilsaur Gauntlets",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 221.85858168127515,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 20115,
-          "item_name": "Highlander's Leather Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
-          "score": 213.85858168127515,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 15057,
-          "item_name": "Stormshroud Pants",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 387.7171633625503,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 19052,
-          "item_name": "Dawn Treaders",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 44.258229047512415,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 13217,
-          "item_name": "Band of the Penitent",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 193.85858168127515,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 19516,
-          "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 38.22886153054215,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 13171,
-          "item_name": "Smokey's Lighter",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 7959,
-          "item_name": "Blight",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 606.62,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 150.11256198934208,
-      "no_source_count": 1637,
-      "no_source_sample": [
-        "1189 Overseer's Ring",
-        "2277 Necromancer Leggings",
-        "2879 Antipodean Rod",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "7470 Regal Wizard Hat"
-      ],
-      "new_at_band": [
-        "head: Ragefury Eyepatch",
-        "neck: Medallion of the Dawn",
-        "shoulder: Stormshroud Shoulders",
-        "back: Sergeant Major's Cape",
-        "chest: Stormshroud Armor",
-        "wrist: Bracers of Subterfuge",
-        "hands: Devilsaur Gauntlets",
-        "legs: Stormshroud Pants",
-        "feet: Dawn Treaders",
-        "finger1: Band of the Penitent",
-        "finger2: Protector's Band",
-        "trinket1: Smokey's Lighter",
-        "trinket2: Demon's Blood"
-      ],
-      "weights_run_seconds": 2.208083802,
-      "verify_run_seconds": 1.928865122,
-      "coverage": {
-        "back": {
-          "eligible": 332,
-          "sourced": 182
-        },
-        "chest": {
-          "eligible": 400,
-          "sourced": 255
-        },
-        "feet": {
-          "eligible": 314,
-          "sourced": 160
-        },
-        "finger1": {
-          "eligible": 198,
-          "sourced": 89
-        },
-        "finger2": {
-          "eligible": 198,
-          "sourced": 89
-        },
-        "hands": {
-          "eligible": 326,
-          "sourced": 182
-        },
-        "head": {
-          "eligible": 225,
-          "sourced": 129
-        },
-        "legs": {
-          "eligible": 316,
-          "sourced": 199
-        },
-        "main_hand": {
-          "eligible": 506,
-          "sourced": 298
-        },
-        "neck": {
-          "eligible": 106,
-          "sourced": 48
-        },
-        "off_hand": {
-          "eligible": 101,
-          "sourced": 45
-        },
-        "shoulder": {
-          "eligible": 212,
-          "sourced": 102
-        },
-        "trinket1": {
-          "eligible": 63,
-          "sourced": 33
-        },
-        "trinket2": {
-          "eligible": 63,
-          "sourced": 33
-        },
-        "waist": {
-          "eligible": 303,
-          "sourced": 174
-        },
-        "wrist": {
-          "eligible": 246,
-          "sourced": 115
-        }
-      }
-    },
-    {
-      "spec": "druid-feral",
-      "band": 55,
-      "faction": "horde",
-      "race": "tauren",
-      "talents": "0000000000000000-5423222121032010001-5550000000000000",
-      "talent_points": 46,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.001204525929307376,
-          "insignificant": false
-        },
-        {
-          "stat": "feral_attack_power",
-          "weight": 1,
-          "error": 0.001204525929307376,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 2.3199999999996326,
-          "error": 0.002794500155993129,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 1.6698735033939804,
-          "error": 0.08321000142789094,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 13.847041548662512,
-          "error": 0.4064779773056122,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 7.531265815182093,
-          "error": 1.5217581499732167,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 11735,
-          "item_name": "Ragefury Eyepatch",
-          "source": "Blackrock Depths: Guzzler",
-          "source_kind": "dungeon",
-          "score": 401.6371633625481,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 22659,
-          "item_name": "Medallion of the Dawn",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 217.85858168127515,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 15058,
-          "item_name": "Stormshroud Shoulders",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 193.85858168127515,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 16337,
-          "item_name": "Sergeant Major's Cape",
-          "source": "Rank 9",
-          "source_kind": "pvp",
-          "score": 31.918988027148906,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 15056,
-          "item_name": "Stormshroud Armor",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 387.7171633625503,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 22668,
-          "item_name": "Bracers of Subterfuge",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 48.24810255090603,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 15063,
-          "item_name": "Devilsaur Gauntlets",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 221.85858168127515,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 20193,
-          "item_name": "Defiler's Leather Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
-          "score": 213.85858168127515,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 15057,
-          "item_name": "Stormshroud Pants",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 387.7171633625503,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 19052,
-          "item_name": "Dawn Treaders",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 44.258229047512415,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 13217,
-          "item_name": "Band of the Penitent",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 193.85858168127515,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 19511,
-          "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 38.22886153054215,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 13171,
-          "item_name": "Smokey's Lighter",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 7959,
-          "item_name": "Blight",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 606.62,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 148.80775683720236,
-      "no_source_count": 1634,
-      "no_source_sample": [
-        "1189 Overseer's Ring",
-        "2277 Necromancer Leggings",
-        "2879 Antipodean Rod",
-        "2944 Cursed Eye of Paleth",
-        "3738 Brewing Rod",
-        "4196 Feathered Mantle",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5000 Coral Band",
-        "5008 Quicksilver Ring",
-        "5743 Prismstone Ring",
-        "5821 Darkstalker Boots",
-        "5971 Feathered Cape",
-        "6478 Rat Stompers",
-        "7470 Regal Wizard Hat"
-      ],
-      "new_at_band": [
-        "head: Ragefury Eyepatch",
-        "neck: Medallion of the Dawn",
-        "shoulder: Stormshroud Shoulders",
-        "back: Sergeant Major's Cape",
-        "chest: Stormshroud Armor",
-        "wrist: Bracers of Subterfuge",
-        "hands: Devilsaur Gauntlets",
-        "legs: Stormshroud Pants",
-        "feet: Dawn Treaders",
-        "finger1: Band of the Penitent",
-        "finger2: Legionnaire's Band",
-        "trinket1: Smokey's Lighter",
-        "trinket2: Demon's Blood"
-      ],
-      "weights_run_seconds": 2.208083802,
-      "verify_run_seconds": 1.946623717,
-      "coverage": {
-        "back": {
-          "eligible": 337,
-          "sourced": 188
-        },
-        "chest": {
-          "eligible": 397,
-          "sourced": 253
-        },
-        "feet": {
-          "eligible": 318,
-          "sourced": 163
-        },
-        "finger1": {
-          "eligible": 198,
-          "sourced": 89
-        },
-        "finger2": {
-          "eligible": 198,
-          "sourced": 89
-        },
-        "hands": {
-          "eligible": 325,
-          "sourced": 181
-        },
-        "head": {
-          "eligible": 226,
-          "sourced": 130
-        },
-        "legs": {
-          "eligible": 311,
-          "sourced": 194
-        },
-        "main_hand": {
-          "eligible": 510,
-          "sourced": 303
-        },
-        "neck": {
-          "eligible": 108,
-          "sourced": 50
-        },
-        "off_hand": {
-          "eligible": 100,
-          "sourced": 44
-        },
-        "shoulder": {
-          "eligible": 207,
-          "sourced": 97
-        },
-        "trinket1": {
-          "eligible": 63,
-          "sourced": 33
-        },
-        "trinket2": {
-          "eligible": 63,
-          "sourced": 33
-        },
-        "waist": {
-          "eligible": 306,
-          "sourced": 177
-        },
-        "wrist": {
-          "eligible": 249,
-          "sourced": 119
+          "sourced": 104
         }
       }
     },
@@ -6092,7 +2614,7 @@
         }
       ],
       "set_dps": 195.90779652709773,
-      "no_source_count": 2092,
+      "no_source_count": 2010,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6111,11 +2633,13 @@
         "7470 Regal Wizard Hat"
       ],
       "new_at_band": [
+        "head: Ragefury Eyepatch",
         "neck: Blazefury Medallion",
         "shoulder: Lieutenant Commander's Dragonhide Shoulders",
         "back: Cloak of the Fallen God",
         "chest: Field Marshal's Dragonhide Breastplate",
         "wrist: Qiraji Execution Bracers",
+        "hands: Devilsaur Gauntlets",
         "waist: Belt of Never-ending Agony",
         "legs: Marshal's Dragonhide Legguards",
         "feet: Blood Guard's Dragonhide Treads",
@@ -6125,12 +2649,12 @@
         "trinket2: Kiss of the Spider",
         "main_hand: High Warlord's Pulverizer"
       ],
-      "weights_run_seconds": 2.193022796,
-      "verify_run_seconds": 2.201123786,
+      "weights_run_seconds": 1.648870271,
+      "verify_run_seconds": 1.622120153,
       "coverage": {
         "back": {
           "eligible": 369,
-          "sourced": 201
+          "sourced": 203
         },
         "chest": {
           "eligible": 499,
@@ -6138,59 +2662,59 @@
         },
         "feet": {
           "eligible": 390,
-          "sourced": 209
+          "sourced": 222
         },
         "finger1": {
           "eligible": 348,
-          "sourced": 163
+          "sourced": 168
         },
         "finger2": {
           "eligible": 348,
-          "sourced": 163
+          "sourced": 168
         },
         "hands": {
           "eligible": 406,
-          "sourced": 224
+          "sourced": 238
         },
         "head": {
           "eligible": 311,
-          "sourced": 173
+          "sourced": 180
         },
         "legs": {
           "eligible": 409,
-          "sourced": 241
+          "sourced": 244
         },
         "main_hand": {
           "eligible": 633,
-          "sourced": 385
+          "sourced": 395
         },
         "neck": {
           "eligible": 166,
-          "sourced": 93
+          "sourced": 96
         },
         "off_hand": {
           "eligible": 131,
-          "sourced": 66
+          "sourced": 68
         },
         "shoulder": {
           "eligible": 304,
-          "sourced": 148
+          "sourced": 155
         },
         "trinket1": {
           "eligible": 80,
-          "sourced": 47
+          "sourced": 49
         },
         "trinket2": {
           "eligible": 80,
-          "sourced": 47
+          "sourced": 49
         },
         "waist": {
           "eligible": 363,
-          "sourced": 206
+          "sourced": 219
         },
         "wrist": {
           "eligible": 296,
-          "sourced": 147
+          "sourced": 148
         }
       }
     },
@@ -6406,7 +2930,7 @@
         }
       ],
       "set_dps": 195.44188602505363,
-      "no_source_count": 2088,
+      "no_source_count": 2006,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6425,11 +2949,13 @@
         "7470 Regal Wizard Hat"
       ],
       "new_at_band": [
+        "head: Ragefury Eyepatch",
         "neck: Blazefury Medallion",
         "shoulder: Lieutenant Commander's Dragonhide Shoulders",
         "back: Cloak of the Fallen God",
         "chest: Field Marshal's Dragonhide Breastplate",
         "wrist: Qiraji Execution Bracers",
+        "hands: Devilsaur Gauntlets",
         "waist: Belt of Never-ending Agony",
         "legs: Marshal's Dragonhide Legguards",
         "feet: Blood Guard's Dragonhide Treads",
@@ -6439,12 +2965,12 @@
         "trinket2: Kiss of the Spider",
         "main_hand: High Warlord's Pulverizer"
       ],
-      "weights_run_seconds": 2.193022796,
-      "verify_run_seconds": 2.160727146,
+      "weights_run_seconds": 1.648870271,
+      "verify_run_seconds": 1.590746757,
       "coverage": {
         "back": {
           "eligible": 374,
-          "sourced": 207
+          "sourced": 209
         },
         "chest": {
           "eligible": 496,
@@ -6452,59 +2978,59 @@
         },
         "feet": {
           "eligible": 394,
-          "sourced": 213
+          "sourced": 226
         },
         "finger1": {
           "eligible": 348,
-          "sourced": 163
+          "sourced": 168
         },
         "finger2": {
           "eligible": 348,
-          "sourced": 163
+          "sourced": 168
         },
         "hands": {
           "eligible": 406,
-          "sourced": 224
+          "sourced": 238
         },
         "head": {
           "eligible": 312,
-          "sourced": 174
+          "sourced": 181
         },
         "legs": {
           "eligible": 404,
-          "sourced": 236
+          "sourced": 239
         },
         "main_hand": {
           "eligible": 638,
-          "sourced": 391
+          "sourced": 401
         },
         "neck": {
           "eligible": 168,
-          "sourced": 95
+          "sourced": 98
         },
         "off_hand": {
           "eligible": 130,
-          "sourced": 65
+          "sourced": 67
         },
         "shoulder": {
           "eligible": 300,
-          "sourced": 144
+          "sourced": 151
         },
         "trinket1": {
           "eligible": 80,
-          "sourced": 47
+          "sourced": 49
         },
         "trinket2": {
           "eligible": 80,
-          "sourced": 47
+          "sourced": 49
         },
         "waist": {
           "eligible": 366,
-          "sourced": 209
+          "sourced": 222
         },
         "wrist": {
           "eligible": 299,
-          "sourced": 151
+          "sourced": 152
         }
       }
     }
