@@ -1,9 +1,16 @@
 # data/tests/test_loot_reitemise.py
 """src-classicdb lane item 3, 2026-09-29: a Forever-new item (id >=
 200000) that shares its name and slot with an existing Classic item
-inherits the classic item's own sources when it has none of its own."""
+inherits the classic item's own sources when it has none of its own --
+but only when it is plausibly the same item re-tuned (src-classicdb-fixes
+lane, 2026-09-29): item levels within `ITEM_LEVEL_TOLERANCE` and the same
+armor/weapon subclass, or nothing is inherited."""
 
-from pipeline.loot.reitemise import apply_reitemisation, reitemised_pairs
+from pipeline.loot.reitemise import (
+    ITEM_LEVEL_TOLERANCE,
+    apply_reitemisation,
+    reitemised_pairs,
+)
 from pipeline.models import LootBoss, LootFile, LootSource, QuestSource
 
 CLASSIC_ID = 22016
@@ -12,13 +19,36 @@ AMBIGUOUS_CLASSIC_A = 18854
 AMBIGUOUS_CLASSIC_B = 18856
 AMBIGUOUS_NEW = 209611
 
+# Same item level and armor subclass as the classic item they pair with,
+# so the item-level/subclass gate never rejects these unless a test says
+# otherwise -- the gate is exercised on its own by the Swamp Ring rows
+# below.
 ITEM_ROWS = [
-    {"id": CLASSIC_ID, "name": "Beastmaster's Mantle", "inventory_type": 3},
-    {"id": NEW_ID, "name": "Beastmaster's Mantle", "inventory_type": 3},
-    {"id": AMBIGUOUS_CLASSIC_A, "name": "Insignia of the Alliance", "inventory_type": 12},
-    {"id": AMBIGUOUS_CLASSIC_B, "name": "Insignia of the Alliance", "inventory_type": 12},
-    {"id": AMBIGUOUS_NEW, "name": "Insignia of the Alliance", "inventory_type": 12},
-    {"id": 999999, "name": "Unrelated New Item", "inventory_type": 3},
+    {"id": CLASSIC_ID, "name": "Beastmaster's Mantle", "inventory_type": 3,
+     "item_level": 61, "class_id": 4, "subclass_id": 1},
+    {"id": NEW_ID, "name": "Beastmaster's Mantle", "inventory_type": 3,
+     "item_level": 61, "class_id": 4, "subclass_id": 1},
+    {"id": AMBIGUOUS_CLASSIC_A, "name": "Insignia of the Alliance", "inventory_type": 12,
+     "item_level": 26, "class_id": 4, "subclass_id": 0},
+    {"id": AMBIGUOUS_CLASSIC_B, "name": "Insignia of the Alliance", "inventory_type": 12,
+     "item_level": 30, "class_id": 4, "subclass_id": 0},
+    {"id": AMBIGUOUS_NEW, "name": "Insignia of the Alliance", "inventory_type": 12,
+     "item_level": 30, "class_id": 4, "subclass_id": 0},
+    {"id": 999999, "name": "Unrelated New Item", "inventory_type": 3,
+     "item_level": 10, "class_id": 4, "subclass_id": 1},
+]
+
+# The lane brief's own defect: Swamp Ring 270052 (Forever-new, ilvl 35, a
+# leveling ring) merely reuses the name+slot of Swamp Ring 12015 (Classic,
+# ilvl 57, required level 52, a Scholomance reward) -- the two are
+# unrelated content and must NOT inherit each other's sources.
+SWAMP_RING_CLASSIC_ID = 12015
+SWAMP_RING_NEW_ID = 270052
+SWAMP_RING_ROWS = [
+    {"id": SWAMP_RING_CLASSIC_ID, "name": "Swamp Ring", "inventory_type": 11,
+     "item_level": 57, "class_id": 4, "subclass_id": 0},
+    {"id": SWAMP_RING_NEW_ID, "name": "Swamp Ring", "inventory_type": 11,
+     "item_level": 35, "class_id": 4, "subclass_id": 0},
 ]
 
 
@@ -97,9 +127,9 @@ def test_apply_reitemisation_re_derives_faction_from_the_new_items_own_restricti
     they name directly)."""
     restricted_rows = [
         {"id": CLASSIC_ID, "name": "Beastmaster's Mantle", "inventory_type": 3,
-         "faction_restriction": ""},
+         "item_level": 61, "class_id": 4, "subclass_id": 1, "faction_restriction": ""},
         {"id": NEW_ID, "name": "Beastmaster's Mantle", "inventory_type": 3,
-         "faction_restriction": "horde_only"},
+         "item_level": 61, "class_id": 4, "subclass_id": 1, "faction_restriction": "horde_only"},
     ]
     document = LootFile(
         sources=[LootSource(id="quest", kind="quest", name="Quests", items=[CLASSIC_ID])],
@@ -135,3 +165,54 @@ def test_apply_reitemisation_does_nothing_when_the_classic_item_itself_has_no_so
     updated, filled = apply_reitemisation(document, ITEM_ROWS)
     assert filled == 0
     assert updated.sources == []
+
+
+def test_reitemised_pairs_rejects_the_swamp_ring_pair_the_item_level_gap_is_too_wide():
+    """Swamp Ring 270052 (ilvl 35) must not inherit Swamp Ring 12015's
+    (ilvl 57) sources: a 22-ilvl gap exceeds `ITEM_LEVEL_TOLERANCE`."""
+    pairs = reitemised_pairs(SWAMP_RING_ROWS)
+    assert SWAMP_RING_NEW_ID not in pairs
+
+
+def test_apply_reitemisation_never_copies_the_swamp_rings_scholomance_drop():
+    document = LootFile(
+        sources=[
+            LootSource(
+                id="dungeon:scholomance", kind="dungeon", name="Scholomance", zone_id=289,
+                bosses=[
+                    LootBoss(
+                        id="dungeon:scholomance:darkmaster-gandling",
+                        name="Darkmaster Gandling", npc_id=1853,
+                        items=[SWAMP_RING_CLASSIC_ID],
+                    )
+                ],
+            )
+        ]
+    )
+    updated, filled = apply_reitemisation(document, SWAMP_RING_ROWS)
+    assert filled == 0
+    assert updated == document
+
+
+def test_reitemised_pairs_accepts_a_pair_exactly_at_the_item_level_tolerance():
+    rows = [
+        {"id": CLASSIC_ID, "name": "Beastmaster's Mantle", "inventory_type": 3,
+         "item_level": 50, "class_id": 4, "subclass_id": 1},
+        {"id": NEW_ID, "name": "Beastmaster's Mantle", "inventory_type": 3,
+         "item_level": 50 + ITEM_LEVEL_TOLERANCE, "class_id": 4, "subclass_id": 1},
+    ]
+    pairs = reitemised_pairs(rows)
+    assert pairs[NEW_ID] == CLASSIC_ID
+
+
+def test_reitemised_pairs_rejects_a_matching_item_level_but_different_subclass():
+    """Same name, slot and item level, but a plate item reusing a cloth
+    item's name is not the same piece of content."""
+    rows = [
+        {"id": CLASSIC_ID, "name": "Beastmaster's Mantle", "inventory_type": 3,
+         "item_level": 61, "class_id": 4, "subclass_id": 1},
+        {"id": NEW_ID, "name": "Beastmaster's Mantle", "inventory_type": 3,
+         "item_level": 61, "class_id": 4, "subclass_id": 4},
+    ]
+    pairs = reitemised_pairs(rows)
+    assert NEW_ID not in pairs

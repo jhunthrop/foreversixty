@@ -16,6 +16,7 @@ from __future__ import annotations
 from collections import defaultdict
 
 from pipeline.classic_sources import ClassicDbSourceRecord
+from pipeline.forkdb import ForkDatabase
 from pipeline.loot.constants import INSTANCE_KIND
 from pipeline.loot.wowhead import merge_wowhead_sources as merge_classicdb_sources  # noqa: F401
 from pipeline.models import LootBoss, LootSource, QuestSource
@@ -65,6 +66,35 @@ def instance_zone_by_map(zone_rows: list[dict], types: dict[int, int]) -> dict[i
     return by_map
 
 
+def fork_instance_npc_zones(fork: ForkDatabase, types: dict[int, int]) -> dict[int, int]:
+    """npc_id -> the dungeon/raid zone id the fork's OWN drops already
+    place that npc in (its own `drop.npcId`/`drop.zoneId`, the same pair
+    `pipeline.loot.sources._drop_sources` reads, filtered to a zone
+    `types` marks as an instance).
+
+    A dungeon/raid boss classic-db's own dump has no usable spawn map
+    for at all -- a scripted/summoned encounter like Darkmaster Gandling
+    (npc 1853, Scholomance) has no static `creature` spawn row, so
+    `pipeline.classic_sources`' own `_spawn_map_by_entry` never states a
+    `map_id` for it -- still resolves through this fallback instead of
+    stranding the drop in a flat `world:<name>` bucket
+    (`classicdb_additions`'s own doc has the measured regression this
+    closes: 181 items on `world:darkmaster-gandling` alone, src-classicdb
+    lane, before this fallback existed).
+    """
+    zones: dict[int, int] = {}
+    for item in fork.items:
+        for source in item.get("sources") or []:
+            drop = source.get("drop")
+            if drop is None:
+                continue
+            zone_id, npc_id = int(drop.get("zoneId", 0)), int(drop.get("npcId", 0))
+            if not npc_id or not zone_id or INSTANCE_KIND.get(types.get(zone_id, 0)) is None:
+                continue
+            zones.setdefault(npc_id, zone_id)
+    return zones
+
+
 def classicdb_additions(
     classic_sources: dict[int, list[ClassicDbSourceRecord]],
     build_items: set[int],
@@ -74,6 +104,7 @@ def classicdb_additions(
     zone_rows: list[dict],
     quest_levels: dict[int, QuestLevelEntry],
     item_factions: dict[int, str],
+    fork_instance_npcs: dict[int, int] | None = None,
 ) -> tuple[list[LootSource], list[int], dict[int, list[QuestSource]]]:
     """Extra sources `pipeline.classic_sources` names for an item, in the
     same `(LootSource list, quest item ids, quest detail)` shape
@@ -86,6 +117,17 @@ def classicdb_additions(
     never a specific zone -- `instance_zone_by_map` only ever resolves an
     INSTANCE map, so anything else falls to the flat `world:<name>`
     bucket, per this lane's own brief.
+
+    `fork_instance_npcs` (`fork_instance_npc_zones`' own result, npc_id ->
+    zone_id) is the fallback for a creature/skinning/pickpocketing record
+    whose own spawn map does not resolve one -- either because
+    classic-db's dump states no `map_id` at all (a scripted/summoned
+    dungeon or raid boss with no static spawn row: Darkmaster Gandling,
+    Scholomance's npc 1853, is the measured case) or because `zone_by_map`
+    itself has no entry for that map id. Every npc the fork already places
+    in a dungeon or raid must land in that SAME instance here too, never
+    `world` -- src-classicdb-fixes lane, 2026-09-29 (181 items measured on
+    `world:darkmaster-gandling` alone before this fallback existed).
 
     `item_factions` (`pipeline.loot.sources.item_factions`' own result)
     is what a quest reward's `QuestSource.faction` is built from --
@@ -103,6 +145,7 @@ def classicdb_additions(
     states.
     """
     zone_by_map = instance_zone_by_map(zone_rows, types)
+    fork_instance_npcs = fork_instance_npcs or {}
 
     bosses: dict[tuple[int, int], set[int]] = defaultdict(set)
     boss_names: dict[int, str] = {}
@@ -126,6 +169,8 @@ def classicdb_additions(
             if record.kind in _CREATURE_KINDS:
                 zone_id = zone_by_map.get(record.map_id) if record.map_id else None
                 npc_id = record.npc_id or 0
+                if zone_id is None and npc_id:
+                    zone_id = fork_instance_npcs.get(npc_id)
                 if zone_id is not None and npc_id:
                     bosses[(zone_id, npc_id)].add(item_id)
                     boss_names[npc_id] = record.name

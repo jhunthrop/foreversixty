@@ -1,17 +1,32 @@
-"""Re-itemisation inheritance (src-classicdb lane item 3, 2026-09-29):
+"""Re-itemisation inheritance (src-classicdb lane item 3, 2026-09-29;
+gated by item level and subclass, src-classicdb-fixes lane, 2026-09-29):
 a Forever-NEW item (id >= 200000) that shares its exact name and
-inventory slot with an existing Classic-era item almost always drops,
-sells or rewards from the SAME place the Classic item does -- Forever
-re-itemises old content rather than inventing new drop tables for it.
-450 such (name, inventory_type) pairs exist on build 1.60.1.70009; of
-those, `apply_reitemisation` only ever ACTS on a new id that
-`build_loot`'s own fork/classic-db/wowhead passes left wholly unsourced
-(most of the 450 already have their own real source and need nothing
-copied) and whose name+slot key names EXACTLY ONE classic candidate
-(a PvP rank insignia's per-rank ids -- eight different classic ids all
-named "Insignia of the Alliance" -- is left alone rather than guessed
-at: never the fork's or any scrape's own "invent nothing" policy this
-pipeline holds to elsewhere).
+inventory slot with an existing Classic-era item OFTEN drops, sells or
+rewards from the SAME place the Classic item does -- Forever re-itemises
+old content rather than inventing new drop tables for it. But name+slot
+alone is not enough: Forever also reuses old item NAMES for unrelated
+new content (Swamp Ring 270052, ilvl 35, no required level, is a
+low-level leveling ring that merely reuses the name "Swamp Ring" from
+the ilvl-57 Scholomance quest reward 12015 -- inheriting 12015's sources
+put a Darkmaster Gandling drop atop the level-20 hunter list). So a
+name+slot candidate is only trusted when the two items are plausibly the
+SAME piece of content re-tuned: item levels within
+`ITEM_LEVEL_TOLERANCE` of each other, and the same armor/weapon
+subclass (`class_id` AND `subclass_id`, since subclass ids are only
+unique within a class -- weapon subclass 0 is One-Handed Axe, armor
+subclass 0 is Miscellaneous, the very subclass both Swamp Rings share).
+A candidate that fails the gate is logged and left unsourced rather than
+guessed at.
+
+450 (name, inventory_type) pairs exist on build 1.60.1.70009; of those,
+`apply_reitemisation` only ever ACTS on a new id that `build_loot`'s own
+fork/classic-db/wowhead passes left wholly unsourced (most of the 450
+already have their own real source and need nothing copied) and whose
+name+slot key names EXACTLY ONE classic candidate (a PvP rank insignia's
+per-rank ids -- eight different classic ids all named "Insignia of the
+Alliance" -- is left alone rather than guessed at: never the fork's or
+any scrape's own "invent nothing" policy this pipeline holds to
+elsewhere).
 
 Direction is one-way, always: a classic item's own sources are copied
 onto the new item, never the reverse (`reitemised_pairs`' own
@@ -26,14 +41,23 @@ copied from), the same per-item dict shape `item_chances` already uses.
 
 from __future__ import annotations
 
+import logging
 from collections import defaultdict
 
 from pipeline.models import LootBoss, LootFile, LootSource
+
+logger = logging.getLogger(__name__)
 
 #: Forever's own item id split: 200000+ is a newly minted item id, never
 #: a real Blizzard/Classic one (`pipeline.normalize.items`' own
 #: convention, unchanged since the itemisation design landed).
 NEW_ITEM_ID_FLOOR = 200000
+
+#: How far a new item's `item_level` may drift from the classic item it
+#: would inherit sources from before the two are treated as unrelated
+#: content that merely share a name (see the module docstring's Swamp
+#: Ring example, 22 ilvl apart and correctly rejected by this gate).
+ITEM_LEVEL_TOLERANCE = 10
 
 #: `items.json`'s own `faction_restriction` column spellings -> the
 #: `QuestSource.faction` vocabulary -- same mapping
@@ -43,18 +67,31 @@ NEW_ITEM_ID_FLOOR = 200000
 _RESTRICTION_TO_FACTION = {"": "both", "alliance_only": "alliance", "horde_only": "horde"}
 
 
+def _plausibly_the_same_item(new_row: dict, classic_row: dict) -> bool:
+    """True when `new_row` and `classic_row` are close enough in power
+    and category to be the same piece of content, re-tuned -- item
+    levels within `ITEM_LEVEL_TOLERANCE`, and the same armor/weapon
+    subclass (`class_id` and `subclass_id` both)."""
+    ilvl_gap = abs(int(new_row["item_level"]) - int(classic_row["item_level"]))
+    same_subclass = int(new_row["class_id"]) == int(classic_row["class_id"]) and int(
+        new_row["subclass_id"]
+    ) == int(classic_row["subclass_id"])
+    return ilvl_gap <= ITEM_LEVEL_TOLERANCE and same_subclass
+
+
 def reitemised_pairs(item_rows: list[dict]) -> dict[int, int]:
     """Forever-new item id -> the single Classic item id sharing its
-    exact `(name, inventory_type)`, for every such pair that is
-    UNAMBIGUOUS (exactly one classic candidate). `item_rows` is a
-    build's `items.json` (or any list of dicts with `id`/`name`/
-    `inventory_type`).
+    exact `(name, inventory_type)`, for every such pair that is both
+    UNAMBIGUOUS (exactly one classic candidate) and plausibly the same
+    item (`_plausibly_the_same_item`). `item_rows` is a build's
+    `items.json` (or any list of dicts with `id`/`name`/
+    `inventory_type`/`item_level`/`class_id`/`subclass_id`).
     """
-    classic_by_key: dict[tuple[str, int], list[int]] = defaultdict(list)
+    classic_by_key: dict[tuple[str, int], list[dict]] = defaultdict(list)
     for row in item_rows:
         item_id = int(row["id"])
         if item_id < NEW_ITEM_ID_FLOOR:
-            classic_by_key[(row["name"], int(row["inventory_type"]))].append(item_id)
+            classic_by_key[(row["name"], int(row["inventory_type"]))].append(row)
 
     pairs: dict[int, int] = {}
     for row in item_rows:
@@ -62,8 +99,23 @@ def reitemised_pairs(item_rows: list[dict]) -> dict[int, int]:
         if item_id < NEW_ITEM_ID_FLOOR:
             continue
         candidates = classic_by_key.get((row["name"], int(row["inventory_type"])))
-        if candidates and len(candidates) == 1:
-            pairs[item_id] = candidates[0]
+        if not candidates or len(candidates) != 1:
+            continue
+        classic_row = candidates[0]
+        if not _plausibly_the_same_item(row, classic_row):
+            logger.info(
+                "reitemisation: %s (id %d, ilvl %d) not inherited from %s "
+                "(id %d, ilvl %d): item level gap or armor/weapon subclass "
+                "mismatch",
+                row["name"],
+                item_id,
+                int(row["item_level"]),
+                classic_row["name"],
+                int(classic_row["id"]),
+                int(classic_row["item_level"]),
+            )
+            continue
+        pairs[item_id] = int(classic_row["id"])
     return pairs
 
 

@@ -35,7 +35,11 @@ from pipeline.classic_sources import ClassicDbSourceRecord
 from pipeline.csvio import populated
 from pipeline.forkdb import FACTION_RESTRICTIONS, PROFESSIONS, REP_LEVELS, ForkDatabase, decode
 from pipeline.item_sources import ItemSourceEntry
-from pipeline.loot.classicdb import classicdb_additions, merge_classicdb_sources
+from pipeline.loot.classicdb import (
+    classicdb_additions,
+    fork_instance_npc_zones,
+    merge_classicdb_sources,
+)
 from pipeline.loot.constants import INSTANCE_KIND
 from pipeline.loot.wowhead import merge_wowhead_sources, wowhead_additions
 from pipeline.models import LootBoss, LootFile, LootSource, QuestSource
@@ -575,6 +579,7 @@ def build_loot(
         classicdb_sources, classicdb_quest, classicdb_quest_detail = classicdb_additions(
             classic_sources, build_items, equippable, zone_names, types, zone_rows or [],
             quest_levels or {}, item_factions(fork, build_items),
+            fork_instance_npc_zones(fork, types),
         )
         sources = merge_classicdb_sources(sources, classicdb_sources)
         quest = sorted(set(quest) | set(classicdb_quest))

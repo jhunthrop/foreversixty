@@ -101,6 +101,33 @@ def test_an_open_world_creature_drop_becomes_a_flat_world_bucket():
     assert world.item_chances == {str(UNSOURCED_ITEM): 12.5}
 
 
+def test_a_scripted_bosss_missing_spawn_map_falls_back_to_the_forks_own_placement():
+    """npc 902 is the fixture's own Deadmines boss (fork drop for item
+    103 names `npcId: 902, zoneId: 1581`). A classic-db creature_drop for
+    the SAME npc with NO spawn map (`map_id=None`, a scripted/summoned
+    boss with no static `creature` row -- the real Darkmaster Gandling
+    case, src-classicdb-fixes lane, 2026-09-29) still lands in
+    `dungeon:the-deadmines`, never `world`, via `fork_instance_npc_zones`'
+    own fallback."""
+    classic_sources = {
+        UNSOURCED_ITEM: [
+            ClassicDbSourceRecord(
+                kind="creature_drop", npc_id=902, name="A Deadmines Boss", map_id=None, chance=8.0,
+            )
+        ]
+    }
+    document, _ = built(classic_sources)
+    dungeon = source(document, "dungeon:the-deadmines")
+    assert UNSOURCED_ITEM in {item for b in dungeon.bosses for item in b.items}
+    world_items = {
+        item
+        for candidate in document.sources
+        if candidate.id.startswith("world:")
+        for item in candidate.items or []
+    }
+    assert UNSOURCED_ITEM not in world_items
+
+
 def test_a_rep_gated_vendor_carries_faction_and_standing():
     classic_sources = {
         UNSOURCED_ITEM: [
