@@ -79,8 +79,22 @@ export interface LootSource {
   rank?: number;
 }
 
+/** One quest that rewards an item, from loot.json's `quests` map (contract 10.4: item id,
+ *  as a string key, -> the quests that give it as a reward). */
+export interface QuestReward {
+  quest_id: number;
+  name: string;
+  faction: string;
+  min_level: number;
+  level: number;
+}
+
 export interface LootFile {
   sources: LootSource[];
+  /** item id (string-keyed) -> its quest rewards. Absent on a build the data lane has not
+   *  regenerated this field for -- tooltip.ts's sourceLinesFor treats a missing map the
+   *  same as an empty one. */
+  quests?: Record<string, QuestReward[]>;
 }
 
 const EMPTY: LootFile = { sources: [] };
