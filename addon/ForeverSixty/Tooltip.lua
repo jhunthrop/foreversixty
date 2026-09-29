@@ -259,44 +259,29 @@ local function bisTag(itemId, band, equippedItemId, newIds)
 	return ""
 end
 
---- item id -> true once RequestLoadItemDataByID (or the legacy global) has
---- been asked for it, so re-hovering the same uncached item never asks
---- the client twice.
-Tooltip.bisRequested = {}
-
-local function requestItemLoad(itemId)
-	if Tooltip.bisRequested[itemId] then
-		return
-	end
-	Tooltip.bisRequested[itemId] = true
-	local fn = (type(C_Item) == "table" and C_Item.RequestLoadItemDataByID)
-		or _G.RequestLoadItemDataByID
-	if type(fn) == "function" then
-		fn(itemId)
-	end
-end
-
 --- The item's link once GetItemInfo knows it, else the "item:<id>" form
 --- (still a valid hyperlink target) while the client fills its cache --
---- RequestLoadItemDataByID/GetItemInfo asked for the id exactly once,
---- never per hover.
+--- Compat.displayLink's own rule, kept as a named function here since
+--- design/lane-bis-hover-addon.md's own tests call it by this name.
 function Tooltip.bisItemLink(itemId)
-	local _, link = Compat.itemInfo(itemId)
-	if link ~= nil then
-		return link
-	end
-	requestItemLoad(itemId)
-	return "item:" .. itemId
+	return Compat.displayLink(itemId)
 end
 
 --- The BiS hover section for one site slot: a header ("Best in slot ·
---- <band> · <spec>") and the slot's pick as an item link, tagged
---- "(equipped)" or "(new at <band>)"; advanced detail
---- (Prefs.flag("advancedDetail")) adds the source kind. Empty (no
---- section) while InCombatLockdown, with no resolvable class or spec, no
---- bis band at or above BIS_MIN_LEVEL for this character's level, or the
---- band names nothing for this slot -- design/lane-bis-hover-addon.md
---- item 2's own rules.
+--- <band> · <spec>"), the slot's pick as an inline icon beside its item
+--- link (in the link's own quality colour -- GetItemInfo's link already
+--- carries the colour escape codes) tagged "(equipped)" or "(new at
+--- <band>)", the item's level once the client has it cached, and --
+--- advanced detail only (Prefs.flag("advancedDetail")) -- the source
+--- kind. Empty (no section) while InCombatLockdown, with no resolvable
+--- class or spec, no bis band at or above BIS_MIN_LEVEL for this
+--- character's level, or the band names nothing for this slot --
+--- design/lane-bis-hover-addon.md item 2's own rules.
+---
+--- The second return is the recommended item ({ itemId, link }), for the
+--- caller to show the client's own item tooltip for it beside GameTooltip
+--- (Theme.showCompareTooltip) -- nil on every path that answers no
+--- section at all, so a caller need only check it, not re-derive it.
 function Tooltip.bisLines(data, slot)
 	if data == nil or slot == nil then
 		return {}
@@ -326,15 +311,29 @@ function Tooltip.bisLines(data, slot)
 	local itemId, sourceCode = entry[1], entry[2]
 	local tag = bisTag(itemId, band, itemIdOf(equippedLinkFor(slot)), newAtBand(data, spec, band, faction))
 	local link = Tooltip.bisItemLink(itemId)
+	local icon = Theme.inlineIcon(Compat.itemIcon(itemId), Tooltip.BIS_ICON_SIZE)
+	local itemLine = icon .. " " .. link
+	if tag ~= "" then
+		itemLine = itemLine .. " " .. tag
+	end
 	local lines = {
 		string.format(L.tooltipBisHeader, band, spec),
-		tag == "" and link or (link .. " " .. tag),
+		itemLine,
 	}
+	local level = Compat.itemLevel(itemId)
+	if level ~= nil then
+		lines[#lines + 1] = string.format(L.tooltipBisItemLevel, level)
+	end
 	if Prefs.flag("advancedDetail") then
 		lines[#lines + 1] = string.format(L.tooltipBisSource, Tooltip.SOURCE_KIND_NAMES[sourceCode] or sourceCode)
 	end
-	return lines
+	return lines, { itemId = itemId, link = link }
 end
+
+--- The BiS hover's inline icon size -- a touch larger than a list row's
+--- (Theme.SIZES.iconSize), since a tooltip line has more room than a
+--- packed row.
+Tooltip.BIS_ICON_SIZE = 18
 
 --- Every line this addon ever adds, 0 or more. Pure; the hook this
 --- file grows next only draws what this returns. weightsMessage is
@@ -405,6 +404,46 @@ local function cachedLines(itemLink)
 	return lines
 end
 
+--- The BiS hover currently on screen, if it names an item id the client
+--- had to ask for (Compat.requestedItems) -- set by whichever hook below
+--- drew it. GET_ITEM_INFO_RECEIVED (Tooltip.onItemInfoReceived) redraws
+--- it in place once that id's data arrives, rather than asking the
+--- player to move the mouse away and back to see the icon, the coloured
+--- link and the item level that were missing the first time.
+Tooltip.activeHover = nil
+
+--- The premium half of an equipped item's own BiS section: the client's
+--- item tooltip for the recommended item, shown beside this one, and the
+--- redraw target once its data arrives. A second, uncached call to
+--- Tooltip.bisLines -- the first (inside cachedLines) is what drew the
+--- text lines already on the tooltip; this one only exists to read the
+--- { itemId, link } it also returns, which the cache does not keep.
+local function showBisExtras(tooltip, itemLink)
+	local slot = Tooltip.data ~= nil and Tooltip.equippedSlotFor(itemLink) or nil
+	if slot == nil then
+		return
+	end
+	local _, target = Tooltip.bisLines(Tooltip.data, slot)
+	if target == nil then
+		return
+	end
+	Theme.showCompareTooltip(target.itemId, target.link)
+	Tooltip.activeHover = {
+		itemId = target.itemId,
+		redraw = function()
+			-- Re-running Blizzard's own SetHyperlink re-fires the
+			-- TooltipDataProcessor/OnTooltipSetItem hook that called
+			-- Tooltip.onTooltip in the first place, so the tooltip is
+			-- rebuilt from scratch with the data that just arrived
+			-- rather than appending a second copy of this addon's lines.
+			if type(tooltip.SetHyperlink) == "function"
+				and type(tooltip.IsShown) == "function" and tooltip:IsShown() then
+				tooltip:SetHyperlink(itemLink)
+			end
+		end,
+	}
+end
+
 local function addLines(tooltip, itemLink)
 	local lines = cachedLines(itemLink)
 	if #lines == 0 then
@@ -415,6 +454,7 @@ local function addLines(tooltip, itemLink)
 		tooltip:AddLine(line, Theme.rgb(Theme.HEX.body))
 	end
 	tooltip:Show()
+	showBisExtras(tooltip, itemLink)
 end
 
 --- One guarded body for both hook shapes below. A Lua error inside a
@@ -521,7 +561,7 @@ function Tooltip.onSlotEnter(slot, button)
 		return
 	end
 	local ok, err = pcall(function()
-		local lines = Tooltip.bisLines(Tooltip.data, slot)
+		local lines, target = Tooltip.bisLines(Tooltip.data, slot)
 		if #lines == 0 then
 			return
 		end
@@ -531,6 +571,15 @@ function Tooltip.onSlotEnter(slot, button)
 			GameTooltip:AddLine(line, Theme.rgb(Theme.HEX.body))
 		end
 		GameTooltip:Show()
+		if target ~= nil then
+			Theme.showCompareTooltip(target.itemId, target.link)
+			Tooltip.activeHover = {
+				itemId = target.itemId,
+				redraw = function()
+					Tooltip.onSlotEnter(slot, button)
+				end,
+			}
+		end
 	end)
 	if not ok then
 		Tooltip.slotDisabled = true
@@ -556,6 +605,35 @@ function Tooltip.registerBisSlotButtons()
 	end
 end
 
+--- Redraws whichever hover Tooltip.activeHover names, once GET_ITEM_INFO_
+--- RECEIVED confirms the client now has that id's data -- only while it
+--- is still the id showing, so an id arriving after the player moved on
+--- redraws nothing.
+function Tooltip.onItemInfoReceived(itemId, success)
+	if not success or Tooltip.activeHover == nil or Tooltip.activeHover.itemId ~= itemId then
+		return
+	end
+	Tooltip.resetCache()
+	Tooltip.activeHover.redraw()
+end
+
+--- The one GET_ITEM_INFO_RECEIVED listener this addon needs, own frame
+--- rather than Options.EVENTS: that file is a different lane's this wave
+--- (Tooltip.weightsMessage's own comment), and this event is Tooltip's
+--- alone to act on. Idempotent, like register().
+function Tooltip.registerItemInfoRefresh()
+	if Tooltip.itemInfoFrame ~= nil then
+		return Tooltip.itemInfoFrame
+	end
+	local frame = CreateFrame("Frame", nil, UIParent)
+	Theme.registerEvent(frame, "GET_ITEM_INFO_RECEIVED")
+	frame:SetScript("OnEvent", function(_, _, itemId, success)
+		Tooltip.onItemInfoReceived(itemId, success)
+	end)
+	Tooltip.itemInfoFrame = frame
+	return frame
+end
+
 function Tooltip.hasProcessor()
 	return type(TooltipDataProcessor) == "table"
 		and type(TooltipDataProcessor.AddTooltipPostCall) == "function"
@@ -574,6 +652,7 @@ function Tooltip.register()
 	Tooltip.registered = true
 	Tooltip.registerUnit()
 	Tooltip.registerBisSlotButtons()
+	Tooltip.registerItemInfoRefresh()
 	if Tooltip.hasProcessor() then
 		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip)
 			Tooltip.onTooltip(tooltip, Tooltip.itemLinkFrom(tooltip))

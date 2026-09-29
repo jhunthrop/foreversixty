@@ -83,9 +83,13 @@ describe("Theme", function()
 		assert.are.equal("UIPanelButtonTemplate", frame.template)
 	end)
 
-	it("ships with no stock templates, so every control is the addon's own", function()
+	it("ships with no stock templates save the real tooltip, so every other control is the addon's own", function()
 		start({ templates = ALL_TEMPLATES })
-		assert.are.same({}, Theme.TEMPLATES)
+		-- Theme.compareTooltip is the one caller that names a real
+		-- template: SetHyperlink and comparison are the GameTooltip frame
+		-- type's own behaviour, not something a flat texture can stand in
+		-- for the way a button or a tab can.
+		assert.are.same({ gameTooltip = "GameTooltipTemplate" }, Theme.TEMPLATES)
 	end)
 
 	it("builds a bare frame when the client does not", function()
@@ -372,6 +376,64 @@ describe("Theme", function()
 		start()
 		_G.GameTooltip = nil
 		assert.is_false(Theme.showLines(_G.UIParent, { "ForeverSixty" }))
+	end)
+
+	describe("inlineIcon", function()
+		it("draws a |T|t escape at the given size", function()
+			assert.are.equal("|TInterface\\Icons\\Real:18:18|t", Theme.inlineIcon("Interface\\Icons\\Real", 18))
+		end)
+
+		it("falls back to the neutral tile and the default icon size", function()
+			assert.are.equal(
+				string.format("|T%s:%d:%d|t", Theme.UNKNOWN_ICON, Theme.SIZES.iconSize, Theme.SIZES.iconSize),
+				Theme.inlineIcon(nil))
+		end)
+	end)
+
+	describe("the compare tooltip", function()
+		it("shows the client's own item tooltip beside GameTooltip", function()
+			start()
+			assert.is_true(Theme.showCompareTooltip(nil, "|Hitem:1234|h"))
+			local tooltip = Theme.compareTooltipFrame
+			assert.is_not_nil(tooltip)
+			assert.are.equal("GameTooltip", tooltip.kind)
+			assert.are.same({ method = "SetHyperlink", n = 1, "|Hitem:1234|h" },
+				mock.firstCall(tooltip, "SetHyperlink"))
+			assert.are.equal(1, mock.countCalls(tooltip, "Show"))
+		end)
+
+		it("shows a recommended item with no link yet via SetItemByID", function()
+			start()
+			assert.is_true(Theme.showCompareTooltip(1234, nil))
+			assert.are.same({ method = "SetItemByID", n = 1, 1234 },
+				mock.firstCall(Theme.compareTooltipFrame, "SetItemByID"))
+		end)
+
+		it("reuses the same frame across calls rather than creating a second one", function()
+			start()
+			Theme.showCompareTooltip(1234, nil)
+			local first = Theme.compareTooltipFrame
+			Theme.showCompareTooltip(5678, nil)
+			assert.are.equal(first, Theme.compareTooltipFrame)
+		end)
+
+		it("hides through Theme.hideCompareTooltip and whenever GameTooltip itself hides", function()
+			start()
+			Theme.showCompareTooltip(1234, nil)
+			local tooltip = Theme.compareTooltipFrame
+			Theme.hideCompareTooltip()
+			assert.are.equal(1, mock.countCalls(tooltip, "Hide"))
+			local onHide = mock.firstCall(_G.GameTooltip, "HookScript")[2]
+			onHide()
+			assert.are.equal(2, mock.countCalls(tooltip, "Hide"))
+		end)
+
+		it("does nothing on a client with no GameTooltip at all", function()
+			start()
+			_G.GameTooltip = nil
+			assert.is_false(Theme.showCompareTooltip(1234, nil))
+			assert.is_nil(Theme.hideCompareTooltip())
+		end)
 	end)
 
 	it("forgets what it learned about the client on reset", function()

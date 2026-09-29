@@ -87,6 +87,96 @@ describe("Compat", function()
 		assert.are.same({ ITEM_MOD_STRENGTH_SHORT = 10 }, Compat.itemStats("link"))
 	end)
 
+	describe("displayLink/requestItemLoad", function()
+		it("returns the real link once GetItemInfo knows the item", function()
+			_G.GetItemInfo = function()
+				return "Helm", "item:111:link", 2
+			end
+			assert.are.equal("item:111:link", Compat.displayLink(111))
+		end)
+
+		it("falls back to item:<id> and asks the client exactly once while uncached", function()
+			local requested = {}
+			_G.GetItemInfo = function() return nil end
+			_G.RequestLoadItemDataByID = function(id) requested[#requested + 1] = id end
+			assert.are.equal("item:111", Compat.displayLink(111))
+			assert.are.equal("item:111", Compat.displayLink(111))
+			assert.are.same({ 111 }, requested)
+		end)
+
+		it("shares its request bookkeeping across ids asked for independently", function()
+			local requested = {}
+			_G.GetItemInfo = function() return nil end
+			_G.RequestLoadItemDataByID = function(id) requested[#requested + 1] = id end
+			Compat.requestItemLoad(222)
+			Compat.displayLink(222)
+			assert.are.same({ 222 }, requested)
+		end)
+	end)
+
+	describe("itemLevel", function()
+		it("reads GetItemInfo's fourth value", function()
+			_G.GetItemInfo = function()
+				return "Helm", "item:111:link", 2, 45
+			end
+			assert.are.equal(45, Compat.itemLevel(111))
+		end)
+
+		it("answers nil while the item is not yet cached", function()
+			_G.GetItemInfo = function() return nil end
+			assert.is_nil(Compat.itemLevel(111))
+		end)
+	end)
+
+	describe("spell functions", function()
+		local savedSpell
+
+		before_each(function()
+			savedSpell = {
+				GetSpellTexture = _G.GetSpellTexture,
+				GetSpellSubtext = _G.GetSpellSubtext,
+				GetSpellCooldown = _G.GetSpellCooldown,
+				C_Spell = _G.C_Spell,
+			}
+		end)
+
+		after_each(function()
+			for name, value in pairs(savedSpell) do
+				_G[name] = value
+			end
+		end)
+
+		it("uses the global spell functions on a client that still has them", function()
+			_G.C_Spell = nil
+			_G.GetSpellTexture = function() return "Interface\\Icons\\Ability_Rogue_SinisterStrike" end
+			_G.GetSpellSubtext = function() return "Rank 3" end
+			assert.are.equal("Interface\\Icons\\Ability_Rogue_SinisterStrike", Compat.spellTexture(1752))
+			assert.are.equal("Rank 3", Compat.spellSubtext(1752))
+		end)
+
+		it("prefers C_Spell on a client that moved the functions there", function()
+			_G.GetSpellTexture = nil
+			_G.C_Spell = { GetSpellTexture = function() return "Interface\\Icons\\Path" end }
+			assert.are.equal("Interface\\Icons\\Path", Compat.spellTexture(1752))
+		end)
+
+		it("answers nil rather than erroring on a client with neither", function()
+			_G.GetSpellTexture, _G.GetSpellSubtext, _G.GetSpellCooldown, _G.C_Spell = nil, nil, nil, nil
+			assert.is_nil(Compat.spellTexture(1752))
+			assert.is_nil(Compat.spellSubtext(1752))
+			assert.is_nil(Compat.spellCooldownSeconds(1752))
+		end)
+
+		it("rounds the cooldown to whole seconds, nil for one not worth naming", function()
+			_G.GetSpellCooldown = function() return 0, 6000, 1 end
+			assert.are.equal(6, Compat.spellCooldownSeconds(1752))
+			_G.GetSpellCooldown = function() return 0, 0, 1 end
+			assert.is_nil(Compat.spellCooldownSeconds(1752))
+			_G.GetSpellCooldown = function() return nil end
+			assert.is_nil(Compat.spellCooldownSeconds(1752))
+		end)
+	end)
+
 	describe("names", function()
 		local kept
 

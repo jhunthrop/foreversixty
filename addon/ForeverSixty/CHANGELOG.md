@@ -7,6 +7,12 @@
   frame width that could disagree with it; Load now anchors directly off Dismiss instead,
   so the two can never drift apart, with a layout test pinning every banner child inside
   the page's own width.
+- The best-in-slot hover now shows the recommended item properly: its own icon inline, its
+  name in its real quality colour, and its item level, plus a second tooltip beside it
+  showing the item's own full details, the way shift-to-compare already does. An item the
+  client has not cached yet is asked for once and the hover redraws itself in place the
+  moment the data arrives, rather than showing a bare "item:12345" until you move the mouse
+  away and back.
 - Hovering an equipment slot on the character frame now names the best-in-slot item for
   your spec, faction and level, marked equipped when it is what you already wear or newly
   the pick since your last level; an empty slot shows it directly, since it has no item

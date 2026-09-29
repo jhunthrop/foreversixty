@@ -346,6 +346,18 @@ local L = {
 	tooltipBisNew = "(new at %d)",
 	-- Advanced detail only: "Source: <kind>".
 	tooltipBisSource = "Source: %s",
+
+	-- Lane addon-premium (2026-09-28): the addon to the standard of the
+	-- best WoW addon ever made (docs/tenets.md) -- the BiS hover's item
+	-- level line, the rotation card's redesign and header strip, and the
+	-- Top Gear upgrade row's icon.
+	tooltipBisItemLevel = "Item Level %d",
+	overviewRotationHeaderStrip = "%s · Level %d+ · updated %s",
+	overviewRotationMoreCount = "+%d more",
+	overviewRotationLess = "Show fewer",
+	overviewRotationRank = "%s",
+	overviewRotationCooldown = "#%d · %ds cooldown",
+	overviewRotationId = "#%d",
 }
 
 ns.L = L
