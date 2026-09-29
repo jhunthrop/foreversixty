@@ -181,6 +181,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 	"warrior-arms": {
 		"{SpellID: 21553}": "Mortal Strike is gated on its talent (sim/warrior/mortal_strike.go); this build takes none.",
 	},
+	"druid-balance": {
+		"{SpellID: 24977}": "Insect Swarm is a single-point Balance talent (data/builds/<build>/talents/druid.json, id 104930), not a baseline spell every druid learns by level; sim/druid/insect_swarm.go's registerInsectSwarmSpell now gates on Talents.InsectSwarm (rotation-accuracy program, 2026-09-28 -- it previously did not check the talent at all, so a zero-talent character could cast it same as this smoke build does). This build takes none.",
+	},
 }
 
 const noPotionWarning = "OtherActionPotion: this build carries no consumables, so there is " +
