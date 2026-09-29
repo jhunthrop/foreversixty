@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:58:07Z",
+  "generated_at": "2026-09-29T13:34:29Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -194,8 +194,8 @@
         "off_hand: Engineer's Hammer",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 0.8576158,
-      "verify_run_seconds": 0.462889007
+      "weights_run_seconds": 1.129832635,
+      "verify_run_seconds": 0.613994495
     },
     {
       "spec": "rogue-subtlety",
@@ -395,8 +395,8 @@
         "off_hand: Hammer of Orgrimmar",
         "ranged: Skorn's Rifle"
       ],
-      "weights_run_seconds": 0.8576158,
-      "verify_run_seconds": 0.573369375
+      "weights_run_seconds": 1.129832635,
+      "verify_run_seconds": 0.739868248
     },
     {
       "spec": "rogue-subtlety",
@@ -602,8 +602,8 @@
         "off_hand: Hardwood Cudgel",
         "ranged: Daryl's Hunting Bow"
       ],
-      "weights_run_seconds": 0.864120515,
-      "verify_run_seconds": 0.886988582
+      "weights_run_seconds": 1.121339099,
+      "verify_run_seconds": 1.17319666
     },
     {
       "spec": "rogue-subtlety",
@@ -811,8 +811,8 @@
         "off_hand: Claystone Shortsword",
         "ranged: Privateer Musket"
       ],
-      "weights_run_seconds": 0.864120515,
-      "verify_run_seconds": 0.788709884
+      "weights_run_seconds": 1.121339099,
+      "verify_run_seconds": 1.009461977
     },
     {
       "spec": "rogue-subtlety",
@@ -1038,8 +1038,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Deadly Blunderbuss"
       ],
-      "weights_run_seconds": 0.877581079,
-      "verify_run_seconds": 0.97104007
+      "weights_run_seconds": 1.162182781,
+      "verify_run_seconds": 1.248782
     },
     {
       "spec": "rogue-subtlety",
@@ -1267,8 +1267,8 @@
         "off_hand: Scout's Blade",
         "ranged: Bow of Plunder"
       ],
-      "weights_run_seconds": 0.877581079,
-      "verify_run_seconds": 0.870851134
+      "weights_run_seconds": 1.162182781,
+      "verify_run_seconds": 1.112270939
     },
     {
       "spec": "rogue-subtlety",
@@ -1494,8 +1494,8 @@
         "off_hand: Bite of Serra'kis",
         "ranged: Raptor's End"
       ],
-      "weights_run_seconds": 0.864672641,
-      "verify_run_seconds": 1.055228667
+      "weights_run_seconds": 1.141924882,
+      "verify_run_seconds": 1.381634607
     },
     {
       "spec": "rogue-subtlety",
@@ -1719,8 +1719,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Bite of Serra'kis"
       ],
-      "weights_run_seconds": 0.864672641,
-      "verify_run_seconds": 1.071834117
+      "weights_run_seconds": 1.141924882,
+      "verify_run_seconds": 1.382000176
     },
     {
       "spec": "rogue-subtlety",
@@ -1953,8 +1953,8 @@
         "off_hand: Electrocutioner Leg",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 0.953889857,
-      "verify_run_seconds": 1.180869381
+      "weights_run_seconds": 1.21009791,
+      "verify_run_seconds": 1.5281859249999998
     },
     {
       "spec": "rogue-subtlety",
@@ -2188,8 +2188,8 @@
         "off_hand: Sword of Hammerfall",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 0.953889857,
-      "verify_run_seconds": 1.012742025
+      "weights_run_seconds": 1.21009791,
+      "verify_run_seconds": 1.310337549
     },
     {
       "spec": "rogue-subtlety",
@@ -2413,8 +2413,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Black Menace"
       ],
-      "weights_run_seconds": 1.016321917,
-      "verify_run_seconds": 1.205712447
+      "weights_run_seconds": 1.312227992,
+      "verify_run_seconds": 1.5586739170000001
     },
     {
       "spec": "rogue-subtlety",
@@ -2641,8 +2641,8 @@
         "off_hand: Tok'kar's Murloc Shanker",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.016321917,
-      "verify_run_seconds": 1.28528846
+      "weights_run_seconds": 1.312227992,
+      "verify_run_seconds": 1.6768368900000001
     },
     {
       "spec": "rogue-subtlety",
@@ -2882,8 +2882,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.005192238,
-      "verify_run_seconds": 1.001884775
+      "weights_run_seconds": 1.325790212,
+      "verify_run_seconds": 1.295751635
     },
     {
       "spec": "rogue-subtlety",
@@ -3118,8 +3118,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Spirit of the Faerie Dragon"
       ],
-      "weights_run_seconds": 1.005192238,
-      "verify_run_seconds": 0.991258199
+      "weights_run_seconds": 1.325790212,
+      "verify_run_seconds": 1.2942154989999999
     },
     {
       "spec": "rogue-subtlety",
@@ -3352,8 +3352,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.01771214,
-      "verify_run_seconds": 1.22542202
+      "weights_run_seconds": 1.32310444,
+      "verify_run_seconds": 1.590829536
     },
     {
       "spec": "rogue-subtlety",
@@ -3586,8 +3586,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.01771214,
-      "verify_run_seconds": 1.23271034
+      "weights_run_seconds": 1.32310444,
+      "verify_run_seconds": 1.6103044199999998
     },
     {
       "spec": "rogue-subtlety",
@@ -3814,8 +3814,8 @@
         "off_hand: Blade of Reckoning",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.031983767,
-      "verify_run_seconds": 1.147052282
+      "weights_run_seconds": 1.344244385,
+      "verify_run_seconds": 1.480513613
     },
     {
       "spec": "rogue-subtlety",
@@ -4043,8 +4043,8 @@
         "main_hand: Inventor's Focal Sword",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.031983767,
-      "verify_run_seconds": 1.128433404
+      "weights_run_seconds": 1.344244385,
+      "verify_run_seconds": 1.379298451
     },
     {
       "spec": "rogue-subtlety",
@@ -4278,8 +4278,8 @@
         "off_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.02099713,
-      "verify_run_seconds": 1.241928008
+      "weights_run_seconds": 1.349807232,
+      "verify_run_seconds": 1.59092744
     },
     {
       "spec": "rogue-subtlety",
@@ -4513,8 +4513,8 @@
         "off_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.02099713,
-      "verify_run_seconds": 1.225535044
+      "weights_run_seconds": 1.349807232,
+      "verify_run_seconds": 1.602624317
     },
     {
       "spec": "rogue-subtlety",
@@ -4618,7 +4618,7 @@
           "item_name": "Bonescythe Gauntlets",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 236.9920962948349,
+          "score": 236.99209629483494,
           "verified": true
         },
         {
@@ -4654,7 +4654,7 @@
           "item_name": "Band of Unnatural Forces",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "score": 222.9920962948349,
+          "score": 222.99209629483494,
           "verified": true
         },
         {
@@ -4750,8 +4750,8 @@
         "off_hand: The Hungering Cold",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.046789558,
-      "verify_run_seconds": 1.389447114
+      "weights_run_seconds": 1.326890422,
+      "verify_run_seconds": 1.848341601
     },
     {
       "spec": "rogue-subtlety",
@@ -4836,7 +4836,7 @@
           "item_name": "Bonescythe Breastplate",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 364.64978637668844,
+          "score": 364.6497863766885,
           "verified": true
         },
         {
@@ -4891,7 +4891,7 @@
           "item_name": "Band of Unnatural Forces",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "score": 222.99209629483494,
+          "score": 222.9920962948349,
           "verified": true
         },
         {
@@ -4987,8 +4987,8 @@
         "off_hand: The Hungering Cold",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.046789558,
-      "verify_run_seconds": 1.358622864
+      "weights_run_seconds": 1.326890422,
+      "verify_run_seconds": 1.74347467
     }
   ]
 }

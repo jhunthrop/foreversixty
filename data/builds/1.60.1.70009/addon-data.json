@@ -33663,9 +33663,9 @@
               "source": "Ahn'Qiraj"
             },
             "legs": {
-              "item_id": 16564,
+              "item_id": 16456,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Captain Dirgehammer"
             },
             "feet": {
               "item_id": 22480,
@@ -33806,7 +33806,7 @@
             22483,
             22481,
             21586,
-            16564,
+            16456,
             22480,
             23038,
             19325,

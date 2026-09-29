@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:54:46Z",
+  "generated_at": "2026-09-29T13:30:10Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -205,8 +205,8 @@
         "off_hand: Father Flame",
         "ranged: Spark of the People's Militia"
       ],
-      "weights_run_seconds": 0.582080482,
-      "verify_run_seconds": 0.316341602
+      "weights_run_seconds": 0.747996414,
+      "verify_run_seconds": 0.400246067
     },
     {
       "spec": "mage-fire",
@@ -410,8 +410,8 @@
         "main_hand: Darkwood Staff",
         "ranged: Branding Rod"
       ],
-      "weights_run_seconds": 0.582080482,
-      "verify_run_seconds": 0.282223458
+      "weights_run_seconds": 0.747996414,
+      "verify_run_seconds": 0.360148814
     },
     {
       "spec": "mage-fire",
@@ -630,8 +630,8 @@
         "main_hand: Oakthrush Staff",
         "ranged: Moonstone Wand"
       ],
-      "weights_run_seconds": 0.55463052,
-      "verify_run_seconds": 0.408741134
+      "weights_run_seconds": 0.709786039,
+      "verify_run_seconds": 0.526238936
     },
     {
       "spec": "mage-fire",
@@ -845,8 +845,8 @@
         "finger2: Bounty Hunter's Ring",
         "main_hand: Clear Crystal Rod"
       ],
-      "weights_run_seconds": 0.55463052,
-      "verify_run_seconds": 0.414289511
+      "weights_run_seconds": 0.709786039,
+      "verify_run_seconds": 0.520175815
     },
     {
       "spec": "mage-fire",
@@ -1082,8 +1082,8 @@
         "main_hand: Staff of Westfall",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.601359501,
-      "verify_run_seconds": 0.460402986
+      "weights_run_seconds": 0.752323331,
+      "verify_run_seconds": 0.559040716
     },
     {
       "spec": "mage-fire",
@@ -1320,8 +1320,8 @@
         "main_hand: Polished Walking Staff",
         "ranged: Charred Wand"
       ],
-      "weights_run_seconds": 0.601359501,
-      "verify_run_seconds": 0.484632097
+      "weights_run_seconds": 0.752323331,
+      "verify_run_seconds": 0.601587804
     },
     {
       "spec": "mage-fire",
@@ -1548,8 +1548,8 @@
         "finger1: Ring of Forlorn Spirits",
         "main_hand: Rod of the Sleepwalker"
       ],
-      "weights_run_seconds": 0.58208558,
-      "verify_run_seconds": 0.460590304
+      "weights_run_seconds": 0.727944916,
+      "verify_run_seconds": 0.568226193
     },
     {
       "spec": "mage-fire",
@@ -1783,8 +1783,8 @@
         "main_hand: Defias Rapier",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.58208558,
-      "verify_run_seconds": 0.492696073
+      "weights_run_seconds": 0.727944916,
+      "verify_run_seconds": 0.601557261
     },
     {
       "spec": "mage-fire",
@@ -2026,8 +2026,8 @@
         "main_hand: Lorekeeper's Staff",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 0.625295709,
-      "verify_run_seconds": 0.596894961
+      "weights_run_seconds": 0.762855649,
+      "verify_run_seconds": 0.757614472
     },
     {
       "spec": "mage-fire",
@@ -2267,8 +2267,8 @@
         "main_hand: Nimboya's Mystical Staff",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.625295709,
-      "verify_run_seconds": 0.594415917
+      "weights_run_seconds": 0.762855649,
+      "verify_run_seconds": 0.752137638
     },
     {
       "spec": "mage-fire",
@@ -2504,8 +2504,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 0.613376556,
-      "verify_run_seconds": 0.593184015
+      "weights_run_seconds": 0.760407175,
+      "verify_run_seconds": 0.742197497
     },
     {
       "spec": "mage-fire",
@@ -2738,8 +2738,8 @@
         "finger1: Advisor's Ring",
         "finger2: Snake Hoop"
       ],
-      "weights_run_seconds": 0.613376556,
-      "verify_run_seconds": 0.597106237
+      "weights_run_seconds": 0.760407175,
+      "verify_run_seconds": 0.748780328
     },
     {
       "spec": "mage-fire",
@@ -2982,8 +2982,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 0.630760581,
-      "verify_run_seconds": 0.580834559
+      "weights_run_seconds": 0.80648755,
+      "verify_run_seconds": 0.734299187
     },
     {
       "spec": "mage-fire",
@@ -3218,8 +3218,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 0.630760581,
-      "verify_run_seconds": 0.593724123
+      "weights_run_seconds": 0.80648755,
+      "verify_run_seconds": 0.746389156
     },
     {
       "spec": "mage-fire",
@@ -3455,8 +3455,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.643528682,
-      "verify_run_seconds": 0.599086434
+      "weights_run_seconds": 0.785688719,
+      "verify_run_seconds": 0.74510667
     },
     {
       "spec": "mage-fire",
@@ -3691,8 +3691,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.643528682,
-      "verify_run_seconds": 0.596020957
+      "weights_run_seconds": 0.785688719,
+      "verify_run_seconds": 0.738553273
     },
     {
       "spec": "mage-fire",
@@ -3928,8 +3928,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.636056085,
-      "verify_run_seconds": 0.608796294
+      "weights_run_seconds": 0.824503855,
+      "verify_run_seconds": 0.757140246
     },
     {
       "spec": "mage-fire",
@@ -4164,8 +4164,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.636056085,
-      "verify_run_seconds": 0.594663751
+      "weights_run_seconds": 0.824503855,
+      "verify_run_seconds": 0.749493347
     },
     {
       "spec": "mage-fire",
@@ -4404,8 +4404,8 @@
         "finger2: Glowing Crystal Ring",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 0.642322335,
-      "verify_run_seconds": 0.603174155
+      "weights_run_seconds": 0.791997845,
+      "verify_run_seconds": 0.746384496
     },
     {
       "spec": "mage-fire",
@@ -4649,8 +4649,8 @@
         "trinket1: Smokey's Lighter",
         "ranged: Nature's Breath"
       ],
-      "weights_run_seconds": 0.642322335,
-      "verify_run_seconds": 0.601579664
+      "weights_run_seconds": 0.791997845,
+      "verify_run_seconds": 0.764382201
     },
     {
       "spec": "mage-fire",
@@ -4710,7 +4710,7 @@
           "item_name": "Frostfire Circlet",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 447.62810959340476,
+          "score": 447.6281095934048,
           "verified": true,
           "swap_note": "beat the scored pick Bloodvine Goggles (id 19999) in the sim: 172.4 vs 168.3 set DPS"
         },
@@ -4841,7 +4841,7 @@
           "item_name": "Atiesh, Greatstaff of the Guardian",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 527.3448638450408,
+          "score": 527.3448638450407,
           "verified": true,
           "effect_unmodelled": true
         },
@@ -4895,8 +4895,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.663828157,
-      "verify_run_seconds": 0.613137158
+      "weights_run_seconds": 0.866469181,
+      "verify_run_seconds": 0.752691275
     },
     {
       "spec": "mage-fire",
@@ -4956,7 +4956,7 @@
           "item_name": "Frostfire Circlet",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 447.6281095934048,
+          "score": 447.62810959340476,
           "verified": true,
           "swap_note": "beat the scored pick Bloodvine Goggles (id 19999) in the sim: 151.9 vs 149.4 set DPS"
         },
@@ -5140,8 +5140,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.663828157,
-      "verify_run_seconds": 0.611518225
+      "weights_run_seconds": 0.866469181,
+      "verify_run_seconds": 0.757383228
     }
   ]
 }

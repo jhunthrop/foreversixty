@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T07:00:07Z",
+  "generated_at": "2026-09-29T13:37:06Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -207,8 +207,8 @@
         "off_hand: Father Flame",
         "ranged: Spark of the People's Militia"
       ],
-      "weights_run_seconds": 1.012977887,
-      "verify_run_seconds": 0.536272489
+      "weights_run_seconds": 1.356055238,
+      "verify_run_seconds": 0.697577014
     },
     {
       "spec": "warlock-affliction",
@@ -412,8 +412,8 @@
         "main_hand: Darkwood Staff",
         "ranged: Branding Rod"
       ],
-      "weights_run_seconds": 1.012977887,
-      "verify_run_seconds": 0.490998918
+      "weights_run_seconds": 1.356055238,
+      "verify_run_seconds": 0.632147386
     },
     {
       "spec": "warlock-affliction",
@@ -627,8 +627,8 @@
         "main_hand: Staff of Westfall",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.017949196,
-      "verify_run_seconds": 0.723178166
+      "weights_run_seconds": 1.352646375,
+      "verify_run_seconds": 0.928777778
     },
     {
       "spec": "warlock-affliction",
@@ -844,8 +844,8 @@
         "main_hand: Staff of Orgrimmar",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.017949196,
-      "verify_run_seconds": 0.710763845
+      "weights_run_seconds": 1.352646375,
+      "verify_run_seconds": 0.936137783
     },
     {
       "spec": "warlock-affliction",
@@ -1078,8 +1078,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 0.980410585,
-      "verify_run_seconds": 0.694568544
+      "weights_run_seconds": 1.33193649,
+      "verify_run_seconds": 0.903864517
     },
     {
       "spec": "warlock-affliction",
@@ -1315,8 +1315,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Polished Walking Staff"
       ],
-      "weights_run_seconds": 0.980410585,
-      "verify_run_seconds": 0.796046502
+      "weights_run_seconds": 1.33193649,
+      "verify_run_seconds": 1.026481648
     },
     {
       "spec": "warlock-affliction",
@@ -1544,8 +1544,8 @@
         "finger1: Ring of Forlorn Spirits",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 0.801143296,
-      "verify_run_seconds": 0.605946835
+      "weights_run_seconds": 1.028491434,
+      "verify_run_seconds": 0.796986116
     },
     {
       "spec": "warlock-affliction",
@@ -1771,8 +1771,8 @@
         "main_hand: Rod of the Sleepwalker",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.801143296,
-      "verify_run_seconds": 0.659306248
+      "weights_run_seconds": 1.028491434,
+      "verify_run_seconds": 0.829855143
     },
     {
       "spec": "warlock-affliction",
@@ -2008,8 +2008,8 @@
         "trinket2: Rune of Perfection",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 1.006304596,
-      "verify_run_seconds": 0.955743513
+      "weights_run_seconds": 1.433464848,
+      "verify_run_seconds": 1.239349538
     },
     {
       "spec": "warlock-affliction",
@@ -2246,8 +2246,8 @@
         "main_hand: Defias Rapier",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.006304596,
-      "verify_run_seconds": 0.958286017
+      "weights_run_seconds": 1.433464848,
+      "verify_run_seconds": 1.24062936
     },
     {
       "spec": "warlock-affliction",
@@ -2477,8 +2477,8 @@
         "waist: Star Belt",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 1.047600864,
-      "verify_run_seconds": 0.983904286
+      "weights_run_seconds": 1.328368401,
+      "verify_run_seconds": 1.259459157
     },
     {
       "spec": "warlock-affliction",
@@ -2712,8 +2712,8 @@
         "feet: Defiler's Cloth Boots",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 1.047600864,
-      "verify_run_seconds": 0.964860465
+      "weights_run_seconds": 1.328368401,
+      "verify_run_seconds": 1.221004635
     },
     {
       "spec": "warlock-affliction",
@@ -2951,8 +2951,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 0.918170616,
-      "verify_run_seconds": 0.80106003
+      "weights_run_seconds": 1.00949041,
+      "verify_run_seconds": 1.029315236
     },
     {
       "spec": "warlock-affliction",
@@ -3187,8 +3187,8 @@
         "trinket1: Mark of the Chosen",
         "trinket2: Carrot on a Stick"
       ],
-      "weights_run_seconds": 0.918170616,
-      "verify_run_seconds": 0.794519755
+      "weights_run_seconds": 1.00949041,
+      "verify_run_seconds": 1.045720639
     },
     {
       "spec": "warlock-affliction",
@@ -3423,8 +3423,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.123703465,
-      "verify_run_seconds": 0.96197234
+      "weights_run_seconds": 1.450892539,
+      "verify_run_seconds": 1.240954757
     },
     {
       "spec": "warlock-affliction",
@@ -3658,8 +3658,8 @@
         "trinket2: Shard of the Splithooves",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.123703465,
-      "verify_run_seconds": 0.963167375
+      "weights_run_seconds": 1.450892539,
+      "verify_run_seconds": 1.250803645
     },
     {
       "spec": "warlock-affliction",
@@ -3891,8 +3891,8 @@
         "finger1: Blackstone Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 0.918182488,
-      "verify_run_seconds": 0.80545872
+      "weights_run_seconds": 1.148181596,
+      "verify_run_seconds": 1.041089181
     },
     {
       "spec": "warlock-affliction",
@@ -4124,8 +4124,8 @@
         "finger2: Advisor's Ring",
         "trinket2: Smoking Heart of the Mountain"
       ],
-      "weights_run_seconds": 0.918182488,
-      "verify_run_seconds": 0.796051485
+      "weights_run_seconds": 1.148181596,
+      "verify_run_seconds": 1.021497325
     },
     {
       "spec": "warlock-affliction",
@@ -4355,8 +4355,8 @@
         "feet: Omnicast Boots",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.221657558,
-      "verify_run_seconds": 0.961773738
+      "weights_run_seconds": 1.523977372,
+      "verify_run_seconds": 1.239969347
     },
     {
       "spec": "warlock-affliction",
@@ -4587,8 +4587,8 @@
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.221657558,
-      "verify_run_seconds": 0.953345638
+      "weights_run_seconds": 1.523977372,
+      "verify_run_seconds": 1.231863115
     },
     {
       "spec": "warlock-affliction",
@@ -4832,8 +4832,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.906830245,
-      "verify_run_seconds": 0.781486734
+      "weights_run_seconds": 1.162028147,
+      "verify_run_seconds": 1.001553837
     },
     {
       "spec": "warlock-affliction",
@@ -5078,8 +5078,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.906830245,
-      "verify_run_seconds": 0.79275077
+      "weights_run_seconds": 1.162028147,
+      "verify_run_seconds": 1.045088205
     }
   ]
 }

@@ -2,7 +2,7 @@
   "spec": "mage-frost",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:55:06Z",
+  "generated_at": "2026-09-29T13:30:36Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -206,8 +206,8 @@
         "off_hand: Father Flame",
         "ranged: Spark of the People's Militia"
       ],
-      "weights_run_seconds": 0.51607105,
-      "verify_run_seconds": 0.305050775
+      "weights_run_seconds": 0.688431194,
+      "verify_run_seconds": 0.386653679
     },
     {
       "spec": "mage-frost",
@@ -410,8 +410,8 @@
         "main_hand: Darkwood Staff",
         "ranged: Branding Rod"
       ],
-      "weights_run_seconds": 0.51607105,
-      "verify_run_seconds": 0.274758566
+      "weights_run_seconds": 0.688431194,
+      "verify_run_seconds": 0.353435438
     },
     {
       "spec": "mage-frost",
@@ -626,8 +626,8 @@
         "off_hand: Tear of Grief",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.536234638,
-      "verify_run_seconds": 0.411657177
+      "weights_run_seconds": 0.684347688,
+      "verify_run_seconds": 0.508149277
     },
     {
       "spec": "mage-frost",
@@ -842,8 +842,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.536234638,
-      "verify_run_seconds": 0.423660164
+      "weights_run_seconds": 0.684347688,
+      "verify_run_seconds": 0.515490191
     },
     {
       "spec": "mage-frost",
@@ -1079,8 +1079,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 0.533519805,
-      "verify_run_seconds": 0.402589717
+      "weights_run_seconds": 0.661304152,
+      "verify_run_seconds": 0.501626516
     },
     {
       "spec": "mage-frost",
@@ -1316,8 +1316,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Polished Walking Staff"
       ],
-      "weights_run_seconds": 0.533519805,
-      "verify_run_seconds": 0.43428829
+      "weights_run_seconds": 0.661304152,
+      "verify_run_seconds": 0.546674224
     },
     {
       "spec": "mage-frost",
@@ -1546,8 +1546,8 @@
         "waist: Belt of Arugal",
         "finger1: Ring of Forlorn Spirits"
       ],
-      "weights_run_seconds": 0.546647005,
-      "verify_run_seconds": 0.404827414
+      "weights_run_seconds": 0.675495328,
+      "verify_run_seconds": 0.519779216
     },
     {
       "spec": "mage-frost",
@@ -1780,8 +1780,8 @@
         "legs: Gaze Dreamer Pants",
         "finger2: Snake Hoop"
       ],
-      "weights_run_seconds": 0.546647005,
-      "verify_run_seconds": 0.43394341
+      "weights_run_seconds": 0.675495328,
+      "verify_run_seconds": 0.566718365
     },
     {
       "spec": "mage-frost",
@@ -2021,8 +2021,8 @@
         "main_hand: Lorekeeper's Staff",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 0.528634728,
-      "verify_run_seconds": 0.525485752
+      "weights_run_seconds": 0.651670637,
+      "verify_run_seconds": 0.666173852
     },
     {
       "spec": "mage-frost",
@@ -2266,8 +2266,8 @@
         "main_hand: Nimboya's Mystical Staff",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.528634728,
-      "verify_run_seconds": 0.521587961
+      "weights_run_seconds": 0.651670637,
+      "verify_run_seconds": 0.654884686
     },
     {
       "spec": "mage-frost",
@@ -2502,8 +2502,8 @@
         "waist: Star Belt",
         "main_hand: Hypnotic Blade"
       ],
-      "weights_run_seconds": 0.516897483,
-      "verify_run_seconds": 0.519932238
+      "weights_run_seconds": 0.67377053,
+      "verify_run_seconds": 0.66478736
     },
     {
       "spec": "mage-frost",
@@ -2737,8 +2737,8 @@
         "finger2: Snake Hoop",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 0.516897483,
-      "verify_run_seconds": 0.531436094
+      "weights_run_seconds": 0.67377053,
+      "verify_run_seconds": 0.67823768
     },
     {
       "spec": "mage-frost",
@@ -2978,8 +2978,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.54096908,
-      "verify_run_seconds": 0.538989901
+      "weights_run_seconds": 0.671552012,
+      "verify_run_seconds": 0.662458094
     },
     {
       "spec": "mage-frost",
@@ -3218,8 +3218,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 0.54096908,
-      "verify_run_seconds": 0.533387513
+      "weights_run_seconds": 0.671552012,
+      "verify_run_seconds": 0.676621197
     },
     {
       "spec": "mage-frost",
@@ -3453,8 +3453,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.548645445,
-      "verify_run_seconds": 0.517516778
+      "weights_run_seconds": 0.691219924,
+      "verify_run_seconds": 0.66547334
     },
     {
       "spec": "mage-frost",
@@ -3686,8 +3686,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.548645445,
-      "verify_run_seconds": 0.541957368
+      "weights_run_seconds": 0.691219924,
+      "verify_run_seconds": 0.675443851
     },
     {
       "spec": "mage-frost",
@@ -3923,8 +3923,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.552458922,
-      "verify_run_seconds": 0.525863177
+      "weights_run_seconds": 0.671822979,
+      "verify_run_seconds": 0.668610272
     },
     {
       "spec": "mage-frost",
@@ -4165,8 +4165,8 @@
         "main_hand: Kindling Stave",
         "ranged: Nature's Breath"
       ],
-      "weights_run_seconds": 0.552458922,
-      "verify_run_seconds": 0.551012043
+      "weights_run_seconds": 0.671822979,
+      "verify_run_seconds": 0.683494676
     },
     {
       "spec": "mage-frost",
@@ -4400,8 +4400,8 @@
         "feet: Omnicast Boots",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 0.558243813,
-      "verify_run_seconds": 0.526868397
+      "weights_run_seconds": 0.685844506,
+      "verify_run_seconds": 0.651492162
     },
     {
       "spec": "mage-frost",
@@ -4639,8 +4639,8 @@
         "trinket1: Smokey's Lighter",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.558243813,
-      "verify_run_seconds": 0.544386076
+      "weights_run_seconds": 0.685844506,
+      "verify_run_seconds": 0.695934706
     },
     {
       "spec": "mage-frost",
@@ -4883,8 +4883,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.551836745,
-      "verify_run_seconds": 0.549565513
+      "weights_run_seconds": 0.706607104,
+      "verify_run_seconds": 0.678645556
     },
     {
       "spec": "mage-frost",
@@ -5125,8 +5125,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.551836745,
-      "verify_run_seconds": 0.563801738
+      "weights_run_seconds": 0.706607104,
+      "verify_run_seconds": 0.711896338
     }
   ]
 }

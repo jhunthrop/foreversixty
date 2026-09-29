@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (dwarf, 0000000000000000-00000000000000000-100000000000000000)
 
-Set DPS (verified): 36.7. Weights run: 1.3s. Verify run: 0.7s. 695 eligible items had no known source.
+Set DPS (verified): 36.7. Weights run: 1.8s. Verify run: 0.9s. 695 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.019 ± 0.004, strength=1.000 ± 0.001, crit=0.935 ± 0.031, hit=0.597 ± 0.041, melee_haste=not significant (-0.735 ± 1.110)
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 695, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (dwarf, 0000000000000000-00000000000000000-500100000000000000)
 
-Set DPS (verified): 39.7. Weights run: 1.4s. Verify run: 1.1s. 922 eligible items had no known source.
+Set DPS (verified): 39.7. Weights run: 1.8s. Verify run: 1.5s. 922 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.025 ± 0.006, strength=1.000 ± 0.001, crit=1.240 ± 0.039, hit=0.688 ± 0.050, melee_haste=not significant (-1.090 ± 1.072)
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 922, see the JSON for more): 727 Notched Shortswor
 
 ### Band 20 (dwarf, 0000000000000000-00000000000000000-500230100000000000)
 
-Set DPS (verified): 54.0. Weights run: 1.4s. Verify run: 1.3s. 1207 eligible items had no known source.
+Set DPS (verified): 54.0. Weights run: 1.8s. Verify run: 1.7s. 1207 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.037 ± 0.007, strength=1.000 ± 0.001, crit=1.607 ± 0.051, hit=0.966 ± 0.082, melee_haste=not significant (0.795 ± 0.764)
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 1207, see the JSON for more): 727 Notched Shortswo
 
 ### Band 25 (dwarf, 0000000000000000-00000000000000000-500230131010000000)
 
-Set DPS (verified): 56.1. Weights run: 1.4s. Verify run: 1.2s. 1521 eligible items had no known source.
+Set DPS (verified): 56.1. Weights run: 1.8s. Verify run: 1.6s. 1521 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.048 ± 0.010, strength=1.000 ± 0.001, crit=1.946 ± 0.059, hit=2.266 ± 0.127, melee_haste=not significant (1.290 ± 0.937)
 
@@ -126,7 +126,7 @@ No-known-source sample (15 of 1521, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (dwarf, 0000000000000000-00000000000000000-500230131051000000)
 
-Set DPS (verified): 62.2. Weights run: 1.5s. Verify run: 1.5s. 1794 eligible items had no known source.
+Set DPS (verified): 62.2. Weights run: 1.9s. Verify run: 1.9s. 1794 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.052 ± 0.014, strength=1.000 ± 0.001, crit=2.688 ± 0.095, hit=3.081 ± 0.212, melee_haste=not significant (0.562 ± 0.827)
 
@@ -156,7 +156,7 @@ No-known-source sample (15 of 1794, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (dwarf, 0000000000000000-00000000000000000-500230131051120110)
 
-Set DPS (verified): 73.7. Weights run: 1.5s. Verify run: 1.6s. 2021 eligible items had no known source.
+Set DPS (verified): 73.7. Weights run: 1.9s. Verify run: 2.1s. 2021 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.064 ± 0.010, strength=1.000 ± 0.001, crit=2.970 ± 0.096, hit=3.181 ± 0.240, melee_haste=not significant (1.413 ± 0.693)
 
@@ -186,7 +186,7 @@ No-known-source sample (15 of 2021, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (dwarf, 0000000000000000-00000000000000000-500230131051120151)
 
-Set DPS (verified): 81.6. Weights run: 1.5s. Verify run: 1.4s. 2843 eligible items had no known source.
+Set DPS (verified): 81.6. Weights run: 1.9s. Verify run: 1.9s. 2843 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.169 ± 0.018, strength=1.000 ± 0.001, crit=3.231 ± 0.106, hit=3.490 ± 0.282, melee_haste=not significant (3.178 ± 1.330)
 
@@ -216,7 +216,7 @@ No-known-source sample (15 of 2843, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (dwarf, 0000000000000000-32000000000000000-500230131051120151)
 
-Set DPS (verified): 93.4. Weights run: 1.5s. Verify run: 1.6s. 3150 eligible items had no known source.
+Set DPS (verified): 93.4. Weights run: 1.9s. Verify run: 2.1s. 3150 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.172 ± 0.020, strength=1.000 ± 0.001, crit=3.965 ± 0.143, hit=3.907 ± 0.374, melee_haste=not significant (2.225 ± 0.878)
 
@@ -246,7 +246,7 @@ No-known-source sample (15 of 3150, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (dwarf, 0000000000000000-32005000000000000-500230131051120151)
 
-Set DPS (verified): 101.9. Weights run: 1.5s. Verify run: 1.4s. 3492 eligible items had no known source.
+Set DPS (verified): 101.9. Weights run: 1.9s. Verify run: 1.9s. 3492 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.177 ± 0.018, strength=1.000 ± 0.001, crit=4.300 ± 0.154, hit=5.121 ± 0.388, melee_haste=not significant (1.910 ± 0.883)
 
@@ -276,7 +276,7 @@ No-known-source sample (15 of 3492, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 55 (dwarf, 0000000000000000-32005500000000000-500230131051120151)
 
-Set DPS (verified): 114.5. Weights run: 1.5s. Verify run: 1.6s. 3793 eligible items had no known source.
+Set DPS (verified): 114.5. Weights run: 1.9s. Verify run: 2.1s. 3793 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.193 ± 0.022, strength=1.000 ± 0.001, crit=4.599 ± 0.159, hit=5.344 ± 0.400, melee_haste=not significant (1.113 ± 0.951)
 
@@ -306,7 +306,7 @@ No-known-source sample (15 of 3793, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (dwarf, 0000000000000000-32005500005000000-500230131051120151)
 
-Set DPS (verified): 216.1. Weights run: 1.5s. Verify run: 1.7s. 4390 eligible items had no known source.
+Set DPS (verified): 216.1. Weights run: 2.0s. Verify run: 2.2s. 4390 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.205 ± 0.024, strength=1.000 ± 0.001, crit=6.402 ± 0.250, hit=5.883 ± 0.716, melee_haste=not significant (0.393 ± 1.319)
 
@@ -338,7 +338,7 @@ No-known-source sample (15 of 4390, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 10 (troll, 0000000000000000-00000000000000000-100000000000000000)
 
-Set DPS (verified): 39.2. Weights run: 1.3s. Verify run: 0.9s. 695 eligible items had no known source.
+Set DPS (verified): 39.2. Weights run: 1.8s. Verify run: 1.3s. 695 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.019 ± 0.004, strength=1.000 ± 0.001, crit=0.935 ± 0.031, hit=0.597 ± 0.041, melee_haste=not significant (-0.735 ± 1.110)
 
@@ -368,7 +368,7 @@ No-known-source sample (15 of 695, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (troll, 0000000000000000-00000000000000000-500100000000000000)
 
-Set DPS (verified): 43.3. Weights run: 1.4s. Verify run: 1.0s. 918 eligible items had no known source.
+Set DPS (verified): 43.3. Weights run: 1.8s. Verify run: 1.3s. 918 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.025 ± 0.006, strength=1.000 ± 0.001, crit=1.240 ± 0.039, hit=0.688 ± 0.050, melee_haste=not significant (-1.090 ± 1.072)
 
@@ -398,7 +398,7 @@ No-known-source sample (15 of 918, see the JSON for more): 727 Notched Shortswor
 
 ### Band 20 (troll, 0000000000000000-00000000000000000-500230100000000000)
 
-Set DPS (verified): 53.7. Weights run: 1.4s. Verify run: 1.2s. 1203 eligible items had no known source.
+Set DPS (verified): 53.7. Weights run: 1.8s. Verify run: 1.6s. 1203 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.037 ± 0.007, strength=1.000 ± 0.001, crit=1.607 ± 0.051, hit=0.966 ± 0.082, melee_haste=not significant (0.795 ± 0.764)
 
@@ -428,7 +428,7 @@ No-known-source sample (15 of 1203, see the JSON for more): 727 Notched Shortswo
 
 ### Band 25 (troll, 0000000000000000-00000000000000000-500230131010000000)
 
-Set DPS (verified): 55.8. Weights run: 1.4s. Verify run: 1.3s. 1517 eligible items had no known source.
+Set DPS (verified): 55.8. Weights run: 1.8s. Verify run: 1.8s. 1517 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.048 ± 0.010, strength=1.000 ± 0.001, crit=1.946 ± 0.059, hit=2.266 ± 0.127, melee_haste=not significant (1.290 ± 0.937)
 
@@ -458,7 +458,7 @@ No-known-source sample (15 of 1517, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (troll, 0000000000000000-00000000000000000-500230131051000000)
 
-Set DPS (verified): 68.0. Weights run: 1.5s. Verify run: 1.5s. 1790 eligible items had no known source.
+Set DPS (verified): 68.0. Weights run: 1.9s. Verify run: 2.0s. 1790 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.052 ± 0.014, strength=1.000 ± 0.001, crit=2.688 ± 0.095, hit=3.081 ± 0.212, melee_haste=not significant (0.562 ± 0.827)
 
@@ -488,7 +488,7 @@ No-known-source sample (15 of 1790, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (troll, 0000000000000000-00000000000000000-500230131051120110)
 
-Set DPS (verified): 63.6. Weights run: 1.5s. Verify run: 1.6s. 2017 eligible items had no known source.
+Set DPS (verified): 63.6. Weights run: 1.9s. Verify run: 2.1s. 2017 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.064 ± 0.010, strength=1.000 ± 0.001, crit=2.970 ± 0.096, hit=3.181 ± 0.240, melee_haste=not significant (1.413 ± 0.693)
 
@@ -518,7 +518,7 @@ No-known-source sample (15 of 2017, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (troll, 0000000000000000-00000000000000000-500230131051120151)
 
-Set DPS (verified): 80.1. Weights run: 1.5s. Verify run: 1.3s. 2838 eligible items had no known source.
+Set DPS (verified): 80.1. Weights run: 1.9s. Verify run: 1.8s. 2838 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.169 ± 0.018, strength=1.000 ± 0.001, crit=3.231 ± 0.106, hit=3.490 ± 0.282, melee_haste=not significant (3.178 ± 1.330)
 
@@ -548,7 +548,7 @@ No-known-source sample (15 of 2838, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (troll, 0000000000000000-32000000000000000-500230131051120151)
 
-Set DPS (verified): 94.1. Weights run: 1.5s. Verify run: 1.6s. 3145 eligible items had no known source.
+Set DPS (verified): 94.1. Weights run: 1.9s. Verify run: 2.1s. 3145 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.172 ± 0.020, strength=1.000 ± 0.001, crit=3.965 ± 0.143, hit=3.907 ± 0.374, melee_haste=not significant (2.225 ± 0.878)
 
@@ -578,7 +578,7 @@ No-known-source sample (15 of 3145, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (troll, 0000000000000000-32005000000000000-500230131051120151)
 
-Set DPS (verified): 95.6. Weights run: 1.5s. Verify run: 1.4s. 3487 eligible items had no known source.
+Set DPS (verified): 95.6. Weights run: 1.9s. Verify run: 1.8s. 3487 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.177 ± 0.018, strength=1.000 ± 0.001, crit=4.300 ± 0.154, hit=5.121 ± 0.388, melee_haste=not significant (1.910 ± 0.883)
 
@@ -608,7 +608,7 @@ No-known-source sample (15 of 3487, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 55 (troll, 0000000000000000-32005500000000000-500230131051120151)
 
-Set DPS (verified): 112.9. Weights run: 1.5s. Verify run: 1.6s. 3788 eligible items had no known source.
+Set DPS (verified): 112.9. Weights run: 1.9s. Verify run: 2.1s. 3788 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.193 ± 0.022, strength=1.000 ± 0.001, crit=4.599 ± 0.159, hit=5.344 ± 0.400, melee_haste=not significant (1.113 ± 0.951)
 
@@ -638,7 +638,7 @@ No-known-source sample (15 of 3788, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (troll, 0000000000000000-32005500005000000-500230131051120151)
 
-Set DPS (verified): 215.7. Weights run: 1.5s. Verify run: 1.6s. 4385 eligible items had no known source.
+Set DPS (verified): 215.7. Weights run: 2.0s. Verify run: 2.2s. 4385 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.205 ± 0.024, strength=1.000 ± 0.001, crit=6.402 ± 0.250, hit=5.883 ± 0.716, melee_haste=not significant (0.393 ± 1.319)
 

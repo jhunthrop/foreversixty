@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:51:23Z",
+  "generated_at": "2026-09-29T13:25:45Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -197,8 +197,8 @@
         "finger1: Sustaining Ring",
         "main_hand: Fist of the People's Militia"
       ],
-      "weights_run_seconds": 1.028317425,
-      "verify_run_seconds": 0.468615154
+      "weights_run_seconds": 1.422534968,
+      "verify_run_seconds": 0.598194069
     },
     {
       "spec": "druid-feral",
@@ -398,8 +398,8 @@
         "finger1: Ring of Scorn",
         "main_hand: Ceranium Rod"
       ],
-      "weights_run_seconds": 1.028317425,
-      "verify_run_seconds": 0.520522486
+      "weights_run_seconds": 1.422534968,
+      "verify_run_seconds": 0.663021928
     },
     {
       "spec": "druid-feral",
@@ -602,8 +602,8 @@
         "finger2: Clergy Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 1.003962278,
-      "verify_run_seconds": 0.664324731
+      "weights_run_seconds": 1.316847066,
+      "verify_run_seconds": 0.835007104
     },
     {
       "spec": "druid-feral",
@@ -812,8 +812,8 @@
         "finger2: Ring of Scorn",
         "main_hand: Crescent Staff"
       ],
-      "weights_run_seconds": 1.003962278,
-      "verify_run_seconds": 0.613702016
+      "weights_run_seconds": 1.316847066,
+      "verify_run_seconds": 0.77315949
     },
     {
       "spec": "druid-feral",
@@ -1043,8 +1043,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.375382066,
-      "verify_run_seconds": 1.0382936
+      "weights_run_seconds": 1.8375083110000001,
+      "verify_run_seconds": 1.37088242
     },
     {
       "spec": "druid-feral",
@@ -1275,8 +1275,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.375382066,
-      "verify_run_seconds": 1.022020787
+      "weights_run_seconds": 1.8375083110000001,
+      "verify_run_seconds": 1.3570373660000001
     },
     {
       "spec": "druid-feral",
@@ -1502,8 +1502,8 @@
         "hands: Toughened Leather Gloves",
         "feet: Lancer Boots"
       ],
-      "weights_run_seconds": 1.603661168,
-      "verify_run_seconds": 1.16256067
+      "weights_run_seconds": 2.077837187,
+      "verify_run_seconds": 1.542643098
     },
     {
       "spec": "druid-feral",
@@ -1728,8 +1728,8 @@
         "waist: Deftkin Belt",
         "feet: Stomping Boots"
       ],
-      "weights_run_seconds": 1.603661168,
-      "verify_run_seconds": 1.16528617
+      "weights_run_seconds": 2.077837187,
+      "verify_run_seconds": 1.531230095
     },
     {
       "spec": "druid-feral",
@@ -1965,8 +1965,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Rock Pulverizer"
       ],
-      "weights_run_seconds": 1.589622282,
-      "verify_run_seconds": 1.426038572
+      "weights_run_seconds": 2.124680213,
+      "verify_run_seconds": 1.857047792
     },
     {
       "spec": "druid-feral",
@@ -2199,8 +2199,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Nimboya's Mystical Staff"
       ],
-      "weights_run_seconds": 1.589622282,
-      "verify_run_seconds": 1.43058928
+      "weights_run_seconds": 2.124680213,
+      "verify_run_seconds": 1.869614154
     },
     {
       "spec": "druid-feral",
@@ -2427,8 +2427,8 @@
         "finger1: Ironspine's Eye",
         "finger2: Protector's Band"
       ],
-      "weights_run_seconds": 1.6900700149999999,
-      "verify_run_seconds": 1.496661584
+      "weights_run_seconds": 2.214009773,
+      "verify_run_seconds": 1.961779988
     },
     {
       "spec": "druid-feral",
@@ -2654,8 +2654,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 1.6900700149999999,
-      "verify_run_seconds": 1.481628863
+      "weights_run_seconds": 2.214009773,
+      "verify_run_seconds": 1.952699347
     },
     {
       "spec": "druid-feral",
@@ -2888,8 +2888,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.6900729650000001,
-      "verify_run_seconds": 1.506047173
+      "weights_run_seconds": 2.198382129,
+      "verify_run_seconds": 1.980076681
     },
     {
       "spec": "druid-feral",
@@ -3125,8 +3125,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Mograine's Might"
       ],
-      "weights_run_seconds": 1.6900729650000001,
-      "verify_run_seconds": 1.54267263
+      "weights_run_seconds": 2.198382129,
+      "verify_run_seconds": 1.9492773140000001
     },
     {
       "spec": "druid-feral",
@@ -3352,8 +3352,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.73125372,
-      "verify_run_seconds": 1.521525821
+      "weights_run_seconds": 2.225904395,
+      "verify_run_seconds": 1.989890768
     },
     {
       "spec": "druid-feral",
@@ -3580,8 +3580,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.73125372,
-      "verify_run_seconds": 1.512821682
+      "weights_run_seconds": 2.225904395,
+      "verify_run_seconds": 1.991049706
     },
     {
       "spec": "druid-feral",
@@ -3807,8 +3807,8 @@
         "waist: Highlander's Leather Girdle",
         "finger1: Protector's Band"
       ],
-      "weights_run_seconds": 1.6814259649999999,
-      "verify_run_seconds": 1.534793798
+      "weights_run_seconds": 2.245927728,
+      "verify_run_seconds": 2.021792775
     },
     {
       "spec": "druid-feral",
@@ -4033,8 +4033,8 @@
         "finger1: Legionnaire's Band",
         "finger2: White Bone Band"
       ],
-      "weights_run_seconds": 1.6814259649999999,
-      "verify_run_seconds": 1.523676578
+      "weights_run_seconds": 2.245927728,
+      "verify_run_seconds": 2.009129169
     },
     {
       "spec": "druid-feral",
@@ -4263,8 +4263,8 @@
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.7157399039999999,
-      "verify_run_seconds": 1.46221448
+      "weights_run_seconds": 2.274957977,
+      "verify_run_seconds": 1.900648382
     },
     {
       "spec": "druid-feral",
@@ -4493,8 +4493,8 @@
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.7157399039999999,
-      "verify_run_seconds": 1.432890748
+      "weights_run_seconds": 2.274957977,
+      "verify_run_seconds": 1.887274779
     },
     {
       "spec": "druid-feral",
@@ -4724,8 +4724,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Ebon Hand"
       ],
-      "weights_run_seconds": 1.704629502,
-      "verify_run_seconds": 1.5528595360000002
+      "weights_run_seconds": 2.244724068,
+      "verify_run_seconds": 2.046567636
     },
     {
       "spec": "druid-feral",
@@ -4955,8 +4955,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Grand Marshal's Battle Hammer"
       ],
-      "weights_run_seconds": 1.704629502,
-      "verify_run_seconds": 1.586911196
+      "weights_run_seconds": 2.244724068,
+      "verify_run_seconds": 2.112952588
     }
   ]
 }
