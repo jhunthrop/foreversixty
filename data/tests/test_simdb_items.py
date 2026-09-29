@@ -165,6 +165,10 @@ def test_an_on_equip_bonus_is_folded_into_the_stat_array():
     )
     axe = built(equip={12798: bonus})[12798]
     assert axe.stats[pb.Stat.Value("StatAttackPower")] == 62.0
+    # rank-stat-plumbing: a generic attack_power amount mirrors into
+    # ranged_attack_power (statmap.stat_array) regardless of which caller
+    # handed it in - an on-equip bonus is no exception.
+    assert axe.stats[pb.Stat.Value("StatRangedAttackPower")] == 62.0
     assert axe.weapon_skills[pb.WeaponSkill.Value("WeaponSkillAxes")] == 3.0
     assert axe.bonus_physical_damage == 2.0
 

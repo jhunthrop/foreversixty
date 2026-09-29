@@ -145,6 +145,10 @@ def test_a_weapon_carries_the_damage_the_client_computes():
     assert reaper.weapon_speed == pytest.approx(3.8)
     assert (reaper.weapon_damage_min, reaper.weapon_damage_max) == (153.0, 256.0)
     assert reaper.stats[pb.Stat.Value("StatAttackPower")] == 62.0
+    # rank-stat-plumbing: reaper's +62 Attack Power is ItemSparse's generic
+    # column (StatModifier_bonusStat 38), which Classic Era raises ranged
+    # attack power with too - statmap.stat_array mirrors it.
+    assert reaper.stats[pb.Stat.Value("StatRangedAttackPower")] == 62.0
 
 
 def test_a_set_piece_carries_its_armour_and_its_set():
@@ -165,10 +169,19 @@ def test_a_known_on_equip_stat_survived_the_round_trip():
     as a flat percentage, so simdb divides it by this build's level-60 hit
     factor (10, from gametables/combatratings.txt) -- see
     pipeline/simdb/ratings.py.
+
+    rank-stat-plumbing (2026-09-29): ranged attack power is 84, not 42 --
+    this item's own tooltip states a flat +42 Attack Power line AND a
+    separate +42 Ranged Attack Power line (equip.py's module docstring,
+    aura 99 vs aura 124), and statmap.stat_array now mirrors the generic
+    +42 Attack Power into ranged attack power too (Classic Era's generic AP
+    raises both at once -- see statmap.py's own comment), additive with the
+    explicit +42 Ranged Attack Power already there: 42 mirrored + 42
+    explicit = 84.
     """
     rune = item(19120)
     assert rune.stats[pb.Stat.Value("StatAttackPower")] == 42.0
-    assert rune.stats[pb.Stat.Value("StatRangedAttackPower")] == 42.0
+    assert rune.stats[pb.Stat.Value("StatRangedAttackPower")] == 84.0
     assert rune.stats[pb.Stat.Value("StatHit")] == pytest.approx(0.7)
 
 
@@ -249,6 +262,8 @@ def test_go_reads_back_what_python_wrote(tmp_path: Path):
     assert report["spot"]["dreadnaught_is_plate"] == 1.0
     assert report["spot"]["dreadnaught_in_a_set"] == 1.0
     assert report["spot"]["rune_attack_power"] == 42.0
-    assert report["spot"]["rune_ranged_attack_power"] == 42.0
+    # rank-stat-plumbing: 42 mirrored (generic AP) + 42 explicit ranged-only
+    # AP -- see test_a_known_on_equip_stat_survived_the_round_trip.
+    assert report["spot"]["rune_ranged_attack_power"] == 84.0
     assert report["spot"]["rune_hit"] == pytest.approx(0.7)
     assert report["spot"]["player_database_items"] == EXPECTED_ITEMS

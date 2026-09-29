@@ -58,6 +58,45 @@ func TestScoreZeroDPSAddsNothing(t *testing.T) {
 	}
 }
 
+func TestScoreGenericAttackPowerCountsTowardRangedAttackPowerWeight(t *testing.T) {
+	// Blackwater Belt-shaped case: items/<class>.json states a generic AP
+	// bonus as one "attack_power" line (no separate "ranged_attack_power"
+	// key), but Classic's generic AP raises ranged attack power too - a
+	// hunter dps spec's weights (ranged_attack_power, no attack_power entry
+	// per data/curated/specs.json) must still value it.
+	c := candidate{Stats: map[string]float64{"attack_power": 18}}
+	weights := map[string]float64{"ranged_attack_power": 3.0}
+	got := score(c, "waist", weights)
+	want := 18 * 3.0
+	if got != want {
+		t.Errorf("score = %v, want %v", got, want)
+	}
+}
+
+func TestScoreGenericAttackPowerStillCountsTowardMeleeAttackPowerWeight(t *testing.T) {
+	c := candidate{Stats: map[string]float64{"attack_power": 18}}
+	weights := map[string]float64{"attack_power": 2.0}
+	got := score(c, "waist", weights)
+	want := 18 * 2.0
+	if got != want {
+		t.Errorf("score = %v, want %v", got, want)
+	}
+}
+
+func TestScoreGenericAttackPowerDoesNotDoubleCountWhenASpecWeighsBoth(t *testing.T) {
+	// No spec's weight_stats actually lists both today (see
+	// genericAttackPowerWeightStats' comment), but the sum still has to be
+	// the physically correct one if that ever changes: a single generic AP
+	// bonus is one physical quantity, valued once per weight it feeds.
+	c := candidate{Stats: map[string]float64{"attack_power": 10}}
+	weights := map[string]float64{"attack_power": 1.0, "ranged_attack_power": 4.0}
+	got := score(c, "waist", weights)
+	want := 10 * (1.0 + 4.0)
+	if got != want {
+		t.Errorf("score = %v, want %v", got, want)
+	}
+}
+
 func TestScoreARelicWithNoStatsAndNoDPSIsZero(t *testing.T) {
 	// A relic (libram/idol/totem) carries no armour, no flat stat and no
 	// DPS -- its whole value is an on-equip spell effect score() has no

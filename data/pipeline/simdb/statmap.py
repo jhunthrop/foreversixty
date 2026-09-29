@@ -153,10 +153,30 @@ def _pairs(stats: StatPairs) -> Iterable[tuple[str, float]]:
     return stats.items() if isinstance(stats, Mapping) else stats
 
 
+#: Classic Era's generic "+X Attack Power" raises a character's melee AND
+#: ranged attack power at once -- it is not a melee-only stat the way its
+#: single tooltip line suggests. The fork's own item database mirrors this:
+#: `tools/database/wowhead_tooltips.go`'s `GetStats` sets
+#: `Stat_StatRangedAttackPower` to `baseAP + <ranged-only tooltip lines>`,
+#: i.e. the generic amount plus whatever a *separate* "Ranged Attack Power"
+#: line adds on top (Rune of the Guard Captain's tooltip states both a flat
+#: +42 Attack Power line and a +42 Ranged Attack Power line, and nets 84
+#: ranged attack power, not 42 -- see `equip.py`'s module docstring and
+#: `STAT_AURAS`, where aura 99 is the generic line and aura 124 is the
+#: ranged-only one). Mirroring here, in the one place every source of a
+#: flat `attack_power` pair funnels through (item columns, on-equip spells,
+#: enchants and consumable buffs all call `stat_array`), means none of
+#: those callers have to know about the mirror themselves.
+GENERIC_ATTACK_POWER_KEY = "attack_power"
+MIRRORED_RANGED_ATTACK_POWER_KEY = "ranged_attack_power"
+
+
 def stat_array(stats: StatPairs) -> list[float]:
     array = [0.0] * _STAT_COUNT
     for key, amount in _pairs(stats):
         array[stat_index(key)] += float(amount)
+        if key == GENERIC_ATTACK_POWER_KEY:
+            array[stat_index(MIRRORED_RANGED_ATTACK_POWER_KEY)] += float(amount)
     return _truncate(array)
 
 

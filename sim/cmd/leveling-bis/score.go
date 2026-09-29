@@ -28,6 +28,44 @@ var weaponAPStat = map[string]string{
 	"off_hand":  "attack_power",
 }
 
+// genericAttackPowerWeightStats is which weight ids a flat "attack_power"
+// entry in a candidate's Stats counts toward. Classic Era's generic
+// "+X Attack Power" raises a character's melee AND ranged attack power at
+// once - data/builds/<build>/items/<class>.json states it as one
+// "attack_power" line (data/pipeline/normalize/gear.py never synthesises a
+// second "ranged_attack_power" line there, so tooltips do not show a
+// duplicate), so the ranker has to apply it to both weights itself rather
+// than finding a "ranged_attack_power" key on the item.
+//
+// This mirrors data/pipeline/simdb/statmap.py's stat_array, which does the
+// same for the engine's own simdb.bin (the actual DPS the sim reports for a
+// hunter already counts this AP as ranged attack power; the ranker's
+// weighted-sum estimate has to agree or it ranks gear the sim itself would
+// not).
+var genericAttackPowerWeightStats = []string{"attack_power", "ranged_attack_power"}
+
+// statWeight is the weight an item's stat amount is multiplied by. Every
+// stat but "attack_power" uses its own entry in weights, unweighted stats
+// scoring zero. "attack_power" is the one exception
+// (genericAttackPowerWeightStats): its weight is the sum of the
+// spec's attack_power AND ranged_attack_power weights, since a candidate's
+// Stats map never carries both keys for the same generic AP bonus (see
+// genericAttackPowerWeightStats' own comment) - a melee spec's
+// ranged_attack_power weight and a hunter dps spec's attack_power weight
+// are each the zero value in practice (data/curated/specs.json's
+// weight_stats lists at most one of the two per spec), so this never
+// double-counts a spec that actually cares about both.
+func statWeight(stat string, weights map[string]float64) float64 {
+	if stat != "attack_power" {
+		return weights[stat]
+	}
+	total := 0.0
+	for _, id := range genericAttackPowerWeightStats {
+		total += weights[id]
+	}
+	return total
+}
+
 // score is the weighted sum of an item's resolved stats against a
 // spec's stat weights, plus its weapon DPS (if any, converted through
 // attackPowerPerDPS into the attack-power stat the slot it is
@@ -45,7 +83,7 @@ var weaponAPStat = map[string]string{
 func score(c candidate, slot string, weights map[string]float64) float64 {
 	total := 0.0
 	for stat, amount := range c.Stats {
-		total += amount * weights[stat]
+		total += amount * statWeight(stat, weights)
 	}
 	if c.DPS > 0 {
 		if apStat, ok := weaponAPStat[slot]; ok {
