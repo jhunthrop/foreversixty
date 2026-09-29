@@ -176,6 +176,65 @@ func TestLoadLootIndexMissingFile(t *testing.T) {
 	}
 }
 
+// TestLoadLootIndexPerQuestFactionSide is the quest-faction lane's own
+// regression for the owner defect this lane fixes: item 270018
+// (Hammerbone) showed as Alliance best-in-slot from quest 914 Leaders
+// of the Fang, a horde-only quest, because loot.json's flat "quest"
+// LootSource named the item with no per-quest faction at all and the
+// item itself carries no factionRestriction. Two fixtures, a temp
+// loot.json rather than testdata/reporoot's shared one, since this is
+// specifically about the `quests` map's per-quest `faction`, not the
+// rest of loadLootIndex's file shape:
+//
+//   - item 2001 mirrors Hammerbone exactly: one horde-only quest, no
+//     item-level restriction - an alliance character must find no
+//     obtainable source at all, a horde character must.
+//   - item 2002 is reachable through two faction-mirrored quests, one
+//     per side (the design's own "both" case) - it must carry TWO
+//     itemSource records, never merged into one, so each faction finds
+//     its own.
+func TestLoadLootIndexPerQuestFactionSide(t *testing.T) {
+	dir := t.TempDir()
+	loot := `{
+  "sources": [
+    {"id": "quest", "kind": "quest", "name": "Quests", "items": [2001, 2002]}
+  ],
+  "quests": {
+    "2001": [
+      {"quest_id": 914, "name": "Leaders of the Fang", "faction": "horde", "faction_source": "classic-db", "min_level": 20, "level": 20, "level_source": "classic-db"}
+    ],
+    "2002": [
+      {"quest_id": 100, "name": "A Horde Quest", "faction": "horde", "faction_source": "classic-db", "min_level": 20, "level": 20, "level_source": "classic-db"},
+      {"quest_id": 200, "name": "An Alliance Mirror", "faction": "alliance", "faction_source": "classic-db", "min_level": 20, "level": 20, "level_source": "classic-db"}
+    ]
+  }
+}`
+	if err := os.WriteFile(filepath.Join(dir, "loot.json"), []byte(loot), 0o644); err != nil {
+		t.Fatalf("writing loot.json: %v", err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+
+	if _, ok := sourceFor(2001, 20, "alliance", "", idx); ok {
+		t.Error("sourceFor(2001, alliance) = ok, want false: quest 914 is horde-only")
+	}
+	if src, ok := sourceFor(2001, 20, "horde", "", idx); !ok || src.Label != "Leaders of the Fang" {
+		t.Errorf("sourceFor(2001, horde) = %+v, %v, want ok=true, %q", src, ok, "Leaders of the Fang")
+	}
+
+	if got := len(idx[2002]); got != 2 {
+		t.Fatalf("idx[2002] = %+v, want 2 records (one per quest, never merged)", idx[2002])
+	}
+	if src, ok := sourceFor(2002, 20, "horde", "", idx); !ok || src.Label != "A Horde Quest" {
+		t.Errorf("sourceFor(2002, horde) = %+v, %v, want ok=true, %q", src, ok, "A Horde Quest")
+	}
+	if src, ok := sourceFor(2002, 20, "alliance", "", idx); !ok || src.Label != "An Alliance Mirror" {
+		t.Errorf("sourceFor(2002, alliance) = %+v, %v, want ok=true, %q", src, ok, "An Alliance Mirror")
+	}
+}
+
 func TestApplyEffectiveRequiredLevelsRaisesAQuestRewardsGate(t *testing.T) {
 	idx, questFloors, err := loadLootIndex(buildDirFixture(), nil)
 	if err != nil {

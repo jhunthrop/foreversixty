@@ -285,6 +285,15 @@ var repSide = map[int]string{
 	889: "alliance", 509: "alliance", 730: "alliance",
 }
 
+// questFactionSide maps loot.json's `quests[item][].faction` ("alliance",
+// "horde" or "both") to the Side band.go's sourceObtainable expects ("" -
+// no restriction - for "both", the faction name itself otherwise).
+// quest-faction lane, 2026-09-29: loadLootIndex builds one itemSource per
+// quest from this, rather than trusting the flat "quest" LootSource's own
+// Side (always "", since its id is literally "quest") - see loadLootIndex's
+// own doc for why a per-quest record, not a per-item merge, is required.
+var questFactionSide = map[string]string{"alliance": "alliance", "horde": "horde", "both": ""}
+
 // repFactionSwap pairs the six battleground faction ids with their
 // opposite number, for correctedRepSource's fix below.
 var repFactionSwap = map[int]int{
@@ -375,6 +384,20 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 	}
 	idx := make(lootIndex)
 	for _, src := range f.Sources {
+		// quest-faction lane, 2026-09-29: the flat "quest" LootSource
+		// names every quest-sourced item with no per-quest faction at all
+		// (its own Side is always "" - factionExclusiveDungeons has no
+		// entry for id "quest"), which is exactly what let an item reach
+		// an alliance character through a horde-only quest (Hammerbone,
+		// item 270018, quest 914 Leaders of the Fang) as long as the item
+		// itself carried no client-stated factionRestriction. Skipped
+		// here in favour of one itemSource PER QUEST below, built from
+		// f.Quests' own per-quest Faction, so band.go's sourceObtainable
+		// can actually tell a horde-only quest reward from an
+		// alliance-only or unrestricted one.
+		if src.Kind == "quest" {
+			continue
+		}
 		add := func(id int, label string) {
 			is := itemSource{Kind: src.Kind, Label: label, Side: factionExclusiveDungeons[src.ID]}
 			if src.Kind == "rep" {
@@ -409,6 +432,16 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		levels := make([]int, len(entries))
 		for i, e := range entries {
 			levels[i] = leveling.QuestFloor(e.MinLevel, e.Level)
+			// One itemSource per quest, not one merged record: an item
+			// two faction-mirrored quest chains both award (one
+			// alliance-only, one horde-only) stays obtainable by BOTH
+			// sides, each through its own record, rather than the two
+			// quests' factions collapsing into a single wrong Side.
+			idx[id] = append(idx[id], itemSource{
+				Kind:  "quest",
+				Label: e.Name,
+				Side:  questFactionSide[e.Faction],
+			})
 		}
 		questFloors[id] = leveling.LowestFloor(levels)
 	}
