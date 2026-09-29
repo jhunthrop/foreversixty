@@ -1,0 +1,43 @@
+---
+// web/src/components/bis/VerifiedGlyph.astro
+// The small gold check mark a verified pick's name line shows -- confirmed by a real Top
+// Gear sim pass, not just ranked by weights. Also reused on a `verified: true`
+// alternative's own delta (fix round 1, wow-player review 2026-09-29: the ranker now
+// publishes `verified` on the one alternative it actually simmed against the pick), so the
+// same glyph means the same thing everywhere it appears rather than inventing a second
+// "confirmed" mark for the same fact.
+import { bisCopy } from '../../lib/bis/copy';
+
+interface Props {
+  /** Square size in px -- 13 by default (the main pick's own name-line glyph); the alt
+   *  row's own delta passes a smaller size to match its 11px text. */
+  size?: number;
+}
+
+const { size = 13 } = Astro.props;
+---
+
+<span class="verified-glyph" title={bisCopy.verifiedGlyphTitle} aria-label={bisCopy.verifiedGlyphTitle}>
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2.4"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <use href="#bis-verified" />
+  </svg>
+</span>
+
+<style>
+  .verified-glyph {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    color: var(--color-gold, #c9a35e);
+  }
+</style>

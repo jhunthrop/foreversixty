@@ -39,6 +39,16 @@ export interface AlternativeView {
   sourceKind: SourceCell['kind'];
   sourceDetail: string;
   dpsDelta: number;
+  /** `BisAlternative.verified` -- true for the one alternative (per slot, at most) the
+   *  ranker's own verify pass actually simmed against the pick, whose `dpsDelta` is real
+   *  sim output rather than a score estimate (wow-player fix round 1: label it with the
+   *  same check glyph a verified main pick gets, never a second unlabelled number). */
+  verified?: boolean;
+  /** "ilvl 24 · needs 21" (band above the alternative's own required level) or "ilvl 24"
+   *  (band at or above it) -- undefined only when the alternative's id has no tooltip
+   *  model at all (wow-player fix round 1: read straight off the model already resolved
+   *  below, no second item lookup). */
+  metaLabel?: string;
 }
 
 /** One slot's row: the source cell, the item itself, and (ruling 2) its up-to-three
@@ -76,6 +86,7 @@ function buildAlternativeView(
   faction: Faction,
   lootFile: LootFile & Partial<LootQuestsFile>,
   tooltipFor: (itemId: number) => ItemTooltipModel | undefined,
+  band: number,
 ): AlternativeView {
   const badgeLabel = sourceBadgeLabel({ source_kind: alt.source_kind }, faction);
   const cell = resolveSourceCell(
@@ -84,13 +95,19 @@ function buildAlternativeView(
     lootFile,
     badgeLabel,
   );
+  const model = tooltipFor(alt.item_id);
   return {
     itemId: alt.item_id,
     itemName: alt.item_name,
-    model: tooltipFor(alt.item_id),
+    model,
     sourceKind: cell.kind,
     sourceDetail: describeSourceCell(cell),
     dpsDelta: alt.dps_delta,
+    verified: alt.verified,
+    metaLabel:
+      model === undefined
+        ? undefined
+        : bisCopy.alternativeMetaLabel(model.itemLevel, model.requiredLevel, band),
   };
 }
 
@@ -102,6 +119,7 @@ function buildRowView(
   replacedBySlot: ReadonlyMap<string, string | undefined>,
   tooltipFor: (itemId: number) => ItemTooltipModel | undefined,
   mainHandTwoHanded: boolean,
+  band: number,
 ): RowView {
   if (isMissingSlot(row) || !hasKnownSource(row)) {
     const emptyCopy =
@@ -125,7 +143,7 @@ function buildRowView(
     keyStatsLine: model && model.stats.length > 0 ? model.stats.slice(0, 4).join(', ') : undefined,
     verified: row.verified,
     alternatives: (row.alternatives ?? []).map((alt) =>
-      buildAlternativeView(alt, faction, lootFile, tooltipFor),
+      buildAlternativeView(alt, faction, lootFile, tooltipFor, band),
     ),
     replacedName: replacedBySlot.get(row.slot),
   };
@@ -240,6 +258,7 @@ export function bandInfosFor(
         replacedBySlot,
         deps.tooltipFor,
         mainHandTwoHanded,
+        band,
       ),
     );
     const newSlots = new Set(

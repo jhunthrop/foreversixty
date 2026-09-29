@@ -11,6 +11,7 @@ import { rarityBorderColorFor, rarityClassFor } from '../../lib/planner/items';
 import { SLOT_LABELS, type Slot } from '../../lib/planner/types';
 import SlotIcon from './SlotIcon.astro';
 import SourceKindIcon from './SourceKindIcon.astro';
+import VerifiedGlyph from './VerifiedGlyph.astro';
 
 interface Props {
   row: RowView;
@@ -91,25 +92,7 @@ function hasRealIcon(icon: string | undefined): icon is string {
                 </span>
               )}
               {row.verified ? (
-                <span
-                  class="verified-glyph"
-                  title={bisCopy.verifiedGlyphTitle}
-                  aria-label={bisCopy.verifiedGlyphTitle}
-                >
-                  <svg
-                    width="13"
-                    height="13"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.4"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <use href="#bis-verified" />
-                  </svg>
-                </span>
+                <VerifiedGlyph />
               ) : (
                 <span class="text-muted text-[11px]" title={bisCopy.unverifiedGlyphTitle}>
                   {bisCopy.unverified}
@@ -121,57 +104,59 @@ function hasRealIcon(icon: string | undefined): icon is string {
               <SourceKindIcon kind={row.sourceKind ?? 'unknown'} />
               {row.sourceDetail}
             </span>
-            {row.alternatives && row.alternatives.length > 0 && (
-              <span class="gear-row-alts">
-                <span class="gear-row-alts-label label text-muted">{bisCopy.alternativesLabel}</span>
-                <span class="gear-row-alts-list">
-                  {row.alternatives.map((alt) => (
-                    <span
-                      class="gear-row-alt"
-                      data-testid={`item-hover-${alt.itemId}`}
-                      data-bis-item={alt.itemId}
-                      tabindex="0"
-                      role="button"
-                      aria-haspopup="true"
-                      title={`${alt.itemName} · ${bisCopy.alternativeGapLabel(alt.dpsDelta)}`}
-                    >
-                      {hasRealIcon(alt.model?.icon) ? (
-                        <img
-                          src={dataUrl(build, `icons/${alt.model!.icon}.webp`)}
-                          alt=""
-                          width="20"
-                          height="20"
-                          loading="lazy"
-                          decoding="async"
-                          class="gear-row-alt-icon rounded-control border object-cover"
-                          style={`border-color:${rarityBorderColorFor(alt.model?.quality ?? 1)}`}
-                        />
-                      ) : (
-                        <span
-                          class="gear-row-alt-icon gear-row-icon-placeholder rounded-control border"
-                          style={`border-color:${rarityBorderColorFor(alt.model?.quality ?? 1)}`}
-                          aria-hidden="true"
-                        >
-                          <SlotIcon slot={row.slot as Slot} size={12} />
-                        </span>
-                      )}
-                      <span class:list={['gear-row-alt-name', rarityClassFor(alt.model?.quality ?? 1)]}>
-                        {alt.itemName}
-                      </span>
-                      <span class="gear-row-alt-source text-muted">
-                        <SourceKindIcon kind={alt.sourceKind} />
-                        {alt.sourceDetail}
-                      </span>
-                      <span class="gear-row-alt-gap text-muted">
-                        {bisCopy.alternativeGapLabel(alt.dpsDelta)}
-                      </span>
-                    </span>
-                  ))}
-                </span>
-              </span>
-            )}
           </span>
         </span>
+        {row.alternatives && row.alternatives.length > 0 && (
+          <span class="gear-row-alts">
+            <span class="gear-row-alts-label label text-muted">{bisCopy.alternativesLabel}</span>
+            <span class="gear-row-alts-list">
+              {row.alternatives.map((alt) => (
+                <span
+                  class="gear-row-alt"
+                  data-testid={`item-hover-${alt.itemId}`}
+                  data-bis-item={alt.itemId}
+                  tabindex="0"
+                  role="button"
+                  aria-haspopup="true"
+                  title={`${alt.itemName} · ${bisCopy.alternativeGapLabel(alt.dpsDelta)}`}
+                >
+                  {hasRealIcon(alt.model?.icon) ? (
+                    <img
+                      src={dataUrl(build, `icons/${alt.model!.icon}.webp`)}
+                      alt=""
+                      width="20"
+                      height="20"
+                      loading="lazy"
+                      decoding="async"
+                      class="gear-row-alt-icon rounded-control border object-cover"
+                      style={`border-color:${rarityBorderColorFor(alt.model?.quality ?? 1)}`}
+                    />
+                  ) : (
+                    <span
+                      class="gear-row-alt-icon gear-row-icon-placeholder rounded-control border"
+                      style={`border-color:${rarityBorderColorFor(alt.model?.quality ?? 1)}`}
+                      aria-hidden="true"
+                    >
+                      <SlotIcon slot={row.slot as Slot} size={12} />
+                    </span>
+                  )}
+                  <span class:list={['gear-row-alt-name', rarityClassFor(alt.model?.quality ?? 1)]}>
+                    {alt.itemName}
+                  </span>
+                  <span class="gear-row-alt-source text-muted" title={alt.sourceDetail}>
+                    <SourceKindIcon kind={alt.sourceKind} class="gear-row-alt-source-icon" />
+                    <span class="gear-row-alt-source-text">{alt.sourceDetail}</span>
+                  </span>
+                  <span class="gear-row-alt-gap text-muted">
+                    {alt.verified && <VerifiedGlyph size={11} />}
+                    {bisCopy.alternativeGapLabel(alt.dpsDelta)}
+                  </span>
+                  {alt.metaLabel && <span class="gear-row-alt-level text-muted">{alt.metaLabel}</span>}
+                </span>
+              ))}
+            </span>
+          </span>
+        )}
       </span>
       <span class="gear-row-ilvl tabular text-muted" title={bisCopy.levelHeading}>
         {row.itemLevel === undefined ? '—' : bisCopy.itemLevelShort(row.itemLevel)}
@@ -223,13 +208,22 @@ function hasRealIcon(icon: string | undefined): icon is string {
     font-size: 12px;
     font-weight: 600;
   }
-  /* `position: relative` is BisTooltipHost's own mount point: the one shared tooltip panel
-     is appended inside whichever row is open, and its `position: absolute` needs this row
-     to be its containing block. */
+  /* Column, not row: the pick (`.gear-row-item`) and its alternatives (`.gear-row-alts`)
+     stack, and critically are SIBLINGS here rather than the alternatives nesting inside the
+     pick's own hover target -- fix round 1 (e2e failure, 2026-09-29): with alternatives
+     nested inside `.gear-row-item`, that element's bounding box grew tall enough that
+     hovering its visual centre (Playwright's default hover point, and a mouse user's most
+     natural target) landed on a nested alternative's own smaller box instead, opening the
+     wrong tooltip; a screen reader also saw a button nested in a button. Two siblings under
+     one column fixes both: the pick's own hover target is now sized to just its icon/name/
+     stat/source content, and every alternative is its own independent hover target next to
+     it, never inside it. */
   .gear-row-body {
     display: flex;
     flex: 1;
     min-width: 0;
+    flex-direction: column;
+    gap: 0.3rem;
   }
   .gear-row-item {
     position: relative;
@@ -299,18 +293,17 @@ function hasRealIcon(icon: string | undefined): icon is string {
     font-weight: 700;
     text-transform: uppercase;
   }
-  .verified-glyph {
-    display: inline-flex;
-    align-items: center;
-    color: var(--color-gold, #c9a35e);
-  }
-
-  /* --- alternatives row (ruling 2): a compact row under the pick, not a bare chip. --- */
+  /* --- alternatives row (ruling 2): a compact row under the pick, not a bare chip. Each
+     alternative is its own CSS grid (fix round 1, UX-designer review 2026-09-29): icon |
+     name (row 1) / source (row 2, ellipsis-truncated, full text in its own `title`) | delta
+     (row 1, always at the right edge of the NAME's line) / item level (row 2, right edge of
+     the SOURCE's line) -- a long source name can never strand the delta on a line of its
+     own, at any width down to 360px, because the delta's grid cell never depends on how
+     much text wrapped above it. --- */
   .gear-row-alts {
     display: flex;
     flex-direction: column;
     gap: 0.2rem;
-    margin-top: 0.15rem;
   }
   .gear-row-alts-label {
     color: var(--color-muted, #999);
@@ -322,29 +315,64 @@ function hasRealIcon(icon: string | undefined): icon is string {
   }
   .gear-row-alt {
     position: relative;
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 20px minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    column-gap: 0.45rem;
+    row-gap: 1px;
     align-items: center;
-    gap: 0.35rem;
     cursor: pointer;
   }
   .gear-row-alt-icon {
-    flex-shrink: 0;
+    grid-column: 1;
+    grid-row: 1 / span 2;
     width: 20px;
     height: 20px;
     object-fit: cover;
   }
   .gear-row-alt-name {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font-size: 11px;
     font-weight: 600;
   }
   .gear-row-alt-source {
+    grid-column: 2;
+    grid-row: 2;
     display: flex;
+    min-width: 0;
     align-items: center;
     gap: 0.25rem;
     font-size: 11px;
   }
+  .gear-row-alt-source-icon {
+    flex-shrink: 0;
+  }
+  .gear-row-alt-source-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .gear-row-alt-gap {
+    grid-column: 3;
+    grid-row: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-self: end;
+    gap: 3px;
+    white-space: nowrap;
     font-size: 11px;
+  }
+  .gear-row-alt-level {
+    grid-column: 3;
+    grid-row: 2;
+    justify-self: end;
+    white-space: nowrap;
+    font-size: 10px;
   }
 </style>
