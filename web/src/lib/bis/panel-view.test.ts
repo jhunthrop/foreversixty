@@ -129,6 +129,7 @@ describe('bandInfosFor: alternatives', () => {
     score: 20,
     source_kind: 'vendor',
     source: 'Vendor: Someone Else',
+    score_delta: -13.3,
     dps_delta: -0.8,
   };
 
@@ -158,6 +159,59 @@ describe('bandInfosFor: alternatives', () => {
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
     expect(infos[0].rows.find((r) => r.slot === 'head')?.alternatives).toEqual([]);
   });
+
+  it('carries verified through from the alternative, undefined when the ranker never simmed it', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            alternatives: [
+              { ...alt, verified: true },
+              { ...alt, item_id: 43 },
+            ],
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const [first, second] = infos[0].rows.find((r) => r.slot === 'head')?.alternatives ?? [];
+    expect(first?.verified).toBe(true);
+    expect(second?.verified).toBeUndefined();
+  });
+
+  it('builds metaLabel from the alternative’s own tooltip model, "needs" only above the band', () => {
+    const belowBandModel: ItemTooltipModel = {
+      id: 42,
+      name: 'Runner-up Cap',
+      quality: 2,
+      icon: 'inv_helmet_01',
+      slotLabel: 'Head',
+      typeLabel: undefined,
+      itemLevel: 24,
+      requiredLevel: 18,
+      armor: null,
+      weapon: null,
+      stats: [],
+      effectText: null,
+      setName: null,
+      sourceLines: [],
+      unique: false,
+    };
+    const aboveBandModel: ItemTooltipModel = { ...belowBandModel, id: 43, requiredLevel: 25 };
+    const file = fileWith([band({ slots: [slot({ alternatives: [alt, { ...alt, item_id: 43 }] })] })]);
+    const tooltipFor = (id: number): ItemTooltipModel | undefined =>
+      id === 42 ? belowBandModel : id === 43 ? aboveBandModel : undefined;
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith({ tooltipFor }));
+    const [first, second] = infos[0].rows.find((r) => r.slot === 'head')?.alternatives ?? [];
+    expect(first?.metaLabel).toBe('ilvl 24');
+    expect(second?.metaLabel).toBe('ilvl 24 · needs 25');
+  });
+
+  it('leaves metaLabel undefined when the alternative’s id has no tooltip model', () => {
+    const file = fileWith([band({ slots: [slot({ alternatives: [alt] })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.alternatives?.[0].metaLabel).toBeUndefined();
+  });
 });
 
 describe('collectModelsInto', () => {
@@ -185,6 +239,7 @@ describe('collectModelsInto', () => {
       score: 20,
       source_kind: 'vendor',
       source: 'Vendor: Someone Else',
+      score_delta: 0,
       dps_delta: 0,
     };
     const file = fileWith([band({ slots: [slot({ alternatives: [alt] })] })]);

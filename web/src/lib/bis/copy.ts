@@ -104,11 +104,21 @@ export const bisCopy = {
 
   // --- character panel redesign (bis-character-panel, 2026-09-29) -------------------------
   alternativesLabel: 'Also:',
-  /** The alternative row's own gap-from-the-pick line: an exact tie (the ranker's own
-   *  `dps_delta` 0) reads as "same DPS" rather than "+0.0 DPS behind" -- a signed zero is
-   *  never a real distinction a player should have to parse. */
+  /** The alternative row's own gap-from-the-pick line: anything under 0.05 DPS reads as
+   *  "same DPS" rather than "+0.0 DPS behind" (fix round 1, wow-player review -- the
+   *  ranker's real dps_delta is a float that is essentially never an exact 0, so a strict
+   *  `=== 0` check missed every practical tie; 0.05 is below the 0.1 the line itself
+   *  rounds to, so nothing that would still show as a non-zero number reads as a tie). */
   alternativeGapLabel: (dpsDelta: number): string =>
-    dpsDelta === 0 ? 'same DPS' : `${dpsDelta > 0 ? '+' : '−'}${Math.abs(dpsDelta).toFixed(1)} DPS`,
+    Math.abs(dpsDelta) < 0.05
+      ? 'same DPS'
+      : `${dpsDelta > 0 ? '+' : '−'}${Math.abs(dpsDelta).toFixed(1)} DPS`,
+  /** An alternative's item level, and its required level only when that is above the
+   *  band it's shown at (fix round 1, wow-player review): a requirement at or under the
+   *  band's own level is already implied by the row being shown here at all, so naming it
+   *  every time would be noise, not information. */
+  alternativeMetaLabel: (itemLevel: number, requiredLevel: number, band: number): string =>
+    requiredLevel > band ? `ilvl ${itemLevel} · needs ${requiredLevel}` : `ilvl ${itemLevel}`,
   weightsReferenceDpsLine: (label: string, dpsPerPoint: number): string =>
     `1 ${label} = ${dpsPerPoint.toFixed(2)} DPS`,
   weightsRowDpsLine: (label: string, weight: number, refAbbrev: string, dpsPerPoint: number): string =>
