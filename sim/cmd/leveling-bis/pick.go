@@ -257,3 +257,36 @@ func mergeByScore(a, b []scored) []scored {
 	})
 	return out
 }
+
+// enforceTwoHandOffHandInvariant returns picks unchanged, or a copy
+// with off_hand cleared, so that "a two-handed main_hand means an
+// empty off_hand" - pick()'s own rule, right above - still holds after
+// every LATER pass that can replace main_hand's pick without knowing
+// off_hand exists: rankSlotWithEffects (an implemented-proc two-hander
+// can out-measure the one-handed pick) and trySetCompletion (a
+// two-hand set piece can complete a set the independently-scored
+// picks did not). Both run once per slot, blind to what any OTHER
+// slot's own pass just decided, so neither can maintain this
+// invariant on its own - main.go's runSpec calls this once, after
+// every pass, right before verifyBand/buildReport read picks for
+// good.
+//
+// This is not limited to leveling.DualWieldSpecs: this lane's own
+// dogfood run found it on priest-shadow and every warlock spec too (a
+// two-hand staff's implemented proc winning main_hand over the
+// original one-hand pick, with a held off-hand item pick()
+// legitimately gave them for THAT original pick left standing) - any
+// spec whose main_hand pool can contain both one- and two-handers is
+// exposed, not only the ones that dual-wield.
+func enforceTwoHandOffHandInvariant(picks map[string]slotPick) map[string]slotPick {
+	mh := picks["main_hand"]
+	if mh.Item == nil || !mh.Item.TwoHand || picks["off_hand"].Item == nil {
+		return picks
+	}
+	out := make(map[string]slotPick, len(picks))
+	for k, v := range picks {
+		out[k] = v
+	}
+	out["off_hand"] = slotPick{}
+	return out
+}

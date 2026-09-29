@@ -13,6 +13,7 @@ import (
 	"sort"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
 // setCandidate is one slot's best score()-based candidate that
@@ -28,16 +29,50 @@ type setCandidate struct {
 // are ranked by rankTrinketSlot on a completely different axis, item
 // level, not score, so "the #1 scored trinket" is not a meaningful
 // question) and a slot with zero candidates is skipped.
-func bestSetPieces(bySlot map[string][]scored) map[int][]setCandidate {
+//
+// Two defences mirrored from pick.go/rank.go, needed here for the
+// same reason: this function walks bySlot's OWN pools, not pick()'s
+// already-defended output.
+//
+//   - A dual-wielder's main hand never offers a two-hander (see
+//     rank.go's rankSlotWithEffects, which excludes the same way):
+//     without this, a two-hand set piece could beat this spec's own
+//     one-handed pick here and be tried together with an off-hand
+//     item trySetCompletion still wears.
+//   - finger1 and finger2 (data.go's plannerSlots: a ring's Slots is
+//     always both) share the exact same candidate list, so their own
+//     #1-scored item is the identical physical ring for both --
+//     iterated in slotOrder (not map order, so which slot keeps it is
+//     deterministic across runs) and deduplicated per set by item id,
+//     rather than counting one ring as two of its own set's pieces
+//     and having trySetCompletion equip it in both finger slots at
+//     once (the same "same trinket twice" shape the trinket exclusion
+//     above already avoids for the other paired slot).
+func bestSetPieces(bySlot map[string][]scored, specSlug string) map[int][]setCandidate {
 	out := map[int][]setCandidate{}
-	for slot, list := range bySlot {
+	seenItem := map[int]map[int]bool{}
+	for _, slot := range slotOrder {
+		list := bySlot[slot]
 		if slot == "trinket1" || slot == "trinket2" || len(list) == 0 {
 			continue
+		}
+		if slot == "main_hand" && leveling.DualWieldSpecs[specSlug] {
+			list = excludeTwoHand(list)
+			if len(list) == 0 {
+				continue
+			}
 		}
 		best := list[0]
 		if best.SetID == nil || !setEffectImplemented(*best.SetID) {
 			continue
 		}
+		if seenItem[*best.SetID] == nil {
+			seenItem[*best.SetID] = map[int]bool{}
+		}
+		if seenItem[*best.SetID][best.ID] {
+			continue
+		}
+		seenItem[*best.SetID][best.ID] = true
 		out[*best.SetID] = append(out[*best.SetID], setCandidate{slot: slot, item: best})
 	}
 	return out
@@ -72,7 +107,7 @@ func setAlreadyFullyEquipped(picks map[string]slotPick, cands []setCandidate) bo
 // rankTrinketSlot/rankSlotWithEffects already give a single bad
 // candidate).
 func trySetCompletion(runner engineRunner, spec specInfo, race, classSlug string, level int, picks map[string]slotPick, bySlot map[string][]scored) (map[string]slotPick, []string) {
-	bySet := bestSetPieces(bySlot)
+	bySet := bestSetPieces(bySlot, spec.Spec)
 	setIDs := make([]int, 0, len(bySet))
 	for id, cands := range bySet {
 		if len(cands) < 2 || setAlreadyFullyEquipped(picks, cands) {

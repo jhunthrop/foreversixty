@@ -19,6 +19,7 @@ import (
 	"sort"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
+	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
 // hasImplementedEffect reports whether c carries an on-hit/on-use/proc
@@ -89,9 +90,24 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 		mateID, mateName = picks[mate].Item.ID, picks[mate].Item.Name
 	}
 
+	pool := bySlot[slot]
+	// A dual-wielder's main hand is never a two-hander (pick.go's own
+	// "main_hand" case, excludeTwoHand): a two-hand candidate's own
+	// implemented proc can still out-measure the current one-handed
+	// pick in a plain DPS sim below, which for a spec whose kit assumes
+	// two weapons (leveling.DualWieldSpecs) would silently swap the
+	// character onto a two-hander with no comparison against what it
+	// actually forfeits (a whole second weapon's worth of stats/imbue,
+	// buildGear's own off_hand-drop rule - the exact bug this excludes:
+	// hunter-survival's level-35 main hand picking Frost Tiger Blade
+	// [two-hand, a frost-bolt proc] over its dual-wield set, silently
+	// carrying an off_hand pick the sim never actually wore).
+	if slot == "main_hand" && leveling.DualWieldSpecs[spec.Spec] {
+		pool = excludeTwoHand(pool)
+	}
 	candidates := []scored{*current.Item}
 	seen := map[int]bool{current.Item.ID: true}
-	for _, c := range bySlot[slot] {
+	for _, c := range pool {
 		if len(candidates) >= 1+effectRankTopN {
 			break
 		}

@@ -231,3 +231,36 @@ func TestPickKeepsAHeldItemOutOfADualWieldersOffHand(t *testing.T) {
 		t.Fatalf("elemental off hand = %v, want the held item (it does not dual-wield)", got)
 	}
 }
+
+// The real bug this lane's report names on priest-shadow and every
+// warlock spec: a LATER pass (rankSlotWithEffects, trySetCompletion)
+// swaps main_hand onto a two-hander after pick() already gave off_hand
+// its own, now-stale item for the ORIGINAL one-handed main_hand.
+func TestEnforceTwoHandOffHandInvariantClearsAStaleOffHand(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {Item: &scored{candidate: candidate{ID: 1, TwoHand: true}}},
+		"off_hand":  {Item: &scored{candidate: candidate{ID: 2}}},
+		"head":      {Item: &scored{candidate: candidate{ID: 3}}},
+	}
+	out := enforceTwoHandOffHandInvariant(picks)
+	if out["off_hand"].Item != nil {
+		t.Fatalf("off_hand = %+v, want cleared (main_hand is two-handed)", out["off_hand"].Item)
+	}
+	if out["head"].Item == nil || out["head"].Item.ID != 3 {
+		t.Fatalf("head = %+v, want untouched", out["head"].Item)
+	}
+	if picks["off_hand"].Item == nil {
+		t.Fatal("enforceTwoHandOffHandInvariant mutated its input picks")
+	}
+}
+
+func TestEnforceTwoHandOffHandInvariantLeavesAOneHandedMainHandAlone(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {Item: &scored{candidate: candidate{ID: 1, TwoHand: false}}},
+		"off_hand":  {Item: &scored{candidate: candidate{ID: 2}}},
+	}
+	out := enforceTwoHandOffHandInvariant(picks)
+	if out["off_hand"].Item == nil || out["off_hand"].Item.ID != 2 {
+		t.Fatalf("off_hand = %+v, want untouched (main_hand is one-handed)", out["off_hand"].Item)
+	}
+}
