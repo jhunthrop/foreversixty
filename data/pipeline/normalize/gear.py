@@ -4,9 +4,10 @@ from __future__ import annotations
 
 import logging
 import re
+from collections import Counter
 from typing import TYPE_CHECKING, NamedTuple
 
-from pipeline.icons import resolve_icon
+from pipeline.icons import resolve_icon, resolve_icon_name
 from pipeline.models import ClassItems, GearItem, ItemSetBonus, ItemSetRecord
 from pipeline.normalize.classes import slugify
 from pipeline.normalize.item_curves import ItemCurves, resolve_armor, stat_budget
@@ -552,17 +553,31 @@ def _check_level_60_sanity(
             )
 
 
-def _icon_name(item_row: dict[str, str], icons: dict[int, str], display_name: str) -> str:
-    """The item's icon name, falling back to the client's placeholder art.
+def _icon_name(
+    item_row: dict[str, str],
+    icons: dict[int, str],
+    display_name: str,
+    fork_icons: dict[int, str],
+    wowhead_icons: dict[int, str],
+    icon_origins: Counter[str],
+) -> str:
+    """The item's icon name, falling back past the client's placeholder art.
 
     Some client rows carry `IconFileDataID` 0, meaning the client itself ships
-    no art for the item; see `pipeline.icons.resolve_icon` for what happens then.
+    no art for the item; see `pipeline.icons.resolve_icon` for what happens
+    then, and `pipeline.icons.resolve_icon_name` for the fork-db/wowhead
+    fallback chain applied on top of it here. `icon_origins` is mutated with
+    a count per source ("client", "fork", "wowhead"), for `build_class_items`
+    to log a per-build summary.
     """
-    return resolve_icon(
+    base = resolve_icon(
         int_column(item_row, "IconFileDataID"),
         icons,
         f"item {item_row.get('ID', '?')} ({display_name})",
     )
+    icon, origin = resolve_icon_name(base, int_column(item_row, "ID"), fork_icons, wowhead_icons)
+    icon_origins[origin] += 1
+    return icon
 
 
 def resolve_item_values(
@@ -636,8 +651,20 @@ def build_class_items(
     curves: ItemCurves | None = None,
     effects: EffectIndex | None = None,
     weapon_curves: WeaponCurves | None = None,
+    fork_icons: dict[int, str] | None = None,
+    wowhead_icons: dict[int, str] | None = None,
 ) -> list[ClassItems]:
     """One equippable item list per class. Raises ItemDataError if a row is unreadable.
+
+    `fork_icons` and `wowhead_icons` are the same fallback chain
+    `pipeline.icons_fix.fix_placeholder_icons` applies to an already-committed
+    build, applied here instead at normalize time so a build fetched with a
+    complete raw export never needs the standalone pass at all. Pass None
+    (the default, same as an empty dict) for a caller with neither -- every
+    item whose `IconFileDataID` the client states as 0 (or names no row in
+    `ManifestInterfaceData`) simply keeps PLACEHOLDER_ICON, exactly as before
+    either fallback existed. A one-line summary of how many items resolved
+    from each source is logged once the class lists are built.
 
     `curves` resolves armour and stats for a build whose ItemSparse carries no
     literal amounts (the 1.60 client / Forever beta); pass None (the default)
@@ -658,6 +685,9 @@ def build_class_items(
     extra stats and an empty `effect_text`, exactly as before this existed.
     """
     by_id = {int_column(row, "ID"): row for row in item_rows}
+    fork_icons = fork_icons or {}
+    wowhead_icons = wowhead_icons or {}
+    icon_origins: Counter[str] = Counter()
     candidates: list[tuple[GearItem, int, int, int]] = []
     for row in sparse_rows:
         inventory_type = int_column(row, "InventoryType")
@@ -695,7 +725,7 @@ def build_class_items(
         item = GearItem(
             id=item_id,
             name=display_name,
-            icon=_icon_name(item_row, icons, display_name),
+            icon=_icon_name(item_row, icons, display_name, fork_icons, wowhead_icons, icon_origins),
             slot=slot,
             quality=quality,
             required_level=required_level,
@@ -735,6 +765,15 @@ def build_class_items(
                 class_slug=slugify(class_row["Name_lang"]),
                 items=sorted(items, key=lambda i: (i.required_level, i.name, i.id)),
             )
+        )
+    if icon_origins["fork"] or icon_origins["wowhead"]:
+        logger.info(
+            "items %s icon origins: %d from the client, %d from the fork db, "
+            "%d from wowhead's gear-planner payload",
+            build,
+            icon_origins["client"],
+            icon_origins["fork"],
+            icon_origins["wowhead"],
         )
     return records
 

@@ -10,6 +10,7 @@ from pipeline.forkdb import (
     REP_LEVELS,
     ForkDbError,
     decode,
+    icon_by_item_id,
     load_fork_database,
 )
 
@@ -39,6 +40,15 @@ def test_the_fixture_database_loads_every_table():
     assert fork.spell_icons[7420] == "spell_holy_chest"
     assert len(fork.spell_icon_rows) == 5
     assert len(fork.item_icon_rows) == 1
+
+
+def test_icon_by_item_id_covers_both_item_tables():
+    fork = load_fork_database(ENGINE)
+    icons = icon_by_item_id(fork)
+    # From the main `items` array.
+    assert icons[100] == "inv_a"
+    # From the smaller `itemIcons` table, which `items` does not repeat.
+    assert icons[2304] == "inv_misc_armorkit_17"
 
 
 def test_the_tables_are_immutable():

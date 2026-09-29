@@ -73,7 +73,7 @@
     {
       "id": 260210,
       "name": "A Bigger Shield",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shield_11",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 0,
@@ -204,7 +204,7 @@
     {
       "id": 260167,
       "name": "Adventurer's Lost Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_07",
       "slot": "feet",
       "quality": 2,
       "required_level": 0,
@@ -249,7 +249,7 @@
     {
       "id": 277234,
       "name": "Alacritous Treads",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 0,
@@ -292,7 +292,7 @@
     {
       "id": 260169,
       "name": "Amice of Sorrow",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_09",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 0,
@@ -337,7 +337,7 @@
     {
       "id": 281260,
       "name": "Ancestral Waistcord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_24",
       "slot": "waist",
       "quality": 2,
       "required_level": 0,
@@ -426,7 +426,7 @@
     {
       "id": 281637,
       "name": "Antique Bulwark",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shield_02",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 0,
@@ -711,7 +711,7 @@
     {
       "id": 260172,
       "name": "Assassin's Dagger",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_12",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -1198,7 +1198,7 @@
     {
       "id": 260179,
       "name": "Barkwoven Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_24",
       "slot": "waist",
       "quality": 2,
       "required_level": 0,
@@ -1377,7 +1377,7 @@
     {
       "id": 281539,
       "name": "Bear Fur Cowl",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_16",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -2051,7 +2051,7 @@
     {
       "id": 259891,
       "name": "Berdun's Trusty Rifle",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_rifle_04",
       "slot": "ranged",
       "quality": 2,
       "required_level": 0,
@@ -2420,7 +2420,7 @@
     {
       "id": 281303,
       "name": "Bleached Scale Vest",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_12",
       "slot": "chest",
       "quality": 2,
       "required_level": 0,
@@ -3075,7 +3075,7 @@
     {
       "id": 281318,
       "name": "Bouquet of Auberdine Flowers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_flower_02",
       "slot": "off_hand",
       "quality": 2,
       "required_level": 0,
@@ -3724,7 +3724,7 @@
     {
       "id": 277206,
       "name": "Brilliant Cloak",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_16",
       "slot": "back",
       "quality": 2,
       "required_level": 0,
@@ -3856,7 +3856,7 @@
     {
       "id": 281272,
       "name": "Brog's Friendship Bracelet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_03",
       "slot": "wrist",
       "quality": 2,
       "required_level": 0,
@@ -4267,7 +4267,7 @@
     {
       "id": 281310,
       "name": "Carnage Trousers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_06",
       "slot": "legs",
       "quality": 2,
       "required_level": 0,
@@ -5159,7 +5159,7 @@
     {
       "id": 260184,
       "name": "Cliff Walker's Cinch",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_49b",
       "slot": "waist",
       "quality": 3,
       "required_level": 0,
@@ -5271,7 +5271,7 @@
     {
       "id": 277205,
       "name": "Cloak of the Divine Storm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_04",
       "slot": "back",
       "quality": 3,
       "required_level": 0,
@@ -5738,7 +5738,7 @@
     {
       "id": 281251,
       "name": "Courier's Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_02",
       "slot": "wrist",
       "quality": 2,
       "required_level": 0,
@@ -5908,7 +5908,7 @@
     {
       "id": 276720,
       "name": "Criminal's Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_14",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 0,
@@ -6042,7 +6042,7 @@
     {
       "id": 277214,
       "name": "Crusty Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_02",
       "slot": "wrist",
       "quality": 2,
       "required_level": 0,
@@ -6133,7 +6133,7 @@
     {
       "id": 281261,
       "name": "Crystal-flecked Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_26",
       "slot": "waist",
       "quality": 2,
       "required_level": 0,
@@ -6155,7 +6155,7 @@
     {
       "id": 281262,
       "name": "Crystal-flecked Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_23",
       "slot": "waist",
       "quality": 2,
       "required_level": 0,
@@ -6286,7 +6286,7 @@
     {
       "id": 276721,
       "name": "DNT CHEST",
-      "icon": "inv_misc_questionmark",
+      "icon": "0",
       "slot": "chest",
       "quality": 2,
       "required_level": 0,
@@ -6305,7 +6305,7 @@
     {
       "id": 276719,
       "name": "DNT HEAD",
-      "icon": "inv_misc_questionmark",
+      "icon": "0",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -6324,7 +6324,7 @@
     {
       "id": 276725,
       "name": "DNT LEGS",
-      "icon": "inv_misc_questionmark",
+      "icon": "0",
       "slot": "legs",
       "quality": 2,
       "required_level": 0,
@@ -6365,7 +6365,7 @@
     {
       "id": 281257,
       "name": "Daggerfang's Daggerfang",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_04",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -6451,7 +6451,7 @@
     {
       "id": 260186,
       "name": "Darkblade",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_06",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -7537,7 +7537,7 @@
     {
       "id": 271799,
       "name": "Desert Crawler's Claw",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_11",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -7737,7 +7737,7 @@
     {
       "id": 277226,
       "name": "Disjointed Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_06",
       "slot": "feet",
       "quality": 2,
       "required_level": 0,
@@ -7849,7 +7849,7 @@
     {
       "id": 281307,
       "name": "Dragonmaw Buckler",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shield_02",
       "slot": "off_hand",
       "quality": 2,
       "required_level": 0,
@@ -8073,7 +8073,7 @@
     {
       "id": 277211,
       "name": "Dudd's Thinkin' Cap",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_27",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -8679,7 +8679,7 @@
     {
       "id": 260182,
       "name": "Elunar Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_15",
       "slot": "waist",
       "quality": 2,
       "required_level": 0,
@@ -9440,7 +9440,7 @@
     {
       "id": 281305,
       "name": "Excavation Cloak",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_16",
       "slot": "back",
       "quality": 2,
       "required_level": 0,
@@ -9728,7 +9728,7 @@
     {
       "id": 281312,
       "name": "Fallen Dragon's Scepter",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_staff_08",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 0,
@@ -10241,7 +10241,7 @@
     {
       "id": 281285,
       "name": "Finscale Soles",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 0,
@@ -10589,7 +10589,7 @@
     {
       "id": 263329,
       "name": "Flutterfly Swatter",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_mace_1h_skybornec60_b_01",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -10739,7 +10739,7 @@
     {
       "id": 281250,
       "name": "Forest Oracle's Cloak",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_17",
       "slot": "back",
       "quality": 2,
       "required_level": 0,
@@ -10804,7 +10804,7 @@
     {
       "id": 281315,
       "name": "Foulfur Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_05",
       "slot": "hands",
       "quality": 2,
       "required_level": 0,
@@ -11419,7 +11419,7 @@
     {
       "id": 281264,
       "name": "Ghastly Bow",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_bow_07",
       "slot": "ranged",
       "quality": 2,
       "required_level": 0,
@@ -11589,7 +11589,7 @@
     {
       "id": 281316,
       "name": "Glimmerchain Trousers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_03",
       "slot": "legs",
       "quality": 2,
       "required_level": 0,
@@ -11611,7 +11611,7 @@
     {
       "id": 276727,
       "name": "Glistening Stompers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_06",
       "slot": "feet",
       "quality": 2,
       "required_level": 0,
@@ -11831,7 +11831,7 @@
     {
       "id": 276722,
       "name": "Gnoll Shackles",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_06",
       "slot": "wrist",
       "quality": 2,
       "required_level": 0,
@@ -12262,7 +12262,7 @@
     {
       "id": 281319,
       "name": "Golem War Cloak",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_20",
       "slot": "back",
       "quality": 3,
       "required_level": 0,
@@ -12436,7 +12436,7 @@
     {
       "id": 271803,
       "name": "Greatstaff of the Necrokhans",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_staff_08",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 0,
@@ -12633,7 +12633,7 @@
     {
       "id": 277221,
       "name": "Grimtotem Naturalist's Tunic",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_06",
       "slot": "chest",
       "quality": 2,
       "required_level": 0,
@@ -13044,7 +13044,7 @@
     {
       "id": 281279,
       "name": "Hailgiant's Fists",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_15",
       "slot": "hands",
       "quality": 2,
       "required_level": 0,
@@ -13460,7 +13460,7 @@
     {
       "id": 260195,
       "name": "Headdress of the Damned",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_04",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -13834,7 +13834,7 @@
     {
       "id": 260201,
       "name": "Highborne Memory Crystal",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chaos_orb",
       "slot": "off_hand",
       "quality": 2,
       "required_level": 0,
@@ -13922,7 +13922,7 @@
     {
       "id": 260185,
       "name": "Hippogryph Hide Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_04",
       "slot": "feet",
       "quality": 3,
       "required_level": 0,
@@ -13967,7 +13967,7 @@
     {
       "id": 260178,
       "name": "Honor Guard's Plate",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_09",
       "slot": "chest",
       "quality": 2,
       "required_level": 0,
@@ -14147,7 +14147,7 @@
     {
       "id": 281284,
       "name": "Howlhide Vest",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_wolf",
       "slot": "chest",
       "quality": 2,
       "required_level": 0,
@@ -14451,7 +14451,7 @@
     {
       "id": 277218,
       "name": "Incinerator's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_05",
       "slot": "feet",
       "quality": 2,
       "required_level": 0,
@@ -14535,7 +14535,7 @@
     {
       "id": 281254,
       "name": "Invader's Mace",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_03",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -14840,7 +14840,7 @@
     {
       "id": 277232,
       "name": "Jailer's Discarded Chain",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_22",
       "slot": "waist",
       "quality": 2,
       "required_level": 0,
@@ -14884,7 +14884,7 @@
     {
       "id": 281308,
       "name": "Jameson's Backup Sword",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_45",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -15284,7 +15284,7 @@
     {
       "id": 281296,
       "name": "Knight's Lance",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_spear_08",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -15416,7 +15416,7 @@
     {
       "id": 277224,
       "name": "Kurzen Headshrinker's Cinch",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_04",
       "slot": "waist",
       "quality": 2,
       "required_level": 0,
@@ -15460,7 +15460,7 @@
     {
       "id": 281675,
       "name": "Lakeshire Firefighter's Headband",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_bandana_01",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -15954,7 +15954,7 @@
     {
       "id": 19972,
       "name": "Lucky Fishing Hat",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_31",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -16196,7 +16196,7 @@
     {
       "id": 277227,
       "name": "Magistrate's Chain Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_16",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -16240,7 +16240,7 @@
     {
       "id": 281274,
       "name": "Makeshift Stormcaller",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_staff_14",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -16352,7 +16352,7 @@
     {
       "id": 281275,
       "name": "Mantle of Scaleslaying",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_05",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 0,
@@ -16564,7 +16564,7 @@
     {
       "id": 281291,
       "name": "Mathystra Channeling Orb",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_orb_01",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 0,
@@ -16586,7 +16586,7 @@
     {
       "id": 281538,
       "name": "Matriarch's Mantle",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_27",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 0,
@@ -16762,7 +16762,7 @@
     {
       "id": 281273,
       "name": "Migi's Friendship Bracelet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_03",
       "slot": "wrist",
       "quality": 2,
       "required_level": 0,
@@ -16783,7 +16783,7 @@
     {
       "id": 276685,
       "name": "Militia Bow",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_bow_02",
       "slot": "ranged",
       "quality": 2,
       "required_level": 0,
@@ -16975,7 +16975,7 @@
     {
       "id": 277255,
       "name": "Misplaced Shooter",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_rifle_07",
       "slot": "ranged",
       "quality": 2,
       "required_level": 0,
@@ -17018,7 +17018,7 @@
     {
       "id": 281269,
       "name": "Mogra's Friendship Bracelet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_04",
       "slot": "wrist",
       "quality": 2,
       "required_level": 0,
@@ -17084,7 +17084,7 @@
     {
       "id": 281280,
       "name": "Mountain Climbers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_17",
       "slot": "hands",
       "quality": 2,
       "required_level": 0,
@@ -17106,7 +17106,7 @@
     {
       "id": 281253,
       "name": "Mountaineer's Greataxe",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_axe_09",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -17192,7 +17192,7 @@
     {
       "id": 277247,
       "name": "Mug of Muddled Memories",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_drink_03",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -17743,7 +17743,7 @@
     {
       "id": 281292,
       "name": "Onu's Patience",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_jewelry_talisman_03",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 0,
@@ -18164,7 +18164,7 @@
     {
       "id": 260211,
       "name": "Panic Hands",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_19",
       "slot": "hands",
       "quality": 3,
       "required_level": 0,
@@ -18274,7 +18274,7 @@
     {
       "id": 281283,
       "name": "Patchwing Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_02",
       "slot": "legs",
       "quality": 2,
       "required_level": 0,
@@ -18319,7 +18319,7 @@
     {
       "id": 281276,
       "name": "Pauldrons of Scaleslaying",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_06",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 0,
@@ -18366,7 +18366,7 @@
     {
       "id": 277236,
       "name": "Pauldrons of Vindication",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_09",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 0,
@@ -18431,7 +18431,7 @@
     {
       "id": 281295,
       "name": "Pelt Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_09",
       "slot": "legs",
       "quality": 2,
       "required_level": 0,
@@ -18453,7 +18453,7 @@
     {
       "id": 272181,
       "name": "Phantasmal Shiv",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_05",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -18891,7 +18891,7 @@
     {
       "id": 260208,
       "name": "Prelate's Orb",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_orb_yellow",
       "slot": "off_hand",
       "quality": 2,
       "required_level": 0,
@@ -18999,7 +18999,7 @@
     {
       "id": 281299,
       "name": "Profane Ritual Robes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_05",
       "slot": "chest",
       "quality": 2,
       "required_level": 0,
@@ -19087,7 +19087,7 @@
     {
       "id": 281271,
       "name": "Puk's Friendship Bracelet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_04",
       "slot": "wrist",
       "quality": 2,
       "required_level": 0,
@@ -19328,7 +19328,7 @@
     {
       "id": 260166,
       "name": "Rageroar's Best Club",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_2h_maul_a_01_hd",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -19550,7 +19550,7 @@
     {
       "id": 281267,
       "name": "Raptorscale Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_03",
       "slot": "legs",
       "quality": 2,
       "required_level": 0,
@@ -19593,7 +19593,7 @@
     {
       "id": 277257,
       "name": "Raven Hill Crest",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shield_06",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 0,
@@ -19634,7 +19634,7 @@
     {
       "id": 281309,
       "name": "Razormaw Shorts",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_06",
       "slot": "legs",
       "quality": 2,
       "required_level": 0,
@@ -19763,7 +19763,7 @@
     {
       "id": 281317,
       "name": "Redstone Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_08",
       "slot": "feet",
       "quality": 2,
       "required_level": 0,
@@ -19917,7 +19917,7 @@
     {
       "id": 281256,
       "name": "Repurposed Hair Band",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_04",
       "slot": "wrist",
       "quality": 2,
       "required_level": 0,
@@ -20634,7 +20634,7 @@
     {
       "id": 281297,
       "name": "Royal Dagger",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_01",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -21005,7 +21005,7 @@
     {
       "id": 260183,
       "name": "Sacred Bangle",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_jewelry_ring_13",
       "slot": "wrist",
       "quality": 3,
       "required_level": 0,
@@ -21073,7 +21073,7 @@
     {
       "id": 281301,
       "name": "Sacrificial Shackles",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_02",
       "slot": "wrist",
       "quality": 2,
       "required_level": 0,
@@ -21139,7 +21139,7 @@
     {
       "id": 281324,
       "name": "Sailing Tunic",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shirt_02",
       "slot": "chest",
       "quality": 2,
       "required_level": 0,
@@ -21552,7 +21552,7 @@
     {
       "id": 260180,
       "name": "Scout's Dagger",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_01",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -21868,7 +21868,7 @@
     {
       "id": 260181,
       "name": "Sentinel's Plate",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_plate02",
       "slot": "chest",
       "quality": 2,
       "required_level": 0,
@@ -22019,7 +22019,7 @@
     {
       "id": 277220,
       "name": "Shabby Spaulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_08",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 0,
@@ -22546,7 +22546,7 @@
     {
       "id": 281278,
       "name": "Shoulderplates of Scaleslaying",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_02",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 0,
@@ -22568,7 +22568,7 @@
     {
       "id": 281277,
       "name": "Shoulders of Scaleslaying",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_27",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 0,
@@ -23393,7 +23393,7 @@
     {
       "id": 277235,
       "name": "Soldier's Visor",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_02",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -23415,7 +23415,7 @@
     {
       "id": 277219,
       "name": "Solomon's Comfortable Hat",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_51",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -23876,7 +23876,7 @@
     {
       "id": 271804,
       "name": "Soulsplatter Mace",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_mace_01",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 0,
@@ -24162,7 +24162,7 @@
     {
       "id": 281323,
       "name": "Spirit-buckle Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_24",
       "slot": "waist",
       "quality": 2,
       "required_level": 0,
@@ -24294,7 +24294,7 @@
     {
       "id": 271797,
       "name": "Staff of Revelations",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_staff_08",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -24556,7 +24556,7 @@
     {
       "id": 281259,
       "name": "Stonard Stompers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 0,
@@ -25112,7 +25112,7 @@
     {
       "id": 281314,
       "name": "Subdued Dragon's Fang",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_01",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 0,
@@ -25353,7 +25353,7 @@
     {
       "id": 281289,
       "name": "Swordfeather Cloak",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_02",
       "slot": "back",
       "quality": 2,
       "required_level": 0,
@@ -25785,7 +25785,7 @@
     {
       "id": 281270,
       "name": "Thra's Friendship Bracelet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_10",
       "slot": "wrist",
       "quality": 2,
       "required_level": 0,
@@ -25933,7 +25933,7 @@
     {
       "id": 281298,
       "name": "Ti'ik's Tattered Trousers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_wolf",
       "slot": "legs",
       "quality": 2,
       "required_level": 0,
@@ -26046,7 +26046,7 @@
     {
       "id": 282064,
       "name": "Tim's Lost Rib",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_15",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -26437,7 +26437,7 @@
     {
       "id": 277223,
       "name": "Traveled Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_23",
       "slot": "hands",
       "quality": 2,
       "required_level": 0,
@@ -26503,7 +26503,7 @@
     {
       "id": 276724,
       "name": "Trophy Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_15",
       "slot": "waist",
       "quality": 2,
       "required_level": 0,
@@ -26525,7 +26525,7 @@
     {
       "id": 260209,
       "name": "Truesong's Hammer",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_12",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -26546,7 +26546,7 @@
     {
       "id": 281313,
       "name": "Trusty Sword",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_04",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 0,
@@ -26589,7 +26589,7 @@
     {
       "id": 277254,
       "name": "Truthseeker's Bow",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_bow_01",
       "slot": "ranged",
       "quality": 3,
       "required_level": 0,
@@ -27760,7 +27760,7 @@
     {
       "id": 281293,
       "name": "Weathered Deathstalker's Blade",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_41",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 0,
@@ -27823,7 +27823,7 @@
     {
       "id": 277207,
       "name": "Well-Weathered Cloak",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_07",
       "slot": "back",
       "quality": 2,
       "required_level": 0,
@@ -28107,7 +28107,7 @@
     {
       "id": 259846,
       "name": "Wide-Brimmed Fishing Hat",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helm_armor_buckledhat_b_01_black",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -28610,7 +28610,7 @@
     {
       "id": 276723,
       "name": "Wise Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_13",
       "slot": "hands",
       "quality": 2,
       "required_level": 0,
@@ -29125,7 +29125,7 @@
     {
       "id": 276897,
       "name": "A Lesson in Destruction",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_book_06",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 1,
@@ -29148,7 +29148,7 @@
     {
       "id": 271801,
       "name": "Abandoned Ferocity",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_axe_17",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 1,
@@ -29171,7 +29171,7 @@
     {
       "id": 277514,
       "name": "Aka'rai's Tattered Vestments",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_40",
       "slot": "chest",
       "quality": 2,
       "required_level": 1,
@@ -29282,7 +29282,7 @@
     {
       "id": 276887,
       "name": "Big Bad Basher",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_08",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -29304,7 +29304,7 @@
     {
       "id": 271796,
       "name": "Blade of the Magram Clan",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_07",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -29349,7 +29349,7 @@
     {
       "id": 271802,
       "name": "Bludgeon of Betrayed Virtues",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_08",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 1,
@@ -29415,7 +29415,7 @@
     {
       "id": 271794,
       "name": "Centaur Spear",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_halberd_04",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -29437,7 +29437,7 @@
     {
       "id": 276886,
       "name": "Chol'aruk's Trophy Sword",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_04",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -29459,7 +29459,7 @@
     {
       "id": 271811,
       "name": "Clacking Carapace Spaulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_29",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 1,
@@ -29482,7 +29482,7 @@
     {
       "id": 271810,
       "name": "Corpsefeeder's Shedding",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_11",
       "slot": "back",
       "quality": 3,
       "required_level": 1,
@@ -29505,7 +29505,7 @@
     {
       "id": 277515,
       "name": "Dagger of Deals",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_05",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -29617,7 +29617,7 @@
     {
       "id": 271798,
       "name": "Desperate Barrier",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shield_05",
       "slot": "off_hand",
       "quality": 2,
       "required_level": 1,
@@ -29729,7 +29729,7 @@
     {
       "id": 281586,
       "name": "Elderwild Construction Hammer",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_08",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 1,
@@ -29843,7 +29843,7 @@
     {
       "id": 281587,
       "name": "Greatflank Flayer",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_36",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 1,
@@ -29866,7 +29866,7 @@
     {
       "id": 272179,
       "name": "Greatsword of Great Pasts",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_23",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -30062,7 +30062,7 @@
     {
       "id": 277979,
       "name": "Mauler's Mutton",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_food_18",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -30128,7 +30128,7 @@
     {
       "id": 281588,
       "name": "Nature's Cull",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_halberd_02",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 1,
@@ -30150,7 +30150,7 @@
     {
       "id": 277980,
       "name": "Ogre Bone",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_bone_01",
       "slot": "off_hand",
       "quality": 2,
       "required_level": 1,
@@ -30172,7 +30172,7 @@
     {
       "id": 272186,
       "name": "Overgrown Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_02",
       "slot": "wrist",
       "quality": 3,
       "required_level": 1,
@@ -30195,7 +30195,7 @@
     {
       "id": 277288,
       "name": "Pathfinder's Clearway",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_axe_01",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 1,
@@ -30236,7 +30236,7 @@
     {
       "id": 276888,
       "name": "Quilboar Toothpick",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_01",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -30369,7 +30369,7 @@
     {
       "id": 281723,
       "name": "Restored Basher",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_mace_03",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -30388,7 +30388,7 @@
     {
       "id": 281732,
       "name": "Restored Bow",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_bow_05",
       "slot": "ranged",
       "quality": 2,
       "required_level": 1,
@@ -30407,7 +30407,7 @@
     {
       "id": 281731,
       "name": "Restored Buckler",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shield_09",
       "slot": "off_hand",
       "quality": 2,
       "required_level": 1,
@@ -30426,7 +30426,7 @@
     {
       "id": 281720,
       "name": "Restored Chopper",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_axe_11",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -30445,7 +30445,7 @@
     {
       "id": 281721,
       "name": "Restored Cleaver",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_axe_04",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -30464,7 +30464,7 @@
     {
       "id": 281717,
       "name": "Restored Cloak",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_10",
       "slot": "back",
       "quality": 2,
       "required_level": 1,
@@ -30483,7 +30483,7 @@
     {
       "id": 281690,
       "name": "Restored Cloth Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_04",
       "slot": "waist",
       "quality": 2,
       "required_level": 1,
@@ -30502,7 +30502,7 @@
     {
       "id": 281688,
       "name": "Restored Cloth Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_10",
       "slot": "wrist",
       "quality": 2,
       "required_level": 1,
@@ -30521,7 +30521,7 @@
     {
       "id": 281689,
       "name": "Restored Cloth Handwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_24",
       "slot": "hands",
       "quality": 2,
       "required_level": 1,
@@ -30540,7 +30540,7 @@
     {
       "id": 281685,
       "name": "Restored Cloth Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_31",
       "slot": "head",
       "quality": 2,
       "required_level": 1,
@@ -30559,7 +30559,7 @@
     {
       "id": 281691,
       "name": "Restored Cloth Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_02",
       "slot": "legs",
       "quality": 2,
       "required_level": 1,
@@ -30578,7 +30578,7 @@
     {
       "id": 281692,
       "name": "Restored Cloth Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_09",
       "slot": "feet",
       "quality": 2,
       "required_level": 1,
@@ -30597,7 +30597,7 @@
     {
       "id": 281686,
       "name": "Restored Cloth Shoulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_06",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 1,
@@ -30616,7 +30616,7 @@
     {
       "id": 281687,
       "name": "Restored Cloth Vest",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_13",
       "slot": "chest",
       "quality": 2,
       "required_level": 1,
@@ -30635,7 +30635,7 @@
     {
       "id": 281722,
       "name": "Restored Dagger",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_05",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -30654,7 +30654,7 @@
     {
       "id": 281727,
       "name": "Restored Greatstaff",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_staff_09",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -30673,7 +30673,7 @@
     {
       "id": 281700,
       "name": "Restored Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_08",
       "slot": "feet",
       "quality": 2,
       "required_level": 1,
@@ -30692,7 +30692,7 @@
     {
       "id": 281699,
       "name": "Restored Leather Chaps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_12",
       "slot": "legs",
       "quality": 2,
       "required_level": 1,
@@ -30711,7 +30711,7 @@
     {
       "id": 281697,
       "name": "Restored Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_24",
       "slot": "hands",
       "quality": 2,
       "required_level": 1,
@@ -30730,7 +30730,7 @@
     {
       "id": 281693,
       "name": "Restored Leather Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_11",
       "slot": "head",
       "quality": 2,
       "required_level": 1,
@@ -30749,7 +30749,7 @@
     {
       "id": 281694,
       "name": "Restored Leather Spaulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_06",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 1,
@@ -30768,7 +30768,7 @@
     {
       "id": 281698,
       "name": "Restored Leather Strap",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_02",
       "slot": "waist",
       "quality": 2,
       "required_level": 1,
@@ -30787,7 +30787,7 @@
     {
       "id": 281695,
       "name": "Restored Leather Tunic",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_05",
       "slot": "chest",
       "quality": 2,
       "required_level": 1,
@@ -30806,7 +30806,7 @@
     {
       "id": 281696,
       "name": "Restored Leather Wristcuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_08",
       "slot": "wrist",
       "quality": 2,
       "required_level": 1,
@@ -30825,7 +30825,7 @@
     {
       "id": 281729,
       "name": "Restored Longsword",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_04",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -30844,7 +30844,7 @@
     {
       "id": 281706,
       "name": "Restored Mail Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_23",
       "slot": "waist",
       "quality": 2,
       "required_level": 1,
@@ -30863,7 +30863,7 @@
     {
       "id": 281708,
       "name": "Restored Mail Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_10",
       "slot": "feet",
       "quality": 2,
       "required_level": 1,
@@ -30882,7 +30882,7 @@
     {
       "id": 281703,
       "name": "Restored Mail Chestpiece",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_13",
       "slot": "chest",
       "quality": 2,
       "required_level": 1,
@@ -30901,7 +30901,7 @@
     {
       "id": 281705,
       "name": "Restored Mail Clasps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_12",
       "slot": "hands",
       "quality": 2,
       "required_level": 1,
@@ -30920,7 +30920,7 @@
     {
       "id": 281701,
       "name": "Restored Mail Coif",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_12",
       "slot": "head",
       "quality": 2,
       "required_level": 1,
@@ -30939,7 +30939,7 @@
     {
       "id": 281707,
       "name": "Restored Mail Legguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_05",
       "slot": "legs",
       "quality": 2,
       "required_level": 1,
@@ -30958,7 +30958,7 @@
     {
       "id": 281702,
       "name": "Restored Mail Shoulderguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_15",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 1,
@@ -30977,7 +30977,7 @@
     {
       "id": 281704,
       "name": "Restored Mail Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_17",
       "slot": "wrist",
       "quality": 2,
       "required_level": 1,
@@ -30996,7 +30996,7 @@
     {
       "id": 281714,
       "name": "Restored Plate Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_34",
       "slot": "waist",
       "quality": 2,
       "required_level": 1,
@@ -31015,7 +31015,7 @@
     {
       "id": 281716,
       "name": "Restored Plate Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_08",
       "slot": "feet",
       "quality": 2,
       "required_level": 1,
@@ -31034,7 +31034,7 @@
     {
       "id": 281711,
       "name": "Restored Plate Chestguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_plate16",
       "slot": "chest",
       "quality": 2,
       "required_level": 1,
@@ -31053,7 +31053,7 @@
     {
       "id": 281713,
       "name": "Restored Plate Handguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_29",
       "slot": "hands",
       "quality": 2,
       "required_level": 1,
@@ -31072,7 +31072,7 @@
     {
       "id": 281709,
       "name": "Restored Plate Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_22",
       "slot": "head",
       "quality": 2,
       "required_level": 1,
@@ -31091,7 +31091,7 @@
     {
       "id": 281715,
       "name": "Restored Plate Legs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_plate_15",
       "slot": "legs",
       "quality": 2,
       "required_level": 1,
@@ -31110,7 +31110,7 @@
     {
       "id": 281710,
       "name": "Restored Plate Shoulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_30",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 1,
@@ -31129,7 +31129,7 @@
     {
       "id": 281712,
       "name": "Restored Plate Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_27b",
       "slot": "wrist",
       "quality": 2,
       "required_level": 1,
@@ -31148,7 +31148,7 @@
     {
       "id": 281728,
       "name": "Restored Shortsword",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_04",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -31167,7 +31167,7 @@
     {
       "id": 281724,
       "name": "Restored Smasher",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_16",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -31186,7 +31186,7 @@
     {
       "id": 281725,
       "name": "Restored Spear",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_spear_08",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -31274,7 +31274,7 @@
     {
       "id": 276898,
       "name": "Salve and Salvation",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_book_01",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 1,
@@ -31297,7 +31297,7 @@
     {
       "id": 271800,
       "name": "Scavenged Magram Armament",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_spear_05",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 1,
@@ -31342,7 +31342,7 @@
     {
       "id": 276903,
       "name": "Shimmerwine Shanker",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_drink_11",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -31364,7 +31364,7 @@
     {
       "id": 276904,
       "name": "Shimmerwine Spirits",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_cooking_100_foamybottle",
       "slot": "off_hand",
       "quality": 2,
       "required_level": 1,
@@ -31476,7 +31476,7 @@
     {
       "id": 272180,
       "name": "Spectral Magister's Commission",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_41",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -31544,7 +31544,7 @@
     {
       "id": 276274,
       "name": "Surfer Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 1,
@@ -31630,7 +31630,7 @@
     {
       "id": 272187,
       "name": "Thornplated Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_23",
       "slot": "waist",
       "quality": 3,
       "required_level": 1,
@@ -31653,7 +31653,7 @@
     {
       "id": 276889,
       "name": "Thornwoven Shield",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shield_14",
       "slot": "off_hand",
       "quality": 2,
       "required_level": 1,
@@ -31675,7 +31675,7 @@
     {
       "id": 271805,
       "name": "Thrice-Damned Effigy",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_orb_01",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 1,
@@ -31742,7 +31742,7 @@
     {
       "id": 277289,
       "name": "Traveler's Shawl",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_15",
       "slot": "back",
       "quality": 3,
       "required_level": 1,
@@ -31787,7 +31787,7 @@
     {
       "id": 276901,
       "name": "Uncle's Heroism",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_02",
       "slot": "back",
       "quality": 2,
       "required_level": 1,
@@ -31809,7 +31809,7 @@
     {
       "id": 271795,
       "name": "Wanderer's Broadsword",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_35",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -31872,7 +31872,7 @@
     {
       "id": 282284,
       "name": "Webwood Slicer",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_12",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 1,
@@ -31916,7 +31916,7 @@
     {
       "id": 276902,
       "name": "Youngster's First Bow",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_bow_05",
       "slot": "ranged",
       "quality": 2,
       "required_level": 1,
@@ -32270,7 +32270,7 @@
     {
       "id": 3469,
       "name": "Copper Chain Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 4,
@@ -32333,7 +32333,7 @@
     {
       "id": 277672,
       "name": "Rough Copper Chain Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 4,
@@ -32522,7 +32522,7 @@
     {
       "id": 277025,
       "name": "Azure Gustwoven Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_leather_skybornec60_b_01",
       "slot": "waist",
       "quality": 2,
       "required_level": 5,
@@ -32543,7 +32543,7 @@
     {
       "id": 277023,
       "name": "Azure Gustwoven Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_leather_skybornec60_b_01",
       "slot": "wrist",
       "quality": 2,
       "required_level": 5,
@@ -32564,7 +32564,7 @@
     {
       "id": 277019,
       "name": "Azure Skyforged Chain",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_mail_skybornec60_b_01",
       "slot": "waist",
       "quality": 2,
       "required_level": 5,
@@ -32585,7 +32585,7 @@
     {
       "id": 277017,
       "name": "Azure Skyforged Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_mail_skybornec60_b_01",
       "slot": "wrist",
       "quality": 2,
       "required_level": 5,
@@ -32606,7 +32606,7 @@
     {
       "id": 277037,
       "name": "Azure Stormsewn Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_cloth_skybornec60_b_01",
       "slot": "waist",
       "quality": 2,
       "required_level": 5,
@@ -32627,7 +32627,7 @@
     {
       "id": 277035,
       "name": "Azure Stormsewn Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_cloth_skybornec60_b_01",
       "slot": "wrist",
       "quality": 2,
       "required_level": 5,
@@ -32648,7 +32648,7 @@
     {
       "id": 277029,
       "name": "Azure Windraveled Armguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_leather_skybornec60_b_02",
       "slot": "wrist",
       "quality": 2,
       "required_level": 5,
@@ -32669,7 +32669,7 @@
     {
       "id": 277031,
       "name": "Azure Windraveled Strap",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_leather_skybornec60_b_02",
       "slot": "waist",
       "quality": 2,
       "required_level": 5,
@@ -32816,7 +32816,7 @@
     {
       "id": 277001,
       "name": "Cloudy Gustwoven Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_leather_skybornec60_b_01",
       "slot": "waist",
       "quality": 2,
       "required_level": 5,
@@ -32837,7 +32837,7 @@
     {
       "id": 276999,
       "name": "Cloudy Gustwoven Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_leather_skybornec60_b_01",
       "slot": "wrist",
       "quality": 2,
       "required_level": 5,
@@ -32858,7 +32858,7 @@
     {
       "id": 276995,
       "name": "Cloudy Skyforged Chain",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_mail_skybornec60_b_01",
       "slot": "waist",
       "quality": 2,
       "required_level": 5,
@@ -32879,7 +32879,7 @@
     {
       "id": 276993,
       "name": "Cloudy Skyforged Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_mail_skybornec60_b_01",
       "slot": "wrist",
       "quality": 2,
       "required_level": 5,
@@ -32900,7 +32900,7 @@
     {
       "id": 277013,
       "name": "Cloudy Stormsewn Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_cloth_skybornec60_b_01",
       "slot": "waist",
       "quality": 2,
       "required_level": 5,
@@ -32921,7 +32921,7 @@
     {
       "id": 277011,
       "name": "Cloudy Stormsewn Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_cloth_skybornec60_b_01",
       "slot": "wrist",
       "quality": 2,
       "required_level": 5,
@@ -32942,7 +32942,7 @@
     {
       "id": 277005,
       "name": "Cloudy Windraveled Armguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_leather_skybornec60_b_02",
       "slot": "wrist",
       "quality": 2,
       "required_level": 5,
@@ -32963,7 +32963,7 @@
     {
       "id": 277007,
       "name": "Cloudy Windraveled Strap",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_leather_skybornec60_b_02",
       "slot": "waist",
       "quality": 2,
       "required_level": 5,
@@ -33651,7 +33651,7 @@
     {
       "id": 277027,
       "name": "Azure Gustwoven Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boot_leather_skybornec60_b_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 6,
@@ -33672,7 +33672,7 @@
     {
       "id": 277024,
       "name": "Azure Gustwoven Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_glove_leather_skybornec60_b_01",
       "slot": "hands",
       "quality": 2,
       "required_level": 6,
@@ -33693,7 +33693,7 @@
     {
       "id": 277018,
       "name": "Azure Skyforged Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_glove_mail_skybornec60_b_01",
       "slot": "hands",
       "quality": 2,
       "required_level": 6,
@@ -33714,7 +33714,7 @@
     {
       "id": 277021,
       "name": "Azure Skyforged Greaves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boot_mail_skybornec60_b_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 6,
@@ -33735,7 +33735,7 @@
     {
       "id": 277036,
       "name": "Azure Stormsewn Handwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_glove_cloth_skybornec60_b_01",
       "slot": "hands",
       "quality": 2,
       "required_level": 6,
@@ -33756,7 +33756,7 @@
     {
       "id": 277039,
       "name": "Azure Stormsewn Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boot_cloth_skybornec60_b_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 6,
@@ -33777,7 +33777,7 @@
     {
       "id": 277033,
       "name": "Azure Windraveled Footwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boot_leather_skybornec60_b_02",
       "slot": "feet",
       "quality": 2,
       "required_level": 6,
@@ -33798,7 +33798,7 @@
     {
       "id": 277030,
       "name": "Azure Windraveled Mitts",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_glove_leather_skybornec60_b_02",
       "slot": "hands",
       "quality": 2,
       "required_level": 6,
@@ -33996,7 +33996,7 @@
     {
       "id": 277003,
       "name": "Cloudy Gustwoven Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boot_leather_skybornec60_b_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 6,
@@ -34017,7 +34017,7 @@
     {
       "id": 277000,
       "name": "Cloudy Gustwoven Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_glove_leather_skybornec60_b_01",
       "slot": "hands",
       "quality": 2,
       "required_level": 6,
@@ -34038,7 +34038,7 @@
     {
       "id": 276994,
       "name": "Cloudy Skyforged Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_glove_mail_skybornec60_b_01",
       "slot": "hands",
       "quality": 2,
       "required_level": 6,
@@ -34059,7 +34059,7 @@
     {
       "id": 276997,
       "name": "Cloudy Skyforged Greaves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boot_mail_skybornec60_b_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 6,
@@ -34080,7 +34080,7 @@
     {
       "id": 277012,
       "name": "Cloudy Stormsewn Handwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_glove_cloth_skybornec60_b_01",
       "slot": "hands",
       "quality": 2,
       "required_level": 6,
@@ -34101,7 +34101,7 @@
     {
       "id": 277015,
       "name": "Cloudy Stormsewn Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boot_cloth_skybornec60_b_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 6,
@@ -34122,7 +34122,7 @@
     {
       "id": 277009,
       "name": "Cloudy Windraveled Footwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boot_leather_skybornec60_b_02",
       "slot": "feet",
       "quality": 2,
       "required_level": 6,
@@ -34143,7 +34143,7 @@
     {
       "id": 277006,
       "name": "Cloudy Windraveled Mitts",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_glove_leather_skybornec60_b_02",
       "slot": "hands",
       "quality": 2,
       "required_level": 6,
@@ -34701,7 +34701,7 @@
     {
       "id": 277022,
       "name": "Azure Gustwoven Harness",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_skybornec60_b_01",
       "slot": "chest",
       "quality": 2,
       "required_level": 7,
@@ -34722,7 +34722,7 @@
     {
       "id": 277026,
       "name": "Azure Gustwoven Trousers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pant_leather_skybornec60_b_01",
       "slot": "legs",
       "quality": 2,
       "required_level": 7,
@@ -34743,7 +34743,7 @@
     {
       "id": 277016,
       "name": "Azure Skyforged Chainmail",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_mail_skybornec60_b_01",
       "slot": "chest",
       "quality": 2,
       "required_level": 7,
@@ -34764,7 +34764,7 @@
     {
       "id": 277020,
       "name": "Azure Skyforged Legguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pant_mail_skybornec60_b_01",
       "slot": "legs",
       "quality": 2,
       "required_level": 7,
@@ -34785,7 +34785,7 @@
     {
       "id": 277038,
       "name": "Azure Stormsewn Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pant_cloth_skybornec60_b_01",
       "slot": "legs",
       "quality": 2,
       "required_level": 7,
@@ -34806,7 +34806,7 @@
     {
       "id": 277034,
       "name": "Azure Stormsewn Vest",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest-_cloth_skybornec60_b_01",
       "slot": "chest",
       "quality": 2,
       "required_level": 7,
@@ -34827,7 +34827,7 @@
     {
       "id": 277028,
       "name": "Azure Windraveled Jerkin",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_skybornec60_b_02",
       "slot": "chest",
       "quality": 2,
       "required_level": 7,
@@ -34848,7 +34848,7 @@
     {
       "id": 277032,
       "name": "Azure Windraveled Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pant_leather_skybornec60_b_02",
       "slot": "legs",
       "quality": 2,
       "required_level": 7,
@@ -34934,7 +34934,7 @@
     {
       "id": 276998,
       "name": "Cloudy Gustwoven Harness",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_skybornec60_b_01",
       "slot": "chest",
       "quality": 2,
       "required_level": 7,
@@ -34955,7 +34955,7 @@
     {
       "id": 277002,
       "name": "Cloudy Gustwoven Trousers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pant_leather_skybornec60_b_01",
       "slot": "legs",
       "quality": 2,
       "required_level": 7,
@@ -34976,7 +34976,7 @@
     {
       "id": 276992,
       "name": "Cloudy Skyforged Chainmail",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_mail_skybornec60_b_01",
       "slot": "chest",
       "quality": 2,
       "required_level": 7,
@@ -34997,7 +34997,7 @@
     {
       "id": 276996,
       "name": "Cloudy Skyforged Legguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pant_mail_skybornec60_b_01",
       "slot": "legs",
       "quality": 2,
       "required_level": 7,
@@ -35018,7 +35018,7 @@
     {
       "id": 277014,
       "name": "Cloudy Stormsewn Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pant_cloth_skybornec60_b_01",
       "slot": "legs",
       "quality": 2,
       "required_level": 7,
@@ -35039,7 +35039,7 @@
     {
       "id": 277010,
       "name": "Cloudy Stormsewn Vest",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest-_cloth_skybornec60_b_01",
       "slot": "chest",
       "quality": 2,
       "required_level": 7,
@@ -35060,7 +35060,7 @@
     {
       "id": 277004,
       "name": "Cloudy Windraveled Jerkin",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_skybornec60_b_02",
       "slot": "chest",
       "quality": 2,
       "required_level": 7,
@@ -35081,7 +35081,7 @@
     {
       "id": 277008,
       "name": "Cloudy Windraveled Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pant_leather_skybornec60_b_02",
       "slot": "legs",
       "quality": 2,
       "required_level": 7,
@@ -37222,7 +37222,7 @@
     {
       "id": 252424,
       "name": "Black Whelp Slippers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_leather_05red",
       "slot": "feet",
       "quality": 3,
       "required_level": 10,
@@ -37537,7 +37537,7 @@
     {
       "id": 252425,
       "name": "Dark Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 10,
@@ -37748,7 +37748,7 @@
     {
       "id": 250620,
       "name": "Gemmed Copper Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_11",
       "slot": "feet",
       "quality": 3,
       "required_level": 10,
@@ -37810,7 +37810,7 @@
     {
       "id": 250482,
       "name": "Glowing Copper Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_01",
       "slot": "feet",
       "quality": 3,
       "required_level": 10,
@@ -37960,7 +37960,7 @@
     {
       "id": 252427,
       "name": "Moonglow Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_03",
       "slot": "feet",
       "quality": 3,
       "required_level": 10,
@@ -37982,7 +37982,7 @@
     {
       "id": 252426,
       "name": "Murloc Scale Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_14",
       "slot": "feet",
       "quality": 3,
       "required_level": 10,
@@ -38067,7 +38067,7 @@
     {
       "id": 253885,
       "name": "Novice Arcanist's Sash",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43a",
       "slot": "waist",
       "quality": 3,
       "required_level": 10,
@@ -38090,7 +38090,7 @@
     {
       "id": 253887,
       "name": "Novice Ardent's Sash",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43",
       "slot": "waist",
       "quality": 3,
       "required_level": 10,
@@ -38385,7 +38385,7 @@
     {
       "id": 250621,
       "name": "Strange Copper Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_01",
       "slot": "feet",
       "quality": 3,
       "required_level": 10,
@@ -39494,7 +39494,7 @@
     {
       "id": 250516,
       "name": "Acolyte's Chain Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_23",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -39559,7 +39559,7 @@
     {
       "id": 252428,
       "name": "Brawler's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_04",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -39690,7 +39690,7 @@
     {
       "id": 250517,
       "name": "Crusader's Chain Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_22",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -39713,7 +39713,7 @@
     {
       "id": 252430,
       "name": "Defender's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_24",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -39776,7 +39776,7 @@
     {
       "id": 253893,
       "name": "Flame Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_02",
       "slot": "feet",
       "quality": 3,
       "required_level": 12,
@@ -39841,7 +39841,7 @@
     {
       "id": 250514,
       "name": "Guard's Chain Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_15",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -40054,7 +40054,7 @@
     {
       "id": 253897,
       "name": "Pearly Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 12,
@@ -40097,7 +40097,7 @@
     {
       "id": 253889,
       "name": "Pristine Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_03",
       "slot": "feet",
       "quality": 3,
       "required_level": 12,
@@ -40165,7 +40165,7 @@
     {
       "id": 250515,
       "name": "Protector's Chain Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_17",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -40396,7 +40396,7 @@
     {
       "id": 253895,
       "name": "Shadow Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 12,
@@ -40418,7 +40418,7 @@
     {
       "id": 253899,
       "name": "Shining Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_08",
       "slot": "feet",
       "quality": 3,
       "required_level": 12,
@@ -40440,7 +40440,7 @@
     {
       "id": 253891,
       "name": "Silky Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_01",
       "slot": "feet",
       "quality": 3,
       "required_level": 12,
@@ -40666,7 +40666,7 @@
     {
       "id": 252432,
       "name": "Stormrider's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_16",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -40711,7 +40711,7 @@
     {
       "id": 252431,
       "name": "Totemic Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_06",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -40734,7 +40734,7 @@
     {
       "id": 252429,
       "name": "Trapper's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_05",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -40757,7 +40757,7 @@
     {
       "id": 250513,
       "name": "Veteran's Chain Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_17",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -40906,7 +40906,7 @@
     {
       "id": 252433,
       "name": "Wisdom's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_06",
       "slot": "waist",
       "quality": 3,
       "required_level": 12,
@@ -43964,7 +43964,7 @@
     {
       "id": 250491,
       "name": "Acolyte's Chain Shirt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_08",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -43988,7 +43988,7 @@
     {
       "id": 250511,
       "name": "Acolyte's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_11",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -44307,7 +44307,7 @@
     {
       "id": 252490,
       "name": "Brawler's Leather Armor",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_07",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -44331,7 +44331,7 @@
     {
       "id": 252494,
       "name": "Brawler's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_21",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -44436,7 +44436,7 @@
     {
       "id": 250492,
       "name": "Crusader's Chain Shirt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_09",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -44459,7 +44459,7 @@
     {
       "id": 250512,
       "name": "Crusader's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_12",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -44566,7 +44566,7 @@
     {
       "id": 252434,
       "name": "Defender's Leather Armor",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_10",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -44589,7 +44589,7 @@
     {
       "id": 252496,
       "name": "Defender's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_24",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -44674,7 +44674,7 @@
     {
       "id": 253905,
       "name": "Filigreed Flame Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_02",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -44697,7 +44697,7 @@
     {
       "id": 253909,
       "name": "Filigreed Pearly Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_51",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -44720,7 +44720,7 @@
     {
       "id": 253901,
       "name": "Filigreed Pristine Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_32",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -44745,7 +44745,7 @@
     {
       "id": 253907,
       "name": "Filigreed Shadow Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_48",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -44768,7 +44768,7 @@
     {
       "id": 253911,
       "name": "Filigreed Shining Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_26",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -44791,7 +44791,7 @@
     {
       "id": 253903,
       "name": "Filigreed Silky Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_03",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -44814,7 +44814,7 @@
     {
       "id": 253917,
       "name": "Flame Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_19",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -45002,7 +45002,7 @@
     {
       "id": 250489,
       "name": "Guard's Chain Shirt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_09",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -45025,7 +45025,7 @@
     {
       "id": 250509,
       "name": "Guard's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_15",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -45448,7 +45448,7 @@
     {
       "id": 253921,
       "name": "Pearly Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_20",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -45492,7 +45492,7 @@
     {
       "id": 253913,
       "name": "Pristine Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_16",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -45538,7 +45538,7 @@
     {
       "id": 250490,
       "name": "Protector's Chain Shirt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_07",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -45561,7 +45561,7 @@
     {
       "id": 250510,
       "name": "Protector's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_26",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -45783,7 +45783,7 @@
     {
       "id": 253919,
       "name": "Shadow Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_27",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -45846,7 +45846,7 @@
     {
       "id": 253923,
       "name": "Shining Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_21",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -45868,7 +45868,7 @@
     {
       "id": 253915,
       "name": "Silky Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_17",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -45956,7 +45956,7 @@
     {
       "id": 252492,
       "name": "Stormrider's Leather Armor",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_03",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -45980,7 +45980,7 @@
     {
       "id": 252498,
       "name": "Stormrider's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_24",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -46025,7 +46025,7 @@
     {
       "id": 252435,
       "name": "Totemic Leather Armor",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_01",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -46049,7 +46049,7 @@
     {
       "id": 252497,
       "name": "Totemic Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_12",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -46072,7 +46072,7 @@
     {
       "id": 252491,
       "name": "Trapper's Leather Armor",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_08",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -46096,7 +46096,7 @@
     {
       "id": 252495,
       "name": "Trapper's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_10",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -46119,7 +46119,7 @@
     {
       "id": 250488,
       "name": "Veteran's Chain Shirt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_07",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -46142,7 +46142,7 @@
     {
       "id": 250508,
       "name": "Veteran's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_26",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -46230,7 +46230,7 @@
     {
       "id": 252493,
       "name": "Wisdom's Leather Armor",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_fur",
       "slot": "chest",
       "quality": 3,
       "required_level": 15,
@@ -46255,7 +46255,7 @@
     {
       "id": 252499,
       "name": "Wisdom's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_60",
       "slot": "hands",
       "quality": 3,
       "required_level": 15,
@@ -47932,7 +47932,7 @@
     {
       "id": 250506,
       "name": "Acolyte's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_02",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -48168,7 +48168,7 @@
     {
       "id": 252439,
       "name": "Brawler's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_09",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -48401,7 +48401,7 @@
     {
       "id": 250507,
       "name": "Crusader's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -48507,7 +48507,7 @@
     {
       "id": 252441,
       "name": "Defender's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_07",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -48615,7 +48615,7 @@
     {
       "id": 253929,
       "name": "Flame Sash",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43c",
       "slot": "waist",
       "quality": 3,
       "required_level": 17,
@@ -48807,7 +48807,7 @@
     {
       "id": 250504,
       "name": "Guard's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_01",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -49147,7 +49147,7 @@
     {
       "id": 253933,
       "name": "Pearly Sash",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43a",
       "slot": "waist",
       "quality": 3,
       "required_level": 17,
@@ -49169,7 +49169,7 @@
     {
       "id": 253925,
       "name": "Pristine Sash",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43",
       "slot": "waist",
       "quality": 3,
       "required_level": 17,
@@ -49193,7 +49193,7 @@
     {
       "id": 250505,
       "name": "Protector's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_03",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -49510,7 +49510,7 @@
     {
       "id": 253931,
       "name": "Shadow Sash",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43",
       "slot": "waist",
       "quality": 3,
       "required_level": 17,
@@ -49591,7 +49591,7 @@
     {
       "id": 253935,
       "name": "Shining Sash",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43b",
       "slot": "waist",
       "quality": 3,
       "required_level": 17,
@@ -49632,7 +49632,7 @@
     {
       "id": 253927,
       "name": "Silky Sash",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43a",
       "slot": "waist",
       "quality": 3,
       "required_level": 17,
@@ -49815,7 +49815,7 @@
     {
       "id": 252443,
       "name": "Stormrider's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -49900,7 +49900,7 @@
     {
       "id": 252442,
       "name": "Totemic Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_12",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -49923,7 +49923,7 @@
     {
       "id": 252440,
       "name": "Trapper's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_04",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -49946,7 +49946,7 @@
     {
       "id": 250503,
       "name": "Veteran's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_03",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -50035,7 +50035,7 @@
     {
       "id": 252444,
       "name": "Wisdom's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_03",
       "slot": "feet",
       "quality": 3,
       "required_level": 17,
@@ -53907,7 +53907,7 @@
     {
       "id": 250531,
       "name": "Acolyte's Silvered Chain Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_36",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -53930,7 +53930,7 @@
     {
       "id": 274744,
       "name": "Barrens Basher",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_09",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 20,
@@ -54014,7 +54014,7 @@
     {
       "id": 252504,
       "name": "Brawler's Leather Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_31",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -54036,7 +54036,7 @@
     {
       "id": 252500,
       "name": "Brawler's Leather Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_06",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -54082,7 +54082,7 @@
     {
       "id": 250603,
       "name": "Bronze Dory",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_spear_05",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 20,
@@ -54167,7 +54167,7 @@
     {
       "id": 250497,
       "name": "Crusader's Chain Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_13",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -54190,7 +54190,7 @@
     {
       "id": 250532,
       "name": "Crusader's Silvered Chain Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_37",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -54277,7 +54277,7 @@
     {
       "id": 274743,
       "name": "Defective Samophlange",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gizmo_06",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 20,
@@ -54299,7 +54299,7 @@
     {
       "id": 252447,
       "name": "Defender's Leather Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_48",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -54321,7 +54321,7 @@
     {
       "id": 252445,
       "name": "Defender's Leather Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_leather_01",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -54495,7 +54495,7 @@
     {
       "id": 253941,
       "name": "Filigreed Flame Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_06",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -54518,7 +54518,7 @@
     {
       "id": 253945,
       "name": "Filigreed Pearly Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_10",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -54541,7 +54541,7 @@
     {
       "id": 253937,
       "name": "Filigreed Pristine Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_01",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -54566,7 +54566,7 @@
     {
       "id": 253943,
       "name": "Filigreed Shadow Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_11",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -54589,7 +54589,7 @@
     {
       "id": 253947,
       "name": "Filigreed Shining Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_cloth_01",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -54612,7 +54612,7 @@
     {
       "id": 253939,
       "name": "Filigreed Silky Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_08",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -54658,7 +54658,7 @@
     {
       "id": 253953,
       "name": "Flame Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -54944,7 +54944,7 @@
     {
       "id": 250494,
       "name": "Guard's Chain Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_16",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -54967,7 +54967,7 @@
     {
       "id": 250529,
       "name": "Guard's Silvered Chain Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_38",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -55477,7 +55477,7 @@
     {
       "id": 253957,
       "name": "Pearly Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -55557,7 +55557,7 @@
     {
       "id": 253949,
       "name": "Pristine Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -55602,7 +55602,7 @@
     {
       "id": 250495,
       "name": "Protector's Chain Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_05",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -55625,7 +55625,7 @@
     {
       "id": 250530,
       "name": "Protector's Silvered Chain Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_39",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -55647,7 +55647,7 @@
     {
       "id": 274740,
       "name": "Quilted Cloak",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_05",
       "slot": "back",
       "quality": 2,
       "required_level": 20,
@@ -55690,7 +55690,7 @@
     {
       "id": 274742,
       "name": "Ratchet Wristwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_22a",
       "slot": "wrist",
       "quality": 2,
       "required_level": 20,
@@ -55869,7 +55869,7 @@
     {
       "id": 274741,
       "name": "Rumpled Kilt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_08",
       "slot": "legs",
       "quality": 2,
       "required_level": 20,
@@ -56046,7 +56046,7 @@
     {
       "id": 253955,
       "name": "Shadow Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -56127,7 +56127,7 @@
     {
       "id": 253959,
       "name": "Shining Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -56169,7 +56169,7 @@
     {
       "id": 253951,
       "name": "Silky Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -56403,7 +56403,7 @@
     {
       "id": 250483,
       "name": "Sterling Silver Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_01",
       "slot": "feet",
       "quality": 2,
       "required_level": 20,
@@ -56426,7 +56426,7 @@
     {
       "id": 252506,
       "name": "Stormrider's Leather Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_29",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -56448,7 +56448,7 @@
     {
       "id": 252502,
       "name": "Stormrider's Leather Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_10",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -56536,7 +56536,7 @@
     {
       "id": 252448,
       "name": "Totemic Leather Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_15",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -56558,7 +56558,7 @@
     {
       "id": 252446,
       "name": "Totemic Leather Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_01",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -56582,7 +56582,7 @@
     {
       "id": 252505,
       "name": "Trapper's Leather Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_33",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -56604,7 +56604,7 @@
     {
       "id": 252501,
       "name": "Trapper's Leather Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_14",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -56628,7 +56628,7 @@
     {
       "id": 250493,
       "name": "Veteran's Chain Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_05",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -56651,7 +56651,7 @@
     {
       "id": 250528,
       "name": "Veteran's Silvered Chain Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_39",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -56716,7 +56716,7 @@
     {
       "id": 252507,
       "name": "Wisdom's Leather Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_33",
       "slot": "head",
       "quality": 3,
       "required_level": 20,
@@ -56739,7 +56739,7 @@
     {
       "id": 252503,
       "name": "Wisdom's Leather Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_06",
       "slot": "legs",
       "quality": 3,
       "required_level": 20,
@@ -58359,7 +58359,7 @@
     {
       "id": 250485,
       "name": "Sterling Silver Gauntlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_05",
       "slot": "hands",
       "quality": 2,
       "required_level": 21,
@@ -58382,7 +58382,7 @@
     {
       "id": 250484,
       "name": "Sterling Silver Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_03",
       "slot": "legs",
       "quality": 2,
       "required_level": 21,
@@ -58628,7 +58628,7 @@
     {
       "id": 250521,
       "name": "Acolyte's Silvered Chain Shirt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_08",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -58911,7 +58911,7 @@
     {
       "id": 252508,
       "name": "Brawler's Leather Tunic",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_02",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -59044,7 +59044,7 @@
     {
       "id": 250522,
       "name": "Crusader's Silvered Chain Shirt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_09",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -59110,7 +59110,7 @@
     {
       "id": 252450,
       "name": "Defender's Leather Tunic",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_07",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -59405,7 +59405,7 @@
     {
       "id": 253965,
       "name": "Flame Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_02",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -59526,7 +59526,7 @@
     {
       "id": 250519,
       "name": "Guard's Silvered Chain Shirt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_09",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -59721,7 +59721,7 @@
     {
       "id": 252449,
       "name": "Hillman's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_29",
       "slot": "feet",
       "quality": 2,
       "required_level": 22,
@@ -60042,7 +60042,7 @@
     {
       "id": 253969,
       "name": "Pearly Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_51",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -60109,7 +60109,7 @@
     {
       "id": 253961,
       "name": "Pristine Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_32",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -60134,7 +60134,7 @@
     {
       "id": 250520,
       "name": "Protector's Silvered Chain Shirt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_07",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -60261,7 +60261,7 @@
     {
       "id": 253967,
       "name": "Shadow Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_48",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -60306,7 +60306,7 @@
     {
       "id": 253971,
       "name": "Shining Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_26",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -60329,7 +60329,7 @@
     {
       "id": 253963,
       "name": "Silky Gown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_03",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -60648,7 +60648,7 @@
     {
       "id": 250486,
       "name": "Sterling Silver Shoulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_09",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 22,
@@ -60671,7 +60671,7 @@
     {
       "id": 252510,
       "name": "Stormrider's Leather Tunic",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_02",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -60794,7 +60794,7 @@
     {
       "id": 252451,
       "name": "Totemic Leather Tunic",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_02",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -60863,7 +60863,7 @@
     {
       "id": 252509,
       "name": "Trapper's Leather Tunic",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_01",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -60910,7 +60910,7 @@
     {
       "id": 250518,
       "name": "Veteran's Silvered Chain Shirt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_07",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -60973,7 +60973,7 @@
     {
       "id": 252511,
       "name": "Wisdom's Leather Tunic",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_01",
       "slot": "chest",
       "quality": 3,
       "required_level": 22,
@@ -64568,7 +64568,7 @@
     {
       "id": 250501,
       "name": "Acolyte's Chain Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_36",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -64591,7 +64591,7 @@
     {
       "id": 250526,
       "name": "Acolyte's Silvered Chain Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_10",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -64723,7 +64723,7 @@
     {
       "id": 252512,
       "name": "Brawler's Leather Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_15",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -64745,7 +64745,7 @@
     {
       "id": 252516,
       "name": "Brawler's Leather Legguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_leather_19",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -64834,7 +64834,7 @@
     {
       "id": 250502,
       "name": "Crusader's Chain Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_37",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -64856,7 +64856,7 @@
     {
       "id": 250527,
       "name": "Crusader's Silvered Chain Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_13",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -64920,7 +64920,7 @@
     {
       "id": 252455,
       "name": "Defender's Leather Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_33",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -64942,7 +64942,7 @@
     {
       "id": 252457,
       "name": "Defender's Leather Kilt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_kilt_cloth_04v4",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -65210,7 +65210,7 @@
     {
       "id": 253979,
       "name": "Filigreed Flame Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -65231,7 +65231,7 @@
     {
       "id": 253983,
       "name": "Filigreed Pearly Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -65252,7 +65252,7 @@
     {
       "id": 253975,
       "name": "Filigreed Pristine Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -65275,7 +65275,7 @@
     {
       "id": 253981,
       "name": "Filigreed Shadow Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -65296,7 +65296,7 @@
     {
       "id": 253985,
       "name": "Filigreed Shining Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -65317,7 +65317,7 @@
     {
       "id": 253977,
       "name": "Filigreed Silky Circlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_01",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -65338,7 +65338,7 @@
     {
       "id": 253991,
       "name": "Flame Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_06",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -65538,7 +65538,7 @@
     {
       "id": 250499,
       "name": "Guard's Chain Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_38",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -65560,7 +65560,7 @@
     {
       "id": 250524,
       "name": "Guard's Silvered Chain Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_16",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -66115,7 +66115,7 @@
     {
       "id": 253995,
       "name": "Pearly Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_10",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -66176,7 +66176,7 @@
     {
       "id": 253987,
       "name": "Pristine Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_01",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -66201,7 +66201,7 @@
     {
       "id": 250500,
       "name": "Protector's Chain Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_39",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -66223,7 +66223,7 @@
     {
       "id": 250525,
       "name": "Protector's Silvered Chain Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_05",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -66588,7 +66588,7 @@
     {
       "id": 253993,
       "name": "Shadow Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_11",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -66632,7 +66632,7 @@
     {
       "id": 253997,
       "name": "Shining Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_cloth_01",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -66655,7 +66655,7 @@
     {
       "id": 253989,
       "name": "Silky Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_08",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -66761,7 +66761,7 @@
     {
       "id": 250487,
       "name": "Sterling Silver Breastplate",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_09",
       "slot": "chest",
       "quality": 2,
       "required_level": 25,
@@ -66784,7 +66784,7 @@
     {
       "id": 252514,
       "name": "Stormrider's Leather Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_30",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -66806,7 +66806,7 @@
     {
       "id": 252518,
       "name": "Stormrider's Leather Kilt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_kilt_cloth_01",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -66934,7 +66934,7 @@
     {
       "id": 252456,
       "name": "Totemic Leather Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_24",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -66956,7 +66956,7 @@
     {
       "id": 252458,
       "name": "Totemic Leather Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_01",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -66980,7 +66980,7 @@
     {
       "id": 252513,
       "name": "Trapper's Leather Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_32",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -67002,7 +67002,7 @@
     {
       "id": 252517,
       "name": "Trapper's Leather Legguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_05",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -67117,7 +67117,7 @@
     {
       "id": 250498,
       "name": "Veteran's Chain Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_39",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -67139,7 +67139,7 @@
     {
       "id": 250523,
       "name": "Veteran's Silvered Chain Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_05",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -67276,7 +67276,7 @@
     {
       "id": 252515,
       "name": "Wisdom's Leather Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_26",
       "slot": "head",
       "quality": 3,
       "required_level": 25,
@@ -67299,7 +67299,7 @@
     {
       "id": 252519,
       "name": "Wisdom's Leather Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_02",
       "slot": "legs",
       "quality": 3,
       "required_level": 25,
@@ -68041,7 +68041,7 @@
     {
       "id": 250604,
       "name": "Iron Fists",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_11",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 26,
@@ -74075,7 +74075,7 @@
     {
       "id": 250533,
       "name": "Hard Gold Cuirass",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_06",
       "slot": "chest",
       "quality": 2,
       "required_level": 29,
@@ -75214,7 +75214,7 @@
     {
       "id": 277050,
       "name": "Azure Gustwoven Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helm_leather_skybornec60_b_01",
       "slot": "head",
       "quality": 2,
       "required_level": 30,
@@ -75236,7 +75236,7 @@
     {
       "id": 277051,
       "name": "Azure Gustwoven Spaulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_leather_skybornec60_b_01",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 30,
@@ -75300,7 +75300,7 @@
     {
       "id": 277048,
       "name": "Azure Skyforged Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helm_mail_skybornec60_b_01",
       "slot": "head",
       "quality": 2,
       "required_level": 30,
@@ -75322,7 +75322,7 @@
     {
       "id": 277049,
       "name": "Azure Skyforged Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_mail_skybornec60_b_01",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 30,
@@ -75344,7 +75344,7 @@
     {
       "id": 277054,
       "name": "Azure Stormsewn Cowl",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helm_cloth_skybornec60_b_01",
       "slot": "head",
       "quality": 2,
       "required_level": 30,
@@ -75366,7 +75366,7 @@
     {
       "id": 277055,
       "name": "Azure Stormsewn Epaulets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_cloth_skybornec60_b_01",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 30,
@@ -75388,7 +75388,7 @@
     {
       "id": 277052,
       "name": "Azure Windraveled Cover",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helm_leather_skybornec60_b_02",
       "slot": "head",
       "quality": 2,
       "required_level": 30,
@@ -75410,7 +75410,7 @@
     {
       "id": 277053,
       "name": "Azure Windraveled Drapes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_leather_skybornec60_b_02",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 30,
@@ -75477,7 +75477,7 @@
     {
       "id": 254007,
       "name": "Black Slippers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_21",
       "slot": "feet",
       "quality": 3,
       "required_level": 30,
@@ -75565,7 +75565,7 @@
     {
       "id": 274748,
       "name": "Booty Bay Bruiser's Buckshot",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_rifle_02",
       "slot": "ranged",
       "quality": 3,
       "required_level": 30,
@@ -75606,7 +75606,7 @@
     {
       "id": 280308,
       "name": "Clanking Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_34",
       "slot": "waist",
       "quality": 2,
       "required_level": 30,
@@ -75625,7 +75625,7 @@
     {
       "id": 277042,
       "name": "Cloudy Gustwoven Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helm_leather_skybornec60_b_02",
       "slot": "head",
       "quality": 2,
       "required_level": 30,
@@ -75647,7 +75647,7 @@
     {
       "id": 277043,
       "name": "Cloudy Gustwoven Spaulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_leather_skybornec60_b_02",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 30,
@@ -75669,7 +75669,7 @@
     {
       "id": 277040,
       "name": "Cloudy Skyforged Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helm_mail_skybornec60_b_01",
       "slot": "head",
       "quality": 2,
       "required_level": 30,
@@ -75691,7 +75691,7 @@
     {
       "id": 277041,
       "name": "Cloudy Skyforged Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_mail_skybornec60_b_01",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 30,
@@ -75713,7 +75713,7 @@
     {
       "id": 277046,
       "name": "Cloudy Stormsewn Cowl",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helm_cloth_skybornec60_b_01",
       "slot": "head",
       "quality": 2,
       "required_level": 30,
@@ -75735,7 +75735,7 @@
     {
       "id": 277047,
       "name": "Cloudy Stormsewn Epaulets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_cloth_skybornec60_b_01",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 30,
@@ -75757,7 +75757,7 @@
     {
       "id": 277044,
       "name": "Cloudy Windraveled Cover",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helm_leather_skybornec60_b_01",
       "slot": "head",
       "quality": 2,
       "required_level": 30,
@@ -75779,7 +75779,7 @@
     {
       "id": 277045,
       "name": "Cloudy Windraveled Drapes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_leather_skybornec60_b_01",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 30,
@@ -75882,7 +75882,7 @@
     {
       "id": 274745,
       "name": "Deckswabber's Mitts",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_05",
       "slot": "hands",
       "quality": 2,
       "required_level": 30,
@@ -76014,7 +76014,7 @@
     {
       "id": 253999,
       "name": "Earthen Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_09",
       "slot": "legs",
       "quality": 2,
       "required_level": 30,
@@ -76188,7 +76188,7 @@
     {
       "id": 254005,
       "name": "Fiery Slippers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_02",
       "slot": "feet",
       "quality": 3,
       "required_level": 30,
@@ -76211,7 +76211,7 @@
     {
       "id": 254003,
       "name": "Frothing Slippers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_03",
       "slot": "feet",
       "quality": 3,
       "required_level": 30,
@@ -76294,7 +76294,7 @@
     {
       "id": 254001,
       "name": "Gilded Slippers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_08",
       "slot": "feet",
       "quality": 3,
       "required_level": 30,
@@ -76319,7 +76319,7 @@
     {
       "id": 280307,
       "name": "Gizmo Girdle",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_06",
       "slot": "waist",
       "quality": 2,
       "required_level": 30,
@@ -76360,7 +76360,7 @@
     {
       "id": 254009,
       "name": "Golden Slippers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_06",
       "slot": "feet",
       "quality": 3,
       "required_level": 30,
@@ -76445,7 +76445,7 @@
     {
       "id": 250534,
       "name": "Hard Gold Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_03",
       "slot": "feet",
       "quality": 2,
       "required_level": 30,
@@ -76744,7 +76744,7 @@
     {
       "id": 250560,
       "name": "Justicar's Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_13",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -76939,7 +76939,7 @@
     {
       "id": 252523,
       "name": "Mender's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_26",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77074,7 +77074,7 @@
     {
       "id": 250556,
       "name": "Officer's Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_20",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77161,7 +77161,7 @@
     {
       "id": 250559,
       "name": "Prefect's Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_08",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77206,7 +77206,7 @@
     {
       "id": 252459,
       "name": "Prowler's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77230,7 +77230,7 @@
     {
       "id": 254011,
       "name": "Radiant Slippers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_26",
       "slot": "feet",
       "quality": 3,
       "required_level": 30,
@@ -77424,7 +77424,7 @@
     {
       "id": 250557,
       "name": "Sentinel's Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_37a",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77489,7 +77489,7 @@
     {
       "id": 252461,
       "name": "Skirmisher's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_37a",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77513,7 +77513,7 @@
     {
       "id": 252520,
       "name": "Skulker's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_37b",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77537,7 +77537,7 @@
     {
       "id": 252522,
       "name": "Skycaller's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_39a",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77561,7 +77561,7 @@
     {
       "id": 274747,
       "name": "Soggy Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_05",
       "slot": "feet",
       "quality": 2,
       "required_level": 30,
@@ -77623,7 +77623,7 @@
     {
       "id": 252521,
       "name": "Stalker's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_25",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77869,7 +77869,7 @@
     {
       "id": 252460,
       "name": "Warden's Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_06",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77892,7 +77892,7 @@
     {
       "id": 250558,
       "name": "Warder's Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_29",
       "slot": "waist",
       "quality": 3,
       "required_level": 30,
@@ -77915,7 +77915,7 @@
     {
       "id": 280306,
       "name": "Whimsical Waistwrap",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_06",
       "slot": "waist",
       "quality": 2,
       "required_level": 30,
@@ -78218,7 +78218,7 @@
     {
       "id": 254013,
       "name": "Earthen Silk Slippers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_22",
       "slot": "feet",
       "quality": 2,
       "required_level": 31,
@@ -79780,7 +79780,7 @@
     {
       "id": 254015,
       "name": "Earthen Silk Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_29",
       "slot": "head",
       "quality": 2,
       "required_level": 32,
@@ -80151,7 +80151,7 @@
     {
       "id": 250535,
       "name": "Hard Gold Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_28a",
       "slot": "wrist",
       "quality": 2,
       "required_level": 32,
@@ -80701,7 +80701,7 @@
     {
       "id": 250605,
       "name": "Steel Spear",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_spear_08",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 32,
@@ -81495,7 +81495,7 @@
     {
       "id": 250536,
       "name": "Hard Gold Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_13",
       "slot": "legs",
       "quality": 2,
       "required_level": 33,
@@ -81620,7 +81620,7 @@
     {
       "id": 250606,
       "name": "Iron Morningstar",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_mace_15",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 33,
@@ -82676,7 +82676,7 @@
     {
       "id": 254017,
       "name": "Earthen Silk Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_24",
       "slot": "hands",
       "quality": 2,
       "required_level": 34,
@@ -83985,7 +83985,7 @@
     {
       "id": 254027,
       "name": "Black Handwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_27",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -84238,7 +84238,7 @@
     {
       "id": 254019,
       "name": "Earthen Silk Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_09",
       "slot": "wrist",
       "quality": 2,
       "required_level": 35,
@@ -84280,7 +84280,7 @@
     {
       "id": 254025,
       "name": "Fiery Handwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_13",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -84342,7 +84342,7 @@
     {
       "id": 254023,
       "name": "Frothing Handwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_30",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -84383,7 +84383,7 @@
     {
       "id": 254021,
       "name": "Gilded Handwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_29",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -84429,7 +84429,7 @@
     {
       "id": 254029,
       "name": "Golden Handwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_23",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -84533,7 +84533,7 @@
     {
       "id": 250537,
       "name": "Hard Gold Coif",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_39",
       "slot": "head",
       "quality": 2,
       "required_level": 35,
@@ -84555,7 +84555,7 @@
     {
       "id": 250538,
       "name": "Hard Gold Gauntlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_29",
       "slot": "hands",
       "quality": 2,
       "required_level": 35,
@@ -84577,7 +84577,7 @@
     {
       "id": 250539,
       "name": "Hard Gold Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_28",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 35,
@@ -84802,7 +84802,7 @@
     {
       "id": 250570,
       "name": "Justicar's Gauntlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_30",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -84901,7 +84901,7 @@
     {
       "id": 252530,
       "name": "Mender's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_20",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -84985,7 +84985,7 @@
     {
       "id": 250566,
       "name": "Officer's Gauntlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_51",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -85008,7 +85008,7 @@
     {
       "id": 250569,
       "name": "Prefect's Gauntlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_26",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -85053,7 +85053,7 @@
     {
       "id": 252524,
       "name": "Prowler's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_18",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -85076,7 +85076,7 @@
     {
       "id": 254031,
       "name": "Radiant Handwraps",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_16",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -85241,7 +85241,7 @@
     {
       "id": 250567,
       "name": "Sentinel's Gauntlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_22",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -85372,7 +85372,7 @@
     {
       "id": 252528,
       "name": "Skirmisher's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_22",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -85395,7 +85395,7 @@
     {
       "id": 252525,
       "name": "Skulker's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_22",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -85418,7 +85418,7 @@
     {
       "id": 252529,
       "name": "Skycaller's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_14",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -85539,7 +85539,7 @@
     {
       "id": 252526,
       "name": "Stalker's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_51",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -85705,7 +85705,7 @@
     {
       "id": 252527,
       "name": "Warden's Leather Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_18",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -85772,7 +85772,7 @@
     {
       "id": 250568,
       "name": "Warder's Gauntlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_50",
       "slot": "hands",
       "quality": 3,
       "required_level": 35,
@@ -86232,7 +86232,7 @@
     {
       "id": 254033,
       "name": "Earthen Silk Shoulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_25",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 36,
@@ -86684,7 +86684,7 @@
     {
       "id": 250607,
       "name": "Mithril Shortsword",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_05",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 36,
@@ -90160,7 +90160,7 @@
     {
       "id": 250608,
       "name": "Mithril Warhammer",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_03",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 38,
@@ -90904,7 +90904,7 @@
     {
       "id": 10008,
       "name": "White Bandit Mask",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_11",
       "slot": "head",
       "quality": 2,
       "required_level": 38,
@@ -92480,7 +92480,7 @@
     {
       "id": 277239,
       "name": "Bejeweled Punchers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_04",
       "slot": "hands",
       "quality": 2,
       "required_level": 40,
@@ -92502,7 +92502,7 @@
     {
       "id": 280311,
       "name": "Bent Goggles",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_47",
       "slot": "head",
       "quality": 2,
       "required_level": 40,
@@ -92544,7 +92544,7 @@
     {
       "id": 254043,
       "name": "Black Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_09",
       "slot": "waist",
       "quality": 3,
       "required_level": 40,
@@ -93094,7 +93094,7 @@
     {
       "id": 277233,
       "name": "Clinking Mail Legguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_04",
       "slot": "legs",
       "quality": 2,
       "required_level": 40,
@@ -93116,7 +93116,7 @@
     {
       "id": 277231,
       "name": "Conductive Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_04",
       "slot": "hands",
       "quality": 2,
       "required_level": 40,
@@ -93138,7 +93138,7 @@
     {
       "id": 276200,
       "name": "Crawler's Clackers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_desecrated_plategloves",
       "slot": "hands",
       "quality": 2,
       "required_level": 40,
@@ -93160,7 +93160,7 @@
     {
       "id": 277258,
       "name": "Crest of Elucidation",
-      "icon": "inv_misc_questionmark",
+      "icon": "spell_holy_powerwordshield",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 40,
@@ -93182,7 +93182,7 @@
     {
       "id": 277216,
       "name": "Cross-Stitched Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_26",
       "slot": "waist",
       "quality": 2,
       "required_level": 40,
@@ -93428,7 +93428,7 @@
     {
       "id": 280313,
       "name": "Dented Goggles",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_47",
       "slot": "head",
       "quality": 2,
       "required_level": 40,
@@ -93469,7 +93469,7 @@
     {
       "id": 277241,
       "name": "Double-Plated Legplates",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_01",
       "slot": "legs",
       "quality": 2,
       "required_level": 40,
@@ -93754,7 +93754,7 @@
     {
       "id": 277229,
       "name": "Enduring Chain Vest",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_07",
       "slot": "chest",
       "quality": 2,
       "required_level": 40,
@@ -93820,7 +93820,7 @@
     {
       "id": 277222,
       "name": "Feathered Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_08",
       "slot": "wrist",
       "quality": 2,
       "required_level": 40,
@@ -93841,7 +93841,7 @@
     {
       "id": 277225,
       "name": "Feathered Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_02",
       "slot": "legs",
       "quality": 2,
       "required_level": 40,
@@ -93863,7 +93863,7 @@
     {
       "id": 277259,
       "name": "Fermented Restoration Potion",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_potion_19",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 40,
@@ -94037,7 +94037,7 @@
     {
       "id": 254041,
       "name": "Fiery Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_39c",
       "slot": "waist",
       "quality": 3,
       "required_level": 40,
@@ -94060,7 +94060,7 @@
     {
       "id": 280310,
       "name": "Floppy Goggles",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_47",
       "slot": "head",
       "quality": 2,
       "required_level": 40,
@@ -94102,7 +94102,7 @@
     {
       "id": 254039,
       "name": "Frothing Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_03",
       "slot": "waist",
       "quality": 3,
       "required_level": 40,
@@ -94210,7 +94210,7 @@
     {
       "id": 254037,
       "name": "Gilded Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_08",
       "slot": "waist",
       "quality": 3,
       "required_level": 40,
@@ -94235,7 +94235,7 @@
     {
       "id": 277240,
       "name": "Gilded Plate Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_11",
       "slot": "waist",
       "quality": 2,
       "required_level": 40,
@@ -94257,7 +94257,7 @@
     {
       "id": 254045,
       "name": "Golden Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_34",
       "slot": "waist",
       "quality": 3,
       "required_level": 40,
@@ -94375,7 +94375,7 @@
     {
       "id": 277230,
       "name": "Grayscale Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_07",
       "slot": "wrist",
       "quality": 2,
       "required_level": 40,
@@ -94416,7 +94416,7 @@
     {
       "id": 277244,
       "name": "Guardian's Maulers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_monsterclaw_04",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 40,
@@ -94853,7 +94853,7 @@
     {
       "id": 277237,
       "name": "Inspiring Chestplate",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_07",
       "slot": "chest",
       "quality": 2,
       "required_level": 40,
@@ -94875,7 +94875,7 @@
     {
       "id": 274753,
       "name": "Jhordy's Misplaced Screwdriver",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_14",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 40,
@@ -95074,7 +95074,7 @@
     {
       "id": 250550,
       "name": "Justicar's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -95243,7 +95243,7 @@
     {
       "id": 252533,
       "name": "Mender's Leather Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_14",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -95268,7 +95268,7 @@
     {
       "id": 252565,
       "name": "Mender's Mail Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -95293,7 +95293,7 @@
     {
       "id": 276201,
       "name": "Misplaced Pantaloons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_desecrated_mailpants",
       "slot": "legs",
       "quality": 2,
       "required_level": 40,
@@ -95359,7 +95359,7 @@
     {
       "id": 250610,
       "name": "Mithril Claymore",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_sword_23",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 40,
@@ -95447,7 +95447,7 @@
     {
       "id": 277215,
       "name": "Nimble Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_23",
       "slot": "hands",
       "quality": 2,
       "required_level": 40,
@@ -95469,7 +95469,7 @@
     {
       "id": 277248,
       "name": "Notched Ritual Rib",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_15",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 40,
@@ -95514,7 +95514,7 @@
     {
       "id": 250546,
       "name": "Officer's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_19v2",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -95623,7 +95623,7 @@
     {
       "id": 277217,
       "name": "Patchy Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_02",
       "slot": "legs",
       "quality": 2,
       "required_level": 40,
@@ -95668,7 +95668,7 @@
     {
       "id": 250549,
       "name": "Prefect's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_19v3",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -95692,7 +95692,7 @@
     {
       "id": 276203,
       "name": "Primitive Fishing Pole",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_spear_06",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 40,
@@ -95715,7 +95715,7 @@
     {
       "id": 252465,
       "name": "Prowler's Leather Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_19",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -95739,7 +95739,7 @@
     {
       "id": 254047,
       "name": "Radiant Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_37b",
       "slot": "waist",
       "quality": 3,
       "required_level": 40,
@@ -95822,7 +95822,7 @@
     {
       "id": 274750,
       "name": "Reflective Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_32b",
       "slot": "wrist",
       "quality": 2,
       "required_level": 40,
@@ -95883,7 +95883,7 @@
     {
       "id": 277260,
       "name": "Researcher's Night Light",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_torch_lit",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 40,
@@ -96164,7 +96164,7 @@
     {
       "id": 274752,
       "name": "Sandstorm Cover",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_cape_06",
       "slot": "back",
       "quality": 2,
       "required_level": 40,
@@ -96209,7 +96209,7 @@
     {
       "id": 250547,
       "name": "Sentinel's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_20v1",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -96301,7 +96301,7 @@
     {
       "id": 277238,
       "name": "Shimmering Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_07",
       "slot": "wrist",
       "quality": 2,
       "required_level": 40,
@@ -96323,7 +96323,7 @@
     {
       "id": 250542,
       "name": "Shining Mithril Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_02",
       "slot": "feet",
       "quality": 2,
       "required_level": 40,
@@ -96345,7 +96345,7 @@
     {
       "id": 250540,
       "name": "Shining Mithril Breastplate",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_plate01",
       "slot": "chest",
       "quality": 2,
       "required_level": 40,
@@ -96367,7 +96367,7 @@
     {
       "id": 250541,
       "name": "Shining Mithril Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_29",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 40,
@@ -96389,7 +96389,7 @@
     {
       "id": 277243,
       "name": "Silverbane Slicer",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_axe_01",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 40,
@@ -96411,7 +96411,7 @@
     {
       "id": 277242,
       "name": "Silverrune Greaves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_06",
       "slot": "feet",
       "quality": 2,
       "required_level": 40,
@@ -96456,7 +96456,7 @@
     {
       "id": 252531,
       "name": "Skulker's Leather Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -96480,7 +96480,7 @@
     {
       "id": 252532,
       "name": "Skycaller's Leather Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_14",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -96504,7 +96504,7 @@
     {
       "id": 252563,
       "name": "Skycaller's Mail Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_mail_15v2",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -96528,7 +96528,7 @@
     {
       "id": 277228,
       "name": "Snakescale Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_07",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 40,
@@ -96550,7 +96550,7 @@
     {
       "id": 277212,
       "name": "Soulwoven Epaulets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_03",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 40,
@@ -96616,7 +96616,7 @@
     {
       "id": 252562,
       "name": "Stalker's Mail Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_mail_15v2",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -96686,7 +96686,7 @@
     {
       "id": 280312,
       "name": "Stuckbutton Goggles",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_47",
       "slot": "head",
       "quality": 2,
       "required_level": 40,
@@ -96705,7 +96705,7 @@
     {
       "id": 274751,
       "name": "Sunburn Spaulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_08",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 40,
@@ -96749,7 +96749,7 @@
     {
       "id": 277245,
       "name": "Swampspine Crusher",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_03",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 40,
@@ -96967,7 +96967,7 @@
     {
       "id": 277250,
       "name": "The Skullcracker",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_03",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 40,
@@ -96989,7 +96989,7 @@
     {
       "id": 276204,
       "name": "Thrash's Trash",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shield_02",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 40,
@@ -97339,7 +97339,7 @@
     {
       "id": 252466,
       "name": "Warden's Leather Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_20",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -97385,7 +97385,7 @@
     {
       "id": 250548,
       "name": "Warder's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_19v1",
       "slot": "feet",
       "quality": 3,
       "required_level": 40,
@@ -100246,7 +100246,7 @@
     {
       "id": 250580,
       "name": "Justicar's Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_22",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100394,7 +100394,7 @@
     {
       "id": 252538,
       "name": "Mender's Leather Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_17",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100419,7 +100419,7 @@
     {
       "id": 252569,
       "name": "Mender's Mail Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_08",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100466,7 +100466,7 @@
     {
       "id": 250611,
       "name": "Mithril Stiletto",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_05",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 42,
@@ -100531,7 +100531,7 @@
     {
       "id": 254053,
       "name": "Netherflame Shoulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_23",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100554,7 +100554,7 @@
     {
       "id": 254051,
       "name": "Netherfroth Shoulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_02",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100577,7 +100577,7 @@
     {
       "id": 254049,
       "name": "Nethergeld Shoulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_22",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100602,7 +100602,7 @@
     {
       "id": 254059,
       "name": "Netherlight Shoulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_05",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100625,7 +100625,7 @@
     {
       "id": 254055,
       "name": "Netherpearl Shoulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_25",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100648,7 +100648,7 @@
     {
       "id": 254057,
       "name": "Nethershine Shoulders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_09",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100692,7 +100692,7 @@
     {
       "id": 250576,
       "name": "Officer's Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_13",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100775,7 +100775,7 @@
     {
       "id": 250579,
       "name": "Prefect's Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_20",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100799,7 +100799,7 @@
     {
       "id": 252534,
       "name": "Prowler's Leather Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_17",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -100959,7 +100959,7 @@
     {
       "id": 250577,
       "name": "Sentinel's Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_12",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -101022,7 +101022,7 @@
     {
       "id": 252568,
       "name": "Skirmisher's Mail Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_23",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -101046,7 +101046,7 @@
     {
       "id": 252535,
       "name": "Skulker's Leather Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulders_mail_warfrontsforsaken_d_01",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -101089,7 +101089,7 @@
     {
       "id": 252537,
       "name": "Skycaller's Leather Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_25",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -101113,7 +101113,7 @@
     {
       "id": 252567,
       "name": "Skycaller's Mail Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_12",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -101159,7 +101159,7 @@
     {
       "id": 252566,
       "name": "Stalker's Mail Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_18",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -101418,7 +101418,7 @@
     {
       "id": 252536,
       "name": "Warden's Leather Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_06",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -101441,7 +101441,7 @@
     {
       "id": 250578,
       "name": "Warder's Pauldrons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_03",
       "slot": "shoulder",
       "quality": 3,
       "required_level": 42,
@@ -101903,7 +101903,7 @@
     {
       "id": 250612,
       "name": "Charged Mithril Battleaxe",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_axe_09",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 43,
@@ -102849,7 +102849,7 @@
     {
       "id": 250543,
       "name": "Shining Mithril Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_35",
       "slot": "head",
       "quality": 2,
       "required_level": 43,
@@ -104522,7 +104522,7 @@
     {
       "id": 250545,
       "name": "Shining Mithril Gauntlet",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_28",
       "slot": "hands",
       "quality": 2,
       "required_level": 44,
@@ -104544,7 +104544,7 @@
     {
       "id": 250544,
       "name": "Shining Mithril Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_plate_16",
       "slot": "legs",
       "quality": 2,
       "required_level": 44,
@@ -105767,7 +105767,7 @@
     {
       "id": 250585,
       "name": "Justicar's Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_22a",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -105869,7 +105869,7 @@
     {
       "id": 252543,
       "name": "Mender's Leather Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_07",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -105894,7 +105894,7 @@
     {
       "id": 252573,
       "name": "Mender's Mail Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_02",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -105964,7 +105964,7 @@
     {
       "id": 254065,
       "name": "Netherflame Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_23a",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -105987,7 +105987,7 @@
     {
       "id": 254063,
       "name": "Netherfroth Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_22a",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106010,7 +106010,7 @@
     {
       "id": 254061,
       "name": "Nethergeld Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_23b",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106035,7 +106035,7 @@
     {
       "id": 254071,
       "name": "Netherlight Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_20b",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106058,7 +106058,7 @@
     {
       "id": 254067,
       "name": "Netherpearl Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_13",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106081,7 +106081,7 @@
     {
       "id": 254069,
       "name": "Nethershine Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_21b",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106104,7 +106104,7 @@
     {
       "id": 250581,
       "name": "Officer's Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_22c",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106355,7 +106355,7 @@
     {
       "id": 250584,
       "name": "Prefect's Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_21b",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106447,7 +106447,7 @@
     {
       "id": 252539,
       "name": "Prowler's Leather Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_21c",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106720,7 +106720,7 @@
     {
       "id": 250582,
       "name": "Sentinel's Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_23a",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106895,7 +106895,7 @@
     {
       "id": 252572,
       "name": "Skirmisher's Mail Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_31",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106919,7 +106919,7 @@
     {
       "id": 252540,
       "name": "Skulker's Leather Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_21c",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106943,7 +106943,7 @@
     {
       "id": 252542,
       "name": "Skycaller's Leather Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_22a",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106967,7 +106967,7 @@
     {
       "id": 252571,
       "name": "Skycaller's Mail Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_25",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -106991,7 +106991,7 @@
     {
       "id": 252570,
       "name": "Stalker's Mail Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_31a",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -107363,7 +107363,7 @@
     {
       "id": 252541,
       "name": "Warden's Leather Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_22",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -107386,7 +107386,7 @@
     {
       "id": 250583,
       "name": "Warder's Wristguards",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_14",
       "slot": "wrist",
       "quality": 3,
       "required_level": 45,
@@ -107681,7 +107681,7 @@
     {
       "id": 252575,
       "name": "Charged Scorpid Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_22",
       "slot": "waist",
       "quality": 2,
       "required_level": 46,
@@ -108834,7 +108834,7 @@
     {
       "id": 252574,
       "name": "Supple Scorpid Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_07",
       "slot": "feet",
       "quality": 2,
       "required_level": 46,
@@ -109094,7 +109094,7 @@
     {
       "id": 254087,
       "name": "Black Waistcord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_04",
       "slot": "waist",
       "quality": 3,
       "required_level": 47,
@@ -109184,7 +109184,7 @@
     {
       "id": 252467,
       "name": "Blue Suede Shoes",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_leather_12",
       "slot": "feet",
       "quality": 2,
       "required_level": 47,
@@ -109346,7 +109346,7 @@
     {
       "id": 254077,
       "name": "Earthenweave Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_39c",
       "slot": "waist",
       "quality": 2,
       "required_level": 47,
@@ -109369,7 +109369,7 @@
     {
       "id": 254075,
       "name": "Earthenweave Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_21",
       "slot": "hands",
       "quality": 2,
       "required_level": 47,
@@ -109438,7 +109438,7 @@
     {
       "id": 254085,
       "name": "Fiery Waistcord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_37a",
       "slot": "waist",
       "quality": 3,
       "required_level": 47,
@@ -109538,7 +109538,7 @@
     {
       "id": 254083,
       "name": "Frothing Waistcord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_39a",
       "slot": "waist",
       "quality": 3,
       "required_level": 47,
@@ -109620,7 +109620,7 @@
     {
       "id": 254073,
       "name": "Ghostweave Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_16",
       "slot": "waist",
       "quality": 2,
       "required_level": 47,
@@ -109642,7 +109642,7 @@
     {
       "id": 254081,
       "name": "Gilded Waistcord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_07",
       "slot": "waist",
       "quality": 3,
       "required_level": 47,
@@ -109666,7 +109666,7 @@
     {
       "id": 254089,
       "name": "Golden Waistcord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_32",
       "slot": "waist",
       "quality": 3,
       "required_level": 47,
@@ -110039,7 +110039,7 @@
     {
       "id": 250565,
       "name": "Justicar's Sabatons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110161,7 +110161,7 @@
     {
       "id": 252472,
       "name": "Mender's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_03",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110185,7 +110185,7 @@
     {
       "id": 252579,
       "name": "Mender's Mail Sabatons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_02",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110289,7 +110289,7 @@
     {
       "id": 250561,
       "name": "Officer's Sabatons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_19v2",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110369,7 +110369,7 @@
     {
       "id": 250564,
       "name": "Prefect's Sabatons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_19v3",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110416,7 +110416,7 @@
     {
       "id": 252468,
       "name": "Prowler's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_06",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110462,7 +110462,7 @@
     {
       "id": 254091,
       "name": "Radiant Waistcord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43",
       "slot": "waist",
       "quality": 3,
       "required_level": 47,
@@ -110585,7 +110585,7 @@
     {
       "id": 250562,
       "name": "Sentinel's Sabatons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_20v1",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110653,7 +110653,7 @@
     {
       "id": 252578,
       "name": "Skirmisher's Mail Sabatons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_13",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110676,7 +110676,7 @@
     {
       "id": 252469,
       "name": "Skulker's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_25purple",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110699,7 +110699,7 @@
     {
       "id": 252471,
       "name": "Skycaller's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_leather_cataclysm_b_02",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110722,7 +110722,7 @@
     {
       "id": 252577,
       "name": "Skycaller's Mail Sabatons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_12",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -110838,7 +110838,7 @@
     {
       "id": 252576,
       "name": "Stalker's Mail Sabatons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_12",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -111031,7 +111031,7 @@
     {
       "id": 252544,
       "name": "Tooled Leather Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_04",
       "slot": "waist",
       "quality": 2,
       "required_level": 47,
@@ -111139,7 +111139,7 @@
     {
       "id": 252470,
       "name": "Warden's Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_04",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -111161,7 +111161,7 @@
     {
       "id": 250563,
       "name": "Warder's Sabatons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_19v1",
       "slot": "feet",
       "quality": 3,
       "required_level": 47,
@@ -111553,7 +111553,7 @@
     {
       "id": 252546,
       "name": "Blue Suede Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_17",
       "slot": "hands",
       "quality": 2,
       "required_level": 48,
@@ -111641,7 +111641,7 @@
     {
       "id": 252581,
       "name": "Charged Scorpid Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_39",
       "slot": "head",
       "quality": 2,
       "required_level": 48,
@@ -114263,7 +114263,7 @@
     {
       "id": 252580,
       "name": "Supple Scorpid Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_09",
       "slot": "legs",
       "quality": 2,
       "required_level": 48,
@@ -114371,7 +114371,7 @@
     {
       "id": 252545,
       "name": "Tooled Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_06",
       "slot": "feet",
       "quality": 2,
       "required_level": 48,
@@ -114843,7 +114843,7 @@
     {
       "id": 254093,
       "name": "Earthenweave Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_07",
       "slot": "feet",
       "quality": 2,
       "required_level": 49,
@@ -116399,7 +116399,7 @@
     {
       "id": 254101,
       "name": "Black Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_32",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -116422,7 +116422,7 @@
     {
       "id": 254113,
       "name": "Black Sandals",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 50,
@@ -116637,7 +116637,7 @@
     {
       "id": 252583,
       "name": "Charged Scorpid Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_14",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 50,
@@ -116747,7 +116747,7 @@
     {
       "id": 274758,
       "name": "Coldmetal Guard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_plate15",
       "slot": "chest",
       "quality": 2,
       "required_level": 50,
@@ -117245,7 +117245,7 @@
     {
       "id": 254099,
       "name": "Fiery Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_19",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -117268,7 +117268,7 @@
     {
       "id": 254111,
       "name": "Fiery Sandals",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_05",
       "slot": "feet",
       "quality": 3,
       "required_level": 50,
@@ -117381,7 +117381,7 @@
     {
       "id": 254097,
       "name": "Frothing Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_17",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -117404,7 +117404,7 @@
     {
       "id": 254109,
       "name": "Frothing Sandals",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_07",
       "slot": "feet",
       "quality": 3,
       "required_level": 50,
@@ -117474,7 +117474,7 @@
     {
       "id": 254095,
       "name": "Gilded Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_11",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -117499,7 +117499,7 @@
     {
       "id": 254107,
       "name": "Gilded Sandals",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_06",
       "slot": "feet",
       "quality": 3,
       "required_level": 50,
@@ -117561,7 +117561,7 @@
     {
       "id": 254103,
       "name": "Golden Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_21",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -117584,7 +117584,7 @@
     {
       "id": 254115,
       "name": "Golden Sandals",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_11",
       "slot": "feet",
       "quality": 3,
       "required_level": 50,
@@ -117764,7 +117764,7 @@
     {
       "id": 274756,
       "name": "Impractical Headwarmer",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_bandana_01",
       "slot": "head",
       "quality": 2,
       "required_level": 50,
@@ -117865,7 +117865,7 @@
     {
       "id": 250555,
       "name": "Justicar's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_30",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -117888,7 +117888,7 @@
     {
       "id": 250575,
       "name": "Justicar's Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_13",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -118070,7 +118070,7 @@
     {
       "id": 252551,
       "name": "Mender's Leather Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_29",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -118095,7 +118095,7 @@
     {
       "id": 252477,
       "name": "Mender's Leather Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_16",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -118119,7 +118119,7 @@
     {
       "id": 252591,
       "name": "Mender's Mail Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_37c",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -118143,7 +118143,7 @@
     {
       "id": 252587,
       "name": "Mender's Mail Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_25",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -118230,7 +118230,7 @@
     {
       "id": 250551,
       "name": "Officer's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_51",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -118253,7 +118253,7 @@
     {
       "id": 250571,
       "name": "Officer's Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_20",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -118394,7 +118394,7 @@
     {
       "id": 250554,
       "name": "Prefect's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_26",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -118418,7 +118418,7 @@
     {
       "id": 250574,
       "name": "Prefect's Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_08",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -118465,7 +118465,7 @@
     {
       "id": 252547,
       "name": "Prowler's Leather Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_17",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -118489,7 +118489,7 @@
     {
       "id": 252473,
       "name": "Prowler's Leather Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_37b",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -118531,7 +118531,7 @@
     {
       "id": 254105,
       "name": "Radiant Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_20",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -118554,7 +118554,7 @@
     {
       "id": 254117,
       "name": "Radiant Sandals",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_03",
       "slot": "feet",
       "quality": 3,
       "required_level": 50,
@@ -118795,7 +118795,7 @@
     {
       "id": 250552,
       "name": "Sentinel's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_22",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -118818,7 +118818,7 @@
     {
       "id": 250572,
       "name": "Sentinel's Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_37a",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -118926,7 +118926,7 @@
     {
       "id": 252590,
       "name": "Skirmisher's Mail Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_39c",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -118949,7 +118949,7 @@
     {
       "id": 252586,
       "name": "Skirmisher's Mail Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_19",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -118973,7 +118973,7 @@
     {
       "id": 252548,
       "name": "Skulker's Leather Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_15",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -118997,7 +118997,7 @@
     {
       "id": 252474,
       "name": "Skulker's Leather Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -119020,7 +119020,7 @@
     {
       "id": 252550,
       "name": "Skycaller's Leather Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_30",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -119044,7 +119044,7 @@
     {
       "id": 252476,
       "name": "Skycaller's Leather Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_43a",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -119067,7 +119067,7 @@
     {
       "id": 252589,
       "name": "Skycaller's Mail Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_22",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -119090,7 +119090,7 @@
     {
       "id": 252585,
       "name": "Skycaller's Mail Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_30",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -119138,7 +119138,7 @@
     {
       "id": 252588,
       "name": "Stalker's Mail Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_17",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -119161,7 +119161,7 @@
     {
       "id": 252584,
       "name": "Stalker's Mail Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_29",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -119185,7 +119185,7 @@
     {
       "id": 274755,
       "name": "Steamwheedle Grips",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_18",
       "slot": "hands",
       "quality": 2,
       "required_level": 50,
@@ -119276,7 +119276,7 @@
     {
       "id": 274757,
       "name": "Substandard Belt Chain",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_18",
       "slot": "waist",
       "quality": 2,
       "required_level": 50,
@@ -119317,7 +119317,7 @@
     {
       "id": 252582,
       "name": "Supple Scorpid Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_23a",
       "slot": "wrist",
       "quality": 2,
       "required_level": 50,
@@ -119438,7 +119438,7 @@
     {
       "id": 253884,
       "name": "Template Item",
-      "icon": "inv_misc_questionmark",
+      "icon": "0",
       "slot": "chest",
       "quality": 2,
       "required_level": 50,
@@ -119550,7 +119550,7 @@
     {
       "id": 250614,
       "name": "Thorium Cestus",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_11",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 50,
@@ -119572,7 +119572,7 @@
     {
       "id": 250613,
       "name": "Thorium Greatmace",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_hammer_10",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 50,
@@ -119681,7 +119681,7 @@
     {
       "id": 252549,
       "name": "Warden's Leather Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_21",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -119704,7 +119704,7 @@
     {
       "id": 252475,
       "name": "Warden's Leather Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_04",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -119726,7 +119726,7 @@
     {
       "id": 250553,
       "name": "Warder's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_50",
       "slot": "hands",
       "quality": 3,
       "required_level": 50,
@@ -119749,7 +119749,7 @@
     {
       "id": 250573,
       "name": "Warder's Waistguard",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_29",
       "slot": "waist",
       "quality": 3,
       "required_level": 50,
@@ -119924,7 +119924,7 @@
     {
       "id": 252478,
       "name": "Blue Suede Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_leather_21",
       "slot": "legs",
       "quality": 2,
       "required_level": 51,
@@ -120045,7 +120045,7 @@
     {
       "id": 252593,
       "name": "Charged Scorpid Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_30",
       "slot": "wrist",
       "quality": 2,
       "required_level": 51,
@@ -120068,7 +120068,7 @@
     {
       "id": 252596,
       "name": "Charged Scorpid Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_30",
       "slot": "hands",
       "quality": 2,
       "required_level": 51,
@@ -120581,7 +120581,7 @@
     {
       "id": 252594,
       "name": "Heavy Scorpid Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_21",
       "slot": "feet",
       "quality": 2,
       "required_level": 51,
@@ -121259,7 +121259,7 @@
     {
       "id": 252595,
       "name": "Supple Scorpid Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_38b",
       "slot": "waist",
       "quality": 2,
       "required_level": 51,
@@ -121281,7 +121281,7 @@
     {
       "id": 252592,
       "name": "Supple Scorpid Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_03",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 51,
@@ -121431,7 +121431,7 @@
     {
       "id": 252552,
       "name": "Tooled Leather Armor",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_08",
       "slot": "chest",
       "quality": 2,
       "required_level": 51,
@@ -121916,7 +121916,7 @@
     {
       "id": 252554,
       "name": "Blue Suede Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_25",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 52,
@@ -121983,7 +121983,7 @@
     {
       "id": 252598,
       "name": "Charged Scorpid Vest",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_chain_06",
       "slot": "chest",
       "quality": 2,
       "required_level": 52,
@@ -122216,7 +122216,7 @@
     {
       "id": 254119,
       "name": "Earthenweave Mantle",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_05",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 52,
@@ -122656,7 +122656,7 @@
     {
       "id": 250589,
       "name": "Imperial Plate Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_30",
       "slot": "hands",
       "quality": 2,
       "required_level": 52,
@@ -123446,7 +123446,7 @@
     {
       "id": 252597,
       "name": "Supple Scorpid Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_34",
       "slot": "head",
       "quality": 2,
       "required_level": 52,
@@ -123529,7 +123529,7 @@
     {
       "id": 250615,
       "name": "Thorium Poleaxe",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_spear_05",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 52,
@@ -123552,7 +123552,7 @@
     {
       "id": 252553,
       "name": "Tooled Leather Gauntlets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_27",
       "slot": "hands",
       "quality": 2,
       "required_level": 52,
@@ -123771,7 +123771,7 @@
     {
       "id": 252479,
       "name": "Wicked Leather Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_05",
       "slot": "feet",
       "quality": 2,
       "required_level": 52,
@@ -123862,7 +123862,7 @@
     {
       "id": 274417,
       "name": "Barkskin Baubles",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_misc_bag_10_black",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 53,
@@ -123886,7 +123886,7 @@
     {
       "id": 274419,
       "name": "Bear Poking Stick",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_staff_21",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 53,
@@ -123959,7 +123959,7 @@
     {
       "id": 275612,
       "name": "Bileblister Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_06",
       "slot": "feet",
       "quality": 3,
       "required_level": 53,
@@ -123982,7 +123982,7 @@
     {
       "id": 275610,
       "name": "Bileblister Claws",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_25",
       "slot": "hands",
       "quality": 3,
       "required_level": 53,
@@ -124005,7 +124005,7 @@
     {
       "id": 275611,
       "name": "Bileblister Girdle",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_09",
       "slot": "waist",
       "quality": 3,
       "required_level": 53,
@@ -124096,7 +124096,7 @@
     {
       "id": 252480,
       "name": "Blue Suede Armor",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_07",
       "slot": "chest",
       "quality": 2,
       "required_level": 53,
@@ -124142,7 +124142,7 @@
     {
       "id": 275620,
       "name": "Broodwatcher's Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_18",
       "slot": "waist",
       "quality": 3,
       "required_level": 53,
@@ -124166,7 +124166,7 @@
     {
       "id": 275619,
       "name": "Broodwatcher's Clenchers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_13",
       "slot": "hands",
       "quality": 3,
       "required_level": 53,
@@ -124190,7 +124190,7 @@
     {
       "id": 275621,
       "name": "Broodwatcher's Treaders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_12",
       "slot": "feet",
       "quality": 3,
       "required_level": 53,
@@ -124214,7 +124214,7 @@
     {
       "id": 274418,
       "name": "Burrow Barricade",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shield_16",
       "slot": "off_hand",
       "quality": 3,
       "required_level": 53,
@@ -124296,7 +124296,7 @@
     {
       "id": 275625,
       "name": "Clutchlord's Grips",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_29",
       "slot": "hands",
       "quality": 3,
       "required_level": 53,
@@ -124319,7 +124319,7 @@
     {
       "id": 275627,
       "name": "Clutchlord's Stompers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_07",
       "slot": "feet",
       "quality": 3,
       "required_level": 53,
@@ -124342,7 +124342,7 @@
     {
       "id": 275626,
       "name": "Clutchlord's Support",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_34",
       "slot": "waist",
       "quality": 3,
       "required_level": 53,
@@ -124592,7 +124592,7 @@
     {
       "id": 254125,
       "name": "Earthenweave Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_06",
       "slot": "legs",
       "quality": 2,
       "required_level": 53,
@@ -124894,7 +124894,7 @@
     {
       "id": 275622,
       "name": "Goregasher Grips",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_31",
       "slot": "hands",
       "quality": 3,
       "required_level": 53,
@@ -124917,7 +124917,7 @@
     {
       "id": 275624,
       "name": "Goregasher Stompers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_plate_08",
       "slot": "feet",
       "quality": 3,
       "required_level": 53,
@@ -124940,7 +124940,7 @@
     {
       "id": 275623,
       "name": "Goregasher Support",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_33",
       "slot": "waist",
       "quality": 3,
       "required_level": 53,
@@ -125045,7 +125045,7 @@
     {
       "id": 275615,
       "name": "Hivethrasher's Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_07",
       "slot": "feet",
       "quality": 3,
       "required_level": 53,
@@ -125068,7 +125068,7 @@
     {
       "id": 275613,
       "name": "Hivethrasher's Claws",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_24",
       "slot": "hands",
       "quality": 3,
       "required_level": 53,
@@ -125091,7 +125091,7 @@
     {
       "id": 275614,
       "name": "Hivethrasher's Girdle",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_15",
       "slot": "waist",
       "quality": 3,
       "required_level": 53,
@@ -125777,7 +125777,7 @@
     {
       "id": 275617,
       "name": "Scalegut Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_20",
       "slot": "waist",
       "quality": 3,
       "required_level": 53,
@@ -125800,7 +125800,7 @@
     {
       "id": 275616,
       "name": "Scalegut Clenchers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_12",
       "slot": "hands",
       "quality": 3,
       "required_level": 53,
@@ -125823,7 +125823,7 @@
     {
       "id": 275618,
       "name": "Scalegut Treaders",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_11",
       "slot": "feet",
       "quality": 3,
       "required_level": 53,
@@ -125889,7 +125889,7 @@
     {
       "id": 275608,
       "name": "Swarmtender's Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_03",
       "slot": "waist",
       "quality": 3,
       "required_level": 53,
@@ -125913,7 +125913,7 @@
     {
       "id": 275609,
       "name": "Swarmtender's Footpads",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_01",
       "slot": "feet",
       "quality": 3,
       "required_level": 53,
@@ -125937,7 +125937,7 @@
     {
       "id": 275607,
       "name": "Swarmtender's Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_17",
       "slot": "hands",
       "quality": 3,
       "required_level": 53,
@@ -126018,7 +126018,7 @@
     {
       "id": 252555,
       "name": "Tooled Leather Crown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_33",
       "slot": "head",
       "quality": 2,
       "required_level": 53,
@@ -126128,7 +126128,7 @@
     {
       "id": 275605,
       "name": "Venomspew Cord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_25",
       "slot": "waist",
       "quality": 3,
       "required_level": 53,
@@ -126151,7 +126151,7 @@
     {
       "id": 275606,
       "name": "Venomspew Footpads",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_04",
       "slot": "feet",
       "quality": 3,
       "required_level": 53,
@@ -126174,7 +126174,7 @@
     {
       "id": 275604,
       "name": "Venomspew Gloves",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_gauntlets_18",
       "slot": "hands",
       "quality": 3,
       "required_level": 53,
@@ -126371,7 +126371,7 @@
     {
       "id": 274420,
       "name": "Wisepaw Totem",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_staff_51",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 53,
@@ -126484,7 +126484,7 @@
     {
       "id": 250592,
       "name": "Blessed Plate Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_11",
       "slot": "waist",
       "quality": 2,
       "required_level": 54,
@@ -126620,7 +126620,7 @@
     {
       "id": 252481,
       "name": "Blue Suede Belt",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_03",
       "slot": "waist",
       "quality": 2,
       "required_level": 54,
@@ -126643,7 +126643,7 @@
     {
       "id": 250616,
       "name": "Bold Dirk",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_weapon_shortblade_01",
       "slot": "main_hand",
       "quality": 2,
       "required_level": 54,
@@ -126769,7 +126769,7 @@
     {
       "id": 252600,
       "name": "Charged Scorpid Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_15",
       "slot": "legs",
       "quality": 2,
       "required_level": 54,
@@ -127050,7 +127050,7 @@
     {
       "id": 254121,
       "name": "Earthenweave Vest",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_cloth_20",
       "slot": "chest",
       "quality": 2,
       "required_level": 54,
@@ -127303,7 +127303,7 @@
     {
       "id": 254127,
       "name": "Ghostweave Mantle",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_09",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 54,
@@ -128243,7 +128243,7 @@
     {
       "id": 254123,
       "name": "Runecloth Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_13",
       "slot": "wrist",
       "quality": 2,
       "required_level": 54,
@@ -128380,7 +128380,7 @@
     {
       "id": 252599,
       "name": "Supple Scorpid Vest",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_mail_17v1",
       "slot": "chest",
       "quality": 2,
       "required_level": 54,
@@ -128426,7 +128426,7 @@
     {
       "id": 252557,
       "name": "Tooled Leather Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_23b",
       "slot": "wrist",
       "quality": 2,
       "required_level": 54,
@@ -128630,7 +128630,7 @@
     {
       "id": 252556,
       "name": "Wicked Leather Shoulder",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_09",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 54,
@@ -128877,7 +128877,7 @@
     {
       "id": 250593,
       "name": "Blessed Plate Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_24",
       "slot": "head",
       "quality": 2,
       "required_level": 55,
@@ -128942,7 +128942,7 @@
     {
       "id": 252559,
       "name": "Blue Suede Bracers",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_22a",
       "slot": "wrist",
       "quality": 2,
       "required_level": 55,
@@ -129259,7 +129259,7 @@
     {
       "id": 254131,
       "name": "Earthenweave Cuffs",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_bracer_13",
       "slot": "wrist",
       "quality": 2,
       "required_level": 55,
@@ -129650,7 +129650,7 @@
     {
       "id": 254129,
       "name": "Ghostweave Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_cloth_17",
       "slot": "feet",
       "quality": 2,
       "required_level": 55,
@@ -131486,7 +131486,7 @@
     {
       "id": 252558,
       "name": "Tooled Leather Epaulets",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_shoulder_08",
       "slot": "shoulder",
       "quality": 2,
       "required_level": 55,
@@ -131884,7 +131884,7 @@
     {
       "id": 252605,
       "name": "Black Dragonscale Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_09",
       "slot": "head",
       "quality": 4,
       "required_level": 56,
@@ -131971,7 +131971,7 @@
     {
       "id": 252604,
       "name": "Blue Dragonscale Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_09",
       "slot": "head",
       "quality": 4,
       "required_level": 56,
@@ -131994,7 +131994,7 @@
     {
       "id": 252482,
       "name": "Blue Suede Hat",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helm_armor_buckledhat_b_01_blue",
       "slot": "head",
       "quality": 2,
       "required_level": 56,
@@ -132017,7 +132017,7 @@
     {
       "id": 250601,
       "name": "Breastplate of Salvation",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_plate09",
       "slot": "chest",
       "quality": 4,
       "required_level": 56,
@@ -132098,7 +132098,7 @@
     {
       "id": 250598,
       "name": "Champion's Legplates",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_plate_02",
       "slot": "legs",
       "quality": 4,
       "required_level": 56,
@@ -132121,7 +132121,7 @@
     {
       "id": 252602,
       "name": "Charged Scorpid Boots",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_06",
       "slot": "feet",
       "quality": 2,
       "required_level": 56,
@@ -132182,7 +132182,7 @@
     {
       "id": 252483,
       "name": "Dawn Armor",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_leather_08",
       "slot": "chest",
       "quality": 4,
       "required_level": 56,
@@ -132368,7 +132368,7 @@
     {
       "id": 254137,
       "name": "Earthenweave Crown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_crown_02",
       "slot": "head",
       "quality": 2,
       "required_level": 56,
@@ -132633,7 +132633,7 @@
     {
       "id": 254135,
       "name": "Ghostweave Hood",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_26",
       "slot": "head",
       "quality": 2,
       "required_level": 56,
@@ -133052,7 +133052,7 @@
     {
       "id": 252486,
       "name": "Ironfeather Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_leather_26",
       "slot": "legs",
       "quality": 4,
       "required_level": 56,
@@ -133190,7 +133190,7 @@
     {
       "id": 252561,
       "name": "Living Crown",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_32",
       "slot": "head",
       "quality": 4,
       "required_level": 56,
@@ -133342,7 +133342,7 @@
     {
       "id": 250600,
       "name": "Martyr's Legplates",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_plate_21",
       "slot": "legs",
       "quality": 4,
       "required_level": 56,
@@ -133627,7 +133627,7 @@
     {
       "id": 252606,
       "name": "Pristine Scorpid Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_36",
       "slot": "legs",
       "quality": 4,
       "required_level": 56,
@@ -133696,7 +133696,7 @@
     {
       "id": 252603,
       "name": "Red Dragonscale Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_mail_09",
       "slot": "legs",
       "quality": 4,
       "required_level": 56,
@@ -133827,7 +133827,7 @@
     {
       "id": 250599,
       "name": "Stalwart Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_22",
       "slot": "head",
       "quality": 4,
       "required_level": 56,
@@ -133873,7 +133873,7 @@
     {
       "id": 252601,
       "name": "Supple Scorpid Sabatons",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_boots_chain_04",
       "slot": "feet",
       "quality": 2,
       "required_level": 56,
@@ -133980,7 +133980,7 @@
     {
       "id": 252484,
       "name": "Timbermaw Tunic",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_fur",
       "slot": "chest",
       "quality": 4,
       "required_level": 56,
@@ -134003,7 +134003,7 @@
     {
       "id": 252560,
       "name": "Tooled Leather Pants",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_10",
       "slot": "legs",
       "quality": 2,
       "required_level": 56,
@@ -134112,7 +134112,7 @@
     {
       "id": 252485,
       "name": "Warbear Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_31",
       "slot": "head",
       "quality": 4,
       "required_level": 56,
@@ -134709,7 +134709,7 @@
     {
       "id": 250595,
       "name": "Enriched Thorium Breastplate",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_chest_plate11",
       "slot": "chest",
       "quality": 3,
       "required_level": 57,
@@ -138439,7 +138439,7 @@
     {
       "id": 250597,
       "name": "Enriched Thorium Helm",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_helmet_10",
       "slot": "head",
       "quality": 3,
       "required_level": 58,
@@ -138462,7 +138462,7 @@
     {
       "id": 250596,
       "name": "Enriched Thorium Leggings",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_pants_plate_10",
       "slot": "legs",
       "quality": 3,
       "required_level": 58,
@@ -139315,7 +139315,7 @@
     {
       "id": 250619,
       "name": "Legionite Glaive",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_spear_05",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 58,
@@ -140371,7 +140371,7 @@
     {
       "id": 250617,
       "name": "Stormcarver",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_axe_04",
       "slot": "main_hand",
       "quality": 3,
       "required_level": 58,
@@ -147577,7 +147577,7 @@
     {
       "id": 279252,
       "name": "Elderwild Waistcord",
-      "icon": "inv_misc_questionmark",
+      "icon": "inv_belt_leather_raiddruidhyjalc60_d_01",
       "slot": "waist",
       "quality": 4,
       "required_level": 60,

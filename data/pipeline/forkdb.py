@@ -154,6 +154,21 @@ def _icons(rows: list[dict]) -> dict[int, str]:
     return {int(row["id"]): row["icon"] for row in rows if row.get("icon")}
 
 
+def icon_by_item_id(db: ForkDatabase) -> dict[int, str]:
+    """Item id -> icon, across both of db.json's item tables.
+
+    `items` (the equippable/consumable gear `load_fork_database` already
+    keeps as raw rows, for `loot`/`enchants`/`suffixes` to read the rest of)
+    carries its own `icon` for most rows; `item_icons` (the smaller
+    `itemIcons` table, already indexed by id) covers a few more `items`
+    itself omits. `items` wins a collision -- there should not be one, the
+    two tables are disjoint id spaces in practice -- by being applied second.
+    """
+    icons = dict(db.item_icons)
+    icons.update({int(row["id"]): row["icon"] for row in db.items if row.get("icon")})
+    return icons
+
+
 def load_fork_database(engine_dir: Path) -> ForkDatabase:
     path = engine_dir / DB_RELATIVE
     if not path.exists():

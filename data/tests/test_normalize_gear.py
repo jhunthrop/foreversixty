@@ -798,6 +798,55 @@ def test_a_nonzero_icon_id_that_names_no_file_also_falls_back(caplog):
     assert any("99999999" in record.getMessage() for record in caplog.records)
 
 
+def test_an_item_with_no_client_icon_falls_back_to_the_wowhead_planner_icon():
+    """16866 (Helm of Might) has no display icon in the client at all here
+    (IconFileDataID 0) -- the same shape as the 771 real items on build
+    1.60.1.70009 that have no icon of their own, mostly Forever-new hotfix
+    items (night-icons finding, 2026-09-29). The wowhead gear-planner
+    payload's own `icon` still resolves it, and wins over the placeholder
+    with no fork override at all."""
+    records = build_class_items(
+        read_csv(HERE / "fixtures/ItemSparse.csv"),
+        _item_rows_with_icon("16866", "0"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+        wowhead_icons={16866: "inv_helmet_23"},
+    )
+    helm = {i.id: i for r in records for i in r.items}[16866]
+    assert helm.icon == "inv_helmet_23"
+
+
+def test_the_fork_db_icon_is_tried_before_the_wowhead_planner_icon():
+    """Priority order: the engine fork's own assets/database/db.json icon
+    wins over wowhead's when both name one for the same placeholder item."""
+    records = build_class_items(
+        read_csv(HERE / "fixtures/ItemSparse.csv"),
+        _item_rows_with_icon("16866", "0"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+        fork_icons={16866: "inv_helmet_fork"},
+        wowhead_icons={16866: "inv_helmet_wowhead"},
+    )
+    helm = {i.id: i for r in records for i in r.items}[16866]
+    assert helm.icon == "inv_helmet_fork"
+
+
+def test_an_item_neither_fallback_names_still_gets_the_placeholder():
+    records = build_class_items(
+        read_csv(HERE / "fixtures/ItemSparse.csv"),
+        _item_rows_with_icon("16866", "0"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+        fork_icons={99999: "inv_helmet_other"},
+        wowhead_icons={99999: "inv_helmet_other"},
+    )
+    helm = {i.id: i for r in records for i in r.items}[16866]
+    assert helm.icon == PLACEHOLDER_ICON
+
+
 def test_every_emitted_item_icon_is_a_usable_file_name():
     """No item may carry an empty icon: the site builds icons/<icon>.webp from it."""
     assert all(i.icon for record in build_all() for i in record.items)
