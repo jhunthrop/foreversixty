@@ -25,7 +25,9 @@ test('Leveling BiS: index links to a spec, faction and band pills switch panels 
   // A filled slot shows the real item (ItemHover's pill), and an empty one says why rather
   // than a bare dash (tenet 4, this lane's own brief item 1).
   await expect(band10.locator('[data-testid^="item-hover-"]').first()).toBeVisible();
-  await expect(band10.getByTestId('bis-slot-alliance-10-neck')).toContainText('No sourced item at this level yet');
+  await expect(band10.getByTestId('bis-slot-alliance-10-neck')).toContainText(
+    'No sourced item at this level yet',
+  );
 
   // Toggle to Horde -- a label click on a hidden radio, no navigation.
   await page.getByTestId('bis-faction-toggle-horde').click();
