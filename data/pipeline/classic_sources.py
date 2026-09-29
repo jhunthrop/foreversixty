@@ -60,6 +60,7 @@ from __future__ import annotations
 import gzip
 import json
 import logging
+import re
 from collections import Counter, defaultdict
 from datetime import UTC, datetime
 from pathlib import Path
@@ -112,6 +113,73 @@ _WORLD_DROP_MARKER = "World Drop"
 #: for 1.60.1.70009, src-classicdb lane).
 _SHARED_REFERENCE_MAX_USERS = 50
 
+#: cmangos' own tag for a real PER-ZONE/PER-INSTANCE shared trash table
+#: (Shadowfang Keep's, Gnomeregan's, Scarlet Monastery's, Blackfathom
+#: Deeps' and Razorfen Downs' own "Zone Drop" references on the pinned
+#: dump, 22-38 users each) -- a DIFFERENT, hand-authored cmangos label
+#: from `_WORLD_DROP_MARKER`'s "World Drop", naming a table that is
+#: still specific to the one instance it drops in (not bind-on-equip,
+#: not auction-housable), even when the dump's own stale/duplicate
+#: `map` column (the same Onyxia's-Lair-continent-id quirk
+#: `instance_zone_by_map`'s own doc measures) makes `_world_drop_pools`'
+#: distinct-map count for it look like more than one map. World-drop-
+#: pool lane, 2026-09-29: this marker exempts a "Zone Drop" pool from
+#: `_MULTI_MAP_MIN_MAPS`'s own signal (world-drop-pool lane's own
+#: measurement: without this exemption, Gnomeregan's, Scarlet
+#: Monastery's and Blackfathom Deeps' own "Zone Drop" pools -- real,
+#: per-instance trash tables, not auction-housable world drops --
+#: false-positive on 2 maps each).
+_ZONE_DROP_MARKER = "Zone Drop"
+
+#: A reference group whose creature/object/skinning/pickpocketing users
+#: (NOT fishing -- see `_world_drop_pools`' own doc) spawn on this many
+#: or more DISTINCT maps is a generic pool no single instance or open-
+#: world zone owns, whatever its own comment says -- world-drop-pool
+#: lane, 2026-09-29's own measurement: 15 reference ids on the pinned
+#: dump (mostly "NPC LOOT ... Classic World bosses and dragons" and a
+#: handful of profession-recipe tables shared across two Ahn'Qiraj wings)
+#: cross this without EITHER carrying `_WORLD_DROP_MARKER`'s own text or
+#: exceeding `_SHARED_REFERENCE_MAX_USERS`' own fan-out count -- exactly
+#: the gap this lane's brief calls out (Lambent Scale Cloak, item 4706:
+#: 11 narrow-banded reference ids, each well under 50 users and on a
+#: single map on its own, together spanning Gnomeregan, Scarlet
+#: Monastery, Shadowfang Keep and The Stockade once a stale dump-map
+#: quirk is set aside -- see `_ZONE_DROP_MARKER`'s own doc for why that
+#: quirk is excluded here rather than trusted).
+_MULTI_MAP_MIN_MAPS = 2
+
+#: `NPC Levels: <lo>[-<hi>]` or `Item Levels: <lo>[-<hi>]` inside a
+#: `_WORLD_DROP_MARKER`-tagged row's own `comments` text (the pinned
+#: dump's own convention, e.g. "NPC LOOT (Green World Drop) - (Item
+#: Levels: 20-25) - (NPC Levels: 21-22)") -- `_level_range_from_comment`
+#: prefers the NPC figure (closer to "the pool's own creature level
+#: range", this lane's brief's own second option, than the item-level
+#: figure is) and falls back to the item figure only when a row states
+#: no NPC range at all.
+_NPC_LEVEL_PATTERN = re.compile(r"NPC\s+Levels?:?\s*(\d+)(?:\s*-\s*(\d+))?")
+_ITEM_LEVEL_PATTERN = re.compile(r"Item\s+Levels?:?\s*(\d+)(?:\s*-\s*(\d+))?")
+
+
+def _level_range_from_comment(comment: str) -> tuple[int, int] | None:
+    match = _NPC_LEVEL_PATTERN.search(comment) or _ITEM_LEVEL_PATTERN.search(comment)
+    if match is None:
+        return None
+    low = int(match.group(1))
+    high = int(match.group(2)) if match.group(2) else low
+    return low, high
+
+
+class WorldDropPool(BaseModel):
+    """One `reference_loot_template` id `_world_drop_pools` classifies as
+    a generic world-drop pool, with the level range its own referencing
+    rows' `comments` state (`_level_range_from_comment`), widest first --
+    `None` on either side when no referencing row's comment states one at
+    all (kept as a real, honestly-level-less world drop rather than
+    invented, per this file's own no-fabrication rule elsewhere)."""
+
+    level_min: int | None = None
+    level_max: int | None = None
+
 #: Vanilla's own race bitmask (`ChrRaces.dbc` ids, 1-indexed bit
 #: positions) split by faction, for `quest_template.RequiredRaces`. A
 #: quest that admits races from both sides (or states none, 0, meaning
@@ -132,8 +200,9 @@ def _faction_from_required_races(races: int) -> Literal["alliance", "horde", "bo
 
 
 ClassicDbSourceKind = Literal[
-    "creature_drop", "object_drop", "vendor", "quest_reward", "skinning", "pickpocketing", "fishing"
-]
+    "creature_drop", "object_drop", "vendor", "quest_reward", "skinning", "pickpocketing", "fishing",
+    "world_drop",
+]  # fmt: skip
 
 
 class ClassicDbCondition(BaseModel):
@@ -172,6 +241,17 @@ class ClassicDbSourceRecord(BaseModel):
     chance: float | None = None
     condition: ClassicDbCondition | None = None
     quest: ClassicDbQuestInfo | None = None
+    #: `world_drop` only -- the pool's own level range (`WorldDropPool`),
+    #: merged across every reference id that names this exact item (a
+    #: green-quality world drop is typically split across several
+    #: narrow-banded reference ids on the pinned dump -- 11 of them for
+    #: Lambent Scale Cloak alone -- that all describe the one real item;
+    #: `_world_drop_records` merges them into the one honest range a
+    #: player actually sees rather than one near-duplicate source per
+    #: narrow band). `None` on either side when no contributing pool
+    #: states a level at all.
+    level_min: int | None = None
+    level_max: int | None = None
 
 
 def _rows_by_entry(records: list[dict[str, str]]) -> dict[int, list[dict[str, str]]]:
@@ -204,6 +284,142 @@ def _excluded_reference_ids(sql_text: str) -> set[int]:
                 world_drop.add(ref_id)
     shared = {ref_id for ref_id, rows in users.items() if len(rows) > _SHARED_REFERENCE_MAX_USERS}
     return world_drop | shared
+
+
+def _world_drop_pools(
+    sql_text: str, npc_map: dict[int, int], object_map: dict[int, int]
+) -> dict[int, WorldDropPool]:
+    """Every `reference_loot_template` id this lane classifies as a
+    generic world-drop pool -- one this lane's brief asks be recorded
+    under a single synthetic `world_drop` source (`_world_drop_records`),
+    rather than attributed to each creature/object that happens to point
+    at it (`_excluded_reference_ids`'s own, coarser rule: drop it
+    entirely). World-drop-pool lane, 2026-09-29's own measurement on the
+    pinned dump, three signals (a pool matching any one is classified):
+
+    * `_WORLD_DROP_MARKER` in a referencing row's own `comments` -- 309
+      reference ids, the same set `_excluded_reference_ids` already
+      caught by name.
+    * More than `_SHARED_REFERENCE_MAX_USERS` distinct referencing
+      creature/object/skinning/pickpocketing entries -- kept at 50, not
+      lowered to this lane's brief's own proposed 8: Shadowfang Keep's
+      real, single-map "Zone Drop" pool has exactly 27 (this file's own
+      `_SHARED_REFERENCE_MAX_USERS` doc), which 8 would misclassify as a
+      world drop even though it is a real per-instance trash table, not
+      an auction-housable one.
+    * Referencing entries spawning on `_MULTI_MAP_MIN_MAPS` or more
+      DISTINCT maps, UNLESS every referencing comment carries
+      `_ZONE_DROP_MARKER` (`_ZONE_DROP_MARKER`'s own doc: a stale/
+      duplicate map id, the same quirk `instance_zone_by_map` already
+      guards against, would otherwise misclassify Gnomeregan's, Scarlet
+      Monastery's and Blackfathom Deeps' own real "Zone Drop" pools too).
+      This is this lane's brief's own second proposed signal, and the one
+      that actually explains the reported defect: Lambent Scale Cloak's
+      11 reference ids (60125-60135) are each under 50 users and marked
+      `_WORLD_DROP_MARKER` already (so already excluded, just not
+      bucketed) -- a pool with NEITHER signal but a real multi-instance
+      fan-out (Gnomeregan + Scarlet Monastery + Shadowfang Keep + The
+      Stockade, in the reported screenshot's own case) is exactly what
+      this third signal is for.
+
+    Deliberately does NOT implement this lane's brief's own third
+    proposed signal ("rows all `ChanceOrQuestChance` <= 0.5 with no boss
+    in it"): "boss" is a dungeon/raid zone-type fact
+    (`pipeline.loot.classicdb`'s own `zones.json`/`types`), not something
+    this module -- pure SQL-dump parsing, no zone data -- can answer.
+    Left for a follow-up that thread that data through, rather than
+    guessed at here.
+
+    `fishing_loot_template` is deliberately excluded from every signal
+    here (unlike `_excluded_reference_ids`, which still covers it for
+    that function's own, unrelated caller): a fishing pool spanning many
+    zones is fishing working as designed, not a symptom of anything, and
+    `pipeline.loot.classicdb._parse_fishing`'s own flat "Fishing" bucket
+    already names it honestly regardless of which reference id
+    contributed the catch.
+    """
+    users: dict[int, set[tuple[str, int]]] = defaultdict(set)
+    comments: dict[int, list[str]] = defaultdict(list)
+    for table in (
+        "creature_loot_template", "gameobject_loot_template",
+        "skinning_loot_template", "pickpocketing_loot_template",
+    ):
+        for row in iter_table_records(sql_text, table):
+            min_ref = int(row["mincountOrRef"])
+            if min_ref >= 0:
+                continue
+            ref_id = -min_ref
+            users[ref_id].add((table, int(row["entry"])))
+            comments[ref_id].append(row["comments"])
+
+    pools: dict[int, WorldDropPool] = {}
+    for ref_id, entries in users.items():
+        comment_texts = comments[ref_id]
+        marker = any(_WORLD_DROP_MARKER in text for text in comment_texts)
+        zone_drop = any(_ZONE_DROP_MARKER in text for text in comment_texts)
+        maps = {
+            (object_map if table == "gameobject_loot_template" else npc_map).get(entry)
+            for table, entry in entries
+        } - {None}
+        multi_map = len(maps) >= _MULTI_MAP_MIN_MAPS and not zone_drop
+        big_fan_out = len(entries) > _SHARED_REFERENCE_MAX_USERS
+        if not (marker or multi_map or big_fan_out):
+            continue
+        ranges = [
+            level_range
+            for text in comment_texts
+            if (level_range := _level_range_from_comment(text)) is not None
+        ]
+        pools[ref_id] = WorldDropPool(
+            level_min=min((lo for lo, _ in ranges), default=None),
+            level_max=max((hi for _, hi in ranges), default=None),
+        )
+    return pools
+
+
+def _world_drop_records(
+    sql_text: str, pools: dict[int, WorldDropPool]
+) -> dict[int, ClassicDbSourceRecord]:
+    """One `world_drop` `ClassicDbSourceRecord` per item id any pool in
+    `pools` (`_world_drop_pools`' own result) directly names, its own
+    `level_min`/`level_max` the widest range across every pool that names
+    it (this function's own doc reason: the pinned dump splits one real
+    item's world-drop pool across several narrow-banded reference ids far
+    more often than not) and its own `chance` the highest of theirs (a
+    generic pool's per-item chance is itself approximate -- cmangos'
+    own reference rows record it as the item's weight within ONE narrow
+    band, not the real overall drop chance across every band that
+    carries it -- so the highest band's figure is kept as the more
+    honest of several approximations, never averaged or invented).
+
+    Only a pool's own DIRECT rows are read (a POSITIVE `mincountOrRef`)
+    -- no pool in the pinned dump references another one, so the
+    recursive expansion `_expand_loot_template` needs for a creature's
+    own drop list is not needed here.
+    """
+    reference_rows = _rows_by_entry(list(iter_table_records(sql_text, "reference_loot_template")))
+    levels: dict[int, tuple[int | None, int | None]] = {}
+    chances: dict[int, float] = {}
+    for ref_id, pool in pools.items():
+        for row in reference_rows.get(ref_id, []):
+            if int(row["mincountOrRef"]) < 0:
+                continue
+            item_id = int(row["item"])
+            chance = abs(float(row["ChanceOrQuestChance"]))
+            chances[item_id] = max(chances.get(item_id, 0.0), chance)
+            lo, hi = levels.get(item_id, (None, None))
+            if pool.level_min is not None:
+                lo = pool.level_min if lo is None else min(lo, pool.level_min)
+            if pool.level_max is not None:
+                hi = pool.level_max if hi is None else max(hi, pool.level_max)
+            levels[item_id] = (lo, hi)
+    return {
+        item_id: ClassicDbSourceRecord(
+            kind="world_drop", name="World drop", chance=chances.get(item_id),
+            level_min=lo, level_max=hi,
+        )
+        for item_id, (lo, hi) in levels.items()
+    }  # fmt: skip
 
 
 def _expand_loot_template(
@@ -425,7 +641,19 @@ def parse_classic_db_sources(sql_text: str) -> dict[int, list[ClassicDbSourceRec
 
     npc_map = _spawn_map_by_entry(list(iter_table_records(sql_text, "creature")))
     object_map = _spawn_map_by_entry(list(iter_table_records(sql_text, "gameobject")))
-    excluded_refs = frozenset(_excluded_reference_ids(sql_text))
+    # `world_drop_pools` (creature/object/skinning/pickpocketing's own
+    # exclusion set, world-drop-pool lane 2026-09-29) supersedes the
+    # older, coarser `_excluded_reference_ids` for those four tables --
+    # a row pointing at a classified pool still contributes nothing to
+    # ITS OWN creature/object's attribution (same mechanism as before),
+    # but the pool's own items are no longer simply dropped: they are
+    # recorded once each under a synthetic `world_drop` record below.
+    # Fishing keeps `_excluded_reference_ids` unchanged (`_parse_fishing`'s
+    # own doc, and `_world_drop_pools`' own doc, for why the two tables
+    # are not treated the same way).
+    world_drop_pools = _world_drop_pools(sql_text, npc_map, object_map)
+    excluded_refs = frozenset(world_drop_pools)
+    fishing_excluded_refs = frozenset(_excluded_reference_ids(sql_text))
 
     into: dict[int, list[ClassicDbSourceRecord]] = defaultdict(list)
     _parse_creature_drops(
@@ -444,7 +672,9 @@ def parse_classic_db_sources(sql_text: str) -> dict[int, list[ClassicDbSourceRec
     conditions = _parse_conditions(sql_text)
     _parse_vendors(sql_text, creature_names, vendor_template_id, conditions, into)
     _parse_quest_rewards(sql_text, into)
-    _parse_fishing(sql_text, into, excluded_refs)
+    _parse_fishing(sql_text, into, fishing_excluded_refs)
+    for item_id, record in _world_drop_records(sql_text, world_drop_pools).items():
+        into[item_id].append(record)
     return dict(into)
 
 

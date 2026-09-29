@@ -31,6 +31,17 @@ from pipeline.quest_levels import QuestLevelEntry
 _CREATURE_KINDS = frozenset({"creature_drop", "skinning", "pickpocketing"})
 
 
+def _world_drop_id(level_min: int | None, level_max: int | None) -> str:
+    """`world_drop:<level_min>-<level_max>`, or `world_drop:unknown` for a
+    pool the pinned dump's own comments name no level range for at all
+    (`pipeline.classic_sources._world_drop_pools`' own doc) -- never a
+    raw reference-template id, which is an implementation detail of the
+    dump, not a fact the site should ever show or key a URL on."""
+    if level_min is None or level_max is None:
+        return "world_drop:unknown"
+    return f"world_drop:{level_min}-{level_max}"
+
+
 def instance_zone_by_map(zone_rows: list[dict], types: dict[int, int]) -> dict[int, int]:
     """map id -> the zone id `types` marks as dungeon/raid for that map.
 
@@ -161,6 +172,17 @@ def classicdb_additions(
     vendor_condition: dict[int, tuple[int, str]] = {}
     quest: set[int] = set()
     quest_detail: dict[int, list[QuestSource]] = defaultdict(list)
+    # World-drop bucket keys are the pool's own (level_min, level_max) --
+    # `pipeline.classic_sources._world_drop_records`' own doc: a green-
+    # quality world drop is typically split across several narrow-banded
+    # reference ids on the pinned dump that all describe the one real
+    # item, already merged to one range per item there; grouping here by
+    # that same range (rather than by item id 1:1, which would need no
+    # grouping at all) is what turns every item sharing a range into ONE
+    # `world_drop` source instead of one per item, the same "single
+    # synthetic source" shape a raid/dungeon zone's own bucket has.
+    world_drop: dict[tuple[int | None, int | None], set[int]] = defaultdict(set)
+    world_drop_chances: dict[tuple[int | None, int | None], dict[int, float]] = defaultdict(dict)
 
     for item_id, records in classic_sources.items():
         if item_id not in build_items:
@@ -209,6 +231,11 @@ def classicdb_additions(
                 world_names[key] = record.name
                 if record.chance is not None:
                     world_chances[key][item_id] = record.chance
+            elif record.kind == "world_drop":
+                level_key = (record.level_min, record.level_max)
+                world_drop[level_key].add(item_id)
+                if record.chance is not None:
+                    world_drop_chances[level_key][item_id] = record.chance
             elif record.kind == "vendor":
                 # `vendor:<npc_id>` is keyed by id, not name, so an
                 # unnamed vendor is harmless to keep (no collision risk
@@ -288,6 +315,34 @@ def classicdb_additions(
             source_origin="classic-db",
         )
         for key, items in sorted(world.items(), key=lambda pair: slugify(world_names[pair[0]]))
+    )
+    out.extend(
+        LootSource(
+            id=_world_drop_id(level_min, level_max),
+            kind="world_drop",
+            name="World drop",
+            items=sorted(items),
+            item_chances={
+                str(item_id): chance
+                for item_id, chance in sorted(world_drop_chances[(level_min, level_max)].items())
+            }
+            or None,
+            level_min=level_min,
+            level_max=level_max,
+            source_origin="classic-db",
+        )
+        # Sorted by level_min (unknown-level buckets, `None`, last -- a
+        # bucket this pinned dump's own comments state no level for is
+        # rarer and less specific than one that does) so the picker's own
+        # per-kind list reads low-to-high, matching every other level-
+        # banded kind's own convention.
+        for (level_min, level_max), items in sorted(
+            world_drop.items(),
+            key=lambda pair: (
+                pair[0][0] is None, pair[0][0] or 0,
+                pair[0][1] is None, pair[0][1] or 0,
+            ),
+        )
     )
     out.extend(
         LootSource(

@@ -39,7 +39,17 @@ import "sort"
 // report should say what a player actually has to do ("Silverwing
 // Sentinels (honored)"), not the generic "vendor" label that source
 // order used to prefer.
-var sourceKindPriority = []string{"quest", "rep", "vendor", "dungeon", "crafted", "pvp", "world", "raid"}
+//
+// "world_drop" (world-drop-pool lane, 2026-09-29) sits right after
+// "crafted": loot.json's own generic, bind-on-equip world-drop bucket
+// (pipeline.loot.classicdb's own synthetic source, replacing what used
+// to be silently dropped) IS obtainable at any level in its own range -
+// buy it off the auction house - so it ranks above "pvp"/"world"/"raid"
+// (each needs a specific grind or a level-60 raid lockout this early),
+// but below every source that names an exact, single place to go.
+var sourceKindPriority = []string{
+	"quest", "rep", "vendor", "dungeon", "crafted", "world_drop", "pvp", "world", "raid",
+}
 
 // repStandingObtainable is the highest reputation standing a leveling
 // character is assumed to reach: friendly and honored come from playing

@@ -65,6 +65,14 @@ export interface ZoneSourceCell {
   dropChance?: number;
 }
 
+export interface WorldDropSourceCell {
+  kind: 'world_drop';
+  /** See `LootSource.level_min`/`level_max`'s own doc -- absent when the pinned dump names
+   *  no level range for this pool at all. */
+  levelMin?: number;
+  levelMax?: number;
+}
+
 /** A source_kind `loot.json` has nothing for this item under (a data gap, not a defect in
  *  this resolver -- `sim/loot.ts`'s own header names 1,809 sourced ids the 1.60 client does
  *  not carry), or a kind this resolver does not special-case. Carries the pipeline's own
@@ -81,6 +89,7 @@ export type SourceCell =
   | VendorSourceCell
   | RepSourceCell
   | ZoneSourceCell
+  | WorldDropSourceCell
   | FallbackSourceCell;
 
 function findSource(sources: readonly LootSource[], kind: string, itemId: number): LootSource | undefined {
@@ -170,6 +179,13 @@ export function resolveSourceCell(
       : { kind: slot.source_kind, place: source.name, dropChance: findChance(source, itemId) };
   }
 
+  if (slot.source_kind === 'world_drop') {
+    const source = findSource(loot.sources, 'world_drop', itemId);
+    return source === undefined
+      ? fallback
+      : { kind: 'world_drop', levelMin: source.level_min, levelMax: source.level_max };
+  }
+
   return fallback;
 }
 
@@ -200,6 +216,8 @@ export function describeSourceCell(cell: SourceCell): string {
       return cell.dropChance === undefined
         ? bisCopy.placeSourceLabel(cell.place)
         : bisCopy.dropChanceLabel(cell.dropChance, cell.place);
+    case 'world_drop':
+      return bisCopy.worldDropSourceLabel(cell.levelMin, cell.levelMax);
     case 'unknown':
       return cell.label;
   }

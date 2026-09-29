@@ -58,6 +58,14 @@ export const bisCopy = {
   repSourceLabel: (factionName: string, standing?: string): string =>
     standing === undefined ? factionName : `${factionName} (${standing})`,
   placeSourceLabel: (place: string): string => place,
+  /** loot.json's `world_drop` kind (world-drop-pool lane, 2026-09-29): a generic, bind-on-
+   *  equip pool this build's classic-db dump states a level range for -- "World drop (BoE)"
+   *  alone when it does not (`levelMin`/`levelMax` both `undefined`), never an invented
+   *  range. */
+  worldDropSourceLabel: (levelMin?: number, levelMax?: number): string =>
+    levelMin === undefined || levelMax === undefined
+      ? 'World drop (BoE)'
+      : `World drop (BoE) · levels ${levelMin}-${levelMax}`,
   /** "40% from Lord Serpentis", "6% from Deadmines trash" -- classic-db's own drop
    *  chance (src-classicdb lane, 2026-09-29), shown in front of the place a source cell
    *  would otherwise just name plainly. */

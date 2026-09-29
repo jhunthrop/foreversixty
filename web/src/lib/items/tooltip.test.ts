@@ -193,16 +193,19 @@ describe('itemTooltipModel', () => {
     const loot: LootFile = {
       sources: [
         {
-          id: 'world:3',
-          kind: 'world',
-          name: 'Anywhere',
+          id: 'world_drop:20-30',
+          kind: 'world_drop',
+          name: 'World drop',
           items: [1],
-          ...({ level_range: '20-30' } as Record<string, unknown>),
+          level_min: 20,
+          level_max: 30,
         },
       ],
     };
     const sources: ItemTooltipSources = { loot, sets: [] };
-    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual(['World drop (20-30)']);
+    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual([
+      'World drop (BoE) · levels 20-30',
+    ]);
   });
 
   it('puts a boss line’s known drop chance in the line as "(N%)"', () => {

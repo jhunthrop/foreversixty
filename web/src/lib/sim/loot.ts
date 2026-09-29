@@ -23,6 +23,7 @@ export const LOOT_KINDS = [
   'raid',
   'dungeon',
   'world',
+  'world_drop',
   'zone',
   'vendor',
   'crafted',
@@ -36,6 +37,7 @@ export const SOURCE_KIND_LABELS: Record<LootKind, string> = {
   raid: bulkCopy.sourcesRaids,
   dungeon: bulkCopy.sourcesDungeons,
   world: bulkCopy.sourcesWorld,
+  world_drop: bulkCopy.sourcesWorldDrop,
   zone: bulkCopy.sourcesZone,
   vendor: bulkCopy.sourcesVendor,
   crafted: bulkCopy.sourcesCrafted,
@@ -84,6 +86,11 @@ export interface LootSource {
   /** item id (string-keyed) -> percent drop chance (0-100), for a `world`/`zone` source's
    *  own flat `items`/`trash` list -- see `LootBoss.item_chances`'s own doc. */
   item_chances?: Record<string, number>;
+  /** `world_drop` kind only (world-drop-pool lane, 2026-09-29): the level range cmangos/
+   *  classic-db's own dump states for this generic, bind-on-equip, auction-housable drop
+   *  pool. Either side absent when the dump names no level for the pool at all. */
+  level_min?: number;
+  level_max?: number;
 }
 
 /** One quest that rewards an item, from loot.json's `quests` map (contract 10.4: item id,

@@ -58,6 +58,10 @@ SOURCE_KIND_CODES: dict[str, str] = {
     "pvp": "P",
     "world": "W",
     "raid": "A",
+    #: `world_drop` (world-drop-pool lane, 2026-09-29): loot.json's own
+    #: generic, bind-on-equip, auction-housable world-drop pool bucket
+    #: (sim/cmd/leveling-bis/band.go's own sourceKindPriority).
+    "world_drop": "B",
 }
 
 #: The site's own slot vocabulary (Gear.lua's SLOTS_BY_EQUIP_LOCATION

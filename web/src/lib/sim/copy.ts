@@ -1042,6 +1042,9 @@ export const bulkCopy = {
   sourcesRaids: 'Raids',
   sourcesDungeons: 'Dungeons',
   sourcesWorld: 'World bosses',
+  /** loot.json's `world_drop` kind (world-drop-pool lane, 2026-09-29): a generic, bind-on-
+   *  equip pool -- buy it off the auction house, not farmed off one named mob. */
+  sourcesWorldDrop: 'World drops',
   sourcesZone: 'Zone drops',
   sourcesVendor: 'Vendors',
   sourcesCrafted: 'Crafted',

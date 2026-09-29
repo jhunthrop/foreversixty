@@ -51,6 +51,45 @@ func TestSourceForPicksVendorOverDungeonAndFallsBackToItAlone(t *testing.T) {
 	}
 }
 
+func TestSourceForPicksWorldDropOverPvpAndWorldButNotOverCrafted(t *testing.T) {
+	// sourceKindPriority: ... crafted, world_drop, pvp, world, raid --
+	// world_drop is obtainable (auction house) at any level in its own
+	// range, so it beats pvp/world/raid, but a source naming an exact
+	// place (crafted) still wins.
+	idx := lootIndex{
+		1: {
+			{Kind: "raid", Label: "A Raid"},
+			{Kind: "world", Label: "A World Mob"},
+			{Kind: "pvp", Label: "A PvP Rank"},
+			{Kind: "world_drop", Label: "World drop"},
+		},
+	}
+	src, ok := sourceFor(1, 30, "alliance", "", idx)
+	if !ok || src.Kind != "world_drop" || src.Label != "World drop" {
+		t.Fatalf("sourceFor = %+v, %v, want world_drop/World drop", src, ok)
+	}
+
+	idx2 := lootIndex{
+		2: {
+			{Kind: "world_drop", Label: "World drop"},
+			{Kind: "crafted", Label: "A Crafted Item"},
+		},
+	}
+	src, ok = sourceFor(2, 30, "alliance", "", idx2)
+	if !ok || src.Kind != "crafted" {
+		t.Fatalf("sourceFor = %+v, %v, want crafted to win over world_drop", src, ok)
+	}
+
+	// A world_drop-only item (nothing else in the index) must still
+	// resolve -- it is obtainable (buy it off the auction house), not
+	// unsourced.
+	worldDropOnly := lootIndex{3: {{Kind: "world_drop", Label: "World drop"}}}
+	src, ok = sourceFor(3, 30, "alliance", "", worldDropOnly)
+	if !ok || src.Kind != "world_drop" {
+		t.Fatalf("sourceFor with only a world_drop source = %+v, %v, want ok=true, kind=world_drop", src, ok)
+	}
+}
+
 func TestSourceForRaidExcludedBelow60(t *testing.T) {
 	idx := lootIndex{1: {{Kind: "raid", Label: "Molten Core"}}}
 	if _, ok := sourceFor(1, 59, "alliance", "", idx); ok {

@@ -51,8 +51,14 @@ logger = logging.getLogger(__name__)
 
 #: The order sources are emitted in, which is the order the picker shows
 #: them: instances first, then the things you can farm by zone, then the
-#: things you buy or make.
-KIND_ORDER = ("raid", "dungeon", "world", "zone", "vendor", "crafted", "rep", "pvp", "quest")
+#: things you buy or make. `world_drop` (src-classicdb world-drop-pool
+#: lane, 2026-09-29) sits right after `world`: both are "go kill
+#: something out in the world", and `world_drop`'s own generic,
+#: auction-housable pool is a step LESS specific than a named `world`
+#: mob's own drop.
+KIND_ORDER = (
+    "raid", "dungeon", "world", "world_drop", "zone", "vendor", "crafted", "rep", "pvp", "quest",
+)  # fmt: skip
 
 #: An item's own `factionRestriction` (0 included, unlike
 #: `pipeline.forkdb.FACTION_RESTRICTIONS`), standing in for the side of the

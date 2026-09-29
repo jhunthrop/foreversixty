@@ -155,22 +155,13 @@ function percentLabel(chance: number): string {
 /**
  * A `world`/`world_drop` source always renders as this single line (brief item 4) -- never
  * the raw `source.name`, and never one line per world source an item happens to drop from
- * (a client tooltip never lists individual zones for a world drop either). `LootSource`
- * carries no level-range field today; this reads one defensively, without typing it, so a
- * future data lane can add `level_range` (or `min_level`/`max_level`) and have it show up
- * here with no change on this side.
+ * (a client tooltip never lists individual zones for a world drop either). A `world_drop`
+ * source from the classic-db pool classifier carries the pool's own `level_min`/`level_max`.
  */
 function worldDropLine(source: LootSource): string {
-  const untyped = source as unknown as {
-    level_range?: string;
-    min_level?: number;
-    max_level?: number;
-  };
-  if (typeof untyped.level_range === 'string' && untyped.level_range !== '') {
-    return `World drop (${untyped.level_range})`;
-  }
-  if (typeof untyped.min_level === 'number' && typeof untyped.max_level === 'number') {
-    return `World drop (${untyped.min_level}-${untyped.max_level})`;
+  const { level_min: levelMin, level_max: levelMax } = source;
+  if (typeof levelMin === 'number' && typeof levelMax === 'number') {
+    return `World drop (BoE) · levels ${levelMin}-${levelMax}`;
   }
   return 'World drop';
 }
