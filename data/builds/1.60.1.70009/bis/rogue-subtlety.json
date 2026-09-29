@@ -1,8 +1,8 @@
 {
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:24:43Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:12:31Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -14,23 +14,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009896749514027435,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0056773833320845
+          "weight": 1.0056773833320845,
+          "error": 0.002752054034343122,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.23616121139981033
+          "weight": 0.23616121139981033,
+          "error": 0.040460383343273364,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.112786523300062
+          "weight": 1.112786523300062,
+          "error": 0.2654583343539234,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 0.8949009518842209
+          "weight": 0.8949009518842209,
+          "error": 0.758845297708557,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -176,8 +186,8 @@
         "off_hand: Father Flame",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.13157251,
-      "verify_run_seconds": 0.398919998
+      "weights_run_seconds": 0.843155668,
+      "verify_run_seconds": 0.306680678
     },
     {
       "spec": "rogue-subtlety",
@@ -189,23 +199,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009896749514027435,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0056773833320845
+          "weight": 1.0056773833320845,
+          "error": 0.002752054034343122,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.23616121139981033
+          "weight": 0.23616121139981033,
+          "error": 0.040460383343273364,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.112786523300062
+          "weight": 1.112786523300062,
+          "error": 0.2654583343539234,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 0.8949009518842209
+          "weight": 0.8949009518842209,
+          "error": 0.758845297708557,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -351,8 +371,8 @@
         "off_hand: Father Flame",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.13157251,
-      "verify_run_seconds": 0.409618028
+      "weights_run_seconds": 0.843155668,
+      "verify_run_seconds": 0.326017479
     },
     {
       "spec": "rogue-subtlety",
@@ -364,23 +384,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009964142788459686,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.004705179701485
+          "weight": 1.004705179701485,
+          "error": 0.0019148022015274798,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.2683144756133178
+          "weight": 0.2683144756133178,
+          "error": 0.04155180981579695,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.2200682958305604
+          "weight": 1.2200682958305604,
+          "error": 0.2638427427081413,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.047312672822422
+          "weight": 1.047312672822422,
+          "error": 0.7514339005122739,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -535,8 +565,8 @@
         "main_hand: Big Bronze Knife",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.141535673,
-      "verify_run_seconds": 0.595758834
+      "weights_run_seconds": 0.84956651,
+      "verify_run_seconds": 0.449966185
     },
     {
       "spec": "rogue-subtlety",
@@ -548,23 +578,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009964142788459686,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.004705179701485
+          "weight": 1.004705179701485,
+          "error": 0.0019148022015274798,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.2683144756133178
+          "weight": 0.2683144756133178,
+          "error": 0.04155180981579695,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.2200682958305604
+          "weight": 1.2200682958305604,
+          "error": 0.2638427427081413,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.047312672822422
+          "weight": 1.047312672822422,
+          "error": 0.7514339005122739,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -719,8 +759,8 @@
         "main_hand: Big Bronze Knife",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.141535673,
-      "verify_run_seconds": 0.605192868
+      "weights_run_seconds": 0.84956651,
+      "verify_run_seconds": 0.448387285
     },
     {
       "spec": "rogue-subtlety",
@@ -732,23 +772,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001032974001478305,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0100093893450133
+          "weight": 1.0100093893450133,
+          "error": 0.0036385579400418375,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.3250513344758556
+          "weight": 0.3250513344758556,
+          "error": 0.043574627491809174,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.5378595019739234
+          "weight": 1.5378595019739234,
+          "error": 0.29291201794104715,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.4429125891504382
+          "weight": 1.4429125891504382,
+          "error": 0.7076752041051886,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -927,8 +977,8 @@
         "main_hand: Cruel Barb",
         "ranged: Deadly Blunderbuss"
       ],
-      "weights_run_seconds": 1.150901618,
-      "verify_run_seconds": 0.725972443
+      "weights_run_seconds": 0.831238179,
+      "verify_run_seconds": 0.549812534
     },
     {
       "spec": "rogue-subtlety",
@@ -940,23 +990,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001032974001478305,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0100093893450133
+          "weight": 1.0100093893450133,
+          "error": 0.0036385579400418375,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.3250513344758556
+          "weight": 0.3250513344758556,
+          "error": 0.043574627491809174,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.5378595019739234
+          "weight": 1.5378595019739234,
+          "error": 0.29291201794104715,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.4429125891504382
+          "weight": 1.4429125891504382,
+          "error": 0.7076752041051886,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1135,8 +1195,8 @@
         "main_hand: Cruel Barb",
         "ranged: Deadly Blunderbuss"
       ],
-      "weights_run_seconds": 1.150901618,
-      "verify_run_seconds": 0.720687655
+      "weights_run_seconds": 0.831238179,
+      "verify_run_seconds": 0.5384588
     },
     {
       "spec": "rogue-subtlety",
@@ -1148,23 +1208,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010347284994644984,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.007276764049143
+          "weight": 1.007276764049143,
+          "error": 0.003600756869571174,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.3472603640813966
+          "weight": 0.3472603640813966,
+          "error": 0.045078396738204754,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6622400607916994
+          "weight": 1.6622400607916994,
+          "error": 0.2917449013508333,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.6285469509249741
+          "weight": 1.6285469509249741,
+          "error": 0.7001791553580572,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1345,8 +1415,8 @@
         "main_hand: Meteor Shard",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.157431553,
-      "verify_run_seconds": 0.912724402
+      "weights_run_seconds": 0.855980121,
+      "verify_run_seconds": 0.679577216
     },
     {
       "spec": "rogue-subtlety",
@@ -1358,23 +1428,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010347284994644984,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.007276764049143
+          "weight": 1.007276764049143,
+          "error": 0.003600756869571174,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.3472603640813966
+          "weight": 0.3472603640813966,
+          "error": 0.045078396738204754,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6622400607916994
+          "weight": 1.6622400607916994,
+          "error": 0.2917449013508333,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.6285469509249741
+          "weight": 1.6285469509249741,
+          "error": 0.7001791553580572,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1555,8 +1635,8 @@
         "main_hand: Meteor Shard",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.157431553,
-      "verify_run_seconds": 0.892179452
+      "weights_run_seconds": 0.855980121,
+      "verify_run_seconds": 0.685782319
     },
     {
       "spec": "rogue-subtlety",
@@ -1568,23 +1648,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010401569742161168,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0079935084559044
+          "weight": 1.0079935084559044,
+          "error": 0.004019036465851252,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.3209830617479861
+          "weight": 0.3209830617479861,
+          "error": 0.039278475031105646,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.9976479053890388
+          "weight": 0.9976479053890388,
+          "error": 0.216085387481248,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 0.9817273427966705
+          "weight": 0.9817273427966705,
+          "error": 0.6827554716499074,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1770,8 +1860,8 @@
         "main_hand: Swinetusk Shank",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.250031964,
-      "verify_run_seconds": 0.94802326
+      "weights_run_seconds": 0.932009486,
+      "verify_run_seconds": 0.725078407
     },
     {
       "spec": "rogue-subtlety",
@@ -1783,23 +1873,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010401569742161168,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0079935084559044
+          "weight": 1.0079935084559044,
+          "error": 0.004019036465851252,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.3209830617479861
+          "weight": 0.3209830617479861,
+          "error": 0.039278475031105646,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.9976479053890388
+          "weight": 0.9976479053890388,
+          "error": 0.216085387481248,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 0.9817273427966705
+          "weight": 0.9817273427966705,
+          "error": 0.6827554716499074,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1985,8 +2085,8 @@
         "main_hand: Swinetusk Shank",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.250031964,
-      "verify_run_seconds": 0.951271855
+      "weights_run_seconds": 0.932009486,
+      "verify_run_seconds": 0.736171734
     },
     {
       "spec": "rogue-subtlety",
@@ -1998,23 +2098,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009911270230848965,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0082946234557082
+          "weight": 1.0082946234557082,
+          "error": 0.004260961801225276,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.5653451002718338
+          "weight": 0.5653451002718338,
+          "error": 0.055001249832969105,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.9538098995421818
+          "weight": 1.9538098995421818,
+          "error": 0.27974749850694636,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.4581097674536714
+          "weight": 1.4581097674536714,
+          "error": 0.6341511295565951,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2195,8 +2305,8 @@
         "feet: Dusky Boots",
         "main_hand: Hypnotic Blade"
       ],
-      "weights_run_seconds": 1.323620777,
-      "verify_run_seconds": 0.955880439
+      "weights_run_seconds": 0.983119549,
+      "verify_run_seconds": 0.725813701
     },
     {
       "spec": "rogue-subtlety",
@@ -2208,23 +2318,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009911270230848965,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0082946234557082
+          "weight": 1.0082946234557082,
+          "error": 0.004260961801225276,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.5653451002718338
+          "weight": 0.5653451002718338,
+          "error": 0.055001249832969105,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.9538098995421818
+          "weight": 1.9538098995421818,
+          "error": 0.27974749850694636,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.4581097674536714
+          "weight": 1.4581097674536714,
+          "error": 0.6341511295565951,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2405,8 +2525,8 @@
         "feet: Dusky Boots",
         "main_hand: Hypnotic Blade"
       ],
-      "weights_run_seconds": 1.323620777,
-      "verify_run_seconds": 0.959282457
+      "weights_run_seconds": 0.983119549,
+      "verify_run_seconds": 0.714925825
     },
     {
       "spec": "rogue-subtlety",
@@ -2418,23 +2538,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009914411640479263,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0204507902441513
+          "weight": 1.0204507902441513,
+          "error": 0.007165160613857078,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6455391483143408
+          "weight": 0.6455391483143408,
+          "error": 0.08808662467003296,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.2745108156722242
+          "weight": 2.2745108156722242,
+          "error": 0.6990526868385414,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 0.23187889380743548
+          "weight": 0.23187889380743548,
+          "error": 1.7075478526832284,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2626,8 +2756,8 @@
         "main_hand: Lifeforce Dirk",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.338839994,
-      "verify_run_seconds": 1.079375738
+      "weights_run_seconds": 0.972101234,
+      "verify_run_seconds": 0.818500645
     },
     {
       "spec": "rogue-subtlety",
@@ -2639,23 +2769,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009914411640479263,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0204507902441513
+          "weight": 1.0204507902441513,
+          "error": 0.007165160613857078,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6455391483143408
+          "weight": 0.6455391483143408,
+          "error": 0.08808662467003296,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.2745108156722242
+          "weight": 2.2745108156722242,
+          "error": 0.6990526868385414,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 0.23187889380743548
+          "weight": 0.23187889380743548,
+          "error": 1.7075478526832284,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2847,8 +2987,8 @@
         "main_hand: Lifeforce Dirk",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.338839994,
-      "verify_run_seconds": 1.0769807
+      "weights_run_seconds": 0.972101234,
+      "verify_run_seconds": 0.816269537
     },
     {
       "spec": "rogue-subtlety",
@@ -2860,23 +3000,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001156743037878693,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.1883732245015948
+          "weight": 1.1883732245015948,
+          "error": 0.043853310486968056,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 5.7313519025620625
+          "weight": 5.7313519025620625,
+          "error": 0.23528189899491864,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.834782449238742
+          "weight": 2.834782449238742,
+          "error": 0.5949397611146561,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 3.3066055325549653
+          "weight": 3.3066055325549653,
+          "error": 1.4536382078257966,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3066,8 +3216,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Thermotastic Egg Timer"
       ],
-      "weights_run_seconds": 1.315716869,
-      "verify_run_seconds": 1.0659974349999999
+      "weights_run_seconds": 1.006707222,
+      "verify_run_seconds": 0.837028217
     },
     {
       "spec": "rogue-subtlety",
@@ -3079,23 +3229,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001156743037878693,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.1883732245015948
+          "weight": 1.1883732245015948,
+          "error": 0.043853310486968056,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 5.7313519025620625
+          "weight": 5.7313519025620625,
+          "error": 0.23528189899491864,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.834782449238742
+          "weight": 2.834782449238742,
+          "error": 0.5949397611146561,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 3.3066055325549653
+          "weight": 3.3066055325549653,
+          "error": 1.4536382078257966,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3285,8 +3445,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Thermotastic Egg Timer"
       ],
-      "weights_run_seconds": 1.315716869,
-      "verify_run_seconds": 1.094082265
+      "weights_run_seconds": 1.006707222,
+      "verify_run_seconds": 0.824916285
     },
     {
       "spec": "rogue-subtlety",
@@ -3298,243 +3458,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001120314245496943,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.3653223854234324
+          "weight": 1.3653223854234324,
+          "error": 0.09634806106173714,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 6.530138422150977
+          "weight": 6.530138422150977,
+          "error": 0.3380496704833443,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.3622250219100134
+          "weight": 3.3622250219100134,
+          "error": 1.034935070257303,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 4.160236000902116
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 17715,
-          "item_name": "Eye of Theradras",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
-          "score": 91.42193791011368,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 7731,
-          "item_name": "Ghostshard Talisman",
-          "source": "Scarlet Monastery: Azshir the Sleepless",
-          "source_kind": "dungeon",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 15822,
-          "item_name": "Shadowskin Spaulders",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 24.575802937621784,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 8195,
-          "item_name": "Nightscape Cloak",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 13.653223854234325,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 15064,
-          "item_name": "Warbear Harness",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 24.575802937621784,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 19589,
-          "item_name": "Forest Stalker's Bracers",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 23.21048055219835,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 7348,
-          "item_name": "Fletcher's Gloves",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 91.42193791011368,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 10403,
-          "item_name": "Blackened Defias Belt",
-          "source": "The Deadmines: Captain Greenskin",
-          "source_kind": "dungeon",
-          "score": 18,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 15057,
-          "item_name": "Stormshroud Pants",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 182.84387582022737,
-          "verified": false,
-          "swap_note": "runner-up Ferine Leggings (id 6690) measured higher: 69.0 vs 69.0 set DPS - swapped in"
-        },
-        {
-          "slot": "feet",
-          "item_id": 17728,
-          "item_name": "Albino Crocscale Boots",
-          "source": "Maraudon: Rotgrip",
-          "source_kind": "dungeon",
-          "score": 27.30644770846865,
-          "verified": false,
-          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 69.1 vs 69.0 set DPS - swapped in"
-        },
-        {
-          "slot": "finger1",
-          "item_id": 17713,
-          "item_name": "Blackstone Ring",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
-          "score": 53.62225021910013,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 9533,
-          "item_name": "Masons Fraternity Ring",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 19.114513395928054,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 10659,
-          "item_name": "Shard of the Splithooves",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 17719,
-          "item_name": "Inventor's Focal Sword",
-          "source": "Maraudon: Tinkerer Gizlock",
-          "source_kind": "dungeon",
-          "score": 584.6419379101137,
-          "verified": false,
-          "swap_note": "runner-up Enchanted Azsharite Felbane Sword (id 10696) measured higher: 76.9 vs 69.0 set DPS - swapped in"
-        },
-        {
-          "slot": "off_hand",
-          "item_id": 17738,
-          "item_name": "Claw of Celebras",
-          "source": "Maraudon: Celebras the Cursed",
-          "source_kind": "dungeon",
-          "score": 482.15999999999997,
-          "verified": true
-        },
-        {
-          "slot": "ranged",
-          "item_id": 11628,
-          "item_name": "Houndmaster's Bow",
-          "source": "Blackrock Depths: Houndmaster Grebmar",
-          "source_kind": "dungeon",
-          "score": 12,
-          "verified": true
-        }
-      ],
-      "set_dps": 68.9549555146806,
-      "no_source_count": 2601,
-      "no_source_sample": [
-        "720 Brawler Gloves",
-        "727 Notched Shortsword",
-        "753 Dragonmaw Shortsword",
-        "754 Shortsword of Vengeance",
-        "789 Stout Battlehammer",
-        "810 Hammer of the Northern Wind",
-        "816 Small Hand Blade",
-        "820 Slicer Blade",
-        "821 Riverpaw Leather Vest",
-        "827 Wicked Blackjack",
-        "864 Knightly Longsword",
-        "865 Leaden Mace",
-        "867 Gloves of Holy Might",
-        "868 Ardent Custodian",
-        "886 Black Metal Shortsword"
-      ],
-      "new_at_band": [
-        "head: Eye of Theradras",
-        "shoulder: Shadowskin Spaulders",
-        "chest: Warbear Harness",
-        "wrist: Forest Stalker's Bracers",
-        "legs: Stormshroud Pants",
-        "feet: Albino Crocscale Boots",
-        "finger1: Blackstone Ring",
-        "finger2: Masons Fraternity Ring",
-        "main_hand: Inventor's Focal Sword",
-        "off_hand: Claw of Celebras",
-        "ranged: Houndmaster's Bow"
-      ],
-      "weights_run_seconds": 1.338837609,
-      "verify_run_seconds": 1.392079877
-    },
-    {
-      "spec": "rogue-subtlety",
-      "band": 50,
-      "faction": "horde",
-      "race": "troll",
-      "talents": "00500000000000000-32000000000000000-5322210310013011051",
-      "talent_points": 41,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1
-        },
-        {
-          "stat": "agility",
-          "weight": 1.3653223854234324
-        },
-        {
-          "stat": "crit",
-          "weight": 6.530138422150977
-        },
-        {
-          "stat": "hit",
-          "weight": 3.3622250219100134
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 4.160236000902116
+          "weight": 4.160236000902116,
+          "error": 2.5631400661233608,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3627,7 +3577,7 @@
           "source_kind": "dungeon",
           "score": 27.30644770846865,
           "verified": false,
-          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 67.8 vs 67.7 set DPS - swapped in"
+          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 77.0 vs 76.9 set DPS - swapped in"
         },
         {
           "slot": "finger1",
@@ -3665,13 +3615,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 17719,
-          "item_name": "Inventor's Focal Sword",
-          "source": "Maraudon: Tinkerer Gizlock",
-          "source_kind": "dungeon",
-          "score": 584.6419379101137,
-          "verified": false,
-          "swap_note": "runner-up Enchanted Azsharite Felbane Sword (id 10696) measured higher: 75.5 vs 67.7 set DPS - swapped in"
+          "item_id": 10696,
+          "item_name": "Enchanted Azsharite Felbane Sword",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 518.5,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3692,7 +3641,7 @@
           "verified": true
         }
       ],
-      "set_dps": 67.66183302251673,
+      "set_dps": 76.94637512742946,
       "no_source_count": 2601,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3720,12 +3669,238 @@
         "feet: Albino Crocscale Boots",
         "finger1: Blackstone Ring",
         "finger2: Masons Fraternity Ring",
-        "main_hand: Inventor's Focal Sword",
         "off_hand: Claw of Celebras",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 1.338837609,
-      "verify_run_seconds": 1.406423533
+      "weights_run_seconds": 1.004489012,
+      "verify_run_seconds": 1.067349318
+    },
+    {
+      "spec": "rogue-subtlety",
+      "band": 50,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "00500000000000000-32000000000000000-5322210310013011051",
+      "talent_points": 41,
+      "weights": [
+        {
+          "stat": "attack_power",
+          "weight": 1,
+          "error": 0.001120314245496943,
+          "insignificant": false
+        },
+        {
+          "stat": "agility",
+          "weight": 1.3653223854234324,
+          "error": 0.09634806106173714,
+          "insignificant": false
+        },
+        {
+          "stat": "crit",
+          "weight": 6.530138422150977,
+          "error": 0.3380496704833443,
+          "insignificant": false
+        },
+        {
+          "stat": "hit",
+          "weight": 3.3622250219100134,
+          "error": 1.034935070257303,
+          "insignificant": true
+        },
+        {
+          "stat": "melee_haste",
+          "weight": 4.160236000902116,
+          "error": 2.5631400661233608,
+          "insignificant": true
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 17715,
+          "item_name": "Eye of Theradras",
+          "source": "Maraudon: Princess Theradras",
+          "source_kind": "dungeon",
+          "score": 91.42193791011368,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 7731,
+          "item_name": "Ghostshard Talisman",
+          "source": "Scarlet Monastery: Azshir the Sleepless",
+          "source_kind": "dungeon",
+          "score": 14,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 15822,
+          "item_name": "Shadowskin Spaulders",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 24.575802937621784,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 8195,
+          "item_name": "Nightscape Cloak",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 13.653223854234325,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 15064,
+          "item_name": "Warbear Harness",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 24.575802937621784,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 19589,
+          "item_name": "Forest Stalker's Bracers",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 23.21048055219835,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 7348,
+          "item_name": "Fletcher's Gloves",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 91.42193791011368,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10403,
+          "item_name": "Blackened Defias Belt",
+          "source": "The Deadmines: Captain Greenskin",
+          "source_kind": "dungeon",
+          "score": 18,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15057,
+          "item_name": "Stormshroud Pants",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 182.84387582022737,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 17728,
+          "item_name": "Albino Crocscale Boots",
+          "source": "Maraudon: Rotgrip",
+          "source_kind": "dungeon",
+          "score": 27.30644770846865,
+          "verified": false,
+          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 75.5 vs 75.5 set DPS - swapped in"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 17713,
+          "item_name": "Blackstone Ring",
+          "source": "Maraudon: Princess Theradras",
+          "source_kind": "dungeon",
+          "score": 53.62225021910013,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 9533,
+          "item_name": "Masons Fraternity Ring",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 19.114513395928054,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 10696,
+          "item_name": "Enchanted Azsharite Felbane Sword",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 518.5,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 17738,
+          "item_name": "Claw of Celebras",
+          "source": "Maraudon: Celebras the Cursed",
+          "source_kind": "dungeon",
+          "score": 482.15999999999997,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 11628,
+          "item_name": "Houndmaster's Bow",
+          "source": "Blackrock Depths: Houndmaster Grebmar",
+          "source_kind": "dungeon",
+          "score": 12,
+          "verified": true
+        }
+      ],
+      "set_dps": 75.47182328191786,
+      "no_source_count": 2601,
+      "no_source_sample": [
+        "720 Brawler Gloves",
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "789 Stout Battlehammer",
+        "810 Hammer of the Northern Wind",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "821 Riverpaw Leather Vest",
+        "827 Wicked Blackjack",
+        "864 Knightly Longsword",
+        "865 Leaden Mace",
+        "867 Gloves of Holy Might",
+        "868 Ardent Custodian",
+        "886 Black Metal Shortsword"
+      ],
+      "new_at_band": [
+        "head: Eye of Theradras",
+        "shoulder: Shadowskin Spaulders",
+        "chest: Warbear Harness",
+        "wrist: Forest Stalker's Bracers",
+        "legs: Stormshroud Pants",
+        "feet: Albino Crocscale Boots",
+        "finger1: Blackstone Ring",
+        "finger2: Masons Fraternity Ring",
+        "off_hand: Claw of Celebras",
+        "ranged: Houndmaster's Bow"
+      ],
+      "weights_run_seconds": 1.004489012,
+      "verify_run_seconds": 1.066714514
     },
     {
       "spec": "rogue-subtlety",
@@ -3737,23 +3912,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011296072428142823,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.2901697325853556
+          "weight": 1.2901697325853556,
+          "error": 0.0867269437165432,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 6.789905727734781
+          "weight": 6.789905727734781,
+          "error": 0.34711609785086023,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.4269987262670014
+          "weight": 3.4269987262670014,
+          "error": 1.0530812867040193,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 4.123663549319062
+          "weight": 4.123663549319062,
+          "error": 2.5730691953245795,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3765,7 +3950,7 @@
           "source_kind": "dungeon",
           "score": 190.11736037657386,
           "verified": false,
-          "swap_note": "runner-up Mask of the Unforgiven (id 13404) measured higher: 78.8 vs 78.5 set DPS - swapped in"
+          "swap_note": "runner-up Mask of the Unforgiven (id 13404) measured higher: 90.4 vs 90.3 set DPS - swapped in"
         },
         {
           "slot": "neck",
@@ -3838,7 +4023,7 @@
           "source_kind": "crafted",
           "score": 190.11736037657386,
           "verified": false,
-          "swap_note": "runner-up Devilsaur Leggings (id 15062) measured higher: 80.6 vs 78.5 set DPS - swapped in"
+          "swap_note": "runner-up Devilsaur Leggings (id 15062) measured higher: 92.2 vs 90.3 set DPS - swapped in"
         },
         {
           "slot": "feet",
@@ -3885,13 +4070,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 17719,
-          "item_name": "Inventor's Focal Sword",
-          "source": "Maraudon: Tinkerer Gizlock",
-          "source_kind": "dungeon",
-          "score": 588.2786801882869,
-          "verified": false,
-          "swap_note": "runner-up Mirah's Song (id 15806) measured higher: 89.2 vs 78.5 set DPS - swapped in"
+          "item_id": 12777,
+          "item_name": "Blazing Rapier",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 518.84,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3909,11 +4093,10 @@
           "source": "Blackrock Spire: Shadow Hunter Vosh'gajin",
           "source_kind": "dungeon",
           "score": 34.71349773415908,
-          "verified": false,
-          "swap_note": "runner-up Houndmaster's Bow (id 11628) measured higher: 78.6 vs 78.5 set DPS - swapped in"
+          "verified": true
         }
       ],
-      "set_dps": 78.54130589573306,
+      "set_dps": 90.27525425218771,
       "no_source_count": 2817,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3943,10 +4126,11 @@
         "finger1: Band of the Penitent",
         "finger2: Blackstone Ring",
         "trinket1: Smokey's Lighter",
+        "main_hand: Blazing Rapier",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.327452138,
-      "verify_run_seconds": 1.422091373
+      "weights_run_seconds": 0.998691104,
+      "verify_run_seconds": 1.077972379
     },
     {
       "spec": "rogue-subtlety",
@@ -3958,23 +4142,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011296072428142823,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.2901697325853556
+          "weight": 1.2901697325853556,
+          "error": 0.0867269437165432,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 6.789905727734781
+          "weight": 6.789905727734781,
+          "error": 0.34711609785086023,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.4269987262670014
+          "weight": 3.4269987262670014,
+          "error": 1.0530812867040193,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 4.123663549319062
+          "weight": 4.123663549319062,
+          "error": 2.5730691953245795,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3985,7 +4179,8 @@
           "source": "Blackrock Depths: Guzzler",
           "source_kind": "dungeon",
           "score": 190.11736037657386,
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Mask of the Unforgiven (id 13404) measured higher: 88.9 vs 88.8 set DPS - swapped in"
         },
         {
           "slot": "neck",
@@ -4058,7 +4253,7 @@
           "source_kind": "crafted",
           "score": 190.11736037657386,
           "verified": false,
-          "swap_note": "runner-up Devilsaur Leggings (id 15062) measured higher: 78.5 vs 77.3 set DPS - swapped in"
+          "swap_note": "runner-up Devilsaur Leggings (id 15062) measured higher: 90.4 vs 88.8 set DPS - swapped in"
         },
         {
           "slot": "feet",
@@ -4105,13 +4300,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 17719,
-          "item_name": "Inventor's Focal Sword",
-          "source": "Maraudon: Tinkerer Gizlock",
-          "source_kind": "dungeon",
-          "score": 588.2786801882869,
-          "verified": false,
-          "swap_note": "runner-up Mirah's Song (id 15806) measured higher: 88.1 vs 77.3 set DPS - swapped in"
+          "item_id": 12777,
+          "item_name": "Blazing Rapier",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 518.84,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -4132,7 +4326,7 @@
           "verified": true
         }
       ],
-      "set_dps": 77.3197321577625,
+      "set_dps": 88.77436303118995,
       "no_source_count": 2817,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4162,10 +4356,11 @@
         "finger1: Band of the Penitent",
         "finger2: Blackstone Ring",
         "trinket1: Smokey's Lighter",
+        "main_hand: Blazing Rapier",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.327452138,
-      "verify_run_seconds": 1.442011101
+      "weights_run_seconds": 0.998691104,
+      "verify_run_seconds": 1.09964199
     },
     {
       "spec": "rogue-subtlety",
@@ -4177,23 +4372,270 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011392925399602149,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.3473699946803497
+          "weight": 1.3473699946803497,
+          "error": 0.11501418581759494,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.961024471604551
+          "weight": 7.961024471604551,
+          "error": 0.48835922369470836,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.418026408125484
+          "weight": 4.418026408125484,
+          "error": 1.649548859966186,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 4.77456365838532
+          "weight": 4.77456365838532,
+          "error": 4.091473006352602,
+          "insignificant": true
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 22478,
+          "item_name": "Bonescythe Helmet",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 307.5100491265927,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 23053,
+          "item_name": "Stormrage's Talisman of Seething",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 248.90868520492742,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 22479,
+          "item_name": "Bonescythe Pauldrons",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 185.27674656668623,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 18509,
+          "item_name": "Chromatic Cloak",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 111.45434260246371,
+          "verified": false,
+          "swap_note": "runner-up Cloak of Veiled Shadows (id 21406) measured higher: 229.6 vs 226.3 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 22476,
+          "item_name": "Bonescythe Breastplate",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 347.08894928618224,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 22483,
+          "item_name": "Bonescythe Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 146.4859624641528,
+          "verified": false,
+          "swap_note": "runner-up Qiraji Execution Bracers (id 21602) measured higher: 226.3 vs 226.3 set DPS - swapped in"
+        },
+        {
+          "slot": "hands",
+          "item_id": 22481,
+          "item_name": "Bonescythe Gauntlets",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 221.63460668371857,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 21586,
+          "item_name": "Belt of Never-ending Agony",
+          "source": "Ahn'Qiraj",
+          "source_kind": "raid",
+          "score": 219.63460668371857,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 16456,
+          "item_name": "Marshal's Leather Leggings",
+          "source": "Rank 16",
+          "source_kind": "pvp",
+          "score": 236.19386062134282,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 22480,
+          "item_name": "Bonescythe Sabatons",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 219.63460668371854,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 23038,
+          "item_name": "Band of Unnatural Forces",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 207.63460668371854,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 19325,
+          "item_name": "Don Julio's Band",
+          "source": "Frostwolf Clan",
+          "source_kind": "rep",
+          "score": 171.63460668371854,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 23041,
+          "item_name": "Slayer's Crest",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 64,
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 22954,
+          "item_name": "Kiss of the Spider",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 155.63460668371854,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 19019,
+          "item_name": "Thunderfury, Blessed Blade of the Windseeker",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 762.0368499734018,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 18847,
+          "item_name": "Grand Marshal's Left Hand Blade",
+          "source": "Rank 18",
+          "source_kind": "pvp",
+          "score": 972.1743426024636,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "item_id": 23557,
+          "item_name": "Larvae of the Great Worm",
+          "source": "Ahn'Qiraj",
+          "source_kind": "raid",
+          "score": 129.45434260246373,
+          "verified": true
+        }
+      ],
+      "set_dps": 226.30370444224158,
+      "no_source_count": 3283,
+      "no_source_sample": [
+        "720 Brawler Gloves",
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "789 Stout Battlehammer",
+        "810 Hammer of the Northern Wind",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "821 Riverpaw Leather Vest",
+        "827 Wicked Blackjack",
+        "864 Knightly Longsword",
+        "865 Leaden Mace",
+        "867 Gloves of Holy Might",
+        "868 Ardent Custodian",
+        "886 Black Metal Shortsword"
+      ],
+      "new_at_band": [
+        "head: Bonescythe Helmet",
+        "neck: Stormrage's Talisman of Seething",
+        "shoulder: Bonescythe Pauldrons",
+        "back: Chromatic Cloak",
+        "chest: Bonescythe Breastplate",
+        "wrist: Bonescythe Bracers",
+        "hands: Bonescythe Gauntlets",
+        "waist: Belt of Never-ending Agony",
+        "legs: Marshal's Leather Leggings",
+        "feet: Bonescythe Sabatons",
+        "finger1: Band of Unnatural Forces",
+        "finger2: Don Julio's Band",
+        "trinket1: Slayer's Crest",
+        "trinket2: Kiss of the Spider",
+        "main_hand: Thunderfury, Blessed Blade of the Windseeker",
+        "off_hand: Grand Marshal's Left Hand Blade",
+        "ranged: Larvae of the Great Worm"
+      ],
+      "weights_run_seconds": 1.01436945,
+      "verify_run_seconds": 1.093641692
+    },
+    {
+      "spec": "rogue-subtlety",
+      "band": 60,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "00500000000000000-32513100000000000-5322210310013011051",
+      "talent_points": 51,
+      "weights": [
+        {
+          "stat": "attack_power",
+          "weight": 1,
+          "error": 0.0011392925399602149,
+          "insignificant": false
+        },
+        {
+          "stat": "agility",
+          "weight": 1.3473699946803497,
+          "error": 0.11501418581759494,
+          "insignificant": false
+        },
+        {
+          "stat": "crit",
+          "weight": 7.961024471604551,
+          "error": 0.48835922369470836,
+          "insignificant": false
+        },
+        {
+          "stat": "hit",
+          "weight": 4.418026408125484,
+          "error": 1.649548859966186,
+          "insignificant": true
+        },
+        {
+          "stat": "melee_haste",
+          "weight": 4.77456365838532,
+          "error": 4.091473006352602,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -4221,7 +4663,7 @@
           "item_name": "Bonescythe Pauldrons",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 185.27674656668626,
+          "score": 185.27674656668623,
           "verified": true
         },
         {
@@ -4232,7 +4674,7 @@
           "source_kind": "crafted",
           "score": 111.45434260246371,
           "verified": false,
-          "swap_note": "runner-up Cloak of Veiled Shadows (id 21406) measured higher: 193.1 vs 190.8 set DPS - swapped in"
+          "swap_note": "runner-up Cloak of Veiled Shadows (id 21406) measured higher: 227.6 vs 225.0 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -4285,7 +4727,7 @@
           "item_name": "Bonescythe Sabatons",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 219.63460668371854,
+          "score": 219.63460668371857,
           "verified": true
         },
         {
@@ -4326,11 +4768,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 23577,
-          "item_name": "The Hungering Cold",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 1022,
+          "item_id": 19019,
+          "item_name": "Thunderfury, Blessed Blade of the Windseeker",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 762.0368499734018,
           "verified": true
         },
         {
@@ -4352,7 +4794,7 @@
           "verified": true
         }
       ],
-      "set_dps": 190.82500303966992,
+      "set_dps": 225.01878243327695,
       "no_source_count": 3283,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4386,238 +4828,12 @@
         "finger2: Don Julio's Band",
         "trinket1: Slayer's Crest",
         "trinket2: Kiss of the Spider",
-        "main_hand: The Hungering Cold",
+        "main_hand: Thunderfury, Blessed Blade of the Windseeker",
         "off_hand: Grand Marshal's Left Hand Blade",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.315867964,
-      "verify_run_seconds": 1.460902095
-    },
-    {
-      "spec": "rogue-subtlety",
-      "band": 60,
-      "faction": "horde",
-      "race": "troll",
-      "talents": "00500000000000000-32513100000000000-5322210310013011051",
-      "talent_points": 51,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1
-        },
-        {
-          "stat": "agility",
-          "weight": 1.3473699946803497
-        },
-        {
-          "stat": "crit",
-          "weight": 7.961024471604551
-        },
-        {
-          "stat": "hit",
-          "weight": 4.418026408125484
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 4.77456365838532
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 22478,
-          "item_name": "Bonescythe Helmet",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 307.5100491265928,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 23053,
-          "item_name": "Stormrage's Talisman of Seething",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 248.90868520492742,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 22479,
-          "item_name": "Bonescythe Pauldrons",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 185.27674656668626,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 18509,
-          "item_name": "Chromatic Cloak",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 111.45434260246371,
-          "verified": false,
-          "swap_note": "runner-up Cloak of Veiled Shadows (id 21406) measured higher: 191.2 vs 189.0 set DPS - swapped in"
-        },
-        {
-          "slot": "chest",
-          "item_id": 22476,
-          "item_name": "Bonescythe Breastplate",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 347.0889492861823,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 22483,
-          "item_name": "Bonescythe Bracers",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 146.4859624641528,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 22481,
-          "item_name": "Bonescythe Gauntlets",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 221.63460668371857,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 21586,
-          "item_name": "Belt of Never-ending Agony",
-          "source": "Ahn'Qiraj",
-          "source_kind": "raid",
-          "score": 219.63460668371854,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 16456,
-          "item_name": "Marshal's Leather Leggings",
-          "source": "Rank 16",
-          "source_kind": "pvp",
-          "score": 236.19386062134282,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 22480,
-          "item_name": "Bonescythe Sabatons",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 219.63460668371854,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 23038,
-          "item_name": "Band of Unnatural Forces",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 207.63460668371857,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 19325,
-          "item_name": "Don Julio's Band",
-          "source": "Frostwolf Clan",
-          "source_kind": "rep",
-          "score": 171.63460668371854,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 23041,
-          "item_name": "Slayer's Crest",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 64,
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 22954,
-          "item_name": "Kiss of the Spider",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 155.63460668371854,
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 23577,
-          "item_name": "The Hungering Cold",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 1022,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "item_id": 18847,
-          "item_name": "Grand Marshal's Left Hand Blade",
-          "source": "Rank 18",
-          "source_kind": "pvp",
-          "score": 972.1743426024636,
-          "verified": true
-        },
-        {
-          "slot": "ranged",
-          "item_id": 23557,
-          "item_name": "Larvae of the Great Worm",
-          "source": "Ahn'Qiraj",
-          "source_kind": "raid",
-          "score": 129.45434260246373,
-          "verified": true
-        }
-      ],
-      "set_dps": 188.97021913421358,
-      "no_source_count": 3283,
-      "no_source_sample": [
-        "720 Brawler Gloves",
-        "727 Notched Shortsword",
-        "753 Dragonmaw Shortsword",
-        "754 Shortsword of Vengeance",
-        "789 Stout Battlehammer",
-        "810 Hammer of the Northern Wind",
-        "816 Small Hand Blade",
-        "820 Slicer Blade",
-        "821 Riverpaw Leather Vest",
-        "827 Wicked Blackjack",
-        "864 Knightly Longsword",
-        "865 Leaden Mace",
-        "867 Gloves of Holy Might",
-        "868 Ardent Custodian",
-        "886 Black Metal Shortsword"
-      ],
-      "new_at_band": [
-        "head: Bonescythe Helmet",
-        "neck: Stormrage's Talisman of Seething",
-        "shoulder: Bonescythe Pauldrons",
-        "back: Chromatic Cloak",
-        "chest: Bonescythe Breastplate",
-        "wrist: Bonescythe Bracers",
-        "hands: Bonescythe Gauntlets",
-        "waist: Belt of Never-ending Agony",
-        "legs: Marshal's Leather Leggings",
-        "feet: Bonescythe Sabatons",
-        "finger1: Band of Unnatural Forces",
-        "finger2: Don Julio's Band",
-        "trinket1: Slayer's Crest",
-        "trinket2: Kiss of the Spider",
-        "main_hand: The Hungering Cold",
-        "off_hand: Grand Marshal's Left Hand Blade",
-        "ranged: Larvae of the Great Worm"
-      ],
-      "weights_run_seconds": 1.315867964,
-      "verify_run_seconds": 1.4672660290000001
+      "weights_run_seconds": 1.01436945,
+      "verify_run_seconds": 1.104278886
     }
   ]
 }

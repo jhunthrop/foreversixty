@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:26:14Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:13:41Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -14,27 +14,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012905214601078424,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999999225
+          "weight": 1.9999999999999225,
+          "error": 0.0025810429202170254,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.17064817837259214
+          "weight": 0.17064817837259214,
+          "error": 0.01820809724641069,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.594960145702248
+          "weight": 3.594960145702248,
+          "error": 0.08492523657574595,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.4864432681482884
+          "weight": 2.4864432681482884,
+          "error": 0.13411481808161876,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.0849816378202193
+          "weight": 2.0849816378202193,
+          "error": 0.03362151564680401,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -173,8 +185,8 @@
         "feet: Padded Lamellar Boots",
         "main_hand: Copper Battle Axe"
       ],
-      "weights_run_seconds": 1.360212555,
-      "verify_run_seconds": 0.469786996
+      "weights_run_seconds": 0.993204381,
+      "verify_run_seconds": 0.343161041
     },
     {
       "spec": "shaman-enhancement",
@@ -186,27 +198,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012905214601078424,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999999225
+          "weight": 1.9999999999999225,
+          "error": 0.0025810429202170254,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.17064817837259214
+          "weight": 0.17064817837259214,
+          "error": 0.01820809724641069,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.594960145702248
+          "weight": 3.594960145702248,
+          "error": 0.08492523657574595,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.4864432681482884
+          "weight": 2.4864432681482884,
+          "error": 0.13411481808161876,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.0849816378202193
+          "weight": 2.0849816378202193,
+          "error": 0.03362151564680401,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -344,8 +368,8 @@
         "feet: Padded Lamellar Boots",
         "main_hand: Copper Battle Axe"
       ],
-      "weights_run_seconds": 1.360212555,
-      "verify_run_seconds": 0.439010998
+      "weights_run_seconds": 0.993204381,
+      "verify_run_seconds": 0.328316011
     },
     {
       "spec": "shaman-enhancement",
@@ -357,27 +381,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014871413651506684,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999998896
+          "weight": 1.9999999999998896,
+          "error": 0.0029742827303018008,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.19887652529801939
+          "weight": 0.19887652529801939,
+          "error": 0.023575619384677338,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.104862987845666
+          "weight": 4.104862987845666,
+          "error": 0.10331569727464682,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.0531551781096034
+          "weight": 3.0531551781096034,
+          "error": 0.21706803922952167,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.2683408751961074
+          "weight": 2.2683408751961074,
+          "error": 0.04314156192173458,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -535,8 +571,8 @@
         "main_hand: Big Bronze Knife",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.3872992370000001,
-      "verify_run_seconds": 0.678388006
+      "weights_run_seconds": 1.058451275,
+      "verify_run_seconds": 0.508716161
     },
     {
       "spec": "shaman-enhancement",
@@ -548,27 +584,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014871413651506684,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999998896
+          "weight": 1.9999999999998896,
+          "error": 0.0029742827303018008,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.19887652529801939
+          "weight": 0.19887652529801939,
+          "error": 0.023575619384677338,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.104862987845666
+          "weight": 4.104862987845666,
+          "error": 0.10331569727464682,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.0531551781096034
+          "weight": 3.0531551781096034,
+          "error": 0.21706803922952167,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.2683408751961074
+          "weight": 2.2683408751961074,
+          "error": 0.04314156192173458,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -725,8 +773,8 @@
         "main_hand: Big Bronze Knife",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.3872992370000001,
-      "verify_run_seconds": 0.650070319
+      "weights_run_seconds": 1.058451275,
+      "verify_run_seconds": 0.502010577
     },
     {
       "spec": "shaman-enhancement",
@@ -738,27 +786,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015456437494643074,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999999776
+          "weight": 1.9999999999999776,
+          "error": 0.003091287498927731,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.24362405631124065
+          "weight": 0.24362405631124065,
+          "error": 0.02612525476296985,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.527046683967543
+          "weight": 4.527046683967543,
+          "error": 0.1145915067797124,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.6488580097886816
+          "weight": 3.6488580097886816,
+          "error": 0.23244362093232473,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.4524562234392593
+          "weight": 2.4524562234392593,
+          "error": 0.4955483063597052,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -932,8 +992,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.384614442,
-      "verify_run_seconds": 0.809758901
+      "weights_run_seconds": 1.059486273,
+      "verify_run_seconds": 0.60896148
     },
     {
       "spec": "shaman-enhancement",
@@ -945,27 +1005,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015456437494643074,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999999776
+          "weight": 1.9999999999999776,
+          "error": 0.003091287498927731,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.24362405631124065
+          "weight": 0.24362405631124065,
+          "error": 0.02612525476296985,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.527046683967543
+          "weight": 4.527046683967543,
+          "error": 0.1145915067797124,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.6488580097886816
+          "weight": 3.6488580097886816,
+          "error": 0.23244362093232473,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.4524562234392593
+          "weight": 2.4524562234392593,
+          "error": 0.4955483063597052,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1141,8 +1213,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.384614442,
-      "verify_run_seconds": 0.782728079
+      "weights_run_seconds": 1.059486273,
+      "verify_run_seconds": 0.564724076
     },
     {
       "spec": "shaman-enhancement",
@@ -1154,27 +1226,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015444885884928936,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999998224
+          "weight": 1.9999999999998224,
+          "error": 0.003088977176985191,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.27113779523884785
+          "weight": 0.27113779523884785,
+          "error": 0.031177195065560468,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 5.053671162844674
+          "weight": 5.053671162844674,
+          "error": 0.1488790178071291,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.30602440511456
+          "weight": 4.30602440511456,
+          "error": 0.3593464211709059,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.6293305711185617
+          "weight": 2.6293305711185617,
+          "error": 0.9823772853052987,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1346,8 +1430,8 @@
         "finger2: Monkey Ring",
         "main_hand: Rod of the Sleepwalker"
       ],
-      "weights_run_seconds": 1.402142024,
-      "verify_run_seconds": 0.896192625
+      "weights_run_seconds": 1.043664351,
+      "verify_run_seconds": 0.692547029
     },
     {
       "spec": "shaman-enhancement",
@@ -1359,27 +1443,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015444885884928936,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999998224
+          "weight": 1.9999999999998224,
+          "error": 0.003088977176985191,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.27113779523884785
+          "weight": 0.27113779523884785,
+          "error": 0.031177195065560468,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 5.053671162844674
+          "weight": 5.053671162844674,
+          "error": 0.1488790178071291,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.30602440511456
+          "weight": 4.30602440511456,
+          "error": 0.3593464211709059,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.6293305711185617
+          "weight": 2.6293305711185617,
+          "error": 0.9823772853052987,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1549,8 +1645,8 @@
         "finger2: Monkey Ring",
         "main_hand: Rod of the Sleepwalker"
       ],
-      "weights_run_seconds": 1.402142024,
-      "verify_run_seconds": 0.848732385
+      "weights_run_seconds": 1.043664351,
+      "verify_run_seconds": 0.624158388
     },
     {
       "spec": "shaman-enhancement",
@@ -1562,27 +1658,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0017507012666696557,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.000000000000333
+          "weight": 2.000000000000333,
+          "error": 0.003501402533339931,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.36763673645415673
+          "weight": 0.36763673645415673,
+          "error": 0.041050094966317896,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.049930444510568
+          "weight": 7.049930444510568,
+          "error": 0.18395200701566983,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.259660340395223
+          "weight": 5.259660340395223,
+          "error": 0.3591967173845549,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.91283326468399
+          "weight": 2.91283326468399,
+          "error": 0.053510732926372005,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1763,8 +1871,8 @@
         "finger2: Silverlaine's Family Seal",
         "main_hand: Corpsemaker"
       ],
-      "weights_run_seconds": 1.378924295,
-      "verify_run_seconds": 0.959889543
+      "weights_run_seconds": 1.045551935,
+      "verify_run_seconds": 0.729048141
     },
     {
       "spec": "shaman-enhancement",
@@ -1776,27 +1884,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0017507012666696557,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.000000000000333
+          "weight": 2.000000000000333,
+          "error": 0.003501402533339931,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.36763673645415673
+          "weight": 0.36763673645415673,
+          "error": 0.041050094966317896,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.049930444510568
+          "weight": 7.049930444510568,
+          "error": 0.18395200701566983,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.259660340395223
+          "weight": 5.259660340395223,
+          "error": 0.3591967173845549,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.91283326468399
+          "weight": 2.91283326468399,
+          "error": 0.053510732926372005,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1975,8 +2095,8 @@
         "finger2: Silverlaine's Family Seal",
         "main_hand: Corpsemaker"
       ],
-      "weights_run_seconds": 1.378924295,
-      "verify_run_seconds": 0.883187098
+      "weights_run_seconds": 1.045551935,
+      "verify_run_seconds": 0.691331725
     },
     {
       "spec": "shaman-enhancement",
@@ -1988,27 +2108,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001752578655886309,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999992881
+          "weight": 1.9999999999992881,
+          "error": 0.0035051573117719638,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.37178025432154055
+          "weight": 0.37178025432154055,
+          "error": 0.048709925948736243,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 6.901132084213099
+          "weight": 6.901132084213099,
+          "error": 0.2056924256911079,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.060115606443769
+          "weight": 3.060115606443769,
+          "error": 0.19840255143705218,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.8419261119434607
+          "weight": 2.8419261119434607,
+          "error": 0.39062390202604264,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2083,7 +2215,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 21.99999999999217,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2180,8 +2313,8 @@
         "feet: Excelsior Boots",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 1.5858551589999998,
-      "verify_run_seconds": 1.042805005
+      "weights_run_seconds": 1.204515819,
+      "verify_run_seconds": 0.772023928
     },
     {
       "spec": "shaman-enhancement",
@@ -2193,27 +2326,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001752578655886309,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999992881
+          "weight": 1.9999999999992881,
+          "error": 0.0035051573117719638,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.37178025432154055
+          "weight": 0.37178025432154055,
+          "error": 0.048709925948736243,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 6.901132084213099
+          "weight": 6.901132084213099,
+          "error": 0.2056924256911079,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.060115606443769
+          "weight": 3.060115606443769,
+          "error": 0.19840255143705218,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.8419261119434607
+          "weight": 2.8419261119434607,
+          "error": 0.39062390202604264,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2288,7 +2433,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 21.99999999999217,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2385,8 +2531,8 @@
         "feet: Excelsior Boots",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 1.5858551589999998,
-      "verify_run_seconds": 0.956750345
+      "weights_run_seconds": 1.204515819,
+      "verify_run_seconds": 0.743562045
     },
     {
       "spec": "shaman-enhancement",
@@ -2398,27 +2544,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0017417274138876045,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000000404
+          "weight": 2.0000000000000404,
+          "error": 0.003483454827773993,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.3483050775561129
+          "weight": 0.3483050775561129,
+          "error": 0.0427428716768063,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.859336815916824
+          "weight": 7.859336815916824,
+          "error": 0.2750587774919778,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.14800039523279
+          "weight": 4.14800039523279,
+          "error": 0.3247060540779251,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 3.1915696343170015
+          "weight": 3.1915696343170015,
+          "error": 0.6631050580696191,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2494,7 +2652,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 22.000000000000444,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2596,8 +2755,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 1.59416342,
-      "verify_run_seconds": 1.193931763
+      "weights_run_seconds": 1.216088158,
+      "verify_run_seconds": 0.90127535
     },
     {
       "spec": "shaman-enhancement",
@@ -2609,27 +2768,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0017417274138876045,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000000404
+          "weight": 2.0000000000000404,
+          "error": 0.003483454827773993,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.3483050775561129
+          "weight": 0.3483050775561129,
+          "error": 0.0427428716768063,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.859336815916824
+          "weight": 7.859336815916824,
+          "error": 0.2750587774919778,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.14800039523279
+          "weight": 4.14800039523279,
+          "error": 0.3247060540779251,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 3.1915696343170015
+          "weight": 3.1915696343170015,
+          "error": 0.6631050580696191,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2705,7 +2876,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 22.000000000000444,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2808,8 +2980,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 1.59416342,
-      "verify_run_seconds": 1.126080139
+      "weights_run_seconds": 1.216088158,
+      "verify_run_seconds": 0.855222171
     },
     {
       "spec": "shaman-enhancement",
@@ -2821,27 +2993,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0017599886645853272,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.999999999999577
+          "weight": 1.999999999999577,
+          "error": 0.003519977329167485,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.3853566556441801
+          "weight": 0.3853566556441801,
+          "error": 0.051026411250379135,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 8.171720966678224
+          "weight": 8.171720966678224,
+          "error": 0.28265614620113017,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.1426119817038884
+          "weight": 4.1426119817038884,
+          "error": 0.32435328452955464,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 3.2553015391813256
+          "weight": 3.2553015391813256,
+          "error": 0.6290773916453111,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2979,7 +3163,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 692.54,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -3016,8 +3201,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Enchanted Azsharite Felbane Staff"
       ],
-      "weights_run_seconds": 1.61635747,
-      "verify_run_seconds": 1.171262512
+      "weights_run_seconds": 1.2018241729999999,
+      "verify_run_seconds": 0.893126024
     },
     {
       "spec": "shaman-enhancement",
@@ -3029,27 +3214,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0017599886645853272,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.999999999999577
+          "weight": 1.999999999999577,
+          "error": 0.003519977329167485,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.3853566556441801
+          "weight": 0.3853566556441801,
+          "error": 0.051026411250379135,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 8.171720966678224
+          "weight": 8.171720966678224,
+          "error": 0.28265614620113017,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.1426119817038884
+          "weight": 4.1426119817038884,
+          "error": 0.32435328452955464,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 3.2553015391813256
+          "weight": 3.2553015391813256,
+          "error": 0.6290773916453111,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3187,7 +3384,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 692.54,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -3224,8 +3422,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Enchanted Azsharite Felbane Staff"
       ],
-      "weights_run_seconds": 1.61635747,
-      "verify_run_seconds": 1.143260659
+      "weights_run_seconds": 1.2018241729999999,
+      "verify_run_seconds": 0.850486713
     },
     {
       "spec": "shaman-enhancement",
@@ -3237,27 +3435,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0017936617713157563,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999992875
+          "weight": 1.9999999999992875,
+          "error": 0.003587323542628184,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.26288584098551887
+          "weight": 0.26288584098551887,
+          "error": 0.10888045902101136,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 9.152192842450807
+          "weight": 9.152192842450807,
+          "error": 0.3926401213914025,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.866553075522941
+          "weight": 5.866553075522941,
+          "error": 0.5125945714542374,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 3.4570260619656024
+          "weight": 3.4570260619656024,
+          "error": 1.0494536738258944,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3435,8 +3645,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.657808015,
-      "verify_run_seconds": 1.176140421
+      "weights_run_seconds": 1.220765773,
+      "verify_run_seconds": 0.903858076
     },
     {
       "spec": "shaman-enhancement",
@@ -3448,27 +3658,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0017936617713157563,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999992875
+          "weight": 1.9999999999992875,
+          "error": 0.003587323542628184,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.26288584098551887
+          "weight": 0.26288584098551887,
+          "error": 0.10888045902101136,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 9.152192842450807
+          "weight": 9.152192842450807,
+          "error": 0.3926401213914025,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.866553075522941
+          "weight": 5.866553075522941,
+          "error": 0.5125945714542374,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 3.4570260619656024
+          "weight": 3.4570260619656024,
+          "error": 1.0494536738258944,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3648,8 +3870,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.657808015,
-      "verify_run_seconds": 1.114649404
+      "weights_run_seconds": 1.220765773,
+      "verify_run_seconds": 0.857164199
     },
     {
       "spec": "shaman-enhancement",
@@ -3661,27 +3883,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001800427069126194,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000005085
+          "weight": 2.0000000000005085,
+          "error": 0.003600854138254212,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.39210963744443483
+          "weight": 0.39210963744443483,
+          "error": 0.048550016151205584,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 9.729763439957903
+          "weight": 9.729763439957903,
+          "error": 0.28482257210408735,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.979885381116632
+          "weight": 5.979885381116632,
+          "error": 0.49050798325397527,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 3.85023146896151
+          "weight": 3.85023146896151,
+          "error": 0.14675701858597978,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3862,8 +4096,8 @@
         "trinket2: Smokey's Lighter",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.682899336,
-      "verify_run_seconds": 1.207033027
+      "weights_run_seconds": 1.225208411,
+      "verify_run_seconds": 0.915439298
     },
     {
       "spec": "shaman-enhancement",
@@ -3875,27 +4109,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001800427069126194,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000005085
+          "weight": 2.0000000000005085,
+          "error": 0.003600854138254212,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.39210963744443483
+          "weight": 0.39210963744443483,
+          "error": 0.048550016151205584,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 9.729763439957903
+          "weight": 9.729763439957903,
+          "error": 0.28482257210408735,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.979885381116632
+          "weight": 5.979885381116632,
+          "error": 0.49050798325397527,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 3.85023146896151
+          "weight": 3.85023146896151,
+          "error": 0.14675701858597978,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4077,8 +4323,8 @@
         "trinket2: Smokey's Lighter",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.682899336,
-      "verify_run_seconds": 1.157857043
+      "weights_run_seconds": 1.225208411,
+      "verify_run_seconds": 0.892725957
     },
     {
       "spec": "shaman-enhancement",
@@ -4090,27 +4336,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0018197758723633097,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999993325
+          "weight": 1.9999999999993325,
+          "error": 0.00363955174472268,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.581563892742777
+          "weight": 0.581563892742777,
+          "error": 0.10063079514620583,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.608719775156395
+          "weight": 10.608719775156395,
+          "error": 0.3204313272388437,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 7.762864460691363
+          "weight": 7.762864460691363,
+          "error": 0.6224846529819897,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 4.0915679540120395
+          "weight": 4.0915679540120395,
+          "error": 0.15946197793954112,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4131,8 +4389,7 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "score": 323.044153704379,
-          "verified": false,
-          "swap_note": "runner-up Gem of Trapped Innocents (id 23057) measured higher: 156.4 vs 156.0 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -4252,7 +4509,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 1320.3400000000001,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4297,8 +4555,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.7086562060000001,
-      "verify_run_seconds": 1.2318019869999999
+      "weights_run_seconds": 1.271658419,
+      "verify_run_seconds": 0.939286145
     },
     {
       "spec": "shaman-enhancement",
@@ -4310,27 +4568,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0018197758723633097,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999993325
+          "weight": 1.9999999999993325,
+          "error": 0.00363955174472268,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.581563892742777
+          "weight": 0.581563892742777,
+          "error": 0.10063079514620583,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.608719775156395
+          "weight": 10.608719775156395,
+          "error": 0.3204313272388437,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 7.762864460691363
+          "weight": 7.762864460691363,
+          "error": 0.6224846529819897,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 4.0915679540120395
+          "weight": 4.0915679540120395,
+          "error": 0.15946197793954112,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4469,7 +4739,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 1320.3400000000001,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4514,8 +4785,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.7086562060000001,
-      "verify_run_seconds": 1.141661402
+      "weights_run_seconds": 1.271658419,
+      "verify_run_seconds": 0.883315698
     }
   ]
 }

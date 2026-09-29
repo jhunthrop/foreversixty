@@ -6,9 +6,9 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (dwarf, 1000000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 50.7. Weights run: 1.4s. Verify run: 0.5s. 695 eligible items had no known source.
+Set DPS (verified): 50.7. Weights run: 0.9s. Verify run: 0.4s. 695 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.149, crit=7.041, hit=3.706, melee_haste=7.548
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.149 ± 0.050, crit=7.041 ± 0.352, hit=3.706 ± 0.358, melee_haste=7.548 ± 1.157
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -36,9 +36,9 @@ No-known-source sample (15 of 695, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (dwarf, 5100000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 54.6. Weights run: 1.4s. Verify run: 0.8s. 917 eligible items had no known source.
+Set DPS (verified): 54.6. Weights run: 0.9s. Verify run: 0.6s. 917 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.218, crit=7.749, hit=4.497, melee_haste=9.043
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.218 ± 0.067, crit=7.749 ± 0.353, hit=4.497 ± 0.417, melee_haste=9.043 ± 1.146
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -66,9 +66,9 @@ No-known-source sample (15 of 917, see the JSON for more): 727 Notched Shortswor
 
 ### Band 20 (dwarf, 5420000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 65.9. Weights run: 1.8s. Verify run: 1.1s. 1202 eligible items had no known source.
+Set DPS (verified): 65.9. Weights run: 1.1s. Verify run: 0.8s. 1202 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.045, crit=8.414, hit=5.227, melee_haste=14.870
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.045 ± 0.026, crit=8.414 ± 0.367, hit=5.227 ± 0.378, melee_haste=14.870 ± 1.043
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -96,9 +96,9 @@ No-known-source sample (15 of 1202, see the JSON for more): 727 Notched Shortswo
 
 ### Band 25 (dwarf, 5420001400000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 69.0. Weights run: 1.8s. Verify run: 1.4s. 1516 eligible items had no known source.
+Set DPS (verified): 69.0. Weights run: 1.1s. Verify run: 1.0s. 1516 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.227, crit=9.235, hit=5.227, melee_haste=19.335
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.227 ± 0.058, crit=9.235 ± 0.378, hit=5.227 ± 0.364, melee_haste=19.335 ± 1.096
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -126,9 +126,9 @@ No-known-source sample (15 of 1516, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (dwarf, 5420001504000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 85.5. Weights run: 1.9s. Verify run: 1.6s. 1789 eligible items had no known source.
+Set DPS (verified): 85.5. Weights run: 1.2s. Verify run: 1.2s. 1789 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.173, crit=9.432, hit=4.964, melee_haste=5.293
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.173 ± 0.052, crit=9.432 ± 0.385, hit=4.964 ± 0.376, melee_haste=5.293 ± 1.223
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -156,9 +156,9 @@ No-known-source sample (15 of 1789, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (dwarf, 5420001505001210-00000000000000000-000000000000000000)
 
-Set DPS (verified): 89.0. Weights run: 1.9s. Verify run: 1.6s. 2017 eligible items had no known source.
+Set DPS (verified): 89.0. Weights run: 1.2s. Verify run: 1.2s. 2017 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.092, crit=9.663, hit=5.113, melee_haste=6.161
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.092 ± 0.038, crit=9.663 ± 0.402, hit=5.113 ± 0.530, melee_haste=6.161 ± 1.443
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -186,9 +186,9 @@ No-known-source sample (15 of 2017, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (dwarf, 5420001505001251-00000000000000000-000000000000000000)
 
-Set DPS (verified): 97.9. Weights run: 2.1s. Verify run: 1.9s. 2837 eligible items had no known source.
+Set DPS (verified): 97.9. Weights run: 1.3s. Verify run: 1.3s. 2837 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.151, crit=10.452, hit=5.585, melee_haste=10.749
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.151 ± 0.051, crit=10.452 ± 0.422, hit=5.585 ± 0.679, melee_haste=10.749 ± 1.683
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -216,9 +216,9 @@ No-known-source sample (15 of 2837, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (dwarf, 5420001505001251-32000000000000000-000000000000000000)
 
-Set DPS (verified): 104.9. Weights run: 2.0s. Verify run: 1.8s. 3144 eligible items had no known source.
+Set DPS (verified): 104.9. Weights run: 1.3s. Verify run: 1.3s. 3144 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.212, crit=10.543, hit=5.555, melee_haste=13.321
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.212 ± 0.059, crit=10.543 ± 0.426, hit=5.555 ± 0.664, melee_haste=13.321 ± 1.664
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -236,7 +236,7 @@ Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, rang
 | finger2 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 19.9 | no - runner-up Monkey Ring (id 6748) measured higher: 104.9 vs 104.9 set DPS - swapped in |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 147.6 | no - runner-up Illusionary Rod (id 7713) measured higher: 105.4 vs 104.9 set DPS - swapped in |
+| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 147.6 | yes |
 | off_hand | - | - |  |  |
 | ranged | Master Hunter's Bow (17686) | Quests [quest] | 284.6 | no - runner-up Mithril Heavy-bore Rifle (id 10510) measured higher: 106.1 vs 104.9 set DPS - swapped in |
 
@@ -246,39 +246,39 @@ No-known-source sample (15 of 3144, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (dwarf, 5420001505001251-35200000000000000-000000000000000000)
 
-Set DPS (verified): 112.9. Weights run: 2.0s. Verify run: 1.8s. 3485 eligible items had no known source.
+Set DPS (verified): 116.0. Weights run: 1.3s. Verify run: 1.3s. 3485 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.213, crit=10.950, hit=5.684, melee_haste=7.359
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.213 ± 0.065, crit=10.950 ± 0.442, hit=5.684 ± 0.653, melee_haste=7.359 ± 1.728
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 153.3 | no - runner-up Eye of Theradras (id 17715) measured higher: 115.3 vs 112.9 set DPS - swapped in |
+| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 153.3 | no - runner-up Eye of Theradras (id 17715) measured higher: 117.6 vs 116.0 set DPS - swapped in |
 | neck | Pulsating Crystalline Shard (4743) | Quests [quest] | 0.0 | yes |
 | shoulder | Shadowskin Spaulders (15822) | Quests [quest] | 39.8 | yes |
 | back | Nightscape Cloak (8195) | Leatherworking [crafted] | 22.1 | yes |
-| chest | Wildthorn Mail (12624) | Blacksmithing [crafted] | 56.8 | no - runner-up Vest of the Den Watcher (id 21320) measured higher: 114.7 vs 112.9 set DPS - swapped in |
+| chest | Wildthorn Mail (12624) | Blacksmithing [crafted] | 56.8 | no - runner-up Vest of the Den Watcher (id 21320) measured higher: 117.6 vs 116.0 set DPS - swapped in |
 | wrist | Forest Stalker's Bracers (19589) | Silverwing Sentinels [rep] | 37.6 | yes |
 | hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 166.6 | yes |
 | waist | Seared Mail Girdle (19125) | Quests [quest] | 26.6 | yes |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 306.6 | no - runner-up Oilskin Leggings (id 9414) measured higher: 114.2 vs 112.9 set DPS - swapped in |
-| feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 56.8 | no - runner-up Albino Crocscale Boots (id 17728) measured higher: 114.1 vs 112.9 set DPS - swapped in |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 306.6 | no - runner-up Oilskin Leggings (id 9414) measured higher: 117.2 vs 116.0 set DPS - swapped in |
+| feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 56.8 | no - runner-up Albino Crocscale Boots (id 17728) measured higher: 117.6 vs 116.0 set DPS - swapped in |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 56.8 | yes |
 | finger2 | Masons Fraternity Ring (9533) | Quests [quest] | 31.0 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 153.3 | no - runner-up Illusionary Rod (id 7713) measured higher: 113.4 vs 112.9 set DPS - swapped in |
+| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 153.3 | yes |
 | off_hand | - | - |  |  |
-| ranged | Dusksteel Throwing Knife (20086) | Quests [quest] | 404.4 | no - runner-up Dark Iron Rifle (id 16004) measured higher: 114.5 vs 112.9 set DPS - swapped in |
+| ranged | Dark Iron Rifle (16004) | Engineering [crafted] | 396.6 | yes |
 
-**New at 50:** shoulder: Shadowskin Spaulders; chest: Wildthorn Mail; wrist: Forest Stalker's Bracers; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Masons Fraternity Ring; ranged: Dusksteel Throwing Knife
+**New at 50:** shoulder: Shadowskin Spaulders; chest: Wildthorn Mail; wrist: Forest Stalker's Bracers; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Masons Fraternity Ring; ranged: Dark Iron Rifle
 
 No-known-source sample (15 of 3485, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff; 867 Gloves of Holy Might
 
 ### Band 55 (dwarf, 5420001505001251-35510000000000000-100000000000000000)
 
-Set DPS (verified): 123.2. Weights run: 2.0s. Verify run: 1.8s. 3786 eligible items had no known source.
+Set DPS (verified): 123.2. Weights run: 1.3s. Verify run: 1.4s. 3786 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.204, crit=11.773, hit=5.749, melee_haste=6.982
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.204 ± 0.059, crit=11.773 ± 0.465, hit=5.749 ± 0.712, melee_haste=not significant (6.982 ± 1.793)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -296,7 +296,7 @@ Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, rang
 | finger2 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 57.5 | no - runner-up Masons Fraternity Ring (id 9533) measured higher: 124.3 vs 123.2 set DPS - swapped in |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Smokey's Lighter (13171) | Quests [quest] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 164.8 | no - runner-up Illusionary Rod (id 7713) measured higher: 123.4 vs 123.2 set DPS - swapped in |
+| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 164.8 | yes |
 | off_hand | - | - |  |  |
 | ranged | Blackcrow (12651) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | 482.7 | yes |
 
@@ -306,14 +306,14 @@ No-known-source sample (15 of 3786, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (dwarf, 5420001505001251-35510000000000000-510000000000000000)
 
-Set DPS (verified): 216.9. Weights run: 2.0s. Verify run: 1.8s. 4389 eligible items had no known source.
+Set DPS (verified): 216.9. Weights run: 1.3s. Verify run: 1.4s. 4389 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.320, crit=15.653, hit=0.000, melee_haste=13.712
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.320 ± 0.081, crit=15.653 ± 0.588, hit=not significant (0.000 ± 0.000), melee_haste=13.712 ± 1.963
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Cryptstalker Headpiece (22438) | Quests [quest] | 510.2 | yes |
-| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 438.3 | no - runner-up Gem of Trapped Innocents (id 23057) measured higher: 219.1 vs 216.9 set DPS - swapped in |
+| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 438.3 | yes |
 | shoulder | Cryptstalker Spaulders (22439) | Quests [quest] | 286.4 | yes |
 | back | Chromatic Cloak (18509) | Leatherworking [crafted] | 219.1 | no - runner-up Cloak of the Fallen God (id 21710) measured higher: 220.9 vs 216.9 set DPS - swapped in |
 | chest | Legionnaire's Chain Hauberk (22874) | Rank 12 [pvp] | 475.4 | yes |
@@ -338,9 +338,9 @@ No-known-source sample (15 of 4389, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 10 (troll, 1000000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 51.4. Weights run: 1.4s. Verify run: 0.5s. 695 eligible items had no known source.
+Set DPS (verified): 51.4. Weights run: 0.9s. Verify run: 0.4s. 695 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.149, crit=7.041, hit=3.706, melee_haste=7.548
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.149 ± 0.050, crit=7.041 ± 0.352, hit=3.706 ± 0.358, melee_haste=7.548 ± 1.157
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -368,9 +368,9 @@ No-known-source sample (15 of 695, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (troll, 5100000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 55.2. Weights run: 1.4s. Verify run: 0.8s. 917 eligible items had no known source.
+Set DPS (verified): 55.2. Weights run: 0.9s. Verify run: 0.6s. 917 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.218, crit=7.749, hit=4.497, melee_haste=9.043
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.218 ± 0.067, crit=7.749 ± 0.353, hit=4.497 ± 0.417, melee_haste=9.043 ± 1.146
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -398,9 +398,9 @@ No-known-source sample (15 of 917, see the JSON for more): 727 Notched Shortswor
 
 ### Band 20 (troll, 5420000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 66.4. Weights run: 1.8s. Verify run: 1.1s. 1202 eligible items had no known source.
+Set DPS (verified): 66.4. Weights run: 1.1s. Verify run: 0.8s. 1202 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.045, crit=8.414, hit=5.227, melee_haste=14.870
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.045 ± 0.026, crit=8.414 ± 0.367, hit=5.227 ± 0.378, melee_haste=14.870 ± 1.043
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -428,9 +428,9 @@ No-known-source sample (15 of 1202, see the JSON for more): 727 Notched Shortswo
 
 ### Band 25 (troll, 5420001400000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 69.4. Weights run: 1.8s. Verify run: 1.4s. 1516 eligible items had no known source.
+Set DPS (verified): 69.4. Weights run: 1.1s. Verify run: 1.0s. 1516 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.227, crit=9.235, hit=5.227, melee_haste=19.335
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.227 ± 0.058, crit=9.235 ± 0.378, hit=5.227 ± 0.364, melee_haste=19.335 ± 1.096
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -458,9 +458,9 @@ No-known-source sample (15 of 1516, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (troll, 5420001504000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 86.0. Weights run: 1.9s. Verify run: 1.6s. 1789 eligible items had no known source.
+Set DPS (verified): 86.0. Weights run: 1.2s. Verify run: 1.2s. 1789 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.173, crit=9.432, hit=4.964, melee_haste=5.293
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.173 ± 0.052, crit=9.432 ± 0.385, hit=4.964 ± 0.376, melee_haste=5.293 ± 1.223
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -488,9 +488,9 @@ No-known-source sample (15 of 1789, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (troll, 5420001505001210-00000000000000000-000000000000000000)
 
-Set DPS (verified): 89.4. Weights run: 1.9s. Verify run: 1.6s. 2017 eligible items had no known source.
+Set DPS (verified): 89.4. Weights run: 1.2s. Verify run: 1.2s. 2017 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.092, crit=9.663, hit=5.113, melee_haste=6.161
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.092 ± 0.038, crit=9.663 ± 0.402, hit=5.113 ± 0.530, melee_haste=6.161 ± 1.443
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -518,9 +518,9 @@ No-known-source sample (15 of 2017, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (troll, 5420001505001251-00000000000000000-000000000000000000)
 
-Set DPS (verified): 98.2. Weights run: 2.1s. Verify run: 1.8s. 2837 eligible items had no known source.
+Set DPS (verified): 98.2. Weights run: 1.3s. Verify run: 1.3s. 2837 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.151, crit=10.452, hit=5.585, melee_haste=10.749
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.151 ± 0.051, crit=10.452 ± 0.422, hit=5.585 ± 0.679, melee_haste=10.749 ± 1.683
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -548,9 +548,9 @@ No-known-source sample (15 of 2837, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (troll, 5420001505001251-32000000000000000-000000000000000000)
 
-Set DPS (verified): 105.2. Weights run: 2.0s. Verify run: 1.8s. 3144 eligible items had no known source.
+Set DPS (verified): 105.2. Weights run: 1.3s. Verify run: 1.3s. 3144 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.212, crit=10.543, hit=5.555, melee_haste=13.321
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.212 ± 0.059, crit=10.543 ± 0.426, hit=5.555 ± 0.664, melee_haste=13.321 ± 1.664
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -568,7 +568,7 @@ Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, rang
 | finger2 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 19.9 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 147.6 | no - runner-up Illusionary Rod (id 7713) measured higher: 105.7 vs 105.2 set DPS - swapped in |
+| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 147.6 | yes |
 | off_hand | - | - |  |  |
 | ranged | Master Hunter's Bow (17686) | Quests [quest] | 284.6 | no - runner-up Mithril Heavy-bore Rifle (id 10510) measured higher: 106.3 vs 105.2 set DPS - swapped in |
 
@@ -578,39 +578,39 @@ No-known-source sample (15 of 3144, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (troll, 5420001505001251-35200000000000000-000000000000000000)
 
-Set DPS (verified): 113.9. Weights run: 2.0s. Verify run: 1.8s. 3485 eligible items had no known source.
+Set DPS (verified): 116.7. Weights run: 1.3s. Verify run: 1.3s. 3485 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.213, crit=10.950, hit=5.684, melee_haste=7.359
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.213 ± 0.065, crit=10.950 ± 0.442, hit=5.684 ± 0.653, melee_haste=7.359 ± 1.728
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 153.3 | no - runner-up Eye of Theradras (id 17715) measured higher: 115.9 vs 113.9 set DPS - swapped in |
+| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 153.3 | no - runner-up Eye of Theradras (id 17715) measured higher: 118.4 vs 116.7 set DPS - swapped in |
 | neck | Pulsating Crystalline Shard (4743) | Quests [quest] | 0.0 | yes |
 | shoulder | Shadowskin Spaulders (15822) | Quests [quest] | 39.8 | yes |
 | back | Nightscape Cloak (8195) | Leatherworking [crafted] | 22.1 | yes |
-| chest | Wildthorn Mail (12624) | Blacksmithing [crafted] | 56.8 | no - runner-up Vest of the Den Watcher (id 21320) measured higher: 115.9 vs 113.9 set DPS - swapped in |
+| chest | Wildthorn Mail (12624) | Blacksmithing [crafted] | 56.8 | no - runner-up Vest of the Den Watcher (id 21320) measured higher: 118.4 vs 116.7 set DPS - swapped in |
 | wrist | Forest Stalker's Bracers (19589) | Silverwing Sentinels [rep] | 37.6 | yes |
 | hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 166.6 | yes |
 | waist | Seared Mail Girdle (19125) | Quests [quest] | 26.6 | yes |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 306.6 | no - runner-up Oilskin Leggings (id 9414) measured higher: 115.2 vs 113.9 set DPS - swapped in |
-| feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 56.8 | no - runner-up Albino Crocscale Boots (id 17728) measured higher: 114.9 vs 113.9 set DPS - swapped in |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 306.6 | no - runner-up Oilskin Leggings (id 9414) measured higher: 118.2 vs 116.7 set DPS - swapped in |
+| feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 56.8 | no - runner-up Albino Crocscale Boots (id 17728) measured higher: 117.6 vs 116.7 set DPS - swapped in |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 56.8 | yes |
 | finger2 | Masons Fraternity Ring (9533) | Quests [quest] | 31.0 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 153.3 | no - runner-up Illusionary Rod (id 7713) measured higher: 114.1 vs 113.9 set DPS - swapped in |
+| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 153.3 | yes |
 | off_hand | - | - |  |  |
-| ranged | Dusksteel Throwing Knife (20086) | Quests [quest] | 404.4 | no - runner-up Dark Iron Rifle (id 16004) measured higher: 115.9 vs 113.9 set DPS - swapped in |
+| ranged | Dark Iron Rifle (16004) | Engineering [crafted] | 396.6 | yes |
 
-**New at 50:** shoulder: Shadowskin Spaulders; chest: Wildthorn Mail; wrist: Forest Stalker's Bracers; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Masons Fraternity Ring; ranged: Dusksteel Throwing Knife
+**New at 50:** shoulder: Shadowskin Spaulders; chest: Wildthorn Mail; wrist: Forest Stalker's Bracers; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Masons Fraternity Ring; ranged: Dark Iron Rifle
 
 No-known-source sample (15 of 3485, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff; 867 Gloves of Holy Might
 
 ### Band 55 (troll, 5420001505001251-35510000000000000-100000000000000000)
 
-Set DPS (verified): 123.6. Weights run: 2.0s. Verify run: 1.7s. 3786 eligible items had no known source.
+Set DPS (verified): 123.6. Weights run: 1.3s. Verify run: 1.3s. 3786 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.204, crit=11.773, hit=5.749, melee_haste=6.982
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.204 ± 0.059, crit=11.773 ± 0.465, hit=5.749 ± 0.712, melee_haste=not significant (6.982 ± 1.793)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -628,7 +628,7 @@ Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, rang
 | finger2 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 57.5 | no - runner-up Masons Fraternity Ring (id 9533) measured higher: 124.7 vs 123.6 set DPS - swapped in |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Smokey's Lighter (13171) | Quests [quest] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 164.8 | no - runner-up Illusionary Rod (id 7713) measured higher: 124.4 vs 123.6 set DPS - swapped in |
+| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 164.8 | yes |
 | off_hand | - | - |  |  |
 | ranged | Blackcrow (12651) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | 482.7 | yes |
 
@@ -638,14 +638,14 @@ No-known-source sample (15 of 3786, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (troll, 5420001505001251-35510000000000000-510000000000000000)
 
-Set DPS (verified): 218.2. Weights run: 2.0s. Verify run: 1.8s. 4389 eligible items had no known source.
+Set DPS (verified): 218.2. Weights run: 1.3s. Verify run: 1.3s. 4389 eligible items had no known source.
 
-Stat weights (normalized to ranged_attack_power = 1.0): attack_power=0.000, ranged_attack_power=1.000, agility=2.320, crit=15.653, hit=0.000, melee_haste=13.712
+Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.001, agility=2.320 ± 0.081, crit=15.653 ± 0.588, hit=not significant (0.000 ± 0.000), melee_haste=13.712 ± 1.963
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Cryptstalker Headpiece (22438) | Quests [quest] | 510.2 | yes |
-| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 438.3 | no - runner-up Gem of Trapped Innocents (id 23057) measured higher: 219.1 vs 218.2 set DPS - swapped in |
+| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 438.3 | yes |
 | shoulder | Cryptstalker Spaulders (22439) | Quests [quest] | 286.4 | yes |
 | back | Chromatic Cloak (18509) | Leatherworking [crafted] | 219.1 | no - runner-up Cloak of the Fallen God (id 21710) measured higher: 221.7 vs 218.2 set DPS - swapped in |
 | chest | Legionnaire's Chain Hauberk (22874) | Rank 12 [pvp] | 475.4 | yes |

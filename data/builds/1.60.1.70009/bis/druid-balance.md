@@ -6,9 +6,9 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (night-elf, 1000000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 8.4. Weights run: 1.6s. Verify run: 0.4s. 688 eligible items had no known source.
+Set DPS (verified): 8.4. Weights run: 1.1s. Verify run: 0.3s. 688 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.058, crit=0.605, hit=0.323, spell_haste=-0.016, spell_penetration=0.000, nature_power=0.058, arcane_power=0.942
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.001, intellect=0.058 ± 0.009, crit=0.605 ± 0.026, hit=0.323 ± 0.055, spell_haste=not significant (-0.016 ± 0.006), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.058 ± 0.001, arcane_power=0.942 ± 0.001
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -36,9 +36,9 @@ No-known-source sample (15 of 688, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 15 (night-elf, 5100000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 4.9. Weights run: 1.6s. Verify run: 0.7s. 896 eligible items had no known source.
+Set DPS (verified): 4.9. Weights run: 1.2s. Verify run: 0.5s. 896 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.405, crit=0.646, hit=0.333, spell_haste=-0.002, spell_penetration=0.000, nature_power=0.107, arcane_power=0.893
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=0.405 ± 0.069, crit=0.646 ± 0.028, hit=0.333 ± 0.080, spell_haste=not significant (-0.002 ± 0.012), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.107 ± 0.002, arcane_power=0.893 ± 0.001
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -66,9 +66,9 @@ No-known-source sample (15 of 896, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 20 (night-elf, 5222000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 29.4. Weights run: 1.7s. Verify run: 0.7s. 1166 eligible items had no known source.
+Set DPS (verified): 29.4. Weights run: 1.4s. Verify run: 0.5s. 1166 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.799, crit=0.360, hit=1.173, spell_haste=-0.049, spell_penetration=0.000, nature_power=0.430, arcane_power=0.570
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=0.799 ± 0.049, crit=0.360 ± 0.025, hit=1.173 ± 0.088, spell_haste=not significant (-0.049 ± 0.051), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.430 ± 0.001, arcane_power=0.570 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -96,9 +96,9 @@ No-known-source sample (15 of 1166, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 25 (night-elf, 5222211001000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 34.7. Weights run: 1.8s. Verify run: 0.8s. 1443 eligible items had no known source.
+Set DPS (verified): 34.7. Weights run: 1.2s. Verify run: 0.6s. 1443 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.973, crit=0.484, hit=1.173, spell_haste=-0.162, spell_penetration=0.000, nature_power=0.355, arcane_power=0.645
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=0.973 ± 0.097, crit=0.484 ± 0.032, hit=1.173 ± 0.092, spell_haste=not significant (-0.162 ± 0.066), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.355 ± 0.001, arcane_power=0.645 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -126,9 +126,9 @@ No-known-source sample (15 of 1443, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (night-elf, 5222211005100000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 45.3. Weights run: 1.7s. Verify run: 1.0s. 1695 eligible items had no known source.
+Set DPS (verified): 45.3. Weights run: 1.3s. Verify run: 0.7s. 1695 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.929, crit=0.936, hit=1.922, spell_haste=-0.004, spell_penetration=0.000, nature_power=0.426, arcane_power=0.574
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.929 ± 0.129, crit=0.936 ± 0.076, hit=1.922 ± 0.153, spell_haste=not significant (-0.004 ± 0.042), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.426 ± 0.001, arcane_power=0.574 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -156,9 +156,9 @@ No-known-source sample (15 of 1695, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (night-elf, 5222211005501000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 59.0. Weights run: 1.8s. Verify run: 1.0s. 1912 eligible items had no known source.
+Set DPS (verified): 59.0. Weights run: 1.3s. Verify run: 0.7s. 1912 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.917, crit=1.153, hit=2.416, spell_haste=0.246, spell_penetration=0.000, nature_power=0.486, arcane_power=0.514
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.917 ± 0.184, crit=1.153 ± 0.126, hit=2.416 ± 0.206, spell_haste=not significant (0.246 ± 0.253), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.486 ± 0.001, arcane_power=0.514 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -186,9 +186,9 @@ No-known-source sample (15 of 1912, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (night-elf, 5222211005501050-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 68.6. Weights run: 1.8s. Verify run: 1.1s. 2141 eligible items had no known source.
+Set DPS (verified): 68.6. Weights run: 1.3s. Verify run: 0.8s. 2141 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.824, crit=1.375, hit=3.180, spell_haste=0.093, spell_penetration=0.000, nature_power=0.481, arcane_power=0.519
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.824 ± 0.174, crit=1.375 ± 0.149, hit=3.180 ± 0.251, spell_haste=not significant (0.093 ± 0.283), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.481 ± 0.001, arcane_power=0.519 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -216,69 +216,69 @@ No-known-source sample (15 of 2141, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (night-elf, 5222211005501051-0000000000000000000-4000000000000000)
 
-Set DPS (verified): 75.8. Weights run: 1.8s. Verify run: 1.1s. 2358 eligible items had no known source.
+Set DPS (verified): 82.5. Weights run: 1.3s. Verify run: 0.8s. 2358 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.952, crit=1.713, hit=3.542, spell_haste=0.667, spell_penetration=0.000, nature_power=0.512, arcane_power=0.488
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.952 ± 0.214, crit=1.713 ± 0.201, hit=3.542 ± 0.315, spell_haste=not significant (0.667 ± 0.465), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.512 ± 0.001, arcane_power=0.488 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Red Mageweave Headband (10033) | Tailoring [crafted] | 38.0 | no - runner-up Dreamweave Circlet (id 10041) measured higher: 76.2 vs 75.8 set DPS - swapped in |
+| head | Red Mageweave Headband (10033) | Tailoring [crafted] | 38.0 | no - runner-up Dreamweave Circlet (id 10041) measured higher: 82.8 vs 82.5 set DPS - swapped in |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 12.7 | yes |
 | shoulder | Red Mageweave Shoulders (10029) | Tailoring [crafted] | 21.3 | yes |
 | back | Big Voodoo Cloak (8216) | Leatherworking [crafted] | 13.6 | yes |
-| chest | Acumen Robes (17775) | Quests [quest] | 38.0 | no - runner-up Feathered Breastplate (id 8349) measured higher: 76.9 vs 75.8 set DPS - swapped in |
+| chest | Acumen Robes (17775) | Quests [quest] | 38.0 | no - runner-up Feathered Breastplate (id 8349) measured higher: 83.4 vs 82.5 set DPS - swapped in |
 | wrist | Dryad's Wrist Bindings (19597) | Silverwing Sentinels [rep] | 21.7 | yes |
 | hands | Gloves of the Greatfather (17721) | Leatherworking [crafted] | 24.0 | yes |
-| waist | Satyrmane Sash (17755) | Maraudon: Lord Vyletongue [dungeon] | 23.5 | no - runner-up Deathmage Sash (id 10771) measured higher: 75.8 vs 75.8 set DPS - swapped in |
-| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 25.4 | no - runner-up Big Voodoo Pants (id 8202) measured higher: 75.8 vs 75.8 set DPS - swapped in |
-| feet | Southsea Mojo Boots (20641) | Quests [quest] | 18.5 | no - runner-up Black Mageweave Boots (id 10026) measured higher: 76.0 vs 75.8 set DPS - swapped in |
+| waist | Satyrmane Sash (17755) | Maraudon: Lord Vyletongue [dungeon] | 23.5 | yes |
+| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 25.4 | yes |
+| feet | Southsea Mojo Boots (20641) | Quests [quest] | 18.5 | yes |
 | finger1 | Snake Hoop (6750) | Quests [quest] | 6.7 | yes |
-| finger2 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 5.7 | no - runner-up Electrocutioner Lagnut (id 9447) measured higher: 76.4 vs 75.8 set DPS - swapped in |
+| finger2 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 5.7 | no - runner-up Electrocutioner Lagnut (id 9447) measured higher: 82.6 vs 82.5 set DPS - swapped in |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Illusionary Rod (7713) | Scarlet Monastery: Arcanist Doan [dungeon] | 29.7 | no - runner-up Spellshifter Rod (id 9527) measured higher: 80.1 vs 75.8 set DPS - swapped in |
+| main_hand | Blight (7959) | Blacksmithing [crafted] | 0.0 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
-**New at 45:** head: Red Mageweave Headband; shoulder: Red Mageweave Shoulders; back: Big Voodoo Cloak; chest: Acumen Robes; waist: Satyrmane Sash; trinket1: Shard of the Splithooves; trinket2: Demon's Blood
+**New at 45:** head: Red Mageweave Headband; shoulder: Red Mageweave Shoulders; back: Big Voodoo Cloak; chest: Acumen Robes; waist: Satyrmane Sash; trinket1: Shard of the Splithooves; trinket2: Demon's Blood; main_hand: Blight
 
 No-known-source sample (15 of 2358, see the JSON for more): 720 Brawler Gloves; 789 Stout Battlehammer; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 827 Wicked Blackjack; 865 Leaden Mace; 866 Monk's Staff; 867 Gloves of Holy Might; 868 Ardent Custodian; 873 Staff of Jordan; 880 Staff of Horrors; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves
 
 ### Band 50 (night-elf, 5222211005501051-0000000000000000000-5400000000000000)
 
-Set DPS (verified): 86.2. Weights run: 1.9s. Verify run: 1.2s. 2632 eligible items had no known source.
+Set DPS (verified): 88.4. Weights run: 1.4s. Verify run: 0.9s. 2632 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.909, crit=2.006, hit=4.694, spell_haste=0.714, spell_penetration=0.000, nature_power=0.549, arcane_power=0.451
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.909 ± 0.180, crit=2.006 ± 0.234, hit=4.694 ± 0.379, spell_haste=not significant (0.714 ± 0.432), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.549 ± 0.002, arcane_power=0.451 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Eye of Theradras (17715) | Maraudon: Princess Theradras [dungeon] | 45.4 | no - runner-up Red Mageweave Headband (id 10033) measured higher: 87.6 vs 86.2 set DPS - swapped in |
+| head | Eye of Theradras (17715) | Maraudon: Princess Theradras [dungeon] | 45.4 | no - runner-up Red Mageweave Headband (id 10033) measured higher: 90.1 vs 88.4 set DPS - swapped in |
 | neck | Archlight Talisman (15856) | Quests [quest] | 21.1 | yes |
 | shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 33.2 | yes |
 | back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 19.5 | yes |
-| chest | Acumen Robes (17775) | Quests [quest] | 37.2 | no - runner-up Feathered Breastplate (id 8349) measured higher: 87.6 vs 86.2 set DPS - swapped in |
+| chest | Acumen Robes (17775) | Quests [quest] | 37.2 | no - runner-up Feathered Breastplate (id 8349) measured higher: 90.0 vs 88.4 set DPS - swapped in |
 | wrist | Dryad's Wrist Bindings (19596) | Silverwing Sentinels [rep] | 25.5 | yes |
 | hands | Fletcher's Gloves (7348) | Leatherworking [crafted] | 28.1 | yes |
 | waist | Satyrmane Sash (17755) | Maraudon: Lord Vyletongue [dungeon] | 23.1 | yes |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 56.2 | no - runner-up Red Mageweave Pants (id 10009) measured higher: 88.6 vs 86.2 set DPS - swapped in |
-| feet | Southsea Mojo Boots (20641) | Quests [quest] | 18.0 | yes |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 56.2 | no - runner-up Red Mageweave Pants (id 10009) measured higher: 91.1 vs 88.4 set DPS - swapped in |
+| feet | Southsea Mojo Boots (20641) | Quests [quest] | 18.0 | no - runner-up Black Mageweave Boots (id 10026) measured higher: 88.8 vs 88.4 set DPS - swapped in |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 46.9 | yes |
 | finger2 | Snake Hoop (6750) | Quests [quest] | 6.4 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Kindling Stave (11750) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 39.0 | yes |
+| main_hand | Blight (7959) | Blacksmithing [crafted] | 0.0 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
-**New at 50:** head: Eye of Theradras; neck: Archlight Talisman; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; wrist: Dryad's Wrist Bindings; hands: Fletcher's Gloves; legs: Stormshroud Pants; finger1: Blackstone Ring; finger2: Snake Hoop; main_hand: Kindling Stave
+**New at 50:** head: Eye of Theradras; neck: Archlight Talisman; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; wrist: Dryad's Wrist Bindings; hands: Fletcher's Gloves; legs: Stormshroud Pants; finger1: Blackstone Ring; finger2: Snake Hoop
 
 No-known-source sample (15 of 2632, see the JSON for more): 720 Brawler Gloves; 789 Stout Battlehammer; 791 Gnarled Ash Staff; 810 Hammer of the Northern Wind; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 827 Wicked Blackjack; 865 Leaden Mace; 866 Monk's Staff; 867 Gloves of Holy Might; 868 Ardent Custodian; 873 Staff of Jordan; 880 Staff of Horrors; 890 Twisted Chanter's Staff
 
 ### Band 55 (night-elf, 5222211005501051-0000000000000000000-5531000000000000)
 
-Set DPS (verified): 92.7. Weights run: 1.8s. Verify run: 1.2s. 2882 eligible items had no known source.
+Set DPS (verified): 92.7. Weights run: 1.4s. Verify run: 0.9s. 2882 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.096, crit=2.231, hit=4.839, spell_haste=0.318, spell_penetration=0.000, nature_power=0.538, arcane_power=0.462
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=1.096 ± 0.146, crit=2.231 ± 0.247, hit=4.839 ± 0.391, spell_haste=not significant (0.318 ± 0.379), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.538 ± 0.002, arcane_power=0.462 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -306,9 +306,9 @@ No-known-source sample (15 of 2882, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (night-elf, 5222211005501051-0000000000000000000-5533300000000000)
 
-Set DPS (verified): 188.3. Weights run: 1.9s. Verify run: 1.2s. 3456 eligible items had no known source.
+Set DPS (verified): 188.3. Weights run: 1.4s. Verify run: 0.9s. 3456 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.609, crit=2.540, hit=6.381, spell_haste=0.965, spell_penetration=0.000, nature_power=0.558, arcane_power=0.442
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=1.609 ± 0.329, crit=2.540 ± 0.307, hit=6.381 ± 0.574, spell_haste=not significant (0.965 ± 0.611), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.558 ± 0.002, arcane_power=0.442 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -338,9 +338,9 @@ No-known-source sample (15 of 3456, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 10 (tauren, 1000000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 8.7. Weights run: 1.6s. Verify run: 0.4s. 688 eligible items had no known source.
+Set DPS (verified): 8.7. Weights run: 1.1s. Verify run: 0.3s. 688 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.058, crit=0.605, hit=0.323, spell_haste=-0.016, spell_penetration=0.000, nature_power=0.058, arcane_power=0.942
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.001, intellect=0.058 ± 0.009, crit=0.605 ± 0.026, hit=0.323 ± 0.055, spell_haste=not significant (-0.016 ± 0.006), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.058 ± 0.001, arcane_power=0.942 ± 0.001
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -368,9 +368,9 @@ No-known-source sample (15 of 688, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 15 (tauren, 5100000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 4.9. Weights run: 1.6s. Verify run: 0.6s. 896 eligible items had no known source.
+Set DPS (verified): 4.9. Weights run: 1.2s. Verify run: 0.5s. 896 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.405, crit=0.646, hit=0.333, spell_haste=-0.002, spell_penetration=0.000, nature_power=0.107, arcane_power=0.893
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=0.405 ± 0.069, crit=0.646 ± 0.028, hit=0.333 ± 0.080, spell_haste=not significant (-0.002 ± 0.012), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.107 ± 0.002, arcane_power=0.893 ± 0.001
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -398,9 +398,9 @@ No-known-source sample (15 of 896, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 20 (tauren, 5222000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 29.4. Weights run: 1.7s. Verify run: 0.7s. 1166 eligible items had no known source.
+Set DPS (verified): 29.4. Weights run: 1.4s. Verify run: 0.5s. 1166 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.799, crit=0.360, hit=1.173, spell_haste=-0.049, spell_penetration=0.000, nature_power=0.430, arcane_power=0.570
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=0.799 ± 0.049, crit=0.360 ± 0.025, hit=1.173 ± 0.088, spell_haste=not significant (-0.049 ± 0.051), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.430 ± 0.001, arcane_power=0.570 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -428,9 +428,9 @@ No-known-source sample (15 of 1166, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 25 (tauren, 5222211001000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 35.3. Weights run: 1.8s. Verify run: 0.8s. 1443 eligible items had no known source.
+Set DPS (verified): 35.3. Weights run: 1.2s. Verify run: 0.6s. 1443 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.973, crit=0.484, hit=1.173, spell_haste=-0.162, spell_penetration=0.000, nature_power=0.355, arcane_power=0.645
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=0.973 ± 0.097, crit=0.484 ± 0.032, hit=1.173 ± 0.092, spell_haste=not significant (-0.162 ± 0.066), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.355 ± 0.001, arcane_power=0.645 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -458,9 +458,9 @@ No-known-source sample (15 of 1443, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (tauren, 5222211005100000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 45.7. Weights run: 1.7s. Verify run: 0.9s. 1695 eligible items had no known source.
+Set DPS (verified): 45.7. Weights run: 1.3s. Verify run: 0.7s. 1695 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.929, crit=0.936, hit=1.922, spell_haste=-0.004, spell_penetration=0.000, nature_power=0.426, arcane_power=0.574
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.929 ± 0.129, crit=0.936 ± 0.076, hit=1.922 ± 0.153, spell_haste=not significant (-0.004 ± 0.042), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.426 ± 0.001, arcane_power=0.574 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -488,9 +488,9 @@ No-known-source sample (15 of 1695, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (tauren, 5222211005501000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 59.1. Weights run: 1.8s. Verify run: 1.0s. 1912 eligible items had no known source.
+Set DPS (verified): 59.1. Weights run: 1.3s. Verify run: 0.7s. 1912 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.917, crit=1.153, hit=2.416, spell_haste=0.246, spell_penetration=0.000, nature_power=0.486, arcane_power=0.514
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.917 ± 0.184, crit=1.153 ± 0.126, hit=2.416 ± 0.206, spell_haste=not significant (0.246 ± 0.253), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.486 ± 0.001, arcane_power=0.514 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -518,9 +518,9 @@ No-known-source sample (15 of 1912, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (tauren, 5222211005501050-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 68.8. Weights run: 1.8s. Verify run: 1.1s. 2141 eligible items had no known source.
+Set DPS (verified): 68.8. Weights run: 1.3s. Verify run: 0.8s. 2141 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.824, crit=1.375, hit=3.180, spell_haste=0.093, spell_penetration=0.000, nature_power=0.481, arcane_power=0.519
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.824 ± 0.174, crit=1.375 ± 0.149, hit=3.180 ± 0.251, spell_haste=not significant (0.093 ± 0.283), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.481 ± 0.001, arcane_power=0.519 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -548,69 +548,69 @@ No-known-source sample (15 of 2141, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (tauren, 5222211005501051-0000000000000000000-4000000000000000)
 
-Set DPS (verified): 76.0. Weights run: 1.8s. Verify run: 1.1s. 2358 eligible items had no known source.
+Set DPS (verified): 82.0. Weights run: 1.3s. Verify run: 0.8s. 2358 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.952, crit=1.713, hit=3.542, spell_haste=0.667, spell_penetration=0.000, nature_power=0.512, arcane_power=0.488
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.952 ± 0.214, crit=1.713 ± 0.201, hit=3.542 ± 0.315, spell_haste=not significant (0.667 ± 0.465), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.512 ± 0.001, arcane_power=0.488 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Red Mageweave Headband (10033) | Tailoring [crafted] | 38.0 | no - runner-up Dreamweave Circlet (id 10041) measured higher: 76.7 vs 76.0 set DPS - swapped in |
+| head | Red Mageweave Headband (10033) | Tailoring [crafted] | 38.0 | no - runner-up Dreamweave Circlet (id 10041) measured higher: 83.2 vs 82.0 set DPS - swapped in |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 12.7 | yes |
-| shoulder | Red Mageweave Shoulders (10029) | Tailoring [crafted] | 21.3 | yes |
-| back | Big Voodoo Cloak (8216) | Leatherworking [crafted] | 13.6 | yes |
-| chest | Acumen Robes (17775) | Quests [quest] | 38.0 | no - runner-up Feathered Breastplate (id 8349) measured higher: 77.6 vs 76.0 set DPS - swapped in |
+| shoulder | Red Mageweave Shoulders (10029) | Tailoring [crafted] | 21.3 | no - runner-up Inquisitor's Shawl (id 19507) measured higher: 82.1 vs 82.0 set DPS - swapped in |
+| back | Big Voodoo Cloak (8216) | Leatherworking [crafted] | 13.6 | no - runner-up Long Silken Cloak (id 4326) measured higher: 82.6 vs 82.0 set DPS - swapped in |
+| chest | Acumen Robes (17775) | Quests [quest] | 38.0 | no - runner-up Feathered Breastplate (id 8349) measured higher: 83.0 vs 82.0 set DPS - swapped in |
 | wrist | Dryad's Wrist Bindings (19597) | Silverwing Sentinels [rep] | 21.7 | yes |
 | hands | Gloves of the Greatfather (17721) | Leatherworking [crafted] | 24.0 | yes |
 | waist | Satyrmane Sash (17755) | Maraudon: Lord Vyletongue [dungeon] | 23.5 | yes |
-| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 25.4 | yes |
-| feet | Southsea Mojo Boots (20641) | Quests [quest] | 18.5 | yes |
+| legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 25.4 | no - runner-up Big Voodoo Pants (id 8202) measured higher: 82.2 vs 82.0 set DPS - swapped in |
+| feet | Southsea Mojo Boots (20641) | Quests [quest] | 18.5 | no - runner-up Black Mageweave Boots (id 10026) measured higher: 82.9 vs 82.0 set DPS - swapped in |
 | finger1 | Snake Hoop (6750) | Quests [quest] | 6.7 | yes |
-| finger2 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 5.7 | no - runner-up Electrocutioner Lagnut (id 9447) measured higher: 76.2 vs 76.0 set DPS - swapped in |
+| finger2 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 5.7 | no - runner-up Electrocutioner Lagnut (id 9447) measured higher: 82.8 vs 82.0 set DPS - swapped in |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Illusionary Rod (7713) | Scarlet Monastery: Arcanist Doan [dungeon] | 29.7 | no - runner-up Spellshifter Rod (id 9527) measured higher: 80.4 vs 76.0 set DPS - swapped in |
+| main_hand | Blight (7959) | Blacksmithing [crafted] | 0.0 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
-**New at 45:** head: Red Mageweave Headband; shoulder: Red Mageweave Shoulders; back: Big Voodoo Cloak; chest: Acumen Robes; waist: Satyrmane Sash; trinket1: Shard of the Splithooves; trinket2: Demon's Blood
+**New at 45:** head: Red Mageweave Headband; shoulder: Red Mageweave Shoulders; back: Big Voodoo Cloak; chest: Acumen Robes; waist: Satyrmane Sash; trinket1: Shard of the Splithooves; trinket2: Demon's Blood; main_hand: Blight
 
 No-known-source sample (15 of 2358, see the JSON for more): 720 Brawler Gloves; 789 Stout Battlehammer; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 827 Wicked Blackjack; 865 Leaden Mace; 866 Monk's Staff; 867 Gloves of Holy Might; 868 Ardent Custodian; 873 Staff of Jordan; 880 Staff of Horrors; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves
 
 ### Band 50 (tauren, 5222211005501051-0000000000000000000-5400000000000000)
 
-Set DPS (verified): 86.4. Weights run: 1.9s. Verify run: 1.1s. 2632 eligible items had no known source.
+Set DPS (verified): 89.3. Weights run: 1.4s. Verify run: 0.9s. 2632 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.909, crit=2.006, hit=4.694, spell_haste=0.714, spell_penetration=0.000, nature_power=0.549, arcane_power=0.451
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=0.909 ± 0.180, crit=2.006 ± 0.234, hit=4.694 ± 0.379, spell_haste=not significant (0.714 ± 0.432), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.549 ± 0.002, arcane_power=0.451 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Eye of Theradras (17715) | Maraudon: Princess Theradras [dungeon] | 45.4 | no - runner-up Red Mageweave Headband (id 10033) measured higher: 88.1 vs 86.4 set DPS - swapped in |
+| head | Eye of Theradras (17715) | Maraudon: Princess Theradras [dungeon] | 45.4 | no - runner-up Red Mageweave Headband (id 10033) measured higher: 90.8 vs 89.3 set DPS - swapped in |
 | neck | Archlight Talisman (15856) | Quests [quest] | 21.1 | yes |
 | shoulder | Ironfeather Shoulders (15067) | Leatherworking [crafted] | 33.2 | yes |
 | back | Spritecaster Cape (11623) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 19.5 | yes |
-| chest | Acumen Robes (17775) | Quests [quest] | 37.2 | no - runner-up Feathered Breastplate (id 8349) measured higher: 87.6 vs 86.4 set DPS - swapped in |
+| chest | Acumen Robes (17775) | Quests [quest] | 37.2 | no - runner-up Feathered Breastplate (id 8349) measured higher: 89.7 vs 89.3 set DPS - swapped in |
 | wrist | Dryad's Wrist Bindings (19596) | Silverwing Sentinels [rep] | 25.5 | yes |
 | hands | Fletcher's Gloves (7348) | Leatherworking [crafted] | 28.1 | yes |
 | waist | Satyrmane Sash (17755) | Maraudon: Lord Vyletongue [dungeon] | 23.1 | yes |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 56.2 | no - runner-up Red Mageweave Pants (id 10009) measured higher: 88.5 vs 86.4 set DPS - swapped in |
-| feet | Southsea Mojo Boots (20641) | Quests [quest] | 18.0 | no - runner-up Black Mageweave Boots (id 10026) measured higher: 86.8 vs 86.4 set DPS - swapped in |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 56.2 | no - runner-up Red Mageweave Pants (id 10009) measured higher: 91.5 vs 89.3 set DPS - swapped in |
+| feet | Southsea Mojo Boots (20641) | Quests [quest] | 18.0 | yes |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 46.9 | yes |
 | finger2 | Snake Hoop (6750) | Quests [quest] | 6.4 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Kindling Stave (11750) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 39.0 | yes |
+| main_hand | Blight (7959) | Blacksmithing [crafted] | 0.0 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
-**New at 50:** head: Eye of Theradras; neck: Archlight Talisman; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; wrist: Dryad's Wrist Bindings; hands: Fletcher's Gloves; legs: Stormshroud Pants; finger1: Blackstone Ring; finger2: Snake Hoop; main_hand: Kindling Stave
+**New at 50:** head: Eye of Theradras; neck: Archlight Talisman; shoulder: Ironfeather Shoulders; back: Spritecaster Cape; wrist: Dryad's Wrist Bindings; hands: Fletcher's Gloves; legs: Stormshroud Pants; finger1: Blackstone Ring; finger2: Snake Hoop
 
 No-known-source sample (15 of 2632, see the JSON for more): 720 Brawler Gloves; 789 Stout Battlehammer; 791 Gnarled Ash Staff; 810 Hammer of the Northern Wind; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 827 Wicked Blackjack; 865 Leaden Mace; 866 Monk's Staff; 867 Gloves of Holy Might; 868 Ardent Custodian; 873 Staff of Jordan; 880 Staff of Horrors; 890 Twisted Chanter's Staff
 
 ### Band 55 (tauren, 5222211005501051-0000000000000000000-5531000000000000)
 
-Set DPS (verified): 94.3. Weights run: 1.8s. Verify run: 1.2s. 2882 eligible items had no known source.
+Set DPS (verified): 94.3. Weights run: 1.4s. Verify run: 0.9s. 2882 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.096, crit=2.231, hit=4.839, spell_haste=0.318, spell_penetration=0.000, nature_power=0.538, arcane_power=0.462
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=1.096 ± 0.146, crit=2.231 ± 0.247, hit=4.839 ± 0.391, spell_haste=not significant (0.318 ± 0.379), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.538 ± 0.002, arcane_power=0.462 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -638,9 +638,9 @@ No-known-source sample (15 of 2882, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (tauren, 5222211005501051-0000000000000000000-5533300000000000)
 
-Set DPS (verified): 186.5. Weights run: 1.9s. Verify run: 1.2s. 3456 eligible items had no known source.
+Set DPS (verified): 186.5. Weights run: 1.4s. Verify run: 0.9s. 3456 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.609, crit=2.540, hit=6.381, spell_haste=0.965, spell_penetration=0.000, nature_power=0.558, arcane_power=0.442
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=1.609 ± 0.329, crit=2.540 ± 0.307, hit=6.381 ± 0.574, spell_haste=not significant (0.965 ± 0.611), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.558 ± 0.002, arcane_power=0.442 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -658,7 +658,7 @@ Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.6
 | finger2 | Ring of the Fallen God (21709) | Quests [quest] | 110.5 | no - runner-up Band of Forced Concentration (id 19403) measured higher: 187.0 vs 186.5 set DPS - swapped in |
 | trinket1 | The Restrained Essence of Sapphiron (23046) | Naxxramas [raid] | 40.0 | yes |
 | trinket2 | Slayer's Crest (23041) | Naxxramas [raid] | 0.0 | no - runner-up Eye of the Dead (id 23047) measured higher: 186.6 vs 186.5 set DPS - swapped in |
-| main_hand | Atiesh, Greatstaff of the Guardian (22589) | Quests [quest] | 329.1 | no - runner-up Atiesh, Greatstaff of the Guardian (id 22630) measured higher: 187.0 vs 186.5 set DPS - swapped in |
+| main_hand | Atiesh, Greatstaff of the Guardian (22589) | Quests [quest] | 329.1 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 

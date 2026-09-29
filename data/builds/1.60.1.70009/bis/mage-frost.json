@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:21:12Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:09:45Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -14,31 +14,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003468814594280438,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.2474764575681523
+          "weight": 1.2474764575681523,
+          "error": 0.06452659947903014,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6802550719202295
+          "weight": 0.6802550719202295,
+          "error": 0.038447285463269705,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.655384920602183
+          "weight": 1.655384920602183,
+          "error": 0.09338173847679196,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003468814594280438,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -180,8 +194,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 0.898636296,
-      "verify_run_seconds": 0.247735015
+      "weights_run_seconds": 0.668597655,
+      "verify_run_seconds": 0.184050657
     },
     {
       "spec": "mage-frost",
@@ -193,31 +207,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003468814594280438,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.2474764575681523
+          "weight": 1.2474764575681523,
+          "error": 0.06452659947903014,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6802550719202295
+          "weight": 0.6802550719202295,
+          "error": 0.038447285463269705,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.655384920602183
+          "weight": 1.655384920602183,
+          "error": 0.09338173847679196,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003468814594280438,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -359,8 +387,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 0.898636296,
-      "verify_run_seconds": 0.277202452
+      "weights_run_seconds": 0.668597655,
+      "verify_run_seconds": 0.207751102
     },
     {
       "spec": "mage-frost",
@@ -372,31 +400,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0035760604840482384,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.4740337349395214
+          "weight": 1.4740337349395214,
+          "error": 0.07052287124615932,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.5909690173689436
+          "weight": 0.5909690173689436,
+          "error": 0.03936504472131697,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.5330288660017157
+          "weight": 1.5330288660017157,
+          "error": 0.0912918465768623,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.0305973824189893
+          "weight": 1.0305973824189893,
+          "error": 0.06336971978540705,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0035760604840482384,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -552,8 +594,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.925133403,
-      "verify_run_seconds": 0.497025549
+      "weights_run_seconds": 0.703444911,
+      "verify_run_seconds": 0.374694192
     },
     {
       "spec": "mage-frost",
@@ -565,31 +607,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0035760604840482384,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.4740337349395214
+          "weight": 1.4740337349395214,
+          "error": 0.07052287124615932,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.5909690173689436
+          "weight": 0.5909690173689436,
+          "error": 0.03936504472131697,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.5330288660017157
+          "weight": 1.5330288660017157,
+          "error": 0.0912918465768623,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.0305973824189893
+          "weight": 1.0305973824189893,
+          "error": 0.06336971978540705,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0035760604840482384,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -745,8 +801,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.925133403,
-      "verify_run_seconds": 0.517262771
+      "weights_run_seconds": 0.703444911,
+      "verify_run_seconds": 0.38871549
     },
     {
       "spec": "mage-frost",
@@ -758,31 +814,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0031838354546708477,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.5015521628783847
+          "weight": 0.5015521628783847,
+          "error": 0.045221672521636905,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6537078795420106
+          "weight": 0.6537078795420106,
+          "error": 0.04078045727444379,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.4387439620105098
+          "weight": 1.4387439620105098,
+          "error": 0.0832196448627023,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0031838354546708477,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -961,8 +1031,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 0.912398266,
-      "verify_run_seconds": 0.506182245
+      "weights_run_seconds": 0.675359484,
+      "verify_run_seconds": 0.401794831
     },
     {
       "spec": "mage-frost",
@@ -974,31 +1044,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0031838354546708477,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.5015521628783847
+          "weight": 0.5015521628783847,
+          "error": 0.045221672521636905,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6537078795420106
+          "weight": 0.6537078795420106,
+          "error": 0.04078045727444379,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.4387439620105098
+          "weight": 1.4387439620105098,
+          "error": 0.0832196448627023,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0031838354546708477,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1177,8 +1261,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 0.912398266,
-      "verify_run_seconds": 0.543678889
+      "weights_run_seconds": 0.675359484,
+      "verify_run_seconds": 0.411599183
     },
     {
       "spec": "mage-frost",
@@ -1190,31 +1274,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003336201496942684,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.681529967561778
+          "weight": 0.681529967561778,
+          "error": 0.04838059058093878,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.1263550534147322
+          "weight": 1.1263550534147322,
+          "error": 0.06607832788404647,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.3927861133041772
+          "weight": 1.3927861133041772,
+          "error": 0.07379531739175473,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.36328431718633897
+          "weight": 0.36328431718633897,
+          "error": 0.03560701260183753,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003336201496942684,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1390,8 +1488,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Kam's Walking Stick"
       ],
-      "weights_run_seconds": 0.883538235,
-      "verify_run_seconds": 0.555280912
+      "weights_run_seconds": 0.658442715,
+      "verify_run_seconds": 0.420730414
     },
     {
       "spec": "mage-frost",
@@ -1403,31 +1501,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003336201496942684,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.681529967561778
+          "weight": 0.681529967561778,
+          "error": 0.04838059058093878,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.1263550534147322
+          "weight": 1.1263550534147322,
+          "error": 0.06607832788404647,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.3927861133041772
+          "weight": 1.3927861133041772,
+          "error": 0.07379531739175473,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.36328431718633897
+          "weight": 0.36328431718633897,
+          "error": 0.03560701260183753,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003336201496942684,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1605,8 +1717,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Kam's Walking Stick"
       ],
-      "weights_run_seconds": 0.883538235,
-      "verify_run_seconds": 0.580354113
+      "weights_run_seconds": 0.658442715,
+      "verify_run_seconds": 0.458528177
     },
     {
       "spec": "mage-frost",
@@ -1618,31 +1730,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003566792099187803,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6491088724961455
+          "weight": 0.6491088724961455,
+          "error": 0.08466638171909577,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.6629621113155046
+          "weight": 1.6629621113155046,
+          "error": 0.1061927165384365,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.0586982373317455
+          "weight": 2.0586982373317455,
+          "error": 0.12285579283707572,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.1540658796808518
+          "weight": 0.1540658796808518,
+          "error": 0.033428388089832985,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003566792099187803,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1824,8 +1950,8 @@
         "feet: Acidic Walkers",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.899642491,
-      "verify_run_seconds": 0.655187566
+      "weights_run_seconds": 0.64461875,
+      "verify_run_seconds": 0.486558711
     },
     {
       "spec": "mage-frost",
@@ -1837,31 +1963,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003566792099187803,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6491088724961455
+          "weight": 0.6491088724961455,
+          "error": 0.08466638171909577,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.6629621113155046
+          "weight": 1.6629621113155046,
+          "error": 0.1061927165384365,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.0586982373317455
+          "weight": 2.0586982373317455,
+          "error": 0.12285579283707572,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.1540658796808518
+          "weight": 0.1540658796808518,
+          "error": 0.033428388089832985,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003566792099187803,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2043,8 +2183,8 @@
         "feet: Acidic Walkers",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.899642491,
-      "verify_run_seconds": 0.718238398
+      "weights_run_seconds": 0.64461875,
+      "verify_run_seconds": 0.534677907
     },
     {
       "spec": "mage-frost",
@@ -2056,31 +2196,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003955450642657253,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6915576753073854
+          "weight": 0.6915576753073854,
+          "error": 0.09717127358827973,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.2036595907400596
+          "weight": 2.2036595907400596,
+          "error": 0.1492690428377444,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.9630885588794307
+          "weight": 2.9630885588794307,
+          "error": 0.19211555205873232,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.7081790678716063
+          "weight": 0.7081790678716063,
+          "error": 0.08680262421993927,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003955450642657253,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2258,8 +2412,8 @@
         "waist: Star Belt",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 0.92231624,
-      "verify_run_seconds": 0.689414394
+      "weights_run_seconds": 0.685615326,
+      "verify_run_seconds": 0.529978168
     },
     {
       "spec": "mage-frost",
@@ -2271,31 +2425,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003955450642657253,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6915576753073854
+          "weight": 0.6915576753073854,
+          "error": 0.09717127358827973,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.2036595907400596
+          "weight": 2.2036595907400596,
+          "error": 0.1492690428377444,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.9630885588794307
+          "weight": 2.9630885588794307,
+          "error": 0.19211555205873232,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.7081790678716063
+          "weight": 0.7081790678716063,
+          "error": 0.08680262421993927,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003955450642657253,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2474,8 +2642,8 @@
         "waist: Star Belt",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 0.92231624,
-      "verify_run_seconds": 0.739693849
+      "weights_run_seconds": 0.685615326,
+      "verify_run_seconds": 0.561916805
     },
     {
       "spec": "mage-frost",
@@ -2487,31 +2655,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004185030413947496,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.16026935230002734
+          "weight": 0.16026935230002734,
+          "error": 0.16937908681231104,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 2.752629815415602
+          "weight": 2.752629815415602,
+          "error": 0.17824583822353204,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.872411262849851
+          "weight": 3.872411262849851,
+          "error": 0.26091414792832823,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.9021997006585454
+          "weight": 0.9021997006585454,
+          "error": 0.11801775709719475,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004185030413947496,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2700,8 +2882,8 @@
         "trinket2: Mark of the Chosen",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.948077432,
-      "verify_run_seconds": 0.79538999
+      "weights_run_seconds": 0.710647161,
+      "verify_run_seconds": 0.590185006
     },
     {
       "spec": "mage-frost",
@@ -2713,31 +2895,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004185030413947496,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.16026935230002734
+          "weight": 0.16026935230002734,
+          "error": 0.16937908681231104,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 2.752629815415602
+          "weight": 2.752629815415602,
+          "error": 0.17824583822353204,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.872411262849851
+          "weight": 3.872411262849851,
+          "error": 0.26091414792832823,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.9021997006585454
+          "weight": 0.9021997006585454,
+          "error": 0.11801775709719475,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004185030413947496,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2923,8 +3119,8 @@
         "trinket2: Mark of the Chosen",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.948077432,
-      "verify_run_seconds": 0.844808576
+      "weights_run_seconds": 0.710647161,
+      "verify_run_seconds": 0.64901119
     },
     {
       "spec": "mage-frost",
@@ -2936,31 +3132,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004179490957944694,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.9799422137314978
+          "weight": 0.9799422137314978,
+          "error": 0.22924630936559065,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.700446293239513
+          "weight": 3.700446293239513,
+          "error": 0.24094559583006686,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.981993476985656
+          "weight": 4.981993476985656,
+          "error": 0.3539633290673636,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004179490957944694,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3097,8 +3307,7 @@
           "source": "Scarlet Monastery: Arcanist Doan",
           "source_kind": "dungeon",
           "score": 57.68590138774217,
-          "verified": false,
-          "swap_note": "runner-up Spellshifter Rod (id 9527) measured higher: 81.0 vs 79.3 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3146,8 +3355,8 @@
         "trinket2: Demon's Blood",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.943976839,
-      "verify_run_seconds": 0.779248052
+      "weights_run_seconds": 0.71396195,
+      "verify_run_seconds": 0.595265086
     },
     {
       "spec": "mage-frost",
@@ -3159,31 +3368,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004179490957944694,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.9799422137314978
+          "weight": 0.9799422137314978,
+          "error": 0.22924630936559065,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.700446293239513
+          "weight": 3.700446293239513,
+          "error": 0.24094559583006686,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.981993476985656
+          "weight": 4.981993476985656,
+          "error": 0.3539633290673636,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004179490957944694,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3321,8 +3544,7 @@
           "source": "Scarlet Monastery: Arcanist Doan",
           "source_kind": "dungeon",
           "score": 57.68590138774217,
-          "verified": false,
-          "swap_note": "runner-up Spellshifter Rod (id 9527) measured higher: 70.1 vs 68.3 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3370,8 +3592,8 @@
         "trinket2: Demon's Blood",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.943976839,
-      "verify_run_seconds": 0.823148523
+      "weights_run_seconds": 0.71396195,
+      "verify_run_seconds": 0.639858637
     },
     {
       "spec": "mage-frost",
@@ -3383,31 +3605,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004241809286879367,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6272920882825829
+          "weight": 0.6272920882825829,
+          "error": 0.19030568902184056,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 4.673520416205103
+          "weight": 4.673520416205103,
+          "error": 0.2968555597329665,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.869308796230101
+          "weight": 5.869308796230101,
+          "error": 0.4214227893753818,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.3445527914916721
+          "weight": 0.3445527914916721,
+          "error": 0.08306547058377053,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004241809286879367,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3591,8 +3827,8 @@
         "finger2: Snake Hoop",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.951879449,
-      "verify_run_seconds": 0.793701858
+      "weights_run_seconds": 0.740911817,
+      "verify_run_seconds": 0.604777194
     },
     {
       "spec": "mage-frost",
@@ -3604,31 +3840,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004241809286879367,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6272920882825829
+          "weight": 0.6272920882825829,
+          "error": 0.19030568902184056,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 4.673520416205103
+          "weight": 4.673520416205103,
+          "error": 0.2968555597329665,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.869308796230101
+          "weight": 5.869308796230101,
+          "error": 0.4214227893753818,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.3445527914916721
+          "weight": 0.3445527914916721,
+          "error": 0.08306547058377053,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004241809286879367,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3812,8 +4062,8 @@
         "finger2: Snake Hoop",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.951879449,
-      "verify_run_seconds": 0.858724173
+      "weights_run_seconds": 0.740911817,
+      "verify_run_seconds": 0.655726223
     },
     {
       "spec": "mage-frost",
@@ -3825,31 +4075,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004230573773984751,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6893011286813404
+          "weight": 0.6893011286813404,
+          "error": 0.2784424661681624,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 4.403720775782061
+          "weight": 4.403720775782061,
+          "error": 0.283992292653592,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.644241767424448
+          "weight": 5.644241767424448,
+          "error": 0.3864157059877893,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004230573773984751,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4032,8 +4296,8 @@
         "finger2: Blackstone Ring",
         "trinket2: Smokey's Lighter"
       ],
-      "weights_run_seconds": 0.970982808,
-      "verify_run_seconds": 0.80673791
+      "weights_run_seconds": 0.693042686,
+      "verify_run_seconds": 0.606686236
     },
     {
       "spec": "mage-frost",
@@ -4045,31 +4309,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004230573773984751,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6893011286813404
+          "weight": 0.6893011286813404,
+          "error": 0.2784424661681624,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 4.403720775782061
+          "weight": 4.403720775782061,
+          "error": 0.283992292653592,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.644241767424448
+          "weight": 5.644241767424448,
+          "error": 0.3864157059877893,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004230573773984751,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4251,8 +4529,8 @@
         "finger2: Blackstone Ring",
         "trinket2: Smokey's Lighter"
       ],
-      "weights_run_seconds": 0.970982808,
-      "verify_run_seconds": 0.860135415
+      "weights_run_seconds": 0.693042686,
+      "verify_run_seconds": 0.664735009
     },
     {
       "spec": "mage-frost",
@@ -4264,31 +4542,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004315144076822474,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.478780308494735
+          "weight": 1.478780308494735,
+          "error": 0.31828987754487525,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 6.313472061166519
+          "weight": 6.313472061166519,
+          "error": 0.44124751338616314,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 8.419329852318004
+          "weight": 8.419329852318004,
+          "error": 0.5875057656060511,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.20274456895368745
+          "weight": -0.20274456895368745,
+          "error": 0.19809523384036032,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004315144076822474,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4419,7 +4711,8 @@
           "item_name": "Eye of the Dead",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "main_hand",
@@ -4428,8 +4721,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 369.6618466590098,
-          "verified": false,
-          "swap_note": "runner-up Atiesh, Greatstaff of the Guardian (id 22589) measured higher: 197.0 vs 194.3 set DPS - swapped in"
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4481,8 +4774,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.964844347,
-      "verify_run_seconds": 0.822979967
+      "weights_run_seconds": 0.743524814,
+      "verify_run_seconds": 0.633502141
     },
     {
       "spec": "mage-frost",
@@ -4494,31 +4787,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004315144076822474,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.478780308494735
+          "weight": 1.478780308494735,
+          "error": 0.31828987754487525,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 6.313472061166519
+          "weight": 6.313472061166519,
+          "error": 0.44124751338616314,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 8.419329852318004
+          "weight": 8.419329852318004,
+          "error": 0.5875057656060511,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.20274456895368745
+          "weight": -0.20274456895368745,
+          "error": 0.19809523384036032,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "frost_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004315144076822474,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4538,7 +4845,8 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "score": 202.12867987212567,
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Jewel of Kajaro (id 19601) measured higher: 170.2 vs 170.0 set DPS - swapped in"
         },
         {
           "slot": "shoulder",
@@ -4649,7 +4957,8 @@
           "item_name": "Eye of the Dead",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "main_hand",
@@ -4658,8 +4967,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 369.6618466590098,
-          "verified": false,
-          "swap_note": "runner-up Atiesh, Greatstaff of the Guardian (id 22589) measured higher: 172.9 vs 170.0 set DPS - swapped in"
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4711,8 +5020,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.964844347,
-      "verify_run_seconds": 0.900845664
+      "weights_run_seconds": 0.743524814,
+      "verify_run_seconds": 0.688373692
     }
   ]
 }

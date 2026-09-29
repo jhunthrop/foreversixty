@@ -1,8 +1,8 @@
 {
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:22:43Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:10:55Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -14,31 +14,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002228804985586384,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.5028981268341544
+          "weight": 0.5028981268341544,
+          "error": 0.07217064586948643,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.33539872462777887
+          "weight": 0.33539872462777887,
+          "error": 0.03003212463938915,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.1995564302426132
+          "weight": 1.1995564302426132,
+          "error": 0.09693505366983018,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.002326996950815829
+          "weight": -0.002326996950815829,
+          "error": 0.1958439847701956,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002228804985586384,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -186,8 +200,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 0.984041995,
-      "verify_run_seconds": 0.265323111
+      "weights_run_seconds": 0.762785942,
+      "verify_run_seconds": 0.206179274
     },
     {
       "spec": "priest-shadow",
@@ -199,31 +213,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002228804985586384,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.5028981268341544
+          "weight": 0.5028981268341544,
+          "error": 0.07217064586948643,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.33539872462777887
+          "weight": 0.33539872462777887,
+          "error": 0.03003212463938915,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.1995564302426132
+          "weight": 1.1995564302426132,
+          "error": 0.09693505366983018,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.002326996950815829
+          "weight": -0.002326996950815829,
+          "error": 0.1958439847701956,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002228804985586384,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -370,8 +398,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 0.984041995,
-      "verify_run_seconds": 0.284391306
+      "weights_run_seconds": 0.762785942,
+      "verify_run_seconds": 0.204451767
     },
     {
       "spec": "priest-shadow",
@@ -383,31 +411,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015247479778460438,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.03620907888936991
+          "weight": 0.03620907888936991,
+          "error": 0.010277679307404322,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.35031792965284
+          "weight": 0.35031792965284,
+          "error": 0.029837975307958866,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.9948244129553617
+          "weight": 0.9948244129553617,
+          "error": 0.07969179270798166,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.044218137084590284
+          "weight": 0.044218137084590284,
+          "error": 0.04845031277851759,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015247479778460438,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -564,8 +606,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.952282153,
-      "verify_run_seconds": 0.537490008
+      "weights_run_seconds": 0.737484972,
+      "verify_run_seconds": 0.42497871
     },
     {
       "spec": "priest-shadow",
@@ -577,31 +619,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015247479778460438,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.03620907888936991
+          "weight": 0.03620907888936991,
+          "error": 0.010277679307404322,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.35031792965284
+          "weight": 0.35031792965284,
+          "error": 0.029837975307958866,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.9948244129553617
+          "weight": 0.9948244129553617,
+          "error": 0.07969179270798166,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.044218137084590284
+          "weight": 0.044218137084590284,
+          "error": 0.04845031277851759,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015247479778460438,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -756,8 +812,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.952282153,
-      "verify_run_seconds": 0.547811147
+      "weights_run_seconds": 0.737484972,
+      "verify_run_seconds": 0.415776794
     },
     {
       "spec": "priest-shadow",
@@ -769,31 +825,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002706566128335647,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.5576209743730316
+          "weight": 1.5576209743730316,
+          "error": 0.14917858484085308,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.4421460520427682
+          "weight": 0.4421460520427682,
+          "error": 0.03985229557458063,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.2070960654835914
+          "weight": 2.2070960654835914,
+          "error": 0.17181518294728118,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.4788301627112732
+          "weight": 1.4788301627112732,
+          "error": 0.405399665541009,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002706566128335647,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -972,8 +1042,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 0.991738148,
-      "verify_run_seconds": 0.597700516
+      "weights_run_seconds": 0.753924069,
+      "verify_run_seconds": 0.454774453
     },
     {
       "spec": "priest-shadow",
@@ -985,31 +1055,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002706566128335647,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.5576209743730316
+          "weight": 1.5576209743730316,
+          "error": 0.14917858484085308,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.4421460520427682
+          "weight": 0.4421460520427682,
+          "error": 0.03985229557458063,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.2070960654835914
+          "weight": 2.2070960654835914,
+          "error": 0.17181518294728118,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.4788301627112732
+          "weight": 1.4788301627112732,
+          "error": 0.405399665541009,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002706566128335647,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1190,8 +1274,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 0.991738148,
-      "verify_run_seconds": 0.699983819
+      "weights_run_seconds": 0.753924069,
+      "verify_run_seconds": 0.518307169
     },
     {
       "spec": "priest-shadow",
@@ -1203,31 +1287,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0021479069244556294,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.5052309780787076
+          "weight": 1.5052309780787076,
+          "error": 0.1391206351590225,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6608994940246571
+          "weight": 0.6608994940246571,
+          "error": 0.05776632193900197,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.201934204934637
+          "weight": 2.201934204934637,
+          "error": 0.16097054510970496,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 7.924651440920817
+          "weight": 7.924651440920817,
+          "error": 0.37138374680201286,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0021479069244556294,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1402,8 +1500,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Kam's Walking Stick"
       ],
-      "weights_run_seconds": 0.984272889,
-      "verify_run_seconds": 0.706700969
+      "weights_run_seconds": 0.8043595,
+      "verify_run_seconds": 0.534531282
     },
     {
       "spec": "priest-shadow",
@@ -1415,31 +1513,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0021479069244556294,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.5052309780787076
+          "weight": 1.5052309780787076,
+          "error": 0.1391206351590225,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6608994940246571
+          "weight": 0.6608994940246571,
+          "error": 0.05776632193900197,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.201934204934637
+          "weight": 2.201934204934637,
+          "error": 0.16097054510970496,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 7.924651440920817
+          "weight": 7.924651440920817,
+          "error": 0.37138374680201286,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0021479069244556294,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1615,8 +1727,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Kam's Walking Stick"
       ],
-      "weights_run_seconds": 0.984272889,
-      "verify_run_seconds": 0.79206306
+      "weights_run_seconds": 0.8043595,
+      "verify_run_seconds": 0.605391306
     },
     {
       "spec": "priest-shadow",
@@ -1628,31 +1740,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002303233756550983,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.050974795520943
+          "weight": 1.050974795520943,
+          "error": 0.09091818336854969,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.31169811768947625
+          "weight": 0.31169811768947625,
+          "error": 0.046683720554702955,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.0564857039279576
+          "weight": 3.0564857039279576,
+          "error": 0.20335994173526678,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.29956545271510265
+          "weight": 0.29956545271510265,
+          "error": 0.09528818232873268,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002303233756550983,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1835,8 +1961,8 @@
         "feet: Acidic Walkers",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.105834959,
-      "verify_run_seconds": 0.808601125
+      "weights_run_seconds": 0.798123978,
+      "verify_run_seconds": 0.633646117
     },
     {
       "spec": "priest-shadow",
@@ -1848,31 +1974,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002303233756550983,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.050974795520943
+          "weight": 1.050974795520943,
+          "error": 0.09091818336854969,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.31169811768947625
+          "weight": 0.31169811768947625,
+          "error": 0.046683720554702955,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.0564857039279576
+          "weight": 3.0564857039279576,
+          "error": 0.20335994173526678,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.29956545271510265
+          "weight": 0.29956545271510265,
+          "error": 0.09528818232873268,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002303233756550983,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2058,8 +2198,8 @@
         "feet: Acidic Walkers",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.105834959,
-      "verify_run_seconds": 0.968900302
+      "weights_run_seconds": 0.798123978,
+      "verify_run_seconds": 0.719312366
     },
     {
       "spec": "priest-shadow",
@@ -2071,31 +2211,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024438003189761835,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.4328011979454712
+          "weight": 0.4328011979454712,
+          "error": 0.17416456083099022,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.43132651206126776
+          "weight": 0.43132651206126776,
+          "error": 0.0630615132203825,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.862592186231001
+          "weight": 3.862592186231001,
+          "error": 0.29438739780083373,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.062197326735211
+          "weight": 1.062197326735211,
+          "error": 0.1570631259885757,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024438003189761835,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2279,8 +2433,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 1.189741789,
-      "verify_run_seconds": 0.95454591
+      "weights_run_seconds": 0.862863416,
+      "verify_run_seconds": 0.707109946
     },
     {
       "spec": "priest-shadow",
@@ -2292,31 +2446,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024438003189761835,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.4328011979454712
+          "weight": 0.4328011979454712,
+          "error": 0.17416456083099022,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.43132651206126776
+          "weight": 0.43132651206126776,
+          "error": 0.0630615132203825,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.862592186231001
+          "weight": 3.862592186231001,
+          "error": 0.29438739780083373,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.062197326735211
+          "weight": 1.062197326735211,
+          "error": 0.1570631259885757,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024438003189761835,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2503,8 +2671,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 1.189741789,
-      "verify_run_seconds": 1.079761872
+      "weights_run_seconds": 0.862863416,
+      "verify_run_seconds": 0.808199604
     },
     {
       "spec": "priest-shadow",
@@ -2516,31 +2684,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0026433951987785763,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.5389535688604568
+          "weight": 1.5389535688604568,
+          "error": 0.19083180707105887,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.5293603833263943
+          "weight": 0.5293603833263943,
+          "error": 0.08092745792114998,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.976982501012018
+          "weight": 4.976982501012018,
+          "error": 0.39121247149683824,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.5630919368746584
+          "weight": 0.5630919368746584,
+          "error": 0.1785626732171973,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0026433951987785763,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2726,8 +2908,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.239420411,
-      "verify_run_seconds": 1.013707624
+      "weights_run_seconds": 0.877890256,
+      "verify_run_seconds": 0.77837516
     },
     {
       "spec": "priest-shadow",
@@ -2739,31 +2921,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0026433951987785763,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.5389535688604568
+          "weight": 1.5389535688604568,
+          "error": 0.19083180707105887,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.5293603833263943
+          "weight": 0.5293603833263943,
+          "error": 0.08092745792114998,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.976982501012018
+          "weight": 4.976982501012018,
+          "error": 0.39121247149683824,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.5630919368746584
+          "weight": 0.5630919368746584,
+          "error": 0.1785626732171973,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0026433951987785763,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2948,8 +3144,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.239420411,
-      "verify_run_seconds": 1.172840403
+      "weights_run_seconds": 0.877890256,
+      "verify_run_seconds": 0.867752903
     },
     {
       "spec": "priest-shadow",
@@ -2961,31 +3157,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002852486844432772,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.12882648391330884
+          "weight": 0.12882648391330884,
+          "error": 0.3339677184979228,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.5790509521478274
+          "weight": 0.5790509521478274,
+          "error": 0.08852404343082731,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 6.678512626991785
+          "weight": 6.678512626991785,
+          "error": 0.5227176887834066,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.2641843398295314
+          "weight": 1.2641843398295314,
+          "error": 0.19641603759329943,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002852486844432772,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3175,8 +3385,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.2541462829999999,
-      "verify_run_seconds": 1.058587282
+      "weights_run_seconds": 0.944875598,
+      "verify_run_seconds": 0.785381428
     },
     {
       "spec": "priest-shadow",
@@ -3188,31 +3398,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002852486844432772,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.12882648391330884
+          "weight": 0.12882648391330884,
+          "error": 0.3339677184979228,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.5790509521478274
+          "weight": 0.5790509521478274,
+          "error": 0.08852404343082731,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 6.678512626991785
+          "weight": 6.678512626991785,
+          "error": 0.5227176887834066,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.2641843398295314
+          "weight": 1.2641843398295314,
+          "error": 0.19641603759329943,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002852486844432772,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3402,8 +3626,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.2541462829999999,
-      "verify_run_seconds": 1.223890827
+      "weights_run_seconds": 0.944875598,
+      "verify_run_seconds": 0.899864904
     },
     {
       "spec": "priest-shadow",
@@ -3415,31 +3639,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0028607087975379376,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 3.1105999492478924
+          "weight": 3.1105999492478924,
+          "error": 0.2480879528899405,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.7348080998713549
+          "weight": 0.7348080998713549,
+          "error": 0.110843968985325,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 7.3886048730976865
+          "weight": 7.3886048730976865,
+          "error": 0.5606809052749885,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.9406606496624328
+          "weight": 0.9406606496624328,
+          "error": 0.20479542657364105,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0028607087975379376,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3624,8 +3862,8 @@
         "finger1: Blackstone Ring",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.243407478,
-      "verify_run_seconds": 1.033393234
+      "weights_run_seconds": 0.929309224,
+      "verify_run_seconds": 0.763955071
     },
     {
       "spec": "priest-shadow",
@@ -3637,31 +3875,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0028607087975379376,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 3.1105999492478924
+          "weight": 3.1105999492478924,
+          "error": 0.2480879528899405,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.7348080998713549
+          "weight": 0.7348080998713549,
+          "error": 0.110843968985325,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 7.3886048730976865
+          "weight": 7.3886048730976865,
+          "error": 0.5606809052749885,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.9406606496624328
+          "weight": 0.9406606496624328,
+          "error": 0.20479542657364105,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0028607087975379376,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3844,8 +4096,8 @@
         "finger1: Blackstone Ring",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.243407478,
-      "verify_run_seconds": 1.23061591
+      "weights_run_seconds": 0.929309224,
+      "verify_run_seconds": 0.906283673
     },
     {
       "spec": "priest-shadow",
@@ -3857,31 +4109,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0028173480309360973,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.889692860471011
+          "weight": 1.889692860471011,
+          "error": 0.4713515466101063,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.9942929548365256
+          "weight": 0.9942929548365256,
+          "error": 0.14638961734696343,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 8.677306366780192
+          "weight": 8.677306366780192,
+          "error": 0.6952080836337133,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.6718835532242498
+          "weight": 0.6718835532242498,
+          "error": 0.2603585109864994,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0028173480309360973,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4064,8 +4330,8 @@
         "finger2: Glowing Crystal Ring",
         "trinket2: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.242373471,
-      "verify_run_seconds": 1.027851482
+      "weights_run_seconds": 0.929773801,
+      "verify_run_seconds": 0.769067413
     },
     {
       "spec": "priest-shadow",
@@ -4077,31 +4343,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0028173480309360973,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.889692860471011
+          "weight": 1.889692860471011,
+          "error": 0.4713515466101063,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.9942929548365256
+          "weight": 0.9942929548365256,
+          "error": 0.14638961734696343,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 8.677306366780192
+          "weight": 8.677306366780192,
+          "error": 0.6952080836337133,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.6718835532242498
+          "weight": 0.6718835532242498,
+          "error": 0.2603585109864994,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0028173480309360973,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4283,8 +4563,8 @@
         "finger2: Glowing Crystal Ring",
         "trinket2: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.242373471,
-      "verify_run_seconds": 1.234465069
+      "weights_run_seconds": 0.929773801,
+      "verify_run_seconds": 0.907440857
     },
     {
       "spec": "priest-shadow",
@@ -4296,31 +4576,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002335061394499891,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.6329742742258484
+          "weight": 1.6329742742258484,
+          "error": 0.20929875405721243,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.9929626245546316
+          "weight": 0.9929626245546316,
+          "error": 0.1534735432695641,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 10.782654182365569
+          "weight": 10.782654182365569,
+          "error": 0.8612205004595455,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.5204453827820807
+          "weight": 0.5204453827820807,
+          "error": 0.28615512479638516,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002335061394499891,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4388,7 +4682,7 @@
           "item_name": "Dark Storm Gauntlets",
           "source": "Ahn'Qiraj",
           "source_kind": "raid",
-          "score": 169.32115593704344,
+          "score": 169.32115593704341,
           "verified": true
         },
         {
@@ -4407,7 +4701,7 @@
           "item_name": "Bloodvine Leggings",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 154.62438746901077,
+          "score": 154.6243874690108,
           "verified": false,
           "swap_note": "runner-up Magister's Leggings (id 16687) measured higher: 117.7 vs 113.2 set DPS - swapped in"
         },
@@ -4455,7 +4749,8 @@
           "item_name": "Eye of the Dead",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "main_hand",
@@ -4464,7 +4759,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 417.90826042253855,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4516,8 +4812,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.340734531,
-      "verify_run_seconds": 1.068652446
+      "weights_run_seconds": 0.943963313,
+      "verify_run_seconds": 0.825645954
     },
     {
       "spec": "priest-shadow",
@@ -4529,31 +4825,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002335061394499891,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.6329742742258484
+          "weight": 1.6329742742258484,
+          "error": 0.20929875405721243,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.9929626245546316
+          "weight": 0.9929626245546316,
+          "error": 0.1534735432695641,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 10.782654182365569
+          "weight": 10.782654182365569,
+          "error": 0.8612205004595455,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.5204453827820807
+          "weight": 0.5204453827820807,
+          "error": 0.28615512479638516,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.002335061394499891,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4640,7 +4950,7 @@
           "item_name": "Bloodvine Leggings",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 154.62438746901077,
+          "score": 154.6243874690108,
           "verified": false,
           "swap_note": "runner-up Magister's Leggings (id 16687) measured higher: 93.9 vs 90.9 set DPS - swapped in"
         },
@@ -4697,7 +5007,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 417.90826042253855,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4749,8 +5060,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.340734531,
-      "verify_run_seconds": 1.2711073370000001
+      "weights_run_seconds": 0.943963313,
+      "verify_run_seconds": 0.963026594
     }
   ]
 }

@@ -1,8 +1,8 @@
 {
   "spec": "druid-feral",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:16:37Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:06:17Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -14,31 +14,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013768460791752082,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013768460791752082,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000000027
+          "weight": 2.0000000000000027,
+          "error": 0.0027536921583511073,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.4978577805046092
+          "weight": 1.4978577805046092,
+          "error": 0.06223601425254596,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.798181176885123
+          "weight": 10.798181176885123,
+          "error": 0.2945685093988545,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 8.535626888824753
+          "weight": 8.535626888824753,
+          "error": 0.16407934319469275,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -175,8 +189,8 @@
         "feet: Embossed Leather Boots",
         "main_hand: Goblin Smasher"
       ],
-      "weights_run_seconds": 1.562090033,
-      "verify_run_seconds": 0.561339926
+      "weights_run_seconds": 1.132896484,
+      "verify_run_seconds": 0.419904745
     },
     {
       "spec": "druid-feral",
@@ -188,31 +202,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013768460791752082,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013768460791752082,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000000027
+          "weight": 2.0000000000000027,
+          "error": 0.0027536921583511073,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.4978577805046092
+          "weight": 1.4978577805046092,
+          "error": 0.06223601425254596,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.798181176885123
+          "weight": 10.798181176885123,
+          "error": 0.2945685093988545,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 8.535626888824753
+          "weight": 8.535626888824753,
+          "error": 0.16407934319469275,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -349,8 +377,8 @@
         "feet: Embossed Leather Boots",
         "main_hand: Goblin Smasher"
       ],
-      "weights_run_seconds": 1.562090033,
-      "verify_run_seconds": 0.566104782
+      "weights_run_seconds": 1.132896484,
+      "verify_run_seconds": 0.413942039
     },
     {
       "spec": "druid-feral",
@@ -362,31 +390,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013567548520680291,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013567548520680291,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0800000000000205
+          "weight": 2.0800000000000205,
+          "error": 0.0028220500923013237,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.59758669614551
+          "weight": 1.59758669614551,
+          "error": 0.06975082510756485,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.691058936560816
+          "weight": 10.691058936560816,
+          "error": 0.2937812528797309,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 8.694279889899608
+          "weight": 8.694279889899608,
+          "error": 0.16530978142513325,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -538,8 +580,8 @@
         "main_hand: Big Bronze Knife",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.525802165,
-      "verify_run_seconds": 0.810545452
+      "weights_run_seconds": 1.177059028,
+      "verify_run_seconds": 0.590375137
     },
     {
       "spec": "druid-feral",
@@ -551,31 +593,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013567548520680291,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013567548520680291,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0800000000000205
+          "weight": 2.0800000000000205,
+          "error": 0.0028220500923013237,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.59758669614551
+          "weight": 1.59758669614551,
+          "error": 0.06975082510756485,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.691058936560816
+          "weight": 10.691058936560816,
+          "error": 0.2937812528797309,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 8.694279889899608
+          "weight": 8.694279889899608,
+          "error": 0.16530978142513325,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -726,8 +782,8 @@
         "main_hand: Big Bronze Knife",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.525802165,
-      "verify_run_seconds": 0.819635951
+      "weights_run_seconds": 1.177059028,
+      "verify_run_seconds": 0.596400738
     },
     {
       "spec": "druid-feral",
@@ -739,31 +795,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009361229771858629,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009361229771858629,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.320000000000103
+          "weight": 2.320000000000103,
+          "error": 0.002171805307071307,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.4258871182851647
+          "weight": 1.4258871182851647,
+          "error": 0.04859210287405549,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 8.938115235572496
+          "weight": 8.938115235572496,
+          "error": 0.22384310676504585,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 5.429443051625059
+          "weight": 5.429443051625059,
+          "error": 0.41844186801109806,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -934,8 +1004,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.699121815,
-      "verify_run_seconds": 0.898926916
+      "weights_run_seconds": 1.272063811,
+      "verify_run_seconds": 0.674362404
     },
     {
       "spec": "druid-feral",
@@ -947,31 +1017,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009361229771858629,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009361229771858629,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.320000000000103
+          "weight": 2.320000000000103,
+          "error": 0.002171805307071307,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.4258871182851647
+          "weight": 1.4258871182851647,
+          "error": 0.04859210287405549,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 8.938115235572496
+          "weight": 8.938115235572496,
+          "error": 0.22384310676504585,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 5.429443051625059
+          "weight": 5.429443051625059,
+          "error": 0.41844186801109806,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1142,8 +1226,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.699121815,
-      "verify_run_seconds": 0.88250074
+      "weights_run_seconds": 1.272063811,
+      "verify_run_seconds": 0.670537935
     },
     {
       "spec": "druid-feral",
@@ -1155,31 +1239,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010321993975684093,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010321993975684093,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.320000000000182
+          "weight": 2.320000000000182,
+          "error": 0.0023947026023610216,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.5295107182047987
+          "weight": 1.5295107182047987,
+          "error": 0.05614607660554923,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 9.67364622748719
+          "weight": 9.67364622748719,
+          "error": 0.24996777383798854,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 6.718612579632779
+          "weight": 6.718612579632779,
+          "error": 0.5300866267998827,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1349,8 +1447,8 @@
         "finger2: Monkey Ring",
         "main_hand: Rod of the Sleepwalker"
       ],
-      "weights_run_seconds": 2.085409922,
-      "verify_run_seconds": 1.4491880209999999
+      "weights_run_seconds": 1.530055001,
+      "verify_run_seconds": 1.066028474
     },
     {
       "spec": "druid-feral",
@@ -1362,31 +1460,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010321993975684093,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010321993975684093,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.320000000000182
+          "weight": 2.320000000000182,
+          "error": 0.0023947026023610216,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.5295107182047987
+          "weight": 1.5295107182047987,
+          "error": 0.05614607660554923,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 9.67364622748719
+          "weight": 9.67364622748719,
+          "error": 0.24996777383798854,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 6.718612579632779
+          "weight": 6.718612579632779,
+          "error": 0.5300866267998827,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1556,8 +1668,8 @@
         "finger2: Monkey Ring",
         "main_hand: Rod of the Sleepwalker"
       ],
-      "weights_run_seconds": 2.085409922,
-      "verify_run_seconds": 1.4320836350000001
+      "weights_run_seconds": 1.530055001,
+      "verify_run_seconds": 1.051533881
     },
     {
       "spec": "druid-feral",
@@ -1569,31 +1681,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010277818718556265,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010277818718556265,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.3200000000003618
+          "weight": 2.3200000000003618,
+          "error": 0.0023844539427055793,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.5178847355788923
+          "weight": 1.5178847355788923,
+          "error": 0.0565779791754076,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.174009870434537
+          "weight": 10.174009870434537,
+          "error": 0.2660866349608839,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 6.882868452422846
+          "weight": 6.882868452422846,
+          "error": 0.6580119480461175,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1773,8 +1899,8 @@
         "finger2: Silverlaine's Family Seal",
         "main_hand: Silver Spade"
       ],
-      "weights_run_seconds": 2.087244156,
-      "verify_run_seconds": 1.555573055
+      "weights_run_seconds": 1.528503677,
+      "verify_run_seconds": 1.133776675
     },
     {
       "spec": "druid-feral",
@@ -1786,31 +1912,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010277818718556265,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010277818718556265,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.3200000000003618
+          "weight": 2.3200000000003618,
+          "error": 0.0023844539427055793,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.5178847355788923
+          "weight": 1.5178847355788923,
+          "error": 0.0565779791754076,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.174009870434537
+          "weight": 10.174009870434537,
+          "error": 0.2660866349608839,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 6.882868452422846
+          "weight": 6.882868452422846,
+          "error": 0.6580119480461175,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1990,8 +2130,8 @@
         "finger2: Silverlaine's Family Seal",
         "main_hand: Silver Spade"
       ],
-      "weights_run_seconds": 2.087244156,
-      "verify_run_seconds": 1.538190559
+      "weights_run_seconds": 1.528503677,
+      "verify_run_seconds": 1.131918954
     },
     {
       "spec": "druid-feral",
@@ -2003,31 +2143,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011228967948743486,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011228967948743486,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.3200000000001317
+          "weight": 2.3200000000001317,
+          "error": 0.0026051205641075747,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.5858225204792848
+          "weight": 1.5858225204792848,
+          "error": 0.0608279090442293,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.632052017757749
+          "weight": 10.632052017757749,
+          "error": 0.2678995355455438,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 7.358254413353751
+          "weight": 7.358254413353751,
+          "error": 0.7424668043462456,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2101,7 +2255,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 25.52000000000145,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2200,8 +2355,8 @@
         "feet: Excelsior Boots",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 2.148622422,
-      "verify_run_seconds": 1.601290232
+      "weights_run_seconds": 1.6191818279999999,
+      "verify_run_seconds": 1.192774423
     },
     {
       "spec": "druid-feral",
@@ -2213,31 +2368,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011228967948743486,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011228967948743486,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.3200000000001317
+          "weight": 2.3200000000001317,
+          "error": 0.0026051205641075747,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.5858225204792848
+          "weight": 1.5858225204792848,
+          "error": 0.0608279090442293,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.632052017757749
+          "weight": 10.632052017757749,
+          "error": 0.2678995355455438,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 7.358254413353751
+          "weight": 7.358254413353751,
+          "error": 0.7424668043462456,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2311,7 +2480,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 25.52000000000145,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2410,8 +2580,8 @@
         "feet: Excelsior Boots",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 2.148622422,
-      "verify_run_seconds": 1.610648149
+      "weights_run_seconds": 1.6191818279999999,
+      "verify_run_seconds": 1.190135429
     },
     {
       "spec": "druid-feral",
@@ -2423,31 +2593,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012035500931268579,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012035500931268579,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.320000000000082
+          "weight": 2.320000000000082,
+          "error": 0.0027922362160544357,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.5227950955877938
+          "weight": 1.5227950955877938,
+          "error": 0.06241217046800526,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 11.54668765045491
+          "weight": 11.54668765045491,
+          "error": 0.29991302535004477,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 7.97958133033455
+          "weight": 7.97958133033455,
+          "error": 0.9080627836232801,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2522,7 +2706,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 25.520000000000902,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2625,8 +2810,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 2.210359241,
-      "verify_run_seconds": 1.8897958990000001
+      "weights_run_seconds": 1.595207846,
+      "verify_run_seconds": 1.350166167
     },
     {
       "spec": "druid-feral",
@@ -2638,31 +2823,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012035500931268579,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012035500931268579,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.320000000000082
+          "weight": 2.320000000000082,
+          "error": 0.0027922362160544357,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.5227950955877938
+          "weight": 1.5227950955877938,
+          "error": 0.06241217046800526,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 11.54668765045491
+          "weight": 11.54668765045491,
+          "error": 0.29991302535004477,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 7.97958133033455
+          "weight": 7.97958133033455,
+          "error": 0.9080627836232801,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2737,7 +2936,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 25.520000000000902,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2840,8 +3040,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 2.210359241,
-      "verify_run_seconds": 1.8187831079999999
+      "weights_run_seconds": 1.595207846,
+      "verify_run_seconds": 1.351179524
     },
     {
       "spec": "druid-feral",
@@ -2853,31 +3053,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012004196683272359,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012004196683272359,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.3200000000003445
+          "weight": 2.3200000000003445,
+          "error": 0.002784973630520812,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.60486718799991
+          "weight": 1.60486718799991,
+          "error": 0.07727185286223968,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 11.787341725954734
+          "weight": 11.787341725954734,
+          "error": 0.29735319968096446,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 8.531213042802978
+          "weight": 8.531213042802978,
+          "error": 1.0978040216414466,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2889,7 +3103,7 @@
           "source_kind": "quest",
           "score": 165.02278416336628,
           "verified": false,
-          "swap_note": "runner-up White Bandit Mask (id 10008) measured higher: 98.0 vs 96.6 set DPS - swapped in"
+          "swap_note": "runner-up White Bandit Mask (id 10008) measured higher: 100.4 vs 99.0 set DPS - swapped in"
         },
         {
           "slot": "neck",
@@ -2917,7 +3131,7 @@
           "source_kind": "quest",
           "score": 25.52000000000379,
           "verified": false,
-          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 96.7 vs 96.6 set DPS - swapped in"
+          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 99.0 vs 99.0 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -2953,7 +3167,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 25.52000000000379,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -3009,11 +3224,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 10698,
-          "item_name": "Enchanted Azsharite Felbane Staff",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 692.54,
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 606.62,
           "verified": true
         },
         {
@@ -3025,7 +3240,7 @@
           "verified": false
         }
       ],
-      "set_dps": 96.61523401402353,
+      "set_dps": 98.96692211124748,
       "no_source_count": 2358,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3050,10 +3265,10 @@
         "feet: Sandstalker Ankleguards",
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood",
-        "main_hand: Enchanted Azsharite Felbane Staff"
+        "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.199936707,
-      "verify_run_seconds": 1.834798476
+      "weights_run_seconds": 1.599443544,
+      "verify_run_seconds": 1.378557526
     },
     {
       "spec": "druid-feral",
@@ -3065,31 +3280,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012004196683272359,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012004196683272359,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.3200000000003445
+          "weight": 2.3200000000003445,
+          "error": 0.002784973630520812,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.60486718799991
+          "weight": 1.60486718799991,
+          "error": 0.07727185286223968,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 11.787341725954734
+          "weight": 11.787341725954734,
+          "error": 0.29735319968096446,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 8.531213042802978
+          "weight": 8.531213042802978,
+          "error": 1.0978040216414466,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3101,7 +3330,7 @@
           "source_kind": "quest",
           "score": 165.02278416336628,
           "verified": false,
-          "swap_note": "runner-up White Bandit Mask (id 10008) measured higher: 97.0 vs 95.6 set DPS - swapped in"
+          "swap_note": "runner-up White Bandit Mask (id 10008) measured higher: 99.4 vs 98.0 set DPS - swapped in"
         },
         {
           "slot": "neck",
@@ -3129,7 +3358,7 @@
           "source_kind": "quest",
           "score": 25.52000000000379,
           "verified": false,
-          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 95.7 vs 95.6 set DPS - swapped in"
+          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 98.1 vs 98.0 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -3165,7 +3394,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 25.52000000000379,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -3221,11 +3451,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 10698,
-          "item_name": "Enchanted Azsharite Felbane Staff",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 692.54,
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 606.62,
           "verified": true
         },
         {
@@ -3237,7 +3467,7 @@
           "verified": false
         }
       ],
-      "set_dps": 95.58112028795834,
+      "set_dps": 97.99557053493001,
       "no_source_count": 2358,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3262,10 +3492,10 @@
         "feet: Sandstalker Ankleguards",
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood",
-        "main_hand: Enchanted Azsharite Felbane Staff"
+        "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.199936707,
-      "verify_run_seconds": 1.831620251
+      "weights_run_seconds": 1.599443544,
+      "verify_run_seconds": 1.360190488
     },
     {
       "spec": "druid-feral",
@@ -3277,31 +3507,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001203734064685924,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001203734064685924,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.32000000000048
+          "weight": 2.32000000000048,
+          "error": 0.0027926630300700635,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.59651950544334
+          "weight": 1.59651950544334,
+          "error": 0.07073800903203661,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 12.630364655863644
+          "weight": 12.630364655863644,
+          "error": 0.3261869513226742,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 8.709897300287757
+          "weight": 8.709897300287757,
+          "error": 1.1951103573600135,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3340,7 +3584,7 @@
           "source_kind": "quest",
           "score": 25.52000000000528,
           "verified": false,
-          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 100.7 vs 100.6 set DPS - swapped in"
+          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 104.3 vs 104.2 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -3376,7 +3620,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 25.52000000000528,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -3386,7 +3631,7 @@
           "source_kind": "crafted",
           "score": 353.65021036418204,
           "verified": false,
-          "swap_note": "runner-up Dragonflight Leggings (id 10742) measured higher: 101.0 vs 100.6 set DPS - swapped in"
+          "swap_note": "runner-up Dragonflight Leggings (id 10742) measured higher: 104.5 vs 104.2 set DPS - swapped in"
         },
         {
           "slot": "feet",
@@ -3433,13 +3678,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 11750,
-          "item_name": "Kindling Stave",
-          "source": "Blackrock Depths: Pyromancer Loregrain",
-          "source_kind": "dungeon",
-          "score": 818.8651051820909,
-          "verified": false,
-          "swap_note": "runner-up Enchanted Azsharite Felbane Staff (id 10698) measured higher: 101.9 vs 100.6 set DPS - swapped in"
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 606.62,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3450,7 +3694,7 @@
           "verified": false
         }
       ],
-      "set_dps": 100.63782500407079,
+      "set_dps": 104.23082419332714,
       "no_source_count": 2632,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3473,11 +3717,10 @@
         "head: Eye of Theradras",
         "chest: Warbear Harness",
         "wrist: Forest Stalker's Bracers",
-        "legs: Stormshroud Pants",
-        "main_hand: Kindling Stave"
+        "legs: Stormshroud Pants"
       ],
-      "weights_run_seconds": 2.169228439,
-      "verify_run_seconds": 1.86550416
+      "weights_run_seconds": 1.62850488,
+      "verify_run_seconds": 1.381372
     },
     {
       "spec": "druid-feral",
@@ -3489,31 +3732,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001203734064685924,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001203734064685924,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.32000000000048
+          "weight": 2.32000000000048,
+          "error": 0.0027926630300700635,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.59651950544334
+          "weight": 1.59651950544334,
+          "error": 0.07073800903203661,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 12.630364655863644
+          "weight": 12.630364655863644,
+          "error": 0.3261869513226742,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 8.709897300287757
+          "weight": 8.709897300287757,
+          "error": 1.1951103573600135,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3552,7 +3809,7 @@
           "source_kind": "quest",
           "score": 25.52000000000528,
           "verified": false,
-          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 99.6 vs 99.5 set DPS - swapped in"
+          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 103.3 vs 103.2 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -3588,7 +3845,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 25.52000000000528,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -3598,7 +3856,7 @@
           "source_kind": "crafted",
           "score": 353.65021036418204,
           "verified": false,
-          "swap_note": "runner-up Dragonflight Leggings (id 10742) measured higher: 99.9 vs 99.5 set DPS - swapped in"
+          "swap_note": "runner-up Dragonflight Leggings (id 10742) measured higher: 103.5 vs 103.2 set DPS - swapped in"
         },
         {
           "slot": "feet",
@@ -3626,7 +3884,7 @@
           "source_kind": "quest",
           "score": 22.351273076206763,
           "verified": false,
-          "swap_note": "runner-up Blackstone Ring (id 17713) measured higher: 100.0 vs 99.5 set DPS - swapped in"
+          "swap_note": "runner-up Blackstone Ring (id 17713) measured higher: 103.9 vs 103.2 set DPS - swapped in"
         },
         {
           "slot": "trinket1",
@@ -3646,13 +3904,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 11750,
-          "item_name": "Kindling Stave",
-          "source": "Blackrock Depths: Pyromancer Loregrain",
-          "source_kind": "dungeon",
-          "score": 818.8651051820909,
-          "verified": false,
-          "swap_note": "runner-up Enchanted Azsharite Felbane Staff (id 10698) measured higher: 100.8 vs 99.5 set DPS - swapped in"
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 606.62,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3663,7 +3920,7 @@
           "verified": false
         }
       ],
-      "set_dps": 99.53557910607074,
+      "set_dps": 103.17756871997116,
       "no_source_count": 2632,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3686,11 +3943,10 @@
         "head: Eye of Theradras",
         "chest: Warbear Harness",
         "wrist: Forest Stalker's Bracers",
-        "legs: Stormshroud Pants",
-        "main_hand: Kindling Stave"
+        "legs: Stormshroud Pants"
       ],
-      "weights_run_seconds": 2.169228439,
-      "verify_run_seconds": 1.833703911
+      "weights_run_seconds": 1.62850488,
+      "verify_run_seconds": 1.382257241
     },
     {
       "spec": "druid-feral",
@@ -3702,31 +3958,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012099863309907302,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012099863309907302,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.3199999999996233
+          "weight": 2.3199999999996233,
+          "error": 0.002807168287898977,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.6968742867121946
+          "weight": 1.6968742867121946,
+          "error": 0.07895538448577816,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 13.263282788166585
+          "weight": 13.263282788166585,
+          "error": 0.34330225338615017,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 9.236070830464136
+          "weight": 9.236070830464136,
+          "error": 1.443871950425368,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3837,7 +4107,7 @@
           "source_kind": "dungeon",
           "score": 24.551868580408247,
           "verified": false,
-          "swap_note": "runner-up Masons Fraternity Ring (id 9533) measured higher: 122.6 vs 122.6 set DPS - swapped in"
+          "swap_note": "runner-up Masons Fraternity Ring (id 9533) measured higher: 126.8 vs 126.8 set DPS - swapped in"
         },
         {
           "slot": "trinket1",
@@ -3857,11 +4127,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 11750,
-          "item_name": "Kindling Stave",
-          "source": "Blackrock Depths: Pyromancer Loregrain",
-          "source_kind": "dungeon",
-          "score": 827.7259590343322,
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 606.62,
           "verified": true
         },
         {
@@ -3873,7 +4143,7 @@
           "verified": false
         }
       ],
-      "set_dps": 122.61266423847945,
+      "set_dps": 126.81977117019841,
       "no_source_count": 2882,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3904,8 +4174,8 @@
         "finger2: Ironspine's Eye",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 2.170283322,
-      "verify_run_seconds": 1.879036771
+      "weights_run_seconds": 1.632367,
+      "verify_run_seconds": 1.394819316
     },
     {
       "spec": "druid-feral",
@@ -3917,31 +4187,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012099863309907302,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012099863309907302,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.3199999999996233
+          "weight": 2.3199999999996233,
+          "error": 0.002807168287898977,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.6968742867121946
+          "weight": 1.6968742867121946,
+          "error": 0.07895538448577816,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 13.263282788166585
+          "weight": 13.263282788166585,
+          "error": 0.34330225338615017,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 9.236070830464136
+          "weight": 9.236070830464136,
+          "error": 1.443871950425368,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3953,7 +4237,7 @@
           "source_kind": "dungeon",
           "score": 385.29191806866214,
           "verified": false,
-          "swap_note": "runner-up Mask of the Unforgiven (id 13404) measured higher: 121.9 vs 121.5 set DPS - swapped in"
+          "swap_note": "runner-up Mask of the Unforgiven (id 13404) measured higher: 126.5 vs 125.5 set DPS - swapped in"
         },
         {
           "slot": "neck",
@@ -4053,7 +4337,7 @@
           "source_kind": "dungeon",
           "score": 24.551868580408247,
           "verified": false,
-          "swap_note": "runner-up Masons Fraternity Ring (id 9533) measured higher: 121.5 vs 121.5 set DPS - swapped in"
+          "swap_note": "runner-up Masons Fraternity Ring (id 9533) measured higher: 125.6 vs 125.5 set DPS - swapped in"
         },
         {
           "slot": "trinket1",
@@ -4073,11 +4357,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 11750,
-          "item_name": "Kindling Stave",
-          "source": "Blackrock Depths: Pyromancer Loregrain",
-          "source_kind": "dungeon",
-          "score": 827.7259590343322,
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 606.62,
           "verified": true
         },
         {
@@ -4089,7 +4373,7 @@
           "verified": false
         }
       ],
-      "set_dps": 121.48001705009278,
+      "set_dps": 125.53482701074196,
       "no_source_count": 2882,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4120,8 +4404,8 @@
         "finger2: Ironspine's Eye",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 2.170283322,
-      "verify_run_seconds": 1.848519861
+      "weights_run_seconds": 1.632367,
+      "verify_run_seconds": 1.393528573
     },
     {
       "spec": "druid-feral",
@@ -4133,31 +4417,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001201899379149936,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001201899379149936,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.3199999999998955
+          "weight": 2.3199999999998955,
+          "error": 0.0027884065596251654,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.6853115485212573
+          "weight": 1.6853115485212573,
+          "error": 0.07861780006186089,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 13.764693855738749
+          "weight": 13.764693855738749,
+          "error": 0.3613877592573654,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 9.64612005611405
+          "weight": 9.64612005611405,
+          "error": 1.9441959745346409,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4172,11 +4470,11 @@
         },
         {
           "slot": "neck",
-          "item_id": 23053,
-          "item_name": "Stormrage's Talisman of Seething",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 411.41142796068493,
+          "item_id": 17111,
+          "item_name": "Blazefury Medallion",
+          "source": "Lord Kazzak",
+          "source_kind": "world",
+          "score": 21.909050130776343,
           "verified": true
         },
         {
@@ -4196,7 +4494,7 @@
           "source_kind": "crafted",
           "score": 192.70571398034247,
           "verified": false,
-          "swap_note": "runner-up Cloak of the Fallen God (id 21710) measured higher: 164.5 vs 161.2 set DPS - swapped in"
+          "swap_note": "runner-up Cloak of the Fallen God (id 21710) measured higher: 166.1 vs 162.9 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -4268,7 +4566,8 @@
           "source": "Ahn'Qiraj",
           "source_kind": "raid",
           "score": 232.70571398034247,
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Don Julio's Band (id 19325) measured higher: 162.9 vs 162.9 set DPS - swapped in"
         },
         {
           "slot": "trinket1",
@@ -4290,11 +4589,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 18867,
-          "item_name": "Grand Marshal's Battle Hammer",
-          "source": "Rank 18",
-          "source_kind": "pvp",
-          "score": 1336.2057139803399,
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 606.62,
           "verified": true
         },
         {
@@ -4306,7 +4605,7 @@
           "verified": false
         }
       ],
-      "set_dps": 161.2029520292836,
+      "set_dps": 162.88680295336468,
       "no_source_count": 3456,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4326,7 +4625,7 @@
         "890 Twisted Chanter's Staff"
       ],
       "new_at_band": [
-        "neck: Stormrage's Talisman of Seething",
+        "neck: Blazefury Medallion",
         "back: Chromatic Cloak",
         "wrist: Qiraji Execution Bracers",
         "waist: Belt of Never-ending Agony",
@@ -4334,11 +4633,10 @@
         "finger1: Band of Unnatural Forces",
         "finger2: Ring of the Qiraji Fury",
         "trinket1: Slayer's Crest",
-        "trinket2: Kiss of the Spider",
-        "main_hand: Grand Marshal's Battle Hammer"
+        "trinket2: Kiss of the Spider"
       ],
-      "weights_run_seconds": 2.192308732,
-      "verify_run_seconds": 1.890570434
+      "weights_run_seconds": 1.6719862669999999,
+      "verify_run_seconds": 1.487508292
     },
     {
       "spec": "druid-feral",
@@ -4350,31 +4648,45 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001201899379149936,
+          "insignificant": false
         },
         {
           "stat": "feral_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001201899379149936,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.3199999999998955
+          "weight": 2.3199999999998955,
+          "error": 0.0027884065596251654,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.6853115485212573
+          "weight": 1.6853115485212573,
+          "error": 0.07861780006186089,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 13.764693855738749
+          "weight": 13.764693855738749,
+          "error": 0.3613877592573654,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 9.64612005611405
+          "weight": 9.64612005611405,
+          "error": 1.9441959745346409,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4389,11 +4701,11 @@
         },
         {
           "slot": "neck",
-          "item_id": 23053,
-          "item_name": "Stormrage's Talisman of Seething",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 411.41142796068493,
+          "item_id": 17111,
+          "item_name": "Blazefury Medallion",
+          "source": "Lord Kazzak",
+          "source_kind": "world",
+          "score": 21.909050130776343,
           "verified": true
         },
         {
@@ -4413,7 +4725,7 @@
           "source_kind": "crafted",
           "score": 192.70571398034247,
           "verified": false,
-          "swap_note": "runner-up Cloak of the Fallen God (id 21710) measured higher: 163.6 vs 160.4 set DPS - swapped in"
+          "swap_note": "runner-up Cloak of the Fallen God (id 21710) measured higher: 166.1 vs 162.9 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -4507,11 +4819,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 18867,
-          "item_name": "Grand Marshal's Battle Hammer",
-          "source": "Rank 18",
-          "source_kind": "pvp",
-          "score": 1336.2057139803399,
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 606.62,
           "verified": true
         },
         {
@@ -4523,7 +4835,7 @@
           "verified": false
         }
       ],
-      "set_dps": 160.38122422677412,
+      "set_dps": 162.8522632696338,
       "no_source_count": 3456,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4543,7 +4855,7 @@
         "890 Twisted Chanter's Staff"
       ],
       "new_at_band": [
-        "neck: Stormrage's Talisman of Seething",
+        "neck: Blazefury Medallion",
         "back: Chromatic Cloak",
         "wrist: Qiraji Execution Bracers",
         "waist: Belt of Never-ending Agony",
@@ -4551,11 +4863,10 @@
         "finger1: Band of Unnatural Forces",
         "finger2: Ring of the Qiraji Fury",
         "trinket1: Slayer's Crest",
-        "trinket2: Kiss of the Spider",
-        "main_hand: Grand Marshal's Battle Hammer"
+        "trinket2: Kiss of the Spider"
       ],
-      "weights_run_seconds": 2.192308732,
-      "verify_run_seconds": 1.885788316
+      "weights_run_seconds": 1.6719862669999999,
+      "verify_run_seconds": 1.467542084
     }
   ]
 }

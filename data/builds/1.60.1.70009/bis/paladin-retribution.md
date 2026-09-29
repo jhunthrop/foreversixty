@@ -6,9 +6,9 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (human, 00000000000000000-0000000000000000-10000000000000000)
 
-Set DPS (verified): 10.0. Weights run: 1.5s. Verify run: 0.5s. 853 eligible items had no known source.
+Set DPS (verified): 10.0. Weights run: 1.1s. Verify run: 0.4s. 853 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.057, crit=1.245, hit=0.831, melee_haste=0.704
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.057 ± 0.008, crit=1.245 ± 0.039, hit=0.831 ± 0.071, melee_haste=0.704 ± 0.011
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -36,9 +36,9 @@ No-known-source sample (15 of 853, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (human, 00000000000000000-0000000000000000-51000000000000000)
 
-Set DPS (verified): 16.8. Weights run: 1.4s. Verify run: 0.7s. 1136 eligible items had no known source.
+Set DPS (verified): 16.8. Weights run: 1.1s. Verify run: 0.5s. 1136 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.080, crit=1.685, hit=1.130, melee_haste=0.947
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.080 ± 0.012, crit=1.685 ± 0.053, hit=1.130 ± 0.099, melee_haste=0.947 ± 0.015
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -66,9 +66,9 @@ No-known-source sample (15 of 1136, see the JSON for more): 727 Notched Shortswo
 
 ### Band 20 (human, 00000000000000000-0000000000000000-55100000000000000)
 
-Set DPS (verified): 22.7. Weights run: 1.8s. Verify run: 1.1s. 1504 eligible items had no known source.
+Set DPS (verified): 22.7. Weights run: 1.3s. Verify run: 0.8s. 1504 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.113, crit=2.168, hit=1.304, melee_haste=1.245
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.113 ± 0.017, crit=2.168 ± 0.073, hit=1.304 ± 0.122, melee_haste=1.245 ± 0.051
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -96,9 +96,9 @@ No-known-source sample (15 of 1504, see the JSON for more): 727 Notched Shortswo
 
 ### Band 25 (human, 00000000000000000-0000000000000000-55222000000000000)
 
-Set DPS (verified): 25.8. Weights run: 1.8s. Verify run: 1.2s. 1889 eligible items had no known source.
+Set DPS (verified): 25.8. Weights run: 1.3s. Verify run: 0.8s. 1889 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.149, crit=2.679, hit=1.610, melee_haste=-0.824
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.149 ± 0.025, crit=2.679 ± 0.086, hit=1.610 ± 0.147, melee_haste=-0.824 ± 0.180
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -126,9 +126,9 @@ No-known-source sample (15 of 1889, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (human, 00000000000000000-0000000000000000-55223310000000000)
 
-Set DPS (verified): 39.6. Weights run: 1.8s. Verify run: 1.3s. 2244 eligible items had no known source.
+Set DPS (verified): 39.6. Weights run: 1.3s. Verify run: 0.9s. 2244 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.130, crit=3.041, hit=1.600, melee_haste=-1.404
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.130 ± 0.023, crit=3.041 ± 0.097, hit=1.600 ± 0.159, melee_haste=-1.404 ± 0.209
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -156,27 +156,27 @@ No-known-source sample (15 of 2244, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (human, 00000000000000000-0000000000000000-55223331200000000)
 
-Set DPS (verified): 41.1. Weights run: 1.8s. Verify run: 1.3s. 2551 eligible items had no known source.
+Set DPS (verified): 42.1. Weights run: 1.3s. Verify run: 0.9s. 2551 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.178, crit=3.521, hit=1.676, melee_haste=-2.222
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.178 ± 0.027, crit=3.521 ± 0.115, hit=1.676 ± 0.173, melee_haste=-2.222 ± 0.313
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Tusken Helm (6686) | Razorfen Kraul: Overlord Ramtusk [dungeon] | 26.0 | yes |
-| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | no - runner-up Pulsating Crystalline Shard (id 4743) measured higher: 41.2 vs 41.1 set DPS - swapped in |
+| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | no - runner-up Pulsating Crystalline Shard (id 4743) measured higher: 42.2 vs 42.1 set DPS - swapped in |
 | shoulder | Wrangling Spaulders (15698) | Quests [quest] | 16.4 | yes |
-| back | Wolfmaster Cape (6314) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 10.0 | yes |
+| back | Wolfmaster Cape (6314) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 10.0 | no - runner-up Sergeant Major's Cape (id 16315) measured higher: 42.4 vs 42.1 set DPS - swapped in |
 | chest | Kolkar Marauder Chain (6773) | Quests [quest] | 29.2 | yes |
 | wrist | Bands of Serra'kis (6902) | Blackfathom Deeps [dungeon] | 12.0 | yes |
 | hands | Fletcher's Gloves (7348) | Leatherworking [crafted] | 49.3 | yes |
 | waist | Barbaric Belt (4264) | Leatherworking [crafted] | 22.0 | yes |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 | yes |
-| feet | Golden Scale Boots (3847) | Blacksmithing [crafted] | 16.0 | no - runner-up Excelsior Boots (id 4109) measured higher: 41.2 vs 41.1 set DPS - swapped in |
+| feet | Golden Scale Boots (3847) | Blacksmithing [crafted] | 16.0 | no - runner-up Excelsior Boots (id 4109) measured higher: 42.3 vs 42.1 set DPS - swapped in |
 | finger1 | Silverlaine's Family Seal (6321) | Shadowfang Keep: Baron Silverlaine [dungeon] | 10.0 | yes |
 | finger2 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 9.6 | yes |
 | trinket1 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | 0.0 | yes |
 | trinket2 | Rune of Duty (21568) | Silverwing Sentinels [rep] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 452.8 | no - runner-up Morbid Dawn (id 7689) measured higher: 41.8 vs 41.1 set DPS - swapped in |
+| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 452.8 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
@@ -186,9 +186,9 @@ No-known-source sample (15 of 2551, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (human, 00000000000000000-0000000000000000-55223331211000210)
 
-Set DPS (verified): 47.3. Weights run: 1.8s. Verify run: 1.4s. 2960 eligible items had no known source.
+Set DPS (verified): 47.3. Weights run: 1.3s. Verify run: 1.1s. 2960 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.235, crit=4.105, hit=1.857, melee_haste=1.080
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.235 ± 0.040, crit=4.105 ± 0.139, hit=1.857 ± 0.200, melee_haste=1.080 ± 0.209
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -206,7 +206,7 @@ Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.
 | finger2 | Silverlaine's Family Seal (6321) | Shadowfang Keep: Baron Silverlaine [dungeon] | 10.0 | yes |
 | trinket1 | Carrot on a Stick (11122) | Quests [quest] | 0.0 | yes |
 | trinket2 | Mark of the Chosen (17774) | Quests [quest] | 0.0 | yes |
-| main_hand | Mograine's Might (7723) | Scarlet Monastery: Scarlet Commander Mograine [dungeon] | 561.0 | no - runner-up Ravager (id 7717) measured higher: 51.8 vs 47.3 set DPS - swapped in |
+| main_hand | Mograine's Might (7723) | Scarlet Monastery: Scarlet Commander Mograine [dungeon] | 561.0 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
@@ -216,25 +216,25 @@ No-known-source sample (15 of 2960, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (human, 00000000000000000-5000000000000000-55223331211000210)
 
-Set DPS (verified): 52.0. Weights run: 1.9s. Verify run: 1.5s. 3337 eligible items had no known source.
+Set DPS (verified): 56.9. Weights run: 1.4s. Verify run: 1.2s. 3337 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.274, crit=4.681, hit=2.208, melee_haste=1.334
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.274 ± 0.036, crit=4.681 ± 0.163, hit=2.208 ± 0.235, melee_haste=1.334 ± 0.247
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 91.5 | yes |
-| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | no - runner-up Pulsating Crystalline Shard (id 4743) measured higher: 52.1 vs 52.0 set DPS - swapped in |
-| shoulder | Big Bad Pauldrons (9476) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 24.0 | no - runner-up Failed Flying Experiment (id 9647) measured higher: 52.2 vs 52.0 set DPS - swapped in |
-| back | Tattered Hakkari Cape (20219) | Quests [quest] | 22.0 | no - runner-up Sergeant Major's Cape (id 16336) measured higher: 52.5 vs 52.0 set DPS - swapped in |
-| chest | Ornate Mithril Breastplate (7935) | Blacksmithing [crafted] | 65.5 | no - runner-up Kolkar Marauder Chain (id 6773) measured higher: 52.7 vs 52.0 set DPS - swapped in |
-| wrist | Berserker Bracers (19581) | Silverwing Sentinels [rep] | 29.6 | no - runner-up Windtalker's Wristguards (id 19584) measured higher: 52.8 vs 52.0 set DPS - swapped in |
+| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
+| shoulder | Big Bad Pauldrons (9476) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 24.0 | no - runner-up Failed Flying Experiment (id 9647) measured higher: 57.0 vs 56.9 set DPS - swapped in |
+| back | Tattered Hakkari Cape (20219) | Quests [quest] | 22.0 | no - runner-up Sergeant Major's Cape (id 16336) measured higher: 57.5 vs 56.9 set DPS - swapped in |
+| chest | Ornate Mithril Breastplate (7935) | Blacksmithing [crafted] | 65.5 | no - runner-up Kolkar Marauder Chain (id 6773) measured higher: 57.5 vs 56.9 set DPS - swapped in |
+| wrist | Berserker Bracers (19581) | Silverwing Sentinels [rep] | 29.6 | no - runner-up Windtalker's Wristguards (id 19584) measured higher: 57.7 vs 56.9 set DPS - swapped in |
 | hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 67.2 | yes |
 | waist | Belt of the Den Watcher (21312) | Quests [quest] | 24.0 | yes |
 | legs | Leggings of the Ursa (21316) | Quests [quest] | 99.5 | yes |
-| feet | Shinkicker Boots (9637) | Quests [quest] | 22.5 | no - runner-up Sandstalker Ankleguards (id 12470) measured higher: 52.1 vs 52.0 set DPS - swapped in |
+| feet | Shinkicker Boots (9637) | Quests [quest] | 22.5 | no - runner-up Sandstalker Ankleguards (id 12470) measured higher: 56.9 vs 56.9 set DPS - swapped in |
 | finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 10.5 | yes |
 | finger2 | Silverlaine's Family Seal (6321) | Shadowfang Keep: Baron Silverlaine [dungeon] | 10.0 | yes |
-| trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
+| trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | no - runner-up Carrot on a Stick (id 11122) measured higher: 56.9 vs 56.9 set DPS - swapped in |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
 | main_hand | Blight (7959) | Blacksmithing [crafted] | 606.6 | yes |
 | off_hand | - | - |  |  |
@@ -246,76 +246,76 @@ No-known-source sample (15 of 3337, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (human, 00000000000000000-5500000000000000-55223331211000210)
 
-Set DPS (verified): 58.3. Weights run: 1.9s. Verify run: 1.5s. 3764 eligible items had no known source.
+Set DPS (verified): 61.6. Weights run: 1.4s. Verify run: 1.1s. 3764 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.226, crit=4.900, hit=2.465, melee_haste=-2.953
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.226 ± 0.024, crit=4.900 ± 0.165, hit=2.465 ± 0.270, melee_haste=-2.953 ± 0.399
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 94.6 | yes |
-| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
+| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | no - runner-up Pulsating Crystalline Shard (id 4743) measured higher: 62.0 vs 61.6 set DPS - swapped in |
 | shoulder | Earthslag Shoulders (11632) | Blackrock Depths: Lord Roccor [dungeon] | 26.0 | yes |
-| back | Tattered Hakkari Cape (20219) | Quests [quest] | 22.0 | no - runner-up Sergeant Major's Cape (id 16336) measured higher: 58.3 vs 58.3 set DPS - swapped in |
-| chest | Ornate Mithril Breastplate (7935) | Blacksmithing [crafted] | 68.6 | no - runner-up Kolkar Marauder Chain (id 6773) measured higher: 58.9 vs 58.3 set DPS - swapped in |
-| wrist | Berserker Bracers (19580) | Silverwing Sentinels [rep] | 35.6 | no - runner-up Windtalker's Wristguards (id 19583) measured higher: 58.3 vs 58.3 set DPS - swapped in |
+| back | Tattered Hakkari Cape (20219) | Quests [quest] | 22.0 | no - runner-up Sergeant Major's Cape (id 16336) measured higher: 62.6 vs 61.6 set DPS - swapped in |
+| chest | Ornate Mithril Breastplate (7935) | Blacksmithing [crafted] | 68.6 | no - runner-up Kolkar Marauder Chain (id 6773) measured higher: 62.3 vs 61.6 set DPS - swapped in |
+| wrist | Berserker Bracers (19580) | Silverwing Sentinels [rep] | 35.6 | no - runner-up Windtalker's Wristguards (id 19583) measured higher: 62.6 vs 61.6 set DPS - swapped in |
 | hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 70.0 | yes |
 | waist | Gearforge Girdle (15709) | Quests [quest] | 32.9 | yes |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 137.2 | no - runner-up Leggings of the Ursa (id 21316) measured higher: 58.9 vs 58.3 set DPS - swapped in |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 137.2 | no - runner-up Leggings of the Ursa (id 21316) measured higher: 62.3 vs 61.6 set DPS - swapped in |
 | feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 24.6 | yes |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 44.6 | yes |
 | finger2 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 10.0 | yes |
-| trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
+| trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | no - runner-up Smoking Heart of the Mountain (id 11811) measured higher: 61.8 vs 61.6 set DPS - swapped in |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Bleakwood Hew (12769) | Blacksmithing [crafted] | 672.7 | no - runner-up Dark Iron Pulverizer (id 11608) measured higher: 58.5 vs 58.3 set DPS - swapped in |
+| main_hand | Blight (7959) | Blacksmithing [crafted] | 606.6 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
-**New at 50:** shoulder: Earthslag Shoulders; wrist: Berserker Bracers; waist: Gearforge Girdle; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Ironspine's Eye; main_hand: Bleakwood Hew
+**New at 50:** shoulder: Earthslag Shoulders; wrist: Berserker Bracers; waist: Gearforge Girdle; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Ironspine's Eye
 
 No-known-source sample (15 of 3764, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 810 Hammer of the Northern Wind; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 865 Leaden Mace; 867 Gloves of Holy Might
 
 ### Band 55 (human, 00000000000000000-5532000000000000-55223331211000210)
 
-Set DPS (verified): 72.0. Weights run: 1.9s. Verify run: 1.5s. 4155 eligible items had no known source.
+Set DPS (verified): 72.5. Weights run: 1.4s. Verify run: 1.1s. 4155 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.188, crit=5.612, hit=6.837, melee_haste=4.451
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.188 ± 0.023, crit=5.612 ± 0.197, hit=6.837 ± 0.370, melee_haste=4.451 ± 0.268
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Mask of the Unforgiven (13404) | Stratholme: The Unforgiven [dungeon] | 215.3 | yes |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
 | shoulder | Lightforge Spaulders (16729) | Blackrock Spire: The Beast [dungeon] | 80.5 | yes |
-| back | Tattered Hakkari Cape (20219) | Quests [quest] | 22.0 | yes |
-| chest | Stormshroud Armor (15056) | Leatherworking [crafted] | 157.1 | no - runner-up Savage Gladiator Chain (id 11726) measured higher: 73.5 vs 72.0 set DPS - swapped in |
-| wrist | Vambraces of the Sadist (13400) | Stratholme: Timmy the Cruel [dungeon] | 92.6 | no - runner-up Berserker Bracers (id 19580) measured higher: 72.4 vs 72.0 set DPS - swapped in |
+| back | Tattered Hakkari Cape (20219) | Quests [quest] | 22.0 | no - runner-up Sergeant Major's Cape (id 16337) measured higher: 73.2 vs 72.5 set DPS - swapped in |
+| chest | Stormshroud Armor (15056) | Leatherworking [crafted] | 157.1 | no - runner-up Savage Gladiator Chain (id 11726) measured higher: 73.9 vs 72.5 set DPS - swapped in |
+| wrist | Vambraces of the Sadist (13400) | Stratholme: Timmy the Cruel [dungeon] | 92.6 | no - runner-up Berserker Bracers (id 19580) measured higher: 72.9 vs 72.5 set DPS - swapped in |
 | hands | Devilsaur Gauntlets (15063) | Leatherworking [crafted] | 106.6 | yes |
 | waist | Might of the Timbermaw (19044) | Leatherworking [crafted] | 44.6 | yes |
 | legs | Titanic Leggings (22385) | Blacksmithing [crafted] | 275.3 | yes |
 | feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 68.4 | yes |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 88.4 | yes |
-| finger2 | Band of the Penitent (13217) | Quests [quest] | 78.6 | no - runner-up Ring of Living Stone (id 18400) measured higher: 72.1 vs 72.0 set DPS - swapped in |
+| finger2 | Band of the Penitent (13217) | Quests [quest] | 78.6 | no - runner-up Ring of Living Stone (id 18400) measured higher: 72.6 vs 72.5 set DPS - swapped in |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Smokey's Lighter (13171) | Quests [quest] | 0.0 | yes |
-| main_hand | Enchanted Battlehammer (12776) | Blacksmithing [crafted] | 809.9 | no - runner-up Corruption (id 12782) measured higher: 78.3 vs 72.0 set DPS - swapped in |
+| main_hand | Blight (7959) | Blacksmithing [crafted] | 606.6 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
-**New at 55:** head: Mask of the Unforgiven; shoulder: Lightforge Spaulders; chest: Stormshroud Armor; wrist: Vambraces of the Sadist; hands: Devilsaur Gauntlets; waist: Might of the Timbermaw; legs: Titanic Leggings; finger2: Band of the Penitent; trinket2: Smokey's Lighter; main_hand: Enchanted Battlehammer
+**New at 55:** head: Mask of the Unforgiven; shoulder: Lightforge Spaulders; chest: Stormshroud Armor; wrist: Vambraces of the Sadist; hands: Devilsaur Gauntlets; waist: Might of the Timbermaw; legs: Titanic Leggings; finger2: Band of the Penitent; trinket2: Smokey's Lighter
 
 No-known-source sample (15 of 4155, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 810 Hammer of the Northern Wind; 811 Axe of the Deep Woods; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 865 Leaden Mace
 
 ### Band 60 (human, 00000000000000000-5532500000000000-55223331211000210)
 
-Set DPS (verified): 121.5. Weights run: 1.9s. Verify run: 1.6s. 4836 eligible items had no known source.
+Set DPS (verified): 140.1. Weights run: 1.4s. Verify run: 1.2s. 4836 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.321, crit=5.935, hit=7.969, melee_haste=-4.035
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.321 ± 0.058, crit=5.935 ± 0.208, hit=7.969 ± 0.411, melee_haste=-4.035 ± 0.528
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Lionheart Helm (12640) | Blacksmithing [crafted] | 361.6 | yes |
-| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 192.2 | no - runner-up Gem of Trapped Innocents (id 23057) measured higher: 122.5 vs 121.5 set DPS - swapped in |
+| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 192.2 | yes |
 | shoulder | Lightforge Spaulders (16729) | Blackrock Spire: The Beast [dungeon] | 91.3 | yes |
-| back | Earthweave Cloak (21187) | Quests [quest] | 84.5 | no - runner-up Chromatic Cloak (id 18509) measured higher: 121.7 vs 121.5 set DPS - swapped in |
+| back | Earthweave Cloak (21187) | Quests [quest] | 84.5 | no - runner-up Chromatic Cloak (id 18509) measured higher: 140.4 vs 140.1 set DPS - swapped in |
 | chest | Bloodsoul Breastplate (19690) | Blacksmithing [crafted] | 169.1 | yes |
 | wrist | Qiraji Execution Bracers (21602) | Ahn'Qiraj [raid] | 114.8 | yes |
 | hands | Gauntlets of Annihilation (21581) | Ahn'Qiraj [raid] | 232.8 | yes |
@@ -325,12 +325,12 @@ Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.
 | finger1 | Band of Unnatural Forces (23038) | Naxxramas [raid] | 214.8 | yes |
 | finger2 | Don Julio's Band (19325) | Frostwolf Clan [rep] | 178.8 | yes |
 | trinket1 | Slayer's Crest (23041) | Naxxramas [raid] | 64.0 | yes |
-| trinket2 | The Restrained Essence of Sapphiron (23046) | Naxxramas [raid] | 0.0 | yes |
-| main_hand | Dark Edge of Insanity (21134) | Ahn'Qiraj [raid] | 1288.1 | yes |
+| trinket2 | The Restrained Essence of Sapphiron (23046) | Naxxramas [raid] | 0.0 | no - runner-up Kiss of the Spider (id 22954) measured higher: 142.0 vs 140.1 set DPS - swapped in |
+| main_hand | Thunderfury, Blessed Blade of the Windseeker (19019) | Quests [quest] | 756.9 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
-**New at 60:** head: Lionheart Helm; neck: Stormrage's Talisman of Seething; back: Earthweave Cloak; chest: Bloodsoul Breastplate; wrist: Qiraji Execution Bracers; hands: Gauntlets of Annihilation; waist: Belt of Never-ending Agony; feet: Bloodvine Boots; finger1: Band of Unnatural Forces; finger2: Don Julio's Band; trinket1: Slayer's Crest; trinket2: The Restrained Essence of Sapphiron; main_hand: Dark Edge of Insanity
+**New at 60:** head: Lionheart Helm; neck: Stormrage's Talisman of Seething; back: Earthweave Cloak; chest: Bloodsoul Breastplate; wrist: Qiraji Execution Bracers; hands: Gauntlets of Annihilation; waist: Belt of Never-ending Agony; feet: Bloodvine Boots; finger1: Band of Unnatural Forces; finger2: Don Julio's Band; trinket1: Slayer's Crest; trinket2: The Restrained Essence of Sapphiron; main_hand: Thunderfury, Blessed Blade of the Windseeker
 
 No-known-source sample (15 of 4836, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 810 Hammer of the Northern Wind; 811 Axe of the Deep Woods; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 865 Leaden Mace
 
@@ -338,9 +338,9 @@ No-known-source sample (15 of 4836, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 10 (dwarf, 00000000000000000-0000000000000000-10000000000000000)
 
-Set DPS (verified): 10.2. Weights run: 1.5s. Verify run: 0.5s. 853 eligible items had no known source.
+Set DPS (verified): 10.2. Weights run: 1.1s. Verify run: 0.4s. 853 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.057, crit=1.245, hit=0.831, melee_haste=0.704
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.057 ± 0.008, crit=1.245 ± 0.039, hit=0.831 ± 0.071, melee_haste=0.704 ± 0.011
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -368,9 +368,9 @@ No-known-source sample (15 of 853, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (dwarf, 00000000000000000-0000000000000000-51000000000000000)
 
-Set DPS (verified): 15.3. Weights run: 1.4s. Verify run: 0.7s. 1136 eligible items had no known source.
+Set DPS (verified): 15.3. Weights run: 1.1s. Verify run: 0.6s. 1136 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.080, crit=1.685, hit=1.130, melee_haste=0.947
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.080 ± 0.012, crit=1.685 ± 0.053, hit=1.130 ± 0.099, melee_haste=0.947 ± 0.015
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -398,9 +398,9 @@ No-known-source sample (15 of 1136, see the JSON for more): 727 Notched Shortswo
 
 ### Band 20 (dwarf, 00000000000000000-0000000000000000-55100000000000000)
 
-Set DPS (verified): 25.3. Weights run: 1.8s. Verify run: 1.1s. 1504 eligible items had no known source.
+Set DPS (verified): 25.3. Weights run: 1.3s. Verify run: 0.8s. 1504 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.113, crit=2.168, hit=1.304, melee_haste=1.245
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.113 ± 0.017, crit=2.168 ± 0.073, hit=1.304 ± 0.122, melee_haste=1.245 ± 0.051
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -428,9 +428,9 @@ No-known-source sample (15 of 1504, see the JSON for more): 727 Notched Shortswo
 
 ### Band 25 (dwarf, 00000000000000000-0000000000000000-55222000000000000)
 
-Set DPS (verified): 28.4. Weights run: 1.8s. Verify run: 1.2s. 1889 eligible items had no known source.
+Set DPS (verified): 28.4. Weights run: 1.3s. Verify run: 0.9s. 1889 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.149, crit=2.679, hit=1.610, melee_haste=-0.824
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.149 ± 0.025, crit=2.679 ± 0.086, hit=1.610 ± 0.147, melee_haste=-0.824 ± 0.180
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -458,9 +458,9 @@ No-known-source sample (15 of 1889, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (dwarf, 00000000000000000-0000000000000000-55223310000000000)
 
-Set DPS (verified): 34.6. Weights run: 1.8s. Verify run: 1.3s. 2244 eligible items had no known source.
+Set DPS (verified): 34.6. Weights run: 1.3s. Verify run: 1.0s. 2244 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.130, crit=3.041, hit=1.600, melee_haste=-1.404
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.130 ± 0.023, crit=3.041 ± 0.097, hit=1.600 ± 0.159, melee_haste=-1.404 ± 0.209
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -488,27 +488,27 @@ No-known-source sample (15 of 2244, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (dwarf, 00000000000000000-0000000000000000-55223331200000000)
 
-Set DPS (verified): 36.6. Weights run: 1.8s. Verify run: 1.3s. 2551 eligible items had no known source.
+Set DPS (verified): 37.7. Weights run: 1.3s. Verify run: 1.0s. 2551 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.178, crit=3.521, hit=1.676, melee_haste=-2.222
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.178 ± 0.027, crit=3.521 ± 0.115, hit=1.676 ± 0.173, melee_haste=-2.222 ± 0.313
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Tusken Helm (6686) | Razorfen Kraul: Overlord Ramtusk [dungeon] | 26.0 | yes |
-| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | no - runner-up Pulsating Crystalline Shard (id 4743) measured higher: 37.0 vs 36.6 set DPS - swapped in |
+| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | no - runner-up Pulsating Crystalline Shard (id 4743) measured higher: 37.9 vs 37.7 set DPS - swapped in |
 | shoulder | Wrangling Spaulders (15698) | Quests [quest] | 16.4 | yes |
-| back | Wolfmaster Cape (6314) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 10.0 | no - runner-up Sergeant Major's Cape (id 16315) measured higher: 36.7 vs 36.6 set DPS - swapped in |
+| back | Wolfmaster Cape (6314) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 10.0 | no - runner-up Sergeant Major's Cape (id 16315) measured higher: 38.0 vs 37.7 set DPS - swapped in |
 | chest | Kolkar Marauder Chain (6773) | Quests [quest] | 29.2 | yes |
 | wrist | Bands of Serra'kis (6902) | Blackfathom Deeps [dungeon] | 12.0 | yes |
 | hands | Fletcher's Gloves (7348) | Leatherworking [crafted] | 49.3 | yes |
 | waist | Barbaric Belt (4264) | Leatherworking [crafted] | 22.0 | yes |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 | yes |
-| feet | Golden Scale Boots (3847) | Blacksmithing [crafted] | 16.0 | no - runner-up Excelsior Boots (id 4109) measured higher: 36.8 vs 36.6 set DPS - swapped in |
+| feet | Golden Scale Boots (3847) | Blacksmithing [crafted] | 16.0 | no - runner-up Excelsior Boots (id 4109) measured higher: 37.8 vs 37.7 set DPS - swapped in |
 | finger1 | Silverlaine's Family Seal (6321) | Shadowfang Keep: Baron Silverlaine [dungeon] | 10.0 | yes |
 | finger2 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 9.6 | yes |
 | trinket1 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | 0.0 | yes |
 | trinket2 | Rune of Duty (21568) | Silverwing Sentinels [rep] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 452.8 | no - runner-up Morbid Dawn (id 7689) measured higher: 36.9 vs 36.6 set DPS - swapped in |
+| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 452.8 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
@@ -518,9 +518,9 @@ No-known-source sample (15 of 2551, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (dwarf, 00000000000000000-0000000000000000-55223331211000210)
 
-Set DPS (verified): 52.6. Weights run: 1.8s. Verify run: 1.5s. 2960 eligible items had no known source.
+Set DPS (verified): 52.6. Weights run: 1.3s. Verify run: 1.1s. 2960 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.235, crit=4.105, hit=1.857, melee_haste=1.080
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.235 ± 0.040, crit=4.105 ± 0.139, hit=1.857 ± 0.200, melee_haste=1.080 ± 0.209
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -538,7 +538,7 @@ Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.
 | finger2 | Silverlaine's Family Seal (6321) | Shadowfang Keep: Baron Silverlaine [dungeon] | 10.0 | yes |
 | trinket1 | Carrot on a Stick (11122) | Quests [quest] | 0.0 | yes |
 | trinket2 | Mark of the Chosen (17774) | Quests [quest] | 0.0 | yes |
-| main_hand | Mograine's Might (7723) | Scarlet Monastery: Scarlet Commander Mograine [dungeon] | 561.0 | no - runner-up Ravager (id 7717) measured higher: 52.7 vs 52.6 set DPS - swapped in |
+| main_hand | Mograine's Might (7723) | Scarlet Monastery: Scarlet Commander Mograine [dungeon] | 561.0 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
@@ -548,22 +548,22 @@ No-known-source sample (15 of 2960, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (dwarf, 00000000000000000-5000000000000000-55223331211000210)
 
-Set DPS (verified): 52.6. Weights run: 1.9s. Verify run: 1.6s. 3337 eligible items had no known source.
+Set DPS (verified): 57.7. Weights run: 1.4s. Verify run: 1.2s. 3337 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.274, crit=4.681, hit=2.208, melee_haste=1.334
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.274 ± 0.036, crit=4.681 ± 0.163, hit=2.208 ± 0.235, melee_haste=1.334 ± 0.247
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 91.5 | yes |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
-| shoulder | Big Bad Pauldrons (9476) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 24.0 | no - runner-up Failed Flying Experiment (id 9647) measured higher: 52.7 vs 52.6 set DPS - swapped in |
+| shoulder | Big Bad Pauldrons (9476) | Zul'Farrak: Chief Ukorz Sandscalp [dungeon] | 24.0 | no - runner-up Failed Flying Experiment (id 9647) measured higher: 57.8 vs 57.7 set DPS - swapped in |
 | back | Tattered Hakkari Cape (20219) | Quests [quest] | 22.0 | yes |
-| chest | Ornate Mithril Breastplate (7935) | Blacksmithing [crafted] | 65.5 | no - runner-up Kolkar Marauder Chain (id 6773) measured higher: 53.2 vs 52.6 set DPS - swapped in |
+| chest | Ornate Mithril Breastplate (7935) | Blacksmithing [crafted] | 65.5 | no - runner-up Kolkar Marauder Chain (id 6773) measured higher: 58.3 vs 57.7 set DPS - swapped in |
 | wrist | Berserker Bracers (19581) | Silverwing Sentinels [rep] | 29.6 | yes |
 | hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 67.2 | yes |
 | waist | Belt of the Den Watcher (21312) | Quests [quest] | 24.0 | yes |
 | legs | Leggings of the Ursa (21316) | Quests [quest] | 99.5 | yes |
-| feet | Shinkicker Boots (9637) | Quests [quest] | 22.5 | yes |
+| feet | Shinkicker Boots (9637) | Quests [quest] | 22.5 | no - runner-up Sandstalker Ankleguards (id 12470) measured higher: 57.7 vs 57.7 set DPS - swapped in |
 | finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 10.5 | yes |
 | finger2 | Silverlaine's Family Seal (6321) | Shadowfang Keep: Baron Silverlaine [dungeon] | 10.0 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
@@ -578,39 +578,39 @@ No-known-source sample (15 of 3337, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (dwarf, 00000000000000000-5500000000000000-55223331211000210)
 
-Set DPS (verified): 58.7. Weights run: 1.9s. Verify run: 1.6s. 3764 eligible items had no known source.
+Set DPS (verified): 60.5. Weights run: 1.4s. Verify run: 1.2s. 3764 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.226, crit=4.900, hit=2.465, melee_haste=-2.953
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.226 ± 0.024, crit=4.900 ± 0.165, hit=2.465 ± 0.270, melee_haste=-2.953 ± 0.399
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 94.6 | yes |
-| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
+| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | no - runner-up Pulsating Crystalline Shard (id 4743) measured higher: 60.8 vs 60.5 set DPS - swapped in |
 | shoulder | Earthslag Shoulders (11632) | Blackrock Depths: Lord Roccor [dungeon] | 26.0 | yes |
-| back | Tattered Hakkari Cape (20219) | Quests [quest] | 22.0 | yes |
-| chest | Ornate Mithril Breastplate (7935) | Blacksmithing [crafted] | 68.6 | no - runner-up Kolkar Marauder Chain (id 6773) measured higher: 59.4 vs 58.7 set DPS - swapped in |
-| wrist | Berserker Bracers (19580) | Silverwing Sentinels [rep] | 35.6 | yes |
+| back | Tattered Hakkari Cape (20219) | Quests [quest] | 22.0 | no - runner-up Sergeant Major's Cape (id 16336) measured higher: 62.2 vs 60.5 set DPS - swapped in |
+| chest | Ornate Mithril Breastplate (7935) | Blacksmithing [crafted] | 68.6 | no - runner-up Kolkar Marauder Chain (id 6773) measured higher: 61.2 vs 60.5 set DPS - swapped in |
+| wrist | Berserker Bracers (19580) | Silverwing Sentinels [rep] | 35.6 | no - runner-up Windtalker's Wristguards (id 19583) measured higher: 62.2 vs 60.5 set DPS - swapped in |
 | hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 70.0 | yes |
 | waist | Gearforge Girdle (15709) | Quests [quest] | 32.9 | yes |
-| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 137.2 | no - runner-up Leggings of the Ursa (id 21316) measured higher: 59.4 vs 58.7 set DPS - swapped in |
+| legs | Stormshroud Pants (15057) | Leatherworking [crafted] | 137.2 | no - runner-up Leggings of the Ursa (id 21316) measured higher: 61.2 vs 60.5 set DPS - swapped in |
 | feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 24.6 | yes |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 44.6 | yes |
 | finger2 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 10.0 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Bleakwood Hew (12769) | Blacksmithing [crafted] | 672.7 | no - runner-up Dark Iron Pulverizer (id 11608) measured higher: 64.4 vs 58.7 set DPS - swapped in |
+| main_hand | Blight (7959) | Blacksmithing [crafted] | 606.6 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
-**New at 50:** shoulder: Earthslag Shoulders; wrist: Berserker Bracers; waist: Gearforge Girdle; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Ironspine's Eye; main_hand: Bleakwood Hew
+**New at 50:** shoulder: Earthslag Shoulders; wrist: Berserker Bracers; waist: Gearforge Girdle; legs: Stormshroud Pants; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Ironspine's Eye
 
 No-known-source sample (15 of 3764, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 810 Hammer of the Northern Wind; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 865 Leaden Mace; 867 Gloves of Holy Might
 
 ### Band 55 (dwarf, 00000000000000000-5532000000000000-55223331211000210)
 
-Set DPS (verified): 76.7. Weights run: 1.9s. Verify run: 1.6s. 4155 eligible items had no known source.
+Set DPS (verified): 76.7. Weights run: 1.4s. Verify run: 1.2s. 4155 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.188, crit=5.612, hit=6.837, melee_haste=4.451
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.188 ± 0.023, crit=5.612 ± 0.197, hit=6.837 ± 0.370, melee_haste=4.451 ± 0.268
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -638,16 +638,16 @@ No-known-source sample (15 of 4155, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (dwarf, 00000000000000000-5532500000000000-55223331211000210)
 
-Set DPS (verified): 122.1. Weights run: 1.9s. Verify run: 1.6s. 4836 eligible items had no known source.
+Set DPS (verified): 134.5. Weights run: 1.4s. Verify run: 1.3s. 4836 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.000, agility=0.321, crit=5.935, hit=7.969, melee_haste=-4.035
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, strength=2.000 ± 0.003, agility=0.321 ± 0.058, crit=5.935 ± 0.208, hit=7.969 ± 0.411, melee_haste=-4.035 ± 0.528
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Lionheart Helm (12640) | Blacksmithing [crafted] | 361.6 | yes |
-| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 192.2 | no - runner-up Gem of Trapped Innocents (id 23057) measured higher: 122.7 vs 122.1 set DPS - swapped in |
+| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 192.2 | yes |
 | shoulder | Lightforge Spaulders (16729) | Blackrock Spire: The Beast [dungeon] | 91.3 | yes |
-| back | Earthweave Cloak (21187) | Quests [quest] | 84.5 | no - runner-up Chromatic Cloak (id 18509) measured higher: 122.4 vs 122.1 set DPS - swapped in |
+| back | Earthweave Cloak (21187) | Quests [quest] | 84.5 | yes |
 | chest | Bloodsoul Breastplate (19690) | Blacksmithing [crafted] | 169.1 | yes |
 | wrist | Qiraji Execution Bracers (21602) | Ahn'Qiraj [raid] | 114.8 | yes |
 | hands | Gauntlets of Annihilation (21581) | Ahn'Qiraj [raid] | 232.8 | yes |
@@ -657,12 +657,12 @@ Stat weights (normalized to attack_power = 1.0): attack_power=1.000, strength=2.
 | finger1 | Band of Unnatural Forces (23038) | Naxxramas [raid] | 214.8 | yes |
 | finger2 | Don Julio's Band (19325) | Frostwolf Clan [rep] | 178.8 | yes |
 | trinket1 | Slayer's Crest (23041) | Naxxramas [raid] | 64.0 | yes |
-| trinket2 | The Restrained Essence of Sapphiron (23046) | Naxxramas [raid] | 0.0 | yes |
-| main_hand | Dark Edge of Insanity (21134) | Ahn'Qiraj [raid] | 1288.1 | yes |
+| trinket2 | The Restrained Essence of Sapphiron (23046) | Naxxramas [raid] | 0.0 | no - runner-up Kiss of the Spider (id 22954) measured higher: 135.5 vs 134.5 set DPS - swapped in |
+| main_hand | Thunderfury, Blessed Blade of the Windseeker (19019) | Quests [quest] | 756.9 | yes |
 | off_hand | - | - |  |  |
 | ranged | - | - |  |  |
 
-**New at 60:** head: Lionheart Helm; neck: Stormrage's Talisman of Seething; back: Earthweave Cloak; chest: Bloodsoul Breastplate; wrist: Qiraji Execution Bracers; hands: Gauntlets of Annihilation; waist: Belt of Never-ending Agony; feet: Bloodvine Boots; finger1: Band of Unnatural Forces; finger2: Don Julio's Band; trinket1: Slayer's Crest; trinket2: The Restrained Essence of Sapphiron; main_hand: Dark Edge of Insanity
+**New at 60:** head: Lionheart Helm; neck: Stormrage's Talisman of Seething; back: Earthweave Cloak; chest: Bloodsoul Breastplate; wrist: Qiraji Execution Bracers; hands: Gauntlets of Annihilation; waist: Belt of Never-ending Agony; feet: Bloodvine Boots; finger1: Band of Unnatural Forces; finger2: Don Julio's Band; trinket1: Slayer's Crest; trinket2: The Restrained Essence of Sapphiron; main_hand: Thunderfury, Blessed Blade of the Windseeker
 
 No-known-source sample (15 of 4836, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 789 Stout Battlehammer; 790 Forester's Axe; 810 Hammer of the Northern Wind; 811 Axe of the Deep Woods; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 827 Wicked Blackjack; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 865 Leaden Mace
 

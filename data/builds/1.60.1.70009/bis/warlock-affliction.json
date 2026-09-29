@@ -1,8 +1,8 @@
 {
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:26:51Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:14:10Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -14,31 +14,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.03604565765977578,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.14468721382996932
+          "weight": 0.14468721382996932,
+          "error": 0.03836610940269293,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.15680780654211535
+          "weight": 0.15680780654211535,
+          "error": 0.010823973935304761,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.6065841319464012
+          "weight": 0.6065841319464012,
+          "error": 0.03564581242399039,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.26366202718169357
+          "weight": 0.26366202718169357,
+          "error": 0.02636138702585196,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.03604565765977578,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -180,8 +194,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 1.238155219,
-      "verify_run_seconds": 0.326538335
+      "weights_run_seconds": 0.916377237,
+      "verify_run_seconds": 0.239151369
     },
     {
       "spec": "warlock-affliction",
@@ -193,31 +207,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.03604565765977578,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.14468721382996932
+          "weight": 0.14468721382996932,
+          "error": 0.03836610940269293,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.15680780654211535
+          "weight": 0.15680780654211535,
+          "error": 0.010823973935304761,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.6065841319464012
+          "weight": 0.6065841319464012,
+          "error": 0.03564581242399039,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.26366202718169357
+          "weight": 0.26366202718169357,
+          "error": 0.02636138702585196,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.03604565765977578,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -359,8 +387,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 1.238155219,
-      "verify_run_seconds": 0.352914766
+      "weights_run_seconds": 0.916377237,
+      "verify_run_seconds": 0.266813968
     },
     {
       "spec": "warlock-affliction",
@@ -372,31 +400,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.1942628408635406,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.5353304916667547
+          "weight": 0.5353304916667547,
+          "error": 0.17699175379138565,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.3694512619302688
+          "weight": 0.3694512619302688,
+          "error": 0.02939237884356692,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.3484978198854727
+          "weight": 1.3484978198854727,
+          "error": 0.09863497216135592,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.8839065037980615
+          "weight": 0.8839065037980615,
+          "error": 0.17648966054969445,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.1942628408635406,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -552,8 +594,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.262432163,
-      "verify_run_seconds": 0.649438357
+      "weights_run_seconds": 0.926770873,
+      "verify_run_seconds": 0.458123326
     },
     {
       "spec": "warlock-affliction",
@@ -565,31 +607,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.1942628408635406,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.5353304916667547
+          "weight": 0.5353304916667547,
+          "error": 0.17699175379138565,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.3694512619302688
+          "weight": 0.3694512619302688,
+          "error": 0.02939237884356692,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.3484978198854727
+          "weight": 1.3484978198854727,
+          "error": 0.09863497216135592,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.8839065037980615
+          "weight": 0.8839065037980615,
+          "error": 0.17648966054969445,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.1942628408635406,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -744,8 +800,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.262432163,
-      "verify_run_seconds": 0.673374815
+      "weights_run_seconds": 0.926770873,
+      "verify_run_seconds": 0.511363742
     },
     {
       "spec": "warlock-affliction",
@@ -757,31 +813,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": -0.7083474606656968,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": -0.28135401671110605
+          "weight": -0.28135401671110605,
+          "error": -0.854602292565162,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": -1.2329306478369226
+          "weight": -1.2329306478369226,
+          "error": -0.09863304597376801,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": -3.8859342639886223
+          "weight": -3.8859342639886223,
+          "error": -0.3738822170540083,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.2033110801362379
+          "weight": 0.2033110801362379,
+          "error": -0.6226920968463027,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": -0
+          "weight": -0,
+          "error": -0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": -0.7083474606656968,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -957,8 +1027,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.3224913919999999,
-      "verify_run_seconds": 0.730154453
+      "weights_run_seconds": 0.976457836,
+      "verify_run_seconds": 0.538890274
     },
     {
       "spec": "warlock-affliction",
@@ -970,31 +1040,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": -0.7083474606656968,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": -0.28135401671110605
+          "weight": -0.28135401671110605,
+          "error": -0.854602292565162,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": -1.2329306478369226
+          "weight": -1.2329306478369226,
+          "error": -0.09863304597376801,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": -3.8859342639886223
+          "weight": -3.8859342639886223,
+          "error": -0.3738822170540083,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.2033110801362379
+          "weight": 0.2033110801362379,
+          "error": -0.6226920968463027,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": -0
+          "weight": -0,
+          "error": -0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": -0.7083474606656968,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1174,8 +1258,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.3224913919999999,
-      "verify_run_seconds": 0.757638543
+      "weights_run_seconds": 0.976457836,
+      "verify_run_seconds": 0.562347003
     },
     {
       "spec": "warlock-affliction",
@@ -1187,31 +1271,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.09348737745020333,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.7747422019854558
+          "weight": 0.7747422019854558,
+          "error": 0.12140017747621597,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.20016707060860497
+          "weight": 0.20016707060860497,
+          "error": 0.014926292493066312,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.8027893805098668
+          "weight": 0.8027893805098668,
+          "error": 0.05852471345429387,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.2899625247676703
+          "weight": -0.2899625247676703,
+          "error": 0.13290348587248918,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.09348737745020333,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1390,8 +1488,8 @@
         "finger1: Snake Hoop",
         "main_hand: Kam's Walking Stick"
       ],
-      "weights_run_seconds": 0.958039395,
-      "verify_run_seconds": 0.694922953
+      "weights_run_seconds": 0.73434158,
+      "verify_run_seconds": 0.516195487
     },
     {
       "spec": "warlock-affliction",
@@ -1403,31 +1501,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.09348737745020333,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.7747422019854558
+          "weight": 0.7747422019854558,
+          "error": 0.12140017747621597,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.20016707060860497
+          "weight": 0.20016707060860497,
+          "error": 0.014926292493066312,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.8027893805098668
+          "weight": 0.8027893805098668,
+          "error": 0.05852471345429387,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.2899625247676703
+          "weight": -0.2899625247676703,
+          "error": 0.13290348587248918,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.09348737745020333,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1605,8 +1717,8 @@
         "finger1: Snake Hoop",
         "main_hand: Kam's Walking Stick"
       ],
-      "weights_run_seconds": 0.958039395,
-      "verify_run_seconds": 0.681292574
+      "weights_run_seconds": 0.73434158,
+      "verify_run_seconds": 0.512701172
     },
     {
       "spec": "warlock-affliction",
@@ -1618,31 +1730,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.10484345509703219,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.026438078673777236
+          "weight": 0.026438078673777236,
+          "error": 0.10979935662846883,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.22312068168915022
+          "weight": 0.22312068168915022,
+          "error": 0.015978581737827843,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.9813395623056066
+          "weight": 0.9813395623056066,
+          "error": 0.06582443725442477,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.3114709296138176
+          "weight": -0.3114709296138176,
+          "error": 0.1076443208973637,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.10484345509703219,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1828,8 +1954,8 @@
         "finger1: Electrocutioner Lagnut",
         "finger2: Snake Hoop"
       ],
-      "weights_run_seconds": 1.296857138,
-      "verify_run_seconds": 0.994937851
+      "weights_run_seconds": 0.936945807,
+      "verify_run_seconds": 0.722649725
     },
     {
       "spec": "warlock-affliction",
@@ -1841,31 +1967,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.10484345509703219,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.026438078673777236
+          "weight": 0.026438078673777236,
+          "error": 0.10979935662846883,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.22312068168915022
+          "weight": 0.22312068168915022,
+          "error": 0.015978581737827843,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.9813395623056066
+          "weight": 0.9813395623056066,
+          "error": 0.06582443725442477,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.3114709296138176
+          "weight": -0.3114709296138176,
+          "error": 0.1076443208973637,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.10484345509703219,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2049,8 +2189,8 @@
         "finger1: Electrocutioner Lagnut",
         "finger2: Snake Hoop"
       ],
-      "weights_run_seconds": 1.296857138,
-      "verify_run_seconds": 1.012545637
+      "weights_run_seconds": 0.936945807,
+      "verify_run_seconds": 0.728709177
     },
     {
       "spec": "warlock-affliction",
@@ -2062,31 +2202,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.19548223734010747,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.9514030449663273
+          "weight": 1.9514030449663273,
+          "error": 0.2472780036553765,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.7263003943005675
+          "weight": 0.7263003943005675,
+          "error": 0.05179629981975929,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.9993323948264248
+          "weight": 2.9993323948264248,
+          "error": 0.17973669900328898,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -1.0362387893890725
+          "weight": -1.0362387893890725,
+          "error": 0.2924283435050598,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.19548223734010747,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2277,8 +2431,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.275142077,
-      "verify_run_seconds": 0.997359243
+      "weights_run_seconds": 0.947433459,
+      "verify_run_seconds": 0.736635298
     },
     {
       "spec": "warlock-affliction",
@@ -2290,31 +2444,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.19548223734010747,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.9514030449663273
+          "weight": 1.9514030449663273,
+          "error": 0.2472780036553765,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.7263003943005675
+          "weight": 0.7263003943005675,
+          "error": 0.05179629981975929,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.9993323948264248
+          "weight": 2.9993323948264248,
+          "error": 0.17973669900328898,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -1.0362387893890725
+          "weight": -1.0362387893890725,
+          "error": 0.2924283435050598,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.19548223734010747,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2503,8 +2671,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.275142077,
-      "verify_run_seconds": 1.013688354
+      "weights_run_seconds": 0.947433459,
+      "verify_run_seconds": 0.722666386
     },
     {
       "spec": "warlock-affliction",
@@ -2516,31 +2684,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.42737683689037814,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": -0.05540395094456197
+          "weight": -0.05540395094456197,
+          "error": 0.5906451907833495,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.9037310100557125
+          "weight": 0.9037310100557125,
+          "error": 0.061096485221383265,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.946524274434937
+          "weight": 2.946524274434937,
+          "error": 0.25073498133665295,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.28979114323000305
+          "weight": 0.28979114323000305,
+          "error": 0.5142330329643321,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.42737683689037814,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2725,8 +2907,8 @@
         "trinket2: Mark of the Chosen",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.985225992,
-      "verify_run_seconds": 0.918645144
+      "weights_run_seconds": 0.749434805,
+      "verify_run_seconds": 0.694547878
     },
     {
       "spec": "warlock-affliction",
@@ -2738,31 +2920,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.42737683689037814,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": -0.05540395094456197
+          "weight": -0.05540395094456197,
+          "error": 0.5906451907833495,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.9037310100557125
+          "weight": 0.9037310100557125,
+          "error": 0.061096485221383265,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.946524274434937
+          "weight": 2.946524274434937,
+          "error": 0.25073498133665295,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.28979114323000305
+          "weight": 0.28979114323000305,
+          "error": 0.5142330329643321,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.42737683689037814,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2948,8 +3144,8 @@
         "trinket2: Mark of the Chosen",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.985225992,
-      "verify_run_seconds": 0.885824087
+      "weights_run_seconds": 0.749434805,
+      "verify_run_seconds": 0.686524503
     },
     {
       "spec": "warlock-affliction",
@@ -2961,31 +3157,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.31028695073048723,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": 1.161890118257286
+          "weight": 1.161890118257286,
+          "error": 0.3714207610559194,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.366058195732123
+          "weight": 0.366058195732123,
+          "error": 0.03320870883052616,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.191318067923036
+          "weight": 2.191318067923036,
+          "error": 0.2052774758416172,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.2112920267790603
+          "weight": -0.2112920267790603,
+          "error": 0.37065314066214305,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.31028695073048723,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3173,8 +3383,8 @@
         "trinket2: Demon's Blood",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.409082557,
-      "verify_run_seconds": 1.134157531
+      "weights_run_seconds": 1.034179209,
+      "verify_run_seconds": 0.834327513
     },
     {
       "spec": "warlock-affliction",
@@ -3186,31 +3396,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.31028695073048723,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": 1.161890118257286
+          "weight": 1.161890118257286,
+          "error": 0.3714207610559194,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.366058195732123
+          "weight": 0.366058195732123,
+          "error": 0.03320870883052616,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.191318067923036
+          "weight": 2.191318067923036,
+          "error": 0.2052774758416172,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.2112920267790603
+          "weight": -0.2112920267790603,
+          "error": 0.37065314066214305,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.31028695073048723,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3392,8 +3616,8 @@
         "trinket2: Demon's Blood",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.409082557,
-      "verify_run_seconds": 1.14505675
+      "weights_run_seconds": 1.034179209,
+      "verify_run_seconds": 0.820675212
     },
     {
       "spec": "warlock-affliction",
@@ -3405,31 +3629,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.34035020213025335,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": -0.17678395490144957
+          "weight": -0.17678395490144957,
+          "error": 0.3717719177505804,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.5686675025278397
+          "weight": 0.5686675025278397,
+          "error": 0.04502229235524789,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.1140659555070576
+          "weight": 3.1140659555070576,
+          "error": 0.25821185913450434,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -4.380252179934256
+          "weight": -4.380252179934256,
+          "error": 0.4651512606321351,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.34035020213025335,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3617,8 +3855,8 @@
         "finger2: Electrocutioner Lagnut",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.074766127,
-      "verify_run_seconds": 0.897816954
+      "weights_run_seconds": 0.829106899,
+      "verify_run_seconds": 0.680037506
     },
     {
       "spec": "warlock-affliction",
@@ -3630,31 +3868,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.34035020213025335,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": -0.17678395490144957
+          "weight": -0.17678395490144957,
+          "error": 0.3717719177505804,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.5686675025278397
+          "weight": 0.5686675025278397,
+          "error": 0.04502229235524789,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.1140659555070576
+          "weight": 3.1140659555070576,
+          "error": 0.25821185913450434,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -4.380252179934256
+          "weight": -4.380252179934256,
+          "error": 0.4651512606321351,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.34035020213025335,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3842,8 +4094,8 @@
         "trinket1: Shard of the Splithooves",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.074766127,
-      "verify_run_seconds": 0.903713653
+      "weights_run_seconds": 0.829106899,
+      "verify_run_seconds": 0.679645373
     },
     {
       "spec": "warlock-affliction",
@@ -3855,31 +4107,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.34179546419839835,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": 0.35053963659785164
+          "weight": 0.35053963659785164,
+          "error": 0.37708878078879315,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.5401462541066455
+          "weight": 0.5401462541066455,
+          "error": 0.04723047408644495,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.888183013646429
+          "weight": 2.888183013646429,
+          "error": 0.24523953115737865,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -2.4137397140842314
+          "weight": -2.4137397140842314,
+          "error": 0.414722601918307,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.34179546419839835,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -4062,8 +4328,8 @@
         "trinket2: Smokey's Lighter",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.425100454,
-      "verify_run_seconds": 1.140041641
+      "weights_run_seconds": 1.038794733,
+      "verify_run_seconds": 0.854670193
     },
     {
       "spec": "warlock-affliction",
@@ -4075,31 +4341,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.34179546419839835,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": 0.35053963659785164
+          "weight": 0.35053963659785164,
+          "error": 0.37708878078879315,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.5401462541066455
+          "weight": 0.5401462541066455,
+          "error": 0.04723047408644495,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.888183013646429
+          "weight": 2.888183013646429,
+          "error": 0.24523953115737865,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -2.4137397140842314
+          "weight": -2.4137397140842314,
+          "error": 0.414722601918307,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.34179546419839835,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -4282,8 +4562,8 @@
         "trinket2: Smokey's Lighter",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.425100454,
-      "verify_run_seconds": 1.15204976
+      "weights_run_seconds": 1.038794733,
+      "verify_run_seconds": 0.851998545
     },
     {
       "spec": "warlock-affliction",
@@ -4295,31 +4575,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.40122061909575246,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": -1.1097120145669093
+          "weight": -1.1097120145669093,
+          "error": 0.5001858585218099,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.8089636454885306
+          "weight": 0.8089636454885306,
+          "error": 0.06571091544448221,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.792292447690144
+          "weight": 4.792292447690144,
+          "error": 0.38511396828142047,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -2.3978880600357138
+          "weight": -2.3978880600357138,
+          "error": 0.5648739072091574,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.40122061909575246,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -4450,7 +4744,8 @@
           "item_name": "Eye of the Dead",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "main_hand",
@@ -4459,8 +4754,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 210.33506448766178,
-          "verified": false,
-          "swap_note": "runner-up Atiesh, Greatstaff of the Guardian (id 22630) measured higher: 390.1 vs 377.8 set DPS - swapped in"
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4513,8 +4808,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.113770821,
-      "verify_run_seconds": 0.935855537
+      "weights_run_seconds": 0.837972568,
+      "verify_run_seconds": 0.68995467
     },
     {
       "spec": "warlock-affliction",
@@ -4526,31 +4821,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.40122061909575246,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": -1.1097120145669093
+          "weight": -1.1097120145669093,
+          "error": 0.5001858585218099,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.8089636454885306
+          "weight": 0.8089636454885306,
+          "error": 0.06571091544448221,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.792292447690144
+          "weight": 4.792292447690144,
+          "error": 0.38511396828142047,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -2.3978880600357138
+          "weight": -2.3978880600357138,
+          "error": 0.5648739072091574,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.40122061909575246,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -4681,7 +4990,8 @@
           "item_name": "Eye of the Dead",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "main_hand",
@@ -4690,8 +5000,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 210.33506448766178,
-          "verified": false,
-          "swap_note": "runner-up Atiesh, Greatstaff of the Guardian (id 22630) measured higher: 384.2 vs 370.3 set DPS - swapped in"
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4744,8 +5054,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.113770821,
-      "verify_run_seconds": 0.925518072
+      "weights_run_seconds": 0.837972568,
+      "verify_run_seconds": 0.708920979
     }
   ]
 }

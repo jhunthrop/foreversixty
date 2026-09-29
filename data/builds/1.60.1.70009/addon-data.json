@@ -8674,8 +8674,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 7713,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           },
           "horde": {
@@ -8736,8 +8736,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 7713,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           }
         },
@@ -8749,7 +8749,8 @@
             17775,
             17755,
             10659,
-            10779
+            10779,
+            7959
           ],
           "horde": [
             10033,
@@ -8758,7 +8759,8 @@
             17775,
             17755,
             10659,
-            10779
+            10779,
+            7959
           ]
         }
       },
@@ -8823,8 +8825,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           },
           "horde": {
@@ -8885,8 +8887,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           }
         },
@@ -8900,8 +8902,7 @@
             7348,
             15057,
             17713,
-            6750,
-            11750
+            6750
           ],
           "horde": [
             17715,
@@ -8912,8 +8913,7 @@
             7348,
             15057,
             17713,
-            6750,
-            11750
+            6750
           ]
         }
       },
@@ -10239,8 +10239,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 10698,
-              "source_kind": "quest"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           },
           "horde": {
@@ -10301,8 +10301,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 10698,
-              "source_kind": "quest"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           }
         },
@@ -10313,7 +10313,7 @@
             12470,
             10659,
             10779,
-            10698
+            7959
           ],
           "horde": [
             21317,
@@ -10321,7 +10321,7 @@
             12470,
             10659,
             10779,
-            10698
+            7959
           ]
         }
       },
@@ -10386,8 +10386,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           },
           "horde": {
@@ -10448,8 +10448,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           }
         },
@@ -10458,15 +10458,13 @@
             17715,
             15064,
             19589,
-            15057,
-            11750
+            15057
           ],
           "horde": [
             17715,
             15064,
             19589,
-            15057,
-            11750
+            15057
           ]
         }
       },
@@ -10531,8 +10529,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           },
           "horde": {
@@ -10593,8 +10591,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           }
         },
@@ -10634,8 +10632,8 @@
               "source_kind": "dungeon"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid"
+              "item_id": 17111,
+              "source_kind": "world"
             },
             "shoulder": {
               "item_id": 15058,
@@ -10686,8 +10684,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 18867,
-              "source_kind": "pvp"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           },
           "horde": {
@@ -10696,8 +10694,8 @@
               "source_kind": "dungeon"
             },
             "neck": {
-              "item_id": 23053,
-              "source_kind": "raid"
+              "item_id": 17111,
+              "source_kind": "world"
             },
             "shoulder": {
               "item_id": 15058,
@@ -10748,14 +10746,14 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 18867,
-              "source_kind": "pvp"
+              "item_id": 7959,
+              "source_kind": "crafted"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            23053,
+            17111,
             18509,
             21602,
             21586,
@@ -10763,11 +10761,10 @@
             23038,
             21677,
             23041,
-            22954,
-            18867
+            22954
           ],
           "horde": [
-            23053,
+            17111,
             18509,
             21602,
             21586,
@@ -10775,8 +10772,7 @@
             23038,
             21677,
             23041,
-            22954,
-            18867
+            22954
           ]
         }
       }
@@ -12011,8 +12007,8 @@
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 20086,
-              "source_kind": "quest"
+              "item_id": 16004,
+              "source_kind": "crafted"
             }
           },
           "horde": {
@@ -12077,8 +12073,8 @@
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 20086,
-              "source_kind": "quest"
+              "item_id": 16004,
+              "source_kind": "crafted"
             }
           }
         },
@@ -12091,7 +12087,7 @@
             22240,
             17713,
             9533,
-            20086
+            16004
           ],
           "horde": [
             15822,
@@ -12101,7 +12097,7 @@
             22240,
             17713,
             9533,
-            20086
+            16004
           ]
         }
       },
@@ -13674,8 +13670,8 @@
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 20086,
-              "source_kind": "quest"
+              "item_id": 16004,
+              "source_kind": "crafted"
             }
           },
           "horde": {
@@ -13740,8 +13736,8 @@
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 20086,
-              "source_kind": "quest"
+              "item_id": 16004,
+              "source_kind": "crafted"
             }
           }
         },
@@ -13754,7 +13750,7 @@
             22240,
             17713,
             9533,
-            20086
+            16004
           ],
           "horde": [
             15822,
@@ -13764,7 +13760,7 @@
             22240,
             17713,
             9533,
-            20086
+            16004
           ]
         }
       },
@@ -14222,11 +14218,11 @@
               "source_kind": "crafted"
             },
             "back": {
-              "item_id": 6466,
-              "source_kind": "crafted"
+              "item_id": 14149,
+              "source_kind": "dungeon"
             },
             "chest": {
-              "item_id": 2317,
+              "item_id": 5781,
               "source_kind": "crafted"
             },
             "wrist": {
@@ -14250,12 +14246,8 @@
               "source_kind": "dungeon"
             },
             "main_hand": {
-              "item_id": 1936,
-              "source_kind": "dungeon"
-            },
-            "off_hand": {
-              "item_id": 1172,
-              "source_kind": "quest"
+              "item_id": 3487,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 4362,
@@ -14268,11 +14260,11 @@
               "source_kind": "crafted"
             },
             "back": {
-              "item_id": 6466,
-              "source_kind": "crafted"
+              "item_id": 14149,
+              "source_kind": "dungeon"
             },
             "chest": {
-              "item_id": 2317,
+              "item_id": 5781,
               "source_kind": "crafted"
             },
             "wrist": {
@@ -14296,12 +14288,8 @@
               "source_kind": "dungeon"
             },
             "main_hand": {
-              "item_id": 1936,
-              "source_kind": "dungeon"
-            },
-            "off_hand": {
-              "item_id": 1172,
-              "source_kind": "quest"
+              "item_id": 3487,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 4362,
@@ -14312,27 +14300,25 @@
         "new_at_band": {
           "alliance": [
             4368,
-            6466,
-            2317,
+            14149,
+            5781,
             14148,
             10413,
             5780,
             1934,
             10402,
-            1936,
-            1172
+            3487
           ],
           "horde": [
             4368,
-            6466,
-            2317,
+            14149,
+            5781,
             14148,
             10413,
             5780,
             1934,
             10402,
-            1936,
-            1172
+            3487
           ]
         }
       },
@@ -14353,7 +14339,7 @@
               "source_kind": "dungeon"
             },
             "chest": {
-              "item_id": 2317,
+              "item_id": 5781,
               "source_kind": "crafted"
             },
             "wrist": {
@@ -14365,8 +14351,8 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 6468,
-              "source_kind": "crafted"
+              "item_id": 10403,
+              "source_kind": "dungeon"
             },
             "legs": {
               "item_id": 10410,
@@ -14393,11 +14379,11 @@
               "source_kind": "rep"
             },
             "main_hand": {
-              "item_id": 5200,
+              "item_id": 6631,
               "source_kind": "dungeon"
             },
             "ranged": {
-              "item_id": 4372,
+              "item_id": 4369,
               "source_kind": "crafted"
             }
           },
@@ -14415,7 +14401,7 @@
               "source_kind": "dungeon"
             },
             "chest": {
-              "item_id": 2317,
+              "item_id": 5781,
               "source_kind": "crafted"
             },
             "wrist": {
@@ -14427,8 +14413,8 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 6468,
-              "source_kind": "crafted"
+              "item_id": 10403,
+              "source_kind": "dungeon"
             },
             "legs": {
               "item_id": 10410,
@@ -14455,11 +14441,11 @@
               "source_kind": "rep"
             },
             "main_hand": {
-              "item_id": 5200,
+              "item_id": 6631,
               "source_kind": "dungeon"
             },
             "ranged": {
-              "item_id": 4372,
+              "item_id": 4369,
               "source_kind": "crafted"
             }
           }
@@ -14469,27 +14455,27 @@
             6461,
             6449,
             7348,
-            6468,
+            10403,
             10410,
             1156,
             6463,
             21566,
             21568,
-            5200,
-            4372
+            6631,
+            4369
           ],
           "horde": [
             6461,
             6449,
             7348,
-            6468,
+            10403,
             10410,
             1156,
             6463,
             21566,
             21568,
-            5200,
-            4372
+            6631,
+            4369
           ]
         }
       },
@@ -14506,15 +14492,15 @@
               "source_kind": "crafted"
             },
             "back": {
-              "item_id": 6340,
+              "item_id": 6314,
               "source_kind": "dungeon"
             },
             "chest": {
-              "item_id": 2317,
+              "item_id": 5781,
               "source_kind": "crafted"
             },
             "wrist": {
-              "item_id": 3230,
+              "item_id": 6902,
               "source_kind": "dungeon"
             },
             "hands": {
@@ -14522,8 +14508,8 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 6468,
-              "source_kind": "crafted"
+              "item_id": 10403,
+              "source_kind": "dungeon"
             },
             "legs": {
               "item_id": 10410,
@@ -14538,7 +14524,7 @@
               "source_kind": "quest"
             },
             "finger2": {
-              "item_id": 1156,
+              "item_id": 6321,
               "source_kind": "dungeon"
             },
             "trinket1": {
@@ -14550,7 +14536,7 @@
               "source_kind": "rep"
             },
             "main_hand": {
-              "item_id": 6679,
+              "item_id": 1155,
               "source_kind": "dungeon"
             },
             "ranged": {
@@ -14568,15 +14554,15 @@
               "source_kind": "crafted"
             },
             "back": {
-              "item_id": 6340,
+              "item_id": 6314,
               "source_kind": "dungeon"
             },
             "chest": {
-              "item_id": 2317,
+              "item_id": 5781,
               "source_kind": "crafted"
             },
             "wrist": {
-              "item_id": 3230,
+              "item_id": 6902,
               "source_kind": "dungeon"
             },
             "hands": {
@@ -14584,8 +14570,8 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 6468,
-              "source_kind": "crafted"
+              "item_id": 10403,
+              "source_kind": "dungeon"
             },
             "legs": {
               "item_id": 10410,
@@ -14600,7 +14586,7 @@
               "source_kind": "quest"
             },
             "finger2": {
-              "item_id": 1156,
+              "item_id": 6321,
               "source_kind": "dungeon"
             },
             "trinket1": {
@@ -14612,7 +14598,7 @@
               "source_kind": "rep"
             },
             "main_hand": {
-              "item_id": 6679,
+              "item_id": 1155,
               "source_kind": "dungeon"
             },
             "ranged": {
@@ -14624,20 +14610,20 @@
         "new_at_band": {
           "alliance": [
             4252,
-            6340,
-            3230,
+            6314,
+            6902,
             6748,
-            1156,
-            6679,
+            6321,
+            1155,
             4383
           ],
           "horde": [
             4252,
-            6340,
-            3230,
+            6314,
+            6902,
             6748,
-            1156,
-            6679,
+            6321,
+            1155,
             4383
           ]
         }
@@ -14651,15 +14637,15 @@
               "source_kind": "crafted"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
-              "item_id": 4252,
+              "item_id": 5964,
               "source_kind": "crafted"
             },
             "back": {
-              "item_id": 6340,
+              "item_id": 6314,
               "source_kind": "dungeon"
             },
             "chest": {
@@ -14675,12 +14661,12 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 6788,
-              "source_kind": "quest"
+              "item_id": 10403,
+              "source_kind": "dungeon"
             },
             "legs": {
-              "item_id": 7373,
-              "source_kind": "crafted"
+              "item_id": 6690,
+              "source_kind": "dungeon"
             },
             "feet": {
               "item_id": 10402,
@@ -14703,11 +14689,11 @@
               "source_kind": "rep"
             },
             "main_hand": {
-              "item_id": 6679,
+              "item_id": 7689,
               "source_kind": "dungeon"
             },
             "ranged": {
-              "item_id": 17686,
+              "item_id": 17687,
               "source_kind": "quest"
             }
           },
@@ -14717,15 +14703,15 @@
               "source_kind": "crafted"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
-              "item_id": 4252,
+              "item_id": 5964,
               "source_kind": "crafted"
             },
             "back": {
-              "item_id": 6340,
+              "item_id": 6314,
               "source_kind": "dungeon"
             },
             "chest": {
@@ -14741,12 +14727,12 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 6788,
-              "source_kind": "quest"
+              "item_id": 10403,
+              "source_kind": "dungeon"
             },
             "legs": {
-              "item_id": 7373,
-              "source_kind": "crafted"
+              "item_id": 6690,
+              "source_kind": "dungeon"
             },
             "feet": {
               "item_id": 10402,
@@ -14769,11 +14755,11 @@
               "source_kind": "rep"
             },
             "main_hand": {
-              "item_id": 6679,
+              "item_id": 7689,
               "source_kind": "dungeon"
             },
             "ranged": {
-              "item_id": 17686,
+              "item_id": 17687,
               "source_kind": "quest"
             }
           }
@@ -14781,25 +14767,27 @@
         "new_at_band": {
           "alliance": [
             4322,
-            4743,
+            7731,
+            5964,
             7374,
             18948,
-            6788,
-            7373,
+            6690,
             7686,
             6748,
-            17686
+            7689,
+            17687
           ],
           "horde": [
             4322,
-            4743,
+            7731,
+            5964,
             7374,
             18948,
-            6788,
-            7373,
+            6690,
             7686,
             6748,
-            17686
+            7689,
+            17687
           ]
         }
       },
@@ -14812,15 +14800,15 @@
               "source_kind": "crafted"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
-              "item_id": 4252,
+              "item_id": 5964,
               "source_kind": "crafted"
             },
             "back": {
-              "item_id": 6340,
+              "item_id": 6314,
               "source_kind": "dungeon"
             },
             "chest": {
@@ -14836,16 +14824,16 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 6788,
-              "source_kind": "quest"
+              "item_id": 10403,
+              "source_kind": "dungeon"
             },
             "legs": {
-              "item_id": 7373,
-              "source_kind": "crafted"
+              "item_id": 6690,
+              "source_kind": "dungeon"
             },
             "feet": {
-              "item_id": 7390,
-              "source_kind": "crafted"
+              "item_id": 4109,
+              "source_kind": "quest"
             },
             "finger1": {
               "item_id": 7686,
@@ -14868,7 +14856,7 @@
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 17686,
+              "item_id": 17687,
               "source_kind": "quest"
             }
           },
@@ -14878,15 +14866,15 @@
               "source_kind": "crafted"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
-              "item_id": 4252,
+              "item_id": 5964,
               "source_kind": "crafted"
             },
             "back": {
-              "item_id": 6340,
+              "item_id": 6314,
               "source_kind": "dungeon"
             },
             "chest": {
@@ -14902,16 +14890,16 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 6788,
-              "source_kind": "quest"
+              "item_id": 10403,
+              "source_kind": "dungeon"
             },
             "legs": {
-              "item_id": 7373,
-              "source_kind": "crafted"
+              "item_id": 6690,
+              "source_kind": "dungeon"
             },
             "feet": {
-              "item_id": 7390,
-              "source_kind": "crafted"
+              "item_id": 4109,
+              "source_kind": "quest"
             },
             "finger1": {
               "item_id": 7686,
@@ -14934,7 +14922,7 @@
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 17686,
+              "item_id": 17687,
               "source_kind": "quest"
             }
           }
@@ -14942,12 +14930,12 @@
         "new_at_band": {
           "alliance": [
             7378,
-            7390,
+            4109,
             3854
           ],
           "horde": [
             7378,
-            7390,
+            4109,
             3854
           ]
         }
@@ -14961,23 +14949,23 @@
               "source_kind": "dungeon"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
-              "item_id": 8192,
-              "source_kind": "crafted"
+              "item_id": 9647,
+              "source_kind": "quest"
             },
             "back": {
-              "item_id": 10518,
-              "source_kind": "crafted"
+              "item_id": 16336,
+              "source_kind": "pvp"
             },
             "chest": {
-              "item_id": 8175,
-              "source_kind": "crafted"
+              "item_id": 6773,
+              "source_kind": "quest"
             },
             "wrist": {
-              "item_id": 19590,
+              "item_id": 19584,
               "source_kind": "rep"
             },
             "hands": {
@@ -14985,16 +14973,16 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 6788,
-              "source_kind": "quest"
+              "item_id": 10403,
+              "source_kind": "dungeon"
             },
             "legs": {
-              "item_id": 7373,
-              "source_kind": "crafted"
+              "item_id": 6690,
+              "source_kind": "dungeon"
             },
             "feet": {
-              "item_id": 7390,
-              "source_kind": "crafted"
+              "item_id": 4109,
+              "source_kind": "quest"
             },
             "finger1": {
               "item_id": 9533,
@@ -15017,8 +15005,8 @@
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 17686,
-              "source_kind": "quest"
+              "item_id": 4383,
+              "source_kind": "crafted"
             }
           },
           "horde": {
@@ -15027,23 +15015,23 @@
               "source_kind": "dungeon"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
-              "item_id": 8192,
-              "source_kind": "crafted"
+              "item_id": 9647,
+              "source_kind": "quest"
             },
             "back": {
-              "item_id": 10518,
-              "source_kind": "crafted"
+              "item_id": 16336,
+              "source_kind": "pvp"
             },
             "chest": {
-              "item_id": 8175,
-              "source_kind": "crafted"
+              "item_id": 6773,
+              "source_kind": "quest"
             },
             "wrist": {
-              "item_id": 19590,
+              "item_id": 19584,
               "source_kind": "rep"
             },
             "hands": {
@@ -15051,16 +15039,16 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 6788,
-              "source_kind": "quest"
+              "item_id": 10403,
+              "source_kind": "dungeon"
             },
             "legs": {
-              "item_id": 7373,
-              "source_kind": "crafted"
+              "item_id": 6690,
+              "source_kind": "dungeon"
             },
             "feet": {
-              "item_id": 7390,
-              "source_kind": "crafted"
+              "item_id": 4109,
+              "source_kind": "quest"
             },
             "finger1": {
               "item_id": 9533,
@@ -15083,35 +15071,37 @@
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 17686,
-              "source_kind": "quest"
+              "item_id": 4383,
+              "source_kind": "crafted"
             }
           }
         },
         "new_at_band": {
           "alliance": [
             7719,
-            8192,
-            10518,
-            8175,
-            19590,
+            9647,
+            16336,
+            6773,
+            19584,
             8347,
             9533,
             7686,
             11122,
-            17774
+            17774,
+            4383
           ],
           "horde": [
             7719,
-            8192,
-            10518,
-            8175,
-            19590,
+            9647,
+            16336,
+            6773,
+            19584,
             8347,
             9533,
             7686,
             11122,
-            17774
+            17774,
+            4383
           ]
         }
       },
@@ -15124,23 +15114,23 @@
               "source_kind": "dungeon"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
-              "item_id": 8192,
-              "source_kind": "crafted"
+              "item_id": 9647,
+              "source_kind": "quest"
             },
             "back": {
-              "item_id": 8195,
-              "source_kind": "crafted"
+              "item_id": 16336,
+              "source_kind": "pvp"
             },
             "chest": {
-              "item_id": 21320,
+              "item_id": 17777,
               "source_kind": "quest"
             },
             "wrist": {
-              "item_id": 19590,
+              "item_id": 19584,
               "source_kind": "rep"
             },
             "hands": {
@@ -15148,11 +15138,11 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 19125,
+              "item_id": 21312,
               "source_kind": "quest"
             },
             "legs": {
-              "item_id": 9414,
+              "item_id": 6690,
               "source_kind": "dungeon"
             },
             "feet": {
@@ -15176,12 +15166,12 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 3854,
+              "item_id": 7959,
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 17686,
-              "source_kind": "quest"
+              "item_id": 4383,
+              "source_kind": "crafted"
             }
           },
           "horde": {
@@ -15190,23 +15180,23 @@
               "source_kind": "dungeon"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
-              "item_id": 8192,
-              "source_kind": "crafted"
+              "item_id": 9647,
+              "source_kind": "quest"
             },
             "back": {
-              "item_id": 8195,
-              "source_kind": "crafted"
+              "item_id": 16336,
+              "source_kind": "pvp"
             },
             "chest": {
-              "item_id": 21320,
+              "item_id": 17777,
               "source_kind": "quest"
             },
             "wrist": {
-              "item_id": 19590,
+              "item_id": 19584,
               "source_kind": "rep"
             },
             "hands": {
@@ -15214,11 +15204,11 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 19125,
+              "item_id": 21312,
               "source_kind": "quest"
             },
             "legs": {
-              "item_id": 9414,
+              "item_id": 6690,
               "source_kind": "dungeon"
             },
             "feet": {
@@ -15242,33 +15232,31 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 3854,
+              "item_id": 7959,
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 17686,
-              "source_kind": "quest"
+              "item_id": 4383,
+              "source_kind": "crafted"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            8195,
-            21320,
-            19125,
-            9414,
+            17777,
+            21312,
             12470,
             10659,
-            10779
+            10779,
+            7959
           ],
           "horde": [
-            8195,
-            21320,
-            19125,
-            9414,
+            17777,
+            21312,
             12470,
             10659,
-            10779
+            10779,
+            7959
           ]
         }
       },
@@ -15281,23 +15269,23 @@
               "source_kind": "dungeon"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
-              "item_id": 15822,
+              "item_id": 9647,
               "source_kind": "quest"
             },
             "back": {
-              "item_id": 8195,
-              "source_kind": "crafted"
+              "item_id": 16336,
+              "source_kind": "pvp"
             },
             "chest": {
               "item_id": 12624,
               "source_kind": "crafted"
             },
             "wrist": {
-              "item_id": 19589,
+              "item_id": 19583,
               "source_kind": "rep"
             },
             "hands": {
@@ -15305,7 +15293,7 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 19125,
+              "item_id": 21312,
               "source_kind": "quest"
             },
             "legs": {
@@ -15333,12 +15321,12 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 3854,
+              "item_id": 7959,
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 20086,
-              "source_kind": "quest"
+              "item_id": 11628,
+              "source_kind": "dungeon"
             }
           },
           "horde": {
@@ -15347,23 +15335,23 @@
               "source_kind": "dungeon"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
-              "item_id": 15822,
+              "item_id": 9647,
               "source_kind": "quest"
             },
             "back": {
-              "item_id": 8195,
-              "source_kind": "crafted"
+              "item_id": 16336,
+              "source_kind": "pvp"
             },
             "chest": {
               "item_id": 12624,
               "source_kind": "crafted"
             },
             "wrist": {
-              "item_id": 19589,
+              "item_id": 19583,
               "source_kind": "rep"
             },
             "hands": {
@@ -15371,7 +15359,7 @@
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 19125,
+              "item_id": 21312,
               "source_kind": "quest"
             },
             "legs": {
@@ -15399,35 +15387,33 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 3854,
+              "item_id": 7959,
               "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 20086,
-              "source_kind": "quest"
+              "item_id": 11628,
+              "source_kind": "dungeon"
             }
           }
         },
         "new_at_band": {
           "alliance": [
-            15822,
             12624,
-            19589,
+            19583,
             15057,
             22240,
             17713,
             9533,
-            20086
+            11628
           ],
           "horde": [
-            15822,
             12624,
-            19589,
+            19583,
             15057,
             22240,
             17713,
             9533,
-            20086
+            11628
           ]
         }
       },
@@ -15436,101 +15422,35 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 11735,
+              "item_id": 13404,
               "source_kind": "dungeon"
             },
             "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
+              "item_id": 7731,
+              "source_kind": "dungeon"
             },
             "shoulder": {
               "item_id": 15058,
               "source_kind": "crafted"
             },
             "back": {
-              "item_id": 15789,
-              "source_kind": "quest"
+              "item_id": 16337,
+              "source_kind": "pvp"
             },
             "chest": {
               "item_id": 15056,
               "source_kind": "crafted"
             },
             "wrist": {
-              "item_id": 16402,
-              "source_kind": "pvp"
+              "item_id": 19583,
+              "source_kind": "rep"
             },
             "hands": {
-              "item_id": 8347,
+              "item_id": 15063,
               "source_kind": "crafted"
             },
             "waist": {
-              "item_id": 15088,
-              "source_kind": "crafted"
-            },
-            "legs": {
-              "item_id": 15057,
-              "source_kind": "crafted"
-            },
-            "feet": {
-              "item_id": 22240,
-              "source_kind": "dungeon"
-            },
-            "finger1": {
-              "item_id": 13217,
-              "source_kind": "quest"
-            },
-            "finger2": {
-              "item_id": 17713,
-              "source_kind": "dungeon"
-            },
-            "trinket1": {
-              "item_id": 13171,
-              "source_kind": "quest"
-            },
-            "trinket2": {
-              "item_id": 10779,
-              "source_kind": "quest"
-            },
-            "main_hand": {
-              "item_id": 3854,
-              "source_kind": "crafted"
-            },
-            "ranged": {
-              "item_id": 12651,
-              "source_kind": "dungeon"
-            }
-          },
-          "horde": {
-            "head": {
-              "item_id": 11735,
-              "source_kind": "dungeon"
-            },
-            "neck": {
-              "item_id": 4743,
-              "source_kind": "quest"
-            },
-            "shoulder": {
-              "item_id": 15058,
-              "source_kind": "crafted"
-            },
-            "back": {
-              "item_id": 15789,
-              "source_kind": "quest"
-            },
-            "chest": {
-              "item_id": 15056,
-              "source_kind": "crafted"
-            },
-            "wrist": {
-              "item_id": 16402,
-              "source_kind": "pvp"
-            },
-            "hands": {
-              "item_id": 8347,
-              "source_kind": "crafted"
-            },
-            "waist": {
-              "item_id": 15088,
+              "item_id": 19043,
               "source_kind": "crafted"
             },
             "legs": {
@@ -15558,7 +15478,73 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 3854,
+              "item_id": 7959,
+              "source_kind": "crafted"
+            },
+            "ranged": {
+              "item_id": 12651,
+              "source_kind": "dungeon"
+            }
+          },
+          "horde": {
+            "head": {
+              "item_id": 13404,
+              "source_kind": "dungeon"
+            },
+            "neck": {
+              "item_id": 7731,
+              "source_kind": "dungeon"
+            },
+            "shoulder": {
+              "item_id": 15058,
+              "source_kind": "crafted"
+            },
+            "back": {
+              "item_id": 16337,
+              "source_kind": "pvp"
+            },
+            "chest": {
+              "item_id": 15056,
+              "source_kind": "crafted"
+            },
+            "wrist": {
+              "item_id": 19583,
+              "source_kind": "rep"
+            },
+            "hands": {
+              "item_id": 15063,
+              "source_kind": "crafted"
+            },
+            "waist": {
+              "item_id": 19043,
+              "source_kind": "crafted"
+            },
+            "legs": {
+              "item_id": 15057,
+              "source_kind": "crafted"
+            },
+            "feet": {
+              "item_id": 22240,
+              "source_kind": "dungeon"
+            },
+            "finger1": {
+              "item_id": 13217,
+              "source_kind": "quest"
+            },
+            "finger2": {
+              "item_id": 17713,
+              "source_kind": "dungeon"
+            },
+            "trinket1": {
+              "item_id": 10659,
+              "source_kind": "quest"
+            },
+            "trinket2": {
+              "item_id": 13171,
+              "source_kind": "quest"
+            },
+            "main_hand": {
+              "item_id": 12782,
               "source_kind": "crafted"
             },
             "ranged": {
@@ -15569,27 +15555,28 @@
         },
         "new_at_band": {
           "alliance": [
-            11735,
+            13404,
             15058,
-            15789,
+            16337,
             15056,
-            16402,
-            15088,
+            15063,
+            19043,
             13217,
             17713,
             13171,
             12651
           ],
           "horde": [
-            11735,
+            13404,
             15058,
-            15789,
+            16337,
             15056,
-            16402,
-            15088,
+            15063,
+            19043,
             13217,
             17713,
             13171,
+            12782,
             12651
           ]
         }
@@ -15599,8 +15586,8 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 22438,
-              "source_kind": "quest"
+              "item_id": 13404,
+              "source_kind": "dungeon"
             },
             "neck": {
               "item_id": 23053,
@@ -15615,20 +15602,20 @@
               "source_kind": "crafted"
             },
             "chest": {
-              "item_id": 22874,
-              "source_kind": "pvp"
+              "item_id": 22436,
+              "source_kind": "quest"
             },
             "wrist": {
-              "item_id": 22443,
-              "source_kind": "quest"
+              "item_id": 21602,
+              "source_kind": "raid"
             },
             "hands": {
-              "item_id": 22441,
-              "source_kind": "quest"
+              "item_id": 16463,
+              "source_kind": "pvp"
             },
             "waist": {
-              "item_id": 22442,
-              "source_kind": "quest"
+              "item_id": 21586,
+              "source_kind": "raid"
             },
             "legs": {
               "item_id": 22875,
@@ -15639,12 +15626,12 @@
               "source_kind": "quest"
             },
             "finger1": {
-              "item_id": 13217,
-              "source_kind": "quest"
+              "item_id": 23038,
+              "source_kind": "raid"
             },
             "finger2": {
-              "item_id": 18543,
-              "source_kind": "world"
+              "item_id": 19325,
+              "source_kind": "rep"
             },
             "trinket1": {
               "item_id": 23041,
@@ -15655,7 +15642,7 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 22630,
+              "item_id": 22632,
               "source_kind": "quest"
             },
             "ranged": {
@@ -15665,8 +15652,8 @@
           },
           "horde": {
             "head": {
-              "item_id": 22438,
-              "source_kind": "quest"
+              "item_id": 13404,
+              "source_kind": "dungeon"
             },
             "neck": {
               "item_id": 23053,
@@ -15681,20 +15668,20 @@
               "source_kind": "crafted"
             },
             "chest": {
-              "item_id": 22874,
-              "source_kind": "pvp"
+              "item_id": 22436,
+              "source_kind": "quest"
             },
             "wrist": {
-              "item_id": 22443,
-              "source_kind": "quest"
+              "item_id": 21602,
+              "source_kind": "raid"
             },
             "hands": {
-              "item_id": 22441,
-              "source_kind": "quest"
+              "item_id": 16463,
+              "source_kind": "pvp"
             },
             "waist": {
-              "item_id": 22442,
-              "source_kind": "quest"
+              "item_id": 21586,
+              "source_kind": "raid"
             },
             "legs": {
               "item_id": 22875,
@@ -15705,15 +15692,15 @@
               "source_kind": "quest"
             },
             "finger1": {
-              "item_id": 13217,
-              "source_kind": "quest"
+              "item_id": 23038,
+              "source_kind": "raid"
             },
             "finger2": {
-              "item_id": 18543,
-              "source_kind": "world"
+              "item_id": 19325,
+              "source_kind": "rep"
             },
             "trinket1": {
-              "item_id": 23001,
+              "item_id": 23041,
               "source_kind": "raid"
             },
             "trinket2": {
@@ -15721,7 +15708,7 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 22630,
+              "item_id": 22632,
               "source_kind": "quest"
             },
             "ranged": {
@@ -15732,37 +15719,37 @@
         },
         "new_at_band": {
           "alliance": [
-            22438,
             23053,
             22439,
             18509,
-            22874,
-            22443,
-            22441,
-            22442,
+            22436,
+            21602,
+            16463,
+            21586,
             22875,
             22440,
-            18543,
+            23038,
+            19325,
             23041,
             22954,
-            22630,
+            22632,
             23557
           ],
           "horde": [
-            22438,
             23053,
             22439,
             18509,
-            22874,
-            22443,
-            22441,
-            22442,
+            22436,
+            21602,
+            16463,
+            21586,
             22875,
             22440,
-            18543,
-            23001,
+            23038,
+            19325,
+            23041,
             22954,
-            22630,
+            22632,
             23557
           ]
         }
@@ -21965,7 +21952,7 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 12769,
+              "item_id": 7959,
               "source_kind": "crafted"
             }
           },
@@ -22027,7 +22014,7 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 12769,
+              "item_id": 7959,
               "source_kind": "crafted"
             }
           }
@@ -22040,8 +22027,7 @@
             15057,
             22240,
             17713,
-            7686,
-            12769
+            7686
           ],
           "horde": [
             11632,
@@ -22050,8 +22036,7 @@
             15057,
             22240,
             17713,
-            7686,
-            12769
+            7686
           ]
         }
       },
@@ -22116,7 +22101,7 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 12776,
+              "item_id": 7959,
               "source_kind": "crafted"
             }
           },
@@ -22193,8 +22178,7 @@
             19044,
             22385,
             13217,
-            13171,
-            12776
+            13171
           ],
           "horde": [
             13404,
@@ -22271,8 +22255,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 21134,
-              "source_kind": "raid"
+              "item_id": 19019,
+              "source_kind": "quest"
             }
           },
           "horde": {
@@ -22333,8 +22317,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 21134,
-              "source_kind": "raid"
+              "item_id": 19019,
+              "source_kind": "quest"
             }
           }
         },
@@ -22352,7 +22336,7 @@
             19325,
             23041,
             23046,
-            21134
+            19019
           ],
           "horde": [
             12640,
@@ -22367,7 +22351,7 @@
             19325,
             23041,
             23046,
-            21134
+            19019
           ]
         }
       }
@@ -25355,8 +25339,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon"
+              "item_id": 10696,
+              "source_kind": "quest"
             },
             "off_hand": {
               "item_id": 17738,
@@ -25425,8 +25409,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon"
+              "item_id": 10696,
+              "source_kind": "quest"
             },
             "off_hand": {
               "item_id": 17738,
@@ -25447,7 +25431,6 @@
             17728,
             17713,
             9533,
-            17719,
             17738,
             11628
           ],
@@ -25459,7 +25442,6 @@
             17728,
             17713,
             9533,
-            17719,
             17738,
             11628
           ]
@@ -25699,8 +25681,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 23577,
-              "source_kind": "raid"
+              "item_id": 19019,
+              "source_kind": "quest"
             },
             "off_hand": {
               "item_id": 18847,
@@ -25769,8 +25751,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 23577,
-              "source_kind": "raid"
+              "item_id": 19019,
+              "source_kind": "quest"
             },
             "off_hand": {
               "item_id": 18847,
@@ -25797,7 +25779,7 @@
             21677,
             22954,
             23041,
-            23577,
+            19019,
             18847,
             23557
           ],
@@ -25815,7 +25797,7 @@
             21677,
             22954,
             23041,
-            23577,
+            19019,
             18847,
             23557
           ]
@@ -27106,8 +27088,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon"
+              "item_id": 10696,
+              "source_kind": "quest"
             },
             "off_hand": {
               "item_id": 17738,
@@ -27176,8 +27158,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon"
+              "item_id": 10696,
+              "source_kind": "quest"
             },
             "off_hand": {
               "item_id": 17738,
@@ -27200,7 +27182,6 @@
             17728,
             17713,
             9533,
-            17719,
             17738
           ],
           "horde": [
@@ -27213,7 +27194,6 @@
             17728,
             17713,
             9533,
-            17719,
             17738
           ]
         }
@@ -27279,8 +27259,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon"
+              "item_id": 12777,
+              "source_kind": "crafted"
             },
             "off_hand": {
               "item_id": 17738,
@@ -27349,8 +27329,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon"
+              "item_id": 12777,
+              "source_kind": "crafted"
             },
             "off_hand": {
               "item_id": 17738,
@@ -27374,6 +27354,7 @@
             13217,
             17713,
             13171,
+            12777,
             12651
           ],
           "horde": [
@@ -27387,6 +27368,7 @@
             13217,
             17713,
             13171,
+            12777,
             12651
           ]
         }
@@ -27452,7 +27434,7 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 21244,
+              "item_id": 19019,
               "source_kind": "quest"
             },
             "off_hand": {
@@ -27522,7 +27504,7 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 21244,
+              "item_id": 19019,
               "source_kind": "quest"
             },
             "off_hand": {
@@ -27551,7 +27533,7 @@
             19325,
             23041,
             22954,
-            21244,
+            19019,
             18847,
             23557
           ],
@@ -27570,7 +27552,7 @@
             19325,
             23041,
             22954,
-            21244,
+            19019,
             18847,
             23557
           ]
@@ -28867,8 +28849,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon"
+              "item_id": 10696,
+              "source_kind": "quest"
             },
             "off_hand": {
               "item_id": 17738,
@@ -28937,8 +28919,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon"
+              "item_id": 10696,
+              "source_kind": "quest"
             },
             "off_hand": {
               "item_id": 17738,
@@ -28960,7 +28942,6 @@
             17728,
             17713,
             9533,
-            17719,
             17738,
             11628
           ],
@@ -28973,7 +28954,6 @@
             17728,
             17713,
             9533,
-            17719,
             17738,
             11628
           ]
@@ -29040,8 +29020,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon"
+              "item_id": 12777,
+              "source_kind": "crafted"
             },
             "off_hand": {
               "item_id": 17738,
@@ -29110,8 +29090,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 17719,
-              "source_kind": "dungeon"
+              "item_id": 12777,
+              "source_kind": "crafted"
             },
             "off_hand": {
               "item_id": 17738,
@@ -29135,6 +29115,7 @@
             13217,
             17713,
             13171,
+            12777,
             12651
           ],
           "horde": [
@@ -29148,6 +29129,7 @@
             13217,
             17713,
             13171,
+            12777,
             12651
           ]
         }
@@ -29213,8 +29195,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 23577,
-              "source_kind": "raid"
+              "item_id": 19019,
+              "source_kind": "quest"
             },
             "off_hand": {
               "item_id": 18847,
@@ -29283,8 +29265,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 23577,
-              "source_kind": "raid"
+              "item_id": 19019,
+              "source_kind": "quest"
             },
             "off_hand": {
               "item_id": 18847,
@@ -29312,7 +29294,7 @@
             19325,
             23041,
             22954,
-            23577,
+            19019,
             18847,
             23557
           ],
@@ -29331,7 +29313,7 @@
             19325,
             23041,
             22954,
-            23577,
+            19019,
             18847,
             23557
           ]
@@ -37322,8 +37304,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 1155,
-              "source_kind": "dungeon"
+              "item_id": 10696,
+              "source_kind": "quest"
             },
             "ranged": {
               "item_id": 8071,
@@ -37388,8 +37370,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 1155,
-              "source_kind": "dungeon"
+              "item_id": 10696,
+              "source_kind": "quest"
             },
             "ranged": {
               "item_id": 8071,
@@ -37406,7 +37388,7 @@
             9447,
             4549,
             13171,
-            1155
+            10696
           ],
           "horde": [
             23125,
@@ -37416,7 +37398,7 @@
             9447,
             4549,
             13171,
-            1155
+            10696
           ]
         }
       },
@@ -38725,8 +38707,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 10698,
-              "source_kind": "quest"
+              "item_id": 7959,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 17687,
@@ -38755,7 +38737,7 @@
             9533,
             10659,
             10779,
-            10698
+            7959
           ]
         }
       },
@@ -38820,8 +38802,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 11628,
@@ -38886,8 +38868,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 11628,
@@ -38904,7 +38886,7 @@
             22240,
             17713,
             7686,
-            11750,
+            7959,
             11628
           ],
           "horde": [
@@ -38915,7 +38897,6 @@
             22240,
             17713,
             7686,
-            11750,
             11628
           ]
         }
@@ -38981,8 +38962,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 12777,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 12651,
@@ -39047,12 +39028,12 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             },
             "ranged": {
-              "item_id": 12651,
-              "source_kind": "dungeon"
+              "item_id": 16004,
+              "source_kind": "crafted"
             }
           }
         },
@@ -39067,6 +39048,7 @@
             13217,
             17713,
             13171,
+            12777,
             12651
           ],
           "horde": [
@@ -39079,7 +39061,7 @@
             13217,
             17713,
             13171,
-            12651
+            16004
           ]
         }
       },
@@ -39144,8 +39126,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 19323,
-              "source_kind": "rep"
+              "item_id": 19019,
+              "source_kind": "quest"
             },
             "ranged": {
               "item_id": 23557,
@@ -39210,8 +39192,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 19323,
-              "source_kind": "rep"
+              "item_id": 19019,
+              "source_kind": "quest"
             },
             "ranged": {
               "item_id": 23557,
@@ -39234,7 +39216,7 @@
             21393,
             23041,
             22954,
-            19323,
+            19019,
             23557
           ],
           "horde": [
@@ -39251,7 +39233,7 @@
             21393,
             23041,
             22954,
-            19323,
+            19019,
             23557
           ]
         }
@@ -40008,8 +39990,8 @@
               "source_kind": "rep"
             },
             "main_hand": {
-              "item_id": 7713,
-              "source_kind": "dungeon"
+              "item_id": 3854,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 17687,
@@ -40074,8 +40056,8 @@
               "source_kind": "rep"
             },
             "main_hand": {
-              "item_id": 7713,
-              "source_kind": "dungeon"
+              "item_id": 3854,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 17687,
@@ -40089,14 +40071,14 @@
             3847,
             6321,
             7686,
-            7713
+            3854
           ],
           "horde": [
             4264,
             3847,
             6321,
             7686,
-            7713
+            3854
           ]
         }
       },
@@ -40330,8 +40312,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 10698,
-              "source_kind": "quest"
+              "item_id": 7959,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 17687,
@@ -40396,8 +40378,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 10698,
-              "source_kind": "quest"
+              "item_id": 7959,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 17687,
@@ -40414,7 +40396,7 @@
             21316,
             10659,
             10779,
-            10698
+            7959
           ],
           "horde": [
             9476,
@@ -40424,7 +40406,7 @@
             21316,
             10659,
             10779,
-            10698
+            7959
           ]
         }
       },
@@ -40489,8 +40471,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 11628,
@@ -40555,8 +40537,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 11628,
@@ -40573,7 +40555,6 @@
             11919,
             17713,
             7686,
-            11750,
             11628
           ],
           "horde": [
@@ -40584,7 +40565,6 @@
             11919,
             17713,
             7686,
-            11750,
             11628
           ]
         }
@@ -40650,8 +40630,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 12777,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 12651,
@@ -40716,8 +40696,8 @@
               "source_kind": "quest"
             },
             "main_hand": {
-              "item_id": 11750,
-              "source_kind": "dungeon"
+              "item_id": 7959,
+              "source_kind": "crafted"
             },
             "ranged": {
               "item_id": 12651,
@@ -40738,6 +40718,7 @@
             13217,
             17713,
             13171,
+            12777,
             12651
           ],
           "horde": [
@@ -40817,8 +40798,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 18830,
-              "source_kind": "pvp"
+              "item_id": 19019,
+              "source_kind": "quest"
             },
             "ranged": {
               "item_id": 23557,
@@ -40883,8 +40864,8 @@
               "source_kind": "raid"
             },
             "main_hand": {
-              "item_id": 18830,
-              "source_kind": "pvp"
+              "item_id": 19019,
+              "source_kind": "quest"
             },
             "ranged": {
               "item_id": 23557,
@@ -40907,7 +40888,7 @@
             21677,
             23041,
             22954,
-            18830,
+            19019,
             23557
           ],
           "horde": [
@@ -40924,7 +40905,7 @@
             21677,
             23041,
             22954,
-            18830,
+            19019,
             23557
           ]
         }

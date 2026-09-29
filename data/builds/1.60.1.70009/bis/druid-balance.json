@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:15:36Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:05:30Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -14,35 +14,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013243455281528249,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.057843734112199556
+          "weight": 0.057843734112199556,
+          "error": 0.008698019831872716,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6045330883388753
+          "weight": 0.6045330883388753,
+          "error": 0.026280174591839574,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.3234865386698118
+          "weight": 0.3234865386698118,
+          "error": 0.05456956371733555,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.016147615960911976
+          "weight": -0.016147615960911976,
+          "error": 0.006075464915382492,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.05831647942948319
+          "weight": 0.05831647942948319,
+          "error": 0.0008912952147645857,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.9416835205705162
+          "weight": 0.9416835205705162,
+          "error": 0.0009810749361499965,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -181,8 +197,8 @@
         "feet: Embossed Leather Boots",
         "main_hand: Goblin Smasher"
       ],
-      "weights_run_seconds": 1.555475168,
-      "verify_run_seconds": 0.449580588
+      "weights_run_seconds": 1.132825301,
+      "verify_run_seconds": 0.328489228
     },
     {
       "spec": "druid-balance",
@@ -194,35 +210,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013243455281528249,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.057843734112199556
+          "weight": 0.057843734112199556,
+          "error": 0.008698019831872716,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6045330883388753
+          "weight": 0.6045330883388753,
+          "error": 0.026280174591839574,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.3234865386698118
+          "weight": 0.3234865386698118,
+          "error": 0.05456956371733555,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.016147615960911976
+          "weight": -0.016147615960911976,
+          "error": 0.006075464915382492,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.05831647942948319
+          "weight": 0.05831647942948319,
+          "error": 0.0008912952147645857,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.9416835205705162
+          "weight": 0.9416835205705162,
+          "error": 0.0009810749361499965,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -361,8 +393,8 @@
         "feet: Embossed Leather Boots",
         "main_hand: Goblin Smasher"
       ],
-      "weights_run_seconds": 1.555475168,
-      "verify_run_seconds": 0.44371758
+      "weights_run_seconds": 1.132825301,
+      "verify_run_seconds": 0.326912737
     },
     {
       "spec": "druid-balance",
@@ -374,35 +406,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001822360757165143,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.4045098243222401
+          "weight": 0.4045098243222401,
+          "error": 0.06866201861280756,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.645955103407814
+          "weight": 0.645955103407814,
+          "error": 0.027757931888032224,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.3330676224836954
+          "weight": 0.3330676224836954,
+          "error": 0.08022311470979936,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.001989509117754963
+          "weight": -0.001989509117754963,
+          "error": 0.011575991370595626,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.10667033514460994
+          "weight": 0.10667033514460994,
+          "error": 0.0015860186944637075,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.8933296648553906
+          "weight": 0.8933296648553906,
+          "error": 0.0008948236660802017,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -552,8 +600,8 @@
         "main_hand: Goblin Screwdriver",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.551169096,
-      "verify_run_seconds": 0.697259133
+      "weights_run_seconds": 1.178123582,
+      "verify_run_seconds": 0.510466112
     },
     {
       "spec": "druid-balance",
@@ -565,35 +613,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001822360757165143,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.4045098243222401
+          "weight": 0.4045098243222401,
+          "error": 0.06866201861280756,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.645955103407814
+          "weight": 0.645955103407814,
+          "error": 0.027757931888032224,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.3330676224836954
+          "weight": 0.3330676224836954,
+          "error": 0.08022311470979936,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.001989509117754963
+          "weight": -0.001989509117754963,
+          "error": 0.011575991370595626,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.10667033514460994
+          "weight": 0.10667033514460994,
+          "error": 0.0015860186944637075,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.8933296648553906
+          "weight": 0.8933296648553906,
+          "error": 0.0008948236660802017,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -743,8 +807,8 @@
         "main_hand: Goblin Screwdriver",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.551169096,
-      "verify_run_seconds": 0.641780672
+      "weights_run_seconds": 1.178123582,
+      "verify_run_seconds": 0.48458767
     },
     {
       "spec": "druid-balance",
@@ -756,35 +820,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0033551262781695767,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.7988779062227417
+          "weight": 0.7988779062227417,
+          "error": 0.049421469670083436,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.36038982015613913
+          "weight": 0.36038982015613913,
+          "error": 0.024727448434442526,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.1734423628418267
+          "weight": 1.1734423628418267,
+          "error": 0.08785339109074772,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.04853179073956177
+          "weight": -0.04853179073956177,
+          "error": 0.05076820427594398,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.4300907661949966
+          "weight": 0.4300907661949966,
+          "error": 0.0010368469764720824,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.5699092338050039
+          "weight": 0.5699092338050039,
+          "error": 0.0029276574052035553,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -957,8 +1037,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Impaling Harpoon"
       ],
-      "weights_run_seconds": 1.695271585,
-      "verify_run_seconds": 0.665202812
+      "weights_run_seconds": 1.393835345,
+      "verify_run_seconds": 0.487473889
     },
     {
       "spec": "druid-balance",
@@ -970,35 +1050,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0033551262781695767,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.7988779062227417
+          "weight": 0.7988779062227417,
+          "error": 0.049421469670083436,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.36038982015613913
+          "weight": 0.36038982015613913,
+          "error": 0.024727448434442526,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.1734423628418267
+          "weight": 1.1734423628418267,
+          "error": 0.08785339109074772,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.04853179073956177
+          "weight": -0.04853179073956177,
+          "error": 0.05076820427594398,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.4300907661949966
+          "weight": 0.4300907661949966,
+          "error": 0.0010368469764720824,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.5699092338050039
+          "weight": 0.5699092338050039,
+          "error": 0.0029276574052035553,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1170,8 +1266,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Impaling Harpoon"
       ],
-      "weights_run_seconds": 1.695271585,
-      "verify_run_seconds": 0.660424332
+      "weights_run_seconds": 1.393835345,
+      "verify_run_seconds": 0.489703741
     },
     {
       "spec": "druid-balance",
@@ -1183,35 +1279,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0033838322102999908,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.973139975766857
+          "weight": 0.973139975766857,
+          "error": 0.09657940961964889,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.4844555087189214
+          "weight": 0.4844555087189214,
+          "error": 0.03202264702054739,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.1725785240549926
+          "weight": 1.1725785240549926,
+          "error": 0.09233740856863587,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.16248894525404917
+          "weight": -0.16248894525404917,
+          "error": 0.06605596067784071,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.35453096956583
+          "weight": 0.35453096956583,
+          "error": 0.0008330100448541205,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.6454690304341709
+          "weight": 0.6454690304341709,
+          "error": 0.0030038380196100033,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1384,8 +1496,8 @@
         "finger1: Snake Hoop",
         "finger2: Lavishly Jeweled Ring"
       ],
-      "weights_run_seconds": 1.777859099,
-      "verify_run_seconds": 0.82908926
+      "weights_run_seconds": 1.173451473,
+      "verify_run_seconds": 0.617401723
     },
     {
       "spec": "druid-balance",
@@ -1397,35 +1509,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0033838322102999908,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.973139975766857
+          "weight": 0.973139975766857,
+          "error": 0.09657940961964889,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.4844555087189214
+          "weight": 0.4844555087189214,
+          "error": 0.03202264702054739,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.1725785240549926
+          "weight": 1.1725785240549926,
+          "error": 0.09233740856863587,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.16248894525404917
+          "weight": -0.16248894525404917,
+          "error": 0.06605596067784071,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.35453096956583
+          "weight": 0.35453096956583,
+          "error": 0.0008330100448541205,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.6454690304341709
+          "weight": 0.6454690304341709,
+          "error": 0.0030038380196100033,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1596,8 +1724,8 @@
         "finger1: Snake Hoop",
         "finger2: Lavishly Jeweled Ring"
       ],
-      "weights_run_seconds": 1.777859099,
-      "verify_run_seconds": 0.806041099
+      "weights_run_seconds": 1.173451473,
+      "verify_run_seconds": 0.617614593
     },
     {
       "spec": "druid-balance",
@@ -1609,35 +1737,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003942996014828907,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.9287126697860798
+          "weight": 0.9287126697860798,
+          "error": 0.1294306569148488,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.9363838065322094
+          "weight": 0.9363838065322094,
+          "error": 0.07623966127209873,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.922315703949782
+          "weight": 1.922315703949782,
+          "error": 0.15271403357010016,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.0041228706458104
+          "weight": -0.0041228706458104,
+          "error": 0.04207336132157813,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.4261876964376577
+          "weight": 0.4261876964376577,
+          "error": 0.0011826124216461214,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.5738123035623437
+          "weight": 0.5738123035623437,
+          "error": 0.0036310754687345578,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1816,8 +1960,8 @@
         "waist: Guardian Belt",
         "feet: Acidic Walkers"
       ],
-      "weights_run_seconds": 1.702150333,
-      "verify_run_seconds": 0.984615011
+      "weights_run_seconds": 1.290705348,
+      "verify_run_seconds": 0.737844931
     },
     {
       "spec": "druid-balance",
@@ -1829,35 +1973,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003942996014828907,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.9287126697860798
+          "weight": 0.9287126697860798,
+          "error": 0.1294306569148488,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.9363838065322094
+          "weight": 0.9363838065322094,
+          "error": 0.07623966127209873,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.922315703949782
+          "weight": 1.922315703949782,
+          "error": 0.15271403357010016,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.0041228706458104
+          "weight": -0.0041228706458104,
+          "error": 0.04207336132157813,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.4261876964376577
+          "weight": 0.4261876964376577,
+          "error": 0.0011826124216461214,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.5738123035623437
+          "weight": 0.5738123035623437,
+          "error": 0.0036310754687345578,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2036,8 +2196,8 @@
         "waist: Guardian Belt",
         "feet: Acidic Walkers"
       ],
-      "weights_run_seconds": 1.702150333,
-      "verify_run_seconds": 0.949436017
+      "weights_run_seconds": 1.290705348,
+      "verify_run_seconds": 0.725652781
     },
     {
       "spec": "druid-balance",
@@ -2049,35 +2209,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003811912692077629,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.917225742023244
+          "weight": 0.917225742023244,
+          "error": 0.18406950039005346,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.1527994700279285
+          "weight": 1.1527994700279285,
+          "error": 0.12616811658011914,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.4164540785496236
+          "weight": 2.4164540785496236,
+          "error": 0.20635796457084066,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.24588832453985085
+          "weight": 0.24588832453985085,
+          "error": 0.25273868236779395,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.4860439137462068
+          "weight": 0.4860439137462068,
+          "error": 0.0014558062920934634,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.5139560862537934
+          "weight": 0.5139560862537934,
+          "error": 0.0036691304357046365,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2253,8 +2429,8 @@
         "waist: Star Belt",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 1.763424427,
-      "verify_run_seconds": 0.99744067
+      "weights_run_seconds": 1.340870374,
+      "verify_run_seconds": 0.724839318
     },
     {
       "spec": "druid-balance",
@@ -2266,35 +2442,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003811912692077629,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.917225742023244
+          "weight": 0.917225742023244,
+          "error": 0.18406950039005346,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.1527994700279285
+          "weight": 1.1527994700279285,
+          "error": 0.12616811658011914,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.4164540785496236
+          "weight": 2.4164540785496236,
+          "error": 0.20635796457084066,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.24588832453985085
+          "weight": 0.24588832453985085,
+          "error": 0.25273868236779395,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.4860439137462068
+          "weight": 0.4860439137462068,
+          "error": 0.0014558062920934634,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.5139560862537934
+          "weight": 0.5139560862537934,
+          "error": 0.0036691304357046365,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2470,8 +2662,8 @@
         "waist: Star Belt",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 1.763424427,
-      "verify_run_seconds": 0.973550011
+      "weights_run_seconds": 1.340870374,
+      "verify_run_seconds": 0.720031913
     },
     {
       "spec": "druid-balance",
@@ -2483,35 +2675,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003885334685085746,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.8240556757085767
+          "weight": 0.8240556757085767,
+          "error": 0.17401415384512678,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.3745737605550103
+          "weight": 1.3745737605550103,
+          "error": 0.1487946637938009,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.180042936732021
+          "weight": 3.180042936732021,
+          "error": 0.2509774761484474,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.09255749432685104
+          "weight": 0.09255749432685104,
+          "error": 0.28334927488188233,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.48085468621117333
+          "weight": 0.48085468621117333,
+          "error": 0.0012952900595762425,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.5191453137888263
+          "weight": 0.5191453137888263,
+          "error": 0.0036448798232380925,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2689,8 +2897,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 1.797147486,
-      "verify_run_seconds": 1.082985915
+      "weights_run_seconds": 1.312812368,
+      "verify_run_seconds": 0.806817108
     },
     {
       "spec": "druid-balance",
@@ -2702,35 +2910,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003885334685085746,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.8240556757085767
+          "weight": 0.8240556757085767,
+          "error": 0.17401415384512678,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.3745737605550103
+          "weight": 1.3745737605550103,
+          "error": 0.1487946637938009,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.180042936732021
+          "weight": 3.180042936732021,
+          "error": 0.2509774761484474,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.09255749432685104
+          "weight": 0.09255749432685104,
+          "error": 0.28334927488188233,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.48085468621117333
+          "weight": 0.48085468621117333,
+          "error": 0.0012952900595762425,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.5191453137888263
+          "weight": 0.5191453137888263,
+          "error": 0.0036448798232380925,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2908,8 +3132,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 1.797147486,
-      "verify_run_seconds": 1.081855497
+      "weights_run_seconds": 1.312812368,
+      "verify_run_seconds": 0.808256976
     },
     {
       "spec": "druid-balance",
@@ -2921,35 +3145,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.003786798018385852,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.951765703063723
+          "weight": 0.951765703063723,
+          "error": 0.21391966023358247,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.7126695481008198
+          "weight": 1.7126695481008198,
+          "error": 0.2007539773839418,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.541641722058038
+          "weight": 3.541641722058038,
+          "error": 0.31541701786238224,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.6665660237908473
+          "weight": 0.6665660237908473,
+          "error": 0.46520676982763337,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.5120004723107094
+          "weight": 0.5120004723107094,
+          "error": 0.0014328753114467357,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.4879995276892899
+          "weight": 0.4879995276892899,
+          "error": 0.003561826564737368,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2961,7 +3201,7 @@
           "source_kind": "crafted",
           "score": 38.03531406127446,
           "verified": false,
-          "swap_note": "runner-up Dreamweave Circlet (id 10041) measured higher: 76.2 vs 75.8 set DPS - swapped in"
+          "swap_note": "runner-up Dreamweave Circlet (id 10041) measured higher: 82.8 vs 82.5 set DPS - swapped in"
         },
         {
           "slot": "neck",
@@ -2998,229 +3238,7 @@
           "source_kind": "quest",
           "score": 38.03531406127446,
           "verified": false,
-          "swap_note": "runner-up Feathered Breastplate (id 8349) measured higher: 76.9 vs 75.8 set DPS - swapped in"
-        },
-        {
-          "slot": "wrist",
-          "item_id": 19597,
-          "item_name": "Dryad's Wrist Bindings",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 21.71059421838234,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 17721,
-          "item_name": "Gloves of the Greatfather",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 24,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 17755,
-          "item_name": "Satyrmane Sash",
-          "source": "Maraudon: Lord Vyletongue",
-          "source_kind": "dungeon",
-          "score": 23.51765703063723,
-          "verified": false,
-          "swap_note": "runner-up Deathmage Sash (id 10771) measured higher: 75.8 vs 75.8 set DPS - swapped in"
-        },
-        {
-          "slot": "legs",
-          "item_id": 10009,
-          "item_name": "Red Mageweave Pants",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 25.421188436764677,
-          "verified": false,
-          "swap_note": "runner-up Big Voodoo Pants (id 8202) measured higher: 75.8 vs 75.8 set DPS - swapped in"
-        },
-        {
-          "slot": "feet",
-          "item_id": 20641,
-          "item_name": "Southsea Mojo Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 18.469422733700952,
-          "verified": false,
-          "swap_note": "runner-up Black Mageweave Boots (id 10026) measured higher: 76.0 vs 75.8 set DPS - swapped in"
-        },
-        {
-          "slot": "finger1",
-          "item_id": 6750,
-          "item_name": "Snake Hoop",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6.662359921446061,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 1156,
-          "item_name": "Lavishly Jeweled Ring",
-          "source": "The Deadmines: Gilnid",
-          "source_kind": "dungeon",
-          "score": 5.710594218382338,
-          "verified": false,
-          "swap_note": "runner-up Electrocutioner Lagnut (id 9447) measured higher: 76.4 vs 75.8 set DPS - swapped in"
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 10659,
-          "item_name": "Shard of the Splithooves",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 7713,
-          "item_name": "Illusionary Rod",
-          "source": "Scarlet Monastery: Arcanist Doan",
-          "source_kind": "dungeon",
-          "score": 29.687967891793818,
-          "verified": false,
-          "swap_note": "runner-up Spellshifter Rod (id 9527) measured higher: 80.1 vs 75.8 set DPS - swapped in"
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 75.76181772153662,
-      "no_source_count": 2358,
-      "no_source_sample": [
-        "720 Brawler Gloves",
-        "789 Stout Battlehammer",
-        "791 Gnarled Ash Staff",
-        "816 Small Hand Blade",
-        "820 Slicer Blade",
-        "821 Riverpaw Leather Vest",
-        "827 Wicked Blackjack",
-        "865 Leaden Mace",
-        "866 Monk's Staff",
-        "867 Gloves of Holy Might",
-        "868 Ardent Custodian",
-        "873 Staff of Jordan",
-        "880 Staff of Horrors",
-        "890 Twisted Chanter's Staff",
-        "892 Gnoll Casting Gloves"
-      ],
-      "new_at_band": [
-        "head: Red Mageweave Headband",
-        "shoulder: Red Mageweave Shoulders",
-        "back: Big Voodoo Cloak",
-        "chest: Acumen Robes",
-        "waist: Satyrmane Sash",
-        "trinket1: Shard of the Splithooves",
-        "trinket2: Demon's Blood"
-      ],
-      "weights_run_seconds": 1.7984042439999999,
-      "verify_run_seconds": 1.100464305
-    },
-    {
-      "spec": "druid-balance",
-      "band": 45,
-      "faction": "horde",
-      "race": "tauren",
-      "talents": "5222211005501051-0000000000000000000-4000000000000000",
-      "talent_points": 36,
-      "weights": [
-        {
-          "stat": "spell_power",
-          "weight": 1
-        },
-        {
-          "stat": "intellect",
-          "weight": 0.951765703063723
-        },
-        {
-          "stat": "crit",
-          "weight": 1.7126695481008198
-        },
-        {
-          "stat": "hit",
-          "weight": 3.541641722058038
-        },
-        {
-          "stat": "spell_haste",
-          "weight": 0.6665660237908473
-        },
-        {
-          "stat": "spell_penetration",
-          "weight": 0
-        },
-        {
-          "stat": "nature_power",
-          "weight": 0.5120004723107094
-        },
-        {
-          "stat": "arcane_power",
-          "weight": 0.4879995276892899
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 10033,
-          "item_name": "Red Mageweave Headband",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 38.03531406127446,
-          "verified": false,
-          "swap_note": "runner-up Dreamweave Circlet (id 10041) measured higher: 76.7 vs 76.0 set DPS - swapped in"
-        },
-        {
-          "slot": "neck",
-          "item_id": 23169,
-          "item_name": "Scorn's Icy Choker",
-          "source": "Scarlet Monastery: Scorn",
-          "source_kind": "dungeon",
-          "score": 12.710594218382338,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 10029,
-          "item_name": "Red Mageweave Shoulders",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 21.276485545955843,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 8216,
-          "item_name": "Big Voodoo Cloak",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 13.565891327573507,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 17775,
-          "item_name": "Acumen Robes",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 38.03531406127446,
-          "verified": false,
-          "swap_note": "runner-up Feathered Breastplate (id 8349) measured higher: 77.6 vs 76.0 set DPS - swapped in"
+          "swap_note": "runner-up Feathered Breastplate (id 8349) measured higher: 83.4 vs 82.5 set DPS - swapped in"
         },
         {
           "slot": "wrist",
@@ -3284,7 +3302,7 @@
           "source_kind": "dungeon",
           "score": 5.710594218382338,
           "verified": false,
-          "swap_note": "runner-up Electrocutioner Lagnut (id 9447) measured higher: 76.2 vs 76.0 set DPS - swapped in"
+          "swap_note": "runner-up Electrocutioner Lagnut (id 9447) measured higher: 82.6 vs 82.5 set DPS - swapped in"
         },
         {
           "slot": "trinket1",
@@ -3304,13 +3322,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7713,
-          "item_name": "Illusionary Rod",
-          "source": "Scarlet Monastery: Arcanist Doan",
-          "source_kind": "dungeon",
-          "score": 29.687967891793818,
-          "verified": false,
-          "swap_note": "runner-up Spellshifter Rod (id 9527) measured higher: 80.4 vs 76.0 set DPS - swapped in"
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3321,7 +3337,7 @@
           "verified": false
         }
       ],
-      "set_dps": 75.98697895788838,
+      "set_dps": 82.46204621378695,
       "no_source_count": 2358,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3347,10 +3363,249 @@
         "chest: Acumen Robes",
         "waist: Satyrmane Sash",
         "trinket1: Shard of the Splithooves",
-        "trinket2: Demon's Blood"
+        "trinket2: Demon's Blood",
+        "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.7984042439999999,
-      "verify_run_seconds": 1.103885803
+      "weights_run_seconds": 1.3188489620000001,
+      "verify_run_seconds": 0.835393683
+    },
+    {
+      "spec": "druid-balance",
+      "band": 45,
+      "faction": "horde",
+      "race": "tauren",
+      "talents": "5222211005501051-0000000000000000000-4000000000000000",
+      "talent_points": 36,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1,
+          "error": 0.003786798018385852,
+          "insignificant": false
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.951765703063723,
+          "error": 0.21391966023358247,
+          "insignificant": false
+        },
+        {
+          "stat": "crit",
+          "weight": 1.7126695481008198,
+          "error": 0.2007539773839418,
+          "insignificant": false
+        },
+        {
+          "stat": "hit",
+          "weight": 3.541641722058038,
+          "error": 0.31541701786238224,
+          "insignificant": false
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.6665660237908473,
+          "error": 0.46520676982763337,
+          "insignificant": true
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
+        },
+        {
+          "stat": "nature_power",
+          "weight": 0.5120004723107094,
+          "error": 0.0014328753114467357,
+          "insignificant": false
+        },
+        {
+          "stat": "arcane_power",
+          "weight": 0.4879995276892899,
+          "error": 0.003561826564737368,
+          "insignificant": false
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 10033,
+          "item_name": "Red Mageweave Headband",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 38.03531406127446,
+          "verified": false,
+          "swap_note": "runner-up Dreamweave Circlet (id 10041) measured higher: 83.2 vs 82.0 set DPS - swapped in"
+        },
+        {
+          "slot": "neck",
+          "item_id": 23169,
+          "item_name": "Scorn's Icy Choker",
+          "source": "Scarlet Monastery: Scorn",
+          "source_kind": "dungeon",
+          "score": 12.710594218382338,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 10029,
+          "item_name": "Red Mageweave Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 21.276485545955843,
+          "verified": false,
+          "swap_note": "runner-up Inquisitor's Shawl (id 19507) measured higher: 82.1 vs 82.0 set DPS - swapped in"
+        },
+        {
+          "slot": "back",
+          "item_id": 8216,
+          "item_name": "Big Voodoo Cloak",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 13.565891327573507,
+          "verified": false,
+          "swap_note": "runner-up Long Silken Cloak (id 4326) measured higher: 82.6 vs 82.0 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 17775,
+          "item_name": "Acumen Robes",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 38.03531406127446,
+          "verified": false,
+          "swap_note": "runner-up Feathered Breastplate (id 8349) measured higher: 83.0 vs 82.0 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 19597,
+          "item_name": "Dryad's Wrist Bindings",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 21.71059421838234,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 17721,
+          "item_name": "Gloves of the Greatfather",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 24,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 17755,
+          "item_name": "Satyrmane Sash",
+          "source": "Maraudon: Lord Vyletongue",
+          "source_kind": "dungeon",
+          "score": 23.51765703063723,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10009,
+          "item_name": "Red Mageweave Pants",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 25.421188436764677,
+          "verified": false,
+          "swap_note": "runner-up Big Voodoo Pants (id 8202) measured higher: 82.2 vs 82.0 set DPS - swapped in"
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18.469422733700952,
+          "verified": false,
+          "swap_note": "runner-up Black Mageweave Boots (id 10026) measured higher: 82.9 vs 82.0 set DPS - swapped in"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 6750,
+          "item_name": "Snake Hoop",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 6.662359921446061,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 1156,
+          "item_name": "Lavishly Jeweled Ring",
+          "source": "The Deadmines: Gilnid",
+          "source_kind": "dungeon",
+          "score": 5.710594218382338,
+          "verified": false,
+          "swap_note": "runner-up Electrocutioner Lagnut (id 9447) measured higher: 82.8 vs 82.0 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "verified": false
+        }
+      ],
+      "set_dps": 82.04161136833295,
+      "no_source_count": 2358,
+      "no_source_sample": [
+        "720 Brawler Gloves",
+        "789 Stout Battlehammer",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "821 Riverpaw Leather Vest",
+        "827 Wicked Blackjack",
+        "865 Leaden Mace",
+        "866 Monk's Staff",
+        "867 Gloves of Holy Might",
+        "868 Ardent Custodian",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves"
+      ],
+      "new_at_band": [
+        "head: Red Mageweave Headband",
+        "shoulder: Red Mageweave Shoulders",
+        "back: Big Voodoo Cloak",
+        "chest: Acumen Robes",
+        "waist: Satyrmane Sash",
+        "trinket1: Shard of the Splithooves",
+        "trinket2: Demon's Blood",
+        "main_hand: Blight"
+      ],
+      "weights_run_seconds": 1.3188489620000001,
+      "verify_run_seconds": 0.837672118
     },
     {
       "spec": "druid-balance",
@@ -3362,35 +3617,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004057363560967182,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.9087313074281161
+          "weight": 0.9087313074281161,
+          "error": 0.1797761319840845,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.006043953012615
+          "weight": 2.006043953012615,
+          "error": 0.23434504725333175,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.6940831113711745
+          "weight": 4.6940831113711745,
+          "error": 0.3794057913864284,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.7139525513234805
+          "weight": 0.7139525513234805,
+          "error": 0.4324277034603075,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.5489804084723886
+          "weight": 0.5489804084723886,
+          "error": 0.002218820848152113,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.4510195915276112
+          "weight": 0.4510195915276112,
+          "error": 0.0036418253377308767,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3402,7 +3673,7 @@
           "source_kind": "dungeon",
           "score": 45.35051018331082,
           "verified": false,
-          "swap_note": "runner-up Red Mageweave Headband (id 10033) measured higher: 87.6 vs 86.2 set DPS - swapped in"
+          "swap_note": "runner-up Red Mageweave Headband (id 10033) measured higher: 90.1 vs 88.4 set DPS - swapped in"
         },
         {
           "slot": "neck",
@@ -3439,7 +3710,7 @@
           "source_kind": "quest",
           "score": 37.174626148562325,
           "verified": false,
-          "swap_note": "runner-up Feathered Breastplate (id 8349) measured higher: 87.6 vs 86.2 set DPS - swapped in"
+          "swap_note": "runner-up Feathered Breastplate (id 8349) measured higher: 90.0 vs 88.4 set DPS - swapped in"
         },
         {
           "slot": "wrist",
@@ -3476,7 +3747,7 @@
           "source_kind": "crafted",
           "score": 56.169230684353224,
           "verified": false,
-          "swap_note": "runner-up Red Mageweave Pants (id 10009) measured higher: 88.6 vs 86.2 set DPS - swapped in"
+          "swap_note": "runner-up Red Mageweave Pants (id 10009) measured higher: 91.1 vs 88.4 set DPS - swapped in"
         },
         {
           "slot": "feet",
@@ -3485,7 +3756,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 17.996044381709275,
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Black Mageweave Boots (id 10026) measured higher: 88.8 vs 88.4 set DPS - swapped in"
         },
         {
           "slot": "finger1",
@@ -3523,11 +3795,10 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 11750,
-          "item_name": "Kindling Stave",
-          "source": "Blackrock Depths: Pyromancer Loregrain",
-          "source_kind": "dungeon",
-          "score": 38.98939103131401,
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
           "verified": true
         },
         {
@@ -3539,7 +3810,7 @@
           "verified": false
         }
       ],
-      "set_dps": 86.19627303916103,
+      "set_dps": 88.41577924694352,
       "no_source_count": 2632,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3567,11 +3838,10 @@
         "hands: Fletcher's Gloves",
         "legs: Stormshroud Pants",
         "finger1: Blackstone Ring",
-        "finger2: Snake Hoop",
-        "main_hand: Kindling Stave"
+        "finger2: Snake Hoop"
       ],
-      "weights_run_seconds": 1.876540457,
-      "verify_run_seconds": 1.160398977
+      "weights_run_seconds": 1.368099462,
+      "verify_run_seconds": 0.871027008
     },
     {
       "spec": "druid-balance",
@@ -3583,35 +3853,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004057363560967182,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.9087313074281161
+          "weight": 0.9087313074281161,
+          "error": 0.1797761319840845,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.006043953012615
+          "weight": 2.006043953012615,
+          "error": 0.23434504725333175,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.6940831113711745
+          "weight": 4.6940831113711745,
+          "error": 0.3794057913864284,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.7139525513234805
+          "weight": 0.7139525513234805,
+          "error": 0.4324277034603075,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.5489804084723886
+          "weight": 0.5489804084723886,
+          "error": 0.002218820848152113,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.4510195915276112
+          "weight": 0.4510195915276112,
+          "error": 0.0036418253377308767,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3623,7 +3909,7 @@
           "source_kind": "dungeon",
           "score": 45.35051018331082,
           "verified": false,
-          "swap_note": "runner-up Red Mageweave Headband (id 10033) measured higher: 88.1 vs 86.4 set DPS - swapped in"
+          "swap_note": "runner-up Red Mageweave Headband (id 10033) measured higher: 90.8 vs 89.3 set DPS - swapped in"
         },
         {
           "slot": "neck",
@@ -3660,7 +3946,7 @@
           "source_kind": "quest",
           "score": 37.174626148562325,
           "verified": false,
-          "swap_note": "runner-up Feathered Breastplate (id 8349) measured higher: 87.6 vs 86.4 set DPS - swapped in"
+          "swap_note": "runner-up Feathered Breastplate (id 8349) measured higher: 89.7 vs 89.3 set DPS - swapped in"
         },
         {
           "slot": "wrist",
@@ -3697,7 +3983,7 @@
           "source_kind": "crafted",
           "score": 56.169230684353224,
           "verified": false,
-          "swap_note": "runner-up Red Mageweave Pants (id 10009) measured higher: 88.5 vs 86.4 set DPS - swapped in"
+          "swap_note": "runner-up Red Mageweave Pants (id 10009) measured higher: 91.5 vs 89.3 set DPS - swapped in"
         },
         {
           "slot": "feet",
@@ -3706,8 +3992,7 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 17.996044381709275,
-          "verified": false,
-          "swap_note": "runner-up Black Mageweave Boots (id 10026) measured higher: 86.8 vs 86.4 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "finger1",
@@ -3745,11 +4030,10 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 11750,
-          "item_name": "Kindling Stave",
-          "source": "Blackrock Depths: Pyromancer Loregrain",
-          "source_kind": "dungeon",
-          "score": 38.98939103131401,
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
           "verified": true
         },
         {
@@ -3761,7 +4045,7 @@
           "verified": false
         }
       ],
-      "set_dps": 86.3812527695975,
+      "set_dps": 89.2960212381212,
       "no_source_count": 2632,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3789,11 +4073,10 @@
         "hands: Fletcher's Gloves",
         "legs: Stormshroud Pants",
         "finger1: Blackstone Ring",
-        "finger2: Snake Hoop",
-        "main_hand: Kindling Stave"
+        "finger2: Snake Hoop"
       ],
-      "weights_run_seconds": 1.876540457,
-      "verify_run_seconds": 1.123169911
+      "weights_run_seconds": 1.368099462,
+      "verify_run_seconds": 0.868557354
     },
     {
       "spec": "druid-balance",
@@ -3805,35 +4088,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004097983470850944,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.0962266797860896
+          "weight": 1.0962266797860896,
+          "error": 0.14633199148253198,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.230852813011458
+          "weight": 2.230852813011458,
+          "error": 0.2466681059969961,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.838577858204034
+          "weight": 4.838577858204034,
+          "error": 0.3906298506361733,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.31821055838027346
+          "weight": 0.31821055838027346,
+          "error": 0.37863239045797414,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.5383806251667251
+          "weight": 0.5383806251667251,
+          "error": 0.00208887958390161,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.46161937483327437
+          "weight": 0.46161937483327437,
+          "error": 0.0037113159965567783,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4013,8 +4312,8 @@
         "trinket2: Smokey's Lighter",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.828338091,
-      "verify_run_seconds": 1.154441035
+      "weights_run_seconds": 1.351435801,
+      "verify_run_seconds": 0.859176806
     },
     {
       "spec": "druid-balance",
@@ -4026,35 +4325,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004097983470850944,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.0962266797860896
+          "weight": 1.0962266797860896,
+          "error": 0.14633199148253198,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.230852813011458
+          "weight": 2.230852813011458,
+          "error": 0.2466681059969961,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.838577858204034
+          "weight": 4.838577858204034,
+          "error": 0.3906298506361733,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.31821055838027346
+          "weight": 0.31821055838027346,
+          "error": 0.37863239045797414,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.5383806251667251
+          "weight": 0.5383806251667251,
+          "error": 0.00208887958390161,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.46161937483327437
+          "weight": 0.46161937483327437,
+          "error": 0.0037113159965567783,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4233,8 +4548,8 @@
         "trinket2: Smokey's Lighter",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.828338091,
-      "verify_run_seconds": 1.1608273630000001
+      "weights_run_seconds": 1.351435801,
+      "verify_run_seconds": 0.855692265
     },
     {
       "spec": "druid-balance",
@@ -4246,35 +4561,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004191202035793498,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.6087241660771847
+          "weight": 1.6087241660771847,
+          "error": 0.32940722186102944,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.5399455794954733
+          "weight": 2.5399455794954733,
+          "error": 0.307453557412433,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 6.381313828059607
+          "weight": 6.381313828059607,
+          "error": 0.5740116766313924,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.9648513489718884
+          "weight": 0.9648513489718884,
+          "error": 0.6112564132825885,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.5580963298579938
+          "weight": 0.5580963298579938,
+          "error": 0.002294441019714419,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.4419036701420049
+          "weight": 0.4419036701420049,
+          "error": 0.0037377017912946114,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4381,7 +4712,7 @@
           "item_name": "Seal of the Damned",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "score": 120.3723763935327,
+          "score": 120.37237639353269,
           "verified": true
         },
         {
@@ -4408,7 +4739,8 @@
           "item_name": "Eye of the Dead",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "main_hand",
@@ -4417,7 +4749,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 329.10544987566203,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4463,8 +4796,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.927795667,
-      "verify_run_seconds": 1.175349435
+      "weights_run_seconds": 1.402178198,
+      "verify_run_seconds": 0.896306562
     },
     {
       "spec": "druid-balance",
@@ -4476,35 +4809,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.004191202035793498,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.6087241660771847
+          "weight": 1.6087241660771847,
+          "error": 0.32940722186102944,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.5399455794954733
+          "weight": 2.5399455794954733,
+          "error": 0.307453557412433,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 6.381313828059607
+          "weight": 6.381313828059607,
+          "error": 0.5740116766313924,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.9648513489718884
+          "weight": 0.9648513489718884,
+          "error": 0.6112564132825885,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "nature_power",
-          "weight": 0.5580963298579938
+          "weight": 0.5580963298579938,
+          "error": 0.002294441019714419,
+          "insignificant": false
         },
         {
           "stat": "arcane_power",
-          "weight": 0.4419036701420049
+          "weight": 0.4419036701420049,
+          "error": 0.0037377017912946114,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4552,7 +4901,7 @@
           "item_name": "Bloodvine Vest",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 175.53969072019555,
+          "score": 175.53969072019552,
           "verified": false,
           "swap_note": "runner-up Genesis Vest (id 21357) measured higher: 189.5 vs 186.5 set DPS - swapped in"
         },
@@ -4649,8 +4998,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 329.1054498756621,
-          "verified": false,
-          "swap_note": "runner-up Atiesh, Greatstaff of the Guardian (id 22630) measured higher: 187.0 vs 186.5 set DPS - swapped in"
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4696,8 +5045,8 @@
         "trinket2: Slayer's Crest",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.927795667,
-      "verify_run_seconds": 1.179338936
+      "weights_run_seconds": 1.402178198,
+      "verify_run_seconds": 0.899009886
     }
   ]
 }

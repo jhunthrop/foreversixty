@@ -1,8 +1,8 @@
 {
   "spec": "rogue-assassination",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:23:23Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:11:28Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -14,23 +14,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009896749514027435,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0056773833320845
+          "weight": 1.0056773833320845,
+          "error": 0.002752054034343122,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.23616121139981033
+          "weight": 0.23616121139981033,
+          "error": 0.040460383343273364,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.112786523300062
+          "weight": 1.112786523300062,
+          "error": 0.2654583343539234,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 0.8949009518842209
+          "weight": 0.8949009518842209,
+          "error": 0.758845297708557,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -176,8 +186,8 @@
         "off_hand: Father Flame",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.119123725,
-      "verify_run_seconds": 0.398696069
+      "weights_run_seconds": 0.845267563,
+      "verify_run_seconds": 0.31537093
     },
     {
       "spec": "rogue-assassination",
@@ -189,23 +199,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0009896749514027435,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0056773833320845
+          "weight": 1.0056773833320845,
+          "error": 0.002752054034343122,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.23616121139981033
+          "weight": 0.23616121139981033,
+          "error": 0.040460383343273364,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.112786523300062
+          "weight": 1.112786523300062,
+          "error": 0.2654583343539234,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 0.8949009518842209
+          "weight": 0.8949009518842209,
+          "error": 0.758845297708557,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -351,8 +371,8 @@
         "off_hand: Father Flame",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.119123725,
-      "verify_run_seconds": 0.416878926
+      "weights_run_seconds": 0.845267563,
+      "verify_run_seconds": 0.319934554
     },
     {
       "spec": "rogue-assassination",
@@ -364,23 +384,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010003284896446336,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0129659053199498
+          "weight": 1.0129659053199498,
+          "error": 0.004685051485148499,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.22256191627744215
+          "weight": 0.22256191627744215,
+          "error": 0.029964138993504315,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.2302164565118594
+          "weight": 1.2302164565118594,
+          "error": 0.2630979001449121,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.0652971871342114
+          "weight": 1.0652971871342114,
+          "error": 0.7498064880592247,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -535,8 +565,8 @@
         "main_hand: Big Bronze Knife",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.127456073,
-      "verify_run_seconds": 0.595108901
+      "weights_run_seconds": 0.846717806,
+      "verify_run_seconds": 0.445483713
     },
     {
       "spec": "rogue-assassination",
@@ -548,23 +578,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0010003284896446336,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0129659053199498
+          "weight": 1.0129659053199498,
+          "error": 0.004685051485148499,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.22256191627744215
+          "weight": 0.22256191627744215,
+          "error": 0.029964138993504315,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.2302164565118594
+          "weight": 1.2302164565118594,
+          "error": 0.2630979001449121,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.0652971871342114
+          "weight": 1.0652971871342114,
+          "error": 0.7498064880592247,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -719,8 +759,8 @@
         "main_hand: Big Bronze Knife",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.127456073,
-      "verify_run_seconds": 0.590932058
+      "weights_run_seconds": 0.846717806,
+      "verify_run_seconds": 0.448282994
     },
     {
       "spec": "rogue-assassination",
@@ -732,23 +772,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001087547273706741,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.1023261937225113
+          "weight": 1.1023261937225113,
+          "error": 0.028355602201472457,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.2991167745746437
+          "weight": 2.2991167745746437,
+          "error": 0.1084315134352476,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.4197210385622157
+          "weight": 1.4197210385622157,
+          "error": 0.2671358598338044,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.1716149242058935
+          "weight": 1.1716149242058935,
+          "error": 0.7480972504890444,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -927,8 +977,8 @@
         "main_hand: Cruel Barb",
         "ranged: Deadly Blunderbuss"
       ],
-      "weights_run_seconds": 1.123852431,
-      "verify_run_seconds": 0.700183664
+      "weights_run_seconds": 0.844130121,
+      "verify_run_seconds": 0.552884572
     },
     {
       "spec": "rogue-assassination",
@@ -940,23 +990,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001087547273706741,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.1023261937225113
+          "weight": 1.1023261937225113,
+          "error": 0.028355602201472457,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.2991167745746437
+          "weight": 2.2991167745746437,
+          "error": 0.1084315134352476,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.4197210385622157
+          "weight": 1.4197210385622157,
+          "error": 0.2671358598338044,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.1716149242058935
+          "weight": 1.1716149242058935,
+          "error": 0.7480972504890444,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1135,8 +1195,8 @@
         "main_hand: Cruel Barb",
         "ranged: Deadly Blunderbuss"
       ],
-      "weights_run_seconds": 1.123852431,
-      "verify_run_seconds": 0.705841825
+      "weights_run_seconds": 0.844130121,
+      "verify_run_seconds": 0.560979788
     },
     {
       "spec": "rogue-assassination",
@@ -1148,23 +1208,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011115548115993253,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.1378213305387954
+          "weight": 1.1378213305387954,
+          "error": 0.03529561744215307,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.7391414233409406
+          "weight": 2.7391414233409406,
+          "error": 0.11687281548443945,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.4731259735169022
+          "weight": 1.4731259735169022,
+          "error": 0.2635567674177273,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.3266085296479866
+          "weight": 1.3266085296479866,
+          "error": 0.7453676234715497,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1345,8 +1415,8 @@
         "main_hand: Meteor Shard",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.138894236,
-      "verify_run_seconds": 0.906285682
+      "weights_run_seconds": 0.871544718,
+      "verify_run_seconds": 0.690606491
     },
     {
       "spec": "rogue-assassination",
@@ -1358,23 +1428,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011115548115993253,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.1378213305387954
+          "weight": 1.1378213305387954,
+          "error": 0.03529561744215307,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.7391414233409406
+          "weight": 2.7391414233409406,
+          "error": 0.11687281548443945,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.4731259735169022
+          "weight": 1.4731259735169022,
+          "error": 0.2635567674177273,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.3266085296479866
+          "weight": 1.3266085296479866,
+          "error": 0.7453676234715497,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1555,8 +1635,8 @@
         "main_hand: Meteor Shard",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.138894236,
-      "verify_run_seconds": 0.907756681
+      "weights_run_seconds": 0.871544718,
+      "verify_run_seconds": 0.693299146
     },
     {
       "spec": "rogue-assassination",
@@ -1568,23 +1648,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011174307335843209,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0922585998775929
+          "weight": 1.0922585998775929,
+          "error": 0.02108616336126067,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.0192067862561656
+          "weight": 3.0192067862561656,
+          "error": 0.11533739580475567,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6292609113365615
+          "weight": 1.6292609113365615,
+          "error": 0.29058704588104467,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.5597818285085916
+          "weight": 1.5597818285085916,
+          "error": 0.8051314910669218,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1770,8 +1860,8 @@
         "main_hand: Swinetusk Shank",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.186648835,
-      "verify_run_seconds": 0.976202775
+      "weights_run_seconds": 0.913972791,
+      "verify_run_seconds": 0.741683741
     },
     {
       "spec": "rogue-assassination",
@@ -1783,23 +1873,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011174307335843209,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0922585998775929
+          "weight": 1.0922585998775929,
+          "error": 0.02108616336126067,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.0192067862561656
+          "weight": 3.0192067862561656,
+          "error": 0.11533739580475567,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6292609113365615
+          "weight": 1.6292609113365615,
+          "error": 0.29058704588104467,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.5597818285085916
+          "weight": 1.5597818285085916,
+          "error": 0.8051314910669218,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1985,8 +2085,8 @@
         "main_hand: Swinetusk Shank",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.186648835,
-      "verify_run_seconds": 0.936018564
+      "weights_run_seconds": 0.913972791,
+      "verify_run_seconds": 0.739921325
     },
     {
       "spec": "rogue-assassination",
@@ -1998,23 +2098,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011252223205398925,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.094262472871276
+          "weight": 1.094262472871276,
+          "error": 0.019256288198996576,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.307890553527106
+          "weight": 3.307890553527106,
+          "error": 0.11920521189030786,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.686026295662997
+          "weight": 1.686026295662997,
+          "error": 0.2874632919802813,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.7455706756084435
+          "weight": 1.7455706756084435,
+          "error": 0.8046823445684985,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2194,8 +2304,8 @@
         "feet: Dusky Boots",
         "main_hand: Hypnotic Blade"
       ],
-      "weights_run_seconds": 1.1439142389999999,
-      "verify_run_seconds": 0.947106189
+      "weights_run_seconds": 0.895427832,
+      "verify_run_seconds": 0.74997232
     },
     {
       "spec": "rogue-assassination",
@@ -2207,23 +2317,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0011252223205398925,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.094262472871276
+          "weight": 1.094262472871276,
+          "error": 0.019256288198996576,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.307890553527106
+          "weight": 3.307890553527106,
+          "error": 0.11920521189030786,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.686026295662997
+          "weight": 1.686026295662997,
+          "error": 0.2874632919802813,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.7455706756084435
+          "weight": 1.7455706756084435,
+          "error": 0.8046823445684985,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2403,8 +2523,8 @@
         "feet: Dusky Boots",
         "main_hand: Hypnotic Blade"
       ],
-      "weights_run_seconds": 1.1439142389999999,
-      "verify_run_seconds": 0.932469974
+      "weights_run_seconds": 0.895427832,
+      "verify_run_seconds": 0.749869786
     },
     {
       "spec": "rogue-assassination",
@@ -2416,23 +2536,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014450047392403787,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0997006610961864
+          "weight": 1.0997006610961864,
+          "error": 0.013824976356627593,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.6959645471868123
+          "weight": 2.6959645471868123,
+          "error": 0.07166585008343193,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.3500112778669904
+          "weight": 1.3500112778669904,
+          "error": 0.10317052670741482,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.063254504643639
+          "weight": 2.063254504643639,
+          "error": 0.04079758558486651,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2622,8 +2752,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Lifeforce Dirk"
       ],
-      "weights_run_seconds": 1.174437831,
-      "verify_run_seconds": 1.061401297
+      "weights_run_seconds": 0.927160985,
+      "verify_run_seconds": 0.827951505
     },
     {
       "spec": "rogue-assassination",
@@ -2635,23 +2765,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014450047392403787,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.0997006610961864
+          "weight": 1.0997006610961864,
+          "error": 0.013824976356627593,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.6959645471868123
+          "weight": 2.6959645471868123,
+          "error": 0.07166585008343193,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.3500112778669904
+          "weight": 1.3500112778669904,
+          "error": 0.10317052670741482,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.063254504643639
+          "weight": 2.063254504643639,
+          "error": 0.04079758558486651,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2841,8 +2981,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Lifeforce Dirk"
       ],
-      "weights_run_seconds": 1.174437831,
-      "verify_run_seconds": 1.086999786
+      "weights_run_seconds": 0.927160985,
+      "verify_run_seconds": 0.813055678
     },
     {
       "spec": "rogue-assassination",
@@ -2854,23 +2994,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014769927032777914,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.1075641171450719
+          "weight": 1.1075641171450719,
+          "error": 0.015788308472527705,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.039105528165475
+          "weight": 3.039105528165475,
+          "error": 0.0783725364288965,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.485299424143798
+          "weight": 1.485299424143798,
+          "error": 0.11566097763815696,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.3201432892200455
+          "weight": 2.3201432892200455,
+          "error": 0.04574068193905199,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3058,8 +3208,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Thermotastic Egg Timer"
       ],
-      "weights_run_seconds": 1.274536836,
-      "verify_run_seconds": 1.117657522
+      "weights_run_seconds": 0.96270534,
+      "verify_run_seconds": 0.834185822
     },
     {
       "spec": "rogue-assassination",
@@ -3071,23 +3221,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014769927032777914,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.1075641171450719
+          "weight": 1.1075641171450719,
+          "error": 0.015788308472527705,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.039105528165475
+          "weight": 3.039105528165475,
+          "error": 0.0783725364288965,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.485299424143798
+          "weight": 1.485299424143798,
+          "error": 0.11566097763815696,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.3201432892200455
+          "weight": 2.3201432892200455,
+          "error": 0.04574068193905199,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3275,8 +3435,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Thermotastic Egg Timer"
       ],
-      "weights_run_seconds": 1.274536836,
-      "verify_run_seconds": 1.098268502
+      "weights_run_seconds": 0.96270534,
+      "verify_run_seconds": 0.822336451
     },
     {
       "spec": "rogue-assassination",
@@ -3288,23 +3448,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015004084624682362,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.103244071565563
+          "weight": 1.103244071565563,
+          "error": 0.01521213302231855,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.2828459179891607
+          "weight": 3.2828459179891607,
+          "error": 0.08514855564010984,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6822021783730128
+          "weight": 1.6822021783730128,
+          "error": 0.1288329692566214,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.580109506801645
+          "weight": 2.580109506801645,
+          "error": 0.05080570024518635,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3361,7 +3531,7 @@
           "source_kind": "dungeon",
           "score": 20,
           "verified": false,
-          "swap_note": "runner-up Forest Stalker's Bracers (id 19589) measured higher: 69.1 vs 68.1 set DPS - swapped in"
+          "swap_note": "runner-up Forest Stalker's Bracers (id 19589) measured higher: 76.7 vs 75.8 set DPS - swapped in"
         },
         {
           "slot": "hands",
@@ -3398,7 +3568,7 @@
           "source_kind": "dungeon",
           "score": 22.064881431311257,
           "verified": false,
-          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 68.3 vs 68.1 set DPS - swapped in"
+          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 75.9 vs 75.8 set DPS - swapped in"
         },
         {
           "slot": "finger1",
@@ -3436,13 +3606,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 17719,
-          "item_name": "Inventor's Focal Sword",
-          "source": "Maraudon: Tinkerer Gizlock",
-          "source_kind": "dungeon",
-          "score": 539.1798428518482,
-          "verified": false,
-          "swap_note": "runner-up Enchanted Azsharite Felbane Sword (id 10696) measured higher: 75.8 vs 68.1 set DPS - swapped in"
+          "item_id": 10696,
+          "item_name": "Enchanted Azsharite Felbane Sword",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 518.5,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3463,7 +3632,7 @@
           "verified": true
         }
       ],
-      "set_dps": 68.13943679651611,
+      "set_dps": 75.79748577715901,
       "no_source_count": 2601,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3490,12 +3659,11 @@
         "feet: Albino Crocscale Boots",
         "finger1: Blackstone Ring",
         "finger2: Masons Fraternity Ring",
-        "main_hand: Inventor's Focal Sword",
         "off_hand: Claw of Celebras",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 1.243135927,
-      "verify_run_seconds": 1.398130803
+      "weights_run_seconds": 0.97384705,
+      "verify_run_seconds": 1.076935384
     },
     {
       "spec": "rogue-assassination",
@@ -3507,23 +3675,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015004084624682362,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.103244071565563
+          "weight": 1.103244071565563,
+          "error": 0.01521213302231855,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.2828459179891607
+          "weight": 3.2828459179891607,
+          "error": 0.08514855564010984,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6822021783730128
+          "weight": 1.6822021783730128,
+          "error": 0.1288329692566214,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.580109506801645
+          "weight": 2.580109506801645,
+          "error": 0.05080570024518635,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3580,7 +3758,7 @@
           "source_kind": "dungeon",
           "score": 20,
           "verified": false,
-          "swap_note": "runner-up Forest Stalker's Bracers (id 19589) measured higher: 67.5 vs 66.6 set DPS - swapped in"
+          "swap_note": "runner-up Forest Stalker's Bracers (id 19589) measured higher: 75.8 vs 74.8 set DPS - swapped in"
         },
         {
           "slot": "hands",
@@ -3617,7 +3795,7 @@
           "source_kind": "dungeon",
           "score": 22.064881431311257,
           "verified": false,
-          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 66.7 vs 66.6 set DPS - swapped in"
+          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 74.9 vs 74.8 set DPS - swapped in"
         },
         {
           "slot": "finger1",
@@ -3655,13 +3833,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 17719,
-          "item_name": "Inventor's Focal Sword",
-          "source": "Maraudon: Tinkerer Gizlock",
-          "source_kind": "dungeon",
-          "score": 539.1798428518482,
-          "verified": false,
-          "swap_note": "runner-up Enchanted Azsharite Felbane Sword (id 10696) measured higher: 74.8 vs 66.6 set DPS - swapped in"
+          "item_id": 10696,
+          "item_name": "Enchanted Azsharite Felbane Sword",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 518.5,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3682,7 +3859,7 @@
           "verified": true
         }
       ],
-      "set_dps": 66.62201685522399,
+      "set_dps": 74.78972774444824,
       "no_source_count": 2601,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3709,12 +3886,11 @@
         "feet: Albino Crocscale Boots",
         "finger1: Blackstone Ring",
         "finger2: Masons Fraternity Ring",
-        "main_hand: Inventor's Focal Sword",
         "off_hand: Claw of Celebras",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 1.243135927,
-      "verify_run_seconds": 1.400851173
+      "weights_run_seconds": 0.97384705,
+      "verify_run_seconds": 1.088408473
     },
     {
       "spec": "rogue-assassination",
@@ -3726,23 +3902,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015131642780670915,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.1275344201088726
+          "weight": 1.1275344201088726,
+          "error": 0.01841834798742395,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.630032772291777
+          "weight": 3.630032772291777,
+          "error": 0.09409556711632308,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.9080515104484443
+          "weight": 1.9080515104484443,
+          "error": 0.1411241689215957,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.86939408453877
+          "weight": 2.86939408453877,
+          "error": 0.05635354847675032,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3881,7 +4067,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 570.1478097809799,
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Blazing Rapier (id 12777) measured higher: 87.9 vs 87.6 set DPS - swapped in"
         },
         {
           "slot": "off_hand",
@@ -3934,8 +4121,8 @@
         "main_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.262651601,
-      "verify_run_seconds": 1.4377339679999999
+      "weights_run_seconds": 0.962375913,
+      "verify_run_seconds": 1.114076788
     },
     {
       "spec": "rogue-assassination",
@@ -3947,23 +4134,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015131642780670915,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.1275344201088726
+          "weight": 1.1275344201088726,
+          "error": 0.01841834798742395,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.630032772291777
+          "weight": 3.630032772291777,
+          "error": 0.09409556711632308,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.9080515104484443
+          "weight": 1.9080515104484443,
+          "error": 0.1411241689215957,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 2.86939408453877
+          "weight": 2.86939408453877,
+          "error": 0.05635354847675032,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4102,7 +4299,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 570.1478097809799,
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Blazing Rapier (id 12777) measured higher: 86.4 vs 86.1 set DPS - swapped in"
         },
         {
           "slot": "off_hand",
@@ -4155,8 +4353,8 @@
         "main_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.262651601,
-      "verify_run_seconds": 1.459408944
+      "weights_run_seconds": 0.962375913,
+      "verify_run_seconds": 1.106234686
     },
     {
       "spec": "rogue-assassination",
@@ -4168,23 +4366,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015395790164533388,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.130760862410124
+          "weight": 1.130760862410124,
+          "error": 0.019724090870875805,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.124049713148899
+          "weight": 4.124049713148899,
+          "error": 0.10389031478179507,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 3.275614327616738
+          "weight": 3.275614327616738,
+          "error": 0.0644294760211409,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4223,7 +4431,7 @@
           "source_kind": "crafted",
           "score": 57.73669598408459,
           "verified": false,
-          "swap_note": "runner-up Cape of the Black Baron (id 13340) measured higher: 187.6 vs 185.2 set DPS - swapped in"
+          "swap_note": "runner-up Cape of the Black Baron (id 13340) measured higher: 220.0 vs 217.7 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -4269,7 +4477,7 @@
           "source_kind": "crafted",
           "score": 115.47339196816918,
           "verified": false,
-          "swap_note": "runner-up Knight-Captain's Leather Legguards (id 16419) measured higher: 185.8 vs 185.2 set DPS - swapped in"
+          "swap_note": "runner-up Knight-Captain's Leather Legguards (id 16419) measured higher: 218.3 vs 217.7 set DPS - swapped in"
         },
         {
           "slot": "feet",
@@ -4297,7 +4505,7 @@
           "source_kind": "raid",
           "score": 97.73669598408459,
           "verified": false,
-          "swap_note": "runner-up Don Julio's Band (id 19325) measured higher: 185.5 vs 185.2 set DPS - swapped in"
+          "swap_note": "runner-up Don Julio's Band (id 19325) measured higher: 219.4 vs 217.7 set DPS - swapped in"
         },
         {
           "slot": "trinket1",
@@ -4319,11 +4527,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 23577,
-          "item_name": "The Hungering Cold",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 1022,
+          "item_id": 19019,
+          "item_name": "Thunderfury, Blessed Blade of the Windseeker",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 760.9538043120507,
           "verified": true
         },
         {
@@ -4345,7 +4553,7 @@
           "verified": true
         }
       ],
-      "set_dps": 185.16809763055068,
+      "set_dps": 217.6867812990973,
       "no_source_count": 3283,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4378,12 +4586,12 @@
         "finger2: Ring of the Qiraji Fury",
         "trinket1: Kiss of the Spider",
         "trinket2: Slayer's Crest",
-        "main_hand: The Hungering Cold",
+        "main_hand: Thunderfury, Blessed Blade of the Windseeker",
         "off_hand: Grand Marshal's Left Hand Blade",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.243287909,
-      "verify_run_seconds": 1.459301895
+      "weights_run_seconds": 0.960382011,
+      "verify_run_seconds": 1.113215345
     },
     {
       "spec": "rogue-assassination",
@@ -4395,23 +4603,33 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015395790164533388,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 1.130760862410124
+          "weight": 1.130760862410124,
+          "error": 0.019724090870875805,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.124049713148899
+          "weight": 4.124049713148899,
+          "error": 0.10389031478179507,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 3.275614327616738
+          "weight": 3.275614327616738,
+          "error": 0.0644294760211409,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4450,7 +4668,7 @@
           "source_kind": "crafted",
           "score": 57.73669598408459,
           "verified": false,
-          "swap_note": "runner-up Cape of the Black Baron (id 13340) measured higher: 185.3 vs 183.2 set DPS - swapped in"
+          "swap_note": "runner-up Cape of the Black Baron (id 13340) measured higher: 217.8 vs 215.5 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -4496,7 +4714,7 @@
           "source_kind": "crafted",
           "score": 115.47339196816918,
           "verified": false,
-          "swap_note": "runner-up Knight-Captain's Leather Legguards (id 16419) measured higher: 183.8 vs 183.2 set DPS - swapped in"
+          "swap_note": "runner-up Knight-Captain's Leather Legguards (id 16419) measured higher: 216.1 vs 215.5 set DPS - swapped in"
         },
         {
           "slot": "feet",
@@ -4524,7 +4742,7 @@
           "source_kind": "raid",
           "score": 97.73669598408459,
           "verified": false,
-          "swap_note": "runner-up Don Julio's Band (id 19325) measured higher: 183.7 vs 183.2 set DPS - swapped in"
+          "swap_note": "runner-up Don Julio's Band (id 19325) measured higher: 217.2 vs 215.5 set DPS - swapped in"
         },
         {
           "slot": "trinket1",
@@ -4546,11 +4764,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 23577,
-          "item_name": "The Hungering Cold",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 1022,
+          "item_id": 19019,
+          "item_name": "Thunderfury, Blessed Blade of the Windseeker",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 760.9538043120507,
           "verified": true
         },
         {
@@ -4572,7 +4790,7 @@
           "verified": true
         }
       ],
-      "set_dps": 183.18320016035824,
+      "set_dps": 215.4828156053804,
       "no_source_count": 3283,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4605,12 +4823,12 @@
         "finger2: Ring of the Qiraji Fury",
         "trinket1: Kiss of the Spider",
         "trinket2: Slayer's Crest",
-        "main_hand: The Hungering Cold",
+        "main_hand: Thunderfury, Blessed Blade of the Windseeker",
         "off_hand: Grand Marshal's Left Hand Blade",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.243287909,
-      "verify_run_seconds": 1.485974445
+      "weights_run_seconds": 0.960382011,
+      "verify_run_seconds": 1.1479553
     }
   ]
 }

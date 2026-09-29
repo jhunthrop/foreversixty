@@ -6,9 +6,9 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (dwarf, 1000000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 11.4. Weights run: 1.5s. Verify run: 0.5s. 847 eligible items had no known source.
+Set DPS (verified): 11.4. Weights run: 1.1s. Verify run: 0.4s. 847 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.643, crit=0.875, hit=1.583, spell_haste=-1.186, spell_penetration=0.000, nature_power=0.686
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.643 ± 0.184), crit=0.875 ± 0.029, hit=1.583 ± 0.077, spell_haste=-1.186 ± 0.237, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.686 ± 0.002
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -36,9 +36,9 @@ No-known-source sample (15 of 847, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 15 (dwarf, 4200000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 17.3. Weights run: 1.5s. Verify run: 0.9s. 1139 eligible items had no known source.
+Set DPS (verified): 17.3. Weights run: 1.1s. Verify run: 0.6s. 1139 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.351, crit=0.829, hit=1.546, spell_haste=-0.802, spell_penetration=0.000, nature_power=0.663
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.351 ± 0.211), crit=0.829 ± 0.032, hit=1.546 ± 0.094, spell_haste=-0.802 ± 0.183, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.663 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -66,9 +66,9 @@ No-known-source sample (15 of 1139, see the JSON for more): 816 Small Hand Blade
 
 ### Band 20 (dwarf, 4520000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 26.0. Weights run: 1.5s. Verify run: 0.9s. 1506 eligible items had no known source.
+Set DPS (verified): 26.0. Weights run: 1.1s. Verify run: 0.6s. 1506 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.268, crit=0.822, hit=1.874, spell_haste=3.471, spell_penetration=0.000, nature_power=0.699
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.268 ± 0.163, crit=0.822 ± 0.037, hit=1.874 ± 0.118, spell_haste=3.471 ± 0.217, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.699 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -96,9 +96,9 @@ No-known-source sample (15 of 1506, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 25 (dwarf, 4532200000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 31.6. Weights run: 1.6s. Verify run: 0.9s. 1892 eligible items had no known source.
+Set DPS (verified): 31.6. Weights run: 1.1s. Verify run: 0.7s. 1892 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.428, crit=0.884, hit=1.729, spell_haste=3.238, spell_penetration=0.000, nature_power=0.647
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.428 ± 0.226, crit=0.884 ± 0.037, hit=1.729 ± 0.106, spell_haste=3.238 ± 0.194, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.647 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -126,9 +126,9 @@ No-known-source sample (15 of 1892, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (dwarf, 4532310300000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 41.4. Weights run: 1.6s. Verify run: 1.0s. 2252 eligible items had no known source.
+Set DPS (verified): 41.4. Weights run: 1.2s. Verify run: 0.8s. 2252 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.147, crit=1.741, hit=2.221, spell_haste=2.714, spell_penetration=0.000, nature_power=0.670
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (1.147 ± 0.343), crit=1.741 ± 0.105, hit=2.221 ± 0.198, spell_haste=2.714 ± 0.332, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.670 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -156,9 +156,9 @@ No-known-source sample (15 of 2252, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (dwarf, 4532310300103010-000000000000000000-0000000000000000)
 
-Set DPS (verified): 46.4. Weights run: 1.8s. Verify run: 1.1s. 2559 eligible items had no known source.
+Set DPS (verified): 46.4. Weights run: 1.3s. Verify run: 0.8s. 2559 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.191, crit=2.253, hit=2.914, spell_haste=1.503, spell_penetration=0.000, nature_power=0.619
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.191 ± 0.521), crit=2.253 ± 0.145, hit=2.914 ± 0.269, spell_haste=not significant (1.503 ± 0.564), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.619 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -186,9 +186,9 @@ No-known-source sample (15 of 2559, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (dwarf, 4532310300103031-000000000000000000-2000000000000000)
 
-Set DPS (verified): 53.1. Weights run: 1.9s. Verify run: 1.3s. 2878 eligible items had no known source.
+Set DPS (verified): 53.1. Weights run: 1.4s. Verify run: 1.0s. 2878 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=-0.310, crit=3.014, hit=4.449, spell_haste=0.821, spell_penetration=0.000, nature_power=0.610
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-0.310 ± 0.772), crit=3.014 ± 0.195, hit=4.449 ± 0.395, spell_haste=not significant (0.821 ± 0.563), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.610 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -216,9 +216,9 @@ No-known-source sample (15 of 2878, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (dwarf, 4532310300103031-000000000000000000-5200000000000000)
 
-Set DPS (verified): 53.7. Weights run: 1.8s. Verify run: 1.3s. 3189 eligible items had no known source.
+Set DPS (verified): 53.7. Weights run: 1.3s. Verify run: 1.0s. 3189 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.318, crit=2.683, hit=3.420, spell_haste=3.438, spell_penetration=0.000, nature_power=0.605
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.318 ± 0.289, crit=2.683 ± 0.145, hit=3.420 ± 0.269, spell_haste=3.438 ± 0.293, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.605 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -246,9 +246,9 @@ No-known-source sample (15 of 3189, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (dwarf, 4532310300103031-000000000000000000-5520000000000000)
 
-Set DPS (verified): 75.8. Weights run: 1.8s. Verify run: 1.3s. 3541 eligible items had no known source.
+Set DPS (verified): 75.8. Weights run: 1.4s. Verify run: 1.0s. 3541 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.670, crit=4.233, hit=5.929, spell_haste=5.446, spell_penetration=0.000, nature_power=0.582
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.670 ± 0.848), crit=4.233 ± 0.289, hit=5.929 ± 0.551, spell_haste=5.446 ± 1.048, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.582 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -276,9 +276,9 @@ No-known-source sample (15 of 3541, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 55 (dwarf, 4532310300103031-000000000000000000-5533100000000000)
 
-Set DPS (verified): 82.9. Weights run: 1.8s. Verify run: 1.4s. 3875 eligible items had no known source.
+Set DPS (verified): 82.9. Weights run: 1.3s. Verify run: 1.0s. 3875 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.882, crit=4.799, hit=5.445, spell_haste=4.445, spell_penetration=0.000, nature_power=0.599
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.882 ± 0.995), crit=4.799 ± 0.315, hit=5.445 ± 0.557, spell_haste=not significant (4.445 ± 1.169), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.599 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -306,9 +306,9 @@ No-known-source sample (15 of 3875, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (dwarf, 4532310300103031-000000000000000000-5533220000000000)
 
-Set DPS (verified): 159.8. Weights run: 1.8s. Verify run: 1.4s. 4522 eligible items had no known source.
+Set DPS (verified): 159.8. Weights run: 1.4s. Verify run: 1.1s. 4522 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=2.153, crit=5.878, hit=6.930, spell_haste=6.872, spell_penetration=0.000, nature_power=0.598
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (2.153 ± 0.803), crit=5.878 ± 0.403, hit=6.930 ± 0.712, spell_haste=6.872 ± 1.273, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.598 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -338,9 +338,9 @@ No-known-source sample (15 of 4522, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 10 (orc, 1000000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 11.5. Weights run: 1.5s. Verify run: 0.5s. 847 eligible items had no known source.
+Set DPS (verified): 11.5. Weights run: 1.1s. Verify run: 0.4s. 847 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.643, crit=0.875, hit=1.583, spell_haste=-1.186, spell_penetration=0.000, nature_power=0.686
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.643 ± 0.184), crit=0.875 ± 0.029, hit=1.583 ± 0.077, spell_haste=-1.186 ± 0.237, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.686 ± 0.002
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -368,9 +368,9 @@ No-known-source sample (15 of 847, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 15 (orc, 4200000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 17.3. Weights run: 1.5s. Verify run: 0.8s. 1139 eligible items had no known source.
+Set DPS (verified): 17.3. Weights run: 1.1s. Verify run: 0.6s. 1139 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.351, crit=0.829, hit=1.546, spell_haste=-0.802, spell_penetration=0.000, nature_power=0.663
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.351 ± 0.211), crit=0.829 ± 0.032, hit=1.546 ± 0.094, spell_haste=-0.802 ± 0.183, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.663 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -398,9 +398,9 @@ No-known-source sample (15 of 1139, see the JSON for more): 816 Small Hand Blade
 
 ### Band 20 (orc, 4520000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 27.1. Weights run: 1.5s. Verify run: 0.8s. 1506 eligible items had no known source.
+Set DPS (verified): 27.1. Weights run: 1.1s. Verify run: 0.6s. 1506 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.268, crit=0.822, hit=1.874, spell_haste=3.471, spell_penetration=0.000, nature_power=0.699
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.268 ± 0.163, crit=0.822 ± 0.037, hit=1.874 ± 0.118, spell_haste=3.471 ± 0.217, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.699 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -428,9 +428,9 @@ No-known-source sample (15 of 1506, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 25 (orc, 4532200000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 32.0. Weights run: 1.6s. Verify run: 0.9s. 1892 eligible items had no known source.
+Set DPS (verified): 32.0. Weights run: 1.1s. Verify run: 0.7s. 1892 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.428, crit=0.884, hit=1.729, spell_haste=3.238, spell_penetration=0.000, nature_power=0.647
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.428 ± 0.226, crit=0.884 ± 0.037, hit=1.729 ± 0.106, spell_haste=3.238 ± 0.194, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.647 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -458,9 +458,9 @@ No-known-source sample (15 of 1892, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (orc, 4532310300000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 42.6. Weights run: 1.6s. Verify run: 1.0s. 2252 eligible items had no known source.
+Set DPS (verified): 42.6. Weights run: 1.2s. Verify run: 0.7s. 2252 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.147, crit=1.741, hit=2.221, spell_haste=2.714, spell_penetration=0.000, nature_power=0.670
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (1.147 ± 0.343), crit=1.741 ± 0.105, hit=2.221 ± 0.198, spell_haste=2.714 ± 0.332, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.670 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -488,9 +488,9 @@ No-known-source sample (15 of 2252, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (orc, 4532310300103010-000000000000000000-0000000000000000)
 
-Set DPS (verified): 46.8. Weights run: 1.8s. Verify run: 1.0s. 2559 eligible items had no known source.
+Set DPS (verified): 46.8. Weights run: 1.3s. Verify run: 0.8s. 2559 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.191, crit=2.253, hit=2.914, spell_haste=1.503, spell_penetration=0.000, nature_power=0.619
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.191 ± 0.521), crit=2.253 ± 0.145, hit=2.914 ± 0.269, spell_haste=not significant (1.503 ± 0.564), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.619 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -518,9 +518,9 @@ No-known-source sample (15 of 2559, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (orc, 4532310300103031-000000000000000000-2000000000000000)
 
-Set DPS (verified): 52.8. Weights run: 1.9s. Verify run: 1.3s. 2878 eligible items had no known source.
+Set DPS (verified): 52.8. Weights run: 1.4s. Verify run: 0.9s. 2878 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=-0.310, crit=3.014, hit=4.449, spell_haste=0.821, spell_penetration=0.000, nature_power=0.610
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-0.310 ± 0.772), crit=3.014 ± 0.195, hit=4.449 ± 0.395, spell_haste=not significant (0.821 ± 0.563), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.610 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -548,9 +548,9 @@ No-known-source sample (15 of 2878, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (orc, 4532310300103031-000000000000000000-5200000000000000)
 
-Set DPS (verified): 53.8. Weights run: 1.8s. Verify run: 1.2s. 3189 eligible items had no known source.
+Set DPS (verified): 53.8. Weights run: 1.3s. Verify run: 0.9s. 3189 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=1.318, crit=2.683, hit=3.420, spell_haste=3.438, spell_penetration=0.000, nature_power=0.605
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=1.318 ± 0.289, crit=2.683 ± 0.145, hit=3.420 ± 0.269, spell_haste=3.438 ± 0.293, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.605 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -578,9 +578,9 @@ No-known-source sample (15 of 3189, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (orc, 4532310300103031-000000000000000000-5520000000000000)
 
-Set DPS (verified): 75.7. Weights run: 1.8s. Verify run: 1.3s. 3541 eligible items had no known source.
+Set DPS (verified): 75.7. Weights run: 1.4s. Verify run: 0.9s. 3541 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.670, crit=4.233, hit=5.929, spell_haste=5.446, spell_penetration=0.000, nature_power=0.582
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.670 ± 0.848), crit=4.233 ± 0.289, hit=5.929 ± 0.551, spell_haste=5.446 ± 1.048, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.582 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -608,9 +608,9 @@ No-known-source sample (15 of 3541, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 55 (orc, 4532310300103031-000000000000000000-5533100000000000)
 
-Set DPS (verified): 82.1. Weights run: 1.8s. Verify run: 1.3s. 3875 eligible items had no known source.
+Set DPS (verified): 82.1. Weights run: 1.3s. Verify run: 1.0s. 3875 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=0.882, crit=4.799, hit=5.445, spell_haste=4.445, spell_penetration=0.000, nature_power=0.599
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.882 ± 0.995), crit=4.799 ± 0.315, hit=5.445 ± 0.557, spell_haste=not significant (4.445 ± 1.169), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.599 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -638,9 +638,9 @@ No-known-source sample (15 of 3875, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (orc, 4532310300103031-000000000000000000-5533220000000000)
 
-Set DPS (verified): 157.3. Weights run: 1.8s. Verify run: 1.3s. 4522 eligible items had no known source.
+Set DPS (verified): 157.3. Weights run: 1.4s. Verify run: 1.0s. 4522 eligible items had no known source.
 
-Stat weights (normalized to spell_power = 1.0): spell_power=1.000, intellect=2.153, crit=5.878, hit=6.930, spell_haste=6.872, spell_penetration=0.000, nature_power=0.598
+Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (2.153 ± 0.803), crit=5.878 ± 0.403, hit=6.930 ± 0.712, spell_haste=6.872 ± 1.273, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.598 ± 0.003
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|

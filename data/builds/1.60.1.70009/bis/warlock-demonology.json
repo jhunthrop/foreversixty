@@ -1,8 +1,8 @@
 {
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:27:29Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:14:38Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -14,35 +14,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.027932605605374805,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.26937261270983975
+          "weight": 0.26937261270983975,
+          "error": 0.0340839133431429,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.21814704033044008
+          "weight": 0.21814704033044008,
+          "error": 0.014221067627626273,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.7578914348949817
+          "weight": 0.7578914348949817,
+          "error": 0.042922551244185474,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.39840385232468306
+          "weight": 0.39840385232468306,
+          "error": 0.03591759006495735,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.027932605605374805,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -185,8 +201,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 1.301001943,
-      "verify_run_seconds": 0.327545082
+      "weights_run_seconds": 0.938178152,
+      "verify_run_seconds": 0.228432091
     },
     {
       "spec": "warlock-demonology",
@@ -198,35 +214,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.027932605605374805,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.26937261270983975
+          "weight": 0.26937261270983975,
+          "error": 0.0340839133431429,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.21814704033044008
+          "weight": 0.21814704033044008,
+          "error": 0.014221067627626273,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.7578914348949817
+          "weight": 0.7578914348949817,
+          "error": 0.042922551244185474,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.39840385232468306
+          "weight": 0.39840385232468306,
+          "error": 0.03591759006495735,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.027932605605374805,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -369,8 +401,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 1.301001943,
-      "verify_run_seconds": 0.369677134
+      "weights_run_seconds": 0.938178152,
+      "verify_run_seconds": 0.257850775
     },
     {
       "spec": "warlock-demonology",
@@ -382,35 +414,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.06961279992149165,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6719075317591365
+          "weight": 0.6719075317591365,
+          "error": 0.07468829529724709,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.18076148041607668
+          "weight": 0.18076148041607668,
+          "error": 0.014490812977552685,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.5708842446880911
+          "weight": 0.5708842446880911,
+          "error": 0.04160815729000595,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.1626778501333074
+          "weight": 0.1626778501333074,
+          "error": 0.057221724298442064,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.06961279992149165,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -568,8 +616,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.3177457320000001,
-      "verify_run_seconds": 0.649975212
+      "weights_run_seconds": 0.991137512,
+      "verify_run_seconds": 0.464608784
     },
     {
       "spec": "warlock-demonology",
@@ -581,35 +629,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.06961279992149165,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6719075317591365
+          "weight": 0.6719075317591365,
+          "error": 0.07468829529724709,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.18076148041607668
+          "weight": 0.18076148041607668,
+          "error": 0.014490812977552685,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.5708842446880911
+          "weight": 0.5708842446880911,
+          "error": 0.04160815729000595,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.1626778501333074
+          "weight": 0.1626778501333074,
+          "error": 0.057221724298442064,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.06961279992149165,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -766,8 +830,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.3177457320000001,
-      "verify_run_seconds": 0.686909006
+      "weights_run_seconds": 0.991137512,
+      "verify_run_seconds": 0.491622046
     },
     {
       "spec": "warlock-demonology",
@@ -779,35 +843,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.11984167021453984,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": -0.0891934665442843
+          "weight": -0.0891934665442843,
+          "error": 0.12950908602731964,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.2456800723714046
+          "weight": 0.2456800723714046,
+          "error": 0.019985460351880348,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.7543204610820944
+          "weight": 0.7543204610820944,
+          "error": 0.06303240953862714,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.066010216276527
+          "weight": 1.066010216276527,
+          "error": 0.13176492483772587,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.11984167021453984,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -987,8 +1067,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.41798015,
-      "verify_run_seconds": 0.711802764
+      "weights_run_seconds": 1.064887379,
+      "verify_run_seconds": 0.520870673
     },
     {
       "spec": "warlock-demonology",
@@ -1000,35 +1080,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.11984167021453984,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": -0.0891934665442843
+          "weight": -0.0891934665442843,
+          "error": 0.12950908602731964,
+          "insignificant": true
         },
         {
           "stat": "crit",
-          "weight": 0.2456800723714046
+          "weight": 0.2456800723714046,
+          "error": 0.019985460351880348,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.7543204610820944
+          "weight": 0.7543204610820944,
+          "error": 0.06303240953862714,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.066010216276527
+          "weight": 1.066010216276527,
+          "error": 0.13176492483772587,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.11984167021453984,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1205,8 +1301,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.41798015,
-      "verify_run_seconds": 0.756781902
+      "weights_run_seconds": 1.064887379,
+      "verify_run_seconds": 0.522473267
     },
     {
       "spec": "warlock-demonology",
@@ -1218,35 +1314,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.21087976440541925,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.2635393064220886
+          "weight": 1.2635393064220886,
+          "error": 0.2642497891999393,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.5719381553340958
+          "weight": 0.5719381553340958,
+          "error": 0.04162357311164683,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.0208368349959884
+          "weight": 2.0208368349959884,
+          "error": 0.1349639311093886,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.31268104167049576
+          "weight": 0.31268104167049576,
+          "error": 0.25848592953929234,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.21087976440541925,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1422,8 +1534,8 @@
         "finger1: Snake Hoop",
         "main_hand: Kam's Walking Stick"
       ],
-      "weights_run_seconds": 1.068088318,
-      "verify_run_seconds": 0.645652512
+      "weights_run_seconds": 0.83953973,
+      "verify_run_seconds": 0.490287175
     },
     {
       "spec": "warlock-demonology",
@@ -1435,35 +1547,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.21087976440541925,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.2635393064220886
+          "weight": 1.2635393064220886,
+          "error": 0.2642497891999393,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.5719381553340958
+          "weight": 0.5719381553340958,
+          "error": 0.04162357311164683,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.0208368349959884
+          "weight": 2.0208368349959884,
+          "error": 0.1349639311093886,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.31268104167049576
+          "weight": 0.31268104167049576,
+          "error": 0.25848592953929234,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.21087976440541925,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1639,8 +1767,8 @@
         "finger1: Snake Hoop",
         "main_hand: Kam's Walking Stick"
       ],
-      "weights_run_seconds": 1.068088318,
-      "verify_run_seconds": 0.639899213
+      "weights_run_seconds": 0.83953973,
+      "verify_run_seconds": 0.494073837
     },
     {
       "spec": "warlock-demonology",
@@ -1652,35 +1780,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.20758279713852779,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.9614516315471587
+          "weight": 0.9614516315471587,
+          "error": 0.2084306047849526,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.5463797215166004
+          "weight": 0.5463797215166004,
+          "error": 0.04005997314626395,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.9938124957940433
+          "weight": 1.9938124957940433,
+          "error": 0.12137875288336558,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.0891338454804872
+          "weight": -0.0891338454804872,
+          "error": 0.23537162071230638,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.20758279713852779,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -1865,8 +2009,8 @@
         "feet: Acidic Walkers",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.397737027,
-      "verify_run_seconds": 0.971935861
+      "weights_run_seconds": 1.011559689,
+      "verify_run_seconds": 0.712879546
     },
     {
       "spec": "warlock-demonology",
@@ -1878,35 +2022,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.20758279713852779,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.9614516315471587
+          "weight": 0.9614516315471587,
+          "error": 0.2084306047849526,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.5463797215166004
+          "weight": 0.5463797215166004,
+          "error": 0.04005997314626395,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.9938124957940433
+          "weight": 1.9938124957940433,
+          "error": 0.12137875288336558,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.0891338454804872
+          "weight": -0.0891338454804872,
+          "error": 0.23537162071230638,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.20758279713852779,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2093,8 +2253,8 @@
         "feet: Acidic Walkers",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.397737027,
-      "verify_run_seconds": 0.98335382
+      "weights_run_seconds": 1.011559689,
+      "verify_run_seconds": 0.705612831
     },
     {
       "spec": "warlock-demonology",
@@ -2106,35 +2266,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.564254372847458,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": 8.995122491095806
+          "weight": 8.995122491095806,
+          "error": 0.432079570799075,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.6419251756638098
+          "weight": 1.6419251756638098,
+          "error": 0.11524458119215342,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 6.026541912522799
+          "weight": 6.026541912522799,
+          "error": 0.3543193278627933,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.2308331461327517
+          "weight": -0.2308331461327517,
+          "error": 0.3688891863756135,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.564254372847458,
+          "insignificant": true
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2317,8 +2493,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Flash Wand"
       ],
-      "weights_run_seconds": 1.3470667889999999,
-      "verify_run_seconds": 0.953685113
+      "weights_run_seconds": 0.952013833,
+      "verify_run_seconds": 0.704258031
     },
     {
       "spec": "warlock-demonology",
@@ -2330,35 +2506,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.564254372847458,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": 8.995122491095806
+          "weight": 8.995122491095806,
+          "error": 0.432079570799075,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.6419251756638098
+          "weight": 1.6419251756638098,
+          "error": 0.11524458119215342,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 6.026541912522799
+          "weight": 6.026541912522799,
+          "error": 0.3543193278627933,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.2308331461327517
+          "weight": -0.2308331461327517,
+          "error": 0.3688891863756135,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.564254372847458,
+          "insignificant": true
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2541,8 +2733,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Flash Wand"
       ],
-      "weights_run_seconds": 1.3470667889999999,
-      "verify_run_seconds": 0.983555724
+      "weights_run_seconds": 0.952013833,
+      "verify_run_seconds": 0.70291901
     },
     {
       "spec": "warlock-demonology",
@@ -2554,35 +2746,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.37893383746121073,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": -2.3824981864532377
+          "weight": -2.3824981864532377,
+          "error": 0.5454181720722844,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6437308811314841
+          "weight": 0.6437308811314841,
+          "error": 0.04505385370044749,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.405130125621186
+          "weight": 2.405130125621186,
+          "error": 0.17938391344883658,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 2.285263074046547
+          "weight": 2.285263074046547,
+          "error": 0.3798716385194022,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.37893383746121073,
+          "insignificant": true
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -2773,8 +2981,8 @@
         "main_hand: Rod of the Sleepwalker",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.105694485,
-      "verify_run_seconds": 0.887220744
+      "weights_run_seconds": 0.839850316,
+      "verify_run_seconds": 0.664136471
     },
     {
       "spec": "warlock-demonology",
@@ -2786,35 +2994,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.37893383746121073,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": -2.3824981864532377
+          "weight": -2.3824981864532377,
+          "error": 0.5454181720722844,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6437308811314841
+          "weight": 0.6437308811314841,
+          "error": 0.04505385370044749,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.405130125621186
+          "weight": 2.405130125621186,
+          "error": 0.17938391344883658,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 2.285263074046547
+          "weight": 2.285263074046547,
+          "error": 0.3798716385194022,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.37893383746121073,
+          "insignificant": true
         },
         {
           "stat": "fire_power",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3000,8 +3224,8 @@
         "main_hand: Rod of the Sleepwalker",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.105694485,
-      "verify_run_seconds": 0.924105555
+      "weights_run_seconds": 0.839850316,
+      "verify_run_seconds": 0.691421662
     },
     {
       "spec": "warlock-demonology",
@@ -3013,35 +3237,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": -0.08628299457181977,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": -0.6205711475631868
+          "weight": -0.6205711475631868,
+          "error": -0.1122037586972523,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": -0.18854787960524522
+          "weight": -0.18854787960524522,
+          "error": -0.013826829130189783,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": -0.5478669069354054
+          "weight": -0.5478669069354054,
+          "error": -0.038473649872774685,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.17609910929191155
+          "weight": -0.17609910929191155,
+          "error": -0.06650807649622176,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": -0
+          "weight": -0,
+          "error": -0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": -0.08628299457181977,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": -0
+          "weight": -0,
+          "error": -0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3225,8 +3465,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.469261216,
-      "verify_run_seconds": 1.127560999
+      "weights_run_seconds": 1.076660518,
+      "verify_run_seconds": 0.815611906
     },
     {
       "spec": "warlock-demonology",
@@ -3238,35 +3478,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": -0.08628299457181977,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": -0.6205711475631868
+          "weight": -0.6205711475631868,
+          "error": -0.1122037586972523,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": -0.18854787960524522
+          "weight": -0.18854787960524522,
+          "error": -0.013826829130189783,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": -0.5478669069354054
+          "weight": -0.5478669069354054,
+          "error": -0.038473649872774685,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -0.17609910929191155
+          "weight": -0.17609910929191155,
+          "error": -0.06650807649622176,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": -0
+          "weight": -0,
+          "error": -0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1
+          "weight": 1,
+          "error": -0.08628299457181977,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": -0
+          "weight": -0,
+          "error": -0,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3447,8 +3703,8 @@
         "feet: Stormcloth Boots",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.469261216,
-      "verify_run_seconds": 1.188724038
+      "weights_run_seconds": 1.076660518,
+      "verify_run_seconds": 0.854440245
     },
     {
       "spec": "warlock-demonology",
@@ -3460,35 +3716,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": -0.242330216873912,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.9048955861621037
+          "weight": 1.9048955861621037,
+          "error": -0.2937101477757795,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": -0.5943649073512189
+          "weight": -0.5943649073512189,
+          "error": -0.041879259233876164,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": -1.7312584695840143
+          "weight": -1.7312584695840143,
+          "error": -0.13548211479849465,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -1.2700085696053098
+          "weight": -1.2700085696053098,
+          "error": -0.27145866743819397,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": -0
+          "weight": -0,
+          "error": -0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1.030422777884524
+          "weight": 1.030422777884524,
+          "error": -0.24232989264719204,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": -0.03081320473718845
+          "weight": -0.03081320473718845,
+          "error": -0.0003330828474906171,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3679,8 +3951,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.13417734,
-      "verify_run_seconds": 0.861410372
+      "weights_run_seconds": 0.835182545,
+      "verify_run_seconds": 0.652601222
     },
     {
       "spec": "warlock-demonology",
@@ -3692,35 +3964,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": -0.242330216873912,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.9048955861621037
+          "weight": 1.9048955861621037,
+          "error": -0.2937101477757795,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": -0.5943649073512189
+          "weight": -0.5943649073512189,
+          "error": -0.041879259233876164,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": -1.7312584695840143
+          "weight": -1.7312584695840143,
+          "error": -0.13548211479849465,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": -1.2700085696053098
+          "weight": -1.2700085696053098,
+          "error": -0.27145866743819397,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": -0
+          "weight": -0,
+          "error": -0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 1.030422777884524
+          "weight": 1.030422777884524,
+          "error": -0.24232989264719204,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": -0.03081320473718845
+          "weight": -0.03081320473718845,
+          "error": -0.0003330828474906171,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3911,8 +4199,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.13417734,
-      "verify_run_seconds": 0.868540122
+      "weights_run_seconds": 0.835182545,
+      "verify_run_seconds": 0.657053694
     },
     {
       "spec": "warlock-demonology",
@@ -3924,35 +4212,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.11261084193855266,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.49080936828129934
+          "weight": 0.49080936828129934,
+          "error": 0.12033174281426001,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.24562763009999347
+          "weight": 0.24562763009999347,
+          "error": 0.017985622379814197,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.9063535473592298
+          "weight": 0.9063535473592298,
+          "error": 0.060907149600357334,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.9334047852886632
+          "weight": 0.9334047852886632,
+          "error": 0.179882119420666,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 0.9885885268744472
+          "weight": 0.9885885268744472,
+          "error": 0.1126176631903628,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0.011233016975279226
+          "weight": 0.011233016975279226,
+          "error": 0.0001235253551764819,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4135,8 +4439,8 @@
         "trinket1: Smokey's Lighter",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 1.373924631,
-      "verify_run_seconds": 1.093053462
+      "weights_run_seconds": 0.982105974,
+      "verify_run_seconds": 0.812761774
     },
     {
       "spec": "warlock-demonology",
@@ -4148,35 +4452,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.11261084193855266,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.49080936828129934
+          "weight": 0.49080936828129934,
+          "error": 0.12033174281426001,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.24562763009999347
+          "weight": 0.24562763009999347,
+          "error": 0.017985622379814197,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.9063535473592298
+          "weight": 0.9063535473592298,
+          "error": 0.060907149600357334,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0.9334047852886632
+          "weight": 0.9334047852886632,
+          "error": 0.179882119420666,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 0.9885885268744472
+          "weight": 0.9885885268744472,
+          "error": 0.1126176631903628,
+          "insignificant": false
         },
         {
           "stat": "fire_power",
-          "weight": 0.011233016975279226
+          "weight": 0.011233016975279226,
+          "error": 0.0001235253551764819,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4360,8 +4680,8 @@
         "trinket1: Smokey's Lighter",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 1.373924631,
-      "verify_run_seconds": 1.114231981
+      "weights_run_seconds": 0.982105974,
+      "verify_run_seconds": 0.81086867
     },
     {
       "spec": "warlock-demonology",
@@ -4373,35 +4693,51 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.2548045287082637,
+          "insignificant": true
         },
         {
           "stat": "intellect",
-          "weight": -1.1110866865858395
+          "weight": -1.1110866865858395,
+          "error": 0.2635133943311547,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.6256577484788481
+          "weight": 0.6256577484788481,
+          "error": 0.041644691700009104,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.7555762478909924
+          "weight": 1.7555762478909924,
+          "error": 0.14127590559543177,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 6.396157586863233
+          "weight": 6.396157586863233,
+          "error": 0.28304430881445475,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "shadow_power",
-          "weight": 0.9803074082770602
+          "weight": 0.9803074082770602,
+          "error": 0.2547939130015272,
+          "insignificant": true
         },
         {
           "stat": "fire_power",
-          "weight": 0.019501534575565273
+          "weight": 0.019501534575565273,
+          "error": 0.00020957326136186873,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4422,241 +4758,7 @@
           "source": "Ahn'Qiraj",
           "source_kind": "raid",
           "score": 30.203775045774677,
-          "verified": false,
-          "swap_note": "runner-up Choker of the Fire Lord (id 18814) measured higher: 359.1 vs 358.0 set DPS - swapped in"
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 22507,
-          "item_name": "Plagueheart Shoulderpads",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 40.22272223987984,
           "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 21187,
-          "item_name": "Earthweave Cloak",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 17.555762478909923,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 22504,
-          "item_name": "Plagueheart Robe",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 52.87106385272533,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 21186,
-          "item_name": "Rockfury Bracers",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 44.55576247890993,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 21585,
-          "item_name": "Dark Storm Gauntlets",
-          "source": "Ahn'Qiraj",
-          "source_kind": "raid",
-          "score": 37.88946218012233,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 22510,
-          "item_name": "Plagueheart Belt",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 29.4261682396738,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 19683,
-          "item_name": "Bloodvine Leggings",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 47.889242359394885,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 22508,
-          "item_name": "Plagueheart Sandals",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 22.981821493330443,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 23031,
-          "item_name": "Band of the Inevitable",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 53.55576247890993,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 21709,
-          "item_name": "Ring of the Fallen God",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 47.889242359394885,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 23047,
-          "item_name": "Eye of the Dead",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 23046,
-          "item_name": "The Restrained Essence of Sapphiron",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 40,
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 22589,
-          "item_name": "Atiesh, Greatstaff of the Guardian",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 149.55675098707297,
-          "verified": false,
-          "swap_note": "runner-up Atiesh, Greatstaff of the Guardian (id 22630) measured higher: 367.0 vs 358.0 set DPS - swapped in"
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "item_id": 8071,
-          "item_name": "Sizzle Stick",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 5,
-          "verified": true
-        }
-      ],
-      "set_dps": 357.95547803315554,
-      "no_source_count": 2208,
-      "no_source_sample": [
-        "727 Notched Shortsword",
-        "753 Dragonmaw Shortsword",
-        "754 Shortsword of Vengeance",
-        "791 Gnarled Ash Staff",
-        "816 Small Hand Blade",
-        "820 Slicer Blade",
-        "864 Knightly Longsword",
-        "866 Monk's Staff",
-        "873 Staff of Jordan",
-        "880 Staff of Horrors",
-        "886 Black Metal Shortsword",
-        "890 Twisted Chanter's Staff",
-        "892 Gnoll Casting Gloves",
-        "899 Venom Web Fang",
-        "935 Night Watch Shortsword"
-      ],
-      "new_at_band": [
-        "head: Bloodvine Goggles",
-        "neck: Amulet of Vek'nilash",
-        "shoulder: Plagueheart Shoulderpads",
-        "back: Earthweave Cloak",
-        "chest: Plagueheart Robe",
-        "wrist: Rockfury Bracers",
-        "hands: Dark Storm Gauntlets",
-        "waist: Plagueheart Belt",
-        "legs: Bloodvine Leggings",
-        "feet: Plagueheart Sandals",
-        "finger1: Band of the Inevitable",
-        "finger2: Ring of the Fallen God",
-        "trinket1: Eye of the Dead",
-        "trinket2: The Restrained Essence of Sapphiron",
-        "main_hand: Atiesh, Greatstaff of the Guardian",
-        "ranged: Sizzle Stick"
-      ],
-      "weights_run_seconds": 1.118008048,
-      "verify_run_seconds": 0.881121919
-    },
-    {
-      "spec": "warlock-demonology",
-      "band": 60,
-      "faction": "horde",
-      "race": "troll",
-      "talents": "25532300000000000-2352113101200001351-0000000000000000",
-      "talent_points": 51,
-      "weights": [
-        {
-          "stat": "spell_power",
-          "weight": 1
-        },
-        {
-          "stat": "intellect",
-          "weight": -1.1110866865858395
-        },
-        {
-          "stat": "crit",
-          "weight": 0.6256577484788481
-        },
-        {
-          "stat": "hit",
-          "weight": 1.7555762478909924
-        },
-        {
-          "stat": "spell_haste",
-          "weight": 6.396157586863233
-        },
-        {
-          "stat": "spell_penetration",
-          "weight": 0
-        },
-        {
-          "stat": "shadow_power",
-          "weight": 0.9803074082770602
-        },
-        {
-          "stat": "fire_power",
-          "weight": 0.019501534575565273
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 19999,
-          "item_name": "Bloodvine Goggles",
-          "source": "Engineering",
-          "source_kind": "crafted",
-          "score": 43.87073343652372,
-          "verified": false,
-          "swap_note": "runner-up Plagueheart Circlet (id 22506) measured higher: 360.5 vs 351.9 set DPS - swapped in"
-        },
-        {
-          "slot": "neck",
-          "item_id": 21608,
-          "item_name": "Amulet of Vek'nilash",
-          "source": "Ahn'Qiraj",
-          "source_kind": "raid",
-          "score": 30.203775045774677,
-          "verified": false,
-          "swap_note": "runner-up Choker of the Fire Lord (id 18814) measured higher: 353.1 vs 351.9 set DPS - swapped in"
         },
         {
           "slot": "shoulder",
@@ -4745,7 +4847,7 @@
           "item_name": "Ring of the Fallen God",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 47.88924235939489,
+          "score": 47.889242359394885,
           "verified": true
         },
         {
@@ -4754,7 +4856,8 @@
           "item_name": "Eye of the Dead",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "trinket2",
@@ -4772,8 +4875,257 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 149.55675098707297,
+          "verified": true,
+          "effect_unmodelled": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "item_id": 8071,
+          "item_name": "Sizzle Stick",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 5,
+          "verified": true
+        }
+      ],
+      "set_dps": 357.95547803315554,
+      "no_source_count": 2208,
+      "no_source_sample": [
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "864 Knightly Longsword",
+        "866 Monk's Staff",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "886 Black Metal Shortsword",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves",
+        "899 Venom Web Fang",
+        "935 Night Watch Shortsword"
+      ],
+      "new_at_band": [
+        "head: Bloodvine Goggles",
+        "neck: Amulet of Vek'nilash",
+        "shoulder: Plagueheart Shoulderpads",
+        "back: Earthweave Cloak",
+        "chest: Plagueheart Robe",
+        "wrist: Rockfury Bracers",
+        "hands: Dark Storm Gauntlets",
+        "waist: Plagueheart Belt",
+        "legs: Bloodvine Leggings",
+        "feet: Plagueheart Sandals",
+        "finger1: Band of the Inevitable",
+        "finger2: Ring of the Fallen God",
+        "trinket1: Eye of the Dead",
+        "trinket2: The Restrained Essence of Sapphiron",
+        "main_hand: Atiesh, Greatstaff of the Guardian",
+        "ranged: Sizzle Stick"
+      ],
+      "weights_run_seconds": 0.872420721,
+      "verify_run_seconds": 0.672155657
+    },
+    {
+      "spec": "warlock-demonology",
+      "band": 60,
+      "faction": "horde",
+      "race": "troll",
+      "talents": "25532300000000000-2352113101200001351-0000000000000000",
+      "talent_points": 51,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1,
+          "error": 0.2548045287082637,
+          "insignificant": true
+        },
+        {
+          "stat": "intellect",
+          "weight": -1.1110866865858395,
+          "error": 0.2635133943311547,
+          "insignificant": false
+        },
+        {
+          "stat": "crit",
+          "weight": 0.6256577484788481,
+          "error": 0.041644691700009104,
+          "insignificant": false
+        },
+        {
+          "stat": "hit",
+          "weight": 1.7555762478909924,
+          "error": 0.14127590559543177,
+          "insignificant": false
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 6.396157586863233,
+          "error": 0.28304430881445475,
+          "insignificant": false
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
+        },
+        {
+          "stat": "shadow_power",
+          "weight": 0.9803074082770602,
+          "error": 0.2547939130015272,
+          "insignificant": true
+        },
+        {
+          "stat": "fire_power",
+          "weight": 0.019501534575565273,
+          "error": 0.00020957326136186873,
+          "insignificant": false
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 19999,
+          "item_name": "Bloodvine Goggles",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 43.87073343652372,
           "verified": false,
-          "swap_note": "runner-up Atiesh, Greatstaff of the Guardian (id 22630) measured higher: 361.9 vs 351.9 set DPS - swapped in"
+          "swap_note": "runner-up Plagueheart Circlet (id 22506) measured higher: 360.5 vs 351.9 set DPS - swapped in"
+        },
+        {
+          "slot": "neck",
+          "item_id": 21608,
+          "item_name": "Amulet of Vek'nilash",
+          "source": "Ahn'Qiraj",
+          "source_kind": "raid",
+          "score": 30.203775045774677,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 22507,
+          "item_name": "Plagueheart Shoulderpads",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 40.22272223987985,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 17.555762478909923,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 22504,
+          "item_name": "Plagueheart Robe",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 52.87106385272533,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21186,
+          "item_name": "Rockfury Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 44.55576247890993,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 21585,
+          "item_name": "Dark Storm Gauntlets",
+          "source": "Ahn'Qiraj",
+          "source_kind": "raid",
+          "score": 37.88946218012233,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 22510,
+          "item_name": "Plagueheart Belt",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 29.4261682396738,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 19683,
+          "item_name": "Bloodvine Leggings",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 47.88924235939489,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 22508,
+          "item_name": "Plagueheart Sandals",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 22.981821493330443,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 23031,
+          "item_name": "Band of the Inevitable",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 53.55576247890993,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21709,
+          "item_name": "Ring of the Fallen God",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 47.889242359394885,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 23047,
+          "item_name": "Eye of the Dead",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "verified": true,
+          "effect_unmodelled": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 23046,
+          "item_name": "The Restrained Essence of Sapphiron",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 40,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 22589,
+          "item_name": "Atiesh, Greatstaff of the Guardian",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 149.55675098707297,
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4826,8 +5178,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.118008048,
-      "verify_run_seconds": 0.892020856
+      "weights_run_seconds": 0.872420721,
+      "verify_run_seconds": 0.681973191
     }
   ]
 }

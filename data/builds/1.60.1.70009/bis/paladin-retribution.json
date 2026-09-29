@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:22:06Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:10:27Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -14,27 +14,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013063597048386484,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999998832
+          "weight": 1.9999999999998832,
+          "error": 0.0026127194096765465,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.05668621010209025
+          "weight": 0.05668621010209025,
+          "error": 0.008452434137878863,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.2449864949199148
+          "weight": 1.2449864949199148,
+          "error": 0.03880872846591653,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.8311498291507702
+          "weight": 0.8311498291507702,
+          "error": 0.07125411174160359,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 0.7037353270371872
+          "weight": 0.7037353270371872,
+          "error": 0.011423426844227202,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -173,8 +185,8 @@
         "feet: Padded Lamellar Boots",
         "main_hand: Copper Battle Axe"
       ],
-      "weights_run_seconds": 1.488758186,
-      "verify_run_seconds": 0.501513662
+      "weights_run_seconds": 1.086402582,
+      "verify_run_seconds": 0.366592205
     },
     {
       "spec": "paladin-retribution",
@@ -186,27 +198,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013063597048386484,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999998832
+          "weight": 1.9999999999998832,
+          "error": 0.0026127194096765465,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.05668621010209025
+          "weight": 0.05668621010209025,
+          "error": 0.008452434137878863,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.2449864949199148
+          "weight": 1.2449864949199148,
+          "error": 0.03880872846591653,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0.8311498291507702
+          "weight": 0.8311498291507702,
+          "error": 0.07125411174160359,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 0.7037353270371872
+          "weight": 0.7037353270371872,
+          "error": 0.011423426844227202,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -345,8 +369,8 @@
         "feet: Padded Lamellar Boots",
         "main_hand: Copper Battle Axe"
       ],
-      "weights_run_seconds": 1.488758186,
-      "verify_run_seconds": 0.512806768
+      "weights_run_seconds": 1.086402582,
+      "verify_run_seconds": 0.38328152
     },
     {
       "spec": "paladin-retribution",
@@ -358,27 +382,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013110611597038232,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999998748
+          "weight": 1.9999999999998748,
+          "error": 0.0026221223194093663,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.07960130901087314
+          "weight": 0.07960130901087314,
+          "error": 0.01185810796869555,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.6854702105061592
+          "weight": 1.6854702105061592,
+          "error": 0.05343391228254989,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.1304807956805196
+          "weight": 1.1304807956805196,
+          "error": 0.09868859540098833,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 0.9474391417580601
+          "weight": 0.9474391417580601,
+          "error": 0.015379363958885997,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -524,8 +560,8 @@
         "legs: Goblin Mail Leggings",
         "main_hand: Heavy Copper Broadsword"
       ],
-      "weights_run_seconds": 1.447802799,
-      "verify_run_seconds": 0.705518608
+      "weights_run_seconds": 1.063832156,
+      "verify_run_seconds": 0.521851371
     },
     {
       "spec": "paladin-retribution",
@@ -537,27 +573,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013110611597038232,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999998748
+          "weight": 1.9999999999998748,
+          "error": 0.0026221223194093663,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.07960130901087314
+          "weight": 0.07960130901087314,
+          "error": 0.01185810796869555,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.6854702105061592
+          "weight": 1.6854702105061592,
+          "error": 0.05343391228254989,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.1304807956805196
+          "weight": 1.1304807956805196,
+          "error": 0.09868859540098833,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 0.9474391417580601
+          "weight": 0.9474391417580601,
+          "error": 0.015379363958885997,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -704,8 +752,8 @@
         "legs: Goblin Mail Leggings",
         "main_hand: Heavy Copper Broadsword"
       ],
-      "weights_run_seconds": 1.447802799,
-      "verify_run_seconds": 0.744053588
+      "weights_run_seconds": 1.063832156,
+      "verify_run_seconds": 0.551168185
     },
     {
       "spec": "paladin-retribution",
@@ -717,27 +765,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013566189269330453,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999999634
+          "weight": 1.9999999999999634,
+          "error": 0.0027132378538653533,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.11266384318533923
+          "weight": 0.11266384318533923,
+          "error": 0.016568411697186085,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.1675731137701124
+          "weight": 2.1675731137701124,
+          "error": 0.0732230526929294,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.3042484284038394
+          "weight": 1.3042484284038394,
+          "error": 0.1224053370566023,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.2453289035389652
+          "weight": 1.2453289035389652,
+          "error": 0.05139274903567206,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -912,8 +972,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.800615683,
-      "verify_run_seconds": 1.070759898
+      "weights_run_seconds": 1.299790415,
+      "verify_run_seconds": 0.789961449
     },
     {
       "spec": "paladin-retribution",
@@ -925,27 +985,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013566189269330453,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999999634
+          "weight": 1.9999999999999634,
+          "error": 0.0027132378538653533,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.11266384318533923
+          "weight": 0.11266384318533923,
+          "error": 0.016568411697186085,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.1675731137701124
+          "weight": 2.1675731137701124,
+          "error": 0.0732230526929294,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.3042484284038394
+          "weight": 1.3042484284038394,
+          "error": 0.1224053370566023,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.2453289035389652
+          "weight": 1.2453289035389652,
+          "error": 0.05139274903567206,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1119,8 +1191,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.800615683,
-      "verify_run_seconds": 1.125071688
+      "weights_run_seconds": 1.299790415,
+      "verify_run_seconds": 0.810005565
     },
     {
       "spec": "paladin-retribution",
@@ -1132,27 +1204,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001477799432492709,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000001896
+          "weight": 2.0000000000001896,
+          "error": 0.002955598864985741,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.14850225524034907
+          "weight": 0.14850225524034907,
+          "error": 0.025058295832515717,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.6786276322601705
+          "weight": 2.6786276322601705,
+          "error": 0.08551944430383644,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6095010120606843
+          "weight": 1.6095010120606843,
+          "error": 0.1474612386921697,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": -0.8239005995498615
+          "weight": -0.8239005995498615,
+          "error": 0.1803222818870613,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1323,8 +1407,8 @@
         "finger1: Silverlaine's Family Seal",
         "finger2: Monkey Ring"
       ],
-      "weights_run_seconds": 1.797028211,
-      "verify_run_seconds": 1.167770755
+      "weights_run_seconds": 1.307437362,
+      "verify_run_seconds": 0.842559912
     },
     {
       "spec": "paladin-retribution",
@@ -1336,27 +1420,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001477799432492709,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000001896
+          "weight": 2.0000000000001896,
+          "error": 0.002955598864985741,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.14850225524034907
+          "weight": 0.14850225524034907,
+          "error": 0.025058295832515717,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 2.6786276322601705
+          "weight": 2.6786276322601705,
+          "error": 0.08551944430383644,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6095010120606843
+          "weight": 1.6095010120606843,
+          "error": 0.1474612386921697,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": -0.8239005995498615
+          "weight": -0.8239005995498615,
+          "error": 0.1803222818870613,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1526,8 +1622,8 @@
         "finger1: Silverlaine's Family Seal",
         "finger2: Monkey Ring"
       ],
-      "weights_run_seconds": 1.797028211,
-      "verify_run_seconds": 1.225494815
+      "weights_run_seconds": 1.307437362,
+      "verify_run_seconds": 0.897035012
     },
     {
       "spec": "paladin-retribution",
@@ -1539,27 +1635,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015185790692197195,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000002225
+          "weight": 2.0000000000002225,
+          "error": 0.0030371581384423555,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.1295064574819529
+          "weight": 0.1295064574819529,
+          "error": 0.023046408376556842,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.041008692332066
+          "weight": 3.041008692332066,
+          "error": 0.0965293279789786,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6001889566957053
+          "weight": 1.6001889566957053,
+          "error": 0.1592258408528634,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": -1.403789970695988
+          "weight": -1.403789970695988,
+          "error": 0.2087128844093527,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1735,8 +1843,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Morbid Dawn"
       ],
-      "weights_run_seconds": 1.820552858,
-      "verify_run_seconds": 1.268583121
+      "weights_run_seconds": 1.30810866,
+      "verify_run_seconds": 0.940064421
     },
     {
       "spec": "paladin-retribution",
@@ -1748,27 +1856,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015185790692197195,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000002225
+          "weight": 2.0000000000002225,
+          "error": 0.0030371581384423555,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.1295064574819529
+          "weight": 0.1295064574819529,
+          "error": 0.023046408376556842,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.041008692332066
+          "weight": 3.041008692332066,
+          "error": 0.0965293279789786,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6001889566957053
+          "weight": 1.6001889566957053,
+          "error": 0.1592258408528634,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": -1.403789970695988
+          "weight": -1.403789970695988,
+          "error": 0.2087128844093527,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1948,8 +2068,8 @@
         "finger2: Ironspine's Eye",
         "main_hand: Morbid Dawn"
       ],
-      "weights_run_seconds": 1.820552858,
-      "verify_run_seconds": 1.314103914
+      "weights_run_seconds": 1.30810866,
+      "verify_run_seconds": 0.964805777
     },
     {
       "spec": "paladin-retribution",
@@ -1961,27 +2081,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015623157547963733,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000003637
+          "weight": 2.0000000000003637,
+          "error": 0.003124631509595958,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.17826970465742117
+          "weight": 0.17826970465742117,
+          "error": 0.02681181306391587,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.5214979895457565
+          "weight": 3.5214979895457565,
+          "error": 0.11532232910606433,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6755544902424113
+          "weight": 1.6755544902424113,
+          "error": 0.17266025588028358,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": -2.2217817785094796
+          "weight": -2.2217817785094796,
+          "error": 0.3131411761381235,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2002,7 +2134,7 @@
           "source_kind": "dungeon",
           "score": 14,
           "verified": false,
-          "swap_note": "runner-up Pulsating Crystalline Shard (id 4743) measured higher: 41.2 vs 41.1 set DPS - swapped in"
+          "swap_note": "runner-up Pulsating Crystalline Shard (id 4743) measured higher: 42.2 vs 42.1 set DPS - swapped in"
         },
         {
           "slot": "shoulder",
@@ -2020,7 +2152,8 @@
           "source": "Shadowfang Keep: Wolf Master Nandos",
           "source_kind": "dungeon",
           "score": 10,
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Sergeant Major's Cape (id 16315) measured higher: 42.4 vs 42.1 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -2056,7 +2189,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 22.000000000004,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2075,7 +2209,7 @@
           "source_kind": "crafted",
           "score": 16.00000000000291,
           "verified": false,
-          "swap_note": "runner-up Excelsior Boots (id 4109) measured higher: 41.2 vs 41.1 set DPS - swapped in"
+          "swap_note": "runner-up Excelsior Boots (id 4109) measured higher: 42.3 vs 42.1 set DPS - swapped in"
         },
         {
           "slot": "finger1",
@@ -2118,8 +2252,7 @@
           "source": "Blacksmithing",
           "source_kind": "crafted",
           "score": 452.7809718536406,
-          "verified": false,
-          "swap_note": "runner-up Morbid Dawn (id 7689) measured higher: 41.8 vs 41.1 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -2130,7 +2263,7 @@
           "verified": false
         }
       ],
-      "set_dps": 41.096310036398535,
+      "set_dps": 42.1369482389266,
       "no_source_count": 2551,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -2154,8 +2287,8 @@
         "feet: Golden Scale Boots",
         "main_hand: Frost Tiger Blade"
       ],
-      "weights_run_seconds": 1.782867187,
-      "verify_run_seconds": 1.264747002
+      "weights_run_seconds": 1.348700249,
+      "verify_run_seconds": 0.936178515
     },
     {
       "spec": "paladin-retribution",
@@ -2167,27 +2300,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015623157547963733,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000003637
+          "weight": 2.0000000000003637,
+          "error": 0.003124631509595958,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.17826970465742117
+          "weight": 0.17826970465742117,
+          "error": 0.02681181306391587,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.5214979895457565
+          "weight": 3.5214979895457565,
+          "error": 0.11532232910606433,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.6755544902424113
+          "weight": 1.6755544902424113,
+          "error": 0.17266025588028358,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": -2.2217817785094796
+          "weight": -2.2217817785094796,
+          "error": 0.3131411761381235,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2208,7 +2353,7 @@
           "source_kind": "dungeon",
           "score": 14,
           "verified": false,
-          "swap_note": "runner-up Pulsating Crystalline Shard (id 4743) measured higher: 37.0 vs 36.6 set DPS - swapped in"
+          "swap_note": "runner-up Pulsating Crystalline Shard (id 4743) measured higher: 37.9 vs 37.7 set DPS - swapped in"
         },
         {
           "slot": "shoulder",
@@ -2227,7 +2372,7 @@
           "source_kind": "dungeon",
           "score": 10,
           "verified": false,
-          "swap_note": "runner-up Sergeant Major's Cape (id 16315) measured higher: 36.7 vs 36.6 set DPS - swapped in"
+          "swap_note": "runner-up Sergeant Major's Cape (id 16315) measured higher: 38.0 vs 37.7 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -2263,7 +2408,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 22.000000000004,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2282,7 +2428,7 @@
           "source_kind": "crafted",
           "score": 16.00000000000291,
           "verified": false,
-          "swap_note": "runner-up Excelsior Boots (id 4109) measured higher: 36.8 vs 36.6 set DPS - swapped in"
+          "swap_note": "runner-up Excelsior Boots (id 4109) measured higher: 37.8 vs 37.7 set DPS - swapped in"
         },
         {
           "slot": "finger1",
@@ -2325,8 +2471,7 @@
           "source": "Blacksmithing",
           "source_kind": "crafted",
           "score": 452.7809718536406,
-          "verified": false,
-          "swap_note": "runner-up Morbid Dawn (id 7689) measured higher: 36.9 vs 36.6 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -2337,7 +2482,7 @@
           "verified": false
         }
       ],
-      "set_dps": 36.63286494666286,
+      "set_dps": 37.708706588436044,
       "no_source_count": 2551,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -2361,8 +2506,8 @@
         "feet: Golden Scale Boots",
         "main_hand: Frost Tiger Blade"
       ],
-      "weights_run_seconds": 1.782867187,
-      "verify_run_seconds": 1.320084839
+      "weights_run_seconds": 1.348700249,
+      "verify_run_seconds": 0.969936521
     },
     {
       "spec": "paladin-retribution",
@@ -2374,27 +2519,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001559880320729258,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999995315
+          "weight": 1.9999999999995315,
+          "error": 0.0031197606414580673,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.23509830481384472
+          "weight": 0.23509830481384472,
+          "error": 0.04001277026071181,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.104536740405153
+          "weight": 4.104536740405153,
+          "error": 0.13896795889969357,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.8572929045772064
+          "weight": 1.8572929045772064,
+          "error": 0.1999659176520021,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.079756477706642
+          "weight": 1.079756477706642,
+          "error": 0.20910356213778067,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2470,7 +2627,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 21.999999999994845,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2531,8 +2689,7 @@
           "source": "Scarlet Monastery: Scarlet Commander Mograine",
           "source_kind": "dungeon",
           "score": 561.0199999999962,
-          "verified": false,
-          "swap_note": "runner-up Ravager (id 7717) measured higher: 51.8 vs 47.3 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -2576,8 +2733,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Mograine's Might"
       ],
-      "weights_run_seconds": 1.794017424,
-      "verify_run_seconds": 1.447390271
+      "weights_run_seconds": 1.327383601,
+      "verify_run_seconds": 1.072219589
     },
     {
       "spec": "paladin-retribution",
@@ -2589,27 +2746,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001559880320729258,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999995315
+          "weight": 1.9999999999995315,
+          "error": 0.0031197606414580673,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.23509830481384472
+          "weight": 0.23509830481384472,
+          "error": 0.04001277026071181,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.104536740405153
+          "weight": 4.104536740405153,
+          "error": 0.13896795889969357,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 1.8572929045772064
+          "weight": 1.8572929045772064,
+          "error": 0.1999659176520021,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.079756477706642
+          "weight": 1.079756477706642,
+          "error": 0.20910356213778067,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2683,7 +2852,8 @@
           "source": "Leatherworking",
           "source_kind": "crafted",
           "score": 21.999999999994845,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "legs",
@@ -2744,8 +2914,7 @@
           "source": "Scarlet Monastery: Scarlet Commander Mograine",
           "source_kind": "dungeon",
           "score": 561.0199999999962,
-          "verified": false,
-          "swap_note": "runner-up Ravager (id 7717) measured higher: 52.7 vs 52.6 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -2789,8 +2958,8 @@
         "trinket2: Mark of the Chosen",
         "main_hand: Mograine's Might"
       ],
-      "weights_run_seconds": 1.794017424,
-      "verify_run_seconds": 1.5078873229999998
+      "weights_run_seconds": 1.327383601,
+      "verify_run_seconds": 1.098013284
     },
     {
       "spec": "paladin-retribution",
@@ -2802,27 +2971,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015791188142603558,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999995974
+          "weight": 1.9999999999995974,
+          "error": 0.0031582376285207115,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.27372499160271563
+          "weight": 0.27372499160271563,
+          "error": 0.03644095058524539,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.681106397620116
+          "weight": 4.681106397620116,
+          "error": 0.16331514651977908,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.2077621573897463
+          "weight": 2.2077621573897463,
+          "error": 0.23489494904587907,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.3339616593449364
+          "weight": 1.3339616593449364,
+          "error": 0.24733533536650337,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2842,8 +3023,7 @@
           "source": "Scarlet Monastery: Azshir the Sleepless",
           "source_kind": "dungeon",
           "score": 14,
-          "verified": false,
-          "swap_note": "runner-up Pulsating Crystalline Shard (id 4743) measured higher: 52.1 vs 52.0 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -2853,7 +3033,7 @@
           "source_kind": "dungeon",
           "score": 23.99999999999517,
           "verified": false,
-          "swap_note": "runner-up Failed Flying Experiment (id 9647) measured higher: 52.2 vs 52.0 set DPS - swapped in"
+          "swap_note": "runner-up Failed Flying Experiment (id 9647) measured higher: 57.0 vs 56.9 set DPS - swapped in"
         },
         {
           "slot": "back",
@@ -2863,7 +3043,7 @@
           "source_kind": "quest",
           "score": 21.999999999995573,
           "verified": false,
-          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 52.5 vs 52.0 set DPS - swapped in"
+          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 57.5 vs 56.9 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -2873,7 +3053,7 @@
           "source_kind": "crafted",
           "score": 65.53548956668163,
           "verified": false,
-          "swap_note": "runner-up Kolkar Marauder Chain (id 6773) measured higher: 52.7 vs 52.0 set DPS - swapped in"
+          "swap_note": "runner-up Kolkar Marauder Chain (id 6773) measured higher: 57.5 vs 56.9 set DPS - swapped in"
         },
         {
           "slot": "wrist",
@@ -2883,7 +3063,7 @@
           "source_kind": "rep",
           "score": 29.642349949610658,
           "verified": false,
-          "swap_note": "runner-up Windtalker's Wristguards (id 19584) measured higher: 52.8 vs 52.0 set DPS - swapped in"
+          "swap_note": "runner-up Windtalker's Wristguards (id 19584) measured higher: 57.7 vs 56.9 set DPS - swapped in"
         },
         {
           "slot": "hands",
@@ -2920,7 +3100,230 @@
           "source_kind": "quest",
           "score": 22.463524924420415,
           "verified": false,
-          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 52.1 vs 52.0 set DPS - swapped in"
+          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 56.9 vs 56.9 set DPS - swapped in"
+        },
+        {
+          "slot": "finger1",
+          "item_id": 7686,
+          "item_name": "Ironspine's Eye",
+          "source": "Scarlet Monastery: Ironspine",
+          "source_kind": "dungeon",
+          "score": 10.463524924422831,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 6321,
+          "item_name": "Silverlaine's Family Seal",
+          "source": "Shadowfang Keep: Baron Silverlaine",
+          "source_kind": "dungeon",
+          "score": 9.999999999997987,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": false,
+          "swap_note": "runner-up Carrot on a Stick (id 11122) measured higher: 56.9 vs 56.9 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 606.62,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "verified": false
+        }
+      ],
+      "set_dps": 56.87873538159127,
+      "no_source_count": 3337,
+      "no_source_sample": [
+        "720 Brawler Gloves",
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "789 Stout Battlehammer",
+        "790 Forester's Axe",
+        "821 Riverpaw Leather Vest",
+        "826 Brutish Riverpaw Axe",
+        "827 Wicked Blackjack",
+        "832 Silver Defias Belt",
+        "863 Gloom Reaper",
+        "864 Knightly Longsword",
+        "865 Leaden Mace",
+        "867 Gloves of Holy Might",
+        "868 Ardent Custodian"
+      ],
+      "new_at_band": [
+        "shoulder: Big Bad Pauldrons",
+        "chest: Ornate Mithril Breastplate",
+        "waist: Belt of the Den Watcher",
+        "legs: Leggings of the Ursa",
+        "trinket1: Shard of the Splithooves",
+        "trinket2: Demon's Blood",
+        "main_hand: Blight"
+      ],
+      "weights_run_seconds": 1.387490728,
+      "verify_run_seconds": 1.152249829
+    },
+    {
+      "spec": "paladin-retribution",
+      "band": 45,
+      "faction": "horde",
+      "race": "dwarf",
+      "talents": "00000000000000000-5000000000000000-55223331211000210",
+      "talent_points": 36,
+      "weights": [
+        {
+          "stat": "attack_power",
+          "weight": 1,
+          "error": 0.0015791188142603558,
+          "insignificant": false
+        },
+        {
+          "stat": "strength",
+          "weight": 1.9999999999995974,
+          "error": 0.0031582376285207115,
+          "insignificant": false
+        },
+        {
+          "stat": "agility",
+          "weight": 0.27372499160271563,
+          "error": 0.03644095058524539,
+          "insignificant": false
+        },
+        {
+          "stat": "crit",
+          "weight": 4.681106397620116,
+          "error": 0.16331514651977908,
+          "insignificant": false
+        },
+        {
+          "stat": "hit",
+          "weight": 2.2077621573897463,
+          "error": 0.23489494904587907,
+          "insignificant": false
+        },
+        {
+          "stat": "melee_haste",
+          "weight": 1.3339616593449364,
+          "error": 0.24733533536650337,
+          "insignificant": false
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 7719,
+          "item_name": "Raging Berserker's Helm",
+          "source": "Scarlet Monastery: Herod",
+          "source_kind": "dungeon",
+          "score": 91.5354895666764,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 7731,
+          "item_name": "Ghostshard Talisman",
+          "source": "Scarlet Monastery: Azshir the Sleepless",
+          "source_kind": "dungeon",
+          "score": 14,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 9476,
+          "item_name": "Big Bad Pauldrons",
+          "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+          "source_kind": "dungeon",
+          "score": 23.99999999999517,
+          "verified": false,
+          "swap_note": "runner-up Failed Flying Experiment (id 9647) measured higher: 57.8 vs 57.7 set DPS - swapped in"
+        },
+        {
+          "slot": "back",
+          "item_id": 20219,
+          "item_name": "Tattered Hakkari Cape",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 21.999999999995573,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 7935,
+          "item_name": "Ornate Mithril Breastplate",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 65.53548956668163,
+          "verified": false,
+          "swap_note": "runner-up Kolkar Marauder Chain (id 6773) measured higher: 58.3 vs 57.7 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 19581,
+          "item_name": "Berserker Bracers",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 29.642349949610658,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 8347,
+          "item_name": "Dragonscale Gauntlets",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 67.17783951629792,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 21312,
+          "item_name": "Belt of the Den Watcher",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 24,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 21316,
+          "item_name": "Leggings of the Ursa",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 99.53548956667478,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 9637,
+          "item_name": "Shinkicker Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 22.463524924420415,
+          "verified": false,
+          "swap_note": "runner-up Sandstalker Ankleguards (id 12470) measured higher: 57.7 vs 57.7 set DPS - swapped in"
         },
         {
           "slot": "finger1",
@@ -2974,7 +3377,7 @@
           "verified": false
         }
       ],
-      "set_dps": 52.042036805480855,
+      "set_dps": 57.679171313095864,
       "no_source_count": 3337,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3002,40 +3405,52 @@
         "trinket2: Demon's Blood",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.92828161,
-      "verify_run_seconds": 1.5267284
+      "weights_run_seconds": 1.387490728,
+      "verify_run_seconds": 1.17579922
     },
     {
       "spec": "paladin-retribution",
-      "band": 45,
-      "faction": "horde",
-      "race": "dwarf",
-      "talents": "00000000000000000-5000000000000000-55223331211000210",
-      "talent_points": 36,
+      "band": 50,
+      "faction": "alliance",
+      "race": "human",
+      "talents": "00000000000000000-5500000000000000-55223331211000210",
+      "talent_points": 41,
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0015677912435977596,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999995974
+          "weight": 1.999999999999135,
+          "error": 0.00313558248719406,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.27372499160271563
+          "weight": 0.22617191172332987,
+          "error": 0.023680617284098707,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.681106397620116
+          "weight": 4.900456242883568,
+          "error": 0.16538758435034934,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.2077621573897463
+          "weight": 2.4647710091622805,
+          "error": 0.2700569305723609,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 1.3339616593449364
+          "weight": -2.9530792808762474,
+          "error": 0.399052353460129,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3045,7 +3460,7 @@
           "item_name": "Raging Berserker's Helm",
           "source": "Scarlet Monastery: Herod",
           "source_kind": "dungeon",
-          "score": 91.5354895666764,
+          "score": 94.6063874003587,
           "verified": true
         },
         {
@@ -3055,17 +3470,17 @@
           "source": "Scarlet Monastery: Azshir the Sleepless",
           "source_kind": "dungeon",
           "score": 14,
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Pulsating Crystalline Shard (id 4743) measured higher: 62.0 vs 61.6 set DPS - swapped in"
         },
         {
           "slot": "shoulder",
-          "item_id": 9476,
-          "item_name": "Big Bad Pauldrons",
-          "source": "Zul'Farrak: Chief Ukorz Sandscalp",
+          "item_id": 11632,
+          "item_name": "Earthslag Shoulders",
+          "source": "Blackrock Depths: Lord Roccor",
           "source_kind": "dungeon",
-          "score": 23.99999999999517,
-          "verified": false,
-          "swap_note": "runner-up Failed Flying Experiment (id 9647) measured higher: 52.7 vs 52.6 set DPS - swapped in"
+          "score": 25.999999999988752,
+          "verified": true
         },
         {
           "slot": "back",
@@ -3073,8 +3488,9 @@
           "item_name": "Tattered Hakkari Cape",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 21.999999999995573,
-          "verified": true
+          "score": 21.999999999990486,
+          "verified": false,
+          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 62.6 vs 61.6 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -3082,18 +3498,19 @@
           "item_name": "Ornate Mithril Breastplate",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 65.53548956668163,
+          "score": 68.60638740036995,
           "verified": false,
-          "swap_note": "runner-up Kolkar Marauder Chain (id 6773) measured higher: 53.2 vs 52.6 set DPS - swapped in"
+          "swap_note": "runner-up Kolkar Marauder Chain (id 6773) measured higher: 62.3 vs 61.6 set DPS - swapped in"
         },
         {
           "slot": "wrist",
-          "item_id": 19581,
+          "item_id": 19580,
           "item_name": "Berserker Bracers",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "score": 29.642349949610658,
-          "verified": true
+          "score": 35.5832033820486,
+          "verified": false,
+          "swap_note": "runner-up Windtalker's Wristguards (id 19583) measured higher: 62.6 vs 61.6 set DPS - swapped in"
         },
         {
           "slot": "hands",
@@ -3101,52 +3518,278 @@
           "item_name": "Dragonscale Gauntlets",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 67.17783951629792,
+          "score": 69.96341887070993,
           "verified": true
         },
         {
           "slot": "waist",
-          "item_id": 21312,
-          "item_name": "Belt of the Den Watcher",
+          "item_id": 15709,
+          "item_name": "Gearforge Girdle",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 24,
+          "score": 32.90468764687948,
           "verified": true
         },
         {
           "slot": "legs",
-          "item_id": 21316,
-          "item_name": "Leggings of the Ursa",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 99.53548956667478,
-          "verified": true
+          "item_id": 15057,
+          "item_name": "Stormshroud Pants",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 137.2127748007399,
+          "verified": false,
+          "swap_note": "runner-up Leggings of the Ursa (id 21316) measured higher: 62.3 vs 61.6 set DPS - swapped in"
         },
         {
           "slot": "feet",
-          "item_id": 9637,
-          "item_name": "Shinkicker Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 22.463524924420415,
+          "item_id": 22240,
+          "item_name": "Greaves of Withering Despair",
+          "source": "Blackrock Depths: High Interrogator Gerstahn ",
+          "source_kind": "dungeon",
+          "score": 24.647710091622805,
           "verified": true
         },
         {
           "slot": "finger1",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
+          "item_id": 17713,
+          "item_name": "Blackstone Ring",
+          "source": "Maraudon: Princess Theradras",
           "source_kind": "dungeon",
-          "score": 10.463524924422831,
+          "score": 44.647710091622805,
           "verified": true
         },
         {
           "slot": "finger2",
-          "item_id": 6321,
-          "item_name": "Silverlaine's Family Seal",
-          "source": "Shadowfang Keep: Baron Silverlaine",
+          "item_id": 7686,
+          "item_name": "Ironspine's Eye",
+          "source": "Scarlet Monastery: Ironspine",
           "source_kind": "dungeon",
-          "score": 9.999999999997987,
+          "score": 10.035547205506509,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": false,
+          "swap_note": "runner-up Smoking Heart of the Mountain (id 11811) measured higher: 61.8 vs 61.6 set DPS - swapped in"
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 7959,
+          "item_name": "Blight",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 606.62,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "verified": false
+        }
+      ],
+      "set_dps": 61.64216568320102,
+      "no_source_count": 3764,
+      "no_source_sample": [
+        "720 Brawler Gloves",
+        "727 Notched Shortsword",
+        "753 Dragonmaw Shortsword",
+        "754 Shortsword of Vengeance",
+        "789 Stout Battlehammer",
+        "790 Forester's Axe",
+        "810 Hammer of the Northern Wind",
+        "821 Riverpaw Leather Vest",
+        "826 Brutish Riverpaw Axe",
+        "827 Wicked Blackjack",
+        "832 Silver Defias Belt",
+        "863 Gloom Reaper",
+        "864 Knightly Longsword",
+        "865 Leaden Mace",
+        "867 Gloves of Holy Might"
+      ],
+      "new_at_band": [
+        "shoulder: Earthslag Shoulders",
+        "wrist: Berserker Bracers",
+        "waist: Gearforge Girdle",
+        "legs: Stormshroud Pants",
+        "feet: Greaves of Withering Despair",
+        "finger1: Blackstone Ring",
+        "finger2: Ironspine's Eye"
+      ],
+      "weights_run_seconds": 1.418047127,
+      "verify_run_seconds": 1.129923372
+    },
+    {
+      "spec": "paladin-retribution",
+      "band": 50,
+      "faction": "horde",
+      "race": "dwarf",
+      "talents": "00000000000000000-5500000000000000-55223331211000210",
+      "talent_points": 41,
+      "weights": [
+        {
+          "stat": "attack_power",
+          "weight": 1,
+          "error": 0.0015677912435977596,
+          "insignificant": false
+        },
+        {
+          "stat": "strength",
+          "weight": 1.999999999999135,
+          "error": 0.00313558248719406,
+          "insignificant": false
+        },
+        {
+          "stat": "agility",
+          "weight": 0.22617191172332987,
+          "error": 0.023680617284098707,
+          "insignificant": false
+        },
+        {
+          "stat": "crit",
+          "weight": 4.900456242883568,
+          "error": 0.16538758435034934,
+          "insignificant": false
+        },
+        {
+          "stat": "hit",
+          "weight": 2.4647710091622805,
+          "error": 0.2700569305723609,
+          "insignificant": false
+        },
+        {
+          "stat": "melee_haste",
+          "weight": -2.9530792808762474,
+          "error": 0.399052353460129,
+          "insignificant": false
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 7719,
+          "item_name": "Raging Berserker's Helm",
+          "source": "Scarlet Monastery: Herod",
+          "source_kind": "dungeon",
+          "score": 94.6063874003587,
+          "verified": true
+        },
+        {
+          "slot": "neck",
+          "item_id": 7731,
+          "item_name": "Ghostshard Talisman",
+          "source": "Scarlet Monastery: Azshir the Sleepless",
+          "source_kind": "dungeon",
+          "score": 14,
+          "verified": false,
+          "swap_note": "runner-up Pulsating Crystalline Shard (id 4743) measured higher: 60.8 vs 60.5 set DPS - swapped in"
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 11632,
+          "item_name": "Earthslag Shoulders",
+          "source": "Blackrock Depths: Lord Roccor",
+          "source_kind": "dungeon",
+          "score": 25.999999999988752,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 20219,
+          "item_name": "Tattered Hakkari Cape",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 21.999999999990486,
+          "verified": false,
+          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 62.2 vs 60.5 set DPS - swapped in"
+        },
+        {
+          "slot": "chest",
+          "item_id": 7935,
+          "item_name": "Ornate Mithril Breastplate",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 68.60638740036995,
+          "verified": false,
+          "swap_note": "runner-up Kolkar Marauder Chain (id 6773) measured higher: 61.2 vs 60.5 set DPS - swapped in"
+        },
+        {
+          "slot": "wrist",
+          "item_id": 19580,
+          "item_name": "Berserker Bracers",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 35.5832033820486,
+          "verified": false,
+          "swap_note": "runner-up Windtalker's Wristguards (id 19583) measured higher: 62.2 vs 60.5 set DPS - swapped in"
+        },
+        {
+          "slot": "hands",
+          "item_id": 8347,
+          "item_name": "Dragonscale Gauntlets",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 69.96341887070993,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 15709,
+          "item_name": "Gearforge Girdle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 32.90468764687948,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 15057,
+          "item_name": "Stormshroud Pants",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 137.2127748007399,
+          "verified": false,
+          "swap_note": "runner-up Leggings of the Ursa (id 21316) measured higher: 61.2 vs 60.5 set DPS - swapped in"
+        },
+        {
+          "slot": "feet",
+          "item_id": 22240,
+          "item_name": "Greaves of Withering Despair",
+          "source": "Blackrock Depths: High Interrogator Gerstahn ",
+          "source_kind": "dungeon",
+          "score": 24.647710091622805,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 17713,
+          "item_name": "Blackstone Ring",
+          "source": "Maraudon: Princess Theradras",
+          "source_kind": "dungeon",
+          "score": 44.647710091622805,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 7686,
+          "item_name": "Ironspine's Eye",
+          "source": "Scarlet Monastery: Ironspine",
+          "source_kind": "dungeon",
+          "score": 10.035547205506509,
           "verified": true
         },
         {
@@ -3183,219 +3826,7 @@
           "verified": false
         }
       ],
-      "set_dps": 52.59506111263316,
-      "no_source_count": 3337,
-      "no_source_sample": [
-        "720 Brawler Gloves",
-        "727 Notched Shortsword",
-        "753 Dragonmaw Shortsword",
-        "754 Shortsword of Vengeance",
-        "789 Stout Battlehammer",
-        "790 Forester's Axe",
-        "821 Riverpaw Leather Vest",
-        "826 Brutish Riverpaw Axe",
-        "827 Wicked Blackjack",
-        "832 Silver Defias Belt",
-        "863 Gloom Reaper",
-        "864 Knightly Longsword",
-        "865 Leaden Mace",
-        "867 Gloves of Holy Might",
-        "868 Ardent Custodian"
-      ],
-      "new_at_band": [
-        "shoulder: Big Bad Pauldrons",
-        "chest: Ornate Mithril Breastplate",
-        "waist: Belt of the Den Watcher",
-        "legs: Leggings of the Ursa",
-        "trinket1: Shard of the Splithooves",
-        "trinket2: Demon's Blood",
-        "main_hand: Blight"
-      ],
-      "weights_run_seconds": 1.92828161,
-      "verify_run_seconds": 1.5599543169999999
-    },
-    {
-      "spec": "paladin-retribution",
-      "band": 50,
-      "faction": "alliance",
-      "race": "human",
-      "talents": "00000000000000000-5500000000000000-55223331211000210",
-      "talent_points": 41,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1
-        },
-        {
-          "stat": "strength",
-          "weight": 1.999999999999135
-        },
-        {
-          "stat": "agility",
-          "weight": 0.22617191172332987
-        },
-        {
-          "stat": "crit",
-          "weight": 4.900456242883568
-        },
-        {
-          "stat": "hit",
-          "weight": 2.4647710091622805
-        },
-        {
-          "stat": "melee_haste",
-          "weight": -2.9530792808762474
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 7719,
-          "item_name": "Raging Berserker's Helm",
-          "source": "Scarlet Monastery: Herod",
-          "source_kind": "dungeon",
-          "score": 94.6063874003587,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 7731,
-          "item_name": "Ghostshard Talisman",
-          "source": "Scarlet Monastery: Azshir the Sleepless",
-          "source_kind": "dungeon",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 11632,
-          "item_name": "Earthslag Shoulders",
-          "source": "Blackrock Depths: Lord Roccor",
-          "source_kind": "dungeon",
-          "score": 25.999999999988752,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 20219,
-          "item_name": "Tattered Hakkari Cape",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 21.999999999990486,
-          "verified": false,
-          "swap_note": "runner-up Sergeant Major's Cape (id 16336) measured higher: 58.3 vs 58.3 set DPS - swapped in"
-        },
-        {
-          "slot": "chest",
-          "item_id": 7935,
-          "item_name": "Ornate Mithril Breastplate",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 68.60638740036995,
-          "verified": false,
-          "swap_note": "runner-up Kolkar Marauder Chain (id 6773) measured higher: 58.9 vs 58.3 set DPS - swapped in"
-        },
-        {
-          "slot": "wrist",
-          "item_id": 19580,
-          "item_name": "Berserker Bracers",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 35.5832033820486,
-          "verified": false,
-          "swap_note": "runner-up Windtalker's Wristguards (id 19583) measured higher: 58.3 vs 58.3 set DPS - swapped in"
-        },
-        {
-          "slot": "hands",
-          "item_id": 8347,
-          "item_name": "Dragonscale Gauntlets",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 69.96341887070993,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 15709,
-          "item_name": "Gearforge Girdle",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 32.90468764687948,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 15057,
-          "item_name": "Stormshroud Pants",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 137.2127748007399,
-          "verified": false,
-          "swap_note": "runner-up Leggings of the Ursa (id 21316) measured higher: 58.9 vs 58.3 set DPS - swapped in"
-        },
-        {
-          "slot": "feet",
-          "item_id": 22240,
-          "item_name": "Greaves of Withering Despair",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
-          "source_kind": "dungeon",
-          "score": 24.647710091622805,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 17713,
-          "item_name": "Blackstone Ring",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
-          "score": 44.647710091622805,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 10.035547205506509,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 10659,
-          "item_name": "Shard of the Splithooves",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 12769,
-          "item_name": "Bleakwood Hew",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 672.7199999999904,
-          "verified": false,
-          "swap_note": "runner-up Dark Iron Pulverizer (id 11608) measured higher: 58.5 vs 58.3 set DPS - swapped in"
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 58.250756390071686,
+      "set_dps": 60.54537086226687,
       "no_source_count": 3764,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3421,222 +3852,10 @@
         "legs: Stormshroud Pants",
         "feet: Greaves of Withering Despair",
         "finger1: Blackstone Ring",
-        "finger2: Ironspine's Eye",
-        "main_hand: Bleakwood Hew"
+        "finger2: Ironspine's Eye"
       ],
-      "weights_run_seconds": 1.8879524060000001,
-      "verify_run_seconds": 1.519132647
-    },
-    {
-      "spec": "paladin-retribution",
-      "band": 50,
-      "faction": "horde",
-      "race": "dwarf",
-      "talents": "00000000000000000-5500000000000000-55223331211000210",
-      "talent_points": 41,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1
-        },
-        {
-          "stat": "strength",
-          "weight": 1.999999999999135
-        },
-        {
-          "stat": "agility",
-          "weight": 0.22617191172332987
-        },
-        {
-          "stat": "crit",
-          "weight": 4.900456242883568
-        },
-        {
-          "stat": "hit",
-          "weight": 2.4647710091622805
-        },
-        {
-          "stat": "melee_haste",
-          "weight": -2.9530792808762474
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 7719,
-          "item_name": "Raging Berserker's Helm",
-          "source": "Scarlet Monastery: Herod",
-          "source_kind": "dungeon",
-          "score": 94.6063874003587,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 7731,
-          "item_name": "Ghostshard Talisman",
-          "source": "Scarlet Monastery: Azshir the Sleepless",
-          "source_kind": "dungeon",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 11632,
-          "item_name": "Earthslag Shoulders",
-          "source": "Blackrock Depths: Lord Roccor",
-          "source_kind": "dungeon",
-          "score": 25.999999999988752,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 20219,
-          "item_name": "Tattered Hakkari Cape",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 21.999999999990486,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 7935,
-          "item_name": "Ornate Mithril Breastplate",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 68.60638740036995,
-          "verified": false,
-          "swap_note": "runner-up Kolkar Marauder Chain (id 6773) measured higher: 59.4 vs 58.7 set DPS - swapped in"
-        },
-        {
-          "slot": "wrist",
-          "item_id": 19580,
-          "item_name": "Berserker Bracers",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 35.5832033820486,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 8347,
-          "item_name": "Dragonscale Gauntlets",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 69.96341887070993,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 15709,
-          "item_name": "Gearforge Girdle",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 32.90468764687948,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 15057,
-          "item_name": "Stormshroud Pants",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 137.2127748007399,
-          "verified": false,
-          "swap_note": "runner-up Leggings of the Ursa (id 21316) measured higher: 59.4 vs 58.7 set DPS - swapped in"
-        },
-        {
-          "slot": "feet",
-          "item_id": 22240,
-          "item_name": "Greaves of Withering Despair",
-          "source": "Blackrock Depths: High Interrogator Gerstahn ",
-          "source_kind": "dungeon",
-          "score": 24.647710091622805,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 17713,
-          "item_name": "Blackstone Ring",
-          "source": "Maraudon: Princess Theradras",
-          "source_kind": "dungeon",
-          "score": 44.647710091622805,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 10.035547205506509,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 10659,
-          "item_name": "Shard of the Splithooves",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 12769,
-          "item_name": "Bleakwood Hew",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 672.7199999999904,
-          "verified": false,
-          "swap_note": "runner-up Dark Iron Pulverizer (id 11608) measured higher: 64.4 vs 58.7 set DPS - swapped in"
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 58.725796621679876,
-      "no_source_count": 3764,
-      "no_source_sample": [
-        "720 Brawler Gloves",
-        "727 Notched Shortsword",
-        "753 Dragonmaw Shortsword",
-        "754 Shortsword of Vengeance",
-        "789 Stout Battlehammer",
-        "790 Forester's Axe",
-        "810 Hammer of the Northern Wind",
-        "821 Riverpaw Leather Vest",
-        "826 Brutish Riverpaw Axe",
-        "827 Wicked Blackjack",
-        "832 Silver Defias Belt",
-        "863 Gloom Reaper",
-        "864 Knightly Longsword",
-        "865 Leaden Mace",
-        "867 Gloves of Holy Might"
-      ],
-      "new_at_band": [
-        "shoulder: Earthslag Shoulders",
-        "wrist: Berserker Bracers",
-        "waist: Gearforge Girdle",
-        "legs: Stormshroud Pants",
-        "feet: Greaves of Withering Despair",
-        "finger1: Blackstone Ring",
-        "finger2: Ironspine's Eye",
-        "main_hand: Bleakwood Hew"
-      ],
-      "weights_run_seconds": 1.8879524060000001,
-      "verify_run_seconds": 1.60095746
+      "weights_run_seconds": 1.418047127,
+      "verify_run_seconds": 1.181264815
     },
     {
       "spec": "paladin-retribution",
@@ -3648,27 +3867,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014994844905383083,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999998437
+          "weight": 1.9999999999998437,
+          "error": 0.002998968981076946,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.18753351311539568
+          "weight": 0.18753351311539568,
+          "error": 0.023350132616098057,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 5.611857593352081
+          "weight": 5.611857593352081,
+          "error": 0.19684149196727196,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 6.83737670539141
+          "weight": 6.83737670539141,
+          "error": 0.37041364614208067,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 4.451385235970658
+          "weight": 4.451385235970658,
+          "error": 0.2676264502177909,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3706,7 +3937,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 21.99999999999828,
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Sergeant Major's Cape (id 16337) measured higher: 73.2 vs 72.5 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -3716,7 +3948,7 @@
           "source_kind": "crafted",
           "score": 157.13201261385825,
           "verified": false,
-          "swap_note": "runner-up Savage Gladiator Chain (id 11726) measured higher: 73.5 vs 72.0 set DPS - swapped in"
+          "swap_note": "runner-up Savage Gladiator Chain (id 11726) measured higher: 73.9 vs 72.5 set DPS - swapped in"
         },
         {
           "slot": "wrist",
@@ -3726,7 +3958,7 @@
           "source_kind": "dungeon",
           "score": 92.56600630692803,
           "verified": false,
-          "swap_note": "runner-up Berserker Bracers (id 19580) measured higher: 72.4 vs 72.0 set DPS - swapped in"
+          "swap_note": "runner-up Berserker Bracers (id 19580) measured higher: 72.9 vs 72.5 set DPS - swapped in"
         },
         {
           "slot": "hands",
@@ -3781,7 +4013,7 @@
           "source_kind": "quest",
           "score": 78.56600630692913,
           "verified": false,
-          "swap_note": "runner-up Ring of Living Stone (id 18400) measured higher: 72.1 vs 72.0 set DPS - swapped in"
+          "swap_note": "runner-up Ring of Living Stone (id 18400) measured higher: 72.6 vs 72.5 set DPS - swapped in"
         },
         {
           "slot": "trinket1",
@@ -3801,13 +4033,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 12776,
-          "item_name": "Enchanted Battlehammer",
+          "item_id": 7959,
+          "item_name": "Blight",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 809.8675341078282,
-          "verified": false,
-          "swap_note": "runner-up Corruption (id 12782) measured higher: 78.3 vs 72.0 set DPS - swapped in"
+          "score": 606.62,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3818,7 +4049,7 @@
           "verified": false
         }
       ],
-      "set_dps": 71.98729264870668,
+      "set_dps": 72.47656922666452,
       "no_source_count": 4155,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3846,11 +4077,10 @@
         "waist: Might of the Timbermaw",
         "legs: Titanic Leggings",
         "finger2: Band of the Penitent",
-        "trinket2: Smokey's Lighter",
-        "main_hand: Enchanted Battlehammer"
+        "trinket2: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.879309839,
-      "verify_run_seconds": 1.522813582
+      "weights_run_seconds": 1.401108613,
+      "verify_run_seconds": 1.133526355
     },
     {
       "spec": "paladin-retribution",
@@ -3862,27 +4092,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014994844905383083,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 1.9999999999998437
+          "weight": 1.9999999999998437,
+          "error": 0.002998968981076946,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.18753351311539568
+          "weight": 0.18753351311539568,
+          "error": 0.023350132616098057,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 5.611857593352081
+          "weight": 5.611857593352081,
+          "error": 0.19684149196727196,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 6.83737670539141
+          "weight": 6.83737670539141,
+          "error": 0.37041364614208067,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 4.451385235970658
+          "weight": 4.451385235970658,
+          "error": 0.2676264502177909,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4063,8 +4305,8 @@
         "trinket2: Smokey's Lighter",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.879309839,
-      "verify_run_seconds": 1.572203205
+      "weights_run_seconds": 1.401108613,
+      "verify_run_seconds": 1.158252303
     },
     {
       "spec": "paladin-retribution",
@@ -4076,27 +4318,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014852359342341773,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000003872
+          "weight": 2.0000000000003872,
+          "error": 0.002970471868471908,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.3214871111015605
+          "weight": 0.3214871111015605,
+          "error": 0.058494760499846435,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 5.935360831673385
+          "weight": 5.935360831673385,
+          "error": 0.20781868166596026,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 7.9693622725180875
+          "weight": 7.9693622725180875,
+          "error": 0.4111642416145801,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": -4.035182883073584
+          "weight": -4.035182883073584,
+          "error": 0.528261715844643,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4116,8 +4370,7 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "score": 192.19010328685476,
-          "verified": false,
-          "swap_note": "runner-up Gem of Trapped Innocents (id 23057) measured higher: 122.5 vs 121.5 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -4136,7 +4389,7 @@
           "source_kind": "quest",
           "score": 84.51592939170428,
           "verified": false,
-          "swap_note": "runner-up Chromatic Cloak (id 18509) measured higher: 121.7 vs 121.5 set DPS - swapped in"
+          "swap_note": "runner-up Chromatic Cloak (id 18509) measured higher: 140.4 vs 140.1 set DPS - swapped in"
         },
         {
           "slot": "chest",
@@ -4225,15 +4478,16 @@
           "item_name": "The Restrained Essence of Sapphiron",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Kiss of the Spider (id 22954) measured higher: 142.0 vs 140.1 set DPS - swapped in"
         },
         {
           "slot": "main_hand",
-          "item_id": 21134,
-          "item_name": "Dark Edge of Insanity",
-          "source": "Ahn'Qiraj",
-          "source_kind": "raid",
-          "score": 1288.0882551109432,
+          "item_id": 19019,
+          "item_name": "Thunderfury, Blessed Blade of the Windseeker",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 756.9074355555078,
           "verified": true
         },
         {
@@ -4245,7 +4499,7 @@
           "verified": false
         }
       ],
-      "set_dps": 121.5320551965302,
+      "set_dps": 140.12004183631265,
       "no_source_count": 4836,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4277,10 +4531,10 @@
         "finger2: Don Julio's Band",
         "trinket1: Slayer's Crest",
         "trinket2: The Restrained Essence of Sapphiron",
-        "main_hand: Dark Edge of Insanity"
+        "main_hand: Thunderfury, Blessed Blade of the Windseeker"
       ],
-      "weights_run_seconds": 1.9177122020000001,
-      "verify_run_seconds": 1.570758123
+      "weights_run_seconds": 1.404102331,
+      "verify_run_seconds": 1.239754912
     },
     {
       "spec": "paladin-retribution",
@@ -4292,27 +4546,39 @@
       "weights": [
         {
           "stat": "attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014852359342341773,
+          "insignificant": false
         },
         {
           "stat": "strength",
-          "weight": 2.0000000000003872
+          "weight": 2.0000000000003872,
+          "error": 0.002970471868471908,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 0.3214871111015605
+          "weight": 0.3214871111015605,
+          "error": 0.058494760499846435,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 5.935360831673385
+          "weight": 5.935360831673385,
+          "error": 0.20781868166596026,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 7.9693622725180875
+          "weight": 7.9693622725180875,
+          "error": 0.4111642416145801,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": -4.035182883073584
+          "weight": -4.035182883073584,
+          "error": 0.528261715844643,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4332,8 +4598,7 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "score": 192.19010328685476,
-          "verified": false,
-          "swap_note": "runner-up Gem of Trapped Innocents (id 23057) measured higher: 122.7 vs 122.1 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -4351,8 +4616,7 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 84.51592939170428,
-          "verified": false,
-          "swap_note": "runner-up Chromatic Cloak (id 18509) measured higher: 122.4 vs 122.1 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "chest",
@@ -4441,15 +4705,16 @@
           "item_name": "The Restrained Essence of Sapphiron",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "verified": true
+          "verified": false,
+          "swap_note": "runner-up Kiss of the Spider (id 22954) measured higher: 135.5 vs 134.5 set DPS - swapped in"
         },
         {
           "slot": "main_hand",
-          "item_id": 21134,
-          "item_name": "Dark Edge of Insanity",
-          "source": "Ahn'Qiraj",
-          "source_kind": "raid",
-          "score": 1288.0882551109432,
+          "item_id": 19019,
+          "item_name": "Thunderfury, Blessed Blade of the Windseeker",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 756.9074355555078,
           "verified": true
         },
         {
@@ -4461,7 +4726,7 @@
           "verified": false
         }
       ],
-      "set_dps": 122.10066452681272,
+      "set_dps": 134.52944302411348,
       "no_source_count": 4836,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4493,10 +4758,10 @@
         "finger2: Don Julio's Band",
         "trinket1: Slayer's Crest",
         "trinket2: The Restrained Essence of Sapphiron",
-        "main_hand: Dark Edge of Insanity"
+        "main_hand: Thunderfury, Blessed Blade of the Windseeker"
       ],
-      "weights_run_seconds": 1.9177122020000001,
-      "verify_run_seconds": 1.638280654
+      "weights_run_seconds": 1.404102331,
+      "verify_run_seconds": 1.264349861
     }
   ]
 }

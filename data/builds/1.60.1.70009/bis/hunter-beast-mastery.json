@@ -1,8 +1,8 @@
 {
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:17:36Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:07:02Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -13,28 +13,34 @@
       "talent_points": 1,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001353169696587099,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.1493199547553696
+          "weight": 2.1493199547553696,
+          "error": 0.05000295442470054,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.041299765717842
+          "weight": 7.041299765717842,
+          "error": 0.35153676129925404,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.7061957032691404
+          "weight": 3.7061957032691404,
+          "error": 0.35804196597271665,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 7.547630274592373
+          "weight": 7.547630274592373,
+          "error": 1.1570852924836907,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -176,8 +182,8 @@
         "main_hand: Copper Battle Axe",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.410233001,
-      "verify_run_seconds": 0.499364962
+      "weights_run_seconds": 0.919593589,
+      "verify_run_seconds": 0.36813866
     },
     {
       "spec": "hunter-beast-mastery",
@@ -188,28 +194,34 @@
       "talent_points": 1,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001353169696587099,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.1493199547553696
+          "weight": 2.1493199547553696,
+          "error": 0.05000295442470054,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.041299765717842
+          "weight": 7.041299765717842,
+          "error": 0.35153676129925404,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.7061957032691404
+          "weight": 3.7061957032691404,
+          "error": 0.35804196597271665,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 7.547630274592373
+          "weight": 7.547630274592373,
+          "error": 1.1570852924836907,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -351,8 +363,8 @@
         "main_hand: Copper Battle Axe",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.410233001,
-      "verify_run_seconds": 0.480705045
+      "weights_run_seconds": 0.919593589,
+      "verify_run_seconds": 0.359635915
     },
     {
       "spec": "hunter-beast-mastery",
@@ -363,28 +375,34 @@
       "talent_points": 6,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013326956111072363,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.218331766599883
+          "weight": 2.218331766599883,
+          "error": 0.06741333329502397,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.749111722526457
+          "weight": 7.749111722526457,
+          "error": 0.35330187129607854,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.497052044206647
+          "weight": 4.497052044206647,
+          "error": 0.4166747386165433,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 9.043005880204769
+          "weight": 9.043005880204769,
+          "error": 1.1460730890018345,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -540,8 +558,8 @@
         "main_hand: Goblin Screwdriver",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.389762746,
-      "verify_run_seconds": 0.838734407
+      "weights_run_seconds": 0.940829049,
+      "verify_run_seconds": 0.630551878
     },
     {
       "spec": "hunter-beast-mastery",
@@ -552,28 +570,34 @@
       "talent_points": 6,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013326956111072363,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.218331766599883
+          "weight": 2.218331766599883,
+          "error": 0.06741333329502397,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 7.749111722526457
+          "weight": 7.749111722526457,
+          "error": 0.35330187129607854,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.497052044206647
+          "weight": 4.497052044206647,
+          "error": 0.4166747386165433,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 9.043005880204769
+          "weight": 9.043005880204769,
+          "error": 1.1460730890018345,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -732,8 +756,8 @@
         "main_hand: Goblin Screwdriver",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 1.389762746,
-      "verify_run_seconds": 0.81983595
+      "weights_run_seconds": 0.940829049,
+      "verify_run_seconds": 0.617760421
     },
     {
       "spec": "hunter-beast-mastery",
@@ -744,28 +768,34 @@
       "talent_points": 11,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012805497523504432,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.0452764470665192
+          "weight": 2.0452764470665192,
+          "error": 0.02623233648418913,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 8.41439759652625
+          "weight": 8.41439759652625,
+          "error": 0.3674180309157062,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.226522612412781
+          "weight": 5.226522612412781,
+          "error": 0.37825106531499475,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 14.870493549757967
+          "weight": 14.870493549757967,
+          "error": 1.042927841477789,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -942,8 +972,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Lovingly Crafted Boomstick"
       ],
-      "weights_run_seconds": 1.767239409,
-      "verify_run_seconds": 1.091020715
+      "weights_run_seconds": 1.141718985,
+      "verify_run_seconds": 0.809112891
     },
     {
       "spec": "hunter-beast-mastery",
@@ -954,28 +984,34 @@
       "talent_points": 11,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012805497523504432,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.0452764470665192
+          "weight": 2.0452764470665192,
+          "error": 0.02623233648418913,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 8.41439759652625
+          "weight": 8.41439759652625,
+          "error": 0.3674180309157062,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.226522612412781
+          "weight": 5.226522612412781,
+          "error": 0.37825106531499475,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 14.870493549757967
+          "weight": 14.870493549757967,
+          "error": 1.042927841477789,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1152,8 +1188,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Lovingly Crafted Boomstick"
       ],
-      "weights_run_seconds": 1.767239409,
-      "verify_run_seconds": 1.069346002
+      "weights_run_seconds": 1.141718985,
+      "verify_run_seconds": 0.794315503
     },
     {
       "spec": "hunter-beast-mastery",
@@ -1164,28 +1200,34 @@
       "talent_points": 16,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013035097923455106,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.2271614435786447
+          "weight": 2.2271614435786447,
+          "error": 0.058484659948692466,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 9.234801557532142
+          "weight": 9.234801557532142,
+          "error": 0.37756448027919454,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.22652527113722
+          "weight": 5.22652527113722,
+          "error": 0.3635971288672184,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 19.335336285171834
+          "weight": 19.335336285171834,
+          "error": 1.0959013228008556,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1361,8 +1403,8 @@
         "main_hand: Armor Piercer",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.784858928,
-      "verify_run_seconds": 1.4028083470000001
+      "weights_run_seconds": 1.12793635,
+      "verify_run_seconds": 1.037182386
     },
     {
       "spec": "hunter-beast-mastery",
@@ -1373,28 +1415,34 @@
       "talent_points": 16,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013035097923455106,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.2271614435786447
+          "weight": 2.2271614435786447,
+          "error": 0.058484659948692466,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 9.234801557532142
+          "weight": 9.234801557532142,
+          "error": 0.37756448027919454,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.22652527113722
+          "weight": 5.22652527113722,
+          "error": 0.3635971288672184,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 19.335336285171834
+          "weight": 19.335336285171834,
+          "error": 1.0959013228008556,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1569,8 +1617,8 @@
         "main_hand: Armor Piercer",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.784858928,
-      "verify_run_seconds": 1.361704619
+      "weights_run_seconds": 1.12793635,
+      "verify_run_seconds": 1.01620285
     },
     {
       "spec": "hunter-beast-mastery",
@@ -1581,28 +1629,34 @@
       "talent_points": 21,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001301531883931681,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.172938104158454
+          "weight": 2.172938104158454,
+          "error": 0.052476361316728004,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 9.431640782568628
+          "weight": 9.431640782568628,
+          "error": 0.38499844237206016,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.963865824285009
+          "weight": 4.963865824285009,
+          "error": 0.3758211040998344,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 5.292545360083992
+          "weight": 5.292545360083992,
+          "error": 1.2230176709419076,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1788,8 +1842,8 @@
         "finger2: Monkey Ring",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.8706951379999999,
-      "verify_run_seconds": 1.6129459609999999
+      "weights_run_seconds": 1.184564228,
+      "verify_run_seconds": 1.196700509
     },
     {
       "spec": "hunter-beast-mastery",
@@ -1800,28 +1854,34 @@
       "talent_points": 21,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001301531883931681,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.172938104158454
+          "weight": 2.172938104158454,
+          "error": 0.052476361316728004,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 9.431640782568628
+          "weight": 9.431640782568628,
+          "error": 0.38499844237206016,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 4.963865824285009
+          "weight": 4.963865824285009,
+          "error": 0.3758211040998344,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 5.292545360083992
+          "weight": 5.292545360083992,
+          "error": 1.2230176709419076,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2006,8 +2066,8 @@
         "finger2: Monkey Ring",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.8706951379999999,
-      "verify_run_seconds": 1.579654377
+      "weights_run_seconds": 1.184564228,
+      "verify_run_seconds": 1.1622681639999999
     },
     {
       "spec": "hunter-beast-mastery",
@@ -2018,28 +2078,34 @@
       "talent_points": 26,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013621553735119962,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.091640839697043
+          "weight": 2.091640839697043,
+          "error": 0.03764382953417709,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 9.663242010947531
+          "weight": 9.663242010947531,
+          "error": 0.40168806532869117,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.11332715611063
+          "weight": 5.11332715611063,
+          "error": 0.5304031243942444,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 6.160523270025375
+          "weight": 6.160523270025375,
+          "error": 1.4432820435081455,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2215,8 +2281,8 @@
         "feet: Dusky Boots",
         "main_hand: Frost Tiger Blade"
       ],
-      "weights_run_seconds": 1.935904377,
-      "verify_run_seconds": 1.638665053
+      "weights_run_seconds": 1.212663697,
+      "verify_run_seconds": 1.177527817
     },
     {
       "spec": "hunter-beast-mastery",
@@ -2227,28 +2293,34 @@
       "talent_points": 26,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013621553735119962,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.091640839697043
+          "weight": 2.091640839697043,
+          "error": 0.03764382953417709,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 9.663242010947531
+          "weight": 9.663242010947531,
+          "error": 0.40168806532869117,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.11332715611063
+          "weight": 5.11332715611063,
+          "error": 0.5304031243942444,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 6.160523270025375
+          "weight": 6.160523270025375,
+          "error": 1.4432820435081455,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2426,8 +2498,8 @@
         "feet: Dusky Boots",
         "main_hand: Frost Tiger Blade"
       ],
-      "weights_run_seconds": 1.935904377,
-      "verify_run_seconds": 1.575074219
+      "weights_run_seconds": 1.212663697,
+      "verify_run_seconds": 1.173660143
     },
     {
       "spec": "hunter-beast-mastery",
@@ -2438,28 +2510,34 @@
       "talent_points": 31,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012899298934767349,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.1514444580586094
+          "weight": 2.1514444580586094,
+          "error": 0.0508633977844042,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.452065270746623
+          "weight": 10.452065270746623,
+          "error": 0.42209192079794783,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.584919562983999
+          "weight": 5.584919562983999,
+          "error": 0.6791168541493742,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 10.749148295339483
+          "weight": 10.749148295339483,
+          "error": 1.6831087640278384,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2497,7 +2575,8 @@
           "source": "Engineering",
           "source_kind": "crafted",
           "score": 17.211555664468875,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "chest",
@@ -2645,8 +2724,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 2.060218451,
-      "verify_run_seconds": 1.875733587
+      "weights_run_seconds": 1.2558088889999999,
+      "verify_run_seconds": 1.342708858
     },
     {
       "spec": "hunter-beast-mastery",
@@ -2657,28 +2736,34 @@
       "talent_points": 31,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012899298934767349,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.1514444580586094
+          "weight": 2.1514444580586094,
+          "error": 0.0508633977844042,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.452065270746623
+          "weight": 10.452065270746623,
+          "error": 0.42209192079794783,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.584919562983999
+          "weight": 5.584919562983999,
+          "error": 0.6791168541493742,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 10.749148295339483
+          "weight": 10.749148295339483,
+          "error": 1.6831087640278384,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2716,7 +2801,8 @@
           "source": "Engineering",
           "source_kind": "crafted",
           "score": 17.211555664468875,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "chest",
@@ -2864,8 +2950,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 2.060218451,
-      "verify_run_seconds": 1.772220017
+      "weights_run_seconds": 1.2558088889999999,
+      "verify_run_seconds": 1.336650892
     },
     {
       "spec": "hunter-beast-mastery",
@@ -2876,28 +2962,34 @@
       "talent_points": 36,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013131649536112515,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.211622052819285
+          "weight": 2.211622052819285,
+          "error": 0.059081938305658284,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.542834559228114
+          "weight": 10.542834559228114,
+          "error": 0.4256142557402422,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.555028416660654
+          "weight": 5.555028416660654,
+          "error": 0.6639918759755096,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 13.321318737592396
+          "weight": 13.321318737592396,
+          "error": 1.6639557921544628,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3034,8 +3126,7 @@
           "source": "Blacksmithing",
           "source_kind": "crafted",
           "score": 147.5996838291936,
-          "verified": false,
-          "swap_note": "runner-up Illusionary Rod (id 7713) measured higher: 105.4 vs 104.9 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3080,8 +3171,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 2.047505088,
-      "verify_run_seconds": 1.837378408
+      "weights_run_seconds": 1.290807956,
+      "verify_run_seconds": 1.3351495070000001
     },
     {
       "spec": "hunter-beast-mastery",
@@ -3092,28 +3183,34 @@
       "talent_points": 36,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0013131649536112515,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.211622052819285
+          "weight": 2.211622052819285,
+          "error": 0.059081938305658284,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.542834559228114
+          "weight": 10.542834559228114,
+          "error": 0.4256142557402422,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.555028416660654
+          "weight": 5.555028416660654,
+          "error": 0.6639918759755096,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 13.321318737592396
+          "weight": 13.321318737592396,
+          "error": 1.6639557921544628,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3249,8 +3346,7 @@
           "source": "Blacksmithing",
           "source_kind": "crafted",
           "score": 147.5996838291936,
-          "verified": false,
-          "swap_note": "runner-up Illusionary Rod (id 7713) measured higher: 105.7 vs 105.2 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3295,8 +3391,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 2.047505088,
-      "verify_run_seconds": 1.775839975
+      "weights_run_seconds": 1.290807956,
+      "verify_run_seconds": 1.3104438489999999
     },
     {
       "spec": "hunter-beast-mastery",
@@ -3307,28 +3403,34 @@
       "talent_points": 41,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001333616319212442,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.212516879755078
+          "weight": 2.212516879755078,
+          "error": 0.06532234232676178,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.950364697207519
+          "weight": 10.950364697207519,
+          "error": 0.44180565833250146,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.683992371593826
+          "weight": 5.683992371593826,
+          "error": 0.6529842695222818,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 7.358657467671035
+          "weight": 7.358657467671035,
+          "error": 1.727717473652228,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3340,7 +3442,7 @@
           "source_kind": "dungeon",
           "score": 153.30510576090526,
           "verified": false,
-          "swap_note": "runner-up Eye of Theradras (id 17715) measured higher: 115.3 vs 112.9 set DPS - swapped in"
+          "swap_note": "runner-up Eye of Theradras (id 17715) measured higher: 117.6 vs 116.0 set DPS - swapped in"
         },
         {
           "slot": "neck",
@@ -3376,7 +3478,7 @@
           "source_kind": "crafted",
           "score": 56.839923715938255,
           "verified": false,
-          "swap_note": "runner-up Vest of the Den Watcher (id 21320) measured higher: 114.7 vs 112.9 set DPS - swapped in"
+          "swap_note": "runner-up Vest of the Den Watcher (id 21320) measured higher: 117.6 vs 116.0 set DPS - swapped in"
         },
         {
           "slot": "wrist",
@@ -3413,7 +3515,7 @@
           "source_kind": "crafted",
           "score": 306.6102115218105,
           "verified": false,
-          "swap_note": "runner-up Oilskin Leggings (id 9414) measured higher: 114.2 vs 112.9 set DPS - swapped in"
+          "swap_note": "runner-up Oilskin Leggings (id 9414) measured higher: 117.2 vs 116.0 set DPS - swapped in"
         },
         {
           "slot": "feet",
@@ -3423,7 +3525,7 @@
           "source_kind": "dungeon",
           "score": 56.839923715938255,
           "verified": false,
-          "swap_note": "runner-up Albino Crocscale Boots (id 17728) measured higher: 114.1 vs 112.9 set DPS - swapped in"
+          "swap_note": "runner-up Albino Crocscale Boots (id 17728) measured higher: 117.6 vs 116.0 set DPS - swapped in"
         },
         {
           "slot": "finger1",
@@ -3466,8 +3568,7 @@
           "source": "Blacksmithing",
           "source_kind": "crafted",
           "score": 153.30510576090526,
-          "verified": false,
-          "swap_note": "runner-up Illusionary Rod (id 7713) measured higher: 113.4 vs 112.9 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3475,16 +3576,15 @@
         },
         {
           "slot": "ranged",
-          "item_id": 20086,
-          "item_name": "Dusksteel Throwing Knife",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 404.4076181582856,
-          "verified": false,
-          "swap_note": "runner-up Dark Iron Rifle (id 16004) measured higher: 114.5 vs 112.9 set DPS - swapped in"
+          "item_id": 16004,
+          "item_name": "Dark Iron Rifle",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 396.62,
+          "verified": true
         }
       ],
-      "set_dps": 112.86727718653466,
+      "set_dps": 115.95857180647664,
       "no_source_count": 3485,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3511,10 +3611,10 @@
         "feet: Greaves of Withering Despair",
         "finger1: Blackstone Ring",
         "finger2: Masons Fraternity Ring",
-        "ranged: Dusksteel Throwing Knife"
+        "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.024997059,
-      "verify_run_seconds": 1.769181203
+      "weights_run_seconds": 1.260929327,
+      "verify_run_seconds": 1.33567663
     },
     {
       "spec": "hunter-beast-mastery",
@@ -3525,28 +3625,34 @@
       "talent_points": 41,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001333616319212442,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.212516879755078
+          "weight": 2.212516879755078,
+          "error": 0.06532234232676178,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 10.950364697207519
+          "weight": 10.950364697207519,
+          "error": 0.44180565833250146,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.683992371593826
+          "weight": 5.683992371593826,
+          "error": 0.6529842695222818,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 7.358657467671035
+          "weight": 7.358657467671035,
+          "error": 1.727717473652228,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3558,7 +3664,7 @@
           "source_kind": "dungeon",
           "score": 153.30510576090526,
           "verified": false,
-          "swap_note": "runner-up Eye of Theradras (id 17715) measured higher: 115.9 vs 113.9 set DPS - swapped in"
+          "swap_note": "runner-up Eye of Theradras (id 17715) measured higher: 118.4 vs 116.7 set DPS - swapped in"
         },
         {
           "slot": "neck",
@@ -3594,7 +3700,7 @@
           "source_kind": "crafted",
           "score": 56.839923715938255,
           "verified": false,
-          "swap_note": "runner-up Vest of the Den Watcher (id 21320) measured higher: 115.9 vs 113.9 set DPS - swapped in"
+          "swap_note": "runner-up Vest of the Den Watcher (id 21320) measured higher: 118.4 vs 116.7 set DPS - swapped in"
         },
         {
           "slot": "wrist",
@@ -3631,7 +3737,7 @@
           "source_kind": "crafted",
           "score": 306.6102115218105,
           "verified": false,
-          "swap_note": "runner-up Oilskin Leggings (id 9414) measured higher: 115.2 vs 113.9 set DPS - swapped in"
+          "swap_note": "runner-up Oilskin Leggings (id 9414) measured higher: 118.2 vs 116.7 set DPS - swapped in"
         },
         {
           "slot": "feet",
@@ -3641,7 +3747,7 @@
           "source_kind": "dungeon",
           "score": 56.839923715938255,
           "verified": false,
-          "swap_note": "runner-up Albino Crocscale Boots (id 17728) measured higher: 114.9 vs 113.9 set DPS - swapped in"
+          "swap_note": "runner-up Albino Crocscale Boots (id 17728) measured higher: 117.6 vs 116.7 set DPS - swapped in"
         },
         {
           "slot": "finger1",
@@ -3684,8 +3790,7 @@
           "source": "Blacksmithing",
           "source_kind": "crafted",
           "score": 153.30510576090526,
-          "verified": false,
-          "swap_note": "runner-up Illusionary Rod (id 7713) measured higher: 114.1 vs 113.9 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3693,16 +3798,15 @@
         },
         {
           "slot": "ranged",
-          "item_id": 20086,
-          "item_name": "Dusksteel Throwing Knife",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 404.4076181582856,
-          "verified": false,
-          "swap_note": "runner-up Dark Iron Rifle (id 16004) measured higher: 115.9 vs 113.9 set DPS - swapped in"
+          "item_id": 16004,
+          "item_name": "Dark Iron Rifle",
+          "source": "Engineering",
+          "source_kind": "crafted",
+          "score": 396.62,
+          "verified": true
         }
       ],
-      "set_dps": 113.86002463117067,
+      "set_dps": 116.7309158521451,
       "no_source_count": 3485,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3729,10 +3833,10 @@
         "feet: Greaves of Withering Despair",
         "finger1: Blackstone Ring",
         "finger2: Masons Fraternity Ring",
-        "ranged: Dusksteel Throwing Knife"
+        "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 2.024997059,
-      "verify_run_seconds": 1.775790226
+      "weights_run_seconds": 1.260929327,
+      "verify_run_seconds": 1.3256457240000001
     },
     {
       "spec": "hunter-beast-mastery",
@@ -3743,28 +3847,34 @@
       "talent_points": 46,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001374435219087201,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.2038982651291232
+          "weight": 2.2038982651291232,
+          "error": 0.059107454146820844,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 11.77284997099464
+          "weight": 11.77284997099464,
+          "error": 0.4650405706409946,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.749288843368956
+          "weight": 5.749288843368956,
+          "error": 0.7115662386872911,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 6.981532711262704
+          "weight": 6.981532711262704,
+          "error": 1.7932465370396369,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -3904,8 +4014,7 @@
           "source": "Blacksmithing",
           "source_kind": "crafted",
           "score": 164.81989959392496,
-          "verified": false,
-          "swap_note": "runner-up Illusionary Rod (id 7713) measured higher: 123.4 vs 123.2 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3953,8 +4062,8 @@
         "trinket2: Smokey's Lighter",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.008990975,
-      "verify_run_seconds": 1.8077554789999999
+      "weights_run_seconds": 1.282997428,
+      "verify_run_seconds": 1.361823145
     },
     {
       "spec": "hunter-beast-mastery",
@@ -3965,28 +4074,34 @@
       "talent_points": 46,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001374435219087201,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.2038982651291232
+          "weight": 2.2038982651291232,
+          "error": 0.059107454146820844,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 11.77284997099464
+          "weight": 11.77284997099464,
+          "error": 0.4650405706409946,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.749288843368956
+          "weight": 5.749288843368956,
+          "error": 0.7115662386872911,
+          "insignificant": false
         },
         {
           "stat": "melee_haste",
-          "weight": 6.981532711262704
+          "weight": 6.981532711262704,
+          "error": 1.7932465370396369,
+          "insignificant": true
         }
       ],
       "slots": [
@@ -4125,8 +4240,7 @@
           "source": "Blacksmithing",
           "source_kind": "crafted",
           "score": 164.81989959392496,
-          "verified": false,
-          "swap_note": "runner-up Illusionary Rod (id 7713) measured higher: 124.4 vs 123.6 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -4174,8 +4288,8 @@
         "trinket2: Smokey's Lighter",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.008990975,
-      "verify_run_seconds": 1.740126834
+      "weights_run_seconds": 1.282997428,
+      "verify_run_seconds": 1.2923501769999999
     },
     {
       "spec": "hunter-beast-mastery",
@@ -4186,28 +4300,34 @@
       "talent_points": 51,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012143657951591076,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.3200315989873537
+          "weight": 2.3200315989873537,
+          "error": 0.08123010951569448,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 15.653343145274238
+          "weight": 15.653343145274238,
+          "error": 0.5875133762892862,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 13.711844253924125
+          "weight": 13.711844253924125,
+          "error": 1.9631833835403887,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4227,8 +4347,7 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "score": 438.2936080676787,
-          "verified": false,
-          "swap_note": "runner-up Gem of Trapped Innocents (id 23057) measured higher: 219.1 vs 216.9 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -4346,7 +4465,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 438.2936080676787,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4398,8 +4518,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.9932583529999999,
-      "verify_run_seconds": 1.801595308
+      "weights_run_seconds": 1.271756668,
+      "verify_run_seconds": 1.350239117
     },
     {
       "spec": "hunter-beast-mastery",
@@ -4410,28 +4530,34 @@
       "talent_points": 51,
       "weights": [
         {
-          "stat": "attack_power",
-          "weight": 0
-        },
-        {
           "stat": "ranged_attack_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0012143657951591076,
+          "insignificant": false
         },
         {
           "stat": "agility",
-          "weight": 2.3200315989873537
+          "weight": 2.3200315989873537,
+          "error": 0.08123010951569448,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 15.653343145274238
+          "weight": 15.653343145274238,
+          "error": 0.5875133762892862,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "melee_haste",
-          "weight": 13.711844253924125
+          "weight": 13.711844253924125,
+          "error": 1.9631833835403887,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4451,8 +4577,7 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "score": 438.2936080676787,
-          "verified": false,
-          "swap_note": "runner-up Gem of Trapped Innocents (id 23057) measured higher: 219.1 vs 218.2 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -4570,7 +4695,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 438.2936080676787,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4622,8 +4748,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.9932583529999999,
-      "verify_run_seconds": 1.7520605900000001
+      "weights_run_seconds": 1.271756668,
+      "verify_run_seconds": 1.346841118
     }
   ]
 }

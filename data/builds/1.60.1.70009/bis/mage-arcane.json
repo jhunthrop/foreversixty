@@ -1,8 +1,8 @@
 {
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
-  "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-28T22:20:06Z",
+  "engine_version": "b5ac36a52",
+  "generated_at": "2026-09-29T01:08:53Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -14,31 +14,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0027708521103468066,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.8186379807748845
+          "weight": 1.8186379807748845,
+          "error": 0.09831922504053142,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.9727698193323382
+          "weight": 0.9727698193323382,
+          "error": 0.04263570198408627,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.385121391639254
+          "weight": 2.385121391639254,
+          "error": 0.10289004309455417,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0027708521103468066,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -180,8 +194,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 1.072432995,
-      "verify_run_seconds": 0.303143834
+      "weights_run_seconds": 0.80821124,
+      "verify_run_seconds": 0.224995985
     },
     {
       "spec": "mage-arcane",
@@ -193,31 +207,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0027708521103468066,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.8186379807748845
+          "weight": 1.8186379807748845,
+          "error": 0.09831922504053142,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.9727698193323382
+          "weight": 0.9727698193323382,
+          "error": 0.04263570198408627,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.385121391639254
+          "weight": 2.385121391639254,
+          "error": 0.10289004309455417,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0027708521103468066,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -359,8 +387,8 @@
         "off_hand: Father Flame",
         "ranged: Lesser Magic Wand"
       ],
-      "weights_run_seconds": 1.072432995,
-      "verify_run_seconds": 0.303547302
+      "weights_run_seconds": 0.80821124,
+      "verify_run_seconds": 0.225285325
     },
     {
       "spec": "mage-arcane",
@@ -372,31 +400,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024784306963144503,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.4587675735824557
+          "weight": 1.4587675735824557,
+          "error": 0.08431760841323896,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.914778440103068
+          "weight": 0.914778440103068,
+          "error": 0.040334291543218624,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.2349377861208413
+          "weight": 2.2349377861208413,
+          "error": 0.08913845376799029,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024784306963144503,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -552,8 +594,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.082600406,
-      "verify_run_seconds": 0.579645713
+      "weights_run_seconds": 0.789313919,
+      "verify_run_seconds": 0.428187286
     },
     {
       "spec": "mage-arcane",
@@ -565,31 +607,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024784306963144503,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 1.4587675735824557
+          "weight": 1.4587675735824557,
+          "error": 0.08431760841323896,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.914778440103068
+          "weight": 0.914778440103068,
+          "error": 0.040334291543218624,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.2349377861208413
+          "weight": 2.2349377861208413,
+          "error": 0.08913845376799029,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024784306963144503,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -746,8 +802,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.082600406,
-      "verify_run_seconds": 0.593383923
+      "weights_run_seconds": 0.789313919,
+      "verify_run_seconds": 0.442149858
     },
     {
       "spec": "mage-arcane",
@@ -759,31 +815,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024561766077735954,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.9668985197121505
+          "weight": 0.9668985197121505,
+          "error": 0.06536143523689845,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.8633861195045398
+          "weight": 0.8633861195045398,
+          "error": 0.03697246169007052,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.1855239653421266
+          "weight": 2.1855239653421266,
+          "error": 0.08419448284950448,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024561766077735954,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -961,8 +1031,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.062576685,
-      "verify_run_seconds": 0.623839581
+      "weights_run_seconds": 0.789356523,
+      "verify_run_seconds": 0.450743698
     },
     {
       "spec": "mage-arcane",
@@ -974,31 +1044,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024561766077735954,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.9668985197121505
+          "weight": 0.9668985197121505,
+          "error": 0.06536143523689845,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 0.8633861195045398
+          "weight": 0.8633861195045398,
+          "error": 0.03697246169007052,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.1855239653421266
+          "weight": 2.1855239653421266,
+          "error": 0.08419448284950448,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0024561766077735954,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1176,8 +1260,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.062576685,
-      "verify_run_seconds": 0.623261619
+      "weights_run_seconds": 0.789356523,
+      "verify_run_seconds": 0.46653482
     },
     {
       "spec": "mage-arcane",
@@ -1189,31 +1273,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0031998858335195893,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.8419939827983663
+          "weight": 0.8419939827983663,
+          "error": 0.06459465410582381,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.1447953408314542
+          "weight": 1.1447953408314542,
+          "error": 0.04788408722670503,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.878367879491879
+          "weight": 2.878367879491879,
+          "error": 0.3505404811483991,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0031998858335195893,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1390,8 +1488,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Kam's Walking Stick"
       ],
-      "weights_run_seconds": 1.080879128,
-      "verify_run_seconds": 0.733804278
+      "weights_run_seconds": 0.777207996,
+      "verify_run_seconds": 0.551233343
     },
     {
       "spec": "mage-arcane",
@@ -1403,31 +1501,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0031998858335195893,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.8419939827983663
+          "weight": 0.8419939827983663,
+          "error": 0.06459465410582381,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.1447953408314542
+          "weight": 1.1447953408314542,
+          "error": 0.04788408722670503,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 2.878367879491879
+          "weight": 2.878367879491879,
+          "error": 0.3505404811483991,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0031998858335195893,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1604,8 +1716,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Kam's Walking Stick"
       ],
-      "weights_run_seconds": 1.080879128,
-      "verify_run_seconds": 0.753031983
+      "weights_run_seconds": 0.777207996,
+      "verify_run_seconds": 0.557173945
     },
     {
       "spec": "mage-arcane",
@@ -1617,31 +1729,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0036605522751509438,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6393181211445508
+          "weight": 0.6393181211445508,
+          "error": 0.06736415465296122,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.1662039581312806
+          "weight": 1.1662039581312806,
+          "error": 0.044306162560419894,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.1714987864254773
+          "weight": 3.1714987864254773,
+          "error": 0.5311598819258601,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0036605522751509438,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -1826,8 +1952,8 @@
         "feet: Acidic Walkers",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.029215125,
-      "verify_run_seconds": 0.813335212
+      "weights_run_seconds": 0.771450751,
+      "verify_run_seconds": 0.612404858
     },
     {
       "spec": "mage-arcane",
@@ -1839,31 +1965,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0036605522751509438,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.6393181211445508
+          "weight": 0.6393181211445508,
+          "error": 0.06736415465296122,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.1662039581312806
+          "weight": 1.1662039581312806,
+          "error": 0.044306162560419894,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.1714987864254773
+          "weight": 3.1714987864254773,
+          "error": 0.5311598819258601,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0036605522751509438,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2049,8 +2189,8 @@
         "feet: Acidic Walkers",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.029215125,
-      "verify_run_seconds": 0.836414215
+      "weights_run_seconds": 0.771450751,
+      "verify_run_seconds": 0.634543096
     },
     {
       "spec": "mage-arcane",
@@ -2062,31 +2202,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014578808588922793,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.04719825579438372
+          "weight": 0.04719825579438372,
+          "error": 0.007953907834959133,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.5574187669075696
+          "weight": 1.5574187669075696,
+          "error": 0.043716240863934,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.1190435021296516
+          "weight": 3.1190435021296516,
+          "error": 0.08281075604655133,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.5413444317374732
+          "weight": 1.5413444317374732,
+          "error": 0.05092770678647554,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014578808588922793,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2272,8 +2426,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.858225499,
-      "verify_run_seconds": 0.869324413
+      "weights_run_seconds": 0.661610404,
+      "verify_run_seconds": 0.623524221
     },
     {
       "spec": "mage-arcane",
@@ -2285,31 +2439,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014578808588922793,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.04719825579438372
+          "weight": 0.04719825579438372,
+          "error": 0.007953907834959133,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 1.5574187669075696
+          "weight": 1.5574187669075696,
+          "error": 0.043716240863934,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.1190435021296516
+          "weight": 3.1190435021296516,
+          "error": 0.08281075604655133,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 1.5413444317374732
+          "weight": 1.5413444317374732,
+          "error": 0.05092770678647554,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0014578808588922793,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2496,8 +2664,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.858225499,
-      "verify_run_seconds": 0.875793928
+      "weights_run_seconds": 0.661610404,
+      "verify_run_seconds": 0.669140468
     },
     {
       "spec": "mage-arcane",
@@ -2509,31 +2677,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016080776390088195,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.09084931844058435
+          "weight": 0.09084931844058435,
+          "error": 0.014669996589894563,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.1592288436233655
+          "weight": 3.1592288436233655,
+          "error": 0.08826565927752807,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.8639738044151897
+          "weight": 3.8639738044151897,
+          "error": 0.10522827522649889,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 2.04315061982723
+          "weight": 2.04315061982723,
+          "error": 0.07155346022835186,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016080776390088195,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2717,8 +2899,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 0.889306088,
-      "verify_run_seconds": 0.96484782
+      "weights_run_seconds": 0.684155863,
+      "verify_run_seconds": 0.729889682
     },
     {
       "spec": "mage-arcane",
@@ -2730,31 +2912,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016080776390088195,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.09084931844058435
+          "weight": 0.09084931844058435,
+          "error": 0.014669996589894563,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.1592288436233655
+          "weight": 3.1592288436233655,
+          "error": 0.08826565927752807,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.8639738044151897
+          "weight": 3.8639738044151897,
+          "error": 0.10522827522649889,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 2.04315061982723
+          "weight": 2.04315061982723,
+          "error": 0.07155346022835186,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016080776390088195,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -2937,8 +3133,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 0.889306088,
-      "verify_run_seconds": 0.999715034
+      "weights_run_seconds": 0.684155863,
+      "verify_run_seconds": 0.730433983
     },
     {
       "spec": "mage-arcane",
@@ -2950,31 +3146,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016728188448525182,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.09325211233292346
+          "weight": 0.09325211233292346,
+          "error": 0.015402789301245699,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.0532877913966217
+          "weight": 3.0532877913966217,
+          "error": 0.08339935338093431,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.7945435994264662
+          "weight": 3.7945435994264662,
+          "error": 0.12914277037788655,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 2.010604705445112
+          "weight": 2.010604705445112,
+          "error": 0.07040170521122316,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016728188448525182,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3111,8 +3321,7 @@
           "source": "Scarlet Monastery: Arcanist Doan",
           "source_kind": "dungeon",
           "score": 43.305541753550244,
-          "verified": false,
-          "swap_note": "runner-up Spellshifter Rod (id 9527) measured higher: 73.2 vs 71.9 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3158,8 +3367,8 @@
         "trinket2: Demon's Blood",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.882041544,
-      "verify_run_seconds": 0.947018918
+      "weights_run_seconds": 0.679114939,
+      "verify_run_seconds": 0.713019767
     },
     {
       "spec": "mage-arcane",
@@ -3171,31 +3380,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016728188448525182,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.09325211233292346
+          "weight": 0.09325211233292346,
+          "error": 0.015402789301245699,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 3.0532877913966217
+          "weight": 3.0532877913966217,
+          "error": 0.08339935338093431,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 3.7945435994264662
+          "weight": 3.7945435994264662,
+          "error": 0.12914277037788655,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 2.010604705445112
+          "weight": 2.010604705445112,
+          "error": 0.07040170521122316,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016728188448525182,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3334,8 +3557,7 @@
           "source": "Scarlet Monastery: Arcanist Doan",
           "source_kind": "dungeon",
           "score": 43.305541753550244,
-          "verified": false,
-          "swap_note": "runner-up Spellshifter Rod (id 9527) measured higher: 59.4 vs 58.5 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3381,8 +3603,8 @@
         "trinket2: Demon's Blood",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.882041544,
-      "verify_run_seconds": 0.978462289
+      "weights_run_seconds": 0.679114939,
+      "verify_run_seconds": 0.750709257
     },
     {
       "spec": "mage-arcane",
@@ -3394,31 +3616,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001669143867640112,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.10628485702221353
+          "weight": 0.10628485702221353,
+          "error": 0.020148217892763606,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.627817612687636
+          "weight": 4.627817612687636,
+          "error": 0.13429773673840353,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.657116256367807
+          "weight": 5.657116256367807,
+          "error": 0.23802591786254496,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 2.999806007238973
+          "weight": 2.999806007238973,
+          "error": 0.10283538072386782,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001669143867640112,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3557,8 +3793,7 @@
           "source": "Blackrock Depths: Pyromancer Loregrain",
           "source_kind": "dungeon",
           "score": 66.06486486189347,
-          "verified": false,
-          "swap_note": "runner-up Illusionary Rod (id 7713) measured higher: 84.9 vs 84.9 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -3604,8 +3839,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.895079801,
-      "verify_run_seconds": 0.983644863
+      "weights_run_seconds": 0.700262521,
+      "verify_run_seconds": 0.730845126
     },
     {
       "spec": "mage-arcane",
@@ -3617,31 +3852,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001669143867640112,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.10628485702221353
+          "weight": 0.10628485702221353,
+          "error": 0.020148217892763606,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.627817612687636
+          "weight": 4.627817612687636,
+          "error": 0.13429773673840353,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.657116256367807
+          "weight": 5.657116256367807,
+          "error": 0.23802591786254496,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 2.999806007238973
+          "weight": 2.999806007238973,
+          "error": 0.10283538072386782,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001669143867640112,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -3826,8 +4075,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.895079801,
-      "verify_run_seconds": 1.016081219
+      "weights_run_seconds": 0.700262521,
+      "verify_run_seconds": 0.773007954
     },
     {
       "spec": "mage-arcane",
@@ -3839,31 +4088,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016700669503836522,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.09519653825446053
+          "weight": 0.09519653825446053,
+          "error": 0.019217921471340018,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.632004062001135
+          "weight": 4.632004062001135,
+          "error": 0.13615685425116852,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.642977896322721
+          "weight": 5.642977896322721,
+          "error": 0.24008788656570476,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 3.000964230800891
+          "weight": 3.000964230800891,
+          "error": 0.10290962694194677,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016700669503836522,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4043,8 +4306,8 @@
         "finger2: Blackstone Ring",
         "trinket2: Smokey's Lighter"
       ],
-      "weights_run_seconds": 0.901358764,
-      "verify_run_seconds": 0.958839254
+      "weights_run_seconds": 0.684628425,
+      "verify_run_seconds": 0.701209811
     },
     {
       "spec": "mage-arcane",
@@ -4056,31 +4319,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016700669503836522,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.09519653825446053
+          "weight": 0.09519653825446053,
+          "error": 0.019217921471340018,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 4.632004062001135
+          "weight": 4.632004062001135,
+          "error": 0.13615685425116852,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 5.642977896322721
+          "weight": 5.642977896322721,
+          "error": 0.24008788656570476,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 3.000964230800891
+          "weight": 3.000964230800891,
+          "error": 0.10290962694194677,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.0016700669503836522,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4261,8 +4538,8 @@
         "finger2: Blackstone Ring",
         "trinket2: Smokey's Lighter"
       ],
-      "weights_run_seconds": 0.901358764,
-      "verify_run_seconds": 0.992240276
+      "weights_run_seconds": 0.684628425,
+      "verify_run_seconds": 0.749027862
     },
     {
       "spec": "mage-arcane",
@@ -4274,31 +4551,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001671673511660357,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.1372298520255278
+          "weight": 0.1372298520255278,
+          "error": 0.027790475652723905,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 6.853026624457921
+          "weight": 6.853026624457921,
+          "error": 0.19783723787975688,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 8.396118394444224
+          "weight": 8.396118394444224,
+          "error": 0.34485707179804237,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 4.451912447686659
+          "weight": 4.451912447686659,
+          "error": 0.15234194962675296,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001671673511660357,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4440,8 +4731,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 345.8644111935621,
-          "verified": false,
-          "swap_note": "runner-up Atiesh, Greatstaff of the Guardian (id 22589) measured higher: 178.6 vs 174.9 set DPS - swapped in"
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4493,8 +4784,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.92518205,
-      "verify_run_seconds": 1.016918231
+      "weights_run_seconds": 0.698191667,
+      "verify_run_seconds": 0.770412886
     },
     {
       "spec": "mage-arcane",
@@ -4506,31 +4797,45 @@
       "weights": [
         {
           "stat": "spell_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001671673511660357,
+          "insignificant": false
         },
         {
           "stat": "intellect",
-          "weight": 0.1372298520255278
+          "weight": 0.1372298520255278,
+          "error": 0.027790475652723905,
+          "insignificant": false
         },
         {
           "stat": "crit",
-          "weight": 6.853026624457921
+          "weight": 6.853026624457921,
+          "error": 0.19783723787975688,
+          "insignificant": false
         },
         {
           "stat": "hit",
-          "weight": 8.396118394444224
+          "weight": 8.396118394444224,
+          "error": 0.34485707179804237,
+          "insignificant": false
         },
         {
           "stat": "spell_haste",
-          "weight": 4.451912447686659
+          "weight": 4.451912447686659,
+          "error": 0.15234194962675296,
+          "insignificant": false
         },
         {
           "stat": "spell_penetration",
-          "weight": 0
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
         },
         {
           "stat": "arcane_power",
-          "weight": 1
+          "weight": 1,
+          "error": 0.001671673511660357,
+          "insignificant": false
         }
       ],
       "slots": [
@@ -4663,7 +4968,8 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "verified": false,
-          "swap_note": "runner-up Kiss of the Spider (id 22954) measured higher: 140.7 vs 140.6 set DPS - swapped in"
+          "swap_note": "runner-up Kiss of the Spider (id 22954) measured higher: 140.7 vs 140.6 set DPS - swapped in",
+          "effect_unmodelled": true
         },
         {
           "slot": "main_hand",
@@ -4672,8 +4978,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 345.8644111935621,
-          "verified": false,
-          "swap_note": "runner-up Atiesh, Greatstaff of the Guardian (id 22589) measured higher: 144.8 vs 140.6 set DPS - swapped in"
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -4725,8 +5031,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.92518205,
-      "verify_run_seconds": 1.062674233
+      "weights_run_seconds": 0.698191667,
+      "verify_run_seconds": 0.788893867
     }
   ]
 }
