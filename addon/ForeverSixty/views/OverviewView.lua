@@ -353,14 +353,22 @@ local function banner(parent, width, onLoad, onDismiss)
 	frame.eyebrow:Hide()
 	frame.title:SetPoint("TOPLEFT", frame, "TOPLEFT", S.padding, -S.padding)
 	frame.detail:SetPoint("TOPLEFT", frame.title, "BOTTOMLEFT", 0, -S.gap)
-	local load = Widgets.button(frame, L.buildArrivedLoad, function()
-		onLoad()
-	end)
-	load:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -S.padding - S.buttonWidth - S.gap * 2, S.padding)
+	-- Dismiss anchors straight to the frame's own edge; Load anchors off
+	-- Dismiss rather than duplicating its width and the gap in a second
+	-- offset from the frame -- the first in-game screenshot showed Load
+	-- drifting past the frame's right edge once that duplicated math and
+	-- the frame's own width math (ctx.contentWidth vs the scrollable
+	-- page's inner width) disagreed. Anchoring off Dismiss instead means
+	-- Load can only ever sit where Dismiss actually is, however either
+	-- width is computed.
 	local dismiss = Widgets.button(frame, L.buildArrivedDismiss, function()
 		onDismiss()
 	end)
 	dismiss:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -S.padding, S.padding)
+	local load = Widgets.button(frame, L.buildArrivedLoad, function()
+		onLoad()
+	end)
+	load:SetPoint("RIGHT", dismiss, "LEFT", -S.gap * 2, 0)
 	frame.load, frame.dismiss = load, dismiss
 	return frame
 end

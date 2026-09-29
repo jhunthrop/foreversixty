@@ -242,6 +242,32 @@ describe("OverviewView", function()
 			assert.is_nil(Follow.build)
 			assert.is_false(view.arrival:IsShown())
 		end)
+
+		-- The clipped-banner bug (docs/tenets.md item 1): the first in-game
+		-- screenshot showed Load sitting past the window's own right edge.
+		-- Window.pageWidth (the real page holder's width) and
+		-- Window.contentWidth (what this file lays content out in) are
+		-- pinned here as their own formulas rather than by requiring
+		-- Window.lua, a different lane's file this wave.
+		it("keeps every banner child inside the page holder's own width", function()
+			start()
+			_G.ForeverSixtyInbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
+			local S = require("Theme").SIZES
+			local holderWidth = S.windowWidth - S.sidebarWidth
+			local contentWidth = holderWidth - S.padding * 2
+			local holder = _G.CreateFrame("Frame")
+			holder:SetSize(holderWidth, S.windowHeight - S.titleBarHeight - S.headerHeight)
+			local view = OverviewView.mount(holder, {
+				data = DATA, contentWidth = contentWidth, select = function() end,
+				refreshEverything = function() end,
+			})
+			assert.is_true(view.arrival:IsShown())
+			local cache = {}
+			for _, child in ipairs({ view.arrival, view.arrival.load, view.arrival.dismiss }) do
+				assert.is_true(helper.rightEdgeWithin(child, holder, cache) >= 0,
+					"a banner child's right edge must not pass the page holder's own right edge")
+			end
+		end)
 	end)
 
 	-- The personal rating card (design section 3): always shows, its

@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Fixed the Overview's build-arrived banner: the Load button could land past the window's
+  own right edge because it duplicated Dismiss's own width-and-gap arithmetic against a
+  frame width that could disagree with it; Load now anchors directly off Dismiss instead,
+  so the two can never drift apart, with a layout test pinning every banner child inside
+  the page's own width.
 - Hovering an equipment slot on the character frame now names the best-in-slot item for
   your spec, faction and level, marked equipped when it is what you already wear or newly
   the pick since your last level; an empty slot shows it directly, since it has no item
