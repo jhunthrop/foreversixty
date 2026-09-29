@@ -4612,6 +4612,11 @@
             "spell_id": 1495,
             "name": "Mongoose Bite",
             "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
+          },
+          {
+            "spell_id": 13795,
+            "name": "Immolation Trap",
+            "condition": "Immolation Trap on cooldown: within 5 yards it lands as a melee-range filler, gated only by its own 30-second cooldown and mana cost."
           }
         ]
       },
@@ -4632,6 +4637,11 @@
             "spell_id": 14269,
             "name": "Mongoose Bite",
             "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
+          },
+          {
+            "spell_id": 14302,
+            "name": "Immolation Trap",
+            "condition": "Immolation Trap on cooldown: within 5 yards it lands as a melee-range filler, gated only by its own 30-second cooldown and mana cost."
           },
           {
             "spell_id": 1317257,
@@ -4659,6 +4669,11 @@
             "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
           },
           {
+            "spell_id": 14303,
+            "name": "Immolation Trap",
+            "condition": "Immolation Trap on cooldown: within 5 yards it lands as a melee-range filler, gated only by its own 30-second cooldown and mana cost."
+          },
+          {
             "spell_id": 1317257,
             "name": "Strider Kick",
             "condition": "Strider Kick as the lowest-priority filler on its own 8s cooldown."
@@ -4682,6 +4697,11 @@
             "spell_id": 14269,
             "name": "Mongoose Bite",
             "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
+          },
+          {
+            "spell_id": 14303,
+            "name": "Immolation Trap",
+            "condition": "Immolation Trap on cooldown: within 5 yards it lands as a melee-range filler, gated only by its own 30-second cooldown and mana cost."
           },
           {
             "spell_id": 1317257,
@@ -4709,6 +4729,11 @@
             "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
           },
           {
+            "spell_id": 14304,
+            "name": "Immolation Trap",
+            "condition": "Immolation Trap on cooldown: within 5 yards it lands as a melee-range filler, gated only by its own 30-second cooldown and mana cost."
+          },
+          {
             "spell_id": 1317257,
             "name": "Strider Kick",
             "condition": "Strider Kick as the lowest-priority filler on its own 8s cooldown."
@@ -4732,6 +4757,11 @@
             "spell_id": 14271,
             "name": "Mongoose Bite",
             "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
+          },
+          {
+            "spell_id": 14305,
+            "name": "Immolation Trap",
+            "condition": "Immolation Trap on cooldown: within 5 yards it lands as a melee-range filler, gated only by its own 30-second cooldown and mana cost."
           },
           {
             "spell_id": 1317257,
