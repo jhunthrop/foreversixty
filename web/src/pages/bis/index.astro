@@ -5,13 +5,13 @@
 // list yet still gets a link -- its own page carries the empty state -- rather than being
 // left off the index, which would look like the class does not exist here at all.
 import Base from '../../layouts/Base.astro';
-import ClassTile from '../../components/ClassTile.astro';
+import BisClassCard, { type BisClassCardSpec } from '../../components/bis/BisClassCard.astro';
 import UpdatedStamp from '../../components/UpdatedStamp.astro';
 import classes from '../../data/classes.json';
 import activeBuild from '../../data/active-build.json';
 import { latest } from '../../lib/dates';
 import { bisCopy } from '../../lib/bis/copy';
-import { groupByClass, loadBisFile, readSpecCatalog } from '../../lib/bis/load';
+import { bandEntry, groupByClass, loadBisFile, readSpecCatalog } from '../../lib/bis/load';
 
 const catalog = readSpecCatalog();
 const grouped = groupByClass(catalog);
@@ -23,10 +23,16 @@ const updated =
 const classesWithSpecs = classes
   .map((c) => ({
     ...c,
-    specs: (grouped.find((g) => g.classSlug === c.slug)?.specs ?? []).map((spec) => ({
-      ...spec,
-      hasData: loadBisFile(spec.spec, activeBuild.build) !== null,
-    })),
+    specs: (grouped.find((g) => g.classSlug === c.slug)?.specs ?? []).map((spec): BisClassCardSpec => {
+      const file = loadBisFile(spec.spec, activeBuild.build);
+      return {
+        class_slug: spec.class_slug,
+        spec_slug: spec.spec_slug,
+        name: spec.name,
+        hasData: file !== null,
+        band60Dps: file === null ? undefined : bandEntry(file, 60, 'alliance')?.set_dps,
+      };
+    }),
   }))
   .filter((c) => c.specs.length > 0);
 ---
@@ -44,21 +50,7 @@ const classesWithSpecs = classes
     <p class="text-muted text-[14px]">{bisCopy.indexIntro}</p>
     <div class="flex flex-col gap-3">
       {classesWithSpecs.map((c) => (
-        <section id={c.slug} class="rounded-control bg-raised border border-line p-4 scroll-mt-20">
-          <div class="grid grid-cols-[84px_1fr] gap-4 items-start">
-            <ClassTile name={c.name} slug={c.slug} />
-            <ul class="flex flex-wrap gap-x-4 gap-y-1 list-none p-0 m-0 text-[13px]">
-              {c.specs.map((spec) => (
-                <li>
-                  <a href={`/bis/${spec.class_slug}/${spec.spec_slug}`}>
-                    {spec.name}
-                    {!spec.hasData && <span class="text-muted"> · {bisCopy.noDataYet}</span>}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
+        <BisClassCard name={c.name} slug={c.slug} specs={c.specs} />
       ))}
     </div>
   </main>
