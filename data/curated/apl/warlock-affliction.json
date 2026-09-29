@@ -2,17 +2,37 @@
   "spec": "warlock-affliction",
   "state": "written",
   "notes": "Adapted from the fork's single shared warlock preset (ui/warlock/apls/rotation.apl.json), which wowsims models as one package for all three specs. That preset's Shadow Bolt was a stale rank (25307 cast at rank 9; the build's current top rank for 25307 is 10) -- fixed here. It kept Amplify Curse as a prepull (buffs the next curse) which Affliction alone talents into, so it stays; Demonic Sacrifice was dropped since sacrificing the pet is a Demonology-tree talent Affliction does not have. Immolate was dropped as a maintained DoT (Destruction's signature, not Affliction's) in favor of Bane of Agony and Corruption, and Wrack (1316697) is added as a third maintained DoT -- Forever's own tier 6 Affliction capstone, a 6 second instant DoT the base wowsims/classic Affliction tree does not have. Fix round 1 (superseded): Wrack was reported inert here because sim/warlock had no spell file for it yet. Rotation-accuracy program (2026-09-28): sim/warlock/wrack.go now registers Wrack for real (talent-gated on warlock.Talents.Wrack, RequiredLevel 40) -- the line below is no longer inert, and the level-60 ladder golden shows it as the spec's #2 damage source (behind Shadow Bolt), ticking at high uptime alongside the vulnerability aura the talent grants. The line's own note is corrected to match. Confirmed clean by the fix-round-1 review: Bane of Agony (11713) is exactly the spell id the engine's curse registration (sim/warlock/curses.go, function name getCurseOfAgonyBaseConfig notwithstanding) uses, and is fully castable; the separate 'Curse of Agony' spellconst entries (18671/1233077) are unrelated tuning data referenced nowhere in the engine, so no change was needed there. Rotation-accuracy audit, engine numbers (2026-09-28): Corruption's and Bane of Agony's per-tick base damage in sim/warlock (corruption.go, curses.go) carried classic tooltip values roughly double spellconst/warlock.json's own flat per-rank amount; fixed in the fork with a regression test each (commit 34803746d), which is why this spec's DPS dropped in this round's golden refresh -- the cast set and priority order are unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/. Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on it resolves and fires heavily (up to 62 percent of top casts) alongside Life Tap on this bare, no-consumes, no-buffs ladder character.",
-  "inert": [5019],
+  "inert": [
+    5019
+  ],
   "sources": [
-    { "label": "wowsims-forever warlock default priority list (shared across all three specs)", "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/warlock/apls/rotation.apl.json", "kind": "community" },
-    { "label": "Warcraft Tavern: Classic Affliction Warlock DPS rotation", "url": "https://www.warcrafttavern.com/wow-classic/guides/warlock-dps-rotation/", "kind": "community" }
+    {
+      "label": "wowsims-forever warlock default priority list (shared across all three specs)",
+      "url": "https://github.com/jhunthrop/wowsims-forever/blob/464d1a14a6408956aecb14b3c5867392502db401/ui/warlock/apls/rotation.apl.json",
+      "kind": "community"
+    },
+    {
+      "label": "Warcraft Tavern: Classic Affliction Warlock DPS rotation",
+      "url": "https://www.warcrafttavern.com/wow-classic/guides/warlock-dps-rotation/",
+      "kind": "community"
+    }
   ],
   "rotation": {
     "type": "TypeAPL",
     "prepullActions": [
       {
-        "action": { "castSpell": { "spellId": { "spellId": 18288 } } },
-        "doAtValue": { "const": { "val": "-5s" } }
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 18288
+            }
+          }
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-5s"
+          }
+        }
       }
     ],
     "priorityList": [
@@ -22,53 +42,177 @@
           "condition": {
             "and": {
               "vals": [
-                { "cmp": { "op": "OpGe", "lhs": { "remainingTime": {} }, "rhs": { "const": { "val": "15s" } } } },
-                { "cmp": { "op": "OpLe", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "75%" } } } },
-                { "isExecutePhase": { "threshold": "E35" } }
+                {
+                  "cmp": {
+                    "op": "OpGe",
+                    "lhs": {
+                      "remainingTime": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "15s"
+                      }
+                    }
+                  }
+                },
+                {
+                  "cmp": {
+                    "op": "OpLe",
+                    "lhs": {
+                      "currentManaPercent": {}
+                    },
+                    "rhs": {
+                      "const": {
+                        "val": "75%"
+                      }
+                    }
+                  }
+                },
+                {
+                  "isExecutePhase": {
+                    "threshold": "E35"
+                  }
+                }
               ]
             }
           },
-          "castSpell": { "spellId": { "otherId": "OtherActionPotion" } }
+          "castSpell": {
+            "spellId": {
+              "otherId": "OtherActionPotion"
+            }
+          }
         }
       },
-      { "action": { "autocastOtherCooldowns": {} } },
+      {
+        "action": {
+          "autocastOtherCooldowns": {}
+        }
+      },
       {
         "notes": "Life Tap to keep casting once mana runs low; health is not a concern with three DoTs and Drain Life available.",
         "action": {
-          "condition": { "cmp": { "op": "OpLt", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "10%" } } } },
-          "castSpell": { "spellId": { "spellId": 11689, "rank": 6 } }
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentManaPercent": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "10%"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 11689,
+              "rank": 6
+            }
+          }
         }
       },
       {
         "notes": "Bane of Agony ramps up over its duration, so it goes down first and is refreshed on cooldown.",
         "action": {
-          "condition": { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 11713, "rank": 6 } } } } },
-          "castSpell": { "spellId": { "spellId": 11713, "rank": 6 } }
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 11713,
+                    "rank": 6
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 11713,
+              "rank": 6
+            }
+          }
         }
       },
       {
         "notes": "Corruption is the cheapest DoT per damage and is kept up throughout.",
         "action": {
-          "condition": { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 25311, "rank": 7 } } } } },
-          "castSpell": { "spellId": { "spellId": 25311, "rank": 7 } }
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 25311,
+                    "rank": 7
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 25311,
+              "rank": 7
+            }
+          }
         }
       },
       {
         "notes": "Wrack is live (sim/warlock/wrack.go, talent-gated, RequiredLevel 40): an instant, no-cooldown 6 second DoT that also applies a +10% Shadow-damage-taken vulnerability to the target, so it is refreshed the moment it drops rather than waiting behind the longer Bane of Agony/Corruption timers above it. The level-60 ladder golden confirms high uptime and it as the spec's #2 damage source behind Shadow Bolt.",
         "action": {
-          "condition": { "not": { "val": { "dotIsActive": { "spellId": { "spellId": 1316697, "rank": 1 } } } } },
-          "castSpell": { "spellId": { "spellId": 1316697, "rank": 1 } }
+          "condition": {
+            "not": {
+              "val": {
+                "dotIsActive": {
+                  "spellId": {
+                    "spellId": 1316697,
+                    "rank": 1
+                  }
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 1316697,
+              "rank": 1
+            }
+          }
         }
       },
       {
         "notes": "Shadow Bolt fills every remaining global while the DoTs run their course.",
-        "action": { "castSpell": { "spellId": { "spellId": 25307, "rank": 10 } } }
+        "action": {
+          "castSpell": {
+            "spellId": {
+              "spellId": 25307,
+              "rank": 10
+            }
+          }
+        }
       },
       {
-        "notes": "Shoot (5019, core.RegisterShootSpell) is the wand-weaving fallback added by the rotation-accuracy program's caster-wand finding (2026-09-28): sim/warlock never enabled a ranged auto attack or registered a Shoot action, so a leveling warlock's equipped wand dealt zero damage even though the ladder harness always equips one. Placed beneath Life Tap's own 10 percent gate above and gated below 20 percent mana itself, so Life Tap keeps first claim on refueling mana with health and Shoot only fills the band above that where Shadow Bolt is no longer affordable. Warlocks have no Wand Specialization equivalent, so this casts at the wand's plain damage.",
+        "notes": "Shoot with your wand once mana falls under 20%: it costs nothing and keeps damage going while your DoTs tick and you regenerate.",
         "action": {
-          "condition": { "cmp": { "op": "OpLt", "lhs": { "currentManaPercent": {} }, "rhs": { "const": { "val": "20%" } } } },
-          "castSpell": { "spellId": { "spellId": 5019 } }
+          "condition": {
+            "cmp": {
+              "op": "OpLt",
+              "lhs": {
+                "currentManaPercent": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "20%"
+                }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 5019
+            }
+          }
         }
       }
     ]
