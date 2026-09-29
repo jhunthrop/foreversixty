@@ -73,4 +73,36 @@ export const bisCopy = {
 
   // --- header (step 3) ----------------------------------------------------------------------
   indexSpecDps60: (dps: number): string => `Level 60: ${dps.toFixed(1)} DPS`,
+
+  // --- list-first redesign (bis-ux, 2026-09-29 -- owner: "still looks like shit") ----------
+  levelScaleGroupLabel: 'Jump to level',
+  newAtBandCount: (count: number): string => `${count} new`,
+  newPillLabel: 'New',
+  newPillTitle: (replaced: string | undefined): string =>
+    replaced === undefined ? 'New this band -- nothing was equipped here before.' : `Replaces ${replaced}.`,
+  verifiedGlyphTitle: 'Confirmed by a Top Gear simulation pass at this band.',
+  unverifiedGlyphTitle: 'Ranked by stat weights only; not yet settled by a Top Gear pass.',
+  runnerUpSummary: 'Runner-up',
+  upgradesSinceHeading: (count: number, previousBand: number): string =>
+    count === 0
+      ? `Nothing changed since level ${previousBand}`
+      : `${count} upgrade${count === 1 ? '' : 's'} since level ${previousBand}`,
+  newSlotLabel: 'New slot',
+  setDpsDelta: (delta: number): string =>
+    `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} DPS since the last band`,
+  weightsExplainer: (referenceLabel: string): string =>
+    `Value of one point of each stat, in ${referenceLabel.toLowerCase()}.`,
+  raceTalentsLine: (race: string, points: number): string =>
+    `${capitalise(race)} · ${points} talent point${points === 1 ? '' : 's'} spent`,
+  noSourceLine: (count: number): string =>
+    count === 0 ? '' : `${count} item${count === 1 ? '' : 's'} at this band have no known source yet.`,
+  coverageLine: (known: number, total: number): string =>
+    `Sources known for ${known.toLocaleString()} of ${total.toLocaleString()} items at this band.`,
 } as const;
+
+/** `dwarf` -> `Dwarf`: the pipeline's own race strings are not reliably capitalised (owner
+ *  screenshot finding, 2026-09-29), and this is the one place every `/bis` race line reads
+ *  one, so every caller gets the fix for free rather than re-capitalising it themselves. */
+function capitalise(word: string): string {
+  return word.length === 0 ? word : word[0]!.toUpperCase() + word.slice(1);
+}

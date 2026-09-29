@@ -43,7 +43,11 @@ test('Leveling BiS: index links to a spec, faction and band pills switch panels 
   // the picker uses elsewhere -- tenet 2's "an item is never just a name" applied to sources.
   await expect(band30.getByTestId('bis-row-new').first()).toBeVisible();
   await expect(band30).toContainText('Quest:');
-  await expect(band30).toContainText('What changed since level 25');
+
+  // "What changed since level N" (a wall of diff rows above the list, owner screenshot
+  // review 2026-09-29) is now a single disclosure line under the list -- "N upgrades since
+  // level 25" -- that expands to the same before/after diff.
+  await expect(band30).toContainText(/upgrades since level 25/);
 });
 
 test('Leveling BiS: a spec with no ranked list yet shows the empty state, not a 404', async ({ page }) => {
