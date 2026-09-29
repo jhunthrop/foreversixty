@@ -31,16 +31,50 @@ Options.data = Data
 --- diag) has nowhere in the window to land, so it always answers in chat.
 Options.TABS = { export = true, follow = true, gear = true, settings = true }
 
+--- The newest "weights" message actually about `spec` (Gear.specOf's own
+--- "class-spec" slug, the same vocabulary api/internal/addon/messages.go
+--- writes into a weights message's own `spec` field). A message the
+--- companion queued for a spec the character sim'd but has since
+--- respecced away from -- or simply is not playing right now -- must
+--- never supply THIS spec's capped-stat call-outs (Tooltip.capLines) on
+--- an item scored for a different one; nil `spec` (no build loaded, no
+--- resolvable class) answers no message at all rather than guessing.
+local function weightsMessageForSpec(messages, spec)
+	if spec == nil then
+		return nil
+	end
+	for _, message in ipairs(messages) do
+		if message.spec == spec then
+			return message
+		end
+	end
+	return nil
+end
+
+--- The character's current spec, Gear.specOf's own slug, or nil with no
+--- resolvable class (no build loaded is not a bar here -- Talents.
+--- readRanks and playerClassSlug read the client directly, same as the
+--- rotation card's own specTitle lookup does).
+local function currentSpec(data)
+	local classSlug = Talents.playerClassSlug()
+	if classSlug == nil then
+		return nil
+	end
+	return Gear.specOf(data, classSlug, Talents.readRanks(data))
+end
+
 --- The newest "weights" inbox message for the character currently
---- logged in, handed to Tooltip so an item's own tooltip can call out a
---- capped stat (Tooltip.capLines). Read at the same point
---- Options.readInbox already reads the companion's queued builds: the
---- companion writes both into the same inbox file on its own ten-minute
---- sync, so one read covers both. Unaddressed to nil rather than
---- refusing anything -- the same "no data, no line" rule Tooltip already
---- follows when there is no message at all.
+--- logged in AND for the spec they are playing right now, handed to
+--- Tooltip so an item's own tooltip can call out a capped stat
+--- (Tooltip.capLines). Read at the same point Options.readInbox already
+--- reads the companion's queued builds: the companion writes both into
+--- the same inbox file on its own ten-minute sync, so one read covers
+--- both. Unaddressed, or addressed to a spec the character is not
+--- currently playing, both answer nil -- the same "no data, no line"
+--- rule Tooltip already follows when there is no message at all.
 function Options.refreshWeightsMessage()
-	Tooltip.weightsMessage = Follow.messages(ForeverSixtyInbox, Export.characterKey(), "weights")[1]
+	local messages = Follow.messages(ForeverSixtyInbox, Export.characterKey(), "weights")
+	Tooltip.weightsMessage = weightsMessageForSpec(messages, currentSpec(Options.data))
 	return Tooltip.weightsMessage
 end
 
@@ -180,6 +214,15 @@ function Options.onEvent(_, event, ...)
 		-- The tooltip cache is keyed by item link alone (Tooltip.lua); a
 		-- BiS band is chosen by level, so a link cached before this level-up
 		-- would otherwise go on answering the band the character just left.
+		Tooltip.resetCache()
+	end
+	if event == "PLAYER_TALENT_UPDATE" or event == "TRAIT_CONFIG_UPDATED" then
+		-- A respec can change Gear.specOf's own answer mid-session;
+		-- Options.refreshWeightsMessage reads it fresh, and the tooltip
+		-- cache is busted for the same reason PLAYER_LEVEL_UP busts it
+		-- above -- an item cached under the spec just left must not go on
+		-- answering that spec's caps.
+		Options.refreshWeightsMessage()
 		Tooltip.resetCache()
 	end
 	Toast.refresh(Options.data)

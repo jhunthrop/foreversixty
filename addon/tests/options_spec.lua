@@ -192,19 +192,76 @@ describe("Options", function()
 		assert.are.equal(1, #build.order)
 	end)
 
-	it("hands the newest weights message to Tooltip at login", function()
+	it("hands the newest weights message for the character's own spec to Tooltip at login", function()
 		_G.ForeverSixtyInbox = {
 			generated_at = "2026-09-20T00:00:00Z",
 			builds = {},
 			messages = {
-				{ type = "weights", spec = "holy", weights = {}, caps = { "hit" } },
-				{ type = "weights", spec = "protection", weights = {}, caps = { "expertise" } },
+				-- DATA's own fixture (5/5 in Holy) resolves to "paladin-holy" --
+				-- Gear.specOf's slug, the same one a real weights message's
+				-- `spec` carries (api/internal/addon/messages.go's specSlugFor).
+				{ type = "weights", spec = "paladin-holy", weights = {}, caps = { "hit" } },
+				{ type = "weights", spec = "paladin-holy", weights = {}, caps = { "spirit" } },
 			},
 		}
 		Options.readInbox()
 		-- Follow.messages reverses the companion's append order, so the
-		-- second entry written -- "protection" -- is the newest.
-		assert.are.equal("protection", require("Tooltip").weightsMessage.spec)
+		-- second entry written is the newest -- and both are Holy here,
+		-- so ties within the same spec still resolve to the newest.
+		assert.are.equal("spirit", require("Tooltip").weightsMessage.caps[1])
+	end)
+
+	-- Lane night-addon's own find (docs/tenets.md's standard, review item
+	-- 4's "a message for a spec the player is not in"): a weights message
+	-- queued for a spec the character sim'd but is not playing right now
+	-- must never supply that spec's caps on this character's tooltip.
+	it("ignores a weights message queued for a spec the character is not playing", function()
+		_G.ForeverSixtyInbox = {
+			generated_at = "2026-09-20T00:00:00Z",
+			builds = {},
+			messages = {
+				-- Written after the Holy one below, so "newest" alone would
+				-- have picked this one under the old, spec-blind rule.
+				{ type = "weights", spec = "paladin-protection", weights = {}, caps = { "expertise" } },
+			},
+		}
+		Options.readInbox()
+		assert.is_nil(require("Tooltip").weightsMessage)
+	end)
+
+	it("picks the Holy message over a newer Protection one queued for the same character", function()
+		_G.ForeverSixtyInbox = {
+			generated_at = "2026-09-20T00:00:00Z",
+			builds = {},
+			messages = {
+				{ type = "weights", spec = "paladin-holy", weights = {}, caps = { "hit" } },
+				{ type = "weights", spec = "paladin-protection", weights = {}, caps = { "expertise" } },
+			},
+		}
+		Options.readInbox()
+		assert.are.equal("paladin-holy", require("Tooltip").weightsMessage.spec)
+	end)
+
+	it("re-reads the weights message for the new spec once talents change mid-session", function()
+		_G.ForeverSixtyInbox = {
+			generated_at = "2026-09-20T00:00:00Z",
+			builds = {},
+			messages = {
+				{ type = "weights", spec = "paladin-holy", weights = {}, caps = { "hit" } },
+				{ type = "weights", spec = "paladin-protection", weights = {}, caps = { "expertise" } },
+			},
+		}
+		Options.register()
+		Options.readInbox()
+		assert.are.equal("paladin-holy", require("Tooltip").weightsMessage.spec)
+		-- Respec to Protection: 5/5 there now outweighs Holy's own 5.
+		state.talents = {
+			{ name = "Holy", talents = { { name = "A", tier = 1, column = 1, rank = 0, maxRank = 5 } } },
+			{ name = "Protection", talents = { { name = "B", tier = 1, column = 1, rank = 5, maxRank = 5 } } },
+			{ name = "Retribution", talents = {} },
+		}
+		Options.onEvent(Options.frame, "PLAYER_TALENT_UPDATE")
+		assert.are.equal("paladin-protection", require("Tooltip").weightsMessage.spec)
 	end)
 
 	it("leaves Tooltip.weightsMessage nil rather than erroring with no weights message queued", function()
@@ -217,7 +274,7 @@ describe("Options", function()
 		_G.ForeverSixtyInbox = {
 			generated_at = "2026-09-20T00:00:00Z",
 			builds = {},
-			messages = { { type = "weights", character = "US/Ashbringer/Alice", spec = "holy" } },
+			messages = { { type = "weights", character = "US/Ashbringer/Alice", spec = "paladin-holy" } },
 		}
 		Options.readInbox()
 		assert.is_nil(require("Tooltip").weightsMessage)
