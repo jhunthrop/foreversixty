@@ -90,10 +90,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-100000000000000000-000000000000000000 | main_hand:3570 off_hand:6969 | 9.7 | 5 | other:attack/2=107.1, other:attack/1=73.9, other:rage_gain=38.1, spell:1680=16.7, spell:2687=3.5 | {SpellID: 12328}, {SpellID: 23894} |
+| 10 | 00000000000000000-100000000000000000-000000000000000000 | main_hand:1927 off_hand:6969 | 9.4 | 5 | other:attack/2=107.1, other:attack/1=68.4, other:rage_gain=38.0, spell:1680=16.4, spell:2687=3.5 | {SpellID: 12328}, {SpellID: 23894} |
 | 20 | 00000000000000000-353000000000000000-000000000000000000 | main_hand:1482 off_hand:2236 | 21.7 | 5 | other:attack/2=121.3, other:attack/1=63.6, other:rage_gain=38.1, spell:1680=17.1, spell:285/1=4.1 | {SpellID: 12328}, {SpellID: 23894} |
 | 30 | 00000000000000000-353211005010000000-000000000000000000 | main_hand:6692 off_hand:7687 | 36.6 | 6 | other:attack/2=76.0, other:attack/1=71.2, other:rage_gain=64.0, spell:1680=13.4, spell:5308=8.8 | {SpellID: 12328}, {SpellID: 23894} |
-| 38 | 00000000000000000-353211005050010030-000000000000000000 | main_hand:868 off_hand:10823 | 57.6 | 7 | other:attack/2=85.5, other:attack/1=80.8, other:rage_gain=68.8, spell:1680=13.5, spell:20658=10.2 | {SpellID: 23894} |
+| 38 | 00000000000000000-353211005050010030-000000000000000000 | main_hand:868 off_hand:6829 | 56.0 | 7 | other:attack/2=85.4, other:attack/1=81.3, other:rage_gain=68.8, spell:1680=13.5, spell:20658=10.0 | {SpellID: 23894} |
 | 40 | 00000000000000000-353211005050010050-000000000000000000 | main_hand:868 off_hand:9359 | 54.5 | 7 | other:attack/1=89.0, other:attack/2=83.5, other:rage_gain=68.0, spell:1680=12.6, spell:20660=7.8 | {SpellID: 23881} |
 | 50 | 35100000000000000-353211005050010051-000000000000000000 | main_hand:810 off_hand:6660 | 75.6 | 9 | other:attack/2=149.2, other:attack/1=92.4, other:rage_gain=80.1, spell:23892=12.7, spell:20661=8.2 | - |
 | 60 | 35311103002000000-353211005050010051-000000000000000000 | main_hand:23577 off_hand:21126 | 144.0 | 9 | other:attack/1=129.8, other:attack/2=109.0, other:rage_gain=79.7, spell:23894=16.4, spell:20662=11.2 | - |
@@ -185,4 +185,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- warrior-fury level=40 kind=dps_regression dps=54.5 prev_dps=57.6
+- warrior-fury level=40 kind=dps_regression dps=54.5 prev_dps=56.0
