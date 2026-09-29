@@ -90,9 +90,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 00000000000000000-10000000000000000-0000000000000000000 | main_hand:3462 off_hand:15443 | 17.9 | 3 | other:attack/2=128.7, other:attack/1=120.7, spell:1757=40.6, spell:6760/5=4.5, spell:5171/5=2.8 | {SpellID: 13750} |
-| 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:920 off_hand:3490 | 26.0 | 3 | other:attack/2=110.7, other:attack/1=79.9, spell:1758=46.8, spell:5171/5=4.3, spell:6761/5=3.8 | {SpellID: 13750} |
-| 30 | 00000000000000000-32531300000400000-0000000000000000000 | main_hand:4977 off_hand:9520 | 44.0 | 3 | other:attack/2=110.6, other:attack/1=86.6, spell:1760=44.7, spell:5171/5=4.2, spell:6762/5=3.8 | {SpellID: 13750} |
+| 10 | 00000000000000000-10000000000000000-0000000000000000000 | main_hand:3462 off_hand:15443 | 16.7 | 3 | other:attack/2=128.7, other:attack/1=120.7, spell:1757=40.6, spell:6760/5=4.5, spell:5171/5=2.8 | {SpellID: 13750} |
+| 20 | 00000000000000000-32510000000000000-0000000000000000000 | main_hand:920 off_hand:3490 | 25.3 | 3 | other:attack/2=110.7, other:attack/1=79.9, spell:1758=46.8, spell:5171/5=4.3, spell:6761/5=3.8 | {SpellID: 13750} |
+| 30 | 00000000000000000-32531300000400000-0000000000000000000 | main_hand:4977 off_hand:9520 | 44.9 | 3 | other:attack/2=110.6, other:attack/1=86.6, spell:1760=44.7, spell:5171/5=4.2, spell:6762/5=3.8 | {SpellID: 13750} |
 | 38 | 00000000000000000-32531300000515100-0000000000000000000 | main_hand:4987 off_hand:10703 | 61.6 | 4 | other:attack/2=106.7, other:attack/1=81.2, spell:8621=43.1, spell:8623/5=4.2, spell:5171/5=3.6 | {SpellID: 13750} |
 | 40 | 00000000000000000-32531300000515201-0000000000000000000 | main_hand:9651 off_hand:10750 | 73.9 | 5 | other:attack/2=126.5, other:attack/1=75.1, spell:8621=48.0, spell:8624/5=5.0, spell:5171/5=3.6 | - |
 | 50 | 32500000000000000-32531300000515201-0000000000000000000 | main_hand:10696 off_hand:10697 | 104.4 | 5 | other:attack/2=140.8, other:attack/1=105.7, spell:11293=46.3, spell:11299/5=4.6, spell:6774/5=3.8 | - |
