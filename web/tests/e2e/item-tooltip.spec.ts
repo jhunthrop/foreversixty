@@ -5,7 +5,7 @@
 // fixture suite: item 16963 (Helm of Wrath, gear.spec.ts's own equip target) carries stats,
 // a set (Battlegear of Wrath) and armor, which is enough to exercise the panel without
 // needing loot.json content the fixture build does not ship.
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Locator, type Page } from '@playwright/test';
 import { openGear } from './support/planner';
 
 test('hovering the head slot’s icon shows the item tooltip with icon, stats and level', async ({ page }) => {
@@ -88,6 +88,12 @@ test('only one item tooltip is open at a time', async ({ page }) => {
 // own ItemHover island -- one shared BisTooltipHost island now delegates hover/focus/tap
 // for the whole page (BisTooltipHost.svelte), so this contract needs its own coverage
 // against real delegated listeners rather than one Svelte instance per row.
+/** A gear row's item name alone -- the row's hover target wraps its slot label, "New"
+ *  pill, stat line and source line too, none of which the tooltip repeats. */
+async function rowItemName(row: Locator): Promise<string> {
+  return (await row.locator('.gear-row-name').first().innerText()).trim();
+}
+
 /** The band table the BiS page shows first (the nightly's lowest band, alliance). */
 function firstVisibleBand(page: Page) {
   return page.locator('[data-testid^="bis-band-alliance-"]:visible').first();
@@ -103,7 +109,7 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     // page and expects the tooltip to carry that name plus a real stat line.
     const icon = band.locator('[data-testid^="item-hover-"]').first();
     await expect(icon).toBeVisible();
-    const itemName = (await icon.innerText()).trim();
+    const itemName = await rowItemName(icon);
     expect(itemName.length).toBeGreaterThan(0);
     await expect(page.getByTestId('item-tooltip')).toBeHidden();
 
@@ -137,8 +143,8 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     const pills = firstVisibleBand(page).locator('[data-testid^="item-hover-"]');
     const firstIcon = pills.nth(0);
     const secondIcon = pills.nth(1);
-    const firstName = (await firstIcon.innerText()).trim();
-    const secondName = (await secondIcon.innerText()).trim();
+    const firstName = await rowItemName(firstIcon);
+    const secondName = await rowItemName(secondIcon);
     expect(secondName).not.toBe(firstName);
 
     await firstIcon.hover();
