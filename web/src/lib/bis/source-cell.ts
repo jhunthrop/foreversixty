@@ -155,7 +155,9 @@ export function resolveSourceCell(
 export function describeSourceCell(cell: SourceCell): string {
   switch (cell.kind) {
     case 'quest':
-      return `${bisCopy.questSourceLabel(cell.questName)} · ${bisCopy.questLevelLabel(cell.level)}`;
+      return cell.level > 0
+        ? `${bisCopy.questSourceLabel(cell.questName)} · ${bisCopy.questLevelLabel(cell.level)}`
+        : bisCopy.questSourceLabel(cell.questName);
     case 'dungeon':
     case 'raid':
       return bisCopy.dungeonSourceLabel(cell.instance, cell.boss);

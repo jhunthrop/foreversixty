@@ -49,6 +49,8 @@ export const bisCopy = {
   // --- source cell (step 1) ---------------------------------------------------------------
   questSourceLabel: (questName: string): string => `Quest: ${questName}`,
   questLevelLabel: (level: number): string => `Level ${level}`,
+  /** The row's small item-level figure, labelled so a bare number never has to be guessed at. */
+  itemLevelShort: (level: number): string => `ilvl ${level}`,
   dungeonSourceLabel: (instance: string, boss?: string): string =>
     boss === undefined ? instance : `${instance} · ${boss}`,
   craftedSourceLabel: (profession: string): string => `Crafted: ${profession}`,
