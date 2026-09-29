@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T18:17:48Z",
+  "generated_at": "2026-09-29T19:21:41Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -153,21 +153,16 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 8350,
           "item_name": "The 1 Ring",
           "source": "Fishing",
           "source_kind": "world",
           "score": 2.0158962953893207,
           "verified": true
+        },
+        {
+          "slot": "finger2",
+          "verified": false
         },
         {
           "slot": "trinket1",
@@ -185,7 +180,7 @@
           "source_kind": "dungeon",
           "score": 140,
           "verified": true,
-          "swap_note": "beat the scored pick Staff of Conjuring (id 1933) in the sim: 14.1 vs 12.7 set DPS"
+          "swap_note": "beat the scored pick Staff of Conjuring (id 1933) in the sim: 13.6 vs 12.1 set DPS"
         },
         {
           "slot": "off_hand",
@@ -207,24 +202,24 @@
           ]
         }
       ],
-      "set_dps": 14.117587947666602,
-      "no_source_count": 611,
+      "set_dps": 13.5714206195673,
+      "no_source_count": 220,
       "no_source_sample": [
-        "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5821 Darkstalker Boots",
-        "5822 Hedgeseed Gauntlets",
-        "6478 Rat Stompers",
-        "7748 Forcestone Buckler",
         "7955 Copper Claymore",
         "8178 Training Sword",
-        "9362 Brilliant Gold Ring",
-        "9602 Brushwood Blade"
+        "9602 Brushwood Blade",
+        "9747 Simple Britches",
+        "9748 Simple Robe",
+        "9749 Simple Blouse",
+        "9753 Nomad Buckler",
+        "9756 Nomad Trousers",
+        "9757 Nomad Tunic",
+        "9763 Cadet Leggings",
+        "9764 Cadet Shield",
+        "9765 Cadet Vest",
+        "10047 Simple Kilt",
+        "10421 Rough Copper Vest"
       ],
       "new_at_band": [
         "head: Lucky Fishing Hat",
@@ -235,80 +230,71 @@
         "waist: Wendigo Collar",
         "legs: Deepgrave Trousers",
         "feet: Gemmed Copper Boots",
-        "finger1: Swamp Ring",
-        "finger2: The 1 Ring",
+        "finger1: The 1 Ring",
         "main_hand: Birchwood Maul",
         "ranged: Heavy Shortbow"
       ],
-      "weights_run_seconds": 1.442781193,
-      "verify_run_seconds": 0.938379904,
+      "weights_run_seconds": 1.431059028,
+      "verify_run_seconds": 0.90519085,
       "coverage": {
         "back": {
-          "eligible": 38,
+          "eligible": 23,
           "sourced": 10
         },
         "chest": {
-          "eligible": 104,
+          "eligible": 78,
           "sourced": 57
         },
         "feet": {
-          "eligible": 75,
+          "eligible": 49,
           "sourced": 35
         },
         "finger1": {
-          "eligible": 47,
-          "sourced": 2
+          "eligible": 11,
+          "sourced": 1
         },
         "finger2": {
-          "eligible": 47,
-          "sourced": 2
+          "eligible": 11,
+          "sourced": 1
         },
         "hands": {
-          "eligible": 59,
+          "eligible": 40,
           "sourced": 27
         },
         "head": {
-          "eligible": 35,
+          "eligible": 10,
           "sourced": 3
         },
         "legs": {
-          "eligible": 96,
+          "eligible": 64,
           "sourced": 49
         },
         "main_hand": {
-          "eligible": 212,
+          "eligible": 134,
           "sourced": 71
         },
         "neck": {
-          "eligible": 27,
+          "eligible": 6,
           "sourced": 0
         },
         "off_hand": {
-          "eligible": 56,
-          "sourced": 14
+          "eligible": 28,
+          "sourced": 12
         },
         "ranged": {
-          "eligible": 29,
+          "eligible": 14,
           "sourced": 6
         },
         "shoulder": {
-          "eligible": 27,
-          "sourced": 0
-        },
-        "trinket1": {
-          "eligible": 6,
-          "sourced": 0
-        },
-        "trinket2": {
-          "eligible": 6,
+          "eligible": 8,
           "sourced": 0
         },
         "waist": {
-          "eligible": 61,
+          "eligible": 41,
           "sourced": 30
         },
         "wrist": {
-          "eligible": 65,
+          "eligible": 37,
           "sourced": 22
         }
       }
@@ -462,21 +448,16 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 8350,
           "item_name": "The 1 Ring",
           "source": "Fishing",
           "source_kind": "world",
           "score": 2.0158962953893207,
           "verified": true
+        },
+        {
+          "slot": "finger2",
+          "verified": false
         },
         {
           "slot": "trinket1",
@@ -519,24 +500,24 @@
           ]
         }
       ],
-      "set_dps": 16.678106528220603,
-      "no_source_count": 611,
+      "set_dps": 16.055848301553834,
+      "no_source_count": 220,
       "no_source_sample": [
-        "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5821 Darkstalker Boots",
-        "5822 Hedgeseed Gauntlets",
-        "6478 Rat Stompers",
-        "7748 Forcestone Buckler",
         "7955 Copper Claymore",
         "8178 Training Sword",
-        "9362 Brilliant Gold Ring",
-        "9602 Brushwood Blade"
+        "9602 Brushwood Blade",
+        "9747 Simple Britches",
+        "9748 Simple Robe",
+        "9749 Simple Blouse",
+        "9753 Nomad Buckler",
+        "9756 Nomad Trousers",
+        "9757 Nomad Tunic",
+        "9763 Cadet Leggings",
+        "9764 Cadet Shield",
+        "9765 Cadet Vest",
+        "10047 Simple Kilt",
+        "10421 Rough Copper Vest"
       ],
       "new_at_band": [
         "head: Lucky Fishing Hat",
@@ -547,80 +528,71 @@
         "waist: Wendigo Collar",
         "legs: Deepgrave Trousers",
         "feet: Gemmed Copper Boots",
-        "finger1: Swamp Ring",
-        "finger2: The 1 Ring",
+        "finger1: The 1 Ring",
         "main_hand: Logsplitter",
         "ranged: Heavy Shortbow"
       ],
-      "weights_run_seconds": 1.442781193,
-      "verify_run_seconds": 0.869636393,
+      "weights_run_seconds": 1.431059028,
+      "verify_run_seconds": 0.790883381,
       "coverage": {
         "back": {
-          "eligible": 39,
+          "eligible": 24,
           "sourced": 11
         },
         "chest": {
-          "eligible": 98,
+          "eligible": 72,
           "sourced": 51
         },
         "feet": {
-          "eligible": 73,
+          "eligible": 47,
           "sourced": 33
         },
         "finger1": {
-          "eligible": 47,
-          "sourced": 2
+          "eligible": 11,
+          "sourced": 1
         },
         "finger2": {
-          "eligible": 47,
-          "sourced": 2
+          "eligible": 11,
+          "sourced": 1
         },
         "hands": {
-          "eligible": 60,
+          "eligible": 41,
           "sourced": 28
         },
         "head": {
-          "eligible": 35,
+          "eligible": 10,
           "sourced": 3
         },
         "legs": {
-          "eligible": 91,
+          "eligible": 59,
           "sourced": 44
         },
         "main_hand": {
-          "eligible": 212,
+          "eligible": 134,
           "sourced": 71
         },
         "neck": {
-          "eligible": 27,
+          "eligible": 6,
           "sourced": 0
         },
         "off_hand": {
-          "eligible": 55,
-          "sourced": 13
+          "eligible": 27,
+          "sourced": 11
         },
         "ranged": {
-          "eligible": 31,
+          "eligible": 16,
           "sourced": 8
         },
         "shoulder": {
-          "eligible": 27,
-          "sourced": 0
-        },
-        "trinket1": {
-          "eligible": 6,
-          "sourced": 0
-        },
-        "trinket2": {
-          "eligible": 6,
+          "eligible": 8,
           "sourced": 0
         },
         "waist": {
-          "eligible": 63,
+          "eligible": 43,
           "sourced": 32
         },
         "wrist": {
-          "eligible": 65,
+          "eligible": 37,
           "sourced": 22
         }
       }
@@ -814,21 +786,16 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 8350,
           "item_name": "The 1 Ring",
           "source": "Fishing",
           "source_kind": "world",
           "score": 2.041269282380759,
           "verified": true
+        },
+        {
+          "slot": "finger2",
+          "verified": false
         },
         {
           "slot": "trinket1",
@@ -840,13 +807,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 1460,
-          "item_name": "Shadowhide Two-handed Sword",
-          "source": "Rabid Shadowhide Gnoll",
-          "source_kind": "world",
-          "score": 191.56507712952305,
-          "verified": true,
-          "swap_note": "beat the scored pick Ironforge Greathammer (id 279895) in the sim: 21.3 vs 21.2 set DPS"
+          "item_id": 279895,
+          "item_name": "Ironforge Greathammer",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 231.74507712952305,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -862,102 +828,94 @@
           "verified": true
         }
       ],
-      "set_dps": 21.263537442692694,
-      "no_source_count": 739,
+      "set_dps": 20.626040568828746,
+      "no_source_count": 366,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5821 Darkstalker Boots",
-        "5822 Hedgeseed Gauntlets",
-        "6478 Rat Stompers",
-        "7748 Forcestone Buckler",
         "7955 Copper Claymore",
         "8178 Training Sword",
-        "9362 Brilliant Gold Ring"
+        "9602 Brushwood Blade",
+        "9747 Simple Britches",
+        "9748 Simple Robe",
+        "9749 Simple Blouse",
+        "9753 Nomad Buckler",
+        "9756 Nomad Trousers",
+        "9757 Nomad Tunic",
+        "9763 Cadet Leggings",
+        "9764 Cadet Shield",
+        "9765 Cadet Vest",
+        "9770 Greenweave Cloak"
       ],
       "new_at_band": [
         "head: Flying Tiger Goggles",
         "chest: Veteran's Chain Shirt",
         "hands: Polar Gauntlets",
         "waist: Burnished Girdle",
-        "main_hand: Shadowhide Two-handed Sword",
+        "main_hand: Ironforge Greathammer",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.473523572,
-      "verify_run_seconds": 0.993077404,
+      "weights_run_seconds": 1.482229932,
+      "verify_run_seconds": 0.859948596,
       "coverage": {
         "back": {
-          "eligible": 73,
+          "eligible": 58,
           "sourced": 30
         },
         "chest": {
-          "eligible": 165,
+          "eligible": 141,
           "sourced": 105
         },
         "feet": {
-          "eligible": 117,
-          "sourced": 62
+          "eligible": 92,
+          "sourced": 61
         },
         "finger1": {
-          "eligible": 50,
-          "sourced": 2
+          "eligible": 14,
+          "sourced": 1
         },
         "finger2": {
-          "eligible": 50,
-          "sourced": 2
+          "eligible": 14,
+          "sourced": 1
         },
         "hands": {
-          "eligible": 121,
+          "eligible": 105,
           "sourced": 75
         },
         "head": {
-          "eligible": 36,
+          "eligible": 11,
           "sourced": 4
         },
         "legs": {
-          "eligible": 131,
+          "eligible": 100,
           "sourced": 75
         },
         "main_hand": {
-          "eligible": 290,
+          "eligible": 217,
           "sourced": 131
         },
         "neck": {
-          "eligible": 28,
+          "eligible": 8,
           "sourced": 0
         },
         "off_hand": {
-          "eligible": 74,
-          "sourced": 24
+          "eligible": 46,
+          "sourced": 22
         },
         "ranged": {
-          "eligible": 38,
+          "eligible": 24,
           "sourced": 13
         },
         "shoulder": {
-          "eligible": 27,
-          "sourced": 0
-        },
-        "trinket1": {
-          "eligible": 6,
-          "sourced": 0
-        },
-        "trinket2": {
-          "eligible": 6,
+          "eligible": 8,
           "sourced": 0
         },
         "waist": {
-          "eligible": 101,
+          "eligible": 82,
           "sourced": 56
         },
         "wrist": {
-          "eligible": 90,
+          "eligible": 64,
           "sourced": 31
         }
       }
@@ -1145,21 +1103,26 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 8350,
           "item_name": "The 1 Ring",
           "source": "Fishing",
           "source_kind": "world",
           "score": 2.041269282380759,
           "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 3235,
+          "item_name": "Ring of Scorn",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true,
+          "ties": [
+            {
+              "item_id": 5351,
+              "item_name": "Bounty Hunter's Ring"
+            }
+          ]
         },
         {
           "slot": "trinket1",
@@ -1192,24 +1155,24 @@
           "verified": true
         }
       ],
-      "set_dps": 21.75337183529274,
-      "no_source_count": 733,
+      "set_dps": 21.164750631581583,
+      "no_source_count": 360,
       "no_source_sample": [
         "1189 Overseer's Ring",
-        "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
-        "5821 Darkstalker Boots",
-        "5822 Hedgeseed Gauntlets",
-        "6478 Rat Stompers",
-        "7748 Forcestone Buckler",
         "7955 Copper Claymore",
         "8178 Training Sword",
-        "9362 Brilliant Gold Ring"
+        "9602 Brushwood Blade",
+        "9747 Simple Britches",
+        "9748 Simple Robe",
+        "9749 Simple Blouse",
+        "9753 Nomad Buckler",
+        "9756 Nomad Trousers",
+        "9757 Nomad Tunic",
+        "9763 Cadet Leggings",
+        "9764 Cadet Shield",
+        "9765 Cadet Vest",
+        "9770 Greenweave Cloak"
       ],
       "new_at_band": [
         "head: Flying Tiger Goggles",
@@ -1217,78 +1180,71 @@
         "chest: Veteran's Chain Shirt",
         "hands: Blackened Defias Gloves",
         "waist: Burnished Girdle",
+        "finger2: Ring of Scorn",
         "main_hand: Ironforge Greathammer",
         "ranged: Fine Longbow"
       ],
-      "weights_run_seconds": 1.473523572,
-      "verify_run_seconds": 0.992182282,
+      "weights_run_seconds": 1.482229932,
+      "verify_run_seconds": 1.001079576,
       "coverage": {
         "back": {
-          "eligible": 74,
+          "eligible": 59,
           "sourced": 32
         },
         "chest": {
-          "eligible": 159,
+          "eligible": 135,
           "sourced": 100
         },
         "feet": {
-          "eligible": 114,
-          "sourced": 59
+          "eligible": 89,
+          "sourced": 58
         },
         "finger1": {
-          "eligible": 52,
-          "sourced": 4
+          "eligible": 16,
+          "sourced": 3
         },
         "finger2": {
-          "eligible": 52,
-          "sourced": 4
+          "eligible": 16,
+          "sourced": 3
         },
         "hands": {
-          "eligible": 116,
+          "eligible": 100,
           "sourced": 70
         },
         "head": {
-          "eligible": 36,
+          "eligible": 11,
           "sourced": 4
         },
         "legs": {
-          "eligible": 128,
+          "eligible": 97,
           "sourced": 72
         },
         "main_hand": {
-          "eligible": 286,
+          "eligible": 213,
           "sourced": 129
         },
         "neck": {
-          "eligible": 28,
+          "eligible": 8,
           "sourced": 0
         },
         "off_hand": {
-          "eligible": 75,
-          "sourced": 25
+          "eligible": 47,
+          "sourced": 23
         },
         "ranged": {
-          "eligible": 39,
+          "eligible": 25,
           "sourced": 14
         },
         "shoulder": {
-          "eligible": 27,
-          "sourced": 0
-        },
-        "trinket1": {
-          "eligible": 6,
-          "sourced": 0
-        },
-        "trinket2": {
-          "eligible": 6,
+          "eligible": 8,
           "sourced": 0
         },
         "waist": {
-          "eligible": 101,
+          "eligible": 82,
           "sourced": 56
         },
         "wrist": {
-          "eligible": 92,
+          "eligible": 66,
           "sourced": 35
         }
       }
@@ -1341,29 +1297,12 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 4368,
-          "item_name": "Flying Tiger Goggles",
-          "source": "Engineering",
+          "item_id": 250528,
+          "item_name": "Veteran's Silvered Chain Helm",
+          "source": "Blacksmithing",
           "source_kind": "crafted",
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 4373,
-              "item_name": "Shadow Goggles"
-            },
-            {
-              "item_id": 19972,
-              "item_name": "Lucky Fishing Hat"
-            },
-            {
-              "item_id": 21524,
-              "item_name": "Red Winter Hat"
-            },
-            {
-              "item_id": 21525,
-              "item_name": "Green Winter Hat"
-            }
-          ]
+          "score": 19.894944994023692,
+          "verified": true
         },
         {
           "slot": "neck",
@@ -1477,20 +1416,20 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 20439,
           "item_name": "Protector's Band",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
           "score": 7.957977997609476,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 8350,
+          "item_name": "The 1 Ring",
+          "source": "Fishing",
+          "source_kind": "world",
+          "score": 1.989494499402369,
           "verified": true
         },
         {
@@ -1511,13 +1450,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 251533,
-          "item_name": "Forsaken Greataxe",
+          "item_id": 270018,
+          "item_name": "Hammerbone",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 302.91595599521895,
-          "verified": true,
-          "swap_note": "beat the scored pick Hammerbone (id 270018) in the sim: 29.0 vs 28.9 set DPS"
+          "score": 306.05494499402374,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -1533,26 +1471,27 @@
           "verified": true
         }
       ],
-      "set_dps": 28.950015659443235,
-      "no_source_count": 946,
+      "set_dps": 29.313936608589255,
+      "no_source_count": 537,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2879 Antipodean Rod",
         "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
         "5821 Darkstalker Boots",
         "5822 Hedgeseed Gauntlets",
         "6478 Rat Stompers",
         "7608 Seer's Fine Stein",
-        "7748 Forcestone Buckler",
-        "7955 Copper Claymore"
+        "7955 Copper Claymore",
+        "7956 Bronze Warhammer",
+        "8178 Training Sword",
+        "9602 Brushwood Blade",
+        "9747 Simple Britches",
+        "9748 Simple Robe",
+        "9749 Simple Blouse"
       ],
       "new_at_band": [
+        "head: Veteran's Silvered Chain Helm",
         "neck: Sentinel's Medallion",
         "shoulder: Rough Bronze Shoulders",
         "back: Lambent Scale Cloak",
@@ -1562,81 +1501,82 @@
         "waist: Blackened Defias Belt",
         "legs: Chausses of Westfall",
         "feet: Veteran's Boots",
-        "finger2: Protector's Band",
+        "finger1: Protector's Band",
+        "finger2: The 1 Ring",
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty",
-        "main_hand: Forsaken Greataxe"
+        "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.446427144,
-      "verify_run_seconds": 1.225364285,
+      "weights_run_seconds": 1.5354844939999999,
+      "verify_run_seconds": 1.145775683,
       "coverage": {
         "back": {
-          "eligible": 114,
-          "sourced": 57
+          "eligible": 99,
+          "sourced": 58
         },
         "chest": {
-          "eligible": 211,
+          "eligible": 187,
           "sourced": 134
         },
         "feet": {
-          "eligible": 164,
+          "eligible": 142,
           "sourced": 95
         },
         "finger1": {
-          "eligible": 76,
+          "eligible": 40,
           "sourced": 16
         },
         "finger2": {
-          "eligible": 76,
+          "eligible": 40,
           "sourced": 16
         },
         "hands": {
-          "eligible": 155,
-          "sourced": 95
+          "eligible": 139,
+          "sourced": 96
         },
         "head": {
-          "eligible": 57,
-          "sourced": 5
+          "eligible": 32,
+          "sourced": 25
         },
         "legs": {
-          "eligible": 184,
-          "sourced": 95
+          "eligible": 154,
+          "sourced": 113
         },
         "main_hand": {
-          "eligible": 415,
-          "sourced": 230
+          "eligible": 346,
+          "sourced": 232
         },
         "neck": {
-          "eligible": 33,
+          "eligible": 15,
           "sourced": 2
         },
         "off_hand": {
-          "eligible": 108,
-          "sourced": 44
+          "eligible": 83,
+          "sourced": 43
         },
         "ranged": {
-          "eligible": 52,
-          "sourced": 22
+          "eligible": 38,
+          "sourced": 23
         },
         "shoulder": {
-          "eligible": 42,
-          "sourced": 10
+          "eligible": 24,
+          "sourced": 12
         },
         "trinket1": {
-          "eligible": 9,
+          "eligible": 3,
           "sourced": 2
         },
         "trinket2": {
-          "eligible": 9,
+          "eligible": 3,
           "sourced": 2
         },
         "waist": {
-          "eligible": 141,
-          "sourced": 83
+          "eligible": 123,
+          "sourced": 85
         },
         "wrist": {
-          "eligible": 120,
-          "sourced": 45
+          "eligible": 95,
+          "sourced": 47
         }
       }
     },
@@ -1688,29 +1628,12 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 4368,
-          "item_name": "Flying Tiger Goggles",
-          "source": "Engineering",
+          "item_id": 250528,
+          "item_name": "Veteran's Silvered Chain Helm",
+          "source": "Blacksmithing",
           "source_kind": "crafted",
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 4373,
-              "item_name": "Shadow Goggles"
-            },
-            {
-              "item_id": 19972,
-              "item_name": "Lucky Fishing Hat"
-            },
-            {
-              "item_id": 21524,
-              "item_name": "Red Winter Hat"
-            },
-            {
-              "item_id": 21525,
-              "item_name": "Green Winter Hat"
-            }
-          ]
+          "score": 19.894944994023692,
+          "verified": true
         },
         {
           "slot": "neck",
@@ -1788,12 +1711,22 @@
         },
         {
           "slot": "legs",
-          "item_id": 279900,
-          "item_name": "Deepgrave Trousers",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 13.926461495816584,
-          "verified": true
+          "item_id": 250493,
+          "item_name": "Veteran's Chain Leggings",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 17.905450494621324,
+          "verified": true,
+          "ties": [
+            {
+              "item_id": 252445,
+              "item_name": "Defender's Leather Pants"
+            },
+            {
+              "item_id": 252446,
+              "item_name": "Totemic Leather Pants"
+            }
+          ]
         },
         {
           "slot": "feet",
@@ -1824,20 +1757,20 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 20429,
           "item_name": "Legionnaire's Band",
           "source": "Warsong Outriders",
           "source_kind": "rep",
           "score": 7.957977997609476,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 8350,
+          "item_name": "The 1 Ring",
+          "source": "Fishing",
+          "source_kind": "world",
+          "score": 1.989494499402369,
           "verified": true
         },
         {
@@ -1864,7 +1797,7 @@
           "source_kind": "quest",
           "score": 302.91595599521895,
           "verified": true,
-          "swap_note": "beat the scored pick Hammerbone (id 270018) in the sim: 31.7 vs 29.3 set DPS"
+          "swap_note": "beat the scored pick Hammerbone (id 270018) in the sim: 32.2 vs 29.9 set DPS"
         },
         {
           "slot": "off_hand",
@@ -1880,26 +1813,27 @@
           "verified": true
         }
       ],
-      "set_dps": 31.6800809264829,
-      "no_source_count": 940,
+      "set_dps": 32.18098122835542,
+      "no_source_count": 531,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2879 Antipodean Rod",
         "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
         "5821 Darkstalker Boots",
         "5822 Hedgeseed Gauntlets",
         "6478 Rat Stompers",
         "7608 Seer's Fine Stein",
-        "7748 Forcestone Buckler",
-        "7955 Copper Claymore"
+        "7955 Copper Claymore",
+        "7956 Bronze Warhammer",
+        "8178 Training Sword",
+        "9602 Brushwood Blade",
+        "9747 Simple Britches",
+        "9748 Simple Robe",
+        "9749 Simple Blouse"
       ],
       "new_at_band": [
+        "head: Veteran's Silvered Chain Helm",
         "neck: Scout's Medallion",
         "shoulder: Rough Bronze Shoulders",
         "back: Lambent Scale Cloak",
@@ -1907,82 +1841,84 @@
         "wrist: Patterned Bronze Bracers",
         "hands: Gold-flecked Gloves",
         "waist: Blackened Defias Belt",
+        "legs: Veteran's Chain Leggings",
         "feet: Veteran's Boots",
-        "finger2: Legionnaire's Band",
+        "finger1: Legionnaire's Band",
+        "finger2: The 1 Ring",
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty",
         "main_hand: Forsaken Greataxe"
       ],
-      "weights_run_seconds": 1.446427144,
-      "verify_run_seconds": 1.211035442,
+      "weights_run_seconds": 1.5354844939999999,
+      "verify_run_seconds": 1.201067896,
       "coverage": {
         "back": {
-          "eligible": 114,
-          "sourced": 58
+          "eligible": 99,
+          "sourced": 59
         },
         "chest": {
-          "eligible": 207,
+          "eligible": 183,
           "sourced": 131
         },
         "feet": {
-          "eligible": 157,
+          "eligible": 135,
           "sourced": 88
         },
         "finger1": {
-          "eligible": 76,
+          "eligible": 40,
           "sourced": 16
         },
         "finger2": {
-          "eligible": 76,
+          "eligible": 40,
           "sourced": 16
         },
         "hands": {
-          "eligible": 149,
-          "sourced": 89
+          "eligible": 133,
+          "sourced": 90
         },
         "head": {
-          "eligible": 57,
-          "sourced": 5
+          "eligible": 32,
+          "sourced": 25
         },
         "legs": {
-          "eligible": 180,
-          "sourced": 91
+          "eligible": 150,
+          "sourced": 109
         },
         "main_hand": {
-          "eligible": 412,
-          "sourced": 229
+          "eligible": 343,
+          "sourced": 231
         },
         "neck": {
-          "eligible": 33,
+          "eligible": 15,
           "sourced": 2
         },
         "off_hand": {
-          "eligible": 106,
-          "sourced": 42
+          "eligible": 81,
+          "sourced": 41
         },
         "ranged": {
-          "eligible": 51,
-          "sourced": 21
+          "eligible": 37,
+          "sourced": 22
         },
         "shoulder": {
-          "eligible": 43,
-          "sourced": 11
+          "eligible": 25,
+          "sourced": 13
         },
         "trinket1": {
-          "eligible": 9,
+          "eligible": 3,
           "sourced": 2
         },
         "trinket2": {
-          "eligible": 9,
+          "eligible": 3,
           "sourced": 2
         },
         "waist": {
-          "eligible": 139,
-          "sourced": 81
+          "eligible": 121,
+          "sourced": 83
         },
         "wrist": {
-          "eligible": 121,
-          "sourced": 48
+          "eligible": 96,
+          "sourced": 50
         }
       }
     },
@@ -2034,39 +1970,16 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 4368,
-          "item_name": "Flying Tiger Goggles",
-          "source": "Engineering",
+          "item_id": 250498,
+          "item_name": "Veteran's Chain Helm",
+          "source": "Blacksmithing",
           "source_kind": "crafted",
+          "score": 22.136136020301922,
           "verified": true,
           "ties": [
             {
-              "item_id": 4373,
-              "item_name": "Shadow Goggles"
-            },
-            {
-              "item_id": 4385,
-              "item_name": "Green Tinted Goggles"
-            },
-            {
-              "item_id": 6971,
-              "item_name": "Fire Hardened Coif"
-            },
-            {
-              "item_id": 7048,
-              "item_name": "Azure Silk Hood"
-            },
-            {
-              "item_id": 19972,
-              "item_name": "Lucky Fishing Hat"
-            },
-            {
-              "item_id": 21524,
-              "item_name": "Red Winter Hat"
-            },
-            {
-              "item_id": 21525,
-              "item_name": "Green Winter Hat"
+              "item_id": 252455,
+              "item_name": "Defender's Leather Helm"
             }
           ]
         },
@@ -2155,7 +2068,13 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 20.291458018610097,
-          "verified": true
+          "verified": true,
+          "ties": [
+            {
+              "item_id": 250523,
+              "item_name": "Veteran's Silvered Chain Leggings"
+            }
+          ]
         },
         {
           "slot": "feet",
@@ -2190,20 +2109,20 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 6321,
           "item_name": "Silverlaine's Family Seal",
           "source": "Shadowfang Keep: Baron Silverlaine",
           "source_kind": "dungeon",
           "score": 9.223390008459134,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 20439,
+          "item_name": "Protector's Band",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 7.378712006767308,
           "verified": true
         },
         {
@@ -2245,26 +2164,27 @@
           "verified": true
         }
       ],
-      "set_dps": 36.16241751705619,
-      "no_source_count": 1213,
+      "set_dps": 37.01127678588277,
+      "no_source_count": 755,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2879 Antipodean Rod",
         "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4196 Feathered Mantle",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
         "5000 Coral Band",
         "5821 Darkstalker Boots",
         "5822 Hedgeseed Gauntlets",
         "5971 Feathered Cape",
-        "6478 Rat Stompers"
+        "6478 Rat Stompers",
+        "7608 Seer's Fine Stein",
+        "7955 Copper Claymore",
+        "7956 Bronze Warhammer",
+        "7957 Bronze Greatsword",
+        "7958 Bronze Battle Axe"
       ],
       "new_at_band": [
+        "head: Veteran's Chain Helm",
         "neck: Glowing Green Talisman",
         "shoulder: Elite Shoulders",
         "back: Wolfmaster Cape",
@@ -2272,80 +2192,81 @@
         "wrist: Pugilist Bracers",
         "hands: Heavy Earthen Gloves",
         "feet: Draftsman Boots",
-        "finger2: Silverlaine's Family Seal",
+        "finger1: Silverlaine's Family Seal",
+        "finger2: Protector's Band",
         "main_hand: Slaghammer",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 1.585734187,
-      "verify_run_seconds": 1.228476372,
+      "weights_run_seconds": 1.628803158,
+      "verify_run_seconds": 1.2576664370000001,
       "coverage": {
         "back": {
-          "eligible": 147,
-          "sourced": 75
+          "eligible": 132,
+          "sourced": 76
         },
         "chest": {
-          "eligible": 277,
-          "sourced": 165
+          "eligible": 254,
+          "sourced": 183
         },
         "feet": {
-          "eligible": 193,
-          "sourced": 110
+          "eligible": 175,
+          "sourced": 111
         },
         "finger1": {
-          "eligible": 101,
+          "eligible": 67,
           "sourced": 28
         },
         "finger2": {
-          "eligible": 101,
+          "eligible": 67,
           "sourced": 28
         },
         "hands": {
-          "eligible": 200,
-          "sourced": 124
+          "eligible": 187,
+          "sourced": 128
         },
         "head": {
-          "eligible": 81,
-          "sourced": 8
+          "eligible": 59,
+          "sourced": 45
         },
         "legs": {
-          "eligible": 234,
-          "sourced": 113
+          "eligible": 209,
+          "sourced": 149
         },
         "main_hand": {
-          "eligible": 513,
-          "sourced": 293
+          "eligible": 446,
+          "sourced": 306
         },
         "neck": {
-          "eligible": 35,
+          "eligible": 18,
           "sourced": 3
         },
         "off_hand": {
-          "eligible": 140,
-          "sourced": 58
+          "eligible": 117,
+          "sourced": 60
         },
         "ranged": {
-          "eligible": 68,
-          "sourced": 30
+          "eligible": 56,
+          "sourced": 35
         },
         "shoulder": {
-          "eligible": 84,
-          "sourced": 31
+          "eligible": 68,
+          "sourced": 35
         },
         "trinket1": {
-          "eligible": 12,
+          "eligible": 6,
           "sourced": 2
         },
         "trinket2": {
-          "eligible": 12,
+          "eligible": 6,
           "sourced": 2
         },
         "waist": {
-          "eligible": 175,
-          "sourced": 101
+          "eligible": 158,
+          "sourced": 104
         },
         "wrist": {
-          "eligible": 156,
-          "sourced": 62
+          "eligible": 135,
+          "sourced": 67
         }
       }
     },
@@ -2397,39 +2318,16 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 4368,
-          "item_name": "Flying Tiger Goggles",
-          "source": "Engineering",
+          "item_id": 250498,
+          "item_name": "Veteran's Chain Helm",
+          "source": "Blacksmithing",
           "source_kind": "crafted",
+          "score": 22.136136020301922,
           "verified": true,
           "ties": [
             {
-              "item_id": 4373,
-              "item_name": "Shadow Goggles"
-            },
-            {
-              "item_id": 4385,
-              "item_name": "Green Tinted Goggles"
-            },
-            {
-              "item_id": 7048,
-              "item_name": "Azure Silk Hood"
-            },
-            {
-              "item_id": 7130,
-              "item_name": "Brutal Helm"
-            },
-            {
-              "item_id": 19972,
-              "item_name": "Lucky Fishing Hat"
-            },
-            {
-              "item_id": 21524,
-              "item_name": "Red Winter Hat"
-            },
-            {
-              "item_id": 21525,
-              "item_name": "Green Winter Hat"
+              "item_id": 252455,
+              "item_name": "Defender's Leather Helm"
             }
           ]
         },
@@ -2519,11 +2417,11 @@
         },
         {
           "slot": "legs",
-          "item_id": 6671,
-          "item_name": "Juggernaut Leggings",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 18.446780016918268,
+          "item_id": 250523,
+          "item_name": "Veteran's Silvered Chain Leggings",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 20.291458018610097,
           "verified": true
         },
         {
@@ -2559,21 +2457,27 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 6321,
           "item_name": "Silverlaine's Family Seal",
           "source": "Shadowfang Keep: Baron Silverlaine",
           "source_kind": "dungeon",
           "score": 9.223390008459134,
           "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 17694,
+          "item_name": "Band of the Fist",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 7.378712006767308,
+          "verified": true,
+          "ties": [
+            {
+              "item_id": 20429,
+              "item_name": "Legionnaire's Band"
+            }
+          ]
         },
         {
           "slot": "trinket1",
@@ -2614,108 +2518,110 @@
           "verified": true
         }
       ],
-      "set_dps": 37.155420881578614,
-      "no_source_count": 1207,
+      "set_dps": 38.206246564449486,
+      "no_source_count": 749,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2879 Antipodean Rod",
         "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4196 Feathered Mantle",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
         "5000 Coral Band",
         "5821 Darkstalker Boots",
         "5822 Hedgeseed Gauntlets",
         "5971 Feathered Cape",
-        "6478 Rat Stompers"
+        "6478 Rat Stompers",
+        "7608 Seer's Fine Stein",
+        "7955 Copper Claymore",
+        "7956 Bronze Warhammer",
+        "7957 Bronze Greatsword",
+        "7958 Bronze Battle Axe"
       ],
       "new_at_band": [
+        "head: Veteran's Chain Helm",
         "neck: Glowing Green Talisman",
         "shoulder: Elite Shoulders",
         "back: Wolfmaster Cape",
         "chest: Shining Silver Breastplate",
         "wrist: Pugilist Bracers",
         "hands: Warsong Gauntlets",
-        "legs: Juggernaut Leggings",
+        "legs: Veteran's Silvered Chain Leggings",
         "feet: Draftsman Boots",
-        "finger2: Silverlaine's Family Seal",
+        "finger1: Silverlaine's Family Seal",
+        "finger2: Band of the Fist",
         "main_hand: Slaghammer",
         "ranged: Double-barreled Shotgun"
       ],
-      "weights_run_seconds": 1.585734187,
-      "verify_run_seconds": 1.22720355,
+      "weights_run_seconds": 1.628803158,
+      "verify_run_seconds": 1.230729693,
       "coverage": {
         "back": {
-          "eligible": 150,
-          "sourced": 79
+          "eligible": 135,
+          "sourced": 80
         },
         "chest": {
-          "eligible": 269,
-          "sourced": 158
+          "eligible": 246,
+          "sourced": 176
         },
         "feet": {
-          "eligible": 191,
-          "sourced": 108
+          "eligible": 173,
+          "sourced": 109
         },
         "finger1": {
-          "eligible": 104,
+          "eligible": 70,
           "sourced": 31
         },
         "finger2": {
-          "eligible": 104,
+          "eligible": 70,
           "sourced": 31
         },
         "hands": {
-          "eligible": 198,
-          "sourced": 122
+          "eligible": 185,
+          "sourced": 126
         },
         "head": {
-          "eligible": 81,
-          "sourced": 8
+          "eligible": 59,
+          "sourced": 45
         },
         "legs": {
-          "eligible": 231,
-          "sourced": 110
+          "eligible": 206,
+          "sourced": 146
         },
         "main_hand": {
-          "eligible": 504,
-          "sourced": 286
+          "eligible": 437,
+          "sourced": 299
         },
         "neck": {
-          "eligible": 35,
+          "eligible": 18,
           "sourced": 3
         },
         "off_hand": {
-          "eligible": 138,
-          "sourced": 56
+          "eligible": 115,
+          "sourced": 58
         },
         "ranged": {
-          "eligible": 67,
-          "sourced": 29
+          "eligible": 55,
+          "sourced": 34
         },
         "shoulder": {
-          "eligible": 84,
-          "sourced": 31
+          "eligible": 68,
+          "sourced": 35
         },
         "trinket1": {
-          "eligible": 12,
+          "eligible": 6,
           "sourced": 2
         },
         "trinket2": {
-          "eligible": 12,
+          "eligible": 6,
           "sourced": 2
         },
         "waist": {
-          "eligible": 177,
-          "sourced": 103
+          "eligible": 160,
+          "sourced": 106
         },
         "wrist": {
-          "eligible": 159,
-          "sourced": 67
+          "eligible": 138,
+          "sourced": 72
         }
       }
     },
@@ -2839,13 +2745,12 @@
         },
         {
           "slot": "legs",
-          "item_id": 6690,
-          "item_name": "Ferine Leggings",
-          "source": "Razorfen Kraul: Agathelos the Raging",
-          "source_kind": "dungeon",
-          "score": 26,
-          "verified": true,
-          "swap_note": "beat the scored pick Dual Reinforced Leggings (id 9625) in the sim: 52.9 vs 52.7 set DPS"
+          "item_id": 9625,
+          "item_name": "Dual Reinforced Leggings",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 26.016819044418035,
+          "verified": true
         },
         {
           "slot": "feet",
@@ -2858,20 +2763,20 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14.019756789824712,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 19517,
           "item_name": "Protector's Band",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
           "score": 13.06767989168315,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 6321,
+          "item_name": "Silverlaine's Family Seal",
+          "source": "Shadowfang Keep: Baron Silverlaine",
+          "source_kind": "dungeon",
+          "score": 10.840341268507514,
           "verified": true
         },
         {
@@ -2899,7 +2804,7 @@
           "source_kind": "dungeon",
           "score": 440.7384840337858,
           "verified": true,
-          "swap_note": "beat the scored pick Morbid Dawn (id 7689) in the sim: 70.3 vs 52.7 set DPS"
+          "swap_note": "beat the scored pick Morbid Dawn (id 7689) in the sim: 70.0 vs 52.6 set DPS"
         },
         {
           "slot": "off_hand",
@@ -2915,24 +2820,24 @@
           "verified": true
         }
       ],
-      "set_dps": 70.52301168315068,
-      "no_source_count": 1488,
+      "set_dps": 70.01029533699732,
+      "no_source_count": 1065,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
         "2879 Antipodean Rod",
         "2944 Cursed Eye of Paleth",
         "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4196 Feathered Mantle",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
         "5000 Coral Band",
         "5821 Darkstalker Boots",
-        "5822 Hedgeseed Gauntlets"
+        "5822 Hedgeseed Gauntlets",
+        "5971 Feathered Cape",
+        "6478 Rat Stompers",
+        "7608 Seer's Fine Stein",
+        "7955 Copper Claymore",
+        "7956 Bronze Warhammer"
       ],
       "new_at_band": [
         "head: Tusken Helm",
@@ -2940,83 +2845,84 @@
         "shoulder: Wrangling Spaulders",
         "hands: Gauntlets of Ogre Strength",
         "waist: Highlander's Plate Girdle",
-        "legs: Ferine Leggings",
+        "legs: Dual Reinforced Leggings",
         "feet: Trouncing Boots",
-        "finger2: Protector's Band",
+        "finger1: Protector's Band",
+        "finger2: Silverlaine's Family Seal",
         "trinket1: Talisman of Arathor",
         "trinket2: Rune of Perfection",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.6066095219999998,
-      "verify_run_seconds": 1.538209142,
+      "weights_run_seconds": 1.6451668609999999,
+      "verify_run_seconds": 1.581008948,
       "coverage": {
         "back": {
-          "eligible": 184,
-          "sourced": 91
+          "eligible": 174,
+          "sourced": 92
         },
         "chest": {
-          "eligible": 319,
-          "sourced": 188
+          "eligible": 296,
+          "sourced": 206
         },
         "feet": {
-          "eligible": 241,
-          "sourced": 125
+          "eligible": 223,
+          "sourced": 126
         },
         "finger1": {
-          "eligible": 123,
+          "eligible": 97,
           "sourced": 41
         },
         "finger2": {
-          "eligible": 123,
+          "eligible": 97,
           "sourced": 41
         },
         "hands": {
-          "eligible": 233,
-          "sourced": 138
+          "eligible": 220,
+          "sourced": 142
         },
         "head": {
-          "eligible": 127,
-          "sourced": 30
+          "eligible": 105,
+          "sourced": 67
         },
         "legs": {
-          "eligible": 271,
-          "sourced": 133
+          "eligible": 247,
+          "sourced": 169
         },
         "main_hand": {
-          "eligible": 576,
-          "sourced": 334
+          "eligible": 518,
+          "sourced": 347
         },
         "neck": {
-          "eligible": 53,
+          "eligible": 38,
           "sourced": 11
         },
         "off_hand": {
-          "eligible": 166,
-          "sourced": 67
+          "eligible": 145,
+          "sourced": 69
         },
         "ranged": {
-          "eligible": 84,
-          "sourced": 37
+          "eligible": 72,
+          "sourced": 42
         },
         "shoulder": {
-          "eligible": 127,
-          "sourced": 50
+          "eligible": 112,
+          "sourced": 54
         },
         "trinket1": {
-          "eligible": 17,
+          "eligible": 11,
           "sourced": 3
         },
         "trinket2": {
-          "eligible": 17,
+          "eligible": 11,
           "sourced": 3
         },
         "waist": {
-          "eligible": 234,
-          "sourced": 126
+          "eligible": 221,
+          "sourced": 129
         },
         "wrist": {
-          "eligible": 179,
-          "sourced": 72
+          "eligible": 161,
+          "sourced": 77
         }
       }
     },
@@ -3164,20 +3070,20 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14.019756789824712,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 19513,
           "item_name": "Legionnaire's Band",
           "source": "Warsong Outriders",
           "source_kind": "rep",
           "score": 13.06767989168315,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 6321,
+          "item_name": "Silverlaine's Family Seal",
+          "source": "Shadowfang Keep: Baron Silverlaine",
+          "source_kind": "dungeon",
+          "score": 10.840341268507514,
           "verified": true
         },
         {
@@ -3205,7 +3111,7 @@
           "source_kind": "dungeon",
           "score": 440.7384840337858,
           "verified": true,
-          "swap_note": "beat the scored pick Morbid Dawn (id 7689) in the sim: 71.7 vs 49.7 set DPS"
+          "swap_note": "beat the scored pick Morbid Dawn (id 7689) in the sim: 71.5 vs 49.5 set DPS"
         },
         {
           "slot": "off_hand",
@@ -3221,24 +3127,24 @@
           "verified": true
         }
       ],
-      "set_dps": 71.71267987338074,
-      "no_source_count": 1482,
+      "set_dps": 71.4685590198871,
+      "no_source_count": 1059,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
         "2879 Antipodean Rod",
         "2944 Cursed Eye of Paleth",
         "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4196 Feathered Mantle",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
         "5000 Coral Band",
         "5821 Darkstalker Boots",
-        "5822 Hedgeseed Gauntlets"
+        "5822 Hedgeseed Gauntlets",
+        "5971 Feathered Cape",
+        "6478 Rat Stompers",
+        "7608 Seer's Fine Stein",
+        "7955 Copper Claymore",
+        "7956 Bronze Warhammer"
       ],
       "new_at_band": [
         "head: Tusken Helm",
@@ -3248,81 +3154,82 @@
         "waist: Defiler's Plate Girdle",
         "legs: Dual Reinforced Leggings",
         "feet: Trouncing Boots",
-        "finger2: Legionnaire's Band",
+        "finger1: Legionnaire's Band",
+        "finger2: Silverlaine's Family Seal",
         "trinket1: Defiler's Talisman",
         "trinket2: Rune of Perfection",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.6066095219999998,
-      "verify_run_seconds": 1.5675800610000001,
+      "weights_run_seconds": 1.6451668609999999,
+      "verify_run_seconds": 1.5476223999999998,
       "coverage": {
         "back": {
-          "eligible": 183,
-          "sourced": 91
+          "eligible": 173,
+          "sourced": 92
         },
         "chest": {
-          "eligible": 312,
-          "sourced": 182
+          "eligible": 289,
+          "sourced": 200
         },
         "feet": {
-          "eligible": 239,
-          "sourced": 123
+          "eligible": 221,
+          "sourced": 124
         },
         "finger1": {
-          "eligible": 121,
+          "eligible": 95,
           "sourced": 39
         },
         "finger2": {
-          "eligible": 121,
+          "eligible": 95,
           "sourced": 39
         },
         "hands": {
-          "eligible": 230,
-          "sourced": 135
+          "eligible": 217,
+          "sourced": 139
         },
         "head": {
-          "eligible": 126,
-          "sourced": 29
+          "eligible": 104,
+          "sourced": 66
         },
         "legs": {
-          "eligible": 268,
-          "sourced": 130
+          "eligible": 244,
+          "sourced": 166
         },
         "main_hand": {
-          "eligible": 561,
-          "sourced": 321
+          "eligible": 503,
+          "sourced": 334
         },
         "neck": {
-          "eligible": 53,
+          "eligible": 38,
           "sourced": 11
         },
         "off_hand": {
-          "eligible": 162,
-          "sourced": 63
+          "eligible": 141,
+          "sourced": 65
         },
         "ranged": {
-          "eligible": 83,
-          "sourced": 36
+          "eligible": 71,
+          "sourced": 41
         },
         "shoulder": {
-          "eligible": 124,
-          "sourced": 47
+          "eligible": 109,
+          "sourced": 51
         },
         "trinket1": {
-          "eligible": 17,
+          "eligible": 11,
           "sourced": 3
         },
         "trinket2": {
-          "eligible": 17,
+          "eligible": 11,
           "sourced": 3
         },
         "waist": {
-          "eligible": 233,
-          "sourced": 125
+          "eligible": 220,
+          "sourced": 128
         },
         "wrist": {
-          "eligible": 182,
-          "sourced": 77
+          "eligible": 164,
+          "sourced": 82
         }
       }
     },
@@ -3476,20 +3383,20 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14.032363402528363,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 19517,
           "item_name": "Protector's Band",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
           "score": 12.882361837093377,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 6321,
+          "item_name": "Silverlaine's Family Seal",
+          "source": "Shadowfang Keep: Baron Silverlaine",
+          "source_kind": "dungeon",
+          "score": 10.654393024590238,
           "verified": true
         },
         {
@@ -3533,104 +3440,105 @@
           "verified": true
         }
       ],
-      "set_dps": 63.20611418126786,
-      "no_source_count": 1550,
+      "set_dps": 63.02961386942869,
+      "no_source_count": 1157,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
         "2879 Antipodean Rod",
         "2944 Cursed Eye of Paleth",
         "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4196 Feathered Mantle",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
         "5000 Coral Band",
         "5008 Quicksilver Ring",
-        "5743 Prismstone Ring"
+        "5743 Prismstone Ring",
+        "5821 Darkstalker Boots",
+        "5822 Hedgeseed Gauntlets",
+        "5971 Feathered Cape",
+        "6478 Rat Stompers",
+        "7608 Seer's Fine Stein"
       ],
       "new_at_band": [
         "hands: Scarlet Gauntlets",
         "waist: Scarlet Belt",
+        "legs: Ferine Leggings",
         "feet: Ironheel Boots",
         "trinket1: Cold Basilisk Eye",
         "trinket2: Talisman of Arathor",
         "main_hand: Bonebiter",
         "ranged: Explosive Shotgun"
       ],
-      "weights_run_seconds": 1.683017727,
-      "verify_run_seconds": 1.503935126,
+      "weights_run_seconds": 1.739608373,
+      "verify_run_seconds": 1.487193722,
       "coverage": {
         "back": {
-          "eligible": 210,
-          "sourced": 116
+          "eligible": 201,
+          "sourced": 117
         },
         "chest": {
-          "eligible": 359,
-          "sourced": 226
+          "eligible": 337,
+          "sourced": 244
         },
         "feet": {
-          "eligible": 278,
-          "sourced": 159
+          "eligible": 262,
+          "sourced": 160
         },
         "finger1": {
-          "eligible": 138,
+          "eligible": 116,
           "sourced": 53
         },
         "finger2": {
-          "eligible": 138,
+          "eligible": 116,
           "sourced": 53
         },
         "hands": {
-          "eligible": 286,
-          "sourced": 170
+          "eligible": 274,
+          "sourced": 174
         },
         "head": {
-          "eligible": 159,
-          "sourced": 59
+          "eligible": 140,
+          "sourced": 96
         },
         "legs": {
-          "eligible": 299,
-          "sourced": 159
+          "eligible": 278,
+          "sourced": 195
         },
         "main_hand": {
-          "eligible": 636,
-          "sourced": 383
+          "eligible": 584,
+          "sourced": 396
         },
         "neck": {
-          "eligible": 58,
+          "eligible": 43,
           "sourced": 16
         },
         "off_hand": {
-          "eligible": 198,
-          "sourced": 97
+          "eligible": 179,
+          "sourced": 99
         },
         "ranged": {
-          "eligible": 95,
-          "sourced": 42
+          "eligible": 84,
+          "sourced": 47
         },
         "shoulder": {
-          "eligible": 155,
-          "sourced": 76
+          "eligible": 140,
+          "sourced": 80
         },
         "trinket1": {
-          "eligible": 19,
+          "eligible": 13,
           "sourced": 4
         },
         "trinket2": {
-          "eligible": 19,
+          "eligible": 13,
           "sourced": 4
         },
         "waist": {
-          "eligible": 264,
-          "sourced": 154
+          "eligible": 252,
+          "sourced": 157
         },
         "wrist": {
-          "eligible": 214,
-          "sourced": 104
+          "eligible": 201,
+          "sourced": 109
         }
       }
     },
@@ -3800,20 +3708,20 @@
         },
         {
           "slot": "finger1",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14.032363402528363,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
           "item_id": 19513,
           "item_name": "Legionnaire's Band",
           "source": "Warsong Outriders",
           "source_kind": "rep",
           "score": 12.882361837093377,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 6321,
+          "item_name": "Silverlaine's Family Seal",
+          "source": "Shadowfang Keep: Baron Silverlaine",
+          "source_kind": "dungeon",
+          "score": 10.654393024590238,
           "verified": true
         },
         {
@@ -3857,24 +3765,24 @@
           "verified": true
         }
       ],
-      "set_dps": 55.76690990223309,
-      "no_source_count": 1544,
+      "set_dps": 55.592921806775024,
+      "no_source_count": 1151,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
         "2879 Antipodean Rod",
         "2944 Cursed Eye of Paleth",
         "3738 Brewing Rod",
-        "4110 Master Hunter's Bow",
-        "4111 Master Hunter's Rifle",
-        "4116 Olmann Sewar",
         "4196 Feathered Mantle",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
         "5000 Coral Band",
         "5008 Quicksilver Ring",
-        "5743 Prismstone Ring"
+        "5743 Prismstone Ring",
+        "5821 Darkstalker Boots",
+        "5822 Hedgeseed Gauntlets",
+        "5971 Feathered Cape",
+        "6478 Rat Stompers",
+        "7608 Seer's Fine Stein"
       ],
       "new_at_band": [
         "hands: Scarlet Gauntlets",
@@ -3886,76 +3794,76 @@
         "main_hand: Frost Tiger Blade",
         "ranged: Explosive Shotgun"
       ],
-      "weights_run_seconds": 1.683017727,
-      "verify_run_seconds": 1.467728819,
+      "weights_run_seconds": 1.739608373,
+      "verify_run_seconds": 1.511360948,
       "coverage": {
         "back": {
-          "eligible": 209,
-          "sourced": 116
+          "eligible": 200,
+          "sourced": 117
         },
         "chest": {
-          "eligible": 350,
-          "sourced": 218
+          "eligible": 328,
+          "sourced": 236
         },
         "feet": {
-          "eligible": 273,
-          "sourced": 154
+          "eligible": 257,
+          "sourced": 155
         },
         "finger1": {
-          "eligible": 136,
+          "eligible": 114,
           "sourced": 51
         },
         "finger2": {
-          "eligible": 136,
+          "eligible": 114,
           "sourced": 51
         },
         "hands": {
-          "eligible": 284,
-          "sourced": 168
+          "eligible": 272,
+          "sourced": 172
         },
         "head": {
-          "eligible": 159,
-          "sourced": 59
+          "eligible": 140,
+          "sourced": 96
         },
         "legs": {
-          "eligible": 295,
-          "sourced": 155
+          "eligible": 274,
+          "sourced": 191
         },
         "main_hand": {
-          "eligible": 620,
-          "sourced": 369
+          "eligible": 568,
+          "sourced": 382
         },
         "neck": {
-          "eligible": 57,
+          "eligible": 42,
           "sourced": 15
         },
         "off_hand": {
-          "eligible": 192,
-          "sourced": 91
+          "eligible": 173,
+          "sourced": 93
         },
         "ranged": {
-          "eligible": 94,
-          "sourced": 41
+          "eligible": 83,
+          "sourced": 46
         },
         "shoulder": {
-          "eligible": 153,
-          "sourced": 74
+          "eligible": 138,
+          "sourced": 78
         },
         "trinket1": {
-          "eligible": 19,
+          "eligible": 13,
           "sourced": 4
         },
         "trinket2": {
-          "eligible": 19,
+          "eligible": 13,
           "sourced": 4
         },
         "waist": {
-          "eligible": 265,
-          "sourced": 155
+          "eligible": 253,
+          "sourced": 158
         },
         "wrist": {
-          "eligible": 219,
-          "sourced": 111
+          "eligible": 206,
+          "sourced": 116
         }
       }
     },
@@ -4016,13 +3924,12 @@
         },
         {
           "slot": "neck",
-          "item_id": 19540,
-          "item_name": "Sentinel's Medallion",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 0.31459804797779645,
-          "verified": true,
-          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 77.8 vs 77.7 set DPS"
+          "item_id": 7731,
+          "item_name": "Ghostshard Talisman",
+          "source": "Scarlet Monastery: Azshir the Sleepless",
+          "source_kind": "dungeon",
+          "score": 14,
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -4107,12 +4014,13 @@
         },
         {
           "slot": "finger2",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 14.057199645086872,
-          "verified": true
+          "item_id": 7686,
+          "item_name": "Ironspine's Eye",
+          "source": "Scarlet Monastery: Ironspine",
+          "source_kind": "dungeon",
+          "score": 10.234440916029024,
+          "verified": true,
+          "swap_note": "beat the scored pick Silverlaine's Family Seal (id 6321) in the sim: 77.9 vs 77.0 set DPS"
         },
         {
           "slot": "trinket1",
@@ -4145,17 +4053,16 @@
         },
         {
           "slot": "ranged",
-          "item_id": 17687,
-          "item_name": "Master Hunter's Rifle",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 10.091441803311843,
-          "verified": true,
-          "swap_note": "beat the scored pick Explosive Shotgun (id 8188) in the sim: 77.8 vs 77.7 set DPS"
+          "item_id": 8188,
+          "item_name": "Explosive Shotgun",
+          "source": "Ironeye the Invincible",
+          "source_kind": "world",
+          "score": 12.471303141422625,
+          "verified": true
         }
       ],
-      "set_dps": 78.13711495677501,
-      "no_source_count": 1918,
+      "set_dps": 77.91882570488892,
+      "no_source_count": 1590,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -4167,15 +4074,14 @@
         "4116 Olmann Sewar",
         "4196 Feathered Mantle",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
         "5000 Coral Band",
         "5008 Quicksilver Ring",
-        "5743 Prismstone Ring"
+        "5743 Prismstone Ring",
+        "5821 Darkstalker Boots",
+        "5822 Hedgeseed Gauntlets"
       ],
       "new_at_band": [
         "head: Raging Berserker's Helm",
-        "neck: Sentinel's Medallion",
         "shoulder: Failed Flying Experiment",
         "back: Sergeant Major's Cape",
         "chest: Kolkar Marauder Chain",
@@ -4185,81 +4091,80 @@
         "legs: Scarlet Leggings",
         "feet: Shinkicker Boots",
         "finger1: Protector's Band",
-        "finger2: Swamp Ring",
+        "finger2: Ironspine's Eye",
         "trinket1: Ankh of Life",
-        "trinket2: Rune of Perfection",
-        "ranged: Master Hunter's Rifle"
+        "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 2.084806323,
-      "verify_run_seconds": 1.818177575,
+      "weights_run_seconds": 2.076908336,
+      "verify_run_seconds": 1.824059746,
       "coverage": {
         "back": {
-          "eligible": 244,
-          "sourced": 128
+          "eligible": 236,
+          "sourced": 129
         },
         "chest": {
-          "eligible": 414,
-          "sourced": 253
+          "eligible": 400,
+          "sourced": 271
         },
         "feet": {
-          "eligible": 342,
-          "sourced": 172
+          "eligible": 327,
+          "sourced": 173
         },
         "finger1": {
-          "eligible": 156,
+          "eligible": 139,
           "sourced": 57
         },
         "finger2": {
-          "eligible": 156,
+          "eligible": 139,
           "sourced": 57
         },
         "hands": {
-          "eligible": 340,
-          "sourced": 196
+          "eligible": 334,
+          "sourced": 200
         },
         "head": {
-          "eligible": 206,
-          "sourced": 77
+          "eligible": 191,
+          "sourced": 114
         },
         "legs": {
-          "eligible": 340,
-          "sourced": 174
+          "eligible": 326,
+          "sourced": 210
         },
         "main_hand": {
-          "eligible": 692,
-          "sourced": 405
+          "eligible": 660,
+          "sourced": 418
         },
         "neck": {
-          "eligible": 69,
+          "eligible": 56,
           "sourced": 19
         },
         "off_hand": {
-          "eligible": 222,
-          "sourced": 102
+          "eligible": 204,
+          "sourced": 104
         },
         "ranged": {
-          "eligible": 105,
-          "sourced": 48
+          "eligible": 97,
+          "sourced": 53
         },
         "shoulder": {
-          "eligible": 201,
-          "sourced": 86
+          "eligible": 188,
+          "sourced": 90
         },
         "trinket1": {
-          "eligible": 26,
+          "eligible": 20,
           "sourced": 11
         },
         "trinket2": {
-          "eligible": 26,
+          "eligible": 20,
           "sourced": 11
         },
         "waist": {
-          "eligible": 319,
-          "sourced": 175
+          "eligible": 308,
+          "sourced": 178
         },
         "wrist": {
-          "eligible": 260,
-          "sourced": 115
+          "eligible": 250,
+          "sourced": 119
         }
       }
     },
@@ -4320,13 +4225,12 @@
         },
         {
           "slot": "neck",
-          "item_id": 4430,
-          "item_name": "Ethereal Talisman",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 12.585702431596369,
-          "verified": true,
-          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 77.9 vs 77.4 set DPS"
+          "item_id": 7731,
+          "item_name": "Ghostshard Talisman",
+          "source": "Scarlet Monastery: Azshir the Sleepless",
+          "source_kind": "dungeon",
+          "score": 14,
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -4339,13 +4243,12 @@
         },
         {
           "slot": "back",
-          "item_id": 16315,
+          "item_id": 16336,
           "item_name": "Sergeant Major's Cape",
           "source": "Rank 9",
           "source_kind": "pvp",
-          "score": 10.091441803311843,
-          "verified": true,
-          "swap_note": "beat the scored pick Sergeant Major's Cape (id 16336) in the sim: 77.4 vs 77.4 set DPS"
+          "score": 15.137162704967766,
+          "verified": true
         },
         {
           "slot": "chest",
@@ -4358,33 +4261,30 @@
         },
         {
           "slot": "wrist",
-          "item_id": 4438,
-          "item_name": "Pugilist Bracers",
-          "source": "Razorfen Kraul: Overlord Ramtusk",
+          "item_id": 19508,
+          "item_name": "Branded Leather Bracers",
+          "source": "Scarlet Monastery: High Inquisitor Fairbanks",
           "source_kind": "dungeon",
-          "score": 19.9540850262762,
-          "verified": true,
-          "swap_note": "beat the scored pick Branded Leather Bracers (id 19508) in the sim: 77.5 vs 77.4 set DPS"
+          "score": 20,
+          "verified": true
         },
         {
           "slot": "hands",
-          "item_id": 7724,
-          "item_name": "Gauntlets of Divinity",
-          "source": "Scarlet Monastery: Scarlet Commander Mograine",
-          "source_kind": "dungeon",
-          "score": 32,
-          "verified": true,
-          "swap_note": "beat the scored pick Truesilver Gauntlets (id 7938) in the sim: 77.4 vs 77.4 set DPS"
+          "item_id": 7938,
+          "item_name": "Truesilver Gauntlets",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 39.9081700525524,
+          "verified": true
         },
         {
           "slot": "waist",
-          "item_id": 9705,
-          "item_name": "Tharg's Shoelace",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 32.42538816769883,
-          "verified": true,
-          "swap_note": "beat the scored pick Defiler's Plate Girdle (id 20206) in the sim: 77.5 vs 77.4 set DPS"
+          "item_id": 20206,
+          "item_name": "Defiler's Plate Girdle",
+          "source": "The Defilers",
+          "source_kind": "rep",
+          "score": 37.41390942426788,
+          "verified": true
         },
         {
           "slot": "legs",
@@ -4397,13 +4297,12 @@
         },
         {
           "slot": "feet",
-          "item_id": 6423,
-          "item_name": "Blackforge Greaves",
-          "source": "Gnomeregan: STX-04/BD",
-          "source_kind": "dungeon",
-          "score": 22.734343879995087,
-          "verified": true,
-          "swap_note": "beat the scored pick Shinkicker Boots (id 9637) in the sim: 77.5 vs 77.4 set DPS"
+          "item_id": 9637,
+          "item_name": "Shinkicker Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 25.200004685736175,
+          "verified": true
         },
         {
           "slot": "finger1",
@@ -4416,13 +4315,12 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19513,
+          "item_id": 19512,
           "item_name": "Legionnaire's Band",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "score": 15.137162704967766,
-          "verified": true,
-          "swap_note": "beat the scored pick Legionnaire's Band (id 19512) in the sim: 77.4 vs 77.4 set DPS"
+          "score": 20.182883606623687,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -4455,17 +4353,16 @@
         },
         {
           "slot": "ranged",
-          "item_id": 17687,
-          "item_name": "Master Hunter's Rifle",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 10.091441803311843,
-          "verified": true,
-          "swap_note": "beat the scored pick Explosive Shotgun (id 8188) in the sim: 77.9 vs 77.4 set DPS"
+          "item_id": 8188,
+          "item_name": "Explosive Shotgun",
+          "source": "Ironeye the Invincible",
+          "source_kind": "world",
+          "score": 12.471303141422625,
+          "verified": true
         }
       ],
-      "set_dps": 76.61109822189646,
-      "no_source_count": 1912,
+      "set_dps": 77.36697032919628,
+      "no_source_count": 1584,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -4477,98 +4374,98 @@
         "4116 Olmann Sewar",
         "4196 Feathered Mantle",
         "4763 Blackwood Recurve Bow",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe",
         "5000 Coral Band",
         "5008 Quicksilver Ring",
-        "5743 Prismstone Ring"
+        "5743 Prismstone Ring",
+        "5821 Darkstalker Boots",
+        "5822 Hedgeseed Gauntlets"
       ],
       "new_at_band": [
         "head: Raging Berserker's Helm",
-        "neck: Ethereal Talisman",
         "shoulder: Failed Flying Experiment",
         "back: Sergeant Major's Cape",
         "chest: Kolkar Marauder Chain",
-        "hands: Gauntlets of Divinity",
-        "waist: Tharg's Shoelace",
+        "wrist: Branded Leather Bracers",
+        "hands: Truesilver Gauntlets",
+        "waist: Defiler's Plate Girdle",
         "legs: Scarlet Leggings",
-        "feet: Blackforge Greaves",
+        "feet: Shinkicker Boots",
         "finger1: Band of Allegiance",
+        "finger2: Legionnaire's Band",
         "trinket1: Rune of Perfection",
         "trinket2: Ankh of Life",
-        "main_hand: Thornstone Sledgehammer",
-        "ranged: Master Hunter's Rifle"
+        "main_hand: Thornstone Sledgehammer"
       ],
-      "weights_run_seconds": 2.084806323,
-      "verify_run_seconds": 1.795683819,
+      "weights_run_seconds": 2.076908336,
+      "verify_run_seconds": 1.727295946,
       "coverage": {
         "back": {
-          "eligible": 247,
-          "sourced": 132
+          "eligible": 239,
+          "sourced": 133
         },
         "chest": {
-          "eligible": 405,
-          "sourced": 245
+          "eligible": 391,
+          "sourced": 263
         },
         "feet": {
-          "eligible": 343,
-          "sourced": 173
+          "eligible": 328,
+          "sourced": 174
         },
         "finger1": {
-          "eligible": 156,
+          "eligible": 139,
           "sourced": 57
         },
         "finger2": {
-          "eligible": 156,
+          "eligible": 139,
           "sourced": 57
         },
         "hands": {
-          "eligible": 339,
-          "sourced": 195
+          "eligible": 333,
+          "sourced": 199
         },
         "head": {
-          "eligible": 205,
-          "sourced": 76
+          "eligible": 190,
+          "sourced": 113
         },
         "legs": {
-          "eligible": 336,
-          "sourced": 170
+          "eligible": 322,
+          "sourced": 206
         },
         "main_hand": {
-          "eligible": 679,
-          "sourced": 394
+          "eligible": 647,
+          "sourced": 407
         },
         "neck": {
-          "eligible": 70,
+          "eligible": 57,
           "sourced": 20
         },
         "off_hand": {
-          "eligible": 220,
-          "sourced": 100
+          "eligible": 202,
+          "sourced": 102
         },
         "ranged": {
-          "eligible": 104,
-          "sourced": 47
+          "eligible": 96,
+          "sourced": 52
         },
         "shoulder": {
-          "eligible": 199,
-          "sourced": 84
+          "eligible": 186,
+          "sourced": 88
         },
         "trinket1": {
-          "eligible": 25,
+          "eligible": 19,
           "sourced": 10
         },
         "trinket2": {
-          "eligible": 25,
+          "eligible": 19,
           "sourced": 10
         },
         "waist": {
-          "eligible": 321,
-          "sourced": 177
+          "eligible": 310,
+          "sourced": 180
         },
         "wrist": {
-          "eligible": 265,
-          "sourced": 122
+          "eligible": 255,
+          "sourced": 126
         }
       }
     },
@@ -4666,13 +4563,12 @@
         },
         {
           "slot": "wrist",
-          "item_id": 14770,
-          "item_name": "Ravager's Armguards",
-          "source": "Ironeye the Invincible",
-          "source_kind": "world",
-          "score": 19.49184875185949,
-          "verified": true,
-          "swap_note": "beat the scored pick Branded Leather Bracers (id 19508) in the sim: 97.9 vs 97.8 set DPS"
+          "item_id": 19508,
+          "item_name": "Branded Leather Bracers",
+          "source": "Scarlet Monastery: High Inquisitor Fairbanks",
+          "source_kind": "dungeon",
+          "score": 20,
+          "verified": true
         },
         {
           "slot": "hands",
@@ -4685,13 +4581,12 @@
         },
         {
           "slot": "waist",
-          "item_id": 20125,
-          "item_name": "Highlander's Plate Girdle",
+          "item_id": 20089,
+          "item_name": "Highlander's Chain Girdle",
           "source": "The League of Arathor",
           "source_kind": "rep",
-          "score": 34.65396743072593,
-          "verified": true,
-          "swap_note": "beat the scored pick Highlander's Chain Girdle (id 20089) in the sim: 97.9 vs 97.8 set DPS"
+          "score": 111.75788265161388,
+          "verified": true
         },
         {
           "slot": "legs",
@@ -4722,13 +4617,12 @@
         },
         {
           "slot": "finger2",
-          "item_id": 270052,
-          "item_name": "Swamp Ring",
-          "source": "Darkmaster Gandling",
-          "source_kind": "world",
-          "score": 15.659998642093695,
-          "verified": true,
-          "swap_note": "beat the scored pick Ironspine's Eye (id 7686) in the sim: 97.9 vs 97.8 set DPS"
+          "item_id": 7686,
+          "item_name": "Ironspine's Eye",
+          "source": "Scarlet Monastery: Ironspine",
+          "source_kind": "dungeon",
+          "score": 16.711051870948545,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -4770,8 +4664,8 @@
           "verified": true
         }
       ],
-      "set_dps": 99.90563963686121,
-      "no_source_count": 2227,
+      "set_dps": 99.59704372565358,
+      "no_source_count": 1938,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -4790,85 +4684,84 @@
         "5743 Prismstone Ring"
       ],
       "new_at_band": [
-        "neck: Ghostshard Talisman",
         "chest: Warforged Chestplate",
-        "wrist: Ravager's Armguards",
         "hands: Gloves of Holy Might",
+        "waist: Highlander's Chain Girdle",
         "trinket1: Guardian Talisman",
         "trinket2: Smotts' Compass",
         "main_hand: Blight",
         "ranged: Guttbuster"
       ],
-      "weights_run_seconds": 2.048201303,
-      "verify_run_seconds": 1.825066088,
+      "weights_run_seconds": 2.061413913,
+      "verify_run_seconds": 1.8455418369999999,
       "coverage": {
         "back": {
-          "eligible": 272,
-          "sourced": 137
+          "eligible": 266,
+          "sourced": 138
         },
         "chest": {
-          "eligible": 465,
-          "sourced": 281
+          "eligible": 456,
+          "sourced": 299
         },
         "feet": {
-          "eligible": 383,
-          "sourced": 192
+          "eligible": 372,
+          "sourced": 193
         },
         "finger1": {
-          "eligible": 168,
+          "eligible": 153,
           "sourced": 60
         },
         "finger2": {
-          "eligible": 168,
+          "eligible": 153,
           "sourced": 60
         },
         "hands": {
-          "eligible": 376,
-          "sourced": 211
+          "eligible": 370,
+          "sourced": 215
         },
         "head": {
-          "eligible": 259,
-          "sourced": 105
+          "eligible": 248,
+          "sourced": 142
         },
         "legs": {
-          "eligible": 380,
-          "sourced": 190
+          "eligible": 368,
+          "sourced": 226
         },
         "main_hand": {
-          "eligible": 745,
-          "sourced": 437
+          "eligible": 716,
+          "sourced": 450
         },
         "neck": {
-          "eligible": 78,
+          "eligible": 65,
           "sourced": 25
         },
         "off_hand": {
-          "eligible": 245,
-          "sourced": 110
+          "eligible": 229,
+          "sourced": 112
         },
         "ranged": {
-          "eligible": 115,
-          "sourced": 54
+          "eligible": 111,
+          "sourced": 59
         },
         "shoulder": {
-          "eligible": 260,
-          "sourced": 103
+          "eligible": 253,
+          "sourced": 107
         },
         "trinket1": {
-          "eligible": 35,
+          "eligible": 29,
           "sourced": 16
         },
         "trinket2": {
-          "eligible": 35,
+          "eligible": 29,
           "sourced": 16
         },
         "waist": {
-          "eligible": 358,
-          "sourced": 188
+          "eligible": 348,
+          "sourced": 191
         },
         "wrist": {
-          "eligible": 324,
-          "sourced": 127
+          "eligible": 318,
+          "sourced": 131
         }
       }
     },
@@ -4920,13 +4813,12 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 7937,
-          "item_name": "Ornate Mithril Helm",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 126.86052760543117,
-          "verified": true,
-          "swap_note": "beat the scored pick Raging Berserker's Helm (id 7719) in the sim: 99.3 vs 99.2 set DPS"
+          "item_id": 7719,
+          "item_name": "Raging Berserker's Helm",
+          "source": "Scarlet Monastery: Herod",
+          "source_kind": "dungeon",
+          "score": 133.79132109157635,
+          "verified": true
         },
         {
           "slot": "neck",
@@ -4985,13 +4877,12 @@
         },
         {
           "slot": "waist",
-          "item_id": 20206,
-          "item_name": "Defiler's Plate Girdle",
+          "item_id": 20153,
+          "item_name": "Defiler's Chain Girdle",
           "source": "The Defilers",
           "source_kind": "rep",
-          "score": 34.65396743072593,
-          "verified": true,
-          "swap_note": "beat the scored pick Defiler's Chain Girdle (id 20153) in the sim: 100.1 vs 99.2 set DPS"
+          "score": 111.75788265161388,
+          "verified": true
         },
         {
           "slot": "legs",
@@ -5022,13 +4913,12 @@
         },
         {
           "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 16.711051870948545,
-          "verified": true,
-          "swap_note": "beat the scored pick Band of Allegiance (id 18585) in the sim: 99.2 vs 99.2 set DPS"
+          "item_id": 18585,
+          "item_name": "Band of Allegiance",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 20.79238045843556,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -5070,8 +4960,8 @@
           "verified": true
         }
       ],
-      "set_dps": 102.30160434022176,
-      "no_source_count": 2221,
+      "set_dps": 102.20752068688817,
+      "no_source_count": 1932,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -5090,90 +4980,87 @@
         "5743 Prismstone Ring"
       ],
       "new_at_band": [
-        "head: Ornate Mithril Helm",
-        "back: Sergeant Major's Cape",
+        "neck: Ethereal Talisman",
         "chest: Warforged Chestplate",
-        "wrist: Branded Leather Bracers",
         "hands: Gloves of Holy Might",
-        "waist: Defiler's Plate Girdle",
-        "feet: Shinkicker Boots",
+        "waist: Defiler's Chain Girdle",
         "finger1: Legionnaire's Band",
-        "finger2: Ironspine's Eye",
+        "finger2: Band of Allegiance",
         "trinket1: Smotts' Compass",
         "trinket2: Guardian Talisman",
         "main_hand: Blight",
         "ranged: Guttbuster"
       ],
-      "weights_run_seconds": 2.048201303,
-      "verify_run_seconds": 1.8414570179999998,
+      "weights_run_seconds": 2.061413913,
+      "verify_run_seconds": 1.903531774,
       "coverage": {
         "back": {
-          "eligible": 276,
-          "sourced": 142
+          "eligible": 270,
+          "sourced": 143
         },
         "chest": {
-          "eligible": 457,
-          "sourced": 274
+          "eligible": 448,
+          "sourced": 292
         },
         "feet": {
-          "eligible": 384,
-          "sourced": 193
+          "eligible": 373,
+          "sourced": 194
         },
         "finger1": {
-          "eligible": 168,
+          "eligible": 153,
           "sourced": 60
         },
         "finger2": {
-          "eligible": 168,
+          "eligible": 153,
           "sourced": 60
         },
         "hands": {
-          "eligible": 377,
-          "sourced": 212
+          "eligible": 371,
+          "sourced": 216
         },
         "head": {
-          "eligible": 259,
-          "sourced": 105
+          "eligible": 248,
+          "sourced": 142
         },
         "legs": {
-          "eligible": 376,
-          "sourced": 186
+          "eligible": 364,
+          "sourced": 222
         },
         "main_hand": {
-          "eligible": 735,
-          "sourced": 429
+          "eligible": 706,
+          "sourced": 442
         },
         "neck": {
-          "eligible": 79,
+          "eligible": 66,
           "sourced": 26
         },
         "off_hand": {
-          "eligible": 242,
-          "sourced": 107
+          "eligible": 226,
+          "sourced": 109
         },
         "ranged": {
-          "eligible": 114,
-          "sourced": 53
+          "eligible": 110,
+          "sourced": 58
         },
         "shoulder": {
-          "eligible": 259,
-          "sourced": 102
+          "eligible": 252,
+          "sourced": 106
         },
         "trinket1": {
-          "eligible": 34,
+          "eligible": 28,
           "sourced": 15
         },
         "trinket2": {
-          "eligible": 34,
+          "eligible": 28,
           "sourced": 15
         },
         "waist": {
-          "eligible": 359,
-          "sourced": 189
+          "eligible": 349,
+          "sourced": 192
         },
         "wrist": {
-          "eligible": 327,
-          "sourced": 132
+          "eligible": 321,
+          "sourced": 136
         }
       }
     },
@@ -5304,23 +5191,21 @@
         },
         {
           "slot": "legs",
-          "item_id": 21316,
-          "item_name": "Leggings of the Ursa",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 123.3036548845204,
-          "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 110.2 vs 109.7 set DPS"
+          "item_id": 15057,
+          "item_name": "Stormshroud Pants",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 194.94630902790595,
+          "verified": true
         },
         {
           "slot": "feet",
-          "item_id": 9637,
-          "item_name": "Shinkicker Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 18.95634709965011,
-          "verified": true,
-          "swap_note": "beat the scored pick Greaves of Withering Despair (id 22240) in the sim: 110.1 vs 109.7 set DPS"
+          "item_id": 22240,
+          "item_name": "Greaves of Withering Despair",
+          "source": "Blackrock Depths: High Interrogator Gerstahn ",
+          "source_kind": "dungeon",
+          "score": 20.662084824402,
+          "verified": true
         },
         {
           "slot": "finger1",
@@ -5380,8 +5265,8 @@
           "verified": true
         }
       ],
-      "set_dps": 113.87234637324106,
-      "no_source_count": 2434,
+      "set_dps": 111.62920885889662,
+      "no_source_count": 2197,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -5404,83 +5289,84 @@
         "back: Bloodlust Cape",
         "wrist: Bracers of the Stone Princess",
         "waist: Highlander's Chain Girdle",
-        "legs: Leggings of the Ursa",
+        "legs: Stormshroud Pants",
+        "feet: Greaves of Withering Despair",
         "finger1: Blackstone Ring",
         "finger2: Protector's Band",
         "trinket1: Smoking Heart of the Mountain",
         "trinket2: Arena Grand Master",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.15034958,
-      "verify_run_seconds": 1.931647333,
+      "weights_run_seconds": 2.161508757,
+      "verify_run_seconds": 1.977461615,
       "coverage": {
         "back": {
-          "eligible": 303,
-          "sourced": 160
+          "eligible": 299,
+          "sourced": 161
         },
         "chest": {
-          "eligible": 518,
-          "sourced": 325
+          "eligible": 513,
+          "sourced": 343
         },
         "feet": {
-          "eligible": 455,
-          "sourced": 228
+          "eligible": 447,
+          "sourced": 229
         },
         "finger1": {
-          "eligible": 187,
+          "eligible": 172,
           "sourced": 73
         },
         "finger2": {
-          "eligible": 187,
+          "eligible": 172,
           "sourced": 73
         },
         "hands": {
-          "eligible": 450,
-          "sourced": 246
+          "eligible": 445,
+          "sourced": 249
         },
         "head": {
-          "eligible": 296,
-          "sourced": 132
+          "eligible": 291,
+          "sourced": 169
         },
         "legs": {
-          "eligible": 423,
-          "sourced": 226
+          "eligible": 416,
+          "sourced": 262
         },
         "main_hand": {
-          "eligible": 811,
-          "sourced": 481
+          "eligible": 790,
+          "sourced": 494
         },
         "neck": {
-          "eligible": 88,
+          "eligible": 77,
           "sourced": 32
         },
         "off_hand": {
-          "eligible": 271,
-          "sourced": 133
+          "eligible": 263,
+          "sourced": 136
         },
         "ranged": {
-          "eligible": 126,
-          "sourced": 61
+          "eligible": 122,
+          "sourced": 66
         },
         "shoulder": {
-          "eligible": 298,
-          "sourced": 134
+          "eligible": 292,
+          "sourced": 138
         },
         "trinket1": {
-          "eligible": 52,
+          "eligible": 49,
           "sourced": 22
         },
         "trinket2": {
-          "eligible": 52,
+          "eligible": 49,
           "sourced": 22
         },
         "waist": {
-          "eligible": 424,
-          "sourced": 222
+          "eligible": 420,
+          "sourced": 225
         },
         "wrist": {
-          "eligible": 363,
-          "sourced": 156
+          "eligible": 360,
+          "sourced": 160
         }
       }
     },
@@ -5541,13 +5427,12 @@
         },
         {
           "slot": "neck",
-          "item_id": 19159,
-          "item_name": "Woven Ivy Necklace",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 12.87858230657542,
-          "verified": true,
-          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 110.9 vs 110.6 set DPS"
+          "item_id": 7731,
+          "item_name": "Ghostshard Talisman",
+          "source": "Scarlet Monastery: Azshir the Sleepless",
+          "source_kind": "dungeon",
+          "score": 14,
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -5612,23 +5497,21 @@
         },
         {
           "slot": "legs",
-          "item_id": 21316,
-          "item_name": "Leggings of the Ursa",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 123.3036548845204,
-          "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 110.9 vs 110.6 set DPS"
+          "item_id": 15057,
+          "item_name": "Stormshroud Pants",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 194.94630902790595,
+          "verified": true
         },
         {
           "slot": "feet",
-          "item_id": 9637,
-          "item_name": "Shinkicker Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 18.95634709965011,
-          "verified": true,
-          "swap_note": "beat the scored pick Greaves of Withering Despair (id 22240) in the sim: 110.9 vs 110.6 set DPS"
+          "item_id": 22240,
+          "item_name": "Greaves of Withering Despair",
+          "source": "Blackrock Depths: High Interrogator Gerstahn ",
+          "source_kind": "dungeon",
+          "score": 20.662084824402,
+          "verified": true
         },
         {
           "slot": "finger1",
@@ -5688,8 +5571,8 @@
           "verified": true
         }
       ],
-      "set_dps": 115.75499767270554,
-      "no_source_count": 2428,
+      "set_dps": 112.6126805185517,
+      "no_source_count": 2191,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -5708,89 +5591,89 @@
         "5743 Prismstone Ring"
       ],
       "new_at_band": [
-        "head: Raging Berserker's Helm",
-        "neck: Woven Ivy Necklace",
+        "neck: Ghostshard Talisman",
         "shoulder: Wyrmslayer Spaulders",
         "back: Bloodlust Cape",
         "wrist: Bracers of the Stone Princess",
         "waist: Defiler's Chain Girdle",
-        "legs: Leggings of the Ursa",
+        "legs: Stormshroud Pants",
+        "feet: Greaves of Withering Despair",
         "finger1: Blackstone Ring",
         "finger2: White Bone Band",
         "trinket1: Smoking Heart of the Mountain",
         "trinket2: Arena Grand Master",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.15034958,
-      "verify_run_seconds": 1.862283183,
+      "weights_run_seconds": 2.161508757,
+      "verify_run_seconds": 1.894653553,
       "coverage": {
         "back": {
-          "eligible": 309,
-          "sourced": 167
+          "eligible": 305,
+          "sourced": 168
         },
         "chest": {
-          "eligible": 512,
-          "sourced": 320
+          "eligible": 507,
+          "sourced": 338
         },
         "feet": {
-          "eligible": 453,
-          "sourced": 226
+          "eligible": 445,
+          "sourced": 227
         },
         "finger1": {
-          "eligible": 187,
+          "eligible": 172,
           "sourced": 73
         },
         "finger2": {
-          "eligible": 187,
+          "eligible": 172,
           "sourced": 73
         },
         "hands": {
-          "eligible": 449,
-          "sourced": 245
+          "eligible": 444,
+          "sourced": 248
         },
         "head": {
-          "eligible": 294,
-          "sourced": 130
+          "eligible": 289,
+          "sourced": 167
         },
         "legs": {
-          "eligible": 417,
-          "sourced": 220
+          "eligible": 410,
+          "sourced": 256
         },
         "main_hand": {
-          "eligible": 801,
-          "sourced": 473
+          "eligible": 780,
+          "sourced": 486
         },
         "neck": {
-          "eligible": 90,
+          "eligible": 79,
           "sourced": 34
         },
         "off_hand": {
-          "eligible": 270,
-          "sourced": 132
+          "eligible": 262,
+          "sourced": 135
         },
         "ranged": {
-          "eligible": 126,
-          "sourced": 61
+          "eligible": 122,
+          "sourced": 66
         },
         "shoulder": {
-          "eligible": 296,
-          "sourced": 132
+          "eligible": 290,
+          "sourced": 136
         },
         "trinket1": {
-          "eligible": 52,
+          "eligible": 49,
           "sourced": 22
         },
         "trinket2": {
-          "eligible": 52,
+          "eligible": 49,
           "sourced": 22
         },
         "waist": {
-          "eligible": 425,
-          "sourced": 223
+          "eligible": 421,
+          "sourced": 226
         },
         "wrist": {
-          "eligible": 365,
-          "sourced": 160
+          "eligible": 362,
+          "sourced": 164
         }
       }
     },
@@ -5842,13 +5725,12 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 13404,
-          "item_name": "Mask of the Unforgiven",
-          "source": "Stratholme: The Unforgiven",
+          "item_id": 11735,
+          "item_name": "Ragefury Eyepatch",
+          "source": "Blackrock Depths: Guzzler",
           "source_kind": "dungeon",
-          "score": 243.84855136071786,
-          "verified": true,
-          "swap_note": "beat the scored pick Ragefury Eyepatch (id 11735) in the sim: 122.7 vs 121.8 set DPS"
+          "score": 368.9052233351767,
+          "verified": true
         },
         {
           "slot": "neck",
@@ -5871,13 +5753,12 @@
         },
         {
           "slot": "back",
-          "item_id": 19084,
-          "item_name": "Stormpike Soldier's Cloak",
-          "source": "Stormpike Guard",
-          "source_kind": "rep",
-          "score": 24,
-          "verified": true,
-          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 122.1 vs 121.8 set DPS"
+          "item_id": 20219,
+          "item_name": "Tattered Hakkari Cape",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 24.290133689247007,
+          "verified": true
         },
         {
           "slot": "chest",
@@ -5891,13 +5772,12 @@
         },
         {
           "slot": "wrist",
-          "item_id": 22668,
-          "item_name": "Bracers of Subterfuge",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 28.573250500877712,
-          "verified": true,
-          "swap_note": "beat the scored pick Vambraces of the Sadist (id 13400) in the sim: 122.5 vs 121.8 set DPS"
+          "item_id": 13400,
+          "item_name": "Vambraces of the Sadist",
+          "source": "Stratholme: Timmy the Cruel",
+          "source_kind": "dungeon",
+          "score": 193.28538755458723,
+          "verified": true
         },
         {
           "slot": "hands",
@@ -5910,13 +5790,12 @@
         },
         {
           "slot": "waist",
-          "item_id": 20124,
-          "item_name": "Highlander's Plate Girdle",
+          "item_id": 20106,
+          "item_name": "Highlander's Lamellar Girdle",
           "source": "The League of Arathor",
           "source_kind": "rep",
-          "score": 199.90996946983643,
-          "verified": true,
-          "swap_note": "beat the scored pick Highlander's Lamellar Girdle (id 20106) in the sim: 121.9 vs 121.8 set DPS"
+          "score": 202.11816344158615,
+          "verified": true
         },
         {
           "slot": "legs",
@@ -5948,13 +5827,12 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19516,
-          "item_name": "Protector's Band",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 25.97672618752554,
-          "verified": true,
-          "swap_note": "beat the scored pick Blackstone Ring (id 17713) in the sim: 122.4 vs 121.8 set DPS"
+          "item_id": 17713,
+          "item_name": "Blackstone Ring",
+          "source": "Maraudon: Princess Theradras",
+          "source_kind": "dungeon",
+          "score": 53.01026080418935,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -5995,8 +5873,8 @@
           "verified": true
         }
       ],
-      "set_dps": 132.88148278994237,
-      "no_source_count": 2656,
+      "set_dps": 132.61386858231958,
+      "no_source_count": 2502,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6015,75 +5893,76 @@
         "5743 Prismstone Ring"
       ],
       "new_at_band": [
-        "head: Mask of the Unforgiven",
+        "head: Ragefury Eyepatch",
         "neck: Medallion of the Dawn",
         "shoulder: Lightforge Spaulders",
-        "back: Stormpike Soldier's Cloak",
+        "back: Tattered Hakkari Cape",
         "chest: Savage Gladiator Chain",
-        "wrist: Bracers of Subterfuge",
+        "wrist: Vambraces of the Sadist",
         "hands: Devilsaur Gauntlets",
-        "waist: Highlander's Plate Girdle",
+        "waist: Highlander's Lamellar Girdle",
         "legs: Titanic Leggings",
         "feet: Sapphiron's Scale Boots",
         "finger1: Band of the Penitent",
+        "finger2: Blackstone Ring",
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.146564707,
-      "verify_run_seconds": 1.889170849,
+      "weights_run_seconds": 2.119592676,
+      "verify_run_seconds": 1.9344021919999999,
       "coverage": {
         "back": {
-          "eligible": 333,
-          "sourced": 181
+          "eligible": 332,
+          "sourced": 182
         },
         "chest": {
-          "eligible": 580,
-          "sourced": 360
+          "eligible": 579,
+          "sourced": 378
         },
         "feet": {
           "eligible": 516,
-          "sourced": 263
+          "sourced": 264
         },
         "finger1": {
-          "eligible": 207,
+          "eligible": 198,
           "sourced": 89
         },
         "finger2": {
-          "eligible": 207,
+          "eligible": 198,
           "sourced": 89
         },
         "hands": {
           "eligible": 511,
-          "sourced": 280
+          "sourced": 283
         },
         "head": {
-          "eligible": 345,
-          "sourced": 162
+          "eligible": 344,
+          "sourced": 199
         },
         "legs": {
-          "eligible": 477,
-          "sourced": 263
+          "eligible": 475,
+          "sourced": 299
         },
         "main_hand": {
-          "eligible": 863,
-          "sourced": 524
+          "eligible": 862,
+          "sourced": 537
         },
         "neck": {
-          "eligible": 108,
+          "eligible": 106,
           "sourced": 48
         },
         "off_hand": {
           "eligible": 291,
-          "sourced": 142
+          "sourced": 146
         },
         "ranged": {
           "eligible": 140,
-          "sourced": 73
+          "sourced": 78
         },
         "shoulder": {
-          "eligible": 352,
-          "sourced": 166
+          "eligible": 348,
+          "sourced": 170
         },
         "trinket1": {
           "eligible": 63,
@@ -6094,12 +5973,12 @@
           "sourced": 33
         },
         "waist": {
-          "eligible": 490,
-          "sourced": 263
+          "eligible": 488,
+          "sourced": 266
         },
         "wrist": {
-          "eligible": 413,
-          "sourced": 186
+          "eligible": 411,
+          "sourced": 190
         }
       }
     },
@@ -6198,13 +6077,12 @@
         },
         {
           "slot": "wrist",
-          "item_id": 22668,
-          "item_name": "Bracers of Subterfuge",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 28.573250500877712,
-          "verified": true,
-          "swap_note": "beat the scored pick Vambraces of the Sadist (id 13400) in the sim: 124.0 vs 123.8 set DPS"
+          "item_id": 13400,
+          "item_name": "Vambraces of the Sadist",
+          "source": "Stratholme: Timmy the Cruel",
+          "source_kind": "dungeon",
+          "score": 193.28538755458723,
+          "verified": true
         },
         {
           "slot": "hands",
@@ -6217,13 +6095,12 @@
         },
         {
           "slot": "waist",
-          "item_id": 20151,
-          "item_name": "Defiler's Chain Girdle",
+          "item_id": 20205,
+          "item_name": "Defiler's Plate Girdle",
           "source": "The Defilers",
           "source_kind": "rep",
-          "score": 197.82802975233915,
-          "verified": true,
-          "swap_note": "beat the scored pick Defiler's Plate Girdle (id 20205) in the sim: 123.9 vs 123.8 set DPS"
+          "score": 199.90996946983643,
+          "verified": true
         },
         {
           "slot": "legs",
@@ -6255,13 +6132,12 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19511,
-          "item_name": "Legionnaire's Band",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 25.97672618752554,
-          "verified": true,
-          "swap_note": "beat the scored pick Blackstone Ring (id 17713) in the sim: 124.5 vs 123.8 set DPS"
+          "item_id": 17713,
+          "item_name": "Blackstone Ring",
+          "source": "Maraudon: Princess Theradras",
+          "source_kind": "dungeon",
+          "score": 53.01026080418935,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -6302,8 +6178,8 @@
           "verified": true
         }
       ],
-      "set_dps": 134.25619198192453,
-      "no_source_count": 2650,
+      "set_dps": 135.02193651312115,
+      "no_source_count": 2496,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6327,70 +6203,71 @@
         "shoulder: Lightforge Spaulders",
         "back: Tattered Hakkari Cape",
         "chest: Savage Gladiator Chain",
-        "wrist: Bracers of Subterfuge",
+        "wrist: Vambraces of the Sadist",
         "hands: Devilsaur Gauntlets",
+        "waist: Defiler's Plate Girdle",
         "legs: Titanic Leggings",
         "feet: Sapphiron's Scale Boots",
         "finger1: Band of the Penitent",
-        "finger2: Legionnaire's Band",
+        "finger2: Blackstone Ring",
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood",
         "ranged: The Purifier"
       ],
-      "weights_run_seconds": 2.146564707,
-      "verify_run_seconds": 1.9502565060000001,
+      "weights_run_seconds": 2.119592676,
+      "verify_run_seconds": 1.9490348370000001,
       "coverage": {
         "back": {
-          "eligible": 338,
-          "sourced": 187
+          "eligible": 337,
+          "sourced": 188
         },
         "chest": {
-          "eligible": 574,
-          "sourced": 355
+          "eligible": 573,
+          "sourced": 373
         },
         "feet": {
           "eligible": 514,
-          "sourced": 261
+          "sourced": 262
         },
         "finger1": {
-          "eligible": 207,
+          "eligible": 198,
           "sourced": 89
         },
         "finger2": {
-          "eligible": 207,
+          "eligible": 198,
           "sourced": 89
         },
         "hands": {
           "eligible": 509,
-          "sourced": 278
+          "sourced": 281
         },
         "head": {
-          "eligible": 343,
-          "sourced": 160
+          "eligible": 342,
+          "sourced": 197
         },
         "legs": {
-          "eligible": 471,
-          "sourced": 257
+          "eligible": 469,
+          "sourced": 293
         },
         "main_hand": {
-          "eligible": 854,
-          "sourced": 517
+          "eligible": 853,
+          "sourced": 530
         },
         "neck": {
-          "eligible": 110,
+          "eligible": 108,
           "sourced": 50
         },
         "off_hand": {
           "eligible": 291,
-          "sourced": 142
+          "sourced": 146
         },
         "ranged": {
           "eligible": 139,
-          "sourced": 72
+          "sourced": 77
         },
         "shoulder": {
-          "eligible": 348,
-          "sourced": 162
+          "eligible": 344,
+          "sourced": 166
         },
         "trinket1": {
           "eligible": 63,
@@ -6401,12 +6278,12 @@
           "sourced": 33
         },
         "waist": {
-          "eligible": 490,
-          "sourced": 263
+          "eligible": 488,
+          "sourced": 266
         },
         "wrist": {
-          "eligible": 417,
-          "sourced": 192
+          "eligible": 415,
+          "sourced": 196
         }
       }
     },
@@ -6505,7 +6382,7 @@
           "source_kind": "quest",
           "score": 67.69329697179009,
           "verified": true,
-          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 265.1 vs 262.9 set DPS"
+          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 263.1 vs 260.3 set DPS"
         },
         {
           "slot": "chest",
@@ -6524,7 +6401,7 @@
           "source_kind": "raid",
           "score": 106.65193810519867,
           "verified": true,
-          "swap_note": "beat the scored pick Vambraces of the Sadist (id 13400) in the sim: 263.7 vs 262.9 set DPS"
+          "swap_note": "beat the scored pick Vambraces of the Sadist (id 13400) in the sim: 264.2 vs 260.3 set DPS"
         },
         {
           "slot": "hands",
@@ -6546,12 +6423,26 @@
         },
         {
           "slot": "legs",
-          "item_id": 237825,
-          "item_name": "Sentinel's Plate Legguards",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
-          "score": 672.6509897071732,
-          "verified": true
+          "item_id": 16479,
+          "item_name": "Marshal's Plate Legguards",
+          "source": "Captain Dirgehammer",
+          "source_kind": "vendor",
+          "score": 645.4477464154216,
+          "verified": true,
+          "ties": [
+            {
+              "item_id": 16543,
+              "item_name": "General's Plate Leggings"
+            },
+            {
+              "item_id": 231533,
+              "item_name": "General's Plate Leggings"
+            },
+            {
+              "item_id": 231540,
+              "item_name": "Marshal's Plate Legguards"
+            }
+          ]
         },
         {
           "slot": "feet",
@@ -6584,8 +6475,8 @@
           "slot": "trinket1",
           "item_id": 23041,
           "item_name": "Slayer's Crest",
-          "source": "Sapphiron",
-          "source_kind": "world",
+          "source": "Naxxramas",
+          "source_kind": "raid",
           "score": 64,
           "verified": true
         },
@@ -6615,14 +6506,14 @@
           "slot": "ranged",
           "item_id": 23557,
           "item_name": "Larvae of the Great Worm",
-          "source": "Ouro",
-          "source_kind": "world",
+          "source": "Ahn'Qiraj",
+          "source_kind": "raid",
           "score": 301.8620970766372,
           "verified": true
         }
       ],
-      "set_dps": 268.6795820873356,
-      "no_source_count": 3132,
+      "set_dps": 266.4825556485304,
+      "no_source_count": 3009,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6649,7 +6540,7 @@
         "wrist: Hive Defiler Wristguards",
         "hands: Gauntlets of Annihilation",
         "waist: Zandalar Vindicator's Belt",
-        "legs: Sentinel's Plate Legguards",
+        "legs: Marshal's Plate Legguards",
         "feet: Conqueror's Greaves",
         "finger1: Band of Unnatural Forces",
         "finger2: Quick Strike Ring",
@@ -6658,20 +6549,20 @@
         "main_hand: High Warlord's Greatsword",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.14644969,
-      "verify_run_seconds": 1.781928949,
+      "weights_run_seconds": 2.168565733,
+      "verify_run_seconds": 1.838435208,
       "coverage": {
         "back": {
           "eligible": 368,
-          "sourced": 200
+          "sourced": 201
         },
         "chest": {
           "eligible": 715,
-          "sourced": 448
+          "sourced": 466
         },
         "feet": {
           "eligible": 612,
-          "sourced": 339
+          "sourced": 340
         },
         "finger1": {
           "eligible": 343,
@@ -6683,19 +6574,19 @@
         },
         "hands": {
           "eligible": 622,
-          "sourced": 350
+          "sourced": 353
         },
         "head": {
           "eligible": 450,
-          "sourced": 227
+          "sourced": 264
         },
         "legs": {
           "eligible": 609,
-          "sourced": 343
+          "sourced": 373
         },
         "main_hand": {
           "eligible": 1061,
-          "sourced": 662
+          "sourced": 675
         },
         "neck": {
           "eligible": 169,
@@ -6703,15 +6594,15 @@
         },
         "off_hand": {
           "eligible": 353,
-          "sourced": 181
+          "sourced": 185
         },
         "ranged": {
           "eligible": 179,
-          "sourced": 99
+          "sourced": 104
         },
         "shoulder": {
           "eligible": 469,
-          "sourced": 233
+          "sourced": 237
         },
         "trinket1": {
           "eligible": 80,
@@ -6723,11 +6614,11 @@
         },
         "waist": {
           "eligible": 569,
-          "sourced": 319
+          "sourced": 322
         },
         "wrist": {
           "eligible": 477,
-          "sourced": 240
+          "sourced": 244
         }
       }
     },
@@ -6826,7 +6717,7 @@
           "source_kind": "quest",
           "score": 67.69329697179009,
           "verified": true,
-          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 248.0 vs 242.8 set DPS"
+          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 245.9 vs 242.4 set DPS"
         },
         {
           "slot": "chest",
@@ -6845,7 +6736,7 @@
           "source_kind": "raid",
           "score": 106.65193810519867,
           "verified": true,
-          "swap_note": "beat the scored pick Vambraces of the Sadist (id 13400) in the sim: 246.7 vs 242.8 set DPS"
+          "swap_note": "beat the scored pick Vambraces of the Sadist (id 13400) in the sim: 246.6 vs 242.4 set DPS"
         },
         {
           "slot": "hands",
@@ -6858,32 +6749,44 @@
         },
         {
           "slot": "waist",
-          "item_id": 20204,
-          "item_name": "Defiler's Plate Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
-          "score": 349.92711649946233,
-          "verified": true,
-          "swap_note": "beat the scored pick Zandalar Vindicator's Belt (id 19823) in the sim: 242.9 vs 242.8 set DPS"
-        },
-        {
-          "slot": "legs",
-          "item_id": 237826,
-          "item_name": "Outrider's Plate Legguards",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
-          "score": 672.6509897071732,
+          "item_id": 19823,
+          "item_name": "Zandalar Vindicator's Belt",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 381.0165374043212,
           "verified": true
         },
         {
-          "slot": "feet",
-          "item_id": 16483,
-          "item_name": "Marshal's Plate Boots",
+          "slot": "legs",
+          "item_id": 16479,
+          "item_name": "Marshal's Plate Legguards",
           "source": "Captain Dirgehammer",
           "source_kind": "vendor",
-          "score": 81.46443237175208,
+          "score": 645.4477464154216,
           "verified": true,
-          "swap_note": "beat the scored pick Conqueror's Greaves (id 21333) in the sim: 245.3 vs 242.8 set DPS"
+          "ties": [
+            {
+              "item_id": 16543,
+              "item_name": "General's Plate Leggings"
+            },
+            {
+              "item_id": 231533,
+              "item_name": "General's Plate Leggings"
+            },
+            {
+              "item_id": 231540,
+              "item_name": "Marshal's Plate Legguards"
+            }
+          ]
+        },
+        {
+          "slot": "feet",
+          "item_id": 21333,
+          "item_name": "Conqueror's Greaves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 97.92014660099899,
+          "verified": true
         },
         {
           "slot": "finger1",
@@ -6907,8 +6810,8 @@
           "slot": "trinket1",
           "item_id": 23041,
           "item_name": "Slayer's Crest",
-          "source": "Sapphiron",
-          "source_kind": "world",
+          "source": "Naxxramas",
+          "source_kind": "raid",
           "score": 64,
           "verified": true
         },
@@ -6938,14 +6841,14 @@
           "slot": "ranged",
           "item_id": 23557,
           "item_name": "Larvae of the Great Worm",
-          "source": "Ouro",
-          "source_kind": "world",
+          "source": "Ahn'Qiraj",
+          "source_kind": "raid",
           "score": 301.8620970766372,
           "verified": true
         }
       ],
-      "set_dps": 249.22155031896057,
-      "no_source_count": 3126,
+      "set_dps": 249.34319226558557,
+      "no_source_count": 3003,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2277 Necromancer Leggings",
@@ -6971,9 +6874,9 @@
         "chest: Bloodsoul Breastplate",
         "wrist: Hive Defiler Wristguards",
         "hands: Gauntlets of Annihilation",
-        "waist: Defiler's Plate Girdle",
-        "legs: Outrider's Plate Legguards",
-        "feet: Marshal's Plate Boots",
+        "waist: Zandalar Vindicator's Belt",
+        "legs: Marshal's Plate Legguards",
+        "feet: Conqueror's Greaves",
         "finger1: Band of Unnatural Forces",
         "finger2: Quick Strike Ring",
         "trinket1: Slayer's Crest",
@@ -6981,20 +6884,20 @@
         "main_hand: High Warlord's Greatsword",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.14644969,
-      "verify_run_seconds": 1.821337594,
+      "weights_run_seconds": 2.168565733,
+      "verify_run_seconds": 1.84849142,
       "coverage": {
         "back": {
           "eligible": 373,
-          "sourced": 206
+          "sourced": 207
         },
         "chest": {
           "eligible": 710,
-          "sourced": 444
+          "sourced": 462
         },
         "feet": {
           "eligible": 609,
-          "sourced": 336
+          "sourced": 337
         },
         "finger1": {
           "eligible": 343,
@@ -7006,19 +6909,19 @@
         },
         "hands": {
           "eligible": 622,
-          "sourced": 350
+          "sourced": 353
         },
         "head": {
           "eligible": 450,
-          "sourced": 227
+          "sourced": 264
         },
         "legs": {
           "eligible": 603,
-          "sourced": 337
+          "sourced": 367
         },
         "main_hand": {
           "eligible": 1055,
-          "sourced": 658
+          "sourced": 671
         },
         "neck": {
           "eligible": 171,
@@ -7026,15 +6929,15 @@
         },
         "off_hand": {
           "eligible": 353,
-          "sourced": 181
+          "sourced": 185
         },
         "ranged": {
           "eligible": 178,
-          "sourced": 98
+          "sourced": 103
         },
         "shoulder": {
           "eligible": 466,
-          "sourced": 230
+          "sourced": 234
         },
         "trinket1": {
           "eligible": 80,
@@ -7046,11 +6949,11 @@
         },
         "waist": {
           "eligible": 569,
-          "sourced": 319
+          "sourced": 322
         },
         "wrist": {
           "eligible": 482,
-          "sourced": 247
+          "sourced": 251
         }
       }
     }
