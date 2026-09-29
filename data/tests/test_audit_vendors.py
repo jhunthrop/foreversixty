@@ -55,7 +55,11 @@ def _write_build(root: Path, build: str) -> Path:
             {
                 "id": "vendor:8001", "kind": "vendor", "name": "Test Vendor", "npc_id": 8001,
                 "items": [400, 401, 402],
-            }
+            },
+            {
+                "id": "vendor:209889", "kind": "vendor", "name": "Forever Vendor",
+                "npc_id": 209889, "items": [403],
+            },
         ],
         "quests": {},
         "factions": {},
@@ -103,3 +107,13 @@ def test_item_template_reputation_column_checked_with_dump(tmp_path):
     result = check_vendors.check(ctx)
     finding = next(f for f in result.findings if f.subject == "400")
     assert "RequiredReputationFaction=50" in finding.message
+
+
+def test_a_forever_new_vendor_npc_is_unverifiable_not_a_mismatch(tmp_path):
+    root = tmp_path / "builds"
+    _write_build(root, "testbuild")
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_vendors.check(ctx)
+    finding = next(f for f in result.findings if f.subject == "403")
+    assert finding.severity == "minor"
+

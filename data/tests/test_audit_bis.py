@@ -29,6 +29,7 @@ def _write_build(root: Path, build: str) -> Path:
         _item(102, "Legit Off Hand", required_level=20),
         _item(103, "Unique Trinket", required_level=20, unique=True),
         _item(200, "Real Crafted Item", required_level=20),
+        _item(300, "Twice-Rewarded Star", required_level=0),
     ]
     (build_dir / "items" / "warrior.json").write_text(
         json.dumps({"build": build, "class_slug": "warrior", "items": items})
@@ -57,6 +58,10 @@ def _write_build(root: Path, build: str) -> Path:
                     "slot": "trinket2", "item_id": 103, "item_name": "Unique Trinket",
                     "source": "", "source_kind": "world",
                 },
+                {
+                    "slot": "ranged", "item_id": 300, "item_name": "Twice-Rewarded Star",
+                    "source": "Quests", "source_kind": "quest",
+                },
             ],
         }
     ]  # fmt: skip
@@ -66,9 +71,18 @@ def _write_build(root: Path, build: str) -> Path:
             {
                 "id": "crafted:blacksmithing", "kind": "crafted", "name": "Blacksmithing",
                 "profession": "blacksmithing", "items": [101, 200],
-            }
+            },
+            {"id": "quest", "kind": "quest", "name": "Quests", "items": [300]},
         ],
-        "quests": {},
+        # Two quests reward item 300: a level-35 one (floor 32) and a Forever
+        # quest a level-21 character can finish (floor 21). The lowest floor
+        # is the ranker's rule, so band 20 is the only band this flags.
+        "quests": {
+            "300": [
+                {"quest_id": 1, "name": "Late", "faction": "both", "min_level": 30, "level": 35},
+                {"quest_id": 2, "name": "Early", "faction": "both", "min_level": 14, "level": 24},
+            ]
+        },
         "factions": {"100": "horde"},
     }
     (build_dir / "loot.json").write_text(json.dumps(loot))
@@ -141,3 +155,27 @@ def test_duplicate_trinket_pair_is_flagged(tmp_path):
     ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
     result = check_bis.check(ctx)
     assert any("not a distinct pair" in f.message for f in result.findings)
+
+
+def test_quest_floor_is_the_lowest_across_an_items_quests(tmp_path):
+    root = tmp_path / "builds"
+    _write_build(root, "testbuild")
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_bis.check(ctx)
+    star = [f for f in result.findings if f.subject == "300"]
+    assert len(star) == 1
+    assert star[0].theirs == "21"
+    assert "lowest quest floor" in star[0].message
+
+
+def test_quest_floor_ignores_the_other_factions_quest(tmp_path):
+    root = tmp_path / "builds"
+    build_dir = _write_build(root, "testbuild")
+    loot = json.loads((build_dir / "loot.json").read_text())
+    loot["quests"]["300"][1]["faction"] = "horde"
+    (build_dir / "loot.json").write_text(json.dumps(loot))
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_bis.check(ctx)
+    star = [f for f in result.findings if f.subject == "300"]
+    assert star[0].theirs == "32"
+

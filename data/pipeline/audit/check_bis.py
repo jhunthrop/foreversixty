@@ -66,11 +66,26 @@ def _source_name_index(loot: dict) -> dict[str, set[int]]:
     return index
 
 
-def _quest_level(loot: dict, item_id: int) -> int | None:
+def _quest_floor(loot: dict, item_id: int, faction: str) -> int | None:
+    """The level a character of `faction` must reach before ANY quest that
+    rewards `item_id` counts as obtainable: the lowest QuestFloor across
+    the item's quests open to that faction (sim/leveling's LowestFloor,
+    the ranker's own rule), where QuestFloor is the accept level raised to
+    the quest level minus the slack when the level is known. Silver Star
+    (3463) is rewarded by Stealing Supplies (30/35) AND the Forever quest
+    Scramble (14/24): a level-21 character can finish Scramble, so the
+    floor is 21, not 32."""
     quests = loot.get("quests", {}).get(str(item_id))
     if not quests:
         return None
-    return max(q["level"] for q in quests)
+    floors = []
+    for q in quests:
+        if q.get("faction", "both") not in ("both", faction):
+            continue
+        min_level = int(q.get("min_level") or 0)
+        level = int(q.get("level") or 0)
+        floors.append(max(min_level, level - QUEST_FLOOR_OFFSET) if level > 0 else min_level)
+    return min(floors) if floors else None
 
 
 def _check_pick(
@@ -106,15 +121,16 @@ def _check_pick(
             theirs=str(row["required_level"]),
         )
     if pick.get("source_kind") == "quest":
-        quest_level = _quest_level(loot, item_id)
-        if quest_level is not None and quest_level - QUEST_FLOOR_OFFSET > band_level:
+        floor = _quest_floor(loot, item_id, faction)
+        if floor is not None and floor > band_level:
             result.add(
                 severity,
                 item_id,
-                f"{label} item {item_id} ({row['name']})'s quest floor "
-                f"(level {quest_level} - {QUEST_FLOOR_OFFSET}) exceeds band {band_level}",
+                f"{label} item {item_id} ({row['name']})'s lowest quest floor "
+                f"(quest level - {QUEST_FLOOR_OFFSET}, or the accept level) is {floor}, "
+                f"above band {band_level}",
                 ours=str(band_level),
-                theirs=str(quest_level - QUEST_FLOOR_OFFSET),
+                theirs=str(floor),
             )
     item_faction = factions.get(str(item_id))
     if item_faction and item_faction != "both" and item_faction != faction:
@@ -150,8 +166,16 @@ def _check_band(
         if item_id is None:
             continue
         row = _check_pick(
-            result, "blocker", slot_entry, band_level, faction, items_by_id, factions, loot,
-            name_index, f"{label} {slot_entry['slot']}",
+            result,
+            "blocker",
+            slot_entry,
+            band_level,
+            faction,
+            items_by_id,
+            factions,
+            loot,
+            name_index,
+            f"{label} {slot_entry['slot']}",
         )
         if row is not None:
             rows_by_base_slot[_base_slot(slot_entry["slot"])] = {**row, "slot": slot_entry["slot"]}
@@ -159,8 +183,16 @@ def _check_band(
                 unique_counts[item_id] += 1
         for alt in slot_entry.get("alternatives", []):
             _check_pick(
-                result, "minor", alt, band_level, faction, items_by_id, factions, loot,
-                name_index, f"{label} {slot_entry['slot']} alternative",
+                result,
+                "minor",
+                alt,
+                band_level,
+                faction,
+                items_by_id,
+                factions,
+                loot,
+                name_index,
+                f"{label} {slot_entry['slot']} alternative",
             )
 
     main_hand = rows_by_base_slot.get("main_hand")

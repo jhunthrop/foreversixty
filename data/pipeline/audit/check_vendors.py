@@ -46,7 +46,12 @@ def check(ctx: AuditContext) -> CategoryResult:
                 if r.kind == "vendor" and r.npc_id == npc_id
             ]
             if not records:
-                severity = "minor" if item_id >= FOREVER_NEW_ID_THRESHOLD else "major"
+                # A Forever-new item OR a Forever-new vendor npc has no 1.12 row
+                # to check against: unverifiable, not a mismatch.
+                forever_new = item_id >= FOREVER_NEW_ID_THRESHOLD or (
+                    npc_id is not None and int(npc_id) >= FOREVER_NEW_ID_THRESHOLD
+                )
+                severity = "minor" if forever_new else "major"
                 result.add(
                     severity,
                     item_id,
@@ -58,9 +63,10 @@ def check(ctx: AuditContext) -> CategoryResult:
             conditions = [r.condition for r in records if r.condition is not None]
             if conditions:
                 condition = conditions[0]
-                if source.get("faction_id") != condition.faction_id or source.get(
-                    "standing"
-                ) != condition.standing:
+                if (
+                    source.get("faction_id") != condition.faction_id
+                    or source.get("standing") != condition.standing
+                ):
                     result.add(
                         "blocker",
                         item_id,
