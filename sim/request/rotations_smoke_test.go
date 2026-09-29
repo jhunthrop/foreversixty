@@ -162,6 +162,9 @@ var smokeBuildWarnings = map[string]map[string]string{
 		"{SpellID: 14278}": "Ghostly Strike is a talent (sim/rogue/ghostly_strike.go); this build takes none.",
 		"{SpellID: 16511}": "Hemorrhage is a talent (sim/rogue/talents.go); this build takes none.",
 	},
+	"shaman-elemental": {
+		"{SpellID: 1238300}": "Lava Burst is a talent (sim/shaman/lava_burst.go, Elemental's tier-6 capstone); this build takes none.",
+	},
 	"shaman-enhancement": {
 		"{SpellID: 17364}": "Stormstrike is a talent (sim/shaman/stormstrike.go); this build takes none.",
 	},
