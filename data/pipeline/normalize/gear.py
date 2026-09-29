@@ -108,6 +108,15 @@ SLOT_BY_INVENTORY_TYPE: dict[int, str] = {
     23: "off_hand",
     25: "ranged",
     26: "ranged",
+    # INVTYPE_RELIC: librams (paladin), idols (druid) and totems (shaman)
+    # occupy the ranged slot in Classic Era, same as a bow or wand. This
+    # was missing entirely until the 2026-09-28 night-bis-sources lane,
+    # which silently dropped every relic (65 on build 1.60.1.70009,
+    # confirmed present with real names in the unfiltered items.json) out
+    # of every class's items/<class>.json -- emptying paladin's ranged
+    # slot at every leveling band, not a true absence of librams in the
+    # client.
+    28: "ranged",
 }
 
 #: StatModifier_bonusStat_<n> -> the planner's stat key, or None for a stat the

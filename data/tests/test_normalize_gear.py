@@ -93,6 +93,54 @@ def test_slot_comes_from_inventory_type():
     assert items[19019].slot == "main_hand"
 
 
+def test_a_relic_slots_as_ranged_and_stays_class_restricted():
+    """InventoryType 28 (INVTYPE_RELIC) was missing from
+    SLOT_BY_INVENTORY_TYPE entirely, so every libram/idol/totem was
+    silently dropped from every class's file -- not filtered by class,
+    dropped before the class filter ever ran. A libram (AllowableClass 2
+    = paladin only) must now appear for paladin, slotted "ranged", and
+    not for warrior or mage -- built from rows kept local to this test so
+    the shared ItemSparse.csv/Item.csv fixtures (and every golden output
+    built from them) stay untouched."""
+    sparse_rows = read_csv(HERE / "fixtures/ItemSparse.csv") + [
+        {
+            "ID": "22402",
+            "Display_lang": "Libram of Grace",
+            "OverallQualityID": "4",
+            "ItemLevel": "78",
+            "RequiredLevel": "60",
+            "InventoryType": "28",
+            "MaxCount": "1",
+            "ItemSet": "0",
+            "AllowableClass": "2",
+            "Resistances_0": "0", "Resistances_1": "0", "Resistances_2": "0",
+            "Resistances_3": "0", "Resistances_4": "0", "Resistances_5": "0", "Resistances_6": "0",
+            "StatModifier_bonusStat_0": "7",
+            "StatModifier_bonusStat_1": "-1",
+            "StatModifier_bonusAmount_0": "12",
+            "StatModifier_bonusAmount_1": "0",
+            "ItemDelay": "0", "DmgVariance": "0", "MinDamage_0": "0", "MaxDamage_0": "0",
+        }
+    ]
+    item_rows = read_csv(HERE / "fixtures/Item.csv") + [
+        {"ID": "22402", "ClassID": "4", "SubclassID": "7", "IconFileDataID": "132759"}
+    ]
+    records = build_class_items(
+        sparse_rows,
+        item_rows,
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+    )
+    by_class = {record.class_slug: record for record in records}
+    paladin_items = {i.id: i for i in by_class["paladin"].items}
+    assert paladin_items[22402].slot == "ranged"
+    warrior_ids = {i.id for i in by_class["warrior"].items}
+    mage_ids = {i.id for i in by_class["mage"].items}
+    assert 22402 not in warrior_ids
+    assert 22402 not in mage_ids
+
+
 def test_armour_and_resistances_come_from_the_resistance_columns():
     helm = {i.id: i for i in by_slug()["warrior"].items}[16866]
     assert helm.armor == 608

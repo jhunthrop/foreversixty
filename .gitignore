@@ -20,6 +20,12 @@ artifacts/
 # being committed. `make artifacts` always passes -o and never produces
 # this; the target stays ignored so the mistake is silent, not a commit.
 sim/wasm
+# a manual `go build ./cmd/leveling-bis` from sim/, with no -o, names
+# its output after the package directory the same way the wasm build
+# above does - a 25+ MB binary landing here, untracked, one `git add
+# -A` away from being committed. Nothing in this repo's Makefile builds
+# leveling-bis without -o.
+sim/leveling-bis
 # the coverage profile the sim workflow's floor check writes; the
 # figure is CI's, not an artefact
 sim/cover.out

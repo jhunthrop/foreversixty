@@ -31,6 +31,21 @@ def test_two_handed_swords_exclude_rogues():
     assert not can_equip(4, WEAPON, 8)
 
 
+def test_relics_are_one_class_each_and_nobody_else():
+    # libram (7): paladin only
+    assert can_equip(2, ARMOR, 7)
+    for class_id in (1, 3, 4, 5, 7, 8, 9, 11):
+        assert not can_equip(class_id, ARMOR, 7)
+    # totem (9): shaman only
+    assert can_equip(7, ARMOR, 9)
+    for class_id in (1, 2, 3, 4, 5, 8, 9, 11):
+        assert not can_equip(class_id, ARMOR, 9)
+    # idol (8): druid only
+    assert can_equip(11, ARMOR, 8)
+    for class_id in (1, 2, 3, 4, 5, 7, 8, 9):
+        assert not can_equip(class_id, ARMOR, 8)
+
+
 def test_monster_and_fishing_subclasses_belong_to_nobody():
     for class_id in (1, 4, 8):
         assert not can_equip(class_id, WEAPON, 14)

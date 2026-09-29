@@ -29,17 +29,28 @@ _LEATHER = 2
 _MAIL = 3
 _PLATE = 4
 _SHIELD = 6
+_LIBRAM = 7
+_IDOL = 8
+_TOTEM = 9
 
+#: Relic subclasses (7 libram, 8 idol, 9 totem) were absent from every
+#: class's set below entirely until the 2026-09-28 night-bis-sources
+#: lane, which (together with `pipeline.normalize.gear.
+#: SLOT_BY_INVENTORY_TYPE` lacking InventoryType 28) silently dropped
+#: every relic from every class's items/<class>.json, emptying paladin's
+#: ranged slot at every leveling band. Only the class trainer spells
+#: actually give a relic to gets it: a libram is paladin-only, an idol
+#: druid-only, a totem shaman-only.
 ARMOR_SUBCLASSES: dict[int, frozenset[int]] = {
     1: frozenset({_MISC, _CLOTH, _LEATHER, _MAIL, _PLATE, _SHIELD}),  # warrior
-    2: frozenset({_MISC, _CLOTH, _LEATHER, _MAIL, _PLATE, _SHIELD}),  # paladin
+    2: frozenset({_MISC, _CLOTH, _LEATHER, _MAIL, _PLATE, _SHIELD, _LIBRAM}),  # paladin
     3: frozenset({_MISC, _CLOTH, _LEATHER, _MAIL}),  # hunter
     4: frozenset({_MISC, _CLOTH, _LEATHER}),  # rogue
     5: frozenset({_MISC, _CLOTH}),  # priest
-    7: frozenset({_MISC, _CLOTH, _LEATHER, _MAIL, _SHIELD}),  # shaman
+    7: frozenset({_MISC, _CLOTH, _LEATHER, _MAIL, _SHIELD, _TOTEM}),  # shaman
     8: frozenset({_MISC, _CLOTH}),  # mage
     9: frozenset({_MISC, _CLOTH}),  # warlock
-    11: frozenset({_MISC, _CLOTH, _LEATHER}),  # druid
+    11: frozenset({_MISC, _CLOTH, _LEATHER, _IDOL}),  # druid
 }
 
 WEAPON_SUBCLASSES: dict[int, frozenset[int]] = {
