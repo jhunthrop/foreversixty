@@ -37,6 +37,40 @@ _PLACEHOLDER_NAME_RE = re.compile(
     r"^(Bland |Copy of |\d+ (Poor|Common|Uncommon|Rare|Epic|Legendary) )"
 )
 
+#: src-crawl-order lane, 2026-09-29: wowhead's OWN item-page crawl (the
+#: one `pipeline.wowhead_item_sources.fetch_item_sources` walks, and
+#: what `unsourced_real_item_ids` used to hand it in whatever order
+#: `load_class_item_rows` happened to read the per-class files in, which
+#: `fetch_item_sources`/`fetch_missing_from_wowhead` then flattened with
+#: a plain ascending `sorted()`) works its backlog in ascending item id.
+#: Build 1.60.1.70009's Classic ids top out at 24222 and every
+#: Forever-new id starts at 202256, so an ascending-id crawl finishes
+#: every Classic id -- 425/440 of the first pages fetched named a source
+#: -- long before it ever reaches a Forever-new id, which the fork's own
+#: database cannot possibly have itemised and this pipeline exists to
+#: fill in. 200,000 sits cleanly in that gap and is used as the
+#: Forever-new/Classic boundary throughout this pipeline.
+FOREVER_NEW_ID_THRESHOLD = 200_000
+
+#: Sorts after every real Classic `required_level` (max 60) so an item
+#: with no required_level on file (0, or the key missing entirely --
+#: bind-on-account/token rows commonly have neither) crawls LAST within
+#: its own Forever-new/Classic bucket, never ahead of a levelling item
+#: this pipeline actually knows the level of.
+_UNSET_REQUIRED_LEVEL_RANK = 10_000
+
+
+def _crawl_priority_key(item_id: int, required_level: int | None) -> tuple[int, int, int]:
+    """(a) every Forever-new id before every Classic id, (b) ascending
+    `required_level` within each bucket (unset last), (c) item id as a
+    final, deterministic tiebreaker. `unsourced_real_item_ids` sorts by
+    this; `fetch_missing_from_wowhead`/`fetch_item_sources` then have to
+    preserve that order rather than re-sorting ascending by id
+    themselves for this to reach the live crawl at all."""
+    is_classic_bucket = 0 if item_id >= FOREVER_NEW_ID_THRESHOLD else 1
+    level_rank = required_level if required_level else _UNSET_REQUIRED_LEVEL_RANK
+    return (is_classic_bucket, level_rank, item_id)
+
 
 def is_placeholder_item(item_row: dict) -> bool:
     """`item_row` is one entry of `builds/<build>/items/<class>.json`'s
@@ -107,16 +141,26 @@ def unsourced_real_item_ids(item_rows: list[dict], named: set[int]) -> list[int]
     denominator: it was never going to have a real source, fork or
     wowhead, so counting it as "unsourced" would overstate the gap this
     pipeline can actually close.
+
+    Ordered by `_crawl_priority_key` (src-crawl-order lane, 2026-09-29):
+    every Forever-new id before every Classic id, ascending
+    `required_level` within each bucket -- NOT the ascending-item-id
+    order `item_rows` arrives in or wowhead's own crawl defaults to. See
+    that function's doc for why. Callers that fetch live pages
+    (`pipeline.item_sources.fetch_missing_from_wowhead`,
+    `pipeline.wowhead_item_sources.fetch_item_sources`) must preserve
+    this order rather than re-sorting ascending by id themselves.
     """
     seen: set[int] = set()
-    ids: list[int] = []
+    unsourced: list[dict] = []
     for row in item_rows:
         item_id = int(row["id"])
         if item_id in seen or is_placeholder_item(row) or item_id in named:
             continue
         seen.add(item_id)
-        ids.append(item_id)
-    return ids
+        unsourced.append(row)
+    unsourced.sort(key=lambda row: _crawl_priority_key(int(row["id"]), row.get("required_level")))
+    return [int(row["id"]) for row in unsourced]
 
 
 def wowhead_additions(

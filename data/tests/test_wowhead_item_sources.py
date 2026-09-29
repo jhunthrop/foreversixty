@@ -139,6 +139,29 @@ def test_fetch_item_sources_stops_at_the_max_pages_budget(tmp_path: Path, monkey
     assert result.missing == {30}
 
 
+def test_fetch_item_sources_preserves_caller_order_rather_than_sorting_ascending(
+    tmp_path: Path, monkeypatch
+):
+    """src-crawl-order lane, 2026-09-29: `pending` used to be
+    `sorted(set(item_ids))`, which discarded a crawl-priority-ordered
+    backlog (`pipeline.loot.wowhead.unsourced_real_item_ids`) right
+    before the live requests went out. Requests must follow the CALLER's
+    order, not ascending item id."""
+    monkeypatch.setattr(wis.time, "sleep", lambda s: None)
+    requested: list[int] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        item_id = int(str(request.url).rsplit("=", 1)[-1])
+        requested.append(item_id)
+        return httpx.Response(200, text=DROPPED_BY.read_text(encoding="utf-8"))
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    wis.fetch_item_sources(
+        "1.60.1.70009", [300, 100, 200, 100], root=tmp_path, client=client, delay=0
+    )
+    assert requested == [300, 100, 200]  # NOT ascending id order; duplicate 100 fetched once
+
+
 def test_fetch_item_sources_caches_a_live_fetch_and_a_true_miss_is_not_cached(tmp_path: Path):
     calls: list[int] = []
 

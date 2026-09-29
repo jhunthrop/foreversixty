@@ -113,6 +113,13 @@ class ItemSourceMergeStats:
     fetched: int
     still_missing: int
     needed: int
+    #: src-crawl-order lane, 2026-09-29: of `fetched`, how many pages
+    #: actually named a dropped-by/sold-by/crafted-by/quest-reward row
+    #: (`ItemPageSources.is_empty()` false) rather than being cached as
+    #: an empty "wowhead had a page, it named nothing this pipeline
+    #: reads" result. First 440 Classic-id pages measured 425/440; this
+    #: is how the crawl learns the same number for Forever-new ids.
+    with_source: int
 
 
 def fetch_missing_from_wowhead(
@@ -130,13 +137,27 @@ def fetch_missing_from_wowhead(
     doc) into the committed cache. `delay`/`client` are test-only
     (override the politeness delay / inject an `httpx.Client` over a
     `MockTransport`); production callers always leave both `None`.
+
+    `item_ids`' own order is preserved into `needed` (deduplicated, and
+    filtered to ids `item-sources.json` does not already cover) rather
+    than re-sorted ascending by id -- callers such as
+    `pipeline.loot.wowhead.unsourced_real_item_ids` order the backlog by
+    crawl priority (Forever-new before Classic, required_level
+    ascending), and an ascending-id `sorted()` here would silently
+    discard that ordering before it ever reached the live crawl.
     """
     build_dir = root / build
     entries = load_item_sources(build_dir)
-    needed = sorted(i for i in set(item_ids) if i not in entries)
+    seen: set[int] = set()
+    needed: list[int] = []
+    for item_id in item_ids:
+        if item_id in entries or item_id in seen:
+            continue
+        seen.add(item_id)
+        needed.append(item_id)
     if not needed:
         logger.info("item-sources: every needed item id is already covered; nothing to fetch")
-        return ItemSourceMergeStats(fetched=0, still_missing=0, needed=0)
+        return ItemSourceMergeStats(fetched=0, still_missing=0, needed=0, with_source=0)
     kwargs = {}
     if delay is not None:
         kwargs["delay"] = delay
@@ -160,13 +181,19 @@ def fetch_missing_from_wowhead(
     }
     _write(build_dir, merged)
     still_missing = len(needed) - len(result.sources)
+    with_source = sum(1 for page in result.sources.values() if not page.is_empty())
     logger.info(
-        "item-sources: wowhead resolved a page for %d/%d needed ids (%d still missing; "
-        "rerun later to resume from the warm cache)",
+        "item-sources: wowhead resolved a page for %d/%d needed ids (%d of those fetched "
+        "pages named ANY source; %d still missing; rerun later to resume from the warm "
+        "cache)",
         len(result.sources),
         len(needed),
+        with_source,
         still_missing,
     )
     return ItemSourceMergeStats(
-        fetched=len(result.sources), still_missing=still_missing, needed=len(needed)
+        fetched=len(result.sources),
+        still_missing=still_missing,
+        needed=len(needed),
+        with_source=with_source,
     )
