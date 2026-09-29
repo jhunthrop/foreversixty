@@ -86,11 +86,19 @@ export function loadBisFile(spec: string, build: string): BisFile | null {
 }
 
 /** The nightly's first files wrote `null` for an empty "new at this band" list (a Go nil
- *  slice); the contract is an array, so every band is read as one. */
+ *  slice); the contract is an array, so every band is read as one. Also defaults `coverage`
+ *  (lane `rank-guardrails`' guardrail A, `report.go`'s own `Coverage` field) to `{}`: a file
+ *  published before that field existed carries no `coverage` key at all (`undefined` here),
+ *  and a Go nil map also encodes as JSON `null` -- either way the contract is an object, the
+ *  same reasoning `new_at_band` already applies to its own array. */
 export function normaliseBisFile(file: BisFile): BisFile {
   return {
     ...file,
-    bands: file.bands.map((band) => ({ ...band, new_at_band: band.new_at_band ?? [] })),
+    bands: file.bands.map((band) => ({
+      ...band,
+      new_at_band: band.new_at_band ?? [],
+      coverage: band.coverage ?? {},
+    })),
   };
 }
 

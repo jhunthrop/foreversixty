@@ -379,7 +379,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			}
 			verifySeconds := time.Since(verifyStart).Seconds()
 
-			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors)
+			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors, pool.Coverage)
 			reports = append(reports, report)
 			previous[f.name] = picks
 
@@ -389,6 +389,13 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// separately per faction, so a slow band/spec is visible
 			// without re-deriving it from timestamps.
 			log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, effect-rank+set-completion %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, effectSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
+			// lane rank-guardrails, guardrail A: one line per band+faction
+			// naming how much of the slot table a reader is actually
+			// looking at versus how much the ranker could see at all -
+			// the same coverage the published JSON's own Coverage field
+			// carries (report.go's coverageSummary), so a nightly log
+			// reader sees the honesty gap without opening the JSON.
+			log.Printf("leveling-bis: %s band %d %s: coverage %s", spec, band, f.name, coverageSummary(pool.Coverage))
 		}
 	}
 

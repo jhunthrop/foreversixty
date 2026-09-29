@@ -1,0 +1,415 @@
+{
+  "hunter-marksmanship": {
+    "20": [
+      {
+        "item_id": 5404,
+        "item_name": "Serpent's Shoulders",
+        "reason": "This lane's own brief example: agility leather shoulders, a well-known early leveling BiS for leather DPS classes."
+      },
+      {
+        "item_id": 2041,
+        "item_name": "Tunic of Westfall",
+        "reason": "This lane's own brief example: the Defias Traitor questline's leather chest, iconic Alliance-side agility/stamina piece for leveling hunters and rogues."
+      },
+      {
+        "item_id": 1951,
+        "item_name": "Blackwater Cutlass",
+        "reason": "This lane's own brief example: a fast off-hand-capable sword with agility, a common early melee weapon for a hunter who has not yet found a better bow."
+      },
+      {
+        "item_id": 5191,
+        "item_name": "Cruel Barb",
+        "reason": "This lane's own brief example: a Redridge Mountains quest reward sword with attack power, a very commonly cited early hunter/rogue weapon."
+      },
+      {
+        "item_id": 10410,
+        "item_name": "Leggings of the Fang",
+        "reason": "This lane's own brief example: agility/stamina/strength leather leggings, a solid early leveling leg slot for leather DPS."
+      }
+    ],
+    "40": [
+      {
+        "item_id": 13138,
+        "item_name": "The Silencer",
+        "reason": "Zul'Farrak bow with real dps and a slow/silence-flavoured proc, a widely recommended level-30s hunter ranged upgrade."
+      },
+      {
+        "item_id": 20192,
+        "item_name": "Defiler's Leather Girdle",
+        "reason": "Zul'Farrak leather waist with attack power, a standard leveling-hunter belt at this level (Horde side)."
+      },
+      {
+        "item_id": 7724,
+        "item_name": "Gauntlets of Divinity",
+        "reason": "Scarlet Monastery leather gloves carrying flat attack power, a strong hands slot for a leveling agility DPS at this level."
+      },
+      {
+        "item_id": 6690,
+        "item_name": "Ferine Leggings",
+        "reason": "Agility/stamina leather legs commonly picked up mid-30s by leather DPS classes."
+      }
+    ],
+    "60": [
+      {
+        "item_id": 13023,
+        "item_name": "Eaglehorn Long Bow",
+        "reason": "Stratholme bow (Baron Rivendare), one of the most commonly cited pre-raid BiS hunter ranged weapons."
+      },
+      {
+        "item_id": 15050,
+        "item_name": "Black Dragonscale Breastplate",
+        "reason": "Dragonscale Leatherworking crafted mail chest with attack power - the iconic pre-raid hunter armor set piece."
+      },
+      {
+        "item_id": 15052,
+        "item_name": "Black Dragonscale Leggings",
+        "reason": "The same Black Dragonscale set's leg piece, attack power mail, a standard pre-raid hunter leg slot."
+      },
+      {
+        "item_id": 19043,
+        "item_name": "Heavy Timbermaw Belt",
+        "reason": "Timbermaw Hold reputation mail belt, a common pre-raid hunter waist recommendation once that grind is done."
+      }
+    ]
+  },
+  "rogue-combat": {
+    "20": [
+      {
+        "item_id": 1482,
+        "item_name": "Shadowfang",
+        "reason": "Arugal's Shadowfang Keep dagger with a fear-on-hit proc, one of the most famous early leveling rogue daggers."
+      },
+      {
+        "item_id": 2041,
+        "item_name": "Tunic of Westfall",
+        "reason": "The Defias Traitor questline's leather chest - the same agility/stamina piece the brief names for hunter, equally a rogue pick (Alliance side)."
+      },
+      {
+        "item_id": 10410,
+        "item_name": "Leggings of the Fang",
+        "reason": "Agility/stamina/strength leather leggings, a solid leg slot for a leveling rogue."
+      },
+      {
+        "item_id": 10403,
+        "item_name": "Blackened Defias Belt",
+        "reason": "Defias Pillager leather belt with agility, a common early-leveling rogue waist pick."
+      }
+    ],
+    "40": [
+      {
+        "item_id": 868,
+        "item_name": "Ardent Custodian",
+        "reason": "A fast Scarlet Monastery dagger, epic quality, a well-known combat-rogue main hand pick around this level."
+      },
+      {
+        "item_id": 20192,
+        "item_name": "Defiler's Leather Girdle",
+        "reason": "Zul'Farrak leather waist with attack power, a standard leveling-rogue belt at this level (Horde side)."
+      },
+      {
+        "item_id": 867,
+        "item_name": "Gloves of Holy Might",
+        "reason": "Scarlet Monastery leather gloves, epic quality with attack power, a strong hands slot for leveling rogues."
+      },
+      {
+        "item_id": 6690,
+        "item_name": "Ferine Leggings",
+        "reason": "Agility/stamina leather legs commonly picked up mid-30s by leather DPS classes, rogue included."
+      }
+    ],
+    "60": [
+      {
+        "item_id": 22384,
+        "item_name": "Persuader",
+        "reason": "A one-hand mace favoured for applying Mind-numbing Poison, a commonly cited pre-raid combat-rogue weapon."
+      },
+      {
+        "item_id": 17738,
+        "item_name": "Claw of Celebras",
+        "reason": "Sunken Temple off-hand dagger, a well-known pre-raid rogue (and druid) weapon pick."
+      },
+      {
+        "item_id": 15062,
+        "item_name": "Devilsaur Leggings",
+        "reason": "Part of the iconic Devilsaur leather set, a widely recognised pre-raid/PvP rogue leg slot."
+      },
+      {
+        "item_id": 16499,
+        "item_name": "Blood Guard's Leather Vices",
+        "reason": "A PvP-rank leather glove reward with attack power, a common pre-raid rogue hands pick."
+      }
+    ]
+  },
+  "warrior-arms": {
+    "20": [
+      {
+        "item_id": 6631,
+        "item_name": "Living Root",
+        "reason": "The top-dps two-hand weapon eligible at this level in the class item file - a plausible early arms-warrior main hand."
+      },
+      {
+        "item_id": 6087,
+        "item_name": "Chausses of Westfall",
+        "reason": "The Defias Traitor questline's plate/mail leg reward, a commonly cited early leveling-warrior leg slot (Alliance side)."
+      },
+      {
+        "item_id": 10403,
+        "item_name": "Blackened Defias Belt",
+        "reason": "Defias Pillager leather belt with agility, usable by a leveling warrior before better mail drops."
+      },
+      {
+        "item_id": 6627,
+        "item_name": "Mutant Scale Breastplate",
+        "reason": "Wailing Caverns mail chest, a standard early-leveling warrior chest pick."
+      }
+    ],
+    "40": [
+      {
+        "item_id": 873,
+        "item_name": "Staff of Jordan",
+        "reason": "An epic two-hand staff with broad stats, a well-known quest-chain reward many classes (warrior included) pick up around this level."
+      },
+      {
+        "item_id": 7719,
+        "item_name": "Raging Berserker's Helm",
+        "reason": "Scarlet Monastery mail helm with strength/crit/stamina, a strong arms-warrior head slot at this level."
+      },
+      {
+        "item_id": 10328,
+        "item_name": "Scarlet Chestpiece",
+        "reason": "Scarlet Monastery mail chest with strength/stamina, a common leveling-warrior chest pick."
+      },
+      {
+        "item_id": 7724,
+        "item_name": "Gauntlets of Divinity",
+        "reason": "Scarlet Monastery gloves carrying flat attack power, a strong hands slot for a leveling melee DPS."
+      }
+    ],
+    "60": [
+      {
+        "item_id": 2801,
+        "item_name": "Blade of Hanna",
+        "reason": "The top-dps one-hand weapon eligible at this level in the class item file - a plausible pre-raid arms-warrior main hand."
+      },
+      {
+        "item_id": 15141,
+        "item_name": "Onyxia Scale Breastplate",
+        "reason": "The Onyxia's Head council-reward chest, one of the single most iconic pre-raid warrior chest pieces in Classic."
+      },
+      {
+        "item_id": 15052,
+        "item_name": "Black Dragonscale Leggings",
+        "reason": "Dragonscale Leatherworking crafted mail legs with attack power, a common pre-raid warrior leg slot."
+      },
+      {
+        "item_id": 19043,
+        "item_name": "Heavy Timbermaw Belt",
+        "reason": "Timbermaw Hold reputation mail belt, a common pre-raid melee-DPS waist recommendation."
+      }
+    ]
+  },
+  "mage-frost": {
+    "20": [
+      {
+        "item_id": 2585,
+        "item_name": "Gray Woolen Robe",
+        "reason": "A common low-level cloth chest with intellect, a typical early-leveling mage robe before better quest rewards drop."
+      },
+      {
+        "item_id": 1929,
+        "item_name": "Silk-threaded Trousers",
+        "reason": "Cloth legs with intellect, a standard early-leveling caster leg slot."
+      },
+      {
+        "item_id": 5970,
+        "item_name": "Serpent Gloves",
+        "reason": "Cloth gloves picked up commonly by low-level casters for the intellect."
+      },
+      {
+        "item_id": 8071,
+        "item_name": "Sizzle Stick",
+        "reason": "An early wand, a spec-defining ranged slot for a leveling mage before a better wand drops."
+      }
+    ],
+    "40": [
+      {
+        "item_id": 1716,
+        "item_name": "Robe of the Magi",
+        "reason": "A Scarlet Monastery Library cloth robe, one of the most widely cited leveling-caster chest pieces in Classic."
+      },
+      {
+        "item_id": 10009,
+        "item_name": "Red Mageweave Pants",
+        "reason": "Tailoring-crafted Mageweave legs, a common leveling-caster leg slot at this level."
+      },
+      {
+        "item_id": 2620,
+        "item_name": "Augural Shroud",
+        "reason": "A cloth head piece with intellect, a common mid-leveling caster head slot."
+      },
+      {
+        "item_id": 10003,
+        "item_name": "Black Mageweave Gloves",
+        "reason": "Tailoring-crafted Mageweave gloves, a common leveling-caster hands slot at this level."
+      }
+    ],
+    "60": [
+      {
+        "item_id": 14152,
+        "item_name": "Robe of the Archmage",
+        "reason": "The mage-specific crafted Mooncloth robe with a large flat spell power roll, one of the single most iconic pre-raid mage chest pieces."
+      },
+      {
+        "item_id": 18405,
+        "item_name": "Belt of the Archmage",
+        "reason": "The matching crafted belt from the same set, a standard pre-raid caster waist pick."
+      },
+      {
+        "item_id": 19050,
+        "item_name": "Mantle of the Timbermaw",
+        "reason": "Timbermaw Hold reputation cloth shoulders, a commonly cited pre-raid caster shoulder pick."
+      },
+      {
+        "item_id": 10033,
+        "item_name": "Red Mageweave Headband",
+        "reason": "Tailoring-crafted Mageweave head piece, a common pre-raid caster head slot before a better drop."
+      }
+    ]
+  },
+  "warlock-affliction": {
+    "20": [
+      {
+        "item_id": 2585,
+        "item_name": "Gray Woolen Robe",
+        "reason": "A common low-level cloth chest with intellect, a typical early-leveling warlock robe before better quest rewards drop."
+      },
+      {
+        "item_id": 1929,
+        "item_name": "Silk-threaded Trousers",
+        "reason": "Cloth legs with intellect, a standard early-leveling caster leg slot."
+      },
+      {
+        "item_id": 5970,
+        "item_name": "Serpent Gloves",
+        "reason": "Cloth gloves picked up commonly by low-level casters for the intellect."
+      },
+      {
+        "item_id": 8071,
+        "item_name": "Sizzle Stick",
+        "reason": "An early wand, a common ranged slot for a leveling warlock before a better wand drops."
+      }
+    ],
+    "40": [
+      {
+        "item_id": 1716,
+        "item_name": "Robe of the Magi",
+        "reason": "A Scarlet Monastery Library cloth robe, one of the most widely cited leveling-caster chest pieces in Classic."
+      },
+      {
+        "item_id": 10009,
+        "item_name": "Red Mageweave Pants",
+        "reason": "Tailoring-crafted Mageweave legs, a common leveling-caster leg slot at this level."
+      },
+      {
+        "item_id": 2620,
+        "item_name": "Augural Shroud",
+        "reason": "A cloth head piece with intellect, a common mid-leveling caster head slot."
+      },
+      {
+        "item_id": 10003,
+        "item_name": "Black Mageweave Gloves",
+        "reason": "Tailoring-crafted Mageweave gloves, a common leveling-caster hands slot at this level."
+      }
+    ],
+    "60": [
+      {
+        "item_id": 14153,
+        "item_name": "Robe of the Void",
+        "reason": "The warlock-specific crafted Mooncloth robe with a large flat spell power roll, one of the single most iconic pre-raid warlock chest pieces."
+      },
+      {
+        "item_id": 18405,
+        "item_name": "Belt of the Archmage",
+        "reason": "The matching crafted belt from the Archmage set, a standard pre-raid caster waist pick shared across cloth casters."
+      },
+      {
+        "item_id": 17571,
+        "item_name": "Legionnaire's Dreadweave Leggings",
+        "reason": "A PvP-rank Dreadweave leg reward with intellect and spell power, a common pre-raid warlock leg pick."
+      },
+      {
+        "item_id": 19050,
+        "item_name": "Mantle of the Timbermaw",
+        "reason": "Timbermaw Hold reputation cloth shoulders, a commonly cited pre-raid caster shoulder pick."
+      }
+    ]
+  },
+  "priest-shadow": {
+    "20": [
+      {
+        "item_id": 2585,
+        "item_name": "Gray Woolen Robe",
+        "reason": "A common low-level cloth chest with intellect, a typical early-leveling priest robe before better quest rewards drop."
+      },
+      {
+        "item_id": 1929,
+        "item_name": "Silk-threaded Trousers",
+        "reason": "Cloth legs with intellect, a standard early-leveling caster leg slot."
+      },
+      {
+        "item_id": 5970,
+        "item_name": "Serpent Gloves",
+        "reason": "Cloth gloves picked up commonly by low-level casters for the intellect."
+      },
+      {
+        "item_id": 8071,
+        "item_name": "Sizzle Stick",
+        "reason": "An early wand, a common ranged slot for a leveling shadow priest before a better wand drops."
+      }
+    ],
+    "40": [
+      {
+        "item_id": 1716,
+        "item_name": "Robe of the Magi",
+        "reason": "A Scarlet Monastery Library cloth robe, one of the most widely cited leveling-caster chest pieces in Classic."
+      },
+      {
+        "item_id": 10009,
+        "item_name": "Red Mageweave Pants",
+        "reason": "Tailoring-crafted Mageweave legs, a common leveling-caster leg slot at this level."
+      },
+      {
+        "item_id": 2620,
+        "item_name": "Augural Shroud",
+        "reason": "A cloth head piece with intellect, a common mid-leveling caster head slot."
+      },
+      {
+        "item_id": 10003,
+        "item_name": "Black Mageweave Gloves",
+        "reason": "Tailoring-crafted Mageweave gloves, a common leveling-caster hands slot at this level."
+      }
+    ],
+    "60": [
+      {
+        "item_id": 14154,
+        "item_name": "Truefaith Vestments",
+        "reason": "The highest flat spell power cloth robe a priest can wear pre-raid, even though it is itemized for healing - shadow priests commonly wear it for the spell power alone."
+      },
+      {
+        "item_id": 18405,
+        "item_name": "Belt of the Archmage",
+        "reason": "The crafted Archmage-set belt, a standard pre-raid caster waist pick shared across cloth casters."
+      },
+      {
+        "item_id": 19050,
+        "item_name": "Mantle of the Timbermaw",
+        "reason": "Timbermaw Hold reputation cloth shoulders, a commonly cited pre-raid caster shoulder pick."
+      },
+      {
+        "item_id": 10033,
+        "item_name": "Red Mageweave Headband",
+        "reason": "Tailoring-crafted Mageweave head piece, a common pre-raid caster head slot before a better drop."
+      }
+    ]
+  }
+}
