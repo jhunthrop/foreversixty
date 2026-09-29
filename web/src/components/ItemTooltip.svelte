@@ -1,10 +1,19 @@
 <!-- web/src/components/ItemTooltip.svelte -->
-<!-- The panel: icon, quality-coloured name, item level, slot/type, armor, weapon line,
-     green stats, "Equip:"-style effect text, set, source, required level -- the client's
-     own tooltip layout, tenet 2's "the real item" made visible. Pure presentation over an
-     already-built ItemTooltipModel (lib/items/tooltip.ts); it fetches nothing and owns no
-     open/close state -- ItemHover.svelte lazy-loads this component and mounts it only while
-     open, so its weight never rides on a page's base bundle. -->
+<!-- The panel: icon, quality-coloured name (site body face, never the site's display face --
+     tooltip-polish brief item 2), item level on its own muted line, slot/type, armor, weapon
+     line, green stats, "Equip:"-style effect text, set, required level, then the source block
+     behind a hairline -- the client's own tooltip layout and line order, tenet 2's "the real
+     item" made visible. Pure presentation over an already-built ItemTooltipModel
+     (lib/items/tooltip.ts); it fetches nothing and owns no open/close state -- ItemHover.svelte
+     lazy-loads this component and mounts it only while open, so its weight never rides on a
+     page's base bundle.
+
+     The name is never truncated (tooltip-polish brief item 1): it wraps instead, inside a
+     panel that clamps between 280px and 360px wide (full width minus 32px on a phone). The
+     panel's own vertical and horizontal placement -- flip above the anchor, clamp and scroll
+     internally when neither side fits, shift left off the viewport's right edge -- is
+     `lib/items/tooltip-position.ts`'s job; this component only reads the CSS variables that
+     positions it. -->
 <script lang="ts">
   import type { ItemTooltipModel } from '../lib/items/tooltip';
   import { rarityClassFor } from '../lib/planner/items';
@@ -22,8 +31,14 @@
   {id}
   role="tooltip"
   data-testid="item-tooltip"
-  class="border-line bg-raised rounded-panel absolute top-full left-0 z-30 mt-2 flex w-72 flex-col gap-2 border p-3 text-[13px] shadow-[0_12px_30px_rgba(0,0,0,.45)]"
+  class="border-line bg-raised rounded-panel absolute z-30 flex w-[clamp(280px,calc(100vw_-_32px),360px)] flex-col gap-2 border p-3 text-[13px] shadow-[0_12px_30px_rgba(0,0,0,.45)]"
   style:left="var(--item-tooltip-shift, 0px)"
+  style:top="var(--item-tooltip-top, 100%)"
+  style:bottom="var(--item-tooltip-bottom, auto)"
+  style:margin-top="var(--item-tooltip-mt, 8px)"
+  style:margin-bottom="var(--item-tooltip-mb, 0px)"
+  style:max-height="var(--item-tooltip-max-h, none)"
+  style:overflow-y="var(--item-tooltip-overflow-y, visible)"
 >
   <div class="flex items-start gap-2">
     {#if iconBroken}
@@ -48,15 +63,15 @@
         }}
       />
     {/if}
-    <div class="flex min-w-0 flex-col">
-      <span class={`font-display truncate text-[14px] font-bold ${rarityClassFor(model.quality)}`}>
+    <div class="flex min-w-0 flex-1 flex-col gap-0.5">
+      <span class={`text-[15px] font-semibold ${rarityClassFor(model.quality)}`}>
         {model.name}
       </span>
+      <span class="tabular text-muted font-mono text-[11px]">Item Level {model.itemLevel}</span>
       {#if model.unique}
         <span class="text-muted text-[11px]">Unique</span>
       {/if}
     </div>
-    <span class="tabular text-muted ml-auto shrink-0 font-mono text-[11px]">iLvl {model.itemLevel}</span>
   </div>
 
   <div class="text-muted flex flex-wrap justify-between gap-x-2 text-[12px]">
@@ -92,15 +107,15 @@
     <span class="text-rarity-uncommon text-[12px] font-semibold">{model.setName}</span>
   {/if}
 
+  {#if model.requiredLevel > 0}
+    <span class="text-muted text-[11px]">Requires Level {model.requiredLevel}</span>
+  {/if}
+
   {#if model.sourceLines.length > 0}
     <div class="border-line-soft text-muted flex flex-col gap-0.5 border-t pt-2 text-[11px]">
       {#each model.sourceLines as line (line)}
         <span>{line}</span>
       {/each}
     </div>
-  {/if}
-
-  {#if model.requiredLevel > 0}
-    <span class="text-muted text-[11px]">Requires Level {model.requiredLevel}</span>
   {/if}
 </div>

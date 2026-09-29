@@ -100,10 +100,6 @@ export const bisCopy = {
     `Value of one point of each stat, in ${referenceLabel.toLowerCase()}.`,
   raceTalentsLine: (race: string, points: number): string =>
     `${capitalise(race)} · ${points} talent point${points === 1 ? '' : 's'} spent`,
-  noSourceLine: (count: number): string =>
-    count === 0 ? '' : `${count} item${count === 1 ? '' : 's'} at this band have no known source yet.`,
-  coverageLine: (known: number, total: number): string =>
-    `Sources known for ${known.toLocaleString()} of ${total.toLocaleString()} items at this band.`,
 } as const;
 
 /** `dwarf` -> `Dwarf`: the pipeline's own race strings are not reliably capitalised (owner
