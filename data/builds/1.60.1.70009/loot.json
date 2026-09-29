@@ -184244,7 +184244,10 @@
       "kind": "world",
       "name": "Fernfeather",
       "items": [
-        727
+        727,
+        285272,
+        285273,
+        285274
       ],
       "source_origin": "wowhead"
     },
@@ -202285,7 +202288,8 @@
       "kind": "world",
       "name": "Ghostfang",
       "items": [
-        2958
+        2958,
+        286751
       ],
       "source_origin": "wowhead"
     },
@@ -268620,7 +268624,8 @@
       "name": "Matriarch Bristlefur",
       "items": [
         727,
-        2140
+        2140,
+        286748
       ],
       "source_origin": "wowhead"
     },
@@ -291905,6 +291910,15 @@
         "5503": 0.02
       },
       "source_origin": "classic-db"
+    },
+    {
+      "id": "world:nightscreech",
+      "kind": "world",
+      "name": "Nightscreech",
+      "items": [
+        286750
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "world:nightterror-whelp",
@@ -361694,6 +361708,16 @@
       "source_origin": "classic-db"
     },
     {
+      "id": "world:slydris",
+      "kind": "world",
+      "name": "Slydris",
+      "items": [
+        285238,
+        285239
+      ],
+      "source_origin": "wowhead"
+    },
+    {
       "id": "world:small-crag-boar",
       "kind": "world",
       "name": "Small Crag Boar",
@@ -363593,6 +363617,16 @@
       "source_origin": "classic-db"
     },
     {
+      "id": "world:snapbeak-the-quick",
+      "kind": "world",
+      "name": "Snapbeak the Quick",
+      "items": [
+        285264,
+        285269
+      ],
+      "source_origin": "wowhead"
+    },
+    {
       "id": "world:snapjaw",
       "kind": "world",
       "name": "Snapjaw",
@@ -364298,6 +364332,15 @@
         "4605": 11.6279
       },
       "source_origin": "classic-db"
+    },
+    {
+      "id": "world:snarlsnout",
+      "kind": "world",
+      "name": "Snarlsnout",
+      "items": [
+        286753
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "world:sneed",
@@ -444892,7 +444935,8 @@
         7455,
         7465,
         10553,
-        10554
+        10554,
+        286751
       ]
     },
     {
@@ -445527,7 +445571,8 @@
         6511,
         6512,
         6550,
-        7108
+        7108,
+        286748
       ]
     },
     {
@@ -445828,7 +445873,8 @@
         6336,
         6337,
         6512,
-        6527
+        6527,
+        286750
       ],
       "source_origin": "wowhead"
     },
@@ -446450,7 +446496,14 @@
         6336,
         6337,
         6512,
-        6527
+        6527,
+        285238,
+        285239,
+        285264,
+        285269,
+        285272,
+        285273,
+        285274
       ],
       "source_origin": "wowhead"
     },
@@ -446720,7 +446773,8 @@
         6337,
         6512,
         6527,
-        17922
+        17922,
+        286753
       ]
     },
     {
@@ -452436,6 +452490,16 @@
       ]
     },
     {
+      "id": "vendor:15078",
+      "kind": "vendor",
+      "name": "Jang",
+      "npc_id": 15078,
+      "items": [
+        276274
+      ],
+      "source_origin": "wowhead"
+    },
+    {
       "id": "vendor:151",
       "kind": "vendor",
       "name": "Brog Hamfist",
@@ -453466,6 +453530,31 @@
         7005
       ],
       "source_origin": "classic-db"
+    },
+    {
+      "id": "vendor:272045",
+      "kind": "vendor",
+      "name": "Brother Zendraas",
+      "npc_id": 272045,
+      "items": [
+        277057,
+        277058,
+        277059,
+        277061,
+        277063,
+        277064,
+        277065,
+        277067,
+        277069,
+        277070,
+        277071,
+        277073,
+        277075,
+        277076,
+        277077,
+        277079
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "vendor:2803",
@@ -459505,7 +459594,16 @@
         22670,
         22671,
         217273,
-        254105
+        254105,
+        276993,
+        276994,
+        276995,
+        276997,
+        277017,
+        277018,
+        277019,
+        277021,
+        277672
       ],
       "reitemised_from": {
         "217273": 9366,
@@ -459795,7 +459893,23 @@
         22760,
         22761,
         217270,
-        252425
+        252425,
+        276999,
+        277000,
+        277001,
+        277003,
+        277005,
+        277006,
+        277007,
+        277009,
+        277023,
+        277024,
+        277025,
+        277027,
+        277029,
+        277030,
+        277031,
+        277033
       ],
       "reitemised_from": {
         "217270": 8187,
@@ -459978,7 +460092,13 @@
         22660,
         22756,
         22757,
-        22758
+        22758,
+        277011,
+        277012,
+        277013,
+        277015,
+        277035,
+        277037
       ]
     },
     {
@@ -463433,8 +463553,33 @@
         248206,
         270094,
         272448,
+        276886,
+        276887,
+        276888,
+        276889,
+        277286,
+        277288,
+        277289,
+        279864,
+        279865,
+        279867,
+        279868,
+        279869,
+        279870,
+        279874,
+        279875,
+        279876,
+        279877,
+        279894,
+        279895,
+        279896,
+        279897,
+        279898,
+        279899,
+        279900,
         281167,
-        281168
+        281168,
+        282284
       ],
       "reitemised_from": {
         "217017": 19978,
@@ -498764,6 +498909,312 @@
         "min_level": 1,
         "level": 25,
         "level_source": "classic-db"
+      }
+    ],
+    "276886": [
+      {
+        "quest_id": 97003,
+        "name": "Chol'aruk the Ravener",
+        "faction": "both",
+        "min_level": 15,
+        "level": 21,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 97005,
+        "name": "Chol'aruk the Ravener",
+        "faction": "both",
+        "min_level": 15,
+        "level": 21,
+        "level_source": "wowhead"
+      }
+    ],
+    "276887": [
+      {
+        "quest_id": 97003,
+        "name": "Chol'aruk the Ravener",
+        "faction": "both",
+        "min_level": 15,
+        "level": 21,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 97005,
+        "name": "Chol'aruk the Ravener",
+        "faction": "both",
+        "min_level": 15,
+        "level": 21,
+        "level_source": "wowhead"
+      }
+    ],
+    "276888": [
+      {
+        "quest_id": 97003,
+        "name": "Chol'aruk the Ravener",
+        "faction": "both",
+        "min_level": 15,
+        "level": 21,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 97005,
+        "name": "Chol'aruk the Ravener",
+        "faction": "both",
+        "min_level": 15,
+        "level": 21,
+        "level_source": "wowhead"
+      }
+    ],
+    "276889": [
+      {
+        "quest_id": 97003,
+        "name": "Chol'aruk the Ravener",
+        "faction": "both",
+        "min_level": 15,
+        "level": 21,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 97005,
+        "name": "Chol'aruk the Ravener",
+        "faction": "both",
+        "min_level": 15,
+        "level": 21,
+        "level_source": "wowhead"
+      }
+    ],
+    "277286": [
+      {
+        "quest_id": 97250,
+        "name": "Wrongly Blamed, Justly Corrected",
+        "faction": "both",
+        "min_level": 18,
+        "level": 23,
+        "level_source": "wowhead"
+      }
+    ],
+    "277288": [
+      {
+        "quest_id": 97250,
+        "name": "Wrongly Blamed, Justly Corrected",
+        "faction": "both",
+        "min_level": 18,
+        "level": 23,
+        "level_source": "wowhead"
+      }
+    ],
+    "277289": [
+      {
+        "quest_id": 97250,
+        "name": "Wrongly Blamed, Justly Corrected",
+        "faction": "both",
+        "min_level": 18,
+        "level": 23,
+        "level_source": "wowhead"
+      }
+    ],
+    "279864": [
+      {
+        "quest_id": 95250,
+        "name": "Abominable Creatures",
+        "faction": "both",
+        "min_level": 16,
+        "level": 21,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 97290,
+        "name": "Unending Torment",
+        "faction": "both",
+        "min_level": 16,
+        "level": 21,
+        "level_source": "wowhead"
+      }
+    ],
+    "279865": [
+      {
+        "quest_id": 95250,
+        "name": "Abominable Creatures",
+        "faction": "both",
+        "min_level": 16,
+        "level": 21,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 97290,
+        "name": "Unending Torment",
+        "faction": "both",
+        "min_level": 16,
+        "level": 21,
+        "level_source": "wowhead"
+      }
+    ],
+    "279867": [
+      {
+        "quest_id": 95250,
+        "name": "Abominable Creatures",
+        "faction": "both",
+        "min_level": 16,
+        "level": 21,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 97290,
+        "name": "Unending Torment",
+        "faction": "both",
+        "min_level": 16,
+        "level": 21,
+        "level_source": "wowhead"
+      }
+    ],
+    "279868": [
+      {
+        "quest_id": 95195,
+        "name": "Bloodied Insignia",
+        "faction": "both",
+        "min_level": 16,
+        "level": 22,
+        "level_source": "wowhead"
+      }
+    ],
+    "279869": [
+      {
+        "quest_id": 95195,
+        "name": "Bloodied Insignia",
+        "faction": "both",
+        "min_level": 16,
+        "level": 22,
+        "level_source": "wowhead"
+      }
+    ],
+    "279870": [
+      {
+        "quest_id": 95161,
+        "name": "Remember That I Love You",
+        "faction": "both",
+        "min_level": 15,
+        "level": 22,
+        "level_source": "wowhead"
+      }
+    ],
+    "279874": [
+      {
+        "quest_id": 92421,
+        "name": "Light's Justice",
+        "faction": "both",
+        "min_level": 15,
+        "level": 22,
+        "level_source": "wowhead"
+      }
+    ],
+    "279875": [
+      {
+        "quest_id": 92421,
+        "name": "Light's Justice",
+        "faction": "both",
+        "min_level": 15,
+        "level": 22,
+        "level_source": "wowhead"
+      }
+    ],
+    "279876": [
+      {
+        "quest_id": 95216,
+        "name": "The New Plague",
+        "faction": "both",
+        "min_level": 16,
+        "level": 22,
+        "level_source": "wowhead"
+      }
+    ],
+    "279877": [
+      {
+        "quest_id": 95216,
+        "name": "The New Plague",
+        "faction": "both",
+        "min_level": 16,
+        "level": 22,
+        "level_source": "wowhead"
+      }
+    ],
+    "279894": [
+      {
+        "quest_id": 96393,
+        "name": "Old Ironforge Incursion",
+        "faction": "both",
+        "min_level": 9,
+        "level": 16,
+        "level_source": "wowhead"
+      }
+    ],
+    "279895": [
+      {
+        "quest_id": 96393,
+        "name": "Old Ironforge Incursion",
+        "faction": "both",
+        "min_level": 9,
+        "level": 16,
+        "level_source": "wowhead"
+      }
+    ],
+    "279896": [
+      {
+        "quest_id": 96393,
+        "name": "Old Ironforge Incursion",
+        "faction": "both",
+        "min_level": 9,
+        "level": 16,
+        "level_source": "wowhead"
+      }
+    ],
+    "279897": [
+      {
+        "quest_id": 96394,
+        "name": "The Restless Dead",
+        "faction": "both",
+        "min_level": 10,
+        "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "279898": [
+      {
+        "quest_id": 96403,
+        "name": "Important Heirlooms",
+        "faction": "both",
+        "min_level": 10,
+        "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "279899": [
+      {
+        "quest_id": 96395,
+        "name": "An Ancient Grudge",
+        "faction": "both",
+        "min_level": 10,
+        "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "279900": [
+      {
+        "quest_id": 96395,
+        "name": "An Ancient Grudge",
+        "faction": "both",
+        "min_level": 10,
+        "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "282284": [
+      {
+        "quest_id": 98403,
+        "name": "Twisted Hatred",
+        "faction": "both",
+        "min_level": 4,
+        "level": 12,
+        "level_source": "wowhead"
       }
     ],
     "226825": [
