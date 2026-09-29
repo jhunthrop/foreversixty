@@ -21,7 +21,11 @@ def _write_bis(root: Path, build: str, spec: str, bands: list[dict]) -> None:
 
 
 def _band(
-    level: int, faction: str, slots: list[dict], new_at_band: list[str] | None = None
+    level: int,
+    faction: str,
+    slots: list[dict],
+    new_at_band: list[str] | None = None,
+    weights: list[dict] | None = None,
 ) -> dict:
     return {
         "spec": "hunter-marksmanship",
@@ -29,6 +33,7 @@ def _band(
         "faction": faction,
         "slots": slots,
         "new_at_band": new_at_band or [],
+        "weights": weights or [],
     }
 
 
@@ -152,3 +157,87 @@ def test_multiple_specs_each_get_their_own_table(tmp_path):
     _write_bis(tmp_path, BUILD, "warrior-fury", [_band(20, "alliance", [])])
     bis = build_bis(tmp_path, BUILD)
     assert set(bis) == {"hunter-marksmanship", "warrior-fury"}
+
+
+def test_a_pick_carries_its_source_label(tmp_path):
+    """lane addon-tooltip-polish item 1: the tooltip's muted source line
+    reads this, in preference to a bare source kind."""
+    _write_bis(
+        tmp_path,
+        BUILD,
+        "hunter-marksmanship",
+        [
+            _band(
+                20,
+                "alliance",
+                [
+                    {
+                        "slot": "chest",
+                        "item_id": 2317,
+                        "source": "Leatherworking",
+                        "source_kind": "crafted",
+                    }
+                ],
+            )
+        ],
+    )
+    bis = build_bis(tmp_path, BUILD)
+    assert bis["hunter-marksmanship"][0].factions["alliance"]["chest"].source == "Leatherworking"
+
+
+def test_a_pick_with_no_source_label_is_simply_empty(tmp_path):
+    _write_bis(
+        tmp_path,
+        BUILD,
+        "hunter-marksmanship",
+        [_band(20, "alliance", [{"slot": "chest", "item_id": 2317, "source_kind": "crafted"}])],
+    )
+    bis = build_bis(tmp_path, BUILD)
+    assert bis["hunter-marksmanship"][0].factions["alliance"]["chest"].source == ""
+
+
+def test_a_bands_weights_keep_only_the_significant_ones(tmp_path):
+    """lane addon-tooltip-polish item 4: the tooltip's verdict scores a
+    hovered item against these, never an insignificant one leveling-bis
+    itself flagged as noise."""
+    _write_bis(
+        tmp_path,
+        BUILD,
+        "hunter-marksmanship",
+        [
+            _band(
+                20,
+                "alliance",
+                [],
+                weights=[
+                    {"stat": "agility", "weight": 2.0452764470665192, "insignificant": False},
+                    {"stat": "hit", "weight": 5.226522612412781, "insignificant": True},
+                ],
+            )
+        ],
+    )
+    bis = build_bis(tmp_path, BUILD)
+    assert bis["hunter-marksmanship"][0].weights == {"agility": 2.045}
+
+
+def test_a_bands_weights_are_the_same_for_every_faction(tmp_path):
+    """Only the first faction's own `weights` list is kept (sorted, so
+    always the same one for a given band) -- see AddonBisBand.weights'
+    docstring on why factions are not kept apart for this field."""
+    _write_bis(
+        tmp_path,
+        BUILD,
+        "hunter-marksmanship",
+        [
+            _band(20, "horde", [], weights=[{"stat": "agility", "weight": 1.0}]),
+            _band(20, "alliance", [], weights=[{"stat": "agility", "weight": 2.0}]),
+        ],
+    )
+    bis = build_bis(tmp_path, BUILD)
+    assert bis["hunter-marksmanship"][0].weights == {"agility": 2.0}
+
+
+def test_a_band_with_no_weights_measured_yet_is_simply_empty(tmp_path):
+    _write_bis(tmp_path, BUILD, "hunter-marksmanship", [_band(20, "alliance", [])])
+    bis = build_bis(tmp_path, BUILD)
+    assert bis["hunter-marksmanship"][0].weights == {}

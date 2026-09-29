@@ -422,9 +422,9 @@ class AddonRotationBand(BaseModel):
 
 class AddonBisItem(BaseModel):
     """One slot's leveling BiS pick, ids only (pipeline.addonbis's own
-    load-bearing decision: the item's name, score and swap_note are not
-    carried again -- the client resolves the name for free from `item_id`,
-    and the rest is prose a player reading a tooltip has no use for)."""
+    load-bearing decision: the item's name and swap_note are not carried
+    again -- the client resolves the name for free from `item_id`, and the
+    rest is prose a player reading a tooltip has no use for)."""
 
     item_id: int
     #: One of pipeline.addonbis.SOURCE_KIND_CODES' keys (leveling-bis's own
@@ -432,6 +432,14 @@ class AddonBisItem(BaseModel):
     #: raid). Kept as the full word here -- render_lua is what encodes it
     #: down to one letter for size; the JSON stays readable.
     source_kind: str
+    #: leveling-bis's own short place: "Wailing Caverns: Mutanus the
+    #: Devourer" (instance: boss), a quest name, or a profession name for a
+    #: crafted pick (report.go's own `source` string) -- the tooltip's
+    #: muted source line (lane addon-tooltip-polish item 1: no reader-
+    #: facing surface may show a bare "Source: Crafted" again). Empty for a
+    #: pick leveling-bis wrote with no `source` at all, which the addon
+    #: reads as "show no source line" rather than a placeholder.
+    source: str = ""
 
 
 class AddonBisBand(BaseModel):
@@ -446,6 +454,16 @@ class AddonBisBand(BaseModel):
     factions: dict[str, dict[str, AddonBisItem]]
     #: faction -> item ids newly best at this band.
     new_at_band: dict[str, list[int]] = {}
+    #: This band's own measured stat weights (leveling-bis's own `weights`
+    #: list on its flat per-(band, faction) report), significant entries
+    #: only, rounded for size (lane addon-tooltip-polish item 4). Weights
+    #: do not vary by faction for a given spec/band in practice (race
+    #: changes the sim's race, not the stat weights it measures), so
+    #: pipeline.addonbis keeps the first faction's own list rather than
+    #: one per faction. Empty when leveling-bis has not measured this
+    #: band/spec yet -- the tooltip's verdict falls back to the curated
+    #: static table (ns.Data.weights) in that case.
+    weights: dict[str, float] = {}
 
 
 class AddonData(BaseModel):

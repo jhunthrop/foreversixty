@@ -243,7 +243,10 @@ local L = {
 	-- interleaved with the keys above, so a merge with the window lane's
 	-- own edits to this file costs one diff hunk, not a rebase through
 	-- every key.
-	tooltipPlanned = "Planned for your %s",
+	-- The verdict's own absolute-points fallback, for a slot with nothing
+	-- worn in it to be a percentage OF (an empty slot; lane addon-
+	-- tooltip-polish's own verdictFor) -- tooltipVerdictUpgrade below is
+	-- what a hovered item's verdict shows against something actually worn.
 	tooltipUpgrade = "Upgrade for %s: %+.0f by our weights",
 	tooltipNotUpgrade = "Not an upgrade",
 	diagTooltipHookFailed = "The item tooltip hook failed once and turned itself off: %s",
@@ -338,13 +341,13 @@ local L = {
 	-- the inbox-wire block above for the same reason it gives: two other
 	-- lanes are editing this same file today, and an appended block is
 	-- the smallest surface for the controller to merge.
-	-- "Best in slot · <band> · <spec>".
-	tooltipBisHeader = "Best in slot · %d · %s",
-	tooltipBisEquipped = "(equipped)",
-	-- "(new at <band>)".
-	tooltipBisNew = "(new at %d)",
-	-- Advanced detail only: "Source: <kind>".
-	tooltipBisSource = "Source: %s",
+	-- The BiS row's own right-aligned tag (lane addon-tooltip-polish
+	-- restyled this row onto one AddDoubleLine; there is no separate
+	-- "Best in slot · <band> · <spec>" header line any more -- the tag
+	-- alone says why the row is there).
+	tooltipBisEquipped = "equipped",
+	-- "new at <band>".
+	tooltipBisNew = "new at %d",
 
 	-- Lane addon-premium (2026-09-28): the addon to the standard of the
 	-- best WoW addon ever made (docs/tenets.md) -- the BiS hover's item
@@ -361,6 +364,27 @@ local L = {
 	-- spell id, and its cooldown when it has one worth naming.
 	overviewRotationDetail = "%s · #%d",
 	overviewRotationDetailCooldown = "%s · #%d · %ds cooldown",
+
+	-- Lane addon-tooltip-polish (2026-09-28): the item tooltip section
+	-- restyled to docs/tenets.md's standard -- a single brand header, the
+	-- BiS row as one AddDoubleLine (icon + coloured link left, a tag
+	-- right), the upgrade verdict coloured by meaning and scored against
+	-- the nightly band weights when they exist, and a muted source line
+	-- with a real place instead of a bare source kind. Appended, not
+	-- interleaved, for the same reason every block above gives: several
+	-- other lanes are editing this same file this wave.
+	-- A percentage of what is actually worn -- "Upgrade +4.2%".
+	tooltipVerdictUpgrade = "Upgrade +%.1f%%",
+	-- "Downgrade -3.1%" (an ASCII hyphen, not U+2212: Locale.lua carries no
+	-- non-ASCII outside "·", already used throughout this file, and a
+	-- second lookalike glyph is not worth introducing for one string).
+	tooltipVerdictDowngrade = "Downgrade -%.1f%%",
+	tooltipVerdictSidegrade = "Sidegrade",
+	-- The BiS row's tag when the pick is neither worn nor new: "BiS · lvl 20".
+	tooltipBisDefaultTag = "BiS · lvl %d",
+	-- The muted source line: "<kind> · <place>", e.g. "Dungeon · Wailing
+	-- Caverns · Mutanus the Devourer" or "Crafted · Leatherworking".
+	tooltipBisSourceLabel = "%s · %s",
 }
 
 ns.L = L

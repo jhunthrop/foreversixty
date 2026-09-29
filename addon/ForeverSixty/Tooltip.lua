@@ -1,11 +1,12 @@
 -- addon/ForeverSixty/Tooltip.lua
--- Two lines on an item's own tooltip: whether the loaded build wants it,
--- and whether it beats what is worn, by Gear's own scoring.
+-- The item tooltip section, to the standard docs/tenets.md sets: a single
+-- brand header, a coloured upgrade verdict, a structured BiS row (an icon
+-- and a quality-coloured link on the left, a tag on the right), and a
+-- muted source line -- never a bare "Source: Crafted".
 --
--- Pure functions first (plannedLine, upgradeLine, lines) -- what the specs
--- cover without a real GameTooltip. The guarded hook that draws them onto
--- an actual tooltip is Tooltip.register() and friends, added in the next
--- task.
+-- Pure functions first (verdict, bisLines, sections) -- what the specs
+-- cover without a real GameTooltip. The guarded hooks that draw them onto
+-- an actual tooltip (Tooltip.register() and friends) come after.
 local _, ns = ...
 ns = type(ns) == "table" and ns or {}
 local L = ns.L or require("Locale")
@@ -15,7 +16,6 @@ local Export = ns.Export or require("Export")
 local Compat = ns.Compat or require("Compat")
 local Theme = ns.Theme or require("Theme")
 local Prefs = ns.Prefs or require("Prefs")
-local Follow = ns.Follow or require("Follow")
 
 local Tooltip = {}
 
@@ -69,34 +69,108 @@ function Tooltip.equippedSlotFor(itemLink)
 	return nil
 end
 
---- "Planned for your <slot>" when the loaded build wants this exact item.
-function Tooltip.plannedLine(build, itemId)
-	if build == nil or itemId == nil then
+--- The highest band key at or below `level` in a band-keyed table (bands
+--- run 10..60 step 5, and a build in progress may skip one) -- shared by
+--- the BiS lookup and the verdict's own band-weights lookup, so both
+--- round down to the same rung. nil below `floor`, or with no table (or no
+--- entry at all) to look in.
+local function highestBandAtOrBelow(bands, level, floor)
+	if type(bands) ~= "table" or type(level) ~= "number" or level < floor then
 		return nil
 	end
-	for _, entry in ipairs(build.gear or {}) do
-		if entry.itemId == itemId then
-			return string.format(L.tooltipPlanned, entry.slot)
+	local rounded = math.min(60, math.floor(level / 5) * 5)
+	for candidate = rounded, floor, -5 do
+		if bands[candidate] ~= nil then
+			return candidate
 		end
 	end
 	return nil
 end
 
---- "Upgrade for <slot>: +N by our weights" or "Not an upgrade", scored
---- against whatever is worn in each slot the item could fill -- the best
---- (highest-delta) slot wins when more than one fits (rings, trinkets, one-
---- and two-handers). Gear's own scoring; no second scorer. Uses the
---- player's own class (there may be no build loaded at all), unlike
---- Gear.upgrades, which is always called with one already loaded.
-function Tooltip.upgradeLine(data, itemLink)
+--- Below this level a character has no ladder band yet (design: "below 10
+--- shows nothing" -- pipeline.addonbis.BIS_LEVEL_BANDS' own floor).
+Tooltip.BIS_MIN_LEVEL = 10
+
+--- This spec's stat weights at `level`: the nightly-measured band weights
+--- (ns.Data.bis_weights, lane addon-tooltip-polish item 4) when the
+--- leveling-bis run has actually measured this spec/band, else the
+--- curated static table (ns.Data.weights) -- the same "band data first,
+--- static fallback" rule Tooltip.bisLines already follows for gear picks.
+--- A band entry that exists but measured nothing significant (weights ==
+--- {}) is "not measured yet", not "measured as zero", so it also falls
+--- through to the static table.
+function Tooltip.weightsFor(data, spec, level)
+	if spec == nil then
+		return nil
+	end
+	local bisWeights = type(data.bis_weights) == "table" and data.bis_weights[spec] or nil
+	local band = highestBandAtOrBelow(bisWeights, level, Tooltip.BIS_MIN_LEVEL)
+	local measured = band ~= nil and bisWeights[band] or nil
+	if type(measured) == "table" and next(measured) ~= nil then
+		return measured
+	end
+	return data.weights[spec]
+end
+
+--- Below this percentage magnitude a delta reads as noise, not a verdict --
+--- lane addon-tooltip-polish's own call; nothing in the design states a
+--- number, and this is small enough that two items only a stray point of a
+--- minor stat apart still read as a Sidegrade rather than a coin-flip
+--- Upgrade/Downgrade.
+Tooltip.SIDEGRADE_THRESHOLD_PERCENT = 0.5
+
+--- { kind, color, text } for a slot's own best candidate delta, kind one
+--- of "upgrade" | "downgrade" | "sidegrade", color one of Theme.HEX's own
+--- keys. With something actually worn in the best slot (equippedScore ~=
+--- 0), the verdict is a percentage of that baseline, which is what the
+--- owner's screenshot review asked for: a chest with more agility than
+--- the one worn must obviously read as an upgrade. With nothing worn
+--- there at all (an empty slot, or a worn item that scores exactly zero
+--- under these weights), a percentage has no baseline to be a percentage
+--- OF, so this falls back to the older absolute-points wording instead of
+--- dividing by zero.
+local function verdictFor(slot, delta, equippedScore)
+	if equippedScore ~= 0 then
+		local percent = delta / math.abs(equippedScore) * 100
+		if math.abs(percent) < Tooltip.SIDEGRADE_THRESHOLD_PERCENT then
+			return { kind = "sidegrade", color = "muted", text = L.tooltipVerdictSidegrade }
+		end
+		if percent > 0 then
+			return {
+				kind = "upgrade", color = "success",
+				text = string.format(L.tooltipVerdictUpgrade, percent),
+			}
+		end
+		return {
+			kind = "downgrade", color = "warning",
+			text = string.format(L.tooltipVerdictDowngrade, -percent),
+		}
+	end
+	if delta > 0 then
+		return {
+			kind = "upgrade", color = "success",
+			text = string.format(L.tooltipUpgrade, slot, delta),
+		}
+	end
+	return { kind = "sidegrade", color = "muted", text = L.tooltipNotUpgrade }
+end
+
+--- The upgrade verdict for a hovered item, scored against whatever is worn
+--- in each slot the item could fill -- the best (highest-delta) slot wins
+--- when more than one fits (rings, trinkets, one- and two-handers). Gear's
+--- own scoring; no second scorer. Uses the player's own class (there may
+--- be no build loaded at all). nil with nothing to say: no resolvable
+--- class, no item link, no data table, no stat weights for the spec at
+--- any band, or an item with no equip slot at all (a reagent, say).
+function Tooltip.verdict(data, itemLink)
 	local classSlug = Talents.playerClassSlug()
 	if classSlug == nil or itemLink == nil or data == nil then
 		return nil
 	end
 	local ranks = Talents.readRanks(data)
 	local spec = Gear.specOf(data, classSlug, ranks)
-	local weights = spec ~= nil and data.weights[spec] or nil
-	if weights == nil then
+	local weights = Tooltip.weightsFor(data, spec, Compat.playerLevel())
+	if weights == nil or next(weights) == nil then
 		return nil
 	end
 	local _, _, _, equipLocation = Compat.itemInfoInstant(itemLink)
@@ -110,16 +184,13 @@ function Tooltip.upgradeLine(data, itemLink)
 		local equippedScore = Gear.score(Gear.statsOf(equippedLinkFor(slot)), weights)
 		local delta = itemScore - equippedScore
 		if best == nil or delta > best.delta then
-			best = { slot = slot, delta = delta }
+			best = { slot = slot, delta = delta, equippedScore = equippedScore }
 		end
 	end
 	if best == nil then
 		return nil
 	end
-	if best.delta > 0 then
-		return string.format(L.tooltipUpgrade, best.slot, best.delta)
-	end
-	return L.tooltipNotUpgrade
+	return verdictFor(best.slot, best.delta, best.equippedScore)
 end
 
 --- "<Stat> capped: more is wasted" for each stat this item carries that
@@ -127,8 +198,8 @@ end
 --- inbox, key, "weights"), section 4's breakpoint call-out) already
 --- names in its `caps` list. With no message, or one carrying no caps
 --- at all, this answers no lines rather than guessing -- the same "no
---- data, no line" rule Tooltip.upgradeLine already follows for a spec
---- with no weights.
+--- data, no line" rule Tooltip.verdict already follows for a spec with
+--- no weights.
 function Tooltip.capLines(itemLink, weightsMessage)
 	local lines = {}
 	if itemLink == nil or type(weightsMessage) ~= "table" or type(weightsMessage.caps) ~= "table" then
@@ -174,12 +245,8 @@ Tooltip.BIS_SLOT_BUTTONS = {
 	ranged = "CharacterRangedSlot",
 }
 
---- Below this level a character has no ladder band yet (design: "below 10
---- shows nothing" -- pipeline.addonbis.BIS_LEVEL_BANDS' own floor).
-Tooltip.BIS_MIN_LEVEL = 10
-
 --- data/pipeline/addonlua.py's SOURCE_KIND_CODES, decoded back for the
---- advanced-detail line. Kept beside BIS_SLOT_BUTTONS as the addon's own
+--- muted source line. Kept beside BIS_SLOT_BUTTONS as the addon's own
 --- half of a contract data/pipeline/addonbis.py's SOURCE_KIND_CODES
 --- states in full; tests/tooltip_bis_spec.lua pins this table's key set
 --- against that same set of source kinds independently, the way
@@ -199,19 +266,11 @@ Tooltip.SOURCE_KIND_NAMES = {
 --- yet). Below BIS_MIN_LEVEL, or with no bis table for this spec at all:
 --- nil, nil.
 local function bisBandFor(specBis, level)
-	if type(specBis) ~= "table" or type(level) ~= "number" or level < Tooltip.BIS_MIN_LEVEL then
+	local band = highestBandAtOrBelow(specBis, level, Tooltip.BIS_MIN_LEVEL)
+	if band == nil then
 		return nil, nil
 	end
-	local rounded = math.floor(level / 5) * 5
-	if rounded > 60 then
-		rounded = 60
-	end
-	for candidate = rounded, Tooltip.BIS_MIN_LEVEL, -5 do
-		if specBis[candidate] ~= nil then
-			return candidate, specBis[candidate]
-		end
-	end
-	return nil, nil
+	return band, specBis[band]
 end
 
 --- "alliance"/"horde", the bis table's own faction keys, or nil on a test
@@ -247,16 +306,17 @@ local function isAmong(ids, itemId)
 	return false
 end
 
---- "(equipped)" beats "(new at <band>)" when both would apply -- an item
---- already worn cannot also be new to put on.
+--- The BiS row's own right-aligned tag, as { text, color }: "equipped"
+--- (green) beats "new at <band>" (gold) beats the plain "BiS · lvl <band>"
+--- (muted) default -- an item already worn cannot also be new to put on.
 local function bisTag(itemId, band, equippedItemId, newIds)
 	if equippedItemId == itemId then
-		return L.tooltipBisEquipped
+		return { text = L.tooltipBisEquipped, color = "success" }
 	end
 	if isAmong(newIds, itemId) then
-		return string.format(L.tooltipBisNew, band)
+		return { text = string.format(L.tooltipBisNew, band), color = "gold" }
 	end
-	return ""
+	return { text = string.format(L.tooltipBisDefaultTag, band), color = "muted" }
 end
 
 --- The item's link once GetItemInfo knows it, else the "item:<id>" form
@@ -267,16 +327,38 @@ function Tooltip.bisItemLink(itemId)
 	return Compat.displayLink(itemId)
 end
 
---- The BiS hover section for one site slot: a header ("Best in slot ·
---- <band> · <spec>"), the slot's pick as an inline icon beside its item
---- link (in the link's own quality colour -- GetItemInfo's link already
---- carries the colour escape codes) tagged "(equipped)" or "(new at
---- <band>)", the item's level once the client has it cached, and --
---- advanced detail only (Prefs.flag("advancedDetail")) -- the source
---- kind. Empty (no section) while InCombatLockdown, with no resolvable
---- class or spec, no bis band at or above BIS_MIN_LEVEL for this
---- character's level, or the band names nothing for this slot --
---- design/lane-bis-hover-addon.md item 2's own rules.
+--- The muted source line -- "<kind> · <place>", e.g. "Dungeon · Wailing
+--- Caverns · Mutanus the Devourer" or "Crafted · Leatherworking" -- from
+--- the pick's source-kind code and its short place label (addonbis.py's
+--- own `source`, positional element 3). nil with no label at all: a bare
+--- "Source: Crafted" is never shown again (lane addon-tooltip-polish item
+--- 1), so a pick this data has no place for simply gets no source line,
+--- rather than the kind alone.
+local function sourceLine(sourceCode, sourceLabel)
+	if type(sourceLabel) ~= "string" or sourceLabel == "" then
+		return nil
+	end
+	local kindName = Tooltip.SOURCE_KIND_NAMES[sourceCode] or sourceCode
+	-- "Wailing Caverns: Mutanus the Devourer" -> "Wailing Caverns · Mutanus
+	-- the Devourer": report.go's own "instance: boss" punctuation, recut to
+	-- the addon's own separator so the whole line reads as one style.
+	return string.format(L.tooltipBisSourceLabel, kindName, (sourceLabel:gsub(": ", " · ")))
+end
+
+--- The BiS hover's inline icon size -- a touch larger than a list row's
+--- (Theme.SIZES.iconSize), since a tooltip line has more room than a
+--- packed row.
+Tooltip.BIS_ICON_SIZE = 18
+
+--- The BiS section for one site slot, as a list of draw ops (Tooltip.draw
+--- is what turns these into real tooltip calls): a "doubleline" op for the
+--- pick itself (icon + quality-coloured link on the left, the tag on the
+--- right), then plain "line" ops for the item level (once cached) and the
+--- muted source line (when the data has one). Empty (no ops) while
+--- InCombatLockdown, with no resolvable class or spec, no bis band at or
+--- above BIS_MIN_LEVEL for this character's level, or the band names
+--- nothing for this slot -- design/lane-bis-hover-addon.md item 2's own
+--- rules.
 ---
 --- The second return is the recommended item ({ itemId, link }), for the
 --- caller to show the client's own item tooltip for it beside GameTooltip
@@ -306,65 +388,61 @@ function Tooltip.bisLines(data, slot)
 	if entry == nil then
 		return {}
 	end
-	-- entry is { itemId, sourceKindCode } -- addonlua.py's positional,
-	-- unnamed-field encoding (the lane brief's size budget).
-	local itemId, sourceCode = entry[1], entry[2]
+	-- entry is { itemId, sourceKindCode, sourceLabel } -- addonlua.py's
+	-- positional, unnamed-field encoding (the lane brief's size budget);
+	-- sourceLabel is left out of the table literal entirely for a pick
+	-- with none, so it comes back nil rather than "".
+	local itemId, sourceCode, sourceLabel = entry[1], entry[2], entry[3]
 	local tag = bisTag(itemId, band, itemIdOf(equippedLinkFor(slot)), newAtBand(data, spec, band, faction))
 	local link = Tooltip.bisItemLink(itemId)
 	local icon = Theme.inlineIcon(Compat.itemIcon(itemId), Tooltip.BIS_ICON_SIZE)
-	local itemLine = icon .. " " .. link
-	if tag ~= "" then
-		itemLine = itemLine .. " " .. tag
-	end
-	local lines = {
-		string.format(L.tooltipBisHeader, band, spec),
-		itemLine,
+	local ops = {
+		{ kind = "doubleline", left = icon .. " " .. link, right = tag.text, rightColor = tag.color },
 	}
 	local level = Compat.itemLevel(itemId)
 	if level ~= nil then
-		lines[#lines + 1] = string.format(L.tooltipBisItemLevel, level)
+		ops[#ops + 1] = { kind = "line", text = string.format(L.tooltipBisItemLevel, level), color = "muted" }
 	end
-	if Prefs.flag("advancedDetail") then
-		lines[#lines + 1] = string.format(L.tooltipBisSource, Tooltip.SOURCE_KIND_NAMES[sourceCode] or sourceCode)
+	local source = sourceLine(sourceCode, sourceLabel)
+	if source ~= nil then
+		ops[#ops + 1] = { kind = "line", text = source, color = "muted" }
 	end
-	return lines, { itemId = itemId, link = link }
+	return ops, { itemId = itemId, link = link }
 end
 
---- The BiS hover's inline icon size -- a touch larger than a list row's
---- (Theme.SIZES.iconSize), since a tooltip line has more room than a
---- packed row.
-Tooltip.BIS_ICON_SIZE = 18
-
---- Every line this addon ever adds, 0 or more. Pure; the hook this
---- file grows next only draws what this returns. weightsMessage is
---- optional (nil is "no weights message for this character yet"), so
---- every existing three-argument call site keeps behaving exactly as
---- it did before Tooltip.capLines existed.
-function Tooltip.lines(data, build, itemLink, weightsMessage)
-	local lines = {}
-	local planned = Tooltip.plannedLine(build, itemIdOf(itemLink))
-	if planned ~= nil then
-		lines[#lines + 1] = planned
+--- Every op this addon ever draws for one item, 0 or more: the upgrade
+--- verdict first (Tooltip.verdict, colour by meaning), then the BiS
+--- section for the item's own slot -- only for an item that IS what this
+--- character wears right now in one of its own slots (a bag item or
+--- someone else's gear names no site slot and gets nothing here) -- then
+--- any capped-stat call-outs. Pure; Tooltip.draw is what turns this into
+--- real tooltip calls. weightsMessage is optional (nil is "no weights
+--- message for this character yet").
+---
+--- The second return is the BiS section's own recommended item, exactly
+--- as Tooltip.bisLines answers it (nil with no BiS section at all), so a
+--- caller need only check it, not re-derive it.
+function Tooltip.sections(data, itemLink, weightsMessage)
+	local ops = {}
+	local verdict = Tooltip.verdict(data, itemLink)
+	if verdict ~= nil then
+		ops[#ops + 1] = { kind = "line", text = verdict.text, color = verdict.color }
 	end
-	local upgrade = Tooltip.upgradeLine(data, itemLink)
-	if upgrade ~= nil then
-		lines[#lines + 1] = upgrade
-	end
-	for _, capLine in ipairs(Tooltip.capLines(itemLink, weightsMessage)) do
-		lines[#lines + 1] = capLine
-	end
-	-- The BiS section only for an item that IS what this character wears
-	-- right now in one of its own slots -- a bag item or someone else's
-	-- gear names no site slot and gets nothing here.
+	local target
 	if data ~= nil then
 		local slot = Tooltip.equippedSlotFor(itemLink)
 		if slot ~= nil then
-			for _, bisLine in ipairs(Tooltip.bisLines(data, slot)) do
-				lines[#lines + 1] = bisLine
+			local bisOps, bisTarget = Tooltip.bisLines(data, slot)
+			for _, op in ipairs(bisOps) do
+				ops[#ops + 1] = op
 			end
+			target = bisTarget
 		end
 	end
-	return lines
+	for _, capLine in ipairs(Tooltip.capLines(itemLink, weightsMessage)) do
+		ops[#ops + 1] = { kind = "line", text = capLine, color = "body" }
+	end
+	return ops, target
 end
 
 --- The generated data table, set once by Options.register() exactly like
@@ -394,14 +472,19 @@ function Tooltip.resetCache()
 	return Tooltip.cache
 end
 
-local function cachedLines(itemLink)
+--- Tooltip.sections(Tooltip.data, itemLink, Tooltip.weightsMessage),
+--- cached by link. Caching the ops AND the target together (one call)
+--- rather than the ops alone is what lets the item hook and the compare
+--- tooltip share one scoring walk instead of two -- see git history for
+--- the version that scored bisLines a second time just to read `target`.
+local function cachedSections(itemLink)
 	local cached = Tooltip.cache[itemLink]
 	if cached ~= nil then
-		return cached
+		return cached.ops, cached.target
 	end
-	local lines = Tooltip.lines(Tooltip.data, Follow.build, itemLink, Tooltip.weightsMessage)
-	Tooltip.cache[itemLink] = lines
-	return lines
+	local ops, target = Tooltip.sections(Tooltip.data, itemLink, Tooltip.weightsMessage)
+	Tooltip.cache[itemLink] = { ops = ops, target = target }
+	return ops, target
 end
 
 --- The BiS hover currently on screen, if it names an item id the client
@@ -412,18 +495,50 @@ end
 --- link and the item level that were missing the first time.
 Tooltip.activeHover = nil
 
---- The premium half of an equipped item's own BiS section: the client's
---- item tooltip for the recommended item, shown beside this one, and the
---- redraw target once its data arrives. A second, uncached call to
---- Tooltip.bisLines -- the first (inside cachedLines) is what drew the
---- text lines already on the tooltip; this one only exists to read the
---- { itemId, link } it also returns, which the cache does not keep.
-local function showBisExtras(tooltip, itemLink)
-	local slot = Tooltip.data ~= nil and Tooltip.equippedSlotFor(itemLink) or nil
-	if slot == nil then
+--- Colour one op's field by Theme.HEX key, falling back to body text for
+--- an op that names no colour at all.
+local function opColor(key)
+	return Theme.rgb(Theme.HEX[key or "body"])
+end
+
+--- The header strip icon's inline size -- Theme.SIZES.rotationHeaderIcon
+--- is the same "a small icon beside a header line" job the rotation
+--- card's own strip already does; reused rather than a second constant
+--- for one more small header icon.
+Tooltip.HEADER_ICON_SIZE = Theme.SIZES.rotationHeaderIcon
+
+--- Draws `ops` (Tooltip.sections' or Tooltip.bisLines' own output) onto a
+--- real tooltip, with the brand header first -- the addon's small icon
+--- texture beside "Forever Sixty" in the brand gold, docs/tenets.md's own
+--- ask -- and never drawn at all when there is nothing to say. Shared by
+--- the item hook and the empty-slot section (both hover paths item 2
+--- covers), so the two draw exactly the same way.
+local function drawOps(tooltip, ops)
+	if #ops == 0 then
 		return
 	end
-	local _, target = Tooltip.bisLines(Tooltip.data, slot)
+	local hr, hg, hb = opColor("gold")
+	tooltip:AddLine(Theme.inlineIcon(Theme.MEDIA.minimapIcon, Tooltip.HEADER_ICON_SIZE) .. " " .. L.addonName,
+		hr, hg, hb)
+	for _, op in ipairs(ops) do
+		if op.kind == "doubleline" then
+			local lr, lg, lb = opColor(op.leftColor)
+			local rr, rg, rb = opColor(op.rightColor)
+			tooltip:AddDoubleLine(op.left, op.right, lr, lg, lb, rr, rg, rb)
+		else
+			local r, g, b = opColor(op.color)
+			tooltip:AddLine(op.text, r, g, b)
+		end
+	end
+end
+
+local function addLines(tooltip, itemLink)
+	local ops, target = cachedSections(itemLink)
+	if #ops == 0 then
+		return
+	end
+	drawOps(tooltip, ops)
+	tooltip:Show()
 	if target == nil then
 		return
 	end
@@ -442,19 +557,6 @@ local function showBisExtras(tooltip, itemLink)
 			end
 		end,
 	}
-end
-
-local function addLines(tooltip, itemLink)
-	local lines = cachedLines(itemLink)
-	if #lines == 0 then
-		return
-	end
-	tooltip:AddLine(L.addonName, Theme.rgb(Theme.HEX.gold))
-	for _, line in ipairs(lines) do
-		tooltip:AddLine(line, Theme.rgb(Theme.HEX.body))
-	end
-	tooltip:Show()
-	showBisExtras(tooltip, itemLink)
 end
 
 --- One guarded body for both hook shapes below. A Lua error inside a
@@ -546,13 +648,76 @@ function Tooltip.registerUnit()
 	return nil
 end
 
---- An EMPTY slot's own BiS section: PaperDollItemSlotButton_OnEnter's own
---- GameTooltip:SetInventoryItem call adds nothing and never shows the
---- tooltip when the slot has no item, so OnTooltipSetItem (Tooltip.lines,
---- above) never fires for it at all -- this hook is the only place an
---- empty slot's hover gets drawn. A slot that DOES have an item is left
---- alone here: its section already came from the item hook, and drawing
---- it twice is not this hook's job.
+--- The Blizzard slot-button frame this character's own BIS_SLOT_BUTTONS
+--- names for `slot`, or nil (this client renamed it, or a test double
+--- never defined it).
+local function slotButton(slot)
+	local buttonName = Tooltip.BIS_SLOT_BUTTONS[slot]
+	return buttonName ~= nil and _G[buttonName] or nil
+end
+
+--- The site slot `owner` (a GameTooltip owner frame) names, or nil: the
+--- reverse of slotButton, by frame identity rather than by name -- this
+--- client's slot buttons are whatever BIS_SLOT_BUTTONS says they are,
+--- named global or not.
+local function slotForOwner(owner)
+	if owner == nil then
+		return nil
+	end
+	for slot in pairs(Tooltip.BIS_SLOT_BUTTONS) do
+		if slotButton(slot) == owner then
+			return slot
+		end
+	end
+	return nil
+end
+
+--- Whether Tooltip.appendEmptySlotSection has already drawn its lines onto
+--- a given tooltip since its last OnTooltipCleared -- item 2's own "never
+--- appended twice" mark. Kept in a weak-keyed table of this file's own
+--- rather than as a field on the tooltip itself: GameTooltip is a global
+--- this addon only ever reads (luacheck rightly flags an assignment into
+--- one of its fields as writing a read-only global), and a test double is
+--- a plain table a spec may reuse across examples. Weak keys let a
+--- tooltip this addon no longer references (a test's own, once the spec
+--- ends) be collected rather than pinned here forever.
+local appendedSection = setmetatable({}, { __mode = "k" })
+
+--- An EMPTY slot's own BiS section, appended onto `tooltip` (already
+--- owned and, for a fresh hover, already cleared by the caller) unless it
+--- already carries one -- appendedSection, cleared by
+--- Tooltip.onEmptySlotTooltipCleared below, is the mark item 2's own fix
+--- turns on so Blizzard's own OnUpdate re-render (which rebuilds
+--- GameTooltip without going through this addon's OnEnter hook at all)
+--- gets exactly one copy of this section, never zero and never two.
+function Tooltip.appendEmptySlotSection(tooltip, slot, button)
+	if appendedSection[tooltip] then
+		return
+	end
+	local ops, target = Tooltip.bisLines(Tooltip.data, slot)
+	if #ops == 0 then
+		return
+	end
+	drawOps(tooltip, ops)
+	appendedSection[tooltip] = true
+	tooltip:Show()
+	if target == nil then
+		return
+	end
+	Theme.showCompareTooltip(target.itemId, target.link)
+	Tooltip.activeHover = {
+		itemId = target.itemId,
+		redraw = function()
+			appendedSection[tooltip] = nil
+			Tooltip.onSlotEnter(slot, button)
+		end,
+	}
+end
+
+--- The character-frame slot buttons' own OnEnter: an EMPTY slot's BiS
+--- section (design/lane-bis-hover-addon.md item 2). A slot that DOES have
+--- an item is left alone here: its section already came from the item
+--- hook, and drawing it twice is not this hook's job.
 function Tooltip.onSlotEnter(slot, button)
 	if Tooltip.slotDisabled or not Prefs.flag("tooltip") then
 		return
@@ -561,25 +726,13 @@ function Tooltip.onSlotEnter(slot, button)
 		return
 	end
 	local ok, err = pcall(function()
-		local lines, target = Tooltip.bisLines(Tooltip.data, slot)
-		if #lines == 0 then
-			return
-		end
 		GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
 		GameTooltip:ClearLines()
-		for _, line in ipairs(lines) do
-			GameTooltip:AddLine(line, Theme.rgb(Theme.HEX.body))
-		end
-		GameTooltip:Show()
-		if target ~= nil then
-			Theme.showCompareTooltip(target.itemId, target.link)
-			Tooltip.activeHover = {
-				itemId = target.itemId,
-				redraw = function()
-					Tooltip.onSlotEnter(slot, button)
-				end,
-			}
-		end
+		-- Cleared explicitly rather than only relying on OnTooltipCleared
+		-- firing for this same-owner SetOwner/ClearLines pair -- unverified
+		-- without a live client (see the lane report).
+		appendedSection[GameTooltip] = nil
+		Tooltip.appendEmptySlotSection(GameTooltip, slot, button)
 	end)
 	if not ok then
 		Tooltip.slotDisabled = true
@@ -603,6 +756,55 @@ function Tooltip.registerBisSlotButtons()
 			end)
 		end
 	end
+end
+
+--- GameTooltip's own OnTooltipCleared: clears the "already appended" mark
+--- (item 2's own fix) so the NEXT OnShow -- whether this addon's own
+--- Tooltip.onSlotEnter or Blizzard's OnUpdate re-render -- knows it must
+--- draw the section again.
+function Tooltip.onEmptySlotTooltipCleared(tooltip)
+	appendedSection[tooltip] = nil
+end
+
+--- GameTooltip's own OnShow: the fix for the empty-slot flash
+--- (design/lane-addon-tooltip-polish.md item 2). Blizzard's
+--- PaperDollItemSlotButton_OnUpdate re-runs the hovered slot's OnEnter
+--- logic on a timer WITHOUT firing the button's OnEnter script -- this
+--- addon's own hook in registerBisSlotButtons never sees that re-render at
+--- all -- so GameTooltip is rebuilt with none of this addon's lines a
+--- moment after they were drawn. OnShow fires for every one of those
+--- re-renders (and for this addon's own first draw, which is what the
+--- "already appended" mark is for): whenever GameTooltip's owner is one
+--- of the 17 slot buttons and it carries no item, this appends the
+--- section again -- a no-op when it is already there.
+function Tooltip.onEmptySlotTooltipShow(tooltip)
+	if Tooltip.slotDisabled or not Prefs.flag("tooltip") then
+		return
+	end
+	local owner = type(tooltip.GetOwner) == "function" and tooltip:GetOwner() or nil
+	local slot = slotForOwner(owner)
+	if slot == nil or equippedLinkFor(slot) ~= nil then
+		return
+	end
+	local ok, err = pcall(Tooltip.appendEmptySlotSection, tooltip, slot, owner)
+	if not ok then
+		Tooltip.slotDisabled = true
+		Theme.note(string.format(L.diagTooltipHookFailed, tostring(err)))
+	end
+end
+
+--- Hooks GameTooltip's OnTooltipCleared/OnShow once (item 2's own fix).
+--- Idempotent, like registerBisSlotButtons.
+function Tooltip.registerEmptySlotRefresh()
+	if Tooltip.emptySlotRefreshRegistered then
+		return
+	end
+	Tooltip.emptySlotRefreshRegistered = true
+	if type(GameTooltip) ~= "table" or type(GameTooltip.HookScript) ~= "function" then
+		return
+	end
+	GameTooltip:HookScript("OnTooltipCleared", Tooltip.onEmptySlotTooltipCleared)
+	GameTooltip:HookScript("OnShow", Tooltip.onEmptySlotTooltipShow)
 end
 
 --- Redraws whichever hover Tooltip.activeHover names, once GET_ITEM_INFO_
@@ -652,6 +854,7 @@ function Tooltip.register()
 	Tooltip.registered = true
 	Tooltip.registerUnit()
 	Tooltip.registerBisSlotButtons()
+	Tooltip.registerEmptySlotRefresh()
 	Tooltip.registerItemInfoRefresh()
 	if Tooltip.hasProcessor() then
 		TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Item, function(tooltip)

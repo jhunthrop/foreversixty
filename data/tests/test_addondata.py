@@ -155,6 +155,88 @@ def test_check_addon_data_agrees_with_a_deliberately_drifted_copy(tmp_path):
     assert check_addon_data(BUILD, root=tmp_path)
 
 
+def test_bis_lua_carries_the_source_label_when_present():
+    from pipeline.models import AddonBisBand, AddonBisItem, AddonData
+
+    data = AddonData(
+        build="x",
+        classes={},
+        weights={},
+        bis={
+            "hunter-marksmanship": [
+                AddonBisBand(
+                    level=20,
+                    factions={
+                        "alliance": {
+                            "chest": AddonBisItem(
+                                item_id=2317,
+                                source_kind="crafted",
+                                source="Leatherworking",
+                            )
+                        }
+                    },
+                )
+            ]
+        },
+    )
+    lua = render_lua(data)
+    assert 'chest = { 2317, "C", "Leatherworking" },' in lua
+
+
+def test_bis_lua_leaves_the_source_element_out_when_there_is_none():
+    from pipeline.models import AddonBisBand, AddonBisItem, AddonData
+
+    data = AddonData(
+        build="x",
+        classes={},
+        weights={},
+        bis={
+            "hunter-marksmanship": [
+                AddonBisBand(
+                    level=20,
+                    factions={
+                        "alliance": {"chest": AddonBisItem(item_id=2317, source_kind="crafted")}
+                    },
+                )
+            ]
+        },
+    )
+    lua = render_lua(data)
+    assert 'chest = { 2317, "C" },' in lua
+
+
+def test_bis_weights_lua_carries_a_measured_bands_weights():
+    from pipeline.models import AddonBisBand, AddonData
+
+    data = AddonData(
+        build="x",
+        classes={},
+        weights={},
+        bis={
+            "hunter-beast-mastery": [
+                AddonBisBand(level=20, factions={}, weights={"agility": 2.045}),
+            ]
+        },
+    )
+    lua = render_lua(data)
+    start = lua.index("bis_weights = {")
+    assert '["hunter-beast-mastery"] = {\n\t\t\t[20] = { ["agility"] = 2.045 },' in lua[start:]
+
+
+def test_bis_weights_lua_skips_a_spec_with_no_measured_band():
+    from pipeline.models import AddonBisBand, AddonData
+
+    data = AddonData(
+        build="x",
+        classes={},
+        weights={},
+        bis={"hunter-beast-mastery": [AddonBisBand(level=20, factions={})]},
+    )
+    lua = render_lua(data)
+    start = lua.index("bis_weights = {")
+    assert "hunter-beast-mastery" not in lua[start:]
+
+
 def test_the_cli_check_passes_on_the_committed_file():
     result = subprocess.run(
         [sys.executable, "-m", "pipeline", "addon-data", "--build", BUILD, "--check"],
