@@ -225,6 +225,25 @@ func wouldDuplicatePairMate(out map[string]slotPick, slot string, itemID int, it
 	return out[mate].Item.ID == itemID || out[mate].Item.Name == itemName
 }
 
+// wouldBreakTwoHandInvariant is whether promoting runnerUp into slot
+// would leave a two-hander in main_hand next to an off_hand pick, or an
+// off_hand pick under a two-handed main hand. The swap sim measured the
+// runner-up with the rest of the set as it stood, so a two-hand
+// main-hand runner-up "beating" a one-hander was measured with the off
+// hand still counted; the published row must hold the invariant
+// pick.go's enforceTwoHandOffHandInvariant already established (the
+// nightly of 2026-09-29 published Darkwood Staff beside Nightglow
+// Concoction for priest-shadow band 20 this way).
+func wouldBreakTwoHandInvariant(out map[string]slotPick, slot string, runnerUp *scored) bool {
+	switch slot {
+	case "main_hand":
+		return runnerUp.TwoHand && out["off_hand"].Item != nil
+	case "off_hand":
+		return out["main_hand"].Item != nil && out["main_hand"].Item.TwoHand
+	}
+	return false
+}
+
 // applySwaps promotes every runner-up that beat its slot's scored pick
 // into the pick (the scored pick becomes the row's runner-up, so the
 // report can say what was beaten), then measures the resulting set once
@@ -251,7 +270,7 @@ func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, leve
 		if !sw.Beat || !ok || pk.RunnerUp == nil {
 			continue
 		}
-		if wouldDuplicatePairMate(out, sw.Slot, pk.RunnerUp.ID, pk.RunnerUp.Name) {
+		if wouldDuplicatePairMate(out, sw.Slot, pk.RunnerUp.ID, pk.RunnerUp.Name) || wouldBreakTwoHandInvariant(out, sw.Slot, pk.RunnerUp) {
 			adjusted[i].Beat = false
 			continue
 		}

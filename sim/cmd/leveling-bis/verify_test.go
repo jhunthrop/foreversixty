@@ -344,3 +344,48 @@ func TestApplySwapsRefusesToPromoteAMainHandDuplicateOfOffHand(t *testing.T) {
 		t.Fatalf("adjusted swaps = %+v, want the refused swap reported as not-beat", gotSwaps)
 	}
 }
+
+func TestApplySwapsRefusesToPromoteATwoHanderBesideAnOffHand(t *testing.T) {
+	current := &scored{candidate: candidate{ID: 1936, Name: "Goblin Screwdriver"}}
+	staff := &scored{candidate: candidate{ID: 3446, Name: "Darkwood Staff", TwoHand: true}}
+	held := &scored{candidate: candidate{ID: 3451, Name: "Nightglow Concoction"}}
+	picks := map[string]slotPick{
+		"main_hand": {Item: current, RunnerUp: staff},
+		"off_hand":  {Item: held},
+	}
+	engine := &fakeEngine{DefaultDPS: 999}
+	spec := specInfo{Spec: "priest-shadow", ClassSlug: "priest"}
+
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "undead", "priest", 20, picks, []swapResult{{Slot: "main_hand", SwapDPS: 23.4, BaselineDPS: 23.3, Beat: true}}, 23.3)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out["main_hand"].Item.ID != current.ID || out["off_hand"].Item == nil {
+		t.Fatalf("main_hand = %d, off_hand nil = %v; want the one-hander kept beside its off hand", out["main_hand"].Item.ID, out["off_hand"].Item == nil)
+	}
+	if dps != 23.3 || len(engine.Calls) != 0 {
+		t.Fatalf("a refused promotion must not re-measure the set: dps=%v calls=%d", dps, len(engine.Calls))
+	}
+	if len(gotSwaps) != 1 || gotSwaps[0].Beat {
+		t.Fatalf("adjusted swaps = %+v, want the refused swap reported as not-beat", gotSwaps)
+	}
+}
+
+func TestApplySwapsRefusesAnOffHandUnderATwoHandedMainHand(t *testing.T) {
+	staff := &scored{candidate: candidate{ID: 3446, Name: "Darkwood Staff", TwoHand: true}}
+	held := &scored{candidate: candidate{ID: 3451, Name: "Nightglow Concoction"}}
+	picks := map[string]slotPick{
+		"main_hand": {Item: staff},
+		"off_hand":  {RunnerUp: held},
+	}
+	engine := &fakeEngine{DefaultDPS: 999}
+	spec := specInfo{Spec: "priest-shadow", ClassSlug: "priest"}
+
+	out, _, gotSwaps, err := applySwaps(engine, spec, "undead", "priest", 20, picks, []swapResult{{Slot: "off_hand", SwapDPS: 24, BaselineDPS: 23, Beat: true}}, 23)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out["off_hand"].Item != nil || len(engine.Calls) != 0 || gotSwaps[0].Beat {
+		t.Fatalf("off_hand = %+v calls=%d swaps=%+v; want no off hand under a two-hander", out["off_hand"].Item, len(engine.Calls), gotSwaps)
+	}
+}
