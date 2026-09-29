@@ -61,3 +61,17 @@ describe.each(PAGES)('the $name shell', ({ component, path, heading, name }) => 
     expect(html).toContain('href="/sim"');
   });
 });
+
+describe('the gear shell only', () => {
+  // The other three sim-tools pages carry the plain, render-blocking `<link>` still --
+  // gear is this sweep's one assigned page (night-web-perf, 2026-09-28). IslandStyle.astro
+  // defers the same 55 KB stylesheet past first paint the way IslandScript.astro already
+  // defers the bundle it styles.
+  it('defers its stylesheet past first paint via IslandStyle.astro', async () => {
+    const html = await container.renderToString(Gear);
+    expect(html).toContain('href="/sim-tools-island.css"');
+    expect(html).toContain('media="print"');
+    expect(html).toContain('data-island-style="/sim-tools-island.css"');
+    expect(html).toContain('data-island-style-loader="/sim-tools-island.css"');
+  });
+});

@@ -1,0 +1,37 @@
+---
+// web/src/components/IslandStyle.astro
+// Loads an island bundle's stylesheet (dist/<name>-island.css, the standalone Vite builds)
+// without holding up first paint. A plain `<link rel="stylesheet">` in <head> is
+// render-blocking: on /sim/gear it held the page's very first paint -- a plain intro
+// paragraph above the fold, styled entirely by the page's own inlined stylesheet -- back by
+// ~880ms while the browser fetched sim-tools-island.css's full 55 KB (every sim tool's
+// styles, cssCodeSplit:false in vite.island.config.ts) just to render text that needed none
+// of it (Lighthouse mobile audit, 2026-09-28 night-web-perf sweep).
+//
+// The skeleton every one of these islands renders first (bulk-skeleton.ts) needs none of
+// this stylesheet either: its Tailwind utilities are scanned from the .astro page itself and
+// already sit in that page's inlined <style> (astro.config's inlineStylesheets: 'always'),
+// and its one custom class (.skeleton-block) lives in src/styles/global.css, also inlined.
+// This stylesheet only styles the hydrated island's own markup, which cannot paint before
+// IslandScript.astro's bundle loads and mounts it anyway -- so nothing needs this CSS before
+// that point.
+//
+// `media="print"` is the standard non-blocking-load technique: the browser still fetches
+// the stylesheet, just without it qualifying for the current media type, so it cannot block
+// rendering. Flipping `media` to `all` two frames in mirrors IslandScript.astro's own
+// timing for the same reason: the shell paints first.
+interface Props {
+  href: string;
+}
+const { href } = Astro.props;
+---
+
+<link rel="stylesheet" href={href} media="print" data-island-style={href} />
+<script is:inline data-island-style-loader={href}>
+  ((marker) => {
+    const href = marker.dataset.islandStyleLoader;
+    const link = document.querySelector(`link[data-island-style="${href}"]`);
+    if (!link) return;
+    requestAnimationFrame(() => requestAnimationFrame(() => (link.media = 'all')));
+  })(document.currentScript);
+</script>
