@@ -58,6 +58,84 @@ function Compat.itemIcon(item)
 	return call("GetItemIconByID", item) or call("GetItemIcon", item)
 end
 
+--- item id -> true once RequestLoadItemDataByID (or the legacy global) has
+--- been asked for it, so two callers showing the same uncached item (the
+--- BiS hover, the Top Gear upgrade queue) never ask the client twice
+--- between them.
+Compat.requestedItems = {}
+
+function Compat.requestItemLoad(itemId)
+	if Compat.requestedItems[itemId] then
+		return
+	end
+	Compat.requestedItems[itemId] = true
+	call("RequestLoadItemDataByID", itemId)
+end
+
+--- The item's link once GetItemInfo knows it (it carries the quality
+--- colour, enchants and suffixes already), else the "item:<id>" form --
+--- still a valid hyperlink target -- while the client fills its cache.
+--- RequestLoadItemDataByID/GetItemInfo is asked for the id exactly once,
+--- never per hover or per row.
+function Compat.displayLink(itemId)
+	local _, link = Compat.itemInfo(itemId)
+	if link ~= nil then
+		return link
+	end
+	Compat.requestItemLoad(itemId)
+	return "item:" .. itemId
+end
+
+--- The item's level (GetItemInfo's fourth value), or nil until the client
+--- has it cached.
+function Compat.itemLevel(itemId)
+	return select(4, Compat.itemInfo(itemId))
+end
+
+--- The function `name` from C_Spell, else the global of the same name --
+--- Compat.itemFunction's own rule, one namespace over.
+local function spellFunction(name)
+	local namespace = _G.C_Spell
+	if type(namespace) == "table" and type(namespace[name]) == "function" then
+		return namespace[name]
+	end
+	local global = _G[name]
+	if type(global) == "function" then
+		return global
+	end
+	return nil
+end
+
+local function callSpell(name, ...)
+	local fn = spellFunction(name)
+	if fn == nil then
+		return nil
+	end
+	return fn(...)
+end
+
+--- The spell's icon, for a rotation line's spellId.
+function Compat.spellTexture(spellId)
+	return callSpell("GetSpellTexture", spellId)
+end
+
+--- "Rank 3", the classic client's own subtext -- nil for a spell with none
+--- (many level-60 ranks are simply the ability's only rank).
+function Compat.spellSubtext(spellId)
+	return callSpell("GetSpellSubtext", spellId)
+end
+
+--- The spell's base cooldown in whole seconds, or nil for one with none
+--- worth naming (an instant with no cooldown reads as 0 or nil depending
+--- on the client, and neither is worth a "0s CD" line).
+function Compat.spellCooldownSeconds(spellId)
+	local _, duration = callSpell("GetSpellCooldown", spellId)
+	if type(duration) ~= "number" or duration <= 0 then
+		return nil
+	end
+	return math.floor(duration / 1000 + 0.5)
+end
+
 --- Whether `value` is this client's own realm in any spelling the API hands
 --- out: GetRealmName ("Classic Beta PvP"), GetNormalizedRealmName
 --- ("ClassicBetaPvP"), or the display name with its spaces and hyphens gone.

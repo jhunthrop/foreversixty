@@ -38,6 +38,7 @@ describe("FollowView", function()
 		mock.install(state or {})
 		Theme = helper.load("Theme")
 		Theme.reset()
+		helper.load("Compat")
 		helper.load("Widgets")
 		Prefs = helper.load("Prefs")
 		Follow = helper.load("Follow")
@@ -317,6 +318,31 @@ describe("FollowView", function()
 			assert.are.equal(string.format(L.followUpgradeItem, "chest", "chest item"), view.upgrades.rows[1].text:GetText())
 			assert.are.equal(string.format(L.followUpgradeSource, "Raid"), view.upgrades.rows[1].source:GetText())
 			assert.are.equal(string.format(L.followUpgradeDelta, 15), view.upgrades.rows[1].right:GetText())
+			-- The slot's own icon, and the neutral item icon a message with
+			-- no item_id (an older companion's wire shape) falls back to.
+			assert.is_not_nil(mock.lastCall(view.upgrades.rows[1].slotIcon, "SetTexture"))
+			assert.are.equal(Theme.UNKNOWN_ICON, mock.lastCall(view.upgrades.rows[1].icon, "SetTexture")[1])
+		end)
+
+		it("shows the item's own icon and quality-coloured link once a message carries an item_id", function()
+			start({ globals = {
+				GetItemIconByID = function(id) return id == 12345 and "Interface\\Icons\\Real" or nil end,
+				GetItemInfo = function(id)
+					if id == 12345 then
+						return "Robe", "|cff0070dd|Hitem:12345|h[Robe]|h|r", 3
+					end
+					return nil
+				end,
+			} })
+			_G.ForeverSixtyInbox = { messages = {
+				{ type = "upgrade", slot = "chest", item_id = 12345, item_name = "Robe", source = "Molten Core", delta = 12 },
+			} }
+			local view = FollowView.mount(_G.CreateFrame("Frame"), ctxFor())
+			local row = view.upgrades.rows[1]
+			assert.are.equal("Interface\\Icons\\Real", mock.lastCall(row.icon, "SetTexture")[1])
+			assert.are.equal(string.format(L.followUpgradeItem, "chest", "|cff0070dd|Hitem:12345|h[Robe]|h|r"),
+				row.text:GetText())
+			assert.are.equal(12345, row.itemId)
 		end)
 
 		it("hides the title and the more hint when nothing is waiting", function()

@@ -252,12 +252,11 @@ local L = {
 	-- rotation card (section 6 Wave B).
 	rotationToastMessage = "Level %d: %s opens your rotation now.",
 	overviewRotationEyebrow = "YOUR ROTATION",
-	overviewRotationTitle = "Your rotation at level %d",
 	overviewRotationNone = "No curated rotation for this spec yet.",
 	overviewRotationNoBuild = "Load a build to see your rotation.",
-	-- "<name> — <condition>" for one line; a line with no condition (the
-	-- curated APL had no notes) shows the name alone.
-	overviewRotationLine = "%s — %s",
+	-- The Follow tab's own Top Gear upgrade queue reuses this line for its
+	-- overflow hint (FollowView.lua); the Overview's rotation card has its
+	-- own expand-in-place affordance now (overviewRotationMoreCount).
 	overviewRotationMore = "Turn on advanced detail in Settings to see the rest.",
 	minimapProgress = "%d of %d points",
 	minimapUpgrades = "%d upgrade(s) waiting",
@@ -346,6 +345,22 @@ local L = {
 	tooltipBisNew = "(new at %d)",
 	-- Advanced detail only: "Source: <kind>".
 	tooltipBisSource = "Source: %s",
+
+	-- Lane addon-premium (2026-09-28): the addon to the standard of the
+	-- best WoW addon ever made (docs/tenets.md) -- the BiS hover's item
+	-- level line, the rotation card's redesign and header strip, and the
+	-- Top Gear upgrade row's icon.
+	tooltipBisItemLevel = "Item Level %d",
+	-- The rotation card's header strip: "<spec> · Level <band>+ · updated <build>".
+	overviewRotationHeaderStrip = "%s · Level %d+ · updated %s",
+	-- The expand-in-place affordance, replacing the old "turn on advanced
+	-- detail in Settings" hint for this one card.
+	overviewRotationMoreCount = "+%d more",
+	overviewRotationLess = "Show fewer",
+	-- Advanced detail's extra line under a rotation row's rank: the
+	-- spell id, and its cooldown when it has one worth naming.
+	overviewRotationDetail = "%s · #%d",
+	overviewRotationDetailCooldown = "%s · #%d · %ds cooldown",
 }
 
 ns.L = L

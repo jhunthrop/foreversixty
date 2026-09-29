@@ -98,6 +98,12 @@ Theme.SIZES = {
 	--- complete" stays on the tracker before it hides.
 	copiedSeconds = 2,
 	completeSeconds = 5,
+	--- The rotation card's own row height: an icon-height line for the
+	--- ability's name and rank, a small-font line under it for the
+	--- condition, and the gap between them.
+	rotationRowHeight = 34,
+	--- The rotation card's header strip icon.
+	rotationHeaderIcon = 14,
 }
 
 --- The client's own font objects, and what to use when one is missing.
@@ -110,14 +116,20 @@ Theme.FONTS = {
 Theme.FALLBACK_FONT = { path = "Fonts\\FRIZQT__.TTF", size = 12 }
 
 --- Every template this addon will ever ask for, by the key callers use.
---- Empty on purpose. The first in-game screenshots showed what the
---- client's stock templates do to this window: a red action button, gold
---- tabs hanging off the bottom edge and a one-line input with the export
---- spilling out of it, none of it the site's design. Buttons, tabs and
---- fields are drawn by Widgets from flat textures instead, which also
---- means one code path to test. createFrame keeps the lookup so a template
---- can be named here again without touching a caller.
-Theme.TEMPLATES = {}
+--- Empty save one entry, on purpose. The first in-game screenshots showed
+--- what the client's stock templates do to this window: a red action
+--- button, gold tabs hanging off the bottom edge and a one-line input
+--- with the export spilling out of it, none of it the site's design.
+--- Buttons, tabs and fields are drawn by Widgets from flat textures
+--- instead, which also means one code path to test. A real tooltip is
+--- the one widget that genuinely cannot be flat-textured -- SetHyperlink,
+--- item comparison and the rest are the GameTooltip frame type's own C
+--- behaviour, not something a template merely skins -- so the BiS
+--- hover's second tooltip (Theme.compareTooltip) is the one caller that
+--- names a real one, gracefully bare on a client without it exactly like
+--- every other Theme.createFrame call. createFrame keeps the lookup so a
+--- template can be named here again without touching a caller.
+Theme.TEMPLATES = { gameTooltip = "GameTooltipTemplate" }
 
 Theme.MEDIA = { minimapIcon = "Interface\\AddOns\\ForeverSixty\\media\\minimap" }
 
@@ -294,6 +306,31 @@ Theme.NAV_ICONS = {
 }
 Theme.UNKNOWN_ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 
+--- The client's own empty-slot silhouettes, one per site slot name --
+--- stable paths the client has carried since vanilla, not a template or a
+--- capability worth probing. Shirt and Tabard carry no stats and are not
+--- in Gear.lua's own slot vocabulary at all (Tooltip.BIS_SLOT_BUTTONS
+--- skips them the same way), so they are not here either.
+Theme.SLOT_ICONS = {
+	head = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Head",
+	neck = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Neck",
+	shoulder = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Shoulder",
+	back = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Chest",
+	chest = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Chest",
+	wrist = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Wrists",
+	hands = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Hands",
+	waist = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Waist",
+	legs = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Legs",
+	feet = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Feet",
+	finger1 = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Finger",
+	finger2 = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Finger",
+	trinket1 = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Trinket",
+	trinket2 = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Trinket",
+	main_hand = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-MainHand",
+	off_hand = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-SecondaryHand",
+	ranged = "Interface\\PaperDollInfoFrame\\UI-PaperDoll-Slot-Ranged",
+}
+
 --- A game icon with its bevel cropped. `path` may be a texture path or a
 --- file id; nil draws the neutral tile rather than nothing.
 function Theme.icon(parent, layer, path, size)
@@ -304,6 +341,15 @@ function Theme.icon(parent, layer, path, size)
 		texture:SetTexCoord(Theme.ICON_CROP[1], Theme.ICON_CROP[2], Theme.ICON_CROP[3], Theme.ICON_CROP[4])
 	end
 	return texture
+end
+
+--- An icon as a `|T<path>:<height>:<width>|t` escape, for a text line
+--- that cannot hold a real texture region -- a tooltip line's icon
+--- prefix. The neutral tile when the path is not known yet, matching
+--- Theme.icon's own default.
+function Theme.inlineIcon(path, size)
+	local pixels = size or Theme.SIZES.iconSize
+	return string.format("|T%s:%d:%d|t", path or Theme.UNKNOWN_ICON, pixels, pixels)
 end
 
 --- Grey an icon out, where the client can.
@@ -554,6 +600,75 @@ function Theme.showLines(owner, lines)
 	end
 	GameTooltip:Show()
 	return true
+end
+
+Theme.COMPARE_TOOLTIP_NAME = "ForeverSixtyCompareTooltip"
+--- Clearance between GameTooltip's right edge and the compare tooltip,
+--- the same idea as the client's own shift-to-compare tooltip sitting
+--- beside an item's.
+Theme.COMPARE_TOOLTIP_GAP = 4
+
+--- The BiS hover's second tooltip: the client's own item tooltip for the
+--- recommended item, anchored beside GameTooltip. Lazily created on the
+--- first call and reused after that -- WoW cannot destroy a frame, so
+--- creating a second one on every hover would leak one per hover instead
+--- of reusing the one this addon will ever need. Hidden automatically
+--- whenever GameTooltip hides (hooked once, here, since this is the one
+--- place that creates the frame that needs it).
+function Theme.compareTooltip()
+	if Theme.compareTooltipFrame ~= nil then
+		return Theme.compareTooltipFrame
+	end
+	local frame = Theme.createFrame("GameTooltip", Theme.COMPARE_TOOLTIP_NAME, UIParent, "gameTooltip")
+	if type(frame.SetFrameStrata) == "function" then
+		frame:SetFrameStrata("TOOLTIP")
+	end
+	Theme.compareTooltipFrame = frame
+	if hasTooltip() and type(GameTooltip.HookScript) == "function" then
+		GameTooltip:HookScript("OnHide", function()
+			Theme.hideCompareTooltip()
+		end)
+	end
+	return frame
+end
+
+--- Show the compare tooltip beside GameTooltip for one item: `link` when
+--- it is known (it carries enchants and suffixes), else `itemId` for a
+--- recommended item the player has never seen. Guarded exactly like
+--- Theme.showItemTooltip: a missing capability degrades to "shown
+--- nothing", never raises.
+function Theme.showCompareTooltip(itemId, link)
+	if not hasTooltip() then
+		return false
+	end
+	local tooltip = Theme.compareTooltip()
+	tooltip:SetOwner(GameTooltip, "ANCHOR_NONE")
+	if type(tooltip.ClearAllPoints) == "function" then
+		tooltip:ClearAllPoints()
+	end
+	tooltip:SetPoint("TOPLEFT", GameTooltip, "TOPRIGHT", Theme.COMPARE_TOOLTIP_GAP, 0)
+	if link ~= nil then
+		if type(tooltip.SetHyperlink) ~= "function" then
+			return false
+		end
+		tooltip:SetHyperlink(link)
+	elseif itemId ~= nil then
+		if type(tooltip.SetItemByID) ~= "function" then
+			return false
+		end
+		tooltip:SetItemByID(itemId)
+	else
+		return false
+	end
+	tooltip:Show()
+	return true
+end
+
+function Theme.hideCompareTooltip()
+	if Theme.compareTooltipFrame ~= nil then
+		Theme.compareTooltipFrame:Hide()
+	end
+	return nil
 end
 
 ns.Theme = Theme

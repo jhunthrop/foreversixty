@@ -242,6 +242,32 @@ describe("OverviewView", function()
 			assert.is_nil(Follow.build)
 			assert.is_false(view.arrival:IsShown())
 		end)
+
+		-- The clipped-banner bug (docs/tenets.md item 1): the first in-game
+		-- screenshot showed Load sitting past the window's own right edge.
+		-- Window.pageWidth (the real page holder's width) and
+		-- Window.contentWidth (what this file lays content out in) are
+		-- pinned here as their own formulas rather than by requiring
+		-- Window.lua, a different lane's file this wave.
+		it("keeps every banner child inside the page holder's own width", function()
+			start()
+			_G.ForeverSixtyInbox = { builds = { { id = "a", name = "Deep Holy", code = CODE } } }
+			local S = require("Theme").SIZES
+			local holderWidth = S.windowWidth - S.sidebarWidth
+			local contentWidth = holderWidth - S.padding * 2
+			local holder = _G.CreateFrame("Frame")
+			holder:SetSize(holderWidth, S.windowHeight - S.titleBarHeight - S.headerHeight)
+			local view = OverviewView.mount(holder, {
+				data = DATA, contentWidth = contentWidth, select = function() end,
+				refreshEverything = function() end,
+			})
+			assert.is_true(view.arrival:IsShown())
+			local cache = {}
+			for _, child in ipairs({ view.arrival, view.arrival.load, view.arrival.dismiss }) do
+				assert.is_true(helper.rightEdgeWithin(child, holder, cache) >= 0,
+					"a banner child's right edge must not pass the page holder's own right edge")
+			end
+		end)
 	end)
 
 	-- The personal rating card (design section 3): always shows, its
@@ -305,9 +331,72 @@ describe("OverviewView", function()
 			assert.is_truthy(Follow.load(CODE, DATA))
 			local model = OverviewView.summary(DATA).rotation
 			assert.is_false(model.empty)
-			assert.are.equal(string.format(L.overviewRotationTitle, 10), model.title)
+			assert.are.equal(string.format(L.overviewRotationHeaderStrip, "Holy", 10, DATA.build), model.header)
 			assert.are.equal(1, #model.lines)
 			assert.are.equal("Holy Light", model.lines[1].name)
+		end)
+
+		it("each line carries an icon, a rank and whether it was just learned", function()
+			start()
+			assert.is_truthy(Follow.load(CODE, DATA))
+			local model = OverviewView.summary(DATA).rotation
+			local line = model.lines[1]
+			assert.are.equal(1, line.spellId)
+			assert.is_false(line.learned)
+			assert.are.equal("", line.rank) -- no GetSpellSubtext mocked
+		end)
+
+		it("glows the row Rotation.recentlyLearned names", function()
+			start()
+			assert.is_truthy(Follow.load(CODE, DATA))
+			require("Rotation").markLearned({ { spellId = 1, name = "Holy Light" } })
+			local model = OverviewView.summary(DATA).rotation
+			assert.is_true(model.lines[1].learned)
+		end)
+
+		it("widens the rank with the spell id, and a cooldown when it has one, in advanced mode", function()
+			start()
+			assert.is_truthy(Follow.load(CODE, DATA))
+			require("Prefs").setFlag("advancedDetail", true)
+			_G.GetSpellCooldown = function() return 0, 8000, 1 end
+			local model = OverviewView.summary(DATA).rotation
+			assert.are.equal(string.format(L.overviewRotationDetailCooldown, "", 1, 8), model.lines[1].rank)
+		end)
+
+		it("is not expandable once advanced detail already shows everything", function()
+			start()
+			assert.is_truthy(Follow.load(CODE, DATA))
+			require("Prefs").setFlag("advancedDetail", true)
+			local model = OverviewView.summary(DATA).rotation
+			assert.is_false(model.expandable)
+		end)
+
+		it("expands in place when the card's own state says to, without advanced detail", function()
+			start()
+			-- A shallow copy of DATA with a rotation five lines deep --
+			-- one more than Rotation.NOVICE_LINES -- so there is
+			-- something to expand into. DATA itself only ever needs one
+			-- line for its other tests, per the fixture at the top of
+			-- this file.
+			local data = { build = DATA.build, classes = DATA.classes, weights = DATA.weights, rotations = {
+				["paladin-holy"] = {
+					{ level = 10, lines = {
+						{ spellId = 1, name = "A" }, { spellId = 2, name = "B" },
+						{ spellId = 3, name = "C" }, { spellId = 4, name = "D" },
+						{ spellId = 5, name = "E" },
+					} },
+				},
+			} }
+			assert.is_truthy(Follow.load(CODE, data))
+			local collapsed = OverviewView.summary(data, false).rotation
+			assert.is_true(collapsed.expandable)
+			assert.are.equal(4, #collapsed.lines)
+			assert.are.equal(1, collapsed.moreCount)
+			assert.is_false(collapsed.expanded)
+			local expanded = OverviewView.summary(data, true).rotation
+			assert.are.equal(5, #expanded.lines)
+			assert.are.equal(0, expanded.moreCount)
+			assert.is_true(expanded.expanded)
 		end)
 	end)
 end)

@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+- Fixed the Overview's build-arrived banner: the Load button could land past the window's
+  own right edge because it duplicated Dismiss's own width-and-gap arithmetic against a
+  frame width that could disagree with it; Load now anchors directly off Dismiss instead,
+  so the two can never drift apart, with a layout test pinning every banner child inside
+  the page's own width.
+- The Talents page's Top Gear upgrade rows now show the item's own icon and its quality-
+  coloured link (once the client has it cached) beside the slot's own icon, instead of a
+  plain "<slot>: <item name>" line; hovering a row shows the item's real tooltip. A message
+  from an older companion build with no item id still falls back to the plain name.
+- Redesigned the Overview's rotation card: each priority row now carries the ability's own
+  icon, its name, its rank, and the condition on its own muted line beneath, numbered
+  top to bottom; a compact header strip names your spec (with its icon), your level band
+  and which data build it is from; the row for whatever you just learned this level glows,
+  off the same event as the toast; novice mode's "+N more" expands the card in place
+  instead of sending you to Settings, and advanced detail adds the spell id and cooldown.
+- The best-in-slot hover now shows the recommended item properly: its own icon inline, its
+  name in its real quality colour, and its item level, plus a second tooltip beside it
+  showing the item's own full details, the way shift-to-compare already does. An item the
+  client has not cached yet is asked for once and the hover redraws itself in place the
+  moment the data arrives, rather than showing a bare "item:12345" until you move the mouse
+  away and back.
 - Hovering an equipment slot on the character frame now names the best-in-slot item for
   your spec, faction and level, marked equipped when it is what you already wear or newly
   the pick since your last level; an empty slot shows it directly, since it has no item

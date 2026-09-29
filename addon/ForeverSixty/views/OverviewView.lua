@@ -220,30 +220,98 @@ local function ratingModel(advanced)
 	}
 end
 
---- The rotation card (design section 2 item 3 / section 6 Wave B): the
---- current level's priority list, novice-trimmed to the top four lines
---- unless the advanced-detail toggle is on. `reason` carries the empty
---- state's line when there is no build, or the spec has no curated
---- rotation yet.
-local function rotationModel(data, build, ranks, advanced)
+--- "warrior-fury" reads as "Fury" for the rotation card's header strip --
+--- Window.specLabel's own algorithm. Kept local rather than requiring
+--- Window.lua: Window requires this file (Window.VIEWS.overview), and
+--- loads late in the TOC (after Minimap, before Toast), so a require the
+--- other way is not something the real client could satisfy either.
+local function specTitle(slug)
+	if slug == nil then
+		return L.headerNoSpec
+	end
+	local name = slug:match("^[^-]+-(.+)$") or slug
+	local words = {}
+	for word in name:gmatch("[^-]+") do
+		words[#words + 1] = word:sub(1, 1):upper() .. word:sub(2)
+	end
+	return table.concat(words, " ")
+end
+
+--- A rotation line's rank text, advanced detail widening it with the
+--- spell id and, when the ability has one worth naming, its cooldown --
+--- design section 2 item 3's "advanced shows all and adds the spell id/
+--- cooldown".
+local function rankText(line, advanced)
+	local rank = Compat.spellSubtext(line.spellId) or ""
+	if not advanced then
+		return rank
+	end
+	local cooldown = Compat.spellCooldownSeconds(line.spellId)
+	if cooldown ~= nil then
+		return string.format(L.overviewRotationDetailCooldown, rank, line.spellId, cooldown)
+	end
+	return string.format(L.overviewRotationDetail, rank, line.spellId)
+end
+
+--- The rotation card's rows, with everything a row draws that Rotation's
+--- own pure lines do not carry: the ability's icon, its rank text, and
+--- whether it just entered the rotation this level (Rotation.
+--- recentlyLearned, set by Toast off the same PLAYER_LEVEL_UP event).
+local function rotationLines(lines, advanced)
+	local rows = {}
+	for index, line in ipairs(lines) do
+		rows[index] = {
+			spellId = line.spellId,
+			name = line.name,
+			condition = line.condition,
+			icon = Compat.spellTexture(line.spellId),
+			rank = rankText(line, advanced),
+			learned = Rotation.recentlyLearned[line.spellId] == true,
+		}
+	end
+	return rows
+end
+
+--- The rotation card (design section 2 item 3 / section 6 Wave B,
+--- redesigned to docs/tenets.md's standard): the current level's
+--- priority list, novice-trimmed to the top four lines unless advanced
+--- detail is on or `expanded` (the card's own "+N more" affordance,
+--- independent of the global advanced-detail toggle) asks for the rest.
+--- `reason` carries the empty state's line when there is no build, or
+--- the spec has no curated rotation yet.
+local function rotationModel(data, build, ranks, advanced, expanded)
 	if build == nil then
 		return { visible = true, empty = true, reason = L.overviewRotationNoBuild }
 	end
-	local model = Rotation.model(data, build, ranks, Compat.playerLevel(), advanced)
-	if not model.visible or #model.lines == 0 then
+	local showAll = advanced or expanded
+	local shown = Rotation.model(data, build, ranks, Compat.playerLevel(), showAll)
+	if not shown.visible or #shown.lines == 0 then
 		return { visible = true, empty = true, reason = L.overviewRotationNone }
 	end
+	-- Only asked for when there might be more to count -- showAll already
+	-- shows everything, so `shown` itself is the full list in that case.
+	local full = showAll and shown or Rotation.model(data, build, ranks, Compat.playerLevel(), true)
+	local classSlug = Talents.playerClassSlug()
+	local spec = classSlug ~= nil and Gear.specOf(data, classSlug, ranks) or nil
 	return {
 		visible = true,
 		empty = false,
-		title = string.format(L.overviewRotationTitle, model.level),
-		lines = model.lines,
-		hasMore = model.hasMore,
+		header = string.format(L.overviewRotationHeaderStrip, specTitle(spec), shown.level, data.build or ""),
+		lines = rotationLines(shown.lines, advanced),
+		moreCount = #full.lines - #shown.lines,
+		-- Nothing left to expand in place once advanced detail already
+		-- shows everything -- the "+N more"/"Show fewer" row is this
+		-- card's own control, not a second way to reach the same toggle.
+		expandable = not advanced and #full.lines > Rotation.NOVICE_LINES,
+		expanded = expanded == true,
 	}
 end
 
 --- Everything the page shows, as plain tables and finished strings.
-function OverviewView.summary(data)
+--- `rotationExpanded` is the rotation card's own "+N more" state
+--- (OverviewView.mount's view.rotationExpanded), independent of the
+--- global advanced-detail preference.
+function OverviewView.summary(data, rotationExpanded)
 	local build = Follow.build
 	local ranks = Talents.readRanks(data)
 	local advanced = Prefs.flag("advancedDetail")
@@ -254,7 +322,7 @@ function OverviewView.summary(data)
 		sync = syncModel(data),
 		arrival = arrivalModel(data),
 		rating = ratingModel(advanced),
-		rotation = rotationModel(data, build, ranks, advanced),
+		rotation = rotationModel(data, build, ranks, advanced, rotationExpanded),
 	}
 end
 
@@ -345,7 +413,8 @@ OverviewView.RATING_HEIGHT = 64
 --- level band (test_addonrotation.py's own committed-data test would
 --- catch a spec that grew past this without a matching bump here).
 OverviewView.ROTATION_MAX_LINES = 7
-OverviewView.ROTATION_HEIGHT = Theme.SIZES.padding * 2 + 40 + OverviewView.ROTATION_MAX_LINES * Theme.SIZES.rowHeight
+OverviewView.ROTATION_HEIGHT =
+	Theme.SIZES.padding * 2 + 40 + OverviewView.ROTATION_MAX_LINES * Theme.SIZES.rotationRowHeight
 
 local function banner(parent, width, onLoad, onDismiss)
 	local S = Theme.SIZES
@@ -353,32 +422,54 @@ local function banner(parent, width, onLoad, onDismiss)
 	frame.eyebrow:Hide()
 	frame.title:SetPoint("TOPLEFT", frame, "TOPLEFT", S.padding, -S.padding)
 	frame.detail:SetPoint("TOPLEFT", frame.title, "BOTTOMLEFT", 0, -S.gap)
-	local load = Widgets.button(frame, L.buildArrivedLoad, function()
-		onLoad()
-	end)
-	load:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -S.padding - S.buttonWidth - S.gap * 2, S.padding)
+	-- Dismiss anchors straight to the frame's own edge; Load anchors off
+	-- Dismiss rather than duplicating its width and the gap in a second
+	-- offset from the frame -- the first in-game screenshot showed Load
+	-- drifting past the frame's right edge once that duplicated math and
+	-- the frame's own width math (ctx.contentWidth vs the scrollable
+	-- page's inner width) disagreed. Anchoring off Dismiss instead means
+	-- Load can only ever sit where Dismiss actually is, however either
+	-- width is computed.
 	local dismiss = Widgets.button(frame, L.buildArrivedDismiss, function()
 		onDismiss()
 	end)
 	dismiss:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -S.padding, S.padding)
+	local load = Widgets.button(frame, L.buildArrivedLoad, function()
+		onLoad()
+	end)
+	load:SetPoint("RIGHT", dismiss, "LEFT", -S.gap * 2, 0)
 	frame.load, frame.dismiss = load, dismiss
 	return frame
 end
 
---- The rotation card's line rows: plain labels, recycled and hidden past
---- however many the current model has (Widgets.list is overkill for a
---- handful of static rows that never scroll on their own).
+--- The rotation card's header strip (design section 2 item 3's own new
+--- requirement): the spec's icon beside "<spec> · Level <band>+ ·
+--- updated <build>", sitting exactly where the card's plain title used
+--- to (Cards.card's own eyebrow/title anchoring), and its numbered
+--- priority rows (Widgets.rotationRow), recycled and hidden past however
+--- many the current model has.
 local function rotationRows(card)
 	local S = Theme.SIZES
+	card.headerIcon = Theme.icon(card, "ARTWORK", Theme.NAV_ICONS.follow, S.rotationHeaderIcon)
+	card.headerIcon:SetPoint("LEFT", card.title, "LEFT", 0, 0)
+	card.header = Widgets.label(card, "", "body", "small")
+	card.header:SetPoint("LEFT", card.headerIcon, "RIGHT", S.gap, 0)
 	card.rows = {}
 	for index = 1, OverviewView.ROTATION_MAX_LINES do
-		local label = Widgets.label(card, "", "body", "small")
-		label:SetPoint("TOPLEFT", card, "TOPLEFT", S.padding, -(S.padding + 40 + (index - 1) * S.rowHeight))
-		card.rows[index] = label
+		local row = Widgets.rotationRow(card, card.innerWidth)
+		row.frame:SetPoint("TOPLEFT", card, "TOPLEFT",
+			S.padding, -(S.padding + 40 + (index - 1) * S.rotationRowHeight))
+		card.rows[index] = row
 	end
 	card.reason = Widgets.label(card, "", "muted", "small")
 	card.reason:SetPoint("TOPLEFT", card, "TOPLEFT", S.padding, -(S.padding + 40))
-	card.more = Widgets.label(card, L.overviewRotationMore, "muted", "small")
+	-- Set to toggle view.rotationExpanded and refresh by OverviewView.mount,
+	-- which is the one place that owns that state.
+	card.more = Widgets.textButton(card, "", function()
+		if card.onToggleMore ~= nil then
+			card.onToggleMore()
+		end
+	end)
 	card.more:SetPoint("BOTTOMLEFT", card, "BOTTOMLEFT", S.padding, S.padding)
 	return card
 end
@@ -386,7 +477,7 @@ end
 local function layout(parent, ctx)
 	local S = Theme.SIZES
 	local width = math.floor((ctx.contentWidth - S.cardGap) / 2)
-	local view = { frame = parent, ctx = ctx, cards = {} }
+	local view = { frame = parent, ctx = ctx, cards = {}, rotationExpanded = false }
 	local gridTop = S.padding + OverviewView.BANNER_HEIGHT + S.cardGap
 	local function place(card, column, row)
 		card:SetPoint("TOPLEFT", parent, "TOPLEFT",
@@ -444,6 +535,10 @@ local function layout(parent, ctx)
 		Cards.card(parent, ctx.contentWidth, OverviewView.ROTATION_HEIGHT, L.overviewRotationEyebrow))
 	view.rotation:SetPoint("TOPLEFT", parent, "TOPLEFT",
 		S.padding, -(ratingTop + OverviewView.RATING_HEIGHT + S.cardGap))
+	view.rotation.onToggleMore = function()
+		view.rotationExpanded = not view.rotationExpanded
+		view.refresh()
+	end
 	view.contentHeight = ratingTop + OverviewView.RATING_HEIGHT + S.cardGap
 		+ OverviewView.ROTATION_HEIGHT + S.padding
 	return view
@@ -468,20 +563,37 @@ local function applyRating(card, model)
 	return card
 end
 
+local function applyRotationRow(row, index, line, classToken)
+	row.number:SetText(index .. ".")
+	row.icon:SetTexture(line.icon or Theme.UNKNOWN_ICON)
+	row.name:SetText(line.name)
+	row.name:SetTextColor(Theme.classColor(classToken))
+	row.rank:SetText(line.rank or "")
+	row.condition:SetText(line.condition or "")
+	if line.learned then
+		Theme.showGlow(row.frame)
+	else
+		Theme.hideGlow(row.frame)
+	end
+	row.frame:Show()
+end
+
 local function applyRotation(card, model)
-	card.title:SetText(model.empty and "" or model.title)
+	card.header:SetText(model.empty and "" or model.header)
 	card.reason:SetText(model.empty and (model.reason or "") or "")
+	local classToken = select(2, UnitClass("player"))
 	for index, row in ipairs(card.rows) do
 		local line = not model.empty and model.lines[index] or nil
 		if line ~= nil then
-			row:SetText(line.condition ~= "" and string.format(L.overviewRotationLine, line.name, line.condition)
-				or line.name)
-			row:Show()
+			applyRotationRow(row, index, line, classToken)
 		else
-			row:Hide()
+			row.frame:Hide()
+			Theme.hideGlow(row.frame)
 		end
 	end
-	if not model.empty and model.hasMore then
+	if not model.empty and model.expandable then
+		card.more:SetText(model.expanded and L.overviewRotationLess
+			or string.format(L.overviewRotationMoreCount, model.moreCount))
 		card.more:Show()
 	else
 		card.more:Hide()
@@ -510,7 +622,7 @@ function OverviewView.mount(parent, ctx)
 	local view = layout(scroll.content, ctx)
 	view.scroll = scroll
 	function view.refresh()
-		return OverviewView.apply(view, OverviewView.summary(ctx.data))
+		return OverviewView.apply(view, OverviewView.summary(ctx.data, view.rotationExpanded))
 	end
 	view.refresh()
 	return view

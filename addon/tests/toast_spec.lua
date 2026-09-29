@@ -226,6 +226,30 @@ describe("Toast, the rotation toast", function()
 		assert.are.equal(string.format(L.rotationToastMessage, 20, "Flash of Light"), model.text)
 	end)
 
+	-- docs/tenets.md's standard: the rotation card glows the row for the
+	-- ability the player just learned, off this same event -- recorded on
+	-- Rotation.recentlyLearned (see Rotation.markLearned's own comment for
+	-- why not read from Toast directly).
+	describe("marking the rotation card's glow (Rotation.recentlyLearned)", function()
+		it("names the spellId the rotation card should glow", function()
+			start()
+			assert(Follow.load(CODE, ROTATION_DATA))
+			local Rotation = require("Rotation")
+			Toast.rotationModel(ROTATION_DATA, 10, 20)
+			-- Flash of Light's own spellId in ROTATION_DATA's level-20 band.
+			assert.is_true(Rotation.recentlyLearned[2])
+		end)
+
+		it("clears to empty when a level-up crosses no rung", function()
+			start()
+			assert(Follow.load(CODE, ROTATION_DATA))
+			local Rotation = require("Rotation")
+			Toast.rotationModel(ROTATION_DATA, 10, 20)
+			Toast.rotationModel(ROTATION_DATA, 11, 15)
+			assert.are.same({}, Rotation.recentlyLearned)
+		end)
+	end)
+
 	it("says nothing when the level-up crosses no rung", function()
 		start()
 		assert(Follow.load(CODE, ROTATION_DATA))

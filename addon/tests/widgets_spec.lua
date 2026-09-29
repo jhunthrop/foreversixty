@@ -299,6 +299,50 @@ describe("Widgets", function()
 		assert.is_nil(mock.firstCall(_G.GameTooltip, "SetOwner"))
 		assert.is_nil(mock.firstCall(_G.GameTooltip, "Show"))
 	end)
+
+	it("runs a text button's handler when clicked and sizes itself to the text", function()
+		start({ templates = {} })
+		local clicks = 0
+		local button = Widgets.textButton(_G.UIParent, "+3 more", function() clicks = clicks + 1 end)
+		assert.are.equal("+3 more", button:GetText())
+		button:GetScript("OnClick")(button)
+		assert.are.equal(1, clicks)
+		button:SetText("Show fewer")
+		assert.are.equal("Show fewer", button:GetText())
+	end)
+
+	it("ignores a click on a disabled text button", function()
+		start({ templates = {} })
+		local clicks = 0
+		local button = Widgets.textButton(_G.UIParent, "+3 more", function() clicks = clicks + 1 end)
+		button:Disable()
+		button:GetScript("OnClick")(button)
+		assert.are.equal(0, clicks)
+	end)
+
+	it("builds a rotation row with a number, an icon, a name, a rank and a condition", function()
+		start({ templates = {} })
+		local row = Widgets.rotationRow(_G.UIParent, 400)
+		row.number:SetText("1.")
+		row.name:SetText("Bloodrage")
+		row.rank:SetText("Rank 1")
+		row.condition:SetText("Bloodrage on cooldown.")
+		assert.are.equal("1.", row.number:GetText())
+		assert.are.equal("Bloodrage", row.name:GetText())
+		assert.are.equal("Rank 1", row.rank:GetText())
+		assert.are.equal("Bloodrage on cooldown.", row.condition:GetText())
+	end)
+
+	it("highlights a rotation row on hover", function()
+		start({ templates = {} })
+		local row = Widgets.rotationRow(_G.UIParent, 400)
+		local highlight = row.frame.regions[1]
+		row.frame:GetScript("OnEnter")(row.frame)
+		assert.is_true(highlight.shown)
+		row.frame:GetScript("OnLeave")(row.frame)
+		assert.is_false(highlight.shown)
+	end)
+
 	describe("keyboard focus", function()
 		-- An edit box that holds focus swallows every keybind. It may take
 		-- focus only when the player asks to copy, and must give it back.
