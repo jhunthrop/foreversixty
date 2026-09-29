@@ -199,6 +199,45 @@ def test_fork_stays_primary_when_classic_db_names_the_same_bucket():
     assert zone.source_origin is None
 
 
+def test_a_world_drop_pool_record_becomes_one_world_drop_source_and_a_real_boss_drop_stays_put():
+    """World-drop-pool lane, 2026-09-29's own report case, at the loot-
+    model level (`pipeline.classic_sources`'s own tests cover the SQL-
+    dump classification that produces a `world_drop` record in the first
+    place): item 110 (`UNSOURCED_ITEM`, standing in for Lambent Scale
+    Cloak) gets ONE `world_drop:18-25` source, never a per-creature
+    listing; item 104's own real Deadmines boss drop (standing in for Mr.
+    Smite's Mighty Hammer) keeps its own boss and chance, proving a
+    `world_drop` record for one item never touches an unrelated item's
+    own real attribution."""
+    classic_sources = {
+        UNSOURCED_ITEM: [
+            ClassicDbSourceRecord(
+                kind="world_drop", name="World drop", chance=1.5, level_min=18, level_max=25,
+            )
+        ],
+        104: [
+            ClassicDbSourceRecord(
+                kind="creature_drop", npc_id=646, name="Mr. Smite", map_id=36, chance=20.0,
+            )
+        ],
+    }
+    document, _ = built(classic_sources)
+    world_drop = source(document, "world_drop:18-25")
+    assert world_drop.kind == "world_drop"
+    assert world_drop.name == "World drop"
+    assert world_drop.level_min == 18
+    assert world_drop.level_max == 25
+    assert world_drop.items == [UNSOURCED_ITEM]
+    assert world_drop.item_chances == {str(UNSOURCED_ITEM): 1.5}
+    world_buckets = [c for c in document.sources if c.id.startswith("world:")]
+    assert not any(UNSOURCED_ITEM in (c.items or []) for c in world_buckets)
+
+    dungeon = source(document, "dungeon:the-deadmines")
+    smite = next(b for b in dungeon.bosses if b.name == "Mr. Smite")
+    assert smite.items == [104]
+    assert smite.item_chances == {"104": 20.0}
+
+
 def test_classic_db_fills_the_gap_before_wowhead_and_wowhead_unions_into_it():
     """Priority order fork > classic-db > wowhead: classic-db creates the
     `world:shared-mob` bucket first (source_origin="classic-db"); a

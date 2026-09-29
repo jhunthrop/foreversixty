@@ -265,6 +265,14 @@ class LootSource(BaseModel):
     #: a Forever-new item re-itemisation added to this source's own flat
     #: `items`/`trash` list -- see `pipeline.loot.reitemise`'s own doc.
     reitemised_from: dict[str, int] | None = None
+    #: `world_drop` kind only (src-classicdb world-drop-pool lane,
+    #: 2026-09-29): the level range cmangos/classic-db's own dump states
+    #: for this generic, bind-on-equip, auction-housable drop pool
+    #: (`pipeline.classic_sources._world_drop_records`' own doc). Either
+    #: side is `None` when the dump names no level for the pool at all --
+    #: never invented.
+    level_min: int | None = None
+    level_max: int | None = None
     #: "wowhead" or "classic-db" when this source exists ONLY because a
     #: scrape/dump named it for an item the engine fork's own database
     #: named no source for at all (night-item-sources lane, 2026-09-28;

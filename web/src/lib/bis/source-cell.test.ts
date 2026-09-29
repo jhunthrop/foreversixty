@@ -68,6 +68,15 @@ const LOOT: LootFile & LootQuestsFile = {
       items: [81],
       item_chances: { '81': 6 },
     },
+    {
+      id: 'world_drop:18-25',
+      kind: 'world_drop',
+      name: 'World drop',
+      items: [90],
+      level_min: 18,
+      level_max: 25,
+    },
+    { id: 'world_drop:unknown', kind: 'world_drop', name: 'World drop', items: [91] },
   ],
   quests: {
     '70': [
@@ -205,6 +214,26 @@ describe('resolveSourceCell', () => {
     const cell = resolveSourceCell(slot({ item_id: 10, source_kind: 'raid' }), 'alliance', LOOT, 'fallback');
     expect(cell).toEqual({ kind: 'raid', instance: 'Molten Core', boss: 'Ragnaros' });
   });
+
+  it('resolves a world_drop item to its own level range', () => {
+    const cell = resolveSourceCell(
+      slot({ item_id: 90, source_kind: 'world_drop' }),
+      'alliance',
+      LOOT,
+      'fallback',
+    );
+    expect(cell).toEqual({ kind: 'world_drop', levelMin: 18, levelMax: 25 });
+  });
+
+  it('resolves a world_drop item with no known level range to undefined levels', () => {
+    const cell = resolveSourceCell(
+      slot({ item_id: 91, source_kind: 'world_drop' }),
+      'alliance',
+      LOOT,
+      'fallback',
+    );
+    expect(cell).toEqual({ kind: 'world_drop', levelMin: undefined, levelMax: undefined });
+  });
 });
 
 describe('describeSourceCell', () => {
@@ -223,6 +252,13 @@ describe('describeSourceCell', () => {
     );
     expect(describeSourceCell({ kind: 'zone', place: 'Dun Morogh' })).toBe('Dun Morogh');
     expect(describeSourceCell({ kind: 'unknown', label: 'Vendors' })).toBe('Vendors');
+  });
+
+  it('formats a world_drop cell with and without a known level range', () => {
+    expect(describeSourceCell({ kind: 'world_drop', levelMin: 18, levelMax: 25 })).toBe(
+      'World drop (BoE) · levels 18-25',
+    );
+    expect(describeSourceCell({ kind: 'world_drop' })).toBe('World drop (BoE)');
   });
 
   it('leads with the classic-db drop chance when the cell carries one', () => {

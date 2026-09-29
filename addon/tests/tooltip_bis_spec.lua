@@ -607,7 +607,7 @@ describe("Tooltip's BiS hover section", function()
 				names[#names + 1] = code
 			end
 			table.sort(names)
-			assert.are.same({ "A", "C", "D", "P", "Q", "R", "V", "W" }, names)
+			assert.are.same({ "A", "B", "C", "D", "P", "Q", "R", "V", "W" }, names)
 		end)
 	end)
 end)

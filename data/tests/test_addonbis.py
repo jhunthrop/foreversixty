@@ -156,6 +156,7 @@ def test_every_source_kind_code_is_a_single_uppercase_letter():
         "pvp",
         "world",
         "raid",
+        "world_drop",
     }
     assert all(len(code) == 1 and code.isupper() for code in SOURCE_KIND_CODES.values())
     assert len(set(SOURCE_KIND_CODES.values())) == len(SOURCE_KIND_CODES)

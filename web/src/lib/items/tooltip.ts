@@ -25,7 +25,14 @@
 //     the client's exact prose.
 import type { Item, ItemSet } from '../planner/types';
 import { SLOT_LABELS, STAT_KEYS, STAT_LABELS } from '../planner/types';
-import { bossName, itemsOfBoss, itemsOfSource, sourceLabel, type LootFile } from '../sim/loot';
+import {
+  bossName,
+  itemsOfBoss,
+  itemsOfSource,
+  sourceLabel,
+  type LootFile,
+  type LootSource,
+} from '../sim/loot';
 import { humanise } from '../sim/humanise';
 
 export interface WeaponLine {
@@ -118,46 +125,99 @@ function setNameFor(item: Item, sets: readonly ItemSet[]): string | null {
   return sets.find((set) => set.id === item.set_id)?.name ?? null;
 }
 
+/** "World drop (BoE) · levels 18-25", or "World drop (BoE)" alone when this build's
+ *  classic-db dump names no level range for the pool at all (world-drop-pool lane,
+ *  2026-09-29) -- never an invented range. */
+function worldDropLine(source: LootSource): string {
+  const { level_min: levelMin, level_max: levelMax } = source;
+  return levelMin === undefined || levelMax === undefined
+    ? 'World drop (BoE)'
+    : `World drop (BoE) · levels ${levelMin}-${levelMax}`;
+}
+
+/** At most this many named sources ever print before the tooltip falls back to a plain
+ *  "and N more" -- tenet 2's "the source line is right" still holds for a wall of nearly-
+ *  identical world-drop-pool bosses (dps report, 2026-09-29): a player wants to know WHERE
+ *  to go, not read forty near-duplicate lines to find the best one. */
+const MAX_NAMED_SOURCE_LINES = 3;
+
+interface SourceLine {
+  text: string;
+  /** A named boss's own classic-db chance (undefined for every other line, and for a boss
+   *  neither database gives one) -- what `capSourceLines` sorts the overflow case by. */
+  bossChance: number | undefined;
+}
+
+/** `lines`, deduplicated (`sourceLinesFor`'s own doc: a neutral quest rewarded to both
+ *  factions separately can render the identical line twice) and, only once there are more
+ *  than `MAX_NAMED_SOURCE_LINES`, cut down to the highest-chance named bosses first (ties
+ *  and every non-boss line keep their original, insertion order) plus one final "and N
+ *  more" summary line. An item with `MAX_NAMED_SOURCE_LINES` or fewer real lines is
+ *  returned exactly as given -- capping never reorders a short, already-readable list.
+ */
+function capSourceLines(lines: readonly SourceLine[]): string[] {
+  const seen = new Set<string>();
+  const deduped: SourceLine[] = [];
+  for (const line of lines) {
+    if (seen.has(line.text)) continue;
+    seen.add(line.text);
+    deduped.push(line);
+  }
+  if (deduped.length <= MAX_NAMED_SOURCE_LINES) return deduped.map((line) => line.text);
+  const ranked = deduped
+    .map((line, index) => ({ ...line, index }))
+    .sort((a, b) => {
+      const aRank = a.bossChance ?? -1;
+      const bRank = b.bossChance ?? -1;
+      return bRank !== aRank ? bRank - aRank : a.index - b.index;
+    });
+  const shown = ranked.slice(0, MAX_NAMED_SOURCE_LINES).map((line) => line.text);
+  return [...shown, `and ${deduped.length - MAX_NAMED_SOURCE_LINES} more`];
+}
+
 /**
  * Every place loot.json says `itemId` comes from: a specific boss when one of the source's
  * bosses names it (checked first, so a raid/dungeon item never also prints its zone-level
  * source line for the same drop), else the source itself worded per kind, plus one line per
  * quest that rewards it. `sourceLabel` and `bossName` are loot.ts's own -- reused rather than
  * re-worded here, so a rep source with a standing or an unnamed boss never drifts from how
- * the source picker already renders the identical source.
+ * the source picker already renders the identical source. Capped to at most
+ * `MAX_NAMED_SOURCE_LINES` real lines by `capSourceLines`.
  */
 function sourceLinesFor(itemId: number, loot: LootFile): string[] {
-  const lines: string[] = [];
+  const lines: SourceLine[] = [];
   for (const source of loot.sources) {
     const boss = (source.bosses ?? []).find((candidate) =>
       itemsOfBoss(source, candidate.id).includes(itemId),
     );
     if (boss !== undefined) {
-      lines.push(`${source.name} — ${bossName(source, boss)}`);
+      const bossChance = boss.item_chances?.[String(itemId)] ?? source.item_chances?.[String(itemId)];
+      lines.push({ text: `${source.name} — ${bossName(source, boss)}`, bossChance });
       continue;
     }
     if (!itemsOfSource(source).includes(itemId)) continue;
     if (source.kind === 'crafted') {
-      lines.push(source.profession !== undefined ? `${source.name} (${source.profession})` : source.name);
+      lines.push({
+        text: source.profession !== undefined ? `${source.name} (${source.profession})` : source.name,
+        bossChance: undefined,
+      });
     } else if (source.kind === 'rep') {
-      lines.push(sourceLabel(source));
+      lines.push({ text: sourceLabel(source), bossChance: undefined });
     } else if (source.kind === 'pvp') {
-      lines.push(source.rank !== undefined ? `${source.name}, rank ${source.rank}` : source.name);
+      lines.push({
+        text: source.rank !== undefined ? `${source.name}, rank ${source.rank}` : source.name,
+        bossChance: undefined,
+      });
+    } else if (source.kind === 'world_drop') {
+      lines.push({ text: worldDropLine(source), bossChance: undefined });
     } else {
-      lines.push(source.name);
+      lines.push({ text: source.name, bossChance: undefined });
     }
   }
   for (const quest of loot.quests?.[String(itemId)] ?? []) {
-    lines.push(`${quest.name} (${humanise(quest.faction)})`);
+    lines.push({ text: `${quest.name} (${humanise(quest.faction)})`, bossChance: undefined });
   }
-  // A quest that rewards the item to both factions separately (an Alliance-side and a
-  // Horde-side copy of the same quest, both humanising to "(Both)") would otherwise print
-  // the identical line twice -- besides being a pointless repeat, ItemTooltip.svelte keys
-  // its `{#each sourceLines as line (line)}` by the line's own text, and Svelte throws
-  // (rather than silently rendering) on a duplicate key, which would crash the tooltip
-  // instead of just showing it. `Set` preserves insertion order, so this only removes the
-  // repeat, never reorders the real lines.
-  return [...new Set(lines)];
+  return capSourceLines(lines);
 }
 
 /** The one place every ItemHover/ItemTooltip in the site builds its model -- a runtime

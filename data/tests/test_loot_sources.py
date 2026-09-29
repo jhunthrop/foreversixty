@@ -79,10 +79,12 @@ def test_every_kind_is_emitted_once_and_in_the_contracts_order():
         "pvp:rank-11",
         "quest",
     ]
-    # The fixture has no vendor rows, so every kind but `vendor` is emitted
-    # once, in the contract's order (Azuregos in Azshara is also zone 16's
-    # one open-world drop).
-    assert [s.kind for s in document.sources] == [k for k in KIND_ORDER if k != "vendor"]
+    # The fixture has no vendor rows and no classic-db world_drop pools, so
+    # every other kind is emitted once, in the contract's order (Azuregos
+    # in Azshara is also zone 16's one open-world drop).
+    assert [s.kind for s in document.sources] == [
+        k for k in KIND_ORDER if k not in ("vendor", "world_drop")
+    ]
 
 
 def test_a_raid_lists_a_boss_per_npc_and_everything_else_as_trash():

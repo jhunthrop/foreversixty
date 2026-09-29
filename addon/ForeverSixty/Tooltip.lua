@@ -263,6 +263,7 @@ Tooltip.SOURCE_KIND_NAMES = {
 	P = "PvP",
 	W = "World",
 	A = "Raid",
+	B = "World Drop",
 }
 
 --- The highest bis band <= level, tolerating gaps in a partially-generated

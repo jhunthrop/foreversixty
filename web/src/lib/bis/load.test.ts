@@ -256,6 +256,7 @@ describe('sourceBadgeLabel', () => {
     expect(sourceBadgeLabel(slot('vendor'), 'alliance')).toBe('Vendors');
     expect(sourceBadgeLabel(slot('zone'), 'alliance')).toBe('Zone drops');
     expect(sourceBadgeLabel(slot('dungeon'), 'alliance')).toBe('Dungeons');
+    expect(sourceBadgeLabel(slot('world_drop'), 'alliance')).toBe('World drops');
   });
 
   it('falls back to the raw kind for one loot.ts does not know, rather than throwing', () => {

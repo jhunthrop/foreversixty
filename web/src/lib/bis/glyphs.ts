@@ -48,6 +48,9 @@ export function slotGlyphKey(slot: string): string {
 
 export function sourceKindGlyphKey(kind: string): string {
   if (kind === 'raid') return 'dungeon';
-  if (kind === 'world') return 'zone';
+  // world_drop reuses the same glyph `world` itself reuses (`zone`) --
+  // both are "go kill something out in the world", not a distinct icon
+  // worth its own path (world-drop-pool lane, 2026-09-29).
+  if (kind === 'world' || kind === 'world_drop') return 'zone';
   return kind in SOURCE_KIND_GLYPH_PATHS ? kind : 'zone';
 }

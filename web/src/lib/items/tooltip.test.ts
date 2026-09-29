@@ -169,6 +169,88 @@ describe('itemTooltipModel', () => {
     expect(itemTooltipModel(item({ id: 42 }), NO_SOURCES).sourceLines).toEqual([]);
   });
 
+  it('names a world_drop pool with and without a known level range', () => {
+    const loot: LootFile = {
+      sources: [
+        {
+          id: 'world_drop:18-25',
+          kind: 'world_drop',
+          name: 'World drop',
+          items: [6],
+          level_min: 18,
+          level_max: 25,
+        },
+        { id: 'world_drop:unknown', kind: 'world_drop', name: 'World drop', items: [7] },
+      ],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 6 }), sources).sourceLines).toEqual([
+      'World drop (BoE) · levels 18-25',
+    ]);
+    expect(itemTooltipModel(item({ id: 7 }), sources).sourceLines).toEqual(['World drop (BoE)']);
+  });
+
+  it('caps a long source list to the 3 highest-chance bosses plus an "and N more" line', () => {
+    // The reported world-drop-pool defect's own shape: the same generic-pool item listed
+    // as a named boss drop across many different dungeons -- one boss per source, since
+    // sourceLinesFor takes the first matching boss PER SOURCE (its own established rule).
+    const loot: LootFile = {
+      sources: [
+        {
+          id: 'dungeon:a',
+          kind: 'dungeon',
+          name: 'Dungeon A',
+          bosses: [{ id: 'a1', name: 'Low Chance Boss', items: [8], item_chances: { '8': 5 } }],
+        },
+        {
+          id: 'dungeon:b',
+          kind: 'dungeon',
+          name: 'Dungeon B',
+          bosses: [{ id: 'b1', name: 'High Chance Boss', items: [8], item_chances: { '8': 90 } }],
+        },
+        {
+          id: 'dungeon:c',
+          kind: 'dungeon',
+          name: 'Dungeon C',
+          bosses: [{ id: 'c1', name: 'Mid Chance Boss', items: [8], item_chances: { '8': 40 } }],
+        },
+        {
+          id: 'dungeon:d',
+          kind: 'dungeon',
+          name: 'Dungeon D',
+          bosses: [{ id: 'd1', name: 'No Chance Boss', items: [8] }],
+        },
+        {
+          id: 'dungeon:e',
+          kind: 'dungeon',
+          name: 'Dungeon E',
+          bosses: [{ id: 'e1', name: 'Another Low Boss', items: [8], item_chances: { '8': 10 } }],
+        },
+      ],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 8 }), sources).sourceLines).toEqual([
+      'Dungeon B — High Chance Boss',
+      'Dungeon C — Mid Chance Boss',
+      'Dungeon E — Another Low Boss',
+      'and 2 more',
+    ]);
+  });
+
+  it('does not reorder or cap a list of 3 or fewer sources', () => {
+    const loot: LootFile = {
+      sources: [
+        { id: 'vendor:a', kind: 'vendor', name: 'Vendor A', items: [9] },
+        { id: 'crafted:tailoring', kind: 'crafted', name: 'Made Item', profession: 'tailoring', items: [9] },
+      ],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 9 }), sources).sourceLines).toEqual([
+      'Vendor A',
+      'Made Item (tailoring)',
+    ]);
+  });
+
   it('drops a duplicate line when two quest entries render identically', () => {
     // A neutral ("both") quest reward can appear as two separate entries in loot.json (one
     // recorded per side that can pick it up) that both humanise to the exact same line --
