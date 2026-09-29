@@ -24,4 +24,12 @@ describe('readItemTooltipModel', () => {
   it('is null for a build with no item file for the class', () => {
     expect(readItemTooltipModel('no-such-build', 'warrior', 20143)).toBeNull();
   });
+
+  it('reads the same item twice without the second call producing a different answer -- the in-process cache stays correct across repeat calls (a real /bis page calls this once per slot per band per faction)', () => {
+    const first = readItemTooltipModel(BUILD, 'warrior', 20143);
+    const second = readItemTooltipModel(BUILD, 'warrior', 20143);
+    expect(second).toEqual(first);
+    // A different item in the same class file still resolves correctly off the cached array.
+    expect(readItemTooltipModel(BUILD, 'warrior', 226857)?.name).toBe('Battleboots of Heroism');
+  });
 });

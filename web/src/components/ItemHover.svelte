@@ -26,7 +26,7 @@
 </script>
 
 <script lang="ts">
-  import { mount, unmount, type Component, type Snippet } from 'svelte';
+  import { mount, unmount, untrack, type Component, type Snippet } from 'svelte';
   import { fetchItemTooltipModel } from '../lib/items/lookup';
   import { rarityClassFor } from '../lib/planner/items';
   import { dataUrl } from '../lib/planner/load';
@@ -47,18 +47,31 @@
     children?: Snippet;
   } = $props();
 
-  const hoverId = `item-hover-${itemId}-${Math.random().toString(36).slice(2, 8)}`;
+  // Read once, deliberately: every caller keys its {#each} by item id (candidateKey,
+  // comboKey, …), so a changed itemId always remounts a fresh ItemHover rather than
+  // reusing this one -- `untrack` says so explicitly instead of leaving the compiler to
+  // warn that a plain read only captures `itemId`'s initial value.
+  const hoverId = untrack(() => `item-hover-${itemId}-${Math.random().toString(36).slice(2, 8)}`);
   const tooltipId = `${hoverId}-tip`;
   const isOpen = $derived(activeHoverId === hoverId);
 
-  let resolvedModel = $state<ItemTooltipModel | null>(model ?? null);
-  // Which build/class/item resolvedModel was fetched for, so a prop change (a different
-  // itemId reusing the same instance -- SubstitutionChips re-keys its rows by item id, so
-  // this should not happen in practice, but nothing here assumes it can't) re-fetches
+  // The model a runtime fetch resolved, when `model` was not given. `resolvedModel` below
+  // prefers the `model` prop reactively, so a caller that later supplies one (or swaps it)
+  // is reflected without this component re-fetching anything.
+  let fetchedModel = $state<ItemTooltipModel | null>(null);
+  const resolvedModel = $derived(model ?? fetchedModel);
+  // Which build/class/item fetchedModel was fetched for, so a prop change re-fetches
   // instead of showing a stale model.
   let loadedFor = '';
 
-  let host: HTMLDivElement | undefined = $state();
+  // A <span>, not a <div>: ItemHover sits inline wherever an item is named -- inside a
+  // <label> (CandidateRows.svelte), inside another <span> (SubstitutionChips.svelte's own
+  // chip) -- and at least one caller's own test (ComboResults.test.ts's rowSegments) walks
+  // its row's raw HTML on the documented assumption that every cell is a <span>, never a
+  // nested <div>. `position: relative` (Tailwind's `relative`) still establishes the
+  // containing block the mounted panel's `position: absolute` needs, regardless of the
+  // element's own display type.
+  let host: HTMLSpanElement | undefined = $state();
   let PanelComponent: Component<{ model: ItemTooltipModel; build: string; id: string }> | null = null;
   let panelModuleLoad: Promise<unknown> | null = null;
   let mountedInstance: object | null = null;
@@ -96,16 +109,13 @@
   }
 
   function ensureModel(): void {
-    if (model !== undefined) {
-      resolvedModel = model;
-      return;
-    }
+    if (model !== undefined) return;
     const key = `${build}::${classSlug}::${itemId}`;
     if (loadedFor === key) return;
     loadedFor = key;
     void fetchItemTooltipModel(build, classSlug, itemId).then((loaded) => {
       if (loadedFor !== key) return;
-      resolvedModel = loaded;
+      fetchedModel = loaded;
       if (isOpen) mountPanel();
     });
   }
@@ -156,9 +166,9 @@
   $effect(() => () => unmountPanel());
 </script>
 
-<div class="relative inline-flex" bind:this={host}>
+<span class="relative inline-flex min-w-0" bind:this={host}>
   <span
-    class={`inline-flex items-center gap-1 ${pillClass}`}
+    class={`inline-flex min-w-0 items-center gap-1 ${pillClass}`}
     tabindex="0"
     role="button"
     aria-haspopup="true"
@@ -187,4 +197,4 @@
       <span class="text-muted">Item {itemId}</span>
     {/if}
   </span>
-</div>
+</span>

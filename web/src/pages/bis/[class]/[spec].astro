@@ -11,6 +11,7 @@ import Base from '../../../layouts/Base.astro';
 import UpdatedStamp from '../../../components/UpdatedStamp.astro';
 import classes from '../../../data/classes.json';
 import activeBuild from '../../../data/active-build.json';
+import ItemHover from '../../../components/ItemHover.svelte';
 import { rarityClassFor } from '../../../lib/planner/items';
 import { SLOT_LABELS, type Slot } from '../../../lib/planner/types';
 import { bisCopy } from '../../../lib/bis/copy';
@@ -136,11 +137,18 @@ const factions: Faction[] = ['alliance', 'horde'];
                               ) : (
                                 <>
                                   <td class="py-2 pr-2">
-                                    <span
-                                      class={`font-semibold ${rarityClassFor(qualities.get(row.item_id) ?? 1)}`}
+                                    <ItemHover
+                                      itemId={row.item_id}
+                                      classSlug={specEntry.class_slug}
+                                      build={activeBuild.build}
+                                      client:visible
                                     >
-                                      {row.item_name}
-                                    </span>
+                                      <span
+                                        class={`font-semibold ${rarityClassFor(qualities.get(row.item_id) ?? 1)}`}
+                                      >
+                                        {row.item_name}
+                                      </span>
+                                    </ItemHover>
                                     {row.swap_note && (
                                       <details class="text-muted mt-1 text-[12px]">
                                         <summary>{bisCopy.swapNoteSummary}</summary>

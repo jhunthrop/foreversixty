@@ -72,15 +72,38 @@ function readJson<T>(file: string): T {
   return JSON.parse(readFileSync(file, 'utf8')) as T;
 }
 
-/** Build-time equivalent of loadSources above, reading straight off disk -- no fetch, no
- *  cache, since an Astro page's frontmatter runs once per build and this reads at most a
- *  couple of small files. */
+// Build-time reads, cached in-process: a class's items/<classSlug>.json runs 1.5-3.4 MB on
+// the real build (warrior.json alone is over 3 MB), and a page like /bis renders a row per
+// slot per band per faction -- a couple hundred `readItemTooltipModel` calls in one page,
+// every written spec's own page besides. Re-reading and re-JSON.parse-ing multi-megabyte
+// files that many times per page (and again for every other spec page in the same class)
+// would cost real `astro build` minutes for no benefit: these files never change mid-build.
+const buildTimeItemsCache = new Map<string, Item[]>();
+const buildTimeSourcesCache = new Map<string, ItemTooltipSources>();
+
+function readItemsForBuildTime(build: string, classSlug: string): Item[] | null {
+  const key = cacheKey(build, classSlug);
+  const cached = buildTimeItemsCache.get(key);
+  if (cached !== undefined) return cached;
+  const itemsFile = path.join(REPO_ROOT, 'data/builds', build, 'items', `${classSlug}.json`);
+  if (!existsSync(itemsFile)) return null;
+  const { items } = readJson<{ items: Item[] }>(itemsFile);
+  buildTimeItemsCache.set(key, items);
+  return items;
+}
+
+/** Build-time equivalent of loadSources above, reading straight off disk. Cached per build
+ *  for the same reason readItemsForBuildTime is. */
 function readSources(build: string): ItemTooltipSources {
+  const cached = buildTimeSourcesCache.get(build);
+  if (cached !== undefined) return cached;
   const lootFile = path.join(REPO_ROOT, 'data/builds', build, 'loot.json');
   const setsFile = path.join(REPO_ROOT, 'data/builds', build, 'sets.json');
   const loot: LootFile = existsSync(lootFile) ? readJson<LootFile>(lootFile) : { sources: [] };
   const sets: ItemSet[] = existsSync(setsFile) ? readJson<ItemSet[]>(setsFile) : [];
-  return { loot, sets };
+  const sources: ItemTooltipSources = { loot, sets };
+  buildTimeSourcesCache.set(build, sources);
+  return sources;
 }
 
 /**
@@ -94,9 +117,8 @@ export function readItemTooltipModel(
   classSlug: string,
   itemId: number,
 ): ItemTooltipModel | null {
-  const itemsFile = path.join(REPO_ROOT, 'data/builds', build, 'items', `${classSlug}.json`);
-  if (!existsSync(itemsFile)) return null;
-  const { items } = readJson<{ items: Item[] }>(itemsFile);
+  const items = readItemsForBuildTime(build, classSlug);
+  if (items === null) return null;
   const row = items.find((item) => item.id === itemId);
   return row === undefined ? null : itemTooltipModel(row, readSources(build));
 }

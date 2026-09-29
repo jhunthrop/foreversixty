@@ -28,6 +28,7 @@
      source names here are short (a boss or vendor name), the row already wraps
      (`flex-wrap`), and a reader gets the full answer without a second element to manage. -->
 <script lang="ts">
+  import ItemHover from '../../ItemHover.svelte';
   import { rarityClassFor } from '../../../lib/planner/items';
   import { dataUrl } from '../../../lib/planner/load';
   import type { Item } from '../../../lib/planner/types';
@@ -39,10 +40,14 @@
     substitutions,
     items,
     treeVersion,
+    classSlug,
   }: {
     substitutions: readonly Substitution[];
     items: ReadonlyMap<number, Item>;
     treeVersion: string;
+    /** For ItemHover's fetch key. Optional: a caller with no classSlug in hand (none
+     *  today) still gets the chip, just without its own hover tooltip. */
+    classSlug?: string;
   } = $props();
 </script>
 
@@ -57,20 +62,35 @@
     {:else}
       {@const item = sub.item_id === undefined ? undefined : items.get(sub.item_id)}
       <span class="border-line rounded-pill inline-flex items-center gap-1 border px-2 py-[2px] text-[12px]">
-        {#if item !== undefined}
-          <img
-            src={dataUrl(treeVersion, `icons/${item.icon}.webp`)}
-            alt=""
-            width="16"
-            height="16"
-            loading="lazy"
-            decoding="async"
-            class="rounded-control h-4 w-4 object-cover"
-          />
+        {#if item !== undefined && classSlug !== undefined}
+          <ItemHover itemId={item.id} {classSlug} build={treeVersion}>
+            <img
+              src={dataUrl(treeVersion, `icons/${item.icon}.webp`)}
+              alt=""
+              width="16"
+              height="16"
+              loading="lazy"
+              decoding="async"
+              class="rounded-control h-4 w-4 object-cover"
+            />
+            <span class={rarityClassFor(item.quality)}>{substitutionChipLabel(sub)}</span>
+          </ItemHover>
+        {:else}
+          {#if item !== undefined}
+            <img
+              src={dataUrl(treeVersion, `icons/${item.icon}.webp`)}
+              alt=""
+              width="16"
+              height="16"
+              loading="lazy"
+              decoding="async"
+              class="rounded-control h-4 w-4 object-cover"
+            />
+          {/if}
+          <span class={item === undefined ? 'text-text' : rarityClassFor(item.quality)}>
+            {substitutionChipLabel(sub)}
+          </span>
         {/if}
-        <span class={item === undefined ? 'text-text' : rarityClassFor(item.quality)}>
-          {substitutionChipLabel(sub)}
-        </span>
         <!-- Task 7: the source name used to be hidden in a title= (never fires on touch).
              Shown inline, muted, only when the substitution actually carries one. -->
         {#if sub.source_name !== undefined && sub.source_name !== ''}

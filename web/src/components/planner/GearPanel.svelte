@@ -3,6 +3,7 @@
      phone, four from md up; every slot button clears 44px. -->
 <script lang="ts">
   import { mount, unmount, type Component } from 'svelte';
+  import ItemHover from '../ItemHover.svelte';
   import { plannerCopy } from '../../lib/planner/copy';
   import { addonCopy } from '../../lib/addon/copy';
   import { scoreItem, specKeyFor, weightsFor, type WeightsFile } from '../../lib/addon/score';
@@ -153,25 +154,20 @@
       {@const equippedId = store.gear[slot]}
       {@const item = equippedId === undefined ? undefined : store.itemIndex.get(equippedId)}
       <div
-        class="relative"
+        class="relative flex items-stretch gap-2"
         role="group"
         bind:this={popoverHosts[slot]}
         onmouseenter={() => showPopover(slot)}
         onmouseleave={() => hidePopoverIfShown(slot)}
         onfocusout={(event) => onSlotFocusOut(event, slot)}
       >
-        <button
-          type="button"
-          class="border-line rounded-control bg-card-top flex min-h-11 w-full items-center gap-2 border px-2 py-1 text-left"
-          data-testid={`slot-${slot}`}
-          aria-label={item ? `${SLOT_LABELS[slot]}: ${item.name}` : `${SLOT_LABELS[slot]}: empty`}
-          aria-describedby={hoveredSlot === slot ? `bis-hover-${slot}` : undefined}
-          disabled={store.readOnly}
-          onclick={() => (openSlot = openSlot === slot ? null : slot)}
-          onfocus={() => showPopover(slot)}
-        >
-          {#if item}
-            <!-- The aria-label above names the slot and the item, so the icon is decorative. -->
+        <!-- The icon sits beside the slot button, not inside it: it is ItemHover's own
+             hover/focus target (the item's real tooltip -- tenet 2), and nesting one
+             interactive element inside another (the button below, which opens the item
+             picker) is invalid HTML. The button's aria-label already names the item, so
+             nothing here loses the "click to change gear" affordance. -->
+        {#if item}
+          <ItemHover itemId={item.id} classSlug={store.classSlug} build={store.treeVersion} class="shrink-0">
             <img
               src={dataUrl(store.treeVersion, `icons/${item.icon}.webp`)}
               alt=""
@@ -181,9 +177,23 @@
               decoding="async"
               class="rounded-control border-line h-7 w-7 border object-cover"
             />
-          {:else}
-            <span class="rounded-control border-line-soft h-7 w-7 border" aria-hidden="true"></span>
-          {/if}
+          </ItemHover>
+        {:else}
+          <span
+            class="rounded-control border-line-soft h-7 w-7 shrink-0 self-center border"
+            aria-hidden="true"
+          ></span>
+        {/if}
+        <button
+          type="button"
+          class="border-line rounded-control bg-card-top flex min-h-11 flex-1 items-center gap-2 border px-2 py-1 text-left"
+          data-testid={`slot-${slot}`}
+          aria-label={item ? `${SLOT_LABELS[slot]}: ${item.name}` : `${SLOT_LABELS[slot]}: empty`}
+          aria-describedby={hoveredSlot === slot ? `bis-hover-${slot}` : undefined}
+          disabled={store.readOnly}
+          onclick={() => (openSlot = openSlot === slot ? null : slot)}
+          onfocus={() => showPopover(slot)}
+        >
           <span class="flex min-w-0 flex-col">
             <span class="label text-muted">{SLOT_LABELS[slot]}</span>
             <span
