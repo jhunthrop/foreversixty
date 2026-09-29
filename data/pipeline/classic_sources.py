@@ -601,6 +601,36 @@ def _parse_quest_rewards(sql_text: str, into: dict[int, list[ClassicDbSourceReco
             )
 
 
+def quest_factions_from_classic_sources(
+    items: dict[int, list[ClassicDbSourceRecord]],
+) -> dict[int, Literal["alliance", "horde", "both"]]:
+    """Quest id -> `_faction_from_required_races`' own verdict for it,
+    recovered from the `quest_reward` records `parse_classic_db_sources`/
+    `load_classic_sources` already carry (one per reward item, each
+    naming the same `ClassicDbQuestInfo` for that quest id) rather than
+    re-reading `quest_template` a second time.
+
+    quest-faction lane, 2026-09-29: `pipeline.loot.sources.build_loot`
+    applies this over EVERY `QuestSource` it assembles (fork, classic-db
+    or wowhead, whichever scrape produced the item-quest link), because a
+    quest's own `RequiredRaces` is the primary source for its faction --
+    the reward item's `factionRestriction` is only ever a proxy for it,
+    and the two can legitimately disagree (item 270018 Hammerbone, quest
+    914 Leaders of the Fang: `RequiredRaces` 178 = horde-only, even though
+    Hammerbone itself carries no `factionRestriction`). A quest id this
+    dict does not cover (a Forever-new quest, e.g. 79980 Scramble or 92422
+    The Wrath of Rath'mael) keeps the item-derived guess, tagged
+    `QuestSource.faction_source="item"` rather than `"classic-db"`, so the
+    site and reports can say the faction is unverified.
+    """
+    factions: dict[int, Literal["alliance", "horde", "both"]] = {}
+    for records in items.values():
+        for record in records:
+            if record.kind == "quest_reward" and record.quest is not None:
+                factions[record.quest.quest_id] = record.quest.faction
+    return factions
+
+
 def _parse_fishing(
     sql_text: str, into: dict[int, list[ClassicDbSourceRecord]], excluded_refs: frozenset[int]
 ) -> None:

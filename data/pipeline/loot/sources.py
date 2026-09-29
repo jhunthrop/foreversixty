@@ -31,7 +31,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 
 from pipeline.classic_quest_levels import item_level_proxy
-from pipeline.classic_sources import ClassicDbSourceRecord
+from pipeline.classic_sources import ClassicDbSourceRecord, quest_factions_from_classic_sources
 from pipeline.csvio import populated
 from pipeline.forkdb import FACTION_RESTRICTIONS, PROFESSIONS, REP_LEVELS, ForkDatabase, decode
 from pipeline.item_sources import ItemSourceEntry
@@ -610,6 +610,33 @@ def build_loot(
         quest = sorted(set(quest) | set(wowhead_quest))
         for item_id, entries in wowhead_quest_detail.items():
             quest_detail[item_id] = [*quest_detail.get(item_id, []), *entries]
+    # quest-faction lane, 2026-09-29: the quest's own classic-db
+    # `RequiredRaces` (verified against a primary source) wins over every
+    # `QuestSource.faction` built above (fork, classic-db and wowhead
+    # alike all currently guess a quest's faction from the reward ITEM's
+    # own `factionRestriction`, which can legitimately disagree with the
+    # quest -- item 270018 Hammerbone, quest 914 Leaders of the Fang,
+    # `QuestSource`'s own doc). Applied once here, after every scrape's
+    # quest_detail has been folded in, so it covers a quest id regardless
+    # of which one produced the link. A quest id classic-db does not
+    # cover (a Forever-new quest) keeps its item-derived guess, tagged
+    # `faction_source="item"` rather than `"classic-db"` so the site and
+    # reports can say the faction is unverified.
+    quest_factions = quest_factions_from_classic_sources(classic_sources or {})
+    quest_detail = {
+        item_id: [
+            entry.model_copy(
+                update={
+                    "faction": quest_factions.get(entry.quest_id, entry.faction),
+                    "faction_source": (
+                        "classic-db" if entry.quest_id in quest_factions else "item"
+                    ),
+                }
+            )
+            for entry in entries
+        ]
+        for item_id, entries in quest_detail.items()
+    }
     if quest:
         sources.append(LootSource(id="quest", kind="quest", name="Quests", items=quest))
     # A source the filter emptied is not a source. `_drop_sources` already

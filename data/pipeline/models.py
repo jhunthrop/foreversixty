@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel
 
 
@@ -290,7 +292,17 @@ class QuestSource(BaseModel):
     The fork database states no faction on a quest directly; the item it
     awards carries whichever `factionRestriction` the quest's side amounts
     to in practice, so `faction` here is that restriction standing in for
-    it, not a fact the quest row itself states.
+    it, not a fact the quest row itself states -- UNLESS the quest id is
+    covered by the pinned classic-db dump (quest-faction lane, 2026-09-29),
+    in which case `faction` is the quest's own `quest_template.
+    RequiredRaces` (`pipeline.classic_sources.
+    quest_factions_from_classic_sources`, applied by `pipeline.loot.
+    sources.build_loot` over every `QuestSource` regardless of which
+    scrape -- fork, classic-db or wowhead -- produced it) and the item's
+    restriction is not consulted at all: the quest's own faction can
+    legitimately differ from a reward item that is itself unrestricted
+    (item 270018 Hammerbone, quest 914 Leaders of the Fang, horde-only via
+    `RequiredRaces` even though the item carries no `factionRestriction`).
 
     min_level/level (2026-09-28 quest-levels finding): the client's own
     item row for a quest reward almost always states `required_level` 0
@@ -302,11 +314,21 @@ class QuestSource(BaseModel):
     `"wowhead"` when scraped, or `"item_level_proxy"` when wowhead has no
     page for the quest and both fields instead fall back to
     `wowhead_quests.item_level_proxy(item.item_level)`.
+
+    faction_source: "classic-db" when `faction` came from the quest's own
+    `RequiredRaces` (verified against a primary source); "item" when the
+    quest id is absent from the pinned dump (a Forever-new quest, such as
+    79980 Scramble or 92422 The Wrath of Rath'mael) and `faction` is still
+    only the reward item's own restriction standing in for it, unverified
+    against the quest itself -- the site and reports should say so rather
+    than present it as fact. `None` only for a `QuestSource` built by a
+    caller other than `build_loot` (tests, mostly) that never set it.
     """
 
     quest_id: int
     name: str
     faction: str
+    faction_source: Literal["classic-db", "item"] | None = None
     min_level: int
     level: int
     level_source: str
