@@ -4564,29 +4564,9 @@
         "level": 10,
         "lines": [
           {
-            "spell_id": 1236188,
-            "name": "Aimed Shot",
-            "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot."
-          },
-          {
             "spell_id": 415336,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities."
-          },
-          {
-            "spell_id": 28751,
-            "name": "Multi-Shot",
-            "condition": "Multi-Shot as the filler between Aimed Shots."
-          },
-          {
-            "spell_id": 13549,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide."
-          },
-          {
-            "spell_id": 3044,
-            "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below."
           }
         ]
       },
@@ -4594,29 +4574,14 @@
         "level": 20,
         "lines": [
           {
-            "spell_id": 19434,
-            "name": "Aimed Shot",
-            "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot."
-          },
-          {
             "spell_id": 415337,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities."
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below."
           },
           {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "Multi-Shot as the filler between Aimed Shots."
-          },
-          {
-            "spell_id": 13550,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide."
-          },
-          {
-            "spell_id": 14282,
-            "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "spell_id": 1495,
+            "name": "Mongoose Bite",
+            "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
           }
         ]
       },
@@ -4624,29 +4589,24 @@
         "level": 30,
         "lines": [
           {
-            "spell_id": 20900,
-            "name": "Aimed Shot",
-            "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot."
-          },
-          {
             "spell_id": 415338,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities."
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below."
           },
           {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "Multi-Shot as the filler between Aimed Shots."
+            "spell_id": 1242634,
+            "name": "Counterattack",
+            "condition": "Counterattack: a bare cast that only lands while its parry-triggered proc aura is active, the same shape warrior-arms.json's own Overpower line uses."
           },
           {
-            "spell_id": 13551,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide."
+            "spell_id": 14269,
+            "name": "Mongoose Bite",
+            "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
           },
           {
-            "spell_id": 14283,
-            "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "Strider Kick as the lowest-priority filler on its own 8s cooldown."
           }
         ]
       },
@@ -4654,29 +4614,24 @@
         "level": 38,
         "lines": [
           {
-            "spell_id": 20901,
-            "name": "Aimed Shot",
-            "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot."
-          },
-          {
             "spell_id": 415340,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities."
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below."
           },
           {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "Multi-Shot as the filler between Aimed Shots."
+            "spell_id": 1242634,
+            "name": "Counterattack",
+            "condition": "Counterattack: a bare cast that only lands while its parry-triggered proc aura is active, the same shape warrior-arms.json's own Overpower line uses."
           },
           {
-            "spell_id": 13552,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide."
+            "spell_id": 14269,
+            "name": "Mongoose Bite",
+            "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
           },
           {
-            "spell_id": 14284,
-            "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "Strider Kick as the lowest-priority filler on its own 8s cooldown."
           }
         ]
       },
@@ -4684,29 +4639,24 @@
         "level": 40,
         "lines": [
           {
-            "spell_id": 20901,
-            "name": "Aimed Shot",
-            "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot."
-          },
-          {
             "spell_id": 415341,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities."
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below."
           },
           {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "Multi-Shot as the filler between Aimed Shots."
+            "spell_id": 1242634,
+            "name": "Counterattack",
+            "condition": "Counterattack: a bare cast that only lands while its parry-triggered proc aura is active, the same shape warrior-arms.json's own Overpower line uses."
           },
           {
-            "spell_id": 13552,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide."
+            "spell_id": 14269,
+            "name": "Mongoose Bite",
+            "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
           },
           {
-            "spell_id": 14284,
-            "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "Strider Kick as the lowest-priority filler on its own 8s cooldown."
           }
         ]
       },
@@ -4714,29 +4664,24 @@
         "level": 50,
         "lines": [
           {
-            "spell_id": 20902,
-            "name": "Aimed Shot",
-            "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot."
-          },
-          {
             "spell_id": 415342,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities."
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below."
           },
           {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "Multi-Shot as the filler between Aimed Shots."
+            "spell_id": 20909,
+            "name": "Counterattack",
+            "condition": "Counterattack: a bare cast that only lands while its parry-triggered proc aura is active, the same shape warrior-arms.json's own Overpower line uses."
           },
           {
-            "spell_id": 13554,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide."
+            "spell_id": 14270,
+            "name": "Mongoose Bite",
+            "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
           },
           {
-            "spell_id": 14285,
-            "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "Strider Kick as the lowest-priority filler on its own 8s cooldown."
           }
         ]
       },
@@ -4744,29 +4689,24 @@
         "level": 60,
         "lines": [
           {
-            "spell_id": 27632,
-            "name": "Aimed Shot",
-            "condition": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot."
-          },
-          {
             "spell_id": 415343,
             "name": "Raptor Strike",
-            "condition": "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities."
+            "condition": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below."
           },
           {
-            "spell_id": 2643,
-            "name": "Multi-Shot",
-            "condition": "Multi-Shot as the filler between Aimed Shots."
+            "spell_id": 20910,
+            "name": "Counterattack",
+            "condition": "Counterattack: a bare cast that only lands while its parry-triggered proc aura is active, the same shape warrior-arms.json's own Overpower line uses."
           },
           {
-            "spell_id": 25295,
-            "name": "Serpent Sting",
-            "condition": "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide."
+            "spell_id": 14271,
+            "name": "Mongoose Bite",
+            "condition": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates."
           },
           {
-            "spell_id": 14287,
-            "name": "Arcane Shot",
-            "condition": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an aut…"
+            "spell_id": 1317257,
+            "name": "Strider Kick",
+            "condition": "Strider Kick as the lowest-priority filler on its own 8s cooldown."
           }
         ]
       }
