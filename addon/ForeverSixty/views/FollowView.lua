@@ -206,27 +206,48 @@ local function slotsRow(parent, onSelect)
 end
 
 --- One row of the Top Gear upgrade queue (design section 3 item 2, Wave
---- C): the slot and item name on top, the source it drops from beneath,
---- and the delta by the site's own weights on the right. No icon -- a
---- message carries an item id and a name, not a link, and resolving an
---- icon from the id alone would need a server round trip this addon has
---- no network for.
+--- C, icons added to the standard docs/tenets.md sets): the slot's own
+--- icon (Theme.SLOT_ICONS) beside the item's icon (Compat.itemIcon, known
+--- without a server round trip even before GetItemInfo has the rest), the
+--- slot and the item as a quality-coloured link on top (Compat.
+--- displayLink, once the client has it cached), the source it drops from
+--- beneath, and the delta by the site's own weights on the right. An
+--- older companion's message with no item_id (the field is optional on
+--- the wire) falls back to the plain item_name text and the neutral
+--- tile, same as before this redesign.
 local function upgradeRow(parent, width)
 	local S = Theme.SIZES
 	local frame = CreateFrame("Frame", nil, parent)
 	frame:SetSize(width, S.rowHeight)
+	frame:EnableMouse(true)
+	local slotIcon = Theme.icon(frame, "ARTWORK", nil, S.iconSize)
+	slotIcon:SetPoint("LEFT", frame, "LEFT", 0, 0)
+	local icon = Theme.icon(frame, "ARTWORK", nil, S.iconSize)
+	icon:SetPoint("LEFT", slotIcon, "RIGHT", S.gap, 0)
 	local text = Widgets.label(frame, "", "body", "small")
-	text:SetPoint("LEFT", frame, "LEFT", S.gap * 2, 0)
+	text:SetPoint("LEFT", icon, "RIGHT", S.gap * 2, 0)
 	local source = Widgets.label(frame, "", "muted", "small")
-	source:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", S.gap * 2, S.gap)
+	source:SetPoint("BOTTOMLEFT", icon, "RIGHT", S.gap * 2, S.gap)
 	local right = Widgets.label(frame, "", "gold", "small")
 	right:SetJustifyH("RIGHT")
 	right:SetPoint("RIGHT", frame, "RIGHT", -S.gap * 2, 0)
-	return { frame = frame, text = text, source = source, right = right }
+	local row = { frame = frame, slotIcon = slotIcon, icon = icon, text = text, source = source, right = right }
+	Widgets.attachTooltip(frame, function()
+		return row.itemId, row.link
+	end)
+	return row
 end
 
 local function renderUpgradeRow(row, item)
-	row.text:SetText(string.format(L.followUpgradeItem, item.slot, item.item_name))
+	row.slotIcon:SetTexture(Theme.SLOT_ICONS[item.slot] or Theme.UNKNOWN_ICON)
+	if item.item_id ~= nil then
+		row.icon:SetTexture(Compat.itemIcon(item.item_id) or Theme.UNKNOWN_ICON)
+		row.text:SetText(string.format(L.followUpgradeItem, item.slot, Compat.displayLink(item.item_id)))
+		row.itemId = item.item_id
+	else
+		row.icon:SetTexture(Theme.UNKNOWN_ICON)
+		row.text:SetText(string.format(L.followUpgradeItem, item.slot, item.item_name))
+	end
 	row.source:SetText(string.format(L.followUpgradeSource, item.source))
 	row.right:SetText(string.format(L.followUpgradeDelta, item.delta))
 end

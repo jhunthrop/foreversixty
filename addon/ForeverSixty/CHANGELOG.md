@@ -7,6 +7,10 @@
   frame width that could disagree with it; Load now anchors directly off Dismiss instead,
   so the two can never drift apart, with a layout test pinning every banner child inside
   the page's own width.
+- The Talents page's Top Gear upgrade rows now show the item's own icon and its quality-
+  coloured link (once the client has it cached) beside the slot's own icon, instead of a
+  plain "<slot>: <item name>" line; hovering a row shows the item's real tooltip. A message
+  from an older companion build with no item id still falls back to the plain name.
 - Redesigned the Overview's rotation card: each priority row now carries the ability's own
   icon, its name, its rank, and the condition on its own muted line beneath, numbered
   top to bottom; a compact header strip names your spec (with its icon), your level band
