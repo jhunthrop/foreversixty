@@ -316,7 +316,7 @@ describe('itemTooltipModel', () => {
 describe('statLines sign', () => {
   it('writes a negative stat as "-15 Parry", never "+-15"', () => {
     const model = itemTooltipModel(item({ id: 9, stats: { crit: 14, parry: -15 } }), {
-      loot: { sources: [], quests: {}, factions: {} },
+      loot: { sources: [], quests: {} },
       sets: [],
     });
     expect(model.stats).toContain('+14 Crit');
