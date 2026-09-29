@@ -84,7 +84,7 @@ export const SPECS: readonly Spec[] = [
     role: 'dps',
     tree_index: 2,
     reference_stat: 'ranged_attack_power',
-    weight_stats: ['ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
+    weight_stats: ['attack_power', 'ranged_attack_power', 'agility', 'crit', 'hit', 'melee_haste'],
   },
   {
     spec: 'mage-arcane',
