@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
   "engine_version": "dd71eb7da",
-  "generated_at": "2026-09-29T00:18:26Z",
+  "generated_at": "2026-09-29T00:49:18Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -221,8 +221,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Lovingly Crafted Boomstick"
       ],
-      "weights_run_seconds": 0.707718708,
-      "verify_run_seconds": 0.864626292
+      "weights_run_seconds": 0.652579625,
+      "verify_run_seconds": 0.70028875
     },
     {
       "spec": "hunter-marksmanship",
@@ -441,8 +441,8 @@
         "main_hand: Impaling Harpoon",
         "ranged: Lovingly Crafted Boomstick"
       ],
-      "weights_run_seconds": 0.707718708,
-      "verify_run_seconds": 0.765163667
+      "weights_run_seconds": 0.652579625,
+      "verify_run_seconds": 0.751546584
     },
     {
       "spec": "hunter-marksmanship",
@@ -518,7 +518,8 @@
           "source": "Engineering",
           "source_kind": "crafted",
           "score": 15.999999999999954,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "chest",
@@ -672,8 +673,8 @@
         "main_hand: Frost Tiger Blade",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 0.662566667,
-      "verify_run_seconds": 1.20339725
+      "weights_run_seconds": 0.607941167,
+      "verify_run_seconds": 1.1709585
     },
     {
       "spec": "hunter-marksmanship",
@@ -749,7 +750,8 @@
           "source": "Engineering",
           "source_kind": "crafted",
           "score": 15.999999999999954,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "chest",
@@ -903,8 +905,8 @@
         "main_hand: Frost Tiger Blade",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 0.662566667,
-      "verify_run_seconds": 1.26380075
+      "weights_run_seconds": 0.607941167,
+      "verify_run_seconds": 1.1506182919999999
     },
     {
       "spec": "hunter-marksmanship",
@@ -962,8 +964,7 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "score": 465.31859084285713,
-          "verified": false,
-          "swap_note": "runner-up Gem of Trapped Innocents (id 23057) measured higher: 219.1 vs 216.9 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -1017,7 +1018,7 @@
           "item_name": "Cryptstalker Girdle",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 278.65929542143306,
+          "score": 278.6592954214331,
           "verified": true
         },
         {
@@ -1081,7 +1082,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 465.31859084285713,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -1134,8 +1136,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 0.672278375,
-      "verify_run_seconds": 1.5617082500000001
+      "weights_run_seconds": 0.625825167,
+      "verify_run_seconds": 1.262218208
     },
     {
       "spec": "hunter-marksmanship",
@@ -1183,7 +1185,7 @@
           "item_name": "Cryptstalker Headpiece",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 527.3185908428633,
+          "score": 527.3185908428632,
           "verified": true
         },
         {
@@ -1193,8 +1195,7 @@
           "source": "Naxxramas",
           "source_kind": "raid",
           "score": 465.31859084285713,
-          "verified": false,
-          "swap_note": "runner-up Gem of Trapped Innocents (id 23057) measured higher: 219.1 vs 218.2 set DPS - swapped in"
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -1202,7 +1203,7 @@
           "item_name": "Cryptstalker Spaulders",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 290.65929542143425,
+          "score": 290.6592954214343,
           "verified": true
         },
         {
@@ -1221,7 +1222,7 @@
           "item_name": "Legionnaire's Chain Hauberk",
           "source": "Rank 12",
           "source_kind": "pvp",
-          "score": 497.3185908428603,
+          "score": 497.31859084286026,
           "verified": true
         },
         {
@@ -1248,7 +1249,7 @@
           "item_name": "Cryptstalker Girdle",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 278.65929542143306,
+          "score": 278.6592954214331,
           "verified": true
         },
         {
@@ -1257,7 +1258,7 @@
           "item_name": "Legionnaire's Chain Legguards",
           "source": "Rank 12",
           "source_kind": "pvp",
-          "score": 497.31859084286026,
+          "score": 497.3185908428603,
           "verified": true
         },
         {
@@ -1312,7 +1313,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 465.31859084285713,
-          "verified": true
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
@@ -1365,8 +1367,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 0.672278375,
-      "verify_run_seconds": 1.528612708
+      "weights_run_seconds": 0.625825167,
+      "verify_run_seconds": 1.268921708
     }
   ]
 }

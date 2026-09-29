@@ -104,6 +104,17 @@ type candidate struct {
 	Unique             bool
 	Slots              []string
 	SetID              *int
+	// EffectText is the item's own on-hit/on-use/proc description
+	// (data/builds/<build>/items/<class>.json's own effect_text), empty
+	// for an item with no such effect. Carried through from
+	// classItem.EffectText, unused before this lane (2026-09-28
+	// weights-effects): score() cannot see a proc at all (it only dots
+	// Stats against a spec's weights), which is exactly the gap this
+	// lane's brief calls out ("Do we factor in on-hit effects, set
+	// bonuses, etc. in our sims?") -- effectcoverage.go and rank.go read
+	// this field to decide whether a candidate needs an engine-verified
+	// run instead of (or in addition to) score()'s stat total.
+	EffectText string
 	// EffectiveRequiredLevel is the level gate this candidate really
 	// has: RequiredLevel unless a quest or crafted source floors it
 	// higher (leveling.EffectiveRequiredLevel; see
@@ -162,6 +173,7 @@ func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 			Unique:                 ci.Unique,
 			Slots:                  plannerSlots(ci.Slot),
 			SetID:                  ci.SetID,
+			EffectText:             ci.EffectText,
 		})
 	}
 	return out, missing, nil

@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 20 (dwarf, 0000000000000000-35300000000000000-000000000000000000)
 
-Set DPS (verified): 65.9. Weights run: 0.7s. Verify run: 0.9s. 1202 eligible items had no known source.
+Set DPS (verified): 65.9. Weights run: 0.7s. Verify run: 0.7s. 1202 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.006, agility=2.000 ± 0.011, crit=7.120 ± 1.713, hit=not significant (4.069 ± 1.555), melee_haste=not significant (19.999 ± 5.120)
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 1202, see the JSON for more): 727 Notched Shortswo
 
 ### Band 40 (dwarf, 0000000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 97.9. Weights run: 0.7s. Verify run: 1.2s. 2837 eligible items had no known source.
+Set DPS (verified): 97.9. Weights run: 0.6s. Verify run: 1.2s. 2837 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.008, agility=2.000 ± 0.015, crit=11.241 ± 2.522, hit=not significant (7.195 ± 2.873), melee_haste=not significant (7.826 ± 5.608)
 
@@ -66,14 +66,14 @@ No-known-source sample (15 of 2837, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (dwarf, 5522000000000000-35305500115003000-510000000000000000)
 
-Set DPS (verified): 216.9. Weights run: 0.7s. Verify run: 1.6s. 4389 eligible items had no known source.
+Set DPS (verified): 216.9. Weights run: 0.6s. Verify run: 1.3s. 4389 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.005, agility=2.000 ± 0.009, crit=16.619 ± 3.069, hit=not significant (0.000 ± 0.000), melee_haste=not significant (9.439 ± 6.592)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Cryptstalker Headpiece (22438) | Quests [quest] | 527.3 | yes |
-| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 465.3 | no - runner-up Gem of Trapped Innocents (id 23057) measured higher: 219.1 vs 216.9 set DPS - swapped in |
+| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 465.3 | yes |
 | shoulder | Cryptstalker Spaulders (22439) | Quests [quest] | 290.7 | yes |
 | back | Chromatic Cloak (18509) | Leatherworking [crafted] | 232.7 | no - runner-up Cloak of the Fallen God (id 21710) measured higher: 220.9 vs 216.9 set DPS - swapped in |
 | chest | Legionnaire's Chain Hauberk (22874) | Rank 12 [pvp] | 497.3 | yes |
@@ -128,7 +128,7 @@ No-known-source sample (15 of 1202, see the JSON for more): 727 Notched Shortswo
 
 ### Band 40 (troll, 0000000000000000-35305500115003000-000000000000000000)
 
-Set DPS (verified): 98.2. Weights run: 0.7s. Verify run: 1.3s. 2837 eligible items had no known source.
+Set DPS (verified): 98.2. Weights run: 0.6s. Verify run: 1.2s. 2837 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.008, agility=2.000 ± 0.015, crit=11.241 ± 2.522, hit=not significant (7.195 ± 2.873), melee_haste=not significant (7.826 ± 5.608)
 
@@ -158,14 +158,14 @@ No-known-source sample (15 of 2837, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (troll, 5522000000000000-35305500115003000-510000000000000000)
 
-Set DPS (verified): 218.2. Weights run: 0.7s. Verify run: 1.5s. 4389 eligible items had no known source.
+Set DPS (verified): 218.2. Weights run: 0.6s. Verify run: 1.3s. 4389 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): ranged_attack_power=1.000 ± 0.005, agility=2.000 ± 0.009, crit=16.619 ± 3.069, hit=not significant (0.000 ± 0.000), melee_haste=not significant (9.439 ± 6.592)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Cryptstalker Headpiece (22438) | Quests [quest] | 527.3 | yes |
-| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 465.3 | no - runner-up Gem of Trapped Innocents (id 23057) measured higher: 219.1 vs 218.2 set DPS - swapped in |
+| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 465.3 | yes |
 | shoulder | Cryptstalker Spaulders (22439) | Quests [quest] | 290.7 | yes |
 | back | Chromatic Cloak (18509) | Leatherworking [crafted] | 232.7 | no - runner-up Cloak of the Fallen God (id 21710) measured higher: 221.7 vs 218.2 set DPS - swapped in |
 | chest | Legionnaire's Chain Hauberk (22874) | Rank 12 [pvp] | 497.3 | yes |

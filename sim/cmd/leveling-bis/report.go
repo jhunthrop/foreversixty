@@ -26,6 +26,17 @@ type slotRow struct {
 	Score      float64 `json:"score,omitempty"`
 	Verified   bool    `json:"verified"`
 	SwapNote   string  `json:"swap_note,omitempty"`
+	// EffectUnmodelled is true when the picked item carries an
+	// effect_text the engine does NOT implement (effectids_generated.go)
+	// -- this lane's brief, item 3: such a candidate is still scored on
+	// its plain stats (score.go never saw the effect either way), but
+	// the page shows "proc not simulated" on it rather than letting the
+	// Score/Verified columns imply the whole item was accounted for.
+	// False (omitted) for a candidate with no effect_text at all, and
+	// for one whose effect IS implemented -- see rank.go's
+	// hasImplementedEffect, the single predicate both this flag and the
+	// effect-verification pass itself read.
+	EffectUnmodelled bool `json:"effect_unmodelled,omitempty"`
 }
 
 // bandReport is one band's whole answer for one faction: the pick per
@@ -125,6 +136,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			row.ItemID = pk.Item.ID
 			row.ItemName = pk.Item.Name
 			row.Score = pk.Item.Score
+			row.EffectUnmodelled = pk.Item.EffectText != "" && !hasImplementedEffect(pk.Item.candidate)
 			if pk.Item.HasSource {
 				row.Source = pk.Item.Source.Label
 				row.SourceKind = pk.Item.Source.Kind

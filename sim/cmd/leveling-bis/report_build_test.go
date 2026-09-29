@@ -188,6 +188,33 @@ func TestBuildReportFlagsInsignificantWeights(t *testing.T) {
 	}
 }
 
+func TestBuildReportFlagsEffectUnmodelledOnAnUnimplementedProcButNotAnImplementedOne(t *testing.T) {
+	picks := map[string]slotPick{
+		// 424242 is not a real item id: its effect can never be
+		// engine-implemented (rank.go's hasImplementedEffect).
+		"main_hand": {Item: &scored{candidate: candidate{ID: 424242, Name: "Unmodelled Sword", EffectText: "Does something nobody coded."}}},
+		// 3854 (Frost Tiger Blade) is real, from this lane's own
+		// effectids_generated.go.
+		"ranged": {Item: &scored{candidate: candidate{ID: 3854, Name: "Frost Tiger Blade", EffectText: "Launches a bolt of frost."}}},
+		// A plain item with no effect_text at all must never be flagged.
+		"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Plain Helm"}}},
+	}
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil)
+	byslot := map[string]slotRow{}
+	for _, s := range r.Slots {
+		byslot[s.Slot] = s
+	}
+	if !byslot["main_hand"].EffectUnmodelled {
+		t.Error("main_hand (unimplemented proc) EffectUnmodelled = false, want true")
+	}
+	if byslot["ranged"].EffectUnmodelled {
+		t.Error("ranged (implemented proc) EffectUnmodelled = true, want false")
+	}
+	if byslot["head"].EffectUnmodelled {
+		t.Error("head (no effect_text at all) EffectUnmodelled = true, want false")
+	}
+}
+
 func TestWriteSpecReportWritesReadableJSON(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "nested", "hunter-marksmanship.json")

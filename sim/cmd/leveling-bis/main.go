@@ -318,6 +318,31 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			}
 			trinketSeconds := time.Since(trinketStart).Seconds()
 
+			// Every other slot with an engine-implemented effect
+			// candidate (rank.go; this lane's brief, item 3): score()
+			// cannot see a proc at all, so a slot score() would
+			// otherwise decide on stats alone gets a real verify pass
+			// against its own implemented-effect candidates.
+			effectStart := time.Now()
+			for _, slot := range slotsNeedingEffectVerification(bySlot) {
+				var notes []string
+				picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, bySlot, slot)
+				for _, n := range notes {
+					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
+				}
+			}
+
+			// A pick that would complete an engine-implemented 2- or
+			// 3-piece set is tried together and kept only if it
+			// verifies ahead of the independently-scored picks (sets.go;
+			// this lane's brief, item 3's second half).
+			var setNotes []string
+			picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, bySlot)
+			for _, n := range setNotes {
+				log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
+			}
+			effectSeconds := time.Since(effectStart).Seconds()
+
 			verifyStart := time.Now()
 			setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, picks)
 			if err != nil {
@@ -337,7 +362,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// band, logged above), trinket-rank and verify seconds
 			// separately per faction, so a slow band/spec is visible
 			// without re-deriving it from timestamps.
-			log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
+			log.Printf("leveling-bis: %s band %d %s: set DPS %.1f, trinket-rank %.1fs, effect-rank+set-completion %.1fs, verify %.1fs, %d no-source, %d cross-class set item(s) excluded, %d weapon candidate(s) with no dps (lane data-weapons' gap), %d verify errors", spec, band, f.name, setDPS, trinketSeconds, effectSeconds, verifySeconds, len(pool.NoSource), len(pool.CrossClassSet), len(pool.NoDPSWeapon), len(verifyErrors))
 		}
 	}
 
