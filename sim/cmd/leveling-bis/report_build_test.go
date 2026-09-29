@@ -261,7 +261,7 @@ func TestBuildReportCarriesTiedAlternatives(t *testing.T) {
 		},
 		"head": {Item: &scored{candidate: candidate{ID: 4, Name: "Plain Helm"}, Score: 12}},
 	}
-	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil)
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil)
 	byslot := map[string]slotRow{}
 	for _, s := range r.Slots {
 		byslot[s.Slot] = s
