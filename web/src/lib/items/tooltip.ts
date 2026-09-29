@@ -25,7 +25,14 @@
 //     the client's exact prose.
 import type { Item, ItemSet } from '../planner/types';
 import { SLOT_LABELS, STAT_KEYS, STAT_LABELS } from '../planner/types';
-import { bossName, itemsOfBoss, itemsOfSource, sourceLabel, type LootFile } from '../sim/loot';
+import {
+  bossName,
+  itemsOfBoss,
+  itemsOfSource,
+  sourceLabel,
+  type LootFile,
+  type LootSource,
+} from '../sim/loot';
 import { humanise } from '../sim/humanise';
 
 export interface WeaponLine {
@@ -67,6 +74,17 @@ export interface ItemTooltipSources {
   loot: LootFile;
   sets: readonly ItemSet[];
 }
+
+/** The source block never shows more than this many lines before collapsing the rest into
+ *  "and N more" (owner screenshot 2026-09-29, tooltip-polish brief item 4) -- a raid boss
+ *  with a dozen possible drops used to print a dozen lines, dwarfing the rest of the panel. */
+const MAX_SOURCE_LINES = 3;
+
+/** `world` today, `world_drop` once the loot pipeline's own migration lands (a parallel
+ *  lane, per this lane's brief) -- both name the exact same thing, so both collapse to the
+ *  identical "World drop" line rather than drifting into two different sentences for one
+ *  concept. */
+const WORLD_DROP_KINDS: ReadonlySet<string> = new Set(['world', 'world_drop']);
 
 const ALIAS_SLOT_LABELS: Record<string, string> = { finger: 'Finger', trinket: 'Trinket' };
 
@@ -118,6 +136,45 @@ function setNameFor(item: Item, sets: readonly ItemSet[]): string | null {
   return sets.find((set) => set.id === item.set_id)?.name ?? null;
 }
 
+/** One candidate source line before final ordering and capping: `priority` 0 for a named
+ *  boss kill or a quest reward (the client's own "how you'd actually go get this" answer),
+ *  1 for everything else; `chance` the drop percent when loot.json records one for this
+ *  exact item at this exact source, `order` the original loot.json iteration position, used
+ *  only to keep equal-priority/unknown-chance lines in a stable, deterministic order. */
+interface RankedSourceLine {
+  text: string;
+  priority: 0 | 1;
+  chance: number | undefined;
+  order: number;
+}
+
+function percentLabel(chance: number): string {
+  return `${Math.round(chance)}%`;
+}
+
+/**
+ * A `world`/`world_drop` source always renders as this single line (brief item 4) -- never
+ * the raw `source.name`, and never one line per world source an item happens to drop from
+ * (a client tooltip never lists individual zones for a world drop either). `LootSource`
+ * carries no level-range field today; this reads one defensively, without typing it, so a
+ * future data lane can add `level_range` (or `min_level`/`max_level`) and have it show up
+ * here with no change on this side.
+ */
+function worldDropLine(source: LootSource): string {
+  const untyped = source as unknown as {
+    level_range?: string;
+    min_level?: number;
+    max_level?: number;
+  };
+  if (typeof untyped.level_range === 'string' && untyped.level_range !== '') {
+    return `World drop (${untyped.level_range})`;
+  }
+  if (typeof untyped.min_level === 'number' && typeof untyped.max_level === 'number') {
+    return `World drop (${untyped.min_level}-${untyped.max_level})`;
+  }
+  return 'World drop';
+}
+
 /**
  * Every place loot.json says `itemId` comes from: a specific boss when one of the source's
  * bosses names it (checked first, so a raid/dungeon item never also prints its zone-level
@@ -125,39 +182,102 @@ function setNameFor(item: Item, sets: readonly ItemSet[]): string | null {
  * quest that rewards it. `sourceLabel` and `bossName` are loot.ts's own -- reused rather than
  * re-worded here, so a rep source with a standing or an unnamed boss never drifts from how
  * the source picker already renders the identical source.
+ *
+ * `world`/`world_drop` sources collapse to one "World drop" line; every other kind this
+ * function does not specifically recognise (present or future) falls through to the final
+ * `else` and is named by its own `source.name` rather than crashing or inventing wording --
+ * the defensiveness the brief asks for.
  */
 function sourceLinesFor(itemId: number, loot: LootFile): string[] {
-  const lines: string[] = [];
+  const lines: RankedSourceLine[] = [];
+  let order = 0;
+
   for (const source of loot.sources) {
+    if (WORLD_DROP_KINDS.has(source.kind)) {
+      lines.push({ text: worldDropLine(source), priority: 1, chance: undefined, order: order++ });
+      continue;
+    }
     const boss = (source.bosses ?? []).find((candidate) =>
       itemsOfBoss(source, candidate.id).includes(itemId),
     );
     if (boss !== undefined) {
-      lines.push(`${source.name} — ${bossName(source, boss)}`);
+      lines.push({
+        text: `${source.name} — ${bossName(source, boss)}`,
+        priority: 0,
+        chance: boss.item_chances?.[String(itemId)],
+        order: order++,
+      });
       continue;
     }
     if (!itemsOfSource(source).includes(itemId)) continue;
+    const chance = source.item_chances?.[String(itemId)];
     if (source.kind === 'crafted') {
-      lines.push(source.profession !== undefined ? `${source.name} (${source.profession})` : source.name);
+      lines.push({
+        text: source.profession !== undefined ? `${source.name} (${source.profession})` : source.name,
+        priority: 1,
+        chance: undefined,
+        order: order++,
+      });
     } else if (source.kind === 'rep') {
-      lines.push(sourceLabel(source));
+      lines.push({ text: sourceLabel(source), priority: 1, chance: undefined, order: order++ });
     } else if (source.kind === 'pvp') {
-      lines.push(source.rank !== undefined ? `${source.name}, rank ${source.rank}` : source.name);
+      lines.push({
+        text: source.rank !== undefined ? `${source.name}, rank ${source.rank}` : source.name,
+        priority: 1,
+        chance: undefined,
+        order: order++,
+      });
     } else {
-      lines.push(source.name);
+      lines.push({ text: source.name, priority: 1, chance, order: order++ });
     }
   }
   for (const quest of loot.quests?.[String(itemId)] ?? []) {
-    lines.push(`${quest.name} (${humanise(quest.faction)})`);
+    lines.push({
+      text: `${quest.name} (${humanise(quest.faction)})`,
+      priority: 0,
+      chance: undefined,
+      order: order++,
+    });
   }
+
+  return finalizeSourceLines(lines);
+}
+
+/**
+ * Ranks, formats, dedupes and caps the candidate lines `sourceLinesFor` built: boss kills
+ * and quest rewards (`priority` 0) before everything else, a known drop chance descending
+ * within its own priority group, an unknown chance last in its group -- ties broken by
+ * loot.json's own order so this never reshuffles between two otherwise-identical runs. At
+ * most `MAX_SOURCE_LINES` real lines; a longer list collapses the rest into one "and N
+ * more" line instead of dwarfing the rest of the panel.
+ */
+function finalizeSourceLines(lines: RankedSourceLine[]): string[] {
+  const ranked = [...lines].sort((a, b) => {
+    if (a.priority !== b.priority) return a.priority - b.priority;
+    if (a.chance !== b.chance) {
+      if (a.chance === undefined) return 1;
+      if (b.chance === undefined) return -1;
+      return b.chance - a.chance;
+    }
+    return a.order - b.order;
+  });
+  const texts = ranked.map((line) =>
+    line.chance === undefined ? line.text : `${line.text} (${percentLabel(line.chance)})`,
+  );
+
   // A quest that rewards the item to both factions separately (an Alliance-side and a
-  // Horde-side copy of the same quest, both humanising to "(Both)") would otherwise print
-  // the identical line twice -- besides being a pointless repeat, ItemTooltip.svelte keys
-  // its `{#each sourceLines as line (line)}` by the line's own text, and Svelte throws
-  // (rather than silently rendering) on a duplicate key, which would crash the tooltip
-  // instead of just showing it. `Set` preserves insertion order, so this only removes the
-  // repeat, never reorders the real lines.
-  return [...new Set(lines)];
+  // Horde-side copy of the same quest, both humanising to "(Both)"), or the same "World
+  // drop" line named by two different world sources, would otherwise print an identical
+  // line twice -- besides being a pointless repeat, ItemTooltip.svelte keys its
+  // `{#each sourceLines as line (line)}` by the line's own text, and Svelte throws (rather
+  // than silently rendering) on a duplicate key, which would crash the tooltip instead of
+  // just showing it. `Set` preserves insertion (i.e. ranked) order, so this only removes
+  // the repeat, never reorders the real lines.
+  const deduped = [...new Set(texts)];
+
+  if (deduped.length <= MAX_SOURCE_LINES) return deduped;
+  const shown = deduped.slice(0, MAX_SOURCE_LINES);
+  return [...shown, `and ${deduped.length - MAX_SOURCE_LINES} more`];
 }
 
 /** The one place every ItemHover/ItemTooltip in the site builds its model -- a runtime

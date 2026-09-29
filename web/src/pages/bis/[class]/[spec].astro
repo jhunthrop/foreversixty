@@ -73,14 +73,7 @@ import {
   resolveSourceCell,
   type SourceCell,
 } from '../../../lib/bis/source-cell';
-import type {
-  BisBand,
-  BisFile,
-  ChangedSlot,
-  Faction,
-  ItemDetail,
-  LootQuestsFile,
-} from '../../../lib/bis/types';
+import type { BisFile, ChangedSlot, Faction, ItemDetail, LootQuestsFile } from '../../../lib/bis/types';
 import type { LootFile } from '../../../lib/sim/loot';
 
 export async function getStaticPaths() {
@@ -219,7 +212,6 @@ interface BandInfo {
   talentPoints: number;
   weightBars: WeightBarRow[];
   referenceLabel: string;
-  noSourceLine: string;
 }
 
 function bandInfosFor(faction: Faction): BandInfo[] {
@@ -260,21 +252,9 @@ function bandInfosFor(faction: Faction): BandInfo[] {
         talentPoints: bandData.talent_points,
         weightBars,
         referenceLabel: weightBars[0]?.row.label ?? specEntry.reference_stat,
-        noSourceLine: coverageLineFor(bandData),
       },
     ];
   });
-}
-
-/** The coverage line under the rail: a positive "known of total" count summed over the
- *  band's per-slot `coverage` rows (sim/cmd/leveling-bis' `coverageRow`), or the plain
- *  no-source count for a file published before coverage existed. */
-function coverageLineFor(band: BisBand): string {
-  const rows = Object.values(band.coverage ?? {});
-  if (rows.length === 0) return bisCopy.noSourceLine(band.no_source_count);
-  const sourced = rows.reduce((n, r) => n + r.sourced, 0);
-  const eligible = rows.reduce((n, r) => n + r.eligible, 0);
-  return bisCopy.coverageLine(sourced, eligible);
 }
 
 /** Every model this band's rows, runner-ups and "what changed" diff name, merged into
@@ -439,7 +419,6 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                     talentPoints,
                     weightBars,
                     referenceLabel,
-                    noSourceLine,
                   }) => (
                     <div
                       id={`band-${faction}-${band}`}
@@ -675,7 +654,6 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                             </ul>
                           </div>
                           <p class="text-muted">{bisCopy.raceTalentsLine(race, talentPoints)}</p>
-                          {noSourceLine && <p class="text-muted text-[12px]">{noSourceLine}</p>}
                         </aside>
                       </div>
                     </div>

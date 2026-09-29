@@ -155,4 +155,34 @@ test.describe('the BiS page shares one tooltip host across every row', () => {
     await expect(page.getByTestId('item-tooltip')).toHaveCount(1);
     await expect(page.getByTestId('item-tooltip')).toContainText(secondName);
   });
+
+  // Tooltip-polish brief item 5 (owner screenshot 2026-09-29): the panel never extends below
+  // the viewport -- lib/items/tooltip-position.ts flips it above the anchor, or clamps and
+  // scrolls internally when neither side fits. A row anywhere in the middle of the page never
+  // exercises that path (Playwright centers whatever it hovers), so this forces the anchor to
+  // the very bottom edge of the viewport first.
+  test('a row pinned to the bottom edge of the viewport opens the tooltip without spilling past it', async ({
+    page,
+  }) => {
+    await page.goto('/bis/hunter/marksmanship');
+    const band = firstVisibleBand(page);
+    await expect(band).toBeVisible();
+    const icon = band.locator('[data-testid^="item-hover-"]').last();
+    await expect(icon).toBeVisible();
+
+    // `block: 'end'` aligns the anchor's own bottom edge with the viewport's bottom edge --
+    // the same "nothing below it" case a long band list's last row hits on a short viewport,
+    // without needing a fixture tall enough to push a real row there on its own.
+    await icon.evaluate((el) => el.scrollIntoView({ block: 'end' }));
+    await icon.hover();
+
+    const tooltip = page.getByTestId('item-tooltip');
+    await expect(tooltip).toBeVisible();
+    const box = await tooltip.boundingBox();
+    const viewport = page.viewportSize();
+    expect(box).not.toBeNull();
+    expect(viewport).not.toBeNull();
+    // The +1 covers sub-pixel rounding between the two measurements, nothing more.
+    expect(box!.y + box!.height).toBeLessThanOrEqual(viewport!.height + 1);
+  });
 });

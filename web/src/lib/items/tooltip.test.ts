@@ -169,6 +169,125 @@ describe('itemTooltipModel', () => {
     expect(itemTooltipModel(item({ id: 42 }), NO_SOURCES).sourceLines).toEqual([]);
   });
 
+  it('collapses a world or world_drop source to one "World drop" line, the two kinds treated identically', () => {
+    const loot: LootFile = {
+      sources: [
+        { id: 'world:1', kind: 'world', name: 'Whatever this build calls it', items: [1] },
+        // Not yet a real LootKind on LootSource's own type (the parallel lane's own
+        // migration) -- cast the same way a build straight off that lane's pipeline would
+        // arrive, so this proves the defensive read rather than assuming it away.
+        {
+          id: 'world:2',
+          kind: 'world_drop' as LootFile['sources'][number]['kind'],
+          name: 'Elsewhere',
+          items: [2],
+        },
+      ],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual(['World drop']);
+    expect(itemTooltipModel(item({ id: 2 }), sources).sourceLines).toEqual(['World drop']);
+  });
+
+  it('appends a world source’s level range when the row carries one, defensively (no typed field for it yet)', () => {
+    const loot: LootFile = {
+      sources: [
+        {
+          id: 'world:3',
+          kind: 'world',
+          name: 'Anywhere',
+          items: [1],
+          ...({ level_range: '20-30' } as Record<string, unknown>),
+        },
+      ],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual(['World drop (20-30)']);
+  });
+
+  it('puts a boss line’s known drop chance in the line as "(N%)"', () => {
+    const loot: LootFile = {
+      sources: [
+        {
+          id: 'raid:molten-core',
+          kind: 'raid',
+          name: 'Molten Core',
+          bosses: [
+            { id: 'raid:molten-core:12118', name: 'Ragnaros', items: [1], item_chances: { '1': 19.6 } },
+          ],
+        },
+      ],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual(['Molten Core — Ragnaros (20%)']);
+  });
+
+  it('ranks bosses and quests ahead of vendor/crafted/rep/pvp lines, known chance descending within that group', () => {
+    const loot: LootFile = {
+      sources: [
+        { id: 'vendor:some-vendor', kind: 'vendor', name: 'Some Vendor', items: [1] },
+        {
+          id: 'raid:molten-core',
+          kind: 'raid',
+          name: 'Molten Core',
+          bosses: [{ id: 'raid:molten-core:a', name: 'Low Chance', items: [1], item_chances: { '1': 5 } }],
+        },
+      ],
+      quests: { '1': [{ quest_id: 9, name: 'A Reward', faction: 'alliance', min_level: 1, level: 5 }] },
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual([
+      'Molten Core — Low Chance (5%)',
+      'A Reward (Alliance)',
+      'Some Vendor',
+    ]);
+  });
+
+  it('orders two known-chance boss lines by chance descending', () => {
+    const loot: LootFile = {
+      sources: [
+        {
+          id: 'raid:molten-core',
+          kind: 'raid',
+          name: 'Molten Core',
+          bosses: [{ id: 'raid:molten-core:a', name: 'Low Chance', items: [1], item_chances: { '1': 5 } }],
+        },
+        {
+          id: 'raid:blackwing-lair',
+          kind: 'raid',
+          name: 'Blackwing Lair',
+          bosses: [
+            { id: 'raid:blackwing-lair:b', name: 'High Chance', items: [1], item_chances: { '1': 40 } },
+          ],
+        },
+      ],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual([
+      'Blackwing Lair — High Chance (40%)',
+      'Molten Core — Low Chance (5%)',
+    ]);
+  });
+
+  it('caps the source block at 3 lines and folds the rest into "and N more"', () => {
+    const loot: LootFile = {
+      sources: [
+        { id: 'vendor:1', kind: 'vendor', name: 'Vendor One', items: [1] },
+        { id: 'vendor:2', kind: 'vendor', name: 'Vendor Two', items: [1] },
+        { id: 'vendor:3', kind: 'vendor', name: 'Vendor Three', items: [1] },
+        { id: 'vendor:4', kind: 'vendor', name: 'Vendor Four', items: [1] },
+        { id: 'vendor:5', kind: 'vendor', name: 'Vendor Five', items: [1] },
+      ],
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 1 }), sources).sourceLines).toEqual([
+      'Vendor One',
+      'Vendor Two',
+      'Vendor Three',
+      'and 2 more',
+    ]);
+  });
+
   it('drops a duplicate line when two quest entries render identically', () => {
     // A neutral ("both") quest reward can appear as two separate entries in loot.json (one
     // recorded per side that can pick it up) that both humanise to the exact same line --
