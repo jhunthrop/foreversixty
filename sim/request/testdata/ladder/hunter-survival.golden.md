@@ -90,41 +90,43 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-00000000000000000-100000000000000000 | main_hand:3462 off_hand:15443 ranged:5346 | 51.9 | 3 | other:shoot=110.1, spell:13549=17.1, spell:3044=16.4, other:move=1.0, spell:13165=1.0 | {SpellID: 20904}, {SpellID: 2643} |
-| 20 | 0000000000000000-00000000000000000-551000000000000000 | main_hand:17046 off_hand:9608 ranged:6739 | 63.2 | 5 | other:shoot=90.2, spell:13550=12.0, spell:19434=10.2, spell:2643=2.0, other:move=1.0 | - |
-| 30 | 0000000000000000-00000000000000000-555222000000000000 | main_hand:4977 off_hand:9520 ranged:17686 | 75.2 | 6 | other:shoot=89.7, spell:13551=14.1, spell:20900=3.9, spell:2643=3.8, other:move=1.0 | - |
-| 38 | 0000000000000000-00000000000000000-555223001051000000 | main_hand:4987 off_hand:10703 ranged:17686 | 79.2 | 6 | other:shoot=89.7, spell:2643=14.6, spell:20901=4.0, spell:13552=3.0, other:move=1.0 | - |
-| 40 | 0000000000000000-00000000000000000-555223001051200000 | main_hand:10750 off_hand:4987 ranged:10510 | 82.8 | 6 | other:shoot=74.5, spell:2643=15.3, spell:20901=4.0, spell:13552=3.4, other:move=1.0 | - |
-| 50 | 0000000000000000-35200000000000000-555223001051200000 | main_hand:10696 off_hand:10697 ranged:16004 | 98.5 | 6 | other:shoot=79.9, spell:2643=16.1, spell:20902=4.0, spell:13554=3.0, other:move=1.0 | - |
-| 60 | 0000000000000000-35534000000000000-555223001051200000 | main_hand:23577 off_hand:21126 ranged:23557 | 125.5 | 6 | other:shoot=71.8, spell:2643=17.1, spell:20904=4.0, spell:25295=3.0, other:move=1.0 | - |
+| 10 | 0000000000000000-00000000000000000-100000000000000000 | main_hand:3462 off_hand:15443 ranged:5346 | 39.3 | 3 | other:attack/2=121.4, other:attack/1=86.8, spell:14260/3=27.2, spell:14260=27.0, spell:14260/1=27.0 | - |
+| 20 | 0000000000000000-00000000000000000-500230100000000000 | main_hand:17046 off_hand:9608 ranged:6739 | 49.7 | 4 | other:attack/2=95.9, other:attack/1=74.9, spell:1495=31.4, spell:14261=8.0, spell:14261/1=8.0 | - |
+| 30 | 0000000000000000-00000000000000000-500230131051000000 | main_hand:4977 off_hand:9520 ranged:17686 | 71.9 | 5 | other:attack/2=101.2, other:attack/1=71.3, spell:14269=30.5, spell:14262=8.0, spell:14262/1=8.0 | {SpellID: 1317257} |
+| 38 | 0000000000000000-00000000000000000-500230131051120140 | main_hand:4987 off_hand:10703 ranged:17686 | 88.9 | 6 | other:attack/2=95.8, other:attack/1=63.0, spell:14269=31.6, spell:1317257=23.0, spell:14263=10.0 | - |
+| 40 | 0000000000000000-00000000000000000-500230131051120151 | main_hand:10750 off_hand:4987 ranged:10510 | 87.7 | 6 | other:attack/1=103.9, other:attack/2=73.0, spell:14269=30.4, spell:1317257=23.0, spell:14264=10.0 | - |
+| 50 | 0000000000000000-32005000000000000-500230131051120151 | main_hand:10696 off_hand:10697 ranged:16004 | 113.2 | 6 | other:attack/2=121.4, other:attack/1=80.2, spell:14270=30.1, spell:1317257=23.0, spell:14265=11.0 | - |
+| 60 | 0000000000000000-32005500005000000-500230131051120151 | main_hand:23577 off_hand:21126 ranged:23557 | 159.8 | 6 | other:attack/1=110.4, other:attack/2=101.3, spell:14271=29.4, spell:1317257=23.0, spell:14266=11.0 | - |
 
 ## Learned but unused (informational)
 
 
 ### Level 10
 
+- Arcane Shot (spell 3044)
 - Bite (spell 17255)
 - Claw (spell 16828)
 - Lightning Breath (spell 24844)
 - Mine! (spell 1265054)
-- Raptor Strike (spell 14260)
 - Scorpid Poison (spell 24640)
+- Serpent Sting (spell 13549)
 - Widow Bite (spell 26226)
 - Wyvern Strike (spell 458482)
 
 ### Level 20
 
+- Aimed Shot (spell 19434)
+- Arcane Shot (spell 14282)
 - Bite (spell 17256)
 - Claw (spell 16829)
 - Dismember (spell 1264758)
 - Immolation Trap Effect (spell 13797)
 - Lightning Breath (spell 25008)
 - Mine! (spell 1265055)
-- Mongoose Bite (spell 1495)
 - Pinch (spell 1264735)
-- Raptor Strike (spell 14261)
 - Savage Rend (spell 1265065)
 - Scorpid Poison (spell 24640)
+- Serpent Sting (spell 13550)
 - Sonic Blast (spell 1264478)
 - Swipe (spell 1264494)
 - Tendon Rip (spell 1265038)
@@ -135,6 +137,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 30
 
+- Aimed Shot (spell 20900)
+- Arcane Shot (spell 14283)
 - Bite (spell 17257)
 - Claw (spell 16830)
 - Counterattack (spell 1242634)
@@ -143,11 +147,10 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lacerate (spell 24118)
 - Lightning Breath (spell 25009)
 - Mine! (spell 1265056)
-- Mongoose Bite (spell 14269)
 - Pinch (spell 1264736)
-- Raptor Strike (spell 14262)
 - Savage Rend (spell 1265066)
 - Scorpid Poison (spell 24583)
+- Serpent Sting (spell 13551)
 - Sonic Blast (spell 1264479)
 - Strider Kick (spell 1317257)
 - Summon Hawk (spell 1293241)
@@ -161,6 +164,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 38
 
+- Aimed Shot (spell 20901)
+- Arcane Shot (spell 14284)
 - Bite (spell 17258)
 - Claw (spell 16831)
 - Counterattack (spell 1242634)
@@ -170,13 +175,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lacerate (spell 24118)
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265056)
-- Mongoose Bite (spell 14269)
 - Pinch (spell 1264739)
-- Raptor Strike (spell 14263)
 - Savage Rend (spell 1265067)
 - Scorpid Poison (spell 24583)
+- Serpent Sting (spell 13552)
 - Sonic Blast (spell 1264480)
-- Strider Kick (spell 1317257)
 - Summon Hawk (spell 1293525)
 - Swipe (spell 1264498)
 - Tendon Rip (spell 1265040)
@@ -188,6 +191,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 40
 
+- Aimed Shot (spell 20901)
+- Arcane Shot (spell 14284)
 - Bite (spell 17259)
 - Claw (spell 16832)
 - Counterattack (spell 1242634)
@@ -197,14 +202,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lacerate (spell 24119)
 - Lightning Breath (spell 25010)
 - Mine! (spell 1265057)
-- Mongoose Bite (spell 14269)
 - Pinch (spell 1264739)
-- Raptor Strike (spell 14264)
 - Savage Rend (spell 1265067)
 - Scorpid Poison (spell 24586)
+- Serpent Sting (spell 13552)
 - Sniper Shot (spell 1310687)
 - Sonic Blast (spell 1264480)
-- Strider Kick (spell 1317257)
 - Summon Hawk (spell 1293525)
 - Swipe (spell 1264498)
 - Tendon Rip (spell 1265040)
@@ -216,6 +219,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 50
 
+- Aimed Shot (spell 20902)
+- Arcane Shot (spell 14285)
 - Bite (spell 17260)
 - Claw (spell 3010)
 - Counterattack (spell 20909)
@@ -226,14 +231,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lava Breath (spell 444681)
 - Lightning Breath (spell 25011)
 - Mine! (spell 1265058)
-- Mongoose Bite (spell 14270)
 - Pinch (spell 1264741)
-- Raptor Strike (spell 14265)
 - Savage Rend (spell 1265068)
 - Scorpid Poison (spell 24586)
+- Serpent Sting (spell 13554)
 - Sniper Shot (spell 1310785)
 - Sonic Blast (spell 1264481)
-- Strider Kick (spell 1317257)
 - Summon Hawk (spell 1293526)
 - Swipe (spell 1264501)
 - Tendon Rip (spell 1265041)
@@ -245,6 +248,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
+- Aimed Shot (spell 20904)
+- Arcane Shot (spell 14287)
 - Bite (spell 17261)
 - Claw (spell 3009)
 - Counterattack (spell 20910)
@@ -256,14 +261,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Lava Breath (spell 444681)
 - Lightning Breath (spell 25012)
 - Mine! (spell 1265058)
-- Mongoose Bite (spell 14271)
 - Pinch (spell 1264742)
-- Raptor Strike (spell 14266)
 - Savage Rend (spell 1265069)
 - Scorpid Poison (spell 24587)
+- Serpent Sting (spell 25295)
 - Sniper Shot (spell 1310786)
 - Sonic Blast (spell 1264482)
-- Strider Kick (spell 1317257)
 - Summon Hawk (spell 1293527)
 - Swipe (spell 1264502)
 - Tendon Rip (spell 1265042)
@@ -275,4 +278,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- hunter-survival level=40 kind=dps_regression dps=87.7 prev_dps=88.9

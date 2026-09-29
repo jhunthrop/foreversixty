@@ -185,13 +185,17 @@ def test_check_specs_names_the_file_that_drifted(tmp_path: Path):
 #: melee and hunters, spell power for casters. Transcribed here from the
 #: plan's table rather than imported, so the curated file is checked
 #: against the decision and not against itself.
+#:
+#: hunter-survival reads attack_power, not ranged_attack_power, since the
+#: rotation-accuracy program's 2026-09-28 rewrite (owner: "survival will
+#: be a melee hunter spec") -- the other two hunter specs are unchanged.
 REFERENCE_BY_SPEC = {
     "druid-balance": "spell_power",
     "druid-feral": "attack_power",
     "druid-restoration": "spell_power",
     "hunter-beast-mastery": "ranged_attack_power",
     "hunter-marksmanship": "ranged_attack_power",
-    "hunter-survival": "ranged_attack_power",
+    "hunter-survival": "attack_power",
     "mage-arcane": "spell_power",
     "mage-fire": "spell_power",
     "mage-frost": "spell_power",

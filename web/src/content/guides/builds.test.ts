@@ -127,6 +127,7 @@ const SIGNATURE_TALENTS: Record<string, string[]> = {
   'rogue/assassination': ['Cold Blood', 'Mutilate', 'Venom'],
   'rogue/combat': ['Adrenaline Rush'],
   'rogue/subtlety': ['Ghostly Strike', 'Premeditation', 'Hemorrhage'],
+  'hunter/survival': ['Counterattack', 'Strider Kick'],
   'shaman/enhancement': ['Stormstrike'],
   'warlock/affliction': ['Amplify Curse', 'Wrack'],
   'warlock/destruction': ['Incinerate'],
