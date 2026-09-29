@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T07:00:42Z",
+  "generated_at": "2026-09-29T13:37:51Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -213,8 +213,8 @@
         "off_hand: Father Flame",
         "ranged: Spark of the People's Militia"
       ],
-      "weights_run_seconds": 1.14589816,
-      "verify_run_seconds": 0.554823322
+      "weights_run_seconds": 1.5251991409999999,
+      "verify_run_seconds": 0.7011599
     },
     {
       "spec": "warlock-demonology",
@@ -424,8 +424,8 @@
         "main_hand: Darkwood Staff",
         "ranged: Branding Rod"
       ],
-      "weights_run_seconds": 1.14589816,
-      "verify_run_seconds": 0.50228551
+      "weights_run_seconds": 1.5251991409999999,
+      "verify_run_seconds": 0.638430764
     },
     {
       "spec": "warlock-demonology",
@@ -646,8 +646,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.157106578,
-      "verify_run_seconds": 0.753967181
+      "weights_run_seconds": 1.534932901,
+      "verify_run_seconds": 1.008925413
     },
     {
       "spec": "warlock-demonology",
@@ -868,8 +868,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.157106578,
-      "verify_run_seconds": 0.752928605
+      "weights_run_seconds": 1.534932901,
+      "verify_run_seconds": 0.992320072
     },
     {
       "spec": "warlock-demonology",
@@ -1114,8 +1114,8 @@
         "trinket2: Rune of Duty",
         "off_hand: Tear of Grief"
       ],
-      "weights_run_seconds": 1.102262829,
-      "verify_run_seconds": 0.814127992
+      "weights_run_seconds": 1.458165938,
+      "verify_run_seconds": 1.031785931
     },
     {
       "spec": "warlock-demonology",
@@ -1360,8 +1360,8 @@
         "trinket2: Rune of Duty",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.102262829,
-      "verify_run_seconds": 0.868132897
+      "weights_run_seconds": 1.458165938,
+      "verify_run_seconds": 1.097889336
     },
     {
       "spec": "warlock-demonology",
@@ -1595,8 +1595,8 @@
         "finger1: Ring of Forlorn Spirits",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 0.911574066,
-      "verify_run_seconds": 0.607514785
+      "weights_run_seconds": 1.224874119,
+      "verify_run_seconds": 0.809672324
     },
     {
       "spec": "warlock-demonology",
@@ -1830,8 +1830,8 @@
         "finger2: Sacred Band",
         "main_hand: Rod of the Sleepwalker"
       ],
-      "weights_run_seconds": 0.911574066,
-      "verify_run_seconds": 0.650907649
+      "weights_run_seconds": 1.224874119,
+      "verify_run_seconds": 0.831811348
     },
     {
       "spec": "warlock-demonology",
@@ -2077,8 +2077,8 @@
         "main_hand: Lorekeeper's Staff",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 1.144410545,
-      "verify_run_seconds": 0.966296987
+      "weights_run_seconds": 1.475890812,
+      "verify_run_seconds": 1.249468987
     },
     {
       "spec": "warlock-demonology",
@@ -2322,8 +2322,8 @@
         "main_hand: Nimboya's Mystical Staff",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.144410545,
-      "verify_run_seconds": 0.956254802
+      "weights_run_seconds": 1.475890812,
+      "verify_run_seconds": 1.245679193
     },
     {
       "spec": "warlock-demonology",
@@ -2557,8 +2557,8 @@
         "waist: Star Belt",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 1.13537325,
-      "verify_run_seconds": 0.973028448
+      "weights_run_seconds": 1.459940066,
+      "verify_run_seconds": 1.270426154
     },
     {
       "spec": "warlock-demonology",
@@ -2799,8 +2799,8 @@
         "feet: Defiler's Cloth Boots",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 1.13537325,
-      "verify_run_seconds": 0.967883451
+      "weights_run_seconds": 1.459940066,
+      "verify_run_seconds": 1.2297224390000001
     },
     {
       "spec": "warlock-demonology",
@@ -3042,8 +3042,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 0.949918704,
-      "verify_run_seconds": 0.792170156
+      "weights_run_seconds": 1.187671532,
+      "verify_run_seconds": 1.021380662
     },
     {
       "spec": "warlock-demonology",
@@ -3286,8 +3286,8 @@
         "trinket1: Mark of the Chosen",
         "trinket2: Carrot on a Stick"
       ],
-      "weights_run_seconds": 0.949918704,
-      "verify_run_seconds": 0.797843287
+      "weights_run_seconds": 1.187671532,
+      "verify_run_seconds": 0.993961669
     },
     {
       "spec": "warlock-demonology",
@@ -3530,8 +3530,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.1263577009999999,
-      "verify_run_seconds": 0.980502439
+      "weights_run_seconds": 1.461371313,
+      "verify_run_seconds": 1.251844271
     },
     {
       "spec": "warlock-demonology",
@@ -3775,8 +3775,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.1263577009999999,
-      "verify_run_seconds": 0.978624884
+      "weights_run_seconds": 1.461371313,
+      "verify_run_seconds": 1.23143938
     },
     {
       "spec": "warlock-demonology",
@@ -4016,8 +4016,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 0.94061003,
-      "verify_run_seconds": 0.77992893
+      "weights_run_seconds": 1.182418812,
+      "verify_run_seconds": 1.019833548
     },
     {
       "spec": "warlock-demonology",
@@ -4257,8 +4257,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 0.94061003,
-      "verify_run_seconds": 0.812925456
+      "weights_run_seconds": 1.182418812,
+      "verify_run_seconds": 1.010487683
     },
     {
       "spec": "warlock-demonology",
@@ -4497,8 +4497,8 @@
         "feet: Omnicast Boots",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.132411386,
-      "verify_run_seconds": 0.974186921
+      "weights_run_seconds": 1.453459006,
+      "verify_run_seconds": 1.22742583
     },
     {
       "spec": "warlock-demonology",
@@ -4736,8 +4736,8 @@
         "feet: Omnicast Boots",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.132411386,
-      "verify_run_seconds": 0.958036957
+      "weights_run_seconds": 1.453459006,
+      "verify_run_seconds": 1.23484957
     },
     {
       "spec": "warlock-demonology",
@@ -4987,8 +4987,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.958070357,
-      "verify_run_seconds": 0.820179315
+      "weights_run_seconds": 1.204033263,
+      "verify_run_seconds": 1.035238746
     },
     {
       "spec": "warlock-demonology",
@@ -5238,8 +5238,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Nature's Breath"
       ],
-      "weights_run_seconds": 0.958070357,
-      "verify_run_seconds": 0.808034168
+      "weights_run_seconds": 1.204033263,
+      "verify_run_seconds": 1.026944073
     }
   ]
 }

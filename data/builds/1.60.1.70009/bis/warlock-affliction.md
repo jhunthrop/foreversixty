@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (gnome, 10000000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 11.6. Weights run: 1.0s. Verify run: 0.5s. 442 eligible items had no known source.
+Set DPS (verified): 11.6. Weights run: 1.4s. Verify run: 0.7s. 442 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 62.862), intellect=not significant (-47.955 ± 70.818), crit=239.564 ± 10.451, hit=628.881 ± 34.775, spell_haste=374.519 ± 67.987, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 62.862)
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 442, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (gnome, 24000000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 18.6. Weights run: 1.0s. Verify run: 0.7s. 581 eligible items had no known source.
+Set DPS (verified): 18.6. Weights run: 1.4s. Verify run: 0.9s. 581 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± -0.216, intellect=1.112 ± -0.242, crit=-0.857 ± -0.038, hit=-2.320 ± -0.121, spell_haste=-1.421 ± -0.201, spell_penetration=not significant (-0.000 ± -0.000), shadow_power=1.000 ± -0.216
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 581, see the JSON for more): 727 Notched Shortswor
 
 ### Band 20 (gnome, 25400000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 29.4. Weights run: 1.0s. Verify run: 0.7s. 754 eligible items had no known source.
+Set DPS (verified): 29.4. Weights run: 1.3s. Verify run: 0.9s. 754 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± -0.127, intellect=0.422 ± -0.128, crit=-0.462 ± -0.020, hit=-1.259 ± -0.070, spell_haste=-0.173 ± -0.159, spell_penetration=not significant (-0.000 ± -0.000), shadow_power=1.000 ± -0.127
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 754, see the JSON for more): 727 Notched Shortswor
 
 ### Band 25 (gnome, 25540000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 47.8. Weights run: 0.8s. Verify run: 0.6s. 946 eligible items had no known source.
+Set DPS (verified): 47.8. Weights run: 1.0s. Verify run: 0.8s. 946 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.203, intellect=-1.755 ± 0.199, crit=0.712 ± 0.031, hit=2.002 ± 0.104, spell_haste=-1.388 ± 0.224, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.203
 
@@ -126,7 +126,7 @@ No-known-source sample (15 of 946, see the JSON for more): 727 Notched Shortswor
 
 ### Band 30 (gnome, 25552000110000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 51.5. Weights run: 1.0s. Verify run: 1.0s. 1110 eligible items had no known source.
+Set DPS (verified): 51.5. Weights run: 1.4s. Verify run: 1.2s. 1110 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.261), intellect=not significant (-0.193 ± 0.270), crit=0.624 ± 0.029, hit=1.712 ± 0.125, spell_haste=-1.617 ± 0.248, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.261)
 
@@ -156,7 +156,7 @@ No-known-source sample (15 of 1110, see the JSON for more): 727 Notched Shortswo
 
 ### Band 35 (gnome, 25552000130201000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 56.3. Weights run: 1.0s. Verify run: 1.0s. 1246 eligible items had no known source.
+Set DPS (verified): 56.3. Weights run: 1.3s. Verify run: 1.3s. 1246 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.137, intellect=-0.913 ± 0.141, crit=0.646 ± 0.029, hit=1.786 ± 0.090, spell_haste=-1.212 ± 0.175, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.137
 
@@ -186,7 +186,7 @@ No-known-source sample (15 of 1246, see the JSON for more): 727 Notched Shortswo
 
 ### Band 40 (gnome, 25552000130201050-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 90.9. Weights run: 0.9s. Verify run: 0.8s. 1403 eligible items had no known source.
+Set DPS (verified): 90.9. Weights run: 1.0s. Verify run: 1.0s. 1403 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.358), intellect=not significant (0.698 ± 0.495), crit=1.096 ± 0.054, hit=3.563 ± 0.219, spell_haste=-2.263 ± 0.479, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.358)
 
@@ -216,7 +216,7 @@ No-known-source sample (15 of 1403, see the JSON for more): 727 Notched Shortswo
 
 ### Band 45 (gnome, 25552000130201051-2200000000000000000-0000000000000000)
 
-Set DPS (verified): 82.8. Weights run: 1.1s. Verify run: 1.0s. 1546 eligible items had no known source.
+Set DPS (verified): 82.8. Weights run: 1.5s. Verify run: 1.2s. 1546 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.179, intellect=not significant (0.334 ± 0.212), crit=0.400 ± 0.020, hit=1.762 ± 0.112, spell_haste=-2.005 ± 0.233, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.179
 
@@ -246,7 +246,7 @@ No-known-source sample (15 of 1546, see the JSON for more): 727 Notched Shortswo
 
 ### Band 50 (gnome, 25552000130201051-2340000000000000000-0000000000000000)
 
-Set DPS (verified): 117.2. Weights run: 0.9s. Verify run: 0.8s. 1717 eligible items had no known source.
+Set DPS (verified): 117.2. Weights run: 1.1s. Verify run: 1.0s. 1717 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.222, intellect=not significant (0.052 ± 0.247), crit=0.455 ± 0.023, hit=2.181 ± 0.152, spell_haste=-9.055 ± 0.409, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.222
 
@@ -276,7 +276,7 @@ No-known-source sample (15 of 1717, see the JSON for more): 727 Notched Shortswo
 
 ### Band 55 (gnome, 25552000130201051-2354000000000000000-0000000000000000)
 
-Set DPS (verified): 113.0. Weights run: 1.2s. Verify run: 1.0s. 1867 eligible items had no known source.
+Set DPS (verified): 113.0. Weights run: 1.5s. Verify run: 1.2s. 1867 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.307), intellect=not significant (-0.220 ± 0.334), crit=0.629 ± 0.035, hit=3.223 ± 0.217, spell_haste=-10.594 ± 0.536, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.307)
 
@@ -306,7 +306,7 @@ No-known-source sample (15 of 1867, see the JSON for more): 727 Notched Shortswo
 
 ### Band 60 (gnome, 25552000130201051-2355220000000000000-0000000000000000)
 
-Set DPS (verified): 316.2. Weights run: 0.9s. Verify run: 0.8s. 2209 eligible items had no known source.
+Set DPS (verified): 316.2. Weights run: 1.2s. Verify run: 1.0s. 2209 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.837), intellect=not significant (-1.254 ± 0.970), crit=1.999 ± 0.106, hit=6.401 ± 0.516, spell_haste=not significant (0.241 ± 0.963), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.837)
 
@@ -338,7 +338,7 @@ No-known-source sample (15 of 2209, see the JSON for more): 727 Notched Shortswo
 
 ### Band 10 (troll, 10000000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 14.6. Weights run: 1.0s. Verify run: 0.5s. 442 eligible items had no known source.
+Set DPS (verified): 14.6. Weights run: 1.4s. Verify run: 0.6s. 442 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 62.862), intellect=not significant (-47.955 ± 70.818), crit=239.564 ± 10.451, hit=628.881 ± 34.775, spell_haste=374.519 ± 67.987, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 62.862)
 
@@ -368,7 +368,7 @@ No-known-source sample (15 of 442, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (troll, 24000000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 19.8. Weights run: 1.0s. Verify run: 0.7s. 577 eligible items had no known source.
+Set DPS (verified): 19.8. Weights run: 1.4s. Verify run: 0.9s. 577 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± -0.216, intellect=1.112 ± -0.242, crit=-0.857 ± -0.038, hit=-2.320 ± -0.121, spell_haste=-1.421 ± -0.201, spell_penetration=not significant (-0.000 ± -0.000), shadow_power=1.000 ± -0.216
 
@@ -398,7 +398,7 @@ No-known-source sample (15 of 577, see the JSON for more): 727 Notched Shortswor
 
 ### Band 20 (troll, 25400000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 29.8. Weights run: 1.0s. Verify run: 0.8s. 750 eligible items had no known source.
+Set DPS (verified): 29.8. Weights run: 1.3s. Verify run: 1.0s. 750 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± -0.127, intellect=0.422 ± -0.128, crit=-0.462 ± -0.020, hit=-1.259 ± -0.070, spell_haste=-0.173 ± -0.159, spell_penetration=not significant (-0.000 ± -0.000), shadow_power=1.000 ± -0.127
 
@@ -428,7 +428,7 @@ No-known-source sample (15 of 750, see the JSON for more): 727 Notched Shortswor
 
 ### Band 25 (troll, 25540000000000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 47.5. Weights run: 0.8s. Verify run: 0.7s. 942 eligible items had no known source.
+Set DPS (verified): 47.5. Weights run: 1.0s. Verify run: 0.8s. 942 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.203, intellect=-1.755 ± 0.199, crit=0.712 ± 0.031, hit=2.002 ± 0.104, spell_haste=-1.388 ± 0.224, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.203
 
@@ -458,7 +458,7 @@ No-known-source sample (15 of 942, see the JSON for more): 727 Notched Shortswor
 
 ### Band 30 (troll, 25552000110000000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 48.2. Weights run: 1.0s. Verify run: 1.0s. 1106 eligible items had no known source.
+Set DPS (verified): 48.2. Weights run: 1.4s. Verify run: 1.2s. 1106 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.261), intellect=not significant (-0.193 ± 0.270), crit=0.624 ± 0.029, hit=1.712 ± 0.125, spell_haste=-1.617 ± 0.248, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.261)
 
@@ -488,7 +488,7 @@ No-known-source sample (15 of 1106, see the JSON for more): 727 Notched Shortswo
 
 ### Band 35 (troll, 25552000130201000-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 52.5. Weights run: 1.0s. Verify run: 1.0s. 1242 eligible items had no known source.
+Set DPS (verified): 52.5. Weights run: 1.3s. Verify run: 1.2s. 1242 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.137, intellect=-0.913 ± 0.141, crit=0.646 ± 0.029, hit=1.786 ± 0.090, spell_haste=-1.212 ± 0.175, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.137
 
@@ -518,7 +518,7 @@ No-known-source sample (15 of 1242, see the JSON for more): 727 Notched Shortswo
 
 ### Band 40 (troll, 25552000130201050-0000000000000000000-0000000000000000)
 
-Set DPS (verified): 86.8. Weights run: 0.9s. Verify run: 0.8s. 1399 eligible items had no known source.
+Set DPS (verified): 86.8. Weights run: 1.0s. Verify run: 1.0s. 1399 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.358), intellect=not significant (0.698 ± 0.495), crit=1.096 ± 0.054, hit=3.563 ± 0.219, spell_haste=-2.263 ± 0.479, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.358)
 
@@ -548,7 +548,7 @@ No-known-source sample (15 of 1399, see the JSON for more): 727 Notched Shortswo
 
 ### Band 45 (troll, 25552000130201051-2200000000000000000-0000000000000000)
 
-Set DPS (verified): 78.8. Weights run: 1.1s. Verify run: 1.0s. 1542 eligible items had no known source.
+Set DPS (verified): 78.8. Weights run: 1.5s. Verify run: 1.3s. 1542 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.179, intellect=not significant (0.334 ± 0.212), crit=0.400 ± 0.020, hit=1.762 ± 0.112, spell_haste=-2.005 ± 0.233, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.179
 
@@ -578,7 +578,7 @@ No-known-source sample (15 of 1542, see the JSON for more): 727 Notched Shortswo
 
 ### Band 50 (troll, 25552000130201051-2340000000000000000-0000000000000000)
 
-Set DPS (verified): 114.7. Weights run: 0.9s. Verify run: 0.8s. 1713 eligible items had no known source.
+Set DPS (verified): 114.7. Weights run: 1.1s. Verify run: 1.0s. 1713 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.222, intellect=not significant (0.052 ± 0.247), crit=0.455 ± 0.023, hit=2.181 ± 0.152, spell_haste=-9.055 ± 0.409, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.222
 
@@ -608,7 +608,7 @@ No-known-source sample (15 of 1713, see the JSON for more): 727 Notched Shortswo
 
 ### Band 55 (troll, 25552000130201051-2354000000000000000-0000000000000000)
 
-Set DPS (verified): 109.1. Weights run: 1.2s. Verify run: 1.0s. 1863 eligible items had no known source.
+Set DPS (verified): 109.1. Weights run: 1.5s. Verify run: 1.2s. 1863 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.307), intellect=not significant (-0.220 ± 0.334), crit=0.629 ± 0.035, hit=3.223 ± 0.217, spell_haste=-10.594 ± 0.536, spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.307)
 
@@ -638,7 +638,7 @@ No-known-source sample (15 of 1863, see the JSON for more): 727 Notched Shortswo
 
 ### Band 60 (troll, 25552000130201051-2355220000000000000-0000000000000000)
 
-Set DPS (verified): 309.9. Weights run: 0.9s. Verify run: 0.8s. 2205 eligible items had no known source.
+Set DPS (verified): 309.9. Weights run: 1.2s. Verify run: 1.0s. 2205 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=not significant (1.000 ± 0.837), intellect=not significant (-1.254 ± 0.970), crit=1.999 ± 0.106, hit=6.401 ± 0.516, spell_haste=not significant (0.241 ± 0.963), spell_penetration=not significant (0.000 ± 0.000), shadow_power=not significant (1.000 ± 0.837)
 

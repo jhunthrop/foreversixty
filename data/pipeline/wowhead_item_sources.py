@@ -328,13 +328,30 @@ def fetch_item_sources(
     that function's own doc for the full throttle/backoff/max_pages
     contract, which this mirrors line for line, only over items instead
     of quests).
+
+    `item_ids`' own order is preserved into `pending` (deduplicated)
+    rather than re-sorted ascending by id -- src-crawl-order lane,
+    2026-09-29: `pipeline.item_sources.fetch_missing_from_wowhead` hands
+    this a crawl-priority-ordered backlog, and a plain `sorted()` here
+    would silently put it back into ascending-item-id order right before
+    the live requests actually go out, which is the one ordering this
+    whole lane exists to stop happening. A cached id is still skipped in
+    place (no live request, `index` advances) without disturbing the
+    order the rest of `pending` is walked in, so resuming a
+    budget-capped run picks up exactly where the last one left off.
     """
     build_dir = root / build
     own = client is None
     client = client or httpx.Client(headers={"User-Agent": USER_AGENT})
     sources: dict[int, ItemPageSources] = {}
     missing: set[int] = set()
-    pending = sorted(set(item_ids))
+    pending: list[int] = []
+    _pending_seen: set[int] = set()
+    for item_id in item_ids:
+        if item_id in _pending_seen:
+            continue
+        _pending_seen.add(item_id)
+        pending.append(item_id)
     consecutive_throttled = 0
     backoff = THROTTLE_BACKOFF_START_SECONDS
     stopped_early_at: int | None = None

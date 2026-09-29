@@ -81,6 +81,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="cap on live wowhead requests this run sends (default 200); remaining ids "
         "stay unsourced for a later run to pick up",
     )
+    ivs.add_argument(
+        "--only-new",
+        action="store_true",
+        help="fetch ONLY Forever-new item ids (id >= pipeline.loot.wowhead."
+        "FOREVER_NEW_ID_THRESHOLD) -- for measuring or resuming just this lane's actual "
+        "target without spending the page budget on Classic ids first",
+    )
 
     n = sub.add_parser("normalize", help="normalize raw CSVs into JSON")
     n.add_argument("--build", required=True)
@@ -275,6 +282,7 @@ def main(argv: list[str] | None = None) -> int:
 
         from pipeline.item_sources import fetch_missing_from_wowhead
         from pipeline.loot.wowhead import (
+            FOREVER_NEW_ID_THRESHOLD,
             load_class_item_rows,
             named_items_in_committed_loot,
             unsourced_real_item_ids,
@@ -282,12 +290,18 @@ def main(argv: list[str] | None = None) -> int:
 
         build_dir = Path("builds") / args.build
         named = named_items_in_committed_loot(build_dir)
+        # Ordered Forever-new-then-Classic, ascending required_level within
+        # each bucket (see pipeline.loot.wowhead._crawl_priority_key);
+        # --only-new narrows to just the Forever-new bucket.
         ids = unsourced_real_item_ids(load_class_item_rows(build_dir), named)
+        if args.only_new:
+            ids = [item_id for item_id in ids if item_id >= FOREVER_NEW_ID_THRESHOLD]
         stats = fetch_missing_from_wowhead(args.build, ids, max_pages=args.max_pages)
         print(
             f"item-sources: wowhead resolved a page for {stats.fetched}/{stats.needed} "
-            f"unsourced real item ids ({stats.still_missing} still missing; rerun later to "
-            "resume from the warm cache)"
+            f"unsourced real item ids ({stats.with_source}/{stats.fetched} fetched pages "
+            f"named any source; {stats.still_missing} still missing; rerun later to resume "
+            "from the warm cache)"
         )
     elif args.command == "itemnames":
         from pipeline.normalize.itemnames import write_item_names_from_build

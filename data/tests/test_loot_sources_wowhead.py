@@ -14,6 +14,7 @@ from pipeline.forkdb import load_fork_database
 from pipeline.item_sources import ItemSourceEntry
 from pipeline.loot.sources import build_loot, instance_types, pvp_ranks, source_item_ids
 from pipeline.loot.wowhead import (
+    FOREVER_NEW_ID_THRESHOLD,
     is_placeholder_item,
     load_class_item_rows,
     named_items_in_committed_loot,
@@ -177,6 +178,33 @@ def test_unsourced_real_item_ids_excludes_named_and_placeholder_items():
         {"id": 3, "name": "Another Real Item", "armor": 5, "damage_max": 0, "stats": {}},
     ]
     assert unsourced_real_item_ids(rows, named={3}) == [1]
+
+
+def test_unsourced_real_item_ids_orders_forever_new_before_classic_by_required_level():
+    """src-crawl-order lane, 2026-09-29: every Forever-new id (>=
+    FOREVER_NEW_ID_THRESHOLD) sorts before every Classic id, ascending
+    required_level within each bucket, unset (0, or the key entirely
+    missing) required_level sorting last within its own bucket -- NOT
+    the ascending-item-id order these rows are given in."""
+    assert FOREVER_NEW_ID_THRESHOLD == 200_000
+    rows = [
+        {"id": 100, "name": "Classic High", "armor": 1, "required_level": 40},
+        {"id": 50, "name": "Classic Low", "armor": 1, "required_level": 5},
+        {"id": 60, "name": "Classic Unset", "armor": 1, "required_level": 0},
+        {"id": 70, "name": "Classic No Level Key", "armor": 1},
+        {"id": 200500, "name": "Forever-new High", "armor": 1, "required_level": 30},
+        {"id": 200050, "name": "Forever-new Low", "armor": 1, "required_level": 10},
+        {"id": 200100, "name": "Forever-new Unset", "armor": 1, "required_level": 0},
+    ]
+    assert unsourced_real_item_ids(rows, named=set()) == [
+        200050,  # Forever-new bucket, ascending required_level
+        200500,
+        200100,  # Forever-new bucket, unset required_level -- last
+        50,  # Classic bucket, ascending required_level
+        100,
+        60,  # Classic bucket, unset required_level -- last (0 and missing tie on id)
+        70,
+    ]
 
 
 def test_named_items_in_committed_loot_reads_every_bucket_shape(tmp_path: Path):

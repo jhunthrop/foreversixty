@@ -45,7 +45,7 @@ def test_fetch_missing_from_wowhead_only_fetches_ids_not_already_covered(tmp_pat
     )
 
     assert requested == [721]  # 720 was already covered; only 721 was fetched
-    assert stats == isrc.ItemSourceMergeStats(fetched=1, still_missing=0, needed=1)
+    assert stats == isrc.ItemSourceMergeStats(fetched=1, still_missing=0, needed=1, with_source=1)
 
     entries = isrc.load_item_sources(build_dir)
     assert entries[720].fetched_at == "x"  # untouched
@@ -68,7 +68,7 @@ def test_fetch_missing_from_wowhead_commits_an_empty_result_so_it_is_not_refetch
     stats = isrc.fetch_missing_from_wowhead(
         "1.60.1.70009", [270257], max_pages=10, root=tmp_path, delay=0, client=client
     )
-    assert stats == isrc.ItemSourceMergeStats(fetched=1, still_missing=0, needed=1)
+    assert stats == isrc.ItemSourceMergeStats(fetched=1, still_missing=0, needed=1, with_source=0)
 
     entries = isrc.load_item_sources(tmp_path / "1.60.1.70009")
     assert entries[270257].dropped_by == []
@@ -86,7 +86,43 @@ def test_fetch_missing_from_wowhead_commits_an_empty_result_so_it_is_not_refetch
         "1.60.1.70009", [270257], max_pages=10, root=tmp_path, delay=0, client=client2
     )
     assert requested == []
-    assert stats2 == isrc.ItemSourceMergeStats(fetched=0, still_missing=0, needed=0)
+    assert stats2 == isrc.ItemSourceMergeStats(fetched=0, still_missing=0, needed=0, with_source=0)
+
+
+def test_fetch_missing_from_wowhead_preserves_caller_priority_order(tmp_path: Path):
+    """src-crawl-order lane, 2026-09-29: `needed` used to be
+    `sorted(i for i in set(item_ids) if i not in entries)`, discarding
+    whatever priority order the caller (`unsourced_real_item_ids`)
+    passed in. Requests must go out in the caller's order."""
+    requested: list[int] = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        item_id = int(str(request.url).rsplit("=", 1)[-1])
+        requested.append(item_id)
+        return httpx.Response(200, text=DROPPED_BY.read_text(encoding="utf-8"))
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    isrc.fetch_missing_from_wowhead(
+        "1.60.1.70009", [900, 100, 500], max_pages=10, root=tmp_path, delay=0, client=client
+    )
+    assert requested == [900, 100, 500]  # NOT ascending id order
+
+
+def test_fetch_missing_from_wowhead_counts_fetched_pages_that_named_any_source(tmp_path: Path):
+    """`with_source` counts only pages that named a dropped-by/sold-by/
+    crafted-by/quest-reward row -- 721 (DROPPED_BY fixture) counts,
+    270257 (NO_LISTVIEW fixture, cacheable but empty) does not."""
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        item_id = int(str(request.url).rsplit("=", 1)[-1])
+        fixture = DROPPED_BY if item_id == 721 else NO_LISTVIEW
+        return httpx.Response(200, text=fixture.read_text(encoding="utf-8"))
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    stats = isrc.fetch_missing_from_wowhead(
+        "1.60.1.70009", [721, 270257], max_pages=10, root=tmp_path, delay=0, client=client
+    )
+    assert stats == isrc.ItemSourceMergeStats(fetched=2, still_missing=0, needed=2, with_source=1)
 
 
 def test_fetch_missing_from_wowhead_with_nothing_missing_does_not_touch_the_file(tmp_path: Path):
@@ -98,5 +134,5 @@ def test_fetch_missing_from_wowhead_with_nothing_missing_does_not_touch_the_file
     before = isrc.raw_path(build_dir).read_text(encoding="utf-8")
 
     stats = isrc.fetch_missing_from_wowhead("1.60.1.70009", [720], max_pages=10, root=tmp_path)
-    assert stats == isrc.ItemSourceMergeStats(fetched=0, still_missing=0, needed=0)
+    assert stats == isrc.ItemSourceMergeStats(fetched=0, still_missing=0, needed=0, with_source=0)
     assert isrc.raw_path(build_dir).read_text(encoding="utf-8") == before

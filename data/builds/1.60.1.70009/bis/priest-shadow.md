@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (gnome, 000000000000000000-00000000000000000-100000000000000000)
 
-Set DPS (verified): 8.4. Weights run: 0.8s. Verify run: 0.4s. 449 eligible items had no known source.
+Set DPS (verified): 8.4. Weights run: 1.0s. Verify run: 0.5s. 449 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=not significant (-4.132 ± 1.337), crit=0.462 ± 0.035, hit=not significant (-2.193 ± 0.723), spell_haste=not significant (-4.331 ± 2.265), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 449, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 15 (gnome, 000000000000000000-00000000000000000-420000000000000000)
 
-Set DPS (verified): 9.0. Weights run: 0.8s. Verify run: 0.6s. 591 eligible items had no known source.
+Set DPS (verified): 9.0. Weights run: 1.1s. Verify run: 0.8s. 591 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.001, intellect=not significant (-0.436 ± 0.214), crit=0.242 ± 0.021, hit=not significant (-0.069 ± 0.372), spell_haste=not significant (-3.171 ± 0.873), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.001
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 591, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 20 (gnome, 000000000000000000-00000000000000000-443000000000000000)
 
-Set DPS (verified): 20.5. Weights run: 0.7s. Verify run: 0.6s. 772 eligible items had no known source.
+Set DPS (verified): 20.5. Weights run: 0.9s. Verify run: 0.8s. 772 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=-3.775 ± 0.282, crit=1.211 ± 0.056, hit=1.697 ± 0.274, spell_haste=not significant (-0.927 ± 0.284), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 772, see the JSON for more): 789 Stout Battlehamme
 
 ### Band 25 (gnome, 000000000000000000-00000000000000000-443110300000000000)
 
-Set DPS (verified): 26.3. Weights run: 0.7s. Verify run: 0.6s. 956 eligible items had no known source.
+Set DPS (verified): 26.3. Weights run: 0.9s. Verify run: 0.7s. 956 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=not significant (0.079 ± 0.203), crit=1.322 ± 0.065, hit=2.644 ± 0.204, spell_haste=-12.306 ± 0.512, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -126,7 +126,7 @@ No-known-source sample (15 of 956, see the JSON for more): 789 Stout Battlehamme
 
 ### Band 30 (gnome, 000000000000000000-00000000000000000-443110501200000000)
 
-Set DPS (verified): 41.1. Weights run: 0.5s. Verify run: 0.7s. 1123 eligible items had no known source.
+Set DPS (verified): 41.1. Weights run: 0.7s. Verify run: 1.0s. 1123 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=not significant (0.425 ± 0.239), crit=1.229 ± 0.067, hit=3.796 ± 0.202, spell_haste=not significant (0.186 ± 0.312), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -156,7 +156,7 @@ No-known-source sample (15 of 1123, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 35 (gnome, 000000000000000000-00000000000000000-443110501201300100)
 
-Set DPS (verified): 49.7. Weights run: 0.6s. Verify run: 0.7s. 1260 eligible items had no known source.
+Set DPS (verified): 49.7. Weights run: 0.7s. Verify run: 0.9s. 1260 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-1.002 ± 0.372), crit=1.249 ± 0.075, hit=4.564 ± 0.268, spell_haste=not significant (-0.742 ± 0.411), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -186,7 +186,7 @@ No-known-source sample (15 of 1260, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 40 (gnome, 000000000000000000-00000000000000000-443110501201300240)
 
-Set DPS (verified): 57.9. Weights run: 0.6s. Verify run: 0.7s. 1422 eligible items had no known source.
+Set DPS (verified): 57.9. Weights run: 0.7s. Verify run: 0.9s. 1422 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.442 ± 0.373), crit=1.468 ± 0.091, hit=5.629 ± 0.331, spell_haste=not significant (0.939 ± 0.654), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -216,7 +216,7 @@ No-known-source sample (15 of 1422, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 45 (gnome, 300000000000000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 64.5. Weights run: 0.6s. Verify run: 0.7s. 1565 eligible items had no known source.
+Set DPS (verified): 64.5. Weights run: 0.7s. Verify run: 0.9s. 1565 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-1.934 ± 0.535), crit=1.515 ± 0.098, hit=7.006 ± 0.463, spell_haste=not significant (-3.613 ± 1.039), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -246,7 +246,7 @@ No-known-source sample (15 of 1565, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 50 (gnome, 521000000000000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 73.9. Weights run: 0.6s. Verify run: 0.7s. 1752 eligible items had no known source.
+Set DPS (verified): 73.9. Weights run: 0.7s. Verify run: 0.9s. 1752 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-0.242 ± 0.580), crit=1.866 ± 0.121, hit=8.219 ± 0.471, spell_haste=not significant (-1.234 ± 0.835), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -276,7 +276,7 @@ No-known-source sample (15 of 1752, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 55 (gnome, 524110000000000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 84.1. Weights run: 0.6s. Verify run: 0.7s. 1916 eligible items had no known source.
+Set DPS (verified): 84.1. Weights run: 0.7s. Verify run: 0.9s. 1916 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (2.526 ± 0.824), crit=2.316 ± 0.160, hit=10.568 ± 0.659, spell_haste=not significant (-2.447 ± 1.165), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -306,7 +306,7 @@ No-known-source sample (15 of 1916, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 60 (gnome, 524111001300000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 133.1. Weights run: 0.6s. Verify run: 0.7s. 2309 eligible items had no known source.
+Set DPS (verified): 133.1. Weights run: 0.8s. Verify run: 0.9s. 2309 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.724 ± 0.748), crit=2.882 ± 0.178, hit=12.470 ± 0.766, spell_haste=not significant (1.648 ± 0.891), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -338,7 +338,7 @@ No-known-source sample (15 of 2309, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 10 (undead, 000000000000000000-00000000000000000-100000000000000000)
 
-Set DPS (verified): 9.6. Weights run: 0.8s. Verify run: 0.4s. 449 eligible items had no known source.
+Set DPS (verified): 9.6. Weights run: 1.0s. Verify run: 0.5s. 449 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=not significant (-4.132 ± 1.337), crit=0.462 ± 0.035, hit=not significant (-2.193 ± 0.723), spell_haste=not significant (-4.331 ± 2.265), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -368,7 +368,7 @@ No-known-source sample (15 of 449, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 15 (undead, 000000000000000000-00000000000000000-420000000000000000)
 
-Set DPS (verified): 9.9. Weights run: 0.8s. Verify run: 0.6s. 588 eligible items had no known source.
+Set DPS (verified): 9.9. Weights run: 1.1s. Verify run: 0.8s. 588 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.001, intellect=not significant (-0.436 ± 0.214), crit=0.242 ± 0.021, hit=not significant (-0.069 ± 0.372), spell_haste=not significant (-3.171 ± 0.873), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.001
 
@@ -398,7 +398,7 @@ No-known-source sample (15 of 588, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 20 (undead, 000000000000000000-00000000000000000-443000000000000000)
 
-Set DPS (verified): 22.9. Weights run: 0.7s. Verify run: 0.6s. 769 eligible items had no known source.
+Set DPS (verified): 22.9. Weights run: 0.9s. Verify run: 0.8s. 769 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=-3.775 ± 0.282, crit=1.211 ± 0.056, hit=1.697 ± 0.274, spell_haste=not significant (-0.927 ± 0.284), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -428,7 +428,7 @@ No-known-source sample (15 of 769, see the JSON for more): 789 Stout Battlehamme
 
 ### Band 25 (undead, 000000000000000000-00000000000000000-443110300000000000)
 
-Set DPS (verified): 27.6. Weights run: 0.7s. Verify run: 0.6s. 953 eligible items had no known source.
+Set DPS (verified): 27.6. Weights run: 0.9s. Verify run: 0.7s. 953 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=not significant (0.079 ± 0.203), crit=1.322 ± 0.065, hit=2.644 ± 0.204, spell_haste=-12.306 ± 0.512, spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -458,7 +458,7 @@ No-known-source sample (15 of 953, see the JSON for more): 789 Stout Battlehamme
 
 ### Band 30 (undead, 000000000000000000-00000000000000000-443110501200000000)
 
-Set DPS (verified): 39.5. Weights run: 0.5s. Verify run: 0.7s. 1120 eligible items had no known source.
+Set DPS (verified): 39.5. Weights run: 0.7s. Verify run: 0.9s. 1120 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.002, intellect=not significant (0.425 ± 0.239), crit=1.229 ± 0.067, hit=3.796 ± 0.202, spell_haste=not significant (0.186 ± 0.312), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -488,7 +488,7 @@ No-known-source sample (15 of 1120, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 35 (undead, 000000000000000000-00000000000000000-443110501201300100)
 
-Set DPS (verified): 45.9. Weights run: 0.6s. Verify run: 0.6s. 1257 eligible items had no known source.
+Set DPS (verified): 45.9. Weights run: 0.7s. Verify run: 0.9s. 1257 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-1.002 ± 0.372), crit=1.249 ± 0.075, hit=4.564 ± 0.268, spell_haste=not significant (-0.742 ± 0.411), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -518,7 +518,7 @@ No-known-source sample (15 of 1257, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 40 (undead, 000000000000000000-00000000000000000-443110501201300240)
 
-Set DPS (verified): 55.1. Weights run: 0.6s. Verify run: 0.7s. 1419 eligible items had no known source.
+Set DPS (verified): 55.1. Weights run: 0.7s. Verify run: 0.9s. 1419 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.442 ± 0.373), crit=1.468 ± 0.091, hit=5.629 ± 0.331, spell_haste=not significant (0.939 ± 0.654), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -548,7 +548,7 @@ No-known-source sample (15 of 1419, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 45 (undead, 300000000000000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 58.3. Weights run: 0.6s. Verify run: 0.7s. 1562 eligible items had no known source.
+Set DPS (verified): 58.3. Weights run: 0.7s. Verify run: 0.8s. 1562 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-1.934 ± 0.535), crit=1.515 ± 0.098, hit=7.006 ± 0.463, spell_haste=not significant (-3.613 ± 1.039), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -578,7 +578,7 @@ No-known-source sample (15 of 1562, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 50 (undead, 521000000000000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 65.5. Weights run: 0.6s. Verify run: 0.6s. 1749 eligible items had no known source.
+Set DPS (verified): 65.5. Weights run: 0.7s. Verify run: 0.9s. 1749 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (-0.242 ± 0.580), crit=1.866 ± 0.121, hit=8.219 ± 0.471, spell_haste=not significant (-1.234 ± 0.835), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -608,7 +608,7 @@ No-known-source sample (15 of 1749, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 55 (undead, 524110000000000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 71.5. Weights run: 0.6s. Verify run: 0.7s. 1913 eligible items had no known source.
+Set DPS (verified): 71.5. Weights run: 0.7s. Verify run: 0.9s. 1913 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (2.526 ± 0.824), crit=2.316 ± 0.160, hit=10.568 ± 0.659, spell_haste=not significant (-2.447 ± 1.165), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -638,7 +638,7 @@ No-known-source sample (15 of 1913, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 60 (undead, 524111001300000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 114.3. Weights run: 0.6s. Verify run: 0.7s. 2306 eligible items had no known source.
+Set DPS (verified): 114.3. Weights run: 0.8s. Verify run: 0.9s. 2306 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.003, intellect=not significant (0.724 ± 0.748), crit=2.882 ± 0.178, hit=12.470 ± 0.766, spell_haste=not significant (1.648 ± 0.891), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 

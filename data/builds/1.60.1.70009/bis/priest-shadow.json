@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:56:09Z",
+  "generated_at": "2026-09-29T13:31:56Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -207,8 +207,8 @@
         "off_hand: Father Flame",
         "ranged: Spark of the People's Militia"
       ],
-      "weights_run_seconds": 0.770509816,
-      "verify_run_seconds": 0.426886857
+      "weights_run_seconds": 0.972307372,
+      "verify_run_seconds": 0.549228644
     },
     {
       "spec": "priest-shadow",
@@ -411,8 +411,8 @@
         "main_hand: Darkwood Staff",
         "ranged: Branding Rod"
       ],
-      "weights_run_seconds": 0.770509816,
-      "verify_run_seconds": 0.380090289
+      "weights_run_seconds": 0.972307372,
+      "verify_run_seconds": 0.48583199
     },
     {
       "spec": "priest-shadow",
@@ -627,8 +627,8 @@
         "off_hand: Tear of Grief",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.795773269,
-      "verify_run_seconds": 0.626606853
+      "weights_run_seconds": 1.092483844,
+      "verify_run_seconds": 0.798835203
     },
     {
       "spec": "priest-shadow",
@@ -843,8 +843,8 @@
         "off_hand: Nightglow Concoction",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.795773269,
-      "verify_run_seconds": 0.629023172
+      "weights_run_seconds": 1.092483844,
+      "verify_run_seconds": 0.78547541
     },
     {
       "spec": "priest-shadow",
@@ -1080,8 +1080,8 @@
         "trinket2: Rune of Duty",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 0.671985654,
-      "verify_run_seconds": 0.639033435
+      "weights_run_seconds": 0.886393529,
+      "verify_run_seconds": 0.827755377
     },
     {
       "spec": "priest-shadow",
@@ -1323,8 +1323,8 @@
         "trinket2: Rune of Duty",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.671985654,
-      "verify_run_seconds": 0.609757242
+      "weights_run_seconds": 0.886393529,
+      "verify_run_seconds": 0.778574456
     },
     {
       "spec": "priest-shadow",
@@ -1553,8 +1553,8 @@
         "finger2: Minor Channeling Ring",
         "main_hand: Icicle Rod"
       ],
-      "weights_run_seconds": 0.674439851,
-      "verify_run_seconds": 0.579824148
+      "weights_run_seconds": 0.853182034,
+      "verify_run_seconds": 0.743742512
     },
     {
       "spec": "priest-shadow",
@@ -1791,8 +1791,8 @@
         "main_hand: Polished Walking Staff",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.674439851,
-      "verify_run_seconds": 0.578467802
+      "weights_run_seconds": 0.853182034,
+      "verify_run_seconds": 0.716059685
     },
     {
       "spec": "priest-shadow",
@@ -2034,8 +2034,8 @@
         "main_hand: Lorekeeper's Staff",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 0.548535074,
-      "verify_run_seconds": 0.737007708
+      "weights_run_seconds": 0.690734905,
+      "verify_run_seconds": 0.953935216
     },
     {
       "spec": "priest-shadow",
@@ -2279,8 +2279,8 @@
         "trinket2: Rune of Perfection",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.548535074,
-      "verify_run_seconds": 0.702147759
+      "weights_run_seconds": 0.690734905,
+      "verify_run_seconds": 0.920197126
     },
     {
       "spec": "priest-shadow",
@@ -2509,8 +2509,8 @@
         "waist: Star Belt",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 0.566834355,
-      "verify_run_seconds": 0.689059377
+      "weights_run_seconds": 0.733205664,
+      "verify_run_seconds": 0.902130691
     },
     {
       "spec": "priest-shadow",
@@ -2743,8 +2743,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 0.566834355,
-      "verify_run_seconds": 0.646790819
+      "weights_run_seconds": 0.733205664,
+      "verify_run_seconds": 0.862682526
     },
     {
       "spec": "priest-shadow",
@@ -2979,8 +2979,8 @@
         "trinket1: Thunderbrew's Boot Flask",
         "trinket2: Carrot on a Stick"
       ],
-      "weights_run_seconds": 0.562087652,
-      "verify_run_seconds": 0.678961422
+      "weights_run_seconds": 0.709196711,
+      "verify_run_seconds": 0.862367259
     },
     {
       "spec": "priest-shadow",
@@ -3215,8 +3215,8 @@
         "trinket1: Mark of the Chosen",
         "trinket2: Carrot on a Stick"
       ],
-      "weights_run_seconds": 0.562087652,
-      "verify_run_seconds": 0.702186131
+      "weights_run_seconds": 0.709196711,
+      "verify_run_seconds": 0.907314337
     },
     {
       "spec": "priest-shadow",
@@ -3449,8 +3449,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 0.594961555,
-      "verify_run_seconds": 0.713104389
+      "weights_run_seconds": 0.736078936,
+      "verify_run_seconds": 0.94295642
     },
     {
       "spec": "priest-shadow",
@@ -3685,8 +3685,8 @@
         "main_hand: Rod of the Sleepwalker",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.594961555,
-      "verify_run_seconds": 0.67166996
+      "weights_run_seconds": 0.736078936,
+      "verify_run_seconds": 0.849542091
     },
     {
       "spec": "priest-shadow",
@@ -3919,8 +3919,8 @@
         "finger1: Blackstone Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 0.566299335,
-      "verify_run_seconds": 0.694421557
+      "weights_run_seconds": 0.738030815,
+      "verify_run_seconds": 0.901954221
     },
     {
       "spec": "priest-shadow",
@@ -4162,8 +4162,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.566299335,
-      "verify_run_seconds": 0.648628687
+      "weights_run_seconds": 0.738030815,
+      "verify_run_seconds": 0.851637909
     },
     {
       "spec": "priest-shadow",
@@ -4406,8 +4406,8 @@
         "main_hand: Kindling Stave",
         "ranged: Cairnstone Sliver"
       ],
-      "weights_run_seconds": 0.592994978,
-      "verify_run_seconds": 0.734479709
+      "weights_run_seconds": 0.741066463,
+      "verify_run_seconds": 0.934961261
     },
     {
       "spec": "priest-shadow",
@@ -4640,8 +4640,8 @@
         "trinket1: Smokey's Lighter",
         "ranged: Nature's Breath"
       ],
-      "weights_run_seconds": 0.592994978,
-      "verify_run_seconds": 0.702772224
+      "weights_run_seconds": 0.741066463,
+      "verify_run_seconds": 0.912418607
     },
     {
       "spec": "priest-shadow",
@@ -4890,8 +4890,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.616772335,
-      "verify_run_seconds": 0.720730371
+      "weights_run_seconds": 0.780205516,
+      "verify_run_seconds": 0.912273571
     },
     {
       "spec": "priest-shadow",
@@ -5009,7 +5009,7 @@
           "item_name": "Dark Storm Gauntlets",
           "source": "Ahn'Qiraj",
           "source_kind": "raid",
-          "score": 172.56571397956608,
+          "score": 172.5657139795661,
           "verified": true
         },
         {
@@ -5138,8 +5138,8 @@
         "main_hand: Atiesh, Greatstaff of the Guardian",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.616772335,
-      "verify_run_seconds": 0.68603327
+      "weights_run_seconds": 0.780205516,
+      "verify_run_seconds": 0.89457216
     }
   ]
 }

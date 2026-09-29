@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:52:15Z",
+  "generated_at": "2026-09-29T13:26:54Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -195,8 +195,8 @@
         "off_hand: Brushwood Blade",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 0.935428771,
-      "verify_run_seconds": 0.642198728
+      "weights_run_seconds": 1.271022154,
+      "verify_run_seconds": 0.865334792
     },
     {
       "spec": "hunter-beast-mastery",
@@ -397,8 +397,8 @@
         "off_hand: Compact Fighting Knife",
         "ranged: Orcish Battle Bow"
       ],
-      "weights_run_seconds": 0.935428771,
-      "verify_run_seconds": 0.783944316
+      "weights_run_seconds": 1.271022154,
+      "verify_run_seconds": 1.01312509
     },
     {
       "spec": "hunter-beast-mastery",
@@ -603,8 +603,8 @@
         "off_hand: Defias Rapier",
         "ranged: Daryl's Hunting Rifle"
       ],
-      "weights_run_seconds": 0.972925222,
-      "verify_run_seconds": 0.971949115
+      "weights_run_seconds": 1.270220036,
+      "verify_run_seconds": 1.29931943
     },
     {
       "spec": "hunter-beast-mastery",
@@ -811,8 +811,8 @@
         "off_hand: Goblin Screwdriver",
         "ranged: Privateer Musket"
       ],
-      "weights_run_seconds": 0.972925222,
-      "verify_run_seconds": 0.898650099
+      "weights_run_seconds": 1.270220036,
+      "verify_run_seconds": 1.174710059
     },
     {
       "spec": "hunter-beast-mastery",
@@ -1040,8 +1040,8 @@
         "off_hand: Deadly Bronze Poniard",
         "ranged: Outrunner's Bow"
       ],
-      "weights_run_seconds": 1.152265929,
-      "verify_run_seconds": 1.240455125
+      "weights_run_seconds": 1.5426813579999998,
+      "verify_run_seconds": 1.6662653939999998
     },
     {
       "spec": "hunter-beast-mastery",
@@ -1268,8 +1268,8 @@
         "trinket2: Rune of Duty",
         "ranged: Cliffrunner's Aim"
       ],
-      "weights_run_seconds": 1.152265929,
-      "verify_run_seconds": 1.213023398
+      "weights_run_seconds": 1.5426813579999998,
+      "verify_run_seconds": 1.6178153050000001
     },
     {
       "spec": "hunter-beast-mastery",
@@ -1496,8 +1496,8 @@
         "off_hand: Goblin Screwdriver",
         "ranged: Lunaris Bow"
       ],
-      "weights_run_seconds": 1.15659484,
-      "verify_run_seconds": 1.220884058
+      "weights_run_seconds": 1.57954355,
+      "verify_run_seconds": 1.640009138
     },
     {
       "spec": "hunter-beast-mastery",
@@ -1724,8 +1724,8 @@
         "finger2: Band of the Fist",
         "main_hand: Prison Shank"
       ],
-      "weights_run_seconds": 1.15659484,
-      "verify_run_seconds": 1.173282352
+      "weights_run_seconds": 1.57954355,
+      "verify_run_seconds": 1.589431222
     },
     {
       "spec": "hunter-beast-mastery",
@@ -1958,8 +1958,8 @@
         "off_hand: Prison Shank",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 1.229960303,
-      "verify_run_seconds": 1.57429055
+      "weights_run_seconds": 1.6447433729999998,
+      "verify_run_seconds": 2.094364067
     },
     {
       "spec": "hunter-beast-mastery",
@@ -2192,8 +2192,8 @@
         "off_hand: Scout's Blade",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.229960303,
-      "verify_run_seconds": 1.548677208
+      "weights_run_seconds": 1.6447433729999998,
+      "verify_run_seconds": 2.037449063
     },
     {
       "spec": "hunter-beast-mastery",
@@ -2414,8 +2414,8 @@
         "feet: Dusky Boots",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.259593293,
-      "verify_run_seconds": 1.610552725
+      "weights_run_seconds": 1.669567805,
+      "verify_run_seconds": 2.142154597
     },
     {
       "spec": "hunter-beast-mastery",
@@ -2636,8 +2636,8 @@
         "waist: Kolkar Hunter's Belt",
         "feet: Dusky Boots"
       ],
-      "weights_run_seconds": 1.259593293,
-      "verify_run_seconds": 1.474635832
+      "weights_run_seconds": 1.669567805,
+      "verify_run_seconds": 1.947059774
     },
     {
       "spec": "hunter-beast-mastery",
@@ -2872,8 +2872,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Outrunner's Bow"
       ],
-      "weights_run_seconds": 1.353177257,
-      "verify_run_seconds": 1.597392465
+      "weights_run_seconds": 1.785872527,
+      "verify_run_seconds": 2.115408754
     },
     {
       "spec": "hunter-beast-mastery",
@@ -3107,8 +3107,8 @@
         "off_hand: Blue Glittering Axe",
         "ranged: Outrider's Bow"
       ],
-      "weights_run_seconds": 1.353177257,
-      "verify_run_seconds": 1.567087655
+      "weights_run_seconds": 1.785872527,
+      "verify_run_seconds": 2.074594213
     },
     {
       "spec": "hunter-beast-mastery",
@@ -3336,8 +3336,8 @@
         "trinket2: Demon's Blood",
         "off_hand: Dazzling Mithril Rapier"
       ],
-      "weights_run_seconds": 1.343001252,
-      "verify_run_seconds": 1.566317876
+      "weights_run_seconds": 1.738746863,
+      "verify_run_seconds": 2.197635972
     },
     {
       "spec": "hunter-beast-mastery",
@@ -3565,8 +3565,8 @@
         "trinket1: Demon's Blood",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 1.343001252,
-      "verify_run_seconds": 1.538386213
+      "weights_run_seconds": 1.738746863,
+      "verify_run_seconds": 2.054210302
     },
     {
       "spec": "hunter-beast-mastery",
@@ -3798,8 +3798,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 1.362105001,
-      "verify_run_seconds": 1.611754369
+      "weights_run_seconds": 1.7938286190000001,
+      "verify_run_seconds": 2.140248634
     },
     {
       "spec": "hunter-beast-mastery",
@@ -4033,8 +4033,8 @@
         "off_hand: Scout's Blade",
         "ranged: Dark Iron Rifle"
       ],
-      "weights_run_seconds": 1.362105001,
-      "verify_run_seconds": 1.566804664
+      "weights_run_seconds": 1.7938286190000001,
+      "verify_run_seconds": 2.093282405
     },
     {
       "spec": "hunter-beast-mastery",
@@ -4264,8 +4264,8 @@
         "trinket1: Smokey's Lighter",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.336032586,
-      "verify_run_seconds": 1.620920664
+      "weights_run_seconds": 1.778353987,
+      "verify_run_seconds": 2.140461548
     },
     {
       "spec": "hunter-beast-mastery",
@@ -4495,8 +4495,8 @@
         "trinket1: Smokey's Lighter",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.336032586,
-      "verify_run_seconds": 1.556299423
+      "weights_run_seconds": 1.778353987,
+      "verify_run_seconds": 2.078061432
     },
     {
       "spec": "hunter-beast-mastery",
@@ -4729,8 +4729,8 @@
         "off_hand: Grand Marshal's Longsword",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.326034336,
-      "verify_run_seconds": 1.590826404
+      "weights_run_seconds": 1.750964705,
+      "verify_run_seconds": 2.185681454
     },
     {
       "spec": "hunter-beast-mastery",
@@ -4964,8 +4964,8 @@
         "off_hand: Grand Marshal's Longsword",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.326034336,
-      "verify_run_seconds": 1.542625858
+      "weights_run_seconds": 1.750964705,
+      "verify_run_seconds": 2.061517132
     }
   ]
 }

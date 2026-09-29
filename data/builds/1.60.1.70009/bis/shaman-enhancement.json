@@ -2,7 +2,7 @@
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:59:34Z",
+  "generated_at": "2026-09-29T13:36:23Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -197,8 +197,8 @@
         "main_hand: Fist of the People's Militia",
         "off_hand: Engineer's Hammer"
       ],
-      "weights_run_seconds": 1.128642007,
-      "verify_run_seconds": 0.496181649
+      "weights_run_seconds": 1.533444195,
+      "verify_run_seconds": 0.658930889
     },
     {
       "spec": "shaman-enhancement",
@@ -398,8 +398,8 @@
         "main_hand: Hammer of Orgrimmar",
         "off_hand: Kris of Orgrimmar"
       ],
-      "weights_run_seconds": 1.128642007,
-      "verify_run_seconds": 0.609791369
+      "weights_run_seconds": 1.533444195,
+      "verify_run_seconds": 0.803743287
     },
     {
       "spec": "shaman-enhancement",
@@ -604,8 +604,8 @@
         "main_hand: Hardwood Cudgel",
         "off_hand: Big Bronze Knife"
       ],
-      "weights_run_seconds": 1.143210633,
-      "verify_run_seconds": 0.880903105
+      "weights_run_seconds": 1.526733404,
+      "verify_run_seconds": 1.137823142
     },
     {
       "spec": "shaman-enhancement",
@@ -813,8 +813,8 @@
         "main_hand: Big Bronze Knife",
         "off_hand: Harpy Skinner"
       ],
-      "weights_run_seconds": 1.143210633,
-      "verify_run_seconds": 0.852556568
+      "weights_run_seconds": 1.526733404,
+      "verify_run_seconds": 1.108358039
     },
     {
       "spec": "shaman-enhancement",
@@ -1047,8 +1047,8 @@
         "main_hand: Butcher's Cleaver",
         "off_hand: Shoni's Disarming Tool"
       ],
-      "weights_run_seconds": 1.154454043,
-      "verify_run_seconds": 0.989141815
+      "weights_run_seconds": 1.5002660429999999,
+      "verify_run_seconds": 1.310773298
     },
     {
       "spec": "shaman-enhancement",
@@ -1281,8 +1281,8 @@
         "main_hand: Butcher's Cleaver",
         "off_hand: Stinging Viper"
       ],
-      "weights_run_seconds": 1.154454043,
-      "verify_run_seconds": 0.949003251
+      "weights_run_seconds": 1.5002660429999999,
+      "verify_run_seconds": 1.2129917749999999
     },
     {
       "spec": "shaman-enhancement",
@@ -1512,8 +1512,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Bite of Serra'kis"
       ],
-      "weights_run_seconds": 1.189956356,
-      "verify_run_seconds": 0.939701363
+      "weights_run_seconds": 1.5018691020000001,
+      "verify_run_seconds": 1.238732677
     },
     {
       "spec": "shaman-enhancement",
@@ -1742,8 +1742,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Butcher's Cleaver"
       ],
-      "weights_run_seconds": 1.189956356,
-      "verify_run_seconds": 1.028381716
+      "weights_run_seconds": 1.5018691020000001,
+      "verify_run_seconds": 1.3248139669999999
     },
     {
       "spec": "shaman-enhancement",
@@ -1978,8 +1978,8 @@
         "main_hand: Pronged Reaver",
         "off_hand: Ironspine's Fist"
       ],
-      "weights_run_seconds": 1.209812242,
-      "verify_run_seconds": 1.178523752
+      "weights_run_seconds": 1.61648364,
+      "verify_run_seconds": 1.580291811
     },
     {
       "spec": "shaman-enhancement",
@@ -2211,8 +2211,8 @@
         "main_hand: Pronged Reaver",
         "off_hand: Ironspine's Fist"
       ],
-      "weights_run_seconds": 1.209812242,
-      "verify_run_seconds": 1.116749981
+      "weights_run_seconds": 1.61648364,
+      "verify_run_seconds": 1.507667428
     },
     {
       "spec": "shaman-enhancement",
@@ -2437,8 +2437,8 @@
         "main_hand: Black Menace",
         "off_hand: Pronged Reaver"
       ],
-      "weights_run_seconds": 1.3289908590000001,
-      "verify_run_seconds": 1.252336399
+      "weights_run_seconds": 1.8437720739999999,
+      "verify_run_seconds": 1.652267393
     },
     {
       "spec": "shaman-enhancement",
@@ -2662,8 +2662,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Pronged Reaver"
       ],
-      "weights_run_seconds": 1.3289908590000001,
-      "verify_run_seconds": 1.339615175
+      "weights_run_seconds": 1.8437720739999999,
+      "verify_run_seconds": 1.7620208179999999
     },
     {
       "spec": "shaman-enhancement",
@@ -2896,8 +2896,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.415724467,
-      "verify_run_seconds": 1.239482899
+      "weights_run_seconds": 1.897455478,
+      "verify_run_seconds": 1.6432475260000001
     },
     {
       "spec": "shaman-enhancement",
@@ -3130,8 +3130,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Axe of the Ebon Drake"
       ],
-      "weights_run_seconds": 1.415724467,
-      "verify_run_seconds": 1.163123826
+      "weights_run_seconds": 1.897455478,
+      "verify_run_seconds": 1.534400077
     },
     {
       "spec": "shaman-enhancement",
@@ -3359,8 +3359,8 @@
         "main_hand: Gryphon Rider's Stormhammer",
         "off_hand: Lifeforce Dirk"
       ],
-      "weights_run_seconds": 1.434766464,
-      "verify_run_seconds": 1.343742194
+      "weights_run_seconds": 1.864266875,
+      "verify_run_seconds": 1.786148063
     },
     {
       "spec": "shaman-enhancement",
@@ -3586,8 +3586,8 @@
         "main_hand: Enchanted Azsharite Felbane Dagger",
         "off_hand: Lifeforce Dirk"
       ],
-      "weights_run_seconds": 1.434766464,
-      "verify_run_seconds": 1.344059038
+      "weights_run_seconds": 1.864266875,
+      "verify_run_seconds": 1.789069858
     },
     {
       "spec": "shaman-enhancement",
@@ -3817,8 +3817,8 @@
         "finger2: Protector's Band",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.3924574619999999,
-      "verify_run_seconds": 1.367155135
+      "weights_run_seconds": 1.877856843,
+      "verify_run_seconds": 1.8072926649999999
     },
     {
       "spec": "shaman-enhancement",
@@ -4053,8 +4053,8 @@
         "main_hand: Dawn's Edge",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.3924574619999999,
-      "verify_run_seconds": 1.316650134
+      "weights_run_seconds": 1.877856843,
+      "verify_run_seconds": 1.73515429
     },
     {
       "spec": "shaman-enhancement",
@@ -4287,8 +4287,8 @@
         "main_hand: Dawn's Edge",
         "off_hand: Serenity"
       ],
-      "weights_run_seconds": 1.397402398,
-      "verify_run_seconds": 1.369253578
+      "weights_run_seconds": 1.927719641,
+      "verify_run_seconds": 1.796385714
     },
     {
       "spec": "shaman-enhancement",
@@ -4520,8 +4520,8 @@
         "trinket1: Smokey's Lighter",
         "off_hand: Serenity"
       ],
-      "weights_run_seconds": 1.397402398,
-      "verify_run_seconds": 1.298100212
+      "weights_run_seconds": 1.927719641,
+      "verify_run_seconds": 1.7071481849999999
     },
     {
       "spec": "shaman-enhancement",
@@ -4758,8 +4758,8 @@
         "main_hand: Blessed Qiraji Pugio",
         "off_hand: Blessed Qiraji War Axe"
       ],
-      "weights_run_seconds": 1.479150961,
-      "verify_run_seconds": 1.425336178
+      "weights_run_seconds": 1.932878681,
+      "verify_run_seconds": 1.868535952
     },
     {
       "spec": "shaman-enhancement",
@@ -4860,7 +4860,7 @@
           "item_name": "Qiraji Execution Bracers",
           "source": "Ahn'Qiraj",
           "source_kind": "raid",
-          "score": 149.90080503891906,
+          "score": 149.90080503891903,
           "verified": true
         },
         {
@@ -4996,8 +4996,8 @@
         "main_hand: Blessed Qiraji Pugio",
         "off_hand: Blessed Qiraji War Axe"
       ],
-      "weights_run_seconds": 1.479150961,
-      "verify_run_seconds": 1.355114887
+      "weights_run_seconds": 1.932878681,
+      "verify_run_seconds": 1.759828582
     }
   ]
 }

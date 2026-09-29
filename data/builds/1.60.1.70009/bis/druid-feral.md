@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (night-elf, 0000000000000000-1000000000000000000-0000000000000000)
 
-Set DPS (verified): 10.4. Weights run: 1.0s. Verify run: 0.5s. 688 eligible items had no known source.
+Set DPS (verified): 10.4. Weights run: 1.4s. Verify run: 0.6s. 688 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, feral_attack_power=0.008 ± 0.000, strength=2.000 ± 0.004, agility=0.075 ± 0.017, crit=1.312 ± 0.067, hit=2.965 ± 0.187, melee_haste=0.701 ± 0.026
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 688, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 15 (night-elf, 0000000000000000-5100000000000000000-0000000000000000)
 
-Set DPS (verified): 15.0. Weights run: 1.0s. Verify run: 0.7s. 900 eligible items had no known source.
+Set DPS (verified): 15.0. Weights run: 1.3s. Verify run: 0.8s. 900 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, feral_attack_power=0.009 ± 0.000, strength=2.001 ± 0.004, agility=0.078 ± 0.018, crit=2.009 ± 0.110, hit=4.737 ± 0.304, melee_haste=1.955 ± 0.089
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 900, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 20 (night-elf, 0000000000000000-5420000000000000000-0000000000000000)
 
-Set DPS (verified): 56.7. Weights run: 1.4s. Verify run: 1.0s. 1170 eligible items had no known source.
+Set DPS (verified): 56.7. Weights run: 1.8s. Verify run: 1.4s. 1170 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.436 ± 0.049, crit=8.959 ± 0.224, hit=not significant (0.000 ± 0.000), melee_haste=5.281 ± 0.416
 
@@ -96,7 +96,7 @@ No-known-source sample (15 of 1170, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 25 (night-elf, 0000000000000000-5423200000000000000-0000000000000000)
 
-Set DPS (verified): 64.5. Weights run: 1.6s. Verify run: 1.2s. 1447 eligible items had no known source.
+Set DPS (verified): 64.5. Weights run: 2.1s. Verify run: 1.5s. 1447 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.503 ± 0.062, crit=10.018 ± 0.287, hit=not significant (0.000 ± 0.000), melee_haste=6.120 ± 0.602
 
@@ -126,7 +126,7 @@ No-known-source sample (15 of 1447, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (night-elf, 0000000000000000-5423222100000000000-0000000000000000)
 
-Set DPS (verified): 72.6. Weights run: 1.6s. Verify run: 1.4s. 1699 eligible items had no known source.
+Set DPS (verified): 72.6. Weights run: 2.1s. Verify run: 1.9s. 1699 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.494 ± 0.064, crit=10.211 ± 0.292, hit=not significant (0.000 ± 0.000), melee_haste=6.340 ± 0.693
 
@@ -156,7 +156,7 @@ No-known-source sample (15 of 1699, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (night-elf, 0000000000000000-5423222121020000000-0000000000000000)
 
-Set DPS (verified): 75.6. Weights run: 1.7s. Verify run: 1.5s. 1915 eligible items had no known source.
+Set DPS (verified): 75.6. Weights run: 2.2s. Verify run: 2.0s. 1915 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.578 ± 0.064, crit=11.098 ± 0.300, hit=not significant (0.000 ± 0.000), melee_haste=6.836 ± 0.782
 
@@ -186,7 +186,7 @@ No-known-source sample (15 of 1915, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (night-elf, 0000000000000000-5423222121032010001-0000000000000000)
 
-Set DPS (verified): 87.8. Weights run: 1.7s. Verify run: 1.5s. 2145 eligible items had no known source.
+Set DPS (verified): 87.8. Weights run: 2.2s. Verify run: 2.0s. 2145 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.534 ± 0.071, crit=11.632 ± 0.333, hit=not significant (0.000 ± 0.000), melee_haste=7.650 ± 0.975
 
@@ -216,7 +216,7 @@ No-known-source sample (15 of 2145, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (night-elf, 0000000000000000-5423222121032010001-5000000000000000)
 
-Set DPS (verified): 103.5. Weights run: 1.7s. Verify run: 1.5s. 2362 eligible items had no known source.
+Set DPS (verified): 103.5. Weights run: 2.2s. Verify run: 2.0s. 2362 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.540 ± 0.067, crit=12.001 ± 0.332, hit=not significant (0.000 ± 0.000), melee_haste=7.435 ± 1.144
 
@@ -246,7 +246,7 @@ No-known-source sample (15 of 2362, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (night-elf, 0000000000000000-5423222121032010001-5500000000000000)
 
-Set DPS (verified): 108.3. Weights run: 1.7s. Verify run: 1.5s. 2636 eligible items had no known source.
+Set DPS (verified): 108.3. Weights run: 2.2s. Verify run: 2.0s. 2636 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.597 ± 0.077, crit=12.908 ± 0.369, hit=not significant (0.000 ± 0.000), melee_haste=7.662 ± 1.230
 
@@ -276,7 +276,7 @@ No-known-source sample (15 of 2636, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 55 (night-elf, 0000000000000000-5423222121032010001-5550000000000000)
 
-Set DPS (verified): 127.6. Weights run: 1.7s. Verify run: 1.5s. 2886 eligible items had no known source.
+Set DPS (verified): 127.6. Weights run: 2.3s. Verify run: 1.9s. 2886 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.670 ± 0.083, crit=13.847 ± 0.406, hit=not significant (0.000 ± 0.000), melee_haste=7.531 ± 1.522
 
@@ -306,7 +306,7 @@ No-known-source sample (15 of 2886, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (night-elf, 0000000000000000-5423222121032010001-5553200000000000)
 
-Set DPS (verified): 164.8. Weights run: 1.7s. Verify run: 1.6s. 3456 eligible items had no known source.
+Set DPS (verified): 164.8. Weights run: 2.2s. Verify run: 2.0s. 3456 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.760 ± 0.098, crit=13.720 ± 0.409, hit=not significant (0.000 ± 0.000), melee_haste=not significant (7.156 ± 1.916)
 
@@ -338,7 +338,7 @@ No-known-source sample (15 of 3456, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 10 (tauren, 0000000000000000-1000000000000000000-0000000000000000)
 
-Set DPS (verified): 11.3. Weights run: 1.0s. Verify run: 0.5s. 688 eligible items had no known source.
+Set DPS (verified): 11.3. Weights run: 1.4s. Verify run: 0.7s. 688 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, feral_attack_power=0.008 ± 0.000, strength=2.000 ± 0.004, agility=0.075 ± 0.017, crit=1.312 ± 0.067, hit=2.965 ± 0.187, melee_haste=0.701 ± 0.026
 
@@ -368,7 +368,7 @@ No-known-source sample (15 of 688, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 15 (tauren, 0000000000000000-5100000000000000000-0000000000000000)
 
-Set DPS (verified): 14.2. Weights run: 1.0s. Verify run: 0.6s. 897 eligible items had no known source.
+Set DPS (verified): 14.2. Weights run: 1.3s. Verify run: 0.8s. 897 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, feral_attack_power=0.009 ± 0.000, strength=2.001 ± 0.004, agility=0.078 ± 0.018, crit=2.009 ± 0.110, hit=4.737 ± 0.304, melee_haste=1.955 ± 0.089
 
@@ -398,7 +398,7 @@ No-known-source sample (15 of 897, see the JSON for more): 816 Small Hand Blade;
 
 ### Band 20 (tauren, 0000000000000000-5420000000000000000-0000000000000000)
 
-Set DPS (verified): 56.0. Weights run: 1.4s. Verify run: 1.0s. 1167 eligible items had no known source.
+Set DPS (verified): 56.0. Weights run: 1.8s. Verify run: 1.4s. 1167 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.436 ± 0.049, crit=8.959 ± 0.224, hit=not significant (0.000 ± 0.000), melee_haste=5.281 ± 0.416
 
@@ -428,7 +428,7 @@ No-known-source sample (15 of 1167, see the JSON for more): 789 Stout Battlehamm
 
 ### Band 25 (tauren, 0000000000000000-5423200000000000000-0000000000000000)
 
-Set DPS (verified): 64.0. Weights run: 1.6s. Verify run: 1.2s. 1444 eligible items had no known source.
+Set DPS (verified): 64.0. Weights run: 2.1s. Verify run: 1.5s. 1444 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.503 ± 0.062, crit=10.018 ± 0.287, hit=not significant (0.000 ± 0.000), melee_haste=6.120 ± 0.602
 
@@ -458,7 +458,7 @@ No-known-source sample (15 of 1444, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (tauren, 0000000000000000-5423222100000000000-0000000000000000)
 
-Set DPS (verified): 70.7. Weights run: 1.6s. Verify run: 1.4s. 1696 eligible items had no known source.
+Set DPS (verified): 70.7. Weights run: 2.1s. Verify run: 1.9s. 1696 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.002, agility=1.494 ± 0.064, crit=10.211 ± 0.292, hit=not significant (0.000 ± 0.000), melee_haste=6.340 ± 0.693
 
@@ -488,7 +488,7 @@ No-known-source sample (15 of 1696, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (tauren, 0000000000000000-5423222121020000000-0000000000000000)
 
-Set DPS (verified): 74.5. Weights run: 1.7s. Verify run: 1.5s. 1912 eligible items had no known source.
+Set DPS (verified): 74.5. Weights run: 2.2s. Verify run: 2.0s. 1912 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.578 ± 0.064, crit=11.098 ± 0.300, hit=not significant (0.000 ± 0.000), melee_haste=6.836 ± 0.782
 
@@ -518,7 +518,7 @@ No-known-source sample (15 of 1912, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (tauren, 0000000000000000-5423222121032010001-0000000000000000)
 
-Set DPS (verified): 85.2. Weights run: 1.7s. Verify run: 1.5s. 2142 eligible items had no known source.
+Set DPS (verified): 85.2. Weights run: 2.2s. Verify run: 1.9s. 2142 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.534 ± 0.071, crit=11.632 ± 0.333, hit=not significant (0.000 ± 0.000), melee_haste=7.650 ± 0.975
 
@@ -548,7 +548,7 @@ No-known-source sample (15 of 2142, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 45 (tauren, 0000000000000000-5423222121032010001-5000000000000000)
 
-Set DPS (verified): 101.3. Weights run: 1.7s. Verify run: 1.5s. 2359 eligible items had no known source.
+Set DPS (verified): 101.3. Weights run: 2.2s. Verify run: 2.0s. 2359 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.540 ± 0.067, crit=12.001 ± 0.332, hit=not significant (0.000 ± 0.000), melee_haste=7.435 ± 1.144
 
@@ -578,7 +578,7 @@ No-known-source sample (15 of 2359, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (tauren, 0000000000000000-5423222121032010001-5500000000000000)
 
-Set DPS (verified): 106.0. Weights run: 1.7s. Verify run: 1.5s. 2633 eligible items had no known source.
+Set DPS (verified): 106.0. Weights run: 2.2s. Verify run: 2.0s. 2633 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.597 ± 0.077, crit=12.908 ± 0.369, hit=not significant (0.000 ± 0.000), melee_haste=7.662 ± 1.230
 
@@ -608,7 +608,7 @@ No-known-source sample (15 of 2633, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 55 (tauren, 0000000000000000-5423222121032010001-5550000000000000)
 
-Set DPS (verified): 126.9. Weights run: 1.7s. Verify run: 1.4s. 2883 eligible items had no known source.
+Set DPS (verified): 126.9. Weights run: 2.3s. Verify run: 1.9s. 2883 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.670 ± 0.083, crit=13.847 ± 0.406, hit=not significant (0.000 ± 0.000), melee_haste=7.531 ± 1.522
 
@@ -638,7 +638,7 @@ No-known-source sample (15 of 2883, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 60 (tauren, 0000000000000000-5423222121032010001-5553200000000000)
 
-Set DPS (verified): 164.9. Weights run: 1.7s. Verify run: 1.6s. 3453 eligible items had no known source.
+Set DPS (verified): 164.9. Weights run: 2.2s. Verify run: 2.1s. 3453 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, feral_attack_power=1.000 ± 0.001, strength=2.320 ± 0.003, agility=1.760 ± 0.098, crit=13.720 ± 0.409, hit=not significant (0.000 ± 0.000), melee_haste=not significant (7.156 ± 1.916)
 
