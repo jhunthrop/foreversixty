@@ -10,9 +10,10 @@ func TestSourceForNoSource(t *testing.T) {
 }
 
 func TestSourceForPicksHighestPriorityKind(t *testing.T) {
-	// sourceKindPriority: quest, rep, vendor, dungeon, crafted, pvp, world, raid
-	// - dungeon must win over world even though world was inserted
-	// first, because the priority order (not insertion order) decides.
+	// quest, then boss (dungeon/raid), then rep, vendor, crafted,
+	// world_drop, pvp, world - dungeon (a boss) must win over world even
+	// though world was inserted first, because the priority order (not
+	// insertion order) decides.
 	idx := lootIndex{
 		1: {
 			{Kind: "world", Label: "World Vendor"},
@@ -25,14 +26,16 @@ func TestSourceForPicksHighestPriorityKind(t *testing.T) {
 	}
 }
 
-func TestSourceForPicksVendorOverDungeonAndFallsBackToItAlone(t *testing.T) {
-	// vendor sits right after quest and rep in sourceKindPriority
-	// (added by the 2026-09-28 night-bis-sources lane) and beats
-	// dungeon/world/etc.
+func TestSourceForPicksVendorOverWorldAndFallsBackToItAlone(t *testing.T) {
+	// vendor sits right after quest, rep and boss in sourceKindPriority
+	// (added by the 2026-09-28 night-bis-sources lane) and beats world/etc
+	// -- but NOT dungeon/raid any more (wowhead-world-drops lane,
+	// 2026-09-29: see TestSourceForPicksABossOverVendorRepAndCrafted
+	// below for that case, which this test used to cover before boss
+	// outranked vendor).
 	idx := lootIndex{
 		1: {
 			{Kind: "world", Label: "World Vendor"},
-			{Kind: "dungeon", Label: "A Dungeon"},
 			{Kind: "vendor", Label: "A Vendor"},
 		},
 	}
@@ -52,10 +55,11 @@ func TestSourceForPicksVendorOverDungeonAndFallsBackToItAlone(t *testing.T) {
 }
 
 func TestSourceForPicksWorldDropOverPvpAndWorldButNotOverCrafted(t *testing.T) {
-	// sourceKindPriority: ... crafted, world_drop, pvp, world, raid --
+	// sourceKindPriority: ... crafted, world_drop, pvp, world --
 	// world_drop is obtainable (auction house) at any level in its own
-	// range, so it beats pvp/world/raid, but a source naming an exact
-	// place (crafted) still wins.
+	// range, so it beats pvp/world (and a raid source, excluded below
+	// 60 regardless), but a source naming an exact place (crafted) still
+	// wins.
 	idx := lootIndex{
 		1: {
 			{Kind: "raid", Label: "A Raid"},
@@ -105,6 +109,78 @@ func TestSourceForFallsBackWhenNoNonRaidKindPresent(t *testing.T) {
 	idx := lootIndex{1: {{Kind: "raid", Label: "Molten Core"}}}
 	if _, ok := sourceFor(1, 30, "alliance", "", idx); ok {
 		t.Fatal("sourceFor with only a below-60-excluded raid source: want ok=false, not falling through to it anyway")
+	}
+}
+
+// wowhead-world-drops lane, 2026-09-29: the priority reorder's own
+// point - a real dungeon boss now outranks rep/vendor/crafted, so the
+// report says "kill this boss" rather than "buy this off a vendor" (or
+// "at this reputation") whenever both exist for the same item. See
+// band.go's sourceFor doc for why this reverses the 2026-09-28
+// night-bis-sources lane's own order.
+func TestSourceForPicksABossOverVendorRepAndCrafted(t *testing.T) {
+	idx := lootIndex{
+		1: {
+			{Kind: "crafted", Label: "A Crafted Item"},
+			{Kind: "vendor", Label: "A Vendor"},
+			{Kind: "rep", Label: "A Reputation"},
+			{Kind: "dungeon", Label: "A Dungeon: A Boss"},
+		},
+	}
+	src, ok := sourceFor(1, 30, "alliance", "", idx)
+	if !ok || src.Kind != "dungeon" || src.Label != "A Dungeon: A Boss" {
+		t.Fatalf("sourceFor = %+v, %v, want the dungeon boss to win over vendor/rep/crafted", src, ok)
+	}
+}
+
+// Two boss sources naming the same item (a dungeon trash mob padding a
+// zone bucket, and the zone's own real boss with a stated chance) pick
+// the higher-chance one, not whichever loot.json's array lists first --
+// tenet 7's "never show an arbitrary trash mob when a boss ... exists",
+// at the tie-break level within the boss tier itself.
+func TestSourceForPicksTheHighestChanceBossAmongSeveral(t *testing.T) {
+	idx := lootIndex{
+		1: {
+			{Kind: "dungeon", Label: "The Deadmines: trash", Chance: 0},
+			{Kind: "dungeon", Label: "The Deadmines: Mr. Smite", Chance: 20},
+		},
+	}
+	src, ok := sourceFor(1, 30, "alliance", "", idx)
+	if !ok || src.Label != "The Deadmines: Mr. Smite" {
+		t.Fatalf("sourceFor = %+v, %v, want the higher-chance boss (Mr. Smite)", src, ok)
+	}
+
+	// Order must not matter - the higher-chance entry wins regardless of
+	// which one the array lists first.
+	reversed := lootIndex{
+		2: {
+			{Kind: "dungeon", Label: "The Deadmines: Mr. Smite", Chance: 20},
+			{Kind: "dungeon", Label: "The Deadmines: trash", Chance: 0},
+		},
+	}
+	src, ok = sourceFor(2, 30, "alliance", "", reversed)
+	if !ok || src.Label != "The Deadmines: Mr. Smite" {
+		t.Fatalf("sourceFor (reversed order) = %+v, %v, want the higher-chance boss (Mr. Smite)", src, ok)
+	}
+}
+
+// A raid boss with a higher chance than a dungeon boss for the same
+// item still loses to the dungeon one below level 60 - the raid<60
+// exclusion applies before the chance comparison, not after.
+func TestSourceForPicksTheBestObtainableBossAcrossDungeonAndRaid(t *testing.T) {
+	idx := lootIndex{
+		1: {
+			{Kind: "raid", Label: "Molten Core: Ragnaros", Chance: 50},
+			{Kind: "dungeon", Label: "The Deadmines: Mr. Smite", Chance: 20},
+		},
+	}
+	src, ok := sourceFor(1, 30, "alliance", "", idx)
+	if !ok || src.Kind != "dungeon" {
+		t.Fatalf("sourceFor at 30 = %+v, %v, want the dungeon boss (raid excluded below 60)", src, ok)
+	}
+	src, ok = sourceFor(1, 60, "alliance", "", idx)
+	if !ok || src.Kind != "raid" {
+		t.Fatalf("sourceFor at 60 = %+v, %v, want the raid boss (higher chance, both obtainable)", src, ok)
 	}
 }
 

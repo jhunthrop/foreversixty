@@ -87,7 +87,16 @@ def test_every_kind_is_emitted_once_and_in_the_contracts_order():
     ]
 
 
-def test_a_raid_lists_a_boss_per_npc_and_everything_else_as_trash():
+def test_a_raid_lists_a_named_boss_per_npc_and_drops_an_unnamed_one():
+    """The fixture's own npc 901 (Big Boss's raid-mate, item 102's only
+    drop) has no name in the fork database and, with no classic_sources
+    passed to `built()` here, none in classic-db either --
+    `_resolve_or_drop_unnamed_bosses` (wowhead-world-drops lane,
+    2026-09-29's own addendum) drops it rather than publish an empty
+    name; item 102 (its only drop) is gone from the raid entirely, not
+    merely unbossed. See test_loot_sources_classicdb.py's own
+    `test_a_fork_bosss_empty_name_resolves_from_classic_dbs_own_
+    creature_template` for the case where classic-db DOES name it."""
     raid = source("raid:molten-core")
     assert raid.kind == "raid"
     assert raid.name == "Molten Core"
@@ -96,7 +105,6 @@ def test_a_raid_lists_a_boss_per_npc_and_everything_else_as_trash():
     assert raid.trash == [101]
     assert [(b.id, b.name, b.npc_id, b.items) for b in raid.bosses] == [
         ("raid:molten-core:900", "Big Boss", 900, [100, 112]),
-        ("raid:molten-core:901", "", 901, [102]),
     ]
 
 
@@ -190,16 +198,21 @@ def test_an_item_with_two_sources_appears_under_both():
 def test_an_item_the_build_does_not_have_is_left_out_with_its_boss():
     """Contract 10.4: loot.json lists only items the build has. Item 113
     is a raid drop the fork knows and this client's item table does not,
-    so both it and the boss it was the only drop of are gone."""
+    so both it and the boss it was the only drop of are gone. Only npc
+    900 (Big Boss) remains here -- 901 is separately dropped for having
+    no name at all (see test_a_raid_lists_a_named_boss_per_npc_and_
+    drops_an_unnamed_one above), not because of this build filter."""
     raid = source("raid:molten-core")
     assert 113 not in source_item_ids(raid)
-    assert [boss.npc_id for boss in raid.bosses] == [900, 901]
+    assert [boss.npc_id for boss in raid.bosses] == [900]
 
 
 def test_the_stats_count_what_was_emitted_dropped_and_absent():
     _, stats = built()
-    # 100, 101, 102, 103, 104, 106, 107, 108, 111, 112
-    assert stats.items == 10
+    # 100, 101, 103, 104, 106, 107, 108, 111, 112 -- 102 is gone too: its
+    # only drop was npc 901's, dropped for having no name in either
+    # database (dropped_unnamed_bosses below).
+    assert stats.items == 9
     # Every fixture entry now has a kind: the unnamed open-world mob's drop
     # files under zone:16 and the vendor sale under its npc.
     assert stats.dropped_entries == 0
@@ -207,6 +220,7 @@ def test_the_stats_count_what_was_emitted_dropped_and_absent():
     # item table has none of them, so they are counted before any kind
     # could take them.
     assert stats.absent_items == 3
+    assert stats.dropped_unnamed_bosses == 1
 
 
 def _wsg_fork(repFactionId: int, factionRestriction: int) -> ForkDatabase:

@@ -36,6 +36,7 @@ from pipeline.csvio import populated
 from pipeline.forkdb import FACTION_RESTRICTIONS, PROFESSIONS, REP_LEVELS, ForkDatabase, decode
 from pipeline.item_sources import ItemSourceEntry
 from pipeline.loot.classicdb import (
+    classic_db_npc_names,
     classicdb_additions,
     fork_instance_npc_zones,
     merge_classicdb_sources,
@@ -156,6 +157,12 @@ class LootStats:
     #: applied, so a quest item the fork already covers never double
     #: counts here).
     classicdb_items: int = 0
+    #: wowhead-world-drops lane, 2026-09-29's own addendum: bosses whose
+    #: name resolved to neither the fork database's own npcs table nor
+    #: classic-db's `creature_template.Name` (`classic_db_npc_names`) --
+    #: dropped from their source rather than published with an empty
+    #: name (`_resolve_or_drop_unnamed_bosses`'s own doc).
+    dropped_unnamed_bosses: int = 0
 
 
 def instance_types(
@@ -539,6 +546,57 @@ def source_item_ids(source: LootSource) -> set[int]:
     )
 
 
+def _resolve_or_drop_unnamed_bosses(
+    sources: list[LootSource], npc_names: dict[int, str]
+) -> tuple[list[LootSource], int]:
+    """Every `LootBoss` with an empty `name` (`LootBoss.name`'s own doc:
+    the fork database simply does not name every raid/dungeon npc --
+    measured 58 on build 1.60.1.70009, every one a raid boss) gets
+    `npc_names`' (`pipeline.loot.classicdb.classic_db_npc_names`'s own
+    result) name for its npc_id when one exists; a boss STILL unnamed
+    after that is DROPPED from its source entirely rather than published
+    empty -- wowhead-world-drops lane, 2026-09-29's own addendum: the
+    site renders an empty name as "0% from Unnamed source in <zone>",
+    which is a worse fact than the boss simply not being listed at all
+    (tenet 7's "one line a player recognises", tenet 8's "unverifiable
+    is labelled or left out, never shown as fact"). Runs at the END of
+    `build_loot`, after every origin (fork, classic-db, wowhead) has
+    already merged, so it resolves a name regardless of which origin's
+    union kept an empty one.
+
+    Returns the resolved source list and how many bosses were dropped,
+    for `LootStats.dropped_unnamed_bosses` and the build's own log line.
+    A source a drop leaves with no bosses and no other items is pruned
+    by `build_loot`'s own final `source_item_ids` sweep, same as any
+    other source a filter emptied.
+    """
+    dropped = 0
+    resolved: list[LootSource] = []
+    for source in sources:
+        if not source.bosses:
+            resolved.append(source)
+            continue
+        kept_bosses: list[LootBoss] = []
+        for boss in source.bosses:
+            if boss.name:
+                kept_bosses.append(boss)
+                continue
+            real_name = npc_names.get(boss.npc_id)
+            if real_name:
+                kept_bosses.append(boss.model_copy(update={"name": real_name}))
+                continue
+            dropped += 1
+            logger.warning(
+                "loot: dropping boss npc %d from %s -- neither the fork database nor "
+                "classic-db's own creature_template names it; publishing an empty boss "
+                "name would be worse than omitting it",
+                boss.npc_id,
+                source.id,
+            )
+        resolved.append(source.model_copy(update={"bosses": kept_bosses or None}))
+    return resolved, dropped
+
+
 def build_loot(
     fork: ForkDatabase,
     zone_names: dict[int, str],
@@ -550,6 +608,7 @@ def build_loot(
     item_sources: dict[int, ItemSourceEntry] | None = None,
     classic_sources: dict[int, list[ClassicDbSourceRecord]] | None = None,
     zone_rows: list[dict] | None = None,
+    required_levels: dict[int, int] | None = None,
 ) -> tuple[LootFile, LootStats]:
     absent: set[int] = set()
     # The vendor kind's own filter: a vendor selling only reagents or
@@ -602,9 +661,24 @@ def build_loot(
         # night-item-sources lane, 2026-09-28: fills the gap ABOVE, never
         # replaces a fork-found source -- `merge_wowhead_sources` unions
         # into an existing id and only appends a wholly new one.
+        #
+        # wowhead-world-drops lane, 2026-09-29: every item id ALREADY in
+        # a `world_drop` source at this point got there from classic-db
+        # (fork itself never emits the kind) -- `wowhead_additions`' own
+        # precedence rule skips these entirely rather than resurrecting
+        # their per-creature wowhead rows or appending a second,
+        # differently-leveled `world_drop` source under a different id.
+        classicdb_world_drop_items = {
+            item_id
+            for existing in sources
+            if existing.kind == "world_drop"
+            for item_id in source_item_ids(existing)
+        }
         wowhead_sources, wowhead_quest, wowhead_quest_detail = wowhead_additions(
             item_sources, build_items, equippable, zone_names, types,
             item_factions(fork, build_items),
+            required_levels,
+            classicdb_world_drop_items,
         )
         sources = merge_wowhead_sources(sources, wowhead_sources)
         quest = sorted(set(quest) | set(wowhead_quest))
@@ -639,6 +713,16 @@ def build_loot(
     }
     if quest:
         sources.append(LootSource(id="quest", kind="quest", name="Quests", items=quest))
+    # wowhead-world-drops lane, 2026-09-29's own addendum: resolves an
+    # empty `LootBoss.name` from classic-db's own creature_template, or
+    # drops the boss when neither origin names it -- runs after every
+    # origin has merged (fork, classic-db, wowhead) so it catches an
+    # empty name regardless of which origin's union kept one, and BEFORE
+    # the pruning sweep below so a source a drop leaves empty is removed
+    # the same way any other emptied source already is.
+    sources, dropped_unnamed_bosses = _resolve_or_drop_unnamed_bosses(
+        sources, classic_db_npc_names(classic_sources) if classic_sources else {}
+    )
     # A source the filter emptied is not a source. `_drop_sources` already
     # drops a boss with no items left (its `bosses` set is simply never
     # created), so this is the last sweep: a zone whose every drop was
@@ -662,4 +746,5 @@ def build_loot(
         unnamed_zones=unnamed_zones,
         wowhead_items=len(named - fork_and_classicdb_named),
         classicdb_items=len(fork_and_classicdb_named - fork_named),
+        dropped_unnamed_bosses=dropped_unnamed_bosses,
     )

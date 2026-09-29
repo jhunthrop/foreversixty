@@ -17,7 +17,7 @@ from collections import defaultdict
 
 from pipeline.classic_sources import ClassicDbSourceRecord
 from pipeline.forkdb import ForkDatabase
-from pipeline.loot.constants import INSTANCE_KIND
+from pipeline.loot.constants import INSTANCE_KIND, world_drop_id
 from pipeline.loot.wowhead import merge_wowhead_sources as merge_classicdb_sources  # noqa: F401
 from pipeline.models import LootBoss, LootSource, QuestSource
 from pipeline.normalize.classes import slugify
@@ -29,17 +29,6 @@ from pipeline.quest_levels import QuestLevelEntry
 #: identically (this lane's own brief: "classify as world" is what
 #: distinguishes them from a `creature_drop`, not a separate bucket kind).
 _CREATURE_KINDS = frozenset({"creature_drop", "skinning", "pickpocketing"})
-
-
-def _world_drop_id(level_min: int | None, level_max: int | None) -> str:
-    """`world_drop:<level_min>-<level_max>`, or `world_drop:unknown` for a
-    pool the pinned dump's own comments name no level range for at all
-    (`pipeline.classic_sources._world_drop_pools`' own doc) -- never a
-    raw reference-template id, which is an implementation detail of the
-    dump, not a fact the site should ever show or key a URL on."""
-    if level_min is None or level_max is None:
-        return "world_drop:unknown"
-    return f"world_drop:{level_min}-{level_max}"
 
 
 def instance_zone_by_map(zone_rows: list[dict], types: dict[int, int]) -> dict[int, int]:
@@ -104,6 +93,37 @@ def fork_instance_npc_zones(fork: ForkDatabase, types: dict[int, int]) -> dict[i
                 continue
             zones.setdefault(npc_id, zone_id)
     return zones
+
+
+def classic_db_npc_names(classic_sources: dict[int, list[ClassicDbSourceRecord]]) -> dict[int, str]:
+    """npc_id -> the name cmangos/classic-db's own `creature_template.
+    Name` states for it, re-derived from the committed per-item records
+    (`ClassicDbSourceRecord.name`, itself read off that same column while
+    parsing the dump -- `pipeline.classic_sources.parse_classic_db_
+    sources`'s own `creature_names`) rather than the raw SQL text, which
+    this pipeline does not keep past that one parse.
+
+    wowhead-world-drops lane, 2026-09-29's own addendum: `build_loot`'s
+    fallback for a boss `LootBoss.name`'s own doc already admits the fork
+    database does not name (35/67 raid bosses, 39/230 dungeon bosses on
+    the pinned fork) -- classic-db drops loot for the SAME npc far more
+    often than the fork's own AtlasLoot-derived table names it, so this
+    covers 55 of the 58 empty names measured on build 1.60.1.70009
+    (the remaining 3 -- npc 179703, 181366, 175245 -- have no name in
+    classic-db's own dump either, and `build_loot` drops those bosses
+    rather than publish one empty).
+
+    Keyed by whichever record names each npc_id FIRST across every
+    item's own list (`setdefault`) -- classic-db's own dump never
+    disagrees with itself about one npc's name, so which record wins is
+    never ambiguous in practice.
+    """
+    names: dict[int, str] = {}
+    for records in classic_sources.values():
+        for record in records:
+            if record.npc_id and record.name:
+                names.setdefault(record.npc_id, record.name)
+    return names
 
 
 def classicdb_additions(
@@ -196,7 +216,16 @@ def classicdb_additions(
                 if zone_id is not None and npc_id:
                     bosses[(zone_id, npc_id)].add(item_id)
                     boss_names[npc_id] = record.name
-                    if record.chance is not None:
+                    # wowhead-world-drops lane, 2026-09-29's own addendum:
+                    # cmangos/classic-db's own `ChanceOrQuestChance` uses 0
+                    # as ITS OWN "no chance recorded" sentinel (not a real
+                    # 0% -- a drop with a truly 0% chance would simply not
+                    # be a row in the dump at all), so `record.chance` (a
+                    # truthy check, not `is not None`) excludes it the same
+                    # way an absent chance already is -- an omitted key
+                    # (unknown) is honest; a published `0` reads as "this
+                    # never drops", which is not a fact this dump states.
+                    if record.chance:
                         boss_chances[(zone_id, npc_id)][item_id] = record.chance
                 elif npc_id and record.name:
                     # An unnamed npc (creature_template names none) has
@@ -212,7 +241,9 @@ def classicdb_additions(
                     key = ("npc", npc_id)
                     world[key].add(item_id)
                     world_names[key] = record.name
-                    if record.chance is not None:
+                    # See the creature_drop branch's own comment above: 0
+                    # is classic-db's "unknown" sentinel, never a real 0%.
+                    if record.chance:
                         world_chances[key][item_id] = record.chance
             elif record.kind == "object_drop":
                 zone_id = zone_by_map.get(record.map_id) if record.map_id else None
@@ -223,18 +254,18 @@ def classicdb_additions(
                     key = ("object", object_id)
                     world[key].add(item_id)
                     world_names[key] = record.name
-                    if record.chance is not None:
+                    if record.chance:
                         world_chances[key][item_id] = record.chance
             elif record.kind == "fishing":
                 key = ("fishing", 0)
                 world[key].add(item_id)
                 world_names[key] = record.name
-                if record.chance is not None:
+                if record.chance:
                     world_chances[key][item_id] = record.chance
             elif record.kind == "world_drop":
                 level_key = (record.level_min, record.level_max)
                 world_drop[level_key].add(item_id)
-                if record.chance is not None:
+                if record.chance:
                     world_drop_chances[level_key][item_id] = record.chance
             elif record.kind == "vendor":
                 # `vendor:<npc_id>` is keyed by id, not name, so an
@@ -318,7 +349,7 @@ def classicdb_additions(
     )
     out.extend(
         LootSource(
-            id=_world_drop_id(level_min, level_max),
+            id=world_drop_id(level_min, level_max),
             kind="world_drop",
             name="World drop",
             items=sorted(items),

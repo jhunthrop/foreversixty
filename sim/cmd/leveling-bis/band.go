@@ -9,7 +9,7 @@ import "sort"
 // leveling list is about what a leveling character can get" - the
 // leveling-bis design doc's own words). An item with more than one
 // source (rare in today's data; loot.json's kinds barely overlap)
-// takes the first non-raid one in a fixed kind order, so the choice
+// takes the highest-priority one in a fixed kind order, so the choice
 // is deterministic across runs rather than dependent on loot.json's
 // row order.
 //
@@ -21,35 +21,63 @@ import "sort"
 // and the caller (bandPool, below) should keep it out of the BiS
 // pick but list it as a "lucky" candidate the way the design doc
 // describes, rather than dropping it silently as this prototype does.
-// "vendor" sits right after "quest" and "rep": a vendor purchase needs
-// only gold and the right faction/level (both already gated elsewhere -
-// sourceObtainable's Side check and eligible.go's factionRestriction
-// check), so it is at least as reliable while leveling as a quest
-// reward and more reliable than a dungeon grind. It was missing
-// entirely until the 2026-09-28 night-bis-sources lane, even though
-// loot.json has carried vendor sources (and the web's LOOT_KINDS has
-// known the kind) since the vendor/zone kinds landed - a vendor-only
-// item fell through every case here and reported "no known source".
 //
-// "rep" outranks "vendor" (moved here this lane): a reputation
-// quartermaster's own vendor row duplicates its rep tier's item list
-// verbatim (data.go's vendorInheritsRepStandingGate, this lane's brief
+// wowhead-world-drops lane, 2026-09-29: the priority order is now
+// quest, boss (dungeon/raid, by highest chance - bestBoss below), rep,
+// vendor, crafted, world_drop, pvp, world - a real boss kill now
+// outranks a reputation/vendor/crafted purchase, reversing the
+// 2026-09-28 night-bis-sources lane's own order below. That lane put
+// "rep"/"vendor" ahead of "dungeon" because a fixed kind order picked
+// whichever dungeon SOURCE (not boss) an item's array entry happened to
+// list first, with no way to tell a real boss from a trash mob dumped
+// in the same zone bucket - tenet 7's "never show an arbitrary trash
+// mob when a boss ... exists" now has the data (ItemChances) to make
+// that distinction directly, so a boss ranking below rep/vendor no
+// longer buys anything a chance-aware pick could not do better; ranking
+// it above them instead means the report says "kill this named boss"
+// rather than "buy this from a vendor" whenever a real boss drop
+// exists, which is the more specific, more direct instruction (tenet
+// 5's "accuracy first" reading of what a leveling player actually
+// wants: the fastest, most reliable route, not merely a purchasable
+// one).
+//
+// "vendor" still sits right after "rep": a vendor purchase needs only
+// gold and the right faction/level (both already gated elsewhere -
+// sourceObtainable's Side check and eligible.go's factionRestriction
+// check), so it is at least as reliable while leveling as a reputation
+// grind and more reliable than an ungated open-world/pvp source. It was
+// missing entirely until the 2026-09-28 night-bis-sources lane, even
+// though loot.json has carried vendor sources (and the web's LOOT_KINDS
+// has known the kind) since the vendor/zone kinds landed - a
+// vendor-only item fell through every case here and reported "no known
+// source".
+//
+// "rep" outranks "vendor": a reputation quartermaster's own vendor row
+// duplicates its rep tier's item list verbatim (data.go's
+// vendorInheritsRepStandingGate, 2026-09-28 night-bis-sources lane's own
 // defect 2), so an item with both sources is the identical purchase
 // either way once the vendor row correctly inherits the rep gate - the
 // report should say what a player actually has to do ("Silverwing
-// Sentinels (honored)"), not the generic "vendor" label that source
-// order used to prefer.
+// Sentinels (honored)"), not the generic "vendor" label that a plain
+// kind order would prefer.
 //
-// "world_drop" (world-drop-pool lane, 2026-09-29) sits right after
-// "crafted": loot.json's own generic, bind-on-equip world-drop bucket
-// (pipeline.loot.classicdb's own synthetic source, replacing what used
-// to be silently dropped) IS obtainable at any level in its own range -
-// buy it off the auction house - so it ranks above "pvp"/"world"/"raid"
-// (each needs a specific grind or a level-60 raid lockout this early),
-// but below every source that names an exact, single place to go.
+// "world_drop" sits right after "crafted": loot.json's own generic,
+// bind-on-equip world-drop bucket (pipeline.loot.classicdb's and, since
+// this lane, pipeline.loot.wowhead's own synthetic source) IS obtainable
+// at any level in its own range - buy it off the auction house - so it
+// ranks above "pvp"/"world" (each needs a specific grind), but below
+// every source that names an exact, single place to go, and below a
+// real boss (bossKinds), matching tenet 7's own ranking: "World drop" is
+// the least specific true thing this pipeline can say about an item.
 var sourceKindPriority = []string{
-	"quest", "rep", "vendor", "dungeon", "crafted", "world_drop", "pvp", "world", "raid",
+	"quest", "rep", "vendor", "crafted", "world_drop", "pvp", "world",
 }
+
+// bossKinds are the two kinds loot.json gives a per-boss chance
+// (lootBoss.ItemChances): a real dungeon or raid kill, checked as one
+// combined priority tier (bestBoss below) right after "quest" - see
+// sourceFor's own doc for why a boss now outranks rep/vendor/crafted.
+var bossKinds = [2]string{"dungeon", "raid"}
 
 // repStandingObtainable is the highest reputation standing a leveling
 // character is assumed to reach: friendly and honored come from playing
@@ -103,26 +131,70 @@ func sourceFor(id, level int, faction, itemFactionRestriction string, idx lootIn
 	if len(srcs) == 0 {
 		return itemSource{}, false
 	}
-	byKind := make(map[string]itemSource, len(srcs))
+	obtainable := make([]itemSource, 0, len(srcs))
 	for _, s := range srcs {
 		if !sourceObtainable(s, level, faction, itemFactionRestriction) {
 			continue
 		}
-		if _, seen := byKind[s.Kind]; !seen {
-			byKind[s.Kind] = s
+		if s.Kind == "raid" && level < 60 {
+			continue
 		}
+		obtainable = append(obtainable, s)
 	}
-	for _, kind := range sourceKindPriority {
-		s, ok := byKind[kind]
-		if !ok {
-			continue
+	if quest, ok := bestOfKind(obtainable, "quest"); ok {
+		return quest, true
+	}
+	if boss, ok := bestBoss(obtainable); ok {
+		return boss, true
+	}
+	for _, kind := range sourceKindPriority[1:] { // ["quest", ...] - quest is already checked
+		if s, ok := bestOfKind(obtainable, kind); ok {
+			return s, true
 		}
-		if kind == "raid" && level < 60 {
-			continue
-		}
-		return s, true
 	}
 	return itemSource{}, false
+}
+
+// bestOfKind is the highest-Chance obtainable source of exactly this
+// kind - the tie-break `sourceFor` needs whenever more than one source
+// of the same kind names the same item (rare, but a `world`/`vendor`
+// item can have two). Every non-boss kind carries no chance data in
+// practice (Chance stays 0 for all of them), so this degrades to "the
+// first one in loot.json's own order" exactly like the old byKind map
+// did, for every kind sourceFor still walks in a fixed order below.
+func bestOfKind(obtainable []itemSource, kind string) (itemSource, bool) {
+	var best itemSource
+	found := false
+	for _, s := range obtainable {
+		if s.Kind != kind || (found && s.Chance <= best.Chance) {
+			continue
+		}
+		best, found = s, true
+	}
+	return best, found
+}
+
+// bestBoss is the highest-Chance obtainable dungeon OR raid source -
+// sourceFor's own doc: a real boss kill (bossKinds) is checked as one
+// combined tier, by drop chance, rather than as two separate kind slots
+// in a fixed order the way rep/vendor/crafted still are. An item
+// dropping from more than one boss (two different dungeons, or a
+// dungeon and a raid) picks whichever one a leveling character is
+// actually more likely to see it from; an unknown chance (0, the
+// overwhelming majority of today's dungeon/raid rows - only classic-db
+// states one) never loses a tie against another unknown chance, so
+// "first boss loot.json happens to list" is still the fallback exactly
+// like it always was, not a regression this lane introduces.
+func bestBoss(obtainable []itemSource) (itemSource, bool) {
+	var best itemSource
+	found := false
+	for _, s := range obtainable {
+		if (s.Kind != bossKinds[0] && s.Kind != bossKinds[1]) || (found && s.Chance <= best.Chance) {
+			continue
+		}
+		best, found = s, true
+	}
+	return best, found
 }
 
 // bandPool is everything candidatesBySlot/pick need for one band and
