@@ -395,6 +395,16 @@ type gearProfile struct {
 	// weapon-DPS-through-form-conversion, so it picks no weapon at all
 	// rather than equip one that does nothing for the rotation measured.
 	Skip bool
+	// SkipFromLevel narrows Skip to apply only at or above this level;
+	// below it, gear is picked normally. druid-feral's own Skip is real
+	// only from Cat Form's own learn level on (spellconst: spell 768,
+	// level 20) - below that the character has no Cat Form yet (and
+	// Bear Form's damage kit is not modeled either, see
+	// data/curated/apl/druid-feral.json's own notes on its pre-20
+	// Moonfire/Wrath fallback), so it fights unshifted and a real
+	// weapon matters for its auto-attack the same way it does for any
+	// other caster. Zero means "Skip applies at every level."
+	SkipFromLevel int
 	// Shield fills off_hand with a shield (pickShieldItem: armor,
 	// subclass 6) instead of a weapon - shaman's elemental/resto rule
 	// (MH + shield). Mutually exclusive with OffHand in practice.
@@ -456,7 +466,7 @@ var ladderGearProfiles = map[string]gearProfile{
 	"paladin-retribution": {MainHand: handTwo},
 	"shaman-enhancement":  {MainHand: handOne, OffHand: true},
 	"shaman-elemental":    {MainHand: handOne, Shield: true},
-	"druid-feral":         {Skip: true},
+	"druid-feral":         {Skip: true, SkipFromLevel: 20, MainHand: handAny},
 	"druid-balance":       {MainHand: handAny, MainHandTypes: twoHandWeaponSubclasses},
 	"rogue-assassination": {MainHand: handOne, OffHand: true,
 		MainHandTypes: []int{weaponDagger}, OffHandTypes: []int{weaponDagger}},
@@ -602,7 +612,7 @@ func pickShieldItem(items []buildItem, known map[int]bool, floors map[int]int, l
 // the level it is actually obtainable at.
 func ladderGear(items []buildItem, known map[int]bool, floors map[int]int, spec string, level int) []api.GearSlot {
 	profile := ladderGearProfiles[spec]
-	if profile.Skip {
+	if profile.Skip && (profile.SkipFromLevel == 0 || level >= profile.SkipFromLevel) {
 		return nil
 	}
 	var gear []api.GearSlot

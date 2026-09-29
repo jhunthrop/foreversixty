@@ -11,6 +11,14 @@
     {
       "id": 9850,
       "reason": "Claw is the fallback builder for level 20-21, before Shred is learned. Superseding this entry's earlier text (which believed sim/druid/claw.go had no per-rank registration and so this line was permanently inert below level 58): that has since been fixed upstream (registerClawSpell now uses the same per-rank clawSpellID[core.HighestRankAtLevel(...)] lookup Shred and Rake use), and fixing it exposed a real defect the earlier notes did not anticipate -- with no gate, Claw kept firing at every level Shred is also known, since Claw's 45-energy cost (spellconst) undercuts Shred's 60 and won the energy race almost every time (26.5 casts/iteration to Shred's 1.4 at level 60, pre-fix). The line is now gated `not spellIsKnown(Shred)` (see the priority list's own note on this action), so from level 22 on -- every level this rule's zero_casts check flags -- Claw correctly goes idle and Shred, the strictly stronger filler (2.25x multiplier vs Claw's 1x), claims the slot instead. The fallback yielding as designed below level 22, not a defect."
+    },
+    {
+      "id": 9835,
+      "reason": "Moonfire is the pre-Cat-Form upkeep line for level 10-19 (see the priority list's own note on this action for the full diagnosis: no Cat Form until level 20, no modeled Bear Form damage kit either). Gated `not spellIsKnown(Claw)`, so it correctly goes idle from level 20 on -- every level this rule's zero_casts check flags -- once real Cat Form abilities take over. The fallback yielding as designed below level 20, not a defect."
+    },
+    {
+      "id": 9912,
+      "reason": "Wrath is the pre-Cat-Form filler for level 10-19, paired with the Moonfire line above (same gate, same diagnosis). Correctly idle from level 20 on for the same reason."
     }
   ],
   "sources": [
@@ -31,6 +39,55 @@
       {
         "action": {
           "autocastOtherCooldowns": {}
+        }
+      },
+      {
+        "notes": "Rotation-accuracy program finding (2026-09-28): below level 20 a feral druid has no Cat Form yet (spellconst: Cat Form, spell 768, learn level 20) and Bear Form's own damage kit is not modeled in this engine (Maul lives in the underscore-prefixed, excluded sim/druid/_maul.go), so the only real option for a leveling feral before 20 is the same baseline caster kit every druid has -- Moonfire kept ticking, matching balance's own upkeep line. Previously this rotation named nothing here at all, leaving the level-10 ladder rung at auto-attack only (the level-10 golden's own 'learned but unused' list already flagged Moonfire and Wrath as learned and unused). Gated on `not spellIsKnown(Claw)`: Claw and Cat Form share the same learn level (20), so it doubles as a level check without a level primitive the APL language does not have, and correctly falls silent from 20 on once real Cat Form abilities take over. sim/druid/druid.go's RegisterFeralCatSpells did not register Moonfire/Wrath at all before this fix (feral's spec entry called only the Cat-form kit) -- fixed there too, adding the same registerMoonfireSpell()/registerWrathSpell() calls RegisterBalanceSpells already makes, self-gated by their own per-rank learn levels exactly like Claw and Shred. The engine auto-unshifts a Cat-Form character to cast a Humanoid-only spell (druid.go's RegisterSpell ModifyCast, existing behavior, not changed here) and there is nothing below level 20 to shift back INTO Cat Form for, so the character settles into Humanoid form for the rest of a sub-20 fight after this cast -- correct for a character who cannot yet be in Cat Form at all. A residual, deliberately unfixed inaccuracy: NewFeralDruid still hardcodes StartingForm to Cat regardless of level (an existing engine simplification, out of this fix's scope), so the very first GCD or so of a sub-20 iteration still auto-attacks with the Cat Form claw weapon before this line's first cast unshifts it -- a few seconds out of a multi-minute ladder run, not touched here to keep this fix to the rotation-accuracy program's own scope.",
+        "action": {
+          "condition": {
+            "and": {
+              "vals": [
+                {
+                  "not": {
+                    "val": {
+                      "spellIsKnown": { "spellId": { "spellId": 9850, "rank": 5 } }
+                    }
+                  }
+                },
+                {
+                  "not": {
+                    "val": {
+                      "dotIsActive": { "spellId": { "spellId": 9835, "rank": 10 } }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 9835,
+              "rank": 10
+            }
+          }
+        }
+      },
+      {
+        "notes": "Wrath as the pre-Cat-Form filler once Moonfire is already ticking; see the Moonfire line above for the full diagnosis. Gated the same way, `not spellIsKnown(Claw)`.",
+        "action": {
+          "condition": {
+            "not": {
+              "val": {
+                "spellIsKnown": { "spellId": { "spellId": 9850, "rank": 5 } }
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 9912,
+              "rank": 8
+            }
+          }
         }
       },
       {
