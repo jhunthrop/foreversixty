@@ -21,9 +21,19 @@ const { path = '' } = Astro.props;
 // widening every other nav entry to match.
 const NARROW_LABELS = new Set(['Logs']);
 
+// "Leveling BiS" (98.75px of text, tracking included) is wider than its own 80px phone-grid
+// column and, forced onto one line, spilled ~10px past its cell into "Get set up" next
+// door -- the two labels visually ran together as "LEVELING BISGET SET UP" with no gap
+// between them at 390px. Wrapping this one label onto two lines keeps it inside its column
+// (13px font, leading-tight: ~33px tall, well under the 44px cell) instead of bleeding into
+// the neighbor; every other label stays single-line since none of them are wide enough to
+// need it.
+const WRAPPING_LABELS = new Set(['Leveling BiS']);
+
 function itemClass(label: string, current: boolean): (string | false)[] {
   return [
-    'inline-flex items-center justify-center md:justify-start min-h-11 md:min-h-0 whitespace-nowrap text-nav hover:text-strong',
+    'inline-flex items-center justify-center md:justify-start min-h-11 md:min-h-0 text-nav hover:text-strong',
+    WRAPPING_LABELS.has(label) ? 'whitespace-normal text-center leading-tight' : 'whitespace-nowrap',
     NARROW_LABELS.has(label) && 'px-2',
     current && 'text-gold hover:text-gold',
   ];
