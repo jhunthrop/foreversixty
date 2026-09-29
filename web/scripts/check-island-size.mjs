@@ -21,7 +21,7 @@ import { gzipSync } from 'node:zlib';
 // positioning math GearPanel's own BisSlotPopover trigger already paid for once, now
 // duplicated for a second, independent tooltip. The heavy panel itself
 // (ItemTooltip.svelte) stays code-split behind a dynamic import exactly like
-// BisSlotPopover, so only ItemHover's small shell rides here. Measured 70,244 bytes
+// BisSlotPopover, so only ItemHover's small shell rides here. Measured 69,975 bytes
 // gzipped on a fixture build (FOREVER_DATA=fixture) on 2026-09-28; 72 KB leaves headroom
 // for the fixture/CI gap this file's own history already shows (the character spine line
 // above is ~3 KB apart between the two).

@@ -10,10 +10,20 @@
 //     this once per item it names and passes the result as ItemHover's `model` prop, so the
 //     browser never fetches anything for a page that already has the model server-side.
 //
-// Neither function is reachable from the other's caller: no island imports
-// readItemTooltipModel (its node:fs import would have nothing to resolve to in a browser
-// bundle), and no Astro page needs fetchItemTooltipModel's cache, which only pays for
-// itself across many hovers in one page session.
+// ItemHover.svelte imports fetchItemTooltipModel from this same module for every island
+// (planner, sim, sim-tools), so this file DOES reach the browser -- and a bundler tree-
+// shakes an ES module by binding, not by function, so the build-time half only drops out
+// of a client bundle if nothing in it runs eagerly. That is why `repoRoot()` below is a
+// function, called lazily from inside the two build-time exports, rather than the more
+// obvious top-level `const REPO_ROOT = path.resolve(fileURLToPath(...), ...)`: a top-level
+// call is a side effect no bundler can prove safe to drop, so it used to ride into every
+// island's bundle regardless of whether that island ever called readItemTooltipModel --
+// caught by `[astro-island] Error hydrating ... fileURLToPath is not a function` at
+// runtime, since Vite externalizes node:fs/node:path/node:url (empty shims) for the
+// browser target. With the call deferred, an island that only imports
+// fetchItemTooltipModel never calls repoRoot, so it, readItemTooltipModel, readSources and
+// readItemsForBuildTime are all simply unreferenced code -- which every bundler does
+// remove, taking the three imports below out with them.
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -22,7 +32,9 @@ import type { Item, ItemSet } from '../planner/types';
 import { loadLoot, type LootFile } from '../sim/loot';
 import { itemTooltipModel, type ItemTooltipModel, type ItemTooltipSources } from './tooltip';
 
-const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
+function repoRoot(): string {
+  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
+}
 
 function cacheKey(build: string, classSlug: string): string {
   return `${build}::${classSlug}`;
@@ -85,7 +97,7 @@ function readItemsForBuildTime(build: string, classSlug: string): Item[] | null 
   const key = cacheKey(build, classSlug);
   const cached = buildTimeItemsCache.get(key);
   if (cached !== undefined) return cached;
-  const itemsFile = path.join(REPO_ROOT, 'data/builds', build, 'items', `${classSlug}.json`);
+  const itemsFile = path.join(repoRoot(), 'data/builds', build, 'items', `${classSlug}.json`);
   if (!existsSync(itemsFile)) return null;
   const { items } = readJson<{ items: Item[] }>(itemsFile);
   buildTimeItemsCache.set(key, items);
@@ -97,8 +109,9 @@ function readItemsForBuildTime(build: string, classSlug: string): Item[] | null 
 function readSources(build: string): ItemTooltipSources {
   const cached = buildTimeSourcesCache.get(build);
   if (cached !== undefined) return cached;
-  const lootFile = path.join(REPO_ROOT, 'data/builds', build, 'loot.json');
-  const setsFile = path.join(REPO_ROOT, 'data/builds', build, 'sets.json');
+  const root = repoRoot();
+  const lootFile = path.join(root, 'data/builds', build, 'loot.json');
+  const setsFile = path.join(root, 'data/builds', build, 'sets.json');
   const loot: LootFile = existsSync(lootFile) ? readJson<LootFile>(lootFile) : { sources: [] };
   const sets: ItemSet[] = existsSync(setsFile) ? readJson<ItemSet[]>(setsFile) : [];
   const sources: ItemTooltipSources = { loot, sets };

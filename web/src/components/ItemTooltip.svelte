@@ -18,6 +18,7 @@
 <div
   {id}
   role="tooltip"
+  data-testid="item-tooltip"
   class="border-line bg-raised rounded-panel absolute top-full left-0 z-30 mt-2 flex w-72 flex-col gap-2 border p-3 text-[13px] shadow-[0_12px_30px_rgba(0,0,0,.45)]"
   style:left="var(--item-tooltip-shift, 0px)"
 >

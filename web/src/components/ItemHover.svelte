@@ -171,6 +171,7 @@
     class={`inline-flex min-w-0 items-center gap-1 ${pillClass}`}
     tabindex="0"
     role="button"
+    data-testid={`item-hover-${itemId}`}
     aria-haspopup="true"
     aria-describedby={isOpen ? tooltipId : undefined}
     onmouseenter={open}
