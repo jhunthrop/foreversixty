@@ -147,7 +147,16 @@ def test_every_source_kind_code_is_a_single_uppercase_letter():
     sourceKindPriority); a code for a kind that vocabulary drops would be
     dead, and a new kind with no code here is what
     pipeline.addonlua._source_kind_code refuses at render time."""
-    assert set(SOURCE_KIND_CODES) == {"quest", "dungeon", "crafted", "rep", "pvp", "world", "raid"}
+    assert set(SOURCE_KIND_CODES) == {
+        "quest",
+        "vendor",
+        "dungeon",
+        "crafted",
+        "rep",
+        "pvp",
+        "world",
+        "raid",
+    }
     assert all(len(code) == 1 and code.isupper() for code in SOURCE_KIND_CODES.values())
     assert len(set(SOURCE_KIND_CODES.values())) == len(SOURCE_KIND_CODES)
 

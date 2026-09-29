@@ -51,6 +51,7 @@ BIS_LEVEL_BANDS = list(range(10, 61, 5))
 #: table back, independently pinned against this same literal list.
 SOURCE_KIND_CODES: dict[str, str] = {
     "quest": "Q",
+    "vendor": "V",
     "dungeon": "D",
     "crafted": "C",
     "rep": "R",

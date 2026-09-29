@@ -253,6 +253,7 @@ Tooltip.BIS_SLOT_BUTTONS = {
 --- rotation_spec.lua pins LEVEL_BANDS against ladder.go's literal.
 Tooltip.SOURCE_KIND_NAMES = {
 	Q = "Quest",
+	V = "Vendor",
 	D = "Dungeon",
 	C = "Crafted",
 	R = "Reputation",
