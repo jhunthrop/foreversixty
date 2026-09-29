@@ -120,10 +120,13 @@ function weaponLineFor(item: Item): WeaponLine | null {
   };
 }
 
+/** "+10 Strength" / "-15 Parry": the client's own sign convention -- a negative stat
+ *  (Fletcher's Gloves' parry) reads "-15", never "+-15". */
 function statLines(item: Item): string[] {
-  return STAT_KEYS.filter((key) => key !== 'armor' && !!item.stats[key]).map(
-    (key) => `+${item.stats[key]} ${STAT_LABELS[key]}`,
-  );
+  return STAT_KEYS.filter((key) => key !== 'armor' && !!item.stats[key]).map((key) => {
+    const value = item.stats[key] as number;
+    return `${value < 0 ? '-' : '+'}${Math.abs(value)} ${STAT_LABELS[key]}`;
+  });
 }
 
 function effectTextFor(item: Item): string | null {

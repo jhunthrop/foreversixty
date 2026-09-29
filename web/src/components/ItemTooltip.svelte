@@ -94,7 +94,8 @@
   {#if model.stats.length > 0}
     <div class="text-rarity-uncommon flex flex-col text-[12px]">
       {#each model.stats as line (line)}
-        <span>{line}</span>
+        <!-- The client paints a negative stat red. -->
+        <span class:text-death={line.startsWith('-')}>{line}</span>
       {/each}
     </div>
   {/if}
