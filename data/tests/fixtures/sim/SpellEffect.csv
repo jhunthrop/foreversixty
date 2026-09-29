@@ -1,5 +1,10 @@
 SpellID,DifficultyID,EffectIndex,Effect,EffectAura,EffectBasePointsF,EffectAuraPeriod,EffectBonusCoefficient,BonusCoefficientFromAP,EffectTriggerSpell,EffectMiscValue_0
 9103,0,0,6,29,8,0,0,0,0,0
+413839,0,0,6,436,0,0,0,0,0,0
+1248751,0,0,6,80,5,0,0,0,0,4
+1302545,0,0,6,168,2,0,0,0,0,32
+1270490,0,0,6,142,5,0,0,0,0,1
+1270490,0,1,6,466,5,0,0,0,0,0
 13385,0,0,6,30,7,0,0,0,0,95
 14027,0,0,6,99,24,0,0,0,0,0
 14027,0,1,6,124,24,0,0,0,0,0

@@ -103,6 +103,32 @@ def test_flat_block_value_is_a_stat():
     assert spell_bonus([23731], effects()).stats == {"block_value": 19.0}
 
 
+def test_environmental_damage_reduction_grants_nothing_and_does_not_raise():
+    """Aura 436 is 'Mod Environmental Damage Taken %', carried by spell 413839
+    'Kajaric Icon' (a shaman totem relic): real, classified, and not a stat."""
+    assert spell_bonus([413839], effects()).is_empty()
+
+
+def test_percent_stat_grants_nothing_and_does_not_raise():
+    """Aura 80 is 'Mod Stat % (Spirit)', carried by spell 1248751 'Increased
+    Spirit': a percentage modifier, not the flat amount aura 29 reads."""
+    assert spell_bonus([1248751], effects()).is_empty()
+
+
+def test_damage_done_vs_creature_type_grants_nothing_and_does_not_raise():
+    """Aura 168 is 'Mod All Damage Done Against Creature - %', carried by
+    spell 1302545 'Increased Damage Undead 01': a percentage, creature-type-
+    conditional damage modifier, not a Stat."""
+    assert spell_bonus([1302545], effects()).is_empty()
+
+
+def test_percent_resistance_and_armor_grant_nothing_and_do_not_raise():
+    """Auras 142 and 466 are 'Mod Base Resistance - % (Physical)' and 'Mod
+    Armor Bonus %', both effects of spell 1270490 'Thicker Hide': percentage
+    modifiers, not the flat amount aura 22 (AURA_RESISTANCE) reads."""
+    assert spell_bonus([1270490], effects()).is_empty()
+
+
 def test_an_item_the_caller_filtered_out_is_never_looked_at():
     """Item 100007's spell applies an unclassified aura. Scoping to the kept
     items is what stops a gamemaster row failing the whole run."""
