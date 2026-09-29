@@ -12,7 +12,10 @@
 
   let { model, build, id }: { model: ItemTooltipModel; build: string; id: string } = $props();
 
-  let iconBroken = $state(false);
+  // The item pipeline's own placeholder for an id it has no real icon for is the client's
+  // red-bordered "?" texture; the letter mark below is the tooltip's fallback for it, the
+  // same way the BiS rows never draw it (tenet: never a red "?").
+  let iconBroken = $state(model.icon === 'inv_misc_questionmark');
 </script>
 
 <div
