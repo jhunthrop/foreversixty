@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:12:44Z",
+  "generated_at": "2026-09-29T06:53:59Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -201,8 +201,8 @@
         "off_hand: Craftsman's Dagger",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.858838126,
-      "verify_run_seconds": 1.021979368
+      "weights_run_seconds": 1.302152657,
+      "verify_run_seconds": 0.72759231
     },
     {
       "spec": "hunter-survival",
@@ -409,8 +409,8 @@
         "off_hand: Kris of Orgrimmar",
         "ranged: Skorn's Rifle"
       ],
-      "weights_run_seconds": 1.858838126,
-      "verify_run_seconds": 1.343159964
+      "weights_run_seconds": 1.302152657,
+      "verify_run_seconds": 0.936480277
     },
     {
       "spec": "hunter-survival",
@@ -621,8 +621,8 @@
         "off_hand: Relic Blade",
         "ranged: Daryl's Hunting Bow"
       ],
-      "weights_run_seconds": 1.896733996,
-      "verify_run_seconds": 1.577560555
+      "weights_run_seconds": 1.360987661,
+      "verify_run_seconds": 1.129108899
     },
     {
       "spec": "hunter-survival",
@@ -836,8 +836,8 @@
         "off_hand: Claystone Shortsword",
         "ranged: Privateer Musket"
       ],
-      "weights_run_seconds": 1.896733996,
-      "verify_run_seconds": 1.398239974
+      "weights_run_seconds": 1.360987661,
+      "verify_run_seconds": 0.991371234
     },
     {
       "spec": "hunter-survival",
@@ -1071,8 +1071,8 @@
         "off_hand: Cruel Barb",
         "ranged: Deadly Blunderbuss"
       ],
-      "weights_run_seconds": 1.909451816,
-      "verify_run_seconds": 1.789589172
+      "weights_run_seconds": 1.405254904,
+      "verify_run_seconds": 1.293657115
     },
     {
       "spec": "hunter-survival",
@@ -1308,8 +1308,8 @@
         "off_hand: Cruel Barb",
         "ranged: Bow of Plunder"
       ],
-      "weights_run_seconds": 1.909451816,
-      "verify_run_seconds": 1.711832276
+      "weights_run_seconds": 1.405254904,
+      "verify_run_seconds": 1.241296774
     },
     {
       "spec": "hunter-survival",
@@ -1545,8 +1545,8 @@
         "off_hand: Bite of Serra'kis",
         "ranged: Raptor's End"
       ],
-      "weights_run_seconds": 1.931521582,
-      "verify_run_seconds": 1.698655663
+      "weights_run_seconds": 1.414019271,
+      "verify_run_seconds": 1.2210572769999999
     },
     {
       "spec": "hunter-survival",
@@ -1780,8 +1780,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Prison Shank"
       ],
-      "weights_run_seconds": 1.931521582,
-      "verify_run_seconds": 1.860783433
+      "weights_run_seconds": 1.414019271,
+      "verify_run_seconds": 1.337850317
     },
     {
       "spec": "hunter-survival",
@@ -2021,8 +2021,8 @@
         "off_hand: Electrocutioner Leg",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 2.026442291,
-      "verify_run_seconds": 2.064019361
+      "weights_run_seconds": 1.483014684,
+      "verify_run_seconds": 1.469981629
     },
     {
       "spec": "hunter-survival",
@@ -2260,8 +2260,8 @@
         "off_hand: Silent Hunter",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 2.026442291,
-      "verify_run_seconds": 2.132110729
+      "weights_run_seconds": 1.483014684,
+      "verify_run_seconds": 1.499063972
     },
     {
       "spec": "hunter-survival",
@@ -2494,8 +2494,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Black Menace"
       ],
-      "weights_run_seconds": 1.987384784,
-      "verify_run_seconds": 2.241610932
+      "weights_run_seconds": 1.453636145,
+      "verify_run_seconds": 1.603344259
     },
     {
       "spec": "hunter-survival",
@@ -2724,8 +2724,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Tok'kar's Murloc Shanker"
       ],
-      "weights_run_seconds": 1.987384784,
-      "verify_run_seconds": 2.240506992
+      "weights_run_seconds": 1.453636145,
+      "verify_run_seconds": 1.607612719
     },
     {
       "spec": "hunter-survival",
@@ -2965,8 +2965,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Sword of Serenity"
       ],
-      "weights_run_seconds": 2.01678345,
-      "verify_run_seconds": 1.997318336
+      "weights_run_seconds": 1.456281573,
+      "verify_run_seconds": 1.431818945
     },
     {
       "spec": "hunter-survival",
@@ -3204,8 +3204,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Force of the Hippogryph"
       ],
-      "weights_run_seconds": 2.01678345,
-      "verify_run_seconds": 1.92696931
+      "weights_run_seconds": 1.456281573,
+      "verify_run_seconds": 1.341706141
     },
     {
       "spec": "hunter-survival",
@@ -3437,8 +3437,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 2.028636711,
-      "verify_run_seconds": 2.276192112
+      "weights_run_seconds": 1.466083423,
+      "verify_run_seconds": 1.602143339
     },
     {
       "spec": "hunter-survival",
@@ -3669,8 +3669,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 2.028636711,
-      "verify_run_seconds": 2.209735529
+      "weights_run_seconds": 1.466083423,
+      "verify_run_seconds": 1.5659526480000001
     },
     {
       "spec": "hunter-survival",
@@ -3908,8 +3908,8 @@
         "off_hand: Blade of Reckoning",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 2.029824432,
-      "verify_run_seconds": 1.971941511
+      "weights_run_seconds": 1.479936962,
+      "verify_run_seconds": 1.398888528
     },
     {
       "spec": "hunter-survival",
@@ -4147,8 +4147,8 @@
         "off_hand: Enchanted Azsharite Felbane Sword",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 2.029824432,
-      "verify_run_seconds": 1.940955355
+      "weights_run_seconds": 1.479936962,
+      "verify_run_seconds": 1.370858357
     },
     {
       "spec": "hunter-survival",
@@ -4385,8 +4385,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.072530839,
-      "verify_run_seconds": 2.209115399
+      "weights_run_seconds": 1.4734654649999999,
+      "verify_run_seconds": 1.569448773
     },
     {
       "spec": "hunter-survival",
@@ -4624,8 +4624,8 @@
         "off_hand: Dawn's Edge",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.072530839,
-      "verify_run_seconds": 2.232467441
+      "weights_run_seconds": 1.4734654649999999,
+      "verify_run_seconds": 1.557589386
     },
     {
       "spec": "hunter-survival",
@@ -4867,8 +4867,8 @@
         "off_hand: Blessed Qiraji Pugio",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.074199337,
-      "verify_run_seconds": 2.402827022
+      "weights_run_seconds": 1.4739558640000001,
+      "verify_run_seconds": 1.6794814649999998
     },
     {
       "spec": "hunter-survival",
@@ -4959,7 +4959,7 @@
           "item_name": "Cryptstalker Tunic",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 202.6607463520382,
+          "score": 202.66074635203816,
           "verified": true
         },
         {
@@ -5110,8 +5110,8 @@
         "off_hand: Blessed Qiraji Pugio",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.074199337,
-      "verify_run_seconds": 2.329337614
+      "weights_run_seconds": 1.4739558640000001,
+      "verify_run_seconds": 1.621487034
     }
   ]
 }

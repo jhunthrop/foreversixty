@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:07:52Z",
+  "generated_at": "2026-09-29T06:50:30Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -207,8 +207,8 @@
         "main_hand: Compact Hammer",
         "off_hand: Father Flame"
       ],
-      "weights_run_seconds": 1.646942189,
-      "verify_run_seconds": 0.597065682
+      "weights_run_seconds": 1.222840382,
+      "verify_run_seconds": 0.471877126
     },
     {
       "spec": "druid-balance",
@@ -417,8 +417,8 @@
         "finger1: Ring of Scorn",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 1.646942189,
-      "verify_run_seconds": 0.661460645
+      "weights_run_seconds": 1.222840382,
+      "verify_run_seconds": 0.501913398
     },
     {
       "spec": "druid-balance",
@@ -631,8 +631,8 @@
         "finger2: Clergy Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 1.629834708,
-      "verify_run_seconds": 1.074016382
+      "weights_run_seconds": 1.33779895,
+      "verify_run_seconds": 0.806952714
     },
     {
       "spec": "druid-balance",
@@ -844,8 +844,8 @@
         "finger2: Bounty Hunter's Ring",
         "main_hand: Clear Crystal Rod"
       ],
-      "weights_run_seconds": 1.629834708,
-      "verify_run_seconds": 0.973961397
+      "weights_run_seconds": 1.33779895,
+      "verify_run_seconds": 0.721918689
     },
     {
       "spec": "druid-balance",
@@ -1083,8 +1083,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Impaling Harpoon"
       ],
-      "weights_run_seconds": 1.773138783,
-      "verify_run_seconds": 0.930887871
+      "weights_run_seconds": 1.150124072,
+      "verify_run_seconds": 0.669175767
     },
     {
       "spec": "druid-balance",
@@ -1322,8 +1322,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Impaling Harpoon"
       ],
-      "weights_run_seconds": 1.773138783,
-      "verify_run_seconds": 0.959398525
+      "weights_run_seconds": 1.150124072,
+      "verify_run_seconds": 0.676706345
     },
     {
       "spec": "druid-balance",
@@ -1554,8 +1554,8 @@
         "finger2: Ring of Forlorn Spirits",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.774764377,
-      "verify_run_seconds": 0.908311077
+      "weights_run_seconds": 1.222105673,
+      "verify_run_seconds": 0.640971558
     },
     {
       "spec": "druid-balance",
@@ -1791,8 +1791,8 @@
         "finger1: Snake Hoop",
         "finger2: Advisor's Ring"
       ],
-      "weights_run_seconds": 1.774764377,
-      "verify_run_seconds": 0.882278991
+      "weights_run_seconds": 1.222105673,
+      "verify_run_seconds": 0.616509042
     },
     {
       "spec": "druid-balance",
@@ -2037,8 +2037,8 @@
         "trinket1: Talisman of Arathor",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 1.808117931,
-      "verify_run_seconds": 1.240481148
+      "weights_run_seconds": 1.26883309,
+      "verify_run_seconds": 0.851008509
     },
     {
       "spec": "druid-balance",
@@ -2282,8 +2282,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Nimboya's Mystical Staff"
       ],
-      "weights_run_seconds": 1.808117931,
-      "verify_run_seconds": 1.169345125
+      "weights_run_seconds": 1.26883309,
+      "verify_run_seconds": 0.825298002
     },
     {
       "spec": "druid-balance",
@@ -2516,8 +2516,8 @@
         "waist: Star Belt",
         "legs: Abomination Skin Leggings"
       ],
-      "weights_run_seconds": 1.926223853,
-      "verify_run_seconds": 1.203712713
+      "weights_run_seconds": 1.359318263,
+      "verify_run_seconds": 0.830008433
     },
     {
       "spec": "druid-balance",
@@ -2751,8 +2751,8 @@
         "waist: Star Belt",
         "legs: Abomination Skin Leggings"
       ],
-      "weights_run_seconds": 1.926223853,
-      "verify_run_seconds": 1.21337257
+      "weights_run_seconds": 1.359318263,
+      "verify_run_seconds": 0.885141417
     },
     {
       "spec": "druid-balance",
@@ -2987,8 +2987,8 @@
         "trinket1: Thunderbrew's Boot Flask",
         "trinket2: Carrot on a Stick"
       ],
-      "weights_run_seconds": 1.913742681,
-      "verify_run_seconds": 1.127967164
+      "weights_run_seconds": 1.349761145,
+      "verify_run_seconds": 0.837043658
     },
     {
       "spec": "druid-balance",
@@ -3226,8 +3226,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.913742681,
-      "verify_run_seconds": 1.076618801
+      "weights_run_seconds": 1.349761145,
+      "verify_run_seconds": 0.81661367
     },
     {
       "spec": "druid-balance",
@@ -3458,8 +3458,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.8168554110000001,
-      "verify_run_seconds": 1.169499381
+      "weights_run_seconds": 1.340086552,
+      "verify_run_seconds": 0.879186153
     },
     {
       "spec": "druid-balance",
@@ -3698,8 +3698,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.8168554110000001,
-      "verify_run_seconds": 1.137841125
+      "weights_run_seconds": 1.340086552,
+      "verify_run_seconds": 0.862837814
     },
     {
       "spec": "druid-balance",
@@ -3934,8 +3934,8 @@
         "finger1: Blackstone Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.898286449,
-      "verify_run_seconds": 1.188838916
+      "weights_run_seconds": 1.407535004,
+      "verify_run_seconds": 0.905974637
     },
     {
       "spec": "druid-balance",
@@ -4172,8 +4172,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.898286449,
-      "verify_run_seconds": 1.177961859
+      "weights_run_seconds": 1.407535004,
+      "verify_run_seconds": 0.907870506
     },
     {
       "spec": "druid-balance",
@@ -4408,8 +4408,8 @@
         "trinket1: Smokey's Lighter",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.872836817,
-      "verify_run_seconds": 1.141347647
+      "weights_run_seconds": 1.3862470980000001,
+      "verify_run_seconds": 0.896084709
     },
     {
       "spec": "druid-balance",
@@ -4647,8 +4647,8 @@
         "trinket1: Smokey's Lighter",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.872836817,
-      "verify_run_seconds": 1.148310998
+      "weights_run_seconds": 1.3862470980000001,
+      "verify_run_seconds": 0.907920838
     },
     {
       "spec": "druid-balance",
@@ -4848,7 +4848,7 @@
           "item_name": "Atiesh, Greatstaff of the Guardian",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 287.6680013639584,
+          "score": 287.66800136395835,
           "verified": true,
           "effect_unmodelled": true
         },
@@ -4897,8 +4897,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.9074617059999999,
-      "verify_run_seconds": 1.20233069
+      "weights_run_seconds": 1.439715847,
+      "verify_run_seconds": 0.934370338
     },
     {
       "spec": "druid-balance",
@@ -5146,8 +5146,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.9074617059999999,
-      "verify_run_seconds": 1.194184336
+      "weights_run_seconds": 1.439715847,
+      "verify_run_seconds": 0.915860908
     }
   ]
 }

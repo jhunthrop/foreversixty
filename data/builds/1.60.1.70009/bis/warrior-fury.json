@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:24:28Z",
+  "generated_at": "2026-09-29T07:02:54Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -201,8 +201,8 @@
         "off_hand: Engineer's Hammer",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.579186418,
-      "verify_run_seconds": 0.679771571
+      "weights_run_seconds": 1.168992309,
+      "verify_run_seconds": 0.521867176
     },
     {
       "spec": "warrior-fury",
@@ -409,8 +409,8 @@
         "off_hand: Kris of Orgrimmar",
         "ranged: Orcish Battle Bow"
       ],
-      "weights_run_seconds": 1.579186418,
-      "verify_run_seconds": 0.963303908
+      "weights_run_seconds": 1.168992309,
+      "verify_run_seconds": 0.721249501
     },
     {
       "spec": "warrior-fury",
@@ -621,8 +621,8 @@
         "off_hand: Big Bronze Knife",
         "ranged: Daryl's Hunting Rifle"
       ],
-      "weights_run_seconds": 1.577381232,
-      "verify_run_seconds": 1.2044953760000001
+      "weights_run_seconds": 1.203907616,
+      "verify_run_seconds": 0.912329278
     },
     {
       "spec": "warrior-fury",
@@ -835,8 +835,8 @@
         "main_hand: Wingblade",
         "off_hand: Claystone Shortsword"
       ],
-      "weights_run_seconds": 1.577381232,
-      "verify_run_seconds": 1.192811198
+      "weights_run_seconds": 1.203907616,
+      "verify_run_seconds": 0.891573896
     },
     {
       "spec": "warrior-fury",
@@ -1075,8 +1075,8 @@
         "off_hand: Cruel Barb",
         "ranged: Dwarven Fishing Pole"
       ],
-      "weights_run_seconds": 1.578808332,
-      "verify_run_seconds": 1.454203477
+      "weights_run_seconds": 1.168277435,
+      "verify_run_seconds": 1.072464551
     },
     {
       "spec": "warrior-fury",
@@ -1314,8 +1314,8 @@
         "main_hand: Butcher's Cleaver",
         "off_hand: Cruel Barb"
       ],
-      "weights_run_seconds": 1.578808332,
-      "verify_run_seconds": 1.4143602180000001
+      "weights_run_seconds": 1.168277435,
+      "verify_run_seconds": 1.096479772
     },
     {
       "spec": "warrior-fury",
@@ -1547,8 +1547,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Bite of Serra'kis"
       ],
-      "weights_run_seconds": 1.717921972,
-      "verify_run_seconds": 1.397904222
+      "weights_run_seconds": 1.2807415739999999,
+      "verify_run_seconds": 1.058988781
     },
     {
       "spec": "warrior-fury",
@@ -1781,8 +1781,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Butcher's Cleaver"
       ],
-      "weights_run_seconds": 1.717921972,
-      "verify_run_seconds": 1.631547769
+      "weights_run_seconds": 1.2807415739999999,
+      "verify_run_seconds": 1.227524116
     },
     {
       "spec": "warrior-fury",
@@ -2023,8 +2023,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 1.71421161,
-      "verify_run_seconds": 1.726281788
+      "weights_run_seconds": 1.291887984,
+      "verify_run_seconds": 1.286687536
     },
     {
       "spec": "warrior-fury",
@@ -2262,8 +2262,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 1.71421161,
-      "verify_run_seconds": 1.7158339439999999
+      "weights_run_seconds": 1.291887984,
+      "verify_run_seconds": 1.272410687
     },
     {
       "spec": "warrior-fury",
@@ -2491,8 +2491,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Black Menace"
       ],
-      "weights_run_seconds": 1.8954608830000002,
-      "verify_run_seconds": 1.889587309
+      "weights_run_seconds": 1.4210671559999999,
+      "verify_run_seconds": 1.423292015
     },
     {
       "spec": "warrior-fury",
@@ -2724,8 +2724,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Pronged Reaver"
       ],
-      "weights_run_seconds": 1.8954608830000002,
-      "verify_run_seconds": 2.066135041
+      "weights_run_seconds": 1.4210671559999999,
+      "verify_run_seconds": 1.563247455
     },
     {
       "spec": "warrior-fury",
@@ -2960,8 +2960,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.9273847389999998,
-      "verify_run_seconds": 1.5670307829999999
+      "weights_run_seconds": 1.482406318,
+      "verify_run_seconds": 1.210991184
     },
     {
       "spec": "warrior-fury",
@@ -3198,8 +3198,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Axe of the Ebon Drake"
       ],
-      "weights_run_seconds": 1.9273847389999998,
-      "verify_run_seconds": 1.715792738
+      "weights_run_seconds": 1.482406318,
+      "verify_run_seconds": 1.291995773
     },
     {
       "spec": "warrior-fury",
@@ -3429,8 +3429,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 2.053993956,
-      "verify_run_seconds": 1.935365879
+      "weights_run_seconds": 1.5518570120000001,
+      "verify_run_seconds": 1.438130399
     },
     {
       "spec": "warrior-fury",
@@ -3662,8 +3662,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 2.053993956,
-      "verify_run_seconds": 1.982038422
+      "weights_run_seconds": 1.5518570120000001,
+      "verify_run_seconds": 1.5137504659999999
     },
     {
       "spec": "warrior-fury",
@@ -3898,8 +3898,8 @@
         "off_hand: Blade of Reckoning",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.095313444,
-      "verify_run_seconds": 1.675274613
+      "weights_run_seconds": 1.575317777,
+      "verify_run_seconds": 1.269324842
     },
     {
       "spec": "warrior-fury",
@@ -4137,8 +4137,8 @@
         "off_hand: Enchanted Azsharite Felbane Sword",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.095313444,
-      "verify_run_seconds": 1.734143454
+      "weights_run_seconds": 1.575317777,
+      "verify_run_seconds": 1.327018416
     },
     {
       "spec": "warrior-fury",
@@ -4380,8 +4380,8 @@
         "off_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.078214562,
-      "verify_run_seconds": 1.718675408
+      "weights_run_seconds": 1.5723062730000001,
+      "verify_run_seconds": 1.2965296099999999
     },
     {
       "spec": "warrior-fury",
@@ -4620,8 +4620,8 @@
         "off_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.078214562,
-      "verify_run_seconds": 1.776685115
+      "weights_run_seconds": 1.5723062730000001,
+      "verify_run_seconds": 1.411058148
     },
     {
       "spec": "warrior-fury",
@@ -4864,8 +4864,8 @@
         "off_hand: Blessed Qiraji War Axe",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.122561033,
-      "verify_run_seconds": 1.9592888899999998
+      "weights_run_seconds": 1.615517735,
+      "verify_run_seconds": 1.485918997
     },
     {
       "spec": "warrior-fury",
@@ -5108,8 +5108,8 @@
         "off_hand: Blessed Qiraji War Axe",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.122561033,
-      "verify_run_seconds": 2.03971397
+      "weights_run_seconds": 1.615517735,
+      "verify_run_seconds": 1.509995572
     }
   ]
 }

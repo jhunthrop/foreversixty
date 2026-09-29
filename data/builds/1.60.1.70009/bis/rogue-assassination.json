@@ -2,7 +2,7 @@
   "spec": "rogue-assassination",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:16:32Z",
+  "generated_at": "2026-09-29T06:56:48Z",
   "bands": [
     {
       "spec": "rogue-assassination",
@@ -194,8 +194,8 @@
         "off_hand: Engineer's Hammer",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.136448853,
-      "verify_run_seconds": 0.602740276
+      "weights_run_seconds": 0.849529076,
+      "verify_run_seconds": 0.454745011
     },
     {
       "spec": "rogue-assassination",
@@ -395,8 +395,8 @@
         "off_hand: Hammer of Orgrimmar",
         "ranged: Skorn's Rifle"
       ],
-      "weights_run_seconds": 1.136448853,
-      "verify_run_seconds": 0.72129532
+      "weights_run_seconds": 0.849529076,
+      "verify_run_seconds": 0.57662246
     },
     {
       "spec": "rogue-assassination",
@@ -602,8 +602,8 @@
         "off_hand: Hardwood Cudgel",
         "ranged: Daryl's Hunting Bow"
       ],
-      "weights_run_seconds": 1.1449633559999999,
-      "verify_run_seconds": 1.147603295
+      "weights_run_seconds": 0.865829883,
+      "verify_run_seconds": 0.876717634
     },
     {
       "spec": "rogue-assassination",
@@ -811,8 +811,8 @@
         "off_hand: Claystone Shortsword",
         "ranged: Privateer Musket"
       ],
-      "weights_run_seconds": 1.1449633559999999,
-      "verify_run_seconds": 1.012268355
+      "weights_run_seconds": 0.865829883,
+      "verify_run_seconds": 0.809658918
     },
     {
       "spec": "rogue-assassination",
@@ -1039,8 +1039,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Deadly Blunderbuss"
       ],
-      "weights_run_seconds": 1.148911077,
-      "verify_run_seconds": 1.243907422
+      "weights_run_seconds": 0.851918568,
+      "verify_run_seconds": 0.949515237
     },
     {
       "spec": "rogue-assassination",
@@ -1269,8 +1269,8 @@
         "off_hand: Scout's Blade",
         "ranged: Bow of Plunder"
       ],
-      "weights_run_seconds": 1.148911077,
-      "verify_run_seconds": 1.1685904759999999
+      "weights_run_seconds": 0.851918568,
+      "verify_run_seconds": 0.866882159
     },
     {
       "spec": "rogue-assassination",
@@ -1497,8 +1497,8 @@
         "off_hand: Bite of Serra'kis",
         "ranged: Raptor's End"
       ],
-      "weights_run_seconds": 1.133241969,
-      "verify_run_seconds": 1.378833883
+      "weights_run_seconds": 0.866380143,
+      "verify_run_seconds": 1.043719181
     },
     {
       "spec": "rogue-assassination",
@@ -1723,8 +1723,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Bite of Serra'kis"
       ],
-      "weights_run_seconds": 1.133241969,
-      "verify_run_seconds": 1.377609211
+      "weights_run_seconds": 0.866380143,
+      "verify_run_seconds": 1.05797625
     },
     {
       "spec": "rogue-assassination",
@@ -1962,8 +1962,8 @@
         "off_hand: Electrocutioner Leg",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.198596223,
-      "verify_run_seconds": 1.505940528
+      "weights_run_seconds": 0.901520688,
+      "verify_run_seconds": 1.170007277
     },
     {
       "spec": "rogue-assassination",
@@ -2197,8 +2197,8 @@
         "off_hand: Sword of Hammerfall",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.198596223,
-      "verify_run_seconds": 1.287826045
+      "weights_run_seconds": 0.901520688,
+      "verify_run_seconds": 1.029007886
     },
     {
       "spec": "rogue-assassination",
@@ -2424,8 +2424,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Black Menace"
       ],
-      "weights_run_seconds": 1.197407992,
-      "verify_run_seconds": 1.567884651
+      "weights_run_seconds": 0.90104949,
+      "verify_run_seconds": 1.194451853
     },
     {
       "spec": "rogue-assassination",
@@ -2649,8 +2649,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Tok'kar's Murloc Shanker"
       ],
-      "weights_run_seconds": 1.197407992,
-      "verify_run_seconds": 1.622547706
+      "weights_run_seconds": 0.90104949,
+      "verify_run_seconds": 1.2631012369999999
     },
     {
       "spec": "rogue-assassination",
@@ -2888,8 +2888,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.220310981,
-      "verify_run_seconds": 1.302782336
+      "weights_run_seconds": 0.918466017,
+      "verify_run_seconds": 0.978921864
     },
     {
       "spec": "rogue-assassination",
@@ -3122,8 +3122,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Spirit of the Faerie Dragon"
       ],
-      "weights_run_seconds": 1.220310981,
-      "verify_run_seconds": 1.26161982
+      "weights_run_seconds": 0.918466017,
+      "verify_run_seconds": 0.961790437
     },
     {
       "spec": "rogue-assassination",
@@ -3354,8 +3354,8 @@
         "main_hand: Gryphon Rider's Stormhammer",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.283157671,
-      "verify_run_seconds": 1.559898073
+      "weights_run_seconds": 0.949325458,
+      "verify_run_seconds": 1.215082488
     },
     {
       "spec": "rogue-assassination",
@@ -3586,8 +3586,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.283157671,
-      "verify_run_seconds": 1.575366046
+      "weights_run_seconds": 0.949325458,
+      "verify_run_seconds": 1.2282692530000001
     },
     {
       "spec": "rogue-assassination",
@@ -3817,8 +3817,8 @@
         "off_hand: Blade of Reckoning",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 1.263515054,
-      "verify_run_seconds": 1.472275474
+      "weights_run_seconds": 0.989271109,
+      "verify_run_seconds": 1.165612493
     },
     {
       "spec": "rogue-assassination",
@@ -4048,8 +4048,8 @@
         "main_hand: Inventor's Focal Sword",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 1.263515054,
-      "verify_run_seconds": 1.368990628
+      "weights_run_seconds": 0.989271109,
+      "verify_run_seconds": 1.066020834
     },
     {
       "spec": "rogue-assassination",
@@ -4283,8 +4283,8 @@
         "off_hand: Blood Talon",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.276901495,
-      "verify_run_seconds": 1.4996272990000001
+      "weights_run_seconds": 1.000970836,
+      "verify_run_seconds": 1.140887426
     },
     {
       "spec": "rogue-assassination",
@@ -4518,8 +4518,8 @@
         "off_hand: Blood Talon",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.276901495,
-      "verify_run_seconds": 1.497263419
+      "weights_run_seconds": 1.000970836,
+      "verify_run_seconds": 1.166678121
     },
     {
       "spec": "rogue-assassination",
@@ -4757,8 +4757,8 @@
         "off_hand: Blessed Qiraji Pugio",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.288154777,
-      "verify_run_seconds": 1.6516021969999999
+      "weights_run_seconds": 0.988920226,
+      "verify_run_seconds": 1.310340945
     },
     {
       "spec": "rogue-assassination",
@@ -4996,8 +4996,8 @@
         "off_hand: Blessed Qiraji Pugio",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.288154777,
-      "verify_run_seconds": 1.662519147
+      "weights_run_seconds": 0.988920226,
+      "verify_run_seconds": 1.288010256
     }
   ]
 }

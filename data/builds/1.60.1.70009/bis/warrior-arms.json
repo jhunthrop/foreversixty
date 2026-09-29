@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:23:22Z",
+  "generated_at": "2026-09-29T07:02:04Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -195,8 +195,8 @@
         "main_hand: Edge of the People's Militia",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.4905881810000001,
-      "verify_run_seconds": 0.572479737
+      "weights_run_seconds": 1.109914192,
+      "verify_run_seconds": 0.440791244
     },
     {
       "spec": "warrior-arms",
@@ -396,8 +396,8 @@
         "main_hand: Ceranium Rod",
         "ranged: Orcish Battle Bow"
       ],
-      "weights_run_seconds": 1.4905881810000001,
-      "verify_run_seconds": 0.729456925
+      "weights_run_seconds": 1.109914192,
+      "verify_run_seconds": 0.550037465
     },
     {
       "spec": "warrior-arms",
@@ -601,8 +601,8 @@
         "main_hand: Seraph's Strike",
         "ranged: Daryl's Hunting Rifle"
       ],
-      "weights_run_seconds": 1.580210583,
-      "verify_run_seconds": 0.975014721
+      "weights_run_seconds": 1.18658285,
+      "verify_run_seconds": 0.748563273
     },
     {
       "spec": "warrior-arms",
@@ -806,8 +806,8 @@
         "finger2: Bounty Hunter's Ring",
         "main_hand: Wingblade"
       ],
-      "weights_run_seconds": 1.580210583,
-      "verify_run_seconds": 0.989682492
+      "weights_run_seconds": 1.18658285,
+      "verify_run_seconds": 0.730990887
     },
     {
       "spec": "warrior-arms",
@@ -1036,8 +1036,8 @@
         "trinket2: Rune of Duty",
         "ranged: Dwarven Fishing Pole"
       ],
-      "weights_run_seconds": 1.54814064,
-      "verify_run_seconds": 1.08638601
+      "weights_run_seconds": 1.167644035,
+      "verify_run_seconds": 0.81926475
     },
     {
       "spec": "warrior-arms",
@@ -1266,8 +1266,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Runic Darkblade"
       ],
-      "weights_run_seconds": 1.54814064,
-      "verify_run_seconds": 1.068514267
+      "weights_run_seconds": 1.167644035,
+      "verify_run_seconds": 0.815625
     },
     {
       "spec": "warrior-arms",
@@ -1490,8 +1490,8 @@
         "finger2: Protector's Band",
         "main_hand: Emil's Brand"
       ],
-      "weights_run_seconds": 1.6256406289999998,
-      "verify_run_seconds": 1.192853215
+      "weights_run_seconds": 1.242778655,
+      "verify_run_seconds": 0.892639076
     },
     {
       "spec": "warrior-arms",
@@ -1714,8 +1714,8 @@
         "finger2: Band of the Fist",
         "main_hand: Rod of the Sleepwalker"
       ],
-      "weights_run_seconds": 1.6256406289999998,
-      "verify_run_seconds": 1.164694029
+      "weights_run_seconds": 1.242778655,
+      "verify_run_seconds": 0.871289848
     },
     {
       "spec": "warrior-arms",
@@ -1946,8 +1946,8 @@
         "main_hand: Whirlwind Warhammer",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 1.704266714,
-      "verify_run_seconds": 1.349367178
+      "weights_run_seconds": 1.276136958,
+      "verify_run_seconds": 1.004090771
     },
     {
       "spec": "warrior-arms",
@@ -2179,8 +2179,8 @@
         "main_hand: Whirlwind Axe",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 1.704266714,
-      "verify_run_seconds": 1.428432169
+      "weights_run_seconds": 1.276136958,
+      "verify_run_seconds": 1.079431601
     },
     {
       "spec": "warrior-arms",
@@ -2400,8 +2400,8 @@
         "feet: Ironheel Boots",
         "main_hand: Bonebiter"
       ],
-      "weights_run_seconds": 1.775448145,
-      "verify_run_seconds": 1.4225667309999999
+      "weights_run_seconds": 1.368302835,
+      "verify_run_seconds": 1.067898012
     },
     {
       "spec": "warrior-arms",
@@ -2620,8 +2620,8 @@
         "hands: Scarlet Gauntlets",
         "main_hand: Whirlwind Warhammer"
       ],
-      "weights_run_seconds": 1.775448145,
-      "verify_run_seconds": 1.431091685
+      "weights_run_seconds": 1.368302835,
+      "verify_run_seconds": 1.060914708
     },
     {
       "spec": "warrior-arms",
@@ -2851,8 +2851,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 2.071331443,
-      "verify_run_seconds": 1.532034763
+      "weights_run_seconds": 1.572389061,
+      "verify_run_seconds": 1.13335446
     },
     {
       "spec": "warrior-arms",
@@ -3081,8 +3081,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Will of the Mountain Giant"
       ],
-      "weights_run_seconds": 2.071331443,
-      "verify_run_seconds": 1.404170593
+      "weights_run_seconds": 1.572389061,
+      "verify_run_seconds": 1.074958793
     },
     {
       "spec": "warrior-arms",
@@ -3308,8 +3308,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.075921067,
-      "verify_run_seconds": 1.500627997
+      "weights_run_seconds": 1.565214785,
+      "verify_run_seconds": 1.12762575
     },
     {
       "spec": "warrior-arms",
@@ -3537,8 +3537,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.075921067,
-      "verify_run_seconds": 1.499322796
+      "weights_run_seconds": 1.565214785,
+      "verify_run_seconds": 1.155089183
     },
     {
       "spec": "warrior-arms",
@@ -3765,8 +3765,8 @@
         "finger2: Protector's Band",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.192799249,
-      "verify_run_seconds": 1.577319771
+      "weights_run_seconds": 1.634588586,
+      "verify_run_seconds": 1.211562789
     },
     {
       "spec": "warrior-arms",
@@ -3995,8 +3995,8 @@
         "finger2: Legionnaire's Band",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.192799249,
-      "verify_run_seconds": 1.5958835489999998
+      "weights_run_seconds": 1.634588586,
+      "verify_run_seconds": 1.200407308
     },
     {
       "spec": "warrior-arms",
@@ -4232,8 +4232,8 @@
         "trinket2: Demon's Blood",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.194794623,
-      "verify_run_seconds": 1.6020796339999999
+      "weights_run_seconds": 1.659723594,
+      "verify_run_seconds": 1.20563715
     },
     {
       "spec": "warrior-arms",
@@ -4468,8 +4468,8 @@
         "trinket2: Demon's Blood",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.194794623,
-      "verify_run_seconds": 1.6189736
+      "weights_run_seconds": 1.659723594,
+      "verify_run_seconds": 1.218839109
     },
     {
       "spec": "warrior-arms",
@@ -4706,8 +4706,8 @@
         "main_hand: Thunderfury, Blessed Blade of the Windseeker",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.181722001,
-      "verify_run_seconds": 1.6802051869999999
+      "weights_run_seconds": 1.671059095,
+      "verify_run_seconds": 1.278808379
     },
     {
       "spec": "warrior-arms",
@@ -4945,8 +4945,8 @@
         "main_hand: Thunderfury, Blessed Blade of the Windseeker",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.181722001,
-      "verify_run_seconds": 1.692511149
+      "weights_run_seconds": 1.671059095,
+      "verify_run_seconds": 1.262590038
     }
   ]
 }

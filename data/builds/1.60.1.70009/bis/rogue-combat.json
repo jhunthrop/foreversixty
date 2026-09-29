@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:17:22Z",
+  "generated_at": "2026-09-29T06:57:27Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -194,8 +194,8 @@
         "off_hand: Engineer's Hammer",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.1186671559999999,
-      "verify_run_seconds": 0.581085326
+      "weights_run_seconds": 0.842418133,
+      "verify_run_seconds": 0.445279748
     },
     {
       "spec": "rogue-combat",
@@ -395,8 +395,8 @@
         "off_hand: Hammer of Orgrimmar",
         "ranged: Skorn's Rifle"
       ],
-      "weights_run_seconds": 1.1186671559999999,
-      "verify_run_seconds": 0.726095317
+      "weights_run_seconds": 0.842418133,
+      "verify_run_seconds": 0.573691403
     },
     {
       "spec": "rogue-combat",
@@ -602,8 +602,8 @@
         "off_hand: Hardwood Cudgel",
         "ranged: Daryl's Hunting Bow"
       ],
-      "weights_run_seconds": 1.132026846,
-      "verify_run_seconds": 1.164156532
+      "weights_run_seconds": 0.85844348,
+      "verify_run_seconds": 0.880974969
     },
     {
       "spec": "rogue-combat",
@@ -811,8 +811,8 @@
         "off_hand: Claystone Shortsword",
         "ranged: Privateer Musket"
       ],
-      "weights_run_seconds": 1.132026846,
-      "verify_run_seconds": 1.004949319
+      "weights_run_seconds": 0.85844348,
+      "verify_run_seconds": 0.767620561
     },
     {
       "spec": "rogue-combat",
@@ -1038,8 +1038,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Deadly Blunderbuss"
       ],
-      "weights_run_seconds": 1.114252375,
-      "verify_run_seconds": 1.2131335
+      "weights_run_seconds": 0.849384561,
+      "verify_run_seconds": 0.967075143
     },
     {
       "spec": "rogue-combat",
@@ -1267,8 +1267,8 @@
         "off_hand: Scout's Blade",
         "ranged: Bow of Plunder"
       ],
-      "weights_run_seconds": 1.114252375,
-      "verify_run_seconds": 1.102284789
+      "weights_run_seconds": 0.849384561,
+      "verify_run_seconds": 0.85150513
     },
     {
       "spec": "rogue-combat",
@@ -1494,8 +1494,8 @@
         "off_hand: Bite of Serra'kis",
         "ranged: Raptor's End"
       ],
-      "weights_run_seconds": 1.090213611,
-      "verify_run_seconds": 1.351875523
+      "weights_run_seconds": 0.867024036,
+      "verify_run_seconds": 1.03124043
     },
     {
       "spec": "rogue-combat",
@@ -1719,8 +1719,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Bite of Serra'kis"
       ],
-      "weights_run_seconds": 1.090213611,
-      "verify_run_seconds": 1.361575848
+      "weights_run_seconds": 0.867024036,
+      "verify_run_seconds": 1.038708439
     },
     {
       "spec": "rogue-combat",
@@ -1954,8 +1954,8 @@
         "off_hand: Electrocutioner Leg",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.13118563,
-      "verify_run_seconds": 1.470626469
+      "weights_run_seconds": 0.872270599,
+      "verify_run_seconds": 1.167365426
     },
     {
       "spec": "rogue-combat",
@@ -2189,8 +2189,8 @@
         "off_hand: Sword of Hammerfall",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.13118563,
-      "verify_run_seconds": 1.299902745
+      "weights_run_seconds": 0.872270599,
+      "verify_run_seconds": 0.995063717
     },
     {
       "spec": "rogue-combat",
@@ -2414,8 +2414,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Black Menace"
       ],
-      "weights_run_seconds": 1.137530183,
-      "verify_run_seconds": 1.524605294
+      "weights_run_seconds": 0.856500732,
+      "verify_run_seconds": 1.175081874
     },
     {
       "spec": "rogue-combat",
@@ -2641,8 +2641,8 @@
         "main_hand: Hypnotic Blade",
         "off_hand: Tok'kar's Murloc Shanker"
       ],
-      "weights_run_seconds": 1.137530183,
-      "verify_run_seconds": 1.614077481
+      "weights_run_seconds": 0.856500732,
+      "verify_run_seconds": 1.239049194
     },
     {
       "spec": "rogue-combat",
@@ -2882,8 +2882,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.173702776,
-      "verify_run_seconds": 1.244331301
+      "weights_run_seconds": 0.914239997,
+      "verify_run_seconds": 1.002255898
     },
     {
       "spec": "rogue-combat",
@@ -3118,8 +3118,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Spirit of the Faerie Dragon"
       ],
-      "weights_run_seconds": 1.173702776,
-      "verify_run_seconds": 1.261822711
+      "weights_run_seconds": 0.914239997,
+      "verify_run_seconds": 0.977796712
     },
     {
       "spec": "rogue-combat",
@@ -3353,8 +3353,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.179765368,
-      "verify_run_seconds": 1.5416490729999999
+      "weights_run_seconds": 0.922312055,
+      "verify_run_seconds": 1.206619751
     },
     {
       "spec": "rogue-combat",
@@ -3587,8 +3587,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.179765368,
-      "verify_run_seconds": 1.5605114119999999
+      "weights_run_seconds": 0.922312055,
+      "verify_run_seconds": 1.219604537
     },
     {
       "spec": "rogue-combat",
@@ -3816,8 +3816,8 @@
         "off_hand: Blade of Reckoning",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.199676834,
-      "verify_run_seconds": 1.457057708
+      "weights_run_seconds": 0.90992461,
+      "verify_run_seconds": 1.152976341
     },
     {
       "spec": "rogue-combat",
@@ -4046,8 +4046,8 @@
         "main_hand: Inventor's Focal Sword",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.199676834,
-      "verify_run_seconds": 1.363807661
+      "weights_run_seconds": 0.90992461,
+      "verify_run_seconds": 1.056719815
     },
     {
       "spec": "rogue-combat",
@@ -4282,8 +4282,8 @@
         "off_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.218105601,
-      "verify_run_seconds": 1.716477239
+      "weights_run_seconds": 0.918714567,
+      "verify_run_seconds": 1.290225707
     },
     {
       "spec": "rogue-combat",
@@ -4518,8 +4518,8 @@
         "off_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.218105601,
-      "verify_run_seconds": 1.688928505
+      "weights_run_seconds": 0.918714567,
+      "verify_run_seconds": 1.31833081
     },
     {
       "spec": "rogue-combat",
@@ -4567,7 +4567,7 @@
           "item_name": "Bonescythe Helmet",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 316.1076070350479,
+          "score": 316.107607035048,
           "verified": true
         },
         {
@@ -4631,16 +4631,16 @@
           "item_name": "Belt of Never-ending Agony",
           "source": "Ahn'Qiraj",
           "source_kind": "raid",
-          "score": 223.0913607117416,
+          "score": 223.09136071174163,
           "verified": true
         },
         {
           "slot": "legs",
-          "item_id": 16456,
-          "item_name": "Marshal's Leather Leggings",
-          "source": "Captain Dirgehammer",
+          "item_id": 16564,
+          "item_name": "General's Leather Legguards",
+          "source": "Lady Palanseer",
           "source_kind": "vendor",
-          "score": 240.77384005007661,
+          "score": 240.77384005007664,
           "verified": true
         },
         {
@@ -4649,7 +4649,7 @@
           "item_name": "Bonescythe Sabatons",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 223.0913607117416,
+          "score": 223.09136071174163,
           "verified": true
         },
         {
@@ -4667,7 +4667,7 @@
           "item_name": "Don Julio's Band",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "score": 175.0913607117416,
+          "score": 175.09136071174163,
           "verified": true
         },
         {
@@ -4744,7 +4744,7 @@
         "wrist: Bonescythe Bracers",
         "hands: Bonescythe Gauntlets",
         "waist: Belt of Never-ending Agony",
-        "legs: Marshal's Leather Leggings",
+        "legs: General's Leather Legguards",
         "feet: Bonescythe Sabatons",
         "finger1: Band of Unnatural Forces",
         "finger2: Don Julio's Band",
@@ -4754,8 +4754,8 @@
         "off_hand: The Hungering Cold",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.200208398,
-      "verify_run_seconds": 1.69340671
+      "weights_run_seconds": 0.921057549,
+      "verify_run_seconds": 1.315032078
     },
     {
       "spec": "rogue-combat",
@@ -4991,8 +4991,8 @@
         "off_hand: The Hungering Cold",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.200208398,
-      "verify_run_seconds": 1.715660803
+      "weights_run_seconds": 0.921057549,
+      "verify_run_seconds": 1.324842696
     }
   ]
 }

@@ -2,7 +2,7 @@
   "spec": "mage-arcane",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:13:17Z",
+  "generated_at": "2026-09-29T06:54:23Z",
   "bands": [
     {
       "spec": "mage-arcane",
@@ -206,8 +206,8 @@
         "off_hand: Father Flame",
         "ranged: Spark of the People's Militia"
       ],
-      "weights_run_seconds": 0.860197358,
-      "verify_run_seconds": 0.455084117
+      "weights_run_seconds": 0.577083672,
+      "verify_run_seconds": 0.333707018
     },
     {
       "spec": "mage-arcane",
@@ -411,8 +411,8 @@
         "main_hand: Darkwood Staff",
         "ranged: Branding Rod"
       ],
-      "weights_run_seconds": 0.860197358,
-      "verify_run_seconds": 0.407734744
+      "weights_run_seconds": 0.577083672,
+      "verify_run_seconds": 0.302107163
     },
     {
       "spec": "mage-arcane",
@@ -628,8 +628,8 @@
         "off_hand: Tear of Grief",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.82156303,
-      "verify_run_seconds": 0.665598891
+      "weights_run_seconds": 0.601765096,
+      "verify_run_seconds": 0.472890797
     },
     {
       "spec": "mage-arcane",
@@ -844,8 +844,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.82156303,
-      "verify_run_seconds": 0.650738083
+      "weights_run_seconds": 0.601765096,
+      "verify_run_seconds": 0.476039451
     },
     {
       "spec": "mage-arcane",
@@ -1081,8 +1081,8 @@
         "trinket2: Rune of Duty",
         "off_hand: Grayson's Torch"
       ],
-      "weights_run_seconds": 0.815316526,
-      "verify_run_seconds": 0.700698365
+      "weights_run_seconds": 0.594523762,
+      "verify_run_seconds": 0.502856351
     },
     {
       "spec": "mage-arcane",
@@ -1320,8 +1320,8 @@
         "trinket2: Rune of Duty",
         "off_hand: Nightglow Concoction"
       ],
-      "weights_run_seconds": 0.815316526,
-      "verify_run_seconds": 0.739282197
+      "weights_run_seconds": 0.594523762,
+      "verify_run_seconds": 0.533455201
     },
     {
       "spec": "mage-arcane",
@@ -1552,8 +1552,8 @@
         "finger1: Ring of Forlorn Spirits",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 0.859926276,
-      "verify_run_seconds": 0.686616899
+      "weights_run_seconds": 0.600081927,
+      "verify_run_seconds": 0.468345668
     },
     {
       "spec": "mage-arcane",
@@ -1788,8 +1788,8 @@
         "finger2: Snake Hoop",
         "main_hand: Polished Walking Staff"
       ],
-      "weights_run_seconds": 0.859926276,
-      "verify_run_seconds": 0.708274902
+      "weights_run_seconds": 0.600081927,
+      "verify_run_seconds": 0.499662244
     },
     {
       "spec": "mage-arcane",
@@ -2030,8 +2030,8 @@
         "main_hand: Lorekeeper's Staff",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 0.836877471,
-      "verify_run_seconds": 0.84816311
+      "weights_run_seconds": 0.600973311,
+      "verify_run_seconds": 0.626964896
     },
     {
       "spec": "mage-arcane",
@@ -2269,8 +2269,8 @@
         "main_hand: Nimboya's Mystical Staff",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.836877471,
-      "verify_run_seconds": 0.774002051
+      "weights_run_seconds": 0.600973311,
+      "verify_run_seconds": 0.601936734
     },
     {
       "spec": "mage-arcane",
@@ -2503,8 +2503,8 @@
         "legs: Gaze Dreamer Pants",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 0.95094493,
-      "verify_run_seconds": 0.870965876
+      "weights_run_seconds": 0.698672488,
+      "verify_run_seconds": 0.624575774
     },
     {
       "spec": "mage-arcane",
@@ -2734,8 +2734,8 @@
         "chest: Robe of Power",
         "waist: Star Belt"
       ],
-      "weights_run_seconds": 0.95094493,
-      "verify_run_seconds": 0.823359912
+      "weights_run_seconds": 0.698672488,
+      "verify_run_seconds": 0.60453166
     },
     {
       "spec": "mage-arcane",
@@ -2972,8 +2972,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 0.970225527,
-      "verify_run_seconds": 0.860618156
+      "weights_run_seconds": 0.718839219,
+      "verify_run_seconds": 0.614184925
     },
     {
       "spec": "mage-arcane",
@@ -3211,8 +3211,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 0.970225527,
-      "verify_run_seconds": 0.823698518
+      "weights_run_seconds": 0.718839219,
+      "verify_run_seconds": 0.59878492
     },
     {
       "spec": "mage-arcane",
@@ -3446,8 +3446,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.982771339,
-      "verify_run_seconds": 0.848341143
+      "weights_run_seconds": 0.714117579,
+      "verify_run_seconds": 0.608570915
     },
     {
       "spec": "mage-arcane",
@@ -3680,8 +3680,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.982771339,
-      "verify_run_seconds": 0.871797147
+      "weights_run_seconds": 0.714117579,
+      "verify_run_seconds": 0.605118427
     },
     {
       "spec": "mage-arcane",
@@ -3915,8 +3915,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.991437119,
-      "verify_run_seconds": 0.857404859
+      "weights_run_seconds": 0.706932696,
+      "verify_run_seconds": 0.627510684
     },
     {
       "spec": "mage-arcane",
@@ -4150,8 +4150,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.991437119,
-      "verify_run_seconds": 0.868939525
+      "weights_run_seconds": 0.706932696,
+      "verify_run_seconds": 0.613306206
     },
     {
       "spec": "mage-arcane",
@@ -4384,8 +4384,8 @@
         "finger1: Band of the Penitent",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.021994945,
-      "verify_run_seconds": 0.863502641
+      "weights_run_seconds": 0.721329373,
+      "verify_run_seconds": 0.623959619
     },
     {
       "spec": "mage-arcane",
@@ -4616,8 +4616,8 @@
         "finger1: Band of the Penitent",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.021994945,
-      "verify_run_seconds": 0.88456895
+      "weights_run_seconds": 0.721329373,
+      "verify_run_seconds": 0.619422747
     },
     {
       "spec": "mage-arcane",
@@ -4862,8 +4862,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.989675526,
-      "verify_run_seconds": 0.888425801
+      "weights_run_seconds": 0.75099417,
+      "verify_run_seconds": 0.638877607
     },
     {
       "spec": "mage-arcane",
@@ -5000,7 +5000,7 @@
           "item_name": "Frostfire Leggings",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 133.52916009710597,
+          "score": 133.52916009710594,
           "verified": true
         },
         {
@@ -5108,8 +5108,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.989675526,
-      "verify_run_seconds": 0.882587849
+      "weights_run_seconds": 0.75099417,
+      "verify_run_seconds": 0.62693984
     }
   ]
 }

@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:18:14Z",
+  "generated_at": "2026-09-29T06:58:07Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -194,8 +194,8 @@
         "off_hand: Engineer's Hammer",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.145812952,
-      "verify_run_seconds": 0.603149202
+      "weights_run_seconds": 0.8576158,
+      "verify_run_seconds": 0.462889007
     },
     {
       "spec": "rogue-subtlety",
@@ -395,8 +395,8 @@
         "off_hand: Hammer of Orgrimmar",
         "ranged: Skorn's Rifle"
       ],
-      "weights_run_seconds": 1.145812952,
-      "verify_run_seconds": 0.743273768
+      "weights_run_seconds": 0.8576158,
+      "verify_run_seconds": 0.573369375
     },
     {
       "spec": "rogue-subtlety",
@@ -602,8 +602,8 @@
         "off_hand: Hardwood Cudgel",
         "ranged: Daryl's Hunting Bow"
       ],
-      "weights_run_seconds": 1.135166392,
-      "verify_run_seconds": 1.154385048
+      "weights_run_seconds": 0.864120515,
+      "verify_run_seconds": 0.886988582
     },
     {
       "spec": "rogue-subtlety",
@@ -811,8 +811,8 @@
         "off_hand: Claystone Shortsword",
         "ranged: Privateer Musket"
       ],
-      "weights_run_seconds": 1.135166392,
-      "verify_run_seconds": 1.004552613
+      "weights_run_seconds": 0.864120515,
+      "verify_run_seconds": 0.788709884
     },
     {
       "spec": "rogue-subtlety",
@@ -1038,8 +1038,8 @@
         "off_hand: Sentinel's Blade",
         "ranged: Deadly Blunderbuss"
       ],
-      "weights_run_seconds": 1.14563978,
-      "verify_run_seconds": 1.2645428189999999
+      "weights_run_seconds": 0.877581079,
+      "verify_run_seconds": 0.97104007
     },
     {
       "spec": "rogue-subtlety",
@@ -1267,8 +1267,8 @@
         "off_hand: Scout's Blade",
         "ranged: Bow of Plunder"
       ],
-      "weights_run_seconds": 1.14563978,
-      "verify_run_seconds": 1.126352966
+      "weights_run_seconds": 0.877581079,
+      "verify_run_seconds": 0.870851134
     },
     {
       "spec": "rogue-subtlety",
@@ -1494,8 +1494,8 @@
         "off_hand: Bite of Serra'kis",
         "ranged: Raptor's End"
       ],
-      "weights_run_seconds": 1.141354358,
-      "verify_run_seconds": 1.369349284
+      "weights_run_seconds": 0.864672641,
+      "verify_run_seconds": 1.055228667
     },
     {
       "spec": "rogue-subtlety",
@@ -1719,8 +1719,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Bite of Serra'kis"
       ],
-      "weights_run_seconds": 1.141354358,
-      "verify_run_seconds": 1.37058662
+      "weights_run_seconds": 0.864672641,
+      "verify_run_seconds": 1.071834117
     },
     {
       "spec": "rogue-subtlety",
@@ -1953,8 +1953,8 @@
         "off_hand: Electrocutioner Leg",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.240954417,
-      "verify_run_seconds": 1.518368248
+      "weights_run_seconds": 0.953889857,
+      "verify_run_seconds": 1.180869381
     },
     {
       "spec": "rogue-subtlety",
@@ -2188,8 +2188,8 @@
         "off_hand: Sword of Hammerfall",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 1.240954417,
-      "verify_run_seconds": 1.3248799629999999
+      "weights_run_seconds": 0.953889857,
+      "verify_run_seconds": 1.012742025
     },
     {
       "spec": "rogue-subtlety",
@@ -2413,8 +2413,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Black Menace"
       ],
-      "weights_run_seconds": 1.30619428,
-      "verify_run_seconds": 1.551172526
+      "weights_run_seconds": 1.016321917,
+      "verify_run_seconds": 1.205712447
     },
     {
       "spec": "rogue-subtlety",
@@ -2641,8 +2641,8 @@
         "off_hand: Tok'kar's Murloc Shanker",
         "ranged: Master Hunter's Bow"
       ],
-      "weights_run_seconds": 1.30619428,
-      "verify_run_seconds": 1.638689257
+      "weights_run_seconds": 1.016321917,
+      "verify_run_seconds": 1.28528846
     },
     {
       "spec": "rogue-subtlety",
@@ -2882,8 +2882,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.310953768,
-      "verify_run_seconds": 1.27276477
+      "weights_run_seconds": 1.005192238,
+      "verify_run_seconds": 1.001884775
     },
     {
       "spec": "rogue-subtlety",
@@ -3118,8 +3118,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Spirit of the Faerie Dragon"
       ],
-      "weights_run_seconds": 1.310953768,
-      "verify_run_seconds": 1.2623345590000001
+      "weights_run_seconds": 1.005192238,
+      "verify_run_seconds": 0.991258199
     },
     {
       "spec": "rogue-subtlety",
@@ -3352,8 +3352,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.347643052,
-      "verify_run_seconds": 1.594166973
+      "weights_run_seconds": 1.01771214,
+      "verify_run_seconds": 1.22542202
     },
     {
       "spec": "rogue-subtlety",
@@ -3586,8 +3586,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.347643052,
-      "verify_run_seconds": 1.588211013
+      "weights_run_seconds": 1.01771214,
+      "verify_run_seconds": 1.23271034
     },
     {
       "spec": "rogue-subtlety",
@@ -3814,8 +3814,8 @@
         "off_hand: Blade of Reckoning",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.342708759,
-      "verify_run_seconds": 1.526062183
+      "weights_run_seconds": 1.031983767,
+      "verify_run_seconds": 1.147052282
     },
     {
       "spec": "rogue-subtlety",
@@ -4043,8 +4043,8 @@
         "main_hand: Inventor's Focal Sword",
         "ranged: Moonsight Rifle"
       ],
-      "weights_run_seconds": 1.342708759,
-      "verify_run_seconds": 1.361619442
+      "weights_run_seconds": 1.031983767,
+      "verify_run_seconds": 1.128433404
     },
     {
       "spec": "rogue-subtlety",
@@ -4278,8 +4278,8 @@
         "off_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.3367764069999999,
-      "verify_run_seconds": 1.57370929
+      "weights_run_seconds": 1.02099713,
+      "verify_run_seconds": 1.241928008
     },
     {
       "spec": "rogue-subtlety",
@@ -4513,8 +4513,8 @@
         "off_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 1.3367764069999999,
-      "verify_run_seconds": 1.6156815770000001
+      "weights_run_seconds": 1.02099713,
+      "verify_run_seconds": 1.225535044
     },
     {
       "spec": "rogue-subtlety",
@@ -4600,7 +4600,7 @@
           "item_name": "Bonescythe Breastplate",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 364.64978637668844,
+          "score": 364.6497863766885,
           "verified": true
         },
         {
@@ -4618,7 +4618,7 @@
           "item_name": "Bonescythe Gauntlets",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 236.99209629483494,
+          "score": 236.9920962948349,
           "verified": true
         },
         {
@@ -4750,8 +4750,8 @@
         "off_hand: The Hungering Cold",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.319157305,
-      "verify_run_seconds": 1.81347374
+      "weights_run_seconds": 1.046789558,
+      "verify_run_seconds": 1.389447114
     },
     {
       "spec": "rogue-subtlety",
@@ -4836,7 +4836,7 @@
           "item_name": "Bonescythe Breastplate",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 364.6497863766885,
+          "score": 364.64978637668844,
           "verified": true
         },
         {
@@ -4987,8 +4987,8 @@
         "off_hand: The Hungering Cold",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 1.319157305,
-      "verify_run_seconds": 1.720313996
+      "weights_run_seconds": 1.046789558,
+      "verify_run_seconds": 1.358622864
     }
   ]
 }

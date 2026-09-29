@@ -2,7 +2,7 @@
   "spec": "warlock-affliction",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:20:52Z",
+  "generated_at": "2026-09-29T07:00:07Z",
   "bands": [
     {
       "spec": "warlock-affliction",
@@ -150,12 +150,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 6215,
-          "item_name": "Balanced Fighting Stick",
+          "item_id": 2218,
+          "item_name": "Craftsman's Dagger",
           "source": "Quests",
           "source_kind": "quest",
-          "verified": true,
-          "swap_note": "beat the scored pick Craftsman's Dagger (id 2218) in the sim: 11.4 vs 11.4 set DPS"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -176,7 +175,7 @@
           "swap_note": "beat the scored pick Lesser Magic Wand (id 11287) in the sim: 11.6 vs 11.4 set DPS"
         }
       ],
-      "set_dps": 11.57849348500932,
+      "set_dps": 11.574099922632044,
       "no_source_count": 442,
       "no_source_sample": [
         "727 Notched Shortsword",
@@ -204,12 +203,12 @@
         "legs: Handstitched Linen Britches",
         "feet: Nat Pagle's Extreme Anglin' Boots",
         "finger1: Sustaining Ring",
-        "main_hand: Balanced Fighting Stick",
+        "main_hand: Craftsman's Dagger",
         "off_hand: Father Flame",
         "ranged: Spark of the People's Militia"
       ],
-      "weights_run_seconds": 1.349858206,
-      "verify_run_seconds": 0.691281992
+      "weights_run_seconds": 1.012977887,
+      "verify_run_seconds": 0.536272489
     },
     {
       "spec": "warlock-affliction",
@@ -413,8 +412,8 @@
         "main_hand: Darkwood Staff",
         "ranged: Branding Rod"
       ],
-      "weights_run_seconds": 1.349858206,
-      "verify_run_seconds": 0.637489642
+      "weights_run_seconds": 1.012977887,
+      "verify_run_seconds": 0.490998918
     },
     {
       "spec": "warlock-affliction",
@@ -628,8 +627,8 @@
         "main_hand: Staff of Westfall",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.304626314,
-      "verify_run_seconds": 0.981911304
+      "weights_run_seconds": 1.017949196,
+      "verify_run_seconds": 0.723178166
     },
     {
       "spec": "warlock-affliction",
@@ -845,8 +844,8 @@
         "main_hand: Staff of Orgrimmar",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.304626314,
-      "verify_run_seconds": 0.882800051
+      "weights_run_seconds": 1.017949196,
+      "verify_run_seconds": 0.710763845
     },
     {
       "spec": "warlock-affliction",
@@ -1079,8 +1078,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.320206095,
-      "verify_run_seconds": 0.898147374
+      "weights_run_seconds": 0.980410585,
+      "verify_run_seconds": 0.694568544
     },
     {
       "spec": "warlock-affliction",
@@ -1316,8 +1315,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Polished Walking Staff"
       ],
-      "weights_run_seconds": 1.320206095,
-      "verify_run_seconds": 1.022529567
+      "weights_run_seconds": 0.980410585,
+      "verify_run_seconds": 0.796046502
     },
     {
       "spec": "warlock-affliction",
@@ -1545,8 +1544,8 @@
         "finger1: Ring of Forlorn Spirits",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 1.02349852,
-      "verify_run_seconds": 0.771846969
+      "weights_run_seconds": 0.801143296,
+      "verify_run_seconds": 0.605946835
     },
     {
       "spec": "warlock-affliction",
@@ -1772,8 +1771,8 @@
         "main_hand: Rod of the Sleepwalker",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.02349852,
-      "verify_run_seconds": 0.846297781
+      "weights_run_seconds": 0.801143296,
+      "verify_run_seconds": 0.659306248
     },
     {
       "spec": "warlock-affliction",
@@ -2009,8 +2008,8 @@
         "trinket2: Rune of Perfection",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 1.342360694,
-      "verify_run_seconds": 1.23098486
+      "weights_run_seconds": 1.006304596,
+      "verify_run_seconds": 0.955743513
     },
     {
       "spec": "warlock-affliction",
@@ -2247,8 +2246,8 @@
         "main_hand: Defias Rapier",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.342360694,
-      "verify_run_seconds": 1.248266542
+      "weights_run_seconds": 1.006304596,
+      "verify_run_seconds": 0.958286017
     },
     {
       "spec": "warlock-affliction",
@@ -2478,8 +2477,8 @@
         "waist: Star Belt",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 1.345451518,
-      "verify_run_seconds": 1.240215496
+      "weights_run_seconds": 1.047600864,
+      "verify_run_seconds": 0.983904286
     },
     {
       "spec": "warlock-affliction",
@@ -2713,8 +2712,8 @@
         "feet: Defiler's Cloth Boots",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 1.345451518,
-      "verify_run_seconds": 1.248649629
+      "weights_run_seconds": 1.047600864,
+      "verify_run_seconds": 0.964860465
     },
     {
       "spec": "warlock-affliction",
@@ -2952,8 +2951,8 @@
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen"
       ],
-      "weights_run_seconds": 1.05729794,
-      "verify_run_seconds": 1.046826744
+      "weights_run_seconds": 0.918170616,
+      "verify_run_seconds": 0.80106003
     },
     {
       "spec": "warlock-affliction",
@@ -3188,8 +3187,8 @@
         "trinket1: Mark of the Chosen",
         "trinket2: Carrot on a Stick"
       ],
-      "weights_run_seconds": 1.05729794,
-      "verify_run_seconds": 1.056624476
+      "weights_run_seconds": 0.918170616,
+      "verify_run_seconds": 0.794519755
     },
     {
       "spec": "warlock-affliction",
@@ -3424,8 +3423,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.478731101,
-      "verify_run_seconds": 1.249364118
+      "weights_run_seconds": 1.123703465,
+      "verify_run_seconds": 0.96197234
     },
     {
       "spec": "warlock-affliction",
@@ -3659,8 +3658,8 @@
         "trinket2: Shard of the Splithooves",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.478731101,
-      "verify_run_seconds": 1.281340068
+      "weights_run_seconds": 1.123703465,
+      "verify_run_seconds": 0.963167375
     },
     {
       "spec": "warlock-affliction",
@@ -3892,8 +3891,8 @@
         "finger1: Blackstone Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.151271975,
-      "verify_run_seconds": 1.034927999
+      "weights_run_seconds": 0.918182488,
+      "verify_run_seconds": 0.80545872
     },
     {
       "spec": "warlock-affliction",
@@ -4125,8 +4124,8 @@
         "finger2: Advisor's Ring",
         "trinket2: Smoking Heart of the Mountain"
       ],
-      "weights_run_seconds": 1.151271975,
-      "verify_run_seconds": 1.0650756829999999
+      "weights_run_seconds": 0.918182488,
+      "verify_run_seconds": 0.796051485
     },
     {
       "spec": "warlock-affliction",
@@ -4356,8 +4355,8 @@
         "feet: Omnicast Boots",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.565247028,
-      "verify_run_seconds": 1.2685718129999999
+      "weights_run_seconds": 1.221657558,
+      "verify_run_seconds": 0.961773738
     },
     {
       "spec": "warlock-affliction",
@@ -4588,8 +4587,8 @@
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.565247028,
-      "verify_run_seconds": 1.2752214689999999
+      "weights_run_seconds": 1.221657558,
+      "verify_run_seconds": 0.953345638
     },
     {
       "spec": "warlock-affliction",
@@ -4833,8 +4832,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.156254286,
-      "verify_run_seconds": 1.002396731
+      "weights_run_seconds": 0.906830245,
+      "verify_run_seconds": 0.781486734
     },
     {
       "spec": "warlock-affliction",
@@ -5079,8 +5078,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.156254286,
-      "verify_run_seconds": 1.012547837
+      "weights_run_seconds": 0.906830245,
+      "verify_run_seconds": 0.79275077
     }
   ]
 }

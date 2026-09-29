@@ -2,7 +2,7 @@
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:22:23Z",
+  "generated_at": "2026-09-29T07:01:19Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -157,12 +157,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 6215,
-          "item_name": "Balanced Fighting Stick",
+          "item_id": 2218,
+          "item_name": "Craftsman's Dagger",
           "source": "Quests",
           "source_kind": "quest",
-          "verified": true,
-          "swap_note": "beat the scored pick Craftsman's Dagger (id 2218) in the sim: 11.8 vs 11.8 set DPS"
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -183,7 +182,7 @@
           "swap_note": "beat the scored pick Lesser Magic Wand (id 11287) in the sim: 12.1 vs 11.8 set DPS"
         }
       ],
-      "set_dps": 12.120724782482103,
+      "set_dps": 12.117400640483389,
       "no_source_count": 442,
       "no_source_sample": [
         "727 Notched Shortsword",
@@ -211,12 +210,12 @@
         "legs: Handstitched Linen Britches",
         "feet: Nat Pagle's Extreme Anglin' Boots",
         "finger1: Sustaining Ring",
-        "main_hand: Balanced Fighting Stick",
+        "main_hand: Craftsman's Dagger",
         "off_hand: Father Flame",
         "ranged: Spark of the People's Militia"
       ],
-      "weights_run_seconds": 1.5098316349999998,
-      "verify_run_seconds": 0.729399715
+      "weights_run_seconds": 1.105001674,
+      "verify_run_seconds": 0.547861447
     },
     {
       "spec": "warlock-destruction",
@@ -428,8 +427,8 @@
         "main_hand: Staff of Orgrimmar",
         "ranged: Branding Rod"
       ],
-      "weights_run_seconds": 1.5098316349999998,
-      "verify_run_seconds": 0.634756701
+      "weights_run_seconds": 1.105001674,
+      "verify_run_seconds": 0.497690364
     },
     {
       "spec": "warlock-destruction",
@@ -651,8 +650,8 @@
         "main_hand: Staff of Westfall",
         "ranged: Moonstone Wand"
       ],
-      "weights_run_seconds": 1.495358389,
-      "verify_run_seconds": 0.907977131
+      "weights_run_seconds": 1.160659757,
+      "verify_run_seconds": 0.712990725
     },
     {
       "spec": "warlock-destruction",
@@ -872,8 +871,8 @@
         "feet: Red Woolen Boots",
         "finger2: Bounty Hunter's Ring"
       ],
-      "weights_run_seconds": 1.495358389,
-      "verify_run_seconds": 0.910345774
+      "weights_run_seconds": 1.160659757,
+      "verify_run_seconds": 0.789118807
     },
     {
       "spec": "warlock-destruction",
@@ -1118,8 +1117,8 @@
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.4847469,
-      "verify_run_seconds": 1.040495662
+      "weights_run_seconds": 1.153507126,
+      "verify_run_seconds": 0.804949613
     },
     {
       "spec": "warlock-destruction",
@@ -1364,8 +1363,8 @@
         "off_hand: Nightglow Concoction",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 1.4847469,
-      "verify_run_seconds": 1.119551614
+      "weights_run_seconds": 1.153507126,
+      "verify_run_seconds": 0.864857874
     },
     {
       "spec": "warlock-destruction",
@@ -1599,8 +1598,8 @@
         "finger1: Ring of Forlorn Spirits",
         "main_hand: Hardened Root Staff"
       ],
-      "weights_run_seconds": 1.2553486999999999,
-      "verify_run_seconds": 0.795649605
+      "weights_run_seconds": 0.975547377,
+      "verify_run_seconds": 0.619109832
     },
     {
       "spec": "warlock-destruction",
@@ -1835,8 +1834,8 @@
         "legs: Gaze Dreamer Pants",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.2553486999999999,
-      "verify_run_seconds": 0.876281664
+      "weights_run_seconds": 0.975547377,
+      "verify_run_seconds": 0.677303609
     },
     {
       "spec": "warlock-destruction",
@@ -2077,8 +2076,8 @@
         "trinket2: Rune of Perfection",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 1.5449827520000001,
-      "verify_run_seconds": 1.262874731
+      "weights_run_seconds": 1.195975437,
+      "verify_run_seconds": 0.951708568
     },
     {
       "spec": "warlock-destruction",
@@ -2321,8 +2320,8 @@
         "main_hand: Rod of the Sleepwalker",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 1.5449827520000001,
-      "verify_run_seconds": 1.234570233
+      "weights_run_seconds": 1.195975437,
+      "verify_run_seconds": 0.967641176
     },
     {
       "spec": "warlock-destruction",
@@ -2558,8 +2557,8 @@
         "waist: Star Belt",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 1.592743657,
-      "verify_run_seconds": 1.256788554
+      "weights_run_seconds": 1.261307408,
+      "verify_run_seconds": 1.017702723
     },
     {
       "spec": "warlock-destruction",
@@ -2795,8 +2794,8 @@
         "waist: Star Belt",
         "main_hand: Staff of Dar'Orahil"
       ],
-      "weights_run_seconds": 1.592743657,
-      "verify_run_seconds": 1.258936978
+      "weights_run_seconds": 1.261307408,
+      "verify_run_seconds": 1.015540191
     },
     {
       "spec": "warlock-destruction",
@@ -3041,8 +3040,8 @@
         "trinket1: Thunderbrew's Boot Flask",
         "trinket2: Carrot on a Stick"
       ],
-      "weights_run_seconds": 1.279647795,
-      "verify_run_seconds": 1.031562348
+      "weights_run_seconds": 1.009408437,
+      "verify_run_seconds": 0.840386796
     },
     {
       "spec": "warlock-destruction",
@@ -3284,8 +3283,8 @@
         "trinket1: Mark of the Chosen",
         "trinket2: Carrot on a Stick"
       ],
-      "weights_run_seconds": 1.279647795,
-      "verify_run_seconds": 1.044775392
+      "weights_run_seconds": 1.009408437,
+      "verify_run_seconds": 0.816008534
     },
     {
       "spec": "warlock-destruction",
@@ -3526,8 +3525,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.5437393350000002,
-      "verify_run_seconds": 1.249543679
+      "weights_run_seconds": 1.195474491,
+      "verify_run_seconds": 1.00317295
     },
     {
       "spec": "warlock-destruction",
@@ -3769,8 +3768,8 @@
         "trinket1: Demon's Blood",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.5437393350000002,
-      "verify_run_seconds": 1.25041278
+      "weights_run_seconds": 1.195474491,
+      "verify_run_seconds": 1.010195992
     },
     {
       "spec": "warlock-destruction",
@@ -4013,8 +4012,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 1.257150622,
-      "verify_run_seconds": 1.037940528
+      "weights_run_seconds": 1.047684711,
+      "verify_run_seconds": 0.824394736
     },
     {
       "spec": "warlock-destruction",
@@ -4258,8 +4257,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.257150622,
-      "verify_run_seconds": 1.093402935
+      "weights_run_seconds": 1.047684711,
+      "verify_run_seconds": 0.826088599
     },
     {
       "spec": "warlock-destruction",
@@ -4500,8 +4499,8 @@
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.559254299,
-      "verify_run_seconds": 1.257024771
+      "weights_run_seconds": 1.193032251,
+      "verify_run_seconds": 0.986309957
     },
     {
       "spec": "warlock-destruction",
@@ -4742,8 +4741,8 @@
         "finger2: Band of the Penitent",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.559254299,
-      "verify_run_seconds": 1.2778163980000001
+      "weights_run_seconds": 1.193032251,
+      "verify_run_seconds": 1.044103598
     },
     {
       "spec": "warlock-destruction",
@@ -4991,8 +4990,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.280497441,
-      "verify_run_seconds": 1.03660623
+      "weights_run_seconds": 1.015352457,
+      "verify_run_seconds": 0.832980386
     },
     {
       "spec": "warlock-destruction",
@@ -5067,7 +5066,7 @@
           "item_name": "Gem of Trapped Innocents",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "score": 193.43891316456586,
+          "score": 193.4389131645659,
           "verified": true
         },
         {
@@ -5240,8 +5239,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.280497441,
-      "verify_run_seconds": 1.03279396
+      "weights_run_seconds": 1.015352457,
+      "verify_run_seconds": 0.817714374
     }
   ]
 }

@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
   "engine_version": "038e51a61",
-  "generated_at": "2026-09-29T06:19:08Z",
+  "generated_at": "2026-09-29T06:58:48Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -204,8 +204,8 @@
         "main_hand: Fist of the People's Militia",
         "off_hand: Ironplate Buckler"
       ],
-      "weights_run_seconds": 1.557782526,
-      "verify_run_seconds": 0.768699003
+      "weights_run_seconds": 1.142071874,
+      "verify_run_seconds": 0.577215521
     },
     {
       "spec": "shaman-elemental",
@@ -406,8 +406,8 @@
         "finger1: Ring of Scorn",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 1.557782526,
-      "verify_run_seconds": 0.609451441
+      "weights_run_seconds": 1.142071874,
+      "verify_run_seconds": 0.471888543
     },
     {
       "spec": "shaman-elemental",
@@ -615,8 +615,8 @@
         "finger2: Sustaining Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 1.562942922,
-      "verify_run_seconds": 0.951120952
+      "weights_run_seconds": 1.133746574,
+      "verify_run_seconds": 0.733737219
     },
     {
       "spec": "shaman-elemental",
@@ -819,8 +819,8 @@
         "finger2: Bounty Hunter's Ring",
         "main_hand: Clear Crystal Rod"
       ],
-      "weights_run_seconds": 1.562942922,
-      "verify_run_seconds": 0.778874508
+      "weights_run_seconds": 1.133746574,
+      "verify_run_seconds": 0.596461524
     },
     {
       "spec": "shaman-elemental",
@@ -1052,8 +1052,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.569526457,
-      "verify_run_seconds": 1.03486449
+      "weights_run_seconds": 1.178354856,
+      "verify_run_seconds": 0.783657033
     },
     {
       "spec": "shaman-elemental",
@@ -1284,8 +1284,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Polished Walking Staff"
       ],
-      "weights_run_seconds": 1.569526457,
-      "verify_run_seconds": 0.984107809
+      "weights_run_seconds": 1.178354856,
+      "verify_run_seconds": 0.766501301
     },
     {
       "spec": "shaman-elemental",
@@ -1513,8 +1513,8 @@
         "finger1: Snake Hoop",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.599762799,
-      "verify_run_seconds": 0.999905265
+      "weights_run_seconds": 1.176413076,
+      "verify_run_seconds": 0.758827815
     },
     {
       "spec": "shaman-elemental",
@@ -1738,8 +1738,8 @@
         "finger1: Snake Hoop",
         "finger2: Lavishly Jeweled Ring"
       ],
-      "weights_run_seconds": 1.599762799,
-      "verify_run_seconds": 0.970498341
+      "weights_run_seconds": 1.176413076,
+      "verify_run_seconds": 0.734674275
     },
     {
       "spec": "shaman-elemental",
@@ -1971,8 +1971,8 @@
         "trinket1: Talisman of Arathor",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 1.7119210580000002,
-      "verify_run_seconds": 1.294758355
+      "weights_run_seconds": 1.250403915,
+      "verify_run_seconds": 0.981756178
     },
     {
       "spec": "shaman-elemental",
@@ -2203,8 +2203,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Nimboya's Mystical Staff"
       ],
-      "weights_run_seconds": 1.7119210580000002,
-      "verify_run_seconds": 1.227423283
+      "weights_run_seconds": 1.250403915,
+      "verify_run_seconds": 0.918946311
     },
     {
       "spec": "shaman-elemental",
@@ -2432,8 +2432,8 @@
         "legs: Gaze Dreamer Pants",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.79339893,
-      "verify_run_seconds": 1.376277492
+      "weights_run_seconds": 1.305927523,
+      "verify_run_seconds": 1.059950381
     },
     {
       "spec": "shaman-elemental",
@@ -2668,8 +2668,8 @@
         "finger2: Electrocutioner Lagnut",
         "main_hand: Shadow Crescent Axe"
       ],
-      "weights_run_seconds": 1.79339893,
-      "verify_run_seconds": 1.298407836
+      "weights_run_seconds": 1.305927523,
+      "verify_run_seconds": 1.014343111
     },
     {
       "spec": "shaman-elemental",
@@ -2902,8 +2902,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.893079614,
-      "verify_run_seconds": 1.4212702720000001
+      "weights_run_seconds": 1.405377885,
+      "verify_run_seconds": 1.08053183
     },
     {
       "spec": "shaman-elemental",
@@ -3138,8 +3138,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.893079614,
-      "verify_run_seconds": 1.324013835
+      "weights_run_seconds": 1.405377885,
+      "verify_run_seconds": 1.038149841
     },
     {
       "spec": "shaman-elemental",
@@ -3365,8 +3365,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.8446387290000001,
-      "verify_run_seconds": 1.405961047
+      "weights_run_seconds": 1.3887918670000001,
+      "verify_run_seconds": 1.13076348
     },
     {
       "spec": "shaman-elemental",
@@ -3594,8 +3594,8 @@
         "trinket1: Demon's Blood",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 1.8446387290000001,
-      "verify_run_seconds": 1.327689018
+      "weights_run_seconds": 1.3887918670000001,
+      "verify_run_seconds": 1.033335088
     },
     {
       "spec": "shaman-elemental",
@@ -3825,8 +3825,8 @@
         "finger1: Blackstone Ring",
         "finger2: Snake Hoop"
       ],
-      "weights_run_seconds": 1.904190491,
-      "verify_run_seconds": 1.4652339429999999
+      "weights_run_seconds": 1.45146841,
+      "verify_run_seconds": 1.122948274
     },
     {
       "spec": "shaman-elemental",
@@ -4057,8 +4057,8 @@
         "trinket2: Smoking Heart of the Mountain",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.904190491,
-      "verify_run_seconds": 1.3698660870000001
+      "weights_run_seconds": 1.45146841,
+      "verify_run_seconds": 1.065129302
     },
     {
       "spec": "shaman-elemental",
@@ -4292,8 +4292,8 @@
         "trinket1: Smokey's Lighter",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.901833346,
-      "verify_run_seconds": 1.508223759
+      "weights_run_seconds": 1.394431209,
+      "verify_run_seconds": 1.132836795
     },
     {
       "spec": "shaman-elemental",
@@ -4529,8 +4529,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.901833346,
-      "verify_run_seconds": 1.424244884
+      "weights_run_seconds": 1.394431209,
+      "verify_run_seconds": 1.090292434
     },
     {
       "spec": "shaman-elemental",
@@ -4768,8 +4768,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.866097764,
-      "verify_run_seconds": 1.487706795
+      "weights_run_seconds": 1.469959684,
+      "verify_run_seconds": 1.156756478
     },
     {
       "spec": "shaman-elemental",
@@ -4866,7 +4866,7 @@
           "item_name": "Bloodvine Vest",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 173.63182024254016,
+          "score": 173.6318202425402,
           "verified": true
         },
         {
@@ -5006,8 +5006,8 @@
         "trinket2: Slayer's Crest",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.866097764,
-      "verify_run_seconds": 1.480107627
+      "weights_run_seconds": 1.469959684,
+      "verify_run_seconds": 1.107970728
     }
   ]
 }

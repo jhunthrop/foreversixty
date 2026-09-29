@@ -27411,9 +27411,9 @@
               "source": "Quests"
             },
             "main_hand": {
-              "item_id": 3446,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 1936,
+              "source_kind": "dungeon",
+              "source": "The Deadmines"
             },
             "off_hand": {
               "item_id": 3451,
@@ -27448,6 +27448,7 @@
             10048,
             4313,
             5351,
+            1936,
             3451,
             8071
           ]
@@ -27620,9 +27621,9 @@
               "source": "Warsong Outriders"
             },
             "main_hand": {
-              "item_id": 3446,
-              "source_kind": "quest",
-              "source": "Quests"
+              "item_id": 1936,
+              "source_kind": "dungeon",
+              "source": "The Deadmines"
             },
             "off_hand": {
               "item_id": 3451,
@@ -33662,9 +33663,9 @@
               "source": "Ahn'Qiraj"
             },
             "legs": {
-              "item_id": 16456,
+              "item_id": 16564,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Lady Palanseer"
             },
             "feet": {
               "item_id": 22480,
@@ -33805,7 +33806,7 @@
             22483,
             22481,
             21586,
-            16456,
+            16564,
             22480,
             23038,
             19325,
@@ -40359,7 +40360,7 @@
               "source": "Quests"
             },
             "main_hand": {
-              "item_id": 6215,
+              "item_id": 2218,
               "source_kind": "quest",
               "source": "Quests"
             },
@@ -40442,7 +40443,7 @@
             4309,
             19969,
             6743,
-            6215,
+            2218,
             13371,
             12296
           ],
@@ -42478,7 +42479,7 @@
               "source": "Quests"
             },
             "main_hand": {
-              "item_id": 6215,
+              "item_id": 2218,
               "source_kind": "quest",
               "source": "Quests"
             },
@@ -42561,7 +42562,7 @@
             4309,
             19969,
             6743,
-            6215,
+            2218,
             13371,
             12296
           ],
@@ -44641,7 +44642,7 @@
               "source": "Quests"
             },
             "main_hand": {
-              "item_id": 6215,
+              "item_id": 2218,
               "source_kind": "quest",
               "source": "Quests"
             },
@@ -44724,7 +44725,7 @@
             4309,
             19969,
             6743,
-            6215,
+            2218,
             13371,
             12296
           ],
