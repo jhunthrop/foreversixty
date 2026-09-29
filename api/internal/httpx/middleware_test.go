@@ -195,6 +195,50 @@ func TestRateLimitPerHourAllowsTheBudgetThenReturns429(t *testing.T) {
 	}
 }
 
+func TestRateLimitByKeyAllowsTheBudgetThenReturns429PerKey(t *testing.T) {
+	keyOf := func(r *http.Request) (string, bool) {
+		return r.Header.Get("X-Account"), r.Header.Get("X-Account") != ""
+	}
+	h := Chain(okHandler(), RequestID(), RateLimitByKey(3, time.Hour, keyOf))
+	post := func(account string) int {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest("POST", "/v1/sims/run", nil)
+		req.RemoteAddr = "10.0.0.1:1234" // same address for every call: the key is the account, not the IP
+		req.Header.Set("X-Account", account)
+		h.ServeHTTP(rec, req)
+		return rec.Code
+	}
+	for i := 0; i < 3; i++ {
+		if code := post("42"); code != 200 {
+			t.Fatalf("request %d for account 42: code = %d, want 200", i+1, code)
+		}
+	}
+	if code := post("42"); code != http.StatusTooManyRequests {
+		t.Fatalf("fourth request for account 42: code = %d, want 429", code)
+	}
+	// A different account, same address, has its own budget.
+	if code := post("7"); code != 200 {
+		t.Fatalf("other account: code = %d, want 200", code)
+	}
+}
+
+func TestRateLimitByKeyExemptsAKeylessRequestEntirely(t *testing.T) {
+	calls := 0
+	keyOf := func(r *http.Request) (string, bool) { calls++; return "", false }
+	h := Chain(okHandler(), RequestID(), RateLimitByKey(1, time.Hour, keyOf))
+	for i := 0; i < 5; i++ {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest("POST", "/v1/uploads", nil)
+		h.ServeHTTP(rec, req)
+		if rec.Code != 200 {
+			t.Fatalf("request %d: code = %d, want 200 (no key means no budget to exceed)", i+1, rec.Code)
+		}
+	}
+	if calls != 5 {
+		t.Fatalf("keyOf was called %d times, want 5", calls)
+	}
+}
+
 func TestRateLimitExceptLetsAnExemptPathPastTheSpentBudget(t *testing.T) {
 	exempt := func(r *http.Request) bool {
 		return r.Method == http.MethodGet && strings.HasPrefix(r.URL.Path, "/b/")

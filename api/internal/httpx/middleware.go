@@ -200,6 +200,34 @@ func RateLimitPer(n int, window time.Duration, trustedHops int) func(http.Handle
 	}
 }
 
+// RateLimitByKey rate-limits requests to n per window, with a burst of n,
+// keyed by whatever keyOf derives from the request rather than by client
+// IP - the same token-bucket-per-string machinery RateLimitPer uses,
+// generalized for routes that must budget per account rather than per
+// address (a compromised session dispatching many premium runs, or many
+// uploads, from a rotating set of addresses must still hit one budget).
+// keyOf reports ok=false to exempt a request from this limiter entirely
+// - an unsigned request on a route that also requires a session, say,
+// which is refused downstream anyway and should not spend or contend for
+// a shared "no key" bucket.
+func RateLimitByKey(n int, window time.Duration, keyOf func(*http.Request) (key string, ok bool)) func(http.Handler) http.Handler {
+	l := newIPLimiter(n, window)
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			key, ok := keyOf(r)
+			if !ok {
+				next.ServeHTTP(w, r)
+				return
+			}
+			if !l.allow(key, Now()) {
+				WriteError(w, r, http.StatusTooManyRequests, "rate_limited", "too many requests", nil)
+				return
+			}
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
 // clientIP resolves the request's client address, trusting exactly
 // trustedHops reverse proxies in front of this service.
 //

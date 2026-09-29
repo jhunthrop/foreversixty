@@ -46,6 +46,18 @@ const (
 	// every route in it, saved sims included.
 	publicObjectMaxAge = 60 * time.Second
 	publicObjectStale  = 600 * time.Second
+	// simsRunPerMinute bounds how often one signed-in account may call
+	// POST /v1/sims/run: each call dispatches a real Cloud Run job, so
+	// this is a per-account cost cap on top of the router-wide 120/min
+	// per-IP budget (night-api-security finding, LOW - a compromised
+	// session could otherwise run up real compute cost from a rotating
+	// set of addresses). The route already gates on
+	// entitlements.FeatureServerSims (a personal premium or guild plan)
+	// before this is ever reached, and that check is a plain yes/no -
+	// there is no further numeric entitlement tier within "entitled" to
+	// key a larger or smaller budget off, so every entitled account
+	// shares this one cap.
+	simsRunPerMinute = 6
 )
 
 // Service serves the simulator routes.
@@ -83,7 +95,8 @@ func Mount(mux *http.ServeMux, s *Service) {
 	mux.HandleFunc("GET /v1/specs", s.specs)
 	mux.HandleFunc("GET /v1/characters/{region}/{ruleset}/{name}/sim-input", s.simInput)
 	if s.Jobs != nil && s.Accounts != nil && s.Planner != nil {
-		mux.HandleFunc("POST /v1/sims/run", auth.RequireSession(s.run))
+		limit := httpx.RateLimitByKey(simsRunPerMinute, time.Minute, auth.AccountRateLimitKey)
+		mux.Handle("POST /v1/sims/run", limit(auth.RequireSession(s.run)))
 	}
 }
 
