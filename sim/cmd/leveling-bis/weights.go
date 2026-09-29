@@ -41,30 +41,43 @@ func isWeightSignificant(w api.StatWeight) bool {
 // score() (score.go), and anything downstream that ranks by score,
 // actually multiplies against an item's stats.
 //
-// A weight isWeightSignificant calls insignificant is zeroed here
-// rather than carried through at its raw (possibly negative) value.
-// Night-bis-sanity's own finding is why: ~40 low-level cloth items
-// (Evergreen Gloves, Featherbead Bracers, ...) across six caster specs
-// published a NEGATIVE score because a weight the sweep itself could
-// not distinguish from noise happened to land small and negative on
-// one of the item's stats, and score() dotted it straight into the
-// total. This command already tells the player which weights it
-// trusts (report.go's Insignificant flag, isWeightSignificant above)
-// -- this function is that same judgment applied BEFORE ranking, not
-// just after publication: a weight nobody should trust should not
-// move a ranking either.
+// The rule is narrower than "zero anything isWeightSignificant calls
+// insignificant" -- this lane tried that first and the controller's
+// own before/after measurement rejected it: zeroing every
+// insignificant weight (not just negative ones) DROPPED mage-frost's
+// own verified set_dps at band 20 for both factions (alliance
+// 29.8->29.2, horde 28.1->27.0) versus the un-zeroed baseline,
+// because this command's 100-iteration sweep calls a real, useful
+// POSITIVE weight "insignificant" more often than its 25% error bar
+// should be trusted to gate ranking on -- report.go's Insignificant
+// flag is calibrated for "should a player trust this printed number",
+// not "should this stat be allowed to influence which item wins a
+// slot". Discarding it lost real signal.
+//
+// A NEGATIVE weight is different: in this engine, no stat lowers a
+// damage spec's own DPS, so a negative weight -- whatever
+// isWeightSignificant says about it -- is measurement noise around a
+// true value at or near zero, never a real "this stat hurts" signal.
+// That is night-bis-sanity's own finding (~40 low-level cloth items,
+// Evergreen Gloves/Featherbead Bracers among them, publishing a
+// NEGATIVE score because such a noise-negative weight landed on one
+// of the item's stats and score() dotted it straight into the total)
+// -- so effectiveWeights zeroes exactly the weights that can only ever
+// be noise (Weight <= 0) and otherwise trusts the sweep's own number,
+// significant or not.
 //
 // The raw weights -- Weight, Error and Insignificant exactly as the
 // engine reported and this command judged them -- still reach the
 // published JSON unchanged (report.go's buildReport reads the
 // map[string]api.StatWeight the caller passes it directly, not this
 // function's output): a player or Pawn-style consumer reading the
-// aside still sees the real number and its error bar, only the
-// RANKING stops trusting it.
+// aside still sees the real number, its error bar and whether this
+// command trusts it enough to print as a fact -- only ranking's own,
+// narrower rule is decided here.
 func effectiveWeights(weights map[string]api.StatWeight) map[string]float64 {
 	out := make(map[string]float64, len(weights))
 	for stat, w := range weights {
-		if isWeightSignificant(w) {
+		if w.Weight > 0 {
 			out[stat] = w.Weight
 		}
 	}
