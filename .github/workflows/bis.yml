@@ -85,31 +85,43 @@ jobs:
           # so it runs unconditionally, same as quest-levels above.
           items_summary=$(uv run python -m pipeline item-sources --build "${{ steps.identity.outputs.build }}" --max-pages 200 | tee /dev/stderr)
           items_fetched=$(echo "$items_summary" | sed -E 's/^item-sources: wowhead resolved a page for ([0-9]+)\/.*/\1/')
-          # loot.json is rebuilt from the client's raw tables, which are not
-          # committed (data.yml's fetch job downloads them from wago.tools).
+          # src-classicdb lane, 2026-09-29: `loot-merge` re-derives loot.json
+          # from every COMMITTED input (engine fork, zones.json, items.json,
+          # quest-levels.json, item-sources.json, raw/classicdb/sources.json)
+          # with NO raw/ CSVs at all -- unlike the gated full rebuild below,
+          # it never needs `fetch` or its ItemSparse completeness gate, so it
+          # runs every night unconditionally, picking up tonight's quest-level
+          # and item-source fill-ins (and any re-itemisation the pipeline can
+          # newly resolve) even on a night the gated rebuild cannot run.
+          uv run python -m pipeline loot-merge --build "${{ steps.identity.outputs.build }}" --engine ../.engine
+          # loot.json is then rebuilt IN FULL from the client's raw tables,
+          # which are not committed (data.yml's fetch job downloads them from
+          # wago.tools) -- this supersedes the merge-only pass above with the
+          # complete one (real ItemSparse-derived PvP ranks, real Map.csv
+          # instance zones) whenever raw tables are healthy enough to fetch.
           # Only a night that filled in at least one quest level or item
-          # source pays for that download; every other night the committed
-          # loot.json is already what the pipeline would produce.
+          # source pays for that download; every other night the merge-only
+          # pass above is already what a full rebuild would additionally add.
           # `fetch` and `loot` each carry a completeness gate over ItemSparse.csv
           # (pipeline/csvio.py's check_item_sparse_completeness -- night-fetch-guard,
           # 2026-09-29: wago.tools silently served a truncated ItemSparse export that
           # would have halved every class's committed items/<class>.json). The gate
-          # checks BEFORE writing, so a trip leaves the committed loot.json and
-          # items/*.json untouched. It is reported as a workflow warning and the
-          # rebuild is skipped rather than failing the job: the wowhead caches
-          # fetched above are still committed (so the crawl keeps its place) and
-          # the picks below still run on the committed loot.json. The first night
-          # wago is complete again, the rebuild happens on its own.
+          # checks BEFORE writing, so a trip leaves the merge-only loot.json from
+          # above in place rather than reverting to last night's. It is reported as
+          # a workflow warning and the full rebuild is skipped rather than failing
+          # the job: the wowhead caches fetched above are still committed (so the
+          # crawl keeps its place) and the picks below still run on the merge-only
+          # loot.json. The first night wago is complete again, the full rebuild
+          # happens on its own.
           if [ "${quests_fetched:-0}" -gt 0 ] || [ "${items_fetched:-0}" -gt 0 ]; then
             if uv run python -m pipeline fetch --product wow_classic_era --build "${{ steps.identity.outputs.build }}" \
                && uv run python -m pipeline loot --build "${{ steps.identity.outputs.build }}" --engine ../.engine; then
-              echo "loot.json rebuilt"
+              echo "loot.json rebuilt in full"
             else
-              echo "::warning title=loot rebuild skipped::the raw-table completeness gate tripped (see the log); committed loot.json kept"
-              git checkout -- "builds/${{ steps.identity.outputs.build }}/loot.json" "builds/${{ steps.identity.outputs.build }}/manifest.json" 2>/dev/null || true
+              echo "::warning title=full loot rebuild skipped::the raw-table completeness gate tripped (see the log); the merge-only loot.json from loot-merge is kept"
             fi
           else
-            echo "no quest level or item source filled in tonight; loot.json unchanged"
+            echo "no quest level or item source filled in tonight; loot-merge's own loot.json stands"
           fi
       - name: commit quest-levels.json, item-sources.json and loot.json if they changed
         run: |

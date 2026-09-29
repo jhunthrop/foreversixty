@@ -131,8 +131,37 @@ def test_a_wowhead_quest_reward_joins_the_flat_quest_bucket_with_wowhead_level_s
     detail = document.quests[str(UNSOURCED_ITEM)]
     assert len(detail) == 1
     assert detail[0].quest_id == 99
-    assert detail[0].faction == "horde"
+    # item 110 (the fixture's fork-unsourced item) carries no
+    # factionRestriction of its own, so QuestSource.faction is "both",
+    # NOT the scrape's own "horde" -- see
+    # test_a_wowhead_quest_reward_faction_follows_the_items_own_
+    # restriction_not_the_scrapes below for the item-restricted case.
+    assert detail[0].faction == "both"
     assert detail[0].level_source == "wowhead"
+
+
+def test_a_wowhead_quest_reward_faction_follows_the_items_own_restriction_not_the_scrapes():
+    """item 100's own `factionRestriction` (alliance_only, per the
+    fixture's db.json) wins over wowhead's OWN scraped `faction`
+    (horde here, deliberately mismatched) -- `QuestSource.faction` is
+    always the item's own truth (models.QuestSource's own doc)."""
+    item_sources = {
+        100: ItemSourceEntry(
+            quest_rewards=[
+                QuestRewardSource(
+                    quest_id=199, name="A Mismatched Wowhead Page", min_level=38, level=40,
+                    faction="horde",
+                )
+            ],
+            source="wowhead",
+            fetched_at="x",
+        )
+    }
+    document, _ = built(item_sources)
+    detail = document.quests[str(100)]
+    matching = [entry for entry in detail if entry.quest_id == 199]
+    assert len(matching) == 1
+    assert matching[0].faction == "alliance"
 
 
 def test_a_wowhead_source_for_an_item_the_build_does_not_have_is_ignored():

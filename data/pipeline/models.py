@@ -215,6 +215,18 @@ class LootBoss(BaseModel):
     name: str
     npc_id: int
     items: list[int]
+    #: item id (string key, JSON-object convention) -> percent drop chance
+    #: (0-100), from cmangos/classic-db's own `ChanceOrQuestChance`
+    #: (src-classicdb lane, 2026-09-29). Only classic-db states a chance at
+    #: all -- the fork database and wowhead's scrape carry none -- so this
+    #: is unset for every boss entry classic-db did not itself contribute
+    #: an item to.
+    item_chances: dict[str, float] | None = None
+    #: item id (string key) -> the CLASSIC item id it was copied from,
+    #: for a Forever-new item re-itemisation added to this boss
+    #: (`pipeline.loot.reitemise`'s own doc). Unset for every item this
+    #: boss's own real source named.
+    reitemised_from: dict[str, int] | None = None
 
 
 class LootSource(BaseModel):
@@ -244,14 +256,23 @@ class LootSource(BaseModel):
     bosses: list[LootBoss] | None = None
     trash: list[int] | None = None
     items: list[int] | None = None
-    #: "wowhead" when this source exists ONLY because
-    #: `pipeline.item_sources`/`pipeline.wowhead_item_sources` scraped it
-    #: for an item the engine fork's own database named no source for at
-    #: all (night-item-sources lane, 2026-09-28); omitted (None) for
-    #: every source the fork database itself names, which is still most
-    #: of them. A source both the fork and a wowhead scrape name (an
-    #: item added to an existing `world:`/`vendor:`/`crafted:` bucket)
-    #: keeps this unset -- the fork found it first.
+    #: item id (string key) -> percent drop chance (0-100), for a `world`
+    #: or `zone` kind source's own flat `items`/`trash` list -- see
+    #: `LootBoss.item_chances`' own doc for where this comes from and why
+    #: it is classic-db-only.
+    item_chances: dict[str, float] | None = None
+    #: item id (string key) -> the CLASSIC item id it was copied from, for
+    #: a Forever-new item re-itemisation added to this source's own flat
+    #: `items`/`trash` list -- see `pipeline.loot.reitemise`'s own doc.
+    reitemised_from: dict[str, int] | None = None
+    #: "wowhead" or "classic-db" when this source exists ONLY because a
+    #: scrape/dump named it for an item the engine fork's own database
+    #: named no source for at all (night-item-sources lane, 2026-09-28;
+    #: src-classicdb lane, 2026-09-29); omitted (None) for every source
+    #: the fork database itself names, which is still most of them. A
+    #: source more than one origin names (an item added to an existing
+    #: `world:`/`vendor:`/`crafted:` bucket) keeps whichever origin found
+    #: it FIRST in priority order fork > classic-db > wowhead.
     source_origin: str | None = None
 
 

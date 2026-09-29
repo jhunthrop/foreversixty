@@ -31,9 +31,11 @@ from collections import defaultdict
 from dataclasses import dataclass
 
 from pipeline.classic_quest_levels import item_level_proxy
+from pipeline.classic_sources import ClassicDbSourceRecord
 from pipeline.csvio import populated
 from pipeline.forkdb import FACTION_RESTRICTIONS, PROFESSIONS, REP_LEVELS, ForkDatabase, decode
 from pipeline.item_sources import ItemSourceEntry
+from pipeline.loot.classicdb import classicdb_additions, merge_classicdb_sources
 from pipeline.loot.constants import INSTANCE_KIND
 from pipeline.loot.wowhead import merge_wowhead_sources, wowhead_additions
 from pipeline.models import LootBoss, LootFile, LootSource, QuestSource
@@ -137,6 +139,13 @@ class LootStats:
     #: fork-derived count above, for the report this lane's brief asks
     #: for.
     wowhead_items: int = 0
+    #: Distinct item ids sourced ONLY because `classic_sources` (the
+    #: cmangos/classic-db dump, src-classicdb lane) named one for an item
+    #: the fork database itself named none for -- disjoint from `items`
+    #: (fork) and `wowhead_items` (both counted before this origin is
+    #: applied, so a quest item the fork already covers never double
+    #: counts here).
+    classicdb_items: int = 0
 
 
 def instance_types(
@@ -529,6 +538,8 @@ def build_loot(
     item_inventory_types: dict[int, int],
     quest_levels: dict[int, QuestLevelEntry] | None = None,
     item_sources: dict[int, ItemSourceEntry] | None = None,
+    classic_sources: dict[int, list[ClassicDbSourceRecord]] | None = None,
+    zone_rows: list[dict] | None = None,
 ) -> tuple[LootFile, LootStats]:
     absent: set[int] = set()
     # The vendor kind's own filter: a vendor selling only reagents or
@@ -554,12 +565,35 @@ def build_loot(
     fork_named = {
         item_id for source in sources for item_id in source_item_ids(source)
     } | set(quest)
+    if classic_sources:
+        # src-classicdb lane, 2026-09-29: applied BEFORE wowhead (priority
+        # order fork > classic-db > wowhead) -- a bucket classic-db
+        # creates first gets source_origin="classic-db"; if wowhead later
+        # names the same bucket for an overlapping item, the union below
+        # keeps THIS origin, not wowhead's, since merge unions extra into
+        # base and only a brand-new id keeps extra's own origin.
+        classicdb_sources, classicdb_quest, classicdb_quest_detail = classicdb_additions(
+            classic_sources, build_items, equippable, zone_names, types, zone_rows or [],
+            quest_levels or {}, item_factions(fork, build_items),
+        )
+        sources = merge_classicdb_sources(sources, classicdb_sources)
+        quest = sorted(set(quest) | set(classicdb_quest))
+        for item_id, entries in classicdb_quest_detail.items():
+            quest_detail[item_id] = [*quest_detail.get(item_id, []), *entries]
+    # Fork + classic-db coverage, the baseline `LootStats.wowhead_items`
+    # is measured against -- a quest item classic-db already covers must
+    # count as classic-db's, not wowhead's, same reasoning as `fork_named`
+    # above.
+    fork_and_classicdb_named = {
+        item_id for source in sources for item_id in source_item_ids(source)
+    } | set(quest)
     if item_sources:
         # night-item-sources lane, 2026-09-28: fills the gap ABOVE, never
         # replaces a fork-found source -- `merge_wowhead_sources` unions
         # into an existing id and only appends a wholly new one.
         wowhead_sources, wowhead_quest, wowhead_quest_detail = wowhead_additions(
-            item_sources, build_items, equippable, zone_names, types
+            item_sources, build_items, equippable, zone_names, types,
+            item_factions(fork, build_items),
         )
         sources = merge_wowhead_sources(sources, wowhead_sources)
         quest = sorted(set(quest) | set(wowhead_quest))
@@ -588,5 +622,6 @@ def build_loot(
         dropped_entries=dropped_drops + dropped_keyed,
         absent_items=len(absent),
         unnamed_zones=unnamed_zones,
-        wowhead_items=len(named - fork_named),
+        wowhead_items=len(named - fork_and_classicdb_named),
+        classicdb_items=len(fork_and_classicdb_named - fork_named),
     )

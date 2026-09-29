@@ -125,6 +125,7 @@ def wowhead_additions(
     equippable: set[int],
     zone_names: dict[int, str],
     types: dict[int, int],
+    item_factions: dict[int, str],
 ) -> tuple[list[LootSource], list[int], dict[int, list[QuestSource]]]:
     """Extra sources `pipeline.item_sources`' wowhead scrape names for an
     item the fork database itself named NO source for at all. Every
@@ -137,6 +138,17 @@ def wowhead_additions(
     fork's `sources` list. A `dropped-by` row's `zone_ids` can name more
     than one zone (a mob that roams); only the FIRST is used, the same
     one-zone-per-drop limit the fork's own shape already has.
+
+    `item_factions` (`pipeline.loot.sources.item_factions`' own result)
+    is what a quest reward's `QuestSource.faction` is built from, same
+    fix and same reasoning as `pipeline.loot.classicdb.
+    classicdb_additions`' own doc: the scrape's own `row.faction` (which
+    SIDE'S version of a quest chain this page names) can legitimately
+    disagree with the item's own client-stated `factionRestriction` for
+    a neutral item two faction-mirrored quest chains both award (item
+    1490, "Guardian Talisman", quests 1445/1475, measured while
+    regenerating loot.json for 1.60.1.70009) -- `QuestSource.faction`'s
+    own contract is always the item's side, every origin agreeing.
     """
     bosses: dict[tuple[int, int], set[int]] = defaultdict(set)
     boss_names: dict[int, str] = {}
@@ -177,7 +189,7 @@ def wowhead_additions(
                 QuestSource(
                     quest_id=row.quest_id,
                     name=row.name,
-                    faction=row.faction,
+                    faction=item_factions.get(item_id, "both"),
                     min_level=row.min_level,
                     level=row.level,
                     level_source="wowhead",
@@ -259,8 +271,28 @@ def wowhead_additions(
     return out, sorted(quest), dict(quest_detail)
 
 
+def _merge_item_dict(base: dict | None, extra: dict | None) -> dict | None:
+    """`base`'s own item-keyed dict (`item_chances`/`reitemised_from`)
+    with `extra`'s entries folded in for a key `base` does not already
+    have -- `base` wins on a shared key (it is the primary side, same
+    rule `_union_source`/`_union_boss` apply to everything else), never
+    silently dropped the way a plain `base.model_copy` without this
+    merge would (src-classicdb lane, 2026-09-29 -- a boss the fork
+    already named lost every classic-db drop-chance for its own items
+    until this existed, since only `items` was unioned before)."""
+    if not base and not extra:
+        return None
+    return {**(extra or {}), **(base or {})}
+
+
 def _union_boss(base: LootBoss, extra: LootBoss) -> LootBoss:
-    return base.model_copy(update={"items": sorted(set(base.items) | set(extra.items))})
+    return base.model_copy(
+        update={
+            "items": sorted(set(base.items) | set(extra.items)),
+            "item_chances": _merge_item_dict(base.item_chances, extra.item_chances),
+            "reitemised_from": _merge_item_dict(base.reitemised_from, extra.reitemised_from),
+        }
+    )
 
 
 def _union_source(base: LootSource, extra: LootSource) -> LootSource:
@@ -285,6 +317,8 @@ def _union_source(base: LootSource, extra: LootSource) -> LootSource:
             "items": sorted(set(base.items or []) | set(extra.items or [])) or None,
             "trash": sorted(set(base.trash or []) | set(extra.trash or [])) or None,
             "bosses": sorted(merged_bosses, key=lambda b: b.npc_id) or None,
+            "item_chances": _merge_item_dict(base.item_chances, extra.item_chances),
+            "reitemised_from": _merge_item_dict(base.reitemised_from, extra.reitemised_from),
         }
     )
 
