@@ -1,8 +1,8 @@
 {
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
-  "engine_version": "cfbb7f945",
-  "generated_at": "2026-09-29T02:56:46Z",
+  "engine_version": "84575e84b",
+  "generated_at": "2026-09-29T04:00:12Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -204,8 +204,8 @@
         "main_hand: Fist of the People's Militia",
         "off_hand: Ironplate Buckler"
       ],
-      "weights_run_seconds": 1.4798914810000001,
-      "verify_run_seconds": 0.753749808
+      "weights_run_seconds": 1.527009171,
+      "verify_run_seconds": 0.751726571
     },
     {
       "spec": "shaman-elemental",
@@ -406,8 +406,8 @@
         "finger1: Ring of Scorn",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 1.4798914810000001,
-      "verify_run_seconds": 0.616073137
+      "weights_run_seconds": 1.527009171,
+      "verify_run_seconds": 0.604376951
     },
     {
       "spec": "shaman-elemental",
@@ -615,8 +615,8 @@
         "finger2: Sustaining Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 1.547726001,
-      "verify_run_seconds": 0.971663412
+      "weights_run_seconds": 1.5444305900000002,
+      "verify_run_seconds": 0.959051226
     },
     {
       "spec": "shaman-elemental",
@@ -821,8 +821,8 @@
         "finger2: Bounty Hunter's Ring",
         "main_hand: Clear Crystal Rod"
       ],
-      "weights_run_seconds": 1.547726001,
-      "verify_run_seconds": 0.847067583
+      "weights_run_seconds": 1.5444305900000002,
+      "verify_run_seconds": 0.846885269
     },
     {
       "spec": "shaman-elemental",
@@ -889,8 +889,8 @@
           "slot": "neck",
           "item_id": 20444,
           "item_name": "Sentinel's Medallion",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "verified": true
         },
         {
@@ -1021,7 +1021,7 @@
         }
       ],
       "set_dps": 27.252420767257643,
-      "no_source_count": 1513,
+      "no_source_count": 1511,
       "no_source_sample": [
         "789 Stout Battlehammer",
         "790 Forester's Axe",
@@ -1054,8 +1054,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.593638227,
-      "verify_run_seconds": 1.030112101
+      "weights_run_seconds": 1.59758979,
+      "verify_run_seconds": 1.014431152
     },
     {
       "spec": "shaman-elemental",
@@ -1122,8 +1122,8 @@
           "slot": "neck",
           "item_id": 20442,
           "item_name": "Scout's Medallion",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "verified": true
         },
         {
@@ -1214,8 +1214,8 @@
           "slot": "finger2",
           "item_id": 20426,
           "item_name": "Advisor's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 5,
           "verified": true
         },
@@ -1254,7 +1254,7 @@
         }
       ],
       "set_dps": 27.069212255998394,
-      "no_source_count": 1509,
+      "no_source_count": 1507,
       "no_source_sample": [
         "789 Stout Battlehammer",
         "790 Forester's Axe",
@@ -1286,8 +1286,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Polished Walking Staff"
       ],
-      "weights_run_seconds": 1.593638227,
-      "verify_run_seconds": 0.982118114
+      "weights_run_seconds": 1.59758979,
+      "verify_run_seconds": 0.961639534
     },
     {
       "spec": "shaman-elemental",
@@ -1354,8 +1354,8 @@
           "slot": "neck",
           "item_id": 20444,
           "item_name": "Sentinel's Medallion",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "verified": true
         },
         {
@@ -1488,7 +1488,7 @@
         }
       ],
       "set_dps": 37.43011333292635,
-      "no_source_count": 1899,
+      "no_source_count": 1897,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -1518,8 +1518,8 @@
         "finger2: Ring of Forlorn Spirits",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.594862118,
-      "verify_run_seconds": 1.012744662
+      "weights_run_seconds": 1.557503637,
+      "verify_run_seconds": 0.966125377
     },
     {
       "spec": "shaman-elemental",
@@ -1586,8 +1586,8 @@
           "slot": "neck",
           "item_id": 20442,
           "item_name": "Scout's Medallion",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "verified": true
         },
         {
@@ -1677,8 +1677,8 @@
           "slot": "finger2",
           "item_id": 20426,
           "item_name": "Advisor's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 5,
           "verified": true,
           "swap_note": "beat the scored pick Lavishly Jeweled Ring (id 1156) in the sim: 29.7 vs 29.5 set DPS"
@@ -1719,7 +1719,7 @@
         }
       ],
       "set_dps": 33.49002096711059,
-      "no_source_count": 1895,
+      "no_source_count": 1893,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -1745,8 +1745,8 @@
         "finger1: Snake Hoop",
         "main_hand: Reef Axe"
       ],
-      "weights_run_seconds": 1.594862118,
-      "verify_run_seconds": 1.003674737
+      "weights_run_seconds": 1.557503637,
+      "verify_run_seconds": 0.929878765
     },
     {
       "spec": "shaman-elemental",
@@ -1869,8 +1869,8 @@
           "slot": "waist",
           "item_id": 20099,
           "item_name": "Highlander's Cloth Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "score": 14.439918148892149,
           "verified": true
         },
@@ -1914,8 +1914,8 @@
           "slot": "trinket1",
           "item_id": 21119,
           "item_name": "Talisman of Arathor",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "verified": true,
           "effect_unmodelled": true
         },
@@ -1946,7 +1946,7 @@
         }
       ],
       "set_dps": 48.014067591636234,
-      "no_source_count": 2267,
+      "no_source_count": 2257,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -1977,8 +1977,8 @@
         "trinket1: Talisman of Arathor",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 1.6756785509999998,
-      "verify_run_seconds": 1.291488136
+      "weights_run_seconds": 1.67248399,
+      "verify_run_seconds": 1.282541282
     },
     {
       "spec": "shaman-elemental",
@@ -2100,8 +2100,8 @@
           "slot": "waist",
           "item_id": 20164,
           "item_name": "Defiler's Cloth Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "score": 14.439918148892149,
           "verified": true
         },
@@ -2136,8 +2136,8 @@
           "slot": "finger2",
           "item_id": 19521,
           "item_name": "Advisor's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 7,
           "verified": true
         },
@@ -2145,8 +2145,8 @@
           "slot": "trinket1",
           "item_id": 21120,
           "item_name": "Defiler's Talisman",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "verified": true,
           "effect_unmodelled": true
         },
@@ -2177,7 +2177,7 @@
         }
       ],
       "set_dps": 47.34618066699338,
-      "no_source_count": 2263,
+      "no_source_count": 2253,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2208,8 +2208,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Nimboya's Mystical Staff"
       ],
-      "weights_run_seconds": 1.6756785509999998,
-      "verify_run_seconds": 1.215917261
+      "weights_run_seconds": 1.67248399,
+      "verify_run_seconds": 1.216288846
     },
     {
       "spec": "shaman-elemental",
@@ -2331,8 +2331,8 @@
           "slot": "waist",
           "item_id": 20099,
           "item_name": "Highlander's Cloth Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "score": 14.572581609276813,
           "verified": true
         },
@@ -2376,8 +2376,8 @@
           "slot": "trinket1",
           "item_id": 21119,
           "item_name": "Talisman of Arathor",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "verified": true,
           "effect_unmodelled": true
         },
@@ -2409,7 +2409,7 @@
         }
       ],
       "set_dps": 50.01698206270283,
-      "no_source_count": 2574,
+      "no_source_count": 2563,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2433,8 +2433,8 @@
         "wrist: Guardian Leather Bracers",
         "hands: Fletcher's Gloves"
       ],
-      "weights_run_seconds": 1.8172899,
-      "verify_run_seconds": 1.353806438
+      "weights_run_seconds": 1.813676106,
+      "verify_run_seconds": 1.354772973
     },
     {
       "spec": "shaman-elemental",
@@ -2557,8 +2557,8 @@
           "slot": "waist",
           "item_id": 20164,
           "item_name": "Defiler's Cloth Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "score": 14.572581609276813,
           "verified": true
         },
@@ -2603,8 +2603,8 @@
           "slot": "trinket1",
           "item_id": 21120,
           "item_name": "Defiler's Talisman",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "verified": true,
           "effect_unmodelled": true
         },
@@ -2636,7 +2636,7 @@
         }
       ],
       "set_dps": 49.38369547313919,
-      "no_source_count": 2570,
+      "no_source_count": 2559,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2662,8 +2662,8 @@
         "finger2: Lonetree's Circle",
         "main_hand: Shadow Crescent Axe"
       ],
-      "weights_run_seconds": 1.8172899,
-      "verify_run_seconds": 1.294797881
+      "weights_run_seconds": 1.813676106,
+      "verify_run_seconds": 1.2759461349999999
     },
     {
       "spec": "shaman-elemental",
@@ -2725,7 +2725,7 @@
           "source_kind": "crafted",
           "score": 21,
           "verified": true,
-          "swap_note": "beat the scored pick Raging Berserker's Helm (id 7719) in the sim: 56.5 vs 55.6 set DPS"
+          "swap_note": "beat the scored pick Raging Berserker's Helm (id 7719) in the sim: 57.2 vs 56.3 set DPS"
         },
         {
           "slot": "neck",
@@ -2744,17 +2744,17 @@
           "source_kind": "dungeon",
           "score": 6.205990373862708,
           "verified": true,
-          "swap_note": "beat the scored pick Moonlit Amice (id 11884) in the sim: 56.8 vs 55.6 set DPS"
+          "swap_note": "beat the scored pick Moonlit Amice (id 11884) in the sim: 57.4 vs 56.3 set DPS"
         },
         {
           "slot": "back",
           "item_id": 19532,
           "item_name": "Caretaker's Cape",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 6,
           "verified": true,
-          "swap_note": "beat the scored pick Icy Cloak (id 4327) in the sim: 56.3 vs 55.6 set DPS"
+          "swap_note": "beat the scored pick Icy Cloak (id 4327) in the sim: 56.6 vs 56.3 set DPS"
         },
         {
           "slot": "chest",
@@ -2773,7 +2773,7 @@
           "source_kind": "dungeon",
           "score": 9,
           "verified": true,
-          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 56.7 vs 55.6 set DPS"
+          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 57.1 vs 56.3 set DPS"
         },
         {
           "slot": "hands",
@@ -2783,7 +2783,7 @@
           "source_kind": "crafted",
           "score": 42.19773960575544,
           "verified": true,
-          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 55.7 vs 55.6 set DPS"
+          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 56.4 vs 56.3 set DPS"
         },
         {
           "slot": "waist",
@@ -2793,7 +2793,7 @@
           "source_kind": "crafted",
           "score": 13,
           "verified": true,
-          "swap_note": "beat the scored pick Highlander's Chain Girdle (id 20089) in the sim: 57.1 vs 55.6 set DPS"
+          "swap_note": "beat the scored pick Highlander's Chain Girdle (id 20089) in the sim: 57.1 vs 56.3 set DPS"
         },
         {
           "slot": "legs",
@@ -2803,36 +2803,35 @@
           "source_kind": "crafted",
           "score": 10.274653831816943,
           "verified": true,
-          "swap_note": "beat the scored pick Gaze Dreamer Pants (id 6903) in the sim: 56.4 vs 55.6 set DPS"
+          "swap_note": "beat the scored pick Gaze Dreamer Pants (id 6903) in the sim: 57.7 vs 56.3 set DPS"
         },
         {
           "slot": "feet",
-          "item_id": 15104,
-          "item_name": "Wingborne Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6,
+          "item_id": 20095,
+          "item_name": "Highlander's Cloth Boots",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
+          "score": 7.068663457954235,
           "verified": true,
-          "swap_note": "beat the scored pick Nimbus Boots (id 6998) in the sim: 56.7 vs 55.6 set DPS"
+          "effect_unmodelled": true
         },
         {
           "slot": "finger1",
           "item_id": 19524,
           "item_name": "Lorekeeper's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 9,
           "verified": true
         },
         {
           "slot": "finger2",
-          "item_id": 1449,
-          "item_name": "Minor Channeling Ring",
+          "item_id": 2043,
+          "item_name": "Ring of Forlorn Spirits",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 4.37910897196949,
-          "verified": true,
-          "swap_note": "beat the scored pick Ring of Forlorn Spirits (id 2043) in the sim: 55.6 vs 55.6 set DPS"
+          "score": 8,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -2868,8 +2867,8 @@
           "verified": false
         }
       ],
-      "set_dps": 60.840057078191876,
-      "no_source_count": 2902,
+      "set_dps": 61.11639638172736,
+      "no_source_count": 2883,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2896,15 +2895,14 @@
         "hands: Dragonscale Gauntlets",
         "waist: Star Belt",
         "legs: Red Mageweave Pants",
-        "feet: Wingborne Boots",
+        "feet: Highlander's Cloth Boots",
         "finger1: Lorekeeper's Ring",
-        "finger2: Minor Channeling Ring",
         "trinket1: Thunderbrew's Boot Flask",
         "trinket2: Carrot on a Stick",
         "main_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.881392209,
-      "verify_run_seconds": 1.4523590849999999
+      "weights_run_seconds": 1.841966792,
+      "verify_run_seconds": 1.456629576
     },
     {
       "spec": "shaman-elemental",
@@ -2966,7 +2964,7 @@
           "source_kind": "crafted",
           "score": 21,
           "verified": true,
-          "swap_note": "beat the scored pick Raging Berserker's Helm (id 7719) in the sim: 52.5 vs 51.4 set DPS"
+          "swap_note": "beat the scored pick Raging Berserker's Helm (id 7719) in the sim: 52.4 vs 51.2 set DPS"
         },
         {
           "slot": "neck",
@@ -2985,17 +2983,17 @@
           "source_kind": "dungeon",
           "score": 6.205990373862708,
           "verified": true,
-          "swap_note": "beat the scored pick Chestnut Mantle (id 17695) in the sim: 52.3 vs 51.4 set DPS"
+          "swap_note": "beat the scored pick Chestnut Mantle (id 17695) in the sim: 52.1 vs 51.2 set DPS"
         },
         {
           "slot": "back",
           "item_id": 19528,
           "item_name": "Battle Healer's Cloak",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 6,
           "verified": true,
-          "swap_note": "beat the scored pick Icy Cloak (id 4327) in the sim: 51.8 vs 51.4 set DPS"
+          "swap_note": "beat the scored pick Icy Cloak (id 4327) in the sim: 51.7 vs 51.2 set DPS"
         },
         {
           "slot": "chest",
@@ -3023,7 +3021,7 @@
           "source_kind": "crafted",
           "score": 42.19773960575544,
           "verified": true,
-          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 51.5 vs 51.4 set DPS"
+          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 51.4 vs 51.2 set DPS"
         },
         {
           "slot": "waist",
@@ -3033,7 +3031,7 @@
           "source_kind": "crafted",
           "score": 13,
           "verified": true,
-          "swap_note": "beat the scored pick Defiler's Chain Girdle (id 20153) in the sim: 52.1 vs 51.4 set DPS"
+          "swap_note": "beat the scored pick Defiler's Chain Girdle (id 20153) in the sim: 52.6 vs 51.2 set DPS"
         },
         {
           "slot": "legs",
@@ -3043,48 +3041,49 @@
           "source_kind": "crafted",
           "score": 10.274653831816943,
           "verified": true,
-          "swap_note": "beat the scored pick Gaze Dreamer Pants (id 6903) in the sim: 51.9 vs 51.4 set DPS"
+          "swap_note": "beat the scored pick Gaze Dreamer Pants (id 6903) in the sim: 51.9 vs 51.2 set DPS"
         },
         {
           "slot": "feet",
-          "item_id": 4325,
-          "item_name": "Boots of the Enchanter",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 5,
+          "item_id": 20161,
+          "item_name": "Defiler's Cloth Boots",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
+          "score": 7.068663457954235,
           "verified": true,
-          "swap_note": "beat the scored pick Spidersilk Boots (id 4320) in the sim: 51.6 vs 51.4 set DPS"
+          "effect_unmodelled": true
         },
         {
           "slot": "finger1",
           "item_id": 19520,
           "item_name": "Advisor's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 9,
           "verified": true
         },
         {
           "slot": "finger2",
-          "item_id": 9447,
-          "item_name": "Electrocutioner Lagnut",
-          "source": "Gnomeregan",
-          "source_kind": "dungeon",
-          "score": 3,
-          "verified": true
+          "item_id": 6669,
+          "item_name": "Sacred Band",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 2,
+          "verified": true,
+          "swap_note": "beat the scored pick Electrocutioner Lagnut (id 9447) in the sim: 51.4 vs 51.2 set DPS"
         },
         {
           "slot": "trinket1",
-          "item_id": 11122,
-          "item_name": "Carrot on a Stick",
+          "item_id": 17774,
+          "item_name": "Mark of the Chosen",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
         },
         {
           "slot": "trinket2",
-          "item_id": 17774,
-          "item_name": "Mark of the Chosen",
+          "item_id": 11122,
+          "item_name": "Carrot on a Stick",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
@@ -3097,7 +3096,7 @@
           "source_kind": "crafted",
           "score": 10,
           "verified": true,
-          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 54.3 vs 51.4 set DPS"
+          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 54.2 vs 51.2 set DPS"
         },
         {
           "slot": "off_hand",
@@ -3108,8 +3107,8 @@
           "verified": false
         }
       ],
-      "set_dps": 57.7334637378867,
-      "no_source_count": 2899,
+      "set_dps": 58.17677259290243,
+      "no_source_count": 2879,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3135,14 +3134,14 @@
         "hands: Dragonscale Gauntlets",
         "waist: Star Belt",
         "legs: Red Mageweave Pants",
-        "feet: Boots of the Enchanter",
+        "feet: Defiler's Cloth Boots",
         "finger1: Advisor's Ring",
-        "finger2: Electrocutioner Lagnut",
-        "trinket1: Carrot on a Stick",
-        "trinket2: Mark of the Chosen"
+        "finger2: Sacred Band",
+        "trinket1: Mark of the Chosen",
+        "trinket2: Carrot on a Stick"
       ],
-      "weights_run_seconds": 1.881392209,
-      "verify_run_seconds": 1.3522500659999999
+      "weights_run_seconds": 1.841966792,
+      "verify_run_seconds": 1.355341919
     },
     {
       "spec": "shaman-elemental",
@@ -3298,8 +3297,8 @@
           "slot": "finger1",
           "item_id": 19524,
           "item_name": "Lorekeeper's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 9,
           "verified": true,
           "swap_note": "beat the scored pick Snake Hoop (id 6750) in the sim: 54.9 vs 54.3 set DPS"
@@ -3320,16 +3319,16 @@
           "item_name": "Demon's Blood",
           "source": "Quests",
           "source_kind": "quest",
-          "verified": true
+          "verified": true,
+          "swap_note": "beat the scored pick Shard of the Splithooves (id 10659) in the sim: 54.6 vs 54.3 set DPS"
         },
         {
           "slot": "trinket2",
-          "item_id": 11122,
-          "item_name": "Carrot on a Stick",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
           "source": "Quests",
           "source_kind": "quest",
-          "verified": true,
-          "swap_note": "beat the scored pick Shard of the Splithooves (id 10659) in the sim: 54.6 vs 54.3 set DPS"
+          "verified": true
         },
         {
           "slot": "main_hand",
@@ -3349,7 +3348,7 @@
         }
       ],
       "set_dps": 54.23743732690161,
-      "no_source_count": 3213,
+      "no_source_count": 3194,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3377,11 +3376,11 @@
         "waist: Satyrmane Sash",
         "legs: Big Voodoo Pants",
         "feet: Black Mageweave Boots",
-        "finger2: Ring of Forlorn Spirits",
-        "trinket1: Demon's Blood"
+        "trinket1: Demon's Blood",
+        "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.880621592,
-      "verify_run_seconds": 1.412645088
+      "weights_run_seconds": 1.864385081,
+      "verify_run_seconds": 1.398491752
     },
     {
       "spec": "shaman-elemental",
@@ -3541,23 +3540,23 @@
           "slot": "finger2",
           "item_id": 19520,
           "item_name": "Advisor's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 9,
           "verified": true
         },
         {
           "slot": "trinket1",
-          "item_id": 10659,
-          "item_name": "Shard of the Splithooves",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
         },
         {
           "slot": "trinket2",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
@@ -3582,7 +3581,7 @@
         }
       ],
       "set_dps": 55.08769987717982,
-      "no_source_count": 3210,
+      "no_source_count": 3190,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3610,12 +3609,12 @@
         "feet: Southsea Mojo Boots",
         "finger1: Snake Hoop",
         "finger2: Advisor's Ring",
-        "trinket1: Shard of the Splithooves",
-        "trinket2: Demon's Blood",
+        "trinket1: Demon's Blood",
+        "trinket2: Shard of the Splithooves",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.880621592,
-      "verify_run_seconds": 1.327704264
+      "weights_run_seconds": 1.864385081,
+      "verify_run_seconds": 1.327522542
     },
     {
       "spec": "shaman-elemental",
@@ -3738,9 +3737,9 @@
           "slot": "waist",
           "item_id": 20097,
           "item_name": "Highlander's Cloth Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
-          "score": 71.60528432744385,
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
+          "score": 71.60528432744387,
           "verified": true
         },
         {
@@ -3775,23 +3774,23 @@
           "slot": "finger2",
           "item_id": 19523,
           "item_name": "Lorekeeper's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 12,
           "verified": true
         },
         {
           "slot": "trinket1",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
         },
         {
           "slot": "trinket2",
-          "item_id": 10659,
-          "item_name": "Shard of the Splithooves",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
@@ -3814,7 +3813,7 @@
         }
       ],
       "set_dps": 81.04046453573724,
-      "no_source_count": 3574,
+      "no_source_count": 3547,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3844,10 +3843,10 @@
         "feet: Greaves of Withering Despair",
         "finger1: Blackstone Ring",
         "finger2: Lorekeeper's Ring",
-        "trinket2: Shard of the Splithooves"
+        "trinket1: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 1.899064554,
-      "verify_run_seconds": 1.475076327
+      "weights_run_seconds": 1.883423084,
+      "verify_run_seconds": 1.493012304
     },
     {
       "spec": "shaman-elemental",
@@ -3972,9 +3971,9 @@
           "slot": "waist",
           "item_id": 20165,
           "item_name": "Defiler's Cloth Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
-          "score": 71.60528432744387,
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
+          "score": 71.60528432744385,
           "verified": true
         },
         {
@@ -4009,23 +4008,23 @@
           "slot": "finger2",
           "item_id": 19519,
           "item_name": "Advisor's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 12,
           "verified": true
         },
         {
           "slot": "trinket1",
-          "item_id": 10779,
-          "item_name": "Demon's Blood",
+          "item_id": 10659,
+          "item_name": "Shard of the Splithooves",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
         },
         {
           "slot": "trinket2",
-          "item_id": 10659,
-          "item_name": "Shard of the Splithooves",
+          "item_id": 10779,
+          "item_name": "Demon's Blood",
           "source": "Quests",
           "source_kind": "quest",
           "verified": true
@@ -4049,7 +4048,7 @@
         }
       ],
       "set_dps": 77.76783061953157,
-      "no_source_count": 3572,
+      "no_source_count": 3543,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4077,12 +4076,12 @@
         "feet: Greaves of Withering Despair",
         "finger1: Blackstone Ring",
         "finger2: Advisor's Ring",
-        "trinket1: Demon's Blood",
-        "trinket2: Shard of the Splithooves",
+        "trinket1: Shard of the Splithooves",
+        "trinket2: Demon's Blood",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 1.899064554,
-      "verify_run_seconds": 1.388383239
+      "weights_run_seconds": 1.883423084,
+      "verify_run_seconds": 1.384920944
     },
     {
       "spec": "shaman-elemental",
@@ -4208,8 +4207,8 @@
           "slot": "waist",
           "item_id": 20097,
           "item_name": "Highlander's Cloth Girdle",
-          "source": "The League of Arathor",
-          "source_kind": "rep",
+          "source": "Samuel Hawke",
+          "source_kind": "vendor",
           "score": 80.59132913645264,
           "verified": true
         },
@@ -4246,8 +4245,8 @@
           "slot": "finger2",
           "item_id": 19523,
           "item_name": "Lorekeeper's Ring",
-          "source": "Silverwing Sentinels",
-          "source_kind": "rep",
+          "source": "Illiyana Moonblaze",
+          "source_kind": "vendor",
           "score": 12,
           "verified": true,
           "swap_note": "beat the scored pick Blackstone Ring (id 17713) in the sim: 82.7 vs 80.6 set DPS"
@@ -4287,7 +4286,7 @@
         }
       ],
       "set_dps": 86.34857757059716,
-      "no_source_count": 3908,
+      "no_source_count": 3881,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4316,11 +4315,10 @@
         "feet: Omnicast Boots",
         "finger1: Band of the Penitent",
         "trinket1: Smokey's Lighter",
-        "trinket2: Demon's Blood",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.854372842,
-      "verify_run_seconds": 1.487894098
+      "weights_run_seconds": 1.827664957,
+      "verify_run_seconds": 1.4741819440000001
     },
     {
       "spec": "shaman-elemental",
@@ -4444,8 +4442,8 @@
           "slot": "waist",
           "item_id": 20165,
           "item_name": "Defiler's Cloth Girdle",
-          "source": "The Defilers",
-          "source_kind": "rep",
+          "source": "Rutherford Twing",
+          "source_kind": "vendor",
           "score": 80.59132913645264,
           "verified": true
         },
@@ -4481,8 +4479,8 @@
           "slot": "finger2",
           "item_id": 19519,
           "item_name": "Advisor's Ring",
-          "source": "Warsong Outriders",
-          "source_kind": "rep",
+          "source": "Kelm Hargunth",
+          "source_kind": "vendor",
           "score": 12,
           "verified": true,
           "swap_note": "beat the scored pick Blackstone Ring (id 17713) in the sim: 79.0 vs 78.6 set DPS"
@@ -4522,7 +4520,7 @@
         }
       ],
       "set_dps": 82.40781270317451,
-      "no_source_count": 3906,
+      "no_source_count": 3877,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4550,11 +4548,10 @@
         "legs: Devilsaur Leggings",
         "finger1: Band of the Penitent",
         "trinket1: Smokey's Lighter",
-        "trinket2: Demon's Blood",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.854372842,
-      "verify_run_seconds": 1.421260162
+      "weights_run_seconds": 1.827664957,
+      "verify_run_seconds": 1.419875501
     },
     {
       "spec": "shaman-elemental",
@@ -4687,8 +4684,8 @@
           "slot": "legs",
           "item_id": 16579,
           "item_name": "General's Mail Leggings",
-          "source": "Rank 16",
-          "source_kind": "pvp",
+          "source": "Lady Palanseer",
+          "source_kind": "vendor",
           "score": 158.81525967416962,
           "verified": true,
           "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 163.3 vs 159.8 set DPS"
@@ -4744,7 +4741,7 @@
           "item_name": "Atiesh, Greatstaff of the Guardian",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 377.02201036024127,
+          "score": 377.0220103602412,
           "verified": true,
           "effect_unmodelled": true
         },
@@ -4758,7 +4755,7 @@
         }
       ],
       "set_dps": 167.98568013140044,
-      "no_source_count": 4527,
+      "no_source_count": 4522,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4792,8 +4789,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.906468733,
-      "verify_run_seconds": 1.4976553670000001
+      "weights_run_seconds": 1.87893832,
+      "verify_run_seconds": 1.521810688
     },
     {
       "spec": "shaman-elemental",
@@ -4927,8 +4924,8 @@
           "slot": "legs",
           "item_id": 16579,
           "item_name": "General's Mail Leggings",
-          "source": "Rank 16",
-          "source_kind": "pvp",
+          "source": "Lady Palanseer",
+          "source_kind": "vendor",
           "score": 158.81525967416962,
           "verified": true,
           "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 161.0 vs 157.3 set DPS"
@@ -4983,7 +4980,7 @@
           "item_name": "Atiesh, Greatstaff of the Guardian",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 377.02201036024127,
+          "score": 377.0220103602412,
           "verified": true,
           "effect_unmodelled": true
         },
@@ -4997,7 +4994,7 @@
         }
       ],
       "set_dps": 167.3521215339656,
-      "no_source_count": 4523,
+      "no_source_count": 4518,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -5031,8 +5028,8 @@
         "trinket2: Slayer's Crest",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.906468733,
-      "verify_run_seconds": 1.433283457
+      "weights_run_seconds": 1.87893832,
+      "verify_run_seconds": 1.452833684
     }
   ]
 }
