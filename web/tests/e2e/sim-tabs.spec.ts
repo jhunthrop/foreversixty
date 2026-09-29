@@ -206,4 +206,62 @@ test.describe('the simulator tab strip at phone width', () => {
     // shrink-to-fit quirk can hide exactly this class of overflow from a single check).
     await assertNoHorizontalScroll(page, 390);
   });
+
+  // night-sim-tabs: the scroll itself was never the problem -- nothing told a visitor at
+  // 390px that Weights and Spec support existed past the right edge. These four tests prove
+  // the edge fade, the active-tab scroll-into-view, and overscroll containment SimTabs.astro
+  // now carries.
+  async function fadeOpacity(page: import('@playwright/test').Page, side: 'start' | 'end'): Promise<string> {
+    return page.evaluate((testId) => {
+      const el = document.querySelector(`[data-testid="${testId}"]`);
+      return el ? getComputedStyle(el).opacity : '';
+    }, `sim-nav-tabs-fade-${side}`);
+  }
+
+  test('on load, the last tab is off-screen and a right-edge fade is present, with no left-edge fade', async ({
+    page,
+  }) => {
+    await page.goto('/sim');
+
+    const lastTab = SIM_TABS[SIM_TABS.length - 1];
+    const box = await page.getByTestId(`sim-nav-tab-${lastTab.id}`).boundingBox();
+    expect(box, `${lastTab.id} is rendered`).not.toBeNull();
+    expect((box?.x ?? 0) + (box?.width ?? 0), `${lastTab.id} clears the 390px viewport`).toBeGreaterThan(390);
+
+    await expect.poll(() => fadeOpacity(page, 'end')).toBe('1');
+    expect(await fadeOpacity(page, 'start'), 'already at the start: no left fade').toBe('0');
+  });
+
+  test('scrolling the strip to its end removes the right fade and shows the left one', async ({ page }) => {
+    await page.goto('/sim');
+    await expect.poll(() => fadeOpacity(page, 'end')).toBe('1');
+
+    await page.evaluate(() => {
+      const nav = document.querySelector('[data-testid="sim-nav-tabs"]');
+      if (nav) nav.scrollLeft = nav.scrollWidth;
+    });
+
+    await expect.poll(() => fadeOpacity(page, 'end')).toBe('0');
+    await expect.poll(() => fadeOpacity(page, 'start')).toBe('1');
+  });
+
+  test('the active tab is scrolled into view on load, even when it is the last one', async ({ page }) => {
+    // Spec support is SIM_TABS' last entry and, with none of this fix, would sit past the
+    // right edge exactly like the previous test's Quick-Sim-active case shows for it.
+    await page.goto('/sim/specs');
+
+    const box = await page.getByTestId('sim-nav-tab-specs').boundingBox();
+    expect(box?.x ?? -1, 'the active tab itself is on-screen').toBeGreaterThanOrEqual(0);
+    expect((box?.x ?? 0) + (box?.width ?? 0), 'the active tab itself is on-screen').toBeLessThanOrEqual(390);
+
+    // It was scrolled all the way to its own end to get there, so the right fade is gone
+    // and the left one (everything before it) is showing.
+    await expect.poll(() => fadeOpacity(page, 'end')).toBe('0');
+    await expect.poll(() => fadeOpacity(page, 'start')).toBe('1');
+  });
+
+  test('the strip contains its own overscroll rather than bouncing the page', async ({ page }) => {
+    await page.goto('/sim');
+    await expect(page.getByTestId('sim-nav-tabs')).toHaveCSS('overscroll-behavior-x', 'contain');
+  });
 });
