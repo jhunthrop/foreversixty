@@ -21,7 +21,16 @@ import "sort"
 // and the caller (bandPool, below) should keep it out of the BiS
 // pick but list it as a "lucky" candidate the way the design doc
 // describes, rather than dropping it silently as this prototype does.
-var sourceKindPriority = []string{"quest", "dungeon", "crafted", "rep", "pvp", "world", "raid"}
+// "vendor" sits right after "quest": a vendor purchase needs only gold
+// and the right faction/level (both already gated elsewhere -
+// sourceObtainable's Side check and eligible.go's factionRestriction
+// check), so it is at least as reliable while leveling as a quest
+// reward and more reliable than a dungeon or reputation grind. It was
+// missing entirely until the 2026-09-28 night-bis-sources lane, even
+// though loot.json has carried vendor sources (and the web's LOOT_KINDS
+// has known the kind) since the vendor/zone kinds landed - a vendor-only
+// item fell through every case here and reported "no known source".
+var sourceKindPriority = []string{"quest", "vendor", "dungeon", "crafted", "rep", "pvp", "world", "raid"}
 
 // repStandingObtainable is the highest reputation standing a leveling
 // character is assumed to reach: friendly and honored come from playing

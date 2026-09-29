@@ -343,12 +343,16 @@ type lootIndex map[int][]itemSource
 // TODO(bis-data): loot.json's "quest" kind is one flattened bucket
 // with no per-item faction or quest name (see this lane's brief and
 // the design doc's "The site's loot.json flattens quests into one
-// bucket today; it grows"). Lane bis-data is adding quest id/name/
-// faction, vendor and zone-drop kinds; once those land, this index
-// gains "vendor" and "zone" cases below and the report's "lucky"
-// (unsourced-but-a-known-zone-drop) distinction becomes possible.
-// Today an item absent from every source here is reported as having
-// no known source, full stop - see report.go's noSource accounting.
+// bucket today; it grows"). loot.json's vendor and zone-drop kinds have
+// since landed and this generic add() loop already carries them into
+// idx with Kind "vendor"/"zone" - the 2026-09-28 night-bis-sources lane
+// added "vendor" to band.go's sourceKindPriority so a vendor source is
+// actually picked, but "zone" (a farm-anywhere-in-this-zone drop, more
+// speculative than a named world boss) is still absent from that
+// priority list on purpose; report.go's "lucky" (unsourced-but-a-known-
+// zone-drop) distinction still does not exist, so a zone-only item is
+// reported as having no known source, full stop - see report.go's
+// noSource accounting.
 func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (lootIndex, map[int]int, error) {
 	b, err := os.ReadFile(filepath.Join(buildDir, "loot.json"))
 	if err != nil {

@@ -57,6 +57,66 @@ INSTANCE_KIND = {1: "dungeon", 2: "raid"}
 #: quest directly. 0 means the quest is open to both, per the design.
 QUEST_FACTION_BY_RESTRICTION = {0: "both", 1: "alliance", 2: "horde"}
 
+#: `pipeline.forkdb.FACTION_RESTRICTIONS`' 1/2 (alliance_only/horde_only),
+#: minus the `_only` suffix, for comparing an item's own restriction
+#: against the side a rep faction id belongs to.
+_RESTRICTION_SIDE = {1: "alliance", 2: "horde"}
+
+#: Which side a battleground reputation faction id is on. Sourced from the
+#: fork's own `factions` table names, not invented: Silverwing Sentinels
+#: and Stormpike Guard are Alliance-run; Warsong Outriders and Frostwolf
+#: Clan are Horde-run. Used only to detect and correct
+#: `_ATLASLOOT_WSG_REP_FACTION_SWAP` below, never to reject an id outright.
+_BG_REP_FACTION_SIDE = {889: "alliance", 890: "horde", 729: "horde", 730: "alliance"}
+
+#: Warsong Gulch's two reputation factions come out of the fork's
+#: `assets/database/db.json` swapped: every item mined under 889
+#: (Silverwing Sentinels, Alliance) actually carries `factionRestriction:
+#: 2` (horde_only), and every item under 890 (Warsong Outriders, Horde)
+#: carries `factionRestriction: 1` (alliance_only) -- confirmed on the
+#: 2026-09-28 hunter/paladin audits for Scout's/Sentinel's Medallion
+#: (20442/20444/19541) and Lorekeeper's Staff (19573), and for all 124 WSG
+#: rep-sourced items on this build by cross-checking both the item's own
+#: `factionRestriction` and the same source's `playerFaction` field, which
+#: agree with each other and disagree with `repFactionId` every time.
+#: Arathi Basin (509/510) and Alterac Valley (729/730) are not affected --
+#: only WSG's ids are reversed.
+#:
+#: The defect is upstream of this pipeline, in the wowsims-forever engine
+#: fork's `tools/database/atlasloot.go` (~line 406), whose hardcoded
+#: `RepFactionId` map has the ALLIANCE and HORDE keys pointing at each
+#: other's WSG faction id (its own comments name the right faction for the
+#: wrong key). That needs a one-line swap and a re-pin on the engine side;
+#: this pipeline cannot regenerate `db.json` and so corrects the id here
+#: instead, so `loot.json` itself -- not just its Go consumer's separate
+#: safety net -- is right.
+#:
+#: `_corrected_rep_faction_id` only ever applies this when doing so turns a
+#: mismatch with the item's own `factionRestriction` into a match, so once
+#: the engine fix lands and `db.json` stops swapping the ids, this becomes
+#: a no-op rather than re-breaking correct data.
+_ATLASLOOT_WSG_REP_FACTION_SWAP = {889: 890, 890: 889}
+
+
+def _corrected_rep_faction_id(faction_id: int, faction_restriction: int) -> int:
+    """`faction_id`, or its swap partner when the swap partner is the one
+    that actually matches the item's own `factionRestriction`.
+
+    See `_ATLASLOOT_WSG_REP_FACTION_SWAP`'s docstring for the defect this
+    corrects and why it self-disables once the upstream data is fixed.
+    """
+    swapped = _ATLASLOOT_WSG_REP_FACTION_SWAP.get(faction_id)
+    if swapped is None or not faction_restriction:
+        return faction_id
+    expected = _RESTRICTION_SIDE.get(faction_restriction)
+    if expected is None:
+        return faction_id
+    if _BG_REP_FACTION_SIDE.get(faction_id) != expected and (
+        _BG_REP_FACTION_SIDE.get(swapped) == expected
+    ):
+        return swapped
+    return faction_id
+
 
 @dataclass(frozen=True)
 class LootStats:
@@ -298,7 +358,9 @@ def _keyed_sources(
                 crafted[profession].add(item_id)
             elif "rep" in source:
                 standing = decode(REP_LEVELS, int(source["rep"]["repLevel"]), "rep level")
-                faction_id = int(source["rep"]["repFactionId"])
+                faction_id = _corrected_rep_faction_id(
+                    int(source["rep"]["repFactionId"]), int(item.get("factionRestriction") or 0)
+                )
                 if faction_id not in fork.factions:
                     # A faction the fork's own table does not name: there is
                     # nothing to call the source, so it is not emitted.

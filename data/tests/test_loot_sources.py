@@ -207,6 +207,89 @@ def test_the_stats_count_what_was_emitted_dropped_and_absent():
     assert stats.absent_items == 3
 
 
+def _wsg_fork(repFactionId: int, factionRestriction: int) -> ForkDatabase:
+    return ForkDatabase(
+        items=(
+            {
+                "id": 1,
+                "factionRestriction": factionRestriction,
+                "sources": [{"rep": {"repFactionId": repFactionId, "repLevel": 6}}],
+            },
+        ),
+        enchants=(),
+        random_suffixes=(),
+        zones={},
+        npcs={},
+        factions={889: "Silverwing Sentinels", 890: "Warsong Outriders"},
+        item_icons={},
+        spell_icons={},
+        spell_icon_rows=(),
+        item_icon_rows=(),
+    )
+
+
+def test_wsg_rep_sources_are_corrected_to_match_the_items_own_faction_restriction():
+    """The fork's db.json mines every WSG rep-sourced item under the wrong
+    faction id (`_ATLASLOOT_WSG_REP_FACTION_SWAP`'s docstring has the
+    upstream defect and the evidence). An alliance_only item (restriction
+    1) mined under 890 (Warsong Outriders, Horde) is corrected to 889
+    (Silverwing Sentinels, Alliance); a horde_only item mined under 889 is
+    corrected to 890."""
+    document, _ = build_loot(
+        _wsg_fork(repFactionId=890, factionRestriction=1), {}, {}, {}, {1}, {}
+    )
+    rep = document.sources[0]
+    assert (rep.faction_id, rep.name) == (889, "Silverwing Sentinels")
+
+    document, _ = build_loot(
+        _wsg_fork(repFactionId=889, factionRestriction=2), {}, {}, {}, {1}, {}
+    )
+    rep = document.sources[0]
+    assert (rep.faction_id, rep.name) == (890, "Warsong Outriders")
+
+
+def test_wsg_rep_source_correction_is_a_no_op_once_already_correct():
+    """Proves the fix does not blindly flip 889/890 -- an item already
+    mined under the faction id that matches its own restriction is left
+    alone, so a future upstream fix to the swap does not get re-broken by
+    this correction."""
+    document, _ = build_loot(
+        _wsg_fork(repFactionId=889, factionRestriction=1), {}, {}, {}, {1}, {}
+    )
+    assert document.sources[0].faction_id == 889
+
+    document, _ = build_loot(
+        _wsg_fork(repFactionId=890, factionRestriction=2), {}, {}, {}, {1}, {}
+    )
+    assert document.sources[0].faction_id == 890
+
+
+def test_non_wsg_rep_sources_are_never_touched_by_the_correction():
+    """Arathi Basin/Alterac Valley ids (or anything else) are outside
+    `_ATLASLOOT_WSG_REP_FACTION_SWAP` and pass through untouched regardless
+    of factionRestriction."""
+    fork = ForkDatabase(
+        items=(
+            {
+                "id": 1,
+                "factionRestriction": 2,
+                "sources": [{"rep": {"repFactionId": 509, "repLevel": 6}}],
+            },
+        ),
+        enchants=(),
+        random_suffixes=(),
+        zones={},
+        npcs={},
+        factions={509: "The League of Arathor"},
+        item_icons={},
+        spell_icons={},
+        spell_icon_rows=(),
+        item_icon_rows=(),
+    )
+    document, _ = build_loot(fork, {}, {}, {}, {1}, {})
+    assert document.sources[0].faction_id == 509
+
+
 def test_two_world_bosses_with_the_same_name_raise_instead_of_silently_colliding():
     """`apply_overlays` keys its sources by id (`by_id = {source.id:
     source for ...}`); two world npcs the fork names identically would

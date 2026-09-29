@@ -10,7 +10,7 @@ func TestSourceForNoSource(t *testing.T) {
 }
 
 func TestSourceForPicksHighestPriorityKind(t *testing.T) {
-	// sourceKindPriority: quest, dungeon, crafted, rep, pvp, world, raid
+	// sourceKindPriority: quest, vendor, dungeon, crafted, rep, pvp, world, raid
 	// - dungeon must win over world even though world was inserted
 	// first, because the priority order (not insertion order) decides.
 	idx := lootIndex{
@@ -22,6 +22,31 @@ func TestSourceForPicksHighestPriorityKind(t *testing.T) {
 	src, ok := sourceFor(1, 30, "alliance", "", idx)
 	if !ok || src.Kind != "dungeon" || src.Label != "A Dungeon" {
 		t.Fatalf("sourceFor = %+v, %v, want dungeon/A Dungeon", src, ok)
+	}
+}
+
+func TestSourceForPicksVendorOverDungeonAndFallsBackToItAlone(t *testing.T) {
+	// vendor sits right after quest in sourceKindPriority (added by the
+	// 2026-09-28 night-bis-sources lane) and beats dungeon/world/etc.
+	idx := lootIndex{
+		1: {
+			{Kind: "world", Label: "World Vendor"},
+			{Kind: "dungeon", Label: "A Dungeon"},
+			{Kind: "vendor", Label: "A Vendor"},
+		},
+	}
+	src, ok := sourceFor(1, 30, "alliance", "", idx)
+	if !ok || src.Kind != "vendor" || src.Label != "A Vendor" {
+		t.Fatalf("sourceFor = %+v, %v, want vendor/A Vendor", src, ok)
+	}
+
+	// A vendor-only item (nothing else in the index) must still resolve -
+	// this was the bug: vendor fell through every case and reported no
+	// known source even though loot.json carried it.
+	vendorOnly := lootIndex{2: {{Kind: "vendor", Label: "A Vendor"}}}
+	src, ok = sourceFor(2, 30, "alliance", "", vendorOnly)
+	if !ok || src.Kind != "vendor" {
+		t.Fatalf("sourceFor with only a vendor source = %+v, %v, want ok=true, kind=vendor", src, ok)
 	}
 }
 
