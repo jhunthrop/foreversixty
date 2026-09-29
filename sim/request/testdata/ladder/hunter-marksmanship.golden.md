@@ -91,11 +91,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-10000000000000000-000000000000000000 | main_hand:3462 off_hand:15443 ranged:5346 | 51.9 | 3 | other:shoot=110.1, spell:3044=17.4, spell:13549=16.9, other:move=1.0, spell:13165=1.0 | {SpellID: 20904} |
-| 20 | 0000000000000000-35300000000000000-000000000000000000 | main_hand:17046 off_hand:9608 ranged:6739 | 62.9 | 5 | other:shoot=90.2, spell:2643=14.6, spell:19434=7.0, spell:13550=3.1, spell:14282=1.9 | - |
-| 30 | 0000000000000000-35305500000000000-000000000000000000 | main_hand:4977 off_hand:9520 ranged:17686 | 74.9 | 6 | other:shoot=89.2, spell:20900=10.7, spell:2643=6.6, spell:14283=2.8, spell:13551=2.2 | - |
-| 38 | 0000000000000000-35305500115001000-000000000000000000 | main_hand:4987 off_hand:10703 ranged:17686 | 77.7 | 6 | other:shoot=89.0, spell:20901=7.9, spell:2643=7.7, spell:13552=2.2, spell:14284=1.9 | - |
-| 40 | 0000000000000000-35305500115003000-000000000000000000 | main_hand:10750 off_hand:4987 ranged:10510 | 82.6 | 6 | other:shoot=74.7, spell:20901=10.1, spell:2643=6.3, spell:13552=3.0, other:move=1.0 | - |
-| 50 | 5500000000000000-35305500115003000-000000000000000000 | main_hand:10696 off_hand:10697 ranged:16004 | 96.8 | 6 | other:shoot=79.9, spell:2643=9.5, spell:20902=5.6, spell:13554=2.2, spell:14285=1.9 | - |
+| 20 | 0000000000000000-35300000000000000-000000000000000000 | main_hand:1482 off_hand:1292 ranged:6739 | 62.7 | 5 | other:shoot=90.3, spell:2643=14.4, spell:19434=6.8, spell:13550=2.2, spell:14282=1.9 | - |
+| 30 | 0000000000000000-35305500000000000-000000000000000000 | main_hand:6692 off_hand:9520 ranged:17687 | 75.1 | 6 | other:shoot=82.8, spell:20900=10.8, spell:2643=6.9, spell:13551=2.2, spell:14283=1.9 | - |
+| 38 | 0000000000000000-35305500115001000-000000000000000000 | main_hand:6829 off_hand:6831 ranged:19560 | 80.3 | 6 | other:shoot=90.0, spell:2643=11.9, spell:20901=4.7, spell:13552=2.2, spell:14284=1.9 | - |
+| 40 | 0000000000000000-35305500115003000-000000000000000000 | main_hand:10750 off_hand:6829 ranged:19560 | 83.4 | 6 | other:shoot=88.7, spell:20901=10.6, spell:2643=5.0, spell:14284=2.8, spell:13552=2.2 | - |
+| 50 | 5500000000000000-35305500115003000-000000000000000000 | main_hand:12774 off_hand:10750 ranged:16004 | 97.7 | 6 | other:shoot=79.9, spell:2643=9.5, spell:20902=5.6, spell:13554=2.2, spell:14285=1.9 | - |
 | 60 | 5522000000000000-35305500115003000-510000000000000000 | main_hand:23577 off_hand:21126 ranged:23557 | 120.9 | 6 | other:shoot=72.5, spell:2643=11.7, spell:20904=3.0, spell:25295=2.1, other:move=1.0 | - |
 
 ## Learned but unused (informational)
@@ -209,6 +209,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Swipe (spell 1264498)
 - Tendon Rip (spell 1265040)
 - Thunderstomp (spell 26187)
+- Volley (spell 1510)
 - Web (spell 1265880)
 - Widow Bite (spell 26226)
 - Wing Clip (spell 14267)
@@ -238,6 +239,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Swipe (spell 1264501)
 - Tendon Rip (spell 1265041)
 - Thunderstomp (spell 26188)
+- Volley (spell 14294)
 - Web (spell 1265881)
 - Widow Bite (spell 26226)
 - Wing Clip (spell 14267)
@@ -268,6 +270,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Swipe (spell 1264502)
 - Tendon Rip (spell 1265042)
 - Thunderstomp (spell 1264455)
+- Volley (spell 14295)
 - Web (spell 1265883)
 - Widow Bite (spell 26226)
 - Wing Clip (spell 14268)

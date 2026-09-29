@@ -90,12 +90,12 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 100000000000000000-00000000000000000-0000000000000000000 | main_hand:3462 | 7.9 | 1 | spell:5143/1=67.5 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589} |
-| 20 | 253100000000000000-00000000000000000-0000000000000000000 | main_hand:2263 ranged:6677 | 13.1 | 1 | spell:5144/1=72.3 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400574}, {SpellID: 400589} |
+| 10 | 100000000000000000-00000000000000000-0000000000000000000 | main_hand:15444 | 8.5 | 1 | spell:5143/1=72.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400589} |
+| 20 | 253100000000000000-00000000000000000-0000000000000000000 | main_hand:4437 ranged:6677 | 13.6 | 1 | spell:5144/1=74.8 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 400574}, {SpellID: 400589} |
 | 30 | 253225110000000000-00000000000000000-0000000000000000000 | main_hand:4134 ranged:5249 | 25.2 | 1 | spell:5145/1=92.4, item:5514=1.0, other:mana_gain=1.0 | {SpellID: 12042}, {SpellID: 12043}, {SpellID: 1239696}, {SpellID: 400589} |
-| 38 | 253225111100011400-00000000000000000-0000000000000000000 | main_hand:4134 ranged:10704 | 91.2 | 3 | spell:8416/1=158.4, spell:1239696=41.2, spell:12043=1.5 | {SpellID: 12042} |
-| 40 | 253225111100011501-00000000000000000-0000000000000000000 | main_hand:10750 ranged:10704 | 117.1 | 4 | spell:8417/1=158.4, spell:1239696=41.2, spell:12042=1.5, spell:12043=1.5 | - |
-| 50 | 253225111100011501-23500000000000000-0000000000000000000 | main_hand:10696 ranged:17745 | 181.1 | 4 | spell:10211/1=158.4, spell:1239699=41.2, spell:12042=1.5, spell:12043=1.5 | - |
+| 38 | 253225111100011400-00000000000000000-0000000000000000000 | main_hand:7757 ranged:10704 | 91.4 | 3 | spell:8416/1=158.4, spell:1239696=41.2, spell:12043=1.5 | {SpellID: 12042} |
+| 40 | 253225111100011501-00000000000000000-0000000000000000000 | main_hand:9527 ranged:10704 | 118.0 | 4 | spell:8417/1=158.4, spell:1239696=41.2, spell:12042=1.5, spell:12043=1.5 | - |
+| 50 | 253225111100011501-23500000000000000-0000000000000000000 | main_hand:9527 ranged:17745 | 182.1 | 4 | spell:10211/1=158.4, spell:1239699=41.2, spell:12042=1.5, spell:12043=1.5 | - |
 | 60 | 253225111100011501-23552300000000000-0000000000000000000 | main_hand:22589 ranged:16993 | 332.4 | 4 | spell:25345/1=159.6, spell:1239700=41.0, spell:12042=1.5, spell:12043=1.5 | - |
 
 ## Learned but unused (informational)
@@ -114,6 +114,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Blast (spell 400574)
 - Arcane Explosion (spell 1449)
 - Arcane Missile (spell 7268)
+- Blizzard (spell 10)
+- Chill (spell 1308651)
 - Fire Blast (spell 2137)
 - Fireball (spell 3140)
 - Flamestrike (spell 2120)
@@ -128,6 +130,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Explosion (spell 8438)
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 11113)
+- Blizzard (spell 6141)
+- Chill (spell 1308651)
 - Cone of Cold (spell 120)
 - Fire Blast (spell 8412)
 - Fireball (spell 8401)
@@ -143,6 +147,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Explosion (spell 8439)
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13018)
+- Blizzard (spell 8427)
+- Chill (spell 1308651)
 - Cone of Cold (spell 8492)
 - Fire Blast (spell 8413)
 - Fireball (spell 8402)
@@ -158,6 +164,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Explosion (spell 8439)
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13018)
+- Blizzard (spell 8427)
+- Chill (spell 1308651)
 - Cone of Cold (spell 8492)
 - Fire Blast (spell 8413)
 - Fireball (spell 8402)
@@ -174,6 +182,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Explosion (spell 10201)
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13019)
+- Blizzard (spell 10185)
+- Chill (spell 1308651)
 - Cone of Cold (spell 10160)
 - Fire Blast (spell 10197)
 - Fireball (spell 10149)
@@ -190,6 +200,8 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 - Arcane Explosion (spell 10202)
 - Arcane Missile (spell 7268)
 - Blast Wave (spell 13021)
+- Blizzard (spell 10187)
+- Chill (spell 1308651)
 - Cone of Cold (spell 10161)
 - Debug Frost Spell (spell 29607)
 - Fire Blast (spell 10199)

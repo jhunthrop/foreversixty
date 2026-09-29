@@ -89,14 +89,16 @@ func TestPickGearItemRefusesADeadheadBladeShapedQuestRewardBelowItsQuestLevel(t 
 	// even though its own RequiredLevel is 0, and the pick falls back
 	// to the level-appropriate item instead of hanging with no pick at
 	// all.
-	got, ok := pickGearItem(items, known, floors, "main_hand", 10, handAny, nil)
+	got, ok := pickGearItem(items, known, floors, "main_hand", 10, handAny, nil, nil, false)
 	if !ok || got.ID != 100 {
 		t.Fatalf("pickGearItem at level 10 = (%+v, %v), want item 100 (Deadhead Blade refused)", got, ok)
 	}
 
 	// At level 20 (the quest's own min_level), the item becomes pickable
-	// and, being the higher item level, wins.
-	got, ok = pickGearItem(items, known, floors, "main_hand", 20, handAny, nil)
+	// and, being the higher item level (neither candidate carries any
+	// stat, so weaponScore falls all the way through to its itemLevel
+	// tiebreak), wins.
+	got, ok = pickGearItem(items, known, floors, "main_hand", 20, handAny, nil, nil, false)
 	if !ok || got.ID != 274271 {
 		t.Fatalf("pickGearItem at level 20 = (%+v, %v), want item 274271", got, ok)
 	}
@@ -105,7 +107,7 @@ func TestPickGearItemRefusesADeadheadBladeShapedQuestRewardBelowItsQuestLevel(t 
 	// behaviour is exactly what leveling.EffectiveRequiredLevel(0, 0)
 	// reduces to: eligible at any level. Documented here so a future
 	// change to the zero-value behaviour is a deliberate, visible one.
-	got, ok = pickGearItem(items, known, nil, "main_hand", 1, handAny, nil)
+	got, ok = pickGearItem(items, known, nil, "main_hand", 1, handAny, nil, nil, false)
 	if !ok || got.ID != 274271 {
 		t.Fatalf("pickGearItem with nil floors at level 1 = (%+v, %v), want item 274271 (undefended without the floors map)", got, ok)
 	}

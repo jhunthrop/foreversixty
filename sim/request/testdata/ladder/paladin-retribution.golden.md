@@ -91,7 +91,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
 | 10 | 00000000000000000-0000000000000000-10000000000000000 | main_hand:11854 | 15.2 | 5 | other:attack/1=73.1, spell:25740=48.0, spell:20287=19.5, spell:20271=18.6, spell:20280=18.6 | - |
-| 20 | 00000000000000000-0000000000000000-55100000000000000 | main_hand:3822 | 28.2 | 5 | other:attack/1=55.5, spell:25739=42.1, spell:20288=19.8, spell:20271=19.4, spell:20281=19.4 | - |
+| 20 | 00000000000000000-0000000000000000-55100000000000000 | main_hand:6953 | 28.4 | 5 | other:attack/1=57.3, spell:25739=43.9, spell:20288=20.5, spell:20271=20.0, spell:20281=20.0 | - |
 | 30 | 00000000000000000-0000000000000000-55223310000000000 | main_hand:4983 | 39.9 | 5 | other:attack/1=49.6, spell:25738=19.6, spell:680=17.7, spell:20271=17.4, spell:20282=17.4 | - |
 | 38 | 00000000000000000-0000000000000000-55223331211000100 | main_hand:6830 | 52.7 | 5 | other:attack/1=53.9, spell:25737=23.1, spell:2495=17.5, spell:20271=16.7, spell:20283=16.7 | - |
 | 40 | 00000000000000000-0000000000000000-55223331211000210 | main_hand:10652 | 54.1 | 5 | other:attack/1=65.3, spell:25737=30.8, spell:2495=17.9, spell:20271=17.4, spell:20283=17.4 | - |
@@ -107,30 +107,35 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 20
 
+- Consecration (spell 26573)
 - Exorcism (spell 879)
 - Judgement of Command (spell 20425)
 - Judgement of Fury (spell 1311655)
 
 ### Level 30
 
+- Consecration (spell 20116)
 - Exorcism (spell 5614)
 - Judgement of Command (spell 20962)
 - Judgement of Fury (spell 20183)
 
 ### Level 38
 
+- Consecration (spell 20116)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20962)
 - Judgement of Fury (spell 20411)
 
 ### Level 40
 
+- Consecration (spell 20922)
 - Exorcism (spell 5615)
 - Judgement of Command (spell 20961)
 - Judgement of Fury (spell 20411)
 
 ### Level 50
 
+- Consecration (spell 20923)
 - Exorcism (spell 10312)
 - Hammer of Wrath (spell 24275)
 - Holy Wrath (spell 2812)
@@ -139,6 +144,7 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ### Level 60
 
+- Consecration (spell 20924)
 - Exorcism (spell 10314)
 - Hammer of Wrath (spell 24239)
 - Holy Wrath (spell 10318)
