@@ -86,11 +86,20 @@ const addonIconPath =
                (Lighthouse's index run failed LCP by 70 ms when this column went empty for it,
                05f3e478). data-session-hide (Base.astro's pre-paint hint) removes the dates the
                moment a session cookie is present; the card draws nothing without one. -->
-          <div class="grid lg:col-span-5" data-testid="home-guild-block">
+          <div class="grid lg:col-span-5 min-w-0" data-testid="home-guild-block">
             <!-- Both share one grid cell, the same overlay the account block above uses:
                  data-session-hide only hides (visibility), so the dates must not also
-                 keep a slot above the card once a signed-in visitor's card takes over. -->
-            <div class="[grid-area:1/1]" data-session-hide data-testid="home-timeline-block">
+                 keep a slot above the card once a signed-in visitor's card takes over.
+                 min-w-0 on this cell and both overlaid children: a CSS grid item's default
+                 min-width is auto (its content's own intrinsic width), not the track's
+                 width, so without it HomeTimeline's five-entry strip (836px of content)
+                 forced this whole column past its 5/12 track and out of SkyBand's
+                 overflow-hidden -- the Nov 4 Launch date, First raids and "Updated" stamp
+                 rendered but were entirely invisible and unreachable on any viewport
+                 narrower than roughly 1500px, never triggering the strip's own
+                 md:overflow-x-auto scroll. min-w-0 lets the track's own width win, so the
+                 strip now properly scrolls within its card instead of blowing out of it. -->
+            <div class="[grid-area:1/1] min-w-0" data-session-hide data-testid="home-timeline-block">
               <HomeTimeline dates={dates} updated={updated} />
             </div>
             <!-- Not an island: HomeAccountPanel (the hero's own island, already holding the
@@ -99,7 +108,7 @@ const addonIconPath =
                  request in the hero before the largest paint moved Lighthouse's simulated
                  LCP over budget (05f3e478). .home-guild-slot (global.css) reserves the
                  card's height from the session hint so a signed-in hero holds still. -->
-            <div class="home-guild-slot [grid-area:1/1]" data-testid="home-guild-slot"></div>
+            <div class="home-guild-slot [grid-area:1/1] min-w-0" data-testid="home-guild-slot"></div>
           </div>
         </div>
       </div>
