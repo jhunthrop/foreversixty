@@ -1,22 +1,27 @@
 {
   "spec": "hunter-survival",
   "state": "written",
-  "notes": "wowsims-forever models one Hunter spell package for all three specs; Survival keeps the same Aimed Shot / Multi-Shot base as the other two, and, unlike Beast Mastery or Marksmanship, weaves in melee Raptor Strike -- the Survival tree's talents (Counterattack, Improved Wing Clip and the rest) are the ones that make standing in melee worthwhile. The cited Warcraft Tavern guide says outright that you should never prioritize Serpent Sting over an Aimed Shot or Multi-Shot cast; Serpent Sting is therefore ordered below both shots here, refreshed only once it is about to fall off and neither shot is close to ready, the same shape as hunter-marksmanship's. Raptor Strike is on-next-swing: its APL-castable queue is tag 3 (pipeline/apl.py's ON_NEXT_SWING_QUEUE_TAG, the odd one out among the on-next-swing abilities, which otherwise queue at tag 1), not the tag 1 that Heroic Strike, Cleave and Maul use, so it is cast with tag 3 here. It is gated on mana so it does not pull mana away from the ranged shots below 20 percent. Every rank named here is checked against this build's own spellconst: the shared preset names Multi-Shot as spell 25294, which does not exist in this build (Multi-Shot only has one rank here, 2643), and calls Serpent Sting rank 8 when 25295 is actually rank 9 -- both fixed here rather than copied stale. Aimed Shot (20904) is registered by the engine again since 2026-09-28 (its registration had been commented out, and the cast line was declared inert until then). Aimed Shot being unregistered also makes every spellTimeToReady(20904) reference in this file resolve to a nil APLValue, which an `and` condition silently drops (rot.newValueAnd filters nil operands) rather than nulling the whole condition -- so Serpent Sting's gate above already degrades correctly to its other operand and did not need rewriting. What did need fixing: nothing in this site's request pipeline (sim/request) ever sets a character's DistanceFromTarget, so every hunter starts at 0 -- under Multi-Shot, Serpent Sting and Aimed Shot's own ExtraCastCondition floor of 12 (core.MinRangedAttackDistance), which also gates the ranged auto-attack itself (sim/core/attack.go's startPull). A `move` prepull action to 30 yards is added so this and every future simulation of this spec actually has a ranged auto-attack and can cast its ranged abilities -- matching the priority order above, which already ranks Aimed Shot ahead of Raptor Strike. That has a real cost specific to this spec: Raptor Strike's own ExtraCastCondition requires DistanceFromTarget <= 5 (core.MaxMeleeAttackDistance), a genuine dead zone against the ranged floor of 12 in this engine's distance model, so once the character commits to 30 yards for the ranged kit it can never re-enter melee range on a stationary single-target fight and Raptor Strike's line goes unreached; this is an existing limitation of a single static `move`, not a new regression (Raptor Strike was not firing before this fix either), and is left as a follow-up rather than solved here with a dynamic kite-and-swap the APL value language does not have a clean way to express (the same category of gap mage-frost's own notes call out for powershifting). Under this smoke build specifically (no gear equipped anywhere) the ranged weapon's SwingSpeed is the Weapon{} zero value, which collapses the ranged swing timer to its 500ms cast-time floor (sim/core/attack.go's WeaponAttack.updateSwingDuration: curSwingDuration = weapon.SwingSpeed / hasteMultiplier = 0) -- a real ranged weapon's positive SwingSpeed does not have this problem. The resulting sub-GCD auto-shot loop saturates the character's action economy so completely that the priority list, including Multi-Shot and Serpent Sting, never gets a decision window in this one bare-weapon run; this is a new engine-side artifact of the no-gear smoke build (recorded for the engine ledger), not a defect in this rotation's gates. Rotation-accuracy program diagnosis (2026-09-28): the inert ids above (Multi-Shot 2643) are level-gated in the engine (sim/hunter/multi_shot.go RequiredLevel 18) but carry rank:0 rows in spellranks.json, which the ladder's idLearnLevel deliberately does not level-gate (the same skip keeps Bloodrage/Judgement -- genuinely never level-gated by the engine -- from being wrongly treated as gated); not declared inert here (both resolve fine above their real gate under the pinned engine); see hunter-beast-mastery.json's notes (the shared hunter spell package all three specs use) for the full diagnosis and the sim/internal/spellranks + sim/request/ladder.go fix that actually resolves this.",
+  "notes": "Rotation-accuracy program, 2026-09-28 (owner: \"survival will be a melee hunter spec\"). Rewritten from a ranged-shots-plus-Raptor-Strike-weave rotation to a real melee rotation: the character starts in melee range (no prepull move -- StartDistanceFromTarget defaults to 0, well inside core.MaxMeleeAttackDistance) and never leaves it, so Aimed Shot, Multi-Shot, Arcane Shot and Serpent Sting -- every one of them gated on core.MinRangedAttackDistance (12 yd) in this engine -- are removed rather than declared inert or expected_idle: they are not lines this rotation names any more, and a spec that commits fully to melee for the whole fight cannot ever satisfy both that gate and Raptor Strike/Mongoose Bite/Counterattack/Strider Kick's core.MaxMeleeAttackDistance (5 yd) gate at once under this engine's single static per-fight distance. Wing Clip is also deliberately left out: it is a control tool (a snare/immobilize), not a damage line worth a GCD against a stationary target, matching how a real Survival player would not snare a training dummy either -- the ladder's own 'learned but unused' list will keep naming it at every level it is learned, which is the expected, reviewed state for a line this file chooses not to carry. The engine side of this rewrite is sim/hunter's melee kit: Raptor Strike and Mongoose Bite's damage corrected to this build's own client numbers (both previously carried vanilla Classic's higher numbers), Mongoose Bite's old dodge-gate removed (the Forever client's own tooltip, wowhead.com/forever/spell=1495, lists no such requirement), and three previously-unimplemented Survival talent abilities added: Counterattack (parry-triggered, cannot be dodged/parried/blocked), Strider Kick (100% weapon damage, 8s cooldown) and Lacerating Strikes (a bleed on Mongoose Bite). Raptor Strike is still queued at tag 3 (pipeline/apl.py's ON_NEXT_SWING_QUEUE_TAG, the odd one out among the on-next-swing abilities) as the swing-timer weave, gated at 20% mana so it does not starve Mongoose Bite. Counterattack and Mongoose Bite are bare casts -- Counterattack's own ExtraCastCondition only lets it land while its parry-triggered proc aura is up (the same 'free line that falls through otherwise' shape this site's warrior-arms.json already uses for Overpower), and Mongoose Bite's own mana cost and 5s cooldown are gate enough now that the dodge requirement is gone. Strider Kick is the lowest-priority filler on its own 8s cooldown. There is no spammable melee filler between these cooldowns and Raptor Strike's swing-timer weave -- Classic-era hunters never had one -- so a GCD with nothing else ready is spent on nothing beyond the auto-attack itself, same as live Classic Survival play.",
   "inert": [],
   "expected_idle": [
     {
-      "id": 14266,
-      "reason": "the ladder's move prepull sends the hunter to 30 yd to satisfy the ranged floor (core.MinRangedAttackDistance, 12 yd) for Aimed Shot/Multi-Shot/Serpent Sting; Raptor Strike's own ExtraCastCondition requires DistanceFromTarget <= 5 (core.MaxMeleeAttackDistance), a dead zone this bare single-target run never re-enters (documented in this file's own notes)."
+      "id": 20910,
+      "reason": "Counterattack only lands while its parry-triggered proc aura is active (hunter.CounterattackProcAura), which only activates off an OnSpellHitTaken parry -- i.e. it requires the TARGET to attack the hunter. This ladder's (and the site's own production sim's) target dummy carries TankIndex: -1 and no SwingSpeed/MinBaseDamage (sim/request/request.go's targetStats/encounter), so it never auto-attacks anyone; nothing in a bare, untanked single-character run can ever trigger a parry, at any level, in any of the 300 iterations. This is a property of the shared encounter builder every spec's ladder run shares, not a defect in this rotation or in sim/hunter/counterattack.go -- Counterattack is correctly wired and dealt real damage in sim/hunter/survival_melee_test.go's own TestCounterattackLevel60ProcsOnParryAndDealsClientDamage, which activates the proc aura directly rather than waiting on an attack that this harness's target never makes."
     }
   ],
   "sources": [
     {
-      "label": "wowsims-forever default hunter priority list, Multi-Shot and Serpent Sting ranks corrected against this build",
-      "url": "https://github.com/wowsims/classic/blob/master/ui/hunter/apls/p1.apl.json",
+      "label": "Data source for every number in this rewrite: this build's own client spell data, data/builds/1.60.1.70009/spellconst/hunter.json and talents/hunter.json (Survival tree, tree index 2)",
+      "url": "https://foreversixty.gg/data/1.60.1.70009/spellconst/hunter.json",
+      "kind": "datamined"
+    },
+    {
+      "label": "wowhead Forever: Mongoose Bite (no dodge requirement listed) and Counterattack (cannot be blocked, dodged or parried) tooltips",
+      "url": "https://www.wowhead.com/forever/spell=1495",
       "kind": "community"
     },
     {
-      "label": "Warcraft Tavern: Classic Survival Hunter rotation (Aimed Shot main, Multi-Shot next, Serpent Sting refreshed only once it ends -- never ahead of a shot -- plus melee weaving from the Survival talents)",
+      "label": "Warcraft Tavern: Classic Survival Hunter rotation (melee weaving from the Survival talents; superseded here by a full melee commitment per the owner's 2026-09-28 direction that Survival is a melee spec in Forever)",
       "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-survival-hunter-rotations-cooldowns/",
       "kind": "community"
     },
@@ -28,54 +33,7 @@
   ],
   "rotation": {
     "type": "TypeAPL",
-    "prepullActions": [
-      {
-        "action": {
-          "move": {
-            "rangeFromTarget": {
-              "const": {
-                "val": "30"
-              }
-            }
-          }
-        },
-        "doAtValue": {
-          "const": {
-            "val": "-15s"
-          }
-        }
-      },
-      {
-        "action": {
-          "castSpell": {
-            "spellId": {
-              "spellId": 25296,
-              "rank": 7
-            }
-          }
-        },
-        "doAtValue": {
-          "const": {
-            "val": "-10s"
-          }
-        }
-      },
-      {
-        "action": {
-          "castSpell": {
-            "spellId": {
-              "spellId": 20904,
-              "rank": 6
-            }
-          }
-        },
-        "doAtValue": {
-          "const": {
-            "val": "-3.5s"
-          }
-        }
-      }
-    ],
+    "prepullActions": [],
     "priorityList": [
       {
         "action": {
@@ -83,33 +41,7 @@
         }
       },
       {
-        "notes": "Aimed Shot on cooldown, timed so its cast does not clip the next auto shot.",
-        "action": {
-          "condition": {
-            "cmp": {
-              "op": "OpGt",
-              "lhs": {
-                "autoTimeToNext": {
-                  "autoType": "Ranged"
-                }
-              },
-              "rhs": {
-                "const": {
-                  "val": "1s"
-                }
-              }
-            }
-          },
-          "castSpell": {
-            "spellId": {
-              "spellId": 20904,
-              "rank": 6
-            }
-          }
-        }
-      },
-      {
-        "notes": "Raptor Strike as the melee filler while Survival's talents make meleeing worthwhile; queued at tag 3, the engine's odd one out for on-next-swing abilities. Never below 20 percent mana, so it does not starve the ranged shots.",
+        "notes": "Raptor Strike queued on the swing timer (tag 3, the on-next-swing queue tag), gated at 20% mana so it does not starve Mongoose Bite below.",
         "action": {
           "condition": {
             "cmp": {
@@ -134,122 +66,34 @@
         }
       },
       {
-        "notes": "Multi-Shot as the filler between Aimed Shots.",
+        "notes": "Counterattack: a bare cast that only lands while its parry-triggered proc aura is active, the same shape warrior-arms.json's own Overpower line uses.",
         "action": {
-          "condition": {
-            "cmp": {
-              "op": "OpGt",
-              "lhs": {
-                "autoTimeToNext": {
-                  "autoType": "Ranged"
-                }
-              },
-              "rhs": {
-                "const": {
-                  "val": "0.5s"
-                }
-              }
-            }
-          },
           "castSpell": {
             "spellId": {
-              "spellId": 2643,
-              "rank": 0
+              "spellId": 20910,
+              "rank": 4
             }
           }
         }
       },
       {
-        "notes": "Serpent Sting kept up whenever it is about to fall off -- never ahead of Aimed Shot or Multi-Shot above, per the cited guide.",
+        "notes": "Mongoose Bite on cooldown: no dodge requirement in this build, so its own 5s cooldown and mana cost are the only gates.",
         "action": {
-          "condition": {
-            "cmp": {
-              "op": "OpLt",
-              "lhs": {
-                "dotRemainingTime": {
-                  "spellId": {
-                    "spellId": 25295,
-                    "rank": 9
-                  }
-                }
-              },
-              "rhs": {
-                "const": {
-                  "val": "5s"
-                }
-              }
-            }
-          },
           "castSpell": {
             "spellId": {
-              "spellId": 25295,
-              "rank": 9
+              "spellId": 14271,
+              "rank": 4
             }
           }
         }
       },
       {
-        "notes": "Arcane Shot as the last filler, only when neither shot above will be ready within a global and mana is above the floor: it is instant, so it never clips an auto shot, but it is the least mana-efficient shot, and a Classic-length fight runs dry without the floor.",
+        "notes": "Strider Kick as the lowest-priority filler on its own 8s cooldown.",
         "action": {
-          "condition": {
-            "and": {
-              "vals": [
-                {
-                  "cmp": {
-                    "op": "OpGt",
-                    "lhs": {
-                      "currentManaPercent": {}
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "40%"
-                      }
-                    }
-                  }
-                },
-                {
-                  "cmp": {
-                    "op": "OpGt",
-                    "lhs": {
-                      "spellTimeToReady": {
-                        "spellId": {
-                          "spellId": 2643,
-                          "rank": 0
-                        }
-                      }
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "1.5s"
-                      }
-                    }
-                  }
-                },
-                {
-                  "cmp": {
-                    "op": "OpGt",
-                    "lhs": {
-                      "spellTimeToReady": {
-                        "spellId": {
-                          "spellId": 20904,
-                          "rank": 6
-                        }
-                      }
-                    },
-                    "rhs": {
-                      "const": {
-                        "val": "1.5s"
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          },
           "castSpell": {
             "spellId": {
-              "spellId": 14287,
-              "rank": 8
+              "spellId": 1317257,
+              "rank": 1
             }
           }
         }

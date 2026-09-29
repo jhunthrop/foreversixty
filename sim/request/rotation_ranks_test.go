@@ -10,17 +10,22 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
-// The three hunter rotations that reference Serpent Sting's max rank
-// (25295) and Multi-Shot (2643). Multi-Shot's own spellranks.json row is
-// rank 0 (the reference table never lists this build's higher client
-// ranks 14288/14289/14290/25294 at all), but it is NOT unranked in the
-// engine's own sense: sim/hunter/multi_shot.go gates rank 1 (2643) on
-// RequiredLevel 18. sim/internal/spellranks' singleTierLevelOverrides
-// (rotation-accuracy program, 2026-09-28) carries this id specifically
-// so HighestLearnedSpellID agrees with the engine below level 18,
-// rather than treating 2643 as always-learned the way a genuinely
-// unranked ability (Bloodrage, Judgement) is.
-const hunterSpecForRankTests = "hunter-survival"
+// hunter-marksmanship: one of the two hunter rotations left that still
+// reference Serpent Sting's max rank (25295) and Multi-Shot (2643) --
+// hunter-survival used to be the third until the rotation-accuracy
+// program's melee rewrite (2026-09-28) dropped every ranged shot and
+// Serpent Sting from it (they require a range this now-melee spec never
+// occupies; see data/curated/apl/hunter-survival.json's own notes), so
+// this file points at marksmanship instead. Multi-Shot's own
+// spellranks.json row is rank 0 (the reference table never lists this
+// build's higher client ranks 14288/14289/14290/25294 at all), but it is
+// NOT unranked in the engine's own sense: sim/hunter/multi_shot.go gates
+// rank 1 (2643) on RequiredLevel 18. sim/internal/spellranks'
+// singleTierLevelOverrides (rotation-accuracy program, 2026-09-28)
+// carries this id specifically so HighestLearnedSpellID agrees with the
+// engine below level 18, rather than treating 2643 as always-learned the
+// way a genuinely unranked ability (Bloodrage, Judgement) is.
+const hunterSpecForRankTests = "hunter-marksmanship"
 
 func readHunterAPL(t *testing.T) []byte {
 	t.Helper()
