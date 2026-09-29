@@ -5167,9 +5167,9 @@
             "condition": "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again."
           },
           {
-            "spell_id": 20287,
-            "name": "Seal of Righteousness",
-            "condition": "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up."
+            "spell_id": 679,
+            "name": "Holy Strike",
+            "condition": "Holy Strike on cooldown: new in Forever this week (sim/paladin/holy_strike.go, no engine file before it) -- an instant Holy weapon attack on its own 10s cooldo…"
           }
         ]
       },
@@ -5187,19 +5187,9 @@
             "condition": "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's…"
           },
           {
-            "spell_id": 20375,
-            "name": "Seal of Command",
-            "condition": "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up."
-          },
-          {
-            "spell_id": 20288,
-            "name": "Seal of Righteousness",
-            "condition": "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up."
-          },
-          {
-            "spell_id": 20375,
-            "name": "Seal of Command",
-            "condition": "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less."
+            "spell_id": 1866,
+            "name": "Holy Strike",
+            "condition": "Holy Strike on cooldown: new in Forever this week (sim/paladin/holy_strike.go, no engine file before it) -- an instant Holy weapon attack on its own 10s cooldo…"
           }
         ]
       },
@@ -5217,19 +5207,9 @@
             "condition": "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's…"
           },
           {
-            "spell_id": 20915,
-            "name": "Seal of Command",
-            "condition": "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up."
-          },
-          {
-            "spell_id": 20289,
-            "name": "Seal of Righteousness",
-            "condition": "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up."
-          },
-          {
-            "spell_id": 20915,
-            "name": "Seal of Command",
-            "condition": "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less."
+            "spell_id": 680,
+            "name": "Holy Strike",
+            "condition": "Holy Strike on cooldown: new in Forever this week (sim/paladin/holy_strike.go, no engine file before it) -- an instant Holy weapon attack on its own 10s cooldo…"
           }
         ]
       },
@@ -5247,19 +5227,9 @@
             "condition": "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's…"
           },
           {
-            "spell_id": 20915,
-            "name": "Seal of Command",
-            "condition": "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up."
-          },
-          {
-            "spell_id": 20290,
-            "name": "Seal of Righteousness",
-            "condition": "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up."
-          },
-          {
-            "spell_id": 20915,
-            "name": "Seal of Command",
-            "condition": "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less."
+            "spell_id": 2495,
+            "name": "Holy Strike",
+            "condition": "Holy Strike on cooldown: new in Forever this week (sim/paladin/holy_strike.go, no engine file before it) -- an instant Holy weapon attack on its own 10s cooldo…"
           }
         ]
       },
@@ -5277,19 +5247,9 @@
             "condition": "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's…"
           },
           {
-            "spell_id": 20918,
-            "name": "Seal of Command",
-            "condition": "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up."
-          },
-          {
-            "spell_id": 20290,
-            "name": "Seal of Righteousness",
-            "condition": "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up."
-          },
-          {
-            "spell_id": 20918,
-            "name": "Seal of Command",
-            "condition": "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less."
+            "spell_id": 2495,
+            "name": "Holy Strike",
+            "condition": "Holy Strike on cooldown: new in Forever this week (sim/paladin/holy_strike.go, no engine file before it) -- an instant Holy weapon attack on its own 10s cooldo…"
           }
         ]
       },
@@ -5309,22 +5269,12 @@
           {
             "spell_id": 24275,
             "name": "Hammer of Wrath",
-            "condition": "Hammer of Wrath below 20 percent: the other button Retribution has besides seals and Judgement."
+            "condition": "Hammer of Wrath below 20 percent: the execute-window button Retribution has besides seals, Judgement and Holy Strike."
           },
           {
-            "spell_id": 20919,
-            "name": "Seal of Command",
-            "condition": "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up."
-          },
-          {
-            "spell_id": 20292,
-            "name": "Seal of Righteousness",
-            "condition": "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up."
-          },
-          {
-            "spell_id": 20919,
-            "name": "Seal of Command",
-            "condition": "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less."
+            "spell_id": 5569,
+            "name": "Holy Strike",
+            "condition": "Holy Strike on cooldown: new in Forever this week (sim/paladin/holy_strike.go, no engine file before it) -- an instant Holy weapon attack on its own 10s cooldo…"
           }
         ]
       },
@@ -5344,22 +5294,12 @@
           {
             "spell_id": 24239,
             "name": "Hammer of Wrath",
-            "condition": "Hammer of Wrath below 20 percent: the other button Retribution has besides seals and Judgement."
+            "condition": "Hammer of Wrath below 20 percent: the execute-window button Retribution has besides seals, Judgement and Holy Strike."
           },
           {
-            "spell_id": 20920,
-            "name": "Seal of Command",
-            "condition": "Seal twist: swap to Seal of Command right before a melee swing lands, if Seal of Righteousness is currently up."
-          },
-          {
-            "spell_id": 20293,
-            "name": "Seal of Righteousness",
-            "condition": "Seal twist: swap back to Seal of Righteousness right before the next melee swing lands, if Seal of Command is currently up."
-          },
-          {
-            "spell_id": 20920,
-            "name": "Seal of Command",
-            "condition": "Fallback: if neither seal is active (the twist above has not fired yet), keep Seal of Command up so the paladin is never seal-less."
+            "spell_id": 10333,
+            "name": "Holy Strike",
+            "condition": "Holy Strike on cooldown: new in Forever this week (sim/paladin/holy_strike.go, no engine file before it) -- an instant Holy weapon attack on its own 10s cooldo…"
           }
         ]
       }
@@ -5461,7 +5401,7 @@
           {
             "spell_id": 2944,
             "name": "Devouring Plague",
-            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke."
+            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke, at rank 6 (19280), spellconst's top rank and the highest…"
           },
           {
             "spell_id": 8102,
@@ -5491,7 +5431,7 @@
           {
             "spell_id": 19276,
             "name": "Devouring Plague",
-            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke."
+            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke, at rank 6 (19280), spellconst's top rank and the highest…"
           },
           {
             "spell_id": 8104,
@@ -5526,7 +5466,7 @@
           {
             "spell_id": 19277,
             "name": "Devouring Plague",
-            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke."
+            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke, at rank 6 (19280), spellconst's top rank and the highest…"
           },
           {
             "spell_id": 8105,
@@ -5561,7 +5501,7 @@
           {
             "spell_id": 19277,
             "name": "Devouring Plague",
-            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke."
+            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke, at rank 6 (19280), spellconst's top rank and the highest…"
           },
           {
             "spell_id": 8106,
@@ -5596,7 +5536,7 @@
           {
             "spell_id": 19278,
             "name": "Devouring Plague",
-            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke."
+            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke, at rank 6 (19280), spellconst's top rank and the highest…"
           },
           {
             "spell_id": 10945,
@@ -5631,7 +5571,7 @@
           {
             "spell_id": 19280,
             "name": "Devouring Plague",
-            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke."
+            "condition": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke, at rank 6 (19280), spellconst's top rank and the highest…"
           },
           {
             "spell_id": 10947,
@@ -6673,7 +6613,7 @@
           {
             "spell_id": 1316697,
             "name": "Wrack",
-            "condition": "Inert until the engine registers Wrack (found only in sim/warlock's talent metadata table, no spell registration)."
+            "condition": "Wrack is live (sim/warlock/wrack.go, talent-gated, RequiredLevel 40): an instant, no-cooldown 6 second DoT that also applies a +10% Shadow-damage-taken vulnera…"
           },
           {
             "spell_id": 7641,
@@ -6703,7 +6643,7 @@
           {
             "spell_id": 1316697,
             "name": "Wrack",
-            "condition": "Inert until the engine registers Wrack (found only in sim/warlock's talent metadata table, no spell registration)."
+            "condition": "Wrack is live (sim/warlock/wrack.go, talent-gated, RequiredLevel 40): an instant, no-cooldown 6 second DoT that also applies a +10% Shadow-damage-taken vulnera…"
           },
           {
             "spell_id": 11659,
@@ -6733,7 +6673,7 @@
           {
             "spell_id": 1316697,
             "name": "Wrack",
-            "condition": "Inert until the engine registers Wrack (found only in sim/warlock's talent metadata table, no spell registration)."
+            "condition": "Wrack is live (sim/warlock/wrack.go, talent-gated, RequiredLevel 40): an instant, no-cooldown 6 second DoT that also applies a +10% Shadow-damage-taken vulnera…"
           },
           {
             "spell_id": 25307,
