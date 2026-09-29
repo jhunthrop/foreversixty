@@ -26,6 +26,9 @@ type fakeEngine struct {
 	DefaultDPS float64
 	// WeightsResult is what RunWeights always returns.
 	WeightsResult map[string]api.StatWeight
+	// ReferenceDPSPerPoint is RunWeights' second return - this lane's
+	// brief, item 2 (bandReport.ReferenceDPSPerPoint's own source).
+	ReferenceDPSPerPoint float64
 	// FailGear, if non-empty, makes RunPlainDPS return an error for
 	// exactly that gear fingerprint - how tests exercise this
 	// command's per-candidate/per-slot error tolerance.
@@ -93,11 +96,11 @@ func (f *fakeEngine) RunPlainDPS(req api.SimRequest) (float64, error) {
 	return f.DefaultDPS, nil
 }
 
-func (f *fakeEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, error) {
+func (f *fakeEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
 	if f.FailWeights {
-		return nil, fmt.Errorf("fakeEngine: forced weights failure")
+		return nil, 0, fmt.Errorf("fakeEngine: forced weights failure")
 	}
-	return f.WeightsResult, nil
+	return f.WeightsResult, f.ReferenceDPSPerPoint, nil
 }
 
 // writeFile creates path (and its parent directories) with contents -

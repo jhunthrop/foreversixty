@@ -163,6 +163,91 @@ describe('normaliseBisFile', () => {
     const normalised = normaliseBisFile(file);
     expect(normalised.bands[0].coverage).toEqual(coverage);
   });
+
+  it('defaults a missing reference_dps_per_point to null (a file published before this lane landed)', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [baseBand],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].reference_dps_per_point).toBeNull();
+  });
+
+  it('keeps a real reference_dps_per_point unchanged', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, reference_dps_per_point: 0.0714 }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].reference_dps_per_point).toBe(0.0714);
+  });
+
+  const slotWithoutAlternatives: BisSlot = {
+    slot: 'head',
+    item_id: 1,
+    item_name: 'Plain Helm',
+    source: 'A Quest',
+    source_kind: 'quest',
+    score: 10,
+    verified: true,
+  };
+
+  it('defaults a missing slot alternatives field to [] (a file published before this lane landed)', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, slots: [slotWithoutAlternatives] }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].slots[0].alternatives).toEqual([]);
+  });
+
+  it('defaults a literal null slot alternatives (a Go nil slice) to []', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [
+        {
+          ...baseBand,
+          slots: [{ ...slotWithoutAlternatives, alternatives: null as unknown as undefined }],
+        },
+      ],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].slots[0].alternatives).toEqual([]);
+  });
+
+  it('keeps a real slot alternatives list unchanged', () => {
+    const alternatives = [
+      {
+        item_id: 2,
+        item_name: 'Runner Up',
+        score: 8,
+        source_kind: 'quest',
+        source: 'A Quest',
+        dps_delta: -2,
+      },
+    ];
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, slots: [{ ...slotWithoutAlternatives, alternatives }] }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].slots[0].alternatives).toEqual(alternatives);
+  });
 });
 
 describe('bandLevels', () => {

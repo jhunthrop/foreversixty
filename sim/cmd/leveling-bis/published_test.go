@@ -213,6 +213,61 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 	// neither missing a stat the spec is scored on nor carrying one it
 	// is not.
 	checkWeightsCoverSpecStats(t, bandLabel, band, spec)
+
+	// (9) this lane's brief, item 1: every published alternative is
+	// itself eligible, sourced (with the source/source_kind sourceFor
+	// says it has), distinct from the pick and from every other
+	// alternative, never the slot's own pair-mate, and bounded at
+	// alternativesLimit.
+	checkAlternatives(t, slotLabel, byID, lootIdx, band, bySlot)
+}
+
+// checkAlternatives applies check (9) to every filled slot's
+// Alternatives: each one is a real, eligible, sourced candidate at
+// this band+faction (the same three facts checks 1-3 already demand
+// of the pick itself), never the pick, never listed twice, never the
+// slot's own pair-mate (pairSlot, verify.go), and the list never
+// exceeds alternativesLimit (report.go).
+func checkAlternatives(t *testing.T, slotLabel func(string) string, byID map[int]candidate, lootIdx lootIndex, band bandReport, bySlot map[string]slotRow) {
+	t.Helper()
+	for _, row := range bySlot {
+		if row.ItemID == 0 || len(row.Alternatives) == 0 {
+			continue
+		}
+		if len(row.Alternatives) > alternativesLimit {
+			t.Errorf("%s: %d alternatives published, want at most %d (alternativesLimit)", slotLabel(row.Slot), len(row.Alternatives), alternativesLimit)
+		}
+		mateRow, hasMate := bySlot[pairSlot[row.Slot]]
+		seen := map[int]bool{row.ItemID: true}
+		for _, alt := range row.Alternatives {
+			if seen[alt.ItemID] {
+				t.Errorf("%s: alternative %d (%s) published more than once, or duplicates the pick itself", slotLabel(row.Slot), alt.ItemID, alt.ItemName)
+			}
+			seen[alt.ItemID] = true
+
+			c, ok := byID[alt.ItemID]
+			if !ok {
+				t.Errorf("%s: alternative %d (%s) is not in %s's item file at all", slotLabel(row.Slot), alt.ItemID, alt.ItemName, band.Spec)
+				continue
+			}
+			if c.EffectiveRequiredLevel > band.Band {
+				t.Errorf("%s: alternative %d (%s) needs level %d (sim/leveling.EffectiveRequiredLevel), published at band %d", slotLabel(row.Slot), alt.ItemID, alt.ItemName, c.EffectiveRequiredLevel, band.Band)
+			}
+			if c.FactionRestriction != "" && c.FactionRestriction != band.Faction {
+				t.Errorf("%s: alternative %d (%s) is restricted to %s, published for %s", slotLabel(row.Slot), alt.ItemID, alt.ItemName, c.FactionRestriction, band.Faction)
+			}
+			src, ok := sourceFor(alt.ItemID, band.Band, band.Faction, c.FactionRestriction, lootIdx)
+			if !ok {
+				t.Errorf("%s: alternative %d (%s) has no source obtainable by a %s character at level %d (sourceFor), but was published as an alternative", slotLabel(row.Slot), alt.ItemID, alt.ItemName, band.Faction, band.Band)
+			} else if alt.Source != src.Label || alt.SourceKind != src.Kind {
+				t.Errorf("%s: alternative %d (%s) published source %q/%q, sourceFor says %q/%q", slotLabel(row.Slot), alt.ItemID, alt.ItemName, alt.Source, alt.SourceKind, src.Label, src.Kind)
+			}
+
+			if hasMate && mateRow.ItemID != 0 && (alt.ItemID == mateRow.ItemID || (alt.ItemName != "" && alt.ItemName == mateRow.ItemName)) {
+				t.Errorf("%s: alternative %d (%s) is this slot's own pair-mate (%s, id %d) - the same physical item cannot be offered as a fallback here", slotLabel(row.Slot), alt.ItemID, alt.ItemName, mateRow.ItemName, mateRow.ItemID)
+			}
+		}
+	}
 }
 
 // checkPairNotDuplicated reports a violation when slots a and b (both
