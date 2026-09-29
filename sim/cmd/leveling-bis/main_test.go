@@ -10,16 +10,31 @@ import (
 )
 
 func TestFormatWeights(t *testing.T) {
-	got := formatWeights([]string{"agility", "crit"}, map[string]float64{"agility": 1.5, "crit": 0.75})
-	want := "agility=1.500, crit=0.750"
+	got := formatWeights([]string{"agility", "crit"}, map[string]api.StatWeight{
+		"agility": {Stat: "agility", Weight: 1.5, Error: 0.1},
+		"crit":    {Stat: "crit", Weight: 0.75, Error: 0.05},
+	})
+	want := "agility=1.500 ± 0.100, crit=0.750 ± 0.050"
 	if got != want {
 		t.Errorf("formatWeights = %q, want %q", got, want)
 	}
 }
 
-func TestFormatWeightsMissingStatDefaultsToZero(t *testing.T) {
-	got := formatWeights([]string{"agility", "hit"}, map[string]float64{"agility": 1})
-	want := "agility=1.000, hit=0.000"
+func TestFormatWeightsMissingStatDefaultsToZeroAndReadsNotSignificant(t *testing.T) {
+	got := formatWeights([]string{"agility", "hit"}, map[string]api.StatWeight{
+		"agility": {Stat: "agility", Weight: 1, Error: 0.1},
+	})
+	want := "agility=1.000 ± 0.100, hit=not significant (0.000 ± 0.000)"
+	if got != want {
+		t.Errorf("formatWeights = %q, want %q", got, want)
+	}
+}
+
+func TestFormatWeightsFlagsHighErrorAsNotSignificant(t *testing.T) {
+	got := formatWeights([]string{"melee_haste"}, map[string]api.StatWeight{
+		"melee_haste": {Stat: "melee_haste", Weight: 14.87, Error: 6.0},
+	})
+	want := "melee_haste=not significant (14.870 ± 6.000)"
 	if got != want {
 		t.Errorf("formatWeights = %q, want %q", got, want)
 	}

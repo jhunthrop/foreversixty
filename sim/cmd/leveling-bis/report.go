@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"math"
 	"os"
 	"path/filepath"
 	"sort"
@@ -10,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/enginever"
 )
 
@@ -51,6 +53,48 @@ type bandReport struct {
 type weightRow struct {
 	Stat   string  `json:"stat"`
 	Weight float64 `json:"weight"`
+	// Error is this weight's standard error, in the same units as
+	// Weight (sim/adapter.Weights' own StatWeight.Error, carried
+	// through unchanged) -- the page shows it as "±". See
+	// isWeightSignificant's own doc for why this command publishes it
+	// at all when the general-purpose /sim/weights tool's own
+	// significance bar (sim/adapter.go's Insignificant field) is more
+	// lenient than the one this command applies below.
+	Error float64 `json:"error"`
+	// Insignificant is this command's OWN, stricter call (see
+	// isWeightSignificant), not sim/adapter's Insignificant field: the
+	// page greys this row out and the Pawn/planner consumers of this
+	// JSON should not treat it as a real number.
+	Insignificant bool `json:"insignificant"`
+}
+
+// significanceErrorFraction is this command's own publication bar
+// (2026-09-28 weights-effects lane; owner, looking at a level-20
+// hunter's weights: "these stat weights look like garbage"). The
+// general-purpose /sim/weights tool's own bar
+// (sim/adapter.go's `Insignificant: errAmt >= math.Abs(weight)`) only
+// catches a weight the error swallows entirely -- appropriate for a
+// tool a player can re-run at higher precision on demand. This
+// command's sweep runs a fixed, small budget (100 iterations per
+// direction by default -- see weightsIterations's own flag doc) and
+// publishes every weight on the BiS page's aside as a fact a player
+// acts on without re-running anything, so it holds every row to a
+// tighter bar: an error under 25% of the weight's own value, or the
+// row reports "not significant" instead of a number nobody should
+// trust.
+const significanceErrorFraction = 0.25
+
+// isWeightSignificant applies significanceErrorFraction to one
+// engine-reported weight. A weight of exactly zero is never
+// significant (there is nothing for a 25%-of-value bar to compare
+// against, and a hard-capped or unmoved stat reads back as
+// weight=0, error=0 the same way sim/adapter.go's own comment
+// describes for its own field).
+func isWeightSignificant(w api.StatWeight) bool {
+	if w.Weight == 0 {
+		return false
+	}
+	return w.Error < significanceErrorFraction*math.Abs(w.Weight)
 }
 
 // noSourceSampleSize bounds how many unsourced item names the JSON
@@ -61,7 +105,7 @@ const noSourceSampleSize = 15
 // buildReport assembles one band+faction's report from pick() output,
 // the weights this band used, verification results, and the previous
 // band's picks (nil for the first band run).
-func buildReport(spec specInfo, band int, faction, race, talents string, talentPoints int, weights map[string]float64, weightOrder []string, picks map[string]slotPick, setDPS float64, swaps []swapResult, noSource []candidate, previous map[string]slotPick, weightsSeconds, verifySeconds float64, verifyErrors []string) bandReport {
+func buildReport(spec specInfo, band int, faction, race, talents string, talentPoints int, weights map[string]api.StatWeight, weightOrder []string, picks map[string]slotPick, setDPS float64, swaps []swapResult, noSource []candidate, previous map[string]slotPick, weightsSeconds, verifySeconds float64, verifyErrors []string) bandReport {
 	swapBySlot := make(map[string]swapResult, len(swaps))
 	for _, s := range swaps {
 		swapBySlot[s.Slot] = s
@@ -134,7 +178,13 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 
 	wrows := make([]weightRow, 0, len(weightOrder))
 	for _, id := range weightOrder {
-		wrows = append(wrows, weightRow{Stat: id, Weight: weights[id]})
+		w := weights[id]
+		wrows = append(wrows, weightRow{
+			Stat:          id,
+			Weight:        w.Weight,
+			Error:         w.Error,
+			Insignificant: !isWeightSignificant(w),
+		})
 	}
 
 	return bandReport{
@@ -232,10 +282,14 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 			fmt.Fprintf(&b, "Set DPS (verified): %.1f. Weights run: %.1fs. Verify run: %.1fs. %d eligible items had no known source.\n\n",
 				r.SetDPS, r.WeightsRunSeconds, r.VerifyRunSeconds, r.NoSourceCount)
 
-			fmt.Fprintf(&b, "Stat weights (normalized to %s = 1.0): ", spec.ReferenceStat)
+			fmt.Fprintf(&b, "Stat weights (normalized to %s = 1.0, error under %.0f%% of the weight to publish - see report.go's isWeightSignificant): ", spec.ReferenceStat, significanceErrorFraction*100)
 			parts := make([]string, len(r.Weights))
 			for i, w := range r.Weights {
-				parts[i] = fmt.Sprintf("%s=%.3f", w.Stat, w.Weight)
+				if w.Insignificant {
+					parts[i] = fmt.Sprintf("%s=not significant (%.3f ± %.3f)", w.Stat, w.Weight, w.Error)
+				} else {
+					parts[i] = fmt.Sprintf("%s=%.3f ± %.3f", w.Stat, w.Weight, w.Error)
+				}
 			}
 			fmt.Fprintln(&b, strings.Join(parts, ", "))
 			b.WriteString("\n")

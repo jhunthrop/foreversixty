@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/jhunthrop/foreversixty/sim/api"
 )
 
 func TestTitleCase(t *testing.T) {
@@ -25,7 +27,7 @@ func TestBuildReportFirstBandHasNoPreviousSoEveryPickIsNew(t *testing.T) {
 	picks := map[string]slotPick{
 		"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Helm"}, HasSource: true, Source: itemSource{Kind: "quest", Label: "A Quest"}}},
 	}
-	r := buildReport(reportSpec(), 20, "horde", "troll", "0500000", 5, map[string]float64{"agility": 1.5}, reportSpec().WeightStats, picks, 500, nil, nil, nil, 1.2, 3.4, nil)
+	r := buildReport(reportSpec(), 20, "horde", "troll", "0500000", 5, map[string]api.StatWeight{"agility": {Stat: "agility", Weight: 1.5, Error: 0.1}}, reportSpec().WeightStats, picks, 500, nil, nil, nil, 1.2, 3.4, nil)
 	if r.Band != 20 || r.Faction != "horde" || r.Race != "troll" || r.TalentPoints != 5 {
 		t.Fatalf("buildReport base fields wrong: %+v", r)
 	}
@@ -146,7 +148,10 @@ func TestBuildReportNoSourceCountAndSample(t *testing.T) {
 }
 
 func TestBuildReportWeightsFollowOrder(t *testing.T) {
-	weights := map[string]float64{"agility": 2.5, "ranged_attack_power": 1.0}
+	weights := map[string]api.StatWeight{
+		"agility":             {Stat: "agility", Weight: 2.5, Error: 0.1},
+		"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0, Error: 0.05},
+	}
 	order := []string{"ranged_attack_power", "agility"}
 	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, weights, order, map[string]slotPick{}, 0, nil, nil, nil, 0, 0, nil)
 	if len(r.Weights) != 2 || r.Weights[0].Stat != "ranged_attack_power" || r.Weights[1].Stat != "agility" {
@@ -154,6 +159,32 @@ func TestBuildReportWeightsFollowOrder(t *testing.T) {
 	}
 	if r.Weights[0].Weight != 1.0 || r.Weights[1].Weight != 2.5 {
 		t.Fatalf("r.Weights = %+v, wrong values", r.Weights)
+	}
+}
+
+func TestBuildReportFlagsInsignificantWeights(t *testing.T) {
+	// The owner's own repro (2026-09-28, hunter-marksmanship band 20):
+	// melee_haste read 14.87 with an error wide enough that report.go's
+	// own significanceErrorFraction (25%) rejects it, while agility's
+	// tight error passes.
+	weights := map[string]api.StatWeight{
+		"agility":     {Stat: "agility", Weight: 2.05, Error: 0.1},
+		"melee_haste": {Stat: "melee_haste", Weight: 14.87, Error: 6.0},
+	}
+	order := []string{"agility", "melee_haste"}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, weights, order, map[string]slotPick{}, 0, nil, nil, nil, 0, 0, nil)
+	byStat := map[string]weightRow{}
+	for _, w := range r.Weights {
+		byStat[w.Stat] = w
+	}
+	if byStat["agility"].Insignificant {
+		t.Errorf("agility (error 0.1 on weight 2.05, %.0f%% below threshold) reported insignificant", significanceErrorFraction*100)
+	}
+	if !byStat["melee_haste"].Insignificant {
+		t.Errorf("melee_haste (error 6.0 on weight 14.87, over threshold) reported significant")
+	}
+	if byStat["melee_haste"].Error != 6.0 {
+		t.Errorf("melee_haste.Error = %v, want 6.0 carried through unchanged", byStat["melee_haste"].Error)
 	}
 }
 

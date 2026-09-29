@@ -35,6 +35,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
@@ -283,11 +284,17 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			return fmt.Errorf("band %d weights run: %w", band, err)
 		}
 		weightsSeconds := time.Since(weightsStart).Seconds()
+		// buildBandPool/score() only ever need the plain number (a
+		// candidate's stats dotted against it); wresult itself (with
+		// Error and Insignificant) rides through to buildReport
+		// unchanged, so the report can publish what this command's own
+		// significance bar (report.go's isWeightSignificant) says about
+		// each one instead of a bare, unqualified number.
 		weights := make(map[string]float64, len(wresult))
 		for stat, w := range wresult {
 			weights[stat] = w.Weight
 		}
-		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, weights))
+		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
 
 		for _, f := range factions {
 			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights)
@@ -321,7 +328,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				log.Printf("leveling-bis: %s band %d %s: could not verify %s", spec, band, f.name, e)
 			}
 
-			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, weights, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors)
+			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors)
 			reports = append(reports, report)
 			previous[f.name] = picks
 
@@ -346,10 +353,20 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	return nil
 }
 
-func formatWeights(order []string, weights map[string]float64) string {
+// formatWeights renders the log line a nightly run's own console shows
+// per band: every weight with its ± error, and "not significant" for
+// one report.go's isWeightSignificant would grey out on the page - so
+// a reader watching the run does not have to open the JSON to see the
+// same honesty the page shows.
+func formatWeights(order []string, weights map[string]api.StatWeight) string {
 	parts := make([]string, len(order))
 	for i, id := range order {
-		parts[i] = fmt.Sprintf("%s=%.3f", id, weights[id])
+		w := weights[id]
+		if !isWeightSignificant(w) {
+			parts[i] = fmt.Sprintf("%s=not significant (%.3f ± %.3f)", id, w.Weight, w.Error)
+			continue
+		}
+		parts[i] = fmt.Sprintf("%s=%.3f ± %.3f", id, w.Weight, w.Error)
 	}
 	return strings.Join(parts, ", ")
 }
