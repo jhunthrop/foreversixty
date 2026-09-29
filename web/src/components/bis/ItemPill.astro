@@ -1,0 +1,54 @@
+---
+// web/src/components/bis/ItemPill.astro
+// The small "icon + quality-coloured name" mention (a runner-up, a changed-slot's before/
+// after) that used to be ItemHover's own default (no `children` snippet) rendering --
+// lane bis-tooltip-host (2026-09-29) moved every row on this page off a per-item
+// `ItemHover` island, so this is the same visual in plain server markup: a
+// `data-bis-item="<id>"` attribute and `data-testid="item-hover-<id>"` (unchanged, so
+// tests/e2e/bis.spec.ts's own `[data-testid^="item-hover-"]` locator still finds it) are
+// all `BisTooltipHost.svelte`'s delegated listeners need to open/close its tooltip.
+import type { ItemTooltipModel } from '../../lib/items/tooltip';
+import { rarityClassFor } from '../../lib/planner/items';
+import { dataUrl } from '../../lib/planner/load';
+
+interface Props {
+  itemId: number;
+  model: ItemTooltipModel | undefined;
+  build: string;
+  class?: string;
+}
+
+const { itemId, model, build, class: className = '' } = Astro.props;
+---
+
+<span
+  class={`item-pill inline-flex min-w-0 items-center gap-1 ${className}`}
+  data-testid={`item-hover-${itemId}`}
+  data-bis-item={itemId}
+  tabindex="0"
+  role="button"
+  aria-haspopup="true"
+>
+  {model ? (
+    <>
+      <img
+        src={dataUrl(build, `icons/${model.icon}.webp`)}
+        alt=""
+        width="20"
+        height="20"
+        loading="lazy"
+        decoding="async"
+        class="item-pill-icon rounded-control border-line h-5 w-5 border object-cover"
+      />
+      <span class={rarityClassFor(model.quality)}>{model.name}</span>
+    </>
+  ) : (
+    <span class="text-muted">Item {itemId}</span>
+  )}
+</span>
+
+<style>
+  .item-pill {
+    position: relative;
+  }
+</style>

@@ -168,4 +168,25 @@ describe('itemTooltipModel', () => {
   it('has no source lines when the item is not in the loot file', () => {
     expect(itemTooltipModel(item({ id: 42 }), NO_SOURCES).sourceLines).toEqual([]);
   });
+
+  it('drops a duplicate line when two quest entries render identically', () => {
+    // A neutral ("both") quest reward can appear as two separate entries in loot.json (one
+    // recorded per side that can pick it up) that both humanise to the exact same line --
+    // ItemTooltip.svelte keys its `{#each sourceLines as line (line)}` by the line's own
+    // text, and a duplicate key there throws instead of rendering, so this must collapse to
+    // one line rather than reach the component twice.
+    const loot: LootFile = {
+      sources: [],
+      quests: {
+        '19972': [
+          { quest_id: 1, name: "Rare Fish - Keefer's Angelfish", faction: 'both', min_level: 1, level: 5 },
+          { quest_id: 1, name: "Rare Fish - Keefer's Angelfish", faction: 'both', min_level: 1, level: 5 },
+        ],
+      },
+    };
+    const sources: ItemTooltipSources = { loot, sets: [] };
+    expect(itemTooltipModel(item({ id: 19972 }), sources).sourceLines).toEqual([
+      "Rare Fish - Keefer's Angelfish (Both)",
+    ]);
+  });
 });

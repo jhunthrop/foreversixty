@@ -57,6 +57,13 @@ const PAGE_ISLAND_BUDGETS = [
   { component: 'Rankings', limitBytes: 16 * 1024 },
   { component: 'Character', limitBytes: 16 * 1024 },
   { component: 'GuildShell', limitBytes: 16 * 1024 },
+  // Lane bis-tooltip-host (2026-09-29): one BisTooltipHost per /bis/<class>/<spec> page
+  // replaces roughly 840 per-row ItemHover islands with delegated document-level listeners
+  // plus the same lazy-loaded ItemTooltip.svelte panel ItemHover already used -- no data,
+  // no per-row state, so its own shell should stay close to ItemHover's own ~2 KB. 8 KB
+  // gzipped leaves real headroom without hiding an accidental heavy import the way the
+  // other two page-island budgets above already don't.
+  { component: 'BisTooltipHost', limitBytes: 8 * 1024 },
 ];
 
 /**

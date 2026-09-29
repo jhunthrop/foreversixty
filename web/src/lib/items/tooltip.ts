@@ -150,7 +150,14 @@ function sourceLinesFor(itemId: number, loot: LootFile): string[] {
   for (const quest of loot.quests?.[String(itemId)] ?? []) {
     lines.push(`${quest.name} (${humanise(quest.faction)})`);
   }
-  return lines;
+  // A quest that rewards the item to both factions separately (an Alliance-side and a
+  // Horde-side copy of the same quest, both humanising to "(Both)") would otherwise print
+  // the identical line twice -- besides being a pointless repeat, ItemTooltip.svelte keys
+  // its `{#each sourceLines as line (line)}` by the line's own text, and Svelte throws
+  // (rather than silently rendering) on a duplicate key, which would crash the tooltip
+  // instead of just showing it. `Set` preserves insertion order, so this only removes the
+  // repeat, never reorders the real lines.
+  return [...new Set(lines)];
 }
 
 /** The one place every ItemHover/ItemTooltip in the site builds its model -- a runtime
