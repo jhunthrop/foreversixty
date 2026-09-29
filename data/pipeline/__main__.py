@@ -97,6 +97,15 @@ def build_parser() -> argparse.ArgumentParser:
         "target without spending the page budget on Classic ids first",
     )
 
+    hf = sub.add_parser(
+        "hotfixes",
+        help="decode a copied DBCache.bin ('XFTH' hotfix cache) into raw/hotfixes/"
+        "{ItemSparse,Item}.csv for `normalize` to merge over the shipped tables -- "
+        "never fetches the cache itself; the controller copies it from the client",
+    )
+    hf.add_argument("--build", required=True)
+    hf.add_argument("--cache", required=True, help="path to the copied DBCache.bin")
+
     n = sub.add_parser("normalize", help="normalize raw CSVs into JSON")
     n.add_argument("--build", required=True)
     n.add_argument(
@@ -375,6 +384,18 @@ def main(argv: list[str] | None = None) -> int:
         from pipeline.normalize.itemnames import write_item_names_from_build
 
         write_item_names_from_build(args.build)
+    elif args.command == "hotfixes":
+        from pathlib import Path
+
+        from pipeline.hotfix_merge import write_build_hotfix_tables
+
+        for result in write_build_hotfix_tables(args.build, Path(args.cache)):
+            print(
+                f"hotfixes {result.table}: {result.valid} valid, {result.removed} removed, "
+                f"{result.invalid} invalid, {result.not_public} not_public records "
+                f"({result.new_ids} new ids, {result.overriding_ids} overriding shipped "
+                f"rows) -> {result.path}"
+            )
     elif args.command == "normalize":
         from pathlib import Path
 
