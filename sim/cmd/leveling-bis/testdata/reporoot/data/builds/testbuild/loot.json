@@ -21,6 +21,20 @@
       "bosses": [
         {"name": "Taragaman the Hungerer", "items": [1004]}
       ]
+    },
+    {
+      "id": "rep-1",
+      "kind": "rep",
+      "name": "A Test Faction",
+      "faction_id": 1,
+      "standing": "revered",
+      "items": [1005]
+    },
+    {
+      "id": "vendor-1",
+      "kind": "vendor",
+      "name": "A Test Quartermaster",
+      "items": [1005]
     }
   ],
   "quests": {

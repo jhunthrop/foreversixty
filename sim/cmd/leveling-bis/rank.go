@@ -18,7 +18,6 @@ package main
 import (
 	"sort"
 
-	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
@@ -73,7 +72,7 @@ const effectRankTopN = 4
 // compare it against). Mirrors rankTrinketSlot's own error handling:
 // a candidate whose verify sim fails is skipped and logged, not fatal
 // to the slot.
-func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug string, level int, picks map[string]slotPick, bySlot map[string][]scored, slot string) (map[string]slotPick, []string) {
+func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, bySlot map[string][]scored, slot string) (map[string]slotPick, []string) {
 	out := make(map[string]slotPick, len(picks))
 	for k, v := range picks {
 		out[k] = v
@@ -132,7 +131,7 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 	var notes []string
 	for _, c := range candidates {
 		gear := swapSlot(picks, slot, c.ID, c.TwoHand)
-		req := plainRequest(spec, api.CharacterSpec{Name: "effect-rank", Race: race, Class: classSlug, Level: level, Gear: gear}, trinketRankIterations, verifySeed)
+		req := plainRequest(spec, bandCharacter("effect-rank", race, classSlug, level, talents, gear), trinketRankIterations, verifySeed)
 		dps, err := runner.RunPlainDPS(req)
 		if err != nil {
 			notes = append(notes, formatTrinketRankError(slot, c, err))

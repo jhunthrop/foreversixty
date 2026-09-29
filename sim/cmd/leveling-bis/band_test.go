@@ -10,7 +10,7 @@ func TestSourceForNoSource(t *testing.T) {
 }
 
 func TestSourceForPicksHighestPriorityKind(t *testing.T) {
-	// sourceKindPriority: quest, vendor, dungeon, crafted, rep, pvp, world, raid
+	// sourceKindPriority: quest, rep, vendor, dungeon, crafted, pvp, world, raid
 	// - dungeon must win over world even though world was inserted
 	// first, because the priority order (not insertion order) decides.
 	idx := lootIndex{
@@ -26,8 +26,9 @@ func TestSourceForPicksHighestPriorityKind(t *testing.T) {
 }
 
 func TestSourceForPicksVendorOverDungeonAndFallsBackToItAlone(t *testing.T) {
-	// vendor sits right after quest in sourceKindPriority (added by the
-	// 2026-09-28 night-bis-sources lane) and beats dungeon/world/etc.
+	// vendor sits right after quest and rep in sourceKindPriority
+	// (added by the 2026-09-28 night-bis-sources lane) and beats
+	// dungeon/world/etc.
 	idx := lootIndex{
 		1: {
 			{Kind: "world", Label: "World Vendor"},
@@ -233,5 +234,55 @@ func TestSourceForTrustsItemFactionRestrictionOverAMinedRepSideMismatch(t *testi
 	idx[1] = []itemSource{{Kind: "rep", Label: "Warsong Outriders", Side: "horde", Standing: "honored"}}
 	if _, ok := sourceFor(1, 20, "alliance", "", idx); ok {
 		t.Fatal("an unrestricted item's mined rep Side must still gate a mismatched faction")
+	}
+}
+
+// This lane's brief, defect 2: sourceKindPriority now lists rep ahead
+// of vendor, so when an item's index carries both (the quartermaster's
+// own vendor row, gated by vendorInheritsRepStandingGate in data.go),
+// the published label reads the reputation the player actually has to
+// earn - "Silverwing Sentinels (honored)" - rather than the generic
+// "vendor" the old order preferred.
+func TestSourceForPrefersRepOverVendorForTheSameItem(t *testing.T) {
+	idx := lootIndex{
+		20444: {
+			{Kind: "rep", Label: "Silverwing Sentinels", Side: "alliance", Standing: "honored"},
+			{Kind: "vendor", Label: "Illiyana Moonblaze", Side: "alliance", Standing: "honored"},
+		},
+	}
+	src, ok := sourceFor(20444, 20, "alliance", "", idx)
+	if !ok || src.Kind != "rep" || src.Label != "Silverwing Sentinels" {
+		t.Fatalf("sourceFor = %+v, %v, want the rep source (Silverwing Sentinels), not vendor", src, ok)
+	}
+}
+
+// The defect itself: a vendor row gated to the same standing as its
+// matching rep row must obey that gate exactly like the rep row does -
+// Outrunner's Bow (Warsong Outriders revered) must not resolve as an
+// ordinary level-agnostic vendor purchase at level 20.
+func TestSourceForGatesAVendorRowThatInheritedARepStanding(t *testing.T) {
+	idx := lootIndex{
+		19562: {
+			{Kind: "rep", Label: "Warsong Outriders", Side: "horde", Standing: "revered"},
+			{Kind: "vendor", Label: "Kelm Hargunth", Side: "horde", Standing: "revered"},
+		},
+	}
+	if _, ok := sourceFor(19562, 20, "horde", "", idx); ok {
+		t.Fatal("a vendor row gated to revered must not resolve for a level-20 character (bypassing the reputation gate)")
+	}
+	src, ok := sourceFor(19562, 60, "horde", "", idx)
+	if !ok || src.Kind != "rep" {
+		t.Fatalf("sourceFor at 60 = %+v, %v, want the rep source obtainable at 60", src, ok)
+	}
+}
+
+// A vendor source with no matching rep source in the index (an
+// ordinary gold vendor) must remain ungated - vendorInheritsRepStandingGate
+// only touches a vendor row that shares an id with a rep row.
+func TestSourceForOrdinaryVendorWithNoMatchingRepStaysUngated(t *testing.T) {
+	idx := lootIndex{1: {{Kind: "vendor", Label: "A Gold Vendor"}}}
+	src, ok := sourceFor(1, 1, "alliance", "", idx)
+	if !ok || src.Kind != "vendor" {
+		t.Fatalf("sourceFor = %+v, %v, want the ungated vendor source obtainable at any level", src, ok)
 	}
 }

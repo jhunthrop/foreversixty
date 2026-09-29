@@ -412,7 +412,51 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		}
 		questFloors[id] = leveling.LowestFloor(levels)
 	}
-	return idx, questFloors, nil
+	return vendorInheritsRepStandingGate(idx), questFloors, nil
+}
+
+// vendorInheritsRepStandingGate returns a copy of idx where a "vendor"
+// source sharing an item id with a "rep" source inherits that rep
+// source's own Side/Standing (this lane's brief, defect 2). A
+// reputation quartermaster's own vendor row (Illiyana Moonblaze,
+// Kelm Hargunth, ...) duplicates its faction's rep-reward item list
+// verbatim - loot.json's own data confirms this for every rep tier
+// this build carries - but the vendor kind itself names no
+// FactionID/Standing (lootSource's Standing field is populated only
+// on the `src.Kind == "rep"` branch above), so sourceObtainable saw a
+// bare, level-agnostic "vendor" purchase for an item that actually
+// needs Silverwing Sentinels revered: Outrunner's Bow (item 19562+)
+// showed as an ordinary level-18 vendor item, and the honored-tier
+// Sentinel's Medallion's own report line read "vendor" instead of
+// "Silverwing Sentinels (honored)" - the reputation gate the item
+// really has, bypassed by its own vendor row. An item's vendor source
+// with no matching rep source (an ordinary gold vendor) is returned
+// unchanged.
+func vendorInheritsRepStandingGate(idx lootIndex) lootIndex {
+	out := make(lootIndex, len(idx))
+	for id, srcs := range idx {
+		var repSrc *itemSource
+		for i := range srcs {
+			if srcs[i].Kind == "rep" {
+				repSrc = &srcs[i]
+				break
+			}
+		}
+		if repSrc == nil {
+			out[id] = srcs
+			continue
+		}
+		gated := make([]itemSource, len(srcs))
+		for i, s := range srcs {
+			if s.Kind == "vendor" {
+				s.Side = repSrc.Side
+				s.Standing = repSrc.Standing
+			}
+			gated[i] = s
+		}
+		out[id] = gated
+	}
+	return out
 }
 
 // applyEffectiveRequiredLevels returns a copy of items with each

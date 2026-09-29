@@ -30,6 +30,18 @@ var slotOrder = []string{
 type slotPick struct {
 	Item     *scored
 	RunnerUp *scored
+	// Ties is every OTHER candidate in this slot's score-sorted list
+	// that scored identically to Item (this lane's brief, defect 4):
+	// pick()'s tie-break is item id, ascending, which otherwise
+	// silently picks one of several equally-good items - three
+	// one-handers scoring 8.28 apiece, with the report showing only
+	// the lowest-id one as though it were uniquely best - with no
+	// record that the others existed. Populated by pick() only: the
+	// trinket/effect/set-completion passes (rank.go, trinkets.go,
+	// sets.go) replace a slot's whole slotPick with their own
+	// real-sim-ranked choice, which is not a score tie in this sense,
+	// so a slot any of them overwrites reports no ties.
+	Ties []scored
 }
 
 // candidatesBySlot fans a scored pool out by every planner slot each
@@ -103,18 +115,40 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 			// score() (see its own comment) converts a weapon's DPS to
 			// attack power per slot in isolation, with no term for the
 			// off hand a two-hander forfeits - so a two-hander's higher
-			// raw dps routinely outscores a one-hander here even though
-			// a dual-wielder loses an entire second weapon's worth of
-			// attack power, and for a spec whose kit assumes two
-			// imbued weapons (Enhancement's Windfury/Rockbiter,
+			// raw dps routinely outscores a SINGLE one-hander here even
+			// though a dual-wielder loses an entire second weapon's
+			// worth of attack power, and for a spec whose kit assumes
+			// two imbued weapons (Enhancement's Windfury/Rockbiter,
 			// leveling.KitConsumes) also loses the off-hand imbue
-			// entirely. A dual-wielder's main hand is never a
-			// two-hander in practice; this kept picking Smite's Mighty
-			// Hammer (a two-hand hammer, item 7230) for shaman-
-			// enhancement's level-20 main hand, leaving off_hand
-			// permanently empty rather than the dual-wield set a real
-			// Enhancement shaman runs.
-			if leveling.DualWieldSpecs[spec] {
+			// entirely. This kept picking Smite's Mighty Hammer (a
+			// two-hand hammer, item 7230) for shaman-enhancement's
+			// level-20 main hand, leaving off_hand permanently empty
+			// rather than the dual-wield set a real Enhancement shaman
+			// runs.
+			//
+			// A blanket exclusion is wrong for a spec whose weapon is a
+			// stat stick rather than its damage source, though (this
+			// lane's brief, defect 3): hunter-beast-mastery/-marksmanship
+			// are in DualWieldSpecs (pick.go treats "never offers a
+			// two-hander for main_hand" and "offers main_hand's
+			// one-handers to off_hand" as one rule), but their weight
+			// runs zero out melee attack_power entirely (character.go's
+			// weightsRequest doc), so score()'s dps-derived term is not
+			// inflating a two-hander's score the way it does for a
+			// melee dual-wielder - Impaling Harpoon (a two-hand polearm,
+			// scored on its flat agility alone) legitimately outscored
+			// Goblin Screwdriver+Poniard (two one-handers) this way.
+			// twoHandBeatsPair compares the best two-hander against the
+			// best LEGAL pair (main one-hander + its own best off-hand
+			// partner, not the two-hander's score against a single
+			// one-hander alone - the exact "no term for the forfeited
+			// off hand" gap the exclusion above exists to guard
+			// against), so a two-hander only wins here when it is
+			// ahead of the full pair it would replace. Ties, and any
+			// case this score-level approximation gets wrong, are
+			// settled by the real sim in verify.go's own swap pass,
+			// same as every other pick() decision.
+			if leveling.DualWieldSpecs[spec] && !twoHandBeatsPair(bySlot) {
 				list = excludeTwoHand(list)
 			}
 		case "off_hand":
@@ -162,6 +196,18 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 		if len(list) > 1 {
 			runnerUp := list[1]
 			sp.RunnerUp = &runnerUp
+		}
+		if sp.Item != nil {
+			// list is best-score-first (candidatesBySlot's own
+			// contract), so every tie with the winner is contiguous
+			// starting right after index 0 - stop at the first lower
+			// score.
+			for i := 1; i < len(list); i++ {
+				if list[i].Score != sp.Item.Score {
+					break
+				}
+				sp.Ties = append(sp.Ties, list[i])
+			}
 		}
 		out[slot] = sp
 
@@ -237,6 +283,52 @@ func excludeTwoHand(list []scored) []scored {
 		}
 	}
 	return out
+}
+
+// twoHandBeatsPair reports whether bySlot's best two-handed main_hand
+// candidate outscores the best legal one-handed main_hand+off_hand
+// PAIR - this lane's brief, defect 3. mainList is already best-score-
+// first (candidatesBySlot's own contract), so the first two-handed
+// entry found walking it is the single highest-scoring two-hander
+// regardless of how many one-handers sit above it in the list.
+//
+// The pair side mirrors pick()'s own off_hand case: the best one-hand
+// main_hand candidate, plus the best off_hand candidate once that
+// one-hander is excluded from its own pool (excludePaired) - a
+// dual-wielder's off hand pool is main_hand's one-handers merged with
+// off_hand's own list, weapons only, exactly as pick() builds it. A
+// pair with no viable off-hand partner (empty pool) is still scored on
+// its main-hand item alone, since a bare main-hander is what a
+// dual-wielder gets when nothing else is eligible.
+func twoHandBeatsPair(bySlot map[string][]scored) bool {
+	mainList := bySlot["main_hand"]
+	var bestTwoHand *scored
+	for i := range mainList {
+		if mainList[i].TwoHand {
+			c := mainList[i]
+			bestTwoHand = &c
+			break
+		}
+	}
+	if bestTwoHand == nil {
+		return false
+	}
+
+	oneHanders := oneHandedWeapons(mainList)
+	if len(oneHanders) == 0 {
+		// No legal one-hand main_hand candidate at all: the two-hander
+		// has nothing to lose to.
+		return true
+	}
+	bestMain := oneHanders[0]
+	pairScore := bestMain.Score
+
+	offPool := weaponsOnly(excludePaired(mergeByScore(bySlot["off_hand"], oneHanders), bestMain.ID, bestMain.Name))
+	if len(offPool) > 0 {
+		pairScore += offPool[0].Score
+	}
+
+	return bestTwoHand.Score > pairScore
 }
 
 // mergeByScore concatenates two already best-score-first lists (the

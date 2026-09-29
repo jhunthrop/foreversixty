@@ -9,6 +9,15 @@
     "weight_stats": ["ranged_attack_power", "agility", "crit"]
   },
   {
+    "spec": "hunter-beast-mastery",
+    "class_slug": "hunter",
+    "spec_slug": "beast-mastery",
+    "name": "Beast Mastery",
+    "tree_index": 0,
+    "reference_stat": "ranged_attack_power",
+    "weight_stats": ["ranged_attack_power", "agility", "crit"]
+  },
+  {
     "spec": "mage-fire",
     "class_slug": "mage",
     "spec_slug": "fire",

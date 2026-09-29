@@ -151,6 +151,21 @@ func TestLoadLootIndex(t *testing.T) {
 	if questFloors[1002] != 0 {
 		t.Errorf("questFloors[1002] = %d, want 0 (not a quest reward)", questFloors[1002])
 	}
+	// This lane's brief, defect 2: item 1005's fixture rows are a rep
+	// source (revered) and a quartermaster vendor row for the same
+	// item - loadLootIndex's own vendorInheritsRepStandingGate must
+	// give the vendor row that rep source's own Standing (and Side),
+	// so sourceObtainable's revered gate reaches it too, not just the
+	// rep row.
+	gated, ok := idx[1005]
+	if !ok || len(gated) != 2 {
+		t.Fatalf("idx[1005] = %+v, want a rep source and a vendor source", gated)
+	}
+	for _, s := range gated {
+		if s.Kind == "vendor" && s.Standing != "revered" {
+			t.Errorf("idx[1005] vendor source = %+v, want Standing \"revered\" inherited from the matching rep source", s)
+		}
+	}
 }
 
 func TestLoadLootIndexMissingFile(t *testing.T) {
@@ -206,8 +221,8 @@ func TestLoadAllSpecs(t *testing.T) {
 	if err != nil {
 		t.Fatalf("loadAllSpecs: %v", err)
 	}
-	if len(specs) != 3 {
-		t.Fatalf("loadAllSpecs = %d specs, want 3", len(specs))
+	if len(specs) != 4 {
+		t.Fatalf("loadAllSpecs = %d specs, want 4", len(specs))
 	}
 }
 

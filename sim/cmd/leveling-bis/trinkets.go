@@ -2,8 +2,6 @@ package main
 
 import (
 	"sort"
-
-	"github.com/jhunthrop/foreversixty/sim/api"
 )
 
 // Ranking trinkets by engine-verified DPS instead of score().
@@ -82,7 +80,7 @@ func topByItemLevel(list []scored, excludeID int, excludeName string) []scored {
 // lowest-id eligible trinket, which the report's swap_note on that row
 // still leaves honestly unverified) and the caller is told so via the
 // returned notes slice, one line per skipped candidate.
-func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string, level int, picks map[string]slotPick, bySlot map[string][]scored, slot string) (map[string]slotPick, []string) {
+func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, bySlot map[string][]scored, slot string) (map[string]slotPick, []string) {
 	out := make(map[string]slotPick, len(picks))
 	for k, v := range picks {
 		out[k] = v
@@ -106,7 +104,7 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	var notes []string
 	for _, c := range candidates {
 		gear := swapSlot(picks, slot, c.ID, false)
-		req := plainRequest(spec, api.CharacterSpec{Name: "trinket-rank", Race: race, Class: classSlug, Level: level, Gear: gear}, trinketRankIterations, verifySeed)
+		req := plainRequest(spec, bandCharacter("trinket-rank", race, classSlug, level, talents, gear), trinketRankIterations, verifySeed)
 		dps, err := runner.RunPlainDPS(req)
 		if err != nil {
 			notes = append(notes, formatTrinketRankError(slot, c, err))

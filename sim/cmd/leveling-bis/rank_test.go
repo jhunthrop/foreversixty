@@ -64,7 +64,7 @@ func TestRankSlotWithEffectsPicksTheHighestMeasuredDPSAmongImplementedCandidates
 			gearKey([]api.GearSlot{{Slot: "main_hand", ItemID: 7959}}): 200, // highest - should win
 		},
 	}
-	out, notes := rankSlotWithEffects(fake, specInfo{}, "dwarf", "hunter", 20, picks, bySlot, "main_hand")
+	out, notes := rankSlotWithEffects(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "main_hand")
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none", notes)
 	}
@@ -113,7 +113,7 @@ func TestRankSlotWithEffectsExcludesTwoHandersForADualWieldSpec(t *testing.T) {
 		},
 		DefaultDPS: 100,
 	}
-	out, notes := rankSlotWithEffects(fake, specInfo{Spec: "hunter-survival"}, "dwarf", "hunter", 35, picks, bySlot, "main_hand")
+	out, notes := rankSlotWithEffects(fake, specInfo{Spec: "hunter-survival"}, "dwarf", "hunter", 35, "", picks, bySlot, "main_hand")
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none (nothing left to compare the pick against)", notes)
 	}
@@ -137,7 +137,7 @@ func TestRankSlotWithEffectsLeavesTheSlotAloneWhenOnlyOneCandidateQualifies(t *t
 		},
 	}
 	fake := &fakeEngine{}
-	out, notes := rankSlotWithEffects(fake, specInfo{}, "dwarf", "hunter", 20, picks, bySlot, "main_hand")
+	out, notes := rankSlotWithEffects(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "main_hand")
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none (nothing to compare the pick against)", notes)
 	}

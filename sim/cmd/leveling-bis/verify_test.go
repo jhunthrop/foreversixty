@@ -148,7 +148,7 @@ func TestBuildGearProducesAPIGearSlots(t *testing.T) {
 func TestVerifyBandNoRunnerUpsReturnsBaselineOnly(t *testing.T) {
 	picks := map[string]slotPick{"head": {Item: p(1, false)}}
 	fake := &fakeEngine{DefaultDPS: 100}
-	dps, swaps, verifyErrors, err := verifyBand(fake, specInfo{Spec: "hunter-marksmanship"}, "dwarf", "hunter", 20, picks)
+	dps, swaps, verifyErrors, err := verifyBand(fake, specInfo{Spec: "hunter-marksmanship"}, "dwarf", "hunter", 20, "", picks)
 	if err != nil {
 		t.Fatalf("verifyBand: %v", err)
 	}
@@ -168,7 +168,7 @@ func TestVerifyBandRunnerUpBeatsThePick(t *testing.T) {
 		DefaultDPS: 100, // the baseline (head=1)
 		DPSByGear:  map[string]float64{gearKey([]api.GearSlot{{Slot: "head", ItemID: 2}}): 150},
 	}
-	dps, swaps, verifyErrors, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, picks)
+	dps, swaps, verifyErrors, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks)
 	if err != nil {
 		t.Fatalf("verifyBand: %v", err)
 	}
@@ -191,7 +191,7 @@ func TestVerifyBandRunnerUpLosesToThePick(t *testing.T) {
 		DefaultDPS: 100,
 		DPSByGear:  map[string]float64{gearKey([]api.GearSlot{{Slot: "head", ItemID: 2}}): 50},
 	}
-	_, swaps, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, picks)
+	_, swaps, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks)
 	if err != nil {
 		t.Fatalf("verifyBand: %v", err)
 	}
@@ -203,7 +203,7 @@ func TestVerifyBandRunnerUpLosesToThePick(t *testing.T) {
 func TestVerifyBandBaselineFailurePropagates(t *testing.T) {
 	picks := map[string]slotPick{"head": {Item: p(1, false)}}
 	fake := &fakeEngine{FailGear: gearKey(buildGear(picks))}
-	_, _, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, picks)
+	_, _, _, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks)
 	if err == nil {
 		t.Fatal("verifyBand with a failing baseline: want an error, got nil")
 	}
@@ -224,7 +224,7 @@ func TestVerifyBandSwapFailureIsCollectedNotFatal(t *testing.T) {
 		FailGear:   failingGear,
 		DPSByGear:  map[string]float64{gearKey(swapSlot(picks, "neck", 4, false)): 200},
 	}
-	_, swaps, verifyErrors, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, picks)
+	_, swaps, verifyErrors, err := verifyBand(fake, specInfo{}, "dwarf", "hunter", 20, "", picks)
 	if err != nil {
 		t.Fatalf("verifyBand: %v", err)
 	}
@@ -246,7 +246,7 @@ func TestApplySwapsPromotesTheMeasuredWinnerAndRemeasuresTheSet(t *testing.T) {
 	engine := &fakeEngine{DPSByGear: map[string]float64{gearKey(buildGear(map[string]slotPick{"head": {Item: better}})): 200}, DefaultDPS: 150}
 	spec := specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}
 
-	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, picks, []swapResult{{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, "", picks, []swapResult{{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -266,7 +266,7 @@ func TestApplySwapsPromotesTheMeasuredWinnerAndRemeasuresTheSet(t *testing.T) {
 		t.Fatal("applySwaps mutated its input picks")
 	}
 
-	same, sameDPS, sameSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, picks, []swapResult{{Slot: "head", SwapDPS: 100, BaselineDPS: 150, Beat: false}}, 150)
+	same, sameDPS, sameSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, "", picks, []swapResult{{Slot: "head", SwapDPS: 100, BaselineDPS: 150, Beat: false}}, 150)
 	if err != nil || sameDPS != 150 || same["head"].Item.ID != 1 || len(engine.Calls) != 1 {
 		t.Fatalf("a losing swap must leave picks and DPS alone without a sim: dps=%v item=%d calls=%d err=%v", sameDPS, same["head"].Item.ID, len(engine.Calls), err)
 	}
@@ -295,7 +295,7 @@ func TestApplySwapsRefusesToPromoteADuplicateOfItsPairMate(t *testing.T) {
 	engine := &fakeEngine{DefaultDPS: 999} // must never be called: nothing to re-measure once the only swap is refused
 	spec := specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}
 
-	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, picks, []swapResult{{Slot: "finger1", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, "", picks, []swapResult{{Slot: "finger1", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -330,7 +330,7 @@ func TestApplySwapsRefusesToPromoteAMainHandDuplicateOfOffHand(t *testing.T) {
 	engine := &fakeEngine{DefaultDPS: 999}
 	spec := specInfo{Spec: "hunter-survival", ClassSlug: "hunter"}
 
-	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 35, picks, []swapResult{{Slot: "main_hand", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "dwarf", "hunter", 35, "", picks, []swapResult{{Slot: "main_hand", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -345,7 +345,14 @@ func TestApplySwapsRefusesToPromoteAMainHandDuplicateOfOffHand(t *testing.T) {
 	}
 }
 
-func TestApplySwapsRefusesToPromoteATwoHanderBesideAnOffHand(t *testing.T) {
+// This lane's brief, defect 3: a two-handed runner-up that beat the
+// swap sim (its own SwapDPS already measured with off_hand correctly
+// dropped, per swapSlot) is promoted, and applySwaps empties off_hand
+// itself as part of that promotion - wouldBreakTwoHandInvariant used
+// to refuse this outright instead, silently keeping the weaker
+// dual-wield pick even though the sim had already measured the
+// two-hander beating it.
+func TestApplySwapsPromotesATwoHanderAndEmptiesTheOffHand(t *testing.T) {
 	current := &scored{candidate: candidate{ID: 1936, Name: "Goblin Screwdriver"}}
 	staff := &scored{candidate: candidate{ID: 3446, Name: "Darkwood Staff", TwoHand: true}}
 	held := &scored{candidate: candidate{ID: 3451, Name: "Nightglow Concoction"}}
@@ -356,18 +363,24 @@ func TestApplySwapsRefusesToPromoteATwoHanderBesideAnOffHand(t *testing.T) {
 	engine := &fakeEngine{DefaultDPS: 999}
 	spec := specInfo{Spec: "priest-shadow", ClassSlug: "priest"}
 
-	out, dps, gotSwaps, err := applySwaps(engine, spec, "undead", "priest", 20, picks, []swapResult{{Slot: "main_hand", SwapDPS: 23.4, BaselineDPS: 23.3, Beat: true}}, 23.3)
+	out, dps, gotSwaps, err := applySwaps(engine, spec, "undead", "priest", 20, "", picks, []swapResult{{Slot: "main_hand", SwapDPS: 23.4, BaselineDPS: 23.3, Beat: true}}, 23.3)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if out["main_hand"].Item.ID != current.ID || out["off_hand"].Item == nil {
-		t.Fatalf("main_hand = %d, off_hand nil = %v; want the one-hander kept beside its off hand", out["main_hand"].Item.ID, out["off_hand"].Item == nil)
+	if out["main_hand"].Item == nil || out["main_hand"].Item.ID != staff.ID {
+		t.Fatalf("main_hand = %+v, want the promoted two-hander (%d)", out["main_hand"].Item, staff.ID)
 	}
-	if dps != 23.3 || len(engine.Calls) != 0 {
-		t.Fatalf("a refused promotion must not re-measure the set: dps=%v calls=%d", dps, len(engine.Calls))
+	if out["main_hand"].RunnerUp == nil || out["main_hand"].RunnerUp.ID != current.ID {
+		t.Fatalf("main_hand runner-up = %+v, want the demoted one-hander (%d)", out["main_hand"].RunnerUp, current.ID)
 	}
-	if len(gotSwaps) != 1 || gotSwaps[0].Beat {
-		t.Fatalf("adjusted swaps = %+v, want the refused swap reported as not-beat", gotSwaps)
+	if out["off_hand"].Item != nil {
+		t.Fatalf("off_hand = %+v, want nil: equipping a two-hander empties it", out["off_hand"].Item)
+	}
+	if dps != 999 || len(engine.Calls) != 1 {
+		t.Fatalf("a promotion must re-measure the set once: dps=%v calls=%d", dps, len(engine.Calls))
+	}
+	if len(gotSwaps) != 1 || !gotSwaps[0].Beat {
+		t.Fatalf("adjusted swaps = %+v, want the promoted swap still marked Beat", gotSwaps)
 	}
 }
 
@@ -381,7 +394,7 @@ func TestApplySwapsRefusesAnOffHandUnderATwoHandedMainHand(t *testing.T) {
 	engine := &fakeEngine{DefaultDPS: 999}
 	spec := specInfo{Spec: "priest-shadow", ClassSlug: "priest"}
 
-	out, _, gotSwaps, err := applySwaps(engine, spec, "undead", "priest", 20, picks, []swapResult{{Slot: "off_hand", SwapDPS: 24, BaselineDPS: 23, Beat: true}}, 23)
+	out, _, gotSwaps, err := applySwaps(engine, spec, "undead", "priest", 20, "", picks, []swapResult{{Slot: "off_hand", SwapDPS: 24, BaselineDPS: 23, Beat: true}}, 23)
 	if err != nil {
 		t.Fatal(err)
 	}

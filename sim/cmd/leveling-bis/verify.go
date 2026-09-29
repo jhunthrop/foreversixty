@@ -168,8 +168,8 @@ func swapSlot(picks map[string]slotPick, slot string, itemID int, itemIsTwoHand 
 // bad candidate. A baseline failure is different: with no baseline
 // DPS there is nothing to compare a swap against, so that error
 // still propagates and the caller reports the band as unverified.
-func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, level int, picks map[string]slotPick) (baselineDPS float64, swaps []swapResult, verifyErrors []string, err error) {
-	baseline := plainRequest(spec, api.CharacterSpec{Name: "verify", Race: race, Class: classSlug, Level: level, Gear: buildGear(picks)}, verifyIterations, verifySeed)
+func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick) (baselineDPS float64, swaps []swapResult, verifyErrors []string, err error) {
+	baseline := plainRequest(spec, bandCharacter("verify", race, classSlug, level, talents, buildGear(picks)), verifyIterations, verifySeed)
 	baselineDPS, err = runner.RunPlainDPS(baseline)
 	if err != nil {
 		return 0, nil, nil, err
@@ -186,7 +186,7 @@ func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, leve
 	for _, slot := range slots {
 		runnerUp := picks[slot].RunnerUp
 		gear := swapSlot(picks, slot, runnerUp.ID, runnerUp.TwoHand)
-		req := plainRequest(spec, api.CharacterSpec{Name: "verify", Race: race, Class: classSlug, Level: level, Gear: gear}, verifyIterations, verifySeed)
+		req := plainRequest(spec, bandCharacter("verify", race, classSlug, level, talents, gear), verifyIterations, verifySeed)
 		dps, runErr := runner.RunPlainDPS(req)
 		if runErr != nil {
 			verifyErrors = append(verifyErrors, fmt.Sprintf("%s: runner-up %s (id %d): %v", slot, runnerUp.Name, runnerUp.ID, runErr))
@@ -225,20 +225,27 @@ func wouldDuplicatePairMate(out map[string]slotPick, slot string, itemID int, it
 	return out[mate].Item.ID == itemID || out[mate].Item.Name == itemName
 }
 
-// wouldBreakTwoHandInvariant is whether promoting runnerUp into slot
-// would leave a two-hander in main_hand next to an off_hand pick, or an
-// off_hand pick under a two-handed main hand. The swap sim measured the
-// runner-up with the rest of the set as it stood, so a two-hand
-// main-hand runner-up "beating" a one-hander was measured with the off
-// hand still counted; the published row must hold the invariant
-// pick.go's enforceTwoHandOffHandInvariant already established (the
-// nightly of 2026-09-29 published Darkwood Staff beside Nightglow
-// Concoction for priest-shadow band 20 this way).
-func wouldBreakTwoHandInvariant(out map[string]slotPick, slot string, runnerUp *scored) bool {
-	switch slot {
-	case "main_hand":
-		return runnerUp.TwoHand && out["off_hand"].Item != nil
-	case "off_hand":
+// wouldBreakTwoHandInvariant is whether promoting runnerUp into
+// off_hand would leave it equipped under a two-handed main hand -
+// pick.go's own enforceTwoHandOffHandInvariant rule, re-checked here
+// because a main_hand promotion earlier in this SAME applySwaps call
+// can make the character two-handed after off_hand's own swap was
+// already measured against the old (one-handed) main_hand.
+//
+// A main_hand promotion TO a two-hander is not refused here (it used
+// to be, and that used to be this function's whole job): applySwaps
+// itself now empties off_hand as PART of that promotion instead (this
+// lane's brief, defect 3) - the promoted swap's own SwapDPS was
+// already measured with off_hand correctly dropped (verify.go's own
+// swapSlot), so refusing the promotion outright would silently keep a
+// weaker dual-wield pick even when the sim had already measured the
+// two-hander beating it. The bug this function used to guard against
+// (the nightly of 2026-09-29 published Darkwood Staff beside Nightglow
+// Concoction for priest-shadow band 20) was promoting a two-hander
+// WITHOUT dropping off_hand at all; the fix now is to drop it
+// properly, not to refuse the promotion.
+func wouldBreakTwoHandInvariant(out map[string]slotPick, slot string) bool {
+	if slot == "off_hand" {
 		return out["main_hand"].Item != nil && out["main_hand"].Item.TwoHand
 	}
 	return false
@@ -257,7 +264,7 @@ func wouldBreakTwoHandInvariant(out map[string]slotPick, slot string, runnerUp *
 // happen -- see that function's own doc for why silently declining a
 // duplicate here but leaving the original swaps slice unchanged would
 // print a swap_note for an item the row no longer shows.
-func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, level int, picks map[string]slotPick, swaps []swapResult, setDPS float64) (map[string]slotPick, float64, []swapResult, error) {
+func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, swaps []swapResult, setDPS float64) (map[string]slotPick, float64, []swapResult, error) {
 	promoted := false
 	out := make(map[string]slotPick, len(picks))
 	for slot, pk := range picks {
@@ -270,17 +277,27 @@ func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, leve
 		if !sw.Beat || !ok || pk.RunnerUp == nil {
 			continue
 		}
-		if wouldDuplicatePairMate(out, sw.Slot, pk.RunnerUp.ID, pk.RunnerUp.Name) || wouldBreakTwoHandInvariant(out, sw.Slot, pk.RunnerUp) {
+		if wouldDuplicatePairMate(out, sw.Slot, pk.RunnerUp.ID, pk.RunnerUp.Name) || wouldBreakTwoHandInvariant(out, sw.Slot) {
 			adjusted[i].Beat = false
 			continue
 		}
 		out[sw.Slot] = slotPick{Item: pk.RunnerUp, RunnerUp: pk.Item}
 		promoted = true
+		if sw.Slot == "main_hand" && pk.RunnerUp.TwoHand {
+			// Equipping a two-hander physically empties the off hand -
+			// the same rule buildGear/swapSlot already apply to the
+			// gear list this swap's own SwapDPS was measured against
+			// (this file's own doc above). Clearing the SLOT ITSELF
+			// here (not just one trial's gear list) is the fix this
+			// lane's brief (defect 3) asks for in place of
+			// wouldBreakTwoHandInvariant's old outright refusal.
+			out["off_hand"] = slotPick{}
+		}
 	}
 	if !promoted {
 		return picks, setDPS, adjusted, nil
 	}
-	final := plainRequest(spec, api.CharacterSpec{Name: "verify", Race: race, Class: classSlug, Level: level, Gear: buildGear(out)}, verifyIterations, verifySeed)
+	final := plainRequest(spec, bandCharacter("verify", race, classSlug, level, talents, buildGear(out)), verifyIterations, verifySeed)
 	dps, err := runner.RunPlainDPS(final)
 	if err != nil {
 		return nil, 0, nil, err

@@ -36,6 +36,20 @@ type slotRow struct {
 	// hasImplementedEffect, the single predicate both this flag and the
 	// effect-verification pass itself read.
 	EffectUnmodelled bool `json:"effect_unmodelled,omitempty"`
+	// Ties is every other candidate that scored identically to this
+	// row's pick (slotPick.Ties, pick.go's own doc; this lane's brief,
+	// defect 4) - "or Blackwater Cutlass" as populated alternatives the
+	// page can print beside a pick that was really an arbitrary
+	// lowest-id tie-break rather than a unique best. Empty for a slot
+	// the trinket/effect/set-completion passes decided by a real sim
+	// instead of score() (see slotPick.Ties's own doc).
+	Ties []tieAlternative `json:"ties,omitempty"`
+}
+
+// tieAlternative is one equally-scored item slotRow.Ties names.
+type tieAlternative struct {
+	ItemID   int    `json:"item_id"`
+	ItemName string `json:"item_name"`
 }
 
 // bandReport is one band's whole answer for one faction: the pick per
@@ -113,6 +127,9 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			row.ItemName = pk.Item.Name
 			row.Score = pk.Item.Score
 			row.EffectUnmodelled = pk.Item.EffectText != "" && !hasImplementedEffect(pk.Item.candidate)
+			for _, tie := range pk.Ties {
+				row.Ties = append(row.Ties, tieAlternative{ItemID: tie.ID, ItemName: tie.Name})
+			}
 			if pk.Item.HasSource {
 				row.Source = pk.Item.Source.Label
 				row.SourceKind = pk.Item.Source.Kind
@@ -284,6 +301,13 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 				verified := ""
 				if row.ItemID != 0 {
 					item = fmt.Sprintf("%s (%d)", row.ItemName, row.ItemID)
+					if len(row.Ties) > 0 {
+						alts := make([]string, len(row.Ties))
+						for i, t := range row.Ties {
+							alts[i] = fmt.Sprintf("%s (%d)", t.ItemName, t.ItemID)
+						}
+						item += " (or " + strings.Join(alts, ", ") + ")"
+					}
 					score = strconv.FormatFloat(row.Score, 'f', 1, 64)
 					verified = "yes"
 					if !row.Verified {

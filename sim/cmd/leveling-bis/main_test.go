@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
@@ -195,5 +196,108 @@ func TestRunSpecWeightsFailurePropagates(t *testing.T) {
 	err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", t.TempDir(), "hunter-marksmanship", []int{20}, 5)
 	if err == nil {
 		t.Fatal("runSpec with a failing weights run: want an error, got nil")
+	}
+}
+
+// digitSum totals a LadderTalentString's digits ("5-5-1" -> 11) - a
+// cheap, deterministic stand-in for "how many talent points this
+// string spends", used below to make a fake engine's DPS a function of
+// Character.Talents without needing the real engine.
+func digitSum(talents string) int {
+	sum := 0
+	for _, r := range talents {
+		if r >= '0' && r <= '9' {
+			sum += int(r - '0')
+		}
+	}
+	return sum
+}
+
+// readSpecReportForTest reads a data/builds/<build>/bis/<spec>.json
+// file back into a specReport - the same shape writeSpecReport writes
+// (report.go) - for a test to assert on published fields runSpec's own
+// return value does not expose.
+func readSpecReportForTest(t *testing.T, path string) specReport {
+	t.Helper()
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("reading %s: %v", path, err)
+	}
+	var out specReport
+	if err := json.Unmarshal(b, &out); err != nil {
+		t.Fatalf("decoding %s: %v", path, err)
+	}
+	return out
+}
+
+// TestRunSpecPublishesDifferentSetDPSForDifferentTalentStrings guards
+// this lane's brief, defect 1: a direct sim of the published BM
+// level-60 set gave 227 DPS with talents equipped and 201 without, yet
+// the published set_dps was 200.15 for BOTH BM and MM at EVERY band -
+// the tell that Character.Talents never reached the engine at all
+// (character.go's bandCharacter, used by every plain-DPS site, is the
+// fix). This drives two specs whose fixture guide builds spend
+// different points (marksmanship.md: 5/5/5, beast-mastery.md: 1/1/1)
+// through the real pipeline with a fake engine whose DPS is a function
+// of Character.Talents, not of gear, and asserts their published
+// set_dps differ - the same shape a real regression here would show.
+func TestRunSpecPublishesDifferentSetDPSForDifferentTalentStrings(t *testing.T) {
+	fake := &fakeEngine{
+		WeightsResult: map[string]api.StatWeight{
+			"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0},
+			"agility":             {Stat: "agility", Weight: 1.8},
+		},
+		DPSFunc: func(req api.SimRequest) (float64, error) {
+			return 200 + float64(digitSum(req.Character.Talents))*2, nil
+		},
+	}
+
+	mmDir := t.TempDir()
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", mmDir, "hunter-marksmanship", []int{20}, 5); err != nil {
+		t.Fatalf("runSpec(hunter-marksmanship): %v", err)
+	}
+	bmDir := t.TempDir()
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", bmDir, "hunter-beast-mastery", []int{20}, 5); err != nil {
+		t.Fatalf("runSpec(hunter-beast-mastery): %v", err)
+	}
+
+	mm := readSpecReportForTest(t, filepath.Join(mmDir, "hunter-marksmanship.json"))
+	bm := readSpecReportForTest(t, filepath.Join(bmDir, "hunter-beast-mastery.json"))
+	if len(mm.Bands) == 0 || len(bm.Bands) == 0 {
+		t.Fatalf("expected at least one band report each, got mm=%d bm=%d", len(mm.Bands), len(bm.Bands))
+	}
+	if mm.Bands[0].Talents == bm.Bands[0].Talents {
+		t.Fatalf("fixture guide builds must spend different points so this test proves something: both bands got talents %q", mm.Bands[0].Talents)
+	}
+	if mm.Bands[0].SetDPS == bm.Bands[0].SetDPS {
+		t.Fatalf("hunter-marksmanship and hunter-beast-mastery talents differ (%q vs %q) but published set_dps is identical (%.2f) - Character.Talents is not reaching the engine", mm.Bands[0].Talents, bm.Bands[0].Talents, mm.Bands[0].SetDPS)
+	}
+}
+
+// TestRunSpecEveryPlainDPSRequestCarriesTheBandsTalents is the
+// narrower, per-call form of the guard above: every RunPlainDPS
+// request runSpec issues (verifyBand's baseline/swaps, applySwaps'
+// re-measure, rankTrinketSlot, rankSlotWithEffects, trySetCompletion -
+// this lane's brief names all eight CharacterSpec construction sites)
+// must carry the band's own non-empty talent string, not the zero
+// value.
+func TestRunSpecEveryPlainDPSRequestCarriesTheBandsTalents(t *testing.T) {
+	fake := &fakeEngine{
+		DefaultDPS: 500,
+		WeightsResult: map[string]api.StatWeight{
+			"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0},
+			"agility":             {Stat: "agility", Weight: 1.8},
+		},
+	}
+	if err := runSpec(fake, repoRootFixture, buildDirFixture(), "testbuild", t.TempDir(), "hunter-marksmanship", []int{20}, 5); err != nil {
+		t.Fatalf("runSpec: %v", err)
+	}
+	if len(fake.TalentsSeen) == 0 {
+		t.Fatal("no RunPlainDPS calls were recorded - this test proves nothing")
+	}
+	for i, talents := range fake.TalentsSeen {
+		if talents == "" {
+			t.Fatalf("RunPlainDPS call %d (gear %s) carried an empty Character.Talents", i, fake.Calls[i])
+		}
 	}
 }

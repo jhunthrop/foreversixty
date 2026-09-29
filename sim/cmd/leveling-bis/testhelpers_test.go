@@ -33,11 +33,27 @@ type fakeEngine struct {
 	// FailWeights, if true, makes RunWeights return an error.
 	FailWeights bool
 
+	// DPSFunc, when set, computes RunPlainDPS's return value directly
+	// from the full request rather than DPSByGear/DefaultDPS - the only
+	// way a test can make the fake DPS depend on req.Character.Talents,
+	// since DPSByGear/gearKey fingerprint gear alone. Used by
+	// TestRunSpecPublishesDifferentSetDPSForDifferentTalentStrings
+	// (main_test.go) to prove Talents actually reaches the engine
+	// (this lane's brief, defect 1).
+	DPSFunc func(req api.SimRequest) (float64, error)
+
 	// Calls records every RunPlainDPS gear fingerprint seen, in order,
 	// so a test can assert what this command actually tried (e.g. "did
 	// it drop the pair-mate", "did it skip the failing candidate and
 	// keep going").
 	Calls []string
+	// TalentsSeen records req.Character.Talents for every RunPlainDPS
+	// call, parallel to Calls - so a test can assert every site that
+	// builds a plain-DPS request (verifyBand, applySwaps,
+	// rankTrinketSlot, rankSlotWithEffects, trySetCompletion) carried
+	// the band's own talent string, not the zero value (this lane's
+	// brief, defect 1).
+	TalentsSeen []string
 }
 
 // gearKey fingerprints a gear list as a stable, comparable string:
@@ -64,8 +80,12 @@ func gearKey(gear []api.GearSlot) string {
 func (f *fakeEngine) RunPlainDPS(req api.SimRequest) (float64, error) {
 	key := gearKey(req.Character.Gear)
 	f.Calls = append(f.Calls, key)
+	f.TalentsSeen = append(f.TalentsSeen, req.Character.Talents)
 	if f.FailGear != "" && key == f.FailGear {
 		return 0, fmt.Errorf("fakeEngine: forced failure for gear %s", key)
+	}
+	if f.DPSFunc != nil {
+		return f.DPSFunc(req)
 	}
 	if dps, ok := f.DPSByGear[key]; ok {
 		return dps, nil

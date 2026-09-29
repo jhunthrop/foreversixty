@@ -70,7 +70,7 @@ func TestRankTrinketSlotPicksTheHighestMeasuredDPS(t *testing.T) {
 			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 3}}): 200,
 		},
 	}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, picks, bySlot, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1")
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none", notes)
 	}
@@ -95,7 +95,7 @@ func TestRankTrinketSlotSkipsAFailingCandidateAndKeepsGoing(t *testing.T) {
 		FailGear:  gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}}),
 		DPSByGear: map[string]float64{gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 3}}): 50},
 	}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, picks, bySlot, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1")
 	if len(notes) != 1 {
 		t.Fatalf("notes = %v, want exactly 1 (item 2 failed)", notes)
 	}
@@ -112,7 +112,7 @@ func TestRankTrinketSlotAllCandidatesFailLeavesPicksUnchanged(t *testing.T) {
 	picks := map[string]slotPick{"trinket1": {Item: original}}
 	bySlot := map[string][]scored{"trinket1": {trinket(2, "Fails", 30)}}
 	fake := &fakeEngine{FailGear: gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}})}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, picks, bySlot, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1")
 	if len(notes) != 1 {
 		t.Fatalf("notes = %v, want exactly 1", notes)
 	}
@@ -125,7 +125,7 @@ func TestRankTrinketSlotNoCandidatesReturnsUnchanged(t *testing.T) {
 	original := &scored{candidate: candidate{ID: 1, Name: "Original Pick"}}
 	picks := map[string]slotPick{"trinket1": {Item: original}}
 	fake := &fakeEngine{}
-	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, picks, map[string][]scored{}, "trinket1")
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, map[string][]scored{}, "trinket1")
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none", notes)
 	}

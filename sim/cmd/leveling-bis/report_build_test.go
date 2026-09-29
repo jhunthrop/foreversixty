@@ -246,6 +246,36 @@ func TestBuildReportFlagsEffectUnmodelledOnARelicTheEngineDoesNotImplement(t *te
 	}
 }
 
+// This lane's brief, defect 4: a slot's tied alternatives (pick.go's
+// own Ties field) must reach the published row, so the page can show
+// "or Blackwater Cutlass" instead of implying the lowest-id winner was
+// uniquely best.
+func TestBuildReportCarriesTiedAlternatives(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {
+			Item: &scored{candidate: candidate{ID: 1, Name: "Rusty Sword"}, Score: 8.28},
+			Ties: []scored{
+				{candidate: candidate{ID: 2, Name: "Blackwater Cutlass"}, Score: 8.28},
+				{candidate: candidate{ID: 3, Name: "Bent Blade"}, Score: 8.28},
+			},
+		},
+		"head": {Item: &scored{candidate: candidate{ID: 4, Name: "Plain Helm"}, Score: 12}},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil)
+	byslot := map[string]slotRow{}
+	for _, s := range r.Slots {
+		byslot[s.Slot] = s
+	}
+	got := byslot["main_hand"].Ties
+	want := []tieAlternative{{ItemID: 2, ItemName: "Blackwater Cutlass"}, {ItemID: 3, ItemName: "Bent Blade"}}
+	if len(got) != len(want) || got[0] != want[0] || got[1] != want[1] {
+		t.Fatalf("main_hand Ties = %+v, want %+v", got, want)
+	}
+	if len(byslot["head"].Ties) != 0 {
+		t.Fatalf("head Ties = %+v, want none: no tied alternative was recorded", byslot["head"].Ties)
+	}
+}
+
 func TestWriteSpecReportWritesReadableJSON(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "nested", "hunter-marksmanship.json")
@@ -281,7 +311,7 @@ func TestWriteMarkdownRendersFactionsSortedWithTablesAndNotes(t *testing.T) {
 			Band: 20, Faction: "horde", Race: "troll", Talents: "0500000",
 			Weights: []weightRow{{Stat: "ranged_attack_power", Weight: 1.0}},
 			Slots: []slotRow{
-				{Slot: "head", ItemID: 1, ItemName: "Helm", Score: 10, Verified: true, Source: "A Quest", SourceKind: "quest"},
+				{Slot: "head", ItemID: 1, ItemName: "Helm", Score: 10, Verified: true, Source: "A Quest", SourceKind: "quest", Ties: []tieAlternative{{ItemID: 5, ItemName: "Tied Cap"}}},
 				{Slot: "neck"}, // unpicked slot renders as "-"
 			},
 			SetDPS: 250.5, NoSourceCount: 2, NoSourceSample: []string{"3 Ghost Item"},
@@ -308,6 +338,9 @@ func TestWriteMarkdownRendersFactionsSortedWithTablesAndNotes(t *testing.T) {
 	}
 	if !strings.Contains(content, "Helm (1)") {
 		t.Error("markdown missing the picked item's name/id")
+	}
+	if !strings.Contains(content, "Helm (1) (or Tied Cap (5))") {
+		t.Error("markdown missing the tied alternative (this lane's brief, defect 4)")
 	}
 	if !strings.Contains(content, "A Quest [quest]") {
 		t.Error("markdown missing the item's source label/kind")

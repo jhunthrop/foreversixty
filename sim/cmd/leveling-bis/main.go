@@ -322,7 +322,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			trinketStart := time.Now()
 			for _, slot := range []string{"trinket1", "trinket2"} {
 				var notes []string
-				picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, bySlot, slot)
+				picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, bySlot, slot)
 				for _, n := range notes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
@@ -337,7 +337,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			effectStart := time.Now()
 			for _, slot := range slotsNeedingEffectVerification(bySlot) {
 				var notes []string
-				picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, bySlot, slot)
+				picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, bySlot, slot)
 				for _, n := range notes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
@@ -348,7 +348,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// verifies ahead of the independently-scored picks (sets.go;
 			// this lane's brief, item 3's second half).
 			var setNotes []string
-			picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, bySlot)
+			picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, bySlot)
 			for _, n := range setNotes {
 				log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 			}
@@ -362,7 +362,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			picks = enforceTwoHandOffHandInvariant(picks)
 
 			verifyStart := time.Now()
-			setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, picks)
+			setDPS, swaps, verifyErrors, err := verifyBand(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks)
 			if err != nil {
 				return fmt.Errorf("band %d %s verify run (baseline): %w", band, f.name, err)
 			}
@@ -373,7 +373,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// pick: swap it into the slot and re-measure the whole set once,
 			// so the published row, the set DPS and the next band's diff all
 			// name the item a player should actually wear.
-			picks, setDPS, swaps, err = applySwaps(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, swaps, setDPS)
+			picks, setDPS, swaps, err = applySwaps(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, swaps, setDPS)
 			if err != nil {
 				return fmt.Errorf("band %d %s verify run (after swaps): %w", band, f.name, err)
 			}

@@ -97,7 +97,7 @@ func TestTrySetCompletionAdoptsTheSetWhenItVerifiesHigher(t *testing.T) {
 			gearKey([]api.GearSlot{{Slot: "head", ItemID: 11}, {Slot: "chest", ItemID: 21}}): 150, // the completed set - higher
 		},
 	}
-	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, picks, bySlot)
+	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot)
 	if len(notes) != 1 {
 		t.Fatalf("notes = %v, want exactly 1 (the adoption note)", notes)
 	}
@@ -124,7 +124,7 @@ func TestTrySetCompletionKeepsTheIndependentlyScoredPicksWhenTheSetDoesNotVerify
 			gearKey([]api.GearSlot{{Slot: "head", ItemID: 11}, {Slot: "chest", ItemID: 21}}): 150,
 		},
 	}
-	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, picks, bySlot)
+	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot)
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none (the set did not win)", notes)
 	}
@@ -143,7 +143,7 @@ func TestTrySetCompletionSkipsASetAlreadyFullyEquipped(t *testing.T) {
 		"chest": {setItem(21, "Set Chest", 41, "chest")},
 	}
 	fake := &fakeEngine{}
-	_, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, picks, bySlot)
+	_, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot)
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none", notes)
 	}
@@ -155,7 +155,7 @@ func TestTrySetCompletionSkipsASetAlreadyFullyEquipped(t *testing.T) {
 func TestTrySetCompletionNoImplementedSetsReturnsUnchanged(t *testing.T) {
 	original := map[string]slotPick{"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Plain Head"}}}}
 	fake := &fakeEngine{}
-	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, original, map[string][]scored{})
+	out, notes := trySetCompletion(fake, specInfo{}, "dwarf", "hunter", 60, "", original, map[string][]scored{})
 	if len(notes) != 0 {
 		t.Fatalf("notes = %v, want none", notes)
 	}
