@@ -220,6 +220,32 @@ func TestBuildReportFlagsEffectUnmodelledOnAnUnimplementedProcButNotAnImplemente
 	}
 }
 
+func TestBuildReportFlagsEffectUnmodelledOnARelicTheEngineDoesNotImplement(t *testing.T) {
+	// night-relic-exempt: a relic (libram/idol/totem) carries zero
+	// stats, so score() alone can never distinguish two candidates in
+	// the ranged slot -- the engine-verified effect ranking (rank.go)
+	// is the only thing that can, and only for a relic whose spell id
+	// is in effectids_generated.go. 30101 is not a real item id, so its
+	// effect can never be engine-implemented: the report must flag it
+	// effect_unmodelled rather than silently reporting score 0 as if
+	// that were a real answer about which relic is best.
+	picks := map[string]slotPick{
+		"ranged": {Item: &scored{candidate: candidate{
+			ID: 30101, Name: "Libram of Effect Only", ClassID: armorClassID,
+			SubclassID: armorSublibramID, Stats: map[string]float64{},
+			EffectText: "Reduces the cast time of Holy Light.",
+		}}},
+	}
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil)
+	byslot := map[string]slotRow{}
+	for _, s := range r.Slots {
+		byslot[s.Slot] = s
+	}
+	if !byslot["ranged"].EffectUnmodelled {
+		t.Error("ranged (relic with an unimplemented effect) EffectUnmodelled = false, want true")
+	}
+}
+
 func TestWriteSpecReportWritesReadableJSON(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "nested", "hunter-marksmanship.json")

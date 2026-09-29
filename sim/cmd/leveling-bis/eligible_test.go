@@ -72,6 +72,38 @@ func TestEligible(t *testing.T) {
 			want:    true,
 		},
 		{
+			// Relics (librams/idols/totems) have no entry in
+			// armorAvailableLevel: eligible() must not level-gate one
+			// just because it shares Item.ClassID 4 with the mail/plate
+			// rows that DO have an entry. Class restriction (paladin
+			// only gets a libram, etc.) is enforced upstream by which
+			// per-class candidate file a relic is even loaded from
+			// (data.go/loadCandidates), not by eligible() -- see this
+			// function's own doc.
+			name:    "a libram is eligible at level 1 for a paladin -- no relic level gate exists",
+			c:       candidate{ClassID: armorClassID, SubclassID: armorSublibramID, RequiredLevel: 1, EffectiveRequiredLevel: 1},
+			class:   "paladin",
+			level:   1,
+			faction: "horde",
+			want:    true,
+		},
+		{
+			name:    "an idol is eligible at level 1 for a druid -- no relic level gate exists",
+			c:       candidate{ClassID: armorClassID, SubclassID: armorSubidolID, RequiredLevel: 1, EffectiveRequiredLevel: 1},
+			class:   "druid",
+			level:   1,
+			faction: "alliance",
+			want:    true,
+		},
+		{
+			name:    "a totem is eligible at level 1 for a shaman -- no relic level gate exists",
+			c:       candidate{ClassID: armorClassID, SubclassID: armorSubtotemID, RequiredLevel: 1, EffectiveRequiredLevel: 1},
+			class:   "shaman",
+			level:   1,
+			faction: "horde",
+			want:    true,
+		},
+		{
 			name:    "a non-armor item (class_id != 4) skips the armor gate entirely",
 			c:       candidate{ClassID: 2, SubclassID: armorSubmailID, RequiredLevel: 1},
 			class:   "hunter",
