@@ -1,8 +1,8 @@
 {
   "spec": "druid-balance",
   "build": "1.60.1.70009",
-  "engine_version": "b5ac36a52",
-  "generated_at": "2026-09-29T02:12:03Z",
+  "engine_version": "cfbb7f945",
+  "generated_at": "2026-09-29T02:45:30Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -207,8 +207,8 @@
         "main_hand: Compact Hammer",
         "off_hand: Father Flame"
       ],
-      "weights_run_seconds": 1.705456663,
-      "verify_run_seconds": 0.620624611
+      "weights_run_seconds": 1.585486481,
+      "verify_run_seconds": 0.590579928
     },
     {
       "spec": "druid-balance",
@@ -417,8 +417,8 @@
         "finger1: Ring of Scorn",
         "main_hand: Staff of Orgrimmar"
       ],
-      "weights_run_seconds": 1.705456663,
-      "verify_run_seconds": 0.782483708
+      "weights_run_seconds": 1.585486481,
+      "verify_run_seconds": 0.63571107
     },
     {
       "spec": "druid-balance",
@@ -515,11 +515,10 @@
         },
         {
           "slot": "wrist",
-          "item_id": 14148,
-          "item_name": "Crystalline Cuffs",
-          "source": "Ragefire Chasm: Taragaman the Hungerer",
-          "source_kind": "dungeon",
-          "score": 0.8090196486444802,
+          "item_id": 5315,
+          "item_name": "Timberland Armguards",
+          "source": "Quests",
+          "source_kind": "quest",
           "verified": true
         },
         {
@@ -600,8 +599,8 @@
           "verified": false
         }
       ],
-      "set_dps": 13.324075838844065,
-      "no_source_count": 896,
+      "set_dps": 13.30600727947268,
+      "no_source_count": 900,
       "no_source_sample": [
         "816 Small Hand Blade",
         "820 Slicer Blade",
@@ -623,7 +622,7 @@
         "head: Flying Tiger Goggles",
         "back: Black Whelp Cloak",
         "chest: Moonglow Vest",
-        "wrist: Crystalline Cuffs",
+        "wrist: Timberland Armguards",
         "hands: Windfelt Gloves",
         "waist: Relic Hunter Belt",
         "legs: Colorful Kilt",
@@ -632,8 +631,8 @@
         "finger2: Clergy Ring",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 1.682260214,
-      "verify_run_seconds": 1.082072749
+      "weights_run_seconds": 1.544012578,
+      "verify_run_seconds": 1.223061094
     },
     {
       "spec": "druid-balance",
@@ -845,8 +844,8 @@
         "finger2: Bounty Hunter's Ring",
         "main_hand: Clear Crystal Rod"
       ],
-      "weights_run_seconds": 1.682260214,
-      "verify_run_seconds": 0.995258218
+      "weights_run_seconds": 1.544012578,
+      "verify_run_seconds": 0.927383442
     },
     {
       "spec": "druid-balance",
@@ -917,7 +916,11 @@
         },
         {
           "slot": "neck",
-          "verified": false
+          "item_id": 20444,
+          "item_name": "Sentinel's Medallion",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -936,7 +939,7 @@
           "source_kind": "crafted",
           "score": 4,
           "verified": true,
-          "swap_note": "beat the scored pick Pearl-clasped Cloak (id 5542) in the sim: 31.3 vs 30.8 set DPS"
+          "swap_note": "beat the scored pick Pearl-clasped Cloak (id 5542) in the sim: 31.6 vs 31.4 set DPS"
         },
         {
           "slot": "chest",
@@ -949,11 +952,10 @@
         },
         {
           "slot": "wrist",
-          "item_id": 14148,
-          "item_name": "Crystalline Cuffs",
-          "source": "Ragefire Chasm: Taragaman the Hungerer",
-          "source_kind": "dungeon",
-          "score": 1.5977558124454834,
+          "item_id": 5315,
+          "item_name": "Timberland Armguards",
+          "source": "Quests",
+          "source_kind": "quest",
           "verified": true
         },
         {
@@ -964,7 +966,7 @@
           "source_kind": "quest",
           "score": 7,
           "verified": true,
-          "swap_note": "beat the scored pick Serpent Gloves (id 5970) in the sim: 31.2 vs 30.8 set DPS"
+          "swap_note": "beat the scored pick Serpent Gloves (id 5970) in the sim: 31.6 vs 31.4 set DPS"
         },
         {
           "slot": "waist",
@@ -1004,13 +1006,12 @@
         },
         {
           "slot": "finger2",
-          "item_id": 2933,
-          "item_name": "Seal of Wrynn",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 3.1955116248909667,
-          "verified": true,
-          "swap_note": "beat the scored pick Lavishly Jeweled Ring (id 1156) in the sim: 31.2 vs 30.8 set DPS"
+          "item_id": 20431,
+          "item_name": "Lorekeeper's Ring",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 5,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -1036,7 +1037,7 @@
           "source_kind": "dungeon",
           "score": 3.9943895311137085,
           "verified": true,
-          "swap_note": "beat the scored pick Staff of Westfall (id 2042) in the sim: 31.2 vs 30.8 set DPS"
+          "swap_note": "beat the scored pick Staff of Westfall (id 2042) in the sim: 32.0 vs 31.4 set DPS"
         },
         {
           "slot": "off_hand",
@@ -1047,7 +1048,7 @@
           "verified": false
         }
       ],
-      "set_dps": 32.43427096126334,
+      "set_dps": 32.58952859465375,
       "no_source_count": 1172,
       "no_source_sample": [
         "789 Stout Battlehammer",
@@ -1068,6 +1069,7 @@
       ],
       "new_at_band": [
         "head: Shadow Goggles",
+        "neck: Sentinel's Medallion",
         "shoulder: Rose Mantle",
         "back: Heavy Woolen Cloak",
         "chest: Gray Woolen Robe",
@@ -1076,13 +1078,13 @@
         "legs: Abomination Skin Leggings",
         "feet: Spidersilk Boots",
         "finger1: Minor Channeling Ring",
-        "finger2: Seal of Wrynn",
+        "finger2: Lorekeeper's Ring",
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty",
         "main_hand: Impaling Harpoon"
       ],
-      "weights_run_seconds": 1.832228985,
-      "verify_run_seconds": 0.962247335
+      "weights_run_seconds": 1.673867719,
+      "verify_run_seconds": 0.94251991
     },
     {
       "spec": "druid-balance",
@@ -1153,7 +1155,11 @@
         },
         {
           "slot": "neck",
-          "verified": false
+          "item_id": 20442,
+          "item_name": "Scout's Medallion",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -1172,7 +1178,7 @@
           "source_kind": "crafted",
           "score": 4,
           "verified": true,
-          "swap_note": "beat the scored pick Pearl-clasped Cloak (id 5542) in the sim: 30.2 vs 30.2 set DPS"
+          "swap_note": "beat the scored pick Pearl-clasped Cloak (id 5542) in the sim: 31.2 vs 31.1 set DPS"
         },
         {
           "slot": "chest",
@@ -1209,7 +1215,7 @@
           "source_kind": "crafted",
           "score": 4,
           "verified": true,
-          "swap_note": "beat the scored pick Azure Sash (id 6740) in the sim: 30.3 vs 30.2 set DPS"
+          "swap_note": "beat the scored pick Azure Sash (id 6740) in the sim: 31.5 vs 31.1 set DPS"
         },
         {
           "slot": "legs",
@@ -1231,22 +1237,21 @@
         },
         {
           "slot": "finger1",
+          "item_id": 20426,
+          "item_name": "Advisor's Ring",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 5,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 1156,
           "item_name": "Lavishly Jeweled Ring",
           "source": "The Deadmines: Gilnid",
           "source_kind": "dungeon",
           "score": 4.79326743733645,
           "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 5313,
-          "item_name": "Totemic Clan Ring",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 2.396633718668225,
-          "verified": true,
-          "swap_note": "beat the scored pick Skull Ring (id 3739) in the sim: 30.3 vs 30.2 set DPS"
         },
         {
           "slot": "trinket1",
@@ -1272,7 +1277,7 @@
           "source_kind": "dungeon",
           "score": 3.9943895311137085,
           "verified": true,
-          "swap_note": "beat the scored pick Polished Walking Staff (id 16889) in the sim: 30.8 vs 30.2 set DPS"
+          "swap_note": "beat the scored pick Polished Walking Staff (id 16889) in the sim: 31.4 vs 31.1 set DPS"
         },
         {
           "slot": "off_hand",
@@ -1283,8 +1288,8 @@
           "verified": false
         }
       ],
-      "set_dps": 31.584595802807403,
-      "no_source_count": 1173,
+      "set_dps": 32.41546952784369,
+      "no_source_count": 1169,
       "no_source_sample": [
         "789 Stout Battlehammer",
         "816 Small Hand Blade",
@@ -1304,20 +1309,21 @@
       ],
       "new_at_band": [
         "head: Shadow Goggles",
+        "neck: Scout's Medallion",
         "shoulder: Chestnut Mantle",
         "back: Heavy Woolen Cloak",
         "wrist: Featherbead Bracers",
         "waist: Hillman's Belt",
         "legs: Abomination Skin Leggings",
         "feet: Spidersilk Boots",
-        "finger1: Lavishly Jeweled Ring",
-        "finger2: Totemic Clan Ring",
+        "finger1: Advisor's Ring",
+        "finger2: Lavishly Jeweled Ring",
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty",
         "main_hand: Impaling Harpoon"
       ],
-      "weights_run_seconds": 1.832228985,
-      "verify_run_seconds": 0.95653871
+      "weights_run_seconds": 1.673867719,
+      "verify_run_seconds": 0.939405977
     },
     {
       "spec": "druid-balance",
@@ -1388,16 +1394,21 @@
         },
         {
           "slot": "neck",
-          "verified": false
+          "item_id": 20444,
+          "item_name": "Sentinel's Medallion",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "verified": true
         },
         {
           "slot": "shoulder",
-          "item_id": 3748,
-          "item_name": "Feline Mantle",
-          "source": "Shadowfang Keep: Wolf Master Nandos",
-          "source_kind": "dungeon",
-          "score": 11.785119806134855,
-          "verified": true
+          "item_id": 5274,
+          "item_name": "Rose Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 9.865699878834285,
+          "verified": true,
+          "swap_note": "beat the scored pick Feline Mantle (id 3748) in the sim: 42.2 vs 42.1 set DPS"
         },
         {
           "slot": "back",
@@ -1419,11 +1430,10 @@
         },
         {
           "slot": "wrist",
-          "item_id": 14148,
-          "item_name": "Crystalline Cuffs",
-          "source": "Ragefire Chasm: Taragaman the Hungerer",
+          "item_id": 3230,
+          "item_name": "Black Wolf Bracers",
+          "source": "Shadowfang Keep: Fenrus the Devourer",
           "source_kind": "dungeon",
-          "score": 1.946279951533714,
           "verified": true
         },
         {
@@ -1443,7 +1453,7 @@
           "source_kind": "dungeon",
           "score": 11.91941992730057,
           "verified": true,
-          "swap_note": "beat the scored pick Moss Cinch (id 6911) in the sim: 42.7 vs 42.3 set DPS"
+          "swap_note": "beat the scored pick Moss Cinch (id 6911) in the sim: 42.5 vs 42.1 set DPS"
         },
         {
           "slot": "legs",
@@ -1453,7 +1463,7 @@
           "source_kind": "dungeon",
           "score": 12,
           "verified": true,
-          "swap_note": "beat the scored pick Abomination Skin Leggings (id 23173) in the sim: 43.2 vs 42.3 set DPS"
+          "swap_note": "beat the scored pick Abomination Skin Leggings (id 23173) in the sim: 42.5 vs 42.1 set DPS"
         },
         {
           "slot": "feet",
@@ -1481,7 +1491,7 @@
           "source_kind": "quest",
           "score": 6.811979830367998,
           "verified": true,
-          "swap_note": "beat the scored pick Minor Channeling Ring (id 1449) in the sim: 42.9 vs 42.3 set DPS"
+          "swap_note": "beat the scored pick Minor Channeling Ring (id 1449) in the sim: 42.5 vs 42.1 set DPS"
         },
         {
           "slot": "trinket1",
@@ -1517,7 +1527,7 @@
           "verified": false
         }
       ],
-      "set_dps": 43.337509449564905,
+      "set_dps": 42.69204715887649,
       "no_source_count": 1449,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -1537,9 +1547,9 @@
         "1077 Defias Mage Ring"
       ],
       "new_at_band": [
-        "shoulder: Feline Mantle",
         "back: Repairman's Cape",
         "chest: Lesser Wizard's Robe",
+        "wrist: Black Wolf Bracers",
         "hands: Truefaith Gloves",
         "waist: Belt of Arugal",
         "legs: Gaze Dreamer Pants",
@@ -1547,8 +1557,8 @@
         "finger2: Snake Hoop",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.694223285,
-      "verify_run_seconds": 0.943328236
+      "weights_run_seconds": 1.593698699,
+      "verify_run_seconds": 0.889075117
     },
     {
       "spec": "druid-balance",
@@ -1619,7 +1629,11 @@
         },
         {
           "slot": "neck",
-          "verified": false
+          "item_id": 20442,
+          "item_name": "Scout's Medallion",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -1629,7 +1643,7 @@
           "source_kind": "quest",
           "score": 8,
           "verified": true,
-          "swap_note": "beat the scored pick Feline Mantle (id 3748) in the sim: 35.2 vs 35.0 set DPS"
+          "swap_note": "beat the scored pick Feline Mantle (id 3748) in the sim: 35.3 vs 35.1 set DPS"
         },
         {
           "slot": "back",
@@ -1648,7 +1662,7 @@
           "source_kind": "quest",
           "score": 9.946279951533715,
           "verified": true,
-          "swap_note": "beat the scored pick Lesser Wizard's Robe (id 5766) in the sim: 35.3 vs 35.0 set DPS"
+          "swap_note": "beat the scored pick Lesser Wizard's Robe (id 5766) in the sim: 35.3 vs 35.1 set DPS"
         },
         {
           "slot": "wrist",
@@ -1658,7 +1672,7 @@
           "source_kind": "quest",
           "score": 2.9462799515337137,
           "verified": true,
-          "swap_note": "beat the scored pick Featherbead Bracers (id 15452) in the sim: 35.2 vs 35.0 set DPS"
+          "swap_note": "beat the scored pick Featherbead Bracers (id 15452) in the sim: 35.2 vs 35.1 set DPS"
         },
         {
           "slot": "hands",
@@ -1677,7 +1691,7 @@
           "source_kind": "dungeon",
           "score": 11.91941992730057,
           "verified": true,
-          "swap_note": "beat the scored pick Moss Cinch (id 6911) in the sim: 35.3 vs 35.0 set DPS"
+          "swap_note": "beat the scored pick Moss Cinch (id 6911) in the sim: 35.3 vs 35.1 set DPS"
         },
         {
           "slot": "legs",
@@ -1687,7 +1701,7 @@
           "source_kind": "dungeon",
           "score": 12,
           "verified": true,
-          "swap_note": "beat the scored pick Abomination Skin Leggings (id 23173) in the sim: 36.0 vs 35.0 set DPS"
+          "swap_note": "beat the scored pick Abomination Skin Leggings (id 23173) in the sim: 36.1 vs 35.1 set DPS"
         },
         {
           "slot": "feet",
@@ -1709,12 +1723,13 @@
         },
         {
           "slot": "finger2",
-          "item_id": 1156,
-          "item_name": "Lavishly Jeweled Ring",
-          "source": "The Deadmines: Gilnid",
-          "source_kind": "dungeon",
-          "score": 5.838839854601142,
-          "verified": true
+          "item_id": 20426,
+          "item_name": "Advisor's Ring",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 5,
+          "verified": true,
+          "swap_note": "beat the scored pick Lavishly Jeweled Ring (id 1156) in the sim: 36.2 vs 35.1 set DPS"
         },
         {
           "slot": "trinket1",
@@ -1740,7 +1755,7 @@
           "source_kind": "dungeon",
           "score": 4.865699878834285,
           "verified": true,
-          "swap_note": "beat the scored pick Polished Walking Staff (id 16889) in the sim: 35.8 vs 35.0 set DPS"
+          "swap_note": "beat the scored pick Polished Walking Staff (id 16889) in the sim: 35.8 vs 35.1 set DPS"
         },
         {
           "slot": "off_hand",
@@ -1751,8 +1766,8 @@
           "verified": false
         }
       ],
-      "set_dps": 36.44282320670856,
-      "no_source_count": 1450,
+      "set_dps": 36.89888939972721,
+      "no_source_count": 1446,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -1777,10 +1792,10 @@
         "waist: Belt of Arugal",
         "legs: Gaze Dreamer Pants",
         "finger1: Snake Hoop",
-        "finger2: Lavishly Jeweled Ring"
+        "finger2: Advisor's Ring"
       ],
-      "weights_run_seconds": 1.694223285,
-      "verify_run_seconds": 0.938985138
+      "weights_run_seconds": 1.593698699,
+      "verify_run_seconds": 0.879185119
     },
     {
       "spec": "druid-balance",
@@ -1893,7 +1908,7 @@
           "source_kind": "dungeon",
           "score": 9,
           "verified": true,
-          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 52.6 vs 52.4 set DPS"
+          "swap_note": "beat the scored pick Arcane Runed Bracers (id 4744) in the sim: 53.4 vs 52.8 set DPS"
         },
         {
           "slot": "hands",
@@ -1903,7 +1918,7 @@
           "source_kind": "crafted",
           "score": 7.78613800935824,
           "verified": true,
-          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 54.0 vs 52.4 set DPS"
+          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 54.3 vs 52.8 set DPS"
         },
         {
           "slot": "waist",
@@ -1943,13 +1958,12 @@
         },
         {
           "slot": "finger2",
-          "item_id": 6750,
-          "item_name": "Snake Hoop",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6.5009886885025585,
-          "verified": true,
-          "swap_note": "beat the scored pick Minor Channeling Ring (id 1449) in the sim: 52.6 vs 52.4 set DPS"
+          "item_id": 19525,
+          "item_name": "Lorekeeper's Ring",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 7,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -1986,8 +2000,8 @@
           "verified": false
         }
       ],
-      "set_dps": 54.876240796426956,
-      "no_source_count": 1711,
+      "set_dps": 55.08834241530171,
+      "no_source_count": 1707,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2014,11 +2028,12 @@
         "waist: Highlander's Cloth Girdle",
         "legs: Abomination Skin Leggings",
         "feet: Acidic Walkers",
+        "finger2: Lorekeeper's Ring",
         "trinket1: Talisman of Arathor",
         "trinket2: Rune of Perfection"
       ],
-      "weights_run_seconds": 1.812468416,
-      "verify_run_seconds": 1.232974112
+      "weights_run_seconds": 1.738842908,
+      "verify_run_seconds": 1.170540358
     },
     {
       "spec": "druid-balance",
@@ -2107,12 +2122,13 @@
         },
         {
           "slot": "back",
-          "item_id": 15468,
-          "item_name": "Windsong Drape",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 5,
-          "verified": true
+          "item_id": 5542,
+          "item_name": "Pearl-clasped Cloak",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 4.78613800935824,
+          "verified": true,
+          "swap_note": "beat the scored pick Windsong Drape (id 15468) in the sim: 53.5 vs 53.3 set DPS"
         },
         {
           "slot": "chest",
@@ -2140,7 +2156,7 @@
           "source_kind": "quest",
           "score": 10.85742533957216,
           "verified": true,
-          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 54.4 vs 53.2 set DPS"
+          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 54.8 vs 53.3 set DPS"
         },
         {
           "slot": "waist",
@@ -2162,31 +2178,32 @@
         },
         {
           "slot": "feet",
-          "item_id": 9454,
-          "item_name": "Acidic Walkers",
-          "source": "Gnomeregan",
-          "source_kind": "dungeon",
-          "score": 12.42970135828864,
-          "verified": true
+          "item_id": 4320,
+          "item_name": "Spidersilk Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 10.71485067914432,
+          "verified": true,
+          "swap_note": "beat the scored pick Acidic Walkers (id 9454) in the sim: 53.9 vs 53.3 set DPS"
         },
         {
           "slot": "finger1",
-          "item_id": 6750,
-          "item_name": "Snake Hoop",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6.5009886885025585,
+          "item_id": 19521,
+          "item_name": "Advisor's Ring",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 7,
           "verified": true
         },
         {
           "slot": "finger2",
-          "item_id": 18586,
-          "item_name": "Lonetree's Circle",
-          "source": "Quests",
-          "source_kind": "quest",
+          "item_id": 1156,
+          "item_name": "Lavishly Jeweled Ring",
+          "source": "The Deadmines: Gilnid",
+          "source_kind": "dungeon",
           "score": 5.572276018716479,
           "verified": true,
-          "swap_note": "beat the scored pick Lavishly Jeweled Ring (id 1156) in the sim: 53.3 vs 53.2 set DPS"
+          "swap_note": "beat the scored pick Snake Hoop (id 6750) in the sim: 53.6 vs 53.3 set DPS"
         },
         {
           "slot": "trinket1",
@@ -2223,8 +2240,8 @@
           "verified": false
         }
       ],
-      "set_dps": 54.72728443602625,
-      "no_source_count": 1713,
+      "set_dps": 54.038580357475325,
+      "no_source_count": 1705,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2246,18 +2263,19 @@
         "head: Enchanter's Cowl",
         "neck: Scorn's Icy Choker",
         "shoulder: Bloodmage Mantle",
+        "back: Pearl-clasped Cloak",
         "chest: Green Silk Armor",
         "wrist: Spidertank Oilrag",
         "waist: Defiler's Cloth Girdle",
         "legs: Abomination Skin Leggings",
-        "feet: Acidic Walkers",
-        "finger2: Lonetree's Circle",
+        "finger1: Advisor's Ring",
+        "finger2: Lavishly Jeweled Ring",
         "trinket1: Defiler's Talisman",
         "trinket2: Rune of Perfection",
         "main_hand: Nimboya's Mystical Staff"
       ],
-      "weights_run_seconds": 1.812468416,
-      "verify_run_seconds": 1.215755997
+      "weights_run_seconds": 1.738842908,
+      "verify_run_seconds": 1.1396837
     },
     {
       "spec": "druid-balance",
@@ -2388,7 +2406,7 @@
           "source_kind": "crafted",
           "score": 13,
           "verified": true,
-          "swap_note": "beat the scored pick Highlander's Cloth Girdle (id 20099) in the sim: 62.1 vs 62.0 set DPS"
+          "swap_note": "beat the scored pick Highlander's Cloth Girdle (id 20099) in the sim: 62.6 vs 62.3 set DPS"
         },
         {
           "slot": "legs",
@@ -2419,13 +2437,12 @@
         },
         {
           "slot": "finger2",
-          "item_id": 6750,
-          "item_name": "Snake Hoop",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6.420580194162708,
-          "verified": true,
-          "swap_note": "beat the scored pick Minor Channeling Ring (id 1449) in the sim: 62.5 vs 62.0 set DPS"
+          "item_id": 19525,
+          "item_name": "Lorekeeper's Ring",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 7,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -2462,8 +2479,8 @@
           "verified": false
         }
       ],
-      "set_dps": 63.063288553155985,
-      "no_source_count": 1928,
+      "set_dps": 62.57594671585502,
+      "no_source_count": 1924,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2489,8 +2506,8 @@
         "hands: Gloves of the Greatfather",
         "waist: Star Belt"
       ],
-      "weights_run_seconds": 1.876357644,
-      "verify_run_seconds": 1.255801827
+      "weights_run_seconds": 1.794707222,
+      "verify_run_seconds": 1.1937478750000001
     },
     {
       "spec": "druid-balance",
@@ -2570,13 +2587,12 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 7684,
-          "item_name": "Bloodmage Mantle",
-          "source": "Scarlet Monastery: Bloodmage Thalnos",
-          "source_kind": "dungeon",
-          "score": 17.255031678209196,
-          "verified": true,
-          "swap_note": "beat the scored pick Green Silken Shoulders (id 7057) in the sim: 58.7 vs 58.7 set DPS"
+          "item_id": 7057,
+          "item_name": "Green Silken Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 18.089483162255682,
+          "verified": true
         },
         {
           "slot": "back",
@@ -2598,12 +2614,13 @@
         },
         {
           "slot": "wrist",
-          "item_id": 4260,
-          "item_name": "Guardian Leather Bracers",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 11.503354452139465,
-          "verified": true
+          "item_id": 4545,
+          "item_name": "Radiant Silver Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 11.337805936185951,
+          "verified": true,
+          "swap_note": "beat the scored pick Guardian Leather Bracers (id 4260) in the sim: 59.4 vs 59.3 set DPS"
         },
         {
           "slot": "hands",
@@ -2622,7 +2639,7 @@
           "source_kind": "crafted",
           "score": 13,
           "verified": true,
-          "swap_note": "beat the scored pick Defiler's Cloth Girdle (id 20164) in the sim: 59.1 vs 58.7 set DPS"
+          "swap_note": "beat the scored pick Defiler's Cloth Girdle (id 20164) in the sim: 59.7 vs 59.3 set DPS"
         },
         {
           "slot": "legs",
@@ -2644,22 +2661,21 @@
         },
         {
           "slot": "finger1",
+          "item_id": 19521,
+          "item_name": "Advisor's Ring",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 7,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 6750,
           "item_name": "Snake Hoop",
           "source": "Quests",
           "source_kind": "quest",
           "score": 6.420580194162708,
           "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 18586,
-          "item_name": "Lonetree's Circle",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 5.503354452139464,
-          "verified": true,
-          "swap_note": "beat the scored pick Lavishly Jeweled Ring (id 1156) in the sim: 59.0 vs 58.7 set DPS"
         },
         {
           "slot": "trinket1",
@@ -2686,7 +2702,7 @@
           "source_kind": "quest",
           "score": 7.337805936185952,
           "verified": true,
-          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 63.4 vs 58.7 set DPS"
+          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 64.4 vs 59.3 set DPS"
         },
         {
           "slot": "off_hand",
@@ -2697,8 +2713,8 @@
           "verified": false
         }
       ],
-      "set_dps": 64.27891495107303,
-      "no_source_count": 1930,
+      "set_dps": 64.8120877564894,
+      "no_source_count": 1922,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2717,20 +2733,262 @@
         "911 Ironwood Treebranch"
       ],
       "new_at_band": [
+        "shoulder: Green Silken Shoulders",
         "back: Long Silken Cloak",
         "chest: Robe of Power",
-        "wrist: Guardian Leather Bracers",
+        "wrist: Radiant Silver Bracers",
         "hands: Gloves of the Greatfather",
-        "waist: Star Belt"
+        "waist: Star Belt",
+        "feet: Acidic Walkers",
+        "finger2: Snake Hoop"
       ],
-      "weights_run_seconds": 1.876357644,
-      "verify_run_seconds": 1.234304802
+      "weights_run_seconds": 1.794707222,
+      "verify_run_seconds": 1.178592418
     },
     {
       "spec": "druid-balance",
       "band": 40,
       "faction": "alliance",
       "race": "night-elf",
+      "talents": "5222211005501050-0000000000000000000-0000000000000000",
+      "talent_points": 31,
+      "weights": [
+        {
+          "stat": "spell_power",
+          "weight": 1,
+          "error": 0.003885334685085746,
+          "insignificant": false
+        },
+        {
+          "stat": "intellect",
+          "weight": 0.8240556757085767,
+          "error": 0.17401415384512678,
+          "insignificant": false
+        },
+        {
+          "stat": "crit",
+          "weight": 1.3745737605550103,
+          "error": 0.1487946637938009,
+          "insignificant": false
+        },
+        {
+          "stat": "hit",
+          "weight": 3.180042936732021,
+          "error": 0.2509774761484474,
+          "insignificant": false
+        },
+        {
+          "stat": "spell_haste",
+          "weight": 0.09255749432685104,
+          "error": 0.28334927488188233,
+          "insignificant": true
+        },
+        {
+          "stat": "spell_penetration",
+          "weight": 0,
+          "error": 0,
+          "insignificant": true
+        },
+        {
+          "stat": "nature_power",
+          "weight": 0.48085468621117333,
+          "error": 0.0012952900595762425,
+          "insignificant": false
+        },
+        {
+          "stat": "arcane_power",
+          "weight": 0.5191453137888263,
+          "error": 0.0036448798232380925,
+          "insignificant": false
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 8201,
+          "item_name": "Big Voodoo Mask",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 20.536779459920076,
+          "verified": true,
+          "swap_note": "beat the scored pick Spellpower Goggles Xtreme (id 10502) in the sim: 70.2 vs 70.1 set DPS"
+        },
+        {
+          "slot": "neck",
+          "item_id": 23169,
+          "item_name": "Scorn's Icy Choker",
+          "source": "Scarlet Monastery: Scorn",
+          "source_kind": "dungeon",
+          "score": 11.94433405425146,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 7057,
+          "item_name": "Green Silken Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 17.064612432794345,
+          "verified": true,
+          "swap_note": "beat the scored pick Inquisitor's Shawl (id 19507) in the sim: 70.3 vs 70.1 set DPS"
+        },
+        {
+          "slot": "back",
+          "item_id": 4326,
+          "item_name": "Long Silken Cloak",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 10.120278378542885,
+          "verified": true
+        },
+        {
+          "slot": "chest",
+          "item_id": 10021,
+          "item_name": "Dreamweave Vest",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 25.41650108137719,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 4744,
+          "item_name": "Arcane Runed Bracers",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 9,
+          "verified": true,
+          "swap_note": "beat the scored pick Guardian Leather Bracers (id 4260) in the sim: 70.2 vs 70.1 set DPS"
+        },
+        {
+          "slot": "hands",
+          "item_id": 17721,
+          "item_name": "Gloves of the Greatfather",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 24,
+          "verified": true
+        },
+        {
+          "slot": "waist",
+          "item_id": 10771,
+          "item_name": "Deathmage Sash",
+          "source": "Razorfen Downs: Mordresh Fire Eye",
+          "source_kind": "dungeon",
+          "score": 19.36083513562865,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 10009,
+          "item_name": "Red Mageweave Pants",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 23.88866810850292,
+          "verified": true
+        },
+        {
+          "slot": "feet",
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 17.064612432794345,
+          "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 19524,
+          "item_name": "Lorekeeper's Ring",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 9,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 1449,
+          "item_name": "Minor Channeling Ring",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 6.648111351417153,
+          "verified": true,
+          "swap_note": "beat the scored pick Ring of Forlorn Spirits (id 2043) in the sim: 70.2 vs 70.1 set DPS"
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 744,
+          "item_name": "Thunderbrew's Boot Flask",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true,
+          "effect_unmodelled": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 11122,
+          "item_name": "Carrot on a Stick",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 9651,
+          "item_name": "Gryphon Rider's Stormhammer",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "verified": false
+        },
+        {
+          "slot": "ranged",
+          "verified": false
+        }
+      ],
+      "set_dps": 69.46234601450672,
+      "no_source_count": 2160,
+      "no_source_sample": [
+        "720 Brawler Gloves",
+        "789 Stout Battlehammer",
+        "791 Gnarled Ash Staff",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "821 Riverpaw Leather Vest",
+        "827 Wicked Blackjack",
+        "865 Leaden Mace",
+        "866 Monk's Staff",
+        "867 Gloves of Holy Might",
+        "868 Ardent Custodian",
+        "873 Staff of Jordan",
+        "880 Staff of Horrors",
+        "890 Twisted Chanter's Staff",
+        "892 Gnoll Casting Gloves"
+      ],
+      "new_at_band": [
+        "head: Big Voodoo Mask",
+        "chest: Dreamweave Vest",
+        "wrist: Arcane Runed Bracers",
+        "waist: Deathmage Sash",
+        "legs: Red Mageweave Pants",
+        "feet: Southsea Mojo Boots",
+        "finger1: Lorekeeper's Ring",
+        "finger2: Minor Channeling Ring",
+        "trinket1: Thunderbrew's Boot Flask",
+        "trinket2: Carrot on a Stick",
+        "main_hand: Gryphon Rider's Stormhammer"
+      ],
+      "weights_run_seconds": 1.744833185,
+      "verify_run_seconds": 1.181904426
+    },
+    {
+      "spec": "druid-balance",
+      "band": 40,
+      "faction": "horde",
+      "race": "tauren",
       "talents": "5222211005501050-0000000000000000000-0000000000000000",
       "talent_points": 31,
       "weights": [
@@ -2831,248 +3089,13 @@
         },
         {
           "slot": "wrist",
-          "item_id": 4260,
-          "item_name": "Guardian Leather Bracers",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 10.94433405425146,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 17721,
-          "item_name": "Gloves of the Greatfather",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 24,
-          "verified": true
-        },
-        {
-          "slot": "waist",
-          "item_id": 10771,
-          "item_name": "Deathmage Sash",
-          "source": "Razorfen Downs: Mordresh Fire Eye",
-          "source_kind": "dungeon",
-          "score": 19.36083513562865,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 10009,
-          "item_name": "Red Mageweave Pants",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 23.88866810850292,
-          "verified": true
-        },
-        {
-          "slot": "feet",
-          "item_id": 20641,
-          "item_name": "Southsea Mojo Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 17.064612432794345,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 2043,
-          "item_name": "Ring of Forlorn Spirits",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 8,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 6750,
-          "item_name": "Snake Hoop",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 5.768389729960037,
-          "verified": true,
-          "swap_note": "beat the scored pick Minor Channeling Ring (id 1449) in the sim: 69.8 vs 69.5 set DPS"
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 744,
-          "item_name": "Thunderbrew's Boot Flask",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 11122,
-          "item_name": "Carrot on a Stick",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 9651,
-          "item_name": "Gryphon Rider's Stormhammer",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 69.82545663852306,
-      "no_source_count": 2168,
-      "no_source_sample": [
-        "720 Brawler Gloves",
-        "789 Stout Battlehammer",
-        "791 Gnarled Ash Staff",
-        "816 Small Hand Blade",
-        "820 Slicer Blade",
-        "821 Riverpaw Leather Vest",
-        "827 Wicked Blackjack",
-        "865 Leaden Mace",
-        "866 Monk's Staff",
-        "867 Gloves of Holy Might",
-        "868 Ardent Custodian",
-        "873 Staff of Jordan",
-        "880 Staff of Horrors",
-        "890 Twisted Chanter's Staff",
-        "892 Gnoll Casting Gloves"
-      ],
-      "new_at_band": [
-        "head: Spellpower Goggles Xtreme",
-        "shoulder: Inquisitor's Shawl",
-        "chest: Dreamweave Vest",
-        "waist: Deathmage Sash",
-        "legs: Red Mageweave Pants",
-        "feet: Southsea Mojo Boots",
-        "trinket1: Thunderbrew's Boot Flask",
-        "trinket2: Carrot on a Stick",
-        "main_hand: Gryphon Rider's Stormhammer"
-      ],
-      "weights_run_seconds": 1.884076087,
-      "verify_run_seconds": 1.254344387
-    },
-    {
-      "spec": "druid-balance",
-      "band": 40,
-      "faction": "horde",
-      "race": "tauren",
-      "talents": "5222211005501050-0000000000000000000-0000000000000000",
-      "talent_points": 31,
-      "weights": [
-        {
-          "stat": "spell_power",
-          "weight": 1,
-          "error": 0.003885334685085746,
-          "insignificant": false
-        },
-        {
-          "stat": "intellect",
-          "weight": 0.8240556757085767,
-          "error": 0.17401415384512678,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 1.3745737605550103,
-          "error": 0.1487946637938009,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 3.180042936732021,
-          "error": 0.2509774761484474,
-          "insignificant": false
-        },
-        {
-          "stat": "spell_haste",
-          "weight": 0.09255749432685104,
-          "error": 0.28334927488188233,
-          "insignificant": true
-        },
-        {
-          "stat": "spell_penetration",
-          "weight": 0,
-          "error": 0,
-          "insignificant": true
-        },
-        {
-          "stat": "nature_power",
-          "weight": 0.48085468621117333,
-          "error": 0.0012952900595762425,
-          "insignificant": false
-        },
-        {
-          "stat": "arcane_power",
-          "weight": 0.5191453137888263,
-          "error": 0.0036448798232380925,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 10502,
-          "item_name": "Spellpower Goggles Xtreme",
-          "source": "Engineering",
-          "source_kind": "crafted",
-          "score": 21,
-          "verified": true
-        },
-        {
-          "slot": "neck",
-          "item_id": 23169,
-          "item_name": "Scorn's Icy Choker",
-          "source": "Scarlet Monastery: Scorn",
-          "source_kind": "dungeon",
-          "score": 11.94433405425146,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 7057,
-          "item_name": "Green Silken Shoulders",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 17.064612432794345,
-          "verified": true,
-          "swap_note": "beat the scored pick Inquisitor's Shawl (id 19507) in the sim: 66.7 vs 66.6 set DPS"
-        },
-        {
-          "slot": "back",
-          "item_id": 4326,
-          "item_name": "Long Silken Cloak",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 10.120278378542885,
-          "verified": true
-        },
-        {
-          "slot": "chest",
-          "item_id": 10021,
-          "item_name": "Dreamweave Vest",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 25.41650108137719,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
           "item_id": 4545,
           "item_name": "Radiant Silver Bracers",
           "source": "Quests",
           "source_kind": "quest",
           "score": 10.592445405668613,
           "verified": true,
-          "swap_note": "beat the scored pick Guardian Leather Bracers (id 4260) in the sim: 66.7 vs 66.6 set DPS"
+          "swap_note": "beat the scored pick Guardian Leather Bracers (id 4260) in the sim: 67.8 vs 67.8 set DPS"
         },
         {
           "slot": "hands",
@@ -3112,22 +3135,21 @@
         },
         {
           "slot": "finger1",
+          "item_id": 19520,
+          "item_name": "Advisor's Ring",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 9,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 6750,
           "item_name": "Snake Hoop",
           "source": "Quests",
           "source_kind": "quest",
           "score": 5.768389729960037,
           "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 18586,
-          "item_name": "Lonetree's Circle",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 4.944334054251461,
-          "verified": true,
-          "swap_note": "beat the scored pick Lavishly Jeweled Ring (id 1156) in the sim: 67.3 vs 66.6 set DPS"
         },
         {
           "slot": "trinket1",
@@ -3153,7 +3175,7 @@
           "source_kind": "quest",
           "score": 18.953280541297264,
           "verified": true,
-          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 69.7 vs 66.6 set DPS"
+          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 70.9 vs 67.8 set DPS"
         },
         {
           "slot": "off_hand",
@@ -3164,8 +3186,8 @@
           "verified": false
         }
       ],
-      "set_dps": 69.91470278570323,
-      "no_source_count": 2170,
+      "set_dps": 70.6097288043033,
+      "no_source_count": 2158,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3185,18 +3207,18 @@
       ],
       "new_at_band": [
         "head: Spellpower Goggles Xtreme",
-        "shoulder: Green Silken Shoulders",
+        "shoulder: Inquisitor's Shawl",
         "chest: Dreamweave Vest",
-        "wrist: Radiant Silver Bracers",
         "waist: Deathmage Sash",
         "legs: Red Mageweave Pants",
         "feet: Southsea Mojo Boots",
+        "finger1: Advisor's Ring",
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 1.884076087,
-      "verify_run_seconds": 1.2271502220000001
+      "weights_run_seconds": 1.744833185,
+      "verify_run_seconds": 1.167650303
     },
     {
       "spec": "druid-balance",
@@ -3264,7 +3286,7 @@
           "source_kind": "crafted",
           "score": 30.51765703063723,
           "verified": true,
-          "swap_note": "beat the scored pick Red Mageweave Headband (id 10033) in the sim: 81.5 vs 80.9 set DPS"
+          "swap_note": "beat the scored pick Red Mageweave Headband (id 10033) in the sim: 82.3 vs 81.9 set DPS"
         },
         {
           "slot": "neck",
@@ -3277,23 +3299,21 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 19507,
-          "item_name": "Inquisitor's Shawl",
-          "source": "Scarlet Monastery: High Inquisitor Fairbanks",
-          "source_kind": "dungeon",
-          "score": 19.3729541398284,
-          "verified": true,
-          "swap_note": "beat the scored pick Red Mageweave Shoulders (id 10029) in the sim: 80.9 vs 80.9 set DPS"
+          "item_id": 10029,
+          "item_name": "Red Mageweave Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 21.276485545955843,
+          "verified": true
         },
         {
           "slot": "back",
-          "item_id": 4326,
-          "item_name": "Long Silken Cloak",
-          "source": "Tailoring",
+          "item_id": 8216,
+          "item_name": "Big Voodoo Cloak",
+          "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 10.758828515318616,
-          "verified": true,
-          "swap_note": "beat the scored pick Big Voodoo Cloak (id 8216) in the sim: 81.0 vs 80.9 set DPS"
+          "score": 13.565891327573507,
+          "verified": true
         },
         {
           "slot": "chest",
@@ -3303,7 +3323,7 @@
           "source_kind": "crafted",
           "score": 28.51765703063723,
           "verified": true,
-          "swap_note": "beat the scored pick Acumen Robes (id 17775) in the sim: 82.0 vs 80.9 set DPS"
+          "swap_note": "beat the scored pick Acumen Robes (id 17775) in the sim: 82.7 vs 81.9 set DPS"
         },
         {
           "slot": "wrist",
@@ -3334,13 +3354,12 @@
         },
         {
           "slot": "legs",
-          "item_id": 8202,
-          "item_name": "Big Voodoo Pants",
-          "source": "Leatherworking",
+          "item_id": 10009,
+          "item_name": "Red Mageweave Pants",
+          "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 24.51765703063723,
-          "verified": true,
-          "swap_note": "beat the scored pick Red Mageweave Pants (id 10009) in the sim: 81.1 vs 80.9 set DPS"
+          "score": 25.421188436764677,
+          "verified": true
         },
         {
           "slot": "feet",
@@ -3350,26 +3369,25 @@
           "source_kind": "crafted",
           "score": 17.66235992144606,
           "verified": true,
-          "swap_note": "beat the scored pick Southsea Mojo Boots (id 20641) in the sim: 81.3 vs 80.9 set DPS"
+          "swap_note": "beat the scored pick Southsea Mojo Boots (id 20641) in the sim: 82.0 vs 81.9 set DPS"
         },
         {
           "slot": "finger1",
+          "item_id": 19524,
+          "item_name": "Lorekeeper's Ring",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 9,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 2043,
           "item_name": "Ring of Forlorn Spirits",
           "source": "Quests",
           "source_kind": "quest",
           "score": 8,
           "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 6750,
-          "item_name": "Snake Hoop",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6.662359921446061,
-          "verified": true,
-          "swap_note": "beat the scored pick Minor Channeling Ring (id 1449) in the sim: 81.1 vs 80.9 set DPS"
         },
         {
           "slot": "trinket1",
@@ -3404,8 +3422,8 @@
           "verified": false
         }
       ],
-      "set_dps": 82.89028359185828,
-      "no_source_count": 2385,
+      "set_dps": 83.67784068543858,
+      "no_source_count": 2377,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3425,16 +3443,19 @@
       ],
       "new_at_band": [
         "head: Dreamweave Circlet",
+        "shoulder: Red Mageweave Shoulders",
+        "back: Big Voodoo Cloak",
         "chest: Feathered Breastplate",
+        "wrist: Guardian Leather Bracers",
         "waist: Satyrmane Sash",
-        "legs: Big Voodoo Pants",
         "feet: Black Mageweave Boots",
+        "finger2: Ring of Forlorn Spirits",
         "trinket1: Demon's Blood",
         "trinket2: Shard of the Splithooves",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.9082764239999999,
-      "verify_run_seconds": 1.29721557
+      "weights_run_seconds": 1.811952605,
+      "verify_run_seconds": 1.208177455
     },
     {
       "spec": "druid-balance",
@@ -3502,7 +3523,7 @@
           "source_kind": "crafted",
           "score": 30.51765703063723,
           "verified": true,
-          "swap_note": "beat the scored pick Red Mageweave Headband (id 10033) in the sim: 80.9 vs 80.2 set DPS"
+          "swap_note": "beat the scored pick Red Mageweave Headband (id 10033) in the sim: 82.2 vs 81.9 set DPS"
         },
         {
           "slot": "neck",
@@ -3515,23 +3536,21 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 19507,
-          "item_name": "Inquisitor's Shawl",
-          "source": "Scarlet Monastery: High Inquisitor Fairbanks",
-          "source_kind": "dungeon",
-          "score": 19.3729541398284,
-          "verified": true,
-          "swap_note": "beat the scored pick Red Mageweave Shoulders (id 10029) in the sim: 80.3 vs 80.2 set DPS"
+          "item_id": 10029,
+          "item_name": "Red Mageweave Shoulders",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 21.276485545955843,
+          "verified": true
         },
         {
           "slot": "back",
-          "item_id": 4326,
-          "item_name": "Long Silken Cloak",
-          "source": "Tailoring",
+          "item_id": 8216,
+          "item_name": "Big Voodoo Cloak",
+          "source": "Leatherworking",
           "source_kind": "crafted",
-          "score": 10.758828515318616,
-          "verified": true,
-          "swap_note": "beat the scored pick Big Voodoo Cloak (id 8216) in the sim: 80.4 vs 80.2 set DPS"
+          "score": 13.565891327573507,
+          "verified": true
         },
         {
           "slot": "chest",
@@ -3541,7 +3560,7 @@
           "source_kind": "crafted",
           "score": 28.51765703063723,
           "verified": true,
-          "swap_note": "beat the scored pick Acumen Robes (id 17775) in the sim: 81.6 vs 80.2 set DPS"
+          "swap_note": "beat the scored pick Acumen Robes (id 17775) in the sim: 82.9 vs 81.9 set DPS"
         },
         {
           "slot": "wrist",
@@ -3572,40 +3591,38 @@
         },
         {
           "slot": "legs",
-          "item_id": 8202,
-          "item_name": "Big Voodoo Pants",
-          "source": "Leatherworking",
+          "item_id": 10009,
+          "item_name": "Red Mageweave Pants",
+          "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 24.51765703063723,
-          "verified": true,
-          "swap_note": "beat the scored pick Red Mageweave Pants (id 10009) in the sim: 80.4 vs 80.2 set DPS"
+          "score": 25.421188436764677,
+          "verified": true
         },
         {
           "slot": "feet",
-          "item_id": 10026,
-          "item_name": "Black Mageweave Boots",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 17.66235992144606,
-          "verified": true,
-          "swap_note": "beat the scored pick Southsea Mojo Boots (id 20641) in the sim: 80.7 vs 80.2 set DPS"
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 18.469422733700952,
+          "verified": true
         },
         {
           "slot": "finger1",
+          "item_id": 19520,
+          "item_name": "Advisor's Ring",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 9,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 6750,
           "item_name": "Snake Hoop",
           "source": "Quests",
           "source_kind": "quest",
           "score": 6.662359921446061,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 1156,
-          "item_name": "Lavishly Jeweled Ring",
-          "source": "The Deadmines: Gilnid",
-          "source_kind": "dungeon",
-          "score": 5.710594218382338,
           "verified": true
         },
         {
@@ -3641,8 +3658,8 @@
           "verified": false
         }
       ],
-      "set_dps": 81.82463308041721,
-      "no_source_count": 2387,
+      "set_dps": 83.57382795110301,
+      "no_source_count": 2375,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3662,19 +3679,17 @@
       ],
       "new_at_band": [
         "head: Dreamweave Circlet",
-        "shoulder: Inquisitor's Shawl",
+        "shoulder: Red Mageweave Shoulders",
+        "back: Big Voodoo Cloak",
         "chest: Feathered Breastplate",
         "wrist: Guardian Leather Bracers",
         "waist: Satyrmane Sash",
-        "legs: Big Voodoo Pants",
-        "feet: Black Mageweave Boots",
-        "finger2: Lavishly Jeweled Ring",
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.9082764239999999,
-      "verify_run_seconds": 1.270843301
+      "weights_run_seconds": 1.811952605,
+      "verify_run_seconds": 1.187583767
     },
     {
       "spec": "druid-balance",
@@ -3742,7 +3757,7 @@
           "source_kind": "crafted",
           "score": 37.174626148562325,
           "verified": true,
-          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 87.7 vs 86.6 set DPS"
+          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 88.8 vs 87.6 set DPS"
         },
         {
           "slot": "neck",
@@ -3779,7 +3794,7 @@
           "source_kind": "crafted",
           "score": 28.087313074281163,
           "verified": true,
-          "swap_note": "beat the scored pick Acumen Robes (id 17775) in the sim: 87.8 vs 86.6 set DPS"
+          "swap_note": "beat the scored pick Acumen Robes (id 17775) in the sim: 88.6 vs 87.6 set DPS"
         },
         {
           "slot": "wrist",
@@ -3816,16 +3831,17 @@
           "source_kind": "crafted",
           "score": 24.904775689137395,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 88.7 vs 86.6 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 90.0 vs 87.6 set DPS"
         },
         {
           "slot": "feet",
-          "item_id": 20641,
-          "item_name": "Southsea Mojo Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 17.996044381709275,
-          "verified": true
+          "item_id": 10026,
+          "item_name": "Black Mageweave Boots",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 17.361119151996814,
+          "verified": true,
+          "swap_note": "beat the scored pick Southsea Mojo Boots (id 20641) in the sim: 87.6 vs 87.6 set DPS"
         },
         {
           "slot": "finger1",
@@ -3838,11 +3854,11 @@
         },
         {
           "slot": "finger2",
-          "item_id": 2043,
-          "item_name": "Ring of Forlorn Spirits",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 8,
+          "item_id": 19523,
+          "item_name": "Lorekeeper's Ring",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 12,
           "verified": true
         },
         {
@@ -3878,8 +3894,8 @@
           "verified": false
         }
       ],
-      "set_dps": 91.18586804650133,
-      "no_source_count": 2670,
+      "set_dps": 92.42349454101841,
+      "no_source_count": 2658,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3905,13 +3921,11 @@
         "wrist: Runic Leather Bracers",
         "hands: Fletcher's Gloves",
         "waist: Highlander's Cloth Girdle",
-        "legs: Red Mageweave Pants",
-        "feet: Southsea Mojo Boots",
         "finger1: Blackstone Ring",
-        "finger2: Ring of Forlorn Spirits"
+        "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 2.002198022,
-      "verify_run_seconds": 1.319359516
+      "weights_run_seconds": 1.85062546,
+      "verify_run_seconds": 1.251744881
     },
     {
       "spec": "druid-balance",
@@ -3979,7 +3993,7 @@
           "source_kind": "crafted",
           "score": 37.174626148562325,
           "verified": true,
-          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 87.7 vs 86.4 set DPS"
+          "swap_note": "beat the scored pick Eye of Theradras (id 17715) in the sim: 88.7 vs 87.4 set DPS"
         },
         {
           "slot": "neck",
@@ -4007,7 +4021,7 @@
           "source_kind": "dungeon",
           "score": 19.452387844568698,
           "verified": true,
-          "swap_note": "beat the scored pick Deep Woodlands Cloak (id 19121) in the sim: 87.3 vs 86.4 set DPS"
+          "swap_note": "beat the scored pick Deep Woodlands Cloak (id 19121) in the sim: 87.8 vs 87.4 set DPS"
         },
         {
           "slot": "chest",
@@ -4017,7 +4031,7 @@
           "source_kind": "crafted",
           "score": 28.087313074281163,
           "verified": true,
-          "swap_note": "beat the scored pick Acumen Robes (id 17775) in the sim: 87.4 vs 86.4 set DPS"
+          "swap_note": "beat the scored pick Acumen Robes (id 17775) in the sim: 88.5 vs 87.4 set DPS"
         },
         {
           "slot": "wrist",
@@ -4054,17 +4068,16 @@
           "source_kind": "crafted",
           "score": 24.904775689137395,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 88.7 vs 86.4 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 89.9 vs 87.4 set DPS"
         },
         {
           "slot": "feet",
-          "item_id": 10026,
-          "item_name": "Black Mageweave Boots",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 17.361119151996814,
-          "verified": true,
-          "swap_note": "beat the scored pick Southsea Mojo Boots (id 20641) in the sim: 86.5 vs 86.4 set DPS"
+          "item_id": 20641,
+          "item_name": "Southsea Mojo Boots",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 17.996044381709275,
+          "verified": true
         },
         {
           "slot": "finger1",
@@ -4077,13 +4090,12 @@
         },
         {
           "slot": "finger2",
-          "item_id": 6750,
-          "item_name": "Snake Hoop",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6.361119151996813,
-          "verified": true,
-          "swap_note": "beat the scored pick Chemist's Ring (id 15702) in the sim: 86.5 vs 86.4 set DPS"
+          "item_id": 19519,
+          "item_name": "Advisor's Ring",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 12,
+          "verified": true
         },
         {
           "slot": "trinket1",
@@ -4118,8 +4130,8 @@
           "verified": false
         }
       ],
-      "set_dps": 91.83001188116998,
-      "no_source_count": 2672,
+      "set_dps": 92.83139497928978,
+      "no_source_count": 2656,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4145,14 +4157,13 @@
         "wrist: Runic Leather Bracers",
         "hands: Fletcher's Gloves",
         "waist: Defiler's Cloth Girdle",
-        "legs: Red Mageweave Pants",
         "finger1: Blackstone Ring",
-        "finger2: Snake Hoop",
+        "finger2: Advisor's Ring",
         "trinket1: Demon's Blood",
         "trinket2: Shard of the Splithooves"
       ],
-      "weights_run_seconds": 2.002198022,
-      "verify_run_seconds": 1.310673546
+      "weights_run_seconds": 1.85062546,
+      "verify_run_seconds": 1.2268687329999999
     },
     {
       "spec": "druid-balance",
@@ -4358,7 +4369,7 @@
         }
       ],
       "set_dps": 96.92205632076391,
-      "no_source_count": 2920,
+      "no_source_count": 2908,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4388,8 +4399,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.9772991229999999,
-      "verify_run_seconds": 1.311099561
+      "weights_run_seconds": 1.829667139,
+      "verify_run_seconds": 1.228213623
     },
     {
       "spec": "druid-balance",
@@ -4596,7 +4607,7 @@
         }
       ],
       "set_dps": 98.04989849041392,
-      "no_source_count": 2922,
+      "no_source_count": 2906,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4626,8 +4637,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.9772991229999999,
-      "verify_run_seconds": 1.304606368
+      "weights_run_seconds": 1.829667139,
+      "verify_run_seconds": 1.247392431
     },
     {
       "spec": "druid-balance",
@@ -4790,7 +4801,7 @@
           "item_name": "Seal of the Damned",
           "source": "Naxxramas",
           "source_kind": "raid",
-          "score": 120.37237639353269,
+          "score": 120.3723763935327,
           "verified": true
         },
         {
@@ -4826,7 +4837,7 @@
           "item_name": "Atiesh, Greatstaff of the Guardian",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 329.10544987566203,
+          "score": 329.1054498756621,
           "verified": true,
           "effect_unmodelled": true
         },
@@ -4840,7 +4851,7 @@
         }
       ],
       "set_dps": 206.81746332091137,
-      "no_source_count": 3489,
+      "no_source_count": 3460,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4875,8 +4886,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.9806416150000001,
-      "verify_run_seconds": 1.338202453
+      "weights_run_seconds": 1.94164511,
+      "verify_run_seconds": 1.261068049
     },
     {
       "spec": "druid-balance",
@@ -4980,7 +4991,7 @@
           "item_name": "Genesis Vest",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 102.16861809878905,
+          "score": 102.16861809878907,
           "verified": true,
           "swap_note": "beat the scored pick Bloodvine Vest (id 19682) in the sim: 189.5 vs 186.5 set DPS"
         },
@@ -5048,7 +5059,7 @@
           "item_name": "Band of Forced Concentration",
           "source": "Blackwing Lair: Ebonroc",
           "source_kind": "raid",
-          "score": 104.11782827352229,
+          "score": 104.11782827352228,
           "verified": true,
           "swap_note": "beat the scored pick Ring of the Fallen God (id 21709) in the sim: 187.0 vs 186.5 set DPS"
         },
@@ -5077,7 +5088,7 @@
           "item_name": "Atiesh, Greatstaff of the Guardian",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 329.1054498756621,
+          "score": 329.10544987566203,
           "verified": true,
           "effect_unmodelled": true
         },
@@ -5091,7 +5102,7 @@
         }
       ],
       "set_dps": 206.4762062813863,
-      "no_source_count": 3490,
+      "no_source_count": 3457,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -5126,8 +5137,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 1.9806416150000001,
-      "verify_run_seconds": 1.335608399
+      "weights_run_seconds": 1.94164511,
+      "verify_run_seconds": 1.271592578
     }
   ]
 }

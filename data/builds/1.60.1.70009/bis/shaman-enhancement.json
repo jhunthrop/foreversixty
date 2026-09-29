@@ -1,8 +1,8 @@
 {
   "spec": "shaman-enhancement",
   "build": "1.60.1.70009",
-  "engine_version": "b5ac36a52",
-  "generated_at": "2026-09-29T02:24:50Z",
+  "engine_version": "cfbb7f945",
+  "generated_at": "2026-09-29T02:57:41Z",
   "bands": [
     {
       "spec": "shaman-enhancement",
@@ -145,23 +145,28 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 3488,
-          "item_name": "Copper Battle Axe",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 126.84,
+          "item_id": 1480,
+          "item_name": "Fist of the People's Militia",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 122.15999999999984,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 5324,
+          "item_name": "Engineer's Hammer",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 113.67999999999999,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 18.511111367971147,
+      "set_dps": 22.803296960910863,
       "no_source_count": 847,
       "no_source_sample": [
         "816 Small Hand Blade",
@@ -189,10 +194,11 @@
         "legs: Frontier Britches",
         "feet: Padded Lamellar Boots",
         "finger1: Sustaining Ring",
-        "main_hand: Copper Battle Axe"
+        "main_hand: Fist of the People's Militia",
+        "off_hand: Engineer's Hammer"
       ],
-      "weights_run_seconds": 1.446871625,
-      "verify_run_seconds": 0.586070749
+      "weights_run_seconds": 1.398544643,
+      "verify_run_seconds": 0.610241414
     },
     {
       "spec": "shaman-enhancement",
@@ -339,23 +345,28 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 3452,
-          "item_name": "Ceranium Rod",
+          "item_id": 15445,
+          "item_name": "Hammer of Orgrimmar",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 202.16,
+          "score": 131.95999999999987,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 15443,
+          "item_name": "Kris of Orgrimmar",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 126,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 21.24431030347394,
+      "set_dps": 24.28448582875153,
       "no_source_count": 847,
       "no_source_sample": [
         "816 Small Hand Blade",
@@ -384,10 +395,11 @@
         "legs: Gargoyle Leggings",
         "feet: Padded Lamellar Boots",
         "finger1: Ring of Scorn",
-        "main_hand: Ceranium Rod"
+        "main_hand: Hammer of Orgrimmar",
+        "off_hand: Kris of Orgrimmar"
       ],
-      "weights_run_seconds": 1.446871625,
-      "verify_run_seconds": 0.600964222
+      "weights_run_seconds": 1.398544643,
+      "verify_run_seconds": 0.765133578
     },
     {
       "spec": "shaman-enhancement",
@@ -453,11 +465,11 @@
         },
         {
           "slot": "back",
-          "item_id": 14149,
-          "item_name": "Subterranean Cape",
-          "source": "Ragefire Chasm: Taragaman the Hungerer",
-          "source_kind": "dungeon",
-          "score": 5.999999999999669,
+          "item_id": 3511,
+          "item_name": "Cloak of the People's Militia",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 0.39775305059603877,
           "verified": true
         },
         {
@@ -471,11 +483,10 @@
         },
         {
           "slot": "wrist",
-          "item_id": 14147,
-          "item_name": "Cavedweller Bracers",
-          "source": "Ragefire Chasm: Jergosh the Invoker",
-          "source_kind": "dungeon",
-          "score": 3.9999999999997793,
+          "item_id": 5315,
+          "item_name": "Timberland Armguards",
+          "source": "Quests",
+          "source_kind": "quest",
           "verified": true
         },
         {
@@ -540,26 +551,29 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 5613,
-          "item_name": "Staff of the Purifier",
+          "item_id": 5757,
+          "item_name": "Hardwood Cudgel",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 213.78,
-          "verified": true,
-          "swap_note": "beat the scored pick Staff of Westfall (id 2042) in the sim: 25.0 vs 25.0 set DPS",
-          "effect_unmodelled": true
+          "score": 143.99999999999977,
+          "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 3848,
+          "item_name": "Big Bronze Knife",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 140,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 24.977096208682163,
-      "no_source_count": 1139,
+      "set_dps": 29.137378380705204,
+      "no_source_count": 1144,
       "no_source_sample": [
         "816 Small Hand Blade",
         "820 Slicer Blade",
@@ -579,18 +593,18 @@
       ],
       "new_at_band": [
         "head: Flying Tiger Goggles",
-        "back: Subterranean Cape",
         "chest: Murloc Scale Breastplate",
-        "wrist: Cavedweller Bracers",
+        "wrist: Timberland Armguards",
         "hands: Polar Gauntlets",
         "legs: Chausses of Westfall",
         "feet: Gold Militia Boots",
         "finger1: Ring of Iron Will",
         "finger2: Clergy Ring",
-        "main_hand: Staff of the Purifier"
+        "main_hand: Hardwood Cudgel",
+        "off_hand: Big Bronze Knife"
       ],
-      "weights_run_seconds": 1.497750992,
-      "verify_run_seconds": 0.93071328
+      "weights_run_seconds": 1.380178303,
+      "verify_run_seconds": 1.03006991
     },
     {
       "spec": "shaman-enhancement",
@@ -707,7 +721,7 @@
           "source_kind": "quest",
           "score": 7.999999999999559,
           "verified": true,
-          "swap_note": "beat the scored pick Goblin Mail Leggings (id 1943) in the sim: 24.5 vs 24.4 set DPS"
+          "swap_note": "beat the scored pick Goblin Mail Leggings (id 1943) in the sim: 26.3 vs 26.2 set DPS"
         },
         {
           "slot": "feet",
@@ -745,23 +759,28 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 6505,
-          "item_name": "Crescent Staff",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 286.1521356770861,
+          "item_id": 3848,
+          "item_name": "Big Bronze Knife",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 140,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 5279,
+          "item_name": "Harpy Skinner",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 135.55662957589408,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 24.474915842735346,
+      "set_dps": 26.27391326287365,
       "no_source_count": 1140,
       "no_source_sample": [
         "816 Small Hand Blade",
@@ -790,10 +809,11 @@
         "legs: Sea Dog Britches",
         "finger1: Bounty Hunter's Ring",
         "finger2: Ring of Scorn",
-        "main_hand: Crescent Staff"
+        "main_hand: Big Bronze Knife",
+        "off_hand: Harpy Skinner"
       ],
-      "weights_run_seconds": 1.497750992,
-      "verify_run_seconds": 0.855704306
+      "weights_run_seconds": 1.380178303,
+      "verify_run_seconds": 1.059199639
     },
     {
       "spec": "shaman-enhancement",
@@ -852,7 +872,12 @@
         },
         {
           "slot": "neck",
-          "verified": false
+          "item_id": 20444,
+          "item_name": "Sentinel's Medallion",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 1.461744337867444,
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -861,16 +886,17 @@
           "source": "Quests",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "beat the scored pick Silvered Bronze Shoulders (id 3481) in the sim: 35.6 vs 35.4 set DPS"
+          "swap_note": "beat the scored pick Silvered Bronze Shoulders (id 3481) in the sim: 37.0 vs 37.0 set DPS"
         },
         {
           "slot": "back",
-          "item_id": 14149,
-          "item_name": "Subterranean Cape",
-          "source": "Ragefire Chasm: Taragaman the Hungerer",
+          "item_id": 6449,
+          "item_name": "Glowing Lizardscale Cloak",
+          "source": "Wailing Caverns: Skum",
           "source_kind": "dungeon",
-          "score": 5.9999999999999325,
-          "verified": true
+          "score": 1.461744337867444,
+          "verified": true,
+          "swap_note": "beat the scored pick Miner's Cape (id 5444) in the sim: 37.2 vs 37.0 set DPS"
         },
         {
           "slot": "chest",
@@ -892,13 +918,12 @@
         },
         {
           "slot": "hands",
-          "item_id": 5195,
-          "item_name": "Gold-flecked Gloves",
-          "source": "The Deadmines: Sneed",
-          "source_kind": "dungeon",
-          "score": 13.999999999999844,
-          "verified": true,
-          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 35.6 vs 35.4 set DPS"
+          "item_id": 7348,
+          "item_name": "Fletcher's Gloves",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 63.378653575545606,
+          "verified": true
         },
         {
           "slot": "waist",
@@ -929,20 +954,20 @@
         },
         {
           "slot": "finger1",
+          "item_id": 20439,
+          "item_name": "Protector's Band",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 8.974496225244874,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 2933,
           "item_name": "Seal of Wrynn",
           "source": "Quests",
           "source_kind": "quest",
           "score": 6.730872168933654,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 1156,
-          "item_name": "Lavishly Jeweled Ring",
-          "source": "The Deadmines: Gilnid",
-          "source_kind": "dungeon",
-          "score": 0.4872481126224813,
           "verified": true
         },
         {
@@ -963,24 +988,30 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7230,
-          "item_name": "Smite's Mighty Hammer",
-          "source": "The Deadmines: Mr. Smite",
+          "item_id": 1292,
+          "item_name": "Butcher's Cleaver",
+          "source": "Shadowfang Keep: Razorclaw the Butcher",
           "source_kind": "dungeon",
-          "score": 298.9144962252447,
+          "score": 237.00724811262236,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 9608,
+          "item_name": "Shoni's Disarming Tool",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 224.70000000000002,
+          "verified": true,
+          "swap_note": "beat the scored pick Gutterblade (id 17046) in the sim: 37.8 vs 37.0 set DPS"
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 35.802390690529535,
-      "no_source_count": 1512,
+      "set_dps": 37.869244933169725,
+      "no_source_count": 1513,
       "no_source_sample": [
         "789 Stout Battlehammer",
         "790 Forester's Axe",
@@ -1000,20 +1031,23 @@
       ],
       "new_at_band": [
         "head: Sparkmetal Coif",
+        "neck: Sentinel's Medallion",
         "shoulder: Mantle of Honor",
+        "back: Glowing Lizardscale Cloak",
         "chest: Mutant Scale Breastplate",
         "wrist: Patterned Bronze Bracers",
-        "hands: Gold-flecked Gloves",
+        "hands: Fletcher's Gloves",
         "waist: Blackened Defias Belt",
         "feet: Draftsman Boots",
-        "finger1: Seal of Wrynn",
-        "finger2: Lavishly Jeweled Ring",
+        "finger1: Protector's Band",
+        "finger2: Seal of Wrynn",
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty",
-        "main_hand: Smite's Mighty Hammer"
+        "main_hand: Butcher's Cleaver",
+        "off_hand: Shoni's Disarming Tool"
       ],
-      "weights_run_seconds": 1.476070156,
-      "verify_run_seconds": 1.026786765
+      "weights_run_seconds": 1.417952855,
+      "verify_run_seconds": 1.210757065
     },
     {
       "spec": "shaman-enhancement",
@@ -1063,24 +1097,30 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 4368,
-          "item_name": "Flying Tiger Goggles",
+          "item_id": 4373,
+          "item_name": "Shadow Goggles",
           "source": "Engineering",
           "source_kind": "crafted",
-          "verified": true
+          "verified": true,
+          "swap_note": "beat the scored pick Flying Tiger Goggles (id 4368) in the sim: 40.5 vs 39.9 set DPS"
         },
         {
           "slot": "neck",
-          "verified": false
+          "item_id": 20442,
+          "item_name": "Scout's Medallion",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 1.461744337867444,
+          "verified": true
         },
         {
           "slot": "shoulder",
-          "item_id": 3481,
-          "item_name": "Silvered Bronze Shoulders",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 5.9999999999999325,
-          "verified": true
+          "item_id": 3324,
+          "item_name": "Ghostly Mantle",
+          "source": "Quests",
+          "source_kind": "quest",
+          "verified": true,
+          "swap_note": "beat the scored pick Silvered Bronze Shoulders (id 3481) in the sim: 40.0 vs 39.9 set DPS"
         },
         {
           "slot": "back",
@@ -1117,7 +1157,7 @@
           "source_kind": "dungeon",
           "score": 13.999999999999844,
           "verified": true,
-          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 32.1 vs 32.0 set DPS"
+          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 40.0 vs 39.9 set DPS"
         },
         {
           "slot": "waist",
@@ -1157,11 +1197,11 @@
         },
         {
           "slot": "finger2",
-          "item_id": 6414,
-          "item_name": "Seal of Sylvanas",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 6,
+          "item_id": 20429,
+          "item_name": "Legionnaire's Band",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 8.974496225244874,
           "verified": true
         },
         {
@@ -1182,24 +1222,29 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7230,
-          "item_name": "Smite's Mighty Hammer",
-          "source": "The Deadmines: Mr. Smite",
+          "item_id": 1292,
+          "item_name": "Butcher's Cleaver",
+          "source": "Shadowfang Keep: Razorclaw the Butcher",
           "source_kind": "dungeon",
-          "score": 298.9144962252447,
+          "score": 237.00724811262236,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 6472,
+          "item_name": "Stinging Viper",
+          "source": "Wailing Caverns: Lord Pythas",
+          "source_kind": "dungeon",
+          "score": 217.56,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 32.056646905822035,
-      "no_source_count": 1513,
+      "set_dps": 40.56262648579008,
+      "no_source_count": 1509,
       "no_source_sample": [
         "789 Stout Battlehammer",
         "790 Forester's Axe",
@@ -1218,7 +1263,9 @@
         "920 Wicked Spiked Mace"
       ],
       "new_at_band": [
-        "shoulder: Silvered Bronze Shoulders",
+        "head: Shadow Goggles",
+        "neck: Scout's Medallion",
+        "shoulder: Ghostly Mantle",
         "back: Wildhunter Cloak",
         "chest: Mutant Scale Breastplate",
         "wrist: Patterned Bronze Bracers",
@@ -1227,13 +1274,14 @@
         "legs: Juggernaut Leggings",
         "feet: Draftsman Boots",
         "finger1: Band of the Fist",
-        "finger2: Seal of Sylvanas",
+        "finger2: Legionnaire's Band",
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty",
-        "main_hand: Smite's Mighty Hammer"
+        "main_hand: Butcher's Cleaver",
+        "off_hand: Stinging Viper"
       ],
-      "weights_run_seconds": 1.476070156,
-      "verify_run_seconds": 0.949544638
+      "weights_run_seconds": 1.417952855,
+      "verify_run_seconds": 1.129696066
     },
     {
       "spec": "shaman-enhancement",
@@ -1292,7 +1340,12 @@
         },
         {
           "slot": "neck",
-          "verified": false
+          "item_id": 20444,
+          "item_name": "Sentinel's Medallion",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 1.626826771433087,
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -1311,7 +1364,7 @@
           "source_kind": "pvp",
           "score": 9.08455118095468,
           "verified": true,
-          "swap_note": "beat the scored pick Wolfmaster Cape (id 6314) in the sim: 33.8 vs 33.6 set DPS"
+          "swap_note": "beat the scored pick Wolfmaster Cape (id 6314) in the sim: 38.3 vs 37.9 set DPS"
         },
         {
           "slot": "chest",
@@ -1339,7 +1392,7 @@
           "source_kind": "crafted",
           "score": 16,
           "verified": true,
-          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 33.8 vs 33.6 set DPS"
+          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 38.0 vs 37.9 set DPS"
         },
         {
           "slot": "waist",
@@ -1358,7 +1411,7 @@
           "source_kind": "quest",
           "score": 19.999999999998224,
           "verified": true,
-          "swap_note": "beat the scored pick Chausses of Westfall (id 6087) in the sim: 34.0 vs 33.6 set DPS"
+          "swap_note": "beat the scored pick Chausses of Westfall (id 6087) in the sim: 38.2 vs 37.9 set DPS"
         },
         {
           "slot": "feet",
@@ -1368,7 +1421,7 @@
           "source_kind": "crafted",
           "score": 7.9999999999992895,
           "verified": true,
-          "swap_note": "beat the scored pick Draftsman Boots (id 6668) in the sim: 33.6 vs 33.6 set DPS"
+          "swap_note": "beat the scored pick Draftsman Boots (id 6668) in the sim: 38.1 vs 37.9 set DPS"
         },
         {
           "slot": "finger1",
@@ -1386,7 +1439,8 @@
           "source": "Quests",
           "source_kind": "quest",
           "score": 6.813413385716011,
-          "verified": true
+          "verified": true,
+          "swap_note": "beat the scored pick Protector's Band (id 20439) in the sim: 38.2 vs 37.9 set DPS"
         },
         {
           "slot": "trinket1",
@@ -1406,24 +1460,30 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 1155,
-          "item_name": "Rod of the Sleepwalker",
-          "source": "Blackfathom Deeps: Twilight Lord Kelris",
+          "item_id": 6220,
+          "item_name": "Meteor Shard",
+          "source": "Shadowfang Keep: Archmage Arugal",
           "source_kind": "dungeon",
-          "score": 332.5,
+          "score": 256.62,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 6904,
+          "item_name": "Bite of Serra'kis",
+          "source": "Blackfathom Deeps",
+          "source_kind": "dungeon",
+          "score": 247.66000000000003,
+          "verified": true,
+          "swap_note": "beat the scored pick Crescent of Forlorn Spirits (id 2044) in the sim: 40.6 vs 37.9 set DPS"
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 34.39306336280683,
-      "no_source_count": 1898,
+      "set_dps": 41.37588188083341,
+      "no_source_count": 1899,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -1450,11 +1510,11 @@
         "legs: Darkshire Mail Leggings",
         "feet: Silvered Bronze Boots",
         "finger1: Silverlaine's Family Seal",
-        "finger2: Seal of Wrynn",
-        "main_hand: Rod of the Sleepwalker"
+        "main_hand: Meteor Shard",
+        "off_hand: Bite of Serra'kis"
       ],
-      "weights_run_seconds": 1.494810046,
-      "verify_run_seconds": 1.038486429
+      "weights_run_seconds": 1.41759911,
+      "verify_run_seconds": 1.156147246
     },
     {
       "spec": "shaman-enhancement",
@@ -1509,11 +1569,16 @@
           "source": "Engineering",
           "source_kind": "crafted",
           "verified": true,
-          "swap_note": "beat the scored pick Flying Tiger Goggles (id 4368) in the sim: 33.6 vs 33.3 set DPS"
+          "swap_note": "beat the scored pick Flying Tiger Goggles (id 4368) in the sim: 40.8 vs 40.7 set DPS"
         },
         {
           "slot": "neck",
-          "verified": false
+          "item_id": 20442,
+          "item_name": "Scout's Medallion",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 1.626826771433087,
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -1559,7 +1624,7 @@
           "source_kind": "quest",
           "score": 19.999999999998224,
           "verified": true,
-          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 33.6 vs 33.3 set DPS"
+          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 40.8 vs 40.7 set DPS"
         },
         {
           "slot": "waist",
@@ -1587,7 +1652,7 @@
           "source_kind": "quest",
           "score": 9.08455118095468,
           "verified": true,
-          "swap_note": "beat the scored pick Draftsman Boots (id 6668) in the sim: 33.3 vs 33.3 set DPS"
+          "swap_note": "beat the scored pick Draftsman Boots (id 6668) in the sim: 40.7 vs 40.7 set DPS"
         },
         {
           "slot": "finger1",
@@ -1625,24 +1690,30 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 1155,
-          "item_name": "Rod of the Sleepwalker",
-          "source": "Blackfathom Deeps: Twilight Lord Kelris",
+          "item_id": 6220,
+          "item_name": "Meteor Shard",
+          "source": "Shadowfang Keep: Archmage Arugal",
           "source_kind": "dungeon",
-          "score": 332.5,
+          "score": 256.62,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 1292,
+          "item_name": "Butcher's Cleaver",
+          "source": "Shadowfang Keep: Razorclaw the Butcher",
+          "source_kind": "dungeon",
+          "score": 237.0622755904768,
+          "verified": true,
+          "swap_note": "beat the scored pick Bite of Serra'kis (id 6904) in the sim: 42.8 vs 40.7 set DPS"
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 33.99564181086457,
-      "no_source_count": 1899,
+      "set_dps": 43.079978482610954,
+      "no_source_count": 1895,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -1661,7 +1732,6 @@
         "899 Venom Web Fang"
       ],
       "new_at_band": [
-        "head: Shadow Goggles",
         "shoulder: Enforcer Pauldrons",
         "back: Wolfmaster Cape",
         "chest: Shining Silver Breastplate",
@@ -1670,10 +1740,11 @@
         "feet: Stomping Boots",
         "finger1: Silverlaine's Family Seal",
         "finger2: Band of the Fist",
-        "main_hand: Rod of the Sleepwalker"
+        "main_hand: Meteor Shard",
+        "off_hand: Butcher's Cleaver"
       ],
-      "weights_run_seconds": 1.494810046,
-      "verify_run_seconds": 0.956182095
+      "weights_run_seconds": 1.41759911,
+      "verify_run_seconds": 1.266079971
     },
     {
       "spec": "shaman-enhancement",
@@ -1747,7 +1818,7 @@
           "source_kind": "quest",
           "score": 16.000000000002665,
           "verified": true,
-          "swap_note": "beat the scored pick Wrangling Spaulders (id 15698) in the sim: 50.5 vs 50.4 set DPS"
+          "swap_note": "beat the scored pick Wrangling Spaulders (id 15698) in the sim: 56.6 vs 55.8 set DPS"
         },
         {
           "slot": "back",
@@ -1757,7 +1828,7 @@
           "source_kind": "pvp",
           "score": 9.47054694581796,
           "verified": true,
-          "swap_note": "beat the scored pick Wolfmaster Cape (id 6314) in the sim: 50.7 vs 50.4 set DPS"
+          "swap_note": "beat the scored pick Wolfmaster Cape (id 6314) in the sim: 56.5 vs 55.8 set DPS"
         },
         {
           "slot": "chest",
@@ -1785,7 +1856,7 @@
           "source_kind": "quest",
           "score": 20.000000000003332,
           "verified": true,
-          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 50.7 vs 50.4 set DPS"
+          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 57.0 vs 55.8 set DPS"
         },
         {
           "slot": "waist",
@@ -1807,31 +1878,31 @@
         },
         {
           "slot": "feet",
-          "item_id": 6668,
-          "item_name": "Draftsman Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 10.000000000001666,
-          "verified": true
+          "item_id": 3482,
+          "item_name": "Silvered Bronze Boots",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 8.000000000001332,
+          "verified": true,
+          "swap_note": "beat the scored pick Draftsman Boots (id 6668) in the sim: 56.5 vs 55.8 set DPS"
         },
         {
           "slot": "finger1",
+          "item_id": 19517,
+          "item_name": "Protector's Band",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 14.205820418726939,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 7686,
           "item_name": "Ironspine's Eye",
           "source": "Scarlet Monastery: Ironspine",
           "source_kind": "dungeon",
           "score": 11.308730628088743,
           "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 2933,
-          "item_name": "Seal of Wrynn",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 7.102910209363469,
-          "verified": true,
-          "swap_note": "beat the scored pick Silverlaine's Family Seal (id 6321) in the sim: 50.5 vs 50.4 set DPS"
         },
         {
           "slot": "trinket1",
@@ -1852,24 +1923,30 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 4983,
-          "item_name": "Rock Pulverizer",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 471.08,
-          "verified": true
+          "item_id": 7687,
+          "item_name": "Ironspine's Fist",
+          "source": "Scarlet Monastery: Ironspine",
+          "source_kind": "dungeon",
+          "score": 334.8800000000023,
+          "verified": true,
+          "swap_note": "beat the scored pick Pronged Reaver (id 6692) in the sim: 60.1 vs 55.8 set DPS"
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 7687,
+          "item_name": "Ironspine's Fist",
+          "source": "Scarlet Monastery: Ironspine",
+          "source_kind": "dungeon",
+          "score": 334.8800000000023,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 51.16505926545243,
-      "no_source_count": 2270,
+      "set_dps": 61.81957135691772,
+      "no_source_count": 2267,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -1895,14 +1972,15 @@
         "hands: Stormfire Gauntlets",
         "waist: Highlander's Plate Girdle",
         "legs: Ferine Leggings",
-        "feet: Draftsman Boots",
-        "finger1: Ironspine's Eye",
+        "finger1: Protector's Band",
+        "finger2: Ironspine's Eye",
         "trinket1: Talisman of Arathor",
         "trinket2: Rune of Perfection",
-        "main_hand: Rock Pulverizer"
+        "main_hand: Ironspine's Fist",
+        "off_hand: Ironspine's Fist"
       ],
-      "weights_run_seconds": 1.5432389130000002,
-      "verify_run_seconds": 1.268874918
+      "weights_run_seconds": 1.4207368439999999,
+      "verify_run_seconds": 1.434472782
     },
     {
       "spec": "shaman-enhancement",
@@ -1952,13 +2030,12 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 7915,
-          "item_name": "Barbaric Iron Helm",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 21.30873062809041,
-          "verified": true,
-          "swap_note": "beat the scored pick Tusken Helm (id 6686) in the sim: 48.5 vs 48.5 set DPS"
+          "item_id": 6686,
+          "item_name": "Tusken Helm",
+          "source": "Razorfen Kraul: Overlord Ramtusk",
+          "source_kind": "dungeon",
+          "score": 26.00000000000433,
+          "verified": true
         },
         {
           "slot": "neck",
@@ -2013,7 +2090,7 @@
           "source_kind": "quest",
           "score": 20.000000000003332,
           "verified": true,
-          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 48.6 vs 48.5 set DPS"
+          "swap_note": "beat the scored pick Fletcher's Gloves (id 7348) in the sim: 61.5 vs 61.3 set DPS"
         },
         {
           "slot": "waist",
@@ -2053,11 +2130,11 @@
         },
         {
           "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 11.308730628088743,
+          "item_id": 19513,
+          "item_name": "Legionnaire's Band",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 14.205820418726939,
           "verified": true
         },
         {
@@ -2079,25 +2156,29 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 9521,
-          "item_name": "Skullsplitter",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 452.380000000005,
-          "verified": true,
-          "swap_note": "beat the scored pick Nimboya's Mystical Staff (id 4134) in the sim: 51.3 vs 48.5 set DPS"
+          "item_id": 6692,
+          "item_name": "Pronged Reaver",
+          "source": "Razorfen Kraul: Charlga Razorflank",
+          "source_kind": "dungeon",
+          "score": 345.44000000000165,
+          "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 7687,
+          "item_name": "Ironspine's Fist",
+          "source": "Scarlet Monastery: Ironspine",
+          "source_kind": "dungeon",
+          "score": 334.8800000000023,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 51.44198900560903,
-      "no_source_count": 2271,
+      "set_dps": 61.549774969626064,
+      "no_source_count": 2263,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2116,7 +2197,7 @@
         "892 Gnoll Casting Gloves"
       ],
       "new_at_band": [
-        "head: Barbaric Iron Helm",
+        "head: Tusken Helm",
         "neck: Ghostshard Talisman",
         "shoulder: Wrangling Spaulders",
         "chest: Kolkar Marauder Chain",
@@ -2125,13 +2206,14 @@
         "legs: Ferine Leggings",
         "feet: Darkspear Boots",
         "finger1: Band of Allegiance",
-        "finger2: Ironspine's Eye",
+        "finger2: Legionnaire's Band",
         "trinket1: Defiler's Talisman",
         "trinket2: Rune of Perfection",
-        "main_hand: Skullsplitter"
+        "main_hand: Pronged Reaver",
+        "off_hand: Ironspine's Fist"
       ],
-      "weights_run_seconds": 1.5432389130000002,
-      "verify_run_seconds": 1.208406837
+      "weights_run_seconds": 1.4207368439999999,
+      "verify_run_seconds": 1.356968427
     },
     {
       "spec": "shaman-enhancement",
@@ -2190,12 +2272,12 @@
         },
         {
           "slot": "neck",
-          "item_id": 4743,
-          "item_name": "Pulsating Crystalline Shard",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true,
-          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 49.8 vs 49.5 set DPS"
+          "item_id": 7731,
+          "item_name": "Ghostshard Talisman",
+          "source": "Scarlet Monastery: Azshir the Sleepless",
+          "source_kind": "dungeon",
+          "score": 14,
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -2205,17 +2287,16 @@
           "source_kind": "quest",
           "score": 15.999999999994305,
           "verified": true,
-          "swap_note": "beat the scored pick Wrangling Spaulders (id 15698) in the sim: 50.2 vs 49.5 set DPS"
+          "swap_note": "beat the scored pick Wrangling Spaulders (id 15698) in the sim: 49.2 vs 49.1 set DPS"
         },
         {
           "slot": "back",
-          "item_id": 16315,
-          "item_name": "Sergeant Major's Cape",
-          "source": "Rank 9",
-          "source_kind": "pvp",
-          "score": 9.487121017283314,
-          "verified": true,
-          "swap_note": "beat the scored pick Wolfmaster Cape (id 6314) in the sim: 50.2 vs 49.5 set DPS"
+          "item_id": 6314,
+          "item_name": "Wolfmaster Cape",
+          "source": "Shadowfang Keep: Wolf Master Nandos",
+          "source_kind": "dungeon",
+          "score": 10,
+          "verified": true
         },
         {
           "slot": "chest",
@@ -2264,32 +2345,30 @@
         },
         {
           "slot": "feet",
-          "item_id": 4109,
-          "item_name": "Excelsior Boots",
+          "item_id": 4653,
+          "item_name": "Ironheel Boots",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 17.346022288888882,
-          "verified": true,
-          "swap_note": "beat the scored pick Ironheel Boots (id 4653) in the sim: 49.6 vs 49.5 set DPS"
+          "score": 19.99999999999288,
+          "verified": true
         },
         {
           "slot": "finger1",
+          "item_id": 19517,
+          "item_name": "Protector's Band",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 14.230681525924973,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 7686,
           "item_name": "Ironspine's Eye",
           "source": "Scarlet Monastery: Ironspine",
           "source_kind": "dungeon",
           "score": 11.346022288891017,
           "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 2933,
-          "item_name": "Seal of Wrynn",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 7.115340762962487,
-          "verified": true,
-          "swap_note": "beat the scored pick Silverlaine's Family Seal (id 6321) in the sim: 50.1 vs 49.5 set DPS"
         },
         {
           "slot": "trinket1",
@@ -2310,24 +2389,30 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 6830,
-          "item_name": "Bonebiter",
+          "item_id": 6831,
+          "item_name": "Black Menace",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 583.4799999999858,
+          "score": 415.38,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 6692,
+          "item_name": "Pronged Reaver",
+          "source": "Razorfen Kraul: Charlga Razorflank",
+          "source_kind": "dungeon",
+          "score": 345.4399999999964,
+          "verified": true,
+          "swap_note": "beat the scored pick Hypnotic Blade (id 7714) in the sim: 57.7 vs 49.1 set DPS"
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 50.46430505865022,
-      "no_source_count": 2577,
+      "set_dps": 58.29425052146904,
+      "no_source_count": 2574,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2346,14 +2431,15 @@
         "880 Staff of Horrors"
       ],
       "new_at_band": [
-        "neck: Pulsating Crystalline Shard",
+        "back: Wolfmaster Cape",
         "hands: Fletcher's Gloves",
         "waist: Highlander's Chain Girdle",
-        "feet: Excelsior Boots",
-        "main_hand: Bonebiter"
+        "feet: Ironheel Boots",
+        "main_hand: Black Menace",
+        "off_hand: Pronged Reaver"
       ],
-      "weights_run_seconds": 1.70028463,
-      "verify_run_seconds": 1.368087566
+      "weights_run_seconds": 1.608175315,
+      "verify_run_seconds": 1.55038242
     },
     {
       "spec": "shaman-enhancement",
@@ -2484,12 +2570,13 @@
         },
         {
           "slot": "feet",
-          "item_id": 4136,
-          "item_name": "Darkspear Boots",
+          "item_id": 4109,
+          "item_name": "Excelsior Boots",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 17.999999999993594,
-          "verified": true
+          "score": 17.346022288888882,
+          "verified": true,
+          "swap_note": "beat the scored pick Darkspear Boots (id 4136) in the sim: 52.9 vs 52.7 set DPS"
         },
         {
           "slot": "finger1",
@@ -2502,11 +2589,11 @@
         },
         {
           "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 11.346022288891017,
+          "item_id": 19513,
+          "item_name": "Legionnaire's Band",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 14.230681525924973,
           "verified": true
         },
         {
@@ -2528,25 +2615,31 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 4134,
-          "item_name": "Nimboya's Mystical Staff",
+          "item_id": 9680,
+          "item_name": "Tok'kar's Murloc Shanker",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 499.09999999999997,
+          "score": 352.23068152592924,
           "verified": true,
-          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 48.8 vs 44.5 set DPS"
+          "swap_note": "beat the scored pick Hypnotic Blade (id 7714) in the sim: 57.1 vs 52.7 set DPS"
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 6692,
+          "item_name": "Pronged Reaver",
+          "source": "Razorfen Kraul: Charlga Razorflank",
+          "source_kind": "dungeon",
+          "score": 345.4399999999964,
+          "verified": true,
+          "swap_note": "beat the scored pick Tok'kar's Murloc Shanker (id 9680) in the sim: 54.4 vs 52.7 set DPS"
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 48.78921588771882,
-      "no_source_count": 2578,
+      "set_dps": 58.923191719226345,
+      "no_source_count": 2570,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2565,13 +2658,14 @@
         "880 Staff of Horrors"
       ],
       "new_at_band": [
-        "head: Tusken Helm",
         "hands: Fletcher's Gloves",
         "waist: Defiler's Chain Girdle",
-        "main_hand: Nimboya's Mystical Staff"
+        "feet: Excelsior Boots",
+        "main_hand: Tok'kar's Murloc Shanker",
+        "off_hand: Pronged Reaver"
       ],
-      "weights_run_seconds": 1.70028463,
-      "verify_run_seconds": 1.2658402739999999
+      "weights_run_seconds": 1.608175315,
+      "verify_run_seconds": 1.740800597
     },
     {
       "spec": "shaman-enhancement",
@@ -2690,7 +2784,7 @@
           "source_kind": "rep",
           "score": 30,
           "verified": true,
-          "swap_note": "beat the scored pick Highlander's Chain Girdle (id 20089) in the sim: 59.1 vs 58.8 set DPS"
+          "swap_note": "beat the scored pick Highlander's Chain Girdle (id 20089) in the sim: 69.1 vs 68.7 set DPS"
         },
         {
           "slot": "legs",
@@ -2709,26 +2803,25 @@
           "source_kind": "quest",
           "score": 17.134745698005297,
           "verified": true,
-          "swap_note": "beat the scored pick Ironheel Boots (id 4653) in the sim: 58.8 vs 58.8 set DPS"
+          "swap_note": "beat the scored pick Ironheel Boots (id 4653) in the sim: 68.7 vs 68.7 set DPS"
         },
         {
           "slot": "finger1",
+          "item_id": 19515,
+          "item_name": "Protector's Band",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 18.786440620449227,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 7686,
           "item_name": "Ironspine's Eye",
           "source": "Scarlet Monastery: Ironspine",
           "source_kind": "dungeon",
           "score": 11.134745698005178,
           "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 2933,
-          "item_name": "Seal of Wrynn",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 7.044915232668459,
-          "verified": true,
-          "swap_note": "beat the scored pick Silverlaine's Family Seal (id 6321) in the sim: 58.9 vs 58.8 set DPS"
         },
         {
           "slot": "trinket1",
@@ -2749,24 +2842,30 @@
         },
         {
           "slot": "main_hand",
+          "item_id": 10750,
+          "item_name": "Lifeforce Dirk",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 503.15999999999997,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
           "item_id": 9651,
           "item_name": "Gryphon Rider's Stormhammer",
           "source": "Quests",
           "source_kind": "quest",
           "score": 440.72,
-          "verified": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
+          "verified": true,
+          "swap_note": "beat the scored pick Axe of the Ebon Drake (id 10744) in the sim: 76.2 vs 68.7 set DPS"
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 59.2488148997097,
-      "no_source_count": 2909,
+      "set_dps": 76.57382768199271,
+      "no_source_count": 2902,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -2786,19 +2885,21 @@
       ],
       "new_at_band": [
         "head: Raging Berserker's Helm",
-        "neck: Ghostshard Talisman",
         "shoulder: Failed Flying Experiment",
         "back: Tattered Hakkari Cape",
         "wrist: Branded Leather Bracers",
         "hands: Dragonscale Gauntlets",
         "waist: Highlander's Leather Girdle",
         "legs: Scarlet Leggings",
+        "feet: Excelsior Boots",
+        "finger1: Protector's Band",
         "trinket1: Thunderbrew's Boot Flask",
         "trinket2: Carrot on a Stick",
-        "main_hand: Gryphon Rider's Stormhammer"
+        "main_hand: Lifeforce Dirk",
+        "off_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.716246765,
-      "verify_run_seconds": 1.369690021
+      "weights_run_seconds": 1.675475181,
+      "verify_run_seconds": 1.465189611
     },
     {
       "spec": "shaman-enhancement",
@@ -2857,23 +2958,21 @@
         },
         {
           "slot": "neck",
-          "item_id": 4430,
-          "item_name": "Ethereal Talisman",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 11.393220310224654,
-          "verified": true,
-          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 52.2 vs 52.2 set DPS"
+          "item_id": 7731,
+          "item_name": "Ghostshard Talisman",
+          "source": "Scarlet Monastery: Azshir the Sleepless",
+          "source_kind": "dungeon",
+          "score": 14,
+          "verified": true
         },
         {
           "slot": "shoulder",
-          "item_id": 11502,
-          "item_name": "Loreskin Shoulders",
+          "item_id": 9647,
+          "item_name": "Failed Flying Experiment",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 20.000000000000405,
-          "verified": true,
-          "swap_note": "beat the scored pick Failed Flying Experiment (id 9647) in the sim: 52.7 vs 52.2 set DPS"
+          "score": 23.483050775561534,
+          "verified": true
         },
         {
           "slot": "back",
@@ -2883,7 +2982,7 @@
           "source_kind": "pvp",
           "score": 14.089830465336918,
           "verified": true,
-          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 53.0 vs 52.2 set DPS"
+          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 76.1 vs 75.6 set DPS"
         },
         {
           "slot": "chest",
@@ -2920,7 +3019,7 @@
           "source_kind": "rep",
           "score": 30,
           "verified": true,
-          "swap_note": "beat the scored pick Defiler's Chain Girdle (id 20153) in the sim: 52.5 vs 52.2 set DPS"
+          "swap_note": "beat the scored pick Defiler's Chain Girdle (id 20153) in the sim: 76.1 vs 75.6 set DPS"
         },
         {
           "slot": "legs",
@@ -2933,29 +3032,30 @@
         },
         {
           "slot": "feet",
-          "item_id": 4136,
-          "item_name": "Darkspear Boots",
+          "item_id": 10702,
+          "item_name": "Enormous Ogre Boots",
           "source": "Quests",
           "source_kind": "quest",
           "score": 18.000000000000362,
-          "verified": true
+          "verified": true,
+          "swap_note": "beat the scored pick Darkspear Boots (id 4136) in the sim: 75.8 vs 75.6 set DPS"
         },
         {
           "slot": "finger1",
+          "item_id": 19512,
+          "item_name": "Legionnaire's Band",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 18.786440620449227,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 18585,
           "item_name": "Band of Allegiance",
           "source": "Quests",
           "source_kind": "quest",
           "score": 18.000000000000362,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 11.134745698005178,
           "verified": true
         },
         {
@@ -2976,25 +3076,29 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 10652,
-          "item_name": "Will of the Mountain Giant",
+          "item_id": 10750,
+          "item_name": "Lifeforce Dirk",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 582.4400000000006,
-          "verified": true,
-          "swap_note": "beat the scored pick Illusionary Rod (id 7713) in the sim: 64.5 vs 52.2 set DPS"
+          "score": 503.15999999999997,
+          "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 10744,
+          "item_name": "Axe of the Ebon Drake",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 441.6400000000004,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 65.36473094100744,
-      "no_source_count": 2911,
+      "set_dps": 76.37448514503588,
+      "no_source_count": 2899,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3014,20 +3118,23 @@
       ],
       "new_at_band": [
         "head: Raging Berserker's Helm",
-        "neck: Ethereal Talisman",
-        "shoulder: Loreskin Shoulders",
+        "shoulder: Failed Flying Experiment",
         "back: Sergeant Major's Cape",
         "chest: Honorguard Chestpiece",
         "wrist: Branded Leather Bracers",
         "hands: Dragonscale Gauntlets",
         "waist: Defiler's Leather Girdle",
         "legs: Scarlet Leggings",
+        "feet: Enormous Ogre Boots",
+        "finger1: Legionnaire's Band",
+        "finger2: Band of Allegiance",
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen",
-        "main_hand: Will of the Mountain Giant"
+        "main_hand: Lifeforce Dirk",
+        "off_hand: Axe of the Ebon Drake"
       ],
-      "weights_run_seconds": 1.716246765,
-      "verify_run_seconds": 1.3149637840000001
+      "weights_run_seconds": 1.675475181,
+      "verify_run_seconds": 1.362818601
     },
     {
       "spec": "shaman-enhancement",
@@ -3110,17 +3217,16 @@
           "source_kind": "pvp",
           "score": 14.312139933862543,
           "verified": true,
-          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 63.2 vs 62.9 set DPS"
+          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 80.4 vs 80.1 set DPS"
         },
         {
           "slot": "chest",
-          "item_id": 17777,
-          "item_name": "Relentless Chain",
+          "item_id": 6773,
+          "item_name": "Kolkar Marauder Chain",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 28,
-          "verified": true,
-          "swap_note": "beat the scored pick Kolkar Marauder Chain (id 6773) in the sim: 63.4 vs 62.9 set DPS"
+          "score": 30.697496589503338,
+          "verified": true
         },
         {
           "slot": "wrist",
@@ -3148,7 +3254,7 @@
           "source_kind": "rep",
           "score": 30,
           "verified": true,
-          "swap_note": "beat the scored pick Highlander's Chain Girdle (id 20089) in the sim: 63.0 vs 62.9 set DPS"
+          "swap_note": "beat the scored pick Highlander's Chain Girdle (id 20089) in the sim: 80.4 vs 80.1 set DPS"
         },
         {
           "slot": "legs",
@@ -3158,7 +3264,7 @@
           "source_kind": "quest",
           "score": 35.780349834656356,
           "verified": true,
-          "swap_note": "beat the scored pick Scarlet Leggings (id 10330) in the sim: 63.0 vs 62.9 set DPS"
+          "swap_note": "beat the scored pick Scarlet Leggings (id 10330) in the sim: 80.2 vs 80.1 set DPS"
         },
         {
           "slot": "feet",
@@ -3168,26 +3274,25 @@
           "source_kind": "dungeon",
           "score": 18.551063145948525,
           "verified": true,
-          "swap_note": "beat the scored pick Ironheel Boots (id 4653) in the sim: 63.3 vs 62.9 set DPS"
+          "swap_note": "beat the scored pick Ironheel Boots (id 4653) in the sim: 80.4 vs 80.1 set DPS"
         },
         {
           "slot": "finger1",
+          "item_id": 19515,
+          "item_name": "Protector's Band",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 19.082853245150055,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 7686,
           "item_name": "Ironspine's Eye",
           "source": "Scarlet Monastery: Ironspine",
           "source_kind": "dungeon",
           "score": 11.468209900795928,
           "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 9655,
-          "item_name": "Seedtime Hoop",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 7.999999999998308,
-          "verified": true,
-          "swap_note": "beat the scored pick Silverlaine's Family Seal (id 6321) in the sim: 63.6 vs 62.9 set DPS"
         },
         {
           "slot": "trinket1",
@@ -3207,25 +3312,29 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 10698,
-          "item_name": "Enchanted Azsharite Felbane Staff",
+          "item_id": 9651,
+          "item_name": "Gryphon Rider's Stormhammer",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 692.54,
-          "verified": true,
-          "effect_unmodelled": true
+          "score": 440.72,
+          "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 10750,
+          "item_name": "Lifeforce Dirk",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 503.15999999999997,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 64.90361466863135,
-      "no_source_count": 3220,
+      "set_dps": 80.78946318216558,
+      "no_source_count": 3213,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3245,16 +3354,15 @@
       ],
       "new_at_band": [
         "back: Sergeant Major's Cape",
-        "chest: Relentless Chain",
         "legs: Gryphon Rider's Leggings",
         "feet: Sandstalker Ankleguards",
-        "finger2: Seedtime Hoop",
         "trinket1: Demon's Blood",
         "trinket2: Shard of the Splithooves",
-        "main_hand: Enchanted Azsharite Felbane Staff"
+        "main_hand: Gryphon Rider's Stormhammer",
+        "off_hand: Lifeforce Dirk"
       ],
-      "weights_run_seconds": 1.753763714,
-      "verify_run_seconds": 1.346109002
+      "weights_run_seconds": 1.718834093,
+      "verify_run_seconds": 1.63312156
     },
     {
       "spec": "shaman-enhancement",
@@ -3319,7 +3427,7 @@
           "source_kind": "quest",
           "score": 11.541426622574605,
           "verified": true,
-          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 65.1 vs 65.1 set DPS"
+          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 77.4 vs 77.4 set DPS"
         },
         {
           "slot": "shoulder",
@@ -3329,7 +3437,7 @@
           "source_kind": "quest",
           "score": 19.99999999999577,
           "verified": true,
-          "swap_note": "beat the scored pick Failed Flying Experiment (id 9647) in the sim: 65.3 vs 65.1 set DPS"
+          "swap_note": "beat the scored pick Failed Flying Experiment (id 9647) in the sim: 77.6 vs 77.4 set DPS"
         },
         {
           "slot": "back",
@@ -3339,7 +3447,7 @@
           "source_kind": "pvp",
           "score": 14.312139933862543,
           "verified": true,
-          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 65.4 vs 65.1 set DPS"
+          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 78.4 vs 77.4 set DPS"
         },
         {
           "slot": "chest",
@@ -3376,7 +3484,7 @@
           "source_kind": "rep",
           "score": 30,
           "verified": true,
-          "swap_note": "beat the scored pick Defiler's Chain Girdle (id 20153) in the sim: 65.2 vs 65.1 set DPS"
+          "swap_note": "beat the scored pick Defiler's Chain Girdle (id 20153) in the sim: 77.5 vs 77.4 set DPS"
         },
         {
           "slot": "legs",
@@ -3389,30 +3497,29 @@
         },
         {
           "slot": "feet",
-          "item_id": 4136,
-          "item_name": "Darkspear Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 17.99999999999619,
-          "verified": true,
-          "swap_note": "beat the scored pick Sandstalker Ankleguards (id 12470) in the sim: 65.3 vs 65.1 set DPS"
+          "item_id": 12470,
+          "item_name": "Sandstalker Ankleguards",
+          "source": "Zul'Farrak: Zerillis",
+          "source_kind": "dungeon",
+          "score": 18.551063145948525,
+          "verified": true
         },
         {
           "slot": "finger1",
+          "item_id": 19512,
+          "item_name": "Legionnaire's Band",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 19.082853245150055,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
           "item_id": 18585,
           "item_name": "Band of Allegiance",
           "source": "Quests",
           "source_kind": "quest",
           "score": 17.99999999999619,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 11.468209900795928,
           "verified": true
         },
         {
@@ -3433,25 +3540,30 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 10698,
-          "item_name": "Enchanted Azsharite Felbane Staff",
+          "item_id": 10697,
+          "item_name": "Enchanted Azsharite Felbane Dagger",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 692.54,
+          "score": 517.38,
           "verified": true,
           "effect_unmodelled": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 10750,
+          "item_name": "Lifeforce Dirk",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 503.15999999999997,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 64.96948062250988,
-      "no_source_count": 3222,
+      "set_dps": 77.62189570867815,
+      "no_source_count": 3210,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3470,12 +3582,16 @@
         "868 Ardent Custodian"
       ],
       "new_at_band": [
+        "neck: Ethereal Talisman",
+        "shoulder: Loreskin Shoulders",
+        "feet: Sandstalker Ankleguards",
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood",
-        "main_hand: Enchanted Azsharite Felbane Staff"
+        "main_hand: Enchanted Azsharite Felbane Dagger",
+        "off_hand: Lifeforce Dirk"
       ],
-      "weights_run_seconds": 1.753763714,
-      "verify_run_seconds": 1.317783064
+      "weights_run_seconds": 1.718834093,
+      "verify_run_seconds": 1.6342729
     },
     {
       "spec": "shaman-enhancement",
@@ -3531,16 +3647,16 @@
           "source_kind": "dungeon",
           "score": 128.1306997943113,
           "verified": true,
-          "swap_note": "beat the scored pick Raging Berserker's Helm (id 7719) in the sim: 70.7 vs 69.4 set DPS"
+          "swap_note": "beat the scored pick Raging Berserker's Helm (id 7719) in the sim: 93.3 vs 92.8 set DPS"
         },
         {
           "slot": "neck",
-          "item_id": 4743,
-          "item_name": "Pulsating Crystalline Shard",
-          "source": "Quests",
-          "source_kind": "quest",
-          "verified": true,
-          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 69.9 vs 69.4 set DPS"
+          "item_id": 7731,
+          "item_name": "Ghostshard Talisman",
+          "source": "Scarlet Monastery: Azshir the Sleepless",
+          "source_kind": "dungeon",
+          "score": 14,
+          "verified": true
         },
         {
           "slot": "shoulder",
@@ -3553,23 +3669,21 @@
         },
         {
           "slot": "back",
-          "item_id": 16336,
-          "item_name": "Sergeant Major's Cape",
-          "source": "Rank 9",
-          "source_kind": "pvp",
-          "score": 13.577315045908838,
-          "verified": true,
-          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 70.1 vs 69.4 set DPS"
+          "item_id": 20219,
+          "item_name": "Tattered Hakkari Cape",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 21.999999999992163,
+          "verified": true
         },
         {
           "slot": "chest",
-          "item_id": 6773,
-          "item_name": "Kolkar Marauder Chain",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 29.840200886888656,
-          "verified": true,
-          "swap_note": "beat the scored pick Wildthorn Mail (id 12624) in the sim: 69.6 vs 69.4 set DPS"
+          "item_id": 12624,
+          "item_name": "Wildthorn Mail",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 58.66553075522941,
+          "verified": true
         },
         {
           "slot": "wrist",
@@ -3606,7 +3720,7 @@
           "source_kind": "dungeon",
           "score": 41.999999999985036,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 70.0 vs 69.4 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 93.1 vs 92.8 set DPS"
         },
         {
           "slot": "feet",
@@ -3628,11 +3742,11 @@
         },
         {
           "slot": "finger2",
-          "item_id": 7686,
-          "item_name": "Ironspine's Eye",
-          "source": "Scarlet Monastery: Ironspine",
-          "source_kind": "dungeon",
-          "score": 10.36597256886682,
+          "item_id": 19516,
+          "item_name": "Protector's Band",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 22.365972568862542,
           "verified": true
         },
         {
@@ -3662,15 +3776,21 @@
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 10697,
+          "item_name": "Enchanted Azsharite Felbane Dagger",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 517.38,
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 71.11711499693287,
-      "no_source_count": 3585,
+      "set_dps": 93.75805930947612,
+      "no_source_count": 3574,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3690,19 +3810,19 @@
       ],
       "new_at_band": [
         "head: Eye of Theradras",
-        "neck: Pulsating Crystalline Shard",
         "shoulder: Clouddrift Mantle",
-        "chest: Kolkar Marauder Chain",
+        "back: Tattered Hakkari Cape",
+        "chest: Wildthorn Mail",
         "wrist: Bracers of the Stone Princess",
         "waist: Highlander's Chain Girdle",
         "legs: Scarlet Leggings",
         "feet: Greaves of Withering Despair",
         "finger1: Blackstone Ring",
-        "finger2: Ironspine's Eye",
-        "main_hand: Gryphon Rider's Stormhammer"
+        "finger2: Protector's Band",
+        "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.699638451,
-      "verify_run_seconds": 1.372510456
+      "weights_run_seconds": 1.690564523,
+      "verify_run_seconds": 1.681599939
     },
     {
       "spec": "shaman-enhancement",
@@ -3758,7 +3878,7 @@
           "source_kind": "dungeon",
           "score": 128.1306997943113,
           "verified": true,
-          "swap_note": "beat the scored pick Raging Berserker's Helm (id 7719) in the sim: 67.1 vs 66.4 set DPS"
+          "swap_note": "beat the scored pick Raging Berserker's Helm (id 7719) in the sim: 96.4 vs 95.9 set DPS"
         },
         {
           "slot": "neck",
@@ -3771,13 +3891,12 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 11502,
-          "item_name": "Loreskin Shoulders",
+          "item_id": 9647,
+          "item_name": "Failed Flying Experiment",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 19.999999999992873,
-          "verified": true,
-          "swap_note": "beat the scored pick Failed Flying Experiment (id 9647) in the sim: 66.9 vs 66.4 set DPS"
+          "score": 22.62885840984806,
+          "verified": true
         },
         {
           "slot": "back",
@@ -3787,7 +3906,7 @@
           "source_kind": "pvp",
           "score": 13.577315045908838,
           "verified": true,
-          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 66.6 vs 66.4 set DPS"
+          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 96.4 vs 95.9 set DPS"
         },
         {
           "slot": "chest",
@@ -3797,7 +3916,7 @@
           "source_kind": "quest",
           "score": 43.999999999984325,
           "verified": true,
-          "swap_note": "beat the scored pick Wildthorn Mail (id 12624) in the sim: 67.1 vs 66.4 set DPS"
+          "swap_note": "beat the scored pick Wildthorn Mail (id 12624) in the sim: 96.7 vs 95.9 set DPS"
         },
         {
           "slot": "wrist",
@@ -3834,7 +3953,7 @@
           "source_kind": "dungeon",
           "score": 41.999999999985036,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 66.8 vs 66.4 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 96.5 vs 95.9 set DPS"
         },
         {
           "slot": "feet",
@@ -3856,12 +3975,13 @@
         },
         {
           "slot": "finger2",
-          "item_id": 11862,
-          "item_name": "White Bone Band",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 24,
-          "verified": true
+          "item_id": 19511,
+          "item_name": "Legionnaire's Band",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 22.365972568862542,
+          "verified": true,
+          "swap_note": "beat the scored pick White Bone Band (id 11862) in the sim: 96.2 vs 95.9 set DPS"
         },
         {
           "slot": "trinket1",
@@ -3881,26 +4001,30 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 10698,
-          "item_name": "Enchanted Azsharite Felbane Staff",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 692.54,
-          "verified": true,
-          "swap_note": "beat the scored pick Kindling Stave (id 11750) in the sim: 73.1 vs 66.4 set DPS",
-          "effect_unmodelled": true
+          "item_id": 12774,
+          "item_name": "Dawn's Edge",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 638.1506997943113,
+          "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 10697,
+          "item_name": "Enchanted Azsharite Felbane Dagger",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 517.38,
+          "verified": true,
+          "effect_unmodelled": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 75.11280126887182,
-      "no_source_count": 3588,
+      "set_dps": 98.21482964727365,
+      "no_source_count": 3572,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -3921,16 +4045,19 @@
       "new_at_band": [
         "head: Eye of Theradras",
         "neck: Woven Ivy Necklace",
+        "shoulder: Failed Flying Experiment",
         "wrist: Bracers of the Stone Princess",
         "waist: Defiler's Chain Girdle",
         "feet: Greaves of Withering Despair",
         "finger1: Blackstone Ring",
-        "finger2: White Bone Band",
+        "finger2: Legionnaire's Band",
         "trinket1: Demon's Blood",
-        "trinket2: Shard of the Splithooves"
+        "trinket2: Shard of the Splithooves",
+        "main_hand: Dawn's Edge",
+        "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 1.699638451,
-      "verify_run_seconds": 1.304372968
+      "weights_run_seconds": 1.690564523,
+      "verify_run_seconds": 1.620521762
     },
     {
       "spec": "shaman-enhancement",
@@ -3986,7 +4113,7 @@
           "source_kind": "dungeon",
           "score": 255.81439578174326,
           "verified": true,
-          "swap_note": "beat the scored pick Ragefury Eyepatch (id 11735) in the sim: 80.6 vs 80.1 set DPS"
+          "swap_note": "beat the scored pick Ragefury Eyepatch (id 11735) in the sim: 86.6 vs 85.8 set DPS"
         },
         {
           "slot": "neck",
@@ -4005,7 +4132,7 @@
           "source_kind": "crafted",
           "score": 40,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Shoulders (id 15058) in the sim: 81.1 vs 80.1 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Shoulders (id 15058) in the sim: 86.9 vs 85.8 set DPS"
         },
         {
           "slot": "back",
@@ -4024,17 +4151,16 @@
           "source_kind": "dungeon",
           "score": 241.81456716334617,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 81.6 vs 80.1 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 87.5 vs 85.8 set DPS"
         },
         {
           "slot": "wrist",
-          "item_id": 19508,
-          "item_name": "Branded Leather Bracers",
-          "source": "Scarlet Monastery: High Inquisitor Fairbanks",
+          "item_id": 17714,
+          "item_name": "Bracers of the Stone Princess",
+          "source": "Maraudon: Princess Theradras",
           "source_kind": "dungeon",
-          "score": 20,
-          "verified": true,
-          "swap_note": "beat the scored pick Bracers of the Stone Princess (id 17714) in the sim: 80.3 vs 80.1 set DPS"
+          "score": 28,
+          "verified": true
         },
         {
           "slot": "hands",
@@ -4062,7 +4188,7 @@
           "source_kind": "crafted",
           "score": 182.21668815941064,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 83.1 vs 80.1 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 89.5 vs 85.8 set DPS"
         },
         {
           "slot": "feet",
@@ -4109,24 +4235,31 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 12776,
-          "item_name": "Enchanted Battlehammer",
+          "item_id": 12774,
+          "item_name": "Dawn's Edge",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 792.7177076223327,
+          "score": 646.2366881594106,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 12781,
+          "item_name": "Serenity",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 525,
+          "verified": true,
+          "swap_note": "beat the scored pick Blood Talon (id 12795) in the sim: 92.1 vs 85.8 set DPS",
+          "effect_unmodelled": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 84.93396845927963,
-      "no_source_count": 3919,
+      "set_dps": 98.75086674040776,
+      "no_source_count": 3908,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4150,17 +4283,17 @@
         "shoulder: Black Dragonscale Shoulders",
         "back: Stormpike Soldier's Cloak",
         "chest: Savage Gladiator Chain",
-        "wrist: Branded Leather Bracers",
         "hands: Devilsaur Gauntlets",
         "legs: Devilsaur Leggings",
         "finger1: Band of the Penitent",
         "finger2: Blackstone Ring",
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood",
-        "main_hand: Enchanted Battlehammer"
+        "main_hand: Dawn's Edge",
+        "off_hand: Serenity"
       ],
-      "weights_run_seconds": 1.738823137,
-      "verify_run_seconds": 1.390353149
+      "weights_run_seconds": 1.7007498509999999,
+      "verify_run_seconds": 1.621200112
     },
     {
       "spec": "shaman-enhancement",
@@ -4216,7 +4349,7 @@
           "source_kind": "dungeon",
           "score": 255.81439578174326,
           "verified": true,
-          "swap_note": "beat the scored pick Ragefury Eyepatch (id 11735) in the sim: 75.0 vs 74.4 set DPS"
+          "swap_note": "beat the scored pick Ragefury Eyepatch (id 11735) in the sim: 87.1 vs 86.4 set DPS"
         },
         {
           "slot": "neck",
@@ -4226,7 +4359,7 @@
           "source_kind": "quest",
           "score": 15.528986737002965,
           "verified": true,
-          "swap_note": "beat the scored pick Frostwolf Legionnaire's Pendant (id 19095) in the sim: 74.6 vs 74.4 set DPS"
+          "swap_note": "beat the scored pick Frostwolf Legionnaire's Pendant (id 19095) in the sim: 86.5 vs 86.4 set DPS"
         },
         {
           "slot": "shoulder",
@@ -4236,7 +4369,7 @@
           "source_kind": "crafted",
           "score": 40,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Shoulders (id 15058) in the sim: 75.3 vs 74.4 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Shoulders (id 15058) in the sim: 87.5 vs 86.4 set DPS"
         },
         {
           "slot": "back",
@@ -4255,7 +4388,7 @@
           "source_kind": "dungeon",
           "score": 241.81456716334617,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 75.8 vs 74.4 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 88.2 vs 86.4 set DPS"
         },
         {
           "slot": "wrist",
@@ -4292,7 +4425,7 @@
           "source_kind": "crafted",
           "score": 182.21668815941064,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 77.3 vs 74.4 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 90.1 vs 86.4 set DPS"
         },
         {
           "slot": "feet",
@@ -4339,24 +4472,31 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 12776,
-          "item_name": "Enchanted Battlehammer",
+          "item_id": 12774,
+          "item_name": "Dawn's Edge",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 792.7177076223327,
+          "score": 646.2366881594106,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 12781,
+          "item_name": "Serenity",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 525,
+          "verified": true,
+          "swap_note": "beat the scored pick Blood Talon (id 12795) in the sim: 96.8 vs 86.4 set DPS",
+          "effect_unmodelled": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 79.87039634351883,
-      "no_source_count": 3922,
+      "set_dps": 106.49402531661501,
+      "no_source_count": 3906,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4385,10 +4525,10 @@
         "finger2: Blackstone Ring",
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood",
-        "main_hand: Enchanted Battlehammer"
+        "off_hand: Serenity"
       ],
-      "weights_run_seconds": 1.738823137,
-      "verify_run_seconds": 1.328357544
+      "weights_run_seconds": 1.7007498509999999,
+      "verify_run_seconds": 1.533706235
     },
     {
       "spec": "shaman-enhancement",
@@ -4444,7 +4584,7 @@
           "source_kind": "dungeon",
           "score": 303.7793660660168,
           "verified": true,
-          "swap_note": "beat the scored pick Ragefury Eyepatch (id 11735) in the sim: 157.8 vs 156.0 set DPS"
+          "swap_note": "beat the scored pick Ragefury Eyepatch (id 11735) in the sim: 156.4 vs 155.0 set DPS"
         },
         {
           "slot": "neck",
@@ -4472,239 +4612,7 @@
           "source_kind": "quest",
           "score": 86.35210299805527,
           "verified": true,
-          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 158.2 vs 156.0 set DPS"
-        },
-        {
-          "slot": "chest",
-          "item_id": 19690,
-          "item_name": "Bloodsoul Breastplate",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 302.27822873906405,
-          "verified": true
-        },
-        {
-          "slot": "wrist",
-          "item_id": 21602,
-          "item_name": "Qiraji Execution Bracers",
-          "source": "Ahn'Qiraj",
-          "source_kind": "raid",
-          "score": 116.93366689078805,
-          "verified": true
-        },
-        {
-          "slot": "hands",
-          "item_id": 19157,
-          "item_name": "Chromatic Gauntlets",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 192.5220768521895,
-          "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Gloves (id 21278) in the sim: 156.4 vs 156.0 set DPS"
-        },
-        {
-          "slot": "waist",
-          "item_id": 21586,
-          "item_name": "Belt of Never-ending Agony",
-          "source": "Ahn'Qiraj",
-          "source_kind": "raid",
-          "score": 290.1507214591031,
-          "verified": true
-        },
-        {
-          "slot": "legs",
-          "item_id": 15062,
-          "item_name": "Devilsaur Leggings",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 194.5220768521895,
-          "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 156.5 vs 156.0 set DPS"
-        },
-        {
-          "slot": "feet",
-          "item_id": 19684,
-          "item_name": "Bloodvine Boots",
-          "source": "Tailoring",
-          "source_kind": "crafted",
-          "score": 77.62864460691362,
-          "verified": true
-        },
-        {
-          "slot": "finger1",
-          "item_id": 23038,
-          "item_name": "Band of Unnatural Forces",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 278.1507214591031,
-          "verified": true
-        },
-        {
-          "slot": "finger2",
-          "item_id": 19325,
-          "item_name": "Don Julio's Band",
-          "source": "Stormpike Guard",
-          "source_kind": "rep",
-          "score": 242.15072145910312,
-          "verified": true
-        },
-        {
-          "slot": "trinket1",
-          "item_id": 23041,
-          "item_name": "Slayer's Crest",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 64,
-          "verified": true
-        },
-        {
-          "slot": "trinket2",
-          "item_id": 22954,
-          "item_name": "Kiss of the Spider",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 226.15072145910312,
-          "verified": true
-        },
-        {
-          "slot": "main_hand",
-          "item_id": 22632,
-          "item_name": "Atiesh, Greatstaff of the Guardian",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 1320.3400000000001,
-          "verified": true,
-          "effect_unmodelled": true
-        },
-        {
-          "slot": "off_hand",
-          "verified": false
-        },
-        {
-          "slot": "ranged",
-          "verified": false
-        }
-      ],
-      "set_dps": 160.23244755023987,
-      "no_source_count": 4556,
-      "no_source_sample": [
-        "720 Brawler Gloves",
-        "789 Stout Battlehammer",
-        "790 Forester's Axe",
-        "791 Gnarled Ash Staff",
-        "810 Hammer of the Northern Wind",
-        "811 Axe of the Deep Woods",
-        "816 Small Hand Blade",
-        "820 Slicer Blade",
-        "821 Riverpaw Leather Vest",
-        "826 Brutish Riverpaw Axe",
-        "827 Wicked Blackjack",
-        "832 Silver Defias Belt",
-        "863 Gloom Reaper",
-        "865 Leaden Mace",
-        "866 Monk's Staff"
-      ],
-      "new_at_band": [
-        "neck: Stormrage's Talisman of Seething",
-        "shoulder: Champion's Mail Pauldrons",
-        "back: Earthweave Cloak",
-        "chest: Bloodsoul Breastplate",
-        "wrist: Qiraji Execution Bracers",
-        "hands: Chromatic Gauntlets",
-        "waist: Belt of Never-ending Agony",
-        "feet: Bloodvine Boots",
-        "finger1: Band of Unnatural Forces",
-        "finger2: Don Julio's Band",
-        "trinket1: Slayer's Crest",
-        "trinket2: Kiss of the Spider",
-        "main_hand: Atiesh, Greatstaff of the Guardian"
-      ],
-      "weights_run_seconds": 1.761415237,
-      "verify_run_seconds": 1.430366791
-    },
-    {
-      "spec": "shaman-enhancement",
-      "band": 60,
-      "faction": "horde",
-      "race": "orc",
-      "talents": "5533220000000000-253130030005102051-0000000000000000",
-      "talent_points": 51,
-      "weights": [
-        {
-          "stat": "attack_power",
-          "weight": 1,
-          "error": 0.0018197758723633097,
-          "insignificant": false
-        },
-        {
-          "stat": "strength",
-          "weight": 1.9999999999993325,
-          "error": 0.00363955174472268,
-          "insignificant": false
-        },
-        {
-          "stat": "agility",
-          "weight": 0.581563892742777,
-          "error": 0.10063079514620583,
-          "insignificant": false
-        },
-        {
-          "stat": "crit",
-          "weight": 10.608719775156395,
-          "error": 0.3204313272388437,
-          "insignificant": false
-        },
-        {
-          "stat": "hit",
-          "weight": 7.762864460691363,
-          "error": 0.6224846529819897,
-          "insignificant": false
-        },
-        {
-          "stat": "melee_haste",
-          "weight": 4.0915679540120395,
-          "error": 0.15946197793954112,
-          "insignificant": false
-        }
-      ],
-      "slots": [
-        {
-          "slot": "head",
-          "item_id": 13404,
-          "item_name": "Mask of the Unforgiven",
-          "source": "Stratholme: The Unforgiven",
-          "source_kind": "dungeon",
-          "score": 303.7793660660168,
-          "verified": true,
-          "swap_note": "beat the scored pick Ragefury Eyepatch (id 11735) in the sim: 158.5 vs 158.2 set DPS"
-        },
-        {
-          "slot": "neck",
-          "item_id": 23053,
-          "item_name": "Stormrage's Talisman of Seething",
-          "source": "Naxxramas",
-          "source_kind": "raid",
-          "score": 323.044153704379,
-          "verified": true
-        },
-        {
-          "slot": "shoulder",
-          "item_id": 23260,
-          "item_name": "Champion's Mail Pauldrons",
-          "source": "Rank 14",
-          "source_kind": "pvp",
-          "score": 158.5220768521862,
-          "verified": true
-        },
-        {
-          "slot": "back",
-          "item_id": 21187,
-          "item_name": "Earthweave Cloak",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 86.35210299805527,
-          "verified": true,
-          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 158.8 vs 158.2 set DPS"
+          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 156.7 vs 155.0 set DPS"
         },
         {
           "slot": "chest",
@@ -4744,12 +4652,13 @@
         },
         {
           "slot": "legs",
-          "item_id": 15057,
-          "item_name": "Stormshroud Pants",
-          "source": "Leatherworking",
-          "source_kind": "crafted",
-          "score": 297.044153704379,
-          "verified": true
+          "item_id": 22748,
+          "item_name": "Sentinel's Chain Leggings",
+          "source": "Silverwing Sentinels",
+          "source_kind": "rep",
+          "score": 246.50545770510033,
+          "verified": true,
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 156.0 vs 155.0 set DPS"
         },
         {
           "slot": "feet",
@@ -4759,6 +4668,245 @@
           "source_kind": "crafted",
           "score": 77.62864460691362,
           "verified": true
+        },
+        {
+          "slot": "finger1",
+          "item_id": 23038,
+          "item_name": "Band of Unnatural Forces",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 278.1507214591031,
+          "verified": true
+        },
+        {
+          "slot": "finger2",
+          "item_id": 19325,
+          "item_name": "Don Julio's Band",
+          "source": "Stormpike Guard",
+          "source_kind": "rep",
+          "score": 242.15072145910312,
+          "verified": true
+        },
+        {
+          "slot": "trinket1",
+          "item_id": 23041,
+          "item_name": "Slayer's Crest",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 64,
+          "verified": true
+        },
+        {
+          "slot": "trinket2",
+          "item_id": 22954,
+          "item_name": "Kiss of the Spider",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 226.15072145910312,
+          "verified": true
+        },
+        {
+          "slot": "main_hand",
+          "item_id": 19170,
+          "item_name": "Ebon Hand",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 722.4,
+          "verified": true
+        },
+        {
+          "slot": "off_hand",
+          "item_id": 21242,
+          "item_name": "Blessed Qiraji War Axe",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 1010.6420768521896,
+          "verified": true
+        },
+        {
+          "slot": "ranged",
+          "verified": false
+        }
+      ],
+      "set_dps": 158.86881910435977,
+      "no_source_count": 4527,
+      "no_source_sample": [
+        "720 Brawler Gloves",
+        "789 Stout Battlehammer",
+        "790 Forester's Axe",
+        "791 Gnarled Ash Staff",
+        "810 Hammer of the Northern Wind",
+        "811 Axe of the Deep Woods",
+        "816 Small Hand Blade",
+        "820 Slicer Blade",
+        "821 Riverpaw Leather Vest",
+        "826 Brutish Riverpaw Axe",
+        "827 Wicked Blackjack",
+        "832 Silver Defias Belt",
+        "863 Gloom Reaper",
+        "865 Leaden Mace",
+        "866 Monk's Staff"
+      ],
+      "new_at_band": [
+        "neck: Stormrage's Talisman of Seething",
+        "shoulder: Champion's Mail Pauldrons",
+        "back: Earthweave Cloak",
+        "chest: Bloodsoul Breastplate",
+        "wrist: Qiraji Execution Bracers",
+        "hands: Stormshroud Gloves",
+        "waist: Belt of Never-ending Agony",
+        "legs: Sentinel's Chain Leggings",
+        "feet: Bloodvine Boots",
+        "finger1: Band of Unnatural Forces",
+        "finger2: Don Julio's Band",
+        "trinket1: Slayer's Crest",
+        "trinket2: Kiss of the Spider",
+        "main_hand: Ebon Hand",
+        "off_hand: Blessed Qiraji War Axe"
+      ],
+      "weights_run_seconds": 1.728008319,
+      "verify_run_seconds": 1.64782357
+    },
+    {
+      "spec": "shaman-enhancement",
+      "band": 60,
+      "faction": "horde",
+      "race": "orc",
+      "talents": "5533220000000000-253130030005102051-0000000000000000",
+      "talent_points": 51,
+      "weights": [
+        {
+          "stat": "attack_power",
+          "weight": 1,
+          "error": 0.0018197758723633097,
+          "insignificant": false
+        },
+        {
+          "stat": "strength",
+          "weight": 1.9999999999993325,
+          "error": 0.00363955174472268,
+          "insignificant": false
+        },
+        {
+          "stat": "agility",
+          "weight": 0.581563892742777,
+          "error": 0.10063079514620583,
+          "insignificant": false
+        },
+        {
+          "stat": "crit",
+          "weight": 10.608719775156395,
+          "error": 0.3204313272388437,
+          "insignificant": false
+        },
+        {
+          "stat": "hit",
+          "weight": 7.762864460691363,
+          "error": 0.6224846529819897,
+          "insignificant": false
+        },
+        {
+          "stat": "melee_haste",
+          "weight": 4.0915679540120395,
+          "error": 0.15946197793954112,
+          "insignificant": false
+        }
+      ],
+      "slots": [
+        {
+          "slot": "head",
+          "item_id": 13404,
+          "item_name": "Mask of the Unforgiven",
+          "source": "Stratholme: The Unforgiven",
+          "source_kind": "dungeon",
+          "score": 303.7793660660168,
+          "verified": true,
+          "swap_note": "beat the scored pick Ragefury Eyepatch (id 11735) in the sim: 160.0 vs 157.2 set DPS"
+        },
+        {
+          "slot": "neck",
+          "item_id": 23053,
+          "item_name": "Stormrage's Talisman of Seething",
+          "source": "Naxxramas",
+          "source_kind": "raid",
+          "score": 323.044153704379,
+          "verified": true
+        },
+        {
+          "slot": "shoulder",
+          "item_id": 23260,
+          "item_name": "Champion's Mail Pauldrons",
+          "source": "Rank 14",
+          "source_kind": "pvp",
+          "score": 158.5220768521862,
+          "verified": true
+        },
+        {
+          "slot": "back",
+          "item_id": 21187,
+          "item_name": "Earthweave Cloak",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 86.35210299805527,
+          "verified": true,
+          "swap_note": "beat the scored pick Chromatic Cloak (id 18509) in the sim: 159.2 vs 157.2 set DPS"
+        },
+        {
+          "slot": "chest",
+          "item_id": 19690,
+          "item_name": "Bloodsoul Breastplate",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 302.27822873906405,
+          "verified": true
+        },
+        {
+          "slot": "wrist",
+          "item_id": 21602,
+          "item_name": "Qiraji Execution Bracers",
+          "source": "Ahn'Qiraj",
+          "source_kind": "raid",
+          "score": 116.93366689078805,
+          "verified": true
+        },
+        {
+          "slot": "hands",
+          "item_id": 19157,
+          "item_name": "Chromatic Gauntlets",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 192.5220768521895,
+          "verified": true,
+          "swap_note": "beat the scored pick Stormshroud Gloves (id 21278) in the sim: 157.3 vs 157.2 set DPS"
+        },
+        {
+          "slot": "waist",
+          "item_id": 21586,
+          "item_name": "Belt of Never-ending Agony",
+          "source": "Ahn'Qiraj",
+          "source_kind": "raid",
+          "score": 290.1507214591031,
+          "verified": true
+        },
+        {
+          "slot": "legs",
+          "item_id": 22673,
+          "item_name": "Outrider's Chain Leggings",
+          "source": "Warsong Outriders",
+          "source_kind": "rep",
+          "score": 246.50545770510035,
+          "verified": true,
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 159.8 vs 157.2 set DPS"
+        },
+        {
+          "slot": "feet",
+          "item_id": 22240,
+          "item_name": "Greaves of Withering Despair",
+          "source": "Blackrock Depths: High Interrogator Gerstahn ",
+          "source_kind": "dungeon",
+          "score": 77.62864460691362,
+          "verified": true,
+          "swap_note": "beat the scored pick Bloodvine Boots (id 19684) in the sim: 157.8 vs 157.2 set DPS"
         },
         {
           "slot": "finger1",
@@ -4798,25 +4946,29 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 22632,
-          "item_name": "Atiesh, Greatstaff of the Guardian",
+          "item_id": 21244,
+          "item_name": "Blessed Qiraji Pugio",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 1320.3400000000001,
-          "verified": true,
-          "effect_unmodelled": true
+          "score": 1092.4107214591031,
+          "verified": true
         },
         {
           "slot": "off_hand",
-          "verified": false
+          "item_id": 21242,
+          "item_name": "Blessed Qiraji War Axe",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 1010.6420768521896,
+          "verified": true
         },
         {
           "slot": "ranged",
           "verified": false
         }
       ],
-      "set_dps": 158.21926117686507,
-      "no_source_count": 4558,
+      "set_dps": 164.13751608889538,
+      "no_source_count": 4523,
       "no_source_sample": [
         "720 Brawler Gloves",
         "789 Stout Battlehammer",
@@ -4840,18 +4992,18 @@
         "back: Earthweave Cloak",
         "chest: Bloodsoul Breastplate",
         "wrist: Qiraji Execution Bracers",
-        "hands: Stormshroud Gloves",
+        "hands: Chromatic Gauntlets",
         "waist: Belt of Never-ending Agony",
-        "legs: Stormshroud Pants",
-        "feet: Bloodvine Boots",
+        "legs: Outrider's Chain Leggings",
         "finger1: Band of Unnatural Forces",
         "finger2: Don Julio's Band",
         "trinket1: Slayer's Crest",
         "trinket2: Kiss of the Spider",
-        "main_hand: Atiesh, Greatstaff of the Guardian"
+        "main_hand: Blessed Qiraji Pugio",
+        "off_hand: Blessed Qiraji War Axe"
       ],
-      "weights_run_seconds": 1.761415237,
-      "verify_run_seconds": 1.3198313050000001
+      "weights_run_seconds": 1.728008319,
+      "verify_run_seconds": 1.594645468
     }
   ]
 }

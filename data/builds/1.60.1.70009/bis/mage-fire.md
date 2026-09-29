@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (gnome, 000000000000000000-10000000000000000-0000000000000000000)
 
-Set DPS (verified): 7.9. Weights run: 1.1s. Verify run: 0.5s. 446 eligible items had no known source.
+Set DPS (verified): 7.9. Weights run: 1.0s. Verify run: 0.5s. 446 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=2.329 ± 0.092, crit=0.804 ± 0.048, hit=1.949 ± 0.117, spell_haste=-1.377 ± 0.152, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -36,48 +36,48 @@ No-known-source sample (15 of 446, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (gnome, 000000000000000000-23100000000000000-0000000000000000000)
 
-Set DPS (verified): 12.3. Weights run: 1.1s. Verify run: 0.9s. 580 eligible items had no known source.
+Set DPS (verified): 13.7. Weights run: 1.1s. Verify run: 0.7s. 585 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.571 ± 0.158), crit=0.715 ± 0.053, hit=2.020 ± 0.147, spell_haste=not significant (0.026 ± 0.020), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Lucky Fishing Hat (19972) | Quests [quest] | 0.0 | yes |
+| head | Flying Tiger Goggles (4368) | Engineering [crafted] | 0.0 | yes |
 | neck | - | - |  |  |
 | shoulder | - | - |  |  |
-| back | Black Whelp Cloak (7283) | Leatherworking [crafted] | 3.0 | yes |
-| chest | Manaweave Robe (7509) | Quests [quest] | 3.4 | yes |
+| back | Pearl-clasped Cloak (5542) | Tailoring [crafted] | 3.7 | yes |
+| chest | Green Woolen Robe (6243) | Tailoring [crafted] | 4.7 | yes |
 | wrist | Timberland Armguards (5315) | Quests [quest] | 0.0 | yes |
-| hands | Riding Gloves (1304) | Quests [quest] | 1.7 | yes |
+| hands | Heavy Woolen Gloves (4310) | Tailoring [crafted] | 3.1 | yes |
 | waist | Relic Hunter Belt (11936) | Quests [quest] | 2.3 | yes |
-| legs | Handstitched Linen Britches (4309) | Tailoring [crafted] | 3.1 | yes |
-| feet | Woolen Boots (2583) | Tailoring [crafted] | 3.1 | yes |
-| finger1 | Clergy Ring (5622) | Quests [quest] | 0.0 | yes |
-| finger2 | Sustaining Ring (6743) | Quests [quest] | 0.0 | yes |
+| legs | Colorful Kilt (10048) | Tailoring [crafted] | 5.0 | yes |
+| feet | Red Woolen Boots (4313) | Tailoring [crafted] | 4.0 | yes |
+| finger1 | Ring of Iron Will (1319) | Quests [quest] | 0.0 | yes |
+| finger2 | Clergy Ring (5622) | Quests [quest] | 0.0 | yes |
 | trinket1 | - | - |  |  |
 | trinket2 | - | - |  |  |
-| main_hand | Oakthrush Staff (15397) | Quests [quest] | 1.1 | yes |
+| main_hand | Staff of Westfall (2042) | Quests [quest] | 2.9 | yes |
 | off_hand | - | - |  |  |
-| ranged | Sable Wand (7607) | Quests [quest] | 3.0 | yes |
+| ranged | Sizzle Stick (8071) | Quests [quest] | 5.0 | yes |
 
-**New at 15:** back: Black Whelp Cloak; chest: Manaweave Robe; wrist: Timberland Armguards; hands: Riding Gloves; waist: Relic Hunter Belt; feet: Woolen Boots; finger1: Clergy Ring; finger2: Sustaining Ring; main_hand: Oakthrush Staff; ranged: Sable Wand
+**New at 15:** head: Flying Tiger Goggles; back: Pearl-clasped Cloak; chest: Green Woolen Robe; wrist: Timberland Armguards; hands: Heavy Woolen Gloves; waist: Relic Hunter Belt; legs: Colorful Kilt; feet: Red Woolen Boots; finger1: Ring of Iron Will; finger2: Clergy Ring; main_hand: Staff of Westfall; ranged: Sizzle Stick
 
-No-known-source sample (15 of 580, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 899 Venom Web Fang; 935 Night Watch Shortsword; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete; 1287 Giant Tarantula Fang; 1300 Lesser Staff of the Spire; 1355 Buckskin Cape; 1391 Riverpaw Mystic Staff; 1405 Foamspittle Staff; 1473 Riverside Staff; 1917 Jeweled Dagger
+No-known-source sample (15 of 585, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 899 Venom Web Fang; 935 Night Watch Shortsword; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete; 1287 Giant Tarantula Fang; 1300 Lesser Staff of the Spire; 1355 Buckskin Cape; 1391 Riverpaw Mystic Staff; 1405 Foamspittle Staff; 1473 Riverside Staff; 1917 Jeweled Dagger
 
 ### Band 20 (gnome, 000000000000000000-23510000000000000-0000000000000000000)
 
-Set DPS (verified): 20.7. Weights run: 1.1s. Verify run: 0.9s. 760 eligible items had no known source.
+Set DPS (verified): 20.7. Weights run: 1.1s. Verify run: 0.8s. 761 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=1.392 ± 0.085, crit=0.972 ± 0.082, hit=2.132 ± 0.154, spell_haste=-0.708 ± 0.159, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Shadow Goggles (4373) | Engineering [crafted] | 7.0 | yes |
-| neck | - | - |  |  |
+| neck | Sentinel's Medallion (20444) | Silverwing Sentinels [rep] | 0.0 | yes |
 | shoulder | Rose Mantle (5274) | Quests [quest] | 12.0 | yes |
-| back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 | yes |
+| back | Pearl-clasped Cloak (5542) | Tailoring [crafted] | 6.2 | yes |
 | chest | Gray Woolen Robe (2585) | Tailoring [crafted] | 11.0 | yes |
-| wrist | Crystalline Cuffs (14148) | Ragefire Chasm: Taragaman the Hungerer [dungeon] | 2.8 | yes |
+| wrist | Timberland Armguards (5315) | Quests [quest] | 0.0 | yes |
 | hands | Shilly Mitts (9609) | Quests [quest] | 7.0 | yes |
 | waist | Relic Hunter Belt (11936) | Quests [quest] | 5.6 | yes |
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 20.1 | yes |
@@ -90,43 +90,43 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | - | - |  |  |
 | ranged | Sizzle Stick (8071) | Quests [quest] | 5.0 | yes |
 
-**New at 20:** head: Shadow Goggles; shoulder: Rose Mantle; back: Heavy Woolen Cloak; chest: Gray Woolen Robe; wrist: Crystalline Cuffs; hands: Shilly Mitts; legs: Abomination Skin Leggings; feet: Spidersilk Boots; finger1: Lavishly Jeweled Ring; finger2: Minor Channeling Ring; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Staff of Westfall; ranged: Sizzle Stick
+**New at 20:** head: Shadow Goggles; neck: Sentinel's Medallion; shoulder: Rose Mantle; chest: Gray Woolen Robe; hands: Shilly Mitts; legs: Abomination Skin Leggings; feet: Spidersilk Boots; finger1: Lavishly Jeweled Ring; finger2: Minor Channeling Ring; trinket1: Rune of Perfection; trinket2: Rune of Duty
 
-No-known-source sample (15 of 760, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete; 1287 Giant Tarantula Fang; 1299 Lesser Belt of the Spire; 1300 Lesser Staff of the Spire; 1355 Buckskin Cape
+No-known-source sample (15 of 761, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete; 1287 Giant Tarantula Fang; 1299 Lesser Belt of the Spire; 1300 Lesser Staff of the Spire; 1355 Buckskin Cape
 
 ### Band 25 (gnome, 000000000000000000-23551000000000000-0000000000000000000)
 
-Set DPS (verified): 30.1. Weights run: 1.3s. Verify run: 0.9s. 953 eligible items had no known source.
+Set DPS (verified): 29.3. Weights run: 1.1s. Verify run: 0.8s. 954 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=1.178 ± 0.129, crit=1.821 ± 0.157, hit=2.735 ± 0.209, spell_haste=not significant (-0.280 ± 0.195), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Shadow Goggles (4373) | Engineering [crafted] | 5.9 | yes |
-| neck | - | - |  |  |
+| neck | Sentinel's Medallion (20444) | Silverwing Sentinels [rep] | 0.0 | yes |
 | shoulder | Feline Mantle (3748) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 13.4 | yes |
 | back | Repairman's Cape (9605) | Quests [quest] | 7.7 | yes |
 | chest | Lesser Wizard's Robe (5766) | Tailoring [crafted] | 14.4 | yes |
-| wrist | Crystalline Cuffs (14148) | Ragefire Chasm: Taragaman the Hungerer [dungeon] | 2.4 | yes |
+| wrist | Timberland Armguards (5315) | Quests [quest] | 0.0 | yes |
 | hands | Truefaith Gloves (7049) | Tailoring [crafted] | 8.5 | yes |
 | waist | Belt of Arugal (6392) | Shadowfang Keep: Archmage Arugal [dungeon] | 12.5 | yes |
-| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 18.4 | yes |
+| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 12.0 | yes |
 | feet | Spidersilk Boots (4320) | Tailoring [crafted] | 11.7 | yes |
 | finger1 | Snake Hoop (6750) | Quests [quest] | 8.2 | yes |
-| finger2 | Ring of Forlorn Spirits (2043) | Quests [quest] | 8.0 | yes |
+| finger2 | Minor Channeling Ring (1449) | Quests [quest] | 7.4 | yes |
 | trinket1 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | 0.0 | yes |
 | trinket2 | Rune of Duty (21568) | Silverwing Sentinels [rep] | 0.0 | yes |
 | main_hand | Staff of Westfall (2042) | Quests [quest] | 5.9 | yes |
 | off_hand | - | - |  |  |
-| ranged | Sizzle Stick (8071) | Quests [quest] | 5.0 | yes |
+| ranged | Moonbeam Wand (5818) | Quests [quest] | 4.4 | yes |
 
-**New at 25:** shoulder: Feline Mantle; back: Repairman's Cape; chest: Lesser Wizard's Robe; hands: Truefaith Gloves; waist: Belt of Arugal; finger1: Snake Hoop; finger2: Ring of Forlorn Spirits
+**New at 25:** shoulder: Feline Mantle; back: Repairman's Cape; chest: Lesser Wizard's Robe; hands: Truefaith Gloves; waist: Belt of Arugal; legs: Gaze Dreamer Pants; finger1: Snake Hoop; ranged: Moonbeam Wand
 
-No-known-source sample (15 of 953, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete
+No-known-source sample (15 of 954, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete
 
 ### Band 30 (gnome, 000000000000000000-23552110020000000-0000000000000000000)
 
-Set DPS (verified): 40.5. Weights run: 1.5s. Verify run: 1.1s. 1125 eligible items had no known source.
+Set DPS (verified): 40.5. Weights run: 1.3s. Verify run: 1.1s. 1122 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=1.030 ± 0.168, crit=2.538 ± 0.231, hit=3.171 ± 0.272, spell_haste=not significant (0.015 ± 0.231), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -150,13 +150,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | - | - |  |  |
 | ranged | Fizzle's Zippy Lighter (6729) | Quests [quest] | 7.1 | yes |
 
-**New at 30:** head: Enchanter's Cowl; neck: Scorn's Icy Choker; shoulder: Death Speaker Mantle; chest: Green Silk Armor; wrist: Spidertank Oilrag; waist: Crimson Silk Belt; feet: Acidic Walkers; finger1: Ring of Forlorn Spirits; finger2: Snake Hoop; trinket1: Talisman of Arathor; trinket2: Rune of Perfection; ranged: Fizzle's Zippy Lighter
+**New at 30:** head: Enchanter's Cowl; neck: Scorn's Icy Choker; shoulder: Death Speaker Mantle; chest: Green Silk Armor; wrist: Spidertank Oilrag; waist: Crimson Silk Belt; legs: Abomination Skin Leggings; feet: Acidic Walkers; finger1: Ring of Forlorn Spirits; finger2: Snake Hoop; trinket1: Talisman of Arathor; trinket2: Rune of Perfection; ranged: Fizzle's Zippy Lighter
 
-No-known-source sample (15 of 1125, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak
+No-known-source sample (15 of 1122, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak
 
 ### Band 35 (gnome, 000000000000000000-23552110030003010-0000000000000000000)
 
-Set DPS (verified): 44.0. Weights run: 1.5s. Verify run: 1.2s. 1262 eligible items had no known source.
+Set DPS (verified): 43.9. Weights run: 1.4s. Verify run: 1.0s. 1259 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=0.847 ± 0.192, crit=2.767 ± 0.247, hit=3.287 ± 0.295, spell_haste=not significant (0.271 ± 0.261), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -169,24 +169,24 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | chest | Robe of Power (7054) | Tailoring [crafted] | 24.2 | yes |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes |
 | hands | Truefaith Gloves (7049) | Tailoring [crafted] | 7.5 | yes |
-| waist | Star Belt (4329) | Tailoring [crafted] | 13.0 | yes |
+| waist | Highlander's Cloth Girdle (20099) | The League of Arathor [rep] | 13.5 | yes |
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 15.8 | yes |
 | feet | Acidic Walkers (9454) | Gnomeregan [dungeon] | 11.8 | yes |
 | finger1 | Ring of Forlorn Spirits (2043) | Quests [quest] | 8.0 | yes |
-| finger2 | Minor Channeling Ring (1449) | Quests [quest] | 6.7 | yes |
+| finger2 | Lorekeeper's Ring (19525) | Silverwing Sentinels [rep] | 7.0 | yes |
 | trinket1 | Talisman of Arathor (21119) | The League of Arathor [rep] | 0.0 | yes |
 | trinket2 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | 0.0 | yes |
 | main_hand | Illusionary Rod (7713) | Scarlet Monastery: Arcanist Doan [dungeon] | 43.8 | yes |
 | off_hand | - | - |  |  |
 | ranged | Fizzle's Zippy Lighter (6729) | Quests [quest] | 6.5 | yes |
 
-**New at 35:** shoulder: Green Silken Shoulders; back: Long Silken Cloak; chest: Robe of Power; waist: Star Belt; finger2: Minor Channeling Ring; main_hand: Illusionary Rod
+**New at 35:** shoulder: Green Silken Shoulders; back: Long Silken Cloak; chest: Robe of Power; waist: Highlander's Cloth Girdle; finger2: Lorekeeper's Ring; main_hand: Illusionary Rod
 
-No-known-source sample (15 of 1262, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 937 Black Duskwood Staff; 1076 Defias Renegade Ring
+No-known-source sample (15 of 1259, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 937 Black Duskwood Staff; 1076 Defias Renegade Ring
 
 ### Band 40 (gnome, 000000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 56.8. Weights run: 1.6s. Verify run: 1.1s. 1428 eligible items had no known source.
+Set DPS (verified): 57.4. Weights run: 1.5s. Verify run: 1.1s. 1421 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (-0.083 ± 0.167), crit=2.791 ± 0.286, hit=3.609 ± 0.389, spell_haste=6.535 ± 0.548, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -195,14 +195,14 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | head | Spellpower Goggles Xtreme (10502) | Engineering [crafted] | 21.0 | yes |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 6.5 | yes |
 | shoulder | Green Silken Shoulders (7057) | Tailoring [crafted] | 7.1 | yes |
-| back | Long Silken Cloak (4326) | Tailoring [crafted] | 5.6 | yes |
+| back | Caretaker's Cape (19532) | Silverwing Sentinels [rep] | 6.0 | yes |
 | chest | Dreamweave Vest (10021) | Tailoring [crafted] | 17.3 | yes |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes |
 | hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 17.7 | yes |
 | waist | Highlander's Cloth Girdle (20098) | The League of Arathor [rep] | 13.7 | yes |
 | legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 13.0 | yes |
 | feet | Southsea Mojo Boots (20641) | Quests [quest] | 7.1 | yes |
-| finger1 | Ring of Forlorn Spirits (2043) | Quests [quest] | 8.0 | yes |
+| finger1 | Lorekeeper's Ring (19524) | Silverwing Sentinels [rep] | 9.0 | yes |
 | finger2 | Minor Channeling Ring (1449) | Quests [quest] | 4.8 | yes |
 | trinket1 | Thunderbrew's Boot Flask (744) | Quests [quest] | 0.0 | yes |
 | trinket2 | Carrot on a Stick (11122) | Quests [quest] | 0.0 | yes |
@@ -210,13 +210,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | - | - |  |  |
 | ranged | Burning Sliver (5249) | Quests [quest] | 6.0 | yes |
 
-**New at 40:** head: Spellpower Goggles Xtreme; chest: Dreamweave Vest; hands: Dreamweave Gloves; waist: Highlander's Cloth Girdle; legs: Red Mageweave Pants; feet: Southsea Mojo Boots; trinket1: Thunderbrew's Boot Flask; trinket2: Carrot on a Stick; ranged: Burning Sliver
+**New at 40:** head: Spellpower Goggles Xtreme; back: Caretaker's Cape; chest: Dreamweave Vest; hands: Dreamweave Gloves; waist: Highlander's Cloth Girdle; legs: Red Mageweave Pants; feet: Southsea Mojo Boots; finger1: Lorekeeper's Ring; finger2: Minor Channeling Ring; trinket1: Thunderbrew's Boot Flask; trinket2: Carrot on a Stick; ranged: Burning Sliver
 
-No-known-source sample (15 of 1428, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 937 Black Duskwood Staff
+No-known-source sample (15 of 1421, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 937 Black Duskwood Staff
 
 ### Band 45 (gnome, 230000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 63.6. Weights run: 1.6s. Verify run: 1.1s. 1571 eligible items had no known source.
+Set DPS (verified): 64.7. Weights run: 1.5s. Verify run: 1.0s. 1564 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (0.581 ± 0.218), crit=2.792 ± 0.312, hit=3.928 ± 0.437, spell_haste=6.856 ± 0.625, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -225,28 +225,28 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | head | Dreamweave Circlet (10041) | Tailoring [crafted] | 26.8 | yes |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 10.5 | yes |
 | shoulder | Black Mageweave Shoulders (10027) | Tailoring [crafted] | 15.2 | yes |
-| back | Long Silken Cloak (4326) | Tailoring [crafted] | 8.9 | yes |
+| back | Big Voodoo Cloak (8216) | Leatherworking [crafted] | 10.2 | yes |
 | chest | Acumen Robes (17775) | Quests [quest] | 30.6 | yes |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes |
 | hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 20.3 | yes |
 | waist | Highlander's Cloth Girdle (20098) | The League of Arathor [rep] | 16.3 | yes |
 | legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 21.0 | yes |
 | feet | Southsea Mojo Boots (20641) | Quests [quest] | 14.4 | yes |
-| finger1 | Ring of Forlorn Spirits (2043) | Quests [quest] | 8.0 | yes |
-| finger2 | Snake Hoop (6750) | Quests [quest] | 4.1 | yes |
+| finger1 | Lorekeeper's Ring (19524) | Silverwing Sentinels [rep] | 9.0 | yes |
+| finger2 | Ring of Forlorn Spirits (2043) | Quests [quest] | 8.0 | yes |
 | trinket1 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
 | trinket2 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | main_hand | Illusionary Rod (7713) | Scarlet Monastery: Arcanist Doan [dungeon] | 42.6 | yes |
 | off_hand | - | - |  |  |
-| ranged | Burning Sliver (5249) | Quests [quest] | 6.0 | yes |
+| ranged | Charged Lightning Rod (11860) | Quests [quest] | 7.3 | yes |
 
-**New at 45:** head: Dreamweave Circlet; shoulder: Black Mageweave Shoulders; chest: Acumen Robes; finger2: Snake Hoop; trinket1: Demon's Blood; trinket2: Shard of the Splithooves
+**New at 45:** head: Dreamweave Circlet; shoulder: Black Mageweave Shoulders; back: Big Voodoo Cloak; chest: Acumen Robes; finger2: Ring of Forlorn Spirits; trinket1: Demon's Blood; trinket2: Shard of the Splithooves; ranged: Charged Lightning Rod
 
-No-known-source sample (15 of 1571, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
+No-known-source sample (15 of 1564, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
 
 ### Band 50 (gnome, 253000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 77.9. Weights run: 1.6s. Verify run: 1.1s. 1761 eligible items had no known source.
+Set DPS (verified): 77.6. Weights run: 1.5s. Verify run: 1.1s. 1750 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=1.296 ± 0.317, crit=3.552 ± 0.409, hit=4.991 ± 0.564, spell_haste=9.278 ± 0.776, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -263,20 +263,20 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | legs | Kilt of the Atal'ai Prophet (10807) | The Temple of Atal'Hakkar [dungeon] | 26.3 | yes |
 | feet | Southsea Mojo Boots (20641) | Quests [quest] | 22.3 | yes |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 49.9 | yes |
-| finger2 | Snake Hoop (6750) | Quests [quest] | 9.1 | yes |
+| finger2 | Lorekeeper's Ring (19523) | Silverwing Sentinels [rep] | 12.0 | yes |
 | trinket1 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| trinket2 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
+| trinket2 | Smoking Heart of the Mountain (11811) | Enchanting [crafted] | 0.0 | yes |
 | main_hand | Kindling Stave (11750) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 65.3 | yes |
 | off_hand | - | - |  |  |
 | ranged | Charged Lightning Rod (11860) | Quests [quest] | 10.2 | yes |
 
-**New at 50:** head: Red Mageweave Headband; neck: Archlight Talisman; shoulder: Rotgrip Mantle; back: Spritecaster Cape; wrist: Shizzle's Nozzle Wiper; hands: Runecloth Gloves; waist: Satyrmane Sash; legs: Kilt of the Atal'ai Prophet; finger1: Blackstone Ring; main_hand: Kindling Stave; ranged: Charged Lightning Rod
+**New at 50:** head: Red Mageweave Headband; neck: Archlight Talisman; shoulder: Rotgrip Mantle; back: Spritecaster Cape; wrist: Shizzle's Nozzle Wiper; hands: Runecloth Gloves; waist: Satyrmane Sash; legs: Kilt of the Atal'ai Prophet; finger1: Blackstone Ring; finger2: Lorekeeper's Ring; trinket2: Smoking Heart of the Mountain; main_hand: Kindling Stave
 
-No-known-source sample (15 of 1761, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
+No-known-source sample (15 of 1750, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
 
 ### Band 55 (gnome, 255111000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 89.7. Weights run: 1.6s. Verify run: 1.2s. 1911 eligible items had no known source.
+Set DPS (verified): 89.7. Weights run: 1.5s. Verify run: 1.1s. 1900 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.008, intellect=2.639 ± 0.569, crit=5.169 ± 0.516, hit=7.271 ± 0.854, spell_haste=13.492 ± 1.049, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.008
 
@@ -302,11 +302,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 55:** head: Crown of the Penitent; chest: Mooncloth Vest; hands: Magister's Gloves; waist: Wisdom of the Timbermaw; feet: Magister's Boots; finger2: Glowing Crystal Ring; trinket1: Smokey's Lighter; trinket2: Demon's Blood
 
-No-known-source sample (15 of 1911, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
+No-known-source sample (15 of 1900, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
 
 ### Band 60 (gnome, 255115100000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 168.4. Weights run: 1.4s. Verify run: 1.2s. 2253 eligible items had no known source.
+Set DPS (verified): 168.4. Weights run: 1.3s. Verify run: 1.1s. 2222 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.011, intellect=not significant (0.705 ± 0.527), crit=6.781 ± 0.558, hit=15.519 ± 1.707, spell_haste=14.999 ± 1.118, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.011
 
@@ -332,13 +332,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Frostfire Circlet; neck: Gem of Trapped Innocents; shoulder: Champion's Silk Mantle; back: Earthweave Cloak; chest: Frostfire Robe; wrist: Frostfire Bindings; hands: Dark Storm Gauntlets; waist: Frostfire Belt; legs: Frostfire Leggings; feet: Enigma Boots; finger1: Seal of the Damned; finger2: Don Julio's Band; trinket1: The Restrained Essence of Sapphiron; trinket2: Eye of the Dead; main_hand: Atiesh, Greatstaff of the Guardian
 
-No-known-source sample (15 of 2253, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
+No-known-source sample (15 of 2222, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
 
 ## Horde
 
 ### Band 10 (orc, 000000000000000000-10000000000000000-0000000000000000000)
 
-Set DPS (verified): 8.3. Weights run: 1.1s. Verify run: 0.6s. 446 eligible items had no known source.
+Set DPS (verified): 8.3. Weights run: 1.0s. Verify run: 0.5s. 446 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=2.329 ± 0.092, crit=0.804 ± 0.048, hit=1.949 ± 0.117, spell_haste=-1.377 ± 0.152, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -368,7 +368,7 @@ No-known-source sample (15 of 446, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (orc, 000000000000000000-23100000000000000-0000000000000000000)
 
-Set DPS (verified): 13.2. Weights run: 1.1s. Verify run: 0.8s. 581 eligible items had no known source.
+Set DPS (verified): 13.2. Weights run: 1.1s. Verify run: 0.7s. 581 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (0.571 ± 0.158), crit=0.715 ± 0.053, hit=2.020 ± 0.147, spell_haste=not significant (0.026 ± 0.020), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -398,14 +398,14 @@ No-known-source sample (15 of 581, see the JSON for more): 727 Notched Shortswor
 
 ### Band 20 (orc, 000000000000000000-23510000000000000-0000000000000000000)
 
-Set DPS (verified): 17.5. Weights run: 1.1s. Verify run: 0.9s. 761 eligible items had no known source.
+Set DPS (verified): 17.9. Weights run: 1.1s. Verify run: 0.8s. 757 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=1.392 ± 0.085, crit=0.972 ± 0.082, hit=2.132 ± 0.154, spell_haste=-0.708 ± 0.159, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Shadow Goggles (4373) | Engineering [crafted] | 7.0 | yes |
-| neck | - | - |  |  |
+| neck | Scout's Medallion (20442) | Warsong Outriders [rep] | 0.0 | yes |
 | shoulder | Chestnut Mantle (17695) | Quests [quest] | 8.0 | yes |
 | back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 | yes |
 | chest | High Robe of the Adjudicator (3461) | Quests [quest] | 10.8 | yes |
@@ -415,27 +415,27 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 20.1 | yes |
 | feet | Spidersilk Boots (4320) | Tailoring [crafted] | 12.6 | yes |
 | finger1 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 8.4 | yes |
-| finger2 | Totemic Clan Ring (5313) | Quests [quest] | 4.2 | yes |
+| finger2 | Advisor's Ring (20426) | Warsong Outriders [rep] | 5.0 | yes |
 | trinket1 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes |
 | trinket2 | Rune of Duty (21568) | Warsong Outriders [rep] | 0.0 | yes |
 | main_hand | Polished Walking Staff (16889) | Quests [quest] | 9.7 | yes |
 | off_hand | - | - |  |  |
-| ranged | Charred Wand (5250) | Quests [quest] | 4.8 | yes |
+| ranged | Sizzle Stick (8071) | Quests [quest] | 5.0 | yes |
 
-**New at 20:** head: Shadow Goggles; shoulder: Chestnut Mantle; back: Heavy Woolen Cloak; legs: Abomination Skin Leggings; feet: Spidersilk Boots; finger1: Lavishly Jeweled Ring; finger2: Totemic Clan Ring; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Polished Walking Staff; ranged: Charred Wand
+**New at 20:** head: Shadow Goggles; neck: Scout's Medallion; shoulder: Chestnut Mantle; back: Heavy Woolen Cloak; legs: Abomination Skin Leggings; feet: Spidersilk Boots; finger1: Lavishly Jeweled Ring; finger2: Advisor's Ring; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Polished Walking Staff
 
-No-known-source sample (15 of 761, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete; 1287 Giant Tarantula Fang; 1299 Lesser Belt of the Spire; 1300 Lesser Staff of the Spire; 1355 Buckskin Cape
+No-known-source sample (15 of 757, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete; 1287 Giant Tarantula Fang; 1299 Lesser Belt of the Spire; 1300 Lesser Staff of the Spire; 1355 Buckskin Cape
 
 ### Band 25 (orc, 000000000000000000-23551000000000000-0000000000000000000)
 
-Set DPS (verified): 25.6. Weights run: 1.3s. Verify run: 0.9s. 954 eligible items had no known source.
+Set DPS (verified): 25.8. Weights run: 1.1s. Verify run: 0.9s. 950 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=1.178 ± 0.129, crit=1.821 ± 0.157, hit=2.735 ± 0.209, spell_haste=not significant (-0.280 ± 0.195), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Shadow Goggles (4373) | Engineering [crafted] | 5.9 | yes |
-| neck | - | - |  |  |
+| neck | Scout's Medallion (20442) | Warsong Outriders [rep] | 0.0 | yes |
 | shoulder | Feline Mantle (3748) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 13.4 | yes |
 | back | Pearl-clasped Cloak (5542) | Tailoring [crafted] | 5.5 | yes |
 | chest | Lesser Wizard's Robe (5766) | Tailoring [crafted] | 14.4 | yes |
@@ -445,20 +445,20 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 18.4 | yes |
 | feet | Spidersilk Boots (4320) | Tailoring [crafted] | 11.7 | yes |
 | finger1 | Snake Hoop (6750) | Quests [quest] | 8.2 | yes |
-| finger2 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 7.1 | yes |
+| finger2 | Advisor's Ring (20426) | Warsong Outriders [rep] | 5.0 | yes |
 | trinket1 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes |
 | trinket2 | Rune of Duty (21568) | Warsong Outriders [rep] | 0.0 | yes |
 | main_hand | Polished Walking Staff (16889) | Quests [quest] | 8.2 | yes |
 | off_hand | - | - |  |  |
 | ranged | Sizzle Stick (8071) | Quests [quest] | 5.0 | yes |
 
-**New at 25:** shoulder: Feline Mantle; back: Pearl-clasped Cloak; chest: Lesser Wizard's Robe; hands: Truefaith Gloves; waist: Belt of Arugal; finger1: Snake Hoop; finger2: Lavishly Jeweled Ring; ranged: Sizzle Stick
+**New at 25:** shoulder: Feline Mantle; back: Pearl-clasped Cloak; chest: Lesser Wizard's Robe; hands: Truefaith Gloves; waist: Belt of Arugal; finger1: Snake Hoop
 
-No-known-source sample (15 of 954, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete
+No-known-source sample (15 of 950, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete
 
 ### Band 30 (orc, 000000000000000000-23552110020000000-0000000000000000000)
 
-Set DPS (verified): 35.8. Weights run: 1.5s. Verify run: 1.1s. 1126 eligible items had no known source.
+Set DPS (verified): 35.9. Weights run: 1.3s. Verify run: 1.1s. 1118 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=1.030 ± 0.168, crit=2.538 ± 0.231, hit=3.171 ± 0.272, spell_haste=not significant (0.015 ± 0.231), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -466,59 +466,59 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 |---|---|---|---|---|
 | head | Enchanter's Cowl (4322) | Tailoring [crafted] | 16.3 | yes |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 13.2 | yes |
-| shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 18.3 | yes |
-| back | Pearl-clasped Cloak (5542) | Tailoring [crafted] | 5.1 | yes |
+| shoulder | Death Speaker Mantle (6685) | Razorfen Kraul: Death Speaker Jargba [dungeon] | 17.3 | yes |
+| back | Soft Willow Cape (16661) | Quests [quest] | 5.2 | yes |
 | chest | Green Silk Armor (7065) | Tailoring [crafted] | 22.4 | yes |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes |
 | hands | Truefaith Gloves (7049) | Tailoring [crafted] | 8.1 | yes |
-| waist | Defiler's Cloth Girdle (20164) | The Defilers [rep] | 14.1 | yes |
+| waist | Crimson Silk Belt (7055) | Tailoring [crafted] | 13.2 | yes |
 | legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 17.2 | yes |
 | feet | Acidic Walkers (9454) | Gnomeregan [dungeon] | 13.2 | yes |
 | finger1 | Snake Hoop (6750) | Quests [quest] | 7.2 | yes |
-| finger2 | Lonetree's Circle (18586) | Quests [quest] | 6.2 | yes |
+| finger2 | Advisor's Ring (19521) | Warsong Outriders [rep] | 7.0 | yes |
 | trinket1 | Defiler's Talisman (21120) | The Defilers [rep] | 0.0 | yes |
 | trinket2 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes |
 | main_hand | Nimboya's Mystical Staff (4134) | Quests [quest] | 8.2 | yes |
 | off_hand | - | - |  |  |
 | ranged | Fizzle's Zippy Lighter (6729) | Quests [quest] | 7.1 | yes |
 
-**New at 30:** head: Enchanter's Cowl; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; chest: Green Silk Armor; wrist: Spidertank Oilrag; waist: Defiler's Cloth Girdle; feet: Acidic Walkers; finger2: Lonetree's Circle; trinket1: Defiler's Talisman; trinket2: Rune of Perfection; main_hand: Nimboya's Mystical Staff; ranged: Fizzle's Zippy Lighter
+**New at 30:** head: Enchanter's Cowl; neck: Scorn's Icy Choker; shoulder: Death Speaker Mantle; back: Soft Willow Cape; chest: Green Silk Armor; wrist: Spidertank Oilrag; waist: Crimson Silk Belt; feet: Acidic Walkers; finger2: Advisor's Ring; trinket1: Defiler's Talisman; trinket2: Rune of Perfection; main_hand: Nimboya's Mystical Staff; ranged: Fizzle's Zippy Lighter
 
-No-known-source sample (15 of 1126, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak
+No-known-source sample (15 of 1118, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak
 
 ### Band 35 (orc, 000000000000000000-23552110030003010-0000000000000000000)
 
-Set DPS (verified): 38.2. Weights run: 1.5s. Verify run: 1.1s. 1263 eligible items had no known source.
+Set DPS (verified): 38.7. Weights run: 1.4s. Verify run: 1.1s. 1255 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=0.847 ± 0.192, crit=2.767 ± 0.247, hit=3.287 ± 0.295, spell_haste=not significant (0.271 ± 0.261), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Craftsman's Monocle (4393) | Engineering [crafted] | 12.7 | yes |
+| head | Enchanter's Cowl (4322) | Tailoring [crafted] | 14.5 | yes |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 12.1 | yes |
 | shoulder | Green Silken Shoulders (7057) | Tailoring [crafted] | 17.3 | yes |
 | back | Long Silken Cloak (4326) | Tailoring [crafted] | 10.2 | yes |
 | chest | Robe of Power (7054) | Tailoring [crafted] | 24.2 | yes |
-| wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes |
+| wrist | Radiant Silver Bracers (4545) | Quests [quest] | 10.8 | yes |
 | hands | Truefaith Gloves (7049) | Tailoring [crafted] | 7.5 | yes |
 | waist | Star Belt (4329) | Tailoring [crafted] | 13.0 | yes |
-| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 12.0 | yes |
+| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 15.8 | yes |
 | feet | Acidic Walkers (9454) | Gnomeregan [dungeon] | 11.8 | yes |
-| finger1 | Snake Hoop (6750) | Quests [quest] | 5.9 | yes |
-| finger2 | Lonetree's Circle (18586) | Quests [quest] | 5.1 | yes |
+| finger1 | Advisor's Ring (19521) | Warsong Outriders [rep] | 7.0 | yes |
+| finger2 | Snake Hoop (6750) | Quests [quest] | 5.9 | yes |
 | trinket1 | Defiler's Talisman (21120) | The Defilers [rep] | 0.0 | yes |
 | trinket2 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes |
 | main_hand | Nimboya's Mystical Staff (4134) | Quests [quest] | 6.8 | yes |
 | off_hand | - | - |  |  |
 | ranged | Fizzle's Zippy Lighter (6729) | Quests [quest] | 6.5 | yes |
 
-**New at 35:** head: Craftsman's Monocle; shoulder: Green Silken Shoulders; back: Long Silken Cloak; chest: Robe of Power; waist: Star Belt; legs: Gaze Dreamer Pants
+**New at 35:** shoulder: Green Silken Shoulders; back: Long Silken Cloak; chest: Robe of Power; wrist: Radiant Silver Bracers; waist: Star Belt; finger1: Advisor's Ring; finger2: Snake Hoop
 
-No-known-source sample (15 of 1263, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 937 Black Duskwood Staff; 1076 Defias Renegade Ring
+No-known-source sample (15 of 1255, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 937 Black Duskwood Staff; 1076 Defias Renegade Ring
 
 ### Band 40 (orc, 000000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 47.7. Weights run: 1.6s. Verify run: 1.2s. 1429 eligible items had no known source.
+Set DPS (verified): 48.9. Weights run: 1.5s. Verify run: 1.1s. 1417 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (-0.083 ± 0.167), crit=2.791 ± 0.286, hit=3.609 ± 0.389, spell_haste=6.535 ± 0.548, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -527,58 +527,58 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | head | Spellpower Goggles Xtreme (10502) | Engineering [crafted] | 21.0 | yes |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 6.5 | yes |
 | shoulder | Bloodmage Mantle (7684) | Scarlet Monastery: Bloodmage Thalnos [dungeon] | 8.3 | yes |
-| back | Long Silken Cloak (4326) | Tailoring [crafted] | 5.6 | yes |
+| back | Battle Healer's Cloak (19528) | Warsong Outriders [rep] | 6.0 | yes |
 | chest | Dreamweave Vest (10021) | Tailoring [crafted] | 17.3 | yes |
 | wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes |
 | hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 17.7 | yes |
 | waist | Defiler's Cloth Girdle (20166) | The Defilers [rep] | 13.7 | yes |
 | legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 13.0 | yes |
 | feet | Southsea Mojo Boots (20641) | Quests [quest] | 7.1 | yes |
-| finger1 | Electrocutioner Lagnut (9447) | Gnomeregan [dungeon] | 3.0 | yes |
-| finger2 | Sacred Band (6669) | Quests [quest] | 2.0 | yes |
+| finger1 | Advisor's Ring (19520) | Warsong Outriders [rep] | 9.0 | yes |
+| finger2 | Electrocutioner Lagnut (9447) | Gnomeregan [dungeon] | 3.0 | yes |
 | trinket1 | Carrot on a Stick (11122) | Quests [quest] | 0.0 | yes |
 | trinket2 | Mark of the Chosen (17774) | Quests [quest] | 0.0 | yes |
 | main_hand | Illusionary Rod (7713) | Scarlet Monastery: Arcanist Doan [dungeon] | 38.6 | yes |
 | off_hand | - | - |  |  |
 | ranged | Sizzle Stick (8071) | Quests [quest] | 5.0 | yes |
 
-**New at 40:** head: Spellpower Goggles Xtreme; shoulder: Bloodmage Mantle; chest: Dreamweave Vest; hands: Dreamweave Gloves; waist: Defiler's Cloth Girdle; legs: Red Mageweave Pants; feet: Southsea Mojo Boots; finger1: Electrocutioner Lagnut; finger2: Sacred Band; trinket1: Carrot on a Stick; trinket2: Mark of the Chosen; main_hand: Illusionary Rod; ranged: Sizzle Stick
+**New at 40:** head: Spellpower Goggles Xtreme; shoulder: Bloodmage Mantle; back: Battle Healer's Cloak; chest: Dreamweave Vest; wrist: Spidertank Oilrag; hands: Dreamweave Gloves; waist: Defiler's Cloth Girdle; legs: Red Mageweave Pants; feet: Southsea Mojo Boots; finger1: Advisor's Ring; finger2: Electrocutioner Lagnut; trinket1: Carrot on a Stick; trinket2: Mark of the Chosen; main_hand: Illusionary Rod; ranged: Sizzle Stick
 
-No-known-source sample (15 of 1429, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 937 Black Duskwood Staff
+No-known-source sample (15 of 1417, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 937 Black Duskwood Staff
 
 ### Band 45 (orc, 230000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 56.2. Weights run: 1.6s. Verify run: 1.1s. 1572 eligible items had no known source.
+Set DPS (verified): 57.4. Weights run: 1.5s. Verify run: 1.1s. 1560 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (0.581 ± 0.218), crit=2.792 ± 0.312, hit=3.928 ± 0.437, spell_haste=6.856 ± 0.625, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Dreamweave Circlet (10041) | Tailoring [crafted] | 26.8 | yes |
+| head | Red Mageweave Headband (10033) | Tailoring [crafted] | 30.6 | yes |
 | neck | Scorn's Icy Choker (23169) | Scarlet Monastery: Scorn [dungeon] | 10.5 | yes |
 | shoulder | Black Mageweave Shoulders (10027) | Tailoring [crafted] | 15.2 | yes |
 | back | Big Voodoo Cloak (8216) | Leatherworking [crafted] | 10.2 | yes |
 | chest | Acumen Robes (17775) | Quests [quest] | 30.6 | yes |
-| wrist | Radiant Silver Bracers (4545) | Quests [quest] | 8.6 | yes |
+| wrist | Spidertank Oilrag (9448) | Gnomeregan [dungeon] | 9.0 | yes |
 | hands | Dreamweave Gloves (10019) | Tailoring [crafted] | 20.3 | yes |
 | waist | Satyrmane Sash (17755) | Maraudon: Lord Vyletongue [dungeon] | 19.8 | yes |
 | legs | Red Mageweave Pants (10009) | Tailoring [crafted] | 21.0 | yes |
 | feet | Southsea Mojo Boots (20641) | Quests [quest] | 14.4 | yes |
-| finger1 | Snake Hoop (6750) | Quests [quest] | 4.1 | yes |
-| finger2 | Lonetree's Circle (18586) | Quests [quest] | 3.5 | yes |
+| finger1 | Advisor's Ring (19520) | Warsong Outriders [rep] | 9.0 | yes |
+| finger2 | Snake Hoop (6750) | Quests [quest] | 4.1 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
 | main_hand | Illusionary Rod (7713) | Scarlet Monastery: Arcanist Doan [dungeon] | 42.6 | yes |
 | off_hand | - | - |  |  |
 | ranged | Charged Lightning Rod (11860) | Quests [quest] | 7.3 | yes |
 
-**New at 45:** head: Dreamweave Circlet; shoulder: Black Mageweave Shoulders; back: Big Voodoo Cloak; chest: Acumen Robes; wrist: Radiant Silver Bracers; waist: Satyrmane Sash; finger1: Snake Hoop; finger2: Lonetree's Circle; trinket1: Shard of the Splithooves; trinket2: Demon's Blood; ranged: Charged Lightning Rod
+**New at 45:** head: Red Mageweave Headband; shoulder: Black Mageweave Shoulders; back: Big Voodoo Cloak; chest: Acumen Robes; waist: Satyrmane Sash; finger2: Snake Hoop; trinket1: Shard of the Splithooves; trinket2: Demon's Blood; ranged: Charged Lightning Rod
 
-No-known-source sample (15 of 1572, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
+No-known-source sample (15 of 1560, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
 
 ### Band 50 (orc, 253000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 67.3. Weights run: 1.6s. Verify run: 1.2s. 1762 eligible items had no known source.
+Set DPS (verified): 67.8. Weights run: 1.5s. Verify run: 1.0s. 1746 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=1.296 ± 0.317, crit=3.552 ± 0.409, hit=4.991 ± 0.564, spell_haste=9.278 ± 0.776, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -595,20 +595,20 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | legs | Kilt of the Atal'ai Prophet (10807) | The Temple of Atal'Hakkar [dungeon] | 26.3 | yes |
 | feet | Southsea Mojo Boots (20641) | Quests [quest] | 22.3 | yes |
 | finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 49.9 | yes |
-| finger2 | Chemist's Ring (15702) | Quests [quest] | 13.0 | yes |
+| finger2 | Advisor's Ring (19519) | Warsong Outriders [rep] | 12.0 | yes |
 | trinket1 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
 | trinket2 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | main_hand | Kindling Stave (11750) | Blackrock Depths: Pyromancer Loregrain [dungeon] | 65.3 | yes |
 | off_hand | - | - |  |  |
 | ranged | Charged Lightning Rod (11860) | Quests [quest] | 10.2 | yes |
 
-**New at 50:** head: Red Mageweave Headband; neck: Archlight Talisman; shoulder: Rotgrip Mantle; back: Spritecaster Cape; wrist: Shizzle's Nozzle Wiper; hands: Runecloth Gloves; legs: Kilt of the Atal'ai Prophet; finger1: Blackstone Ring; finger2: Chemist's Ring; trinket1: Demon's Blood; trinket2: Shard of the Splithooves; main_hand: Kindling Stave
+**New at 50:** neck: Archlight Talisman; shoulder: Rotgrip Mantle; back: Spritecaster Cape; wrist: Shizzle's Nozzle Wiper; hands: Runecloth Gloves; legs: Kilt of the Atal'ai Prophet; finger1: Blackstone Ring; finger2: Advisor's Ring; trinket1: Demon's Blood; trinket2: Shard of the Splithooves; main_hand: Kindling Stave
 
-No-known-source sample (15 of 1762, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
+No-known-source sample (15 of 1746, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
 
 ### Band 55 (orc, 255111000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 77.8. Weights run: 1.6s. Verify run: 1.2s. 1912 eligible items had no known source.
+Set DPS (verified): 77.8. Weights run: 1.5s. Verify run: 1.1s. 1896 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.008, intellect=2.639 ± 0.569, crit=5.169 ± 0.516, hit=7.271 ± 0.854, spell_haste=13.492 ± 1.049, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.008
 
@@ -634,11 +634,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 55:** head: Crown of the Penitent; neck: Frostwolf Advisor's Pendant; back: Deep Woodlands Cloak; chest: Mooncloth Vest; hands: Magister's Gloves; waist: Wisdom of the Timbermaw; feet: Magister's Boots; finger2: Glowing Crystal Ring; trinket1: Smokey's Lighter; trinket2: Demon's Blood
 
-No-known-source sample (15 of 1912, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
+No-known-source sample (15 of 1896, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
 
 ### Band 60 (orc, 255115100000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 145.6. Weights run: 1.4s. Verify run: 1.2s. 2254 eligible items had no known source.
+Set DPS (verified): 145.6. Weights run: 1.3s. Verify run: 1.1s. 2218 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.011, intellect=not significant (0.705 ± 0.527), crit=6.781 ± 0.558, hit=15.519 ± 1.707, spell_haste=14.999 ± 1.118, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.011
 
@@ -664,5 +664,5 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Frostfire Circlet; neck: Gem of Trapped Innocents; shoulder: Champion's Silk Mantle; back: Earthweave Cloak; chest: Frostfire Robe; wrist: Frostfire Bindings; hands: Dark Storm Gauntlets; waist: Frostfire Belt; legs: Frostfire Leggings; feet: Enigma Boots; finger1: Seal of the Damned; finger2: Don Julio's Band; trinket1: The Restrained Essence of Sapphiron; trinket2: Kiss of the Spider; main_hand: Atiesh, Greatstaff of the Guardian
 
-No-known-source sample (15 of 2254, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
+No-known-source sample (15 of 2218, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 864 Knightly Longsword; 866 Monk's Staff; 873 Staff of Jordan; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword
 
