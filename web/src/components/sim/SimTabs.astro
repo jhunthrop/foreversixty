@@ -101,8 +101,14 @@ const pill = `${rowLink} shrink-0 px-3 text-[12px] font-bold tracking-[0.06em] u
     if (!fadeStart || !fadeEnd) return;
 
     const updateFades = (): void => {
-      const hiddenStart = nav.scrollLeft > EPSILON_PX;
-      const hiddenEnd = nav.scrollLeft + nav.clientWidth < nav.scrollWidth - EPSILON_PX;
+      // Measured against the first and last TAB, not scrollWidth: the strip's own
+      // trailing padding counts toward scrollWidth, so after the last tab is scrolled
+      // into view a sliver of padding kept the end fade on (CI mobile, 2026-09-29).
+      const first = nav.firstElementChild;
+      const last = nav.lastElementChild;
+      const edge = nav.getBoundingClientRect();
+      const hiddenStart = first !== null && first.getBoundingClientRect().left < edge.left - EPSILON_PX;
+      const hiddenEnd = last !== null && last.getBoundingClientRect().right > edge.right + EPSILON_PX;
       fadeStart.classList.toggle('is-visible', hiddenStart);
       fadeEnd.classList.toggle('is-visible', hiddenEnd);
     };
