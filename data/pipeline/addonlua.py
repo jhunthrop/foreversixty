@@ -80,13 +80,16 @@ def _source_kind_code(source_kind: str) -> str:
 
 
 def _bis_lua(bis: dict) -> list[str]:
-    """`bis[spec][band][faction][slot] = { itemId, sourceKindCode }` -- ids
-    only (addonbis.py's own load-bearing decision) and positional rather
-    than named fields, and faction/slot as bare Lua identifiers rather than
-    quoted keys, because this table is the addition the lane brief's size
-    budget is about: named fields alone would nearly double it across 27
-    specs. Tooltip.lua's SOURCE_KIND_NAMES decodes the single-letter code
-    back for advanced detail."""
+    """`bis[spec][band][faction][slot] = { itemId, sourceKindCode[, source] }`
+    -- ids only (addonbis.py's own load-bearing decision) and positional
+    rather than named fields, and faction/slot as bare Lua identifiers
+    rather than quoted keys, because this table is the addition the lane
+    brief's size budget is about: named fields alone would nearly double it
+    across 27 specs. Tooltip.lua's SOURCE_KIND_NAMES decodes the
+    single-letter code back for the tooltip's muted source line; `source`
+    (the third, optional element -- left out of the table literal entirely
+    for a pick with none, rather than an empty string, saving two bytes
+    each) is the short place name that line reads beside it."""
     lines = ["\tbis = {"]
     for spec in sorted(bis):
         lines.append(f"\t\t[{_quote(spec)}] = {{")
@@ -97,9 +100,37 @@ def _bis_lua(bis: dict) -> list[str]:
                 for slot in sorted(band.factions[faction]):
                     item = band.factions[faction][slot]
                     code = _source_kind_code(item.source_kind)
-                    lines.append(f"\t\t\t\t\t{slot} = {{ {item.item_id}, {_quote(code)} }},")
+                    fields = f"{item.item_id}, {_quote(code)}"
+                    if item.source:
+                        fields += f", {_quote(item.source)}"
+                    lines.append(f"\t\t\t\t\t{slot} = {{ {fields} }},")
                 lines.append("\t\t\t\t},")
             lines.append("\t\t\t},")
+        lines.append("\t\t},")
+    lines.append("\t},")
+    return lines
+
+
+def _bis_weights_lua(bis: dict) -> list[str]:
+    """`bis_weights[spec][band] = { stat = weight }`, significant weights
+    only (AddonBisBand.weights' own filter) -- the nightly measured weights
+    Tooltip.verdictFor scores a hovered item against, in preference to the
+    curated static `weights` table above (lane addon-tooltip-polish item
+    4). A spec/band leveling-bis has not measured yet simply has no key,
+    the same "absent, not empty" rule build_bis's own docstring states for
+    a spec with no bis/<spec>.json at all."""
+    lines = ["\tbis_weights = {"]
+    for spec in sorted(bis):
+        measured = [band for band in bis[spec] if band.weights]
+        if not measured:
+            continue
+        lines.append(f"\t\t[{_quote(spec)}] = {{")
+        for band in measured:
+            pairs = ", ".join(
+                f"[{_quote(stat)}] = {_number(value)}"
+                for stat, value in sorted(band.weights.items())
+            )
+            lines.append(f"\t\t\t[{band.level}] = {{ {pairs} }},")
         lines.append("\t\t},")
     lines.append("\t},")
     return lines
@@ -147,6 +178,7 @@ def render_lua(data: AddonData) -> str:
     lines.extend(_rotations_lua(data.rotations))
     lines.extend(_bis_lua(data.bis))
     lines.extend(_bis_new_lua(data.bis))
+    lines.extend(_bis_weights_lua(data.bis))
     lines.append("}")
     lines.append("")
     lines.append("return ns.Data")

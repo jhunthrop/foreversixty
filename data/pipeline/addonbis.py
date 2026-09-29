@@ -103,10 +103,25 @@ def _new_item_ids(new_at_band: list[str], slot_lookup: dict[str, dict]) -> list[
     return ids
 
 
+def _significant_weights(weights: list[dict]) -> dict[str, float]:
+    """leveling-bis's own `weights` list, filtered to the entries it did not
+    flag `insignificant`, rounded to three decimals -- 2.0452764470665192
+    on 27 specs' worth of bands is exactly the byte-budget problem
+    addonbis.py's ids-only rule already solved once for item names; three
+    decimals is more precision than a percentage-difference verdict
+    (Tooltip.verdictFor, one decimal place) can ever show."""
+    return {
+        entry["stat"]: round(float(entry["weight"]), 3)
+        for entry in weights
+        if not entry.get("insignificant", False)
+    }
+
+
 def _one_band(path: Path, level: int, by_faction: dict[str, dict]) -> AddonBisBand:
     factions: dict[str, dict[str, AddonBisItem]] = {}
     new_at_band: dict[str, list[int]] = {}
-    for faction, band in sorted(by_faction.items()):
+    weights: dict[str, float] = {}
+    for index, (faction, band) in enumerate(sorted(by_faction.items())):
         if faction not in KNOWN_FACTIONS:
             raise AddonBisError(f"{path}: unknown faction {faction!r} at band {level}")
         slot_lookup = _slot_lookup(band.get("slots", []))
@@ -114,11 +129,20 @@ def _one_band(path: Path, level: int, by_faction: dict[str, dict]) -> AddonBisBa
             if slot not in KNOWN_SLOTS:
                 raise AddonBisError(f"{path}: unknown slot {slot!r} at band {level}/{faction}")
         factions[faction] = {
-            slot: AddonBisItem(item_id=entry["item_id"], source_kind=entry["source_kind"])
+            slot: AddonBisItem(
+                item_id=entry["item_id"],
+                source_kind=entry["source_kind"],
+                source=entry.get("source", ""),
+            )
             for slot, entry in slot_lookup.items()
         }
         new_at_band[faction] = _new_item_ids(band.get("new_at_band") or [], slot_lookup)
-    return AddonBisBand(level=level, factions=factions, new_at_band=new_at_band)
+        # The first faction (sorted, so always the same one for a given
+        # band) stands for the band as a whole -- see AddonBisBand.weights'
+        # own docstring on why factions are not kept apart here.
+        if index == 0:
+            weights = _significant_weights(band.get("weights") or [])
+    return AddonBisBand(level=level, factions=factions, new_at_band=new_at_band, weights=weights)
 
 
 def _spec_bis(path: Path) -> list[AddonBisBand]:
