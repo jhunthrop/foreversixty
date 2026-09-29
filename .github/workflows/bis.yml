@@ -136,6 +136,16 @@ jobs:
       # N") if a future spec count regresses the budget.
       - name: rank leveling BiS for every written spec
         run: make bis
+      # night-bis-sanity lane, 2026-09-29: the published files are checked
+      # for the defects the class audits found by eye (an item above the
+      # band, the other side's rep, a two-hander with an off hand, one ring
+      # in both slots). Warning-only for now so a data finding never blocks
+      # the picks from landing; promote to blocking once it has been clean
+      # for a week.
+      - name: sanity-check tonight's picks
+        continue-on-error: true
+        working-directory: sim
+        run: FOREVER_BIS_SANITY=1 go test ./cmd/leveling-bis -run TestPublishedBISFilesPassSanityChecks -count=1
       # The addon ships the picks (Data.lua's bis/bis_new tables, ids only),
       # and data.yml's drift check compares the committed Data.lua with what
       # the pipeline renders -- so the same commit that adds bis/*.json must
