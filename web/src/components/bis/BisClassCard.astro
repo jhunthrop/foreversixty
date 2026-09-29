@@ -1,0 +1,60 @@
+---
+// web/src/components/bis/BisClassCard.astro
+// The /bis index's own class card: the class's icon (tenet 1 -- ClassTile.astro's plain
+// coloured-text tile is right for the guide index and the planner's compact rail, but this
+// page's brief specifically asks for "class cards with icons", so this is its own small
+// component rather than a change to ClassTile that would ripple into those other pages) and
+// one row per written spec, each carrying its band-60 set DPS -- the number a reader
+// scanning the index actually wants, not just a name.
+import { classIconUrl } from '../../lib/account/character-descriptor';
+import { bisCopy } from '../../lib/bis/copy';
+
+export interface BisClassCardSpec {
+  class_slug: string;
+  spec_slug: string;
+  name: string;
+  hasData: boolean;
+  /** `bandEntry(file, 60, 'alliance')?.set_dps` -- undefined when the spec has no file yet,
+   *  or (rare) no level-60 alliance band. */
+  band60Dps?: number;
+}
+
+interface Props {
+  name: string;
+  slug: string;
+  specs: BisClassCardSpec[];
+}
+
+const { name, slug, specs } = Astro.props;
+const iconUrl = classIconUrl({ name, class: slug });
+---
+
+<section id={slug} class="rounded-control bg-raised border-line border p-4 scroll-mt-20">
+  <div class="grid grid-cols-[56px_1fr] items-start gap-4">
+    <div class="flex flex-col items-center gap-1">
+      {iconUrl ? (
+        <img src={iconUrl} alt="" width="40" height="40" class="rounded-control border-line border" />
+      ) : (
+        <div class="rounded-control border-line h-10 w-10 border" aria-hidden="true" />
+      )}
+      <span class="text-[11px] font-bold uppercase tracking-[0.06em]">{name}</span>
+    </div>
+    <ul class="m-0 flex list-none flex-col gap-1 p-0 text-[13px]">
+      {specs.map((spec) => (
+        <li class="flex items-center justify-between gap-3">
+          <a href={`/bis/${spec.class_slug}/${spec.spec_slug}`}>{spec.name}</a>
+          {spec.hasData && spec.band60Dps !== undefined ? (
+            <span
+              class="tabular text-muted text-[12px]"
+              data-testid={`bis-index-dps-${spec.class_slug}-${spec.spec_slug}`}
+            >
+              {bisCopy.indexSpecDps60(spec.band60Dps)}
+            </span>
+          ) : (
+            <span class="text-muted text-[12px]">{bisCopy.noDataYet}</span>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

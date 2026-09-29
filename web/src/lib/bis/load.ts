@@ -15,9 +15,20 @@ import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SLOTS, type Slot } from '../planner/types';
-import { LOOT_KINDS, SOURCE_KIND_LABELS, type LootKind } from '../sim/loot';
+import { LOOT_KINDS, SOURCE_KIND_LABELS, type LootFile, type LootKind } from '../sim/loot';
 import { bisCopy } from './copy';
-import type { BisBand, BisFile, BisSlot, Faction, SpecCatalogEntry } from './types';
+import { hasKnownSource } from './source-cell';
+import type {
+  BisBand,
+  BisFile,
+  BisSlot,
+  ChangedSlot,
+  Faction,
+  ItemDetail,
+  ItemHoverModel,
+  LootQuestsFile,
+  SpecCatalogEntry,
+} from './types';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 const WEB_ROOT = path.resolve(REPO_ROOT, 'web');
@@ -109,6 +120,17 @@ export function isMissingSlot(row: SlotRow): row is { slot: Slot; missing: true 
   return 'missing' in row;
 }
 
+/**
+ * A row with nothing to show for it, either way the pipeline can mean that: absent from the
+ * band's own `slots` array (`isMissingSlot`) or present but carrying no pick (`{ slot,
+ * verified: false }`, `hasKnownSource`'s own doc comment). The page's one empty-slot branch
+ * reads this, not `isMissingSlot` alone -- the design brief's "an empty slot says why, not a
+ * dash" covers both shapes the real files actually use.
+ */
+export function isEmptySlotRow(row: SlotRow): boolean {
+  return isMissingSlot(row) || !hasKnownSource(row);
+}
+
 /** Every one of the planner's 17 slots, in its canonical order, filled from the band where
  *  it has a BiS pick and marked missing where it does not -- the honesty the design doc
  *  asks for: a slot with no known source is a visible row, not a silent gap. */
@@ -119,19 +141,62 @@ export function filledSlots(band: BisBand): SlotRow[] {
 
 const isLootKind = (kind: string): kind is LootKind => (LOOT_KINDS as readonly string[]).includes(kind);
 
+function itemsFile<T>(build: string, classSlug: string): T | undefined {
+  const file = path.join(REPO_ROOT, 'data/builds', build, 'items', `${classSlug}.json`);
+  return existsSync(file) ? readJson<T>(file) : undefined;
+}
+
 /**
- * item id -> quality, from this build's items/<classSlug>.json, for the rarity-coloured
- * item name GearList.svelte and CandidateRows.svelte both already use (rarityClassFor,
- * planner/items.ts). The BiS contract's own slot rows carry no quality field, so this joins
- * against the same per-class item file the rest of the site already ships; an id neither
- * the real build nor (for the fixture spec) any real item file names simply gets no entry,
- * and the page falls back to plain text the same way GearList does for an unknown id.
+ * item id -> the fields this lane's item-level column and rarity colouring need, from this
+ * build's items/<classSlug>.json. An id neither the real build nor (for the fixture spec)
+ * any real item file names simply gets no entry, and the page falls back to plain text the
+ * same way GearList does for an unknown id.
+ */
+export function itemDetails(build: string, classSlug: string): Map<number, ItemDetail> {
+  const parsed = itemsFile<{ items: ({ id: number } & ItemDetail)[] }>(build, classSlug);
+  if (parsed === undefined) return new Map();
+  return new Map(
+    parsed.items.map(({ id, name, quality, item_level, required_level, icon, stats }) => [
+      id,
+      { name, quality, item_level, required_level, icon, stats },
+    ]),
+  );
+}
+
+/**
+ * item id -> quality alone, from `itemDetails` -- the shape the rarity-coloured item name
+ * GearList.svelte and CandidateRows.svelte both already use (rarityClassFor, planner/
+ * items.ts) needs, kept as its own export so this page's existing callers and tests do not
+ * have to widen to the full `ItemDetail` just to colour a name.
  */
 export function itemQualities(build: string, classSlug: string): Map<number, number> {
-  const file = path.join(REPO_ROOT, 'data/builds', build, 'items', `${classSlug}.json`);
-  if (!existsSync(file)) return new Map();
-  const { items } = readJson<{ items: { id: number; quality: number }[] }>(file);
-  return new Map(items.map((item) => [item.id, item.quality]));
+  return new Map([...itemDetails(build, classSlug)].map(([id, detail]) => [id, detail.quality]));
+}
+
+/**
+ * `ItemHover`'s stub `model` prop for one item: the name always comes from the caller (the
+ * BiS file's own `item_name` for a picked slot, or a runner-up's name parsed off
+ * `swap_note`) rather than `itemDetails`, so the pill still shows the real name even for an
+ * id `itemDetails` does not know (a data gap `sim/loot.ts`'s own header names). Quality,
+ * item level, required level, icon and stats come from `itemDetails` when it does know the
+ * id, and fall back to an uncoloured, level-less pill when it does not.
+ */
+export function itemHoverModel(
+  itemId: number,
+  itemName: string,
+  details: ReadonlyMap<number, ItemDetail>,
+): ItemHoverModel {
+  const detail = details.get(itemId);
+  return detail === undefined
+    ? { name: itemName, quality: 1, itemLevel: 0, requiredLevel: 0 }
+    : {
+        name: itemName,
+        quality: detail.quality,
+        itemLevel: detail.item_level,
+        requiredLevel: detail.required_level,
+        icon: detail.icon,
+        stats: detail.stats,
+      };
 }
 
 /** The picker's own badge word for a source kind (loot.ts's SOURCE_KIND_LABELS), except a
@@ -141,4 +206,53 @@ export function itemQualities(build: string, classSlug: string): Map<number, num
 export function sourceBadgeLabel(slot: BisSlot, faction: Faction): string {
   if (slot.source_kind === 'quest') return bisCopy.questFactionBadge(faction);
   return isLootKind(slot.source_kind) ? SOURCE_KIND_LABELS[slot.source_kind] : slot.source_kind;
+}
+
+const EMPTY_LOOT: LootFile & LootQuestsFile = { sources: [], quests: {} };
+
+/**
+ * `loot.json`, off disk at build time (see this file's own header) rather than `sim/
+ * loot.ts`'s `loadLoot`, which fetches -- Astro's static pages never run in a browser. A
+ * build the data lane has not shipped a loot table for yet reads as empty, the same
+ * `loadLoot` contract, so a missing file degrades every source cell to its generic badge
+ * instead of failing the page.
+ */
+export function loadLootFile(build: string): LootFile & LootQuestsFile {
+  const file = path.join(REPO_ROOT, 'data/builds', build, 'loot.json');
+  return existsSync(file) ? readJson<LootFile & LootQuestsFile>(file) : EMPTY_LOOT;
+}
+
+/** The band immediately before this one in `bandLevels(file)`'s own order (the contract's
+ *  bands are dense, 10..60 step 5, so this is always `band - 5`, but reading it off the
+ *  file's own band list rather than hardcoding the step means a file that ever changed its
+ *  cadence would still diff correctly). Undefined at the file's first band. */
+export function previousBandLevel(file: BisFile, band: number): number | undefined {
+  const levels = bandLevels(file);
+  const index = levels.indexOf(band);
+  return index <= 0 ? undefined : levels[index - 1];
+}
+
+/**
+ * Every slot's pick this band and the previous band, faction held constant -- the "what
+ * changed since <band>" panel's rows, and (via `slot` membership) the set of slots this
+ * band's own table marks "new". Undefined at the file's first band -- nothing to have
+ * changed since.
+ */
+export function changedSinceBand(file: BisFile, band: number, faction: Faction): ChangedSlot[] | undefined {
+  const previousBand = previousBandLevel(file, band);
+  if (previousBand === undefined) return undefined;
+  const current = bandEntry(file, band, faction);
+  const previous = bandEntry(file, previousBand, faction);
+  if (current === undefined) return [];
+  const currentBySlot = new Map(current.slots.map((slot) => [slot.slot, slot]));
+  const previousBySlot = new Map((previous?.slots ?? []).map((slot) => [slot.slot, slot]));
+  const changed: ChangedSlot[] = [];
+  for (const slotName of SLOTS) {
+    const afterRow = currentBySlot.get(slotName);
+    const beforeRow = previousBySlot.get(slotName);
+    const after = afterRow !== undefined && hasKnownSource(afterRow) ? afterRow : undefined;
+    const before = beforeRow !== undefined && hasKnownSource(beforeRow) ? beforeRow : undefined;
+    if (after?.item_id !== before?.item_id) changed.push({ slot: slotName, before, after });
+  }
+  return changed;
 }
