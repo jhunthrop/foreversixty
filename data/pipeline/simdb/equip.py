@@ -148,15 +148,33 @@ STAT_AURAS: dict[int, str] = {
 #: 155 water breathing, 272 percentage block ("Shield Specialization"), 319
 #: percentage melee speed ("Rapid Fire"), 342 percentage haste ("Gyroscopic
 #: Acceleration"), 470 a food effect ("Wastewanderer Rations"), 598 a
-#: percentage stat conversion ("Careful Aim"). Every aura this build puts on a
-#: kept item's or an enchant's equip spell is in this set or in STAT_AURAS.
+#: percentage stat conversion ("Careful Aim"). Two were added for build
+#: 1.60.1.70009: 436 is spell 413839 "Kajaric Icon" (a shaman totem relic,
+#: class_id 4 subclass_id 9, item 206387), which carries it as "Mod
+#: Environmental Damage Taken %" per wowhead's Forever corroboration
+#: (https://www.wowhead.com/forever/spell=413839) -- fall/lava/drowning damage
+#: reduction has no Stat the sim tracks. 80 is spell 1248751 "Increased
+#: Spirit", which wowhead's Forever corroboration
+#: (https://www.wowhead.com/forever/spell=1248751) states as "Mod Stat %
+#: (Spirit)" -- a percentage stat modifier like 69 and 598 above, not the
+#: flat amount aura 29 (MOD_STAT) reads. 168 is spell 1302545 "Increased
+#: Damage Undead 01", which wowhead's Forever corroboration
+#: (https://www.wowhead.com/forever/spell=1302545) states as "Mod All Damage
+#: Done Against Creature - %" (EffectMiscValue_0 32 is the undead creature
+#: type bit) -- a percentage, creature-type-conditional damage modifier, not a
+#: Stat. 142 and 466 are spell 1270490 "Thicker Hide"'s two effects: wowhead's
+#: Forever corroboration (https://www.wowhead.com/forever/spell=1270490)
+#: states them as "Mod Base Resistance - % (Physical)" and "Mod Armor Bonus
+#: %" -- percentage modifiers of resistance/armor, not the flat amount aura 22
+#: (AURA_RESISTANCE) reads. Every aura this build puts on a kept item's or an
+#: enchant's equip spell is in this set or in STAT_AURAS.
 IGNORED_AURAS = frozenset(
     {
         3, 4, 8, 10, 14, 15, 17, 19, 23, 31, 33, 34, 35, 42, 43, 56, 57, 58,
-        59, 64, 69, 77, 79, 82, 87, 89, 98, 102, 107, 108, 109, 112, 117, 122,
-        129, 130, 131, 134, 139, 140, 144, 154, 155, 161, 180, 187, 194, 197,
-        213, 226, 234, 262, 272, 275, 290, 319, 328, 332, 342, 395, 470, 561,
-        576, 593, 598, 601, 608,
+        59, 64, 69, 77, 79, 80, 82, 87, 89, 98, 102, 107, 108, 109, 112, 117,
+        122, 129, 130, 131, 134, 139, 140, 142, 144, 154, 155, 161, 168, 180,
+        187, 194, 197, 213, 226, 234, 262, 272, 275, 290, 319, 328, 332, 342,
+        395, 436, 466, 470, 561, 576, 593, 598, 601, 608,
     }
 )
 
