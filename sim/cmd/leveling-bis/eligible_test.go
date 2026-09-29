@@ -112,3 +112,22 @@ func TestEligible(t *testing.T) {
 		})
 	}
 }
+
+// items.json spells a restriction "alliance_only"/"horde_only"; the bands
+// are ranked for "alliance"/"horde". The candidate loader maps one onto
+// the other, and eligible() then admits the item for its own faction only.
+func TestFactionRestrictionMatchesTheBandFaction(t *testing.T) {
+	if got := factionOfRestriction("alliance_only"); got != "alliance" {
+		t.Fatalf("alliance_only -> %q, want alliance", got)
+	}
+	if got := factionOfRestriction(""); got != "" {
+		t.Fatalf("empty restriction -> %q, want empty", got)
+	}
+	tunic := candidate{ID: 2041, RequiredLevel: 14, ClassID: 4, SubclassID: 2, FactionRestriction: factionOfRestriction("alliance_only")}
+	if !eligible(tunic, "hunter", 20, "alliance") {
+		t.Fatal("an alliance-only quest reward must be eligible for an alliance band")
+	}
+	if eligible(tunic, "hunter", 20, "horde") {
+		t.Fatal("an alliance-only quest reward must not be eligible for a horde band")
+	}
+}

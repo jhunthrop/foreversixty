@@ -163,7 +163,7 @@ func loadCandidates(buildDir, classSlug string) ([]candidate, []string, error) {
 			ItemLevel:              ci.ItemLevel,
 			ClassID:                fi.ClassID,
 			SubclassID:             fi.SubclassID,
-			FactionRestriction:     fi.FactionRestriction,
+			FactionRestriction:     factionOfRestriction(fi.FactionRestriction),
 			Stats:                  ci.Stats,
 			DamageMin:              ci.DamageMin,
 			DamageMax:              ci.DamageMax,
@@ -483,4 +483,14 @@ func loadGuideRaces(repoRoot, classSlug, specSlug string) (guideRaces, error) {
 		return guideRaces{}, fmt.Errorf("%s: recommendedRaces: frontmatter did not parse into 2 races, got %q/%q", path, out.AllianceRace, out.HordeRace)
 	}
 	return out, nil
+}
+
+// factionOfRestriction maps items.json's faction_restriction value
+// ("alliance_only", "horde_only", "") onto the faction words the bands
+// are ranked for ("alliance", "horde"), so eligible() compares like with
+// like. Before this, every restricted item -- 870 in this build, Tunic of
+// Westfall among them -- failed the comparison for BOTH factions and was
+// silently left out of every list.
+func factionOfRestriction(restriction string) string {
+	return strings.TrimSuffix(restriction, "_only")
 }
