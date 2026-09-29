@@ -122,6 +122,30 @@ def unchecked_engine_aura_ids(rotation: dict[str, Any]) -> set[int]:
     }
 
 
+#: Spell ids that are real, checked-in client abilities (`spells.json`/
+#: `raw/Spell.csv` both name them) but that spellconst's per-class split
+#: never carries under any class, because spellconst groups spells by a
+#: class's own family_mask and these ids belong to none -- they are granted
+#: by an equipped item, not learned into a class's spellbook. Unlike
+#: `ENGINE_AURA_IDS` (an engine-vs-client id mismatch, aura references
+#: only), a `castSpell` naming one of these ids is exactly as legitimate as
+#: an aura reference: the id is the real one, just absent from every
+#: per-class file, so `test_every_spell_the_rotations_name_exists_with_that_rank`
+#: accepts it unconditionally rather than only where it is not a cast
+#: target.
+UNGROUPED_CLIENT_SPELL_IDS: dict[int, str] = {
+    5019: (
+        'Shoot: "Attack with an equipped wand." (raw/Spell.csv), granted by '
+        "any wand in the ranged slot rather than by a class's own "
+        "spellbook, so it carries no family_mask and spellconst's per-class "
+        "split never carries it under mage/priest/warlock (or any other "
+        "class) -- confirmed absent from every class's spellconst dump. "
+        "sim/core/wand.go's RegisterShootSpell registers it directly by "
+        "this id for whichever caster has a wand equipped."
+    ),
+}
+
+
 def cast_spell_action_ids(node: Any) -> Iterator[tuple[int, int, int]]:
     """Every (spell id, rank, tag) a `castSpell` action names.
 

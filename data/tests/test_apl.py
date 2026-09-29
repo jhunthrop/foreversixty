@@ -7,6 +7,7 @@ from pipeline.apl import (
     APL_STATES,
     EMPTY_ROTATION,
     ENGINE_AURA_IDS,
+    UNGROUPED_CLIENT_SPELL_IDS,
     AplError,
     action_ids,
     aura_reference_ids,
@@ -90,12 +91,18 @@ def test_every_spell_the_rotations_name_exists_with_that_rank():
     """The engine's own checked-in presets are stale on ranks -- their Frostbolt
     is rank 10 where the client's 25304 is Rank 11. Check against the client.
 
-    `ENGINE_AURA_IDS` is the one sanctioned exception, and only where the id
-    is never a `castSpell` target: it records an aura a rotation must gate on
+    `ENGINE_AURA_IDS` is one sanctioned exception, and only where the id is
+    never a `castSpell` target: it records an aura a rotation must gate on
     an id the engine registers internally rather than the client's own copy
     of the same ability -- spellconst is client data and cannot confirm an
-    id the engine only ever creates in Go. Empty today; populated the next
-    time a written rotation hits that gap."""
+    id the engine only ever creates in Go.
+
+    `UNGROUPED_CLIENT_SPELL_IDS` is the other: a real client id (unlike
+    `ENGINE_AURA_IDS`, no engine/client mismatch) that spellconst's per-class
+    split never carries under any class because it has no family_mask --
+    Shoot (5019), granted by an equipped wand rather than a class's own
+    spellbook. Accepted unconditionally, cast target or not, since there is
+    no per-class spellconst entry for it to ever check a cast against."""
     if not SPELLCONST.exists():
         pytest.skip("spellconst has not been generated yet (Task 8)")
     by_class = {
@@ -104,7 +111,7 @@ def test_every_spell_the_rotations_name_exists_with_that_rank():
     checked = 0
     for key, document in documents().items():
         spells = by_class[key.split("-", 1)[0]]
-        exempt = unchecked_engine_aura_ids(document.rotation)
+        exempt = unchecked_engine_aura_ids(document.rotation) | set(UNGROUPED_CLIENT_SPELL_IDS)
         for spell_id, rank in action_ids(document.rotation):
             if spell_id in exempt:
                 continue
@@ -240,6 +247,7 @@ EXPECTED_ABILITY_NAMES = {
     },
     "mage-frost": {
         25304: "Frostbolt",
+        5019: "Shoot",
     },
 }
 

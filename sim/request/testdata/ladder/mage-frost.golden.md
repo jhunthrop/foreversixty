@@ -90,13 +90,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 000000000000000000-00000000000000000-1000000000000000000 | main_hand:3462 | 6.7 | 1 | spell:205=39.3 | - |
-| 20 | 000000000000000000-00000000000000000-2531000000000000000 | main_hand:2263 ranged:6677 | 14.1 | 1 | spell:7322=33.7 | - |
-| 30 | 000000000000000000-00000000000000000-2535111300000000000 | main_hand:4134 ranged:5249 | 25.5 | 1 | spell:8406=34.2, item:5514=1.0, other:mana_gain=1.0 | - |
-| 38 | 000000000000000000-00000000000000000-2535111300000301040 | main_hand:4134 ranged:10704 | 40.3 | 2 | spell:8408=30.0, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0, spell:12472=1.0 | - |
-| 40 | 000000000000000000-00000000000000000-2535111300000301051 | main_hand:10750 ranged:10704 | 39.4 | 2 | spell:8408=29.3, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0, spell:12472=1.0 | - |
-| 50 | 000000000000000000-23500000000000000-2535111300000301051 | main_hand:10696 ranged:17745 | 51.9 | 2 | spell:10180=25.7, other:mana_gain=2.0, item:5514=1.0, item:8007=1.0, spell:12472=1.0 | - |
-| 60 | 000000000000000000-23552300000000000-2535111300000301051 | main_hand:22589 ranged:16993 | 97.9 | 2 | spell:25304=26.2, other:mana_gain=2.0, item:5514=1.0, item:8008=1.0, spell:12472=1.0 | - |
+| 10 | 000000000000000000-00000000000000000-1000000000000000000 | main_hand:3462 | 6.7 | 1 | spell:205=39.3 | {SpellID: 5019} |
+| 20 | 000000000000000000-00000000000000000-2531000000000000000 | main_hand:2263 ranged:6677 | 20.1 | 2 | spell:5019=66.5, spell:7322=32.2 | - |
+| 30 | 000000000000000000-00000000000000000-2535111300000000000 | main_hand:4134 ranged:5249 | 34.0 | 2 | spell:5019=75.2, spell:8406=33.2, item:5514=1.0, other:mana_gain=1.0 | - |
+| 38 | 000000000000000000-00000000000000000-2535111300000301040 | main_hand:4134 ranged:10704 | 50.8 | 3 | spell:5019=76.8, spell:8408=29.3, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
+| 40 | 000000000000000000-00000000000000000-2535111300000301051 | main_hand:10750 ranged:10704 | 49.5 | 3 | spell:5019=77.9, spell:8408=28.7, other:mana_gain=2.0, item:5513=1.0, item:5514=1.0 | - |
+| 50 | 000000000000000000-23500000000000000-2535111300000301051 | main_hand:10696 ranged:17745 | 67.5 | 3 | spell:5019=73.7, spell:10180=25.1, other:mana_gain=2.0, item:5514=1.0, item:8007=1.0 | - |
+| 60 | 000000000000000000-23552300000000000-2535111300000301051 | main_hand:22589 ranged:16993 | 113.4 | 3 | spell:5019=61.1, spell:25304=25.8, other:mana_gain=2.0, item:5514=1.0, item:8008=1.0 | - |
 
 ## Learned but unused (informational)
 
@@ -201,4 +201,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-- mage-frost level=40 kind=dps_regression dps=39.4 prev_dps=40.3
+- mage-frost level=40 kind=dps_regression dps=49.5 prev_dps=50.8
