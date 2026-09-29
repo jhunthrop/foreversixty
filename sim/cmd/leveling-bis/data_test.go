@@ -129,6 +129,19 @@ func TestLoadLootIndex(t *testing.T) {
 	if _, ok := idx[9999]; ok {
 		t.Error("idx[9999] present, want absent (no source names it)")
 	}
+	// Item 1004's only source is the fixture's "dungeon:ragefire-chasm"
+	// row - factionExclusiveDungeons marks that id horde-only, so its
+	// itemSource must carry Faction "horde", the same as the real
+	// build's Subterranean Cape (14149) does.
+	ragefire, ok := idx[1004]
+	if !ok || len(ragefire) != 1 || ragefire[0].Faction != "horde" {
+		t.Errorf("idx[1004] = %+v, want one source with Faction \"horde\"", ragefire)
+	}
+	// An ordinary dungeon source (not in factionExclusiveDungeons)
+	// carries no Faction at all - it must not inherit one by accident.
+	if boss[0].Faction != "" {
+		t.Errorf("idx[1002][0].Faction = %q, want empty (not a faction-exclusive source)", boss[0].Faction)
+	}
 	// The fixture's item 1001 (required_level 10) is a quest reward
 	// whose quest ("A Test Quest") states min_level 25 in loot.json's
 	// quests map - the Polar Leggings shape this lane's brief names.

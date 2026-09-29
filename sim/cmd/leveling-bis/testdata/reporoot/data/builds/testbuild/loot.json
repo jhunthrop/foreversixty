@@ -13,6 +13,14 @@
       "bosses": [
         {"name": "Test Boss", "items": [1002]}
       ]
+    },
+    {
+      "id": "dungeon:ragefire-chasm",
+      "kind": "dungeon",
+      "name": "Ragefire Chasm",
+      "bosses": [
+        {"name": "Taragaman the Hungerer", "items": [1004]}
+      ]
     }
   ],
   "quests": {
