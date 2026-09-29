@@ -294,5 +294,7 @@ export function percentileToken(percentile: number): string {
   if (p >= 75) return 'var(--color-parse-purple)';
   if (p >= 50) return 'var(--color-parse-blue)';
   if (p >= 25) return 'var(--color-parse-green)';
-  return 'var(--color-parse-grey)';
+  // --color-parse-grey-text, not --color-parse-grey: every caller uses this as a text
+  // color (see tokens.css), and the raw grey fails WCAG AA contrast as text.
+  return 'var(--color-parse-grey-text)';
 }

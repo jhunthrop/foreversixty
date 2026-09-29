@@ -29,4 +29,13 @@ describe('HomeTimeline', () => {
     expect(html).toContain('level cap 30');
     expect(html).toContain('Updated Sept 20');
   });
+
+  it('is focusable and named, so a keyboard user can reach and scroll it once it overflows (axe scrollable-region-focusable)', async () => {
+    const c = await AstroContainer.create();
+    const html = await c.renderToString(HomeTimeline, {
+      props: { dates: DATES, now: new Date('2026-09-24T00:00:00Z') },
+    });
+    expect(html).toContain('tabindex="0"');
+    expect(html).toContain('aria-label="Key dates timeline"');
+  });
 });

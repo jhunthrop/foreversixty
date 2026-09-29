@@ -20,6 +20,9 @@ const rows = timelineRows(dates, now);
 <div
   class="bg-raised/85 border-line grid grid-cols-2 gap-3 rounded-panel border px-[18px] py-[14px] md:flex md:items-stretch md:gap-0 md:overflow-x-auto"
   data-testid="home-timeline"
+  tabindex="0"
+  role="group"
+  aria-label="Key dates timeline"
 >
   {rows.map((row, i) => (
     <div
