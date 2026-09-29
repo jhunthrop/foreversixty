@@ -90,7 +90,12 @@ export function loadBisFile(spec: string, build: string): BisFile | null {
  *  (lane `rank-guardrails`' guardrail A, `report.go`'s own `Coverage` field) to `{}`: a file
  *  published before that field existed carries no `coverage` key at all (`undefined` here),
  *  and a Go nil map also encodes as JSON `null` -- either way the contract is an object, the
- *  same reasoning `new_at_band` already applies to its own array. */
+ *  same reasoning `new_at_band` already applies to its own array.
+ *
+ *  Also defaults each slot's `alternatives` (`sim/cmd/leveling-bis/report.go`'s own
+ *  `slotRow.Alternatives`) to `[]` and each band's `reference_dps_per_point` to `null` --
+ *  both new, optional fields a file published before this lane landed carries neither of, and
+ *  a Go nil slice/omitted float likewise reach here as `undefined` rather than `[]`/`null`. */
 export function normaliseBisFile(file: BisFile): BisFile {
   return {
     ...file,
@@ -98,6 +103,11 @@ export function normaliseBisFile(file: BisFile): BisFile {
       ...band,
       new_at_band: band.new_at_band ?? [],
       coverage: band.coverage ?? {},
+      reference_dps_per_point: band.reference_dps_per_point ?? null,
+      slots: band.slots.map((slot) => ({
+        ...slot,
+        alternatives: slot.alternatives ?? [],
+      })),
     })),
   };
 }

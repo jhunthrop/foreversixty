@@ -29,6 +29,7 @@ import (
 	"github.com/jhunthrop/foreversixty/sim/api"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/internal/simdrain"
+	"github.com/jhunthrop/foreversixty/sim/internal/statid"
 	"github.com/jhunthrop/foreversixty/sim/request"
 	engine "github.com/wowsims/classic/sim"
 	"github.com/wowsims/classic/sim/core"
@@ -47,7 +48,11 @@ import (
 // below is the only production implementation.
 type engineRunner interface {
 	RunPlainDPS(req api.SimRequest) (float64, error)
-	RunWeights(req api.SimRequest) (map[string]api.StatWeight, error)
+	// RunWeights' second return is referenceDPSPerPoint (this lane's
+	// brief, item 2) - see runWeights' own doc for why it has to be
+	// read out of the weights run's raw result rather than the
+	// normalised map[string]api.StatWeight alone.
+	RunWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error)
 }
 
 // realEngine is the engineRunner backed by the actual wowsims-classic
@@ -57,7 +62,7 @@ type realEngine struct{}
 
 func (realEngine) RunPlainDPS(req api.SimRequest) (float64, error) { return runPlainDPS(req) }
 
-func (realEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, error) {
+func (realEngine) RunWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
 	return runWeights(req)
 }
 
@@ -102,24 +107,66 @@ func runPlainDPS(req api.SimRequest) (float64, error) {
 }
 
 // runWeights runs req (which must carry a Weights block) and returns
-// the normalised stat weights, keyed by stat id.
-func runWeights(req api.SimRequest) (map[string]api.StatWeight, error) {
+// the normalised stat weights, keyed by stat id, plus
+// referenceDPSPerPoint: the measured, UN-normalised DPS this run found
+// for one point of req.Weights.Reference (this lane's brief, item 2 -
+// "reference_dps_per_point... the raw weight the ratios are normalised
+// by"). adapter.Weights computes exactly this number as its own
+// unexported "scale" (sim/adapter/adapter.go's own doc: "dividing is
+// one arithmetic, in one place") to divide every OTHER weight by, but
+// never returns it - the reference stat's own entry in its output is
+// always exactly 1.0 by construction (Weight/scale), so the raw figure
+// would otherwise be lost the moment adapter.Weights returns.
+// referenceStatRawWeight (below) reads it straight off this same res,
+// duplicating adapter.go's own small lookup rather than changing that
+// function's signature - this file's own package doc already commits
+// to that pattern ("the pipeline... is repeated here rather than
+// reused").
+func runWeights(req api.SimRequest) (map[string]api.StatWeight, float64, error) {
 	registerEngine()
 	engineReq, err := request.BuildWeights(req, request.Options{OpenIterations: true})
 	if err != nil {
-		return nil, fmt.Errorf("building the weights request: %w", err)
+		return nil, 0, fmt.Errorf("building the weights request: %w", err)
 	}
 	if err := simdb.AttachWeights(engineReq); err != nil {
-		return nil, fmt.Errorf("attaching the item database: %w", err)
+		return nil, 0, fmt.Errorf("attaching the item database: %w", err)
 	}
 	res := core.StatWeights(engineReq)
 	weights, err := adapter.Weights(res, req)
 	if err != nil {
-		return nil, fmt.Errorf("reading the engine's weights: %w", err)
+		return nil, 0, fmt.Errorf("reading the engine's weights: %w", err)
 	}
 	out := make(map[string]api.StatWeight, len(weights))
 	for _, w := range weights {
 		out[w.Stat] = w
 	}
-	return out, nil
+	referenceDPSPerPoint, err := referenceStatRawWeight(res, req)
+	if err != nil {
+		return nil, 0, fmt.Errorf("reading the reference stat's raw weight: %w", err)
+	}
+	return out, referenceDPSPerPoint, nil
+}
+
+// referenceStatRawWeight is the engine's own raw (un-normalised) DPS
+// delta for one point of req.Weights.Reference - see runWeights' own
+// doc for why this is read here instead of coming back from
+// adapter.Weights. Validated the same way adapter.Weights validates
+// its own reference lookup (statid.Parse); a request that reached this
+// point already passed adapter.Weights' own reference checks
+// (ErrNoWeights on a bad or zero-weighing reference), so an error here
+// in production would mean the two lookups disagree, not that the
+// request was actually invalid.
+func referenceStatRawWeight(res *proto.StatWeightsResult, req api.SimRequest) (float64, error) {
+	if req.Weights == nil {
+		return 0, fmt.Errorf("the request carries no weights block")
+	}
+	reference, ok := statid.Parse(req.Weights.Reference)
+	if !ok {
+		return 0, fmt.Errorf("reference stat %q is not a known stat id", req.Weights.Reference)
+	}
+	raw := res.GetDps().GetWeights().GetStats()
+	if int(reference) >= len(raw) {
+		return 0, nil
+	}
+	return raw[reference], nil
 }

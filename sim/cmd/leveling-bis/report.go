@@ -42,14 +42,143 @@ type slotRow struct {
 	// page can print beside a pick that was really an arbitrary
 	// lowest-id tie-break rather than a unique best. Empty for a slot
 	// the trinket/effect/set-completion passes decided by a real sim
-	// instead of score() (see slotPick.Ties's own doc).
+	// instead of score() (see slotPick.Ties's own doc). Kept exactly as
+	// it was before Alternatives existed (below) - a consumer already
+	// reading Ties keeps working unchanged.
 	Ties []tieAlternative `json:"ties,omitempty"`
+	// Alternatives is up to alternativesLimit candidates a player who
+	// cannot get this row's pick can fall back on: this lane's brief
+	// (owner defect A, 2026-09-29) - warrior-arms horde band 20's
+	// main_hand published Forsaken Greataxe with no record that Smite's
+	// Mighty Hammer (a Deadmines drop, item 7230) was ever considered,
+	// leaving a player who cannot or will not run that quest nothing to
+	// fall back on. Every Ties entry (score identical to the pick) is
+	// listed first, dps_delta 0, ranked ahead of every lower-scoring
+	// alternative (the wow-player review's own addendum to this lane's
+	// brief) - a tie is exactly as good as the pick, and bySlot's own
+	// score-sorted order does not otherwise distinguish a tie's rank
+	// from a strictly-lower scorer's. The list is then filled to
+	// alternativesLimit with the next-best sourced candidates by
+	// score() (buildAlternatives, this file). See that function's own
+	// doc for exactly what "next-best" excludes (the pick itself, its
+	// pair-mate, and anything already listed as a tie).
+	Alternatives []alternativeRow `json:"alternatives,omitempty"`
 }
 
 // tieAlternative is one equally-scored item slotRow.Ties names.
 type tieAlternative struct {
 	ItemID   int    `json:"item_id"`
 	ItemName string `json:"item_name"`
+}
+
+// alternativesLimit bounds how many candidates slotRow.Alternatives
+// carries beyond the pick itself (this lane's brief: "the next best 3
+// candidates by score after the pick") - enough for a player who
+// cannot get the picked item's own source to see a genuine fallback,
+// without ballooning the JSON with a slot's whole candidate pool.
+const alternativesLimit = 3
+
+// alternativeRow is one candidate slotRow.Alternatives names beyond
+// the slot's own pick.
+type alternativeRow struct {
+	ItemID     int     `json:"item_id"`
+	ItemName   string  `json:"item_name"`
+	Score      float64 `json:"score"`
+	SourceKind string  `json:"source_kind"`
+	Source     string  `json:"source"`
+	// DPSDelta is Score minus the pick's own published Score, in the
+	// band's score unit (score.go's weighted-stat-plus-weapon-dps
+	// total, not a measured DPS figure - buildAlternatives is built
+	// from the scoring pass alone, per this lane's brief: "Reuse
+	// slotPick.Ties/the existing scoring path; do not re-sim"). Exactly
+	// 0 for a tie (this row came from pk.Ties, whose whole definition
+	// is "scored identically to the pick"). Usually negative for every
+	// other entry (bySlot's own list is score-sorted, so most
+	// candidates after the pick score lower), but CAN be positive: a
+	// runner-up whose own score() total is lower than the item it beat
+	// can still be promoted into the pick by applySwaps' real-sim swap
+	// pass (verify.go) - the demoted, higher-scoring item still belongs
+	// in the published pick's alternatives list, just with a positive
+	// delta.
+	DPSDelta float64 `json:"dps_delta"`
+}
+
+// buildAlternatives is slotRow.Alternatives' own builder: pk.Ties
+// first (dps_delta 0, this lane's brief addendum), then list (bySlot's
+// own score-sorted pool for this slot - candidatesBySlot's contract,
+// unfiltered by pick()'s own per-slot narrowing, so a two-handed
+// main_hand pick's alternatives still offer one-handers mixed with
+// two-handers the way the brief asks for), until alternativesLimit
+// total, excluding:
+//   - the pick's own item (already the row's own ItemID/ItemName)
+//   - the pick's pair-mate's item, by id or name (pairSlot, verify.go's
+//     own doc: the same physical ring/trinket/weapon cannot also be
+//     offered as a fallback for THIS slot when its pair-mate already
+//     wears it)
+//   - anything already listed as a tie, so a candidate never appears
+//     twice
+//
+// list is bySlot[slot] as passed to buildReport - NOT the narrower,
+// per-slot list pick() computes internally for a dual-wielder's
+// off_hand (main_hand's one-handers merged in) or a dual-wielder's
+// main_hand (two-handers excluded): reusing the base scoring pool
+// (candidatesBySlot's own output) rather than re-deriving pick()'s
+// internal, stateful narrowing is this function's own scope call - see
+// this lane's report for why. off_hand of a two-handed main_hand pick
+// is never reached here at all: buildReport only calls this for a
+// slot whose pk.Item is non-nil, and enforceTwoHandOffHandInvariant
+// (pick.go) guarantees off_hand's own Item is nil whenever main_hand
+// is two-handed.
+func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string]slotPick) []alternativeRow {
+	if pk.Item == nil {
+		return nil
+	}
+	var mateID int
+	var mateName string
+	if mate, ok := pairSlot[slot]; ok {
+		if mp := picks[mate].Item; mp != nil {
+			mateID, mateName = mp.ID, mp.Name
+		}
+	}
+	seen := map[int]bool{pk.Item.ID: true}
+	excluded := func(c scored) bool {
+		if seen[c.ID] {
+			return true
+		}
+		return mateID != 0 && (c.ID == mateID || (mateName != "" && c.Name == mateName))
+	}
+	add := func(out []alternativeRow, c scored) []alternativeRow {
+		seen[c.ID] = true
+		return append(out, alternativeRow{
+			ItemID:     c.ID,
+			ItemName:   c.Name,
+			Score:      c.Score,
+			SourceKind: c.Source.Kind,
+			Source:     c.Source.Label,
+			DPSDelta:   c.Score - pk.Item.Score,
+		})
+	}
+
+	out := make([]alternativeRow, 0, alternativesLimit)
+	for _, tie := range pk.Ties {
+		if len(out) >= alternativesLimit {
+			return out
+		}
+		if excluded(tie) {
+			continue
+		}
+		out = add(out, tie)
+	}
+	for _, c := range list {
+		if len(out) >= alternativesLimit {
+			return out
+		}
+		if excluded(c) {
+			continue
+		}
+		out = add(out, c)
+	}
+	return out
 }
 
 // bandReport is one band's whole answer for one faction: the pick per
@@ -82,6 +211,19 @@ type bandReport struct {
 	// NoSource. web/src/lib/bis/types.ts's BisBand.coverage is this
 	// field's read contract.
 	Coverage map[string]coverageRow `json:"coverage"`
+	// ReferenceDPSPerPoint is the measured, un-normalised DPS this
+	// band's weights run found for one point of the spec's own
+	// reference stat (data/curated/specs.json's reference_stat) - this
+	// lane's brief, item 2: the raw number every OTHER published
+	// Weights[i].Weight is a ratio against (Weight_i/scale;
+	// simrun.go's runWeights/referenceStatRawWeight read scale itself
+	// straight off the engine's own result, since the normalised
+	// weights map alone can never recover it - the reference stat's
+	// own entry is exactly 1.0 by construction). Lets the page turn
+	// "Strength 1.99" into "1 Attack Power = 0.07 DPS, Strength 1.99 (=
+	// 0.14 DPS per point)" instead of publishing a bare, unitless
+	// ratio with nothing saying what "1" means.
+	ReferenceDPSPerPoint float64 `json:"reference_dps_per_point"`
 }
 
 type weightRow struct {
@@ -115,8 +257,14 @@ const noSourceSampleSize = 15
 
 // buildReport assembles one band+faction's report from pick() output,
 // the weights this band used, verification results, and the previous
-// band's picks (nil for the first band run).
-func buildReport(spec specInfo, band int, faction, race, talents string, talentPoints int, weights map[string]api.StatWeight, weightOrder []string, picks map[string]slotPick, setDPS float64, swaps []swapResult, noSource []candidate, previous map[string]slotPick, weightsSeconds, verifySeconds float64, verifyErrors []string, coverage map[string]coverageRow) bandReport {
+// band's picks (nil for the first band run). bySlot is candidatesBySlot's
+// own output for this band+faction (main.go's runSpec builds a fresh one
+// per band iteration) - buildAlternatives reads it to fill each row's
+// Alternatives; a nil/empty bySlot (every test but the ones this lane's
+// brief adds) simply publishes no alternatives, same as an empty map
+// would. referenceDPSPerPoint is runWeights' own second return
+// (simrun.go) - this lane's brief, item 2.
+func buildReport(spec specInfo, band int, faction, race, talents string, talentPoints int, weights map[string]api.StatWeight, weightOrder []string, picks map[string]slotPick, setDPS float64, swaps []swapResult, noSource []candidate, previous map[string]slotPick, weightsSeconds, verifySeconds float64, verifyErrors []string, coverage map[string]coverageRow, bySlot map[string][]scored, referenceDPSPerPoint float64) bandReport {
 	swapBySlot := make(map[string]swapResult, len(swaps))
 	for _, s := range swaps {
 		swapBySlot[s.Slot] = s
@@ -140,6 +288,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			for _, tie := range pk.Ties {
 				row.Ties = append(row.Ties, tieAlternative{ItemID: tie.ID, ItemName: tie.Name})
 			}
+			row.Alternatives = buildAlternatives(pk, slot, bySlot[slot], picks)
 			if pk.Item.HasSource {
 				row.Source = pk.Item.Source.Label
 				row.SourceKind = pk.Item.Source.Kind
@@ -196,22 +345,23 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 	}
 
 	return bandReport{
-		Spec:              spec.Spec,
-		Band:              band,
-		Faction:           faction,
-		Race:              race,
-		Talents:           talents,
-		TalentPoints:      talentPoints,
-		Weights:           wrows,
-		Slots:             rows,
-		SetDPS:            setDPS,
-		NoSourceCount:     len(noSource),
-		NoSourceSample:    sampleNames,
-		NewAtBand:         nonNil(newAt),
-		WeightsRunSeconds: weightsSeconds,
-		VerifyRunSeconds:  verifySeconds,
-		VerifyErrors:      verifyErrors,
-		Coverage:          coverage,
+		Spec:                 spec.Spec,
+		Band:                 band,
+		Faction:              faction,
+		Race:                 race,
+		Talents:              talents,
+		TalentPoints:         talentPoints,
+		Weights:              wrows,
+		Slots:                rows,
+		SetDPS:               setDPS,
+		NoSourceCount:        len(noSource),
+		NoSourceSample:       sampleNames,
+		NewAtBand:            nonNil(newAt),
+		WeightsRunSeconds:    weightsSeconds,
+		VerifyRunSeconds:     verifySeconds,
+		VerifyErrors:         verifyErrors,
+		Coverage:             coverage,
+		ReferenceDPSPerPoint: referenceDPSPerPoint,
 	}
 }
 
@@ -359,13 +509,14 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 			fmt.Fprintln(&b, strings.Join(parts, ", "))
 			b.WriteString("\n")
 
-			b.WriteString("| Slot | Item | Source | Score | Verified |\n")
-			b.WriteString("|---|---|---|---|---|\n")
+			b.WriteString("| Slot | Item | Source | Score | Verified | Alternatives |\n")
+			b.WriteString("|---|---|---|---|---|---|\n")
 			for _, row := range r.Slots {
 				item := "-"
 				source := "-"
 				score := ""
 				verified := ""
+				alternatives := ""
 				if row.ItemID != 0 {
 					item = fmt.Sprintf("%s (%d)", row.ItemName, row.ItemID)
 					if len(row.Ties) > 0 {
@@ -385,8 +536,22 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 					} else {
 						source = "no known source"
 					}
+					// Alternatives (this lane's brief, item 1): the
+					// next-best sourced candidates after the pick, so a
+					// player reading the human-facing markdown table -
+					// not only a script reading the JSON - sees a real
+					// fallback when the pick's own source is out of
+					// reach.
+					alternatives = "-"
+					if len(row.Alternatives) > 0 {
+						alts := make([]string, len(row.Alternatives))
+						for i, a := range row.Alternatives {
+							alts[i] = fmt.Sprintf("%s (%d, %+.1f) [%s]", a.ItemName, a.ItemID, a.DPSDelta, a.SourceKind)
+						}
+						alternatives = strings.Join(alts, "; ")
+					}
 				}
-				fmt.Fprintf(&b, "| %s | %s | %s | %s | %s |\n", row.Slot, item, source, score, verified)
+				fmt.Fprintf(&b, "| %s | %s | %s | %s | %s | %s |\n", row.Slot, item, source, score, verified, alternatives)
 			}
 			b.WriteString("\n")
 

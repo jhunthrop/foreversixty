@@ -292,7 +292,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 
 		weightsStart := time.Now()
 		wreq := weightsRequest(specInfo, ladderCh, weightsIterations, 3)
-		wresult, err := runner.RunWeights(wreq)
+		wresult, referenceDPSPerPoint, err := runner.RunWeights(wreq)
 		if err != nil {
 			return fmt.Errorf("band %d weights run: %w", band, err)
 		}
@@ -381,7 +381,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			}
 			verifySeconds := time.Since(verifyStart).Seconds()
 
-			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors, pool.Coverage)
+			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors, pool.Coverage, bySlot, referenceDPSPerPoint)
 			reports = append(reports, report)
 			previous[f.name] = picks
 

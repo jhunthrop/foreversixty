@@ -36,6 +36,27 @@ export interface BisSlot {
   score: number;
   verified: boolean;
   swap_note?: string;
+  /** The next-best sourced candidates after this row's own pick (`sim/cmd/leveling-bis/
+   *  report.go`'s own `slotRow.Alternatives`) -- up to three, ties (identical score to the
+   *  pick) ranked first with `dps_delta` 0, then the next-best by score. Optional: a file
+   *  published before this field existed carries no `alternatives` key at all;
+   *  `normaliseBisFile` (`load.ts`) defaults that (and a literal JSON `null`) to `[]`, the
+   *  same discipline it already applies to `coverage`/`new_at_band`. A separate lane renders
+   *  this list -- this lane only carries the data through. */
+  alternatives?: BisAlternative[];
+}
+
+/** One candidate `BisSlot.alternatives` names beyond the slot's own pick. */
+export interface BisAlternative {
+  item_id: number;
+  item_name: string;
+  score: number;
+  source_kind: string;
+  source: string;
+  /** `score` minus the pick's own `score`, in the band's score unit (not a measured DPS
+   *  figure) -- exactly 0 for a tie, usually negative, occasionally positive for a
+   *  runner-up the ranker's real-sim swap pass promoted over a higher-scoring item. */
+  dps_delta: number;
 }
 
 /** One planner slot's coverage: how many items `eligible()` (sim/cmd/leveling-bis/eligible.go)
@@ -71,6 +92,14 @@ export interface BisBand {
   new_at_band: string[];
   weights_run_seconds: number;
   verify_run_seconds: number;
+  /** The measured, un-normalised DPS this band's weights run found for one point of the
+   *  spec's own reference stat (`sim/cmd/leveling-bis/report.go`'s own
+   *  `bandReport.ReferenceDPSPerPoint`) -- the raw number every `weights[i].weight` ratio is
+   *  normalised against, letting the page turn "Strength 1.99" into "= 1.99 *
+   *  reference_dps_per_point DPS per point". Optional and defaults to `null`
+   *  (`normaliseBisFile`, `load.ts`): a file published before this field existed carries no
+   *  `reference_dps_per_point` key at all. */
+  reference_dps_per_point?: number | null;
 }
 
 export interface BisFile {
