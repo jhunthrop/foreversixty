@@ -12,6 +12,15 @@ export interface BisStatWeight {
   weight: number;
 }
 
+/**
+ * `BisSlot` types every field but `swap_note` as required to match `bis/hover.ts` and
+ * `BisSlotPopover.svelte` (both read straight through to `pick.item_id` once a pick is
+ * found, with no `undefined` check). The real pipeline output does not honour that for a
+ * slot the ranking found no source for: it writes `{ slot, verified: false }` alone, every
+ * item field simply absent rather than a placeholder id. Code reading a `BisSlot` off a real
+ * file checks for that with `hasKnownSource` (`source-cell.ts`) before trusting `item_id`
+ * and friends, the same discipline `sourceBadgeLabel` already applies to `source_kind`.
+ */
 export interface BisSlot {
   slot: string;
   item_id: number;
@@ -63,4 +72,66 @@ export interface SpecCatalogEntry {
   tree_index: number;
   reference_stat: string;
   weight_stats: string[];
+}
+
+/** `data/builds/<build>/items/<class>.json`'s own per-item shape, the fields this lane's
+ *  source cell, item-level column and `ItemHover` stub read (`load.ts`'s `itemDetails`). */
+export interface ItemDetail {
+  name: string;
+  quality: number;
+  item_level: number;
+  required_level: number;
+  /** The client's icon name (e.g. `inv_jewelry_ring_26`), no extension, no path -- the same
+   *  value `ItemHover`'s own item model carries. */
+  icon: string;
+  stats: Record<string, number>;
+}
+
+/** `loot.json`'s `quests` map: item id (as a string key) -> every quest that awards it,
+ *  one entry per faction that has its own quest for the item. */
+export interface LootQuestOption {
+  quest_id: number;
+  name: string;
+  /** `'both'` for a neutral quest every faction can pick up -- the BiS row's own faction
+   *  badge comes from the band it is rendered under, not this field (see
+   *  `source-cell.ts`'s `resolveSourceCell`), so a `'both'` quest still shows the right
+   *  faction word on each panel rather than a third label. */
+  faction: Faction | 'both';
+  min_level: number;
+  level: number;
+}
+
+/** `loot.json`'s shape beyond `sim/loot.ts`'s own `LootFile` (which only reads `sources`):
+ *  the quest-reward map a BiS quest row's name and level come from. Declared here rather
+ *  than widening `sim/loot.ts`'s `LootFile` itself, which the Droptimizer picker also uses
+ *  and has never needed the quest map for (every quest source there is one undifferentiated
+ *  "Quests" pill, contract 6.1's own default-off kind). */
+export interface LootQuestsFile {
+  quests: Record<string, LootQuestOption[]>;
+}
+
+/**
+ * The pre-resolved item `ItemHover`'s stub renders (its documented `model?` prop) -- every
+ * `/bis` caller already has this from `itemDetails` (`load.ts`) at build time, so the stub
+ * never reads or fetches on its own. The real component's own model may differ once lane
+ * `web-item-tooltips` lands; this is this lane's own shape, used only by its stub and by the
+ * page that builds it.
+ */
+export interface ItemHoverModel {
+  name: string;
+  quality: number;
+  itemLevel: number;
+  requiredLevel: number;
+  icon?: string;
+  stats?: Record<string, number>;
+}
+
+/** One slot's pick, before and after a band boundary, faction held constant -- the "what
+ *  changed since <band>" panel's own row, and the source `load.ts`'s `changedSinceBand`
+ *  computes it from for a band's "new" row markers too. Either side is undefined when the
+ *  slot had, or still has, no known source. */
+export interface ChangedSlot {
+  slot: string;
+  before?: BisSlot;
+  after?: BisSlot;
 }
