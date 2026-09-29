@@ -244,6 +244,32 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="write nothing; exit non-zero if either emitted file has drifted",
     )
+
+    au = sub.add_parser(
+        "audit",
+        help="THE ACCURACY-AUDIT INSTRUMENT (tenet 8, docs/tenets.md): compare every "
+        "published fact -- items, quests, drops, vendors, crafted recipes, leveling BiS, "
+        "the addon and the curated specs -- against its primary source (client tables, "
+        "classic-db, the engine). Read-only over data/builds; always exits 0, the caller "
+        "reads audit.json/audit.md to decide.",
+    )
+    au.add_argument("--build", required=True)
+    au.add_argument(
+        "--engine", help="path to a wowsims-forever checkout, reserved for a future check"
+    )
+    au.add_argument(
+        "--classicdb-dump",
+        help="path to the pinned cmangos/classic-db mysqldump (.sql or .sql.gz) for the "
+        "checks that need raw tables `raw/classicdb/sources.json` does not carry (boss spawn "
+        "maps, vendor item_template rep columns, crafted-item recipe spells); omit to skip "
+        "just those sub-checks",
+    )
+    au.add_argument(
+        "--out",
+        default=None,
+        help="directory to write audit.json/audit.md into (default: a scratch dir under "
+        "the system temp directory, never data/builds)",
+    )
     return p
 
 
@@ -508,6 +534,19 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         print(write_addon_data(args.build))
         print(write_lua(args.build))
+    elif args.command == "audit":
+        import tempfile
+        from pathlib import Path
+
+        from pipeline.audit import run_audit, summary_line, write_report
+
+        out_dir = Path(args.out) if args.out else Path(tempfile.mkdtemp(prefix="forever-audit-"))
+        dump = Path(args.classicdb_dump) if args.classicdb_dump else None
+        engine = Path(args.engine) if args.engine else None
+        results = run_audit(args.build, engine=engine, classicdb_dump=dump)
+        json_path, md_path = write_report(results, out_dir, args.build)
+        print(f"audit: wrote {json_path} and {md_path}")
+        print(summary_line(results))
     return 0
 
 
