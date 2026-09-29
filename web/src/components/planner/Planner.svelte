@@ -422,34 +422,62 @@
         writePointer('code', codeParam, codeForThisClass.build.classSlug);
       }
 
-      const sets = await loadSets(store.treeVersion);
-      if (stale()) return;
-      store.setSets(sets);
-      // Gear is optional in the same way sets are: a build whose item table did not
-      // normalize ships no items/<class>.json, and the planner is complete without a gear
-      // panel. Only a 404 means that. A 5xx, an unreachable network or a malformed file is a
-      // broken build rather than an absent one, so it is rethrown into the failure state --
-      // the same line loadSets draws, for the same reason.
-      try {
-        const items = await loadItems(store.treeVersion, slug);
-        if (stale()) return;
-        store.setItems(items);
-      } catch (error) {
-        if (!(error instanceof DataLoadError) || error.status !== 404) throw error;
-        if (stale()) return;
-        store.setItems({ build: store.treeVersion, class_slug: slug, items: [] });
-      }
-      // Weights are optional the same way sets and items are: a build the data lane has
-      // not regenerated ships none, and loadWeights already returns [] for a 404. Any
-      // other failure here is rethrown into the outer catch, the same line loadSets draws.
-      weights = await loadWeights(store.treeVersion);
-      if (stale()) return;
+      // Planner TBT lane (2026-09-28): `status` used to wait on sets/items/weights too, so
+      // the trees, toolbar, import box and order strip -- none of which read gear data --
+      // sat behind the same gate as the gear panel and all mounted in one synchronous
+      // Svelte flush the instant the slowest of the three resolved. Profiling (Chrome's
+      // long-tasks audit plus a CPU/trace capture of /planner.html under the mobile
+      // throttling lighthouserc.json uses) named that flush -- not the fetch or the JSON
+      // parse of the class's items file -- as the actual blocking work: a single task in
+      // the hydration bundle for mounting every ready-state panel at once. `status` now
+      // flips as soon as the trees have something to show; gear loads after, in its own
+      // turn, so its own (much smaller) first mount of GearPanel is a separate task rather
+      // than added onto this one.
       status = 'ready';
+      void loadGear(store.treeVersion, slug, stale);
     } catch {
       // A stale run's failure is not this class's failure: the run that replaced it owns the
       // status, and reporting this one would put a working planner behind a Retry button.
       if (stale()) return;
       status = 'failed';
+    }
+  }
+
+  /**
+   * Sets, items and weights -- gear data, none of it needed for the trees, toolbar, import
+   * box or order strip already on screen by the time this runs (see `load`'s own comment).
+   * Fetched after `status` flips to `'ready'` rather than before it, so gear's own first
+   * mount of GearPanel lands in a later, separate task instead of growing the one above.
+   *
+   * Unlike `load`, a genuine failure here (anything but the two documented 404s, which mean
+   * "this build ships none of this") does not send the planner to its failure panel: the
+   * trees are already live and useful, and yanking them for a Retry button over a gear file
+   * the visitor may not even open would be a worse outcome than a gear panel that stays
+   * absent. It fails the same way loadItems already treats a class with no item file --
+   * quietly, leaving the gear tab out -- rather than inventing a second failure state this
+   * lane's scope does not call for.
+   */
+  async function loadGear(treeVersion: string, slug: string, stale: () => boolean): Promise<void> {
+    try {
+      const sets = await loadSets(treeVersion);
+      if (stale()) return;
+      store.setSets(sets);
+
+      try {
+        const items = await loadItems(treeVersion, slug);
+        if (stale()) return;
+        store.setItems(items);
+      } catch (error) {
+        if (!(error instanceof DataLoadError) || error.status !== 404) throw error;
+        if (stale()) return;
+        store.setItems({ build: treeVersion, class_slug: slug, items: [] });
+      }
+
+      weights = await loadWeights(treeVersion);
+      if (stale()) return;
+    } catch {
+      // Left as the pre-load state (no sets, no items, no weights): the gear tab stays
+      // absent, same as a class whose build ships no item file at all.
     }
   }
 
