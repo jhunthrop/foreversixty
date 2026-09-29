@@ -58,6 +58,10 @@ export const bisCopy = {
   repSourceLabel: (factionName: string, standing?: string): string =>
     standing === undefined ? factionName : `${factionName} (${standing})`,
   placeSourceLabel: (place: string): string => place,
+  /** "40% from Lord Serpentis", "6% from Deadmines trash" -- classic-db's own drop
+   *  chance (src-classicdb lane, 2026-09-29), shown in front of the place a source cell
+   *  would otherwise just name plainly. */
+  dropChanceLabel: (chance: number, from: string): string => `${chance}% from ${from}`,
   runnerUpBeatBy: (dps: number): string => `+${dps.toFixed(1)} DPS`,
   runnerUpTitle: (name: string, higherDps: number, lowerDps: number): string =>
     `${name} measured higher at this band: ${higherDps.toFixed(1)} vs ${lowerDps.toFixed(1)} set DPS.`,

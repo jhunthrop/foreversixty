@@ -38,6 +38,7 @@ import json
 import logging
 from pathlib import Path
 
+from pipeline.classic_sources import load_classic_sources
 from pipeline.csvio import check_item_sparse_completeness, read_csv
 from pipeline.forkdb import load_fork_database
 from pipeline.item_sources import load_item_sources
@@ -58,6 +59,7 @@ from pipeline.loot.gear import (
     suffix_options,
 )
 from pipeline.loot.overlay import apply_overlays, load_overlays
+from pipeline.loot.reitemise import apply_reitemisation
 from pipeline.loot.sources import build_loot, instance_types, pvp_ranks
 from pipeline.loot.weapons import apply_fork_weapon_damage, fork_weapon_damage
 from pipeline.manifest import refresh_manifest
@@ -124,6 +126,12 @@ def write_loot_files(
     # step allowed to.
     item_sources = load_item_sources(build_dir)
 
+    # src-classicdb lane, 2026-09-29: the committed cmangos/classic-db
+    # dump parse (pipeline.classic_sources' own doc) -- same offline-in-CI
+    # contract as quest_levels/item_sources above. Fills a gap between the
+    # two: applied after the fork's own sources, before wowhead's.
+    classic_sources = load_classic_sources(build_dir)
+
     # Contract 10.4's build filter happens inside build_loot, and its
     # pruning sweep with it -- so this runs BEFORE the overlay, which is
     # what lets a curated source with a deliberately empty item list (the
@@ -137,7 +145,16 @@ def write_loot_files(
         item_inventory_types,
         quest_levels,
         item_sources,
+        classic_sources,
+        zone_rows,
     )
+    # src-classicdb lane item 3: a Forever-new item sharing its name and
+    # slot with a Classic item, still unsourced after fork+classic-db+
+    # wowhead, inherits the classic item's own sources. Runs AFTER
+    # build_loot (needs its finished sources to know what is still
+    # unsourced) and BEFORE the overlay (a curated fact should be able to
+    # override an inherited one same as any other).
+    document, reitemised = apply_reitemisation(document, item_rows)
     document = apply_overlays(document, load_overlays(overlay_dir))
 
     enchants = build_enchants(fork)
@@ -159,7 +176,8 @@ def write_loot_files(
     weapons_won = apply_fork_weapon_damage(build_dir, fork_weapon_damage(fork))
 
     logger.info(
-        "loot: %d sources naming %d items (%d from wowhead's item-sources.json scrape, "
+        "loot: %d sources naming %d items (%d from classic-db's dump parse, %d from "
+        "wowhead's item-sources.json scrape, %d from re-itemisation inheritance, "
         "%d quests with faction detail); "
         "%d fork ids left out because this build has no such item, "
         "%d fork source entries with no kind dropped, %d zone sources with "
@@ -169,7 +187,9 @@ def write_loot_files(
         "items/*.json: %d weapon rows won by the fork's own damage",
         len(document.sources),
         stats.items,
+        stats.classicdb_items,
         stats.wowhead_items,
+        reitemised,
         len(document.quests),
         stats.absent_items,
         stats.dropped_entries,
@@ -190,3 +210,132 @@ def write_loot_files(
         build_dir / "items.json",
         *sorted((build_dir / "items").glob("*.json")),
     ]
+
+
+def _load_committed_loot(build_dir: Path) -> dict:
+    path = build_dir / LOOT
+    if not path.exists():
+        return {"sources": []}
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def types_from_committed_loot(build_dir: Path) -> dict[int, int]:
+    """zone id -> a `Map.InstanceType`-equivalent code (1 dungeon, 2
+    raid), recovered from the CURRENTLY COMMITTED `loot.json`'s own
+    dungeon/raid sources -- `merge_loot_files`' raw-free substitute for
+    `instance_types()` (which needs `raw/Map.csv`, unavailable when the
+    build's `raw/` was never fetched at all: night-fetch-guard,
+    2026-09-29, wago.tools' ItemSparse export for this build is
+    truncated and `check_item_sparse_completeness` refuses it).
+
+    Degrades gracefully, not silently: a dungeon/raid zone that
+    currently has ZERO sourced items would be invisible to this recovery
+    (there is no committed source to read it off), but the fork's own
+    database has not changed between a full run and a merge-only one, so
+    every zone a full run would have found stays found here too, as
+    long as at least one of its items already made it into the last full
+    `loot.json`.
+    """
+    kind_code = {"dungeon": 1, "raid": 2}
+    types: dict[int, int] = {}
+    for source in _load_committed_loot(build_dir).get("sources", []):
+        code = kind_code.get(source.get("kind", ""))
+        zone_id = source.get("zone_id")
+        if code and zone_id:
+            types[int(zone_id)] = code
+    return types
+
+
+def pvp_ranks_from_committed_loot(build_dir: Path) -> dict[int, int]:
+    """item id -> PvP rank, recovered from the currently committed
+    `loot.json`'s own `pvp:rank-N` sources -- the raw-free substitute for
+    `pvp_ranks()` (needs `raw/ItemSparse.csv`'s `RequiredPVPRank`,
+    unavailable in merge-only mode, same reason as
+    `types_from_committed_loot` above)."""
+    ranks: dict[int, int] = {}
+    for source in _load_committed_loot(build_dir).get("sources", []):
+        if source.get("kind") == "pvp" and source.get("rank"):
+            for item_id in source.get("items") or []:
+                ranks[int(item_id)] = int(source["rank"])
+    return ranks
+
+
+def merge_loot_files(
+    build: str,
+    engine_dir: Path,
+    root: Path = Path("builds"),
+    overlay_dir: Path = Path("curated/loot"),
+) -> list[Path]:
+    """`python -m pipeline loot-merge`: re-derives `loot.json` ALONE from
+    inputs already committed -- the engine fork checkout, and the
+    build's own `zones.json`/`items.json` plus its `raw/quests/
+    quest-levels.json`, `raw/items/item-sources.json` and `raw/classicdb/
+    sources.json` caches -- WITHOUT `raw/ItemSparse.csv` or `raw/Map.csv`
+    (see `write_loot_files`'s own doc: those need a real `fetch` run,
+    which this build cannot do right now -- night-fetch-guard,
+    2026-09-29).
+
+    Two things `write_loot_files` reads off `raw/ItemSparse.csv` are
+    therefore unavailable and handled by NOT reading them fresh: the
+    dungeon/raid zone map (`types_from_committed_loot`, above) and PvP
+    ranks (`pvp_ranks_from_committed_loot`, above) are recovered from
+    the currently committed `loot.json` instead of raw CSVs, so a
+    `loot-merge` run does not regress either away. `check_no_sockets`
+    (an ItemSparse-only validation with no data of its own) and
+    `check_item_sparse_completeness` are skipped outright, loudly logged
+    -- there is nothing for either to validate without the CSV.
+
+    Unlike `write_loot_files`, this writes ONLY `loot.json` -- enchants,
+    suffixes, simbuffs and the fork weapon-damage/suffix-option columns
+    on `items.json`/`items/*.json` all need the same engine pass
+    `write_loot_files` already did last time they changed (the fork's
+    own database, not `raw/`), so a merge-only run leaves them alone.
+    """
+    build_dir = root / build
+    for name in ("zones.json", "items.json"):
+        _require(build_dir / name, "normalize")
+    logger.warning(
+        "loot-merge: no raw/ItemSparse.csv or raw/Map.csv for %s -- the dungeon/raid zone "
+        "map and PvP ranks are recovered from the currently committed loot.json instead of "
+        "fetched fresh, and check_no_sockets/check_item_sparse_completeness are skipped "
+        "(nothing to validate without the CSV)",
+        build,
+    )
+    fork = load_fork_database(engine_dir)
+    zone_rows = json.loads((build_dir / "zones.json").read_text(encoding="utf-8"))
+    item_rows = json.loads((build_dir / "items.json").read_text(encoding="utf-8"))
+    build_items = {int(row["id"]) for row in item_rows}
+    item_inventory_types = {int(row["id"]): int(row["inventory_type"]) for row in item_rows}
+    quest_levels = load_quest_levels(build_dir)
+    item_sources = load_item_sources(build_dir)
+    classic_sources = load_classic_sources(build_dir)
+
+    document, stats = build_loot(
+        fork,
+        {int(row["id"]): row["name"] for row in zone_rows},
+        types_from_committed_loot(build_dir),
+        pvp_ranks_from_committed_loot(build_dir),
+        build_items,
+        item_inventory_types,
+        quest_levels,
+        item_sources,
+        classic_sources,
+        zone_rows,
+    )
+    document, reitemised = apply_reitemisation(document, item_rows)
+    document = apply_overlays(document, load_overlays(overlay_dir))
+    write_document(document, build_dir / LOOT)
+    logger.info(
+        "loot-merge: %d sources naming %d items (%d from classic-db, %d from wowhead, %d "
+        "from re-itemisation inheritance); %d fork ids left out, %d fork entries with no "
+        "kind dropped",
+        len(document.sources),
+        stats.items,
+        stats.classicdb_items,
+        stats.wowhead_items,
+        reitemised,
+        stats.absent_items,
+        stats.dropped_entries,
+    )
+    refresh_manifest(build_dir)
+    return [build_dir / LOOT]

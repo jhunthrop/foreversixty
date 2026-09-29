@@ -35,6 +35,10 @@ export interface PlaceSourceCell {
   /** Undefined when the item is the instance's own trash or unbossed loot list, not any
    *  named boss's own drop. */
   boss?: string;
+  /** Percent drop chance (0-100), from cmangos/classic-db (src-classicdb lane,
+   *  2026-09-29). Undefined when no source contributing to this bucket names one -- the
+   *  fork database and wowhead's scrape never do. */
+  dropChance?: number;
 }
 
 export interface CraftedSourceCell {
@@ -57,6 +61,8 @@ export interface ZoneSourceCell {
   /** `zone`, `world` or `pvp` -- every other kind `loot.json` names as one flat place. */
   kind: 'zone' | 'world' | 'pvp';
   place: string;
+  /** See `PlaceSourceCell.dropChance`'s own doc. */
+  dropChance?: number;
 }
 
 /** A source_kind `loot.json` has nothing for this item under (a data gap, not a defect in
@@ -81,9 +87,21 @@ function findSource(sources: readonly LootSource[], kind: string, itemId: number
   return sources.find((source) => source.kind === kind && itemsOfSource(source).includes(itemId));
 }
 
+function findBossEntry(source: LootSource, itemId: number) {
+  return (source.bosses ?? []).find((entry) => entry.items.includes(itemId));
+}
+
 function findBoss(source: LootSource, itemId: number): string | undefined {
-  const boss = (source.bosses ?? []).find((entry) => entry.items.includes(itemId));
+  const boss = findBossEntry(source, itemId);
   return boss === undefined ? undefined : bossName(source, boss);
+}
+
+/** `source`'s (or, for a boss drop, that boss's own) `item_chances` entry for `itemId` --
+ *  `PlaceSourceCell.dropChance`/`ZoneSourceCell.dropChance`'s own doc. */
+function findChance(source: LootSource, itemId: number): number | undefined {
+  const boss = findBossEntry(source, itemId);
+  const chances = boss?.item_chances ?? source.item_chances;
+  return chances?.[String(itemId)];
 }
 
 /** The quest matching this band's own faction when `loot.json` lists more than one (a
@@ -122,7 +140,12 @@ export function resolveSourceCell(
     const source = findSource(loot.sources, slot.source_kind, itemId);
     return source === undefined
       ? fallback
-      : { kind: slot.source_kind, instance: source.name, boss: findBoss(source, itemId) };
+      : {
+          kind: slot.source_kind,
+          instance: source.name,
+          boss: findBoss(source, itemId),
+          dropChance: findChance(source, itemId),
+        };
   }
 
   if (slot.source_kind === 'crafted') {
@@ -142,7 +165,9 @@ export function resolveSourceCell(
 
   if (slot.source_kind === 'zone' || slot.source_kind === 'world' || slot.source_kind === 'pvp') {
     const source = findSource(loot.sources, slot.source_kind, itemId);
-    return source === undefined ? fallback : { kind: slot.source_kind, place: source.name };
+    return source === undefined
+      ? fallback
+      : { kind: slot.source_kind, place: source.name, dropChance: findChance(source, itemId) };
   }
 
   return fallback;
@@ -160,7 +185,9 @@ export function describeSourceCell(cell: SourceCell): string {
         : bisCopy.questSourceLabel(cell.questName);
     case 'dungeon':
     case 'raid':
-      return bisCopy.dungeonSourceLabel(cell.instance, cell.boss);
+      return cell.dropChance === undefined
+        ? bisCopy.dungeonSourceLabel(cell.instance, cell.boss)
+        : bisCopy.dropChanceLabel(cell.dropChance, cell.boss ?? `${cell.instance} trash`);
     case 'crafted':
       return bisCopy.craftedSourceLabel(cell.profession);
     case 'vendor':
@@ -170,7 +197,9 @@ export function describeSourceCell(cell: SourceCell): string {
     case 'zone':
     case 'world':
     case 'pvp':
-      return bisCopy.placeSourceLabel(cell.place);
+      return cell.dropChance === undefined
+        ? bisCopy.placeSourceLabel(cell.place)
+        : bisCopy.dropChanceLabel(cell.dropChance, cell.place);
     case 'unknown':
       return cell.label;
   }

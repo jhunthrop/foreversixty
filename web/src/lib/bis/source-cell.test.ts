@@ -46,6 +46,28 @@ const LOOT: LootFile & LootQuestsFile = {
       items: [50],
     },
     { id: 'zone:1', kind: 'zone', name: 'Dun Morogh', zone_id: 1, items: [60] },
+    {
+      id: 'dungeon:the-deadmines',
+      kind: 'dungeon',
+      name: 'The Deadmines',
+      zone_id: 3,
+      bosses: [
+        {
+          id: 'dungeon:the-deadmines:1',
+          name: 'Lord Serpentis',
+          npc_id: 1,
+          items: [80],
+          item_chances: { '80': 40 },
+        },
+      ],
+    },
+    {
+      id: 'world:some-creature',
+      kind: 'world',
+      name: 'Some Creature',
+      items: [81],
+      item_chances: { '81': 6 },
+    },
   ],
   quests: {
     '70': [
@@ -158,6 +180,31 @@ describe('resolveSourceCell', () => {
     const cell = resolveSourceCell(slot({ item_id: 1, source_kind: 'raid' }), 'alliance', LOOT, 'fallback');
     expect(cell).toEqual({ kind: 'unknown', label: 'fallback' });
   });
+
+  it('carries a boss drop’s own classic-db chance through as dropChance', () => {
+    const cell = resolveSourceCell(
+      slot({ item_id: 80, source_kind: 'dungeon' }),
+      'alliance',
+      LOOT,
+      'fallback',
+    );
+    expect(cell).toEqual({
+      kind: 'dungeon',
+      instance: 'The Deadmines',
+      boss: 'Lord Serpentis',
+      dropChance: 40,
+    });
+  });
+
+  it('carries a world source’s own classic-db chance through as dropChance', () => {
+    const cell = resolveSourceCell(slot({ item_id: 81, source_kind: 'world' }), 'alliance', LOOT, 'fallback');
+    expect(cell).toEqual({ kind: 'world', place: 'Some Creature', dropChance: 6 });
+  });
+
+  it('leaves dropChance undefined for a source with no classic-db chance data', () => {
+    const cell = resolveSourceCell(slot({ item_id: 10, source_kind: 'raid' }), 'alliance', LOOT, 'fallback');
+    expect(cell).toEqual({ kind: 'raid', instance: 'Molten Core', boss: 'Ragnaros' });
+  });
 });
 
 describe('describeSourceCell', () => {
@@ -176,6 +223,26 @@ describe('describeSourceCell', () => {
     );
     expect(describeSourceCell({ kind: 'zone', place: 'Dun Morogh' })).toBe('Dun Morogh');
     expect(describeSourceCell({ kind: 'unknown', label: 'Vendors' })).toBe('Vendors');
+  });
+
+  it('leads with the classic-db drop chance when the cell carries one', () => {
+    expect(
+      describeSourceCell({
+        kind: 'dungeon',
+        instance: 'The Deadmines',
+        boss: 'Lord Serpentis',
+        dropChance: 40,
+      }),
+    ).toBe('40% from Lord Serpentis');
+    expect(describeSourceCell({ kind: 'world', place: 'Some Creature', dropChance: 6 })).toBe(
+      '6% from Some Creature',
+    );
+  });
+
+  it('falls back to the instance name for a chance on trash (no named boss)', () => {
+    expect(describeSourceCell({ kind: 'dungeon', instance: 'The Deadmines', dropChance: 6 })).toBe(
+      '6% from The Deadmines trash',
+    );
   });
 });
 

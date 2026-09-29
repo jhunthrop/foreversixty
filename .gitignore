@@ -81,6 +81,12 @@ data/builds/*/raw/quests/*
 !data/builds/*/raw/items/
 data/builds/*/raw/items/*
 !data/builds/*/raw/items/item-sources.json
+# src-classicdb lane, 2026-09-29: the same exception, for the parsed
+# cmangos/classic-db dump cache (pipeline.classic_sources) -- the 73MB
+# dump itself is never committed, only this compact per-item-id parse.
+!data/builds/*/raw/classicdb/
+data/builds/*/raw/classicdb/*
+!data/builds/*/raw/classicdb/sources.json
 data/.icon-cache/
 
 # git worktrees for parallel plan execution

@@ -54,6 +54,10 @@ export interface LootBoss {
   name: string;
   npc_id?: number;
   items: number[];
+  /** item id (string-keyed) -> percent drop chance (0-100), from cmangos/classic-db
+   *  (src-classicdb lane, 2026-09-29). Only present for an item classic-db itself
+   *  contributed to this boss -- absent for a fork- or wowhead-only entry. */
+  item_chances?: Record<string, number>;
 }
 
 export interface LootSource {
@@ -77,6 +81,9 @@ export interface LootSource {
   faction_id?: number;
   standing?: string;
   rank?: number;
+  /** item id (string-keyed) -> percent drop chance (0-100), for a `world`/`zone` source's
+   *  own flat `items`/`trash` list -- see `LootBoss.item_chances`'s own doc. */
+  item_chances?: Record<string, number>;
 }
 
 /** One quest that rewards an item, from loot.json's `quests` map (contract 10.4: item id,

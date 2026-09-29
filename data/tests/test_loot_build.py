@@ -26,26 +26,32 @@ BUILD = "1.60.1.70009"
 BUILD_DIR = Path("builds") / BUILD
 IDS_MD = Path("../sim/request/IDS.md")
 
-#: Sources per kind. Seven raids: the six the generator emits after
-#: contract 10.4's build filter, plus Onyxia's Lair, which the filter
-#: empties and curated/loot/forever-raid-phases.json adds back with its
-#: announced phase. Eighteen dungeons, one world boss (Lord Kazzak;
-#: Azuregos keeps none of his ten drops on this client), twenty-five
-#: zones with a non-instance drop, seventeen vendor npcs selling at least
-#: one equippable item, five professions, thirty-one faction-and-standing
-#: pairs, thirteen PvP ranks, one quest list.
+#: Sources per kind. src-classicdb lane, 2026-09-29: the cmangos/classic-db
+#: dump (pipeline.classic_sources) joined as a third loot.json origin --
+#: see that module's own doc and this lane's report for the coverage
+#: measurement -- is why `world` (one fork-named world boss before) and
+#: `vendor` (seventeen fork-named npcs before) grew by three orders of
+#: magnitude: classic-db names a `world:<creature>` bucket for almost
+#: every open-world drop this build's items reference, and a `vendor:
+#: <npc>` bucket for almost every npc selling one. Seven raids and
+#: eighteen dungeons are unchanged in COUNT (same zones), though their
+#: own boss/item shapes (RAID_SHAPE below) grew the same way. Five
+#: professions, thirty-one faction-and-standing pairs, thirteen PvP
+#: ranks, one quest list are all fork-derived buckets, unaffected by kind
+#: COUNT (their own item counts still grew -- see the per-kind constants
+#: below).
 SOURCES_PER_KIND = {
     "raid": 7,
     "dungeon": 18,
-    "world": 1,
-    "zone": 25,
-    "vendor": 17,
+    "world": 3993,
+    "zone": 55,
+    "vendor": 518,
     "crafted": 5,
     "rep": 31,
     "pvp": 13,
     "quest": 1,
 }
-TOTAL_SOURCES = 118
+TOTAL_SOURCES = 4641
 
 RAID_SOURCE_IDS = [
     "raid:ahnqiraj",
@@ -56,73 +62,95 @@ RAID_SOURCE_IDS = [
     "raid:ruins-of-ahnqiraj",
     "raid:zulgurub",
 ]
-#: raid source id -> (bosses, trash items, distinct items). The gap
-#: against what the fork's sources name -- Molten Core 10 of 139,
-#: Zul'Gurub 2 of 98 -- is Forever's re-itemisation, and the overlay's
-#: notes carry it.
+#: raid source id -> (bosses, trash items, distinct items). Grown by
+#: classic-db over the fork-only shape (Molten Core was 4 bosses/10
+#: items; the fork's own gap against its OWN sources -- 139 named, only
+#: 10 kept -- was Forever's re-itemisation, unchanged by this lane).
+#: Onyxia's Lair stays (0, 0, 0): classic-db's only `zones.json` row for
+#: it states `map_id: 1` (a bare continent id, `AreaTable.ContinentID`
+#: fallback, not a real instance map -- pipeline.loot.classicdb.
+#: instance_zone_by_map's own doc), so no classic-db creature/object
+#: drop can resolve to it at all; it stays the curated placeholder.
 RAID_SHAPE = {
-    "raid:ahnqiraj": (12, 7, 68),
-    "raid:blackwing-lair": (8, 3, 22),
-    "raid:molten-core": (4, 5, 10),
-    "raid:naxxramas": (15, 1, 46),
+    "raid:ahnqiraj": (31, 7, 181),
+    "raid:blackwing-lair": (18, 3, 146),
+    "raid:molten-core": (27, 5, 115),
+    "raid:naxxramas": (50, 7, 148),
     "raid:onyxias-lair": (0, 0, 0),
-    "raid:ruins-of-ahnqiraj": (3, 1, 5),
-    "raid:zulgurub": (1, 1, 2),
+    "raid:ruins-of-ahnqiraj": (28, 1, 181),
+    "raid:zulgurub": (44, 1, 209),
 }
-RAID_BOSSES = 43
-RAID_ITEMS = 153
+RAID_BOSSES = 198
+RAID_ITEMS = 581
 #: Bosses the fork database names no NPC for. An invented name would be
 #: worse than a blank one, so this is measured rather than forbidden.
+#: Unchanged by classic-db: a classic-db boss ALWAYS carries a
+#: creature_template name (pipeline.loot.classicdb's own "elif npc_id
+#: and record.name" gate skips an unnamed one rather than emitting a
+#: blank boss), so every blank name here is still fork-only.
 UNNAMED_RAID_BOSSES = 31
 UNNAMED_DUNGEON_BOSSES = 27
 
-DUNGEON_BOSSES = 160
+DUNGEON_BOSSES = 625
 DUNGEONS_WITH_TRASH = 14
-WORLD_SOURCE_IDS = ["world:lord-kazzak"]
+#: `world` sources: one per named open-world creature (or gameobject/
+#: fishing bucket) classic-db or the fork names at least one item for.
+#: 3,993 up from 1 (Lord Kazzak alone, fork-only) -- src-classicdb lane's
+#: whole point. Too many to enumerate here; this lane's report and
+#: `test_the_world_sources_include_every_fork_named_one_and_grew_a_lot`
+#: below are the coverage evidence instead of a hardcoded id list.
+WORLD_SOURCES = 3993
 CRAFTED_ITEMS = {
-    "crafted:blacksmithing": 191,
+    "crafted:blacksmithing": 210,
     "crafted:enchanting": 4,
-    "crafted:engineering": 47,
-    "crafted:leatherworking": 191,
-    "crafted:tailoring": 157,
+    "crafted:engineering": 48,
+    "crafted:leatherworking": 207,
+    "crafted:tailoring": 171,
 }
-QUEST_ITEMS = 1140
-PVP_ITEMS_PER_RANK = {5: 2, 6: 16, 7: 6, 8: 6, 9: 23, 10: 2, 11: 66, 12: 93,
-                      14: 63, 15: 2, 16: 80, 17: 48, 18: 42}
+QUEST_ITEMS = 2060
+PVP_ITEMS_PER_RANK = {5: 4, 6: 16, 7: 6, 8: 6, 9: 23, 10: 4, 11: 98, 12: 122,
+                      14: 97, 15: 2, 16: 117, 17: 82, 18: 82}
 
 #: Every distinct item id the file names. Contract 10.4: all of them are
 #: the build's own, the 1,809 the fork names and this client does not
-#: having been left out. Up from 2,970 once the zone and vendor kinds
-#: (below) started naming items no other kind already covered.
-NAMED_ITEMS = 3172
+#: having been left out. Up from 3,172 once classic-db
+#: (pipeline.classic_sources) joined as a third origin and re-itemisation
+#: inheritance (pipeline.loot.reitemise) started filling Forever-new ids.
+NAMED_ITEMS = 8827
 
 #: `zone` sources: one per non-instance zone a `drop` source names,
-#: alongside (not instead of) the existing per-npc `world` bucket.
-ZONE_SOURCES = 25
-ZONE_ITEMS = 201
-UNNAMED_ZONES = 0
+#: alongside (not instead of) the existing per-npc `world` bucket. Grown
+#: by classic-db the same way `world`/`vendor` did; two zone ids among
+#: them are ones `zones.json` itself does not name (UNNAMED_ZONES),
+#: same "never invent" policy as an unnamed boss.
+ZONE_SOURCES = 55
+ZONE_ITEMS = 5106
+UNNAMED_ZONES = 2
 
 #: `vendor` sources: one per npc selling at least one equippable item.
-VENDOR_SOURCES = 17
-VENDOR_ITEMS = 497
+VENDOR_SOURCES = 518
+VENDOR_ITEMS = 4613
 
-#: `quests` map: item id -> its quest(s). Same 1,140 items as the flat
+#: `quests` map: item id -> its quest(s). Same 2,060 items as the flat
 #: `quest` bucket, now with the quest's own id, name and faction -- the
 #: item's own `factionRestriction` standing in for the quest's side, per
-#: the design (0 both, 1 alliance, 2 horde).
-QUEST_DETAIL_ITEMS = 1140
-QUEST_FACTION_COUNTS = {"alliance": 326, "horde": 307, "both": 507}
+#: the design (0 both, 1 alliance, 2 horde) -- true for a classic-db
+#: quest reward too (pipeline.loot.classicdb.classicdb_additions' own
+#: doc: the item's restriction wins even when classic-db's OWN
+#: RequiredRaces reading for the quest disagrees).
+QUEST_DETAIL_ITEMS = 2060
+QUEST_FACTION_COUNTS = {"alliance": 652, "horde": 615, "both": 2785}
 
-#: 2026-09-28 quest-levels finding: how many of the 1,140 quest-reward
-#: items' quest(s) resolved from cmangos/classic-db's `quest_template`
-#: table (99.7% of this build's 720 distinct quest ids -- Forever
-#: quest ids match 1.12's for old content almost entirely), how many
-#: needed wowhead's fill-in (2 ids classic-db does not have -- Forever-
-#: new quests), and how many fell all the way back to item_level_proxy
-#: (0 -- both sources together cover every quest-reward item this build
-#: has). See pipeline.quest_levels's own doc and this lane's report for
-#: the full source story.
-QUEST_LEVEL_SOURCE_COUNTS = {"classic-db": 1138, "wowhead": 2}
+#: 2026-09-28 quest-levels finding, re-measured after src-classicdb: how
+#: many of the 2,060 quest-reward items' quest(s) resolved from
+#: cmangos/classic-db's `quest_template` table, how many needed
+#: wowhead's fill-in, and how many fell all the way back to
+#: item_level_proxy (0 -- both sources together still cover every
+#: quest-reward item this build has, now that classic-db's OWN
+#: quest_reward records feed far more quest ids into this map than the
+#: fork alone ever named). See pipeline.quest_levels's own doc and this
+#: lane's report for the full source story.
+QUEST_LEVEL_SOURCE_COUNTS = {"classic-db": 4023, "wowhead": 29}
 
 #: `factions` map: item id -> "alliance"/"horde" for every restricted item
 #: this build has, quest items and non-quest items alike. Matches
@@ -280,8 +308,20 @@ def test_the_dungeon_sources_are_the_eighteen_that_survived_the_filter():
     assert sum(1 for s in dungeons if s.get("trash")) == DUNGEONS_WITH_TRASH
 
 
-def test_the_only_world_source_is_the_one_world_boss_with_loot_left():
-    assert [s["id"] for s in loot()["sources"] if s["kind"] == "world"] == WORLD_SOURCE_IDS
+def test_world_sources_are_one_per_named_creature_object_or_fishing_bucket():
+    """3,993 up from the single fork-named `world:lord-kazzak` (still
+    among them -- Azuregos keeps none of his ten fork drops on this
+    client) -- src-classicdb lane's own coverage growth, too large a set
+    to enumerate by id here (see this lane's report instead)."""
+    world = [s for s in loot()["sources"] if s["kind"] == "world"]
+    assert len(world) == WORLD_SOURCES
+    assert "world:lord-kazzak" in {s["id"] for s in world}
+    ids = [s["id"] for s in world]
+    assert ids == sorted(ids)
+    for source in world:
+        assert source["name"].strip(), source["id"]
+        assert source["items"], source["id"]
+        assert source["items"] == sorted(set(source["items"]))
 
 
 def test_zone_sources_are_additive_to_world_not_a_replacement_for_it():
@@ -332,16 +372,36 @@ def test_crafted_rep_pvp_and_quest_carry_their_own_keys_and_counts():
     assert len(by_id()["quest"]["items"]) == QUEST_ITEMS
 
 
+#: Every key `write_document`'s `exclude_none` can ever leave on a
+#: source, beyond the four every kind always carries (id/kind/name/
+#: items) -- src-classicdb lane grew this set by three: `source_origin`
+#: ("classic-db"/"wowhead", a bucket the fork itself did not name first),
+#: `item_chances` (classic-db's own per-item percent), `reitemised_from`
+#: (pipeline.loot.reitemise's own per-item breadcrumb).
+_OPTIONAL_SOURCE_KEYS = {
+    "zone_id", "opens", "profession", "faction_id", "standing", "rank", "npc_id",
+    "bosses", "trash", "item_chances", "reitemised_from", "source_origin",
+}
+
+
 def test_a_source_only_carries_the_keys_its_kind_needs():
     """`write_document` drops the unset ones, so a crafted source has no
-    null `bosses` for the page to filter out."""
+    null `bosses` for the page to filter out -- checked here as "no
+    unexpected key", since WHICH optional keys are set on any one
+    instance now varies with which origin(s) touched it."""
+    always = {"id", "kind", "name", "items"}
+    for source in loot()["sources"]:
+        extra = set(source) - always
+        assert extra <= _OPTIONAL_SOURCE_KEYS, source["id"]
     assert sorted(by_id()["crafted:tailoring"]) == ["id", "items", "kind", "name", "profession"]
-    assert sorted(by_id()["quest"]) == ["id", "items", "kind", "name"]
+    assert set(by_id()["quest"]) <= always | {"reitemised_from"}
     assert "profession" not in by_id()["raid:molten-core"]
     vendor = next(s for s in loot()["sources"] if s["kind"] == "vendor")
-    assert sorted(vendor) == ["id", "items", "kind", "name", "npc_id"]
+    assert set(vendor) <= always | {"npc_id", "faction_id", "standing", "source_origin"}
+    assert "npc_id" in vendor
     zone = next(s for s in loot()["sources"] if s["kind"] == "zone")
-    assert sorted(zone) == ["id", "items", "kind", "name", "zone_id"]
+    assert set(zone) <= always | {"zone_id", "item_chances", "reitemised_from", "source_origin"}
+    assert "zone_id" in zone
 
 
 def test_every_item_list_is_sorted_and_free_of_duplicates():
@@ -473,9 +533,13 @@ def test_quests_map_carries_id_name_and_faction_per_item():
             # fallback is. level (the quest's DESIGN level, informational
             # only) is not: three real classic-db rows ("Paragons of
             # Power", quest 8053-8055) carry QuestLevel 61 despite
-            # MinLevel 60 -- a real 1.12 data quirk, not a bug here.
+            # MinLevel 60 -- a real 1.12 data quirk, not a bug here. Quest
+            # 9321 ("Major Healing Potion", a barter/turn-in quest)
+            # carries classic-db's own QuestLevel -1 -- cmangos' "no
+            # fixed level" convention for that quest shape, also real,
+            # also not a bug -- so `level`'s floor is -1, not 0.
             assert 0 <= entry["min_level"] <= 60
-            assert 0 <= entry["level"] <= 61
+            assert -1 <= entry["level"] <= 61
             counts[entry["faction"]] += 1
     assert counts == QUEST_FACTION_COUNTS
 

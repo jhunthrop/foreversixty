@@ -25,6 +25,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     fcq.add_argument("--build", required=True, help="the build whose raw/ receives the file")
 
+    fcs = sub.add_parser(
+        "fetch-classic-sources",
+        help="ONE-TIME (or occasional, same pinned commit as fetch-classic-quest-levels): "
+        "download cmangos/classic-db's loot/vendor/quest tables and write the committed "
+        "raw/classicdb/sources.json `loot`/`loot-merge` read, tagged source: classic-db",
+    )
+    fcs.add_argument("--build", required=True, help="the build whose raw/ receives the file")
+
     qlv = sub.add_parser(
         "quest-levels",
         help="THE NIGHTLY STEP (.github/workflows/bis.yml, before `make bis`): fetch "
@@ -175,6 +183,22 @@ def build_parser() -> argparse.ArgumentParser:
         "for a deliberate re-baseline; logs loudly when used",
     )
 
+    lm = sub.add_parser(
+        "loot-merge",
+        help="THE NIGHTLY FALLBACK when raw/ CSVs are not available (night-fetch-guard): "
+        "re-derive loot.json ALONE from committed inputs -- engine fork, zones.json, "
+        "items.json, quest-levels.json, item-sources.json, classicdb/sources.json -- "
+        "no raw/ItemSparse.csv or raw/Map.csv needed. Run the full `loot` command instead "
+        "whenever raw/ is healthy; this never writes enchants/suffixes/simbuffs/items "
+        "columns, only loot.json.",
+    )
+    lm.add_argument("--build", required=True)
+    lm.add_argument(
+        "--engine",
+        required=True,
+        help="path to the wowsims-forever checkout, e.g. $FOREVER_ENGINE_PATH",
+    )
+
     sp = sub.add_parser("specs", help="generate the Go and TypeScript spec lists")
     sp.add_argument("--go", default="../sim/specs/specs.go")
     sp.add_argument("--ts", default="../web/src/lib/sim/specs.ts")
@@ -229,6 +253,11 @@ def main(argv: list[str] | None = None) -> int:
             f"fetch-classic-quest-levels: merged {stats.added} classic-db entries "
             f"({stats.total} total)"
         )
+    elif args.command == "fetch-classic-sources":
+        from pipeline.classic_sources import fetch_and_write_classic_sources
+
+        path = fetch_and_write_classic_sources(args.build)
+        print(path)
     elif args.command == "quest-levels":
         import json
         from pathlib import Path
@@ -376,6 +405,13 @@ def main(argv: list[str] | None = None) -> int:
         for path in write_loot_files(
             args.build, Path(args.engine), allow_shrink=args.allow_shrink
         ):
+            print(path)
+    elif args.command == "loot-merge":
+        from pathlib import Path
+
+        from pipeline.loot import merge_loot_files
+
+        for path in merge_loot_files(args.build, Path(args.engine)):
             print(path)
     elif args.command == "simproto":
         from pathlib import Path
