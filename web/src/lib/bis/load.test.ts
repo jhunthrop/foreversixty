@@ -23,7 +23,7 @@ import {
   sourceBadgeLabel,
   normaliseBisFile,
 } from './load';
-import type { BisSlot, SpecCatalogEntry } from './types';
+import type { BisBand, BisSlot, SpecCatalogEntry } from './types';
 
 const FIXTURE = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -100,6 +100,68 @@ describe('loadBisFile', () => {
   it('reads an empty "new at this band" list as an array, never null', () => {
     const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
     for (const band of file.bands) expect(Array.isArray(band.new_at_band)).toBe(true);
+  });
+
+  it('reads coverage as an object on every band, never undefined', () => {
+    const file = loadBisFile('hunter-marksmanship', '1.60.1.70009')!;
+    for (const band of file.bands) expect(typeof band.coverage).toBe('object');
+  });
+});
+
+describe('normaliseBisFile', () => {
+  const baseBand: BisBand = {
+    spec: 'hunter-marksmanship',
+    band: 20,
+    faction: 'horde',
+    race: 'troll',
+    talents: '',
+    talent_points: 0,
+    weights: [],
+    slots: [],
+    set_dps: 0,
+    no_source_count: 0,
+    new_at_band: [],
+    weights_run_seconds: 0,
+    verify_run_seconds: 0,
+    coverage: {},
+  };
+
+  it('defaults a missing coverage field to {} (a file published before guardrail A landed)', () => {
+    const { coverage: _coverage, ...bandWithoutCoverage } = baseBand;
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [bandWithoutCoverage as unknown as BisBand],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].coverage).toEqual({});
+  });
+
+  it('defaults a literal null coverage (a Go nil map) to {}', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, coverage: null as unknown as Record<string, never> }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].coverage).toEqual({});
+  });
+
+  it('keeps a real coverage map unchanged', () => {
+    const coverage = { head: { eligible: 12, sourced: 3 } };
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, coverage }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].coverage).toEqual(coverage);
   });
 });
 

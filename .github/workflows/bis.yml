@@ -142,10 +142,16 @@ jobs:
       # in both slots). Warning-only for now so a data finding never blocks
       # the picks from landing; promote to blocking once it has been clean
       # for a week.
+      # rank-guardrails lane, 2026-09-29: TestKnownGoodItemsAreSeenAndRanked
+      # runs in the same warning-only step - it checks a small, hand-curated
+      # list of Classic community-known BiS items (testdata/known-good.json)
+      # against tonight's picks: is each one sourced, and was it actually
+      # competitive? See docs/superpowers/specs/2026-09-28-leveling-bis-
+      # design.md's "Guardrails" section.
       - name: sanity-check tonight's picks
         continue-on-error: true
         working-directory: sim
-        run: FOREVER_BIS_SANITY=1 go test ./cmd/leveling-bis -run TestPublishedBISFilesPassSanityChecks -count=1
+        run: FOREVER_BIS_SANITY=1 go test ./cmd/leveling-bis -run 'TestPublishedBISFilesPassSanityChecks|TestKnownGoodItemsAreSeenAndRanked' -count=1
       # The addon ships the picks (Data.lua's bis/bis_new tables, ids only),
       # and data.yml's drift check compares the committed Data.lua with what
       # the pipeline renders -- so the same commit that adds bis/*.json must

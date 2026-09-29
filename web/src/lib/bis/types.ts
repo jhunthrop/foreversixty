@@ -38,6 +38,15 @@ export interface BisSlot {
   swap_note?: string;
 }
 
+/** One planner slot's coverage: how many items `eligible()` (sim/cmd/leveling-bis/eligible.go)
+ *  passed for this band+faction, and how many of those `sourceFor()` could actually find a
+ *  source for. A slot missing from `BisBand.coverage` had zero eligible candidates at all --
+ *  not even an unsourced one. */
+export interface BisCoverage {
+  eligible: number;
+  sourced: number;
+}
+
 export interface BisBand {
   spec: string;
   band: number;
@@ -49,6 +58,13 @@ export interface BisBand {
   slots: BisSlot[];
   set_dps: number;
   no_source_count: number;
+  /** Lane `rank-guardrails`' guardrail A: planner slot -> `{ eligible, sourced }`
+   *  (`sim/cmd/leveling-bis/report.go`'s own `Coverage` field). Required here the same way
+   *  `new_at_band` is: a file the nightly published before this field existed carries no
+   *  `coverage` key at all, and `normaliseBisFile` (`load.ts`) defaults that (and a literal
+   *  JSON `null`) to `{}`, so every caller can read `band.coverage[slot]` with no existence
+   *  check of its own. */
+  coverage: Record<string, BisCoverage>;
   /** Precomputed by the pipeline: `"<slot>: <item name>"` for every slot whose BiS pick
    *  changed since the previous band, faction held constant. Empty at the lowest band (no
    *  previous band to diff against). */

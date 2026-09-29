@@ -72,6 +72,16 @@ type bandReport struct {
 	WeightsRunSeconds float64     `json:"weights_run_seconds"`
 	VerifyRunSeconds  float64     `json:"verify_run_seconds"`
 	VerifyErrors      []string    `json:"verify_errors,omitempty"`
+	// Coverage is band.go's buildBandPool own per-slot count (lane
+	// rank-guardrails' guardrail A): planner slot -> how many items
+	// eligible() passed for this band+faction, and how many of those
+	// sourceFor() could actually find a source for. A slot missing from
+	// this map had zero eligible candidates at all (not even an
+	// unsourced one) - see coverageRow's own doc for why a cross-class
+	// set item still counts here even though it never reaches Slots or
+	// NoSource. web/src/lib/bis/types.ts's BisBand.coverage is this
+	// field's read contract.
+	Coverage map[string]coverageRow `json:"coverage"`
 }
 
 type weightRow struct {
@@ -106,7 +116,7 @@ const noSourceSampleSize = 15
 // buildReport assembles one band+faction's report from pick() output,
 // the weights this band used, verification results, and the previous
 // band's picks (nil for the first band run).
-func buildReport(spec specInfo, band int, faction, race, talents string, talentPoints int, weights map[string]api.StatWeight, weightOrder []string, picks map[string]slotPick, setDPS float64, swaps []swapResult, noSource []candidate, previous map[string]slotPick, weightsSeconds, verifySeconds float64, verifyErrors []string) bandReport {
+func buildReport(spec specInfo, band int, faction, race, talents string, talentPoints int, weights map[string]api.StatWeight, weightOrder []string, picks map[string]slotPick, setDPS float64, swaps []swapResult, noSource []candidate, previous map[string]slotPick, weightsSeconds, verifySeconds float64, verifyErrors []string, coverage map[string]coverageRow) bandReport {
 	swapBySlot := make(map[string]swapResult, len(swaps))
 	for _, s := range swaps {
 		swapBySlot[s.Slot] = s
@@ -201,7 +211,64 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 		WeightsRunSeconds: weightsSeconds,
 		VerifyRunSeconds:  verifySeconds,
 		VerifyErrors:      verifyErrors,
+		Coverage:          coverage,
 	}
+}
+
+// coverageTotals sums every slot's coverageRow into one band-wide
+// figure: how many eligible items this band+faction saw across every
+// slot, and how many of those had a source. Used by main.go's own
+// one-line nightly log summary (this lane's brief, guardrail A) -
+// giving a reader watching the run the same "N of M sourced" honesty
+// the page's per-band coverage table will show, without having to
+// open the JSON.
+func coverageTotals(coverage map[string]coverageRow) (eligible, sourced int) {
+	for _, row := range coverage {
+		eligible += row.Eligible
+		sourced += row.Sourced
+	}
+	return eligible, sourced
+}
+
+// worstCoveredSlot names the slot with the lowest sourced/eligible
+// ratio (ties broken by the most eligible items, then by slot name,
+// so the result is deterministic across runs) - the one line's own
+// "and worst is X" clause points a reader straight at the slot most
+// worth a data lane's attention, rather than making them scan the
+// full per-slot map for it. A slot with zero eligible items is
+// excluded: 0/0 is not a coverage gap, it is "nothing exists here to
+// gate at all".
+func worstCoveredSlot(coverage map[string]coverageRow) (slot string, row coverageRow, ok bool) {
+	for _, s := range slotOrder {
+		r, present := coverage[s]
+		if !present || r.Eligible == 0 {
+			continue
+		}
+		if !ok || ratio(r) < ratio(row) {
+			slot, row, ok = s, r, true
+		}
+	}
+	return slot, row, ok
+}
+
+func ratio(r coverageRow) float64 {
+	if r.Eligible == 0 {
+		return 1
+	}
+	return float64(r.Sourced) / float64(r.Eligible)
+}
+
+// coverageSummary is the one-line-per-band nightly log string this
+// lane's brief asks for: the band-wide total, plus the single
+// worst-covered slot so a reader does not have to open the JSON to
+// see which slot most needs a data lane's attention.
+func coverageSummary(coverage map[string]coverageRow) string {
+	eligible, sourced := coverageTotals(coverage)
+	slot, row, ok := worstCoveredSlot(coverage)
+	if !ok {
+		return fmt.Sprintf("%d/%d eligible items sourced", sourced, eligible)
+	}
+	return fmt.Sprintf("%d/%d eligible items sourced; worst slot %s (%d/%d)", sourced, eligible, slot, row.Sourced, row.Eligible)
 }
 
 // titleCase upper-cases a single lower-kebab word's first letter -

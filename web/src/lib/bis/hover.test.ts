@@ -39,6 +39,7 @@ function band(bandLevel: number, faction: BisBand['faction'], slots: BisSlot[]):
     new_at_band: [],
     weights_run_seconds: 0,
     verify_run_seconds: 0,
+    coverage: {},
   };
 }
 

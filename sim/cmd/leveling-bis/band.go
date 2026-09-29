@@ -127,6 +127,24 @@ type bandPool struct {
 	// or ranged) whose DPS field is 0 - see this file's own
 	// weaponWithNoDPS doc for what that means and whose gap it is.
 	NoDPSWeapon []candidate
+	// Coverage is planner slot -> how many items eligible() passed for
+	// this band+faction fan out to that slot, and how many of those
+	// sourceFor() could actually find a source for (lane
+	// rank-guardrails' guardrail A: "a review can no longer confirm
+	// what is there instead of testing what should be there" - a slot
+	// whose coverage is 2 eligible/0 sourced is a slot the ranker can
+	// never fill no matter how good its scoring gets, and today's page
+	// has no way to say that other than the per-band NoSourceCount,
+	// which is not broken out per slot). Counted for every eligible
+	// item regardless of whether buildBandPool's own crossClassSetItem
+	// exclusion later drops it from Scored/NoSource -- a cross-class
+	// set item is still real, equippable, (in)sourced gear a player
+	// could look up, and hiding it from this count would silently
+	// undercount exactly the honesty gap this field exists to surface.
+	// An item with zero Slots (see the loop below) cannot be attributed
+	// to any slot and is not counted here either, matching NoSource's
+	// own silent drop for the same case.
+	Coverage map[string]coverageRow
 }
 
 // weaponSlots is which planner slots score.go's weaponAPStat also
@@ -236,15 +254,17 @@ func crossClassSetItem(c candidate, classSlug string) bool {
 // Scored.
 func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int, faction string, weights map[string]float64) bandPool {
 	var out bandPool
+	out.Coverage = make(map[string]coverageRow)
 	for _, c := range items {
 		if !eligible(c, classSlug, level, faction) {
 			continue
 		}
+		src, ok := sourceFor(c.ID, level, faction, c.FactionRestriction, idx)
+		addCoverage(out.Coverage, c.Slots, ok)
 		if crossClassSetItem(c, classSlug) {
 			out.CrossClassSet = append(out.CrossClassSet, c)
 			continue
 		}
-		src, ok := sourceFor(c.ID, level, faction, c.FactionRestriction, idx)
 		if !ok {
 			out.NoSource = append(out.NoSource, c)
 			continue
@@ -264,4 +284,32 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 	}
 	sort.Slice(out.NoSource, func(i, j int) bool { return out.NoSource[i].ID < out.NoSource[j].ID })
 	return out
+}
+
+// coverageRow is one slot's answer to "how many eligible items exist,
+// and how many of those had a source" - report.go's bandReport.Coverage
+// publishes exactly this shape (json tags live there, next to the
+// other published fields; this file only computes the counts).
+type coverageRow struct {
+	Eligible int `json:"eligible"`
+	Sourced  int `json:"sourced"`
+}
+
+// addCoverage fans one already-eligible candidate's coverage out to
+// every planner slot it occupies (the same slots.go/data.go
+// plannerSlots expansion candidatesBySlot uses), incrementing Eligible
+// always and Sourced when sourceFor found it a usable source. A
+// candidate with no Slots (see buildBandPool's own doc: an item the
+// per-class file could not map to a planner slot at all) contributes
+// to no slot's count, same as it contributes to none of Scored or
+// NoSource either.
+func addCoverage(cov map[string]coverageRow, slots []string, sourced bool) {
+	for _, slot := range slots {
+		row := cov[slot]
+		row.Eligible++
+		if sourced {
+			row.Sourced++
+		}
+		cov[slot] = row
+	}
 }

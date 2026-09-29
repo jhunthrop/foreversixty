@@ -27,7 +27,7 @@ func TestBuildReportFirstBandHasNoPreviousSoEveryPickIsNew(t *testing.T) {
 	picks := map[string]slotPick{
 		"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Helm"}, HasSource: true, Source: itemSource{Kind: "quest", Label: "A Quest"}}},
 	}
-	r := buildReport(reportSpec(), 20, "horde", "troll", "0500000", 5, map[string]api.StatWeight{"agility": {Stat: "agility", Weight: 1.5, Error: 0.1}}, reportSpec().WeightStats, picks, 500, nil, nil, nil, 1.2, 3.4, nil)
+	r := buildReport(reportSpec(), 20, "horde", "troll", "0500000", 5, map[string]api.StatWeight{"agility": {Stat: "agility", Weight: 1.5, Error: 0.1}}, reportSpec().WeightStats, picks, 500, nil, nil, nil, 1.2, 3.4, nil, nil)
 	if r.Band != 20 || r.Faction != "horde" || r.Race != "troll" || r.TalentPoints != 5 {
 		t.Fatalf("buildReport base fields wrong: %+v", r)
 	}
@@ -58,7 +58,7 @@ func TestBuildReportUnchangedFromPreviousBandIsNotNew(t *testing.T) {
 	item1 := &scored{candidate: candidate{ID: 1, Name: "Helm"}}
 	picks := map[string]slotPick{"head": {Item: item1}}
 	previous := map[string]slotPick{"head": {Item: item1}}
-	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, previous, 0, 0, nil)
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, previous, 0, 0, nil, nil)
 	if len(r.NewAtBand) != 0 {
 		t.Fatalf("NewAtBand = %v, want empty: item 1 unchanged from the previous band", r.NewAtBand)
 	}
@@ -67,7 +67,7 @@ func TestBuildReportUnchangedFromPreviousBandIsNotNew(t *testing.T) {
 func TestBuildReportChangedFromPreviousBandIsNew(t *testing.T) {
 	picks := map[string]slotPick{"head": {Item: &scored{candidate: candidate{ID: 2, Name: "Better Helm"}}}}
 	previous := map[string]slotPick{"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Helm"}}}}
-	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, previous, 0, 0, nil)
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, previous, 0, 0, nil, nil)
 	if len(r.NewAtBand) != 1 || !strings.Contains(r.NewAtBand[0], "Better Helm") {
 		t.Fatalf("NewAtBand = %v, want Better Helm listed", r.NewAtBand)
 	}
@@ -80,7 +80,7 @@ func TestBuildReportSwapBeatenRowIsTheWinnerVerifiedWithNote(t *testing.T) {
 	beaten := &scored{candidate: candidate{ID: 1, Name: "Helm"}}
 	picks := map[string]slotPick{"head": {Item: winner, RunnerUp: beaten}}
 	swaps := []swapResult{{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true}}
-	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 200, swaps, nil, nil, 0, 0, nil)
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 200, swaps, nil, nil, 0, 0, nil, nil)
 	var headRow slotRow
 	for _, s := range r.Slots {
 		if s.Slot == "head" {
@@ -103,7 +103,7 @@ func TestBuildReportSwapLostKeepsSlotVerified(t *testing.T) {
 	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Worse Helm"}}
 	picks := map[string]slotPick{"head": {Item: pick, RunnerUp: runnerUp}}
 	swaps := []swapResult{{Slot: "head", SwapDPS: 50, Beat: false}}
-	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 150, swaps, nil, nil, 0, 0, nil)
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 150, swaps, nil, nil, 0, 0, nil, nil)
 	var headRow slotRow
 	for _, s := range r.Slots {
 		if s.Slot == "head" {
@@ -120,7 +120,7 @@ func TestBuildReportVerifyErrorMarksSlotUnconfirmed(t *testing.T) {
 	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Other Helm"}}
 	picks := map[string]slotPick{"head": {Item: pick, RunnerUp: runnerUp}}
 	verifyErrors := []string{"head: runner-up Other Helm (id 2): the engine reported an error: boom"}
-	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 150, nil, nil, nil, 0, 0, verifyErrors)
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 150, nil, nil, nil, 0, 0, verifyErrors, nil)
 	var headRow slotRow
 	for _, s := range r.Slots {
 		if s.Slot == "head" {
@@ -143,7 +143,7 @@ func TestBuildReportNoSourceCountAndSample(t *testing.T) {
 	for i := 1; i <= noSourceSampleSize+5; i++ {
 		noSource = append(noSource, candidate{ID: i, Name: "Unsourced"})
 	}
-	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, map[string]slotPick{}, 0, nil, noSource, nil, 0, 0, nil)
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, map[string]slotPick{}, 0, nil, noSource, nil, 0, 0, nil, nil)
 	if r.NoSourceCount != len(noSource) {
 		t.Fatalf("NoSourceCount = %d, want %d", r.NoSourceCount, len(noSource))
 	}
@@ -158,7 +158,7 @@ func TestBuildReportWeightsFollowOrder(t *testing.T) {
 		"ranged_attack_power": {Stat: "ranged_attack_power", Weight: 1.0, Error: 0.05},
 	}
 	order := []string{"ranged_attack_power", "agility"}
-	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, weights, order, map[string]slotPick{}, 0, nil, nil, nil, 0, 0, nil)
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, weights, order, map[string]slotPick{}, 0, nil, nil, nil, 0, 0, nil, nil)
 	if len(r.Weights) != 2 || r.Weights[0].Stat != "ranged_attack_power" || r.Weights[1].Stat != "agility" {
 		t.Fatalf("r.Weights = %+v, want order preserved", r.Weights)
 	}
@@ -177,7 +177,7 @@ func TestBuildReportFlagsInsignificantWeights(t *testing.T) {
 		"melee_haste": {Stat: "melee_haste", Weight: 14.87, Error: 6.0},
 	}
 	order := []string{"agility", "melee_haste"}
-	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, weights, order, map[string]slotPick{}, 0, nil, nil, nil, 0, 0, nil)
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, weights, order, map[string]slotPick{}, 0, nil, nil, nil, 0, 0, nil, nil)
 	byStat := map[string]weightRow{}
 	for _, w := range r.Weights {
 		byStat[w.Stat] = w
@@ -204,7 +204,7 @@ func TestBuildReportFlagsEffectUnmodelledOnAnUnimplementedProcButNotAnImplemente
 		// A plain item with no effect_text at all must never be flagged.
 		"head": {Item: &scored{candidate: candidate{ID: 1, Name: "Plain Helm"}}},
 	}
-	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil)
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil)
 	byslot := map[string]slotRow{}
 	for _, s := range r.Slots {
 		byslot[s.Slot] = s
@@ -236,7 +236,7 @@ func TestBuildReportFlagsEffectUnmodelledOnARelicTheEngineDoesNotImplement(t *te
 			EffectText: "Reduces the cast time of Holy Light.",
 		}}},
 	}
-	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil)
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil)
 	byslot := map[string]slotRow{}
 	for _, s := range r.Slots {
 		byslot[s.Slot] = s
