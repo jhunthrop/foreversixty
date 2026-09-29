@@ -402,3 +402,13 @@ func TestApplySwapsRefusesAnOffHandUnderATwoHandedMainHand(t *testing.T) {
 		t.Fatalf("off_hand = %+v calls=%d swaps=%+v; want no off hand under a two-hander", out["off_hand"].Item, len(engine.Calls), gotSwaps)
 	}
 }
+
+func TestARunnerUpWithinTheNoiseMarginDoesNotBeatTheScoredPick(t *testing.T) {
+	// Mantle of Honor vs Serpent's Shoulders, Alliance level 20, 2026-09-29: 78.7 vs 78.6.
+	if beatsByMargin(78.7, 78.6) {
+		t.Fatal("0.1 DPS on 78.6 is noise, not a win")
+	}
+	if !beatsByMargin(80.0, 78.6) {
+		t.Fatal("1.8% is a real win")
+	}
+}

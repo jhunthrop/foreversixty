@@ -192,7 +192,7 @@ func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, leve
 			verifyErrors = append(verifyErrors, fmt.Sprintf("%s: runner-up %s (id %d): %v", slot, runnerUp.Name, runnerUp.ID, runErr))
 			continue
 		}
-		swaps = append(swaps, swapResult{Slot: slot, SwapDPS: dps, BaselineDPS: baselineDPS, Beat: dps > baselineDPS})
+		swaps = append(swaps, swapResult{Slot: slot, SwapDPS: dps, BaselineDPS: baselineDPS, Beat: beatsByMargin(dps, baselineDPS)})
 	}
 	return baselineDPS, swaps, verifyErrors, nil
 }
@@ -249,6 +249,20 @@ func wouldBreakTwoHandInvariant(out map[string]slotPick, slot string) bool {
 		return out["main_hand"].Item != nil && out["main_hand"].Item.TwoHand
 	}
 	return false
+}
+
+// swapMargin is how much a runner-up's measured set DPS must exceed the
+// scored pick's before the sim's verdict overrides the score. The
+// verify runs are short, so two items within a fraction of a percent
+// are a tie the noise decides: the nightly of 2026-09-29 replaced
+// Serpent's Shoulders (+5 agility) with Mantle of Honor (+7 intellect,
+// +7 spirit) on the Alliance level-20 hunter list on 78.7 vs 78.6 DPS.
+// A tie keeps the scored pick.
+const swapMargin = 0.01
+
+// beatsByMargin is whether dps beats baseline by more than swapMargin.
+func beatsByMargin(dps, baseline float64) bool {
+	return dps > baseline*(1+swapMargin)
 }
 
 // applySwaps promotes every runner-up that beat its slot's scored pick

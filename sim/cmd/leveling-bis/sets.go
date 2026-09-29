@@ -153,7 +153,7 @@ func trySetCompletion(runner engineRunner, spec specInfo, race, classSlug string
 			notes = append(notes, fmt.Sprintf("set %d completion (%d pieces): verify failed: %v", setID, len(cands), err))
 			continue
 		}
-		if dps > baselineDPS {
+		if beatsByMargin(dps, baselineDPS) {
 			notes = append(notes, fmt.Sprintf("set %d completion (%d pieces) beat the independently-scored picks: %.1f vs %.1f set DPS - adopted", setID, len(cands), dps, baselineDPS))
 			out = trial
 			baselineDPS = dps
