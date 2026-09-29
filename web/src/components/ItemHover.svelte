@@ -28,6 +28,7 @@
 <script lang="ts">
   import { mount, unmount, untrack, type Component, type Snippet } from 'svelte';
   import { fetchItemTooltipModel } from '../lib/items/lookup';
+  import { positionTooltipPanel } from '../lib/items/tooltip-position';
   import { rarityClassFor } from '../lib/planner/items';
   import { dataUrl } from '../lib/planner/load';
 
@@ -82,22 +83,6 @@
     mountedInstance = null;
   }
 
-  /** Clamps the panel inside the viewport, the same edge-aware move TalentCell's own
-   *  tooltip makes: near the right edge of a phone, hanging the panel from the anchor's
-   *  left edge would otherwise push it off-screen and scroll the page sideways. Applied as
-   *  a CSS variable on the host rather than a prop into the mounted panel -- mount()'s
-   *  props are a point-in-time snapshot (GearPanel's own popover host makes the identical
-   *  trade), and remeasuring only needs the DOM, not a re-mount. */
-  function positionPanel(): void {
-    if (host === undefined) return;
-    const anchor = host.getBoundingClientRect();
-    const viewport = document.documentElement.clientWidth;
-    const margin = 8;
-    const panelWidth = 288; // w-72
-    const maxLeft = viewport - margin - panelWidth - anchor.left;
-    host.style.setProperty('--item-tooltip-shift', `${Math.min(0, maxLeft)}px`);
-  }
-
   function mountPanel(): void {
     if (resolvedModel === null || PanelComponent === null || host === undefined) return;
     unmountPanel();
@@ -105,7 +90,7 @@
       target: host,
       props: { model: resolvedModel, build, id: tooltipId },
     });
-    positionPanel();
+    positionTooltipPanel(host);
   }
 
   function ensureModel(): void {

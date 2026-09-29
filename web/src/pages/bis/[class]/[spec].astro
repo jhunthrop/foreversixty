@@ -19,18 +19,26 @@
 // showed, and "what changed since level N" is a single disclosure line under the list
 // instead of a wall of diff rows sitting above it.
 //
-// `ItemHover` (icon + quality-coloured name, full tooltip on hover/focus) is lane
-// `web-item-tooltips`'s own component (`components/ItemHover.svelte`, `components/
-// ItemTooltip.svelte`, `lib/items/*`). This page passes it a pre-resolved `model` (the
-// shared `ItemTooltipModel`, `lib/items/tooltip.ts`) built from `itemDetails` at build time,
-// per its documented `{ itemId, classSlug, build, model? }` prop contract, rather than
-// making the component re-resolve data this page already has. This page also supplies its
-// own `children` snippet for the 36px row icon (the same pattern `GearList.svelte` already
-// uses for its own custom-sized pill), so `ItemHover`'s built-in small pill is only used for
-// the smaller inline mentions (the "what changed" disclosure, the runner-up detail).
+// Every gear mention on this page (a slot row, a runner-up, a "what changed" before/after)
+// used to be its own `ItemHover` island (`client:idle`) -- lane `web-item-tooltips`'s own
+// component (`components/ItemHover.svelte`, `components/ItemTooltip.svelte`, `lib/items/
+// *`), fed a pre-resolved `model` (the shared `ItemTooltipModel`) built from `itemDetails`
+// at build time. 11 bands x 17 slots x 2 factions, plus runner-ups and the diff, put roughly
+// 840 of those islands on one page -- 2.5 MB of HTML and CI's own Lighthouse mobile run over
+// the 100ms total-blocking-time budget (lighthouserc.json) on every deploy.
+//
+// Lane bis-tooltip-host (2026-09-29): every mention below is now plain server markup (an
+// icon, a quality-coloured name, a `data-bis-item="<id>"` attribute) -- the row's own custom
+// 36px layout inline, the smaller mentions via `ItemPill.astro` -- and the page collects
+// every model it built (`tooltipFor`, unchanged) into ONE deduplicated map, handed to a
+// single `BisTooltipHost` island (`client:idle`) as a sibling JSON `<script>` tag rather
+// than the island's own (HTML-attribute-escaped) props. That one island owns hover/focus/
+// tap open-close for the whole page, delegated from one listener set instead of 840 Svelte
+// instances.
 import Base from '../../../layouts/Base.astro';
 import UpdatedStamp from '../../../components/UpdatedStamp.astro';
-import ItemHover from '../../../components/ItemHover.svelte';
+import BisTooltipHost from '../../../components/BisTooltipHost.svelte';
+import ItemPill from '../../../components/bis/ItemPill.astro';
 import { readItemTooltipModel } from '../../../lib/items/lookup';
 import { buildWeightDisplayRows, type WeightDisplayRow } from '../../../lib/sim/weights-display';
 import type { ItemTooltipModel } from '../../../lib/items/tooltip';
@@ -116,8 +124,11 @@ interface RowView {
   replacedName?: string;
 }
 
-// The shared item tooltip (lib/items) built off disk for this page's class; undefined
-// when the item table has no row, and ItemHover then fetches at runtime.
+// The shared item tooltip (lib/items) built off disk for this page's class; undefined when
+// the item table has no row for it, in which case the id is simply absent from
+// `tooltipModels` below and BisTooltipHost shows nothing for it -- this page makes no
+// runtime fetch fallback (unlike ItemHover's own dual-mode), since every id here already
+// came from this same build-time read.
 function tooltipFor(itemId: number): ItemTooltipModel | undefined {
   return readItemTooltipModel(activeBuild.build, specEntry.class_slug, itemId) ?? undefined;
 }
@@ -264,6 +275,47 @@ function coverageLineFor(band: BisBand): string {
   const eligible = rows.reduce((n, r) => n + r.eligible, 0);
   return bisCopy.coverageLine(sourced, eligible);
 }
+
+/** Every model this band's rows, runner-ups and "what changed" diff name, merged into
+ *  `into` keyed by item id -- the single deduplicated map `BisTooltipHost` needs, built from
+ *  exactly the same `tooltipFor` reads the rows already made (design step (1): "collect
+ *  them once" rather than re-resolving per island the way 840 separate `ItemHover`s used
+ *  to). A `Map` write is idempotent, so the same item id named twice (a runner-up that is
+ *  also a later band's main pick, the same piece surviving into a "was:" line) costs one
+ *  entry, not two. */
+function collectModelsInto(into: Map<number, ItemTooltipModel>, bandInfos: readonly BandInfo[]): void {
+  for (const info of bandInfos) {
+    for (const row of info.rows) {
+      if (row.itemId !== undefined && row.model !== undefined) into.set(row.itemId, row.model);
+      if (row.runnerUp?.model !== undefined) into.set(row.runnerUp.itemId, row.runnerUp.model);
+    }
+    for (const entry of info.changed ?? []) {
+      if (entry.before !== undefined) {
+        const model = tooltipFor(entry.before.item_id);
+        if (model !== undefined) into.set(entry.before.item_id, model);
+      }
+      if (entry.after !== undefined) {
+        const model = tooltipFor(entry.after.item_id);
+        if (model !== undefined) into.set(entry.after.item_id, model);
+      }
+    }
+  }
+}
+
+const bandInfosByFaction: Readonly<Record<Faction, BandInfo[]>> = {
+  alliance: bandInfosFor('alliance'),
+  horde: bandInfosFor('horde'),
+};
+
+const tooltipModels = new Map<number, ItemTooltipModel>();
+collectModelsInto(tooltipModels, bandInfosByFaction.alliance);
+collectModelsInto(tooltipModels, bandInfosByFaction.horde);
+
+// `<` -> `<` (never actual escaping of `"`/`'`) is the standard "safe to inline in a
+// <script> tag" transform: JSON never emits a bare `<`, so this is the one substitution
+// needed to make `</script` unreachable in the output, without the HTML-attribute quote-
+// escaping an island prop of this size would otherwise cost (see the header note above).
+const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).replace(/</g, '\\u003c');
 ---
 
 <Base title={title} description={description} path={path}>
@@ -297,6 +349,21 @@ function coverageLineFor(band: BisBand): string {
     )}
 
     {file && (
+      <Fragment>
+        {/* One island for the whole page (see the header note): the models map rides as a
+            sibling JSON script tag rather than this island's own (HTML-attribute-escaped)
+            props, and BisTooltipHost reads it once, on mount, by this fixed id. */}
+        <script
+          is:inline
+          type="application/json"
+          id="bis-tooltip-models"
+          set:html={tooltipModelsJson}
+        ></script>
+        <BisTooltipHost client:idle build={activeBuild.build} />
+      </Fragment>
+    )}
+
+    {file && (
       <div class="bis-faction-root">
         <input type="radio" name="faction" id="faction-alliance" class="sr-only" checked />
         <input type="radio" name="faction" id="faction-horde" class="sr-only" />
@@ -310,7 +377,7 @@ function coverageLineFor(band: BisBand): string {
         </div>
 
         {factions.map((faction) => {
-          const bandInfos = bandInfosFor(faction);
+          const bandInfos = bandInfosByFaction[faction];
           return (
             <section
               id={`panel-${faction}`}
@@ -400,13 +467,13 @@ function coverageLineFor(band: BisBand): string {
                                 ) : (
                                   <>
                                     <span class="gear-row-body">
-                                      <ItemHover
-                                        client:idle
-                                        itemId={row.itemId!}
-                                        classSlug={specEntry.class_slug}
-                                        build={activeBuild.build}
-                                        model={row.model}
+                                      <span
                                         class="gear-row-item"
+                                        data-testid={`item-hover-${row.itemId}`}
+                                        data-bis-item={row.itemId}
+                                        tabindex="0"
+                                        role="button"
+                                        aria-haspopup="true"
                                       >
                                         {/* `inv_misc_questionmark` is the item pipeline's own
                                             placeholder for an id it has no real icon for
@@ -483,12 +550,10 @@ function coverageLineFor(band: BisBand): string {
                                                   {bisCopy.runnerUpSummary}
                                                 </summary>
                                                 <span class="runner-up-body">
-                                                  <ItemHover
-                                                    client:idle
+                                                  <ItemPill
                                                     itemId={row.runnerUp.itemId}
-                                                    classSlug={specEntry.class_slug}
-                                                    build={activeBuild.build}
                                                     model={row.runnerUp.model}
+                                                    build={activeBuild.build}
                                                   />
                                                   <span class="text-muted">
                                                     {bisCopy.runnerUpBeatBy(row.runnerUp.deltaDps)}
@@ -512,7 +577,7 @@ function coverageLineFor(band: BisBand): string {
                                             {row.sourceDetail}
                                           </span>
                                         </span>
-                                      </ItemHover>
+                                      </span>
                                     </span>
                                     <span
                                       class="gear-row-ilvl tabular text-muted"
@@ -549,22 +614,18 @@ function coverageLineFor(band: BisBand): string {
                                       {entry.before === undefined ? (
                                         <span class="upgrade-new-slot">{bisCopy.newSlotLabel}</span>
                                       ) : (
-                                        <ItemHover
-                                          client:idle
+                                        <ItemPill
                                           itemId={entry.before.item_id}
-                                          classSlug={specEntry.class_slug}
-                                          build={activeBuild.build}
                                           model={tooltipFor(entry.before.item_id)}
+                                          build={activeBuild.build}
                                         />
                                       )}
                                       {entry.before !== undefined && <span aria-hidden="true">&rarr;</span>}
                                       {entry.after ? (
-                                        <ItemHover
-                                          client:idle
+                                        <ItemPill
                                           itemId={entry.after.item_id}
-                                          classSlug={specEntry.class_slug}
-                                          build={activeBuild.build}
                                           model={tooltipFor(entry.after.item_id)}
+                                          build={activeBuild.build}
                                         />
                                       ) : (
                                         <span class="text-muted text-[12px]">
@@ -768,30 +829,27 @@ function coverageLineFor(band: BisBand): string {
     font-size: 12px;
     font-weight: 600;
   }
-  /* ItemHover's own two wrapper spans (components/ItemHover.svelte) carry none of this
-     page's classes except the innermost one (the documented `class` prop) -- `:global()`
-     reaches into that Svelte-rendered markup, and the plain `span` child selector reaches
-     the one wrapper further out that never receives a class at all, so the whole chain from
-     `.gear-row-body` down to the icon/content children stretches to fill the row instead of
-     shrinking to its content's width. */
+  /* `.gear-row-item` is now plain server markup, a direct child of `.gear-row-body`
+     (lane bis-tooltip-host, 2026-09-29 -- it used to be ItemHover's own Svelte-rendered
+     wrapper, reached only via `:global()`), so both take the row's ordinary flex sizing
+     with no scoping workaround needed. `position: relative` is BisTooltipHost's own mount
+     point: the one shared tooltip panel is appended inside whichever row is open, and its
+     `position: absolute` needs this row to be its containing block. */
   .gear-row-body {
     display: flex;
     flex: 1;
     min-width: 0;
   }
-  .gear-row-body > :global(span) {
+  .gear-row-item {
+    position: relative;
     display: flex;
     flex: 1;
     min-width: 0;
+    align-items: flex-start;
+    gap: 0.6rem;
+    cursor: pointer;
   }
-  :global(.gear-row-item) {
-    display: flex !important;
-    flex: 1;
-    min-width: 0;
-    align-items: flex-start !important;
-    gap: 0.6rem !important;
-  }
-  :global(.gear-row-icon) {
+  .gear-row-icon {
     flex-shrink: 0;
     width: 36px;
     height: 36px;
