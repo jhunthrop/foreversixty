@@ -55,7 +55,7 @@ This build spends 31 points in Demonology to reach Demonic Pact, with the remain
 
 ## Rotation and priority
 
-Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Keep Corruption running throughout — it's cheap, sustained damage that doesn't compete with your Shadow Bolt casts for a global cooldown. Soul Fire goes out on cooldown whenever it's up; in a full build it's meant to synergize with Decimation, which drops its cooldown to near nothing after a Shadow Bolt or Searing Pain crit, but this site's simulator hasn't implemented that shortened cooldown yet, so today Soul Fire simply fires about once a minute on its own timer. Shadow Bolt is the default filler for every other global, and it's also what feeds the Decimation proc once that talent is live. Life Tap whenever mana drops below about 10% to keep the rotation running.
+Pop a mana potion at the start of the fight if your mana is already below its usual threshold. Keep Corruption running throughout — it's cheap, sustained damage that doesn't compete with your Shadow Bolt casts for a global cooldown. Soul Fire goes out on cooldown whenever it's up. The build above rushes past Decimation (0 of 2 points) to reach Demonic Pact at the bottom of the tree, so today it fires on its own flat 60 second cooldown, about five times in a five-minute fight; the simulator does model Decimation correctly (it drops that cooldown by up to 90% and shortens Soul Fire's cast time and cost for 10 seconds after a Shadow Bolt or Searing Pain crit) for a build that spends the two points there instead. Shadow Bolt is the default filler for every other global. Life Tap whenever mana drops below about 10% to keep the rotation running.
 
 ## Stat priority
 
