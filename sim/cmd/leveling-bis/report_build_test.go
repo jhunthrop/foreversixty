@@ -73,23 +73,28 @@ func TestBuildReportChangedFromPreviousBandIsNew(t *testing.T) {
 	}
 }
 
-func TestBuildReportSwapBeatenMarksUnverifiedWithNote(t *testing.T) {
-	pick := &scored{candidate: candidate{ID: 1, Name: "Helm"}}
-	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Better Helm"}}
-	picks := map[string]slotPick{"head": {Item: pick, RunnerUp: runnerUp}}
-	swaps := []swapResult{{Slot: "head", SwapDPS: 200, Beat: true}}
-	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 150, swaps, nil, nil, 0, 0, nil)
+func TestBuildReportSwapBeatenRowIsTheWinnerVerifiedWithNote(t *testing.T) {
+	// applySwaps has already promoted the runner-up into Item and demoted
+	// the scored pick to RunnerUp before buildReport sees the picks.
+	winner := &scored{candidate: candidate{ID: 2, Name: "Better Helm"}}
+	beaten := &scored{candidate: candidate{ID: 1, Name: "Helm"}}
+	picks := map[string]slotPick{"head": {Item: winner, RunnerUp: beaten}}
+	swaps := []swapResult{{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true}}
+	r := buildReport(reportSpec(), 30, "horde", "troll", "", 0, nil, nil, picks, 200, swaps, nil, nil, 0, 0, nil)
 	var headRow slotRow
 	for _, s := range r.Slots {
 		if s.Slot == "head" {
 			headRow = s
 		}
 	}
-	if headRow.Verified {
-		t.Fatal("head row Verified = true, want false: the runner-up beat the pick")
+	if headRow.ItemID != 2 || headRow.ItemName != "Better Helm" {
+		t.Fatalf("head row = %d %q, want the measured winner Better Helm (2)", headRow.ItemID, headRow.ItemName)
 	}
-	if !strings.Contains(headRow.SwapNote, "Better Helm") || !strings.Contains(headRow.SwapNote, "200.0") {
-		t.Fatalf("head row SwapNote = %q, want it to name the runner-up and its DPS", headRow.SwapNote)
+	if !headRow.Verified {
+		t.Fatal("head row Verified = false, want true: the winner was measured by the very swap run")
+	}
+	if !strings.Contains(headRow.SwapNote, "Helm (id 1)") || !strings.Contains(headRow.SwapNote, "200.0") || !strings.Contains(headRow.SwapNote, "150.0") {
+		t.Fatalf("head row SwapNote = %q, want it to name the beaten pick and both set DPS figures", headRow.SwapNote)
 	}
 }
 

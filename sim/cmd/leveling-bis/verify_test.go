@@ -210,3 +210,36 @@ func TestVerifyBandSwapFailureIsCollectedNotFatal(t *testing.T) {
 		t.Fatalf("swaps = %+v, want neck alone, beaten", swaps)
 	}
 }
+
+// A runner-up the sim measured ahead of the scored pick becomes the pick,
+// the scored pick becomes the row's runner-up, and the set is measured
+// once more with the winner in; with no winning swap nothing runs.
+func TestApplySwapsPromotesTheMeasuredWinnerAndRemeasuresTheSet(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Helm"}}
+	better := &scored{candidate: candidate{ID: 2, Name: "Better Helm"}}
+	picks := map[string]slotPick{"head": {Item: pick, RunnerUp: better}}
+	engine := &fakeEngine{DPSByGear: map[string]float64{gearKey(buildGear(map[string]slotPick{"head": {Item: better}})): 200}, DefaultDPS: 150}
+	spec := specInfo{Spec: "hunter-marksmanship", ClassSlug: "hunter"}
+
+	out, dps, err := applySwaps(engine, spec, "dwarf", "hunter", 30, picks, []swapResult{{Slot: "head", SwapDPS: 200, BaselineDPS: 150, Beat: true}}, 150)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if out["head"].Item.ID != 2 || out["head"].RunnerUp.ID != 1 {
+		t.Fatalf("head = item %d runner-up %d, want the winner (2) promoted over the scored pick (1)", out["head"].Item.ID, out["head"].RunnerUp.ID)
+	}
+	if dps != 200 {
+		t.Fatalf("set DPS after the swap = %v, want the re-measured 200", dps)
+	}
+	if len(engine.Calls) != 1 {
+		t.Fatalf("engine calls = %d, want exactly one re-measure", len(engine.Calls))
+	}
+	if picks["head"].Item.ID != 1 {
+		t.Fatal("applySwaps mutated its input picks")
+	}
+
+	same, sameDPS, err := applySwaps(engine, spec, "dwarf", "hunter", 30, picks, []swapResult{{Slot: "head", SwapDPS: 100, BaselineDPS: 150, Beat: false}}, 150)
+	if err != nil || sameDPS != 150 || same["head"].Item.ID != 1 || len(engine.Calls) != 1 {
+		t.Fatalf("a losing swap must leave picks and DPS alone without a sim: dps=%v item=%d calls=%d err=%v", sameDPS, same["head"].Item.ID, len(engine.Calls), err)
+	}
+}

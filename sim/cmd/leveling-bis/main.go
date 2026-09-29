@@ -348,10 +348,18 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			if err != nil {
 				return fmt.Errorf("band %d %s verify run (baseline): %w", band, f.name, err)
 			}
-			verifySeconds := time.Since(verifyStart).Seconds()
 			for _, e := range verifyErrors {
 				log.Printf("leveling-bis: %s band %d %s: could not verify %s", spec, band, f.name, e)
 			}
+			// A runner-up the sim measured ahead of the scored pick IS the
+			// pick: swap it into the slot and re-measure the whole set once,
+			// so the published row, the set DPS and the next band's diff all
+			// name the item a player should actually wear.
+			picks, setDPS, err = applySwaps(runner, specInfo, f.race, specInfo.ClassSlug, band, picks, swaps, setDPS)
+			if err != nil {
+				return fmt.Errorf("band %d %s verify run (after swaps): %w", band, f.name, err)
+			}
+			verifySeconds := time.Since(verifyStart).Seconds()
 
 			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors)
 			reports = append(reports, report)

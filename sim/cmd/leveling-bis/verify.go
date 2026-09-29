@@ -52,7 +52,9 @@ const verifySeed = 7
 type swapResult struct {
 	Slot    string
 	SwapDPS float64
-	Beat    bool
+	// BaselineDPS is the scored set's own DPS the swap was measured against.
+	BaselineDPS float64
+	Beat        bool
 }
 
 // buildGear turns a pick map into the engine's gear list, dropping
@@ -176,7 +178,38 @@ func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, leve
 			verifyErrors = append(verifyErrors, fmt.Sprintf("%s: runner-up %s (id %d): %v", slot, runnerUp.Name, runnerUp.ID, runErr))
 			continue
 		}
-		swaps = append(swaps, swapResult{Slot: slot, SwapDPS: dps, Beat: dps > baselineDPS})
+		swaps = append(swaps, swapResult{Slot: slot, SwapDPS: dps, BaselineDPS: baselineDPS, Beat: dps > baselineDPS})
 	}
 	return baselineDPS, swaps, verifyErrors, nil
+}
+
+// applySwaps promotes every runner-up that beat its slot's scored pick
+// into the pick (the scored pick becomes the row's runner-up, so the
+// report can say what was beaten), then measures the resulting set once
+// more so the published set DPS is the set's own, not the pre-swap
+// baseline. With no swap that beat, picks and setDPS come back as they
+// were and no sim runs.
+func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, level int, picks map[string]slotPick, swaps []swapResult, setDPS float64) (map[string]slotPick, float64, error) {
+	promoted := false
+	out := make(map[string]slotPick, len(picks))
+	for slot, pk := range picks {
+		out[slot] = pk
+	}
+	for _, sw := range swaps {
+		pk, ok := out[sw.Slot]
+		if !sw.Beat || !ok || pk.RunnerUp == nil {
+			continue
+		}
+		out[sw.Slot] = slotPick{Item: pk.RunnerUp, RunnerUp: pk.Item}
+		promoted = true
+	}
+	if !promoted {
+		return picks, setDPS, nil
+	}
+	final := plainRequest(spec, api.CharacterSpec{Name: "verify", Race: race, Class: classSlug, Level: level, Gear: buildGear(out)}, verifyIterations, verifySeed)
+	dps, err := runner.RunPlainDPS(final)
+	if err != nil {
+		return nil, 0, err
+	}
+	return out, dps, nil
 }

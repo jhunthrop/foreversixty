@@ -147,23 +147,16 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 				row.SwapNote = "the runner-up's verification sim failed (an engine-side error, not a scoring one - see verify_errors); the pick is unconfirmed against it"
 			default:
 				row.Verified = true
-				if sw, ok := swapBySlot[slot]; ok {
-					row.Verified = !sw.Beat
-					if sw.Beat {
-						row.SwapNote = fmt.Sprintf("runner-up %s (id %d) measured higher: %.1f vs %.1f set DPS - swapped in", pk.RunnerUp.Name, pk.RunnerUp.ID, sw.SwapDPS, setDPS)
-					}
+				if sw, ok := swapBySlot[slot]; ok && sw.Beat && pk.RunnerUp != nil {
+					// applySwaps already promoted the runner-up into pk.Item and
+					// demoted the scored pick to pk.RunnerUp: this row IS the
+					// measured winner, verified by that very run.
+					row.SwapNote = fmt.Sprintf("beat the scored pick %s (id %d) in the sim: %.1f vs %.1f set DPS", pk.RunnerUp.Name, pk.RunnerUp.ID, sw.SwapDPS, sw.BaselineDPS)
 				}
 			}
 		}
 		rows = append(rows, row)
 	}
-
-	// A runner-up that beat the pick is swapped into the reported row
-	// above (SwapNote says so) but the row's own ItemID/Name/Score
-	// still name the ORIGINAL pick - swapping the row's identity too
-	// would need a second scored item's fields, which this prototype
-	// does not carry back from verifyBand (see this file's own
-	// buildReport doc and the lane report's "what I would change").
 
 	var newAt []string
 	for _, slot := range slotOrder {
