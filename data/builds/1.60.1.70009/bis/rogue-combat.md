@@ -36,7 +36,7 @@ No-known-source sample (15 of 673, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (night-elf, 00000000000000000-32100000000000000-0000000000000000000)
 
-Set DPS (verified): 19.2. Weights run: 1.1s. Verify run: 1.1s. 883 eligible items had no known source.
+Set DPS (verified): 19.2. Weights run: 1.1s. Verify run: 1.2s. 883 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.005 ± 0.002, crit=0.338 ± 0.058, hit=not significant (0.778 ± 0.286), melee_haste=not significant (0.471 ± 0.830)
 
@@ -146,11 +146,11 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | finger2 | Protector's Band (19517) | Illiyana Moonblaze [vendor] | 6.2 | yes |
 | trinket1 | Talisman of Arathor (21119) | Samuel Hawke [vendor] | 0.0 | yes |
 | trinket2 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | 0.0 | yes |
-| main_hand | Ironspine's Fist (7687) | Scarlet Monastery: Ironspine [dungeon] | 320.9 | yes |
+| main_hand | Swinetusk Shank (6691) | Razorfen Kraul: Agathelos the Raging [dungeon] | 322.0 | yes |
 | off_hand | Electrocutioner Leg (9446) | Gnomeregan [dungeon] | 308.8 | yes |
 | ranged | Master Hunter's Bow (17686) | Quests [quest] | 6.2 | yes |
 
-**New at 30:** head: Enchanter's Cowl; neck: Ghostshard Talisman; shoulder: Barbaric Shoulders; wrist: Barbaric Bracers; waist: Highlander's Chain Girdle; legs: Ferine Leggings; feet: Highlander's Chain Greaves; finger1: Ironspine's Eye; finger2: Protector's Band; trinket1: Talisman of Arathor; trinket2: Rune of Perfection; main_hand: Ironspine's Fist; off_hand: Electrocutioner Leg; ranged: Master Hunter's Bow
+**New at 30:** head: Enchanter's Cowl; neck: Ghostshard Talisman; shoulder: Barbaric Shoulders; wrist: Barbaric Bracers; waist: Highlander's Chain Girdle; legs: Ferine Leggings; feet: Highlander's Chain Greaves; finger1: Ironspine's Eye; finger2: Protector's Band; trinket1: Talisman of Arathor; trinket2: Rune of Perfection; main_hand: Swinetusk Shank; off_hand: Electrocutioner Leg; ranged: Master Hunter's Bow
 
 No-known-source sample (15 of 1686, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 789 Stout Battlehammer; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 827 Wicked Blackjack; 865 Leaden Mace; 886 Black Metal Shortsword; 892 Gnoll Casting Gloves; 897 Madwolf Bracers; 899 Venom Web Fang; 920 Wicked Spiked Mace; 935 Night Watch Shortsword
 
@@ -186,7 +186,7 @@ No-known-source sample (15 of 1904, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 40 (night-elf, 00000000000000000-32531300000515201-0000000000000000000)
 
-Set DPS (verified): 67.2. Weights run: 1.2s. Verify run: 1.3s. 2135 eligible items had no known source.
+Set DPS (verified): 67.2. Weights run: 1.2s. Verify run: 1.2s. 2135 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.010 ± 0.004, crit=0.962 ± 0.146, hit=4.384 ± 0.987, melee_haste=not significant (-0.246 ± 1.799)
 
@@ -488,7 +488,7 @@ No-known-source sample (15 of 1682, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (troll, 00000000000000000-32531300000513000-0000000000000000000)
 
-Set DPS (verified): 46.9. Weights run: 1.1s. Verify run: 1.6s. 1900 eligible items had no known source.
+Set DPS (verified): 42.1. Weights run: 1.1s. Verify run: 1.6s. 1900 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.014 ± 0.005, crit=0.383 ± 0.027, hit=2.753 ± 0.402, melee_haste=not significant (2.678 ± 0.704)
 
@@ -508,17 +508,17 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | finger2 | Legionnaire's Band (19513) | Kelm Hargunth [vendor] | 6.1 | yes |
 | trinket1 | Defiler's Talisman (21120) | Rutherford Twing [vendor] | 0.0 | yes |
 | trinket2 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes |
-| main_hand | Tok'kar's Murloc Shanker (9680) | Quests [quest] | 356.1 | yes |
+| main_hand | Hypnotic Blade (7714) | Scarlet Monastery: Arcanist Doan [dungeon] | 375.1 | yes |
 | off_hand | Tok'kar's Murloc Shanker (9680) | Quests [quest] | 356.1 | yes |
 | ranged | Master Hunter's Bow (17686) | Quests [quest] | 6.1 | yes |
 
-**New at 35:** wrist: Dusky Bracers; hands: Tiger Hunter Gloves; feet: Excelsior Boots; main_hand: Tok'kar's Murloc Shanker; off_hand: Tok'kar's Murloc Shanker
+**New at 35:** wrist: Dusky Bracers; hands: Tiger Hunter Gloves; feet: Excelsior Boots; main_hand: Hypnotic Blade; off_hand: Tok'kar's Murloc Shanker
 
 No-known-source sample (15 of 1900, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 789 Stout Battlehammer; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 827 Wicked Blackjack; 864 Knightly Longsword; 865 Leaden Mace; 886 Black Metal Shortsword; 892 Gnoll Casting Gloves; 897 Madwolf Bracers; 899 Venom Web Fang; 920 Wicked Spiked Mace
 
 ### Band 40 (troll, 00000000000000000-32531300000515201-0000000000000000000)
 
-Set DPS (verified): 62.1. Weights run: 1.2s. Verify run: 1.2s. 2131 eligible items had no known source.
+Set DPS (verified): 62.1. Weights run: 1.2s. Verify run: 1.3s. 2131 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.010 ± 0.004, crit=0.962 ± 0.146, hit=4.384 ± 0.987, melee_haste=not significant (-0.246 ± 1.799)
 
@@ -578,7 +578,7 @@ No-known-source sample (15 of 2352, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 50 (troll, 32500000000000000-32531300000515201-0000000000000000000)
 
-Set DPS (verified): 82.0. Weights run: 1.2s. Verify run: 1.3s. 2603 eligible items had no known source.
+Set DPS (verified): 82.0. Weights run: 1.2s. Verify run: 1.4s. 2603 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.239 ± 0.059, crit=6.333 ± 0.367, hit=not significant (5.215 ± 1.384), melee_haste=not significant (-1.529 ± 2.421)
 

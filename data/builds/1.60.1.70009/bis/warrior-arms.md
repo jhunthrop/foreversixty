@@ -488,7 +488,7 @@ No-known-source sample (15 of 2469, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (orc, 35325213020000000-000000000000000000-000000000000000000)
 
-Set DPS (verified): 53.2. Weights run: 1.8s. Verify run: 1.5s. 2794 eligible items had no known source.
+Set DPS (verified): 53.2. Weights run: 1.8s. Verify run: 1.4s. 2794 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.103, strength=2.131 ± 0.143, agility=not significant (0.016 ± 0.010), crit=0.298 ± 0.039, hit=2.264 ± 0.315, melee_haste=3.874 ± 0.442
 

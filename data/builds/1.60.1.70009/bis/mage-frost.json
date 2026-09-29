@@ -1,8 +1,8 @@
 {
   "spec": "mage-frost",
   "build": "1.60.1.70009",
-  "engine_version": "84575e84b",
-  "generated_at": "2026-09-29T03:55:27Z",
+  "engine_version": "038e51a61",
+  "generated_at": "2026-09-29T06:14:18Z",
   "bands": [
     {
       "spec": "mage-frost",
@@ -82,13 +82,12 @@
         },
         {
           "slot": "chest",
-          "item_id": 2578,
-          "item_name": "Barbaric Linen Vest",
-          "source": "Tailoring",
-          "source_kind": "crafted",
+          "item_id": 1561,
+          "item_name": "Harvester's Robe",
+          "source": "Quests",
+          "source_kind": "quest",
           "score": 2,
-          "verified": true,
-          "swap_note": "beat the scored pick Harvester's Robe (id 1561) in the sim: 11.9 vs 11.7 set DPS"
+          "verified": true
         },
         {
           "slot": "wrist",
@@ -100,9 +99,8 @@
           "item_name": "Evergreen Gloves",
           "source": "Quests",
           "source_kind": "quest",
-          "score": -3.4944841462508505,
           "verified": true,
-          "swap_note": "beat the scored pick Wayfaring Gloves (id 5337) in the sim: 12.0 vs 11.7 set DPS"
+          "swap_note": "beat the scored pick Wayfaring Gloves (id 5337) in the sim: 12.2 vs 12.0 set DPS"
         },
         {
           "slot": "waist",
@@ -114,13 +112,12 @@
         },
         {
           "slot": "legs",
-          "item_id": 10549,
-          "item_name": "Rancher's Trousers",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 1,
-          "verified": true,
-          "swap_note": "beat the scored pick Leggings of the People's Militia (id 12295) in the sim: 11.8 vs 11.7 set DPS"
+          "item_id": 4309,
+          "item_name": "Handstitched Linen Britches",
+          "source": "Tailoring",
+          "source_kind": "crafted",
+          "score": 2,
+          "verified": true
         },
         {
           "slot": "feet",
@@ -174,10 +171,10 @@
           "source_kind": "quest",
           "score": 1,
           "verified": true,
-          "swap_note": "beat the scored pick Lesser Magic Wand (id 11287) in the sim: 12.4 vs 11.7 set DPS"
+          "swap_note": "beat the scored pick Lesser Magic Wand (id 11287) in the sim: 12.5 vs 12.0 set DPS"
         }
       ],
-      "set_dps": 12.283670614724224,
+      "set_dps": 12.479969286959522,
       "no_source_count": 446,
       "no_source_sample": [
         "727 Notched Shortsword",
@@ -199,18 +196,18 @@
       "new_at_band": [
         "head: Lucky Fishing Hat",
         "back: Fine Leather Cloak",
-        "chest: Barbaric Linen Vest",
+        "chest: Harvester's Robe",
         "hands: Evergreen Gloves",
         "waist: Foreman Belt",
-        "legs: Rancher's Trousers",
+        "legs: Handstitched Linen Britches",
         "feet: Nat Pagle's Extreme Anglin' Boots",
         "finger1: Sustaining Ring",
         "main_hand: Craftsman's Dagger",
         "off_hand: Father Flame",
         "ranged: Spark of the People's Militia"
       ],
-      "weights_run_seconds": 0.666932078,
-      "verify_run_seconds": 0.368815696
+      "weights_run_seconds": 0.78323827,
+      "verify_run_seconds": 0.43535079
     },
     {
       "spec": "mage-frost",
@@ -294,7 +291,7 @@
           "item_name": "High Robe of the Adjudicator",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 5.670343902499432,
+          "score": 8,
           "verified": true
         },
         {
@@ -303,18 +300,15 @@
           "item_name": "Featherbead Bracers",
           "source": "Quests",
           "source_kind": "quest",
-          "score": -5.824140243751418,
           "verified": true
         },
         {
           "slot": "hands",
-          "item_id": 10637,
-          "item_name": "Brewer's Gloves",
+          "item_id": 5337,
+          "item_name": "Wayfaring Gloves",
           "source": "Quests",
           "source_kind": "quest",
-          "score": -2.329656097500567,
-          "verified": true,
-          "swap_note": "beat the scored pick Wayfaring Gloves (id 5337) in the sim: 11.9 vs 11.9 set DPS"
+          "verified": true
         },
         {
           "slot": "waist",
@@ -322,9 +316,8 @@
           "item_name": "Jackseed Belt",
           "source": "Quests",
           "source_kind": "quest",
-          "score": -3.4944841462508505,
           "verified": true,
-          "swap_note": "beat the scored pick Captain Sander's Sash (id 3344) in the sim: 11.9 vs 11.9 set DPS"
+          "swap_note": "beat the scored pick Captain Sander's Sash (id 3344) in the sim: 15.2 vs 15.2 set DPS"
         },
         {
           "slot": "legs",
@@ -332,9 +325,8 @@
           "item_name": "Handstitched Linen Britches",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": -0.3296560975005671,
-          "verified": true,
-          "swap_note": "beat the scored pick Lucky Trousers (id 1832) in the sim: 12.0 vs 11.9 set DPS"
+          "score": 2,
+          "verified": true
         },
         {
           "slot": "feet",
@@ -378,16 +370,15 @@
         },
         {
           "slot": "ranged",
-          "item_id": 11287,
-          "item_name": "Lesser Magic Wand",
-          "source": "Enchanting",
-          "source_kind": "crafted",
-          "score": 1,
-          "verified": true,
-          "swap_note": "beat the scored pick Cinder Wand (id 5242) in the sim: 11.9 vs 11.9 set DPS"
+          "item_id": 5356,
+          "item_name": "Branding Rod",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 2,
+          "verified": true
         }
       ],
-      "set_dps": 12.074355939705715,
+      "set_dps": 15.197699556592621,
       "no_source_count": 446,
       "no_source_sample": [
         "727 Notched Shortsword",
@@ -411,16 +402,16 @@
         "back: Fine Leather Cloak",
         "chest: High Robe of the Adjudicator",
         "wrist: Featherbead Bracers",
-        "hands: Brewer's Gloves",
+        "hands: Wayfaring Gloves",
         "waist: Jackseed Belt",
         "legs: Handstitched Linen Britches",
         "feet: Nat Pagle's Extreme Anglin' Boots",
         "finger1: Ring of Scorn",
         "main_hand: Darkwood Staff",
-        "ranged: Lesser Magic Wand"
+        "ranged: Branding Rod"
       ],
-      "weights_run_seconds": 0.666932078,
-      "verify_run_seconds": 0.357559025
+      "weights_run_seconds": 0.78323827,
+      "verify_run_seconds": 0.398564933
     },
     {
       "spec": "mage-frost",
@@ -505,7 +496,7 @@
           "item_name": "Green Woolen Robe",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 2.6668536958522178,
+          "score": 3,
           "verified": true
         },
         {
@@ -522,7 +513,7 @@
           "item_name": "Heavy Woolen Gloves",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 1.7779024639014787,
+          "score": 2,
           "verified": true
         },
         {
@@ -585,11 +576,12 @@
         },
         {
           "slot": "off_hand",
-          "item_id": 1172,
-          "item_name": "Grayson's Torch",
+          "item_id": 5611,
+          "item_name": "Tear of Grief",
           "source": "Quests",
           "source_kind": "quest",
-          "verified": true
+          "verified": true,
+          "swap_note": "beat the scored pick Grayson's Torch (id 1172) in the sim: 20.0 vs 19.9 set DPS"
         },
         {
           "slot": "ranged",
@@ -601,7 +593,7 @@
           "verified": true
         }
       ],
-      "set_dps": 19.85900116604063,
+      "set_dps": 19.98044891241514,
       "no_source_count": 585,
       "no_source_sample": [
         "727 Notched Shortsword",
@@ -631,11 +623,11 @@
         "finger1: Ring of Iron Will",
         "finger2: Clergy Ring",
         "main_hand: Defias Rapier",
-        "off_hand: Grayson's Torch",
+        "off_hand: Tear of Grief",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.667857356,
-      "verify_run_seconds": 0.475210278
+      "weights_run_seconds": 0.74721366,
+      "verify_run_seconds": 0.581390109
     },
     {
       "spec": "mage-frost",
@@ -720,7 +712,7 @@
           "item_name": "High Robe of the Adjudicator",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 7.777902463901478,
+          "score": 8,
           "verified": true
         },
         {
@@ -729,7 +721,7 @@
           "item_name": "Owlbeard Bracers",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 0.7779024639014787,
+          "score": 1,
           "verified": true
         },
         {
@@ -738,7 +730,7 @@
           "item_name": "Jutebraid Gloves",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 5.444756159753696,
+          "score": 6,
           "verified": true
         },
         {
@@ -747,7 +739,6 @@
           "item_name": "Grassland Sash",
           "source": "Quests",
           "source_kind": "quest",
-          "score": -0.3331463041477821,
           "verified": true,
           "swap_note": "beat the scored pick Captain Sander's Sash (id 3344) in the sim: 19.8 vs 19.7 set DPS"
         },
@@ -771,12 +762,11 @@
         },
         {
           "slot": "finger1",
-          "item_id": 5351,
-          "item_name": "Bounty Hunter's Ring",
+          "item_id": 3235,
+          "item_name": "Ring of Scorn",
           "source": "Quests",
           "source_kind": "quest",
-          "verified": true,
-          "swap_note": "beat the scored pick Ring of Scorn (id 3235) in the sim: 19.7 vs 19.7 set DPS"
+          "verified": true
         },
         {
           "slot": "finger2",
@@ -820,7 +810,7 @@
           "verified": true
         }
       ],
-      "set_dps": 19.88503208166147,
+      "set_dps": 19.76646998103248,
       "no_source_count": 581,
       "no_source_sample": [
         "727 Notched Shortsword",
@@ -847,14 +837,13 @@
         "waist: Grassland Sash",
         "legs: Colorful Kilt",
         "feet: Red Woolen Boots",
-        "finger1: Bounty Hunter's Ring",
         "finger2: Bounty Hunter's Ring",
         "main_hand: Defias Rapier",
         "off_hand: Grayson's Torch",
         "ranged: Sizzle Stick"
       ],
-      "weights_run_seconds": 0.667857356,
-      "verify_run_seconds": 0.522683833
+      "weights_run_seconds": 0.74721366,
+      "verify_run_seconds": 0.618411855
     },
     {
       "spec": "mage-frost",
@@ -1090,8 +1079,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Staff of Westfall"
       ],
-      "weights_run_seconds": 0.668928672,
-      "verify_run_seconds": 0.496405177
+      "weights_run_seconds": 0.758817308,
+      "verify_run_seconds": 0.592080092
     },
     {
       "spec": "mage-frost",
@@ -1327,8 +1316,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Polished Walking Staff"
       ],
-      "weights_run_seconds": 0.668928672,
-      "verify_run_seconds": 0.551135638
+      "weights_run_seconds": 0.758817308,
+      "verify_run_seconds": 0.626153097
     },
     {
       "spec": "mage-frost",
@@ -1557,8 +1546,8 @@
         "waist: Belt of Arugal",
         "finger1: Ring of Forlorn Spirits"
       ],
-      "weights_run_seconds": 0.667893758,
-      "verify_run_seconds": 0.516965499
+      "weights_run_seconds": 0.733413745,
+      "verify_run_seconds": 0.542408287
     },
     {
       "spec": "mage-frost",
@@ -1791,8 +1780,8 @@
         "legs: Gaze Dreamer Pants",
         "finger2: Snake Hoop"
       ],
-      "weights_run_seconds": 0.667893758,
-      "verify_run_seconds": 0.55867753
+      "weights_run_seconds": 0.733413745,
+      "verify_run_seconds": 0.577333809
     },
     {
       "spec": "mage-frost",
@@ -2032,8 +2021,8 @@
         "main_hand: Lorekeeper's Staff",
         "ranged: Burning Sliver"
       ],
-      "weights_run_seconds": 0.64997032,
-      "verify_run_seconds": 0.660987285
+      "weights_run_seconds": 0.731832558,
+      "verify_run_seconds": 0.749163947
     },
     {
       "spec": "mage-frost",
@@ -2277,8 +2266,8 @@
         "main_hand: Nimboya's Mystical Staff",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.64997032,
-      "verify_run_seconds": 0.64074217
+      "weights_run_seconds": 0.731832558,
+      "verify_run_seconds": 0.742423538
     },
     {
       "spec": "mage-frost",
@@ -2513,8 +2502,8 @@
         "waist: Star Belt",
         "main_hand: Hypnotic Blade"
       ],
-      "weights_run_seconds": 0.651803688,
-      "verify_run_seconds": 0.643916725
+      "weights_run_seconds": 0.763879576,
+      "verify_run_seconds": 0.756559511
     },
     {
       "spec": "mage-frost",
@@ -2748,8 +2737,8 @@
         "finger2: Snake Hoop",
         "main_hand: Illusionary Rod"
       ],
-      "weights_run_seconds": 0.651803688,
-      "verify_run_seconds": 0.663753203
+      "weights_run_seconds": 0.763879576,
+      "verify_run_seconds": 0.682667256
     },
     {
       "spec": "mage-frost",
@@ -2989,8 +2978,8 @@
         "main_hand: Spellshifter Rod",
         "ranged: Fizzle's Zippy Lighter"
       ],
-      "weights_run_seconds": 0.68286289,
-      "verify_run_seconds": 0.669543686
+      "weights_run_seconds": 0.75433985,
+      "verify_run_seconds": 0.748381626
     },
     {
       "spec": "mage-frost",
@@ -3229,8 +3218,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Spellshifter Rod"
       ],
-      "weights_run_seconds": 0.68286289,
-      "verify_run_seconds": 0.675161394
+      "weights_run_seconds": 0.75433985,
+      "verify_run_seconds": 0.775710907
     },
     {
       "spec": "mage-frost",
@@ -3464,8 +3453,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.675231079,
-      "verify_run_seconds": 0.653968627
+      "weights_run_seconds": 0.75184021,
+      "verify_run_seconds": 0.690688161
     },
     {
       "spec": "mage-frost",
@@ -3697,8 +3686,8 @@
         "main_hand: Illusionary Rod",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.675231079,
-      "verify_run_seconds": 0.681277876
+      "weights_run_seconds": 0.75184021,
+      "verify_run_seconds": 0.837242194
     },
     {
       "spec": "mage-frost",
@@ -3934,8 +3923,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Kindling Stave"
       ],
-      "weights_run_seconds": 0.67382891,
-      "verify_run_seconds": 0.64946008
+      "weights_run_seconds": 0.751926641,
+      "verify_run_seconds": 0.743738965
     },
     {
       "spec": "mage-frost",
@@ -4176,8 +4165,8 @@
         "main_hand: Kindling Stave",
         "ranged: Nature's Breath"
       ],
-      "weights_run_seconds": 0.67382891,
-      "verify_run_seconds": 0.669668319
+      "weights_run_seconds": 0.751926641,
+      "verify_run_seconds": 0.747062077
     },
     {
       "spec": "mage-frost",
@@ -4411,8 +4400,8 @@
         "feet: Omnicast Boots",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 0.685088841,
-      "verify_run_seconds": 0.678936356
+      "weights_run_seconds": 0.750261561,
+      "verify_run_seconds": 0.737706389
     },
     {
       "spec": "mage-frost",
@@ -4650,8 +4639,8 @@
         "trinket1: Smokey's Lighter",
         "ranged: Charged Lightning Rod"
       ],
-      "weights_run_seconds": 0.685088841,
-      "verify_run_seconds": 0.678078346
+      "weights_run_seconds": 0.750261561,
+      "verify_run_seconds": 0.761260695
     },
     {
       "spec": "mage-frost",
@@ -4747,7 +4736,7 @@
           "item_name": "Frostfire Robe",
           "source": "Quests",
           "source_kind": "quest",
-          "score": 300.3816079690301,
+          "score": 300.38160796903003,
           "verified": true
         },
         {
@@ -4894,8 +4883,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.708800444,
-      "verify_run_seconds": 0.697633234
+      "weights_run_seconds": 0.788818687,
+      "verify_run_seconds": 0.784218804
     },
     {
       "spec": "mage-frost",
@@ -4973,7 +4962,7 @@
           "item_name": "Mantle of the Timbermaw",
           "source": "Tailoring",
           "source_kind": "crafted",
-          "score": 140.12594398057672,
+          "score": 140.12594398057675,
           "verified": true
         },
         {
@@ -5136,8 +5125,8 @@
         "trinket2: Eye of the Dead",
         "main_hand: Atiesh, Greatstaff of the Guardian"
       ],
-      "weights_run_seconds": 0.708800444,
-      "verify_run_seconds": 0.682130622
+      "weights_run_seconds": 0.788818687,
+      "verify_run_seconds": 0.819501264
     }
   ]
 }

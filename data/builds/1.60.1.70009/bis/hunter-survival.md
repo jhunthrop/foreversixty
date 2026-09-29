@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (dwarf, 0000000000000000-00000000000000000-100000000000000000)
 
-Set DPS (verified): 36.7. Weights run: 1.8s. Verify run: 1.0s. 695 eligible items had no known source.
+Set DPS (verified): 36.7. Weights run: 1.9s. Verify run: 1.0s. 695 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.019 ± 0.004, strength=1.000 ± 0.001, crit=0.935 ± 0.031, hit=0.597 ± 0.041, melee_haste=not significant (-0.735 ± 1.110)
 
@@ -36,7 +36,7 @@ No-known-source sample (15 of 695, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (dwarf, 0000000000000000-00000000000000000-500100000000000000)
 
-Set DPS (verified): 39.8. Weights run: 1.8s. Verify run: 1.7s. 922 eligible items had no known source.
+Set DPS (verified): 39.7. Weights run: 1.9s. Verify run: 1.6s. 922 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.025 ± 0.006, strength=1.000 ± 0.001, crit=1.240 ± 0.039, hit=0.688 ± 0.050, melee_haste=not significant (-1.090 ± 1.072)
 
@@ -56,19 +56,19 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | finger2 | Clergy Ring (5622) | Quests [quest] | 0.0 | yes |
 | trinket1 | - | - |  |  |
 | trinket2 | - | - |  |  |
-| main_hand | Relic Blade (5627) | Quests [quest] | 140.0 | yes |
+| main_hand | Big Bronze Knife (3848) | Blacksmithing [crafted] | 140.0 | yes |
 | off_hand | Relic Blade (5627) | Quests [quest] | 140.0 | yes |
 | ranged | Daryl's Hunting Bow (2903) | Quests [quest] | 1.0 | yes |
 
-**New at 15:** head: Flying Tiger Goggles; chest: Tunic of Westfall; wrist: Timberland Armguards; hands: Gloves of the Fang; waist: Murloc Scale Belt; legs: Smith's Trousers; feet: Blackened Defias Boots; finger1: Ring of Iron Will; finger2: Clergy Ring; main_hand: Relic Blade; off_hand: Relic Blade; ranged: Daryl's Hunting Bow
+**New at 15:** head: Flying Tiger Goggles; chest: Tunic of Westfall; wrist: Timberland Armguards; hands: Gloves of the Fang; waist: Murloc Scale Belt; legs: Smith's Trousers; feet: Blackened Defias Boots; finger1: Ring of Iron Will; finger2: Clergy Ring; main_hand: Big Bronze Knife; off_hand: Relic Blade; ranged: Daryl's Hunting Bow
 
 No-known-source sample (15 of 922, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 899 Venom Web Fang; 935 Night Watch Shortsword; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1211 Gnoll War Harness; 1219 Redridge Machete; 1220 Lupine Axe; 1287 Giant Tarantula Fang; 1300 Lesser Staff of the Spire; 1355 Buckskin Cape
 
 ### Band 20 (dwarf, 0000000000000000-00000000000000000-500230100000000000)
 
-Set DPS (verified): 55.0. Weights run: 1.8s. Verify run: 1.6s. 1207 eligible items had no known source.
+Set DPS (verified): 54.0. Weights run: 1.9s. Verify run: 1.8s. 1207 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.026 ± 0.006, strength=1.000 ± 0.001, crit=1.573 ± 0.049, hit=1.038 ± 0.087, melee_haste=not significant (1.066 ± 0.869)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.037 ± 0.007, strength=1.000 ± 0.001, crit=1.607 ± 0.051, hit=0.966 ± 0.082, melee_haste=not significant (0.795 ± 0.764)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -76,35 +76,35 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | neck | Sentinel's Medallion (20444) | Illiyana Moonblaze [vendor] | 6.2 | yes |
 | shoulder | Mantle of Honor (3560) | Quests [quest] | 0.0 | yes |
 | back | Glowing Lizardscale Cloak (6449) | Wailing Caverns: Skum [dungeon] | 6.2 | yes |
-| chest | Tunic of Westfall (2041) | Quests [quest] | 11.3 | yes |
+| chest | Tunic of Westfall (2041) | Quests [quest] | 11.4 | yes |
 | wrist | Timberland Armguards (5315) | Quests [quest] | 0.0 | yes |
 | hands | Gloves of the Fang (10413) | Wailing Caverns [dungeon] | 10.2 | yes |
 | waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 | yes |
-| legs | Leggings of the Fang (10410) | Wailing Caverns: Lord Cobrahn [dungeon] | 14.2 | yes |
+| legs | Leggings of the Fang (10410) | Wailing Caverns: Lord Cobrahn [dungeon] | 14.3 | yes |
 | feet | Nimbus Boots (6998) | Quests [quest] | 6.2 | yes |
 | finger1 | Protector's Band (20439) | Illiyana Moonblaze [vendor] | 8.1 | yes |
 | finger2 | Seal of Wrynn (2933) | Quests [quest] | 6.1 | yes |
 | trinket1 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | 0.0 | yes |
 | trinket2 | Rune of Duty (21568) | Silverwing Sentinels [rep] | 0.0 | yes |
-| main_hand | Cruel Barb (5191) | The Deadmines: Edwin VanCleef [dungeon] | 229.6 | yes |
+| main_hand | Butcher's Cleaver (1292) | Shadowfang Keep: Razorclaw the Butcher [dungeon] | 233.6 | yes |
 | off_hand | Cruel Barb (5191) | The Deadmines: Edwin VanCleef [dungeon] | 229.6 | yes |
 | ranged | Deadly Blunderbuss (4369) | Engineering [crafted] | 2.1 | yes |
 
-**New at 20:** head: Shadow Goggles; neck: Sentinel's Medallion; shoulder: Mantle of Honor; back: Glowing Lizardscale Cloak; waist: Blackened Defias Belt; legs: Leggings of the Fang; feet: Nimbus Boots; finger1: Protector's Band; finger2: Seal of Wrynn; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Cruel Barb; off_hand: Cruel Barb; ranged: Deadly Blunderbuss
+**New at 20:** head: Shadow Goggles; neck: Sentinel's Medallion; shoulder: Mantle of Honor; back: Glowing Lizardscale Cloak; waist: Blackened Defias Belt; legs: Leggings of the Fang; feet: Nimbus Boots; finger1: Protector's Band; finger2: Seal of Wrynn; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Butcher's Cleaver; off_hand: Cruel Barb; ranged: Deadly Blunderbuss
 
 No-known-source sample (15 of 1207, see the JSON for more): 727 Notched Shortsword; 790 Forester's Axe; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 880 Staff of Horrors; 885 Black Metal Axe; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1121 Feet of the Lynx; 1189 Overseer's Ring; 1190 Overseer's Cloak
 
 ### Band 25 (dwarf, 0000000000000000-00000000000000000-500230131010000000)
 
-Set DPS (verified): 54.8. Weights run: 1.7s. Verify run: 1.5s. 1521 eligible items had no known source.
+Set DPS (verified): 56.1. Weights run: 1.9s. Verify run: 1.7s. 1521 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.048 ± 0.010, strength=1.000 ± 0.001, crit=1.948 ± 0.060, hit=2.228 ± 0.135, melee_haste=not significant (1.018 ± 0.790)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.048 ± 0.010, strength=1.000 ± 0.001, crit=1.946 ± 0.059, hit=2.266 ± 0.127, melee_haste=not significant (1.290 ± 0.937)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Shadow Goggles (4373) | Engineering [crafted] | 0.0 | yes |
 | neck | Sentinel's Medallion (20444) | Illiyana Moonblaze [vendor] | 6.3 | yes |
-| shoulder | Dark Leather Shoulders (4252) | Leatherworking [crafted] | 7.3 | yes |
+| shoulder | Feline Mantle (3748) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 2.1 | yes |
 | back | Sergeant Major's Cape (16315) | Rank 9 [pvp] | 8.2 | yes |
 | chest | Raptorbane Armor (3566) | Quests [quest] | 16.0 | yes |
 | wrist | Bands of Serra'kis (6902) | Blackfathom Deeps [dungeon] | 6.0 | yes |
@@ -120,15 +120,15 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | Bite of Serra'kis (6904) | Blackfathom Deeps [dungeon] | 247.7 | yes |
 | ranged | Raptor's End (3493) | Quests [quest] | 2.1 | yes |
 
-**New at 25:** shoulder: Dark Leather Shoulders; back: Sergeant Major's Cape; chest: Raptorbane Armor; wrist: Bands of Serra'kis; hands: Heavy Earthen Gloves; feet: Lancer Boots; main_hand: Meteor Shard; off_hand: Bite of Serra'kis; ranged: Raptor's End
+**New at 25:** shoulder: Feline Mantle; back: Sergeant Major's Cape; chest: Raptorbane Armor; wrist: Bands of Serra'kis; hands: Heavy Earthen Gloves; feet: Lancer Boots; main_hand: Meteor Shard; off_hand: Bite of Serra'kis; ranged: Raptor's End
 
 No-known-source sample (15 of 1521, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 790 Forester's Axe; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 880 Staff of Horrors; 885 Black Metal Axe; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 897 Madwolf Bracers; 899 Venom Web Fang
 
 ### Band 30 (dwarf, 0000000000000000-00000000000000000-500230131051000000)
 
-Set DPS (verified): 60.2. Weights run: 1.8s. Verify run: 1.8s. 1794 eligible items had no known source.
+Set DPS (verified): 62.2. Weights run: 2.0s. Verify run: 2.1s. 1794 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.056 ± 0.014, strength=1.000 ± 0.001, crit=2.700 ± 0.095, hit=2.735 ± 0.232, melee_haste=not significant (1.075 ± 0.773)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.052 ± 0.014, strength=1.000 ± 0.001, crit=2.688 ± 0.095, hit=3.081 ± 0.212, melee_haste=not significant (0.562 ± 0.827)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -156,181 +156,181 @@ No-known-source sample (15 of 1794, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 35 (dwarf, 0000000000000000-00000000000000000-500230131051120110)
 
-Set DPS (verified): 75.0. Weights run: 1.8s. Verify run: 1.7s. 2021 eligible items had no known source.
+Set DPS (verified): 73.7. Weights run: 2.0s. Verify run: 2.2s. 2021 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.077 ± 0.013, strength=1.000 ± 0.001, crit=3.012 ± 0.099, hit=2.756 ± 0.238, melee_haste=not significant (1.440 ± 0.712)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.064 ± 0.010, strength=1.000 ± 0.001, crit=2.970 ± 0.096, hit=3.181 ± 0.240, melee_haste=not significant (1.413 ± 0.693)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
 | head | Enchanter's Cowl (4322) | Tailoring [crafted] | 0.0 | yes |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
-| shoulder | Barbaric Shoulders (5964) | Leatherworking [crafted] | 10.4 | yes |
-| back | Wolfmaster Cape (6314) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 10.0 | yes |
-| chest | Dusky Leather Armor (7374) | Leatherworking [crafted] | 15.1 | yes |
-| wrist | Dusky Bracers (7378) | Leatherworking [crafted] | 8.6 | yes |
-| hands | Fletcher's Gloves (7348) | Leatherworking [crafted] | 42.2 | yes |
+| shoulder | Barbaric Shoulders (5964) | Leatherworking [crafted] | 10.3 | yes |
+| back | Yeti Fur Cloak (2805) | Quests [quest] | 9.4 | yes |
+| chest | Dusky Leather Armor (7374) | Leatherworking [crafted] | 14.9 | yes |
+| wrist | Dusky Bracers (7378) | Leatherworking [crafted] | 8.5 | yes |
+| hands | Fletcher's Gloves (7348) | Leatherworking [crafted] | 41.6 | yes |
 | waist | Highlander's Chain Girdle (20090) | Samuel Hawke [vendor] | 24.0 | yes |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 | yes |
-| feet | Excelsior Boots (4109) | Quests [quest] | 16.7 | yes |
-| finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 13.7 | yes |
-| finger2 | Protector's Band (19517) | Illiyana Moonblaze [vendor] | 12.5 | yes |
+| feet | Excelsior Boots (4109) | Quests [quest] | 16.6 | yes |
+| finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 13.6 | yes |
+| finger2 | Protector's Band (19517) | Illiyana Moonblaze [vendor] | 12.4 | yes |
 | trinket1 | Talisman of Arathor (21119) | Samuel Hawke [vendor] | 0.0 | yes |
 | trinket2 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 445.7 | yes |
+| main_hand | Sword of Serenity (6829) | Quests [quest] | 420.0 | yes |
 | off_hand | Black Menace (6831) | Quests [quest] | 415.4 | yes |
 | ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.3 | yes |
 
-**New at 35:** head: Enchanter's Cowl; chest: Dusky Leather Armor; wrist: Dusky Bracers; hands: Fletcher's Gloves; feet: Excelsior Boots; main_hand: Frost Tiger Blade; off_hand: Black Menace
+**New at 35:** head: Enchanter's Cowl; back: Yeti Fur Cloak; chest: Dusky Leather Armor; wrist: Dusky Bracers; hands: Fletcher's Gloves; feet: Excelsior Boots; main_hand: Sword of Serenity; off_hand: Black Menace
 
 No-known-source sample (15 of 2021, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 863 Gloom Reaper; 864 Knightly Longsword; 870 Fiery War Axe; 873 Staff of Jordan; 880 Staff of Horrors; 885 Black Metal Axe
 
 ### Band 40 (dwarf, 0000000000000000-00000000000000000-500230131051120151)
 
-Set DPS (verified): 82.9. Weights run: 1.8s. Verify run: 1.6s. 2843 eligible items had no known source.
+Set DPS (verified): 81.6. Weights run: 2.0s. Verify run: 2.0s. 2843 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.159 ± 0.013, strength=1.000 ± 0.001, crit=3.278 ± 0.110, hit=3.307 ± 0.279, melee_haste=not significant (0.291 ± 0.772)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.169 ± 0.018, strength=1.000 ± 0.001, crit=3.231 ± 0.106, hit=3.490 ± 0.282, melee_haste=not significant (3.178 ± 1.330)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | White Bandit Mask (10008) | Tailoring [crafted] | 23.7 | yes |
+| head | White Bandit Mask (10008) | Tailoring [crafted] | 23.9 | yes |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
-| shoulder | Failed Flying Experiment (9647) | Quests [quest] | 21.6 | yes |
+| shoulder | Failed Flying Experiment (9647) | Quests [quest] | 21.7 | yes |
 | back | Sergeant Major's Cape (16336) | Rank 9 [pvp] | 13.0 | yes |
-| chest | Dawnrider's Chestpiece (9663) | Quests [quest] | 18.5 | yes |
+| chest | Kolkar Marauder Chain (6773) | Quests [quest] | 22.2 | yes |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 | yes |
-| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 52.8 | yes |
+| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 52.3 | yes |
 | waist | Highlander's Leather Girdle (20116) | Samuel Hawke [vendor] | 30.0 | yes |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 | yes |
-| feet | Excelsior Boots (4109) | Quests [quest] | 17.4 | yes |
-| finger1 | Protector's Band (19515) | Illiyana Moonblaze [vendor] | 17.3 | yes |
-| finger2 | Masons Fraternity Ring (9533) | Quests [quest] | 16.2 | yes |
+| feet | Excelsior Boots (4109) | Quests [quest] | 17.5 | yes |
+| finger1 | Protector's Band (19515) | Illiyana Moonblaze [vendor] | 17.4 | yes |
+| finger2 | Masons Fraternity Ring (9533) | Quests [quest] | 16.4 | yes |
 | trinket1 | Thunderbrew's Boot Flask (744) | Quests [quest] | 0.0 | yes |
 | trinket2 | Carrot on a Stick (11122) | Quests [quest] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 449.4 | yes |
-| off_hand | Axe of the Ebon Drake (10744) | Quests [quest] | 432.6 | yes |
-| ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.6 | yes |
+| main_hand | Lifeforce Dirk (10750) | Quests [quest] | 503.2 | yes |
+| off_hand | Sword of Serenity (6829) | Quests [quest] | 420.0 | yes |
+| ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.7 | yes |
 
-**New at 40:** head: White Bandit Mask; shoulder: Failed Flying Experiment; back: Sergeant Major's Cape; chest: Dawnrider's Chestpiece; wrist: Branded Leather Bracers; hands: Dragonscale Gauntlets; waist: Highlander's Leather Girdle; finger1: Protector's Band; finger2: Masons Fraternity Ring; trinket1: Thunderbrew's Boot Flask; trinket2: Carrot on a Stick; off_hand: Axe of the Ebon Drake
+**New at 40:** head: White Bandit Mask; shoulder: Failed Flying Experiment; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Dragonscale Gauntlets; waist: Highlander's Leather Girdle; finger1: Protector's Band; finger2: Masons Fraternity Ring; trinket1: Thunderbrew's Boot Flask; trinket2: Carrot on a Stick; main_hand: Lifeforce Dirk; off_hand: Sword of Serenity
 
 No-known-source sample (15 of 2843, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff; 867 Gloves of Holy Might; 870 Fiery War Axe
 
 ### Band 45 (dwarf, 0000000000000000-32000000000000000-500230131051120151)
 
-Set DPS (verified): 106.5. Weights run: 1.8s. Verify run: 1.7s. 3150 eligible items had no known source.
+Set DPS (verified): 93.4. Weights run: 2.0s. Verify run: 2.3s. 3150 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.161 ± 0.017, strength=1.000 ± 0.001, crit=3.954 ± 0.142, hit=3.966 ± 0.405, melee_haste=not significant (2.241 ± 0.955)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.172 ± 0.020, strength=1.000 ± 0.001, crit=3.965 ± 0.143, hit=3.907 ± 0.374, melee_haste=not significant (2.225 ± 0.878)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 68.4 | yes |
+| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 68.5 | yes |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
-| shoulder | Failed Flying Experiment (9647) | Quests [quest] | 21.6 | yes |
+| shoulder | Failed Flying Experiment (9647) | Quests [quest] | 21.7 | yes |
 | back | Sergeant Major's Cape (16336) | Rank 9 [pvp] | 13.0 | yes |
 | chest | Relentless Chain (17777) | Quests [quest] | 28.0 | yes |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 | yes |
-| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 62.3 | yes |
+| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 62.5 | yes |
 | waist | Highlander's Leather Girdle (20116) | Samuel Hawke [vendor] | 30.0 | yes |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 | yes |
-| feet | Sandstalker Ankleguards (12470) | Zul'Farrak: Zerillis [dungeon] | 25.7 | yes |
-| finger1 | Protector's Band (19515) | Illiyana Moonblaze [vendor] | 17.3 | yes |
-| finger2 | Masons Fraternity Ring (9533) | Quests [quest] | 16.2 | yes |
+| feet | Sandstalker Ankleguards (12470) | Zul'Farrak: Zerillis [dungeon] | 25.9 | yes |
+| finger1 | Protector's Band (19515) | Illiyana Moonblaze [vendor] | 17.4 | yes |
+| finger2 | Masons Fraternity Ring (9533) | Quests [quest] | 16.4 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Blight (7959) | Blacksmithing [crafted] | 606.6 | yes |
+| main_hand | Enchanted Azsharite Felbane Sword (10696) | Quests [quest] | 518.5 | yes |
 | off_hand | Enchanted Azsharite Felbane Dagger (10697) | Quests [quest] | 517.4 | yes |
-| ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.6 | yes |
+| ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.7 | yes |
 
-**New at 45:** head: Raging Berserker's Helm; chest: Relentless Chain; feet: Sandstalker Ankleguards; trinket1: Shard of the Splithooves; trinket2: Demon's Blood; main_hand: Blight; off_hand: Enchanted Azsharite Felbane Dagger
+**New at 45:** head: Raging Berserker's Helm; chest: Relentless Chain; feet: Sandstalker Ankleguards; trinket1: Shard of the Splithooves; trinket2: Demon's Blood; main_hand: Enchanted Azsharite Felbane Sword; off_hand: Enchanted Azsharite Felbane Dagger
 
 No-known-source sample (15 of 3150, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff; 867 Gloves of Holy Might
 
 ### Band 50 (dwarf, 0000000000000000-32005000000000000-500230131051120151)
 
-Set DPS (verified): 112.4. Weights run: 1.8s. Verify run: 1.7s. 3492 eligible items had no known source.
+Set DPS (verified): 101.9. Weights run: 2.0s. Verify run: 2.0s. 3492 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.160 ± 0.016, strength=1.000 ± 0.001, crit=4.351 ± 0.157, hit=4.544 ± 0.433, melee_haste=not significant (1.236 ± 0.987)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.177 ± 0.018, strength=1.000 ± 0.001, crit=4.300 ± 0.154, hit=5.121 ± 0.388, melee_haste=not significant (1.910 ± 0.883)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Eye of Theradras (17715) | Maraudon: Princess Theradras [dungeon] | 60.9 | yes |
-| neck | Sentinel's Medallion (19539) | Illiyana Moonblaze [vendor] | 13.9 | yes |
-| shoulder | Clouddrift Mantle (11874) | Quests [quest] | 25.9 | yes |
-| back | Sergeant Major's Cape (16336) | Rank 9 [pvp] | 13.0 | yes |
-| chest | Warbear Harness (15064) | Leatherworking [crafted] | 31.9 | yes |
+| head | Eye of Theradras (17715) | Maraudon: Princess Theradras [dungeon] | 60.2 | yes |
+| neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
+| shoulder | Clouddrift Mantle (11874) | Quests [quest] | 26.1 | yes |
+| back | Sergeant Major's Cape (16336) | Rank 9 [pvp] | 13.1 | yes |
+| chest | Warbear Harness (15064) | Leatherworking [crafted] | 32.2 | yes |
 | wrist | Bracers of the Stone Princess (17714) | Maraudon: Princess Theradras [dungeon] | 28.0 | yes |
-| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 67.9 | yes |
-| waist | Highlander's Chain Girdle (20088) | Samuel Hawke [vendor] | 80.9 | yes |
-| legs | Gryphon Rider's Leggings (9652) | Quests [quest] | 32.4 | yes |
-| feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 45.4 | yes |
-| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 65.4 | yes |
-| finger2 | Protector's Band (19516) | Illiyana Moonblaze [vendor] | 20.4 | yes |
+| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 67.3 | yes |
+| waist | Highlander's Chain Girdle (20088) | Samuel Hawke [vendor] | 80.2 | yes |
+| legs | Gryphon Rider's Leggings (9652) | Quests [quest] | 32.6 | yes |
+| feet | Sandstalker Ankleguards (12470) | Zul'Farrak: Zerillis [dungeon] | 26.0 | yes |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 71.2 | yes |
+| finger2 | Protector's Band (19516) | Illiyana Moonblaze [vendor] | 20.6 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Blight (7959) | Blacksmithing [crafted] | 606.6 | yes |
-| off_hand | Inventor's Focal Sword (17719) | Maraudon: Tinkerer Gizlock [dungeon] | 554.1 | yes |
-| ranged | Houndmaster's Bow (11628) | Blackrock Depths: Houndmaster Grebmar [dungeon] | 15.0 | yes |
+| main_hand | Dawn's Edge (12774) | Blacksmithing [crafted] | 570.2 | yes |
+| off_hand | Blade of Reckoning (12061) | Quests [quest] | 521.6 | yes |
+| ranged | Moonsight Rifle (4383) | Engineering [crafted] | 15.4 | yes |
 
-**New at 50:** head: Eye of Theradras; neck: Sentinel's Medallion; shoulder: Clouddrift Mantle; chest: Warbear Harness; wrist: Bracers of the Stone Princess; waist: Highlander's Chain Girdle; legs: Gryphon Rider's Leggings; feet: Greaves of Withering Despair; finger1: Blackstone Ring; finger2: Protector's Band; off_hand: Inventor's Focal Sword; ranged: Houndmaster's Bow
+**New at 50:** head: Eye of Theradras; shoulder: Clouddrift Mantle; chest: Warbear Harness; wrist: Bracers of the Stone Princess; waist: Highlander's Chain Girdle; legs: Gryphon Rider's Leggings; finger1: Blackstone Ring; finger2: Protector's Band; main_hand: Dawn's Edge; off_hand: Blade of Reckoning; ranged: Moonsight Rifle
 
 No-known-source sample (15 of 3492, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff; 867 Gloves of Holy Might
 
 ### Band 55 (dwarf, 0000000000000000-32005500000000000-500230131051120151)
 
-Set DPS (verified): 121.6. Weights run: 1.9s. Verify run: 1.7s. 3793 eligible items had no known source.
+Set DPS (verified): 114.5. Weights run: 2.1s. Verify run: 2.2s. 3793 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.202 ± 0.024, strength=1.000 ± 0.001, crit=4.751 ± 0.168, hit=4.546 ± 0.441, melee_haste=not significant (0.573 ± 0.979)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.193 ± 0.022, strength=1.000 ± 0.001, crit=4.599 ± 0.159, hit=5.344 ± 0.400, melee_haste=not significant (1.113 ± 0.951)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Mask of the Unforgiven (13404) | Stratholme: The Unforgiven [dungeon] | 157.4 | yes |
+| head | Mask of the Unforgiven (13404) | Stratholme: The Unforgiven [dungeon] | 171.3 | yes |
 | neck | Stormpike Soldier's Pendant (19097) | Stormpike Guard [rep] | 18.0 | yes |
 | shoulder | Black Dragonscale Shoulders (15051) | Leatherworking [crafted] | 40.0 | yes |
-| back | Sergeant Major's Cape (16337) | Rank 9 [pvp] | 17.6 | yes |
-| chest | Savage Gladiator Chain (11726) | Blackrock Depths: Gorosh the Dervish [dungeon] | 132.6 | yes |
+| back | Sergeant Major's Cape (16337) | Rank 9 [pvp] | 17.5 | yes |
+| chest | Savage Gladiator Chain (11726) | Blackrock Depths: Gorosh the Dervish [dungeon] | 129.3 | yes |
 | wrist | Bracers of the Stone Princess (17714) | Maraudon: Princess Theradras [dungeon] | 28.0 | yes |
-| hands | Devilsaur Gauntlets (15063) | Leatherworking [crafted] | 94.5 | yes |
-| waist | Highlander's Chain Girdle (20088) | Samuel Hawke [vendor] | 86.5 | yes |
-| legs | Devilsaur Leggings (15062) | Leatherworking [crafted] | 112.5 | yes |
-| feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 45.5 | yes |
-| finger1 | Band of the Penitent (13217) | Quests [quest] | 66.5 | yes |
-| finger2 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 65.5 | yes |
+| hands | Devilsaur Gauntlets (15063) | Leatherworking [crafted] | 92.4 | yes |
+| waist | Highlander's Chain Girdle (20088) | Samuel Hawke [vendor] | 84.4 | yes |
+| legs | Devilsaur Leggings (15062) | Leatherworking [crafted] | 110.4 | yes |
+| feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 53.4 | yes |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 73.4 | yes |
+| finger2 | Protector's Band (19516) | Illiyana Moonblaze [vendor] | 20.7 | yes |
 | trinket1 | Smokey's Lighter (13171) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Blight (7959) | Blacksmithing [crafted] | 606.6 | yes |
-| off_hand | Dawn's Edge (12774) | Blacksmithing [crafted] | 576.5 | yes |
-| ranged | Blackcrow (12651) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | 44.5 | yes |
+| main_hand | Blazing Rapier (12777) | Blacksmithing [crafted] | 518.8 | yes |
+| off_hand | Dawn's Edge (12774) | Blacksmithing [crafted] | 574.4 | yes |
+| ranged | Blackcrow (12651) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | 51.7 | yes |
 
-**New at 55:** head: Mask of the Unforgiven; neck: Stormpike Soldier's Pendant; shoulder: Black Dragonscale Shoulders; back: Sergeant Major's Cape; chest: Savage Gladiator Chain; hands: Devilsaur Gauntlets; legs: Devilsaur Leggings; finger1: Band of the Penitent; finger2: Blackstone Ring; trinket1: Smokey's Lighter; off_hand: Dawn's Edge; ranged: Blackcrow
+**New at 55:** head: Mask of the Unforgiven; neck: Stormpike Soldier's Pendant; shoulder: Black Dragonscale Shoulders; back: Sergeant Major's Cape; chest: Savage Gladiator Chain; hands: Devilsaur Gauntlets; legs: Devilsaur Leggings; feet: Greaves of Withering Despair; trinket1: Smokey's Lighter; main_hand: Blazing Rapier; off_hand: Dawn's Edge; ranged: Blackcrow
 
 No-known-source sample (15 of 3793, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 790 Forester's Axe; 791 Gnarled Ash Staff; 811 Axe of the Deep Woods; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff
 
 ### Band 60 (dwarf, 0000000000000000-32005500005000000-500230131051120151)
 
-Set DPS (verified): 208.4. Weights run: 1.8s. Verify run: 2.1s. 4390 eligible items had no known source.
+Set DPS (verified): 216.1. Weights run: 2.1s. Verify run: 2.4s. 4390 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, agility=1.316 ± 0.049, strength=1.000 ± 0.002, crit=6.716 ± 0.257, hit=6.890 ± 0.771, melee_haste=not significant (2.246 ± 1.449)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.205 ± 0.024, strength=1.000 ± 0.001, crit=6.402 ± 0.250, hit=5.883 ± 0.716, melee_haste=not significant (0.393 ± 1.319)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Bloodvine Goggles (19999) | Engineering [crafted] | 231.8 | yes |
-| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 214.1 | yes |
-| shoulder | Cryptstalker Spaulders (22439) | Quests [quest] | 132.2 | yes |
-| back | Cloak of the Unseen Path (21403) | Quests [quest] | 91.3 | yes |
-| chest | Cryptstalker Tunic (22436) | Quests [quest] | 222.2 | yes |
-| wrist | Cryptstalker Wristguards (22443) | Quests [quest] | 103.1 | yes |
-| hands | Marshal's Chain Grips (16463) | Captain Dirgehammer [vendor] | 121.7 | yes |
-| waist | Cryptstalker Girdle (22442) | Quests [quest] | 193.2 | yes |
-| legs | Legionnaire's Chain Legguards (22875) | Lady Palanseer [vendor] | 209.1 | yes |
-| feet | Cryptstalker Boots (22440) | Quests [quest] | 112.3 | yes |
-| finger1 | Band of Unnatural Forces (23038) | Naxxramas [raid] | 214.9 | yes |
-| finger2 | Don Julio's Band (19325) | Stormpike Guard [rep] | 178.9 | yes |
+| head | Cryptstalker Headpiece (22438) | Quests [quest] | 216.6 | yes |
+| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 205.3 | yes |
+| shoulder | Cryptstalker Spaulders (22439) | Quests [quest] | 124.6 | yes |
+| back | Cloak of the Unseen Path (21403) | Quests [quest] | 79.3 | yes |
+| chest | Cryptstalker Tunic (22436) | Quests [quest] | 202.7 | yes |
+| wrist | Qiraji Execution Bracers (21602) | Ahn'Qiraj [raid] | 93.1 | yes |
+| hands | Marshal's Chain Grips (16463) | Captain Dirgehammer [vendor] | 114.9 | yes |
+| waist | Cryptstalker Girdle (22442) | Quests [quest] | 176.2 | yes |
+| legs | Legionnaire's Chain Legguards (22875) | Lady Palanseer [vendor] | 198.5 | yes |
+| feet | Cryptstalker Boots (22440) | Quests [quest] | 98.6 | yes |
+| finger1 | Band of Unnatural Forces (23038) | Naxxramas [raid] | 200.5 | yes |
+| finger2 | Don Julio's Band (19325) | Stormpike Guard [rep] | 164.5 | yes |
 | trinket1 | Slayer's Crest (23041) | Naxxramas [raid] | 64.0 | yes |
-| trinket2 | Kiss of the Spider (22954) | Naxxramas [raid] | 162.9 | yes |
-| main_hand | Thunderfury, Blessed Blade of the Windseeker (19019) | Quests [quest] | 761.9 | yes |
-| off_hand | Death's Sting (21126) | Ahn'Qiraj [raid] | 967.5 | yes |
-| ranged | Larvae of the Great Worm (23557) | Ahn'Qiraj [raid] | 112.0 | yes |
+| trinket2 | Kiss of the Spider (22954) | Naxxramas [raid] | 148.5 | yes |
+| main_hand | Thunderfury, Blessed Blade of the Windseeker (19019) | Quests [quest] | 761.3 | yes |
+| off_hand | Blessed Qiraji Pugio (21244) | Quests [quest] | 1014.7 | yes |
+| ranged | Larvae of the Great Worm (23557) | Ahn'Qiraj [raid] | 107.6 | yes |
 
-**New at 60:** head: Bloodvine Goggles; neck: Stormrage's Talisman of Seething; shoulder: Cryptstalker Spaulders; back: Cloak of the Unseen Path; chest: Cryptstalker Tunic; wrist: Cryptstalker Wristguards; hands: Marshal's Chain Grips; waist: Cryptstalker Girdle; legs: Legionnaire's Chain Legguards; feet: Cryptstalker Boots; finger1: Band of Unnatural Forces; finger2: Don Julio's Band; trinket1: Slayer's Crest; trinket2: Kiss of the Spider; main_hand: Thunderfury, Blessed Blade of the Windseeker; off_hand: Death's Sting; ranged: Larvae of the Great Worm
+**New at 60:** head: Cryptstalker Headpiece; neck: Stormrage's Talisman of Seething; shoulder: Cryptstalker Spaulders; back: Cloak of the Unseen Path; chest: Cryptstalker Tunic; wrist: Qiraji Execution Bracers; hands: Marshal's Chain Grips; waist: Cryptstalker Girdle; legs: Legionnaire's Chain Legguards; feet: Cryptstalker Boots; finger1: Band of Unnatural Forces; finger2: Don Julio's Band; trinket1: Slayer's Crest; trinket2: Kiss of the Spider; main_hand: Thunderfury, Blessed Blade of the Windseeker; off_hand: Blessed Qiraji Pugio; ranged: Larvae of the Great Worm
 
 No-known-source sample (15 of 4390, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 790 Forester's Axe; 791 Gnarled Ash Staff; 811 Axe of the Deep Woods; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff
 
@@ -338,7 +338,7 @@ No-known-source sample (15 of 4390, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 10 (troll, 0000000000000000-00000000000000000-100000000000000000)
 
-Set DPS (verified): 39.2. Weights run: 1.8s. Verify run: 1.3s. 695 eligible items had no known source.
+Set DPS (verified): 39.2. Weights run: 1.9s. Verify run: 1.3s. 695 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.019 ± 0.004, strength=1.000 ± 0.001, crit=0.935 ± 0.031, hit=0.597 ± 0.041, melee_haste=not significant (-0.735 ± 1.110)
 
@@ -368,7 +368,7 @@ No-known-source sample (15 of 695, see the JSON for more): 727 Notched Shortswor
 
 ### Band 15 (troll, 0000000000000000-00000000000000000-500100000000000000)
 
-Set DPS (verified): 43.3. Weights run: 1.8s. Verify run: 1.3s. 918 eligible items had no known source.
+Set DPS (verified): 43.3. Weights run: 1.9s. Verify run: 1.4s. 918 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.025 ± 0.006, strength=1.000 ± 0.001, crit=1.240 ± 0.039, hit=0.688 ± 0.050, melee_haste=not significant (-1.090 ± 1.072)
 
@@ -398,9 +398,9 @@ No-known-source sample (15 of 918, see the JSON for more): 727 Notched Shortswor
 
 ### Band 20 (troll, 0000000000000000-00000000000000000-500230100000000000)
 
-Set DPS (verified): 55.2. Weights run: 1.8s. Verify run: 1.5s. 1203 eligible items had no known source.
+Set DPS (verified): 53.7. Weights run: 1.9s. Verify run: 1.7s. 1203 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.026 ± 0.006, strength=1.000 ± 0.001, crit=1.573 ± 0.049, hit=1.038 ± 0.087, melee_haste=not significant (1.066 ± 0.869)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.037 ± 0.007, strength=1.000 ± 0.001, crit=1.607 ± 0.051, hit=0.966 ± 0.082, melee_haste=not significant (0.795 ± 0.764)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -408,29 +408,29 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | neck | Scout's Medallion (20442) | Kelm Hargunth [vendor] | 6.2 | yes |
 | shoulder | Slime-encrusted Pads (6461) | Wailing Caverns: Mutanus the Devourer [dungeon] | 0.0 | yes |
 | back | Wildhunter Cloak (16658) | Quests [quest] | 10.0 | yes |
-| chest | Panther Armor (6670) | Quests [quest] | 11.2 | yes |
+| chest | Panther Armor (6670) | Quests [quest] | 11.3 | yes |
 | wrist | Wolfmane Wristguards (1306) | Quests [quest] | 2.1 | yes |
 | hands | Gloves of the Fang (10413) | Wailing Caverns [dungeon] | 10.2 | yes |
 | waist | Blackened Defias Belt (10403) | The Deadmines: Captain Greenskin [dungeon] | 18.0 | yes |
-| legs | Leggings of the Fang (10410) | Wailing Caverns: Lord Cobrahn [dungeon] | 14.2 | yes |
-| feet | Trailblazer Boots (10653) | Quests [quest] | 7.2 | yes |
+| legs | Leggings of the Fang (10410) | Wailing Caverns: Lord Cobrahn [dungeon] | 14.3 | yes |
+| feet | Trailblazer Boots (10653) | Quests [quest] | 7.3 | yes |
 | finger1 | Band of the Fist (17694) | Quests [quest] | 8.1 | yes |
 | finger2 | Legionnaire's Band (20429) | Kelm Hargunth [vendor] | 8.1 | yes |
 | trinket1 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes |
 | trinket2 | Rune of Duty (21568) | Warsong Outriders [rep] | 0.0 | yes |
-| main_hand | Cruel Barb (5191) | The Deadmines: Edwin VanCleef [dungeon] | 229.6 | yes |
+| main_hand | Butcher's Cleaver (1292) | Shadowfang Keep: Razorclaw the Butcher [dungeon] | 233.6 | yes |
 | off_hand | Cruel Barb (5191) | The Deadmines: Edwin VanCleef [dungeon] | 229.6 | yes |
 | ranged | Bow of Plunder (3742) | Quests [quest] | 2.1 | yes |
 
-**New at 20:** head: Shadow Goggles; neck: Scout's Medallion; shoulder: Slime-encrusted Pads; back: Wildhunter Cloak; chest: Panther Armor; waist: Blackened Defias Belt; legs: Leggings of the Fang; finger1: Band of the Fist; finger2: Legionnaire's Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Cruel Barb; off_hand: Cruel Barb; ranged: Bow of Plunder
+**New at 20:** head: Shadow Goggles; neck: Scout's Medallion; shoulder: Slime-encrusted Pads; back: Wildhunter Cloak; chest: Panther Armor; waist: Blackened Defias Belt; legs: Leggings of the Fang; finger1: Band of the Fist; finger2: Legionnaire's Band; trinket1: Rune of Perfection; trinket2: Rune of Duty; main_hand: Butcher's Cleaver; off_hand: Cruel Barb; ranged: Bow of Plunder
 
 No-known-source sample (15 of 1203, see the JSON for more): 727 Notched Shortsword; 790 Forester's Axe; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 880 Staff of Horrors; 885 Black Metal Axe; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1121 Feet of the Lynx; 1189 Overseer's Ring; 1190 Overseer's Cloak
 
 ### Band 25 (troll, 0000000000000000-00000000000000000-500230131010000000)
 
-Set DPS (verified): 54.9. Weights run: 1.7s. Verify run: 1.7s. 1517 eligible items had no known source.
+Set DPS (verified): 55.8. Weights run: 1.9s. Verify run: 1.9s. 1517 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.048 ± 0.010, strength=1.000 ± 0.001, crit=1.948 ± 0.060, hit=2.228 ± 0.135, melee_haste=not significant (1.018 ± 0.790)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.048 ± 0.010, strength=1.000 ± 0.001, crit=1.946 ± 0.059, hit=2.266 ± 0.127, melee_haste=not significant (1.290 ± 0.937)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
@@ -458,17 +458,17 @@ No-known-source sample (15 of 1517, see the JSON for more): 720 Brawler Gloves; 
 
 ### Band 30 (troll, 0000000000000000-00000000000000000-500230131051000000)
 
-Set DPS (verified): 66.0. Weights run: 1.8s. Verify run: 1.9s. 1790 eligible items had no known source.
+Set DPS (verified): 68.0. Weights run: 2.0s. Verify run: 2.1s. 1790 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.056 ± 0.014, strength=1.000 ± 0.001, crit=2.700 ± 0.095, hit=2.735 ± 0.232, melee_haste=not significant (1.075 ± 0.773)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.052 ± 0.014, strength=1.000 ± 0.001, crit=2.688 ± 0.095, hit=3.081 ± 0.212, melee_haste=not significant (0.562 ± 0.827)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Spirit Hunter Headdress (6720) | Quests [quest] | 10.6 | yes |
+| head | Enchanter's Cowl (4322) | Tailoring [crafted] | 0.0 | yes |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
 | shoulder | Barbaric Shoulders (5964) | Leatherworking [crafted] | 10.3 | yes |
 | back | Wolfmaster Cape (6314) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 10.0 | yes |
-| chest | Dusky Leather Armor (7374) | Leatherworking [crafted] | 14.8 | yes |
+| chest | Dusky Leather Armor (7374) | Leatherworking [crafted] | 14.7 | yes |
 | wrist | Barbaric Bracers (18948) | Leatherworking [crafted] | 8.2 | yes |
 | hands | Heavy Earthen Gloves (7359) | Leatherworking [crafted] | 16.0 | yes |
 | waist | Defiler's Chain Girdle (20152) | Rutherford Twing [vendor] | 24.0 | yes |
@@ -482,187 +482,187 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | off_hand | Silent Hunter (9520) | Quests [quest] | 330.2 | yes |
 | ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.2 | yes |
 
-**New at 30:** head: Spirit Hunter Headdress; neck: Ghostshard Talisman; shoulder: Barbaric Shoulders; chest: Dusky Leather Armor; wrist: Barbaric Bracers; waist: Defiler's Chain Girdle; legs: Ferine Leggings; finger1: Ironspine's Eye; finger2: Legionnaire's Band; trinket1: Defiler's Talisman; trinket2: Rune of Perfection; main_hand: Pronged Reaver; off_hand: Silent Hunter; ranged: Master Hunter's Rifle
+**New at 30:** head: Enchanter's Cowl; neck: Ghostshard Talisman; shoulder: Barbaric Shoulders; chest: Dusky Leather Armor; wrist: Barbaric Bracers; waist: Defiler's Chain Girdle; legs: Ferine Leggings; finger1: Ironspine's Eye; finger2: Legionnaire's Band; trinket1: Defiler's Talisman; trinket2: Rune of Perfection; main_hand: Pronged Reaver; off_hand: Silent Hunter; ranged: Master Hunter's Rifle
 
 No-known-source sample (15 of 1790, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 880 Staff of Horrors; 885 Black Metal Axe; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 897 Madwolf Bracers
 
 ### Band 35 (troll, 0000000000000000-00000000000000000-500230131051120110)
 
-Set DPS (verified): 74.7. Weights run: 1.8s. Verify run: 1.6s. 2017 eligible items had no known source.
+Set DPS (verified): 63.6. Weights run: 2.0s. Verify run: 2.2s. 2017 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.077 ± 0.013, strength=1.000 ± 0.001, crit=3.012 ± 0.099, hit=2.756 ± 0.238, melee_haste=not significant (1.440 ± 0.712)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.064 ± 0.010, strength=1.000 ± 0.001, crit=2.970 ± 0.096, hit=3.181 ± 0.240, melee_haste=not significant (1.413 ± 0.693)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Enchanter's Cowl (4322) | Tailoring [crafted] | 0.0 | yes |
+| head | Spirit Hunter Headdress (6720) | Quests [quest] | 10.6 | yes |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
-| shoulder | Barbaric Shoulders (5964) | Leatherworking [crafted] | 10.4 | yes |
+| shoulder | Barbaric Shoulders (5964) | Leatherworking [crafted] | 10.3 | yes |
 | back | Wolfmaster Cape (6314) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 10.0 | yes |
-| chest | Dusky Leather Armor (7374) | Leatherworking [crafted] | 15.1 | yes |
-| wrist | Dusky Bracers (7378) | Leatherworking [crafted] | 8.6 | yes |
-| hands | Fletcher's Gloves (7348) | Leatherworking [crafted] | 42.2 | yes |
+| chest | Dusky Leather Armor (7374) | Leatherworking [crafted] | 14.9 | yes |
+| wrist | Dusky Bracers (7378) | Leatherworking [crafted] | 8.5 | yes |
+| hands | Fletcher's Gloves (7348) | Leatherworking [crafted] | 41.6 | yes |
 | waist | Defiler's Chain Girdle (20152) | Rutherford Twing [vendor] | 24.0 | yes |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 | yes |
-| feet | Excelsior Boots (4109) | Quests [quest] | 16.7 | yes |
-| finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 13.7 | yes |
-| finger2 | Legionnaire's Band (19513) | Kelm Hargunth [vendor] | 12.5 | yes |
+| feet | Excelsior Boots (4109) | Quests [quest] | 16.6 | yes |
+| finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 13.6 | yes |
+| finger2 | Legionnaire's Band (19513) | Kelm Hargunth [vendor] | 12.4 | yes |
 | trinket1 | Defiler's Talisman (21120) | Rutherford Twing [vendor] | 0.0 | yes |
 | trinket2 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 445.7 | yes |
-| off_hand | Tok'kar's Murloc Shanker (9680) | Quests [quest] | 356.5 | yes |
+| main_hand | Hypnotic Blade (7714) | Scarlet Monastery: Arcanist Doan [dungeon] | 375.1 | yes |
+| off_hand | Tok'kar's Murloc Shanker (9680) | Quests [quest] | 356.4 | yes |
 | ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.3 | yes |
 
-**New at 35:** head: Enchanter's Cowl; wrist: Dusky Bracers; hands: Fletcher's Gloves; feet: Excelsior Boots; main_hand: Frost Tiger Blade; off_hand: Tok'kar's Murloc Shanker
+**New at 35:** head: Spirit Hunter Headdress; wrist: Dusky Bracers; hands: Fletcher's Gloves; feet: Excelsior Boots; main_hand: Hypnotic Blade; off_hand: Tok'kar's Murloc Shanker
 
 No-known-source sample (15 of 2017, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 863 Gloom Reaper; 864 Knightly Longsword; 870 Fiery War Axe; 873 Staff of Jordan; 880 Staff of Horrors; 885 Black Metal Axe
 
 ### Band 40 (troll, 0000000000000000-00000000000000000-500230131051120151)
 
-Set DPS (verified): 82.6. Weights run: 1.8s. Verify run: 1.6s. 2838 eligible items had no known source.
+Set DPS (verified): 80.1. Weights run: 2.0s. Verify run: 1.9s. 2838 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.159 ± 0.013, strength=1.000 ± 0.001, crit=3.278 ± 0.110, hit=3.307 ± 0.279, melee_haste=not significant (0.291 ± 0.772)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.169 ± 0.018, strength=1.000 ± 0.001, crit=3.231 ± 0.106, hit=3.490 ± 0.282, melee_haste=not significant (3.178 ± 1.330)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | White Bandit Mask (10008) | Tailoring [crafted] | 23.7 | yes |
+| head | White Bandit Mask (10008) | Tailoring [crafted] | 23.9 | yes |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
-| shoulder | Failed Flying Experiment (9647) | Quests [quest] | 21.6 | yes |
+| shoulder | Failed Flying Experiment (9647) | Quests [quest] | 21.7 | yes |
 | back | Sergeant Major's Cape (16336) | Rank 9 [pvp] | 13.0 | yes |
-| chest | Kolkar Marauder Chain (6773) | Quests [quest] | 22.1 | yes |
+| chest | Honorguard Chestpiece (9650) | Quests [quest] | 22.0 | yes |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 | yes |
-| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 52.8 | yes |
+| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 52.3 | yes |
 | waist | Defiler's Leather Girdle (20192) | Rutherford Twing [vendor] | 30.0 | yes |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 | yes |
-| feet | Excelsior Boots (4109) | Quests [quest] | 17.4 | yes |
-| finger1 | Legionnaire's Band (19512) | Kelm Hargunth [vendor] | 17.3 | yes |
-| finger2 | Masons Fraternity Ring (9533) | Quests [quest] | 16.2 | yes |
+| feet | Excelsior Boots (4109) | Quests [quest] | 17.5 | yes |
+| finger1 | Legionnaire's Band (19512) | Kelm Hargunth [vendor] | 17.4 | yes |
+| finger2 | Masons Fraternity Ring (9533) | Quests [quest] | 16.4 | yes |
 | trinket1 | Mark of the Chosen (17774) | Quests [quest] | 0.0 | yes |
 | trinket2 | Carrot on a Stick (11122) | Quests [quest] | 0.0 | yes |
-| main_hand | Frost Tiger Blade (3854) | Blacksmithing [crafted] | 449.4 | yes |
-| off_hand | Force of the Hippogryph (9684) | Quests [quest] | 436.3 | yes |
-| ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.6 | yes |
+| main_hand | Lifeforce Dirk (10750) | Quests [quest] | 503.2 | yes |
+| off_hand | Force of the Hippogryph (9684) | Quests [quest] | 436.4 | yes |
+| ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.7 | yes |
 
-**New at 40:** head: White Bandit Mask; shoulder: Failed Flying Experiment; back: Sergeant Major's Cape; chest: Kolkar Marauder Chain; wrist: Branded Leather Bracers; hands: Dragonscale Gauntlets; waist: Defiler's Leather Girdle; finger1: Legionnaire's Band; finger2: Masons Fraternity Ring; trinket1: Mark of the Chosen; trinket2: Carrot on a Stick; off_hand: Force of the Hippogryph
+**New at 40:** head: White Bandit Mask; shoulder: Failed Flying Experiment; back: Sergeant Major's Cape; chest: Honorguard Chestpiece; wrist: Branded Leather Bracers; hands: Dragonscale Gauntlets; waist: Defiler's Leather Girdle; finger1: Legionnaire's Band; finger2: Masons Fraternity Ring; trinket1: Mark of the Chosen; trinket2: Carrot on a Stick; main_hand: Lifeforce Dirk; off_hand: Force of the Hippogryph
 
 No-known-source sample (15 of 2838, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff; 867 Gloves of Holy Might; 870 Fiery War Axe
 
 ### Band 45 (troll, 0000000000000000-32000000000000000-500230131051120151)
 
-Set DPS (verified): 106.7. Weights run: 1.8s. Verify run: 1.6s. 3145 eligible items had no known source.
+Set DPS (verified): 94.1. Weights run: 2.0s. Verify run: 2.2s. 3145 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.161 ± 0.017, strength=1.000 ± 0.001, crit=3.954 ± 0.142, hit=3.966 ± 0.405, melee_haste=not significant (2.241 ± 0.955)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.172 ± 0.020, strength=1.000 ± 0.001, crit=3.965 ± 0.143, hit=3.907 ± 0.374, melee_haste=not significant (2.225 ± 0.878)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 68.4 | yes |
+| head | Raging Berserker's Helm (7719) | Scarlet Monastery: Herod [dungeon] | 68.5 | yes |
 | neck | Ghostshard Talisman (7731) | Scarlet Monastery: Azshir the Sleepless [dungeon] | 14.0 | yes |
-| shoulder | Failed Flying Experiment (9647) | Quests [quest] | 21.6 | yes |
+| shoulder | Failed Flying Experiment (9647) | Quests [quest] | 21.7 | yes |
 | back | Sergeant Major's Cape (16336) | Rank 9 [pvp] | 13.0 | yes |
 | chest | Relentless Chain (17777) | Quests [quest] | 28.0 | yes |
 | wrist | Branded Leather Bracers (19508) | Scarlet Monastery: High Inquisitor Fairbanks [dungeon] | 20.0 | yes |
-| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 62.3 | yes |
+| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 62.5 | yes |
 | waist | Defiler's Leather Girdle (20192) | Rutherford Twing [vendor] | 30.0 | yes |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 | yes |
-| feet | Sandstalker Ankleguards (12470) | Zul'Farrak: Zerillis [dungeon] | 25.7 | yes |
-| finger1 | Legionnaire's Band (19512) | Kelm Hargunth [vendor] | 17.3 | yes |
-| finger2 | Masons Fraternity Ring (9533) | Quests [quest] | 16.2 | yes |
+| feet | Sandstalker Ankleguards (12470) | Zul'Farrak: Zerillis [dungeon] | 25.9 | yes |
+| finger1 | Legionnaire's Band (19512) | Kelm Hargunth [vendor] | 17.4 | yes |
+| finger2 | Masons Fraternity Ring (9533) | Quests [quest] | 16.4 | yes |
 | trinket1 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
 | trinket2 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
-| main_hand | Blight (7959) | Blacksmithing [crafted] | 606.6 | yes |
+| main_hand | Enchanted Azsharite Felbane Sword (10696) | Quests [quest] | 518.5 | yes |
 | off_hand | Enchanted Azsharite Felbane Dagger (10697) | Quests [quest] | 517.4 | yes |
-| ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.6 | yes |
+| ranged | Master Hunter's Rifle (17687) | Quests [quest] | 8.7 | yes |
 
-**New at 45:** head: Raging Berserker's Helm; chest: Relentless Chain; feet: Sandstalker Ankleguards; trinket1: Demon's Blood; trinket2: Shard of the Splithooves; main_hand: Blight; off_hand: Enchanted Azsharite Felbane Dagger
+**New at 45:** head: Raging Berserker's Helm; chest: Relentless Chain; feet: Sandstalker Ankleguards; trinket1: Demon's Blood; trinket2: Shard of the Splithooves; main_hand: Enchanted Azsharite Felbane Sword; off_hand: Enchanted Azsharite Felbane Dagger
 
 No-known-source sample (15 of 3145, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff; 867 Gloves of Holy Might
 
 ### Band 50 (troll, 0000000000000000-32005000000000000-500230131051120151)
 
-Set DPS (verified): 113.5. Weights run: 1.8s. Verify run: 1.6s. 3487 eligible items had no known source.
+Set DPS (verified): 95.6. Weights run: 2.0s. Verify run: 1.9s. 3487 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.160 ± 0.016, strength=1.000 ± 0.001, crit=4.351 ± 0.157, hit=4.544 ± 0.433, melee_haste=not significant (1.236 ± 0.987)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.177 ± 0.018, strength=1.000 ± 0.001, crit=4.300 ± 0.154, hit=5.121 ± 0.388, melee_haste=not significant (1.910 ± 0.883)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Eye of Theradras (17715) | Maraudon: Princess Theradras [dungeon] | 60.9 | yes |
-| neck | Woven Ivy Necklace (19159) | Quests [quest] | 16.4 | yes |
-| shoulder | Failed Flying Experiment (9647) | Quests [quest] | 21.6 | yes |
-| back | Sergeant Major's Cape (16336) | Rank 9 [pvp] | 13.0 | yes |
-| chest | Warbear Harness (15064) | Leatherworking [crafted] | 31.9 | yes |
+| head | Eye of Theradras (17715) | Maraudon: Princess Theradras [dungeon] | 60.2 | yes |
+| neck | Woven Ivy Necklace (19159) | Quests [quest] | 16.6 | yes |
+| shoulder | Failed Flying Experiment (9647) | Quests [quest] | 21.8 | yes |
+| back | Sergeant Major's Cape (16336) | Rank 9 [pvp] | 13.1 | yes |
+| chest | Warbear Harness (15064) | Leatherworking [crafted] | 32.2 | yes |
 | wrist | Bracers of the Stone Princess (17714) | Maraudon: Princess Theradras [dungeon] | 28.0 | yes |
-| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 67.9 | yes |
-| waist | Defiler's Chain Girdle (20151) | Rutherford Twing [vendor] | 80.9 | yes |
+| hands | Dragonscale Gauntlets (8347) | Leatherworking [crafted] | 67.3 | yes |
+| waist | Defiler's Chain Girdle (20151) | Rutherford Twing [vendor] | 80.2 | yes |
 | legs | Ferine Leggings (6690) | Razorfen Kraul: Agathelos the Raging [dungeon] | 26.0 | yes |
-| feet | Sandstalker Ankleguards (12470) | Zul'Farrak: Zerillis [dungeon] | 25.7 | yes |
-| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 65.4 | yes |
+| feet | Sandstalker Ankleguards (12470) | Zul'Farrak: Zerillis [dungeon] | 26.0 | yes |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 71.2 | yes |
 | finger2 | White Bone Band (11862) | Quests [quest] | 24.0 | yes |
 | trinket1 | Shard of the Splithooves (10659) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Blight (7959) | Blacksmithing [crafted] | 606.6 | yes |
-| off_hand | Inventor's Focal Sword (17719) | Maraudon: Tinkerer Gizlock [dungeon] | 554.1 | yes |
-| ranged | Houndmaster's Bow (11628) | Blackrock Depths: Houndmaster Grebmar [dungeon] | 15.0 | yes |
+| main_hand | Dawn's Edge (12774) | Blacksmithing [crafted] | 570.2 | yes |
+| off_hand | Enchanted Azsharite Felbane Sword (10696) | Quests [quest] | 518.5 | yes |
+| ranged | Moonsight Rifle (4383) | Engineering [crafted] | 15.4 | yes |
 
-**New at 50:** head: Eye of Theradras; neck: Woven Ivy Necklace; chest: Warbear Harness; wrist: Bracers of the Stone Princess; waist: Defiler's Chain Girdle; finger1: Blackstone Ring; finger2: White Bone Band; trinket1: Shard of the Splithooves; trinket2: Demon's Blood; off_hand: Inventor's Focal Sword; ranged: Houndmaster's Bow
+**New at 50:** head: Eye of Theradras; neck: Woven Ivy Necklace; chest: Warbear Harness; wrist: Bracers of the Stone Princess; waist: Defiler's Chain Girdle; finger1: Blackstone Ring; finger2: White Bone Band; trinket1: Shard of the Splithooves; trinket2: Demon's Blood; main_hand: Dawn's Edge; off_hand: Enchanted Azsharite Felbane Sword; ranged: Moonsight Rifle
 
 No-known-source sample (15 of 3487, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 790 Forester's Axe; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff; 867 Gloves of Holy Might
 
 ### Band 55 (troll, 0000000000000000-32005500000000000-500230131051120151)
 
-Set DPS (verified): 121.2. Weights run: 1.9s. Verify run: 1.7s. 3788 eligible items had no known source.
+Set DPS (verified): 112.9. Weights run: 2.1s. Verify run: 2.2s. 3788 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.202 ± 0.024, strength=1.000 ± 0.001, crit=4.751 ± 0.168, hit=4.546 ± 0.441, melee_haste=not significant (0.573 ± 0.979)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.193 ± 0.022, strength=1.000 ± 0.001, crit=4.599 ± 0.159, hit=5.344 ± 0.400, melee_haste=not significant (1.113 ± 0.951)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Mask of the Unforgiven (13404) | Stratholme: The Unforgiven [dungeon] | 157.4 | yes |
+| head | Mask of the Unforgiven (13404) | Stratholme: The Unforgiven [dungeon] | 171.3 | yes |
 | neck | Frostwolf Legionnaire's Pendant (19095) | Frostwolf Clan [rep] | 18.0 | yes |
 | shoulder | Black Dragonscale Shoulders (15051) | Leatherworking [crafted] | 40.0 | yes |
-| back | Sergeant Major's Cape (16337) | Rank 9 [pvp] | 17.6 | yes |
-| chest | Savage Gladiator Chain (11726) | Blackrock Depths: Gorosh the Dervish [dungeon] | 132.6 | yes |
+| back | Sergeant Major's Cape (16337) | Rank 9 [pvp] | 17.5 | yes |
+| chest | Savage Gladiator Chain (11726) | Blackrock Depths: Gorosh the Dervish [dungeon] | 129.3 | yes |
 | wrist | Bracers of the Stone Princess (17714) | Maraudon: Princess Theradras [dungeon] | 28.0 | yes |
-| hands | Devilsaur Gauntlets (15063) | Leatherworking [crafted] | 94.5 | yes |
-| waist | Defiler's Chain Girdle (20151) | Rutherford Twing [vendor] | 86.5 | yes |
-| legs | Devilsaur Leggings (15062) | Leatherworking [crafted] | 112.5 | yes |
-| feet | Greaves of Withering Despair (22240) | Blackrock Depths: High Interrogator Gerstahn  [dungeon] | 45.5 | yes |
-| finger1 | Band of the Penitent (13217) | Quests [quest] | 66.5 | yes |
-| finger2 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 65.5 | yes |
+| hands | Devilsaur Gauntlets (15063) | Leatherworking [crafted] | 92.4 | yes |
+| waist | Defiler's Chain Girdle (20151) | Rutherford Twing [vendor] | 84.4 | yes |
+| legs | Devilsaur Leggings (15062) | Leatherworking [crafted] | 110.4 | yes |
+| feet | Shadowcraft Boots (16711) | Scholomance: Rattlegore [dungeon] | 41.1 | yes |
+| finger1 | Blackstone Ring (17713) | Maraudon: Princess Theradras [dungeon] | 73.4 | yes |
+| finger2 | White Bone Band (11862) | Quests [quest] | 24.0 | yes |
 | trinket1 | Smokey's Lighter (13171) | Quests [quest] | 0.0 | yes |
 | trinket2 | Demon's Blood (10779) | Quests [quest] | 0.0 | yes |
-| main_hand | Blight (7959) | Blacksmithing [crafted] | 606.6 | yes |
-| off_hand | Dawn's Edge (12774) | Blacksmithing [crafted] | 576.5 | yes |
-| ranged | Blackcrow (12651) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | 44.5 | yes |
+| main_hand | Blazing Rapier (12777) | Blacksmithing [crafted] | 518.8 | yes |
+| off_hand | Dawn's Edge (12774) | Blacksmithing [crafted] | 574.4 | yes |
+| ranged | Blackcrow (12651) | Blackrock Spire: Shadow Hunter Vosh'gajin [dungeon] | 51.7 | yes |
 
-**New at 55:** head: Mask of the Unforgiven; neck: Frostwolf Legionnaire's Pendant; shoulder: Black Dragonscale Shoulders; back: Sergeant Major's Cape; chest: Savage Gladiator Chain; hands: Devilsaur Gauntlets; legs: Devilsaur Leggings; feet: Greaves of Withering Despair; finger1: Band of the Penitent; finger2: Blackstone Ring; trinket1: Smokey's Lighter; off_hand: Dawn's Edge; ranged: Blackcrow
+**New at 55:** head: Mask of the Unforgiven; neck: Frostwolf Legionnaire's Pendant; shoulder: Black Dragonscale Shoulders; back: Sergeant Major's Cape; chest: Savage Gladiator Chain; hands: Devilsaur Gauntlets; legs: Devilsaur Leggings; feet: Shadowcraft Boots; trinket1: Smokey's Lighter; main_hand: Blazing Rapier; off_hand: Dawn's Edge; ranged: Blackcrow
 
 No-known-source sample (15 of 3788, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 790 Forester's Axe; 791 Gnarled Ash Staff; 811 Axe of the Deep Woods; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff
 
 ### Band 60 (troll, 0000000000000000-32005500005000000-500230131051120151)
 
-Set DPS (verified): 209.0. Weights run: 1.8s. Verify run: 2.0s. 4385 eligible items had no known source.
+Set DPS (verified): 215.7. Weights run: 2.1s. Verify run: 2.3s. 4385 eligible items had no known source.
 
-Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.002, agility=1.316 ± 0.049, strength=1.000 ± 0.002, crit=6.716 ± 0.257, hit=6.890 ± 0.771, melee_haste=not significant (2.246 ± 1.449)
+Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): attack_power=1.000 ± 0.001, agility=1.205 ± 0.024, strength=1.000 ± 0.001, crit=6.402 ± 0.250, hit=5.883 ± 0.716, melee_haste=not significant (0.393 ± 1.319)
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Bloodvine Goggles (19999) | Engineering [crafted] | 231.8 | yes |
-| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 214.1 | yes |
-| shoulder | Cryptstalker Spaulders (22439) | Quests [quest] | 132.2 | yes |
-| back | Cloak of the Unseen Path (21403) | Quests [quest] | 91.3 | yes |
-| chest | Cryptstalker Tunic (22436) | Quests [quest] | 222.2 | yes |
-| wrist | Cryptstalker Wristguards (22443) | Quests [quest] | 103.1 | yes |
-| hands | Marshal's Chain Grips (16463) | Captain Dirgehammer [vendor] | 121.7 | yes |
-| waist | Cryptstalker Girdle (22442) | Quests [quest] | 193.2 | yes |
-| legs | Legionnaire's Chain Legguards (22875) | Lady Palanseer [vendor] | 209.1 | yes |
-| feet | Cryptstalker Boots (22440) | Quests [quest] | 112.3 | yes |
-| finger1 | Band of Unnatural Forces (23038) | Naxxramas [raid] | 214.9 | yes |
-| finger2 | Don Julio's Band (19325) | Frostwolf Clan [rep] | 178.9 | yes |
+| head | Cryptstalker Headpiece (22438) | Quests [quest] | 216.6 | yes |
+| neck | Stormrage's Talisman of Seething (23053) | Naxxramas [raid] | 205.3 | yes |
+| shoulder | Cryptstalker Spaulders (22439) | Quests [quest] | 124.6 | yes |
+| back | Cloak of the Unseen Path (21403) | Quests [quest] | 79.3 | yes |
+| chest | Cryptstalker Tunic (22436) | Quests [quest] | 202.7 | yes |
+| wrist | Qiraji Execution Bracers (21602) | Ahn'Qiraj [raid] | 93.1 | yes |
+| hands | Marshal's Chain Grips (16463) | Captain Dirgehammer [vendor] | 114.9 | yes |
+| waist | Cryptstalker Girdle (22442) | Quests [quest] | 176.2 | yes |
+| legs | Legionnaire's Chain Legguards (22875) | Lady Palanseer [vendor] | 198.5 | yes |
+| feet | Cryptstalker Boots (22440) | Quests [quest] | 98.6 | yes |
+| finger1 | Band of Unnatural Forces (23038) | Naxxramas [raid] | 200.5 | yes |
+| finger2 | Don Julio's Band (19325) | Frostwolf Clan [rep] | 164.5 | yes |
 | trinket1 | Slayer's Crest (23041) | Naxxramas [raid] | 64.0 | yes |
-| trinket2 | Kiss of the Spider (22954) | Naxxramas [raid] | 162.9 | yes |
-| main_hand | Thunderfury, Blessed Blade of the Windseeker (19019) | Quests [quest] | 761.9 | yes |
-| off_hand | Death's Sting (21126) | Ahn'Qiraj [raid] | 967.5 | yes |
-| ranged | Larvae of the Great Worm (23557) | Ahn'Qiraj [raid] | 112.0 | yes |
+| trinket2 | Kiss of the Spider (22954) | Naxxramas [raid] | 148.5 | yes |
+| main_hand | Thunderfury, Blessed Blade of the Windseeker (19019) | Quests [quest] | 761.3 | yes |
+| off_hand | Blessed Qiraji Pugio (21244) | Quests [quest] | 1014.7 | yes |
+| ranged | Larvae of the Great Worm (23557) | Ahn'Qiraj [raid] | 107.6 | yes |
 
-**New at 60:** head: Bloodvine Goggles; neck: Stormrage's Talisman of Seething; shoulder: Cryptstalker Spaulders; back: Cloak of the Unseen Path; chest: Cryptstalker Tunic; wrist: Cryptstalker Wristguards; hands: Marshal's Chain Grips; waist: Cryptstalker Girdle; legs: Legionnaire's Chain Legguards; feet: Cryptstalker Boots; finger1: Band of Unnatural Forces; finger2: Don Julio's Band; trinket1: Slayer's Crest; trinket2: Kiss of the Spider; main_hand: Thunderfury, Blessed Blade of the Windseeker; off_hand: Death's Sting; ranged: Larvae of the Great Worm
+**New at 60:** head: Cryptstalker Headpiece; neck: Stormrage's Talisman of Seething; shoulder: Cryptstalker Spaulders; back: Cloak of the Unseen Path; chest: Cryptstalker Tunic; wrist: Qiraji Execution Bracers; hands: Marshal's Chain Grips; waist: Cryptstalker Girdle; legs: Legionnaire's Chain Legguards; feet: Cryptstalker Boots; finger1: Band of Unnatural Forces; finger2: Don Julio's Band; trinket1: Slayer's Crest; trinket2: Kiss of the Spider; main_hand: Thunderfury, Blessed Blade of the Windseeker; off_hand: Blessed Qiraji Pugio; ranged: Larvae of the Great Worm
 
 No-known-source sample (15 of 4385, see the JSON for more): 720 Brawler Gloves; 727 Notched Shortsword; 753 Dragonmaw Shortsword; 754 Shortsword of Vengeance; 790 Forester's Axe; 791 Gnarled Ash Staff; 811 Axe of the Deep Woods; 816 Small Hand Blade; 820 Slicer Blade; 821 Riverpaw Leather Vest; 826 Brutish Riverpaw Axe; 832 Silver Defias Belt; 863 Gloom Reaper; 864 Knightly Longsword; 866 Monk's Staff
 

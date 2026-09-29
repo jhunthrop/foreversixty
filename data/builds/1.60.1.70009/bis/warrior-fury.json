@@ -1,8 +1,8 @@
 {
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
-  "engine_version": "84575e84b",
-  "generated_at": "2026-09-29T04:05:24Z",
+  "engine_version": "038e51a61",
+  "generated_at": "2026-09-29T06:24:28Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -201,8 +201,8 @@
         "off_hand: Engineer's Hammer",
         "ranged: Rough Boomstick"
       ],
-      "weights_run_seconds": 1.585380097,
-      "verify_run_seconds": 0.665801674
+      "weights_run_seconds": 1.579186418,
+      "verify_run_seconds": 0.679771571
     },
     {
       "spec": "warrior-fury",
@@ -409,8 +409,8 @@
         "off_hand: Kris of Orgrimmar",
         "ranged: Orcish Battle Bow"
       ],
-      "weights_run_seconds": 1.585380097,
-      "verify_run_seconds": 0.952453124
+      "weights_run_seconds": 1.579186418,
+      "verify_run_seconds": 0.963303908
     },
     {
       "spec": "warrior-fury",
@@ -621,8 +621,8 @@
         "off_hand: Big Bronze Knife",
         "ranged: Daryl's Hunting Rifle"
       ],
-      "weights_run_seconds": 1.5843554659999999,
-      "verify_run_seconds": 1.242198656
+      "weights_run_seconds": 1.577381232,
+      "verify_run_seconds": 1.2044953760000001
     },
     {
       "spec": "warrior-fury",
@@ -835,8 +835,8 @@
         "main_hand: Wingblade",
         "off_hand: Claystone Shortsword"
       ],
-      "weights_run_seconds": 1.5843554659999999,
-      "verify_run_seconds": 1.171153224
+      "weights_run_seconds": 1.577381232,
+      "verify_run_seconds": 1.192811198
     },
     {
       "spec": "warrior-fury",
@@ -1011,13 +1011,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 17046,
-          "item_name": "Gutterblade",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 232.2133067241387,
-          "verified": true,
-          "swap_note": "beat the scored pick Butcher's Cleaver (id 1292) in the sim: 25.6 vs 25.3 set DPS"
+          "item_id": 1292,
+          "item_name": "Butcher's Cleaver",
+          "source": "Shadowfang Keep: Razorclaw the Butcher",
+          "source_kind": "dungeon",
+          "score": 237.1125737160323,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -1039,7 +1038,7 @@
           "verified": true
         }
       ],
-      "set_dps": 28.301454118055926,
+      "set_dps": 27.79470751542489,
       "no_source_count": 1673,
       "no_source_sample": [
         "727 Notched Shortsword",
@@ -1072,12 +1071,12 @@
         "finger2: Seal of Wrynn",
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty",
-        "main_hand: Gutterblade",
+        "main_hand: Butcher's Cleaver",
         "off_hand: Cruel Barb",
         "ranged: Dwarven Fishing Pole"
       ],
-      "weights_run_seconds": 1.604767161,
-      "verify_run_seconds": 1.454517236
+      "weights_run_seconds": 1.578808332,
+      "verify_run_seconds": 1.454203477
     },
     {
       "spec": "warrior-fury",
@@ -1252,13 +1251,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 5191,
-          "item_name": "Cruel Barb",
-          "source": "The Deadmines: Edwin VanCleef",
+          "item_id": 1292,
+          "item_name": "Butcher's Cleaver",
+          "source": "Shadowfang Keep: Razorclaw the Butcher",
           "source_kind": "dungeon",
-          "score": 229.56,
-          "verified": true,
-          "swap_note": "beat the scored pick Butcher's Cleaver (id 1292) in the sim: 25.8 vs 24.9 set DPS"
+          "score": 237.1125737160323,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -1279,7 +1277,7 @@
           "verified": true
         }
       ],
-      "set_dps": 26.64541544452364,
+      "set_dps": 25.707003898331255,
       "no_source_count": 1668,
       "no_source_sample": [
         "727 Notched Shortsword",
@@ -1313,11 +1311,11 @@
         "finger2: Legionnaire's Band",
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty",
-        "main_hand: Cruel Barb",
+        "main_hand: Butcher's Cleaver",
         "off_hand: Cruel Barb"
       ],
-      "weights_run_seconds": 1.604767161,
-      "verify_run_seconds": 1.383623882
+      "weights_run_seconds": 1.578808332,
+      "verify_run_seconds": 1.4143602180000001
     },
     {
       "spec": "warrior-fury",
@@ -1549,8 +1547,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Bite of Serra'kis"
       ],
-      "weights_run_seconds": 1.709552915,
-      "verify_run_seconds": 1.4014111200000001
+      "weights_run_seconds": 1.717921972,
+      "verify_run_seconds": 1.397904222
     },
     {
       "spec": "warrior-fury",
@@ -1783,8 +1781,8 @@
         "main_hand: Meteor Shard",
         "off_hand: Butcher's Cleaver"
       ],
-      "weights_run_seconds": 1.709552915,
-      "verify_run_seconds": 1.63284542
+      "weights_run_seconds": 1.717921972,
+      "verify_run_seconds": 1.631547769
     },
     {
       "spec": "warrior-fury",
@@ -1963,13 +1961,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7687,
-          "item_name": "Ironspine's Fist",
-          "source": "Scarlet Monastery: Ironspine",
+          "item_id": 6692,
+          "item_name": "Pronged Reaver",
+          "source": "Razorfen Kraul: Charlga Razorflank",
           "source_kind": "dungeon",
-          "score": 332.6120172528082,
-          "verified": true,
-          "swap_note": "beat the scored pick Pronged Reaver (id 6692) in the sim: 40.6 vs 40.5 set DPS"
+          "score": 343.8200123234344,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -1990,7 +1987,7 @@
           "verified": true
         }
       ],
-      "set_dps": 41.72876872263275,
+      "set_dps": 41.48639697920248,
       "no_source_count": 2474,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -2022,12 +2019,12 @@
         "finger2: Silverlaine's Family Seal",
         "trinket1: Talisman of Arathor",
         "trinket2: Rune of Perfection",
-        "main_hand: Ironspine's Fist",
+        "main_hand: Pronged Reaver",
         "off_hand: Ironspine's Fist",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 1.7092690529999999,
-      "verify_run_seconds": 1.71432184
+      "weights_run_seconds": 1.71421161,
+      "verify_run_seconds": 1.726281788
     },
     {
       "spec": "warrior-fury",
@@ -2203,13 +2200,12 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7687,
-          "item_name": "Ironspine's Fist",
-          "source": "Scarlet Monastery: Ironspine",
+          "item_id": 6692,
+          "item_name": "Pronged Reaver",
+          "source": "Razorfen Kraul: Charlga Razorflank",
           "source_kind": "dungeon",
-          "score": 332.6120172528082,
-          "verified": true,
-          "swap_note": "beat the scored pick Pronged Reaver (id 6692) in the sim: 41.6 vs 41.4 set DPS"
+          "score": 343.8200123234344,
+          "verified": true
         },
         {
           "slot": "off_hand",
@@ -2230,7 +2226,7 @@
           "verified": true
         }
       ],
-      "set_dps": 42.738877896008866,
+      "set_dps": 42.466433912190425,
       "no_source_count": 2469,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -2262,12 +2258,12 @@
         "finger2: Legionnaire's Band",
         "trinket1: Defiler's Talisman",
         "trinket2: Rune of Perfection",
-        "main_hand: Ironspine's Fist",
+        "main_hand: Pronged Reaver",
         "off_hand: Ironspine's Fist",
         "ranged: Master Hunter's Rifle"
       ],
-      "weights_run_seconds": 1.7092690529999999,
-      "verify_run_seconds": 1.715214646
+      "weights_run_seconds": 1.71421161,
+      "verify_run_seconds": 1.7158339439999999
     },
     {
       "spec": "warrior-fury",
@@ -2495,8 +2491,8 @@
         "main_hand: Sword of Serenity",
         "off_hand: Black Menace"
       ],
-      "weights_run_seconds": 1.882760304,
-      "verify_run_seconds": 1.8731547499999999
+      "weights_run_seconds": 1.8954608830000002,
+      "verify_run_seconds": 1.889587309
     },
     {
       "spec": "warrior-fury",
@@ -2591,12 +2587,13 @@
         },
         {
           "slot": "wrist",
-          "item_id": 4132,
-          "item_name": "Darkspear Armsplints",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 12.109895738237148,
-          "verified": true
+          "item_id": 6902,
+          "item_name": "Bands of Serra'kis",
+          "source": "Blackfathom Deeps",
+          "source_kind": "dungeon",
+          "score": 10.379910632774699,
+          "verified": true,
+          "swap_note": "beat the scored pick Darkspear Armsplints (id 4132) in the sim: 41.4 vs 41.4 set DPS"
         },
         {
           "slot": "hands",
@@ -2627,12 +2624,13 @@
         },
         {
           "slot": "feet",
-          "item_id": 4136,
-          "item_name": "Darkspear Boots",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 15.569865949162049,
-          "verified": true
+          "item_id": 3847,
+          "item_name": "Golden Scale Boots",
+          "source": "Blacksmithing",
+          "source_kind": "crafted",
+          "score": 13.839880843699598,
+          "verified": true,
+          "swap_note": "beat the scored pick Darkspear Boots (id 4136) in the sim: 41.4 vs 41.4 set DPS"
         },
         {
           "slot": "finger1",
@@ -2645,12 +2643,13 @@
         },
         {
           "slot": "finger2",
-          "item_id": 19513,
-          "item_name": "Legionnaire's Band",
-          "source": "Kelm Hargunth",
-          "source_kind": "vendor",
-          "score": 11.236956357487049,
-          "verified": true
+          "item_id": 6321,
+          "item_name": "Silverlaine's Family Seal",
+          "source": "Shadowfang Keep: Baron Silverlaine",
+          "source_kind": "dungeon",
+          "score": 8.649925527312249,
+          "verified": true,
+          "swap_note": "beat the scored pick Legionnaire's Band (id 19513) in the sim: 41.4 vs 41.4 set DPS"
         },
         {
           "slot": "trinket1",
@@ -2671,21 +2670,22 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 3854,
-          "item_name": "Frost Tiger Blade",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 452.2095087951182,
+          "item_id": 7714,
+          "item_name": "Hypnotic Blade",
+          "source": "Scarlet Monastery: Arcanist Doan",
+          "source_kind": "dungeon",
+          "score": 375.06,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "item_id": 9680,
-          "item_name": "Tok'kar's Murloc Shanker",
-          "source": "Quests",
-          "source_kind": "quest",
-          "score": 350.85704572471235,
-          "verified": true
+          "item_id": 6692,
+          "item_name": "Pronged Reaver",
+          "source": "Razorfen Kraul: Charlga Razorflank",
+          "source_kind": "dungeon",
+          "score": 344.08992552731223,
+          "verified": true,
+          "swap_note": "beat the scored pick Tok'kar's Murloc Shanker (id 9680) in the sim: 41.5 vs 41.4 set DPS"
         },
         {
           "slot": "ranged",
@@ -2697,7 +2697,7 @@
           "verified": true
         }
       ],
-      "set_dps": 42.723076807703244,
+      "set_dps": 41.10785200321972,
       "no_source_count": 2794,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -2717,12 +2717,15 @@
         "865 Leaden Mace"
       ],
       "new_at_band": [
+        "wrist: Bands of Serra'kis",
         "hands: Fletcher's Gloves",
-        "main_hand: Frost Tiger Blade",
-        "off_hand: Tok'kar's Murloc Shanker"
+        "feet: Golden Scale Boots",
+        "finger2: Silverlaine's Family Seal",
+        "main_hand: Hypnotic Blade",
+        "off_hand: Pronged Reaver"
       ],
-      "weights_run_seconds": 1.882760304,
-      "verify_run_seconds": 1.571503437
+      "weights_run_seconds": 1.8954608830000002,
+      "verify_run_seconds": 2.066135041
     },
     {
       "spec": "warrior-fury",
@@ -2841,7 +2844,7 @@
           "source_kind": "vendor",
           "score": 30,
           "verified": true,
-          "swap_note": "beat the scored pick Highlander's Chain Girdle (id 20089) in the sim: 52.3 vs 52.0 set DPS"
+          "swap_note": "beat the scored pick Highlander's Chain Girdle (id 20089) in the sim: 49.1 vs 48.8 set DPS"
         },
         {
           "slot": "legs",
@@ -2897,11 +2900,11 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 3854,
-          "item_name": "Frost Tiger Blade",
-          "source": "Blacksmithing",
-          "source_kind": "crafted",
-          "score": 464.036764806493,
+          "item_id": 10750,
+          "item_name": "Lifeforce Dirk",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 503.15999999999997,
           "verified": true
         },
         {
@@ -2923,7 +2926,7 @@
           "verified": true
         }
       ],
-      "set_dps": 52.32943939867453,
+      "set_dps": 49.12918093958643,
       "no_source_count": 3227,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -2954,11 +2957,11 @@
         "finger1: Protector's Band",
         "trinket1: Carrot on a Stick",
         "trinket2: Mark of the Chosen",
-        "main_hand: Frost Tiger Blade",
+        "main_hand: Lifeforce Dirk",
         "off_hand: Gryphon Rider's Stormhammer"
       ],
-      "weights_run_seconds": 1.956037604,
-      "verify_run_seconds": 1.589597589
+      "weights_run_seconds": 1.9273847389999998,
+      "verify_run_seconds": 1.5670307829999999
     },
     {
       "spec": "warrior-fury",
@@ -3195,8 +3198,8 @@
         "main_hand: Lifeforce Dirk",
         "off_hand: Axe of the Ebon Drake"
       ],
-      "weights_run_seconds": 1.956037604,
-      "verify_run_seconds": 1.719619362
+      "weights_run_seconds": 1.9273847389999998,
+      "verify_run_seconds": 1.715792738
     },
     {
       "spec": "warrior-fury",
@@ -3426,8 +3429,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 2.058838191,
-      "verify_run_seconds": 1.956218683
+      "weights_run_seconds": 2.053993956,
+      "verify_run_seconds": 1.935365879
     },
     {
       "spec": "warrior-fury",
@@ -3659,8 +3662,8 @@
         "main_hand: Enchanted Azsharite Felbane Sword",
         "off_hand: Enchanted Azsharite Felbane Dagger"
       ],
-      "weights_run_seconds": 2.058838191,
-      "verify_run_seconds": 2.026059028
+      "weights_run_seconds": 2.053993956,
+      "verify_run_seconds": 1.982038422
     },
     {
       "spec": "warrior-fury",
@@ -3752,7 +3755,7 @@
           "source_kind": "quest",
           "score": 28,
           "verified": true,
-          "swap_note": "beat the scored pick Ornate Mithril Breastplate (id 7935) in the sim: 67.1 vs 66.8 set DPS"
+          "swap_note": "beat the scored pick Ornate Mithril Breastplate (id 7935) in the sim: 58.3 vs 57.7 set DPS"
         },
         {
           "slot": "wrist",
@@ -3789,7 +3792,7 @@
           "source_kind": "quest",
           "score": 98.0188129220072,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 67.4 vs 66.8 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 58.7 vs 57.7 set DPS"
         },
         {
           "slot": "feet",
@@ -3837,21 +3840,22 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7959,
-          "item_name": "Blight",
+          "item_id": 12774,
+          "item_name": "Dawn's Edge",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 606.62,
+          "score": 577.5045609631719,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "item_id": 17719,
-          "item_name": "Inventor's Focal Sword",
-          "source": "Maraudon: Tinkerer Gizlock",
-          "source_kind": "dungeon",
-          "score": 560.7045609631718,
-          "verified": true
+          "item_id": 12061,
+          "item_name": "Blade of Reckoning",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 521.62,
+          "verified": true,
+          "swap_note": "beat the scored pick Inventor's Focal Sword (id 17719) in the sim: 78.1 vs 57.7 set DPS"
         },
         {
           "slot": "ranged",
@@ -3860,11 +3864,10 @@
           "source": "Blackrock Depths: Houndmaster Grebmar",
           "source_kind": "dungeon",
           "score": 17.388397404500342,
-          "verified": true,
-          "swap_note": "beat the scored pick Dark Iron Rifle (id 16004) in the sim: 67.3 vs 66.8 set DPS"
+          "verified": true
         }
       ],
-      "set_dps": 68.70285117753231,
+      "set_dps": 79.44519188942044,
       "no_source_count": 4059,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -3891,12 +3894,12 @@
         "feet: Highlander's Lamellar Greaves",
         "finger1: Blackstone Ring",
         "finger2: Protector's Band",
-        "main_hand: Blight",
-        "off_hand: Inventor's Focal Sword",
+        "main_hand: Dawn's Edge",
+        "off_hand: Blade of Reckoning",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.068837361,
-      "verify_run_seconds": 1.6669416190000002
+      "weights_run_seconds": 2.095313444,
+      "verify_run_seconds": 1.675274613
     },
     {
       "spec": "warrior-fury",
@@ -3961,7 +3964,7 @@
           "source_kind": "quest",
           "score": 13.493476454051873,
           "verified": true,
-          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 67.4 vs 67.0 set DPS"
+          "swap_note": "beat the scored pick Ghostshard Talisman (id 7731) in the sim: 51.2 vs 50.9 set DPS"
         },
         {
           "slot": "shoulder",
@@ -3971,7 +3974,7 @@
           "source_kind": "dungeon",
           "score": 21.553589618001368,
           "verified": true,
-          "swap_note": "beat the scored pick Earthslag Shoulders (id 11632) in the sim: 67.0 vs 67.0 set DPS"
+          "swap_note": "beat the scored pick Earthslag Shoulders (id 11632) in the sim: 50.9 vs 50.9 set DPS"
         },
         {
           "slot": "back",
@@ -3990,7 +3993,7 @@
           "source_kind": "quest",
           "score": 39.51491429966918,
           "verified": true,
-          "swap_note": "beat the scored pick Ornate Mithril Breastplate (id 7935) in the sim: 68.2 vs 67.0 set DPS"
+          "swap_note": "beat the scored pick Ornate Mithril Breastplate (id 7935) in the sim: 52.3 vs 50.9 set DPS"
         },
         {
           "slot": "wrist",
@@ -4027,17 +4030,17 @@
           "source_kind": "quest",
           "score": 98.0188129220072,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 67.7 vs 67.0 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Pants (id 15057) in the sim: 51.8 vs 50.9 set DPS"
         },
         {
           "slot": "feet",
-          "item_id": 20211,
-          "item_name": "Defiler's Plate Greaves",
-          "source": "Rutherford Twing",
-          "source_kind": "vendor",
-          "score": 22.77599231100258,
+          "item_id": 11919,
+          "item_name": "Cragplate Greaves",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 21.553589618001368,
           "verified": true,
-          "effect_unmodelled": true
+          "swap_note": "beat the scored pick Defiler's Plate Greaves (id 20211) in the sim: 50.9 vs 50.9 set DPS"
         },
         {
           "slot": "finger1",
@@ -4056,7 +4059,7 @@
           "source_kind": "vendor",
           "score": 20.678006326718997,
           "verified": true,
-          "swap_note": "beat the scored pick White Bone Band (id 11862) in the sim: 67.2 vs 67.0 set DPS"
+          "swap_note": "beat the scored pick White Bone Band (id 11862) in the sim: 51.0 vs 50.9 set DPS"
         },
         {
           "slot": "trinket1",
@@ -4076,21 +4079,22 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7959,
-          "item_name": "Blight",
+          "item_id": 12774,
+          "item_name": "Dawn's Edge",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 606.62,
+          "score": 577.5045609631719,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "item_id": 17719,
-          "item_name": "Inventor's Focal Sword",
-          "source": "Maraudon: Tinkerer Gizlock",
-          "source_kind": "dungeon",
-          "score": 560.7045609631718,
-          "verified": true
+          "item_id": 10696,
+          "item_name": "Enchanted Azsharite Felbane Sword",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 518.5,
+          "verified": true,
+          "swap_note": "beat the scored pick Inventor's Focal Sword (id 17719) in the sim: 59.0 vs 50.9 set DPS"
         },
         {
           "slot": "ranged",
@@ -4102,7 +4106,7 @@
           "verified": true
         }
       ],
-      "set_dps": 69.36810632347266,
+      "set_dps": 61.294724017867594,
       "no_source_count": 4054,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4126,15 +4130,15 @@
         "shoulder: Big Bad Pauldrons",
         "wrist: Bracers of the Stone Princess",
         "waist: Defiler's Chain Girdle",
-        "feet: Defiler's Plate Greaves",
+        "feet: Cragplate Greaves",
         "finger1: Blackstone Ring",
         "finger2: Legionnaire's Band",
-        "main_hand: Blight",
-        "off_hand: Inventor's Focal Sword",
+        "main_hand: Dawn's Edge",
+        "off_hand: Enchanted Azsharite Felbane Sword",
         "ranged: Houndmaster's Bow"
       ],
-      "weights_run_seconds": 2.068837361,
-      "verify_run_seconds": 1.69202349
+      "weights_run_seconds": 2.095313444,
+      "verify_run_seconds": 1.734143454
     },
     {
       "spec": "warrior-fury",
@@ -4184,13 +4188,12 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 13404,
-          "item_name": "Mask of the Unforgiven",
-          "source": "Stratholme: The Unforgiven",
+          "item_id": 11735,
+          "item_name": "Ragefury Eyepatch",
+          "source": "Blackrock Depths: Guzzler",
           "source_kind": "dungeon",
-          "score": 224.18983857085973,
-          "verified": true,
-          "swap_note": "beat the scored pick Ragefury Eyepatch (id 11735) in the sim: 76.2 vs 75.9 set DPS"
+          "score": 291.6452804871073,
+          "verified": true
         },
         {
           "slot": "neck",
@@ -4207,9 +4210,9 @@
           "item_name": "Lightforge Spaulders",
           "source": "Blackrock Spire: The Beast",
           "source_kind": "dungeon",
-          "score": 59.755546599423354,
+          "score": 59.75554659942336,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Shoulders (id 15058) in the sim: 76.3 vs 75.9 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Shoulders (id 15058) in the sim: 66.3 vs 65.1 set DPS"
         },
         {
           "slot": "back",
@@ -4219,7 +4222,7 @@
           "source_kind": "rep",
           "score": 24,
           "verified": true,
-          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 75.9 vs 75.9 set DPS"
+          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 65.2 vs 65.1 set DPS"
         },
         {
           "slot": "chest",
@@ -4229,7 +4232,7 @@
           "source_kind": "dungeon",
           "score": 248.390629175489,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 76.8 vs 75.9 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 67.3 vs 65.1 set DPS"
         },
         {
           "slot": "wrist",
@@ -4239,7 +4242,7 @@
           "source_kind": "dungeon",
           "score": 28,
           "verified": true,
-          "swap_note": "beat the scored pick Vambraces of the Sadist (id 13400) in the sim: 75.9 vs 75.9 set DPS"
+          "swap_note": "beat the scored pick Vambraces of the Sadist (id 13400) in the sim: 65.3 vs 65.1 set DPS"
         },
         {
           "slot": "hands",
@@ -4265,7 +4268,7 @@
           "item_name": "Titanic Leggings",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 290.97964138977477,
+          "score": 290.9796413897748,
           "verified": true
         },
         {
@@ -4276,7 +4279,7 @@
           "source_kind": "crafted",
           "score": 28.94224788819653,
           "verified": true,
-          "swap_note": "beat the scored pick Greaves of Withering Despair (id 22240) in the sim: 76.3 vs 75.9 set DPS"
+          "swap_note": "beat the scored pick Greaves of Withering Despair (id 22240) in the sim: 65.7 vs 65.1 set DPS"
         },
         {
           "slot": "finger1",
@@ -4314,21 +4317,22 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7959,
-          "item_name": "Blight",
+          "item_id": 12774,
+          "item_name": "Dawn's Edge",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 606.62,
+          "score": 649.1636599616621,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "item_id": 17719,
-          "item_name": "Inventor's Focal Sword",
-          "source": "Maraudon: Tinkerer Gizlock",
-          "source_kind": "dungeon",
-          "score": 632.363659961662,
-          "verified": true
+          "item_id": 15806,
+          "item_name": "Mirah's Song",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 582.6430265289723,
+          "verified": true,
+          "swap_note": "beat the scored pick Inventor's Focal Sword (id 17719) in the sim: 90.1 vs 65.1 set DPS"
         },
         {
           "slot": "ranged",
@@ -4340,7 +4344,7 @@
           "verified": true
         }
       ],
-      "set_dps": 79.14455604277703,
+      "set_dps": 93.56061599197426,
       "no_source_count": 4445,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4360,7 +4364,7 @@
         "832 Silver Defias Belt"
       ],
       "new_at_band": [
-        "head: Mask of the Unforgiven",
+        "head: Ragefury Eyepatch",
         "neck: Stormpike Soldier's Pendant",
         "shoulder: Lightforge Spaulders",
         "back: Stormpike Soldier's Cloak",
@@ -4373,10 +4377,11 @@
         "finger2: Blackstone Ring",
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood",
+        "off_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.085416697,
-      "verify_run_seconds": 1.666912796
+      "weights_run_seconds": 2.078214562,
+      "verify_run_seconds": 1.718675408
     },
     {
       "spec": "warrior-fury",
@@ -4441,27 +4446,25 @@
           "source_kind": "quest",
           "score": 15.964046247080859,
           "verified": true,
-          "swap_note": "beat the scored pick Frostwolf Legionnaire's Pendant (id 19095) in the sim: 76.2 vs 76.0 set DPS"
+          "swap_note": "beat the scored pick Frostwolf Legionnaire's Pendant (id 19095) in the sim: 58.9 vs 58.8 set DPS"
         },
         {
           "slot": "shoulder",
-          "item_id": 16729,
-          "item_name": "Lightforge Spaulders",
-          "source": "Blackrock Spire: The Beast",
-          "source_kind": "dungeon",
-          "score": 59.75554659942336,
-          "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Shoulders (id 15058) in the sim: 76.3 vs 76.0 set DPS"
+          "item_id": 15058,
+          "item_name": "Stormshroud Shoulders",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 139.14365996166214,
+          "verified": true
         },
         {
           "slot": "back",
-          "item_id": 19083,
-          "item_name": "Frostwolf Legionnaire's Cloak",
-          "source": "Frostwolf Clan",
-          "source_kind": "rep",
-          "score": 24,
-          "verified": true,
-          "swap_note": "beat the scored pick Tattered Hakkari Cape (id 20219) in the sim: 76.1 vs 76.0 set DPS"
+          "item_id": 20219,
+          "item_name": "Tattered Hakkari Cape",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 24.489594366935528,
+          "verified": true
         },
         {
           "slot": "chest",
@@ -4471,7 +4474,7 @@
           "source_kind": "dungeon",
           "score": 248.390629175489,
           "verified": true,
-          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 77.3 vs 76.0 set DPS"
+          "swap_note": "beat the scored pick Stormshroud Armor (id 15056) in the sim: 60.0 vs 58.8 set DPS"
         },
         {
           "slot": "wrist",
@@ -4517,7 +4520,7 @@
           "source_kind": "crafted",
           "score": 28.94224788819653,
           "verified": true,
-          "swap_note": "beat the scored pick Greaves of Withering Despair (id 22240) in the sim: 76.1 vs 76.0 set DPS"
+          "swap_note": "beat the scored pick Greaves of Withering Despair (id 22240) in the sim: 59.2 vs 58.8 set DPS"
         },
         {
           "slot": "finger1",
@@ -4555,21 +4558,22 @@
         },
         {
           "slot": "main_hand",
-          "item_id": 7959,
-          "item_name": "Blight",
+          "item_id": 12774,
+          "item_name": "Dawn's Edge",
           "source": "Blacksmithing",
           "source_kind": "crafted",
-          "score": 606.62,
+          "score": 649.1636599616621,
           "verified": true
         },
         {
           "slot": "off_hand",
-          "item_id": 17719,
-          "item_name": "Inventor's Focal Sword",
-          "source": "Maraudon: Tinkerer Gizlock",
-          "source_kind": "dungeon",
-          "score": 632.363659961662,
-          "verified": true
+          "item_id": 15806,
+          "item_name": "Mirah's Song",
+          "source": "Quests",
+          "source_kind": "quest",
+          "score": 582.6430265289723,
+          "verified": true,
+          "swap_note": "beat the scored pick Inventor's Focal Sword (id 17719) in the sim: 85.8 vs 58.8 set DPS"
         },
         {
           "slot": "ranged",
@@ -4581,7 +4585,7 @@
           "verified": true
         }
       ],
-      "set_dps": 78.5516045363355,
+      "set_dps": 88.13451249590685,
       "no_source_count": 4440,
       "no_source_sample": [
         "720 Brawler Gloves",
@@ -4602,8 +4606,7 @@
       ],
       "new_at_band": [
         "head: Ragefury Eyepatch",
-        "shoulder: Lightforge Spaulders",
-        "back: Frostwolf Legionnaire's Cloak",
+        "shoulder: Stormshroud Shoulders",
         "chest: Savage Gladiator Chain",
         "wrist: Vambraces of the Sadist",
         "hands: Devilsaur Gauntlets",
@@ -4614,10 +4617,11 @@
         "finger2: Blackstone Ring",
         "trinket1: Smokey's Lighter",
         "trinket2: Demon's Blood",
+        "off_hand: Mirah's Song",
         "ranged: Blackcrow"
       ],
-      "weights_run_seconds": 2.085416697,
-      "verify_run_seconds": 1.715379934
+      "weights_run_seconds": 2.078214562,
+      "verify_run_seconds": 1.776685115
     },
     {
       "spec": "warrior-fury",
@@ -4860,8 +4864,8 @@
         "off_hand: Blessed Qiraji War Axe",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.141938614,
-      "verify_run_seconds": 1.975448439
+      "weights_run_seconds": 2.122561033,
+      "verify_run_seconds": 1.9592888899999998
     },
     {
       "spec": "warrior-fury",
@@ -5104,8 +5108,8 @@
         "off_hand: Blessed Qiraji War Axe",
         "ranged: Larvae of the Great Worm"
       ],
-      "weights_run_seconds": 2.141938614,
-      "verify_run_seconds": 2.040075582
+      "weights_run_seconds": 2.122561033,
+      "verify_run_seconds": 2.03971397
     }
   ]
 }

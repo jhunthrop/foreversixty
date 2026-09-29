@@ -6,7 +6,7 @@ Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane repo
 
 ### Band 10 (gnome, 000000000000000000-10000000000000000-0000000000000000000)
 
-Set DPS (verified): 12.2. Weights run: 0.7s. Verify run: 0.4s. 446 eligible items had no known source.
+Set DPS (verified): 12.3. Weights run: 0.8s. Verify run: 0.4s. 446 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=-5.973 ± 0.398, crit=3.508 ± 0.120, hit=8.814 ± 0.297, spell_haste=-2.090 ± 0.422, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -20,7 +20,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | wrist | - | - |  |  |
 | hands | Wayfaring Gloves (5337) | Quests [quest] | 0.0 | yes |
 | waist | Foreman Belt (3217) | Quests [quest] | 0.0 | yes |
-| legs | Rancher's Trousers (10549) | Quests [quest] | 1.0 | yes |
+| legs | Handstitched Linen Britches (4309) | Tailoring [crafted] | 2.0 | yes |
 | feet | Nat Pagle's Extreme Anglin' Boots (19969) | Quests [quest] | 0.0 | yes |
 | finger1 | Sustaining Ring (6743) | Quests [quest] | 0.0 | yes |
 | finger2 | - | - |  |  |
@@ -30,13 +30,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | Father Flame (13371) | Blackrock Spire [dungeon] | 0.0 | yes |
 | ranged | Spark of the People's Militia (12296) | Quests [quest] | 1.0 | yes |
 
-**New at 10:** head: Lucky Fishing Hat; back: Fine Leather Cloak; chest: Harvester's Robe; hands: Wayfaring Gloves; waist: Foreman Belt; legs: Rancher's Trousers; feet: Nat Pagle's Extreme Anglin' Boots; finger1: Sustaining Ring; main_hand: Craftsman's Dagger; off_hand: Father Flame; ranged: Spark of the People's Militia
+**New at 10:** head: Lucky Fishing Hat; back: Fine Leather Cloak; chest: Harvester's Robe; hands: Wayfaring Gloves; waist: Foreman Belt; legs: Handstitched Linen Britches; feet: Nat Pagle's Extreme Anglin' Boots; finger1: Sustaining Ring; main_hand: Craftsman's Dagger; off_hand: Father Flame; ranged: Spark of the People's Militia
 
 No-known-source sample (15 of 446, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 1287 Giant Tarantula Fang; 1917 Jeweled Dagger; 1933 Staff of Conjuring; 2088 Long Crawler Limb; 2140 Carving Knife; 2266 Stonesplinter Dagger; 2283 Rat Cloth Belt; 2310 Embossed Leather Cloak; 2569 Linen Boots; 2580 Reinforced Linen Cape; 2632 Curved Dagger; 2847 Copper Shortsword; 2957 Journeyman's Vest
 
 ### Band 15 (gnome, 000000000000000000-23100000000000000-0000000000000000000)
 
-Set DPS (verified): 17.1. Weights run: 0.7s. Verify run: 0.5s. 585 eligible items had no known source.
+Set DPS (verified): 17.1. Weights run: 0.8s. Verify run: 0.6s. 585 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=5.049 ± 0.448, crit=2.321 ± 0.090, hit=6.208 ± 0.235, spell_haste=1.355 ± 0.166, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -66,7 +66,7 @@ No-known-source sample (15 of 585, see the JSON for more): 727 Notched Shortswor
 
 ### Band 20 (gnome, 000000000000000000-23510000000000000-0000000000000000000)
 
-Set DPS (verified): 27.4. Weights run: 0.7s. Verify run: 0.6s. 758 eligible items had no known source.
+Set DPS (verified): 27.4. Weights run: 0.8s. Verify run: 0.6s. 758 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=1.617 ± 0.198, crit=2.699 ± 0.108, hit=6.702 ± 0.242, spell_haste=not significant (0.409 ± 0.385), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -96,37 +96,37 @@ No-known-source sample (15 of 758, see the JSON for more): 727 Notched Shortswor
 
 ### Band 25 (gnome, 000000000000000000-23551000000000000-0000000000000000000)
 
-Set DPS (verified): 35.5. Weights run: 0.7s. Verify run: 0.6s. 951 eligible items had no known source.
+Set DPS (verified): 35.9. Weights run: 0.8s. Verify run: 0.6s. 951 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (-0.321 ± 0.397), crit=3.490 ± 0.187, hit=6.512 ± 0.361, spell_haste=not significant (0.452 ± 0.489), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Green Tinted Goggles (4385) | Engineering [crafted] | 0.0 | yes |
+| head | Shadow Goggles (4373) | Engineering [crafted] | 0.0 | yes |
 | neck | Sentinel's Medallion (20444) | Illiyana Moonblaze [vendor] | 0.0 | yes |
-| shoulder | Feline Mantle (3748) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 1.4 | yes |
-| back | Prelacy Cape (7004) | Quests [quest] | 4.0 | yes |
+| shoulder | Feline Mantle (3748) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 4.0 | yes |
+| back | Heavy Woolen Cloak (4311) | Tailoring [crafted] | 4.0 | yes |
 | chest | Robes of Arcana (5770) | Tailoring [crafted] | 8.0 | yes |
 | wrist | Timberland Armguards (5315) | Quests [quest] | 0.0 | yes |
 | hands | Shilly Mitts (9609) | Quests [quest] | 7.0 | yes |
-| waist | Belt of Arugal (6392) | Shadowfang Keep: Archmage Arugal [dungeon] | 8.0 | yes |
-| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 6.4 | yes |
-| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 5.7 | yes |
+| waist | Belt of Arugal (6392) | Shadowfang Keep: Archmage Arugal [dungeon] | 9.0 | yes |
+| legs | Gaze Dreamer Pants (6903) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 12.0 | yes |
+| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 7.0 | yes |
 | finger1 | Ring of Forlorn Spirits (2043) | Quests [quest] | 8.0 | yes |
-| finger2 | Minor Channeling Ring (1449) | Quests [quest] | 4.4 | yes |
+| finger2 | Minor Channeling Ring (1449) | Quests [quest] | 5.0 | yes |
 | trinket1 | Rune of Perfection (21566) | Silverwing Sentinels [rep] | 0.0 | yes |
 | trinket2 | Rune of Duty (21568) | Silverwing Sentinels [rep] | 0.0 | yes |
-| main_hand | Hardened Root Staff (1317) | Quests [quest] | 0.0 | yes |
+| main_hand | Rod of the Sleepwalker (1155) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 0.0 | yes |
 | off_hand | - | - |  |  |
 | ranged | Sizzle Stick (8071) | Quests [quest] | 5.0 | yes |
 
-**New at 25:** head: Green Tinted Goggles; shoulder: Feline Mantle; back: Prelacy Cape; chest: Robes of Arcana; waist: Belt of Arugal; finger1: Ring of Forlorn Spirits; main_hand: Hardened Root Staff
+**New at 25:** shoulder: Feline Mantle; chest: Robes of Arcana; waist: Belt of Arugal; legs: Gaze Dreamer Pants; finger1: Ring of Forlorn Spirits; main_hand: Rod of the Sleepwalker
 
 No-known-source sample (15 of 951, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete
 
 ### Band 30 (gnome, 000000000000000000-23552110020000000-0000000000000000000)
 
-Set DPS (verified): 52.5. Weights run: 0.8s. Verify run: 0.7s. 1115 eligible items had no known source.
+Set DPS (verified): 52.5. Weights run: 0.9s. Verify run: 0.8s. 1115 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.375 ± 0.506), crit=3.624 ± 0.223, hit=6.056 ± 0.383, spell_haste=5.146 ± 0.503, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -150,13 +150,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | - | - |  |  |
 | ranged | Burning Sliver (5249) | Quests [quest] | 6.0 | yes |
 
-**New at 30:** head: Enchanter's Cowl; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Repairman's Cape; chest: Green Silk Armor; wrist: Spidertank Oilrag; hands: Truefaith Gloves; waist: Razzeric's Customized Seatbelt; legs: Gaze Dreamer Pants; feet: Acidic Walkers; finger1: Snake Hoop; finger2: Ring of Forlorn Spirits; trinket1: Talisman of Arathor; trinket2: Rune of Perfection; main_hand: Lorekeeper's Staff; ranged: Burning Sliver
+**New at 30:** head: Enchanter's Cowl; neck: Scorn's Icy Choker; shoulder: Bloodmage Mantle; back: Repairman's Cape; chest: Green Silk Armor; wrist: Spidertank Oilrag; hands: Truefaith Gloves; waist: Razzeric's Customized Seatbelt; feet: Acidic Walkers; finger1: Snake Hoop; finger2: Ring of Forlorn Spirits; trinket1: Talisman of Arathor; trinket2: Rune of Perfection; main_hand: Lorekeeper's Staff; ranged: Burning Sliver
 
 No-known-source sample (15 of 1115, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 791 Gnarled Ash Staff; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak
 
 ### Band 35 (gnome, 000000000000000000-23552110030003010-0000000000000000000)
 
-Set DPS (verified): 54.8. Weights run: 0.8s. Verify run: 0.7s. 1251 eligible items had no known source.
+Set DPS (verified): 54.8. Weights run: 0.8s. Verify run: 0.9s. 1251 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (0.903 ± 0.631), crit=3.966 ± 0.255, hit=5.893 ± 0.422, spell_haste=7.796 ± 0.626, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -186,7 +186,7 @@ No-known-source sample (15 of 1251, see the JSON for more): 727 Notched Shortswo
 
 ### Band 40 (gnome, 000000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 69.5. Weights run: 0.8s. Verify run: 0.7s. 1408 eligible items had no known source.
+Set DPS (verified): 69.5. Weights run: 0.9s. Verify run: 0.8s. 1408 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (1.220 ± 0.772), crit=3.709 ± 0.304, hit=6.038 ± 0.597, spell_haste=7.821 ± 0.995, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -216,7 +216,7 @@ No-known-source sample (15 of 1408, see the JSON for more): 727 Notched Shortswo
 
 ### Band 45 (gnome, 230000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 77.8. Weights run: 0.8s. Verify run: 0.7s. 1551 eligible items had no known source.
+Set DPS (verified): 77.8. Weights run: 0.9s. Verify run: 0.8s. 1551 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.246 ± 0.720), crit=3.788 ± 0.319, hit=7.446 ± 0.644, spell_haste=18.322 ± 1.152, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -246,7 +246,7 @@ No-known-source sample (15 of 1551, see the JSON for more): 727 Notched Shortswo
 
 ### Band 50 (gnome, 253000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 90.2. Weights run: 0.8s. Verify run: 0.7s. 1731 eligible items had no known source.
+Set DPS (verified): 90.2. Weights run: 0.9s. Verify run: 0.8s. 1731 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (0.248 ± 1.140), crit=4.947 ± 0.428, hit=9.366 ± 0.828, spell_haste=14.377 ± 1.359, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -276,7 +276,7 @@ No-known-source sample (15 of 1731, see the JSON for more): 727 Notched Shortswo
 
 ### Band 55 (gnome, 255111000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 101.4. Weights run: 0.8s. Verify run: 0.7s. 1881 eligible items had no known source.
+Set DPS (verified): 101.4. Weights run: 0.9s. Verify run: 0.8s. 1881 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.008, intellect=not significant (1.953 ± 1.458), crit=5.517 ± 0.485, hit=10.332 ± 1.158, spell_haste=8.442 ± 1.611, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.008
 
@@ -306,7 +306,7 @@ No-known-source sample (15 of 1881, see the JSON for more): 727 Notched Shortswo
 
 ### Band 60 (gnome, 255115100000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 184.1. Weights run: 0.9s. Verify run: 0.8s. 2218 eligible items had no known source.
+Set DPS (verified): 184.1. Weights run: 1.0s. Verify run: 0.9s. 2218 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.011, intellect=not significant (1.134 ± 1.662), crit=7.715 ± 0.552, hit=17.053 ± 1.684, spell_haste=not significant (-2.222 ± 2.347), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.011
 
@@ -338,7 +338,7 @@ No-known-source sample (15 of 2218, see the JSON for more): 727 Notched Shortswo
 
 ### Band 10 (orc, 000000000000000000-10000000000000000-0000000000000000000)
 
-Set DPS (verified): 11.5. Weights run: 0.7s. Verify run: 0.4s. 446 eligible items had no known source.
+Set DPS (verified): 16.1. Weights run: 0.8s. Verify run: 0.4s. 446 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=-5.973 ± 0.398, crit=3.508 ± 0.120, hit=8.814 ± 0.297, spell_haste=-2.090 ± 0.422, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -348,11 +348,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | neck | - | - |  |  |
 | shoulder | - | - |  |  |
 | back | Fine Leather Cloak (2308) | Leatherworking [crafted] | 0.0 | yes |
-| chest | Blue Linen Robe (6242) | Tailoring [crafted] | 2.0 | yes |
-| wrist | Featherbead Bracers (15452) | Quests [quest] | -29.9 | yes |
-| hands | Wayfaring Gloves (5337) | Quests [quest] | 0.0 | yes |
-| waist | Jackseed Belt (10820) | Quests [quest] | -17.9 | yes |
-| legs | Handstitched Linen Britches (4309) | Tailoring [crafted] | -9.9 | yes |
+| chest | High Robe of the Adjudicator (3461) | Quests [quest] | 8.0 | yes |
+| wrist | Featherbead Bracers (15452) | Quests [quest] | 0.0 | yes |
+| hands | Brewer's Gloves (10637) | Quests [quest] | 0.0 | yes |
+| waist | Jackseed Belt (10820) | Quests [quest] | 0.0 | yes |
+| legs | Handstitched Linen Britches (4309) | Tailoring [crafted] | 2.0 | yes |
 | feet | Nat Pagle's Extreme Anglin' Boots (19969) | Quests [quest] | 0.0 | yes |
 | finger1 | Ring of Scorn (3235) | Quests [quest] | 0.0 | yes |
 | finger2 | - | - |  |  |
@@ -360,15 +360,15 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | trinket2 | - | - |  |  |
 | main_hand | Darkwood Staff (3446) | Quests [quest] | 0.0 | yes |
 | off_hand | - | - |  |  |
-| ranged | Lesser Magic Wand (11287) | Enchanting [crafted] | 1.0 | yes |
+| ranged | Branding Rod (5356) | Quests [quest] | 2.0 | yes |
 
-**New at 10:** head: Lucky Fishing Hat; back: Fine Leather Cloak; chest: Blue Linen Robe; wrist: Featherbead Bracers; hands: Wayfaring Gloves; waist: Jackseed Belt; legs: Handstitched Linen Britches; feet: Nat Pagle's Extreme Anglin' Boots; finger1: Ring of Scorn; main_hand: Darkwood Staff; ranged: Lesser Magic Wand
+**New at 10:** head: Lucky Fishing Hat; back: Fine Leather Cloak; chest: High Robe of the Adjudicator; wrist: Featherbead Bracers; hands: Brewer's Gloves; waist: Jackseed Belt; legs: Handstitched Linen Britches; feet: Nat Pagle's Extreme Anglin' Boots; finger1: Ring of Scorn; main_hand: Darkwood Staff; ranged: Branding Rod
 
 No-known-source sample (15 of 446, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 1287 Giant Tarantula Fang; 1917 Jeweled Dagger; 1933 Staff of Conjuring; 2088 Long Crawler Limb; 2140 Carving Knife; 2266 Stonesplinter Dagger; 2283 Rat Cloth Belt; 2310 Embossed Leather Cloak; 2569 Linen Boots; 2580 Reinforced Linen Cape; 2632 Curved Dagger; 2847 Copper Shortsword; 2957 Journeyman's Vest
 
 ### Band 15 (orc, 000000000000000000-23100000000000000-0000000000000000000)
 
-Set DPS (verified): 19.7. Weights run: 0.7s. Verify run: 0.5s. 581 eligible items had no known source.
+Set DPS (verified): 19.7. Weights run: 0.8s. Verify run: 0.6s. 581 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=5.049 ± 0.448, crit=2.321 ± 0.090, hit=6.208 ± 0.235, spell_haste=1.355 ± 0.166, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -392,13 +392,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | off_hand | - | - |  |  |
 | ranged | Branding Rod (5356) | Quests [quest] | 12.1 | yes |
 
-**New at 15:** head: Flying Tiger Goggles; back: Black Whelp Cloak; chest: Lesser Spellfire Robes; wrist: Owlbeard Bracers; hands: Jutebraid Gloves; waist: Grassland Sash; legs: Ghastly Trousers; feet: Red Woolen Boots; finger2: Bounty Hunter's Ring; main_hand: Clear Crystal Rod; ranged: Branding Rod
+**New at 15:** head: Flying Tiger Goggles; back: Black Whelp Cloak; chest: Lesser Spellfire Robes; wrist: Owlbeard Bracers; hands: Jutebraid Gloves; waist: Grassland Sash; legs: Ghastly Trousers; feet: Red Woolen Boots; finger2: Bounty Hunter's Ring; main_hand: Clear Crystal Rod
 
 No-known-source sample (15 of 581, see the JSON for more): 727 Notched Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 899 Venom Web Fang; 935 Night Watch Shortsword; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete; 1287 Giant Tarantula Fang; 1300 Lesser Staff of the Spire; 1355 Buckskin Cape; 1391 Riverpaw Mystic Staff; 1405 Foamspittle Staff; 1473 Riverside Staff; 1917 Jeweled Dagger
 
 ### Band 20 (orc, 000000000000000000-23510000000000000-0000000000000000000)
 
-Set DPS (verified): 25.5. Weights run: 0.7s. Verify run: 0.6s. 754 eligible items had no known source.
+Set DPS (verified): 25.5. Weights run: 0.8s. Verify run: 0.7s. 754 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=1.617 ± 0.198, crit=2.699 ± 0.108, hit=6.702 ± 0.242, spell_haste=not significant (0.409 ± 0.385), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -428,37 +428,37 @@ No-known-source sample (15 of 754, see the JSON for more): 727 Notched Shortswor
 
 ### Band 25 (orc, 000000000000000000-23551000000000000-0000000000000000000)
 
-Set DPS (verified): 31.6. Weights run: 0.7s. Verify run: 0.6s. 947 eligible items had no known source.
+Set DPS (verified): 32.5. Weights run: 0.8s. Verify run: 0.7s. 947 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (-0.321 ± 0.397), crit=3.490 ± 0.187, hit=6.512 ± 0.361, spell_haste=not significant (0.452 ± 0.489), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
 | Slot | Item | Source | Score | Verified |
 |---|---|---|---|---|
-| head | Flying Tiger Goggles (4368) | Engineering [crafted] | 0.0 | yes |
+| head | Shadow Goggles (4373) | Engineering [crafted] | 0.0 | yes |
 | neck | Scout's Medallion (20442) | Kelm Hargunth [vendor] | 0.0 | yes |
-| shoulder | Chestnut Mantle (17695) | Quests [quest] | 8.0 | yes |
+| shoulder | Feline Mantle (3748) | Shadowfang Keep: Wolf Master Nandos [dungeon] | 4.0 | yes |
 | back | Windsong Drape (15468) | Quests [quest] | 5.0 | yes |
 | chest | Robes of Arcana (5770) | Tailoring [crafted] | 8.0 | yes |
-| wrist | Owlbeard Bracers (16981) | Quests [quest] | 0.4 | yes |
-| hands | Serpent Gloves (5970) | Wailing Caverns: Lord Serpentis [dungeon] | 7.0 | yes |
+| wrist | Owlbeard Bracers (16981) | Quests [quest] | 1.0 | yes |
+| hands | Jutebraid Gloves (10654) | Quests [quest] | 6.0 | yes |
 | waist | Warsong Sash (16975) | Quests [quest] | 11.0 | yes |
-| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 6.4 | yes |
-| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 5.7 | yes |
+| legs | Abomination Skin Leggings (23173) | Shadowfang Keep: Sever [dungeon] | 9.0 | yes |
+| feet | Spidersilk Boots (4320) | Tailoring [crafted] | 7.0 | yes |
 | finger1 | Advisor's Ring (20426) | Kelm Hargunth [vendor] | 5.0 | yes |
-| finger2 | Sacred Band (6669) | Quests [quest] | 2.0 | yes |
+| finger2 | Lavishly Jeweled Ring (1156) | The Deadmines: Gilnid [dungeon] | 0.0 | yes |
 | trinket1 | Rune of Perfection (21566) | Warsong Outriders [rep] | 0.0 | yes |
 | trinket2 | Rune of Duty (21568) | Warsong Outriders [rep] | 0.0 | yes |
-| main_hand | Rod of the Sleepwalker (1155) | Blackfathom Deeps: Twilight Lord Kelris [dungeon] | 0.0 | yes |
+| main_hand | Defias Rapier (1925) | The Deadmines [dungeon] | 0.0 | yes |
 | off_hand | - | - |  |  |
-| ranged | Cookie's Stirring Rod (5198) | The Deadmines: Cookie [dungeon] | 3.0 | yes |
+| ranged | Sizzle Stick (8071) | Quests [quest] | 5.0 | yes |
 
-**New at 25:** head: Flying Tiger Goggles; back: Windsong Drape; chest: Robes of Arcana; wrist: Owlbeard Bracers; hands: Serpent Gloves; waist: Warsong Sash; finger1: Advisor's Ring; finger2: Sacred Band; main_hand: Rod of the Sleepwalker; ranged: Cookie's Stirring Rod
+**New at 25:** shoulder: Feline Mantle; back: Windsong Drape; chest: Robes of Arcana; wrist: Owlbeard Bracers; waist: Warsong Sash; finger1: Advisor's Ring; finger2: Lavishly Jeweled Ring; main_hand: Defias Rapier; ranged: Sizzle Stick
 
 No-known-source sample (15 of 947, see the JSON for more): 727 Notched Shortsword; 753 Dragonmaw Shortsword; 816 Small Hand Blade; 820 Slicer Blade; 880 Staff of Horrors; 886 Black Metal Shortsword; 890 Twisted Chanter's Staff; 892 Gnoll Casting Gloves; 899 Venom Web Fang; 935 Night Watch Shortsword; 1076 Defias Renegade Ring; 1077 Defias Mage Ring; 1189 Overseer's Ring; 1190 Overseer's Cloak; 1219 Redridge Machete
 
 ### Band 30 (orc, 000000000000000000-23552110020000000-0000000000000000000)
 
-Set DPS (verified): 45.7. Weights run: 0.8s. Verify run: 0.7s. 1111 eligible items had no known source.
+Set DPS (verified): 45.7. Weights run: 0.9s. Verify run: 0.8s. 1111 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.375 ± 0.506), crit=3.624 ± 0.223, hit=6.056 ± 0.383, spell_haste=5.146 ± 0.503, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -488,7 +488,7 @@ No-known-source sample (15 of 1111, see the JSON for more): 727 Notched Shortswo
 
 ### Band 35 (orc, 000000000000000000-23552110030003010-0000000000000000000)
 
-Set DPS (verified): 49.9. Weights run: 0.8s. Verify run: 0.7s. 1247 eligible items had no known source.
+Set DPS (verified): 49.9. Weights run: 0.8s. Verify run: 0.8s. 1247 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (0.903 ± 0.631), crit=3.966 ± 0.255, hit=5.893 ± 0.422, spell_haste=7.796 ± 0.626, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -518,7 +518,7 @@ No-known-source sample (15 of 1247, see the JSON for more): 727 Notched Shortswo
 
 ### Band 40 (orc, 000000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 62.7. Weights run: 0.8s. Verify run: 0.7s. 1404 eligible items had no known source.
+Set DPS (verified): 62.7. Weights run: 0.9s. Verify run: 0.8s. 1404 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (1.220 ± 0.772), crit=3.709 ± 0.304, hit=6.038 ± 0.597, spell_haste=7.821 ± 0.995, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -548,7 +548,7 @@ No-known-source sample (15 of 1404, see the JSON for more): 727 Notched Shortswo
 
 ### Band 45 (orc, 230000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 70.1. Weights run: 0.8s. Verify run: 0.7s. 1547 eligible items had no known source.
+Set DPS (verified): 70.1. Weights run: 0.9s. Verify run: 0.8s. 1547 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.004, intellect=not significant (1.246 ± 0.720), crit=3.788 ± 0.319, hit=7.446 ± 0.644, spell_haste=18.322 ± 1.152, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.004
 
@@ -578,7 +578,7 @@ No-known-source sample (15 of 1547, see the JSON for more): 727 Notched Shortswo
 
 ### Band 50 (orc, 253000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 79.1. Weights run: 0.8s. Verify run: 0.7s. 1727 eligible items had no known source.
+Set DPS (verified): 79.1. Weights run: 0.9s. Verify run: 0.8s. 1727 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.005, intellect=not significant (0.248 ± 1.140), crit=4.947 ± 0.428, hit=9.366 ± 0.828, spell_haste=14.377 ± 1.359, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -608,7 +608,7 @@ No-known-source sample (15 of 1727, see the JSON for more): 727 Notched Shortswo
 
 ### Band 55 (orc, 255111000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 92.0. Weights run: 0.8s. Verify run: 0.7s. 1877 eligible items had no known source.
+Set DPS (verified): 92.0. Weights run: 0.9s. Verify run: 0.9s. 1877 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.008, intellect=not significant (1.953 ± 1.458), crit=5.517 ± 0.485, hit=10.332 ± 1.158, spell_haste=8.442 ± 1.611, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.008
 
@@ -638,7 +638,7 @@ No-known-source sample (15 of 1877, see the JSON for more): 727 Notched Shortswo
 
 ### Band 60 (orc, 255115100000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 161.3. Weights run: 0.9s. Verify run: 0.8s. 2214 eligible items had no known source.
+Set DPS (verified): 161.3. Weights run: 1.0s. Verify run: 0.8s. 2214 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant): spell_power=1.000 ± 0.011, intellect=not significant (1.134 ± 1.662), crit=7.715 ± 0.552, hit=17.053 ± 1.684, spell_haste=not significant (-2.222 ± 2.347), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.011
 

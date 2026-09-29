@@ -1,8 +1,8 @@
 {
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
-  "engine_version": "84575e84b",
-  "generated_at": "2026-09-29T03:56:14Z",
+  "engine_version": "038e51a61",
+  "generated_at": "2026-09-29T06:15:08Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -191,8 +191,8 @@
         "finger1: Sustaining Ring",
         "main_hand: Edge of the People's Militia"
       ],
-      "weights_run_seconds": 1.277558665,
-      "verify_run_seconds": 0.499943721
+      "weights_run_seconds": 1.369148155,
+      "verify_run_seconds": 0.557964737
     },
     {
       "spec": "paladin-retribution",
@@ -387,8 +387,8 @@
         "finger1: Ring of Scorn",
         "main_hand: Axe of Orgrimmar"
       ],
-      "weights_run_seconds": 1.277558665,
-      "verify_run_seconds": 0.66323324
+      "weights_run_seconds": 1.369148155,
+      "verify_run_seconds": 0.731850217
     },
     {
       "spec": "paladin-retribution",
@@ -587,8 +587,8 @@
         "finger2: Clergy Ring",
         "main_hand: Seraph's Strike"
       ],
-      "weights_run_seconds": 1.263836242,
-      "verify_run_seconds": 0.803661863
+      "weights_run_seconds": 1.392901669,
+      "verify_run_seconds": 0.914441946
     },
     {
       "spec": "paladin-retribution",
@@ -795,8 +795,8 @@
         "main_hand: Wingblade",
         "off_hand: Faerleia's Shield"
       ],
-      "weights_run_seconds": 1.263836242,
-      "verify_run_seconds": 0.808887631
+      "weights_run_seconds": 1.392901669,
+      "verify_run_seconds": 0.882188425
     },
     {
       "spec": "paladin-retribution",
@@ -1022,8 +1022,8 @@
         "trinket1: Rune of Perfection",
         "trinket2: Rune of Duty"
       ],
-      "weights_run_seconds": 1.386497679,
-      "verify_run_seconds": 0.945519702
+      "weights_run_seconds": 1.480519856,
+      "verify_run_seconds": 0.999158621
     },
     {
       "spec": "paladin-retribution",
@@ -1251,8 +1251,8 @@
         "trinket2: Rune of Duty",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.386497679,
-      "verify_run_seconds": 0.955281452
+      "weights_run_seconds": 1.480519856,
+      "verify_run_seconds": 1.037690088
     },
     {
       "spec": "paladin-retribution",
@@ -1473,8 +1473,8 @@
         "finger2: Protector's Band",
         "main_hand: Emil's Brand"
       ],
-      "weights_run_seconds": 1.3887129169999999,
-      "verify_run_seconds": 0.956957554
+      "weights_run_seconds": 1.452688642,
+      "verify_run_seconds": 1.05269785
     },
     {
       "spec": "paladin-retribution",
@@ -1696,8 +1696,8 @@
         "finger1: Silverlaine's Family Seal",
         "finger2: Band of the Fist"
       ],
-      "weights_run_seconds": 1.3887129169999999,
-      "verify_run_seconds": 0.976193215
+      "weights_run_seconds": 1.452688642,
+      "verify_run_seconds": 1.048206783
     },
     {
       "spec": "paladin-retribution",
@@ -1929,8 +1929,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Morbid Dawn"
       ],
-      "weights_run_seconds": 1.382167934,
-      "verify_run_seconds": 1.135684323
+      "weights_run_seconds": 1.5051486939999998,
+      "verify_run_seconds": 1.230933276
     },
     {
       "spec": "paladin-retribution",
@@ -2156,8 +2156,8 @@
         "trinket2: Rune of Perfection",
         "main_hand: Skullsplitter"
       ],
-      "weights_run_seconds": 1.382167934,
-      "verify_run_seconds": 1.171285407
+      "weights_run_seconds": 1.5051486939999998,
+      "verify_run_seconds": 1.283176013
     },
     {
       "spec": "paladin-retribution",
@@ -2375,8 +2375,8 @@
         "feet: Ironheel Boots",
         "main_hand: Bonebiter"
       ],
-      "weights_run_seconds": 1.418594262,
-      "verify_run_seconds": 1.139710773
+      "weights_run_seconds": 1.472653605,
+      "verify_run_seconds": 1.299609598
     },
     {
       "spec": "paladin-retribution",
@@ -2590,8 +2590,8 @@
         "hands: Fletcher's Gloves",
         "main_hand: Tok'kar's Murloc Chopper"
       ],
-      "weights_run_seconds": 1.418594262,
-      "verify_run_seconds": 1.164101967
+      "weights_run_seconds": 1.472653605,
+      "verify_run_seconds": 1.267171366
     },
     {
       "spec": "paladin-retribution",
@@ -2817,8 +2817,8 @@
         "trinket1: Thunderbrew's Boot Flask",
         "trinket2: Carrot on a Stick"
       ],
-      "weights_run_seconds": 1.403396778,
-      "verify_run_seconds": 1.144257828
+      "weights_run_seconds": 1.502853684,
+      "verify_run_seconds": 1.2508523
     },
     {
       "spec": "paladin-retribution",
@@ -3045,8 +3045,8 @@
         "trinket2: Carrot on a Stick",
         "main_hand: Will of the Mountain Giant"
       ],
-      "weights_run_seconds": 1.403396778,
-      "verify_run_seconds": 1.208949364
+      "weights_run_seconds": 1.502853684,
+      "verify_run_seconds": 1.346740244
     },
     {
       "spec": "paladin-retribution",
@@ -3266,8 +3266,8 @@
         "trinket2: Demon's Blood",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.44564271,
-      "verify_run_seconds": 1.275073988
+      "weights_run_seconds": 1.5720176129999999,
+      "verify_run_seconds": 1.344543442
     },
     {
       "spec": "paladin-retribution",
@@ -3490,8 +3490,8 @@
         "trinket2: Shard of the Splithooves",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 1.44564271,
-      "verify_run_seconds": 1.289541165
+      "weights_run_seconds": 1.5720176129999999,
+      "verify_run_seconds": 1.394350528
     },
     {
       "spec": "paladin-retribution",
@@ -3713,8 +3713,8 @@
         "finger1: Blackstone Ring",
         "finger2: Protector's Band"
       ],
-      "weights_run_seconds": 1.5253037520000001,
-      "verify_run_seconds": 1.257206157
+      "weights_run_seconds": 1.538420902,
+      "verify_run_seconds": 1.335207246
     },
     {
       "spec": "paladin-retribution",
@@ -3938,8 +3938,8 @@
         "trinket1: Shard of the Splithooves",
         "trinket2: Demon's Blood"
       ],
-      "weights_run_seconds": 1.5253037520000001,
-      "verify_run_seconds": 1.340963045
+      "weights_run_seconds": 1.538420902,
+      "verify_run_seconds": 1.397721665
     },
     {
       "spec": "paladin-retribution",
@@ -4161,8 +4161,8 @@
         "legs: Titanic Leggings",
         "trinket1: Smokey's Lighter"
       ],
-      "weights_run_seconds": 1.479699569,
-      "verify_run_seconds": 1.238635163
+      "weights_run_seconds": 1.492219841,
+      "verify_run_seconds": 1.260342931
     },
     {
       "spec": "paladin-retribution",
@@ -4236,7 +4236,7 @@
           "item_name": "Lightforge Spaulders",
           "source": "Blackrock Spire: The Beast",
           "source_kind": "dungeon",
-          "score": 101.21967566623148,
+          "score": 101.21967566623147,
           "verified": true
         },
         {
@@ -4387,8 +4387,8 @@
         "trinket1: Smokey's Lighter",
         "main_hand: Enchanted Battlehammer"
       ],
-      "weights_run_seconds": 1.479699569,
-      "verify_run_seconds": 1.286791623
+      "weights_run_seconds": 1.492219841,
+      "verify_run_seconds": 1.302129242
     },
     {
       "spec": "paladin-retribution",
@@ -4613,8 +4613,8 @@
         "trinket2: Slayer's Crest",
         "main_hand: Thunderfury, Blessed Blade of the Windseeker"
       ],
-      "weights_run_seconds": 1.487809754,
-      "verify_run_seconds": 1.280850851
+      "weights_run_seconds": 1.484672005,
+      "verify_run_seconds": 1.275028395
     },
     {
       "spec": "paladin-retribution",
@@ -4840,8 +4840,8 @@
         "trinket2: Kiss of the Spider",
         "main_hand: Thunderfury, Blessed Blade of the Windseeker"
       ],
-      "weights_run_seconds": 1.487809754,
-      "verify_run_seconds": 1.419167847
+      "weights_run_seconds": 1.484672005,
+      "verify_run_seconds": 1.41288962
     }
   ]
 }
