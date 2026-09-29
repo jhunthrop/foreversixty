@@ -29,19 +29,32 @@ def items_by_id() -> dict[str, dict]:
 
 
 def test_the_quests_map_faction_matches_the_items_own_restriction():
-    """The design's faction rule, checked per item rather than by count:
-    an item's own `factionRestriction` (0 both, 1 alliance, 2 horde) is
-    what `quests[item].faction` reports, because the fork states no
-    faction on the quest itself. `items.json`'s `faction_restriction`
-    column is the same fact, independently written by
-    `pipeline/loot/gear.py`'s `faction_restrictions`, so cross-checking
-    against it is a real second source, not the same computation twice."""
+    """The design's ORIGINAL faction rule, still true for the fallback
+    case: an item's own `factionRestriction` (0 both, 1 alliance, 2
+    horde) is what `quests[item].faction` reports when the fork states
+    no faction on the quest itself and the quest id is not covered by
+    the pinned classic-db dump (`entry["faction_source"] == "item"`).
+
+    loot-contracts lane, 2026-09-29: superseded as the general rule by
+    the classic-db rule (`pipeline.models.QuestSource`'s own doc,
+    `pipeline.loot.sources.build_loot`): when the quest id IS covered by
+    the pinned dump (`faction_source == "classic-db"`), `faction` is the
+    quest's own `quest_template.RequiredRaces` instead, which can
+    legitimately disagree with the reward item's restriction (item
+    270018 Hammerbone, quest 914 Leaders of the Fang, horde-only via
+    RequiredRaces despite carrying no `factionRestriction` at all) --
+    that disagreement is the whole point of reading the quest's own
+    table rather than always inferring from the reward. This test now
+    only pins the fallback path; the classic-db path has no independent
+    second source to check here (classic-db's own `RequiredRaces` IS the
+    source), so it is left unchecked rather than re-asserted as fact."""
     by_restriction = {"": "both", "alliance_only": "alliance", "horde_only": "horde"}
     rows = items_by_id()
     for item_id, entries in loot()["quests"].items():
         expected = by_restriction[rows[item_id]["faction_restriction"]]
         for entry in entries:
-            assert entry["faction"] == expected, item_id
+            if entry["faction_source"] == "item":
+                assert entry["faction"] == expected, item_id
 
 
 def test_the_factions_map_never_says_both():

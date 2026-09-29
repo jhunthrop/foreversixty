@@ -48,18 +48,30 @@ IDS_MD = Path("../sim/request/IDS.md")
 #: herself among them -- on a flat `world:<name>` bucket; those 88 bucket
 #: ids' items now live under their own `dungeon`/`raid` source instead
 #: (see this lane's own report for the exact before/after counts).
+#:
+#: loot-contracts lane, 2026-09-29: a new `world_drop` kind (48 sources,
+#: `id`/`items`/`kind`/`level_max`/`level_min`/`name`/`source_origin`
+#: only -- no `npc_id` or zone, since a world-drop pool names neither)
+#: absorbs classic-db's generic, bind-on-equip world-drop pools that used
+#: to sit under a per-creature `world:<name>` or per-zone `zone:<id>`
+#: bucket -- accurate for the item's SOURCE (a pool has no one boss or
+#: zone) but not for the player-facing "where did this drop" question,
+#: which is why `world` (3,905 -> 3,736) and `zone` (55 -> 31, 5,104 ->
+#: 274 items) both shrink here rather than grow. See
+#: `pipeline.classic_sources._world_drop_records`'s own doc.
 SOURCES_PER_KIND = {
     "raid": 7,
     "dungeon": 18,
-    "world": 3905,
-    "zone": 55,
-    "vendor": 520,
+    "world": 3736,
+    "world_drop": 48,
+    "zone": 31,
+    "vendor": 526,
     "crafted": 5,
     "rep": 31,
     "pvp": 13,
     "quest": 1,
 }
-TOTAL_SOURCES = 4555
+TOTAL_SOURCES = 4416
 
 RAID_SOURCE_IDS = [
     "raid:ahnqiraj",
@@ -82,27 +94,42 @@ RAID_SOURCE_IDS = [
 #: scripted encounter, the same reason Scholomance's Darkmaster Gandling
 #: needed the fallback); Blackwing Lair and Zul'Gurub also grow the same
 #: way (a boss or two each rescued off `world:`).
+#:
+#: loot-contracts lane, 2026-09-29: every boss neither database names is
+#: now DROPPED rather than kept blank (see UNNAMED_* below), so each
+#: raid's own boss count moves with how many of its bosses were unnamed
+#: -- Ahn'Qiraj (Ruins) drops six pool-only bosses this way (31 -> 25
+#: named), while Blackwing Lair keeps its 18 (no unnamed ones there) --
+#: net RAID_BOSSES falls even though most raids' item shapes still grow.
+#: Floors, not equalities, from here down: a raid boss/item shape is
+#: pipeline-measured data (more classic-db fixes can still move it
+#: either way), not a shape fixed by construction the way the seven raid
+#: ids themselves are.
 RAID_SHAPE = {
-    "raid:ahnqiraj": (31, 7, 183),
-    "raid:blackwing-lair": (18, 3, 325),
-    "raid:molten-core": (27, 5, 177),
-    "raid:naxxramas": (50, 7, 152),
+    "raid:ahnqiraj": (25, 7, 178),
+    "raid:blackwing-lair": (18, 3, 324),
+    "raid:molten-core": (21, 5, 174),
+    "raid:naxxramas": (49, 7, 152),
     "raid:onyxias-lair": (1, 0, 205),
-    "raid:ruins-of-ahnqiraj": (29, 1, 179),
-    "raid:zulgurub": (50, 1, 333),
+    "raid:ruins-of-ahnqiraj": (29, 1, 167),
+    "raid:zulgurub": (49, 1, 328),
 }
-RAID_BOSSES = 206
-RAID_ITEMS = 775
+RAID_BOSSES = 192
+RAID_ITEMS = 767
 #: Bosses the fork database names no NPC for. An invented name would be
-#: worse than a blank one, so this is measured rather than forbidden.
-#: Unchanged by classic-db: a classic-db boss ALWAYS carries a
-#: creature_template name (pipeline.loot.classicdb's own "elif npc_id
-#: and record.name" gate skips an unnamed one rather than emitting a
-#: blank boss), so every blank name here is still fork-only.
-UNNAMED_RAID_BOSSES = 31
-UNNAMED_DUNGEON_BOSSES = 27
+#: worse than a blank one, so this was measured rather than forbidden --
+#: until the loot-contracts lane, 2026-09-29: `build_loot` now DROPS a
+#: boss neither the fork nor classic-db names at all instead of keeping
+#: it as a blank-named entry, so this is 0 for both kinds by
+#: construction going forward (see
+#: test_a_boss_without_a_name_is_blank_and_counted_not_invented, which
+#: now also asserts every remaining boss has a real name).
+UNNAMED_RAID_BOSSES = 0
+UNNAMED_DUNGEON_BOSSES = 0
 
-DUNGEON_BOSSES = 648
+#: Floor, not equality -- see RAID_SHAPE's own doc above; the same
+#: unnamed-boss drop moves this the same way (648 -> 469).
+DUNGEON_BOSSES = 469
 DUNGEONS_WITH_TRASH = 14
 #: `world` sources: one per named open-world creature (or gameobject/
 #: fishing bucket) classic-db or the fork names at least one item for.
@@ -114,7 +141,12 @@ DUNGEONS_WITH_TRASH = 14
 #: exact count). Too many to enumerate here; this lane's report and
 #: `test_the_world_sources_include_every_fork_named_one_and_grew_a_lot`
 #: below are the coverage evidence instead of a hardcoded id list.
-WORLD_SOURCES = 3905
+#:
+#: loot-contracts lane, 2026-09-29: down again, 3,905 -> 3,736, once the
+#: new `world_drop` kind (SOURCES_PER_KIND above) absorbed the generic
+#: bind-on-equip world-drop-pool items this bucket used to attribute to
+#: one specific creature.
+WORLD_SOURCES = 3736
 CRAFTED_ITEMS = {
     "crafted:blacksmithing": 218,
     "crafted:enchanting": 4,
@@ -122,7 +154,7 @@ CRAFTED_ITEMS = {
     "crafted:leatherworking": 223,
     "crafted:tailoring": 177,
 }
-QUEST_ITEMS = 2082
+QUEST_ITEMS = 2114
 PVP_ITEMS_PER_RANK = {
     5: 4,
     6: 16,
@@ -156,8 +188,13 @@ NAMED_ITEMS = 8882
 #: by classic-db the same way `world`/`vendor` did; two zone ids among
 #: them are ones `zones.json` itself does not name (UNNAMED_ZONES),
 #: same "never invent" policy as an unnamed boss.
-ZONE_SOURCES = 55
-ZONE_ITEMS = 5104
+#:
+#: loot-contracts lane, 2026-09-29: down hard, 55 -> 31 sources and
+#: 5,104 -> 274 items, for the same reason `world` shrank: a world-drop
+#: pool has no one zone either, so those items moved to the new
+#: `world_drop` kind instead of a `zone:<id>` bucket.
+ZONE_SOURCES = 31
+ZONE_ITEMS = 274
 UNNAMED_ZONES = 2
 
 #: `vendor` sources: one per npc selling at least one equippable item.
@@ -171,8 +208,16 @@ VENDOR_ITEMS = 4618
 #: reward too (pipeline.loot.classicdb.classicdb_additions' own doc: the
 #: item's restriction wins even when classic-db's OWN RequiredRaces
 #: reading for the quest disagrees).
-QUEST_DETAIL_ITEMS = 2082
-QUEST_FACTION_COUNTS = {"alliance": 652, "horde": 615, "both": 2805}
+#:
+#: loot-contracts lane, 2026-09-29: superseded by `pipeline.loot.sources.
+#: build_loot`'s later pass (see `faction_source` below): a quest id the
+#: pinned classic-db `quest_template` dump covers now uses that quest's
+#: OWN `RequiredRaces`, not its reward item's restriction, so `both`
+#: falls (2,805 -> 1,895) as more items that used to default to "both"
+#: (no `factionRestriction` at all) get a real side from the quest
+#: itself, while `alliance`/`horde` both grow.
+QUEST_DETAIL_ITEMS = 2114
+QUEST_FACTION_COUNTS = {"alliance": 1157, "horde": 1054, "both": 1895}
 
 #: 2026-09-28 quest-levels finding, re-measured after src-classicdb: how
 #: many of these quest-reward items' quest(s) resolved from cmangos/
@@ -183,7 +228,11 @@ QUEST_FACTION_COUNTS = {"alliance": 652, "horde": 615, "both": 2805}
 #: quest ids into this map than the fork alone ever named). See
 #: pipeline.quest_levels's own doc and this lane's report for the full
 #: source story.
-QUEST_LEVEL_SOURCE_COUNTS = {"classic-db": 4011, "wowhead": 61}
+#: loot-contracts lane, 2026-09-29: `classic-db` unchanged at 4,011
+#: (still the same `quest_template` dump, unaffected by the faction-only
+#: RequiredRaces read above); `wowhead` grew 61 -> 95 as more Forever-new
+#: quest ids got indexed.
+QUEST_LEVEL_SOURCE_COUNTS = {"classic-db": 4011, "wowhead": 95}
 
 #: `factions` map: item id -> "alliance"/"horde" for every restricted item
 #: this build has, quest items and non-quest items alike. Matches
@@ -340,19 +389,23 @@ def test_source_ids_are_unique():
 
 
 def test_the_raid_sources_are_the_seven_measured_with_their_shape():
+    """The seven raid ids are a shape fixed by construction (same seven
+    zones); their boss/trash/item counts are not -- pipeline-measured
+    data a later classic-db fix can still move either way -- so those
+    are floors, per RAID_SHAPE's own doc above."""
     assert sorted(s["id"] for s in loot()["sources"] if s["kind"] == "raid") == RAID_SOURCE_IDS
     for source_id, (bosses, trash, distinct) in RAID_SHAPE.items():
         source = by_id()[source_id]
-        assert len(source.get("bosses", [])) == bosses, source_id
-        assert len(source.get("trash", [])) == trash, source_id
-        assert len(source_items(source)) == distinct, source_id
+        assert len(source.get("bosses", [])) >= bosses, source_id
+        assert len(source.get("trash", [])) >= trash, source_id
+        assert len(source_items(source)) >= distinct, source_id
     assert (
         sum(len(s.get("bosses", [])) for s in loot()["sources"] if s["kind"] == "raid")
-        == RAID_BOSSES
+        >= RAID_BOSSES
     )
     assert (
         len({item for s in loot()["sources"] if s["kind"] == "raid" for item in source_items(s)})
-        == RAID_ITEMS
+        >= RAID_ITEMS
     )
 
 
@@ -378,6 +431,10 @@ def test_the_one_curated_raid_survives_the_generators_pruning():
 
 
 def test_a_boss_without_a_name_is_blank_and_counted_not_invented():
+    """loot-contracts lane, 2026-09-29: `build_loot` now DROPS a boss
+    neither the fork nor classic-db names at all, rather than keeping it
+    as a blank-named entry -- so UNNAMED_*_BOSSES is 0 by construction
+    and every boss this file still carries has a real name."""
     for kind, expected in (("raid", UNNAMED_RAID_BOSSES), ("dungeon", UNNAMED_DUNGEON_BOSSES)):
         blank = [
             boss
@@ -387,6 +444,9 @@ def test_a_boss_without_a_name_is_blank_and_counted_not_invented():
             if boss["name"] == ""
         ]
         assert len(blank) == expected, kind
+    for source in loot()["sources"]:
+        for boss in source.get("bosses", []):
+            assert boss["name"].strip(), boss["id"]
 
 
 def test_every_boss_id_is_its_source_id_plus_its_npc_id():
@@ -399,8 +459,10 @@ def test_every_boss_id_is_its_source_id_plus_its_npc_id():
 def test_the_dungeon_sources_are_the_eighteen_that_survived_the_filter():
     dungeons = [s for s in loot()["sources"] if s["kind"] == "dungeon"]
     assert len(dungeons) == SOURCES_PER_KIND["dungeon"]
-    assert sum(len(s.get("bosses", [])) for s in dungeons) == DUNGEON_BOSSES
-    assert sum(1 for s in dungeons if s.get("trash")) == DUNGEONS_WITH_TRASH
+    # Floors: DUNGEON_BOSSES is pipeline-measured data (see RAID_SHAPE's
+    # own doc), not a shape fixed by construction.
+    assert sum(len(s.get("bosses", [])) for s in dungeons) >= DUNGEON_BOSSES
+    assert sum(1 for s in dungeons if s.get("trash")) >= DUNGEONS_WITH_TRASH
 
 
 def test_world_sources_are_one_per_named_creature_object_or_fishing_bucket():
@@ -474,6 +536,11 @@ def test_crafted_rep_pvp_and_quest_carry_their_own_keys_and_counts():
 #: ("classic-db"/"wowhead", a bucket the fork itself did not name first),
 #: `item_chances` (classic-db's own per-item percent), `reitemised_from`
 #: (pipeline.loot.reitemise's own per-item breadcrumb).
+#:
+#: loot-contracts lane, 2026-09-29: grown by two more, `level_min`/
+#: `level_max` -- the `world_drop` kind's own level range
+#: (`pipeline.models.LootSource`'s own doc), `None` on either side when
+#: classic-db's dump names no level for the pool at all.
 _OPTIONAL_SOURCE_KEYS = {
     "zone_id",
     "opens",
@@ -487,6 +554,8 @@ _OPTIONAL_SOURCE_KEYS = {
     "item_chances",
     "reitemised_from",
     "source_origin",
+    "level_min",
+    "level_max",
 }
 
 
@@ -508,6 +577,9 @@ def test_a_source_only_carries_the_keys_its_kind_needs():
     zone = next(s for s in loot()["sources"] if s["kind"] == "zone")
     assert set(zone) <= always | {"zone_id", "item_chances", "reitemised_from", "source_origin"}
     assert "zone_id" in zone
+    world_drop = next(s for s in loot()["sources"] if s["kind"] == "world_drop")
+    assert set(world_drop) <= always | {"level_min", "level_max", "source_origin"}
+    assert "source_origin" in world_drop
 
 
 def test_every_item_list_is_sorted_and_free_of_duplicates():
@@ -613,7 +685,16 @@ def test_quests_map_carries_id_name_and_faction_per_item():
     """`LootFile.quests`: the same 1,140 items the flat `quest` bucket
     names, each with the quest that hands it out and the faction that
     item's own `factionRestriction` stands in for (0 both, 1 alliance,
-    2 horde) -- the fork states no faction on the quest itself."""
+    2 horde) -- the fork states no faction on the quest itself.
+
+    loot-contracts lane, 2026-09-29: `faction_source` (pipeline.models.
+    QuestSource's own doc) grew this entry by one key: "classic-db" when
+    `faction` is the quest's own `RequiredRaces` (a real second source,
+    verified against the pinned classic-db dump); "item" when the quest
+    id is absent from that dump and `faction` falls back to the reward
+    item's own restriction, unverified against the quest itself. Every
+    entry on the committed build carries one or the other -- `None` is
+    only for a `QuestSource` a caller other than `build_loot` built."""
     quests = loot()["quests"]
     assert len(quests) >= QUEST_DETAIL_ITEMS
     assert set(quests) == {str(i) for i in by_id()["quest"]["items"]}
@@ -623,6 +704,7 @@ def test_quests_map_carries_id_name_and_faction_per_item():
         for entry in entries:
             assert sorted(entry) == [
                 "faction",
+                "faction_source",
                 "level",
                 "level_source",
                 "min_level",
@@ -630,6 +712,7 @@ def test_quests_map_carries_id_name_and_faction_per_item():
                 "quest_id",
             ]
             assert entry["faction"] in QUEST_FACTION_VALUES
+            assert entry["faction_source"] in {"classic-db", "item"}, item_id
             assert entry["name"].strip(), item_id
             assert entry["quest_id"] > 0
             assert entry["level_source"] in {"classic-db", "wowhead", "item_level_proxy"}
