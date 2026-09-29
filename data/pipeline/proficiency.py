@@ -33,6 +33,14 @@ _LIBRAM = 7
 _IDOL = 8
 _TOTEM = 9
 
+#: Relic subclasses (Item.ClassID 4/ARMOR, SubclassID 7/8/9) -- the single
+#: source of truth `pipeline.normalize.gear._has_gear_value` reads from so a
+#: relic's exemption there and its class filter here never drift apart. A
+#: relic carries its value in an on-equip spell effect, not armour or a
+#: literal stat, so it needs the same "not judged on armour/stats" exemption
+#: the WEAPON class id already gets in _has_gear_value.
+RELIC_SUBCLASSES: frozenset[int] = frozenset({_LIBRAM, _IDOL, _TOTEM})
+
 #: Relic subclasses (7 libram, 8 idol, 9 totem) were absent from every
 #: class's set below entirely until the 2026-09-28 night-bis-sources
 #: lane, which (together with `pipeline.normalize.gear.

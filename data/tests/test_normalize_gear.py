@@ -8,6 +8,7 @@ from pipeline.models import ItemSetBonus
 from pipeline.normalize import write_json, write_model
 from pipeline.normalize.effects import EffectIndex
 from pipeline.normalize.gear import (
+    STAT_COLUMNS,
     ItemDataError,
     build_class_items,
     build_item_sets,
@@ -139,6 +140,97 @@ def test_a_relic_slots_as_ranged_and_stays_class_restricted():
     mage_ids = {i.id for i in by_class["mage"].items}
     assert 22402 not in warrior_ids
     assert 22402 not in mage_ids
+
+
+def _zero_stat_relic_row(item_id: str, allowable_class: str, required_level: str = "50") -> dict:
+    """An Era-shaped ItemSparse row with InventoryType 28 (relic) and no armour
+    or stat value at all -- the shape of this build's 65 relics (idols/librams/
+    totems), whose whole value is an on-equip spell effect (cast-speed/proc/
+    dummy aura), not armour or a flat stat. Used by
+    test_zero_stat_relics_are_exempt_... below to prove `_has_gear_value`'s
+    relic exemption, independent of the already-stats-carrying libram fixture
+    `test_a_relic_slots_as_ranged_and_stays_class_restricted` uses.
+    """
+    row = {
+        "ID": item_id,
+        "Display_lang": f"Effect-Only Relic {item_id}",
+        "OverallQualityID": "3",
+        "ItemLevel": "60",
+        "RequiredLevel": required_level,
+        "InventoryType": "28",
+        "MaxCount": "1",
+        "ItemSet": "0",
+        "AllowableClass": allowable_class,
+        "ItemDelay": "0",
+        "DmgVariance": "0",
+        "MinDamage_0": "0",
+        "MaxDamage_0": "0",
+    }
+    for n in range(7):
+        row[f"Resistances_{n}"] = "0"
+    for n in STAT_COLUMNS:
+        row[f"StatModifier_bonusStat_{n}"] = "-1"
+        row[f"StatModifier_bonusAmount_{n}"] = "0"
+    return row
+
+
+def test_zero_stat_relics_are_exempt_from_the_gear_value_clause_but_a_plain_item_still_drops():
+    """A relic (Item.ClassID 4/ARMOR, SubclassID 7 libram, 8 idol, 9 totem) that
+    carries no armour and no stat must survive `_has_gear_value` the same way a
+    damage-only weapon does (test_a_damage_only_weapon_survives_the_
+    no_armour_no_stats_clause) -- its value is an on-equip spell effect this
+    function has no way to see. A plain armour piece (SubclassID 0, misc) with
+    the same all-zero shape is not a relic and must still be dropped: the
+    exemption is relics and weapons only, exactly like
+    test_a_stat_less_armour_piece_is_still_dropped proves for the non-relic
+    case against the shared fixtures.
+    """
+    paladin_mask = 1 << (2 - 1)
+    shaman_mask = 1 << (7 - 1)
+    druid_mask = 1 << (11 - 1)
+    class_rows = [
+        {"ID": "1", "Name_lang": "Warrior", "Filename": "WARRIOR"},
+        {"ID": "2", "Name_lang": "Paladin", "Filename": "PALADIN"},
+        {"ID": "7", "Name_lang": "Shaman", "Filename": "SHAMAN"},
+        {"ID": "11", "Name_lang": "Druid", "Filename": "DRUID"},
+    ]
+    sparse_rows = [
+        _zero_stat_relic_row("30101", str(paladin_mask)),  # libram
+        _zero_stat_relic_row("30102", str(druid_mask)),  # idol
+        _zero_stat_relic_row("30103", str(shaman_mask)),  # totem
+        {
+            **_zero_stat_relic_row("30104", "-1"),
+            "InventoryType": "5",  # a plain chest slot, not a relic
+        },
+    ]
+    item_rows = [
+        {"ID": "30101", "ClassID": "4", "SubclassID": "7", "IconFileDataID": "0"},  # libram
+        {"ID": "30102", "ClassID": "4", "SubclassID": "8", "IconFileDataID": "0"},  # idol
+        {"ID": "30103", "ClassID": "4", "SubclassID": "9", "IconFileDataID": "0"},  # totem
+        {"ID": "30104", "ClassID": "4", "SubclassID": "0", "IconFileDataID": "0"},  # misc, no relic
+    ]
+    records = build_class_items(
+        sparse_rows, item_rows, class_rows, fixture_icons(), "1.0.0.1"
+    )
+    by_class = {record.class_slug: record for record in records}
+
+    paladin_ids = {i.id for i in by_class["paladin"].items}
+    druid_ids = {i.id for i in by_class["druid"].items}
+    shaman_ids = {i.id for i in by_class["shaman"].items}
+    warrior_ids = {i.id for i in by_class["warrior"].items}
+
+    assert 30101 in paladin_ids  # libram survives for paladin
+    assert 30101 not in warrior_ids  # and only paladin
+    assert 30102 in druid_ids  # idol survives for druid
+    assert 30103 in shaman_ids  # totem survives for shaman
+
+    libram = next(i for i in by_class["paladin"].items if i.id == 30101)
+    assert libram.armor == 0
+    assert libram.stats == {}
+    assert libram.slot == "ranged"
+
+    all_ids = {i.id for record in records for i in record.items}
+    assert 30104 not in all_ids  # a plain zero-stat item is still dropped
 
 
 def test_armour_and_resistances_come_from_the_resistance_columns():

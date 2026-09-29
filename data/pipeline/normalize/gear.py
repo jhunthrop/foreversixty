@@ -16,7 +16,7 @@ from pipeline.normalize.weapon_curves import (
     resolve_weapon_damage,
     row_has_literal_weapon_damage,
 )
-from pipeline.proficiency import ARMOR, WEAPON, can_equip
+from pipeline.proficiency import ARMOR, RELIC_SUBCLASSES, WEAPON, can_equip
 from pipeline.spelltext import SpellText
 
 if TYPE_CHECKING:
@@ -479,7 +479,9 @@ def is_junk_name(name: str) -> bool:
     return JUNK_NAME_PATTERN.search(name) is not None
 
 
-def _has_gear_value(armor: int, stats: dict[str, int], item_class_id: int) -> bool:
+def _has_gear_value(
+    armor: int, stats: dict[str, int], item_class_id: int, subclass_id: int
+) -> bool:
     """True when the item carries something the planner can compare.
 
     An item with no armour and no non-zero stat gives the planner nothing to
@@ -494,8 +496,21 @@ def _has_gear_value(armor: int, stats: dict[str, int], item_class_id: int) -> bo
     client weapon the `ItemDamage*` curve tables state no dps for (or a
     curve-unavailable build) keeps damage 0 and is still not dropped here --
     see `build_class_items`.
+
+    Relics (`Item.ClassID` 4/ARMOR, `SubclassID` in `RELIC_SUBCLASSES` --
+    libram, idol, totem) get the same exemption for the same reason: a
+    relic's value is an on-equip spell effect (cast-speed/proc/dummy auras),
+    not armour or a flat stat. Judging one on armour and stats alone dropped
+    every relic on this build -- 65 rows on build 1.60.1.70009, emptying
+    paladin/druid/shaman's `ranged` slot at every leveling band (see
+    `SLOT_BY_INVENTORY_TYPE`'s InventoryType 28 comment). A relic survives on
+    the quality and junk-name clauses alone, same as a weapon; whether its
+    effect is one the simulator can model at all is judged downstream by
+    `sim/cmd/leveling-bis`'s ranker, not here.
     """
     if item_class_id == WEAPON:
+        return True
+    if item_class_id == ARMOR and subclass_id in RELIC_SUBCLASSES:
         return True
     return armor != 0 or any(stats.values())
 
@@ -670,7 +685,7 @@ def build_class_items(
         if effects is not None:
             _merge_effect_stats(stats, item_id, display_name, effects)
         _check_level_60_sanity(item_id, display_name, item_level, armor, stats)
-        if not _has_gear_value(armor, stats, item_class_id):
+        if not _has_gear_value(armor, stats, item_class_id, subclass_id):
             continue
         weapon = (
             weapon_fields(row, subclass_id, weapon_curves)

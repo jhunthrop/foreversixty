@@ -57,3 +57,19 @@ func TestScoreZeroDPSAddsNothing(t *testing.T) {
 		t.Errorf("score = %v, want 1 (no DPS contribution)", got)
 	}
 }
+
+func TestScoreARelicWithNoStatsAndNoDPSIsZero(t *testing.T) {
+	// A relic (libram/idol/totem) carries no armour, no flat stat and no
+	// DPS -- its whole value is an on-equip spell effect score() has no
+	// term for at all (night-relic-exempt: relics were dropped entirely
+	// before this, so score() never saw one). It must score exactly 0,
+	// not panic on a nil/empty Stats map, so only rank.go's engine-
+	// verified effect ranking (or, absent that, the effect_unmodelled
+	// flag) can ever distinguish one relic from another.
+	c := candidate{ClassID: armorClassID, SubclassID: armorSublibramID, Stats: map[string]float64{}}
+	weights := map[string]float64{"agility": 2.0, "ranged_attack_power": 100}
+	got := score(c, "ranged", weights)
+	if got != 0 {
+		t.Errorf("score = %v, want 0 for a zero-stat relic", got)
+	}
+}

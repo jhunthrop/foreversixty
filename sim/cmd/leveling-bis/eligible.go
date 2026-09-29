@@ -18,6 +18,16 @@ const (
 	armorSubleatherID = 2
 	armorSubmailID    = 3
 	armorSubplateID   = 4
+	// Relic subclasses (librams, idols, totems -- data/pipeline/proficiency.py's
+	// RELIC_SUBCLASSES). A relic's real gate is the class trainer spell that
+	// teaches it (paladin/druid/shaman only), which the per-class candidate
+	// file already enforces before this command ever sees the row (see
+	// eligible()'s own doc) -- these ids exist here only so armorAvailableLevel
+	// below has something to name if a relic ever needs a level gate, and so
+	// tests can assert one does not exist today without a magic number.
+	armorSublibramID = 7
+	armorSubidolID   = 8
+	armorSubtotemID  = 9
 )
 
 // armorAvailableLevel is the level a class's armor proficiency for a
