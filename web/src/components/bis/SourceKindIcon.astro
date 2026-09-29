@@ -8,11 +8,12 @@
 // Engineering'" duplication the owner's screenshot review called out). `currentColor`
 // throughout, sized to sit inline with the source line's own small text.
 interface Props {
-  kind: 'quest' | 'dungeon' | 'raid' | 'crafted' | 'vendor' | 'rep' | 'zone' | 'world' | 'pvp' | 'unknown';
+  kind: SourceCell['kind'];
   class?: string;
 }
 
 import { sourceKindGlyphKey } from '../../lib/bis/glyphs';
+import type { SourceCell } from '../../lib/bis/source-cell';
 
 const { kind, class: className = '' } = Astro.props;
 
