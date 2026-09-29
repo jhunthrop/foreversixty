@@ -34,7 +34,7 @@ from pipeline.normalize.classes import slugify
 #: its name does not match, since a real item always has at least one of
 #: those.
 _PLACEHOLDER_NAME_RE = re.compile(
-    r"^(Bland |Copy of |\d+ (Poor|Common|Uncommon|Rare|Epic|Legendary) )"
+    r"^(Bland |Copy of |DNT |Template Item|\d+ (Poor|Common|Uncommon|Rare|Epic|Legendary) )"
 )
 
 #: src-crawl-order lane, 2026-09-29: wowhead's OWN item-page crawl (the

@@ -150,7 +150,10 @@ def test_a_wowhead_quest_reward_faction_follows_the_items_own_restriction_not_th
         100: ItemSourceEntry(
             quest_rewards=[
                 QuestRewardSource(
-                    quest_id=199, name="A Mismatched Wowhead Page", min_level=38, level=40,
+                    quest_id=199,
+                    name="A Mismatched Wowhead Page",
+                    min_level=38,
+                    level=40,
                     faction="horde",
                 )
             ],
@@ -274,3 +277,10 @@ def test_load_class_item_rows_dedupes_an_item_shared_by_two_classes(tmp_path: Pa
     (items_dir / "rogue.json").write_text(json.dumps({"items": [row]}), encoding="utf-8")
     rows = load_class_item_rows(build_dir)
     assert {r["id"] for r in rows} == {1, 2}
+
+
+def test_dnt_and_template_rows_are_placeholders():
+    from pipeline.loot.wowhead import is_placeholder_item
+
+    for name in ("DNT CHEST", "Template Item"):
+        assert is_placeholder_item({"id": 1, "name": name, "armor": 25, "stats": {"stamina": 1}})

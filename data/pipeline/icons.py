@@ -98,15 +98,20 @@ def resolve_icon_name(
     no icon is trusted over neither disagreeing at all, but the fork's own
     say-so beats it when the fork has one.
     """
-    if base_icon != PLACEHOLDER_ICON:
+    if base_icon not in (PLACEHOLDER_ICON, "0", ""):
         return base_icon, "client"
     fork_icon = fork_icons.get(item_id)
     if fork_icon and fork_icon != PLACEHOLDER_ICON:
         return fork_icon, "fork"
     wowhead_icon = wowhead_icons.get(item_id)
-    if wowhead_icon and wowhead_icon != PLACEHOLDER_ICON:
+    # The planner payload writes a literal "0" for an item wowhead has no
+    # icon for either (Rotmender's set, "DNT"/"Template Item" test rows on
+    # 1.60.1.70009); that is no icon, not an icon named "0".
+    if wowhead_icon and wowhead_icon not in (PLACEHOLDER_ICON, "0"):
         return wowhead_icon, "wowhead"
-    return base_icon, "client"
+    # Nothing named a real icon: a stored "0"/"" is normalised to the one
+    # placeholder the site knows how to draw around.
+    return (PLACEHOLDER_ICON if base_icon in ("0", "") else base_icon), "client"
 
 
 def icon_names(manifest_rows: list[dict[str, str]]) -> dict[int, str]:

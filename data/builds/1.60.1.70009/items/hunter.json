@@ -5313,7 +5313,7 @@
     {
       "id": 276721,
       "name": "DNT CHEST",
-      "icon": "0",
+      "icon": "inv_misc_questionmark",
       "slot": "chest",
       "quality": 2,
       "required_level": 0,
@@ -5332,7 +5332,7 @@
     {
       "id": 276719,
       "name": "DNT HEAD",
-      "icon": "0",
+      "icon": "inv_misc_questionmark",
       "slot": "head",
       "quality": 2,
       "required_level": 0,
@@ -5351,7 +5351,7 @@
     {
       "id": 276725,
       "name": "DNT LEGS",
-      "icon": "0",
+      "icon": "inv_misc_questionmark",
       "slot": "legs",
       "quality": 2,
       "required_level": 0,
@@ -42666,7 +42666,7 @@
     {
       "id": 286979,
       "name": "Rotmender's Gloves",
-      "icon": "0",
+      "icon": "inv_misc_questionmark",
       "slot": "hands",
       "quality": 3,
       "required_level": 17,
@@ -42708,7 +42708,7 @@
     {
       "id": 286980,
       "name": "Rotmender's Sash",
-      "icon": "0",
+      "icon": "inv_misc_questionmark",
       "slot": "waist",
       "quality": 3,
       "required_level": 17,
@@ -44768,7 +44768,7 @@
     {
       "id": 286978,
       "name": "Rotmender's Robes",
-      "icon": "0",
+      "icon": "inv_misc_questionmark",
       "slot": "chest",
       "quality": 3,
       "required_level": 18,
@@ -102856,7 +102856,7 @@
     {
       "id": 253884,
       "name": "Template Item",
-      "icon": "0",
+      "icon": "inv_misc_questionmark",
       "slot": "chest",
       "quality": 2,
       "required_level": 50,

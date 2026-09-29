@@ -103,7 +103,7 @@ def fix_placeholder_icons(
     results: list[ClassFixResult] = []
     for path in sorted((build_dir / "items").glob("*.json")):
         record = ClassItems.model_validate_json(path.read_text(encoding="utf-8"))
-        before = sum(1 for item in record.items if item.icon == PLACEHOLDER_ICON)
+        before = sum(1 for item in record.items if item.icon in (PLACEHOLDER_ICON, "0", ""))
         if before == 0:
             results.append(ClassFixResult(record.class_slug, len(record.items), 0, 0, 0, 0))
             continue
@@ -118,7 +118,7 @@ def fix_placeholder_icons(
                 changed = True
                 item = item.model_copy(update={"icon": icon})
             new_items.append(item)
-        after = sum(1 for item in new_items if item.icon == PLACEHOLDER_ICON)
+        after = sum(1 for item in new_items if item.icon in (PLACEHOLDER_ICON, "0", ""))
         if changed:
             _write_class_items(record.model_copy(update={"items": new_items}), path)
         results.append(

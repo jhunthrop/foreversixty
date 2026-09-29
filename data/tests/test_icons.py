@@ -439,9 +439,7 @@ def test_resolve_icon_name_leaves_a_real_client_icon_alone():
 
 
 def test_resolve_icon_name_prefers_the_fork_db_over_wowhead():
-    icon, origin = resolve_icon_name(
-        PLACEHOLDER_ICON, 1, {1: "inv_fork"}, {1: "inv_wowhead"}
-    )
+    icon, origin = resolve_icon_name(PLACEHOLDER_ICON, 1, {1: "inv_fork"}, {1: "inv_wowhead"})
     assert (icon, origin) == ("inv_fork", "fork")
 
 
@@ -456,7 +454,13 @@ def test_resolve_icon_name_stays_on_the_placeholder_with_neither():
 
 
 def test_resolve_icon_name_skips_a_fork_entry_that_is_itself_the_placeholder():
-    icon, origin = resolve_icon_name(
-        PLACEHOLDER_ICON, 1, {1: PLACEHOLDER_ICON}, {1: "inv_wowhead"}
-    )
+    icon, origin = resolve_icon_name(PLACEHOLDER_ICON, 1, {1: PLACEHOLDER_ICON}, {1: "inv_wowhead"})
     assert (icon, origin) == ("inv_wowhead", "wowhead")
+
+
+def test_a_zero_wowhead_icon_counts_as_no_icon():
+    from pipeline.icons import PLACEHOLDER_ICON, resolve_icon_name
+
+    icon, origin = resolve_icon_name(PLACEHOLDER_ICON, 286979, {}, {286979: "0"})
+    assert icon == PLACEHOLDER_ICON
+    assert origin != "wowhead"
