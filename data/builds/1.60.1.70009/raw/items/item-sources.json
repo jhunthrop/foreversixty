@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-29T13:23:05.327659+00:00",
+ "generated_at": "2026-09-29T17:25:25.288402+00:00",
  "source": {
   "wowhead": {
    "note": "scraped per item id, ONLY for ids the fork database names no source for at all; see pipeline.wowhead_item_sources for the URL pattern, the four listviews read, and the politeness rules."
@@ -432518,6 +432518,2203 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T13:23:05.326097+00:00"
+  },
+  "241089": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "251960": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "263005": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "263006": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "263007": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271794": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271795": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271796": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271798": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271800": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271801": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271802": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271805": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271806": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271807": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271808": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271809": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271810": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271811": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "271812": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "272179": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "272180": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "272184": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "272185": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "272186": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "272187": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "274978": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "275824": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276274": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 15078,
+     "name": "Jang",
+     "zone_ids": [
+      33
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276765": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276886": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97003,
+     "name": "Chol'aruk the Ravener",
+     "min_level": 15,
+     "level": 21,
+     "faction": "horde"
+    },
+    {
+     "quest_id": 97005,
+     "name": "Chol'aruk the Ravener",
+     "min_level": 15,
+     "level": 21,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276887": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97003,
+     "name": "Chol'aruk the Ravener",
+     "min_level": 15,
+     "level": 21,
+     "faction": "horde"
+    },
+    {
+     "quest_id": 97005,
+     "name": "Chol'aruk the Ravener",
+     "min_level": 15,
+     "level": 21,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276888": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97003,
+     "name": "Chol'aruk the Ravener",
+     "min_level": 15,
+     "level": 21,
+     "faction": "horde"
+    },
+    {
+     "quest_id": 97005,
+     "name": "Chol'aruk the Ravener",
+     "min_level": 15,
+     "level": 21,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276889": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97003,
+     "name": "Chol'aruk the Ravener",
+     "min_level": 15,
+     "level": 21,
+     "faction": "horde"
+    },
+    {
+     "quest_id": 97005,
+     "name": "Chol'aruk the Ravener",
+     "min_level": 15,
+     "level": 21,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276897": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276898": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276899": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276900": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276901": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276902": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276903": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276904": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276993": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "blacksmithing"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276994": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "blacksmithing"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276995": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "blacksmithing"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276997": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "blacksmithing"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "276999": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277000": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277001": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277003": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277005": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277006": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277007": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277009": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277011": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "tailoring"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277012": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "tailoring"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277013": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "tailoring"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277015": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "tailoring"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277017": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "blacksmithing"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277018": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "blacksmithing"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277019": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "blacksmithing"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277021": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "blacksmithing"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277023": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277024": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277025": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277027": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277029": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277030": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277031": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277033": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "leatherworking"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277035": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "tailoring"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277037": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "tailoring"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277057": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277058": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277059": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277061": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277063": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277064": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277065": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277067": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277069": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277070": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277071": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277073": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277075": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277076": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277077": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277079": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 272045,
+     "name": "Brother Zendraas",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277286": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97250,
+     "name": "Wrongly Blamed, Justly Corrected",
+     "min_level": 18,
+     "level": 23,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277288": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97250,
+     "name": "Wrongly Blamed, Justly Corrected",
+     "min_level": 18,
+     "level": 23,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277289": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97250,
+     "name": "Wrongly Blamed, Justly Corrected",
+     "min_level": 18,
+     "level": 23,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277514": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277515": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277672": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "blacksmithing"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277979": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277980": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "277981": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "278017": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "278018": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "278019": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279839": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279840": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279841": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279842": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279843": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279844": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279849": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279854": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279855": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279864": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95250,
+     "name": "Abominable Creatures",
+     "min_level": 16,
+     "level": 21,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 97290,
+     "name": "Unending Torment",
+     "min_level": 16,
+     "level": 21,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279865": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95250,
+     "name": "Abominable Creatures",
+     "min_level": 16,
+     "level": 21,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 97290,
+     "name": "Unending Torment",
+     "min_level": 16,
+     "level": 21,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279867": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95250,
+     "name": "Abominable Creatures",
+     "min_level": 16,
+     "level": 21,
+     "faction": "alliance"
+    },
+    {
+     "quest_id": 97290,
+     "name": "Unending Torment",
+     "min_level": 16,
+     "level": 21,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279868": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95195,
+     "name": "Bloodied Insignia",
+     "min_level": 16,
+     "level": 22,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279869": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95195,
+     "name": "Bloodied Insignia",
+     "min_level": 16,
+     "level": 22,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279870": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95161,
+     "name": "Remember That I Love You",
+     "min_level": 15,
+     "level": 22,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279874": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92421,
+     "name": "Light's Justice",
+     "min_level": 15,
+     "level": 22,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279875": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92421,
+     "name": "Light's Justice",
+     "min_level": 15,
+     "level": 22,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279876": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95216,
+     "name": "The New Plague",
+     "min_level": 16,
+     "level": 22,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279877": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95216,
+     "name": "The New Plague",
+     "min_level": 16,
+     "level": 22,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279882": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279883": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279884": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279891": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279892": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279894": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 96393,
+     "name": "Old Ironforge Incursion",
+     "min_level": 9,
+     "level": 16,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279895": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 96393,
+     "name": "Old Ironforge Incursion",
+     "min_level": 9,
+     "level": 16,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279896": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 96393,
+     "name": "Old Ironforge Incursion",
+     "min_level": 9,
+     "level": 16,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279897": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 96394,
+     "name": "The Restless Dead",
+     "min_level": 10,
+     "level": 15,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279898": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 96403,
+     "name": "Important Heirlooms",
+     "min_level": 10,
+     "level": 15,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279899": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 96395,
+     "name": "An Ancient Grudge",
+     "min_level": 10,
+     "level": 15,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279900": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 96395,
+     "name": "An Ancient Grudge",
+     "min_level": 10,
+     "level": 15,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279930": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "280304": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "280604": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "280605": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "280607": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "280696": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281586": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281587": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281588": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281685": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281686": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281687": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281688": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281689": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281690": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281691": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281692": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281693": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281694": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281695": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281696": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281697": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281698": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281699": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281700": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281701": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281702": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281703": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281704": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281705": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281706": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281707": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281708": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281709": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281710": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281711": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281712": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281713": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281714": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281715": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281716": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281717": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281720": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281721": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281722": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281723": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281724": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281725": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281727": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281728": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281729": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281731": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281732": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "281733": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "282283": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "282284": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98403,
+     "name": "Twisted Hatred",
+     "min_level": 4,
+     "level": 12,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "285236": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "285238": {
+   "dropped_by": [
+    {
+     "npc_id": 255887,
+     "name": "Slydris",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "285239": {
+   "dropped_by": [
+    {
+     "npc_id": 255887,
+     "name": "Slydris",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "285264": {
+   "dropped_by": [
+    {
+     "npc_id": 259394,
+     "name": "Snapbeak the Quick",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "285268": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "285269": {
+   "dropped_by": [
+    {
+     "npc_id": 259394,
+     "name": "Snapbeak the Quick",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "285272": {
+   "dropped_by": [
+    {
+     "npc_id": 256492,
+     "name": "Fernfeather",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "285273": {
+   "dropped_by": [
+    {
+     "npc_id": 256492,
+     "name": "Fernfeather",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "285274": {
+   "dropped_by": [
+    {
+     "npc_id": 256492,
+     "name": "Fernfeather",
+     "zone_ids": [
+      16593
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "286748": {
+   "dropped_by": [
+    {
+     "npc_id": 276189,
+     "name": "Matriarch Bristlefur",
+     "zone_ids": [
+      12
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "286750": {
+   "dropped_by": [
+    {
+     "npc_id": 276101,
+     "name": "Nightscreech",
+     "zone_ids": [
+      141
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "286751": {
+   "dropped_by": [
+    {
+     "npc_id": 276111,
+     "name": "Ghostfang",
+     "zone_ids": [
+      1
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "286753": {
+   "dropped_by": [
+    {
+     "npc_id": 276109,
+     "name": "Snarlsnout",
+     "zone_ids": [
+      215
+     ]
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-29T17:25:25.287750+00:00"
   }
  }
 }
