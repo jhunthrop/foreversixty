@@ -71,6 +71,44 @@ def resolve_icon(file_id: int, names: dict[int, str], owner: str) -> str:
     return PLACEHOLDER_ICON
 
 
+def resolve_icon_name(
+    base_icon: str,
+    item_id: int,
+    fork_icons: dict[int, str],
+    wowhead_icons: dict[int, str],
+) -> tuple[str, str]:
+    """`base_icon` (whatever `resolve_icon` already produced from the client's
+    own tables), with a fallback chain applied when it is still the
+    placeholder. Returns `(icon_name, origin)`; `origin` is one of "client",
+    "fork" or "wowhead", for a caller that logs or counts where each item's
+    icon actually came from.
+
+    771 of the 9,391 real items on build 1.60.1.70009 carry
+    `IconFileDataID` 0 in the client's own `Item` table (night-icons finding,
+    2026-09-29) -- not a join this pipeline is missing (`ManifestInterfaceData`
+    resolves every nonzero id it is asked for), but Blizzard genuinely stating
+    no icon for an item it shipped as a Forever hotfix (768 of the 771 are
+    Forever-new ids, `>= 200_000`). Two other sources still know a real icon
+    for the same item: the engine fork's own `assets/database/db.json`
+    (`pipeline.forkdb`, curated from AtlasLoot), tried first as the more
+    deliberately-curated of the two; then wowhead's Forever gear-planner
+    payload (`pipeline.wowhead_items`), which names one for all 771 on that
+    build and is tried last precisely because it is the least curated -- a
+    wowhead-only fallback for an item the client and the fork both agree has
+    no icon is trusted over neither disagreeing at all, but the fork's own
+    say-so beats it when the fork has one.
+    """
+    if base_icon != PLACEHOLDER_ICON:
+        return base_icon, "client"
+    fork_icon = fork_icons.get(item_id)
+    if fork_icon and fork_icon != PLACEHOLDER_ICON:
+        return fork_icon, "fork"
+    wowhead_icon = wowhead_icons.get(item_id)
+    if wowhead_icon and wowhead_icon != PLACEHOLDER_ICON:
+        return wowhead_icon, "wowhead"
+    return base_icon, "client"
+
+
 def icon_names(manifest_rows: list[dict[str, str]]) -> dict[int, str]:
     """File data id -> lowercase icon name with no extension."""
     names: dict[int, str] = {}

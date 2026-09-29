@@ -98,6 +98,12 @@ def build_parser() -> argparse.ArgumentParser:
         "(csvio.check_item_sparse_completeness / normalize._check_class_items_not_shrunk) "
         "for a deliberate re-baseline; logs loudly when used",
     )
+    n.add_argument(
+        "--engine",
+        help="path to a wowsims-forever checkout; an item the client states no icon "
+        "for falls back to the fork's own assets/database/db.json before the wowhead "
+        "gear-planner payload's. Optional: without it, only the wowhead payload is tried",
+    )
 
     inm = sub.add_parser(
         "itemnames", help="write itemnames.json from a build's committed items (no raw/ needed)"
@@ -106,6 +112,13 @@ def build_parser() -> argparse.ArgumentParser:
 
     i = sub.add_parser("icons", help="download and convert the icons a build refers to")
     i.add_argument("--build", required=True)
+    i.add_argument(
+        "--engine",
+        help="path to a wowsims-forever checkout; before downloading art, rewrites any "
+        "items/<class>.json row still on the placeholder icon using the fork's own "
+        "assets/database/db.json and the build's wowhead gear-planner payload (in that "
+        "order). Optional: without it, only the wowhead payload is tried",
+    )
 
     a = sub.add_parser("tree-art", help="download and process each talent tree's background")
     a.add_argument("--build", required=True)
@@ -308,9 +321,12 @@ def main(argv: list[str] | None = None) -> int:
 
         write_item_names_from_build(args.build)
     elif args.command == "normalize":
+        from pathlib import Path
+
         from pipeline.normalize import normalize_build
 
-        result = normalize_build(args.build, allow_shrink=args.allow_shrink)
+        engine = Path(args.engine) if args.engine else None
+        result = normalize_build(args.build, allow_shrink=args.allow_shrink, engine=engine)
         if result.skipped:
             # The build directory is incomplete. Exiting non-zero stops the CI
             # job before it can commit and push a build the site cannot render.
@@ -318,8 +334,20 @@ def main(argv: list[str] | None = None) -> int:
                 logging.getLogger("pipeline").error("build %s is missing %s", args.build, reason)
             return 1
     elif args.command == "icons":
-        from pipeline.icons import icons_for_build
+        from pathlib import Path
 
+        from pipeline.icons import icons_for_build
+        from pipeline.icons_fix import fix_icons_for_build
+
+        engine = Path(args.engine) if args.engine else None
+        for result in fix_icons_for_build(args.build, engine=engine):
+            if result.before_placeholder:
+                print(
+                    f"icons: {result.class_slug} {result.before_placeholder} -> "
+                    f"{result.after_placeholder} placeholder icons "
+                    f"({result.fixed_by_fork} fixed via fork db, "
+                    f"{result.fixed_by_wowhead} via wowhead)"
+                )
         icons_for_build(args.build)
     elif args.command == "tree-art":
         from pipeline.art import backgrounds_for_build

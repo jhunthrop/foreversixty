@@ -13,6 +13,7 @@ from pipeline.icons import (
     download_icons,
     icon_names,
     icons_for_build,
+    resolve_icon_name,
     wanted_icons,
 )
 
@@ -430,3 +431,32 @@ def test_download_icons_skips_an_icon_the_version_serves_empty(tmp_path: Path, c
     assert written == 0
     assert not (tmp_path / "icons" / "a.webp").exists()
     assert "empty in CASC at version 1.0.0.1" in caplog.text
+
+
+def test_resolve_icon_name_leaves_a_real_client_icon_alone():
+    icon, origin = resolve_icon_name("inv_sword_04", 1, {1: "inv_other"}, {1: "inv_other2"})
+    assert (icon, origin) == ("inv_sword_04", "client")
+
+
+def test_resolve_icon_name_prefers_the_fork_db_over_wowhead():
+    icon, origin = resolve_icon_name(
+        PLACEHOLDER_ICON, 1, {1: "inv_fork"}, {1: "inv_wowhead"}
+    )
+    assert (icon, origin) == ("inv_fork", "fork")
+
+
+def test_resolve_icon_name_falls_back_to_wowhead_with_no_fork_entry():
+    icon, origin = resolve_icon_name(PLACEHOLDER_ICON, 1, {}, {1: "inv_wowhead"})
+    assert (icon, origin) == ("inv_wowhead", "wowhead")
+
+
+def test_resolve_icon_name_stays_on_the_placeholder_with_neither():
+    icon, origin = resolve_icon_name(PLACEHOLDER_ICON, 1, {}, {})
+    assert (icon, origin) == (PLACEHOLDER_ICON, "client")
+
+
+def test_resolve_icon_name_skips_a_fork_entry_that_is_itself_the_placeholder():
+    icon, origin = resolve_icon_name(
+        PLACEHOLDER_ICON, 1, {1: PLACEHOLDER_ICON}, {1: "inv_wowhead"}
+    )
+    assert (icon, origin) == ("inv_wowhead", "wowhead")

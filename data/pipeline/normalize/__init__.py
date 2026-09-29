@@ -108,11 +108,21 @@ def normalize_build(
     curated_dir: Path = Path("curated"),
     *,
     allow_shrink: bool = False,
+    engine: Path | None = None,
 ) -> NormalizeResult:
+    """`engine`, optional, points at a wowsims-forever checkout: when given,
+    an item whose `IconFileDataID` the client states as 0 (or names no row
+    in `ManifestInterfaceData`) falls back to the fork's own icon before the
+    wowhead payload's -- see `pipeline.normalize.gear.build_class_items`'s
+    own doc. Without it (the default), only the wowhead payload is tried,
+    the same as the standalone `python -m pipeline icons` pass without
+    `--engine`.
+    """
     from pipeline.csvio import check_item_sparse_completeness, read_csv
     from pipeline.curated import merge_curated
     from pipeline.curves import load_rank_points
     from pipeline.icons import icon_names
+    from pipeline.icons_fix import load_fork_icons, load_wowhead_icons
     from pipeline.manifest import write_manifest
     from pipeline.normalize.classes import normalize_classes, normalize_races
     from pipeline.normalize.dungeons import normalize_dungeons
@@ -270,6 +280,8 @@ def normalize_build(
         spell_effect_rows,
         spell_text,
     )
+    fork_icons = load_fork_icons(engine) if engine is not None else {}
+    wowhead_icons = load_wowhead_icons(build_dir)
     try:
         class_items = build_class_items(
             t("ItemSparse"),
@@ -280,6 +292,8 @@ def normalize_build(
             curves,
             effects=effects,
             weapon_curves=weapon_curves,
+            fork_icons=fork_icons,
+            wowhead_icons=wowhead_icons,
         )
     except ItemDataError as error:
         logger.warning("items not emitted for build %s: %s", build, error)
