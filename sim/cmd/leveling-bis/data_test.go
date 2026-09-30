@@ -607,6 +607,75 @@ func TestLoadLootIndexComputedRepOpensWinsOverTheHandList(t *testing.T) {
 	}
 }
 
+// bis-ranker-integrity-7 lane, item 3: worldBossSources (data.go)
+// gates the six named world bosses to "raids-1" even though loot.json's
+// own "world" kind (shared with every ordinary named-mob world drop)
+// never carries an opens value at all - a fresh level-60 character does
+// not solo Lord Kazzak or a Dragon of Nightmare. An ordinary world
+// source (a plain mob drop, not a world boss) stays open at launch.
+func TestLoadLootIndexGatesWorldBossesToRaidsOnePhase(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "world:lord-kazzak", "kind": "world", "name": "Lord Kazzak", "items": [18543]},
+			{"id": "world:azuregos", "kind": "world", "name": "Azuregos", "items": [18202]},
+			{"id": "world:emeriss", "kind": "world", "name": "Emeriss", "items": [20579]},
+			{"id": "world:lethon", "kind": "world", "name": "Lethon", "items": [20625]},
+			{"id": "world:taerar", "kind": "world", "name": "Taerar", "items": [20631]},
+			{"id": "world:ysondre", "kind": "world", "name": "Ysondre", "items": [20635]},
+			{"id": "world:aged-kodo", "kind": "world", "name": "Aged Kodo", "items": [6249]}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	for id, boss := range map[int]string{
+		18543: "Lord Kazzak", 18202: "Azuregos", 20579: "Emeriss",
+		20625: "Lethon", 20631: "Taerar", 20635: "Ysondre",
+	} {
+		src, ok := idx[id]
+		if !ok || len(src) != 1 || src[0].Opens != "raids-1" {
+			t.Fatalf("idx[%d] (%s) = %+v, want one source with Opens \"raids-1\"", id, boss, src)
+		}
+	}
+	ordinary, ok := idx[6249]
+	if !ok || len(ordinary) != 1 || ordinary[0].Opens != "" {
+		t.Fatalf("idx[6249] (Aged Kodo, an ordinary world mob) = %+v, want Opens empty", ordinary)
+	}
+}
+
+// A world boss source loot.json itself already gives an explicit opens
+// value for must keep that computed value, not the hand-maintained
+// worldBossSources fallback - the same firstNonEmpty priority
+// TestLoadLootIndexComputedOpensWinsOverTheHandList pins for quests and
+// TestLoadLootIndexComputedRepOpensWinsOverTheHandList pins for
+// reputation.
+func TestLoadLootIndexComputedWorldBossOpensWinsOverTheHandList(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "world:lord-kazzak", "kind": "world", "name": "Lord Kazzak", "items": [18543], "opens": "later"}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	src, ok := idx[18543]
+	if !ok || len(src) != 1 || src[0].Opens != "later" {
+		t.Fatalf("idx[18543] = %+v, want Opens \"later\" (the computed value, not worldBossSources's \"raids-1\")", src)
+	}
+}
+
 func TestLoadLootIndexMissingFile(t *testing.T) {
 	if _, _, err := loadLootIndex(t.TempDir(), nil); err == nil {
 		t.Fatal("loadLootIndex on an empty dir: want an error, got nil")

@@ -474,6 +474,37 @@ var repFactionRaidPhaseOpens = map[int]string{
 	609: "later", // Cenarion Circle - Gates of Ahn'Qiraj (AQ War Effort)
 }
 
+// worldBossSources is a loot.json "world"-kind source id -> the content
+// phase its OWN world boss opens in, for the six world bosses whose
+// loot.json entry (`kind: "world"`, the SAME generic bucket every
+// ordinary named-mob world drop uses) carries no `opens` value at all -
+// this lane's brief, item 3: "World bosses are raid content." A fresh
+// level-60 character does not solo Lord Kazzak, Azuregos, or the four
+// Dragons of Nightmare (Emeriss, Lethon, Taerar, Ysondre) - each needs a
+// raid-sized group, exactly the same barrier forever-raid-phases.json's
+// own curated facts already gate every direct raid-instance source
+// behind (raid:onyxias-lair's own "raids-1", the earliest phase any
+// raid content opens) - so each one is hand-listed here at that same
+// phase, the way data.go's own raidLockedQuestOpens (above) hand-lists
+// a quest reward loot.json's own per-item shape cannot state a raid
+// gate for either. loadLootIndex's own `add` closure reads this with
+// firstNonEmpty(src.Opens, worldBossSources[src.ID]) - the pipeline's
+// own computed Opens wins the moment a data lane teaches
+// pipeline.loot.classicdb (or a future world-boss-specific curated
+// fact) to state one, exactly like every other firstNonEmpty gate in
+// this file. Found dogfooding this lane's brief: warlock-affliction/
+// -demonology/-destruction band 60 main_hand (both factions) published
+// Amberseal Keeper, sourced to world:lord-kazzak with no gate at all,
+// 2.3 DPS ahead of Ironbark Staff (a real, obtainable alternative).
+var worldBossSources = map[string]string{
+	"world:lord-kazzak": "raids-1",
+	"world:azuregos":    "raids-1",
+	"world:emeriss":     "raids-1",
+	"world:lethon":      "raids-1",
+	"world:taerar":      "raids-1",
+	"world:ysondre":     "raids-1",
+}
+
 // firstNonEmpty returns the first non-empty string, or "" when every one
 // is - used wherever a computed fact (the pipeline's own
 // QuestSource.opens) should win over a hand-maintained fallback
@@ -612,6 +643,14 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				// (Alliance)") - pvpSourceLabel (band.go) names the
 				// rank, its in-game title and the faction together.
 				is.Label = pvpSourceLabel(is.Rank, is.Title, is.Side)
+			}
+			if src.Kind == "world" {
+				// This lane's brief, item 3: worldBossSources' own doc
+				// above - the six named world bosses are raid content
+				// even though loot.json's own "world" kind (shared with
+				// every ordinary named-mob world drop) never carries an
+				// opens value at all.
+				is.Opens = firstNonEmpty(src.Opens, worldBossSources[src.ID])
 			}
 			if src.Kind == "vendor" && src.Faction != "" {
 				// Fourth wow-player sweep, item 1: pipeline.loot.

@@ -87,9 +87,33 @@ type slotPick struct {
 // candidatesBySlot fans a scored pool out by every planner slot each
 // item occupies (a ring lands in both "finger1" and "finger2"; a
 // one-hander in both "main_hand" and "off_hand"), sorted best score
-// first within each slot. Ties break on item id, so the order - and
-// therefore which of two equally-scored items is "the pick" versus
-// "the runner-up" - is stable across runs.
+// first within each slot.
+//
+// bis-ranker-integrity-7 lane, item 1: an exact score() tie used to
+// break on item id alone, which is arbitrary with respect to either
+// candidate's own merits - the seventh wow-player sweep's own named
+// repro, mage-arcane band 60 neck (both factions): Medallion of the
+// Dawn (stamina/agility/crit, item level 60) and Jewel of Kajaro
+// (intellect/spirit/spell power, item level 65) score() to the exact
+// same weighted total for this spec, and the id-ascending tie-break
+// picked whichever one happened to have the lower id with no
+// principled reason - the report published the other as a "dps_delta:
+// 0" alternative with nothing to explain why it lost. On an exact
+// score tie (this function's own contract; a MEASURED tie - the real
+// sim finding two candidates statistically indistinguishable - is a
+// different question this file does not decide at all: verify.go's
+// own swapMargin/beatsByMargin, and rank.go's identical rule for an
+// implemented-effect tournament, already keep the higher-SCORE
+// candidate whenever a real sim cannot clear its own noise floor, "the
+// weights already encode the spec's stat preferences" being exactly
+// why that default is correct and needed no change here), the higher
+// ITEM LEVEL is the principled break: a higher-ilvl item is the better
+// real-world upgrade path (an easier or later, but not undertuned
+// substitute) even when this build's own weights happen to value its
+// particular stat mix identically to a lower-ilvl item's different
+// mix. Item id remains the final, purely-for-determinism fallback when
+// even item level ties (never observed in this build's data, but
+// needed for a stable sort regardless).
 func candidatesBySlot(pool []scored) map[string][]scored {
 	out := map[string][]scored{}
 	for _, s := range pool {
@@ -101,6 +125,9 @@ func candidatesBySlot(pool []scored) map[string][]scored {
 		sort.SliceStable(list, func(i, j int) bool {
 			if list[i].Score != list[j].Score {
 				return list[i].Score > list[j].Score
+			}
+			if list[i].ItemLevel != list[j].ItemLevel {
+				return list[i].ItemLevel > list[j].ItemLevel
 			}
 			return list[i].ID < list[j].ID
 		})
