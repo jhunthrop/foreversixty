@@ -61,4 +61,19 @@ describe('HomeSwitchCharacterPanel', () => {
     expect(body).toContain('src="/icons/hd/crests/warrior.webp"');
     expect((body.match(/width="36"/g) ?? []).length).toBe(3);
   });
+
+  it("gives every row crest ClassCrest's own rest/hover/focus-within ring recipe (ux-designer round 2)", () => {
+    // svelte/server's render() does not inline a component's own scoped <style> text into
+    // `body` (Svelte injects it separately at hydration time), so this checks the markup
+    // the CSS selectors below hook into -- the row carries the `crest-row` hover/focus-
+    // within scope and the crest carries `row-crest` plus its own `--c` custom property,
+    // exactly like ClassCrest.astro's `.crest`/`--c` pair. The rendered ring/outline
+    // itself is verified visually (recaptured hover/focus screenshots, this lane's report).
+    const { body } = render(HomeSwitchCharacterPanel, {
+      props: { me: ME, currentKey: 'us/normal/zulmara', onswitch: () => {} },
+    });
+    expect(body).toContain('class="crest-row');
+    expect(body).toContain('class="row-crest');
+    expect(body).toContain('style="--c: var(--color-class-hunter);"');
+  });
 });

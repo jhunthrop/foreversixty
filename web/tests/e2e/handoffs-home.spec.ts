@@ -45,6 +45,14 @@ test('a signed-in visitor sees the "Get set up" banner collapse to one line, nev
   );
   await page.goto('/');
   const row = page.getByTestId('home-companion-row');
+  // Review round 3 ("islands" item): this card is below the signed-out fold and now
+  // mounts `client:visible`, like every other below-fold island on this page, so it only
+  // hydrates once scrolled into view. `HomeGetSetUp` itself renders nothing before it is
+  // ready, so its own `<astro-island>` wrapper has zero height pre-hydration --
+  // `scrollIntoViewIfNeeded` aligns the (tall) static pitch card's own top edge, which can
+  // leave that zero-height sibling just past the bottom of a short viewport. Centering the
+  // row instead keeps both safely inside the intersection observer's bounds.
+  await row.evaluate((el) => el.scrollIntoView({ block: 'center' }));
   await expect(row.getByRole('link', { name: /Get set up/ })).toHaveCount(0);
   const line = page.getByTestId('home-get-set-up');
   await expect(line).toHaveText('Install the addon · Set up the companion →');
@@ -83,6 +91,7 @@ test('a signed-in visitor with an addon-linked build sees the collapsed sentence
     }),
   );
   await page.goto('/');
+  await page.getByTestId('home-companion-row').evaluate((el) => el.scrollIntoView({ block: 'center' }));
   await expect(page.getByTestId('home-get-set-up')).toHaveText(
     'Signed in and addon linked · synced 10 minutes ago → Set up the companion',
   );

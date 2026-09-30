@@ -22,16 +22,11 @@
   import { factionMarkSrc } from '../lib/faction-mark';
   import { guildHref } from '../lib/characters';
   import { ratingCopy } from '../lib/rating/copy';
-  import { homePanelCopy, homeHeroCardsCopy, HOME_SIGNED_OUT_ID } from '../lib/home-panel-copy';
+  import { homePanelCopy, HOME_SIGNED_OUT_ID } from '../lib/home-panel-copy';
   import { createHomeHero } from '../lib/account/home-hero.svelte';
-  import { armorySimHref } from '../lib/sim/url';
-  import { listMySims } from '../lib/sim/api';
-  import { simCardLine } from '../lib/home/next-steps';
-  import type { SimListRow } from '../lib/sim/types';
   import { homeHeroLevelRaceClassLine } from '../lib/account/character-descriptor';
   import { relativeTime } from '../lib/sim/sources';
   import { accountPageCopy } from '../lib/account/account-page-copy';
-  import Skeleton from './ui/Skeleton.svelte';
 
   // The session read, hero derivation and rating fetch all live in one shared composable
   // (lib/account/home-hero.svelte.ts) so this island and HomeNextSteps.svelte agree on who
@@ -94,6 +89,29 @@
     };
   });
 
+  /**
+   * The three next-action cards (§3.B.2), mounted the same dynamic-import-once-signed-in
+   * way HomeSwitchCharacterPanel already is: HomeHeroCards.svelte's own imports (the
+   * Simulator card's fetch and its dependencies) never reach a signed-out visitor's
+   * browser this way (review round 3, "islands" item -- see that component's own doc).
+   */
+  $effect(() => {
+    if (!ready || me === null || hero === null) return;
+    const slot = document.querySelector<HTMLElement>('[data-testid="home-hero-cards-slot"]');
+    if (slot === null) return;
+    const current = hero;
+    let cards: Record<string, unknown> | null = null;
+    let cancelled = false;
+    void import('./character/HomeHeroCards.svelte').then(({ default: HomeHeroCards }) => {
+      if (cancelled) return;
+      cards = mount(HomeHeroCards, { target: slot, props: { hero: current } });
+    });
+    return () => {
+      cancelled = true;
+      if (cards !== null) void unmount(cards);
+    };
+  });
+
   function switchTo(character: MeCharacter): void {
     homeHero.switchTo(character);
   }
@@ -119,28 +137,6 @@
     hero?.build === undefined ? 0 : (Date.now() - new Date(hero.build.captured_at).getTime()) / 3_600_000,
   );
 
-  // The Simulator card's own data: the visitor's latest saved sim, the one figure of the
-  // three next-action cards this site can compute honestly today (§3.B.2's own ruling).
-  // Independent per-card loading, the same rule HomeNextSteps.svelte's own cards follow.
-  let latestSim = $state<SimListRow | null>(null);
-  let simStatus = $state<'loading' | 'ready' | 'failed'>('loading');
-
-  $effect(() => {
-    const current = hero;
-    if (current === null) return;
-    simStatus = 'loading';
-    void listMySims(1)
-      .then((page) => {
-        if (current !== hero) return;
-        latestSim = page.rows[0] ?? null;
-        simStatus = 'ready';
-      })
-      .catch(() => {
-        if (current !== hero) return;
-        simStatus = 'failed';
-      });
-  });
-
   // The latest rating figure, when one exists: chained off the hero rather than blocking
   // it, since this island is already deferred (`client:idle-after-load`) and never sits on
   // the LCP path. Never shown until it resolves with a real sample -- an absent figure, not
@@ -151,9 +147,6 @@
       ? `${ratingCopy.panelHeading} ${rating.latest.overall.toFixed(2)}`
       : '',
   );
-
-  const CARD_CLASS =
-    'flex flex-col gap-[6px] p-[14px_16px] rounded-panel border border-line bg-gradient-to-b from-card-top to-raised shadow-[inset_0_-1px_0_rgba(229,185,85,.35)] text-strong hover:border-gold-deep transition-colors duration-150';
 </script>
 
 <!-- The root always renders, even empty: the island hydrates with client:idle-after-load,
@@ -232,35 +225,13 @@
       </CharacterIdentity>
     </div>
 
-    <!-- The three next-action cards (§3.B.2): Best in slot and Talents are not yet
-         computable against live data (no worn-gear or talent-compare source exists), so
-         they show one settled, honest line instead of a figure that would have to be
-         invented -- see homeHeroCardsCopy's own doc. Simulator alone carries real data. -->
-    <div class="grid grid-cols-1 gap-3 sm:grid-cols-3" data-testid="home-hero-cards">
-      <a href="#upgrades" class={CARD_CLASS} data-testid="home-hero-card-bis">
-        <span class="label text-gold">{homeHeroCardsCopy.bestInSlotLabel}</span>
-        <span class="text-muted text-[13px]">{homeHeroCardsCopy.bestInSlotNotAvailable}</span>
-      </a>
-      <a href="/planner" class={CARD_CLASS} data-testid="home-hero-card-talents">
-        <span class="label text-gold">{homeHeroCardsCopy.talentsLabel}</span>
-        <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNotAvailable}</span>
-      </a>
-      <a href={armorySimHref(hero.key)} class={CARD_CLASS} data-testid="home-hero-card-sim">
-        <span class="label text-gold">{homeHeroCardsCopy.simulatorLabel}</span>
-        {#if simStatus === 'loading'}
-          <Skeleton lines={2} rowHeight="h-3" testid="home-hero-card-sim-skeleton" />
-        {:else if simStatus === 'failed'}
-          <span class="text-muted text-[12px]">{homePanelCopy.noSimYet}</span>
-        {:else if latestSim !== null}
-          <span class="text-strong text-[13px] font-semibold" data-testid="home-hero-card-sim-value"
-            >{simCardLine(latestSim)}</span
-          >
-        {:else}
-          <span class="text-muted text-[13px]">{homePanelCopy.noSimYet}</span>
-          <span class="text-nav text-[12px] font-semibold">{homePanelCopy.runAction}</span>
-        {/if}
-      </a>
-    </div>
+    <!-- The three next-action cards (§3.B.2) render from HomeHeroCards.svelte, mounted
+         above once signed in -- not this island's own static markup, so a signed-out
+         visitor's browser never downloads the Simulator card's fetch or its dependencies
+         (review round 3, "islands" item). min-h approximates the ready grid's own height
+         (one row of cards, ~112px) so the mount does not visibly shift the timeline strip
+         beneath it. -->
+    <div class="min-h-[112px]" data-testid="home-hero-cards-slot"></div>
   </div>
 {:else}
   <div class="pointer-events-none min-h-[220px] [grid-area:1/1]" aria-hidden="true"></div>

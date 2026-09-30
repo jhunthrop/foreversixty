@@ -48,13 +48,18 @@
   <ul class="flex flex-col" data-testid="current-character-bar-switch-list">
     {#each ordered as character (character.key)}
       <li
-        class="border-line-soft flex min-h-11 items-center gap-3 border-b py-2 text-[14px] last:border-b-0"
+        class="crest-row border-line-soft flex min-h-11 items-center gap-3 border-b py-2 text-[14px] last:border-b-0"
         data-testid={`current-character-bar-switch-row-${character.key}`}
       >
         {#if character.class !== undefined}
           <!-- The same circular ringed crest ClassCrest.astro renders (review round 1 item
                3: every crest on the page reads the same way) -- inlined rather than
-               imported, since a Svelte component tree cannot render an Astro component. -->
+               imported, since a Svelte component tree cannot render an Astro component.
+               ux-designer round 2: the rest/hover/focus-visible states are ClassCrest's own
+               recipe too (55% ring at rest, 100% on hover, 2px offset outline on focus),
+               scoped to `.crest-row:hover`/`:focus-within` below rather than `a:hover` --
+               this row has no wrapping anchor, only the trailing Switch button, so the
+               row's own hover/focus-within is the equivalent interactive scope. -->
           <img
             src={classCrestSrc(classSlugFromName(character.class))}
             alt=""
@@ -62,8 +67,9 @@
             height="36"
             loading="lazy"
             decoding="async"
-            class="bg-raised shrink-0 rounded-full object-cover"
-            style={`box-shadow: 0 0 0 2px ${classColorVar(character.class)};`}
+            class="row-crest bg-raised shrink-0 rounded-full object-cover"
+            style={`--c: ${classColorVar(character.class)};`}
+            data-testid="home-switch-character-crest"
           />
         {:else}
           <span
@@ -98,3 +104,24 @@
     {/each}
   </ul>
 </div>
+
+<style>
+  /* ux-designer round 2: the identical recipe ClassCrest.astro's own <style> block uses --
+     a reduced-opacity ring at rest that brightens to the class colour at full opacity on
+     hover/focus-within, plus a 2px offset outline once focus lands inside the row (the
+     trailing Switch button, since the row itself has no wrapping anchor to :focus-visible
+     on directly). Kept in this component rather than shared with ClassCrest's own <style>,
+     since Astro's per-component scoped styles cannot be imported into a Svelte file. */
+  .row-crest {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent);
+    transition: box-shadow 120ms ease-out;
+  }
+  .crest-row:hover .row-crest,
+  .crest-row:focus-within .row-crest {
+    box-shadow: 0 0 0 2px var(--c);
+  }
+  .crest-row:focus-within .row-crest {
+    outline: 2px solid var(--c);
+    outline-offset: 2px;
+  }
+</style>
