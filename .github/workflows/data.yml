@@ -25,6 +25,17 @@ jobs:
       - uses: astral-sh/setup-uv@v3
       - run: uv sync
       - run: uv run ruff check .
+      # loot-contract-drift, 2026-09-30: the full suite, right after lint and
+      # before the slower --check/build-dependent steps below, so a contract
+      # test that drifts from the pipeline's shape (or vice versa) fails fast
+      # instead of landing unnoticed -- four tests/test_loot_build.py cases
+      # did exactly that after data-followups-9 (fc65ac2d) changed vendor/
+      # raid/quest source shapes without this gate ever running. No
+      # FOREVER_ENGINE_PATH here (a wowsims-forever checkout is not
+      # available in this job): tests/test_genproto.py, test_loot_
+      # classicdb.py, test_simdb_build.py and test_simdb_fork_parity.py all
+      # `pytest.skip` cleanly when it is unset rather than failing.
+      - run: uv run pytest -q --no-cov
       # sim/specs/specs.go and web/src/lib/sim/specs.ts are generated from
       # curated/specs.json and committed. `specs` is not a per-build emitter,
       # so the fetch job never runs it; this is the gate that catches an edit
