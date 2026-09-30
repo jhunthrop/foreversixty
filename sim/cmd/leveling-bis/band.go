@@ -1,6 +1,9 @@
 package main
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+)
 
 // sourceFor answers loot.json's own question for one item at one
 // band: does it have a source usable at this level, and if so which.
@@ -272,6 +275,27 @@ func pvpRankExceedsCap(s itemSource) bool {
 	return s.Rank > pvpRankCap
 }
 
+// pvpSourceLabel is the on-screen source line for a pvp-sourced pick,
+// or a vendor row that inherited a rank (data.go's
+// vendorInheritsPvpRankGate) - fourth wow-player sweep, item 2: never
+// the bare bucket name loot.json's own pvp source Name carries ("Rank 9
+// (Alliance)") or, for the vendor case, the bare quartermaster name
+// ("Captain O'Neal") - a player expects "PvP rank 9 · Master Sergeant ·
+// Alliance". Mirrors web/src/lib/bis/copy.ts's own pvpSourceLabel
+// (source-cell.ts/tooltip.ts's vocabulary for the same rank/title/
+// faction facts) so the site and this report never disagree about the
+// wording. title is itemSource.Title (empty when loot.json's own rank
+// falls outside pipeline.loot.pvp_faction.rank_title's known 14-rank
+// ladder, that function's own doc) - falls back to naming just the
+// rank and faction rather than printing an empty title segment.
+func pvpSourceLabel(rank int, title, faction string) string {
+	factionLabel := titleCase(faction)
+	if title == "" {
+		return fmt.Sprintf("PvP rank %d · %s", rank, factionLabel)
+	}
+	return fmt.Sprintf("PvP rank %d · %s · %s", rank, title, factionLabel)
+}
+
 // bandPool is everything candidatesBySlot/pick need for one band and
 // faction: every eligible, sourced item, scored - plus the ones that
 // were eligible but had no usable source, kept only so the report can
@@ -409,7 +433,7 @@ func crossClassSetItem(c candidate, classSlug string) bool {
 // that order, to the full candidate list for one band and faction. It
 // does not pick: candidatesBySlot/pick (pick.go) do that from
 // Scored.
-func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int, faction string, weights map[string]float64, referenceDPSPerPoint float64) bandPool {
+func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int, faction string, weights map[string]float64, referenceDPSPerPoint float64, castsShoot bool) bandPool {
 	var out bandPool
 	out.Coverage = make(map[string]coverageRow)
 	for _, c := range items {
@@ -452,7 +476,7 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 		}
 		out.Scored = append(out.Scored, scored{
 			candidate: c,
-			Score:     score(c, c.Slots[0], weights, referenceDPSPerPoint),
+			Score:     score(c, c.Slots[0], weights, referenceDPSPerPoint, castsShoot),
 			Source:    src,
 			HasSource: true,
 		})
