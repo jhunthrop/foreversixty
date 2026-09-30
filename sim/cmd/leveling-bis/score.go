@@ -134,6 +134,25 @@ func statWeight(stat string, weights map[string]float64) float64 {
 // stats"). referenceDPSPerPoint <= 0 or castsShoot == false (every
 // test that does not pass both) leaves the ranged branch a no-op too,
 // matching the pre-fallback behaviour exactly.
+// deadStatCount counts how many of c's own positive-amount stats this
+// spec's weights do not value at all (statWeight <= 0) -
+// bis-ranker-integrity-12 lane, item 5: an exact score() tie between
+// two candidates is not evidence they are equally good gear for this
+// spec - one may carry only stats the spec's own weights actually use
+// while the other pads the identical total with a stat the spec never
+// weighs (a rogue's Spell Power, a caster's Strength before this build
+// weighed either) - so candidatesBySlot's own tie-break reads this
+// count before falling back to item level.
+func deadStatCount(c candidate, weights map[string]float64) int {
+	count := 0
+	for stat, amount := range c.Stats {
+		if amount > 0 && statWeight(stat, weights) <= 0 {
+			count++
+		}
+	}
+	return count
+}
+
 func score(c candidate, slot string, weights map[string]float64, referenceDPSPerPoint float64, castsShoot bool) float64 {
 	total := 0.0
 	for stat, amount := range c.Stats {

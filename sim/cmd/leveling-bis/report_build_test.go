@@ -1092,6 +1092,55 @@ func TestBuildAlternativesExcludesThePairMate(t *testing.T) {
 	}
 }
 
+// TestBuildAlternativesExcludesAnotherIDOfThePicksOwnName is this
+// lane's brief (bis-ranker-integrity-12), item 2: Sergeant Major's
+// Cape has three real ids (16315 req 25, 16336 req 40, 16337 req 55,
+// all rank 9 Alliance) - the same physical reward at three points in a
+// player's own PvP progression, but three DIFFERENT item ids. ranker-
+// 11 made alternatives unique among THEMSELVES by name
+// (dedupeAlternatives), but never checked a candidate's name against
+// the PICK's own name, so a lower-req-level id of the identical cape
+// reached this row as its own "alternative" (ten such pick-vs-
+// alternative pairs across the hybrid specs, this lane's own dogfood:
+// the page showed a pick and an alternative both reading "Sergeant
+// Major's Cape - PvP rank 9 - Sergeant Major - Alliance").
+func TestBuildAlternativesExcludesAnotherIDOfThePicksOwnName(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 16337, Name: "Sergeant Major's Cape"}, Score: 10}
+	pk := slotPick{Item: pick}
+	list := []scored{
+		{candidate: candidate{ID: 16337, Name: "Sergeant Major's Cape"}, Score: 10},
+		{candidate: candidate{ID: 16315, Name: "Sergeant Major's Cape"}, Score: 10}, // a lower-req-level id of the SAME cape
+		{candidate: candidate{ID: 3, Name: "A Different Back Item"}, Score: 9},
+	}
+	got := buildAlternatives(pk, "back", list, map[string]slotPick{"back": pk}, 1.0, nil, 0)
+	for _, a := range got {
+		if a.ItemID == 16315 {
+			t.Fatalf("buildAlternatives = %+v, want no alternative sharing the pick's own name (16315 is another id of the picked 16337 - Sergeant Major's Cape)", got)
+		}
+	}
+	if len(got) != 1 || got[0].ItemID != 3 {
+		t.Fatalf("buildAlternatives = %+v, want only the genuinely different item (id 3)", got)
+	}
+}
+
+// The same guard must also hold for the swap-tested runner-up's own
+// force-include step, which bypasses the ordinary tie/list loop's
+// excluded() check entirely - a runner-up sharing the pick's own name
+// must never be force-included either, whatever verify.go's swap pass
+// measured for it.
+func TestBuildAlternativesExcludesASwapTestedRunnerUpSharingThePicksOwnName(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 16337, Name: "Sergeant Major's Cape"}, Score: 10}
+	runnerUp := &scored{candidate: candidate{ID: 16315, Name: "Sergeant Major's Cape"}, Score: 8}
+	pk := slotPick{Item: pick, RunnerUp: runnerUp}
+	sw := &swapResult{Slot: "back", SwapDPS: 45.0, BaselineDPS: 48.0, Beat: false}
+	got := buildAlternatives(pk, "back", nil, map[string]slotPick{"back": pk}, 0, sw, 48.0)
+	for _, a := range got {
+		if a.ItemID == 16315 {
+			t.Fatalf("buildAlternatives = %+v, want the swap-tested runner-up excluded too: it shares the pick's own name", got)
+		}
+	}
+}
+
 // This lane's brief, item 2: hunter-beast-mastery/marksmanship band
 // 40/50 main_hand published caster-stat weapons (spell power/
 // intellect staves) as alternatives next to a ranged spec's real
@@ -1527,6 +1576,48 @@ func TestBuildReportKeepsATrinketWhoseGainWasNeverMeasured(t *testing.T) {
 	}
 	if row.ItemID != 1 || row.EmptyReason != "" {
 		t.Fatalf("trinket1 row = %+v, want item 1 published with no EmptyReason (an unmeasured gain is not evidence of zero value)", row)
+	}
+}
+
+// TestBuildReportTrinketLowGainKeepsAlternatives is this lane's brief
+// (bis-ranker-integrity-12), item 1: the OLD trinketLowGain case
+// replaced the whole row with a bare slotRow, discarding
+// row.Alternatives (built earlier in buildReport, before this gate
+// ever runs) along with the now-hidden pick - shaman-elemental band 50
+// Horde's own repro, both trinket slots publishing empty with
+// literally zero alternatives even though a real shortlist was simmed;
+// paladin-retribution band 50 Alliance's own trinket2 losing Fire Ruby
+// entirely as a fallback while Horde's own (not gated) trinket2 row for
+// the identical comparison still showed it at -0.14 DPS. A trinket
+// whose own gain does not clear the noise floor is still a real,
+// checked fact about this band's OTHER shortlisted trinkets, and must
+// survive the pick being hidden.
+func TestBuildReportTrinketLowGainKeepsAlternatives(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Weak Trinket"}, MeasuredDPS: 100, MeasuredGainDPS: 0.1, MeasuredGainStdErr: 1.0, GainMeasured: true}
+	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Real Runner Up"}}
+	picks := map[string]slotPick{"trinket1": {Item: pick, RunnerUp: runnerUp}}
+	swaps := []swapResult{{Slot: "trinket1", SwapDPS: 98.0, BaselineDPS: 100.0, Beat: false}}
+	r := buildReport(reportSpec(), 50, "horde", "troll", "", 0, nil, nil, picks, 100.0, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket1" {
+			row = s
+		}
+	}
+	if row.ItemID != 0 || row.EmptyReason != noDPSValueReason {
+		t.Fatalf("trinket1 row = %+v, want empty with EmptyReason %q (gain 0.1 does not clear 2x its own stdErr 1.0)", row, noDPSValueReason)
+	}
+	if len(row.Alternatives) == 0 {
+		t.Fatal("trinket1 Alternatives is empty, want the real, swap-verified runner-up (id 2) to survive the pick being hidden")
+	}
+	found := false
+	for _, a := range row.Alternatives {
+		if a.ItemID == 2 && a.Verified {
+			found = true
+		}
+	}
+	if !found {
+		t.Errorf("trinket1 Alternatives = %+v, want a Verified entry for item 2", row.Alternatives)
 	}
 }
 

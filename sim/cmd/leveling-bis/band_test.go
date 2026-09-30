@@ -358,6 +358,32 @@ func TestBuildBandPoolSeparatesEligibleSourcedCrossClassAndUnsourced(t *testing.
 	}
 }
 
+// TestBuildBandPoolSetsDeadStatCount is this lane's brief
+// (bis-ranker-integrity-12), item 5: buildBandPool is the one place
+// deadStatCount actually runs (score.go's own function; candidatesBySlot's
+// tie-break just reads the field it sets), so this pins that wiring
+// directly rather than only through score.go's own unit test.
+func TestBuildBandPoolSetsDeadStatCount(t *testing.T) {
+	items := []candidate{
+		{ID: 1, Name: "All Real Stats", RequiredLevel: 10, EffectiveRequiredLevel: 10, Stats: map[string]float64{"agility": 6}, Slots: []string{"hands"}},
+		{ID: 2, Name: "One Dead Stat", RequiredLevel: 10, EffectiveRequiredLevel: 10, Stats: map[string]float64{"agility": 6, "spell_power": 7}, Slots: []string{"hands"}},
+	}
+	idx := lootIndex{1: {{Kind: "quest", Label: "A Quest"}}, 2: {{Kind: "quest", Label: "A Quest"}}}
+	pool := buildBandPool(items, idx, "rogue", 20, "horde", map[string]float64{"agility": 1}, 0, false)
+	for _, s := range pool.Scored {
+		switch s.ID {
+		case 1:
+			if s.DeadStatCount != 0 {
+				t.Errorf("item 1 DeadStatCount = %d, want 0", s.DeadStatCount)
+			}
+		case 2:
+			if s.DeadStatCount != 1 {
+				t.Errorf("item 2 DeadStatCount = %d, want 1 (spell_power is unweighted here)", s.DeadStatCount)
+			}
+		}
+	}
+}
+
 func TestBuildBandPoolSkipsItemsWithNoSlots(t *testing.T) {
 	// An item that resolved to zero planner slots (should not happen in
 	// practice, but buildBandPool defends explicitly against it rather

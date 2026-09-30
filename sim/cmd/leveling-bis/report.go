@@ -452,6 +452,25 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 	isPairMateItem := func(c scored) bool {
 		return mateID != 0 && (c.ID == mateID || (mateName != "" && c.Name == mateName))
 	}
+	// isPickNameItem is this lane's brief, item 2 (bis-ranker-integrity-12):
+	// a slot's own pick can have several real item ids sharing one
+	// NAME (Sergeant Major's Cape: ids 16315/16336/16337, PvP rank 9
+	// Alliance at req level 25/40/55 - three physically different
+	// rewards a player earns at different points, but the same cape
+	// from the reader's own point of view) - excluded's own id-based
+	// check alone let a DIFFERENT id of the identical name reach
+	// out as an "alternative" to itself (ten such pick-vs-alternative
+	// pairs across the hybrid specs, this lane's own dogfood: the page
+	// showed a pick and an alternative both reading "Sergeant Major's
+	// Cape - PvP rank 9 - Sergeant Major - Alliance" with nothing
+	// distinguishing them). A name match is excluded the same way an
+	// id match already is - ranker-11's own dedupeAlternatives already
+	// keeps alternatives unique AMONG THEMSELVES by name; this closes
+	// the one case that missed, the pick's own name never being
+	// checked against at all.
+	isPickNameItem := func(c scored) bool {
+		return c.Name == pk.Item.Name
+	}
 	// excluded no longer tracks "already added" - controller direction,
 	// 2026-09-30 (Grand Marshal's Stave repro, buildAlternatives' own
 	// doc below): the identical item id can reach this function twice,
@@ -465,6 +484,9 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 	// silently dropped before it ever gets compared.
 	excluded := func(c scored) bool {
 		if c.ID == pk.Item.ID {
+			return true
+		}
+		if isPickNameItem(c) {
 			return true
 		}
 		return isPairMateItem(c)
@@ -549,7 +571,7 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		out = upsert(out, c)
 	}
 
-	if sw != nil && pk.RunnerUp != nil && !isPairMateItem(*pk.RunnerUp) {
+	if sw != nil && pk.RunnerUp != nil && !isPairMateItem(*pk.RunnerUp) && !isPickNameItem(*pk.RunnerUp) {
 		// bis-ranker-integrity-3, 2026-09-29, this lane's brief item 3:
 		// pk.RunnerUp is the ONE candidate verify.go's own swap pass
 		// actually simmed against the pick (swapBySlot, buildReport's own
@@ -1300,7 +1322,27 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			case relicEffectUnmodelled:
 				row = slotRow{Slot: slot, EmptyReason: effectNotModelledReason, EffectUnmodelled: true}
 			case trinketLowGain:
-				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason}
+				// This lane's brief (bis-ranker-integrity-12), item 1:
+				// the OLD version of this case replaced row wholesale
+				// with a bare slotRow, discarding row.Alternatives
+				// (built above, before this gate ever runs) along with
+				// the now-hidden pick - shaman-elemental band 50
+				// Horde's own repro, both trinket slots publishing
+				// empty with literally zero alternatives even though
+				// rankTrinketSlot's own tournament simmed a real
+				// shortlist and paladin-retribution band 50's trinket2
+				// (Alliance) losing Fire Ruby entirely as a fallback
+				// while Horde's own trinket2 row - the SAME comparison,
+				// just not gated - still showed it at -0.14 DPS. A
+				// trinket whose own measured gain does not clear
+				// trinketGainSignificant's bar is not evidence the
+				// SLOT has no other real candidate worth a player's
+				// attention; the pick's own alternatives (the runner-up
+				// verify.go actually simmed, chief among them) are
+				// still true, checked facts about this band's other
+				// shortlisted trinkets and must survive the pick being
+				// hidden.
+				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason, Alternatives: row.Alternatives}
 			case row.Score != 0 || row.EffectUnmodelled || realSimPromotion || trinketEffectExempt || simDecided:
 				// Not zero-value at all, or redeemed by one of the
 				// existing exemptions above - the row stands as computed.
