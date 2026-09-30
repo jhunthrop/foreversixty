@@ -1220,6 +1220,7 @@
     "name": "Scale of the Gods",
     "item_ids": [
       17064,
+      17082,
       278476
     ],
     "bonuses": [
@@ -1583,6 +1584,7 @@
     "id": 361,
     "name": "Champion's Pursuit",
     "item_ids": [
+      16526,
       272490,
       272491,
       272492,
