@@ -145,6 +145,88 @@ func TestBuildReportSwapBeatenRowIsTheWinnerVerifiedWithNote(t *testing.T) {
 	}
 }
 
+// bis-ranker-integrity-16, item 6: warlock-destruction band 60
+// Alliance's own live repro (legs, id 237815 "Sentinel's Silk
+// Leggings" beating id 22752, ALSO named "Sentinel's Silk Leggings",
+// both sold by Illiyana Moonblaze). Before this fix, SwapNote read
+// "beat the scored pick Sentinel's Silk Leggings (id 22752) in the
+// sim" next to a pick published under the identical name - a sentence
+// that reads as the pick beating itself, with the id in parentheses
+// the only (easy to miss) way to tell them apart. swapNoteRunnerUpName
+// appends the beaten item's own item level whenever its name
+// collides with the winner's.
+func TestBuildReportSwapNoteDisambiguatesASameNameRunnerUp(t *testing.T) {
+	winner := &scored{candidate: candidate{ID: 237815, Name: "Sentinel's Silk Leggings", ItemLevel: 78}}
+	beaten := &scored{candidate: candidate{ID: 22752, Name: "Sentinel's Silk Leggings", ItemLevel: 65}}
+	picks := map[string]slotPick{"legs": {Item: winner, RunnerUp: beaten}}
+	swaps := []swapResult{{Slot: "legs", SwapDPS: 143.0, BaselineDPS: 140.0, Beat: true}}
+	r := buildReport(reportSpec(), 60, "alliance", "human", "", 0, nil, nil, picks, 143.0, swaps, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var legsRow slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "legs" {
+			legsRow = s
+		}
+	}
+	if !strings.Contains(legsRow.SwapNote, "Sentinel's Silk Leggings (ilvl 65) (id 22752)") {
+		t.Fatalf("legs row SwapNote = %q, want the beaten item's own ilvl disambiguating it from the identically-named pick", legsRow.SwapNote)
+	}
+}
+
+// swapNoteRunnerUpName must never append an item level to a runner-up
+// whose name does not collide with the pick's - the ordinary case,
+// which is nearly every row.
+func TestSwapNoteRunnerUpNameLeavesADistinctNameAlone(t *testing.T) {
+	pk := slotPick{
+		Item:     &scored{candidate: candidate{ID: 2, Name: "Better Helm", ItemLevel: 60}},
+		RunnerUp: &scored{candidate: candidate{ID: 1, Name: "Helm", ItemLevel: 40}},
+	}
+	if got := swapNoteRunnerUpName(pk); got != "Helm" {
+		t.Fatalf("swapNoteRunnerUpName = %q, want the bare name unchanged", got)
+	}
+}
+
+// bis-ranker-integrity-16, item 6: applyLabelSuffixForNameCollisions
+// in isolation, for a row where a same-named alternative DOES survive
+// (buildAlternatives' own isPickNameItem exclusion, ranker-12, means
+// this never happens through the ordinary pipeline today, but the
+// function must still label BOTH sides correctly if that ever
+// changes, or for a hand-built row like this one).
+func TestApplyLabelSuffixForNameCollisionsLabelsBothSides(t *testing.T) {
+	row := slotRow{
+		ItemID:   237815,
+		ItemName: "Sentinel's Silk Leggings",
+		Alternatives: []alternativeRow{
+			{ItemID: 22752, ItemName: "Sentinel's Silk Leggings"},
+			{ItemID: 231587, ItemName: "Marshal's Dreadweave Leggings"},
+		},
+	}
+	levels := map[int]int{237815: 78, 22752: 65, 231587: 70}
+	applyLabelSuffixForNameCollisions(&row, func(id int) int { return levels[id] })
+	if row.LabelSuffix != "(ilvl 78)" {
+		t.Fatalf("row.LabelSuffix = %q, want \"(ilvl 78)\"", row.LabelSuffix)
+	}
+	if row.Alternatives[0].LabelSuffix != "(ilvl 65)" {
+		t.Fatalf("colliding alternative's LabelSuffix = %q, want \"(ilvl 65)\"", row.Alternatives[0].LabelSuffix)
+	}
+	if row.Alternatives[1].LabelSuffix != "" {
+		t.Fatalf("non-colliding alternative's LabelSuffix = %q, want empty", row.Alternatives[1].LabelSuffix)
+	}
+}
+
+// A pick whose name is unique within its own Alternatives - nearly
+// every row - must never publish a LabelSuffix at all.
+func TestApplyLabelSuffixForNameCollisionsLeavesUniqueNamesAlone(t *testing.T) {
+	row := slotRow{
+		ItemID:       1,
+		ItemName:     "Helm",
+		Alternatives: []alternativeRow{{ItemID: 2, ItemName: "Cap"}},
+	}
+	applyLabelSuffixForNameCollisions(&row, func(id int) int { return 60 })
+	if row.LabelSuffix != "" || row.Alternatives[0].LabelSuffix != "" {
+		t.Fatalf("row = %+v, want no LabelSuffix anywhere: the names do not collide", row)
+	}
+}
+
 // This lane's brief, item 5: when this row's own SwapDPS really is the
 // band's own final SetDPS (the promotion was the last word - the
 // exact shape TestBuildReportSwapBeatenRowIsTheWinnerVerifiedWithNote
@@ -785,6 +867,73 @@ func TestBuildReportEmptiesATrinketWithNoEffectAndNoValueAtScoreZero(t *testing.
 	}
 	if row.ItemID != 0 || row.EmptyReason != noDPSValueReason {
 		t.Fatalf("trinket1 row = %+v, want empty with EmptyReason %q (no effect_text, no valued stat)", row, noDPSValueReason)
+	}
+}
+
+// bis-ranker-integrity-16, item 3: shaman-elemental's Alliance band 50
+// trinket2 published empty (trinketLowGain: Molten Heart of the
+// Mountain's own measured gain, 0.32 +/- 0.38, never cleared
+// trinketGainSignificant's bar) while still carrying a FactionNote
+// written by reconcileFactionTrinkets' own gainsIndistinguishable
+// branch naming that same hidden item "alliance's own pick Molten
+// Heart of the Mountain" -- a player-visible claim about an item the
+// row showed nowhere at all. A note whose FactionNoteNeedsPick is
+// true must never survive the row emptying; one whose
+// FactionNoteNeedsPick is false (the racial branch, which never
+// claims Item itself) must survive unchanged regardless.
+func TestBuildReportDropsAFactionNoteThatNeedsAPickTheRowNoLongerShows(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket2": {
+			Item: &scored{
+				candidate:    candidate{ID: 1, Name: "Molten Heart of the Mountain"},
+				GainMeasured: true, MeasuredGainDPS: 0.32, MeasuredGainStdErr: 0.38,
+			},
+			FactionNote:          "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on dwarf (0.00 ± 1.92 vs 0.32 ± 0.38 DPS gain) -- each faction's own tournament winner kept",
+			FactionNoteNeedsPick: true,
+		},
+	}
+	r := buildReport(reportSpec(), 50, "alliance", "dwarf", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket2" {
+			row = s
+		}
+	}
+	if row.ItemID != 0 || row.EmptyReason != noDPSValueReason {
+		t.Fatalf("trinket2 row = %+v, want empty with EmptyReason %q (gain never cleared significance)", row, noDPSValueReason)
+	}
+	if row.FactionNote != "" {
+		t.Fatalf("trinket2 row.FactionNote = %q, want empty: the note names Molten Heart of the Mountain as \"alliance's own pick\", an item the row no longer shows anywhere", row.FactionNote)
+	}
+}
+
+// The racial branch's note (negativeBeyondError, faction_trinkets.go)
+// names only the REJECTED crossing candidate, never Item -
+// FactionNoteNeedsPick is false for it, and the note must survive the
+// row emptying unchanged.
+func TestBuildReportKeepsAFactionNoteThatDoesNotNeedAPickEvenWhenTheRowEmpties(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket2": {
+			Item: &scored{
+				candidate:    candidate{ID: 1, Name: "Rune of Perfection", Stats: map[string]float64{"spell_penetration": 6}},
+				GainMeasured: true, MeasuredGainDPS: 0.1, MeasuredGainStdErr: 0.38,
+			},
+			FactionNote:          "Fire Ruby measures lower on troll (racial)",
+			FactionNoteNeedsPick: false,
+		},
+	}
+	r := buildReport(reportSpec(), 50, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket2" {
+			row = s
+		}
+	}
+	if row.ItemID != 0 || row.EmptyReason != noDPSValueReason {
+		t.Fatalf("trinket2 row = %+v, want empty with EmptyReason %q (gain never cleared significance)", row, noDPSValueReason)
+	}
+	if row.FactionNote == "" {
+		t.Fatalf("trinket2 row.FactionNote is empty, want the racial note to survive: it never named Item at all")
 	}
 }
 
@@ -2510,5 +2659,41 @@ func TestBuildReportKeepsATrinketWhoseGainClearsTwiceItsError(t *testing.T) {
 	}
 	if row.ItemID != 249469 || row.EmptyReason != "" {
 		t.Fatalf("trinket2 row = %+v, want item 249469 published with no EmptyReason (gain 3.03 clears 2x its own stdErr 0.98)", row)
+	}
+}
+
+// bis-ranker-integrity-16, item 4: mage-arcane/fire/frost band 50
+// Alliance's own live repro, reproduced locally against this build's
+// simdb.bin (Smoking Heart of the Mountain gain 0.0000 +/- 1.8611,
+// Uther's Strength gain 2.1335 +/- 1.8675 - both real numbers, neither
+// clears trinketGainSignificanceMultiplier on its own). Before this
+// fix, trinketLowGain fired ahead of trinketEffectExempt in the
+// switch below, so this trinket - a real, unmodelled armor-buff
+// effect_text, rankTrinketSlot's own tournament winner - was emptied
+// exactly like a bare stat-only trinket with nothing behind it,
+// hiding the slot next to its own tied alternative (Uther's Strength)
+// with neither able to publish. druid-balance band 50 Alliance
+// trinket2 (Uther's Strength itself, same tournament, same gate)
+// never exposed this because nothing there was close enough to make
+// Uther's Strength lose its own tournament - this is the same gate,
+// not a different one, catching every effect-bearing trinket whose
+// measured gain does not clear significance, which the tournament
+// always measures (rankTrinketSlot's own doc).
+func TestBuildReportKeepsAnEffectBearingTrinketEvenWhenItsMeasuredGainIsInsignificant(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket2": {Item: &scored{
+			candidate:   candidate{ID: 11811, Name: "Smoking Heart of the Mountain", EffectText: "Increases armor by 520 for 20 sec."},
+			MeasuredDPS: 275.1557, MeasuredGainDPS: 0.0, MeasuredGainStdErr: 1.8611, GainMeasured: true,
+		}},
+	}
+	r := buildReport(reportSpec(), 50, "alliance", "human", "", 0, nil, nil, picks, 275.1557, nil, nil, nil, 0, 0, nil, nil, nil, 0, "")
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket2" {
+			row = s
+		}
+	}
+	if row.ItemID != 11811 || row.EmptyReason != "" {
+		t.Fatalf("trinket2 row = %+v, want item 11811 published with no EmptyReason (a real effect_text exempts it from trinketLowGain, the same way trinketEffectExempt already exempts a score-zero trinket)", row)
 	}
 }

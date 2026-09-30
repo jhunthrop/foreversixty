@@ -326,6 +326,13 @@ func reconcileTrinketDirection(runner engineRunner, spec specInfo, classSlug str
 				srcItem.Name, source.Faction, target.Faction, targetPick.Item.Name, target.Race,
 				gainOnTarget, stdErrOnTarget, targetPick.Item.MeasuredGainDPS, targetPick.Item.MeasuredGainStdErr,
 			)
+			// This note names Item itself ("target's own pick") - only
+			// true while Item goes on to publish as this slot's pick.
+			// report.go's own zero-value gate reads this to drop the
+			// note instead of publishing it (bis-ranker-integrity-16,
+			// item 3) if Item's own measured gain later fails
+			// trinketGainSignificant and the row empties.
+			row.FactionNoteNeedsPick = true
 			out[slot] = row
 			*notes = append(*notes, fmt.Sprintf(
 				"%s: kept %s's own verdict over %s (id %d) from %s - gains are statistically indistinguishable on %s (%.2f ± %.2f vs %.2f ± %.2f DPS), a cross-faction tie rather than a real difference",

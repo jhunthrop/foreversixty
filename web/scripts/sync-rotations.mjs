@@ -36,7 +36,7 @@ for (const entry of entries) {
   if (!entry.isFile() || !entry.name.endsWith('.json')) continue;
   const spec = entry.name.slice(0, -'.json'.length);
   const raw = await readFile(path.join(sourceDir, entry.name), 'utf8');
-  const notes = rotationNotesOf(JSON.parse(raw));
+  const notes = rotationNotesOf(JSON.parse(raw), spec);
   rotations[spec] = notes;
   if (notes.length > 0) specsWithNotes += 1;
 }

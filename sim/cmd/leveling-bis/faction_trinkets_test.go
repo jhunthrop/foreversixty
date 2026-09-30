@@ -158,6 +158,13 @@ func TestReconcileFactionTrinketsKeepsTargetWhenGainMeasuresNegativeBeyondError(
 	if len(notes) == 0 {
 		t.Fatalf("expected a note describing the kept verdict")
 	}
+	// bis-ranker-integrity-16, item 3: this note names only the
+	// REJECTED crossing candidate (Fire Ruby), never Item (which is
+	// nil here) - that claim stays true no matter what later happens
+	// to this slot's own pick, so report.go must never drop it.
+	if got.FactionNoteNeedsPick {
+		t.Fatalf("FactionNoteNeedsPick = true, want false: this note names the rejected candidate, not Item")
+	}
 }
 
 // (c2) data-followups-10 lane, 2026-09-30: two DIFFERENT faction-
@@ -216,6 +223,18 @@ func TestReconcileFactionTrinketsNotesANearTieInsteadOfSilentlyDiverging(t *test
 	}
 	if len(notes) < 2 {
 		t.Fatalf("notes = %v, want at least one per direction describing the kept tie", notes)
+	}
+	// bis-ranker-integrity-16, item 3: this note names Item ("this
+	// faction's own pick") by name - a claim report.go's own
+	// trinketLowGain gate can later falsify if Item's measured gain
+	// does not clear significance. FactionNoteNeedsPick is how
+	// report.go (publishableFactionNote) knows to drop the note rather
+	// than publish it next to an empty row.
+	if !newAlliance["trinket1"].FactionNoteNeedsPick {
+		t.Fatalf("Alliance trinket1.FactionNoteNeedsPick = false, want true: the note names Item as its own pick")
+	}
+	if !newHorde["trinket1"].FactionNoteNeedsPick {
+		t.Fatalf("Horde trinket1.FactionNoteNeedsPick = false, want true: the note names Item as its own pick")
 	}
 }
 
