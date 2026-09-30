@@ -102,7 +102,32 @@ type slotRow struct {
 	// hasImplementedEffect, the single predicate both this flag and the
 	// effect-verification pass itself read.
 	EffectUnmodelled bool `json:"effect_unmodelled,omitempty"`
-	// Ties is every other candidate that scored identically to this
+	// SimStatus is notInSimReason ("not_in_sim") when this row's own
+	// pick carries an item id this build's embedded item database does
+	// not have (pk.Item.NotInSimDB, data.go's own doc) - this lane's
+	// brief, item 1, generalising
+	// rank.go's own effectVerifiedInSim gate (which already caught this
+	// for an implemented-effect candidate's EffectUnmodelled flag,
+	// above) to EVERY slot and every pass that can set MeasuredDPS
+	// (trinkets.go's tournament, rank.go's effect tournament, sets.go's
+	// set-completion trial, verify.go's swap promotion): simdb.Attach/
+	// AttachWeights' own UnequipUnknown silently strips such an item
+	// from the character before ANY sim this command runs ever builds
+	// it, so nothing downstream ever actually measured it, whatever
+	// pk.Item.MeasuredDPS below claims to have found. Forces simDecided
+	// off (below), so the row keeps its plain score() estimate and
+	// Score is never zeroed - "the pick stays score-decided" (this
+	// lane's brief) - and forces Verified false and every sim-only field
+	// (SimDPS, DPSDelta, SwapNote) empty, in the switch below, so the
+	// row can never read as tested when it never was. Empty (omitted)
+	// for every other row, including one whose pick was genuinely never
+	// simmed at all (score()-only, no tournament/swap ever touched it) -
+	// that case already publishes Verified: true with no SimDPS/
+	// DPSDelta, which is not a false claim (see erroredSlots/default
+	// case below): this field exists only for the specific, provably
+	// false claim a stripped item's own MeasuredDPS would otherwise
+	// make.
+	SimStatus string `json:"sim_status,omitempty"`
 	// row's pick (slotPick.Ties, pick.go's own doc; this lane's brief,
 	// defect 4) - "or Blackwater Cutlass" as populated alternatives the
 	// page can print beside a pick that was really an arbitrary
@@ -188,6 +213,11 @@ const noDPSValueReason = "no_dps_value"
 // this reason fires for, so the effect can be added to
 // effectids_generated.go.
 const effectNotModelledReason = "effect_not_modelled"
+
+// notInSimReason is slotRow.SimStatus's own value for a pick this
+// build's embedded item database does not carry - see that field's
+// own doc (this lane's brief, item 1).
+const notInSimReason = "not_in_sim"
 
 // trinketZeroGainThresholdDPS is the noise floor rankTrinketSlot's own
 // baseline-relative gain (scored.MeasuredGainDPS) must clear before a
@@ -426,15 +456,28 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 	isPairMateItem := func(c scored) bool {
 		return mateID != 0 && (c.ID == mateID || (mateName != "" && c.Name == mateName))
 	}
-	seen := map[int]bool{pk.Item.ID: true}
+	// excluded no longer tracks "already added" - controller direction,
+	// 2026-09-30 (Grand Marshal's Stave repro, buildAlternatives' own
+	// doc below): the identical item id can reach this function twice,
+	// through two different itemSource rows, and a plain "skip whatever
+	// arrives second" guard makes the survivor depend on iteration
+	// order (Ties before list, and whichever order a slot's own two
+	// rows happen to sit in either one) rather than on
+	// betterAlternative's own, order-independent rule. Only the pick's
+	// own id and its pair-mate's are excluded outright here; a genuine
+	// same-id duplicate is reconciled by upsert (below), not by being
+	// silently dropped before it ever gets compared.
 	excluded := func(c scored) bool {
-		if seen[c.ID] {
+		if c.ID == pk.Item.ID {
 			return true
 		}
 		return isPairMateItem(c)
 	}
-	add := func(out []alternativeRow, c scored) []alternativeRow {
-		seen[c.ID] = true
+	// indexByID is upsert's own record of where each item id already
+	// landed in out, so a same-id duplicate replaces that row (via
+	// betterAlternative) instead of appending a second one.
+	indexByID := make(map[int]int, alternativesLimit)
+	toRow := func(c scored) alternativeRow {
 		scoreDelta := c.Score - pk.Item.Score
 		// DPSDelta's own doc, above: this row is not (yet) the one
 		// candidate verify.go actually simmed against the pick (the
@@ -447,13 +490,29 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		if dpsDelta > 0 {
 			dpsDelta = 0
 		}
-		return append(out, alternativeRow{
+		return alternativeRow{
 			ItemID:     c.ID,
 			ItemName:   c.Name,
 			SourceKind: c.Source.Kind,
 			Source:     c.Source.Label,
 			DPSDelta:   dpsDelta,
-		})
+		}
+	}
+	// upsert appends c's own row, or - when this exact item id already
+	// has one (indexByID) - keeps whichever of the two betterAlternative
+	// prefers (report.go's own doc on that function). This is what
+	// makes the survivor's SourceKind deterministic regardless of which
+	// of an item's two source rows this function happens to see first.
+	upsert := func(out []alternativeRow, c scored) []alternativeRow {
+		row := toRow(c)
+		if i, ok := indexByID[c.ID]; ok {
+			if betterAlternative(row, out[i]) {
+				out[i] = row
+			}
+			return out
+		}
+		indexByID[c.ID] = len(out)
+		return append(out, row)
 	}
 
 	// This lane's brief, item 2: hunter-beast-mastery/marksmanship band
@@ -472,22 +531,26 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 
 	out := make([]alternativeRow, 0, alternativesLimit)
 	for _, tie := range pk.Ties {
-		if len(out) >= alternativesLimit {
-			break
-		}
 		if excluded(tie) || !realAlternative(tie) {
 			continue
 		}
-		out = add(out, tie)
+		// The cap only ever blocks a genuinely NEW item id from
+		// joining out - a duplicate of one already there still has to
+		// reach upsert so betterAlternative gets to compare the two
+		// (this lane's own doc above), whatever the cap already holds.
+		if _, already := indexByID[tie.ID]; !already && len(out) >= alternativesLimit {
+			continue
+		}
+		out = upsert(out, tie)
 	}
 	for _, c := range list {
-		if len(out) >= alternativesLimit {
-			break
-		}
 		if excluded(c) || !realAlternative(c) {
 			continue
 		}
-		out = add(out, c)
+		if _, already := indexByID[c.ID]; !already && len(out) >= alternativesLimit {
+			continue
+		}
+		out = upsert(out, c)
 	}
 
 	if sw != nil && pk.RunnerUp != nil && !isPairMateItem(*pk.RunnerUp) {
@@ -559,6 +622,20 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		}
 	}
 
+	// Controller direction, 2026-09-30 (priest-shadow band 60 Alliance
+	// main_hand's own repro): Grand Marshal's Stave published twice,
+	// once via loot.json's own "pvp:rank-18:alliance" source and once
+	// via the quartermaster's own "vendor" row that
+	// vendorInheritsPvpRankGate (data.go) copies that same rank onto -
+	// two itemSource rows for the one physical item id, which can each
+	// reach this function's own inputs (Ties/list/the swap force-
+	// include above all key on Score, not on "have I already named
+	// this id under a DIFFERENT source"). Alternatives are unique by
+	// item id; dedupeAlternatives keeps the one row worth showing a
+	// player for each id and drops the rest before the final sort
+	// below ever sees them.
+	out = dedupeAlternatives(out)
+
 	sort.SliceStable(out, func(i, j int) bool {
 		if out[i].DPSDelta != out[j].DPSDelta {
 			return out[i].DPSDelta > out[j].DPSDelta
@@ -566,6 +643,49 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		return out[i].ItemID < out[j].ItemID
 	})
 	return out
+}
+
+// dedupeAlternatives keeps exactly one alternativeRow per ItemID -
+// buildAlternatives' own doc above has the concrete repro this closes
+// (Grand Marshal's Stave, reached through both a "pvp" and a "vendor"
+// itemSource row for the identical id). Kept: the row betterAlternative
+// prefers; ties (an identical DPSDelta and neither row's SourceKind is
+// "pvp", or both are) resolve to whichever row this function saw
+// first, so the result is deterministic regardless of map/slice
+// iteration order upstream.
+func dedupeAlternatives(rows []alternativeRow) []alternativeRow {
+	indexByID := make(map[int]int, len(rows))
+	out := make([]alternativeRow, 0, len(rows))
+	for _, r := range rows {
+		if i, ok := indexByID[r.ItemID]; ok {
+			if betterAlternative(r, out[i]) {
+				out[i] = r
+			}
+			continue
+		}
+		indexByID[r.ItemID] = len(out)
+		out = append(out, r)
+	}
+	return out
+}
+
+// betterAlternative reports whether candidate should replace incumbent
+// as the one published row for the item id they share - controller
+// direction, 2026-09-30: the row with the higher DPSDelta wins; on a
+// tie, the "pvp" SourceKind wins over any other (a player recognises
+// "Alliance PvP Rank 18" as the real requirement more readily than a
+// vendor row that only carries a rank at all because
+// vendorInheritsPvpRankGate, data.go, copied it there - the opposite
+// question from band.go's own sourceKindPriority, which decides a
+// SLOT'S OWN pick and prefers "vendor" for exactly the reason a plain
+// gold purchase is simpler than a PvP grind; an alternative is not the
+// pick, and here the more specific, more informative source wins
+// instead).
+func betterAlternative(candidate, incumbent alternativeRow) bool {
+	if candidate.DPSDelta != incumbent.DPSDelta {
+		return candidate.DPSDelta > incumbent.DPSDelta
+	}
+	return candidate.SourceKind == "pvp" && incumbent.SourceKind != "pvp"
 }
 
 // swapDeltaNoiseFloorDPS is how small a real, measured DPS delta must
@@ -622,17 +742,36 @@ const swapDeltaNoiseFloorDPS = 0.05
 // number; reusing it to zero out a real measurement made every one of
 // these rows claim an exact tie regardless of how large the actual,
 // measured gap was (bis-ranker-integrity-8's caster finding above).
-// This function now only ever calls an exact tie (0) when the real
-// measured delta itself is smaller than swapDeltaNoiseFloorDPS - an
-// absolute floor on THIS row's own number, answering "is this
-// measurement itself too small to trust" rather than "did it clear an
-// unrelated promotion bar". A negative delta (a genuine, measured
-// loss, however small) was never clamped and still is not.
+// This function calls an exact tie (0) when the real measured delta
+// itself is smaller than swapDeltaNoiseFloorDPS - an absolute floor on
+// THIS row's own number, answering "is this measurement itself too
+// small to trust" rather than "did it clear an unrelated promotion
+// bar". A negative delta (a genuine, measured loss, however small) is
+// never clamped by either rule below.
+//
+// Controller direction, 2026-09-30 (ninth wow-player sweep,
+// day3/player-review-24/casters.md finding 1, lane bis-ranker-
+// integrity-9): the noise floor alone still let a real, well-above-
+// noise POSITIVE delta through the !sw.Beat branch - mage-arcane band
+// 60's own Weakness Analyzer published dps_delta +2.34 next to the
+// KEPT pick Talisman of Ascendance, warlock-destruction's own Orb of
+// the Darkmoon +1.6 over the neck pick, both verified: true. !sw.Beat
+// means beatsByMargin (verify.go) already found this candidate did NOT
+// clear swapMargin, so the pick was kept on purpose - a positive
+// number here reads as "the site chose the worse item", which is never
+// true once the pick was kept. Every positive delta in the !sw.Beat
+// branch is now an honest tie (0), whatever its size; only a genuine
+// loss (delta <= 0) can ever publish a nonzero number here, and the
+// noise floor still rounds a tiny loss to an exact tie the same way it
+// always did.
 func swapMeasuredDelta(sw swapResult) float64 {
 	if sw.Beat {
 		return sw.BaselineDPS - sw.SwapDPS
 	}
 	delta := sw.SwapDPS - sw.BaselineDPS
+	if delta > 0 {
+		return 0
+	}
 	if math.Abs(delta) < swapDeltaNoiseFloorDPS {
 		return 0
 	}
@@ -675,21 +814,40 @@ func alternativeCarriesRealEvidence(alts []alternativeRow) bool {
 // the counts an honest reader needs (how many eligible items had no
 // known source).
 type bandReport struct {
-	Spec              string      `json:"spec"`
-	Band              int         `json:"band"`
-	Faction           string      `json:"faction"`
-	Race              string      `json:"race"`
-	Talents           string      `json:"talents"`
-	TalentPoints      int         `json:"talent_points"`
-	Weights           []weightRow `json:"weights"`
-	Slots             []slotRow   `json:"slots"`
-	SetDPS            float64     `json:"set_dps"`
-	NoSourceCount     int         `json:"no_source_count"`
-	NoSourceSample    []string    `json:"no_source_sample,omitempty"`
-	NewAtBand         []string    `json:"new_at_band"`
-	WeightsRunSeconds float64     `json:"weights_run_seconds"`
-	VerifyRunSeconds  float64     `json:"verify_run_seconds"`
-	VerifyErrors      []string    `json:"verify_errors,omitempty"`
+	Spec         string      `json:"spec"`
+	Band         int         `json:"band"`
+	Faction      string      `json:"faction"`
+	Race         string      `json:"race"`
+	Talents      string      `json:"talents"`
+	TalentPoints int         `json:"talent_points"`
+	Weights      []weightRow `json:"weights"`
+	Slots        []slotRow   `json:"slots"`
+	SetDPS       float64     `json:"set_dps"`
+	// SetDPSPartial is true when at least one published slot's own pick
+	// carries an item id this build's embedded item database does not
+	// have (a Slots row with SimStatus == "not_in_sim", above) - this
+	// lane's brief, item 1. simdb.Attach's own UnequipUnknown silently
+	// empties that one item's equipment slot before EVERY sim this
+	// band's own SetDPS was ever measured from (the baseline run,
+	// every swap trial, applySwaps' own final re-measure), so SetDPS
+	// itself was always a real, honestly-computed number for "this
+	// set, minus that one item" - never for the full set this band
+	// actually publishes. The two honest choices this lane's brief
+	// offers are publishing only the simmable part (with this flag) or
+	// omitting set_dps outright; omitting it would throw away a true
+	// measurement of every OTHER slot's own real contribution just
+	// because one relic/idol/item this build's client export never
+	// carried a row for happened to also be the best pick somewhere in
+	// the set, so this flag is the option chosen - set_dps stays
+	// published, exactly as the engine already computed it, with this
+	// flag naming what it is not a measurement of.
+	SetDPSPartial     bool     `json:"set_dps_partial,omitempty"`
+	NoSourceCount     int      `json:"no_source_count"`
+	NoSourceSample    []string `json:"no_source_sample,omitempty"`
+	NewAtBand         []string `json:"new_at_band"`
+	WeightsRunSeconds float64  `json:"weights_run_seconds"`
+	VerifyRunSeconds  float64  `json:"verify_run_seconds"`
+	VerifyErrors      []string `json:"verify_errors,omitempty"`
 	// Coverage is band.go's buildBandPool own per-slot count (lane
 	// rank-guardrails' guardrail A): planner slot -> how many items
 	// eligible() passed for this band+faction, and how many of those
@@ -909,10 +1067,26 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// measurement instead of score()'s stat estimate - never
 			// both, so a reader cannot compare this row's Score against
 			// another row's Score across two different units.
-			simDecided := pk.Item.MeasuredDPS > 0
+			// notInSimDB (this lane's brief, item 1): pk.Item.NotInSimDB
+			// (data.go's own doc - set once per spec run by
+			// markNotInSimDB, off this build's real embedded item
+			// database) is true when simdb.Attach/AttachWeights' own
+			// UnequipUnknown would have silently emptied this exact
+			// slot before every sim this command ran ever built the
+			// character, so no run anywhere actually measured this
+			// item whatever MeasuredDPS claims. Forcing simDecided off
+			// here is what makes "the pick stays score-decided" true
+			// below (Score is never zeroed) and what the SimStatus/
+			// Verified branch further down reads to keep this row
+			// honest.
+			notInSimDB := pk.Item.NotInSimDB
+			simDecided := pk.Item.MeasuredDPS > 0 && !notInSimDB
 			if simDecided {
 				row.SimDPS = pk.Item.MeasuredDPS
 				row.Score = 0
+			}
+			if notInSimDB {
+				row.SimStatus = notInSimReason
 			}
 			// effectVerifiedInSim (rank.go), not the bare "does the
 			// engine's source claim this id" hasImplementedEffect: a
@@ -936,6 +1110,13 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			}
 			var realSimPromotion bool
 			switch {
+			case notInSimDB:
+				// This lane's brief, item 1: never "verified" and never
+				// carrying sim_dps/dps_delta - SimStatus (set above)
+				// already tells the page why, so no SwapNote text
+				// duplicates it here; DPSDelta/SimDPS simply never get
+				// set in this branch (both start at their zero values).
+				row.Verified = false
 			case erroredSlots[slot]:
 				row.Verified = false
 				row.SwapNote = "the runner-up's verification sim failed (an engine-side error, not a scoring one - see verify_errors); the pick is unconfirmed against it"
@@ -1151,6 +1332,18 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 		}
 	}
 
+	// setDPSPartial: this lane's brief, item 1 - see SetDPSPartial's
+	// own doc on bandReport for what it means and why publishing the
+	// real (partial) set_dps rather than omitting it is the honest
+	// choice here.
+	setDPSPartial := false
+	for _, row := range rows {
+		if row.SimStatus == notInSimReason {
+			setDPSPartial = true
+			break
+		}
+	}
+
 	sampleNames := make([]string, 0, noSourceSampleSize)
 	for i, c := range noSource {
 		if i >= noSourceSampleSize {
@@ -1203,6 +1396,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 		Weights:              wrows,
 		Slots:                rows,
 		SetDPS:               setDPS,
+		SetDPSPartial:        setDPSPartial,
 		NoSourceCount:        len(noSource),
 		NoSourceSample:       sampleNames,
 		NewAtBand:            nonNil(newAt),

@@ -18,6 +18,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/jhunthrop/foreversixty/sim/internal/simdb"
 	"github.com/jhunthrop/foreversixty/sim/leveling"
 )
 
@@ -143,6 +144,41 @@ type candidate struct {
 	// quests map). eligible() gates on THIS field, not RequiredLevel
 	// directly -- see this lane's brief and eligible.go's own doc.
 	EffectiveRequiredLevel int
+	// NotInSimDB is true when this build's embedded item database
+	// (simdb.Known) does not carry a row for ID - set once per spec
+	// run by markNotInSimDB, immediately after loadCandidates
+	// (main.go's runSpec, the same point convertCandidateRatings/
+	// applyEffectiveRequiredLevels already run at), this lane's brief,
+	// item 1: simdb.Attach/AttachWeights' own UnequipUnknown silently
+	// strips such an item from the character before ANY sim this
+	// command ever builds, so a real sim never actually measured it,
+	// however this candidate scored or which pass promoted it -
+	// report.go's buildReport reads this field off the final pick to
+	// keep the report honest (SimStatus, never Verified/SimDPS/
+	// DPSDelta - see slotRow's own doc). A candidate a test builds
+	// directly, bypassing loadCandidates/markNotInSimDB entirely
+	// (every existing *_test.go fixture, all synthetic ids the real
+	// simdb.bin has never heard of), defaults to false - "assume
+	// known", this field's own zero value and the field's absence's
+	// old behaviour alike - so the existing suite's fixtures are
+	// unaffected; only a test that sets this field explicitly (this
+	// lane's brief, item 2's contract test) exercises the new path.
+	NotInSimDB bool
+}
+
+// markNotInSimDB sets NotInSimDB (above) on every item this build's
+// embedded item database does not carry - this lane's brief, item 1.
+// Called once per spec run, right after loadCandidates, so every
+// candidate that ever reaches band.go's eligible()/buildBandPool
+// already carries the flag before pick()/rankTrinketSlot/
+// rankSlotWithEffects/trySetCompletion/verify.go ever see it.
+func markNotInSimDB(items []candidate) []candidate {
+	out := make([]candidate, len(items))
+	for i, c := range items {
+		c.NotInSimDB = !simdb.Known(int32(c.ID))
+		out[i] = c
+	}
+	return out
 }
 
 // loadCandidates merges items.json and items/<class>.json for one
