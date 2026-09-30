@@ -177,6 +177,23 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     92: None,
     96: None,
     98: None,
+    # 101, 125, 126, 129, 134, 139 below all surfaced only once the hotfix
+    # cache is merged (normalize-levels lane, 2026-09-29): each is a real,
+    # defined ItemModType a hotfix-only item's StatModifier slot names --
+    # verified via wowhead's Forever tooltip corroboration for the item that
+    # carries it, never guessed at -- but every one is either a
+    # creature-type-conditional damage bonus ("+N Attack Power against
+    # <type>", rendered through wowhead's own `rtg<id>` template tag: 125
+    # Humanoids on item 7683 "Bloody Brass Knuckles", 126 Elementals on item
+    # 5444 "Miner's Cape", 129 Dragonkin on item 282778 "Mark of the Red
+    # Flight") or a weapon-skill-style bonus (101, "Increased Polearms +1" on
+    # item 13056 "Frenzied Striker"; 134, no rendered line at all on item
+    # 2169 "Buzzer Blade" -- see that item's separate, unrelated "Equip:
+    # spell power" line, which comes from an on-equip spell, not this
+    # StatModifier slot; 139, "Increases damage done to Beasts..." on item
+    # 4771 "Harvest Cloak") -- none of which this Classic-style planner's
+    # stat vocabulary has a key for.
+    101: None,
     103: None,
     112: None,
     113: None,
@@ -186,12 +203,17 @@ STAT_BY_MODIFIER_ID: dict[int, str | None] = {
     119: None,
     121: None,
     124: None,
+    125: None,
+    126: None,
     127: None,
     128: None,
+    129: None,
     131: None,
     132: None,
+    134: None,
     135: None,
     136: None,
+    139: None,
 }
 
 #: Resistances_<n> -> stat key. Index 0 is armour and index 1 is holy
@@ -263,6 +285,46 @@ def is_weapon_row(item_class_id: int, inventory_type: int) -> bool:
 #: and block as percentages". The two units cannot be summed into one
 #: `stats` entry; `_merge_effect_stats` raises rather than do it.
 RATING_FAMILY_STAT_KEYS = frozenset({"hit", "crit", "dodge", "parry", "block", "defense"})
+
+
+#: `resolve_required_level`'s item-level-proxy offset: `sim/leveling.
+#: ItemLevelProxyRequiredLevel`'s own formula, `item_level - 5`, kept as a
+#: named constant here rather than inlined so the Go file's comment ("the
+#: two cannot share code across languages, only the number") has one Python
+#: number to point at.
+REQUIRED_LEVEL_ITEM_LEVEL_PROXY_OFFSET = 5
+
+
+def resolve_required_level(
+    client_level: int, item_level: int, wowhead_level: int | None
+) -> tuple[int, str]:
+    """The level gate one gear row really has, and which of four sources
+    produced it -- `models.GearItem.required_level_source`'s own doc has the
+    full rationale; this is the precedence in code:
+
+    1. `client_level`, when non-zero -- the shipped or hotfix-merged row
+       states its own gate. Source `"client"`.
+    2. `wowhead_level`, when `client_level` is 0 (or the row has no client
+       side at all -- a wowhead-supplement item, whose own `required_level`
+       IS `wowhead_level`) and wowhead names a non-zero level for this id.
+       Source `"wowhead"`.
+    3. The item-level proxy, for real gear (`item_level > 1`) neither of the
+       above resolved: `item_level - REQUIRED_LEVEL_ITEM_LEVEL_PROXY_OFFSET`,
+       floored at 0 and capped at `MAX_PLAYER_LEVEL` -- the same formula
+       `sim/leveling.ItemLevelProxyRequiredLevel` computes independently in
+       Go. Source `"item_level_proxy"`.
+    4. 0, for an `item_level`-1 row (or anything else with no proxy to
+       compute) -- required_level 0 IS the right answer here, not a gap.
+       Source `"none"`.
+    """
+    if client_level:
+        return client_level, "client"
+    if wowhead_level:
+        return wowhead_level, "wowhead"
+    if item_level > 1:
+        proxy = item_level - REQUIRED_LEVEL_ITEM_LEVEL_PROXY_OFFSET
+        return max(0, min(MAX_PLAYER_LEVEL, proxy)), "item_level_proxy"
+    return 0, "none"
 
 
 class ItemDataError(ValueError):
@@ -653,6 +715,7 @@ def build_class_items(
     weapon_curves: WeaponCurves | None = None,
     fork_icons: dict[int, str] | None = None,
     wowhead_icons: dict[int, str] | None = None,
+    wowhead_required_levels: dict[int, int] | None = None,
 ) -> list[ClassItems]:
     """One equippable item list per class. Raises ItemDataError if a row is unreadable.
 
@@ -683,10 +746,19 @@ def build_class_items(
     populate, and sets `effect_text` from its use/proc spells. Pass None (the
     default) for a caller that has not built one and every item gets no
     extra stats and an empty `effect_text`, exactly as before this existed.
+
+    `wowhead_required_levels` (item id -> wowhead's own `required_level`, every
+    id the payload names, not only the ones the client lacks -- see
+    `pipeline.icons_fix.load_wowhead_icons`'s own doc for why "every id" and
+    not just the supplement) resolves `required_level`/`required_level_source`
+    per `resolve_required_level`. Pass None (the default, same as an empty
+    dict) for a caller with no wowhead payload -- every row's `required_level`
+    then falls back to the item-level proxy or 0, never wowhead's number.
     """
     by_id = {int_column(row, "ID"): row for row in item_rows}
     fork_icons = fork_icons or {}
     wowhead_icons = wowhead_icons or {}
+    wowhead_required_levels = wowhead_required_levels or {}
     icon_origins: Counter[str] = Counter()
     candidates: list[tuple[GearItem, int, int, int]] = []
     for row in sparse_rows:
@@ -694,8 +766,8 @@ def build_class_items(
         slot = SLOT_BY_INVENTORY_TYPE.get(inventory_type)
         if slot is None:
             continue
-        required_level = int_column(row, "RequiredLevel")
-        if required_level > MAX_PLAYER_LEVEL:
+        client_required_level = int_column(row, "RequiredLevel")
+        if client_required_level > MAX_PLAYER_LEVEL:
             continue
         quality = int_column(row, "OverallQualityID")
         if quality not in PLANNER_QUALITIES:
@@ -722,6 +794,9 @@ def build_class_items(
             if is_weapon_row(item_class_id, inventory_type)
             else NOT_A_WEAPON
         )
+        required_level, required_level_source = resolve_required_level(
+            client_required_level, item_level, wowhead_required_levels.get(item_id)
+        )
         item = GearItem(
             id=item_id,
             name=display_name,
@@ -729,6 +804,7 @@ def build_class_items(
             slot=slot,
             quality=quality,
             required_level=required_level,
+            required_level_source=required_level_source,
             item_level=item_level,
             armor=armor,
             stats=stats,

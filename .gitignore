@@ -87,6 +87,17 @@ data/builds/*/raw/items/*
 !data/builds/*/raw/classicdb/
 data/builds/*/raw/classicdb/*
 !data/builds/*/raw/classicdb/sources.json
+# normalize-levels lane, 2026-09-29: the same exception, for the beta
+# client's own hotfix cache (pipeline.hotfix_cache/hotfix_merge) -- the
+# DBCache.bin the controller copies off the client is never committed
+# (never fetched by this pipeline itself), only the ItemSparse.csv/Item.csv
+# `python -m pipeline hotfixes` decodes it into, tracked as inputs like the
+# other raw exceptions above (~1.8 MB; refreshed by hand after a play
+# session, not regenerated on every `fetch`).
+!data/builds/*/raw/hotfixes/
+data/builds/*/raw/hotfixes/*
+!data/builds/*/raw/hotfixes/ItemSparse.csv
+!data/builds/*/raw/hotfixes/Item.csv
 data/.icon-cache/
 
 # git worktrees for parallel plan execution

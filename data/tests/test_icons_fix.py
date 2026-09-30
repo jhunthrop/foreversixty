@@ -27,6 +27,7 @@ def _gear_item(item_id: int, icon: str) -> dict:
         "slot": "head",
         "quality": 3,
         "required_level": 1,
+        "required_level_source": "none",
         "item_level": 1,
         "armor": 0,
         "stats": {},

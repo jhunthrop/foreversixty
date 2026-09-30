@@ -90,8 +90,15 @@ def _compare_against_raw(ctx: AuditContext, result: CategoryResult) -> None:
             sparse = sparse_by_id.get(item_id)
             item_row = item_by_id.get(item_id)
             if sparse is None or item_row is None:
+                # normalize-levels lane, 2026-09-29: a wowhead-supplement row
+                # (required_level_source "wowhead" on an item with no client
+                # row at all -- see pipeline.wowhead_items.to_gear_item) was
+                # never going to be in the client's own raw tables; that is
+                # what makes it a supplement, not a defect the way a real
+                # client id going missing would be. Downgraded to "minor"
+                # ("unverified against the client") rather than "major".
                 result.add(
-                    "major",
+                    "minor" if ours.get("required_level_source") == "wowhead" else "major",
                     item_id,
                     f"{ours['name']!r} ({class_slug}) is in items/{class_slug}.json but not in "
                     "the build's own raw ItemSparse.csv/Item.csv",
@@ -100,7 +107,6 @@ def _compare_against_raw(ctx: AuditContext, result: CategoryResult) -> None:
             result.checked += 1
             try:
                 for field, column in (
-                    ("required_level", "RequiredLevel"),
                     ("item_level", "ItemLevel"),
                     ("quality", "OverallQualityID"),
                 ):
@@ -113,6 +119,7 @@ def _compare_against_raw(ctx: AuditContext, result: CategoryResult) -> None:
                             ours=str(ours.get(field)),
                             theirs=str(theirs),
                         )
+                _compare_required_level(ours, sparse, item_id, class_slug, result)
                 _compare_weapon(ours, sparse, item_row, item_id, class_slug, result)
                 _compare_stats(ours, sparse, item_row, item_id, class_slug, result)
             except ItemDataError as error:
@@ -121,6 +128,41 @@ def _compare_against_raw(ctx: AuditContext, result: CategoryResult) -> None:
                     item_id,
                     f"{ours['name']!r} ({class_slug}) raw row could not be read: {error}",
                 )
+
+
+def _compare_required_level(ours, sparse, item_id, class_slug, result) -> None:
+    """`required_level`'s own comparison, separated from the other raw-column
+    fields above: `pipeline.normalize.gear.resolve_required_level` (normalize-
+    levels lane, 2026-09-29) can deliberately publish a level the client's own
+    `RequiredLevel` column does not state -- wowhead's or the item-level
+    proxy's, for a client row that states 0 -- which is the fix, not a
+    disagreement with the client. Only a `"client"`-sourced row is checked
+    against the raw column as a blocker; the other two sources get a `minor`
+    finding instead, naming the source, so the report still says the number
+    is unverified against the client rather than silently agreeing with it.
+    """
+    theirs = int_column(sparse, "RequiredLevel")
+    ours_level = ours.get("required_level")
+    if ours_level == theirs:
+        return
+    source = ours.get("required_level_source")
+    if source == "client":
+        result.add(
+            "blocker",
+            item_id,
+            f"{ours['name']!r} ({class_slug}) required_level disagrees with the client",
+            ours=str(ours_level),
+            theirs=str(theirs),
+        )
+        return
+    result.add(
+        "minor",
+        item_id,
+        f"{ours['name']!r} ({class_slug}) required_level {ours_level} is a "
+        f"{source} estimate, unverified against the client's own RequiredLevel {theirs}",
+        ours=str(ours_level),
+        theirs=str(theirs),
+    )
 
 
 def _compare_weapon(ours, sparse, item_row, item_id, class_slug, result) -> None:

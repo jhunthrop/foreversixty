@@ -140,6 +140,7 @@ def normalize_build(
     from pipeline.normalize.traits import TraitDataError, TraitRows, has_trait_trees
     from pipeline.normalize.weapon_curves import load_weapon_curves
     from pipeline.normalize.wowhead import (
+        load_required_levels,
         load_supplement,
         merge_class_items,
         merge_items,
@@ -159,9 +160,6 @@ def normalize_build(
     # shipped .db2 has outright.
     sparse_rows = merge_hotfix_table(raw, "ItemSparse")
     item_rows = merge_hotfix_table(raw, "Item")
-    check_item_sparse_completeness(
-        raw, allow_shrink=allow_shrink, item_rows=item_rows, sparse_rows=sparse_rows
-    )
 
     def t(name: str) -> list[dict[str, str]]:
         if name == "ItemSparse":
@@ -192,7 +190,13 @@ def normalize_build(
         if wowhead_supplement is not None
         else client_items
     )
-    write_json(items, build_dir / "items.json")
+    # items.json's own completeness gate and write are deferred to just after
+    # the per-class items/ gate below (still before "Curated Forever facts"),
+    # not run here: checking (and possibly writing) it this early would let a
+    # narrower per-class regression (`_check_class_items_not_shrunk`) get
+    # masked by this broader, less specific gate firing first whenever the
+    # same raw change shrinks both -- almost always, since the per-class
+    # files are themselves built from these same raw rows.
     write_json(normalize_spells(t("SpellName")), build_dir / "spells.json")
 
     # Phase 1 planner data. Both directories are rebuilt from scratch so a class
@@ -298,6 +302,7 @@ def normalize_build(
     )
     fork_icons = load_fork_icons(engine) if engine is not None else {}
     wowhead_icons = load_wowhead_icons(build_dir)
+    wowhead_required_levels = load_required_levels(build_dir)
     try:
         class_items = build_class_items(
             t("ItemSparse"),
@@ -310,6 +315,7 @@ def normalize_build(
             weapon_curves=weapon_curves,
             fork_icons=fork_icons,
             wowhead_icons=wowhead_icons,
+            wowhead_required_levels=wowhead_required_levels,
         )
     except ItemDataError as error:
         logger.warning("items not emitted for build %s: %s", build, error)
@@ -332,6 +338,15 @@ def normalize_build(
         for record in class_items:
             write_model(record, build_dir / "items" / f"{record.class_slug}.json")
         write_item_names(build, items, class_items, build_dir)
+
+    # The flat catalog's own gate, now that any narrower per-class regression
+    # above has already had first refusal -- see the comment where `items`
+    # was computed. Runs (and, on success, writes) whether the per-class
+    # build above succeeded or was skipped for an unrelated ItemDataError:
+    # this list comes from `normalize_items`/the wowhead supplement, neither
+    # of which depends on `build_class_items` succeeding.
+    check_item_sparse_completeness(build_dir, len(items), allow_shrink=allow_shrink)
+    write_json(items, build_dir / "items.json")
 
     # Curated Forever facts.
     classes, races, combos = merge_curated(

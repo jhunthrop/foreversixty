@@ -34,6 +34,20 @@ local engine checkout and are the only commands that need one.
 ## Layout
 ```
 builds/<build>/raw/*.csv        downloaded DB2 exports (gitignored)
+builds/<build>/raw/hotfixes/{ItemSparse,Item}.csv  the beta client's own hotfix
+                                cache, from its `Cache/ADB/enUS/DBCache.bin` --
+                                decoded by `python -m pipeline hotfixes --build
+                                <build> --cache <path to the copied DBCache.bin>`
+                                (pipeline/hotfix_cache.py) and committed as raw
+                                inputs (~1.8 MB), unlike the rest of raw/: there
+                                is no server endpoint to re-fetch a hotfix from,
+                                so these are refreshed by hand after a play
+                                session, the same way a controller copies the
+                                file off the client. `normalize` merges them
+                                over the shipped tables when present
+                                (pipeline/hotfix_merge.py) -- a row the client
+                                only carries as a hotfix counts the same as one
+                                the shipped .db2 export has outright.
 builds/<build>/*.json           flat entities: zones, dungeons, items, spells,
                                 classes, races, talents, sets, combos
 builds/<build>/talents/<class-slug>.json   per-class trees with rank descriptions

@@ -35,6 +35,7 @@ from pipeline.normalize.gear import (
     SLOT_BY_INVENTORY_TYPE,
     is_junk_name,
     is_weapon_row,
+    resolve_required_level,
 )
 from pipeline.proficiency import ARMOR, can_equip
 from pipeline.wago import USER_AGENT
@@ -247,13 +248,22 @@ def to_gear_item(item: WowheadItem, untracked: Counter[str] | None = None) -> Ge
     numbers at face value the way every other field on this row is.
     """
     is_weapon = is_weapon_row(item.class_id, item.inventory_type)
+    # This item has no client row at all (it exists in items/<class>.json
+    # only because the supplement added it), so `item.required_level` IS
+    # wowhead's own number -- `resolve_required_level`'s `client_level` is 0
+    # and its `wowhead_level` is this same value, exactly the precedence
+    # `build_class_items` applies for a client row wowhead corroborates.
+    required_level, required_level_source = resolve_required_level(
+        0, item.item_level, item.required_level
+    )
     return GearItem(
         id=item.id,
         name=item.name,
         icon=item.icon,
         slot=SLOT_BY_INVENTORY_TYPE[item.inventory_type],
         quality=item.quality,
-        required_level=item.required_level,
+        required_level=required_level,
+        required_level_source=required_level_source,
         item_level=item.item_level,
         armor=item.armor,
         stats=planner_stats(item, untracked),

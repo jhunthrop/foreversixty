@@ -139,6 +139,19 @@ class GearItem(BaseModel):
     slot: str
     quality: int
     required_level: int
+    #: Where `required_level` came from, in the precedence
+    #: `pipeline.normalize.gear.resolve_required_level` applies (normalize-levels
+    #: lane, 2026-09-29): `"client"` for a shipped or hotfix-merged row that states
+    #: a non-zero `RequiredLevel` itself; `"wowhead"` when the client states 0 (or
+    #: has no row at all -- a wowhead-supplement item) and wowhead's Forever
+    #: gear-planner payload (`pipeline.wowhead_items`) names a non-zero level for
+    #: the same id; `"item_level_proxy"` for real gear (item level > 1) neither of
+    #: those resolved -- `item_level - 5`, floored at 0 and capped at 60, the same
+    #: formula `sim/leveling.ItemLevelProxyRequiredLevel` computes independently in
+    #: Go (the two cannot share code across languages, only the number); `"none"`
+    #: for an item_level-1 row (or anything else with no proxy to compute), where
+    #: required_level 0 is simply the right answer, not a gap.
+    required_level_source: Literal["client", "wowhead", "item_level_proxy", "none"]
     item_level: int
     armor: int
     stats: dict[str, int]
