@@ -1,17 +1,45 @@
 // web/src/lib/home-landing-copy.ts
 // The home page's own words (spec 2026-09-23, "the landing page is the product, not the
-// wiki"; spec 2026-09-25 §3.5 drops the Reference band; spec 2026-09-28 drops the "Your
-// guild" panel, replaced by the hero's own guild card -- see `lib/guild/copy.ts`'s
-// `homeGuildCardCopy` for that card's words): the sky-band hero, the four product panels,
-// and the "Get set up" card. `home-panel-copy.ts` stays the account-aware strip's own copy
-// (the signed-out sentence there is now also the hero's sentence, so it stays the one
-// source rather than a second copy of the same words here).
+// wiki"; spec 2026-09-25 §3.5 drops the Reference band; spec 2026-09-28's own guild card in
+// the hero's right column is, in turn, replaced by the Switch character panel there -- home
+// rebuild spec 2026-09-30 §3.B.4, HomeGuildCard.svelte and lib/guild/home-card.ts removed as
+// dead code; home rebuild spec §1 replaces the headline with tenet 14's own fixed sentence):
+// the sky-band hero, the four product panels, and the "Get set up" card. `home-panel-copy.ts`
+// stays the account-aware strip's own copy (the signed-out sentence there is now also the
+// hero's sentence, so it stays the one source rather than a second copy of the same words
+// here).
 
 export const homeHeroCopy = {
   eyebrow: 'World of Warcraft: Forever',
-  headline: 'Your character, planned, simmed, logged and ranked.',
+  // Tenet 14 / design/DESIGN-SYSTEM.md principle 1's one fixed sentence -- not a pitch, the
+  // one thing this page is allowed to say about itself. Verbatim, capital P only, full stop
+  // included (home rebuild spec §1); this is also the hero H1's exact glyph set that
+  // scripts/hero-font.py subsets into hero-font.css, so a change here needs that script
+  // re-run (`python3 scripts/hero-font.py` from web/).
+  headline: 'Play your class better.',
+  sentence:
+    'Pick your class for its best-in-slot list, talents and rotation, or sign in and your own characters arrive with their gear, talents and guild.',
   addonAltLabel: 'or paste an addon export',
   addonAltHref: '/setup#paste',
+} as const;
+
+/** Home rebuild spec §3.A.4/§3.B.5: the two nine-class rows below the hero -- "Best in slot
+ *  by class" signed out, "Another class" signed in, same aside link either way. */
+export const homeClassPickerCopy = {
+  bestInSlotByClassHeading: 'Best in slot by class',
+  anotherClassHeading: 'Another class',
+  allSpecsLink: 'All 27 specs',
+  allSpecsHref: '/bis',
+} as const;
+
+/** Home rebuild spec §3.A.2: the signed-out hero's right-column example panel -- a
+ *  leveling BiS preview, captioned unambiguously as a stand-in class, never a claim about
+ *  the visitor's own character. */
+export const homeHeroStatePanelCopy = {
+  betaEyebrow: 'Beta is live',
+  levelCapLabel: 'level cap 30',
+  examplePill: 'Example',
+  bandsLine: 'Leveling best in slot, bands 20 to 60',
 } as const;
 
 export interface HomeProductPanelCopy {
@@ -87,8 +115,13 @@ export const homeCompanionRow: readonly HomeCompanionRowCard[] = [
  *  whether one is paired), so its own item never carries a done mark either way. */
 export const homeGetSetUpCopy = {
   /** Both known steps (signed in, addon linked) done: the one line names them and points at
-   *  the one step left, verbatim. */
-  bothDone: 'Signed in and addon linked · Set up the companion →',
+   *  the one step left. Home rebuild spec §3.B.6: takes the addon's own sync time (the same
+   *  relative figure the hero's sync line shows, `build.captured_at`) so the two never
+   *  disagree about when the addon last spoke -- a function, not a fixed string, since the
+   *  hero and this card read the same fact from two different characters' data in the
+   *  general case. */
+  bothDone: (syncedAgo: string): string =>
+    `Signed in and addon linked · synced ${syncedAgo} → Set up the companion`,
   addonRemaining: 'Install the addon',
   companionRemaining: 'Set up the companion',
 } as const;

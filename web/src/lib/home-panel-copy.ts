@@ -1,8 +1,8 @@
 // web/src/lib/home-panel-copy.ts
-// The home page's one account-aware panel (spec 2026-09-22 §3.2, restyled into the hero by
-// spec 2026-09-23 §2): reference, not pitch -- one sentence, one button, signed out; the
-// hero character, its descriptor, four links and (spec 2026-09-23) a rating figure when one
-// exists, signed in.
+// The home page's account-aware hero (spec 2026-09-22 §3.2, restyled into the hero by
+// spec 2026-09-23 §2, rebuilt by the home rebuild spec 2026-09-30 §3.B): reference, not
+// pitch -- one sentence, one button, signed out; the hero character, its descriptor, the
+// three next-action cards and the Switch character panel, signed in.
 
 /** The signed-out block's `id` in `index.astro`: `HomeAccountPanel.svelte` reaches outside
  *  its own root to find it (same cross-island DOM-reach pattern as `SIM_TAB_ATTR` /
@@ -13,39 +13,46 @@
 export const HOME_SIGNED_OUT_ID = 'home-signed-out';
 
 export const homePanelCopy = {
-  // Spec 2026-09-23 §2 item 2's exact hero sentence.
-  signedOutLine: 'Sign in with Battle.net and your characters arrive with their gear, talents and guild.',
   signInButton: 'Sign in with Battle.net',
-  logs: 'Logs',
-  yourCharacters: 'Your characters',
-  planTalents: 'Plan talents',
-  // Review round 1 fix item 1: "Get the build" retired everywhere on the page -- the hero's
-  // one primary action reads "Open the planner" when the character has no build yet (it is
-  // the same next step the planner door itself points to), never a claim that a build
-  // already exists to retrieve.
-  openThePlanner: 'Open the planner',
-  simCharacter: (name: string): string => `Sim ${name}`,
-  /** The chip row under the hero: every other character, one click to make it current. */
-  switchTo: (name: string): string => `Switch to ${name}`,
-  moreCharacters: (count: number): string => `+${count} more`,
+  /** The signed-in Simulator card's own empty/loading fallback (§3.B.2) -- reused verbatim
+   *  from the pre-rebuild next-steps grid, since the spec's own Empty-state row for this
+   *  card names these exact two strings. */
   noSimYet: 'No sim yet.',
   runAction: 'Run',
-  noBuildYet: 'No build yet.',
-  continuePlanning: 'Continue planning',
-  /** The planner door card's no-build state (review round 1 fix item 1): one link, not a
-   *  muted status line plus a separate "Get the build" action, and it sends the visitor to
-   *  the fastest way to get one (pasting an export) rather than the account page. */
-  pasteAnExport: 'Paste an export',
-  noLogsYet: 'No logs yet.',
-  uploadALog: 'Upload a log',
-  openAction: 'Open',
-  notRatedYet: 'Not rated yet.',
-  rankingsForClass: (klass: string): string => `Rankings for ${klass}`,
-  /** Guides carries no per-character state (review round 1 fix item 2): its status line is
-   *  the site's own fixed fact, the same figure `home-landing-copy.ts`'s Guides sentence
-   *  names, so the signed-in card's live-status shape still applies to it. */
-  guidesStatus: '27 spec guides',
+  /** Home rebuild spec §3.B.1's signed-in eyebrow label (the mock's own "Sample" pill next
+   *  to it is NOT reproduced here: that pill documents the mock's own stand-in fixture
+   *  data, and this hero renders the visitor's real `/v1/me` character -- labelling real
+   *  data "Sample" would be the exact fabrication tenet 8 rules out). */
+  yourCharacterEyebrow: 'Your character',
+  /** §3.B.1's sync line tail, after the mono relative-time figure: "{time} from the addon
+   *  · gear and talents in sync" -- the "bags in sync" clause the mock shows is omitted,
+   *  since no field on `MeCharacter` backs it yet. */
+  syncedFromAddon: 'from the addon · gear and talents in sync',
+  /** §4's stale-sync row (> 24h): one added line, no alarm colour. */
+  reopenAddonToRefresh: 'Reopen the addon to refresh your gear.',
+  /** §3.B.4's "Switch character" panel header. */
+  switchCharacterLabel: 'Switch character',
+  addOneCharacter: 'Add one',
 } as const;
 
-/** How many other characters the hub's chip row shows before "+N more" links to /account. */
-export const HOME_CHIP_LIMIT = 6;
+/**
+ * Home rebuild spec §3.B.2's three next-action cards (Best in slot / Talents / Simulator).
+ * The first two name a real, live comparison the site cannot compute yet -- no source joins
+ * a signed-in character's actually-worn gear against a BiS list, and no function compares
+ * spent talents against a band's recommended build (§3.B.2/§3.B.3's own "not yet available"
+ * ruling) -- so rather than a skeleton that shimmers forever with nothing ever arriving
+ * behind it (which tells a screen-reader user "Loading" for a fetch that will never
+ * resolve), these cards show one honest, settled line instead: labelled as not yet
+ * available, never a fabricated figure (tenet 8). The Simulator card carries no such gap
+ * (the visitor's own saved sim already exists, `lib/home/next-steps.ts`'s `simCardLine`),
+ * so it alone keeps the real loading/ready/empty states `HomeNextSteps.svelte` already has.
+ */
+export const homeHeroCardsCopy = {
+  bestInSlotLabel: 'Best in slot',
+  bestInSlotNotYet: 'Not available yet',
+  bestInSlotComingWhen: 'Coming once the addon reports your equipped gear.',
+  talentsLabel: 'Talents',
+  talentsNotYet: 'Not available yet',
+  talentsComingWhen: 'Coming once talent sync lands.',
+  simulatorLabel: 'Simulator',
+} as const;

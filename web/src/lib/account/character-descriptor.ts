@@ -10,6 +10,35 @@ import { rulesetLabel } from '../characters';
 import type { MeCharacter } from './api';
 import { characterListCopy } from './character-list-copy';
 
+/**
+ * Home rebuild spec §3.B.1's signed-in hero descriptor: "Level 24 Troll Marksmanship
+ * Hunter" in the mock -- a DIFFERENT word order from `characterDescriptor`'s own "Race
+ * Class · Level N · Realm (Ruleset REGION)" line, and mixed with markup
+ * (`HomeAccountPanel.svelte` inserts a `FactionMark` icon and the guild tag around this
+ * text, plus the faction word in the faction's own colour) that a single plain-text
+ * function cannot produce anyway. Kept as its own small helper, not an extension of
+ * `characterDescriptor` (which three other surfaces -- Account.svelte's hero band,
+ * CharacterList.svelte and sim/LandingState.svelte -- render as-is today, unrelated to this
+ * lane and out of scope to reshape): reusing its own building blocks
+ * (`classDisplayName`/`rulesetLabel` are for the OTHER function's own realm/ruleset clause,
+ * not needed here) keeps this honest and small rather than overloading one function with
+ * two unrelated output shapes behind a flag.
+ *
+ * The mock's line also names a spec ("Marksmanship Hunter") that `MeCharacter` carries no
+ * field for -- spec is only inferable today from a sim input fetch this lane does not wire
+ * up for every character chip, so this omits it rather than guess (tenet 8): "Level 24
+ * Troll Hunter", not a fabricated "Marksmanship".
+ */
+export function homeHeroLevelRaceClassLine(character: MeCharacter): string {
+  const className = character.class === undefined ? undefined : classDisplayName(character.class);
+  const parts = [
+    character.level === undefined ? undefined : characterListCopy.levelPrefix(character.level),
+    character.race,
+    className,
+  ].filter((part): part is string => part !== undefined);
+  return parts.join(' ');
+}
+
 /** "Night Elf Hunter · Level 25 · Living Flame (PvP US)"; every part but the ruleset/
  *  region location is omitted when the character has never been through the Battle.net
  *  import. */

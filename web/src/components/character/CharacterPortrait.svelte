@@ -14,13 +14,15 @@
     avatar_url?: string;
   }
 
-  /** 28 / 36 / 44 / 72px, spec 2026-09-23 §2.1 (xl added for the home hero, 2026-09-25) --
-   *  one named map, no magic numbers at the call site. */
+  /** 28 / 36 / 44 / 84px, spec 2026-09-23 §2.1 (xl added for the home hero, 2026-09-25;
+   *  widened 72px -> 84px by the home rebuild spec 2026-09-30 §3.B.1 to match the mock's
+   *  measured hero crest exactly -- one token change, one caller, since this hero is the
+   *  only `xl` caller today). */
   const SIZE_CLASS = {
     sm: { box: 'h-7 w-7', letter: 'text-[12px]' },
     md: { box: 'h-9 w-9', letter: 'text-[15px]' },
     lg: { box: 'h-11 w-11', letter: 'text-[18px]' },
-    xl: { box: 'h-[72px] w-[72px]', letter: 'text-[26px]' },
+    xl: { box: 'h-[84px] w-[84px]', letter: 'text-[28px]' },
   } as const;
 
   let {
