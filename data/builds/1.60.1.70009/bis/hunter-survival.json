@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T15:42:45Z",
+  "generated_at": "2026-09-30T16:09:25Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -555,8 +555,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.9086952940000002,
-      "verify_run_seconds": 1.749664354,
+      "weights_run_seconds": 1.453293837,
+      "verify_run_seconds": 1.338081388,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1188,8 +1188,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.9086952940000002,
-      "verify_run_seconds": 1.690132618,
+      "weights_run_seconds": 1.453293837,
+      "verify_run_seconds": 1.276912044,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1768,7 +1768,6 @@
           "verified": true,
           "swap_note": "beat the scored pick Swinetusk Shank (id 6691) in the sim: +20.5 DPS (85.1 vs 64.7 set DPS)",
           "dps_delta": 20.46199434631926,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 9608,
@@ -1865,8 +1864,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.002826875,
-      "verify_run_seconds": 1.888157154,
+      "weights_run_seconds": 1.5440119,
+      "verify_run_seconds": 1.484102737,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2445,7 +2444,6 @@
           "verified": true,
           "swap_note": "beat the scored pick Swinetusk Shank (id 6691) in the sim: +20.5 DPS (84.9 vs 64.3 set DPS)",
           "dps_delta": 20.539705568633977,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 11855,
@@ -2541,8 +2539,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 2.002826875,
-      "verify_run_seconds": 1.816721011,
+      "weights_run_seconds": 1.5440119,
+      "verify_run_seconds": 1.395180297,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2713,7 +2711,6 @@
           "source_kind": "quest",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 19540,
@@ -3044,7 +3041,6 @@
           "source_kind": "dungeon",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 19515,
@@ -3216,8 +3212,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.981799964,
-      "verify_run_seconds": 1.874505143,
+      "weights_run_seconds": 1.525612469,
+      "verify_run_seconds": 1.4219497030000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3388,7 +3384,6 @@
           "source_kind": "quest",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 19536,
@@ -3726,7 +3721,6 @@
           "source_kind": "dungeon",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 19512,
@@ -3898,8 +3892,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.981799964,
-      "verify_run_seconds": 1.822157773,
+      "weights_run_seconds": 1.525612469,
+      "verify_run_seconds": 1.391693653,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4037,29 +4031,28 @@
           "source_kind": "dungeon",
           "score": 40,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 19984,
-              "item_name": "Ebon Mask",
-              "source_kind": "quest",
-              "source": "The Azure Key",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
-              "item_id": 17767,
-              "item_name": "Bloomsprout Headpiece",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.20433199648009204
-            },
             {
               "item_id": 10008,
               "item_name": "White Bandit Mask",
               "source_kind": "crafted",
               "source": "Tailoring",
               "dps_delta": -0.8092627160061271
+            },
+            {
+              "item_id": 17767,
+              "item_name": "Bloomsprout Headpiece",
+              "source_kind": "dungeon",
+              "source": "Maraudon: Meshlok the Harvester",
+              "dps_delta": -0.8302992352960814,
+              "verified": true
+            },
+            {
+              "item_id": 220822,
+              "item_name": "Knight-Lieutenant's Chain Helmet",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -0.8453576013373046
             }
           ]
         },
@@ -4080,19 +4073,19 @@
               "dps_delta": -0.31651901909780045
             },
             {
+              "item_id": 17772,
+              "item_name": "Zealous Shadowshard Pendant",
+              "source_kind": "quest",
+              "source": "Shadowshard Fragments",
+              "dps_delta": -0.31861416531950226,
+              "verified": true
+            },
+            {
               "item_id": 7731,
               "item_name": "Ghostshard Talisman",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Azshir the Sleepless",
               "dps_delta": -0.3346053133897039
-            },
-            {
-              "item_id": 17772,
-              "item_name": "Zealous Shadowshard Pendant",
-              "source_kind": "quest",
-              "source": "Shadowshard Fragments",
-              "dps_delta": -0.7131398109629004,
-              "verified": true
             }
           ]
         },
@@ -4124,7 +4117,7 @@
               "item_name": "Skulker's Leather Shoulder",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.21208975483150994,
+              "dps_delta": -0.44676884028433506,
               "verified": true
             }
           ]
@@ -4146,51 +4139,51 @@
               "dps_delta": -0.24539397122245246
             },
             {
-              "item_id": 19982,
-              "item_name": "Duskbat Drape",
-              "source_kind": "quest",
-              "source": "The Azure Key",
-              "dps_delta": -0.30649799472013806
+              "item_id": 5257,
+              "item_name": "Dark Hooded Cape",
+              "source_kind": "world",
+              "source": "Nimar the Slayer",
+              "dps_delta": -0.3465820922307878
             },
             {
               "item_id": 12552,
               "item_name": "Blisterbane Wrap",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Anvilrage Overseer",
-              "dps_delta": -0.4284578540614916,
+              "dps_delta": -0.4239692970853923,
               "verified": true
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 22274,
-          "item_name": "Grizzled Pelt",
-          "source": "A Better Ingredient",
-          "source_kind": "quest",
-          "score": 36.138742689439155,
+          "item_id": 15064,
+          "item_name": "Warbear Harness",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 32.531085525619055,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 12793,
-              "item_name": "Mixologist's Tunic",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Plugger Spazzring",
-              "dps_delta": -0.254437118368404
-            },
             {
               "item_id": 10583,
               "item_name": "Quillward Harness",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Withered Warrior",
-              "dps_delta": -0.2764349215871505
+              "dps_delta": -0.09214497386238363
             },
             {
-              "item_id": 15064,
-              "item_name": "Warbear Harness",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.29476111880924805,
+              "item_id": 11193,
+              "item_name": "Blazewind Breastplate",
+              "source_kind": "quest",
+              "source": "Tremors of the Earth",
+              "dps_delta": -0.10314387547175688
+            },
+            {
+              "item_id": 12793,
+              "item_name": "Mixologist's Tunic",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Plugger Spazzring",
+              "dps_delta": -0.269678823504222,
               "verified": true
             }
           ]
@@ -4229,7 +4222,7 @@
               "item_name": "Arena Bands",
               "source_kind": "world",
               "source": "Arena Treasure Chest",
-              "dps_delta": -1.0310307991543084,
+              "dps_delta": -1.0132157403720612,
               "verified": true
             }
           ]
@@ -4262,7 +4255,7 @@
               "item_name": "Gauntlets of Divinity",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Scarlet Commander Mograine",
-              "dps_delta": -1.1104509646079919,
+              "dps_delta": -0.9976383293660547,
               "verified": true
             }
           ]
@@ -4275,14 +4268,13 @@
           "source_kind": "dungeon",
           "score": 38,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 274757,
               "item_name": "Substandard Belt Chain",
               "source_kind": "vendor",
               "source": "Zippie Fizzbolt",
-              "dps_delta": -0.27756912077492757,
+              "dps_delta": -0.2916777256534431,
               "verified": true
             },
             {
@@ -4375,8 +4367,8 @@
           "source_kind": "dungeon",
           "score": 20.907004696469894,
           "verified": true,
-          "swap_note": "confirmed by the sim against Protector's Band (id 19516): kept the pick, +3.5 DPS (165.0 vs 161.5 set DPS)",
-          "dps_delta": 3.5468022337427385,
+          "swap_note": "confirmed by the sim against Protector's Band (id 19516): kept the pick, +3.3 DPS (163.2 vs 159.9 set DPS)",
+          "dps_delta": 3.284983361614593,
           "alternatives": [
             {
               "item_id": 2262,
@@ -4429,7 +4421,7 @@
               "item_name": "Assault Band",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.3699705634995212,
+              "dps_delta": -0.5602534130608205,
               "verified": true
             }
           ]
@@ -4440,38 +4432,15 @@
           "item_name": "Devilsaur Eye",
           "source": "The Green Drake",
           "source_kind": "quest",
-          "sim_dps": 164.99681896458503,
+          "sim_dps": 163.18768271374933,
           "verified": true,
-          "swap_note": "confirmed by the sim against Diamond Flask (id 20130): kept the pick, +4.2 DPS (165.0 vs 160.8 set DPS)",
-          "dps_delta": 4.1888665160095115,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0
-            }
-          ]
+          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +4.2 DPS (163.2 vs 159.0 set DPS)",
+          "dps_delta": 4.164947108636454
         },
         {
           "slot": "trinket2",
-          "item_id": 20130,
-          "item_name": "Diamond Flask",
-          "source": "Voodoo Feathers",
-          "source_kind": "quest",
-          "sim_dps": 164.99681896458503,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -1.5096066881553156,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4479,7 +4448,7 @@
           "item_name": "Bloodrazor",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 164.99681896458503,
+          "sim_dps": 163.18768271374933,
           "verified": true,
           "alternatives": [
             {
@@ -4501,7 +4470,7 @@
               "item_name": "Hanzo Sword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -14.16349263416825,
+              "dps_delta": -13.892090670046429,
               "verified": true
             }
           ]
@@ -4534,7 +4503,7 @@
               "item_name": "Grizzle's Skinner",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Grizzle",
-              "dps_delta": -19.75383233585754,
+              "dps_delta": -19.64748859126462,
               "verified": true
             }
           ]
@@ -4545,7 +4514,7 @@
           "item_name": "Skull Splitting Crossbow",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 164.99681896458503,
+          "sim_dps": 163.18768271374933,
           "verified": true,
           "alternatives": [
             {
@@ -4567,14 +4536,14 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.6079680471125357,
+              "dps_delta": -1.6256389495698613,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 164.99681896458503,
-      "no_source_count": 751,
+      "set_dps": 163.18768271374933,
+      "no_source_count": 748,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -4596,7 +4565,7 @@
         "head: Embrace of the Lycan",
         "neck: Skibi's Pendant",
         "back: Blackveil Cape",
-        "chest: Grizzled Pelt",
+        "chest: Warbear Harness",
         "wrist: Bracers of the Stone Princess",
         "hands: Raider Gloves",
         "waist: Girdle of Beastial Fury",
@@ -4605,53 +4574,52 @@
         "finger1: Blackstone Ring",
         "finger2: Protector's Band",
         "trinket1: Devilsaur Eye",
-        "trinket2: Diamond Flask",
         "main_hand: Bloodrazor",
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.014726213,
-      "verify_run_seconds": 2.06375539,
+      "weights_run_seconds": 1.536764861,
+      "verify_run_seconds": 1.560350723,
       "coverage": {
         "back": {
-          "eligible": 314,
-          "sourced": 268
+          "eligible": 313,
+          "sourced": 267
         },
         "chest": {
-          "eligible": 515,
-          "sourced": 461
+          "eligible": 513,
+          "sourced": 459
         },
         "feet": {
-          "eligible": 404,
-          "sourced": 352
+          "eligible": 403,
+          "sourced": 351
         },
         "finger1": {
-          "eligible": 152,
-          "sourced": 99
+          "eligible": 150,
+          "sourced": 97
         },
         "finger2": {
-          "eligible": 152,
-          "sourced": 99
+          "eligible": 150,
+          "sourced": 97
         },
         "hands": {
-          "eligible": 419,
+          "eligible": 418,
           "sourced": 378
         },
         "head": {
-          "eligible": 284,
-          "sourced": 250
+          "eligible": 283,
+          "sourced": 249
         },
         "legs": {
           "eligible": 403,
           "sourced": 349
         },
         "main_hand": {
-          "eligible": 664,
-          "sourced": 500
+          "eligible": 660,
+          "sourced": 497
         },
         "neck": {
-          "eligible": 77,
-          "sourced": 45
+          "eligible": 76,
+          "sourced": 44
         },
         "off_hand": {
           "eligible": 98,
@@ -4666,12 +4634,12 @@
           "sourced": 234
         },
         "trinket1": {
-          "eligible": 81,
-          "sourced": 50
+          "eligible": 76,
+          "sourced": 46
         },
         "trinket2": {
-          "eligible": 81,
-          "sourced": 50
+          "eligible": 76,
+          "sourced": 46
         },
         "waist": {
           "eligible": 383,
@@ -4749,22 +4717,14 @@
           "source_kind": "dungeon",
           "score": 40,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 19984,
-              "item_name": "Ebon Mask",
-              "source_kind": "quest",
-              "source": "The Azure Key",
-              "dps_delta": 0,
-              "verified": true
-            },
             {
               "item_id": 17767,
               "item_name": "Bloomsprout Headpiece",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.20433199648009204
+              "dps_delta": -0.5701576306572349,
+              "verified": true
             },
             {
               "item_id": 10008,
@@ -4772,6 +4732,13 @@
               "source_kind": "crafted",
               "source": "Tailoring",
               "dps_delta": -0.8092627160061271
+            },
+            {
+              "item_id": 220821,
+              "item_name": "Blood Guard's Chain Helmet",
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "dps_delta": -0.8453576013373046
             }
           ]
         },
@@ -4803,7 +4770,7 @@
               "item_name": "Zealous Shadowshard Pendant",
               "source_kind": "quest",
               "source": "Shadowshard Fragments",
-              "dps_delta": -0.413131669664466,
+              "dps_delta": -0.42479602778558956,
               "verified": true
             }
           ]
@@ -4858,51 +4825,51 @@
               "dps_delta": -0.24539397122245246
             },
             {
-              "item_id": 19982,
-              "item_name": "Duskbat Drape",
-              "source_kind": "quest",
-              "source": "The Azure Key",
-              "dps_delta": -0.30649799472013806
+              "item_id": 5257,
+              "item_name": "Dark Hooded Cape",
+              "source_kind": "world",
+              "source": "Nimar the Slayer",
+              "dps_delta": -0.3465820922307878
             },
             {
               "item_id": 12552,
               "item_name": "Blisterbane Wrap",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Anvilrage Overseer",
-              "dps_delta": -0.440510310497217,
+              "dps_delta": -0.4397522478579958,
               "verified": true
             }
           ]
         },
         {
           "slot": "chest",
-          "item_id": 22274,
-          "item_name": "Grizzled Pelt",
-          "source": "A Better Ingredient",
-          "source_kind": "quest",
-          "score": 36.138742689439155,
+          "item_id": 15064,
+          "item_name": "Warbear Harness",
+          "source": "Leatherworking",
+          "source_kind": "crafted",
+          "score": 32.531085525619055,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 12793,
-              "item_name": "Mixologist's Tunic",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Plugger Spazzring",
-              "dps_delta": -0.254437118368404
-            },
             {
               "item_id": 10583,
               "item_name": "Quillward Harness",
               "source_kind": "dungeon",
               "source": "Razorfen Downs: Withered Warrior",
-              "dps_delta": -0.2764349215871505
+              "dps_delta": -0.09214497386238363
             },
             {
-              "item_id": 15064,
-              "item_name": "Warbear Harness",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.2958556272908197,
+              "item_id": 11193,
+              "item_name": "Blazewind Breastplate",
+              "source_kind": "quest",
+              "source": "Broken Alliances",
+              "dps_delta": -0.10314387547175688
+            },
+            {
+              "item_id": 12793,
+              "item_name": "Mixologist's Tunic",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Plugger Spazzring",
+              "dps_delta": -0.2870097268061045,
               "verified": true
             }
           ]
@@ -4974,7 +4941,7 @@
               "item_name": "Gauntlets of Divinity",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Scarlet Commander Mograine",
-              "dps_delta": -1.0798476721622592,
+              "dps_delta": -1.0779495605475518,
               "verified": true
             }
           ]
@@ -4987,14 +4954,13 @@
           "source_kind": "dungeon",
           "score": 38,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 274757,
               "item_name": "Substandard Belt Chain",
               "source_kind": "vendor",
               "source": "Zippie Fizzbolt",
-              "dps_delta": -0.3072266100989225,
+              "dps_delta": -0.30150348485057066,
               "verified": true
             },
             {
@@ -5087,8 +5053,8 @@
           "source_kind": "quest",
           "score": 24,
           "verified": true,
-          "swap_note": "confirmed by the sim against Blackstone Ring (id 17713): kept the pick, +2.3 DPS (166.4 vs 164.1 set DPS)",
-          "dps_delta": 2.2642889702002265,
+          "swap_note": "confirmed by the sim against Blackstone Ring (id 17713): kept the pick, +2.3 DPS (166.1 vs 163.8 set DPS)",
+          "dps_delta": 2.2654689854003607,
           "alternatives": [
             {
               "item_id": 19511,
@@ -5141,7 +5107,7 @@
               "item_name": "Legionnaire's Band",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.6540568789067152,
+              "dps_delta": -1.660503951246966,
               "verified": true
             }
           ]
@@ -5152,10 +5118,10 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 166.3522970810432,
+          "sim_dps": 166.05644145375237,
           "verified": true,
-          "swap_note": "confirmed by the sim against Devilsaur Eye (id 19991): kept the pick, +5.4 DPS (166.4 vs 161.0 set DPS)",
-          "dps_delta": 5.368483182423802,
+          "swap_note": "confirmed by the sim against Devilsaur Eye (id 19991): kept the pick, +5.4 DPS (166.1 vs 160.7 set DPS)",
+          "dps_delta": 5.379387963158138,
           "alternatives": [
             {
               "item_id": 249469,
@@ -5172,7 +5138,7 @@
           "item_name": "Devilsaur Eye",
           "source": "The Green Drake",
           "source_kind": "quest",
-          "sim_dps": 166.3522970810432,
+          "sim_dps": 166.05644145375237,
           "verified": true,
           "alternatives": [
             {
@@ -5180,14 +5146,7 @@
               "item_name": "Frozen Heart of the Mountain",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 20130,
-              "item_name": "Diamond Flask",
-              "source_kind": "quest",
-              "source": "Voodoo Feathers",
-              "dps_delta": -1.7812174543127242,
+              "dps_delta": -2.7321811169881585,
               "verified": true
             }
           ]
@@ -5198,7 +5157,7 @@
           "item_name": "Bloodrazor",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 166.3522970810432,
+          "sim_dps": 166.05644145375237,
           "verified": true,
           "alternatives": [
             {
@@ -5220,7 +5179,7 @@
               "item_name": "Hanzo Sword",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -14.193663920816874,
+              "dps_delta": -14.189507929483142,
               "verified": true
             }
           ]
@@ -5253,7 +5212,7 @@
               "item_name": "Grizzle's Skinner",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Grizzle",
-              "dps_delta": -20.832555512999676,
+              "dps_delta": -20.80719536433253,
               "verified": true
             }
           ]
@@ -5264,7 +5223,7 @@
           "item_name": "Skull Splitting Crossbow",
           "source": "World drop",
           "source_kind": "world_drop",
-          "sim_dps": 166.3522970810432,
+          "sim_dps": 166.05644145375237,
           "verified": true,
           "alternatives": [
             {
@@ -5286,14 +5245,14 @@
               "item_name": "Dark Iron Rifle",
               "source_kind": "crafted",
               "source": "Engineering",
-              "dps_delta": -1.603871353891833,
+              "dps_delta": -1.604707197991928,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 166.3522970810432,
-      "no_source_count": 740,
+      "set_dps": 166.05644145375237,
+      "no_source_count": 737,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5315,7 +5274,7 @@
         "head: Embrace of the Lycan",
         "neck: Skibi's Pendant",
         "back: Blackveil Cape",
-        "chest: Grizzled Pelt",
+        "chest: Warbear Harness",
         "wrist: Bracers of the Stone Princess",
         "hands: Raider Gloves",
         "waist: Girdle of Beastial Fury",
@@ -5329,48 +5288,48 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.014726213,
-      "verify_run_seconds": 2.045330905,
+      "weights_run_seconds": 1.536764861,
+      "verify_run_seconds": 1.5205650560000001,
       "coverage": {
         "back": {
-          "eligible": 319,
-          "sourced": 275
+          "eligible": 318,
+          "sourced": 274
         },
         "chest": {
-          "eligible": 508,
-          "sourced": 451
+          "eligible": 506,
+          "sourced": 449
         },
         "feet": {
-          "eligible": 407,
-          "sourced": 349
+          "eligible": 406,
+          "sourced": 348
         },
         "finger1": {
-          "eligible": 153,
-          "sourced": 101
+          "eligible": 151,
+          "sourced": 100
         },
         "finger2": {
-          "eligible": 153,
-          "sourced": 101
+          "eligible": 151,
+          "sourced": 100
         },
         "hands": {
-          "eligible": 419,
-          "sourced": 376
+          "eligible": 418,
+          "sourced": 375
         },
         "head": {
-          "eligible": 284,
-          "sourced": 250
+          "eligible": 283,
+          "sourced": 249
         },
         "legs": {
           "eligible": 398,
           "sourced": 346
         },
         "main_hand": {
-          "eligible": 659,
-          "sourced": 507
+          "eligible": 655,
+          "sourced": 504
         },
         "neck": {
-          "eligible": 80,
-          "sourced": 48
+          "eligible": 79,
+          "sourced": 47
         },
         "off_hand": {
           "eligible": 94,
@@ -5385,12 +5344,12 @@
           "sourced": 234
         },
         "trinket1": {
-          "eligible": 81,
-          "sourced": 50
+          "eligible": 76,
+          "sourced": 46
         },
         "trinket2": {
-          "eligible": 81,
-          "sourced": 50
+          "eligible": 76,
+          "sourced": 46
         },
         "waist": {
           "eligible": 386,
@@ -5481,7 +5440,7 @@
               "item_name": "Lieutenant Commander's Chain Greathelm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -2.9813205836709105
+              "dps_delta": -2.98132058367091
             },
             {
               "item_id": 231562,
@@ -5983,7 +5942,6 @@
           "source_kind": "dungeon",
           "sim_dps": 303.43575404915913,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 22318,
@@ -6011,7 +5969,7 @@
         }
       ],
       "set_dps": 303.43575404915913,
-      "no_source_count": 1637,
+      "no_source_count": 1622,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6048,76 +6006,76 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.042195768,
-      "verify_run_seconds": 2.072439387,
+      "weights_run_seconds": 1.5293721200000001,
+      "verify_run_seconds": 1.5805334659999999,
       "coverage": {
         "back": {
-          "eligible": 445,
-          "sourced": 342
+          "eligible": 444,
+          "sourced": 341
         },
         "chest": {
-          "eligible": 711,
-          "sourced": 600
+          "eligible": 704,
+          "sourced": 598
         },
         "feet": {
-          "eligible": 589,
-          "sourced": 494
+          "eligible": 578,
+          "sourced": 488
         },
         "finger1": {
-          "eligible": 366,
-          "sourced": 202
+          "eligible": 364,
+          "sourced": 200
         },
         "finger2": {
-          "eligible": 366,
-          "sourced": 202
+          "eligible": 364,
+          "sourced": 200
         },
         "hands": {
-          "eligible": 609,
-          "sourced": 506
+          "eligible": 597,
+          "sourced": 500
         },
         "head": {
-          "eligible": 443,
-          "sourced": 356
+          "eligible": 437,
+          "sourced": 355
         },
         "legs": {
-          "eligible": 602,
-          "sourced": 487
+          "eligible": 593,
+          "sourced": 483
         },
         "main_hand": {
-          "eligible": 1018,
-          "sourced": 700
+          "eligible": 1010,
+          "sourced": 697
         },
         "neck": {
-          "eligible": 193,
-          "sourced": 98
+          "eligible": 192,
+          "sourced": 97
         },
         "off_hand": {
-          "eligible": 168,
-          "sourced": 108
+          "eligible": 167,
+          "sourced": 107
         },
         "ranged": {
-          "eligible": 215,
-          "sourced": 142
+          "eligible": 214,
+          "sourced": 141
         },
         "shoulder": {
-          "eligible": 448,
+          "eligible": 443,
           "sourced": 357
         },
         "trinket1": {
-          "eligible": 186,
-          "sourced": 110
+          "eligible": 181,
+          "sourced": 106
         },
         "trinket2": {
-          "eligible": 186,
-          "sourced": 110
+          "eligible": 181,
+          "sourced": 106
         },
         "waist": {
-          "eligible": 545,
-          "sourced": 462
+          "eligible": 539,
+          "sourced": 461
         },
         "wrist": {
-          "eligible": 457,
-          "sourced": 362
+          "eligible": 451,
+          "sourced": 361
         }
       },
       "reference_dps_per_point": 0.05039227318719236,
@@ -6449,7 +6407,7 @@
           "item_name": "Dawnstalker Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 119.0124167083772,
+          "score": 119.01241670837722,
           "verified": true,
           "alternatives": [
             {
@@ -6457,14 +6415,14 @@
               "item_name": "Dawnstalker Legguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.499024684448931
+              "dps_delta": -2.499024684448932
             },
             {
               "item_id": 237819,
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.1675094076583554
+              "dps_delta": -3.1675094076583563
             },
             {
               "item_id": 231567,
@@ -6708,7 +6666,6 @@
           "source_kind": "dungeon",
           "sim_dps": 305.8745286956304,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 22318,
@@ -6736,7 +6693,7 @@
         }
       ],
       "set_dps": 305.8745286956304,
-      "no_source_count": 1625,
+      "no_source_count": 1610,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6773,76 +6730,76 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 2.042195768,
-      "verify_run_seconds": 2.038267752,
+      "weights_run_seconds": 1.5293721200000001,
+      "verify_run_seconds": 1.558140654,
       "coverage": {
         "back": {
-          "eligible": 451,
-          "sourced": 349
+          "eligible": 450,
+          "sourced": 348
         },
         "chest": {
-          "eligible": 708,
-          "sourced": 593
+          "eligible": 700,
+          "sourced": 591
         },
         "feet": {
-          "eligible": 594,
-          "sourced": 494
+          "eligible": 581,
+          "sourced": 487
         },
         "finger1": {
-          "eligible": 369,
-          "sourced": 207
+          "eligible": 367,
+          "sourced": 206
         },
         "finger2": {
-          "eligible": 369,
-          "sourced": 207
+          "eligible": 367,
+          "sourced": 206
         },
         "hands": {
-          "eligible": 612,
-          "sourced": 506
+          "eligible": 598,
+          "sourced": 498
         },
         "head": {
-          "eligible": 445,
-          "sourced": 356
+          "eligible": 437,
+          "sourced": 354
         },
         "legs": {
-          "eligible": 599,
-          "sourced": 485
+          "eligible": 588,
+          "sourced": 480
         },
         "main_hand": {
-          "eligible": 1016,
-          "sourced": 710
+          "eligible": 1008,
+          "sourced": 707
         },
         "neck": {
-          "eligible": 197,
-          "sourced": 102
+          "eligible": 196,
+          "sourced": 101
         },
         "off_hand": {
-          "eligible": 165,
-          "sourced": 105
+          "eligible": 164,
+          "sourced": 104
         },
         "ranged": {
-          "eligible": 215,
-          "sourced": 141
+          "eligible": 214,
+          "sourced": 140
         },
         "shoulder": {
-          "eligible": 449,
+          "eligible": 443,
           "sourced": 358
         },
         "trinket1": {
-          "eligible": 185,
-          "sourced": 109
+          "eligible": 180,
+          "sourced": 105
         },
         "trinket2": {
-          "eligible": 185,
-          "sourced": 109
+          "eligible": 180,
+          "sourced": 105
         },
         "waist": {
-          "eligible": 550,
-          "sourced": 464
+          "eligible": 543,
+          "sourced": 463
         },
         "wrist": {
-          "eligible": 462,
-          "sourced": 373
+          "eligible": 455,
+          "sourced": 372
         }
       },
       "reference_dps_per_point": 0.05039227318719236,

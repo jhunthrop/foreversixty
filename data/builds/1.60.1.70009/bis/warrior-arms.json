@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "047a0ddb3",
-  "generated_at": "2026-09-30T15:49:14Z",
+  "generated_at": "2026-09-30T16:14:10Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -542,8 +542,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.5542459979999999,
-      "verify_run_seconds": 1.258264329,
+      "weights_run_seconds": 1.168284729,
+      "verify_run_seconds": 0.976795222,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1174,8 +1174,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.5542459979999999,
-      "verify_run_seconds": 1.216164866,
+      "weights_run_seconds": 1.168284729,
+      "verify_run_seconds": 0.945356879,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1834,8 +1834,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.669241869,
-      "verify_run_seconds": 1.466309708,
+      "weights_run_seconds": 1.280735468,
+      "verify_run_seconds": 1.09866148,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2501,8 +2501,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.669241869,
-      "verify_run_seconds": 1.425619975,
+      "weights_run_seconds": 1.280735468,
+      "verify_run_seconds": 1.122471678,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2680,7 +2680,6 @@
           "source_kind": "quest",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 13084,
@@ -3032,7 +3031,6 @@
           "source_kind": "dungeon",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 13097,
@@ -3175,8 +3173,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.094037179,
-      "verify_run_seconds": 1.5920821219999999,
+      "weights_run_seconds": 1.599465821,
+      "verify_run_seconds": 1.212236355,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3354,7 +3352,6 @@
           "source_kind": "quest",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 4430,
@@ -3713,7 +3710,6 @@
           "source_kind": "dungeon",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 13097,
@@ -3855,8 +3851,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 2.094037179,
-      "verify_run_seconds": 1.636138747,
+      "weights_run_seconds": 1.599465821,
+      "verify_run_seconds": 1.195499005,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3994,29 +3990,28 @@
           "source_kind": "dungeon",
           "score": 44.58923778662369,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 19984,
-              "item_name": "Ebon Mask",
+              "item_id": 20521,
+              "item_name": "Fury Visor",
               "source_kind": "quest",
-              "source": "The Azure Key",
-              "dps_delta": 0,
-              "verified": true
+              "source": "Voodoo Feathers",
+              "dps_delta": -1.2187532363582554
+            },
+            {
+              "item_id": 220804,
+              "item_name": "Knight-Lieutenant's Plate Helm",
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer",
+              "dps_delta": -1.3169201845568288
             },
             {
               "item_id": 17767,
               "item_name": "Bloomsprout Headpiece",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.6656791040694492
-            },
-            {
-              "item_id": 20521,
-              "item_name": "Fury Visor",
-              "source_kind": "quest",
-              "source": "Voodoo Feathers",
-              "dps_delta": -1.218753236358255
+              "dps_delta": -1.6855942993261266,
+              "verified": true
             }
           ]
         },
@@ -4028,7 +4023,6 @@
           "source_kind": "quest",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 13089,
@@ -4137,11 +4131,11 @@
               "dps_delta": -0.4892462823272378
             },
             {
-              "item_id": 22274,
-              "item_name": "Grizzled Pelt",
-              "source_kind": "quest",
-              "source": "A Better Ingredient",
-              "dps_delta": -0.5009716429441546
+              "item_id": 274758,
+              "item_name": "Coldmetal Guard",
+              "source_kind": "vendor",
+              "source": "Zippie Fizzbolt",
+              "dps_delta": -0.6098032749605545
             },
             {
               "item_id": 8274,
@@ -4234,7 +4228,6 @@
           "source_kind": "dungeon",
           "score": 42.58923778662369,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 10798,
@@ -4408,16 +4401,8 @@
           "source_kind": "quest",
           "sim_dps": 129.5040093207497,
           "verified": true,
-          "alternatives": [
-            {
-              "item_id": 20512,
-              "item_name": "Sanctified Orb",
-              "source_kind": "quest",
-              "source": "Forging the Mightstone",
-              "dps_delta": -3.1504688687286944,
-              "verified": true
-            }
-          ]
+          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +4.1 DPS (129.5 vs 125.4 set DPS)",
+          "dps_delta": 4.144055008322653
         },
         {
           "slot": "trinket2",
@@ -4497,7 +4482,7 @@
         }
       ],
       "set_dps": 129.5040093207497,
-      "no_source_count": 859,
+      "no_source_count": 856,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -4530,48 +4515,48 @@
         "trinket1: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.244982388,
-      "verify_run_seconds": 1.870689478,
+      "weights_run_seconds": 1.652250742,
+      "verify_run_seconds": 1.363814068,
       "coverage": {
         "back": {
-          "eligible": 314,
-          "sourced": 268
+          "eligible": 313,
+          "sourced": 267
         },
         "chest": {
-          "eligible": 550,
-          "sourced": 490
+          "eligible": 548,
+          "sourced": 488
         },
         "feet": {
-          "eligible": 456,
-          "sourced": 395
+          "eligible": 455,
+          "sourced": 394
         },
         "finger1": {
-          "eligible": 152,
-          "sourced": 99
+          "eligible": 150,
+          "sourced": 97
         },
         "finger2": {
-          "eligible": 152,
-          "sourced": 99
+          "eligible": 150,
+          "sourced": 97
         },
         "hands": {
-          "eligible": 461,
+          "eligible": 460,
           "sourced": 418
         },
         "head": {
-          "eligible": 317,
-          "sourced": 282
+          "eligible": 316,
+          "sourced": 281
         },
         "legs": {
           "eligible": 431,
           "sourced": 376
         },
         "main_hand": {
-          "eligible": 886,
-          "sourced": 676
+          "eligible": 881,
+          "sourced": 672
         },
         "neck": {
-          "eligible": 77,
-          "sourced": 45
+          "eligible": 76,
+          "sourced": 44
         },
         "off_hand": {
           "eligible": 282,
@@ -4586,12 +4571,12 @@
           "sourced": 271
         },
         "trinket1": {
-          "eligible": 81,
-          "sourced": 50
+          "eligible": 75,
+          "sourced": 45
         },
         "trinket2": {
-          "eligible": 81,
-          "sourced": 50
+          "eligible": 75,
+          "sourced": 45
         },
         "waist": {
           "eligible": 428,
@@ -4669,29 +4654,28 @@
           "source_kind": "dungeon",
           "score": 44.58923778662369,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
-            {
-              "item_id": 19984,
-              "item_name": "Ebon Mask",
-              "source_kind": "quest",
-              "source": "The Azure Key",
-              "dps_delta": 0,
-              "verified": true
-            },
             {
               "item_id": 17767,
               "item_name": "Bloomsprout Headpiece",
               "source_kind": "dungeon",
               "source": "Maraudon: Meshlok the Harvester",
-              "dps_delta": -0.6656791040694492
+              "dps_delta": -0.8170379500693628,
+              "verified": true
             },
             {
               "item_id": 20521,
               "item_name": "Fury Visor",
               "source_kind": "quest",
               "source": "Voodoo Feathers",
-              "dps_delta": -1.218753236358255
+              "dps_delta": -1.2187532363582554
+            },
+            {
+              "item_id": 220803,
+              "item_name": "Blood Guard's Plate Helm",
+              "source_kind": "vendor",
+              "source": "Lady Palanseer",
+              "dps_delta": -1.3169201845568288
             }
           ]
         },
@@ -4703,7 +4687,6 @@
           "source_kind": "quest",
           "score": 20,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 7731,
@@ -4820,11 +4803,11 @@
               "dps_delta": -0.4892462823272378
             },
             {
-              "item_id": 22274,
-              "item_name": "Grizzled Pelt",
-              "source_kind": "quest",
-              "source": "A Better Ingredient",
-              "dps_delta": -0.5009716429441546
+              "item_id": 274758,
+              "item_name": "Coldmetal Guard",
+              "source_kind": "vendor",
+              "source": "Zippie Fizzbolt",
+              "dps_delta": -0.6098032749605545
             }
           ]
         },
@@ -4909,7 +4892,6 @@
           "source_kind": "dungeon",
           "score": 42.58923778662369,
           "verified": true,
-          "effect_unmodelled": true,
           "alternatives": [
             {
               "item_id": 20192,
@@ -5181,7 +5163,7 @@
         }
       ],
       "set_dps": 130.55655163518887,
-      "no_source_count": 840,
+      "no_source_count": 837,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5215,48 +5197,48 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 2.244982388,
-      "verify_run_seconds": 1.86835324,
+      "weights_run_seconds": 1.652250742,
+      "verify_run_seconds": 1.413321133,
       "coverage": {
         "back": {
-          "eligible": 319,
-          "sourced": 275
+          "eligible": 318,
+          "sourced": 274
         },
         "chest": {
-          "eligible": 543,
-          "sourced": 480
+          "eligible": 541,
+          "sourced": 478
         },
         "feet": {
-          "eligible": 457,
-          "sourced": 392
+          "eligible": 456,
+          "sourced": 391
         },
         "finger1": {
-          "eligible": 153,
-          "sourced": 101
+          "eligible": 151,
+          "sourced": 100
         },
         "finger2": {
-          "eligible": 153,
-          "sourced": 101
+          "eligible": 151,
+          "sourced": 100
         },
         "hands": {
-          "eligible": 460,
-          "sourced": 415
+          "eligible": 459,
+          "sourced": 414
         },
         "head": {
-          "eligible": 316,
-          "sourced": 281
+          "eligible": 315,
+          "sourced": 280
         },
         "legs": {
           "eligible": 426,
           "sourced": 373
         },
         "main_hand": {
-          "eligible": 877,
-          "sourced": 681
+          "eligible": 872,
+          "sourced": 677
         },
         "neck": {
-          "eligible": 80,
-          "sourced": 48
+          "eligible": 79,
+          "sourced": 47
         },
         "off_hand": {
           "eligible": 279,
@@ -5271,12 +5253,12 @@
           "sourced": 271
         },
         "trinket1": {
-          "eligible": 81,
-          "sourced": 50
+          "eligible": 75,
+          "sourced": 45
         },
         "trinket2": {
-          "eligible": 81,
-          "sourced": 50
+          "eligible": 75,
+          "sourced": 45
         },
         "waist": {
           "eligible": 429,
@@ -5610,7 +5592,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.071645739611837
+              "dps_delta": -3.071645739611836
             },
             {
               "item_id": 22385,
@@ -5827,7 +5809,7 @@
         }
       ],
       "set_dps": 245.29529588623691,
-      "no_source_count": 1906,
+      "no_source_count": 1891,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5862,76 +5844,76 @@
         "main_hand: Blackblade of Shahram",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 2.201026665,
-      "verify_run_seconds": 1.8383111749999999,
+      "weights_run_seconds": 1.677820653,
+      "verify_run_seconds": 1.404952402,
       "coverage": {
         "back": {
-          "eligible": 445,
-          "sourced": 342
+          "eligible": 444,
+          "sourced": 341
         },
         "chest": {
-          "eligible": 791,
-          "sourced": 662
+          "eligible": 782,
+          "sourced": 660
         },
         "feet": {
-          "eligible": 692,
-          "sourced": 576
+          "eligible": 676,
+          "sourced": 567
         },
         "finger1": {
-          "eligible": 366,
-          "sourced": 202
+          "eligible": 364,
+          "sourced": 200
         },
         "finger2": {
-          "eligible": 366,
-          "sourced": 202
+          "eligible": 364,
+          "sourced": 200
         },
         "hands": {
-          "eligible": 704,
-          "sourced": 581
+          "eligible": 688,
+          "sourced": 573
         },
         "head": {
-          "eligible": 515,
-          "sourced": 418
+          "eligible": 506,
+          "sourced": 416
         },
         "legs": {
-          "eligible": 692,
-          "sourced": 559
+          "eligible": 679,
+          "sourced": 553
         },
         "main_hand": {
-          "eligible": 1346,
-          "sourced": 934
+          "eligible": 1337,
+          "sourced": 930
         },
         "neck": {
-          "eligible": 196,
-          "sourced": 98
+          "eligible": 195,
+          "sourced": 97
         },
         "off_hand": {
-          "eligible": 433,
-          "sourced": 318
+          "eligible": 432,
+          "sourced": 317
         },
         "ranged": {
-          "eligible": 212,
-          "sourced": 142
+          "eligible": 211,
+          "sourced": 141
         },
         "shoulder": {
-          "eligible": 529,
+          "eligible": 522,
           "sourced": 424
         },
         "trinket1": {
-          "eligible": 185,
-          "sourced": 110
+          "eligible": 179,
+          "sourced": 105
         },
         "trinket2": {
-          "eligible": 185,
-          "sourced": 110
+          "eligible": 179,
+          "sourced": 105
         },
         "waist": {
-          "eligible": 634,
-          "sourced": 532
+          "eligible": 626,
+          "sourced": 531
         },
         "wrist": {
-          "eligible": 538,
-          "sourced": 426
+          "eligible": 530,
+          "sourced": 425
         }
       },
       "reference_dps_per_point": 0.03201643806324714,
@@ -6257,14 +6239,14 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.071645739611837
+              "dps_delta": -3.071645739611836
             },
             {
               "item_id": 22385,
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -3.2503144177497005
+              "dps_delta": -3.2503144177496996
             },
             {
               "item_id": 14554,
@@ -6503,7 +6485,7 @@
         }
       ],
       "set_dps": 237.65353599897114,
-      "no_source_count": 1887,
+      "no_source_count": 1872,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6539,76 +6521,76 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 2.201026665,
-      "verify_run_seconds": 1.732132571,
+      "weights_run_seconds": 1.677820653,
+      "verify_run_seconds": 1.379558453,
       "coverage": {
         "back": {
-          "eligible": 451,
-          "sourced": 349
+          "eligible": 450,
+          "sourced": 348
         },
         "chest": {
-          "eligible": 788,
-          "sourced": 655
+          "eligible": 778,
+          "sourced": 653
         },
         "feet": {
-          "eligible": 690,
-          "sourced": 570
+          "eligible": 675,
+          "sourced": 562
         },
         "finger1": {
-          "eligible": 369,
-          "sourced": 207
+          "eligible": 367,
+          "sourced": 206
         },
         "finger2": {
-          "eligible": 369,
-          "sourced": 207
+          "eligible": 367,
+          "sourced": 206
         },
         "hands": {
-          "eligible": 705,
-          "sourced": 580
+          "eligible": 688,
+          "sourced": 570
         },
         "head": {
-          "eligible": 515,
-          "sourced": 417
+          "eligible": 505,
+          "sourced": 415
         },
         "legs": {
-          "eligible": 686,
-          "sourced": 555
+          "eligible": 673,
+          "sourced": 549
         },
         "main_hand": {
-          "eligible": 1341,
-          "sourced": 943
+          "eligible": 1332,
+          "sourced": 939
         },
         "neck": {
-          "eligible": 200,
-          "sourced": 102
+          "eligible": 199,
+          "sourced": 101
         },
         "off_hand": {
-          "eligible": 432,
-          "sourced": 321
+          "eligible": 431,
+          "sourced": 320
         },
         "ranged": {
-          "eligible": 212,
-          "sourced": 141
+          "eligible": 211,
+          "sourced": 140
         },
         "shoulder": {
-          "eligible": 528,
+          "eligible": 521,
           "sourced": 424
         },
         "trinket1": {
-          "eligible": 184,
-          "sourced": 109
+          "eligible": 178,
+          "sourced": 104
         },
         "trinket2": {
-          "eligible": 184,
-          "sourced": 109
+          "eligible": 178,
+          "sourced": 104
         },
         "waist": {
-          "eligible": 635,
-          "sourced": 531
+          "eligible": 627,
+          "sourced": 530
         },
         "wrist": {
-          "eligible": 543,
-          "sourced": 437
+          "eligible": 534,
+          "sourced": 436
         }
       },
       "reference_dps_per_point": 0.03201643806324714,
