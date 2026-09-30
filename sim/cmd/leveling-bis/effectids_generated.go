@@ -24,6 +24,7 @@ package main
 // scored total, only for whether a slot's pick gets an engine-verified
 // run (see rank.go's hasImplementedEffect) and whether report.go's
 // effect_unmodelled flag is set.
+// Generated from wowsims-forever 047a0ddb3 by sim/scripts/effectids.py.
 var engineImplementedEffectItemIDs = map[int]bool{
 	647: true, 754: true, 809: true, 810: true, 870: true, 871: true, 1168: true, 1728: true, 1982: true, 2163: true,
 	2164: true, 2243: true, 2825: true, 3854: true, 5616: true, 6622: true, 7717: true, 7959: true, 8190: true, 9423: true,
@@ -40,11 +41,11 @@ var engineImplementedEffectItemIDs = map[int]bool{
 	19289: true, 19324: true, 19334: true, 19337: true, 19339: true, 19340: true, 19341: true, 19342: true, 19344: true, 19353: true,
 	19577: true, 19601: true, 19812: true, 19874: true, 19901: true, 19918: true, 19946: true, 19947: true, 19948: true, 19949: true,
 	19950: true, 19951: true, 19953: true, 19954: true, 19956: true, 19957: true, 19959: true, 19961: true, 19962: true, 19963: true,
-	19991: true, 19992: true, 20036: true, 20130: true, 20512: true, 20578: true, 21180: true, 21190: true, 21473: true, 21625: true,
-	21670: true, 21679: true, 22268: true, 22321: true, 22395: true, 22397: true, 22678: true, 22691: true, 22862: true, 22954: true,
-	23027: true, 23040: true, 23041: true, 23046: true, 23078: true, 23081: true, 23082: true, 23084: true, 23085: true, 23087: true,
-	23088: true, 23089: true, 23090: true, 23091: true, 23092: true, 23093: true, 23197: true, 23198: true, 23199: true, 23206: true,
-	23207: true, 23221: true, 23279: true, 23570: true,
+	19991: true, 19992: true, 20130: true, 20512: true, 20578: true, 21180: true, 21190: true, 21473: true, 21625: true, 21670: true,
+	21679: true, 22268: true, 22321: true, 22395: true, 22397: true, 22678: true, 22691: true, 22862: true, 22954: true, 23027: true,
+	23040: true, 23041: true, 23046: true, 23078: true, 23081: true, 23082: true, 23084: true, 23085: true, 23087: true, 23088: true,
+	23089: true, 23090: true, 23091: true, 23092: true, 23093: true, 23197: true, 23198: true, 23199: true, 23206: true, 23207: true,
+	23221: true, 23279: true, 23570: true,
 }
 
 func effectImplemented(itemID int) bool {
