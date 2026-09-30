@@ -20,27 +20,31 @@ func TestKitConsumesIsRoguePoisonsFromTwenty(t *testing.T) {
 	}
 }
 
+// TestKitConsumesIsShamanEnhancementWeaponImbues: shamans cannot dual
+// wield in Forever (owner rule, 2026-09-30, bis-ranker-integrity-13's
+// brief), so enhancement's off hand is a shield or held item, never a
+// second imbued weapon - one imbue, always on the main hand.
 func TestKitConsumesIsShamanEnhancementWeaponImbues(t *testing.T) {
 	got := KitConsumes("shaman-enhancement", 10)
-	want := []string{"main_hand_imbue:rockbiter_weapon", "off_hand_imbue:rockbiter_weapon"}
-	if len(got) != len(want) || got[0] != want[0] || got[1] != want[1] {
-		t.Fatalf("shaman-enhancement at 10 = %v, want %v (Rockbiter Weapon on both weapons; Windfury Weapon is not learnable until 30)", got, want)
+	want := []string{"main_hand_imbue:rockbiter_weapon"}
+	if len(got) != len(want) || got[0] != want[0] {
+		t.Fatalf("shaman-enhancement at 10 = %v, want %v (Rockbiter Weapon on the main hand; Windfury Weapon is not learnable until 30)", got, want)
 	}
 
 	got = KitConsumes("shaman-enhancement", 29)
-	if len(got) != 2 || got[0] != "main_hand_imbue:rockbiter_weapon" {
-		t.Fatalf("shaman-enhancement at 29 = %v, want Rockbiter Weapon still on both weapons", got)
+	if len(got) != 1 || got[0] != "main_hand_imbue:rockbiter_weapon" {
+		t.Fatalf("shaman-enhancement at 29 = %v, want Rockbiter Weapon still on the main hand", got)
 	}
 
 	got = KitConsumes("shaman-enhancement", 30)
-	want = []string{"main_hand_imbue:windfury_weapon", "off_hand_imbue:rockbiter_weapon"}
-	if len(got) != len(want) || got[0] != want[0] || got[1] != want[1] {
+	want = []string{"main_hand_imbue:windfury_weapon"}
+	if len(got) != len(want) || got[0] != want[0] {
 		t.Fatalf("shaman-enhancement at 30 = %v, want %v (Windfury Weapon on the main hand once learned)", got, want)
 	}
 
 	got = KitConsumes("shaman-enhancement", 60)
-	if len(got) != 2 || got[0] != "main_hand_imbue:windfury_weapon" || got[1] != "off_hand_imbue:rockbiter_weapon" {
-		t.Fatalf("shaman-enhancement at 60 = %v, want Windfury Weapon MH / Rockbiter Weapon OH still", got)
+	if len(got) != 1 || got[0] != "main_hand_imbue:windfury_weapon" {
+		t.Fatalf("shaman-enhancement at 60 = %v, want Windfury Weapon on the main hand, nothing on the off hand", got)
 	}
 
 	if got := KitConsumes("shaman-elemental", 60); got != nil {
@@ -51,5 +55,32 @@ func TestKitConsumesIsShamanEnhancementWeaponImbues(t *testing.T) {
 	}
 	if got := KitConsumes("shaman", 60); got != nil {
 		t.Fatalf("bare shaman class = %v, want nothing (the kit is a spec property, not a class one)", got)
+	}
+}
+
+// TestDualWieldSpecsExcludesShaman: enhancement's off hand is a
+// shield/held-item pool, not a weapon pool - it must not be a
+// DualWieldSpecs member. Dual wield stays for rogue's three specs,
+// warrior-fury and hunter's three specs, and no other spec is a member.
+func TestDualWieldSpecsExcludesShaman(t *testing.T) {
+	if DualWieldSpecs["shaman-enhancement"] {
+		t.Fatal("shaman-enhancement must not be a DualWieldSpecs member: shamans cannot dual wield in Forever")
+	}
+	want := map[string]bool{
+		"rogue-assassination":  true,
+		"rogue-combat":         true,
+		"rogue-subtlety":       true,
+		"warrior-fury":         true,
+		"hunter-beast-mastery": true,
+		"hunter-marksmanship":  true,
+		"hunter-survival":      true,
+	}
+	if len(DualWieldSpecs) != len(want) {
+		t.Fatalf("DualWieldSpecs = %v, want exactly %v", DualWieldSpecs, want)
+	}
+	for spec := range want {
+		if !DualWieldSpecs[spec] {
+			t.Fatalf("DualWieldSpecs missing %q", spec)
+		}
 	}
 }

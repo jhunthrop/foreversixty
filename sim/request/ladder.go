@@ -441,13 +441,19 @@ type gearProfile struct {
 // ladderGearProfiles is every written spec whose weapon rule is not the
 // bare caster default: the two-handers (warrior-arms,
 // paladin-retribution), the dual-wielders (warrior-fury, rogue's three
-// specs, shaman-enhancement, and hunter - hunters can dual-wield a
-// melee stat-stick beside their bow in this build), hunter's ranged
-// bow, feral's "none", shaman-elemental's shield, druid-balance's
+// specs, and hunter - hunters can dual-wield a melee stat-stick beside
+// their bow in this build), hunter's ranged bow, feral's "none",
+// shaman-elemental's and shaman-enhancement's shield, druid-balance's
 // staff/two-hander, and every caster's wand (harness rule 3:
 // priest-shadow, mage's three specs and warlock's three specs, so
 // OtherActionShoot/wand lines have a real weapon to resolve against,
 // the same way melee always has).
+//
+// shaman-enhancement is NOT a dual-wielder (owner rule, Justin,
+// 2026-09-30, bis-ranker-integrity-13's brief: shamans cannot dual
+// wield in Forever) - it shares shaman-elemental's Shield profile
+// instead, one imbued main-hand weapon plus a shield, never a second
+// weapon.
 //
 // Weapon TYPE (this wave's harness rule 1, from the class item table's
 // weapon subclass, joined in by loadItemWeaponTypes): assassination and
@@ -460,8 +466,9 @@ type gearProfile struct {
 // swords" - Forever gives Combat axes too, but the brief this table
 // follows names sword/mace, so axe is left out here even though the
 // guide suggests it is also viable; a follow-up can widen this once
-// that's confirmed); shaman ele/resto want a shield rather than
-// dual-wielding (only elemental is a written spec today);
+// that's confirmed); shaman ele/enhancement/resto want a shield rather
+// than dual-wielding (elemental and enhancement are the two written
+// specs today);
 // druid-balance (and feral, if it ever stops skipping gear) wants a
 // staff or a two-hand weapon, matching what an unconstrained "highest
 // item_level" pick already happened to choose for balance in this
@@ -481,10 +488,15 @@ var ladderGearProfiles = map[string]gearProfile{
 	"warrior-arms":        {MainHand: handTwo},
 	"warrior-fury":        {MainHand: handOne, OffHand: true},
 	"paladin-retribution": {MainHand: handTwo},
-	"shaman-enhancement":  {MainHand: handOne, OffHand: true},
-	"shaman-elemental":    {MainHand: handOne, Shield: true},
-	"druid-feral":         {Skip: true, SkipFromLevel: 20, MainHand: handAny},
-	"druid-balance":       {MainHand: handAny, MainHandTypes: twoHandWeaponSubclasses},
+	// shaman-enhancement: owner rule (Justin, 2026-09-30,
+	// bis-ranker-integrity-13's brief) - shamans cannot dual wield in
+	// Forever, so enhancement's off hand is a shield, the same
+	// pickShieldItem pool shaman-elemental already draws from, not a
+	// second weapon.
+	"shaman-enhancement": {MainHand: handOne, Shield: true},
+	"shaman-elemental":   {MainHand: handOne, Shield: true},
+	"druid-feral":        {Skip: true, SkipFromLevel: 20, MainHand: handAny},
+	"druid-balance":      {MainHand: handAny, MainHandTypes: twoHandWeaponSubclasses},
 	"rogue-assassination": {MainHand: handOne, OffHand: true,
 		MainHandTypes: []int{weaponDagger}, OffHandTypes: []int{weaponDagger}},
 	"rogue-combat": {MainHand: handOne, OffHand: true,
