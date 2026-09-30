@@ -58,6 +58,7 @@ change the named constant if it differs from the default.
 | 25 | Tooltip hook API | `/dump TooltipDataProcessor and TooltipDataProcessor.AddTooltipPostCall ~= nil`, `/dump Enum and Enum.TooltipDataType and Enum.TooltipDataType.Item` | `Tooltip.hasProcessor`; with neither, `OnTooltipSetItem` is hooked instead |
 | 26 | Addon compartment | `/dump AddonCompartmentFrame and AddonCompartmentFrame.RegisterAddon ~= nil` | `Minimap.hasCompartment`; absent just means no compartment entry, no error |
 | 27 | The keybind shows up | Open Key Bindings > AddOns > Forever Sixty; confirm "Toggle Forever Sixty" is listed and toggles the window when bound | `Bindings.xml` |
+| 28 | AddOns list icon | Open the game's own AddOns list (the one `## IconTexture` feeds, introduced alongside the trait-based talent UI this client already has -- see row 4a) and confirm Forever Sixty shows the LX seal rather than a blank slot | `## IconTexture:` in `ForeverSixty.toc`; if the list shows no icon, remove the line rather than ship a dead directive |
 
 ## Findings
 
@@ -82,7 +83,7 @@ Run on one character per role and tick here:
 - [ ] The talent window glows the next talent (record which mapping in row 22).
 - [ ] The Gear tab lists the planned set against what is worn, and at least one
       bagged item with a working Equip button that is disabled in combat.
-- [ ] The minimap button shows the gold "60", drags around the ring, opens the
+- [ ] The minimap button shows the LX seal, drags around the ring, opens the
       window on left-click and the settings on right-click.
 - [ ] Forever Sixty appears in the game's own Settings panel, with the same
       toggles as the window's Settings tab.
