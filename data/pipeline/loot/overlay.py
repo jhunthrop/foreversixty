@@ -24,6 +24,9 @@ from pipeline.curated import parse_sources
 from pipeline.loot.sources import KIND_ORDER
 from pipeline.models import LootFile, LootOverlay
 
+#: The phase an undated raid source is gated to: no raid is open at launch.
+RAID_DEFAULT_OPENS = "later"
+
 
 class OverlayError(SystemExit):
     """A curated loot overlay names something the generated file does not."""
@@ -90,6 +93,13 @@ def apply_overlays(
                     f"{path} removes source {source_id!r}, which is not there"
                 )
             del by_id[source_id]
+    # Nothing raids at launch (curated/loot/forever-raid-phases.json's own notes):
+    # a raid the generator emits that no overlay dates -- Forever's own Scarlet
+    # Enclave surfaced from a fresh Map.csv on 2026-09-30 with no `opens` and would
+    # have read as open from launch -- defaults to "later" rather than nothing.
+    for source_id, source in list(by_id.items()):
+        if source.kind == "raid" and source.opens is None:
+            by_id[source_id] = source.model_copy(update={"opens": RAID_DEFAULT_OPENS})
     return LootFile(
         sources=sorted(
             by_id.values(), key=lambda source: (KIND_ORDER.index(source.kind), source.id)

@@ -236,3 +236,22 @@ def test_every_phase_an_overlay_names_is_a_real_phase_or_the_sentinel():
             assert patch.opens is None or patch.opens in allowed, (path, patch.id)
         for source in document.add:
             assert source.opens is None or source.opens in allowed, (path, source.id)
+
+
+def test_an_undated_raid_source_defaults_to_opens_later():
+    from pipeline.loot.overlay import RAID_DEFAULT_OPENS, apply_overlays
+    from pipeline.models import LootFile, LootSource
+
+    document = LootFile(
+        sources=[
+            LootSource(id="raid:scarlet-enclave", kind="raid", name="Scarlet Enclave", items=[1]),
+            LootSource(id="dungeon:the-deadmines", kind="dungeon", name="The Deadmines", items=[2]),
+        ],
+        quests={},
+        factions={},
+    )
+    out = apply_overlays(document, [])
+    by_id = {s.id: s for s in out.sources}
+    assert by_id["raid:scarlet-enclave"].opens == RAID_DEFAULT_OPENS
+    assert by_id["dungeon:the-deadmines"].opens is None
+
