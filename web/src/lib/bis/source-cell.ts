@@ -209,7 +209,19 @@ export function resolveSourceCell(
 
   if (slot.source_kind === 'vendor') {
     const source = findSource(loot.sources, 'vendor', itemId);
-    return source === undefined ? fallback : { kind: 'vendor', npc: source.name };
+    if (source === undefined) return fallback;
+    // Some `vendor`-kind sources are really PvP rank rewards: the rank-16-through-18 sets
+    // (Marshal's/Field Marshal's/Grand Marshal's for Alliance, Warlord's/General's/High
+    // Warlord's for Horde) sell from four real, single-faction NPCs that `loot.json`
+    // classifies as plain `vendor` (fourth wow-player sweep, day 3, top finding: a bare
+    // "Vendor: Sergeant Thunderhorn" line gave no hint the gear was faction-restricted, and
+    // three sweeps of the opposite-faction NPC's own stock cross-wired onto the wrong
+    // faction's list). A vendor source naming both `rank` and a real `faction` is one of
+    // these -- render it exactly like a `pvp`-kind source, `pvpSourceLabel` and all, rather
+    // than the bare NPC name.
+    return source.rank !== undefined && (source.faction === 'alliance' || source.faction === 'horde')
+      ? { kind: 'pvp', rank: source.rank, faction: source.faction }
+      : { kind: 'vendor', npc: source.name };
   }
 
   if (slot.source_kind === 'rep') {

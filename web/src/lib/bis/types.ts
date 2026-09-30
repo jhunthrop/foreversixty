@@ -43,8 +43,16 @@ export interface BisSlot {
   /** A weapon slot where no sourced candidate carried a positive score and the ranker
    *  fell back to the best by item level rather than publish an empty weapon slot. */
   low_value?: boolean;
-  /** Why an empty slot is empty: `two_hand_equipped`, `no_dps_value`, `no_sourced_item`. */
+  /** Why an empty slot is empty: `two_hand_equipped`, `no_dps_value`, `no_sourced_item`,
+   *  `effect_not_modelled`. */
   empty_reason?: string;
+  /** The pick's own proc or use effect is not simulated (`hasImplementedEffect`,
+   *  `sim/cmd/leveling-bis/report.go`) -- the row was ranked on its stats alone, which can
+   *  let an unmodelled-effect item win by a margin smaller than its own blind spot (fourth
+   *  wow-player sweep, day 3: "Serenity Field"). Never conflated with `empty_reason`'s own
+   *  `effect_not_modelled` value, which describes an EMPTY slot with no sourced candidate at
+   *  all, not a flag on a filled pick. */
+  effect_unmodelled?: boolean;
   swap_note?: string;
   /** The next-best sourced candidates after this row's own pick (`sim/cmd/leveling-bis/
    *  report.go`'s own `slotRow.Alternatives`) -- up to three, ties (identical score to the
@@ -82,6 +90,9 @@ export interface BisAlternative {
    *  fallback (owner review, tenet 8). Omitted (falsy) for every other row: a score estimate
    *  the ranker never simmed at all. */
   verified?: boolean;
+  /** See `BisSlot.effect_unmodelled`'s own doc -- an alternative can carry the identical
+   *  flag, for the same reason. */
+  effect_unmodelled?: boolean;
 }
 
 /** One planner slot's coverage: how many items `eligible()` (sim/cmd/leveling-bis/eligible.go)

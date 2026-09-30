@@ -25,8 +25,86 @@ import {
   type SlotRow,
 } from './load';
 import { describeSourceCell, hasKnownSource, resolveSourceCell, type SourceCell } from './source-cell';
-import type { BisAlternative, BisFile, ChangedSlot, Faction, ItemDetail, LootQuestsFile } from './types';
+import type {
+  BisAlternative,
+  BisFile,
+  BisSlot,
+  ChangedSlot,
+  Faction,
+  ItemDetail,
+  LootQuestsFile,
+} from './types';
 import type { ItemTooltipModel } from '../items/tooltip';
+
+/** The two ranker-own `swap_note` templates (`sim/cmd/leveling-bis/report.go`'s own
+ *  `fmt.Sprintf` calls): "confirmed by the sim against X (id N): kept the pick, A vs B set
+ *  DPS" and "beat the scored pick X (id N) in the sim: A vs B set DPS" -- in both, `A` is
+ *  this row's own pick's measured DPS and `B` the named alternative's (verified directly
+ *  against report.go's own argument order: `sw.BaselineDPS, sw.SwapDPS` when the pick was
+ *  kept, `sw.SwapDPS, sw.BaselineDPS` when the pick IS the promoted swap winner -- either
+ *  way the row's own current pick comes first). Checked against all 580 `swap_note` strings
+ *  in the 2026-09-29 build (`data/builds/1.60.1.70009/bis/*.json`): every one matches. */
+const SWAP_NOTE_PATTERN =
+  /^(?:confirmed by the sim against|beat the scored pick) (.+?) \(id \d+\)(?:: kept the pick, |\s+in the sim: )(\d+(?:\.\d+)?) vs (\d+(?:\.\d+)?) set DPS$/;
+
+export interface ParsedSwapNote {
+  /** The named alternative's item name (never this row's own pick -- see the pattern's own
+   *  doc for which side of "A vs B" each belongs to). */
+  itemName: string;
+  /** This row's own pick's measured DPS. */
+  pickDps: number;
+  /** The named alternative's measured DPS. */
+  altDps: number;
+}
+
+/** Parses a `BisSlot.swap_note` sentence into the two numbers a player can read --
+ *  undefined for any text that does not match `SWAP_NOTE_PATTERN` (a `swap_note` format
+ *  this function does not know, e.g. the verify-error fallback string), so a caller falls
+ *  back to the raw note rather than fabricate a reading of it (tenet 8). */
+export function parseSwapNote(note: string): ParsedSwapNote | undefined {
+  const match = SWAP_NOTE_PATTERN.exec(note);
+  if (match === null) return undefined;
+  const [, itemName, pickDps, altDps] = match;
+  return { itemName: itemName!, pickDps: Number(pickDps), altDps: Number(altDps) };
+}
+
+/** The row's own evidence line (spec: fourth wow-player sweep, day 3, item 1) -- in player
+ *  words when `swap_note` matches a known ranker format, the raw note otherwise (never
+ *  nothing: a `swap_note` the page cannot parse is still real evidence, just unparsed). */
+function evidenceLineFor(swapNote: string | undefined): string | undefined {
+  if (swapNote === undefined) return undefined;
+  const parsed = parseSwapNote(swapNote);
+  return parsed === undefined
+    ? swapNote
+    : bisCopy.evidenceLine(parsed.itemName, parsed.pickDps, parsed.altDps);
+}
+
+/** The main pick's own verified-glyph title -- the default "confirmed by a Top Gear pass"
+ *  copy unless the pick carries `sim_dps` and no `swap_note` (a sim-decided row with no
+ *  swap narrative to tell -- a trinket/proc/weapon-pair tournament winner), which names its
+ *  own real number instead (spec item 1's second rule). */
+function verifiedGlyphTitleFor(row: BisSlot): string | undefined {
+  return row.swap_note === undefined && row.sim_dps !== undefined
+    ? bisCopy.simDpsVerifiedTitle(row.sim_dps)
+    : undefined;
+}
+
+/** `empty_reason` -> the honest, player-worded line for why this slot has no pick (spec
+ *  item 3) -- `no_sourced_item` and any value this page does not recognise both fall back
+ *  to today's plain `noKnownSourceForSlot` line, never a fabricated reason. Never called for
+ *  the off-hand-under-a-two-hander case, which `buildRowView` special-cases first with its
+ *  own copy regardless of what `empty_reason` says (that rule predates this field and stays
+ *  the more specific, more player-legible one of the two). */
+function emptyReasonLabel(reason: string | undefined): string {
+  switch (reason) {
+    case 'no_dps_value':
+      return bisCopy.emptyReasonNoDpsValue;
+    case 'effect_not_modelled':
+      return bisCopy.emptyReasonEffectNotModelled;
+    default:
+      return bisCopy.noKnownSourceForSlot;
+  }
+}
 
 /** One `BisAlternative` resolved to what the row shows: the same icon/name/source
  *  resolution a main pick gets, plus the gap-from-the-pick line (`bisCopy.
@@ -49,6 +127,9 @@ export interface AlternativeView {
    *  model at all (wow-player fix round 1: read straight off the model already resolved
    *  below, no second item lookup). */
   metaLabel?: string;
+  /** `BisAlternative.effect_unmodelled` -- see `RowView.effectUnmodelled`'s own doc; an
+   *  alternative can carry the identical flag for the identical reason. */
+  effectUnmodelled?: boolean;
 }
 
 /** One slot's row: the source cell, the item itself, and (ruling 2) its up-to-three
@@ -75,6 +156,20 @@ export interface RowView {
   /** The item this slot's NEW pill replaced -- undefined at the file's first band (nothing
    *  was equipped before) or when the slot did not change this band. */
   replacedName?: string;
+  /** The row's own evidence line, in player words -- see `evidenceLineFor`'s own doc.
+   *  Undefined when the pick carries no `swap_note` at all (most rows: nothing to show). */
+  evidenceLine?: string;
+  /** Override for the main pick's verified-glyph `title` -- see `verifiedGlyphTitleFor`'s
+   *  own doc. Undefined keeps the glyph's own default title. */
+  verifiedGlyphTitle?: string;
+  /** `BisSlot.effect_unmodelled` -- true when this pick's proc/use effect is not
+   *  simulated, so its DPS number is stats-only (fourth wow-player sweep, day 3: "Serenity
+   *  Field" beating a real combat trinket by less than its own blind spot). */
+  effectUnmodelled?: boolean;
+  /** `BisSlot.low_value` -- true for a weapon row where no sourced candidate scored above
+   *  zero and the ranker published the best-by-item-level fallback instead of an empty
+   *  slot. */
+  lowValue?: boolean;
 }
 
 /** Resolves one `BisAlternative` the same way a main pick's source cell resolves --
@@ -108,6 +203,7 @@ function buildAlternativeView(
       model === undefined
         ? undefined
         : bisCopy.alternativeMetaLabel(model.itemLevel, model.requiredLevel, band),
+    effectUnmodelled: alt.effect_unmodelled,
   };
 }
 
@@ -122,10 +218,14 @@ function buildRowView(
   band: number,
 ): RowView {
   if (isMissingSlot(row) || !hasKnownSource(row)) {
+    // A missing slot (`isMissingSlot`) never published an `empty_reason` at all -- the
+    // pipeline's own `{ slot, missing: true }` shape carries nothing but the slot name --
+    // so only a present-but-unsourced `BisSlot` has one to read.
+    const emptyReason = isMissingSlot(row) ? undefined : row.empty_reason;
     const emptyCopy =
       row.slot === 'off_hand' && mainHandTwoHanded
         ? bisCopy.twoHanderEquippedLabel
-        : bisCopy.noKnownSourceForSlot;
+        : emptyReasonLabel(emptyReason);
     return { slot: row.slot, empty: true, emptyCopy };
   }
   const badgeLabel = sourceBadgeLabel(row, faction);
@@ -146,6 +246,10 @@ function buildRowView(
       buildAlternativeView(alt, faction, lootFile, tooltipFor, band),
     ),
     replacedName: replacedBySlot.get(row.slot),
+    evidenceLine: evidenceLineFor(row.swap_note),
+    verifiedGlyphTitle: verifiedGlyphTitleFor(row),
+    effectUnmodelled: row.effect_unmodelled,
+    lowValue: row.low_value,
   };
 }
 

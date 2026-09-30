@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { LootFile } from '../sim/loot';
-import { bandInfosFor, collectModelsInto, type PanelViewDeps } from './panel-view';
+import { bandInfosFor, collectModelsInto, parseSwapNote, type PanelViewDeps } from './panel-view';
 import type { BisAlternative, BisBand, BisFile, BisSlot, ItemDetail, LootQuestsFile } from './types';
 
 function slot(overrides: Partial<BisSlot> = {}): BisSlot {
@@ -280,5 +280,219 @@ describe('bandInfosFor: weight rail', () => {
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
     const reference = infos[0].weightBars.find((bar) => bar.row.isReference);
     expect(reference?.dpsPerPoint).toBeUndefined();
+  });
+});
+
+describe('parseSwapNote', () => {
+  it('parses the "confirmed by the sim against" template, pick DPS first', () => {
+    expect(
+      parseSwapNote(
+        'confirmed by the sim against Diamond Hammer (id 2194): kept the pick, 45.8 vs 38.0 set DPS',
+      ),
+    ).toEqual({ itemName: 'Diamond Hammer', pickDps: 45.8, altDps: 38.0 });
+  });
+
+  it('parses the "beat the scored pick" template, the same way', () => {
+    expect(
+      parseSwapNote('beat the scored pick Wolfmaster Cape (id 6314) in the sim: 70.9 vs 69.9 set DPS'),
+    ).toEqual({ itemName: 'Wolfmaster Cape', pickDps: 70.9, altDps: 69.9 });
+  });
+
+  it('is undefined for a swap_note format it does not recognise, never a guessed reading', () => {
+    expect(
+      parseSwapNote(
+        "the runner-up's verification sim failed (an engine-side error, not a scoring one - see verify_errors); the pick is unconfirmed against it",
+      ),
+    ).toBeUndefined();
+    expect(parseSwapNote('')).toBeUndefined();
+  });
+
+  it('matches every real swap_note in the 2026-09-29 build fixture shape (a multi-word item name, a decimal id-adjacent DPS)', () => {
+    expect(
+      parseSwapNote(
+        "confirmed by the sim against Ironspine's Fist (id 7687): kept the pick, 69.9 vs 70.7 set DPS",
+      ),
+    ).toEqual({ itemName: "Ironspine's Fist", pickDps: 69.9, altDps: 70.7 });
+  });
+});
+
+describe('bandInfosFor: evidence line and verified-glyph title', () => {
+  it('renders the evidence line in player words when swap_note matches a known ranker template', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            swap_note:
+              'confirmed by the sim against Diamond Hammer (id 2194): kept the pick, 45.8 vs 38.0 set DPS',
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.evidenceLine).toBe('Sim-checked against Diamond Hammer: 45.8 vs 38.0 DPS');
+  });
+
+  it('falls back to the raw swap_note text when the format is unrecognised', () => {
+    const file = fileWith([band({ slots: [slot({ swap_note: 'something the parser has never seen' })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.evidenceLine).toBe(
+      'something the parser has never seen',
+    );
+  });
+
+  it('leaves evidenceLine undefined when the pick has no swap_note at all', () => {
+    const file = fileWith([band({ slots: [slot()] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.evidenceLine).toBeUndefined();
+  });
+
+  it('gives the verified glyph a sim-DPS title when the pick has sim_dps and no swap_note', () => {
+    const file = fileWith([band({ slots: [slot({ sim_dps: 78.6, swap_note: undefined })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.verifiedGlyphTitle).toBe(
+      'Confirmed by a full sim: 78.6 DPS with this item',
+    );
+  });
+
+  it('leaves the verified glyph title undefined when a swap_note is already telling the story', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            sim_dps: 78.6,
+            swap_note:
+              'confirmed by the sim against Diamond Hammer (id 2194): kept the pick, 45.8 vs 38.0 set DPS',
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.verifiedGlyphTitle).toBeUndefined();
+  });
+
+  it('leaves the verified glyph title undefined for an ordinary weight-ranked pick (no sim_dps, no swap_note)', () => {
+    const file = fileWith([band({ slots: [slot()] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.verifiedGlyphTitle).toBeUndefined();
+  });
+});
+
+describe('bandInfosFor: effect_unmodelled and low_value flags', () => {
+  it('carries effect_unmodelled through on a pick', () => {
+    const file = fileWith([band({ slots: [slot({ effect_unmodelled: true })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.effectUnmodelled).toBe(true);
+  });
+
+  it('is undefined on a pick that carries no effect_unmodelled flag', () => {
+    const file = fileWith([band({ slots: [slot()] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.effectUnmodelled).toBeUndefined();
+  });
+
+  it('carries effect_unmodelled through on an alternative independently of the pick', () => {
+    const alt: BisAlternative = {
+      item_id: 42,
+      item_name: 'Weakness Analyzer',
+      source_kind: 'vendor',
+      source: 'Vendor: Someone',
+      dps_delta: -4.5,
+      effect_unmodelled: true,
+    };
+    const file = fileWith([band({ slots: [slot({ alternatives: [alt] })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.effectUnmodelled).toBeUndefined();
+    expect(head?.alternatives?.[0].effectUnmodelled).toBe(true);
+  });
+
+  it('carries low_value through on a weapon row', () => {
+    const file = fileWith([band({ slots: [slot({ slot: 'ranged', low_value: true })] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'ranged')?.lowValue).toBe(true);
+  });
+});
+
+describe('bandInfosFor: empty_reason copy', () => {
+  it('reads the thin-pool line for no_dps_value', () => {
+    const file = fileWith([
+      band({ slots: [{ ...missingSlot('trinket1'), empty_reason: 'no_dps_value' } as BisSlot] }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'trinket1')?.emptyCopy).toBe(
+      'Nothing sourced at this level helps your DPS',
+    );
+  });
+
+  it('reads the unmodelled-relic line for effect_not_modelled', () => {
+    const file = fileWith([
+      band({ slots: [{ ...missingSlot('ranged'), empty_reason: 'effect_not_modelled' } as BisSlot] }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'ranged')?.emptyCopy).toBe(
+      "Relic effects aren't simulated yet",
+    );
+  });
+
+  it('falls back to the plain no-source line for no_sourced_item and any unrecognised value', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          { ...missingSlot('finger1'), empty_reason: 'no_sourced_item' } as BisSlot,
+          { ...missingSlot('finger2'), empty_reason: 'some_future_reason' } as BisSlot,
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'finger1')?.emptyCopy).toBe(
+      'No sourced item at this level yet',
+    );
+    expect(infos[0].rows.find((r) => r.slot === 'finger2')?.emptyCopy).toBe(
+      'No sourced item at this level yet',
+    );
+  });
+
+  it('a truly missing slot (no empty_reason field at all) still gets the plain no-source line', () => {
+    const file = fileWith([band({ slots: [missingSlot('finger1')] })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'finger1')?.emptyCopy).toBe(
+      'No sourced item at this level yet',
+    );
+  });
+
+  it('the off-hand-under-a-two-hander rule still wins over any empty_reason the row carries', () => {
+    const twoHandModel: ItemTooltipModel = {
+      id: 99,
+      name: 'Big Staff',
+      quality: 3,
+      icon: 'inv_staff_25',
+      slotLabel: 'Main Hand',
+      typeLabel: 'Two-Handed Weapon',
+      itemLevel: 20,
+      requiredLevel: 18,
+      armor: null,
+      weapon: null,
+      stats: [],
+      effectText: null,
+      setName: null,
+      sourceLines: [],
+      unique: false,
+    };
+    const file = fileWith([
+      band({
+        slots: [
+          slot({ slot: 'main_hand', item_id: 99 }),
+          { ...missingSlot('off_hand'), empty_reason: 'no_dps_value' } as BisSlot,
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(
+      file,
+      [20],
+      'alliance',
+      depsWith({ tooltipFor: (id) => (id === 99 ? twoHandModel : undefined) }),
+    );
+    expect(infos[0].rows.find((r) => r.slot === 'off_hand')?.emptyCopy).toBe('Two-hander equipped');
   });
 });
