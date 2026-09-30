@@ -345,7 +345,7 @@ describe('describeSourceCell', () => {
 
   it('formats every kind as the one line the row shows', () => {
     expect(describeSourceCell({ kind: 'quest', questName: 'Foo', faction: 'alliance', level: 12 })).toBe(
-      'Quest: Foo · Level 12',
+      'Quest: Foo · Level 12',
     );
     expect(describeSourceCell({ kind: 'raid', instance: 'Molten Core', boss: 'Ragnaros' })).toBe(
       'Molten Core · Ragnaros',

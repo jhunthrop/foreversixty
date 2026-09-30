@@ -380,6 +380,20 @@ const bandTextVariants = bands.map((band) => ({
     font-size: 13px;
     font-family: var(--font-body);
   }
+  /* This page's own race select defaults to the active faction's first race (a real,
+     documented choice, never the mock's own "Troll" example) until `CharacterCard`'s island
+     syncs it to the signed-in visitor's own character race (ux-designer review round 2).
+     That sync is a cross-island DOM write that only ever runs after hydration, so a probably-
+     signed-in visitor (Base.astro's own pre-paint session hint, `fs_csrf` readable cookie,
+     `<html data-session="1">`, unchanged here) would otherwise see the wrong default flash
+     before the real one lands. Hidden (not removed: the control keeps its layout space, no
+     shift) until either the sync applies the real race or `CharacterCard` confirms there is
+     nothing to sync (signed out after all, or a race this class cannot be) and marks
+     `<html data-race-select-synced>` either way. A visitor with no session hint at all never
+     hides: there is nothing to wait for. */
+  :global(html[data-session='1']:not([data-race-select-synced])) .class-header-race-select {
+    visibility: hidden;
+  }
 
   @media (max-width: 1023px) {
     .class-header {

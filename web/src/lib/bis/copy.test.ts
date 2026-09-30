@@ -48,11 +48,11 @@ describe('alternativeGapLabel', () => {
 
 describe('alternativeMetaLabel', () => {
   it('names only the item level when the requirement is at or under the band', () => {
-    expect(bisCopy.alternativeMetaLabel(24, 18, 20)).toBe('ilvl 24');
-    expect(bisCopy.alternativeMetaLabel(24, 20, 20)).toBe('ilvl 24');
+    expect(bisCopy.alternativeMetaLabel(24, 18, 20)).toBe('ilvl 24');
+    expect(bisCopy.alternativeMetaLabel(24, 20, 20)).toBe('ilvl 24');
   });
 
   it('adds "needs <level>" only when the requirement is above the band', () => {
-    expect(bisCopy.alternativeMetaLabel(24, 21, 20)).toBe('ilvl 24 · needs 21');
+    expect(bisCopy.alternativeMetaLabel(24, 21, 20)).toBe('ilvl 24 · needs 21');
   });
 });

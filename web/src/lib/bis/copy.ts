@@ -48,9 +48,16 @@ export const bisCopy = {
 
   // --- source cell (step 1) ---------------------------------------------------------------
   questSourceLabel: (questName: string): string => `Quest: ${questName}`,
-  questLevelLabel: (level: number): string => `Level ${level}`,
+  // A non-breaking space between the label word and its number (here and in every other
+  // "Word N" metadata token below) -- a source/meta line wraps at its own " · " separators
+  // on a narrow phone (bis rebuild spec §6), never mid-token; a plain space let the browser
+  // orphan the number on its own line ("Quest: The Defias Brotherhood · Level" / "22",
+  // wow-player review round 2, 390px capture). Never a `white-space: nowrap` on the line's
+  // own outer element instead: several of these lines (`alternativeMetaLabel` below) join
+  // two such tokens with " · ", which must still be free to wrap between them.
+  questLevelLabel: (level: number): string => `Level ${level}`,
   /** The row's small item-level figure, labelled so a bare number never has to be guessed at. */
-  itemLevelShort: (level: number): string => `ilvl ${level}`,
+  itemLevelShort: (level: number): string => `ilvl ${level}`,
   dungeonSourceLabel: (instance: string, boss?: string): string =>
     boss === undefined ? instance : `${instance} · ${boss}`,
   /** "Crafted: Blacksmithing" when the source's own name already IS the profession --
@@ -149,7 +156,7 @@ export const bisCopy = {
    *  band's own level is already implied by the row being shown here at all, so naming it
    *  every time would be noise, not information. */
   alternativeMetaLabel: (itemLevel: number, requiredLevel: number, band: number): string =>
-    requiredLevel > band ? `ilvl ${itemLevel} · needs ${requiredLevel}` : `ilvl ${itemLevel}`,
+    requiredLevel > band ? `ilvl ${itemLevel} · needs ${requiredLevel}` : `ilvl ${itemLevel}`,
   /** A rating-family row's native `title` hover (spec addendum 2, §C(2)): the client's own
    *  rating-per-percent conversion, so "Crit rating" doesn't leave a player guessing what
    *  "rating" means -- `14 Crit rating = 1% Crit`. */

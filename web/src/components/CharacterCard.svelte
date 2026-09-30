@@ -31,7 +31,7 @@
     nextPath,
     switchHref = '/account',
     sendListHref = '/addon',
-    installHref = '/setup#pair',
+    installHref = '/setup',
   }: {
     nextPath: string;
     switchHref?: string;
@@ -68,6 +68,19 @@
       );
       if (match !== undefined) select.value = match.value;
     });
+  });
+
+  /**
+   * Reveals the race select once this island has settled, one way or the other (`ClassHeader`'s
+   * own `:global(html[data-session='1']:not([data-race-select-synced]))` rule, ux-designer
+   * review round 2) -- fires on `ready` AND `failed`, not only when a race was actually
+   * applied above: a signed-in visitor with no characters, a race this class cannot be, or a
+   * session hint that turns out stale (no real session after all) all still need the select
+   * uncovered, showing its own honest per-faction default rather than hide forever waiting
+   * for a sync that will never come. */
+  $effect(() => {
+    if (state.status === 'loading') return;
+    document.documentElement.setAttribute('data-race-select-synced', '1');
   });
 </script>
 

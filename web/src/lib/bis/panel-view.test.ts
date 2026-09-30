@@ -212,8 +212,8 @@ describe('bandInfosFor: alternatives', () => {
       id === 42 ? belowBandModel : id === 43 ? aboveBandModel : undefined;
     const infos = bandInfosFor(file, [20], 'alliance', depsWith({ tooltipFor }));
     const [first, second] = infos[0].rows.find((r) => r.slot === 'head')?.alternatives ?? [];
-    expect(first?.metaLabel).toBe('ilvl 24');
-    expect(second?.metaLabel).toBe('ilvl 24 · needs 25');
+    expect(first?.metaLabel).toBe('ilvl 24');
+    expect(second?.metaLabel).toBe('ilvl 24 · needs 25');
   });
 
   it('leaves metaLabel undefined when the alternative’s id has no tooltip model', () => {

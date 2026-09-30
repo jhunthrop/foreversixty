@@ -8,6 +8,14 @@
 // 4-column table layout (Stat / bar / Scale / Per point / Error) that view-model's own
 // interim page render did not yet use, one component so a later merge only has to reconcile
 // markup, never two competing sets of numbers.
+//
+// The addon button's own `/addon` href is NOT a live Astro route -- `check-no-removed-
+// routes.mjs` (postbuild) fails the build if `dist/addon.html` exists at all, since spec
+// 2026-09-25 §3.4 replaced that page with `/setup`. `/addon` still works as a link target
+// site-wide (`ImportBox.svelte`/`SourceSwitcher.svelte` already link to it the same way)
+// because `public/_redirects` 301s it to `/setup` at the CDN, the one place that
+// redirect lives; a second Astro page at this path would shadow that rule, which is
+// exactly what tripped the postbuild guard when this lane first tried it.
 import { bisCopy } from '../../lib/bis/copy';
 import type { ScaleRow } from '../../lib/bis/panel-view';
 import { SECONDARY_BUTTON } from '../../lib/planner/styles';
