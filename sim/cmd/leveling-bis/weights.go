@@ -167,6 +167,22 @@ func positiveBeyondError(delta, stdErr float64) bool {
 	return delta > stdErr
 }
 
+// negativeBeyondError is positiveBeyondError's mirror image: delta is
+// trusted as a genuine LOSS only when it clears its own standard error
+// in the negative direction, not merely when it happens to be
+// negative. reconcileFactionTrinkets (faction_trinkets.go, this lane's
+// brief bis-ranker-integrity-15) uses this - not
+// trinketGainSignificant's stricter 2x bar - to decide whether a
+// faction-neutral candidate's gain, AS MEASURED ON THE OTHER FACTION,
+// is a real racial difference rather than the same faction-neutral
+// item simply sitting near its own bar on both sides: the bar for
+// "this is a genuine, opposite-sign result" only needs to be as wide
+// as the measurement's own noise, the same standard positiveBeyondError
+// already uses for a band's reference-stat sweep.
+func negativeBeyondError(delta, stdErr float64) bool {
+	return delta < -stdErr
+}
+
 // trinketGainSignificanceMultiplier is report.go's trinketLowGain gate
 // own bar on a trinket's MeasuredGainDPS/MeasuredGainStdErr
 // (trinkets.go) - bis-ranker-integrity-11's brief, item 2. A bare 1x

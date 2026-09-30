@@ -213,6 +213,24 @@ func runSpecSubprocess(execPath string, timeout time.Duration, repoRoot, build, 
 	return err
 }
 
+// factionWork is one faction's own working state for one band, carried
+// from the first half of runSpec's own per-faction loop (buildBandPool
+// through rankTrinketSlot) to reconcileFactionTrinkets
+// (faction_trinkets.go, this lane's brief bis-ranker-integrity-15) and
+// on into the loop's second half (rankSlotWithEffects onward) - split
+// into two passes so both factions' own trinket tournaments are
+// finished, and reconcilable against each other, before either one's
+// picks continue into the rest of the pipeline.
+type factionWork struct {
+	faction        string
+	race           string
+	pool           bandPool
+	bySlot         map[string][]scored
+	pickBySlot     map[string][]scored
+	picks          map[string]slotPick
+	trinketSeconds float64
+}
+
 // runSpec ranks one spec across every band and both factions and writes
 // its two output files (json, md) under outDir.
 func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec string, bands []int, weightsIterations int) error {
@@ -445,6 +463,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		}
 		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
 
+		work := make(map[string]*factionWork, len(factions))
 		for _, f := range factions {
 			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, bandReferenceDPSPerPoint, castsShoot)
 			bySlot := candidatesBySlot(pool.Scored)
@@ -531,6 +550,37 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				}
 			}
 			trinketSeconds := time.Since(trinketStart).Seconds()
+			work[f.name] = &factionWork{faction: f.name, race: f.race, pool: pool, bySlot: bySlot, pickBySlot: pickBySlot, picks: picks, trinketSeconds: trinketSeconds}
+		}
+
+		// This lane's brief (bis-ranker-integrity-15, twelfth sweep): both
+		// factions' own rankTrinketSlot tournaments just above are now
+		// finished for this band - reconcile trinket1/trinket2 across
+		// them before either faction's picks continue into
+		// rankSlotWithEffects/trySetCompletion/verifyBand below, so a
+		// faction-neutral item's own published verdict never differs
+		// between Alliance and Horde for a reason that is really just
+		// one side's own sim noise landing on the wrong side of a shared
+		// bar (druid-feral band 50, druid-balance band 50 - this lane's
+		// own repro; faction_trinkets.go's own doc has the full design).
+		allianceWork, hordeWork := work["alliance"], work["horde"]
+		var reconcileNotes []string
+		allianceWork.picks, hordeWork.picks, reconcileNotes = reconcileFactionTrinkets(
+			runner, specInfo, specInfo.ClassSlug, band, talents, lootIdx,
+			factionTrinketInputs{Faction: "alliance", Race: allianceWork.race, BySlot: allianceWork.bySlot}, allianceWork.picks,
+			factionTrinketInputs{Faction: "horde", Race: hordeWork.race, BySlot: hordeWork.bySlot}, hordeWork.picks,
+		)
+		for _, n := range reconcileNotes {
+			log.Printf("leveling-bis: %s band %d faction reconcile: %s", spec, band, n)
+		}
+
+		for _, f := range factions {
+			fw := work[f.name]
+			pool := fw.pool
+			bySlot := fw.bySlot
+			pickBySlot := fw.pickBySlot
+			picks := fw.picks
+			trinketSeconds := fw.trinketSeconds
 
 			// Every other slot with an engine-implemented effect
 			// candidate (rank.go; this lane's brief, item 3): score()
