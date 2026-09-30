@@ -74,6 +74,7 @@ def test_apply_fork_columns_keeps_the_key_order_and_appends_the_new_ones(tmp_pat
         "required_level_source",
         "stats_source",
         "client_unconfirmed",
+        "superseded_by",
     ]
 
 

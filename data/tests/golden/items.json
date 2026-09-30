@@ -12,7 +12,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 2825,
@@ -27,7 +28,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 7026,
@@ -42,7 +44,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 12345,
@@ -57,7 +60,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 12798,
@@ -72,7 +76,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 13315,
@@ -87,7 +92,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 14152,
@@ -102,7 +108,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 16866,
@@ -117,7 +124,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 17066,
@@ -132,7 +140,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 19019,
@@ -147,7 +156,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 19325,
@@ -162,7 +172,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 19743,
@@ -177,7 +188,8 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   },
   {
     "id": 99002,
@@ -192,6 +204,7 @@
     "faction_restriction": "",
     "required_level_source": null,
     "stats_source": null,
-    "client_unconfirmed": false
+    "client_unconfirmed": false,
+    "superseded_by": null
   }
 ]

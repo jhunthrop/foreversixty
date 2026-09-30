@@ -69,6 +69,7 @@ from pipeline.loot.sources import (
     instance_types,
     pvp_ranks,
 )
+from pipeline.loot.supersede import apply_supersession, mark_superseded_items, superseded_pairs
 from pipeline.loot.weapons import apply_fork_weapon_damage, fork_weapon_damage
 from pipeline.manifest import refresh_manifest
 from pipeline.normalize import write_document, write_records
@@ -195,6 +196,14 @@ def write_loot_files(
     # unsourced) and BEFORE the overlay (a curated fact should be able to
     # override an inherited one same as any other).
     document, reitemised = apply_reitemisation(document, item_rows)
+    # data-followups-4 lane, 2026-09-30: AFTER apply_reitemisation (which
+    # only ever fills a WHOLLY unsourced new id -- the opposite gap from
+    # this one) and BEFORE the overlay, same reasoning as that step's own
+    # ordering: a legacy id a curated fact still deliberately lists should
+    # not be silently deduplicated out from under it. See
+    # `pipeline.loot.supersede`'s own doc.
+    superseded = superseded_pairs(document, item_rows)
+    document, superseded_removed = apply_supersession(document, superseded)
     document = apply_overlays(document, load_overlays(overlay_dir))
     # Quest-gates lane, 2026-09-29: AFTER the overlay, which is what
     # actually sets a raid's own LootSource.opens
@@ -207,6 +216,7 @@ def write_loot_files(
     # taught by a quest itself needs already settled -- see
     # apply_crafted_opens_gate's own doc.
     document = apply_crafted_opens_gate(document, classic_crafted)
+    superseded_marked = mark_superseded_items(build_dir, superseded)
 
     enchants = build_enchants(fork)
     suffixes = build_suffixes(fork)
@@ -237,7 +247,8 @@ def write_loot_files(
         "a zone id zones[] does not name, %d bosses dropped for having no name in "
         "either database; "
         "%d enchants, %d suffixes, %d buff ids; "
-        "items.json: %d with suffix options, %d faction-restricted; "
+        "items.json: %d with suffix options, %d faction-restricted, %d superseded "
+        "rows marked (%d source/boss listings deduplicated); "
         "items/*.json: %d weapon rows won by the fork's own damage",
         len(document.sources),
         stats.items,
@@ -257,6 +268,8 @@ def write_loot_files(
         len(simbuffs.entries),
         with_suffixes,
         restricted,
+        superseded_marked,
+        superseded_removed,
         weapons_won,
     )
     refresh_manifest(build_dir)
@@ -395,11 +408,16 @@ def merge_loot_files(
     `check_item_sparse_completeness` are skipped outright, loudly logged
     -- there is nothing for either to validate without the CSV.
 
-    Unlike `write_loot_files`, this writes ONLY `loot.json` -- enchants,
-    suffixes, simbuffs and the fork weapon-damage/suffix-option columns
-    on `items.json`/`items/*.json` all need the same engine pass
-    `write_loot_files` already did last time they changed (the fork's
-    own database, not `raw/`), so a merge-only run leaves them alone.
+    Unlike `write_loot_files`, this writes only `loot.json` plus, when
+    `superseded_pairs` finds any, `items.json`/`items/*.json`'s own
+    `superseded_by` column (`pipeline.loot.supersede`'s own doc) --
+    everything else those two files carry (enchants, suffixes, simbuffs
+    and the fork weapon-damage/suffix-option columns) needs the same
+    engine pass `write_loot_files` already did last time it changed (the
+    fork's own database, not `raw/`), so a merge-only run leaves the rest
+    alone. `superseded_by` needs only the currently committed
+    `items.json` and the freshly rebuilt `document` above, both of which
+    a merge-only run already has, so it is not held back the same way.
     """
     build_dir = root / build
     for name in ("zones.json", "items.json"):
@@ -441,15 +459,19 @@ def merge_loot_files(
         document, {int(row["id"]): row["name"] for row in item_rows}, classic_sources, zone_rows
     )
     document, reitemised = apply_reitemisation(document, item_rows)
+    superseded = superseded_pairs(document, item_rows)
+    document, superseded_removed = apply_supersession(document, superseded)
     document = apply_overlays(document, load_overlays(overlay_dir))
     document = apply_quest_opens_gate(document, classic_sources)
     document = apply_crafted_opens_gate(document, classic_crafted)
     write_document(document, build_dir / LOOT)
+    superseded_marked = mark_superseded_items(build_dir, superseded)
     logger.info(
         "loot-merge: %d sources naming %d items (%d from classic-db, %d from wowhead, %d "
         "from re-itemisation inheritance); pvp faction split: %d via classic-db vendor, "
         "%d via title, %d unresolved and dropped; %d fork ids left out, %d fork entries "
-        "with no kind dropped, %d bosses dropped for having no name in either database",
+        "with no kind dropped, %d bosses dropped for having no name in either database; "
+        "%d superseded rows marked (%d source/boss listings deduplicated)",
         len(document.sources),
         stats.items,
         stats.classicdb_items,
@@ -461,6 +483,12 @@ def merge_loot_files(
         stats.absent_items,
         stats.dropped_entries,
         stats.dropped_unnamed_bosses,
+        superseded_marked,
+        superseded_removed,
     )
     refresh_manifest(build_dir)
-    return [build_dir / LOOT]
+    return [
+        build_dir / LOOT,
+        *([build_dir / "items.json", *sorted((build_dir / "items").glob("*.json"))]
+          if superseded else []),
+    ]
