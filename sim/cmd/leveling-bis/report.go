@@ -219,41 +219,37 @@ const effectNotModelledReason = "effect_not_modelled"
 // own doc (this lane's brief, item 1).
 const notInSimReason = "not_in_sim"
 
-// trinketZeroGainThresholdDPS is the noise floor rankTrinketSlot's own
-// baseline-relative gain (scored.MeasuredGainDPS) must clear before a
-// trinket counts as having any real, measured value at all - this
-// lane's brief, item 2: "a trinket or relic whose measured/estimated
-// gain is < 0.05 DPS publishes empty with no_dps_value". Below this, a
-// trinket's own real contribution (Rune of Perfection's spell
-// penetration/stamina) is indistinguishable from noise, not a genuine
-// DPS gain a player should read as a reason to chase this item.
+// trinketZeroGainThresholdDPS is no longer the production gate (see
+// history below) - it survives only as the test suite's own
+// descriptive floor for "obviously zero" versus "obviously real" gain
+// fixtures. bis-ranker-integrity-11's brief, item 2 replaced the
+// production check with trinketGainSignificant (weights.go):
+// trinketLowGain (below) now asks whether a trinket's own
+// MeasuredGainDPS clears trinketGainSignificanceMultiplier times its
+// own MeasuredGainStdErr (trinkets.go's engineRunner.RunPlainDPSWithError,
+// the candidate and no-trinket-baseline runs' errors combined in
+// quadrature), not a flat absolute DPS floor.
 //
-// Known limitation (bis-ranker-integrity-3 lane report): a trinket
-// whose ONLY stat is completely inert for this spec (Rune of
-// Perfection/Rune of Duty/Onyxia Blood Talisman - nothing the engine's
-// resource model reads at all) measures bit-identical to the baseline,
-// exactly 0.0000, every time - this threshold catches those
-// deterministically. A trinket carrying Spirit specifically (Ankh of
-// Life) can still perturb a MANA-using spec's own RNG consumption
-// order (a slightly different mp5 tick timing shifts which random
-// draws a 100-iteration trinket-rank sim happens to make) enough to
-// read anywhere from small-negative to several DPS on either side of
-// this threshold, inconsistently across bands, for paladin-retribution
-// and shaman-enhancement specifically (dogfooded directly: Ankh of
-// Life measured exactly 0.0000 at every band for druid-feral, which
-// spends no mana in Cat Form, but 0.03-1.3 DPS for the two mana-using
-// hybrids) - this is the same scale of noise verify.go's own swapMargin
-// (1%) already exists to filter for the swap pass, at 300 iterations;
-// this pass runs at trinketRankIterations (100, a deliberately smaller
-// nightly-budget spend) and could not fully suppress it within this
-// lane's scope. The fix as shipped is still strictly better than
-// before it (previously nothing here could ever fire for ANY trinket -
-// see rankTrinketSlot's own doc), and reliably closes the exact,
-// reported defect (a bare off-axis-stat trinket like Rune of
-// Perfection). A mana-using hybrid's own Ankh of Life pick may still
-// occasionally survive on sim noise; a future lane could raise this
-// pass's own iteration count or switch to a relative margin (matching
-// swapMargin's own convention) if that residual case needs closing too.
+// History (bis-ranker-integrity-3 lane report, 2026-09-29): a flat
+// 0.05 DPS floor reliably caught a trinket whose ONLY stat is
+// completely inert for this spec (Rune of Perfection/Rune of Duty/
+// Onyxia Blood Talisman), which measures bit-identical to the
+// baseline every time, but could not resolve small, genuinely real
+// gains (Frozen Heart of the Mountain's own +9 Hit, 0.47 DPS at band
+// 60) from equally-small sim noise at trinketRankIterations (100) -
+// nor, going the other way, could it catch a trinket whose own
+// measured "gain" was PURE noise around an effect with zero true DPS
+// relevance for this spec (Sanctified Orb's "Restores 340 Mana" for a
+// spec with no mana resource, Fire Ruby's mage-only Fire Ward/Fire
+// Blast interaction for any other class) when that noise happened to
+// read above 0.05 by chance - bis-ranker-integrity-11's own repro:
+// both won zero-delta ties against real, weighted-stat trinkets this
+// way. trinketGainSignificant resolves both: a real small gain still
+// clears its own (wider) error bar, and a genuinely-inert effect's
+// noise only clears that bar as often as chance allows at the 2x
+// multiplier's own confidence level, not every time it happens to
+// land positive (see trinketGainSignificanceMultiplier's own doc for
+// the dogfooded numbers that picked 2x over a bare 1x).
 const trinketZeroGainThresholdDPS = 0.05
 
 // twoHandEquippedReason is EmptyReason's own value for an off_hand
@@ -645,25 +641,41 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 	return out
 }
 
-// dedupeAlternatives keeps exactly one alternativeRow per ItemID -
-// buildAlternatives' own doc above has the concrete repro this closes
-// (Grand Marshal's Stave, reached through both a "pvp" and a "vendor"
-// itemSource row for the identical id). Kept: the row betterAlternative
-// prefers; ties (an identical DPSDelta and neither row's SourceKind is
-// "pvp", or both are) resolve to whichever row this function saw
-// first, so the result is deterministic regardless of map/slice
-// iteration order upstream.
+// dedupeAlternatives keeps exactly one alternativeRow per ItemID, then
+// exactly one per ItemName (bis-ranker-integrity-11's brief, item 3: "a
+// player reads names") - buildAlternatives' own doc above has the
+// concrete repro the ID pass closes (Grand Marshal's Stave, reached
+// through both a "pvp" and a "vendor" itemSource row for the identical
+// id); the NAME pass closes a different repro this lane dogfooded
+// directly: Signet Ring of the Bronze Dragonflight publishing TWICE in
+// the same band-60 finger1 Alternatives list under two different item
+// ids (a player reading the list sees the same ring named back to back
+// with no way to tell they are even different rows), the same shape
+// Sentinel's/Scout's Medallion (band 30/40 neck), Highlander's/
+// Defiler's Leather Girdle (band 50 waist) and Sentinel's Chain
+// Leggings (band 60 legs) all share. Both passes keep the row
+// betterAlternative prefers; ties resolve to whichever row this
+// function saw first, so the result is deterministic regardless of
+// map/slice iteration order upstream.
 func dedupeAlternatives(rows []alternativeRow) []alternativeRow {
-	indexByID := make(map[int]int, len(rows))
+	byID := dedupeAlternativesBy(rows, func(r alternativeRow) any { return r.ItemID })
+	return dedupeAlternativesBy(byID, func(r alternativeRow) any { return r.ItemName })
+}
+
+// dedupeAlternativesBy is dedupeAlternatives' own shared pass: keep
+// exactly one row per key(row), the one betterAlternative prefers.
+func dedupeAlternativesBy(rows []alternativeRow, key func(alternativeRow) any) []alternativeRow {
+	indexByKey := make(map[any]int, len(rows))
 	out := make([]alternativeRow, 0, len(rows))
 	for _, r := range rows {
-		if i, ok := indexByID[r.ItemID]; ok {
+		k := key(r)
+		if i, ok := indexByKey[k]; ok {
 			if betterAlternative(r, out[i]) {
 				out[i] = r
 			}
 			continue
 		}
-		indexByID[r.ItemID] = len(out)
+		indexByKey[k] = len(out)
 		out = append(out, r)
 	}
 	return out
@@ -1265,7 +1277,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// (rankSlotWithEffects, trySetCompletion, a swap promotion)
 			// is untouched - each of those already measures a genuine
 			// comparative delta, not an absolute set total.
-			trinketLowGain := isTrinketSlot && pk.Item.GainMeasured && pk.Item.MeasuredGainDPS < trinketZeroGainThresholdDPS
+			trinketLowGain := isTrinketSlot && pk.Item.GainMeasured && !trinketGainSignificant(pk.Item.MeasuredGainDPS, pk.Item.MeasuredGainStdErr)
 			// A relic (libram/idol/totem) whose one real selling point -
 			// its engraved effect - the engine cannot simulate at all
 			// never got a fair shot at EITHER exemption below: score()

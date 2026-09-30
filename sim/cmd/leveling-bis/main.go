@@ -350,6 +350,19 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 	notInSimWarned := make(map[int]bool)
 
 	var reports []bandReport
+	// lastGoodWeights/lastGoodReferenceDPSPerPoint/lastGoodBand track
+	// the most recent LOWER band whose own sweep measured its reference
+	// stat positive beyond its own error - this lane's brief, item 1's
+	// fallback: a band whose own sweep (even re-run at
+	// weightsRetryIterationsFactor iterations) still cannot be trusted
+	// ranks and verifies its picks against this band's weights instead
+	// of an empty map, rather than publishing nine empty slots over a
+	// noisy sweep (warlock-destruction band 60's own repro). Bands run
+	// in ascending order (defaultBandsFlag's own doc), so "the nearest
+	// lower band" is simply whichever of these three was last set.
+	var lastGoodWeights map[string]float64
+	var lastGoodReferenceDPSPerPoint float64
+	var lastGoodBand int
 	for _, band := range bands {
 		talents := leveling.LadderTalentString(activeTrees, talentTargets, specInfo.TreeIndex, band)
 		talentPoints := talentPointsSpent(talents)
@@ -363,6 +376,30 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		if err != nil {
 			return fmt.Errorf("band %d weights run: %w", band, err)
 		}
+		weightsReason := referenceMeasurementReason(specInfo.ReferenceStat, wresult, referenceDPSPerPoint)
+		if weightsReason != "" {
+			// This lane's brief, item 1's guard: a band whose reference
+			// stat is not positive beyond its own error re-runs the
+			// sweep ONCE at weightsRetryIterationsFactor iterations
+			// before giving up on it - warlock-destruction band 60's
+			// own repro (bis-ranker-integrity-11) found this tightens
+			// the raw standard error (±0.1332 at 100 iterations/
+			// direction to ±0.0642 at 400) but does not always flip an
+			// actually-negative measurement positive, so the fallback
+			// below still has to exist for when this retry alone is
+			// not enough.
+			retryReq := weightsRequest(specInfo, ladderCh, weightsIterations*weightsRetryIterationsFactor, 3)
+			retryResult, retryReferenceDPSPerPoint, retryErr := runner.RunWeights(retryReq)
+			if retryErr != nil {
+				return fmt.Errorf("band %d weights retry run: %w", band, retryErr)
+			}
+			retryReason := referenceMeasurementReason(specInfo.ReferenceStat, retryResult, retryReferenceDPSPerPoint)
+			log.Printf("leveling-bis: %s band %d: sweep at %d iterations/direction was not significant (%s); re-ran at %dx", spec, band, weightsIterations, weightsReason, weightsRetryIterationsFactor)
+			wresult, referenceDPSPerPoint, weightsReason = retryResult, retryReferenceDPSPerPoint, retryReason
+		}
+		// weightsSeconds covers the whole band, including the retry
+		// above when one ran - a single per-band number, the same
+		// field buildReport has always taken one of.
 		weightsSeconds := time.Since(weightsStart).Seconds()
 		// buildBandPool/score() only ever need the plain number (a
 		// candidate's stats dotted against it), and only for a weight
@@ -373,22 +410,38 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		// unchanged, so the published JSON keeps publishing what
 		// isWeightSignificant says about each one instead of a bare,
 		// unqualified number.
-		weightsReason := referenceMeasurementReason(specInfo.ReferenceStat, wresult, referenceDPSPerPoint)
 		weights := effectiveWeights(wresult)
 		bandReferenceDPSPerPoint := referenceDPSPerPoint
 		if weightsReason != "" {
-			// The whole sweep is untrustworthy (see
-			// referenceMeasurementReason's own doc): nothing it
-			// measured may rank an item or convert a wand's flat DPS
-			// into score units for this band, so both feeds a
-			// corrupted reference could poison - the per-stat weights
-			// score() dots against, and the raw DPS-per-point
-			// buildBandPool/score()/buildAlternatives divide by - are
-			// cleared the same way an unmeasured band always reads:
-			// no weight, no reference to convert against.
-			weights = map[string]float64{}
-			bandReferenceDPSPerPoint = 0
+			if lastGoodWeights != nil {
+				// The fallback half of the guard: rank and verify this
+				// band's picks against the nearest lower band's own
+				// trusted weights instead of an empty map, and say
+				// exactly that in the published weights_reason - an
+				// empty slot is only ever published when no candidate
+				// exists, never because a sweep was noisy (this lane's
+				// brief).
+				weights = lastGoodWeights
+				bandReferenceDPSPerPoint = lastGoodReferenceDPSPerPoint
+				weightsReason = fallbackWeightsReason(specInfo.ReferenceStat, wresult, referenceDPSPerPoint, band, lastGoodBand)
+			} else {
+				// No earlier band to fall back to (this is the lowest
+				// band run, or every band so far has been untrustworthy)
+				// - the whole sweep is untrustworthy (see
+				// referenceMeasurementReason's own doc) and nothing it
+				// measured may rank an item or convert a wand's flat
+				// DPS into score units for this band, so both feeds a
+				// corrupted reference could poison are cleared the
+				// same way an unmeasured band always reads: no weight,
+				// no reference to convert against.
+				weights = map[string]float64{}
+				bandReferenceDPSPerPoint = 0
+			}
 			log.Printf("leveling-bis: %s band %d: %s", spec, band, weightsReason)
+		} else {
+			lastGoodWeights = weights
+			lastGoodReferenceDPSPerPoint = bandReferenceDPSPerPoint
+			lastGoodBand = band
 		}
 		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
 

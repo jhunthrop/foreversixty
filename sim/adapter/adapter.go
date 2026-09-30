@@ -926,7 +926,21 @@ func Weights(res *proto.StatWeightsResult, req api.SimRequest) ([]api.StatWeight
 			return nil, fmt.Errorf("%w: %q", ErrNoWeights, id)
 		}
 		weight := at(s, raw) / scale
-		errAmt := at(s, stdev) / scale
+		// errAmt is an error BAR, never signed: stdev (from
+		// values.GetWeightsStdev(), sim/core/statweight.go's own
+		// aggregator) is a population standard deviation and is never
+		// negative, so dividing it by a negative scale (a reference
+		// stat whose own raw DPS-per-point measured negative - noise
+		// around zero, see weights.go's referenceMeasurementReason)
+		// must not flip its sign the way dividing the signed weight
+		// above does. sim/core/statweight.go's own calcEpResults
+		// divides its stdev by math.Abs(reference weight) for exactly
+		// this reason; this lane's leveling-bis command published a
+		// band-60 warlock-destruction weights_reason with error
+		// -5.7 on spell_power (bis-ranker-integrity-11's own repro)
+		// before this Abs was added, because scale here was negative
+		// and this line was not wrapped the same way.
+		errAmt := at(s, stdev) / math.Abs(scale)
 		// sampleCount is 0 only for a SimRequest with no Iterations set
 		// - a hand-built fixture in a test, never a validated request
 		// (api.SimRequest.Validate refuses an Iterations outside

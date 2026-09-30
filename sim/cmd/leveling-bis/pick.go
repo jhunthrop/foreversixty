@@ -51,6 +51,20 @@ type scored struct {
 	// number" pattern HasSource/Source already uses above.
 	MeasuredGainDPS float64
 	GainMeasured    bool
+	// MeasuredGainStdErr is MeasuredGainDPS's own standard error -
+	// sqrt(candidate run's error^2 + baseline run's error^2), both from
+	// engineRunner.RunPlainDPSWithError (bis-ranker-integrity-11's
+	// brief, item 2) - only ever meaningful when GainMeasured is true.
+	// report.go's trinketLowGain gate checks MeasuredGainDPS "positive
+	// beyond its own error" (positiveBeyondError, weights.go) against
+	// this, the same significance bar weights.go's
+	// referenceMeasurementReason already applies to a band's reference
+	// stat (item 1) - not a flat, noise-blind DPS floor: Sanctified Orb
+	// ("Restores 340 Mana", zero DPS relevance for a non-mana spec) and
+	// Fire Ruby (a mage-only Fire Ward/Fire Blast interaction, inert for
+	// any other class) both used to win zero-delta ties against this
+	// noise alone.
+	MeasuredGainStdErr float64
 }
 
 // slotOrder is the order sim/api.GearSlots and the engine's own
