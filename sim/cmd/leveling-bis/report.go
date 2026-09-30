@@ -712,21 +712,62 @@ type bandReport struct {
 const scoreUnitReferenceStatPoints = "reference_stat_points"
 
 type weightRow struct {
-	Stat   string  `json:"stat"`
+	// Stat is the weight_stats id (data/curated/specs.json) - for a
+	// rating-family stat (hit/crit/dodge/parry/block/defense) this is
+	// also the exact key candidate.Stats/data.go's ratingFactors uses
+	// (Forever's engine unifies each rating family into one Stat; see
+	// data.go's ratingStatColumns doc).
+	Stat string `json:"stat"`
+	// Weight is per RATING POINT for a rating-family stat (Unit ==
+	// "rating"), because that is what the item's own tooltip and this
+	// site show a player (this lane's brief, item 3): "Crit 1.44 RAP ·
+	// 0.08 DPS per point" is true for a "+14 Crit" item, not for "+1%
+	// crit chance". For every other stat, Weight is exactly what the
+	// weights sweep measured, unchanged. publishWeightRatingUnits
+	// (below) is the ONE place that divides a rating-family row's raw,
+	// sim-unit weight down to this per-rating-point number -
+	// buildReport itself still receives and computes against the raw
+	// sim-unit weight throughout (isWeightSignificant's own 25%-of-
+	// value bar runs on that raw number, before this conversion, so
+	// dividing every row here by the same positive factor never
+	// changes which rows it flags).
 	Weight float64 `json:"weight"`
-	// Error is this weight's standard error, in the same units as
-	// Weight (sim/adapter.Weights' own StatWeight.Error, carried
-	// through unchanged) -- the page shows it as "±". See
-	// isWeightSignificant's own doc for why this command publishes it
-	// at all when the general-purpose /sim/weights tool's own
-	// significance bar (sim/adapter.go's Insignificant field) is more
-	// lenient than the one this command applies below.
+	// Error is this weight's standard error, in the SAME units as
+	// Weight above - divided by RatingFactor alongside Weight for a
+	// rating-family row, so "±" still means what Weight's own unit
+	// says it means (sim/adapter.Weights' own StatWeight.Error is the
+	// raw, sim-unit source; see isWeightSignificant's own doc for why
+	// this command publishes an error bar at all).
 	Error float64 `json:"error"`
 	// Insignificant is this command's OWN, stricter call (see
 	// isWeightSignificant), not sim/adapter's Insignificant field: the
 	// page greys this row out and the Pawn/planner consumers of this
 	// JSON should not treat it as a real number.
 	Insignificant bool `json:"insignificant"`
+	// Unit is "rating" for a rating-family stat - Weight/Error above
+	// are per RATING POINT, not per sim unit (percent). Omitted for
+	// every other stat: a plain sim-unit weight (Strength, Spell
+	// Power, ...) needs no unit qualifier here (bandReport.ScoreUnit
+	// is the separate, existing "what does Score mean" field; this is
+	// "what does THIS ROW'S Weight mean").
+	Unit string `json:"unit,omitempty"`
+	// RatingFactor is this build's own gametables/combatratings.txt
+	// level-60 rating points per 1% for Stat (data.go's
+	// loadRatingFactors) - set only alongside Unit == "rating", so a
+	// consumer can render "14 rating = 1%" in a tooltip without
+	// hardcoding the client's own conversion table a second time, and
+	// so the contract Weight == WeightPerPercent/RatingFactor is
+	// checkable directly off this one row.
+	RatingFactor float64 `json:"rating_factor,omitempty"`
+	// WeightPerPercent is the weight exactly as the weights sweep
+	// measured it, per SIM UNIT (one point of hit/crit/dodge/parry/
+	// block/defense percentage, i.e. what score() (score.go) actually
+	// multiplies a converted candidate's stat by) - published
+	// alongside Weight above so nothing the sweep measured is lost
+	// once Weight itself switches to per-rating-point for a
+	// rating-family row. Equal to Weight for every non-rating-family
+	// stat (RatingFactor unset).
+	WeightPerPercent float64 `json:"weight_per_percent"`
 }
 
 // significanceErrorFraction and isWeightSignificant now live in
@@ -734,6 +775,45 @@ type weightRow struct {
 // turns a raw stat-weights result into the plain numbers score()
 // ranks by, zeroing exactly the weights this file's own
 // isWeightSignificant call marks Insignificant below.
+
+// publishWeightRatingUnits returns a NEW []weightRow (this package's
+// immutability rule) with every rating-family row (weightRow.Stat one
+// of data.go's ratingStatColumns keys) republished per RATING point
+// instead of per sim unit: Weight and Error divide by factors[Stat],
+// Unit is set to "rating" and RatingFactor to the factor itself.
+// WeightPerPercent is set to the ORIGINAL, un-divided Weight for
+// every row (rating-family or not), so "weight ==
+// weight_per_percent/rating_factor" holds exactly wherever
+// rating_factor is published (this lane's brief, item 3's contract
+// test) and nothing the weights sweep measured is lost.
+//
+// Called once per band+faction (main.go's runSpec, right after
+// buildReport returns) rather than folded into buildReport itself:
+// buildReport has dozens of existing callers in report_build_test.go
+// that construct a bandReport directly from a raw sim-unit
+// map[string]api.StatWeight and never touch a build directory at all
+// - threading ratingFactors through buildReport's own signature would
+// force every one of those tests to grow an unrelated parameter for a
+// concern (rating units) none of them are about. Applying the
+// conversion as a small, separate, well-tested pass over the rows
+// buildReport already produced keeps that surface untouched while
+// still reaching both outputs this lane's brief asks for (the JSON,
+// via bandReport.Weights, and the markdown, via writeMarkdown reading
+// the very same reports slice).
+func publishWeightRatingUnits(rows []weightRow, factors ratingFactors) []weightRow {
+	out := make([]weightRow, len(rows))
+	for i, row := range rows {
+		row.WeightPerPercent = row.Weight
+		if factor, ok := factors[row.Stat]; ok {
+			row.Unit = "rating"
+			row.RatingFactor = factor
+			row.Weight = row.Weight / factor
+			row.Error = row.Error / factor
+		}
+		out[i] = row
+	}
+	return out
+}
 
 // noSourceSampleSize bounds how many unsourced item names the JSON
 // and markdown carry - the count is exact, the sample is just enough
@@ -1237,13 +1317,17 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 			fmt.Fprintf(&b, "Set DPS (verified): %.1f. Weights run: %.1fs. Verify run: %.1fs. %d eligible items had no known source.\n\n",
 				r.SetDPS, r.WeightsRunSeconds, r.VerifyRunSeconds, r.NoSourceCount)
 
-			fmt.Fprintf(&b, "Stat weights (normalized to %s = 1.0, error under %.0f%% of the weight to publish - see report.go's isWeightSignificant): ", spec.ReferenceStat, significanceErrorFraction*100)
+			fmt.Fprintf(&b, "Stat weights (normalized to %s = 1.0, error under %.0f%% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1%% hit/crit/dodge/parry/block/defense): ", spec.ReferenceStat, significanceErrorFraction*100)
 			parts := make([]string, len(r.Weights))
 			for i, w := range r.Weights {
+				unit := ""
+				if w.Unit == "rating" {
+					unit = fmt.Sprintf(" per rating point (%.0f rating = 1%%, %.3f per %%)", w.RatingFactor, w.WeightPerPercent)
+				}
 				if w.Insignificant {
-					parts[i] = fmt.Sprintf("%s=not significant (%.3f ± %.3f)", w.Stat, w.Weight, w.Error)
+					parts[i] = fmt.Sprintf("%s=not significant (%.3f ± %.3f)%s", w.Stat, w.Weight, w.Error, unit)
 				} else {
-					parts[i] = fmt.Sprintf("%s=%.3f ± %.3f", w.Stat, w.Weight, w.Error)
+					parts[i] = fmt.Sprintf("%s=%.3f ± %.3f%s", w.Stat, w.Weight, w.Error, unit)
 				}
 			}
 			fmt.Fprintln(&b, strings.Join(parts, ", "))

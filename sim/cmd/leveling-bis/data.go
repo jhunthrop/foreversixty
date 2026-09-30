@@ -225,6 +225,152 @@ func loadClassItems(buildDir, classSlug string) (classItemFile, error) {
 	return f, nil
 }
 
+// ratingStatColumns mirrors data/pipeline/simdb/ratings.py's own
+// RATING_STAT_COLUMNS: the engine-bound stat key (candidate.Stats' own
+// key, matching sim/leveling and the engine's unified Stat naming) ->
+// the gametables/combatratings.txt column(s) that state, at level 60,
+// how many rating points buy 1% of that stat. hit and crit each list
+// all three schools because the engine unifies them into one Stat
+// (data/pipeline/simdb/statmap.py); loadRatingFactors requires every
+// column for a key to agree, so a build whose schools actually
+// diverge fails loudly instead of silently picking one - exactly
+// ratings.py's own rule, mirrored so the ranker's units never drift
+// from what pipeline.simdb.ratings already divided out of simdb.bin.
+var ratingStatColumns = map[string][]string{
+	"hit":     {"Hit - Melee", "Hit - Ranged", "Hit - Spell"},
+	"crit":    {"Crit - Melee", "Crit - Ranged", "Crit - Spell"},
+	"dodge":   {"Dodge"},
+	"parry":   {"Parry"},
+	"block":   {"Block"},
+	"defense": {"Defense Skill"},
+}
+
+// ratingFactors is level-60 rating points per 1%, one entry per
+// ratingStatColumns key - loadRatingFactors' own return and
+// convertRatingStats' own divisor.
+type ratingFactors map[string]float64
+
+// loadRatingFactors reads buildDir's own
+// gametables/combatratings.txt (the same file
+// data/pipeline/simdb/ratings.py reads to build simdb.bin) and
+// returns its level-60 row's rating-to-percent factors for every
+// rating-family stat score() dots against a weight the weights sweep
+// measured per sim unit (percent), never per rating point. Loaded
+// once per spec run (runSpec, alongside every other per-run loader in
+// this file) rather than per band or per item: the table does not
+// vary by band, and re-reading/re-parsing it per candidate would be
+// pure overhead for a value that never changes within a run.
+//
+// Fails loudly - never silently skips a stat, defaults a missing
+// column, or averages disagreeing ones - if the file, its level-60
+// row, or any named column is missing or non-numeric, or if a key's
+// own columns disagree: this build's own gametables/combatratings.txt
+// is the single source of truth simdb.bin was already divided by, and
+// a build where that has changed (or where a school's factor
+// genuinely diverged) needs to be caught here, not ranked against a
+// stale or averaged number.
+func loadRatingFactors(buildDir string) (ratingFactors, error) {
+	path := filepath.Join(buildDir, "gametables", "combatratings.txt")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		return nil, fmt.Errorf("reading %s: %w", path, err)
+	}
+	var rows [][]string
+	for _, line := range strings.Split(strings.ReplaceAll(string(b), "\r\n", "\n"), "\n") {
+		if line == "" {
+			continue
+		}
+		rows = append(rows, strings.Split(line, "\t"))
+	}
+	if len(rows) < 2 {
+		return nil, fmt.Errorf("%s has a header and no rows", path)
+	}
+	header := rows[0]
+	var level60 []string
+	for _, row := range rows[1:] {
+		if len(row) > 0 && row[0] == "60" {
+			level60 = row
+			break
+		}
+	}
+	if level60 == nil {
+		return nil, fmt.Errorf("%s has no level 60 row", path)
+	}
+	if len(level60) != len(header) {
+		return nil, fmt.Errorf("%s level 60 row has %d cells against a %d-column header", path, len(level60), len(header))
+	}
+	byColumn := make(map[string]string, len(header))
+	for i, name := range header {
+		byColumn[name] = level60[i]
+	}
+	factors := make(ratingFactors, len(ratingStatColumns))
+	for key, columns := range ratingStatColumns {
+		var factor float64
+		for i, col := range columns {
+			raw, ok := byColumn[col]
+			if !ok {
+				return nil, fmt.Errorf("%s level 60 has no %q column (needed for %q)", path, col, key)
+			}
+			v, err := strconv.ParseFloat(raw, 64)
+			if err != nil {
+				return nil, fmt.Errorf("%s level 60 %q = %q: %w", path, col, raw, err)
+			}
+			if i == 0 {
+				factor = v
+			} else if v != factor {
+				return nil, fmt.Errorf(
+					"%s level 60 %v disagree (%v vs %v) for %q; the engine's unified stat needs one factor, not per-column ones",
+					path, columns, factor, v, key,
+				)
+			}
+		}
+		if factor <= 0 {
+			return nil, fmt.Errorf("%s level 60 %q factor is %v, not positive", path, key, factor)
+		}
+		factors[key] = factor
+	}
+	return factors, nil
+}
+
+// convertRatingStats returns a NEW map (this package's immutability
+// rule; the same map a classItem/candidate carries may still be read
+// elsewhere for what the client's own tooltip states) with every
+// ratingFactors key's amount divided down from a combat-rating number
+// to the flat percentage data/pipeline/simdb/ratings.py's own
+// convert_rating_stats already produced for simdb.bin - the unit
+// score() (score.go) and every weight it dots against actually share.
+// A stat not in factors (agility, spell power, and so on - anything
+// the client never itemises through ItemModType 31/32/12-15) passes
+// through unchanged.
+func convertRatingStats(stats map[string]float64, factors ratingFactors) map[string]float64 {
+	out := make(map[string]float64, len(stats))
+	for stat, amount := range stats {
+		if factor, ok := factors[stat]; ok {
+			out[stat] = amount / factor
+			continue
+		}
+		out[stat] = amount
+	}
+	return out
+}
+
+// convertCandidateRatings returns a NEW slice, one new candidate per
+// entry in items, with each candidate's Stats run through
+// convertRatingStats - see that function's own doc. Called once per
+// spec run (runSpec), immediately after loadCandidates, so every
+// downstream consumer that dots a candidate's stats against a weight
+// (score() first among them; pick.go's promoteLowValueWeapon only
+// checks which keys are PRESENT, never their magnitude, so it is
+// unaffected either way) operates in sim units throughout.
+func convertCandidateRatings(items []candidate, factors ratingFactors) []candidate {
+	out := make([]candidate, len(items))
+	for i, c := range items {
+		c.Stats = convertRatingStats(c.Stats, factors)
+		out[i] = c
+	}
+	return out
+}
+
 // lootBoss is one entry of a raid/dungeon lootSource's own Bosses list.
 // ItemChances (src-classicdb lane, 2026-09-29; wowhead-world-drops lane,
 // 2026-09-29 for the wowhead-scraped case) is item id (string key,

@@ -1,0 +1,2 @@
+Level	Defense Skill	Dodge	Parry	Block	Hit - Melee	Hit - Ranged	Hit - Spell	Crit - Melee	Crit - Ranged	Crit - Spell
+60	1	12	15	5	10	10	10	14	14	14
