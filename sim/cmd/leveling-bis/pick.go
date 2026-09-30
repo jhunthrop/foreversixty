@@ -11,6 +11,24 @@ type scored struct {
 	Score     float64
 	Source    itemSource // zero value when HasSource is false
 	HasSource bool
+	// MeasuredDPS is the real, engine-measured full-set DPS this exact
+	// candidate produced in whichever real-sim pass actually decided
+	// it - rankTrinketSlot's own tournament (trinkets.go), rankSlotWithEffects
+	// (rank.go), trySetCompletion (sets.go), or a swap promotion
+	// (verify.go's applySwaps) - 0 (the Go zero value) for a candidate
+	// score() alone ever ranked, which is the overwhelming majority of
+	// gear. This lane's brief, item 7: "one number per row" - score()'s
+	// own stat-weight estimate (Score, above) and a real sim's measured
+	// DPS are two different units a slot can be decided by, and
+	// publishing both under one ambiguous "score" name is exactly what
+	// let a reviewer compare an unrelated unit's number across two rows
+	// and call it "the alternative outscores the verified pick" (163
+	// slots, the melee sweep's own systemic finding #14/#24) when the
+	// two numbers were never comparable to begin with. report.go's
+	// buildReport reads this field to decide whether a row publishes
+	// Score (score()'s estimate, in reference-stat points) or SimDPS
+	// (this field) - never both.
+	MeasuredDPS float64
 }
 
 // slotOrder is the order sim/api.GearSlots and the engine's own
@@ -380,5 +398,90 @@ func enforceTwoHandOffHandInvariant(picks map[string]slotPick) map[string]slotPi
 		out[k] = v
 	}
 	out["off_hand"] = slotPick{}
+	return out
+}
+
+// promoteLowValueWeapon reorders a weapon slot's own score()-sorted
+// pool so pick() lands on a defensible fallback instead of an
+// arbitrary lowest-id item, for this lane's brief item 1's second
+// half: "when every candidate still scores 0 the slot picks the best
+// by item level among sourced candidates carrying any of the spec's
+// weight stats" - the case score.go's own caster-DPS-fallback fix
+// cannot reach at all (a weapon with a genuine 0 DPS figure, band.go's
+// weaponWithNoDPS - "lane data-weapons' own gap" - AND no stat this
+// spec's weights price above zero: score() has nothing left to total
+// for it either way).
+//
+// No-op unless list's own best score is exactly 0 (list is best-
+// score-first, candidatesBySlot's own contract, so list[0].Score > 0
+// means at least one candidate genuinely scored something and pick()
+// already ranks it correctly - reordering here would only ever move a
+// WORSE-scoring item ahead of a better one). weightStats is the
+// spec's own data/curated/specs.json weight_stats list - "carrying
+// any of the spec's weight stats" means the raw stat KEY is present at
+// all, not that its measured weight was significant or even positive:
+// a stat this spec cares about, at whatever amount, beats a weapon
+// with literally nothing this spec's own theorycraft would ever look
+// at twice.
+func promoteLowValueWeapon(list []scored, weightStats []string) []scored {
+	if len(list) == 0 || list[0].Score != 0 {
+		return list
+	}
+	wanted := make(map[string]bool, len(weightStats))
+	for _, stat := range weightStats {
+		wanted[stat] = true
+	}
+	hasWeightStat := func(c scored) bool {
+		for stat := range c.Stats {
+			if wanted[stat] {
+				return true
+			}
+		}
+		return false
+	}
+	out := append([]scored(nil), list...)
+	sort.SliceStable(out, func(i, j int) bool {
+		hi, hj := hasWeightStat(out[i]), hasWeightStat(out[j])
+		if hi != hj {
+			return hi
+		}
+		if out[i].ItemLevel != out[j].ItemLevel {
+			return out[i].ItemLevel > out[j].ItemLevel
+		}
+		return out[i].ID < out[j].ID
+	})
+	return out
+}
+
+// excludeAbovePvpRankCap drops a PvP source above band.go's own
+// pvpRankCap from list - this lane's brief, item 3: "PvP rank rewards
+// above rank 10 are not default picks". Unlike excludeTwoHand/
+// weaponsOnly above, this is not applied to bySlot itself: it builds
+// the SEPARATE picking-only pool main.go's runSpec passes to
+// pick()/rankTrinketSlot/rankSlotWithEffects/trySetCompletion, while
+// buildReport still reads the original, unfiltered bySlot for
+// buildAlternatives - a rank-11+ reward is a real, obtainable-if-
+// unlikely item, so it must still be able to appear as a labelled
+// ("Rank 18") alternative even though it should never be the default
+// pick.
+//
+// Filtering out every candidate is refused (the original list comes
+// back unchanged) when doing so would leave the slot with nothing at
+// all: this lane's brief, item 1's own rule ("a weapon slot should
+// essentially never be zero value... hiding the slot entirely is a
+// worse failure mode") applies here too - a rank-11+ trinket or
+// weapon is still strictly better than an empty slot when it is
+// genuinely the only sourced candidate left.
+func excludeAbovePvpRankCap(list []scored) []scored {
+	out := make([]scored, 0, len(list))
+	for _, c := range list {
+		if c.HasSource && pvpRankExceedsCap(c.Source) {
+			continue
+		}
+		out = append(out, c)
+	}
+	if len(out) == 0 {
+		return list
+	}
 	return out
 }

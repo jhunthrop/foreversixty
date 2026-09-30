@@ -81,6 +81,12 @@ func TestRankSlotWithEffectsPicksTheHighestMeasuredDPSAmongImplementedCandidates
 	if picks["main_hand"].Item.ID != 1 {
 		t.Fatalf("the input picks map was mutated: %+v", picks["main_hand"])
 	}
+	// This lane's brief, item 7: the winner carries its own measured
+	// DPS from this tournament - report.go's buildReport reads this to
+	// publish sim_dps instead of score()'s stat estimate for this slot.
+	if out["main_hand"].Item.MeasuredDPS != 200 {
+		t.Errorf("main_hand pick MeasuredDPS = %v, want 200", out["main_hand"].Item.MeasuredDPS)
+	}
 }
 
 // The real bug this test guards, found in tonight's published output:

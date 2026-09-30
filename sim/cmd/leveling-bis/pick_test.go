@@ -344,3 +344,81 @@ func TestPickRecordsNoTiesWhenTheRunnerUpScoresLower(t *testing.T) {
 		t.Fatalf("head ties = %+v, want none: no candidate matched the winner's score", result["head"].Ties)
 	}
 }
+
+// TestPromoteLowValueWeaponPrefersAWeightStatThenItemLevel is this
+// lane's brief, item 1's second half: when every candidate in a
+// weapon slot scored 0 (score.go's own caster-DPS fallback still
+// leaves this true for a genuinely 0-DPS, 0-relevant-stat weapon),
+// the fallback pick is the highest item level among candidates
+// carrying ANY of the spec's weight-stat keys, never an arbitrary
+// lowest-id tie-break.
+func TestPromoteLowValueWeaponPrefersAWeightStatThenItemLevel(t *testing.T) {
+	low := item(1, "Notched Shortsword", 0, "main_hand")
+	low.ItemLevel = 20
+	plain := item(2, "Plain Blade", 0, "main_hand")
+	plain.ItemLevel = 30
+	withStat := item(3, "Apprentice's Wand", 0, "main_hand")
+	withStat.ItemLevel = 15
+	withStat.Stats = map[string]float64{"intellect": 3}
+
+	list := []scored{plain, low, withStat} // deliberately not pre-sorted by id
+	got := promoteLowValueWeapon(list, []string{"intellect", "spirit"})
+	if len(got) == 0 || got[0].ID != 3 {
+		t.Fatalf("promoteLowValueWeapon()[0] = %+v, want item 3 (the only one carrying a weight stat, intellect), got order %+v", got[0], got)
+	}
+	// Among the remaining two (neither carries a weight stat), the
+	// higher item level (Plain Blade, 30) comes next, not the lower id.
+	if len(got) < 2 || got[1].ID != 2 {
+		t.Fatalf("promoteLowValueWeapon()[1] = %+v, want item 2 (higher item level among the stat-less pair)", got[1])
+	}
+}
+
+// A slot where the top score is already positive is untouched: at
+// least one real, scoreable candidate exists, and pick()'s own
+// greedy rule already ranks it correctly.
+func TestPromoteLowValueWeaponIsNoOpWhenTopScoreIsPositive(t *testing.T) {
+	list := []scored{item(1, "Real Weapon", 5, "main_hand"), item(2, "Worthless Weapon", 0, "main_hand")}
+	got := promoteLowValueWeapon(list, []string{"intellect"})
+	if got[0].ID != 1 {
+		t.Fatalf("promoteLowValueWeapon reordered a slot with a genuine positive-scoring candidate: %+v", got)
+	}
+}
+
+// TestExcludeAbovePvpRankCapDropsOnlyRankAboveTheCap is this lane's
+// brief, item 3: a rank-11+ PvP source is dropped from the PICKING
+// pool, a rank-10-or-below one is kept, and a non-pvp source is
+// unaffected regardless of its own (irrelevant) Rank field.
+func TestExcludeAbovePvpRankCapDropsOnlyRankAboveTheCap(t *testing.T) {
+	rank10 := item(1, "Rank 10 Sword", 10, "main_hand")
+	rank10.HasSource, rank10.Source = true, itemSource{Kind: "pvp", Rank: 10}
+	rank18 := item(2, "Grand Marshal's Sword", 20, "main_hand")
+	rank18.HasSource, rank18.Source = true, itemSource{Kind: "pvp", Rank: 18}
+	questSword := item(3, "Quest Sword", 5, "main_hand")
+	questSword.HasSource, questSword.Source = true, itemSource{Kind: "quest"}
+
+	got := excludeAbovePvpRankCap([]scored{rank18, rank10, questSword})
+	ids := map[int]bool{}
+	for _, c := range got {
+		ids[c.ID] = true
+	}
+	if ids[2] {
+		t.Errorf("excludeAbovePvpRankCap kept rank 18: %+v", got)
+	}
+	if !ids[1] || !ids[3] {
+		t.Errorf("excludeAbovePvpRankCap dropped a candidate it should have kept: %+v", got)
+	}
+}
+
+// If filtering would leave a slot with nothing at all, the original,
+// unfiltered list comes back - this lane's brief, item 1's own rule
+// ("never empty a weapon slot") outranks the rank cap when a rank-11+
+// item is genuinely the only sourced candidate.
+func TestExcludeAbovePvpRankCapNeverEmptiesTheOnlyCandidate(t *testing.T) {
+	onlyOption := item(1, "Grand Marshal's Sword", 20, "main_hand")
+	onlyOption.HasSource, onlyOption.Source = true, itemSource{Kind: "pvp", Rank: 18}
+
+	got := excludeAbovePvpRankCap([]scored{onlyOption})
+	if len(got) != 1 || got[0].ID != 1 {
+		t.Fatalf("excludeAbovePvpRankCap emptied the only candidate: %+v", got)
+	}
+}

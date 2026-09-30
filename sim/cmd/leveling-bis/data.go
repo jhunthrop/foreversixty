@@ -301,6 +301,15 @@ type itemSource struct {
 	// brief, item 3: sourceObtainable (band.go) refuses any source this
 	// is non-empty for, at every band, not only below 60.
 	Opens string
+	// Rank is lootSource.Rank, carried through unchanged, for a Kind ==
+	// "pvp" source only (the Go zero value for every other kind - a rep/
+	// vendor/quest/etc. source has no rank at all, and 0 is not itself a
+	// real PvP rank, so band.go's pvpRankExceedsCap gates on Kind == "pvp"
+	// first rather than trusting a bare Rank > pvpRankCap check alone).
+	// bis-ranker-integrity-2 lane, item 3: loot.json's own pvp sources
+	// (pvp:rank-5 .. pvp:rank-18) already carry this; nothing upstream
+	// read it before this lane.
+	Rank int
 }
 
 // repSide names the reputations only one side can earn, by the client's
@@ -339,34 +348,30 @@ var questFactionSide = map[string]string{"alliance": "alliance", "horde": "horde
 // general Opens-from-a-raid-source gate in sourceObtainable never sees
 // it - loadLootIndex skips "quest"-kind rows from that loop entirely
 // and builds this one's itemSource separately, below) but whose quest
-// chain is actually gated behind raid boss kills - this lane's brief,
-// item 3's own named example: "Atiesh, Greatstaff of the Guardian" is
-// the Naxxramas class-quest chain's reward, not obtainable without
-// having already killed Kel'Thuzad, so it is exactly as launch-
-// unavailable as a direct Naxxramas drop even though loot.json's own
-// "kind" says "quest".
+// chain is actually gated behind raid boss kills or a raid-tier
+// community event - this lane's brief, item 3's own named example was
+// "Atiesh, Greatstaff of the Guardian" (the Naxxramas class-quest
+// chain's reward, not obtainable without having already killed
+// Kel'Thuzad) and "Rise, Thunderfury!" (needs 8 Bindings of the
+// Windseeker, which drop randomly off EVERY Molten Core boss); both are
+// legendaries (items.json quality 5) and are gated by
+// band.go's legendaryGatedLater now (bis-ranker-integrity-2 lane, item
+// 2: "any item of quality 5 is gated later regardless of source kind"
+// replaces the two hand-picked quest-id rows this map used to carry for
+// them - one rule instead of one row per legendary this build ever
+// adds).
 //
-// Quest ids 9270/9271 (Wowhead's Alliance/Horde quest ids for "Atiesh,
-// Greatstaff of the Guardian", confirmed against loot.json's own
-// quests map for items 22589/22630) are the brief's own named case;
-// this lane's own dogfood run (re-checking mage-fire band 60 after
-// gating those two alone) immediately found the SAME shape one level
-// down the same reward's own alternatives list - "Blessed Qiraji
-// Acolyte Staff" (quest 8790, "Imperial Qiraji Regalia") became the
-// new band-60 main_hand pick, itself gated behind the Ahn'Qiraj War
-// Effort - a raid-tier community event this build's own
-// forever-raid-phases.json already curates "later" for the raid
-// itself (`raid:ahnqiraj`), but which never touches its OWN
-// quest-kind rewards the same way Atiesh's chain does not. 8789/8756
-// are that same War Effort's other two reward-item quests
-// ("Imperial Qiraji Armaments", "The Qiraji Conqueror"), added
-// together rather than one at a time once the pattern was clear. 7787
-// ("Rise, Thunderfury!") is the same shape again, found the same way
-// re-checking warrior/rogue/hunter band 60 main_hand after the Qiraji
-// fix: the quest itself needs 8 Bindings of the Windseeker, which drop
-// randomly off EVERY Molten Core boss (`raid:molten-core`, already
-// "later") - the legendary is exactly as launch-unobtainable as a
-// direct MC drop.
+// What is LEFT here is not a legendary at all: 8756/8789/8790 are the
+// Ahn'Qiraj War Effort's three reward-item quests ("The Qiraji
+// Conqueror", "Imperial Qiraji Armaments", "Imperial Qiraji Regalia" -
+// found re-checking mage-fire band 60 after the Atiesh fix landed:
+// "Blessed Qiraji Acolyte Staff", quest 8790, immediately became the
+// new band-60 main_hand pick, itself gated behind the same War Effort a
+// direct Ahn'Qiraj raid drop already is via forever-raid-phases.json's
+// `raid:ahnqiraj` curated fact) - their own items.json quality is well
+// below 5, so legendaryGatedLater's rule has no way to catch them; their
+// gate is the war-effort RAID EVENT itself, which loot.json's own
+// quest-kind rows never state.
 //
 // A broader systematic audit of every OTHER quest-kind reward that
 // turns out to be raid-gated (the same category of gap
@@ -374,12 +379,9 @@ var questFactionSide = map[string]string{"alliance": "alliance", "horde": "horde
 // sources) is a follow-up beyond this lane's scope - see this lane's
 // report for exactly what was and was not checked.
 var raidLockedQuestOpens = map[int]string{
-	9270: "later", // Atiesh, Greatstaff of the Guardian (Alliance) - Naxxramas class quest chain
-	9271: "later", // Atiesh, Greatstaff of the Guardian (Horde) - Naxxramas class quest chain
 	8756: "later", // The Qiraji Conqueror - Ahn'Qiraj War Effort reward
 	8789: "later", // Imperial Qiraji Armaments - Ahn'Qiraj War Effort reward
 	8790: "later", // Imperial Qiraji Regalia - Ahn'Qiraj War Effort reward
-	7787: "later", // Rise, Thunderfury! - needs 8 Bindings of the Windseeker (Molten Core boss drops)
 }
 
 // repFactionSwap pairs the six battleground faction ids with their
@@ -490,6 +492,9 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 			is := itemSource{
 				Kind: src.Kind, Label: label, Side: factionExclusiveDungeons[src.ID], Chance: chance, Opens: src.Opens,
 			}
+			if src.Kind == "pvp" {
+				is.Rank = src.Rank
+			}
 			if src.Kind == "rep" {
 				factionID := src.FactionID
 				if correctedID, correctedLabel, swapped := correctedRepSource(itemFactionRestriction[id], factionID, factionNames); swapped {
@@ -536,7 +541,51 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 		}
 		questFloors[id] = leveling.LowestFloor(levels)
 	}
-	return vendorInheritsRepStandingGate(idx), questFloors, nil
+	return vendorInheritsPvpRankGate(vendorInheritsRepStandingGate(idx)), questFloors, nil
+}
+
+// vendorInheritsPvpRankGate returns a copy of idx where a "vendor"
+// source sharing an item id with a "pvp" source inherits that pvp
+// source's own Rank - the exact same shape vendorInheritsRepStandingGate
+// (below) already fixes for reputation, found dogfooding this lane's
+// brief item 3 (pvpRankCap): Captain O'Neal (Alliance's Grand Marshal
+// rank-reward quartermaster, loot.json's own vendor:12782) lists the
+// SAME items (Grand Marshal's Stave 18873, Grand Marshal's Sunderer
+// 18830, Grand Marshal's Demolisher 23455, ...) loot.json's own
+// pvp:rank-18 source already lists with Rank 18 - but "vendor" outranks
+// "pvp" in sourceKindPriority (band.go), so sourceFor picked the vendor
+// row for every one of them and band.go's pvpRankExceedsCap never saw a
+// Rank at all (the vendor kind carries none on its own), silently
+// defeating the whole cap: every caster/melee/hybrid spec's band-60
+// main_hand this lane regenerated to check item 1 picked a Grand
+// Marshal/High Warlord weapon from ITS OWN vendor before this fix, with
+// the cap doing nothing. An item's vendor source with no matching pvp
+// source (an ordinary gold vendor, or a rep-gated quartermaster with no
+// rank reward) is returned unchanged.
+func vendorInheritsPvpRankGate(idx lootIndex) lootIndex {
+	out := make(lootIndex, len(idx))
+	for id, srcs := range idx {
+		var pvpSrc *itemSource
+		for i := range srcs {
+			if srcs[i].Kind == "pvp" {
+				pvpSrc = &srcs[i]
+				break
+			}
+		}
+		if pvpSrc == nil {
+			out[id] = srcs
+			continue
+		}
+		gated := make([]itemSource, len(srcs))
+		for i, s := range srcs {
+			if s.Kind == "vendor" {
+				s.Rank = pvpSrc.Rank
+			}
+			gated[i] = s
+		}
+		out[id] = gated
+	}
+	return out
 }
 
 // vendorInheritsRepStandingGate returns a copy of idx where a "vendor"

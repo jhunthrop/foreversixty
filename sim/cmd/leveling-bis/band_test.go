@@ -302,7 +302,7 @@ func TestBuildBandPoolSeparatesEligibleSourcedCrossClassAndUnsourced(t *testing.
 		4: {{Kind: "quest", Label: "A Quest"}},
 		5: {{Kind: "quest", Label: "A Quest"}},
 	}
-	pool := buildBandPool(items, idx, "hunter", 20, "horde", map[string]float64{"agility": 2})
+	pool := buildBandPool(items, idx, "hunter", 20, "horde", map[string]float64{"agility": 2}, 0)
 
 	if len(pool.Scored) != 2 {
 		t.Fatalf("pool.Scored = %+v, want 2 (helm + bow)", pool.Scored)
@@ -330,7 +330,7 @@ func TestBuildBandPoolSkipsItemsWithNoSlots(t *testing.T) {
 	// added to any bucket.
 	items := []candidate{{ID: 1, RequiredLevel: 1, Slots: nil}}
 	idx := lootIndex{1: {{Kind: "quest", Label: "A Quest"}}}
-	pool := buildBandPool(items, idx, "hunter", 20, "horde", nil)
+	pool := buildBandPool(items, idx, "hunter", 20, "horde", nil, 0)
 	if len(pool.Scored) != 0 || len(pool.NoSource) != 0 {
 		t.Fatalf("pool = %+v, want everything empty for a slotless item", pool)
 	}
@@ -452,5 +452,84 @@ func TestSourceForOrdinaryVendorWithNoMatchingRepStaysUngated(t *testing.T) {
 	src, ok := sourceFor(1, 1, "alliance", "", idx)
 	if !ok || src.Kind != "vendor" {
 		t.Fatalf("sourceFor = %+v, %v, want the ungated vendor source obtainable at any level", src, ok)
+	}
+}
+
+// TestBuildBandPoolGatesEveryLegendaryRegardlessOfSourceKind is this
+// lane's brief, item 2: a quality-5 item is gated "later" no matter
+// which loot.json source kind names it - unlike the old
+// raidLockedQuestOpens hand list (data.go), which needed a manual
+// quest-id entry per legendary, this is one rule. Four different
+// source kinds are asserted here (quest - Atiesh's own real shape;
+// raid, which was already gated by Opens before this lane and must
+// stay gated; and vendor/crafted, which loot.json does not carry a
+// legendary under today but which the rule must still catch, since a
+// per-kind allowlist would silently miss one) to prove the exclusion
+// is keyed on Quality, not on Kind.
+func TestBuildBandPoolGatesEveryLegendaryRegardlessOfSourceKind(t *testing.T) {
+	items := []candidate{
+		{ID: 22589, Name: "Atiesh, Greatstaff of the Guardian", Quality: legendaryQuality, RequiredLevel: 60, EffectiveRequiredLevel: 60, Slots: []string{"main_hand"}, Stats: map[string]float64{"spell_power": 100}},
+		{ID: 19019, Name: "Thunderfury, Blessed Blade of the Windseeker", Quality: legendaryQuality, RequiredLevel: 60, EffectiveRequiredLevel: 60, Slots: []string{"main_hand"}, Stats: map[string]float64{"agility": 100}},
+		{ID: 99001, Name: "Hypothetical Legendary Trinket", Quality: legendaryQuality, RequiredLevel: 60, EffectiveRequiredLevel: 60, Slots: []string{"trinket1", "trinket2"}},
+		{ID: 810, Name: "Hammer of the Northern Wind", Quality: 4, RequiredLevel: 49, EffectiveRequiredLevel: 49, Slots: []string{"main_hand"}, Stats: map[string]float64{"agility": 10}},
+	}
+	idx := lootIndex{
+		22589: {{Kind: "quest", Label: "Atiesh, Greatstaff of the Guardian"}},
+		19019: {{Kind: "raid", Label: "Molten Core: Ragnaros", Opens: "later"}},
+		99001: {{Kind: "vendor", Label: "A Vendor Nobody Should Ever Reach"}},
+		810:   {{Kind: "world_drop", Label: "World drop"}},
+	}
+	weights := map[string]float64{"spell_power": 1, "agility": 1}
+	pool := buildBandPool(items, idx, "warrior", 60, "alliance", weights, 0)
+
+	scoredIDs := make(map[int]bool, len(pool.Scored))
+	for _, s := range pool.Scored {
+		scoredIDs[s.ID] = true
+	}
+	for _, legendaryID := range []int{22589, 19019, 99001} {
+		if scoredIDs[legendaryID] {
+			t.Errorf("pool.Scored contains legendary item %d, want it excluded regardless of source kind", legendaryID)
+		}
+	}
+	if !scoredIDs[810] {
+		t.Error("pool.Scored is missing the ordinary (non-legendary) weapon 810 - the rule must not over-exclude")
+	}
+
+	var foundLegendaryInNoSource int
+	for _, c := range pool.NoSource {
+		if c.Quality == legendaryQuality {
+			foundLegendaryInNoSource++
+		}
+	}
+	if foundLegendaryInNoSource != 3 {
+		t.Errorf("pool.NoSource carries %d legendaries, want 3 (accounted for, same as a raid-gated item)", foundLegendaryInNoSource)
+	}
+}
+
+// TestPvpRankExceedsCap pins band.go's own rule (this lane's brief,
+// item 3): Rank above pvpRankCap is capped regardless of Kind - a
+// vendor row vendorInheritsPvpRankGate (data.go) copied a pvp source's
+// Rank onto must be capped exactly like the pvp source itself
+// (Captain O'Neal's own vendor row for Grand Marshal's Stave, Rank 18 -
+// the real bug this lane's own dogfood run found: "vendor" outranks
+// "pvp" in sourceKindPriority, so sourceFor always picked the
+// Rank-less vendor row over the pvp one, and a Kind == "pvp" check
+// here would have silently done nothing for every one of them).
+func TestPvpRankExceedsCap(t *testing.T) {
+	cases := []struct {
+		name string
+		src  itemSource
+		want bool
+	}{
+		{"pvp rank 10 (the cap itself) does not exceed it", itemSource{Kind: "pvp", Rank: 10}, false},
+		{"pvp rank 11 exceeds it", itemSource{Kind: "pvp", Rank: 11}, true},
+		{"pvp rank 18 exceeds it", itemSource{Kind: "pvp", Rank: 18}, true},
+		{"a non-pvp source with no inherited rank is never capped", itemSource{Kind: "quest", Rank: 0}, false},
+		{"a vendor row that inherited a pvp rank IS capped, same as the pvp source itself", itemSource{Kind: "vendor", Rank: 18}, true},
+	}
+	for _, tc := range cases {
+		if got := pvpRankExceedsCap(tc.src); got != tc.want {
+			t.Errorf("%s: pvpRankExceedsCap(%+v) = %v, want %v", tc.name, tc.src, got, tc.want)
+		}
 	}
 }

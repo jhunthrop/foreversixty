@@ -158,6 +158,16 @@ func TestRankTrinketSlotPicksTheHighestMeasuredDPS(t *testing.T) {
 	if picks["trinket1"].Item.ID != 1 {
 		t.Fatalf("the input picks map was mutated: %+v", picks["trinket1"])
 	}
+	// This lane's brief, item 7: the winner and runner-up each carry
+	// their OWN measured DPS from this tournament, not each other's and
+	// not zero - report.go's buildReport reads this to publish sim_dps
+	// instead of score()'s stat estimate.
+	if out["trinket1"].Item.MeasuredDPS != 200 {
+		t.Errorf("trinket1 pick MeasuredDPS = %v, want 200", out["trinket1"].Item.MeasuredDPS)
+	}
+	if out["trinket1"].RunnerUp.MeasuredDPS != 100 {
+		t.Errorf("trinket1 runner-up MeasuredDPS = %v, want 100", out["trinket1"].RunnerUp.MeasuredDPS)
+	}
 }
 
 func TestRankTrinketSlotSkipsAFailingCandidateAndKeepsGoing(t *testing.T) {

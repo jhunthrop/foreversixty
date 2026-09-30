@@ -295,7 +295,16 @@ func applySwaps(runner engineRunner, spec specInfo, race, classSlug string, leve
 			adjusted[i].Beat = false
 			continue
 		}
-		out[sw.Slot] = slotPick{Item: pk.RunnerUp, RunnerUp: pk.Item}
+		// This lane's brief, item 7: the promoted item's own MeasuredDPS
+		// (scored's own doc) is sw.SwapDPS, the real measurement that
+		// just won this comparison - report.go's buildReport reads it to
+		// publish sim_dps instead of score()'s stat estimate for this
+		// row. promotedItem is a copy (not pk.RunnerUp itself) so this
+		// never mutates a scored value some OTHER slot's bySlot entry
+		// might still be reading.
+		promotedItem := *pk.RunnerUp
+		promotedItem.MeasuredDPS = sw.SwapDPS
+		out[sw.Slot] = slotPick{Item: &promotedItem, RunnerUp: pk.Item}
 		promoted = true
 		if sw.Slot == "main_hand" && pk.RunnerUp.TwoHand {
 			// Equipping a two-hander physically empties the off hand -

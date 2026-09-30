@@ -253,6 +253,15 @@ func TestApplySwapsPromotesTheMeasuredWinnerAndRemeasuresTheSet(t *testing.T) {
 	if out["head"].Item.ID != 2 || out["head"].RunnerUp.ID != 1 {
 		t.Fatalf("head = item %d runner-up %d, want the winner (2) promoted over the scored pick (1)", out["head"].Item.ID, out["head"].RunnerUp.ID)
 	}
+	// This lane's brief, item 7: the promoted item carries the swap's
+	// own measured SwapDPS - report.go's buildReport reads this to
+	// publish sim_dps instead of score()'s stat estimate for this row.
+	if out["head"].Item.MeasuredDPS != 200 {
+		t.Errorf("promoted item MeasuredDPS = %v, want 200 (sw.SwapDPS)", out["head"].Item.MeasuredDPS)
+	}
+	if better.MeasuredDPS != 0 {
+		t.Errorf("original RunnerUp scored value MeasuredDPS = %v, want 0: applySwaps must copy, not mutate, the shared candidate", better.MeasuredDPS)
+	}
 	if dps != 200 {
 		t.Fatalf("set DPS after the swap = %v, want the re-measured 200", dps)
 	}

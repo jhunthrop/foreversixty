@@ -301,13 +301,120 @@ func TestBuildReportPublishesEmptySlotWithNoDPSValueReason(t *testing.T) {
 	}
 }
 
+// This lane's brief, item 1: a weapon slot (band.go's weaponSlots) is
+// NEVER emptied by the score-zero gate, unlike every other slot -
+// instead the row stands, published, with LowValue set so the page
+// can say so honestly instead of implying a genuine BiS win.
+func TestBuildReportFlagsLowValueOnAZeroScoringWeaponInsteadOfEmptying(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {Item: &scored{candidate: candidate{ID: 1, Name: "Notched Shortsword"}, Score: 0}},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "main_hand" {
+			row = s
+		}
+	}
+	if row.ItemID != 1 || row.EmptyReason != "" {
+		t.Fatalf("main_hand row = %+v, want item 1 published (never emptied), no EmptyReason", row)
+	}
+	if !row.LowValue {
+		t.Fatalf("main_hand row = %+v, want LowValue true (score() found this weapon worth exactly 0)", row)
+	}
+}
+
+// A weapon slot that scores something real (not 0) must never carry
+// LowValue - it is a genuine, measured pick, not a fallback.
+func TestBuildReportDoesNotFlagLowValueOnARealScoringWeapon(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {Item: &scored{candidate: candidate{ID: 1, Name: "A Real Sword"}, Score: 12.5}},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "main_hand" {
+			row = s
+		}
+	}
+	if row.LowValue {
+		t.Fatalf("main_hand row = %+v, want LowValue false for a genuinely-scoring weapon", row)
+	}
+}
+
+// This lane's brief, item 8: every empty slot carries an
+// empty_reason. off_hand with no pick at all, because main_hand
+// equipped a two-hander, must publish "two_hand_equipped" - before
+// this fix it published a bare {"slot": "off_hand"} with no reason
+// (hunter-marksmanship band 40 alliance's own named case).
+func TestBuildReportEmptyOffHandUnderTwoHanderCarriesTwoHandEquippedReason(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {Item: &scored{candidate: candidate{ID: 1, Name: "A Greatsword", TwoHand: true}, Score: 10}},
+		"off_hand":  {},
+	}
+	r := buildReport(reportSpec(), 40, "alliance", "human", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "off_hand" {
+			row = s
+		}
+	}
+	if row.EmptyReason != twoHandEquippedReason {
+		t.Fatalf("off_hand row EmptyReason = %q, want %q", row.EmptyReason, twoHandEquippedReason)
+	}
+}
+
+// An empty slot with no two-hander in play at all (nothing was ever
+// sourced for it under this spec's own picking pool) must still carry
+// SOME empty_reason, never a bare row - this lane's brief, item 8's
+// own general contract test.
+func TestBuildReportEmptySlotWithNoTwoHanderCarriesNoSourcedItemReason(t *testing.T) {
+	picks := map[string]slotPick{
+		"waist": {},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "waist" {
+			row = s
+		}
+	}
+	if row.EmptyReason != noSourcedItemReason {
+		t.Fatalf("waist row EmptyReason = %q, want %q", row.EmptyReason, noSourcedItemReason)
+	}
+}
+
+// Contract test, this lane's brief item 8, literally: every row in a
+// built report either publishes an item or carries a non-empty
+// EmptyReason - never both empty (a bare "nothing here" the page
+// cannot explain).
+func TestBuildReportContractEveryRowHasAnItemOrAnEmptyReason(t *testing.T) {
+	picks := map[string]slotPick{
+		"main_hand": {Item: &scored{candidate: candidate{ID: 1, Name: "A Greatsword", TwoHand: true}, Score: 10}},
+		"off_hand":  {},
+		"neck":      {Item: &scored{candidate: candidate{ID: 2, Name: "Sentinel's Medallion"}, Score: 0}},
+		"waist":     {},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	for _, row := range r.Slots {
+		if row.ItemID == 0 && row.EmptyReason == "" {
+			t.Errorf("slot %s: no item and no EmptyReason - every empty slot must carry a reason", row.Slot)
+		}
+	}
+}
+
 // A trinket slot's own Score is near-meaningless (score() cannot value a
 // proc/on-use effect at all - trinkets.go's own doc): rankTrinketSlot's
 // real-sim decision is authoritative regardless of what score() says, so
 // a trinket at Score 0 must NOT be emptied.
-func TestBuildReportKeepsATrinketAtScoreZero(t *testing.T) {
+// A trinket with a real effect (score() cannot value it at all - a
+// proc/on-use effect carries no scorable stats) stays exempt from the
+// score-zero gate even at Score 0 - bis-ranker-integrity-2 lane, item
+// 4's own kept half: EffectText is what makes this trinket different
+// from a bare stat-stick, not merely being a trinket.
+func TestBuildReportKeepsATrinketWithAnEffectAtScoreZero(t *testing.T) {
 	picks := map[string]slotPick{
-		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "A Proc Trinket"}, Score: 0}},
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "A Proc Trinket", EffectText: "Chance on hit: deals damage"}, Score: 0}},
 	}
 	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
 	var row slotRow
@@ -317,7 +424,30 @@ func TestBuildReportKeepsATrinketAtScoreZero(t *testing.T) {
 		}
 	}
 	if row.ItemID != 1 || row.EmptyReason != "" {
-		t.Fatalf("trinket1 row = %+v, want item 1 published with no EmptyReason (trinkets are exempt from the score-zero gate)", row)
+		t.Fatalf("trinket1 row = %+v, want item 1 published with no EmptyReason (an effect_text trinket is exempt from the score-zero gate)", row)
+	}
+}
+
+// This lane's brief, item 4: Rune of Perfection (+6 spell penetration,
+// +4 stamina) and Rune of Duty (pure resistance) carry no effect_text
+// and no stat this fixture's spec weighs - a bare stat-stick trinket
+// with nothing score() or a real sim could ever value is exactly as
+// zero-value as Sentinel's/Scout's Medallion (the original neck-slot
+// finding), and must empty the same way, not stay published as
+// "verified" BiS just because it is a trinket.
+func TestBuildReportEmptiesATrinketWithNoEffectAndNoValueAtScoreZero(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "Rune of Perfection", Stats: map[string]float64{"spell_penetration": 6, "stamina": 4}}, Score: 0}},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket1" {
+			row = s
+		}
+	}
+	if row.ItemID != 0 || row.EmptyReason != noDPSValueReason {
+		t.Fatalf("trinket1 row = %+v, want empty with EmptyReason %q (no effect_text, no valued stat)", row, noDPSValueReason)
 	}
 }
 
@@ -493,6 +623,17 @@ func TestBuildAlternativesSwapBeatOverridesTheDemotedRunnerUpsDelta(t *testing.T
 	if !hammerbone.Verified {
 		t.Error("Hammerbone Verified = false, want true: this row's delta came from a real swap sim, not a score estimate")
 	}
+	// This lane's brief, item 7: the one row a real sim actually
+	// measured publishes THAT measurement (SimDPS), not score()'s
+	// estimate - Hammerbone is the demoted former pick, so its own
+	// measured value is sw.BaselineDPS (29.9), and Score/ScoreDelta are
+	// cleared.
+	if hammerbone.SimDPS != 29.9 {
+		t.Errorf("Hammerbone SimDPS = %v, want 29.9 (sw.BaselineDPS, its own measured value as the demoted former pick)", hammerbone.SimDPS)
+	}
+	if hammerbone.Score != 0 || hammerbone.ScoreDelta != 0 {
+		t.Errorf("Hammerbone Score/ScoreDelta = %v/%v, want 0/0 (cleared - SimDPS is the real number now)", hammerbone.Score, hammerbone.ScoreDelta)
+	}
 	// Ordering: after the swap correction, Hammerbone's real delta
 	// (-2.3) is worse than Smite's Mighty Hammer's plain score estimate
 	// (-5.09 score points ~ -0.226 DPS at this reference_dps_per_point),
@@ -528,6 +669,102 @@ func TestBuildAlternativesSwapNotBeatOverridesTheRunnerUpsDelta(t *testing.T) {
 	wantDelta := 40.0 - 50.0
 	if got[0].DPSDelta != wantDelta {
 		t.Errorf("DPSDelta = %v, want %v (SwapDPS - BaselineDPS)", got[0].DPSDelta, wantDelta)
+	}
+	// This lane's brief, item 7: the runner-up here was never promoted
+	// (!Beat), so its own measured value is sw.SwapDPS (40) - the
+	// number the sim actually measured FOR IT, not the baseline.
+	if got[0].SimDPS != 40 {
+		t.Errorf("SimDPS = %v, want 40 (sw.SwapDPS, this row's own measured value)", got[0].SimDPS)
+	}
+	if got[0].Score != 0 || got[0].ScoreDelta != 0 {
+		t.Errorf("Score/ScoreDelta = %v/%v, want 0/0 (cleared - SimDPS is the real number now)", got[0].Score, got[0].ScoreDelta)
+	}
+}
+
+// TestSwapAlternativeMeasuredDPS pins swapAlternativeMeasuredDPS's own
+// two branches directly - this lane's brief, item 7.
+func TestSwapAlternativeMeasuredDPS(t *testing.T) {
+	beat := swapResult{SwapDPS: 32.2, BaselineDPS: 29.9, Beat: true}
+	if got := swapAlternativeMeasuredDPS(beat); got != 29.9 {
+		t.Errorf("swapAlternativeMeasuredDPS(%+v) = %v, want 29.9 (BaselineDPS - the demoted former pick's own measured value)", beat, got)
+	}
+	notBeat := swapResult{SwapDPS: 40, BaselineDPS: 50, Beat: false}
+	if got := swapAlternativeMeasuredDPS(notBeat); got != 40 {
+		t.Errorf("swapAlternativeMeasuredDPS(%+v) = %v, want 40 (SwapDPS - the still-just-a-runner-up's own measured value)", notBeat, got)
+	}
+}
+
+// This lane's brief, item 9: swapMargin (verify.go) deliberately
+// keeps the scored pick when a runner-up measures higher but not
+// enough to clear the noise margin (Beat == false), but the runner-up
+// still genuinely measured a few tenths of a DPS higher - the exact
+// shape that published a POSITIVE, "verified: true" dps_delta before
+// this fix (55 slots across ret/feral/enhancement, the controller's
+// own review). The contract: every alternative's dps_delta <= 0 after
+// the swap stage, verified or not.
+func TestSwapMeasuredDeltaCapsAPositiveNotBeatDeltaAtZero(t *testing.T) {
+	// SwapDPS (100.3) is higher than BaselineDPS (100), but not by
+	// enough to clear swapMargin (1%) - Beat is correctly false, but
+	// the naive SwapDPS-BaselineDPS would be +0.3.
+	sw := swapResult{SwapDPS: 100.3, BaselineDPS: 100, Beat: false}
+	got := swapMeasuredDelta(sw)
+	if got > 0 {
+		t.Fatalf("swapMeasuredDelta(%+v) = %v, want <= 0 (a candidate the swap stage did not promote must never publish a positive delta)", sw, got)
+	}
+	if got != 0 {
+		t.Errorf("swapMeasuredDelta(%+v) = %v, want exactly 0 (capped, not the naive +0.3)", sw, got)
+	}
+}
+
+// The Beat branch was already correct (a promoted item's own delta,
+// from the DEMOTED item's row, is always negative by construction),
+// pinned directly so a future edit cannot regress the sign.
+func TestSwapMeasuredDeltaBeatBranchIsNegative(t *testing.T) {
+	sw := swapResult{SwapDPS: 110, BaselineDPS: 100, Beat: true}
+	got := swapMeasuredDelta(sw)
+	want := 100.0 - 110.0
+	if got != want {
+		t.Errorf("swapMeasuredDelta(%+v) = %v, want %v", sw, got, want)
+	}
+	if got >= 0 {
+		t.Errorf("swapMeasuredDelta(%+v) = %v, want negative: the demoted item genuinely lost", sw, got)
+	}
+}
+
+// A genuine loss in the !Beat branch (SwapDPS below BaselineDPS) is
+// unaffected by the cap - only the positive direction is clamped.
+func TestSwapMeasuredDeltaNotBeatGenuineLossIsUnchanged(t *testing.T) {
+	sw := swapResult{SwapDPS: 40, BaselineDPS: 50, Beat: false}
+	got := swapMeasuredDelta(sw)
+	want := 40.0 - 50.0
+	if got != want {
+		t.Errorf("swapMeasuredDelta(%+v) = %v, want %v (unchanged - only positive deltas are capped)", sw, got, want)
+	}
+}
+
+// End-to-end pin through buildAlternatives: the exact "flips sign
+// between factions" shape the controller's review named (a coin-flip
+// margin either side of the 1% bar) must publish dps_delta <= 0
+// either way, never a positive "verified" win for the side that
+// happened to land just inside the margin's other side.
+func TestBuildAlternativesNeverPublishesAPositiveVerifiedDeltaWhenNotBeat(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Knight's Leather Pants"}, Score: 100}
+	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Stormshroud Pants"}, Score: 105}
+	pk := slotPick{Item: pick, RunnerUp: runnerUp}
+	list := []scored{
+		{candidate: candidate{ID: 1, Name: "Knight's Leather Pants"}, Score: 100},
+		{candidate: candidate{ID: 2, Name: "Stormshroud Pants"}, Score: 105, Source: itemSource{Kind: "crafted", Label: "Tailoring"}},
+	}
+	sw := &swapResult{Slot: "legs", SwapDPS: 100.4, BaselineDPS: 100, Beat: false}
+	got := buildAlternatives(pk, "legs", list, map[string]slotPick{"legs": pk}, 0.05, sw)
+	if len(got) != 1 || got[0].ItemID != 2 {
+		t.Fatalf("buildAlternatives = %+v, want exactly the runner-up", got)
+	}
+	if got[0].DPSDelta > 0 {
+		t.Errorf("Stormshroud Pants DPSDelta = %v, want <= 0 (Beat was false; the sim did not promote it)", got[0].DPSDelta)
+	}
+	if !got[0].Verified {
+		t.Error("Verified = false, want true: this row still came from a real swap sim")
 	}
 }
 
@@ -612,6 +849,90 @@ func TestBuildReportPublishesReferenceDPSPerPoint(t *testing.T) {
 	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, map[string]slotPick{}, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0.0714)
 	if r.ReferenceDPSPerPoint != 0.0714 {
 		t.Fatalf("ReferenceDPSPerPoint = %v, want 0.0714", r.ReferenceDPSPerPoint)
+	}
+}
+
+// This lane's brief, item 7: bandReport always documents its own
+// Score field's unit, regardless of what the band's picks look like.
+func TestBuildReportAlwaysPublishesScoreUnit(t *testing.T) {
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, map[string]slotPick{}, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	if r.ScoreUnit != scoreUnitReferenceStatPoints {
+		t.Fatalf("ScoreUnit = %q, want %q", r.ScoreUnit, scoreUnitReferenceStatPoints)
+	}
+}
+
+// A sim-decided pick (MeasuredDPS > 0 - trinkets.go/rank.go/sets.go's
+// own tournaments all set this) publishes SimDPS and omits Score -
+// this lane's brief, item 7: "one number per row", never both units on
+// the same row.
+func TestBuildReportSimDecidedPickPublishesSimDPSNotScore(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "A Real Trinket"}, Score: 42, MeasuredDPS: 301.5}},
+	}
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket1" {
+			row = s
+		}
+	}
+	if row.Score != 0 {
+		t.Errorf("Score = %v, want 0 (omitted): this row was sim-decided", row.Score)
+	}
+	if row.SimDPS != 301.5 {
+		t.Errorf("SimDPS = %v, want 301.5", row.SimDPS)
+	}
+	if row.ItemID != 1 {
+		t.Fatalf("row = %+v, want item 1 published (a sim-decided trinket is never emptied)", row)
+	}
+}
+
+// A score()-decided pick (MeasuredDPS == 0, the overwhelming majority
+// of gear) publishes Score exactly as before and never sets SimDPS.
+func TestBuildReportScoreDecidedPickPublishesScoreNotSimDPS(t *testing.T) {
+	picks := map[string]slotPick{
+		"head": {Item: &scored{candidate: candidate{ID: 1, Name: "A Real Helm"}, Score: 42}},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "head" {
+			row = s
+		}
+	}
+	if row.Score != 42 {
+		t.Errorf("Score = %v, want 42", row.Score)
+	}
+	if row.SimDPS != 0 {
+		t.Errorf("SimDPS = %v, want 0 (this row was score-decided)", row.SimDPS)
+	}
+}
+
+// A swap-promoted pick (verify.go's applySwaps) is sim-decided too:
+// its own MeasuredDPS is the promotion's own measured SwapDPS, and its
+// row publishes SimDPS, not Score, alongside the existing SwapNote.
+func TestBuildReportSwapPromotedPickPublishesSimDPS(t *testing.T) {
+	promoted := &scored{candidate: candidate{ID: 1, Name: "The Winner"}, Score: 302.91, MeasuredDPS: 32.2}
+	demoted := &scored{candidate: candidate{ID: 2, Name: "The Loser"}, Score: 306.05}
+	picks := map[string]slotPick{
+		"main_hand": {Item: promoted, RunnerUp: demoted},
+	}
+	swaps := []swapResult{{Slot: "main_hand", SwapDPS: 32.2, BaselineDPS: 29.9, Beat: true}}
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 0, swaps, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "main_hand" {
+			row = s
+		}
+	}
+	if row.Score != 0 {
+		t.Errorf("Score = %v, want 0 (omitted): a swap-promoted pick is sim-decided", row.Score)
+	}
+	if row.SimDPS != 32.2 {
+		t.Errorf("SimDPS = %v, want 32.2 (the promotion's own measured SwapDPS)", row.SimDPS)
+	}
+	if row.SwapNote == "" {
+		t.Error("SwapNote is empty, want the existing promotion note still present")
 	}
 }
 

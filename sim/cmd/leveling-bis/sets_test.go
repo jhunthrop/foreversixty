@@ -107,6 +107,16 @@ func TestTrySetCompletionAdoptsTheSetWhenItVerifiesHigher(t *testing.T) {
 	if out["chest"].Item == nil || out["chest"].Item.ID != 21 {
 		t.Fatalf("chest = %+v, want the set piece (21)", out["chest"].Item)
 	}
+	// This lane's brief, item 7: every adopted piece carries the
+	// winning trial's own measured DPS - report.go's buildReport reads
+	// this to publish sim_dps instead of score()'s stat estimate for
+	// both slots.
+	if out["head"].Item.MeasuredDPS != 150 {
+		t.Errorf("head MeasuredDPS = %v, want 150", out["head"].Item.MeasuredDPS)
+	}
+	if out["chest"].Item.MeasuredDPS != 150 {
+		t.Errorf("chest MeasuredDPS = %v, want 150", out["chest"].Item.MeasuredDPS)
+	}
 }
 
 func TestTrySetCompletionKeepsTheIndependentlyScoredPicksWhenTheSetDoesNotVerifyHigher(t *testing.T) {

@@ -213,6 +213,65 @@ func bestBoss(obtainable []itemSource) (itemSource, bool) {
 	return best, found
 }
 
+// legendaryQuality is the client's own quality tier for an orange/
+// legendary item (items.json's own "quality" field, confirmed against
+// Atiesh's four ids, both Thunderfury ids and both Sulfuras ids - this
+// lane's brief, item 2).
+const legendaryQuality = 5
+
+// legendaryGatedLater reports whether c is a legendary - this lane's
+// brief, item 2: replaces data.go's raidLockedQuestOpens hand list (which
+// needed its own manual quest-id entry for Atiesh AND, separately, for
+// Thunderfury, and would need a fresh one for every future legendary this
+// build ever adds) with one rule that catches every legendary regardless
+// of which source kind loot.json's own pipeline classified it under. A
+// legendary is exactly as launch-day-unobtainable as a direct raid drop
+// whether a character reaches it through a raid boss, a class-quest chain
+// gated behind one (Atiesh's own Naxxramas chain, Thunderfury's Molten
+// Core Bindings), or - should this build ever add one - a vendor or
+// crafted recipe; no source kind makes a legendary launch-day-obtainable.
+// raidLockedQuestOpens keeps the Ahn'Qiraj war-effort quest ids (8756/
+// 8789/8790): those rewards are not legendaries (their own items.json
+// quality is well below 5) and are gated by the war-effort RAID EVENT,
+// a fact this rule has no way to see.
+func legendaryGatedLater(c candidate) bool {
+	return c.Quality == legendaryQuality
+}
+
+// pvpRankCap is the highest PvP rank reward this lane's own ruling
+// (owner, 2026-09-29) treats as something "a fresh level 60 can
+// realistically get": rank 10 is a few weeks of casual battlegrounds,
+// rank 11+ needs sustained top-bracket play with rank decay, which a
+// leveling list - "what a launch-day character can get", band.go's
+// own sourceFor doc - should not default to any more than it defaults
+// to a raid drop. Unlike a raid/legendary gate (sourceObtainable's
+// Opens check, legendaryGatedLater above), a rank-11+ reward is NOT
+// removed from the candidate pool: it is still a real, obtainable
+// (just unlikely) item, so it stays sourced and scored, able to
+// appear as a labelled alternative ("Rank 18") - only pick()'s own
+// picking pool (main.go's runSpec, pickBySlot) excludes it from being
+// the DEFAULT pick. See pick.go's excludeAbovePvpRankCap for exactly
+// where that line is drawn.
+const pvpRankCap = 10
+
+// pvpRankExceedsCap reports whether s carries a PvP rank above
+// pvpRankCap. Checked on Rank alone, not Kind == "pvp": a PvP rank
+// quartermaster's own vendor row (Captain O'Neal, Rank 18) duplicates
+// the identical item list its matching "pvp" source names, and
+// data.go's vendorInheritsPvpRankGate copies Rank onto that vendor row
+// for exactly this reason - "vendor" outranks "pvp" in
+// sourceKindPriority, so sourceFor picks the vendor row for a
+// dual-listed item every time, and a Kind == "pvp" check here would
+// never see it. Rank is 0 (the Go zero value) for every source
+// vendorInheritsPvpRankGate did not touch and every non-pvp kind
+// loot.json itself never populates a nonzero rank for (confirmed
+// against the whole build: no non-"pvp" source carries one), so this
+// is still false by construction for an ordinary vendor/quest/rep/etc.
+// source.
+func pvpRankExceedsCap(s itemSource) bool {
+	return s.Rank > pvpRankCap
+}
+
 // bandPool is everything candidatesBySlot/pick need for one band and
 // faction: every eligible, sourced item, scored - plus the ones that
 // were eligible but had no usable source, kept only so the report can
@@ -350,11 +409,29 @@ func crossClassSetItem(c candidate, classSlug string) bool {
 // that order, to the full candidate list for one band and faction. It
 // does not pick: candidatesBySlot/pick (pick.go) do that from
 // Scored.
-func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int, faction string, weights map[string]float64) bandPool {
+func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int, faction string, weights map[string]float64, referenceDPSPerPoint float64) bandPool {
 	var out bandPool
 	out.Coverage = make(map[string]coverageRow)
 	for _, c := range items {
 		if !eligible(c, classSlug, level, faction) {
+			continue
+		}
+		if legendaryGatedLater(c) {
+			// This lane's brief, item 2: gated exactly like a raid drop
+			// (below), before sourceFor ever runs - a legendary has no
+			// "obtainable via a different, non-raid kind" case sourceFor
+			// could otherwise find (loadLootIndex's quest-kind rows are
+			// the actual gap this closes: Atiesh/Thunderfury's own quest
+			// source carries no raid Opens tag at all). Counted as
+			// not-sourced, same accounting a raid-gated item already
+			// gets, so Coverage/NoSourceCount stay an honest count of
+			// "eligible items this band could not actually put in a
+			// leveling character's hands" rather than silently excluding
+			// legendaries from that count.
+			addCoverage(out.Coverage, c.Slots, false)
+			if len(c.Slots) > 0 {
+				out.NoSource = append(out.NoSource, c)
+			}
 			continue
 		}
 		src, ok := sourceFor(c.ID, level, faction, c.FactionRestriction, idx)
@@ -375,7 +452,7 @@ func buildBandPool(items []candidate, idx lootIndex, classSlug string, level int
 		}
 		out.Scored = append(out.Scored, scored{
 			candidate: c,
-			Score:     score(c, c.Slots[0], weights),
+			Score:     score(c, c.Slots[0], weights, referenceDPSPerPoint),
 			Source:    src,
 			HasSource: true,
 		})
