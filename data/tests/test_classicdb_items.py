@@ -33,6 +33,8 @@ from pipeline.classicdb_items import (
     effect_text,
     equip_stats,
     extract_records,
+    honor_rank_for_name,
+    honor_ranks_by_title_for_untitled_items,
     is_gm_class_mask,
     planner_stats,
     supplement,
@@ -640,3 +642,60 @@ def test_classic_honor_ranks_keeps_only_items_with_a_real_rank():
         _item(id=9999, required_honor_rank=0),
     ]
     assert classic_honor_ranks(items) == {16465: 17, 16437: 16}
+
+
+def test_honor_rank_by_title_table_agrees_with_the_committed_classic_db_extract():
+    """HONOR_RANK_BY_TITLE's own doc: every item in this build's committed
+    `raw/classicdb/item_template.json` whose name starts with one of these
+    titles and carries a nonzero `required_honor_rank` must agree with the
+    table -- a real regression guard against the table drifting from the
+    primary source it was built from, not just a snapshot of today's data."""
+    from pathlib import Path
+
+    from pipeline.classicdb_items import HONOR_RANK_BY_TITLE, load_extract
+
+    build_dir = Path("builds/1.60.1.70009")
+    extract = load_extract(build_dir)
+    assert extract is not None, f"no committed classic-db extract at {build_dir}"
+    items, _ = extract
+    checked = 0
+    for item in items:
+        if not item.required_honor_rank:
+            continue
+        rank = honor_rank_for_name(item.name)
+        if rank is None:
+            continue
+        checked += 1
+        assert rank == item.required_honor_rank, (item.id, item.name)
+    assert checked > 0, "no committed item exercised the title table at all"
+
+
+def test_honor_rank_for_name_matches_the_longest_title_first():
+    # "Field Marshal's" (17) must win over the shorter "Marshal's" (16)
+    # for a name that starts with both.
+    assert honor_rank_for_name("Field Marshal's Chain Greathelm") == 17
+    assert honor_rank_for_name("Marshal's Chain Vices") == 16
+    assert honor_rank_for_name("Warlord's Chain Helm") == 17
+    assert honor_rank_for_name("General's Chain Vices") == 16
+    assert honor_rank_for_name("Just a Regular Item") is None
+
+
+def test_honor_ranks_by_title_for_untitled_items_fills_only_the_gap():
+    """bis-ranker-integrity-16 lane, item 7: the exact live repro -- Forever's
+    own re-itemised "Field Marshal's Chain Greathelm" (231562) shares
+    neither id nor exact name with classic-db's "Field Marshal's Chain
+    Helm" (16465, rank 17), so it must be filled in by TITLE alone. An id
+    already in `already_ranked` (classic_honor_ranks/pvp_ranks already
+    covered it) is never touched, and a name matching no known title is
+    left out entirely."""
+    item_rows = [
+        {"id": 231562, "name": "Field Marshal's Chain Greathelm"},
+        {"id": 231578, "name": "Marshal's Chain Vices"},
+        {"id": 16465, "name": "Field Marshal's Chain Helm"},
+        {"id": 12345, "name": "Ordinary Leather Belt"},
+    ]
+    already_ranked = {16465}
+    assert honor_ranks_by_title_for_untitled_items(item_rows, already_ranked) == {
+        231562: 17,
+        231578: 16,
+    }

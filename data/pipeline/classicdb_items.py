@@ -504,6 +504,85 @@ def classic_honor_ranks(items: list[ClassicDbItem]) -> dict[int, int]:
     return {item.id: item.required_honor_rank for item in items if item.required_honor_rank}
 
 
+#: Vanilla Classic's honor-rank title ladder, title prefix -> required
+#: rank. This is fixed Classic game design, not a build-specific fact
+#: (unlike this module's neighbours, which all read a build's own
+#: client/classic-db export) -- verified here against this build's own
+#: committed `raw/classicdb/item_template.json`: every item name
+#: starting with one of these titles that ALSO carries a nonzero
+#: `required_honor_rank` agrees with the rank below (see
+#: test_classicdb_items.py's own check, which walks the committed
+#: extract and asserts exactly that).
+#:
+#: bis-ranker-integrity-16 lane, 2026-09-30 (fourteenth player sweep,
+#: melee-ranged.md finding 7): all three hunter specs published
+#: rank-16/17 honor armor -- "Field Marshal's Chain Greathelm",
+#: "Marshal's Chain Vices", "Warlord's Chain Helm", "General's Chain
+#: Vices" among them -- with no rank shown and no cap applied at all.
+#: `classic_honor_ranks` above only ever keys by the CLASSIC item's own
+#: id (16465 "Field Marshal's Chain Helm", rank 17), but Forever's own
+#: re-itemised twin renamed every slot word (Helm -> Greathelm,
+#: Spaulders -> Pauldrons, Boots -> Greaves/Sabatons, Legguards ->
+#: Legplates, Gloves/Grips -> Vices) under a BRAND NEW id (231562) that
+#: shares neither the classic id nor the exact name -- so neither the
+#: id-keyed rank dict nor `pipeline.loot.sources.apply_reitemisation`'s
+#: own exact-name inheritance ever found it. The title prefix alone is
+#: a safe, general match: nothing in this catalogue names an item
+#: starting with "Field Marshal's " that is not that same honor-rank
+#: reward, whatever Forever renamed the rest of the string to.
+HONOR_RANK_BY_TITLE: dict[str, int] = {
+    "Sergeant's": 7,
+    "Senior Sergeant's": 8,
+    "Master Sergeant's": 8,
+    "First Sergeant's": 9,
+    "Sergeant Major's": 9,
+    "Blood Guard's": 11,
+    "Legionnaire's": 12,
+    "Champion's": 14,
+    "Lieutenant Commander's": 14,
+    "Marshal's": 16,
+    "General's": 16,
+    "Field Marshal's": 17,
+    "Warlord's": 17,
+    "Grand Marshal's": 18,
+    "High Warlord's": 18,
+}
+
+
+def honor_rank_for_name(name: str) -> int | None:
+    """`HONOR_RANK_BY_TITLE`'s own rank for `name`'s title prefix, or
+    `None` when `name` starts with none of them. Checked longest title
+    first, so "Field Marshal's" (rank 17) matches before the shorter
+    "Marshal's" (rank 16) would otherwise also match "Field Marshal's
+    Chain Greathelm"."""
+    for title in sorted(HONOR_RANK_BY_TITLE, key=len, reverse=True):
+        if name.startswith(f"{title} "):
+            return HONOR_RANK_BY_TITLE[title]
+    return None
+
+
+def honor_ranks_by_title_for_untitled_items(
+    item_rows: Iterable[dict[str, object]], already_ranked: set[int]
+) -> dict[int, int]:
+    """`honor_rank_for_name` applied to every one of this build's own
+    `item_rows` (items.json, Forever's flat catalogue -- id and name,
+    whatever else each row carries) not already in `already_ranked`
+    (the id-keyed union `classic_honor_ranks`/`pipeline.loot.sources.
+    pvp_ranks` already cover) -- `pipeline.loot.__init__.
+    _pvp_ranks_with_classic_db`'s own gap-filler for a Forever
+    re-itemised honor reward under a new id and a renamed slot word
+    (HONOR_RANK_BY_TITLE's own doc)."""
+    out: dict[int, int] = {}
+    for row in item_rows:
+        item_id = int(row["id"])  # type: ignore[arg-type]
+        if item_id in already_ranked:
+            continue
+        rank = honor_rank_for_name(str(row["name"]))
+        if rank is not None:
+            out[item_id] = rank
+    return out
+
+
 def is_planner_gear(item: ClassicDbItem) -> bool:
     """The gates `normalize/gear.py`'s `build_class_items` applies to a
     client row, plus the classic-db-specific GM-mask check -- see

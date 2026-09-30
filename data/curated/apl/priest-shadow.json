@@ -4,6 +4,10 @@
   "inert": [
     5019
   ],
+  "engineering_notes": {
+    "2": "sim/priest/shadow_word_death.go: Forever's tier 5 Early Demise talent gives it bonus crit chance below 20% target health, read through the engine's execute-phase approximation (isExecutePhase E20, the same primitive this line already used).",
+    "4": "Rank 6 (19280) is spellconst's top rank and the highest the engine registers at level 60."
+  },
   "notes": "Rotation-accuracy program, wand-weaving addition (2026-09-28): Shoot (5019) is declared inert because this build's item table (data/builds/<active>/items/priest.json filtered to simitems.json's known ids) has no wand with required_level <= 10, so the ladder's level-10 rung equips nothing in the ranged slot and core.RegisterShootSpell never registers the spell there; from level 20 on, once a wand is available, it resolves and fires heavily (the level 20-60 rungs below show it as up to 82 percent of top casts on this bare, no-consumes, no-buffs ladder character). Adapted from the fork's shadow_priest/apls/p1.apl.json. Devouring Plague's off-by-one registration bug (an old 'Fix round 1' that had temporarily moved this file's authored id back to rank 5) and the follow-up 'rank 5 casts instead of rank 6' diagnosis are both stale and superseded (audit-priest, 2026-09-28): sim/priest/devouring_plague.go's registration loop runs the full 1..DevouringPlagueRanks range, this file's strictSequence has authored rank 6 (19280) since before this audit, and a direct 3000-iteration reproduction of the level-60 bare-gear ladder request (forever-sim, engine b5ac36a52) casts 19280 and never 19279. Shadow Word: Death (1309636, sim/priest/shadow_word_death.go) is implemented and does deal damage under isExecutePhase(E20) -- the same reproduction cast it 408 times over 3000 iterations (avg 0.136/iteration) -- it is simply rare on the ladder's bare, no-mana-regen gear: it is priced at 340 mana, sits behind Shadow Word: Pain's upkeep in priority, and only has a window when BOTH the execute phase is open AND mana remains, so a specific 300-iteration seed landing on zero casts (this ladder's golden) is not surprising and is not the engine-primitive bug the previous note attributed it to (see expected_idle below; that comparison to paladin-retribution's Hammer of Wrath and warrior-fury's Execute conflated a real resource-scarcity effect with the shared isExecutePhase primitive, which this reproduction shows working correctly for Shadow Word: Death). Engine numbers (audit-priest, 2026-09-28): Shadow Word: Pain's and Devouring Plague's BonusCoefficient were hardcoded to vanilla-Classic-shaped values (an escalating table topping out at 0.167, and 0.063) that this build's own spellconst carries no support for; spellconst's sp_coefficient is a flat 0.2 for every Shadow Word: Pain rank and a flat 0.1 for every Devouring Plague rank, fixed on fork branch audit-priest (unpushed; needs a real engine-pin bump once merged). Shadowform is still cast at prepull, Shadow Word: Pain is maintained with the same fight-end guard as the source preset, and Inner Focus into Devouring Plague, Mind Blast on cooldown, and Mind Flay as filler are otherwise unchanged. Every rank named here is checked against the spellconst of the newest client build in builds/.",
   "expected_idle": [
     {
@@ -94,7 +98,7 @@
         }
       },
       {
-        "notes": "Shadow Word: Death (sim/priest/shadow_word_death.go): Forever's tier 5 Early Demise talent gives it bonus crit chance below 20% target health, read through the engine's execute-phase approximation (isExecutePhase E20, the same primitive this line already used).",
+        "notes": "Shadow Word: Death gets bonus crit chance below 20% target health from the Early Demise talent.",
         "action": {
           "condition": {
             "isExecutePhase": {
@@ -126,7 +130,7 @@
         }
       },
       {
-        "notes": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke, at rank 6 (19280), spellconst's top rank and the highest the engine registers at level 60.",
+        "notes": "Inner Focus into Devouring Plague: a free, empowered cast of the priest's biggest single-target nuke, using your highest learned rank at level 60.",
         "action": {
           "strictSequence": {
             "actions": [

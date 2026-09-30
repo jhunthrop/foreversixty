@@ -202,6 +202,14 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 	bySlot := make(map[string]slotRow, len(band.Slots))
 	for _, row := range band.Slots {
 		bySlot[row.Slot] = row
+
+		// (12) this lane's brief (bis-ranker-integrity-16), item 3: a
+		// faction_note that claims "this faction's own pick X" must
+		// name the item this row actually publishes, on a FILLED row
+		// (checked before the ItemID == 0 skip below, since this is
+		// exactly the case an emptied row must never carry).
+		checkFactionNoteNamesPublishedItem(t, slotLabel(row.Slot), row)
+
 		if row.ItemID == 0 {
 			continue
 		}
@@ -368,6 +376,41 @@ func checkArmorProficiencyGate(t *testing.T, label, classSlug string, band int, 
 	key := fmt.Sprintf("%s:%d", classSlug, c.SubclassID)
 	if opens, gated := armorAvailableLevel[key]; gated && band < opens {
 		t.Errorf("%s: item %d (%s) is subclass %d, gated to level %d for %s (armorAvailableLevel), published at band %d", label, itemID, itemName, c.SubclassID, opens, classSlug, band)
+	}
+}
+
+// factionNoteOwnPickMarker is the exact phrase
+// reconcileTrinketDirection's own gainsIndistinguishable branch
+// (faction_trinkets.go) always writes right before the item name it
+// is claiming as this row's own pick - the one FactionNote shape
+// whose truth depends on what this row actually publishes (pick.go's
+// own FactionNoteNeedsPick doc). The OTHER branch that writes a
+// FactionNote (negativeBeyondError, "racial") never uses this phrase:
+// it names only the rejected crossing candidate, a claim that holds
+// regardless of what this row publishes.
+const factionNoteOwnPickMarker = "own pick "
+
+// checkFactionNoteNamesPublishedItem applies this lane's brief
+// (bis-ranker-integrity-16), item 3: shaman-elemental's Alliance band
+// 50 trinket2 published EMPTY while its own faction_note still said
+// "alliance's own pick Molten Heart of the Mountain" - an item named
+// nowhere in the row (report.go's own trinketLowGain gate hid it
+// after the note was already written). A faction_note naming an "own
+// pick" must name the item this row actually shows as its pick, never
+// an empty row and never a different item.
+func checkFactionNoteNamesPublishedItem(t *testing.T, label string, row slotRow) {
+	t.Helper()
+	idx := strings.Index(row.FactionNote, factionNoteOwnPickMarker)
+	if idx == -1 {
+		return
+	}
+	named := strings.TrimSpace(row.FactionNote[idx+len(factionNoteOwnPickMarker):])
+	if row.ItemID == 0 {
+		t.Errorf("%s: faction_note %q claims an \"own pick\" but this row published empty (empty_reason %q) - the note must describe what publishes, or be omitted", label, row.FactionNote, row.EmptyReason)
+		return
+	}
+	if row.ItemName != "" && !strings.HasPrefix(named, row.ItemName) {
+		t.Errorf("%s: faction_note %q claims \"own pick\" %s, but this row's own published pick is %q (id %d)", label, row.FactionNote, named, row.ItemName, row.ItemID)
 	}
 }
 

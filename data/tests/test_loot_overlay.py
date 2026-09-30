@@ -228,6 +228,30 @@ def test_the_notes_state_the_per_raid_gap():
         assert fragment in notes
 
 
+def anachronos_war_effort_overlay():
+    for path, document in load_overlays(CURATED):
+        if path.name == "anachronos-war-effort.json":
+            return document
+    raise AssertionError("no anachronos-war-effort.json under curated/loot")
+
+
+def test_anachronos_vendor_is_gated_to_the_same_phase_as_the_aq_raid():
+    """bis-ranker-integrity-16 lane, item 5: Anachronos (vendor:15192)
+    sells the Ahn'Qiraj War Effort reward line as a flat, ungated
+    vendor buy -- the same war-effort rewards `raid:ahnqiraj` gates to
+    `opens: "later"` (no announced AQ date) and
+    `sim/cmd/leveling-bis/data.go`'s own `raidLockedQuestOpens` already
+    gates for the quest-turn-in path. Kept in its own file, not
+    forever-raid-phases.json, because that file's own `replace` list is
+    pinned to exactly the seven raid sources the loot generator emits
+    (test_the_seven_generated_raids_are_all_patched_not_added, above)."""
+    document = anachronos_war_effort_overlay()
+    assert [patch.id for patch in document.replace] == ["vendor:15192"]
+    assert document.replace[0].opens == OPENS_LATER
+    assert document.add == []
+    assert document.remove == []
+
+
 def test_every_phase_an_overlay_names_is_a_real_phase_or_the_sentinel():
     """An `opens` the API does not know is a filter that matches nothing."""
     allowed = PHASES | {OPENS_LATER}

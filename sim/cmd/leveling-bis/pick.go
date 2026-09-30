@@ -116,6 +116,25 @@ type slotPick struct {
 	// wonder why the same obtainable-by-both item was kept on one side
 	// and not the other. Empty for every slot that pass never touches.
 	FactionNote string
+	// FactionNoteNeedsPick is true only when FactionNote's own wording
+	// names Item itself as "this faction's own pick" (the
+	// gainsIndistinguishable branch of reconcileTrinketDirection,
+	// faction_trinkets.go) - a claim that is only true while Item
+	// actually publishes as this slot's pick. This lane's brief
+	// (bis-ranker-integrity-16), item 3: shaman-elemental's Alliance
+	// band 50 trinket2 published EMPTY (report.go's own trinketLowGain
+	// gate, Item's own measured gain never cleared significance) while
+	// still carrying a FactionNote written before that gate ran, naming
+	// Item ("Molten Heart of the Mountain") as "alliance's own pick" -
+	// an item that then appeared nowhere in the published row at all.
+	// The OTHER branch that writes FactionNote (negativeBeyondError,
+	// "racial") names only the REJECTED crossing candidate, a claim
+	// that stays true regardless of what later happens to this slot's
+	// own pick, so it never sets this field. report.go's own
+	// zero-value gate reads this to drop a note whose claim it would
+	// otherwise falsify, rather than publishing a note about an item
+	// the row no longer shows anywhere.
+	FactionNoteNeedsPick bool
 }
 
 // candidatesBySlot fans a scored pool out by every planner slot each

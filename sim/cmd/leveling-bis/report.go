@@ -202,6 +202,22 @@ type slotRow struct {
 	// for every row that pass never touches, including a trinket slot
 	// that simply was never faction-neutral to begin with.
 	FactionNote string `json:"faction_note,omitempty"`
+	// LabelSuffix disambiguates this row's own ItemName from a
+	// DIFFERENT item sharing the exact same display name elsewhere in
+	// this same row (an Alternatives entry, almost always - see
+	// applyLabelSuffixForNameCollisions) - this lane's brief
+	// (bis-ranker-integrity-16), item 6: warlock-destruction band 60
+	// Alliance's own legs pick, "Sentinel's Silk Leggings" (id 237815,
+	// ilvl 78, Forever's own reissue), sits beside an alternative ALSO
+	// named "Sentinel's Silk Leggings" (id 22752, ilvl 65, the real
+	// vanilla item, both sold by Illiyana Moonblaze) with nothing on
+	// the row itself telling the two apart beyond a bare id a player
+	// cannot look up in-game. "(ilvl 78)" here, the item's own real
+	// item level, is the one distinguishing fact every other row on
+	// the page already carries a tooltip for. Empty for every row
+	// whose name is unique within its own Alternatives list, which is
+	// nearly all of them.
+	LabelSuffix string `json:"label_suffix,omitempty"`
 }
 
 // noDPSValueReason is EmptyReason's own published value for this lane's
@@ -280,6 +296,24 @@ const twoHandEquippedReason = "two_hand_equipped"
 // brief, item 8.
 const noSourcedItemReason = "no_sourced_item"
 
+// swapNoteRunnerUpName is pk.RunnerUp.Name, with its own item level
+// appended when it exactly matches pk.Item's own name under a
+// different id - this lane's brief (bis-ranker-integrity-16), item 6:
+// warlock-destruction band 60 Alliance's own legs swap_note read "beat
+// the scored pick Sentinel's Silk Leggings (id 22752) in the sim" next
+// to a pick ALSO named "Sentinel's Silk Leggings" (id 237815) - a
+// sentence that reads as the pick beating itself, the id in
+// parentheses being the only (easy to miss) fact telling the two
+// apart. "(ilvl 65)" here is the same disambiguator
+// applyLabelSuffixForNameCollisions publishes on the row itself.
+func swapNoteRunnerUpName(pk slotPick) string {
+	if pk.Item != nil && pk.RunnerUp != nil && pk.Item.Name == pk.RunnerUp.Name &&
+		pk.Item.ID != pk.RunnerUp.ID && pk.RunnerUp.ItemLevel > 0 {
+		return fmt.Sprintf("%s (ilvl %d)", pk.RunnerUp.Name, pk.RunnerUp.ItemLevel)
+	}
+	return pk.RunnerUp.Name
+}
+
 // emptyReasonForNilPick names why slot has no pick at all (pk.Item ==
 // nil): pick()'s own loop (pick.go) only ever leaves a slot without
 // an Item because (a) main_hand equipped a two-hander, so off_hand is
@@ -303,6 +337,26 @@ func emptyReasonForNilPick(slot string, picks map[string]slotPick) string {
 		}
 	}
 	return noSourcedItemReason
+}
+
+// publishableFactionNote is pk.FactionNote, or "" when that note's own
+// wording names pk.Item as "this faction's own pick"
+// (FactionNoteNeedsPick, pick.go's own doc) but the row about to
+// publish no longer shows Item as its pick at all - this lane's brief
+// (bis-ranker-integrity-16), item 3: shaman-elemental's Alliance band
+// 50 trinket2 published empty (report.go's own trinketLowGain gate)
+// while still carrying a note calling its own hidden item "alliance's
+// own pick Molten Heart of the Mountain", an item that then named
+// nowhere in the row at all. Every site that rebuilds row as an empty
+// slotRow (relicEffectUnmodelled, trinketLowGain, the default
+// zero-value case) calls this instead of reading pk.FactionNote
+// directly, so a note only ever publishes while its own claim still
+// holds; tenet 8: describe what actually publishes, or say nothing.
+func publishableFactionNote(pk slotPick) string {
+	if pk.FactionNoteNeedsPick {
+		return ""
+	}
+	return pk.FactionNote
 }
 
 // tieAlternative is one equally-scored item slotRow.Ties names.
@@ -451,6 +505,13 @@ type alternativeRow struct {
 	// measured value is the number that used to be the baseline).
 	// Omitted (0) for every unverified row.
 	SimDPS float64 `json:"sim_dps,omitempty"`
+	// LabelSuffix is slotRow.LabelSuffix's own doc, applied to this
+	// alternative instead of the pick: set only when THIS alternative's
+	// ItemName collides with a different item id elsewhere in the same
+	// row (the pick itself, or another alternative) -
+	// applyLabelSuffixForNameCollisions sets it on every colliding
+	// entry, never only one side of the collision.
+	LabelSuffix string `json:"label_suffix,omitempty"`
 }
 
 // buildAlternatives is slotRow.Alternatives' own builder: pk.Ties
@@ -750,6 +811,64 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 		return out[i].ItemID < out[j].ItemID
 	})
 	return out
+}
+
+// slotItemLevelByID is item id -> ItemLevel for every candidate this
+// slot's own pool (list, the same []scored buildAlternatives just
+// read) or pick/runner-up carries - applyLabelSuffixForNameCollisions'
+// own resolver. pk's Item/RunnerUp are added on top of list because a
+// swap-promoted pick is not always still present in list by the time
+// this runs (pick.go's own doc on the picks map replacing entries
+// outright).
+func slotItemLevelByID(list []scored, pk slotPick) func(id int) int {
+	byID := make(map[int]int, len(list)+2)
+	for _, c := range list {
+		byID[c.ID] = c.ItemLevel
+	}
+	if pk.Item != nil {
+		byID[pk.Item.ID] = pk.Item.ItemLevel
+	}
+	if pk.RunnerUp != nil {
+		byID[pk.RunnerUp.ID] = pk.RunnerUp.ItemLevel
+	}
+	return func(id int) int { return byID[id] }
+}
+
+// applyLabelSuffixForNameCollisions sets LabelSuffix on row itself and
+// on any row.Alternatives entry whose ItemName equals row.ItemName but
+// whose ItemID differs - two different items sharing one display name
+// (warlock-destruction band 60 Alliance's own legs pick, this lane's
+// brief item 6: "Sentinel's Silk Leggings" id 237815, ilvl 78,
+// Forever's own reissue, sold beside a real vanilla item of the same
+// name, id 22752, ilvl 65, by the same vendor), distinguished only by
+// a bare id neither this page nor the in-game tooltip surfaces on its
+// own. itemLevel resolves an id to its own item level; an id it has no
+// answer for (0) publishes no suffix rather than a misleading
+// "(ilvl 0)". Never set for the overwhelming majority of rows, whose
+// name is unique within their own Alternatives list -
+// dedupeAlternatives (buildAlternatives, above) already collapses a
+// same-name collision BETWEEN two alternatives down to one row before
+// this ever runs, so the only collision left to catch is the pick's
+// own name against a surviving alternative.
+func applyLabelSuffixForNameCollisions(row *slotRow, itemLevel func(id int) int) {
+	if row.ItemID == 0 || row.ItemName == "" {
+		return
+	}
+	collides := false
+	for i := range row.Alternatives {
+		if row.Alternatives[i].ItemName != row.ItemName || row.Alternatives[i].ItemID == row.ItemID {
+			continue
+		}
+		collides = true
+		if lvl := itemLevel(row.Alternatives[i].ItemID); lvl > 0 {
+			row.Alternatives[i].LabelSuffix = fmt.Sprintf("(ilvl %d)", lvl)
+		}
+	}
+	if collides {
+		if lvl := itemLevel(row.ItemID); lvl > 0 {
+			row.LabelSuffix = fmt.Sprintf("(ilvl %d)", lvl)
+		}
+	}
 }
 
 // dedupeAlternatives keeps exactly one alternativeRow per ItemID, then
@@ -1322,6 +1441,14 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// row.Alternatives' own, possibly sim-measured delta for the
 			// same item id - reconcileTies' own doc, above.
 			row.Ties = reconcileTies(row.Ties, row.Alternatives)
+			// This lane's brief (bis-ranker-integrity-16), item 6: label
+			// the pick and any alternative sharing its exact display
+			// name under a different id (applyLabelSuffixForNameCollisions'
+			// own doc) - dedupeAlternatives (buildAlternatives, above)
+			// already collapses two ALTERNATIVES sharing a name down to
+			// one row, so the only collision left to catch here is the
+			// pick's own name against one of its surviving alternatives.
+			applyLabelSuffixForNameCollisions(&row, slotItemLevelByID(bySlot[slot], pk))
 			if pk.Item.HasSource {
 				row.Source = pk.Item.Source.Label
 				row.SourceKind = pk.Item.Source.Kind
@@ -1347,7 +1474,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 					// measured winner, verified by that very run.
 					delta := sw.SwapDPS - sw.BaselineDPS
 					row.DPSDelta = &delta
-					row.SwapNote = fmt.Sprintf("beat the scored pick %s (id %d) in the sim: %s", pk.RunnerUp.Name, pk.RunnerUp.ID, dpsComparisonPhrase(delta, sw.SwapDPS, sw.BaselineDPS, setDPS))
+					row.SwapNote = fmt.Sprintf("beat the scored pick %s (id %d) in the sim: %s", swapNoteRunnerUpName(pk), pk.RunnerUp.ID, dpsComparisonPhrase(delta, sw.SwapDPS, sw.BaselineDPS, setDPS))
 					realSimPromotion = true
 				case ok:
 					// This lane's brief (bis-ranker-integrity-6), item 6:
@@ -1413,7 +1540,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 						// SwapNote already does, is this fix.
 						delta := sw.BaselineDPS - sw.SwapDPS
 						row.DPSDelta = &delta
-						row.SwapNote = fmt.Sprintf("confirmed by the sim against %s (id %d): kept the pick, %s", pk.RunnerUp.Name, pk.RunnerUp.ID, dpsComparisonPhrase(delta, sw.BaselineDPS, sw.SwapDPS, setDPS))
+						row.SwapNote = fmt.Sprintf("confirmed by the sim against %s (id %d): kept the pick, %s", swapNoteRunnerUpName(pk), pk.RunnerUp.ID, dpsComparisonPhrase(delta, sw.BaselineDPS, sw.SwapDPS, setDPS))
 					}
 				}
 			}
@@ -1495,7 +1622,35 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// (rankSlotWithEffects, trySetCompletion, a swap promotion)
 			// is untouched - each of those already measures a genuine
 			// comparative delta, not an absolute set total.
-			trinketLowGain := isTrinketSlot && pk.Item.GainMeasured && !trinketGainSignificant(pk.Item.MeasuredGainDPS, pk.Item.MeasuredGainStdErr)
+			//
+			// This lane's brief (bis-ranker-integrity-16), item 4:
+			// !trinketEffectExempt is required here, not just ORed in
+			// further down the switch - a trinket rankTrinketSlot
+			// tournament-ranked always has GainMeasured true (this
+			// doc's own point above), so trinketLowGain fired for EVERY
+			// low-gain trinket regardless of trinketEffectExempt, and
+			// this case's own position ahead of `case ... ||
+			// trinketEffectExempt || ...` in the switch below meant
+			// that later case never got a chance to run for one: a
+			// trinket with a real, unmodelled defensive effect_text
+			// (Smoking Heart of the Mountain's armor buff, mage-arcane/
+			// fire/frost band 50 Alliance trinket2's own tournament
+			// winner) was emptied by this case exactly like a bare
+			// stat-only trinket with nothing behind it at all, hiding
+			// it next to its own tied alternative (Uther's Strength,
+			// the same "real defensive effect, no measurable DPS gain"
+			// shape) with no way for either to publish. druid-balance
+			// band 50 Alliance trinket2 (also Uther's Strength) never
+			// exposed this: it is EVERY band's own outright winner
+			// there, but ranked via the SAME tournament and gated by
+			// the SAME trinketLowGain - the two specs differ only in
+			// which effect-bearing trinket happened to win, not in
+			// whether this gate would have hidden it. Excluding an
+			// effect-bearing item here restores trinketEffectExempt's
+			// own stated purpose for every trinket the tournament ever
+			// crowns, not only the ones lucky enough to never trigger
+			// this case in the first place.
+			trinketLowGain := isTrinketSlot && !trinketEffectExempt && pk.Item.GainMeasured && !trinketGainSignificant(pk.Item.MeasuredGainDPS, pk.Item.MeasuredGainStdErr)
 			// A relic (libram/idol/totem) whose one real selling point -
 			// its engraved effect - the engine cannot simulate at all
 			// never got a fair shot at EITHER exemption below: score()
@@ -1516,7 +1671,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			relicEffectUnmodelled := row.EffectUnmodelled && !simDecided && !realSimPromotion && isRelicCandidate(pk.Item.candidate)
 			switch {
 			case relicEffectUnmodelled:
-				row = slotRow{Slot: slot, EmptyReason: effectNotModelledReason, EffectUnmodelled: true, FactionNote: pk.FactionNote}
+				row = slotRow{Slot: slot, EmptyReason: effectNotModelledReason, EffectUnmodelled: true, FactionNote: publishableFactionNote(pk)}
 			case trinketLowGain:
 				// This lane's brief (bis-ranker-integrity-12), item 1:
 				// the OLD version of this case replaced row wholesale
@@ -1538,7 +1693,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 				// still true, checked facts about this band's other
 				// shortlisted trinkets and must survive the pick being
 				// hidden.
-				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason, Alternatives: row.Alternatives, FactionNote: pk.FactionNote}
+				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason, Alternatives: row.Alternatives, FactionNote: publishableFactionNote(pk)}
 			case row.Score != 0 || row.EffectUnmodelled || realSimPromotion || trinketEffectExempt || simDecided:
 				// Not zero-value at all, or redeemed by one of the
 				// existing exemptions above - the row stands as computed.
@@ -1551,7 +1706,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			case weaponSlots[slot]:
 				row.LowValue = true
 			default:
-				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason, FactionNote: pk.FactionNote}
+				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason, FactionNote: publishableFactionNote(pk)}
 			}
 		}
 		rows = append(rows, row)

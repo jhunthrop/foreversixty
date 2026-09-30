@@ -299,6 +299,46 @@ def test_pvp_ranks_with_classic_db_returns_client_ranks_unchanged_without_an_ext
     assert _pvp_ranks_with_classic_db(build_dir, client_ranks) == client_ranks
 
 
+def test_pvp_ranks_with_classic_db_fills_a_retitled_honor_reward_from_item_rows(
+    tmp_path: Path,
+):
+    """bis-ranker-integrity-16 lane, item 7: the live repro - Forever's own
+    re-itemised "Field Marshal's Chain Greathelm" (231562) shares neither id
+    nor exact name with classic-db's "Field Marshal's Chain Helm" (16465,
+    rank 17), so neither `classic_honor_ranks` (id-keyed) nor `client_ranks`
+    ever names it. `item_rows` (items.json, this build's own flat catalogue)
+    is what lets `honor_ranks_by_title_for_untitled_items` fill it in by
+    title alone, without overwriting an id either table already covers."""
+    build_dir = tmp_path / "builds" / "1.60.1.70009"
+    write_extract(
+        build_dir,
+        [_classic_db_item(16465, required_honor_rank=17)],
+        {},
+        source_commit="deadbeef",
+    )
+    client_ranks: dict[int, int] = {}
+    item_rows = [
+        {"id": 231562, "name": "Field Marshal's Chain Greathelm"},
+        {"id": 16465, "name": "Field Marshal's Chain Helm"},
+        {"id": 999, "name": "Ordinary Leather Belt"},
+    ]
+    merged = _pvp_ranks_with_classic_db(build_dir, client_ranks, item_rows)
+    assert merged == {16465: 17, 231562: 17}
+
+
+def test_pvp_ranks_with_classic_db_skips_the_title_fill_without_item_rows(tmp_path: Path):
+    """The default (no item_rows) leaves title-based fill-in off entirely -
+    exactly as before it existed, for a caller with nothing to pass."""
+    build_dir = tmp_path / "builds" / "1.60.1.70009"
+    write_extract(
+        build_dir,
+        [_classic_db_item(16465, required_honor_rank=17)],
+        {},
+        source_commit="deadbeef",
+    )
+    assert _pvp_ranks_with_classic_db(build_dir, {}) == {16465: 17}
+
+
 def test_write_document_drops_an_unset_key_entirely_not_as_null(tmp_path: Path):
     """`loot.json`'s sources are a union (contract 6.1): a crafted source
     has no `bosses`. `write_document` must leave the key out of the JSON

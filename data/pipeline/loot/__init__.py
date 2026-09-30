@@ -40,7 +40,7 @@ from pathlib import Path
 
 from pipeline.classic_sources import load_classic_sources
 from pipeline.classicdb_crafted import load_extract as load_classic_crafted_recipes
-from pipeline.classicdb_items import classic_honor_ranks
+from pipeline.classicdb_items import classic_honor_ranks, honor_ranks_by_title_for_untitled_items
 from pipeline.classicdb_items import load_extract as load_classic_item_template
 from pipeline.csvio import read_csv
 from pipeline.forkdb import load_fork_database
@@ -92,7 +92,9 @@ def _require(path: Path, command: str) -> None:
         raise SystemExit(f"no {path}; run `python -m pipeline {command}` for this build first")
 
 
-def _pvp_ranks_with_classic_db(build_dir: Path, client_ranks: dict[int, int]) -> dict[int, int]:
+def _pvp_ranks_with_classic_db(
+    build_dir: Path, client_ranks: dict[int, int], item_rows: list[dict] | None = None
+) -> dict[int, int]:
     """`client_ranks` (either `pvp_ranks(sparse_rows)` or
     `pvp_ranks_from_committed_loot`) with `pipeline.classicdb_items.
     classic_honor_ranks`' own dict merged in for every id `client_ranks`
@@ -107,13 +109,23 @@ def _pvp_ranks_with_classic_db(build_dir: Path, client_ranks: dict[int, int]) ->
     Client wins on an id both name -- none measured on this build, the
     two tables cover disjoint item sets, but the client is the more
     authoritative one when they ever do disagree.
+
+    bis-ranker-integrity-16 lane, 2026-09-30: `item_rows` (items.json,
+    this build's own flat catalogue) additionally fills in
+    `pipeline.classicdb_items.honor_ranks_by_title_for_untitled_items`
+    for a Forever re-itemised honor reward under a BRAND NEW id whose
+    slot word was also renamed (`HONOR_RANK_BY_TITLE`'s own doc: "Field
+    Marshal's Chain Greathelm" 231562, neither id nor exact name
+    matching classic-db's "Field Marshal's Chain Helm" 16465, rank 17)
+    -- these never reach either table above at all. Pass `None` (the
+    default) for a caller with no item_rows on hand and this step is
+    skipped, exactly as before it existed.
     """
     extract = load_classic_item_template(build_dir)
-    if extract is None:
-        return client_ranks
-    items, _ = extract
-    merged = classic_honor_ranks(items)
+    merged = {} if extract is None else classic_honor_ranks(extract[0])
     merged.update(client_ranks)
+    if item_rows is not None:
+        merged.update(honor_ranks_by_title_for_untitled_items(item_rows, set(merged)))
     return merged
 
 
@@ -200,7 +212,7 @@ def write_loot_files(
         fork,
         {int(row["id"]): row["name"] for row in zone_rows},
         instance_types(read_csv(raw / "Map.csv"), zone_rows),
-        _pvp_ranks_with_classic_db(build_dir, pvp_ranks(sparse_rows)),
+        _pvp_ranks_with_classic_db(build_dir, pvp_ranks(sparse_rows), item_rows),
         build_items,
         item_inventory_types,
         quest_levels,
@@ -498,7 +510,7 @@ def merge_loot_files(
         fork,
         {int(row["id"]): row["name"] for row in zone_rows},
         types_from_committed_loot(build_dir, zone_rows),
-        _pvp_ranks_with_classic_db(build_dir, pvp_ranks_from_committed_loot(build_dir)),
+        _pvp_ranks_with_classic_db(build_dir, pvp_ranks_from_committed_loot(build_dir), item_rows),
         build_items,
         item_inventory_types,
         quest_levels,

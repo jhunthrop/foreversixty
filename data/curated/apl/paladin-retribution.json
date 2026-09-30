@@ -3,56 +3,144 @@
   "state": "written",
   "notes": "Vanilla Retribution at 60 has few buttons: keep a seal up, Judgement it off cooldown, Holy Strike it off cooldown, autoattack, and swap to Hammer of Wrath in the execute window. This rotation used to seal-twist every swing (swap Seal of Righteousness <-> Seal of Command right before each melee hit), ported directly from wowsims-forever's basic_ret.apl.json. Measured against this engine's own mechanics (2026-09-28 rotation-accuracy audit) that twist is a DPS loss here, not a gain, for three reasons specific to this fork: (1) sim/paladin/soc.go and sor.go's applySeal deactivates whichever seal is active before activating the new one -- the two auras are strictly mutually exclusive, so there is no overlap window for a swing to benefit from both, unlike the historical 1.12 latency exploit the technique is named for; (2) sim/paladin/judgement.go's castSpecificJudgement calls matchingSeal.Deactivate(sim) on every Judgement cast, and sim/request/request.go hardcodes PrimarySeal to Seal of Righteousness for every paladin request, so the very next decision after any Judgement always recasts Seal of Righteousness regardless of which seal the twist had up at that instant -- Judgement's damage is not actually being steered onto Seal of Command's judgement by twisting here; (3) Twist of Light (talents/paladin.json, Retribution capstone, proto field PaladinTalents.TwistOfLight) -- the talent whose whole point is removing the old exploit's timing risk by echoing the outgoing seal's effect onto the next hit -- has a proto field but is never read anywhere in sim/paladin, so the engine grants no benefit for having the talent either. Each seal recast costs a full GCD and 200+ mana at 60 (Seal of Righteousness rank 8 is 200, Seal of Command rank 5 is 210); swinging every ~2-3s pays that mana and GCD for no measurable benefit. Removing the twist and adding Holy Strike (below) as a filler on the freed GCDs was measured directly: forever-sim, level 60, band-60 BiS gear (data/builds/1.60.1.70009/bis/paladin-retribution.json), no buffs/consumes, 3000 iterations, patchwerk single-target -- twist-every-swing (the old rotation) 153.8 DPS; no twist, no Holy Strike 165.6 DPS; no twist plus Holy Strike (this rotation) 190.0 DPS, +23.5% over the old rotation. Consecration (baseline in Forever, sim/paladin/consecration.go, ranks from level 20) is deliberately left out of this single-target priority list: the same forever-sim comparison with Consecration added on cooldown measured 184.3 DPS, a DPS LOSS versus the 190.0 without it, because its scaling mana cost (135 at rank 1 up to 565 at rank 5) crowds out Judgement/Holy Strike/Exorcism casts for a ground-AOE effect that does nothing extra against one target. Consecration is genuinely valuable while leveling or tanking adds (see the guide's Leveling section), just not in a single-target damage priority, which is why it carries no expected_idle entry here at all rather than a castSpell line -- it is never named by this rotation, not named-and-silent. Hammer of Wrath (24239) is a rank the vanilla client never had at this level (rank 3, level 60) -- checked against this build's own spellconst, not remembered from live Classic. Rotation-accuracy program, unused-ability pass (2026-09-28): Holy Wrath (2812/10318, learnable at 50) is left out of this priority list for the same reason as Consecration above, not measured separately -- sim/paladin/holy_wrath.go's ApplyEffects loops the encounter's targets and only deals damage to target.MobType == Demon || Undead (the same restriction Exorcism's ExtraCastCondition enforces above), so against this ladder's default Humanoid target, or any Humanoid boss, it is a full GCD and 645-805 mana spent on zero damage. Judgement of Command (20425/20966) and Judgement of Fury (also on the class's own learned-ability list at every level) are not separate castable buttons at all: sim/paladin/judgement.go's generic Judgement (20271) resolves to whichever of these the active seal implies, and this rotation's seal never leaves Seal of Righteousness (see the seal-twist paragraph above) -- so they show as permanently unused by name only, with no line for this file to add or gate.",
   "expected_idle": [
-    { "id": 10314, "reason": "Exorcism only lands on Undead or Demon (sim/paladin/exorcism.go's ExtraCastCondition, target.MobType == Demon || Undead); the ladder's default encounter target is Humanoid, so this line's own gate structurally can never pass against it." },
-    { "id": 24239, "reason": "Hammer of Wrath is gated on core.Simulation.IsExecutePhase20(), the same duration-based execute-window flag warrior's Execute uses (sim/warrior/execute.go); the ladder's bare, no-consumes single-target run never casts it despite the window being wired correctly on the built request (execute_proportion_20 is nonzero and the duration-based transition lands in the fight's last quarter) -- reported to lane engine-melee as an open finding, not something this file's condition can fix." }
+    {
+      "id": 10314,
+      "reason": "Exorcism only lands on Undead or Demon (sim/paladin/exorcism.go's ExtraCastCondition, target.MobType == Demon || Undead); the ladder's default encounter target is Humanoid, so this line's own gate structurally can never pass against it."
+    },
+    {
+      "id": 24239,
+      "reason": "Hammer of Wrath is gated on core.Simulation.IsExecutePhase20(), the same duration-based execute-window flag warrior's Execute uses (sim/warrior/execute.go); the ladder's bare, no-consumes single-target run never casts it despite the window being wired correctly on the built request (execute_proportion_20 is nonzero and the duration-based transition lands in the fight's last quarter) -- reported to lane engine-melee as an open finding, not something this file's condition can fix."
+    }
   ],
+  "engineering_notes": {
+    "2": "paladin.md audit finding 3: sim/paladin/exorcism.go's ExtraCastCondition already gates it on target.MobType == Demon || Undead, and sim/core/spell.go routes ExtraCastCondition through Spell.CanCast, so spellCanCast naturally no-ops on any other target with no new APL condition type needed. The smoke build's default target is not Undead or Demon, so this cannot be proven to fire against it -- proven structurally instead (the action survives the rank rewrite at 60 and 20, spellCanCast resolves with no validation warning).",
+    "4": "New in Forever this week (sim/paladin/holy_strike.go, no engine file before it). Measured directly: adding it (with the seal twist removed, see notes) raised a level-60 band-60-BiS forever-sim run from 165.6 to 190.0 DPS.",
+    "5": "sim/paladin/judgement.go's castSpecificJudgement is what deactivates the seal that this condition then catches."
+  },
   "sources": [
-    { "label": "wowsims-forever default Retribution priority list (seal-twisting logic this rotation used to port directly, now removed -- see notes)", "url": "https://github.com/wowsims/classic/blob/master/ui/retribution_paladin/apls/basic_ret.apl.json", "kind": "community" },
-    { "label": "Warcraft Tavern: Classic Retribution Paladin rotation (Normal Rotation vs. the higher-DPS Seal Twisting Rotation; Judgement of the Crusader, Hammer of Wrath execute) -- cited for period context; this engine's own mechanics do not reward the twist, see notes", "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-retribution-paladin-rotations-cooldowns/", "kind": "community" },
-    { "label": "Forever Sixty default rotation, unvalidated until the nightly job runs", "url": "https://foreversixty.gg/sim/specs", "kind": "site" }
+    {
+      "label": "wowsims-forever default Retribution priority list (seal-twisting logic this rotation used to port directly, now removed -- see notes)",
+      "url": "https://github.com/wowsims/classic/blob/master/ui/retribution_paladin/apls/basic_ret.apl.json",
+      "kind": "community"
+    },
+    {
+      "label": "Warcraft Tavern: Classic Retribution Paladin rotation (Normal Rotation vs. the higher-DPS Seal Twisting Rotation; Judgement of the Crusader, Hammer of Wrath execute) -- cited for period context; this engine's own mechanics do not reward the twist, see notes",
+      "url": "https://www.warcrafttavern.com/wow-classic/guides/pve-retribution-paladin-rotations-cooldowns/",
+      "kind": "community"
+    },
+    {
+      "label": "Forever Sixty default rotation, unvalidated until the nightly job runs",
+      "url": "https://foreversixty.gg/sim/specs",
+      "kind": "site"
+    }
   ],
   "rotation": {
     "type": "TypeAPL",
     "prepullActions": [
       {
-        "action": { "castPaladinPrimarySeal": {} },
-        "doAtValue": { "const": { "val": "-1.5s" } }
+        "action": {
+          "castPaladinPrimarySeal": {}
+        },
+        "doAtValue": {
+          "const": {
+            "val": "-1.5s"
+          }
+        }
       }
     ],
     "priorityList": [
-      { "action": { "autocastOtherCooldowns": {} } },
       {
-        "notes": "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again.",
         "action": {
-          "condition": { "spellCanCast": { "spellId": { "spellId": 20271 } } },
-          "castSpell": { "spellId": { "spellId": 20271 } }
+          "autocastOtherCooldowns": {}
         }
       },
       {
-        "notes": "Exorcism on cooldown vs Undead and Demons (paladin.md audit finding 3): implemented, learnable at 20, 15s cooldown, real Holy nuke -- sim/paladin/exorcism.go's ExtraCastCondition already gates it on target.MobType == Demon || Undead, and sim/core/spell.go routes ExtraCastCondition through Spell.CanCast, so spellCanCast naturally no-ops on any other target with no new APL condition type needed. Free damage on the right encounters; the smoke build's default target is not Undead or Demon, so this cannot be proven to fire against it -- proven structurally instead (the action survives the rank rewrite at 60 and 20, spellCanCast resolves with no validation warning).",
+        "notes": "Judgement on cooldown: it is a free global that unloads the seal's judgement effect and starts its ten second cooldown again.",
         "action": {
-          "condition": { "spellCanCast": { "spellId": { "spellId": 10314, "rank": 6 } } },
-          "castSpell": { "spellId": { "spellId": 10314, "rank": 6 } }
+          "condition": {
+            "spellCanCast": {
+              "spellId": {
+                "spellId": 20271
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 20271
+            }
+          }
+        }
+      },
+      {
+        "notes": "Exorcism on cooldown against Undead and Demons: learnable at level 20, a 15 second cooldown Holy nuke that only lands on those two target types.",
+        "action": {
+          "condition": {
+            "spellCanCast": {
+              "spellId": {
+                "spellId": 10314,
+                "rank": 6
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10314,
+              "rank": 6
+            }
+          }
         }
       },
       {
         "notes": "Hammer of Wrath below 20 percent: the execute-window button Retribution has besides seals, Judgement and Holy Strike.",
         "action": {
-          "condition": { "isExecutePhase": { "threshold": "E20" } },
-          "castSpell": { "spellId": { "spellId": 24239, "rank": 3 } }
+          "condition": {
+            "isExecutePhase": {
+              "threshold": "E20"
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 24239,
+              "rank": 3
+            }
+          }
         }
       },
       {
-        "notes": "Holy Strike on cooldown: new in Forever this week (sim/paladin/holy_strike.go, no engine file before it) -- an instant Holy weapon attack on its own 10s cooldown, learnable from level 6. Judgement and seal maintenance alone leave GCDs idle every ten-second window; Holy Strike is the filler that spends them. Measured directly: adding it (with the seal twist removed, see notes) raised a level-60 band-60-BiS forever-sim run from 165.6 to 190.0 DPS.",
+        "notes": "Holy Strike on cooldown: an instant Holy weapon attack on its own 10 second cooldown, learnable from level 6. Judgement and seal maintenance alone leave GCDs idle every ten-second window; Holy Strike is the filler that spends them.",
         "action": {
-          "condition": { "spellCanCast": { "spellId": { "spellId": 10333, "rank": 8 } } },
-          "castSpell": { "spellId": { "spellId": 10333, "rank": 8 } }
+          "condition": {
+            "spellCanCast": {
+              "spellId": {
+                "spellId": 10333,
+                "rank": 8
+              }
+            }
+          },
+          "castSpell": {
+            "spellId": {
+              "spellId": 10333,
+              "rank": 8
+            }
+          }
         }
       },
       {
-        "notes": "Reapply Seal of Righteousness once it is about to expire -- this is now the ONLY seal-maintenance line (see notes for why the seal twist that used to sit here was removed). It also catches the seal being deactivated by Judgement's own cast (sim/paladin/judgement.go's castSpecificJudgement), which fires this same condition on the very next decision.",
+        "notes": "Reapply Seal of Righteousness once it is about to expire -- this is now the only seal-maintenance line (see notes for why the seal twist that used to sit here was removed). It also catches the seal being deactivated by Judgement's own cast, which fires this same condition on the very next decision.",
         "action": {
-          "condition": { "cmp": { "op": "OpLe", "lhs": { "currentSealRemainingTime": {} }, "rhs": { "const": { "val": "1" } } } },
+          "condition": {
+            "cmp": {
+              "op": "OpLe",
+              "lhs": {
+                "currentSealRemainingTime": {}
+              },
+              "rhs": {
+                "const": {
+                  "val": "1"
+                }
+              }
+            }
+          },
           "castPaladinPrimarySeal": {}
         }
       }

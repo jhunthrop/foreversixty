@@ -788,6 +788,23 @@ class AplDocument(BaseModel):
     #: smoke test holds the engine's own unknown-action warnings to exactly
     #: this set. Empty is the normal case.
     inert: list[int] = []
+    #: Engineering commentary for a `rotation.priorityList` step, keyed by
+    #: that step's own 0-based index (a string key: JSON has no integer
+    #: keys) -- bis-ranker-integrity-16 lane, 2026-09-30 (fourteenth
+    #: player sweep, casters.md's headline finding): a step's own `notes`
+    #: is rendered VERBATIM in the live rotation drawer
+    #: (web/src/lib/sim/rotations.ts's rotationNotesFor), so Go file
+    #: paths, "Fix round N" narrative and internal spell/aura ids never
+    #: belong there -- this field is where that commentary moved instead.
+    #: Deliberately NOT a key on the step object itself
+    #: (`rotation.priorityList[i]`): that dict round-trips through the
+    #: engine's own strict `APLListItem` protobuf schema
+    #: (`pipeline.apl.parse_rotation`, test_apl.py's own
+    #: test_every_rotation_parses_as_the_engines_own_aplrotation), which
+    #: has exactly three fields ("hide", "notes", "action") and rejects
+    #: anything else outright. Empty for every spec this lane's cleanup
+    #: never touched, which is most of them.
+    engineering_notes: dict[str, str] = {}
 
 
 class SpellEffectConstant(BaseModel):
