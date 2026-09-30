@@ -33,8 +33,18 @@ export interface BisSlot {
   /** One of loot.ts's LootKind -- the picker's own kinds, so a BiS row's badge reads the
    *  same word as the Droptimizer's. */
   source_kind: string;
-  score: number;
+  /** The stat-weight estimate in the band's `score_unit`; absent on a row the ranker's
+   *  own sim decided (trinkets, proc items, weapon pairs), which carries `sim_dps` instead
+   *  (ranker-integrity-2, 2026-09-30: one number per row, never two units side by side). */
+  score?: number;
+  /** The measured set DPS with this item, for a sim-decided row. */
+  sim_dps?: number;
   verified: boolean;
+  /** A weapon slot where no sourced candidate carried a positive score and the ranker
+   *  fell back to the best by item level rather than publish an empty weapon slot. */
+  low_value?: boolean;
+  /** Why an empty slot is empty: `two_hand_equipped`, `no_dps_value`, `no_sourced_item`. */
+  empty_reason?: string;
   swap_note?: string;
   /** The next-best sourced candidates after this row's own pick (`sim/cmd/leveling-bis/
    *  report.go`'s own `slotRow.Alternatives`) -- up to three, ties (identical score to the
@@ -50,13 +60,15 @@ export interface BisSlot {
 export interface BisAlternative {
   item_id: number;
   item_name: string;
-  score: number;
+  /** See `BisSlot.score`: absent when the row was sim-decided (then `sim_dps` may be set). */
+  score?: number;
+  sim_dps?: number;
   source_kind: string;
   source: string;
   /** `score` minus the pick's own `score`, in the band's score unit -- the raw number
    *  `dps_delta` is converted from, kept here for a consumer that wants the un-converted
    *  figure. Exactly 0 for a tie. */
-  score_delta: number;
+  score_delta?: number;
   /** `score_delta` converted to real DPS (`score_delta * BisBand.reference_dps_per_point`) --
    *  owner review, tenet 8 (2026-09-29): the first cut of this field published the raw
    *  score-unit delta under this same name with nothing saying it was not DPS. Usually
@@ -113,6 +125,9 @@ export interface BisBand {
    *  (`normaliseBisFile`, `load.ts`): a file published before this field existed carries no
    *  `reference_dps_per_point` key at all. */
   reference_dps_per_point?: number | null;
+  /** The unit every stat-weight `score` on this band is in (`"reference_stat_points"`);
+   *  a sim-decided row carries `sim_dps` instead of a score. */
+  score_unit?: string;
 }
 
 export interface BisFile {
