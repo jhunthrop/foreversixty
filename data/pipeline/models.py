@@ -445,6 +445,14 @@ class LootSource(BaseModel):
     #: case -- the fork's own 16-item AtlasLoot table for it is a subset
     #: of what classic-db's dump independently names for the same boss).
     source_origin: str | None = None
+    #: A short, player-unreadable reason this source (or the `opens`
+    #: gate this specific source copy carries -- `pipeline.loot.
+    #: vendor_cost.apply_vendor_cost_gate`'s own `vendor:<npc_id>:later`
+    #: sibling) is not simply an ordinary open-at-launch listing: never
+    #: shown in player-facing copy (tenet 7), read by reports and
+    #: reviewers only. `None` for every source this applies to (most of
+    #: them).
+    source_note: str | None = None
 
 
 class QuestSource(BaseModel):

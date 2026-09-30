@@ -59,6 +59,11 @@ class ItemSourceEntry(BaseModel):
     sold_by: list[NpcSource] = []
     crafted_by: list[CraftedSource] = []
     quest_rewards: list[QuestRewardSource] = []
+    #: `pipeline.wowhead_item_sources.ItemPageSources`' own two fields of
+    #: the same name -- carried through the merge unchanged (vendor-11036
+    #: lane, 2026-09-30).
+    required_faction_id: int | None = None
+    required_standing_raw: int | None = None
     source: ItemSourceOrigin
     fetched_at: str
 
@@ -173,6 +178,8 @@ def fetch_missing_from_wowhead(
                 sold_by=page.sold_by,
                 crafted_by=page.crafted_by,
                 quest_rewards=page.quest_rewards,
+                required_faction_id=page.required_faction_id,
+                required_standing_raw=page.required_standing_raw,
                 source="wowhead",
                 fetched_at=now,
             )

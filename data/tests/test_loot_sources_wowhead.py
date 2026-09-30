@@ -82,6 +82,48 @@ def test_a_wholly_new_wowhead_vendor_source_is_appended_and_tagged():
     assert stats.wowhead_items == 1
 
 
+def test_a_wowhead_vendor_with_a_fork_recognised_reqfaction_carries_rep_gate():
+    """vendor-11036 lane, 2026-09-30: `ItemSourceEntry.required_faction_id`/
+    `required_standing_raw` (wowhead's own `jsonequip.reqfaction`/
+    `reqrep`) are only trusted when the fork's own faction table knows
+    the id -- fixture engine's `db.json` names faction 529 "Argent
+    Dawn". wowhead's `reqrep` is 0-7; `6` decodes (offset +1 into
+    `pipeline.forkdb.REP_LEVELS`) to `"revered"`."""
+    item_sources = {
+        UNSOURCED_ITEM: ItemSourceEntry(
+            sold_by=[NpcSource(npc_id=950, name="Wowhead Vendor", zone_ids=[16])],
+            required_faction_id=529,
+            required_standing_raw=6,
+            source="wowhead",
+            fetched_at="x",
+        )
+    }
+    document, _ = built(item_sources)
+    vendor = source(document, "vendor:950")
+    assert vendor.faction_id == 529
+    assert vendor.standing == "revered"
+
+
+def test_a_wowhead_vendor_with_an_unknown_reqfaction_carries_no_rep_gate():
+    """A faction id the fork's own table does not name (unlike
+    `_corrected_rep_faction_id`'s fork-native `rep` bucket, this is
+    never dropped outright -- the vendor source itself still stands,
+    just without a gate neither database can corroborate)."""
+    item_sources = {
+        UNSOURCED_ITEM: ItemSourceEntry(
+            sold_by=[NpcSource(npc_id=950, name="Wowhead Vendor", zone_ids=[16])],
+            required_faction_id=999999,
+            required_standing_raw=6,
+            source="wowhead",
+            fetched_at="x",
+        )
+    }
+    document, _ = built(item_sources)
+    vendor = source(document, "vendor:950")
+    assert vendor.faction_id is None
+    assert vendor.standing is None
+
+
 def test_a_wowhead_drop_in_an_existing_zone_unions_into_the_fork_source_and_stays_unset():
     """Item 104 ("World Boss Drop") already sources Azuregos's own
     `zone:16` bucket (npc 903 names no `zoneId` on ITS OWN drop row, so
