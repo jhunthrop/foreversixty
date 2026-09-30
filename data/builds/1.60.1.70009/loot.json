@@ -110205,6 +110205,7 @@
         16514,
         16516,
         16524,
+        16526,
         17570,
         17573,
         17610,
@@ -110261,7 +110262,7 @@
       "name": "Rank 16 (Alliance)",
       "rank": 16,
       "faction": "alliance",
-      "faction_source": "title",
+      "faction_source": "classic-db",
       "title": "Marshal",
       "items": [
         16438,
@@ -110312,7 +110313,7 @@
       "name": "Rank 16 (Horde)",
       "rank": 16,
       "faction": "horde",
-      "faction_source": "title",
+      "faction_source": "classic-db",
       "title": "General",
       "items": [
         16537,

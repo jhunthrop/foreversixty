@@ -155,6 +155,59 @@ def test_one_line_caps_a_run_on_sentence_with_no_boundary():
     assert result.endswith("…")
 
 
+def test_one_line_never_cuts_a_word_in_half():
+    """data-followups-10 lane, 2026-09-30, item 8: the live repro
+    (hunter-marksmanship/hunter-beast-mastery's Arcane Shot line)
+    published "...are the sh…", the cap landing inside "shots" - a
+    last-resort cut must back off to the last whole word instead. One
+    long, real-shaped run-on sentence (no early ". " boundary) built
+    from ordinary words: the text before the ellipsis must be an exact
+    prefix of the original, cut only at a space the original text
+    itself had."""
+    words = [f"word{i}" for i in range(400)]
+    sentence = " ".join(words) + "."  # one giant run-on, single trailing period
+    result = _one_line(sentence)
+    assert result.endswith("…")
+    before_ellipsis = result[:-1]
+    assert sentence.startswith(before_ellipsis), (
+        f"{before_ellipsis!r} is not a clean prefix of the original text"
+    )
+    assert sentence[len(before_ellipsis)] == " ", (
+        "the cut did not land on a word boundary in the original text"
+    )
+
+
+def test_one_line_real_curated_notes_never_hit_the_fallback_cap():
+    """data-followups-10 lane, 2026-09-30, item 8: every curated
+    apl/*.json note's own first sentence, across every spec on this
+    build, must fit under CONDITION_MAX_CHARS without the last-resort
+    cap ever firing - the regression this pins (Arcane Shot's real
+    first sentence is 534 characters with no early ". " boundary, and
+    the longest across the whole corpus, druid-feral's Claw line, is
+    672) is the cap itself sitting well under that real maximum."""
+    apl_dir = Path(__file__).resolve().parent.parent / "curated" / "apl"
+    cut_lines = []
+
+    def walk(obj):
+        if isinstance(obj, dict):
+            notes = obj.get("notes")
+            if isinstance(notes, str) and notes.strip():
+                if _one_line(notes).endswith("…"):
+                    cut_lines.append(notes[:80])
+            for value in obj.values():
+                walk(value)
+        elif isinstance(obj, list):
+            for value in obj:
+                walk(value)
+
+    for path in sorted(apl_dir.glob("*.json")):
+        walk(json.loads(path.read_text(encoding="utf-8")))
+
+    assert not cut_lines, (
+        f"{len(cut_lines)} curated note(s) still hit the fallback cap: {cut_lines}"
+    )
+
+
 def test_a_line_carries_only_the_first_sentence_of_a_long_curated_note(tmp_path):
     long_note = (
         "Short reason. A paragraph of engine-debugging narration that a "

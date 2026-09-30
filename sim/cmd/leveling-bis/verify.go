@@ -34,6 +34,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"sort"
 
 	"github.com/jhunthrop/foreversixty/sim/api"
@@ -55,6 +56,47 @@ type swapResult struct {
 	// BaselineDPS is the scored set's own DPS the swap was measured against.
 	BaselineDPS float64
 	Beat        bool
+	// SwapStdErr/BaselineStdErr are the two runs' own standard error
+	// (api.Estimate.Error, RunPlainDPSWithError's second return) -
+	// data-followups-10 lane, 2026-09-30, item 7: read for free off the
+	// SAME single sim run RunPlainDPS already made (runPlainDPSEstimate's
+	// own doc - no second run, no extra cost), so Significant (below)
+	// can tell a genuine, reproducible DPS difference apart from this
+	// run's own sampling noise the exact way trinkets.go's
+	// trinketGainSignificant/positiveBeyondError already do for a
+	// trinket's gain - this file's own swap comparison had no such
+	// check at all before this lane (a live repro, hunter-marksmanship
+	// band 20: Serpent Gloves/+7 spell power, a stat this spec's own
+	// weight_stats never measures at all, so score() ties it exactly
+	// against Gloves of the Fang's +4 Strength, also unweighted - kept
+	// "winning" the item-level tie-break for three sweeps running, and
+	// verify.go's own bare 1%-margin swap test against Gloves of the
+	// Fang, same fixed verifySeed every run, kept reporting a "real",
+	// sim-measured negative delta for it that never once retested
+	// whether that gap was bigger than the run's own noise).
+	SwapStdErr     float64
+	BaselineStdErr float64
+}
+
+// Significant reports whether sw's own SwapDPS and BaselineDPS differ
+// by more than their own combined standard error - the same
+// combination-in-quadrature rule gainsIndistinguishable
+// (faction_trinkets.go) and trinkets.go's own gainStdErr already use,
+// applied here to an ordinary gear swap's baseline/runner-up pair
+// instead of two trinkets' own gains. Computed on demand, never
+// stored, so a swapResult literal built by a test that has not been
+// updated to populate SwapStdErr/BaselineStdErr (the Go zero value,
+// 0.0) trivially reports "significant" for ANY nonzero delta - this
+// method is additive, never a silent behaviour change for a caller
+// that predates real error bars. Beat (verifyBand's own flat
+// swapMargin bar) and Significant are BOTH required before applySwaps
+// promotes a runner-up (a real improvement must be both practically
+// and statistically real) and before report.go treats this slot's own
+// measured delta as confirmed evidence rather than an ordinary,
+// unverified estimate.
+func (sw swapResult) Significant() bool {
+	combined := math.Sqrt(sw.SwapStdErr*sw.SwapStdErr + sw.BaselineStdErr*sw.BaselineStdErr)
+	return math.Abs(sw.SwapDPS-sw.BaselineDPS) > combined
 }
 
 // buildGear turns a pick map into the engine's gear list, dropping
@@ -170,7 +212,8 @@ func swapSlot(picks map[string]slotPick, slot string, itemID int, itemIsTwoHand 
 // still propagates and the caller reports the band as unverified.
 func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick) (baselineDPS float64, swaps []swapResult, verifyErrors []string, err error) {
 	baseline := plainRequest(spec, bandCharacter("verify", race, classSlug, spec.Spec, level, talents, buildGear(picks)), verifyIterations, verifySeed)
-	baselineDPS, err = runner.RunPlainDPS(baseline)
+	var baselineStdErr float64
+	baselineDPS, baselineStdErr, err = runner.RunPlainDPSWithError(baseline)
 	if err != nil {
 		return 0, nil, nil, err
 	}
@@ -187,12 +230,20 @@ func verifyBand(runner engineRunner, spec specInfo, race, classSlug string, leve
 		runnerUp := picks[slot].RunnerUp
 		gear := swapSlot(picks, slot, runnerUp.ID, runnerUp.TwoHand)
 		req := plainRequest(spec, bandCharacter("verify", race, classSlug, spec.Spec, level, talents, gear), verifyIterations, verifySeed)
-		dps, runErr := runner.RunPlainDPS(req)
+		dps, stdErr, runErr := runner.RunPlainDPSWithError(req)
 		if runErr != nil {
 			verifyErrors = append(verifyErrors, fmt.Sprintf("%s: runner-up %s (id %d): %v", slot, runnerUp.Name, runnerUp.ID, runErr))
 			continue
 		}
-		swaps = append(swaps, swapResult{Slot: slot, SwapDPS: dps, BaselineDPS: baselineDPS, Beat: beatsByMargin(dps, baselineDPS)})
+		sw := swapResult{
+			Slot:           slot,
+			SwapDPS:        dps,
+			BaselineDPS:    baselineDPS,
+			SwapStdErr:     stdErr,
+			BaselineStdErr: baselineStdErr,
+		}
+		sw.Beat = beatsByMargin(dps, baselineDPS) && sw.Significant()
+		swaps = append(swaps, sw)
 	}
 	return baselineDPS, swaps, verifyErrors, nil
 }
