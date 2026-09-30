@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 000000000000000000-23510000000000000-0000000000000000000)
 
-Set DPS (verified): 32.9. Weights run: 0.7s. Verify run: 0.8s. 147 eligible items had no known source.
+Set DPS (verified): 32.9. Weights run: 0.7s. Verify run: 0.7s. 147 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.005, intellect=0.385 ± 0.014, crit=0.166 ± 0.007 per rating point (14 rating = 1%, 2.318 per %), hit=0.498 ± 0.004 per rating point (10 rating = 1%, 4.982 per %), spell_haste=not significant (0.476 ± 0.242), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 426, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 255115100000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 455.6. Weights run: 0.8s. Verify run: 0.9s. 1002 eligible items had no known source.
+Set DPS (verified): 455.6. Weights run: 0.9s. Verify run: 0.9s. 1016 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.011, intellect=0.971 ± 0.137, crit=0.545 ± 0.040 per rating point (14 rating = 1%, 7.628 per %), hit=1.387 ± 0.025 per rating point (10 rating = 1%, 13.866 per %), spell_haste=not significant (-3.482 ± 2.444), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.011
 
@@ -139,13 +139,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | shoulder | Fireleaf Shoulderpads (240054) | Leonid Barthalomew the Revered [vendor] | 63.2 spell_power points (13.13 DPS) | yes | Fireleaf Mantle (240046, -2.59 DPS, sim-verified) [vendor]; Rugged Mantle of the Timbermaw (227808, -2.91 DPS) [vendor]; Field Marshal's Silk Spaulders (231602, -4.91 DPS) [vendor] |
 | back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 37.6 spell_power points (7.82 DPS) | yes | Hide of the Wild (18510, -2.89 DPS) [crafted]; Spritecaster Cape (11623, -3.70 DPS) [dungeon]; Crystalline Threaded Cape (20697, -6.79 DPS, sim-verified) [world_drop] |
 | chest | Fireleaf Robe (240059) | Leonid Barthalomew the Revered [vendor] | 96.7 spell_power points (20.09 DPS) | yes | Fireleaf Garb (240051, -0.81 DPS, sim-verified) [vendor]; Robe of the Archmage (14152, -7.77 DPS) [crafted]; Field Marshal's Silk Vestments (231603, -8.22 DPS) [vendor] |
-| wrist | Fireleaf Bindings (240052) | Leonid Barthalomew the Revered [vendor] | 58.2 spell_power points (12.08 DPS) | yes | Fireleaf Wristwraps (240044, -5.46 DPS, sim-verified) [vendor]; Dryad's Wrist Bindings (19595, -5.90 DPS) [rep]; Arcanist Bindings (16799, -6.56 DPS) [world_drop] |
+| wrist | Fireleaf Bindings (240052) | Leonid Barthalomew the Revered [vendor] | 58.2 spell_power points (12.08 DPS) | yes | Fireleaf Wristwraps (240044, -5.46 DPS, sim-verified) [vendor]; Dryad's Wrist Bindings (19595, -5.90 DPS) [rep]; Dryad's Wrist Bindings (19596, -6.72 DPS) [rep] |
 | hands | Fireleaf Gloves (240057) | Leonid Barthalomew the Revered [vendor] | 70.9 spell_power points (14.72 DPS) | yes | Fireleaf Mitts (240049, +0.00 DPS, sim-verified) [vendor]; Sorcerer's Gloves (22066, -6.52 DPS) [quest]; Sorcerer's Gauntlets (226930, -6.52 DPS) [vendor] |
 | waist | Fireleaf Belt (240053) | Leonid Barthalomew the Revered [vendor] | 72.5 spell_power points (15.06 DPS) | yes | Knowledge of the Timbermaw (228190, -2.55 DPS) [vendor]; Belt of the Archmage (18405, -6.09 DPS) [crafted]; Fireleaf Waistguard (240045, -8.72 DPS, sim-verified) [vendor] |
 | legs | Fireleaf Leggings (240055) | Leonid Barthalomew the Revered [vendor] | 86.1 spell_power points (17.88 DPS) | yes | Fireleaf Pants (240047, -2.85 DPS, sim-verified) [vendor]; Marshal's Silk Leggings (231605, -6.03 DPS) [vendor]; Sentinel's Silk Leggings (237815, -6.05 DPS) [vendor] |
 | feet | Fireleaf Boots (240050) (or Fireleaf Sandals (240058)) | Leonid Barthalomew the Revered [vendor] | 64.2 spell_power points (13.34 DPS) | yes | Fireleaf Sandals (240058, +0.00 DPS, sim-verified) [vendor]; Marshal's Silk Footwraps (231606, -3.27 DPS) [vendor]; Sorcerer's Boots (22064, -5.75 DPS) [quest] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (455.6 DPS) | yes | Signet Ring of the Bronze Dragonflight (234028, -0.62 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234024, -0.82 DPS) [vendor]; Naglering (11669, -25.37 DPS, sim-verified) [dungeon] |
-| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (455.6 DPS) | yes | Ritssyn's Ring of Chaos (21836, -0.01 DPS) [world_drop]; Channeler's Ring (272406, -1.08 DPS) [vendor]; Naglering (11669, -13.67 DPS, sim-verified) [dungeon] |
+| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (455.6 DPS) | yes | Channeler's Ring (272406, -1.08 DPS) [vendor]; Cauterizing Band (19140, -1.25 DPS) [world_drop]; Naglering (11669, -13.67 DPS, sim-verified) [dungeon] |
 | trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (455.6 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor] |
 | trinket2 | Briarwood Reed (12930) | Blackrock Spire: Jed Runewatcher [dungeon] | sim-verified (455.6 DPS) | yes | Weakness Analyzer (272438, -1.45 DPS) [vendor]; Serenity Field (272439, -3.12 DPS) [vendor]; Blackhand's Breadth (13965, -8.12 DPS, sim-verified) [quest] |
 | main_hand | Crackling Staff (19102) | Stormpike Guard [rep] | sim-verified (455.6 DPS) | yes | Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; Amethyst War Staff (20654, -1.36 DPS) [world]; Teebu's Blazing Longsword (1728, -17.35 DPS, sim-verified) [world_drop] |
@@ -154,7 +154,7 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Fireleaf Circlet; neck: Amulet of the Dawn; shoulder: Fireleaf Shoulderpads; back: Arcanoweave Cloak; chest: Fireleaf Robe; wrist: Fireleaf Bindings; hands: Fireleaf Gloves; waist: Fireleaf Belt; legs: Fireleaf Leggings; feet: Fireleaf Boots; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Burst of Knowledge; trinket2: Briarwood Reed; main_hand: Crackling Staff; ranged: Torch of Light
 
-No-known-source sample (15 of 1002, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4116 Olmann Sewar; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
+No-known-source sample (15 of 1016, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4116 Olmann Sewar; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 
 ## Horde
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 319, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 253000000000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 139.1. Weights run: 0.8s. Verify run: 0.9s. 416 eligible items had no known source.
+Set DPS (verified): 139.1. Weights run: 0.8s. Verify run: 0.8s. 416 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.005, intellect=1.186 ± 0.069, crit=0.346 ± 0.031 per rating point (14 rating = 1%, 4.846 per %), hit=0.739 ± 0.011 per rating point (10 rating = 1%, 7.393 per %), spell_haste=7.836 ± 1.430, spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.005
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 416, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (orc, 255115100000000000-23552110030003051-0000000000000000000)
 
-Set DPS (verified): 422.6. Weights run: 0.8s. Verify run: 0.9s. 993 eligible items had no known source.
+Set DPS (verified): 422.6. Weights run: 0.9s. Verify run: 0.9s. 1007 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.011, intellect=0.971 ± 0.137, crit=0.545 ± 0.040 per rating point (14 rating = 1%, 7.628 per %), hit=1.387 ± 0.025 per rating point (10 rating = 1%, 13.866 per %), spell_haste=not significant (-3.482 ± 2.444), spell_penetration=not significant (0.000 ± 0.000), fire_power=1.000 ± 0.011
 
@@ -291,13 +291,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | shoulder | Fireleaf Shoulderpads (240054) | Leonid Barthalomew the Revered [vendor] | 63.2 spell_power points (13.13 DPS) | yes | Rugged Mantle of the Timbermaw (227808, -2.91 DPS) [vendor]; Warlord's Silk Amice (231594, -4.91 DPS) [vendor]; Fireleaf Mantle (240046, -5.45 DPS, sim-verified) [vendor] |
 | back | Arcanoweave Cloak (272411) | Pix Xizzix [vendor] | 37.6 spell_power points (7.82 DPS) | yes | Hide of the Wild (18510, -2.89 DPS) [crafted]; Deep Woodlands Cloak (19121, -3.51 DPS) [quest]; Crystalline Threaded Cape (20697, -9.53 DPS, sim-verified) [world_drop] |
 | chest | Fireleaf Robe (240059) | Leonid Barthalomew the Revered [vendor] | 96.7 spell_power points (20.09 DPS) | yes | Robe of the Archmage (14152, -7.77 DPS) [crafted]; Warlord's Silk Raiment (231596, -8.22 DPS) [vendor]; Fireleaf Garb (240051, -10.90 DPS, sim-verified) [vendor] |
-| wrist | Fireleaf Bindings (240052) | Leonid Barthalomew the Revered [vendor] | 58.2 spell_power points (12.08 DPS) | yes | Dryad's Wrist Bindings (19595, -5.90 DPS) [rep]; Arcanist Bindings (16799, -6.56 DPS) [world_drop]; Fireleaf Wristwraps (240044, -7.28 DPS, sim-verified) [vendor] |
+| wrist | Fireleaf Bindings (240052) | Leonid Barthalomew the Revered [vendor] | 58.2 spell_power points (12.08 DPS) | yes | Dryad's Wrist Bindings (19595, -5.90 DPS) [rep]; Dryad's Wrist Bindings (19596, -6.72 DPS) [rep]; Fireleaf Wristwraps (240044, -7.28 DPS, sim-verified) [vendor] |
 | hands | Fireleaf Gloves (240057) | Leonid Barthalomew the Revered [vendor] | 70.9 spell_power points (14.72 DPS) | yes | Sorcerer's Gloves (22066, -6.52 DPS) [quest]; Sorcerer's Gauntlets (226930, -6.52 DPS) [vendor]; Fireleaf Mitts (240049, -10.04 DPS, sim-verified) [vendor] |
 | waist | Fireleaf Belt (240053) | Leonid Barthalomew the Revered [vendor] | 72.5 spell_power points (15.06 DPS) | yes | Knowledge of the Timbermaw (228190, -2.55 DPS) [vendor]; Belt of the Archmage (18405, -6.09 DPS) [crafted]; Fireleaf Waistguard (240045, -11.49 DPS, sim-verified) [vendor] |
 | legs | Fireleaf Leggings (240055) | Leonid Barthalomew the Revered [vendor] | 86.1 spell_power points (17.88 DPS) | yes | General's Silk Trousers (231595, -6.03 DPS) [vendor]; Sentinel's Silk Leggings (237815, -6.05 DPS) [vendor]; Fireleaf Pants (240047, -7.23 DPS, sim-verified) [vendor] |
 | feet | Fireleaf Boots (240050) (or Fireleaf Sandals (240058)) | Leonid Barthalomew the Revered [vendor] | 64.2 spell_power points (13.34 DPS) | yes | Fireleaf Sandals (240058, +0.00 DPS, sim-verified) [vendor]; General's Silk Boots (231597, -3.27 DPS) [vendor]; Sorcerer's Boots (22064, -5.75 DPS) [quest] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (422.6 DPS) | yes | Signet Ring of the Bronze Dragonflight (234028, -0.62 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234024, -0.82 DPS) [vendor]; Naglering (11669, -24.88 DPS, sim-verified) [dungeon] |
-| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (422.6 DPS) | yes | Ritssyn's Ring of Chaos (21836, -0.01 DPS) [world_drop]; Channeler's Ring (272406, -1.08 DPS) [vendor]; Naglering (11669, -15.92 DPS, sim-verified) [dungeon] |
+| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (422.6 DPS) | yes | Channeler's Ring (272406, -1.08 DPS) [vendor]; Cauterizing Band (19140, -1.25 DPS) [world_drop]; Naglering (11669, -15.92 DPS, sim-verified) [dungeon] |
 | trinket1 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (422.6 DPS) | yes | Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor] |
 | trinket2 | Briarwood Reed (12930) | Blackrock Spire: Jed Runewatcher [dungeon] | sim-verified (422.6 DPS) | yes | Weakness Analyzer (272438, -1.45 DPS) [vendor]; Serenity Field (272439, -3.15 DPS, sim-verified) [vendor]; Frozen Heart of the Mountain (249469, -3.43 DPS) [crafted] |
 | main_hand | Amethyst War Staff (20654) | Azure Templar [world] | sim-verified (422.6 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Lord Valthalak's Staff of Command (22335, -0.34 DPS) [dungeon]; Teebu's Blazing Longsword (1728, -20.73 DPS, sim-verified) [world_drop] |
@@ -306,5 +306,5 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Fireleaf Circlet; neck: Amulet of the Dawn; shoulder: Fireleaf Shoulderpads; back: Arcanoweave Cloak; chest: Fireleaf Robe; wrist: Fireleaf Bindings; hands: Fireleaf Gloves; waist: Fireleaf Belt; legs: Fireleaf Leggings; feet: Fireleaf Boots; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Briarwood Reed; main_hand: Amethyst War Staff; ranged: Torch of Light
 
-No-known-source sample (15 of 993, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4116 Olmann Sewar; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant
+No-known-source sample (15 of 1007, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4116 Olmann Sewar; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant
 

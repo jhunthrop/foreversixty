@@ -2,7 +2,7 @@
   "spec": "mage-fire",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T13:17:42Z",
+  "generated_at": "2026-09-30T13:52:32Z",
   "bands": [
     {
       "spec": "mage-fire",
@@ -531,8 +531,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.742933812,
-      "verify_run_seconds": 0.750757387,
+      "weights_run_seconds": 0.731090648,
+      "verify_run_seconds": 0.710133573,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1141,8 +1141,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.742933812,
-      "verify_run_seconds": 0.774704984,
+      "weights_run_seconds": 0.731090648,
+      "verify_run_seconds": 0.768794678,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1800,8 +1800,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.753880422,
-      "verify_run_seconds": 0.765427205,
+      "weights_run_seconds": 0.756500074,
+      "verify_run_seconds": 0.765546067,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2170,7 +2170,7 @@
               "item_id": 9491,
               "item_name": "Hotshot Pilot's Gloves",
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher",
+              "source": "Gnomeregan: Caverndeep Burrower",
               "dps_delta": -0.32330055509164707
             }
           ]
@@ -2466,8 +2466,8 @@
         "main_hand: Glimmering Staff",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.753880422,
-      "verify_run_seconds": 0.787218867,
+      "weights_run_seconds": 0.756500074,
+      "verify_run_seconds": 0.784346808,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3125,8 +3125,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.782780702,
-      "verify_run_seconds": 0.749464018,
+      "weights_run_seconds": 0.792128532,
+      "verify_run_seconds": 0.730961129,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3778,8 +3778,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.782780702,
-      "verify_run_seconds": 0.746551786,
+      "weights_run_seconds": 0.792128532,
+      "verify_run_seconds": 0.722474572,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4464,8 +4464,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.783223556,
-      "verify_run_seconds": 0.842556473,
+      "weights_run_seconds": 0.795917262,
+      "verify_run_seconds": 0.835868334,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5163,8 +5163,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.783223556,
-      "verify_run_seconds": 0.872356083,
+      "weights_run_seconds": 0.795917262,
+      "verify_run_seconds": 0.841145856,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5491,11 +5491,11 @@
               "dps_delta": -5.898625814733574
             },
             {
-              "item_id": 16799,
-              "item_name": "Arcanist Bindings",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -6.563528436476363
+              "item_id": 19596,
+              "item_name": "Dryad's Wrist Bindings",
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels",
+              "dps_delta": -6.7175294574500395
             }
           ]
         },
@@ -5682,18 +5682,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 21836,
-              "item_name": "Ritssyn's Ring of Chaos",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.011571241587339557
-            },
-            {
               "item_id": 272406,
               "item_name": "Channeler's Ring",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "dps_delta": -1.0842526138472641
+            },
+            {
+              "item_id": 19140,
+              "item_name": "Cauterizing Band",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.2522260004066705
             },
             {
               "item_id": 11669,
@@ -5846,7 +5846,7 @@
         }
       ],
       "set_dps": 455.55978923378007,
-      "no_source_count": 1002,
+      "no_source_count": 1016,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5882,8 +5882,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.840997406,
-      "verify_run_seconds": 0.899434697,
+      "weights_run_seconds": 0.896105811,
+      "verify_run_seconds": 0.853308177,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5891,7 +5891,7 @@
         },
         "chest": {
           "eligible": 328,
-          "sourced": 273
+          "sourced": 272
         },
         "feet": {
           "eligible": 210,
@@ -5899,15 +5899,15 @@
         },
         "finger1": {
           "eligible": 366,
-          "sourced": 206
+          "sourced": 203
         },
         "finger2": {
           "eligible": 366,
-          "sourced": 206
+          "sourced": 203
         },
         "hands": {
           "eligible": 224,
-          "sourced": 181
+          "sourced": 179
         },
         "head": {
           "eligible": 189,
@@ -5915,11 +5915,11 @@
         },
         "legs": {
           "eligible": 210,
-          "sourced": 169
+          "sourced": 168
         },
         "main_hand": {
           "eligible": 573,
-          "sourced": 387
+          "sourced": 384
         },
         "neck": {
           "eligible": 193,
@@ -5935,23 +5935,23 @@
         },
         "shoulder": {
           "eligible": 163,
-          "sourced": 132
+          "sourced": 131
         },
         "trinket1": {
           "eligible": 185,
-          "sourced": 110
+          "sourced": 109
         },
         "trinket2": {
           "eligible": 185,
-          "sourced": 110
+          "sourced": 109
         },
         "waist": {
           "eligible": 198,
-          "sourced": 165
+          "sourced": 164
         },
         "wrist": {
           "eligible": 161,
-          "sourced": 120
+          "sourced": 119
         }
       },
       "reference_dps_per_point": 0.2077097277206131,
@@ -6202,11 +6202,11 @@
               "dps_delta": -5.898625814733574
             },
             {
-              "item_id": 16799,
-              "item_name": "Arcanist Bindings",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -6.563528436476363
+              "item_id": 19596,
+              "item_name": "Dryad's Wrist Bindings",
+              "source_kind": "rep",
+              "source": "Warsong Outriders",
+              "dps_delta": -6.7175294574500395
             },
             {
               "item_id": 240044,
@@ -6401,18 +6401,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 21836,
-              "item_name": "Ritssyn's Ring of Chaos",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.011571241587339557
-            },
-            {
               "item_id": 272406,
               "item_name": "Channeler's Ring",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
               "dps_delta": -1.0842526138472641
+            },
+            {
+              "item_id": 19140,
+              "item_name": "Cauterizing Band",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -1.2522260004066705
             },
             {
               "item_id": 11669,
@@ -6566,7 +6566,7 @@
         }
       ],
       "set_dps": 422.62888407111274,
-      "no_source_count": 993,
+      "no_source_count": 1007,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6602,8 +6602,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.840997406,
-      "verify_run_seconds": 0.901166162,
+      "weights_run_seconds": 0.896105811,
+      "verify_run_seconds": 0.892128513,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6611,7 +6611,7 @@
         },
         "chest": {
           "eligible": 326,
-          "sourced": 269
+          "sourced": 268
         },
         "feet": {
           "eligible": 210,
@@ -6619,15 +6619,15 @@
         },
         "finger1": {
           "eligible": 369,
-          "sourced": 211
+          "sourced": 208
         },
         "finger2": {
           "eligible": 369,
-          "sourced": 211
+          "sourced": 208
         },
         "hands": {
           "eligible": 227,
-          "sourced": 183
+          "sourced": 181
         },
         "head": {
           "eligible": 189,
@@ -6635,11 +6635,11 @@
         },
         "legs": {
           "eligible": 209,
-          "sourced": 169
+          "sourced": 168
         },
         "main_hand": {
           "eligible": 576,
-          "sourced": 400
+          "sourced": 397
         },
         "neck": {
           "eligible": 197,
@@ -6655,23 +6655,23 @@
         },
         "shoulder": {
           "eligible": 162,
-          "sourced": 131
+          "sourced": 130
         },
         "trinket1": {
           "eligible": 184,
-          "sourced": 109
+          "sourced": 108
         },
         "trinket2": {
           "eligible": 184,
-          "sourced": 109
+          "sourced": 108
         },
         "waist": {
           "eligible": 198,
-          "sourced": 163
+          "sourced": 162
         },
         "wrist": {
           "eligible": 162,
-          "sourced": 123
+          "sourced": 122
         }
       },
       "reference_dps_per_point": 0.2077097277206131,

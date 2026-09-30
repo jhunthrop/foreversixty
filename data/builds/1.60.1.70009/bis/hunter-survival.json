@@ -2,7 +2,7 @@
   "spec": "hunter-survival",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T13:17:03Z",
+  "generated_at": "2026-09-30T13:51:54Z",
   "bands": [
     {
       "spec": "hunter-survival",
@@ -555,8 +555,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.821048556,
-      "verify_run_seconds": 1.655785627,
+      "weights_run_seconds": 1.900762632,
+      "verify_run_seconds": 1.751160957,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1188,8 +1188,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 1.821048556,
-      "verify_run_seconds": 1.6125350360000001,
+      "weights_run_seconds": 1.900762632,
+      "verify_run_seconds": 1.690570235,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1872,8 +1872,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.868692647,
-      "verify_run_seconds": 1.784816049,
+      "weights_run_seconds": 1.9820859849999999,
+      "verify_run_seconds": 1.907365615,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2555,8 +2555,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.868692647,
-      "verify_run_seconds": 1.733368167,
+      "weights_run_seconds": 1.9820859849999999,
+      "verify_run_seconds": 1.841516574,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3237,8 +3237,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.860703972,
-      "verify_run_seconds": 1.75590453,
+      "weights_run_seconds": 1.9462275020000002,
+      "verify_run_seconds": 1.8466032380000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3919,8 +3919,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.860703972,
-      "verify_run_seconds": 1.714174763,
+      "weights_run_seconds": 1.9462275020000002,
+      "verify_run_seconds": 1.840432598,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4625,8 +4625,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.8721019220000001,
-      "verify_run_seconds": 1.965150059,
+      "weights_run_seconds": 2.002915462,
+      "verify_run_seconds": 2.049975927,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5338,8 +5338,8 @@
         "off_hand: Thorium Cestus",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.8721019220000001,
-      "verify_run_seconds": 1.911389089,
+      "weights_run_seconds": 2.002915462,
+      "verify_run_seconds": 2.016689753,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5739,7 +5739,7 @@
           "item_name": "Dawnstalker Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 119.01241670837722,
+          "score": 119.0124167083772,
           "verified": true,
           "alternatives": [
             {
@@ -5747,14 +5747,14 @@
               "item_name": "Dawnstalker Legguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.499024684448932
+              "dps_delta": -2.499024684448931
             },
             {
               "item_id": 237819,
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.1675094076583563
+              "dps_delta": -3.1675094076583554
             },
             {
               "item_id": 231558,
@@ -6034,7 +6034,7 @@
         }
       ],
       "set_dps": 304.25300102023493,
-      "no_source_count": 1590,
+      "no_source_count": 1611,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6071,8 +6071,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.905653034,
-      "verify_run_seconds": 1.959954875,
+      "weights_run_seconds": 2.022814123,
+      "verify_run_seconds": 2.079065789,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6080,23 +6080,23 @@
         },
         "chest": {
           "eligible": 710,
-          "sourced": 603
+          "sourced": 602
         },
         "feet": {
           "eligible": 586,
-          "sourced": 494
+          "sourced": 493
         },
         "finger1": {
           "eligible": 366,
-          "sourced": 206
+          "sourced": 203
         },
         "finger2": {
           "eligible": 366,
-          "sourced": 206
+          "sourced": 203
         },
         "hands": {
           "eligible": 606,
-          "sourced": 509
+          "sourced": 508
         },
         "head": {
           "eligible": 440,
@@ -6104,11 +6104,11 @@
         },
         "legs": {
           "eligible": 598,
-          "sourced": 489
+          "sourced": 488
         },
         "main_hand": {
           "eligible": 1018,
-          "sourced": 707
+          "sourced": 701
         },
         "neck": {
           "eligible": 193,
@@ -6124,23 +6124,23 @@
         },
         "shoulder": {
           "eligible": 443,
-          "sourced": 360
+          "sourced": 358
         },
         "trinket1": {
           "eligible": 186,
-          "sourced": 110
+          "sourced": 109
         },
         "trinket2": {
           "eligible": 186,
-          "sourced": 110
+          "sourced": 109
         },
         "waist": {
           "eligible": 545,
-          "sourced": 466
+          "sourced": 462
         },
         "wrist": {
           "eligible": 457,
-          "sourced": 364
+          "sourced": 363
         }
       },
       "reference_dps_per_point": 0.05039227318719236,
@@ -6223,7 +6223,7 @@
               "item_name": "Champion's Chain Greathelm",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -2.98132058367091
+              "dps_delta": -2.9813205836709105
             },
             {
               "item_id": 231568,
@@ -6767,7 +6767,7 @@
         }
       ],
       "set_dps": 303.4265850405959,
-      "no_source_count": 1579,
+      "no_source_count": 1600,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6804,8 +6804,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.905653034,
-      "verify_run_seconds": 1.9073475100000001,
+      "weights_run_seconds": 2.022814123,
+      "verify_run_seconds": 2.02408629,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6813,23 +6813,23 @@
         },
         "chest": {
           "eligible": 707,
-          "sourced": 595
+          "sourced": 594
         },
         "feet": {
           "eligible": 591,
-          "sourced": 493
+          "sourced": 492
         },
         "finger1": {
           "eligible": 369,
-          "sourced": 211
+          "sourced": 208
         },
         "finger2": {
           "eligible": 369,
-          "sourced": 211
+          "sourced": 208
         },
         "hands": {
           "eligible": 609,
-          "sourced": 510
+          "sourced": 509
         },
         "head": {
           "eligible": 442,
@@ -6837,11 +6837,11 @@
         },
         "legs": {
           "eligible": 595,
-          "sourced": 487
+          "sourced": 486
         },
         "main_hand": {
           "eligible": 1016,
-          "sourced": 717
+          "sourced": 711
         },
         "neck": {
           "eligible": 197,
@@ -6857,23 +6857,23 @@
         },
         "shoulder": {
           "eligible": 444,
-          "sourced": 360
+          "sourced": 358
         },
         "trinket1": {
           "eligible": 185,
-          "sourced": 109
+          "sourced": 108
         },
         "trinket2": {
           "eligible": 185,
-          "sourced": 109
+          "sourced": 108
         },
         "waist": {
           "eligible": 550,
-          "sourced": 468
+          "sourced": 464
         },
         "wrist": {
           "eligible": 462,
-          "sourced": 375
+          "sourced": 374
         }
       },
       "reference_dps_per_point": 0.05039227318719236,

@@ -9542,7 +9542,7 @@
               "source": "Voodoo Feathers"
             },
             "main_hand": {
-              "item_id": 23221,
+              "item_id": 18803,
               "source_kind": "world_drop",
               "source": "World drop"
             },
@@ -9624,7 +9624,7 @@
               "source": "Voodoo Feathers"
             },
             "main_hand": {
-              "item_id": 23221,
+              "item_id": 18803,
               "source_kind": "world_drop",
               "source": "World drop"
             },
@@ -9651,7 +9651,7 @@
             19514,
             19289,
             20130,
-            23221,
+            18803,
             23197
           ],
           "horde": [
@@ -9669,7 +9669,7 @@
             19510,
             19289,
             20130,
-            23221,
+            18803,
             23197
           ]
         },
@@ -9921,7 +9921,7 @@
             "legs": {
               "item_id": 9509,
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher"
+              "source": "Gnomeregan: Caverndeep Burrower"
             },
             "feet": {
               "item_id": 4055,
@@ -9998,7 +9998,7 @@
             "legs": {
               "item_id": 9509,
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher"
+              "source": "Gnomeregan: Caverndeep Burrower"
             },
             "feet": {
               "item_id": 4055,
@@ -10939,7 +10939,7 @@
             "legs": {
               "item_id": 9509,
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher"
+              "source": "Gnomeregan: Caverndeep Burrower"
             },
             "feet": {
               "item_id": 4055,
@@ -11016,7 +11016,7 @@
             "legs": {
               "item_id": 9509,
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher"
+              "source": "Gnomeregan: Caverndeep Burrower"
             },
             "feet": {
               "item_id": 4055,
@@ -13597,7 +13597,7 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 240058,
+              "item_id": 240050,
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
@@ -13607,9 +13607,9 @@
               "source": "Anachronos"
             },
             "finger2": {
-              "item_id": 21836,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "trinket1": {
               "item_id": 22268,
@@ -13679,7 +13679,7 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 240058,
+              "item_id": 240050,
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
@@ -13689,9 +13689,9 @@
               "source": "Anachronos"
             },
             "finger2": {
-              "item_id": 21836,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "trinket1": {
               "item_id": 22268,
@@ -13726,9 +13726,9 @@
             240057,
             240053,
             240055,
-            240058,
+            240050,
             234032,
-            21836,
+            20682,
             22268,
             12930,
             20654,
@@ -13744,9 +13744,9 @@
             240057,
             240053,
             240055,
-            240058,
+            240050,
             234032,
-            21836,
+            20682,
             22268,
             12930,
             20654,
@@ -15583,7 +15583,7 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 240050,
+              "item_id": 240058,
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
@@ -15593,9 +15593,9 @@
               "source": "Anachronos"
             },
             "finger2": {
-              "item_id": 21836,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "trinket1": {
               "item_id": 22678,
@@ -15603,9 +15603,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "trinket2": {
-              "item_id": 11832,
+              "item_id": 22268,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Blackrock Spire: General Drakkisath"
             },
             "main_hand": {
               "item_id": 19102,
@@ -15675,9 +15675,9 @@
               "source": "Anachronos"
             },
             "finger2": {
-              "item_id": 21836,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "trinket1": {
               "item_id": 22678,
@@ -15685,9 +15685,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "trinket2": {
-              "item_id": 11832,
+              "item_id": 12930,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Blackrock Spire: Jed Runewatcher"
             },
             "main_hand": {
               "item_id": 20654,
@@ -15712,11 +15712,11 @@
             240057,
             240053,
             240055,
-            240050,
+            240058,
             234032,
-            21836,
+            20682,
             22678,
-            11832,
+            22268,
             19102,
             279246
           ],
@@ -15732,9 +15732,9 @@
             240055,
             240050,
             234032,
-            21836,
+            20682,
             22678,
-            11832,
+            12930,
             20654,
             279246
           ]
@@ -16555,14 +16555,14 @@
               "source": "Blackrock Spire: General Drakkisath"
             },
             "trinket2": {
-              "item_id": 11819,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach"
+              "item_id": 19289,
+              "source_kind": "quest",
+              "source": "Darkmoon Elementals Deck"
             },
             "main_hand": {
-              "item_id": 12592,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "item_id": 18803,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           },
           "horde": {
@@ -16627,19 +16627,19 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 22268,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
-            },
-            "trinket2": {
               "item_id": 11832,
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash"
             },
+            "trinket2": {
+              "item_id": 22268,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath"
+            },
             "main_hand": {
-              "item_id": 19167,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 18803,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           }
         },
@@ -16658,8 +16658,8 @@
             234034,
             19325,
             22268,
-            11819,
-            12592
+            19289,
+            18803
           ],
           "horde": [
             240027,
@@ -16674,9 +16674,9 @@
             240029,
             234034,
             19325,
-            22268,
             11832,
-            19167
+            22268,
+            18803
           ]
         },
         "weights": {
@@ -18593,12 +18593,12 @@
               "source": "Garona: A Study on Stealth and Treachery"
             },
             "main_hand": {
-              "item_id": 23221,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 21522,
+              "source_kind": "quest",
+              "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 21522,
+              "item_id": 21520,
               "source_kind": "quest",
               "source": "Treasure of the Timeless One"
             },
@@ -18680,12 +18680,12 @@
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 23221,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 21522,
+              "source_kind": "quest",
+              "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 21522,
+              "item_id": 21520,
               "source_kind": "quest",
               "source": "Treasure of the Timeless One"
             },
@@ -18712,8 +18712,8 @@
             19325,
             19289,
             18465,
-            23221,
             21522,
+            21520,
             12653
           ],
           "horde": [
@@ -18731,8 +18731,8 @@
             11862,
             19289,
             19120,
-            23221,
             21522,
+            21520,
             12653
           ]
         },
@@ -19639,12 +19639,12 @@
               "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "main_hand": {
-              "item_id": 23221,
+              "item_id": 1728,
               "source_kind": "world_drop",
               "source": "World drop"
             },
             "off_hand": {
-              "item_id": 21522,
+              "item_id": 21520,
               "source_kind": "quest",
               "source": "Treasure of the Timeless One"
             },
@@ -19721,17 +19721,17 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 23221,
+              "item_id": 1728,
               "source_kind": "world_drop",
               "source": "World drop"
             },
             "off_hand": {
-              "item_id": 21522,
+              "item_id": 21520,
               "source_kind": "quest",
               "source": "Treasure of the Timeless One"
             },
@@ -19758,8 +19758,8 @@
             19325,
             19289,
             11815,
-            23221,
-            21522,
+            1728,
+            21520,
             12653
           ],
           "horde": [
@@ -19776,9 +19776,9 @@
             21205,
             19325,
             19289,
-            11815,
-            23221,
-            21522,
+            19120,
+            1728,
+            21520,
             12653
           ]
         },
@@ -22624,19 +22624,19 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 13965,
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise"
             },
             "main_hand": {
-              "item_id": 23221,
+              "item_id": 2243,
               "source_kind": "world_drop",
               "source": "World drop"
             },
             "off_hand": {
-              "item_id": 21522,
-              "source_kind": "quest",
-              "source": "Treasure of the Timeless One"
+              "item_id": 18805,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           },
           "horde": {
@@ -22646,9 +22646,9 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "neck": {
-              "item_id": 22150,
+              "item_id": 22659,
               "source_kind": "quest",
-              "source": "Falrin's Vendetta"
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 240135,
@@ -22701,24 +22701,24 @@
               "source": "Frostwolf Clan"
             },
             "trinket1": {
-              "item_id": 13965,
-              "source_kind": "quest",
-              "source": "For The Horde!"
-            },
-            "trinket2": {
               "item_id": 19289,
               "source_kind": "quest",
               "source": "Darkmoon Elementals Deck"
             },
-            "main_hand": {
-              "item_id": 23221,
-              "source_kind": "world_drop",
-              "source": "World drop"
+            "trinket2": {
+              "item_id": 19120,
+              "source_kind": "quest",
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
-            "off_hand": {
+            "main_hand": {
               "item_id": 21522,
               "source_kind": "quest",
               "source": "Treasure of the Timeless One"
+            },
+            "off_hand": {
+              "item_id": 18805,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           }
         },
@@ -22737,13 +22737,13 @@
             234034,
             19325,
             19289,
-            11815,
-            23221,
-            21522
+            13965,
+            2243,
+            18805
           ],
           "horde": [
             240131,
-            22150,
+            22659,
             240135,
             272414,
             240128,
@@ -22754,10 +22754,10 @@
             240129,
             234034,
             19325,
-            13965,
             19289,
-            23221,
-            21522
+            19120,
+            21522,
+            18805
           ]
         },
         "weights": {
@@ -23603,9 +23603,9 @@
               "source": "Anachronos"
             },
             "finger2": {
-              "item_id": 21836,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "trinket1": {
               "item_id": 22678,
@@ -23685,9 +23685,9 @@
               "source": "Anachronos"
             },
             "finger2": {
-              "item_id": 21836,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "trinket1": {
               "item_id": 22678,
@@ -23695,9 +23695,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "trinket2": {
-              "item_id": 11832,
+              "item_id": 12930,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Blackrock Spire: Jed Runewatcher"
             },
             "main_hand": {
               "item_id": 20654,
@@ -23724,7 +23724,7 @@
             240142,
             240139,
             234436,
-            21836,
+            20682,
             22678,
             12930,
             20654,
@@ -23742,9 +23742,9 @@
             240142,
             240139,
             234436,
-            21836,
+            20682,
             22678,
-            11832,
+            12930,
             20654,
             279246
           ]
@@ -24591,9 +24591,9 @@
               "source": "Anachronos"
             },
             "finger2": {
-              "item_id": 21836,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "trinket1": {
               "item_id": 22678,
@@ -24611,9 +24611,9 @@
               "source": "Azure Templar"
             },
             "ranged": {
-              "item_id": 22408,
-              "source_kind": "dungeon",
-              "source": "Stratholme: Baron Rivendare"
+              "item_id": 279246,
+              "source_kind": "crafted",
+              "source": "Enchanting"
             }
           },
           "horde": {
@@ -24673,9 +24673,9 @@
               "source": "Anachronos"
             },
             "finger2": {
-              "item_id": 21836,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 20682,
+              "source_kind": "world",
+              "source": "Prince Skaldrenox"
             },
             "trinket1": {
               "item_id": 22678,
@@ -24712,11 +24712,11 @@
             240142,
             240139,
             234032,
-            21836,
+            20682,
             22678,
             12930,
             20654,
-            22408
+            279246
           ],
           "horde": [
             240141,
@@ -24730,7 +24730,7 @@
             240142,
             240139,
             234032,
-            21836,
+            20682,
             22678,
             12930,
             20654,
@@ -25538,14 +25538,14 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
-              "item_id": 23237,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "finger2": {
               "item_id": 21200,
               "source_kind": "quest",
               "source": "The Protector of Kalimdor"
+            },
+            "finger2": {
+              "item_id": 19140,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket1": {
               "item_id": 22678,
@@ -25580,14 +25580,14 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "finger1": {
-              "item_id": 23237,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
-            "finger2": {
               "item_id": 21200,
               "source_kind": "quest",
               "source": "The Protector of Kalimdor"
+            },
+            "finger2": {
+              "item_id": 19140,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "trinket1": {
               "item_id": 22268,
@@ -25619,8 +25619,8 @@
         "new_at_band": {
           "alliance": [
             240141,
-            23237,
             21200,
+            19140,
             22678,
             22268,
             21521,
@@ -25629,8 +25629,8 @@
           ],
           "horde": [
             240141,
-            23237,
             21200,
+            19140,
             22268,
             22678,
             21521,
@@ -26555,19 +26555,19 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "item_id": 19289,
+              "source_kind": "quest",
+              "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 20130,
+              "item_id": 19120,
               "source_kind": "quest",
-              "source": "Voodoo Feathers"
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "main_hand": {
-              "item_id": 19169,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 19323,
+              "source_kind": "rep",
+              "source": "Frostwolf Clan"
             },
             "ranged": {
               "item_id": 19107,
@@ -26608,8 +26608,9 @@
             239515,
             234034,
             19510,
-            11815,
-            19169,
+            19289,
+            19120,
+            19323,
             19107
           ]
         },
@@ -27523,17 +27524,17 @@
               "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 20130,
-              "source_kind": "quest",
-              "source": "Voodoo Feathers"
+              "item_id": 11815,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "main_hand": {
-              "item_id": 23221,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 21520,
+              "source_kind": "quest",
+              "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 21520,
+              "item_id": 21522,
               "source_kind": "quest",
               "source": "Treasure of the Timeless One"
             },
@@ -27615,12 +27616,12 @@
               "source": "Darkmoon Elementals Deck"
             },
             "main_hand": {
-              "item_id": 23221,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 21520,
+              "source_kind": "quest",
+              "source": "Treasure of the Timeless One"
             },
             "off_hand": {
-              "item_id": 21520,
+              "item_id": 21522,
               "source_kind": "quest",
               "source": "Treasure of the Timeless One"
             },
@@ -27646,9 +27647,9 @@
             234034,
             19514,
             19289,
-            20130,
-            23221,
+            11815,
             21520,
+            21522,
             12653
           ],
           "horde": [
@@ -27665,8 +27666,8 @@
             234034,
             19510,
             19289,
-            23221,
             21520,
+            21522,
             12653
           ]
         },

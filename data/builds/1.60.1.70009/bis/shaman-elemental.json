@@ -2,7 +2,7 @@
   "spec": "shaman-elemental",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T13:20:47Z",
+  "generated_at": "2026-09-30T13:55:42Z",
   "bands": [
     {
       "spec": "shaman-elemental",
@@ -526,8 +526,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.540538661,
-      "verify_run_seconds": 1.103679459,
+      "weights_run_seconds": 1.639666141,
+      "verify_run_seconds": 1.131336888,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1122,8 +1122,8 @@
         "finger2: Lavishly Jeweled Ring",
         "main_hand: Rhahk'Zor's Hammer"
       ],
-      "weights_run_seconds": 1.540538661,
-      "verify_run_seconds": 1.025815809,
+      "weights_run_seconds": 1.639666141,
+      "verify_run_seconds": 1.071653715,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1752,8 +1752,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.64215928,
-      "verify_run_seconds": 1.139228284,
+      "weights_run_seconds": 1.791377954,
+      "verify_run_seconds": 1.140373868,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2412,8 +2412,8 @@
         "main_hand: Scorn's Focal Dagger",
         "off_hand: Orb of Mystic Insight"
       ],
-      "weights_run_seconds": 1.64215928,
-      "verify_run_seconds": 1.079036166,
+      "weights_run_seconds": 1.791377954,
+      "verify_run_seconds": 1.120302581,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3035,8 +3035,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.780632124,
-      "verify_run_seconds": 1.187008512,
+      "weights_run_seconds": 1.946248728,
+      "verify_run_seconds": 1.240683245,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3661,8 +3661,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.780632124,
-      "verify_run_seconds": 1.189759145,
+      "weights_run_seconds": 1.946248728,
+      "verify_run_seconds": 1.233899394,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4346,8 +4346,8 @@
         "trinket2: Sanctified Orb",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.808583889,
-      "verify_run_seconds": 1.318066759,
+      "weights_run_seconds": 1.96077106,
+      "verify_run_seconds": 1.4237782970000001,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5030,8 +5030,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.808583889,
-      "verify_run_seconds": 1.246723019,
+      "weights_run_seconds": 1.96077106,
+      "verify_run_seconds": 1.336252462,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5321,7 +5321,7 @@
               "item_name": "Soulcrusher Chestguard",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.7789739836349927
+              "dps_delta": -2.7789739836349936
             },
             {
               "item_id": 23089,
@@ -5442,18 +5442,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 23665,
-              "item_name": "Leggings of Elemental Fury",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.9770139528491895
-            },
-            {
               "item_id": 252486,
               "item_name": "Ironfeather Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -1.993100438530177
+            },
+            {
+              "item_id": 252603,
+              "item_name": "Red Dragonscale Leggings",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -2.5579246971100456
             },
             {
               "item_id": 240097,
@@ -5542,18 +5542,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 21836,
-              "item_name": "Ritssyn's Ring of Chaos",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.418392690084557
-            },
-            {
               "item_id": 19140,
               "item_name": "Cauterizing Band",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.5011219413191604
+            },
+            {
+              "item_id": 13001,
+              "item_name": "Maiden's Circle",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.769639569619655
             },
             {
               "item_id": 11669,
@@ -5677,7 +5677,7 @@
         }
       ],
       "set_dps": 170.78524485108625,
-      "no_source_count": 1642,
+      "no_source_count": 1664,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5712,8 +5712,8 @@
         "trinket2: Talisman of Ascendance",
         "main_hand: Crackling Staff"
       ],
-      "weights_run_seconds": 1.810221385,
-      "verify_run_seconds": 1.226263875,
+      "weights_run_seconds": 1.9720841249999999,
+      "verify_run_seconds": 1.323662777,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5721,23 +5721,23 @@
         },
         "chest": {
           "eligible": 718,
-          "sourced": 598
+          "sourced": 597
         },
         "feet": {
           "eligible": 594,
-          "sourced": 490
+          "sourced": 489
         },
         "finger1": {
           "eligible": 370,
-          "sourced": 211
+          "sourced": 208
         },
         "finger2": {
           "eligible": 370,
-          "sourced": 211
+          "sourced": 208
         },
         "hands": {
           "eligible": 617,
-          "sourced": 505
+          "sourced": 504
         },
         "head": {
           "eligible": 449,
@@ -5745,11 +5745,11 @@
         },
         "legs": {
           "eligible": 607,
-          "sourced": 486
+          "sourced": 484
         },
         "main_hand": {
           "eligible": 958,
-          "sourced": 667
+          "sourced": 662
         },
         "neck": {
           "eligible": 189,
@@ -5757,7 +5757,7 @@
         },
         "off_hand": {
           "eligible": 430,
-          "sourced": 316
+          "sourced": 315
         },
         "ranged": {
           "eligible": 23,
@@ -5765,23 +5765,23 @@
         },
         "shoulder": {
           "eligible": 453,
-          "sourced": 356
+          "sourced": 354
         },
         "trinket1": {
           "eligible": 183,
-          "sourced": 108
+          "sourced": 107
         },
         "trinket2": {
           "eligible": 183,
-          "sourced": 108
+          "sourced": 107
         },
         "waist": {
           "eligible": 556,
-          "sourced": 469
+          "sourced": 465
         },
         "wrist": {
           "eligible": 463,
-          "sourced": 363
+          "sourced": 362
         }
       },
       "reference_dps_per_point": 0.0866914792155093,
@@ -5997,14 +5997,14 @@
               "item_name": "Soulcrusher Tunic",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -1.9108899219877276
+              "dps_delta": -1.910889921987729
             },
             {
               "item_id": 240101,
               "item_name": "Soulcrusher Chestguard",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -2.7789739836349927
+              "dps_delta": -2.778973983634995
             },
             {
               "item_id": 23089,
@@ -6103,7 +6103,7 @@
               "item_name": "Soulcrusher Girdle",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.28237903618467375
+              "dps_delta": -0.28237903618467436
             },
             {
               "item_id": 240107,
@@ -6124,18 +6124,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 23665,
-              "item_name": "Leggings of Elemental Fury",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.9770139528491895
-            },
-            {
               "item_id": 252486,
               "item_name": "Ironfeather Leggings",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -1.993100438530177
+            },
+            {
+              "item_id": 231664,
+              "item_name": "General's Mail Leggings",
+              "source_kind": "vendor",
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": -2.2257047515488426
             },
             {
               "item_id": 240097,
@@ -6222,18 +6222,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 21836,
-              "item_name": "Ritssyn's Ring of Chaos",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.418392690084557
-            },
-            {
               "item_id": 19140,
               "item_name": "Cauterizing Band",
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.5011219413191604
+            },
+            {
+              "item_id": 13001,
+              "item_name": "Maiden's Circle",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.769639569619655
             },
             {
               "item_id": 11669,
@@ -6355,7 +6355,7 @@
         }
       ],
       "set_dps": 170.51194768660594,
-      "no_source_count": 1577,
+      "no_source_count": 1599,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6390,8 +6390,8 @@
         "trinket2: Talisman of Ascendance",
         "main_hand: Hammer of Divine Might"
       ],
-      "weights_run_seconds": 1.810221385,
-      "verify_run_seconds": 1.276823391,
+      "weights_run_seconds": 1.9720841249999999,
+      "verify_run_seconds": 1.355762614,
       "coverage": {
         "back": {
           "eligible": 452,
@@ -6399,23 +6399,23 @@
         },
         "chest": {
           "eligible": 717,
-          "sourced": 602
+          "sourced": 601
         },
         "feet": {
           "eligible": 600,
-          "sourced": 499
+          "sourced": 498
         },
         "finger1": {
           "eligible": 374,
-          "sourced": 216
+          "sourced": 213
         },
         "finger2": {
           "eligible": 374,
-          "sourced": 216
+          "sourced": 213
         },
         "hands": {
           "eligible": 620,
-          "sourced": 515
+          "sourced": 514
         },
         "head": {
           "eligible": 452,
@@ -6423,11 +6423,11 @@
         },
         "legs": {
           "eligible": 605,
-          "sourced": 493
+          "sourced": 491
         },
         "main_hand": {
           "eligible": 962,
-          "sourced": 681
+          "sourced": 676
         },
         "neck": {
           "eligible": 197,
@@ -6435,7 +6435,7 @@
         },
         "off_hand": {
           "eligible": 429,
-          "sourced": 319
+          "sourced": 318
         },
         "ranged": {
           "eligible": 23,
@@ -6443,23 +6443,23 @@
         },
         "shoulder": {
           "eligible": 455,
-          "sourced": 367
+          "sourced": 365
         },
         "trinket1": {
           "eligible": 183,
-          "sourced": 110
+          "sourced": 109
         },
         "trinket2": {
           "eligible": 183,
-          "sourced": 110
+          "sourced": 109
         },
         "waist": {
           "eligible": 562,
-          "sourced": 474
+          "sourced": 470
         },
         "wrist": {
           "eligible": 469,
-          "sourced": 378
+          "sourced": 377
         }
       },
       "reference_dps_per_point": 0.0866914792155093,

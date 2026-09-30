@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 5420000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 75.1. Weights run: 1.4s. Verify run: 1.6s. 217 eligible items had no known source.
+Set DPS (verified): 75.1. Weights run: 1.5s. Verify run: 1.6s. 217 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.185 ± 0.045, crit=0.477 ± 0.019 per rating point (14 rating = 1%, 6.678 per %), hit=0.165 ± 0.007 per rating point (10 rating = 1%, 1.648 per %), melee_haste=3.462 ± 0.795
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 217, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 5420001504000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 99.6. Weights run: 1.5s. Verify run: 1.7s. 363 eligible items had no known source.
+Set DPS (verified): 99.6. Weights run: 1.7s. Verify run: 1.8s. 363 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.236 ± 0.054, crit=0.589 ± 0.023 per rating point (14 rating = 1%, 8.241 per %), hit=0.183 ± 0.007 per rating point (10 rating = 1%, 1.832 per %), melee_haste=8.084 ± 1.239
 
@@ -52,7 +52,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | wrist | Hawkeye's Bracers (14590) (or Jurassic Wristguards (6198), Insignia Bracers (6410)) | World drop [world_drop] | 13.4 ranged_attack_power points (0.78 DPS) | yes | Jurassic Wristguards (6198, +0.00 DPS, sim-verified) [world]; Insignia Bracers (6410, +0.00 DPS) [world_drop]; Madwolf Bracers (897, -0.13 DPS) [world] |
 | hands | Pilferer's Gloves (7358) | Leatherworking [crafted] | 17.9 ranged_attack_power points (1.04 DPS) | yes | Heavy Earthen Gloves (7359, -0.09 DPS, sim-verified) [crafted]; Insignia Gloves (6408, -0.26 DPS) [world_drop]; Ebon Vise (7690, -0.26 DPS) [dungeon] |
 | waist | Highlander's Chain Girdle (20090) (or Highlander's Leather Girdle (20117)) | The League of Arathor [rep] | 24.0 ranged_attack_power points (1.40 DPS) | yes | Highlander's Leather Girdle (20117, +0.00 DPS, sim-verified) [rep]; Skulker's Leather Belt (252520, -0.23 DPS) [crafted]; Stalker's Leather Belt (252521, -0.23 DPS) [crafted] |
-| legs | Petrolspill Leggings (9509) (or Troll's Bane Leggings (13114)) | Gnomeregan: Caverndeep Ambusher [dungeon] | 31.3 ranged_attack_power points (1.82 DPS) | yes | Troll's Bane Leggings (13114, +0.00 DPS, sim-verified) [world_drop]; Dusky Leather Leggings (7373, -0.13 DPS) [crafted]; Ferine Leggings (6690, -0.31 DPS) [dungeon] |
+| legs | Petrolspill Leggings (9509) (or Troll's Bane Leggings (13114)) | Gnomeregan: Caverndeep Burrower [dungeon] | 31.3 ranged_attack_power points (1.82 DPS) | yes | Troll's Bane Leggings (13114, +0.00 DPS, sim-verified) [world_drop]; Dusky Leather Leggings (7373, -0.13 DPS) [crafted]; Ferine Leggings (6690, -0.31 DPS) [dungeon] |
 | feet | Insignia Boots (4055) (or Highlander's Mail Greaves (20123), Feet of the Lynx (1121)) | World drop [world_drop] | 17.9 ranged_attack_power points (1.04 DPS) | yes | Feet of the Lynx (1121, +0.00 DPS) [world_drop]; Highlander's Mail Greaves (20123, +0.00 DPS, sim-verified) [vendor]; Lancer Boots (6752, -0.13 DPS) [quest] |
 | finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 20.1 ranged_attack_power points (1.17 DPS) | yes | Ring of Precision (1491, -0.39 DPS) [dungeon]; Protector's Band (19517, -0.39 DPS) [rep]; Signet of the Zhevra (285330, -0.39 DPS) [world] |
 | finger2 | Monkey Ring (6748) | Willix the Importer [quest] | 15.6 ranged_attack_power points (0.91 DPS) | yes | Ring of Precision (1491, -0.13 DPS) [dungeon]; Signet of the Zhevra (285330, -0.13 DPS) [world]; Protector's Band (19517, -0.56 DPS, sim-verified) [rep] |
@@ -68,7 +68,7 @@ No-known-source sample (15 of 363, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (dwarf, 5420001505001251-00000000000000000-000000000000000000)
 
-Set DPS (verified): 134.2. Weights run: 1.6s. Verify run: 1.9s. 592 eligible items had no known source.
+Set DPS (verified): 134.2. Weights run: 1.8s. Verify run: 2.0s. 592 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.211 ± 0.053, crit=0.658 ± 0.026 per rating point (14 rating = 1%, 9.207 per %), hit=0.200 ± 0.009 per rating point (10 rating = 1%, 2.002 per %), melee_haste=not significant (4.358 ± 1.738)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 592, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 5420001505001251-35200000000000000-000000000000000000)
 
-Set DPS (verified): 159.0. Weights run: 1.8s. Verify run: 2.0s. 755 eligible items had no known source.
+Set DPS (verified): 159.0. Weights run: 1.8s. Verify run: 2.2s. 755 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.247 ± 0.061, crit=0.757 ± 0.029 per rating point (14 rating = 1%, 10.594 per %), hit=0.230 ± 0.010 per rating point (10 rating = 1%, 2.300 per %), melee_haste=not significant (4.431 ± 1.893)
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 755, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (dwarf, 5420001505001251-35510000000000000-510000000000000000)
 
-Set DPS (verified): 238.7. Weights run: 1.7s. Verify run: 2.0s. 1590 eligible items had no known source.
+Set DPS (verified): 238.7. Weights run: 1.8s. Verify run: 2.2s. 1611 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.233 ± 0.071, crit=1.088 ± 0.041 per rating point (14 rating = 1%, 15.231 per %), hit=0.356 ± 0.015 per rating point (10 rating = 1%, 3.557 per %), melee_haste=12.796 ± 2.185
 
@@ -141,7 +141,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (238.7 DPS) | yes | Dawnstalker Tunic (239543, -1.86 DPS) [vendor]; Dawn Armor (252483, -4.74 DPS) [crafted]; Tunic of Undead Slaying (23089, -14.35 DPS, sim-verified) [world] |
 | wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | sim-verified (238.7 DPS) | yes | Dawnstalker Wristguards (239544, -0.63 DPS) [vendor]; Bracers of the Eclipse (18375, -2.43 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -7.01 DPS, sim-verified) [world] |
 | hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | 137.2 ranged_attack_power points (7.35 DPS) | yes | Dawnstalker Handguards (239539, -1.95 DPS, sim-verified) [vendor]; Marshal's Chain Vices (231578, -4.02 DPS) [vendor]; Raider Gloves (272099, -4.12 DPS) [vendor] |
-| waist | Dawnstalker Belt (239535) | Leonid Barthalomew the Revered [vendor] | 113.6 ranged_attack_power points (6.09 DPS) | yes | Dawnstalker Girdle (239538, -1.24 DPS, sim-verified) [vendor]; Dense Timbermaw Belt (227807, -2.66 DPS) [vendor]; Molten Belt (19163, -2.74 DPS) [crafted] |
+| waist | Dawnstalker Belt (239535) | Leonid Barthalomew the Revered [vendor] | 113.6 ranged_attack_power points (6.09 DPS) | yes | Dawnstalker Girdle (239538, -1.24 DPS, sim-verified) [vendor]; Dense Timbermaw Belt (227807, -2.66 DPS) [vendor]; Ranger's Belt (272397, -3.22 DPS) [vendor] |
 | legs | Dawnstalker Leggings (239533) | Leonid Barthalomew the Revered [vendor] | 184.0 ranged_attack_power points (9.86 DPS) | yes | Sentinel's Chain Leggings (237819, -3.85 DPS) [vendor]; Sentinel's Chain Leggings (22748, -4.66 DPS) [rep]; Dawnstalker Legguards (239541, -5.79 DPS, sim-verified) [vendor] |
 | feet | Dawnstalker Greaves (239530) | Leonid Barthalomew the Revered [vendor] | 145.6 ranged_attack_power points (7.80 DPS) | yes | Dawnstalker Boots (239537, -3.58 DPS, sim-verified) [vendor]; Marshal's Chain Boots (16462, -4.50 DPS) [vendor]; Marshal's Chain Greaves (231579, -4.50 DPS) [vendor] |
 | finger1 | Signet Ring of the Bronze Dragonflight (21205) | The Changing of Paths - Protector No More [quest] | sim-verified (238.7 DPS) | yes | Signet Ring of the Bronze Dragonflight (234202, +0.00 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (21204, -0.24 DPS) [quest]; Naglering (11669, -5.79 DPS, sim-verified) [dungeon] |
@@ -154,13 +154,13 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 
 **New at 60:** head: Dawnstalker Visor; neck: Amulet of the Darkmoon; shoulder: Dawnstalker Pauldrons; back: Cape of the Black Baron; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Dawnstalker Belt; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Cutthroat's Signet; trinket1: Burst of Knowledge; main_hand: Legionite Glaive; ranged: Hyper Deluxe Sniper Rifle Mk XVII
 
-No-known-source sample (15 of 1590, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
+No-known-source sample (15 of 1611, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
 
 ## Horde
 
 ### Band 20 (troll, 5420000000000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 75.8. Weights run: 1.4s. Verify run: 1.6s. 213 eligible items had no known source.
+Set DPS (verified): 75.8. Weights run: 1.5s. Verify run: 1.7s. 213 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.185 ± 0.045, crit=0.477 ± 0.019 per rating point (14 rating = 1%, 6.678 per %), hit=0.165 ± 0.007 per rating point (10 rating = 1%, 1.648 per %), melee_haste=3.462 ± 0.795
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 213, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 5420001504000000-00000000000000000-000000000000000000)
 
-Set DPS (verified): 100.1. Weights run: 1.5s. Verify run: 1.7s. 360 eligible items had no known source.
+Set DPS (verified): 100.1. Weights run: 1.7s. Verify run: 1.8s. 360 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.236 ± 0.054, crit=0.589 ± 0.023 per rating point (14 rating = 1%, 8.241 per %), hit=0.183 ± 0.007 per rating point (10 rating = 1%, 1.832 per %), melee_haste=8.084 ± 1.239
 
@@ -204,7 +204,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | wrist | Hawkeye's Bracers (14590) (or Jurassic Wristguards (6198), Insignia Bracers (6410)) | World drop [world_drop] | 13.4 ranged_attack_power points (0.78 DPS) | yes | Jurassic Wristguards (6198, +0.00 DPS, sim-verified) [world]; Insignia Bracers (6410, +0.00 DPS) [world_drop]; Madwolf Bracers (897, -0.13 DPS) [world] |
 | hands | Pilferer's Gloves (7358) | Leatherworking [crafted] | 17.9 ranged_attack_power points (1.04 DPS) | yes | Heavy Earthen Gloves (7359, -0.11 DPS, sim-verified) [crafted]; Braced Handguards (6784, -0.13 DPS) [quest]; Ebon Vise (7690, -0.26 DPS) [dungeon] |
 | waist | Defiler's Chain Girdle (20152) (or Defiler's Leather Girdle (20191)) | The Defilers [rep] | 24.0 ranged_attack_power points (1.40 DPS) | yes | Defiler's Leather Girdle (20191, +0.00 DPS, sim-verified) [rep]; Deftkin Belt (16659, -0.18 DPS) [quest]; Skulker's Leather Belt (252520, -0.23 DPS) [crafted] |
-| legs | Petrolspill Leggings (9509) (or Troll's Bane Leggings (13114)) | Gnomeregan: Caverndeep Ambusher [dungeon] | 31.3 ranged_attack_power points (1.82 DPS) | yes | Troll's Bane Leggings (13114, +0.00 DPS, sim-verified) [world_drop]; Dusky Leather Leggings (7373, -0.13 DPS) [crafted]; Ferine Leggings (6690, -0.31 DPS) [dungeon] |
+| legs | Petrolspill Leggings (9509) (or Troll's Bane Leggings (13114)) | Gnomeregan: Caverndeep Burrower [dungeon] | 31.3 ranged_attack_power points (1.82 DPS) | yes | Troll's Bane Leggings (13114, +0.00 DPS, sim-verified) [world_drop]; Dusky Leather Leggings (7373, -0.13 DPS) [crafted]; Ferine Leggings (6690, -0.31 DPS) [dungeon] |
 | feet | Insignia Boots (4055) (or Highlander's Mail Greaves (20123), Vorrel's Boots (7751), Warsong Boots (16977), Feet of the Lynx (1121)) | World drop [world_drop] | 17.9 ranged_attack_power points (1.04 DPS) | yes | Vorrel's Boots (7751, +0.00 DPS) [quest]; Warsong Boots (16977, +0.00 DPS) [quest]; Highlander's Mail Greaves (20123, +0.00 DPS, sim-verified) [vendor] |
 | finger1 | Ironspine's Eye (7686) | Scarlet Monastery: Ironspine [dungeon] | 20.1 ranged_attack_power points (1.17 DPS) | yes | Ring of Precision (1491, -0.39 DPS) [dungeon]; Legionnaire's Band (19513, -0.39 DPS) [rep]; Signet of the Zhevra (285330, -0.39 DPS) [world] |
 | finger2 | Monkey Ring (6748) | Willix the Importer [quest] | 15.6 ranged_attack_power points (0.91 DPS) | yes | Ring of Precision (1491, -0.13 DPS) [dungeon]; Signet of the Zhevra (285330, -0.13 DPS) [world]; Legionnaire's Band (19513, -0.18 DPS, sim-verified) [rep] |
@@ -220,7 +220,7 @@ No-known-source sample (15 of 360, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (troll, 5420001505001251-00000000000000000-000000000000000000)
 
-Set DPS (verified): 135.0. Weights run: 1.6s. Verify run: 1.9s. 580 eligible items had no known source.
+Set DPS (verified): 135.0. Weights run: 1.8s. Verify run: 2.0s. 580 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.211 ± 0.053, crit=0.658 ± 0.026 per rating point (14 rating = 1%, 9.207 per %), hit=0.200 ± 0.009 per rating point (10 rating = 1%, 2.002 per %), melee_haste=not significant (4.358 ± 1.738)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 580, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 5420001505001251-35200000000000000-000000000000000000)
 
-Set DPS (verified): 163.3. Weights run: 1.8s. Verify run: 2.0s. 744 eligible items had no known source.
+Set DPS (verified): 163.3. Weights run: 1.8s. Verify run: 2.1s. 744 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.247 ± 0.061, crit=0.757 ± 0.029 per rating point (14 rating = 1%, 10.594 per %), hit=0.230 ± 0.010 per rating point (10 rating = 1%, 2.300 per %), melee_haste=not significant (4.431 ± 1.893)
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 744, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (troll, 5420001505001251-35510000000000000-510000000000000000)
 
-Set DPS (verified): 243.2. Weights run: 1.7s. Verify run: 2.0s. 1579 eligible items had no known source.
+Set DPS (verified): 243.2. Weights run: 1.8s. Verify run: 2.1s. 1600 eligible items had no known source.
 
 Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): ranged_attack_power=1.000 ± 0.001, agility=2.233 ± 0.071, crit=1.088 ± 0.041 per rating point (14 rating = 1%, 15.231 per %), hit=0.356 ± 0.015 per rating point (10 rating = 1%, 3.557 per %), melee_haste=12.796 ± 2.185
 
@@ -293,7 +293,7 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 | chest | Dawnstalker Breastplate (239529) | Leonid Barthalomew the Revered [vendor] | sim-verified (243.2 DPS) | yes | Dawnstalker Tunic (239543, -1.86 DPS) [vendor]; Dawn Armor (252483, -4.74 DPS) [crafted]; Tunic of Undead Slaying (23089, -14.33 DPS, sim-verified) [world] |
 | wrist | Dawnstalker Vambraces (239536) | Leonid Barthalomew the Revered [vendor] | sim-verified (243.2 DPS) | yes | Dawnstalker Wristguards (239544, -0.63 DPS) [vendor]; Bracers of the Eclipse (18375, -2.43 DPS) [dungeon]; Wristwraps of Undead Slaying (23093, -7.02 DPS, sim-verified) [world] |
 | hands | Dawnstalker Gauntlets (239531) | Leonid Barthalomew the Revered [vendor] | 137.2 ranged_attack_power points (7.35 DPS) | yes | Dawnstalker Handguards (239539, -1.84 DPS, sim-verified) [vendor]; General's Chain Gloves (16571, -4.02 DPS) [vendor]; General's Chain Vices (231575, -4.02 DPS) [vendor] |
-| waist | Dawnstalker Belt (239535) | Leonid Barthalomew the Revered [vendor] | 113.6 ranged_attack_power points (6.09 DPS) | yes | Dawnstalker Girdle (239538, -1.24 DPS, sim-verified) [vendor]; Dense Timbermaw Belt (227807, -2.66 DPS) [vendor]; Molten Belt (19163, -2.74 DPS) [crafted] |
+| waist | Dawnstalker Belt (239535) | Leonid Barthalomew the Revered [vendor] | 113.6 ranged_attack_power points (6.09 DPS) | yes | Dawnstalker Girdle (239538, -1.24 DPS, sim-verified) [vendor]; Dense Timbermaw Belt (227807, -2.66 DPS) [vendor]; Ranger's Belt (272397, -3.22 DPS) [vendor] |
 | legs | Dawnstalker Leggings (239533) | Leonid Barthalomew the Revered [vendor] | 184.0 ranged_attack_power points (9.86 DPS) | yes | Sentinel's Chain Leggings (237819, -3.85 DPS) [vendor]; Outrider's Chain Leggings (22673, -4.66 DPS) [rep]; Dawnstalker Legguards (239541, -5.98 DPS, sim-verified) [vendor] |
 | feet | Dawnstalker Greaves (239530) | Leonid Barthalomew the Revered [vendor] | 145.6 ranged_attack_power points (7.80 DPS) | yes | Dawnstalker Boots (239537, -3.61 DPS, sim-verified) [vendor]; General's Chain Greaves (231570, -4.50 DPS) [vendor]; General's Chain Sabatons (231564, -4.56 DPS) [vendor] |
 | finger1 | Signet Ring of the Bronze Dragonflight (21205) | The Changing of Paths - Protector No More [quest] | sim-verified (243.2 DPS) | yes | Signet Ring of the Bronze Dragonflight (234202, +0.00 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (21204, -0.24 DPS) [quest]; Naglering (11669, -5.79 DPS, sim-verified) [dungeon] |
@@ -306,5 +306,5 @@ Stat weights (normalized to ranged_attack_power = 1.0, error under 25% of the we
 
 **New at 60:** head: Dawnstalker Visor; neck: Amulet of the Darkmoon; shoulder: Dawnstalker Pauldrons; back: Cape of the Black Baron; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Dawnstalker Belt; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Cutthroat's Signet; trinket2: Burst of Knowledge; main_hand: Legionite Glaive; ranged: Hyper Deluxe Sniper Rifle Mk XVII
 
-No-known-source sample (15 of 1579, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
+No-known-source sample (15 of 1600, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
 

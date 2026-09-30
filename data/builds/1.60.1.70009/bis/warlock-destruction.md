@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 00000000000000000-0000000000000000000-2351000000000000)
 
-Set DPS (verified): 43.9. Weights run: 1.4s. Verify run: 1.2s. 148 eligible items had no known source.
+Set DPS (verified): 43.9. Weights run: 1.5s. Verify run: 1.2s. 148 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.102, intellect=0.267 ± 0.020, crit=0.043 ± 0.002 per rating point (14 rating = 1%, 0.606 per %), hit=0.152 ± 0.001 per rating point (10 rating = 1%, 1.516 per %), spell_haste=not significant (0.109 ± 0.098), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.774 ± 0.102, fire_power=0.228 ± 0.001
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 148, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (gnome, 00000000000000000-0000000000000000000-2353224000000000)
 
-Set DPS (verified): 66.9. Weights run: 1.3s. Verify run: 1.2s. 246 eligible items had no known source.
+Set DPS (verified): 66.9. Weights run: 1.5s. Verify run: 1.3s. 246 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.103, intellect=0.190 ± 0.009, crit=0.065 ± 0.003 per rating point (14 rating = 1%, 0.912 per %), hit=0.154 ± 0.002 per rating point (10 rating = 1%, 1.542 per %), spell_haste=0.727 ± 0.096, spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.799 ± 0.103, fire_power=0.202 ± 0.000
 
@@ -128,13 +128,13 @@ No-known-source sample (15 of 419, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 25532300000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 319.7. Weights run: 1.4s. Verify run: 1.3s. 993 eligible items had no known source.
+Set DPS (verified): 328.6. Weights run: 1.4s. Verify run: 1.3s. 1007 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=not significant (1.000 ± -5.700), intellect=not significant (-11.635 ± -0.334), crit=not significant (-2.647 ± -0.119) per rating point (14 rating = 1%, -37.059 per %), hit=not significant (-5.135 ± -0.053) per rating point (10 rating = 1%, -51.347 per %), spell_haste=not significant (-13.428 ± -4.422), spell_penetration=not significant (-0.000 ± -0.000), shadow_power=not significant (8.066 ± -5.701), fire_power=not significant (-7.192 ± -0.026)
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Heretic Cowl (240141) | Leonid Barthalomew the Revered [vendor] | sim-verified (+26.7 DPS vs the runner-up, not corroborated against the finished set) | yes | Sun Shades (208424, -26.73 DPS, sim-verified) [vendor] |
+| head | Heretic Cowl (240141) | Leonid Barthalomew the Revered [vendor] | sim-verified (+26.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Sun Shades (208424, -26.93 DPS, sim-verified) [vendor] |
 | neck | - | - |  |  |  |
 | shoulder | - | - |  |  |  |
 | back | - | - |  |  |  |
@@ -144,23 +144,23 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | waist | - | - |  |  |  |
 | legs | - | - |  |  |  |
 | feet | - | - |  |  |  |
-| finger1 | Ring of the Eternal Flame (23237) | World drop [world_drop] | 0.0 spell_power points | yes | Naglering (11669, -1.34 DPS, sim-verified) [dungeon] |
-| finger2 | Signet Ring of the Bronze Dragonflight (21200) | The Protector of Kalimdor [quest] | 0.0 spell_power points | yes | Naglering (11669, +0.00 DPS, sim-verified) [dungeon] |
-| trinket1 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (+7.6 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
-| trinket2 | Draconic Infused Emblem (22268) | Blackrock Spire: General Drakkisath [dungeon] | 0.0 spell_power points | yes | Burst of Knowledge (11832, -2.45 DPS, sim-verified) [dungeon] |
+| finger1 | Signet Ring of the Bronze Dragonflight (21200) | The Protector of Kalimdor [quest] | 0.0 spell_power points | yes | Naglering (11669, +0.00 DPS, sim-verified) [dungeon] |
+| finger2 | Cauterizing Band (19140) | World drop [world_drop] | 0.0 spell_power points | yes | Naglering (11669, -10.33 DPS, sim-verified) [dungeon] |
+| trinket1 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (+10.2 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
+| trinket2 | Draconic Infused Emblem (22268) | Blackrock Spire: General Drakkisath [dungeon] | 0.0 spell_power points | yes | Burst of Knowledge (11832, -3.30 DPS, sim-verified) [dungeon] |
 | main_hand | Runesword of the Red (21521) | Treasure of the Timeless One [quest] | 0.0 spell_power points | yes | Teebu's Blazing Longsword (1728, +0.00 DPS, sim-verified) [world_drop] |
-| off_hand | Lei of the Lifegiver (19312) | Stormpike Guard [rep] | sim-verified (+9.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Tome of the Ice Lord (19310, -9.02 DPS, sim-verified) [rep] |
-| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (+7.3 DPS vs the runner-up, not corroborated against the finished set) | yes | Torch of Light (279246, -7.27 DPS, sim-verified) [crafted] |
+| off_hand | Lei of the Lifegiver (19312) | Stormpike Guard [rep] | sim-verified (+8.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Tome of the Ice Lord (19310, -8.37 DPS, sim-verified) [rep] |
+| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (+4.9 DPS vs the runner-up, not corroborated against the finished set) | yes | Torch of Light (279246, -4.92 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Heretic Cowl; finger1: Ring of the Eternal Flame; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Talisman of Ascendance; trinket2: Draconic Infused Emblem; main_hand: Runesword of the Red; off_hand: Lei of the Lifegiver; ranged: Ritssyn's Wand of Bad Mojo
+**New at 60:** head: Heretic Cowl; finger1: Signet Ring of the Bronze Dragonflight; finger2: Cauterizing Band; trinket1: Talisman of Ascendance; trinket2: Draconic Infused Emblem; main_hand: Runesword of the Red; off_hand: Lei of the Lifegiver; ranged: Ritssyn's Wand of Bad Mojo
 
-No-known-source sample (15 of 993, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4116 Olmann Sewar; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
+No-known-source sample (15 of 1007, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4116 Olmann Sewar; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band
 
 ## Horde
 
 ### Band 20 (troll, 00000000000000000-0000000000000000000-2351000000000000)
 
-Set DPS (verified): 42.3. Weights run: 1.4s. Verify run: 1.1s. 142 eligible items had no known source.
+Set DPS (verified): 42.3. Weights run: 1.5s. Verify run: 1.2s. 142 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.102, intellect=0.267 ± 0.020, crit=0.043 ± 0.002 per rating point (14 rating = 1%, 0.606 per %), hit=0.152 ± 0.001 per rating point (10 rating = 1%, 1.516 per %), spell_haste=not significant (0.109 ± 0.098), spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.774 ± 0.102, fire_power=0.228 ± 0.001
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 142, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 00000000000000000-0000000000000000000-2353224000000000)
 
-Set DPS (verified): 65.0. Weights run: 1.3s. Verify run: 1.2s. 237 eligible items had no known source.
+Set DPS (verified): 65.0. Weights run: 1.5s. Verify run: 1.2s. 237 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.103, intellect=0.190 ± 0.009, crit=0.065 ± 0.003 per rating point (14 rating = 1%, 0.912 per %), hit=0.154 ± 0.002 per rating point (10 rating = 1%, 1.542 per %), spell_haste=0.727 ± 0.096, spell_penetration=not significant (0.000 ± 0.000), shadow_power=0.799 ± 0.103, fire_power=0.202 ± 0.000
 
@@ -280,13 +280,13 @@ No-known-source sample (15 of 410, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (troll, 25532300000000000-0000000000000000000-2353225100101051)
 
-Set DPS (verified): 318.5. Weights run: 1.4s. Verify run: 1.3s. 984 eligible items had no known source.
+Set DPS (verified): 327.4. Weights run: 1.4s. Verify run: 1.3s. 998 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=not significant (1.000 ± -5.700), intellect=not significant (-11.635 ± -0.334), crit=not significant (-2.647 ± -0.119) per rating point (14 rating = 1%, -37.059 per %), hit=not significant (-5.135 ± -0.053) per rating point (10 rating = 1%, -51.347 per %), spell_haste=not significant (-13.428 ± -4.422), spell_penetration=not significant (-0.000 ± -0.000), shadow_power=not significant (8.066 ± -5.701), fire_power=not significant (-7.192 ± -0.026)
 
 | Slot | Item | Source | Score (spell_power points) | Verified | Alternatives |
 |---|---|---|---|---|---|
-| head | Heretic Cowl (240141) | Leonid Barthalomew the Revered [vendor] | sim-verified (+27.0 DPS vs the runner-up, not corroborated against the finished set) | yes | Sun Shades (208424, -27.00 DPS, sim-verified) [vendor] |
+| head | Heretic Cowl (240141) | Leonid Barthalomew the Revered [vendor] | sim-verified (+27.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Sun Shades (208424, -27.84 DPS, sim-verified) [vendor] |
 | neck | - | - |  |  |  |
 | shoulder | - | - |  |  |  |
 | back | - | - |  |  |  |
@@ -296,15 +296,15 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | waist | - | - |  |  |  |
 | legs | - | - |  |  |  |
 | feet | - | - |  |  |  |
-| finger1 | Ring of the Eternal Flame (23237) | World drop [world_drop] | 0.0 spell_power points | yes | Naglering (11669, -1.92 DPS, sim-verified) [dungeon] |
-| finger2 | Signet Ring of the Bronze Dragonflight (21200) | The Protector of Kalimdor [quest] | 0.0 spell_power points | yes | Naglering (11669, +0.00 DPS, sim-verified) [dungeon] |
-| trinket1 | Draconic Infused Emblem (22268) | Blackrock Spire: General Drakkisath [dungeon] | sim-verified (+7.7 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
-| trinket2 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | 0.0 spell_power points | yes | Burst of Knowledge (11832, -2.51 DPS, sim-verified) [dungeon] |
+| finger1 | Signet Ring of the Bronze Dragonflight (21200) | The Protector of Kalimdor [quest] | 0.0 spell_power points | yes | Naglering (11669, +0.00 DPS, sim-verified) [dungeon] |
+| finger2 | Cauterizing Band (19140) | World drop [world_drop] | 0.0 spell_power points | yes | Naglering (11669, -10.84 DPS, sim-verified) [dungeon] |
+| trinket1 | Draconic Infused Emblem (22268) | Blackrock Spire: General Drakkisath [dungeon] | sim-verified (+9.4 DPS vs the runner-up, not corroborated against the finished set) | yes | - |
+| trinket2 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | 0.0 spell_power points | yes | Burst of Knowledge (11832, -4.01 DPS, sim-verified) [dungeon] |
 | main_hand | Runesword of the Red (21521) | Treasure of the Timeless One [quest] | 0.0 spell_power points | yes | Teebu's Blazing Longsword (1728, +0.00 DPS, sim-verified) [world_drop] |
-| off_hand | Lei of the Lifegiver (19312) | Frostwolf Clan [rep] | sim-verified (+8.8 DPS vs the runner-up, not corroborated against the finished set) | yes | Tome of the Ice Lord (19310, -8.85 DPS, sim-verified) [rep] |
-| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (+6.5 DPS vs the runner-up, not corroborated against the finished set) | yes | Torch of Light (279246, -6.50 DPS, sim-verified) [crafted] |
+| off_hand | Lei of the Lifegiver (19312) | Frostwolf Clan [rep] | sim-verified (+7.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Tome of the Ice Lord (19310, -7.36 DPS, sim-verified) [rep] |
+| ranged | Ritssyn's Wand of Bad Mojo (22408) | Stratholme: Baron Rivendare [dungeon] | sim-verified (+7.4 DPS vs the runner-up, not corroborated against the finished set) | yes | Torch of Light (279246, -7.39 DPS, sim-verified) [crafted] |
 
-**New at 60:** head: Heretic Cowl; finger1: Ring of the Eternal Flame; finger2: Signet Ring of the Bronze Dragonflight; trinket1: Draconic Infused Emblem; trinket2: Talisman of Ascendance; main_hand: Runesword of the Red; off_hand: Lei of the Lifegiver; ranged: Ritssyn's Wand of Bad Mojo
+**New at 60:** head: Heretic Cowl; finger1: Signet Ring of the Bronze Dragonflight; finger2: Cauterizing Band; trinket1: Draconic Infused Emblem; trinket2: Talisman of Ascendance; main_hand: Runesword of the Red; off_hand: Lei of the Lifegiver; ranged: Ritssyn's Wand of Bad Mojo
 
-No-known-source sample (15 of 984, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3556 Dread Mage Hat; 3738 Brewing Rod; 4116 Olmann Sewar; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
+No-known-source sample (15 of 998, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3556 Dread Mage Hat; 3738 Brewing Rod; 4116 Olmann Sewar; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 

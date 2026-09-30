@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (gnome, 000000000000000000-00000000000000000-443000000000000000)
 
-Set DPS (verified): 22.5. Weights run: 0.9s. Verify run: 1.0s. 149 eligible items had no known source.
+Set DPS (verified): 22.5. Weights run: 0.9s. Verify run: 1.1s. 149 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=-2.593 ± 0.062, crit=0.080 ± 0.004 per rating point (14 rating = 1%, 1.117 per %), hit=0.183 ± 0.004 per rating point (10 rating = 1%, 1.832 per %), spell_haste=not significant (-0.514 ± 0.244), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 328, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (gnome, 521000000000000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 137.1. Weights run: 0.7s. Verify run: 0.8s. 426 eligible items had no known source.
+Set DPS (verified): 137.1. Weights run: 0.8s. Verify run: 0.8s. 426 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=1.099 ± 0.047, crit=0.115 ± 0.009 per rating point (14 rating = 1%, 1.607 per %), hit=0.638 ± 0.012 per rating point (10 rating = 1%, 6.384 per %), spell_haste=not significant (-0.545 ± 0.921), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 426, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (gnome, 524111001300000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 264.9. Weights run: 0.8s. Verify run: 0.8s. 1053 eligible items had no known source.
+Set DPS (verified): 264.9. Weights run: 0.8s. Verify run: 0.8s. 1067 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=1.190 ± 0.057, crit=0.224 ± 0.013 per rating point (14 rating = 1%, 3.142 per %), hit=1.121 ± 0.017 per rating point (10 rating = 1%, 11.211 per %), spell_haste=not significant (0.982 ± 1.111), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -141,11 +141,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | chest | Robe of Revelation (239591) | Leonid Barthalomew the Revered [vendor] | 76.0 spell_power points (8.51 DPS) | yes | Field Marshal's Satin Vestments (17605, -1.08 DPS) [vendor]; Field Marshal's Satin Tunic (231624, -2.43 DPS) [vendor]; Field Marshal's Satin Robe (231618, -2.91 DPS, sim-verified) [vendor] |
 | wrist | Bindings of Revelation (239588) | Leonid Barthalomew the Revered [vendor] | 40.0 spell_power points (4.48 DPS) | yes | Dryad's Wrist Bindings (19596, -1.44 DPS) [rep]; Sublime Wristguards (18497, -1.80 DPS) [dungeon]; Dryad's Wrist Bindings (19595, -2.13 DPS, sim-verified) [rep] |
 | hands | Gloves of Revelation (239584) | Leonid Barthalomew the Revered [vendor] | 49.1 spell_power points (5.50 DPS) | yes | Marshal's Satin Gloves (17608, -1.19 DPS) [vendor]; Marshal's Satin Grips (231617, -1.19 DPS) [vendor]; Raider Handwraps (272097, -1.39 DPS, sim-verified) [vendor] |
-| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 62.4 spell_power points (6.99 DPS) | yes | Belt of Revelation (239590, +0.00 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -2.26 DPS) [crafted]; Girdle of Prophecy (16817, -3.05 DPS) [world_drop] |
+| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 62.4 spell_power points (6.99 DPS) | yes | Belt of Revelation (239590, +0.00 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -2.26 DPS) [crafted]; Magister's Belt (16685, -3.41 DPS) [dungeon] |
 | legs | Leggings of Revelation (239587) | Leonid Barthalomew the Revered [vendor] | 66.1 spell_power points (7.40 DPS) | yes | Marshal's Satin Pants (17603, -1.02 DPS) [vendor]; Sentinel's Silk Leggings (22752, -1.73 DPS) [rep]; Marshal's Satin Leggings (231619, -2.75 DPS, sim-verified) [vendor] |
 | feet | Sandals of Revelation (239589) | Leonid Barthalomew the Revered [vendor] | 46.8 spell_power points (5.24 DPS) | yes | Marshal's Satin Sandals (17607, -0.27 DPS) [vendor]; Virtuous Slippers (226959, -0.65 DPS) [vendor]; Marshal's Satin Treads (231620, -3.00 DPS, sim-verified) [vendor] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (264.9 DPS) | yes | Signet Ring of the Bronze Dragonflight (234028, -0.36 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234024, -0.47 DPS) [vendor]; Naglering (11669, -9.69 DPS, sim-verified) [dungeon] |
-| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (264.9 DPS) | yes | Cauterizing Band (19140, -0.65 DPS) [world_drop]; Ritssyn's Ring of Chaos (21836, -0.78 DPS) [world_drop]; Naglering (11669, -6.95 DPS, sim-verified) [dungeon] |
+| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (264.9 DPS) | yes | Cauterizing Band (19140, -0.65 DPS) [world_drop]; Channeler's Ring (272406, -0.81 DPS) [vendor]; Naglering (11669, -6.95 DPS, sim-verified) [dungeon] |
 | trinket1 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (264.9 DPS) | yes | Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Draconic Infused Emblem (22268, -1.17 DPS, sim-verified) [dungeon] |
 | trinket2 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (264.9 DPS) | yes | Second Wind (11819, +0.00 DPS, sim-verified) [dungeon]; Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor] |
 | main_hand | Crackling Staff (19102) | Stormpike Guard [rep] | sim-verified (264.9 DPS) | yes | Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; Amethyst War Staff (20654, -1.12 DPS) [world]; Hand of Edward the Odd (2243, -4.44 DPS, sim-verified) [world_drop] |
@@ -154,13 +154,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Field Marshal's Satin Crown; neck: Amulet of the Dawn; shoulder: Field Marshal's Satin Epaulets; back: Arcanoweave Cloak; chest: Robe of Revelation; wrist: Bindings of Revelation; hands: Gloves of Revelation; waist: Knowledge of the Timbermaw; legs: Leggings of Revelation; feet: Sandals of Revelation; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Talisman of Ascendance; trinket2: Burst of Knowledge; main_hand: Crackling Staff; ranged: Torch of Light
 
-No-known-source sample (15 of 1053, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
+No-known-source sample (15 of 1067, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4797 Fiery Cloak; 4798 Heavy Runed Cloak; 4799 Antiquated Cloak; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor
 
 ## Horde
 
 ### Band 20 (undead, 000000000000000000-00000000000000000-443000000000000000)
 
-Set DPS (verified): 27.0. Weights run: 0.9s. Verify run: 0.9s. 142 eligible items had no known source.
+Set DPS (verified): 27.0. Weights run: 0.9s. Verify run: 1.0s. 142 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=-2.593 ± 0.062, crit=0.080 ± 0.004 per rating point (14 rating = 1%, 1.117 per %), hit=0.183 ± 0.004 per rating point (10 rating = 1%, 1.832 per %), spell_haste=not significant (-0.514 ± 0.244), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 320, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (undead, 521000000000000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 123.5. Weights run: 0.7s. Verify run: 0.8s. 418 eligible items had no known source.
+Set DPS (verified): 123.5. Weights run: 0.8s. Verify run: 0.8s. 418 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=1.099 ± 0.047, crit=0.115 ± 0.009 per rating point (14 rating = 1%, 1.607 per %), hit=0.638 ± 0.012 per rating point (10 rating = 1%, 6.384 per %), spell_haste=not significant (-0.545 ± 0.921), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.003
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 418, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (undead, 524111001300000000-00000000000000000-443110501201300251)
 
-Set DPS (verified): 247.0. Weights run: 0.8s. Verify run: 0.8s. 1046 eligible items had no known source.
+Set DPS (verified): 247.0. Weights run: 0.8s. Verify run: 0.8s. 1060 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.002, intellect=1.190 ± 0.057, crit=0.224 ± 0.013 per rating point (14 rating = 1%, 3.142 per %), hit=1.121 ± 0.017 per rating point (10 rating = 1%, 11.211 per %), spell_haste=not significant (0.982 ± 1.111), spell_penetration=not significant (0.000 ± 0.000), shadow_power=1.000 ± 0.002
 
@@ -293,11 +293,11 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | chest | Robe of Revelation (239591) | Leonid Barthalomew the Revered [vendor] | 76.0 spell_power points (8.51 DPS) | yes | Warlord's Satin Robes (231612, -1.08 DPS) [vendor]; Virtuous Gown (226960, -3.20 DPS) [vendor]; Warlord's Satin Tunic (231632, -4.79 DPS, sim-verified) [vendor] |
 | wrist | Bindings of Revelation (239588) | Leonid Barthalomew the Revered [vendor] | 40.0 spell_power points (4.48 DPS) | yes | Dryad's Wrist Bindings (19596, -1.44 DPS) [rep]; Sublime Wristguards (18497, -1.80 DPS) [dungeon]; Dryad's Wrist Bindings (19595, -3.55 DPS, sim-verified) [rep] |
 | hands | Gloves of Revelation (239584) | Leonid Barthalomew the Revered [vendor] | 49.1 spell_power points (5.50 DPS) | yes | General's Satin Gloves (17620, -1.19 DPS) [vendor]; General's Satin Grips (231613, -1.19 DPS) [vendor]; Raider Handwraps (272097, -1.65 DPS, sim-verified) [vendor] |
-| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 62.4 spell_power points (6.99 DPS) | yes | Belt of Revelation (239590, -0.98 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -2.26 DPS) [crafted]; Girdle of Prophecy (16817, -3.05 DPS) [world_drop] |
+| waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 62.4 spell_power points (6.99 DPS) | yes | Belt of Revelation (239590, -0.98 DPS, sim-verified) [vendor]; Belt of the Archmage (18405, -2.26 DPS) [crafted]; Magister's Belt (16685, -3.41 DPS) [dungeon] |
 | legs | Leggings of Revelation (239587) | Leonid Barthalomew the Revered [vendor] | 66.1 spell_power points (7.40 DPS) | yes | General's Satin Leggings (231614, -1.02 DPS) [vendor]; Sentinel's Silk Leggings (237815, -1.78 DPS) [vendor]; Outrider's Silk Leggings (22747, -5.67 DPS, sim-verified) [rep] |
 | feet | Sandals of Revelation (239589) | Leonid Barthalomew the Revered [vendor] | 46.8 spell_power points (5.24 DPS) | yes | General's Satin Boots (17618, -0.27 DPS) [vendor]; Virtuous Slippers (226959, -0.65 DPS) [vendor]; General's Satin Treads (231610, -2.89 DPS, sim-verified) [vendor] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (247.0 DPS) | yes | Signet Ring of the Bronze Dragonflight (234028, -0.36 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234024, -0.47 DPS) [vendor]; Naglering (11669, -9.80 DPS, sim-verified) [dungeon] |
-| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (247.0 DPS) | yes | Cauterizing Band (19140, -0.65 DPS) [world_drop]; Ritssyn's Ring of Chaos (21836, -0.78 DPS) [world_drop]; Naglering (11669, -7.49 DPS, sim-verified) [dungeon] |
+| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (247.0 DPS) | yes | Cauterizing Band (19140, -0.65 DPS) [world_drop]; Channeler's Ring (272406, -0.81 DPS) [vendor]; Naglering (11669, -7.49 DPS, sim-verified) [dungeon] |
 | trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (247.0 DPS) | yes | Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Draconic Infused Emblem (22268, -3.63 DPS, sim-verified) [dungeon] |
 | trinket2 | Second Wind (11819) | Blackrock Depths: Golem Lord Argelmach [dungeon] | sim-verified (247.0 DPS) | yes | Briarwood Reed (12930, +0.00 DPS) [dungeon]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Draconic Infused Emblem (22268, -0.41 DPS, sim-verified) [dungeon] |
 | main_hand | Amethyst War Staff (20654) | Azure Templar [world] | sim-verified (247.0 DPS) | yes | High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Trindlehaven Staff (13161, -0.11 DPS) [dungeon]; Hand of Edward the Odd (2243, -3.90 DPS, sim-verified) [world_drop] |
@@ -306,5 +306,5 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Warlord's Satin Crown; neck: Amulet of the Dawn; shoulder: Warlord's Satin Epaulets; back: Arcanoweave Cloak; chest: Robe of Revelation; wrist: Bindings of Revelation; hands: Gloves of Revelation; waist: Knowledge of the Timbermaw; legs: Leggings of Revelation; feet: Sandals of Revelation; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Burst of Knowledge; trinket2: Second Wind; main_hand: Amethyst War Staff; ranged: Torch of Light
 
-No-known-source sample (15 of 1046, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5008 Quicksilver Ring
+No-known-source sample (15 of 1060, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 3222 Wicked Dagger; 3738 Brewing Rod; 4642 Star of Xil'yeh; 4988 Burning Obsidian Band; 4989 Mage Dragon Robe; 4990 Scorched Bands; 5000 Coral Band; 5004 Mark of the Kirin Tor; 5005 Emberspark Pendant; 5008 Quicksilver Ring
 

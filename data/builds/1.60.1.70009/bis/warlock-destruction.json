@@ -2,7 +2,7 @@
   "spec": "warlock-destruction",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T13:22:38Z",
+  "generated_at": "2026-09-30T13:57:36Z",
   "bands": [
     {
       "spec": "warlock-destruction",
@@ -540,8 +540,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.360821582,
-      "verify_run_seconds": 1.167405918,
+      "weights_run_seconds": 1.458474067,
+      "verify_run_seconds": 1.233374102,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1157,8 +1157,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.360821582,
-      "verify_run_seconds": 1.141017719,
+      "weights_run_seconds": 1.458474067,
+      "verify_run_seconds": 1.236906967,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1854,8 +1854,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.342846125,
-      "verify_run_seconds": 1.20534308,
+      "weights_run_seconds": 1.4677481399999999,
+      "verify_run_seconds": 1.256536018,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2548,8 +2548,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.342846125,
-      "verify_run_seconds": 1.152159387,
+      "weights_run_seconds": 1.4677481399999999,
+      "verify_run_seconds": 1.17520721,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3227,8 +3227,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.394701311,
-      "verify_run_seconds": 1.132266186,
+      "weights_run_seconds": 1.3837967,
+      "verify_run_seconds": 1.0531075,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3906,8 +3906,8 @@
         "main_hand: Staff of Dar'Orahil",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 1.394701311,
-      "verify_run_seconds": 1.110393884,
+      "weights_run_seconds": 1.3837967,
+      "verify_run_seconds": 1.051321756,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4599,8 +4599,8 @@
         "main_hand: Blade of Eternal Darkness",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.354338495,
-      "verify_run_seconds": 1.177916536,
+      "weights_run_seconds": 1.380347146,
+      "verify_run_seconds": 1.159494395,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5318,8 +5318,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.354338495,
-      "verify_run_seconds": 1.180772076,
+      "weights_run_seconds": 1.380347146,
+      "verify_run_seconds": 1.178430566,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5470,15 +5470,15 @@
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
           "verified": true,
-          "swap_note": "beat the scored pick Sun Shades (id 208424) in the sim: +26.7 DPS over it",
-          "dps_delta": 26.73307869531544,
+          "swap_note": "beat the scored pick Sun Shades (id 208424) in the sim: +26.9 DPS over it",
+          "dps_delta": 26.92535626325423,
           "alternatives": [
             {
               "item_id": 208424,
               "item_name": "Sun Shades",
               "source_kind": "vendor",
               "source": "Rix Xizzix",
-              "dps_delta": -26.73307869531544,
+              "dps_delta": -26.92535626325423,
               "verified": true
             }
           ]
@@ -5530,24 +5530,6 @@
         },
         {
           "slot": "finger1",
-          "item_id": 23237,
-          "item_name": "Ring of the Eternal Flame",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -1.3409891907330689,
-              "verified": true
-            }
-          ]
-        },
-        {
-          "slot": "finger2",
           "item_id": 21200,
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "The Protector of Kalimdor",
@@ -5565,14 +5547,32 @@
           ]
         },
         {
+          "slot": "finger2",
+          "item_id": 19140,
+          "item_name": "Cauterizing Band",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 11669,
+              "item_name": "Naglering",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -10.32575123904138,
+              "verified": true
+            }
+          ]
+        },
+        {
           "slot": "trinket1",
           "item_id": 22678,
           "item_name": "Talisman of Ascendance",
           "source": "Epic Armaments of Battle - Friend of the Dawn",
           "source_kind": "quest",
           "verified": true,
-          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +7.6 DPS over it",
-          "dps_delta": 7.599789203014495
+          "swap_note": "confirmed by the sim against Draconic Infused Emblem (id 22268): kept the pick, +10.2 DPS over it",
+          "dps_delta": 10.150524018790918
         },
         {
           "slot": "trinket2",
@@ -5587,7 +5587,7 @@
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -2.452069865774263,
+              "dps_delta": -3.301390005664871,
               "verified": true
             }
           ]
@@ -5617,15 +5617,15 @@
           "source": "Stormpike Guard",
           "source_kind": "rep",
           "verified": true,
-          "swap_note": "beat the scored pick Tome of the Ice Lord (id 19310) in the sim: +9.0 DPS over it",
-          "dps_delta": 9.021952865424282,
+          "swap_note": "beat the scored pick Tome of the Ice Lord (id 19310) in the sim: +8.4 DPS over it",
+          "dps_delta": 8.371638778447107,
           "alternatives": [
             {
               "item_id": 19310,
               "item_name": "Tome of the Ice Lord",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -9.021952865424282,
+              "dps_delta": -8.371638778447107,
               "verified": true
             }
           ]
@@ -5637,8 +5637,8 @@
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +7.3 DPS over it",
-          "dps_delta": 7.265393545987308,
+          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +4.9 DPS over it",
+          "dps_delta": 4.922016542182746,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -5646,14 +5646,14 @@
               "item_name": "Torch of Light",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -7.265393545987308,
+              "dps_delta": -4.922016542182746,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 319.74852039352356,
-      "no_source_count": 993,
+      "set_dps": 328.56141230928347,
+      "no_source_count": 1007,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5673,16 +5673,16 @@
       ],
       "new_at_band": [
         "head: Heretic Cowl",
-        "finger1: Ring of the Eternal Flame",
-        "finger2: Signet Ring of the Bronze Dragonflight",
+        "finger1: Signet Ring of the Bronze Dragonflight",
+        "finger2: Cauterizing Band",
         "trinket1: Talisman of Ascendance",
         "trinket2: Draconic Infused Emblem",
         "main_hand: Runesword of the Red",
         "off_hand: Lei of the Lifegiver",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.363097089,
-      "verify_run_seconds": 1.282149309,
+      "weights_run_seconds": 1.3844644480000001,
+      "verify_run_seconds": 1.3122425039999999,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5690,7 +5690,7 @@
         },
         "chest": {
           "eligible": 325,
-          "sourced": 271
+          "sourced": 270
         },
         "feet": {
           "eligible": 208,
@@ -5698,15 +5698,15 @@
         },
         "finger1": {
           "eligible": 376,
-          "sourced": 216
+          "sourced": 213
         },
         "finger2": {
           "eligible": 376,
-          "sourced": 216
+          "sourced": 213
         },
         "hands": {
           "eligible": 216,
-          "sourced": 177
+          "sourced": 175
         },
         "head": {
           "eligible": 188,
@@ -5714,11 +5714,11 @@
         },
         "legs": {
           "eligible": 208,
-          "sourced": 168
+          "sourced": 167
         },
         "main_hand": {
           "eligible": 574,
-          "sourced": 388
+          "sourced": 385
         },
         "neck": {
           "eligible": 193,
@@ -5734,23 +5734,23 @@
         },
         "shoulder": {
           "eligible": 161,
-          "sourced": 131
+          "sourced": 130
         },
         "trinket1": {
           "eligible": 186,
-          "sourced": 111
+          "sourced": 110
         },
         "trinket2": {
           "eligible": 186,
-          "sourced": 111
+          "sourced": 110
         },
         "waist": {
           "eligible": 197,
-          "sourced": 164
+          "sourced": 163
         },
         "wrist": {
           "eligible": 162,
-          "sourced": 120
+          "sourced": 119
         }
       },
       "score_unit": "reference_stat_points",
@@ -5833,15 +5833,15 @@
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
           "verified": true,
-          "swap_note": "beat the scored pick Sun Shades (id 208424) in the sim: +27.0 DPS over it",
-          "dps_delta": 26.995415957699038,
+          "swap_note": "beat the scored pick Sun Shades (id 208424) in the sim: +27.8 DPS over it",
+          "dps_delta": 27.84141947709486,
           "alternatives": [
             {
               "item_id": 208424,
               "item_name": "Sun Shades",
               "source_kind": "vendor",
               "source": "Rix Xizzix",
-              "dps_delta": -26.995415957699038,
+              "dps_delta": -27.84141947709486,
               "verified": true
             }
           ]
@@ -5893,24 +5893,6 @@
         },
         {
           "slot": "finger1",
-          "item_id": 23237,
-          "item_name": "Ring of the Eternal Flame",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -1.9183273346305327,
-              "verified": true
-            }
-          ]
-        },
-        {
-          "slot": "finger2",
           "item_id": 21200,
           "item_name": "Signet Ring of the Bronze Dragonflight",
           "source": "The Protector of Kalimdor",
@@ -5928,14 +5910,32 @@
           ]
         },
         {
+          "slot": "finger2",
+          "item_id": 19140,
+          "item_name": "Cauterizing Band",
+          "source": "World drop",
+          "source_kind": "world_drop",
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 11669,
+              "item_name": "Naglering",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -10.83700453529491,
+              "verified": true
+            }
+          ]
+        },
+        {
           "slot": "trinket1",
           "item_id": 22268,
           "item_name": "Draconic Infused Emblem",
           "source": "Blackrock Spire: General Drakkisath",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "confirmed by the sim against Talisman of Ascendance (id 22678): kept the pick, +7.7 DPS over it",
-          "dps_delta": 7.732838395964109
+          "swap_note": "confirmed by the sim against Talisman of Ascendance (id 22678): kept the pick, +9.4 DPS over it",
+          "dps_delta": 9.366437389724524
         },
         {
           "slot": "trinket2",
@@ -5950,7 +5950,7 @@
               "item_name": "Burst of Knowledge",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ambassador Flamelash",
-              "dps_delta": -2.506664335635435,
+              "dps_delta": -4.013451218061448,
               "verified": true
             }
           ]
@@ -5980,15 +5980,15 @@
           "source": "Frostwolf Clan",
           "source_kind": "rep",
           "verified": true,
-          "swap_note": "beat the scored pick Tome of the Ice Lord (id 19310) in the sim: +8.8 DPS over it",
-          "dps_delta": 8.845794290457661,
+          "swap_note": "beat the scored pick Tome of the Ice Lord (id 19310) in the sim: +7.4 DPS over it",
+          "dps_delta": 7.362597349153589,
           "alternatives": [
             {
               "item_id": 19310,
               "item_name": "Tome of the Ice Lord",
               "source_kind": "rep",
               "source": "Frostwolf Clan",
-              "dps_delta": -8.845794290457661,
+              "dps_delta": -7.362597349153589,
               "verified": true
             }
           ]
@@ -6000,8 +6000,8 @@
           "source": "Stratholme: Baron Rivendare",
           "source_kind": "dungeon",
           "verified": true,
-          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +6.5 DPS over it",
-          "dps_delta": 6.500522921577101,
+          "swap_note": "beat the scored pick Torch of Light (id 279246) in the sim: +7.4 DPS over it",
+          "dps_delta": 7.394286328374619,
           "effect_unmodelled": true,
           "alternatives": [
             {
@@ -6009,14 +6009,14 @@
               "item_name": "Torch of Light",
               "source_kind": "crafted",
               "source": "Enchanting",
-              "dps_delta": -6.500522921577101,
+              "dps_delta": -7.394286328374619,
               "verified": true
             }
           ]
         }
       ],
-      "set_dps": 318.50667403219205,
-      "no_source_count": 984,
+      "set_dps": 327.404095060729,
+      "no_source_count": 998,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6036,16 +6036,16 @@
       ],
       "new_at_band": [
         "head: Heretic Cowl",
-        "finger1: Ring of the Eternal Flame",
-        "finger2: Signet Ring of the Bronze Dragonflight",
+        "finger1: Signet Ring of the Bronze Dragonflight",
+        "finger2: Cauterizing Band",
         "trinket1: Draconic Infused Emblem",
         "trinket2: Talisman of Ascendance",
         "main_hand: Runesword of the Red",
         "off_hand: Lei of the Lifegiver",
         "ranged: Ritssyn's Wand of Bad Mojo"
       ],
-      "weights_run_seconds": 1.363097089,
-      "verify_run_seconds": 1.288282146,
+      "weights_run_seconds": 1.3844644480000001,
+      "verify_run_seconds": 1.316344664,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6053,7 +6053,7 @@
         },
         "chest": {
           "eligible": 323,
-          "sourced": 267
+          "sourced": 266
         },
         "feet": {
           "eligible": 208,
@@ -6061,15 +6061,15 @@
         },
         "finger1": {
           "eligible": 379,
-          "sourced": 221
+          "sourced": 218
         },
         "finger2": {
           "eligible": 379,
-          "sourced": 221
+          "sourced": 218
         },
         "hands": {
           "eligible": 219,
-          "sourced": 179
+          "sourced": 177
         },
         "head": {
           "eligible": 188,
@@ -6077,11 +6077,11 @@
         },
         "legs": {
           "eligible": 207,
-          "sourced": 168
+          "sourced": 167
         },
         "main_hand": {
           "eligible": 577,
-          "sourced": 401
+          "sourced": 398
         },
         "neck": {
           "eligible": 197,
@@ -6097,23 +6097,23 @@
         },
         "shoulder": {
           "eligible": 160,
-          "sourced": 130
+          "sourced": 129
         },
         "trinket1": {
           "eligible": 185,
-          "sourced": 110
+          "sourced": 109
         },
         "trinket2": {
           "eligible": 185,
-          "sourced": 110
+          "sourced": 109
         },
         "waist": {
           "eligible": 197,
-          "sourced": 162
+          "sourced": 161
         },
         "wrist": {
           "eligible": 163,
-          "sourced": 124
+          "sourced": 123
         }
       },
       "score_unit": "reference_stat_points",

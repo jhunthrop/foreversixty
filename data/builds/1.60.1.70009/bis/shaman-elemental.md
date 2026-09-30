@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 4520000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 26.4. Weights run: 1.5s. Verify run: 1.1s. 267 eligible items had no known source.
+Set DPS (verified): 26.4. Weights run: 1.6s. Verify run: 1.1s. 267 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.723 ± 0.018, crit=0.059 ± 0.003 per rating point (14 rating = 1%, 0.822 per %), hit=0.153 ± 0.002 per rating point (10 rating = 1%, 1.532 per %), spell_haste=3.471 ± 0.217, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.699 ± 0.003
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 267, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 4532310300000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 47.7. Weights run: 1.6s. Verify run: 1.1s. 433 eligible items had no known source.
+Set DPS (verified): 47.7. Weights run: 1.8s. Verify run: 1.1s. 433 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.811 ± 0.026, crit=0.124 ± 0.008 per rating point (14 rating = 1%, 1.742 per %), hit=0.230 ± 0.003 per rating point (10 rating = 1%, 2.297 per %), spell_haste=2.693 ± 0.329, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.664 ± 0.003
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 433, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 4532310300103031-000000000000000000-2000000000000000)
 
-Set DPS (verified): 62.3. Weights run: 1.8s. Verify run: 1.2s. 583 eligible items had no known source.
+Set DPS (verified): 62.3. Weights run: 1.9s. Verify run: 1.2s. 583 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.227 ± 0.045, crit=0.214 ± 0.014 per rating point (14 rating = 1%, 2.997 per %), hit=0.380 ± 0.006 per rating point (10 rating = 1%, 3.799 per %), spell_haste=not significant (-0.692 ± 0.671), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.529 ± 0.003
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 583, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 4532310300103031-000000000000000000-5520000000000000)
 
-Set DPS (verified): 89.4. Weights run: 1.8s. Verify run: 1.3s. 756 eligible items had no known source.
+Set DPS (verified): 89.4. Weights run: 2.0s. Verify run: 1.4s. 756 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.216 ± 0.055, crit=0.275 ± 0.018 per rating point (14 rating = 1%, 3.848 per %), hit=0.505 ± 0.007 per rating point (10 rating = 1%, 5.046 per %), spell_haste=4.425 ± 0.985, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.491 ± 0.003
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 756, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (dwarf, 4532310300103031-000000000000000000-5533220000000000)
 
-Set DPS (verified): 170.8. Weights run: 1.8s. Verify run: 1.2s. 1642 eligible items had no known source.
+Set DPS (verified): 170.8. Weights run: 2.0s. Verify run: 1.3s. 1664 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.219 ± 0.086, crit=0.399 ± 0.027 per rating point (14 rating = 1%, 5.588 per %), hit=0.656 ± 0.011 per rating point (10 rating = 1%, 6.555 per %), spell_haste=8.642 ± 1.178, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.542 ± 0.003
 
@@ -142,10 +142,10 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | wrist | Soulcrusher Bindings (240127) | Leonid Barthalomew the Revered [vendor] | sim-verified (170.8 DPS) | yes | Soulcrusher Wristguards (240100, -1.43 DPS) [vendor]; Soulcrusher Bracers (240108, -1.91 DPS) [vendor]; Wristwraps of Undead Slaying (23093, -11.92 DPS, sim-verified) [world] |
 | hands | Soulcrusher Mitts (240122) | Leonid Barthalomew the Revered [vendor] | 67.4 spell_power points (5.84 DPS) | yes | Raider Handguards (272101, -2.24 DPS) [vendor]; Raider Handwraps (272097, -2.30 DPS) [vendor]; Soulcrusher Handguards (240095, -4.24 DPS, sim-verified) [vendor] |
 | waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 58.4 spell_power points (5.06 DPS) | yes | Soulcrusher Girdle (240099, -0.28 DPS) [vendor]; Soulcrusher Waistguard (240107, -1.10 DPS) [vendor]; Soulcrusher Cord (240126, -1.28 DPS, sim-verified) [vendor] |
-| legs | Soulcrusher Kilt (240124) | Leonid Barthalomew the Revered [vendor] | 88.5 spell_power points (7.67 DPS) | yes | Leggings of Elemental Fury (23665, -1.98 DPS) [world_drop]; Ironfeather Leggings (252486, -1.99 DPS) [crafted]; Soulcrusher Legguards (240097, -4.74 DPS, sim-verified) [vendor] |
+| legs | Soulcrusher Kilt (240124) | Leonid Barthalomew the Revered [vendor] | 88.5 spell_power points (7.67 DPS) | yes | Ironfeather Leggings (252486, -1.99 DPS) [crafted]; Red Dragonscale Leggings (252603, -2.56 DPS) [crafted]; Soulcrusher Legguards (240097, -4.74 DPS, sim-verified) [vendor] |
 | feet | Soulcrusher Greaves (240110) | Leonid Barthalomew the Revered [vendor] | 64.8 spell_power points (5.62 DPS) | yes | Slippers of The Five Thunders (227007, -2.11 DPS) [vendor]; Dragonrider Boots (18102, -2.37 DPS) [dungeon]; Soulcrusher Boots (240093, -4.39 DPS, sim-verified) [vendor] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | sim-verified (170.8 DPS) | yes | Signet Ring of the Bronze Dragonflight (234028, -0.28 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234024, -0.37 DPS) [vendor]; Naglering (11669, -9.28 DPS, sim-verified) [dungeon] |
-| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (170.8 DPS) | yes | Ritssyn's Ring of Chaos (21836, -0.42 DPS) [world_drop]; Cauterizing Band (19140, -0.50 DPS) [world_drop]; Naglering (11669, -7.51 DPS, sim-verified) [dungeon] |
+| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | sim-verified (170.8 DPS) | yes | Cauterizing Band (19140, -0.50 DPS) [world_drop]; Maiden's Circle (13001, -0.77 DPS) [world_drop]; Naglering (11669, -7.51 DPS, sim-verified) [dungeon] |
 | trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | sim-verified (170.8 DPS) | yes | Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor]; Briarwood Reed (12930, -3.71 DPS, sim-verified) [dungeon] |
 | trinket2 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | sim-verified (170.8 DPS) | yes | Weakness Analyzer (272438, +0.00 DPS) [vendor]; Serenity Field (272439, +0.00 DPS) [vendor]; Briarwood Reed (12930, -0.32 DPS, sim-verified) [dungeon] |
 | main_hand | Crackling Staff (19102) | Stormpike Guard [rep] | sim-verified (170.8 DPS) | yes | Grand Marshal's Stave (234571, +0.00 DPS) [vendor]; Grand Marshal's Demolisher (234568, -0.82 DPS) [vendor]; Hand of Edward the Odd (2243, -7.17 DPS, sim-verified) [world_drop] |
@@ -154,13 +154,13 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Soulcrusher Crown; neck: Amulet of the Dawn; shoulder: Soulcrusher Mantle; back: Arcanoweave Cloak; chest: Soulcrusher Embrace; wrist: Soulcrusher Bindings; hands: Soulcrusher Mitts; waist: Knowledge of the Timbermaw; legs: Soulcrusher Kilt; feet: Soulcrusher Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Burst of Knowledge; trinket2: Talisman of Ascendance; main_hand: Crackling Staff
 
-No-known-source sample (15 of 1642, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
+No-known-source sample (15 of 1664, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh; 4797 Fiery Cloak
 
 ## Horde
 
 ### Band 20 (orc, 4520000000000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 25.8. Weights run: 1.5s. Verify run: 1.0s. 248 eligible items had no known source.
+Set DPS (verified): 25.8. Weights run: 1.6s. Verify run: 1.1s. 248 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.723 ± 0.018, crit=0.059 ± 0.003 per rating point (14 rating = 1%, 0.822 per %), hit=0.153 ± 0.002 per rating point (10 rating = 1%, 1.532 per %), spell_haste=3.471 ± 0.217, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.699 ± 0.003
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 248, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 4532310300000000-000000000000000000-0000000000000000)
 
-Set DPS (verified): 45.1. Weights run: 1.6s. Verify run: 1.1s. 417 eligible items had no known source.
+Set DPS (verified): 45.1. Weights run: 1.8s. Verify run: 1.1s. 417 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.003, intellect=0.811 ± 0.026, crit=0.124 ± 0.008 per rating point (14 rating = 1%, 1.742 per %), hit=0.230 ± 0.003 per rating point (10 rating = 1%, 2.297 per %), spell_haste=2.693 ± 0.329, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.664 ± 0.003
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 417, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 4532310300103031-000000000000000000-2000000000000000)
 
-Set DPS (verified): 62.7. Weights run: 1.8s. Verify run: 1.2s. 566 eligible items had no known source.
+Set DPS (verified): 62.7. Weights run: 1.9s. Verify run: 1.2s. 566 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.227 ± 0.045, crit=0.214 ± 0.014 per rating point (14 rating = 1%, 2.997 per %), hit=0.380 ± 0.006 per rating point (10 rating = 1%, 3.799 per %), spell_haste=not significant (-0.692 ± 0.671), spell_penetration=not significant (0.000 ± 0.000), nature_power=0.529 ± 0.003
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 566, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 4532310300103031-000000000000000000-5520000000000000)
 
-Set DPS (verified): 88.9. Weights run: 1.8s. Verify run: 1.2s. 726 eligible items had no known source.
+Set DPS (verified): 88.9. Weights run: 2.0s. Verify run: 1.3s. 726 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.216 ± 0.055, crit=0.275 ± 0.018 per rating point (14 rating = 1%, 3.848 per %), hit=0.505 ± 0.007 per rating point (10 rating = 1%, 5.046 per %), spell_haste=4.425 ± 0.985, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.491 ± 0.003
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 726, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (orc, 4532310300103031-000000000000000000-5533220000000000)
 
-Set DPS (verified): 170.5. Weights run: 1.8s. Verify run: 1.3s. 1577 eligible items had no known source.
+Set DPS (verified): 170.5. Weights run: 2.0s. Verify run: 1.4s. 1599 eligible items had no known source.
 
 Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): spell_power=1.000 ± 0.004, intellect=1.219 ± 0.086, crit=0.399 ± 0.027 per rating point (14 rating = 1%, 5.588 per %), hit=0.656 ± 0.011 per rating point (10 rating = 1%, 6.555 per %), spell_haste=8.642 ± 1.178, spell_penetration=not significant (0.000 ± 0.000), nature_power=0.542 ± 0.003
 
@@ -294,10 +294,10 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 | wrist | Soulcrusher Bindings (240127) | Leonid Barthalomew the Revered [vendor] | 0.0 spell_power points (0.00 DPS) | yes | Soulcrusher Wristguards (240100, -1.43 DPS) [vendor]; Soulcrusher Bracers (240108, -1.91 DPS) [vendor]; Wristwraps of Undead Slaying (23093, -9.94 DPS, sim-verified) [world] |
 | hands | Soulcrusher Mitts (240122) | Leonid Barthalomew the Revered [vendor] | 67.4 spell_power points (5.84 DPS) | yes | General's Mail Gauntlets (231660, -1.95 DPS) [vendor]; Raider Handguards (272101, -2.24 DPS) [vendor]; Soulcrusher Handguards (240095, -3.61 DPS, sim-verified) [vendor] |
 | waist | Knowledge of the Timbermaw (228190) | Meilosh [vendor] | 58.4 spell_power points (5.06 DPS) | yes | Soulcrusher Cord (240126, +0.00 DPS, sim-verified) [vendor]; Soulcrusher Girdle (240099, -0.28 DPS) [vendor]; Soulcrusher Waistguard (240107, -1.10 DPS) [vendor] |
-| legs | Soulcrusher Kilt (240124) | Leonid Barthalomew the Revered [vendor] | 88.5 spell_power points (7.67 DPS) | yes | Leggings of Elemental Fury (23665, -1.98 DPS) [world_drop]; Ironfeather Leggings (252486, -1.99 DPS) [crafted]; Soulcrusher Legguards (240097, -2.54 DPS, sim-verified) [vendor] |
+| legs | Soulcrusher Kilt (240124) | Leonid Barthalomew the Revered [vendor] | 88.5 spell_power points (7.67 DPS) | yes | Ironfeather Leggings (252486, -1.99 DPS) [crafted]; General's Mail Leggings (231664, -2.23 DPS) [vendor]; Soulcrusher Legguards (240097, -2.54 DPS, sim-verified) [vendor] |
 | feet | Soulcrusher Greaves (240110) | Leonid Barthalomew the Revered [vendor] | 64.8 spell_power points (5.62 DPS) | yes | General's Mail Sabatons (231661, -2.09 DPS) [vendor]; Slippers of The Five Thunders (227007, -2.11 DPS) [vendor]; Soulcrusher Boots (240093, -4.30 DPS, sim-verified) [vendor] |
 | finger1 | Signet Ring of the Bronze Dragonflight (234032) | Anachronos [vendor] | 0.0 spell_power points (0.00 DPS) | yes | Signet Ring of the Bronze Dragonflight (234028, -0.28 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234024, -0.37 DPS) [vendor]; Naglering (11669, -7.89 DPS, sim-verified) [dungeon] |
-| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | 0.0 spell_power points (0.00 DPS) | yes | Ritssyn's Ring of Chaos (21836, -0.42 DPS) [world_drop]; Cauterizing Band (19140, -0.50 DPS) [world_drop]; Naglering (11669, -6.21 DPS, sim-verified) [dungeon] |
+| finger2 | Elemental Focus Band (20682) | Prince Skaldrenox [world] | 0.0 spell_power points (0.00 DPS) | yes | Cauterizing Band (19140, -0.50 DPS) [world_drop]; Maiden's Circle (13001, -0.77 DPS) [world_drop]; Naglering (11669, -6.21 DPS, sim-verified) [dungeon] |
 | trinket1 | Burst of Knowledge (11832) | Blackrock Depths: Ambassador Flamelash [dungeon] | 0.0 spell_power points (0.00 DPS) | yes | Royal Seal of Eldre'Thalas (18471, +0.00 DPS) [quest]; Weakness Analyzer (272438, +0.00 DPS) [vendor]; Briarwood Reed (12930, -2.16 DPS, sim-verified) [dungeon] |
 | trinket2 | Talisman of Ascendance (22678) | Epic Armaments of Battle - Friend of the Dawn [quest] | 0.0 spell_power points (0.00 DPS) | yes | Briarwood Reed (12930, +0.00 DPS, sim-verified) [dungeon]; Royal Seal of Eldre'Thalas (18471, +0.00 DPS) [quest]; Weakness Analyzer (272438, +0.00 DPS) [vendor] |
 | main_hand | Hammer of Divine Might (22333) | Scholomance: Kormok [dungeon] | 0.0 spell_power points (0.00 DPS) | yes | High Warlord's Destroyer (234546, +0.00 DPS) [vendor]; High Warlord's War Staff (234549, +0.00 DPS) [vendor]; Hand of Edward the Odd (2243, -6.28 DPS, sim-verified) [world_drop] |
@@ -306,5 +306,5 @@ Stat weights (normalized to spell_power = 1.0, error under 25% of the weight to 
 
 **New at 60:** head: Soulcrusher Crown; neck: Amulet of the Dawn; shoulder: Soulcrusher Mantle; back: Hide of the Wild; chest: Soulcrusher Embrace; wrist: Soulcrusher Bindings; hands: Soulcrusher Mitts; waist: Knowledge of the Timbermaw; legs: Soulcrusher Kilt; feet: Soulcrusher Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Elemental Focus Band; trinket1: Burst of Knowledge; trinket2: Talisman of Ascendance; main_hand: Hammer of Divine Might
 
-No-known-source sample (15 of 1577, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
+No-known-source sample (15 of 1599, see the JSON for more): 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4196 Feathered Mantle; 4642 Star of Xil'yeh
 

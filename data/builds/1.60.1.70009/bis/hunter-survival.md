@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-00000000000000000-500230100000000000)
 
-Set DPS (verified): 57.3. Weights run: 1.8s. Verify run: 1.7s. 217 eligible items had no known source.
+Set DPS (verified): 57.3. Weights run: 1.9s. Verify run: 1.8s. 217 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.041 ± 0.008, strength=1.000 ± 0.001, crit=0.114 ± 0.004 per rating point (14 rating = 1%, 1.602 per %), hit=0.039 ± 0.002 per rating point (10 rating = 1%, 0.386 per %), melee_haste=not significant (0.818 ± 0.763)
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 217, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-00000000000000000-500230131051000000)
 
-Set DPS (verified): 85.1. Weights run: 1.9s. Verify run: 1.8s. 363 eligible items had no known source.
+Set DPS (verified): 85.1. Weights run: 2.0s. Verify run: 1.9s. 363 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.050 ± 0.013, strength=1.000 ± 0.001, crit=0.193 ± 0.007 per rating point (14 rating = 1%, 2.706 per %), hit=0.059 ± 0.002 per rating point (10 rating = 1%, 0.586 per %), melee_haste=not significant (0.559 ± 0.829)
 
@@ -98,7 +98,7 @@ No-known-source sample (15 of 592, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (dwarf, 0000000000000000-32005000000000000-500230131051120151)
 
-Set DPS (verified): 165.0. Weights run: 1.9s. Verify run: 2.0s. 755 eligible items had no known source.
+Set DPS (verified): 165.0. Weights run: 2.0s. Verify run: 2.0s. 755 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.196 ± 0.022, strength=1.000 ± 0.001, crit=0.308 ± 0.011 per rating point (14 rating = 1%, 4.313 per %), hit=0.091 ± 0.004 per rating point (10 rating = 1%, 0.907 per %), melee_haste=not significant (2.108 ± 0.907)
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 755, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (dwarf, 0000000000000000-32005500005000000-500230131051120151)
 
-Set DPS (verified): 304.3. Weights run: 1.9s. Verify run: 2.0s. 1590 eligible items had no known source.
+Set DPS (verified): 304.3. Weights run: 2.0s. Verify run: 2.1s. 1611 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.205 ± 0.024, strength=1.000 ± 0.001, crit=0.457 ± 0.018 per rating point (14 rating = 1%, 6.402 per %), hit=0.119 ± 0.006 per rating point (10 rating = 1%, 1.190 per %), melee_haste=not significant (0.393 ± 1.319)
 
@@ -154,13 +154,13 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Dawnstalker Visor; neck: Amulet of the Darkmoon; shoulder: Dawnstalker Pauldrons; back: Cloak of the Honor Guard; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Dawnstalker Belt; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Protector's Band; trinket1: Burst of Knowledge; trinket2: Darkmoon Card: Maelstrom; main_hand: Teebu's Blazing Longsword; off_hand: Ravencrest's Legacy; ranged: Riphook
 
-No-known-source sample (15 of 1590, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
+No-known-source sample (15 of 1611, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings; 4110 Master Hunter's Bow
 
 ## Horde
 
 ### Band 20 (troll, 0000000000000000-00000000000000000-500230100000000000)
 
-Set DPS (verified): 57.2. Weights run: 1.8s. Verify run: 1.6s. 213 eligible items had no known source.
+Set DPS (verified): 57.2. Weights run: 1.9s. Verify run: 1.7s. 213 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.041 ± 0.008, strength=1.000 ± 0.001, crit=0.114 ± 0.004 per rating point (14 rating = 1%, 1.602 per %), hit=0.039 ± 0.002 per rating point (10 rating = 1%, 0.386 per %), melee_haste=not significant (0.818 ± 0.763)
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 213, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (troll, 0000000000000000-00000000000000000-500230131051000000)
 
-Set DPS (verified): 84.9. Weights run: 1.9s. Verify run: 1.7s. 360 eligible items had no known source.
+Set DPS (verified): 84.9. Weights run: 2.0s. Verify run: 1.8s. 360 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.050 ± 0.013, strength=1.000 ± 0.001, crit=0.193 ± 0.007 per rating point (14 rating = 1%, 2.706 per %), hit=0.059 ± 0.002 per rating point (10 rating = 1%, 0.586 per %), melee_haste=not significant (0.559 ± 0.829)
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 360, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 40 (troll, 0000000000000000-00000000000000000-500230131051120151)
 
-Set DPS (verified): 119.0. Weights run: 1.9s. Verify run: 1.7s. 580 eligible items had no known source.
+Set DPS (verified): 119.0. Weights run: 1.9s. Verify run: 1.8s. 580 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.166 ± 0.016, strength=1.000 ± 0.001, crit=0.232 ± 0.008 per rating point (14 rating = 1%, 3.251 per %), hit=0.068 ± 0.003 per rating point (10 rating = 1%, 0.675 per %), melee_haste=not significant (3.438 ± 1.346)
 
@@ -250,7 +250,7 @@ No-known-source sample (15 of 580, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 50 (troll, 0000000000000000-32005000000000000-500230131051120151)
 
-Set DPS (verified): 166.4. Weights run: 1.9s. Verify run: 1.9s. 744 eligible items had no known source.
+Set DPS (verified): 166.4. Weights run: 2.0s. Verify run: 2.0s. 744 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.196 ± 0.022, strength=1.000 ± 0.001, crit=0.308 ± 0.011 per rating point (14 rating = 1%, 4.313 per %), hit=0.091 ± 0.004 per rating point (10 rating = 1%, 0.907 per %), melee_haste=not significant (2.108 ± 0.907)
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 744, see the JSON for more): 913 Huge Ogre Sword; 
 
 ### Band 60 (troll, 0000000000000000-32005500005000000-500230131051120151)
 
-Set DPS (verified): 303.4. Weights run: 1.9s. Verify run: 1.9s. 1579 eligible items had no known source.
+Set DPS (verified): 303.4. Weights run: 2.0s. Verify run: 2.0s. 1600 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.001, agility=1.205 ± 0.024, strength=1.000 ± 0.001, crit=0.457 ± 0.018 per rating point (14 rating = 1%, 6.402 per %), hit=0.119 ± 0.006 per rating point (10 rating = 1%, 1.190 per %), melee_haste=not significant (0.393 ± 1.319)
 
@@ -306,5 +306,5 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 
 **New at 60:** head: Dawnstalker Visor; neck: Amulet of the Darkmoon; shoulder: Dawnstalker Pauldrons; back: Deathguard's Cloak; chest: Dawnstalker Breastplate; wrist: Dawnstalker Vambraces; hands: Dawnstalker Gauntlets; waist: Dawnstalker Belt; legs: Dawnstalker Leggings; feet: Dawnstalker Greaves; finger1: Signet Ring of the Bronze Dragonflight; finger2: Legionnaire's Band; trinket1: Darkmoon Card: Maelstrom; trinket2: Burst of Knowledge; main_hand: Teebu's Blazing Longsword; off_hand: Ravencrest's Legacy; ranged: Riphook
 
-No-known-source sample (15 of 1579, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
+No-known-source sample (15 of 1600, see the JSON for more): 913 Huge Ogre Sword; 1189 Overseer's Ring; 1216 Frost Bracers; 1832 Lucky Trousers; 2016 Dusty Chain Armor; 2273 Guerrilla Armor; 2543 Militia Pants; 2664 Spinner Fang; 2944 Cursed Eye of Paleth; 2952 Fine Light Hide Jerkin; 3038 Archer's Longbow; 3222 Wicked Dagger; 3579 Ornate Copper Shoulders; 3738 Brewing Rod; 4081 Blackforge Leggings
 

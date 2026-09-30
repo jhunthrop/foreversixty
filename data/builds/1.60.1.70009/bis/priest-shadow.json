@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T13:18:45Z",
+  "generated_at": "2026-09-30T13:53:36Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -933,8 +933,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.850591986,
-      "verify_run_seconds": 1.011303463,
+      "weights_run_seconds": 0.894774433,
+      "verify_run_seconds": 1.061925627,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1957,8 +1957,8 @@
         "off_hand: Seer's Fine Stein",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.850591986,
-      "verify_run_seconds": 0.920317087,
+      "weights_run_seconds": 0.894774433,
+      "verify_run_seconds": 0.954627398,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2638,8 +2638,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.729696806,
-      "verify_run_seconds": 0.723803762,
+      "weights_run_seconds": 0.736271054,
+      "verify_run_seconds": 0.729190389,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3326,8 +3326,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.729696806,
-      "verify_run_seconds": 0.737565403,
+      "weights_run_seconds": 0.736271054,
+      "verify_run_seconds": 0.736450179,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3985,8 +3985,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.738015244,
-      "verify_run_seconds": 0.683542771,
+      "weights_run_seconds": 0.724624501,
+      "verify_run_seconds": 0.682083154,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4639,8 +4639,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.738015244,
-      "verify_run_seconds": 0.74528505,
+      "weights_run_seconds": 0.724624501,
+      "verify_run_seconds": 0.729699507,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4798,7 +4798,7 @@
               "item_name": "Knight-Lieutenant's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -1.2699444807178657
+              "dps_delta": -1.2699444807178655
             },
             {
               "item_id": 10041,
@@ -5057,7 +5057,7 @@
               "item_name": "Knight's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.7497260913494576
+              "dps_delta": -0.7497260913494572
             },
             {
               "item_id": 10807,
@@ -5326,8 +5326,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.730063767,
-      "verify_run_seconds": 0.796982581,
+      "weights_run_seconds": 0.760285023,
+      "verify_run_seconds": 0.786796609,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5493,7 +5493,7 @@
               "item_name": "Blood Guard's Dreadweave Hat",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -1.2699444807178657
+              "dps_delta": -1.2699444807178655
             }
           ]
         },
@@ -5744,7 +5744,7 @@
               "item_name": "Stone Guard's Dreadweave Leggings",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.7497260913494572
+              "dps_delta": -0.7497260913494576
             },
             {
               "item_id": 10807,
@@ -6026,8 +6026,8 @@
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.730063767,
-      "verify_run_seconds": 0.808604482,
+      "weights_run_seconds": 0.760285023,
+      "verify_run_seconds": 0.793457362,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6420,11 +6420,11 @@
               "dps_delta": -2.263624467651988
             },
             {
-              "item_id": 16817,
-              "item_name": "Girdle of Prophecy",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -3.04804114548886
+              "item_id": 16685,
+              "item_name": "Magister's Belt",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Smolderthorn Mystic",
+              "dps_delta": -3.4053589671952174
             }
           ]
         },
@@ -6545,11 +6545,11 @@
               "dps_delta": -0.6508117520303376
             },
             {
-              "item_id": 21836,
-              "item_name": "Ritssyn's Ring of Chaos",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.7781436365312069
+              "item_id": 272406,
+              "item_name": "Channeler's Ring",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -0.8086388609936898
             },
             {
               "item_id": 11669,
@@ -6701,7 +6701,7 @@
         }
       ],
       "set_dps": 264.9330288081428,
-      "no_source_count": 1053,
+      "no_source_count": 1067,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6737,8 +6737,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.766454531,
-      "verify_run_seconds": 0.833249168,
+      "weights_run_seconds": 0.785824481,
+      "verify_run_seconds": 0.81179927,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6746,7 +6746,7 @@
         },
         "chest": {
           "eligible": 339,
-          "sourced": 276
+          "sourced": 275
         },
         "feet": {
           "eligible": 223,
@@ -6754,15 +6754,15 @@
         },
         "finger1": {
           "eligible": 371,
-          "sourced": 211
+          "sourced": 208
         },
         "finger2": {
           "eligible": 371,
-          "sourced": 211
+          "sourced": 208
         },
         "hands": {
           "eligible": 231,
-          "sourced": 183
+          "sourced": 181
         },
         "head": {
           "eligible": 201,
@@ -6770,11 +6770,11 @@
         },
         "legs": {
           "eligible": 221,
-          "sourced": 173
+          "sourced": 172
         },
         "main_hand": {
           "eligible": 571,
-          "sourced": 385
+          "sourced": 382
         },
         "neck": {
           "eligible": 193,
@@ -6790,23 +6790,23 @@
         },
         "shoulder": {
           "eligible": 174,
-          "sourced": 136
+          "sourced": 135
         },
         "trinket1": {
           "eligible": 185,
-          "sourced": 110
+          "sourced": 109
         },
         "trinket2": {
           "eligible": 185,
-          "sourced": 110
+          "sourced": 109
         },
         "waist": {
           "eligible": 204,
-          "sourced": 166
+          "sourced": 165
         },
         "wrist": {
           "eligible": 167,
-          "sourced": 121
+          "sourced": 120
         }
       },
       "reference_dps_per_point": 0.11201439708185507,
@@ -7131,11 +7131,11 @@
               "dps_delta": -2.263624467651988
             },
             {
-              "item_id": 16817,
-              "item_name": "Girdle of Prophecy",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -3.04804114548886
+              "item_id": 16685,
+              "item_name": "Magister's Belt",
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: Smolderthorn Mystic",
+              "dps_delta": -3.4053589671952174
             }
           ]
         },
@@ -7256,11 +7256,11 @@
               "dps_delta": -0.6508117520303376
             },
             {
-              "item_id": 21836,
-              "item_name": "Ritssyn's Ring of Chaos",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.7781436365312069
+              "item_id": 272406,
+              "item_name": "Channeler's Ring",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -0.8086388609936898
             },
             {
               "item_id": 11669,
@@ -7412,7 +7412,7 @@
         }
       ],
       "set_dps": 247.02940702979856,
-      "no_source_count": 1046,
+      "no_source_count": 1060,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -7448,8 +7448,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.766454531,
-      "verify_run_seconds": 0.802837422,
+      "weights_run_seconds": 0.785824481,
+      "verify_run_seconds": 0.807722058,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -7457,7 +7457,7 @@
         },
         "chest": {
           "eligible": 337,
-          "sourced": 271
+          "sourced": 270
         },
         "feet": {
           "eligible": 223,
@@ -7465,15 +7465,15 @@
         },
         "finger1": {
           "eligible": 374,
-          "sourced": 216
+          "sourced": 213
         },
         "finger2": {
           "eligible": 374,
-          "sourced": 216
+          "sourced": 213
         },
         "hands": {
           "eligible": 234,
-          "sourced": 185
+          "sourced": 183
         },
         "head": {
           "eligible": 201,
@@ -7481,11 +7481,11 @@
         },
         "legs": {
           "eligible": 220,
-          "sourced": 173
+          "sourced": 172
         },
         "main_hand": {
           "eligible": 576,
-          "sourced": 398
+          "sourced": 395
         },
         "neck": {
           "eligible": 197,
@@ -7501,23 +7501,23 @@
         },
         "shoulder": {
           "eligible": 173,
-          "sourced": 135
+          "sourced": 134
         },
         "trinket1": {
           "eligible": 184,
-          "sourced": 109
+          "sourced": 108
         },
         "trinket2": {
           "eligible": 184,
-          "sourced": 109
+          "sourced": 108
         },
         "waist": {
           "eligible": 204,
-          "sourced": 164
+          "sourced": 163
         },
         "wrist": {
           "eligible": 168,
-          "sourced": 125
+          "sourced": 124
         }
       },
       "reference_dps_per_point": 0.11201439708185507,

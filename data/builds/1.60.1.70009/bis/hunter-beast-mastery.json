@@ -2,7 +2,7 @@
   "spec": "hunter-beast-mastery",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T13:15:48Z",
+  "generated_at": "2026-09-30T13:50:35Z",
   "bands": [
     {
       "spec": "hunter-beast-mastery",
@@ -527,8 +527,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.3869022260000001,
-      "verify_run_seconds": 1.554422094,
+      "weights_run_seconds": 1.5360992580000001,
+      "verify_run_seconds": 1.645956543,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1141,8 +1141,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.3869022260000001,
-      "verify_run_seconds": 1.6169695229999999,
+      "weights_run_seconds": 1.5360992580000001,
+      "verify_run_seconds": 1.7205863780000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1551,7 +1551,7 @@
           "slot": "legs",
           "item_id": 9509,
           "item_name": "Petrolspill Leggings",
-          "source": "Gnomeregan: Caverndeep Ambusher",
+          "source": "Gnomeregan: Caverndeep Burrower",
           "source_kind": "dungeon",
           "score": 31.298812233002526,
           "verified": true,
@@ -1861,8 +1861,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.504345501,
-      "verify_run_seconds": 1.732343852,
+      "weights_run_seconds": 1.657087389,
+      "verify_run_seconds": 1.849172188,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2271,7 +2271,7 @@
           "slot": "legs",
           "item_id": 9509,
           "item_name": "Petrolspill Leggings",
-          "source": "Gnomeregan: Caverndeep Ambusher",
+          "source": "Gnomeregan: Caverndeep Burrower",
           "source_kind": "dungeon",
           "score": 31.298812233002526,
           "verified": true,
@@ -2568,8 +2568,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.504345501,
-      "verify_run_seconds": 1.7032455039999999,
+      "weights_run_seconds": 1.657087389,
+      "verify_run_seconds": 1.830118763,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2977,7 +2977,7 @@
               "item_id": 9509,
               "item_name": "Petrolspill Leggings",
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher",
+              "source": "Gnomeregan: Caverndeep Burrower",
               "dps_delta": -0.8641353505154538
             },
             {
@@ -3234,8 +3234,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.633093354,
-      "verify_run_seconds": 1.918102137,
+      "weights_run_seconds": 1.8081781609999998,
+      "verify_run_seconds": 2.046388849,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3644,7 +3644,7 @@
               "item_id": 9509,
               "item_name": "Petrolspill Leggings",
               "source_kind": "dungeon",
-              "source": "Gnomeregan: Caverndeep Ambusher",
+              "source": "Gnomeregan: Caverndeep Burrower",
               "dps_delta": -0.8641353505154538
             },
             {
@@ -3901,8 +3901,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.633093354,
-      "verify_run_seconds": 1.877126214,
+      "weights_run_seconds": 1.8081781609999998,
+      "verify_run_seconds": 1.9936987419999999,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4584,8 +4584,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.788013085,
-      "verify_run_seconds": 1.9988005009999998,
+      "weights_run_seconds": 1.845463728,
+      "verify_run_seconds": 2.153969582,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5266,8 +5266,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.788013085,
-      "verify_run_seconds": 1.956922107,
+      "weights_run_seconds": 1.845463728,
+      "verify_run_seconds": 2.092227855,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5396,7 +5396,7 @@
           "item_name": "Dawnstalker Visor",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 186.2397045879384,
+          "score": 186.23970458793838,
           "verified": true,
           "alternatives": [
             {
@@ -5404,14 +5404,14 @@
               "item_name": "Field Marshal's Chain Helm",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -5.0947360748836354
+              "dps_delta": -5.094736074883634
             },
             {
               "item_id": 231562,
               "item_name": "Field Marshal's Chain Greathelm",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -5.200016681273085
+              "dps_delta": -5.200016681273083
             },
             {
               "item_id": 239540,
@@ -5646,11 +5646,11 @@
               "dps_delta": -2.6592525912849747
             },
             {
-              "item_id": 19163,
-              "item_name": "Molten Belt",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -2.7380110109259266
+              "item_id": 272397,
+              "item_name": "Ranger's Belt",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -3.2166741067258777
             }
           ]
         },
@@ -5925,7 +5925,7 @@
         }
       ],
       "set_dps": 238.73463340513544,
-      "no_source_count": 1590,
+      "no_source_count": 1611,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -5960,8 +5960,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.6725011840000001,
-      "verify_run_seconds": 2.006259011,
+      "weights_run_seconds": 1.809863569,
+      "verify_run_seconds": 2.155891463,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5969,23 +5969,23 @@
         },
         "chest": {
           "eligible": 710,
-          "sourced": 603
+          "sourced": 602
         },
         "feet": {
           "eligible": 586,
-          "sourced": 494
+          "sourced": 493
         },
         "finger1": {
           "eligible": 366,
-          "sourced": 206
+          "sourced": 203
         },
         "finger2": {
           "eligible": 366,
-          "sourced": 206
+          "sourced": 203
         },
         "hands": {
           "eligible": 606,
-          "sourced": 509
+          "sourced": 508
         },
         "head": {
           "eligible": 440,
@@ -5993,11 +5993,11 @@
         },
         "legs": {
           "eligible": 598,
-          "sourced": 489
+          "sourced": 488
         },
         "main_hand": {
           "eligible": 1018,
-          "sourced": 707
+          "sourced": 701
         },
         "neck": {
           "eligible": 193,
@@ -6013,23 +6013,23 @@
         },
         "shoulder": {
           "eligible": 443,
-          "sourced": 360
+          "sourced": 358
         },
         "trinket1": {
           "eligible": 186,
-          "sourced": 110
+          "sourced": 109
         },
         "trinket2": {
           "eligible": 186,
-          "sourced": 110
+          "sourced": 109
         },
         "waist": {
           "eligible": 545,
-          "sourced": 466
+          "sourced": 462
         },
         "wrist": {
           "eligible": 457,
-          "sourced": 364
+          "sourced": 363
         }
       },
       "reference_dps_per_point": 0.05358437641000954,
@@ -6264,14 +6264,14 @@
               "item_name": "Dawnstalker Wristguards",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.6305154957901461
+              "dps_delta": -0.6305154957901453
             },
             {
               "item_id": 18375,
               "item_name": "Bracers of the Eclipse",
               "source_kind": "dungeon",
               "source": "Dire Maul: Prince Tortheldrin",
-              "dps_delta": -2.4343062109455365
+              "dps_delta": -2.434306210945536
             },
             {
               "item_id": 23093,
@@ -6322,7 +6322,7 @@
           "item_name": "Dawnstalker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 113.62738711256564,
+          "score": 113.62738711256566,
           "verified": true,
           "alternatives": [
             {
@@ -6338,14 +6338,14 @@
               "item_name": "Dense Timbermaw Belt",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -2.6592525912849743
+              "dps_delta": -2.6592525912849747
             },
             {
-              "item_id": 19163,
-              "item_name": "Molten Belt",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -2.7380110109259257
+              "item_id": 272397,
+              "item_name": "Ranger's Belt",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -3.2166741067258777
             }
           ]
         },
@@ -6621,7 +6621,7 @@
         }
       ],
       "set_dps": 243.23097255605785,
-      "no_source_count": 1579,
+      "no_source_count": 1600,
       "no_source_sample": [
         "913 Huge Ogre Sword",
         "1189 Overseer's Ring",
@@ -6656,8 +6656,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.6725011840000001,
-      "verify_run_seconds": 1.9609956579999999,
+      "weights_run_seconds": 1.809863569,
+      "verify_run_seconds": 2.101241608,
       "coverage": {
         "back": {
           "eligible": 451,
@@ -6665,23 +6665,23 @@
         },
         "chest": {
           "eligible": 707,
-          "sourced": 595
+          "sourced": 594
         },
         "feet": {
           "eligible": 591,
-          "sourced": 493
+          "sourced": 492
         },
         "finger1": {
           "eligible": 369,
-          "sourced": 211
+          "sourced": 208
         },
         "finger2": {
           "eligible": 369,
-          "sourced": 211
+          "sourced": 208
         },
         "hands": {
           "eligible": 609,
-          "sourced": 510
+          "sourced": 509
         },
         "head": {
           "eligible": 442,
@@ -6689,11 +6689,11 @@
         },
         "legs": {
           "eligible": 595,
-          "sourced": 487
+          "sourced": 486
         },
         "main_hand": {
           "eligible": 1016,
-          "sourced": 717
+          "sourced": 711
         },
         "neck": {
           "eligible": 197,
@@ -6709,23 +6709,23 @@
         },
         "shoulder": {
           "eligible": 444,
-          "sourced": 360
+          "sourced": 358
         },
         "trinket1": {
           "eligible": 185,
-          "sourced": 109
+          "sourced": 108
         },
         "trinket2": {
           "eligible": 185,
-          "sourced": 109
+          "sourced": 108
         },
         "waist": {
           "eligible": 550,
-          "sourced": 468
+          "sourced": 464
         },
         "wrist": {
           "eligible": 462,
-          "sourced": 375
+          "sourced": 374
         }
       },
       "reference_dps_per_point": 0.05358437641000954,
