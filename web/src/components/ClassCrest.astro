@@ -1,0 +1,58 @@
+---
+// web/src/components/ClassCrest.astro
+// The one circle crest every class-picker on the site draws (home spec 2026-09-30 §5/§6):
+// the client's own class icon, upscaled 4x, over a disc, framed by a 2px ring in the
+// class's own colour -- design/DESIGN-SYSTEM.md tenet 7's exact recipe ("the whole icon at
+// an 80% fit over a disc made from the icon itself, blurred and darkened, with a class
+// ring"), rendered as a component instead of an inline class so every caller (the hero
+// picker, the state panel, Best in slot by class, the signed-in hero portrait, Switch
+// character, Another class) gets the identical ring width and background. The upscaled PNGs
+// themselves live at web/public/icons/hd/crests/<slug>.png (scratchpad/upscale/final/crests,
+// copied in verbatim -- 256px, already circular with transparency, never re-encoded here).
+//
+// Five sizes only, one per real caller today (home spec §6): a size this page's regions
+// don't use is its own design review before it's added, not a free-form number.
+import classes from '../data/classes.json';
+import { classCrestSrc } from '../lib/class-crest';
+
+export type ClassCrestSize = 36 | 44 | 56 | 64 | 84;
+
+interface Props {
+  /** A class slug keyed into classes.json for its ring colour -- "warrior", "hunter", etc. */
+  slug: string;
+  size: ClassCrestSize;
+  /** Extra classes the caller wants on the <img> itself (layout only -- never overrides the
+   *  ring/background, which stay this component's own). */
+  class?: string;
+}
+
+const { slug, size, class: cls = '' } = Astro.props;
+const color = classes.find((c) => c.slug === slug)?.color ?? '#ffffff';
+const name = classes.find((c) => c.slug === slug)?.name ?? slug;
+---
+
+<img
+  src={classCrestSrc(slug)}
+  alt=""
+  width={size}
+  height={size}
+  loading="lazy"
+  decoding="async"
+  class={`crest rounded-full ${cls}`}
+  style={`--c: ${color}; width: ${size}px; height: ${size}px;`}
+  data-testid={`class-crest-${slug}`}
+  data-class-name={name}
+/>
+
+<style>
+  /* design/DESIGN-SYSTEM.md tenet 7 / home spec §6: the exact mock CSS --
+     border-radius:999px; box-shadow:0 0 0 2px var(--c); background:#0d111a -- so a
+     slow-loading crest image never flashes transparent before it paints. */
+  .crest {
+    flex-shrink: 0;
+    object-fit: cover;
+    border-radius: 999px;
+    box-shadow: 0 0 0 2px var(--c);
+    background: var(--color-raised, #0d111a);
+  }
+</style>
