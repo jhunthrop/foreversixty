@@ -74,12 +74,20 @@ def test_flat_talents_folds_already_built_records_into_talent_nodes():
                     name="Arms",
                     position=0,
                     background="warriorarms",
+                    icon="icon",
                     talents=[
                         _entry(900001, 0, 0),
                         _entry(900002, 1, 0, prereq=900001, prereq_rank=2),
                     ],
                 ),
-                TalentTree(id=164, name="Fury", position=1, background="warriorfury", talents=[]),
+                TalentTree(
+                    id=164,
+                    name="Fury",
+                    position=1,
+                    background="warriorfury",
+                    icon="icon",
+                    talents=[],
+                ),
             ],
         )
     ]
@@ -110,6 +118,7 @@ def test_flat_talents_agrees_with_normalize_talents_on_the_era_fixture():
                 name=node.tab_name,
                 position=0,
                 background="warriorarms",
+                icon="icon",
                 talents=[
                     TalentEntry(
                         id=node.id,

@@ -74,6 +74,12 @@ def load_specs(curated_dir: Path = Path("curated")) -> list[SpecRecord]:
             )
         if record.spec in seen:
             raise SpecError(f"specs.json names {record.spec} twice")
+        if not record.icon:
+            raise SpecError(
+                f"spec {record.spec} has an empty icon; every spec needs its own "
+                f"talent-tab icon (tenet 3) -- see SpecRecord.icon's own doc for "
+                f"where to read one off the client"
+            )
         seen.add(record.spec)
         records.append(record)
     return sorted(records, key=lambda record: (record.class_slug, record.tree_index))
@@ -88,7 +94,7 @@ def render_go(specs: list[SpecRecord]) -> str:
         f'\t{{Spec: "{s.spec}", ClassSlug: "{s.class_slug}", SpecSlug: "{s.spec_slug}", '
         f'Name: "{s.name}", Role: "{s.role}", TreeIndex: {s.tree_index}, '
         f'ReferenceStat: "{s.reference_stat}", '
-        f'WeightStats: {weight_stats_literal(s.weight_stats)}}},'
+        f'WeightStats: {weight_stats_literal(s.weight_stats)}, Icon: "{s.icon}"}},'
         for s in specs
     )
     return f"""{GENERATED}
@@ -112,6 +118,10 @@ type Spec struct {{
 \t// is never asked about spirit and a caster never sees unexplained
 \t// zeros for expertise. ReferenceStat is always one of them.
 \tWeightStats []string `json:"weight_stats"`
+\t// Icon is the spec's own talent-tab icon (tenet 3), a lowercase file
+\t// name with no extension -- the same convention /data/<build>/icons/
+\t// serves talent and item icons under.
+\tIcon string `json:"icon"`
 }}
 
 // All is every spec, ordered by class slug then talent tree position.
@@ -151,6 +161,7 @@ def render_ts(specs: list[SpecRecord]) -> str:
         f"    tree_index: {s.tree_index},\n"
         f"    reference_stat: '{s.reference_stat}',\n"
         f"    weight_stats: {weight_stats_literal(s.weight_stats)},\n"
+        f"    icon: '{s.icon}',\n"
         f"  }},"
         for s in specs
     )
@@ -169,6 +180,8 @@ export interface Spec {{
   reference_stat: string;
   /** The closed list of stats /sim/weights offers; reference_stat is always one of them. */
   weight_stats: readonly string[];
+  /** The spec's own talent-tab icon (tenet 3): a lowercase file name, no extension. */
+  icon: string;
 }}
 
 /** Every spec, ordered by class slug then talent tree position. */

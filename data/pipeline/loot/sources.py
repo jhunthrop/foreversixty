@@ -1169,6 +1169,14 @@ def build_loot(
             classic_sources, build_items, equippable, zone_names, types, zone_rows or [],
             quest_levels or {}, item_factions(fork, build_items),
             fork_instance_npc_zones(fork, types),
+            # The fork's OWN dungeon/raid zone ids (`drops`, built above,
+            # already the real, correctly-named sources) -- `instance_
+            # zone_by_map`'s own doc: a map with more than one `types`-
+            # marked zone row (The Deadmines' own duplicate "Westfall"
+            # AreaTable row, zone id 206) must resolve to the SAME zone
+            # id the fork already uses, never whichever row happens to
+            # sort first.
+            frozenset(source.zone_id for source in drops if source.zone_id is not None),
         )
         sources = merge_classicdb_sources(sources, classicdb_sources)
         quest = sorted(set(quest) | set(classicdb_quest))
