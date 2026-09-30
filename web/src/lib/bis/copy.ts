@@ -154,6 +154,15 @@ export const bisCopy = {
    *  DPS" conversion; this row exists only to anchor the bar chart, and reads as what it
    *  is). */
   weightsReferenceRowValue: 'Reference',
+  /** The whole weight rail's line when the band carries `weights_reason` (spec addendum
+   *  §A): a band whose reference measurement was not positive beyond its own error never
+   *  gets a bar list at all (`panel-view.ts`'s `bandInfosFor` picks this over both of the
+   *  rail's ordinary branches) -- one honest sentence instead of a list of numbers this
+   *  band's own sim could not stand behind. Every `weights_reason` value maps to this same
+   *  line today (only one exists in real data); a future, more specific code gets its own
+   *  line only when a person writes one, never a fabricated one in the meantime. */
+  weightsUnmeasuredLine:
+    "Weights couldn't be measured for this gear set. The picks below are still real sim results.",
   /** The empty off-hand row when the main hand is a two-hander -- never
    *  `noKnownSourceForSlot`, which would read as a data gap rather than the game rule it
    *  actually is (wow-player fix 4). */
@@ -165,6 +174,13 @@ export const bisCopy = {
    *  supplies the item name and the two DPS numbers, this row's own pick first. */
   evidenceLine: (itemName: string, pickDps: number, altDps: number): string =>
     `Sim-checked against ${itemName}: ${pickDps.toFixed(1)} vs ${altDps.toFixed(1)} DPS`,
+  /** The row's own evidence line when the slot carries a real `dps_delta` (bis-ranker-
+   *  integrity-5): the one number that stays true regardless of which snapshot `swap_note`'s
+   *  own two absolute numbers were measured at (`panel-view.ts`'s own doc) -- preferred over
+   *  `evidenceLine` above whenever `dps_delta` is present, so the row never shows two
+   *  absolute numbers that can silently disagree with the band's own header `set_dps`. */
+  evidenceLineDelta: (itemName: string, delta: number): string =>
+    `Sim-checked against ${itemName}: +${delta.toFixed(1)} DPS`,
   /** The verified glyph's own title when a pick carries `sim_dps` but no `swap_note` --
    *  still a real sim result (a trinket/proc/weapon-pair tournament winner), just not one
    *  phrased as a swap against a named runner-up. */
@@ -175,6 +191,19 @@ export const bisCopy = {
     "This item's proc or use effect is not modelled yet; it was ranked on its stats alone",
   lowValueTag: 'best available',
   lowValueTitle: 'No sourced weapon at this level adds DPS; this is the best by item level',
+  /** An item sourced from classic-db's 1.12 tables rather than the client's own shipped
+   *  tables (spec addendum §B, `Item.client_unconfirmed`) -- a data-confidence flag on the
+   *  item itself, never conflated with `sourceLines` (where you GET the item) or coloured
+   *  like an achievement (`.new-pill`'s gold): this marks a limitation of the data, so it
+   *  borrows the same quiet `.flag-tag` family `effectUnmodelledTag`/`lowValueTag` already
+   *  use. Never any form of the word "confirmed" (wow-player fix, day 3): this row already
+   *  carries `VerifiedGlyph`'s own "Confirmed by a Top Gear simulation pass" title and its
+   *  own "Unverified" empty state, so a second, unrelated use of "confirmed" on the same row
+   *  reads as a contradiction of the verified glyph rather than a comment on the item's data
+   *  provenance -- the data field name (`client_unconfirmed`) and every testid keep their
+   *  names unchanged; only the two player-facing strings change. */
+  clientUnconfirmedTag: '1.12 stats',
+  clientUnconfirmedTitle: "Stats from the original 1.12 tables; not yet seen in Forever's client",
   /** `empty_reason` copy, one line per value the ranker publishes -- `no_sourced_item` and
    *  any value this page does not recognise both fall back to `noKnownSourceForSlot`'s own
    *  text (spec's "unknown -> the last"), never a fabricated reason. */

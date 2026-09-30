@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest';
 import type { ItemTooltipModel } from '../items/tooltip';
 import type { LootFile } from '../sim/loot';
+import { bisCopy } from './copy';
 import { bandInfosFor, collectModelsInto, parseSwapNote, type PanelViewDeps } from './panel-view';
 import type { BisAlternative, BisBand, BisFile, BisSlot, ItemDetail, LootQuestsFile } from './types';
 
@@ -99,6 +100,7 @@ describe('bandInfosFor: empty slots', () => {
       setName: null,
       sourceLines: [],
       unique: false,
+      clientUnconfirmed: false,
     };
     const file = fileWith([
       band({ slots: [slot({ slot: 'main_hand', item_id: 99 }), missingSlot('off_hand')] }),
@@ -194,6 +196,7 @@ describe('bandInfosFor: alternatives', () => {
       setName: null,
       sourceLines: [],
       unique: false,
+      clientUnconfirmed: false,
     };
     const aboveBandModel: ItemTooltipModel = { ...belowBandModel, id: 43, requiredLevel: 25 };
     const file = fileWith([band({ slots: [slot({ alternatives: [alt, { ...alt, item_id: 43 }] })] })]);
@@ -230,6 +233,7 @@ describe('collectModelsInto', () => {
       setName: null,
       sourceLines: [],
       unique: false,
+      clientUnconfirmed: false,
     };
     const alt: BisAlternative = {
       item_id: 42,
@@ -290,6 +294,25 @@ describe('bandInfosFor: weight rail', () => {
     expect(agility?.valueText).toBe(agility?.row.weight.toFixed(2));
     expect(meleeHaste?.valueText).toBe('No effect');
   });
+
+  it('renders no bar list and the unmeasured-weights line when the band carries weights_reason, even with a real reference_dps_per_point', () => {
+    const file = fileWith([
+      band({
+        slots: [slot()],
+        reference_dps_per_point: 2.5,
+        weights_reason: 'reference stat spell_power measured -0.1893 ± 0.6199 DPS per point',
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].weightBars).toEqual([]);
+    expect(infos[0].referenceSentenceLine).toBe(bisCopy.weightsUnmeasuredLine);
+  });
+
+  it('never shows the unmeasured-weights line when weights_reason is absent', () => {
+    const file = fileWith([band({ slots: [slot()], reference_dps_per_point: 2.5 })]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].referenceSentenceLine).not.toBe(bisCopy.weightsUnmeasuredLine);
+  });
 });
 
 describe('parseSwapNote', () => {
@@ -340,6 +363,83 @@ describe('bandInfosFor: evidence line and verified-glyph title', () => {
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
     const head = infos[0].rows.find((r) => r.slot === 'head');
     expect(head?.evidenceLine).toBe('Sim-checked against Diamond Hammer: 45.8 vs 38.0 DPS');
+  });
+
+  it('prefers the row’s own dps_delta over swap_note’s two absolute numbers when both are present', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            swap_note:
+              'confirmed by the sim against Diamond Hammer (id 2194): kept the pick, 45.8 vs 38.0 set DPS',
+            dps_delta: 7.8,
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.evidenceLine).toBe('Sim-checked against Diamond Hammer: +7.8 DPS');
+  });
+
+  it('prefers dps_delta for the bis-ranker-integrity-5 "over it" swap_note suffix, which the old two-number parse cannot match', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            swap_note:
+              "confirmed by the sim against Ironspine's Fist (id 7687): kept the pick, +4.5 DPS over it",
+            dps_delta: 4.5,
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.evidenceLine).toBe("Sim-checked against Ironspine's Fist: +4.5 DPS");
+  });
+
+  it('prefers dps_delta for the "beat the scored pick" template too', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            swap_note: 'beat the scored pick Diamond Hammer (id 2194) in the sim: 40.2 vs 38.0 set DPS',
+            dps_delta: 2.2,
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.evidenceLine).toBe('Sim-checked against Diamond Hammer: +2.2 DPS');
+  });
+
+  it('falls back to the old two-number parse when dps_delta is absent (a file published before this field existed)', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            swap_note:
+              'confirmed by the sim against Diamond Hammer (id 2194): kept the pick, 45.8 vs 38.0 set DPS',
+            dps_delta: null,
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.evidenceLine).toBe('Sim-checked against Diamond Hammer: 45.8 vs 38.0 DPS');
+  });
+
+  it('falls back to the raw swap_note text when dps_delta is present but the swap_note format is unrecognised', () => {
+    const file = fileWith([
+      band({ slots: [slot({ swap_note: 'something the parser has never seen', dps_delta: 3.1 })] }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.evidenceLine).toBe(
+      'something the parser has never seen',
+    );
   });
 
   it('falls back to the raw swap_note text when the format is unrecognised', () => {
@@ -487,6 +587,7 @@ describe('bandInfosFor: empty_reason copy', () => {
       setName: null,
       sourceLines: [],
       unique: false,
+      clientUnconfirmed: false,
     };
     const file = fileWith([
       band({

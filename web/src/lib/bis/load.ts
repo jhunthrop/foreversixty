@@ -93,9 +93,11 @@ export function loadBisFile(spec: string, build: string): BisFile | null {
  *  same reasoning `new_at_band` already applies to its own array.
  *
  *  Also defaults each slot's `alternatives` (`sim/cmd/leveling-bis/report.go`'s own
- *  `slotRow.Alternatives`) to `[]` and each band's `reference_dps_per_point` to `null` --
- *  both new, optional fields a file published before this lane landed carries neither of, and
- *  a Go nil slice/omitted float likewise reach here as `undefined` rather than `[]`/`null`. */
+ *  `slotRow.Alternatives`) to `[]`, each slot's `dps_delta` to `null`, each band's
+ *  `reference_dps_per_point` to `null`, and each band's `weights_reason` to `null` -- all
+ *  new, optional fields a file published before the lane that added them landed carries
+ *  none of, and a Go nil slice/omitted float/omitted string likewise reach here as
+ *  `undefined` rather than `[]`/`null`/`null`/`null`. */
 export function normaliseBisFile(file: BisFile): BisFile {
   return {
     ...file,
@@ -104,9 +106,11 @@ export function normaliseBisFile(file: BisFile): BisFile {
       new_at_band: band.new_at_band ?? [],
       coverage: band.coverage ?? {},
       reference_dps_per_point: band.reference_dps_per_point ?? null,
+      weights_reason: band.weights_reason ?? null,
       slots: band.slots.map((slot) => ({
         ...slot,
         alternatives: slot.alternatives ?? [],
+        dps_delta: slot.dps_delta ?? null,
       })),
     })),
   };

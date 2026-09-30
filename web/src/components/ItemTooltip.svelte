@@ -16,6 +16,7 @@
      positions it. -->
 <script lang="ts">
   import type { ItemTooltipModel } from '../lib/items/tooltip';
+  import { bisCopy } from '../lib/bis/copy';
   import { rarityClassFor } from '../lib/planner/items';
   import { dataUrl } from '../lib/planner/load';
 
@@ -70,6 +71,9 @@
       <span class="tabular text-muted font-mono text-[11px]">Item Level {model.itemLevel}</span>
       {#if model.unique}
         <span class="text-muted text-[11px]">Unique</span>
+      {/if}
+      {#if model.clientUnconfirmed}
+        <span class="text-muted text-[11px]">{bisCopy.clientUnconfirmedTitle}</span>
       {/if}
     </div>
   </div>

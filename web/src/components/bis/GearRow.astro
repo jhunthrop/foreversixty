@@ -107,6 +107,15 @@ function hasRealIcon(icon: string | undefined): icon is string {
                   {bisCopy.effectUnmodelledTag}
                 </span>
               )}
+              {row.model?.clientUnconfirmed && (
+                <span
+                  class="flag-tag"
+                  data-testid="bis-row-client-unconfirmed"
+                  title={bisCopy.clientUnconfirmedTitle}
+                >
+                  {bisCopy.clientUnconfirmedTag}
+                </span>
+              )}
               {row.lowValue && (
                 <span class="flag-tag" data-testid="bis-row-low-value" title={bisCopy.lowValueTitle}>
                   {bisCopy.lowValueTag}
@@ -171,6 +180,15 @@ function hasRealIcon(icon: string | undefined): icon is string {
                         title={bisCopy.effectUnmodelledTitle}
                       >
                         {bisCopy.effectUnmodelledTag}
+                      </span>
+                    )}
+                    {alt.model?.clientUnconfirmed && (
+                      <span
+                        class="flag-tag flag-tag-tiny"
+                        data-testid="bis-alt-client-unconfirmed"
+                        title={bisCopy.clientUnconfirmedTitle}
+                      >
+                        {bisCopy.clientUnconfirmedTag}
                       </span>
                     )}
                   </span>

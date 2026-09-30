@@ -54,6 +54,17 @@ export interface BisSlot {
    *  all, not a flag on a filled pick. */
   effect_unmodelled?: boolean;
   swap_note?: string;
+  /** This row's own pick's measured DPS advantage over the one comparator a real swap sim
+   *  actually measured it against, in that same run (`sim/cmd/leveling-bis/report.go`'s own
+   *  `slotRow.DPSDelta`) -- always real and always non-negative, unlike the two absolute
+   *  numbers `swap_note` may embed (each a full-set snapshot at the moment ITS OWN slot was
+   *  decided, which can silently disagree with the band's own published `set_dps` and with
+   *  each other row's snapshot -- see `report.go`'s own `dpsComparisonPhrase` doc). Distinct
+   *  from `alternatives[].dps_delta`, which is per-alternative. Optional and defaults to
+   *  `null` (`normaliseBisFile`, `load.ts`): a file published before this field existed, or a
+   *  row never compared to anything a sim actually measured, carries no `dps_delta` key at
+   *  all. */
+  dps_delta?: number | null;
   /** The next-best sourced candidates after this row's own pick (`sim/cmd/leveling-bis/
    *  report.go`'s own `slotRow.Alternatives`) -- up to three, ties (identical score to the
    *  pick) ranked first with `dps_delta` 0, then the next-best by score. Optional: a file
@@ -131,6 +142,16 @@ export interface BisBand {
    *  (`normaliseBisFile`, `load.ts`): a file published before this field existed carries no
    *  `reference_dps_per_point` key at all. */
   reference_dps_per_point?: number | null;
+  /** Set only when this band's whole weights sweep could not be trusted
+   *  (`sim/cmd/leveling-bis/report.go`'s own `bandReport.WeightsReason`,
+   *  `referenceMeasurementReason`) -- when present, `reference_dps_per_point` is absent and
+   *  every entry in `weights` carries `insignificant: true`. Pipeline prose, never rendered
+   *  verbatim (tenet 7): `panel-view.ts`'s `bandInfosFor` maps any non-empty value to the
+   *  single `bisCopy.weightsUnmeasuredLine`, the same way `empty_reason` is mapped through
+   *  `emptyReasonLabel` rather than printed as-is. Optional and defaults to `null`
+   *  (`normaliseBisFile`, `load.ts`): a file published before this field existed carries no
+   *  `weights_reason` key at all. */
+  weights_reason?: string | null;
   /** The unit every stat-weight `score` on this band is in (`"reference_stat_points"`);
    *  a sim-decided row carries `sim_dps` instead of a score. */
   score_unit?: string;

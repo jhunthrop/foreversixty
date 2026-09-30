@@ -69,6 +69,10 @@ export interface ItemTooltipModel {
    *  line per place the item is known to come from; empty when loot.json has none. */
   sourceLines: string[];
   unique: boolean;
+  /** `Item.client_unconfirmed ?? false` -- one field, computed once here, read by every
+   *  surface (character-panel row, alternatives row, this tooltip) off the same model,
+   *  never three separate lookups back into the item row (spec addendum §B). */
+  clientUnconfirmed: boolean;
 }
 
 export interface ItemTooltipSources {
@@ -317,5 +321,6 @@ export function itemTooltipModel(row: Item, sources: ItemTooltipSources): ItemTo
     setName: setNameFor(row, sources.sets),
     sourceLines: sourceLinesFor(row.id, sources.loot),
     unique: row.unique,
+    clientUnconfirmed: row.client_unconfirmed ?? false,
   };
 }
