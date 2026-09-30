@@ -741,6 +741,65 @@ def _boss_item_source_origins(
     ]
 
 
+def _classic_db_corroborated_raid_dungeon_origin(
+    sources: list[LootSource],
+    fork_boss_items: set[tuple[int, int]],
+    classic_sources: dict[int, list[ClassicDbSourceRecord]],
+) -> list[LootSource]:
+    """loot-parity-2 lane, 2026-09-30: promotes a raid/dungeon
+    `LootSource.source_origin` from `None` (fork-primary) to
+    `"classic-db"` when classic-db's own `creature_loot_template`
+    independently corroborates EVERY item the fork's own `_drop_sources`
+    pass put on that source (`fork_boss_items`, same pre-merge capture
+    `_boss_item_source_origins` already uses) -- never when trash is
+    present, since a zone's flat `trash` bucket has no per-npc key to
+    check corroboration against.
+
+    Onyxia's Lair is the measured case (this lane's own report): the
+    fork's own AtlasLoot table names 16 items for npc 10184, and
+    classic-db's own dump -- read fresh -- independently names all 16
+    PLUS 5 more, so the fork contributes nothing classic-db does not
+    already confirm; `_union_source`'s "base (fork) stays primary, its
+    own `source_origin` is left alone" rule was correct for a source
+    where fork and classic-db name DISJOINT items (`dungeon:the-
+    deadmines`'s own two-boss test: classic-db's npc 657 corroborates
+    nothing about the fork's own npc 902/item 103, so that source stays
+    fork-primary), but wrong here, where classic-db has independently
+    verified the fork's entire claim and is the more authoritative table
+    (tenet 8: a primary source, not a legacy migration) -- `source_
+    origin` should say so.
+
+    A source with even one fork-only (unconfirmed by classic-db) boss
+    item is left alone: the fork still contributes something classic-db
+    cannot itself vouch for, so `None` (fork-primary, with that one item
+    already carrying its own `item_source_origin: "fork"` tag from
+    `_boss_item_source_origins` above) remains the honest label.
+    """
+    classic_items_by_npc = _classic_db_creature_items(classic_sources)
+
+    def fully_corroborated(source: LootSource) -> bool:
+        fork_items = [
+            (boss.npc_id, item_id)
+            for boss in (source.bosses or [])
+            for item_id in boss.items
+            if (boss.npc_id, item_id) in fork_boss_items
+        ]
+        if not fork_items or source.trash:
+            return False
+        return all(
+            item_id in classic_items_by_npc.get(npc_id, set()) for npc_id, item_id in fork_items
+        )
+
+    return [
+        source.model_copy(update={"source_origin": "classic-db"})
+        if source.kind in ("raid", "dungeon")
+        and source.source_origin is None
+        and fully_corroborated(source)
+        else source
+        for source in sources
+    ]
+
+
 def build_loot(
     fork: ForkDatabase,
     zone_names: dict[int, str],
@@ -883,6 +942,16 @@ def build_loot(
     # every merge" placement as the unnamed-boss resolution just above,
     # for the same reason (it needs the FINAL, post-merge boss lists).
     sources = _boss_item_source_origins(sources, fork_boss_items, classic_sources or {})
+    # loot-parity-2 lane, 2026-09-30: promotes a raid/dungeon source's own
+    # `source_origin` to "classic-db" when classic-db's dump fully
+    # corroborates the fork's own contribution to it --
+    # `_classic_db_corroborated_raid_dungeon_origin`'s own doc (the
+    # Onyxia's Lair case this lane's report measured). Runs after
+    # `_boss_item_source_origins`, same "needs the FINAL, post-merge boss
+    # lists" reasoning.
+    sources = _classic_db_corroborated_raid_dungeon_origin(
+        sources, fork_boss_items, classic_sources or {}
+    )
     # A source the filter emptied is not a source. `_drop_sources` already
     # drops a boss with no items left (its `bosses` set is simply never
     # created), so this is the last sweep: a zone whose every drop was

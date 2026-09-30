@@ -377,4 +377,11 @@ def to_item(item: ClassicDbItem) -> Item:
         class_id=item.class_id,
         subclass_id=item.subclass_id,
         inventory_type=item.inventory_type,
+        # loot-parity-2 lane, 2026-09-30: same labels `to_gear_item` above
+        # already sets on the per-class row for this same item -- the flat
+        # catalogue's own copy, so a consumer reading items.json alone can
+        # tell this is real 1.12 itemization with no client counterpart.
+        required_level_source="classic-db",
+        stats_source="classic-db",
+        client_unconfirmed=True,
     )

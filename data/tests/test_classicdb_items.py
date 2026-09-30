@@ -286,3 +286,15 @@ def test_to_item_carries_the_flat_entity_fields():
         4,
         12,
     )
+
+
+def test_to_item_carries_the_same_provenance_columns_the_per_class_row_gets():
+    """loot-parity-2 lane, 2026-09-30: the flat catalogue's own row for a
+    classic-db-only item now carries the same three provenance columns
+    `to_gear_item`'s per-class row already did -- so items.json ALONE (not
+    just items/<class>.json) can tell a 1.12 row from a client one."""
+    item = _item(id=11815, name="Hand of Justice", class_id=4, subclass_id=0, inventory_type=12)
+    flat = to_item(item)
+    assert flat.required_level_source == "classic-db"
+    assert flat.stats_source == "classic-db"
+    assert flat.client_unconfirmed is True
