@@ -117,6 +117,9 @@ def test_simitems_json_is_the_kept_items_sorted_ids(build_dir: Path):
     assert simitems == {
         "build": "9.9.9.9",
         "items": sorted(item.id for item in database.items),
+        # This fixture has no wowhead payload and no classic-db extract, so
+        # every item is the client's own (simdb-supplement lane, 2026-09-30).
+        "sim_source": {str(item.id): "client" for item in database.items},
     }
 
 

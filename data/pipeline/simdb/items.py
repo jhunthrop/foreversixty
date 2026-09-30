@@ -21,6 +21,7 @@ from __future__ import annotations
 from collections import Counter
 from collections.abc import Iterable, Mapping
 
+from pipeline import classicdb_items as cdb
 from pipeline import wowhead_items as wh
 from pipeline.normalize.gear import (
     MAX_PLAYER_LEVEL,
@@ -47,8 +48,19 @@ ARMOR_SUBCLASS_SHIELD = 6
 ALLOWABLE_ALL_CLASSES = -1
 
 #: InventoryType -> the engine's ItemType. An inventory type that is absent is
-#: not a slot the engine equips (shirts, tabards, bags, ammo, quivers, relics),
-#: and is the same set `normalize/gear.py`'s SLOT_BY_INVENTORY_TYPE keeps.
+#: not a slot the engine equips (shirts, tabards, bags, ammo, quivers), and is
+#: the same set `normalize/gear.py`'s SLOT_BY_INVENTORY_TYPE keeps.
+#:
+#: simdb-supplement lane, 2026-09-30: 28 (INVTYPE_RELIC -- librams, idols and
+#: totems) used to be absent here even though `SLOT_BY_INVENTORY_TYPE` grew it
+#: on 2026-09-28 (the night-bis-sources lane, which fixed the PLANNER's own
+#: relic gap): four real client relics (Idol of the Moon 23197, Totem of the
+#: Storm 23199, Totem of Thunder 228176, Howling Idol 272427) were published
+#: leveling-bis picks with no `simitems.json` row at all, so `simdb.Attach`'s
+#: `UnequipUnknown` stripped every one of them the same way a classic-db-only
+#: id used to. `SLOT_BY_INVENTORY_TYPE` files a relic under the ranged slot
+#: (same as a bow or wand, `normalize/gear.py`'s own comment), so this does
+#: too.
 ITEM_TYPE_BY_INVENTORY_TYPE: dict[int, str] = {
     1: "ItemTypeHead",
     2: "ItemTypeNeck",
@@ -72,6 +84,7 @@ ITEM_TYPE_BY_INVENTORY_TYPE: dict[int, str] = {
     23: "ItemTypeWeapon",
     25: "ItemTypeRanged",
     26: "ItemTypeRanged",
+    28: "ItemTypeRanged",
 }
 
 #: InventoryType -> HandType, for weapons only.
@@ -342,5 +355,118 @@ def build_wowhead_sim_items(
         if w.set_id:
             item.set_id = w.set_id
             item.set_name = set_names.get(w.set_id, "")
+        out.append(item)
+    return out
+
+
+def _classicdb_class_allowlist(item: cdb.ClassicDbItem) -> list[int]:
+    """The proto `Class` values classic-db's own `AllowableClass` mask AND the
+    client's proficiency table both permit -- `pipeline.classicdb_items.
+    class_allowed`, the SAME test `pipeline.normalize.classicdb.
+    merge_class_items` uses to decide which class's `items/<class-slug>.json`
+    a supplement item joins, so this allowlist always agrees with where the
+    planner actually placed the item. A raw mask alone (`_class_allowlist`,
+    the client-row path above) is not enough here: classic-db's own
+    `AllowableClass` is sometimes `-1` (unrestricted) even where real Classic
+    proficiency -- plate, a caster's lack of a shield, ... -- still narrows
+    who can equip it (`is_gm_class_mask`'s own doc has the exact rows this
+    was measured against)."""
+    return sorted(
+        pb.Class.Value(name)
+        for chr_class_id, name in PROTO_CLASS_BY_CHR_CLASS_ID.items()
+        if cdb.class_allowed(item, chr_class_id)
+    )
+
+
+def build_classicdb_sim_items(
+    items: Iterable[cdb.ClassicDbItem],
+    spells: Mapping[int, cdb.ClassicDbSpell],
+    rating_factors: Mapping[str, float],
+    set_names: Mapping[int, str] | None = None,
+    fork_columns: Mapping[int, tuple[list[int], str]] | None = None,
+    untracked: Counter[str] | None = None,
+) -> list[pb.SimItem]:
+    """`SimItem` rows for classic-db's supplement -- the ids neither the
+    client's own `ItemSparse` nor wowhead's Forever gear-planner scrape carry
+    at all (`pipeline.classicdb_items`'s own doc: Hand of Justice, Blackhand's
+    Breadth, Devilsaur Eye and the rest of cmangos/classic-db's 1.12
+    `item_template`). Same shape as `build_wowhead_sim_items` immediately
+    above, extended rather than duplicated, with two differences forced by
+    what classic-db's own extract states:
+
+    * `class_allowlist` comes from `_classicdb_class_allowlist` (per-class
+      membership, mask AND proficiency) rather than a raw mask -- see that
+      helper's own doc.
+    * A stat off `raw_stats`/resistances (`pipeline.classicdb_items.
+      planner_stats`) is a combat rating and needs `ratings.
+      convert_rating_stats`, exactly like a client row's `resolve_item_values`
+      output; a stat off an on-equip spell (`pipeline.classicdb_items.
+      equip_stats`) is already the flat percentage Classic states directly
+      (verified against Blackhand's Breadth/Eye of the Beast -- see
+      `classicdb_items.effect_text`'s own doc) and bypasses that conversion,
+      the same split `build_sim_items` applies between `resolved` and
+      `bonus.stats` above.
+
+    `fork_columns` is the SAME `items.json` columns the client path reads:
+    a classic-db row merges into `items.json` before `python -m pipeline
+    loot` runs (`pipeline.normalize.classicdb.merge_items`), so `loot` places
+    suffixes/faction restrictions on it exactly as it does any other row --
+    `None` (the default) leaves every classic-db `SimItem` unrestricted and
+    unsuffixed, the state a caller with no fork columns at all (no engine
+    checkout) leaves every OTHER item in too.
+
+    An item whose `InventoryType` this module does not equip at all
+    (`ITEM_TYPE_BY_INVENTORY_TYPE` -- relics, InventoryType 28, are the one
+    gap: `normalize/gear.py`'s `SLOT_BY_INVENTORY_TYPE` covers them but this
+    dict does not) is counted in `untracked` and dropped, never guessed at.
+    """
+    set_names = set_names or {}
+    fork_columns = fork_columns or {}
+    out: list[pb.SimItem] = []
+    for row in items:
+        inventory = row.inventory_type
+        if inventory not in ITEM_TYPE_BY_INVENTORY_TYPE:
+            if untracked is not None:
+                untracked[f"inventory_type_{inventory}"] += 1
+            continue
+
+        stat_pairs: list[tuple[str, float]] = list(
+            convert_rating_stats(cdb.planner_stats(row), rating_factors).items()
+        )
+        if row.armor and row.class_id == ITEM_CLASS_ARMOR:
+            stat_pairs.append(("armor", float(row.armor)))
+        stat_pairs.extend(cdb.equip_stats(row, spells).items())
+
+        item = pb.SimItem(
+            id=row.id,
+            name=row.name,
+            type=pb.ItemType.Value(ITEM_TYPE_BY_INVENTORY_TYPE[inventory]),
+            stats=stat_array(stat_pairs),
+            class_allowlist=_classicdb_class_allowlist(row),
+            unique=row.unique,
+            required_level=row.required_level,
+        )
+        _apply_class_subclass(item, row.class_id, row.subclass_id, inventory)
+        if row.class_id == ITEM_CLASS_WEAPON and row.delay > 0:
+            item.weapon_damage_min = float(row.damage_min)
+            item.weapon_damage_max = float(row.damage_max)
+            item.weapon_speed = row.delay / 1000
+
+        if row.set_id:
+            item.set_id = row.set_id
+            item.set_name = set_names.get(row.set_id, "")
+
+        suffix_options, restriction = fork_columns.get(row.id, ([], ""))
+        if suffix_options:
+            item.random_suffix_options.extend(suffix_options)
+        if restriction not in FACTION_RESTRICTION_BY_SLUG:
+            raise SystemExit(
+                f"item {row.id} has faction_restriction {restriction!r} in "
+                f"items.json; pipeline/simdb/items.py knows "
+                f"{sorted(FACTION_RESTRICTION_BY_SLUG)}"
+            )
+        item.faction_restriction = pb.SimItem.FactionRestriction.Value(
+            FACTION_RESTRICTION_BY_SLUG[restriction]
+        )
         out.append(item)
     return out
