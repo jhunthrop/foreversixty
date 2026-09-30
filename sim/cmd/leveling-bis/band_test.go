@@ -302,7 +302,7 @@ func TestBuildBandPoolSeparatesEligibleSourcedCrossClassAndUnsourced(t *testing.
 		4: {{Kind: "quest", Label: "A Quest"}},
 		5: {{Kind: "quest", Label: "A Quest"}},
 	}
-	pool := buildBandPool(items, idx, "hunter", 20, "horde", map[string]float64{"agility": 2}, 0)
+	pool := buildBandPool(items, idx, "hunter", 20, "horde", map[string]float64{"agility": 2}, 0, false)
 
 	if len(pool.Scored) != 2 {
 		t.Fatalf("pool.Scored = %+v, want 2 (helm + bow)", pool.Scored)
@@ -330,7 +330,7 @@ func TestBuildBandPoolSkipsItemsWithNoSlots(t *testing.T) {
 	// added to any bucket.
 	items := []candidate{{ID: 1, RequiredLevel: 1, Slots: nil}}
 	idx := lootIndex{1: {{Kind: "quest", Label: "A Quest"}}}
-	pool := buildBandPool(items, idx, "hunter", 20, "horde", nil, 0)
+	pool := buildBandPool(items, idx, "hunter", 20, "horde", nil, 0, false)
 	if len(pool.Scored) != 0 || len(pool.NoSource) != 0 {
 		t.Fatalf("pool = %+v, want everything empty for a slotless item", pool)
 	}
@@ -499,7 +499,7 @@ func TestBuildBandPoolGatesEveryLegendaryRegardlessOfSourceKind(t *testing.T) {
 		810:   {{Kind: "world_drop", Label: "World drop"}},
 	}
 	weights := map[string]float64{"spell_power": 1, "agility": 1}
-	pool := buildBandPool(items, idx, "warrior", 60, "alliance", weights, 0)
+	pool := buildBandPool(items, idx, "warrior", 60, "alliance", weights, 0, false)
 
 	scoredIDs := make(map[int]bool, len(pool.Scored))
 	for _, s := range pool.Scored {
@@ -549,6 +549,28 @@ func TestPvpRankExceedsCap(t *testing.T) {
 	for _, tc := range cases {
 		if got := pvpRankExceedsCap(tc.src); got != tc.want {
 			t.Errorf("%s: pvpRankExceedsCap(%+v) = %v, want %v", tc.name, tc.src, got, tc.want)
+		}
+	}
+}
+
+// TestPvpSourceLabel is the fourth wow-player sweep's own item 2: never
+// the bare bucket name or the bare quartermaster name - "PvP rank N ·
+// Title · Faction", the same wording web/src/lib/bis/copy.ts's own
+// pvpSourceLabel produces from the identical rank/title/faction facts.
+func TestPvpSourceLabel(t *testing.T) {
+	cases := []struct {
+		name           string
+		rank           int
+		title, faction string
+		want           string
+	}{
+		{"a known rank/title", 9, "Master Sergeant", "alliance", "PvP rank 9 · Master Sergeant · Alliance"},
+		{"a horde rank/title", 18, "High Warlord", "horde", "PvP rank 18 · High Warlord · Horde"},
+		{"no title (rank outside the known ladder) falls back to rank and faction", 4, "", "alliance", "PvP rank 4 · Alliance"},
+	}
+	for _, tc := range cases {
+		if got := pvpSourceLabel(tc.rank, tc.title, tc.faction); got != tc.want {
+			t.Errorf("%s: pvpSourceLabel(%d, %q, %q) = %q, want %q", tc.name, tc.rank, tc.title, tc.faction, got, tc.want)
 		}
 	}
 }

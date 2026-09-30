@@ -88,6 +88,13 @@ export interface LootSource {
    *  module's own doc for how (a classic-db vendor's capital-city PvP hall, or the item's
    *  own rank title as a fallback). */
   faction?: 'alliance' | 'horde';
+  /** `pvp` kind only (fourth wow-player sweep, item 2): the in-game rank title
+   *  (`pipeline.loot.pvp_faction.rank_title`) -- "Master Sergeant" for Alliance rank 9, for
+   *  instance. Not yet read by this file's own `pvpSourceLabel` call sites, which still
+   *  compute the same title from `bisCopy`'s own mirrored table (kept in sync with Python's
+   *  by `data/tests/test_loot_pvp_faction.py`); carried here so a future caller can read it
+   *  directly off the source instead. */
+  title?: string;
   /** item id (string-keyed) -> percent drop chance (0-100), for a `world`/`zone` source's
    *  own flat `items`/`trash` list -- see `LootBoss.item_chances`'s own doc. */
   item_chances?: Record<string, number>;

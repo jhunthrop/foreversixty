@@ -134,6 +134,18 @@ func trinketShortlist(list []scored, excludeID int, excludeName string) []scored
 	return out
 }
 
+// trinketEffectUnmodelled reports whether c's own effect is exactly the
+// case report.go's EffectUnmodelled flag publishes: a real, named
+// on-hit/on-use/proc effect (EffectText non-empty) the engine does NOT
+// actually implement (rank.go's effectImplemented) - Serenity Field's
+// own Spirit self-buff, for one. A candidate with no effect at all
+// (EffectText == "") is NOT unmodelled in this sense: its whole value
+// is stats, which this tournament's own real sim already measures
+// exactly as faithfully as any other stat-only trinket.
+func trinketEffectUnmodelled(c candidate) bool {
+	return c.EffectText != "" && !hasImplementedEffect(c)
+}
+
 // rankTrinketSlot replaces picks[slot] with the engine-verified best of
 // its top-item-level candidates (and the runner-up with the second
 // best), leaving every other slot's pick untouched. It returns a new
@@ -186,6 +198,59 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	}
 	sort.SliceStable(results, func(i, j int) bool { return results[i].dps > results[j].dps })
 
+	// Hybrid sweep, bis-ranker-integrity-4 lane, item 4: Serenity Field
+	// (a Spirit self-buff the engine does not model, published with its
+	// own effect_unmodelled: true) beat a real combat trinket at band 60
+	// ret/enhancement by a margin smaller than this 100-iteration
+	// tournament's own noise - a coin flip decided the slot, not a real
+	// DPS difference. An unmodelled candidate's own measured "DPS" is
+	// exactly the stat-only DPS a modelled candidate ALSO gets credited
+	// with (score.go's own doc: this tournament runs a real sim either
+	// way, so a trinket with no proc/on-use the engine can fire measures
+	// no differently from one whose stats alone happen to be worth the
+	// same amount) - the two are not being compared unfairly, only
+	// noisily, at this iteration count. The fix: a modelled trinket
+	// keeps the slot over a currently-leading unmodelled one unless the
+	// unmodelled one clears beatsByMargin's own 1% bar (verify.go, the
+	// same bar this command already trusts for every other close-call
+	// swap decision), rather than raising trinketRankIterations to shrink
+	// the noise floor by brute force - the lane report names the reason
+	// this one was picked without a side-by-side timing run: doubling or
+	// more the per-candidate iteration count multiplies the cost of
+	// EVERY trinket tournament this command runs, every band, every
+	// faction, every written spec, every night, to fix a failure mode
+	// this shared, already-trusted margin closes for free.
+	winner := 0
+	for i, r := range results {
+		if !trinketEffectUnmodelled(r.item.candidate) {
+			winner = i
+			break
+		}
+	}
+	// winner is now the best MODELLED candidate's index (0 when
+	// results[0] is itself modelled, or when nothing in the pool is
+	// modelled at all - the loop above never reassigns winner in either
+	// case). Only when results[0] is unmodelled AND actually clears the
+	// noise floor over that modelled candidate does the unmodelled one
+	// get to keep winning.
+	if winner > 0 && beatsByMargin(results[0].dps, results[winner].dps) {
+		winner = 0
+	}
+	// runnerUp is whichever OTHER candidate has the next-highest measured
+	// dps - results is sorted descending, so the first index that is not
+	// winner is already that candidate, whether winner stayed at 0 (the
+	// ordinary case) or moved to demote an unmodelled results[0] (in
+	// which case that demoted candidate - real top measured dps, just
+	// not enough to clear the margin - is exactly the runner-up a
+	// reader most wants to see).
+	runnerUpIdx := -1
+	for i := range results {
+		if i != winner {
+			runnerUpIdx = i
+			break
+		}
+	}
+
 	// bis-ranker-integrity-3, 2026-09-29, this lane's brief item 2: every
 	// candidate's own dps above is the full SET's absolute DPS wearing
 	// it, always positive regardless of whether the trinket itself does
@@ -210,24 +275,24 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 		notes = append(notes, slot+": measuring the no-trinket baseline failed: "+baselineErr.Error())
 	}
 
-	best := results[0].item
+	best := results[winner].item
 	// This lane's brief, item 7: best/runnerUp's own MeasuredDPS
 	// (scored's own doc) records the real, per-candidate full-set DPS
 	// this very tournament measured - a trinket has no scorable stats
 	// at all (this file's own package doc), so score()'s Score field
 	// stays whatever near-zero value it always was; buildReport reads
 	// MeasuredDPS, not Score, to decide what this row publishes.
-	best.MeasuredDPS = results[0].dps
+	best.MeasuredDPS = results[winner].dps
 	if baselineErr == nil {
-		best.MeasuredGainDPS = results[0].dps - baselineDPS
+		best.MeasuredGainDPS = results[winner].dps - baselineDPS
 		best.GainMeasured = true
 	}
 	sp := slotPick{Item: &best}
-	if len(results) > 1 {
-		runnerUp := results[1].item
-		runnerUp.MeasuredDPS = results[1].dps
+	if runnerUpIdx != -1 {
+		runnerUp := results[runnerUpIdx].item
+		runnerUp.MeasuredDPS = results[runnerUpIdx].dps
 		if baselineErr == nil {
-			runnerUp.MeasuredGainDPS = results[1].dps - baselineDPS
+			runnerUp.MeasuredGainDPS = results[runnerUpIdx].dps - baselineDPS
 			runnerUp.GainMeasured = true
 		}
 		sp.RunnerUp = &runnerUp

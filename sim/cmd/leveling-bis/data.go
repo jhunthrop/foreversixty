@@ -235,14 +235,23 @@ type lootSource struct {
 	FactionID  int    `json:"faction_id"`
 	Standing   string `json:"standing"`
 	Rank       int    `json:"rank"`
-	// Faction is "alliance" or "horde" for a "pvp" kind source only
+	// Faction is "alliance" or "horde" for a "pvp" kind source
 	// (pipeline.loot.pvp_faction's own doc, pvp-faction lane 2026-09-29:
 	// loot.json's own pvp:rank-N sources split into pvp:rank-N:alliance/
-	// pvp:rank-N:horde, one per side, each carrying its own Faction) -
-	// every other kind's own faction fact already reaches this struct a
-	// different way (FactionID for rep, factionExclusiveDungeons for a
-	// dungeon), so this field is empty for them.
-	Faction     string             `json:"faction"`
+	// pvp:rank-N:horde, one per side, each carrying its own Faction), OR
+	// for a "vendor" kind source pipeline.loot.pvp_faction resolved to a
+	// rank quartermaster's own npc (fourth wow-player sweep, item 1:
+	// vendorInheritsPvpRankGate below reads this to tell which of
+	// possibly several same-id pvp sources a vendor row's own side
+	// matches). Every other kind's own faction fact already reaches this
+	// struct a different way (FactionID for rep, factionExclusiveDungeons
+	// for a dungeon), so this field is empty for them.
+	Faction string `json:"faction"`
+	// Title is the pvp source's own in-game rank title
+	// (pipeline.loot.pvp_faction.rank_title), for a "pvp" kind source
+	// only - fourth wow-player sweep, item 2: "PvP rank 9 · Master
+	// Sergeant · Alliance", never the bare bucket name.
+	Title       string             `json:"title"`
 	Items       []int              `json:"items"`
 	ItemChances map[string]float64 `json:"item_chances"`
 	Bosses      []lootBoss         `json:"bosses"`
@@ -326,6 +335,12 @@ type itemSource struct {
 	// (pvp:rank-5 .. pvp:rank-18) already carry this; nothing upstream
 	// read it before this lane.
 	Rank int
+	// Title is lootSource.Title, carried through unchanged, for a Kind
+	// == "pvp" source only - fourth wow-player sweep, item 2:
+	// pvpSourceLabel (band.go) reads Rank/Title/Side together to format
+	// "PvP rank 9 · Master Sergeant · Alliance" instead of the bare
+	// bucket name loot.json's own Label would otherwise be.
+	Title string
 }
 
 // repSide names the reputations only one side can earn, by the client's
@@ -524,6 +539,7 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 			}
 			if src.Kind == "pvp" {
 				is.Rank = src.Rank
+				is.Title = src.Title
 				// pvp-faction lane, 2026-09-29: loot.json's own
 				// pvp:rank-N:alliance/pvp:rank-N:horde sources each
 				// carry their own Faction now (the module doc above) -
@@ -531,6 +547,21 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 				// actually gate a rank reward to its own side, the
 				// third wow-player sweep's own defect (Alliance-titled
 				// rewards reaching a Horde character's list and back).
+				is.Side = src.Faction
+				// Fourth wow-player sweep, item 2: never the bare bucket
+				// name loot.json's own Name carries ("Rank 9
+				// (Alliance)") - pvpSourceLabel (band.go) names the
+				// rank, its in-game title and the faction together.
+				is.Label = pvpSourceLabel(is.Rank, is.Title, is.Side)
+			}
+			if src.Kind == "vendor" && src.Faction != "" {
+				// Fourth wow-player sweep, item 1: pipeline.loot.
+				// pvp_faction already resolved this rank quartermaster's
+				// OWN side (its own doc) and wrote it onto the vendor
+				// row - carried here as this source's own Side so
+				// vendorInheritsPvpRankGate below can tell which of
+				// (possibly several) same-id pvp sources is really this
+				// vendor's, rather than guessing at the first one found.
 				is.Side = src.Faction
 			}
 			if src.Kind == "rep" {
@@ -590,46 +621,99 @@ func loadLootIndex(buildDir string, itemFactionRestriction map[int]string) (loot
 
 // vendorInheritsPvpRankGate returns a copy of idx where a "vendor"
 // source sharing an item id with a "pvp" source inherits that pvp
-// source's own Rank - the exact same shape vendorInheritsRepStandingGate
-// (below) already fixes for reputation, found dogfooding this lane's
-// brief item 3 (pvpRankCap): Captain O'Neal (Alliance's Grand Marshal
-// rank-reward quartermaster, loot.json's own vendor:12782) lists the
-// SAME items (Grand Marshal's Stave 18873, Grand Marshal's Sunderer
-// 18830, Grand Marshal's Demolisher 23455, ...) loot.json's own
-// pvp:rank-18 source already lists with Rank 18 - but "vendor" outranks
-// "pvp" in sourceKindPriority (band.go), so sourceFor picked the vendor
-// row for every one of them and band.go's pvpRankExceedsCap never saw a
-// Rank at all (the vendor kind carries none on its own), silently
-// defeating the whole cap: every caster/melee/hybrid spec's band-60
-// main_hand this lane regenerated to check item 1 picked a Grand
-// Marshal/High Warlord weapon from ITS OWN vendor before this fix, with
-// the cap doing nothing. An item's vendor source with no matching pvp
-// source (an ordinary gold vendor, or a rep-gated quartermaster with no
-// rank reward) is returned unchanged.
+// source's own Rank AND Faction (Side) - the exact same shape
+// vendorInheritsRepStandingGate (below) already fixes for reputation,
+// found dogfooding this lane's brief item 3 (pvpRankCap): Captain
+// O'Neal (Alliance's Grand Marshal rank-reward quartermaster,
+// loot.json's own vendor:12782) lists the SAME items (Grand Marshal's
+// Stave 18873, Grand Marshal's Sunderer 18830, Grand Marshal's
+// Demolisher 23455, ...) loot.json's own pvp:rank-18 source already
+// lists with Rank 18 - but "vendor" outranks "pvp" in
+// sourceKindPriority (band.go), so sourceFor picked the vendor row for
+// every one of them and band.go's pvpRankExceedsCap never saw a Rank at
+// all (the vendor kind carries none on its own), silently defeating the
+// whole cap: every caster/melee/hybrid spec's band-60 main_hand this
+// lane regenerated to check item 1 picked a Grand Marshal/High Warlord
+// weapon from ITS OWN vendor before this fix, with the cap doing
+// nothing.
+//
+// Fourth wow-player sweep, item 1: the pvp-faction lane (2026-09-29)
+// renamed loot.json's own bucket from a single "pvp:rank-N" to
+// "pvp:rank-N:alliance"/"pvp:rank-N:horde", so the ORIGINAL version of
+// this function (matching on Kind == "pvp" alone, taking the first
+// match) stopped copying Rank at all - worse, it never copied Side
+// either even before that rename, so a vendor row that DID inherit a
+// Rank was still obtainable by both factions at once, with only the
+// rank cap (not the faction gate) doing any work. Fixed by: matching
+// every "pvp" source for this item id (ordinarily exactly one), and
+// when there IS exactly one, trusting it outright regardless of what
+// (if anything) the vendor row's own Side already said - the real-data
+// case this bug actually hit. The rarer, pathological case both
+// factions' own pvp sources somehow name the SAME classic item id (a
+// re-itemised Forever-new item copied onto a classic twin that landed
+// in both splits, or a vendor row this build's pvp_faction lane could
+// not otherwise disambiguate) is resolved by the vendor row's OWN known
+// side instead (data.go's add() closure already copied
+// pipeline.loot.pvp_faction's own npc-faction resolution onto it, via
+// lootSource.Faction) - a vendor row whose own side is unknown AND
+// faces more than one matching pvp source is left alone rather than
+// guessed at (tenet 8: unverifiable is left out, never shown as fact).
+//
+// An item's vendor source with no matching pvp source (an ordinary gold
+// vendor, or a rep-gated quartermaster with no rank reward) is returned
+// unchanged.
 func vendorInheritsPvpRankGate(idx lootIndex) lootIndex {
 	out := make(lootIndex, len(idx))
 	for id, srcs := range idx {
-		var pvpSrc *itemSource
-		for i := range srcs {
-			if srcs[i].Kind == "pvp" {
-				pvpSrc = &srcs[i]
-				break
+		var pvpSrcs []itemSource
+		for _, s := range srcs {
+			if s.Kind == "pvp" {
+				pvpSrcs = append(pvpSrcs, s)
 			}
 		}
-		if pvpSrc == nil {
+		if len(pvpSrcs) == 0 {
 			out[id] = srcs
 			continue
 		}
 		gated := make([]itemSource, len(srcs))
 		for i, s := range srcs {
-			if s.Kind == "vendor" {
-				s.Rank = pvpSrc.Rank
+			if s.Kind != "vendor" {
+				gated[i] = s
+				continue
+			}
+			match, ok := pvpSourceForVendor(s, pvpSrcs)
+			if ok {
+				s.Rank, s.Side, s.Title = match.Rank, match.Side, match.Title
+				s.Label = pvpSourceLabel(s.Rank, s.Title, s.Side)
 			}
 			gated[i] = s
 		}
 		out[id] = gated
 	}
 	return out
+}
+
+// pvpSourceForVendor is vendorInheritsPvpRankGate's own matching rule
+// (its doc above): the single pvp source sharing this item id when
+// there is only one, or - when more than one exists - whichever pvp
+// source's own Side matches the vendor row's already-known Side
+// (data.go's add() closure, from pipeline.loot.pvp_faction's own npc-
+// faction resolution). ok is false when neither rule settles it (more
+// than one pvp source and no known/matching vendor side), in which case
+// the caller leaves the vendor row untouched.
+func pvpSourceForVendor(vendor itemSource, pvpSrcs []itemSource) (itemSource, bool) {
+	if len(pvpSrcs) == 1 {
+		return pvpSrcs[0], true
+	}
+	if vendor.Side == "" {
+		return itemSource{}, false
+	}
+	for _, p := range pvpSrcs {
+		if p.Side == vendor.Side {
+			return p, true
+		}
+	}
+	return itemSource{}, false
 }
 
 // vendorInheritsRepStandingGate returns a copy of idx where a "vendor"

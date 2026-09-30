@@ -111,6 +111,27 @@ for _shared in set(ALLIANCE_TITLES) & set(HORDE_TITLES):
 _TITLES_LONGEST_FIRST: tuple[str, ...] = tuple(sorted(TITLE_FACTION, key=len, reverse=True))
 
 
+def rank_title(faction: Faction, rank: int) -> str | None:
+    """The in-game rank title `faction`'s own ladder gives loot.json's
+    `rank` (Blizzard's client `RequiredPVPRank`, 5-18) -- fourth
+    wow-player sweep, item 2: the bare bucket name ("Rank 9 (Alliance)")
+    reads like neither faction's own quartermaster to a player, who
+    expects "PvP rank 9 · Master Sergeant · Alliance". This module is
+    the canonical source for the title vocabulary (`ALLIANCE_TITLES`/
+    `HORDE_TITLES` above); `web/src/lib/bis/copy.ts`'s own
+    `pvpRankTitle` mirrors it for a source this pipeline has not
+    reached yet, and `test_loot_pvp_faction.py`'s own sync test pins
+    the two tables equal so they cannot drift apart. `None` outside the
+    known ladder (rank < 5 or > 18), so a caller falls back to naming
+    just the rank and faction rather than guessing.
+    """
+    titles = ALLIANCE_TITLES if faction == "alliance" else HORDE_TITLES
+    index = rank - 5
+    if 0 <= index < len(titles):
+        return titles[index]
+    return None
+
+
 def title_faction(item_name: str) -> Faction | None:
     """`item_name`'s own rank title -- Vanilla's PvP reward naming is
     always "<Title>'s <slot>" (e.g. "Knight-Lieutenant's Pauldrons") --
@@ -201,15 +222,92 @@ def _item_vendor_npcs(
     ]
 
 
+def _backfill_vendor_items_into_pvp_buckets(
+    sources: list[LootSource], npc_factions: dict[int, Faction]
+) -> tuple[list[LootSource], int]:
+    """Fourth wow-player sweep, item 1 (found regenerating band 60 for
+    this lane's own report): a rank quartermaster's own "vendor" row
+    sells items its matching "pvp" source's own item list never
+    carried at all -- Captain O'Neal's vendor:12782 lists 47 items,
+    but pvp:rank-18(:alliance) only ever named 41 of them; the six
+    missing (Grand Marshal's Polearm/Warhammer/Barricade/Shiv/
+    Bonecracker/Hacker, Forever-exclusive weapon types the rank-18
+    reward pool never had in vanilla Classic, so no pvp-kind row was
+    ever built to carry them) have NO pvp source at all for
+    `vendorInheritsPvpRankGate` (Go, data.go) to inherit Rank/Faction
+    from, which is exactly what let Alliance's own band-60 High
+    Warlord's Pig Poker (a HORDE-only item, Sergeant Thunderhorn's
+    matching gap) turn up as a real, uncapped, ungated Alliance pick in
+    this lane's own regen check.
+
+    This backfills each such item into the SAME faction+rank bucket
+    every one of the vendor's OTHER items (the ones a real pvp source
+    already names) already landed in -- unanimous only, the same rule
+    `vendor_npc_factions` already applies for faction itself: a vendor
+    whose own known items span more than one rank resolves nothing (its
+    own missing items are left alone, not guessed at, tenet 8). Runs
+    AFTER the main per-item faction split above, using the split
+    result's own `sources` list directly (no re-run of the classic-db/
+    title resolution needed - the vendor row's OWN `items` list off
+    loot.json already carries every id it sells, split or not).
+    """
+    item_rank: dict[int, int] = {}
+    for s in sources:
+        if s.kind == "pvp" and s.rank is not None:
+            for item_id in s.items or []:
+                item_rank.setdefault(item_id, s.rank)
+
+    vendor_sources = [s for s in sources if s.kind == "vendor" and s.npc_id in npc_factions]
+    npc_rank: dict[int, int] = {}
+    for s in vendor_sources:
+        ranks = {item_rank[i] for i in (s.items or []) if i in item_rank}
+        if len(ranks) == 1:
+            npc_rank[s.npc_id] = ranks.pop()
+
+    additions: dict[tuple[int, Faction], set[int]] = defaultdict(set)
+    for s in vendor_sources:
+        rank = npc_rank.get(s.npc_id)
+        if rank is None:
+            continue
+        faction = npc_factions[s.npc_id]
+        for item_id in s.items or []:
+            if item_id not in item_rank:
+                additions[(rank, faction)].add(item_id)
+
+    if not additions:
+        return sources, 0
+
+    backfilled = 0
+    out: list[LootSource] = []
+    for s in sources:
+        extra = None
+        if s.kind == "pvp" and s.rank is not None and s.faction is not None:
+            extra = additions.pop((s.rank, s.faction), None)
+        if extra:
+            backfilled += len(extra)
+            s = s.model_copy(update={"items": sorted(set(s.items or []) | extra)})
+        out.append(s)
+    # A (rank, faction) with backfill items but no existing split bucket
+    # to merge into (every one of the vendor's own items is itself new)
+    # is left in `additions` and dropped here rather than fabricated -
+    # this build has not hit that case (every quartermaster this lane
+    # checked already has at least one classic item anchoring its own
+    # bucket), and tenet 8 says an unanchored guess is worse than a gap.
+    return out, backfilled
+
+
 @dataclass(frozen=True)
 class PvpFactionStats:
     """Lane report counters for `split_pvp_sources_by_faction`: how many
     pvp item/rank pairs resolved via the classic-db vendor tier, how
-    many via the title fallback, and which item ids resolved via
-    neither (dropped from both split buckets)."""
+    many via the title fallback, how many a rank quartermaster's own
+    vendor row backfilled into a bucket no pvp source itself named them
+    in, and which item ids resolved via neither (dropped from both
+    split buckets)."""
 
     resolved_vendor: int = 0
     resolved_title: int = 0
+    backfilled_from_vendor: int = 0
     unresolved: tuple[int, ...] = ()
 
 
@@ -234,7 +332,24 @@ def split_pvp_sources_by_faction(
     sources: list[LootSource] = []
     for source in document.sources:
         if source.kind != "pvp":
-            sources.append(source)
+            # Fourth wow-player sweep, item 1: a rank quartermaster's own
+            # "vendor" row (Captain O'Neal, Sergeant Thunderhorn, ...)
+            # duplicates its matching "pvp" source's item list verbatim,
+            # but carries no faction of its own -- sim/cmd/leveling-bis's
+            # own vendorInheritsPvpRankGate (data.go) needs the vendor
+            # row's OWN known side to disambiguate which pvp source's
+            # Rank/Faction it should inherit whenever more than one pvp
+            # source could apply. npc_factions already resolved that side
+            # (module doc, two-tier resolution) for every rank
+            # quartermaster this build's classic-db dump covers, so it
+            # is written straight onto the vendor row here rather than
+            # re-derived a second time downstream.
+            if source.kind == "vendor" and source.npc_id in npc_factions:
+                sources.append(
+                    source.model_copy(update={"faction": npc_factions[source.npc_id]})
+                )
+            else:
+                sources.append(source)
             continue
         by_faction: dict[Faction, list[int]] = {"alliance": [], "horde": []}
         origin_for: dict[Faction, Literal["classic-db", "title"]] = {}
@@ -263,6 +378,7 @@ def split_pvp_sources_by_faction(
             items = sorted(by_faction[faction])
             if not items:
                 continue
+            title = rank_title(faction, source.rank) if source.rank is not None else None
             sources.append(
                 source.model_copy(
                     update={
@@ -271,6 +387,7 @@ def split_pvp_sources_by_faction(
                         "items": items,
                         "faction": faction,
                         "faction_source": origin_for[faction],
+                        "title": title,
                     }
                 )
             )
@@ -280,9 +397,17 @@ def split_pvp_sources_by_faction(
             len(unresolved),
             sorted(set(unresolved)),
         )
+    sources, backfilled = _backfill_vendor_items_into_pvp_buckets(sources, npc_factions)
+    if backfilled:
+        logger.info(
+            "pvp-faction: %d rank quartermaster item(s) had no pvp source of their own, "
+            "backfilled into their vendor's own faction+rank bucket",
+            backfilled,
+        )
     stats = PvpFactionStats(
         resolved_vendor=resolved_vendor,
         resolved_title=resolved_title,
+        backfilled_from_vendor=backfilled,
         unresolved=tuple(unresolved),
     )
     return document.model_copy(update={"sources": sources}), stats

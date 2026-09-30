@@ -208,6 +208,21 @@ export function resolveSourceCell(
   }
 
   if (slot.source_kind === 'vendor') {
+    // Fourth wow-player sweep, item 1/2: a rank quartermaster's own vendor row
+    // (Captain O'Neal, Sergeant Thunderhorn, ...) duplicates its matching pvp
+    // source's item list verbatim (sim/cmd/leveling-bis/data.go's own
+    // vendorInheritsPvpRankGate does the same inheritance server-side) -- when
+    // a pvp source ALSO names this item, the rank/title/faction line ("PvP
+    // rank 18 · Grand Marshal · Alliance") is what a player expects, never
+    // the bare quartermaster name a plain vendor lookup would show instead.
+    const pvpSource = findSource(loot.sources, 'pvp', itemId);
+    if (
+      pvpSource !== undefined &&
+      pvpSource.rank !== undefined &&
+      (pvpSource.faction === 'alliance' || pvpSource.faction === 'horde')
+    ) {
+      return { kind: 'pvp', rank: pvpSource.rank, faction: pvpSource.faction };
+    }
     const source = findSource(loot.sources, 'vendor', itemId);
     if (source === undefined) return fallback;
     // Some `vendor`-kind sources are really PvP rank rewards: the rank-16-through-18 sets

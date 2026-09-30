@@ -1009,7 +1009,15 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# Leveling BiS: %s\n\n", spec.Name)
 	fmt.Fprintf(&b, "Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane report for method, run times and gaps.\n\n")
-	b.WriteString("Forever unifies melee, ranged and spell hit into one stat, and likewise crit, one point higher on both tables at once (wowsims-forever's `proto/common.proto` StatHit/StatCrit, `data/pipeline/simdb/statmap.py`, `research/01-official-facts.md`) - a caster item carrying only Hit/Crit with no Intellect or Spell Power (Onyxia Tooth Pendant, Earthweave Cloak) still raises that caster's own spell hit and crit chance, and is a correct pick, not a scoring bug.\n\n")
+	// Caster sweep, bis-ranker-integrity-4 lane, item 3: this sentence
+	// used to name Earthweave Cloak as one of the two unified-crit
+	// examples, but the build's own item file no longer states that
+	// stat block for it (data/builds/1.60.1.70009/items/mage.json's own
+	// Earthweave Cloak carries agility/hit, no crit at all today) -
+	// worded generically instead of pinning it to whichever items
+	// happen to carry this shape in any one build, which a data refresh
+	// can freely change without making this sentence false.
+	b.WriteString("Forever unifies melee, ranged and spell hit into one stat, and likewise crit, one point higher on both tables at once (wowsims-forever's `proto/common.proto` StatHit/StatCrit, `data/pipeline/simdb/statmap.py`, `research/01-official-facts.md`) - a caster item carrying only Hit/Crit with no Intellect or Spell Power still raises that caster's own spell hit and crit chance, and is a correct pick, not a scoring bug.\n\n")
 
 	byFaction := map[string][]bandReport{}
 	var factions []string

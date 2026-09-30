@@ -110,6 +110,20 @@ const LOOT: LootFile & LootQuestsFile = {
       faction: 'horde',
       items: [110],
     },
+    // Fourth wow-player sweep, item 1/2: a rank quartermaster's own vendor
+    // row (Captain O'Neal) duplicates its matching pvp source's item list --
+    // item 102 is sold by BOTH, and the resolved cell must read as the pvp
+    // one (rank/title/faction), never the bare quartermaster name.
+    { id: 'vendor:12782', kind: 'vendor', name: "Captain O'Neal", items: [102] },
+    {
+      id: 'pvp:rank-18:alliance',
+      kind: 'pvp',
+      name: 'Rank 18 (Alliance)',
+      rank: 18,
+      faction: 'alliance',
+      title: 'Grand Marshal',
+      items: [102],
+    },
   ],
   quests: {
     '70': [
@@ -218,6 +232,16 @@ describe('resolveSourceCell', () => {
       'fallback',
     );
     expect(cell).toEqual({ kind: 'vendor', npc: 'Gorn One Eye' });
+  });
+
+  it('resolves a rank quartermaster vendor row to its pvp rank/faction, never the bare npc name', () => {
+    const cell = resolveSourceCell(
+      slot({ item_id: 102, source_kind: 'vendor' }),
+      'alliance',
+      LOOT,
+      'fallback',
+    );
+    expect(cell).toEqual({ kind: 'pvp', rank: 18, faction: 'alliance' });
   });
 
   it('resolves a rep item to the faction and standing', () => {

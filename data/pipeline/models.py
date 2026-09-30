@@ -314,6 +314,16 @@ class LootSource(BaseModel):
     #: reports should say the vendor did not corroborate this one.
     #: `None` for every other kind.
     faction_source: Literal["classic-db", "title"] | None = None
+    #: The in-game rank title (`pipeline.loot.pvp_faction.rank_title`),
+    #: for a `pvp` kind source only -- fourth wow-player sweep, item 2:
+    #: the bare bucket name ("Rank 9 (Alliance)") never named the
+    #: quartermaster's own title ("Master Sergeant"), which
+    #: `sim/cmd/leveling-bis` (Go, band.go's pvpSourceLabel) and the
+    #: web (`web/src/lib/bis/copy.ts`'s own mirrored table) both need to
+    #: publish "PvP rank 9 · Master Sergeant · Alliance" instead. `None`
+    #: for every other kind, and for a pvp source whose rank falls
+    #: outside the known 14-rank ladder (rank_title's own doc).
+    title: str | None = None
     bosses: list[LootBoss] | None = None
     trash: list[int] | None = None
     items: list[int] | None = None

@@ -231,6 +231,15 @@ function sourceLinesFor(itemId: number, loot: LootFile): string[] {
           ? bisCopy.pvpSourceLabel(source.rank, source.faction)
           : source.name;
       lines.push({ text, priority: 1, chance: undefined, order: order++ });
+    } else if (
+      source.kind === 'vendor' &&
+      loot.sources.some((s) => s.kind === 'pvp' && itemsOfSource(s).includes(itemId))
+    ) {
+      // Fourth wow-player sweep, item 2: a rank quartermaster's own vendor row
+      // duplicates its matching pvp source's item list verbatim -- skip the
+      // redundant bare-name line ("Captain O'Neal") when the pvp branch above
+      // already names this item with its real rank/title/faction line, rather
+      // than showing both for the same purchase.
     } else {
       lines.push({ text: source.name, priority: 1, chance, order: order++ });
     }

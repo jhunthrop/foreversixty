@@ -106,6 +106,44 @@ func collectSpellIDs(v any, out map[int]bool) {
 	}
 }
 
+// shootSpellID is Shoot's own spell id (data/builds/1.60.1.70009/
+// spellconst/*.json: every class's spellconst carries the same single,
+// unranked entry) - the client's generic ranged-weapon autoshot every
+// class can use, not a class ability. Confirmed present, at this exact
+// id, in every caster APL that actually wand-weaves (mage-arcane/-fire/
+// -frost, priest-shadow, warlock-affliction/-demonology/-destruction)
+// and absent from shaman-elemental's and druid-balance's own APLs -
+// bis-ranker-integrity-4 lane, caster sweep item 2: those two specs'
+// rotations never cast it, so their ranged slot gets no more credit for
+// a wand's raw DPS than their main_hand/off_hand do for a dagger's.
+const shootSpellID = 5019
+
+// aplRotationCastsShoot reports whether data/curated/apl/<spec>.json's
+// own rotation casts Shoot anywhere in its tree - collectSpellIDs
+// (above) walks the same prepullActions+priorityList structure
+// aplRotationRequiresDagger already does, so a spec that wand-weaves
+// via a ranked or conditional Shoot line is caught the same tolerant
+// way. A spec with no apl file at all reports false, nil, matching
+// aplRotationRequiresDagger's own doc for exactly the same reason: a
+// spec with no rotation yet must still rank, just without this credit.
+func aplRotationCastsShoot(repoRoot, spec string) (bool, error) {
+	path := filepath.Join(repoRoot, "data", "curated", "apl", spec+".json")
+	b, err := os.ReadFile(path)
+	if err != nil {
+		if errors.Is(err, fs.ErrNotExist) {
+			return false, nil
+		}
+		return false, err
+	}
+	var doc any
+	if err := json.Unmarshal(b, &doc); err != nil {
+		return false, err
+	}
+	ids := map[int]bool{}
+	collectSpellIDs(doc, ids)
+	return ids[shootSpellID], nil
+}
+
 // daggerSubclassID is the client's own ItemSubclassWeapon id for
 // Dagger (data/builds/1.60.1.70009/items.json: every item this build
 // calls a dagger by name carries subclass_id 15).

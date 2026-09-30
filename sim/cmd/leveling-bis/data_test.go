@@ -283,6 +283,146 @@ func TestLoadLootIndexVendorInheritsPvpRank(t *testing.T) {
 	}
 }
 
+// TestLoadLootIndexVendorInheritsPvpFactionSideAndLabel is the fourth
+// wow-player sweep's own item 1 (real production shape, post pvp-
+// faction lane's rename): loot.json's own pvp:rank-18:alliance carries
+// the split faction and this rank's title, and Captain O'Neal's vendor
+// row shares the same item id - the vendor row must inherit BOTH Rank
+// and Side (not just Rank, which is all the earlier fix checked), and
+// its own Label must become the "PvP rank N · Title · Faction" line
+// (item 2), never the bare quartermaster name.
+func TestLoadLootIndexVendorInheritsPvpFactionSideAndLabel(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "vendor:12782", "kind": "vendor", "name": "Captain O'Neal", "items": [18873]},
+			{"id": "pvp:rank-18:alliance", "kind": "pvp", "name": "Rank 18 (Alliance)",
+			 "rank": 18, "faction": "alliance", "title": "Grand Marshal", "items": [18873]}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	var vendorRow *itemSource
+	for i, s := range idx[18873] {
+		if s.Kind == "vendor" {
+			vendorRow = &idx[18873][i]
+		}
+	}
+	if vendorRow == nil {
+		t.Fatalf("idx[18873] = %+v, want a vendor row", idx[18873])
+	}
+	if vendorRow.Rank != 18 || vendorRow.Side != "alliance" {
+		t.Errorf("Captain O'Neal's vendor row = %+v, want Rank 18, Side alliance", vendorRow)
+	}
+	wantLabel := "PvP rank 18 · Grand Marshal · Alliance"
+	if vendorRow.Label != wantLabel {
+		t.Errorf("Captain O'Neal's vendor row Label = %q, want %q", vendorRow.Label, wantLabel)
+	}
+	// This lane's brief, item 1's own test ask: "an alliance rank-14
+	// weapon under a Horde quartermaster row must be unobtainable for
+	// Horde and capped out of default picks for Alliance." The inherited
+	// Side (now "alliance", not "" as the pre-fix bug left it) is what
+	// makes the first half true; pvpRankExceedsCap(pvpRankCap == 10) on
+	// the inherited Rank (18) is what makes the second half true.
+	if sourceObtainable(*vendorRow, 60, "horde", "") {
+		t.Errorf("vendor row with inherited Side %q must be UNobtainable for horde", vendorRow.Side)
+	}
+	if !sourceObtainable(*vendorRow, 60, "alliance", "") {
+		t.Errorf("vendor row with inherited Side %q must be obtainable for its own faction", vendorRow.Side)
+	}
+	if !pvpRankExceedsCap(*vendorRow) {
+		t.Errorf("vendor row with inherited Rank %d must exceed pvpRankCap (%d), capping it out of the default pick", vendorRow.Rank, pvpRankCap)
+	}
+}
+
+// TestLoadLootIndexVendorInheritsPvpRankAmbiguousFactionUsesVendorsOwnSide
+// is the pathological case this lane's brief calls out: an alliance
+// rank-14 (ladder position) weapon somehow shares its classic item id
+// with a Horde vendor row too (a data anomaly, not something today's
+// build actually produces - verified against build 1.60.1.70009's own
+// loot.json directly). The vendor row's own known side (pipeline.loot.
+// pvp_faction's npc-faction resolution, carried as lootSource.Faction)
+// must decide which of the two same-id pvp sources it inherits from,
+// rather than the first one found.
+func TestLoadLootIndexVendorInheritsPvpRankAmbiguousFactionUsesVendorsOwnSide(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "vendor:horde-qm", "kind": "vendor", "name": "Horde Quartermaster",
+			 "faction": "horde", "items": [99001]},
+			{"id": "pvp:rank-18:alliance", "kind": "pvp", "name": "Rank 18 (Alliance)",
+			 "rank": 18, "faction": "alliance", "title": "Grand Marshal", "items": [99001]},
+			{"id": "pvp:rank-18:horde", "kind": "pvp", "name": "Rank 18 (Horde)",
+			 "rank": 18, "faction": "horde", "title": "High Warlord", "items": [99001]}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	var vendorRow *itemSource
+	for i, s := range idx[99001] {
+		if s.Kind == "vendor" {
+			vendorRow = &idx[99001][i]
+		}
+	}
+	if vendorRow == nil {
+		t.Fatalf("idx[99001] = %+v, want a vendor row", idx[99001])
+	}
+	if vendorRow.Side != "horde" || vendorRow.Title != "High Warlord" {
+		t.Errorf("Horde Quartermaster's vendor row = %+v, want Side horde, Title High Warlord (matched by the vendor's own known side, not the first pvp source found)", vendorRow)
+	}
+}
+
+// TestLoadLootIndexVendorInheritsPvpRankLeavesAmbiguousUnknownSideAlone
+// pins the "left out, never shown as fact" half of the same rule: when
+// two same-id pvp sources exist and the vendor row's OWN side is
+// unknown (no Faction pipeline.loot.pvp_faction could resolve), nothing
+// is guessed - the vendor row keeps whatever Rank/Side it already had
+// (none, in this fixture).
+func TestLoadLootIndexVendorInheritsPvpRankLeavesAmbiguousUnknownSideAlone(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "vendor:unknown", "kind": "vendor", "name": "Unresolved Vendor", "items": [99002]},
+			{"id": "pvp:rank-18:alliance", "kind": "pvp", "name": "Rank 18 (Alliance)",
+			 "rank": 18, "faction": "alliance", "items": [99002]},
+			{"id": "pvp:rank-18:horde", "kind": "pvp", "name": "Rank 18 (Horde)",
+			 "rank": 18, "faction": "horde", "items": [99002]}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	var vendorRow *itemSource
+	for i, s := range idx[99002] {
+		if s.Kind == "vendor" {
+			vendorRow = &idx[99002][i]
+		}
+	}
+	if vendorRow == nil {
+		t.Fatalf("idx[99002] = %+v, want a vendor row", idx[99002])
+	}
+	if vendorRow.Rank != 0 || vendorRow.Side != "" {
+		t.Errorf("Unresolved Vendor's row = %+v, want Rank 0, Side \"\" (left alone, not guessed)", vendorRow)
+	}
+}
+
 // This lane's brief, item 3's own named case: Atiesh's own quest (id
 // 9270) is a "kind": "quest" loot.json row, which the general
 // raid-source Opens gate never sees at all (that loop skips "quest"
