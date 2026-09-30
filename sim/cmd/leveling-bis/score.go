@@ -80,14 +80,54 @@ func statWeight(stat string, weights map[string]float64) float64 {
 // parameter exists so a future ranged-vs-melee split in the engine's
 // own AttackPowerPerDPS does not require changing this function's
 // signature.
-func score(c candidate, slot string, weights map[string]float64) float64 {
+//
+// referenceDPSPerPoint is runWeights' own second return (simrun.go,
+// bandReport.ReferenceDPSPerPoint's own source) - this lane's brief,
+// item 1: "does a wand's/weapon's damage count for casters the way
+// weaponScore counts it for melee?" It did not. weaponAPStat's
+// conversion above only ever lands on "attack_power" or
+// "ranged_attack_power" - the two weight_stats entries every hunter/
+// melee/hybrid spec's own data/curated/specs.json row carries, and
+// NO caster spec (mage/priest/warlock/shaman-elemental/druid-balance)
+// carries EITHER (confirmed against specs.json directly: their own
+// weight_stats lists spell_power/intellect/crit/hit/spell_haste/
+// spell_penetration/<school>_power only), so weights[apStat] is
+// always the Go zero value for them and this term was always exactly
+// 0 - not a data gap on any one item, a structural one in score()
+// itself: a caster's weapon slot had NO path for its damage to count
+// at all, confirmed by wowsims-forever's own sim/core/wand.go/
+// sim/mage/shoot.go doc comments ("wand damage in Classic never
+// scales off AP... a mage with a wand equipped dealt zero wand damage
+// until [Shoot was modeled]") - wand/melee weapon damage for a caster
+// is flat, unscaled output, never an attack-power-derived quantity,
+// so no weight_stats entry could ever give it one even if added.
+//
+// The fix: when the slot's own AP-based weight is zero (every caster,
+// and any melee/hybrid item whose AP weight the run measured as
+// exactly zero or insignificant - effectiveWeights already zeroed a
+// non-positive one before this function ever sees it), fall back to
+// treating the weapon's flat DPS as flat DPS: dividing it by
+// referenceDPSPerPoint converts it into this band's own score unit
+// (reference-stat points) directly, the same unit conversion
+// buildAlternatives (report.go) already applies in the other
+// direction (score * referenceDPSPerPoint -> DPS) - a caster's plain
+// damage output is exactly as real a DPS contribution as a melee
+// spec's attack power, it simply never had a weight_stats entry to
+// convert through. referenceDPSPerPoint <= 0 (every test that does
+// not pass a real one) leaves this a no-op, matching the old
+// behaviour exactly.
+func score(c candidate, slot string, weights map[string]float64, referenceDPSPerPoint float64) float64 {
 	total := 0.0
 	for stat, amount := range c.Stats {
 		total += amount * statWeight(stat, weights)
 	}
 	if c.DPS > 0 {
 		if apStat, ok := weaponAPStat[slot]; ok {
-			total += c.DPS * attackPowerPerDPS * weights[apStat]
+			if apWeight := weights[apStat]; apWeight > 0 {
+				total += c.DPS * attackPowerPerDPS * apWeight
+			} else if referenceDPSPerPoint > 0 {
+				total += c.DPS / referenceDPSPerPoint
+			}
 		}
 	}
 	return total

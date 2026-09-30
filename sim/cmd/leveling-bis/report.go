@@ -17,14 +17,31 @@ import (
 // slotRow is one slot's line in a band's report: the JSON and the
 // markdown table share this shape.
 type slotRow struct {
-	Slot       string  `json:"slot"`
-	ItemID     int     `json:"item_id,omitempty"`
-	ItemName   string  `json:"item_name,omitempty"`
-	Source     string  `json:"source,omitempty"`
-	SourceKind string  `json:"source_kind,omitempty"`
-	Score      float64 `json:"score,omitempty"`
-	Verified   bool    `json:"verified"`
-	SwapNote   string  `json:"swap_note,omitempty"`
+	Slot       string `json:"slot"`
+	ItemID     int    `json:"item_id,omitempty"`
+	ItemName   string `json:"item_name,omitempty"`
+	Source     string `json:"source,omitempty"`
+	SourceKind string `json:"source_kind,omitempty"`
+	// Score is score()'s own stat-weight estimate (bandReport.ScoreUnit,
+	// reference-stat points) - published ONLY for a pick score() itself
+	// decided. Omitted (0) whenever SimDPS below is set: this lane's
+	// brief, item 7 ("one number per row") - the two are different
+	// units a slot can be decided by, and publishing both under one
+	// name is what let a reviewer compare an unrelated unit across two
+	// rows and call it "the alternative outscores the verified pick"
+	// (163 slots, the melee sweep's own systemic finding).
+	Score float64 `json:"score,omitempty"`
+	// SimDPS is the real, engine-measured full-set DPS that decided
+	// THIS pick, published in place of Score whenever a real sim - not
+	// score() - made the call: rankTrinketSlot (every trinket, always),
+	// rankSlotWithEffects (a slot with an implemented-effect
+	// candidate), trySetCompletion (a slot a winning set trial
+	// replaced), or a swap promotion (verify.go's applySwaps). Sourced
+	// from pk.Item.MeasuredDPS (scored's own doc) - this lane's brief,
+	// item 7.
+	SimDPS   float64 `json:"sim_dps,omitempty"`
+	Verified bool    `json:"verified"`
+	SwapNote string  `json:"swap_note,omitempty"`
 	// EffectUnmodelled is true when the picked item carries an
 	// effect_text the engine does NOT implement (effectids_generated.go)
 	// -- this lane's brief, item 3: such a candidate is still scored on
@@ -81,12 +98,68 @@ type slotRow struct {
 	// see it) or for a slot a real swap sim actually promoted (SwapNote
 	// non-empty - a real, measured DPS gain, whatever score() says).
 	EmptyReason string `json:"empty_reason,omitempty"`
+	// LowValue is true for a weapon-slot pick (band.go's weaponSlots)
+	// score() still measured at exactly 0 even after every real fix
+	// this lane's brief, item 1 asks for - bis-ranker-integrity-2 lane:
+	// a weapon slot must never publish empty (EmptyReason above is
+	// never set for one), so a zero-scoring pick here is the best
+	// defensible fallback pick.go's own promoteLowValueWeapon could
+	// find (a candidate carrying one of the spec's own weight-stat
+	// keys, else the highest item level) rather than an honest
+	// "verified BiS", and the page should say so instead of implying
+	// this weapon was actually the strongest option among real
+	// contenders. Never set for a non-weapon slot, which still empties
+	// exactly as before (EmptyReason == noDPSValueReason).
+	LowValue bool `json:"low_value,omitempty"`
 }
 
 // noDPSValueReason is EmptyReason's own published value for this lane's
 // brief item 2 - a named constant so buildReport's own check and any
 // consumer testing for it read the identical string.
 const noDPSValueReason = "no_dps_value"
+
+// twoHandEquippedReason is EmptyReason's own value for an off_hand
+// slot with no pick at all because main_hand equipped a two-hander -
+// this lane's brief, item 8: every empty slot carries an
+// empty_reason, and this is the one case pick.go's own
+// enforceTwoHandOffHandInvariant/off_hand-under-two-hander rule
+// leaves behind (hunter-marksmanship band 40 alliance's own off_hand
+// published neither an item nor a reason before this fix).
+const twoHandEquippedReason = "two_hand_equipped"
+
+// noSourcedItemReason is EmptyReason's own value for a slot with no
+// pick at all because pick()'s own candidate list for it (bySlot,
+// after any spec-specific narrowing: dagger-only restriction,
+// pairing exclusion, ...) was genuinely empty - nothing sourced this
+// band could put in the slot, as distinct from noDPSValueReason
+// (something WAS sourced, it simply scored nothing) - this lane's
+// brief, item 8.
+const noSourcedItemReason = "no_sourced_item"
+
+// emptyReasonForNilPick names why slot has no pick at all (pk.Item ==
+// nil): pick()'s own loop (pick.go) only ever leaves a slot without
+// an Item because (a) main_hand equipped a two-hander, so off_hand is
+// deliberately left empty (pick()'s own "off_hand" case, and
+// enforceTwoHandOffHandInvariant's later re-assertion of the same
+// rule), or (b) this slot's own candidate list was empty once every
+// spec-specific narrowing pick() applies ran (a dagger-only
+// restriction leaving nothing, or a pairing exclusion removing the
+// one candidate that existed) - band.go's Coverage row for the slot
+// tells the two apart from a genuine "nothing was ever sourced here"
+// only imprecisely (case (b) can still show a nonzero Eligible/
+// Sourced count, since pick()'s own narrowing runs AFTER buildBandPool
+// computed Coverage), so both land on noSourcedItemReason: either way,
+// nothing usable existed for THIS spec's own picking pool, the same
+// practical fact a reader needs regardless of which of the two caused
+// it.
+func emptyReasonForNilPick(slot string, picks map[string]slotPick) string {
+	if slot == "off_hand" {
+		if mh := picks["main_hand"].Item; mh != nil && mh.TwoHand {
+			return twoHandEquippedReason
+		}
+	}
+	return noSourcedItemReason
+}
 
 // tieAlternative is one equally-scored item slotRow.Ties names.
 type tieAlternative struct {
@@ -104,18 +177,30 @@ const alternativesLimit = 3
 // alternativeRow is one candidate slotRow.Alternatives names beyond
 // the slot's own pick.
 type alternativeRow struct {
-	ItemID     int     `json:"item_id"`
-	ItemName   string  `json:"item_name"`
-	Score      float64 `json:"score"`
-	SourceKind string  `json:"source_kind"`
-	Source     string  `json:"source"`
+	ItemID     int    `json:"item_id"`
+	ItemName   string `json:"item_name"`
+	SourceKind string `json:"source_kind"`
+	Source     string `json:"source"`
+	// Score and ScoreDelta are score()'s own stat-weight estimate (in
+	// reference-stat points, bandReport.ScoreUnit) - published only for
+	// a row score() actually decided the ranking of. This lane's brief,
+	// item 7 ("one number per row"): the ONE row this slot's real sim
+	// actually measured (SimDPS, below - either the swap pass's own
+	// runner-up, or the demoted former pick once it lost that swap)
+	// omits both, the same way slotRow.Score omits itself for a
+	// sim-decided pick - a reader comparing THIS row's Score against
+	// another slot's score()-decided row was the exact "alternative
+	// outscores the verified pick" confusion the melee sweep's own
+	// systemic finding #14/#24 named (163 slots): the two numbers were
+	// never in the same unit to begin with.
+	Score float64 `json:"score,omitempty"`
 	// ScoreDelta is Score minus the pick's own published Score, in the
 	// band's score unit (score.go's weighted-stat-plus-weapon-dps
 	// total) - the raw number DPSDelta below is derived from, kept
 	// here so a consumer that wants the un-converted figure still has
 	// it. Exactly 0 for a tie (this row came from pk.Ties, whose whole
 	// definition is "scored identically to the pick").
-	ScoreDelta float64 `json:"score_delta"`
+	ScoreDelta float64 `json:"score_delta,omitempty"`
 	// DPSDelta is ScoreDelta converted to real DPS (ScoreDelta *
 	// bandReport.ReferenceDPSPerPoint) - owner review, tenet 8
 	// (2026-09-29): the first cut of this field published the raw
@@ -158,6 +243,18 @@ type alternativeRow struct {
 	// look like the better fallback. Omitted (false) for every other
 	// row - a score estimate this command never simmed at all.
 	Verified bool `json:"verified,omitempty"`
+	// SimDPS is this row's own real, engine-measured full-set DPS -
+	// set only on the one Verified row above (this lane's brief, item
+	// 7: "an alternative that was actually simmed" carries sim_dps,
+	// same as a sim-decided pick does). swapAlternativeMeasuredDPS
+	// (below) is the one place this is computed: sw.SwapDPS when this
+	// row is still just the tested runner-up (!sw.Beat), or
+	// sw.BaselineDPS when this row is the demoted FORMER pick
+	// (sw.Beat promoted the other item into pk.Item, so THIS row's own
+	// measured value is the number that used to be the baseline).
+	// Omitted (0) for every unverified row, exactly like Score/
+	// ScoreDelta are omitted for this one.
+	SimDPS float64 `json:"sim_dps,omitempty"`
 }
 
 // buildAlternatives is slotRow.Alternatives' own builder: pk.Ties
@@ -280,6 +377,17 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 			if out[i].ItemID == pk.RunnerUp.ID {
 				out[i].DPSDelta = measured
 				out[i].Verified = true
+				// This lane's brief, item 7: the one row a real sim
+				// actually measured publishes that measurement (SimDPS),
+				// not score()'s stat estimate - Score/ScoreDelta are
+				// cleared for exactly the same reason slotRow.Score is
+				// cleared for a sim-decided pick (buildReport, below):
+				// the two units are not comparable, and publishing both
+				// under unlabelled names is what let a reviewer compare
+				// them directly and call it a ranking bug.
+				out[i].SimDPS = swapAlternativeMeasuredDPS(*sw)
+				out[i].Score = 0
+				out[i].ScoreDelta = 0
 				break
 			}
 		}
@@ -303,16 +411,49 @@ func buildAlternatives(pk slotPick, slot string, list []scored, picks map[string
 // "runner-up" once sw.Beat, but never re-labels these two numbers, so
 // the item that is NOT the currently-published pick owns BaselineDPS
 // when sw.Beat promoted the other one into the pick, and owns SwapDPS
-// otherwise. Either way this is "the other item's measured DPS minus
-// the pick's own measured DPS", negative whenever the pick's own real
-// DPS is the higher of the two (always true when sw.Beat, since Beat
-// means the promoted item's SwapDPS beat the demoted item's
-// BaselineDPS; usually true, within swapMargin, when !sw.Beat too).
+// otherwise. Either way this starts as "the other item's measured DPS
+// minus the pick's own measured DPS", negative whenever the pick's own
+// real DPS is the higher of the two - always true when sw.Beat
+// (Beat means the promoted item's SwapDPS beat the demoted item's
+// BaselineDPS by more than swapMargin), but NOT always true when
+// !sw.Beat: swapMargin (verify.go) deliberately keeps the scored pick
+// on a runner-up that measured HIGHER but not by enough to clear the
+// noise margin (verify.go's own Serpent's Shoulders/Mantle of Honor
+// example, 78.7 vs 78.6), which left this branch computing a genuinely
+// positive SwapDPS-BaselineDPS and publishing it as a "verified"
+// alternative's dps_delta - the exact contract violation the
+// controller's own review named (bis-ranker-integrity-2 lane, item 9:
+// "every alternative's dps_delta <= 0 after the swap stage, verified
+// or not"; 55 slots across ret/feral/enhancement, the same item pair
+// flipping sign between factions on a coin-flip-sized margin). Capped
+// at 0 here for exactly that case: a runner-up that did not clear the
+// promotion bar is reported as "at best a tie", never as a positive,
+// sim-measured win the pick was not actually given.
 func swapMeasuredDelta(sw swapResult) float64 {
 	if sw.Beat {
 		return sw.BaselineDPS - sw.SwapDPS
 	}
-	return sw.SwapDPS - sw.BaselineDPS
+	delta := sw.SwapDPS - sw.BaselineDPS
+	if delta > 0 {
+		return 0
+	}
+	return delta
+}
+
+// swapAlternativeMeasuredDPS is the ALTERNATIVE row's own measured
+// full-set DPS from the same swap sim swapMeasuredDelta reads - this
+// lane's brief, item 7. The alternative row is always "the OTHER
+// item", never the currently-published pick (swapMeasuredDelta's own
+// doc explains why): when sw.Beat, that other item is the DEMOTED
+// former pick, whose own measured value is sw.BaselineDPS (it was the
+// baseline the swap was measured against); when !sw.Beat, that other
+// item is still just the tested runner-up, whose own measured value
+// is sw.SwapDPS.
+func swapAlternativeMeasuredDPS(sw swapResult) float64 {
+	if sw.Beat {
+		return sw.BaselineDPS
+	}
+	return sw.SwapDPS
 }
 
 // bandReport is one band's whole answer for one faction: the pick per
@@ -358,7 +499,21 @@ type bandReport struct {
 	// 0.14 DPS per point)" instead of publishing a bare, unitless
 	// ratio with nothing saying what "1" means.
 	ReferenceDPSPerPoint float64 `json:"reference_dps_per_point"`
+	// ScoreUnit documents slotRow.Score/alternativeRow.Score's own unit
+	// for every consumer of this JSON - this lane's brief, item 7:
+	// "publish score ONLY where it is the stat-weight estimate in
+	// reference-stat points, and document that in the JSON". Always
+	// scoreUnitReferenceStatPoints today (score.go has exactly one
+	// scoring function); a constant field rather than a bare doc
+	// comment because a future second scoring unit must not silently
+	// leave old JSON ambiguous about which one an already-written file
+	// used.
+	ScoreUnit string `json:"score_unit"`
 }
+
+// scoreUnitReferenceStatPoints is bandReport.ScoreUnit's only value
+// today - see that field's own doc.
+const scoreUnitReferenceStatPoints = "reference_stat_points"
 
 type weightRow struct {
 	Stat   string  `json:"stat"`
@@ -414,10 +569,32 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 	for _, slot := range slotOrder {
 		pk := picks[slot]
 		row := slotRow{Slot: slot}
+		if pk.Item == nil {
+			// This lane's brief, item 8: every empty slot carries an
+			// empty_reason - before this, pick()'s own "off_hand under a
+			// two-hander" case (and any slot whose own candidate list
+			// was genuinely empty) published a bare {"slot": "off_hand"}
+			// with no reason at all, the second "nothing here" shape the
+			// page had alongside noDPSValueReason's own (hunter-
+			// marksmanship band 40 alliance's own off_hand, named
+			// directly in the brief).
+			row.EmptyReason = emptyReasonForNilPick(slot, picks)
+		}
 		if pk.Item != nil {
 			row.ItemID = pk.Item.ID
 			row.ItemName = pk.Item.Name
 			row.Score = pk.Item.Score
+			// This lane's brief, item 7: a candidate a real sim actually
+			// measured (MeasuredDPS > 0 - trinkets.go/rank.go/sets.go's
+			// own tournaments, or a swap promotion below) publishes that
+			// measurement instead of score()'s stat estimate - never
+			// both, so a reader cannot compare this row's Score against
+			// another row's Score across two different units.
+			simDecided := pk.Item.MeasuredDPS > 0
+			if simDecided {
+				row.SimDPS = pk.Item.MeasuredDPS
+				row.Score = 0
+			}
 			row.EffectUnmodelled = pk.Item.EffectText != "" && !hasImplementedEffect(pk.Item.candidate)
 			for _, tie := range pk.Ties {
 				row.Ties = append(row.Ties, tieAlternative{ItemID: tie.ID, ItemName: tie.Name})
@@ -446,16 +623,41 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 					realSimPromotion = true
 				}
 			}
-			// This lane's brief, item 2: a slot score() alone decided
-			// (never touched by rankTrinketSlot's own real-sim tournament,
-			// and never redeemed by an unmodelled effect or a real swap
-			// promotion) whose winning candidate still scored exactly 0
-			// contributes nothing this spec's own weights can measure at
-			// all - publish the slot empty rather than a "verified" pick
-			// that is really just the least-bad of several worthless
-			// items (Sentinel's/Scout's Medallion, Agility+Stamina, on
-			// every caster spec's own band-20 neck before this fix).
-			if row.Score == 0 && slot != "trinket1" && slot != "trinket2" && !row.EffectUnmodelled && !realSimPromotion {
+			// This lane's brief, item 2 (original), narrowed by
+			// bis-ranker-integrity-2's own items 1 and 4: a slot score()
+			// alone decided (never touched by rankTrinketSlot's own
+			// real-sim tournament, and never redeemed by an unmodelled
+			// effect or a real swap promotion) whose winning candidate
+			// still scored exactly 0 contributes nothing this spec's own
+			// weights can measure at all.
+			//
+			// A trinket is exempted only when it carries an EffectText -
+			// score() cannot value ANY trinket's stats meaningfully
+			// (trinkets.go's own doc), but a trinket with a real effect
+			// (modelled or not) still has unquantified value score()
+			// never claimed to see, unlike a genuinely bare stat-stick
+			// trinket (Rune of Perfection: spell penetration + stamina,
+			// neither weighted by warrior-arms; Rune of Duty: pure
+			// resistance) which this lane's brief, item 4 calls exactly
+			// as zero-value as Sentinel's/Scout's Medallion was.
+			//
+			// A weapon slot (band.go's weaponSlots) is NEVER emptied this
+			// way at all - this lane's brief, item 1: "a weapon slot
+			// should essentially never be zero value... hiding the slot
+			// entirely is a worse failure mode". pick.go's own
+			// promoteLowValueWeapon already chose the best defensible
+			// fallback among this slot's own zero-scoring candidates
+			// (one carrying a weight stat, else the highest item level);
+			// this just flags that fallback honestly via LowValue instead
+			// of blanking the row.
+			trinketEffectExempt := (slot == "trinket1" || slot == "trinket2") && pk.Item.EffectText != ""
+			switch {
+			case row.Score != 0 || row.EffectUnmodelled || realSimPromotion || trinketEffectExempt || simDecided:
+				// Not zero-value at all, or redeemed by one of the
+				// existing exemptions above - the row stands as computed.
+			case weaponSlots[slot]:
+				row.LowValue = true
+			default:
 				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason}
 			}
 		}
@@ -514,6 +716,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 		VerifyErrors:         verifyErrors,
 		Coverage:             coverage,
 		ReferenceDPSPerPoint: referenceDPSPerPoint,
+		ScoreUnit:            scoreUnitReferenceStatPoints,
 	}
 }
 
@@ -631,6 +834,7 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 	var b strings.Builder
 	fmt.Fprintf(&b, "# Leveling BiS: %s\n\n", spec.Name)
 	fmt.Fprintf(&b, "Prototype output of `sim/cmd/leveling-bis` (lane `bis-proto`). See the lane report for method, run times and gaps.\n\n")
+	b.WriteString("Forever unifies melee, ranged and spell hit into one stat, and likewise crit, one point higher on both tables at once (wowsims-forever's `proto/common.proto` StatHit/StatCrit, `data/pipeline/simdb/statmap.py`, `research/01-official-facts.md`) - a caster item carrying only Hit/Crit with no Intellect or Spell Power (Onyxia Tooth Pendant, Earthweave Cloak) still raises that caster's own spell hit and crit chance, and is a correct pick, not a scoring bug.\n\n")
 
 	byFaction := map[string][]bandReport{}
 	var factions []string

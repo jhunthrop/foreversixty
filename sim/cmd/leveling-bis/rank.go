@@ -145,9 +145,17 @@ func rankSlotWithEffects(runner engineRunner, spec specInfo, race, classSlug str
 	sort.SliceStable(results, func(i, j int) bool { return results[i].dps > results[j].dps })
 
 	best := results[0].item
+	// This lane's brief, item 7: this tournament ran a real sim (this
+	// function's own precondition, len(candidates) >= 2), so the slot's
+	// decision is sim-based even when the plain score()-based pick
+	// happened to win its own fair fight - MeasuredDPS (scored's own
+	// doc) is what tells buildReport (report.go) to publish this row's
+	// real DPS instead of score()'s stat estimate.
+	best.MeasuredDPS = results[0].dps
 	sp := slotPick{Item: &best}
 	if len(results) > 1 {
 		runnerUp := results[1].item
+		runnerUp.MeasuredDPS = results[1].dps
 		sp.RunnerUp = &runnerUp
 	}
 	out[slot] = sp

@@ -320,7 +320,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
 
 		for _, f := range factions {
-			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights)
+			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, referenceDPSPerPoint)
 			bySlot := candidatesBySlot(pool.Scored)
 			if requiresDagger {
 				// weapon_requirements.go's own doc: a mace or sword is a
@@ -335,7 +335,30 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				bySlot["main_hand"] = restrictToDaggers(bySlot["main_hand"])
 				bySlot["off_hand"] = restrictToDaggers(bySlot["off_hand"])
 			}
-			picks := pick(spec, bySlot)
+
+			// pickBySlot is bySlot's own candidates, further narrowed for
+			// the DECISION passes only (pick(), rankTrinketSlot,
+			// rankSlotWithEffects, trySetCompletion) - bySlot itself stays
+			// unfiltered because buildReport (below) reads it for
+			// buildAlternatives, and a PvP reward above band.go's
+			// pvpRankCap must still be able to appear there, labelled by
+			// rank, even though it must never be a DEFAULT pick (this
+			// lane's brief, item 3). promoteLowValueWeapon additionally
+			// reorders a weapon slot whose every candidate scored exactly
+			// 0 (pick.go's own doc; this lane's brief, item 1's second
+			// half) - reordering only ever changes which zero-scoring
+			// candidate wins a tie, so running it on bySlot too would be
+			// harmless, but pickBySlot is the one map every decision pass
+			// actually reads, so that is the only copy that needs it.
+			pickBySlot := make(map[string][]scored, len(bySlot))
+			for slot, list := range bySlot {
+				filtered := excludeAbovePvpRankCap(list)
+				if weaponSlots[slot] {
+					filtered = promoteLowValueWeapon(filtered, specInfo.WeightStats)
+				}
+				pickBySlot[slot] = filtered
+			}
+			picks := pick(spec, pickBySlot)
 
 			// Trinkets carry no scorable stats (score.go's own doc), so
 			// pick()'s score-based choice for trinket1/trinket2 is
@@ -347,7 +370,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			trinketStart := time.Now()
 			for _, slot := range []string{"trinket1", "trinket2"} {
 				var notes []string
-				picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, bySlot, slot)
+				picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, pickBySlot, slot)
 				for _, n := range notes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
@@ -360,9 +383,9 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// otherwise decide on stats alone gets a real verify pass
 			// against its own implemented-effect candidates.
 			effectStart := time.Now()
-			for _, slot := range slotsNeedingEffectVerification(bySlot) {
+			for _, slot := range slotsNeedingEffectVerification(pickBySlot) {
 				var notes []string
-				picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, bySlot, slot)
+				picks, notes = rankSlotWithEffects(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, pickBySlot, slot)
 				for _, n := range notes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}
@@ -373,7 +396,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// verifies ahead of the independently-scored picks (sets.go;
 			// this lane's brief, item 3's second half).
 			var setNotes []string
-			picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, bySlot)
+			picks, setNotes = trySetCompletion(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, pickBySlot)
 			for _, n := range setNotes {
 				log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 			}

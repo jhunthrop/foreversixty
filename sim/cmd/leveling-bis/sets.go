@@ -155,6 +155,16 @@ func trySetCompletion(runner engineRunner, spec specInfo, race, classSlug string
 		}
 		if beatsByMargin(dps, baselineDPS) {
 			notes = append(notes, fmt.Sprintf("set %d completion (%d pieces) beat the independently-scored picks: %.1f vs %.1f set DPS - adopted", setID, len(cands), dps, baselineDPS))
+			// This lane's brief, item 7: every piece this trial just won
+			// with is sim-decided, not score()-decided - MeasuredDPS
+			// (scored's own doc) is this trial's own measured full-set
+			// DPS (dps), the same number that just won the comparison
+			// above, so buildReport (report.go) publishes THAT instead
+			// of score()'s stat estimate for each of these pieces.
+			for _, c := range cands {
+				item := trial[c.slot].Item
+				item.MeasuredDPS = dps
+			}
 			out = trial
 			baselineDPS = dps
 		}

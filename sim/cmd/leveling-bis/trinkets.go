@@ -187,9 +187,17 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	sort.SliceStable(results, func(i, j int) bool { return results[i].dps > results[j].dps })
 
 	best := results[0].item
+	// This lane's brief, item 7: best/runnerUp's own MeasuredDPS
+	// (scored's own doc) records the real, per-candidate full-set DPS
+	// this very tournament measured - a trinket has no scorable stats
+	// at all (this file's own package doc), so score()'s Score field
+	// stays whatever near-zero value it always was; buildReport reads
+	// MeasuredDPS, not Score, to decide what this row publishes.
+	best.MeasuredDPS = results[0].dps
 	sp := slotPick{Item: &best}
 	if len(results) > 1 {
 		runnerUp := results[1].item
+		runnerUp.MeasuredDPS = results[1].dps
 		sp.RunnerUp = &runnerUp
 	}
 	out[slot] = sp

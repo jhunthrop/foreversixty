@@ -205,13 +205,68 @@ func TestLoadLootIndexCarriesOpensThrough(t *testing.T) {
 	}
 }
 
+// TestLoadLootIndexVendorInheritsPvpRank is the real shape this lane's
+// own dogfood run found regenerating band-60 weapons for item 1: loot.json
+// lists Grand Marshal's Stave (18873) under BOTH pvp:rank-18 (Rank 18)
+// AND vendor:12782 "Captain O'Neal" (no rank field of its own) - and
+// "vendor" outranks "pvp" in band.go's own sourceKindPriority, so
+// sourceFor always picks Captain O'Neal's rank-less row, silently
+// defeating pvpRankCap for every dual-listed item unless the vendor row
+// inherits Rank the same way it already inherits a rep source's
+// Standing (vendorInheritsRepStandingGate). An ordinary vendor with no
+// matching pvp source is untouched.
+func TestLoadLootIndexVendorInheritsPvpRank(t *testing.T) {
+	dir := t.TempDir()
+	lootJSON := `{
+		"sources": [
+			{"id": "vendor:12782", "kind": "vendor", "name": "Captain O'Neal", "items": [18873]},
+			{"id": "pvp:rank-18", "kind": "pvp", "name": "Rank 18", "rank": 18, "items": [18873]},
+			{"id": "vendor:1", "kind": "vendor", "name": "An Ordinary Vendor", "items": [999]}
+		],
+		"quests": {}
+	}`
+	if err := writeFile(t, filepath.Join(dir, "loot.json"), lootJSON); err != nil {
+		t.Fatal(err)
+	}
+	idx, _, err := loadLootIndex(dir, nil)
+	if err != nil {
+		t.Fatalf("loadLootIndex: %v", err)
+	}
+	var vendorRow *itemSource
+	for i, s := range idx[18873] {
+		if s.Kind == "vendor" {
+			vendorRow = &idx[18873][i]
+		}
+	}
+	if vendorRow == nil {
+		t.Fatalf("idx[18873] = %+v, want a vendor row", idx[18873])
+	}
+	if vendorRow.Rank != 18 {
+		t.Errorf("Captain O'Neal's vendor row Rank = %d, want 18 (inherited from pvp:rank-18)", vendorRow.Rank)
+	}
+	ordinary := idx[999]
+	if len(ordinary) != 1 || ordinary[0].Rank != 0 {
+		t.Errorf("idx[999] = %+v, want the ordinary vendor's Rank untouched at 0", ordinary)
+	}
+}
+
 // This lane's brief, item 3's own named case: Atiesh's own quest (id
 // 9270) is a "kind": "quest" loot.json row, which the general
 // raid-source Opens gate never sees at all (that loop skips "quest"
 // rows entirely) - raidLockedQuestOpens is the separate table that
 // catches it, and this test is the exact regression a future edit to
 // either table could otherwise reintroduce silently.
-func TestLoadLootIndexGatesAtieshsOwnRaidLockedQuest(t *testing.T) {
+// TestLoadLootIndexNoLongerHandGatesAtieshsQuest pins that
+// raidLockedQuestOpens (data.go) no longer carries a hand-picked entry
+// for Atiesh's own quest ids - this lane's brief, item 2: "replace the
+// hand list with a rule" (band.go's legendaryGatedLater, gated on the
+// candidate's own quality field) replaces it, one layer above this
+// function: loadLootIndex/sourceFor have no item quality to gate on at
+// all, so a quest reward's own itemSource.Opens is correctly empty
+// here now - see TestBuildBandPoolGatesEveryLegendaryRegardlessOfSourceKind
+// (band_test.go) for the actual gate, which buildBandPool applies
+// before sourceFor ever runs.
+func TestLoadLootIndexNoLongerHandGatesAtieshsQuest(t *testing.T) {
 	dir := t.TempDir()
 	lootJSON := `{
 		"sources": [],
@@ -227,11 +282,11 @@ func TestLoadLootIndexGatesAtieshsOwnRaidLockedQuest(t *testing.T) {
 		t.Fatalf("loadLootIndex: %v", err)
 	}
 	src, ok := idx[22589]
-	if !ok || len(src) != 1 || src[0].Opens != "later" {
-		t.Fatalf("idx[22589] = %+v, want one source with Opens \"later\"", src)
+	if !ok || len(src) != 1 || src[0].Opens != "" {
+		t.Fatalf("idx[22589] = %+v, want one source with Opens \"\" (unset - this layer never gates on quality)", src)
 	}
-	if _, ok := sourceFor(22589, 60, "alliance", "", idx); ok {
-		t.Fatal("sourceFor(22589, level 60) = ok, want ok=false: Atiesh's own quest is Naxxramas-locked")
+	if _, ok := sourceFor(22589, 60, "alliance", "", idx); !ok {
+		t.Fatal("sourceFor(22589, level 60) = not ok, want ok=true: sourceFor alone no longer gates Atiesh; buildBandPool's legendaryGatedLater does, from the candidate's own Quality")
 	}
 }
 

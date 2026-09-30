@@ -23,7 +23,7 @@ func TestEffectiveWeightsZeroesANegativeWeightRegardlessOfSignificance(t *testin
 	}
 
 	c := candidate{Stats: map[string]float64{"spirit": 40}}
-	if s := score(c, "wrist", got); s != 0 {
+	if s := score(c, "wrist", got, 0); s != 0 {
 		t.Errorf("score() with the item's only stat carrying a negative weight = %v, want 0, not negative", s)
 	}
 }
@@ -72,7 +72,7 @@ func TestEffectiveWeightsKeepsASignificantWeightUnchanged(t *testing.T) {
 
 	c := candidate{Stats: map[string]float64{"agility": 10}}
 	want := 10 * 2.05
-	if s := score(c, "wrist", got); s != want {
+	if s := score(c, "wrist", got, 0); s != want {
 		t.Errorf("score() with a significant weight = %v, want %v", s, want)
 	}
 }
@@ -111,7 +111,7 @@ func TestBandPoolNeverPublishesANegativeScoreFromANegativeWeight(t *testing.T) {
 		{ID: 1, Name: "Evergreen Gloves", RequiredLevel: 5, EffectiveRequiredLevel: 5, Stats: map[string]float64{"spirit": 40}, Slots: []string{"hands"}},
 	}
 	idx := lootIndex{1: {{Kind: "quest", Label: "A Quest"}}}
-	pool := buildBandPool(items, idx, "mage", 10, "alliance", weights)
+	pool := buildBandPool(items, idx, "mage", 10, "alliance", weights, 0)
 	if len(pool.Scored) != 1 {
 		t.Fatalf("len(pool.Scored) = %d, want 1", len(pool.Scored))
 	}
