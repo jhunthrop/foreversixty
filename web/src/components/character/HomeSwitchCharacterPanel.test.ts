@@ -51,4 +51,14 @@ describe('HomeSwitchCharacterPanel', () => {
     });
     expect(body.indexOf('Frostspine')).toBeLessThan(body.indexOf('Zulmara'));
   });
+
+  it('draws every row portrait as the same 36px ringed ClassCrest, never an avatar (review round 1 item 3)', () => {
+    const { body } = render(HomeSwitchCharacterPanel, {
+      props: { me: ME, currentKey: 'us/normal/zulmara', onswitch: () => {} },
+    });
+    expect(body).toContain('src="/icons/hd/crests/hunter.png"');
+    expect(body).toContain('src="/icons/hd/crests/mage.png"');
+    expect(body).toContain('src="/icons/hd/crests/warrior.png"');
+    expect((body.match(/width="36"/g) ?? []).length).toBe(3);
+  });
 });

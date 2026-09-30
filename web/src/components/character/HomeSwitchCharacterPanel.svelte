@@ -1,17 +1,24 @@
 <!-- web/src/components/character/HomeSwitchCharacterPanel.svelte -->
-<!-- Home rebuild spec §3.B.4: the signed-in hero's right column. Reuses
-     `CharacterSwitchList.svelte` -- "already exactly this list" per the spec -- rather than
-     forking it: the mock's own "N upgrades" trailing stat is the same not-yet-available gap
-     named in §3.B.2/§3.B.3 (no source joins a character's worn gear against a BiS list
-     yet), so every non-current row's trailing slot stays exactly what CharacterSwitchList
-     already draws (the "Switch" action) instead of inventing a number. Mounted by
-     HomeAccountPanel.svelte into index.astro's `home-switch-character-slot`, the same
-     dynamic-import-once-signed-in trick that island already uses for its own module, so a
-     signed-out page never fetches this component either. -->
+<!-- Home rebuild spec §3.B.4: the signed-in hero's right column. Review round 1 item 3:
+     every crest on the page is the same circular ringed ClassCrest, so this builds its own
+     row markup (name, descriptor, trailing action) around ClassCrest at 36px rather than
+     reusing CharacterSwitchList/CharacterRow's own CharacterPortrait (avatar-or-letter-
+     square) -- the mock's own row uses a class crest here too, never an avatar photo. The
+     "N upgrades" trailing stat the mock shows is the same not-yet-available gap named in
+     §3.B.2/§3.B.3 (no source joins a character's worn gear against a BiS list yet), so
+     every non-current row's trailing slot stays a plain "Switch" action instead of
+     inventing a number. Mounted by HomeAccountPanel.svelte into index.astro's
+     `home-switch-character-slot`, the same dynamic-import-once-signed-in trick that island
+     already uses for its own module, so a signed-out page never fetches this component
+     either. -->
 <script lang="ts">
   import type { Me, MeCharacter } from '../../lib/account/api';
-  import CharacterSwitchList from './CharacterSwitchList.svelte';
   import { homePanelCopy } from '../../lib/home-panel-copy';
+  import { currentCharacterCopy } from '../../lib/current-character-copy';
+  import { classColorVar } from '../../lib/report/format';
+  import { classSlugFromName } from '../../lib/report/tree-sizes';
+  import { homeHeroLevelRaceClassLine } from '../../lib/account/character-descriptor';
+  import { classCrestSrc } from '../../lib/class-crest';
 
   let {
     me,
@@ -38,5 +45,56 @@
       {homePanelCopy.addOneCharacter}
     </a>
   </div>
-  <CharacterSwitchList characters={ordered} {currentKey} {onswitch} descriptor="full" />
+  <ul class="flex flex-col" data-testid="current-character-bar-switch-list">
+    {#each ordered as character (character.key)}
+      <li
+        class="border-line-soft flex min-h-11 items-center gap-3 border-b py-2 text-[14px] last:border-b-0"
+        data-testid={`current-character-bar-switch-row-${character.key}`}
+      >
+        {#if character.class !== undefined}
+          <!-- The same circular ringed crest ClassCrest.astro renders (review round 1 item
+               3: every crest on the page reads the same way) -- inlined rather than
+               imported, since a Svelte component tree cannot render an Astro component. -->
+          <img
+            src={classCrestSrc(classSlugFromName(character.class))}
+            alt=""
+            width="36"
+            height="36"
+            loading="lazy"
+            decoding="async"
+            class="bg-raised shrink-0 rounded-full object-cover"
+            style={`box-shadow: 0 0 0 2px ${classColorVar(character.class)};`}
+          />
+        {:else}
+          <span
+            class="bg-raised border-line inline-block h-9 w-9 shrink-0 rounded-full border"
+            aria-hidden="true"
+          ></span>
+        {/if}
+        <span class="flex min-w-0 flex-1 flex-col">
+          <span
+            class="w-fit truncate [font-family:var(--font-display)] text-[14px] font-semibold"
+            style={`color: ${classColorVar(character.class)}`}
+          >
+            {character.name}
+          </span>
+          <span class="text-muted truncate text-[12px]">{homeHeroLevelRaceClassLine(character)}</span>
+        </span>
+        {#if character.key === currentKey}
+          <span class="text-muted text-[12px]" data-testid="current-character-bar-switch-current">
+            {currentCharacterCopy.switchCurrentMarker}
+          </span>
+        {:else}
+          <button
+            type="button"
+            class="text-nav hover:text-strong flex min-h-11 items-center px-2 text-[13px]"
+            data-testid={`current-character-bar-switch-${character.key}`}
+            onclick={() => onswitch(character)}
+          >
+            {currentCharacterCopy.switchAction}
+          </button>
+        {/if}
+      </li>
+    {/each}
+  </ul>
 </div>
