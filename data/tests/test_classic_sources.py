@@ -159,6 +159,9 @@ CREATE TABLE `quest_template` (
   `MinLevel` tinyint,
   `QuestLevel` smallint,
   `RequiredRaces` smallint,
+  `RequiredClasses` smallint,
+  `RequiredSkill` smallint,
+  `RequiredSkillValue` smallint,
   `RequiredMinRepFaction` smallint,
   `RequiredMinRepValue` mediumint,
   `Title` text,
@@ -174,9 +177,11 @@ CREATE TABLE `quest_template` (
   `RewItemId4` mediumint
 ) ENGINE=MyISAM;
 INSERT INTO `quest_template` VALUES
-  (53,40,44,77,0,0,'Sweet Amber',744,0,0,0,0,0,0,0,0,0),
-  (8,1,5,178,0,0,'A Rogues Deal',0,0,0,0,0,0,159,0,0,0),
-  (8573,60,60,255,609,42000,'Champion\\'s Battlegear',21180,0,0,0,0,0,0,0,0,0);
+  (53,40,44,77,0,0,0,0,0,'Sweet Amber',744,0,0,0,0,0,0,0,0,0),
+  (8,1,5,178,8,0,0,0,0,'A Rogues Deal',0,0,0,0,0,0,159,0,0,0),
+  (8573,60,60,255,0,0,0,609,42000,'Champion\\'s Battlegear',21180,0,0,0,0,0,0,0,0,0),
+  (8253,50,52,255,128,0,0,0,0,'Destroy Morphaz',20036,0,0,0,0,0,0,0,0,0),
+  (100,10,12,255,0,164,50,0,0,'Novice Smith',9999,0,0,0,0,0,0,0,0,0);
 """  # noqa: E501
 
 
@@ -429,6 +434,70 @@ def test_quest_reward_with_no_rep_requirement_leaves_both_fields_none():
     record = next(r for r in items[744] if r.kind == "quest_reward")
     assert record.quest.required_rep_faction is None
     assert record.quest.required_rep_standing is None
+
+
+def test_quest_reward_with_no_class_or_skill_requirement_leaves_them_none():
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    record = next(r for r in items[744] if r.kind == "quest_reward")
+    assert record.quest.classes is None
+    assert record.quest.profession is None
+    assert record.quest.skill is None
+
+
+def test_quest_reward_reads_required_classes_as_sorted_slugs():
+    """Eleventh wow-player sweep finding, day3 data-followups-7 lane,
+    2026-09-30: Fire Ruby (20036)'s own quest 8253 "Destroy Morphaz" is
+    mage-only (`RequiredClasses` 128)."""
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    record = next(r for r in items[20036] if r.kind == "quest_reward")
+    assert record.quest.quest_id == 8253
+    assert record.quest.classes == ["mage"]
+
+
+def test_quest_reward_required_classes_single_bit_matches_its_own_title():
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    record = next(r for r in items[159] if r.kind == "quest_reward")
+    assert record.quest.classes == ["rogue"]  # RequiredClasses 8, "A Rogues Deal"
+
+
+def test_quest_reward_reads_profession_and_skill_from_required_skill():
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    record = next(r for r in items[9999] if r.kind == "quest_reward")
+    assert record.quest.profession == "blacksmithing"
+    assert record.quest.skill == 50
+
+
+def test_classes_from_required_classes_zero_means_any_class():
+    assert cs._classes_from_required_classes(0) is None
+
+
+def test_classes_from_required_classes_multi_bit_sorts_every_admitted_slug():
+    # mage (128) | warlock (256)
+    assert cs._classes_from_required_classes(384) == ["mage", "warlock"]
+
+
+def test_classes_from_required_classes_unknown_bits_stay_none_not_invented():
+    # No bit here is one of this build's 9 playable ChrClasses.CLASS_MASK_BIT
+    # entries -- never fabricated as "excludes every class".
+    assert cs._classes_from_required_classes(1 << 20) is None
+
+
+def test_profession_from_required_skill_unrecognised_id_is_none():
+    assert cs._profession_from_required_skill(999999) is None
+
+
+def test_quest_classes_from_classic_sources_extracts_every_quest():
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    classes = cs.quest_classes_from_classic_sources(items)
+    assert classes[8253] == ["mage"]
+    assert classes[53] is None
+
+
+def test_quest_profession_from_classic_sources_only_covers_profession_quests():
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    professions = cs.quest_profession_from_classic_sources(items)
+    assert professions[100] == ("blacksmithing", 50)
+    assert 53 not in professions
 
 def test_excluded_reference_ids_catches_a_generic_pool_by_high_fan_out_even_without_the_marker():
     """id 60446 (the real dump's own "16 Slot Bag - NPC Levels: 48+",

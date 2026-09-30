@@ -33,7 +33,9 @@ from dataclasses import dataclass
 from pipeline.classic_quest_levels import item_level_proxy
 from pipeline.classic_sources import (
     ClassicDbSourceRecord,
+    quest_classes_from_classic_sources,
     quest_factions_from_classic_sources,
+    quest_profession_from_classic_sources,
     quest_turn_in_items_from_classic_sources,
 )
 from pipeline.classicdb_crafted import ClassicDbCraftedRecipe
@@ -1223,6 +1225,18 @@ def build_loot(
     quest_levels_by_id = quest_levels or {}
     item_sources_by_id = item_sources or {}
     item_faction_restrictions = item_factions(fork, build_items)
+    # Day3 data-followups-7 lane, 2026-09-30: the quest's own `classes`/
+    # `profession`+`skill` (`ClassicDbQuestInfo`'s own facts, both
+    # `RequiredClasses`/`RequiredSkill` columns this pipeline did not read
+    # before this lane) applied the SAME way `quest_factions` above
+    # already is -- once here, after every scrape's quest_detail has been
+    # folded in, so a class- or skill-gated quest is covered regardless
+    # of which one (fork, classic-db or wowhead) produced the item link.
+    # A quest id absent from either dict simply keeps whatever the
+    # freshly-built `QuestSource` already carries (`None`/`None`/`None`:
+    # neither the fork nor wowhead publishes either fact today).
+    quest_classes = quest_classes_from_classic_sources(classic_sources or {})
+    quest_professions = quest_profession_from_classic_sources(classic_sources or {})
     quest_detail = {
         item_id: [
             entry.model_copy(
@@ -1238,7 +1252,10 @@ def build_loot(
                             item_faction_restrictions,
                         ),
                         strict=True,
-                    )
+                    ),
+                    classes=quest_classes.get(entry.quest_id),
+                    profession=(quest_professions.get(entry.quest_id) or (None, None))[0],
+                    skill=(quest_professions.get(entry.quest_id) or (None, None))[1],
                 )
             )
             for entry in entries

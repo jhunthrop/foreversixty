@@ -159,7 +159,11 @@ _WEAPON_SKILL_LINE_NAME: dict[int, str] = {
 #: ChrClasses.ID -> its bit in SkillLineAbility/SkillRaceClassInfo's
 #: ClassMask (`1 << (ChrClasses.ID - 1)`, the same convention
 #: `pipeline.normalize.gear.build_class_items` uses for `AllowableClass`).
-_CLASS_MASK_BIT: dict[int, int] = {
+#: Public (day3 data-followups-7 lane, 2026-09-30): `pipeline.
+#: classic_sources._classes_from_required_classes` reuses this SAME
+#: id -> bit table to decode `quest_template.RequiredClasses`, another
+#: ChrClasses bitmask column, rather than hand-rolling a second one.
+CLASS_MASK_BIT: dict[int, int] = {
     1: 1,  # warrior
     2: 2,  # paladin
     3: 4,  # hunter
@@ -169,6 +173,24 @@ _CLASS_MASK_BIT: dict[int, int] = {
     8: 128,  # mage
     9: 256,  # warlock
     11: 1024,  # druid
+}
+
+#: ChrClasses.ID -> the site's class slug (`pipeline.normalize.classes.
+#: slugify` applied to the client's own `ChrClasses.Name_lang`), keyed
+#: the same way `CLASS_MASK_BIT` above is -- hardcoded rather than read
+#: from a client CSV because `pipeline.classic_sources._parse_quest_
+#: rewards` decodes `RequiredClasses` from the classic-db dump alone,
+#: with no client `ChrClasses.csv` row in reach at that point.
+CLASS_SLUG_BY_ID: dict[int, str] = {
+    1: "warrior",
+    2: "paladin",
+    3: "hunter",
+    4: "rogue",
+    5: "priest",
+    7: "shaman",
+    8: "mage",
+    9: "warlock",
+    11: "druid",
 }
 
 #: (ChrClasses.ID, Item.SubclassID) pairs `SkillLineAbility`'s `ClassMask`
@@ -219,10 +241,10 @@ def _derive_weapon_subclasses_from_client(raw: Path) -> dict[int, frozenset[int]
                 row["ClassMask"]
             )
 
-    derived: dict[int, set[int]] = {class_id: set() for class_id in _CLASS_MASK_BIT}
+    derived: dict[int, set[int]] = {class_id: set() for class_id in CLASS_MASK_BIT}
     for subclass_id, skill_id in _WEAPON_SKILL_LINE.items():
         mask = skill_class_mask.get(skill_id, 0)
-        for class_id, bit in _CLASS_MASK_BIT.items():
+        for class_id, bit in CLASS_MASK_BIT.items():
             if mask & bit and (class_id, subclass_id) not in _VESTIGIAL_CLIENT_BITS:
                 derived[class_id].add(subclass_id)
     return {class_id: frozenset(subclasses) for class_id, subclasses in derived.items()}

@@ -530,6 +530,26 @@ class QuestSource(BaseModel):
     #: need no reputation at all.
     required_rep_faction: int | None = None
     required_rep_standing: str | None = None
+    #: `pipeline.classic_sources.ClassicDbQuestInfo.classes` -- the sorted
+    #: class slugs allowed to accept this quest at all, `None` when the
+    #: quest is open to any class (the overwhelming majority). Day3
+    #: data-followups-7 lane, 2026-09-30: Fire Ruby (item 20036)'s own
+    #: quest 8253 "Destroy Morphaz" is mage-only, so `pipeline.loot.
+    #: sources.build_loot` applies this over every `QuestSource` it
+    #: assembles (same "quest's own primary-source fact wins, regardless
+    #: of which scrape produced the link" rule `faction` above already
+    #: follows) and `pipeline.audit.check_bis.check_bis` blocks a pick or
+    #: alternative whose only sources all exclude the spec's own class.
+    classes: list[str] | None = None
+    #: `pipeline.classic_sources.ClassicDbQuestInfo.profession`/`.skill` --
+    #: a profession (or secondary skill) this quest itself requires, when
+    #: classic-db's own `RequiredSkill` states one this pipeline
+    #: recognises. Not a per-class filter (a profession is learnable by
+    #: any class): a plain fact for the page to state ("Requires
+    #: Blacksmithing 250"), same "never invented, absent rather than
+    #: guessed" policy as `required_rep_faction` above.
+    profession: str | None = None
+    skill: int | None = None
 
 
 class LootFile(BaseModel):

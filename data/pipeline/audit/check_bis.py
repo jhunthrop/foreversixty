@@ -99,6 +99,37 @@ def _source_name_index(loot: dict) -> dict[str, set[int]]:
     return index
 
 
+def _quest_only_item_ids(loot: dict) -> set[int]:
+    """Every item id whose ONLY `loot.json` source bucket, across the
+    whole build, is the flat `quest` kind -- day3 data-followups-7 lane,
+    2026-09-30's own signal for `_class_excludes_every_quest` below: an
+    item with another, independently-verified source is never blocked
+    by what one quest's own `RequiredClasses` says."""
+    kinds: dict[int, set[str]] = {}
+    for source in loot.get("sources", []):
+        kind = source.get("kind", "")
+        ids = set(source.get("items") or []) | set(source.get("trash") or [])
+        for boss in source.get("bosses") or []:
+            ids.update(boss.get("items", []))
+        for item_id in ids:
+            kinds.setdefault(int(item_id), set()).add(kind)
+    return {item_id for item_id, item_kinds in kinds.items() if item_kinds == {"quest"}}
+
+
+def _class_excludes_every_quest(loot: dict, item_id: int, class_slug: str) -> bool:
+    """`True` when EVERY quest `loot.json`'s own `quests` map names for
+    `item_id` excludes `class_slug` (`QuestSource.classes` -- `None`
+    means any class, so a single entry with no restriction, or one that
+    admits the class, clears it). `False` (never blocks) for an item
+    absent from `quests` entirely."""
+    quests = loot.get("quests", {}).get(str(item_id))
+    if not quests:
+        return False
+    return all(
+        q.get("classes") is not None and class_slug not in q["classes"] for q in quests
+    )
+
+
 def _quest_floor(loot: dict, item_id: int, faction: str) -> int | None:
     """The level a character of `faction` must reach before ANY quest that
     rewards `item_id` counts as obtainable: the lowest QuestFloor across
@@ -135,6 +166,8 @@ def _check_pick(
     loot: dict,
     name_index: dict[str, set[int]],
     label: str,
+    class_slug: str,
+    quest_only_items: set[int],
 ) -> dict | None:
     item_id = pick["item_id"]
     result.checked += 1
@@ -147,6 +180,17 @@ def _check_pick(
             "for this spec's class",
         )
         return None
+    # Day3 data-followups-7 lane, 2026-09-30: BLOCKER regardless of `severity`
+    # (a pick or an alternative) -- a quest-only item every one of whose
+    # quests excludes this class (Fire Ruby/Destroy Morphaz's own defect)
+    # is not obtainable at all, not merely a soft downgrade.
+    if item_id in quest_only_items and _class_excludes_every_quest(loot, item_id, class_slug):
+        result.add(
+            "blocker",
+            item_id,
+            f"{label} item {item_id} ({row['name']}) is quest-only and every quest that "
+            f"rewards it excludes {class_slug} (classic-db RequiredClasses)",
+        )
     if row["required_level"] > band_level:
         result.add(
             severity,
@@ -191,6 +235,7 @@ def _check_pick(
 def _check_band(
     result: CategoryResult, spec: str, band: dict, items_by_id: dict[int, dict],
     factions: dict[str, str], loot: dict, name_index: dict[str, set[int]],
+    class_slug: str, quest_only_items: set[int],
 ) -> None:  # fmt: skip
     band_level = band["band"]
     faction = band["faction"]
@@ -212,6 +257,8 @@ def _check_band(
             loot,
             name_index,
             f"{label} {slot_entry['slot']}",
+            class_slug,
+            quest_only_items,
         )
         if row is not None:
             rows_by_base_slot[_base_slot(slot_entry["slot"])] = {**row, "slot": slot_entry["slot"]}
@@ -229,6 +276,8 @@ def _check_band(
                 loot,
                 name_index,
                 f"{label} {slot_entry['slot']} alternative",
+                class_slug,
+                quest_only_items,
             )
 
     main_hand = rows_by_base_slot.get("main_hand")
@@ -266,6 +315,7 @@ def check(ctx: AuditContext) -> CategoryResult:
     loot = ctx.loot
     factions = loot.get("factions", {})
     name_index = _source_name_index(loot)
+    quest_only_items = _quest_only_item_ids(loot)
     for spec, doc in ctx.bis_by_spec.items():
         class_slug = spec.split("-")[0]
         items_by_id = {
@@ -277,5 +327,8 @@ def check(ctx: AuditContext) -> CategoryResult:
             )
             continue
         for band in doc.get("bands", []):
-            _check_band(result, spec, band, items_by_id, factions, loot, name_index)
+            _check_band(
+                result, spec, band, items_by_id, factions, loot, name_index,
+                class_slug, quest_only_items,
+            )  # fmt: skip
     return result
