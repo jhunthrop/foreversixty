@@ -54,6 +54,17 @@ export interface BisSlot {
    *  all, not a flag on a filled pick. */
   effect_unmodelled?: boolean;
   swap_note?: string;
+  /** This row's own pick's measured DPS advantage over the one comparator a real swap sim
+   *  actually measured it against, in that same run (`sim/cmd/leveling-bis/report.go`'s own
+   *  `slotRow.DPSDelta`) -- always real and always non-negative, unlike the two absolute
+   *  numbers `swap_note` may embed (each a full-set snapshot at the moment ITS OWN slot was
+   *  decided, which can silently disagree with the band's own published `set_dps` and with
+   *  each other row's snapshot -- see `report.go`'s own `dpsComparisonPhrase` doc). Distinct
+   *  from `alternatives[].dps_delta`, which is per-alternative. Optional and defaults to
+   *  `null` (`normaliseBisFile`, `load.ts`): a file published before this field existed, or a
+   *  row never compared to anything a sim actually measured, carries no `dps_delta` key at
+   *  all. */
+  dps_delta?: number | null;
   /** The next-best sourced candidates after this row's own pick (`sim/cmd/leveling-bis/
    *  report.go`'s own `slotRow.Alternatives`) -- up to three, ties (identical score to the
    *  pick) ranked first with `dps_delta` 0, then the next-best by score. Optional: a file

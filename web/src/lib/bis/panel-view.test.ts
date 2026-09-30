@@ -365,6 +365,83 @@ describe('bandInfosFor: evidence line and verified-glyph title', () => {
     expect(head?.evidenceLine).toBe('Sim-checked against Diamond Hammer: 45.8 vs 38.0 DPS');
   });
 
+  it('prefers the row’s own dps_delta over swap_note’s two absolute numbers when both are present', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            swap_note:
+              'confirmed by the sim against Diamond Hammer (id 2194): kept the pick, 45.8 vs 38.0 set DPS',
+            dps_delta: 7.8,
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.evidenceLine).toBe('Sim-checked against Diamond Hammer: +7.8 DPS');
+  });
+
+  it('prefers dps_delta for the bis-ranker-integrity-5 "over it" swap_note suffix, which the old two-number parse cannot match', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            swap_note:
+              "confirmed by the sim against Ironspine's Fist (id 7687): kept the pick, +4.5 DPS over it",
+            dps_delta: 4.5,
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.evidenceLine).toBe("Sim-checked against Ironspine's Fist: +4.5 DPS");
+  });
+
+  it('prefers dps_delta for the "beat the scored pick" template too', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            swap_note: 'beat the scored pick Diamond Hammer (id 2194) in the sim: 40.2 vs 38.0 set DPS',
+            dps_delta: 2.2,
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.evidenceLine).toBe('Sim-checked against Diamond Hammer: +2.2 DPS');
+  });
+
+  it('falls back to the old two-number parse when dps_delta is absent (a file published before this field existed)', () => {
+    const file = fileWith([
+      band({
+        slots: [
+          slot({
+            swap_note:
+              'confirmed by the sim against Diamond Hammer (id 2194): kept the pick, 45.8 vs 38.0 set DPS',
+            dps_delta: null,
+          }),
+        ],
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const head = infos[0].rows.find((r) => r.slot === 'head');
+    expect(head?.evidenceLine).toBe('Sim-checked against Diamond Hammer: 45.8 vs 38.0 DPS');
+  });
+
+  it('falls back to the raw swap_note text when dps_delta is present but the swap_note format is unrecognised', () => {
+    const file = fileWith([
+      band({ slots: [slot({ swap_note: 'something the parser has never seen', dps_delta: 3.1 })] }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    expect(infos[0].rows.find((r) => r.slot === 'head')?.evidenceLine).toBe(
+      'something the parser has never seen',
+    );
+  });
+
   it('falls back to the raw swap_note text when the format is unrecognised', () => {
     const file = fileWith([band({ slots: [slot({ swap_note: 'something the parser has never seen' })] })]);
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());

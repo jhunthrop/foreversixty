@@ -273,6 +273,30 @@ describe('normaliseBisFile', () => {
     const normalised = normaliseBisFile(file);
     expect(normalised.bands[0].slots[0].alternatives).toEqual(alternatives);
   });
+
+  it('defaults a missing slot dps_delta to null (a file published before this lane landed)', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, slots: [slotWithoutAlternatives] }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].slots[0].dps_delta).toBeNull();
+  });
+
+  it('keeps a real slot dps_delta unchanged', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, slots: [{ ...slotWithoutAlternatives, dps_delta: 4.5 }] }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].slots[0].dps_delta).toBe(4.5);
+  });
 });
 
 describe('bandLevels', () => {

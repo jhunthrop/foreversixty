@@ -68,11 +68,46 @@ export function parseSwapNote(note: string): ParsedSwapNote | undefined {
   return { itemName: itemName!, pickDps: Number(pickDps), altDps: Number(altDps) };
 }
 
-/** The row's own evidence line (spec: fourth wow-player sweep, day 3, item 1) -- in player
- *  words when `swap_note` matches a known ranker format, the raw note otherwise (never
- *  nothing: a `swap_note` the page cannot parse is still real evidence, just unparsed). */
-function evidenceLineFor(swapNote: string | undefined): string | undefined {
+/** The same two `swap_note` templates' common prefix, WITHOUT the trailing DPS clause --
+ *  bis-ranker-integrity-5's own `dpsComparisonPhrase` (`report.go`) now prints "A vs B set
+ *  DPS" only when A (the primary measurement) matches the band's own finished `set_dps`,
+ *  else "+N.N DPS over it", so `SWAP_NOTE_PATTERN` above (which requires the "vs...set DPS"
+ *  suffix) no longer matches every real `swap_note`. This pattern only needs the runner-up's
+ *  own name -- the number now comes from the row's own `dps_delta` instead (see
+ *  `evidenceLineFor`) -- so it stops right after "kept the pick," / "in the sim:" and never
+ *  cares which suffix format follows. */
+const RUNNER_UP_NAME_PATTERN =
+  /^(?:confirmed by the sim against|beat the scored pick) (.+?) \(id \d+\)(?:: kept the pick,|\s+in the sim:)/;
+
+/** The named runner-up's item name off a `swap_note` sentence, regardless of which DPS
+ *  suffix `dpsComparisonPhrase` chose -- `undefined` for a `swap_note` this page does not
+ *  recognise at all (e.g. the verify-error fallback string), same discipline as
+ *  `parseSwapNote`. */
+function runnerUpNameFromSwapNote(note: string): string | undefined {
+  return RUNNER_UP_NAME_PATTERN.exec(note)?.[1];
+}
+
+/** The row's own evidence line (spec: fourth wow-player sweep, day 3, item 1; delta
+ *  preference added bis-ranker-integrity-5) -- in player words when `swap_note` matches a
+ *  known ranker template, the raw note otherwise (never nothing: a `swap_note` the page
+ *  cannot parse is still real evidence, just unparsed).
+ *
+ *  Prefers the row's own `dps_delta` when present: that number is always real and always
+ *  consistent with itself (`BisSlot.dps_delta`'s own doc), unlike `swap_note`'s two absolute
+ *  numbers, which are each a full-set snapshot at the moment THIS slot was decided and can
+ *  silently disagree with the band's own header `set_dps` -- never publish "X vs Y DPS" from
+ *  the old parse once a trustworthy single number exists. Falls back to the full two-number
+ *  parse (`parseSwapNote`) only when `dps_delta` is absent (a file published before this
+ *  field existed). */
+function evidenceLineFor(
+  swapNote: string | undefined,
+  dpsDelta: number | null | undefined,
+): string | undefined {
   if (swapNote === undefined) return undefined;
+  if (dpsDelta !== undefined && dpsDelta !== null) {
+    const runnerUpName = runnerUpNameFromSwapNote(swapNote);
+    if (runnerUpName !== undefined) return bisCopy.evidenceLineDelta(runnerUpName, dpsDelta);
+  }
   const parsed = parseSwapNote(swapNote);
   return parsed === undefined
     ? swapNote
@@ -246,7 +281,7 @@ function buildRowView(
       buildAlternativeView(alt, faction, lootFile, tooltipFor, band),
     ),
     replacedName: replacedBySlot.get(row.slot),
-    evidenceLine: evidenceLineFor(row.swap_note),
+    evidenceLine: evidenceLineFor(row.swap_note, row.dps_delta),
     verifiedGlyphTitle: verifiedGlyphTitleFor(row),
     effectUnmodelled: row.effect_unmodelled,
     lowValue: row.low_value,
