@@ -121,17 +121,22 @@ RAID_SOURCE_IDS = [
 #: pipeline-measured data (more classic-db fixes can still move it
 #: either way), not a shape fixed by construction the way the seven raid
 #: ids themselves are.
+#: 2026-09-30, re-based after the classic-db cache refresh: the earlier floors (BWL 324,
+#: MC 174) counted level-banded world-pool junk the stale cache still attributed to raid
+#: bosses (Nefarian 356 rows -> 25 real drops); the raid tier Forever re-itemised away
+#: (Perdition's Blade, Band of Accuria, Ashkandi) is absent from the client catalogue and
+#: cannot be sourced at all, which is why these honest counts are lower.
 RAID_SHAPE = {
     "raid:ahnqiraj": (25, 7, 178),
-    "raid:blackwing-lair": (18, 3, 324),
-    "raid:molten-core": (21, 5, 174),
+    "raid:blackwing-lair": (18, 3, 142),
+    "raid:molten-core": (21, 5, 109),
     "raid:naxxramas": (49, 7, 152),
-    "raid:onyxias-lair": (1, 0, 205),
-    "raid:ruins-of-ahnqiraj": (29, 1, 167),
-    "raid:zulgurub": (49, 1, 328),
+    "raid:onyxias-lair": (1, 0, 6),
+    "raid:ruins-of-ahnqiraj": (29, 1, 133),
+    "raid:zulgurub": (49, 1, 215),
 }
 RAID_BOSSES = 192
-RAID_ITEMS = 767
+RAID_ITEMS = 569
 #: Bosses the fork database names no NPC for. An invented name would be
 #: worse than a blank one, so this was measured rather than forbidden --
 #: until the loot-contracts lane, 2026-09-29: `build_loot` now DROPS a
