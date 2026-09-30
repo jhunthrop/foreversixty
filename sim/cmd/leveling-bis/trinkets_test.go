@@ -12,6 +12,18 @@ func trinket(id int, name string, itemLevel int) scored {
 	return scored{candidate: candidate{ID: id, Name: name, ItemLevel: itemLevel, Slots: []string{"trinket1", "trinket2"}}}
 }
 
+// trinketWithEffect is trinket() plus an EffectText, for the hybrid
+// sweep's own trinket-margin tests below. id must be a real engine-
+// implemented-effect id (effectids_generated.go) for a "modelled"
+// trinket, or any id NOT in that map (e.g. one obviously fake, like
+// 999999) for an "unmodelled" one - trinketEffectUnmodelled (trinkets.go)
+// reads exactly that distinction.
+func trinketWithEffect(id int, name string, itemLevel int, effectText string) scored {
+	s := trinket(id, name, itemLevel)
+	s.EffectText = effectText
+	return s
+}
+
 func TestTopByItemLevelOrdersHighestFirstAndBoundsToTopN(t *testing.T) {
 	list := []scored{
 		trinket(1, "A", 10),
@@ -285,5 +297,118 @@ func TestRankTrinketSlotLeavesGainUnmeasuredWhenTheBaselineSimFails(t *testing.T
 	}
 	if out["trinket1"].Item.GainMeasured {
 		t.Errorf("trinket1 pick GainMeasured = true, want false: the baseline sim failed")
+	}
+}
+
+// modelledEffectItemID is a real engine-implemented-effect id
+// (effectids_generated.go) - any id in that map makes hasImplementedEffect
+// true once EffectText is also set, so trinketEffectUnmodelled reads it
+// as "modelled" the same way a real proc trinket would be.
+const modelledEffectItemID = 647
+
+// Hybrid sweep, bis-ranker-integrity-4 lane, item 4: Serenity Field (an
+// unmodelled Spirit self-buff) beat a real combat trinket at band 60
+// ret/enhancement by a margin smaller than the tournament's own noise -
+// a modelled trinket must keep the slot over a currently-leading
+// unmodelled one unless the unmodelled one clears beatsByMargin's own
+// 1% bar (verify.go).
+func TestRankTrinketSlotModelledTrinketKeepsSlotWhenUnmodelledWinIsWithinMargin(t *testing.T) {
+	picks := map[string]slotPick{}
+	bySlot := map[string][]scored{
+		"trinket1": {
+			trinketWithEffect(modelledEffectItemID, "Real Combat Trinket", 60, "On use: deals damage"),
+			trinketWithEffect(999999, "Serenity Field", 60, "Equip: restores spirit over time"),
+		},
+	}
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: modelledEffectItemID}}): 200,
+			// 201 is inside beatsByMargin's 1% bar over 200 (200*1.01 = 202)
+			// - not enough to unseat the modelled trinket.
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 999999}}): 201,
+		},
+	}
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 60, "", picks, bySlot, "trinket1")
+	if len(notes) != 0 {
+		t.Fatalf("notes = %v, want none", notes)
+	}
+	if out["trinket1"].Item == nil || out["trinket1"].Item.ID != modelledEffectItemID {
+		t.Fatalf("trinket1 pick = %+v, want the modelled trinket (%d) despite the unmodelled one measuring higher raw dps", out["trinket1"].Item, modelledEffectItemID)
+	}
+	if out["trinket1"].Item.MeasuredDPS != 200 {
+		t.Errorf("trinket1 pick MeasuredDPS = %v, want 200 (its own measured dps, not the unmodelled one's)", out["trinket1"].Item.MeasuredDPS)
+	}
+	if out["trinket1"].RunnerUp == nil || out["trinket1"].RunnerUp.ID != 999999 {
+		t.Fatalf("trinket1 runner-up = %+v, want the unmodelled trinket (999999): it measured the higher raw dps even though it did not win", out["trinket1"].RunnerUp)
+	}
+	if out["trinket1"].RunnerUp.MeasuredDPS != 201 {
+		t.Errorf("trinket1 runner-up MeasuredDPS = %v, want 201", out["trinket1"].RunnerUp.MeasuredDPS)
+	}
+}
+
+// The mirror case: once the unmodelled trinket's own measured dps
+// clears the noise floor, it is real enough to win outright.
+func TestRankTrinketSlotUnmodelledTrinketWinsWhenItClearsTheMargin(t *testing.T) {
+	picks := map[string]slotPick{}
+	bySlot := map[string][]scored{
+		"trinket1": {
+			trinketWithEffect(modelledEffectItemID, "Real Combat Trinket", 60, "On use: deals damage"),
+			trinketWithEffect(999999, "Serenity Field", 60, "Equip: restores spirit over time"),
+		},
+	}
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: modelledEffectItemID}}): 200,
+			// 205 clears 200*1.01 = 202: a real, not noise-level, lead.
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 999999}}): 205,
+		},
+	}
+	out, _ := rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 60, "", picks, bySlot, "trinket1")
+	if out["trinket1"].Item == nil || out["trinket1"].Item.ID != 999999 {
+		t.Fatalf("trinket1 pick = %+v, want the unmodelled trinket (999999): it cleared the margin", out["trinket1"].Item)
+	}
+	if out["trinket1"].RunnerUp == nil || out["trinket1"].RunnerUp.ID != modelledEffectItemID {
+		t.Fatalf("trinket1 runner-up = %+v, want the modelled trinket (%d)", out["trinket1"].RunnerUp, modelledEffectItemID)
+	}
+}
+
+// With no modelled candidate in the pool at all, the margin rule has
+// nothing to defer to - the highest measured dps wins exactly like
+// before this lane's own fix, even though both candidates are
+// unmodelled.
+func TestRankTrinketSlotPicksHighestWhenEveryCandidateIsUnmodelled(t *testing.T) {
+	picks := map[string]slotPick{}
+	bySlot := map[string][]scored{
+		"trinket1": {
+			trinketWithEffect(999998, "Unmodelled A", 60, "Equip: does something unmodelled"),
+			trinketWithEffect(999999, "Unmodelled B", 60, "Equip: does something else unmodelled"),
+		},
+	}
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 999998}}): 100,
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 999999}}): 100.5,
+		},
+	}
+	out, _ := rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 60, "", picks, bySlot, "trinket1")
+	if out["trinket1"].Item == nil || out["trinket1"].Item.ID != 999999 {
+		t.Fatalf("trinket1 pick = %+v, want item 999999 (higher measured dps, no modelled alternative to defer to)", out["trinket1"].Item)
+	}
+}
+
+func TestTrinketEffectUnmodelled(t *testing.T) {
+	cases := []struct {
+		name string
+		c    candidate
+		want bool
+	}{
+		{"no effect at all is not unmodelled (pure stats)", candidate{ID: 1}, false},
+		{"a real, implemented effect is modelled", candidate{ID: modelledEffectItemID, EffectText: "On use: deals damage"}, false},
+		{"an effect the engine does not implement is unmodelled", candidate{ID: 999999, EffectText: "Equip: restores spirit"}, true},
+	}
+	for _, tc := range cases {
+		if got := trinketEffectUnmodelled(tc.c); got != tc.want {
+			t.Errorf("%s: trinketEffectUnmodelled(%+v) = %v, want %v", tc.name, tc.c, got, tc.want)
+		}
 	}
 }
