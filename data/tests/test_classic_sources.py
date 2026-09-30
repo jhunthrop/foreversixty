@@ -159,6 +159,8 @@ CREATE TABLE `quest_template` (
   `MinLevel` tinyint,
   `QuestLevel` smallint,
   `RequiredRaces` smallint,
+  `RequiredMinRepFaction` smallint,
+  `RequiredMinRepValue` mediumint,
   `Title` text,
   `RewChoiceItemId1` mediumint,
   `RewChoiceItemId2` mediumint,
@@ -172,8 +174,9 @@ CREATE TABLE `quest_template` (
   `RewItemId4` mediumint
 ) ENGINE=MyISAM;
 INSERT INTO `quest_template` VALUES
-  (53,40,44,77,'Sweet Amber',744,0,0,0,0,0,0,0,0,0),
-  (8,1,5,178,'A Rogues Deal',0,0,0,0,0,0,159,0,0,0);
+  (53,40,44,77,0,0,'Sweet Amber',744,0,0,0,0,0,0,0,0,0),
+  (8,1,5,178,0,0,'A Rogues Deal',0,0,0,0,0,0,159,0,0,0),
+  (8573,60,60,255,609,42000,'Champion\\'s Battlegear',21180,0,0,0,0,0,0,0,0,0);
 """  # noqa: E501
 
 
@@ -304,6 +307,25 @@ def test_quest_reward_horde_only_faction_and_rew_item_id_slot():
     record = next(r for r in items[159] if r.kind == "quest_reward")
     assert record.quest.quest_id == 8
     assert record.quest.faction == "horde"  # RequiredRaces 178 = Orc|Undead|Tauren|Troll
+
+
+def test_quest_reward_reads_required_min_rep_faction_and_value_as_a_standing():
+    """rep-gate lane, 2026-09-30, this lane's brief item 1: quest 8573's
+    own RequiredMinRepFaction/RequiredMinRepValue (609, 42000) become
+    ClassicDbQuestInfo.required_rep_faction/required_rep_standing --
+    42000 is the Exalted cutoff, not a raw number."""
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    record = next(r for r in items[21180] if r.kind == "quest_reward")
+    assert record.quest.quest_id == 8573
+    assert record.quest.required_rep_faction == 609
+    assert record.quest.required_rep_standing == "exalted"
+
+
+def test_quest_reward_with_no_rep_requirement_leaves_both_fields_none():
+    items = cs.parse_classic_db_sources(SAMPLE_SQL)
+    record = next(r for r in items[744] if r.kind == "quest_reward")
+    assert record.quest.required_rep_faction is None
+    assert record.quest.required_rep_standing is None
 
 def test_excluded_reference_ids_catches_a_generic_pool_by_high_fan_out_even_without_the_marker():
     """id 60446 (the real dump's own "16 Slot Bag - NPC Levels: 48+",
@@ -757,6 +779,64 @@ CREATE TABLE `reference_loot_template` ({_LOOT_COLUMNS}) ENGINE=MyISAM;
 {_EMPTY_SUPPORTING_TABLES}"""
     items = cs.parse_classic_db_sources(sql)
     assert cs.direct_row_world_drop_items(items) == set()
+
+
+#: this lane's brief item 3: a gameobject CHEST (type 3) whose own
+#: `data1` (16577) is a DIFFERENT numeric id than its own entry (179564,
+#: Dire Maul's real "Gordok Tribute" chest) -- one direct row, one
+#: NEGATIVE `mincountOrRef` reference row, so `gameobject_chest_loot`
+#: proves both the `data1` indirection AND `_expand_loot_template`'s own
+#: reference expansion at once.
+_CHEST_SQL = """
+CREATE TABLE `gameobject_template` (
+  `entry` mediumint,
+  `type` tinyint,
+  `name` varchar(100),
+  `data1` int
+) ENGINE=MyISAM;
+INSERT INTO `gameobject_template` VALUES
+  (179564,3,'Gordok Tribute',16577),
+  (500,0,'Not A Chest',999);
+
+CREATE TABLE `gameobject_loot_template` (
+  `entry` mediumint,
+  `item` mediumint,
+  `ChanceOrQuestChance` float,
+  `groupid` tinyint,
+  `mincountOrRef` mediumint,
+  `maxcount` tinyint,
+  `condition_id` mediumint,
+  `comments` varchar(300)
+) ENGINE=MyISAM;
+INSERT INTO `gameobject_loot_template` VALUES
+  (16577,8952,0,0,15,1,0,'Direct'),
+  (16577,0,100,0,-35033,1,0,'Reference');
+
+CREATE TABLE `reference_loot_template` (
+  `entry` mediumint,
+  `item` mediumint,
+  `ChanceOrQuestChance` float,
+  `groupid` tinyint,
+  `mincountOrRef` mediumint,
+  `maxcount` tinyint,
+  `condition_id` mediumint,
+  `comments` varchar(300)
+) ENGINE=MyISAM;
+INSERT INTO `reference_loot_template` VALUES (35033,35033,3.0,0,1,1,0,'');
+"""
+
+
+def test_gameobject_chest_loot_resolves_data1_not_the_objects_own_entry():
+    chests = cs.gameobject_chest_loot(_CHEST_SQL)
+    assert set(chests[179564]) == {8952, 35033}
+    assert chests[179564][35033] == 3.0  # the REFERENCE row's own chance
+
+
+def test_gameobject_chest_loot_skips_a_non_chest_type():
+    """`type` 0 (not `_GAMEOBJECT_TYPE_CHEST`) is never read for `data1`,
+    even when it happens to have one -- entry 500 names no loot here."""
+    chests = cs.gameobject_chest_loot(_CHEST_SQL)
+    assert 500 not in chests
 
 
 def test_faction_from_required_races_zero_means_both():

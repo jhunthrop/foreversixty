@@ -393,6 +393,8 @@ def classicdb_additions(
                         min_level=min_level,
                         level=level,
                         level_source="classic-db",
+                        required_rep_faction=record.quest.required_rep_faction,
+                        required_rep_standing=record.quest.required_rep_standing,
                     )
                 )
         if direct_pool_level is not None:

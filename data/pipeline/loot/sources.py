@@ -558,12 +558,63 @@ def source_item_ids(source: LootSource) -> set[int]:
 #: this pipeline plays.
 _MAX_QUEST_GATE_PASSES = 5
 
+#: `quest_template.RequiredMinRepFaction` (or the same item's own
+#: `rep`-kind `LootSource`, `_rep_gate_by_item`'s own doc) -> the content
+#: phase that faction's own reputation track requires -- mirrored from
+#: `sim/cmd/leveling-bis/data.go`'s own `repFactionRaidPhaseOpens` (name
+#: it once in Python; not imported from there, and not placed in
+#: `pipeline.loot.overlay` beside `RAID_DEFAULT_OPENS`, because that
+#: module already imports `KIND_ORDER` FROM this one -- importing this
+#: constant back the other way would be circular). Rep-gate lane,
+#: 2026-09-30, this lane's brief item 1: Cenarion Circle's own
+#: reputation is Gates of Ahn'Qiraj (Patch 1.9) content, the same patch
+#: this build's own `raid:ahnqiraj` source is already gated `"later"`
+#: for (`curated/loot/forever-raid-phases.json`), so a quest that needs
+#: ANY standing with it cannot be turned in any earlier than the raid
+#: itself opens. Writing this fact into `QuestSource.opens` here (rather
+#: than only in the Go ranker, where `firstNonEmpty(src.Opens,
+#: repFactionRaidPhaseOpens[factionID])` already covers `rep`-kind
+#: sources) is what fixes a quest reward: `loot.json` states the gate
+#: directly, and the ranker's OWN table becomes a fallback for whatever
+#: this one is silent on, exactly the same relationship `firstNonEmpty`
+#: already has with a curated raid/dungeon `opens`.
+REP_FACTION_RAID_PHASE_OPENS: dict[int, str] = {
+    609: "later",  # Cenarion Circle - Gates of Ahn'Qiraj (AQ War Effort)
+}
+
+
+def _rep_gate_by_item(sources: list[LootSource]) -> dict[int, tuple[int, str]]:
+    """item id -> (faction_id, standing), for every `rep`-kind
+    `LootSource` -- `apply_quest_opens_gate`'s own fallback signal for a
+    quest reward classic-db's `quest_template` states no reputation
+    requirement for directly (Earthstrike, item 21180, quest 8573
+    "Champion's Battlegear": the fork database already names that exact
+    item from a `rep:cenarion-circle:exalted` source, so the quest
+    reward inherits that source's own gate rather than bypassing it)."""
+    by_item: dict[int, tuple[int, str]] = {}
+    for source in sources:
+        if source.kind != "rep" or source.faction_id is None or source.standing is None:
+            continue
+        for item_id in source_item_ids(source):
+            by_item.setdefault(item_id, (source.faction_id, source.standing))
+    return by_item
+
 
 def apply_quest_opens_gate(
     document: LootFile, classic_sources: dict[int, list[ClassicDbSourceRecord]]
 ) -> LootFile:
     """Sets `QuestSource.opens` for every quest in `document.quests`
-    whose classic-db turn-in item(s) (`quest_turn_in_items_from_
+    gated one of two ways.
+
+    First, a REPUTATION gate (rep-gate lane, 2026-09-30, this lane's
+    brief item 1): `entry.required_rep_faction`, whether classic-db's own
+    `quest_template` row states it directly or (Earthstrike's own case)
+    it is filled in here as a fallback from the same item's `rep`-kind
+    `LootSource` (`_rep_gate_by_item`) -- `REP_FACTION_RAID_PHASE_OPENS`
+    turns that faction id into the phase its own reputation track needs.
+
+    Second (unchanged since quest-gates lane, 2026-09-29), whether the
+    quest's classic-db turn-in item(s) (`quest_turn_in_items_from_
     classic_sources`, already resolved through the quest's own
     `PrevQuestId` chain) are THEMSELVES only obtainable from a source
     `opens` is already set on: a raid boss drop directly (Onyxia's
@@ -587,8 +638,6 @@ def apply_quest_opens_gate(
     those.
     """
     quest_turn_ins = quest_turn_in_items_from_classic_sources(classic_sources)
-    if not quest_turn_ins:
-        return document
     # Every NON-"quest"-kind source's own opens, per item id it names --
     # the flat "quest" LootSource carries no per-quest opens of its own
     # (LootSource.opens is never set on it), so it is excluded here the
@@ -605,6 +654,28 @@ def apply_quest_opens_gate(
     quests: dict[str, list[QuestSource]] = {
         item_id: list(entries) for item_id, entries in document.quests.items()
     }
+
+    rep_gate_by_item = _rep_gate_by_item(document.sources)
+    for item_id_str, entries in quests.items():
+        item_id = int(item_id_str)
+        for i, entry in enumerate(entries):
+            faction_id, standing = entry.required_rep_faction, entry.required_rep_standing
+            if faction_id is None:
+                fallback = rep_gate_by_item.get(item_id)
+                if fallback is None:
+                    continue
+                faction_id, standing = fallback
+                entries[i] = entry = entry.model_copy(
+                    update={
+                        "required_rep_faction": faction_id,
+                        "required_rep_standing": standing,
+                    }
+                )
+            if entry.opens:
+                continue
+            gate = REP_FACTION_RAID_PHASE_OPENS.get(faction_id)
+            if gate:
+                entries[i] = entry.model_copy(update={"opens": gate})
 
     def item_gate(item_id: int) -> str | None:
         ways = [*non_quest_ways.get(item_id, [])]
