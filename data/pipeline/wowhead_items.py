@@ -280,15 +280,24 @@ def to_gear_item(item: WowheadItem, untracked: Counter[str] | None = None) -> Ge
 
 
 def to_item(item: WowheadItem) -> Item:
+    # loot-parity-2 lane, 2026-09-30: the SAME resolution `to_gear_item`
+    # above already runs for this id's per-class row -- reused here so the
+    # flat catalogue's own `required_level`/`required_level_source` always
+    # agree with it, never a second, independent guess.
+    required_level, required_level_source = resolve_required_level(
+        0, item.item_level, item.required_level
+    )
     return Item(
         id=item.id,
         name=item.name,
         quality=item.quality,
         item_level=item.item_level,
-        required_level=item.required_level,
+        required_level=required_level,
         class_id=item.class_id,
         subclass_id=item.subclass_id,
         inventory_type=item.inventory_type,
+        required_level_source=required_level_source,
+        stats_source="wowhead",
     )
 
 

@@ -71,6 +71,9 @@ def test_apply_fork_columns_keeps_the_key_order_and_appends_the_new_ones(tmp_pat
         "inventory_type",
         "suffixes",
         "faction_restriction",
+        "required_level_source",
+        "stats_source",
+        "client_unconfirmed",
     ]
 
 

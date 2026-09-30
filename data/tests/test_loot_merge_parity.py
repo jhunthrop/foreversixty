@@ -211,6 +211,16 @@ def _prepare_build(tmp_path: Path) -> Path:
     # engine`) never names npc 911 at all, so only `instance_zone_by_map`
     # -- keyed by this record's own `map_id` -- can place item 5010
     # inside the dungeon instead of a flat `world:test-depths-trash`.
+    #
+    # loot-parity-2 lane, 2026-09-30: item 5011 ALSO gets a classic-db
+    # `creature_drop` record for the SAME npc (910) the fork's own boss
+    # already names it under -- the Onyxia's Lair shape
+    # (`pipeline.loot.sources._classic_db_corroborated_raid_dungeon_
+    # origin`'s own doc) in miniature: classic-db independently
+    # corroborates the fork's ENTIRE contribution to this dungeon, so
+    # `dungeon:test-depths` should be promoted to `source_origin:
+    # "classic-db"` in both `loot` and `loot-merge`'s output --
+    # `test_loot_merge_agrees_on_source_shape_and_origin_labels` below.
     write_classic_sources(
         build_dir,
         {
@@ -219,7 +229,13 @@ def _prepare_build(tmp_path: Path) -> Path:
                     kind="creature_drop", npc_id=911, name="Test Depths Trash",
                     map_id=_TEST_DEPTHS_MAP_ID, chance=10.0,
                 )
-            ]
+            ],
+            5011: [
+                ClassicDbSourceRecord(
+                    kind="creature_drop", npc_id=910, name="Test Depths Boss",
+                    map_id=_TEST_DEPTHS_MAP_ID, chance=50.0,
+                )
+            ],
         },
     )
     return root
@@ -234,6 +250,23 @@ def _dungeon_items(document: dict, source_id: str) -> set[int]:
                 items.update(boss.get("items") or [])
             return items
     raise AssertionError(f"no source {source_id!r} in {[s['id'] for s in document['sources']]}")
+
+
+def _source_shape(source: dict) -> tuple[frozenset, str | None, tuple]:
+    """loot-parity-2 lane, 2026-09-30: the per-source shape `test_loot_
+    merge_agrees_on_source_shape_and_origin_labels` diffs between the two
+    generators, over and above `_dungeon_items`'s own item-id-only
+    comparison -- the KEY SET a source carries (whether `source_origin`
+    is present at all, same gap the lane's own report measured on
+    `raid:onyxias-lair`) and each boss's own `source_origin`/`item_
+    source_origin` attribution."""
+    bosses = tuple(
+        sorted(
+            (boss["npc_id"], tuple(sorted((boss.get("item_source_origin") or {}).items())))
+            for boss in source.get("bosses") or []
+        )
+    )
+    return frozenset(source.keys()), source.get("source_origin"), bosses
 
 
 def test_loot_places_the_classicdb_only_trash_mob_inside_the_dungeon(tmp_path: Path):
@@ -286,3 +319,44 @@ def test_loot_merge_agrees_with_loot_on_the_same_committed_caches(tmp_path: Path
         }
 
     assert by_id(merged_document) == by_id(full_document)
+
+
+def test_loot_merge_agrees_on_source_shape_and_origin_labels(tmp_path: Path):
+    """loot-parity-2 lane, 2026-09-30: the parity contract above only ever
+    diffed item ID sets -- it would have missed `raid:onyxias-lair`'s own
+    real-build gap (this lane's report: the `loot` path's raid sources
+    carried no `source_origin` key at all where `loot-merge` did) because
+    both sides named the exact same items either way. This diffs the
+    FULL per-source shape instead -- every key a source carries, plus
+    each boss's own `source_origin`/`item_source_origin` attribution
+    (`_source_shape`) -- between the same two runs
+    `test_loot_merge_agrees_with_loot_on_the_same_committed_caches` makes,
+    and additionally asserts `dungeon:test-depths` (the fixture's own
+    Onyxia's-Lair-shaped case -- classic-db's dump independently
+    corroborates the fork's entire boss item 5011, `_prepare_build`'s own
+    doc) is promoted to `source_origin: "classic-db"` in BOTH."""
+    root = _prepare_build(tmp_path)
+    engine_dir = _augmented_engine(tmp_path)
+    curated = tmp_path / "curated"
+    curated.mkdir()
+    shutil.copy(FIXTURES / "curated-simbuffs.json", curated / "simbuffs.json")
+    write_loot_files(
+        BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay",
+        curated_dir=curated, ids_md=FIXTURES / "IDS.md",
+    )
+    full_document = json.loads((root / BUILD / LOOT).read_text(encoding="utf-8"))
+
+    merge_loot_files(BUILD, engine_dir=engine_dir, root=root, overlay_dir=tmp_path / "no-overlay")
+    merged_document = json.loads((root / BUILD / LOOT).read_text(encoding="utf-8"))
+
+    def shapes(document: dict) -> dict[str, tuple]:
+        return {source["id"]: _source_shape(source) for source in document["sources"]}
+
+    full_shapes = shapes(full_document)
+    merged_shapes = shapes(merged_document)
+    assert set(full_shapes) == set(merged_shapes)
+    assert full_shapes == merged_shapes
+
+    depths_keys, depths_origin, _ = full_shapes["dungeon:test-depths"]
+    assert "source_origin" in depths_keys
+    assert depths_origin == "classic-db"

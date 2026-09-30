@@ -80,6 +80,12 @@ def test_gear_item_carries_weapon_damage_set_and_uniqueness() -> None:
     flat = wh.to_item(sword)
     assert isinstance(flat, Item)
     assert (flat.class_id, flat.subclass_id, flat.inventory_type) == (2, 7, 13)
+    # loot-parity-2 lane, 2026-09-30: the flat catalogue's own row now
+    # carries the same required_level/required_level_source/stats_source
+    # the per-class `gear` row above does -- `to_item` reuses the same
+    # `resolve_required_level` call, never a second, independent guess.
+    assert (flat.required_level, flat.required_level_source) == (17, "wowhead")
+    assert flat.stats_source == "wowhead"
 
 
 def test_a_holdable_off_hand_item_wowhead_states_a_speed_for_gets_no_weapon_fields() -> None:

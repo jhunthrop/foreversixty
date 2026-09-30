@@ -40,6 +40,25 @@ class Item(BaseModel):
     #: client states none of this on build 1.60.1.69893, so like `suffixes`
     #: it is empty until `loot` has run.
     faction_restriction: str = ""
+    #: loot-parity-2 lane, 2026-09-30: the flat catalogue's own copy of
+    #: `GearItem.required_level_source` (same doc, same vocabulary) -- unset
+    #: (None) for a row `pipeline.normalize.items.normalize_items` built
+    #: straight off the client's own `ItemSparse`, so every `items.json`
+    #: consumer (not just the per-class `items/<class>.json` files) can
+    #: tell a supplement row apart from a client one without a second
+    #: lookup.
+    required_level_source: (
+        Literal["client", "wowhead", "item_level_proxy", "none", "classic-db"] | None
+    ) = None
+    #: The flat catalogue's own copy of `GearItem.stats_source` (same doc):
+    #: `"wowhead"` or `"classic-db"` for a row `normalize_items` itself
+    #: never produced -- the client's `ItemSparse`/`Item` name no such id at
+    #: all -- `None` for every row that is the client's own.
+    stats_source: Literal["wowhead", "classic-db"] | None = None
+    #: The flat catalogue's own copy of `GearItem.client_unconfirmed` (same
+    #: doc): True for a `stats_source == "classic-db"` row, real 1.12
+    #: itemization the Forever client has not (yet) shipped as a hotfix.
+    client_unconfirmed: bool = False
 
 
 class Spell(BaseModel):
@@ -373,7 +392,15 @@ class LootSource(BaseModel):
     #: the fork database itself names, which is still most of them. A
     #: source more than one origin names (an item added to an existing
     #: `world:`/`vendor:`/`crafted:` bucket) keeps whichever origin found
-    #: it FIRST in priority order fork > classic-db > wowhead.
+    #: it FIRST in priority order fork > classic-db > wowhead --
+    #: EXCEPT a `raid`/`dungeon` source classic-db's own dump fully
+    #: corroborates (every item the fork itself named for it also has a
+    #: classic-db `creature_loot_template` row), which is promoted to
+    #: `"classic-db"` even though the fork named it first (loot-parity-2
+    #: lane, 2026-09-30, `pipeline.loot.sources._classic_db_corroborated_
+    #: raid_dungeon_origin`'s own doc: Onyxia's Lair is the measured
+    #: case -- the fork's own 16-item AtlasLoot table for it is a subset
+    #: of what classic-db's dump independently names for the same boss).
     source_origin: str | None = None
 
 

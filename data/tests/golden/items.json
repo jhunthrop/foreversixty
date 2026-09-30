@@ -9,7 +9,10 @@
     "subclass_id": 5,
     "inventory_type": 0,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 2825,
@@ -21,7 +24,10 @@
     "subclass_id": 2,
     "inventory_type": 15,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 7026,
@@ -33,7 +39,10 @@
     "subclass_id": 1,
     "inventory_type": 6,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 12345,
@@ -45,7 +54,10 @@
     "subclass_id": 4,
     "inventory_type": 13,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 12798,
@@ -57,7 +69,10 @@
     "subclass_id": 0,
     "inventory_type": 21,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 13315,
@@ -69,7 +84,10 @@
     "subclass_id": 0,
     "inventory_type": 23,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 14152,
@@ -81,7 +99,10 @@
     "subclass_id": 1,
     "inventory_type": 20,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 16866,
@@ -93,7 +114,10 @@
     "subclass_id": 4,
     "inventory_type": 1,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 17066,
@@ -105,7 +129,10 @@
     "subclass_id": 6,
     "inventory_type": 14,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 19019,
@@ -117,7 +144,10 @@
     "subclass_id": 7,
     "inventory_type": 13,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 19325,
@@ -129,7 +159,10 @@
     "subclass_id": 0,
     "inventory_type": 11,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 19743,
@@ -141,7 +174,10 @@
     "subclass_id": 2,
     "inventory_type": 1,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   },
   {
     "id": 99002,
@@ -153,6 +189,9 @@
     "subclass_id": 1,
     "inventory_type": 5,
     "suffixes": [],
-    "faction_restriction": ""
+    "faction_restriction": "",
+    "required_level_source": null,
+    "stats_source": null,
+    "client_unconfirmed": false
   }
 ]
