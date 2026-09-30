@@ -94,9 +94,9 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 | 20 | 00000000000000000-0000000000000000-55100000000000000 | main_hand:6953 | 28.4 | 5 | other:attack/1=57.3, spell:25739=43.9, spell:20288=20.5, spell:20271=20.0, spell:20281=20.0 | - |
 | 30 | 00000000000000000-0000000000000000-55223310000000000 | main_hand:13045 | 38.7 | 5 | other:attack/1=63.1, spell:25738=26.5, spell:680=17.7, spell:20271=17.4, spell:20282=17.4 | - |
 | 38 | 00000000000000000-0000000000000000-55223331211000100 | main_hand:870 | 54.8 | 5 | other:attack/1=63.1, spell:25737=26.7, spell:2495=17.5, spell:20271=16.7, spell:20283=16.7 | - |
-| 40 | 00000000000000000-0000000000000000-55223331211000210 | main_hand:870 | 57.3 | 5 | other:attack/1=63.1, spell:25737=28.3, spell:2495=17.9, spell:20271=17.4, spell:20283=17.4 | - |
-| 50 | 00000000000000000-5500000000000000-55223331211000210 | main_hand:11608 | 67.9 | 5 | other:attack/1=49.6, spell:5569=18.0, spell:25735=17.9, spell:20271=15.7, spell:20285=15.7 | - |
-| 60 | 00000000000000000-5532500000000000-55223331211000210 | main_hand:21134 | 115.7 | 5 | other:attack/1=52.4, spell:25713=22.8, spell:10333=17.9, spell:20271=15.6, spell:20286=15.6 | - |
+| 40 | 00000000000000000-0000000000000000-55223331211000210 | main_hand:1982 | 20.9 | 5 | other:attack/1=182.1, spell:25737=83.2, spell:2495=17.9, spell:20271=17.4, spell:20283=17.4 | - |
+| 50 | 00000000000000000-5500000000000000-55223331211000210 | main_hand:2915 | 27.0 | 5 | other:attack/1=182.1, spell:25735=70.4, spell:5569=18.0, spell:20271=15.8, spell:20285=15.8 | - |
+| 60 | 00000000000000000-5532500000000000-55223331211000210 | main_hand:22798 | 36.9 | 5 | other:attack/1=182.1, spell:25713=78.7, spell:10333=17.9, spell:20271=15.6, spell:20286=15.6 | - |
 
 ## Learned but unused (informational)
 
@@ -153,4 +153,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- paladin-retribution level=40 kind=dps_regression dps=20.9 prev_dps=54.8

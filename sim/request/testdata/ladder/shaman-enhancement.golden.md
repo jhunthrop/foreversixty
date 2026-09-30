@@ -92,11 +92,11 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 |---|---|---|---|---|---|---|
 | 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:1287 | 23.9 | 6 | other:attack/2=129.9, other:attack/1=70.2, spell:3606=67.8, spell:8050=15.4, spell:3599=5.7 | {SpellID: 17364} |
 | 20 | 0000000000000000-253100000000000000-0000000000000000 | main_hand:2236 off_hand:2194 | 35.1 | 6 | other:attack/1=121.4, other:attack/2=73.0, spell:6350=66.3, spell:8052=14.1, spell:6363=4.8 | {SpellID: 17364} |
-| 30 | 0000000000000000-253130030004000000-0000000000000000 | main_hand:6692 off_hand:7687 | 56.4 | 6 | other:attack/1=80.6, other:attack/2=80.2, spell:6351=64.4, spell:8053=11.4, spell:6364=4.2 | {SpellID: 17364} |
+| 30 | 0000000000000000-253130030004000000-0000000000000000 | main_hand:6692 off_hand:9457 | 55.4 | 6 | other:attack/1=79.4, spell:6351=64.3, spell:8053=11.4, spell:6364=4.2, spell:20572=2.0 | {SpellID: 17364} |
 | 38 | 0000000000000000-253130030005102040-0000000000000000 | main_hand:868 off_hand:6831 | 59.4 | 8 | other:attack/2=128.5, other:attack/1=91.9, spell:6351=68.6, spell:8053=9.3, spell:6364=4.4 | - |
-| 40 | 0000000000000000-253130030005102051-0000000000000000 | main_hand:868 off_hand:9359 | 62.1 | 8 | other:attack/1=92.5, other:attack/2=84.5, spell:6352=61.3, spell:17364=6.8, spell:6365=3.5 | - |
-| 50 | 5500000000000000-253130030005102051-0000000000000000 | main_hand:810 off_hand:6660 | 82.3 | 8 | other:attack/2=148.7, other:attack/1=92.2, spell:10435=64.2, spell:10447=8.1, spell:10437=3.4 | - |
-| 60 | 5533220000000000-253130030005102051-0000000000000000 | main_hand:21126 off_hand:235476 | 116.8 | 7 | other:attack/1=111.0, other:attack/2=110.7, spell:10436=64.9, spell:17364=5.5, spell:29228=4.0 | - |
+| 40 | 0000000000000000-253130030005102051-0000000000000000 | main_hand:2164 off_hand:9359 | 60.2 | 8 | other:attack/1=83.8, spell:6352=61.5, spell:17364=6.7, spell:6365=3.6, spell:10447=3.2 | - |
+| 50 | 5500000000000000-253130030005102051-0000000000000000 | main_hand:810 off_hand:2163 | 83.8 | 8 | other:attack/1=91.6, spell:10435=64.2, spell:10447=8.2, spell:10437=3.4, spell:17364=2.6 | - |
+| 60 | 5533220000000000-253130030005102051-0000000000000000 | main_hand:22802 off_hand:23242 | 42.5 | 7 | other:attack/1=190.4, spell:10436=64.9, spell:17364=5.4, spell:29228=4.0, spell:10438=3.2 | - |
 
 ## Learned but unused (informational)
 
@@ -165,4 +165,4 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 ## Violations found in this run
 
-None.
+- shaman-enhancement level=60 kind=dps_regression dps=42.5 prev_dps=83.8
