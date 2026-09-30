@@ -99,7 +99,6 @@ function bandInfosForFaction(faction: Faction): BandInfo[] {
     itemDetails: details,
     loot,
     tooltipFor,
-    referenceStat: specEntry.reference_stat,
     spec: specEntry.spec,
   });
 }
@@ -240,9 +239,9 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                     setDpsPartialCount,
                     race,
                     talentPoints,
-                    weightBars,
-                    refAbbrevText,
-                    referenceSentenceLine,
+                    scaleRows,
+                    scaleNoteLine,
+                    hasteCaptionLine,
                   }) => {
                     // `rows` is always the planner's 17 slots in SLOTS' own canonical order
                     // (`filledSlots`) -- the paperdoll's own left/right/bottom split, the
@@ -291,50 +290,68 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                             <p class="text-muted">{bisCopy.raceTalentsLine(race, talentPoints)}</p>
                             <div>
                               <p class="aside-label">{bisCopy.statWeightsLabel}</p>
-                              <p class="weights-reference-line">{referenceSentenceLine}</p>
+                              <p class="weights-reference-line">{scaleNoteLine}</p>
                               <ul class="weight-bars" data-testid={`bis-weights-${faction}-${band}`}>
-                                {weightBars.map(
+                                {scaleRows.map(
                                   ({
-                                    row,
-                                    barPercent,
+                                    stat,
+                                    label,
+                                    scaleFactor,
                                     dpsPerPoint,
-                                    valueText,
-                                    displayLabel,
+                                    scaleError,
+                                    significant,
+                                    barPercent,
                                     ratingFactorTitle,
                                   }) => (
                                     <li
-                                      class:list={[
-                                        'weight-bar-row',
-                                        !row.significant && 'weight-bar-row-faint',
-                                      ]}
-                                      title={ratingFactorTitle ?? row.sentence}
+                                      class:list={['weight-bar-row', !significant && 'weight-bar-row-faint']}
+                                      title={ratingFactorTitle}
+                                      data-testid={`bis-weight-row-${faction}-${band}-${stat}`}
                                     >
-                                      {!row.isReference && row.significant && dpsPerPoint !== undefined ? (
-                                        <span class="weight-bar-top">
-                                          <span class="weight-bar-value-sentence tabular">
-                                            {bisCopy.weightsRowDpsLine(
-                                              displayLabel,
-                                              row.weight,
-                                              refAbbrevText,
-                                              dpsPerPoint,
-                                            )}
+                                      <span class="weight-bar-top">
+                                        <span class="weight-bar-label">{label}</span>
+                                        <span class="weight-bar-value tabular">
+                                          {significant
+                                            ? scaleFactor.toFixed(2)
+                                            : bisCopy.weightsNotSignificant}
+                                        </span>
+                                      </span>
+                                      {significant && (
+                                        <Fragment>
+                                          <span class="weight-bar-track">
+                                            <span class="weight-bar-fill" style={`width:${barPercent}%`} />
                                           </span>
-                                        </span>
-                                      ) : (
-                                        <span class="weight-bar-top">
-                                          <span class="weight-bar-label">{displayLabel}</span>
-                                          <span class="weight-bar-value tabular">{valueText}</span>
-                                        </span>
-                                      )}
-                                      {row.significant && (
-                                        <span class="weight-bar-track">
-                                          <span class="weight-bar-fill" style={`width:${barPercent}%`} />
-                                        </span>
+                                          <span class="weight-bar-meta text-muted tabular">
+                                            {dpsPerPoint !== undefined && (
+                                              <span>{dpsPerPoint.toFixed(3)} DPS</span>
+                                            )}
+                                            <span>&plusmn;{scaleError.toFixed(2)}</span>
+                                          </span>
+                                        </Fragment>
                                       )}
                                     </li>
                                   ),
                                 )}
                               </ul>
+                              {hasteCaptionLine && (
+                                <p
+                                  class="weights-haste-caption text-muted"
+                                  data-testid={`bis-weights-haste-${faction}-${band}`}
+                                >
+                                  {hasteCaptionLine}
+                                </p>
+                              )}
+                              <p class="weights-rating-note text-muted">
+                                {bisCopy.weightsRatingConversionNote}
+                              </p>
+                              <p class="weights-addon-blurb text-muted">{bisCopy.weightsAddonBlurb}</p>
+                              <a
+                                href="/addon"
+                                class="weights-addon-button rounded-control border-line-warm text-text inline-flex min-h-11 items-center justify-center border px-4 text-center text-[13px] font-semibold"
+                                data-testid={`bis-weights-addon-${faction}-${band}`}
+                              >
+                                {bisCopy.weightsAddonButton}
+                              </a>
                             </div>
                           </aside>
 
@@ -606,6 +623,30 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
   }
   .weight-bar-value {
     flex-shrink: 0;
+  }
+  /* --- scale rail meta line: per-point DPS and the sim error, in the row's own normalized
+     units (bis-weights-simc, owner: "align with simcraft stat weights output"). --- */
+  .weight-bar-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .weights-haste-caption {
+    font-size: 12px;
+    margin-top: 0.4rem;
+  }
+  .weights-rating-note {
+    font-size: 11px;
+    margin-top: 0.6rem;
+  }
+  .weights-addon-blurb {
+    font-size: 12px;
+    margin-top: 0.6rem;
+  }
+  .weights-addon-button {
+    margin-top: 0.5rem;
+    width: 100%;
   }
 
   /* --- what changed: one disclosure line, never a wall of rows above the list. --- */

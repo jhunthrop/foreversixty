@@ -2,6 +2,7 @@
 // web/src/components/Header.astro
 import communityLinks from '../data/links.json';
 import { TRAILING_NAV_ITEMS, PRIMARY_NAV_ITEMS, isNavItemCurrent } from '../lib/nav';
+import Seal from './Seal.astro';
 
 interface Props {
   /** The current page's path, e.g. `/sim/gear` -- Base.astro's own `path` prop, passed
@@ -21,19 +22,9 @@ const { path = '' } = Astro.props;
 // widening every other nav entry to match.
 const NARROW_LABELS = new Set(['Logs']);
 
-// "Leveling BiS" (98.75px of text, tracking included) is wider than its own 80px phone-grid
-// column and, forced onto one line, spilled ~10px past its cell into "Get set up" next
-// door -- the two labels visually ran together as "LEVELING BISGET SET UP" with no gap
-// between them at 390px. Wrapping this one label onto two lines keeps it inside its column
-// (13px font, leading-tight: ~33px tall, well under the 44px cell) instead of bleeding into
-// the neighbor; every other label stays single-line since none of them are wide enough to
-// need it.
-const WRAPPING_LABELS = new Set(['Leveling BiS']);
-
 function itemClass(label: string, current: boolean): (string | false)[] {
   return [
-    'inline-flex items-center justify-center md:justify-start min-h-11 md:min-h-0 text-nav hover:text-strong',
-    WRAPPING_LABELS.has(label) ? 'whitespace-normal text-center leading-tight' : 'whitespace-nowrap',
+    'inline-flex items-center justify-center md:justify-start min-h-11 md:min-h-0 text-nav hover:text-strong whitespace-nowrap',
     NARROW_LABELS.has(label) && 'px-2',
     current && 'text-gold hover:text-gold',
   ];
@@ -42,25 +33,51 @@ function itemClass(label: string, current: boolean): (string | false)[] {
 const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
 
 // Not an HTML comment: that would ship in every page and in the API's chrome snapshot.
-// Phone: an explicit three-row grid -- wordmark and Discord on the first row, the seven nav
-// items (2026-09-28: "Leveling BiS" joined the six) wrapped four-then-three on the second.
-// A fixed two-row height is the CLS reservation now (design/DESIGN-SYSTEM.md's "nothing
-// moves"), in place of the old horizontally-scrolling row's scroll-fade trick -- four
-// columns wraps seven items into two full rows (4 + 3) with no ragged last row, same as six
-// items did at three columns. No hamburger, so no client JS on a content page.
+// Phone: an explicit grid -- wordmark and session/Discord on the first row, the seven nav
+// items below it. Three columns, not four: at 390px a 4-column cell (~80px) was narrower
+// than "Leveling BiS" itself (84.875px measured with whitespace-nowrap, ux-designer review
+// round 2), so it wrapped onto two lines while its neighbours stayed on one -- the fix is
+// room, not a per-label wrap exception. Three columns gives each cell 100px at 360px (the
+// narrowest width this header is specced for) and 110px at 390px, clearing every label (the
+// widest, "Leveling BiS" at 84.875px) with 15-25px to spare, so every item stays on one
+// line; the cost is a ragged three-item last row instead of four's clean two full rows,
+// which reads better than a wrapped label. A fixed three-row height is still the CLS
+// reservation (design/DESIGN-SYSTEM.md's "nothing moves"), in place of the old
+// horizontally-scrolling row's scroll-fade trick. No hamburger, so no client JS on a
+// content page.
+//
+// The header's own outer grid-cols is `minmax(0,1fr)` for the logo column, not a bare
+// `1fr`: a bare `1fr` track's automatic minimum is its content's min-content size, and once
+// every nav label below went whitespace-nowrap, the seven-item row (which spans both outer
+// columns) had a min-content wide enough to push that track past the viewport -- the header
+// stayed at the viewport's width, but its content silently overflowed past the right edge
+// (measured: nav items ran ~15px past the header's own box at 360px). `minmax(0, 1fr)`
+// gives the track an explicit 0 floor, so it fills only what the session/Discord column
+// (auto) leaves behind, and the grid's own `minmax(0,1fr)` nav columns do the rest.
+//
+// That same `minmax(0,1fr)` floor is also why the session column is a phone-only stack
+// (Sign in above the Discord icon, `flex-col`) rather than the desktop row: going nowrap
+// forced the logo column down to its exact leftover (container width minus the session
+// column's own width), and the session row's un-stacked width (~108px: "Sign in" plus the
+// gap plus the icon button) left only ~200px for a 233px-wide seal-and-wordmark at 360px --
+// the seal silently shrank to ~1px wide rather than overflow (a replaced SVG has no
+// min-content floor of its own the way the nowrap text does). Stacking the two session
+// controls instead of sitting them side by side shrinks that column to its wider single
+// item (~54px), handing the logo column back ~54px -- comfortably more than the ~33px it
+// was short -- at the cost of a taller (still fixed) first row on phone only.
 ---
 
-<header class="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-3 px-[18px] md:flex md:justify-between md:px-12 py-3 md:py-[18px] border-b border-line/60">
-  <a
-    href="/"
-    class="col-start-1 row-start-1 font-display text-[20px] font-bold tracking-[0.08em] uppercase gold-text"
-  >
-    Forever Sixty
+<header class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 px-[18px] md:flex md:justify-between md:px-12 py-3 md:py-[18px] border-b border-line/60">
+  <a href="/" class="col-start-1 row-start-1 inline-flex items-center gap-2 min-h-11">
+    <Seal size={34} gradientId="header-seal" />
+    <span class="font-display text-[20px] font-bold tracking-[0.10em] uppercase text-strong whitespace-nowrap">
+      Forever Sixty
+    </span>
   </a>
   <nav
     aria-label="Primary"
     data-testid="primary-nav"
-    class="col-span-2 row-start-2 md:row-auto grid grid-cols-4 gap-x-3 gap-y-2 md:flex md:flex-nowrap md:gap-x-[22px] text-[13px] font-semibold tracking-[0.12em] uppercase"
+    class="col-span-2 row-start-2 md:row-auto grid grid-cols-3 gap-x-3 gap-y-2 md:flex md:flex-nowrap md:gap-x-[22px] text-[13px] font-semibold tracking-[0.12em] uppercase"
   >
     {NAV_ITEMS.map((item) => {
       const current = isNavItemCurrent(item, path);
@@ -75,11 +92,11 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
       );
     })}
   </nav>
-  <div class="col-start-2 row-start-1 flex items-center justify-self-end gap-3">
+  <div class="col-start-2 row-start-1 flex flex-col items-end gap-2 justify-self-end md:flex-row md:items-center md:gap-3">
     <slot name="session" />
     <a
       href={communityLinks.discordInvite}
-      class="inline-flex items-center gap-2 h-11 md:h-[38px] px-3 border border-line-warm rounded-control text-text bg-bg/50 font-semibold text-[13px]"
+      class="inline-flex items-center justify-center gap-2 h-11 min-w-11 md:h-[38px] md:min-w-0 px-3 border border-line-warm rounded-control text-text bg-bg/50 font-semibold text-[13px]"
     >
       <svg
         width="16"
@@ -94,7 +111,13 @@ const NAV_ITEMS = [...PRIMARY_NAV_ITEMS, ...TRAILING_NAV_ITEMS];
       >
         <path d="M8 12a4 4 0 0 0 8 0M5 8a7 7 0 0 1 14 0v7l2 3H3l2-3z" />
       </svg>
-      <span>Discord</span>
+      <!-- sr-only below md: the header logo column (1fr) and this column (auto) share one
+           phone-width row, and the "Discord" text's own width was the reason "Forever Sixty"
+           lost the room to stay on one line at 390px (ux-designer review round 1). The icon
+           alone still identifies the button (an aria-label would fight the visible text on
+           desktop, so the label stays the real text, just visually hidden on phone instead of
+           swapped for a shorter one). -->
+      <span class="sr-only md:not-sr-only">Discord</span>
     </a>
   </div>
 </header>

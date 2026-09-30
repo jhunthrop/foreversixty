@@ -3,6 +3,7 @@
 ## Notes: Your build, in game. Import your character into the planner and follow a build you chose on the site.
 ## Author: foreversixty.gg
 ## Version: @project-version@
+## IconTexture: Interface\AddOns\ForeverSixty\icon
 ## X-Curse-Project-ID: 1706689
 ## X-Wago-ID: XKqEdoKy
 ## X-Website: https://foreversixty.gg/addon
