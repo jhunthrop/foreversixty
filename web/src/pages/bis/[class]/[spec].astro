@@ -283,38 +283,47 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                               <p class="aside-label">{bisCopy.statWeightsLabel}</p>
                               <p class="weights-reference-line">{referenceSentenceLine}</p>
                               <ul class="weight-bars" data-testid={`bis-weights-${faction}-${band}`}>
-                                {weightBars.map(({ row, barPercent, dpsPerPoint, valueText }) => (
-                                  <li
-                                    class:list={[
-                                      'weight-bar-row',
-                                      !row.significant && 'weight-bar-row-faint',
-                                    ]}
-                                    title={row.sentence}
-                                  >
-                                    {!row.isReference && row.significant && dpsPerPoint !== undefined ? (
-                                      <span class="weight-bar-top">
-                                        <span class="weight-bar-value-sentence tabular">
-                                          {bisCopy.weightsRowDpsLine(
-                                            row.label,
-                                            row.weight,
-                                            refAbbrevText,
-                                            dpsPerPoint,
-                                          )}
+                                {weightBars.map(
+                                  ({
+                                    row,
+                                    barPercent,
+                                    dpsPerPoint,
+                                    valueText,
+                                    displayLabel,
+                                    ratingFactorTitle,
+                                  }) => (
+                                    <li
+                                      class:list={[
+                                        'weight-bar-row',
+                                        !row.significant && 'weight-bar-row-faint',
+                                      ]}
+                                      title={ratingFactorTitle ?? row.sentence}
+                                    >
+                                      {!row.isReference && row.significant && dpsPerPoint !== undefined ? (
+                                        <span class="weight-bar-top">
+                                          <span class="weight-bar-value-sentence tabular">
+                                            {bisCopy.weightsRowDpsLine(
+                                              displayLabel,
+                                              row.weight,
+                                              refAbbrevText,
+                                              dpsPerPoint,
+                                            )}
+                                          </span>
                                         </span>
-                                      </span>
-                                    ) : (
-                                      <span class="weight-bar-top">
-                                        <span class="weight-bar-label">{row.label}</span>
-                                        <span class="weight-bar-value tabular">{valueText}</span>
-                                      </span>
-                                    )}
-                                    {row.significant && (
-                                      <span class="weight-bar-track">
-                                        <span class="weight-bar-fill" style={`width:${barPercent}%`} />
-                                      </span>
-                                    )}
-                                  </li>
-                                ))}
+                                      ) : (
+                                        <span class="weight-bar-top">
+                                          <span class="weight-bar-label">{displayLabel}</span>
+                                          <span class="weight-bar-value tabular">{valueText}</span>
+                                        </span>
+                                      )}
+                                      {row.significant && (
+                                        <span class="weight-bar-track">
+                                          <span class="weight-bar-fill" style={`width:${barPercent}%`} />
+                                        </span>
+                                      )}
+                                    </li>
+                                  ),
+                                )}
                               </ul>
                             </div>
                           </aside>

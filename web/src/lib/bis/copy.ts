@@ -147,6 +147,11 @@ export const bisCopy = {
     `1 ${label} = ${dpsPerPoint.toFixed(2)} DPS`,
   weightsRowDpsLine: (label: string, weight: number, refAbbrev: string, dpsPerPoint: number): string =>
     `${label} ${weight.toFixed(2)} ${refAbbrev} · ${dpsPerPoint.toFixed(2)} DPS per point`,
+  /** A rating-family row's native `title` hover (spec addendum 2, §C(2)): the client's own
+   *  rating-per-percent conversion, so "Crit rating" doesn't leave a player guessing what
+   *  "rating" means -- `14 Crit rating = 1% Crit`. */
+  weightsRatingFactorLine: (label: string, ratingFactor: number): string =>
+    `${ratingFactor} ${label} rating = 1% ${label}`,
   weightsNoEffect: 'No effect',
   /** The reference stat's own row in the weight rail's plain value column -- never a
    *  tautological "1 Attack power = 1.00 Attack power" or a bare "1.00" (the rail's own

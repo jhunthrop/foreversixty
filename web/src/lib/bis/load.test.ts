@@ -297,6 +297,48 @@ describe('normaliseBisFile', () => {
     const normalised = normaliseBisFile(file);
     expect(normalised.bands[0].slots[0].dps_delta).toBe(4.5);
   });
+
+  // Spec addendum 2 (weight rail rows go per rating point): normaliseBisFile never touches
+  // a band's `weights` array itself -- a rating row's new fields (`unit`, `rating_factor`,
+  // `weight_per_percent`) and a non-rating row's absence of them both pass straight through,
+  // the same discipline every other still-optional weight field (`error`, `insignificant`)
+  // already gets here.
+  it('keeps a real rating-family weight row’s unit/rating_factor/weight_per_percent unchanged', () => {
+    const weights = [
+      {
+        stat: 'crit',
+        weight: 1.44,
+        error: 0.07,
+        unit: 'rating' as const,
+        rating_factor: 14,
+        weight_per_percent: 20.16,
+      },
+    ];
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, weights }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].weights[0]).toEqual(weights[0]);
+  });
+
+  it('leaves a non-rating weight row with no unit/rating_factor/weight_per_percent keys at all', () => {
+    const weights = [{ stat: 'agility', weight: 2, error: 0.1 }];
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, weights }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].weights[0].unit).toBeUndefined();
+    expect(normalised.bands[0].weights[0].rating_factor).toBeUndefined();
+    expect(normalised.bands[0].weights[0].weight_per_percent).toBeUndefined();
+  });
 });
 
 describe('bandLevels', () => {

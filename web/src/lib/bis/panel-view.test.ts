@@ -313,6 +313,87 @@ describe('bandInfosFor: weight rail', () => {
     const infos = bandInfosFor(file, [20], 'alliance', depsWith());
     expect(infos[0].referenceSentenceLine).not.toBe(bisCopy.weightsUnmeasuredLine);
   });
+
+  // Spec addendum 2 (weight rail rows go per rating point): a `unit: 'rating'` row's
+  // display label gains a quiet " rating" suffix and its native `title` reads the client's
+  // own rating-per-percent conversion, while a plain, non-rating row (e.g. Agility here)
+  // keeps today's label and its own `row.sentence` as its title, unchanged.
+  it('gives a rating-family row a " rating" display label and its rating-factor title', () => {
+    const file = fileWith([
+      band({
+        weights: [
+          { stat: 'ranged_attack_power', weight: 1, error: 0 },
+          { stat: 'agility', weight: 2, error: 0.1 },
+          {
+            stat: 'crit',
+            weight: 1.44,
+            error: 0.07,
+            unit: 'rating',
+            rating_factor: 14,
+            weight_per_percent: 20.16,
+          },
+        ],
+        slots: [slot()],
+        reference_dps_per_point: 2.5,
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const crit = infos[0].weightBars.find((bar) => bar.row.stat === 'crit');
+    expect(crit?.displayLabel).toBe('Crit rating');
+    expect(crit?.ratingFactorTitle).toBe('14 Crit rating = 1% Crit');
+  });
+
+  it('leaves a non-rating row’s display label and title untouched (no suffix, no override)', () => {
+    const file = fileWith([
+      band({
+        weights: [
+          { stat: 'ranged_attack_power', weight: 1, error: 0 },
+          { stat: 'agility', weight: 2, error: 0.1 },
+          {
+            stat: 'crit',
+            weight: 1.44,
+            error: 0.07,
+            unit: 'rating',
+            rating_factor: 14,
+            weight_per_percent: 20.16,
+          },
+        ],
+        slots: [slot()],
+        reference_dps_per_point: 2.5,
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const agility = infos[0].weightBars.find((bar) => bar.row.stat === 'agility');
+    expect(agility?.displayLabel).toBe(agility?.row.label);
+    expect(agility?.displayLabel).not.toContain('rating');
+    expect(agility?.ratingFactorTitle).toBeUndefined();
+  });
+
+  it('marks an insignificant rating row "No effect" the same as any other insignificant row, just with the " rating" label', () => {
+    const file = fileWith([
+      band({
+        weights: [
+          { stat: 'ranged_attack_power', weight: 1, error: 0 },
+          {
+            stat: 'hit',
+            weight: 0.06,
+            error: 0.3,
+            insignificant: true,
+            unit: 'rating',
+            rating_factor: 10,
+            weight_per_percent: 0.6,
+          },
+        ],
+        slots: [slot()],
+        reference_dps_per_point: 2.5,
+      }),
+    ]);
+    const infos = bandInfosFor(file, [20], 'alliance', depsWith());
+    const hit = infos[0].weightBars.find((bar) => bar.row.stat === 'hit');
+    expect(hit?.displayLabel).toBe('Hit rating');
+    expect(hit?.valueText).toBe(bisCopy.weightsNoEffect);
+    expect(hit?.dpsPerPoint).toBeUndefined();
+  });
 });
 
 describe('parseSwapNote', () => {

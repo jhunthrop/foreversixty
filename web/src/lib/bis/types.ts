@@ -14,6 +14,23 @@ export interface BisStatWeight {
   error?: number;
   /** `true` when the error is over a quarter of the weight: shown faint, never trusted. */
   insignificant?: boolean;
+  /** `'rating'` for a rating-family stat (hit, crit, dodge, parry, block, defense) --
+   *  `weight`/`error` above are per RATING POINT (the number on an item's own tooltip,
+   *  e.g. "+14 Crit"), not per percent (`sim/cmd/leveling-bis/report.go`'s own
+   *  `publishWeightRatingUnits`). Absent for every other stat (Agility, AP, RAP, SP, ...):
+   *  today's flat, weight-per-point-of-the-stat-itself semantics, unchanged. */
+  unit?: 'rating';
+  /** This build's own gametables/combatratings.txt level-60 rating points per 1% for
+   *  `stat` -- set only alongside `unit: 'rating'`, so a consumer can render "14 Crit
+   *  rating = 1% Crit" without hardcoding the client's own conversion table a second time.
+   *  `weight === weight_per_percent / rating_factor` holds exactly wherever this is set. */
+  rating_factor?: number;
+  /** The weight exactly as the weights sweep measured it, per SIM UNIT (one point of
+   *  hit/crit/dodge/parry/block/defense percentage) -- typed and passed through but never
+   *  rendered by this rail (reserved for the Stat Weights tool, tenet 8: never show a
+   *  number this surface wasn't asked to explain). Equal to `weight` for a non-rating-
+   *  family stat. */
+  weight_per_percent?: number;
 }
 
 /**

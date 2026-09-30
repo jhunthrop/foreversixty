@@ -308,6 +308,15 @@ export interface WeightBarRow {
    *  (`referenceSentenceLine`) already says as real DPS -- `bisCopy.weightsNoEffect` for an
    *  insignificant row, else the raw weight to two decimal places. */
   valueText: string;
+  /** `row.label` for every stat, plus a quiet " rating" suffix for a rating-family row
+   *  (spec addendum 2, §C(1)) -- "Crit" -> "Crit rating", so the row's own face reads as
+   *  per-RATING-POINT even on a phone with no hover. Never a new tag, colour or second
+   *  line: the same label word, one suffix. */
+  displayLabel: string;
+  /** The rating-family row's own hover override for the `<li>`'s native `title`
+   *  attribute (spec addendum 2, §C(2)): "14 Crit rating = 1% Crit" instead of the row's
+   *  plain `sentence`. Undefined for every non-rating row, which keeps `row.sentence`. */
+  ratingFactorTitle?: string;
 }
 
 function weightBarsFor(
@@ -327,19 +336,30 @@ function weightBarsFor(
     spec,
   );
   const maxWeight = Math.max(...rows.filter((r) => !r.isReference).map((r) => Math.abs(r.weight)), 0.0001);
-  return rows.map((row) => ({
-    row,
-    barPercent: row.isReference ? 100 : Math.min(100, Math.max(4, (Math.abs(row.weight) / maxWeight) * 100)),
-    dpsPerPoint:
-      referenceDpsPerPoint === null || row.isReference || !row.significant
-        ? undefined
-        : row.weight * referenceDpsPerPoint,
-    valueText: row.isReference
-      ? bisCopy.weightsReferenceRowValue
-      : !row.significant
-        ? bisCopy.weightsNoEffect
-        : row.weight.toFixed(2),
-  }));
+  const ratingMeta = new Map(weights.filter((w) => w.unit === 'rating').map((w) => [w.stat, w]));
+  return rows.map((row) => {
+    const rating = ratingMeta.get(row.stat);
+    return {
+      row,
+      barPercent: row.isReference
+        ? 100
+        : Math.min(100, Math.max(4, (Math.abs(row.weight) / maxWeight) * 100)),
+      dpsPerPoint:
+        referenceDpsPerPoint === null || row.isReference || !row.significant
+          ? undefined
+          : row.weight * referenceDpsPerPoint,
+      valueText: row.isReference
+        ? bisCopy.weightsReferenceRowValue
+        : !row.significant
+          ? bisCopy.weightsNoEffect
+          : row.weight.toFixed(2),
+      displayLabel: ratingMeta.has(row.stat) ? `${row.label} rating` : row.label,
+      ratingFactorTitle:
+        rating?.rating_factor !== undefined
+          ? bisCopy.weightsRatingFactorLine(row.label, rating.rating_factor)
+          : undefined,
+    };
+  });
 }
 
 /** One band's worth of `.paperdoll` data: every row, the centre column's numbers, and the
