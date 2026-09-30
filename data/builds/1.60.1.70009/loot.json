@@ -144584,7 +144584,8 @@
         4592,
         4606,
         5376,
-        16882
+        16882,
+        208851
       ],
       "item_chances": {
         "929": 5.5556,
@@ -144658,6 +144659,7 @@
         11164,
         11165,
         16882,
+        211472,
         217254,
         217284,
         217286
@@ -145680,6 +145682,7 @@
         11098,
         11164,
         16882,
+        211472,
         217286
       ],
       "item_chances": {
@@ -145826,7 +145829,8 @@
         7364,
         7997,
         11098,
-        16882
+        16882,
+        211472
       ],
       "item_chances": {
         "422": 1.6129,
@@ -157096,6 +157100,15 @@
         "217278": 3873
       },
       "source_origin": "classic-db"
+    },
+    {
+      "id": "world:dustwind-eggtender",
+      "kind": "world",
+      "name": "Dustwind Eggtender",
+      "items": [
+        286745
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "world:dustwind-harpy",
@@ -175890,6 +175903,15 @@
       "source_origin": "classic-db"
     },
     {
+      "id": "world:frozen-makrura",
+      "kind": "world",
+      "name": "Frozen Makrura",
+      "items": [
+        206388
+      ],
+      "source_origin": "wowhead"
+    },
+    {
       "id": "world:fungal-ooze",
       "kind": "world",
       "name": "Fungal Ooze",
@@ -180104,7 +180126,8 @@
         2698,
         2881,
         4605,
-        6344
+        6344,
+        208851
       ],
       "item_chances": {
         "774": 0.05,
@@ -183024,7 +183047,8 @@
         15737,
         16043,
         16218,
-        217260
+        217260,
+        220915
       ],
       "item_chances": {
         "765": 0.9,
@@ -190216,7 +190240,8 @@
         3297,
         4536,
         4540,
-        10639
+        10639,
+        208414
       ],
       "item_chances": {
         "117": 13.519,
@@ -191019,7 +191044,8 @@
         2934,
         3634,
         4409,
-        5635
+        5635,
+        206382
       ],
       "item_chances": {
         "774": 0.22,
@@ -191247,7 +191273,8 @@
         10316,
         11038,
         11039,
-        11081
+        11081,
+        210534
       ],
       "item_chances": {
         "774": 0.08,
@@ -191481,7 +191508,8 @@
         4605,
         6347,
         6348,
-        6716
+        6716,
+        210534
       ],
       "item_chances": {
         "765": 0.02,
@@ -191865,7 +191893,8 @@
         4605,
         6344,
         6347,
-        6348
+        6348,
+        210534
       ],
       "item_chances": {
         "414": 0.02,
@@ -192054,7 +192083,8 @@
         6375,
         6716,
         11038,
-        11081
+        11081,
+        210534
       ],
       "item_chances": {
         "774": 0.08,
@@ -193094,7 +193124,8 @@
         10301,
         10302,
         10603,
-        217262
+        217262,
+        220915
       ],
       "item_chances": {
         "1645": 0.02,
@@ -220487,7 +220518,8 @@
         12689,
         14470,
         14479,
-        217264
+        217264,
+        220915
       ],
       "item_chances": {
         "3864": 0.1135,
@@ -222357,7 +222389,8 @@
         2589,
         2592,
         4605,
-        6530
+        6530,
+        208851
       ],
       "item_chances": {
         "858": 1.9802,
@@ -235930,7 +235963,8 @@
         6390,
         6391,
         6716,
-        11038
+        11038,
+        210195
       ],
       "item_chances": {
         "765": 0.02,
@@ -236011,7 +236045,8 @@
         6344,
         6347,
         6348,
-        6716
+        6716,
+        210195
       ],
       "item_chances": {
         "118": 0.02,
@@ -236514,7 +236549,8 @@
         6344,
         6347,
         6348,
-        6716
+        6716,
+        210195
       ],
       "item_chances": {
         "118": 0.02,
@@ -242995,6 +243031,7 @@
         11164,
         11165,
         16882,
+        206387,
         217254,
         217286
       ],
@@ -260380,7 +260417,8 @@
         16220,
         20015,
         217260,
-        217262
+        217262,
+        227444
       ],
       "item_chances": {
         "2450": 0.02,
@@ -260499,7 +260537,8 @@
         14478,
         15731,
         16218,
-        20015
+        20015,
+        227444
       ],
       "item_chances": {
         "3395": 0.02,
@@ -260653,7 +260692,8 @@
         16220,
         20015,
         217262,
-        217271
+        217271,
+        227444
       ],
       "item_chances": {
         "3357": 0.02,
@@ -326151,7 +326191,8 @@
         16220,
         217260,
         217262,
-        217271
+        217271,
+        220915
       ],
       "item_chances": {
         "765": 1.08,
@@ -326313,7 +326354,8 @@
         14484,
         15737,
         16215,
-        16220
+        16220,
+        220915
       ],
       "item_chances": {
         "765": 1.04,
@@ -334918,6 +334960,15 @@
       "source_origin": "classic-db"
     },
     {
+      "id": "world:undying-laborer",
+      "kind": "world",
+      "name": "Undying Laborer",
+      "items": [
+        208849
+      ],
+      "source_origin": "wowhead"
+    },
+    {
       "id": "world:ungoro-gorilla",
       "kind": "world",
       "name": "Un'Goro Gorilla",
@@ -337119,7 +337170,8 @@
         16220,
         20015,
         217260,
-        217271
+        217271,
+        227444
       ],
       "item_chances": {
         "3357": 0.02,
@@ -360936,6 +360988,15 @@
       "source_origin": "classic-db"
     },
     {
+      "id": "world:zaienki",
+      "kind": "world",
+      "name": "Zai'enki",
+      "items": [
+        213594
+      ],
+      "source_origin": "wowhead"
+    },
+    {
       "id": "world:zalas-witherbark",
       "kind": "world",
       "name": "Zalas Witherbark",
@@ -363281,6 +363342,17 @@
       "source_origin": "wowhead"
     },
     {
+      "id": "world_drop:11-19",
+      "kind": "world_drop",
+      "name": "World drop",
+      "items": [
+        208689
+      ],
+      "level_min": 11,
+      "level_max": 19,
+      "source_origin": "wowhead"
+    },
+    {
       "id": "world_drop:11-21",
       "kind": "world_drop",
       "name": "World drop",
@@ -363735,6 +363807,18 @@
       "source_origin": "wowhead"
     },
     {
+      "id": "world_drop:3-4",
+      "kind": "world_drop",
+      "name": "World drop",
+      "items": [
+        205420,
+        206381
+      ],
+      "level_min": 3,
+      "level_max": 4,
+      "source_origin": "wowhead"
+    },
+    {
       "id": "world_drop:30-40",
       "kind": "world_drop",
       "name": "World drop",
@@ -364123,6 +364207,17 @@
       "source_origin": "wowhead"
     },
     {
+      "id": "world_drop:53-54",
+      "kind": "world_drop",
+      "name": "World drop",
+      "items": [
+        225838
+      ],
+      "level_min": 53,
+      "level_max": 54,
+      "source_origin": "wowhead"
+    },
+    {
       "id": "world_drop:54-64",
       "kind": "world_drop",
       "name": "World drop",
@@ -364190,6 +364285,17 @@
       ],
       "level_min": 7,
       "level_max": 17,
+      "source_origin": "wowhead"
+    },
+    {
+      "id": "world_drop:8-11",
+      "kind": "world_drop",
+      "name": "World drop",
+      "items": [
+        206954
+      ],
+      "level_min": 8,
+      "level_max": 11,
       "source_origin": "wowhead"
     },
     {
@@ -364312,7 +364418,8 @@
         4465,
         4474,
         4477,
-        6204
+        6204,
+        211472
       ]
     },
     {
@@ -364371,7 +364478,9 @@
         4767,
         5969,
         5975,
-        6628
+        6628,
+        206382,
+        210195
       ]
     },
     {
@@ -364393,10 +364502,12 @@
       "name": "Durotar",
       "zone_id": 14,
       "items": [
+        206388,
         284286,
         284287,
         284321,
-        284323
+        284323,
+        286745
       ],
       "source_origin": "wowhead"
     },
@@ -364406,6 +364517,7 @@
       "name": "Teldrassil",
       "zone_id": 141,
       "items": [
+        208414,
         284166,
         284167,
         286750
@@ -364520,7 +364632,8 @@
         3336,
         3429,
         4723,
-        4724
+        4724,
+        206387
       ]
     },
     {
@@ -364642,7 +364755,9 @@
         5971,
         6179,
         6180,
-        6205
+        6205,
+        208849,
+        208851
       ]
     },
     {
@@ -364651,7 +364766,8 @@
       "name": "Thousand Needles",
       "zone_id": 400,
       "items": [
-        1493
+        1493,
+        213594
       ]
     },
     {
@@ -364670,7 +364786,8 @@
       "zone_id": 406,
       "items": [
         5751,
-        5752
+        5752,
+        210534
       ]
     },
     {
@@ -364715,7 +364832,8 @@
       "name": "Tanaris",
       "zone_id": 440,
       "items": [
-        9359
+        9359,
+        220915
       ]
     },
     {
@@ -364731,6 +364849,16 @@
         5181,
         5256
       ]
+    },
+    {
+      "id": "zone:490",
+      "kind": "zone",
+      "name": "Un'Goro Crater",
+      "zone_id": 490,
+      "items": [
+        227444
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "zone:618",
@@ -368620,6 +368748,46 @@
         11304
       ],
       "source_origin": "classic-db"
+    },
+    {
+      "id": "vendor:233335",
+      "kind": "vendor",
+      "name": "Rune Broker",
+      "npc_id": 233335,
+      "items": [
+        205420,
+        206954,
+        208414,
+        208689,
+        208849,
+        208851,
+        210534,
+        211472,
+        220915,
+        227444
+      ],
+      "source_origin": "wowhead"
+    },
+    {
+      "id": "vendor:233428",
+      "kind": "vendor",
+      "name": "Rune Broker",
+      "npc_id": 233428,
+      "items": [
+        206381,
+        206382,
+        206386,
+        206387,
+        206388,
+        206954,
+        208414,
+        208689,
+        210534,
+        220915,
+        225838,
+        227444
+      ],
+      "source_origin": "wowhead"
     },
     {
       "id": "vendor:2381",
@@ -375208,6 +375376,9 @@
         249393,
         249394,
         249395,
+        249396,
+        249397,
+        249398,
         249453,
         249454,
         249455,
@@ -379694,38 +379865,120 @@
         227727,
         228659,
         228749,
+        246164,
+        246165,
+        246265,
+        248005,
+        248006,
+        248007,
+        248008,
         251485,
         251486,
         251533,
         251534,
+        257255,
+        257342,
+        257343,
+        257344,
+        257345,
+        257346,
+        257943,
+        263305,
+        263306,
+        263307,
+        263308,
+        263309,
+        263310,
+        263311,
+        263312,
+        263313,
+        263314,
+        263329,
+        263330,
+        263332,
+        263333,
+        263335,
+        263336,
+        263337,
+        263338,
+        263339,
+        263340,
+        263401,
+        263402,
+        263403,
+        263404,
+        263405,
+        263406,
+        263407,
+        263430,
         267369,
+        268484,
+        269716,
+        269717,
+        269742,
+        270000,
         270003,
+        270004,
         270005,
+        270006,
+        270007,
         270008,
         270009,
+        270010,
+        270011,
+        270012,
+        270013,
+        270014,
         270015,
         270016,
         270018,
+        270019,
+        270020,
         270021,
+        270022,
         270023,
         270024,
         270025,
         270027,
+        270028,
         270029,
         270030,
         270031,
         270032,
+        270033,
+        270034,
+        270035,
+        270038,
         270042,
+        270044,
         270045,
         272448,
+        273875,
+        273876,
         275290,
+        276685,
+        276695,
+        276720,
+        276722,
+        276723,
+        276724,
         276886,
         276887,
         276888,
         276889,
+        277203,
+        277204,
+        277210,
+        277218,
+        277226,
+        277234,
+        277247,
+        277255,
         277286,
         277288,
         277289,
+        277988,
+        278002,
         279864,
         279865,
         279867,
@@ -379747,7 +380000,40 @@
         280096,
         281167,
         281168,
+        281250,
+        281251,
+        281252,
+        281253,
+        281254,
+        281256,
+        281257,
+        281265,
+        281267,
+        281269,
+        281270,
+        281271,
+        281272,
+        281273,
+        281274,
+        281283,
+        281284,
+        281285,
+        281289,
+        281291,
+        281292,
+        281293,
+        281294,
+        281296,
+        281297,
+        281315,
+        281318,
+        281634,
+        281635,
+        281673,
+        282064,
         282284,
+        286426,
+        286427,
         286730,
         286731,
         286742,
@@ -419001,6 +419287,83 @@
         "level_source": "wowhead"
       }
     ],
+    "246164": [
+      {
+        "quest_id": 91285,
+        "name": "Murlocs at the Gates",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "246165": [
+      {
+        "quest_id": 91285,
+        "name": "Murlocs at the Gates",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "246265": [
+      {
+        "quest_id": 91316,
+        "name": "Making Repairs",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 8,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "248005": [
+      {
+        "quest_id": 91777,
+        "name": "Rare Books",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 1,
+        "level": 7,
+        "level_source": "wowhead"
+      }
+    ],
+    "248006": [
+      {
+        "quest_id": 91777,
+        "name": "Rare Books",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 1,
+        "level": 7,
+        "level_source": "wowhead"
+      }
+    ],
+    "248007": [
+      {
+        "quest_id": 91777,
+        "name": "Rare Books",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 1,
+        "level": 7,
+        "level_source": "wowhead"
+      }
+    ],
+    "248008": [
+      {
+        "quest_id": 91777,
+        "name": "Rare Books",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 1,
+        "level": 7,
+        "level_source": "wowhead"
+      }
+    ],
     "251485": [
       {
         "quest_id": 92401,
@@ -419045,6 +419408,418 @@
         "level_source": "wowhead"
       }
     ],
+    "257255": [
+      {
+        "quest_id": 93318,
+        "name": "WANTED: Vulgara the Insatiable",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 4,
+        "level": 9,
+        "level_source": "wowhead"
+      }
+    ],
+    "257342": [
+      {
+        "quest_id": 92640,
+        "name": "Desperate Times",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "257343": [
+      {
+        "quest_id": 92880,
+        "name": "Return to Valanaar",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "257344": [
+      {
+        "quest_id": 92640,
+        "name": "Desperate Times",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "257345": [
+      {
+        "quest_id": 92880,
+        "name": "Return to Valanaar",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "257346": [
+      {
+        "quest_id": 92880,
+        "name": "Return to Valanaar",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "257943": [
+      {
+        "quest_id": 93318,
+        "name": "WANTED: Vulgara the Insatiable",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 4,
+        "level": 9,
+        "level_source": "wowhead"
+      }
+    ],
+    "263305": [
+      {
+        "quest_id": 93746,
+        "name": "A Firm Response",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 4,
+        "level": 9,
+        "level_source": "wowhead"
+      }
+    ],
+    "263306": [
+      {
+        "quest_id": 93165,
+        "name": "Mercy Falls on Deaf Ears",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 8,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
+    "263307": [
+      {
+        "quest_id": 93165,
+        "name": "Mercy Falls on Deaf Ears",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 8,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
+    "263308": [
+      {
+        "quest_id": 93165,
+        "name": "Mercy Falls on Deaf Ears",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 8,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
+    "263309": [
+      {
+        "quest_id": 93172,
+        "name": "Free the Hollows",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 8,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
+    "263310": [
+      {
+        "quest_id": 93172,
+        "name": "Free the Hollows",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 8,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
+    "263311": [
+      {
+        "quest_id": 93172,
+        "name": "Free the Hollows",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 8,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
+    "263312": [
+      {
+        "quest_id": 92703,
+        "name": "Deliver the News",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 9,
+        "level_source": "wowhead"
+      }
+    ],
+    "263313": [
+      {
+        "quest_id": 92703,
+        "name": "Deliver the News",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 9,
+        "level_source": "wowhead"
+      }
+    ],
+    "263314": [
+      {
+        "quest_id": 92703,
+        "name": "Deliver the News",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 9,
+        "level_source": "wowhead"
+      }
+    ],
+    "263329": [
+      {
+        "quest_id": 92683,
+        "name": "Flutterfly Dust",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 9,
+        "level_source": "wowhead"
+      }
+    ],
+    "263330": [
+      {
+        "quest_id": 92644,
+        "name": "Unfortunate News",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263332": [
+      {
+        "quest_id": 92644,
+        "name": "Unfortunate News",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263333": [
+      {
+        "quest_id": 92644,
+        "name": "Unfortunate News",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263335": [
+      {
+        "quest_id": 92645,
+        "name": "Breaking the Breaker",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263336": [
+      {
+        "quest_id": 92645,
+        "name": "Breaking the Breaker",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263337": [
+      {
+        "quest_id": 92645,
+        "name": "Breaking the Breaker",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263338": [
+      {
+        "quest_id": 93320,
+        "name": "Tower Defense",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263339": [
+      {
+        "quest_id": 93320,
+        "name": "Tower Defense",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263340": [
+      {
+        "quest_id": 93320,
+        "name": "Tower Defense",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263401": [
+      {
+        "quest_id": 92834,
+        "name": "Avenged Tenfold",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263402": [
+      {
+        "quest_id": 92834,
+        "name": "Avenged Tenfold",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263403": [
+      {
+        "quest_id": 92834,
+        "name": "Avenged Tenfold",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263404": [
+      {
+        "quest_id": 92840,
+        "name": "Catching Wind",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "263405": [
+      {
+        "quest_id": 92646,
+        "name": "Confront Lorthuna",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 12,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 93835,
+        "name": "Confront Lorthuna",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 12,
+        "level_source": "wowhead"
+      }
+    ],
+    "263406": [
+      {
+        "quest_id": 92646,
+        "name": "Confront Lorthuna",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 12,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 93835,
+        "name": "Confront Lorthuna",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 12,
+        "level_source": "wowhead"
+      }
+    ],
+    "263407": [
+      {
+        "quest_id": 92646,
+        "name": "Confront Lorthuna",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 12,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 93835,
+        "name": "Confront Lorthuna",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 12,
+        "level_source": "wowhead"
+      }
+    ],
+    "263430": [
+      {
+        "quest_id": 93797,
+        "name": "Boughs in the Wind",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 10,
+        "level": 10,
+        "level_source": "wowhead"
+      }
+    ],
     "267369": [
       {
         "quest_id": 95140,
@@ -419053,6 +419828,61 @@
         "faction_source": "item",
         "min_level": 20,
         "level": 26,
+        "level_source": "wowhead"
+      }
+    ],
+    "268484": [
+      {
+        "quest_id": 95126,
+        "name": "The Moonsilver Blade",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 20,
+        "level": 25,
+        "level_source": "wowhead"
+      }
+    ],
+    "269716": [
+      {
+        "quest_id": 95508,
+        "name": "Unwelcome Guests",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 14,
+        "level": 18,
+        "level_source": "wowhead"
+      }
+    ],
+    "269717": [
+      {
+        "quest_id": 95508,
+        "name": "Unwelcome Guests",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 14,
+        "level": 18,
+        "level_source": "wowhead"
+      }
+    ],
+    "269742": [
+      {
+        "quest_id": 95508,
+        "name": "Unwelcome Guests",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 14,
+        "level": 18,
+        "level_source": "wowhead"
+      }
+    ],
+    "270000": [
+      {
+        "quest_id": 176,
+        "name": "WANTED: \"Hogger\"",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 5,
+        "level": 11,
         "level_source": "wowhead"
       }
     ],
@@ -419067,6 +419897,17 @@
         "level_source": "wowhead"
       }
     ],
+    "270004": [
+      {
+        "quest_id": 982,
+        "name": "Deep Ocean, Vast Sea",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 13,
+        "level": 17,
+        "level_source": "wowhead"
+      }
+    ],
     "270005": [
       {
         "quest_id": 214,
@@ -419075,6 +419916,28 @@
         "faction_source": "classic-db",
         "min_level": 14,
         "level": 17,
+        "level_source": "wowhead"
+      }
+    ],
+    "270006": [
+      {
+        "quest_id": 14,
+        "name": "The People's Militia",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 9,
+        "level": 17,
+        "level_source": "wowhead"
+      }
+    ],
+    "270007": [
+      {
+        "quest_id": 168,
+        "name": "Collecting Memories",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 14,
+        "level": 18,
         "level_source": "wowhead"
       }
     ],
@@ -419097,6 +419960,61 @@
         "faction_source": "classic-db",
         "min_level": 14,
         "level": 18,
+        "level_source": "wowhead"
+      }
+    ],
+    "270010": [
+      {
+        "quest_id": 6481,
+        "name": "Earthen Arise",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 14,
+        "level": 20,
+        "level_source": "wowhead"
+      }
+    ],
+    "270011": [
+      {
+        "quest_id": 898,
+        "name": "Free From the Hold",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 13,
+        "level": 20,
+        "level_source": "wowhead"
+      }
+    ],
+    "270012": [
+      {
+        "quest_id": 167,
+        "name": "Oh Brother...",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 15,
+        "level": 20,
+        "level_source": "wowhead"
+      }
+    ],
+    "270013": [
+      {
+        "quest_id": 167,
+        "name": "Oh Brother...",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 15,
+        "level": 20,
+        "level_source": "wowhead"
+      }
+    ],
+    "270014": [
+      {
+        "quest_id": 5321,
+        "name": "The Sleeper Has Awakened",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 17,
+        "level": 20,
         "level_source": "wowhead"
       }
     ],
@@ -419133,6 +420051,28 @@
         "level_source": "wowhead"
       }
     ],
+    "270019": [
+      {
+        "quest_id": 256,
+        "name": "WANTED: Chok'sul",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 17,
+        "level": 22,
+        "level_source": "wowhead"
+      }
+    ],
+    "270020": [
+      {
+        "quest_id": 442,
+        "name": "Assault on Fenris Isle",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 10,
+        "level": 24,
+        "level_source": "wowhead"
+      }
+    ],
     "270021": [
       {
         "quest_id": 1275,
@@ -419140,6 +420080,17 @@
         "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 18,
+        "level": 24,
+        "level_source": "wowhead"
+      }
+    ],
+    "270022": [
+      {
+        "quest_id": 943,
+        "name": "The Absent Minded Prospector",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 15,
         "level": 24,
         "level_source": "wowhead"
       }
@@ -419185,6 +420136,17 @@
         "faction_source": "classic-db",
         "min_level": 22,
         "level": 25,
+        "level_source": "wowhead"
+      }
+    ],
+    "270028": [
+      {
+        "quest_id": 6283,
+        "name": "Bloodfury Bloodline",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 18,
+        "level": 26,
         "level_source": "wowhead"
       }
     ],
@@ -419250,11 +420212,66 @@
         "level_source": "wowhead"
       }
     ],
+    "270033": [
+      {
+        "quest_id": 249,
+        "name": "Morganth",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 20,
+        "level": 27,
+        "level_source": "wowhead"
+      }
+    ],
+    "270034": [
+      {
+        "quest_id": 249,
+        "name": "Morganth",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 20,
+        "level": 27,
+        "level_source": "wowhead"
+      }
+    ],
+    "270035": [
+      {
+        "quest_id": 1059,
+        "name": "Reclaiming the Charred Vale",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 20,
+        "level": 27,
+        "level_source": "wowhead"
+      }
+    ],
+    "270038": [
+      {
+        "quest_id": 3514,
+        "name": "Horde Presence",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 15,
+        "level": 29,
+        "level_source": "wowhead"
+      }
+    ],
     "270042": [
       {
         "quest_id": 2904,
         "name": "A Fine Mess",
         "faction": "both",
+        "faction_source": "classic-db",
+        "min_level": 20,
+        "level": 30,
+        "level_source": "wowhead"
+      }
+    ],
+    "270044": [
+      {
+        "quest_id": 253,
+        "name": "Bride of the Embalmer",
+        "faction": "alliance",
         "faction_source": "classic-db",
         "min_level": 20,
         "level": 30,
@@ -419272,6 +420289,37 @@
         "level_source": "wowhead"
       }
     ],
+    "273875": [
+      {
+        "quest_id": 92646,
+        "name": "Confront Lorthuna",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 12,
+        "level_source": "wowhead"
+      },
+      {
+        "quest_id": 93835,
+        "name": "Confront Lorthuna",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 12,
+        "level_source": "wowhead"
+      }
+    ],
+    "273876": [
+      {
+        "quest_id": 92640,
+        "name": "Desperate Times",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
     "275290": [
       {
         "quest_id": 94003,
@@ -419280,6 +420328,72 @@
         "faction_source": "item",
         "min_level": 10,
         "level": 10,
+        "level_source": "wowhead"
+      }
+    ],
+    "276685": [
+      {
+        "quest_id": 91777,
+        "name": "Rare Books",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 1,
+        "level": 7,
+        "level_source": "wowhead"
+      }
+    ],
+    "276695": [
+      {
+        "quest_id": 9,
+        "name": "The Killing Fields",
+        "faction": "alliance",
+        "faction_source": "classic-db",
+        "min_level": 8,
+        "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "276720": [
+      {
+        "quest_id": 549,
+        "name": "WANTED: Syndicate Personnel",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 17,
+        "level": 22,
+        "level_source": "wowhead"
+      }
+    ],
+    "276722": [
+      {
+        "quest_id": 442,
+        "name": "Assault on Fenris Isle",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 10,
+        "level": 24,
+        "level_source": "wowhead"
+      }
+    ],
+    "276723": [
+      {
+        "quest_id": 451,
+        "name": "A Recipe For Death",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 9,
+        "level": 18,
+        "level_source": "wowhead"
+      }
+    ],
+    "276724": [
+      {
+        "quest_id": 501,
+        "name": "Elixir of Pain",
+        "faction": "horde",
+        "faction_source": "classic-db",
+        "min_level": 21,
+        "level": 24,
         "level_source": "wowhead"
       }
     ],
@@ -419363,6 +420477,94 @@
         "level_source": "wowhead"
       }
     ],
+    "277203": [
+      {
+        "quest_id": 78150,
+        "name": "Friend of the Library",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 1,
+        "level": 20,
+        "level_source": "wowhead"
+      }
+    ],
+    "277204": [
+      {
+        "quest_id": 78150,
+        "name": "Friend of the Library",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 1,
+        "level": 20,
+        "level_source": "wowhead"
+      }
+    ],
+    "277210": [
+      {
+        "quest_id": 78307,
+        "name": "The Horn of Xelthos",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 1,
+        "level": 23,
+        "level_source": "wowhead"
+      }
+    ],
+    "277218": [
+      {
+        "quest_id": 95999,
+        "name": "WANTED: Incinerator Gar'im",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 16,
+        "level": 25,
+        "level_source": "wowhead"
+      }
+    ],
+    "277226": [
+      {
+        "quest_id": 95999,
+        "name": "WANTED: Incinerator Gar'im",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 16,
+        "level": 25,
+        "level_source": "wowhead"
+      }
+    ],
+    "277234": [
+      {
+        "quest_id": 95999,
+        "name": "WANTED: Incinerator Gar'im",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 16,
+        "level": 25,
+        "level_source": "wowhead"
+      }
+    ],
+    "277247": [
+      {
+        "quest_id": 98545,
+        "name": "Leonid's Letter",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 10,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
+    "277255": [
+      {
+        "quest_id": 98545,
+        "name": "Leonid's Letter",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 10,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
     "277286": [
       {
         "quest_id": 97250,
@@ -419393,6 +420595,28 @@
         "faction_source": "item",
         "min_level": 18,
         "level": 23,
+        "level_source": "wowhead"
+      }
+    ],
+    "277988": [
+      {
+        "quest_id": 76240,
+        "name": "Stalk With The Earthmother",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 4,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "278002": [
+      {
+        "quest_id": 76240,
+        "name": "Stalk With The Earthmother",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 4,
+        "level": 11,
         "level_source": "wowhead"
       }
     ],
@@ -419632,6 +420856,347 @@
         "level_source": "wowhead"
       }
     ],
+    "281250": [
+      {
+        "quest_id": 940,
+        "name": "Teldrassil",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "281251": [
+      {
+        "quest_id": 86574,
+        "name": "Stonetalon Supply Run",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 20,
+        "level": 24,
+        "level_source": "wowhead"
+      }
+    ],
+    "281252": [
+      {
+        "quest_id": 86576,
+        "name": "Bloodfury Trinkets",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 18,
+        "level": 26,
+        "level_source": "wowhead"
+      }
+    ],
+    "281253": [
+      {
+        "quest_id": 86585,
+        "name": "Banner of the Fallen",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 10,
+        "level": 17,
+        "level_source": "wowhead"
+      }
+    ],
+    "281254": [
+      {
+        "quest_id": 86585,
+        "name": "Banner of the Fallen",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 10,
+        "level": 17,
+        "level_source": "wowhead"
+      }
+    ],
+    "281256": [
+      {
+        "quest_id": 86614,
+        "name": "Silver of the Waves",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 13,
+        "level": 20,
+        "level_source": "wowhead"
+      }
+    ],
+    "281257": [
+      {
+        "quest_id": 86758,
+        "name": "Twisting the Knife",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 12,
+        "level": 16,
+        "level_source": "wowhead"
+      }
+    ],
+    "281265": [
+      {
+        "quest_id": 95981,
+        "name": "Watching the Roads",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 10,
+        "level": 20,
+        "level_source": "wowhead"
+      }
+    ],
+    "281267": [
+      {
+        "quest_id": 97223,
+        "name": "Bloodtalon Matriarch",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 8,
+        "level_source": "wowhead"
+      }
+    ],
+    "281269": [
+      {
+        "quest_id": 97326,
+        "name": "Rocks to Rests",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "281270": [
+      {
+        "quest_id": 97326,
+        "name": "Rocks to Rests",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "281271": [
+      {
+        "quest_id": 97326,
+        "name": "Rocks to Rests",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "281272": [
+      {
+        "quest_id": 97326,
+        "name": "Rocks to Rests",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "281273": [
+      {
+        "quest_id": 97326,
+        "name": "Rocks to Rests",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 5,
+        "level": 15,
+        "level_source": "wowhead"
+      }
+    ],
+    "281274": [
+      {
+        "quest_id": 97282,
+        "name": "Stormy Potential",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "281283": [
+      {
+        "quest_id": 97558,
+        "name": "Hides for the Forsaken",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "281284": [
+      {
+        "quest_id": 97558,
+        "name": "Hides for the Forsaken",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "281285": [
+      {
+        "quest_id": 97558,
+        "name": "Hides for the Forsaken",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 6,
+        "level": 11,
+        "level_source": "wowhead"
+      }
+    ],
+    "281289": [
+      {
+        "quest_id": 98025,
+        "name": "WANTED: Jai'vhanel",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 10,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
+    "281291": [
+      {
+        "quest_id": 98028,
+        "name": "Baron Marinous",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 17,
+        "level": 21,
+        "level_source": "wowhead"
+      }
+    ],
+    "281292": [
+      {
+        "quest_id": 98028,
+        "name": "Baron Marinous",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 17,
+        "level": 21,
+        "level_source": "wowhead"
+      }
+    ],
+    "281293": [
+      {
+        "quest_id": 98095,
+        "name": "Valuable Vantages",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 19,
+        "level": 25,
+        "level_source": "wowhead"
+      }
+    ],
+    "281294": [
+      {
+        "quest_id": 98095,
+        "name": "Valuable Vantages",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 19,
+        "level": 25,
+        "level_source": "wowhead"
+      }
+    ],
+    "281296": [
+      {
+        "quest_id": 98191,
+        "name": "A Friend of the Family",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 20,
+        "level": 25,
+        "level_source": "wowhead"
+      }
+    ],
+    "281297": [
+      {
+        "quest_id": 98191,
+        "name": "A Friend of the Family",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 20,
+        "level": 25,
+        "level_source": "wowhead"
+      }
+    ],
+    "281315": [
+      {
+        "quest_id": 98298,
+        "name": "Arugal's Folly",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 9,
+        "level": 16,
+        "level_source": "wowhead"
+      }
+    ],
+    "281318": [
+      {
+        "quest_id": 98208,
+        "name": "Bloom of the Heavens",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 22,
+        "level": 29,
+        "level_source": "wowhead"
+      }
+    ],
+    "281634": [
+      {
+        "quest_id": 79536,
+        "name": "Greater Friend of the Library",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 20,
+        "level": 35,
+        "level_source": "wowhead"
+      }
+    ],
+    "281635": [
+      {
+        "quest_id": 79536,
+        "name": "Greater Friend of the Library",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 20,
+        "level": 35,
+        "level_source": "wowhead"
+      }
+    ],
+    "281673": [
+      {
+        "quest_id": 95885,
+        "name": "The Offering of Blood",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 20,
+        "level": 23,
+        "level_source": "wowhead"
+      }
+    ],
+    "282064": [
+      {
+        "quest_id": 98545,
+        "name": "Leonid's Letter",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 10,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
     "282284": [
       {
         "quest_id": 98403,
@@ -419640,6 +421205,28 @@
         "faction_source": "item",
         "min_level": 4,
         "level": 12,
+        "level_source": "wowhead"
+      }
+    ],
+    "286426": [
+      {
+        "quest_id": 93739,
+        "name": "Exploring the Horde",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 13,
+        "level_source": "wowhead"
+      }
+    ],
+    "286427": [
+      {
+        "quest_id": 93963,
+        "name": "Exploring the Alliance",
+        "faction": "both",
+        "faction_source": "item",
+        "min_level": 7,
+        "level": 13,
         "level_source": "wowhead"
       }
     ],

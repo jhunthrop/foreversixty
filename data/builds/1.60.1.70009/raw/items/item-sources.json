@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-30T00:33:09.339427+00:00",
+ "generated_at": "2026-09-30T01:33:26.382176+00:00",
  "source": {
   "wowhead": {
    "note": "scraped per item id, ONLY for ids the fork database names no source for at all; see pipeline.wowhead_item_sources for the URL pattern, the four listviews read, and the politeness rules."
@@ -613995,6 +613995,753 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T13:23:05.326097+00:00"
   },
+  "202256": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "205218": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "205420": {
+   "dropped_by": [
+    {
+     "npc_id": 38,
+     "name": "Defias Thug",
+     "zone_ids": [
+      12
+     ],
+     "min_level": 3,
+     "max_level": 4,
+     "chance": 1.1798
+    },
+    {
+     "npc_id": 706,
+     "name": "Frostmane Troll Whelp",
+     "zone_ids": [
+      1
+     ],
+     "min_level": 3,
+     "max_level": 4,
+     "chance": 0.6924
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233335,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1537,
+      1657,
+      1,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206376": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206381": {
+   "dropped_by": [
+    {
+     "npc_id": 2953,
+     "name": "Bristleback Shaman",
+     "zone_ids": [
+      215
+     ],
+     "min_level": 3,
+     "max_level": 4,
+     "chance": 4.8222
+    },
+    {
+     "npc_id": 3124,
+     "name": "Scorpid Worker",
+     "zone_ids": [
+      14
+     ],
+     "min_level": 3,
+     "max_level": 3,
+     "chance": 0.9567
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206382": {
+   "dropped_by": [
+    {
+     "npc_id": 1972,
+     "name": "Grimson the Pale",
+     "zone_ids": [
+      130
+     ],
+     "min_level": 15,
+     "max_level": 15,
+     "chance": 22.2222
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206383": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206385": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206386": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206387": {
+   "dropped_by": [
+    {
+     "npc_id": 2373,
+     "name": "Mudsnout Shaman",
+     "zone_ids": [
+      267
+     ],
+     "min_level": 27,
+     "max_level": 28,
+     "chance": 33.3333
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206388": {
+   "dropped_by": [
+    {
+     "npc_id": 208275,
+     "name": "Frozen Makrura",
+     "zone_ids": [
+      14
+     ],
+     "min_level": 9,
+     "max_level": 9,
+     "chance": 16.6667
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206389": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206390": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206391": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "206954": {
+   "dropped_by": [
+    {
+     "npc_id": 2960,
+     "name": "Prairie Wolf Alpha",
+     "zone_ids": [
+      215,
+      1638
+     ],
+     "min_level": 9,
+     "max_level": 10,
+     "chance": 0.5054
+    },
+    {
+     "npc_id": 2964,
+     "name": "Windfury Sorceress",
+     "zone_ids": [
+      215
+     ],
+     "min_level": 9,
+     "max_level": 10,
+     "chance": 0.1638
+    },
+    {
+     "npc_id": 2965,
+     "name": "Windfury Matriarch",
+     "zone_ids": [
+      215,
+      1638
+     ],
+     "min_level": 10,
+     "max_level": 11,
+     "chance": 0.1474
+    },
+    {
+     "npc_id": 2971,
+     "name": "Taloned Swoop",
+     "zone_ids": [
+      215,
+      1638
+     ],
+     "min_level": 8,
+     "max_level": 10,
+     "chance": 0.6246
+    },
+    {
+     "npc_id": 2979,
+     "name": "Venture Co. Supervisor",
+     "zone_ids": [
+      215
+     ],
+     "min_level": 9,
+     "max_level": 10,
+     "chance": 1.2687
+    },
+    {
+     "npc_id": 3232,
+     "name": "Bristleback Interloper",
+     "zone_ids": [
+      215
+     ],
+     "min_level": 9,
+     "max_level": 10,
+     "chance": 1.4916
+    },
+    {
+     "npc_id": 3566,
+     "name": "Flatland Prowler",
+     "zone_ids": [
+      215,
+      1638
+     ],
+     "min_level": 9,
+     "max_level": 9,
+     "chance": 0.3878
+    },
+    {
+     "npc_id": 7318,
+     "name": "Rageclaw",
+     "zone_ids": [
+      141
+     ],
+     "min_level": 10,
+     "max_level": 10,
+     "chance": 28.7535
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233335,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1537,
+      1657,
+      1,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "208414": {
+   "dropped_by": [
+    {
+     "npc_id": 1989,
+     "name": "Grellkin",
+     "zone_ids": [
+      141
+     ],
+     "min_level": 3,
+     "max_level": 4,
+     "chance": 4.0
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233335,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1537,
+      1657,
+      1,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "208689": {
+   "dropped_by": [
+    {
+     "npc_id": 117,
+     "name": "Riverpaw Gnoll",
+     "zone_ids": [
+      40
+     ],
+     "min_level": 11,
+     "max_level": 12,
+     "chance": 0.3503
+    },
+    {
+     "npc_id": 123,
+     "name": "Riverpaw Mongrel",
+     "zone_ids": [
+      40
+     ],
+     "min_level": 13,
+     "max_level": 14,
+     "chance": 0.2155
+    },
+    {
+     "npc_id": 124,
+     "name": "Riverpaw Brute",
+     "zone_ids": [
+      40
+     ],
+     "min_level": 15,
+     "max_level": 16,
+     "chance": 0.436
+    },
+    {
+     "npc_id": 500,
+     "name": "Riverpaw Scout",
+     "zone_ids": [
+      40
+     ],
+     "min_level": 12,
+     "max_level": 13,
+     "chance": 0.2552
+    },
+    {
+     "npc_id": 1065,
+     "name": "Riverpaw Shaman",
+     "zone_ids": [
+      40
+     ],
+     "min_level": 12,
+     "max_level": 13,
+     "chance": 6.6667
+    },
+    {
+     "npc_id": 1972,
+     "name": "Grimson the Pale",
+     "zone_ids": [
+      130
+     ],
+     "min_level": 15,
+     "max_level": 15,
+     "chance": 1.5936
+    },
+    {
+     "npc_id": 6788,
+     "name": "Den Mother",
+     "zone_ids": [
+      148
+     ],
+     "min_level": 18,
+     "max_level": 19,
+     "chance": 19.5876
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233335,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1537,
+      1657,
+      1,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "208849": {
+   "dropped_by": [
+    {
+     "npc_id": 210537,
+     "name": "Undying Laborer",
+     "zone_ids": [
+      40,
+      12,
+      1519
+     ],
+     "min_level": 14,
+     "max_level": 15,
+     "chance": 14.2857
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233335,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1537,
+      1657,
+      1,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "208851": {
+   "dropped_by": [
+    {
+     "npc_id": 572,
+     "name": "Leprithus",
+     "zone_ids": [
+      40
+     ],
+     "min_level": 19,
+     "max_level": 19,
+     "chance": 25.0
+    },
+    {
+     "npc_id": 846,
+     "name": "Ghoul",
+     "zone_ids": [
+      40
+     ],
+     "min_level": 14,
+     "max_level": 15,
+     "chance": 7.6923
+    },
+    {
+     "npc_id": 7050,
+     "name": "Defias Drone",
+     "zone_ids": [
+      40,
+      10
+     ],
+     "min_level": 22,
+     "max_level": 22,
+     "chance": 13.5135
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233335,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1537,
+      1657,
+      1,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "210195": {
+   "dropped_by": [
+    {
+     "npc_id": 1769,
+     "name": "Moonrage Whitescalp",
+     "zone_ids": [
+      130
+     ],
+     "min_level": 10,
+     "max_level": 11,
+     "chance": 0.996
+    },
+    {
+     "npc_id": 1770,
+     "name": "Moonrage Darkrunner",
+     "zone_ids": [
+      130
+     ],
+     "min_level": 11,
+     "max_level": 12,
+     "chance": 0.5089
+    },
+    {
+     "npc_id": 1924,
+     "name": "Moonrage Bloodhowler",
+     "zone_ids": [
+      130
+     ],
+     "min_level": 15,
+     "max_level": 16,
+     "chance": 12.5
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "210534": {
+   "dropped_by": [
+    {
+     "npc_id": 11910,
+     "name": "Grimtotem Ruffian",
+     "zone_ids": [
+      406
+     ],
+     "min_level": 14,
+     "max_level": 15,
+     "chance": 2.2115
+    },
+    {
+     "npc_id": 11911,
+     "name": "Grimtotem Mercenary",
+     "zone_ids": [
+      406
+     ],
+     "min_level": 14,
+     "max_level": 15,
+     "chance": 2.5397
+    },
+    {
+     "npc_id": 11912,
+     "name": "Grimtotem Brute",
+     "zone_ids": [
+      406
+     ],
+     "min_level": 15,
+     "max_level": 16,
+     "chance": 1.8458
+    },
+    {
+     "npc_id": 11913,
+     "name": "Grimtotem Sorcerer",
+     "zone_ids": [
+      406
+     ],
+     "min_level": 15,
+     "max_level": 16,
+     "chance": 1.7765
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233335,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1537,
+      1657,
+      1,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "210781": {
    "dropped_by": [],
    "sold_by": [],
@@ -614006,6 +614753,59 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
+  },
+  "211472": {
+   "dropped_by": [
+    {
+     "npc_id": 215,
+     "name": "Defias Night Runner",
+     "zone_ids": [
+      10
+     ],
+     "min_level": 24,
+     "max_level": 25,
+     "chance": 5.8728
+    },
+    {
+     "npc_id": 909,
+     "name": "Defias Night Blade",
+     "zone_ids": [
+      10
+     ],
+     "min_level": 25,
+     "max_level": 26,
+     "chance": 3.5256
+    },
+    {
+     "npc_id": 910,
+     "name": "Defias Enchanter",
+     "zone_ids": [
+      10
+     ],
+     "min_level": 26,
+     "max_level": 27,
+     "chance": 2.3965
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233335,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1537,
+      1657,
+      1,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "211500": {
    "dropped_by": [],
@@ -614261,6 +615061,33 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
+  },
+  "213513": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "213594": {
+   "dropped_by": [
+    {
+     "npc_id": 217418,
+     "name": "Zai'enki",
+     "zone_ids": [
+      400
+     ],
+     "min_level": 28,
+     "max_level": 28,
+     "chance": 100.0
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "215365": {
    "dropped_by": [],
@@ -617096,6 +617923,92 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
   },
+  "220915": {
+   "dropped_by": [
+    {
+     "npc_id": 5465,
+     "name": "Land Rager",
+     "zone_ids": [
+      440
+     ],
+     "min_level": 45,
+     "max_level": 47,
+     "chance": 2.5
+    },
+    {
+     "npc_id": 5481,
+     "name": "Thistleshrub Dew Collector",
+     "zone_ids": [
+      440
+     ],
+     "min_level": 47,
+     "max_level": 48,
+     "chance": 2.4778
+    },
+    {
+     "npc_id": 5485,
+     "name": "Thistleshrub Rootshaper",
+     "zone_ids": [
+      440
+     ],
+     "min_level": 49,
+     "max_level": 50,
+     "chance": 5.272
+    },
+    {
+     "npc_id": 5490,
+     "name": "Gnarled Thistleshrub",
+     "zone_ids": [
+      440
+     ],
+     "min_level": 48,
+     "max_level": 49,
+     "chance": 4.3365
+    },
+    {
+     "npc_id": 9396,
+     "name": "Ground Pounder",
+     "zone_ids": [
+      440
+     ],
+     "min_level": 41,
+     "max_level": 43,
+     "chance": 1.4354
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233335,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1537,
+      1657,
+      1,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "223073": {
    "dropped_by": [],
    "sold_by": [
@@ -617241,6 +618154,39 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
+  },
+  "225838": {
+   "dropped_by": [
+    {
+     "npc_id": 7158,
+     "name": "Deadwood Shaman",
+     "zone_ids": [
+      361
+     ],
+     "min_level": 53,
+     "max_level": 54,
+     "chance": 0.0864
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "227044": {
    "dropped_by": [],
@@ -618502,6 +619448,82 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T00:33:09.338509+00:00"
   },
+  "227444": {
+   "dropped_by": [
+    {
+     "npc_id": 6505,
+     "name": "Ravasaur",
+     "zone_ids": [
+      490
+     ],
+     "min_level": 48,
+     "max_level": 49,
+     "chance": 1.5504
+    },
+    {
+     "npc_id": 6506,
+     "name": "Ravasaur Runner",
+     "zone_ids": [
+      490
+     ],
+     "min_level": 49,
+     "max_level": 50,
+     "chance": 1.7032
+    },
+    {
+     "npc_id": 6507,
+     "name": "Ravasaur Hunter",
+     "zone_ids": [
+      490
+     ],
+     "min_level": 49,
+     "max_level": 50,
+     "chance": 2.2936
+    },
+    {
+     "npc_id": 6508,
+     "name": "Venomhide Ravasaur",
+     "zone_ids": [
+      490
+     ],
+     "min_level": 50,
+     "max_level": 51,
+     "chance": 3.6055
+    }
+   ],
+   "sold_by": [
+    {
+     "npc_id": 233335,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1537,
+      1657,
+      1,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 233428,
+     "name": "Rune Broker",
+     "zone_ids": [
+      1497,
+      1637,
+      1638,
+      -1
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "227947": {
    "dropped_by": [],
    "sold_by": [],
@@ -618533,6 +619555,118 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
+  },
+  "246164": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 91285,
+     "name": "Murlocs at the Gates",
+     "min_level": 7,
+     "level": 11,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "246165": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 91285,
+     "name": "Murlocs at the Gates",
+     "min_level": 7,
+     "level": 11,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "246265": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 91316,
+     "name": "Making Repairs",
+     "min_level": 8,
+     "level": 11,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "248005": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 91777,
+     "name": "Rare Books",
+     "min_level": 1,
+     "level": 7,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "248006": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 91777,
+     "name": "Rare Books",
+     "min_level": 1,
+     "level": 7,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "248007": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 91777,
+     "name": "Rare Books",
+     "min_level": 1,
+     "level": 7,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "248008": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 91777,
+     "name": "Rare Books",
+     "min_level": 1,
+     "level": 7,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "249144": {
    "dropped_by": [],
@@ -618641,6 +619775,42 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
+  },
+  "249396": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "enchanting"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "249397": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "enchanting"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "249398": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [
+    {
+     "profession": "enchanting"
+    }
+   ],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "249453": {
    "dropped_by": [],
@@ -623994,6 +625164,126 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T00:33:09.338509+00:00"
   },
+  "254779": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "257255": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93318,
+     "name": "WANTED: Vulgara the Insatiable",
+     "min_level": 4,
+     "level": 9,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "257342": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92640,
+     "name": "Desperate Times",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "257343": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92880,
+     "name": "Return to Valanaar",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "257344": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92640,
+     "name": "Desperate Times",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "257345": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92880,
+     "name": "Return to Valanaar",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "257346": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92880,
+     "name": "Return to Valanaar",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "257943": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93318,
+     "name": "WANTED: Vulgara the Insatiable",
+     "min_level": 4,
+     "level": 9,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "263005": {
    "dropped_by": [],
    "sold_by": [],
@@ -624075,6 +625365,515 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T18:00:47.820347+00:00"
   },
+  "263305": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93746,
+     "name": "A Firm Response",
+     "min_level": 4,
+     "level": 9,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263306": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93165,
+     "name": "Mercy Falls on Deaf Ears",
+     "min_level": 8,
+     "level": 13,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263307": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93165,
+     "name": "Mercy Falls on Deaf Ears",
+     "min_level": 8,
+     "level": 13,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263308": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93165,
+     "name": "Mercy Falls on Deaf Ears",
+     "min_level": 8,
+     "level": 13,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263309": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93172,
+     "name": "Free the Hollows",
+     "min_level": 8,
+     "level": 13,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263310": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93172,
+     "name": "Free the Hollows",
+     "min_level": 8,
+     "level": 13,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263311": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93172,
+     "name": "Free the Hollows",
+     "min_level": 8,
+     "level": 13,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263312": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92703,
+     "name": "Deliver the News",
+     "min_level": 5,
+     "level": 9,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263313": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92703,
+     "name": "Deliver the News",
+     "min_level": 5,
+     "level": 9,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263314": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92703,
+     "name": "Deliver the News",
+     "min_level": 5,
+     "level": 9,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263329": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92683,
+     "name": "Flutterfly Dust",
+     "min_level": 5,
+     "level": 9,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263330": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92644,
+     "name": "Unfortunate News",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263332": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92644,
+     "name": "Unfortunate News",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263333": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92644,
+     "name": "Unfortunate News",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263335": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92645,
+     "name": "Breaking the Breaker",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263336": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92645,
+     "name": "Breaking the Breaker",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263337": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92645,
+     "name": "Breaking the Breaker",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263338": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93320,
+     "name": "Tower Defense",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263339": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93320,
+     "name": "Tower Defense",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263340": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93320,
+     "name": "Tower Defense",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263401": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92834,
+     "name": "Avenged Tenfold",
+     "min_level": 6,
+     "level": 11,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263402": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92834,
+     "name": "Avenged Tenfold",
+     "min_level": 6,
+     "level": 11,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263403": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92834,
+     "name": "Avenged Tenfold",
+     "min_level": 6,
+     "level": 11,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263404": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92840,
+     "name": "Catching Wind",
+     "min_level": 5,
+     "level": 11,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263405": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92646,
+     "name": "Confront Lorthuna",
+     "min_level": 7,
+     "level": 12,
+     "faction": "horde"
+    },
+    {
+     "quest_id": 93835,
+     "name": "Confront Lorthuna",
+     "min_level": 7,
+     "level": 12,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263406": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92646,
+     "name": "Confront Lorthuna",
+     "min_level": 7,
+     "level": 12,
+     "faction": "horde"
+    },
+    {
+     "quest_id": 93835,
+     "name": "Confront Lorthuna",
+     "min_level": 7,
+     "level": 12,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263407": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92646,
+     "name": "Confront Lorthuna",
+     "min_level": 7,
+     "level": 12,
+     "faction": "horde"
+    },
+    {
+     "quest_id": 93835,
+     "name": "Confront Lorthuna",
+     "min_level": 7,
+     "level": 12,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263430": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93797,
+     "name": "Boughs in the Wind",
+     "min_level": 10,
+     "level": 10,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263431": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263432": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263434": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263435": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "263436": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "263935": {
    "dropped_by": [],
    "sold_by": [],
@@ -624134,6 +625933,22 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
   },
+  "268484": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95126,
+     "name": "The Moonsilver Blade",
+     "min_level": 20,
+     "level": 25,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "269501": {
    "dropped_by": [],
    "sold_by": [],
@@ -624158,6 +625973,86 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T00:33:09.338509+00:00"
   },
+  "269716": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95508,
+     "name": "Unwelcome Guests",
+     "min_level": 14,
+     "level": 18,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "269717": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95508,
+     "name": "Unwelcome Guests",
+     "min_level": 14,
+     "level": 18,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "269742": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95508,
+     "name": "Unwelcome Guests",
+     "min_level": 14,
+     "level": 18,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270000": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 176,
+     "name": "WANTED: \"Hogger\"",
+     "min_level": 5,
+     "level": 11,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270001": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270002": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "270003": {
    "dropped_by": [],
    "sold_by": [],
@@ -624174,6 +626069,22 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T18:00:47.820347+00:00"
   },
+  "270004": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 982,
+     "name": "Deep Ocean, Vast Sea",
+     "min_level": 13,
+     "level": 17,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "270005": {
    "dropped_by": [],
    "sold_by": [],
@@ -624189,6 +626100,38 @@
    ],
    "source": "wowhead",
    "fetched_at": "2026-09-29T18:00:47.820347+00:00"
+  },
+  "270006": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 14,
+     "name": "The People's Militia",
+     "min_level": 9,
+     "level": 17,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270007": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 168,
+     "name": "Collecting Memories",
+     "min_level": 14,
+     "level": 18,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "270008": {
    "dropped_by": [],
@@ -624221,6 +626164,86 @@
    ],
    "source": "wowhead",
    "fetched_at": "2026-09-29T18:00:47.820347+00:00"
+  },
+  "270010": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 6481,
+     "name": "Earthen Arise",
+     "min_level": 14,
+     "level": 20,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270011": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 898,
+     "name": "Free From the Hold",
+     "min_level": 13,
+     "level": 20,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270012": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 167,
+     "name": "Oh Brother...",
+     "min_level": 15,
+     "level": 20,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270013": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 167,
+     "name": "Oh Brother...",
+     "min_level": 15,
+     "level": 20,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270014": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 5321,
+     "name": "The Sleeper Has Awakened",
+     "min_level": 17,
+     "level": 20,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "270015": {
    "dropped_by": [],
@@ -624270,6 +626293,38 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T18:00:47.820347+00:00"
   },
+  "270019": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 256,
+     "name": "WANTED: Chok'sul",
+     "min_level": 17,
+     "level": 22,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270020": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 442,
+     "name": "Assault on Fenris Isle",
+     "min_level": 10,
+     "level": 24,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "270021": {
    "dropped_by": [],
    "sold_by": [],
@@ -624285,6 +626340,22 @@
    ],
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
+  },
+  "270022": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 943,
+     "name": "The Absent Minded Prospector",
+     "min_level": 15,
+     "level": 24,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "270023": {
    "dropped_by": [],
@@ -624349,6 +626420,22 @@
    ],
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
+  },
+  "270028": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 6283,
+     "name": "Bloodfury Bloodline",
+     "min_level": 18,
+     "level": 26,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "270029": {
    "dropped_by": [],
@@ -624428,6 +626515,94 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
   },
+  "270033": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 249,
+     "name": "Morganth",
+     "min_level": 20,
+     "level": 27,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270034": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 249,
+     "name": "Morganth",
+     "min_level": 20,
+     "level": 27,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270035": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 1059,
+     "name": "Reclaiming the Charred Vale",
+     "min_level": 20,
+     "level": 27,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270036": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270037": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270038": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 3514,
+     "name": "Horde Presence",
+     "min_level": 15,
+     "level": 29,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270039": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "270042": {
    "dropped_by": [],
    "sold_by": [],
@@ -624444,6 +626619,22 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
   },
+  "270044": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 253,
+     "name": "Bride of the Embalmer",
+     "min_level": 20,
+     "level": 30,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "270045": {
    "dropped_by": [],
    "sold_by": [],
@@ -624459,6 +626650,30 @@
    ],
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
+  },
+  "270046": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270048": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "270049": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "270227": {
    "dropped_by": [],
@@ -624700,6 +626915,46 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
   },
+  "271664": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "271667": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "271670": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "271716": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "271719": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "271720": {
    "dropped_by": [],
    "sold_by": [],
@@ -624707,6 +626962,30 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T20:27:14.213726+00:00"
+  },
+  "271732": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "271740": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "271766": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "271794": {
    "dropped_by": [],
@@ -628036,6 +630315,45 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T20:27:14.213726+00:00"
   },
+  "273875": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92646,
+     "name": "Confront Lorthuna",
+     "min_level": 7,
+     "level": 12,
+     "faction": "horde"
+    },
+    {
+     "quest_id": 93835,
+     "name": "Confront Lorthuna",
+     "min_level": 7,
+     "level": 12,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "273876": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 92640,
+     "name": "Desperate Times",
+     "min_level": 6,
+     "level": 11,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "274042": {
    "dropped_by": [],
    "sold_by": [],
@@ -629584,6 +631902,118 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
   },
+  "276685": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 91777,
+     "name": "Rare Books",
+     "min_level": 1,
+     "level": 7,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "276694": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "276695": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 9,
+     "name": "The Killing Fields",
+     "min_level": 8,
+     "level": 15,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "276720": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 549,
+     "name": "WANTED: Syndicate Personnel",
+     "min_level": 17,
+     "level": 22,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "276722": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 442,
+     "name": "Assault on Fenris Isle",
+     "min_level": 10,
+     "level": 24,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "276723": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 451,
+     "name": "A Recipe For Death",
+     "min_level": 9,
+     "level": 18,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "276724": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 501,
+     "name": "Elixir of Pain",
+     "min_level": 21,
+     "level": 24,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "276727": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "276765": {
    "dropped_by": [],
    "sold_by": [],
@@ -630980,6 +633410,54 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
   },
+  "277203": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 78150,
+     "name": "Friend of the Library",
+     "min_level": 1,
+     "level": 20,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "277204": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 78150,
+     "name": "Friend of the Library",
+     "min_level": 1,
+     "level": 20,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "277210": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 78307,
+     "name": "The Horn of Xelthos",
+     "min_level": 1,
+     "level": 23,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "277212": {
    "dropped_by": [],
    "sold_by": [],
@@ -631020,6 +633498,30 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
   },
+  "277218": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95999,
+     "name": "WANTED: Incinerator Gar'im",
+     "min_level": 16,
+     "level": 25,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "277219": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "277222": {
    "dropped_by": [],
    "sold_by": [],
@@ -631035,6 +633537,30 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
+  },
+  "277226": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95999,
+     "name": "WANTED: Incinerator Gar'im",
+     "min_level": 16,
+     "level": 25,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "277227": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "277228": {
    "dropped_by": [],
@@ -631075,6 +633601,22 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
+  },
+  "277234": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95999,
+     "name": "WANTED: Incinerator Gar'im",
+     "min_level": 16,
+     "level": 25,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "277237": {
    "dropped_by": [],
@@ -631148,6 +633690,22 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
   },
+  "277247": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98545,
+     "name": "Leonid's Letter",
+     "min_level": 10,
+     "level": 13,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "277248": {
    "dropped_by": [],
    "sold_by": [],
@@ -631164,6 +633722,22 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
   },
+  "277255": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98545,
+     "name": "Leonid's Letter",
+     "min_level": 10,
+     "level": 13,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "277256": {
    "dropped_by": [],
    "sold_by": [],
@@ -631171,6 +633745,14 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
+  },
+  "277257": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "277258": {
    "dropped_by": [],
@@ -631296,6 +633878,38 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T17:25:25.287750+00:00"
   },
+  "277988": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 76240,
+     "name": "Stalk With The Earthmother",
+     "min_level": 4,
+     "level": 11,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "278002": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 76240,
+     "name": "Stalk With The Earthmother",
+     "min_level": 4,
+     "level": 11,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "278017": {
    "dropped_by": [],
    "sold_by": [],
@@ -631319,6 +633933,30 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T17:25:25.287750+00:00"
+  },
+  "279388": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "279392": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "279393": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "279839": {
    "dropped_by": [],
@@ -631889,6 +634527,582 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T17:25:25.287750+00:00"
   },
+  "281250": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 940,
+     "name": "Teldrassil",
+     "min_level": 6,
+     "level": 11,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281251": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 86574,
+     "name": "Stonetalon Supply Run",
+     "min_level": 20,
+     "level": 24,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281252": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 86576,
+     "name": "Bloodfury Trinkets",
+     "min_level": 18,
+     "level": 26,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281253": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 86585,
+     "name": "Banner of the Fallen",
+     "min_level": 10,
+     "level": 17,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281254": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 86585,
+     "name": "Banner of the Fallen",
+     "min_level": 10,
+     "level": 17,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281256": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 86614,
+     "name": "Silver of the Waves",
+     "min_level": 13,
+     "level": 20,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281257": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 86758,
+     "name": "Twisting the Knife",
+     "min_level": 12,
+     "level": 16,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281263": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281264": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281265": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95981,
+     "name": "Watching the Roads",
+     "min_level": 10,
+     "level": 20,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281267": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97223,
+     "name": "Bloodtalon Matriarch",
+     "min_level": 5,
+     "level": 8,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281269": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97326,
+     "name": "Rocks to Rests",
+     "min_level": 5,
+     "level": 15,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281270": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97326,
+     "name": "Rocks to Rests",
+     "min_level": 5,
+     "level": 15,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281271": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97326,
+     "name": "Rocks to Rests",
+     "min_level": 5,
+     "level": 15,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281272": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97326,
+     "name": "Rocks to Rests",
+     "min_level": 5,
+     "level": 15,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281273": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97326,
+     "name": "Rocks to Rests",
+     "min_level": 5,
+     "level": 15,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281274": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97282,
+     "name": "Stormy Potential",
+     "min_level": 7,
+     "level": 11,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281283": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97558,
+     "name": "Hides for the Forsaken",
+     "min_level": 6,
+     "level": 11,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281284": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97558,
+     "name": "Hides for the Forsaken",
+     "min_level": 6,
+     "level": 11,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281285": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 97558,
+     "name": "Hides for the Forsaken",
+     "min_level": 6,
+     "level": 11,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281289": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98025,
+     "name": "WANTED: Jai'vhanel",
+     "min_level": 10,
+     "level": 13,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281290": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281291": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98028,
+     "name": "Baron Marinous",
+     "min_level": 17,
+     "level": 21,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281292": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98028,
+     "name": "Baron Marinous",
+     "min_level": 17,
+     "level": 21,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281293": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98095,
+     "name": "Valuable Vantages",
+     "min_level": 19,
+     "level": 25,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281294": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98095,
+     "name": "Valuable Vantages",
+     "min_level": 19,
+     "level": 25,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281295": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281296": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98191,
+     "name": "A Friend of the Family",
+     "min_level": 20,
+     "level": 25,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281297": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98191,
+     "name": "A Friend of the Family",
+     "min_level": 20,
+     "level": 25,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281304": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281305": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281306": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281307": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281309": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281310": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281312": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281313": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281314": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281315": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98298,
+     "name": "Arugal's Folly",
+     "min_level": 9,
+     "level": 16,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281318": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98208,
+     "name": "Bloom of the Heavens",
+     "min_level": 22,
+     "level": 29,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281319": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281320": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281321": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281323": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281324": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "281586": {
    "dropped_by": [],
    "sold_by": [],
@@ -631913,6 +635127,38 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T17:25:25.287750+00:00"
   },
+  "281634": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 79536,
+     "name": "Greater Friend of the Library",
+     "min_level": 20,
+     "level": 35,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281635": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 79536,
+     "name": "Greater Friend of the Library",
+     "min_level": 20,
+     "level": 35,
+     "faction": "both"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "281648": {
    "dropped_by": [],
    "sold_by": [],
@@ -631929,6 +635175,14 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T20:27:14.213726+00:00"
   },
+  "281660": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "281665": {
    "dropped_by": [],
    "sold_by": [],
@@ -631936,6 +635190,30 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
+  },
+  "281673": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 95885,
+     "name": "The Offering of Blood",
+     "min_level": 20,
+     "level": 23,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "281675": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "281685": {
    "dropped_by": [],
@@ -632395,6 +635673,22 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T23:57:41.450153+00:00"
+  },
+  "282064": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 98545,
+     "name": "Leonid's Letter",
+     "min_level": 10,
+     "level": 13,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "282070": {
    "dropped_by": [],
@@ -632982,6 +636276,22 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T18:00:47.820347+00:00"
   },
+  "284382": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "284383": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "284386": {
    "dropped_by": [],
    "sold_by": [],
@@ -633022,6 +636332,14 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
   },
+  "284574": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "284668": {
    "dropped_by": [],
    "sold_by": [],
@@ -633037,6 +636355,14 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
+  },
+  "284699": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "284700": {
    "dropped_by": [],
@@ -633635,6 +636961,38 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T18:00:47.820347+00:00"
   },
+  "286426": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93739,
+     "name": "Exploring the Horde",
+     "min_level": 7,
+     "level": 13,
+     "faction": "horde"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
+  "286427": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [
+    {
+     "quest_id": 93963,
+     "name": "Exploring the Alliance",
+     "min_level": 7,
+     "level": 13,
+     "faction": "alliance"
+    }
+   ],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
+  },
   "286533": {
    "dropped_by": [
     {
@@ -633811,6 +637169,25 @@
    ],
    "source": "wowhead",
    "fetched_at": "2026-09-29T18:00:47.820347+00:00"
+  },
+  "286745": {
+   "dropped_by": [
+    {
+     "npc_id": 276194,
+     "name": "Dustwind Eggtender",
+     "zone_ids": [
+      14
+     ],
+     "min_level": 12,
+     "max_level": 12,
+     "chance": 38.2979
+    }
+   ],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T01:33:26.381299+00:00"
   },
   "286748": {
    "dropped_by": [
