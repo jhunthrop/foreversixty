@@ -222,6 +222,11 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 			t.Errorf("%s: item %d (%s) is restricted to %s, published for %s", slotLabel(row.Slot), row.ItemID, row.ItemName, c.FactionRestriction, band.Faction)
 		}
 
+		// (11) armorAvailableLevel's own gate (eligible.go, this
+		// lane's brief item 2): no band below 40 may publish a mail
+		// pick for shaman/hunter or a plate pick for warrior/paladin.
+		checkArmorProficiencyGate(t, slotLabel(row.Slot), spec.ClassSlug, band.Band, c, row.ItemID, row.ItemName)
+
 		// (3) sourceFor returns an obtainable source, and the published
 		// source/source_kind agree with it.
 		src, ok := sourceFor(row.ItemID, band.Band, band.Faction, c.FactionRestriction, lootIdx)
@@ -278,7 +283,7 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 	// says it has), distinct from the pick and from every other
 	// alternative, never the slot's own pair-mate, and bounded at
 	// alternativesLimit.
-	checkAlternatives(t, slotLabel, byID, lootIdx, band, bySlot)
+	checkAlternatives(t, slotLabel, spec.ClassSlug, byID, lootIdx, band, bySlot)
 }
 
 // checkAlternatives applies check (9) to every filled slot's
@@ -287,7 +292,7 @@ func checkPublishedBand(t *testing.T, path string, band bandReport, spec specInf
 // of the pick itself), never the pick, never listed twice, never the
 // slot's own pair-mate (pairSlot, verify.go), and the list never
 // exceeds alternativesLimit (report.go).
-func checkAlternatives(t *testing.T, slotLabel func(string) string, byID map[int]candidate, lootIdx lootIndex, band bandReport, bySlot map[string]slotRow) {
+func checkAlternatives(t *testing.T, slotLabel func(string) string, classSlug string, byID map[int]candidate, lootIdx lootIndex, band bandReport, bySlot map[string]slotRow) {
 	t.Helper()
 	for _, row := range bySlot {
 		if row.ItemID == 0 || len(row.Alternatives) == 0 {
@@ -315,6 +320,7 @@ func checkAlternatives(t *testing.T, slotLabel func(string) string, byID map[int
 			if c.FactionRestriction != "" && c.FactionRestriction != band.Faction {
 				t.Errorf("%s: alternative %d (%s) is restricted to %s, published for %s", slotLabel(row.Slot), alt.ItemID, alt.ItemName, c.FactionRestriction, band.Faction)
 			}
+			checkArmorProficiencyGate(t, slotLabel(row.Slot)+" alternative", classSlug, band.Band, c, alt.ItemID, alt.ItemName)
 			src, ok := sourceFor(alt.ItemID, band.Band, band.Faction, c.FactionRestriction, lootIdx)
 			if !ok {
 				t.Errorf("%s: alternative %d (%s) has no source obtainable by a %s character at level %d (sourceFor), but was published as an alternative", slotLabel(row.Slot), alt.ItemID, alt.ItemName, band.Faction, band.Band)
@@ -343,6 +349,25 @@ func checkAlternatives(t *testing.T, slotLabel func(string) string, byID map[int
 				t.Errorf("%s: alternative %d (%s) publishes a positive dps_delta (%.2f) with verified omitted - an unverified candidate must never claim to beat the pick", slotLabel(row.Slot), alt.ItemID, alt.ItemName, alt.DPSDelta)
 			}
 		}
+	}
+}
+
+// checkArmorProficiencyGate applies armorAvailableLevel's own rule
+// (eligible.go, this lane's brief item 2) directly to a published pick
+// or alternative: mail below 40 for shaman/hunter, or plate below 40
+// for warrior/paladin, must never be published, regardless of what
+// eligible() would have said at ranking time - a stale committed
+// bis/*.json (Nightly owns generated data: this lane never regenerates
+// or commits it) is exactly what this test exists to catch before the
+// next nightly republishes it.
+func checkArmorProficiencyGate(t *testing.T, label, classSlug string, band int, c candidate, itemID int, itemName string) {
+	t.Helper()
+	if c.ClassID != armorClassID {
+		return
+	}
+	key := fmt.Sprintf("%s:%d", classSlug, c.SubclassID)
+	if opens, gated := armorAvailableLevel[key]; gated && band < opens {
+		t.Errorf("%s: item %d (%s) is subclass %d, gated to level %d for %s (armorAvailableLevel), published at band %d", label, itemID, itemName, c.SubclassID, opens, classSlug, band)
 	}
 }
 

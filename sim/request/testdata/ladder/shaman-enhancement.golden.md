@@ -90,13 +90,13 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 
 | Level | Talents | Gear | DPS | Distinct casts | Top casts | Unresolved |
 |---|---|---|---|---|---|---|
-| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:1287 | 23.9 | 6 | other:attack/2=129.9, other:attack/1=70.2, spell:3606=67.8, spell:8050=15.4, spell:3599=5.7 | {SpellID: 17364} |
-| 20 | 0000000000000000-253100000000000000-0000000000000000 | main_hand:2236 off_hand:2194 | 35.1 | 6 | other:attack/1=121.4, other:attack/2=73.0, spell:6350=66.3, spell:8052=14.1, spell:6363=4.8 | {SpellID: 17364} |
-| 30 | 0000000000000000-253130030004000000-0000000000000000 | main_hand:6692 off_hand:9457 | 55.6 | 6 | other:attack/2=83.1, other:attack/1=79.7, spell:6351=64.7, spell:8053=11.7, spell:6364=4.2 | {SpellID: 17364} |
-| 38 | 0000000000000000-253130030005102040-0000000000000000 | main_hand:868 off_hand:6831 | 59.4 | 8 | other:attack/2=128.5, other:attack/1=91.9, spell:6351=68.6, spell:8053=9.3, spell:6364=4.4 | - |
-| 40 | 0000000000000000-253130030005102051-0000000000000000 | main_hand:2164 off_hand:9359 | 62.5 | 9 | other:attack/1=107.6, other:attack/2=84.3, spell:6352=61.6, spell:17364=6.7, spell:6365=3.6 | - |
-| 50 | 5500000000000000-253130030005102051-0000000000000000 | main_hand:810 off_hand:2163 | 84.6 | 8 | other:attack/2=138.1, other:attack/1=92.3, spell:10435=64.2, spell:10447=8.1, spell:10437=3.4 | - |
-| 60 | 5533220000000000-253130030005102051-0000000000000000 | main_hand:22802 off_hand:23242 | 121.3 | 7 | other:attack/2=133.5, other:attack/1=111.4, spell:10436=64.9, spell:17364=5.5, spell:29228=4.0 | - |
+| 10 | 0000000000000000-100000000000000000-0000000000000000 | main_hand:1927 off_hand:3651 | 22.7 | 6 | other:attack/1=70.3, spell:3606=68.0, spell:8050=15.3, spell:3599=5.8, spell:8044=2.3 | {SpellID: 17364} |
+| 20 | 0000000000000000-253100000000000000-0000000000000000 | main_hand:2236 off_hand:4820 | 32.3 | 6 | other:attack/1=121.6, spell:6350=66.7, spell:8052=14.3, spell:6363=4.9, spell:20572=2.0 | {SpellID: 17364} |
+| 30 | 0000000000000000-253130030004000000-0000000000000000 | main_hand:6692 off_hand:4066 | 55.1 | 6 | other:attack/1=79.3, spell:6351=64.6, spell:8053=11.7, spell:6364=4.2, spell:20572=2.0 | {SpellID: 17364} |
+| 38 | 0000000000000000-253130030005102040-0000000000000000 | main_hand:868 off_hand:4652 | 60.0 | 8 | other:attack/1=91.3, spell:6351=67.6, spell:8053=9.5, spell:6364=4.4, spell:17364=2.0 | - |
+| 40 | 0000000000000000-253130030005102051-0000000000000000 | main_hand:2164 off_hand:4652 | 63.0 | 9 | other:attack/1=106.6, spell:6352=61.7, spell:17364=6.8, spell:18107=3.8, spell:6365=3.6 | - |
+| 50 | 5500000000000000-253130030005102051-0000000000000000 | main_hand:810 off_hand:10195 | 83.8 | 8 | other:attack/1=91.6, spell:10435=64.2, spell:10447=8.2, spell:10437=3.4, spell:17364=2.6 | - |
+| 60 | 5533220000000000-253130030005102051-0000000000000000 | main_hand:22802 off_hand:22819 | 117.0 | 8 | other:attack/1=109.0, spell:10436=67.2, spell:17364=6.0, spell:10438=3.3, spell:29228=3.2 | - |
 
 ## Learned but unused (informational)
 
@@ -155,7 +155,6 @@ docs/superpowers/specs/2026-09-28-rotation-accuracy-program-design.md):
 ### Level 60
 
 - Chain Lightning (spell 10605)
-- Earth Shock (spell 10414)
 - Flametongue Attack (spell 10444)
 - Frost Shock (spell 10473)
 - Frostbrand Attack (spell 16353)

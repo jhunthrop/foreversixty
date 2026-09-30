@@ -257,7 +257,27 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 			// case this score-level approximation gets wrong, are
 			// settled by the real sim in verify.go's own swap pass,
 			// same as every other pick() decision.
-			if leveling.DualWieldSpecs[spec] && !twoHandBeatsPair(bySlot) {
+			//
+			// shaman-enhancement is handled separately, unconditionally
+			// excluding two-handers rather than joining the
+			// twoHandBeatsPair branch above: it left DualWieldSpecs
+			// (owner rule, 2026-09-30 - shamans cannot dual wield in
+			// Forever), so its off hand is a shield, not a second
+			// weapon, and twoHandBeatsPair's whole comparison (a
+			// two-hander against the best one-hand-weapon PAIR) has no
+			// pair to compare against for this spec anymore. The spec's
+			// build is always one imbued main-hand weapon plus a
+			// shield (this lane's brief, item 1) - a two-hander
+			// forfeiting that shield is not a trade-off score-level
+			// heuristics need to weigh, so it is excluded the same
+			// unconditional way a dagger-only rotation excludes every
+			// non-dagger (restrictToDaggers, weapon_requirements.go).
+			switch {
+			case leveling.DualWieldSpecs[spec]:
+				if !twoHandBeatsPair(bySlot) {
+					list = excludeTwoHand(list)
+				}
+			case spec == "shaman-enhancement":
 				list = excludeTwoHand(list)
 			}
 		case "off_hand":
@@ -277,6 +297,11 @@ func pick(spec string, bySlot map[string][]scored) map[string]slotPick {
 			// Fixed here, not in plannerSlots, because only a
 			// DualWieldSpecs member ever wants a weapon in both hands
 			// and plannerSlots has no spec to check against.
+			// shaman-enhancement is not a member (owner rule: shamans
+			// cannot dual wield in Forever), so it never reaches this
+			// merge - its off_hand list is left as bySlot["off_hand"]
+			// gave it, the same shield/held-item pool shaman-elemental
+			// already draws from.
 			if leveling.DualWieldSpecs[spec] {
 				list = mergeByScore(list, oneHandedWeapons(bySlot["main_hand"]))
 			}

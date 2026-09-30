@@ -53,12 +53,20 @@ func isRelicCandidate(c candidate) bool {
 // means "no gate", which is correct for cloth and leather on every
 // class this file has an entry for.
 //
-// Hunter: leather until 40, mail from 40 (this lane's brief, restated
-// from the leveling-bis design doc's own proficiency table). Plate
-// never appears in hunter's per-class item file at all (see the
-// constant block above), so it needs no entry here.
+// Owner-stated rule (Justin, 2026-09-30, bis-ranker-integrity-13's
+// brief, the single source of truth for this table): shamans and
+// hunters wear mail from level 40 (leather before); warriors and
+// paladins wear plate from level 40 (mail before). Every other
+// class/armor pair is available from level 1 - nothing else in
+// Forever is level-gated. Plate never appears in shaman's or hunter's
+// per-class item file at all, and mail never appears in every other
+// class's file besides warrior/paladin/shaman/hunter (see the constant
+// block above), so those pairs need no entry here at all.
 var armorAvailableLevel = map[string]int{
-	"hunter:3": 40, // mail
+	"hunter:3":  40, // mail
+	"shaman:3":  40, // mail
+	"warrior:4": 40, // plate
+	"paladin:4": 40, // plate
 }
 
 // eligible reports whether a leveling character of class/level/faction
