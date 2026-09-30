@@ -255,3 +255,70 @@ def test_an_undated_raid_source_defaults_to_opens_later():
     assert by_id["raid:scarlet-enclave"].opens == RAID_DEFAULT_OPENS
     assert by_id["dungeon:the-deadmines"].opens is None
 
+
+def _world_boss_document() -> LootFile:
+    """A synthetic build carrying all six named world bosses, plus one
+    ordinary `world:` source that must NOT be swept up by the same gate
+    -- most `world:` buckets ARE launch-farmable, only the six
+    WORLD_BOSS_SOURCE_IDS names are held back for the first raid tier."""
+    from pipeline.loot.overlay import WORLD_BOSS_SOURCE_IDS
+
+    return LootFile(
+        sources=[
+            LootSource(id=source_id, kind="world", name=source_id.removeprefix("world:"),
+                       items=[100 + i])
+            for i, source_id in enumerate(sorted(WORLD_BOSS_SOURCE_IDS))
+        ] + [
+            LootSource(id="world:some-farmable-mob", kind="world", name="Some Farmable Mob",
+                       items=[200]),
+        ],
+        quests={},
+        factions={},
+    )
+
+
+def test_the_world_boss_ids_are_exactly_the_six_named_bosses():
+    from pipeline.loot.overlay import WORLD_BOSS_NPC_NAMES, WORLD_BOSS_SOURCE_IDS
+
+    assert set(WORLD_BOSS_NPC_NAMES) == {12397, 6109, 14889, 14888, 14890, 14887}
+    assert WORLD_BOSS_SOURCE_IDS == {
+        "world:lord-kazzak", "world:azuregos", "world:emeriss",
+        "world:lethon", "world:taerar", "world:ysondre",
+    }
+
+
+def test_all_six_named_world_bosses_default_to_the_raids_1_phase():
+    from pipeline.loot.overlay import (
+        RAID_DEFAULT_OPENS,
+        WORLD_BOSS_DEFAULT_OPENS,
+        WORLD_BOSS_SOURCE_IDS,
+    )
+
+    out = apply_overlays(_world_boss_document(), [])
+    by_id = {s.id: s for s in out.sources}
+    for source_id in WORLD_BOSS_SOURCE_IDS:
+        assert by_id[source_id].opens == WORLD_BOSS_DEFAULT_OPENS, source_id
+    # Not the raid sentinel: a raid with no announced date at all gates to
+    # "later"; these six gate to the KNOWN phase the first raids open in.
+    assert WORLD_BOSS_DEFAULT_OPENS != RAID_DEFAULT_OPENS
+
+
+def test_an_ordinary_world_source_is_left_ungated():
+    out = apply_overlays(_world_boss_document(), [])
+    by_id = {s.id: s for s in out.sources}
+    assert by_id["world:some-farmable-mob"].opens is None
+
+
+def test_a_curated_overlay_still_wins_over_the_world_boss_default(tmp_path):
+    """`replace` runs before the default-fill loop, so a curated fact (a
+    world boss server-first killed before the raid tier, say) is not
+    clobbered back to WORLD_BOSS_DEFAULT_OPENS."""
+    write(tmp_path, "a.json", {
+        "sources": [{"label": "l", "url": "https://x.invalid", "kind": "site"}],
+        "notes": "x",
+        "replace": [{"id": "world:lord-kazzak", "opens": "launch"}],
+    })
+    out = apply_overlays(_world_boss_document(), load_overlays(tmp_path))
+    by_id = {s.id: s for s in out.sources}
+    assert by_id["world:lord-kazzak"].opens == "launch"
+

@@ -23,9 +23,53 @@ from pathlib import Path
 from pipeline.curated import parse_sources
 from pipeline.loot.sources import KIND_ORDER
 from pipeline.models import LootFile, LootOverlay
+from pipeline.normalize.classes import slugify
 
 #: The phase an undated raid source is gated to: no raid is open at launch.
 RAID_DEFAULT_OPENS = "later"
+
+#: The six Era world bosses, keyed by the classic wow npc id and naming
+#: each one exactly the way the pinned cmangos/classic-db dump's own
+#: `creature_template` row does (verified 2026-09-30 against the
+#: committed `builds/1.60.1.70009/raw/classicdb/sources.json` cache --
+#: every `quest_reward`/creature-drop record naming that npc_id carries
+#: this exact `name`; the engine fork's own `assets/database/db.json`
+#: `npcs` table separately confirms Lord Kazzak and Azuregos, but has no
+#: row at all for Emeriss, Lethon, Taerar or Ysondre, so classic-db is
+#: the only primary source for those four). None of the six carried an
+#: `opens` before this dict existed, so the leveling ranker read
+#: Amberseal Keeper (off Lord Kazzak) and Blazefury Medallion (off
+#: Azuregos) as launch-obtainable -- data-followups-2 lane, 2026-09-30.
+#: `sim/cmd/leveling-bis` hand-lists the same six npc ids as its own
+#: fallback for a build that carries no curated `opens` here; this dict
+#: is what makes that fallback stop being load-bearing, since it always
+#: wins whenever `loot.json` states an `opens` for the source it names.
+WORLD_BOSS_NPC_NAMES: dict[int, str] = {
+    12397: "Lord Kazzak",
+    6109: "Azuregos",
+    14889: "Emeriss",
+    14888: "Lethon",
+    14890: "Taerar",
+    14887: "Ysondre",
+}
+
+#: `world:<slug>` for each `WORLD_BOSS_NPC_NAMES` entry, slugified the
+#: same way `pipeline.loot.sources`/`pipeline.loot.classicdb` mint a
+#: `world:` source id from an npc's name in the first place -- so a name
+#: either database changes surfaces as a source id this set no longer
+#: matches, rather than silently gating nothing.
+WORLD_BOSS_SOURCE_IDS = {f"world:{slugify(name)}" for name in WORLD_BOSS_NPC_NAMES.values()}
+
+#: The phase these six default to. Not `RAID_DEFAULT_OPENS` -- that
+#: sentinel means "no raid names a date at all" -- but the phase the
+#: FIRST raid tier itself opens in: `data/curated/phases.json` names
+#: this boundary "raids-1", and `curated/loot/forever-raid-phases.json`
+#: already patches the one raid the generator emits for that tier
+#: (`raid:onyxias-lair`) to the identical value. A world boss server-
+#: first happening before a raid tier is live is not a thing the real
+#: game allows either, so these six share the raid's own phase rather
+#: than a separately invented one.
+WORLD_BOSS_DEFAULT_OPENS = "raids-1"
 
 
 class OverlayError(SystemExit):
@@ -100,6 +144,16 @@ def apply_overlays(
     for source_id, source in list(by_id.items()):
         if source.kind == "raid" and source.opens is None:
             by_id[source_id] = source.model_copy(update={"opens": RAID_DEFAULT_OPENS})
+    # The six named world bosses (WORLD_BOSS_NPC_NAMES's own doc): same
+    # default-fill shape as the raid loop above, and run after every
+    # overlay's own `replace` already applied, so a curated fact about
+    # one of these six (a world boss killed server-first before the raid
+    # tier, say) always wins over this default rather than being
+    # clobbered back to it.
+    for source_id in WORLD_BOSS_SOURCE_IDS:
+        source = by_id.get(source_id)
+        if source is not None and source.kind == "world" and source.opens is None:
+            by_id[source_id] = source.model_copy(update={"opens": WORLD_BOSS_DEFAULT_OPENS})
     return LootFile(
         sources=sorted(
             by_id.values(), key=lambda source: (KIND_ORDER.index(source.kind), source.id)
