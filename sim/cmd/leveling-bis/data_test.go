@@ -113,6 +113,14 @@ func TestLoadCandidatesMergesFlatAndClassFiles(t *testing.T) {
 	if bow.DPS != 5.3 {
 		t.Errorf("bow DPS = %v, want 5.3", bow.DPS)
 	}
+	// This lane's brief (bis-ranker-integrity-6), item 9, corrected per
+	// the controller's own direct note: weapon_type lives on the
+	// PER-CLASS row (items/<class>.json, classItem), not the flat
+	// items.json row (flatItem) - loadCandidates must read it from
+	// there.
+	if bow.WeaponType != "bow" {
+		t.Errorf("bow WeaponType = %q, want %q (from the class file, not the flat file)", bow.WeaponType, "bow")
+	}
 }
 
 func TestLoadLootIndex(t *testing.T) {

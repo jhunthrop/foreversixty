@@ -103,6 +103,62 @@ func TestTrinketShortlistUnionsTopByItemLevelAndTopByScore(t *testing.T) {
 	}
 }
 
+// This lane's brief (bis-ranker-integrity-6), item 2: Hand of Justice's
+// own repro shape - a real, engine-implemented-effect trinket
+// (effectids_generated.go) with an empty stat block (score() has
+// nothing to rank it by, so it never makes the top-N-by-score bucket)
+// and an item level below five OTHER real trinkets in the pool (so it
+// never makes topByItemLevel's bucket either) still had no way to
+// reach a single sim before this lane, even though the engine can
+// measure its real effect. trinketShortlist must include it anyway.
+func TestTrinketShortlistIncludesAnImplementedEffectTrinketOffBothAxes(t *testing.T) {
+	list := []scored{
+		trinketScored(2, "ItemLevel 90, Best Score", 90, 100),
+		trinketScored(3, "ItemLevel 85", 85, 90),
+		trinketScored(4, "ItemLevel 83", 83, 80),
+		trinketScored(5, "ItemLevel 80", 80, 70),
+		trinketScored(6, "ItemLevel 78", 78, 60),
+		// Hand of Justice's own shape: lowest item level in the pool,
+		// score 0 (empty stats), but its effect IS implemented.
+		trinketWithEffect(modelledEffectItemID, "Hand of Justice", 58, "1% chance on Melee hit to gain 1 extra attack."),
+	}
+	got := trinketShortlist(list, 0, "")
+	found := false
+	for _, c := range got {
+		if c.ID == modelledEffectItemID {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatalf("trinketShortlist = %+v, want the implemented-effect trinket (id %d) included despite losing both the item-level and score axes", got, modelledEffectItemID)
+	}
+}
+
+// The mirror case: a trinket with NO implemented effect (an ordinary
+// candidate, or one whose real proc the engine does not simulate -
+// Blackhand's Breadth's own crit-chance proc, not in
+// effectids_generated.go) gets no such force-include - only a real,
+// measurable effect earns a guaranteed seat in the tournament.
+func TestTrinketShortlistDoesNotForceIncludeAnUnimplementedEffectTrinket(t *testing.T) {
+	list := []scored{
+		trinketScored(2, "ItemLevel 90, Best Score", 90, 100),
+		trinketScored(3, "ItemLevel 85", 85, 90),
+		trinketScored(4, "ItemLevel 83", 83, 80),
+		trinketScored(5, "ItemLevel 80", 80, 70),
+		trinketScored(6, "ItemLevel 78", 78, 60),
+		// Blackhand's Breadth's own shape: lowest item level, score 0,
+		// a real effect_text the engine does not implement (999999 is
+		// not a real effectids_generated.go id).
+		trinketWithEffect(999999, "Blackhand's Breadth", 63, "Improves your chance to get a critical strike with melee attacks by 2%."),
+	}
+	got := trinketShortlist(list, 0, "")
+	for _, c := range got {
+		if c.ID == 999999 {
+			t.Fatalf("trinketShortlist = %+v, want the unimplemented-effect trinket excluded (off both axes, and no implemented effect to force it in)", got)
+		}
+	}
+}
+
 func TestTrinketShortlistExcludesPairMateByIDAndName(t *testing.T) {
 	list := []scored{trinket(1, "Same Name", 10), trinket(2, "Same Name", 20), trinket(3, "Other", 5)}
 	got := trinketShortlist(list, 1, "")
@@ -393,6 +449,141 @@ func TestRankTrinketSlotPicksHighestWhenEveryCandidateIsUnmodelled(t *testing.T)
 	out, _ := rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 60, "", picks, bySlot, "trinket1")
 	if out["trinket1"].Item == nil || out["trinket1"].Item.ID != 999999 {
 		t.Fatalf("trinket1 pick = %+v, want item 999999 (higher measured dps, no modelled alternative to defer to)", out["trinket1"].Item)
+	}
+}
+
+// This lane's brief (bis-ranker-integrity-6), item 3: hunter-beast-
+// mastery band 60 Alliance's own repro - the two REAL top candidates
+// (Thunderbrew's Boot Flask, +8 Spirit; Frozen Heart of the Mountain,
+// +9 Hit) both measure a genuine, positive, stat-driven gain, but both
+// ALSO carry an unrelated effect_text the engine does not implement.
+// The OLD version of this margin check walked past both of them
+// looking for the first MODELLED candidate however far down the list
+// (here, a third item whose own implemented effect is a pure
+// self-heal - zero DPS relevance, measuring exactly the no-trinket
+// baseline) and crowned that objectively worse, zero-gain candidate
+// instead. The margin check must only ever compare the top TWO
+// candidates: when the immediate runner-up is ALSO unmodelled, there
+// is no real "modelled safety net" to defer to, so the plain highest
+// measured dps wins, exactly as it would if a third, weaker modelled
+// candidate were not in the pool at all.
+func TestRankTrinketSlotDoesNotSkipPastMultipleUnmodelledCandidatesForAWeakModelledOne(t *testing.T) {
+	picks := map[string]slotPick{}
+	const (
+		thunderbrewID = 744    // real Blackrock Depths trinket, +8 Spirit, unimplemented use-effect
+		frozenHeartID = 249469 // real trinket, +9 Hit, unimplemented use-effect
+	)
+	bySlot := map[string][]scored{
+		"trinket1": {
+			trinketWithEffect(thunderbrewID, "Thunderbrew's Boot Flask", 44, "Deals 75 Fire damage... Gets you quite drunk too!"),
+			trinketWithEffect(frozenHeartID, "Frozen Heart of the Mountain", 55, "Increases Frost and Shadow spell damage done..."),
+			trinketWithEffect(modelledEffectItemID, "Darkmoon Card: Heroism", 66, "Sometimes heals bearer of 150 damage when damaging an enemy in melee."),
+		},
+	}
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: thunderbrewID}}):        200.77,
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: frozenHeartID}}):        200.47,
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: modelledEffectItemID}}): 200.00,
+			// The no-trinket baseline (swapSlot's own itemID-0 gear):
+			// 200.00, matching the modelled candidate's own value -
+			// its implemented effect (a self-heal) contributes nothing
+			// to DPS, exactly like Darkmoon Card: Heroism's own real
+			// measurement in this lane's brief repro.
+			gearKey([]api.GearSlot{}): 200.00,
+		},
+	}
+	out, _ := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 60, "", picks, bySlot, "trinket1")
+	if out["trinket1"].Item == nil || out["trinket1"].Item.ID != thunderbrewID {
+		t.Fatalf("trinket1 pick = %+v, want Thunderbrew's Boot Flask (%d): the raw highest measured dps, with no genuinely-modelled candidate immediately behind it to defer to", out["trinket1"].Item, thunderbrewID)
+	}
+	if out["trinket1"].Item.MeasuredGainDPS < trinketZeroGainThresholdDPS {
+		t.Errorf("trinket1 pick MeasuredGainDPS = %v, want >= %v (a real, positive, stat-driven gain, not the zero-gain modelled candidate)", out["trinket1"].Item.MeasuredGainDPS, trinketZeroGainThresholdDPS)
+	}
+	if out["trinket1"].RunnerUp == nil || out["trinket1"].RunnerUp.ID != frozenHeartID {
+		t.Fatalf("trinket1 runner-up = %+v, want Frozen Heart of the Mountain (%d): the next-highest real measurement", out["trinket1"].RunnerUp, frozenHeartID)
+	}
+}
+
+// This lane's brief (bis-ranker-integrity-6), item 5: the end-to-end
+// shape main.go's own trinket loop runs - trinket1's rankTrinketSlot
+// call, THEN trinket2's, sharing one picks map - reproducing
+// shaman-elemental band 40 / druid-balance band 40's own repro: every
+// trinket in this pool ties at score 0 (trinkets carry no scorable
+// stats - trinkets.go's own package doc), so pick()'s own tiebreak
+// (lowest item id) would have landed a real, valuable candidate
+// (Ankh of Life, id 1713, LOWER than every other candidate here on
+// purpose) on trinket2 as a bare placeholder before either slot's own
+// real tournament ever ran. Without clearTrinketPlaceholders, trinket1's
+// OWN rankTrinketSlot call (running first) would read that placeholder
+// as an already-decided pair-mate and wrongly exclude Ankh of Life from
+// its own shortlist - trinket1's only OTHER candidate is a genuine
+// zero-value stat-stick, so the slot would empty outright even though
+// Ankh of Life clearly deserves ONE of the two trinket slots. With the
+// placeholders cleared first, trinket1's own shortlist sees Ankh of
+// Life fairly, picks it (the only real value in the pool), and
+// trinket2 - now correctly excluding Ankh of Life as trinket1's REAL,
+// final pick - is left with only the zero-value stat-stick and empties
+// honestly instead.
+func TestTrinketLoopDoesNotLetTrinket1ExcludeTrinket2sStalePlaceholder(t *testing.T) {
+	const (
+		ankhOfLifeID = 1713 // lowest id in the pool - pick()'s own tiebreak would land it on trinket2 first
+		zeroValueID  = 21565
+	)
+	bySlot := map[string][]scored{
+		"trinket1": {
+			trinketWithEffect(ankhOfLifeID, "Ankh of Life", 45, "Reincarnates the user."),
+			trinket(zeroValueID, "Rune of Perfection", 45),
+		},
+		"trinket2": {
+			trinketWithEffect(ankhOfLifeID, "Ankh of Life", 45, "Reincarnates the user."),
+			trinket(zeroValueID, "Rune of Perfection", 45),
+		},
+	}
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: ankhOfLifeID}}): 105,
+			gearKey([]api.GearSlot{{Slot: "trinket2", ItemID: ankhOfLifeID}}): 105,
+			// Rune of Perfection and the no-trinket baseline all tie at
+			// 100 - a genuine zero-value stat-stick, matching this
+			// lane's own repro exactly.
+		},
+		DefaultDPS: 100,
+	}
+
+	// pick()'s own placeholder, exactly as main.go's runSpec builds it
+	// before the trinket loop runs: lowest item id wins the tiebreak
+	// (every trinket ties score 0), landing Ankh of Life on trinket2.
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: zeroValueID, Name: "Rune of Perfection"}}},
+		"trinket2": {Item: &scored{candidate: candidate{ID: ankhOfLifeID, Name: "Ankh of Life"}}},
+	}
+	picks = clearTrinketPlaceholders(picks)
+
+	var notes []string
+	for _, slot := range []string{"trinket1", "trinket2"} {
+		var slotNotes []string
+		picks, slotNotes = rankTrinketSlot(fake, specInfo{}, "dwarf", "paladin", 40, "", picks, bySlot, slot)
+		notes = append(notes, slotNotes...)
+	}
+	if len(notes) != 0 {
+		t.Fatalf("notes = %v, want none", notes)
+	}
+	if picks["trinket1"].Item == nil || picks["trinket1"].Item.ID != ankhOfLifeID {
+		t.Fatalf("trinket1 = %+v, want Ankh of Life (%d): the only real value in the pool, fairly considered", picks["trinket1"].Item, ankhOfLifeID)
+	}
+	// rankTrinketSlot itself never empties a slot (report.go's own
+	// trinketLowGain gate does that later, from MeasuredGainDPS) - the
+	// contract this test protects is narrower: trinket2's own real
+	// tournament must correctly exclude Ankh of Life as trinket1's REAL
+	// pick (not the stale placeholder) and be left with only the
+	// zero-value stat-stick, whose own measured gain is genuinely 0 -
+	// exactly what later lets buildReport empty it honestly.
+	if picks["trinket2"].Item == nil || picks["trinket2"].Item.ID != zeroValueID {
+		t.Fatalf("trinket2 = %+v, want the remaining zero-value candidate (%d)", picks["trinket2"].Item, zeroValueID)
+	}
+	if !picks["trinket2"].Item.GainMeasured || picks["trinket2"].Item.MeasuredGainDPS >= trinketZeroGainThresholdDPS {
+		t.Fatalf("trinket2 pick GainMeasured/MeasuredGainDPS = %v/%v, want a measured, genuinely-zero gain", picks["trinket2"].Item.GainMeasured, picks["trinket2"].Item.MeasuredGainDPS)
 	}
 }
 

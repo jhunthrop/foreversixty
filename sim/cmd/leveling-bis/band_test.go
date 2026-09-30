@@ -165,6 +165,41 @@ func TestSourceForFallsBackToANonRaidSourceWhenTheRaidOneIsPhaseGated(t *testing
 	}
 }
 
+// This lane's brief (bis-ranker-integrity-6), item 4: loot.json's own
+// "rep"-kind sources never carry an Opens value at all (lootSource.Opens'
+// own doc, data.go), so a reputation faction that is really raid-era
+// content - Cenarion Circle (faction 609), earnable only through the
+// Ahn'Qiraj War Effort, the same patch this build already gates its
+// raid:ahnqiraj source "later" for - would otherwise read as launch-day
+// obtainable. loadLootIndex (data.go) closes that gap by applying
+// repFactionRaidPhaseOpens[factionID] whenever the pipeline itself is
+// silent (firstNonEmpty(src.Opens, repFactionRaidPhaseOpens[factionID])),
+// which is already covered by TestLoadLootIndexGatesCenarionCircleRepToLaterPhase
+// (data_test.go). What that test does NOT show is that the ranker's own
+// gate - sourceObtainable/sourceFor, exactly what band.go's sourceFor
+// doc calls "what a launch-day character can get" - actually treats the
+// resulting Opens:"later" the same way it treats a raid source: this
+// test builds the exact itemSource loadLootIndex produces for
+// Earthstrike (item 21180, Cenarion Circle exalted reward, the repro
+// this lane's brief names) and confirms sourceFor refuses it even at
+// band 60, a Cenarion Circle character could never be exalted before
+// launch.
+//
+// repFactionRaidPhaseOpens (data.go) gates exactly one reputation
+// faction id today: 609 (Cenarion Circle).
+func TestSourceForRefusesEarthstrikesCenarionCircleRepEvenAtLevel60(t *testing.T) {
+	const earthstrikeItemID = 21180
+	idx := lootIndex{earthstrikeItemID: {{
+		Kind:     "rep",
+		Label:    "Cenarion Circle",
+		Standing: "exalted",
+		Opens:    repFactionRaidPhaseOpens[609],
+	}}}
+	if _, ok := sourceFor(earthstrikeItemID, 60, "alliance", "", idx); ok {
+		t.Fatal("sourceFor(21180 Earthstrike, level 60) with the Cenarion Circle rep source's Opens gate applied: want ok=false")
+	}
+}
+
 // wowhead-world-drops lane, 2026-09-29: the priority reorder's own
 // point - a real dungeon boss now outranks rep/vendor/crafted, so the
 // report says "kill this boss" rather than "buy this off a vendor" (or

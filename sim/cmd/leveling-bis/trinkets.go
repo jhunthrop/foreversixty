@@ -91,9 +91,11 @@ func topByItemLevel(list []scored, excludeID int, excludeName string) []scored {
 // trinketShortlist is rankTrinketSlot's real candidate pool: the union
 // of topByItemLevel's top trinketTopN (highest item level - a rough
 // proxy for "how good a trinket this tier of content dropped", the
-// only ranking this file had before this lane) and the top trinketTopN
+// only ranking this file had before this lane), the top trinketTopN
 // BY SCORE (list is already best-score-first - candidatesBySlot's own
-// contract - so this is simply its own head, pair-mate-filtered),
+// contract - so this is simply its own head, pair-mate-filtered), and
+// (bis-ranker-integrity-6, item 2) every candidate whose own effect the
+// engine actually implements (implementedEffectTrinkets, below) -
 // deduplicated by item id.
 //
 // This lane's brief (bis-ranker-integrity, 2026-09-29), item 1's own
@@ -113,6 +115,37 @@ func topByItemLevel(list []scored, excludeID int, excludeName string) []scored {
 // alternative instead of an unverified score() estimate the pick never
 // actually faced (report.go's buildAlternatives, this lane's other
 // fix).
+// implementedEffectTrinkets returns every candidate in list whose own
+// on-hit/on-use/proc effect the engine actually implements
+// (hasImplementedEffect, rank.go) - this lane's brief
+// (bis-ranker-integrity-6), item 2: Hand of Justice (11815, a real
+// Blackrock Depths drop, effectids_generated.go's own table) never
+// reached a single sim for any melee spec at any band, because its
+// stat block is empty (score() has nothing to rank it by - trinkets.go's
+// own package doc) AND five higher-item-level trinkets (Darkmoon Faire
+// cards among them, ilvl 66-75 at band 60) always filled topByItemLevel
+// first. An item the engine CAN measure a real, implemented effect for
+// must reach the tournament regardless of its structured stats or its
+// item level relative to the rest of the pool - the whole reason this
+// file runs a real sim at all is to value exactly what score() cannot
+// see, and item level is only ever a proxy for that, never a
+// substitute for actually asking the engine. A trinket with no
+// implemented effect (or no effect at all) is untouched by this
+// bucket - Blackhand's Breadth (13965) is a real BRD drop too, but its
+// own crit-chance proc is not in effectids_generated.go, so the engine
+// could not measure it any better than score() already fails to; force-
+// including it here would spend a real sim on a candidate this command
+// still could not value, not fix anything this lane's brief asks for.
+func implementedEffectTrinkets(list []scored) []scored {
+	out := make([]scored, 0, len(list))
+	for _, c := range list {
+		if hasImplementedEffect(c.candidate) {
+			out = append(out, c)
+		}
+	}
+	return out
+}
+
 func trinketShortlist(list []scored, excludeID int, excludeName string) []scored {
 	filtered := excludePairMate(list, excludeID, excludeName)
 	byItemLevel := topByItemLevel(filtered, 0, "")
@@ -120,9 +153,10 @@ func trinketShortlist(list []scored, excludeID int, excludeName string) []scored
 	if len(byScore) > trinketTopN {
 		byScore = byScore[:trinketTopN]
 	}
-	seen := make(map[int]bool, len(byItemLevel)+len(byScore))
-	out := make([]scored, 0, len(byItemLevel)+len(byScore))
-	for _, group := range [][]scored{byItemLevel, byScore} {
+	byImplementedEffect := implementedEffectTrinkets(filtered)
+	seen := make(map[int]bool, len(byItemLevel)+len(byScore)+len(byImplementedEffect))
+	out := make([]scored, 0, len(byItemLevel)+len(byScore)+len(byImplementedEffect))
+	for _, group := range [][]scored{byItemLevel, byScore, byImplementedEffect} {
 		for _, c := range group {
 			if seen[c.ID] {
 				continue
@@ -220,21 +254,51 @@ func rankTrinketSlot(runner engineRunner, spec specInfo, race, classSlug string,
 	// EVERY trinket tournament this command runs, every band, every
 	// faction, every written spec, every night, to fix a failure mode
 	// this shared, already-trusted margin closes for free.
+	//
+	// This lane's brief (bis-ranker-integrity-6), item 3: the ORIGINAL
+	// version of this margin check searched arbitrarily far down
+	// results for the first MODELLED candidate, however weak, and
+	// demoted results[0] to it whenever results[0] did not clear the
+	// margin over THAT candidate - hunter-beast-mastery band 60
+	// Alliance's own trinket2 repro: Thunderbrew's Boot Flask (+8
+	// Spirit, a real, always-applied STAT - not its own separate,
+	// unrelated, unimplemented "drunken fire breath" effect_text) and
+	// Frozen Heart of the Mountain (+9 Hit, same story) both measured
+	// real, positive gains (0.77 and 0.47 DPS) from ordinary stats the
+	// engine unconditionally simulates - but BOTH also happen to carry
+	// an unrelated effect_text the engine does not implement, so the
+	// old search skipped past both of them looking for a "modelled"
+	// candidate and landed on Darkmoon Card: Heroism, whose own
+	// IMPLEMENTED effect is a pure self-heal (zero DPS relevance) -
+	// measuring EXACTLY the no-trinket baseline. The slot then
+	// published empty (report.go's trinketLowGain: 0.00 < the 0.05
+	// floor), discarding two real, better, stat-driven trinkets in
+	// favour of a demonstrably worse one, purely because "modelled"
+	// was being used as a proxy for "trustworthy" when the candidate's
+	// own measured number was never in question - only an UNMODELLED
+	// EFFECT's contribution is unverifiable; a candidate's plain STATS
+	// are always faithfully simulated regardless of what else its
+	// effect_text says (score.go's own doc makes exactly this point
+	// about score(), and it is equally true of a real engine sim).
+	//
+	// The margin check that follows now only ever compares results[0]
+	// against results[1] - the ONE case the Serenity Field finding
+	// above actually describes ("beat a real combat trinket... by a
+	// margin smaller than this tournament's own noise"): an unmodelled
+	// leader's own measured lead over the VERY NEXT candidate is close
+	// enough that the leader's own extra, unmodelled effect_text could
+	// be the entire (unverifiable) reason for it, so a real, modelled
+	// runner-up right behind it is trusted instead. When results[1] is
+	// ALSO unmodelled (this lane's own repro), there is no modelled
+	// candidate immediately behind results[0] to defer to at all - both
+	// numbers are equally real measurements of equally-real stats, so
+	// the plain highest one wins, exactly as it would if neither
+	// candidate carried an effect_text in the first place.
 	winner := 0
-	for i, r := range results {
-		if !trinketEffectUnmodelled(r.item.candidate) {
-			winner = i
-			break
+	if len(results) > 1 && trinketEffectUnmodelled(results[0].item.candidate) && !trinketEffectUnmodelled(results[1].item.candidate) {
+		if !beatsByMargin(results[0].dps, results[1].dps) {
+			winner = 1
 		}
-	}
-	// winner is now the best MODELLED candidate's index (0 when
-	// results[0] is itself modelled, or when nothing in the pool is
-	// modelled at all - the loop above never reassigns winner in either
-	// case). Only when results[0] is unmodelled AND actually clears the
-	// noise floor over that modelled candidate does the unmodelled one
-	// get to keep winning.
-	if winner > 0 && beatsByMargin(results[0].dps, results[winner].dps) {
-		winner = 0
 	}
 	// runnerUp is whichever OTHER candidate has the next-highest measured
 	// dps - results is sorted descending, so the first index that is not

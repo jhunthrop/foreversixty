@@ -818,24 +818,33 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 					row.SwapNote = fmt.Sprintf("beat the scored pick %s (id %d) in the sim: %s", pk.RunnerUp.Name, pk.RunnerUp.ID, dpsComparisonPhrase(delta, sw.SwapDPS, sw.BaselineDPS, setDPS))
 					realSimPromotion = true
 				case ok:
-					// This lane's brief, item 6: druid-feral band 50
-					// Alliance trinket2 published its own pick, Frozen
-					// Heart of the Mountain, at sim_dps 124.4 -
-					// rankTrinketSlot's own tournament number, measured
-					// before every other slot in the band had its final
-					// pick - while its OWN verified alternative, Smoking
-					// Heart of the Mountain, carried sim_dps 154.8: this
-					// exact slot's own LATER verifyBand swap pass (below),
-					// which measures against the band's actually-finished
-					// gear. A published pick's own SimDPS must never be
-					// staler than a verified alternative sitting on the
-					// same row - sw.BaselineDPS is this exact pick,
-					// re-measured at that later, closer-to-finished point,
-					// so it replaces whatever earlier tournament snapshot
-					// simDecided carried, whether or not this slot also
-					// needs a visible SwapNote below.
-					if simDecided {
+					// This lane's brief (bis-ranker-integrity-6), item 6:
+					// sw.BaselineDPS is verifyBand's ONE shared baseline
+					// sim, run ONCE for the whole band before any slot's
+					// swap is tried - every unpromoted slot with a
+					// runner-up carries this identical number. It equals
+					// the finished set's own setDPS exactly when nothing
+					// else in the band promoted (the common case: a prior
+					// lane's own druid-feral band 50 repro, sw.BaselineDPS
+					// 155.8 == setDPS 155.8), but the moment some OTHER
+					// slot's swap DOES promote, applySwaps re-measures the
+					// whole set and returns a NEW setDPS the shared
+					// baseline never reflects - shaman-elemental band 60
+					// Horde's own repro, eight unrelated slots all
+					// publishing that one stale pre-promotion baseline as
+					// though it were their own row's real finished-set
+					// number, none of them equal to the band's own
+					// published set_dps. Publish it only when it still
+					// matches (finishedSetEpsilon, the same bar
+					// dpsComparisonPhrase already holds the SwapNote text
+					// to); otherwise omit sim_dps entirely rather than
+					// print a number that no longer describes the
+					// finished set - dps_delta (below) already carries
+					// the one number that stays true regardless.
+					if simDecided && math.Abs(sw.BaselineDPS-setDPS) <= finishedSetEpsilon {
 						row.SimDPS = sw.BaselineDPS
+					} else if simDecided {
+						row.SimDPS = 0
 					}
 					if pk.RunnerUp != nil && !alternativeCarriesRealEvidence(row.Alternatives) {
 						// bis-ranker-integrity-3, 2026-09-29, this lane's brief
@@ -951,18 +960,28 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 		rows = append(rows, row)
 	}
 
+	// This lane's brief (bis-ranker-integrity-6), item 7: this used to
+	// read picks[slot].Item directly - the RAW, pre-gate pick - so a
+	// slot the zero-value gate above just emptied (relicEffectUnmodelled/
+	// trinketLowGain/the default noDPSValueReason case, all of which
+	// replace row with a bare slotRow carrying no ItemID at all) still
+	// named its old, now-published-empty item here (mage-fire band 20
+	// Alliance's own repro: "neck: Sentinel's Medallion", "trinket1:
+	// Rune of Perfection", "trinket2: Rune of Duty" in new_at_band while
+	// every one of those slots' own row published empty). new_at_band
+	// must describe what this band ACTUALLY published, so it is
+	// computed from rows - the final, gated slotRow list - instead.
 	var newAt []string
-	for _, slot := range slotOrder {
-		cur := picks[slot].Item
-		if cur == nil {
+	for _, row := range rows {
+		if row.ItemID == 0 {
 			continue
 		}
 		var prevID int
-		if previous != nil && previous[slot].Item != nil {
-			prevID = previous[slot].Item.ID
+		if previous != nil && previous[row.Slot].Item != nil {
+			prevID = previous[row.Slot].Item.ID
 		}
-		if prevID != cur.ID {
-			newAt = append(newAt, fmt.Sprintf("%s: %s", slot, cur.Name))
+		if prevID != row.ItemID {
+			newAt = append(newAt, fmt.Sprintf("%s: %s", row.Slot, row.ItemName))
 		}
 	}
 
@@ -977,6 +996,19 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 	wrows := make([]weightRow, 0, len(weightOrder))
 	for _, id := range weightOrder {
 		w := weights[id]
+		// The reference stat's own row is always Weight==1.0 by
+		// construction (simrun.go's runWeights doc: "the reference
+		// stat's own entry in its output is always exactly 1.0") --
+		// isWeightSignificant's 25%-of-value error bar can still flag
+		// that row insignificant on a wide error, but
+		// referenceMeasurementReason (weights.go) already ran the
+		// real check for this exact stat: when it returns ""
+		// (weightsReason == ""), the band's reference measurement
+		// itself cleared its own noise floor, and the reference row
+		// IS that measurement -- it is significant by definition, not
+		// by isWeightSignificant's generic bar. Every other row still
+		// goes through isWeightSignificant unchanged.
+		isReferenceRow := id == spec.ReferenceStat
 		wrows = append(wrows, weightRow{
 			Stat:   id,
 			Weight: w.Weight,
@@ -985,7 +1017,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			// every row: the band's own reference measurement makes
 			// none of them trustworthy, whatever their own noise bar
 			// says (weightsReason's own doc).
-			Insignificant: weightsReason != "" || !isWeightSignificant(w),
+			Insignificant: weightsReason != "" || (!isReferenceRow && !isWeightSignificant(w)),
 		})
 	}
 
@@ -1211,6 +1243,21 @@ func writeMarkdown(path string, spec specInfo, reports []bandReport) error {
 					switch {
 					case row.SimDPS != 0:
 						score = fmt.Sprintf("sim-verified (%.1f DPS)", row.SimDPS)
+					case row.Score == 0 && row.DPSDelta != nil:
+						// This lane's brief (bis-ranker-integrity-6), item
+						// 6: a simDecided row whose own sim_dps buildReport
+						// withheld (its measurement no longer matches the
+						// band's own finished set_dps - buildReport's own
+						// doc on this exact case) still has Score
+						// deliberately zeroed, the same convention as an
+						// ordinary sim-decided row (the comment above this
+						// switch). Falling through to the reference-points
+						// case below would print "0.0 <ref> points (0.00
+						// DPS)" - the identical misreading this switch
+						// already exists to prevent - so a row in exactly
+						// this state publishes its one still-trustworthy
+						// number, dps_delta, instead.
+						score = fmt.Sprintf("sim-verified (%+.1f DPS vs the runner-up, not corroborated against the finished set)", *row.DPSDelta)
 					case r.ReferenceDPSPerPoint != nil:
 						// This lane's brief, item 3: the DPS conversion
 						// beside the raw reference-stat-points number,

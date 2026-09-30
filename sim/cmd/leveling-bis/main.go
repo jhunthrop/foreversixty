@@ -362,6 +362,15 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 				bySlot["main_hand"] = restrictToDaggers(bySlot["main_hand"])
 				bySlot["off_hand"] = restrictToDaggers(bySlot["off_hand"])
 			}
+			// This lane's brief (bis-ranker-integrity-6), item 9:
+			// restrictRangedByProficiency's own doc (weapon_requirements.go)
+			// - a caster's ranged slot is only ever a real wand, never a
+			// thrown weapon or bow score()'s own Shoot fallback cannot
+			// tell apart from one today. Applied unconditionally (every
+			// classSlug, not gated behind a spec flag the way the dagger
+			// restriction is) since every spec of a given class shares
+			// the identical ranged-weapon proficiency.
+			bySlot["ranged"] = restrictRangedByProficiency(bySlot["ranged"], specInfo.ClassSlug)
 
 			// pickBySlot is bySlot's own candidates, further narrowed for
 			// the DECISION passes only (pick(), rankTrinketSlot,
@@ -394,6 +403,17 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			// (trinkets.go; this lane's brief). trinket1 first so
 			// trinket2's own ranking sees trinket1's final pick, not
 			// its score-based placeholder.
+			//
+			// This lane's brief (bis-ranker-integrity-6), item 5: the
+			// comment above only ever protected trinket2's OWN view of
+			// trinket1 - it never noticed that trinket1's OWN
+			// rankTrinketSlot call (running first) still reads
+			// picks["trinket2"] as its own pair-mate to exclude, and at
+			// that point picks["trinket2"] is STILL pick()'s bare
+			// score()-based placeholder, not a real decision -
+			// clearTrinketPlaceholders' own doc (pick.go) has the full
+			// repro and reasoning.
+			picks = clearTrinketPlaceholders(picks)
 			trinketStart := time.Now()
 			for _, slot := range []string{"trinket1", "trinket2"} {
 				var notes []string
