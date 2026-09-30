@@ -434,7 +434,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			trinketStart := time.Now()
 			for _, slot := range []string{"trinket1", "trinket2"} {
 				var notes []string
-				picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, pickBySlot, slot)
+				picks, notes = rankTrinketSlot(runner, specInfo, f.race, specInfo.ClassSlug, band, talents, picks, pickBySlot, slot, weights)
 				for _, n := range notes {
 					log.Printf("leveling-bis: %s band %d %s: %s", spec, band, f.name, n)
 				}

@@ -951,25 +951,66 @@ func TestSwapAlternativeMeasuredDPS(t *testing.T) {
 	}
 }
 
-// This lane's brief, item 9: swapMargin (verify.go) deliberately
-// keeps the scored pick when a runner-up measures higher but not
-// enough to clear the noise margin (Beat == false), but the runner-up
-// still genuinely measured a few tenths of a DPS higher - the exact
-// shape that published a POSITIVE, "verified: true" dps_delta before
-// this fix (55 slots across ret/feral/enhancement, the controller's
-// own review). The contract: every alternative's dps_delta <= 0 after
-// the swap stage, verified or not.
-func TestSwapMeasuredDeltaCapsAPositiveNotBeatDeltaAtZero(t *testing.T) {
+// Controller direction, bis-ranker-integrity-8, 2026-09-30 (the eighth
+// wow-player sweep's caster finding): swapMargin (verify.go)
+// deliberately keeps the scored pick when a runner-up measures higher
+// but not enough to clear the noise margin (Beat == false) - but the
+// runner-up still genuinely measured a real, few-tenths-of-a-DPS
+// delta, which bis-ranker-integrity-2 (2026-09-29) used to force to
+// exactly 0 on the theory that "not promoted" meant "at best a tie".
+// That reused swapMargin's own RELATIVE 1% promotion bar to decide an
+// unrelated question (is this row's own number itself too small to
+// trust), which for a caster spec's several-thousand-DPS baseline
+// silently discarded real multi-DPS deltas as fake ties. The fix: this
+// function now only ever floors to 0 at swapDeltaNoiseFloorDPS, an
+// absolute bound on the row's own measurement - 0.3 clears it, so the
+// real, signed +0.3 now publishes.
+func TestSwapMeasuredDeltaPublishesARealSmallPositiveNotBeatDelta(t *testing.T) {
 	// SwapDPS (100.3) is higher than BaselineDPS (100), but not by
-	// enough to clear swapMargin (1%) - Beat is correctly false, but
-	// the naive SwapDPS-BaselineDPS would be +0.3.
+	// enough to clear swapMargin (1%) - Beat is correctly false, and
+	// the real measured delta (+0.3) clears swapDeltaNoiseFloorDPS
+	// (0.05), so it publishes as-is, not a fake tie.
 	sw := swapResult{SwapDPS: 100.3, BaselineDPS: 100, Beat: false}
 	got := swapMeasuredDelta(sw)
-	if got > 0 {
-		t.Fatalf("swapMeasuredDelta(%+v) = %v, want <= 0 (a candidate the swap stage did not promote must never publish a positive delta)", sw, got)
+	want := 0.3
+	if diff := got - want; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("swapMeasuredDelta(%+v) = %v, want %v (the real measured delta, not force-tied to 0)", sw, got, want)
 	}
-	if got != 0 {
-		t.Errorf("swapMeasuredDelta(%+v) = %v, want exactly 0 (capped, not the naive +0.3)", sw, got)
+}
+
+// The floor itself: a delta genuinely too small to trust (here, well
+// under swapDeltaNoiseFloorDPS in either direction) still reads as an
+// honest, exact tie - the floor exists precisely for this case, not
+// for "did not clear swapMargin".
+func TestSwapMeasuredDeltaFloorsAGenuinelyTinyDeltaToZero(t *testing.T) {
+	cases := []swapResult{
+		{SwapDPS: 100.02, BaselineDPS: 100, Beat: false}, // +0.02, under the floor
+		{SwapDPS: 99.98, BaselineDPS: 100, Beat: false},  // -0.02, under the floor
+	}
+	for _, sw := range cases {
+		if got := swapMeasuredDelta(sw); got != 0 {
+			t.Errorf("swapMeasuredDelta(%+v) = %v, want exactly 0 (below swapDeltaNoiseFloorDPS)", sw, got)
+		}
+	}
+}
+
+// Controller direction's own explicit ask: "a tournament loser inside
+// the margin publishes its negative delta." A runner-up that measured
+// genuinely LOWER than the pick, by an amount well inside swapMargin's
+// own 1% promotion band (so Beat is false regardless), still publishes
+// that real, signed, negative number - this direction was never
+// clamped by the old code either (only the POSITIVE direction was),
+// and stays true under the new floor-based rule as long as the loss
+// itself clears swapDeltaNoiseFloorDPS.
+func TestSwapMeasuredDeltaTournamentLoserInsideMarginPublishesItsNegativeDelta(t *testing.T) {
+	// -0.3 DPS is well inside swapMargin's 1% band around 100 (99..101)
+	// but far outside swapDeltaNoiseFloorDPS (0.05) - a real, if small,
+	// measured loss.
+	sw := swapResult{SwapDPS: 99.7, BaselineDPS: 100, Beat: false}
+	got := swapMeasuredDelta(sw)
+	want := -0.3
+	if diff := got - want; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("swapMeasuredDelta(%+v) = %v, want %v (the real measured loss, published as-is)", sw, got, want)
 	}
 }
 
@@ -999,12 +1040,14 @@ func TestSwapMeasuredDeltaNotBeatGenuineLossIsUnchanged(t *testing.T) {
 	}
 }
 
-// End-to-end pin through buildAlternatives: the exact "flips sign
-// between factions" shape the controller's review named (a coin-flip
-// margin either side of the 1% bar) must publish dps_delta <= 0
-// either way, never a positive "verified" win for the side that
-// happened to land just inside the margin's other side.
-func TestBuildAlternativesNeverPublishesAPositiveVerifiedDeltaWhenNotBeat(t *testing.T) {
+// End-to-end pin through buildAlternatives, updated for the controller's
+// bis-ranker-integrity-8 direction (2026-09-30): a runner-up that
+// measured higher but did not clear swapMargin's own 1% promotion bar
+// (Beat == false) now publishes its REAL measured delta - here +0.4,
+// which clears swapDeltaNoiseFloorDPS - rather than the old forced-0
+// "at best a tie" reading. Verified stays true either way: this row
+// came from a real swap sim regardless of which way the sign points.
+func TestBuildAlternativesPublishesARealPositiveVerifiedDeltaWhenNotBeatButAboveTheNoiseFloor(t *testing.T) {
 	pick := &scored{candidate: candidate{ID: 1, Name: "Knight's Leather Pants"}, Score: 100}
 	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Stormshroud Pants"}, Score: 105}
 	pk := slotPick{Item: pick, RunnerUp: runnerUp}
@@ -1017,8 +1060,9 @@ func TestBuildAlternativesNeverPublishesAPositiveVerifiedDeltaWhenNotBeat(t *tes
 	if len(got) != 1 || got[0].ItemID != 2 {
 		t.Fatalf("buildAlternatives = %+v, want exactly the runner-up", got)
 	}
-	if got[0].DPSDelta > 0 {
-		t.Errorf("Stormshroud Pants DPSDelta = %v, want <= 0 (Beat was false; the sim did not promote it)", got[0].DPSDelta)
+	wantDelta := 0.4
+	if diff := got[0].DPSDelta - wantDelta; diff > 1e-9 || diff < -1e-9 {
+		t.Errorf("Stormshroud Pants DPSDelta = %v, want %v (the real measured delta; Beat was false, so it was not promoted, but the number is not a fake tie)", got[0].DPSDelta, wantDelta)
 	}
 	if !got[0].Verified {
 		t.Error("Verified = false, want true: this row still came from a real swap sim")
