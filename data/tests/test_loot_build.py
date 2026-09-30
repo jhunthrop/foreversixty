@@ -195,6 +195,8 @@ DUNGEONS_WITH_TRASH = 14
 #: has the reason (drop-sources-2's direct-row rule, first measured here).
 WORLD_SOURCES = 1500  # floor with slack (measured 1567 on 2026-09-30)
 CRAFTED_ITEMS = {
+    # catalogue-universe, 2026-09-30: Alchemist's Stone (13503) is the one alchemy trinket.
+    "crafted:alchemy": 1,
     "crafted:blacksmithing": 218,
     "crafted:enchanting": 4,
     "crafted:engineering": 48,
