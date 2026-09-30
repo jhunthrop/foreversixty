@@ -191,12 +191,16 @@ def unsourced_real_item_ids(item_rows: list[dict], named: set[int]) -> list[int]
 #:
 #: The threshold constants and the classification logic itself now live
 #: in `pipeline.loot.constants` (`WORLD_DROP_MIN_CREATURES`/
-#: `WORLD_DROP_MIN_ZONES`/`WORLD_DROP_MAX_CHANCE_PERCENT`/
-#: `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`, `is_world_drop_pattern`/
-#: `is_confirmed_boss_drop`), drop-sources-2 lane 2026-09-29:
-#: `pipeline.loot.classicdb` applies the SAME rule to classic-db's own
-#: direct `creature_loot_template` rows, and the two origins must stay
-#: identical rather than drift apart as two near-copies.
+#: `WORLD_DROP_MIN_ZONES`/`WORLD_DROP_MAX_CHANCE_PERCENT`,
+#: `is_world_drop_pattern`/`is_confirmed_boss_drop`), drop-sources-2
+#: lane 2026-09-29: `pipeline.loot.classicdb` applies the SAME rule to
+#: classic-db's own direct `creature_loot_template` rows, and the two
+#: origins must stay identical rather than drift apart as two
+#: near-copies. raid-loot-regression lane, 2026-09-29:
+#: `is_confirmed_boss_drop` exempts a dungeon/raid row from the pool
+#: whatever its chance -- the world-pool rule applies to open-world
+#: creatures only, so the retired `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`
+#: floor is gone from both origins together.
 
 #: `pipeline.classic_sources._world_drop_records`' own doc: when neither
 #: origin states a per-creature level for a world-drop pool, the item's
@@ -225,16 +229,15 @@ def _split_world_drop_rows(
     """`(boss_rows, pool_rows)` for a `dropped-by` list already
     classified a world-drop pattern -- `pipeline.loot.constants.
     is_confirmed_boss_drop`'s own doc: a row resolving to a dungeon/raid
-    zone with a stated chance at or above `WORLD_DROP_BOSS_MIN_CHANCE_
-    PERCENT` is a real boss kill and stays its own source; every other
-    row (world zone, unknown chance, or below the floor) folds into the
-    pool."""
+    zone is a real boss/instance kill and stays its own source, whatever
+    its chance; every other row (an open-world zone, or none at all)
+    folds into the pool."""
     boss_rows: list[NpcSource] = []
     pool_rows: list[NpcSource] = []
     for row in rows:
         zone_id = row.zone_ids[0] if row.zone_ids else 0
         kind = INSTANCE_KIND.get(types.get(zone_id, 0)) if zone_id else None
-        if is_confirmed_boss_drop(kind is not None, row.chance):
+        if is_confirmed_boss_drop(kind is not None):
             boss_rows.append(row)
         else:
             pool_rows.append(row)

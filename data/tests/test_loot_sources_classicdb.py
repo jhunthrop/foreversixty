@@ -419,11 +419,11 @@ def test_a_real_chance_dungeon_boss_keeps_its_own_attribution_alongside_the_dire
     uses (657, Defias Pirate, map 36 -> `dungeon:the-deadmines`) with a
     real 20% chance. Seven distinct creatures across three maps clears
     every one of `is_world_drop_pattern`'s three signals, but `Defias
-    Pirate`'s own row is `is_confirmed_boss_drop` (dungeon zone AND
-    chance >= `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`) -- tenet 7's "a boss
-    that genuinely drops it" exception -- so it keeps its own attribution
-    in `dungeon:the-deadmines` while the six trash rows still fold into
-    one `world_drop:20-35` pool."""
+    Pirate`'s own row is `is_confirmed_boss_drop` (it resolves to a
+    dungeon/raid zone) -- tenet 7's "a boss that genuinely drops it"
+    exception -- so it keeps its own attribution in
+    `dungeon:the-deadmines` while the six trash rows still fold into one
+    `world_drop:20-35` pool."""
     classic_sources = {
         UNSOURCED_ITEM: [
             *_DIRECT_WORLD_DROP_TRASH_ROWS,
@@ -441,6 +441,71 @@ def test_a_real_chance_dungeon_boss_keeps_its_own_attribution_alongside_the_dire
     world_drop = source(document, "world_drop:20-35")
     assert world_drop.items == [UNSOURCED_ITEM]
 
+    assert not any(
+        candidate.id.startswith("world:") and UNSOURCED_ITEM in source_item_ids(candidate)
+        for candidate in document.sources
+    )
+
+
+def test_a_dungeon_boss_with_an_unknown_or_low_chance_still_keeps_its_own_attribution():
+    """raid-loot-regression lane, 2026-09-29's own regression: the SAME
+    seven-row shape as the test above, but `Defias Pirate`'s own row now
+    states NO chance at all (cmangos' `0.0` "unknown" sentinel) -- tier
+    armour in cmangos routinely drops this way, off several bosses (or
+    many trash creatures) of ONE instance at a chance under 1% or none
+    stated. Before this lane's fix, `is_confirmed_boss_drop` also
+    required the row's own chance to clear `WORLD_DROP_BOSS_MIN_CHANCE_
+    PERCENT` (5%), so an unknown-chance dungeon boss folded into the
+    pool exactly like an open-world trash mob -- measured on build
+    1.60.1.70009 as raid distinct items falling 767 -> 350. The fix: a
+    dungeon/raid row is NEVER a world-pool member, whatever its chance
+    -- `Defias Pirate` must still keep his own boss attribution here."""
+    classic_sources = {
+        UNSOURCED_ITEM: [
+            *_DIRECT_WORLD_DROP_TRASH_ROWS,
+            ClassicDbSourceRecord(
+                kind="creature_drop", npc_id=657, name="Defias Pirate", map_id=36, chance=0.0,
+            ),
+        ]
+    }
+    document, _ = built(classic_sources)
+    dungeon = source(document, "dungeon:the-deadmines")
+    boss = next(b for b in dungeon.bosses if b.npc_id == 657)
+    assert boss.items == [UNSOURCED_ITEM]
+    assert boss.item_chances is None  # cmangos' 0.0 sentinel, never a real 0%
+
+    world_drop = source(document, "world_drop:20-35")
+    assert world_drop.items == [UNSOURCED_ITEM]
+
+    assert not any(
+        candidate.id.startswith("world:") and UNSOURCED_ITEM in source_item_ids(candidate)
+        for candidate in document.sources
+    )
+
+
+def test_an_instance_only_direct_row_pattern_item_never_pools_at_all():
+    """The hard invariant this lane's report names: classification may
+    MOVE an item into a pool, never DELETE its source. Six trash
+    creatures of ONE raid instance (map 36, `dungeon:the-deadmines`),
+    every one at a sub-1% chance -- `is_world_drop_pattern`'s own
+    "distinct creatures" signal flags the item as a direct-row world-drop
+    pattern -- but every single row resolves to a dungeon/raid zone, so
+    NONE of them is a world-pool member: the item must keep every one of
+    its six boss/trash attributions and get NO synthetic `world_drop`
+    source at all (an item every one of whose own rows is exempt gets no
+    pool, per `classicdb_additions`' own doc)."""
+    trash_rows = [
+        ClassicDbSourceRecord(
+            kind="creature_drop", npc_id=9900 + i, name=f"Instance Trash {i}",
+            map_id=36, chance=0.3,
+        )
+        for i in range(6)
+    ]  # fmt: skip
+    document, _ = built({UNSOURCED_ITEM: trash_rows})
+    dungeon = source(document, "dungeon:the-deadmines")
+    trash_npc_ids = {b.npc_id for b in dungeon.bosses if UNSOURCED_ITEM in b.items}
+    assert trash_npc_ids == {9900 + i for i in range(6)}
+    assert not any(candidate.kind == "world_drop" for candidate in document.sources)
     assert not any(
         candidate.id.startswith("world:") and UNSOURCED_ITEM in source_item_ids(candidate)
         for candidate in document.sources

@@ -194,15 +194,28 @@ def classicdb_additions(
     from its OWN direct `creature_loot_template` rows alone -- items
     7909/7910/4306, ~900-1,500 per-creature rows each, measured on build
     1.60.1.70009's audit. Every one of that item's creature-kind records
-    that `is_confirmed_boss_drop` does not exempt (a dungeon/raid zone
-    AND a stated chance >= `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`) folds
-    into ONE synthetic `world_drop` source for the item instead of its
-    own boss/world bucket entry, its level range the min/max of every
-    folded row's own creature level (`ClassicDbSourceRecord.level_min`/
+    that `is_confirmed_boss_drop` does not exempt (raid-loot-regression
+    lane, 2026-09-29: a row resolving to a dungeon/raid zone, whatever
+    its chance -- `is_confirmed_boss_drop`'s own doc) folds into ONE
+    synthetic `world_drop` source for the item instead of its own
+    boss/world bucket entry, its level range the min/max of every folded
+    row's own creature level (`ClassicDbSourceRecord.level_min`/
     `level_max`, from `creature_template.MinLevel`/`MaxLevel`) and its
     chance the highest of theirs -- the same "never invented, never
     averaged" merge `pipeline.classic_sources._world_drop_records`
     already uses for a reference-pool world drop.
+
+    This is the ONLY exemption a direct-row-flagged item's own row gets:
+    an open-world creature (`is_confirmed_boss_drop` false because the
+    row resolves to no dungeon/raid zone at all) always folds, whatever
+    its own chance -- the world-pool rule applies to open-world
+    creatures only. Tier armour in cmangos routinely drops from several
+    bosses, or many trash creatures, of ONE instance, sometimes at a
+    chance under 1% or none stated -- gating the dungeon/raid exemption
+    on a chance floor (the retired `WORLD_DROP_BOSS_MIN_CHANCE_PERCENT`)
+    folded exactly those rows into `world_drop` instead, the regression
+    this lane's report measures (raid distinct items 767 -> 350 on build
+    1.60.1.70009).
     """
     zone_by_map = instance_zone_by_map(zone_rows, types)
     fork_instance_npcs = fork_instance_npcs or {}
@@ -254,9 +267,7 @@ def classicdb_additions(
                 npc_id = record.npc_id or 0
                 if zone_id is None and npc_id:
                     zone_id = fork_instance_npcs.get(npc_id)
-                if is_direct_world_drop and not is_confirmed_boss_drop(
-                    zone_id is not None, record.chance
-                ):
+                if is_direct_world_drop and not is_confirmed_boss_drop(zone_id is not None):
                     lo, hi = direct_pool_level or (None, None)
                     if record.level_min is not None:
                         lo = record.level_min if lo is None else min(lo, record.level_min)
