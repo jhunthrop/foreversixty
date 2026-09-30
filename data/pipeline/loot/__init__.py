@@ -61,6 +61,7 @@ from pipeline.loot.gear import (
 )
 from pipeline.loot.overlay import apply_overlays, load_overlays
 from pipeline.loot.pvp_faction import split_pvp_sources_by_faction
+from pipeline.loot.quest_class_gate import apply_quest_class_gate_to_class_items
 from pipeline.loot.reitemise import apply_reitemisation
 from pipeline.loot.sources import (
     apply_crafted_opens_gate,
@@ -217,6 +218,14 @@ def write_loot_files(
     # apply_crafted_opens_gate's own doc.
     document = apply_crafted_opens_gate(document, classic_crafted)
     superseded_marked = mark_superseded_items(build_dir, superseded)
+    # Day3 data-followups-7 lane, 2026-09-30: AFTER every document mutation
+    # above (needs the FINAL `document.quests`, same reasoning as
+    # `mark_superseded_items`'s own placement) -- narrows a quest-only
+    # item's `items/<class>.json` row to the classes its own quest(s) can
+    # accept. `write_document` below already wrote the `document` this
+    # reads; the per-class files it rewrites are `normalize`'s own,
+    # already on disk by the time `loot` runs.
+    quest_class_gate_dropped = apply_quest_class_gate_to_class_items(build_dir, document)
 
     enchants = build_enchants(fork)
     suffixes = build_suffixes(fork)
@@ -249,7 +258,8 @@ def write_loot_files(
         "%d enchants, %d suffixes, %d buff ids; "
         "items.json: %d with suffix options, %d faction-restricted, %d superseded "
         "rows marked (%d source/boss listings deduplicated); "
-        "items/*.json: %d weapon rows won by the fork's own damage",
+        "items/*.json: %d weapon rows won by the fork's own damage, %d quest-only rows "
+        "dropped for excluding their own class across %d classes",
         len(document.sources),
         stats.items,
         stats.classicdb_items,
@@ -271,6 +281,8 @@ def write_loot_files(
         superseded_marked,
         superseded_removed,
         weapons_won,
+        sum(quest_class_gate_dropped.values()),
+        len(quest_class_gate_dropped),
     )
     refresh_manifest(build_dir)
     return [
@@ -466,12 +478,16 @@ def merge_loot_files(
     document = apply_crafted_opens_gate(document, classic_crafted)
     write_document(document, build_dir / LOOT)
     superseded_marked = mark_superseded_items(build_dir, superseded)
+    # Day3 data-followups-7 lane, 2026-09-30: same placement/reasoning as
+    # `write_loot_files`' own call.
+    quest_class_gate_dropped = apply_quest_class_gate_to_class_items(build_dir, document)
     logger.info(
         "loot-merge: %d sources naming %d items (%d from classic-db, %d from wowhead, %d "
         "from re-itemisation inheritance); pvp faction split: %d via classic-db vendor, "
         "%d via title, %d unresolved and dropped; %d fork ids left out, %d fork entries "
         "with no kind dropped, %d bosses dropped for having no name in either database; "
-        "%d superseded rows marked (%d source/boss listings deduplicated)",
+        "%d superseded rows marked (%d source/boss listings deduplicated); %d quest-only "
+        "rows dropped for excluding their own class across %d classes",
         len(document.sources),
         stats.items,
         stats.classicdb_items,
@@ -485,10 +501,12 @@ def merge_loot_files(
         stats.dropped_unnamed_bosses,
         superseded_marked,
         superseded_removed,
+        sum(quest_class_gate_dropped.values()),
+        len(quest_class_gate_dropped),
     )
     refresh_manifest(build_dir)
     return [
         build_dir / LOOT,
         *([build_dir / "items.json", *sorted((build_dir / "items").glob("*.json"))]
-          if superseded else []),
+          if superseded or quest_class_gate_dropped else []),
     ]

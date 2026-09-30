@@ -71,6 +71,7 @@ from pydantic import BaseModel
 
 from pipeline.classic_quest_levels import SOURCE_URL
 from pipeline.forkdb import REP_LEVELS, decode
+from pipeline.proficiency import CLASS_MASK_BIT, CLASS_SLUG_BY_ID
 from pipeline.sqldump import iter_table_records, unquote
 from pipeline.wago import USER_AGENT
 
@@ -199,6 +200,62 @@ def _faction_from_required_races(races: int) -> Literal["alliance", "horde", "bo
     return "both"
 
 
+#: Eleventh wow-player sweep finding, day3 data-followups-7 lane,
+#: 2026-09-30: Fire Ruby (20036) is published as a trinket pick for
+#: hunter-beast-mastery, shaman-elemental and paladin-retribution alike,
+#: but its only source, quest 8253 "Destroy Morphaz", is mage-only
+#: (`RequiredClasses` 128 -- confirmed directly against this build's own
+#: pinned classic-db dump). `quest_template.RequiredClasses` is a
+#: `ChrClasses` bitmask, the same convention `pipeline.proficiency.
+#: CLASS_MASK_BIT` already documents and decodes for `AllowableClass`
+#: elsewhere in this pipeline -- reused here rather than re-derived.
+def _classes_from_required_classes(mask: int) -> list[str] | None:
+    """Sorted class slugs a quest whose `RequiredClasses` is `mask` admits,
+    or `None` when `mask` is 0 ("any class", the overwhelming majority of
+    quests) -- decoded through `pipeline.proficiency.CLASS_MASK_BIT`/
+    `CLASS_SLUG_BY_ID`, this build's own 9 playable classes. A `mask` whose
+    bits fall entirely outside those 9 (never observed on the pinned
+    dump, but not a case to invent an answer for -- tenet 8) also comes
+    back `None` rather than an empty, "no class can take this" list."""
+    if not mask:
+        return None
+    slugs = sorted(
+        CLASS_SLUG_BY_ID[class_id] for class_id, bit in CLASS_MASK_BIT.items() if mask & bit
+    )
+    return slugs or None
+
+
+#: `quest_template.RequiredSkill` -- a client `SkillLine.ID`, verified
+#: against this exact build's own committed `raw/SkillLine.csv`
+#: (`data/builds/1.60.1.70009/raw/SkillLine.csv`): every one of the 12
+#: distinct `RequiredSkill` values the pinned classic-db dump's own
+#: `quest_template` states (measured while building this lane's report)
+#: is one of these rows, none unrecognized. Slugs follow this pipeline's
+#: own `pipeline.normalize.classes.slugify` convention (lowercase,
+#: hyphenated), matching `pipeline.forkdb.PROFESSIONS`' vocabulary for
+#: the 9 tradeskills the two tables share; First Aid/Cooking/Fishing are
+#: secondary skills the fork's own `PROFESSIONS` enum has no id for at
+#: all, so they are named here only, never cross-checked against it.
+_PROFESSION_SKILL_LINE: dict[int, str] = {
+    129: "first-aid",
+    164: "blacksmithing",
+    165: "leatherworking",
+    171: "alchemy",
+    182: "herbalism",
+    185: "cooking",
+    186: "mining",
+    197: "tailoring",
+    202: "engineering",
+    333: "enchanting",
+    356: "fishing",
+    393: "skinning",
+}
+
+
+def _profession_from_required_skill(skill_line: int) -> str | None:
+    return _PROFESSION_SKILL_LINE.get(skill_line)
+
+
 #: Vanilla's own reputation standing thresholds -- the MINIMUM absolute
 #: reputation value needed to BE at each standing, ascending, the same
 #: eight-name vocabulary `pipeline.forkdb.REP_LEVELS` uses. Universal
@@ -308,6 +365,28 @@ class ClassicDbQuestInfo(BaseModel):
     #: fallback wherever the dump actually states it.
     required_rep_faction: int | None = None
     required_rep_standing: str | None = None
+    #: `quest_template.RequiredClasses`, decoded by `_classes_from_
+    #: required_classes` -- the sorted class slugs allowed to accept this
+    #: quest, `None` when the dump states 0 ("any class"). Day3 data-
+    #: followups-7 lane, 2026-09-30: Fire Ruby (20036)'s quest 8253
+    #: "Destroy Morphaz" is mage-only (`RequiredClasses` 128) even though
+    #: nothing on the reward ITEM itself says so -- `pipeline.loot.
+    #: sources.build_loot` reads this the same way it already reads
+    #: `faction` above, over every `QuestSource` regardless of which
+    #: scrape produced the quest-item link, and `pipeline.audit.check_
+    #: bis.check_bis` blocks a pick or alternative whose only sources all
+    #: exclude the spec's own class.
+    classes: list[str] | None = None
+    #: `quest_template.RequiredSkill`/`RequiredSkillValue` -- a profession
+    #: (or secondary skill) quest reward is obtainable only by whoever has
+    #: trained that skill to at least `skill`, `_profession_from_
+    #: required_skill`'s own doc for the verified `SkillLine.ID` table.
+    #: `None`/`None` for the overwhelming majority of quests, which need
+    #: no skill at all; `skill` alone (no `profession`) is never
+    #: published -- an unrecognised `RequiredSkill` id stays unlabelled
+    #: rather than guessed at (tenet 8), same policy as `classes` above.
+    profession: str | None = None
+    skill: int | None = None
 
 
 class ClassicDbSourceRecord(BaseModel):
@@ -962,6 +1041,10 @@ def _parse_quest_rewards(sql_text: str, into: dict[int, list[ClassicDbSourceReco
         # own `CREATE TABLE quest_template` declares fewer columns simply
         # states no reputation requirement, rather than a KeyError.
         required_rep_faction = int(row.get("RequiredMinRepFaction", "0"))
+        # `.get(..., "0")`: same reasoning as `RequiredMinRepFaction` above
+        # -- a fixture predating this lane simply states no class or
+        # skill requirement, rather than a KeyError.
+        profession = _profession_from_required_skill(int(row.get("RequiredSkill", "0")))
         quest = ClassicDbQuestInfo(
             quest_id=entry,
             min_level=int(row["MinLevel"]),
@@ -974,6 +1057,9 @@ def _parse_quest_rewards(sql_text: str, into: dict[int, list[ClassicDbSourceReco
                 if required_rep_faction
                 else None
             ),
+            classes=_classes_from_required_classes(int(row.get("RequiredClasses", "0"))),
+            profession=profession,
+            skill=int(row.get("RequiredSkillValue", "0")) or None if profession else None,
         )
         reward_ids = {
             int(row[f"RewChoiceItemId{n}"]) for n in range(1, 7)
@@ -1014,6 +1100,52 @@ def quest_factions_from_classic_sources(
             if record.kind == "quest_reward" and record.quest is not None:
                 factions[record.quest.quest_id] = record.quest.faction
     return factions
+
+
+def quest_classes_from_classic_sources(
+    items: dict[int, list[ClassicDbSourceRecord]],
+) -> dict[int, list[str] | None]:
+    """Quest id -> `ClassicDbQuestInfo.classes` for it, recovered the same
+    way `quest_factions_from_classic_sources` (above) recovers `faction`
+    rather than re-reading `quest_template` a second time.
+
+    Day3 data-followups-7 lane, 2026-09-30: `pipeline.loot.sources.
+    build_loot` applies this over every `QuestSource` it assembles (fork,
+    classic-db or wowhead, whichever scrape produced the quest-item
+    link), so a class-gated quest (Fire Ruby's Destroy Morphaz among
+    them) never offers its reward to a class that can never accept the
+    quest at all -- see `_classes_from_required_classes`' own doc.
+    """
+    classes: dict[int, list[str] | None] = {}
+    for records in items.values():
+        for record in records:
+            if record.kind == "quest_reward" and record.quest is not None:
+                classes[record.quest.quest_id] = record.quest.classes
+    return classes
+
+
+def quest_profession_from_classic_sources(
+    items: dict[int, list[ClassicDbSourceRecord]],
+) -> dict[int, tuple[str, int | None]]:
+    """Quest id -> `(ClassicDbQuestInfo.profession, .skill)` for the
+    quests that carry one, same recovery technique as `quest_classes_
+    from_classic_sources`/`quest_factions_from_classic_sources` above.
+    A quest id absent from this dict needs no profession at all -- see
+    `_profession_from_required_skill`'s own doc for the one that carries
+    a `RequiredSkill` this pipeline does not recognise instead."""
+    professions: dict[int, tuple[str, int | None]] = {}
+    for records in items.values():
+        for record in records:
+            if (
+                record.kind == "quest_reward"
+                and record.quest is not None
+                and record.quest.profession is not None
+            ):
+                professions[record.quest.quest_id] = (
+                    record.quest.profession,
+                    record.quest.skill,
+                )
+    return professions
 
 
 def quest_turn_in_items_from_classic_sources(

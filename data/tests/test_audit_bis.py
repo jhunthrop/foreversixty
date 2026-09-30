@@ -197,6 +197,37 @@ def test_quest_floor_ignores_the_other_factions_quest(tmp_path):
     assert star[0].theirs == "32"
 
 
+def test_quest_only_item_excluding_the_specs_class_is_blocker(tmp_path):
+    """Day3 data-followups-7 lane, 2026-09-30: Fire Ruby/Destroy Morphaz's
+    own defect, restated at the audit level -- item 300's only source is
+    the flat `quest` bucket, and both of its quests exclude warrior."""
+    root = tmp_path / "builds"
+    build_dir = _write_build(root, "testbuild")
+    loot = json.loads((build_dir / "loot.json").read_text())
+    for q in loot["quests"]["300"]:
+        q["classes"] = ["mage"]
+    (build_dir / "loot.json").write_text(json.dumps(loot))
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_bis.check(ctx)
+    finding = next(
+        f for f in result.findings if f.subject == "300" and "excludes warrior" in f.message
+    )
+    assert finding.severity == "blocker"
+
+
+def test_quest_only_item_with_one_open_quest_among_several_is_not_blocked(tmp_path):
+    root = tmp_path / "builds"
+    build_dir = _write_build(root, "testbuild")
+    loot = json.loads((build_dir / "loot.json").read_text())
+    loot["quests"]["300"][0]["classes"] = ["mage"]  # the OTHER quest stays open to any class
+    (build_dir / "loot.json").write_text(json.dumps(loot))
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_bis.check(ctx)
+    assert not any(
+        f.subject == "300" and "excludes warrior" in f.message for f in result.findings
+    )
+
+
 def test_a_quest_picks_source_may_be_the_quest_name(tmp_path):
     root = tmp_path / "builds"
     build_dir = _write_build(root, "testbuild")

@@ -108,6 +108,24 @@ def check(ctx: AuditContext) -> CategoryResult:
                     ours=str(qs["level"]),
                     theirs=str(db_quest.level),
                 )
+            # Day3 data-followups-7 lane, 2026-09-30: classic-db's own
+            # RequiredClasses restricts this quest to specific classes
+            # (Fire Ruby/Destroy Morphaz's own defect: mage-only, offered
+            # to every class before this lane), but loot.json's own
+            # QuestSource publishes no `classes` for it -- a regression
+            # in `pipeline.loot.sources.build_loot`'s own direct pass-
+            # through (`quest_classes_from_classic_sources`), the same
+            # class of drift `faction`/`min_level`/`level` above already
+            # guard.
+            if db_quest.classes and not qs.get("classes"):
+                result.add(
+                    "major",
+                    quest_id,
+                    f"quest {qs['name']!r} (id {quest_id}, item {item_id}) has classic-db "
+                    "RequiredClasses set but loot.json publishes no `classes` for it",
+                    ours=str(qs.get("classes")),
+                    theirs=",".join(sorted(db_quest.classes)),
+                )
             if quest_id not in item_quest_ids:
                 reward_not_in_112 += 1
                 wowhead = ctx.item_sources.get(item_id) or {}

@@ -214,6 +214,61 @@ def test_a_quest_reward_faction_follows_the_quests_required_races_not_the_item()
     assert matching[0].faction_source == "classic-db"
 
 
+def test_a_quest_reward_carries_classic_dbs_own_required_classes():
+    """Day3 data-followups-7 lane, 2026-09-30: `build_loot` applies
+    `quest_classes_from_classic_sources` over every `QuestSource` the
+    same way it already applies `quest_factions_from_classic_sources` --
+    Fire Ruby's own quest 8253 "Destroy Morphaz" (mage-only) is the real
+    defect this protects."""
+    classic_sources = {
+        100: [
+            ClassicDbSourceRecord(
+                kind="quest_reward", name="Destroy Morphaz",
+                quest=ClassicDbQuestInfo(
+                    quest_id=8253, min_level=50, level=52, faction="both", classes=["mage"],
+                ),
+            )
+        ]
+    }
+    document, _ = built(classic_sources)
+    detail = document.quests[str(100)]
+    matching = [entry for entry in detail if entry.quest_id == 8253]
+    assert len(matching) == 1
+    assert matching[0].classes == ["mage"]
+
+
+def test_a_quest_reward_with_no_class_restriction_publishes_none():
+    classic_sources = {
+        100: [
+            ClassicDbSourceRecord(
+                kind="quest_reward", name="An Open Quest",
+                quest=ClassicDbQuestInfo(quest_id=55, min_level=10, level=12, faction="both"),
+            )
+        ]
+    }
+    document, _ = built(classic_sources)
+    matching = [entry for entry in document.quests[str(100)] if entry.quest_id == 55]
+    assert matching[0].classes is None
+
+
+def test_a_quest_reward_carries_classic_dbs_own_profession_and_skill():
+    classic_sources = {
+        100: [
+            ClassicDbSourceRecord(
+                kind="quest_reward", name="Novice Smith",
+                quest=ClassicDbQuestInfo(
+                    quest_id=56, min_level=10, level=12, faction="both",
+                    profession="blacksmithing", skill=50,
+                ),
+            )
+        ]
+    }
+    document, _ = built(classic_sources)
+    matching = [entry for entry in document.quests[str(100)] if entry.quest_id == 56]
+    assert matching[0].profession == "blacksmithing"
+    assert matching[0].skill == 50
+
+
 def test_fork_stays_primary_when_classic_db_names_the_same_bucket():
     """Item 104 ("World Boss Drop") already sources `zone:16` via the
     fork's own npc 903 drop. A classic-db creature_drop for the SAME
