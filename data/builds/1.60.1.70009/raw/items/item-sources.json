@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-30T03:53:43.892210+00:00",
+ "generated_at": "2026-09-30T04:30:38.728128+00:00",
  "source": {
   "wowhead": {
    "note": "scraped per item id, ONLY for ids the fork database names no source for at all; see pipeline.wowhead_item_sources for the URL pattern, the four listviews read, and the politeness rules."
@@ -629148,6 +629148,3863 @@
    "source": "wowhead",
    "fetched_at": "2026-09-30T03:53:43.890879+00:00"
   },
+  "239575": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239577": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239581": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239582": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239583": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239584": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239585": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239586": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239587": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239588": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239589": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239590": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "239591": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240020": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240021": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240022": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240023": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240024": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240025": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240026": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240027": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240028": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240029": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240030": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240031": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240032": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240033": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240034": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240035": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240036": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240037": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240038": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240039": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240040": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240041": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240042": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240043": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240044": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240045": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240046": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240047": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240048": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240049": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240050": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240051": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240052": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240053": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240054": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240055": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240056": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240057": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240058": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240059": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240060": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240061": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240062": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240063": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240064": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240065": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240066": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240067": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240068": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240069": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240070": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240071": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240072": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240073": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240074": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240075": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240076": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240077": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240078": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240079": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240080": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240081": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240082": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240083": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240084": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240085": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240086": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240087": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240088": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240089": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240090": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240091": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240092": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240093": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240095": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240096": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240097": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240098": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240099": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240100": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240101": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240102": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240103": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240104": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240105": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240106": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240107": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240108": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240109": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240110": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240122": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240123": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240124": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240125": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240126": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240127": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240128": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240129": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240130": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240131": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240134": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240135": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240136": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240137": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240138": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240139": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240140": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240141": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240142": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240143": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240144": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240145": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240146": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240147": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240148": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240149": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240150": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240151": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240152": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "240153": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
   "241089": {
    "dropped_by": [],
    "sold_by": [],
@@ -629163,6 +633020,238 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T19:04:23.664377+00:00"
+  },
+  "246055": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "246056": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "246057": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "246058": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "246059": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "246060": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "246061": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "246062": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 240248,
+     "name": "Bryon Steelblade",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    },
+    {
+     "npc_id": 11036,
+     "name": "Leonid Barthalomew the Revered",
+     "zone_ids": [
+      139
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
   },
   "246164": {
    "dropped_by": [],
@@ -637879,6 +641968,14 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T20:27:14.213726+00:00"
   },
+  "271940": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
   "271941": {
    "dropped_by": [],
    "sold_by": [],
@@ -637886,6 +641983,14 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
+  },
+  "271945": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
   },
   "271946": {
    "dropped_by": [],
@@ -637895,6 +642000,14 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
   },
+  "271948": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
   "271949": {
    "dropped_by": [],
    "sold_by": [],
@@ -637903,6 +642016,14 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
   },
+  "271950": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
   "271951": {
    "dropped_by": [],
    "sold_by": [],
@@ -637910,6 +642031,54 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
+  },
+  "271953": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "271954": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "271955": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "271956": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "271957": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "271959": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
   },
   "272059": {
    "dropped_by": [],
@@ -638595,6 +642764,25 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T20:27:14.213726+00:00"
   },
+  "272095": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 263570,
+     "name": "Creeg Bothunk",
+     "zone_ids": [
+      17
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
   "272096": {
    "dropped_by": [],
    "sold_by": [
@@ -638613,6 +642801,25 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
+  },
+  "272097": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 263570,
+     "name": "Creeg Bothunk",
+     "zone_ids": [
+      17
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
   },
   "272098": {
    "dropped_by": [],
@@ -638633,6 +642840,25 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
   },
+  "272099": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 263570,
+     "name": "Creeg Bothunk",
+     "zone_ids": [
+      17
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
   "272100": {
    "dropped_by": [],
    "sold_by": [
@@ -638652,6 +642878,25 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
   },
+  "272101": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 263570,
+     "name": "Creeg Bothunk",
+     "zone_ids": [
+      17
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
   "272102": {
    "dropped_by": [],
    "sold_by": [
@@ -638670,6 +642915,120 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T22:42:53.103087+00:00"
+  },
+  "272103": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 263570,
+     "name": "Creeg Bothunk",
+     "zone_ids": [
+      17
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272104": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 263570,
+     "name": "Creeg Bothunk",
+     "zone_ids": [
+      17
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272105": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 263570,
+     "name": "Creeg Bothunk",
+     "zone_ids": [
+      17
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272106": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 263570,
+     "name": "Creeg Bothunk",
+     "zone_ids": [
+      17
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272107": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 263570,
+     "name": "Creeg Bothunk",
+     "zone_ids": [
+      17
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272108": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 263570,
+     "name": "Creeg Bothunk",
+     "zone_ids": [
+      17
+     ],
+     "min_level": 55,
+     "max_level": 55,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
   },
   "272179": {
    "dropped_by": [],
@@ -638727,6 +643086,633 @@
    "source": "wowhead",
    "fetched_at": "2026-09-29T17:25:25.287750+00:00"
   },
+  "272393": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272394": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272395": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272396": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272397": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272398": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272399": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272401": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272402": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272403": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272404": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272405": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272406": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272407": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272408": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272409": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272410": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272411": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272413": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272414": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272415": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272427": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272428": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272429": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272430": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272431": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272433": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272434": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272435": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272436": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272438": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272439": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272440": {
+   "dropped_by": [],
+   "sold_by": [
+    {
+     "npc_id": 227853,
+     "name": "Pix Xizzix",
+     "zone_ids": [
+      33
+     ],
+     "min_level": 60,
+     "max_level": 60,
+     "chance": null
+    }
+   ],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
   "272451": {
    "dropped_by": [],
    "sold_by": [],
@@ -638734,6 +643720,14 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T21:53:00.858309+00:00"
+  },
+  "272452": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
   },
   "272453": {
    "dropped_by": [],
@@ -639062,6 +644056,46 @@
    "quest_rewards": [],
    "source": "wowhead",
    "fetched_at": "2026-09-29T23:57:41.450153+00:00"
+  },
+  "272498": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272499": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272500": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272501": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
+  },
+  "272502": {
+   "dropped_by": [],
+   "sold_by": [],
+   "crafted_by": [],
+   "quest_rewards": [],
+   "source": "wowhead",
+   "fetched_at": "2026-09-30T04:30:38.727015+00:00"
   },
   "272548": {
    "dropped_by": [],
