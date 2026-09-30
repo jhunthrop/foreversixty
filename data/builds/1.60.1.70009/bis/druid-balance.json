@@ -2,7 +2,7 @@
   "spec": "druid-balance",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:51:40Z",
+  "generated_at": "2026-09-30T15:12:57Z",
   "bands": [
     {
       "spec": "druid-balance",
@@ -528,8 +528,8 @@
         "finger2: Lorekeeper's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.217770603,
-      "verify_run_seconds": 0.694284546,
+      "weights_run_seconds": 1.559720547,
+      "verify_run_seconds": 0.901102977,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1133,8 +1133,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Twisted Chanter's Staff"
       ],
-      "weights_run_seconds": 1.217770603,
-      "verify_run_seconds": 0.735200299,
+      "weights_run_seconds": 1.559720547,
+      "verify_run_seconds": 0.896200304,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1770,8 +1770,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Mechanic's Pipehammer"
       ],
-      "weights_run_seconds": 1.407611508,
-      "verify_run_seconds": 0.816608003,
+      "weights_run_seconds": 1.770806183,
+      "verify_run_seconds": 1.011159522,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2408,8 +2408,8 @@
         "finger2: Sea Giant's Toe Ring",
         "main_hand: Glimmering Staff"
       ],
-      "weights_run_seconds": 1.407611508,
-      "verify_run_seconds": 0.827035331,
+      "weights_run_seconds": 1.770806183,
+      "verify_run_seconds": 1.083391048,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3039,8 +3039,8 @@
         "finger1: Philanthropist's Ring",
         "finger2: Lorekeeper's Ring"
       ],
-      "weights_run_seconds": 1.470242676,
-      "verify_run_seconds": 0.87821749,
+      "weights_run_seconds": 1.891374213,
+      "verify_run_seconds": 1.106727915,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3672,8 +3672,8 @@
         "finger2: Advisor's Ring",
         "main_hand: Spellforce Rod"
       ],
-      "weights_run_seconds": 1.470242676,
-      "verify_run_seconds": 0.887551075,
+      "weights_run_seconds": 1.891374213,
+      "verify_run_seconds": 1.115369895,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4072,7 +4072,7 @@
               "item_name": "Ban'thok Sash",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Ok'thor the Breaker",
-              "dps_delta": -0.5253183341642544
+              "dps_delta": -0.525318334164254
             },
             {
               "item_id": 12466,
@@ -4221,40 +4221,13 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 249469,
-          "item_name": "Frozen Heart of the Mountain",
-          "source": "Enchanting",
-          "source_kind": "crafted",
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.29650901986335043,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "trinket2",
-          "item_id": 20512,
-          "item_name": "Sanctified Orb",
-          "source": "Forging the Mightstone",
-          "source_kind": "quest",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": 0,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4332,12 +4305,10 @@
         "feet: Skycaller's Leather Boots",
         "finger1: Cyclopean Band",
         "finger2: Philanthropist's Ring",
-        "trinket1: Frozen Heart of the Mountain",
-        "trinket2: Sanctified Orb",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.612503743,
-      "verify_run_seconds": 0.990956644,
+      "weights_run_seconds": 1.899740193,
+      "verify_run_seconds": 1.250956413,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4886,40 +4857,13 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 11302,
-          "item_name": "Uther's Strength",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -0.2093400763918538,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "trinket2",
-          "item_id": 19120,
-          "item_name": "Rune of the Guard Captain",
-          "source": "Job Opening: Guard Captain of Revantusk Village",
-          "source_kind": "quest",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4997,12 +4941,10 @@
         "feet: Skycaller's Leather Boots",
         "finger1: Cyclopean Band",
         "finger2: Philanthropist's Ring",
-        "trinket1: Uther's Strength",
-        "trinket2: Rune of the Guard Captain",
         "main_hand: Glowing Brightwood Staff"
       ],
-      "weights_run_seconds": 1.612503743,
-      "verify_run_seconds": 1.004938934,
+      "weights_run_seconds": 1.899740193,
+      "verify_run_seconds": 1.2356320140000001,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5251,7 +5193,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.59909100620111,
+          "score": 30.599091006201114,
           "verified": true,
           "alternatives": [
             {
@@ -5267,14 +5209,14 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.6702785051381236
+              "dps_delta": -0.6702785051381239
             },
             {
               "item_id": 11623,
               "item_name": "Spritecaster Cape",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: High Interrogator Gerstahn ",
-              "dps_delta": -1.082861677359641
+              "dps_delta": -1.0828616773596413
             }
           ]
         },
@@ -5492,13 +5434,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.34652033811315935
-            },
-            {
-              "item_id": 234436,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.3898210011333225
             },
             {
               "item_id": 11669,
@@ -5775,8 +5710,8 @@
         "main_hand: Crackling Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.510643481,
-      "verify_run_seconds": 0.98156957,
+      "weights_run_seconds": 1.908326979,
+      "verify_run_seconds": 1.2115315309999999,
       "coverage": {
         "back": {
           "eligible": 446,
@@ -6025,7 +5960,7 @@
           "item_name": "Arcanoweave Cloak",
           "source": "Pix Xizzix",
           "source_kind": "vendor",
-          "score": 30.59909100620111,
+          "score": 30.599091006201114,
           "verified": true,
           "alternatives": [
             {
@@ -6041,14 +5976,14 @@
               "item_name": "Crystalline Threaded Cape",
               "source_kind": "world",
               "source": "Chillwind Ravager",
-              "dps_delta": -0.6702785051381236
+              "dps_delta": -0.6702785051381239
             },
             {
               "item_id": 19121,
               "item_name": "Deep Woodlands Cloak",
               "source_kind": "quest",
               "source": "Wanted: Vile Priestess Hexx and Her Minions",
-              "dps_delta": -0.927799741778432
+              "dps_delta": -0.9277997417784324
             }
           ]
         },
@@ -6266,13 +6201,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.34652033811315935
-            },
-            {
-              "item_id": 234436,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.3898210011333225
             },
             {
               "item_id": 11669,
@@ -6549,8 +6477,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.510643481,
-      "verify_run_seconds": 1.018040443,
+      "weights_run_seconds": 1.908326979,
+      "verify_run_seconds": 1.225771759,
       "coverage": {
         "back": {
           "eligible": 452,

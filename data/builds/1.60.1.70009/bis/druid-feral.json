@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:52:13Z",
+  "generated_at": "2026-09-30T15:13:37Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -519,8 +519,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.396428085,
-      "verify_run_seconds": 1.239168327,
+      "weights_run_seconds": 1.796135456,
+      "verify_run_seconds": 1.467209705,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1109,8 +1109,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.396428085,
-      "verify_run_seconds": 1.186437081,
+      "weights_run_seconds": 1.796135456,
+      "verify_run_seconds": 1.480721422,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1732,8 +1732,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.6483325309999999,
-      "verify_run_seconds": 1.4579986520000001,
+      "weights_run_seconds": 2.029824563,
+      "verify_run_seconds": 1.8354605099999999,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2355,8 +2355,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.6483325309999999,
-      "verify_run_seconds": 1.477921058,
+      "weights_run_seconds": 2.029824563,
+      "verify_run_seconds": 1.826675479,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2979,8 +2979,8 @@
         "finger1: Protector's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.725492396,
-      "verify_run_seconds": 1.537413211,
+      "weights_run_seconds": 2.21860566,
+      "verify_run_seconds": 1.9500002360000002,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3604,8 +3604,8 @@
         "finger1: Legionnaire's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.725492396,
-      "verify_run_seconds": 1.537394292,
+      "weights_run_seconds": 2.21860566,
+      "verify_run_seconds": 1.9284295299999998,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -3791,13 +3791,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "dps_delta": -0.7313206744263562
-            },
-            {
-              "item_id": 19540,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.8198251253615118
             },
             {
               "item_id": 17772,
@@ -4091,13 +4084,6 @@
               "verified": true
             },
             {
-              "item_id": 19517,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.7797663315984275
-            },
-            {
               "item_id": 13097,
               "item_name": "Thunderbrow Ring",
               "source_kind": "world_drop",
@@ -4161,29 +4147,8 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 20036,
-          "item_name": "Fire Ruby",
-          "source": "Destroy Morphaz",
-          "source_kind": "quest",
-          "sim_dps": 137.45574834528495,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 20512,
-              "item_name": "Sanctified Orb",
-              "source_kind": "quest",
-              "source": "Forging the Mightstone",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4263,11 +4228,10 @@
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye",
         "trinket1: Diamond Flask",
-        "trinket2: Fire Ruby",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.7567550509999998,
-      "verify_run_seconds": 1.644667536,
+      "weights_run_seconds": 2.15221642,
+      "verify_run_seconds": 2.055973983,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4758,13 +4722,6 @@
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Ironspine",
               "dps_delta": -0.7713794681894409
-            },
-            {
-              "item_id": 19513,
-              "item_name": "Legionnaire's Band",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.7797663315984275
             }
           ]
         },
@@ -4921,8 +4878,8 @@
         "trinket2: Rune of the Guard Captain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.7567550509999998,
-      "verify_run_seconds": 1.6346654699999998,
+      "weights_run_seconds": 2.15221642,
+      "verify_run_seconds": 2.032790859,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5073,7 +5030,7 @@
               "item_name": "Field Marshal's Dragonhide Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Field Marshal · Alliance",
-              "dps_delta": -3.9861693925497224
+              "dps_delta": -3.9861693925497215
             },
             {
               "item_id": 226792,
@@ -5241,13 +5198,6 @@
               "dps_delta": -1.0675909256579528
             },
             {
-              "item_id": 19589,
-              "item_name": "Forest Stalker's Bracers",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -1.510264023181605
-            },
-            {
               "item_id": 23093,
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
@@ -5405,13 +5355,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.25171067053026736
-            },
-            {
-              "item_id": 234026,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.37756600579540106
             },
             {
               "item_id": 11669,
@@ -5690,8 +5633,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.757577132,
-      "verify_run_seconds": 1.6486653100000002,
+      "weights_run_seconds": 2.243948226,
+      "verify_run_seconds": 2.038464899,
       "coverage": {
         "back": {
           "eligible": 446,
@@ -5842,7 +5785,7 @@
               "item_name": "Warlord's Dragonhide Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.9861693925497215
+              "dps_delta": -3.9861693925497224
             },
             {
               "item_id": 226792,
@@ -6010,13 +5953,6 @@
               "dps_delta": -1.0675909256579528
             },
             {
-              "item_id": 19589,
-              "item_name": "Forest Stalker's Bracers",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -1.510264023181605
-            },
-            {
               "item_id": 23093,
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
@@ -6100,6 +6036,8 @@
           "source_kind": "vendor",
           "score": 142.4427778863917,
           "verified": true,
+          "swap_note": "confirmed by the sim against General's Dragonhide Leggings (id 16552): kept the pick, +3.0 DPS (221.9 vs 219.0 set DPS)",
+          "dps_delta": 2.950422359314217,
           "alternatives": [
             {
               "item_id": 15065,
@@ -6114,14 +6052,6 @@
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
               "dps_delta": -2.8679214916488056
-            },
-            {
-              "item_id": 16552,
-              "item_name": "General's Dragonhide Leggings",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -2.950422359314217,
-              "verified": true
             }
           ]
         },
@@ -6174,13 +6104,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.25171067053026736
-            },
-            {
-              "item_id": 234026,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.37756600579540106
             },
             {
               "item_id": 11669,
@@ -6459,8 +6382,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.757577132,
-      "verify_run_seconds": 1.615444646,
+      "weights_run_seconds": 2.243948226,
+      "verify_run_seconds": 2.0368895,
       "coverage": {
         "back": {
           "eligible": 452,

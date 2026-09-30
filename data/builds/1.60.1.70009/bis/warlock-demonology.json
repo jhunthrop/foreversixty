@@ -2,7 +2,7 @@
   "spec": "warlock-demonology",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:57:52Z",
+  "generated_at": "2026-09-30T15:20:50Z",
   "bands": [
     {
       "spec": "warlock-demonology",
@@ -540,8 +540,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.075575059,
-      "verify_run_seconds": 0.947251684,
+      "weights_run_seconds": 1.397797003,
+      "verify_run_seconds": 1.172447304,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1156,8 +1156,8 @@
         "main_hand: Twisted Chanter's Staff",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 1.075575059,
-      "verify_run_seconds": 0.923043798,
+      "weights_run_seconds": 1.397797003,
+      "verify_run_seconds": 1.208341169,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1851,8 +1851,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.120941767,
-      "verify_run_seconds": 0.910836059,
+      "weights_run_seconds": 1.426497563,
+      "verify_run_seconds": 1.151986403,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2546,8 +2546,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 1.120941767,
-      "verify_run_seconds": 0.896711523,
+      "weights_run_seconds": 1.426497563,
+      "verify_run_seconds": 1.135206207,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3211,8 +3211,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.989208466,
-      "verify_run_seconds": 0.762714077,
+      "weights_run_seconds": 1.2854754210000001,
+      "verify_run_seconds": 0.959437471,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3869,8 +3869,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.989208466,
-      "verify_run_seconds": 0.756472938,
+      "weights_run_seconds": 1.2854754210000001,
+      "verify_run_seconds": 0.949793462,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4439,22 +4439,8 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 249469,
-          "item_name": "Frozen Heart of the Mountain",
-          "source": "Enchanting",
-          "source_kind": "crafted",
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 11302,
-              "item_name": "Uther's Strength",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.22222426593850741,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4560,11 +4546,10 @@
         "finger1: Band of the Unicorn",
         "finger2: Lorekeeper's Ring",
         "trinket1: Abyss Shard",
-        "trinket2: Frozen Heart of the Mountain",
         "ranged: Noxious Shooter"
       ],
-      "weights_run_seconds": 1.031247465,
-      "verify_run_seconds": 0.910590051,
+      "weights_run_seconds": 1.265084037,
+      "verify_run_seconds": 1.155405549,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5274,8 +5259,8 @@
         "trinket2: Uther's Strength",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 1.031247465,
-      "verify_run_seconds": 0.860341631,
+      "weights_run_seconds": 1.265084037,
+      "verify_run_seconds": 1.089661526,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5427,6 +5412,8 @@
           "source_kind": "vendor",
           "score": 82.6411881089017,
           "verified": true,
+          "swap_note": "confirmed by the sim against Field Marshal's Coronal (id 17578): kept the pick, +14.4 DPS (342.4 vs 327.9 set DPS)",
+          "dps_delta": 14.443352342649348,
           "alternatives": [
             {
               "item_id": 231584,
@@ -5441,14 +5428,6 @@
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
               "dps_delta": -5.189675130479028
-            },
-            {
-              "item_id": 17578,
-              "item_name": "Field Marshal's Coronal",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -14.443352342649348,
-              "verified": true
             }
           ]
         },
@@ -5500,13 +5479,6 @@
           "score": 53.448904525179984,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 17580,
-              "item_name": "Field Marshal's Dreadweave Shoulders",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -2.506394091108386
-            },
             {
               "item_id": 231583,
               "item_name": "Field Marshal's Dreadweave Shoulders",
@@ -5567,13 +5539,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 17581,
-              "item_name": "Field Marshal's Dreadweave Robe",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -3.8732518865894017
-            },
-            {
               "item_id": 231582,
               "item_name": "Field Marshal's Dreadweave Robe",
               "source_kind": "pvp",
@@ -5598,6 +5563,8 @@
           "source_kind": "vendor",
           "score": 36.1863157033406,
           "verified": true,
+          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19595): kept the pick, +4.8 DPS (342.4 vs 337.6 set DPS)",
+          "dps_delta": 4.765683890714058,
           "alternatives": [
             {
               "item_id": 19596,
@@ -5612,14 +5579,6 @@
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
               "dps_delta": -1.5318137112471677
-            },
-            {
-              "item_id": 19595,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -4.765683890714058,
-              "verified": true
             }
           ]
         },
@@ -5631,6 +5590,8 @@
           "source_kind": "vendor",
           "score": 47.1863157033406,
           "verified": true,
+          "swap_note": "confirmed by the sim against Marshal's Dreadweave Gloves (id 17584): kept the pick, +4.8 DPS (342.4 vs 337.6 set DPS)",
+          "dps_delta": 4.766527483766652,
           "alternatives": [
             {
               "item_id": 231586,
@@ -5645,14 +5606,6 @@
               "source_kind": "quest",
               "source": "Armaments of War",
               "dps_delta": -1.944621274207515
-            },
-            {
-              "item_id": 17584,
-              "item_name": "Marshal's Dreadweave Gloves",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -4.766527483766652,
-              "verified": true
             }
           ]
         },
@@ -5697,6 +5650,8 @@
           "source_kind": "vendor",
           "score": 72.63273399920979,
           "verified": true,
+          "swap_note": "confirmed by the sim against Marshal's Dreadweave Leggings (id 17579): kept the pick, +9.0 DPS (342.4 vs 333.4 set DPS)",
+          "dps_delta": 9.019264386088764,
           "alternatives": [
             {
               "item_id": 231587,
@@ -5710,15 +5665,7 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.2491927079997014
-            },
-            {
-              "item_id": 17579,
-              "item_name": "Marshal's Dreadweave Leggings",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -9.019264386088764,
-              "verified": true
+              "dps_delta": -3.2491927079997005
             }
           ]
         },
@@ -5730,6 +5677,8 @@
           "source_kind": "vendor",
           "score": 46.4166258663882,
           "verified": true,
+          "swap_note": "confirmed by the sim against Marshal's Dreadweave Boots (id 17583): kept the pick, +5.1 DPS (342.4 vs 337.3 set DPS)",
+          "dps_delta": 5.087667166548954,
           "alternatives": [
             {
               "item_id": 231585,
@@ -5744,14 +5693,6 @@
               "source_kind": "crafted",
               "source": "Tailoring",
               "dps_delta": -2.2901174672756524
-            },
-            {
-              "item_id": 17583,
-              "item_name": "Marshal's Dreadweave Boots",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -5.087667166548954,
-              "verified": true
             }
           ]
         },
@@ -5771,13 +5712,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.22785196542429886
-            },
-            {
-              "item_id": 234024,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.3300135253720645
             },
             {
               "item_id": 11669,
@@ -6000,8 +5934,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.037310697,
-      "verify_run_seconds": 0.868068379,
+      "weights_run_seconds": 1.3215313929999999,
+      "verify_run_seconds": 1.110315647,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6153,6 +6087,8 @@
           "source_kind": "vendor",
           "score": 82.6411881089017,
           "verified": true,
+          "swap_note": "confirmed by the sim against Warlord's Dreadweave Hood (id 17591): kept the pick, +14.6 DPS (340.0 vs 325.5 set DPS)",
+          "dps_delta": 14.550668736988825,
           "alternatives": [
             {
               "item_id": 231590,
@@ -6167,14 +6103,6 @@
               "source_kind": "dungeon",
               "source": "Stratholme: Magistrate Barthilas",
               "dps_delta": -5.189675130479028
-            },
-            {
-              "item_id": 17591,
-              "item_name": "Warlord's Dreadweave Hood",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -14.550668736988825,
-              "verified": true
             }
           ]
         },
@@ -6224,22 +6152,15 @@
           "item_name": "Heretic Shoulderpads",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 53.44890452517998,
+          "score": 53.448904525179984,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 17590,
-              "item_name": "Warlord's Dreadweave Mantle",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -2.506394091108385
-            },
             {
               "item_id": 231592,
               "item_name": "Warlord's Dreadweave Mantle",
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -2.506394091108385
+              "dps_delta": -2.506394091108386
             },
             {
               "item_id": 227808,
@@ -6294,13 +6215,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 17592,
-              "item_name": "Warlord's Dreadweave Robe",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -3.8732518865894017
-            },
-            {
               "item_id": 231591,
               "item_name": "Warlord's Dreadweave Robe",
               "source_kind": "pvp",
@@ -6325,6 +6239,8 @@
           "source_kind": "vendor",
           "score": 36.1863157033406,
           "verified": true,
+          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19595): kept the pick, +3.9 DPS (340.0 vs 336.1 set DPS)",
+          "dps_delta": 3.8993476979503043,
           "alternatives": [
             {
               "item_id": 19596,
@@ -6339,14 +6255,6 @@
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
               "dps_delta": -1.5318137112471677
-            },
-            {
-              "item_id": 19595,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -3.8993476979503043,
-              "verified": true
             }
           ]
         },
@@ -6358,6 +6266,8 @@
           "source_kind": "vendor",
           "score": 47.1863157033406,
           "verified": true,
+          "swap_note": "confirmed by the sim against General's Dreadweave Gloves (id 17588): kept the pick, +6.0 DPS (340.0 vs 334.0 set DPS)",
+          "dps_delta": 5.988045768714414,
           "alternatives": [
             {
               "item_id": 231589,
@@ -6372,14 +6282,6 @@
               "source_kind": "quest",
               "source": "Armaments of War",
               "dps_delta": -1.944621274207515
-            },
-            {
-              "item_id": 17588,
-              "item_name": "General's Dreadweave Gloves",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -5.988045768714414,
-              "verified": true
             }
           ]
         },
@@ -6424,6 +6326,8 @@
           "source_kind": "vendor",
           "score": 72.63273399920979,
           "verified": true,
+          "swap_note": "confirmed by the sim against General's Dreadweave Pants (id 17593): kept the pick, +10.0 DPS (340.0 vs 330.0 set DPS)",
+          "dps_delta": 9.998058060690482,
           "alternatives": [
             {
               "item_id": 231588,
@@ -6437,15 +6341,7 @@
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.2491927079997005
-            },
-            {
-              "item_id": 17593,
-              "item_name": "General's Dreadweave Pants",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -9.998058060690482,
-              "verified": true
+              "dps_delta": -3.2491927079997014
             }
           ]
         },
@@ -6457,6 +6353,8 @@
           "source_kind": "vendor",
           "score": 46.4166258663882,
           "verified": true,
+          "swap_note": "confirmed by the sim against General's Dreadweave Boots (id 17586): kept the pick, +5.6 DPS (340.0 vs 334.4 set DPS)",
+          "dps_delta": 5.593032497343813,
           "alternatives": [
             {
               "item_id": 231593,
@@ -6471,14 +6369,6 @@
               "source_kind": "crafted",
               "source": "Tailoring",
               "dps_delta": -2.2901174672756524
-            },
-            {
-              "item_id": 17586,
-              "item_name": "General's Dreadweave Boots",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -5.593032497343813,
-              "verified": true
             }
           ]
         },
@@ -6498,13 +6388,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.22785196542429886
-            },
-            {
-              "item_id": 234024,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.3300135253720645
             },
             {
               "item_id": 11669,
@@ -6726,8 +6609,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 1.037310697,
-      "verify_run_seconds": 0.885892004,
+      "weights_run_seconds": 1.3215313929999999,
+      "verify_run_seconds": 1.123151113,
       "coverage": {
         "back": {
           "eligible": 451,

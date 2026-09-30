@@ -2,7 +2,7 @@
   "spec": "hunter-marksmanship",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:53:13Z",
+  "generated_at": "2026-09-30T15:14:53Z",
   "bands": [
     {
       "spec": "hunter-marksmanship",
@@ -527,8 +527,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.128067382,
-      "verify_run_seconds": 1.243615351,
+      "weights_run_seconds": 1.4241420329999999,
+      "verify_run_seconds": 1.57161757,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1141,8 +1141,8 @@
         "main_hand: Bronze Dory",
         "ranged: Ranger Bow"
       ],
-      "weights_run_seconds": 1.128067382,
-      "verify_run_seconds": 1.301468808,
+      "weights_run_seconds": 1.4241420329999999,
+      "verify_run_seconds": 1.6580084130000001,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1861,8 +1861,8 @@
         "off_hand: Vendetta",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.218496334,
-      "verify_run_seconds": 1.424433421,
+      "weights_run_seconds": 1.564816892,
+      "verify_run_seconds": 1.751973452,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2567,8 +2567,8 @@
         "off_hand: Outlaw Sabre",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.218496334,
-      "verify_run_seconds": 1.484614355,
+      "weights_run_seconds": 1.564816892,
+      "verify_run_seconds": 1.857376975,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3234,8 +3234,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.220520814,
-      "verify_run_seconds": 1.424266324,
+      "weights_run_seconds": 1.587583945,
+      "verify_run_seconds": 1.8080682000000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3902,8 +3902,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: Bow of Searing Arrows"
       ],
-      "weights_run_seconds": 1.220520814,
-      "verify_run_seconds": 1.411174367,
+      "weights_run_seconds": 1.587583945,
+      "verify_run_seconds": 1.785326328,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4075,13 +4075,6 @@
               "source": "Silverwing Sentinels",
               "dps_delta": -0.09622739789443813,
               "verified": true
-            },
-            {
-              "item_id": 19540,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.26967276738293366
             },
             {
               "item_id": 17772,
@@ -4457,29 +4450,8 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 20512,
-          "item_name": "Sanctified Orb",
-          "source": "Forging the Mightstone",
-          "source_kind": "quest",
-          "sim_dps": 136.12899808162365,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 20036,
-              "item_name": "Fire Ruby",
-              "source_kind": "quest",
-              "source": "Destroy Morphaz",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4586,12 +4558,11 @@
         "finger1: Masons Fraternity Ring",
         "finger2: Ring of the Underwood",
         "trinket1: Devilsaur Eye",
-        "trinket2: Sanctified Orb",
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.222372947,
-      "verify_run_seconds": 1.485399997,
+      "weights_run_seconds": 1.5957524109999999,
+      "verify_run_seconds": 1.913828381,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4755,6 +4726,8 @@
           "source_kind": "world_drop",
           "score": 29.996151508704223,
           "verified": true,
+          "swap_note": "confirmed by the sim against Scout's Medallion (id 19535): kept the pick, +0.5 DPS (141.0 vs 140.5 set DPS)",
+          "dps_delta": 0.4870077430127253,
           "alternatives": [
             {
               "item_id": 19536,
@@ -4762,14 +4735,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "dps_delta": -0.26967276738293366
-            },
-            {
-              "item_id": 19535,
-              "item_name": "Scout's Medallion",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.4870077430127253,
-              "verified": true
             },
             {
               "item_id": 19159,
@@ -5272,8 +5237,8 @@
         "main_hand: Eyegouger",
         "ranged: Arcanite Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.222372947,
-      "verify_run_seconds": 1.449457873,
+      "weights_run_seconds": 1.5957524109999999,
+      "verify_run_seconds": 1.8663890890000001,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5406,13 +5371,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 16465,
-              "item_name": "Field Marshal's Chain Helm",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -5.484115225658293
-            },
-            {
               "item_id": 231580,
               "item_name": "Field Marshal's Chain Helm",
               "source_kind": "pvp",
@@ -5468,7 +5426,7 @@
           "item_name": "Dawnstalker Pauldrons",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 143.07868515539013,
+          "score": 143.07868515539016,
           "verified": true,
           "alternatives": [
             {
@@ -5484,14 +5442,14 @@
               "item_name": "Darkspear Pauldrons",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.3943299052108955
+              "dps_delta": -3.3943299052108973
             },
             {
               "item_id": 272106,
               "item_name": "Darkspear Epaulets",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -3.3943299052108955
+              "dps_delta": -3.3943299052108973
             }
           ]
         },
@@ -5666,7 +5624,7 @@
           "item_name": "Dawnstalker Leggings",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 193.92920458018202,
+          "score": 193.929204580182,
           "verified": true,
           "alternatives": [
             {
@@ -5674,14 +5632,7 @@
               "item_name": "Sentinel's Chain Leggings",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.8809368007991045
-            },
-            {
-              "item_id": 22748,
-              "item_name": "Sentinel's Chain Leggings",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -5.023741038865472
+              "dps_delta": -3.880936800799103
             },
             {
               "item_id": 239541,
@@ -5741,13 +5692,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": 0
-            },
-            {
-              "item_id": 21204,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Path of the Conqueror",
-              "dps_delta": -0.26545843082964604
             },
             {
               "item_id": 11669,
@@ -5967,8 +5911,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.198124187,
-      "verify_run_seconds": 1.532084757,
+      "weights_run_seconds": 1.5365617029999998,
+      "verify_run_seconds": 1.9190009080000001,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6376,7 +6320,7 @@
               "item_name": "Outrider's Chain Leggings",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -5.023741038865473
+              "dps_delta": -5.023741038865472
             },
             {
               "item_id": 239541,
@@ -6436,13 +6380,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": 0
-            },
-            {
-              "item_id": 21204,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Path of the Conqueror",
-              "dps_delta": -0.26545843082964604
             },
             {
               "item_id": 11669,
@@ -6662,8 +6599,8 @@
         "main_hand: Legionite Glaive",
         "ranged: Hyper Deluxe Sniper Rifle Mk XVII"
       ],
-      "weights_run_seconds": 1.198124187,
-      "verify_run_seconds": 1.462924051,
+      "weights_run_seconds": 1.5365617029999998,
+      "verify_run_seconds": 1.875949144,
       "coverage": {
         "back": {
           "eligible": 451,

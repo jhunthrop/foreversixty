@@ -2,7 +2,7 @@
   "spec": "paladin-retribution",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:54:51Z",
+  "generated_at": "2026-09-30T15:16:57Z",
   "bands": [
     {
       "spec": "paladin-retribution",
@@ -532,8 +532,8 @@
         "finger2: Demon Band",
         "main_hand: Verigan's Fist"
       ],
-      "weights_run_seconds": 1.029375631,
-      "verify_run_seconds": 0.838792616,
+      "weights_run_seconds": 1.32007963,
+      "verify_run_seconds": 1.086253328,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1134,8 +1134,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.029375631,
-      "verify_run_seconds": 0.81398605,
+      "weights_run_seconds": 1.32007963,
+      "verify_run_seconds": 1.088535097,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1764,8 +1764,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.066120076,
-      "verify_run_seconds": 1.075610691,
+      "weights_run_seconds": 1.38683476,
+      "verify_run_seconds": 1.365263827,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2400,8 +2400,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.066120076,
-      "verify_run_seconds": 1.069981236,
+      "weights_run_seconds": 1.38683476,
+      "verify_run_seconds": 1.365829102,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3033,8 +3033,8 @@
         "finger1: Assault Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.068596872,
-      "verify_run_seconds": 0.986138461,
+      "weights_run_seconds": 1.402411174,
+      "verify_run_seconds": 1.272226715,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3666,8 +3666,8 @@
         "finger1: Assault Band",
         "finger2: Mark of Kern"
       ],
-      "weights_run_seconds": 1.068596872,
-      "verify_run_seconds": 1.014540251,
+      "weights_run_seconds": 1.402411174,
+      "verify_run_seconds": 1.280620377,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4225,21 +4225,8 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 20036,
-          "item_name": "Fire Ruby",
-          "source": "Destroy Morphaz",
-          "source_kind": "quest",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": -0.09839752050818618,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4317,11 +4304,10 @@
         "finger1: Blackstone Ring",
         "finger2: Protector's Band",
         "trinket1: Diamond Flask",
-        "trinket2: Fire Ruby",
         "main_hand: Nightblade"
       ],
-      "weights_run_seconds": 1.1258629,
-      "verify_run_seconds": 1.14363282,
+      "weights_run_seconds": 1.447848703,
+      "verify_run_seconds": 1.42841716,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4982,8 +4968,8 @@
         "trinket2: Diamond Flask",
         "main_hand: Thorium Greatmace"
       ],
-      "weights_run_seconds": 1.1258629,
-      "verify_run_seconds": 1.113830938,
+      "weights_run_seconds": 1.447848703,
+      "verify_run_seconds": 1.40706853,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5462,13 +5448,6 @@
               "dps_delta": -0.17485922050164748
             },
             {
-              "item_id": 234026,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.2622888307524709
-            },
-            {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
@@ -5658,8 +5637,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: Blackblade of Shahram"
       ],
-      "weights_run_seconds": 1.144154599,
-      "verify_run_seconds": 1.068570827,
+      "weights_run_seconds": 1.491774044,
+      "verify_run_seconds": 1.353112899,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5943,7 +5922,7 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -1.6291266404312212
+              "dps_delta": -1.629126640431222
             },
             {
               "item_id": 23087,
@@ -6075,7 +6054,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -2.0108810357689446
+              "dps_delta": -2.0108810357689437
             },
             {
               "item_id": 14554,
@@ -6136,13 +6115,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.17485922050164748
-            },
-            {
-              "item_id": 234026,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.2622888307524709
             },
             {
               "item_id": 11669,
@@ -6335,8 +6307,8 @@
         "trinket2: Draconic Infused Emblem",
         "main_hand: The Unstoppable Force"
       ],
-      "weights_run_seconds": 1.144154599,
-      "verify_run_seconds": 1.056186138,
+      "weights_run_seconds": 1.491774044,
+      "verify_run_seconds": 1.387295787,
       "coverage": {
         "back": {
           "eligible": 450,

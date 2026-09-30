@@ -2,7 +2,7 @@
   "spec": "warrior-arms",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:58:41Z",
+  "generated_at": "2026-09-30T15:21:57Z",
   "bands": [
     {
       "spec": "warrior-arms",
@@ -542,8 +542,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.161791467,
-      "verify_run_seconds": 0.988661682,
+      "weights_run_seconds": 1.448756164,
+      "verify_run_seconds": 1.239975831,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1174,8 +1174,8 @@
         "main_hand: The Axe of Severing",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.161791467,
-      "verify_run_seconds": 0.916344271,
+      "weights_run_seconds": 1.448756164,
+      "verify_run_seconds": 1.195711655,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1834,8 +1834,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.237396232,
-      "verify_run_seconds": 1.113652887,
+      "weights_run_seconds": 1.594569924,
+      "verify_run_seconds": 1.400535335,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2501,8 +2501,8 @@
         "main_hand: Manual Crowd Pummeler",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.237396232,
-      "verify_run_seconds": 1.093593996,
+      "weights_run_seconds": 1.594569924,
+      "verify_run_seconds": 1.428450908,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3175,8 +3175,8 @@
         "main_hand: Nightblade",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.5724020429999999,
-      "verify_run_seconds": 1.20716446,
+      "weights_run_seconds": 2.012629689,
+      "verify_run_seconds": 1.5172113,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3855,8 +3855,8 @@
         "main_hand: Fiery War Axe",
         "ranged: Monolithic Bow"
       ],
-      "weights_run_seconds": 1.5724020429999999,
-      "verify_run_seconds": 1.195338047,
+      "weights_run_seconds": 2.012629689,
+      "verify_run_seconds": 1.49369355,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4418,25 +4418,8 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 249469,
-          "item_name": "Frozen Heart of the Mountain",
-          "source": "Enchanting",
-          "source_kind": "crafted",
-          "sim_dps": 129.5040093207497,
-          "verified": true,
-          "swap_note": "beat the scored pick Fire Ruby (id 20036) in the sim: +2.0 DPS (129.5 vs 127.5 set DPS)",
-          "dps_delta": 2.002639294758424,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 20036,
-              "item_name": "Fire Ruby",
-              "source_kind": "quest",
-              "source": "Destroy Morphaz",
-              "dps_delta": -2.002639294758424,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4540,11 +4523,10 @@
         "finger1: Blackstone Ring",
         "finger2: Assault Band",
         "trinket1: Diamond Flask",
-        "trinket2: Frozen Heart of the Mountain",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.647326659,
-      "verify_run_seconds": 1.501772635,
+      "weights_run_seconds": 2.128358883,
+      "verify_run_seconds": 1.922650729,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5228,8 +5210,8 @@
         "trinket2: Diamond Flask",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.647326659,
-      "verify_run_seconds": 1.422811836,
+      "weights_run_seconds": 2.128358883,
+      "verify_run_seconds": 1.820527181,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5369,13 +5351,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 16478,
-              "item_name": "Field Marshal's Plate Helm",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -3.4196895478617657
-            },
-            {
               "item_id": 231538,
               "item_name": "Field Marshal's Plate Helm",
               "source_kind": "pvp",
@@ -5434,13 +5409,6 @@
           "score": 169.83424879739368,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 16480,
-              "item_name": "Field Marshal's Plate Shoulderguards",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -2.609188251872503
-            },
             {
               "item_id": 231537,
               "item_name": "Field Marshal's Plate Shoulderguards",
@@ -5596,7 +5564,7 @@
           "item_name": "Lightbreaker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 169.77262092861727,
+          "score": 169.77262092861724,
           "verified": true,
           "alternatives": [
             {
@@ -5604,14 +5572,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1.678352469737099
+              "dps_delta": -1.6783524697370982
             },
             {
               "item_id": 16482,
               "item_name": "Marshal's Plate Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.9563626954386188
+              "dps_delta": -1.9563626954386177
             },
             {
               "item_id": 227814,
@@ -5637,7 +5605,7 @@
               "item_name": "Sentinel's Plate Legguards",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -3.071645739611837
+              "dps_delta": -3.071645739611836
             },
             {
               "item_id": 22385,
@@ -5664,6 +5632,8 @@
           "source_kind": "vendor",
           "score": 168.9232450205762,
           "verified": true,
+          "swap_note": "confirmed by the sim against Marshal's Plate Boots (id 16483): kept the pick, +6.3 DPS (245.3 vs 239.0 set DPS)",
+          "dps_delta": 6.32123399344286,
           "alternatives": [
             {
               "item_id": 231539,
@@ -5678,14 +5648,6 @@
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
               "dps_delta": -2.822661740886792
-            },
-            {
-              "item_id": 16483,
-              "item_name": "Marshal's Plate Boots",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -6.32123399344286,
-              "verified": true
             }
           ]
         },
@@ -5705,13 +5667,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.24884312970565903
-            },
-            {
-              "item_id": 234026,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.3732646945584881
             },
             {
               "item_id": 11669,
@@ -5791,36 +5746,8 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 19289,
-          "item_name": "Darkmoon Card: Maelstrom",
-          "source": "Darkmoon Elementals Deck",
-          "source_kind": "quest",
-          "sim_dps": 245.29529588623691,
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 18537,
-              "item_name": "Counterattack Lodestone",
-              "source_kind": "dungeon",
-              "source": "Dire Maul: Tribute",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 13965,
-              "item_name": "Blackhand's Breadth",
-              "source_kind": "quest",
-              "source": "General Drakkisath's Demise",
-              "dps_delta": -0.19640928921629097,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -5927,12 +5854,11 @@
         "finger1: Signet Ring of the Bronze Dragonflight",
         "finger2: Protector's Band",
         "trinket1: Hand of Justice",
-        "trinket2: Darkmoon Card: Maelstrom",
         "main_hand: Blackblade of Shahram",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.636399352,
-      "verify_run_seconds": 1.396501923,
+      "weights_run_seconds": 2.108283593,
+      "verify_run_seconds": 1.757950358,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6072,13 +5998,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 16542,
-              "item_name": "Warlord's Plate Headpiece",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -3.4196895478617657
-            },
-            {
               "item_id": 231535,
               "item_name": "Warlord's Plate Headpiece",
               "source_kind": "pvp",
@@ -6137,13 +6056,6 @@
           "score": 169.83424879739368,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 16544,
-              "item_name": "Warlord's Plate Shoulders",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -2.609188251872503
-            },
             {
               "item_id": 231534,
               "item_name": "Warlord's Plate Shoulders",
@@ -6299,7 +6211,7 @@
           "item_name": "Lightbreaker Belt",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 169.77262092861724,
+          "score": 169.77262092861727,
           "verified": true,
           "alternatives": [
             {
@@ -6307,14 +6219,14 @@
               "item_name": "Ferocity of the Timbermaw",
               "source_kind": "vendor",
               "source": "Meilosh",
-              "dps_delta": -1.6783524697370982
+              "dps_delta": -1.678352469737099
             },
             {
               "item_id": 16547,
               "item_name": "General's Plate Girdle",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.9563626954386177
+              "dps_delta": -1.9563626954386188
             },
             {
               "item_id": 227814,
@@ -6347,7 +6259,7 @@
               "item_name": "Titanic Leggings",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -3.2503144177497014
+              "dps_delta": -3.2503144177497005
             },
             {
               "item_id": 14554,
@@ -6367,13 +6279,15 @@
           "source_kind": "vendor",
           "score": 168.9232450205762,
           "verified": true,
+          "swap_note": "confirmed by the sim against General's Plate Boots (id 16545): kept the pick, +6.7 DPS (237.7 vs 231.0 set DPS)",
+          "dps_delta": 6.67994061398548,
           "alternatives": [
             {
               "item_id": 231531,
               "item_name": "General's Plate Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -2.702892084555594
+              "dps_delta": -2.7028920845555935
             },
             {
               "item_id": 21995,
@@ -6381,14 +6295,6 @@
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
               "dps_delta": -2.822661740886792
-            },
-            {
-              "item_id": 16545,
-              "item_name": "General's Plate Boots",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -6.67994061398548,
-              "verified": true
             }
           ]
         },
@@ -6408,13 +6314,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.24884312970565903
-            },
-            {
-              "item_id": 234026,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.3732646945584881
             },
             {
               "item_id": 11669,
@@ -6635,8 +6534,8 @@
         "main_hand: The Unstoppable Force",
         "ranged: Bloodseeker"
       ],
-      "weights_run_seconds": 1.636399352,
-      "verify_run_seconds": 1.363325587,
+      "weights_run_seconds": 2.108283593,
+      "verify_run_seconds": 1.7463664479999998,
       "coverage": {
         "back": {
           "eligible": 451,

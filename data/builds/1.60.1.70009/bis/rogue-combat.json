@@ -2,7 +2,7 @@
   "spec": "rogue-combat",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:55:53Z",
+  "generated_at": "2026-09-30T15:18:18Z",
   "bands": [
     {
       "spec": "rogue-combat",
@@ -560,8 +560,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 0.844305699,
-      "verify_run_seconds": 0.995661232,
+      "weights_run_seconds": 1.095110744,
+      "verify_run_seconds": 1.269925435,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1198,8 +1198,8 @@
         "off_hand: Cruel Barb",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 0.844305699,
-      "verify_run_seconds": 0.991921144,
+      "weights_run_seconds": 1.095110744,
+      "verify_run_seconds": 1.283333601,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1371,13 +1371,6 @@
               "source": "Silverwing Sentinels",
               "dps_delta": -0.31816156963362374,
               "verified": true
-            },
-            {
-              "item_id": 20444,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.38246374381515813
             },
             {
               "item_id": 13084,
@@ -1867,8 +1860,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 0.868957151,
-      "verify_run_seconds": 1.044614913,
+      "weights_run_seconds": 1.095903948,
+      "verify_run_seconds": 1.331208913,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2040,13 +2033,6 @@
               "source": "Warsong Outriders",
               "dps_delta": -0.32133186651616796,
               "verified": true
-            },
-            {
-              "item_id": 20442,
-              "item_name": "Scout's Medallion",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.38246374381515813
             },
             {
               "item_id": 13084,
@@ -2560,8 +2546,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 0.868957151,
-      "verify_run_seconds": 1.038081189,
+      "weights_run_seconds": 1.095903948,
+      "verify_run_seconds": 1.355325771,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2741,13 +2727,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "dps_delta": -0.4327985717634394
-            },
-            {
-              "item_id": 19541,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.5853956935329089
             }
           ]
         },
@@ -3228,8 +3207,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 0.900042027,
-      "verify_run_seconds": 1.0629414,
+      "weights_run_seconds": 1.167001132,
+      "verify_run_seconds": 1.406056815,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3409,13 +3388,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "dps_delta": -0.4327985717634394
-            },
-            {
-              "item_id": 19537,
-              "item_name": "Scout's Medallion",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.5853956935329089
             }
           ]
         },
@@ -3896,8 +3868,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 0.900042027,
-      "verify_run_seconds": 1.086512342,
+      "weights_run_seconds": 1.167001132,
+      "verify_run_seconds": 1.361270442,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4267,6 +4239,8 @@
           "source_kind": "dungeon",
           "score": 30,
           "verified": true,
+          "swap_note": "confirmed by the sim against Highlander's Leather Girdle (id 20116): kept the pick, +0.8 DPS over it",
+          "dps_delta": 0.7949532613659187,
           "effect_unmodelled": true,
           "ties": [
             {
@@ -4288,14 +4262,6 @@
               "source_kind": "rep",
               "source": "The League of Arathor",
               "dps_delta": -0.3207198302757127
-            },
-            {
-              "item_id": 20116,
-              "item_name": "Highlander's Leather Girdle",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -0.7949532613659187,
-              "verified": true
             }
           ]
         },
@@ -4460,21 +4426,8 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 20512,
-          "item_name": "Sanctified Orb",
-          "source": "Forging the Mightstone",
-          "source_kind": "quest",
-          "verified": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4603,13 +4556,12 @@
         "finger1: Blackstone Ring",
         "finger2: Assault Band",
         "trinket1: Diamond Flask",
-        "trinket2: Sanctified Orb",
         "main_hand: Bloodrazor",
         "off_hand: Shadowblade",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 0.93707845,
-      "verify_run_seconds": 1.372731131,
+      "weights_run_seconds": 1.1937195,
+      "verify_run_seconds": 1.738381108,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4979,6 +4931,8 @@
           "source_kind": "dungeon",
           "score": 30,
           "verified": true,
+          "swap_note": "confirmed by the sim against Defiler's Leather Girdle (id 20192): kept the pick, +0.8 DPS over it",
+          "dps_delta": 0.7924964031677177,
           "effect_unmodelled": true,
           "ties": [
             {
@@ -5000,14 +4954,6 @@
               "source_kind": "rep",
               "source": "The Defilers",
               "dps_delta": -0.3207198302757127
-            },
-            {
-              "item_id": 20192,
-              "item_name": "Defiler's Leather Girdle",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "dps_delta": -0.7924964031677177,
-              "verified": true
             }
           ]
         },
@@ -5322,8 +5268,8 @@
         "off_hand: Shadowblade",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 0.93707845,
-      "verify_run_seconds": 1.348323594,
+      "weights_run_seconds": 1.1937195,
+      "verify_run_seconds": 1.748395395,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5454,6 +5400,8 @@
           "source_kind": "vendor",
           "score": 78.45736358731025,
           "verified": true,
+          "swap_note": "confirmed by the sim against Field Marshal's Leather Mask (id 16455): kept the pick, +10.0 DPS over it",
+          "dps_delta": 10.037103945714193,
           "alternatives": [
             {
               "item_id": 231545,
@@ -5468,14 +5416,6 @@
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
               "dps_delta": -1.759614930592515
-            },
-            {
-              "item_id": 16455,
-              "item_name": "Field Marshal's Leather Mask",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -10.037103945714193,
-              "verified": true
             }
           ]
         },
@@ -5793,13 +5733,6 @@
               "dps_delta": 0
             },
             {
-              "item_id": 21204,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Path of the Conqueror",
-              "dps_delta": -0.14955036159046387
-            },
-            {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
@@ -6043,8 +5976,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 0.917900659,
-      "verify_run_seconds": 1.311411483,
+      "weights_run_seconds": 1.169305694,
+      "verify_run_seconds": 1.6601859719999998,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6175,6 +6108,8 @@
           "source_kind": "vendor",
           "score": 78.45736358731025,
           "verified": true,
+          "swap_note": "confirmed by the sim against Warlord's Leather Helm (id 16561): kept the pick, +9.9 DPS over it",
+          "dps_delta": 9.872573320180152,
           "alternatives": [
             {
               "item_id": 231553,
@@ -6189,14 +6124,6 @@
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
               "dps_delta": -1.759614930592515
-            },
-            {
-              "item_id": 16561,
-              "item_name": "Warlord's Leather Helm",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -9.872573320180152,
-              "verified": true
             }
           ]
         },
@@ -6514,13 +6441,6 @@
               "dps_delta": 0
             },
             {
-              "item_id": 21204,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Path of the Conqueror",
-              "dps_delta": -0.14955036159046387
-            },
-            {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
@@ -6764,8 +6684,8 @@
         "off_hand: Ravencrest's Legacy",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 0.917900659,
-      "verify_run_seconds": 1.304066365,
+      "weights_run_seconds": 1.169305694,
+      "verify_run_seconds": 1.6648183319999998,
       "coverage": {
         "back": {
           "eligible": 451,

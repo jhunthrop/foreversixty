@@ -2,7 +2,7 @@
   "spec": "warrior-fury",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:59:13Z",
+  "generated_at": "2026-09-30T15:22:37Z",
   "bands": [
     {
       "spec": "warrior-fury",
@@ -599,8 +599,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.189322837,
-      "verify_run_seconds": 1.120966753,
+      "weights_run_seconds": 1.465690764,
+      "verify_run_seconds": 1.391093139,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1262,8 +1262,8 @@
         "off_hand: Butcher's Cleaver",
         "ranged: Cracked Blacksmith Hammer"
       ],
-      "weights_run_seconds": 1.189322837,
-      "verify_run_seconds": 1.159409131,
+      "weights_run_seconds": 1.465690764,
+      "verify_run_seconds": 1.429420658,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1952,8 +1952,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.276361201,
-      "verify_run_seconds": 1.160865908,
+      "weights_run_seconds": 1.649410059,
+      "verify_run_seconds": 1.412560765,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2649,8 +2649,8 @@
         "off_hand: Ironspine's Fist",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.276361201,
-      "verify_run_seconds": 1.167195348,
+      "weights_run_seconds": 1.649410059,
+      "verify_run_seconds": 1.468086758,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3331,8 +3331,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.480111288,
-      "verify_run_seconds": 1.316121402,
+      "weights_run_seconds": 1.8707685299999999,
+      "verify_run_seconds": 1.653607383,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4013,8 +4013,8 @@
         "off_hand: Vanquisher's Sword",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.480111288,
-      "verify_run_seconds": 1.404390938,
+      "weights_run_seconds": 1.8707685299999999,
+      "verify_run_seconds": 1.734252872,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4507,13 +4507,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "dps_delta": -0.18914025700432996
-            },
-            {
-              "item_id": 19515,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.522573302518873
             }
           ]
         },
@@ -4546,13 +4539,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "dps_delta": -0.09445905770952374
-            },
-            {
-              "item_id": 19515,
-              "item_name": "Protector's Band",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.4278921032240668
             }
           ]
         },
@@ -4568,22 +4554,8 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 249469,
-          "item_name": "Frozen Heart of the Mountain",
-          "source": "Enchanting",
-          "source_kind": "crafted",
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 20512,
-              "item_name": "Sanctified Orb",
-              "source_kind": "quest",
-              "source": "Forging the Mightstone",
-              "dps_delta": -1.7153820889483598,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4717,13 +4689,12 @@
         "feet: Battlechaser's Greaves",
         "finger1: Blackstone Ring",
         "trinket1: Diamond Flask",
-        "trinket2: Frozen Heart of the Mountain",
         "main_hand: Bloodrazor",
         "off_hand: Doomforged Straightedge",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.577184063,
-      "verify_run_seconds": 1.747226596,
+      "weights_run_seconds": 1.992053647,
+      "verify_run_seconds": 2.193160881,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5433,8 +5404,8 @@
         "off_hand: Shadowblade",
         "ranged: Skull Splitting Crossbow"
       ],
-      "weights_run_seconds": 1.577184063,
-      "verify_run_seconds": 1.8362243249999999,
+      "weights_run_seconds": 1.992053647,
+      "verify_run_seconds": 2.323433404,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5574,13 +5545,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 16478,
-              "item_name": "Field Marshal's Plate Helm",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -3.633590279554547
-            },
-            {
               "item_id": 231538,
               "item_name": "Field Marshal's Plate Helm",
               "source_kind": "pvp",
@@ -5636,22 +5600,15 @@
           "item_name": "Lightbreaker Shoulders",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 101.77938074444337,
+          "score": 101.77938074444339,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 23315,
-              "item_name": "Lieutenant Commander's Plate Shoulders",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -2.8216201130646117
-            },
             {
               "item_id": 227045,
               "item_name": "Lieutenant Commander's Plate Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -2.8216201130646117
+              "dps_delta": -2.8216201130646126
             },
             {
               "item_id": 239524,
@@ -5770,6 +5727,8 @@
           "source_kind": "vendor",
           "sim_dps": 329.6779706221229,
           "verified": true,
+          "swap_note": "confirmed by the sim against Marshal's Plate Gauntlets (id 16484): kept the pick, +5.9 DPS (329.7 vs 323.8 set DPS)",
+          "dps_delta": 5.87828375460407,
           "alternatives": [
             {
               "item_id": 272095,
@@ -5784,14 +5743,6 @@
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
               "dps_delta": -2.2378355930730587
-            },
-            {
-              "item_id": 16484,
-              "item_name": "Marshal's Plate Gauntlets",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -5.87828375460407,
-              "verified": true
             }
           ]
         },
@@ -5867,30 +5818,24 @@
           "item_name": "Lightbreaker Greaves",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 101.87264318808613,
+          "score": 101.87264318808612,
           "verified": true,
+          "swap_note": "confirmed by the sim against Marshal's Plate Boots (id 16483): kept the pick, +8.3 DPS (329.7 vs 321.4 set DPS)",
+          "dps_delta": 8.322554313796275,
           "alternatives": [
             {
               "item_id": 231539,
               "item_name": "Marshal's Plate Boots",
               "source_kind": "pvp",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -3.0026276521407014
+              "dps_delta": -3.002627652140701
             },
             {
               "item_id": 21995,
               "item_name": "Boots of Heroism",
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
-              "dps_delta": -3.04383619524972
-            },
-            {
-              "item_id": 16483,
-              "item_name": "Marshal's Plate Boots",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -8.322554313796275,
-              "verified": true
+              "dps_delta": -3.0438361952497197
             }
           ]
         },
@@ -5910,13 +5855,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.270656722163312
-            },
-            {
-              "item_id": 234026,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.405985083244968
             },
             {
               "item_id": 11669,
@@ -6166,8 +6104,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.583788282,
-      "verify_run_seconds": 1.6880213149999999,
+      "weights_run_seconds": 2.062531427,
+      "verify_run_seconds": 2.134072135,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6307,13 +6245,6 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 16542,
-              "item_name": "Warlord's Plate Headpiece",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -3.633590279554547
-            },
-            {
               "item_id": 231535,
               "item_name": "Warlord's Plate Headpiece",
               "source_kind": "pvp",
@@ -6369,22 +6300,15 @@
           "item_name": "Lightbreaker Shoulders",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 101.77938074444339,
+          "score": 101.77938074444337,
           "verified": true,
           "alternatives": [
-            {
-              "item_id": 23243,
-              "item_name": "Champion's Plate Shoulders",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -2.8216201130646126
-            },
             {
               "item_id": 227042,
               "item_name": "Champion's Plate Shoulders",
               "source_kind": "pvp",
               "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -2.8216201130646126
+              "dps_delta": -2.8216201130646117
             },
             {
               "item_id": 239524,
@@ -6443,14 +6367,14 @@
               "item_name": "Timbermaw Tunic",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -2.7633442026349355
+              "dps_delta": -2.763344202634937
             },
             {
               "item_id": 22191,
               "item_name": "Obsidian Mail Tunic",
               "source_kind": "crafted",
               "source": "Blacksmithing",
-              "dps_delta": -3.309123420845466
+              "dps_delta": -3.3091234208454674
             },
             {
               "item_id": 23087,
@@ -6476,14 +6400,14 @@
               "item_name": "Berserker Bracers",
               "source_kind": "rep",
               "source": "Warsong Outriders",
-              "dps_delta": -1.5364675481146628
+              "dps_delta": -1.5364675481146637
             },
             {
               "item_id": 16546,
               "item_name": "General's Plate Armguards",
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
-              "dps_delta": -1.8331130423840016
+              "dps_delta": -1.8331130423840025
             },
             {
               "item_id": 23090,
@@ -6503,6 +6427,8 @@
           "source_kind": "vendor",
           "sim_dps": 310.48659643440214,
           "verified": true,
+          "swap_note": "confirmed by the sim against General's Plate Gauntlets (id 16548): kept the pick, +8.1 DPS (310.5 vs 302.4 set DPS)",
+          "dps_delta": 8.059274328489778,
           "alternatives": [
             {
               "item_id": 272095,
@@ -6517,14 +6443,6 @@
               "source_kind": "pvp",
               "source": "PvP rank 16 · General · Horde",
               "dps_delta": -2.2378355930730587
-            },
-            {
-              "item_id": 16548,
-              "item_name": "General's Plate Gauntlets",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -8.059274328489778,
-              "verified": true
             }
           ]
         },
@@ -6602,6 +6520,8 @@
           "source_kind": "vendor",
           "score": 101.87264318808613,
           "verified": true,
+          "swap_note": "confirmed by the sim against General's Plate Boots (id 16545): kept the pick, +10.7 DPS (310.5 vs 299.8 set DPS)",
+          "dps_delta": 10.665011087691255,
           "alternatives": [
             {
               "item_id": 231531,
@@ -6616,14 +6536,6 @@
               "source_kind": "quest",
               "source": "Anthion's Parting Words",
               "dps_delta": -3.04383619524972
-            },
-            {
-              "item_id": 16545,
-              "item_name": "General's Plate Boots",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -10.665011087691255,
-              "verified": true
             }
           ]
         },
@@ -6643,13 +6555,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.270656722163312
-            },
-            {
-              "item_id": 234026,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.405985083244968
             },
             {
               "item_id": 11669,
@@ -6899,8 +6804,8 @@
         "off_hand: Shadowsong's Sorrow",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.583788282,
-      "verify_run_seconds": 1.729849294,
+      "weights_run_seconds": 2.062531427,
+      "verify_run_seconds": 2.211390267,
       "coverage": {
         "back": {
           "eligible": 451,

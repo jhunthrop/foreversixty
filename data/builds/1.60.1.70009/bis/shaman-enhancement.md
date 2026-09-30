@@ -8,7 +8,7 @@ Forever unifies melee, ranged and spell hit into one stat, and likewise crit, on
 
 ### Band 20 (dwarf, 0000000000000000-253100000000000000-0000000000000000)
 
-Set DPS (verified): 43.1. Weights run: 1.1s. Verify run: 1.2s. 267 eligible items had no known source.
+Set DPS (verified): 43.1. Weights run: 1.5s. Verify run: 1.5s. 267 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.235 ± 0.025, crit=0.309 ± 0.007 per rating point (14 rating = 1%, 4.333 per %), hit=0.439 ± 0.005 per rating point (10 rating = 1%, 4.391 per %), melee_haste=2.440 ± 0.609
 
@@ -38,7 +38,7 @@ No-known-source sample (15 of 267, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (dwarf, 0000000000000000-253130030004000000-0000000000000000)
 
-Set DPS (verified): 69.4. Weights run: 1.2s. Verify run: 1.2s. 433 eligible items had no known source.
+Set DPS (verified): 69.4. Weights run: 1.5s. Verify run: 1.6s. 433 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.432 ± 0.100, crit=0.525 ± 0.024 per rating point (14 rating = 1%, 7.348 per %), hit=0.619 ± 0.009 per rating point (10 rating = 1%, 6.193 per %), melee_haste=2.835 ± 0.417
 
@@ -68,7 +68,7 @@ No-known-source sample (15 of 433, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (dwarf, 0000000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 88.3. Weights run: 1.4s. Verify run: 1.3s. 582 eligible items had no known source.
+Set DPS (verified): 88.3. Weights run: 1.8s. Verify run: 1.6s. 582 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.386 ± 0.051, crit=0.551 ± 0.015 per rating point (14 rating = 1%, 7.710 per %), hit=0.521 ± 0.008 per rating point (10 rating = 1%, 5.206 per %), melee_haste=3.244 ± 0.122
 
@@ -84,8 +84,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Boar Champion's Belt (10768) | Razorfen Downs: Ragglesnout [dungeon] | 30.0 attack_power points (1.11 DPS) | yes | Highlander's Leather Girdle (20116, +0.00 DPS, sim-verified) [rep]; Girdle of Golem Strength (9405, -0.22 DPS) [world_drop]; Scarlet Belt (10329, -0.22 DPS) [dungeon] |
 | legs | Scarlet Leggings (10330) | Scarlet Monastery: Herod [dungeon] | 42.0 attack_power points (1.55 DPS) | yes | Firemane Leggings (13129, -0.25 DPS, sim-verified) [world_drop]; Orcish War Leggings (7929, -0.30 DPS) [crafted]; Legguards of the Vault (9396, -0.52 DPS) [dungeon] |
 | feet | Prowler's Leather Shoes (252465) | Leatherworking [crafted] | 24.7 attack_power points (0.91 DPS) | yes | Skirmisher's Mail Boots (252564, +0.00 DPS, sim-verified) [crafted]; Blackforge Greaves (6423, -0.11 DPS) [dungeon]; Ironheel Boots (4653, -0.17 DPS) [quest] |
-| finger1 | Assault Band (13095) (or Mark of Kern (2262)) | World drop [world_drop] | 20.0 attack_power points (0.74 DPS) | yes | Protector's Band (19515, -0.03 DPS) [rep]; Thunderbrow Ring (13097, -0.11 DPS) [world_drop]; Protector's Band (19517, -0.21 DPS) [rep] |
-| finger2 | Mark of Kern (2262) | Scarlet Monastery: Houndmaster Loksey [dungeon] | 20.0 attack_power points (0.74 DPS) | yes | Protector's Band (19515, +0.00 DPS, sim-verified) [rep]; Thunderbrow Ring (13097, -0.11 DPS) [world_drop]; Protector's Band (19517, -0.21 DPS) [rep] |
+| finger1 | Assault Band (13095) (or Mark of Kern (2262)) | World drop [world_drop] | 20.0 attack_power points (0.74 DPS) | yes | Protector's Band (19515, -0.03 DPS) [rep]; Thunderbrow Ring (13097, -0.11 DPS) [world_drop] |
+| finger2 | Mark of Kern (2262) | Scarlet Monastery: Houndmaster Loksey [dungeon] | 20.0 attack_power points (0.74 DPS) | yes | Protector's Band (19515, +0.00 DPS, sim-verified) [rep]; Thunderbrow Ring (13097, -0.11 DPS) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gut Ripper (2164) | World drop [world_drop] | 474.5 attack_power points (17.56 DPS) | yes | Staff of Jordan (873, +0.00 DPS) [world_drop]; Bonebiter (6830, +0.00 DPS) [quest]; Darkspear Raider's Reaper (272081, +0.00 DPS) [vendor] |
@@ -98,7 +98,7 @@ No-known-source sample (15 of 582, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (dwarf, 5500000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 127.9. Weights run: 1.4s. Verify run: 1.7s. 752 eligible items had no known source.
+Set DPS (verified): 127.9. Weights run: 1.8s. Verify run: 2.1s. 752 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.512 ± 0.061, crit=0.710 ± 0.019 per rating point (14 rating = 1%, 9.934 per %), hit=0.802 ± 0.012 per rating point (10 rating = 1%, 8.019 per %), melee_haste=3.814 ± 0.090
 
@@ -128,7 +128,7 @@ No-known-source sample (15 of 752, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (dwarf, 5533220000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 222.2. Weights run: 1.5s. Verify run: 1.7s. 1692 eligible items had no known source.
+Set DPS (verified): 222.2. Weights run: 1.9s. Verify run: 2.1s. 1692 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.519 ± 0.068, crit=0.737 ± 0.023 per rating point (14 rating = 1%, 10.313 per %), hit=0.977 ± 0.017 per rating point (10 rating = 1%, 9.771 per %), melee_haste=3.972 ± 0.142
 
@@ -139,12 +139,12 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | shoulder | Soulcrusher Epaulets (240135) | Leonid Barthalomew the Revered [vendor] | 75.8 attack_power points (2.73 DPS) | yes | Highlander's Leather Shoulders (20059, -1.31 DPS) [rep]; Highlander's Lizardhide Shoulders (20060, -1.43 DPS) [rep]; Black Dragonscale Shoulders (15051, -8.10 DPS, sim-verified) [crafted] |
 | back | Howler's Furs (272414) | Pix Xizzix [vendor] | 37.8 attack_power points (1.36 DPS) | yes | Shroud of Domination (22337, -0.14 DPS) [dungeon]; Cape of the Black Baron (13340, -0.36 DPS) [dungeon]; Cloak of the Honor Guard (20073, -2.64 DPS, sim-verified) [rep] |
 | chest | Soulcrusher Armor (240128) | Leonid Barthalomew the Revered [vendor] | sim-verified (222.2 DPS) | yes | Obsidian Mail Tunic (22191, -1.87 DPS) [crafted]; Timbermaw Tunic (252484, -1.89 DPS) [crafted]; Tunic of Undead Slaying (23089, -22.31 DPS, sim-verified) [world] |
-| wrist | Soulcrusher Vambraces (240137) | Leonid Barthalomew the Revered [vendor] | sim-verified (222.2 DPS) | yes | Windtalker's Wristguards (19582, -0.86 DPS) [rep]; Windtalker's Wristguards (19583, -1.00 DPS) [rep]; Wristwraps of Undead Slaying (23093, -7.72 DPS, sim-verified) [world] |
+| wrist | Soulcrusher Vambraces (240137) | Leonid Barthalomew the Revered [vendor] | sim-verified (222.2 DPS) | yes | Windtalker's Wristguards (19582, -0.86 DPS) [rep]; Wristwraps of Undead Slaying (23093, -7.72 DPS, sim-verified) [world] |
 | hands | Soulcrusher Grips (240130) | Leonid Barthalomew the Revered [vendor] | 84.6 attack_power points (3.05 DPS) | yes | Studded Timbermaw Brawlers (227809, -1.42 DPS) [vendor]; Cadaverous Gloves (14640, -1.46 DPS) [dungeon]; Timbermaw Brawlers (19049, -6.61 DPS, sim-verified) [crafted] |
 | waist | Soulcrusher Belt (240136) | Leonid Barthalomew the Revered [vendor] | 82.3 attack_power points (2.97 DPS) | yes | Ferocity of the Timbermaw (227805, -0.77 DPS) [vendor]; Might of the Timbermaw (19044, -1.19 DPS) [crafted]; Dense Timbermaw Belt (227807, -5.20 DPS, sim-verified) [vendor] |
 | legs | Soulcrusher Leggings (240134) | Leonid Barthalomew the Revered [vendor] | 120.6 attack_power points (4.35 DPS) | yes | Devilsaur Leggings (15062, -2.32 DPS) [crafted]; Black Dragonscale Leggings (15052, -2.40 DPS) [crafted]; Warbear Woolies (15065, -8.38 DPS, sim-verified) [crafted] |
 | feet | Soulcrusher Treads (240129) | Leonid Barthalomew the Revered [vendor] | 72.0 attack_power points (2.60 DPS) | yes | Pads of the Dread Wolf (13210, -1.15 DPS) [dungeon]; Drudge Boots (21532, -1.34 DPS) [quest]; Scalegut Treaders (275618, -1.63 DPS, sim-verified) [crafted] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | sim-verified (222.2 DPS) | yes | Signet Ring of the Bronze Dragonflight (234030, -0.14 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234026, -0.22 DPS) [vendor]; Naglering (11669, -8.10 DPS, sim-verified) [dungeon] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | sim-verified (222.2 DPS) | yes | Signet Ring of the Bronze Dragonflight (234030, -0.14 DPS) [vendor]; Naglering (11669, -8.10 DPS, sim-verified) [dungeon] |
 | finger2 | Don Julio's Band (19325) | Stormpike Guard [rep] | sim-verified (222.2 DPS) | yes | Blackstone Ring (17713, -0.23 DPS) [dungeon]; Protector's Band (19514, -0.23 DPS) [rep]; Naglering (11669, -7.39 DPS, sim-verified) [dungeon] |
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (222.2 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Frozen Heart of the Mountain (249469, +0.00 DPS) [crafted] |
 | trinket2 | Blackhand's Breadth (13965) | General Drakkisath's Demise [quest] | sim-verified (222.2 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Eye of the Beast (13968, +0.00 DPS, sim-verified) [quest]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon] |
@@ -160,7 +160,7 @@ No-known-source sample (15 of 1692, see the JSON for more): 1189 Overseer's Ring
 
 ### Band 20 (orc, 0000000000000000-253100000000000000-0000000000000000)
 
-Set DPS (verified): 45.5. Weights run: 1.1s. Verify run: 1.1s. 248 eligible items had no known source.
+Set DPS (verified): 45.5. Weights run: 1.5s. Verify run: 1.4s. 248 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.003, agility=0.235 ± 0.025, crit=0.309 ± 0.007 per rating point (14 rating = 1%, 4.333 per %), hit=0.439 ± 0.005 per rating point (10 rating = 1%, 4.391 per %), melee_haste=2.440 ± 0.609
 
@@ -190,7 +190,7 @@ No-known-source sample (15 of 248, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 30 (orc, 0000000000000000-253130030004000000-0000000000000000)
 
-Set DPS (verified): 74.2. Weights run: 1.2s. Verify run: 1.2s. 417 eligible items had no known source.
+Set DPS (verified): 74.2. Weights run: 1.5s. Verify run: 1.5s. 417 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.432 ± 0.100, crit=0.525 ± 0.024 per rating point (14 rating = 1%, 7.348 per %), hit=0.619 ± 0.009 per rating point (10 rating = 1%, 6.193 per %), melee_haste=2.835 ± 0.417
 
@@ -220,7 +220,7 @@ No-known-source sample (15 of 417, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 40 (orc, 0000000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 85.2. Weights run: 1.4s. Verify run: 1.3s. 565 eligible items had no known source.
+Set DPS (verified): 85.2. Weights run: 1.8s. Verify run: 1.7s. 565 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.386 ± 0.051, crit=0.551 ± 0.015 per rating point (14 rating = 1%, 7.710 per %), hit=0.521 ± 0.008 per rating point (10 rating = 1%, 5.206 per %), melee_haste=3.244 ± 0.122
 
@@ -236,8 +236,8 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | waist | Boar Champion's Belt (10768) | Razorfen Downs: Ragglesnout [dungeon] | 30.0 attack_power points (1.11 DPS) | yes | Defiler's Leather Girdle (20192, -0.07 DPS, sim-verified) [rep]; Tharg's Shoelace (9705, -0.15 DPS) [quest]; Scarlet Belt (10329, -0.22 DPS) [dungeon] |
 | legs | Scarlet Leggings (10330) | Scarlet Monastery: Herod [dungeon] | 42.0 attack_power points (1.55 DPS) | yes | Firemane Leggings (13129, -0.24 DPS, sim-verified) [world_drop]; Orcish War Leggings (7929, -0.30 DPS) [crafted]; Legguards of the Vault (9396, -0.52 DPS) [dungeon] |
 | feet | Prowler's Leather Shoes (252465) | Leatherworking [crafted] | 24.7 attack_power points (0.91 DPS) | yes | Blackforge Greaves (6423, -0.11 DPS) [dungeon]; Skulker's Leather Shoes (252531, -0.24 DPS) [crafted]; Skirmisher's Mail Boots (252564, -0.52 DPS, sim-verified) [crafted] |
-| finger1 | Assault Band (13095) (or Mark of Kern (2262)) | World drop [world_drop] | 20.0 attack_power points (0.74 DPS) | yes | Legionnaire's Band (19512, -0.03 DPS) [rep]; Thunderbrow Ring (13097, -0.11 DPS) [world_drop]; Legionnaire's Band (19513, -0.21 DPS) [rep] |
-| finger2 | Mark of Kern (2262) | Scarlet Monastery: Houndmaster Loksey [dungeon] | 20.0 attack_power points (0.74 DPS) | yes | Legionnaire's Band (19512, +0.00 DPS, sim-verified) [rep]; Thunderbrow Ring (13097, -0.11 DPS) [world_drop]; Legionnaire's Band (19513, -0.21 DPS) [rep] |
+| finger1 | Assault Band (13095) (or Mark of Kern (2262)) | World drop [world_drop] | 20.0 attack_power points (0.74 DPS) | yes | Legionnaire's Band (19512, -0.03 DPS) [rep]; Thunderbrow Ring (13097, -0.11 DPS) [world_drop] |
+| finger2 | Mark of Kern (2262) | Scarlet Monastery: Houndmaster Loksey [dungeon] | 20.0 attack_power points (0.74 DPS) | yes | Legionnaire's Band (19512, +0.00 DPS, sim-verified) [rep]; Thunderbrow Ring (13097, -0.11 DPS) [world_drop] |
 | trinket1 | - | - |  |  |  |
 | trinket2 | - | - |  |  |  |
 | main_hand | Gut Ripper (2164) | World drop [world_drop] | 474.5 attack_power points (17.56 DPS) | yes | Ardent Custodian (868, +0.00 DPS, sim-verified) [world_drop]; Staff of Jordan (873, +0.00 DPS) [world_drop]; Darkspear Raider's Reaper (272081, +0.00 DPS) [vendor] |
@@ -250,7 +250,7 @@ No-known-source sample (15 of 565, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 50 (orc, 5500000000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 128.1. Weights run: 1.4s. Verify run: 1.7s. 722 eligible items had no known source.
+Set DPS (verified): 128.1. Weights run: 1.8s. Verify run: 2.1s. 722 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.512 ± 0.061, crit=0.710 ± 0.019 per rating point (14 rating = 1%, 9.934 per %), hit=0.802 ± 0.012 per rating point (10 rating = 1%, 8.019 per %), melee_haste=3.814 ± 0.090
 
@@ -280,7 +280,7 @@ No-known-source sample (15 of 722, see the JSON for more): 1189 Overseer's Ring;
 
 ### Band 60 (orc, 5533220000000000-253130030005102051-0000000000000000)
 
-Set DPS (verified): 218.6. Weights run: 1.5s. Verify run: 1.5s. 1616 eligible items had no known source.
+Set DPS (verified): 218.6. Weights run: 1.9s. Verify run: 2.0s. 1616 eligible items had no known source.
 
 Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to publish - see report.go's isWeightSignificant; a rating-family stat's weight is per RATING point, matching the item tooltip, not per 1% hit/crit/dodge/parry/block/defense): attack_power=1.000 ± 0.002, strength=2.000 ± 0.004, agility=0.519 ± 0.068, crit=0.737 ± 0.023 per rating point (14 rating = 1%, 10.313 per %), hit=0.977 ± 0.017 per rating point (10 rating = 1%, 9.771 per %), melee_haste=3.972 ± 0.142
 
@@ -291,12 +291,12 @@ Stat weights (normalized to attack_power = 1.0, error under 25% of the weight to
 | shoulder | Soulcrusher Epaulets (240135) | Leonid Barthalomew the Revered [vendor] | 75.8 attack_power points (2.73 DPS) | yes | Warlord's Mail Pauldrons (231654, -0.81 DPS, sim-verified) [vendor]; Champion's Mail Pauldrons (227154, -1.07 DPS) [pvp]; Black Dragonscale Shoulders (15051, -1.29 DPS) [crafted] |
 | back | Howler's Furs (272414) | Pix Xizzix [vendor] | 37.8 attack_power points (1.36 DPS) | yes | Shroud of Domination (22337, -0.14 DPS) [dungeon]; Cape of the Black Baron (13340, -0.36 DPS) [dungeon]; Deathguard's Cloak (20068, -1.63 DPS, sim-verified) [rep] |
 | chest | Soulcrusher Armor (240128) | Leonid Barthalomew the Revered [vendor] | sim-verified (218.6 DPS) | yes | Obsidian Mail Tunic (22191, -1.87 DPS) [crafted]; Timbermaw Tunic (252484, -1.89 DPS) [crafted]; Tunic of Undead Slaying (23089, -21.92 DPS, sim-verified) [world] |
-| wrist | Soulcrusher Vambraces (240137) | Leonid Barthalomew the Revered [vendor] | sim-verified (218.6 DPS) | yes | Windtalker's Wristguards (19582, -0.86 DPS) [rep]; Windtalker's Wristguards (19583, -1.00 DPS) [rep]; Wristwraps of Undead Slaying (23093, -8.94 DPS, sim-verified) [world] |
+| wrist | Soulcrusher Vambraces (240137) | Leonid Barthalomew the Revered [vendor] | sim-verified (218.6 DPS) | yes | Windtalker's Wristguards (19582, -0.86 DPS) [rep]; Wristwraps of Undead Slaying (23093, -8.94 DPS, sim-verified) [world] |
 | hands | Soulcrusher Grips (240130) | Leonid Barthalomew the Revered [vendor] | 84.6 attack_power points (3.05 DPS) | yes | Timbermaw Brawlers (19049, -1.27 DPS) [crafted]; Studded Timbermaw Brawlers (227809, -1.42 DPS) [vendor]; General's Mail Vices (231655, -3.33 DPS, sim-verified) [vendor] |
 | waist | Soulcrusher Belt (240136) | Leonid Barthalomew the Revered [vendor] | 82.3 attack_power points (2.97 DPS) | yes | Ferocity of the Timbermaw (227805, -0.77 DPS) [vendor]; Might of the Timbermaw (19044, -1.19 DPS) [crafted]; Dense Timbermaw Belt (227807, -2.32 DPS, sim-verified) [vendor] |
 | legs | Soulcrusher Leggings (240134) | Leonid Barthalomew the Revered [vendor] | 120.6 attack_power points (4.35 DPS) | yes | Warbear Woolies (15065, -1.99 DPS) [crafted]; Legionnaire's Mail Legguards (227156, -2.04 DPS) [pvp]; General's Mail Legguards (231658, -3.64 DPS, sim-verified) [vendor] |
 | feet | Soulcrusher Treads (240129) | Leonid Barthalomew the Revered [vendor] | 72.0 attack_power points (2.60 DPS) | yes | General's Mail Greaves (231656, +0.00 DPS, sim-verified) [vendor]; Scalegut Treaders (275618, -1.08 DPS) [crafted]; Pads of the Dread Wolf (13210, -1.15 DPS) [dungeon] |
-| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | sim-verified (218.6 DPS) | yes | Signet Ring of the Bronze Dragonflight (234030, -0.14 DPS) [vendor]; Signet Ring of the Bronze Dragonflight (234026, -0.22 DPS) [vendor]; Naglering (11669, -7.09 DPS, sim-verified) [dungeon] |
+| finger1 | Signet Ring of the Bronze Dragonflight (234034) | Anachronos [vendor] | sim-verified (218.6 DPS) | yes | Signet Ring of the Bronze Dragonflight (234030, -0.14 DPS) [vendor]; Naglering (11669, -7.09 DPS, sim-verified) [dungeon] |
 | finger2 | Don Julio's Band (19325) | Frostwolf Clan [rep] | sim-verified (218.6 DPS) | yes | Blackstone Ring (17713, -0.23 DPS) [dungeon]; Legionnaire's Band (19510, -0.23 DPS) [rep]; Naglering (11669, -6.29 DPS, sim-verified) [dungeon] |
 | trinket1 | Darkmoon Card: Maelstrom (19289) | Darkmoon Elementals Deck [quest] | sim-verified (218.6 DPS) | yes | Hand of Justice (11815, +0.00 DPS) [dungeon]; Counterattack Lodestone (18537, +0.00 DPS) [dungeon]; Blackhand's Breadth (13965, -1.95 DPS, sim-verified) [quest] |
 | trinket2 | Rune of the Guard Captain (19120) | Job Opening: Guard Captain of Revantusk Village [quest] | sim-verified (218.6 DPS) | yes | Smolderweb's Eye (13213, -0.81 DPS, sim-verified) [dungeon]; Counterattack Lodestone (18537, -0.97 DPS) [dungeon]; Hand of Justice (11815, -1.04 DPS) [dungeon] |

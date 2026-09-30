@@ -2,7 +2,7 @@
   "spec": "priest-shadow",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:55:05Z",
+  "generated_at": "2026-09-30T15:17:16Z",
   "bands": [
     {
       "spec": "priest-shadow",
@@ -933,8 +933,8 @@
         "off_hand: Dwarven Tome",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.700138166,
-      "verify_run_seconds": 0.83302062,
+      "weights_run_seconds": 0.909338524,
+      "verify_run_seconds": 1.063443219,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1957,8 +1957,8 @@
         "off_hand: Seer's Fine Stein",
         "ranged: Cookie's Stirring Rod"
       ],
-      "weights_run_seconds": 0.700138166,
-      "verify_run_seconds": 0.749414603,
+      "weights_run_seconds": 0.909338524,
+      "verify_run_seconds": 1.011613039,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -2638,8 +2638,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.58200195,
-      "verify_run_seconds": 0.56963077,
+      "weights_run_seconds": 0.73626168,
+      "verify_run_seconds": 0.776593549,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3326,8 +3326,8 @@
         "off_hand: Orb of Mystic Insight",
         "ranged: Necrotic Wand"
       ],
-      "weights_run_seconds": 0.58200195,
-      "verify_run_seconds": 0.603123768,
+      "weights_run_seconds": 0.73626168,
+      "verify_run_seconds": 0.781689652,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -3710,6 +3710,8 @@
           "source_kind": "dungeon",
           "score": 21.758122738875734,
           "verified": true,
+          "swap_note": "confirmed by the sim against Highlander's Cloth Girdle (id 20098): kept the pick, +1.0 DPS (82.9 vs 81.9 set DPS)",
+          "dps_delta": 0.9662029504245879,
           "alternatives": [
             {
               "item_id": 254037,
@@ -3724,14 +3726,6 @@
               "source_kind": "rep",
               "source": "The League of Arathor",
               "dps_delta": -0.7213210667283082
-            },
-            {
-              "item_id": 20098,
-              "item_name": "Highlander's Cloth Girdle",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -0.9662029504245879,
-              "verified": true
             }
           ]
         },
@@ -3985,8 +3979,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.611115778,
-      "verify_run_seconds": 0.530447697,
+      "weights_run_seconds": 0.762716856,
+      "verify_run_seconds": 0.717310778,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -4380,13 +4374,6 @@
               "source_kind": "crafted",
               "source": "Tailoring",
               "dps_delta": -0.5439707305219362
-            },
-            {
-              "item_id": 20164,
-              "item_name": "Defiler's Cloth Girdle",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "dps_delta": -0.7213210667283082
             }
           ]
         },
@@ -4639,8 +4626,8 @@
         "main_hand: Spellforce Rod",
         "ranged: Jaina's Firestarter"
       ],
-      "weights_run_seconds": 0.611115778,
-      "verify_run_seconds": 0.59357741,
+      "weights_run_seconds": 0.762716856,
+      "verify_run_seconds": 0.792356596,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -5179,43 +5166,13 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 20036,
-          "item_name": "Fire Ruby",
-          "source": "Destroy Morphaz",
-          "source_kind": "quest",
-          "sim_dps": 137.1023553120839,
-          "verified": true,
-          "swap_note": "confirmed by the sim against Uther's Strength (id 11302): kept the pick, +1.3 DPS (137.1 vs 135.8 set DPS)",
-          "dps_delta": 1.3340169569488296,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "trinket2",
-          "item_id": 11302,
-          "item_name": "Uther's Strength",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "sim_dps": 137.1023553120839,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -5321,13 +5278,11 @@
         "feet: Sergeant Major's Dreadweave Boots",
         "finger1: Cyclopean Band",
         "finger2: Philanthropist's Ring",
-        "trinket1: Fire Ruby",
-        "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.584044192,
-      "verify_run_seconds": 0.623205172,
+      "weights_run_seconds": 0.788453196,
+      "verify_run_seconds": 0.80949874,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -5892,30 +5847,8 @@
         },
         {
           "slot": "trinket2",
-          "item_id": 11302,
-          "item_name": "Uther's Strength",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "sim_dps": 123.50232026020973,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 249469,
-              "item_name": "Frozen Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
-              "dps_delta": 0,
-              "verified": true
-            },
-            {
-              "item_id": 19120,
-              "item_name": "Rune of the Guard Captain",
-              "source_kind": "quest",
-              "source": "Job Opening: Guard Captain of Revantusk Village",
-              "dps_delta": -0.15957469699639643
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -6022,12 +5955,11 @@
         "finger1: Cyclopean Band",
         "finger2: Philanthropist's Ring",
         "trinket1: Fire Ruby",
-        "trinket2: Uther's Strength",
         "main_hand: Glowing Brightwood Staff",
         "ranged: Pyric Caduceus"
       ],
-      "weights_run_seconds": 0.584044192,
-      "verify_run_seconds": 0.619399425,
+      "weights_run_seconds": 0.788453196,
+      "verify_run_seconds": 0.833254757,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -6266,7 +6198,7 @@
               "item_name": "Shoulderpads of Revelation",
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered",
-              "dps_delta": -0.22371289589982438
+              "dps_delta": -0.22371289589982357
             }
           ]
         },
@@ -6344,6 +6276,8 @@
           "source_kind": "vendor",
           "score": 39.991300668375885,
           "verified": true,
+          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19595): kept the pick, +2.1 DPS (264.9 vs 262.8 set DPS)",
+          "dps_delta": 2.1341395414186195,
           "alternatives": [
             {
               "item_id": 19596,
@@ -6358,14 +6292,6 @@
               "source_kind": "dungeon",
               "source": "Dire Maul: Guard Slip'kik",
               "dps_delta": -1.8025383924785752
-            },
-            {
-              "item_id": 19595,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -2.1341395414186195,
-              "verified": true
             }
           ]
         },
@@ -6441,7 +6367,7 @@
           "item_name": "Leggings of Revelation",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 66.08332490309422,
+          "score": 66.08332490309424,
           "verified": true,
           "alternatives": [
             {
@@ -6449,14 +6375,14 @@
               "item_name": "Marshal's Satin Pants",
               "source_kind": "vendor",
               "source": "PvP rank 16 · Marshal · Alliance",
-              "dps_delta": -1.018753511169475
+              "dps_delta": -1.0187535111694765
             },
             {
               "item_id": 22752,
               "item_name": "Sentinel's Silk Leggings",
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
-              "dps_delta": -1.733389154582191
+              "dps_delta": -1.7333891545821927
             },
             {
               "item_id": 231619,
@@ -6517,13 +6443,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": -0.3573178217063572
-            },
-            {
-              "item_id": 234024,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.46933221878821224
             },
             {
               "item_id": 11669,
@@ -6744,8 +6663,8 @@
         "main_hand: Crackling Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.631714487,
-      "verify_run_seconds": 0.630330009,
+      "weights_run_seconds": 0.810534263,
+      "verify_run_seconds": 0.840578157,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -7029,6 +6948,8 @@
           "source_kind": "vendor",
           "score": 75.98848051068084,
           "verified": true,
+          "swap_note": "confirmed by the sim against Warlord's Satin Robes (id 17624): kept the pick, +2.2 DPS (247.0 vs 244.8 set DPS)",
+          "dps_delta": 2.2472328489701567,
           "alternatives": [
             {
               "item_id": 231612,
@@ -7036,14 +6957,6 @@
               "source_kind": "pvp",
               "source": "PvP rank 17 · Warlord · Horde",
               "dps_delta": -1.0832359546748587
-            },
-            {
-              "item_id": 17624,
-              "item_name": "Warlord's Satin Robes",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -2.2472328489701567,
-              "verified": true
             },
             {
               "item_id": 231632,
@@ -7062,6 +6975,8 @@
           "source_kind": "vendor",
           "score": 39.991300668375885,
           "verified": true,
+          "swap_note": "confirmed by the sim against Dryad's Wrist Bindings (id 19595): kept the pick, +3.6 DPS (247.0 vs 243.5 set DPS)",
+          "dps_delta": 3.5504411177583677,
           "alternatives": [
             {
               "item_id": 19596,
@@ -7076,14 +6991,6 @@
               "source_kind": "dungeon",
               "source": "Dire Maul: Guard Slip'kik",
               "dps_delta": -1.8025383924785752
-            },
-            {
-              "item_id": 19595,
-              "item_name": "Dryad's Wrist Bindings",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -3.5504411177583677,
-              "verified": true
             }
           ]
         },
@@ -7161,6 +7068,8 @@
           "source_kind": "vendor",
           "score": 66.08332490309422,
           "verified": true,
+          "swap_note": "confirmed by the sim against General's Satin Leggings (id 17625): kept the pick, +3.9 DPS (247.0 vs 243.1 set DPS)",
+          "dps_delta": 3.9071105642200905,
           "alternatives": [
             {
               "item_id": 231614,
@@ -7175,14 +7084,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "dps_delta": -1.733389154582191
-            },
-            {
-              "item_id": 17625,
-              "item_name": "General's Satin Leggings",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -3.9071105642200905,
-              "verified": true
             }
           ]
         },
@@ -7234,14 +7135,7 @@
               "item_name": "Signet Ring of the Bronze Dragonflight",
               "source_kind": "vendor",
               "source": "Anachronos",
-              "dps_delta": -0.3573178217063572
-            },
-            {
-              "item_id": 234024,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "vendor",
-              "source": "Anachronos",
-              "dps_delta": -0.46933221878821224
+              "dps_delta": -0.35731782170635795
             },
             {
               "item_id": 11669,
@@ -7462,8 +7356,8 @@
         "main_hand: Amethyst War Staff",
         "ranged: Torch of Light"
       ],
-      "weights_run_seconds": 0.631714487,
-      "verify_run_seconds": 0.639039382,
+      "weights_run_seconds": 0.810534263,
+      "verify_run_seconds": 0.842896471,
       "coverage": {
         "back": {
           "eligible": 451,

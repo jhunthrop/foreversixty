@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T14:56:20Z",
+  "generated_at": "2026-09-30T15:18:52Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -560,8 +560,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 0.854146812,
-      "verify_run_seconds": 1.086869949,
+      "weights_run_seconds": 1.099904646,
+      "verify_run_seconds": 1.379409559,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -1197,8 +1197,8 @@
         "off_hand: Edward's Knife",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 0.854146812,
-      "verify_run_seconds": 1.103610813,
+      "weights_run_seconds": 1.099904646,
+      "verify_run_seconds": 1.409580797,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1370,13 +1370,6 @@
               "source": "Silverwing Sentinels",
               "dps_delta": -0.3056260941880211,
               "verified": true
-            },
-            {
-              "item_id": 20444,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.3691842874205666
             },
             {
               "item_id": 13084,
@@ -1867,8 +1860,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 0.944631544,
-      "verify_run_seconds": 1.22213538,
+      "weights_run_seconds": 1.22455603,
+      "verify_run_seconds": 1.543363238,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2040,13 +2033,6 @@
               "source": "Warsong Outriders",
               "dps_delta": -0.32540194545307344,
               "verified": true
-            },
-            {
-              "item_id": 20442,
-              "item_name": "Scout's Medallion",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.3691842874205666
             },
             {
               "item_id": 13084,
@@ -2563,8 +2549,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 0.944631544,
-      "verify_run_seconds": 1.235655386,
+      "weights_run_seconds": 1.22455603,
+      "verify_run_seconds": 1.578543134,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2744,13 +2730,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels",
               "dps_delta": -0.4387681893442655
-            },
-            {
-              "item_id": 19541,
-              "item_name": "Sentinel's Medallion",
-              "source_kind": "rep",
-              "source": "Silverwing Sentinels",
-              "dps_delta": -0.5893114575963089
             }
           ]
         },
@@ -3231,8 +3210,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 0.997879855,
-      "verify_run_seconds": 1.221892715,
+      "weights_run_seconds": 1.27512254,
+      "verify_run_seconds": 1.5680801500000001,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3412,13 +3391,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders",
               "dps_delta": -0.4387681893442655
-            },
-            {
-              "item_id": 19537,
-              "item_name": "Scout's Medallion",
-              "source_kind": "rep",
-              "source": "Warsong Outriders",
-              "dps_delta": -0.5893114575963089
             }
           ]
         },
@@ -3899,8 +3871,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 0.997879855,
-      "verify_run_seconds": 1.2673229670000001,
+      "weights_run_seconds": 1.27512254,
+      "verify_run_seconds": 1.605049979,
       "coverage": {
         "back": {
           "eligible": 244,
@@ -4038,7 +4010,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.7273604252093027
+              "dps_delta": -0.7273604252093024
             },
             {
               "item_id": 8348,
@@ -4276,6 +4248,8 @@
           "source_kind": "dungeon",
           "score": 30,
           "verified": true,
+          "swap_note": "confirmed by the sim against Highlander's Leather Girdle (id 20116): kept the pick, +0.6 DPS over it",
+          "dps_delta": 0.5981354418055389,
           "effect_unmodelled": true,
           "ties": [
             {
@@ -4297,14 +4271,6 @@
               "source_kind": "rep",
               "source": "The League of Arathor",
               "dps_delta": -0.32480764140675816
-            },
-            {
-              "item_id": 20116,
-              "item_name": "Highlander's Leather Girdle",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -0.5981354418055389,
-              "verified": true
             }
           ]
         },
@@ -4330,7 +4296,7 @@
               "item_name": "Knight's Leather Pants",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.052616308617169066
+              "dps_delta": -0.05261630861716926
             },
             {
               "item_id": 14668,
@@ -4449,35 +4415,13 @@
         },
         {
           "slot": "trinket1",
-          "item_id": 20130,
-          "item_name": "Diamond Flask",
-          "source": "Voodoo Feathers",
-          "source_kind": "quest",
-          "verified": true,
-          "swap_note": "confirmed by the sim against Frozen Heart of the Mountain (id 249469): kept the pick, +0.7 DPS over it",
-          "dps_delta": 0.6799269234775522
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "trinket2",
-          "item_id": 249469,
-          "item_name": "Frozen Heart of the Mountain",
-          "source": "Enchanting",
-          "source_kind": "crafted",
-          "sim_dps": 118.66462196255709,
-          "verified": true,
-          "swap_note": "beat the scored pick Fire Ruby (id 20036) in the sim: +1.7 DPS (118.7 vs 117.0 set DPS)",
-          "dps_delta": 1.6607497943669927,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 20036,
-              "item_name": "Fire Ruby",
-              "source_kind": "quest",
-              "source": "Destroy Morphaz",
-              "dps_delta": -1.6607497943669927,
-              "verified": true
-            }
-          ]
+          "verified": false,
+          "empty_reason": "no_dps_value"
         },
         {
           "slot": "main_hand",
@@ -4607,14 +4551,12 @@
         "feet: Albino Crocscale Boots",
         "finger1: Blackstone Ring",
         "finger2: Assault Band",
-        "trinket1: Diamond Flask",
-        "trinket2: Frozen Heart of the Mountain",
         "main_hand: Barman Shanker",
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.029592584,
-      "verify_run_seconds": 1.596090008,
+      "weights_run_seconds": 1.338828112,
+      "verify_run_seconds": 2.015503399,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4900,7 +4842,7 @@
               "item_name": "Stone Guard's Leather Armor",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.2935377945893499
+              "dps_delta": -0.2935377945893497
             },
             {
               "item_id": 10583,
@@ -4991,6 +4933,8 @@
           "source_kind": "dungeon",
           "score": 30,
           "verified": true,
+          "swap_note": "confirmed by the sim against Defiler's Leather Girdle (id 20192): kept the pick, +0.6 DPS (119.2 vs 118.6 set DPS)",
+          "dps_delta": 0.5976627864271222,
           "effect_unmodelled": true,
           "ties": [
             {
@@ -5012,14 +4956,6 @@
               "source_kind": "rep",
               "source": "The Defilers",
               "dps_delta": -0.32480764140675816
-            },
-            {
-              "item_id": 20192,
-              "item_name": "Defiler's Leather Girdle",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "dps_delta": -0.5976627864271222,
-              "verified": true
             }
           ]
         },
@@ -5045,7 +4981,7 @@
               "item_name": "Stone Guard's Leather Pants",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.05261630861716926
+              "dps_delta": -0.052616308617169066
             },
             {
               "item_id": 14668,
@@ -5331,8 +5267,8 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.029592584,
-      "verify_run_seconds": 1.5767299609999998,
+      "weights_run_seconds": 1.338828112,
+      "verify_run_seconds": 1.9500373309999999,
       "coverage": {
         "back": {
           "eligible": 319,
@@ -5463,6 +5399,8 @@
           "source_kind": "vendor",
           "score": 66.89359252173155,
           "verified": true,
+          "swap_note": "confirmed by the sim against Lieutenant Commander's Leather Helm (id 23312): kept the pick, +10.0 DPS over it",
+          "dps_delta": 9.980091825906527,
           "alternatives": [
             {
               "item_id": 227055,
@@ -5477,14 +5415,6 @@
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
               "dps_delta": -1.4051120851567391
-            },
-            {
-              "item_id": 23312,
-              "item_name": "Lieutenant Commander's Leather Helm",
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -9.980091825906527,
-              "verified": true
             }
           ]
         },
@@ -5725,7 +5655,7 @@
           "item_name": "Duskwraith Legplates",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 68.07439274922437,
+          "score": 68.07439274922436,
           "verified": true,
           "alternatives": [
             {
@@ -5733,14 +5663,14 @@
               "item_name": "Cadaverous Leggings",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.854390667994869
+              "dps_delta": -0.8543906679948683
             },
             {
               "item_id": 237818,
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.0607055581238498
+              "dps_delta": -1.0607055581238491
             },
             {
               "item_id": 15062,
@@ -5758,7 +5688,7 @@
           "item_name": "Duskwraith Sabatons",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 49.90440186674942,
+          "score": 49.90440186674941,
           "verified": true,
           "alternatives": [
             {
@@ -5766,14 +5696,14 @@
               "item_name": "Highlander's Leather Boots",
               "source_kind": "rep",
               "source": "The League of Arathor",
-              "dps_delta": -1.0489496231874222
+              "dps_delta": -1.0489496231874218
             },
             {
               "item_id": 226831,
               "item_name": "Darkmantle Footpads",
               "source_kind": "vendor",
               "source": "Mokvar",
-              "dps_delta": -1.1291992607358832
+              "dps_delta": -1.1291992607358827
             },
             {
               "item_id": 13210,
@@ -5801,13 +5731,6 @@
               "dps_delta": 0
             },
             {
-              "item_id": 21204,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Path of the Conqueror",
-              "dps_delta": -0.12552445506033333
-            },
-            {
               "item_id": 11669,
               "item_name": "Naglering",
               "source_kind": "dungeon",
@@ -5830,14 +5753,14 @@
               "item_name": "Blackstone Ring",
               "source_kind": "dungeon",
               "source": "Maraudon: Princess Theradras",
-              "dps_delta": -0.21890270316722507
+              "dps_delta": -0.21890270316722488
             },
             {
               "item_id": 13095,
               "item_name": "Assault Band",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.24324578266029664
+              "dps_delta": -0.24324578266029645
             },
             {
               "item_id": 11669,
@@ -6053,8 +5976,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.03689461,
-      "verify_run_seconds": 1.551308312,
+      "weights_run_seconds": 1.34322184,
+      "verify_run_seconds": 1.959767545,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6185,6 +6108,8 @@
           "source_kind": "vendor",
           "score": 66.89359252173155,
           "verified": true,
+          "swap_note": "confirmed by the sim against Champion's Leather Helm (id 23257): kept the pick, +10.4 DPS over it",
+          "dps_delta": 10.38556446072937,
           "alternatives": [
             {
               "item_id": 227057,
@@ -6199,14 +6124,6 @@
               "source_kind": "vendor",
               "source": "Lady Palanseer",
               "dps_delta": -1.4051120851567391
-            },
-            {
-              "item_id": 23257,
-              "item_name": "Champion's Leather Helm",
-              "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -10.38556446072937,
-              "verified": true
             }
           ]
         },
@@ -6414,7 +6331,7 @@
           "item_name": "Duskwraith Waistguard",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 47.542801411763776,
+          "score": 47.54280141176378,
           "verified": true,
           "alternatives": [
             {
@@ -6422,14 +6339,14 @@
               "item_name": "Cadaverous Belt",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.4009171131556715
+              "dps_delta": -0.40091711315567186
             },
             {
               "item_id": 11686,
               "item_name": "Girdle of Beastial Fury",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Eviscerator",
-              "dps_delta": -0.9324399403779287
+              "dps_delta": -0.9324399403779291
             },
             {
               "item_id": 20190,
@@ -6447,7 +6364,7 @@
           "item_name": "Duskwraith Legplates",
           "source": "Leonid Barthalomew the Revered",
           "source_kind": "vendor",
-          "score": 68.07439274922437,
+          "score": 68.07439274922436,
           "verified": true,
           "alternatives": [
             {
@@ -6455,14 +6372,14 @@
               "item_name": "Cadaverous Leggings",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -0.854390667994869
+              "dps_delta": -0.8543906679948683
             },
             {
               "item_id": 237818,
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.0607055581238498
+              "dps_delta": -1.0607055581238491
             },
             {
               "item_id": 15062,
@@ -6521,13 +6438,6 @@
               "source_kind": "vendor",
               "source": "Anachronos",
               "dps_delta": 0
-            },
-            {
-              "item_id": 21204,
-              "item_name": "Signet Ring of the Bronze Dragonflight",
-              "source_kind": "quest",
-              "source": "The Path of the Conqueror",
-              "dps_delta": -0.12552445506033333
             },
             {
               "item_id": 11669,
@@ -6776,8 +6686,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.03689461,
-      "verify_run_seconds": 1.623282336,
+      "weights_run_seconds": 1.34322184,
+      "verify_run_seconds": 2.033135323,
       "coverage": {
         "back": {
           "eligible": 451,
