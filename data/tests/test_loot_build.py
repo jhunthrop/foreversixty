@@ -609,7 +609,7 @@ def test_a_source_only_carries_the_keys_its_kind_needs():
     assert set(zone) <= always | {"zone_id", "item_chances", "reitemised_from", "source_origin"}
     assert "zone_id" in zone
     world_drop = next(s for s in loot()["sources"] if s["kind"] == "world_drop")
-    assert set(world_drop) <= always | {"level_min", "level_max", "source_origin"}
+    assert set(world_drop) <= always | {"level_min", "level_max", "source_origin", "item_chances"}
     assert "source_origin" in world_drop
 
 
@@ -733,7 +733,7 @@ def test_quests_map_carries_id_name_and_faction_per_item():
     for item_id, entries in quests.items():
         assert entries, item_id
         for entry in entries:
-            assert sorted(entry) == [
+            assert sorted(k for k in entry if k != "opens") == [
                 "faction",
                 "faction_source",
                 "level",
@@ -742,6 +742,10 @@ def test_quests_map_carries_id_name_and_faction_per_item():
                 "name",
                 "quest_id",
             ]
+            # `opens` (quest-gates lane, 2026-09-30) is present only on a raid-gated
+            # quest and then names a phase.
+            if "opens" in entry:
+                assert entry["opens"] in PHASES | {OPENS_LATER}
             assert entry["faction"] in QUEST_FACTION_VALUES
             assert entry["faction_source"] in {"classic-db", "item"}, item_id
             assert entry["name"].strip(), item_id
