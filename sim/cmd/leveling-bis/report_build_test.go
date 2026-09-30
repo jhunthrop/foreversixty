@@ -511,8 +511,8 @@ func TestBuildAlternativesSortsByDPSDeltaDescendingTiesIncluded(t *testing.T) {
 		{candidate: candidate{ID: 8, Name: "Living Root"}, Score: 296.94, Source: itemSource{Kind: "dungeon", Label: "Wailing Caverns: Verdan the Everliving"}},
 		{candidate: candidate{ID: 9, Name: "Too Far Down"}, Score: 100, Source: itemSource{Kind: "quest", Label: "Quests"}},
 	}
-	// referenceDPSPerPoint 1.0 here so DPSDelta and ScoreDelta read
-	// identically - the dedicated DPS-conversion contract test below
+	// referenceDPSPerPoint 1.0 here so DPSDelta reads as the raw
+	// score-unit gap - the dedicated DPS-conversion contract test below
 	// (TestBuildAlternativesConvertsScoreDeltaToRealDPS) is where a
 	// non-trivial referenceDPSPerPoint is exercised; this test is about
 	// ordering and exclusion, not arithmetic.
@@ -521,9 +521,9 @@ func TestBuildAlternativesSortsByDPSDeltaDescendingTiesIncluded(t *testing.T) {
 		// Tied Greataxe (id 5) and Hammerbone (id 6) both read DPSDelta 0
 		// (an unverified positive estimate is capped, not published),
 		// so they tie-break by item id ascending.
-		{ItemID: 5, ItemName: "Tied Greataxe", Score: 302.9, SourceKind: "quest", Source: "Quests", ScoreDelta: 0, DPSDelta: 0},
-		{ItemID: 6, ItemName: "Hammerbone", Score: 306.05, SourceKind: "quest", Source: "Quests", ScoreDelta: 306.05 - 302.9, DPSDelta: 0},
-		{ItemID: 7230, ItemName: "Smite's Mighty Hammer", Score: 297.82, SourceKind: "dungeon", Source: "The Deadmines: Mr. Smite", ScoreDelta: 297.82 - 302.9, DPSDelta: 297.82 - 302.9},
+		{ItemID: 5, ItemName: "Tied Greataxe", SourceKind: "quest", Source: "Quests", DPSDelta: 0},
+		{ItemID: 6, ItemName: "Hammerbone", SourceKind: "quest", Source: "Quests", DPSDelta: 0},
+		{ItemID: 7230, ItemName: "Smite's Mighty Hammer", SourceKind: "dungeon", Source: "The Deadmines: Mr. Smite", DPSDelta: 297.82 - 302.9},
 	}
 	if len(got) != len(want) {
 		t.Fatalf("buildAlternatives = %+v (%d entries), want %d", got, len(got), len(want))
@@ -535,9 +535,6 @@ func TestBuildAlternativesSortsByDPSDeltaDescendingTiesIncluded(t *testing.T) {
 		}
 		if diff := got[i].DPSDelta - want[i].DPSDelta; diff > 1e-9 || diff < -1e-9 {
 			t.Errorf("alternative[%d] (%s) DPSDelta = %v, want %v", i, got[i].ItemName, got[i].DPSDelta, want[i].DPSDelta)
-		}
-		if diff := got[i].ScoreDelta - want[i].ScoreDelta; diff > 1e-9 || diff < -1e-9 {
-			t.Errorf("alternative[%d] (%s) ScoreDelta = %v, want %v", i, got[i].ItemName, got[i].ScoreDelta, want[i].ScoreDelta)
 		}
 		if got[i].Source != want[i].Source || got[i].SourceKind != want[i].SourceKind {
 			t.Errorf("alternative[%d] (%s) source = %q/%q, want %q/%q", i, got[i].ItemName, got[i].Source, got[i].SourceKind, want[i].Source, want[i].SourceKind)
@@ -561,9 +558,6 @@ func TestBuildAlternativesConvertsScoreDeltaToRealDPS(t *testing.T) {
 	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, referenceDPSPerPoint, nil)
 	if len(got) != 1 {
 		t.Fatalf("buildAlternatives = %+v, want exactly 1 alternative", got)
-	}
-	if got[0].ScoreDelta != -5 {
-		t.Fatalf("ScoreDelta = %v, want -5 (the raw score-unit gap kept alongside dps_delta)", got[0].ScoreDelta)
 	}
 	wantDPSDelta := -5 * referenceDPSPerPoint
 	if diff := got[0].DPSDelta - wantDPSDelta; diff > 1e-9 || diff < -1e-9 {
@@ -626,13 +620,11 @@ func TestBuildAlternativesSwapBeatOverridesTheDemotedRunnerUpsDelta(t *testing.T
 	// This lane's brief, item 7: the one row a real sim actually
 	// measured publishes THAT measurement (SimDPS), not score()'s
 	// estimate - Hammerbone is the demoted former pick, so its own
-	// measured value is sw.BaselineDPS (29.9), and Score/ScoreDelta are
-	// cleared.
+	// measured value is sw.BaselineDPS (29.9). alternativeRow carries no
+	// score at all any more (bis-ranker-integrity-3), so there is
+	// nothing left to clear.
 	if hammerbone.SimDPS != 29.9 {
 		t.Errorf("Hammerbone SimDPS = %v, want 29.9 (sw.BaselineDPS, its own measured value as the demoted former pick)", hammerbone.SimDPS)
-	}
-	if hammerbone.Score != 0 || hammerbone.ScoreDelta != 0 {
-		t.Errorf("Hammerbone Score/ScoreDelta = %v/%v, want 0/0 (cleared - SimDPS is the real number now)", hammerbone.Score, hammerbone.ScoreDelta)
 	}
 	// Ordering: after the swap correction, Hammerbone's real delta
 	// (-2.3) is worse than Smite's Mighty Hammer's plain score estimate
@@ -675,9 +667,6 @@ func TestBuildAlternativesSwapNotBeatOverridesTheRunnerUpsDelta(t *testing.T) {
 	// number the sim actually measured FOR IT, not the baseline.
 	if got[0].SimDPS != 40 {
 		t.Errorf("SimDPS = %v, want 40 (sw.SwapDPS, this row's own measured value)", got[0].SimDPS)
-	}
-	if got[0].Score != 0 || got[0].ScoreDelta != 0 {
-		t.Errorf("Score/ScoreDelta = %v/%v, want 0/0 (cleared - SimDPS is the real number now)", got[0].Score, got[0].ScoreDelta)
 	}
 }
 
@@ -975,8 +964,8 @@ func TestWriteMarkdownRendersFactionsSortedWithTablesAndNotes(t *testing.T) {
 					Slot: "head", ItemID: 1, ItemName: "Helm", Score: 10, Verified: true, Source: "A Quest", SourceKind: "quest",
 					Ties: []tieAlternative{{ItemID: 5, ItemName: "Tied Cap"}},
 					Alternatives: []alternativeRow{
-						{ItemID: 6, ItemName: "Runner Up Helm", Score: 8, SourceKind: "dungeon", Source: "Some Dungeon", DPSDelta: -2},
-						{ItemID: 7, ItemName: "Sim-Verified Cap", Score: 12, SourceKind: "quest", Source: "Quests", DPSDelta: -1.5, Verified: true},
+						{ItemID: 6, ItemName: "Runner Up Helm", SourceKind: "dungeon", Source: "Some Dungeon", DPSDelta: -2},
+						{ItemID: 7, ItemName: "Sim-Verified Cap", SourceKind: "quest", Source: "Quests", DPSDelta: -1.5, Verified: true},
 					},
 				},
 				{Slot: "neck"}, // unpicked slot renders as "-"
@@ -1026,5 +1015,280 @@ func TestWriteMarkdownRendersFactionsSortedWithTablesAndNotes(t *testing.T) {
 	}
 	if !strings.Contains(content, "Sim-Verified Cap (7, -1.50 DPS, sim-verified) [quest]") {
 		t.Error("markdown missing the sim-verified note on a swap-corrected alternative (owner review, tenet 8)")
+	}
+}
+
+// bis-ranker-integrity-3, 2026-09-29, this lane's brief item 2: a
+// trinket rankTrinketSlot's own baseline-relative gain (GainMeasured/
+// MeasuredGainDPS, trinkets.go) measured BELOW trinketZeroGainThresholdDPS
+// must empty exactly like a bare score()-zero trinket does - simDecided
+// (MeasuredDPS > 0) alone can never gate this, since MeasuredDPS is the
+// whole SET's own absolute DPS, always positive regardless of whether
+// the trinket itself contributes anything (warrior-arms band 20's own
+// Rune of Perfection, this lane's dogfood: +6 spell penetration/+4
+// stamina, no effect_text, real measured gain over an empty trinket
+// slot of exactly 0.0).
+func TestBuildReportEmptiesATrinketWithLowMeasuredGain(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 21566, Name: "Rune of Perfection", Stats: map[string]float64{"spell_penetration": 6, "stamina": 4}}, MeasuredDPS: 73.65, MeasuredGainDPS: 0, GainMeasured: true}},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket1" {
+			row = s
+		}
+	}
+	if row.ItemID != 0 || row.EmptyReason != noDPSValueReason {
+		t.Fatalf("trinket1 row = %+v, want empty with EmptyReason %q (real measured gain 0.0, below the noise floor)", row, noDPSValueReason)
+	}
+}
+
+// The symmetric case: a real measured gain that clears the noise floor
+// must publish, exactly as a genuinely-valuable trinket always has.
+func TestBuildReportKeepsATrinketWithMeasuredGainAboveThreshold(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "A Real Trinket"}, MeasuredDPS: 250, MeasuredGainDPS: 12.5, GainMeasured: true}},
+	}
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket1" {
+			row = s
+		}
+	}
+	if row.ItemID != 1 || row.EmptyReason != "" {
+		t.Fatalf("trinket1 row = %+v, want item 1 published with no EmptyReason (a real 12.5 DPS gain clears the noise floor)", row)
+	}
+	if row.SimDPS != 250 {
+		t.Errorf("SimDPS = %v, want 250", row.SimDPS)
+	}
+}
+
+// A trinket rankTrinketSlot's own baseline sim failed to measure at all
+// (GainMeasured false) must NOT be treated as zero-value - tenet 8:
+// never publish a claim ("this trinket is worthless") this command
+// could not actually check. It still publishes via the pre-existing
+// simDecided exemption (this file's own
+// TestBuildReportSimDecidedPickPublishesSimDPSNotScore, unchanged).
+func TestBuildReportKeepsATrinketWhoseGainWasNeverMeasured(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "A Real Trinket"}, MeasuredDPS: 250}},
+	}
+	r := buildReport(reportSpec(), 60, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "trinket1" {
+			row = s
+		}
+	}
+	if row.ItemID != 1 || row.EmptyReason != "" {
+		t.Fatalf("trinket1 row = %+v, want item 1 published with no EmptyReason (an unmeasured gain is not evidence of zero value)", row)
+	}
+}
+
+// bis-ranker-integrity-3, 2026-09-29, this lane's brief item 2: a relic
+// (libram/idol/totem) whose one real selling point - its engraved
+// effect - the engine does not implement at all must empty with its
+// own reason instead of falling back to score()'s plain stat total,
+// which was never designed to value it either way (druid-balance's own
+// Idol of the Huntress: an "Improved Swipe" - a Feral rune - engrave
+// with no Balance-relevant stats, picked at 4 of 5 bands because it was
+// simply never emptied).
+func TestBuildReportEmptiesARelicWithAnUnmodelledEffect(t *testing.T) {
+	picks := map[string]slotPick{
+		"ranged": {Item: &scored{candidate: candidate{
+			ID: 227444, Name: "Idol of the Huntress", ClassID: armorClassID,
+			SubclassID: armorSubidolID, Stats: map[string]float64{},
+			EffectText: "Engrave your cloak with the Improved Swipe rune.",
+		}}},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "ranged" {
+			row = s
+		}
+	}
+	if row.ItemID != 0 || row.EmptyReason != effectNotModelledReason {
+		t.Fatalf("ranged row = %+v, want empty with EmptyReason %q", row, effectNotModelledReason)
+	}
+	if !row.EffectUnmodelled {
+		t.Error("ranged row EffectUnmodelled = false, want true (still named, even though the row is empty)")
+	}
+}
+
+// An ordinary armor piece (not a relic subclass) carrying an
+// unmodelled effect keeps the pre-existing exemption - only a relic's
+// one-real-selling-point situation gets the new, stricter treatment.
+func TestBuildReportDoesNotEmptyANonRelicWithAnUnmodelledEffect(t *testing.T) {
+	picks := map[string]slotPick{
+		"back": {Item: &scored{candidate: candidate{ID: 1, Name: "Mystery Cloak", EffectText: "Does something unimplemented"}, Score: 0}},
+	}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 0, nil, nil, nil, 0, 0, nil, nil, nil, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "back" {
+			row = s
+		}
+	}
+	if row.ItemID != 1 || row.EmptyReason != "" {
+		t.Fatalf("back row = %+v, want item 1 published (not a relic subclass, so the pre-existing EffectUnmodelled exemption still applies)", row)
+	}
+}
+
+// bis-ranker-integrity-3, 2026-09-29, this lane's brief item 3: a real
+// sim DID run for this slot (verifyBand's own swap pass) even though it
+// did not promote anything, but the ONE candidate it actually tested is
+// not visible anywhere in Alternatives - here because it is ALSO the
+// slot's own pair-mate's item (buildAlternatives correctly refuses to
+// offer the same physical weapon back as a fallback for the other hand
+// - shaman-enhancement's own dogfood, exactly reproduced: main_hand's
+// real runner-up, Diamond Hammer, is off_hand's own pick). "Verified:
+// true" must still carry real evidence somewhere on the row (three
+// sweeps running: "verified" with nothing anywhere backing it up).
+func TestBuildReportAddsSwapNoteWhenVerifiedButNoVisibleEvidence(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Butcher's Cleaver"}, Score: 236.9}
+	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Diamond Hammer"}, Score: 232.8}
+	offHandPick := &scored{candidate: candidate{ID: 2, Name: "Diamond Hammer"}, Score: 232.8}
+	picks := map[string]slotPick{
+		"main_hand": {Item: pick, RunnerUp: runnerUp},
+		"off_hand":  {Item: offHandPick},
+	}
+	bySlot := map[string][]scored{
+		"main_hand": {
+			{candidate: candidate{ID: 1, Name: "Butcher's Cleaver"}, Score: 236.9},
+			{candidate: candidate{ID: 3, Name: "Smite's Mighty Hammer"}, Score: 297.8},
+			{candidate: candidate{ID: 4, Name: "Forsaken Greataxe"}, Score: 290.0},
+			{candidate: candidate{ID: 2, Name: "Diamond Hammer"}, Score: 232.8},
+		},
+	}
+	swaps := []swapResult{{Slot: "main_hand", SwapDPS: 38.0, BaselineDPS: 45.8, Beat: false}}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 45.8, swaps, nil, nil, 0, 0, nil, nil, bySlot, 0)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "main_hand" {
+			row = s
+		}
+	}
+	if !row.Verified {
+		t.Fatalf("main_hand row = %+v, want Verified true (the pick beat the real swap test)", row)
+	}
+	for _, a := range row.Alternatives {
+		if a.ItemID == 2 {
+			t.Fatalf("main_hand Alternatives = %+v, want Diamond Hammer (id 2) excluded: it is off_hand's own pick, not a real main_hand fallback", row.Alternatives)
+		}
+	}
+	if row.SwapNote == "" {
+		t.Fatal("main_hand row.SwapNote is empty, want the real sim numbers named (Verified: true with no visible evidence anywhere else on the row)")
+	}
+	if !strings.Contains(row.SwapNote, "Diamond Hammer") || !strings.Contains(row.SwapNote, "45.8") || !strings.Contains(row.SwapNote, "38.0") {
+		t.Errorf("main_hand row.SwapNote = %q, want it to name Diamond Hammer and the real 45.8/38.0 set DPS", row.SwapNote)
+	}
+}
+
+// buildAlternatives itself: a real swap-tested runner-up that ranks
+// below the top alternativesLimit candidates by raw score() (and is
+// NOT excluded as a pair-mate) is force-included anyway, evicting the
+// weakest untested filler - this lane's brief item 3's other half: the
+// one candidate this command actually measured must never be silently
+// dropped just because untested candidates happened to score higher.
+func TestBuildAlternativesForceIncludesALowScoringButActuallyTestedRunnerUp(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Pick"}, Score: 236.9}
+	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Weak But Tested"}, Score: 100}
+	pk := slotPick{Item: pick, RunnerUp: runnerUp}
+	list := []scored{
+		{candidate: candidate{ID: 1, Name: "Pick"}, Score: 236.9},
+		{candidate: candidate{ID: 3, Name: "Untested A"}, Score: 297.8},
+		{candidate: candidate{ID: 4, Name: "Untested B"}, Score: 290.0},
+		{candidate: candidate{ID: 5, Name: "Untested C"}, Score: 280.0},
+		{candidate: candidate{ID: 2, Name: "Weak But Tested"}, Score: 100},
+	}
+	sw := &swapResult{Slot: "main_hand", SwapDPS: 38.0, BaselineDPS: 45.8, Beat: false}
+	got := buildAlternatives(pk, "main_hand", list, map[string]slotPick{"main_hand": pk}, 0, sw)
+	if len(got) > alternativesLimit {
+		t.Fatalf("buildAlternatives = %+v, want at most %d entries", got, alternativesLimit)
+	}
+	var found *alternativeRow
+	for i := range got {
+		if got[i].ItemID == 2 {
+			found = &got[i]
+		}
+	}
+	if found == nil {
+		t.Fatalf("buildAlternatives = %+v, want the tested runner-up (id 2) force-included even though it scores lowest", got)
+	}
+	if !found.Verified || found.SimDPS != 38.0 {
+		t.Errorf("tested runner-up = %+v, want Verified true and SimDPS 38.0 (sw.SwapDPS, this row's own measured value)", found)
+	}
+}
+
+// The fallback SwapNote above must stay silent when the tested
+// runner-up already shows up as a Verified alternative - this lane's
+// brief item 3 fixes a row with NO evidence, not double-documents one
+// that already has it.
+func TestBuildReportSkipsFallbackSwapNoteWhenAlternativeAlreadyShowsIt(t *testing.T) {
+	pick := &scored{candidate: candidate{ID: 1, Name: "Pick"}, Score: 100}
+	runnerUp := &scored{candidate: candidate{ID: 2, Name: "Runner Up"}, Score: 95}
+	picks := map[string]slotPick{"head": {Item: pick, RunnerUp: runnerUp}}
+	bySlot := map[string][]scored{
+		"head": {
+			{candidate: candidate{ID: 1, Name: "Pick"}, Score: 100},
+			{candidate: candidate{ID: 2, Name: "Runner Up"}, Score: 95},
+		},
+	}
+	swaps := []swapResult{{Slot: "head", SwapDPS: 40, BaselineDPS: 50, Beat: false}}
+	r := buildReport(reportSpec(), 20, "horde", "troll", "", 0, nil, nil, picks, 50, swaps, nil, nil, 0, 0, nil, nil, bySlot, 0.05)
+	var row slotRow
+	for _, s := range r.Slots {
+		if s.Slot == "head" {
+			row = s
+		}
+	}
+	if row.SwapNote != "" {
+		t.Fatalf("head row.SwapNote = %q, want empty: the runner-up is already a Verified alternative, no fallback note needed", row.SwapNote)
+	}
+	found := false
+	for _, a := range row.Alternatives {
+		if a.ItemID == 2 && a.Verified {
+			found = true
+		}
+	}
+	if !found {
+		t.Fatal("head row.Alternatives does not show the verified runner-up - test setup is wrong")
+	}
+}
+
+// Owner review, tenet 8: a sim-decided row's Score is deliberately
+// zeroed (buildReport's own doc), so the markdown table must never
+// print a bare "0.0" beside "Verified: yes" - it reads as "this item
+// does nothing" when the row actually carries a real measured number
+// (hybrids sweep, item 5: Dawn's Edge/Ebon Hand/Annihilator all showed
+// this). The real SimDPS is printed instead.
+func TestWriteMarkdownPrintsSimVerifiedDPSNotZeroScore(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "shaman-enhancement.md")
+	spec := specInfo{Spec: "shaman-enhancement", Name: "Enhancement", ReferenceStat: "attack_power"}
+	reports := []bandReport{
+		{
+			Band: 60, Faction: "horde", Race: "orc",
+			Slots: []slotRow{
+				{Slot: "main_hand", ItemID: 1, ItemName: "Annihilator", Score: 0, SimDPS: 165.0, Verified: true},
+			},
+		},
+	}
+	if err := writeMarkdown(path, spec, reports); err != nil {
+		t.Fatalf("writeMarkdown: %v", err)
+	}
+	b, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("reading written file: %v", err)
+	}
+	content := string(b)
+	if strings.Contains(content, "| 0.0 | yes |") {
+		t.Fatalf("markdown still prints a bare 0.0 score beside Verified: yes:\n%s", content)
+	}
+	if !strings.Contains(content, "sim-verified (165.0 DPS)") {
+		t.Errorf("markdown missing the sim-verified DPS note in the Score column:\n%s", content)
 	}
 }

@@ -29,6 +29,28 @@ type scored struct {
 	// Score (score()'s estimate, in reference-stat points) or SimDPS
 	// (this field) - never both.
 	MeasuredDPS float64
+	// MeasuredGainDPS is trinket-slot-only (bis-ranker-integrity-3,
+	// 2026-09-29): the real DPS GAIN this exact candidate measured over
+	// a baseline sim with the trinket slot left empty (rankTrinketSlot's
+	// own baseline run, trinkets.go) - unlike MeasuredDPS above (the
+	// full SET's own absolute DPS with this trinket worn, which is
+	// always positive regardless of whether the trinket itself
+	// contributes anything at all, since a raid's worth of other gear
+	// keeps producing DPS with an empty trinket slot too), this is the
+	// number that actually answers "does this trinket do anything":
+	// warrior-arms band 20's own Rune of Perfection (+6 spell
+	// penetration, +4 stamina - neither weighted by this spec at all)
+	// still measured a full-set MeasuredDPS in the hundreds under the
+	// old check, which is exactly why simDecided (buildReport, below)
+	// could never catch a genuinely worthless trinket: every trinket's
+	// own MeasuredDPS is always > 0. GainMeasured is false whenever this
+	// field was never computed (every non-trinket slot, and a trinket
+	// candidate rankTrinketSlot's own baseline sim failed to measure) -
+	// report.go's zero-value gate only trusts MeasuredGainDPS when
+	// GainMeasured is true, the same explicit "do we actually have this
+	// number" pattern HasSource/Source already uses above.
+	MeasuredGainDPS float64
+	GainMeasured    bool
 }
 
 // slotOrder is the order sim/api.GearSlots and the engine's own

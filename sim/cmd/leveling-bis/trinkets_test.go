@@ -217,3 +217,73 @@ func TestRankTrinketSlotNoCandidatesReturnsUnchanged(t *testing.T) {
 		t.Fatalf("trinket1 = %+v, want unchanged", out["trinket1"].Item)
 	}
 }
+
+// bis-ranker-integrity-3, 2026-09-29, this lane's brief item 2:
+// rankTrinketSlot's own no-trinket baseline sim (swapSlot's itemID-0
+// shape) is what lets report.go's zero-value gate tell a genuinely
+// worthless trinket apart from a real one - MeasuredDPS alone (the
+// whole SET's own absolute DPS) can never do this, since it is always
+// positive regardless of whether the trinket itself contributes
+// anything at all.
+func TestRankTrinketSlotComputesGainAgainstANoTrinketBaseline(t *testing.T) {
+	picks := map[string]slotPick{
+		"trinket1": {Item: &scored{candidate: candidate{ID: 1, Name: "Placeholder"}}},
+	}
+	bySlot := map[string][]scored{
+		"trinket1": {trinket(2, "Low DPS Trinket", 30), trinket(3, "High DPS Trinket", 20)},
+	}
+	fake := &fakeEngine{
+		DPSByGear: map[string]float64{
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 2}}): 100,
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: 3}}): 200,
+			// The baseline call swaps the slot's own item id to 0, which
+			// swapSlot's own doc says drops the slot from the gear list
+			// entirely - an empty gear key.
+			gearKey(nil): 190,
+		},
+	}
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1")
+	if len(notes) != 0 {
+		t.Fatalf("notes = %v, want none", notes)
+	}
+	if !out["trinket1"].Item.GainMeasured {
+		t.Fatalf("trinket1 pick GainMeasured = false, want true")
+	}
+	if out["trinket1"].Item.MeasuredGainDPS != 10 {
+		t.Errorf("trinket1 pick MeasuredGainDPS = %v, want 10 (200 measured - 190 baseline)", out["trinket1"].Item.MeasuredGainDPS)
+	}
+	if !out["trinket1"].RunnerUp.GainMeasured || out["trinket1"].RunnerUp.MeasuredGainDPS != -90 {
+		t.Errorf("trinket1 runner-up gain = measured=%v dps=%v, want measured=true dps=-90 (100 - 190)", out["trinket1"].RunnerUp.GainMeasured, out["trinket1"].RunnerUp.MeasuredGainDPS)
+	}
+}
+
+// A baseline sim failure costs the gain check, not the ranking itself -
+// tenet 8: never claim a gain this command could not actually measure.
+func TestRankTrinketSlotLeavesGainUnmeasuredWhenTheBaselineSimFails(t *testing.T) {
+	picks := map[string]slotPick{}
+	bySlot := map[string][]scored{
+		"trinket1": {trinket(2, "Only Candidate", 30)},
+	}
+	fake := &fakeEngine{
+		// The no-trinket baseline call's own gear list is empty
+		// (swapSlot's itemID-0 shape) - fakeEngine's FailGear sentinel
+		// cannot target an empty fingerprint (it treats "" as "unset"),
+		// so DPSFunc singles out the baseline call by its empty gear.
+		DPSFunc: func(req api.SimRequest) (float64, error) {
+			if len(req.Character.Gear) == 0 {
+				return 0, errors.New("fakeEngine: forced baseline failure")
+			}
+			return 100, nil
+		},
+	}
+	out, notes := rankTrinketSlot(fake, specInfo{}, "dwarf", "hunter", 20, "", picks, bySlot, "trinket1")
+	if len(notes) != 1 {
+		t.Fatalf("notes = %v, want exactly 1 (the baseline failure)", notes)
+	}
+	if out["trinket1"].Item == nil || out["trinket1"].Item.ID != 2 {
+		t.Fatalf("trinket1 pick = %+v, want item 2 (the ranking itself is unaffected)", out["trinket1"].Item)
+	}
+	if out["trinket1"].Item.GainMeasured {
+		t.Errorf("trinket1 pick GainMeasured = true, want false: the baseline sim failed")
+	}
+}

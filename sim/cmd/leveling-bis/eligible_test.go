@@ -163,3 +163,30 @@ func TestFactionRestrictionMatchesTheBandFaction(t *testing.T) {
 		t.Fatal("an alliance-only quest reward must not be eligible for a horde band")
 	}
 }
+
+// bis-ranker-integrity-3, 2026-09-29, this lane's brief item 2:
+// isRelicCandidate is report.go's own predicate for the new
+// effect_not_modelled empty reason - pinned directly since it is the
+// one thing standing between a relic (druid-balance's own Idol of the
+// Huntress) and every other armor piece that merely happens to carry
+// an unmodelled effect too.
+func TestIsRelicCandidate(t *testing.T) {
+	cases := []struct {
+		name string
+		c    candidate
+		want bool
+	}{
+		{"idol", candidate{ClassID: armorClassID, SubclassID: armorSubidolID}, true},
+		{"totem", candidate{ClassID: armorClassID, SubclassID: armorSubtotemID}, true},
+		{"libram", candidate{ClassID: armorClassID, SubclassID: armorSublibramID}, true},
+		{"plain cloak (armor, not a relic subclass)", candidate{ClassID: armorClassID, SubclassID: armorSubclothID}, false},
+		{"a weapon sharing a relic's numeric subclass id by coincidence", candidate{ClassID: itemClassWeapon, SubclassID: armorSubidolID}, false},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := isRelicCandidate(tc.c); got != tc.want {
+				t.Errorf("isRelicCandidate(%+v) = %v, want %v", tc.c, got, tc.want)
+			}
+		})
+	}
+}
