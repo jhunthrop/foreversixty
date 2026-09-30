@@ -67,6 +67,10 @@ def test_gear_item_carries_weapon_damage_set_and_uniqueness() -> None:
         14.62,
     )
     assert gear.set_id == 9001 and gear.unique is True and gear.two_hand is False
+    # A wowhead-supplement item has no client row at all -- resolve_required_level's
+    # "wowhead" branch, not "client", even though the number itself (17) is
+    # unchanged (normalize-levels lane, 2026-09-29).
+    assert (gear.required_level, gear.required_level_source) == (17, "wowhead")
     flat = wh.to_item(sword)
     assert isinstance(flat, Item)
     assert (flat.class_id, flat.subclass_id, flat.inventory_type) == (2, 7, 13)
@@ -105,6 +109,47 @@ def test_a_holdable_off_hand_item_wowhead_states_a_speed_for_gets_no_weapon_fiel
     gear = wh.to_gear_item(rod)
     assert (gear.damage_min, gear.damage_max, gear.speed, gear.dps) == (0, 0, 0.0, 0.0)
     assert gear.two_hand is False
+
+
+def _wowhead_item(**overrides) -> wh.WowheadItem:
+    base = dict(
+        id=1,
+        name="Test Item",
+        quality=2,
+        item_level=20,
+        required_level=0,
+        class_id=4,
+        subclass_id=1,
+        inventory_type=5,
+        icon="inv_chest_cloth_01",
+        class_mask=None,
+        stats={},
+        set_id=None,
+        unique=False,
+        armor=0,
+        damage_min=0,
+        damage_max=0,
+        speed=0.0,
+        dps=0.0,
+    )
+    base.update(overrides)
+    return wh.WowheadItem(**base)
+
+
+def test_to_gear_item_proxies_from_item_level_when_wowhead_names_no_level() -> None:
+    """A supplement item wowhead itself states requiredLevel 0 for falls
+    through resolve_required_level's precedence exactly like a client row
+    would: the item-level proxy, not "wowhead" (normalize-levels lane,
+    2026-09-29)."""
+    item = _wowhead_item(item_level=41, required_level=0)
+    gear = wh.to_gear_item(item)
+    assert (gear.required_level, gear.required_level_source) == (36, "item_level_proxy")
+
+
+def test_to_gear_item_is_none_for_an_item_level_one_supplement_row() -> None:
+    item = _wowhead_item(item_level=1, required_level=0)
+    gear = wh.to_gear_item(item)
+    assert (gear.required_level, gear.required_level_source) == (0, "none")
 
 
 def test_class_allowed_reads_the_mask_and_the_proficiency_table() -> None:

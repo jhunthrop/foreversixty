@@ -13,6 +13,7 @@ from pipeline.normalize.gear import (
     build_class_items,
     build_item_sets,
     is_junk_name,
+    resolve_required_level,
 )
 from pipeline.normalize.item_curves import load_item_curves
 from pipeline.normalize.weapon_curves import load_weapon_curves
@@ -79,6 +80,24 @@ def build_all():
 
 def by_slug():
     return {record.class_slug: record for record in build_all()}
+
+
+def test_build_class_items_prefers_wowhead_over_the_item_level_proxy():
+    """Item 13315 "Testament of Hope" (item_level 61) states client
+    RequiredLevel 0 -- `build_all()`'s own golden output resolves it to the
+    item-level proxy, 56. Feeding `wowhead_required_levels` here proves the
+    "wowhead" branch is wired through `build_class_items`, not only through
+    `resolve_required_level` in isolation."""
+    records = build_class_items(
+        read_csv(HERE / "fixtures/ItemSparse.csv"),
+        read_csv(HERE / "fixtures/Item.csv"),
+        read_csv(HERE / "fixtures/ChrClasses.csv"),
+        fixture_icons(),
+        "1.0.0.1",
+        wowhead_required_levels={13315: 42},
+    )
+    item = next(i for r in records for i in r.items if i.id == 13315)
+    assert (item.required_level, item.required_level_source) == (42, "wowhead")
 
 
 def test_warrior_items_match_golden(tmp_path: Path):
@@ -269,6 +288,51 @@ def test_non_equipment_and_overlevelled_items_are_dropped():
         ids = {i.id for i in record.items}
         assert 2589 not in ids  # InventoryType 0
         assert 12345 not in ids  # RequiredLevel 70
+
+
+# --- resolve_required_level -----------------------------------------------
+
+
+def test_resolve_required_level_uses_the_clients_own_nonzero_value():
+    """Branch 1: a non-zero client RequiredLevel always wins, even when
+    wowhead names a different level for the same id."""
+    assert resolve_required_level(40, 45, 99) == (40, "client")
+
+
+def test_resolve_required_level_falls_back_to_wowhead_when_the_client_is_zero():
+    """Branch 2: the client states 0 (or has no row at all -- a
+    wowhead-supplement item passes 0 here too) and wowhead names a real
+    level for the same id."""
+    assert resolve_required_level(0, 45, 55) == (55, "wowhead")
+
+
+def test_resolve_required_level_falls_back_to_wowhead_with_no_client_row():
+    """A wowhead-supplement item (no client row at all) is the same branch
+    as a client row stating 0 -- `client_level` is 0 either way."""
+    assert resolve_required_level(0, 12, 16) == (16, "wowhead")
+
+
+def test_resolve_required_level_proxies_from_item_level_when_neither_resolves():
+    """Branch 3: real gear (item_level > 1) neither the client nor wowhead
+    resolved falls back to item_level - 5, the same formula
+    sim/leveling.ItemLevelProxyRequiredLevel computes independently in Go."""
+    assert resolve_required_level(0, 61, None) == (56, "item_level_proxy")
+    assert resolve_required_level(0, 61, 0) == (56, "item_level_proxy")  # wowhead names 0 too
+
+
+def test_resolve_required_level_proxy_is_floored_at_zero():
+    assert resolve_required_level(0, 3, None) == (0, "item_level_proxy")
+
+
+def test_resolve_required_level_proxy_is_capped_at_max_player_level():
+    assert resolve_required_level(0, 100, None) == (60, "item_level_proxy")
+
+
+def test_resolve_required_level_is_none_for_an_item_level_one_row():
+    """Branch 4: item_level 1 (or anything with nothing to proxy from) --
+    required_level 0 IS the right answer, not a gap."""
+    assert resolve_required_level(0, 1, None) == (0, "none")
+    assert resolve_required_level(0, 0, None) == (0, "none")
 
 
 @pytest.mark.parametrize(
