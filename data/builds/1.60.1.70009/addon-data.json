@@ -8527,7 +8527,7 @@
             "finger1": {
               "item_id": 1156,
               "source_kind": "dungeon",
-              "source": "Westfall: Gilnid"
+              "source": "The Deadmines: Gilnid"
             },
             "finger2": {
               "item_id": 20426,
@@ -9144,9 +9144,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 226773,
-              "source_kind": "quest",
-              "source": "Saving the Best for Last"
+              "item_id": 252561,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 22657,
@@ -9174,9 +9174,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 272097,
+              "item_id": 226777,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Mokvar"
             },
             "waist": {
               "item_id": 228190,
@@ -9194,9 +9194,9 @@
               "source": "Mokvar"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -9226,9 +9226,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 226773,
-              "source_kind": "quest",
-              "source": "Saving the Best for Last"
+              "item_id": 252561,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 22657,
@@ -9276,9 +9276,9 @@
               "source": "Mokvar"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -9309,17 +9309,16 @@
         },
         "new_at_band": {
           "alliance": [
-            226773,
+            252561,
             22657,
             227808,
             272411,
             226776,
             19595,
-            272097,
             228190,
             252486,
             226774,
-            234032,
+            21210,
             20682,
             11832,
             11819,
@@ -9327,7 +9326,7 @@
             23197
           ],
           "horde": [
-            226773,
+            252561,
             22657,
             227808,
             272411,
@@ -9336,7 +9335,7 @@
             228190,
             252486,
             226774,
-            234032,
+            21210,
             20682,
             11832,
             11819,
@@ -9397,7 +9396,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252500,
@@ -9422,7 +9421,7 @@
             "main_hand": {
               "item_id": 7230,
               "source_kind": "dungeon",
-              "source": "Westfall: Mr. Smite"
+              "source": "The Deadmines: Mr. Smite"
             }
           },
           "horde": {
@@ -9464,7 +9463,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252500,
@@ -9955,6 +9954,16 @@
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Ironspine"
             },
+            "trinket1": {
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
+            "trinket2": {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 10626,
               "source_kind": "dungeon",
@@ -10053,6 +10062,8 @@
             252468,
             19516,
             7686,
+            249470,
+            249469,
             10626
           ],
           "horde": [
@@ -10088,9 +10099,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 231689,
+              "item_id": 226792,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Mokvar"
             },
             "neck": {
               "item_id": 19491,
@@ -10098,9 +10109,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 231693,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 20059,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "back": {
               "item_id": 13340,
@@ -10133,19 +10144,19 @@
               "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 231692,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 21532,
+              "source_kind": "quest",
+              "source": "The Nightmare Manifests"
             },
             "finger1": {
-              "item_id": 234034,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
               "item_id": 19514,
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
+            },
+            "finger2": {
+              "item_id": 21205,
+              "source_kind": "quest",
+              "source": "The Changing of Paths - Protector No More"
             },
             "trinket1": {
               "item_id": 19289,
@@ -10170,9 +10181,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 231687,
+              "item_id": 226792,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Mokvar"
             },
             "neck": {
               "item_id": 19491,
@@ -10180,9 +10191,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 231684,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 20194,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "back": {
               "item_id": 13340,
@@ -10215,19 +10226,19 @@
               "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 231683,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 21532,
+              "source_kind": "quest",
+              "source": "The Nightmare Manifests"
             },
             "finger1": {
-              "item_id": 234034,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
               "item_id": 19510,
               "source_kind": "rep",
               "source": "Warsong Outriders"
+            },
+            "finger2": {
+              "item_id": 21205,
+              "source_kind": "quest",
+              "source": "The Changing of Paths - Protector No More"
             },
             "trinket1": {
               "item_id": 19289,
@@ -10253,36 +10264,36 @@
         },
         "new_at_band": {
           "alliance": [
-            231689,
+            226792,
             19491,
-            231693,
+            20059,
             13340,
             252484,
             19587,
             19049,
             227805,
             15065,
-            231692,
-            234034,
+            21532,
             19514,
+            21205,
             19289,
             13965,
             19323,
             23197
           ],
           "horde": [
-            231687,
+            226792,
             19491,
-            231684,
+            20194,
             13340,
             252484,
             19587,
             19049,
             227805,
             15065,
-            231683,
-            234034,
+            21532,
             19510,
+            21205,
             19289,
             19120,
             19323,
@@ -10342,7 +10353,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 10410,
@@ -10414,7 +10425,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 10410,
@@ -10980,9 +10991,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 220821,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 8348,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 13089,
@@ -10990,9 +11001,9 @@
               "source": "World drop"
             },
             "shoulder": {
-              "item_id": 220824,
+              "item_id": 274751,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 13122,
@@ -11080,9 +11091,8 @@
             285281
           ],
           "horde": [
-            220821,
+            8348,
             13089,
-            220824,
             13122,
             17742,
             13120,
@@ -11109,9 +11119,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 231562,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 252605,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 19491,
@@ -11139,9 +11149,9 @@
               "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 231578,
+              "item_id": 272099,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Creeg Bothunk"
             },
             "waist": {
               "item_id": 227807,
@@ -11154,9 +11164,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 231579,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 275618,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 21205,
@@ -11191,9 +11201,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 231571,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 252605,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 19491,
@@ -11221,9 +11231,9 @@
               "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 231575,
+              "item_id": 272099,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Creeg Bothunk"
             },
             "waist": {
               "item_id": 227807,
@@ -11236,9 +11246,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 231570,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 275618,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 21205,
@@ -11251,14 +11261,14 @@
               "source": "Pix Xizzix"
             },
             "trinket1": {
-              "item_id": 11832,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
-            },
-            "trinket2": {
               "item_id": 19120,
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village"
+            },
+            "trinket2": {
+              "item_id": 11832,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 250619,
@@ -11274,16 +11284,16 @@
         },
         "new_at_band": {
           "alliance": [
-            231562,
+            252605,
             19491,
             272105,
             13340,
             252483,
             18375,
-            231578,
+            272099,
             227807,
             237819,
-            231579,
+            275618,
             21205,
             272408,
             11832,
@@ -11292,20 +11302,19 @@
             279273
           ],
           "horde": [
-            231571,
+            252605,
             19491,
             272105,
             13340,
             252483,
             18375,
-            231575,
+            272099,
             227807,
             237819,
-            231570,
+            275618,
             21205,
             272408,
             11832,
-            19120,
             250619,
             279273
           ]
@@ -11362,7 +11371,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 10410,
@@ -11434,7 +11443,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 10410,
@@ -12000,9 +12009,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 220821,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 8348,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 13089,
@@ -12010,9 +12019,9 @@
               "source": "World drop"
             },
             "shoulder": {
-              "item_id": 220824,
+              "item_id": 274751,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Rettrick"
             },
             "back": {
               "item_id": 13122,
@@ -12100,9 +12109,8 @@
             285281
           ],
           "horde": [
-            220821,
+            8348,
             13089,
-            220824,
             13122,
             17742,
             13120,
@@ -12130,9 +12138,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 231562,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 252605,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 19491,
@@ -12160,9 +12168,9 @@
               "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 231578,
+              "item_id": 272099,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Creeg Bothunk"
             },
             "waist": {
               "item_id": 227807,
@@ -12175,9 +12183,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 231579,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 275618,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 21205,
@@ -12212,9 +12220,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 231571,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 252605,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 19491,
@@ -12242,14 +12250,14 @@
               "source": "Dire Maul: Prince Tortheldrin"
             },
             "hands": {
-              "item_id": 231575,
+              "item_id": 272099,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Creeg Bothunk"
             },
             "waist": {
-              "item_id": 227807,
+              "item_id": 272397,
               "source_kind": "vendor",
-              "source": "Meilosh"
+              "source": "Pix Xizzix"
             },
             "legs": {
               "item_id": 237819,
@@ -12257,9 +12265,9 @@
               "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 231570,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 275618,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 21205,
@@ -12295,16 +12303,16 @@
         },
         "new_at_band": {
           "alliance": [
-            231562,
+            252605,
             19491,
             272105,
             13340,
             252483,
             18375,
-            231578,
+            272099,
             227807,
             237819,
-            231579,
+            275618,
             21205,
             19325,
             11832,
@@ -12313,16 +12321,16 @@
             279273
           ],
           "horde": [
-            231571,
+            252605,
             19491,
             272105,
             13340,
             252483,
             18375,
-            231575,
-            227807,
+            272099,
+            272397,
             237819,
-            231570,
+            275618,
             21205,
             19325,
             11832,
@@ -12382,7 +12390,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252500,
@@ -12459,7 +12467,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252500,
@@ -13172,9 +13180,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 231562,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 13359,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Balnazzar"
             },
             "neck": {
               "item_id": 19491,
@@ -13182,9 +13190,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 231557,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 20059,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "back": {
               "item_id": 20073,
@@ -13212,14 +13220,14 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 231558,
+              "item_id": 237819,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
-              "item_id": 231561,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 275618,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
               "item_id": 21205,
@@ -13232,14 +13240,14 @@
               "source": "Silverwing Sentinels"
             },
             "trinket1": {
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
+            },
+            "trinket2": {
               "item_id": 19289,
               "source_kind": "quest",
               "source": "Darkmoon Elementals Deck"
-            },
-            "trinket2": {
-              "item_id": 11832,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 1728,
@@ -13259,9 +13267,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 231568,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 13359,
+              "source_kind": "dungeon",
+              "source": "Stratholme: Balnazzar"
             },
             "neck": {
               "item_id": 19491,
@@ -13269,9 +13277,9 @@
               "source": "1200 Tickets - Amulet of the Darkmoon"
             },
             "shoulder": {
-              "item_id": 231565,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 20194,
+              "source_kind": "rep",
+              "source": "The Defilers"
             },
             "back": {
               "item_id": 20068,
@@ -13289,9 +13297,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 231569,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 14640,
+              "source_kind": "dungeon",
+              "source": "Scholomance: Lady Illucia Barov"
             },
             "waist": {
               "item_id": 227807,
@@ -13299,9 +13307,9 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 231567,
+              "item_id": 237819,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Illiyana Moonblaze"
             },
             "feet": {
               "item_id": 275618,
@@ -13319,9 +13327,9 @@
               "source": "Warsong Outriders"
             },
             "trinket1": {
-              "item_id": 11832,
+              "item_id": 11819,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "trinket2": {
               "item_id": 19289,
@@ -13347,38 +13355,38 @@
         },
         "new_at_band": {
           "alliance": [
-            231562,
+            13359,
             19491,
-            231557,
+            20059,
             20073,
             22191,
             19582,
             14640,
             227807,
-            231558,
-            231561,
+            237819,
+            275618,
             21205,
             19514,
+            11819,
             19289,
-            11832,
             1728,
             21520,
             12653
           ],
           "horde": [
-            231568,
+            13359,
             19491,
-            231565,
+            20194,
             20068,
             22191,
             19582,
-            231569,
+            14640,
             227807,
-            231567,
+            237819,
             275618,
             21205,
             19510,
-            11832,
+            11819,
             19289,
             1728,
             21520,
@@ -13462,7 +13470,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           },
           "horde": {
@@ -13529,7 +13537,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           }
         },
@@ -14029,6 +14037,11 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
+            "trinket2": {
+              "item_id": 11811,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 1664,
               "source_kind": "world",
@@ -14134,6 +14147,7 @@
             7553,
             19523,
             249469,
+            11811,
             11748
           ],
           "horde": [
@@ -14194,9 +14208,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 231608,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 20716,
+              "source_kind": "quest",
+              "source": "Armaments of War"
             },
             "waist": {
               "item_id": 228190,
@@ -14214,9 +14228,9 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -14276,9 +14290,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 231599,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 20716,
+              "source_kind": "quest",
+              "source": "Armaments of War"
             },
             "waist": {
               "item_id": 228190,
@@ -14296,9 +14310,9 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -14335,10 +14349,10 @@
             272411,
             14152,
             19595,
-            231608,
+            20716,
             228190,
             237815,
-            234032,
+            21210,
             20682,
             12930,
             22268,
@@ -14352,10 +14366,10 @@
             272411,
             14152,
             19595,
-            231599,
+            20716,
             228190,
             237815,
-            234032,
+            21210,
             20682,
             12930,
             22268,
@@ -14441,7 +14455,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           },
           "horde": {
@@ -14498,7 +14512,7 @@
             "finger2": {
               "item_id": 1156,
               "source_kind": "dungeon",
-              "source": "Westfall: Gilnid"
+              "source": "The Deadmines: Gilnid"
             },
             "main_hand": {
               "item_id": 251534,
@@ -14508,7 +14522,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           }
         },
@@ -14983,7 +14997,7 @@
             "feet": {
               "item_id": 220891,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "PvP rank 9 · Sergeant Major · Alliance"
             },
             "finger1": {
               "item_id": 6440,
@@ -14997,6 +15011,11 @@
             },
             "trinket1": {
               "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
+            "trinket2": {
+              "item_id": 11811,
               "source_kind": "crafted",
               "source": "Enchanting"
             },
@@ -15060,7 +15079,7 @@
             "feet": {
               "item_id": 220909,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "PvP rank 9 · First Sergeant · Horde"
             },
             "finger1": {
               "item_id": 6440,
@@ -15109,6 +15128,7 @@
             6440,
             11824,
             249469,
+            11811,
             812,
             11748
           ],
@@ -15195,9 +15215,9 @@
               "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -15232,9 +15252,9 @@
               "source": "Saving the Best for Last"
             },
             "neck": {
-              "item_id": 19601,
+              "item_id": 22657,
               "source_kind": "quest",
-              "source": "The Jewel of Kajaro"
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
               "item_id": 227808,
@@ -15277,9 +15297,9 @@
               "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -15320,7 +15340,7 @@
             228190,
             237815,
             22064,
-            234032,
+            21210,
             20682,
             11832,
             12930,
@@ -15329,7 +15349,7 @@
           ],
           "horde": [
             226935,
-            19601,
+            22657,
             227808,
             272411,
             14152,
@@ -15338,7 +15358,7 @@
             228190,
             237815,
             22064,
-            234032,
+            21210,
             20682,
             11832,
             12930,
@@ -15423,7 +15443,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           },
           "horde": {
@@ -15480,7 +15500,7 @@
             "finger2": {
               "item_id": 1156,
               "source_kind": "dungeon",
-              "source": "Westfall: Gilnid"
+              "source": "The Deadmines: Gilnid"
             },
             "main_hand": {
               "item_id": 251534,
@@ -15490,7 +15510,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           }
         },
@@ -15992,6 +16012,11 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
+            "trinket2": {
+              "item_id": 11811,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -16099,6 +16124,7 @@
             9484,
             11824,
             249469,
+            11811,
             812,
             11748
           ],
@@ -16162,9 +16188,9 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 231608,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 228190,
@@ -16182,9 +16208,9 @@
               "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -16244,9 +16270,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 231599,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 22066,
+              "source_kind": "quest",
+              "source": "Just Compensation"
             },
             "waist": {
               "item_id": 228190,
@@ -16264,9 +16290,9 @@
               "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -16303,11 +16329,11 @@
             272411,
             14152,
             19595,
-            231608,
+            22066,
             228190,
             237815,
             22064,
-            234032,
+            21210,
             20682,
             22678,
             12930,
@@ -16321,11 +16347,11 @@
             272411,
             14152,
             19595,
-            231599,
+            22066,
             228190,
             237815,
             22064,
-            234032,
+            21210,
             20682,
             11832,
             11819,
@@ -16385,7 +16411,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 6087,
@@ -16452,7 +16478,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 250493,
@@ -16788,9 +16814,9 @@
               "source": "Blacksmithing"
             },
             "back": {
-              "item_id": 5257,
-              "source_kind": "world",
-              "source": "Nimar the Slayer"
+              "item_id": 16340,
+              "source_kind": "pvp",
+              "source": "PvP rank 9 · First Sergeant · Horde"
             },
             "chest": {
               "item_id": 8157,
@@ -16858,7 +16884,7 @@
             7719,
             17772,
             250539,
-            5257,
+            16340,
             8157,
             19508,
             7724,
@@ -16970,9 +16996,9 @@
               "source": "Shadowshard Fragments"
             },
             "shoulder": {
-              "item_id": 250576,
-              "source_kind": "crafted",
-              "source": "Blacksmithing"
+              "item_id": 11632,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Lord Roccor"
             },
             "back": {
               "item_id": 14801,
@@ -17055,7 +17081,7 @@
           ],
           "horde": [
             9479,
-            250576,
+            11632,
             14801,
             11195,
             18711,
@@ -17084,9 +17110,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 231648,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 12640,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "neck": {
               "item_id": 11933,
@@ -17094,9 +17120,9 @@
               "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "shoulder": {
-              "item_id": 231651,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 20058,
+              "source_kind": "rep",
+              "source": "The League of Arathor"
             },
             "back": {
               "item_id": 20073,
@@ -17134,19 +17160,19 @@
               "source": "Leatherworking"
             },
             "finger1": {
-              "item_id": 234034,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Stormpike Guard"
             },
-            "trinket1": {
-              "item_id": 11832,
+            "finger2": {
+              "item_id": 18522,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Dire Maul: King Gordok"
+            },
+            "trinket1": {
+              "item_id": 11819,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "trinket2": {
               "item_id": 22268,
@@ -17211,14 +17237,14 @@
               "source": "Leatherworking"
             },
             "finger1": {
-              "item_id": 234034,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Frostwolf Clan"
+            },
+            "finger2": {
+              "item_id": 18522,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: King Gordok"
             },
             "trinket1": {
               "item_id": 11819,
@@ -17239,9 +17265,9 @@
         },
         "new_at_band": {
           "alliance": [
-            231648,
+            12640,
             11933,
-            231651,
+            20058,
             20073,
             22191,
             19578,
@@ -17249,9 +17275,9 @@
             227807,
             22385,
             275618,
-            234034,
             19325,
-            11832,
+            18522,
+            11819,
             22268,
             12592
           ],
@@ -17266,8 +17292,8 @@
             227807,
             22385,
             275618,
-            234034,
             19325,
+            18522,
             11819,
             22268,
             19323
@@ -17356,7 +17382,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           },
           "horde": {
@@ -17428,7 +17454,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           }
         },
@@ -17914,7 +17940,7 @@
             "feet": {
               "item_id": 220891,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "PvP rank 9 · Sergeant Major · Alliance"
             },
             "finger1": {
               "item_id": 11824,
@@ -17996,7 +18022,7 @@
             "feet": {
               "item_id": 220909,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "PvP rank 9 · First Sergeant · Horde"
             },
             "finger1": {
               "item_id": 11824,
@@ -18081,9 +18107,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 231616,
+              "item_id": 226957,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Mokvar"
             },
             "neck": {
               "item_id": 22657,
@@ -18091,9 +18117,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 231621,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -18101,9 +18127,9 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 231618,
+              "item_id": 226960,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Mokvar"
             },
             "wrist": {
               "item_id": 19595,
@@ -18121,19 +18147,19 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 231619,
-              "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "item_id": 22752,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "feet": {
-              "item_id": 231620,
+              "item_id": 226959,
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer"
+              "source": "Mokvar"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -18141,9 +18167,9 @@
               "source": "Prince Skaldrenox"
             },
             "trinket1": {
-              "item_id": 11832,
+              "item_id": 11819,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Ambassador Flamelash"
+              "source": "Blackrock Depths: Golem Lord Argelmach"
             },
             "trinket2": {
               "item_id": 22678,
@@ -18163,9 +18189,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 231615,
+              "item_id": 226957,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Mokvar"
             },
             "neck": {
               "item_id": 22657,
@@ -18173,9 +18199,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 231611,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Meilosh"
             },
             "back": {
               "item_id": 272411,
@@ -18183,9 +18209,9 @@
               "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 231632,
+              "item_id": 226960,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Mokvar"
             },
             "wrist": {
               "item_id": 19595,
@@ -18208,14 +18234,14 @@
               "source": "Warsong Outriders"
             },
             "feet": {
-              "item_id": 231610,
+              "item_id": 226959,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Mokvar"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -18246,35 +18272,35 @@
         },
         "new_at_band": {
           "alliance": [
-            231616,
+            226957,
             22657,
-            231621,
+            227808,
             272411,
-            231618,
+            226960,
             19595,
             272097,
             228190,
-            231619,
-            231620,
-            234032,
+            22752,
+            226959,
+            21210,
             20682,
-            11832,
+            11819,
             22678,
             19102,
             279246
           ],
           "horde": [
-            231615,
+            226957,
             22657,
-            231611,
+            227808,
             272411,
-            231632,
+            226960,
             19595,
             272097,
             228190,
             22747,
-            231610,
-            234032,
+            226959,
+            21210,
             20682,
             11832,
             11819,
@@ -18334,7 +18360,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252500,
@@ -18364,7 +18390,7 @@
             "off_hand": {
               "item_id": 5191,
               "source_kind": "dungeon",
-              "source": "Westfall: Edwin VanCleef"
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "ranged": {
               "item_id": 13136,
@@ -18411,7 +18437,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252500,
@@ -18965,6 +18991,11 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
+            "trinket2": {
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 8190,
               "source_kind": "world_drop",
@@ -19082,6 +19113,7 @@
             17713,
             2262,
             249469,
+            249470,
             8190,
             2163,
             13039
@@ -19382,7 +19414,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252500,
@@ -19412,7 +19444,7 @@
             "off_hand": {
               "item_id": 5191,
               "source_kind": "dungeon",
-              "source": "Westfall: Edwin VanCleef"
+              "source": "The Deadmines: Edwin VanCleef"
             },
             "ranged": {
               "item_id": 13136,
@@ -19459,7 +19491,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252500,
@@ -20435,7 +20467,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252500,
@@ -20512,7 +20544,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252500,
@@ -21065,6 +21097,11 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
+            "trinket2": {
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 12791,
               "source_kind": "dungeon",
@@ -21183,6 +21220,7 @@
             19516,
             17713,
             249469,
+            249470,
             12791,
             6660,
             2100
@@ -21503,7 +21541,7 @@
             "main_hand": {
               "item_id": 5187,
               "source_kind": "dungeon",
-              "source": "Westfall: Rhahk'Zor"
+              "source": "The Deadmines: Rhahk'Zor"
             }
           },
           "horde": {
@@ -21565,12 +21603,12 @@
             "finger2": {
               "item_id": 1156,
               "source_kind": "dungeon",
-              "source": "Westfall: Gilnid"
+              "source": "The Deadmines: Gilnid"
             },
             "main_hand": {
               "item_id": 5187,
               "source_kind": "dungeon",
-              "source": "Westfall: Rhahk'Zor"
+              "source": "The Deadmines: Rhahk'Zor"
             }
           }
         },
@@ -22043,6 +22081,11 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
+            "trinket2": {
+              "item_id": 11811,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -22142,6 +22185,7 @@
             6440,
             11824,
             249469,
+            11811,
             812
           ],
           "horde": [
@@ -22176,7 +22220,7 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 252604,
+              "item_id": 252605,
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
@@ -22206,7 +22250,7 @@
               "source": "Silverwing Sentinels"
             },
             "hands": {
-              "item_id": 272097,
+              "item_id": 272101,
               "source_kind": "vendor",
               "source": "Creeg Bothunk"
             },
@@ -22226,9 +22270,9 @@
               "source": "Mokvar"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -22263,19 +22307,19 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 272958,
+              "item_id": 227808,
               "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "source": "Meilosh"
             },
             "back": {
-              "item_id": 18510,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 272411,
+              "source_kind": "vendor",
+              "source": "Pix Xizzix"
             },
             "chest": {
-              "item_id": 231662,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 16666,
+              "source_kind": "dungeon",
+              "source": "Blackrock Spire: General Drakkisath"
             },
             "wrist": {
               "item_id": 19595,
@@ -22283,7 +22327,7 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 272097,
+              "item_id": 272101,
               "source_kind": "vendor",
               "source": "Creeg Bothunk"
             },
@@ -22293,19 +22337,19 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 252603,
+              "item_id": 252486,
               "source_kind": "crafted",
               "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 231661,
+              "item_id": 227007,
               "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "source": "Mokvar"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -22331,17 +22375,17 @@
         },
         "new_at_band": {
           "alliance": [
-            252604,
+            252605,
             22657,
             227808,
             272411,
             16666,
             19595,
-            272097,
+            272101,
             228190,
             252486,
             227007,
-            234032,
+            21210,
             20682,
             11832,
             11819,
@@ -22350,15 +22394,15 @@
           "horde": [
             227002,
             22657,
-            272958,
-            18510,
-            231662,
+            227808,
+            272411,
+            16666,
             19595,
-            272097,
+            272101,
             228190,
-            252603,
-            231661,
-            234032,
+            252486,
+            227007,
+            21210,
             20682,
             11832,
             11819,
@@ -22418,7 +22462,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252446,
@@ -22443,7 +22487,7 @@
             "main_hand": {
               "item_id": 7230,
               "source_kind": "dungeon",
-              "source": "Westfall: Mr. Smite"
+              "source": "The Deadmines: Mr. Smite"
             }
           },
           "horde": {
@@ -22485,7 +22529,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 252446,
@@ -22819,9 +22863,9 @@
               "source": "Blacksmithing"
             },
             "back": {
-              "item_id": 5257,
-              "source_kind": "world",
-              "source": "Nimar the Slayer"
+              "item_id": 16340,
+              "source_kind": "pvp",
+              "source": "PvP rank 9 · First Sergeant · Horde"
             },
             "chest": {
               "item_id": 6773,
@@ -22890,7 +22934,7 @@
             7719,
             17772,
             250539,
-            5257,
+            16340,
             6773,
             19508,
             7724,
@@ -22980,6 +23024,11 @@
               "source_kind": "crafted",
               "source": "Enchanting"
             },
+            "trinket2": {
+              "item_id": 249470,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 812,
               "source_kind": "world_drop",
@@ -22998,9 +23047,9 @@
               "source": "Shadowshard Fragments"
             },
             "shoulder": {
-              "item_id": 220823,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 252534,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 11626,
@@ -23008,9 +23057,9 @@
               "source": "Blackrock Depths: High Interrogator Gerstahn "
             },
             "chest": {
-              "item_id": 12793,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Plugger Spazzring"
+              "item_id": 220826,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "wrist": {
               "item_id": 18711,
@@ -23077,13 +23126,14 @@
             17713,
             19516,
             249469,
+            249470,
             812
           ],
           "horde": [
             9479,
-            220823,
+            252534,
             11626,
-            12793,
+            220826,
             18711,
             252547,
             11686,
@@ -23159,14 +23209,14 @@
               "source": "Leatherworking"
             },
             "finger1": {
-              "item_id": 234034,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Stormpike Guard"
+            },
+            "finger2": {
+              "item_id": 17713,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
             },
             "trinket1": {
               "item_id": 19289,
@@ -23196,9 +23246,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "shoulder": {
-              "item_id": 231654,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 15051,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "back": {
               "item_id": 272414,
@@ -23216,44 +23266,44 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 231655,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 19049,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "waist": {
-              "item_id": 227805,
+              "item_id": 227807,
               "source_kind": "vendor",
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 231658,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 15065,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "feet": {
-              "item_id": 231656,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 275618,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "finger1": {
-              "item_id": 234034,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
               "item_id": 19325,
               "source_kind": "rep",
               "source": "Frostwolf Clan"
             },
+            "finger2": {
+              "item_id": 17713,
+              "source_kind": "dungeon",
+              "source": "Maraudon: Princess Theradras"
+            },
             "trinket1": {
-              "item_id": 13965,
+              "item_id": 19289,
               "source_kind": "quest",
-              "source": "For The Horde!"
+              "source": "Darkmoon Elementals Deck"
             },
             "trinket2": {
-              "item_id": 11819,
+              "item_id": 11832,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach"
+              "source": "Blackrock Depths: Ambassador Flamelash"
             },
             "main_hand": {
               "item_id": 13983,
@@ -23273,26 +23323,26 @@
             227807,
             15065,
             275618,
-            234034,
             19325,
+            17713,
             19289,
             13965,
             19323
           ],
           "horde": [
             22659,
-            231654,
+            15051,
             272414,
             22191,
             19582,
-            231655,
-            227805,
-            231658,
-            231656,
-            234034,
+            19049,
+            227807,
+            15065,
+            275618,
             19325,
-            13965,
-            11819,
+            17713,
+            19289,
+            11832,
             13983
           ]
         },
@@ -23374,7 +23424,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           },
           "horde": {
@@ -23441,7 +23491,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           }
         },
@@ -24132,9 +24182,9 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 234436,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -24214,9 +24264,9 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 234436,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -24224,14 +24274,14 @@
               "source": "Prince Skaldrenox"
             },
             "trinket1": {
-              "item_id": 22678,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "trinket2": {
               "item_id": 12930,
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher"
+            },
+            "trinket2": {
+              "item_id": 22678,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "main_hand": {
               "item_id": 20654,
@@ -24256,7 +24306,7 @@
             20716,
             228190,
             13170,
-            234436,
+            21210,
             20682,
             22678,
             12930,
@@ -24273,10 +24323,10 @@
             20716,
             228190,
             13170,
-            234436,
+            21210,
             20682,
-            22678,
             12930,
+            22678,
             20654,
             279246
           ]
@@ -24359,7 +24409,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           },
           "horde": {
@@ -24426,7 +24476,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           }
         },
@@ -25119,9 +25169,9 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -25201,9 +25251,9 @@
               "source": "Tailoring"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -25216,9 +25266,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "trinket2": {
-              "item_id": 22268,
+              "item_id": 12930,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: General Drakkisath"
+              "source": "Blackrock Spire: Jed Runewatcher"
             },
             "main_hand": {
               "item_id": 20654,
@@ -25243,7 +25293,7 @@
             20716,
             228190,
             237815,
-            234032,
+            21210,
             20682,
             22678,
             12930,
@@ -25260,10 +25310,10 @@
             20716,
             228190,
             237815,
-            234032,
+            21210,
             20682,
             22678,
-            22268,
+            12930,
             20654,
             279246
           ]
@@ -25344,7 +25394,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           },
           "horde": {
@@ -25411,7 +25461,7 @@
             "ranged": {
               "item_id": 5198,
               "source_kind": "dungeon",
-              "source": "Westfall: Cookie"
+              "source": "The Deadmines: Cookie"
             }
           }
         },
@@ -26103,9 +26153,9 @@
               "source": "Meilosh"
             },
             "legs": {
-              "item_id": 237815,
-              "source_kind": "vendor",
-              "source": "Illiyana Moonblaze"
+              "item_id": 22752,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "feet": {
               "item_id": 18102,
@@ -26113,9 +26163,9 @@
               "source": "Blackrock Spire: Warchief Rend Blackhand"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -26123,14 +26173,14 @@
               "source": "Prince Skaldrenox"
             },
             "trinket1": {
-              "item_id": 22678,
-              "source_kind": "quest",
-              "source": "Epic Armaments of Battle - Friend of the Dawn"
-            },
-            "trinket2": {
               "item_id": 12930,
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Jed Runewatcher"
+            },
+            "trinket2": {
+              "item_id": 22678,
+              "source_kind": "quest",
+              "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "main_hand": {
               "item_id": 19102,
@@ -26175,9 +26225,9 @@
               "source": "Warsong Outriders"
             },
             "hands": {
-              "item_id": 13253,
-              "source_kind": "dungeon",
-              "source": "Blackrock Spire: Quartermaster Zigris"
+              "item_id": 272097,
+              "source_kind": "vendor",
+              "source": "Creeg Bothunk"
             },
             "waist": {
               "item_id": 228190,
@@ -26195,9 +26245,9 @@
               "source": "Blackrock Spire: Warchief Rend Blackhand"
             },
             "finger1": {
-              "item_id": 234032,
-              "source_kind": "vendor",
-              "source": "Anachronos"
+              "item_id": 21210,
+              "source_kind": "quest",
+              "source": "The Grand Invoker"
             },
             "finger2": {
               "item_id": 20682,
@@ -26210,9 +26260,9 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "trinket2": {
-              "item_id": 12930,
+              "item_id": 22268,
               "source_kind": "dungeon",
-              "source": "Blackrock Spire: Jed Runewatcher"
+              "source": "Blackrock Spire: General Drakkisath"
             },
             "main_hand": {
               "item_id": 20654,
@@ -26236,12 +26286,12 @@
             19595,
             272097,
             228190,
-            237815,
+            22752,
             18102,
-            234032,
+            21210,
             20682,
-            22678,
             12930,
+            22678,
             19102,
             22408
           ],
@@ -26252,14 +26302,14 @@
             272411,
             14153,
             19595,
-            13253,
+            272097,
             228190,
             237815,
             18102,
-            234032,
+            21210,
             20682,
             22678,
-            12930,
+            22268,
             20654,
             22408
           ]
@@ -26305,7 +26355,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 6087,
@@ -26372,7 +26422,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 250493,
@@ -26727,9 +26777,9 @@
               "source": "Blacksmithing"
             },
             "back": {
-              "item_id": 16658,
-              "source_kind": "quest",
-              "source": "The Hunt Completed"
+              "item_id": 16340,
+              "source_kind": "pvp",
+              "source": "PvP rank 9 · First Sergeant · Horde"
             },
             "chest": {
               "item_id": 8157,
@@ -26804,6 +26854,7 @@
             250537,
             17772,
             250539,
+            16340,
             8157,
             19508,
             7938,
@@ -26921,9 +26972,9 @@
               "source": "Shadowshard Fragments"
             },
             "shoulder": {
-              "item_id": 220796,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 250576,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "back": {
               "item_id": 14801,
@@ -27011,7 +27062,7 @@
           ],
           "horde": [
             9479,
-            220796,
+            250576,
             14801,
             11195,
             18711,
@@ -27089,24 +27140,24 @@
               "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 234034,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
               "item_id": 19514,
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "trinket1": {
-              "item_id": 11815,
+            "finger2": {
+              "item_id": 18522,
               "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
+              "source": "Dire Maul: King Gordok"
             },
-            "trinket2": {
+            "trinket1": {
               "item_id": 19289,
               "source_kind": "quest",
               "source": "Darkmoon Elementals Deck"
+            },
+            "trinket2": {
+              "item_id": 11815,
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "main_hand": {
               "item_id": 12592,
@@ -27171,24 +27222,24 @@
               "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 234034,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
               "item_id": 19510,
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
+            "finger2": {
+              "item_id": 18522,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: King Gordok"
+            },
             "trinket1": {
-              "item_id": 19289,
+              "item_id": 19120,
               "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
+              "source": "Job Opening: Guard Captain of Revantusk Village"
             },
             "trinket2": {
-              "item_id": 13965,
+              "item_id": 20130,
               "source_kind": "quest",
-              "source": "For The Horde!"
+              "source": "Voodoo Feathers"
             },
             "main_hand": {
               "item_id": 19323,
@@ -27214,10 +27265,10 @@
             227814,
             237825,
             21995,
-            234034,
             19514,
-            11815,
+            18522,
             19289,
+            11815,
             12592,
             19107
           ],
@@ -27232,10 +27283,8 @@
             227814,
             237825,
             21995,
-            234034,
             19510,
-            19289,
-            13965,
+            18522,
             19323,
             19107
           ]
@@ -27291,7 +27340,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 6087,
@@ -27368,7 +27417,7 @@
             "waist": {
               "item_id": 10403,
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin"
+              "source": "The Deadmines: Captain Greenskin"
             },
             "legs": {
               "item_id": 250493,
@@ -27751,9 +27800,9 @@
               "source": "Blacksmithing"
             },
             "back": {
-              "item_id": 5257,
-              "source_kind": "world",
-              "source": "Nimar the Slayer"
+              "item_id": 16340,
+              "source_kind": "pvp",
+              "source": "PvP rank 9 · First Sergeant · Horde"
             },
             "chest": {
               "item_id": 6773,
@@ -27834,7 +27883,7 @@
             7719,
             17772,
             250539,
-            5257,
+            16340,
             6773,
             19508,
             7724,
@@ -27959,9 +28008,9 @@
               "source": "Shadowshard Fragments"
             },
             "shoulder": {
-              "item_id": 220796,
-              "source_kind": "vendor",
-              "source": "Lady Palanseer"
+              "item_id": 250576,
+              "source_kind": "crafted",
+              "source": "Blacksmithing"
             },
             "back": {
               "item_id": 11626,
@@ -28055,7 +28104,7 @@
           ],
           "horde": [
             9479,
-            220796,
+            250576,
             11626,
             11195,
             18711,
@@ -28135,24 +28184,24 @@
               "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 234034,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
               "item_id": 19514,
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
+            "finger2": {
+              "item_id": 18522,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: King Gordok"
+            },
             "trinket1": {
+              "item_id": 20130,
+              "source_kind": "quest",
+              "source": "Voodoo Feathers"
+            },
+            "trinket2": {
               "item_id": 19289,
               "source_kind": "quest",
               "source": "Darkmoon Elementals Deck"
-            },
-            "trinket2": {
-              "item_id": 11815,
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Emperor Dagran Thaurissan"
             },
             "main_hand": {
               "item_id": 21520,
@@ -28222,24 +28271,24 @@
               "source": "Anthion's Parting Words"
             },
             "finger1": {
-              "item_id": 234034,
-              "source_kind": "vendor",
-              "source": "Anachronos"
-            },
-            "finger2": {
               "item_id": 19510,
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
+            "finger2": {
+              "item_id": 18522,
+              "source_kind": "dungeon",
+              "source": "Dire Maul: King Gordok"
+            },
             "trinket1": {
+              "item_id": 13965,
+              "source_kind": "quest",
+              "source": "For The Horde!"
+            },
+            "trinket2": {
               "item_id": 19120,
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village"
-            },
-            "trinket2": {
-              "item_id": 19289,
-              "source_kind": "quest",
-              "source": "Darkmoon Elementals Deck"
             },
             "main_hand": {
               "item_id": 21520,
@@ -28270,10 +28319,9 @@
             227814,
             237825,
             21995,
-            234034,
             19514,
+            18522,
             19289,
-            11815,
             21520,
             21522,
             12653
@@ -28289,9 +28337,10 @@
             227814,
             237825,
             21995,
-            234034,
             19510,
-            19289,
+            18522,
+            13965,
+            19120,
             21520,
             21522,
             12653

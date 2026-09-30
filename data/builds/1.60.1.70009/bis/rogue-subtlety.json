@@ -2,7 +2,7 @@
   "spec": "rogue-subtlety",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T20:48:42Z",
+  "generated_at": "2026-09-30T22:37:15Z",
   "bands": [
     {
       "spec": "rogue-subtlety",
@@ -153,7 +153,7 @@
               "item_id": 5193,
               "item_name": "Cape of the Brotherhood",
               "source_kind": "dungeon",
-              "source": "Westfall: Edwin VanCleef",
+              "source": "The Deadmines: Edwin VanCleef",
               "dps_delta": -0.04594375002396167
             },
             {
@@ -265,7 +265,7 @@
           "slot": "waist",
           "item_id": 10403,
           "item_name": "Blackened Defias Belt",
-          "source": "Westfall: Captain Greenskin",
+          "source": "The Deadmines: Captain Greenskin",
           "source_kind": "dungeon",
           "score": 18,
           "verified": true,
@@ -352,7 +352,7 @@
               "item_id": 10402,
               "item_name": "Blackened Defias Boots",
               "source_kind": "dungeon",
-              "source": "Westfall: Defias Strip Miner",
+              "source": "The Deadmines: Defias Strip Miner",
               "dps_delta": -0.2277456632154539
             },
             {
@@ -393,7 +393,7 @@
               "item_id": 1156,
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
-              "source": "Westfall: Gilnid",
+              "source": "The Deadmines: Gilnid",
               "dps_delta": -0.27303171760463074
             }
           ]
@@ -425,7 +425,7 @@
               "item_id": 1156,
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
-              "source": "Westfall: Gilnid",
+              "source": "The Deadmines: Gilnid",
               "dps_delta": -0.18377500009584669
             }
           ]
@@ -462,7 +462,7 @@
               "item_id": 2169,
               "item_name": "Buzzer Blade",
               "source_kind": "dungeon",
-              "source": "Westfall: Sneed's Shredder",
+              "source": "The Deadmines: Sneed's Shredder",
               "dps_delta": -1.4772310941749478
             },
             {
@@ -527,7 +527,7 @@
         }
       ],
       "set_dps": 31.254470053318002,
-      "no_source_count": 194,
+      "no_source_count": 197,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2664 Spinner Fang",
@@ -535,6 +535,7 @@
         "3222 Wicked Dagger",
         "4642 Star of Xil'yeh",
         "4763 Blackwood Recurve Bow",
+        "4765 Enamelled Broadsword",
         "4797 Fiery Cloak",
         "4798 Heavy Runed Cloak",
         "4799 Antiquated Cloak",
@@ -542,8 +543,7 @@
         "5821 Darkstalker Boots",
         "5968 Rugged Boots",
         "6478 Rat Stompers",
-        "7187 VanCleef's Boots",
-        "14145 Cursed Felblade"
+        "7187 VanCleef's Boots"
       ],
       "new_at_band": [
         "head: Brawler's Leather Hood",
@@ -562,8 +562,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 0.986634619,
-      "verify_run_seconds": 1.055831664,
+      "weights_run_seconds": 0.809623202,
+      "verify_run_seconds": 0.94133743,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -591,7 +591,7 @@
         },
         "head": {
           "eligible": 23,
-          "sourced": 19
+          "sourced": 17
         },
         "legs": {
           "eligible": 107,
@@ -599,7 +599,7 @@
         },
         "main_hand": {
           "eligible": 161,
-          "sourced": 111
+          "sourced": 110
         },
         "neck": {
           "eligible": 15,
@@ -790,7 +790,7 @@
               "item_id": 5193,
               "item_name": "Cape of the Brotherhood",
               "source_kind": "dungeon",
-              "source": "Westfall: Edwin VanCleef",
+              "source": "The Deadmines: Edwin VanCleef",
               "dps_delta": -0.04594375002396167
             },
             {
@@ -904,7 +904,7 @@
           "slot": "waist",
           "item_id": 10403,
           "item_name": "Blackened Defias Belt",
-          "source": "Westfall: Captain Greenskin",
+          "source": "The Deadmines: Captain Greenskin",
           "source_kind": "dungeon",
           "score": 18,
           "verified": true,
@@ -991,7 +991,7 @@
               "item_id": 10402,
               "item_name": "Blackened Defias Boots",
               "source_kind": "dungeon",
-              "source": "Westfall: Defias Strip Miner",
+              "source": "The Deadmines: Defias Strip Miner",
               "dps_delta": -0.2277456632154539
             },
             {
@@ -1098,18 +1098,18 @@
               "dps_delta": -0.2663683805325713
             },
             {
+              "item_id": 20441,
+              "item_name": "Scout's Blade",
+              "source_kind": "pvp",
+              "source": "PvP rank 12 · Legionnaire · Horde",
+              "dps_delta": -0.47558995181056724
+            },
+            {
               "item_id": 2567,
               "item_name": "Evocator's Blade",
               "source_kind": "dungeon",
               "source": "Blackfathom Deeps: Fallenroot Shadowstalker",
               "dps_delta": -0.6466848566774441
-            },
-            {
-              "item_id": 2169,
-              "item_name": "Buzzer Blade",
-              "source_kind": "dungeon",
-              "source": "Westfall: Sneed's Shredder",
-              "dps_delta": -1.4772310941749478
             }
           ]
         },
@@ -1173,7 +1173,7 @@
         }
       ],
       "set_dps": 30.71474448391656,
-      "no_source_count": 193,
+      "no_source_count": 190,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1208,8 +1208,8 @@
         "off_hand: Assassin's Blade",
         "ranged: Lil Timmy's Peashooter"
       ],
-      "weights_run_seconds": 0.986634619,
-      "verify_run_seconds": 1.069509918,
+      "weights_run_seconds": 0.809623202,
+      "verify_run_seconds": 0.966656348,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1245,7 +1245,7 @@
         },
         "main_hand": {
           "eligible": 161,
-          "sourced": 117
+          "sourced": 119
         },
         "neck": {
           "eligible": 15,
@@ -1257,7 +1257,7 @@
         },
         "ranged": {
           "eligible": 38,
-          "sourced": 23
+          "sourced": 24
         },
         "shoulder": {
           "eligible": 11,
@@ -1606,7 +1606,7 @@
               "item_id": 10403,
               "item_name": "Blackened Defias Belt",
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin",
+              "source": "The Deadmines: Captain Greenskin",
               "dps_delta": -0.2789182848841586
             },
             {
@@ -1855,7 +1855,7 @@
         }
       ],
       "set_dps": 40.09617057234984,
-      "no_source_count": 328,
+      "no_source_count": 331,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -1866,12 +1866,12 @@
         "4196 Feathered Mantle",
         "4642 Star of Xil'yeh",
         "4763 Blackwood Recurve Bow",
+        "4765 Enamelled Broadsword",
         "4797 Fiery Cloak",
         "4798 Heavy Runed Cloak",
         "4799 Antiquated Cloak",
         "5000 Coral Band",
-        "5004 Mark of the Kirin Tor",
-        "5005 Emberspark Pendant"
+        "5004 Mark of the Kirin Tor"
       ],
       "new_at_band": [
         "head: Defender's Leather Helm",
@@ -1890,8 +1890,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.089075477,
-      "verify_run_seconds": 1.169658869,
+      "weights_run_seconds": 0.90523721,
+      "verify_run_seconds": 0.994489672,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1919,7 +1919,7 @@
         },
         "head": {
           "eligible": 75,
-          "sourced": 66
+          "sourced": 64
         },
         "legs": {
           "eligible": 177,
@@ -1927,7 +1927,7 @@
         },
         "main_hand": {
           "eligible": 241,
-          "sourced": 174
+          "sourced": 173
         },
         "neck": {
           "eligible": 37,
@@ -2288,7 +2288,7 @@
               "item_id": 10403,
               "item_name": "Blackened Defias Belt",
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin",
+              "source": "The Deadmines: Captain Greenskin",
               "dps_delta": -0.2789182848841586
             },
             {
@@ -2453,6 +2453,13 @@
           "dps_delta": -0.39123803853124883,
           "alternatives": [
             {
+              "item_id": 19545,
+              "item_name": "Scout's Blade",
+              "source_kind": "pvp",
+              "source": "PvP rank 12 · Legionnaire · Horde",
+              "dps_delta": -0.8559104318362907
+            },
+            {
               "item_id": 272086,
               "item_name": "Darkspear Insurgent's Spellblade",
               "source_kind": "vendor",
@@ -2465,13 +2472,6 @@
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Interrogator Vishas",
               "dps_delta": -1.1844729831413943
-            },
-            {
-              "item_id": 6681,
-              "item_name": "Thornspike",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Aggem Thorncurse",
-              "dps_delta": -1.5684504886652522
             }
           ]
         },
@@ -2544,7 +2544,7 @@
         }
       ],
       "set_dps": 39.422408713158845,
-      "no_source_count": 328,
+      "no_source_count": 322,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -2578,8 +2578,8 @@
         "off_hand: Scorn's Focal Dagger",
         "ranged: Booty Bay Bruiser's Buckshot"
       ],
-      "weights_run_seconds": 1.089075477,
-      "verify_run_seconds": 1.21697974,
+      "weights_run_seconds": 0.90523721,
+      "verify_run_seconds": 1.020913397,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2615,7 +2615,7 @@
         },
         "main_hand": {
           "eligible": 240,
-          "sourced": 182
+          "sourced": 186
         },
         "neck": {
           "eligible": 37,
@@ -2627,7 +2627,7 @@
         },
         "ranged": {
           "eligible": 74,
-          "sourced": 53
+          "sourced": 55
         },
         "shoulder": {
           "eligible": 73,
@@ -2981,7 +2981,7 @@
               "item_id": 10403,
               "item_name": "Blackened Defias Belt",
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin",
+              "source": "The Deadmines: Captain Greenskin",
               "dps_delta": -0.5944561037610548
             }
           ]
@@ -3235,7 +3235,7 @@
         }
       ],
       "set_dps": 81.95734349185352,
-      "no_source_count": 456,
+      "no_source_count": 459,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3249,9 +3249,9 @@
         "4196 Feathered Mantle",
         "4642 Star of Xil'yeh",
         "4763 Blackwood Recurve Bow",
+        "4765 Enamelled Broadsword",
         "4797 Fiery Cloak",
-        "4798 Heavy Runed Cloak",
-        "4799 Antiquated Cloak"
+        "4798 Heavy Runed Cloak"
       ],
       "new_at_band": [
         "head: White Bandit Mask",
@@ -3269,8 +3269,8 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.177405904,
-      "verify_run_seconds": 1.204654372,
+      "weights_run_seconds": 0.961321077,
+      "verify_run_seconds": 1.043071816,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3298,7 +3298,7 @@
         },
         "head": {
           "eligible": 142,
-          "sourced": 127
+          "sourced": 125
         },
         "legs": {
           "eligible": 227,
@@ -3306,7 +3306,7 @@
         },
         "main_hand": {
           "eligible": 324,
-          "sourced": 229
+          "sourced": 228
         },
         "neck": {
           "eligible": 54,
@@ -3530,11 +3530,18 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 6314,
-              "item_name": "Wolfmaster Cape",
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Wolf Master Nandos",
-              "dps_delta": -0.2045828422929506
+              "item_id": 16340,
+              "item_name": "First Sergeant's Cloak",
+              "source_kind": "pvp",
+              "source": "PvP rank 9 · First Sergeant · Horde",
+              "dps_delta": -0.101648340375882
+            },
+            {
+              "item_id": 14593,
+              "item_name": "Hawkeye's Cloak",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.20008127689879793
             },
             {
               "item_id": 16658,
@@ -3542,14 +3549,6 @@
               "source_kind": "quest",
               "source": "The Hunt Completed",
               "dps_delta": -0.2045828422929506
-            },
-            {
-              "item_id": 14593,
-              "item_name": "Hawkeye's Cloak",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.35978678484232773,
-              "verified": true
             }
           ]
         },
@@ -3596,6 +3595,13 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 19590,
+              "item_name": "Forest Stalker's Bracers",
+              "source_kind": "pvp",
+              "source": "PvP rank 12 · Legionnaire · Horde",
+              "dps_delta": 0
+            },
+            {
               "item_id": 14590,
               "item_name": "Hawkeye's Bracers",
               "source_kind": "world_drop",
@@ -3609,13 +3615,6 @@
               "source_kind": "quest",
               "source": "Blackfathom Villainy",
               "dps_delta": -0.49538008646754567
-            },
-            {
-              "item_id": 7378,
-              "item_name": "Dusky Bracers",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.5893114575963089
             }
           ]
         },
@@ -3680,7 +3679,7 @@
               "item_id": 10403,
               "item_name": "Blackened Defias Belt",
               "source_kind": "dungeon",
-              "source": "Westfall: Captain Greenskin",
+              "source": "The Deadmines: Captain Greenskin",
               "dps_delta": -0.5944561037610548
             }
           ]
@@ -3844,6 +3843,13 @@
           "dps_delta": 9.899613130507731,
           "alternatives": [
             {
+              "item_id": 19544,
+              "item_name": "Scout's Blade",
+              "source_kind": "pvp",
+              "source": "PvP rank 12 · Legionnaire · Horde",
+              "dps_delta": -2.90669950209149
+            },
+            {
               "item_id": 10761,
               "item_name": "Coldrage Dagger",
               "source_kind": "dungeon",
@@ -3856,13 +3862,6 @@
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
               "dps_delta": -3.43991932043064
-            },
-            {
-              "item_id": 7714,
-              "item_name": "Hypnotic Blade",
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Arcanist Doan",
-              "dps_delta": -4.924078059487406
             }
           ]
         },
@@ -3934,7 +3933,7 @@
         }
       ],
       "set_dps": 80.0246336118507,
-      "no_source_count": 456,
+      "no_source_count": 444,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3968,12 +3967,12 @@
         "off_hand: Jhordy's Misplaced Screwdriver",
         "ranged: The Silencer"
       ],
-      "weights_run_seconds": 1.177405904,
-      "verify_run_seconds": 1.238450553,
+      "weights_run_seconds": 0.961321077,
+      "verify_run_seconds": 1.081434076,
       "coverage": {
         "back": {
           "eligible": 244,
-          "sourced": 208
+          "sourced": 209
         },
         "chest": {
           "eligible": 296,
@@ -4005,7 +4004,7 @@
         },
         "main_hand": {
           "eligible": 325,
-          "sourced": 239
+          "sourced": 245
         },
         "neck": {
           "eligible": 55,
@@ -4017,7 +4016,7 @@
         },
         "ranged": {
           "eligible": 105,
-          "sourced": 75
+          "sourced": 78
         },
         "shoulder": {
           "eligible": 119,
@@ -4037,7 +4036,7 @@
         },
         "wrist": {
           "eligible": 166,
-          "sourced": 137
+          "sourced": 139
         }
       },
       "reference_dps_per_point": 0.04953800864675457,
@@ -4149,7 +4148,7 @@
               "item_name": "Knight-Lieutenant's Leather Headband",
               "source_kind": "vendor",
               "source": "Captain Dirgehammer",
-              "dps_delta": -0.9187700190351908
+              "dps_delta": -0.9187700190351911
             }
           ]
         },
@@ -4523,7 +4522,12 @@
         },
         {
           "slot": "trinket2",
-          "verified": false,
+          "item_id": 249470,
+          "item_name": "Molten Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 118.91883424824154,
+          "verified": true,
           "alternatives": [
             {
               "item_id": 11811,
@@ -4533,7 +4537,6 @@
               "dps_delta": 0
             }
           ],
-          "empty_reason": "no_dps_value",
           "faction_note": "Frozen Heart of the Mountain (from horde) and alliance's own pick Molten Heart of the Mountain measure statistically indistinguishable on night-elf (0.00 ± 0.75 vs 0.31 ± 0.18 DPS gain) -- each faction's own tournament winner kept"
         },
         {
@@ -4639,7 +4642,7 @@
         }
       ],
       "set_dps": 118.91883424824154,
-      "no_source_count": 581,
+      "no_source_count": 584,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4653,9 +4656,9 @@
         "4196 Feathered Mantle",
         "4642 Star of Xil'yeh",
         "4763 Blackwood Recurve Bow",
+        "4765 Enamelled Broadsword",
         "4797 Fiery Cloak",
-        "4798 Heavy Runed Cloak",
-        "4799 Antiquated Cloak"
+        "4798 Heavy Runed Cloak"
       ],
       "new_at_band": [
         "head: Embrace of the Lycan",
@@ -4670,12 +4673,13 @@
         "finger1: Protector's Band",
         "finger2: Blackstone Ring",
         "trinket1: Frozen Heart of the Mountain",
+        "trinket2: Molten Heart of the Mountain",
         "main_hand: Barman Shanker",
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.173792339,
-      "verify_run_seconds": 1.46038712,
+      "weights_run_seconds": 0.969516669,
+      "verify_run_seconds": 1.195226871,
       "coverage": {
         "back": {
           "eligible": 314,
@@ -4703,7 +4707,7 @@
         },
         "head": {
           "eligible": 208,
-          "sourced": 181
+          "sourced": 179
         },
         "legs": {
           "eligible": 281,
@@ -4711,7 +4715,7 @@
         },
         "main_hand": {
           "eligible": 402,
-          "sourced": 292
+          "sourced": 291
         },
         "neck": {
           "eligible": 76,
@@ -4998,18 +5002,11 @@
           "verified": true,
           "alternatives": [
             {
-              "item_id": 252540,
-              "item_name": "Skulker's Leather Bracers",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.2332172829929728
-            },
-            {
-              "item_id": 252539,
-              "item_name": "Prowler's Leather Bracers",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.2568217704228371
+              "item_id": 19589,
+              "item_name": "Forest Stalker's Bracers",
+              "source_kind": "pvp",
+              "source": "PvP rank 12 · Legionnaire · Horde",
+              "dps_delta": 0
             },
             {
               "item_id": 19508,
@@ -5107,7 +5104,7 @@
               "item_name": "Stone Guard's Leather Pants",
               "source_kind": "vendor",
               "source": "Lady Palanseer",
-              "dps_delta": -0.4038560287594646
+              "dps_delta": -0.4038560287594648
             },
             {
               "item_id": 6690,
@@ -5263,17 +5260,17 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 19543,
+              "item_name": "Scout's Blade",
+              "source_kind": "pvp",
+              "source": "PvP rank 12 · Legionnaire · Horde",
+              "dps_delta": -0.4115213881470074
+            },
+            {
               "item_id": 10750,
               "item_name": "Lifeforce Dirk",
               "source_kind": "quest",
               "source": "The God Hakkar",
-              "dps_delta": -0.4244153181048324
-            },
-            {
-              "item_id": 17710,
-              "item_name": "Charstone Dirk",
-              "source_kind": "dungeon",
-              "source": "Maraudon: Princess Theradras",
               "dps_delta": -0.4244153181048324
             },
             {
@@ -5355,7 +5352,7 @@
         }
       ],
       "set_dps": 120.69259767979236,
-      "no_source_count": 581,
+      "no_source_count": 564,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5391,12 +5388,12 @@
         "off_hand: Julie's Dagger",
         "ranged: Precisely Calibrated Boomstick"
       ],
-      "weights_run_seconds": 1.173792339,
-      "verify_run_seconds": 1.548442119,
+      "weights_run_seconds": 0.969516669,
+      "verify_run_seconds": 1.4205793500000001,
       "coverage": {
         "back": {
           "eligible": 319,
-          "sourced": 275
+          "sourced": 276
         },
         "chest": {
           "eligible": 370,
@@ -5428,7 +5425,7 @@
         },
         "main_hand": {
           "eligible": 402,
-          "sourced": 301
+          "sourced": 309
         },
         "neck": {
           "eligible": 79,
@@ -5440,7 +5437,7 @@
         },
         "ranged": {
           "eligible": 135,
-          "sourced": 99
+          "sourced": 103
         },
         "shoulder": {
           "eligible": 177,
@@ -5460,7 +5457,7 @@
         },
         "wrist": {
           "eligible": 223,
-          "sourced": 186
+          "sourced": 190
         }
       },
       "reference_dps_per_point": 0.05413460690112636,
@@ -5881,7 +5878,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.22434510311226116
+              "dps_delta": -0.22434510311226136
             },
             {
               "item_id": 17713,
@@ -5913,7 +5910,7 @@
               "item_name": "Don Julio's Band",
               "source_kind": "rep",
               "source": "Stormpike Guard",
-              "dps_delta": -0.021920458393731256
+              "dps_delta": -0.021920458393731447
             },
             {
               "item_id": 17713,
@@ -6097,7 +6094,7 @@
         }
       ],
       "set_dps": 183.29535232765372,
-      "no_source_count": 1330,
+      "no_source_count": 1358,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6111,9 +6108,9 @@
         "4196 Feathered Mantle",
         "4642 Star of Xil'yeh",
         "4763 Blackwood Recurve Bow",
+        "4765 Enamelled Broadsword",
         "4797 Fiery Cloak",
-        "4798 Heavy Runed Cloak",
-        "4799 Antiquated Cloak"
+        "4798 Heavy Runed Cloak"
       ],
       "new_at_band": [
         "head: Darkmantle Cap",
@@ -6134,8 +6131,8 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.183924993,
-      "verify_run_seconds": 1.509217708,
+      "weights_run_seconds": 1.088146903,
+      "verify_run_seconds": 1.240885339,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -6151,11 +6148,11 @@
         },
         "finger1": {
           "eligible": 366,
-          "sourced": 202
+          "sourced": 177
         },
         "finger2": {
           "eligible": 366,
-          "sourced": 202
+          "sourced": 177
         },
         "hands": {
           "eligible": 414,
@@ -6163,7 +6160,7 @@
         },
         "head": {
           "eligible": 320,
-          "sourced": 252
+          "sourced": 250
         },
         "legs": {
           "eligible": 414,
@@ -6171,7 +6168,7 @@
         },
         "main_hand": {
           "eligible": 624,
-          "sourced": 418
+          "sourced": 417
         },
         "neck": {
           "eligible": 192,
@@ -6840,7 +6837,7 @@
         }
       ],
       "set_dps": 180.9070351182059,
-      "no_source_count": 1331,
+      "no_source_count": 1355,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6877,12 +6874,12 @@
         "off_hand: Felstriker",
         "ranged: Riphook"
       ],
-      "weights_run_seconds": 1.183924993,
-      "verify_run_seconds": 1.5289937500000002,
+      "weights_run_seconds": 1.088146903,
+      "verify_run_seconds": 1.311930496,
       "coverage": {
         "back": {
           "eligible": 451,
-          "sourced": 349
+          "sourced": 350
         },
         "chest": {
           "eligible": 512,
@@ -6894,11 +6891,11 @@
         },
         "finger1": {
           "eligible": 369,
-          "sourced": 208
+          "sourced": 183
         },
         "finger2": {
           "eligible": 369,
-          "sourced": 208
+          "sourced": 183
         },
         "hands": {
           "eligible": 414,

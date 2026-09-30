@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "90f9325b0",
-  "generated_at": "2026-09-30T20:44:04Z",
+  "generated_at": "2026-09-30T22:33:26Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -277,7 +277,7 @@
           "slot": "waist",
           "item_id": 10403,
           "item_name": "Blackened Defias Belt",
-          "source": "Westfall: Captain Greenskin",
+          "source": "The Deadmines: Captain Greenskin",
           "source_kind": "dungeon",
           "score": 18,
           "verified": true,
@@ -405,7 +405,7 @@
               "item_id": 1156,
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
-              "source": "Westfall: Gilnid",
+              "source": "The Deadmines: Gilnid",
               "dps_delta": -0.6736067427225643
             }
           ]
@@ -437,7 +437,7 @@
               "item_id": 1156,
               "item_name": "Lavishly Jeweled Ring",
               "source_kind": "dungeon",
-              "source": "Westfall: Gilnid",
+              "source": "The Deadmines: Gilnid",
               "dps_delta": -0.3551661437531395
             }
           ]
@@ -456,7 +456,7 @@
           "slot": "main_hand",
           "item_id": 7230,
           "item_name": "Smite's Mighty Hammer",
-          "source": "Westfall: Mr. Smite",
+          "source": "The Deadmines: Mr. Smite",
           "source_kind": "dungeon",
           "score": 307.20495847875736,
           "verified": true,
@@ -498,7 +498,7 @@
         }
       ],
       "set_dps": 62.85155612716619,
-      "no_source_count": 189,
+      "no_source_count": 193,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2664 Spinner Fang",
@@ -506,15 +506,15 @@
         "3222 Wicked Dagger",
         "3738 Brewing Rod",
         "4642 Star of Xil'yeh",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
         "4797 Fiery Cloak",
         "4798 Heavy Runed Cloak",
         "4799 Antiquated Cloak",
         "4964 Goblin Smasher",
         "5821 Darkstalker Boots",
         "5968 Rugged Boots",
-        "6478 Rat Stompers",
-        "7187 VanCleef's Boots",
-        "14148 Crystalline Cuffs"
+        "6478 Rat Stompers"
       ],
       "new_at_band": [
         "head: Defender's Leather Hood",
@@ -531,8 +531,8 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.367333601,
-      "verify_run_seconds": 1.127064757,
+      "weights_run_seconds": 1.109643561,
+      "verify_run_seconds": 0.964491823,
       "coverage": {
         "back": {
           "eligible": 98,
@@ -560,7 +560,7 @@
         },
         "head": {
           "eligible": 23,
-          "sourced": 19
+          "sourced": 17
         },
         "legs": {
           "eligible": 107,
@@ -568,7 +568,7 @@
         },
         "main_hand": {
           "eligible": 191,
-          "sourced": 134
+          "sourced": 132
         },
         "neck": {
           "eligible": 15,
@@ -883,7 +883,7 @@
           "slot": "waist",
           "item_id": 10403,
           "item_name": "Blackened Defias Belt",
-          "source": "Westfall: Captain Greenskin",
+          "source": "The Deadmines: Captain Greenskin",
           "source_kind": "dungeon",
           "score": 18,
           "verified": true,
@@ -1072,7 +1072,7 @@
               "item_id": 7230,
               "item_name": "Smite's Mighty Hammer",
               "source_kind": "dungeon",
-              "source": "Westfall: Mr. Smite",
+              "source": "The Deadmines: Mr. Smite",
               "dps_delta": 0,
               "verified": true
             },
@@ -1105,7 +1105,7 @@
         }
       ],
       "set_dps": 61.49653265120395,
-      "no_source_count": 185,
+      "no_source_count": 183,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1121,7 +1121,7 @@
         "14389 Durability Shoulderpads",
         "15401 Welldrip Gloves",
         "18863 Insignia of the Alliance",
-        "20425 Advisor's Gnarled Staff"
+        "209617 Insignia of the Alliance"
       ],
       "new_at_band": [
         "head: Defender's Leather Hood",
@@ -1138,8 +1138,8 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.367333601,
-      "verify_run_seconds": 1.10757642,
+      "weights_run_seconds": 1.109643561,
+      "verify_run_seconds": 0.969486067,
       "coverage": {
         "back": {
           "eligible": 99,
@@ -1175,7 +1175,7 @@
         },
         "main_hand": {
           "eligible": 196,
-          "sourced": 146
+          "sourced": 148
         },
         "neck": {
           "eligible": 15,
@@ -1748,7 +1748,7 @@
         }
       ],
       "set_dps": 102.62399522584398,
-      "no_source_count": 318,
+      "no_source_count": 322,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -1759,12 +1759,12 @@
         "3738 Brewing Rod",
         "4196 Feathered Mantle",
         "4642 Star of Xil'yeh",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
         "4797 Fiery Cloak",
         "4798 Heavy Runed Cloak",
         "4799 Antiquated Cloak",
-        "4964 Goblin Smasher",
-        "5000 Coral Band",
-        "5004 Mark of the Kirin Tor"
+        "4964 Goblin Smasher"
       ],
       "new_at_band": [
         "head: Defender's Leather Helm",
@@ -1780,8 +1780,8 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.6083673269999998,
-      "verify_run_seconds": 1.4068821200000001,
+      "weights_run_seconds": 1.311387097,
+      "verify_run_seconds": 1.152421917,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -1809,7 +1809,7 @@
         },
         "head": {
           "eligible": 75,
-          "sourced": 66
+          "sourced": 64
         },
         "legs": {
           "eligible": 177,
@@ -1817,7 +1817,7 @@
         },
         "main_hand": {
           "eligible": 289,
-          "sourced": 211
+          "sourced": 209
         },
         "neck": {
           "eligible": 37,
@@ -2362,11 +2362,11 @@
               "dps_delta": -2.3957755210718505
             },
             {
-              "item_id": 6689,
-              "item_name": "Wind Spirit Staff",
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Earthcaller Halmgar",
-              "dps_delta": -4.034391827138159
+              "item_id": 19569,
+              "item_name": "Advisor's Gnarled Staff",
+              "source_kind": "pvp",
+              "source": "PvP rank 12 · Legionnaire · Horde",
+              "dps_delta": -3.237029428204105
             },
             {
               "item_id": 13045,
@@ -2391,7 +2391,7 @@
         }
       ],
       "set_dps": 101.20384025470594,
-      "no_source_count": 319,
+      "no_source_count": 315,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -2423,8 +2423,8 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 1.6083673269999998,
-      "verify_run_seconds": 1.410404973,
+      "weights_run_seconds": 1.311387097,
+      "verify_run_seconds": 1.130882226,
       "coverage": {
         "back": {
           "eligible": 175,
@@ -2460,7 +2460,7 @@
         },
         "main_hand": {
           "eligible": 289,
-          "sourced": 218
+          "sourced": 222
         },
         "neck": {
           "eligible": 37,
@@ -3030,7 +3030,7 @@
         }
       ],
       "set_dps": 133.65510403916943,
-      "no_source_count": 434,
+      "no_source_count": 438,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3041,12 +3041,12 @@
         "3738 Brewing Rod",
         "4196 Feathered Mantle",
         "4642 Star of Xil'yeh",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
         "4797 Fiery Cloak",
         "4798 Heavy Runed Cloak",
         "4799 Antiquated Cloak",
-        "4964 Goblin Smasher",
-        "5000 Coral Band",
-        "5004 Mark of the Kirin Tor"
+        "4964 Goblin Smasher"
       ],
       "new_at_band": [
         "head: White Bandit Mask",
@@ -3062,8 +3062,8 @@
         "finger1: Protector's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.653320678,
-      "verify_run_seconds": 1.4967413139999999,
+      "weights_run_seconds": 1.336270418,
+      "verify_run_seconds": 1.206886741,
       "coverage": {
         "back": {
           "eligible": 242,
@@ -3091,7 +3091,7 @@
         },
         "head": {
           "eligible": 142,
-          "sourced": 128
+          "sourced": 126
         },
         "legs": {
           "eligible": 226,
@@ -3099,7 +3099,7 @@
         },
         "main_hand": {
           "eligible": 380,
-          "sourced": 273
+          "sourced": 271
         },
         "neck": {
           "eligible": 54,
@@ -3331,12 +3331,18 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 16340,
+              "item_name": "First Sergeant's Cloak",
+              "source_kind": "pvp",
+              "source": "PvP rank 9 · First Sergeant · Horde",
+              "dps_delta": -0.08291483452204218
+            },
+            {
               "item_id": 14593,
               "item_name": "Hawkeye's Cloak",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.5873112779065934,
-              "verified": true
+              "dps_delta": -0.38335332422287133
             },
             {
               "item_id": 14656,
@@ -3344,13 +3350,6 @@
               "source_kind": "world_drop",
               "source": "World drop",
               "dps_delta": -0.681744500148964
-            },
-            {
-              "item_id": 10518,
-              "item_name": "Parachute Cloak",
-              "source_kind": "crafted",
-              "source": "Engineering",
-              "dps_delta": -0.6837918139237004
             }
           ]
         },
@@ -3397,6 +3396,13 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 19590,
+              "item_name": "Forest Stalker's Bracers",
+              "source_kind": "pvp",
+              "source": "PvP rank 12 · Legionnaire · Horde",
+              "dps_delta": 0
+            },
+            {
               "item_id": 14590,
               "item_name": "Hawkeye's Bracers",
               "source_kind": "world_drop",
@@ -3409,13 +3415,6 @@
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.2537569871769541
-            },
-            {
-              "item_id": 6902,
-              "item_name": "Bands of Serra'kis",
-              "source_kind": "dungeon",
-              "source": "Blackfathom Deeps: Old Serra'kis",
-              "dps_delta": -0.3366718216989962
             }
           ]
         },
@@ -3671,7 +3670,7 @@
         }
       ],
       "set_dps": 132.14183431575975,
-      "no_source_count": 435,
+      "no_source_count": 426,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3703,12 +3702,12 @@
         "finger1: Legionnaire's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 1.653320678,
-      "verify_run_seconds": 1.480105437,
+      "weights_run_seconds": 1.336270418,
+      "verify_run_seconds": 1.188163312,
       "coverage": {
         "back": {
           "eligible": 244,
-          "sourced": 208
+          "sourced": 209
         },
         "chest": {
           "eligible": 295,
@@ -3740,7 +3739,7 @@
         },
         "main_hand": {
           "eligible": 382,
-          "sourced": 282
+          "sourced": 288
         },
         "neck": {
           "eligible": 55,
@@ -3772,7 +3771,7 @@
         },
         "wrist": {
           "eligible": 166,
-          "sourced": 137
+          "sourced": 139
         }
       },
       "reference_dps_per_point": 0.05537365488471057,
@@ -4248,12 +4247,21 @@
         },
         {
           "slot": "trinket1",
-          "verified": false,
-          "empty_reason": "no_dps_value"
+          "item_id": 249470,
+          "item_name": "Molten Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 134.52384094430073,
+          "verified": true
         },
         {
           "slot": "trinket2",
-          "verified": false,
+          "item_id": 249469,
+          "item_name": "Frozen Heart of the Mountain",
+          "source": "Enchanting",
+          "source_kind": "crafted",
+          "sim_dps": 134.52384094430073,
+          "verified": true,
           "alternatives": [
             {
               "item_id": 11811,
@@ -4262,8 +4270,7 @@
               "source": "Enchanting",
               "dps_delta": 0
             }
-          ],
-          "empty_reason": "no_dps_value"
+          ]
         },
         {
           "slot": "main_hand",
@@ -4311,7 +4318,7 @@
         }
       ],
       "set_dps": 134.52384094430073,
-      "no_source_count": 573,
+      "no_source_count": 577,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4322,12 +4329,12 @@
         "3738 Brewing Rod",
         "4196 Feathered Mantle",
         "4642 Star of Xil'yeh",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
         "4797 Fiery Cloak",
         "4798 Heavy Runed Cloak",
         "4799 Antiquated Cloak",
-        "4964 Goblin Smasher",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe"
+        "4964 Goblin Smasher"
       ],
       "new_at_band": [
         "head: Embrace of the Lycan",
@@ -4342,10 +4349,12 @@
         "feet: Prowler's Leather Boots",
         "finger1: Protector's Band",
         "finger2: Ironspine's Eye",
+        "trinket1: Molten Heart of the Mountain",
+        "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.690634425,
-      "verify_run_seconds": 1.55097474,
+      "weights_run_seconds": 1.314567671,
+      "verify_run_seconds": 1.320675904,
       "coverage": {
         "back": {
           "eligible": 313,
@@ -4373,7 +4382,7 @@
         },
         "head": {
           "eligible": 211,
-          "sourced": 183
+          "sourced": 181
         },
         "legs": {
           "eligible": 284,
@@ -4381,7 +4390,7 @@
         },
         "main_hand": {
           "eligible": 477,
-          "sourced": 347
+          "sourced": 345
         },
         "neck": {
           "eligible": 76,
@@ -4533,7 +4542,7 @@
               "item_id": 220851,
               "item_name": "Blood Guard's Leather Headband",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
+              "source": "PvP rank 11 · Blood Guard · Horde",
               "dps_delta": -1.0581467321615747
             }
           ]
@@ -4678,25 +4687,18 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 19589,
+              "item_name": "Forest Stalker's Bracers",
+              "source_kind": "pvp",
+              "source": "PvP rank 12 · Legionnaire · Horde",
+              "dps_delta": 0
+            },
+            {
               "item_id": 252539,
               "item_name": "Prowler's Leather Bracers",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.06521938399004365
-            },
-            {
-              "item_id": 252540,
-              "item_name": "Skulker's Leather Bracers",
-              "source_kind": "crafted",
-              "source": "Leatherworking",
-              "dps_delta": -0.14533697151621294
-            },
-            {
-              "item_id": 14672,
-              "item_name": "Pridelord Bands",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -0.3139590099775377
             }
           ]
         },
@@ -4838,7 +4840,7 @@
           "source_kind": "rep",
           "score": 37.574037773116714,
           "verified": true,
-          "swap_note": "confirmed by the sim against Legionnaire's Band (id 19512): kept the pick, +0.4 DPS (136.6 vs 136.2 set DPS)",
+          "swap_note": "confirmed by the sim against Legionnaire's Band (ilvl 43) (id 19512): kept the pick, +0.4 DPS (136.6 vs 136.2 set DPS)",
           "dps_delta": 0.3705893956950206,
           "alternatives": [
             {
@@ -4971,7 +4973,7 @@
         }
       ],
       "set_dps": 136.61719753344988,
-      "no_source_count": 574,
+      "no_source_count": 561,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5006,12 +5008,12 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Ragehammer"
       ],
-      "weights_run_seconds": 1.690634425,
-      "verify_run_seconds": 1.578098453,
+      "weights_run_seconds": 1.314567671,
+      "verify_run_seconds": 1.300228015,
       "coverage": {
         "back": {
           "eligible": 318,
-          "sourced": 274
+          "sourced": 275
         },
         "chest": {
           "eligible": 375,
@@ -5043,7 +5045,7 @@
         },
         "main_hand": {
           "eligible": 480,
-          "sourced": 357
+          "sourced": 365
         },
         "neck": {
           "eligible": 79,
@@ -5075,7 +5077,7 @@
         },
         "wrist": {
           "eligible": 223,
-          "sourced": 186
+          "sourced": 190
         }
       },
       "reference_dps_per_point": 0.05541519168026557,
@@ -5170,11 +5172,11 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 231689,
-          "item_name": "Field Marshal's Dragonhide Headguard",
-          "source": "Captain Dirgehammer",
+          "item_id": 226792,
+          "item_name": "Feralheart Cap",
+          "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 93.56207706615247,
+          "score": 81.3218142585634,
           "verified": true,
           "alternatives": [
             {
@@ -5185,18 +5187,18 @@
               "dps_delta": 0
             },
             {
-              "item_id": 227173,
-              "item_name": "Lieutenant Commander's Dragonhide Headguard",
-              "source_kind": "pvp",
-              "source": "PvP rank 14 · Lieutenant Commander · Alliance",
-              "dps_delta": -0.7898649815506106
+              "item_id": 231689,
+              "item_name": "Field Marshal's Dragonhide Headguard",
+              "source_kind": "vendor",
+              "source": "PvP rank 17 · Field Marshal · Alliance",
+              "dps_delta": 0
             },
             {
-              "item_id": 226792,
-              "item_name": "Feralheart Cap",
-              "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -0.8012714557820004,
+              "item_id": 252482,
+              "item_name": "Blue Suede Hat",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -1.5003705094355269,
               "verified": true
             }
           ]
@@ -5215,7 +5217,7 @@
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.1022289591579124,
+              "dps_delta": -1.0908375765021106,
               "verified": true
             },
             {
@@ -5236,34 +5238,33 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 231693,
-          "item_name": "Field Marshal's Dragonhide Shoulders",
-          "source": "Captain Dirgehammer",
-          "source_kind": "vendor",
-          "score": 67.32146384844489,
+          "item_id": 20059,
+          "item_name": "Highlander's Leather Shoulders",
+          "source": "The League of Arathor",
+          "source_kind": "rep",
+          "score": 61.68157684553003,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 231693,
+              "item_name": "Field Marshal's Dragonhide Shoulders",
+              "source_kind": "vendor",
+              "source": "PvP rank 17 · Field Marshal · Alliance",
+              "dps_delta": 0
+            },
             {
               "item_id": 272105,
               "item_name": "Darkspear Pauldrons",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.32975649126149004
+              "dps_delta": -0.023803961257504783
             },
             {
               "item_id": 22241,
               "item_name": "Dark Warder's Pauldrons",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Warder Stilgiss",
-              "dps_delta": -0.6444647357366275
-            },
-            {
-              "item_id": 20059,
-              "item_name": "Highlander's Leather Shoulders",
-              "source_kind": "rep",
-              "source": "The League of Arathor",
-              "dps_delta": -0.7902138966302914,
-              "verified": true
+              "dps_delta": -0.33851220573264224
             }
           ]
         },
@@ -5305,7 +5306,7 @@
           "item_name": "Timbermaw Tunic",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 192.5042270407293,
+          "sim_dps": 189.65033048180254,
           "verified": true,
           "alternatives": [
             {
@@ -5320,14 +5321,14 @@
               "item_name": "Cadaverous Armor",
               "source_kind": "dungeon",
               "source": "Scholomance: Lady Illucia Barov",
-              "dps_delta": -1.59062095371511
+              "dps_delta": -1.5906209537151106
             },
             {
               "item_id": 23089,
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -8.057851435182613,
+              "dps_delta": -7.983520010605787,
               "verified": true
             }
           ]
@@ -5338,7 +5339,7 @@
           "item_name": "Forest Stalker's Bracers",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 192.5042270407293,
+          "sim_dps": 189.65033048180254,
           "verified": true,
           "alternatives": [
             {
@@ -5360,7 +5361,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.8493036002157623,
+              "dps_delta": -3.8719855384912876,
               "verified": true
             }
           ]
@@ -5385,8 +5386,8 @@
               "item_id": 231694,
               "item_name": "Marshal's Dragonhide Grips",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": -0.3927520681528847
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": -0.39275206815288394
             },
             {
               "item_id": 227809,
@@ -5418,7 +5419,7 @@
               "item_name": "Shifter's Belt",
               "source_kind": "vendor",
               "source": "Pix Xizzix",
-              "dps_delta": -0.9325866113762231,
+              "dps_delta": -0.9196509822789949,
               "verified": true
             },
             {
@@ -5443,16 +5444,16 @@
               "item_id": 231691,
               "item_name": "Marshal's Dragonhide Leggings",
               "source_kind": "vendor",
-              "source": "Captain Dirgehammer",
-              "dps_delta": 0,
-              "verified": true
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": -0.38329842589795293
             },
             {
               "item_id": 237818,
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -1.1760088711041419
+              "dps_delta": -0.8831245427324177,
+              "verified": true
             },
             {
               "item_id": 8300,
@@ -5465,78 +5466,43 @@
         },
         {
           "slot": "feet",
-          "item_id": 231692,
-          "item_name": "Marshal's Dragonhide Treads",
-          "source": "Captain Dirgehammer",
-          "source_kind": "vendor",
-          "score": 63.80128864338601,
+          "item_id": 21532,
+          "item_name": "Drudge Boots",
+          "source": "The Nightmare Manifests",
+          "source_kind": "quest",
+          "score": 60.08148924300374,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 231692,
+              "item_name": "Marshal's Dragonhide Treads",
+              "source_kind": "vendor",
+              "source": "PvP rank 16 · Marshal · Alliance",
+              "dps_delta": 0
+            },
             {
               "item_id": 227182,
               "item_name": "Knight-Lieutenant's Dragonhide Treads",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Knight-Lieutenant · Alliance",
-              "dps_delta": -0.47304721929209353
+              "dps_delta": -0.2712555810791171
             },
             {
               "item_id": 22472,
               "item_name": "Boots of Ferocity",
               "source_kind": "dungeon",
               "source": "Dire Maul: Isalien",
-              "dps_delta": -0.5837164921997451
-            },
-            {
-              "item_id": 21532,
-              "item_name": "Drudge Boots",
-              "source_kind": "quest",
-              "source": "The Nightmare Manifests",
-              "dps_delta": -0.6325792433279389,
-              "verified": true
+              "dps_delta": -0.3819248539867687
             }
           ]
         },
         {
           "slot": "finger1",
-          "item_id": 234034,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "Anachronos",
-          "source_kind": "vendor",
-          "sim_dps": 192.5042270407293,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 2246,
-              "item_name": "Myrmidon's Signet",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.2592892985235342
-            },
-            {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Stormpike Guard",
-              "dps_delta": -1.408255419523898
-            },
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.6769189804847997,
-              "verified": true
-            }
-          ]
-        },
-        {
-          "slot": "finger2",
           "item_id": 19514,
           "item_name": "Protector's Band",
           "source": "Silverwing Sentinels",
           "source_kind": "rep",
-          "sim_dps": 192.5042270407293,
+          "sim_dps": 189.65033048180254,
           "verified": true,
           "alternatives": [
             {
@@ -5558,7 +5524,40 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.0466537629126265,
+              "dps_delta": -3.058990776596829,
+              "verified": true
+            }
+          ]
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21205,
+          "item_name": "Signet Ring of the Bronze Dragonflight",
+          "source": "The Changing of Paths - Protector No More",
+          "source_kind": "quest",
+          "sim_dps": 189.65033048180254,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.5303103760809351
+            },
+            {
+              "item_id": 19325,
+              "item_name": "Don Julio's Band",
+              "source_kind": "rep",
+              "source": "Stormpike Guard",
+              "dps_delta": -0.6792764970812992
+            },
+            {
+              "item_id": 11669,
+              "item_name": "Naglering",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -3.0854845969936093,
               "verified": true
             }
           ]
@@ -5569,7 +5568,7 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 192.5042270407293,
+          "sim_dps": 189.65033048180254,
           "verified": true,
           "alternatives": [
             {
@@ -5591,7 +5590,7 @@
               "item_name": "Hand of Justice",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -3.525315015911076,
+              "dps_delta": -3.5541170291776325,
               "verified": true
             }
           ]
@@ -5602,7 +5601,7 @@
           "item_name": "Blackhand's Breadth",
           "source": "General Drakkisath's Demise",
           "source_kind": "quest",
-          "sim_dps": 192.5042270407293,
+          "sim_dps": 189.65033048180254,
           "verified": true,
           "alternatives": [
             {
@@ -5634,7 +5633,7 @@
           "item_name": "The Unstoppable Force",
           "source": "Stormpike Guard",
           "source_kind": "rep",
-          "sim_dps": 192.5042270407293,
+          "sim_dps": 189.65033048180254,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -5657,7 +5656,7 @@
               "item_name": "Seeping Willow",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: The Beast",
-              "dps_delta": -3.5777133477158998,
+              "dps_delta": -3.529791656564015,
               "verified": true
             }
           ]
@@ -5756,8 +5755,8 @@
           "low_value": true
         }
       ],
-      "set_dps": 192.5042270407293,
-      "no_source_count": 1403,
+      "set_dps": 189.65033048180254,
+      "no_source_count": 1437,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5768,33 +5767,33 @@
         "3738 Brewing Rod",
         "4196 Feathered Mantle",
         "4642 Star of Xil'yeh",
+        "4777 Ironwood Maul",
+        "4778 Heavy Spiked Mace",
         "4797 Fiery Cloak",
         "4798 Heavy Runed Cloak",
         "4799 Antiquated Cloak",
-        "4964 Goblin Smasher",
-        "4988 Burning Obsidian Band",
-        "4989 Mage Dragon Robe"
+        "4964 Goblin Smasher"
       ],
       "new_at_band": [
-        "head: Field Marshal's Dragonhide Headguard",
+        "head: Feralheart Cap",
         "neck: Amulet of the Darkmoon",
-        "shoulder: Field Marshal's Dragonhide Shoulders",
+        "shoulder: Highlander's Leather Shoulders",
         "back: Cape of the Black Baron",
         "chest: Timbermaw Tunic",
         "wrist: Forest Stalker's Bracers",
         "hands: Timbermaw Brawlers",
         "waist: Ferocity of the Timbermaw",
         "legs: Warbear Woolies",
-        "feet: Marshal's Dragonhide Treads",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Protector's Band",
+        "feet: Drudge Boots",
+        "finger1: Protector's Band",
+        "finger2: Signet Ring of the Bronze Dragonflight",
         "trinket1: Darkmoon Card: Maelstrom",
         "trinket2: Blackhand's Breadth",
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.704146287,
-      "verify_run_seconds": 1.54179943,
+      "weights_run_seconds": 1.36010476,
+      "verify_run_seconds": 1.324148857,
       "coverage": {
         "back": {
           "eligible": 445,
@@ -5810,11 +5809,11 @@
         },
         "finger1": {
           "eligible": 369,
-          "sourced": 205
+          "sourced": 175
         },
         "finger2": {
           "eligible": 369,
-          "sourced": 205
+          "sourced": 175
         },
         "hands": {
           "eligible": 439,
@@ -5822,7 +5821,7 @@
         },
         "head": {
           "eligible": 346,
-          "sourced": 263
+          "sourced": 261
         },
         "legs": {
           "eligible": 441,
@@ -5830,7 +5829,7 @@
         },
         "main_hand": {
           "eligible": 720,
-          "sourced": 482
+          "sourced": 480
         },
         "neck": {
           "eligible": 192,
@@ -5957,11 +5956,11 @@
       "slots": [
         {
           "slot": "head",
-          "item_id": 231687,
-          "item_name": "Warlord's Dragonhide Headguard",
-          "source": "Lady Palanseer",
+          "item_id": 226792,
+          "item_name": "Feralheart Cap",
+          "source": "Mokvar",
           "source_kind": "vendor",
-          "score": 93.56207706615248,
+          "score": 81.3218142585634,
           "verified": true,
           "alternatives": [
             {
@@ -5969,22 +5968,22 @@
               "item_name": "Warlord's Dragonhide Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -7.709102950800291e-16
+              "dps_delta": 0
             },
             {
-              "item_id": 226792,
-              "item_name": "Feralheart Cap",
+              "item_id": 231687,
+              "item_name": "Warlord's Dragonhide Headguard",
               "source_kind": "vendor",
-              "source": "Mokvar",
-              "dps_delta": -0.7860624488953647,
-              "verified": true
+              "source": "PvP rank 17 · Warlord · Horde",
+              "dps_delta": 0
             },
             {
-              "item_id": 227174,
-              "item_name": "Champion's Dragonhide Headguard",
-              "source_kind": "pvp",
-              "source": "PvP rank 14 · Champion · Horde",
-              "dps_delta": -0.7898649815506114
+              "item_id": 252482,
+              "item_name": "Blue Suede Hat",
+              "source_kind": "crafted",
+              "source": "Leatherworking",
+              "dps_delta": -1.5024680442640204,
+              "verified": true
             }
           ]
         },
@@ -6002,7 +6001,7 @@
               "item_name": "Medallion of the Dawn",
               "source_kind": "quest",
               "source": "Epic Armaments of Battle - Friend of the Dawn",
-              "dps_delta": -1.0796028214236628,
+              "dps_delta": -1.0720309356875077,
               "verified": true
             },
             {
@@ -6023,34 +6022,33 @@
         },
         {
           "slot": "shoulder",
-          "item_id": 231684,
-          "item_name": "Warlord's Dragonhide Shoulders",
-          "source": "Lady Palanseer",
-          "source_kind": "vendor",
-          "score": 67.32146384844489,
+          "item_id": 20194,
+          "item_name": "Defiler's Leather Shoulders",
+          "source": "The Defilers",
+          "source_kind": "rep",
+          "score": 61.68157684553003,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 231684,
+              "item_name": "Warlord's Dragonhide Shoulders",
+              "source_kind": "vendor",
+              "source": "PvP rank 17 · Warlord · Horde",
+              "dps_delta": 0
+            },
             {
               "item_id": 272105,
               "item_name": "Darkspear Pauldrons",
               "source_kind": "vendor",
               "source": "Creeg Bothunk",
-              "dps_delta": -0.32975649126149004
+              "dps_delta": -0.023803961257504783
             },
             {
               "item_id": 16551,
               "item_name": "Warlord's Dragonhide Epaulets",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -0.5533423704313023
-            },
-            {
-              "item_id": 20194,
-              "item_name": "Defiler's Leather Shoulders",
-              "source_kind": "rep",
-              "source": "The Defilers",
-              "dps_delta": -0.7870907367085636,
-              "verified": true
+              "dps_delta": -0.24738984042731704
             }
           ]
         },
@@ -6092,7 +6090,7 @@
           "item_name": "Timbermaw Tunic",
           "source": "Leatherworking",
           "source_kind": "crafted",
-          "sim_dps": 193.66690921409977,
+          "sim_dps": 190.85242260649852,
           "verified": true,
           "alternatives": [
             {
@@ -6114,7 +6112,7 @@
               "item_name": "Tunic of Undead Slaying",
               "source_kind": "world",
               "source": "Shadow of Doom",
-              "dps_delta": -7.9839293844196675,
+              "dps_delta": -7.93289680296283,
               "verified": true
             }
           ]
@@ -6125,7 +6123,7 @@
           "item_name": "Forest Stalker's Bracers",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 193.66690921409977,
+          "sim_dps": 190.85242260649852,
           "verified": true,
           "alternatives": [
             {
@@ -6147,7 +6145,7 @@
               "item_name": "Wristwraps of Undead Slaying",
               "source_kind": "world",
               "source": "Bone Witch",
-              "dps_delta": -3.8027432596815913,
+              "dps_delta": -3.877411187386741,
               "verified": true
             }
           ]
@@ -6172,8 +6170,8 @@
               "item_id": 231688,
               "item_name": "General's Dragonhide Grips",
               "source_kind": "vendor",
-              "source": "Lady Palanseer",
-              "dps_delta": -0.3927520681528847
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": -0.39275206815288394
             },
             {
               "item_id": 227809,
@@ -6194,19 +6192,19 @@
           "verified": true,
           "alternatives": [
             {
+              "item_id": 272396,
+              "item_name": "Shifter's Belt",
+              "source_kind": "vendor",
+              "source": "Pix Xizzix",
+              "dps_delta": -0.9125506256915514,
+              "verified": true
+            },
+            {
               "item_id": 19044,
               "item_name": "Might of the Timbermaw",
               "source_kind": "crafted",
               "source": "Leatherworking",
               "dps_delta": -0.9157203168157446
-            },
-            {
-              "item_id": 272396,
-              "item_name": "Shifter's Belt",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": -0.9319677900441548,
-              "verified": true
             },
             {
               "item_id": 20216,
@@ -6238,7 +6236,7 @@
               "item_name": "Sentinel's Leather Pants",
               "source_kind": "vendor",
               "source": "Illiyana Moonblaze",
-              "dps_delta": -0.5803491798102982,
+              "dps_delta": -0.6863684967459562,
               "verified": true
             },
             {
@@ -6252,78 +6250,43 @@
         },
         {
           "slot": "feet",
-          "item_id": 231683,
-          "item_name": "General's Dragonhide Treads",
-          "source": "Lady Palanseer",
-          "source_kind": "vendor",
-          "score": 63.801288643386,
+          "item_id": 21532,
+          "item_name": "Drudge Boots",
+          "source": "The Nightmare Manifests",
+          "source_kind": "quest",
+          "score": 60.08148924300374,
           "verified": true,
           "alternatives": [
+            {
+              "item_id": 231683,
+              "item_name": "General's Dragonhide Treads",
+              "source_kind": "vendor",
+              "source": "PvP rank 16 · General · Horde",
+              "dps_delta": 0
+            },
             {
               "item_id": 227181,
               "item_name": "Blood Guard's Dragonhide Treads",
               "source_kind": "pvp",
               "source": "PvP rank 11 · Blood Guard · Horde",
-              "dps_delta": -0.47304721929209315
+              "dps_delta": -0.2712555810791171
             },
             {
               "item_id": 22472,
               "item_name": "Boots of Ferocity",
               "source_kind": "dungeon",
               "source": "Dire Maul: Isalien",
-              "dps_delta": -0.5837164921997446
-            },
-            {
-              "item_id": 21532,
-              "item_name": "Drudge Boots",
-              "source_kind": "quest",
-              "source": "The Nightmare Manifests",
-              "dps_delta": -0.6599120079089289,
-              "verified": true
+              "dps_delta": -0.3819248539867687
             }
           ]
         },
         {
           "slot": "finger1",
-          "item_id": 234034,
-          "item_name": "Signet Ring of the Bronze Dragonflight",
-          "source": "Anachronos",
-          "source_kind": "vendor",
-          "sim_dps": 193.66690921409977,
-          "verified": true,
-          "effect_unmodelled": true,
-          "alternatives": [
-            {
-              "item_id": 2246,
-              "item_name": "Myrmidon's Signet",
-              "source_kind": "world_drop",
-              "source": "World drop",
-              "dps_delta": -1.2592892985235342
-            },
-            {
-              "item_id": 19325,
-              "item_name": "Don Julio's Band",
-              "source_kind": "rep",
-              "source": "Frostwolf Clan",
-              "dps_delta": -1.4082554195238979
-            },
-            {
-              "item_id": 11669,
-              "item_name": "Naglering",
-              "source_kind": "dungeon",
-              "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -5.285845696348275,
-              "verified": true
-            }
-          ]
-        },
-        {
-          "slot": "finger2",
           "item_id": 19510,
           "item_name": "Legionnaire's Band",
           "source": "Warsong Outriders",
           "source_kind": "rep",
-          "sim_dps": 193.66690921409977,
+          "sim_dps": 190.85242260649852,
           "verified": true,
           "alternatives": [
             {
@@ -6345,7 +6308,40 @@
               "item_name": "Naglering",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Golem Lord Argelmach",
-              "dps_delta": -3.001850943592501,
+              "dps_delta": -3.0626111038297097,
+              "verified": true
+            }
+          ]
+        },
+        {
+          "slot": "finger2",
+          "item_id": 21205,
+          "item_name": "Signet Ring of the Bronze Dragonflight",
+          "source": "The Changing of Paths - Protector No More",
+          "source_kind": "quest",
+          "sim_dps": 190.85242260649852,
+          "verified": true,
+          "alternatives": [
+            {
+              "item_id": 2246,
+              "item_name": "Myrmidon's Signet",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.5303103760809351
+            },
+            {
+              "item_id": 19325,
+              "item_name": "Don Julio's Band",
+              "source_kind": "rep",
+              "source": "Frostwolf Clan",
+              "dps_delta": -0.6792764970812988
+            },
+            {
+              "item_id": 11669,
+              "item_name": "Naglering",
+              "source_kind": "dungeon",
+              "source": "Blackrock Depths: Golem Lord Argelmach",
+              "dps_delta": -4.711250686888633,
               "verified": true
             }
           ]
@@ -6356,10 +6352,10 @@
           "item_name": "Darkmoon Card: Maelstrom",
           "source": "Darkmoon Elementals Deck",
           "source_kind": "quest",
-          "sim_dps": 193.66690921409977,
+          "sim_dps": 190.85242260649852,
           "verified": true,
-          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +6.1 DPS (193.7 vs 187.6 set DPS)",
-          "dps_delta": 6.102184869530049,
+          "swap_note": "confirmed by the sim against Rune of the Guard Captain (id 19120): kept the pick, +6.2 DPS (190.9 vs 184.7 set DPS)",
+          "dps_delta": 6.17995809807465,
           "alternatives": [
             {
               "item_id": 11815,
@@ -6390,7 +6386,7 @@
           "item_name": "Rune of the Guard Captain",
           "source": "Job Opening: Guard Captain of Revantusk Village",
           "source_kind": "quest",
-          "sim_dps": 193.66690921409977,
+          "sim_dps": 190.85242260649852,
           "verified": true,
           "alternatives": [
             {
@@ -6405,7 +6401,7 @@
               "item_name": "Hand of Justice",
               "source_kind": "dungeon",
               "source": "Blackrock Depths: Emperor Dagran Thaurissan",
-              "dps_delta": -1.2170403323034975,
+              "dps_delta": -1.3063054187786918,
               "verified": true
             },
             {
@@ -6423,7 +6419,7 @@
           "item_name": "The Unstoppable Force",
           "source": "Frostwolf Clan",
           "source_kind": "rep",
-          "sim_dps": 193.66690921409977,
+          "sim_dps": 190.85242260649852,
           "verified": true,
           "effect_unmodelled": true,
           "alternatives": [
@@ -6446,7 +6442,7 @@
               "item_name": "Felstriker",
               "source_kind": "dungeon",
               "source": "Blackrock Spire: Warchief Rend Blackhand",
-              "dps_delta": -3.5594937019505437,
+              "dps_delta": -3.558150342510487,
               "verified": true
             }
           ]
@@ -6545,8 +6541,8 @@
           "low_value": true
         }
       ],
-      "set_dps": 193.66690921409977,
-      "no_source_count": 1405,
+      "set_dps": 190.85242260649852,
+      "no_source_count": 1434,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6565,29 +6561,29 @@
         "5004 Mark of the Kirin Tor"
       ],
       "new_at_band": [
-        "head: Warlord's Dragonhide Headguard",
+        "head: Feralheart Cap",
         "neck: Amulet of the Darkmoon",
-        "shoulder: Warlord's Dragonhide Shoulders",
+        "shoulder: Defiler's Leather Shoulders",
         "back: Cape of the Black Baron",
         "chest: Timbermaw Tunic",
         "wrist: Forest Stalker's Bracers",
         "hands: Timbermaw Brawlers",
         "waist: Ferocity of the Timbermaw",
         "legs: Warbear Woolies",
-        "feet: General's Dragonhide Treads",
-        "finger1: Signet Ring of the Bronze Dragonflight",
-        "finger2: Legionnaire's Band",
+        "feet: Drudge Boots",
+        "finger1: Legionnaire's Band",
+        "finger2: Signet Ring of the Bronze Dragonflight",
         "trinket1: Darkmoon Card: Maelstrom",
         "trinket2: Rune of the Guard Captain",
         "main_hand: The Unstoppable Force",
         "ranged: Idol of the Moon"
       ],
-      "weights_run_seconds": 1.704146287,
-      "verify_run_seconds": 1.550052967,
+      "weights_run_seconds": 1.36010476,
+      "verify_run_seconds": 1.296816199,
       "coverage": {
         "back": {
           "eligible": 451,
-          "sourced": 349
+          "sourced": 350
         },
         "chest": {
           "eligible": 539,
@@ -6599,11 +6595,11 @@
         },
         "finger1": {
           "eligible": 372,
-          "sourced": 211
+          "sourced": 181
         },
         "finger2": {
           "eligible": 372,
-          "sourced": 211
+          "sourced": 181
         },
         "hands": {
           "eligible": 439,
