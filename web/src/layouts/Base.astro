@@ -85,7 +85,19 @@ const ldNodes = path === '/' ? [websiteLd(), ...jsonLd] : jsonLd;
     </a>
     <Header path={path}>
       {session ? (
-        <AccountMenu client:load slot="session" />
+        // client:idle, not client:load: this was the one eagerly-hydrating island on every
+        // `session` page, including the home page, and Astro's `load` directive hydrates the
+        // moment its module resolves -- no yield to the browser's paint queue, unlike `idle`
+        // (astro/dist/runtime/client/load.js vs idle.js: idle explicitly defers to
+        // requestIdleCallback). On the home page this put AccountMenu's mount, its `/v1/me`
+        // fetch and its two document-level effect listeners on the critical path ahead of the
+        // hero H1's first paint -- Lighthouse's lhci run (mobile, 4x CPU) measured the home
+        // page's LCP render delay at 1809ms and bootup-time attributed to index.html's own
+        // inline scripts at 467ms, the single largest bootup entry on the page (day3 lane
+        // lane-web-home-lcp). The signed-out fallback is unchanged either way -- an invisible
+        // placeholder until the session read resolves, then the real link -- so this changes
+        // only when hydration starts, never what renders.
+        <AccountMenu client:idle slot="session" />
       ) : (
         <a
           slot="session"
