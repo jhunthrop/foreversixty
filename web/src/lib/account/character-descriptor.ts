@@ -24,16 +24,18 @@ import { characterListCopy } from './character-list-copy';
  * not needed here) keeps this honest and small rather than overloading one function with
  * two unrelated output shapes behind a flag.
  *
- * The mock's line also names a spec ("Marksmanship Hunter") that `MeCharacter` carries no
- * field for -- spec is only inferable today from a sim input fetch this lane does not wire
- * up for every character chip, so this omits it rather than guess (tenet 8): "Level 24
- * Troll Hunter", not a fabricated "Marksmanship".
+ * The mock's line also names a spec ("Marksmanship Hunter"): `MeCharacter.spec` (see that
+ * field's own TODO) carries it once `GET /v1/me` ships it, rendered between race and class
+ * ("Level 24 Troll Marksmanship Hunter"); until then the field is undefined and this omits
+ * the clause rather than guess (tenet 8) -- "Level 24 Troll Hunter", never a fabricated
+ * "Marksmanship" or a placeholder like "Unknown spec".
  */
 export function homeHeroLevelRaceClassLine(character: MeCharacter): string {
   const className = character.class === undefined ? undefined : classDisplayName(character.class);
   const parts = [
     character.level === undefined ? undefined : characterListCopy.levelPrefix(character.level),
     character.race,
+    character.spec,
     className,
   ].filter((part): part is string => part !== undefined);
   return parts.join(' ');

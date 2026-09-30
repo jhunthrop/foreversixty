@@ -126,9 +126,12 @@ test('a signed-in hero shows the descriptor, the three next-action cards, and hi
   const panel = page.getByTestId('home-account-panel');
   await expect(panel).toBeVisible();
   await expect(panel.getByRole('heading', { name: 'Zulmara', level: 1 })).toBeVisible();
-  await expect(panel.getByTestId('home-hero-descriptor')).toContainText('Level 24 Troll Hunter');
-  await expect(panel.getByTestId('home-hero-descriptor')).toContainText('Horde');
-  await expect(panel.getByTestId('home-hero-guild-line')).toContainText('Sample Guild');
+  // Review round 1 item 1: one line, the spec's own shape, guild in angle brackets.
+  const descriptor = panel.getByTestId('home-hero-descriptor');
+  await expect(descriptor).toContainText('Level 24 Troll Hunter');
+  await expect(descriptor).toContainText('Horde');
+  await expect(descriptor).toContainText('<Sample Guild>');
+  await expect(panel.getByTestId('home-hero-guild')).toContainText('Sample Guild');
   await expect(panel.getByTestId('home-hero-sync')).toContainText('from the addon');
   // Best in slot / Talents: not yet computable against live worn-gear data (§3.B.2) --
   // an honest, settled line, never a fabricated figure.

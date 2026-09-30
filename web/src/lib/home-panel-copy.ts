@@ -36,23 +36,24 @@ export const homePanelCopy = {
 } as const;
 
 /**
- * Home rebuild spec §3.B.2's three next-action cards (Best in slot / Talents / Simulator).
- * The first two name a real, live comparison the site cannot compute yet -- no source joins
- * a signed-in character's actually-worn gear against a BiS list, and no function compares
- * spent talents against a band's recommended build (§3.B.2/§3.B.3's own "not yet available"
- * ruling) -- so rather than a skeleton that shimmers forever with nothing ever arriving
- * behind it (which tells a screen-reader user "Loading" for a fetch that will never
- * resolve), these cards show one honest, settled line instead: labelled as not yet
- * available, never a fabricated figure (tenet 8). The Simulator card carries no such gap
- * (the visitor's own saved sim already exists, `lib/home/next-steps.ts`'s `simCardLine`),
- * so it alone keeps the real loading/ready/empty states `HomeNextSteps.svelte` already has.
+ * Home rebuild spec §3.B.2's three next-action cards (Best in slot / Talents / Simulator)
+ * and §3.B.3's "Your upgrades" panel. Best in slot, Your upgrades and Talents each name a
+ * real, live comparison the site cannot compute yet -- no source joins a signed-in
+ * character's actually-worn gear against a BiS list, and no function compares spent talents
+ * against a band's recommended build -- so rather than a skeleton that shimmers forever
+ * with nothing ever arriving behind it (which tells a screen-reader user "Loading" for a
+ * fetch that will never resolve), these show one honest, settled line instead: labelled as
+ * not yet available and naming the real reason, never a fabricated figure (tenet 8). Review
+ * round 1's exact wording -- one sentence, not a label plus a second line. The Simulator
+ * card carries no such gap (the visitor's own saved sim already exists, `lib/home/
+ * next-steps.ts`'s `simCardLine`), so it alone keeps a real loading/ready/empty state.
  */
 export const homeHeroCardsCopy = {
   bestInSlotLabel: 'Best in slot',
-  bestInSlotNotYet: 'Not available yet',
-  bestInSlotComingWhen: 'Coming once the addon reports your equipped gear.',
+  /** Best in slot card and the "Your upgrades" panel name the identical real gap, so they
+   *  read the same sentence rather than two different ways of saying it. */
+  bestInSlotNotAvailable: 'Not available yet: the addon does not send worn gear.',
   talentsLabel: 'Talents',
-  talentsNotYet: 'Not available yet',
-  talentsComingWhen: 'Coming once talent sync lands.',
+  talentsNotAvailable: 'Not available yet: the addon does not send talents.',
   simulatorLabel: 'Simulator',
 } as const;

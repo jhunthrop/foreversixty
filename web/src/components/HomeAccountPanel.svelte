@@ -19,8 +19,8 @@
   import { mount, unmount } from 'svelte';
   import type { MeCharacter } from '../lib/account/api';
   import CharacterIdentity from './character/CharacterIdentity.svelte';
-  import CharacterGuildLine from './character/CharacterGuildLine.svelte';
   import { factionMarkSrc } from '../lib/faction-mark';
+  import { guildHref } from '../lib/characters';
   import { ratingCopy } from '../lib/rating/copy';
   import { homePanelCopy, homeHeroCardsCopy, HOME_SIGNED_OUT_ID } from '../lib/home-panel-copy';
   import { createHomeHero } from '../lib/account/home-hero.svelte';
@@ -168,10 +168,21 @@
     <div class="relative flex flex-wrap items-center gap-[18px]">
       <CharacterIdentity character={hero} size="xl" descriptor="none" heading testid="home-hero">
         {#snippet below()}
-          <span class="text-[15px] text-[#c9c2b2]" data-testid="home-hero-descriptor">
-            {levelRaceClass}
+          <!-- Review round 1 item 1: one line, the spec's own shape -- "Level 24 Troll
+               Marksmanship Hunter · <faction emblem> Horde · <Sample Guild> · Skyborne-US".
+               The guild is inline (angle brackets, same convention the mock's own
+               "&lt;Sample Guild&gt;" uses), not CharacterGuildLine's separate block-level
+               line: that component's own "Verified" text is dropped here rather than given
+               a second pill, since the mock's hero line carries no verified indicator at
+               all. -->
+          <span
+            class="flex flex-wrap items-center gap-x-1 text-[15px] text-[#c9c2b2]"
+            data-testid="home-hero-descriptor"
+          >
+            <span>{levelRaceClass}</span>
             {#if factionLabel !== ''}
-              · <img
+              <span>·</span>
+              <img
                 src={factionMarkSrc(hero.faction === 'alliance' ? 'alliance' : 'horde')}
                 alt=""
                 width="16"
@@ -185,18 +196,19 @@
                 >{factionLabel}</span
               >
             {/if}
+            {#if hero.guild !== undefined}
+              <span>·</span>
+              <span data-testid="home-hero-guild"
+                >&lt;<a href={guildHref(hero.region, hero.ruleset, hero.guild.name)} class="text-nav"
+                  >{hero.guild.name}</a
+                >&gt;</span
+              >
+            {/if}
             {#if realmRegion !== ''}
-              · {realmRegion}
+              <span>·</span>
+              <span>{realmRegion}</span>
             {/if}
           </span>
-          {#if hero.guild !== undefined}
-            <CharacterGuildLine
-              guild={hero.guild}
-              region={hero.region}
-              ruleset={hero.ruleset}
-              testid="home-hero-guild"
-            />
-          {/if}
           {#if syncedAgo !== ''}
             <p class="text-muted text-[12px]" data-testid="home-hero-sync">
               <span class="mono">{syncedAgo}</span>
@@ -227,13 +239,11 @@
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-3" data-testid="home-hero-cards">
       <a href="#upgrades" class={CARD_CLASS} data-testid="home-hero-card-bis">
         <span class="label text-gold">{homeHeroCardsCopy.bestInSlotLabel}</span>
-        <span class="text-muted text-[13px] font-semibold">{homeHeroCardsCopy.bestInSlotNotYet}</span>
-        <span class="text-muted text-[12px]">{homeHeroCardsCopy.bestInSlotComingWhen}</span>
+        <span class="text-muted text-[13px]">{homeHeroCardsCopy.bestInSlotNotAvailable}</span>
       </a>
       <a href="/planner" class={CARD_CLASS} data-testid="home-hero-card-talents">
         <span class="label text-gold">{homeHeroCardsCopy.talentsLabel}</span>
-        <span class="text-muted text-[13px] font-semibold">{homeHeroCardsCopy.talentsNotYet}</span>
-        <span class="text-muted text-[12px]">{homeHeroCardsCopy.talentsComingWhen}</span>
+        <span class="text-muted text-[13px]">{homeHeroCardsCopy.talentsNotAvailable}</span>
       </a>
       <a href={armorySimHref(hero.key)} class={CARD_CLASS} data-testid="home-hero-card-sim">
         <span class="label text-gold">{homeHeroCardsCopy.simulatorLabel}</span>

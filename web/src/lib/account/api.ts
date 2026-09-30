@@ -65,6 +65,17 @@ export interface MeCharacter {
   build?: { source: 'addon' | 'blizzard'; captured_at: string };
   /** Omitted when the character has no `guild_characters` row at all. */
   guild?: MeCharacterGuild;
+  /**
+   * TODO(api): `GET /v1/me` does not send this field yet -- talent spec or primary tree
+   * ("Marksmanship", "Fury", "Holy") is no field on any account payload today, confirmed
+   * absent from this interface and from `POST /v1/me/exports`'s response shape alike.
+   * Home rebuild review round 1 item 2 asks the signed-in hero's descriptor to include it;
+   * this field documents the contract's own shape for the day that route ships it (likely
+   * parsed from the addon's own talent split, the way `talentPointsFromSplit`,
+   * `web/src/lib/sim/sources.ts`, already reads points-per-tree). Every reader treats a
+   * missing value as "not known yet" and omits the clause -- never a placeholder string.
+   */
+  spec?: string;
 }
 
 export interface MeGuild {

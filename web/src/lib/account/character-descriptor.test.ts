@@ -39,6 +39,12 @@ describe('homeHeroLevelRaceClassLine', () => {
     expect(homeHeroLevelRaceClassLine(BARE)).toBe('');
     expect(homeHeroLevelRaceClassLine({ ...BARE, level: 9 })).toBe('Level 9');
   });
+
+  it('inserts the spec between race and class once the account payload carries one (review round 1 item 2)', () => {
+    expect(homeHeroLevelRaceClassLine({ ...FULL, spec: 'Marksmanship' })).toBe(
+      'Level 25 Night Elf Marksmanship Hunter',
+    );
+  });
 });
 
 describe('classSquare', () => {
