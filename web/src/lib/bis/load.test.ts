@@ -213,6 +213,30 @@ describe('normaliseBisFile', () => {
     expect(normalised.bands[0].weights_reason).toBe(reason);
   });
 
+  it('defaults a missing set_dps_partial to false (a file published before this lane landed)', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [baseBand],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].set_dps_partial).toBe(false);
+  });
+
+  it('keeps a real set_dps_partial true unchanged', () => {
+    const file = {
+      spec: 'hunter-marksmanship',
+      build: 'test',
+      engine_version: 'test',
+      generated_at: 'test',
+      bands: [{ ...baseBand, set_dps_partial: true }],
+    };
+    const normalised = normaliseBisFile(file);
+    expect(normalised.bands[0].set_dps_partial).toBe(true);
+  });
+
   const slotWithoutAlternatives: BisSlot = {
     slot: 'head',
     item_id: 1,

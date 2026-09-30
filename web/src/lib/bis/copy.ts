@@ -123,6 +123,13 @@ export const bisCopy = {
   newSlotLabel: 'New slot',
   setDpsDelta: (delta: number): string =>
     `${delta >= 0 ? '+' : ''}${delta.toFixed(1)} DPS since the last band`,
+  /** Shown under `setDpsLabel`'s big number when `BisBand.set_dps_partial` is true (spec
+   *  addendum 3, §E): `count` always equals the number of rows this same band actually
+   *  renders with `notSimCheckedTag` (`panel-view.ts`'s `BandInfo.setDpsPartialCount`,
+   *  computed off the same `rows` array the paperdoll renders), so the number named here
+   *  always matches a row a player can go find and read for themselves. */
+  setDpsPartialNote: (count: number): string =>
+    `Set DPS leaves out ${count} pick${count === 1 ? '' : 's'} marked not sim-checked`,
   raceTalentsLine: (race: string, points: number): string =>
     `${capitalise(race)} · ${points} talent point${points === 1 ? '' : 's'} spent`,
 
@@ -191,6 +198,14 @@ export const bisCopy = {
    *  phrased as a swap against a named runner-up. */
   simDpsVerifiedTitle: (dps: number): string =>
     `Confirmed by a full sim: ${dps.toFixed(1)} DPS with this item`,
+  /** `sim_status === 'not_in_sim'` (spec addendum 3, §D): this build's sim database does
+   *  not carry the item at all, so the pick is ranked by stat weights only, with no full
+   *  sim run behind it -- the umbrella statement, shown before `effectUnmodelledTag` when
+   *  both fire on the same row (that row's own proc/use effect being unmodelled is the
+   *  narrower, more specific fact). Same quiet `.flag-tag` family: no gold, no red. */
+  notSimCheckedTag: 'not sim-checked',
+  notSimCheckedTitle:
+    "This build's sim database doesn't carry this item; the pick is ranked by stat weights only, with no full sim run behind it",
   effectUnmodelledTag: 'effect not simulated',
   effectUnmodelledTitle:
     "This item's proc or use effect is not modelled yet; it was ranked on its stats alone",

@@ -70,6 +70,15 @@ export interface BisSlot {
    *  `effect_not_modelled` value, which describes an EMPTY slot with no sourced candidate at
    *  all, not a flag on a filled pick. */
   effect_unmodelled?: boolean;
+  /** `"not_in_sim"` (`sim/cmd/leveling-bis/report.go`'s own `notInSimReason`) when this
+   *  row's own pick carries an item id this build's embedded item database does not have
+   *  -- the pick stays score-decided (never sim-verified), `verified` is forced `false`,
+   *  and no `sim_dps`/`dps_delta`/`swap_note` is ever published for it (report.go's own
+   *  `SimStatus` doc). Sibling of `effect_unmodelled`, same convention: absent (undefined)
+   *  for every other row, never defaulted by `normaliseBisFile` (`load.ts`) -- a missing
+   *  key simply means "not flagged," matching `effect_unmodelled`'s own default-free
+   *  behaviour. */
+  sim_status?: string;
   swap_note?: string;
   /** This row's own pick's measured DPS advantage over the one comparator a real swap sim
    *  actually measured it against, in that same run (`sim/cmd/leveling-bis/report.go`'s own
@@ -172,6 +181,16 @@ export interface BisBand {
   /** The unit every stat-weight `score` on this band is in (`"reference_stat_points"`);
    *  a sim-decided row carries `sim_dps` instead of a score. */
   score_unit?: string;
+  /** `true` when at least one published slot's own pick carries `sim_status ===
+   *  "not_in_sim"` (`sim/cmd/leveling-bis/report.go`'s own `SetDPSPartial` doc) -- that
+   *  item was silently unequipped before every sim this band's own `set_dps` was ever
+   *  measured from, so `set_dps` stays a true, honestly-computed number for "this set,
+   *  minus that one item," never the full set this band actually publishes. `set_dps`
+   *  itself is unchanged either way -- this flag only names what it is not a measurement
+   *  of. Optional and defaults to `false` (`normaliseBisFile`, `load.ts`), same pattern as
+   *  `weights_reason`'s own default: a file published before this field existed carries no
+   *  `set_dps_partial` key at all. */
+  set_dps_partial?: boolean;
 }
 
 export interface BisFile {

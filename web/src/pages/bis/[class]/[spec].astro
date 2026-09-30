@@ -236,6 +236,8 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                     upgradesCount,
                     setDps,
                     dpsDelta,
+                    setDpsPartial,
+                    setDpsPartialCount,
                     race,
                     talentPoints,
                     weightBars,
@@ -276,6 +278,14 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
                               <p class="dps-value tabular">{setDps.toFixed(1)}</p>
                               {dpsDelta !== undefined && (
                                 <p class="dps-delta text-muted tabular">{bisCopy.setDpsDelta(dpsDelta)}</p>
+                              )}
+                              {setDpsPartial && (
+                                <p
+                                  class="dps-partial-note text-muted"
+                                  data-testid={`bis-set-dps-partial-${faction}-${band}`}
+                                >
+                                  {bisCopy.setDpsPartialNote(setDpsPartialCount)}
+                                </p>
                               )}
                             </div>
                             <p class="text-muted">{bisCopy.raceTalentsLine(race, talentPoints)}</p>
@@ -542,6 +552,9 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
   }
   .dps-delta {
     font-size: 12px;
+  }
+  .dps-partial-note {
+    font-size: 11px;
   }
   .weights-reference-line {
     font-size: 13px;

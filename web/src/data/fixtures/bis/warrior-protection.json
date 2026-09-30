@@ -166,7 +166,8 @@
           "source": "Rep: Ironforge \u2014 Friendly",
           "source_kind": "rep",
           "score": 48.4,
-          "verified": true
+          "verified": false,
+          "sim_status": "not_in_sim"
         },
         {
           "slot": "trinket2",
@@ -175,7 +176,9 @@
           "source": "World drop",
           "source_kind": "world",
           "score": 49.1,
-          "verified": false
+          "verified": false,
+          "sim_status": "not_in_sim",
+          "effect_unmodelled": true
         },
         {
           "slot": "main_hand",
@@ -212,7 +215,8 @@
       "weights_run_seconds": 1.0,
       "verify_run_seconds": 1.0,
       "reference_dps_per_point": 0.0556,
-      "score_unit": "reference_stat_points"
+      "score_unit": "reference_stat_points",
+      "set_dps_partial": true
     },
     {
       "spec": "warrior-protection",
