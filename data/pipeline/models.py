@@ -151,7 +151,11 @@ class GearItem(BaseModel):
     #: Go (the two cannot share code across languages, only the number); `"none"`
     #: for an item_level-1 row (or anything else with no proxy to compute), where
     #: required_level 0 is simply the right answer, not a gap.
-    required_level_source: Literal["client", "wowhead", "item_level_proxy", "none"]
+    #: `"classic-db"` added catalogue-universe lane (2026-09-30): the whole
+    #: row -- not just `required_level` -- has no client counterpart at all,
+    #: same all-or-nothing meaning `stats_source`'s own `"classic-db"` value
+    #: carries; see that field's doc.
+    required_level_source: Literal["client", "wowhead", "item_level_proxy", "none", "classic-db"]
     item_level: int
     armor: int
     stats: dict[str, int]
@@ -188,9 +192,27 @@ class GearItem(BaseModel):
     #: the simulator's Top Gear both need this to know a number here is
     #: wowhead's scrape, not the client's own table, the same way the site
     #: already shows `required_level_source`.
-    stats_source: Literal["wowhead"] | None = None
+    #: `"classic-db"` added catalogue-universe lane (2026-09-30): the client's
+    #: `ItemSparse`/hotfix cache has never seen this id at all (the beta
+    #: character never had it drop), and cmangos/classic-db's own 1.12
+    #: `item_template` is the only source -- armor, stats, weapon damage and
+    #: `effect_text` all come from that table (`pipeline.classicdb_items`).
+    #: Distinct from `"wowhead"`: wowhead's scrape is corroborated against
+    #: this same client's curve tables on every id both sources share
+    #: (`pipeline.wowhead_items`'s own doc); classic-db is 1.12 data with no
+    #: such corroboration, which is exactly what `client_unconfirmed` below
+    #: flags.
+    stats_source: Literal["wowhead", "classic-db"] | None = None
     set_id: int | None
     unique: bool
+    #: True for a `stats_source == "classic-db"` row: real 1.12 itemization
+    #: the Forever client has not (yet) confirmed by shipping it as a hotfix
+    #: -- see `data/README.md`, "classic-db-only items and client_unconfirmed".
+    #: A future hotfix refresh that adds the id to `raw/hotfixes/ItemSparse.csv`
+    #: promotes the row to client stats (`stats_source` reverts to `None`) the
+    #: next time `normalize` runs, the same way any other hotfix promotion
+    #: works. False (the default) for every other row, client or wowhead alike.
+    client_unconfirmed: bool = False
 
 
 class ClassItems(BaseModel):

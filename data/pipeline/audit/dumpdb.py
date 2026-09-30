@@ -46,6 +46,19 @@ class ClassicDbDump:
     def __init__(self, path: Path) -> None:
         self.path = path
 
+    @classmethod
+    def from_text(cls, text: str) -> ClassicDbDump:
+        """Build a view directly from already-read SQL text, for a caller
+        that just downloaded it over the network and has no reason to write
+        it to disk first only to read it straight back
+        (`pipeline.classicdb_items.extract_records`, the same dump
+        `pipeline.classic_sources.fetch_classic_db_sources` already
+        downloads for its own tables)."""
+        dump = cls.__new__(cls)
+        dump.path = None
+        dump.__dict__["_text"] = text
+        return dump
+
     @functools.cached_property
     def _text(self) -> str:
         return _read_text(self.path)
@@ -85,6 +98,50 @@ class ClassicDbDump:
                 "spell_ids": spell_ids,
             }
         return out
+
+    @functools.cached_property
+    def equippable_item_template_rows(self) -> list[dict[str, str]]:
+        """Every `item_template` row that is real equippable gear: Item.ClassID
+        2 (WEAPON) or 4 (ARMOR) with a real equip slot (`InventoryType != 0`)
+        -- the raw dump's own equippable universe, kept as raw string rows
+        (this dump's usual convention: a caller reads the columns it needs
+        with its own `int()`/`unquote()` calls, same as every other
+        row-shaped input in this pipeline).
+
+        `pipeline.classicdb_items` is the one caller (catalogue-universe
+        lane, 2026-09-30): it turns this into the committed
+        `raw/classicdb/item_template.json` extract that fills the ids the
+        client's `ItemSparse`/hotfix cache never carried at all -- 1,960 of
+        them on build 1.60.1.70009, uncommon-or-better, including Hand of
+        Justice (11815) and several ZG/AQ trinkets whose whole value is an
+        on-equip/on-use spell effect, not a flat stat. No quality filter
+        here: this is the raw universe
+        `pipeline.classicdb_items.extract_records` narrows with the
+        planner's own `PLANNER_QUALITIES` gate, the same way every other
+        source's raw rows are narrowed downstream, not at the reader.
+        """
+        return [
+            row
+            for row in iter_table_records(self._text, "item_template")
+            if int(row["class"]) in (2, 4) and int(row["InventoryType"]) != 0
+        ]
+
+    @functools.cached_property
+    def spell_names(self) -> dict[int, str]:
+        """spell id -> `spell_template.SpellName` (enUS), the internal
+        cmangos label for the spell -- NOT player-facing tooltip text
+        (compare "Increase Spell Dam 29" to the client's own resolved
+        "Equip: Increases damage and healing done by magical spells and
+        effects by up to 29"). Used only as `pipeline.classicdb_items`'
+        last-resort fallback for a spell id the Forever client's own
+        `Spell.csv` has no row for at all -- the client carries virtually
+        every Classic-era spell, so this rarely fires; see that module's
+        own doc.
+        """
+        return {
+            int(row["Id"]): unquote(row["SpellName"]) or ""
+            for row in iter_table_records(self._text, "spell_template")
+        }
 
     @functools.cached_property
     def created_item_to_spells(self) -> dict[int, list[int]]:

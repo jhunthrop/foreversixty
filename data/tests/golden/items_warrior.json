@@ -21,7 +21,8 @@
       "effect_text": "",
       "stats_source": null,
       "set_id": null,
-      "unique": false
+      "unique": false,
+      "client_unconfirmed": false
     },
     {
       "id": 13315,
@@ -44,7 +45,8 @@
       "effect_text": "",
       "stats_source": null,
       "set_id": null,
-      "unique": false
+      "unique": false,
+      "client_unconfirmed": false
     },
     {
       "id": 12798,
@@ -65,7 +67,8 @@
       "effect_text": "",
       "stats_source": null,
       "set_id": null,
-      "unique": false
+      "unique": false,
+      "client_unconfirmed": false
     },
     {
       "id": 19325,
@@ -88,7 +91,8 @@
       "effect_text": "",
       "stats_source": null,
       "set_id": null,
-      "unique": true
+      "unique": true,
+      "client_unconfirmed": false
     },
     {
       "id": 17066,
@@ -111,7 +115,8 @@
       "effect_text": "",
       "stats_source": null,
       "set_id": null,
-      "unique": false
+      "unique": false,
+      "client_unconfirmed": false
     },
     {
       "id": 16866,
@@ -136,7 +141,8 @@
       "effect_text": "",
       "stats_source": null,
       "set_id": 209,
-      "unique": false
+      "unique": false,
+      "client_unconfirmed": false
     },
     {
       "id": 19019,
@@ -159,7 +165,8 @@
       "effect_text": "",
       "stats_source": null,
       "set_id": null,
-      "unique": true
+      "unique": true,
+      "client_unconfirmed": false
     }
   ]
 }

@@ -918,6 +918,17 @@ def parse_classic_db_sources(sql_text: str) -> dict[int, list[ClassicDbSourceRec
     return dict(into)
 
 
+def _download_dump(client: httpx.Client, url: str) -> str:
+    """The pinned mysqldump's own decompressed text. Split out from
+    `fetch_classic_db_sources` (catalogue-universe lane, 2026-09-30) so
+    `fetch_and_write_classic_sources` can download it once and hand the same
+    text to a second parser (`pipeline.classicdb_items.extract_records`)
+    rather than fetching the ~13 MB payload twice."""
+    response = client.get(url, timeout=120, follow_redirects=True)
+    response.raise_for_status()
+    return gzip.decompress(response.content).decode("utf-8", errors="replace")
+
+
 def fetch_classic_db_sources(
     client: httpx.Client | None = None, url: str = SOURCE_URL
 ) -> dict[int, list[ClassicDbSourceRecord]]:
@@ -927,9 +938,7 @@ def fetch_classic_db_sources(
     own = client is None
     client = client or httpx.Client(headers={"User-Agent": USER_AGENT})
     try:
-        response = client.get(url, timeout=120, follow_redirects=True)
-        response.raise_for_status()
-        sql_text = gzip.decompress(response.content).decode("utf-8", errors="replace")
+        sql_text = _download_dump(client, url)
         return parse_classic_db_sources(sql_text)
     finally:
         if own:
@@ -1002,13 +1011,39 @@ def fetch_and_write_classic_sources(
     """`python -m pipeline fetch-classic-sources`: the (one-time /
     occasional, same cadence as `fetch-classic-quest-levels`) step that
     downloads the pinned dump and writes the committed cache
-    `pipeline.loot.classicdb` reads from then on."""
-    items = fetch_classic_db_sources(client=client)
+    `pipeline.loot.classicdb` reads from then on.
+
+    Also writes `raw/classicdb/item_template.json` (catalogue-universe lane,
+    2026-09-30), the committed extract `pipeline.normalize.classicdb` reads
+    at every `normalize` run -- the same one download, since this command
+    already owns the only network fetch of this dump `normalize` itself is
+    never allowed to make.
+    """
+    from pipeline.classicdb_items import extract_records
+    from pipeline.classicdb_items import write_extract as write_item_template_extract
+
+    own = client is None
+    client = client or httpx.Client(headers={"User-Agent": USER_AGENT})
+    try:
+        sql_text = _download_dump(client, url=SOURCE_URL)
+    finally:
+        if own:
+            client.close()
+    items = parse_classic_db_sources(sql_text)
     build_dir = root / build
     path = write_classic_sources(build_dir, items)
     logger.info(
         "classic-sources: parsed %d item ids with at least one classic-db source; wrote %s",
         len(items),
         path,
+    )
+    item_template_records = extract_records(sql_text)
+    item_template_path = write_item_template_extract(
+        build_dir, item_template_records, source_commit=_source_commit()
+    )
+    logger.info(
+        "classic-sources: extracted %d equippable item_template rows; wrote %s",
+        len(item_template_records),
+        item_template_path,
     )
     return path

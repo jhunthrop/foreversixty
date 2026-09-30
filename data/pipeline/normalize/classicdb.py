@@ -1,0 +1,129 @@
+"""Merges the classic-db item supplement into `normalize_build`'s outputs.
+
+Runs strictly after `pipeline.normalize.wowhead`'s own merge: the client's
+`ItemSparse`/`Item` are the source of truth for every id they carry, wowhead's
+Forever gear-planner scrape is next (it is corroborated against this same
+client's curve tables on every id both share -- `pipeline.wowhead_items`'s own
+doc), and classic-db's 1.12 `item_template` only ever fills the ids BOTH of
+those lack (`pipeline.classicdb_items.supplement`'s own doc). See
+`pipeline.normalize.wowhead`'s module doc for why each `merge_*` function
+returns a new list/records rather than mutating its input, and why a soft gap
+(an untracked stat, a set id with no client set) is logged, never raised.
+"""
+
+from __future__ import annotations
+
+import logging
+from pathlib import Path
+
+from pipeline.classicdb_items import (
+    ClassicDbItem,
+    class_allowed,
+    load_extract,
+    supplement,
+    to_gear_item,
+    to_item,
+)
+from pipeline.models import ClassItems, Item, ItemSetRecord
+from pipeline.normalize.classes import slugify
+from pipeline.spelltext import SpellText
+
+logger = logging.getLogger(__name__)
+
+
+def load_classicdb_supplement(build_dir: Path, known_ids: set[int]) -> list[ClassicDbItem] | None:
+    """The classic-db items neither the client nor wowhead's own supplement
+    already cover, or `None` when the build carries no committed extract --
+    the caller then leaves every output unchanged."""
+    records = load_extract(build_dir)
+    if records is None:
+        return None
+    return supplement(records, known_ids)
+
+
+def merge_items(items: list[Item], picked: list[ClassicDbItem]) -> list[Item]:
+    """`items` plus a flat `Item` for every picked supplement item -- REPLACING,
+    not duplicating, any existing row with the same id.
+
+    `known_ids` (`load_classicdb_supplement`'s own caller in
+    `pipeline.normalize`) only counts the client as already covering an id
+    when its own row is real equippable data (`InventoryType != 0`), so a
+    client row that names an id but states nothing usable (Orb of Deception,
+    1973, on build 1.60.1.70009 -- see that caller's own doc) can still be
+    picked here. Its flat `items.json` row already exists (with the client's
+    broken `inventory_type: 0`); appending a second one would leave two rows
+    for the same id, so the stale one is dropped in favour of classic-db's
+    real data.
+    """
+    picked_ids = {item.id for item in picked}
+    kept = [item for item in items if item.id not in picked_ids]
+    logger.info("classic-db items: merged %d supplement items into items.json", len(picked))
+    return [*kept, *(to_item(item) for item in picked)]
+
+
+def merge_class_items(
+    records: list[ClassItems],
+    picked: list[ClassicDbItem],
+    class_rows: list[dict[str, str]],
+    spell_text: SpellText,
+    fork_icons: dict[int, str],
+    wowhead_icons: dict[int, str],
+) -> list[ClassItems]:
+    """Each class's `items/<class-slug>.json` plus the classic-db supplement
+    gear that class may equip (classic-db's own `AllowableClass` mask and the
+    client's own proficiency table)."""
+    class_id_by_slug = {slugify(row["Name_lang"]): int(row["ID"]) for row in class_rows}
+    placed = 0
+    merged: list[ClassItems] = []
+    for record in records:
+        class_id = class_id_by_slug.get(record.class_slug)
+        allowed = (
+            [item for item in picked if class_allowed(item, class_id)]
+            if class_id is not None
+            else []
+        )
+        placed += len(allowed)
+        items = [
+            *record.items,
+            *(to_gear_item(item, spell_text, fork_icons, wowhead_icons) for item in allowed),
+        ]
+        merged.append(
+            record.model_copy(
+                update={"items": sorted(items, key=lambda i: (i.required_level, i.name, i.id))}
+            )
+        )
+    logger.info("classic-db items: merged %d supplement item placements into items/*.json", placed)
+    return merged
+
+
+def merge_sets(sets: list[ItemSetRecord], picked: list[ClassicDbItem]) -> list[ItemSetRecord]:
+    """Each supplement item whose set id names an existing set joins its
+    `item_ids` (sorted, deduped) -- same contract as
+    `pipeline.normalize.wowhead.merge_sets`: an id with no matching
+    `ItemSetRecord` is counted and skipped, not invented."""
+    additions: dict[int, set[int]] = {record.id: set() for record in sets}
+    skipped = 0
+    for item in picked:
+        if item.set_id is None:
+            continue
+        if item.set_id not in additions:
+            skipped += 1
+            continue
+        additions[item.set_id].add(item.id)
+
+    joined = 0
+    merged: list[ItemSetRecord] = []
+    for record in sets:
+        new_ids = additions[record.id] - set(record.item_ids)
+        if not new_ids:
+            merged.append(record)
+            continue
+        joined += len(new_ids)
+        merged.append(record.model_copy(update={"item_ids": sorted({*record.item_ids, *new_ids})}))
+    logger.info("classic-db items: merged %d supplement items into existing sets", joined)
+    if skipped:
+        logger.info(
+            "classic-db items: skipped %d supplement items whose set id has no client set",
+            skipped,
+        )
+    return merged
