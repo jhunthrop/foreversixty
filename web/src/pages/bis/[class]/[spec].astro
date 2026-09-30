@@ -324,7 +324,16 @@ const crossScopeCss =
                         <span class="text-muted text-[12px]">{bisCopy.hoverOrTapCaption}</span>
                       </div>
                       <div class="panel-box the-list-panel">
-                        <div class="the-list-header" role="row">
+                        {/* No `role="row"` here (a11y fix, 2026-09-30): the rows below are a
+                            plain `<ul>` of `<li>` cards (`GearRow.astro`), never ARIA
+                            `row`/`cell`s -- a lone `role="row"` with no table/rowgroup
+                            ancestor and no sibling row structure is exactly the broken
+                            half-pattern axe's `aria-required-parent`/`aria-required-children`
+                            flag, and the mobile breakpoint collapses this into a single
+                            stacked column anyway, so a real ARIA table here would describe
+                            a structure that stops existing at 1024px. The three column
+                            labels stay plain, visible text -- sighted users lose nothing. */}
+                        <div class="the-list-header">
                           <span class="label">{bisCopy.slotHeaderLabel}</span>
                           <span class="label">{bisCopy.pickHeaderLabel}</span>
                           <span class="label">{bisCopy.runnersUpHeaderLabel}</span>
