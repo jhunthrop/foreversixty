@@ -192,6 +192,16 @@ type slotRow struct {
 	// contenders. Never set for a non-weapon slot, which still empties
 	// exactly as before (EmptyReason == noDPSValueReason).
 	LowValue bool `json:"low_value,omitempty"`
+	// FactionNote explains the one legitimate reason a faction-neutral
+	// trinket's own published pick differs between Alliance and Horde
+	// (reconcileFactionTrinkets, faction_trinkets.go, this lane's brief
+	// bis-ranker-integrity-15): a real racial stat difference this
+	// faction's own re-measurement of the OTHER faction's pick found,
+	// not the ranker's own per-faction sim noise landing on opposite
+	// sides of a shared bar (twelfth sweep's defect, ranker-14). Empty
+	// for every row that pass never touches, including a trinket slot
+	// that simply was never faction-neutral to begin with.
+	FactionNote string `json:"faction_note,omitempty"`
 }
 
 // noDPSValueReason is EmptyReason's own published value for this lane's
@@ -1141,7 +1151,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 	rows := make([]slotRow, 0, len(slotOrder))
 	for _, slot := range slotOrder {
 		pk := picks[slot]
-		row := slotRow{Slot: slot}
+		row := slotRow{Slot: slot, FactionNote: pk.FactionNote}
 		if pk.Item == nil {
 			// This lane's brief, item 8: every empty slot carries an
 			// empty_reason - before this, pick()'s own "off_hand under a
@@ -1386,7 +1396,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			relicEffectUnmodelled := row.EffectUnmodelled && !simDecided && !realSimPromotion && isRelicCandidate(pk.Item.candidate)
 			switch {
 			case relicEffectUnmodelled:
-				row = slotRow{Slot: slot, EmptyReason: effectNotModelledReason, EffectUnmodelled: true}
+				row = slotRow{Slot: slot, EmptyReason: effectNotModelledReason, EffectUnmodelled: true, FactionNote: pk.FactionNote}
 			case trinketLowGain:
 				// This lane's brief (bis-ranker-integrity-12), item 1:
 				// the OLD version of this case replaced row wholesale
@@ -1408,7 +1418,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 				// still true, checked facts about this band's other
 				// shortlisted trinkets and must survive the pick being
 				// hidden.
-				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason, Alternatives: row.Alternatives}
+				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason, Alternatives: row.Alternatives, FactionNote: pk.FactionNote}
 			case row.Score != 0 || row.EffectUnmodelled || realSimPromotion || trinketEffectExempt || simDecided:
 				// Not zero-value at all, or redeemed by one of the
 				// existing exemptions above - the row stands as computed.
@@ -1421,7 +1431,7 @@ func buildReport(spec specInfo, band int, faction, race, talents string, talentP
 			case weaponSlots[slot]:
 				row.LowValue = true
 			default:
-				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason}
+				row = slotRow{Slot: slot, EmptyReason: noDPSValueReason, FactionNote: pk.FactionNote}
 			}
 		}
 		rows = append(rows, row)

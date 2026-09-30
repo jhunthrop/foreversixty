@@ -107,6 +107,15 @@ type slotPick struct {
 	// real-sim-ranked choice, which is not a score tie in this sense,
 	// so a slot any of them overwrites reports no ties.
 	Ties []scored
+	// FactionNote is set only by reconcileFactionTrinkets
+	// (faction_trinkets.go, this lane's brief, bis-ranker-integrity-15):
+	// the one legitimate reason a faction-neutral trinket's own verdict
+	// is allowed to differ between Alliance and Horde - a racial stat
+	// difference, not a ranker defect - so report.go can publish it
+	// verbatim as slotRow.FactionNote instead of leaving a reader to
+	// wonder why the same obtainable-by-both item was kept on one side
+	// and not the other. Empty for every slot that pass never touches.
+	FactionNote string
 }
 
 // candidatesBySlot fans a scored pool out by every planner slot each

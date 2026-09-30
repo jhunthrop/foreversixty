@@ -450,6 +450,45 @@ func formatTrinketRankError(slot string, c scored, err error) string {
 	return slot + ": ranking candidate " + c.Name + " failed: " + err.Error()
 }
 
+// measureTrinketGain is rankTrinketSlot's own per-candidate measurement
+// (a candidate run, a no-trinket baseline run, then
+// trinketAdaptiveGain's own escalation) pulled out into its own
+// function so a caller outside the ordinary shortlist tournament -
+// reconcileFactionTrinkets (faction_trinkets.go, this lane's brief
+// bis-ranker-integrity-15) - can measure exactly one candidate's own
+// gain on a character (picks/race/talents) it was never shortlisted
+// for, at the same precision rankTrinketSlot's own winner gets,
+// without re-running that whole tournament: this lane's brief's own
+// words, "a contained post-pass, not a cache threaded through the
+// tournaments" - rankTrinketSlot and trinketShortlist themselves are
+// unchanged by this lane.
+//
+// itemID, not a scored candidate, is the only input this needs beyond
+// the character context: the candidate run only ever equips an item
+// id (swapSlot's own contract), so the caller's own copy of the
+// candidate (whichever faction's bySlot it came from) never has to
+// travel through this function at all.
+func measureTrinketGain(runner engineRunner, spec specInfo, race, classSlug string, level int, talents string, picks map[string]slotPick, slot string, itemID int) (absoluteDPS, gainDPS, gainStdErr float64, err error) {
+	gear := swapSlot(picks, slot, itemID, false)
+	req := plainRequest(spec, bandCharacter("trinket-reconcile", race, classSlug, spec.Spec, level, talents, gear), trinketRankIterations, verifySeed)
+	dps, stdErr, err := runner.RunPlainDPSWithError(req)
+	if err != nil {
+		return 0, 0, 0, err
+	}
+	baselineGear := swapSlot(picks, slot, 0, false)
+	baselineReq := plainRequest(spec, bandCharacter("trinket-reconcile-baseline", race, classSlug, spec.Spec, level, talents, baselineGear), trinketRankIterations, verifySeed)
+	baselineDPS, baselineStdErr, err := runner.RunPlainDPSWithError(baselineReq)
+	if err != nil {
+		return 0, 0, 0, err
+	}
+	gainDPS = dps - baselineDPS
+	gainStdErr = math.Sqrt(stdErr*stdErr + baselineStdErr*baselineStdErr)
+	if refinedGain, refinedStdErr, adaptErr := trinketAdaptiveGain(runner, spec, race, classSlug, level, talents, picks, slot, itemID, gainDPS, gainStdErr); adaptErr == nil {
+		gainDPS, gainStdErr = refinedGain, refinedStdErr
+	}
+	return dps, gainDPS, gainStdErr, nil
+}
+
 // trinketGainAdaptivePrecisionDivisor is trinketAdaptiveGain's own
 // target: keep escalating the winning candidate's own gain measurement
 // until its combined standard error sits under gain/4 - this lane's
