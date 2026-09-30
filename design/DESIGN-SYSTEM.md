@@ -104,6 +104,7 @@ Self-host all three faces (Google Fonts license permits it) so no third-party re
 - **Secondary button**: 36px, warm border, uppercase 12px 700 with 0.06em tracking. There is no primary marketing button.
 - **Account button**: the one filled gold button (44px, `#f0cc6c` → `#c99a3a`, dark text, 1px `--gold-deep` inset ring, soft gold glow). Used only for "Sign in with Battle.net" on the signed-out home; never for a tool or a link.
 - **Character row**: class crest (36px circle with class ring), name in class colour (Cinzel 14px), muted descriptor, and on the right either a mono stat ("2 upgrades") or a progress bar. The signed-in home's "Switch character" panel uses the stat form.
+- **Stat weights rail**: the SimulationCraft convention, because that is what players know. Rows sorted by scale factor; columns Stat, bar, Scale (per point, normalized to the top stat = 1.00), Per point (absolute DPS per stat point), Error (sim error in the same units); haste is labelled "Haste (per 1%)" since vanilla has no haste rating; an insignificant stat keeps its row greyed with "not significant". Under the rows, the Pawn string in a mono box with a copy button.
 - **Upgrade row**: slot label, the worn item, an arrow, the best-in-slot item, and a mono gain in green; every item is icon (36px, 1px quality border), name in quality colour, and one source line under it. The table carries a label header row (Slot / You wear / Best in slot / Gain).
 
 ## Logo
