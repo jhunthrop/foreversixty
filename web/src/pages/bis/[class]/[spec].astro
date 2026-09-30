@@ -463,6 +463,11 @@ const tooltipModelsJson = JSON.stringify(Object.fromEntries(tooltipModels)).repl
      wraps to a second row) on a phone. --- */
   .level-scale {
     scrollbar-width: none;
+    /* The strip scrolls horizontally, which also clips vertically: leave room
+       for each tab's "new picks" badge (top/right -5px) inside the scroll box
+       so the row above never appears to cover it (owner report, 2026-09-30). */
+    padding: 6px 6px 2px 0;
+    margin-top: -6px;
   }
   .level-scale::-webkit-scrollbar {
     display: none;
