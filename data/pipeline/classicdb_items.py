@@ -51,6 +51,7 @@ from pydantic import BaseModel
 
 from pipeline.icons import PLACEHOLDER_ICON, resolve_icon_name
 from pipeline.models import GearItem, Item
+from pipeline.normalize.effects import equip_stat_folds_out_text
 from pipeline.normalize.gear import (
     MAX_PLAYER_LEVEL,
     PLANNER_QUALITIES,
@@ -662,6 +663,15 @@ def _extra_attacks(spell: ClassicDbSpell, spells: dict[int, ClassicDbSpell]) -> 
     return None
 
 
+def _proc_line(spell: ClassicDbSpell, extra: int) -> str:
+    """The "Chance on hit: Gain N extra attack(s)." line for an
+    `AURA_PROC_TRIGGER_SPELL` effect -- shared by the two `_render_spell_text`
+    branches below so neither has to repeat the phrasing."""
+    chance = min(spell.proc_chance, 100)
+    plural = "s" if extra != 1 else ""
+    return f"Chance on hit ({chance}%): Gain {extra} extra attack{plural}."
+
+
 def _render_spell_text(
     spell: ClassicDbSpell,
     trigger: int,
@@ -670,23 +680,37 @@ def _render_spell_text(
     spells: dict[int, ClassicDbSpell],
 ) -> str | None:
     """One spell slot's text, built entirely from classic-db's own
-    structured fields -- `None` when this spell has an aura `_equip_stats`
-    does not classify (that spell falls back to the client/bare-name path
-    in `effect_text` instead of a half-built sentence)."""
+    structured fields.
+
+    Returns `None` when this spell has an aura `_equip_stats` does not
+    classify -- that spell falls back to the client/bare-name path in
+    `effect_text` instead of a half-built sentence. Returns `""` (not
+    `None`) when `equip_stat_folds_out_text` says this spell's own stats are
+    already fully accounted for by the item's structured `stats` (`.stats`
+    fed to `to_gear_item`'s own field) and nothing is left to say -- an
+    empty string here means "nothing to add", not "try the client/bare-name
+    fallback", because the fallback would just re-describe the same stat
+    that already has a home; see that predicate's own doc for the full
+    rule. A residual, non-stat effect riding the SAME spell (an extra-attack
+    proc such as Hand of Justice's) still gets its own line even when the
+    spell's stat portion is folded out.
+    """
     try:
         stats = _equip_stats(spell, item_id, item_name)
     except EquipEffectError:
+        return None
+    extra = _extra_attacks(spell, spells)
+    if equip_stat_folds_out_text(trigger == TRIGGER_ON_EQUIP, bool(stats)):
+        return _proc_line(spell, extra) if extra is not None else ""
+    if not stats and extra is None:
         return None
     pieces = []
     for key, amount in stats.items():
         label = _STAT_PHRASE.get(key, key)
         pieces.append(f"+{amount}% {label}" if key in _PERCENT_STATS else f"+{amount} {label}")
     sentence = _TRIGGER_PREFIX.get(trigger, "") + ", ".join(pieces) + "." if pieces else ""
-    extra = _extra_attacks(spell, spells)
     if extra is not None:
-        chance = min(spell.proc_chance, 100)
-        plural = "s" if extra != 1 else ""
-        proc_line = f"Chance on hit ({chance}%): Gain {extra} extra attack{plural}."
+        proc_line = _proc_line(spell, extra)
         sentence = f"{sentence} {proc_line}".strip() if sentence else proc_line
     return sentence or None
 
@@ -717,17 +741,26 @@ def effect_text(
     states a $h/3 divisor that evaluates to 1%; the client's spell NAME
     matches here ("Hand of Justice" both sides) yet its own text is still
     wrong, so this module never trusts client text over a spell it can
-    itself fully classify), Blackhand's Breadth
-    (https://www.wowhead.com/classic/item=13965/blackhands-breadth, "+2%
-    critical strike with melee attacks"), Briarwood Reed
+    itself fully classify), Briarwood Reed
     (https://www.wowhead.com/classic/item=12930/briarwood-reed, "+29 spell
-    damage and healing"), Eye of the Beast
-    (https://www.wowhead.com/classic/item=13968/eye-of-the-beast, "+2%
-    critical strike with spells" -- classic-db's own aura for this is 71,
-    NOT the client's own 552 for the same concept), and Destiny
+    damage and healing"), and Destiny
     (https://www.wowhead.com/classic/item=647/destiny, "Chance on hit:
     Increases Strength by 200" -- item-level `spelltrigger` 2, so this
     never reaches `equip_stats`, only this text).
+
+    An on-equip aura that fully classifies AND became a structured stat
+    contributes no text of its own -- `equip_stat_folds_out_text` (eleventh
+    wow-player sweep, 2026-09-30), shared with the client schema's
+    `EffectIndex.text`, so the two paths cannot silently diverge on when a
+    flat "Equip: +X Stat" restates a number the item's own `stats` block
+    already carries. Blackhand's Breadth (https://www.wowhead.com/classic/
+    item=13965/blackhands-breadth, a flat "+2% critical strike with melee
+    attacks") and Eye of the Beast (https://www.wowhead.com/classic/
+    item=13968/eye-of-the-beast, a flat "+2% critical strike with spells" --
+    classic-db's own aura for this is 71, NOT the client's own 552 for the
+    same concept) are both this case now: `_equip_stats` still classifies
+    their aura and folds it into `stats`, but `effect_text` no longer
+    repeats it as prose, since nothing is left unaccounted for.
 
     A spell this module cannot fully classify (an aura outside
     `_equip_stats`'s table) falls back to the Forever client's own
@@ -751,8 +784,10 @@ def effect_text(
         if rendered is None:
             client_name = client_spell_names.get(slot.spell_id)
             if client_name is not None and client_name == slot.classic_db_name:
-                rendered = spell_text.describe(slot.spell_id)
-        parts.append(rendered or slot.classic_db_name)
+                rendered = spell_text.describe(slot.spell_id) or slot.classic_db_name
+            else:
+                rendered = slot.classic_db_name
+        parts.append(rendered)
     return " ".join(part for part in parts if part)
 
 

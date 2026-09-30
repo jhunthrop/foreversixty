@@ -70,6 +70,29 @@ UnknownAuraError = EquipEffectError
 _EQUIP_ONLY: Container[str] = frozenset({TRIGGER_ON_EQUIP})
 
 
+def equip_stat_folds_out_text(is_equip_trigger: bool, produced_stat: bool) -> bool:
+    """True when a spell's own prose is already fully accounted for by
+    `stats` and must not repeat as effect text.
+
+    Only an on-equip trigger whose aura became at least one structured stat
+    qualifies. A use/proc effect (any other trigger) is never folded out --
+    `stats` never sums a non-equip trigger, so its text is the only place
+    that effect shows up at all. An on-equip aura that produced *no* stat
+    (only a weapon skill, only physical damage, or an aura the classifying
+    table deliberately maps to nothing) is also never folded out, for the
+    same reason: nothing else on the item represents it.
+
+    Shared by `EffectIndex.text` (the client schema, below) and
+    `pipeline.classicdb_items.effect_text` (the classic-db schema) so the
+    two paths cannot silently diverge on this rule -- each schema still
+    classifies its own auras with its own table (`pipeline.simdb.equip`'s
+    `STAT_AURAS`/`IGNORED_AURAS` vs. classic-db's `SIMPLE_STAT_AURAS`/
+    `IGNORED_STAT_AURAS`); only the yes/no decision of what to do with the
+    result is shared.
+    """
+    return is_equip_trigger and produced_stat
+
+
 def _named_item_ids(
     item_effect_rows: Sequence[Mapping[str, str]],
     item_x_item_effect_rows: Sequence[Mapping[str, str]],
@@ -146,6 +169,8 @@ class EffectIndex:
         parts = [
             self._spell_text.describe(spell_id)
             for spell_id in self._all_spells_by_item.get(item_id, [])
-            if spell_id not in equip_ids_with_stats
+            if not equip_stat_folds_out_text(
+                spell_id in equip_spell_ids, spell_id in equip_ids_with_stats
+            )
         ]
         return " ".join(part for part in parts if part)

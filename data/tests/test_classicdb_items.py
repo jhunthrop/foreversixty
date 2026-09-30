@@ -398,14 +398,18 @@ class _FakeSpellText:
         return self._texts.get(spell_id, "")
 
 
-def test_effect_text_renders_verified_stats_from_classicdb_structured_data():
-    """Blackhand's Breadth: real Wowhead classic text is "+2% critical
-    strike with melee attacks" -- built entirely from classic-db's own
-    AURA_MOD_CRIT_PERCENT effect, no client text involved at all."""
+def test_effect_text_folds_a_flat_equip_stat_out_of_the_text():
+    """Blackhand's Breadth: `AURA_MOD_CRIT_PERCENT` is fully classified and
+    folds into the item's `stats` (see `equip_stats`'s own test) -- eleventh
+    wow-player sweep, 2026-09-30: repeating "+2% Critical Strike" as prose
+    here would double-count a number `stats` already carries, so a flat
+    on-equip stat aura with nothing residual contributes no text at all
+    (`equip_stat_folds_out_text`), the same rule the client schema's
+    `EffectIndex.text` applies."""
     slot = _slot(7598, trigger=TRIGGER_ON_EQUIP, classic_db_name="Increased Critical 2")
     item = _item(spells=[slot])
     spells = {7598: _spell(7598, _effect(AURA_MOD_CRIT_PERCENT, 1, 1))}
-    assert effect_text(item, _FakeSpellText({}), spells) == "Equip: +2% Critical Strike."
+    assert effect_text(item, _FakeSpellText({}), spells) == ""
 
 
 def test_effect_text_prefers_classicdb_structured_render_over_a_name_matched_client_text():
@@ -462,6 +466,39 @@ def test_effect_text_falls_back_to_the_classicdb_name_when_the_spell_is_not_in_t
     assert effect_text(item, _FakeSpellText({}), {}) == "Increase Spell Dam 29"
 
 
+def test_effect_text_keeps_a_residual_proc_line_when_the_same_spell_also_folds_a_stat():
+    """A single equip spell can carry both a flat stat aura (folded into
+    `stats`, so its own prose is dropped) and a proc aura with no stat
+    representation at all (the extra-attack line is the only place that
+    residual effect shows up). The fold-out rule (`equip_stat_folds_out_text`)
+    operates on the spell's stats as a whole, not by discarding the entire
+    spell -- a real proc riding the same row must still surface."""
+    item = _item(spells=[_slot(9000, trigger=TRIGGER_ON_EQUIP, classic_db_name="Test Proc")])
+    spells = {
+        9000: _spell(
+            9000,
+            _effect(AURA_MOD_ATTACK_POWER, 19, 1),
+            _effect(AURA_PROC_TRIGGER_SPELL, 0, trigger_spell=15601),
+            proc_chance=2,
+        ),
+        15601: _spell(
+            15601,
+            ClassicDbSpellEffect(
+                effect=EFFECT_ADD_EXTRA_ATTACKS,
+                aura=0,
+                base_points=0,
+                die_sides=0,
+                misc_value=0,
+                trigger_spell=0,
+            ),
+        ),
+    }
+    assert (
+        effect_text(item, _FakeSpellText({}), spells)
+        == "Chance on hit (2%): Gain 1 extra attack."
+    )
+
+
 def test_effect_text_joins_multiple_spells_and_drops_empty_ones():
     item = _item(
         spells=[
@@ -488,6 +525,11 @@ def test_to_gear_item_tags_classicdb_provenance_and_client_unconfirmed():
 
 
 def test_to_gear_item_merges_equip_stats_into_planner_stats():
+    """The stat lands in `gear.stats`; `gear.effect_text` stays empty --
+    the flat aura is fully accounted for by `stats` alone, so `to_gear_item`
+    must not also carry a restating "Equip: +2% Critical Strike." string
+    (eleventh wow-player sweep, 2026-09-30; see
+    `test_effect_text_folds_a_flat_equip_stat_out_of_the_text`)."""
     item = _item(
         id=13965,
         raw_stats={},
@@ -496,7 +538,7 @@ def test_to_gear_item_merges_equip_stats_into_planner_stats():
     spells = {7598: _spell(7598, _effect(AURA_MOD_CRIT_PERCENT, 1, 1))}
     gear = to_gear_item(item, _FakeSpellText({}), spells, fork_icons={}, wowhead_icons={})
     assert gear.stats == {"crit": 2}
-    assert gear.effect_text == "Equip: +2% Critical Strike."
+    assert gear.effect_text == ""
 
 
 def test_to_gear_item_resolves_icon_through_the_fork_wowhead_fallback_chain():
