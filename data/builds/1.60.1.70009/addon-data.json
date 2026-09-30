@@ -7809,9 +7809,9 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 251486,
-              "source_kind": "quest",
-              "source": "A Frightened Request"
+              "item_id": 1974,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 252498,
@@ -7839,9 +7839,9 @@
               "source": "WANTED: Chok'sul"
             },
             "finger2": {
-              "item_id": 1156,
-              "source_kind": "dungeon",
-              "source": "Westfall: Gilnid"
+              "item_id": 20431,
+              "source_kind": "rep",
+              "source": "Silverwing Sentinels"
             },
             "main_hand": {
               "item_id": 890,
@@ -7918,13 +7918,13 @@
             12998,
             5542,
             252493,
-            251486,
+            1974,
             252498,
             253925,
             23173,
             252443,
             1449,
-            1156,
+            20431,
             890
           ],
           "horde": [
@@ -7957,9 +7957,9 @@
         "factions": {
           "alliance": {
             "head": {
-              "item_id": 4322,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 3020,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "neck": {
               "item_id": 23169,
@@ -8015,11 +8015,6 @@
               "item_id": 274746,
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear"
-            },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
             },
             "main_hand": {
               "item_id": 9604,
@@ -8088,11 +8083,6 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 249392,
               "source_kind": "crafted",
@@ -8102,7 +8092,7 @@
         },
         "new_at_band": {
           "alliance": [
-            4322,
+            3020,
             23169,
             7684,
             4462,
@@ -8114,7 +8104,6 @@
             254001,
             19525,
             274746,
-            272059,
             9604
           ],
           "horde": [
@@ -8130,7 +8119,6 @@
             254001,
             19521,
             274746,
-            272059,
             249392
           ]
         },
@@ -8207,11 +8195,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "trinket1": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "main_hand": {
               "item_id": 9604,
               "source_kind": "quest",
@@ -8279,11 +8262,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
-            "trinket1": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "main_hand": {
               "item_id": 1664,
               "source_kind": "world_drop",
@@ -8303,8 +8281,7 @@
             10009,
             254013,
             281635,
-            19524,
-            1713
+            19524
           ],
           "horde": [
             8201,
@@ -8318,7 +8295,6 @@
             254013,
             281635,
             19520,
-            1713,
             1664
           ]
         },
@@ -8612,11 +8588,6 @@
               "item_id": 19102,
               "source_kind": "rep",
               "source": "Stormpike Guard"
-            },
-            "ranged": {
-              "item_id": 23197,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           },
           "horde": {
@@ -8694,11 +8665,6 @@
               "item_id": 20654,
               "source_kind": "world",
               "source": "Azure Templar"
-            },
-            "ranged": {
-              "item_id": 23197,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           }
         },
@@ -8718,8 +8684,7 @@
             20682,
             22678,
             272439,
-            19102,
-            23197
+            19102
           ],
           "horde": [
             240072,
@@ -8736,8 +8701,7 @@
             20682,
             22678,
             272439,
-            20654,
-            23197
+            20654
           ]
         },
         "weights": {
@@ -8840,7 +8804,7 @@
             "back": {
               "item_id": 279865,
               "source_kind": "quest",
-              "source": "Abominable Creatures"
+              "source": "Unending Torment"
             },
             "chest": {
               "item_id": 252490,
@@ -9554,11 +9518,6 @@
               "item_id": 19167,
               "source_kind": "crafted",
               "source": "Blacksmithing"
-            },
-            "ranged": {
-              "item_id": 23197,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           },
           "horde": {
@@ -9636,11 +9595,6 @@
               "item_id": 19167,
               "source_kind": "crafted",
               "source": "Blacksmithing"
-            },
-            "ranged": {
-              "item_id": 23197,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           }
         },
@@ -9660,8 +9614,7 @@
             19514,
             19289,
             249469,
-            19167,
-            23197
+            19167
           ],
           "horde": [
             240064,
@@ -9678,8 +9631,7 @@
             19510,
             19289,
             19120,
-            19167,
-            23197
+            19167
           ]
         },
         "weights": {
@@ -9947,11 +9899,6 @@
               "source_kind": "quest",
               "source": "Willix the Importer"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 285346,
               "source_kind": "world",
@@ -9970,9 +9917,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 6204,
-              "source_kind": "world",
-              "source": "Fenros"
+              "item_id": 252512,
+              "source_kind": "crafted",
+              "source": "Leatherworking"
             },
             "neck": {
               "item_id": 19537,
@@ -10029,20 +9976,15 @@
               "source_kind": "quest",
               "source": "Willix the Importer"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 285346,
               "source_kind": "world",
               "source": "Thora Feathermoon"
             },
             "off_hand": {
-              "item_id": 776,
-              "source_kind": "dungeon",
-              "source": "Razorfen Kraul: Overlord Ramtusk"
+              "item_id": 16886,
+              "source_kind": "quest",
+              "source": "Baron Aquanis"
             },
             "ranged": {
               "item_id": 274748,
@@ -10065,13 +10007,12 @@
             4055,
             7686,
             6748,
-            272059,
             285346,
             776,
             274748
           ],
           "horde": [
-            6204,
+            252512,
             19537,
             2278,
             13108,
@@ -10083,9 +10024,8 @@
             4055,
             7686,
             6748,
-            272059,
             285346,
-            776,
+            16886,
             274748
           ]
         },
@@ -10561,13 +10501,18 @@
               "source_kind": "vendor",
               "source": "Pix Xizzix"
             },
+            "trinket1": {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 250619,
               "source_kind": "crafted",
               "source": "Blacksmithing"
             },
             "ranged": {
-              "item_id": 18282,
+              "item_id": 279273,
               "source_kind": "crafted",
               "source": "Engineering"
             }
@@ -10638,13 +10583,18 @@
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
+            "trinket2": {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 250619,
               "source_kind": "crafted",
               "source": "Blacksmithing"
             },
             "ranged": {
-              "item_id": 18282,
+              "item_id": 279273,
               "source_kind": "crafted",
               "source": "Engineering"
             }
@@ -10665,7 +10615,7 @@
             21205,
             272408,
             250619,
-            18282
+            279273
           ],
           "horde": [
             239532,
@@ -10681,7 +10631,7 @@
             21205,
             272408,
             250619,
-            18282
+            279273
           ]
         },
         "weights": {
@@ -10948,11 +10898,6 @@
               "source_kind": "quest",
               "source": "Willix the Importer"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 285346,
               "source_kind": "world",
@@ -10971,9 +10916,9 @@
           },
           "horde": {
             "head": {
-              "item_id": 252512,
-              "source_kind": "crafted",
-              "source": "Leatherworking"
+              "item_id": 6204,
+              "source_kind": "world",
+              "source": "Fenros"
             },
             "neck": {
               "item_id": 19537,
@@ -11030,11 +10975,6 @@
               "source_kind": "quest",
               "source": "Willix the Importer"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 285346,
               "source_kind": "world",
@@ -11066,13 +11006,12 @@
             4055,
             7686,
             6748,
-            272059,
             285346,
             776,
             274748
           ],
           "horde": [
-            252512,
+            6204,
             19537,
             2278,
             13108,
@@ -11084,7 +11023,6 @@
             4055,
             7686,
             6748,
-            272059,
             285346,
             16886,
             274748
@@ -11563,13 +11501,18 @@
               "source_kind": "rep",
               "source": "Stormpike Guard"
             },
+            "trinket1": {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 250619,
               "source_kind": "crafted",
               "source": "Blacksmithing"
             },
             "ranged": {
-              "item_id": 18282,
+              "item_id": 279273,
               "source_kind": "crafted",
               "source": "Engineering"
             }
@@ -11640,13 +11583,18 @@
               "source_kind": "quest",
               "source": "Job Opening: Guard Captain of Revantusk Village"
             },
+            "trinket2": {
+              "item_id": 249469,
+              "source_kind": "crafted",
+              "source": "Enchanting"
+            },
             "main_hand": {
               "item_id": 250619,
               "source_kind": "crafted",
               "source": "Blacksmithing"
             },
             "ranged": {
-              "item_id": 18282,
+              "item_id": 279273,
               "source_kind": "crafted",
               "source": "Engineering"
             }
@@ -11667,7 +11615,7 @@
             21205,
             19325,
             250619,
-            18282
+            279273
           ],
           "horde": [
             239532,
@@ -11683,7 +11631,7 @@
             21205,
             19325,
             250619,
-            18282
+            279273
           ]
         },
         "weights": {
@@ -11962,11 +11910,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 6692,
               "source_kind": "dungeon",
@@ -12030,9 +11973,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 277226,
-              "source_kind": "quest",
-              "source": "WANTED: Incinerator Gar'im"
+              "item_id": 1121,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "finger1": {
               "item_id": 7686,
@@ -12043,11 +11986,6 @@
               "item_id": 19513,
               "source_kind": "rep",
               "source": "Warsong Outriders"
-            },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
             },
             "main_hand": {
               "item_id": 6692,
@@ -12080,7 +12018,6 @@
             277226,
             7686,
             19517,
-            272059,
             6692,
             23168,
             274748
@@ -12095,10 +12032,8 @@
             7359,
             20152,
             6690,
-            277226,
             7686,
             19513,
-            272059,
             6692,
             23168,
             274748
@@ -12175,11 +12110,6 @@
               "item_id": 19515,
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
-            },
-            "trinket1": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
             },
             "main_hand": {
               "item_id": 2164,
@@ -12287,7 +12217,6 @@
             6423,
             13095,
             19515,
-            1713,
             2164,
             10823,
             13138
@@ -12792,9 +12721,9 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
-              "item_id": 253913,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 5970,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis"
             },
             "waist": {
               "item_id": 253925,
@@ -12907,7 +12836,7 @@
             5542,
             253901,
             1974,
-            253913,
+            5970,
             253925,
             23173,
             4320,
@@ -13004,11 +12933,6 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 23168,
               "source_kind": "dungeon",
@@ -13086,11 +13010,6 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 23168,
               "source_kind": "dungeon",
@@ -13122,7 +13041,6 @@
             254001,
             19525,
             274746,
-            272059,
             23168,
             249394,
             7708
@@ -13140,7 +13058,6 @@
             254001,
             19521,
             274746,
-            272059,
             23168,
             249394,
             7708
@@ -13675,7 +13592,7 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 240050,
+              "item_id": 240058,
               "source_kind": "vendor",
               "source": "Leonid Barthalomew the Revered"
             },
@@ -13740,7 +13657,7 @@
             240057,
             240053,
             240055,
-            240050,
+            240058,
             234032,
             21836,
             272439,
@@ -13790,9 +13707,9 @@
               "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
-              "item_id": 253913,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 5970,
+              "source_kind": "dungeon",
+              "source": "Wailing Caverns: Lord Serpentis"
             },
             "waist": {
               "item_id": 253925,
@@ -13905,7 +13822,7 @@
             5542,
             253901,
             1974,
-            253913,
+            5970,
             253925,
             23173,
             4320,
@@ -13969,9 +13886,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 9448,
-              "source_kind": "dungeon",
-              "source": "Gnomeregan: Electrocutioner 6000"
+              "item_id": 13106,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "hands": {
               "item_id": 270029,
@@ -13984,9 +13901,9 @@
               "source": "The League of Arathor"
             },
             "legs": {
-              "item_id": 23173,
-              "source_kind": "dungeon",
-              "source": "Shadowfang Keep: Sever"
+              "item_id": 253987,
+              "source_kind": "crafted",
+              "source": "Tailoring"
             },
             "feet": {
               "item_id": 254001,
@@ -14002,11 +13919,6 @@
               "item_id": 6199,
               "source_kind": "world",
               "source": "Leech Widow"
-            },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
             },
             "main_hand": {
               "item_id": 249392,
@@ -14076,14 +13988,9 @@
               "source": "Willix the Importer"
             },
             "finger2": {
-              "item_id": 6199,
-              "source_kind": "world",
-              "source": "Leech Widow"
-            },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
+              "item_id": 19521,
+              "source_kind": "rep",
+              "source": "Warsong Outriders"
             },
             "main_hand": {
               "item_id": 249392,
@@ -14104,13 +14011,13 @@
             7684,
             4462,
             7065,
-            9448,
+            13106,
             270029,
             20099,
+            253987,
             254001,
             6750,
             6199,
-            272059,
             249392,
             7708
           ],
@@ -14126,8 +14033,7 @@
             253987,
             254001,
             6750,
-            6199,
-            272059,
+            19521,
             249392,
             7708
           ]
@@ -14294,6 +14200,7 @@
             19507,
             4326,
             10021,
+            9448,
             10019,
             10771,
             10009,
@@ -14799,9 +14706,9 @@
               "source": "Tailoring"
             },
             "legs": {
-              "item_id": 253937,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 23173,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Sever"
             },
             "feet": {
               "item_id": 4320,
@@ -14906,7 +14813,7 @@
             1974,
             5970,
             253925,
-            253937,
+            23173,
             4320,
             1449,
             20431,
@@ -15001,11 +14908,6 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 23168,
               "source_kind": "dungeon",
@@ -15083,11 +14985,6 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 23168,
               "source_kind": "dungeon",
@@ -15115,11 +15012,9 @@
             9448,
             270029,
             20099,
-            23173,
             254001,
             19525,
             274746,
-            272059,
             23168,
             249394,
             7708
@@ -15137,7 +15032,6 @@
             254001,
             19521,
             274746,
-            272059,
             23168,
             249394,
             7708
@@ -16010,11 +15904,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 9449,
               "source_kind": "dungeon",
@@ -16082,11 +15971,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 9449,
               "source_kind": "dungeon",
@@ -16108,7 +15992,6 @@
             250534,
             13097,
             19517,
-            272059,
             9449
           ],
           "horde": [
@@ -16124,7 +16007,6 @@
             250534,
             13097,
             19513,
-            272059,
             9449
           ]
         },
@@ -16584,7 +16466,7 @@
               "source": "Darkmoon Elementals Deck"
             },
             "main_hand": {
-              "item_id": 17193,
+              "item_id": 19169,
               "source_kind": "crafted",
               "source": "Blacksmithing"
             }
@@ -16661,7 +16543,7 @@
               "source": "Epic Armaments of Battle - Friend of the Dawn"
             },
             "main_hand": {
-              "item_id": 17193,
+              "item_id": 19169,
               "source_kind": "crafted",
               "source": "Blacksmithing"
             }
@@ -16683,7 +16565,7 @@
             19325,
             22678,
             19289,
-            17193
+            19169
           ],
           "horde": [
             240027,
@@ -16700,7 +16582,7 @@
             19325,
             19289,
             22678,
-            17193
+            19169
           ]
         },
         "weights": {
@@ -16739,9 +16621,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 251486,
-              "source_kind": "quest",
-              "source": "A Frightened Request"
+              "item_id": 1974,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 5970,
@@ -16858,7 +16740,7 @@
             12998,
             5542,
             253901,
-            251486,
+            1974,
             5970,
             253925,
             253937,
@@ -16956,11 +16838,6 @@
               "source_kind": "quest",
               "source": "WANTED: Chok'sul"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 249392,
               "source_kind": "crafted",
@@ -17033,11 +16910,6 @@
               "source_kind": "quest",
               "source": "Willix the Importer"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 249392,
               "source_kind": "crafted",
@@ -17064,7 +16936,6 @@
             254001,
             19525,
             1449,
-            272059,
             249392,
             7708
           ],
@@ -17081,7 +16952,6 @@
             254001,
             19521,
             6750,
-            272059,
             249392,
             7708
           ]
@@ -17544,9 +17414,9 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 231620,
+              "source_kind": "vendor",
+              "source": "Captain Dirgehammer"
             },
             "finger1": {
               "item_id": 234032,
@@ -17626,9 +17496,9 @@
               "source": "Leonid Barthalomew the Revered"
             },
             "feet": {
-              "item_id": 19684,
-              "source_kind": "crafted",
-              "source": "Tailoring"
+              "item_id": 231610,
+              "source_kind": "vendor",
+              "source": "Lady Palanseer"
             },
             "finger1": {
               "item_id": 234032,
@@ -17673,7 +17543,7 @@
             272097,
             228190,
             239587,
-            19684,
+            231620,
             234032,
             20682,
             22678,
@@ -17691,7 +17561,7 @@
             239584,
             228190,
             239587,
-            19684,
+            231610,
             234032,
             20682,
             22678,
@@ -18038,9 +17908,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 277226,
-              "source_kind": "quest",
-              "source": "WANTED: Incinerator Gar'im"
+              "item_id": 4055,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "finger1": {
               "item_id": 7686,
@@ -18097,7 +17967,7 @@
             7359,
             20152,
             6690,
-            277226,
+            4055,
             7686,
             272067,
             9457,
@@ -19078,9 +18948,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 277226,
-              "source_kind": "quest",
-              "source": "WANTED: Incinerator Gar'im"
+              "item_id": 4055,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "finger1": {
               "item_id": 7686,
@@ -19137,7 +19007,7 @@
             7359,
             20152,
             6690,
-            277226,
+            4055,
             7686,
             272067,
             9457,
@@ -19851,9 +19721,9 @@
               "source": "World drop"
             },
             "off_hand": {
-              "item_id": 251485,
-              "source_kind": "quest",
-              "source": "A Frightened Request"
+              "item_id": 1935,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Son of Arugal"
             },
             "ranged": {
               "item_id": 13136,
@@ -19954,7 +19824,7 @@
             285330,
             277210,
             2236,
-            251485,
+            1935,
             13136
           ],
           "horde": [
@@ -20109,9 +19979,9 @@
               "source": "Razorfen Kraul: Agathelos the Raging"
             },
             "feet": {
-              "item_id": 277226,
-              "source_kind": "quest",
-              "source": "WANTED: Incinerator Gar'im"
+              "item_id": 4055,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "finger1": {
               "item_id": 7686,
@@ -20168,7 +20038,7 @@
             7359,
             20152,
             6690,
-            277226,
+            4055,
             7686,
             272067,
             6691,
@@ -20826,18 +20696,13 @@
               "source_kind": "crafted",
               "source": "Blacksmithing"
             },
-            "neck": {
-              "item_id": 277204,
-              "source_kind": "quest",
-              "source": "Friend of the Library"
-            },
             "shoulder": {
               "item_id": 12998,
               "source_kind": "world_drop",
               "source": "World drop"
             },
             "back": {
-              "item_id": 5542,
+              "item_id": 4311,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
@@ -20847,9 +20712,9 @@
               "source": "Leatherworking"
             },
             "wrist": {
-              "item_id": 251486,
-              "source_kind": "quest",
-              "source": "A Frightened Request"
+              "item_id": 1974,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 252498,
@@ -20882,9 +20747,9 @@
               "source": "Silverwing Sentinels"
             },
             "main_hand": {
-              "item_id": 5187,
-              "source_kind": "dungeon",
-              "source": "Westfall: Rhahk'Zor"
+              "item_id": 890,
+              "source_kind": "world_drop",
+              "source": "World drop"
             }
           },
           "horde": {
@@ -20953,18 +20818,17 @@
         "new_at_band": {
           "alliance": [
             250532,
-            277204,
             12998,
-            5542,
+            4311,
             252492,
-            251486,
+            1974,
             252498,
             253925,
             23173,
             4320,
             1449,
             20431,
-            5187
+            890
           ],
           "horde": [
             250532,
@@ -21054,11 +20918,6 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 9604,
               "source_kind": "quest",
@@ -21126,11 +20985,6 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 23168,
               "source_kind": "dungeon",
@@ -21157,7 +21011,6 @@
             254001,
             19525,
             274746,
-            272059,
             9604
           ],
           "horde": [
@@ -21173,7 +21026,6 @@
             254001,
             19521,
             274746,
-            272059,
             23168,
             249394
           ]
@@ -21251,11 +21103,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "trinket1": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "main_hand": {
               "item_id": 9604,
               "source_kind": "quest",
@@ -21323,11 +21170,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
-            "trinket1": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
-            },
             "main_hand": {
               "item_id": 1664,
               "source_kind": "world_drop",
@@ -21347,8 +21189,7 @@
             10009,
             254013,
             281635,
-            19524,
-            1713
+            19524
           ],
           "horde": [
             8201,
@@ -21362,7 +21203,6 @@
             254013,
             281635,
             19520,
-            1713,
             1664
           ]
         },
@@ -21654,11 +21494,6 @@
               "item_id": 19102,
               "source_kind": "rep",
               "source": "Stormpike Guard"
-            },
-            "ranged": {
-              "item_id": 23199,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           },
           "horde": {
@@ -21736,11 +21571,6 @@
               "item_id": 22333,
               "source_kind": "dungeon",
               "source": "Scholomance: Kormok"
-            },
-            "ranged": {
-              "item_id": 23199,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           }
         },
@@ -21760,8 +21590,7 @@
             20682,
             22678,
             272439,
-            19102,
-            23199
+            19102
           ],
           "horde": [
             240123,
@@ -21778,8 +21607,7 @@
             20682,
             22678,
             272439,
-            22333,
-            23199
+            22333
           ]
         },
         "weights": {
@@ -21994,9 +21822,9 @@
               "source": "Razorfen Kraul: Overlord Ramtusk"
             },
             "neck": {
-              "item_id": 13084,
-              "source_kind": "world_drop",
-              "source": "World drop"
+              "item_id": 7731,
+              "source_kind": "dungeon",
+              "source": "Scarlet Monastery: Azshir the Sleepless"
             },
             "shoulder": {
               "item_id": 2278,
@@ -22048,11 +21876,6 @@
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 6692,
               "source_kind": "dungeon",
@@ -22071,9 +21894,9 @@
               "source": "Razorfen Kraul: Overlord Ramtusk"
             },
             "neck": {
-              "item_id": 7731,
-              "source_kind": "dungeon",
-              "source": "Scarlet Monastery: Azshir the Sleepless"
+              "item_id": 13084,
+              "source_kind": "world_drop",
+              "source": "World drop"
             },
             "shoulder": {
               "item_id": 2278,
@@ -22125,11 +21948,6 @@
               "source_kind": "rep",
               "source": "Warsong Outriders"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 6692,
               "source_kind": "dungeon",
@@ -22145,7 +21963,7 @@
         "new_at_band": {
           "alliance": [
             6686,
-            13084,
+            7731,
             2278,
             16315,
             2870,
@@ -22156,13 +21974,12 @@
             4464,
             13097,
             19517,
-            272059,
             6692,
             7687
           ],
           "horde": [
             6686,
-            7731,
+            13084,
             2278,
             16658,
             2870,
@@ -22173,7 +21990,6 @@
             4464,
             13097,
             19513,
-            272059,
             6692,
             7687
           ]
@@ -22250,11 +22066,6 @@
               "item_id": 19515,
               "source_kind": "rep",
               "source": "Silverwing Sentinels"
-            },
-            "trinket1": {
-              "item_id": 1713,
-              "source_kind": "world_drop",
-              "source": "World drop"
             },
             "main_hand": {
               "item_id": 2164,
@@ -22343,7 +22154,6 @@
         "new_at_band": {
           "alliance": [
             7719,
-            7731,
             250539,
             16336,
             6773,
@@ -22354,12 +22164,12 @@
             252465,
             13095,
             19515,
-            1713,
             2164,
             868
           ],
           "horde": [
             7719,
+            7731,
             250539,
             5257,
             6773,
@@ -22673,11 +22483,6 @@
               "item_id": 21522,
               "source_kind": "quest",
               "source": "Treasure of the Timeless One"
-            },
-            "ranged": {
-              "item_id": 23199,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           },
           "horde": {
@@ -22760,11 +22565,6 @@
               "item_id": 21522,
               "source_kind": "quest",
               "source": "Treasure of the Timeless One"
-            },
-            "ranged": {
-              "item_id": 23199,
-              "source_kind": "world_drop",
-              "source": "World drop"
             }
           }
         },
@@ -22785,8 +22585,7 @@
             19289,
             19287,
             19170,
-            21522,
-            23199
+            21522
           ],
           "horde": [
             240131,
@@ -22803,8 +22602,7 @@
             19325,
             19289,
             19170,
-            21522,
-            23199
+            21522
           ]
         },
         "weights": {
@@ -22833,7 +22631,7 @@
               "source": "World drop"
             },
             "back": {
-              "item_id": 4311,
+              "item_id": 5542,
               "source_kind": "crafted",
               "source": "Tailoring"
             },
@@ -22843,9 +22641,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 251486,
-              "source_kind": "quest",
-              "source": "A Frightened Request"
+              "item_id": 1974,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 5970,
@@ -22960,9 +22758,9 @@
           "alliance": [
             253949,
             12998,
-            4311,
+            5542,
             253901,
-            251486,
+            1974,
             5970,
             253925,
             253937,
@@ -23828,9 +23626,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 251486,
-              "source_kind": "quest",
-              "source": "A Frightened Request"
+              "item_id": 1974,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 5970,
@@ -23947,7 +23745,7 @@
             12998,
             4311,
             253901,
-            251486,
+            1974,
             5970,
             253925,
             253937,
@@ -24816,9 +24614,9 @@
               "source": "Tailoring"
             },
             "wrist": {
-              "item_id": 251486,
-              "source_kind": "quest",
-              "source": "A Frightened Request"
+              "item_id": 1974,
+              "source_kind": "dungeon",
+              "source": "Shadowfang Keep: Son of Arugal"
             },
             "hands": {
               "item_id": 5970,
@@ -24935,7 +24733,7 @@
             12998,
             4311,
             253901,
-            251486,
+            1974,
             5970,
             253925,
             253937,
@@ -25035,11 +24833,6 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 23168,
               "source_kind": "dungeon",
@@ -25117,11 +24910,6 @@
               "source_kind": "vendor",
               "source": "Gezzy Gunkgear"
             },
-            "trinket1": {
-              "item_id": 272059,
-              "source_kind": "vendor",
-              "source": "Creeg Bothunk"
-            },
             "main_hand": {
               "item_id": 23168,
               "source_kind": "dungeon",
@@ -25153,7 +24941,6 @@
             254001,
             19525,
             274746,
-            272059,
             23168,
             249394,
             7708
@@ -25171,7 +24958,6 @@
             254001,
             19521,
             274746,
-            272059,
             23168,
             249394,
             7708
@@ -25863,9 +25649,9 @@
               "source": "Silverwing Sentinels"
             },
             "main_hand": {
-              "item_id": 251533,
-              "source_kind": "quest",
-              "source": "The Wrath of Rath'mael"
+              "item_id": 7230,
+              "source_kind": "dungeon",
+              "source": "Westfall: Mr. Smite"
             },
             "ranged": {
               "item_id": 285279,
@@ -25954,7 +25740,7 @@
             250503,
             12054,
             20439,
-            251533,
+            7230,
             285279
           ],
           "horde": [

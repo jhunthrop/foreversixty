@@ -2,7 +2,7 @@
   "spec": "druid-feral",
   "build": "1.60.1.70009",
   "engine_version": "969b21e0c",
-  "generated_at": "2026-09-30T10:34:27Z",
+  "generated_at": "2026-09-30T12:01:54Z",
   "bands": [
     {
       "spec": "druid-feral",
@@ -138,7 +138,7 @@
               "item_name": "Lambent Scale Cloak",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.042541657822610546,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -309,7 +309,7 @@
               "item_name": "Trapper's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": 0,
+              "dps_delta": 0.14077705322541334,
               "verified": true
             },
             {
@@ -342,7 +342,7 @@
               "item_name": "Feet of the Lynx",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.007795595884537931,
+              "dps_delta": 0,
               "verified": true,
               "sim_dps": 62.84376053128165
             },
@@ -381,18 +381,18 @@
               "dps_delta": -0.3551661437531395
             },
             {
-              "item_id": 281673,
-              "item_name": "Loop of Sacrifice",
-              "source_kind": "quest",
-              "source": "The Offering of Blood",
-              "dps_delta": -0.4470372097788877
-            },
-            {
               "item_id": 8350,
               "item_name": "The 1 Ring",
               "source_kind": "world",
               "source": "Fishing",
               "dps_delta": -0.6246202816554575
+            },
+            {
+              "item_id": 1156,
+              "item_name": "Lavishly Jeweled Ring",
+              "source_kind": "dungeon",
+              "source": "Westfall: Gilnid",
+              "dps_delta": -0.6736067427225643
             }
           ]
         },
@@ -410,16 +410,9 @@
               "item_name": "Signet of the Zhevra",
               "source_kind": "world",
               "source": "Swiftmane",
-              "dps_delta": -0.0070325995700528665,
+              "dps_delta": 0,
               "verified": true,
               "sim_dps": 62.84452352759614
-            },
-            {
-              "item_id": 281673,
-              "item_name": "Loop of Sacrifice",
-              "source_kind": "quest",
-              "source": "The Offering of Blood",
-              "dps_delta": -0.12859661080946294
             },
             {
               "item_id": 8350,
@@ -427,18 +420,25 @@
               "source_kind": "world",
               "source": "Fishing",
               "dps_delta": -0.3061796826860327
+            },
+            {
+              "item_id": 1156,
+              "item_name": "Lavishly Jeweled Ring",
+              "source_kind": "dungeon",
+              "source": "Westfall: Gilnid",
+              "dps_delta": -0.3551661437531395
             }
           ]
         },
         {
           "slot": "trinket1",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "trinket2",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "main_hand",
@@ -486,7 +486,7 @@
         }
       ],
       "set_dps": 62.85155612716619,
-      "no_source_count": 168,
+      "no_source_count": 194,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "2664 Spinner Fang",
@@ -519,16 +519,16 @@
         "finger2: Demon Band",
         "main_hand: Smite's Mighty Hammer"
       ],
-      "weights_run_seconds": 1.864217924,
-      "verify_run_seconds": 1.680598043,
+      "weights_run_seconds": 1.3483029260000001,
+      "verify_run_seconds": 1.109860826,
       "coverage": {
         "back": {
           "eligible": 98,
-          "sourced": 83
+          "sourced": 80
         },
         "chest": {
           "eligible": 137,
-          "sourced": 123
+          "sourced": 122
         },
         "feet": {
           "eligible": 95,
@@ -536,15 +536,15 @@
         },
         "finger1": {
           "eligible": 31,
-          "sourced": 20
+          "sourced": 19
         },
         "finger2": {
           "eligible": 31,
-          "sourced": 20
+          "sourced": 19
         },
         "hands": {
           "eligible": 100,
-          "sourced": 90
+          "sourced": 88
         },
         "head": {
           "eligible": 23,
@@ -552,15 +552,15 @@
         },
         "legs": {
           "eligible": 107,
-          "sourced": 100
+          "sourced": 99
         },
         "main_hand": {
           "eligible": 200,
-          "sourced": 150
+          "sourced": 138
         },
         "neck": {
           "eligible": 15,
-          "sourced": 5
+          "sourced": 4
         },
         "off_hand": {
           "eligible": 26,
@@ -588,7 +588,7 @@
         },
         "wrist": {
           "eligible": 62,
-          "sourced": 53
+          "sourced": 48
         }
       },
       "reference_dps_per_point": 0.055429573624765485,
@@ -718,7 +718,7 @@
           "slot": "back",
           "item_id": 279865,
           "item_name": "Grave Shroud",
-          "source": "Abominable Creatures",
+          "source": "Unending Torment",
           "source_kind": "quest",
           "score": 9.832479239378365,
           "verified": true,
@@ -728,7 +728,7 @@
               "item_name": "Lambent Scale Cloak",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.043617425798515796,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -899,7 +899,7 @@
               "item_name": "Trapper's Leather Pants",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": 0,
+              "dps_delta": 0.14310121783108798,
               "verified": true
             },
             {
@@ -1000,7 +1000,7 @@
               "item_name": "Signet of the Zhevra",
               "source_kind": "world",
               "source": "Swiftmane",
-              "dps_delta": -0.0054555811750489625,
+              "dps_delta": 0,
               "verified": true,
               "sim_dps": 61.4910770700289
             },
@@ -1023,12 +1023,12 @@
         {
           "slot": "trinket1",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "trinket2",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "main_hand",
@@ -1044,7 +1044,7 @@
               "item_name": "Smite's Mighty Hammer",
               "source_kind": "dungeon",
               "source": "Westfall: Mr. Smite",
-              "dps_delta": 0,
+              "dps_delta": 0.46920368978497606,
               "verified": true
             },
             {
@@ -1076,7 +1076,7 @@
         }
       ],
       "set_dps": 61.49653265120395,
-      "no_source_count": 170,
+      "no_source_count": 190,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1832 Lucky Trousers",
@@ -1109,16 +1109,16 @@
         "finger2: Demon Band",
         "main_hand: Hammerbone"
       ],
-      "weights_run_seconds": 1.864217924,
-      "verify_run_seconds": 1.659103026,
+      "weights_run_seconds": 1.3483029260000001,
+      "verify_run_seconds": 1.105290915,
       "coverage": {
         "back": {
           "eligible": 99,
-          "sourced": 88
+          "sourced": 85
         },
         "chest": {
           "eligible": 135,
-          "sourced": 121
+          "sourced": 120
         },
         "feet": {
           "eligible": 95,
@@ -1134,7 +1134,7 @@
         },
         "hands": {
           "eligible": 94,
-          "sourced": 82
+          "sourced": 81
         },
         "head": {
           "eligible": 23,
@@ -1142,19 +1142,19 @@
         },
         "legs": {
           "eligible": 105,
-          "sourced": 96
+          "sourced": 95
         },
         "main_hand": {
           "eligible": 205,
-          "sourced": 157
+          "sourced": 150
         },
         "neck": {
           "eligible": 15,
-          "sourced": 5
+          "sourced": 4
         },
         "off_hand": {
           "eligible": 26,
-          "sourced": 18
+          "sourced": 15
         },
         "ranged": {
           "eligible": 9,
@@ -1174,11 +1174,11 @@
         },
         "waist": {
           "eligible": 84,
-          "sourced": 77
+          "sourced": 75
         },
         "wrist": {
           "eligible": 64,
-          "sourced": 55
+          "sourced": 54
         }
       },
       "reference_dps_per_point": 0.055429573624765485,
@@ -1360,7 +1360,7 @@
               "item_name": "Sergeant Major's Cape",
               "source_kind": "pvp",
               "source": "PvP rank 9 · Sergeant Major · Alliance",
-              "dps_delta": -0.030823058141947968,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -1647,12 +1647,12 @@
         {
           "slot": "trinket1",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "trinket2",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "main_hand",
@@ -1700,7 +1700,7 @@
         }
       ],
       "set_dps": 102.62399522584398,
-      "no_source_count": 296,
+      "no_source_count": 324,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -1732,16 +1732,16 @@
         "finger2: Protector's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.121783968,
-      "verify_run_seconds": 2.12999654,
+      "weights_run_seconds": 1.61748479,
+      "verify_run_seconds": 1.395103644,
       "coverage": {
         "back": {
           "eligible": 175,
-          "sourced": 145
+          "sourced": 142
         },
         "chest": {
           "eligible": 226,
-          "sourced": 207
+          "sourced": 206
         },
         "feet": {
           "eligible": 149,
@@ -1749,15 +1749,15 @@
         },
         "finger1": {
           "eligible": 78,
-          "sourced": 50
+          "sourced": 48
         },
         "finger2": {
           "eligible": 78,
-          "sourced": 50
+          "sourced": 48
         },
         "hands": {
           "eligible": 155,
-          "sourced": 140
+          "sourced": 138
         },
         "head": {
           "eligible": 75,
@@ -1765,19 +1765,19 @@
         },
         "legs": {
           "eligible": 177,
-          "sourced": 161
+          "sourced": 160
         },
         "main_hand": {
           "eligible": 302,
-          "sourced": 230
+          "sourced": 218
         },
         "neck": {
           "eligible": 37,
-          "sourced": 19
+          "sourced": 18
         },
         "off_hand": {
           "eligible": 54,
-          "sourced": 37
+          "sourced": 36
         },
         "ranged": {
           "eligible": 10,
@@ -1801,7 +1801,7 @@
         },
         "wrist": {
           "eligible": 113,
-          "sourced": 97
+          "sourced": 92
         }
       },
       "reference_dps_per_point": 0.0522517954740532,
@@ -2192,11 +2192,11 @@
               "dps_delta": -0.19929448765532254
             },
             {
-              "item_id": 277226,
-              "item_name": "Disjointed Shoes",
-              "source_kind": "quest",
-              "source": "WANTED: Incinerator Gar'im",
-              "dps_delta": -0.3694508925879741
+              "item_id": 4055,
+              "item_name": "Insignia Boots",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -0.37190986103252777
             }
           ]
         },
@@ -2270,12 +2270,12 @@
         {
           "slot": "trinket1",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "trinket2",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "main_hand",
@@ -2323,7 +2323,7 @@
         }
       ],
       "set_dps": 101.20384025470594,
-      "no_source_count": 301,
+      "no_source_count": 326,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -2355,20 +2355,20 @@
         "finger2: Legionnaire's Band",
         "main_hand: Manual Crowd Pummeler"
       ],
-      "weights_run_seconds": 2.121783968,
-      "verify_run_seconds": 2.112213328,
+      "weights_run_seconds": 1.61748479,
+      "verify_run_seconds": 1.393641417,
       "coverage": {
         "back": {
           "eligible": 175,
-          "sourced": 148
+          "sourced": 145
         },
         "chest": {
           "eligible": 223,
-          "sourced": 202
+          "sourced": 201
         },
         "feet": {
           "eligible": 154,
-          "sourced": 131
+          "sourced": 129
         },
         "finger1": {
           "eligible": 79,
@@ -2380,7 +2380,7 @@
         },
         "hands": {
           "eligible": 150,
-          "sourced": 132
+          "sourced": 131
         },
         "head": {
           "eligible": 75,
@@ -2388,19 +2388,19 @@
         },
         "legs": {
           "eligible": 173,
-          "sourced": 156
+          "sourced": 155
         },
         "main_hand": {
           "eligible": 302,
-          "sourced": 233
+          "sourced": 224
         },
         "neck": {
           "eligible": 37,
-          "sourced": 19
+          "sourced": 18
         },
         "off_hand": {
           "eligible": 51,
-          "sourced": 35
+          "sourced": 32
         },
         "ranged": {
           "eligible": 10,
@@ -2420,11 +2420,11 @@
         },
         "waist": {
           "eligible": 155,
-          "sourced": 141
+          "sourced": 139
         },
         "wrist": {
           "eligible": 116,
-          "sourced": 99
+          "sourced": 97
         }
       },
       "reference_dps_per_point": 0.0522517954740532,
@@ -2574,7 +2574,7 @@
               "item_name": "Forest Tracker Epaulets",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.030549210842067964,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -2708,7 +2708,7 @@
               "item_name": "Skulker's Leather Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.044584580553305386,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -2874,7 +2874,7 @@
               "item_name": "Ironspine's Eye",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Ironspine",
-              "dps_delta": 0,
+              "dps_delta": 0.05212714825475473,
               "verified": true
             },
             {
@@ -2896,12 +2896,12 @@
         {
           "slot": "trinket1",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "trinket2",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "main_hand",
@@ -2948,7 +2948,7 @@
         }
       ],
       "set_dps": 131.9604006042411,
-      "no_source_count": 416,
+      "no_source_count": 444,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -2980,16 +2980,16 @@
         "finger1: Protector's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 2.24943975,
-      "verify_run_seconds": 2.349594025,
+      "weights_run_seconds": 1.67014318,
+      "verify_run_seconds": 1.5629783449999999,
       "coverage": {
         "back": {
           "eligible": 242,
-          "sourced": 207
+          "sourced": 204
         },
         "chest": {
           "eligible": 299,
-          "sourced": 270
+          "sourced": 269
         },
         "feet": {
           "eligible": 206,
@@ -2997,15 +2997,15 @@
         },
         "finger1": {
           "eligible": 117,
-          "sourced": 75
+          "sourced": 73
         },
         "finger2": {
           "eligible": 117,
-          "sourced": 75
+          "sourced": 73
         },
         "hands": {
           "eligible": 227,
-          "sourced": 205
+          "sourced": 203
         },
         "head": {
           "eligible": 142,
@@ -3013,19 +3013,19 @@
         },
         "legs": {
           "eligible": 226,
-          "sourced": 200
+          "sourced": 199
         },
         "main_hand": {
           "eligible": 403,
-          "sourced": 299
+          "sourced": 287
         },
         "neck": {
           "eligible": 54,
-          "sourced": 31
+          "sourced": 30
         },
         "off_hand": {
           "eligible": 74,
-          "sourced": 52
+          "sourced": 51
         },
         "ranged": {
           "eligible": 11,
@@ -3049,7 +3049,7 @@
         },
         "wrist": {
           "eligible": 161,
-          "sourced": 135
+          "sourced": 130
         }
       },
       "reference_dps_per_point": 0.05537365488471057,
@@ -3199,7 +3199,7 @@
               "item_name": "Forest Tracker Epaulets",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -0.029994925896332347,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -3333,7 +3333,7 @@
               "item_name": "Skulker's Leather Gloves",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.037548489640258254,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -3499,7 +3499,7 @@
               "item_name": "Ironspine's Eye",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Ironspine",
-              "dps_delta": 0,
+              "dps_delta": 0.13127792121568405,
               "verified": true
             },
             {
@@ -3521,12 +3521,12 @@
         {
           "slot": "trinket1",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "trinket2",
           "verified": false,
-          "empty_reason": "no_dps_value"
+          "empty_reason": "no_sourced_item"
         },
         {
           "slot": "main_hand",
@@ -3573,7 +3573,7 @@
         }
       ],
       "set_dps": 129.77716842701125,
-      "no_source_count": 421,
+      "no_source_count": 446,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -3604,20 +3604,20 @@
         "finger1: Legionnaire's Band",
         "finger2: Thunderbrow Ring"
       ],
-      "weights_run_seconds": 2.24943975,
-      "verify_run_seconds": 2.311093896,
+      "weights_run_seconds": 1.67014318,
+      "verify_run_seconds": 1.570910783,
       "coverage": {
         "back": {
           "eligible": 244,
-          "sourced": 211
+          "sourced": 208
         },
         "chest": {
           "eligible": 295,
-          "sourced": 264
+          "sourced": 263
         },
         "feet": {
           "eligible": 211,
-          "sourced": 181
+          "sourced": 179
         },
         "finger1": {
           "eligible": 116,
@@ -3629,7 +3629,7 @@
         },
         "hands": {
           "eligible": 222,
-          "sourced": 197
+          "sourced": 196
         },
         "head": {
           "eligible": 143,
@@ -3637,19 +3637,19 @@
         },
         "legs": {
           "eligible": 223,
-          "sourced": 196
+          "sourced": 195
         },
         "main_hand": {
           "eligible": 405,
-          "sourced": 304
+          "sourced": 295
         },
         "neck": {
           "eligible": 55,
-          "sourced": 32
+          "sourced": 31
         },
         "off_hand": {
           "eligible": 70,
-          "sourced": 50
+          "sourced": 47
         },
         "ranged": {
           "eligible": 11,
@@ -3669,11 +3669,11 @@
         },
         "waist": {
           "eligible": 209,
-          "sourced": 192
+          "sourced": 190
         },
         "wrist": {
           "eligible": 166,
-          "sourced": 139
+          "sourced": 137
         }
       },
       "reference_dps_per_point": 0.05537365488471057,
@@ -4177,7 +4177,7 @@
               "item_name": "Hammer of the Northern Wind",
               "source_kind": "world_drop",
               "source": "World drop",
-              "dps_delta": -3.499887340942877,
+              "dps_delta": -3.482376952953601,
               "verified": true
             }
           ]
@@ -4195,7 +4195,7 @@
         }
       ],
       "set_dps": 128.24401293888238,
-      "no_source_count": 559,
+      "no_source_count": 587,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4227,16 +4227,16 @@
         "finger2: Ironspine's Eye",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.257632563,
-      "verify_run_seconds": 2.1608865919999998,
+      "weights_run_seconds": 1.679107155,
+      "verify_run_seconds": 1.628181723,
       "coverage": {
         "back": {
           "eligible": 314,
-          "sourced": 271
+          "sourced": 268
         },
         "chest": {
           "eligible": 378,
-          "sourced": 338
+          "sourced": 337
         },
         "feet": {
           "eligible": 280,
@@ -4244,15 +4244,15 @@
         },
         "finger1": {
           "eligible": 152,
-          "sourced": 101
+          "sourced": 99
         },
         "finger2": {
           "eligible": 152,
-          "sourced": 101
+          "sourced": 99
         },
         "hands": {
           "eligible": 301,
-          "sourced": 273
+          "sourced": 271
         },
         "head": {
           "eligible": 212,
@@ -4260,19 +4260,19 @@
         },
         "legs": {
           "eligible": 284,
-          "sourced": 248
+          "sourced": 247
         },
         "main_hand": {
           "eligible": 511,
-          "sourced": 383
+          "sourced": 371
         },
         "neck": {
           "eligible": 77,
-          "sourced": 46
+          "sourced": 45
         },
         "off_hand": {
           "eligible": 98,
-          "sourced": 70
+          "sourced": 69
         },
         "ranged": {
           "eligible": 11,
@@ -4296,7 +4296,7 @@
         },
         "wrist": {
           "eligible": 219,
-          "sourced": 183
+          "sourced": 178
         }
       },
       "reference_dps_per_point": 0.05541519168026557,
@@ -4612,7 +4612,7 @@
               "item_name": "Skulker's Leather Waistguard",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.044793333677063174,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -4678,7 +4678,7 @@
               "item_name": "Skulker's Leather Boots",
               "source_kind": "crafted",
               "source": "Leatherworking",
-              "dps_delta": -0.044793333677063174,
+              "dps_delta": 0,
               "verified": true
             },
             {
@@ -4744,7 +4744,7 @@
               "item_name": "Ironspine's Eye",
               "source_kind": "dungeon",
               "source": "Scarlet Monastery: Ironspine",
-              "dps_delta": 0,
+              "dps_delta": 0.11387397583837355,
               "verified": true
             },
             {
@@ -4783,10 +4783,10 @@
           "effect_unmodelled": true,
           "alternatives": [
             {
-              "item_id": 11811,
-              "item_name": "Smoking Heart of the Mountain",
-              "source_kind": "crafted",
-              "source": "Enchanting",
+              "item_id": 19990,
+              "item_name": "Blessed Prayer Beads",
+              "source_kind": "quest",
+              "source": "Blood of Morphaz",
               "dps_delta": -0.9224730124191893,
               "verified": true
             }
@@ -4837,7 +4837,7 @@
         }
       ],
       "set_dps": 131.16090084178947,
-      "no_source_count": 564,
+      "no_source_count": 589,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -4871,20 +4871,20 @@
         "trinket2: Frozen Heart of the Mountain",
         "main_hand: Blight"
       ],
-      "weights_run_seconds": 2.257632563,
-      "verify_run_seconds": 2.140368497,
+      "weights_run_seconds": 1.679107155,
+      "verify_run_seconds": 1.642086349,
       "coverage": {
         "back": {
           "eligible": 319,
-          "sourced": 278
+          "sourced": 275
         },
         "chest": {
           "eligible": 375,
-          "sourced": 333
+          "sourced": 332
         },
         "feet": {
           "eligible": 286,
-          "sourced": 246
+          "sourced": 244
         },
         "finger1": {
           "eligible": 153,
@@ -4896,7 +4896,7 @@
         },
         "hands": {
           "eligible": 299,
-          "sourced": 268
+          "sourced": 267
         },
         "head": {
           "eligible": 213,
@@ -4904,19 +4904,19 @@
         },
         "legs": {
           "eligible": 280,
-          "sourced": 243
+          "sourced": 242
         },
         "main_hand": {
           "eligible": 515,
-          "sourced": 391
+          "sourced": 382
         },
         "neck": {
           "eligible": 80,
-          "sourced": 49
+          "sourced": 48
         },
         "off_hand": {
           "eligible": 95,
-          "sourced": 69
+          "sourced": 66
         },
         "ranged": {
           "eligible": 11,
@@ -4936,11 +4936,11 @@
         },
         "waist": {
           "eligible": 271,
-          "sourced": 249
+          "sourced": 247
         },
         "wrist": {
           "eligible": 223,
-          "sourced": 186
+          "sourced": 184
         }
       },
       "reference_dps_per_point": 0.05541519168026557,
@@ -5458,17 +5458,17 @@
               "dps_delta": 0
             },
             {
+              "item_id": 13965,
+              "item_name": "Blackhand's Breadth",
+              "source_kind": "quest",
+              "source": "General Drakkisath's Demise",
+              "dps_delta": -0.04278553258470068
+            },
+            {
               "item_id": 18537,
               "item_name": "Counterattack Lodestone",
               "source_kind": "dungeon",
               "source": "Dire Maul: Tribute",
-              "dps_delta": 0
-            },
-            {
-              "item_id": 21891,
-              "item_name": "Shard of the Fallen Star",
-              "source_kind": "world_drop",
-              "source": "World drop",
               "dps_delta": -0.9136032537536778,
               "verified": true
             }
@@ -5498,11 +5498,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 17193,
-              "item_name": "Sulfuron Hammer",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -2.613845663448501,
+              "item_id": 23221,
+              "item_name": "Misplaced Servo Arm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -8.349575180395107,
               "verified": true
             }
           ]
@@ -5514,97 +5514,13 @@
         },
         {
           "slot": "ranged",
-          "item_id": 23197,
-          "item_name": "Idol of the Moon",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 272427,
-              "item_name": "Howling Idol"
-            },
-            {
-              "item_id": 272428,
-              "item_name": "Enraged Idol"
-            },
-            {
-              "item_id": 272429,
-              "item_name": "Idol of Synthesis"
-            },
-            {
-              "item_id": 272430,
-              "item_name": "Swarming Idol"
-            },
-            {
-              "item_id": 279250,
-              "item_name": "Idol of Swiftness"
-            },
-            {
-              "item_id": 279251,
-              "item_name": "Idol of the Ursine Twins"
-            },
-            {
-              "item_id": 220606,
-              "item_name": "Idol of the Dream"
-            },
-            {
-              "item_id": 227444,
-              "item_name": "Idol of the Huntress"
-            },
-            {
-              "item_id": 220915,
-              "item_name": "Idol of the Raging Shambler"
-            },
-            {
-              "item_id": 249441,
-              "item_name": "Talons of Wrath"
-            },
-            {
-              "item_id": 213594,
-              "item_name": "Idol of the Heckler"
-            },
-            {
-              "item_id": 210534,
-              "item_name": "Idol of the Wild"
-            },
-            {
-              "item_id": 249396,
-              "item_name": "Mystic Mushroom"
-            },
-            {
-              "item_id": 208689,
-              "item_name": "Ferocious Idol"
-            },
-            {
-              "item_id": 206954,
-              "item_name": "Idol of Ursine Rage"
-            },
-            {
-              "item_id": 210195,
-              "item_name": "Unbalanced Idol"
-            },
-            {
-              "item_id": 208414,
-              "item_name": "Lunar Idol"
-            }
-          ],
-          "alternatives": [
-            {
-              "item_id": 272427,
-              "item_name": "Howling Idol",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 219.41327758593098
-            }
-          ],
-          "low_value": true
+          "verified": false,
+          "effect_unmodelled": true,
+          "empty_reason": "effect_not_modelled"
         }
       ],
       "set_dps": 219.41327758593098,
-      "no_source_count": 1348,
+      "no_source_count": 1395,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -5637,55 +5553,54 @@
         "finger2: Protector's Band",
         "trinket1: Darkmoon Card: Maelstrom",
         "trinket2: Frozen Heart of the Mountain",
-        "main_hand: Blackfury",
-        "ranged: Idol of the Moon"
+        "main_hand: Blackfury"
       ],
-      "weights_run_seconds": 2.257865548,
-      "verify_run_seconds": 2.05030884,
+      "weights_run_seconds": 1.692487863,
+      "verify_run_seconds": 1.53811767,
       "coverage": {
         "back": {
           "eligible": 446,
-          "sourced": 350
+          "sourced": 345
         },
         "chest": {
           "eligible": 553,
-          "sourced": 461
+          "sourced": 456
         },
         "feet": {
           "eligible": 440,
-          "sourced": 359
+          "sourced": 357
         },
         "finger1": {
           "eligible": 371,
-          "sourced": 213
+          "sourced": 211
         },
         "finger2": {
           "eligible": 371,
-          "sourced": 213
+          "sourced": 211
         },
         "hands": {
           "eligible": 455,
-          "sourced": 370
+          "sourced": 367
         },
         "head": {
           "eligible": 359,
-          "sourced": 278
+          "sourced": 274
         },
         "legs": {
           "eligible": 456,
-          "sourced": 365
+          "sourced": 363
         },
         "main_hand": {
           "eligible": 804,
-          "sourced": 548
+          "sourced": 535
         },
         "neck": {
           "eligible": 193,
-          "sourced": 99
+          "sourced": 98
         },
         "off_hand": {
           "eligible": 172,
-          "sourced": 111
+          "sourced": 110
         },
         "ranged": {
           "eligible": 21,
@@ -5693,7 +5608,7 @@
         },
         "shoulder": {
           "eligible": 342,
-          "sourced": 273
+          "sourced": 272
         },
         "trinket1": {
           "eligible": 185,
@@ -5705,11 +5620,11 @@
         },
         "waist": {
           "eligible": 407,
-          "sourced": 343
+          "sourced": 342
         },
         "wrist": {
           "eligible": 333,
-          "sourced": 259
+          "sourced": 252
         }
       },
       "reference_dps_per_point": 0.054247989338414036,
@@ -5792,7 +5707,7 @@
               "item_name": "Warlord's Dragonhide Helmet",
               "source_kind": "vendor",
               "source": "PvP rank 17 · Warlord · Horde",
-              "dps_delta": -3.9861693925497215
+              "dps_delta": -3.9861693925497224
             },
             {
               "item_id": 226792,
@@ -6266,11 +6181,11 @@
               "dps_delta": 0
             },
             {
-              "item_id": 17193,
-              "item_name": "Sulfuron Hammer",
-              "source_kind": "crafted",
-              "source": "Blacksmithing",
-              "dps_delta": -1.3431708312325839,
+              "item_id": 23221,
+              "item_name": "Misplaced Servo Arm",
+              "source_kind": "world_drop",
+              "source": "World drop",
+              "dps_delta": -8.694868683321744,
               "verified": true
             }
           ]
@@ -6282,97 +6197,13 @@
         },
         {
           "slot": "ranged",
-          "item_id": 23197,
-          "item_name": "Idol of the Moon",
-          "source": "World drop",
-          "source_kind": "world_drop",
-          "verified": true,
-          "ties": [
-            {
-              "item_id": 272427,
-              "item_name": "Howling Idol"
-            },
-            {
-              "item_id": 272428,
-              "item_name": "Enraged Idol"
-            },
-            {
-              "item_id": 272429,
-              "item_name": "Idol of Synthesis"
-            },
-            {
-              "item_id": 272430,
-              "item_name": "Swarming Idol"
-            },
-            {
-              "item_id": 279250,
-              "item_name": "Idol of Swiftness"
-            },
-            {
-              "item_id": 279251,
-              "item_name": "Idol of the Ursine Twins"
-            },
-            {
-              "item_id": 220606,
-              "item_name": "Idol of the Dream"
-            },
-            {
-              "item_id": 227444,
-              "item_name": "Idol of the Huntress"
-            },
-            {
-              "item_id": 220915,
-              "item_name": "Idol of the Raging Shambler"
-            },
-            {
-              "item_id": 249441,
-              "item_name": "Talons of Wrath"
-            },
-            {
-              "item_id": 213594,
-              "item_name": "Idol of the Heckler"
-            },
-            {
-              "item_id": 210534,
-              "item_name": "Idol of the Wild"
-            },
-            {
-              "item_id": 249396,
-              "item_name": "Mystic Mushroom"
-            },
-            {
-              "item_id": 208689,
-              "item_name": "Ferocious Idol"
-            },
-            {
-              "item_id": 206954,
-              "item_name": "Idol of Ursine Rage"
-            },
-            {
-              "item_id": 210195,
-              "item_name": "Unbalanced Idol"
-            },
-            {
-              "item_id": 208414,
-              "item_name": "Lunar Idol"
-            }
-          ],
-          "alternatives": [
-            {
-              "item_id": 272427,
-              "item_name": "Howling Idol",
-              "source_kind": "vendor",
-              "source": "Pix Xizzix",
-              "dps_delta": 0,
-              "verified": true,
-              "sim_dps": 221.4381628761769
-            }
-          ],
-          "low_value": true
+          "verified": false,
+          "effect_unmodelled": true,
+          "empty_reason": "effect_not_modelled"
         }
       ],
       "set_dps": 221.4381628761769,
-      "no_source_count": 1352,
+      "no_source_count": 1396,
       "no_source_sample": [
         "1189 Overseer's Ring",
         "1216 Frost Bracers",
@@ -6405,23 +6236,22 @@
         "finger2: Legionnaire's Band",
         "trinket1: Darkmoon Card: Maelstrom",
         "trinket2: Rune of the Guard Captain",
-        "main_hand: Blackfury",
-        "ranged: Idol of the Moon"
+        "main_hand: Blackfury"
       ],
-      "weights_run_seconds": 2.257865548,
-      "verify_run_seconds": 2.015784382,
+      "weights_run_seconds": 1.692487863,
+      "verify_run_seconds": 1.5243843529999999,
       "coverage": {
         "back": {
           "eligible": 452,
-          "sourced": 357
+          "sourced": 352
         },
         "chest": {
           "eligible": 551,
-          "sourced": 457
+          "sourced": 452
         },
         "feet": {
           "eligible": 445,
-          "sourced": 361
+          "sourced": 357
         },
         "finger1": {
           "eligible": 374,
@@ -6433,27 +6263,27 @@
         },
         "hands": {
           "eligible": 455,
-          "sourced": 367
+          "sourced": 365
         },
         "head": {
           "eligible": 360,
-          "sourced": 279
+          "sourced": 275
         },
         "legs": {
           "eligible": 451,
-          "sourced": 359
+          "sourced": 357
         },
         "main_hand": {
           "eligible": 810,
-          "sourced": 558
+          "sourced": 548
         },
         "neck": {
           "eligible": 197,
-          "sourced": 103
+          "sourced": 102
         },
         "off_hand": {
           "eligible": 170,
-          "sourced": 111
+          "sourced": 108
         },
         "ranged": {
           "eligible": 21,
@@ -6461,7 +6291,7 @@
         },
         "shoulder": {
           "eligible": 340,
-          "sourced": 271
+          "sourced": 270
         },
         "trinket1": {
           "eligible": 184,
@@ -6473,11 +6303,11 @@
         },
         "waist": {
           "eligible": 410,
-          "sourced": 345
+          "sourced": 342
         },
         "wrist": {
           "eligible": 336,
-          "sourced": 261
+          "sourced": 257
         }
       },
       "reference_dps_per_point": 0.054247989338414036,
