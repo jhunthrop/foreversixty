@@ -273,6 +273,7 @@ def to_gear_item(item: WowheadItem, untracked: Counter[str] | None = None) -> Ge
         dps=item.dps if is_weapon else 0.0,
         two_hand=is_weapon and item.inventory_type == TWO_HAND_INVENTORY_TYPE,
         effect_text="",
+        stats_source="wowhead",
         set_id=item.set_id,
         unique=item.unique,
     )
