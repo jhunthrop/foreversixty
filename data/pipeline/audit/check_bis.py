@@ -37,6 +37,24 @@ def _base_slot(slot: str) -> str:
     return slot[:-1] if slot[-1].isdigit() else slot
 
 
+def _pvp_labels(source: dict) -> list[str]:
+    """Every form of the ranker's pvp label one `pvp` source can appear
+    under in a bis pick's `source`: with its title when loot.json states
+    one (`rank_title`/`title`), and the title-less form the ranker falls
+    back to when it does not."""
+    if source.get("kind") != "pvp" or not source.get("rank"):
+        return []
+    faction = str(source.get("faction") or "").capitalize()
+    if not faction:
+        return []
+    rank = int(source["rank"])
+    title = source.get("rank_title") or source.get("title")
+    labels = [f"PvP rank {rank} · {faction}"]
+    if title:
+        labels.append(f"PvP rank {rank} · {title} · {faction}")
+    return labels
+
+
 def _source_name_index(loot: dict) -> dict[str, set[int]]:
     """Human-readable source name -> item ids it lists, built the same way
     `leveling-bis`'s own `source` strings are built (`crafted:<profession>`
@@ -59,6 +77,14 @@ def _source_name_index(loot: dict) -> dict[str, set[int]]:
         bucket = index.setdefault(name, set())
         bucket.update(source.get("items") or [])
         bucket.update(source.get("trash") or [])
+        # bis-ranker-integrity-4, 2026-09-30: a pvp pick's `source` is the
+        # ranker's own "PvP rank N · <title> · <Faction>" label
+        # (`pvpSourceLabel`, sim/cmd/leveling-bis/band.go), not the
+        # source's bare `name` ("Rank 9 (Alliance)"), so that label keys
+        # the same bucket; a vendor row that inherited the rank shows the
+        # same label and its item is on the pvp source too.
+        for label in _pvp_labels(source):
+            index.setdefault(label, set()).update(source.get("items") or [])
         for boss in source.get("bosses") or []:
             bucket.update(boss.get("items", []))
             boss_name = f"{name}: {boss.get('name', '')}"

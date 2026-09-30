@@ -30,6 +30,7 @@ def _write_build(root: Path, build: str) -> Path:
         _item(103, "Unique Trinket", required_level=20, unique=True),
         _item(200, "Real Crafted Item", required_level=20),
         _item(300, "Twice-Rewarded Star", required_level=0),
+        _item(400, "Sergeant Major's Cape", required_level=20),
     ]
     (build_dir / "items" / "warrior.json").write_text(
         json.dumps({"build": build, "class_slug": "warrior", "items": items})
@@ -62,6 +63,10 @@ def _write_build(root: Path, build: str) -> Path:
                     "slot": "ranged", "item_id": 300, "item_name": "Twice-Rewarded Star",
                     "source": "Quests", "source_kind": "quest",
                 },
+                {
+                    "slot": "back", "item_id": 400, "item_name": "Sergeant Major's Cape",
+                    "source": "PvP rank 9 · Sergeant Major · Alliance", "source_kind": "pvp",
+                },
             ],
         }
     ]  # fmt: skip
@@ -76,6 +81,15 @@ def _write_build(root: Path, build: str) -> Path:
                 "items": [101, 200],
             },
             {"id": "quest", "kind": "quest", "name": "Quests", "items": [300]},
+            {
+                "id": "pvp:rank-9:alliance",
+                "kind": "pvp",
+                "name": "Rank 9 (Alliance)",
+                "rank": 9,
+                "faction": "alliance",
+                "rank_title": "Sergeant Major",
+                "items": [400],
+            },
         ],
         # Two quests reward item 300: a level-35 one (floor 32) and a Forever
         # quest a level-21 character can finish (floor 21). The lowest floor
@@ -194,4 +208,14 @@ def test_a_quest_picks_source_may_be_the_quest_name(tmp_path):
     result = check_bis.check(ctx)
     assert not any(
         "does not list the item" in f.message for f in result.findings if f.subject == "300"
+    )
+
+
+def test_a_pvp_picks_source_is_the_rankers_rank_title_faction_label(tmp_path):
+    root = tmp_path / "builds"
+    _write_build(root, "testbuild")
+    ctx = AuditContext("testbuild", root=root, curated_dir=tmp_path / "curated")
+    result = check_bis.check(ctx)
+    assert not any(
+        "does not list the item" in f.message for f in result.findings if f.subject == "400"
     )
