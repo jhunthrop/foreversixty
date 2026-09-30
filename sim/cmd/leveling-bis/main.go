@@ -327,11 +327,27 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 		// unchanged, so the published JSON keeps publishing what
 		// isWeightSignificant says about each one instead of a bare,
 		// unqualified number.
+		weightsReason := referenceMeasurementReason(specInfo.ReferenceStat, wresult, referenceDPSPerPoint)
 		weights := effectiveWeights(wresult)
+		bandReferenceDPSPerPoint := referenceDPSPerPoint
+		if weightsReason != "" {
+			// The whole sweep is untrustworthy (see
+			// referenceMeasurementReason's own doc): nothing it
+			// measured may rank an item or convert a wand's flat DPS
+			// into score units for this band, so both feeds a
+			// corrupted reference could poison - the per-stat weights
+			// score() dots against, and the raw DPS-per-point
+			// buildBandPool/score()/buildAlternatives divide by - are
+			// cleared the same way an unmeasured band always reads:
+			// no weight, no reference to convert against.
+			weights = map[string]float64{}
+			bandReferenceDPSPerPoint = 0
+			log.Printf("leveling-bis: %s band %d: %s", spec, band, weightsReason)
+		}
 		log.Printf("leveling-bis: %s band %d weights (%.1fs): %s", spec, band, weightsSeconds, formatWeights(specInfo.WeightStats, wresult))
 
 		for _, f := range factions {
-			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, referenceDPSPerPoint, castsShoot)
+			pool := buildBandPool(items, lootIdx, specInfo.ClassSlug, band, f.name, weights, bandReferenceDPSPerPoint, castsShoot)
 			bySlot := candidatesBySlot(pool.Scored)
 			if requiresDagger {
 				// weapon_requirements.go's own doc: a mace or sword is a
@@ -438,7 +454,7 @@ func runSpec(runner engineRunner, repoRoot, buildDir, activeBuild, outDir, spec 
 			}
 			verifySeconds := time.Since(verifyStart).Seconds()
 
-			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors, pool.Coverage, bySlot, referenceDPSPerPoint)
+			report := buildReport(specInfo, band, f.name, f.race, talents, talentPoints, wresult, specInfo.WeightStats, picks, setDPS, swaps, pool.NoSource, previous[f.name], weightsSeconds, verifySeconds, verifyErrors, pool.Coverage, bySlot, bandReferenceDPSPerPoint, weightsReason)
 			reports = append(reports, report)
 			previous[f.name] = picks
 

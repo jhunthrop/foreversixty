@@ -160,7 +160,7 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 				continue
 			}
 			weights := reconstructWeights(bandRow.Weights)
-			pool := buildBandPool(items, lootIdx, spec.ClassSlug, band, faction, weights, bandRow.ReferenceDPSPerPoint, castsShoot)
+			pool := buildBandPool(items, lootIdx, spec.ClassSlug, band, faction, weights, referenceDPSPerPointOrZero(bandRow), castsShoot)
 			// pickBySlot mirrors main.go's own runSpec exactly (this
 			// lane's brief, item 3): without excludeAbovePvpRankCap, this
 			// test's own locally-recomputed "primary.Item" reconstructs a
@@ -183,7 +183,7 @@ func checkKnownGoodSpec(t *testing.T, buildDir, specName string, byBand map[stri
 			}
 			picks := pick(spec.Spec, pickBySlot)
 			for _, want := range wantItems {
-				checkKnownGoodItem(t, specName, spec.ClassSlug, band, faction, want, byID, lootIdx, weights, picks, bandRow.ReferenceDPSPerPoint, castsShoot)
+				checkKnownGoodItem(t, specName, spec.ClassSlug, band, faction, want, byID, lootIdx, weights, picks, referenceDPSPerPointOrZero(bandRow), castsShoot)
 			}
 		}
 	}
@@ -209,6 +209,19 @@ func findBandReport(report specReport, band int, faction string) (bandReport, bo
 		}
 	}
 	return bandReport{}, false
+}
+
+// referenceDPSPerPointOrZero mirrors main.go's own bandReferenceDPSPerPoint:
+// nil (a band whose weights sweep buildReport marked untrustworthy -
+// referenceMeasurementReason, weights.go) converts to 0, the same
+// value that disables score()'s wand/ranged fallback and
+// buildBandPool's own conversion, not a published DPS-per-point this
+// test would otherwise divide by.
+func referenceDPSPerPointOrZero(r bandReport) float64 {
+	if r.ReferenceDPSPerPoint == nil {
+		return 0
+	}
+	return *r.ReferenceDPSPerPoint
 }
 
 // reconstructWeights rebuilds score()'s own weights map straight from
