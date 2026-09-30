@@ -638,20 +638,20 @@ func TestRankTrinketSlotPicksHighestWhenEveryCandidateIsUnmodelled(t *testing.T)
 func TestRankTrinketSlotDoesNotSkipPastMultipleUnmodelledCandidatesForAWeakModelledOne(t *testing.T) {
 	picks := map[string]slotPick{}
 	const (
-		thunderbrewID = 744    // real Blackrock Depths trinket, +8 Spirit, unimplemented use-effect
-		frozenHeartID = 249469 // real trinket, +9 Hit, unimplemented use-effect
+		thunderbrewID  = 744    // real Blackrock Depths trinket, +8 Spirit, unimplemented use-effect
+		dormantHeartID = 249473 // real trinket, healer use-effect the engine leaves unregistered (era-item-effects-3)
 	)
 	bySlot := map[string][]scored{
 		"trinket1": {
 			trinketWithEffect(thunderbrewID, "Thunderbrew's Boot Flask", 44, "Deals 75 Fire damage... Gets you quite drunk too!"),
-			trinketWithEffect(frozenHeartID, "Frozen Heart of the Mountain", 55, "Increases Frost and Shadow spell damage done..."),
+			trinketWithEffect(dormantHeartID, "Dormant Heart of the Mountain", 55, "Your casts of Greater Heal, Healing Touch, Healing Wave, or Holy Light..."),
 			trinketWithEffect(modelledEffectItemID, "Darkmoon Card: Heroism", 66, "Sometimes heals bearer of 150 damage when damaging an enemy in melee."),
 		},
 	}
 	fake := &fakeEngine{
 		DPSByGear: map[string]float64{
 			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: thunderbrewID}}):        200.77,
-			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: frozenHeartID}}):        200.47,
+			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: dormantHeartID}}):       200.47,
 			gearKey([]api.GearSlot{{Slot: "trinket1", ItemID: modelledEffectItemID}}): 200.00,
 			// The no-trinket baseline (swapSlot's own itemID-0 gear):
 			// 200.00, matching the modelled candidate's own value -
@@ -668,8 +668,8 @@ func TestRankTrinketSlotDoesNotSkipPastMultipleUnmodelledCandidatesForAWeakModel
 	if out["trinket1"].Item.MeasuredGainDPS < trinketZeroGainThresholdDPS {
 		t.Errorf("trinket1 pick MeasuredGainDPS = %v, want >= %v (a real, positive, stat-driven gain, not the zero-gain modelled candidate)", out["trinket1"].Item.MeasuredGainDPS, trinketZeroGainThresholdDPS)
 	}
-	if out["trinket1"].RunnerUp == nil || out["trinket1"].RunnerUp.ID != frozenHeartID {
-		t.Fatalf("trinket1 runner-up = %+v, want Frozen Heart of the Mountain (%d): the next-highest real measurement", out["trinket1"].RunnerUp, frozenHeartID)
+	if out["trinket1"].RunnerUp == nil || out["trinket1"].RunnerUp.ID != dormantHeartID {
+		t.Fatalf("trinket1 runner-up = %+v, want Frozen Heart of the Mountain (%d): the next-highest real measurement", out["trinket1"].RunnerUp, dormantHeartID)
 	}
 }
 
